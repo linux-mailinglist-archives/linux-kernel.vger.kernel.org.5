@@ -1,116 +1,70 @@
-Return-Path: <linux-kernel+bounces-21547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BA678290FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:45:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF3B8290FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:45:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB826B2508F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:45:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F5FF288BFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257683EA7D;
-	Tue,  9 Jan 2024 23:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170473EA96;
+	Tue,  9 Jan 2024 23:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dqRU+fXe"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j3In2sGE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2323E499;
-	Tue,  9 Jan 2024 23:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6dddc655a60so1118314a34.2;
-        Tue, 09 Jan 2024 15:45:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704843924; x=1705448724; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Q5ZCfevwCuy2eIhN8UYPiiL0PwUWY0yuohYDJnAVWy8=;
-        b=dqRU+fXePvc+PUn9xh0NHbeZXmym/YV4FM0D6hq8xJUoOTO4wZInUxa2+wd/gDuEDE
-         qY8gz/qEQs5Nk0dAwpuwJsZAUUXnlc56e/TWvD/WeJOQ5PwtPVGn7WO+Gvq/LjGEvjnL
-         zVkjAWc8QvHavLPxe4AWfweN98zkJyO/3Gkctylz4XcK6+xjnlnCnbdqEdYJ8DjfF08s
-         oqxaQOxuNNIQe84TfyasYKk2moCYkFs4wDDSg6xOJvwogM4nqx8Q4kg0r8VCaxyljNZn
-         CfVIJt+8rZqDMKUUUY39IOZMMlui3f2QoH6eFnNAeBYwxhb4fB5XlS4Utn2LXSQGahSL
-         EZHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704843924; x=1705448724;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5ZCfevwCuy2eIhN8UYPiiL0PwUWY0yuohYDJnAVWy8=;
-        b=bnoXFK7NOyd4JvLmxRAdHpbC7gKDwT5sewimho49NVkxlPFmhjkqw7LANc8vwBDCjh
-         l+NuTGxr49DsdtAcTdJCCcqxDZicWjNqzdLa90VU9RJve4A3EE9Dvq6Qwv/yomWUgSVt
-         0yTGqE1nBYCRsPHZ8j7x3nkl1l/SfML6/KOVg7ehPtWLMhIwUDP1oM0UTjl0iHaAxAFy
-         1oTvt+BkTe2UaQj0urbQMnpaX5TpMxuLW9RYt+kd4B5de9p70oKB154GDB/UnfY1HWqg
-         riJLMznN95T6PHP+d21VWgBfIAaoXteWwuIG0ZDAa2hoqEEgI30WLJeFrvnh43Xs70oA
-         gu+A==
-X-Gm-Message-State: AOJu0YziwPQo0krLql/SV2EOGo5iRT1rkXAkvmrfwgtNnqlbtA9LsTRF
-	2XVfOSfcSiwHrEwo3CJSevM=
-X-Google-Smtp-Source: AGHT+IHbFJyEsmS3YSQ7oKQdu/bMRsyctydF1vgDZIAYqxikxDI1+T/YGdfqtJeH5aGhNrLxoSB2bA==
-X-Received: by 2002:a05:6870:2385:b0:1fa:e2e4:d8d1 with SMTP id e5-20020a056870238500b001fae2e4d8d1mr303381oap.52.1704843924108;
-        Tue, 09 Jan 2024 15:45:24 -0800 (PST)
-Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id g8-20020a63e608000000b005cdb499acd0sm2204693pgh.42.2024.01.09.15.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 15:45:23 -0800 (PST)
-Date: Wed, 10 Jan 2024 07:45:18 +0800
-From: Kent Gibson <warthog618@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-doc@vger.kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
-	andy@kernel.org, corbet@lwn.net
-Subject: Re: [PATCH 0/7] Documentation: gpio: add character device userspace
- API documentation
-Message-ID: <20240109234518.GA7839@rigel>
-References: <20240109135952.77458-1-warthog618@gmail.com>
- <CAHp75Ve05bAK-ehZZ7XSci5VqR18cCb=hgnbFKXwy2QPkxo=pw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683F03EA8E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:45:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 371D5C433F1;
+	Tue,  9 Jan 2024 23:45:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704843931;
+	bh=T2s2mQEWs6QBULlqS5J8229yFLqn92vMst+hJ7mSbxY=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=j3In2sGE9gAGi60HRU+8Vhk0S5dSuyE0Kts1EThkA7wmNCsw2jQXumi82UAxgQJ5H
+	 5Lp0aQh8KrBZ9jvZscXZJAC4e1CM+7OZe5OP9t5jFbbpceXnaaNUWFR3fTPMmuRZxm
+	 eoehWgrb0grPPmJ0zWrg74XdvBJbOGCs0ub5SIFhlL0xVPh7rFT0Y2xgSBJbUGRAtj
+	 M7qICInYcl3hCH/Pg/UluoGlz4vvy92Jcn+xr70bWnlnzXlgfRnABd9YkDOsjaECe9
+	 oL4JZkpOVE459wM+GxkZnvnI/gCJTgbAwox+mDwXzyxa7IePpzoFmX9Y8bg2m1pGmh
+	 15nyEVbf6GbYQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 249E0C4167D;
+	Tue,  9 Jan 2024 23:45:31 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Changes for v6.8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20231227174023.346ec9fb@xps-13>
+References: <20231227174023.346ec9fb@xps-13>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20231227174023.346ec9fb@xps-13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-6.8
+X-PR-Tracked-Commit-Id: 98d4fda8f2d4bc3fb97958d2ef4c90e161a628f2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 35f11a3710cdcbbc5090d14017a6295454e0cc73
+Message-Id: <170484393114.13323.6194868442201458335.pr-tracker-bot@kernel.org>
+Date: Tue, 09 Jan 2024 23:45:31 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75Ve05bAK-ehZZ7XSci5VqR18cCb=hgnbFKXwy2QPkxo=pw@mail.gmail.com>
 
-On Tue, Jan 09, 2024 at 10:00:26PM +0200, Andy Shevchenko wrote:
-> On Tue, Jan 9, 2024 at 4:00 PM Kent Gibson <warthog618@gmail.com> wrote:
-> >
->
-> Thanks a lot for doing this!
->
+The pull request you sent on Wed, 27 Dec 2023 17:40:23 +0100:
 
-I hope it makes sense - I've been polishing it for a while to
-the point that I might be missing the forest for the trees.
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-6.8
 
-> ...
->
-> >  Documentation/userspace-api/gpio/chardev.rst  | 114 ++++++++++++++++
-> >  .../userspace-api/gpio/chardev_v1.rst         | 129 ++++++++++++++++++
->
-> Shouldn't it be better to have chardev_v2.rst along with chardev.rst
-> to be a link to it?
->
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/35f11a3710cdcbbc5090d14017a6295454e0cc73
 
-Didn't see any benefit to doing that.  As I see it, chardev.rst will
-always be the latest.  If we do ever do a v3 then this doc will get the
-renaming and link treatment then.
+Thank you!
 
-> ...
->
-> May we actually state in the documentation that sysfs is subject to
-> remove at some point?
->
-
-So formally define what "deprecated" means?
-Is that covered in the higher level documentation somewhere?
-If so I'm more than happy to provide a reference.
-
-Cheers,
-Kent.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
