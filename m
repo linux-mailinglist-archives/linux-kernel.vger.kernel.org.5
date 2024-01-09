@@ -1,247 +1,312 @@
-Return-Path: <linux-kernel+bounces-20267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25564827CA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E8B7827CAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:05:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CF8D1C23238
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:54:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BBF31C23318
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9014430;
-	Tue,  9 Jan 2024 01:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482A91C2F;
+	Tue,  9 Jan 2024 02:05:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iKmWPORq"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TshnAYxc"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E655C33D3
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 01:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5ED617F4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 02:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704765267; x=1736301267;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=CdHqfDxcPFIeOtTUu9eEalHjqGfDLamEQKSW2vyjcLI=;
-  b=iKmWPORqMmbpiKvZZEfhX55Hot3jAGILyZDg8+nUJoaSFMu+mylJe9ik
-   Qv0f+MnNYTbPRdoxrNsld29rhORQ/a/wW97DcFpogUQw/t6HUDJ76s8Ne
-   uwV1HbY1x8kc/EIjSun0+cLWSmMZu2vwM33OfmPDuatspX/eZ64Jzbvvg
-   klqHV/s8qlDvgWGT4riXTSEc2urfPn44meBjzUozDI5NeMBuJfpbIVSC7
-   2BS4TxKaZ8vMjF2k4quauB9e3gdW3nmfbqgeHMdfIJqJgL13/4K0jekV+
-   W2u+YrpZKVj5LmU9cTCaALEYsMKTMdsgoMXhaj5mGpvMmZZfzDJvJVY/i
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="397762489"
+  t=1704765936; x=1736301936;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=dDVp6dSq9reUilE2DHoO6Squ+ylc5/8/8iH1Xo4Rf2Y=;
+  b=TshnAYxc1aG19F9kqbOOjYYQOv3o+Gqf1ESAgh/HkbUankMzGf1I9WCz
+   Hu0edSNwSV1A4DST38+W3iqO/qUD3jkokvXKzpWjzxBSTtDYeU7nTE7jQ
+   6cZ6pNm2crrsPT7vKmHoSSG+tMUJzAb2JXmJ4zN1oZ+OtgiDxrplt30Rq
+   MvipreMyedbLlw8cW67A3d8tF9E5gu24TZ3JR6zMe8Fydv1QN5fJELEWY
+   FSfrmRZOy0zLC5A6a+tRh5/OSFfFhhcIubtNPrwXGOiJmo+Ku1gY3MUuj
+   BL9XixqPF5SPlJSB2EkWuEtgHdmEA6Dlv8thLxNP9wDapK5lCH6Gngqaj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="429246203"
 X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="397762489"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 17:54:20 -0800
+   d="scan'208";a="429246203"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 18:05:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="851998110"
 X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="851998110"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Jan 2024 17:54:20 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 8 Jan 2024 17:54:19 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 8 Jan 2024 17:54:19 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 8 Jan 2024 17:54:19 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 8 Jan 2024 17:54:19 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Kt1nnHdWm9njn6siDUQ+H18wr0Y108jPxDj5v5LrieRuC+I15gQTETHJyrPkedlR46mJU7SSfa2Hd/uBfCFhw1yh7A79vjCkIPDHU4yYYDTCN+Nvn+wzPtgDLuIg16x2gx32SS1Vw9UyMT7MvYUBx4OXYOu78Ns/RaKkKy8kn00r/Mvfu34+evpTt4mJDUrG2dp8nFlqzEeVjdw6AOQ4cwqgM1lv5YS36DSuAh2PhzOVQTbXCo5f1FLUhPQlOdVUDsUhXBfUKQgcMFJTDq0lDHglRzSA8dM/ufrjThILBxkjIoEyRgk/HbCRJNQuZNxIrPfsIz+KylMGUffFoRilug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CdHqfDxcPFIeOtTUu9eEalHjqGfDLamEQKSW2vyjcLI=;
- b=l1Xrq8QbN26OqEqLEhg5PKLtwFaME848KFOXu2xSgaefkoI8xMhtmnfa0JR4SrFB2LtxEcCT5gPH78PdYISDwAz0Xvuvj9YOnMpZlx1d6JT4nzGgIoWfdywrZv/pW87lYAKjapE+iyLS49W7roZKi56/cFa8izajNxbw22uORY+mcyBs5KkZgGEvE660ZbW65iu0fPVuYA29BgDw4TXKecdZEDhDb2wLSs9cVRWZEH228MErmIw4bCIlHIDzAtcf1Y/WKvdfZEkrCmOhrdy5PSNq1fKzq58pDdJv4jumao8IbgApQVj/89cGaPvoYTEeEA9jTEDipJXegdSfqdZUMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
- by SJ2PR11MB7672.namprd11.prod.outlook.com (2603:10b6:a03:4cd::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Tue, 9 Jan
- 2024 01:54:17 +0000
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::1962:31ea:5a9e:6102]) by SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::1962:31ea:5a9e:6102%4]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 01:54:17 +0000
-From: "Zhang, Rui" <rui.zhang@intel.com>
-To: "tglx@linutronix.de" <tglx@linutronix.de>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "jgross@suse.com" <jgross@suse.com>, "x86@kernel.org" <x86@kernel.org>,
-	"arjan@linux.intel.com" <arjan@linux.intel.com>, "kprateek.nayak@amd.com"
-	<kprateek.nayak@amd.com>, "Tang, Feng" <feng.tang@intel.com>,
-	"kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>, "ray.huang@amd.com"
-	<ray.huang@amd.com>, "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-	"Sivanich, Dimitri" <dimitri.sivanich@hpe.com>, "paulmck@kernel.org"
-	<paulmck@kernel.org>, "Mehta, Sohil" <sohil.mehta@intel.com>,
-	"andy@infradead.org" <andy@infradead.org>
-Subject: Re: [patch 37/53] x86/cpu: Detect real BSP on crash kernels
-Thread-Topic: [patch 37/53] x86/cpu: Detect real BSP on crash kernels
-Thread-Index: AQHaQjyCF3Nt+9p0tkSkWmDSuvApOLDQAJIAgAAWM4CAAKJBgA==
-Date: Tue, 9 Jan 2024 01:54:17 +0000
-Message-ID: <ff58623cdf63dc75fc245fd18ee776465f4bb3b8.camel@intel.com>
-References: <20230807130108.853357011@linutronix.de>
-	 <20230807135028.381851690@linutronix.de>
-	 <7443f3200ef0be756566059e8c9b0657f3cefcff.camel@intel.com>
-	 <871qarlvub.ffs@tglx> <87y1czkdlg.ffs@tglx>
-In-Reply-To: <87y1czkdlg.ffs@tglx>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|SJ2PR11MB7672:EE_
-x-ms-office365-filtering-correlation-id: 70ab59dc-b81c-4051-45e0-08dc10b5e3a4
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tJKI0dZeCk2IDpllEHvSj/OeBXTbDnDEfSxgCOLa9Owiq7Pg7U8t8Ongd6LHe5r0Xad0Prii3EuucQYhFuYcIIRP+c3Y/cFT3hN8r5QOXIu/cmoBqg/gX6BMIGgMssQDEVdsCfAcEwjOv898SlgbuPQaTBcUnNn6HS9Q8ZvJ3iRGcW91K1ck7Y/vBMVrIL2l917K6AvihIO/GB0kn4t5dfEw+Y98R5M1zpcQz+21kqmveK0I5vySbGSEb24pcBqLdw36boCMcTsWeQqVdHyi1R2epa2QJ2U1ivgtDyD7xB6/S2Z45hcqrEHdJfrytjEtlYKzQ7rmtXB0vzc0zjfTNPkDENVB8NWPp3xoyxg7oHRW9egKSdq7YCR58yZrRSIrpTw9g0yQVo4c779/YwaFU2vyeB4rlz3HxcdW1R9meqO0zYITNAXOW22CLoV9w72lWfJAi8XpWEV2mJufnR/5lKGN86nf/qJqZRucitnVedEiUaxRqNX2Uq4e1DO5rQ9Pohqq7Csd2Nz45VPVw585nlrOlVmYflIMvc69SZq+dEICkGF3ijueqqFqdkRLvYAsDaeZuY4TjXzrSuD+806ImXMpnBCIpVcmAPrSNA38IY5Sxq2fggqHsND0cjW8/s8t
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(136003)(366004)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(71200400001)(26005)(83380400001)(36756003)(86362001)(38070700009)(122000001)(7416002)(38100700002)(82960400001)(5660300002)(4326008)(6506007)(6512007)(66556008)(66476007)(76116006)(66446008)(54906003)(110136005)(316002)(66946007)(8936002)(8676002)(91956017)(2906002)(41300700001)(478600001)(2616005)(6486002)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NlpJOHJCdGNodVB2UDVVTzJFTnZtWHY5cGNqZjl4L3ZjT1dWR0ZWSytONW1m?=
- =?utf-8?B?enVRY2ExNVlkTWVreXkzR1c1MDg2YUVGckVDNTRkc3ZUT3ZwMWtHaFlyK0p2?=
- =?utf-8?B?ckpRYU9xcUhxcmJZTUZma1pmUm1UbWNFbDkvamRWeC9rYWJWeGFSTG1vOWlz?=
- =?utf-8?B?bThiM2ZKMTk1dVhKRVZyN21uOVNoNlROYlBJZVNKbUNHaWNNamNraDlhVEd3?=
- =?utf-8?B?MVZNenp5YzUxUW9Bb2w3NEQ5SFErLzMxSm9IVzdISFAxdWRjVUNNU1A3bXdO?=
- =?utf-8?B?NXV3TWNFN3UyYW5RUXJGZSt2d1pQN3F3OEM3dWRTZ0Q0WTVmZnRHYmNlNjNN?=
- =?utf-8?B?SmlGVHU5eDFHNXVQRjdzYkFpSHlsUlRseFlubHBIa1FtSkMwQzJkckQ1Tnht?=
- =?utf-8?B?WGVWdEh1SFVGKzhESlNzMXdaeGs2bUtRRUxkalVYSFdidGNTazhPOFBIbXBq?=
- =?utf-8?B?cmhZcUk0SmRNS2gvempHSWsvaHBwenJ0OVgyQnJkMis0djJKWnRic2Q5SDlj?=
- =?utf-8?B?ZjlCVWQ2THJlTEhReSsvQzAxVWk0SVVXOUY2c216d2hGS21mM0ZsOUh6SjRu?=
- =?utf-8?B?R3EvSE00dWtrZ3U3bUErcUZBYnRkNmhNdDlLK0wvYnV3YllUeGViV241WmVH?=
- =?utf-8?B?NGJLanp2MkhsZTFGSkdjRlVBOTNvUTlMNHNxUHRmajl4TEthMmI1dUlMS1l6?=
- =?utf-8?B?bFVFTnRPVit6RHVZeG0wUUo3dkQrRVB3M2w1azBOTjRXVHo5NWdQMmNYeVBx?=
- =?utf-8?B?d0VHRjhYRDZ4VFRSaXJjMUZjczY4dEJyazVwTVZXeTBQcGl0UDRpYXo3OXBE?=
- =?utf-8?B?bEsxK3RBS0RnSjZZY2FSSnpnRTNHMVAyVmlaVjVEK3duKzI1RmJDOXp5bFB1?=
- =?utf-8?B?bG4wclAwMkJFOWdWV3FsdWI2MEcyMmQ1dEtpQ0oyWm51R0wvaktGOXAxT09o?=
- =?utf-8?B?ZWxjc0MwUTI2V1V6NmZFOVMxSjJ4NnhaSElOV1BQWEt1YWpqaXdnd0VmTU5n?=
- =?utf-8?B?YytrNTEzT01yVVFMTnVBem4wNUxaeHVSTmltWWk5OEJrdHVMNDYwRmRNQ2RH?=
- =?utf-8?B?T2Y5T1N1MGRMVW1GZ2JpZ3l5T3hnMXJKZ1AxSXVGeHFyRTZ0VFhhY2llUTU2?=
- =?utf-8?B?RFZPVk5JeWIxZVhtMXZLWFAvRXBKTDVRaHNEK2xjK3I2MHoyRHpmMTZNVEF2?=
- =?utf-8?B?VnVKc3VJanBLRmhrcEM2MnA2R0xsbGp5TDlDMUR2Nlk4dnkwSUNYRWt3THY5?=
- =?utf-8?B?RlNMNXZDbWdUa25palN2NWJvUTNGRGY1cjNWNXczNFFGV1h2TDByaTNpQmdT?=
- =?utf-8?B?RGVXaVROc2dYN25uUFJTR2pYMkhPbW9lbWg2M2o5SDh1cXEvL0RiclFxUkdJ?=
- =?utf-8?B?Snh3RlYwcW9HNU1xRjJpREl4Y2hzcStzSm9tTUpZb1BQa1hiMmpzeVgvTU0r?=
- =?utf-8?B?Wi9WOCt0blhMa0h0dlhmckR2aDVwWnJqWEtLN0ZXOFVVSUxxbWluSWExdXdv?=
- =?utf-8?B?VXVzaGUxTkhjZU4zMzlLS3JtbHhvSFhYak9nTkRrSUlCMmNOYlFJb0dRaStD?=
- =?utf-8?B?MEJlcUVXQVoyRVhscUZISW5sTWJ3TEZrVDZBYjVrOWNTeFplZVg2TFB6eGVy?=
- =?utf-8?B?YksyZEZLNjJzbHBSYUEwSStVRStLOEVBWmdpakFxUnBTcmRCMXB0cVpWa2FP?=
- =?utf-8?B?NlRMYmxOc0NSS0NBOTdwcXVCUEJocDlqNk9PZ2NGN0N0dERYWFZ4RnQwZDlM?=
- =?utf-8?B?YUMzelorQ3BWc09yRlNFaFpTKzhKS1lmRmV2dHNBTWRRWTdoTGRGNXdvU250?=
- =?utf-8?B?RUU2UXNSdXVmYllzTnVTNWVyT2JjWE5TbUZ0SFhlcklWWk5KNFIzTUg3SG1Z?=
- =?utf-8?B?MXhWeTduQ0lZUkg0M0dsVVpzOWVWdjgxeHRHVGJsbE5ZeXNzdDlrekI1VXQ1?=
- =?utf-8?B?a3pWVW9yNUJzTlRHQ3pldFMzTlBKZHFVYTNNZW5vdENHTHJRbTV0ejRvWlB3?=
- =?utf-8?B?OWtDWTR5K011WlZmYjl4cVBDb3h3L1VoQ2lDeEhzVlovd0tmMElzOWpVZ0o1?=
- =?utf-8?B?Mk1VZ2FIWVAyY0NLYTUwQ3ZUblFJbzFnOC85Ti9BemJya0Nna3lqS240ZzA5?=
- =?utf-8?B?SloweWdiMGtMc2tlMnJldDgxZnpiTmVSdFpnWkZaelY2S2NHTGxIVVFSNVdR?=
- =?utf-8?B?cFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <ED6D6D99ECF5C34F8E7A54E030D4FF0F@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+   d="scan'208";a="23381454"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 18:05:29 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Hugh Dickins
+ <hughd@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
+ <willy@infradead.org>,  Michal Hocko <mhocko@suse.com>,  Yosry Ahmed
+ <yosryahmed@google.com>,  David Hildenbrand <david@redhat.com>,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] mm/swap, shmem: use new swapin helper to skip
+ readahead conditionally
+In-Reply-To: <20240102175338.62012-10-ryncsn@gmail.com> (Kairui Song's message
+	of "Wed, 3 Jan 2024 01:53:38 +0800")
+References: <20240102175338.62012-1-ryncsn@gmail.com>
+	<20240102175338.62012-10-ryncsn@gmail.com>
+Date: Tue, 09 Jan 2024 10:03:29 +0800
+Message-ID: <871qar9sb2.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70ab59dc-b81c-4051-45e0-08dc10b5e3a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2024 01:54:17.3929
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 250gl/7m+JvTum/SkayVwIsKh6W071Y9hA9xAewnSF58TvDvgzh0K4DaNjRm0NGXJFOAFLcsH6IF53ZaxljUnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7672
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=ascii
 
-T24gTW9uLCAyMDI0LTAxLTA4IGF0IDE3OjEzICswMTAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
-DQo+IE9uIE1vbiwgSmFuIDA4IDIwMjQgYXQgMTU6NTQsIFRob21hcyBHbGVpeG5lciB3cm90ZToN
-Cj4gDQo+ID4gT24gTW9uLCBKYW4gMDggMjAyNCBhdCAxNDoxMSwgWmhhbmcsIFJ1aSB3cm90ZToN
-Cj4gPiA+ID4gK3N0YXRpYyBfX2luaXQgdm9pZCBjaGVja19mb3Jfa2R1bXBfa2VybmVsKHZvaWQp
-DQo+ID4gPiA+ICt7DQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoHUzMiBic3BfYXBpY2lkOw0KPiA+
-ID4gPiArDQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoC8qDQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDC
-oCAqIFRoZXJlIGlzIG5vIHJlYWwgZ29vZCB3YXkgdG8gZGV0ZWN0IHdoZXRoZXIgdGhpcyBhDQo+
-ID4gPiA+IGtkdW1wKCkNCj4gPiA+ID4gK8KgwqDCoMKgwqDCoMKgICoga2VybmVsLCBidXQgZXhj
-ZXB0IG9uIHRoZSBWb3lhZ2VyIFNNUCBtb25zdHJvc2l0eQ0KPiA+ID4gPiB3aGljaCBpcw0KPiA+
-ID4gPiBub3QNCj4gPiA+ID4gK8KgwqDCoMKgwqDCoMKgICogbG9uZ2VyIHN1cHBvcnRlZCwgdGhl
-IHJlYWwgQlNQIGhhcyBhbHdheXMgdGhlIGxvd2VzdA0KPiA+ID4gPiBudW1iZXJlZA0KPiA+ID4g
-PiArwqDCoMKgwqDCoMKgwqAgKiBBUElDIElELiBJZiBhIGNyYXNoIGhhcHBlbmVkIG9uIGFuIEFQ
-LCB3aGljaCB0aGVuDQo+ID4gPiA+IGVuZHMgdXANCj4gPiA+ID4gYXMNCj4gPiA+ID4gK8KgwqDC
-oMKgwqDCoMKgICogYm9vdCBDUFUgaW4gdGhlIGtkdW1wKCkga2VybmVsLCB0aGVuIHNlbmRpbmcg
-SU5JVCB0bw0KPiA+ID4gPiB0aGUNCj4gPiA+ID4gcmVhbA0KPiA+ID4gPiArwqDCoMKgwqDCoMKg
-wqAgKiBCU1Agd291bGQgcmVzZXQgdGhlIHdob2xlIHN5c3RlbS4NCj4gPiA+ID4gK8KgwqDCoMKg
-wqDCoMKgICovDQo+ID4gPiANCj4gPiA+IA0KPiA+ID4gSGksIFRob21hcywNCj4gPiA+IA0KPiA+
-ID4gVW5mb3J0dW5hdGVseSB0aGlzIGNhdXNlcyBhIHJlZ3Jlc3Npb24gb24gSW50ZWwgTWV0ZW9y
-bGFrZQ0KPiA+ID4gcGxhdGZvcm0sDQo+ID4gPiB3aGVyZSB0aGUgQlNQIEFQSUMgSUQgaXMgTk9U
-IHRoZSBsb3dlc3QgbnVtYmVyZWQgQVBJQyBJRA0KPiA+ID4gKGluc3RlYWQsDQo+ID4gPiBDUFUx
-MiwgdGhlIGZpcnN0IEVjb3JlIENQVSwgaGFzIEFQSUMgSUQgMCkuDQo+ID4gDQo+ID4gQmFoLiBM
-ZXQgbWUgdGhpbmsgYWJvdXQgdGhhdC4NCj4gDQo+IEluIHdoaWNoIG9yZGVyIGFyZSB0aGUgQVBJ
-Q3MvQ1BVcyBlbnVtZXJhdGVkIGJ5IEFDUEk/DQoNCg0KVGhpcyBpcyB0aGUgb3JkZXIgaW4gTUFE
-VCwNCiQgY2F0IGFwaWMuZHNsICB8IGdyZXAgeDJBcGljDQpbMDMwaCAwMDQ4ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDEwDQpbMDQwaCAwMDY0ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDExDQpbMDUwaCAwMDgwICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDE4DQpbMDYwaCAwMDk2ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDE5DQpbMDcwaCAwMTEyICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDIwDQpbMDgwaCAwMTI4ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDIxDQpbMDkwaCAwMTQ0ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDI4DQpbMEEwaCAwMTYwICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDI5DQpbMEIwaCAwMTc2ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDMwDQpbMEMwaCAwMTkyICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDMxDQpbMEQwaCAwMjA4ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDM4DQpbMEUwaCAwMjI0ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDM5DQpbMEYwaCAwMjQwICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDAwDQpbMTAwaCAwMjU2ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDAyDQpbMTEwaCAwMjcyICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDA0DQpbMTIwaCAwMjg4ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDA2DQpbMTMwaCAwMzA0ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDA4DQpbMTQwaCAwMzIwICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDBBDQpbMTUwaCAwMzM2ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDBDDQpbMTYwaCAwMzUyICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDBFDQpbMTcwaCAwMzY4ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDQwDQpbMTgwaCAwMzg0ICAgNF0gICAgICAg
-ICAgUHJvY2Vzc29yIHgyQXBpYyBJRCA6IDAwMDAwMDQyDQoNCmFuZCB0aGlzIGlzIHRoZSBvcmRl
-ciBpbiBMaW51eCAoZnJvbSBDUFUwIHRvIENQVU4pDQogICAgICB4MkFQSUMgSUQgb2YgbG9naWNh
-bCBwcm9jZXNzb3IgPSAweDIwICgzMikNCiAgICAgIHgyQVBJQyBJRCBvZiBsb2dpY2FsIHByb2Nl
-c3NvciA9IDB4MTAgKDE2KQ0KICAgICAgeDJBUElDIElEIG9mIGxvZ2ljYWwgcHJvY2Vzc29yID0g
-MHgxMSAoMTcpDQogICAgICB4MkFQSUMgSUQgb2YgbG9naWNhbCBwcm9jZXNzb3IgPSAweDE4ICgy
-NCkNCiAgICAgIHgyQVBJQyBJRCBvZiBsb2dpY2FsIHByb2Nlc3NvciA9IDB4MTkgKDI1KQ0KICAg
-ICAgeDJBUElDIElEIG9mIGxvZ2ljYWwgcHJvY2Vzc29yID0gMHgyMSAoMzMpDQogICAgICB4MkFQ
-SUMgSUQgb2YgbG9naWNhbCBwcm9jZXNzb3IgPSAweDI4ICg0MCkNCiAgICAgIHgyQVBJQyBJRCBv
-ZiBsb2dpY2FsIHByb2Nlc3NvciA9IDB4MjkgKDQxKQ0KICAgICAgeDJBUElDIElEIG9mIGxvZ2lj
-YWwgcHJvY2Vzc29yID0gMHgzMCAoNDgpDQogICAgICB4MkFQSUMgSUQgb2YgbG9naWNhbCBwcm9j
-ZXNzb3IgPSAweDMxICg0OSkNCiAgICAgIHgyQVBJQyBJRCBvZiBsb2dpY2FsIHByb2Nlc3NvciA9
-IDB4MzggKDU2KQ0KICAgICAgeDJBUElDIElEIG9mIGxvZ2ljYWwgcHJvY2Vzc29yID0gMHgzOSAo
-NTcpDQogICAgICB4MkFQSUMgSUQgb2YgbG9naWNhbCBwcm9jZXNzb3IgPSAweDAgKDApDQogICAg
-ICB4MkFQSUMgSUQgb2YgbG9naWNhbCBwcm9jZXNzb3IgPSAweDIgKDIpDQogICAgICB4MkFQSUMg
-SUQgb2YgbG9naWNhbCBwcm9jZXNzb3IgPSAweDQgKDQpDQogICAgICB4MkFQSUMgSUQgb2YgbG9n
-aWNhbCBwcm9jZXNzb3IgPSAweDYgKDYpDQogICAgICB4MkFQSUMgSUQgb2YgbG9naWNhbCBwcm9j
-ZXNzb3IgPSAweDggKDgpDQogICAgICB4MkFQSUMgSUQgb2YgbG9naWNhbCBwcm9jZXNzb3IgPSAw
-eGEgKDEwKQ0KICAgICAgeDJBUElDIElEIG9mIGxvZ2ljYWwgcHJvY2Vzc29yID0gMHhjICgxMikN
-CiAgICAgIHgyQVBJQyBJRCBvZiBsb2dpY2FsIHByb2Nlc3NvciA9IDB4ZSAoMTQpDQogICAgICB4
-MkFQSUMgSUQgb2YgbG9naWNhbCBwcm9jZXNzb3IgPSAweDQwICg2NCkNCiAgICAgIHgyQVBJQyBJ
-RCBvZiBsb2dpY2FsIHByb2Nlc3NvciA9IDB4NDIgKDY2KQ0KDQp0aGFua3MsDQpydWkNCg==
+Kairui Song <ryncsn@gmail.com> writes:
+
+> From: Kairui Song <kasong@tencent.com>
+>
+> Currently, shmem uses cluster readahead for all swap backends. Cluster
+> readahead is not a good solution for ramdisk based device (ZRAM) at all.
+>
+> After switching to the new helper, most benchmarks showed a good result:
+>
+> - Single file sequence read:
+>   perf stat --repeat 20 dd if=/tmpfs/test of=/dev/null bs=1M count=8192
+>   (/tmpfs/test is a zero filled file, using brd as swap, 4G memcg limit)
+>   Before: 22.248 +- 0.549
+>   After:  22.021 +- 0.684 (-1.1%)
+>
+> - Random read stress test:
+>   fio -name=tmpfs --numjobs=16 --directory=/tmpfs \
+>   --size=256m --ioengine=mmap --rw=randread --random_distribution=random \
+>   --time_based --ramp_time=1m --runtime=5m --group_reporting
+>   (using brd as swap, 2G memcg limit)
+>
+>   Before: 1818MiB/s
+>   After:  1888MiB/s (+3.85%)
+>
+> - Zipf biased random read stress test:
+>   fio -name=tmpfs --numjobs=16 --directory=/tmpfs \
+>   --size=256m --ioengine=mmap --rw=randread --random_distribution=zipf:1.2 \
+>   --time_based --ramp_time=1m --runtime=5m --group_reporting
+>   (using brd as swap, 2G memcg limit)
+>
+>   Before: 31.1GiB/s
+>   After:  32.3GiB/s (+3.86%)
+>
+> So cluster readahead doesn't help much even for single sequence read,
+> and for random stress test, the performance is better without it.
+>
+> Considering both memory and swap device will get more fragmented
+> slowly, and commonly used ZRAM consumes much more CPU than plain
+> ramdisk, false readahead could occur more frequently and waste
+> more CPU. Direct SWAP is cheaper, so use the new helper and skip
+> read ahead for SWP_SYNCHRONOUS_IO device.
+
+It's good to take advantage of swap_direct (no readahead).  I also hopes
+we can take advantage of VMA based swapin if shmem is accessed via mmap.
+That appears possible.
+
+--
+Best Regards,
+Huang, Ying
+
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> ---
+>  mm/shmem.c      | 67 +++++++++++++++++++++++++------------------------
+>  mm/swap.h       |  9 -------
+>  mm/swap_state.c | 11 ++++++--
+>  3 files changed, 43 insertions(+), 44 deletions(-)
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 9da9f7a0e620..3c0729fe934d 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1564,20 +1564,6 @@ static inline struct mempolicy *shmem_get_sbmpol(struct shmem_sb_info *sbinfo)
+>  static struct mempolicy *shmem_get_pgoff_policy(struct shmem_inode_info *info,
+>  			pgoff_t index, unsigned int order, pgoff_t *ilx);
+>  
+> -static struct folio *shmem_swapin_cluster(swp_entry_t swap, gfp_t gfp,
+> -			struct shmem_inode_info *info, pgoff_t index)
+> -{
+> -	struct mempolicy *mpol;
+> -	pgoff_t ilx;
+> -	struct folio *folio;
+> -
+> -	mpol = shmem_get_pgoff_policy(info, index, 0, &ilx);
+> -	folio = swap_cluster_readahead(swap, gfp, mpol, ilx);
+> -	mpol_cond_put(mpol);
+> -
+> -	return folio;
+> -}
+> -
+>  /*
+>   * Make sure huge_gfp is always more limited than limit_gfp.
+>   * Some of the flags set permissions, while others set limitations.
+> @@ -1851,9 +1837,12 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+>  {
+>  	struct address_space *mapping = inode->i_mapping;
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+> +	enum swap_cache_result cache_result;
+>  	struct swap_info_struct *si;
+>  	struct folio *folio = NULL;
+> +	struct mempolicy *mpol;
+>  	swp_entry_t swap;
+> +	pgoff_t ilx;
+>  	int error;
+>  
+>  	VM_BUG_ON(!*foliop || !xa_is_value(*foliop));
+> @@ -1871,36 +1860,40 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+>  			return -EINVAL;
+>  	}
+>  
+> -	/* Look it up and read it in.. */
+> -	folio = swap_cache_get_folio(swap, NULL, 0, NULL);
+> +	mpol = shmem_get_pgoff_policy(info, index, 0, &ilx);
+> +	folio = swapin_entry_mpol(swap, gfp, mpol, ilx, &cache_result);
+> +	mpol_cond_put(mpol);
+> +
+>  	if (!folio) {
+> -		/* Or update major stats only when swapin succeeds?? */
+> +		error = -ENOMEM;
+> +		goto failed;
+> +	}
+> +	if (cache_result != SWAP_CACHE_HIT) {
+>  		if (fault_type) {
+>  			*fault_type |= VM_FAULT_MAJOR;
+>  			count_vm_event(PGMAJFAULT);
+>  			count_memcg_event_mm(fault_mm, PGMAJFAULT);
+>  		}
+> -		/* Here we actually start the io */
+> -		folio = shmem_swapin_cluster(swap, gfp, info, index);
+> -		if (!folio) {
+> -			error = -ENOMEM;
+> -			goto failed;
+> -		}
+>  	}
+>  
+>  	/* We have to do this with folio locked to prevent races */
+>  	folio_lock(folio);
+> -	if (!folio_test_swapcache(folio) ||
+> -	    folio->swap.val != swap.val ||
+> -	    !shmem_confirm_swap(mapping, index, swap)) {
+> +	if (cache_result != SWAP_CACHE_BYPASS) {
+> +		/* With cache bypass, folio is new allocated, sync, and not in cache */
+> +		if (!folio_test_swapcache(folio) || folio->swap.val != swap.val) {
+> +			error = -EEXIST;
+> +			goto unlock;
+> +		}
+> +		if (!folio_test_uptodate(folio)) {
+> +			error = -EIO;
+> +			goto failed;
+> +		}
+> +		folio_wait_writeback(folio);
+> +	}
+> +	if (!shmem_confirm_swap(mapping, index, swap)) {
+>  		error = -EEXIST;
+>  		goto unlock;
+>  	}
+> -	if (!folio_test_uptodate(folio)) {
+> -		error = -EIO;
+> -		goto failed;
+> -	}
+> -	folio_wait_writeback(folio);
+>  
+>  	/*
+>  	 * Some architectures may have to restore extra metadata to the
+> @@ -1908,12 +1901,19 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+>  	 */
+>  	arch_swap_restore(swap, folio);
+>  
+> -	if (shmem_should_replace_folio(folio, gfp)) {
+> +	/* With cache bypass, folio is new allocated and always respect gfp flags */
+> +	if (cache_result != SWAP_CACHE_BYPASS && shmem_should_replace_folio(folio, gfp)) {
+>  		error = shmem_replace_folio(&folio, gfp, info, index);
+>  		if (error)
+>  			goto failed;
+>  	}
+>  
+> +	/*
+> +	 * The expected value checking below should be enough to ensure
+> +	 * only one up-to-date swapin success. swap_free() is called after
+> +	 * this, so the entry can't be reused. As long as the mapping still
+> +	 * has the old entry value, it's never swapped in or modified.
+> +	 */
+>  	error = shmem_add_to_page_cache(folio, mapping, index,
+>  					swp_to_radix_entry(swap), gfp);
+>  	if (error)
+> @@ -1924,7 +1924,8 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+>  	if (sgp == SGP_WRITE)
+>  		folio_mark_accessed(folio);
+>  
+> -	delete_from_swap_cache(folio);
+> +	if (cache_result != SWAP_CACHE_BYPASS)
+> +		delete_from_swap_cache(folio);
+>  	folio_mark_dirty(folio);
+>  	swap_free(swap);
+>  	put_swap_device(si);
+> diff --git a/mm/swap.h b/mm/swap.h
+> index 8f790a67b948..20f4048c971c 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
+> @@ -57,9 +57,6 @@ void __delete_from_swap_cache(struct folio *folio,
+>  void delete_from_swap_cache(struct folio *folio);
+>  void clear_shadow_from_swap_cache(int type, unsigned long begin,
+>  				  unsigned long end);
+> -struct folio *swap_cache_get_folio(swp_entry_t entry,
+> -		struct vm_area_struct *vma, unsigned long addr,
+> -		void **shadowp);
+>  struct folio *filemap_get_incore_folio(struct address_space *mapping,
+>  		pgoff_t index);
+>  
+> @@ -123,12 +120,6 @@ static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
+>  	return 0;
+>  }
+>  
+> -static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
+> -		struct vm_area_struct *vma, unsigned long addr)
+> -{
+> -	return NULL;
+> -}
+> -
+>  static inline
+>  struct folio *filemap_get_incore_folio(struct address_space *mapping,
+>  		pgoff_t index)
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 3edf4b63158d..10eec68475dd 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -318,7 +318,14 @@ void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
+>  
+>  static inline bool swap_use_no_readahead(struct swap_info_struct *si, swp_entry_t entry)
+>  {
+> -	return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_count(entry) == 1;
+> +	int count;
+> +
+> +	if (!data_race(si->flags & SWP_SYNCHRONOUS_IO))
+> +		return false;
+> +
+> +	count = __swap_count(entry);
+> +
+> +	return (count == 1 || count == SWAP_MAP_SHMEM);
+>  }
+>  
+>  static inline bool swap_use_vma_readahead(void)
+> @@ -334,7 +341,7 @@ static inline bool swap_use_vma_readahead(void)
+>   *
+>   * Caller must lock the swap device or hold a reference to keep it valid.
+>   */
+> -struct folio *swap_cache_get_folio(swp_entry_t entry,
+> +static struct folio *swap_cache_get_folio(swp_entry_t entry,
+>  		struct vm_area_struct *vma, unsigned long addr, void **shadowp)
+>  {
+>  	struct folio *folio;
 
