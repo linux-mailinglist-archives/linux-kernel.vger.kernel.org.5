@@ -1,148 +1,186 @@
-Return-Path: <linux-kernel+bounces-21191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D9D7828B87
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:54:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4098D828B8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:55:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4CE5285FB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:54:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 585731C23703
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529FC3BB31;
-	Tue,  9 Jan 2024 17:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3B03BB2D;
+	Tue,  9 Jan 2024 17:55:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ONGmHqBf"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="p0BtbpMm"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4615F3C070
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7ba9f1cfe94so109386239f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:54:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704822842; x=1705427642; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uvxQk9rfheLP9Xtji27sCGT3Sv4bNLZc44jbbgusrDU=;
-        b=ONGmHqBfC1ejBCiK95L/gKcx3N81BvYLZ0b2EkYRCOJoWTJ9/Yhz4EdmUERPQWGhus
-         FptUlXtgTzBIsA/xeUfVugvbhq8iALAGLmHftOKjPoYrJDeZbh4K1KTQg/vYQOJ+8yj9
-         +dCc+ruL4a31Dh1J9oHMbkzlOMLlucY9szbPg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704822842; x=1705427642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uvxQk9rfheLP9Xtji27sCGT3Sv4bNLZc44jbbgusrDU=;
-        b=FzUFefpP+FsJL9JgXlwKklPAmkW8Hqw8bR4U/uiZO34wK7Ha0j8BcggSv7oNwq07f8
-         VUUrqc9xYg0/dCoDBHYqJfWGYydFhLyReScCytu+I/ZSJEcNUj6MYvMgB/MoilqY9EGh
-         iDAa01ijUKtp6X6H3RoaxFSBj9guRiqBgTh9M0fVcT/5efpr8+SNCQSDmqEaaLQe8Okx
-         STFggd2U6IdQo66PpgVnst6A8CghrH7hVBoRwdOtJM274aId13XiitS3gtW36HVKbIzH
-         ETOEyOczxfNIA9OaNdVusskEgG57sYkuvYHa9rhYu0UhoHgGdq0zfSPQ2n3VmJHhc2yD
-         9PGA==
-X-Gm-Message-State: AOJu0Ywk/YUIiHCi99dM+IHkZuX2Ww7RxDo0Rjj2nPU/7Vpsbeh5pmEY
-	NSYt8cDlMkVulfh4cxb3Wqzqb5D/HawG
-X-Google-Smtp-Source: AGHT+IETNvPU0pqR+rjwETC6lClyltQG+AAsL2rUrDmov8iCP0gjm6NfVC+6GYU4F02uh16JW6lf7g==
-X-Received: by 2002:a5d:94ce:0:b0:7bc:2607:7caf with SMTP id y14-20020a5d94ce000000b007bc26077cafmr850204ior.21.1704822842469;
-        Tue, 09 Jan 2024 09:54:02 -0800 (PST)
-Received: from localhost (110.41.72.34.bc.googleusercontent.com. [34.72.41.110])
-        by smtp.gmail.com with UTF8SMTPSA id e15-20020a6b500f000000b007bedb7d78b3sm441971iob.24.2024.01.09.09.54.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 09:54:02 -0800 (PST)
-Date: Tue, 9 Jan 2024 17:54:01 +0000
-From: Matthias Kaehlcke <mka@chromium.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
-	Doug Anderson <dianders@google.com>,
-	Stephen Boyd <swboyd@google.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
-Message-ID: <ZZ2IOQEekFffJoHQ@google.com>
-References: <20231227180306.6319-1-johan+linaro@kernel.org>
- <ZZ15c1HUQIH2cY5o@google.com>
- <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01773B796;
+	Tue,  9 Jan 2024 17:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409HDTKf015085;
+	Tue, 9 Jan 2024 17:55:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=df2bpcTkA2YoQF8C0twkiKVvQVi/CLaa4ZuoZBl7OY4=; b=p0
+	BtbpMmZmc7oGmYTSmn8oltx5rOkXRB7BbmjetyBU2cs6oob0tZ8NiFGUuEc4zST+
+	Ex/BLBer1UnszygMmonqVfiefFbHW0ppMlu1rl0E81JtoOXWtDtM/e5hw39WcU3c
+	MBaca7r15TVcimw+ylBAHJjRJHUwpEYFMyBwxbrU3LE8comOOAN5T2spikfgcSEg
+	8Vc4wOeeHwWyLMoXanmcqGOHffhIjWoRFCi5CEm5uuifKvWsTYXWEQM/razUBYSx
+	nsVmBXzHJDKXxxvOk7KYhTQvmaYypiLDngsO8TbJbRpAn/mxgltx0Fsr2h6beuR7
+	ncm3ciAw8Zxx922fPw1A==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9vfg5nr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:55:03 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409Ht1Gk008599
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 17:55:02 GMT
+Received: from [10.71.108.105] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
+ 2024 09:55:00 -0800
+Message-ID: <00a337d0-a82a-43cd-a106-dfe1ac5f9a11@quicinc.com>
+Date: Tue, 9 Jan 2024 09:55:00 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] misc: fastrpc: Pass proper arguments to scm call
+To: Ekansh Gupta <quic_ekangupt@quicinc.com>, <srinivas.kandagatla@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>
+CC: <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        stable
+	<stable@kernel.org>
+References: <20240108100513.19993-1-quic_ekangupt@quicinc.com>
+ <79851641-8b56-4d25-b4c9-2d56a5bf41e9@quicinc.com>
+ <04500984-6bc0-4a07-9940-235e4b932172@quicinc.com>
+Content-Language: en-US
+From: Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <04500984-6bc0-4a07-9940-235e4b932172@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Gw3Hmph0ocKtwh3dwBk8R0yPiyREGP8F
+X-Proofpoint-ORIG-GUID: Gw3Hmph0ocKtwh3dwBk8R0yPiyREGP8F
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ impostorscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090145
 
-On Tue, Jan 09, 2024 at 06:12:26PM +0100, Johan Hovold wrote:
-> On Tue, Jan 09, 2024 at 04:50:59PM +0000, Matthias Kaehlcke wrote:
+
+
+On 1/8/2024 9:38 PM, Ekansh Gupta wrote:
 > 
-> > On Wed, Dec 27, 2023 at 07:03:06PM +0100, Johan Hovold wrote:
-> > > The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
-> > > device address in MSB order when setting it using the
-> > > EDL_WRITE_BD_ADDR_OPCODE command.
-> > > 
-> > > Presumably, this is the case for all non-ROME devices which all use the
-> > > EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
-> > > use a different command and expect the address in LSB order).
-> > > 
-> > > Reverse the little-endian address before setting it to make sure that
-> > > the address can be configured using tools like btmgmt or using the
-> > > 'local-bd-address' devicetree property.
-> > > 
-> > > Note that this can potentially break systems with boot firmware which
-> > > has started relying on the broken behaviour and is incorrectly passing
-> > > the address via devicetree in MSB order.
-> > 
-> > We should not break existing devices. Their byte order for
-> > 'local-bd-address' may not adhere to the 'spec', however in practice
-> > it is the correct format for existing kernels.
+> On 1/9/2024 6:42 AM, Elliot Berman wrote:
+>>
+>> On 1/8/2024 2:05 AM, Ekansh Gupta wrote:
+>>> For CMA memory allocation, ownership is assigned to DSP to make it
+>>> accessible by the PD running on the DSP. With current implementation
+>>> HLOS VM is stored in the channel structure during rpmsg_probe and
+>>> this VM is passed to qcom_scm call as the source VM.
+>>>
+>>> The qcom_scm call will overwrite the passed source VM with the next
+>>> VM which would cause a problem in case the scm call is again needed.
+>>> Adding a local copy of source VM whereever scm call is made to avoid
+>>> this problem.
+>>>
+>> The perms in fastrpc_channel_ctx should always reflect the current
+>> permission bits, so I'm surprised you see problem.
+>>
+>> What is the scenario where that's not the case?
 > 
-> That depends on in what way the current devices are broken.
+> Thanks for reviewing the changes, Elliot. FastRPC driver is storing
+> the bitfield of HLOS VMID in fastrpc_channel_ctx in perms(cctx->perms)
+> and remoteproc specific VMID information from device tree in vmperms(cctx->vmperms).
+> This information is intended to be passed to qcom_scm call when there is
+> a requirement to move the ownership of memory to any remoteproc VM. As
+> the srcvm is overwritten with the new VM, cctx->perms cannot be reused if
+> the same request comes for any other memory allocation.
 > 
-> Any machines that correctly specify their address in little-endian order
-> in the devicetree would no longer be configured using the wrong address.
-> So no problem there (except requiring users to re-pair their gadgets).
+> The problem is seen with audioPD daemon. When the daemon is stated, it
+> allocates some memory for audioPD and moves the ownership from HLOS to
+> ADSP VM using qcom_scm call. After this, audioPD makes a request for some
+> more memory which is again allocated in kernel and as per current
+> implementation, qcom_scm call is again made with cctx->perms as srcVm
+> which is no longer storing HLOS vmid. Hence using a local variable to
+> make qcom_scm call where there is a need to move ownership from HLOS
+> to remoteproc VM.
 > 
-> And tools like btgmt is broken on all of these Qualcomm machine in any
-> case and would now start working as expected. So no problem there either
-> (unless user space had adapted an inverted the addresses to btmgmt).
+> Please let me know if you have any more queries.
 > 
-> So the first question is whether there actually is any boot firmware out
-> there which passes the BD_ADDR in reverse order?
 
-Yes, (at least) the boot firmware for sc7180-trogdor devices.
+Ah, got it. There can be multiple allocations/assignments per fastrpc_channel_ctx.
 
-hexdump -C /proc/device-tree/soc\@0/geniqup\@8c0000/serial\@88c000/bluetooth/local-bd-address
-00000000  8c fd f0 40 15 dc
+In that case:
 
-hciconfig
-hci0:   Type: Primary  Bus: UART
-        BD Address: 8C:FD:F0:40:15:DC  ACL MTU: 1024:8  SCO MTU: 240:8
-        UP RUNNING 
-        RX bytes:1700 acl:0 sco:0 events:95 errors:0
-        TX bytes:128949 acl:0 sco:0 commands:578 errors:0
+Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 
-> > I suggest adding a quirk like 'local-bd-address-msb-quirk' or
-> > 'qcom,local-bd-address-msb-quirk' to make sure existing devices keep
-> > working properly.
+> --ekansh
 > 
-> I don't think that would work. If this is something that we really need
-> to handle, then there's probably no way around introducing new
-> compatible strings for boot firmware that isn't broken while maintaining
-> the current broken behaviour with respect to 'local-bd-address' for some
-> of the current ones.
-
-I think it should work for sc7180-trogdor. For these devices the device tree
-is bundled with the kernel image and can be updated. That might not be true
-for other devices though.
-
-Matthias
+>>
+>>> Fixes: 0871561055e6 ("misc: fastrpc: Add support for audiopd")> Cc: stable <stable@kernel.org>
+>>> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+>>> ---
+>>>   drivers/misc/fastrpc.c | 10 ++++++----
+>>>   1 file changed, 6 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+>>> index 1c6c62a7f7f5..c13efa7727e0 100644
+>>> --- a/drivers/misc/fastrpc.c
+>>> +++ b/drivers/misc/fastrpc.c
+>>> @@ -263,7 +263,6 @@ struct fastrpc_channel_ctx {
+>>>       int domain_id;
+>>>       int sesscount;
+>>>       int vmcount;
+>>> -    u64 perms;
+>>>       struct qcom_scm_vmperm vmperms[FASTRPC_MAX_VMIDS];
+>>>       struct rpmsg_device *rpdev;
+>>>       struct fastrpc_session_ctx session[FASTRPC_MAX_SESSIONS];
+>>> @@ -1279,9 +1278,11 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
+>>>             /* Map if we have any heap VMIDs associated with this ADSP Static Process. */
+>>>           if (fl->cctx->vmcount) {
+>>> +            u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
+>>> +
+>>>               err = qcom_scm_assign_mem(fl->cctx->remote_heap->phys,
+>>>                               (u64)fl->cctx->remote_heap->size,
+>>> -                            &fl->cctx->perms,
+>>> +                            &src_perms,
+>>>                               fl->cctx->vmperms, fl->cctx->vmcount);
+>>>               if (err) {
+>>>                   dev_err(fl->sctx->dev, "Failed to assign memory with phys 0x%llx size 0x%llx err %d",
+>>> @@ -1915,8 +1916,10 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+>>>         /* Add memory to static PD pool, protection thru hypervisor */
+>>>       if (req.flags == ADSP_MMAP_REMOTE_HEAP_ADDR && fl->cctx->vmcount) {
+>>> +        u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
+>>> +
+>>>           err = qcom_scm_assign_mem(buf->phys, (u64)buf->size,
+>>> -            &fl->cctx->perms, fl->cctx->vmperms, fl->cctx->vmcount);
+>>> +            &src_perms, fl->cctx->vmperms, fl->cctx->vmcount);
+>>>           if (err) {
+>>>               dev_err(fl->sctx->dev, "Failed to assign memory phys 0x%llx size 0x%llx err %d",
+>>>                       buf->phys, buf->size, err);
+>>> @@ -2290,7 +2293,6 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
+>>>         if (vmcount) {
+>>>           data->vmcount = vmcount;
+>>> -        data->perms = BIT(QCOM_SCM_VMID_HLOS);
+>>>           for (i = 0; i < data->vmcount; i++) {
+>>>               data->vmperms[i].vmid = vmids[i];
+>>>               data->vmperms[i].perm = QCOM_SCM_PERM_RWX;
 
