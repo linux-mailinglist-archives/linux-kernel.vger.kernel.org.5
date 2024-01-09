@@ -1,48 +1,60 @@
-Return-Path: <linux-kernel+bounces-21411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1041828EC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:12:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F0A4828EC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAF181C24586
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:12:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A28E1F26EE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DBE3DB89;
-	Tue,  9 Jan 2024 21:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC24B3D997;
+	Tue,  9 Jan 2024 21:14:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGEs0gv9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M6+vsaXM"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE473DB80;
-	Tue,  9 Jan 2024 21:12:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79DC5C433F1;
-	Tue,  9 Jan 2024 21:12:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704834761;
-	bh=/1JVvDw9mHJfxdMUncKAv49a/9s2ZRSG6BYC39Uwf+M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=fGEs0gv9cE2gdPAjk5hapaD5iivC8oZR5fDb3nKQaq/ZgMMUUjdVZni1o4LYPOx+p
-	 GNtKmhoVJ+WjyvT9FgLl+wZueRTMsnkaWL0XaYVoBvY9GyCmwKW0y6vSEvAiXsir6i
-	 lRhGi2Cb7eAsYvt9pXOpKXNsPGAvQl4CgZI4oqhm1W5iRDBcHs/KgskqIOolvMuH9L
-	 tWydErzFRS21lQDPO6dy2ydcuI/YJYO9SMg2VRai9N+FzstnP0Lpg/oXSotQUIIUZ0
-	 u2OeLxGjDBIHl07LNaI/IcV22T+EP7vN7Zz3MWUs4E+v79CqiCwDUqDg8X9acOgAd/
-	 wX7PLjBLBUVOQ==
-Date: Tue, 9 Jan 2024 15:12:39 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-	lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-	bhelgaas@google.com, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_bjorande@quicinc.com, fancer.lancer@gmail.com,
-	vidyas@nvidia.com
-Subject: Re: [PATCH v7 1/2] PCI: designware-ep: Fix DBI access before core
- init
-Message-ID: <20240109211239.GA2016581@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A3B3DB80
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704834836; x=1736370836;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=6+QWP6DIpXUdQ1e9U+hc6eMNWtvhHNZCqn4JCU2Z2/M=;
+  b=M6+vsaXMTPrP+yqhW4805g3VnARI/OLd5ZwPdfD3zbUS0LKGt6GJfhH0
+   HmhJMi5GDHNgvkRqGBhit1+5YNYkl0MZ+yVz/M58hWKLkECp37cy8npwP
+   kLfWAD0gFU/O5wNy1IbB8kTQ1smOQ5T0LEKLYGxlSge0F7VzNcfcRdE9Z
+   zG1mYbfJi+v4rS8GHbHAKl24FvGGblCRyQl7aIRqgK5De4I5GQ9b8rUDY
+   gRqlcp4kIFjbEZi463IQDOqSf1JibnV5sUCHJjeLNPy1RgUU8D28rRLfi
+   o5MY6FRJCtiqKuORjhntmkrkix9f1kJRaYK3myEcmp96+1WgS2qOJLfzx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="464726740"
+X-IronPort-AV: E=Sophos;i="6.04,183,1695711600"; 
+   d="scan'208";a="464726740"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 13:13:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,183,1695711600"; 
+   d="scan'208";a="16408481"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 09 Jan 2024 13:13:54 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNJQ0-0006Gs-1C;
+	Tue, 09 Jan 2024 21:13:52 +0000
+Date: Wed, 10 Jan 2024 05:13:03 +0800
+From: kernel test robot <lkp@intel.com>
+To: Martin Habets <habetsm.xilinx@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>
+Subject: drivers/net/ethernet/sfc/siena/mcdi_mon.c:458:65: warning:
+ 'snprintf' output may be truncated before the last format character
+Message-ID: <202401100509.U4prhh6J-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,313 +63,277 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120084014.108274-2-manivannan.sadhasivam@linaro.org>
 
-It doesn't look to me like the issues raised by Niklas have really
-been resolved:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
+commit: f62a074525de47fe748ce74b81b95ea05f97b25c siena: Make HWMON support specific for Siena
+date:   1 year, 8 months ago
+config: x86_64-randconfig-003-20240107 (https://download.01.org/0day-ci/archive/20240110/202401100509.U4prhh6J-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401100509.U4prhh6J-lkp@intel.com/reproduce)
 
-  https://lore.kernel.org/r/ZWYmX8Y%2F7Q9WMxES@x1-carbon/
-  https://lore.kernel.org/r/ZZ2JXMhdOI1Upabx@x1-carbon
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401100509.U4prhh6J-lkp@intel.com/
 
-so I'm doubtful that we should apply this as-is.  The spurious
-/sys/class/dma/ stuff and debugfs warnings sound like things that will
-annoy users.
+All warnings (new ones prefixed by >>):
 
-Apart from that, this patch has been floating around a long time, but
-I still think this solution is hard to maintain for the same reasons I
-mentioned here:
-https://lore.kernel.org/linux-pci/20220919224014.GA1030798@bhelgaas/
+   drivers/net/ethernet/sfc/siena/mcdi_mon.c: In function 'efx_siena_mcdi_mon_probe':
+>> drivers/net/ethernet/sfc/siena/mcdi_mon.c:458:65: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+     458 |                         snprintf(name, sizeof(name), "%s%u_input",
+         |                                                                 ^
+   drivers/net/ethernet/sfc/siena/mcdi_mon.c:458:25: note: 'snprintf' output between 10 and 22 bytes into a destination of size 12
+     458 |                         snprintf(name, sizeof(name), "%s%u_input",
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     459 |                                  hwmon_prefix, hwmon_index);
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/siena/mcdi_mon.c:489:57: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+     489 |                 snprintf(name, sizeof(name), "%s%u_alarm",
+         |                                                         ^
+   drivers/net/ethernet/sfc/siena/mcdi_mon.c:489:17: note: 'snprintf' output between 10 and 22 bytes into a destination of size 12
+     489 |                 snprintf(name, sizeof(name), "%s%u_alarm",
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     490 |                          hwmon_prefix, hwmon_index);
+         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/siena/mcdi_mon.c:496:65: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+     496 |                         snprintf(name, sizeof(name), "%s%u_label",
+         |                                                                 ^
+   drivers/net/ethernet/sfc/siena/mcdi_mon.c:496:25: note: 'snprintf' output between 10 and 22 bytes into a destination of size 12
+     496 |                         snprintf(name, sizeof(name), "%s%u_label",
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     497 |                                  hwmon_prefix, hwmon_index);
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On Mon, Nov 20, 2023 at 02:10:13PM +0530, Manivannan Sadhasivam wrote:
-> The drivers for platforms requiring reference clock from the PCIe host for
-> initializing their PCIe EP core, make use of the 'core_init_notifier'
-> feature exposed by the DWC common code. On these platforms, access to the
-> hw registers like DBI before completing the core initialization will result
-> in a whole system hang. But the current DWC EP driver tries to access DBI
-> registers during dw_pcie_ep_init() without waiting for core initialization
-> and it results in system hang on platforms making use of
-> 'core_init_notifier' such as Tegra194 and Qcom SM8450.
 
-I see that only qcom_pcie_epc_features and tegra_pcie_epc_features
-*set* "core_init_notifier", but all platforms use it because it's only
-tested in dw_pcie_ep_init() (and a test case), which is generic to all
-DWC drivers.
+vim +/snprintf +458 drivers/net/ethernet/sfc/siena/mcdi_mon.c
 
-"core_init_notifier" is not a notifier.  From reading the code, it
-only means "if this is set, skip the rest of dw_pcie_ep_init()".
+d48523cb88e070 Martin Habets 2022-05-09  302  
+4d49e5cd4b095c Martin Habets 2022-05-09  303  int efx_siena_mcdi_mon_probe(struct efx_nic *efx)
+d48523cb88e070 Martin Habets 2022-05-09  304  {
+d48523cb88e070 Martin Habets 2022-05-09  305  	unsigned int n_temp = 0, n_cool = 0, n_in = 0, n_curr = 0, n_power = 0;
+d48523cb88e070 Martin Habets 2022-05-09  306  	struct efx_mcdi_mon *hwmon = efx_mcdi_mon(efx);
+d48523cb88e070 Martin Habets 2022-05-09  307  	MCDI_DECLARE_BUF(inbuf, MC_CMD_SENSOR_INFO_EXT_IN_LEN);
+d48523cb88e070 Martin Habets 2022-05-09  308  	MCDI_DECLARE_BUF(outbuf, MC_CMD_SENSOR_INFO_OUT_LENMAX);
+d48523cb88e070 Martin Habets 2022-05-09  309  	unsigned int n_pages, n_sensors, n_attrs, page;
+d48523cb88e070 Martin Habets 2022-05-09  310  	size_t outlen;
+d48523cb88e070 Martin Habets 2022-05-09  311  	char name[12];
+d48523cb88e070 Martin Habets 2022-05-09  312  	u32 mask;
+d48523cb88e070 Martin Habets 2022-05-09  313  	int rc, i, j, type;
+d48523cb88e070 Martin Habets 2022-05-09  314  
+d48523cb88e070 Martin Habets 2022-05-09  315  	/* Find out how many sensors are present */
+d48523cb88e070 Martin Habets 2022-05-09  316  	n_sensors = 0;
+d48523cb88e070 Martin Habets 2022-05-09  317  	page = 0;
+d48523cb88e070 Martin Habets 2022-05-09  318  	do {
+d48523cb88e070 Martin Habets 2022-05-09  319  		MCDI_SET_DWORD(inbuf, SENSOR_INFO_EXT_IN_PAGE, page);
+d48523cb88e070 Martin Habets 2022-05-09  320  
+4d49e5cd4b095c Martin Habets 2022-05-09  321  		rc = efx_siena_mcdi_rpc(efx, MC_CMD_SENSOR_INFO, inbuf,
+4d49e5cd4b095c Martin Habets 2022-05-09  322  					sizeof(inbuf), outbuf, sizeof(outbuf),
+4d49e5cd4b095c Martin Habets 2022-05-09  323  					&outlen);
+d48523cb88e070 Martin Habets 2022-05-09  324  		if (rc)
+d48523cb88e070 Martin Habets 2022-05-09  325  			return rc;
+d48523cb88e070 Martin Habets 2022-05-09  326  		if (outlen < MC_CMD_SENSOR_INFO_OUT_LENMIN)
+d48523cb88e070 Martin Habets 2022-05-09  327  			return -EIO;
+d48523cb88e070 Martin Habets 2022-05-09  328  
+d48523cb88e070 Martin Habets 2022-05-09  329  		mask = MCDI_DWORD(outbuf, SENSOR_INFO_OUT_MASK);
+d48523cb88e070 Martin Habets 2022-05-09  330  		n_sensors += hweight32(mask & ~(1 << MC_CMD_SENSOR_PAGE0_NEXT));
+d48523cb88e070 Martin Habets 2022-05-09  331  		++page;
+d48523cb88e070 Martin Habets 2022-05-09  332  	} while (mask & (1 << MC_CMD_SENSOR_PAGE0_NEXT));
+d48523cb88e070 Martin Habets 2022-05-09  333  	n_pages = page;
+d48523cb88e070 Martin Habets 2022-05-09  334  
+d48523cb88e070 Martin Habets 2022-05-09  335  	/* Don't create a device if there are none */
+d48523cb88e070 Martin Habets 2022-05-09  336  	if (n_sensors == 0)
+d48523cb88e070 Martin Habets 2022-05-09  337  		return 0;
+d48523cb88e070 Martin Habets 2022-05-09  338  
+c8443b698238fd Martin Habets 2022-05-09  339  	rc = efx_siena_alloc_buffer(efx, &hwmon->dma_buf,
+d48523cb88e070 Martin Habets 2022-05-09  340  			n_sensors * MC_CMD_SENSOR_VALUE_ENTRY_TYPEDEF_LEN,
+d48523cb88e070 Martin Habets 2022-05-09  341  			GFP_KERNEL);
+d48523cb88e070 Martin Habets 2022-05-09  342  	if (rc)
+d48523cb88e070 Martin Habets 2022-05-09  343  		return rc;
+d48523cb88e070 Martin Habets 2022-05-09  344  
+d48523cb88e070 Martin Habets 2022-05-09  345  	mutex_init(&hwmon->update_lock);
+d48523cb88e070 Martin Habets 2022-05-09  346  	efx_mcdi_mon_update(efx);
+d48523cb88e070 Martin Habets 2022-05-09  347  
+d48523cb88e070 Martin Habets 2022-05-09  348  	/* Allocate space for the maximum possible number of
+d48523cb88e070 Martin Habets 2022-05-09  349  	 * attributes for this set of sensors:
+d48523cb88e070 Martin Habets 2022-05-09  350  	 * value, min, max, crit, alarm and label for each sensor.
+d48523cb88e070 Martin Habets 2022-05-09  351  	 */
+d48523cb88e070 Martin Habets 2022-05-09  352  	n_attrs = 6 * n_sensors;
+d48523cb88e070 Martin Habets 2022-05-09  353  	hwmon->attrs = kcalloc(n_attrs, sizeof(*hwmon->attrs), GFP_KERNEL);
+d48523cb88e070 Martin Habets 2022-05-09  354  	if (!hwmon->attrs) {
+d48523cb88e070 Martin Habets 2022-05-09  355  		rc = -ENOMEM;
+d48523cb88e070 Martin Habets 2022-05-09  356  		goto fail;
+d48523cb88e070 Martin Habets 2022-05-09  357  	}
+d48523cb88e070 Martin Habets 2022-05-09  358  	hwmon->group.attrs = kcalloc(n_attrs + 1, sizeof(struct attribute *),
+d48523cb88e070 Martin Habets 2022-05-09  359  				     GFP_KERNEL);
+d48523cb88e070 Martin Habets 2022-05-09  360  	if (!hwmon->group.attrs) {
+d48523cb88e070 Martin Habets 2022-05-09  361  		rc = -ENOMEM;
+d48523cb88e070 Martin Habets 2022-05-09  362  		goto fail;
+d48523cb88e070 Martin Habets 2022-05-09  363  	}
+d48523cb88e070 Martin Habets 2022-05-09  364  
+d48523cb88e070 Martin Habets 2022-05-09  365  	for (i = 0, j = -1, type = -1; ; i++) {
+d48523cb88e070 Martin Habets 2022-05-09  366  		enum efx_hwmon_type hwmon_type;
+d48523cb88e070 Martin Habets 2022-05-09  367  		const char *hwmon_prefix;
+d48523cb88e070 Martin Habets 2022-05-09  368  		unsigned hwmon_index;
+d48523cb88e070 Martin Habets 2022-05-09  369  		u16 min1, max1, min2, max2;
+d48523cb88e070 Martin Habets 2022-05-09  370  
+d48523cb88e070 Martin Habets 2022-05-09  371  		/* Find next sensor type or exit if there is none */
+d48523cb88e070 Martin Habets 2022-05-09  372  		do {
+d48523cb88e070 Martin Habets 2022-05-09  373  			type++;
+d48523cb88e070 Martin Habets 2022-05-09  374  
+d48523cb88e070 Martin Habets 2022-05-09  375  			if ((type % 32) == 0) {
+d48523cb88e070 Martin Habets 2022-05-09  376  				page = type / 32;
+d48523cb88e070 Martin Habets 2022-05-09  377  				j = -1;
+d48523cb88e070 Martin Habets 2022-05-09  378  				if (page == n_pages)
+d48523cb88e070 Martin Habets 2022-05-09  379  					goto hwmon_register;
+d48523cb88e070 Martin Habets 2022-05-09  380  
+d48523cb88e070 Martin Habets 2022-05-09  381  				MCDI_SET_DWORD(inbuf, SENSOR_INFO_EXT_IN_PAGE,
+d48523cb88e070 Martin Habets 2022-05-09  382  					       page);
+4d49e5cd4b095c Martin Habets 2022-05-09  383  				rc = efx_siena_mcdi_rpc(efx, MC_CMD_SENSOR_INFO,
+d48523cb88e070 Martin Habets 2022-05-09  384  							inbuf, sizeof(inbuf),
+d48523cb88e070 Martin Habets 2022-05-09  385  							outbuf, sizeof(outbuf),
+d48523cb88e070 Martin Habets 2022-05-09  386  							&outlen);
+d48523cb88e070 Martin Habets 2022-05-09  387  				if (rc)
+d48523cb88e070 Martin Habets 2022-05-09  388  					goto fail;
+d48523cb88e070 Martin Habets 2022-05-09  389  				if (outlen < MC_CMD_SENSOR_INFO_OUT_LENMIN) {
+d48523cb88e070 Martin Habets 2022-05-09  390  					rc = -EIO;
+d48523cb88e070 Martin Habets 2022-05-09  391  					goto fail;
+d48523cb88e070 Martin Habets 2022-05-09  392  				}
+d48523cb88e070 Martin Habets 2022-05-09  393  
+d48523cb88e070 Martin Habets 2022-05-09  394  				mask = (MCDI_DWORD(outbuf,
+d48523cb88e070 Martin Habets 2022-05-09  395  						   SENSOR_INFO_OUT_MASK) &
+d48523cb88e070 Martin Habets 2022-05-09  396  					~(1 << MC_CMD_SENSOR_PAGE0_NEXT));
+d48523cb88e070 Martin Habets 2022-05-09  397  
+d48523cb88e070 Martin Habets 2022-05-09  398  				/* Check again for short response */
+d48523cb88e070 Martin Habets 2022-05-09  399  				if (outlen <
+d48523cb88e070 Martin Habets 2022-05-09  400  				    MC_CMD_SENSOR_INFO_OUT_LEN(hweight32(mask))) {
+d48523cb88e070 Martin Habets 2022-05-09  401  					rc = -EIO;
+d48523cb88e070 Martin Habets 2022-05-09  402  					goto fail;
+d48523cb88e070 Martin Habets 2022-05-09  403  				}
+d48523cb88e070 Martin Habets 2022-05-09  404  			}
+d48523cb88e070 Martin Habets 2022-05-09  405  		} while (!(mask & (1 << type % 32)));
+d48523cb88e070 Martin Habets 2022-05-09  406  		j++;
+d48523cb88e070 Martin Habets 2022-05-09  407  
+d48523cb88e070 Martin Habets 2022-05-09  408  		if (type < ARRAY_SIZE(efx_mcdi_sensor_type)) {
+d48523cb88e070 Martin Habets 2022-05-09  409  			hwmon_type = efx_mcdi_sensor_type[type].hwmon_type;
+d48523cb88e070 Martin Habets 2022-05-09  410  
+d48523cb88e070 Martin Habets 2022-05-09  411  			/* Skip sensors specific to a different port */
+d48523cb88e070 Martin Habets 2022-05-09  412  			if (hwmon_type != EFX_HWMON_UNKNOWN &&
+d48523cb88e070 Martin Habets 2022-05-09  413  			    efx_mcdi_sensor_type[type].port >= 0 &&
+d48523cb88e070 Martin Habets 2022-05-09  414  			    efx_mcdi_sensor_type[type].port !=
+d48523cb88e070 Martin Habets 2022-05-09  415  			    efx_port_num(efx))
+d48523cb88e070 Martin Habets 2022-05-09  416  				continue;
+d48523cb88e070 Martin Habets 2022-05-09  417  		} else {
+d48523cb88e070 Martin Habets 2022-05-09  418  			hwmon_type = EFX_HWMON_UNKNOWN;
+d48523cb88e070 Martin Habets 2022-05-09  419  		}
+d48523cb88e070 Martin Habets 2022-05-09  420  
+d48523cb88e070 Martin Habets 2022-05-09  421  		switch (hwmon_type) {
+d48523cb88e070 Martin Habets 2022-05-09  422  		case EFX_HWMON_TEMP:
+d48523cb88e070 Martin Habets 2022-05-09  423  			hwmon_prefix = "temp";
+d48523cb88e070 Martin Habets 2022-05-09  424  			hwmon_index = ++n_temp; /* 1-based */
+d48523cb88e070 Martin Habets 2022-05-09  425  			break;
+d48523cb88e070 Martin Habets 2022-05-09  426  		case EFX_HWMON_COOL:
+d48523cb88e070 Martin Habets 2022-05-09  427  			/* This is likely to be a heatsink, but there
+d48523cb88e070 Martin Habets 2022-05-09  428  			 * is no convention for representing cooling
+d48523cb88e070 Martin Habets 2022-05-09  429  			 * devices other than fans.
+d48523cb88e070 Martin Habets 2022-05-09  430  			 */
+d48523cb88e070 Martin Habets 2022-05-09  431  			hwmon_prefix = "fan";
+d48523cb88e070 Martin Habets 2022-05-09  432  			hwmon_index = ++n_cool; /* 1-based */
+d48523cb88e070 Martin Habets 2022-05-09  433  			break;
+d48523cb88e070 Martin Habets 2022-05-09  434  		default:
+d48523cb88e070 Martin Habets 2022-05-09  435  			hwmon_prefix = "in";
+d48523cb88e070 Martin Habets 2022-05-09  436  			hwmon_index = n_in++; /* 0-based */
+d48523cb88e070 Martin Habets 2022-05-09  437  			break;
+d48523cb88e070 Martin Habets 2022-05-09  438  		case EFX_HWMON_CURR:
+d48523cb88e070 Martin Habets 2022-05-09  439  			hwmon_prefix = "curr";
+d48523cb88e070 Martin Habets 2022-05-09  440  			hwmon_index = ++n_curr; /* 1-based */
+d48523cb88e070 Martin Habets 2022-05-09  441  			break;
+d48523cb88e070 Martin Habets 2022-05-09  442  		case EFX_HWMON_POWER:
+d48523cb88e070 Martin Habets 2022-05-09  443  			hwmon_prefix = "power";
+d48523cb88e070 Martin Habets 2022-05-09  444  			hwmon_index = ++n_power; /* 1-based */
+d48523cb88e070 Martin Habets 2022-05-09  445  			break;
+d48523cb88e070 Martin Habets 2022-05-09  446  		}
+d48523cb88e070 Martin Habets 2022-05-09  447  
+d48523cb88e070 Martin Habets 2022-05-09  448  		min1 = MCDI_ARRAY_FIELD(outbuf, SENSOR_ENTRY,
+d48523cb88e070 Martin Habets 2022-05-09  449  					SENSOR_INFO_ENTRY, j, MIN1);
+d48523cb88e070 Martin Habets 2022-05-09  450  		max1 = MCDI_ARRAY_FIELD(outbuf, SENSOR_ENTRY,
+d48523cb88e070 Martin Habets 2022-05-09  451  					SENSOR_INFO_ENTRY, j, MAX1);
+d48523cb88e070 Martin Habets 2022-05-09  452  		min2 = MCDI_ARRAY_FIELD(outbuf, SENSOR_ENTRY,
+d48523cb88e070 Martin Habets 2022-05-09  453  					SENSOR_INFO_ENTRY, j, MIN2);
+d48523cb88e070 Martin Habets 2022-05-09  454  		max2 = MCDI_ARRAY_FIELD(outbuf, SENSOR_ENTRY,
+d48523cb88e070 Martin Habets 2022-05-09  455  					SENSOR_INFO_ENTRY, j, MAX2);
+d48523cb88e070 Martin Habets 2022-05-09  456  
+d48523cb88e070 Martin Habets 2022-05-09  457  		if (min1 != max1) {
+d48523cb88e070 Martin Habets 2022-05-09 @458  			snprintf(name, sizeof(name), "%s%u_input",
+d48523cb88e070 Martin Habets 2022-05-09  459  				 hwmon_prefix, hwmon_index);
+d48523cb88e070 Martin Habets 2022-05-09  460  			efx_mcdi_mon_add_attr(
+d48523cb88e070 Martin Habets 2022-05-09  461  				efx, name, efx_mcdi_mon_show_value, i, type, 0);
+d48523cb88e070 Martin Habets 2022-05-09  462  
+d48523cb88e070 Martin Habets 2022-05-09  463  			if (hwmon_type != EFX_HWMON_POWER) {
+d48523cb88e070 Martin Habets 2022-05-09  464  				snprintf(name, sizeof(name), "%s%u_min",
+d48523cb88e070 Martin Habets 2022-05-09  465  					 hwmon_prefix, hwmon_index);
+d48523cb88e070 Martin Habets 2022-05-09  466  				efx_mcdi_mon_add_attr(
+d48523cb88e070 Martin Habets 2022-05-09  467  					efx, name, efx_mcdi_mon_show_limit,
+d48523cb88e070 Martin Habets 2022-05-09  468  					i, type, min1);
+d48523cb88e070 Martin Habets 2022-05-09  469  			}
+d48523cb88e070 Martin Habets 2022-05-09  470  
+d48523cb88e070 Martin Habets 2022-05-09  471  			snprintf(name, sizeof(name), "%s%u_max",
+d48523cb88e070 Martin Habets 2022-05-09  472  				 hwmon_prefix, hwmon_index);
+d48523cb88e070 Martin Habets 2022-05-09  473  			efx_mcdi_mon_add_attr(
+d48523cb88e070 Martin Habets 2022-05-09  474  				efx, name, efx_mcdi_mon_show_limit,
+d48523cb88e070 Martin Habets 2022-05-09  475  				i, type, max1);
+d48523cb88e070 Martin Habets 2022-05-09  476  
+d48523cb88e070 Martin Habets 2022-05-09  477  			if (min2 != max2) {
+d48523cb88e070 Martin Habets 2022-05-09  478  				/* Assume max2 is critical value.
+d48523cb88e070 Martin Habets 2022-05-09  479  				 * But we have no good way to expose min2.
+d48523cb88e070 Martin Habets 2022-05-09  480  				 */
+d48523cb88e070 Martin Habets 2022-05-09  481  				snprintf(name, sizeof(name), "%s%u_crit",
+d48523cb88e070 Martin Habets 2022-05-09  482  					 hwmon_prefix, hwmon_index);
+d48523cb88e070 Martin Habets 2022-05-09  483  				efx_mcdi_mon_add_attr(
+d48523cb88e070 Martin Habets 2022-05-09  484  					efx, name, efx_mcdi_mon_show_limit,
+d48523cb88e070 Martin Habets 2022-05-09  485  					i, type, max2);
+d48523cb88e070 Martin Habets 2022-05-09  486  			}
+d48523cb88e070 Martin Habets 2022-05-09  487  		}
+d48523cb88e070 Martin Habets 2022-05-09  488  
+d48523cb88e070 Martin Habets 2022-05-09  489  		snprintf(name, sizeof(name), "%s%u_alarm",
+d48523cb88e070 Martin Habets 2022-05-09  490  			 hwmon_prefix, hwmon_index);
+d48523cb88e070 Martin Habets 2022-05-09  491  		efx_mcdi_mon_add_attr(
+d48523cb88e070 Martin Habets 2022-05-09  492  			efx, name, efx_mcdi_mon_show_alarm, i, type, 0);
+d48523cb88e070 Martin Habets 2022-05-09  493  
+d48523cb88e070 Martin Habets 2022-05-09  494  		if (type < ARRAY_SIZE(efx_mcdi_sensor_type) &&
+d48523cb88e070 Martin Habets 2022-05-09  495  		    efx_mcdi_sensor_type[type].label) {
+d48523cb88e070 Martin Habets 2022-05-09  496  			snprintf(name, sizeof(name), "%s%u_label",
+d48523cb88e070 Martin Habets 2022-05-09  497  				 hwmon_prefix, hwmon_index);
+d48523cb88e070 Martin Habets 2022-05-09  498  			efx_mcdi_mon_add_attr(
+d48523cb88e070 Martin Habets 2022-05-09  499  				efx, name, efx_mcdi_mon_show_label, i, type, 0);
+d48523cb88e070 Martin Habets 2022-05-09  500  		}
+d48523cb88e070 Martin Habets 2022-05-09  501  	}
+d48523cb88e070 Martin Habets 2022-05-09  502  
+d48523cb88e070 Martin Habets 2022-05-09  503  hwmon_register:
+d48523cb88e070 Martin Habets 2022-05-09  504  	hwmon->groups[0] = &hwmon->group;
+d48523cb88e070 Martin Habets 2022-05-09  505  	hwmon->device = hwmon_device_register_with_groups(&efx->pci_dev->dev,
+d48523cb88e070 Martin Habets 2022-05-09  506  							  KBUILD_MODNAME, NULL,
+d48523cb88e070 Martin Habets 2022-05-09  507  							  hwmon->groups);
+d48523cb88e070 Martin Habets 2022-05-09  508  	if (IS_ERR(hwmon->device)) {
+d48523cb88e070 Martin Habets 2022-05-09  509  		rc = PTR_ERR(hwmon->device);
+d48523cb88e070 Martin Habets 2022-05-09  510  		goto fail;
+d48523cb88e070 Martin Habets 2022-05-09  511  	}
+d48523cb88e070 Martin Habets 2022-05-09  512  
+d48523cb88e070 Martin Habets 2022-05-09  513  	return 0;
+d48523cb88e070 Martin Habets 2022-05-09  514  
+d48523cb88e070 Martin Habets 2022-05-09  515  fail:
+4d49e5cd4b095c Martin Habets 2022-05-09  516  	efx_siena_mcdi_mon_remove(efx);
+d48523cb88e070 Martin Habets 2022-05-09  517  	return rc;
+d48523cb88e070 Martin Habets 2022-05-09  518  }
+d48523cb88e070 Martin Habets 2022-05-09  519  
 
-Based on the code, I assume it implies that drivers that set
-core_init_notifier must do some additional initialization or
-something, but that initialization isn't connected here.
+:::::: The code at line 458 was first introduced by commit
+:::::: d48523cb88e0703055c1b33e61eb644a7976f92b sfc: Copy shared files needed for Siena (part 2)
 
-There should be some symbol, maybe a member of pci_epc_features, that
-both *does* this initialization and *tells us* that the driver needs
-this initialization.
+:::::: TO: Martin Habets <martinh@xilinx.com>
+:::::: CC: Jakub Kicinski <kuba@kernel.org>
 
-Right now, I think it's something like:
-
-  1) this driver sets core_init_notifier
-  2) that must mean that it also calls dw_pcie_ep_init_notify() somewhere
-  3) we must avoid DBI access until it does
-
-There's nothing that directly connects those three things.
-
-> To workaround this issue, users of the above mentioned platforms have to
-> maintain the dependency with the PCIe host by booting the PCIe EP after
-> host boot. But this won't provide a good user experience, since PCIe EP is
-> _one_ of the features of those platforms and it doesn't make sense to
-> delay the whole platform booting due to the PCIe dependency.
-
-IIUC, "have to maintain the dependency" refers to the situation
-*before* this patch, right?  This patch improves the user experience
-by removing the need for users to enforce this "boot host before EP"
-ordering?
-
-> So to fix this issue, let's move all the DBI access during
-> dw_pcie_ep_init() in the DWC EP driver to the dw_pcie_ep_init_complete()
-> API that gets called only after core initialization on these platforms.
-> This makes sure that the DBI register accesses are skipped during
-> dw_pcie_ep_init() and accessed later once the core initialization happens.
-
-This patch doesn't "skip" them in dw_pcie_ep_init(); it *moves* them
-completely to dw_pcie_ep_late_init() and calls that from the end of
-dw_pcie_ep_init().
-
-> For the rest of the platforms, DBI access happens as usual.
-
-I don't really understand what "as usual" means here.  I guess it just
-means "if the driver doesn't set 'core_init_notifier', nothing
-changes"?  I would at least make it specific to make it clear that
-"rest of the platforms" means "those that don't set
-core_init_notifier".
-
-> Co-developed-by: Vidya Sagar <vidyas@nvidia.com>
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  .../pci/controller/dwc/pcie-designware-ep.c   | 139 ++++++++++++------
->  1 file changed, 91 insertions(+), 48 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index f6207989fc6a..b1c79cd8e25f 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -662,14 +662,19 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
->  	return 0;
->  }
->  
-> -int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
-> +static int dw_pcie_ep_late_init(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> +	struct dw_pcie_ep_func *ep_func;
-> +	struct device *dev = pci->dev;
-> +	struct pci_epc *epc = ep->epc;
->  	unsigned int offset, ptm_cap_base;
->  	unsigned int nbars;
->  	u8 hdr_type;
-> +	u8 func_no;
-> +	int i, ret;
-> +	void *addr;
->  	u32 reg;
-> -	int i;
->  
->  	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
->  		   PCI_HEADER_TYPE_MASK;
-> @@ -680,6 +685,55 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
->  		return -EIO;
->  	}
->  
-> +	dw_pcie_version_detect(pci);
-> +
-> +	dw_pcie_iatu_detect(pci);
-> +
-> +	ret = dw_pcie_edma_detect(pci);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!ep->ib_window_map) {
-> +		ep->ib_window_map = devm_bitmap_zalloc(dev, pci->num_ib_windows,
-> +						       GFP_KERNEL);
-> +		if (!ep->ib_window_map)
-> +			goto err_remove_edma;
-> +	}
-> +
-> +	if (!ep->ob_window_map) {
-> +		ep->ob_window_map = devm_bitmap_zalloc(dev, pci->num_ob_windows,
-> +						       GFP_KERNEL);
-> +		if (!ep->ob_window_map)
-> +			goto err_remove_edma;
-> +	}
-> +
-> +	if (!ep->outbound_addr) {
-> +		addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
-> +				    GFP_KERNEL);
-> +		if (!addr)
-> +			goto err_remove_edma;
-> +		ep->outbound_addr = addr;
-> +	}
-> +
-> +	for (func_no = 0; func_no < epc->max_functions; func_no++) {
-> +
-> +		ep_func = dw_pcie_ep_get_func_from_ep(ep, func_no);
-> +		if (ep_func)
-> +			continue;
-> +
-> +		ep_func = devm_kzalloc(dev, sizeof(*ep_func), GFP_KERNEL);
-> +		if (!ep_func)
-> +			goto err_remove_edma;
-> +
-> +		ep_func->func_no = func_no;
-> +		ep_func->msi_cap = dw_pcie_ep_find_capability(ep, func_no,
-> +							      PCI_CAP_ID_MSI);
-> +		ep_func->msix_cap = dw_pcie_ep_find_capability(ep, func_no,
-> +							       PCI_CAP_ID_MSIX);
-> +
-> +		list_add_tail(&ep_func->list, &ep->func_list);
-> +	}
-> +
->  	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
->  	ptm_cap_base = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_PTM);
->  
-> @@ -714,14 +768,38 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
->  	dw_pcie_dbi_ro_wr_dis(pci);
->  
->  	return 0;
-> +
-> +err_remove_edma:
-> +	dw_pcie_edma_remove(pci);
-> +
-> +	return ret;
-> +}
-> +
-> +int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
-> +{
-> +	struct pci_epc *epc = ep->epc;
-> +	int ret;
-> +
-> +	ret = dw_pcie_ep_late_init(ep);
-> +	if (ret)
-> +		goto err_cleanup;
-> +
-> +	return 0;
-> +
-> +err_cleanup:
-> +	pci_epc_mem_free_addr(epc, ep->msi_mem_phys, ep->msi_mem,
-> +			      epc->mem->window.page_size);
-> +	pci_epc_mem_exit(epc);
-> +	if (ep->ops->deinit)
-> +		ep->ops->deinit(ep);
-> +
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
->  
->  int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  {
->  	int ret;
-> -	void *addr;
-> -	u8 func_no;
->  	struct resource *res;
->  	struct pci_epc *epc;
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> @@ -729,7 +807,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  	struct platform_device *pdev = to_platform_device(dev);
->  	struct device_node *np = dev->of_node;
->  	const struct pci_epc_features *epc_features;
-> -	struct dw_pcie_ep_func *ep_func;
->  
->  	INIT_LIST_HEAD(&ep->func_list);
->  
-> @@ -747,26 +824,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  	if (ep->ops->pre_init)
->  		ep->ops->pre_init(ep);
->  
-> -	dw_pcie_version_detect(pci);
-> -
-> -	dw_pcie_iatu_detect(pci);
-> -
-> -	ep->ib_window_map = devm_bitmap_zalloc(dev, pci->num_ib_windows,
-> -					       GFP_KERNEL);
-> -	if (!ep->ib_window_map)
-> -		return -ENOMEM;
-> -
-> -	ep->ob_window_map = devm_bitmap_zalloc(dev, pci->num_ob_windows,
-> -					       GFP_KERNEL);
-> -	if (!ep->ob_window_map)
-> -		return -ENOMEM;
-> -
-> -	addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
-> -			    GFP_KERNEL);
-> -	if (!addr)
-> -		return -ENOMEM;
-> -	ep->outbound_addr = addr;
-> -
->  	epc = devm_pci_epc_create(dev, &epc_ops);
->  	if (IS_ERR(epc)) {
->  		dev_err(dev, "Failed to create epc device\n");
-> @@ -780,20 +837,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  	if (ret < 0)
->  		epc->max_functions = 1;
->  
-> -	for (func_no = 0; func_no < epc->max_functions; func_no++) {
-> -		ep_func = devm_kzalloc(dev, sizeof(*ep_func), GFP_KERNEL);
-> -		if (!ep_func)
-> -			return -ENOMEM;
-> -
-> -		ep_func->func_no = func_no;
-> -		ep_func->msi_cap = dw_pcie_ep_find_capability(ep, func_no,
-> -							      PCI_CAP_ID_MSI);
-> -		ep_func->msix_cap = dw_pcie_ep_find_capability(ep, func_no,
-> -							       PCI_CAP_ID_MSIX);
-> -
-> -		list_add_tail(&ep_func->list, &ep->func_list);
-> -	}
-> -
->  	if (ep->ops->ep_init)
->  		ep->ops->ep_init(ep);
->  
-> @@ -812,25 +855,25 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  		goto err_exit_epc_mem;
->  	}
->  
-> -	ret = dw_pcie_edma_detect(pci);
-> -	if (ret)
-> -		goto err_free_epc_mem;
-> -
->  	if (ep->ops->get_features) {
->  		epc_features = ep->ops->get_features(ep);
->  		if (epc_features->core_init_notifier)
->  			return 0;
->  	}
->  
-> -	ret = dw_pcie_ep_init_complete(ep);
-> +	/*
-> +	 * NOTE:- Avoid accessing the hardware (Ex:- DBI space) before this
-> +	 * step as platforms that implement 'core_init_notifier' feature may
-> +	 * not have the hardware ready (i.e. core initialized) for access
-> +	 * (Ex: tegra194). Any hardware access on such platforms result
-> +	 * in system hang.
-
-What specifically does "before this step" refer to?  I think the
-intent is that it's something to do with "core_init_notifier", but
-there's no *direct* connection because there's no test of
-core_init_notifier except here and the test case.
-
-> +	ret = dw_pcie_ep_late_init(ep);
->  	if (ret)
-> -		goto err_remove_edma;
-> +		goto err_free_epc_mem;
->  
->  	return 0;
->  
-> -err_remove_edma:
-> -	dw_pcie_edma_remove(pci);
-> -
->  err_free_epc_mem:
->  	pci_epc_mem_free_addr(epc, ep->msi_mem_phys, ep->msi_mem,
->  			      epc->mem->window.page_size);
-> -- 
-> 2.25.1
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
