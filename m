@@ -1,134 +1,140 @@
-Return-Path: <linux-kernel+bounces-20345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB650827D86
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7650F827D85
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B3C8B23917
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:50:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18DA9B23837
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67993847D;
-	Tue,  9 Jan 2024 03:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED283567E;
+	Tue,  9 Jan 2024 03:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KGonJbCR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p5oQ67HL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224FA566D
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 03:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704772177;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZTfyJ0n3w4TT5PYd+Uem/XQgjKHsnfqZgaIdLhgNUL8=;
-	b=KGonJbCR5QdxAAb6YDxwMhDOIYt4XyWboCwKoHWvfNNrc0KZcpKPwSuYosTl+rId2LwLz/
-	WQcabgCAuSTREXqaZhURtM/ZYXLsoxP+ONKdygMpvMM2g3X6GuStI+CdJb9ddNp2RyBIfj
-	6TNuuycnDIQ0qTcQ+j6j99US5jAUEx8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-439-Tn6IMJMmOi-BvWKCm98MJg-1; Mon,
- 08 Jan 2024 22:49:31 -0500
-X-MC-Unique: Tn6IMJMmOi-BvWKCm98MJg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0A56E1C0BB44;
-	Tue,  9 Jan 2024 03:49:28 +0000 (UTC)
-Received: from [10.22.16.105] (unknown [10.22.16.105])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 91EE0492BC9;
-	Tue,  9 Jan 2024 03:49:30 +0000 (UTC)
-Message-ID: <a8023072-0900-4be9-bb34-02850276404b@redhat.com>
-Date: Mon, 8 Jan 2024 22:49:30 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C054418;
+	Tue,  9 Jan 2024 03:49:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E683C433C7;
+	Tue,  9 Jan 2024 03:49:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704772176;
+	bh=E7n3TsSbDbPjksIo7Blfyj5PMO2YbKS3wrQ5fGz2R58=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p5oQ67HLaZNAn2pkjhJthcuHCjkORdRQi6bEPqRrA1Qcq2RAIj57r33jmI6jQZSDW
+	 exuoE4K/MQxFN+ICDKaMa8DkSQWHfbaDIXio7RvHToQy53SFbDOhBQ16bBA/Hg43Hj
+	 lkr6+xAh8ws7o4/N7h2yUodZsQRcjdknnNJDVB1SdDgelKp9sGi2MesaiFn/dOFO6g
+	 lnQ1uzFrLiwIlPOT8MEeVZWTWG9QZX/XJknxrvgXdd3nZm6b0eblDTYmRu2HSXl0ZJ
+	 ZBgxvVgg65tnpc2j0F3k6JZ8/kFvZhKulGuGNZk1gz2uCURttiTJc2aCEttkKpSl6N
+	 AxQbY3dGHGtjg==
+Received: (nullmailer pid 2606875 invoked by uid 1000);
+	Tue, 09 Jan 2024 03:49:34 -0000
+Date: Mon, 8 Jan 2024 20:49:34 -0700
+From: Rob Herring <robh@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Frank Li <Frank.li@nxp.com>, krzysztof.kozlowski@linaro.org, bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org, kw@linux.com, l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, lpieralisi@kernel.org, s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v7 04/16] dt-bindings: imx6q-pcie: Add linux,pci-domain
+ as required for iMX8MQ
+Message-ID: <20240109034934.GA2602612-robh@kernel.org>
+References: <20231227182727.1747435-1-Frank.Li@nxp.com>
+ <20231227182727.1747435-5-Frank.Li@nxp.com>
+ <20240107031506.GC3416@thinkpad>
+ <ZZos6LDk4NTfQHyU@lizhi-Precision-Tower-5810>
+ <20240107051917.GG3416@thinkpad>
+ <ZZo4wkHf4RE2O9UN@lizhi-Precision-Tower-5810>
+ <20240107062911.GP3416@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] lockdep: Add missing graph_unlock in check_prev_add
-Content-Language: en-US
-To: Xuewen Yan <xuewen.yan@unisoc.com>, peterz@infradead.org,
- mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
-Cc: zhiguo.niu@unisoc.com, ke.wang@unisoc.com, linux-kernel@vger.kernel.org
-References: <20240105060456.15331-1-xuewen.yan@unisoc.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240105060456.15331-1-xuewen.yan@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240107062911.GP3416@thinkpad>
 
-On 1/5/24 01:04, Xuewen Yan wrote:
-> The check_prev_add() is held graph_lock, and it should unlock
-> the graph_lock before return 0.
-> But there is one condition where it will return 0 without unlock,
-> that is:
->
-> /* <prev> is not found in <next>::locks_before */
-> 	return 0;
->
-> So add graph_unlock before return 0.
->
-> Fixes: 3454a36d6a39 ("lockdep: Introduce lock_list::dep")
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> ---
-> Change in V2:
-> -move the graph_unlock to check_prev_add from validate_chain(Boqun)
-> -Add fix tag
-> ---
-> ---
->   kernel/locking/lockdep.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 151bd3de5936..c8602a251bec 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -3178,6 +3178,7 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
->   			}
->   
->   			/* <prev> is not found in <next>::locks_before */
-> +			graph_unlock();
->   			return 0;
->   		}
->   	}
+On Sun, Jan 07, 2024 at 11:59:11AM +0530, Manivannan Sadhasivam wrote:
+> On Sun, Jan 07, 2024 at 12:38:10AM -0500, Frank Li wrote:
+> > On Sun, Jan 07, 2024 at 10:49:17AM +0530, Manivannan Sadhasivam wrote:
+> > > On Sat, Jan 06, 2024 at 11:47:36PM -0500, Frank Li wrote:
+> > > > On Sun, Jan 07, 2024 at 08:45:06AM +0530, Manivannan Sadhasivam wrote:
+> > > > > On Wed, Dec 27, 2023 at 01:27:15PM -0500, Frank Li wrote:
+> > > > > > iMX8MQ have two pci controllers. Adds "linux,pci-domain" as required
+> > > > > > proptery for iMX8MQ to indicate pci controller index.
+> > > > > > 
+> > > > > 
+> > > > > property
+> > > > > 
+> > > > > > This adjustment paves the way for eliminating the hardcoded check on the
+> > > > > > base register for acquiring the controller_id.
+> > > > > > 
+> > > > > > 	...
+> > > > > > 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+> > > > > > 		imx6_pcie->controller_id = 1;
+> > > > > > 	...
+> > > > > > 
+> > > > > > The controller_id is crucial and utilized for certain register bit
+> > > > > > positions. It must align precisely with the controller index in the SoC.
+> > > > > > An auto-incremented ID don't fit this case. The DTS or fuse configurations
+> > > > > > may deactivate specific PCI controllers.
+> > > > > > 
+> > > > > 
+> > > > > You cannot change the binding for the sake of driver. But you can make this
+> > > > > change in other way. See below...
+> > > > > 
+> > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > ---
+> > > > > > 
+> > > > > > Notes:
+> > > > > >     Change from v5 to v6
+> > > > > >     - rework commit message to explain why need required and why auto increase
+> > > > > >     id not work
+> > > > > >     
+> > > > > >     Change from v4 to v5
+> > > > > >     - new patch at v5
+> > > > > > 
+> > > > > >  .../bindings/pci/fsl,imx6q-pcie-common.yaml           | 11 +++++++++++
+> > > > > >  1 file changed, 11 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> > > > > > index d91b639ae7ae7..8f39b4e6e8491 100644
+> > > > > > --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> > > > > > +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> > > > > > @@ -265,6 +265,17 @@ allOf:
+> > > > > >              - const: apps
+> > > > > >              - const: turnoff
+> > > > > >  
+> > > > > > +  - if:
+> > > > > > +      properties:
+> > > > > > +        compatible:
+> > > > > > +          contains:
+> > > > > > +            enum:
+> > > > > > +              - fsl,imx8mq-pcie
+> > > > > > +              - fsl,imx8mq-pcie-ep
+> > > > > 
+> > > > > "linux,pci-domain" is a generic property. So you cannot make it required only
+> > > > > for certain SoCs. 
+> > > > 
+> > > > Sorry, why not? there are many generic property.
+> > > > 
+> > > 
+> > > It doesn't make sense to make it required only for specific SoCs since it is not
+> > > specific to any SoC. You can make it required for all.
+> > 
+> > More than 2 controller need require "linux,pci-domain".
+> >
+> 
+> But this property is applicable to single controller also.
 
-There are multiple places in check_prev_add() that will return 0. It 
-will be odd to have just one of them has a graph_unlock(). It makes the 
-code hard to understand. You should insert graph_unlock() in a place 
-that matches the other places where graph_unlock() will be called. My 
-suggestion is as follows:
+Not really.
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 151bd3de5936..d9f2df36332c 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -3252,7 +3252,7 @@ check_prevs_add(struct task_struct *curr, struct 
-held_loc>
-                 if (hlock->check) {
-                         int ret = check_prev_add(curr, hlock, next, 
-distance, &>
-                         if (!ret)
--                               return 0;
-+                               goto out_bug;
+I don't understand the issue. Some SoCs have a dependency on the 
+numbering and need the property. Others don't. They just want 
+(but don't need) consistent numbering. 
 
-                         /*
-                          * Stop after the first non-trylock entry,
-
-It looks like this bug was first introduced by commit 910b1b2e6d 
-("[PATCH] lockdep: internal locking fixes"). So you may also add a fixes 
-tag.
-
-Cheers,
-Longman
-
+Rob
 
