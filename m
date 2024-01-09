@@ -1,191 +1,140 @@
-Return-Path: <linux-kernel+bounces-20644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD1158282E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68BF68282E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F48A1F2531D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:18:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 056C11F25AB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E45D360A8;
-	Tue,  9 Jan 2024 09:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E26E2EB1C;
+	Tue,  9 Jan 2024 09:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jD1u/SxJ"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KtaSPU3a"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57A5328DF
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AD6364CA
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28d61ba65eso297090966b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:17:43 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d5aefcc2fso30799135e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:17:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704791862; x=1705396662; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1704791869; x=1705396669; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GYjQDZU9bf7TMDwBYNdb6wWfnM+ZbpVs+pelo5dxYPg=;
-        b=jD1u/SxJMdcy9wFmY6BnP1YlOpnRrEfs4CWqf8T87rVDIowfHSmhdJn8Dui0x5XcXh
-         avdD45BiJkrBQby/xjpM+8YP0BruyOuQe1SP/7bKJJqlwOuhaji/lALtT7dasr9DU1yn
-         alzozicOUfN5VcW/sjfDkIvEm/334GItQoLEiXrxptrE6Bn1w68cCkv98ghuNKZX9j1h
-         JDOsk6oWuNB51dcqdQeyCABlwk+fxxOfBGsQJMxektgnEV796iqLsIzx4p6YKrNRj6wq
-         mZviN0NUMkt7/5UUeQQq8xk9alVoakuZAiBfDJk+hYL5PWCZKQXCWdBKz9sCPbq6OXrl
-         nG3g==
+        bh=XVkEFOHlWwhz7Duf5BVOmjNadYwqkcetos6KSo/cdnI=;
+        b=KtaSPU3admSSTznyrbTGSe4AywOc1aWqXJT0TLPFVWy6NPDroebDX/Ywz4YVEY7jbD
+         PvrdY1w7o2jHWmr1NwyEnywV+wff+woe9xgYhUwqBsrsxMPM43W9BUOkW97IW+LbVXsy
+         yy5WJjbJcvg6B45euacHnKJepU0x6hQHaLUGq3nLPoNH79ifZbyz1M+nZg2tyIxgglib
+         HmJFyy5Moxey5o8xCwtfI+TX+OC3jBC4EnjO8CUAuXsCrgVf+asCuWNONnxMDvU+jhrg
+         mwkXwpFb+5JCsB02GW2ogfZaYhRKs/HcAzF94BR2BUHlMQppGACptzDAwJIusY4xHdlZ
+         hE8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704791862; x=1705396662;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1704791869; x=1705396669;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GYjQDZU9bf7TMDwBYNdb6wWfnM+ZbpVs+pelo5dxYPg=;
-        b=ZfB9T7RRqZDU/ZyIKB2UrmR6ikFJy3ZHOAk3gYn0/z+PS30Yvb3/8SUPO31YHoOk6+
-         XAFHL55BxxawrlEyI/Svi2si67TE0J8GBfRgZLQVxVJL5+H6oyTneCN5YYZvL8BDDt0c
-         8j8vHY16D1ky+o4tBBq1y985Uf/HdzTphu3XmCuCpDexdsek12y2+bmXInxP+grKkF++
-         Pklr1qM2TM5mpOCZYxtpIbBm+HtUn+NCxS3lMRfYwgRdelr6D/kV3HFFjMu1eTyAGs97
-         shk0qxoamNtva6FYOV0+T4oUr1dOSD0jT3CPJCHSzE1aHVt+GCHNIj/i0L0wjkfv/NwC
-         lkeg==
-X-Gm-Message-State: AOJu0Yy40VcR/YUFOJL0a79HCSMvxPwrji5fCEZskemGzRkUEWFsy9GX
-	nyMdRr6eEdZx/JStWLlDSIvjB6eyhGjYfw==
-X-Google-Smtp-Source: AGHT+IEBwi4ADrWrNnGH1tndKA9GsrVBisUq6EHWEoHt7kNjHsyzxTAP9o0RivW/rNZrWxY1RDWcBg==
-X-Received: by 2002:a17:906:eece:b0:a26:97f6:723a with SMTP id wu14-20020a170906eece00b00a2697f6723amr226511ejb.103.1704791862100;
-        Tue, 09 Jan 2024 01:17:42 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id r14-20020a17090638ce00b00a26f6b8be1csm810451ejd.75.2024.01.09.01.17.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 01:17:41 -0800 (PST)
-Message-ID: <ac2a2370-322c-4cdd-a940-a07ba99dae06@linaro.org>
-Date: Tue, 9 Jan 2024 10:17:38 +0100
+        bh=XVkEFOHlWwhz7Duf5BVOmjNadYwqkcetos6KSo/cdnI=;
+        b=JWS/dBAPrVFLUuG5DGFThzuVQ0njIPTwI3KqQM7VGPsTW5IPqRlU8EO8Zup9c8RM6h
+         mZhkKD2f+iqhdBudX7aIfKPDl58UsDNq65iFUPpZeXDvD0guPixe8lEBslgeFWW1Z/43
+         8VSuULfRWyYgwswz0K5o78/KwqmkqdSVhcWtD04pR9RpkbYnbNW8F3/62U+baDTUePdv
+         IzzDelMR41N40XQOP8GZuJQPFlwDYl3uD8QKwBZOeYyLFuoBWvpFCHajC1jKKw3rSRtc
+         dXB82aqeTd3HoMfdwR8jUukIWQcitviO3XtFoR0y0so6hRM5kdxBsnb8yGpS48FMUtni
+         TgFg==
+X-Gm-Message-State: AOJu0YxcHNqUwjEYkIK+MCSWfnP8zj7oP5g7V6yoKAK4INJ279+dVhoH
+	8Ad/onddT1gGs98Hyy8CvrQZG3hkCv77Sw==
+X-Google-Smtp-Source: AGHT+IHYDtHCq2FubxD8DvGMVoVJReXJUMNuiPN38ZL3R7ASH6fd/DpawvPETlmROnrMCjzV/bj0UQ==
+X-Received: by 2002:a05:600c:470a:b0:40d:3864:a2af with SMTP id v10-20020a05600c470a00b0040d3864a2afmr2589128wmo.82.1704791869219;
+        Tue, 09 Jan 2024 01:17:49 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id h17-20020a05600c351100b0040d839e7bb3sm13920978wmq.19.2024.01.09.01.17.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 01:17:48 -0800 (PST)
+Date: Tue, 9 Jan 2024 12:17:45 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: fs/ntfs3/fsntfs.c:2661 ntfs_set_label() error: __builtin_memcpy()
+ 'uni->name' too small (20 vs 256)
+Message-ID: <70b13673-23ce-4bb9-9842-65828650e563@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 6/9] dt-bindings: vendor-prefixes: add a PCI prefix for
- Qualcomm Atheros
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Chris Morgan <macromorgan@hotmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>,
- Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>,
- Terry Bowman <terry.bowman@amd.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-pci@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240104130123.37115-1-brgl@bgdev.pl>
- <20240104130123.37115-7-brgl@bgdev.pl>
- <20240108191052.GA1893484-robh@kernel.org>
- <CAMRc=Mc7D1rVHaA4yoOC2DHDkkCptF4wjAm=24Rr=kkqM1ztjg@mail.gmail.com>
- <CAL_JsqKGrW-v=fr_9NYKg-8cho_-XbVQ92eXpjYYC1ma0_8UuA@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAL_JsqKGrW-v=fr_9NYKg-8cho_-XbVQ92eXpjYYC1ma0_8UuA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 09/01/2024 03:56, Rob Herring wrote:
-> On Mon, Jan 8, 2024 at 12:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>
->> On Mon, Jan 8, 2024 at 8:10 PM Rob Herring <robh@kernel.org> wrote:
->>>
->>> On Thu, Jan 04, 2024 at 02:01:20PM +0100, Bartosz Golaszewski wrote:
->>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>>
->>>> Document the PCI vendor prefix for Qualcomm Atheros so that we can
->>>> define the QCA PCI devices on device tree.
->>>
->>> Why? vendor-prefixes.yaml is only applied to property names. 'qca'
->>> should be the prefix for those.
->>>
->>> Rob
->>
->> I didn't have any better idea. PCI devices on DT are defined by their
->> "pci<vendor ID>,<model ID>" compatible, not regular human-readable
->> strings and this makes checkpatch.pl complain.
->>
->> I'm open to suggestions.
-> 
-> The checkpatch.pl check predates schemas and we could consider just
-> dropping it. The only thing it provides is checking a patch rather
-> than the tree (which the schema do). It's pretty hacky because it just
-> greps the tree for a compatible string which is not entirely accurate.
-> Also, we can extract an exact list of compatibles with
-> "dt-extract-compatibles" which would make a better check, but I'm not
-> sure making dtschema a dependency on checkpatch would be good.
-> 
-> The other option is just ignore the warning. PCI compatibles are fairly rare.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
+commit: 7832e123490ac39f85ab5befc2ceee7b25b03acb fs/ntfs3: Add support /proc/fs/ntfs3/<dev>/volinfo and /proc/fs/ntfs3/<dev>/label
+config: i386-randconfig-141-20240107 (https://download.01.org/0day-ci/archive/20240109/202401091421.3RJ24Mn3-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
 
-Yep, the same warnings are for EEPROM and USB VID/PID compatibles, and
-we live with these, so I don't think PCI should be treated differently.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202401091421.3RJ24Mn3-lkp@intel.com/
 
-Best regards,
-Krzysztof
+New smatch warnings:
+fs/ntfs3/fsntfs.c:2661 ntfs_set_label() error: __builtin_memcpy() 'uni->name' too small (20 vs 256)
+
+vim +2661 fs/ntfs3/fsntfs.c
+
+7832e123490ac3 Konstantin Komarov 2023-05-08  2627  int ntfs_set_label(struct ntfs_sb_info *sbi, u8 *label, int len)
+7832e123490ac3 Konstantin Komarov 2023-05-08  2628  {
+7832e123490ac3 Konstantin Komarov 2023-05-08  2629  	int err;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2630  	struct ATTRIB *attr;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2631  	struct ntfs_inode *ni = sbi->volume.ni;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2632  	const u8 max_ulen = 0x80; /* TODO: use attrdef to get maximum length */
+7832e123490ac3 Konstantin Komarov 2023-05-08  2633  	/* Allocate PATH_MAX bytes. */
+7832e123490ac3 Konstantin Komarov 2023-05-08  2634  	struct cpu_str *uni = __getname();
+7832e123490ac3 Konstantin Komarov 2023-05-08  2635  
+7832e123490ac3 Konstantin Komarov 2023-05-08  2636  	if (!uni)
+7832e123490ac3 Konstantin Komarov 2023-05-08  2637  		return -ENOMEM;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2638  
+7832e123490ac3 Konstantin Komarov 2023-05-08  2639  	err = ntfs_nls_to_utf16(sbi, label, len, uni, (PATH_MAX - 2) / 2,
+7832e123490ac3 Konstantin Komarov 2023-05-08  2640  				UTF16_LITTLE_ENDIAN);
+7832e123490ac3 Konstantin Komarov 2023-05-08  2641  	if (err < 0)
+7832e123490ac3 Konstantin Komarov 2023-05-08  2642  		goto out;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2643  
+7832e123490ac3 Konstantin Komarov 2023-05-08  2644  	if (uni->len > max_ulen) {
+
+uni->name is defined as 10 elements long.  So allowing PATH_MAX is
+weird.
+
+7832e123490ac3 Konstantin Komarov 2023-05-08  2645  		ntfs_warn(sbi->sb, "new label is too long");
+7832e123490ac3 Konstantin Komarov 2023-05-08  2646  		err = -EFBIG;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2647  		goto out;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2648  	}
+7832e123490ac3 Konstantin Komarov 2023-05-08  2649  
+7832e123490ac3 Konstantin Komarov 2023-05-08  2650  	ni_lock(ni);
+7832e123490ac3 Konstantin Komarov 2023-05-08  2651  
+7832e123490ac3 Konstantin Komarov 2023-05-08  2652  	/* Ignore any errors. */
+7832e123490ac3 Konstantin Komarov 2023-05-08  2653  	ni_remove_attr(ni, ATTR_LABEL, NULL, 0, false, NULL);
+7832e123490ac3 Konstantin Komarov 2023-05-08  2654  
+7832e123490ac3 Konstantin Komarov 2023-05-08  2655  	err = ni_insert_resident(ni, uni->len * sizeof(u16), ATTR_LABEL, NULL,
+7832e123490ac3 Konstantin Komarov 2023-05-08  2656  				 0, &attr, NULL, NULL);
+7832e123490ac3 Konstantin Komarov 2023-05-08  2657  	if (err < 0)
+7832e123490ac3 Konstantin Komarov 2023-05-08  2658  		goto unlock_out;
+7832e123490ac3 Konstantin Komarov 2023-05-08  2659  
+7832e123490ac3 Konstantin Komarov 2023-05-08  2660  	/* write new label in on-disk struct. */
+7832e123490ac3 Konstantin Komarov 2023-05-08 @2661  	memcpy(resident_data(attr), uni->name, uni->len * sizeof(u16));
+                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Btw, I feel like if CONFIG_FORTIFY_SOURCE is enabled this will be a
+runtime issue but I don't know for sure.
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
