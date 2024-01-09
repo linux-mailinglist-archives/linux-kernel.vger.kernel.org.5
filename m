@@ -1,151 +1,132 @@
-Return-Path: <linux-kernel+bounces-21055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 204C082891A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:36:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4C282891F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:38:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 949B4286928
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:36:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FB151F258B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B7539FF2;
-	Tue,  9 Jan 2024 15:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E4239FF1;
+	Tue,  9 Jan 2024 15:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ywhli+63"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TvN3Fyf6"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBB439FE5;
-	Tue,  9 Jan 2024 15:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917F639FDD;
+	Tue,  9 Jan 2024 15:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33761e291c1so1773590f8f.0;
-        Tue, 09 Jan 2024 07:36:21 -0800 (PST)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5cedfc32250so1257731a12.0;
+        Tue, 09 Jan 2024 07:38:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704814579; x=1705419379; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
-        b=Ywhli+630+H5SS8G8SdP1TgmtDG/N/PFkP2WGwB56asraV+ksNO+EQ+Nd63U29BAbU
-         fSWUwniKDPXC92LKRHrteNS3OxqKE8EQmyz9ciQdzSl1/bSzQqMArWwl4MIDw80JhIF0
-         c/Fnf+H+GpVfZx79mUQkH2XY1llzmOX3YX9f2zX2ndpK3KLJLjmqcII44z0j1yL0j+eO
-         t67668S4U0KHxsGVPtEetlCLC3xyNDxQfi3sFop+epuH1ri4FJs4LLx56Say1DLzk2qY
-         SU6zQH2ihIkCaUx5jVAxR61/E0gWEia9X41U1kOp4z3CcMJAZGuGkTyfeKSOVI3rA6/l
-         PYdQ==
+        d=gmail.com; s=20230601; t=1704814703; x=1705419503; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WczyQ1l8jHhZlEcIGinjqLaLiGU6nueDfrDaoUhkza8=;
+        b=TvN3Fyf6k87SR+zPi7lOYo0zUO6Rv3MAgXwjlQyl0CUb6SHjRgit8iSKrqf7qaMZEC
+         dZXEnTGOm9KhOhSco+tRffNUy/Po/SnQjN1+OWOQ1yqKafXD74H0DblVW4LjHkwuCuqF
+         mvcgim21VkCuBNI3zTGSBXiVgDoOEYDGEqzuWiFnM38A38BuCXvKYyZwzu1NAfIp0a8J
+         I6WtoV0q7JhJhr3kNdjQNJ9c3ksbohaNQ0UwT1Y4rrxzsWSnG1SGk9gJe14aXFTMIzWb
+         C4ggJPcB9Ss0HpFNhf3WqX3xbcBfQui/bBLBNSJ55pKvaAK8vv4gOiEtmGzqLvGWPwVx
+         Q1aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704814579; x=1705419379;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
-        b=JieGXoKZP7k3rk6YPPWHfixkbKRotT7DbtHPiIDd7T5qHFDza36BU4ezZtpMhsXh94
-         VkfEbOz2hKMQvTqbTHEtqcJs8UtUgR0YcRhpKynwa/kI64NSETaar8OJ1t1QxYvWrrQ3
-         R8zx/zjY89SgKzAMJIaQEN9RM+gkBS64XhivyMdqm4xqkOOc3xddjKpY93w34z72kqq4
-         AAJLD9P1sG97NqMhmvhLIRS+qoFLkdmoEDUmVhe4ybcwQJ9ndUys46N5o+ygGkF13SsV
-         N+K4hiQjw2N45pVVMOKStpg0wggSZBbvJXRqvXamIuXO6U6qtquzZ4ToAPCH6rZGaM67
-         IHgQ==
-X-Gm-Message-State: AOJu0YxCCM27bXFYGTlNNmxIZ0Nxzz+IUei2UEE3mjw0J83tqFy6OeDx
-	ajb3sOuzaSQlh1JF3+i2dBhYW4IU1g==
-X-Google-Smtp-Source: AGHT+IFF0m5AF5RduXEuT8dKBFZD9iSqrXMBvW+29jCDOiEUyuHNHIbAu0bVFq7vtE0jEW+OG0UyyA==
-X-Received: by 2002:a5d:6349:0:b0:336:641d:626c with SMTP id b9-20020a5d6349000000b00336641d626cmr476091wrw.61.1704814578883;
-        Tue, 09 Jan 2024 07:36:18 -0800 (PST)
-Received: from staff-net-cx-3510.intern.ethz.ch (2001-67c-10ec-5784-8000--1bd.net6.ethz.ch. [2001:67c:10ec:5784:8000::1bd])
-        by smtp.gmail.com with ESMTPSA id j25-20020adfb319000000b0033672cfca96sm2682295wrd.89.2024.01.09.07.36.18
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 09 Jan 2024 07:36:18 -0800 (PST)
-From: Hao Sun <sunhao.th@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ppenkov@google.com,
-	willemb@google.com,
-	ast@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH] bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
-Date: Tue,  9 Jan 2024 16:36:09 +0100
-Message-ID: <20240109153609.10185-1-sunhao.th@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1704814703; x=1705419503;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WczyQ1l8jHhZlEcIGinjqLaLiGU6nueDfrDaoUhkza8=;
+        b=J7f87pZOOidt0rawALuGNKEV/yI91teMPTuk5BKrn02HZWytyE0al0GS6SJANZ1v7n
+         Qb1eleeVZH/Towrf0z495OvVvMgYBraexDyRoz1hVPZbOt7VDCRB8B5GpYmY8fnHfuya
+         u3V2A2c4NYX0Xuf4I6PVyVbQd8soyyTqD40IEp+UfTW6W4IZjGx0pllLLg34ThyI990p
+         1qSfgqF1IAUVHANKVpmn+HXXv5FY4nEa6EGuYDQ1dsSd4lSM0dFNEKKXaQQnZfaaXImx
+         pt/sSW+766ABqnPkKl/E02Odu82+ewxR9Kg4uF/r1F3/KoVeB3Oxmep928879eGZAWs6
+         I5AQ==
+X-Gm-Message-State: AOJu0YzMzXwwEXJsXKFGLdra60Pooch9smSQqCZxY2xzi41z78ktGY/W
+	7idQTdT0ZW5TAmb4i+T4G0Mnvwro7hTsZD5LNvPY6kbi
+X-Google-Smtp-Source: AGHT+IHqR/5JV65k1KfF5hME9odf6td4CQBJxUxdK4tDc79VgoizfxPtfCJOhfd0MhXfSkP+QdpawpbmNCQ8m+sKO5A=
+X-Received: by 2002:a17:90b:364c:b0:28d:7947:1da0 with SMTP id
+ nh12-20020a17090b364c00b0028d79471da0mr1816952pjb.29.1704814702732; Tue, 09
+ Jan 2024 07:38:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240103095650.25769-1-linyunsheng@huawei.com>
+ <20240103095650.25769-4-linyunsheng@huawei.com> <f4abe71b3439b39d17a6fb2d410180f367cadf5c.camel@gmail.com>
+ <74c9a3a1-5204-f79a-95ff-5c108ec6cf2a@huawei.com> <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
+ <f138193c-30e0-b1ba-1735-5f569230724b@huawei.com>
+In-Reply-To: <f138193c-30e0-b1ba-1735-5f569230724b@huawei.com>
+From: Alexander Duyck <alexander.duyck@gmail.com>
+Date: Tue, 9 Jan 2024 07:37:46 -0800
+Message-ID: <CAKgT0UcujEktOnHx7mxWd+Jah1J9mHFWnTx35vc3x25uUadxaA@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/6] mm/page_alloc: use initial zero offset for page_frag_alloc_align()
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For PTR_TO_FLOW_KEYS, check_flow_keys_access() only uses fixed off
-for validation. However, variable offset ptr alu is not prohibited
-for this ptr kind. So the variable offset is not checked.
+On Tue, Jan 9, 2024 at 3:22=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
+> wrote:
+>
+> On 2024/1/9 0:25, Alexander Duyck wrote:
+> > On Mon, Jan 8, 2024 at 12:59=E2=80=AFAM Yunsheng Lin <linyunsheng@huawe=
+i.com> wrote:
+>
+> ...
+>
+> >
+> >>>
+> >>> 2. By starting at the end and working toward zero we can use built in
+> >>> functionality of the CPU to only have to check and see if our result
+> >>> would be signed rather than having to load two registers with the
+> >>> values and then compare them which saves us a few cycles. In addition
+> >>> it saves us from having to read both the size and the offset for ever=
+y
+> >>> page.
+> >>
+> >> I suppose the above is ok if we only use the page_frag_alloc*() API to
+> >> allocate memory for skb->data, not for the frag in skb_shinfo(), as by
+> >> starting at the end and working toward zero, it means we can not do sk=
+b
+> >> coalescing.
+> >>
+> >> As page_frag_alloc*() is returning va now, I am assuming most of users
+> >> is using the API for skb->data, I guess it is ok to drop this patch fo=
+r
+> >> now.
+> >>
+> >> If we allow page_frag_alloc*() to return struct page, we might need th=
+is
+> >> patch to enable coalescing.
+> >
+> > I would argue this is not the interface for enabling coalescing. This
+> > is one of the reasons why this is implemented the way it is. When you
+> > are aligning fragments you aren't going to be able to coalesce the
+> > frames anyway as the alignment would push the fragments apart.
+>
+> It seems the alignment requirement is the same for the same user of a pag=
+e_frag
+> instance, so the aligning does not seem to be a problem for coalescing?
 
-The following prog is accepted:
-func#0 @0
-0: R1=ctx() R10=fp0
-0: (bf) r6 = r1                       ; R1=ctx() R6_w=ctx()
-1: (79) r7 = *(u64 *)(r6 +144)        ; R6_w=ctx() R7_w=flow_keys()
-2: (b7) r8 = 1024                     ; R8_w=1024
-3: (37) r8 /= 1                       ; R8_w=scalar()
-4: (57) r8 &= 1024                    ; R8_w=scalar(smin=smin32=0,
-smax=umax=smax32=umax32=1024,var_off=(0x0; 0x400))
-5: (0f) r7 += r8
-mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1
-mark_precise: frame0: regs=r8 stack= before 4: (57) r8 &= 1024
-mark_precise: frame0: regs=r8 stack= before 3: (37) r8 /= 1
-mark_precise: frame0: regs=r8 stack= before 2: (b7) r8 = 1024
-6: R7_w=flow_keys(smin=smin32=0,smax=umax=smax32=umax32=1024,var_off
-=(0x0; 0x400)) R8_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1024,
-var_off=(0x0; 0x400))
-6: (79) r0 = *(u64 *)(r7 +0)          ; R0_w=scalar()
-7: (95) exit
+I'm a bit confused as to what coalescing you are referring to. If you
+can provide a link it would be useful.
 
-This prog loads flow_keys to r7, and adds the variable offset r8
-to r7, and finally causes out-of-bounds access:
-
-BUG: unable to handle page fault for address: ffffc90014c80038
-..
-Call Trace:
- <TASK>
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
- bpf_flow_dissect+0x15f/0x350 net/core/flow_dissector.c:991
- bpf_prog_test_run_flow_dissector+0x39d/0x620 net/bpf/test_run.c:1359
- bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
- __sys_bpf+0xf8f/0x4560 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Fix this by rejecting ptr alu with variable offset on flow_keys.
-Applying the patch makes the program rejected with "R7 pointer
-arithmetic on flow_keys prohibited"
-
-Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
----
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index adbf330d364b..65f598694d55 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12826,6 +12826,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	}
- 
- 	switch (base_type(ptr_reg->type)) {
-+	case PTR_TO_FLOW_KEYS:
-+		if (known)
-+			break;
-+		fallthrough;
- 	case CONST_PTR_TO_MAP:
- 		/* smin_val represents the known value */
- 		if (known && smin_val == 0 && opcode == BPF_ADD)
--- 
-2.34.1
-
+The problem is page_frag is a very generic item and can be generated
+from a regular page on NICs that can internally reuse the same page
+instance for multiple buffers. So it is possible to coalesce page
+frags, however it is very unlikely to be coalescing them in the case
+of them being used for skb buffers since it would require aligned
+payloads on the network in order to really make it work without
+hardware intervention of some sort and on such devices they are likely
+allocating entire pages instead of page frags for the buffers.
 
