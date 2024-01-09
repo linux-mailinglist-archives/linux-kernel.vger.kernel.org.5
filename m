@@ -1,301 +1,118 @@
-Return-Path: <linux-kernel+bounces-20608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1C75828257
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:45:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A5C82825E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6677F1F24800
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:45:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B6A2281CB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80DC38FA3;
-	Tue,  9 Jan 2024 08:41:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1332E83D;
+	Tue,  9 Jan 2024 08:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="d5lMnuwk"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SuhjkCPm"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BE838DE6
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6daa89a6452so1468539b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 00:41:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1704789678; x=1705394478; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HeZ7Yc/QAQMqHdvRNSeL3MLzDzQAumC8yqHea160CSY=;
-        b=d5lMnuwkPYtFwt9V3EurtqkaHaeRVMcXG9Y96ybFJ5SouEnCo2kepx9FkpgUv51S+o
-         cifzO1eNoGAErRguitjRMTad/XHH93kN5ScsMyrnUV89x1J/aA83RS5IF5O8UZtv9AbD
-         LQzw7X9bedcsDWdi82Nzsk9U9TgwxNrs/IGBw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704789678; x=1705394478;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HeZ7Yc/QAQMqHdvRNSeL3MLzDzQAumC8yqHea160CSY=;
-        b=cI5IKOiTMaj2bBrdeYtONKQW0yPU+aDJUqeVrNtova5pOcPEDw9rXM4VPAFwLgyiTY
-         zLUQmVsqaku7uP09oagpMBSLUZd7vP5Bk+hOVcTtPWR3saSPs4kRG9iq4B6/yTgf0zts
-         gu9UrDmdvLXl/lupHPtlvLFf9mSpoRcOOssQoD301lRtWDS9rMUW8nC9b8ZLRn8aWeg1
-         jm1lzCG+xyFkyNZL4ghyR9/Bwdj4zzz2+Imv81CXXnc0YF9tr0nHaATfIfc2nwIiMheW
-         ynhQ7QyuMR7EBZ47XaI+w89qWiUN/yW6uoyGZE1ASaE28QogFaTHb1EOkiCbcemr049q
-         a5uQ==
-X-Gm-Message-State: AOJu0YwssGnTN8pFu2g6gCBKliUoTRwH9TuBF/O12j2VMHipct4tnNsx
-	paNEH3acfZsFg2OCRLRRHai8/Xjl8aub8xR6ss7haJRT/2n/VPEPlfB6hEzqYn3IqWFdxtVfWOJ
-	hy5kNtojXzaym88VSN8VAA2siG+Y7qOyaInSCXU+JwyvnDSQMHk4LnTRnw4cpmzphUKHGIPFrA4
-	ttrCaPl0hBtj6q6gjjobbV6Bk=
-X-Google-Smtp-Source: AGHT+IFxx53kVarjHq5z7rzVIUwCkyk+NGFUSVTP7cmO2YtnOt1zBEsFEwgvVWBZJ0j2JxOYS0P1zg==
-X-Received: by 2002:a05:6a21:8187:b0:199:bb69:a6ed with SMTP id pd7-20020a056a21818700b00199bb69a6edmr1524423pzb.114.1704789678164;
-        Tue, 09 Jan 2024 00:41:18 -0800 (PST)
-Received: from amakhalov-build-vm.eng.vmware.com ([128.177.82.146])
-        by smtp.gmail.com with ESMTPSA id sf15-20020a17090b51cf00b0028d435cc2cbsm4772293pjb.15.2024.01.09.00.41.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 00:41:17 -0800 (PST)
-From: Alexey Makhalov <alexey.makhalov@broadcom.com>
-X-Google-Original-From: Alexey Makhalov <amakhalov@vmware.com>
-To: linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	bp@alien8.de,
-	hpa@zytor.com,
-	dave.hansen@linux.intel.com,
-	mingo@redhat.com,
-	tglx@linutronix.de
-Cc: x86@kernel.org,
-	netdev@vger.kernel.org,
-	richardcochran@gmail.com,
-	linux-input@vger.kernel.org,
-	dmitry.torokhov@gmail.com,
-	zackr@vmware.com,
-	linux-graphics-maintainer@vmware.com,
-	pv-drivers@vmware.com,
-	namit@vmware.com,
-	timothym@vmware.com,
-	akaher@vmware.com,
-	jsipek@vmware.com,
-	dri-devel@lists.freedesktop.org,
-	daniel@ffwll.ch,
-	airlied@gmail.com,
-	tzimmermann@suse.de,
-	mripard@kernel.org,
-	maarten.lankhorst@linux.intel.com,
-	horms@kernel.org,
-	kirill.shutemov@linux.intel.com
-Subject: [PATCH v6 7/7] x86/vmware: Add TDX hypercall support
-Date: Tue,  9 Jan 2024 00:40:52 -0800
-Message-Id: <20240109084052.58661-8-amakhalov@vmware.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20240109084052.58661-1-amakhalov@vmware.com>
-References: <20240109084052.58661-1-amakhalov@vmware.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398C92E636;
+	Tue,  9 Jan 2024 08:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4096fE0p006338;
+	Tue, 9 Jan 2024 08:43:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BGibbLuPsp6YqJ9RGSe1cHagl2jLZ2fUPegRL4mMGKs=; b=Su
+	hjkCPmGfC9mIlqDcxdKxhVpvVCMtFIqmk3qiOG48qOe93iC7AqWGse1H3Re9rhO/
+	xGW4DQfGeRBtkcaTZwqWuSuty0Tc++3hodT+Zgf5u+ppYpzrZlNhNQphj5xC9Arm
+	/X6sKkRrW9HN5bDRYWyjoMp8Wn8yB/0eBiFt5lunTcqz6NPD8TqrSppnbL7hs9rh
+	nk3PgYCFHHpdwPw/momyqggqKCcOFffOPFIN19AFAAY64ow1uzwwAFAO/BSFUlBH
+	aECfqq9ukbVIkouqP6cOYQEA/aOgJ6097y6UpHRde3htF6JQkOQkIerCFbwXyCls
+	t+3qCdg9J1EF0Ssz4/PA==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgwq1rjxs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 08:43:19 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4098hIn8022107
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 08:43:18 GMT
+Received: from [10.253.78.145] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
+ 2024 00:43:15 -0800
+Message-ID: <78b0b2c0-20b5-4682-8020-335395d0af68@quicinc.com>
+Date: Tue, 9 Jan 2024 16:43:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bus: mhi: host: Add sysfs entry to force device to enter
+ EDL
+Content-Language: en-US
+To: Jeffrey Hugo <quic_jhugo@quicinc.com>, <mani@kernel.org>
+CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>, Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+References: <1703490474-84730-1-git-send-email-quic_qianyu@quicinc.com>
+ <cff4b828-9566-a2bd-287a-138d74a76a59@quicinc.com>
+From: Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <cff4b828-9566-a2bd-287a-138d74a76a59@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: sMM0X-rw5YV5v5z0lL21EP0t4MCX79PI
+X-Proofpoint-ORIG-GUID: sMM0X-rw5YV5v5z0lL21EP0t4MCX79PI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 phishscore=0 impostorscore=0 mlxlogscore=706 spamscore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090068
 
-VMware hypercalls use I/O port, VMCALL or VMMCALL instructions.
-Add __tdx_hypercall path to support TDX guests.
 
-No change in high bandwidth hypercalls, as only low bandwidth
-ones are supported for TDX guests.
+On 1/2/2024 11:31 PM, Jeffrey Hugo wrote:
+> On 12/25/2023 12:47 AM, Qiang Yu wrote:
+>> From: Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+>>
+>> Forcing the device (eg. SDX75) to enter Emergency Download Mode involves
+>> writing the 0xEDEDEDED cookie to the channel 91 doorbell register and
+>> forcing an SOC reset afterwards. Allow users of the MHI bus to 
+>> exercise the
+>> sequence using a sysfs entry.
+>
+> I don't see this documented in the spec anywhere.  Is this standard 
+> behavior for all MHI devices?
 
-Co-developed-by: Tim Merrifield <timothym@vmware.com>
-Signed-off-by: Tim Merrifield <timothym@vmware.com>
-Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-Reviewed-by: Nadav Amit <namit@vmware.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- arch/x86/include/asm/vmware.h | 79 +++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/vmware.c  | 25 +++++++++++
- 2 files changed, 104 insertions(+)
+This is documented in MHI spec v1.2, 13.2 Emergency download (EDL) mode 
+cookie. So I think
 
-diff --git a/arch/x86/include/asm/vmware.h b/arch/x86/include/asm/vmware.h
-index 84a31f579a30..3bd593c6591d 100644
---- a/arch/x86/include/asm/vmware.h
-+++ b/arch/x86/include/asm/vmware.h
-@@ -18,6 +18,12 @@
-  * arg2 - Hypercall command
-  * arg3 bits [15:0] - Port number, LB and direction flags
-  *
-+ * - Low bandwidth TDX hypercalls (x86_64 only) are similar to LB
-+ * hypercalls. They also have up to 6 input and 6 output on registers
-+ * arguments, with different argument to register mapping:
-+ * %r12 (arg0), %rbx (arg1), %r13 (arg2), %rdx (arg3),
-+ * %rsi (arg4), %rdi (arg5).
-+ *
-  * - High bandwidth (HB) hypercalls are I/O port based only. They have
-  * up to 7 input and 7 output arguments passed and returned using
-  * registers: %eax (arg0), %ebx (arg1), %ecx (arg2), %edx (arg3),
-@@ -54,12 +60,61 @@
- #define VMWARE_CMD_GETHZ		45
- #define VMWARE_CMD_GETVCPU_INFO		68
- #define VMWARE_CMD_STEALCLOCK		91
-+/*
-+ * Hypercall command mask:
-+ *   bits [6:0] command, range [0, 127]
-+ *   bits [19:16] sub-command, range [0, 15]
-+ */
-+#define VMWARE_CMD_MASK			0xf007fU
- 
- #define CPUID_VMWARE_FEATURES_ECX_VMMCALL	BIT(0)
- #define CPUID_VMWARE_FEATURES_ECX_VMCALL	BIT(1)
- 
- extern u8 vmware_hypercall_mode;
- 
-+#define VMWARE_TDX_VENDOR_LEAF 0x1af7e4909ULL
-+#define VMWARE_TDX_HCALL_FUNC  1
-+
-+extern unsigned long vmware_tdx_hypercall(unsigned long cmd,
-+					  struct tdx_module_args *args);
-+
-+/*
-+ * TDCALL[TDG.VP.VMCALL] uses %rax (arg0) and %rcx (arg2). Therefore,
-+ * we remap those registers to %r12 and %r13, respectively.
-+ */
-+static inline
-+unsigned long vmware_tdx_hypercall_args(unsigned long cmd, unsigned long in1,
-+					unsigned long in3, unsigned long in4,
-+					unsigned long in5,
-+					uint32_t *out1, uint32_t *out2,
-+					uint32_t *out3, uint32_t *out4,
-+					uint32_t *out5)
-+{
-+	unsigned long ret;
-+
-+	struct tdx_module_args args = {
-+		.rbx = in1,
-+		.rdx = in3,
-+		.rsi = in4,
-+		.rdi = in5,
-+	};
-+
-+	ret = vmware_tdx_hypercall(cmd, &args);
-+
-+	if (out1)
-+		*out1 = args.rbx;
-+	if (out2)
-+		*out2 = args.r13;
-+	if (out3)
-+		*out3 = args.rdx;
-+	if (out4)
-+		*out4 = args.rsi;
-+	if (out5)
-+		*out5 = args.rdi;
-+
-+	return ret;
-+}
-+
- /*
-  * The low bandwidth call. The low word of %edx is presumed to have OUT bit
-  * set. The high word of %edx may contain input data from the caller.
-@@ -87,6 +142,10 @@ unsigned long vmware_hypercall1(unsigned long cmd, unsigned long in1)
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0,
-+						 NULL, NULL, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -105,6 +164,10 @@ unsigned long vmware_hypercall3(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0,
-+						 out1, out2, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -124,6 +187,10 @@ unsigned long vmware_hypercall4(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0,
-+						 out1, out2, out3, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -143,6 +210,10 @@ unsigned long vmware_hypercall5(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, in3, in4, in5,
-+						 NULL, out2, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -165,6 +236,10 @@ unsigned long vmware_hypercall6(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, in3, 0, 0,
-+						 NULL, out2, out3, out4, out5);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2), "=d" (*out3), "=S" (*out4),
- 		  "=D" (*out5)
-@@ -186,6 +261,10 @@ unsigned long vmware_hypercall7(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, in3, in4, in5,
-+						 out1, out2, out3, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
-index 3aa1adaed18f..84caa67d4820 100644
---- a/arch/x86/kernel/cpu/vmware.c
-+++ b/arch/x86/kernel/cpu/vmware.c
-@@ -428,6 +428,31 @@ static bool __init vmware_legacy_x2apic_available(void)
- 		(eax & BIT(VCPU_LEGACY_X2APIC));
- }
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+unsigned long vmware_tdx_hypercall(unsigned long cmd,
-+				   struct tdx_module_args *args)
-+{
-+	if (!hypervisor_is_type(X86_HYPER_VMWARE))
-+		return ULONG_MAX;
-+
-+	if (cmd & ~VMWARE_CMD_MASK) {
-+		pr_warn_once("Out of range command %lx\n", cmd);
-+		return ULONG_MAX;
-+	}
-+
-+	args->r10 = VMWARE_TDX_VENDOR_LEAF;
-+	args->r11 = VMWARE_TDX_HCALL_FUNC;
-+	args->r12 = VMWARE_HYPERVISOR_MAGIC;
-+	args->r13 = cmd;
-+	args->r15 = 0; /* CPL */
-+
-+	__tdx_hypercall(args);
-+
-+	return args->r12;
-+}
-+EXPORT_SYMBOL_GPL(vmware_tdx_hypercall);
-+#endif
-+
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- static void vmware_sev_es_hcall_prepare(struct ghcb *ghcb,
- 					struct pt_regs *regs)
--- 
-2.39.0
+it is standard behavior. At least, SDX65 and SDX75 support it.
 
+>
+> What about devices that don't support EDL mode?
+>
+> How should the host avoid using this special cookie when EDL mode is 
+> not desired?
+
+Can I include another flag in mhi_pci_dev_info and mhi_controller and 
+check this flag
+
+before writing EDL cookie?
+
+>
+> -Jeff
 
