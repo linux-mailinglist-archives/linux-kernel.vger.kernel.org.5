@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-21338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B040E828DD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:42:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3805B828DEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:44:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 447CD2889CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:42:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5106D1C24ACE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F5C4439D;
-	Tue,  9 Jan 2024 19:38:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A893D54C;
+	Tue,  9 Jan 2024 19:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Zo9chhnS"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kvkp5i7S"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25425405C5;
-	Tue,  9 Jan 2024 19:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5D640BF3;
+	Tue,  9 Jan 2024 19:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409J7Wtr027734;
-	Tue, 9 Jan 2024 19:38:01 GMT
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409FdruS011442;
+	Tue, 9 Jan 2024 19:38:02 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=ot2Rc6FWYqawtwAbAQxff+CJFZOjsl6S/t9tlgViSq4
-	=; b=Zo9chhnSm40/QbbTZ9T3vvSYbbmWNVbM7fMd5RB8IB6vR3+ZlIfKAGCoG6C
-	0uHKIVHrZ11CGbnUyXPmlnzXP7CjmEXgwvg34yHZaAgHa/At3sBI5Uq04qz33RKD
-	jL9t4elpnYHd6+aiMR/ceFosZpLnMv2HFCH4LTuy1KfN6Kn4JQJIfc9ti3RLZB9B
-	PCA9PBZXnKj0htcVLnfGOG3pMvxR8rbD4Jn/jENhB6khhqwsPbwWAgJiUmxfABlG
-	26zb18mXIeU/+xyYTSxbI68ZPe4/xLRRteAFR+eUWcslZtELzNUHiSSO049HSgjD
-	5Ot61cw21zAB9X/D7KBEbOLMNjQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9vfgdrp-1
+	:cc; s=qcppdkim1; bh=mCvTvHnDAvi/Z3r/fbIcWBXtbKnYIFgrJK9nQ4SRZtQ
+	=; b=kvkp5i7ShIhFPfNEBWrulkEmXtEQ+gwLJ/1+msn+NXbqJ5ouKzdjF6fxpq1
+	ZJaGNz9sV8hh3IAOe4Y16AWq6r+peU2NATbyLQZZh8pSudmPOLCu05eWwABKzTMd
+	vBuTcd4vrXtvDF7+mbTV7XT1CbUGgda+nfyLLbtwdxZlLANUnrQpSRU80Iu5V8W2
+	/dqd2bUeBASYSTQD/ZDxV2U5ul/PNMaOvkJF+AF2HkRotc8R8frIA+VM5QHLEJDc
+	Ac8w0h80BDHN/bK10KN14A5SeNJ8bB1I3w+qIfE6Yg07mIz10VXz7y8MsTqAb09l
+	W41CNyMhqnpPb7VkVHUtr8bi/Uw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh3me1858-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 19:38:01 +0000 (GMT)
+	Tue, 09 Jan 2024 19:38:02 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409Jc0T0011951
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409Jc1X8024580
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jan 2024 19:38:00 GMT
+	Tue, 9 Jan 2024 19:38:01 GMT
 Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 9 Jan 2024 11:37:59 -0800
+ 15.2.1118.40; Tue, 9 Jan 2024 11:38:00 -0800
 From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Tue, 9 Jan 2024 11:37:55 -0800
-Subject: [PATCH v16 17/34] gunyah: rsc_mgr: Add memory parcel RPC
+Date: Tue, 9 Jan 2024 11:37:56 -0800
+Subject: [PATCH v16 18/34] virt: gunyah: Add interfaces to map memory into
+ guest address space
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,7 +58,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240109-gunyah-v16-17-634904bf4ce9@quicinc.com>
+Message-ID: <20240109-gunyah-v16-18-634904bf4ce9@quicinc.com>
 References: <20240109-gunyah-v16-0-634904bf4ce9@quicinc.com>
 In-Reply-To: <20240109-gunyah-v16-0-634904bf4ce9@quicinc.com>
 To: Alex Elder <elder@linaro.org>,
@@ -97,394 +98,576 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: yuWyby_01twjbm-t5tFkMTfKW7_PGkc_
-X-Proofpoint-ORIG-GUID: yuWyby_01twjbm-t5tFkMTfKW7_PGkc_
+X-Proofpoint-ORIG-GUID: JhWjMLDtmjxLfi0BZgG3YWzgoCejQ_Wn
+X-Proofpoint-GUID: JhWjMLDtmjxLfi0BZgG3YWzgoCejQ_Wn
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 spamscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 mlxscore=0
+ suspectscore=0 impostorscore=0 clxscore=1015 adultscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401090158
 
-In a Gunyah hypervisor system using the Gunyah Resource Manager, the
-"standard" unit of donating, lending and sharing memory is called a
-memory parcel (memparcel).  A memparcel is an abstraction used by the
-resource manager for securely managing donating, lending and sharing
-memory, which may be physically and virtually fragmented, without
-dealing directly with physical memory addresses.
+Gunyah virtual machines are created with either all memory provided at
+VM creation using the Resource Manager memory parcel construct, or
+Incrementally by enabling VM demand paging.
 
-Memparcels are created and managed through the RM RPC functions for
-lending, sharing and reclaiming memory from VMs.
+The Gunyah demand paging support is provided directly by the hypervisor
+and does not require the creation of resource manager memory parcels.
 
-When creating a new VM the initial VM memory containing the VM image and
-the VM's device tree blob must be provided as a memparcel. The memparcel
-must be created using the RM RPC for lending and mapping the memory to
-the VM.
+Demand paging allows the host to map/unmap contiguous pages (folios) to
+a Gunyah memory extent object with the correct rights allowing its
+contained pages to be mapped into the Guest VM's address space. Memory
+extents are Gunyah's mechanism for handling system memory abstracting
+from the direct use of physical page numbers. Memory extents are
+hypervisor objects and are therefore referenced and access controlled
+with capabilities.
+
+When a virtual machine is configured for demand paging, 3 memory
+extent and 1 address space capabilities are provided to the host. The
+resource manager defined policy is such that memory in the "host-only"
+extent (the default) is private to the host. Memory in the "guest-only"
+extent can be used for guest private mappings, and are unmapped from the
+host. Memory in the "host-and-guest-shared" extent can be mapped
+concurrently and shared between the host and guest VMs.
+
+Implement two functions which Linux can use to move memory between the
+virtual machines: gunyah_provide_folio and gunyah_reclaim_folio. Memory
+that has been provided to the guest is tracked in a maple tree to be
+reclaimed later. Folios provided to the virtual machine are assumed to
+be owned Gunyah stack: the folio's ->private field is used for
+bookkeeping about whether page is mapped into virtual machine.
 
 Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/virt/gunyah/rsc_mgr.h     |   9 ++
- drivers/virt/gunyah/rsc_mgr_rpc.c | 231 ++++++++++++++++++++++++++++++++++++++
- include/linux/gunyah.h            |  43 +++++++
- 3 files changed, 283 insertions(+)
+ drivers/virt/gunyah/Makefile     |   2 +-
+ drivers/virt/gunyah/vm_mgr.c     |  67 +++++++++
+ drivers/virt/gunyah/vm_mgr.h     |  46 ++++++
+ drivers/virt/gunyah/vm_mgr_mem.c | 309 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 423 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virt/gunyah/rsc_mgr.h b/drivers/virt/gunyah/rsc_mgr.h
-index 52711de77bb7..ec8ad8149e8e 100644
---- a/drivers/virt/gunyah/rsc_mgr.h
-+++ b/drivers/virt/gunyah/rsc_mgr.h
-@@ -10,6 +10,7 @@
- #include <linux/types.h>
+diff --git a/drivers/virt/gunyah/Makefile b/drivers/virt/gunyah/Makefile
+index 3f82af8c5ce7..f3c9507224ee 100644
+--- a/drivers/virt/gunyah/Makefile
++++ b/drivers/virt/gunyah/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
  
- #define GUNYAH_VMID_INVAL U16_MAX
-+#define GUNYAH_MEM_HANDLE_INVAL U32_MAX
+-gunyah_rsc_mgr-y += rsc_mgr.o rsc_mgr_rpc.o vm_mgr.o
++gunyah_rsc_mgr-y += rsc_mgr.o rsc_mgr_rpc.o vm_mgr.o vm_mgr_mem.o
  
- struct gunyah_rm;
+ obj-$(CONFIG_GUNYAH) += gunyah.o gunyah_rsc_mgr.o gunyah_vcpu.o
+diff --git a/drivers/virt/gunyah/vm_mgr.c b/drivers/virt/gunyah/vm_mgr.c
+index db3d1d18ccb8..26b6dce49970 100644
+--- a/drivers/virt/gunyah/vm_mgr.c
++++ b/drivers/virt/gunyah/vm_mgr.c
+@@ -17,6 +17,16 @@
+ #include "rsc_mgr.h"
+ #include "vm_mgr.h"
  
-@@ -58,6 +59,12 @@ struct gunyah_rm_vm_status_payload {
- 	__le16 app_status;
- } __packed;
- 
-+/* RPC Calls */
-+int gunyah_rm_mem_share(struct gunyah_rm *rm,
-+			struct gunyah_rm_mem_parcel *parcel);
-+int gunyah_rm_mem_reclaim(struct gunyah_rm *rm,
-+			  struct gunyah_rm_mem_parcel *parcel);
++#define GUNYAH_VM_ADDRSPACE_LABEL 0
++// "To" extent for memory private to guest
++#define GUNYAH_VM_MEM_EXTENT_GUEST_PRIVATE_LABEL 0
++// "From" extent for memory shared with guest
++#define GUNYAH_VM_MEM_EXTENT_HOST_SHARED_LABEL 1
++// "To" extent for memory shared with the guest
++#define GUNYAH_VM_MEM_EXTENT_GUEST_SHARED_LABEL 3
++// "From" extent for memory private to guest
++#define GUNYAH_VM_MEM_EXTENT_HOST_PRIVATE_LABEL 2
 +
- int gunyah_rm_alloc_vmid(struct gunyah_rm *rm, u16 vmid);
- int gunyah_rm_dealloc_vmid(struct gunyah_rm *rm, u16 vmid);
- int gunyah_rm_vm_reset(struct gunyah_rm *rm, u16 vmid);
-@@ -99,6 +106,8 @@ struct gunyah_rm_hyp_resources {
- int gunyah_rm_get_hyp_resources(struct gunyah_rm *rm, u16 vmid,
- 				struct gunyah_rm_hyp_resources **resources);
+ static DEFINE_XARRAY(gunyah_vm_functions);
  
-+int gunyah_rm_get_vmid(struct gunyah_rm *rm, u16 *vmid);
+ static void gunyah_vm_put_function(struct gunyah_vm_function *fn)
+@@ -175,6 +185,16 @@ void gunyah_vm_function_unregister(struct gunyah_vm_function *fn)
+ }
+ EXPORT_SYMBOL_GPL(gunyah_vm_function_unregister);
+ 
++static bool gunyah_vm_resource_ticket_populate_noop(
++	struct gunyah_vm_resource_ticket *ticket, struct gunyah_resource *ghrsc)
++{
++	return true;
++}
++static void gunyah_vm_resource_ticket_unpopulate_noop(
++	struct gunyah_vm_resource_ticket *ticket, struct gunyah_resource *ghrsc)
++{
++}
 +
- struct gunyah_resource *
- gunyah_rm_alloc_resource(struct gunyah_rm *rm,
- 			 struct gunyah_rm_hyp_resource *hyp_resource);
-diff --git a/drivers/virt/gunyah/rsc_mgr_rpc.c b/drivers/virt/gunyah/rsc_mgr_rpc.c
-index 141ce0145e91..bc44bde990ce 100644
---- a/drivers/virt/gunyah/rsc_mgr_rpc.c
-+++ b/drivers/virt/gunyah/rsc_mgr_rpc.c
-@@ -5,6 +5,12 @@
+ int gunyah_vm_add_resource_ticket(struct gunyah_vm *ghvm,
+ 				  struct gunyah_vm_resource_ticket *ticket)
+ {
+@@ -342,6 +362,17 @@ static void gunyah_vm_stop(struct gunyah_vm *ghvm)
+ 		   ghvm->vm_status != GUNYAH_RM_VM_STATUS_RUNNING);
+ }
+ 
++static inline void setup_extent_ticket(struct gunyah_vm *ghvm,
++				       struct gunyah_vm_resource_ticket *ticket,
++				       u32 label)
++{
++	ticket->resource_type = GUNYAH_RESOURCE_TYPE_MEM_EXTENT;
++	ticket->label = label;
++	ticket->populate = gunyah_vm_resource_ticket_populate_noop;
++	ticket->unpopulate = gunyah_vm_resource_ticket_unpopulate_noop;
++	gunyah_vm_add_resource_ticket(ghvm, ticket);
++}
++
+ static __must_check struct gunyah_vm *gunyah_vm_alloc(struct gunyah_rm *rm)
+ {
+ 	struct gunyah_vm *ghvm;
+@@ -365,6 +396,25 @@ static __must_check struct gunyah_vm *gunyah_vm_alloc(struct gunyah_rm *rm)
+ 	INIT_LIST_HEAD(&ghvm->resources);
+ 	INIT_LIST_HEAD(&ghvm->resource_tickets);
+ 
++	mt_init(&ghvm->mm);
++
++	ghvm->addrspace_ticket.resource_type = GUNYAH_RESOURCE_TYPE_ADDR_SPACE;
++	ghvm->addrspace_ticket.label = GUNYAH_VM_ADDRSPACE_LABEL;
++	ghvm->addrspace_ticket.populate =
++		gunyah_vm_resource_ticket_populate_noop;
++	ghvm->addrspace_ticket.unpopulate =
++		gunyah_vm_resource_ticket_unpopulate_noop;
++	gunyah_vm_add_resource_ticket(ghvm, &ghvm->addrspace_ticket);
++
++	setup_extent_ticket(ghvm, &ghvm->host_private_extent_ticket,
++			    GUNYAH_VM_MEM_EXTENT_HOST_PRIVATE_LABEL);
++	setup_extent_ticket(ghvm, &ghvm->host_shared_extent_ticket,
++			    GUNYAH_VM_MEM_EXTENT_HOST_SHARED_LABEL);
++	setup_extent_ticket(ghvm, &ghvm->guest_private_extent_ticket,
++			    GUNYAH_VM_MEM_EXTENT_GUEST_PRIVATE_LABEL);
++	setup_extent_ticket(ghvm, &ghvm->guest_shared_extent_ticket,
++			    GUNYAH_VM_MEM_EXTENT_GUEST_SHARED_LABEL);
++
+ 	return ghvm;
+ }
+ 
+@@ -528,6 +578,21 @@ static void _gunyah_vm_put(struct kref *kref)
+ 		gunyah_vm_stop(ghvm);
+ 
+ 	gunyah_vm_remove_functions(ghvm);
++
++	/**
++	 * If this fails, we're going to lose the memory for good and is
++	 * BUG_ON-worthy, but not unrecoverable (we just lose memory).
++	 * This call should always succeed though because the VM is in not
++	 * running and RM will let us reclaim all the memory.
++	 */
++	WARN_ON(gunyah_vm_reclaim_range(ghvm, 0, U64_MAX));
++
++	gunyah_vm_remove_resource_ticket(ghvm, &ghvm->addrspace_ticket);
++	gunyah_vm_remove_resource_ticket(ghvm, &ghvm->host_shared_extent_ticket);
++	gunyah_vm_remove_resource_ticket(ghvm, &ghvm->host_private_extent_ticket);
++	gunyah_vm_remove_resource_ticket(ghvm, &ghvm->guest_shared_extent_ticket);
++	gunyah_vm_remove_resource_ticket(ghvm, &ghvm->guest_private_extent_ticket);
++
+ 	gunyah_vm_clean_resources(ghvm);
+ 
+ 	if (ghvm->vm_status != GUNYAH_RM_VM_STATUS_NO_STATE &&
+@@ -541,6 +606,8 @@ static void _gunyah_vm_put(struct kref *kref)
+ 			   ghvm->vm_status == GUNYAH_RM_VM_STATUS_RESET);
+ 	}
+ 
++	mtree_destroy(&ghvm->mm);
++
+ 	if (ghvm->vm_status > GUNYAH_RM_VM_STATUS_NO_STATE) {
+ 		gunyah_rm_notifier_unregister(ghvm->rm, &ghvm->nb);
+ 
+diff --git a/drivers/virt/gunyah/vm_mgr.h b/drivers/virt/gunyah/vm_mgr.h
+index 8c5b94101b2c..e500f6eb014e 100644
+--- a/drivers/virt/gunyah/vm_mgr.h
++++ b/drivers/virt/gunyah/vm_mgr.h
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/device.h>
+ #include <linux/kref.h>
++#include <linux/maple_tree.h>
+ #include <linux/mutex.h>
+ #include <linux/rwsem.h>
+ #include <linux/wait.h>
+@@ -16,12 +17,42 @@
  
  #include "rsc_mgr.h"
  
-+/* Message IDs: Memory Management */
-+#define GUNYAH_RM_RPC_MEM_LEND 0x51000012
-+#define GUNYAH_RM_RPC_MEM_SHARE 0x51000013
-+#define GUNYAH_RM_RPC_MEM_RECLAIM 0x51000015
-+#define GUNYAH_RM_RPC_MEM_APPEND 0x51000018
-+
- /* Message IDs: VM Management */
- /* clang-format off */
- #define GUNYAH_RM_RPC_VM_ALLOC_VMID		0x56000001
-@@ -15,6 +21,7 @@
- #define GUNYAH_RM_RPC_VM_CONFIG_IMAGE		0x56000009
- #define GUNYAH_RM_RPC_VM_INIT			0x5600000B
- #define GUNYAH_RM_RPC_VM_GET_HYP_RESOURCES	0x56000020
-+#define GUNYAH_RM_RPC_VM_GET_VMID		0x56000024
- /* clang-format on */
- 
- struct gunyah_rm_vm_common_vmid_req {
-@@ -22,6 +29,48 @@ struct gunyah_rm_vm_common_vmid_req {
- 	__le16 _padding;
- } __packed;
- 
-+/* Call: MEM_LEND, MEM_SHARE */
-+#define GUNYAH_RM_MAX_MEM_ENTRIES 512
-+
-+#define GUNYAH_MEM_SHARE_REQ_FLAGS_APPEND BIT(1)
-+
-+struct gunyah_rm_mem_share_req_header {
-+	u8 mem_type;
-+	u8 _padding0;
-+	u8 flags;
-+	u8 _padding1;
-+	__le32 label;
-+} __packed;
-+
-+struct gunyah_rm_mem_share_req_acl_section {
-+	__le32 n_entries;
-+	struct gunyah_rm_mem_acl_entry entries[];
-+} __packed;
-+
-+struct gunyah_rm_mem_share_req_mem_section {
-+	__le16 n_entries;
-+	__le16 _padding;
-+	struct gunyah_rm_mem_entry entries[];
-+} __packed;
-+
-+/* Call: MEM_RELEASE */
-+struct gunyah_rm_mem_release_req {
-+	__le32 mem_handle;
-+	u8 flags; /* currently not used */
-+	u8 _padding0;
-+	__le16 _padding1;
-+} __packed;
-+
-+/* Call: MEM_APPEND */
-+#define GUNYAH_MEM_APPEND_REQ_FLAGS_END BIT(0)
-+
-+struct gunyah_rm_mem_append_req_header {
-+	__le32 mem_handle;
-+	u8 flags;
-+	u8 _padding0;
-+	__le16 _padding1;
-+} __packed;
-+
- /* Call: VM_ALLOC */
- struct gunyah_rm_vm_alloc_vmid_resp {
- 	__le16 vmid;
-@@ -66,6 +115,159 @@ static int gunyah_rm_common_vmid_call(struct gunyah_rm *rm, u32 message_id,
- 			      NULL, NULL);
- }
- 
-+static int gunyah_rm_mem_append(struct gunyah_rm *rm, u32 mem_handle,
-+				struct gunyah_rm_mem_entry *entries,
-+				size_t n_entries)
++static inline u64 gunyah_gpa_to_gfn(u64 gpa)
 +{
-+	struct gunyah_rm_mem_append_req_header *req __free(kfree) = NULL;
-+	struct gunyah_rm_mem_share_req_mem_section *mem;
-+	int ret = 0;
-+	size_t n;
-+
-+	req = kzalloc(sizeof(*req) + struct_size(mem, entries, GUNYAH_RM_MAX_MEM_ENTRIES),
-+		      GFP_KERNEL);
-+	if (!req)
-+		return -ENOMEM;
-+
-+	req->mem_handle = cpu_to_le32(mem_handle);
-+	mem = (void *)(req + 1);
-+
-+	while (n_entries) {
-+		req->flags = 0;
-+		if (n_entries > GUNYAH_RM_MAX_MEM_ENTRIES) {
-+			n = GUNYAH_RM_MAX_MEM_ENTRIES;
-+		} else {
-+			req->flags |= GUNYAH_MEM_APPEND_REQ_FLAGS_END;
-+			n = n_entries;
-+		}
-+
-+		mem->n_entries = cpu_to_le16(n);
-+		memcpy(mem->entries, entries, sizeof(*entries) * n);
-+
-+		ret = gunyah_rm_call(rm, GUNYAH_RM_RPC_MEM_APPEND, req,
-+				     sizeof(*req) + struct_size(mem, entries, n),
-+				     NULL, NULL);
-+		if (ret)
-+			break;
-+
-+		entries += n;
-+		n_entries -= n;
-+	}
-+
-+	return ret;
++	return gpa >> PAGE_SHIFT;
 +}
 +
-+/**
-+ * gunyah_rm_mem_share() - Share memory with other virtual machines.
-+ * @rm: Handle to a Gunyah resource manager
-+ * @p: Information about the memory to be shared.
-+ *
-+ * Sharing keeps Linux's access to the memory while the memory parcel is shared.
-+ */
-+int gunyah_rm_mem_share(struct gunyah_rm *rm, struct gunyah_rm_mem_parcel *p)
++static inline u64 gunyah_gfn_to_gpa(u64 gfn)
 +{
-+	u32 message_id = p->n_acl_entries == 1 ? GUNYAH_RM_RPC_MEM_LEND :
-+						 GUNYAH_RM_RPC_MEM_SHARE;
-+	size_t msg_size, initial_mem_entries = p->n_mem_entries, resp_size;
-+	struct gunyah_rm_mem_share_req_acl_section *acl;
-+	struct gunyah_rm_mem_share_req_mem_section *mem;
-+	struct gunyah_rm_mem_share_req_header *req_header;
-+	size_t acl_size, mem_size;
-+	u32 *attr_section;
-+	bool need_append = false;
-+	__le32 *resp;
-+	void *msg;
-+	int ret;
-+
-+	if (!p->acl_entries || !p->n_acl_entries || !p->mem_entries ||
-+	    !p->n_mem_entries || p->n_acl_entries > U8_MAX ||
-+	    p->mem_handle != GUNYAH_MEM_HANDLE_INVAL)
-+		return -EINVAL;
-+
-+	if (initial_mem_entries > GUNYAH_RM_MAX_MEM_ENTRIES) {
-+		initial_mem_entries = GUNYAH_RM_MAX_MEM_ENTRIES;
-+		need_append = true;
-+	}
-+
-+	acl_size = struct_size(acl, entries, p->n_acl_entries);
-+	mem_size = struct_size(mem, entries, initial_mem_entries);
-+
-+	/* The format of the message goes:
-+	 * request header
-+	 * ACL entries (which VMs get what kind of access to this memory parcel)
-+	 * Memory entries (list of memory regions to share)
-+	 * Memory attributes (currently unused, we'll hard-code the size to 0)
-+	 */
-+	msg_size = sizeof(struct gunyah_rm_mem_share_req_header) + acl_size +
-+		   mem_size +
-+		   sizeof(u32); /* for memory attributes, currently unused */
-+
-+	msg = kzalloc(msg_size, GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	req_header = msg;
-+	acl = (void *)req_header + sizeof(*req_header);
-+	mem = (void *)acl + acl_size;
-+	attr_section = (void *)mem + mem_size;
-+
-+	req_header->mem_type = p->mem_type;
-+	if (need_append)
-+		req_header->flags |= GUNYAH_MEM_SHARE_REQ_FLAGS_APPEND;
-+	req_header->label = cpu_to_le32(p->label);
-+
-+	acl->n_entries = cpu_to_le32(p->n_acl_entries);
-+	memcpy(acl->entries, p->acl_entries,
-+	       flex_array_size(acl, entries, p->n_acl_entries));
-+
-+	mem->n_entries = cpu_to_le16(initial_mem_entries);
-+	memcpy(mem->entries, p->mem_entries,
-+	       flex_array_size(mem, entries, initial_mem_entries));
-+
-+	/* Set n_entries for memory attribute section to 0 */
-+	*attr_section = 0;
-+
-+	ret = gunyah_rm_call(rm, message_id, msg, msg_size, (void **)&resp,
-+			     &resp_size);
-+	kfree(msg);
-+
-+	if (ret)
-+		return ret;
-+
-+	p->mem_handle = le32_to_cpu(*resp);
-+	kfree(resp);
-+
-+	if (need_append) {
-+		ret = gunyah_rm_mem_append(
-+			rm, p->mem_handle, &p->mem_entries[initial_mem_entries],
-+			p->n_mem_entries - initial_mem_entries);
-+		if (ret) {
-+			gunyah_rm_mem_reclaim(rm, p);
-+			p->mem_handle = GUNYAH_MEM_HANDLE_INVAL;
-+		}
-+	}
-+
-+	return ret;
++	return gfn << PAGE_SHIFT;
 +}
 +
-+/**
-+ * gunyah_rm_mem_reclaim() - Reclaim a memory parcel
-+ * @rm: Handle to a Gunyah resource manager
-+ * @parcel: Information about the memory to be reclaimed.
-+ *
-+ * RM maps the associated memory back into the stage-2 page tables of the owner VM.
-+ */
-+int gunyah_rm_mem_reclaim(struct gunyah_rm *rm,
-+			  struct gunyah_rm_mem_parcel *parcel)
-+{
-+	struct gunyah_rm_mem_release_req req = {
-+		.mem_handle = cpu_to_le32(parcel->mem_handle),
-+	};
-+
-+	return gunyah_rm_call(rm, GUNYAH_RM_RPC_MEM_RECLAIM, &req, sizeof(req),
-+			      NULL, NULL);
-+}
-+
+ long gunyah_dev_vm_mgr_ioctl(struct gunyah_rm *rm, unsigned int cmd,
+ 			     unsigned long arg);
+ 
  /**
-  * gunyah_rm_alloc_vmid() - Allocate a new VM in Gunyah. Returns the VM identifier.
-  * @rm: Handle to a Gunyah resource manager
-@@ -236,3 +438,32 @@ int gunyah_rm_get_hyp_resources(struct gunyah_rm *rm, u16 vmid,
- 	*resources = resp;
- 	return 0;
- }
+  * struct gunyah_vm - Main representation of a Gunyah Virtual machine
+  * @vmid: Gunyah's VMID for this virtual machine
++ * @mm: A maple tree of all memory that has been mapped to a VM.
++ *      Indices are guest frame numbers; entries are either folios or
++ *      RM mem parcels
++ * @addrspace_ticket: Resource ticket to the capability for guest VM's
++ *                    address space
++ * @host_private_extent_ticket: Resource ticket to the capability for our
++ *                              memory extent from which to lend private
++ *                              memory to the guest
++ * @host_shared_extent_ticket: Resource ticket to the capaiblity for our
++ *                             memory extent from which to share memory
++ *                             with the guest. Distinction with
++ *                             @host_private_extent_ticket needed for
++ *                             current Qualcomm platforms; on non-Qualcomm
++ *                             platforms, this is the same capability ID
++ * @guest_private_extent_ticket: Resource ticket to the capaiblity for
++ *                               the guest's memory extent to lend private
++ *                               memory to
++ * @guest_shared_extent_ticket: Resource ticket to the capability for
++ *                              the memory extent that represents
++ *                              memory shared with the guest.
+  * @rm: Pointer to the resource manager struct to make RM calls
+  * @parent: For logging
+  * @nb: Notifier block for RM notifications
+@@ -43,6 +74,11 @@ long gunyah_dev_vm_mgr_ioctl(struct gunyah_rm *rm, unsigned int cmd,
+  */
+ struct gunyah_vm {
+ 	u16 vmid;
++	struct maple_tree mm;
++	struct gunyah_vm_resource_ticket addrspace_ticket,
++		host_private_extent_ticket, host_shared_extent_ticket,
++		guest_private_extent_ticket, guest_shared_extent_ticket;
 +
-+/**
-+ * gunyah_rm_get_vmid() - Retrieve VMID of this virtual machine
-+ * @rm: Handle to a Gunyah resource manager
-+ * @vmid: Filled with the VMID of this VM
+ 	struct gunyah_rm *rm;
+ 
+ 	struct notifier_block nb;
+@@ -63,4 +99,14 @@ struct gunyah_vm {
+ 
+ };
+ 
++int gunyah_vm_parcel_to_paged(struct gunyah_vm *ghvm,
++			      struct gunyah_rm_mem_parcel *parcel, u64 gfn,
++			      u64 nr);
++int gunyah_vm_reclaim_parcel(struct gunyah_vm *ghvm,
++			     struct gunyah_rm_mem_parcel *parcel, u64 gfn);
++int gunyah_vm_provide_folio(struct gunyah_vm *ghvm, struct folio *folio,
++			    u64 gfn, bool share, bool write);
++int gunyah_vm_reclaim_folio(struct gunyah_vm *ghvm, u64 gfn);
++int gunyah_vm_reclaim_range(struct gunyah_vm *ghvm, u64 gfn, u64 nr);
++
+ #endif
+diff --git a/drivers/virt/gunyah/vm_mgr_mem.c b/drivers/virt/gunyah/vm_mgr_mem.c
+new file mode 100644
+index 000000000000..d3fcb4514907
+--- /dev/null
++++ b/drivers/virt/gunyah/vm_mgr_mem.c
+@@ -0,0 +1,309 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023-2024 Qualcomm Innovation Center, Inc. All rights reserved.
 + */
-+int gunyah_rm_get_vmid(struct gunyah_rm *rm, u16 *vmid)
++
++#define pr_fmt(fmt) "gunyah_vm_mgr: " fmt
++
++#include <asm/gunyah.h>
++#include <linux/mm.h>
++#include <linux/pagemap.h>
++
++#include "vm_mgr.h"
++
++#define WRITE_TAG (1 << 0)
++#define SHARE_TAG (1 << 1)
++
++static inline struct gunyah_resource *
++__first_resource(struct gunyah_vm_resource_ticket *ticket)
 +{
-+	static u16 cached_vmid = GUNYAH_VMID_INVAL;
-+	size_t resp_size;
-+	__le32 *resp;
++	return list_first_entry_or_null(&ticket->resources,
++					struct gunyah_resource, list);
++}
++
++int gunyah_vm_parcel_to_paged(struct gunyah_vm *ghvm,
++			      struct gunyah_rm_mem_parcel *parcel, u64 gfn,
++			      u64 nr)
++{
++	struct gunyah_rm_mem_entry *entry;
++	unsigned long i, entry_size, tag = 0;
++	struct folio *folio;
++	pgoff_t off = 0;
 +	int ret;
 +
-+	if (cached_vmid != GUNYAH_VMID_INVAL) {
-+		*vmid = cached_vmid;
-+		return 0;
++	if (parcel->n_acl_entries > 1)
++		tag |= SHARE_TAG;
++	if (parcel->acl_entries[0].perms & GUNYAH_RM_ACL_W)
++		tag |= WRITE_TAG;
++
++	for (i = 0; i < parcel->n_mem_entries; i++) {
++		entry = &parcel->mem_entries[i];
++		entry_size = PHYS_PFN(le64_to_cpu(entry->size));
++
++		folio = pfn_folio(PHYS_PFN(le64_to_cpu(entry->phys_addr)));
++		ret = mtree_insert_range(&ghvm->mm, gfn + off, gfn + off + folio_nr_pages(folio) - 1, xa_tag_pointer(folio, tag), GFP_KERNEL);
++		if (ret == -ENOMEM)
++			return ret;
++		BUG_ON(ret);
++		off += folio_nr_pages(folio);
 +	}
 +
-+	ret = gunyah_rm_call(rm, GUNYAH_RM_RPC_VM_GET_VMID, NULL, 0,
-+			     (void **)&resp, &resp_size);
++	BUG_ON(off != nr);
++
++	return 0;
++}
++
++static inline u32 donate_flags(bool share)
++{
++	if (share)
++		return FIELD_PREP_CONST(GUNYAH_MEMEXTENT_OPTION_TYPE_MASK,
++					GUNYAH_MEMEXTENT_DONATE_TO_SIBLING);
++	else
++		return FIELD_PREP_CONST(GUNYAH_MEMEXTENT_OPTION_TYPE_MASK,
++					GUNYAH_MEMEXTENT_DONATE_TO_PROTECTED);
++}
++
++static inline u32 reclaim_flags(bool share)
++{
++	if (share)
++		return FIELD_PREP_CONST(GUNYAH_MEMEXTENT_OPTION_TYPE_MASK,
++					GUNYAH_MEMEXTENT_DONATE_TO_SIBLING);
++	else
++		return FIELD_PREP_CONST(GUNYAH_MEMEXTENT_OPTION_TYPE_MASK,
++					GUNYAH_MEMEXTENT_DONATE_FROM_PROTECTED);
++}
++
++int gunyah_vm_provide_folio(struct gunyah_vm *ghvm, struct folio *folio,
++			    u64 gfn, bool share, bool write)
++{
++	struct gunyah_resource *guest_extent, *host_extent, *addrspace;
++	u32 map_flags = BIT(GUNYAH_ADDRSPACE_MAP_FLAG_PARTIAL);
++	u64 extent_attrs, gpa = gunyah_gfn_to_gpa(gfn);
++	phys_addr_t pa = PFN_PHYS(folio_pfn(folio));
++	enum gunyah_pagetable_access access;
++	size_t size = folio_size(folio);
++	enum gunyah_error gunyah_error;
++	unsigned long tag = 0;
++	int ret;
++
++	/* clang-format off */
++	if (share) {
++		guest_extent = __first_resource(&ghvm->guest_shared_extent_ticket);
++		host_extent = __first_resource(&ghvm->host_shared_extent_ticket);
++	} else {
++		guest_extent = __first_resource(&ghvm->guest_private_extent_ticket);
++		host_extent = __first_resource(&ghvm->host_private_extent_ticket);
++	}
++	/* clang-format on */
++	addrspace = __first_resource(&ghvm->addrspace_ticket);
++
++	if (!addrspace || !guest_extent || !host_extent)
++		return -ENODEV;
++
++	if (share) {
++		map_flags |= BIT(GUNYAH_ADDRSPACE_MAP_FLAG_VMMIO);
++		tag |= SHARE_TAG;
++	} else {
++		map_flags |= BIT(GUNYAH_ADDRSPACE_MAP_FLAG_PRIVATE);
++	}
++
++	if (write)
++		tag |= WRITE_TAG;
++
++	ret = mtree_insert_range(&ghvm->mm, gfn,
++				 gfn + folio_nr_pages(folio) - 1,
++				 xa_tag_pointer(folio, tag), GFP_KERNEL);
++	if (ret == -EEXIST)
++		return -EAGAIN;
 +	if (ret)
 +		return ret;
 +
-+	*vmid = cached_vmid = lower_16_bits(le32_to_cpu(*resp));
-+	kfree(resp);
++	if (share && write)
++		access = GUNYAH_PAGETABLE_ACCESS_RW;
++	else if (share && !write)
++		access = GUNYAH_PAGETABLE_ACCESS_R;
++	else if (!share && write)
++		access = GUNYAH_PAGETABLE_ACCESS_RWX;
++	else /* !share && !write */
++		access = GUNYAH_PAGETABLE_ACCESS_RX;
 +
++	gunyah_error = gunyah_hypercall_memextent_donate(donate_flags(share),
++							 host_extent->capid,
++							 guest_extent->capid,
++							 pa, size);
++	if (gunyah_error != GUNYAH_ERROR_OK) {
++		pr_err("Failed to donate memory for guest address 0x%016llx: %d\n",
++		       gpa, gunyah_error);
++		ret = gunyah_error_remap(gunyah_error);
++		goto remove;
++	}
++
++	extent_attrs =
++		FIELD_PREP_CONST(GUNYAH_MEMEXTENT_MAPPING_TYPE,
++				 ARCH_GUNYAH_DEFAULT_MEMTYPE) |
++		FIELD_PREP(GUNYAH_MEMEXTENT_MAPPING_USER_ACCESS, access) |
++		FIELD_PREP(GUNYAH_MEMEXTENT_MAPPING_KERNEL_ACCESS, access);
++	gunyah_error = gunyah_hypercall_addrspace_map(addrspace->capid,
++						      guest_extent->capid, gpa,
++						      extent_attrs, map_flags,
++						      pa, size);
++	if (gunyah_error != GUNYAH_ERROR_OK) {
++		pr_err("Failed to map guest address 0x%016llx: %d\n", gpa,
++		       gunyah_error);
++		ret = gunyah_error_remap(gunyah_error);
++		goto memextent_reclaim;
++	}
++
++	folio_get(folio);
++	if (!share)
++		folio_set_private(folio);
++	return 0;
++memextent_reclaim:
++	gunyah_error = gunyah_hypercall_memextent_donate(reclaim_flags(share),
++							 guest_extent->capid,
++							 host_extent->capid, pa,
++							 size);
++	if (gunyah_error != GUNYAH_ERROR_OK)
++		pr_err("Failed to reclaim memory donation for guest address 0x%016llx: %d\n",
++		       gpa, gunyah_error);
++remove:
++	mtree_erase(&ghvm->mm, gfn);
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(gunyah_rm_get_vmid);
-diff --git a/include/linux/gunyah.h b/include/linux/gunyah.h
-index a517c5c33a75..9065f5758c39 100644
---- a/include/linux/gunyah.h
-+++ b/include/linux/gunyah.h
-@@ -156,6 +156,49 @@ int gunyah_vm_add_resource_ticket(struct gunyah_vm *ghvm,
- void gunyah_vm_remove_resource_ticket(struct gunyah_vm *ghvm,
- 				      struct gunyah_vm_resource_ticket *ticket);
- 
-+#define GUNYAH_RM_ACL_X BIT(0)
-+#define GUNYAH_RM_ACL_W BIT(1)
-+#define GUNYAH_RM_ACL_R BIT(2)
 +
-+struct gunyah_rm_mem_acl_entry {
-+	__le16 vmid;
-+	u8 perms;
-+	u8 reserved;
-+} __packed;
++static int __gunyah_vm_reclaim_folio_locked(struct gunyah_vm *ghvm, void *entry,
++					    u64 gfn, const bool sync)
++{
++	u32 map_flags = BIT(GUNYAH_ADDRSPACE_MAP_FLAG_PARTIAL);
++	struct gunyah_resource *guest_extent, *host_extent, *addrspace;
++	enum gunyah_pagetable_access access;
++	enum gunyah_error gunyah_error;
++	struct folio *folio;
++	bool write, share;
++	phys_addr_t pa;
++	size_t size;
++	int ret;
 +
-+struct gunyah_rm_mem_entry {
-+	__le64 phys_addr;
-+	__le64 size;
-+} __packed;
++	addrspace = __first_resource(&ghvm->addrspace_ticket);
++	if (!addrspace)
++		return -ENODEV;
 +
-+enum gunyah_rm_mem_type {
-+	GUNYAH_RM_MEM_TYPE_NORMAL = 0,
-+	GUNYAH_RM_MEM_TYPE_IO = 1,
-+};
++	share = !!(xa_pointer_tag(entry) & SHARE_TAG);
++	write = !!(xa_pointer_tag(entry) & WRITE_TAG);
++	folio = xa_untag_pointer(entry);
 +
-+/*
-+ * struct gunyah_rm_mem_parcel - Info about memory to be lent/shared/donated/reclaimed
-+ * @mem_type: The type of memory: normal (DDR) or IO
-+ * @label: An client-specified identifier which can be used by the other VMs to identify the purpose
-+ *         of the memory parcel.
-+ * @n_acl_entries: Count of the number of entries in the @acl_entries array.
-+ * @acl_entries: An array of access control entries. Each entry specifies a VM and what access
-+ *               is allowed for the memory parcel.
-+ * @n_mem_entries: Count of the number of entries in the @mem_entries array.
-+ * @mem_entries: An array of regions to be associated with the memory parcel. Addresses should be
-+ *               (intermediate) physical addresses from Linux's perspective.
-+ * @mem_handle: On success, filled with memory handle that RM allocates for this memory parcel
-+ */
-+struct gunyah_rm_mem_parcel {
-+	enum gunyah_rm_mem_type mem_type;
-+	u32 label;
-+	size_t n_acl_entries;
-+	struct gunyah_rm_mem_acl_entry *acl_entries;
-+	size_t n_mem_entries;
-+	struct gunyah_rm_mem_entry *mem_entries;
-+	u32 mem_handle;
-+};
++	if (!sync)
++		map_flags |= BIT(GUNYAH_ADDRSPACE_MAP_FLAG_NOSYNC);
 +
- /******************************************************************************/
- /* Common arch-independent definitions for Gunyah hypercalls                  */
- #define GUNYAH_CAPID_INVAL U64_MAX
++	/* clang-format off */
++	if (share) {
++		guest_extent = __first_resource(&ghvm->guest_shared_extent_ticket);
++		host_extent = __first_resource(&ghvm->host_shared_extent_ticket);
++		map_flags |= BIT(GUNYAH_ADDRSPACE_MAP_FLAG_VMMIO);
++	} else {
++		guest_extent = __first_resource(&ghvm->guest_private_extent_ticket);
++		host_extent = __first_resource(&ghvm->host_private_extent_ticket);
++		map_flags |= BIT(GUNYAH_ADDRSPACE_MAP_FLAG_PRIVATE);
++	}
++	/* clang-format on */
++
++	pa = PFN_PHYS(folio_pfn(folio));
++	size = folio_size(folio);
++
++	gunyah_error = gunyah_hypercall_addrspace_unmap(addrspace->capid,
++							guest_extent->capid,
++							gunyah_gfn_to_gpa(gfn),
++							map_flags, pa, size);
++	if (gunyah_error != GUNYAH_ERROR_OK) {
++		pr_err_ratelimited(
++			"Failed to unmap guest address 0x%016llx: %d\n",
++			gunyah_gfn_to_gpa(gfn), gunyah_error);
++		ret = gunyah_error_remap(gunyah_error);
++		goto err;
++	}
++
++	gunyah_error = gunyah_hypercall_memextent_donate(reclaim_flags(share),
++							 guest_extent->capid,
++							 host_extent->capid, pa,
++							 size);
++	if (gunyah_error != GUNYAH_ERROR_OK) {
++		pr_err_ratelimited(
++			"Failed to reclaim memory donation for guest address 0x%016llx: %d\n",
++			gunyah_gfn_to_gpa(gfn), gunyah_error);
++		ret = gunyah_error_remap(gunyah_error);
++		goto err;
++	}
++
++	if (share && write)
++		access = GUNYAH_PAGETABLE_ACCESS_RW;
++	else if (share && !write)
++		access = GUNYAH_PAGETABLE_ACCESS_R;
++	else if (!share && write)
++		access = GUNYAH_PAGETABLE_ACCESS_RWX;
++	else /* !share && !write */
++		access = GUNYAH_PAGETABLE_ACCESS_RX;
++
++	gunyah_error = gunyah_hypercall_memextent_donate(donate_flags(share),
++							 guest_extent->capid,
++							 host_extent->capid, pa,
++							 size);
++	if (gunyah_error != GUNYAH_ERROR_OK) {
++		pr_err("Failed to reclaim memory donation for guest address 0x%016llx: %d\n",
++		       gfn << PAGE_SHIFT, gunyah_error);
++		ret = gunyah_error_remap(gunyah_error);
++		goto err;
++	}
++
++	BUG_ON(mtree_erase(&ghvm->mm, gfn) != entry);
++
++	folio_clear_private(folio);
++	folio_put(folio);
++	return 0;
++err:
++	return ret;
++}
++
++int gunyah_vm_reclaim_folio(struct gunyah_vm *ghvm, u64 gfn)
++{
++	struct folio *folio;
++	void *entry;
++
++	entry = mtree_load(&ghvm->mm, gfn);
++	if (!entry)
++		return 0;
++
++	folio = xa_untag_pointer(entry);
++	if (mtree_load(&ghvm->mm, gfn) != entry)
++		return -EAGAIN;
++
++	return __gunyah_vm_reclaim_folio_locked(ghvm, entry, gfn, true);
++}
++
++int gunyah_vm_reclaim_range(struct gunyah_vm *ghvm, u64 gfn, u64 nr)
++{
++	unsigned long next = gfn, g;
++	struct folio *folio;
++	int ret, ret2 = 0;
++	void *entry;
++	bool sync;
++
++	mt_for_each(&ghvm->mm, entry, next, gfn + nr) {
++		folio = xa_untag_pointer(entry);
++		g = next;
++		sync = !!mt_find_after(&ghvm->mm, &g, gfn + nr);
++
++		g = next - folio_nr_pages(folio);
++		folio_get(folio);
++		folio_lock(folio);
++		if (mtree_load(&ghvm->mm, g) == entry)
++			ret = __gunyah_vm_reclaim_folio_locked(ghvm, entry, g, sync);
++		else
++			ret = -EAGAIN;
++		folio_unlock(folio);
++		folio_put(folio);
++		if (ret && ret2 != -EAGAIN)
++			ret2 = ret;
++	}
++
++	return ret2;
++}
 
 -- 
 2.34.1
