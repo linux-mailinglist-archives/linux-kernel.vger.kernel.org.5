@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-20542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F1682806C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:20:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09E07828070
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECC2B283661
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:20:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15BA91C258CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9DB21A11;
-	Tue,  9 Jan 2024 08:19:53 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E66722063;
+	Tue,  9 Jan 2024 08:20:14 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207D213ACF;
-	Tue,  9 Jan 2024 08:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D4D134C3;
+	Tue,  9 Jan 2024 08:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4T8P3G0dKYzsVs2;
-	Tue,  9 Jan 2024 16:19:06 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4T8P4432Ypz1vs8K;
+	Tue,  9 Jan 2024 16:19:48 +0800 (CST)
 Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 28AF8140136;
-	Tue,  9 Jan 2024 16:19:49 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id F15F01404F1;
+	Tue,  9 Jan 2024 16:20:03 +0800 (CST)
 Received: from [10.67.120.192] (10.67.120.192) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 9 Jan 2024 16:19:48 +0800
-Message-ID: <00e5d6e2-168c-4887-8b6d-8498ebaafe6d@huawei.com>
-Date: Tue, 9 Jan 2024 16:19:48 +0800
+ 15.1.2507.35; Tue, 9 Jan 2024 16:20:03 +0800
+Message-ID: <d133f3d5-3b92-4e9d-9b05-038306b2f981@huawei.com>
+Date: Tue, 9 Jan 2024 16:20:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,40 +44,28 @@ CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
 	<shenjian15@huawei.com>, <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
 	<lanhao@huawei.com>, <wangpeiyang1@huawei.com>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V4 net-next 4/4] net: hns3: support dump pfc frame
- statistics in tx timeout log
+Subject: Re: [PATCH V4 net-next 0/4] There are some features for the HNS3
+ ethernet driver
 To: Jiri Pirko <jiri@resnulli.us>
 References: <20240105010119.2619873-1-shaojijie@huawei.com>
- <20240105010119.2619873-5-shaojijie@huawei.com> <ZZfSJoEsoXceI_2q@nanopsycho>
+ <ZZfQ4XRlqde31qgN@nanopsycho>
 From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <ZZfSJoEsoXceI_2q@nanopsycho>
+In-Reply-To: <ZZfQ4XRlqde31qgN@nanopsycho>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600007.china.huawei.com (7.193.23.208)
 
 
-on 2024/1/5 17:55, Jiri Pirko wrote:
->> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->> @@ -2871,8 +2871,10 @@ static bool hns3_get_tx_timeo_queue_info(struct net_device *ndev)
->> 		struct hns3_mac_stats mac_stats;
->>
->> 		h->ae_algo->ops->get_mac_stats(h, &mac_stats);
->> -		netdev_info(ndev, "tx_pause_cnt: %llu, rx_pause_cnt: %llu\n",
->> -			    mac_stats.tx_pause_cnt, mac_stats.rx_pause_cnt);
->> +		netdev_info(ndev,
->> +			    "tx_pause_cnt: %llu, rx_pause_cnt: %llu, tx_pfc_cnt: %llu, rx_pfc_cnt: %llu\n",
->> +			    mac_stats.tx_pause_cnt, mac_stats.rx_pause_cnt,
->> +			    mac_stats.tx_pfc_cnt, mac_stats.rx_pfc_cnt);
-> Don't we have a better way to expose this? I mean, whenever there is a
-> patch that extends the amount of text written in dmesg, it smells.
-> We should rather reduce it.
+on 2024/1/5 17:50, Jiri Pirko wrote:
+> Fri, Jan 05, 2024 at 02:01:15AM CET, shaojijie@huawei.com wrote:
+>> There are some features for the HNS3 ethernet driver
+> This is quite odd patchset cover letter subject and description. You
+> should try to be more specific in the subject and more descriptive
+> here in the description.
 >
-In fact, we include this part of the statistics in the ethtool -S 
-statistics. However, if tx timeout occurs,the driver performs a reset 
-attempt to recover it. And the statistics are cleared after the reset. 
-Therefore, pfc statistics are added to tx timeout log to determine the 
-timeout cause.
-
+>
+Yes, there really should be a more detailed description here.
+Thank you for reminding us.
 
 
