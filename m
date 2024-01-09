@@ -1,155 +1,145 @@
-Return-Path: <linux-kernel+bounces-20843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C589828603
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:30:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C6D482860E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7C961F255EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:30:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B11F4B2407F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F3A381D4;
-	Tue,  9 Jan 2024 12:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9402D381D9;
+	Tue,  9 Jan 2024 12:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="e3uzqzD6"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="chSnIHus"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F28381C0;
-	Tue,  9 Jan 2024 12:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 29D7240E0196;
-	Tue,  9 Jan 2024 12:29:53 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 8LgGsJKL99AU; Tue,  9 Jan 2024 12:29:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704803390; bh=+Ncz7siEkTjAJGaRbmWjV3uElamE3ik/Pui2Em7ihyU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e3uzqzD6Sd0ujUJUSC7MRPxWi8vbuKwJ4aZJ/7hlC5WIahofUZyUqu6erDbkVtFKi
-	 /CFGubT/bagkKI2OzvP8iOpAbgvKCGUTWjZO2fXWeLrv01DN7vwzpg2LQuOg4SYQ5c
-	 rHNecCB5hRIycePIdkdlF2UbRLptkbp6CbKVs3/er+Ry1bO/1VV7Dau+807YKwMa6u
-	 jeL12ntBz1dCGaOaIznhk4bYEgy3OGYr2HRemzpEpQa6Q4tw4YsqULxGCo2TxZewvh
-	 EkZ8s1eqQzmkqEw/T4c3DnAg86Gs/xIiVJO1h+9el0i82Qlmgu1vraVH2f2D9rddnd
-	 4DlViFsbCMmTT55sZIiZwvcahCDpMeUqODB0mDtobxwo1PTYIKOb/t2Baido8+qqPD
-	 ZanyMSPeFcah1u+N9U8Gbs7b8xonaGmffMjGWR+HPMsgRRa9+1T6QHBDzzEvR/3zHx
-	 ZPCkvdjka+ahnZPdOQfgsrfQphChY+NGwYX1/ZXljnBJkahyko326kvCZMr91kOuey
-	 TGQlBpHNhGX9t1haLmDSI4QK+fAdBe6qS12uCaTY7neuVUN4wJ8aOdWjAXaibVyfdm
-	 OZL1rADRWyLuz4u8IAUdY6MSY/14h/A6Ra70eDUxvNbWmcjE6vDDR+mV5NX3ecrDEr
-	 UqQzXXr459AV1ZddaxUfdVGA=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3868140E01F9;
-	Tue,  9 Jan 2024 12:29:11 +0000 (UTC)
-Date: Tue, 9 Jan 2024 13:29:06 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
-	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
-	pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-	jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-	slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
-	ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
- support
-Message-ID: <20240109122906.GCZZ08Esh86vhGwVx1@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-5-michael.roth@amd.com>
- <f60c5fe0-9909-468d-8160-34d5bae39305@linux.microsoft.com>
- <20240105160916.GDZZgprE8T6xbbHJ9E@fat_crate.local>
- <20240105162142.GEZZgslgQCQYI7twat@fat_crate.local>
- <0c4aac73-10d8-4e47-b6a8-f0c180ba1900@linux.microsoft.com>
- <20240108170418.GDZZwrEiIaGuMpV0B0@fat_crate.local>
- <b5b57b60-1573-44f4-8161-e2249eb6f9b6@linux.microsoft.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A6A381CE
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 12:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dbdb124491cso2179119276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 04:30:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704803446; x=1705408246; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W6bnxa+GSR1FpCAvVqbsQV97G8p0dAq+kFC9sgXphqE=;
+        b=chSnIHusUnwn3XCrUTGLl/woFUhegzPC+/qykv4jRfXUGqRo//F7oY6CKp7Ssy6iYA
+         b1HGiRoyj77jg3J4ZSuJcQ1U0aAgpZogjKM5C1Kue04YzIfW0IpaPvdifHezeC9XfmJr
+         L/ViysLijTicR+FY22YHpCtiDyUtFbNy2rcFlivO2XUDLv8kFRUrak8LOI23rPqypVVT
+         tz/letFnoDyMKLsj5Ise4CkaJS1Lgg/ZEMwxpz7LzKtZmdV5QiiXcqiSb6XH+jD/eQ54
+         ZWLSkP+EMLHhGSdFvbG6h+dEvmx5/BqryPukhdMNFGmTgwHfBZTpJmCzWYe38ZS+/X1o
+         2s/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704803446; x=1705408246;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W6bnxa+GSR1FpCAvVqbsQV97G8p0dAq+kFC9sgXphqE=;
+        b=VFJuqpOBimUj8r3oLoEPeQPAVWqBf+3ZyO5wXNL+2UxdEFthqGq0WClzKEkNIzb9n6
+         NfKU4gvDpHImiMmK2CI7EfMKihuOKaElLH8hnmkT71vW+fnGH6HuQWbLqR2fyqzhn1AL
+         FfA8dX6tarVUcfWbGynwu1sfYdGoYxmKv+bCb9nnqTkkHbcqFwKh+VbbD90wcxbL4DOx
+         mKOFdtz3IFwf7o8F54QIB6a+m14NCobWdTzEewWZrGiUeRHARWINch8Oa1JuQlEPhXjs
+         pf6YhYMNFaRHoYhua6p/PVfZux1O4jr3njql1pqz0EVurH3D7xv2d8YFCjoJqtPUoSV9
+         xEfA==
+X-Gm-Message-State: AOJu0YzxpaFUlJajrShboqoPD7/eYcsvlOuJ1nKsWyns9SgFjJn1qfqH
+	71JNRCYcsH95LFFWZ5TacFimI2ScTc8CctQOwtJceH+5zn+22g==
+X-Google-Smtp-Source: AGHT+IH/VCIVPEpFPTboTJrdPUTfNhyfiSowrYT19rYtTyqugjFXBvGgie/pxBxc7jOwlQ5dtHwAfNwOTFIHyTrVnOY=
+X-Received: by 2002:a25:1908:0:b0:dbc:ed55:dd7b with SMTP id
+ 8-20020a251908000000b00dbced55dd7bmr248450ybz.36.1704803446144; Tue, 09 Jan
+ 2024 04:30:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b5b57b60-1573-44f4-8161-e2249eb6f9b6@linux.microsoft.com>
+References: <cover.1704788539.git.ysato@users.sourceforge.jp> <bc794e2165244bd0cee81bc0106f1e2d1bef1613.1704788539.git.ysato@users.sourceforge.jp>
+In-Reply-To: <bc794e2165244bd0cee81bc0106f1e2d1bef1613.1704788539.git.ysato@users.sourceforge.jp>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 9 Jan 2024 13:30:34 +0100
+Message-ID: <CACRpkdYLsf-uWdMCTpieji7u1-H3oTGojvC4xm7Erox97XJ6RQ@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v6 17/37] dt-bindings: interrupt-controller:
+ renesas,sh7751-intc: Add json-schema
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
+	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 09, 2024 at 12:56:17PM +0100, Jeremi Piotrowski wrote:
-> Can we please not assume I am acting in bad faith.
+Hi Yoshinori,
 
-No you're not acting with bad faith.
+thanks for your patch!
 
-What you're doing, in my experience so far is, you come with some weird
-HV + guest models which has been invented somewhere, behind some closed
-doors, then you come with some desire that the upstream kernel should
-support it and you're not even documenting it properly and I'm left with
-asking questions all the time, what is this, what's the use case,
-blabla.
+On Tue, Jan 9, 2024 at 9:24=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
 
-Don't take this personally - I guess this is all due to NDAs,
-development schedules, and whatever else and yes, I've heard it all.
+> +  renesas,icr-irlm:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: If true four independent interrupt requests mode (ICR.I=
+RLM is 1).
+> +
+> +  renesas,ipr-map:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    description: |
+> +      IRQ to IPR mapping definition.
+> +      1st - INTEVT code
+> +      2nd - Register
+> +      3rd - bit index
 
-But just because you want this, we're not going to jump on it and
-support it unconditionally. It needs to integrate properly with the rest
-of the kernel and if it doesn't, it is not going upstream. That simple.
+(...)
 
-> I am explicitly trying to integrate nicely with AMD's KVM SNP host
-> patches to cover an additional usecase and get something upstreamable.
+> +            renesas,ipr-map =3D <0x240 IPRD IPR_B12>, /* IRL0 */
+> +                              <0x2a0 IPRD IPR_B8>,  /* IRL1 */
+> +                              <0x300 IPRD IPR_B4>,  /* IRL2 */
+> +                              <0x360 IPRD IPR_B0>,  /* IRL3 */
+(...)
 
-And yet I still have no clue what your use case is. I always have to go
-ask behind the scenes and get some half-answers about *maybe* this is
-what they support.
+Is it really necessary to have all this in the device tree?
 
-Looking at the patch you pointed at I see there a proper explanation of
-your nested SNP stuff. Finally!
+You know from the compatible that this is "renesas,sh7751-intc"
+and I bet this table will be the same for any sh7751 right?
 
-From now on, please make sure your use case is properly explained
-before you come with patches.
+Then just put it in a table in the driver instead and skip this from
+the device tree and bindings. If more interrupt controllers need
+to be supported by the driver, you can simply look up the table from
+the compatible string.
 
-> The RMP in nested SNP is only used for kernel bookkeeping and so its
-> allocation is optional. KVM could do without reading the RMP directly
-> altogether (by tracking the assigned bit somewhere) but that would be
-> a design change and I'd rather see the KVM SNP host patches merged in
-> their current shape. Which is why the patch I linked allocates
-> a (shadow) RMP from the kernel.
-
-At least three issues I see with that:
-
-- the allocation can fail so it is a lot more convenient when the
-  firmware prepares it
-
-- the RMP_BASE and RMP_END writes need to be verified they actially did
-  set up the RMP range because if they haven't, you might as well
-  throw SNP security out of the window. In general, letting the kernel
-  do the RMP allocation needs to be verified very very thoroughly.
-
-- a future feature might make this more complicated
-
-> I would very much appreciate if we would not prevent that usecase from
-> working - that's why I've been reviewing and testing multiple
-> revisions of these patches and providing feedback all along.
-
-I very much appreciate the help but we need to get the main SNP host
-stuff in first and then we can talk about modifications.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yours,
+Linus Walleij
 
