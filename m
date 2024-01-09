@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-20760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC558284D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:23:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDEBE8284DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91E9F1C23EF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:23:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE6041C24066
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F167B39AD7;
-	Tue,  9 Jan 2024 11:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7668639FCC;
+	Tue,  9 Jan 2024 11:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="elitUFS1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aenuw9aH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D2039870
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 11:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9E539AF5
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 11:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704799258;
+	s=mimecast20190719; t=1704799267;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v9Zmt8qPNtA4BbCqgJuw0LKGT28DtGNcpxFrcZYWG/0=;
-	b=elitUFS17RNYLyh4NrsXXo12fnyDkbYf77V6a9cH4wTJCJzRHAK9Y8m9R4LZtLzv1llWY9
-	YMpeKjKk+8DLsHvjL2/XuICFUmubB4ut/GZpbO8G1MvRAhNW9ZB6x76u9R8prQ9Zz/gsqH
-	8bnSAqyDbAjfykeaZNjShBmm6dr+0AM=
+	bh=Z0xNWJpdRPanEuZiAQenKRA87zeZrifRwyW7XU8kxYA=;
+	b=aenuw9aHRQL27VHKd8TZIUSzbuPzLvSAP9TxWUqXC8oonOoFJfjVmemuzi47tyWRK+FHh4
+	Aez8xm0OjtWMefvNnRfEsTLtKLFWIXCz6hEHPNVAX8dwZgsfpW6XKfYiCuzF9zalX3UEen
+	nJV7R85qms2x4mFwd1ttema+GEAaoh4=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-452-aZtDJMnWPAi-V2MIXSUMUQ-1; Tue,
- 09 Jan 2024 06:20:54 -0500
-X-MC-Unique: aZtDJMnWPAi-V2MIXSUMUQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-581-EPXp23K5MHONs8COTGeLaw-1; Tue,
+ 09 Jan 2024 06:20:58 -0500
+X-MC-Unique: EPXp23K5MHONs8COTGeLaw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 28F8329AA3AF;
-	Tue,  9 Jan 2024 11:20:53 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 357C31C06505;
+	Tue,  9 Jan 2024 11:20:57 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 4CD382166B32;
-	Tue,  9 Jan 2024 11:20:50 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C71151121306;
+	Tue,  9 Jan 2024 11:20:53 +0000 (UTC)
 From: David Howells <dhowells@redhat.com>
 To: Christian Brauner <christian@brauner.io>,
 	Jeff Layton <jlayton@kernel.org>,
@@ -69,10 +69,14 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/6] netfs: Fix the loop that unmarks folios after writing to the cache
-Date: Tue,  9 Jan 2024 11:20:21 +0000
-Message-ID: <20240109112029.1572463-5-dhowells@redhat.com>
+	linux-kernel@vger.kernel.org,
+	Simon Horman <horms@kernel.org>,
+	kernel test robot <lkp@intel.com>,
+	Yiqun Leng <yqleng@linux.alibaba.com>,
+	Jia Zhu <zhujia.zj@bytedance.com>
+Subject: [PATCH 5/6] cachefiles: Fix signed/unsigned mixup
+Date: Tue,  9 Jan 2024 11:20:22 +0000
+Message-ID: <20240109112029.1572463-6-dhowells@redhat.com>
 In-Reply-To: <20240109112029.1572463-1-dhowells@redhat.com>
 References: <20240109112029.1572463-1-dhowells@redhat.com>
 Precedence: bulk
@@ -82,52 +86,66 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-In the loop in netfs_rreq_unmark_after_write() that removes the PG_fscache
-from folios after they've been written to the cache, as soon as we remove
-the mark from a multipage folio, it can get split - and then we might see a
-fragment of folio again.
+In __cachefiles_prepare_write(), the start and pos variables were made
+unsigned 64-bit so that the casts in the checking could be got rid of -
+which should be fine since absolute file offsets can't be negative, except
+that an error code may be obtained from vfs_llseek(), which *would* be
+negative.  This breaks the error check.
 
-Guard against this by advancing the 'unlocked' tracker to the index of the
-last page in the folio to avoid a double removal of the PG_fscache mark.
+Fix this for now by reverting pos and start to be signed and putting back
+the casts.  Unfortunately, the error value checks cannot be replaced with
+IS_ERR_VALUE() as long might be 32-bits.
 
-Reported-by: Marc Dionne <marc.dionne@auristor.com>
+Fixes: 7097c96411d2 ("cachefiles: Fix __cachefiles_prepare_write()")
+Reported-by: Simon Horman <horms@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401071152.DbKqMQMu-lkp@intel.com/
 Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-afs@lists.infradead.org
+Reviewed-by: Simon Horman <horms@kernel.org>
+cc: Gao Xiang <hsiangkao@linux.alibaba.com>
+cc: Yiqun Leng <yqleng@linux.alibaba.com>
+cc: Jia Zhu <zhujia.zj@bytedance.com>
+cc: Jeff Layton <jlayton@kernel.org>
 cc: linux-cachefs@redhat.com
+cc: linux-erofs@lists.ozlabs.org
 cc: linux-fsdevel@vger.kernel.org
 cc: linux-mm@kvack.org
 ---
- fs/netfs/buffered_write.c | 1 +
- fs/netfs/io.c             | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ fs/cachefiles/io.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/netfs/buffered_write.c b/fs/netfs/buffered_write.c
-index 6cd8f7422e9a..0b2b7a60dabc 100644
---- a/fs/netfs/buffered_write.c
-+++ b/fs/netfs/buffered_write.c
-@@ -698,6 +698,7 @@ static void netfs_pages_written_back(struct netfs_io_request *wreq)
- 	end_wb:
- 		if (folio_test_fscache(folio))
- 			folio_end_fscache(folio);
-+		xas_advance(&xas, folio_next_index(folio) - 1);
- 		folio_end_writeback(folio);
- 	}
+diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
+index 3eec26967437..9a2cb2868e90 100644
+--- a/fs/cachefiles/io.c
++++ b/fs/cachefiles/io.c
+@@ -522,7 +522,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+ 			       bool no_space_allocated_yet)
+ {
+ 	struct cachefiles_cache *cache = object->volume->cache;
+-	unsigned long long start = *_start, pos;
++	loff_t start = *_start, pos;
+ 	size_t len = *_len;
+ 	int ret;
  
-diff --git a/fs/netfs/io.c b/fs/netfs/io.c
-index 5b5af96cd4b9..4309edf33862 100644
---- a/fs/netfs/io.c
-+++ b/fs/netfs/io.c
-@@ -126,7 +126,7 @@ static void netfs_rreq_unmark_after_write(struct netfs_io_request *rreq,
- 			 */
- 			if (have_unlocked && folio_index(folio) <= unlocked)
- 				continue;
--			unlocked = folio_index(folio);
-+			unlocked = folio_next_index(folio) - 1;
- 			trace_netfs_folio(folio, netfs_folio_trace_end_copy);
- 			folio_end_fscache(folio);
- 			have_unlocked = true;
+@@ -556,7 +556,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+ 					  cachefiles_trace_seek_error);
+ 		return pos;
+ 	}
+-	if (pos >= start + *_len)
++	if ((u64)pos >= (u64)start + *_len)
+ 		goto check_space; /* Unallocated region */
+ 
+ 	/* We have a block that's at least partially filled - if we're low on
+@@ -575,7 +575,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+ 					  cachefiles_trace_seek_error);
+ 		return pos;
+ 	}
+-	if (pos >= start + *_len)
++	if ((u64)pos >= (u64)start + *_len)
+ 		return 0; /* Fully allocated */
+ 
+ 	/* Partially allocated, but insufficient space: cull. */
 
 
