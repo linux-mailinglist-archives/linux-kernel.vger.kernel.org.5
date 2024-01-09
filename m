@@ -1,172 +1,149 @@
-Return-Path: <linux-kernel+bounces-20696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00F85828394
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:59:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D75818283B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A085E1F289EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:59:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 171E3B2325D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2018D36B15;
-	Tue,  9 Jan 2024 09:58:17 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E6B35F12;
+	Tue,  9 Jan 2024 10:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="ra8Abjhd"
+Received: from mail.tkos.co.il (hours.tkos.co.il [84.110.109.230])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375C736AE4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rN8rr-0007j3-TQ; Tue, 09 Jan 2024 10:57:55 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rN8rq-001Rg1-Ht; Tue, 09 Jan 2024 10:57:54 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rN8rq-007r0c-1X;
-	Tue, 09 Jan 2024 10:57:54 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: "David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com
-Subject: [RFC net-next v2 3/3] net: dsa: microchip: implement PHY loopback configuration for KSZ8794 and KSZ8873
-Date: Tue,  9 Jan 2024 10:57:53 +0100
-Message-Id: <20240109095753.1872010-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240109095753.1872010-1-o.rempel@pengutronix.de>
-References: <20240109095753.1872010-1-o.rempel@pengutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B045364CA;
+	Tue,  9 Jan 2024 10:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
+Received: from localhost (unknown [10.0.8.2])
+	by mail.tkos.co.il (Postfix) with ESMTP id 4BF75440525;
+	Tue,  9 Jan 2024 12:07:02 +0200 (IST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
+	s=default; t=1704794822;
+	bh=43xE3vA91KlBiHYDQYZH4+I07czZ0PHwWXpeBYujzyo=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+	b=ra8Abjhd3wYdSlybleRufYMxkaE1+BMC4kbkA4imvxpBloAdLz+3ebgDaMB/W1Azc
+	 9v15fDP3UQogHqy6VsccDLOJS3EipJuuoz0UYtXV7iJHgiDknsQx5DLY0O+SFJpqTb
+	 mAVYUR0auLIBB39aooMOEFQSr5JLJXTJC7BGkaW9pn0Tw/dXHD9qrKUo/R+eg0wkNX
+	 iNsasprvywnJBZXfPAQDRwslVPQnDZSvOaJxEIv+HO72TOzf+fkcscL3Zxe4KYVO/7
+	 1foNh71grgTMkCMzS773WPRrxS2IgNoUt3s0qVYTL8HKxvTs3FswJjX0iONRNiSVbp
+	 I7IeKaZZQTjJA==
+References: <cover.1703683642.git.baruch@tkos.co.il>
+ <fae5b1180161a7d8cd626a96f5df80b0a0796b8b.1703683642.git.baruch@tkos.co.il>
+ <ZZw3FDy8800NScEk@arm.com>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Baruch Siach <baruch@tkos.co.il>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, Will Deacon <will@kernel.org>, Robin Murphy
+ <robin.murphy@arm.com>, iommu@lists.linux.dev, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Petr
+ =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>, Ramon Fried
+ <ramon@neureality.ai>, Elad
+ Nachman <enachman@marvell.com>
+Subject: Re: [PATCH RFC 3/4] dma-direct: add offset to zone_dma_bits
+Date: Tue, 09 Jan 2024 12:03:43 +0200
+In-reply-to: <ZZw3FDy8800NScEk@arm.com>
+Message-ID: <87msterf7b.fsf@tarshish>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 
-Correct the PHY loopback bit handling in the ksz8_w_phy_bmcr and
-ksz8_r_phy_bmcr functions for KSZ8794 and KSZ8873 variants in the ksz8795
-driver. Previously, the code erroneously used Bit 7 of port register 0xD
-for both chip variants, which is actually for LED configuration. This
-update ensures the correct registers and bits are used for the PHY
-loopback feature:
+Hi Catalin,
 
-- For KSZ8794: Use 0xF / Bit 7.
-- For KSZ8873: Use 0xD / Bit 0.
+On Mon, Jan 08 2024, Catalin Marinas wrote:
+> On Wed, Dec 27, 2023 at 05:04:27PM +0200, Baruch Siach wrote:
+>> Current code using zone_dma_bits assume that all addresses range in the
+>> bits mask are suitable for DMA. For some existing platforms this
+>> assumption is not correct. DMA range might have non zero lower limit.
+>> 
+>> Add 'zone_dma_off' for platform code to set base address for DMA zone.
+>> 
+>> Rename the dma_direct_supported() local 'min_mask' variable to better
+>> describe its use as limit.
+>> 
+>> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+>
+> When I suggested taking the DMA offsets into account, that's not exactly
+> what I meant. Based on patch 4, it looks like zone_dma_off is equivalent
+> to the lower CPU address. Let's say a system has DRAM starting at 2GB
+> and all 32-bit DMA-capable devices has a DMA offset of 0. We want
+> ZONE_DMA32 to end at 4GB rather than 6GB.
 
-The lack of loopback support was seen on KSZ8873 system by using
-"ethtool -t lanX". After this patch, the ethtool selftest will work,
-but only if port is not part of a bridge.
+Patch 4 sets zone_dma_off to the lower limit from 'dma-ranges' property
+that determines zone_dma_bits. This is not necessarily equivalent to
+start of DRAM, though it happens to be that way on my platform.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/microchip/ksz8795.c     | 36 ++++++++++++++++++++-----
- drivers/net/dsa/microchip/ksz8795_reg.h |  1 +
- 2 files changed, 30 insertions(+), 7 deletions(-)
+>> @@ -59,7 +60,7 @@ static gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 *phys_limit)
+>>  	 * zones.
+>>  	 */
+>>  	*phys_limit = dma_to_phys(dev, dma_limit);
+>> -	if (*phys_limit <= DMA_BIT_MASK(zone_dma_bits))
+>> +	if (*phys_limit <= zone_dma_off + DMA_BIT_MASK(zone_dma_bits))
+>>  		return GFP_DMA;
+>>  	if (*phys_limit <= DMA_BIT_MASK(32))
+>>  		return GFP_DMA32;
+>
+> Ah, you ignore the zone_dma_off for 32-bit calculations. But the
+> argument still stands, the start of DRAM does not necessarily mean that
+> all non-64-bit devices have such DMA offset.
+>
+> The current dma_direct_optimal_gfp_mask() confuses me a bit, I think it
+> gives the wrong flag if we have a zone_dma_bits of 30 and a device with
+> a coherent_dma_mask of 31, it incorrectly ends up with GFP_DMA32 (I'm
+> ignoring dma offsets in this example). Luckily I don't think we have any
+> set up where this would fail. Basically if *phys_limit is strictly
+> smaller than DMA_BIT_MASK(32), we want GFP_DMA rather than GFP_DMA32
+> even if it is larger than DMA_BIT_MASK(zone_dma_bits).
+>
+> Anyway, current mainline assumes that DMA_BIT_MASK(zone_dma_bits) and
+> DMA_BIT_MASK(32) are CPU addresses. The problem is that we may have the
+> start of RAM well above 4GB and neither ZONE_DMA nor ZONE_DMA32 upper
+> limits would be a power-of-two. We could change the DMA_BIT_MASK(...) to
+> be DMA address limits and we end up with something like:
+>
+> static gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 *phys_limit)
+> {
+> 	u64 dma_limit = min_not_zero(
+> 		dev->coherent_dma_mask,
+> 		dev->bus_dma_limit);
+> 	u64 dma32_limit = dma_to_phys(dev, DMA_BIT_MASK(32));
+>
+> 	*phys_limit = dma_to_phys(dev, dma_limit);
+> 	if (*phys_limit > dma_limit)
+> 		return 0;
+> 	if (*phys_limit = dma32_limit)
+> 		return GFP_DMA32;
+> 	return GFP_DMA;
+> }
+>
+> The alternative is to get rid of the *_bits variants and go for
+> zone_dma_limit and zone_dma32_limit in the generic code. For most
+> architectures they would match the current DMA_BIT_MASK(32) etc. but
+> arm64 would be able to set some higher values.
+>
+> My preference would be to go for zone_dma{,32}_limit, it's easier to
+> change all the places where DMA_BIT_MASK({zone_dma_bits,32}) is used.
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 51e0194453df..1d8377640a3d 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -731,16 +731,25 @@ static int ksz8_r_phy_bmcr(struct ksz_device *dev, u16 port, u16 *val)
- 	if (ret)
- 		return ret;
- 
--	if (restart & PORT_PHY_LOOPBACK)
--		*val |= BMCR_LOOPBACK;
--
- 	if (ctrl & PORT_FORCE_100_MBIT)
- 		*val |= BMCR_SPEED100;
- 
- 	if (ksz_is_ksz88x3(dev)) {
-+		if (restart & KSZ8873_PORT_PHY_LOOPBACK)
-+			*val |= BMCR_LOOPBACK;
-+
- 		if ((ctrl & PORT_AUTO_NEG_ENABLE))
- 			*val |= BMCR_ANENABLE;
- 	} else {
-+		u8 stat3;
-+
-+		ret = ksz_pread8(dev, port, REG_PORT_STATUS_3, &stat3);
-+		if (ret)
-+			return ret;
-+
-+		if (stat3 & PORT_PHY_LOOPBACK)
-+			*val |= BMCR_LOOPBACK;
-+
- 		if (!(ctrl & PORT_AUTO_NEG_DISABLE))
- 			*val |= BMCR_ANENABLE;
- 	}
-@@ -1001,8 +1010,7 @@ static int ksz8_w_phy_bmcr(struct ksz_device *dev, u16 port, u16 val)
- 
- 	restart = 0;
- 	restart_mask = PORT_LED_OFF | PORT_TX_DISABLE | PORT_AUTO_NEG_RESTART |
--		PORT_POWER_DOWN | PORT_AUTO_MDIX_DISABLE | PORT_FORCE_MDIX |
--		PORT_PHY_LOOPBACK;
-+		PORT_POWER_DOWN | PORT_AUTO_MDIX_DISABLE | PORT_FORCE_MDIX;
- 
- 	if (val & KSZ886X_BMCR_DISABLE_LED)
- 		restart |= PORT_LED_OFF;
-@@ -1022,8 +1030,22 @@ static int ksz8_w_phy_bmcr(struct ksz_device *dev, u16 port, u16 val)
- 	if (val & KSZ886X_BMCR_FORCE_MDI)
- 		restart |= PORT_FORCE_MDIX;
- 
--	if (val & BMCR_LOOPBACK)
--		restart |= PORT_PHY_LOOPBACK;
-+	if (ksz_is_ksz88x3(dev)) {
-+		restart_mask |= KSZ8873_PORT_PHY_LOOPBACK;
-+
-+		if (val & BMCR_LOOPBACK)
-+			restart |= KSZ8873_PORT_PHY_LOOPBACK;
-+	} else {
-+		u8 stat3 = 0;
-+
-+		if (val & BMCR_LOOPBACK)
-+			stat3 |= PORT_PHY_LOOPBACK;
-+
-+		ret = ksz_prmw8(dev, port, REG_PORT_STATUS_3, PORT_PHY_LOOPBACK,
-+				stat3);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	return ksz_prmw8(dev, port, regs[P_NEG_RESTART_CTRL], restart_mask,
- 			 restart);
-diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h b/drivers/net/dsa/microchip/ksz8795_reg.h
-index beca974e0171..7c9341ef73b0 100644
---- a/drivers/net/dsa/microchip/ksz8795_reg.h
-+++ b/drivers/net/dsa/microchip/ksz8795_reg.h
-@@ -265,6 +265,7 @@
- #define PORT_AUTO_MDIX_DISABLE		BIT(2)
- #define PORT_FORCE_MDIX			BIT(1)
- #define PORT_MAC_LOOPBACK		BIT(0)
-+#define KSZ8873_PORT_PHY_LOOPBACK	BIT(0)
- 
- #define REG_PORT_1_STATUS_2		0x1E
- #define REG_PORT_2_STATUS_2		0x2E
+Sounds good to me.
+
+Thanks for your review of this confusing piece of code.
+
+baruch
+
 -- 
-2.39.2
-
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
 
