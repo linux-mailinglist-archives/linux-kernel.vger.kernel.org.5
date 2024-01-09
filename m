@@ -1,179 +1,70 @@
-Return-Path: <linux-kernel+bounces-21539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94BB08290E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:41:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C0088290EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33AD91F268AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:41:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3E6FB23850
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162063E490;
-	Tue,  9 Jan 2024 23:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41D638DCB;
+	Tue,  9 Jan 2024 23:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TLzuwqpN"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gWo/0FhW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50D8364BB
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704843651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rXkeF1JbohR+qHjRwaNYQo4YUCHqi3t+/pnrz4B1Sls=;
-	b=TLzuwqpNZ9ZS0/UggC+3mdF/zmBj63uGsIBup8rZiU3kP5jqM4AxolPJiqhGsN44AkCOEv
-	WXW5GU/ZT/GVnzWIStSfm0QAsKyjxW3L8qOiWmAng9rv7+KlMHmT1tsqsSXrPcD0GkXDQO
-	jXTpdb8J/PjK9rMyiGABWq52pSy09mg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-428-93FeNqTMNtWVinikLvVxWw-1; Tue,
- 09 Jan 2024 18:40:47 -0500
-X-MC-Unique: 93FeNqTMNtWVinikLvVxWw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 605CE3C0F422;
-	Tue,  9 Jan 2024 23:40:47 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 86C353C2E;
-	Tue,  9 Jan 2024 23:40:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
-References: <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com> <152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: dhowells@redhat.com, pinskia@gmail.com,
-    Alexey Dobriyan <adobriyan@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6453E47A;
+	Tue,  9 Jan 2024 23:41:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C5E24C433F1;
+	Tue,  9 Jan 2024 23:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704843711;
+	bh=4VheRJB+SlRDKOp9co2lBsGDm9h8vd0f7gSgXN/H+GU=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=gWo/0FhWZ31EipxpPuaOEuzsngnQO/+/TYnm6HKr1yN3RrKyDNQD7cayNN5+xqhe4
+	 jz+JcN3HReQZAZf5RT+hvCjnwNwk89+nbmUIDbSiYheDzyRr2Nh2XEy0XtT/eoM6i2
+	 KfvR74LcM6la7QMWF+YJ5eb4u7xO9wY5K40lil2Twj/QAFCfX6wM6Z88vW8T7R6S8U
+	 VulRdpRQzNyBjC49DuFA+ECK4yZFSH6PFrQtZPQWn2uLcME0nqR+Rn1QnYnsWNInKg
+	 OvgK07WNmfUWBIeO8kNQcbRytoAoiuy1hmmpedATA9flt5TJ83t23GA7QJobYPlZYo
+	 7+cgyplC12zfQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B0748C4167D;
+	Tue,  9 Jan 2024 23:41:51 +0000 (UTC)
+Subject: Re: [GIT PULL] SPI updates for v6.8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240107223817.EDB59C433C7@smtp.kernel.org>
+References: <20240107223817.EDB59C433C7@smtp.kernel.org>
+X-PR-Tracked-List-Id: <linux-spi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240107223817.EDB59C433C7@smtp.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v6.8
+X-PR-Tracked-Commit-Id: f6cd66231aa58599526584ff4df1bdde8d86eac8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 301940020a92ebdef9352a0573075a1db42d17aa
+Message-Id: <170484371171.10226.15653369376230899816.pr-tracker-bot@kernel.org>
+Date: Tue, 09 Jan 2024 23:41:51 +0000
+To: Mark Brown <broonie@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1681812.1704843645.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 09 Jan 2024 23:40:45 +0000
-Message-ID: <1681813.1704843645@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-H. Peter Anvin <hpa@zytor.com> wrote:
+The pull request you sent on Sun, 07 Jan 2024 22:38:09 +0000:
 
-> Hi all, I'm going to stir the hornet's nest and make what has become the
-> ultimate sacrilege.
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v6.8
 
-:-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/301940020a92ebdef9352a0573075a1db42d17aa
 
-> Both C and C++ has had a lot of development since 1999, and C++ has in f=
-act,
-> in my personal opinion, finally "grown up" to be a better C for the kind=
- of
-> embedded programming that an OS kernel epitomizes.
+Thank you!
 
-And gcc got rewritten in C++ some time back, so they have a vested interes=
-t.
-
-> >   (8) 'virtual'.  Don't want virtual base classes, though virtual func=
-tion
-> >       tables might make operations tables more efficient.
-> =
-
-> Operations tables *are* virtual classes. virtual base classes make sense=
- in a
-> lot of cases, and we de facto use them already.
-
-You end up adding storage for a 'this' pointer for each virtual base class=
-, I
-think - and then you may have extra fun if you inherit from two classes th=
-at
-both inherit the same virtual base class.  Abstract base classes that are =
-just
-ops tables are probably fine, though.
-
-> > Issues:
-> >   (1) Need spaces inserting between strings and symbols.
-> =
-
-> I have to admit I don't really grok this?
-
-You're not allowed to do things like:
-
-	asm volatile("btl "__percpu_arg(2)",%1"
-
-but rather have to do:
-
-	asm volatile("btl " __percpu_arg(2) ",%1"
-
-as you're now allowed to specify type qualifiers.  See
-
-	https://en.cppreference.com/w/cpp/language/user_literal
-
-> >   (2) Direct assignment of pointers to/from void* isn't allowed by C++=
-, though
-> >       g++ grudgingly permits it with -fpermissive.  I would imagine th=
-at a
-> >       compiler option could easily be added to hide the error entirely=
-.
-> =
-
-> Seriously. It should also enforce that it should be a trivial
-> type. Unfortunately it doesn't look like there is a way to create user-d=
-efined
-> implicit conversions from one pointer to another (via a helper class), w=
-hich
-> otherwise would have had some other nice applications.
-
-Might require a compiler option to kill the warning.  Inserting all the
-missing casts would be a pain.
-
-> >   (3) Need gcc v8+ to statically initialise an object of any struct th=
-at's not
-> >       really simple (e.g. if it's got an embedded union).
-> =
-
-> Worst case: constexpr constructor.
-
-There was also a problem with leaving gaps in static array initialisation =
-and
-a problem with statically initialising fields out of order (with respect t=
-o
-the order they're declared in the struct declaration).  Possibly these hav=
-e
-been fixed in g++.
-
-> >   (4) Symbol length.  Really need to extern "C" everything to reduce t=
-he size
-> >       of the symbols stored in the kernel image.  This shouldn't be a =
-problem
-> >       if out-of-line function overloading isn't permitted.
-> =
-
-> This really would lose arguably the absolutely biggest advantage of C++:
-> type-safe linkage. This is the one reason why Linus actually tried to us=
-e C++
-> in one single version of the kernel in the early days (0.99.14, if I rem=
-ember
-> correctly.) At that time, g++ was nowhere near mature enough, and it got
-> dropped right away.
-
-I know.  It depends on how much you want to grow your symbol table by.  Gi=
-ven
-the number of struct pointers we use, it increases it a lot IIRC.  Also, y=
-ou
-might want a demangler for stack traces.
-
-David
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
