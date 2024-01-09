@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-20567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1738782815F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:31:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 320FD82816B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:32:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B92652823C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:31:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB36A283DB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B573A8EB;
-	Tue,  9 Jan 2024 08:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA3A3B19B;
+	Tue,  9 Jan 2024 08:24:33 +0000 (UTC)
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A723A267;
-	Tue,  9 Jan 2024 08:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE5F3A8F2;
+	Tue,  9 Jan 2024 08:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=users.sourceforge.jp
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-	by sakura.ysato.name (Postfix) with ESMTPSA id 979201C0A2A;
-	Tue,  9 Jan 2024 17:24:26 +0900 (JST)
+	by sakura.ysato.name (Postfix) with ESMTPSA id 6C8E91C0A9C;
+	Tue,  9 Jan 2024 17:24:28 +0900 (JST)
 From: Yoshinori Sato <ysato@users.sourceforge.jp>
 To: linux-sh@vger.kernel.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -85,9 +85,9 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	linux-pci@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v6 25/37] dt-bindings: vendor-prefixes: Add iodata
-Date: Tue,  9 Jan 2024 17:23:22 +0900
-Message-Id: <17c6381a733d34e8460fd2979f8b53804e808e04.1704788539.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v6 26/37] dt-bindings: vendor-prefixes:  Add smi
+Date: Tue,  9 Jan 2024 17:23:23 +0900
+Message-Id: <c8aaf67e3fcdb7e60632c53a784691aabfc7733e.1704788539.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1704788539.git.ysato@users.sourceforge.jp>
 References: <cover.1704788539.git.ysato@users.sourceforge.jp>
@@ -99,8 +99,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add IO DATA DEVICE INC.
-https://www.iodata.com/
+Add Silicon Mortion Technology Corporation
+https://www.siliconmotion.com/
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
@@ -108,18 +108,18 @@ Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
  1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 309b94c328c8..94ed63d9f7de 100644
+index 94ed63d9f7de..a338bdd743ab 100644
 --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
 +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -671,6 +671,8 @@ patternProperties:
-     description: Inventec
-   "^inversepath,.*":
-     description: Inverse Path
-+  "^iodata,.*":
-+    description: IO DATA DEVICE Inc.
-   "^iom,.*":
-     description: Iomega Corporation
-   "^irondevice,.*":
+@@ -1283,6 +1283,8 @@ patternProperties:
+     description: Skyworks Solutions, Inc.
+   "^smartlabs,.*":
+     description: SmartLabs LLC
++  "^smi,.*":
++    description: Silicon Motion Technology Corporation
+   "^smsc,.*":
+     description: Standard Microsystems Corporation
+   "^snps,.*":
 -- 
 2.39.2
 
