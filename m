@@ -1,151 +1,97 @@
-Return-Path: <linux-kernel+bounces-20766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B14568284F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:25:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 357B68284F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:25:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 508EBB24746
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:25:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C820D1F223D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F0138DF4;
-	Tue,  9 Jan 2024 11:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3183637167;
+	Tue,  9 Jan 2024 11:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ntb0L3yN"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pqP4Q7qr"
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3A937162;
-	Tue,  9 Jan 2024 11:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704799399; x=1736335399;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=nri6MxrFIMHTBgggJZSrCHzG3uLau0be+hNOOAXuPX8=;
-  b=Ntb0L3yN9DgJ87TWBJsu/cymRrPNQJtHXbmRMRGtZkwm238ME0uE7ney
-   7rHMdLDzvrjrYckg5JXFbGrS9k2OrBjCn2Oe8e44Hi69yfTOnMfG0KpgL
-   YvWGDHa63BvrgkKxtsi4WwmCvIwqoxwmrTcy0PyyQHHiZhqB0tykjoeU6
-   yt3UlPOTHKllAXtNW+5zrbzvDYZcpqP9l1SsIrRTefbr/mpL+Tqorthgi
-   GNZmqydRyx9xSplilh6M4MR99V0AU8+muUINuid2/xV939V7alveAQwjl
-   tGC9/ET7n/3KVGEUDeK+2En22eTNO3mhlvIsuCm2PfX8EV8YMQC+yrLA7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11515183"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="11515183"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 03:23:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="954987339"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="954987339"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 03:23:11 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id B99CB11F913;
-	Tue,  9 Jan 2024 13:23:08 +0200 (EET)
-Date: Tue, 9 Jan 2024 11:23:08 +0000
-From: "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>
-To: Zhi Mao =?utf-8?B?KOavm+aZuik=?= <zhi.mao@mediatek.com>
-Cc: "heiko@sntech.de" <heiko@sntech.de>,
-	"gerald.loacker@wolfvision.net" <gerald.loacker@wolfvision.net>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"yunkec@chromium.org" <yunkec@chromium.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dan.scally@ideasonboard.com" <dan.scally@ideasonboard.com>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	Shengnan Wang =?utf-8?B?KOeOi+Wco+eUtyk=?= <shengnan.wang@mediatek.com>,
-	"hdegoede@redhat.com" <hdegoede@redhat.com>,
-	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-	"andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-	Yaya Chang =?utf-8?B?KOW8tembhea4hSk=?= <Yaya.Chang@mediatek.com>,
-	"mchehab@kernel.org" <mchehab@kernel.org>,
-	"jacopo.mondi@ideasonboard.com" <jacopo.mondi@ideasonboard.com>,
-	"jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"bingbu.cao@intel.com" <bingbu.cao@intel.com>,
-	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"10572168@qq.com" <10572168@qq.com>,
-	"hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-	"tomi.valkeinen@ideasonboard.com" <tomi.valkeinen@ideasonboard.com>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
-	"macromorgan@hotmail.com" <macromorgan@hotmail.com>
-Subject: Re: [PATCH 1/2] media: i2c: Add GC08A3 image sensor driver
-Message-ID: <ZZ0snE1r0BnFHWUh@kekkonen.localdomain>
-References: <20231207052016.25954-1-zhi.mao@mediatek.com>
- <20231207052016.25954-2-zhi.mao@mediatek.com>
- <ZXGtqwjYruBQVaUr@kekkonen.localdomain>
- <d6772a73b61911954b1f0f75325b82da53ad0877.camel@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362F237162
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 11:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bbc7746812so2581274b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 03:24:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704799462; x=1705404262; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4SDTApmECBjOzEfaLEaZeXHNRvaFB8n31mQspM0kzI=;
+        b=pqP4Q7qrtH13LVzQQIbkrFcZWOdvC1Nr4902rbwIxXZ+X2JUqI5XEJVMrke+xCFYRi
+         BVDyRjp8sn98Ac20qQyNK1rp5kirGRPn4381TYVG/XtRTuxwfvr3XLVzus/zsqOTk/MM
+         pUUFV/VLpK3SZhB3tWJstw8S3GxYZukPyouWgj3LTIPKpAtGPEbhSng+20CRVWbn2Us2
+         HBaETC/cxP0n7VMVyfMdy+UN5raCKUzYJJtUGgAbFV7T+p12mAEZPP0VtwHxjyootKgC
+         WD6mpH7Mtkp41RpSFGDGh5Er/UkMXLl9My1yPiBUyW4vv7L5ZVyp5dbE2FQ+VRWbPyAP
+         D8sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704799462; x=1705404262;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S4SDTApmECBjOzEfaLEaZeXHNRvaFB8n31mQspM0kzI=;
+        b=NNAN8SYrLq7GS3LaQEcif3GBMPdgn/fpc3iY7ggET7zcY8hVc7YFh2RL8oJ+PMe0fN
+         PASubxktjHFPDqdzQuC3BYOzNGmxhsIwhj+MfoAPxtqZ5Mh2TNeA5aacLQOjFgNj/Uxq
+         tw0vjVRgnHAQDHRiv3To6OBm6UGkuGmRttXR6QjETlsfwbb3HbRIgNiM26+3bncPPdgx
+         E+smy2uwhxFuGQ577fZZnGC/dDc67VEM4bYPnXUqtcDX8xyLrSbcbe8lU2/aTC2py8Ar
+         CgOZhJTY1J1Ncv3UOQh6g2XpYGDd4rnWRrsVzilUyAtYj3IWclVjS1O2gKzDWnXqDRup
+         Dn6Q==
+X-Gm-Message-State: AOJu0YwH/JCuwGFDPDP2vD4gOzRLJ2Z8iAx/Lf65CtrQ3QrEQjmu5LUI
+	nHQ5qaSCSLK8Zg+0ZnKD/MEaC5HqfpixAgN9yo+AydNs9tCAvA==
+X-Google-Smtp-Source: AGHT+IHCLgsnZU5IHiP8NOccH6UwDy+IAfkge3Z3hsXsWEacGqaX4OClBqm4E9R659NzB4EBGfLT1yi7Zncj2QY5gMo=
+X-Received: by 2002:a05:6358:2928:b0:172:d2ac:1e with SMTP id
+ y40-20020a056358292800b00172d2ac001emr3729385rwb.5.1704799462214; Tue, 09 Jan
+ 2024 03:24:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d6772a73b61911954b1f0f75325b82da53ad0877.camel@mediatek.com>
+References: <20240108134843.429769-1-vincent.guittot@linaro.org>
+ <20240108134843.429769-2-vincent.guittot@linaro.org> <158a8c60-cb54-43c1-8232-6a0a46cc6d42@arm.com>
+In-Reply-To: <158a8c60-cb54-43c1-8232-6a0a46cc6d42@arm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 9 Jan 2024 12:24:11 +0100
+Message-ID: <CAKfTPtBv5=Td2o_fEcq0E7JumyH6XW705kkKR=sPf+_YzB0aPQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] cpufreq: Add a cpufreq pressure feedback for the scheduler
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, 
+	sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org, 
+	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, lukasz.luba@arm.com, rui.zhang@intel.com, 
+	mhiramat@kernel.org, daniel.lezcano@linaro.org, amit.kachhap@gmail.com, 
+	corbet@lwn.net, gregkh@linuxfoundation.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	qyousef@layalina.io
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Zhi,
+On Mon, 8 Jan 2024 at 17:35, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 08/01/2024 14:48, Vincent Guittot wrote:
+> > Provide to the scheduler a feedback about the temporary max available
+> > capacity. Unlike arch_update_thermal_pressure, this doesn't need to be
+> > filtered as the pressure will happen for dozens ms or more.
+>
+> Is this then related to the 'medium pace system pressure' you mentioned
+> in your OSPM '23 talk?
 
-On Tue, Jan 09, 2024 at 10:41:15AM +0000, Zhi Mao (毛智) wrote:
-> > > +static const char *const gc08a3_supply_name[] = {
-> > > +"avdd",
-> > > +"dvdd",
-> > > +"dovdd",
-> > > +};
-> > > +
-> > > +#define GC08A3_NUM_SUPPLIES ARRAY_SIZE(gc08a3_supply_name)
-> > 
-> > Please use ARRAY_SIZE(...) directly.
-> > 
-> [mtk]: About "ARRAY_SIZE", creating a macro with a descriptive name can
-> improve readability of code, especially when it is used in multiple
-> locations in codes. and it seems a common usage in sensor drivers. Can
-> we keep this usage in gc08a3 driver?
-
-It improves readability even more if you use ARRAY_SIZE() directly as then
-it's easy to see you're dealing with a single array. GC08A3_NUM_SUPPLIES is
-thus a useless definition.
-
-..
-
-> > > +static int gc08a3_g_mbus_config(struct v4l2_subdev *sd, unsigned
-> > int pad,
-> > > +struct v4l2_mbus_config *config)
-> > > +{
-> > > +config->type = V4L2_MBUS_CSI2_DPHY;
-> > > +config->bus.mipi_csi2.num_data_lanes = 4;
-> > > +config->bus.mipi_csi2.flags = 0;
-> > > +return 0;
-> > > +}
-> > 
-> > As you return a static configuration, there's no need to implement
-> > g_mbus_config().
-> > 
-> [mtk]: we can not remove this function, because meidatek ISP driver
-> will use this interface to get some information.
-
-Please fix the Mediatek ISP driver in that case.
-
-I'm also open to adding a V4L2 framework function to obtain the number of
-lanes (and other configuration) for an upstream sub-device, either using
-the local endpoint or g_mbus_config if the sub-device driver implements
-that.
-
--- 
-Regards,
-
-Sakari Ailus
+Sorry I forgot to answer this question. Yes this is the medium pace
+system pressure that I mentioned at OSPM'23
+>
+> >
 
