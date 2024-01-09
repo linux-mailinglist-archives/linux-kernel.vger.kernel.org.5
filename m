@@ -1,170 +1,106 @@
-Return-Path: <linux-kernel+bounces-20504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE57D827FDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 20BC8827FCD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:56:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80A2F1F250DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:58:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C63CE1F25367
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2245629436;
-	Tue,  9 Jan 2024 07:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4945CB669;
+	Tue,  9 Jan 2024 07:56:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="rtEKg2rp"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2079.outbound.protection.outlook.com [40.107.104.79])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="duaD3bbO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16B029435;
-	Tue,  9 Jan 2024 07:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GICPR0veMtfMwymAq6vwin7zjCMO7wjxclKwPH5s2SmGk+HH7MqowMw64w+Qg/Pa4qab6hxOWb83bsAyyOIiHSbVOnJgatjYJYJAu6eNkEcG8Q2a/eELHM0XxwCF6cJ2aQaDTvMjE4SsSfBjziLjhA3RVi3a/dZpG5cUONf2h8FRbqgQ3QuvDCRBkrRnQFga3qOVmGsMFELpDLAGc6zQt4AAr+ko4xqpFwGhbm9VwPU7JLkfB/1e7bivQVGkinopen8Z/9utwqUIwIvDwcVTAo/M9S656Z2Um6smFLMoT0O+8OQ3B0gvRyYMMx9ozttw1uY+7FOPQ7EnDqM4f7/0aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YiTuNLnAMYxl8wl1gM2TmXTvurPxCZe6EOS5AQuW3MU=;
- b=J2M+aoH5x+04qu3ebYOBgHI9M0U8TvJnAQuDrsOTLXiTr0D6pSagLt2OU6PrL4clJ7DHMWZr9Qh83EO+6D1CLjgY0EYy/uUe+jvHhHpf1uO+5JgaWDQJqiJs1gQLkHLkAcwOt7v8wujUS3LSygeQG8tsFrIzqk7od60ouIEpHVKecPoTRBEMz4tP7QYK5PREThPGbZlOw2rKvfC4KPd3BVMTZFtXfERwrdPVdgT+0pDp6DBjpAjk0bAkCY6I7EznzxGR142ismhg3xn1eCVOeMdafRp6YHNEUijUgCDu9fiAJKAxPT/JozPKV5zovVFECJ0J1d4QI9RqoSGCwoa51w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YiTuNLnAMYxl8wl1gM2TmXTvurPxCZe6EOS5AQuW3MU=;
- b=rtEKg2rp6Omre1a/6WLGGJtFf60Mxrjp4/r4gFj5C6fBtSAVkWBAKhoJzd2hDQf3szGdEv+YkR9aH8xZOp80f5s3wBNqJ4JctGdsiUiW6n8jb4noaR230NSXNFyCqZKNQnj1Kn0WTwr0wIhsilis3zsQUqAJGHypxtwVJOZNKfA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by GVXPR04MB9994.eurprd04.prod.outlook.com (2603:10a6:150:11a::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Tue, 9 Jan
- 2024 07:57:06 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::2a3c:9a90:b09f:293c]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::2a3c:9a90:b09f:293c%3]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 07:57:05 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH 3/3] ASoC: dt-bindings: fsl,micfil: Add compatible string for i.MX95 platform
-Date: Tue,  9 Jan 2024 16:55:51 +0900
-Message-ID: <20240109075551.870001-4-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240109075551.870001-1-chancel.liu@nxp.com>
-References: <20240109075551.870001-1-chancel.liu@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0184.apcprd06.prod.outlook.com (2603:1096:4:1::16)
- To DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96258323B;
+	Tue,  9 Jan 2024 07:56:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ECC0C433C7;
+	Tue,  9 Jan 2024 07:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704786974;
+	bh=+sbZJVs3h3X4NHYaV/cceIgd2DaNJqv4yInDmP1TWfo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=duaD3bbOGbX3VrRDjhwxfVeJhwE/g7mZPqbI4Qo5RtavldHub0H4F2wlK48q1p3EG
+	 wZqPIKx1sg4Z22/bYkcdf57J9klXMw9Mx7mmMU4lYY5k3j08fp2dVum0wMGbXTZEON
+	 HucGTohDA1k7QLFRtZNpCH+z+iYz8cJPuLp91Bx0=
+Date: Tue, 9 Jan 2024 08:56:11 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Lizhe <sensor1010@163.com>
+Cc: ilpo.jarvinen@linux.intel.com, jirislaby@kernel.org,
+	u.kleine-koenig@pengutronix.de, robh@kernel.org,
+	john.ogness@linutronix.de, tglx@linutronix.de, frank.li@vivo.com,
+	zhang_shurong@foxmail.com, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH v7] serial: linflexuart: Remove redundant uart type
+ assignment
+Message-ID: <2024010958-headscarf-eldercare-ece3@gregkh>
+References: <20240109043426.3756-1-sensor1010@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|GVXPR04MB9994:EE_
-X-MS-Office365-Filtering-Correlation-Id: e304fa24-db19-459c-568b-08dc10e89278
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	vkofNcWdj+O+up2GLZ5np4eu5s3HNaVEh7IbRhMJg/cp3evx9IoNHNC+zpeyc8zvqejIHRZksnJPUpgC90BFKptxube0+k5LD4Kos0cCrjdaG/aCRpxYtza0bhuIQMveqwjaMukV3sgkxOWFG9mTy4fEKZ+wIjErjnvInBlaqcglngV7Qhs/GC+BrvGJS43TFiK6qPx9q+w8oPn8Pk03xooEGnx4NPJf5G3KMeHjCH2cMP3mya/zT2IuGE95uXXmM6k0eCbKKcwe/GqrBMFpO7Y+ktSwggxlTBfPVjPeBmiTLVMDEjrFDXNJoJlyDGaqwDmtqPgnV7jSsaa4icYqtZMipBn+0hj/3e4E3HqBy1f+dNcaNQKXTElHBHyoTw4MvNwwFhCGfNt4xyoJ2u2XXQJj2zA9KMrc0sEgPejlzVwpDNA6MAThdvgfRHv+IupPEfCFYB9fIX1Dxfl9FkGIhLc0bLIkzxRe8XUsZYsRilesavjC46jfGrmztnCE90PSIGUp/Rx07VNXxFejkes5r3fWrhof4U5a5jziA7a5CNvaLb/kKV+tbuUPRvb0Jots81UO4HmAtwnJMVBa4iK4gAQfqYTca0EdHCHzL9XlDkpIPTHL2JczdXsPsNFpVQf7pxPAyqmOBlJIhneXxxnAqg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(346002)(136003)(366004)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(1076003)(2616005)(26005)(52116002)(478600001)(6506007)(6666004)(6512007)(6486002)(38100700002)(921011)(36756003)(86362001)(38350700005)(4744005)(2906002)(7416002)(41300700001)(5660300002)(83380400001)(66556008)(4326008)(66946007)(316002)(44832011)(8936002)(8676002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/00SZLcw10Lw6EpW6HMENymzw1v1PcQNr4cZEABtD9wISjD+g6dFMvURM5En?=
- =?us-ascii?Q?/5T9hFFOjDel28czExp0DpAwDVhoUUd69gPjwLM2Qf5t+bSW8uo/tiesi4U5?=
- =?us-ascii?Q?vxoPUyy2CGpsRnAdV9sf/feetzr+tKLlO6M3cIw6C3IdqzZj8tw/u8euXEki?=
- =?us-ascii?Q?mh1lO0uWHEO/8BcRnudlRukVx5TTzo9kVPO6ZSnB8kaASyxSHcTcdtIbgoet?=
- =?us-ascii?Q?mCyJJXhmXd/3NQIu0xgCDU1lMjg4gdZRZaSauC2hFWcXf1XoWESPbACSjDQq?=
- =?us-ascii?Q?Whvnlyqs9GT+NCq+Ho2f4Qtg6/Z/xqBAqtg2THliQR+lx/XjUPsAqOQYL75H?=
- =?us-ascii?Q?gSUp2EmsO8Q/lfd2vFEnf/VgrXStOvOykPawgPPp9hecpDhAhI+dRkc6xyXr?=
- =?us-ascii?Q?ngcvyF88BKPIysbHeMXS2RPfRe6Ja+3OMbwz7I5QP1GctRntvTYWosBrAAat?=
- =?us-ascii?Q?iBpaKX+j0FGKXUZ7mJou1l/j8Pe4IbnQV64v1SfhSi9dIvKK/TGjNHPi6/WT?=
- =?us-ascii?Q?gpWOdnCGyyl1Smc24otcoCAI+MP4Fkjanxg8IGsvrRiQv613ujs2DT+t3qhd?=
- =?us-ascii?Q?5/2dX8JlrSZKtAAWmVskjDE2limYXuOKniueSpSqejxbSvcQLiQFHfZidDnL?=
- =?us-ascii?Q?vrv3vSrSbTjGdgiZyqdTJznpcLQ35+kBMpD+1fjbaX7XBTvMBKe8YFoAkI1C?=
- =?us-ascii?Q?ghM0j4SUzuFLCFwsOLyfs7uz41q9hcHxXcpGYbhcRMkKPLVaWoc2NIZSCVpW?=
- =?us-ascii?Q?Kmu4qA9z4Ndi9vxI8sTeInEa4vPMRAufywX0W9FASbx9k4VK1fO9AOiJhKlf?=
- =?us-ascii?Q?zV3Ml2wkaKJ0H5y2ufI5NQiju7l8usfAa+ltiLZE8tiJi7DpuXuR/b1Vsmq3?=
- =?us-ascii?Q?J4rn4I7cxvtUF+gauoBDk+UOkRCJNevzTiODzRoLE0aMGH3kJg9w0/rEaUZu?=
- =?us-ascii?Q?hF1E0wcbOiYSm4mILXzNEwLGZXYgVQAgkaL4Xu9pK5SAbzMU0OUQLA/83jGH?=
- =?us-ascii?Q?/hnRjYZpP+gpzrp3UJlU1NxzQPOMh3I8GYOAR1LoZzLa672AOLkWBx2RQJPb?=
- =?us-ascii?Q?cwgfL5vzWfLqclkCqPKs3aGLD82mi3C583tUBE1dkfU9g0dqzwifz3l6RbZ3?=
- =?us-ascii?Q?p0s3php3m5OEeI1ZcrFMqvSt30uzZ3wjkylfwdpAqO/TpgUcA6qrjPMME6Pm?=
- =?us-ascii?Q?0agm0mKBvHaEujHg49xyOgy36XFr6PwwYmZ1JE8fjlgpN1n6Ey+UdsxLvIku?=
- =?us-ascii?Q?aAOmX6NRA6sRnzkBjtZapByM4uuPSW/Ue3Rh1UHEEOooPdU26VZlFdEZzIHI?=
- =?us-ascii?Q?isdlSGxVjobHncy0hmefM0IjoBVqhWJV/le+bXFJ8qMkV6cXGH8Z3GnyN3qa?=
- =?us-ascii?Q?RRjl1ohH01tjoUEXb92nJ1+Zd2PbaQH8VbjnTD0FqNq0GgdaMLoR+id+gk2f?=
- =?us-ascii?Q?wNfnrT1WndG6lJA1pC47arOVudFsAjH01br9MYUjr8lVFqvi41qJrZy6ZybC?=
- =?us-ascii?Q?ExDQVYfYLJJ16nzS6y6Fbo9a1OM8xGT/Er0ukF+eyjjPeX6fjlqh2VmHOBUS?=
- =?us-ascii?Q?YBFV8D8BiuQ3C8f+R1rY2aLv02i9/ndnsj0JFyJg?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e304fa24-db19-459c-568b-08dc10e89278
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 07:57:05.8891
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FFtHNvQDkHh9LbfS7lue38jPtso6K//iqpaoeqslOQS54TorVQb886JAe8WwKAD+1FQED+0BizWpJuQ2TbtveQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9994
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109043426.3756-1-sensor1010@163.com>
 
-Add compatible string "fsl,imx95-micfil" for i.MX95 platform.
+On Mon, Jan 08, 2024 at 08:34:26PM -0800, Lizhe wrote:
+> in linflex_config_port() the member variable type will be
+> assigned again. see linflex_connfig_port()
+> 
+> Signed-off-by: Lizhe <sensor1010@163.com>
+> ---
+>  drivers/tty/serial/fsl_linflexuart.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/fsl_linflexuart.c b/drivers/tty/serial/fsl_linflexuart.c
+> index 3bdaf1ddc309..c5a04a168c15 100644
+> --- a/drivers/tty/serial/fsl_linflexuart.c
+> +++ b/drivers/tty/serial/fsl_linflexuart.c
+> @@ -837,7 +837,6 @@ static int linflex_probe(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	sport->dev = &pdev->dev;
+> -	sport->type = PORT_LINFLEXUART;
+>  	sport->iotype = UPIO_MEM;
+>  	sport->irq = ret;
+>  	sport->ops = &linflex_pops;
+> -- 
+> 2.25.1
+> 
+> 
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- .../devicetree/bindings/sound/fsl,micfil.yaml     | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,micfil.yaml b/Documentation/devicetree/bindings/sound/fsl,micfil.yaml
-index b7e605835639..f0d3d11d07d2 100644
---- a/Documentation/devicetree/bindings/sound/fsl,micfil.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,micfil.yaml
-@@ -15,10 +15,17 @@ description: |
- 
- properties:
-   compatible:
--    enum:
--      - fsl,imx8mm-micfil
--      - fsl,imx8mp-micfil
--      - fsl,imx93-micfil
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,imx95-micfil
-+          - const: fsl,imx93-micfil
-+
-+      - items:
-+          - enum:
-+              - fsl,imx8mm-micfil
-+              - fsl,imx8mp-micfil
-+              - fsl,imx93-micfil
- 
-   reg:
-     maxItems: 1
--- 
-2.42.0
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
 
