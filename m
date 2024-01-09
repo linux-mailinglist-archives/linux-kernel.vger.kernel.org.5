@@ -1,62 +1,59 @@
-Return-Path: <linux-kernel+bounces-21151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EBDE828ACF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:14:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AB0E828AD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:16:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E118D1C243FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:14:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3953E1F24891
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1810F3A8FD;
-	Tue,  9 Jan 2024 17:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086803A8F9;
+	Tue,  9 Jan 2024 17:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SbN6CCuK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iASeUiit"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6BF3A8C7;
-	Tue,  9 Jan 2024 17:14:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 548BCC433C7;
-	Tue,  9 Jan 2024 17:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AD83A1B7;
+	Tue,  9 Jan 2024 17:16:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBF81C433F1;
+	Tue,  9 Jan 2024 17:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704820476;
-	bh=siOZC4wOuNDoVWsdLiyPsbZnkPF7a7ofovZKE/nAX/k=;
+	s=k20201202; t=1704820562;
+	bh=8vHH4TA7YAbmHU9PwkkVzfxY8bEZBUphiHO0pMprnow=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SbN6CCuK5NChl9458MDDbcbs1SdUAG1Fd/5ItykQxgrlxYOt8DA2J14s9SYA8usPM
-	 m5ylQNkriV3WnFbF7c+AFAqUyUAktzZbK3wZoEFB2gKpzmpeF0rHc7zyicWESv7X7n
-	 dFWPf/MH+vgH1EU05HcjMtBdgGFIcA6QVLQ3Zn0XdIe4dg9+PM0H4lp6ZCNA14vqCf
-	 K/XKUGrO0ohFsnTQfU0uJ8mF4pDjRqdZdIN0U0URwMfdzjeGtd6+Jr23csiXdPwDN/
-	 UtmTiCgQlFnX6thWpQcgXP0b9vy5yRfx4+iNclwxUJ8xcjZnZYEPVHPpBX19d0ZaiH
-	 M9/ChPwWdY3CQ==
-Date: Tue, 9 Jan 2024 17:14:29 +0000
+	b=iASeUiit0WvZcOUa1bS5XKWgTQQLqrKQdIP+Fl0Uwmma7hSan2dyQOvG6RPeY8O94
+	 gcsXiR9Hafm3TDy7AZgDQGiOioEFsx0JIbHtVjWjlhD8+FZscQoz38LVm/B9Xi1DR0
+	 ZGIjqdJpa7vgCmz2wqjDailt7hDiA1/3h9+lb3Pf+nU3amxvDNb49nWi61He8WS7kB
+	 uXW9LI9cjgROFBnwocWC+sbcFLSk5r2TUkUvL+UpeewafF1nn4oYq/0JFHXLf9afBB
+	 r3tEY2SfIlTWQkvzXSAnByrdIxOzDFQBBucG1KX6Gm7pTe/hjD4SYBmVaKxzzOBU/A
+	 xx8yx6Uom6vwg==
+Date: Tue, 9 Jan 2024 17:15:57 +0000
 From: Conor Dooley <conor@kernel.org>
-To: Ninad Palsule <ninad@linux.ibm.com>
-Cc: Guenter Roeck <linux@roeck-us.net>, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
-	jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
-	tony.luck@intel.com, gpiccoli@igalia.com,
-	johannes.holland@infineon.com, broonie@kernel.org,
-	patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-	peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-	bhelgaas@google.com, naresh.solanki@9elements.com,
-	alexander.stein@ew.tq-group.com, festevam@denx.de,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-	geissonator@yahoo.com
-Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
-Message-ID: <20240109-pep-coerce-2a86ae88753d@spud>
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-8-ninad@linux.ibm.com>
- <20231212-avid-grill-dbead068fac8@spud>
- <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
- <20231212-mouth-choice-40a83caa34ec@spud>
- <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
- <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Conor Dooley <conor+dt@kernel.org>,
+	William Qiu <william.qiu@starfivetech.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Rob Herring <robh+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Hal Feng <hal.feng@starfivetech.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v10 1/4] dt-bindings: pwm: Add bindings for OpenCores PWM
+ Controller
+Message-ID: <20240109-sleeve-squatted-e0943e659b2e@spud>
+References: <20231222094548.54103-1-william.qiu@starfivetech.com>
+ <20231222094548.54103-2-william.qiu@starfivetech.com>
+ <t3w2p765fs633nanqsx5yqres7taqpk6juwyl4iex5v4jpobo2@rqw6r4myjmv3>
+ <p22vjdwk35yc66mb4pkntnst6kjyhhmnv3eb2n25c3dhi5bdeo@bj7amwepprab>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,60 +61,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OEamGw2PREjDYnc1"
+	protocol="application/pgp-signature"; boundary="l1ROEXz9Iy/Ywcok"
 Content-Disposition: inline
-In-Reply-To: <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
+In-Reply-To: <p22vjdwk35yc66mb4pkntnst6kjyhhmnv3eb2n25c3dhi5bdeo@bj7amwepprab>
 
 
---OEamGw2PREjDYnc1
-Content-Type: text/plain; charset=us-ascii
+--l1ROEXz9Iy/Ywcok
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 08, 2024 at 02:05:53PM -0600, Ninad Palsule wrote:
-> Hello Guenter,
+On Mon, Jan 08, 2024 at 10:03:49PM +0100, Uwe Kleine-K=F6nig wrote:
+> Hello Conor,
 >=20
-> On 12/12/23 13:50, Guenter Roeck wrote:
-> > On 12/12/23 10:51, Conor Dooley wrote:
-> > > On Tue, Dec 12, 2023 at 10:00:39AM -0800, Guenter Roeck wrote:
-> > > > On Tue, Dec 12, 2023 at 05:15:51PM +0000, Conor Dooley wrote:
-> > > > > On Tue, Dec 12, 2023 at 10:40:03AM -0600, Ninad Palsule wrote:
-> > > > > > From: Joel Stanley <joel@jms.id.au>
-> > > > > >=20
-> > > > > > The NPCT75x TPM is TIS compatible. It has an I2C and SPI interf=
-ace.
-> > > > > >=20
-> > > > > > https://www.nuvoton.com/products/cloud-computing/security/trust=
-ed-platform-module-tpm/
-> > > > > >=20
-> > > > > >=20
-> > > > > > Add a compatible string for it, and the generic compatible.
-> > > > > >=20
-> > > > > > OpenBMC-Staging-Count: 3
-> > > > >=20
-> > > > > Delete this from every patch that it appears from.
+> On Thu, Jan 04, 2024 at 11:43:13PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Fri, Dec 22, 2023 at 05:45:45PM +0800, William Qiu wrote:
+> > > Add bindings for OpenCores PWM Controller.
+> > >=20
+> > > Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> > > Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> >=20
+> > Looks fine to me. I'll assume you reiterate the series for patch #2 and
+> > so I will mark this patch as deferred in patchwork.
+> >=20
+> > Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 >=20
+> If you want, pick this patch up that it goes along with the dts changes.
 >=20
-> I have send it as a separate commit. https://lore.kernel.org/linux-kernel=
-/20231214144954.3833998-1-ninad@linux.ibm.com/
+> To make this formal:
+>=20
+> Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-Why did you do that? It now just adds undocumented compatibles to the
-driver. Please, as Rob requested, work with Lukas on his series to make
-sure that these devices are documented.
+Cool. I'll do that after the merge window closes :)
 
-Thanks,
-Conor.
+Thanks!
 
---OEamGw2PREjDYnc1
+--l1ROEXz9Iy/Ywcok
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ1+9AAKCRB4tDGHoIJi
-0htZAP9a2iXLaNyt9gp80dOzXMKedooH9x1JxCeLqDSn/jQ4FAD7BmzWTG2ck+GX
-6HtPX7JRe5C0eqmAl9taPHOuxon4HQw=
-=q6NZ
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ1/TQAKCRB4tDGHoIJi
+0v7HAQCyHgwcpyb9uqwBTi+Ww/Qblt+7MpgHC270lUcxAYkU4QEA3DWB4bXtpFA1
+qblPMvrOJPbChkjkwy2FCF9finMrhAI=
+=ZZGb
 -----END PGP SIGNATURE-----
 
---OEamGw2PREjDYnc1--
+--l1ROEXz9Iy/Ywcok--
 
