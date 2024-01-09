@@ -1,240 +1,298 @@
-Return-Path: <linux-kernel+bounces-21037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8DB8288E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:22:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49E948288E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA06A1C244A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:22:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 479A81C23B89
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6102D39FD1;
-	Tue,  9 Jan 2024 15:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C1339FFC;
+	Tue,  9 Jan 2024 15:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O79X0DzI"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e5b+d0Hp"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11DAE39FC1
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557a3ce8b72so2727000a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 07:21:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704813711; x=1705418511; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bj6NDQcUdJldid13ftpp0zM4/H4UFixWiFSBodj1jj4=;
-        b=O79X0DzIxEVawPKCP++DlxLc099f9TtVHLfqLH1oukFGozRx47/7pPeN9BKlfCJ6fs
-         rgchRTUTzXLRZyDZinXtYHKg28xN/gza9fO6PeFrnbGBVMDfDuq/6qgFODdCSjqSU+GK
-         +JF5o7mtcbgfiANXigK6eT4QRyk/y+62LfUnkkOefOpO8tbIp3tFz4qV1kMwHJ1GilLs
-         Mf3xi5ykbccwuvnLRF61kJCkaw6xgSAifAFvSXcXckLUV5/RIwXXwuvz1tO1HbwxwdrW
-         4oScdAiW848yde6YDxp3ICsYVh0SDZ0jmihEJxFY7Gy1G3doSTk4Pl+R/jaDaSP1xjX4
-         A+cA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF67839FD6
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704813712;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A0vlnWDmYgjsjQdIBVQqu0hvaJod3A6G6ehCH509XEc=;
+	b=e5b+d0Hpct/NpIbXDhZCvmSVIjDuBxUJhD1HB+TUvLJt0iXDW5yWSQ0/w8Hw5/W4Rr8qsl
+	VMwSCrYj2mAXhrUp9mtXmbEetYctWwhZKz2It2m7TgFSYahUf2ZrjYZOvu3qG1N+sJwYAo
+	6M7z99osRUd9oe7wZZunmuyMWZOVf4g=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-540-C5qE20oUNlmieGFzQx9cqw-1; Tue, 09 Jan 2024 10:21:51 -0500
+X-MC-Unique: C5qE20oUNlmieGFzQx9cqw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3374e909bf0so2064103f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 07:21:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704813711; x=1705418511;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bj6NDQcUdJldid13ftpp0zM4/H4UFixWiFSBodj1jj4=;
-        b=jXrfLkRjQlMuardADR1pX1L9LoZnK3XKmVLczU+AOOUl9cFU9ZTAfaLqumPjeiuFzK
-         m8dByiFdoSOwdv8dip24GMnwVyDvTRzZPi4FRU0fSnO9YdVJyd5K/vtH+SosThwW+o5Z
-         tgFSLpDjNeymPW49C4rLY7MO56R5/R+/bQI12ZZBnQj0bMweE3GMHNVipiMxUsSiMHOk
-         +kpfW5uulgF/xIf5niEkZhSx5eqpYGRTBIGPgAnB2kSXUgj+FP0M8GO71TIF9lqe8NNF
-         HO7ws/nwUnJWcPmzJ5tKHB+viOeJCLfsw7XZf+Lkubwu2GPO8fxTW7l+FIEBIRh6UhL3
-         aKqg==
-X-Gm-Message-State: AOJu0YwiirZ+1ClJstXEfga1Rb4PtZp/AJ0DDraaM36xatKBKMG6iX6G
-	HYvIRdiuhlui7ZtfJckjszkuxXUEVQANPw==
-X-Google-Smtp-Source: AGHT+IEtj6/VJROwfg+XweGIBvNmcPlD9tcYc0YZtIMc0fNzc23YXJ/6Ri7aeDvRYAvhx+V8SM4p+w==
-X-Received: by 2002:a50:baa2:0:b0:557:368d:e028 with SMTP id x31-20020a50baa2000000b00557368de028mr3315873ede.59.1704813711370;
-        Tue, 09 Jan 2024 07:21:51 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id g7-20020a056402180700b0055706e6b1f5sm1067613edy.89.2024.01.09.07.21.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        d=1e100.net; s=20230601; t=1704813710; x=1705418510;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A0vlnWDmYgjsjQdIBVQqu0hvaJod3A6G6ehCH509XEc=;
+        b=Rk8A7cjcyesIMjJ31rtTN0kJyomjcuuNAJbPYu76yiD5rUoWW6bdbbaJ5VlLybV9ju
+         Jw5pq+Q4XPUnDJu9Y09wPEJjoYzJkYi3BzpOM24MYXfxmkmPhgONNgeQmsn9UavdV/so
+         zkQfqWczRIE9K6YH26CeR3mUcsmA4Iq+sGKOCfeZU7tSznVn5ekKExukMori0R8tFa3F
+         1tS0qHCCHG5xJQtQz5l5dj+W9FBCbOEU4vXGhLjwF1T2UGR2ER74xm6x1uL+ND7kA5ih
+         yIGhYpucYhyXCYyChmHalqRSOb/zLewfZi03Q36DNBbFtpaVshmzdptajeCz7XhsVLQQ
+         G/TA==
+X-Gm-Message-State: AOJu0YwXouXv0R0fuztMJ1ABlIHhvZRHU06ZjST0aW4OneRDEuKVom6v
+	ySGy7gH6SblOFoKcTUSKdTVbiu1bVAp95U0fSc0byE+G2Ld5OG4VgcRXiga5mZTnb0/eLANatDI
+	hlhm5wIo9gQRE0IIg6ZwWylK8VmgXyijm
+X-Received: by 2002:a05:6000:1841:b0:337:78a7:559d with SMTP id c1-20020a056000184100b0033778a7559dmr391903wri.16.1704813710304;
         Tue, 09 Jan 2024 07:21:50 -0800 (PST)
-Message-ID: <d9a1695a-3747-4fb9-b76e-c2599266a3c1@linaro.org>
-Date: Tue, 9 Jan 2024 16:21:48 +0100
+X-Google-Smtp-Source: AGHT+IH/4434fsZ8vrLq0dFEbXoQrDdtSflkOAHiWGf5RnB8a8efIQKXp/1XTfbUlvaLbPVcO1dWYQ==
+X-Received: by 2002:a05:6000:1841:b0:337:78a7:559d with SMTP id c1-20020a056000184100b0033778a7559dmr391895wri.16.1704813709951;
+        Tue, 09 Jan 2024 07:21:49 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id p11-20020a056000018b00b003362d0eefd3sm2661781wrx.20.2024.01.09.07.21.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 07:21:49 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org, Maxime
+ Ripard <mripard@kernel.org>, Erico Nunes <nunes.erico@gmail.com>,
+ =?utf-8?Q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>, David
+ Airlie <airlied@gmail.com>,
+ Donald Robson <donald.robson@imgtec.com>, Frank Binns
+ <frank.binns@imgtec.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Matt Coster <matt.coster@imgtec.com>,
+ Sarah Walker <sarah.walker@imgtec.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/imagination: Defer probe if requested firmware is
+ not available
+In-Reply-To: <ZZ1R7WopPeaW3y44@phenom.ffwll.local>
+References: <20240109120604.603700-1-javierm@redhat.com>
+ <ZZ1IellMvvyFlQaF@phenom.ffwll.local>
+ <8734v6r51h.fsf@minerva.mail-host-address-is-not-set>
+ <ZZ1R7WopPeaW3y44@phenom.ffwll.local>
+Date: Tue, 09 Jan 2024 16:21:48 +0100
+Message-ID: <87ttnmpm5v.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/5] dt-bindings: crypto: Add Tegra Security Engine
-Content-Language: en-US
-To: Akhil R <akhilrajeev@nvidia.com>, herbert@gondor.apana.org.au,
- davem@davemloft.net, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
- catalin.marinas@arm.com, will@kernel.org, mperttunen@nvidia.com,
- linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
- linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, krzk@kernel.org
-References: <20240109091708.66977-1-akhilrajeev@nvidia.com>
- <20240109091708.66977-2-akhilrajeev@nvidia.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240109091708.66977-2-akhilrajeev@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 09/01/2024 10:17, Akhil R wrote:
-> Add DT binding document for Tegra Security Engine.
-> The AES and HASH algorithms are handled independently by separate
-> engines within the Security Engine. These engines are registered
-> as two separate crypto engine drivers.
-> 
+Daniel Vetter <daniel@ffwll.ch> writes:
 
-..
+> On Tue, Jan 09, 2024 at 02:48:42PM +0100, Javier Martinez Canillas wrote:
+>> Daniel Vetter <daniel@ffwll.ch> writes:
+>> 
+>> Hello Sima,
+>> 
+>> Thanks for your feedback.
+>> 
+>> > On Tue, Jan 09, 2024 at 01:05:59PM +0100, Javier Martinez Canillas wrote:
+>> >> The device is initialized in the driver's probe callback and as part of
+>> >> that initialization, the required firmware is loaded. But this fails if
+>> >> the driver is built-in and the firmware isn't present in the initramfs:
+>> >> 
+>> >> $ dmesg | grep powervr
+>> >> [    2.969757] powervr fd00000.gpu: Direct firmware load for powervr/rogue_33.15.11.3_v1.fw failed with error -2
+>> >> [    2.979727] powervr fd00000.gpu: [drm] *ERROR* failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-2)
+>> >> [    2.989885] powervr: probe of fd00000.gpu failed with error -2
+>> >> 
+>> >> $ ls -lh /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
+>> >> -rw-r--r-- 1 root root 51K Dec 12 19:00 /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
+>> >> 
+>> >> To prevent the probe to fail for this case, let's defer the probe if the
+>> >> firmware isn't available. That way, the driver core can retry it and get
+>> >> the probe to eventually succeed once the root filesystem has been mounted.
+>> >> 
+>> >> If the firmware is also not present in the root filesystem, then the probe
+>> >> will never succeed and the reason listed in the debugfs devices_deferred:
+>> >> 
+>> >> $ cat /sys/kernel/debug/devices_deferred
+>> >> fd00000.gpu     powervr: failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-517)
+>> >> 
+>> >> Fixes: f99f5f3ea7ef ("drm/imagination: Add GPU ID parsing and firmware loading")
+>> >> Suggested-by: Maxime Ripard <mripard@kernel.org>
+>> >> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>> >
+>> > Uh that doesn't work.
+>> >
+>> > Probe is for "I'm missing a struct device" and _only_ that. You can't
+>> > assume that probe deferral will defer enough until the initrd shows up.
+>> >
+>> 
+>> Fair.
+>> 
+>> > You need to fix this by fixing the initrd to include the required
+>> > firmwares. This is what MODULE_FIRMWARE is for, and if your initrd fails
+>> > to observe that it's just broken.
+>> >
+>> 
+>> Tha's already the case, when is built as a module the initrd (dracut in
+>> this particular case) does figure out that the firmware needs to be added
+>> but that doesn't work when the DRM driver is built-in. Because dracut is
+>> not able to figure out and doesn't even have a powervr.ko info to look at
+>> whatever is set by the MODULE_FIRMWARE macro.
+>
+> Yeah built-in drivers that require firmware don't really work. I'm not
+> sure it changed, but a while ago you had to actually include these in the
+> kernel image itself (initrd was again too late), and that gives you
+> something you can't even ship because it links blobs with gplv2 kernel.
+>
 
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - iommus
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+Indeed and even let the legal question aside, doing that makes the kernel
+too platform specific, even more than building drivers in.
 
-This does not look used.
+> Maybe that changed and the initramfs is set up early enough now that it's
+> sufficient to have it there ...
+>
 
-> +    #include <dt-bindings/memory/tegra234-mc.h>
-> +    #include <dt-bindings/clock/tegra234-clock.h>
-> +
-> +    crypto@15820000 {
-> +        compatible = "nvidia,tegra234-se-aes";
-> +        reg = <0x15820000 0x10000>;
-> +        clocks = <&bpmp TEGRA234_CLK_SE>;
-> +        iommus = <&smmu TEGRA234_SID_SES_SE1>;
-> +        dma-coherent;
-> +    };
-> +...
-> diff --git a/Documentation/devicetree/bindings/crypto/nvidia,tegra234-se-hash.yaml b/Documentation/devicetree/bindings/crypto/nvidia,tegra234-se-hash.yaml
-> new file mode 100644
-> index 000000000000..7fb32568756d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/crypto/nvidia,tegra234-se-hash.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/crypto/nvidia,tegra234-se-hash.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVIDIA Tegra Security Engine for HASH algorithms
-> +
-> +description:
-> +  The Tegra Security HASH Engine accelerates the following HASH functions -
-> +  SHA1, SHA224, SHA256, SHA384, SHA512, SHA3-224, SHA3-256, SHA3-384, SHA3-512
-> +  HMAC(SHA224), HMAC(SHA256), HMAC(SHA384), HMAC(SHA512)
-> +
-> +maintainers:
-> +  - Akhil R <akhilrajeev@nvidia.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: nvidia,tegra234-se-hash
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +  dma-coherent: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - iommus
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+It does work if I force to include the firmware file in the initrd, e.g:
 
-This does not look used.
+$ cat /etc/dracut.conf.d/firmware.conf 
+install_items+=" /lib/firmware/powervr/rogue_33.15.11.3_v1.fw "
 
-> +    #include <dt-bindings/memory/tegra234-mc.h>
-> +    #include <dt-bindings/clock/tegra234-clock.h>
-> +
+> Either way I think this needs module/kernel-image build changes so that
+> the list of firmware images needed for the kernel itself is dumped
+> somewhere, so that dracut can consume it and tdrt. My take at least.
+>
 
-With both above fixed:
+That's a very good idea indeed. Dracut just looking at loaded modules and
+their respective module info doesn't really work for built-in drivers...
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> > Yes I know as long as you have enough stuff built as module so that there
+>> > will be _any_ kind of device probe after the root fs is mounted, this
+>> > works, because that triggers a re-probe of everything. But that's the most
+>> > kind of fragile fix there is.
+>> >
+>> 
+>> Is fragile that's true but on the other hand it does solve the issue in
+>> pratice. The whole device probal mechanism is just a best effort anyways.
+>> 
+>> > If you want to change that then I think that needs an official blessing
+>> > from Greg KH/device core folks.
+>> >
 
+Ok. Let's see what Greg says, I think $SUBJECT is the path of least
+resistance and something that is simple enough that could be easy to
+backport / cherry-pick if needed.
 
----
+But also agree with you that it's fragile (just like the driver as is).
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
+Something that I forgot to mention but came up in our IRC discussion is
+that the powervr driver is render only, so deferring the probe won't
+affect the display that's driven by a different driver (tidss in my case).
 
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
+>> 
+>> I liked this approach due its simplicity but an alternative (and more
+>> complex) solution could be to delay the firmware request and not do it at
+>> probe time.
+>> 
+>> For example, the following (only barely tested) patch solves the issue for
+>> me as well but it's a bigger change to this driver and wasn't sure if will
+>> be acceptable:
+>
+> I think this is still barking up the wrong tree. I think there's two
+> proper fixes:
+>
+> - make the "EPROBE_DEFER delays until rootfs no matter what" official and
+>   documented policy. That's much better than drivers hand-rolling
+>   EPROBE_DEFER each in their own driver code.
+>
 
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+I would love that to be the case but the whole probe and deferral is
+already quite messy. Most subsystems just keep deferring but there are
+some that timeout after an arbitrary value (currently that being 30 secs)
+and there's  a "deferred_probe_timeout" kernel cmdline param to change it.
 
+I even tried to disable that timeout by default to have an official and
+consistent deferral policy but unfortunately the patches were nacked due
+some people relying on the existing beahviour of the deferral timing out:
+
+https://lore.kernel.org/lkml/20221116115348.517599-1-javierm@redhat.com/
+
+> - fix kernel build and dracut so it can pick up the firmware images the
+>   kernel itself needs. Because having a driver built-in but it still fails
+>   to load until the rootfs is there is some very confusing failure mode.
+>   Due to that failure mode I think this is the right fix, otherwise
+>   built-in drivers become confusing.
+>
+
+That's a good idea but that will mean adding a new kernel interface (and
+unsure where that should live since sysfs for example has the "one entry,
+one value" rule. I don't know where is a good place to expose such list.
+
+>   Alternatively I guess you could disallow drm/img as a built-in driver
+>   ... And also any other driver that requires fw to function.
+>
+
+That's an option too. But I still think that retrying is better than forcing
+the driver to be built as a module.
+
+> I don't think a "mostly works due to undocumented driver-specific hack" is
+> a good fix, since this is entirely a generic issue.
+>
+
+Maybe something that could be proposed is to have a request_firmware_defer()
+helper that changes the request_firmare() behaviour to return -EPROBE_DEFER
+instead of -ENOENT? At least is something that could be documented and will
+avoid drivers to open code a if (ret == -ENOENT) return -EPROBE_DEFER logic?
+
+> I think it's different if the fw is only needed for optional features,
+> e.g. for i915 some of the display firmware is only needed for self refresh
+> and low power modes. And a runtime_pm_get until the firmware has shown up
+> to prevent mayhem is imo a clean design for that, since the hardware is
+> fully working aside from using a bit too much power.
+>
+
+As mentioned is only needed for rendering, display works without the FW
+since is handled by another driver.
+
+[...]
+
+>> diff --git a/drivers/gpu/drm/imagination/pvr_drv.c b/drivers/gpu/drm/imagination/pvr_drv.c
+>> index 5c3b2d58d766..f8fb45136326 100644
+>> --- a/drivers/gpu/drm/imagination/pvr_drv.c
+>> +++ b/drivers/gpu/drm/imagination/pvr_drv.c
+>> @@ -1309,10 +1309,18 @@ pvr_drm_driver_open(struct drm_device *drm_dev, struct drm_file *file)
+>>  {
+>>  	struct pvr_device *pvr_dev = to_pvr_device(drm_dev);
+>>  	struct pvr_file *pvr_file;
+>> +	int err;
+>> +
+>> +	/* Perform GPU-specific initialization steps. */
+>> +	err = pvr_device_gpu_init(pvr_dev);
+>
+> Ok this is full blas "init hw on first open" drm 1 design. I think what
+> would be ok somewhat is delaying the drm_dev_register, but this here gives
+> me nightmares ...
+>
+> Please no :-)
+>
+
+Ok, that's why I added a RFC prefix to this patch's subject :)
+
+> Cheers, Sima
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+>
+
+-- 
 Best regards,
-Krzysztof
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
 
