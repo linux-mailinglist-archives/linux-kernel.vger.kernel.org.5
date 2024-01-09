@@ -1,80 +1,151 @@
-Return-Path: <linux-kernel+bounces-20800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C765882855F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:46:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E77DC828568
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 688701F24ACD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:46:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 027121C23A2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E473638DFB;
-	Tue,  9 Jan 2024 11:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QA0hOQoZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC3138DE0;
-	Tue,  9 Jan 2024 11:44:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC48CC433C7;
-	Tue,  9 Jan 2024 11:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704800699;
-	bh=ZHek6cnUD/06G1ff9DHO+IrMfmDIWNNJ3OElbgXKZgk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QA0hOQoZdvG+WySnNIvWkgT88AHPzZr7yQU3E1sn49Tk+Qsvq3qJN4RpQYU+no2rN
-	 ZlsayES1RLtYXz0X2zQaiphsEuOhr0UAVwx2iRNrfNHwvlJ/8aprhL2YQygSNMMUTb
-	 0ejbhQHt85PRQsgNTm64r5KQ9qrJY9pGGGFVGWL0=
-Date: Tue, 9 Jan 2024 12:44:56 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Stanley =?utf-8?B?Q2hhbmdb5piM6IKy5b63XQ==?= <stanley_chang@realtek.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Rob Herring <robh@kernel.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
-	Alan Stern <stern@rowland.harvard.edu>, Roy Luo <royluo@google.com>,
-	Ricardo =?iso-8859-1?Q?Ca=F1uelo?= <ricardo.canuelo@collabora.com>,
-	Flavio Suligoi <f.suligoi@asem.it>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v4 4/4] usb: core: add phy notify connect and disconnect
-Message-ID: <2024010925-splendid-thorn-3221@gregkh>
-References: <20231213031203.4911-1-stanley_chang@realtek.com>
- <20231213031203.4911-4-stanley_chang@realtek.com>
- <bdb2c10798124e228b8562576d73b881@realtek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C25374D1;
+	Tue,  9 Jan 2024 11:47:14 +0000 (UTC)
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CFD37149;
+	Tue,  9 Jan 2024 11:47:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernelsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernelsoft.com
+Received: from localhost.localdomain (unknown [106.37.191.2])
+	by mail (Coremail) with SMTP id AQAAfwAXEEwSMp1lYIpFAA--.14466S2;
+	Tue, 09 Jan 2024 19:46:27 +0800 (CST)
+From: tianyu2 <tianyu2@kernelsoft.com>
+To: rafael@kernel.org,
+	viresh.kumar@linaro.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de
+Cc: kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	linux-pm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] cpufreq: imx6: use regmap to read ocotp register
+Date: Tue,  9 Jan 2024 19:45:21 +0800
+Message-Id: <20240109114521.518195-1-tianyu2@kernelsoft.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bdb2c10798124e228b8562576d73b881@realtek.com>
+X-CM-TRANSID:AQAAfwAXEEwSMp1lYIpFAA--.14466S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr13WF4kKFW8GFWxGw1DAwb_yoW5Xw4Dpa
+	y7uFWayrW5XFnrtw1vyF4kG3W3trn2yayUJa10kwnaqwnxtFyrWas0vF9YyF95ZF95GF15
+	XF1ktrWxCw4UXr7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
+X-CM-SenderInfo: xwld05zxs6yvxuqhz2xriwhudrp/
 
-On Tue, Jan 09, 2024 at 02:08:57AM +0000, Stanley Chang[昌育德] wrote:
-> Hi Greg,
-> 
-> Please help review these series of patches.
+Reading the ocotp register directly is unsafe and will cause the system
+to hang if its clock is not turned on in CCM. The regmap interface has
+clk enabled, which can solve this problem.
 
-I was hoping that someone else would review these, which didn't seem to
-happen at all, which is odd for something that I thought many others
-wanted to see merged.
+Signed-off-by: tianyu2 <tianyu2@kernelsoft.com>
+---
+ drivers/cpufreq/imx6q-cpufreq.c | 45 +++++++++++----------------------
+ 1 file changed, 15 insertions(+), 30 deletions(-)
 
-It will have to wait until after 6.8-rc1 is out.  To also help this out,
-please help review other changes that are submitted to the lists as that
-will reduce the maintainer load here.
+diff --git a/drivers/cpufreq/imx6q-cpufreq.c b/drivers/cpufreq/imx6q-cpufreq.c
+index 494d044b9e72..f18b9ee5e484 100644
+--- a/drivers/cpufreq/imx6q-cpufreq.c
++++ b/drivers/cpufreq/imx6q-cpufreq.c
+@@ -14,6 +14,8 @@
+ #include <linux/pm_opp.h>
+ #include <linux/platform_device.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/mfd/syscon.h>
++#include <linux/regmap.h>
+ 
+ #define PU_SOC_VOLTAGE_NORMAL	1250000
+ #define PU_SOC_VOLTAGE_HIGH	1275000
+@@ -225,8 +227,6 @@ static void imx6x_disable_freq_in_opp(struct device *dev, unsigned long freq)
+ 
+ static int imx6q_opp_check_speed_grading(struct device *dev)
+ {
+-	struct device_node *np;
+-	void __iomem *base;
+ 	u32 val;
+ 	int ret;
+ 
+@@ -235,16 +235,11 @@ static int imx6q_opp_check_speed_grading(struct device *dev)
+ 		if (ret)
+ 			return ret;
+ 	} else {
+-		np = of_find_compatible_node(NULL, NULL, "fsl,imx6q-ocotp");
+-		if (!np)
+-			return -ENOENT;
++		struct regmap *ocotp;
+ 
+-		base = of_iomap(np, 0);
+-		of_node_put(np);
+-		if (!base) {
+-			dev_err(dev, "failed to map ocotp\n");
+-			return -EFAULT;
+-		}
++		ocotp = syscon_regmap_lookup_by_compatible("fsl,imx6q-ocotp");
++		if (IS_ERR(ocotp))
++			return -ENOENT;
+ 
+ 		/*
+ 		 * SPEED_GRADING[1:0] defines the max speed of ARM:
+@@ -254,8 +249,7 @@ static int imx6q_opp_check_speed_grading(struct device *dev)
+ 		 * 2b'00: 792000000Hz;
+ 		 * We need to set the max speed of ARM according to fuse map.
+ 		 */
+-		val = readl_relaxed(base + OCOTP_CFG3);
+-		iounmap(base);
++		regmap_read(ocotp, OCOTP_CFG3, &val);
+ 	}
+ 
+ 	val >>= OCOTP_CFG3_SPEED_SHIFT;
+@@ -290,25 +284,16 @@ static int imx6ul_opp_check_speed_grading(struct device *dev)
+ 		if (ret)
+ 			return ret;
+ 	} else {
+-		struct device_node *np;
+-		void __iomem *base;
+-
+-		np = of_find_compatible_node(NULL, NULL, "fsl,imx6ul-ocotp");
+-		if (!np)
+-			np = of_find_compatible_node(NULL, NULL,
+-						     "fsl,imx6ull-ocotp");
+-		if (!np)
+-			return -ENOENT;
++		struct regmap *ocotp;
+ 
+-		base = of_iomap(np, 0);
+-		of_node_put(np);
+-		if (!base) {
+-			dev_err(dev, "failed to map ocotp\n");
+-			return -EFAULT;
+-		}
++		ocotp = syscon_regmap_lookup_by_compatible("fsl,imx6ul-ocotp");
++		if (IS_ERR(ocotp))
++			ocotp = syscon_regmap_lookup_by_compatible("fsl,imx6ull-ocotp");
++
++		if (IS_ERR(ocotp))
++			return -ENOENT;
+ 
+-		val = readl_relaxed(base + OCOTP_CFG3);
+-		iounmap(base);
++		regmap_read(ocotp, OCOTP_CFG3, &val);
+ 	}
+ 
+ 	/*
+-- 
+2.25.1
 
-And again, if anyone else cares to see these merged, please help review
-them, the Cc: list here is very long...
-
-thanks,
-
-greg k-h
 
