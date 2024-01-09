@@ -1,118 +1,113 @@
-Return-Path: <linux-kernel+bounces-21459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A0D4828F71
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:08:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33065828F76
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:12:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47AA028804D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:08:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D598928801C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF3E63DBB1;
-	Tue,  9 Jan 2024 22:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173AB3DBA7;
+	Tue,  9 Jan 2024 22:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NCRmx0F1"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FeUfEWH8"
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DDF3DB98;
-	Tue,  9 Jan 2024 22:08:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2EB3A40E01B2;
-	Tue,  9 Jan 2024 22:08:34 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id KiOhwCe-g0qp; Tue,  9 Jan 2024 22:08:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704838112; bh=worxUdT9KOJEranFxZps6GXVgd62mc3IxDyhlGzs0cY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NCRmx0F1AvON411bFZmisI9EYkIitCHfOHXNYd/eCzvNPdZfDISwu7fxP5jInn05r
-	 Y7lHFxA3DeKeTHPE930sls+OiWOCmJluo7488AyOZIeKFkRBkXl2iUXCM8GGAreu2s
-	 nFVP+KSf04QKZX8XUej+18buuwurHIpE5XqekAMmpz6b5D4hIg7C9Vq8JnfDSvK7Sy
-	 qU7lJntAy1iA9V0KB54lFK7akmoJKnPsdVXl5AolCQBWq9w9WIZwHY6WUxvlUroeg0
-	 diJ9wGF38YnE3SZilIAzaW5qNKm2F9v1diPgYGTnNwzJXVyHBtrRIfSRqsapjUEATl
-	 CgmEb2dNA4CxcF/AJXsFTCxWsREDxUH2GiD+OhVGLIRJyKhH66wOWD01MkSsnjfjM5
-	 AkSZF01kqKAu+GP9zgYSV8pKHeGnbktYaoFbibduOXOGpbiutLCXU2O9aHjtJ//yYM
-	 qfekQTSH0ZeRz8qcU6k66AkfK9KgngakBU6iZQwadHQM9UkvyqXiu7tX4RYyPA641c
-	 T+xwcwaFrEkuXAle/ZJdyJlEWyG42lZfjFyclRehF8GfV6jAqmGNWv26aQm0zdHwn4
-	 Cc+99gALtyJcjitB/MLC0x+ZYPEpwh4qBL7mc4fL8Kfm7T4aQubP2IeUc2hPA7eLVs
-	 D5BX6VxTFc2YtIkwtP3VCTyY=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7C72340E016C;
-	Tue,  9 Jan 2024 22:07:52 +0000 (UTC)
-Date: Tue, 9 Jan 2024 23:07:46 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-	tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-	alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
-	nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-	liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 07/50] x86/sev: Add RMP entry lookup helpers
-Message-ID: <20240109220746.GAZZ3DsouxpiUPeBVN@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-8-michael.roth@amd.com>
- <20231114142442.GCZVODKh03BoMFdlmj@fat_crate.local>
- <20231219033150.m4x6yh6udupkdqaa@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44563C6A4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 22:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704838361;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+MEfEwS7YBgABTVs4pBpb90gb7WYrZTDLj1svt0+kOQ=;
+	b=FeUfEWH8NQXFDwxIrMCopRuDErF2CX8T2lyAKILhtxo9p7YHypWHSErr2cSpZ7NUXuCRj4
+	T99H0foXMcRpFqGJbZ1VYyl9mF0EBh3+tvcP+Jqmi7D0ItBLHKMSuoNecWKmCENC7avZ/F
+	xwbCI/whlohiv7GmWiheHgh8pnDt628=
+From: andrey.konovalov@linux.dev
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>,
+	Marco Elver <elver@google.com>,
+	Alexander Potapenko <glider@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	kasan-dev@googlegroups.com,
+	linux-mm@kvack.org,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Liam.Howlett@oracle.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH mm] kasan: avoid resetting aux_lock
+Date: Tue,  9 Jan 2024 23:12:34 +0100
+Message-Id: <20240109221234.90929-1-andrey.konovalov@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231219033150.m4x6yh6udupkdqaa@amd.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Dec 18, 2023 at 09:31:50PM -0600, Michael Roth wrote:
-> I've moved this to sev.h, but it RMP_PG_SIZE_4K is already defined there
-> and used by a bunch of guest code so it's a bit out-of-place to update
-> those as part of this patchset. I can send a follow-up series to clean up
-> some of the naming and get rid of sev-common.h
+From: Andrey Konovalov <andreyknvl@gmail.com>
 
-Yap, good idea.
+With commit 63b85ac56a64 ("kasan: stop leaking stack trace handles"),
+KASAN zeroes out alloc meta when an object is freed. The zeroed out data
+purposefully includes alloc and auxiliary stack traces but also
+accidentally includes aux_lock.
 
-> Doesn't seem like it would be an issue, maybe some fallout from any
-> files that previously only included sev-common.h and now need to pull in
-> guest struct definitions as well, but those definitions don't have a lot
-> of external dependencies so don't anticipate any header include
-> hellishness. I'll send that as a separate follow-up, along with some of
-> the renames you suggested above since they'll touch guest code and
-> create unecessary churn for SNP host support.
+As aux_lock is only initialized for each object slot during slab
+creation, when the freed slot is reallocated, saving auxiliary stack
+traces for the new object leads to lockdep reports when taking the
+zeroed out aux_lock.
 
-OTOH, people recently have started looking at including only that stuff
-which is really used so having a single header would cause more
-preprocessing effort. I'm not too crazy about it as the preprocessing
-overhead is barely measurable so might as well have a single header and
-then split it later...
+Arguably, we could reinitialize aux_lock when the object is reallocated,
+but a simpler solution is to avoid zeroing out aux_lock when an object
+gets freed.
 
-Definitely something for the after-burner and not important right now.
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Closes: https://lore.kernel.org/linux-next/5cc0f83c-e1d6-45c5-be89-9b86746fe731@paulmck-laptop/
+Fixes: 63b85ac56a64 ("kasan: stop leaking stack trace handles")
+Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
+---
+ mm/kasan/generic.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Thx.
-
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 24c13dfb1e94..df6627f62402 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -487,6 +487,7 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+ 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
+ 
+ 		/*
++		 * Prepare the lock for saving auxiliary stack traces.
+ 		 * Temporarily disable KASAN bug reporting to allow instrumented
+ 		 * raw_spin_lock_init to access aux_lock, which resides inside
+ 		 * of a redzone.
+@@ -510,8 +511,13 @@ static void release_alloc_meta(struct kasan_alloc_meta *meta)
+ 	stack_depot_put(meta->aux_stack[0]);
+ 	stack_depot_put(meta->aux_stack[1]);
+ 
+-	/* Zero out alloc meta to mark it as invalid. */
+-	__memset(meta, 0, sizeof(*meta));
++	/*
++	 * Zero out alloc meta to mark it as invalid but keep aux_lock
++	 * initialized to avoid having to reinitialize it when another object
++	 * is allocated in the same slot.
++	 */
++	__memset(&meta->alloc_track, 0, sizeof(meta->alloc_track));
++	__memset(meta->aux_stack, 0, sizeof(meta->aux_stack));
+ }
+ 
+ static void release_free_meta(const void *object, struct kasan_free_meta *meta)
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
