@@ -1,218 +1,201 @@
-Return-Path: <linux-kernel+bounces-21468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D8A8828FD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:21:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B062A828FD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A478B1F28AAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:21:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28621C24F8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7563EA70;
-	Tue,  9 Jan 2024 22:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799623DBBF;
+	Tue,  9 Jan 2024 22:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ipMeTyAW"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2056.outbound.protection.outlook.com [40.107.223.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TA+KCkts"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCA73C6A4;
-	Tue,  9 Jan 2024 22:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=glZyEfEpxdgF4C+TsUTtFiiiR9Tzp1jBkEn3yr3GlXe6nPDGaH1nv5wAsOk/TJnEMl2etEWj6K/pLnxu6iYLywp/TmhTdWOeWnwgvOa4Qb4qWu53Mi1FzNAjIoz7WSuIWVzR6Kl0MZ9dmWiDNjQxNUscjqyx5fhlk/WoX4cERloejfYob7fskEvgfM2PrtcpbIILyCyrU+87JiOlBI9pv59Obam7KSFpyM3BvKwv1FgBZPyCJM3Xa8hJgbU3aGHg8GAQAiaDL3aN/bVvM9uqaPbOZ/AC70xymt0xXFuqa9doIV4eRG9Lixk9ySPQG3rVe66u1kynO6uZ0vNPrOmsFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0n6S1IhJFL+vYOedd5EP4plpcRrdfl1wNTTgjL8YbRg=;
- b=Rx6iUNCBXcmOXDq8aACWmWgGHWMU03okpiTwY33HYs/huCLM7AC99n3Sy0j72pjjhCgzew2R9ybnAkTUc3T+H9NkYKwb+o6O+N/QtWr0op1UCTJAo6LFali0nNJDz1hnrT2DH5qPwFUIv7Y1MfvN1q6A9mRWQLTLONMmlNBtg9BqKgXZFxRJ1DYBo9KvzCSfgXI8GG6yth7QKJS0QgtZysiBHZi9sUk3VpfqJJ3ZUYoXJygzc8j19KNBr3wKhdvT3pPBSDrFfuPQjzLaMGzvWwEZgGt31HbpAs2neQvJYnNpMsZdvOwPTPmnOboNdSNzH1xhpRHIDbmVGE9S1LYBNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0n6S1IhJFL+vYOedd5EP4plpcRrdfl1wNTTgjL8YbRg=;
- b=ipMeTyAW+a38uAoKfbajM8/64/Zqpno8KBTunc8/7wwmEelALBoVDYvnZHEJdeou18VcSb1nJworRQJwrTMFVYZxW5OGEfTuDP7BqjTTorYDMhr35ulEh9iuLMGUjyx0H8vSRCAv7hX46pVwSA4/gNuHTFvUdZzt65TkhWYM0Bs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by IA1PR12MB8333.namprd12.prod.outlook.com (2603:10b6:208:3fe::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 22:19:05 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::dc71:c26c:a009:49]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::dc71:c26c:a009:49%5]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 22:19:05 +0000
-Message-ID: <5cdd2093-b007-404d-96a8-89b3aa6e6e4b@amd.com>
-Date: Tue, 9 Jan 2024 16:19:02 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 15/26] x86/sev: Introduce snp leaked pages list
-Content-Language: en-US
-To: Vlastimil Babka <vbabka@suse.cz>, Michael Roth <michael.roth@amd.com>,
- x86@kernel.org
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
- linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
- thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
- pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
- jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
- slp@redhat.com, pgonda@google.com, peterz@infradead.org,
- srinivas.pandruvada@linux.intel.com, rientjes@google.com, tobin@ibm.com,
- bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
- sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
- jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
- liam.merwick@oracle.com, zhi.a.wang@intel.com
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-16-michael.roth@amd.com>
- <f221ad9d-6fc3-466b-bacf-23986b8655f5@suse.cz>
-From: "Kalra, Ashish" <ashish.kalra@amd.com>
-In-Reply-To: <f221ad9d-6fc3-466b-bacf-23986b8655f5@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN4PR0501CA0057.namprd05.prod.outlook.com
- (2603:10b6:803:41::34) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D353DB80;
+	Tue,  9 Jan 2024 22:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e67e37661so4289105e87.0;
+        Tue, 09 Jan 2024 14:20:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704838843; x=1705443643; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FHficcIIFY7DUie+kBBBxCI5Hfo9wpTnRz3NE6iiBRs=;
+        b=TA+KCkts1HTytHrL3asmVtWWbRz7Ff0iB6mGOZ1v5WAHNg6axOMw3v0NSST7DYuTbs
+         Om5UCYNS4niCK05tfvddHHhcHYvBLPPG1Ihw6LH42Q2Av7HTbkrJHsGt+dLzlPaF1zoo
+         P9Wpm/RPPlQvXGHIZzk5b1xzEhQJBoVr/4rOcGWXG1DwILM0LEXQ48c+gHdJ91Ee+Uxi
+         jI/jTXZLyE4/tOVhDeMkpkeTpJIX6ZOzhfsOT6tP+qK50m+o3o52nor/o7zmyJueb/ob
+         jmyQtMtI28VqkQ4t9LiUNwAYcmMUVOeUe2o+Dxg3O9cicKy2Lc6YcMre18dJ7Z2PdlLv
+         6bDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704838843; x=1705443643;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FHficcIIFY7DUie+kBBBxCI5Hfo9wpTnRz3NE6iiBRs=;
+        b=OlclO4FeTwLvoMfLpYZWs+OHwq4IhCREYLrsktlttMnLuTbBWA++6coC1sCyMGgjTU
+         6MKIqE1SQYWfr2lvBKa6HU53O/RFjkJuNV2mURenRxUseLXylf6velL8FvESsVx8rTHk
+         eUok6SSfsb8w6QCN4XUHbhvHof74RndulQ2SSK8virD9OB3xPFrX/xh1N0hnRE+qniI5
+         pv3VX5j+5tx/N2xdyXhoExQL2jEdMBK5Yo2rtAsKm5W8/viNPqy56/5vsDL0RShduRoC
+         5OTbcuyFMEExRNAsoy4/3DBixKwLGCwArSDTg5KAbVOOrXKsLd2bf7K/i258fmuYcGGp
+         1cog==
+X-Gm-Message-State: AOJu0Yzf+EoJsW6Zaar7v4P6QdM7E1GEMxskudPZpFa/q3n4sX/UbCO1
+	tiCzXc6EDqC/s39SxMy0oq0=
+X-Google-Smtp-Source: AGHT+IHzUaf7cXQ3/+rzpIrUR/8dYETycPMk53CfPA2rWOWhUqHeEZ9pITM3KmFaD9xESKzduOK3OQ==
+X-Received: by 2002:a19:645e:0:b0:50e:7479:79da with SMTP id b30-20020a19645e000000b0050e747979damr19306lfj.24.1704838842804;
+        Tue, 09 Jan 2024 14:20:42 -0800 (PST)
+Received: from mobilestation ([95.79.203.166])
+        by smtp.gmail.com with ESMTPSA id b16-20020a056512305000b0050ea1f2baeasm474292lfb.20.2024.01.09.14.20.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 14:20:42 -0800 (PST)
+Date: Wed, 10 Jan 2024 01:20:40 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Leong Ching Swee <leong.ching.swee@intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	Rohan G Thomas <rohan.g.thomas@intel.com>
+Subject: Re: [PATCH net-next v2 1/4] dt-bindings: net: snps,dwmac: per
+ channel irq
+Message-ID: <5y3ed4greqcdz6hsepvpqstyabxupqbw7dc3eilgi64acrbkoc@oy2c7flu33gs>
+References: <20240105070925.2948871-1-leong.ching.swee@intel.com>
+ <20240105070925.2948871-2-leong.ching.swee@intel.com>
+ <ffiewfybqvh66nmri4im4veupwytvlxk5jfgdy3nbj6wldxjl2@2vwvnnu37pt7>
+ <7cc4fa92-27cb-4b0d-8f1b-88091548bdb9@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|IA1PR12MB8333:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7e0c4860-42cb-4455-bedc-08dc1160fe0c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	jFElfiQML6gAx3uii+bok8dqoPCGUIM6kpw51H1ISdLZXwrvJcl/kl7kcZAaFxDHdIzIMSUSa9144WRy65C8kAS4jPuO7cODA4aEAGH3SUEPl1oYp459ahcAU+KsxxFq/6PKq0Ar6QFfCiWf9Vv8WrIO8jjsgCtrtH4u1dyeRtfd3aQiR03WIgjgKrY8GwryFxwBSogXe+W8+HMe0efusizDBs098GcGnKxlcYTDR/ilxu9ic+DPxZwiwoyEHPs/b/z+PxGtfp3gkAtORUNt0aE27Hlum/M7i00Kum+bfAPzYSda539MyRGDDXLHlaIG47favqj4wcgzvG3atXDbWJ8KPXEOoayBlfQ4IoV6g4dp9DjpeG8ZDiRrd/XXF2VU5yNaOnIHhGHhepc0tLVnF1avQlwAccIsWBNFmi2HlS/K1mlF4h+ktAuvAfl4dD3YyjzHz7LrepYXfjgooqDqYaciQwBLA/hl0V8e0e1tQJtccIn9YHQ82BuOc71kuQzuLyitpow+htLkdanM3DPkAR9uTPBfOy+P0ME5zADD2MfQySbrYMr+RNHxe3KhqeQgjENuE4JJ3rE0YEdRfZ9WbLoyeQ7uMAn6C1d0TvbrKP75SuiaTLpJdB/O195FG42JGzor7HdD+AEq9WDRBdihIEd/JrYbtJvqtdkatZPJpgzfWe6GcIHnLAvqs9HDd8Jp
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(366004)(396003)(230922051799003)(230273577357003)(230173577357003)(451199024)(186009)(1800799012)(64100799003)(478600001)(6486002)(66556008)(966005)(66946007)(6666004)(316002)(110136005)(4326008)(66476007)(83380400001)(2616005)(26005)(6512007)(53546011)(6506007)(8676002)(8936002)(31686004)(5660300002)(7416002)(7406005)(2906002)(41300700001)(31696002)(86362001)(38100700002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?U00vZUFXY05xMUs5aDdhZFZramZTajFmM2FDUGRLNlRLL2ZmYytlVlJ2NlpC?=
- =?utf-8?B?dVhzTHhMS3ZKQ1pZZTQ1YnM1cTc4TkNNZkZjR0ZEWjBGcVBhbTR3NSswVy9l?=
- =?utf-8?B?NnowNW9iS3hKYlRWY2hqZW9Sd2tBZHBnT3Y2aU40TlREUEpxS0dHK0c2MEg0?=
- =?utf-8?B?ZkZ6Vksxb1h4U2tEdW9vVDF0RnJyZjBlZFBXd0dWblF5aG1LRk9HTk5BSU4y?=
- =?utf-8?B?MnpkTXpaWDBKbG4yLytLNGEyc2RCa0ZHaEhLdFRkcTBhOTIvZXhVelhBQ0Zu?=
- =?utf-8?B?ZzBBWjVUS2QyZm8rYVJYQUdib3dsVjhYaVVSL2V5bThaSVl1NnVIeEVqQkJP?=
- =?utf-8?B?azBSbTRGd0lCVVB1QWcwK3lmUUlkcWhKU0RMc1pZTmlHMDdNMy9GWk1jU2JM?=
- =?utf-8?B?ckYySmNEWS9nV0NmcjVCQTVLVnRYUWJLZnZWQTF4L3dyNFUrRzRlVmsxSGoz?=
- =?utf-8?B?VlNDLzgxSDB1TThSMDAvRkJPbXZySWljWG44VGpsOVFwK0Z0eE9OSzlzSVlD?=
- =?utf-8?B?Mk44NXFvK0JaQW9yV3QrVHYrK1BabmsrUzV6SXRydGJic0RtWTNZcnR2TDU3?=
- =?utf-8?B?RlZmWWswTzJqV1VIS3d0S0Y3dDJhb0JSK04yS25JckxVdU01UHkwbUx4clVu?=
- =?utf-8?B?bE81QVpydDIzdkgyT252NHpGN0xuK2xQRFZOU0RBaGZvaFkvY25iN2VEcXc3?=
- =?utf-8?B?MzZ0QzRsYkpsdnFOS3ZVTlMySUZ4MENzdVQzQ05HRVU2KzBCYm1TaC85TWJI?=
- =?utf-8?B?V0orZFcxUnBzRjhGYXBLNmMyN1laRjhWWkJFZEdEeXVTTEo3cUJPcFRUUUhL?=
- =?utf-8?B?M3VsWEVrY05DOUFXOGcyWHdTRmJ6L3dFSkJUNDM2akE3QTkxVDNkZzhHNGdm?=
- =?utf-8?B?RnNnc2JqK3VYTEw2TVA5NUcwaDNtWjU4YU8yTlVldzJ0Zk1mb2lSUERQOUVD?=
- =?utf-8?B?Q0Z0N2JBeHRIRlBWbSt1M0hUejVTYlY3WjRnRVl1SG9ucjNyMzFpTHpWWlJN?=
- =?utf-8?B?UWlpamoyTytWVWxkZHFEMWVwbkpWQlBubHFXTVVtWk42WUZPeitmWmhlRmVl?=
- =?utf-8?B?cSsvNkhNb2lha2MyWDBSZ2RHT3ZidkpLd0x0bTc1T2ViSit4eWhoaksxMmRa?=
- =?utf-8?B?TXpWeldMTy9RaEhUYUR6SlIxZmlyTlVYYlBBblJIaW9tVTJ0SDJUOW4wQU1a?=
- =?utf-8?B?Y2FMUWNDOW9EeEJ1cmp6UlhBdDlXWSszMlRYSDEvY09Id21jM0F0MkpITkJk?=
- =?utf-8?B?OGhBVEk3aXpGY0ZyRllQYkgrY0g1ajgrUW1ueFNDNDMweU9ZMGs0MmllMEU1?=
- =?utf-8?B?TThZdnBKalp1VHZMSjlzSit1a2ZaN2VRNXRVRzlud0xETVJoK2RPcTVpTm1G?=
- =?utf-8?B?VTJNSlg5ejlEN2t2enM4d1NOQ3lIbU9JTmVjQW9WaFcwM2tYbDZqQXJKTWY2?=
- =?utf-8?B?REJ0TkxxLzMzOWpZWUM0QWEzUllQK1ZFVktCSndKVlRjaE45RlNUTnUwRWxK?=
- =?utf-8?B?RHpKRlM2SER3T25NUVR6K000VkczY1g1WTVFY3VYNmtwWVRvMDRxWVFqc0dk?=
- =?utf-8?B?dnFuU3RRQ3lWZHoyTXJlRy9IcGFLL0VzbG5YaWttMHZpUUZwaW0weTQvRVdW?=
- =?utf-8?B?OVhva1RnSXZCK3FMRGdESmVHbllGUVJieHFUNGJvaklKUEJTcHpUZmNtdjRl?=
- =?utf-8?B?OG1lSXBvcXR4blVHVlg5RnNQZTgvMXhFNHhtdXdQVWxlQlVERGVUS2NQNVpI?=
- =?utf-8?B?L3NmZCtVaDVwL2xKdzZJTEh1emxZOUllcS80SE1zSE9XQjROY0ZvWGMzQXNE?=
- =?utf-8?B?N3pRcFVBcTcySWdMdWliYzFYT1QwWUJ3bG1uZWFNaUpzamgzSy9Kak1rWE0y?=
- =?utf-8?B?VWZ0bXBGeHVpdDNJcVJhL05FWGVWMGdveXhsanU0ZXAvWit4ekkzRTk1bVI0?=
- =?utf-8?B?cFJnVTJ2dEEzV0loZWsyaWN1QjlUdzhwcExCMXRZQS95WkNVaUZaL0kwTGpq?=
- =?utf-8?B?S3dLRE12V1R3M1BGV1c1RUFhdW1QMW92NGxvTjdWeDJnbnhiUGEvZjVqK1ZZ?=
- =?utf-8?B?M0F6OXJQdTJpSTNIbWpmMDVwaGl5bEJUZnZyNm9FaWkxZTZvcnljQ2RzMzJj?=
- =?utf-8?Q?bvM2OaOt3OioNN0rx2JcyYcmQ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e0c4860-42cb-4455-bedc-08dc1160fe0c
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 22:19:05.7949
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rlJmXGWhY5tCxB+ITpClkD1nGrM6lU+uWbxcxs+3cFzJ7sifpwYn74nqzPXJl6Iv82FIb3dQa4l/kzxur22x/A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8333
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7cc4fa92-27cb-4b0d-8f1b-88091548bdb9@linaro.org>
 
-Hello Vlastimil,
+On Tue, Jan 09, 2024 at 10:10:37AM +0100, Krzysztof Kozlowski wrote:
+> On 07/01/2024 21:10, Serge Semin wrote:
+> > On Fri, Jan 05, 2024 at 03:09:22PM +0800, Leong Ching Swee wrote:
+> >> From: Swee Leong Ching <leong.ching.swee@intel.com>
+> >>
+> >> Add dt-bindings for per channel irq.
+> >>
+> >> Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
+> >> Signed-off-by: Swee Leong Ching <leong.ching.swee@intel.com>
+> >> ---
+> >>  .../devicetree/bindings/net/snps,dwmac.yaml   | 24 +++++++++++++------
+> >>  1 file changed, 17 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> >> index 5c2769dc689a..e72dded824f4 100644
+> >> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> >> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> >> @@ -103,17 +103,27 @@ properties:
+> >>  
+> >>    interrupts:
+> >>      minItems: 1
+> >> -    items:
+> >> -      - description: Combined signal for various interrupt events
+> >> -      - description: The interrupt to manage the remote wake-up packet detection
+> >> -      - description: The interrupt that occurs when Rx exits the LPI state
+> >> +    maxItems: 19
+> >>  
+> >>    interrupt-names:
+> >>      minItems: 1
+> >> +    maxItems: 19
+> >>      items:
+> >> -      - const: macirq
+> >> -      - enum: [eth_wake_irq, eth_lpi]
+> >> -      - const: eth_lpi
+> >> +      oneOf:
+> >> +        - description: Combined signal for various interrupt events
+> >> +          const: macirq
+> >> +        - description: The interrupt to manage the remote wake-up packet detection
+> >> +          const: eth_wake_irq
+> >> +        - description: The interrupt that occurs when Rx exits the LPI state
+> >> +          const: eth_lpi
+> >> +        - description: DMA Tx per-channel interrupt
+> >> +          pattern: '^dma_tx[0-7]?$'
+> >> +        - description: DMA Rx per-channel interrupt
+> >> +          pattern: '^dma_rx[0-7]?$'
+> >> +
+> >> +    allOf:
+> >> +      - contains:
+> >> +          const: macirq
+> > 
+> > In order to restore the v1 discussion around this change, here is my
+> > comment copied from there:
+> > 
+> >> As Rob correctly noted it's also better to make sure that 'macirq' is placed first
+> >> in the array. So instead of the constraint above I guess the next one would
+> >> make sure both the array has 'macirq' name and it's the first item:
+> >>
+> >> allOf:
+> >>   - maxItems: 34
+> >>     items:
+> >>       - const: macirq
+> > 
+> > Leong said it didn't work:
+> > https://lore.kernel.org/netdev/CH0PR11MB54904615B45E521DE6B1A7B3CF61A@CH0PR11MB5490.namprd11.prod.outlook.com/
+> > 
+> > Rob, Krzysztof, Conor could you please clarify whether this change is ok the
+> > way it is or it would be better to preserve the stricter constraint
+> > and fix the DT-schema validation tool somehow?
+> 
 
-On 1/8/2024 4:45 AM, Vlastimil Babka wrote:
-> On 12/30/23 17:19, Michael Roth wrote:
->> From: Ashish Kalra <ashish.kalra@amd.com>
->>
->> Pages are unsafe to be released back to the page-allocator, if they
->> have been transitioned to firmware/guest state and can't be reclaimed
->> or transitioned back to hypervisor/shared state. In this case add
->> them to an internal leaked pages list to ensure that they are not freed
->> or touched/accessed to cause fatal page faults.
->>
->> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
->> [mdr: relocate to arch/x86/virt/svm/sev.c]
->> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Hi, sorry I didn't respond in time to the last mail discussing previous
-> version in
-> https://lore.kernel.org/all/8c1fd8da-912a-a9ce-9547-107ba8a450fc@amd.com/
-> due to upcoming holidays.
->
-> I would rather avoid the approach of allocating container objects:
-> - it's allocating memory when effectively losing memory, a dangerous thing
-> - are all the callers and their context ok with GFP_KERNEL?
-> - GFP_KERNEL_ACCOUNT seems wrong, why would we be charging this to the
-> current process, it's probably not its fault the pages are leaked? Also the
-> charging can fail?
-> - given the benefit of having leaked pages on a list is basically just
-> debugging (i.e. crash dump or drgn inspection) this seems too heavy
->
-> I think it would be better and sufficient to use page->lru for order-0 and
-> head pages, and simply skip tail pages (possibly with adjusted warning
-> message for that case).
->
-> Vlastimil
->
-> <snip
+> First of all this change is not good, because commit msg explains
+> absolutely nothing why this is done and what exactly you want to achieve
+> here. The "what" part often is obvious from the code, but not in this
+> case. Are the per-channel IRQs conflicting with macirq or others? Are
+> they complementary (maxItems: 19 suggests that, though, but could be
+> mistake as well)? Do they affect all snps,dwmac derivatives or only some?
+> 
+> So many questions and zero answers in one liner commit msg!
 
-Considering the above thoughts, this is updated version of 
-snp_leak_pages(), looking forward to any review comments/feedback you 
-have on the same:
+Right. The commit message is way too modest =) Leong?
 
-void snp_leak_pages(u64 pfn, unsigned int npages)
-{
-         struct page *page = pfn_to_page(pfn);
+> 
+> Now about the problem, I think we should preserve the order, assuming
+> that these are complementary so first three must be defined.
 
-         pr_debug("%s: leaking PFN range 0x%llx-0x%llx\n", __func__, 
-pfn, pfn + npages);
+Ok. But please note that "Wake" and "LPI" IRQs are optional. It's
+possible to have a device with the "MAC" and "DMA" IRQs and no
+individual "Wake"/"LPI" IRQ lines. Thus the only mandatory IRQ is
+"MAC" which order (being always first), I agree, should be preserved.
 
-         spin_lock(&snp_leaked_pages_list_lock);
-         while (npages--) {
-                 /*
-                  * Reuse the page's buddy list for chaining into the leaked
-                  * pages list. This page should not be on a free list 
-currently
-                  * and is also unsafe to be added to a free list.
-                  */
-                 if ((likely(!PageCompound(page))) || (PageCompound(page) &&
-                     !PageTail(page) && compound_head(page) == page))
-                         /*
-                          * Skip inserting tail pages of compound page as
-                          * page->buddy_list of tail pages is not usable.
-                          */
-                         list_add_tail(&page->buddy_list, 
-&snp_leaked_pages_list);
-                 sev_dump_rmpentry(pfn);
-                 snp_nr_leaked_pages++;
-                 pfn++;
-                 page++;
-         }
-         spin_unlock(&snp_leaked_pages_list_lock);
-}
+> This
+> however could be done in the device schema referencing snps,dwmac. I
+> think I will repeat myself: I dislike this schema, because it mixes two
+> purposes: defining shared part and defining final device part. The code
+> in this patch is fine for a schema defining the shared part.
+> 
+> Therefore before we start growing this monstrosity into bigger one, I
+> think we should go back to the plans of reworking and cleaning it.
 
-Thanks, Ashish
+If you are talking about the changes like introduced here (essentially
+it's Patch 4):
+https://www.spinics.net/lists/netdev/msg888079.html
+I can resurrect it (rebase on the latest kernel, fix the notes, run
+dt-validation, etc) and submit for review on the next week or so.
+Then the Leong' patch in subject either won't be necessary or will
+concern the shared schema only. Does it sound acceptable?
 
+-Serge(y)
+
+> 
+> Best regards,
+> Krzysztof
+> 
 
