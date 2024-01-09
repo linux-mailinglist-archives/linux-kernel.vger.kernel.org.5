@@ -1,112 +1,210 @@
-Return-Path: <linux-kernel+bounces-21106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 224AA8289EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:25:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E720A828A1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:37:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 508EA1C24691
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:25:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9152C286672
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E283A3A1D2;
-	Tue,  9 Jan 2024 16:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aHgQfZLp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A4B3A267;
+	Tue,  9 Jan 2024 16:37:03 +0000 (UTC)
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 391153A1C2;
-	Tue,  9 Jan 2024 16:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704817524; x=1736353524;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=pqvftV7jqXdOf/U1WVzf1rrU3Eu0865Q2QbvOkuWV+k=;
-  b=aHgQfZLp7SjKiOVe0Tmb6hSxRpQZT7O7+n/aLA0I1bw6vKk2O4vMQN41
-   WOMyD5yV1hcsWWVInnpZk+y7QDJZGnO+Ygn61zc52Pymea+0SgMidG7tT
-   vO8UEapvAms2bqhvYoj0gYYcvEZT4FfUgR/6dQ7pKHHaI1kifiLngi1XP
-   grXYPwV5x9q40+GF60Upr//Egm0410qbpSyj02LKgPyE2Gv9IFc58v3pc
-   S05vQZ28DUlRkx/V7Z3Y5bNoCzApk1c0xAsY3YCihZAQrphP7SXv694Ck
-   WhTge4Mhj3ER8Etd8t96Iyf4veXNI/AzKrek1U2NeBX4z3TSZWmoU+N0H
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="484427254"
-X-IronPort-AV: E=Sophos;i="6.04,183,1695711600"; 
-   d="scan'208";a="484427254"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 08:25:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,183,1695711600"; 
-   d="scan'208";a="16334102"
-Received: from rohitpra-mobl1.amr.corp.intel.com ([10.212.96.32])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 08:25:23 -0800
-Message-ID: <30948df0bebe6d37d722b4ca4ab5feba7b7c0895.camel@linux.intel.com>
-Subject: Re: [PATCH v1] crypto: iaa - Remove unnecessary
- debugfs_create_dir() error check in iaa_crypto_debugfs_init()
-From: Tom Zanussi <tom.zanussi@linux.intel.com>
-To: Minjie Du <duminjie@vivo.com>, Herbert Xu <herbert@gondor.apana.org.au>,
-  "David S. Miller" <davem@davemloft.net>, "open list:INTEL IAA CRYPTO
- DRIVER" <linux-crypto@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>
-Cc: opensource.kernel@vivo.com
-Date: Tue, 09 Jan 2024 10:25:21 -0600
-In-Reply-To: <20240109021916.20960-1-duminjie@vivo.com>
-References: <20240109021916.20960-1-duminjie@vivo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC603A1CE;
+	Tue,  9 Jan 2024 16:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 0F427520442;
+	Tue,  9 Jan 2024 17:27:38 +0100 (CET)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 9 Jan
+ 2024 17:27:37 +0100
+Date: Tue, 9 Jan 2024 17:27:32 +0100
+From: Hardik Gajjar <hgajjar@de.adit-jv.com>
+To: John Keeping <john@keeping.me.uk>
+CC: Hardik Gajjar <hgajjar@de.adit-jv.com>, <gregkh@linuxfoundation.org>,
+	<stern@rowland.harvard.edu>, <linux-usb@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <erosca@de.adit-jv.com>,
+	<jlayton@kernel.org>, <brauner@kernel.org>
+Subject: Re: [PATCH v3] usb: gadget: f_fs: Add the missing get_alt callback
+Message-ID: <20240109162732.GA22184@vmlxhi-118.adit-jv.com>
+References: <20240102123419.13491-1-hgajjar@de.adit-jv.com>
+ <ZZaTl3mqeCY5xD_d@keeping.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZZaTl3mqeCY5xD_d@keeping.me.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 
-On Tue, 2024-01-09 at 10:19 +0800, Minjie Du wrote:
-> This patch removes the debugfs_create_dir() error checking in
-> iaa_crypto_debugfs_init(). Because the debugfs_create_dir() is
-> developed
-> in a way that the caller can safely handle the errors that
-> occur during the creation of DebugFS nodes.
->=20
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
+On Thu, Jan 04, 2024 at 11:16:39AM +0000, John Keeping wrote:
+> On Tue, Jan 02, 2024 at 01:34:19PM +0100, Hardik Gajjar wrote:
+> > The Apple CarLife iAP gadget has a descriptor with two alternate
+> > settings. The host sends the set_alt request to configure alt_setting
+> > 0 or 1, and this is verified by the subsequent get_alt request.
+> > 
+> > This patch implements and sets the get_alt callback. Without the
+> > get_alt callback, composite.c abruptly concludes the
+> > USB_REQ_GET/SET_INTERFACE request, assuming only one alt setting
+> > for the endpoint.
+> 
+> I still do not understand what happens if different alternate settings
+> have different endpoints.
+> 
+> Changing the alternate calls ffs_func_eps_disable() /
+> ffs_func_eps_enable() but those functions affect _all_ the configured
+> endpoints.  If f_fs moves to support multiple alternate settings, then
+> isn't there a problem with that behaviour?  Don't we need
+> ffs_func_eps_enable() to enable only the endpoints used by the current
+> alternate setting?
+> 
+> The commit message does not explain why this patch can be as simple as
+> it is and why there is no need to address any wider issues that there
+> seem to be from supporting multiple alternate settings.
+>
+If I understand correctly, for example, there are two alt settings: one with bNumEndpoint 3
+and the other with bNumEndpoint 2. So when there is a request from the host to switch to the
+alt setting that has two endpoints, with this patch, all three endpoints are reset and reconfigured
+again as altsetting one instead of altsetting two. This happens because there is no input yet from
+userspace about the endpoint descriptor for the newly requested alt-settings.
 
-Acked-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+I believe this should not happen in the case of the f_fs gadget because the composite/f_fs driver
+initializes all endpoints of all interfaces during the bind process, creates epfile, and increments the eps count.
+This means that when reinitializing the endpoints during the set_alt, it reinitializes all the endpoints, including
+the endpoints of the proposed alt setting.
 
-Thanks Minjie,
+Userspace drivers need to ensure that they write the correct epfile after switching in altsettings.
+Also, they should make sure that the endpoints are not overridden when defining the descriptor.
+Below is an example of the descriptors we are using from userspace.
 
-Tom
+			// Interface descriptor - fs_descs
+            // interface: 0 band width
+            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0xFF,
+            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
 
+            // interface: alt 1
+            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0xFF,
+            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
+            //  Endpoint descriptor
+            (byte) 0x07, (byte) 0x05, (byte) 0x81, (byte) 0x02, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x07, (byte) 0x05, (byte) 0x02, (byte) 0x02, (byte) 0x00, (byte) 0x00, (byte) 0x00,
 
-> ---
-> =C2=A0drivers/crypto/intel/iaa/iaa_crypto_stats.c | 2 --
-> =C2=A01 file changed, 2 deletions(-)
->=20
-> diff --git a/drivers/crypto/intel/iaa/iaa_crypto_stats.c
-> b/drivers/crypto/intel/iaa/iaa_crypto_stats.c
-> index 2e3b7b73af20..cbf87d0effe3 100644
-> --- a/drivers/crypto/intel/iaa/iaa_crypto_stats.c
-> +++ b/drivers/crypto/intel/iaa/iaa_crypto_stats.c
-> @@ -275,8 +275,6 @@ int __init iaa_crypto_debugfs_init(void)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -ENODEV;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iaa_crypto_debugfs_root =
-=3D debugfs_create_dir("iaa_crypto",
-> NULL);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!iaa_crypto_debugfs_root)
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0return -ENOMEM;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0debugfs_create_u64("max_c=
-omp_delay_ns", 0644,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 iaa_crypto_debugfs_root,
-> &max_comp_delay_ns);
+            // Interface descriptor - hs_descs
+            // interface: 0 band width
+            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0xFF,
+            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
 
+            // Initialize high-speed interface descriptors
+            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0xFF,
+            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
+            // Initialize high-speed end-point descriptors
+            (byte) 0x07, (byte) 0x05, (byte) 0x81, (byte) 0x02, (byte) 0x00, (byte) 0x02, (byte) 0x00,
+            (byte) 0x07, (byte) 0x05, (byte) 0x02, (byte) 0x02, (byte) 0x00, (byte) 0x02, (byte) 0x01,
+
+Please confirm and share your view.
+ 
+> > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> > ---
+> > changes since version 1:
+> > 	- improve commit message to indicate why the get_alt callback
+> > 	  is necessary
+> > 	- Link to v1 - https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_20231124164435.74727-2D1-2Dhgajjar-40de.adit-2Djv.com_&d=DwICAg&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=vWvELMp9SHJnKh1jvRtJiGjnwn47jqfKsAjBDdMGF1-wjK3hGliKdP2ap6Az4efB&s=ajL0PmatFt2otvpDyZsjbMozcLP3OI4VhspIzjoUTLE&e=
+> > 
+> > changes since version 2:
+> > 	- Add the limit to allow set up to 2 alt settings.
+> > 	- Link to v2 - https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_20231201145234.97452-2D1-2Dhgajjar-40de.adit-2Djv.com_&d=DwICAg&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=vWvELMp9SHJnKh1jvRtJiGjnwn47jqfKsAjBDdMGF1-wjK3hGliKdP2ap6Az4efB&s=BSvxAb0iHeXEhufs_mU2MfCKbsrAwJMe7cCiAZq53yY&e=
+> > ---
+> >  drivers/usb/gadget/function/f_fs.c | 20 +++++++++++++++++++-
+> >  1 file changed, 19 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+> > index efe3e3b85769..22200d618184 100644
+> > --- a/drivers/usb/gadget/function/f_fs.c
+> > +++ b/drivers/usb/gadget/function/f_fs.c
+> > @@ -42,6 +42,7 @@
+> >  #include "configfs.h"
+> >  
+> >  #define FUNCTIONFS_MAGIC	0xa647361 /* Chosen by a honest dice roll ;) */
+> > +#define MAX_ALT_SETTINGS	2		  /* Allow up to 2 alt settings to be set. */
+> >  
+> >  /* Reference counter handling */
+> >  static void ffs_data_get(struct ffs_data *ffs);
+> > @@ -75,6 +76,7 @@ struct ffs_function {
+> >  	short				*interfaces_nums;
+> >  
+> >  	struct usb_function		function;
+> > +	int				cur_alt[MAX_CONFIG_INTERFACES];
+> >  };
+> >  
+> >  
+> > @@ -98,6 +100,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
+> >  static int ffs_func_bind(struct usb_configuration *,
+> >  			 struct usb_function *);
+> >  static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
+> > +static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
+> >  static void ffs_func_disable(struct usb_function *);
+> >  static int ffs_func_setup(struct usb_function *,
+> >  			  const struct usb_ctrlrequest *);
+> > @@ -3232,6 +3235,15 @@ static void ffs_reset_work(struct work_struct *work)
+> >  	ffs_data_reset(ffs);
+> >  }
+> >  
+> > +static int ffs_func_get_alt(struct usb_function *f,
+> > +			    unsigned int interface)
+> > +{
+> > +	struct ffs_function *func = ffs_func_from_usb(f);
+> > +	int intf = ffs_func_revmap_intf(func, interface);
+> > +
+> > +	return (intf < 0) ? intf : func->cur_alt[interface];
+> > +}
+> > +
+> >  static int ffs_func_set_alt(struct usb_function *f,
+> >  			    unsigned interface, unsigned alt)
+> >  {
+> > @@ -3239,6 +3251,9 @@ static int ffs_func_set_alt(struct usb_function *f,
+> >  	struct ffs_data *ffs = func->ffs;
+> >  	int ret = 0, intf;
+> >  
+> > +	if (alt > MAX_ALT_SETTINGS)
+> > +		return -EINVAL;
+> > +
+> >  	if (alt != (unsigned)-1) {
+> >  		intf = ffs_func_revmap_intf(func, interface);
+> >  		if (intf < 0)
+> > @@ -3266,8 +3281,10 @@ static int ffs_func_set_alt(struct usb_function *f,
+> >  
+> >  	ffs->func = func;
+> >  	ret = ffs_func_eps_enable(func);
+> > -	if (ret >= 0)
+> > +	if (ret >= 0) {
+> >  		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
+> > +		func->cur_alt[interface] = alt;
+> > +	}
+> >  	return ret;
+> >  }
+> >  
+> > @@ -3574,6 +3591,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
+> >  	func->function.bind    = ffs_func_bind;
+> >  	func->function.unbind  = ffs_func_unbind;
+> >  	func->function.set_alt = ffs_func_set_alt;
+> > +	func->function.get_alt = ffs_func_get_alt;
+> >  	func->function.disable = ffs_func_disable;
+> >  	func->function.setup   = ffs_func_setup;
+> >  	func->function.req_match = ffs_func_req_match;
+> > -- 
+> > 2.17.1
+> > 
 
