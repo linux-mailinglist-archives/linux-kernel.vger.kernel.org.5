@@ -1,647 +1,259 @@
-Return-Path: <linux-kernel+bounces-20878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3579E8286D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:08:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D4F78286E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F448B24864
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:08:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72B721F24C8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E7538F83;
-	Tue,  9 Jan 2024 13:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72CBE38F99;
+	Tue,  9 Jan 2024 13:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SqJ3KQiX"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fastmail.fm header.i=@fastmail.fm header.b="X8Vb15PX";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="5CO2jxrk"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5103B38DE3;
-	Tue,  9 Jan 2024 13:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2207874a12.3;
-        Tue, 09 Jan 2024 05:08:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704805706; x=1705410506; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jkn/gBNSWdgsQ4m9nRfhPB9FovW8F2pIo/cbjC/Hhhk=;
-        b=SqJ3KQiXvl4cjL+U3Kawymc30XUUs7tnDku+rS4e1AYQoFWFwk51/uVkaZL3GISHu/
-         U6ro2fvNtojBoKL43e823fh0+lL/3bSQet7+f9CbYW1Fs8XNq0dnJ+eMHlVjNgHvh7xE
-         jxgEkHyWXKrpDiJRl1dBOQgKPdZ25LB0Cy8DuT7FwakDjyBdw/PCYJSrIYFN1gVaLVsP
-         NEWFOcn5P9tu1q0nBqPEV8oSt68aB8KgNsGbvbxBY9T9ztrnTgotDdqM9Y78x1V3Yh4X
-         sbzVpAh3m73PZ7/rAi0dwLZjNd1+a+GEyCsovY+oRr9ECP7wp/HRYmmzqxdxcdUmSzVz
-         BayQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704805706; x=1705410506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jkn/gBNSWdgsQ4m9nRfhPB9FovW8F2pIo/cbjC/Hhhk=;
-        b=QpsF8wunz5lefWgNm3+1uj7mJu5/+eQv8j9pQc/m316m47zB7zwa/QUkLjMJpTOGL1
-         0stwW+rQEoV752HC1klrR4iEg4yEdrdN7uUCL0wLhnhiDtIr5q6HCzp3orVI9sgCn3HS
-         Jdwiucd/Im5lz9qtmNgMUfGyyfQqlsH97tkHul2Ks8PKh24L9mL3UGG2XUROQ1veK7KI
-         w4okbycaNcaUevhLN2FKMf8yN8x9S1qS/QTH3b3Jplw28ptT4qLddsYVIA6Pk3roQPte
-         XabKbPwqj5nRiUkEOhU/ebUp/7f3CjhbrmDO7Hzv2rNF5KHuPybHE+uP7ByhI4ZnqmZf
-         /nGA==
-X-Gm-Message-State: AOJu0YyRvrqEve/Gljycx46fHO46UoB5sz160xXmwbiHFA9V494vv01s
-	fqamNeoG4nuXTdqsFcgP04TSV1WpAEm0vzIZjsn8XOj4OMOS3xgW
-X-Google-Smtp-Source: AGHT+IFU81h0oo4LPCRPpydLm5NC4k5BofAaqJ+MccVKBWa4Aq1AjUOv2t49F9PpR6UB4HkZCOZ8h2+HBaS5s2Xh05c=
-X-Received: by 2002:a17:90a:8593:b0:28b:de84:f34e with SMTP id
- m19-20020a17090a859300b0028bde84f34emr3082337pjn.36.1704805706434; Tue, 09
- Jan 2024 05:08:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B702D621;
+	Tue,  9 Jan 2024 13:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.fm
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.fm
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id EF8C432004AE;
+	Tue,  9 Jan 2024 08:12:02 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 09 Jan 2024 08:12:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1704805922;
+	 x=1704892322; bh=VM2pbmFsilZIz7Bfq/RLLHqcIAJ63YE0r1M21zIz0TM=; b=
+	X8Vb15PX9N14+iATt/OvCwUce1t+nhTx0uzQI+TFHYusnerwYAvsSGY3RPOLD178
+	BGYLVADvWxaUYXuzxrjeK/gxfPezoqQuzWMhwAs2TyVczp9eHeGfebL95DCi0ZZK
+	1A8XSGkhYNOBkcvAeCXIR0aJla7RWdWeYeDcjtAgW24wkq1Ts5R4aIC0TRSs9MkC
+	9jfWkxOWaorytRuHUUG5X9OFY4X6HqQjyOxIQs0b2EZ8BIQ7UATh81WxMBWIO+A/
+	8r4VxCuwwpwpCWebbhB/I6JzC51CVL+I3z7+YFRLWEIQ6s0uNlJkiPh2jyVIhyZ4
+	o6MdxOHfbT88UMRuzMuRzA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704805922; x=
+	1704892322; bh=VM2pbmFsilZIz7Bfq/RLLHqcIAJ63YE0r1M21zIz0TM=; b=5
+	CO2jxrkqAg+1kUcS2nD9qP1xi+OqxwP6fHcGxfN3SowlKABdcErAdlcz9XnL6NHR
+	pBN82LNv8o/3d8DYtDATbZjdZ9G7Y0SHtFG/W84hj7HzJlNCjhLWWXn0Lw8jig37
+	DVDsGW4PPRlzZou88G43F6yMyWSolP1PYu9wIEJzYw5i1sH4G6yv020mkq1PwTOS
+	emKTPMOxsNL4rzuax9i1PJlWX5h2KHRyWQRnq9FkIH1a4o5JIs3UorahbH1EsEIR
+	l0WWpN7qGnd8V1PHztjKXq3iZ2lA9Nzm+7vIiSUMCUhElf95J5XL6AlqyqbAStL3
+	Wti3KxZmRCwlLqDT/Gpzw==
+X-ME-Sender: <xms:IUadZaCAdX4_NH-JgO1zxn-C0uIAvZFe8s1yZ9rAmLibOkaBuLtjhw>
+    <xme:IUadZUigDQWkEJgSq4nNkRgBuY4jji9R0K9r1rTF9o70gviyT6ZcN3B9QfHtPHjYz
+    8zOeLXcyE7rfryN>
+X-ME-Received: <xmr:IUadZdlGjo7r2AVy56i2C-4OEYSuPpEAQchJV-qoujoaF3bmDwgWq7CpVC05V5NAPoRB4q03rLr8YN5NaTrXP8Z4rjpxOnOP5gydUUbbfFpeyu-Uqgaa>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehledggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeeuvghr
+    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
+    hlrdhfmheqnecuggftrfgrthhtvghrnhepvefhgfdvledtudfgtdfggeelfedvheefieev
+    jeeifeevieetgefggffgueelgfejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilhdr
+    fhhm
+X-ME-Proxy: <xmx:IUadZYyMKklQkpyB_9EIAc1hwVf0Z67LgiBCyZkXwyAaZ6eGExQ61g>
+    <xmx:IUadZfRjt5ZX2CKZfDatacJvZWaJN2LG5VhjHtIMfZVWejD5Fu2-sA>
+    <xmx:IUadZTZjuS3HA1xdLqoOdkC2dmJUA2FwJrQ_Z509gTQkZKueYsmNcg>
+    <xmx:IkadZYTMv_ZoB13zo4Tc7gOTZE5l3CkwTNZxMcDObjXdM1HLsFZqWw>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 9 Jan 2024 08:12:00 -0500 (EST)
+Message-ID: <b6c0d521-bba8-447f-b114-0a679ca89e4b@fastmail.fm>
+Date: Tue, 9 Jan 2024 14:11:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108150602.976232871@linuxfoundation.org>
-In-Reply-To: <20240108150602.976232871@linuxfoundation.org>
-From: Luna Jernberg <droidbittin@gmail.com>
-Date: Tue, 9 Jan 2024 13:08:14 +0000
-Message-ID: <CADo9pHhoL3-CoW-LTjEwqD8mDDRgqTpyEX6ZAojA0GdK0vkoKA@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/124] 6.6.11-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Luna Jernberg <droidbittin@gmail.com>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] virtiofs: limit the length of ITER_KVEC dio by
+ max_nopage_rw
+To: Hou Tao <houtao@huaweicloud.com>, linux-fsdevel@vger.kernel.org
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Vivek Goyal <vgoyal@redhat.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>, "Michael S . Tsirkin"
+ <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, houtao1@huawei.com
+References: <20240103105929.1902658-1-houtao@huaweicloud.com>
+Content-Language: en-US, de-DE, fr
+From: Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <20240103105929.1902658-1-houtao@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Works fine on my Dell Latitude 7390 laptop with model name    :
-Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz
-and Crystal Linux: https://getcryst.al/site
 
-Tested-by: Luna Jernberg <droidbittin@gmail.com>
 
-Den m=C3=A5n 8 jan. 2024 kl 15:10 skrev Greg Kroah-Hartman
-<gregkh@linuxfoundation.org>:
->
-> This is the start of the stable review cycle for the 6.6.11 release.
-> There are 124 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Jan 2024 15:05:35 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.11-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
-> -------------
-> Pseudo-Shortlog of commits:
->
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 6.6.11-rc1
->
-> Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->     media: qcom: camss: Comment CSID dt_id field
->
-> Alison Schofield <alison.schofield@intel.com>
->     cxl/memdev: Hold region_rwsem during inject and clear poison ops
->
-> Dave Jiang <dave.jiang@intel.com>
->     cxl/hdm: Fix a benign lockdep splat
->
-> Dave Jiang <dave.jiang@intel.com>
->     cxl: Add cxl_num_decoders_committed() usage to cxl_test
->
-> Wenchao Chen <wenchao.chen@unisoc.com>
->     mmc: sdhci-sprd: Fix eMMC init failure after hw reset
->
-> Geert Uytterhoeven <geert+renesas@glider.be>
->     mmc: core: Cancel delayed work before releasing host
->
-> Jorge Ramirez-Ortiz <jorge@foundries.io>
->     mmc: rpmb: fixes pause retune on all RPMB partitions.
->
-> Ziyang Huang <hzyitc@outlook.com>
->     mmc: meson-mx-sdhc: Fix initialization frozen issue
->
-> Joshua Ashton <joshua@froggi.es>
->     drm/amd/display: Fix sending VSC (+ colorimetry) packets for DP/eDP d=
-isplays without PSR
->
-> Alex Deucher <alexander.deucher@amd.com>
->     drm/amd/display: add nv12 bounding box
->
-> Alex Deucher <alexander.deucher@amd.com>
->     drm/amdgpu: skip gpu_info fw loading on navi12
->
-> Jiajun Xie <jiajun.xie.sh@gmail.com>
->     mm: fix unmap_mapping_range high bits shift bug
->
-> Benjamin Bara <benjamin.bara@skidata.com>
->     i2c: core: Fix atomic xfer check for non-preempt config
->
-> Jinghao Jia <jinghao7@illinois.edu>
->     x86/kprobes: fix incorrect return address calculation in kprobe_emula=
-te_call_indirect
->
-> Takashi Sakamoto <o-takashi@sakamocchi.jp>
->     firewire: ohci: suppress unexpected system reboot in AMD Ryzen machin=
-es and ASM108x/VT630x PCIe cards
->
-> Yu Zhao <yuzhao@google.com>
->     mm/mglru: skip special VMAs in lru_gen_look_around()
->
-> Eric Dumazet <edumazet@google.com>
->     net: constify sk_dst_get() and __sk_dst_get() argument
->
-> duanqiangwen <duanqiangwen@net-swift.com>
->     net: libwx: fix memory leak on free page
->
-> Ira Weiny <ira.weiny@intel.com>
->     cxl/pmu: Ensure put_device on pmu devices
->
-> Eric Dumazet <edumazet@google.com>
->     net: prevent mss overflow in skb_segment()
->
-> Haren Myneni <haren@linux.ibm.com>
->     powerpc/pseries/vas: Migration suspend waits for no in-progress open =
-windows
->
-> Yong-Xuan Wang <yongxuan.wang@sifive.com>
->     RISCV: KVM: update external interrupt atomically for IMSIC swfile
->
-> Yang Yingliang <yangyingliang@huawei.com>
->     dmaengine: fsl-edma: fix wrong pointer check in fsl_edma3_attach_pd()
->
-> Guanjun <guanjun@linux.alibaba.com>
->     dmaengine: idxd: Protect int_handle field in hw descriptor
->
-> Alex Deucher <alexander.deucher@amd.com>
->     drm/amd/display: Increase frame warning limit with KASAN or KCSAN in =
-dml
->
-> Alison Schofield <alison.schofield@intel.com>
->     kernel/resource: Increment by align value in get_free_mem_region()
->
-> Alison Schofield <alison.schofield@intel.com>
->     cxl/core: Always hold region_rwsem while reading poison lists
->
-> Dave Jiang <dave.jiang@intel.com>
->     cxl: Add cxl_decoders_committed() helper
->
-> Alvin Lee <alvin.lee2@amd.com>
->     drm/amd/display: Increase num voltage states to 40
->
-> Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
->     drm/i915: Call intel_pre_plane_updates() also for pipes getting enabl=
-ed
->
-> Alex Bee <knaerzche@gmail.com>
->     clk: rockchip: rk3128: Fix SCLK_SDMMC's clock name
->
-> Finley Xiao <finley.xiao@rock-chips.com>
->     clk: rockchip: rk3128: Fix aclk_peri_src's parent
->
-> Su Hui <suhui@nfschina.com>
->     phy: sunplus: return negative error code in sp_usb_phy_probe
->
-> Michael Walle <mwalle@kernel.org>
->     phy: mediatek: mipi: mt8183: fix minimal supported frequency
->
-> Lu Baolu <baolu.lu@linux.intel.com>
->     iommu/vt-d: Support enforce_cache_coherency only for empty domains
->
-> Nuno Sa <nuno.sa@analog.com>
->     iio: imu: adis16475: use bit numbers in assign_bit()
->
-> Xiaolei Wang <xiaolei.wang@windriver.com>
->     dmaengine: fsl-edma: Add judgment on enabling round robin arbitration
->
-> Xiaolei Wang <xiaolei.wang@windriver.com>
->     dmaengine: fsl-edma: Do not suspend and resume the masked dma channel=
- when the system is sleeping
->
-> Jai Luthra <j-luthra@ti.com>
->     dmaengine: ti: k3-psil-am62a: Fix SPI PDMA data
->
-> Ronald Wahl <rwahl@gmx.de>
->     dmaengine: ti: k3-psil-am62: Fix SPI PDMA data
->
-> Andrew Davis <afd@ti.com>
->     phy: ti: gmii-sel: Fix register offset when parent is not a syscon no=
-de
->
-> Claudio Imbrenda <imbrenda@linux.ibm.com>
->     KVM: s390: vsie: fix wrong VIR 37 when MSO is used
->
-> Jisheng Zhang <jszhang@kernel.org>
->     riscv: don't probe unaligned access speed if already done
->
-> Frederic Weisbecker <frederic@kernel.org>
->     rcu/tasks-trace: Handle new PF_IDLE semantics
->
-> Frederic Weisbecker <frederic@kernel.org>
->     rcu/tasks: Handle new PF_IDLE semantics
->
-> Frederic Weisbecker <frederic@kernel.org>
->     rcu: Introduce rcu_cpu_online()
->
-> Peter Zijlstra <peterz@infradead.org>
->     rcu: Break rcu_node_0 --> &rq->__lock order
->
-> Dan Carpenter <dan.carpenter@linaro.org>
->     ACPI: thermal: Fix acpi_thermal_unregister_thermal_zone() cleanup
->
-> Moshe Shemesh <moshe@nvidia.com>
->     RDMA/mlx5: Fix mkey cache WQ flush
->
-> Marek Vasut <marex@denx.de>
->     clk: si521xx: Increase stack based print buffer size in probe
->
-> Alex Williamson <alex.williamson@redhat.com>
->     vfio/mtty: Overhaul mtty interrupt handling
->
-> Longfang Liu <liulongfang@huawei.com>
->     crypto: hisilicon/qm - fix EQ/AEQ interrupt issue
->
-> Svyatoslav Pankratov <svyatoslav.pankratov@intel.com>
->     crypto: qat - fix double free during reset
->
-> Eric Biggers <ebiggers@google.com>
->     crypto: xts - use 'spawn' for underlying single-block cipher
->
-> Ian Rogers <irogers@google.com>
->     bpftool: Align output skeleton ELF code
->
-> Denys Zagorui <dzagorui@cisco.com>
->     bpftool: Fix -Wcast-qual warning
->
-> Eric Dumazet <edumazet@google.com>
->     tcp: derive delack_max from rto_min
->
-> Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->     media: qcom: camss: Fix genpd cleanup
->
-> Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->     media: qcom: camss: Fix V4L2 async notifier error path
->
-> Tirthendu Sarkar <tirthendu.sarkar@intel.com>
->     xsk: add multi-buffer support for sockets sharing umem
->
-> Matthew Wilcox (Oracle) <willy@infradead.org>
->     mm/memory-failure: pass the folio and the page to collect_procs()
->
-> Matthew Wilcox (Oracle) <willy@infradead.org>
->     mm: convert DAX lock/unlock page to lock/unlock folio
->
-> Thomas Lange <thomas@corelatus.se>
->     net: Implement missing SO_TIMESTAMPING_NEW cmsg support
->
-> Michael Chan <michael.chan@broadcom.com>
->     bnxt_en: Remove mis-applied code from bnxt_cfg_ntp_filters()
->
-> Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->     net: ravb: Wait for operating mode to be applied
->
-> Chen Ni <nichen@iscas.ac.cn>
->     asix: Add check for usbnet_get_endpoints
->
-> Naveen Mamindlapalli <naveenm@marvell.com>
->     octeontx2-af: Re-enable MAC TX in otx2_stop processing
->
-> Naveen Mamindlapalli <naveenm@marvell.com>
->     octeontx2-af: Always configure NIX TX link credits based on max frame=
- size
->
-> Wen Gu <guwen@linux.alibaba.com>
->     net/smc: fix invalid link access in dumping SMC-R connections
->
-> Dinghao Liu <dinghao.liu@zju.edu.cn>
->     net/qla3xxx: fix potential memleak in ql_alloc_buffer_queues
->
-> Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->     virtio_net: fix missing dma unmap for resize
->
-> Eric Dumazet <edumazet@google.com>
->     virtio_net: avoid data-races on dev->stats fields
->
-> John Johansen <john.johansen@canonical.com>
->     apparmor: Fix move_mount mediation by detecting if source is detached
->
-> Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
->     igc: Fix hicredit calculation
->
-> Andrii Staikov <andrii.staikov@intel.com>
->     i40e: Restore VF MSI-X state during PCI reset
->
-> Mark Brown <broonie@kernel.org>
->     ASoC: meson: g12a-tohdmitx: Fix event generation for S/PDIF mux
->
-> Mark Brown <broonie@kernel.org>
->     ASoC: meson: g12a-toacodec: Fix event generation
->
-> Mark Brown <broonie@kernel.org>
->     ASoC: meson: g12a-tohdmitx: Validate written enum values
->
-> Mark Brown <broonie@kernel.org>
->     ASoC: meson: g12a-toacodec: Validate written enum values
->
-> Ke Xiao <xiaoke@sangfor.com.cn>
->     i40e: fix use-after-free in i40e_aqc_add_filters()
->
-> Marc Dionne <marc.dionne@auristor.com>
->     net: Save and restore msg_namelen in sock_sendmsg
->
-> Pablo Neira Ayuso <pablo@netfilter.org>
->     netfilter: nft_immediate: drop chain reference counter on error
->
-> Brad Cowie <brad@faucet.nz>
->     netfilter: nf_nat: fix action not being set for all ct states
->
-> Adrian Cinal <adriancinal@gmail.com>
->     net: bcmgenet: Fix FCS generation for fragmented skbuffs
->
-> Zhipeng Lu <alexious@zju.edu.cn>
->     sfc: fix a double-free bug in efx_probe_filters
->
-> Stefan Wahren <wahrenst@gmx.net>
->     ARM: sun9i: smp: Fix array-index-out-of-bounds read in sunxi_mc_smp_i=
-nit
->
-> Hangbin Liu <liuhangbin@gmail.com>
->     selftests: bonding: do not set port down when adding to bond
->
-> J=C3=B6rn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
->     net: Implement missing getsockopt(SO_TIMESTAMPING_NEW)
->
-> Kai-Heng Feng <kai.heng.feng@canonical.com>
->     r8169: Fix PCI error on system resume
->
-> Hangyu Hua <hbh25y@gmail.com>
->     net: sched: em_text: fix possible memory leak in em_text_destroy()
->
-> David Thompson <davthompson@nvidia.com>
->     mlxbf_gige: fix receive packet race condition
->
-> Eugen Hristev <eugen.hristev@collabora.com>
->     ASoC: mediatek: mt8186: fix AUD_PAD_TOP register and offset
->
-> Chancel Liu <chancel.liu@nxp.com>
->     ASoC: fsl_rpmsg: Fix error handler with pm_runtime_enable
->
-> Kurt Kanzenbach <kurt@linutronix.de>
->     igc: Check VLAN EtherType mask
->
-> Kurt Kanzenbach <kurt@linutronix.de>
->     igc: Check VLAN TCI mask
->
-> Kurt Kanzenbach <kurt@linutronix.de>
->     igc: Report VLAN EtherType matching back to user
->
-> Sudheer Mogilappagari <sudheer.mogilappagari@intel.com>
->     i40e: Fix filter input checks to prevent config with invalid values
->
-> Ngai-Mint Kwan <ngai-mint.kwan@intel.com>
->     ice: Shut down VSI with "link-down-on-close" enabled
->
-> Katarzyna Wieczerzycka <katarzyna.wieczerzycka@intel.com>
->     ice: Fix link_down_on_close message
->
-> Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
->     drm/i915/perf: Update handling of MMIO triggered reports
->
-> Khaled Almahallawy <khaled.almahallawy@intel.com>
->     drm/i915/dp: Fix passing the correct DPCD_REV for drm_dp_set_phy_test=
-_pattern
->
-> Suman Ghosh <sumang@marvell.com>
->     octeontx2-af: Fix marking couple of structure as __packed
->
-> Siddh Raman Pant <code@siddh.me>
->     nfc: llcp_core: Hold a ref to llcp_local->dev when holding a ref to l=
-lcp_local
->
-> Pablo Neira Ayuso <pablo@netfilter.org>
->     netfilter: nf_tables: set transport offset from mac header for netdev=
-/egress
->
-> Douglas Anderson <dianders@chromium.org>
->     drm/bridge: ps8640: Fix size mismatch warning w/ len
->
-> Douglas Anderson <dianders@chromium.org>
->     drm/bridge: ti-sn65dsi86: Never store more than msg->size bytes in AU=
-X xfer
->
-> Douglas Anderson <dianders@chromium.org>
->     drm/bridge: parade-ps8640: Never store more than msg->size bytes in A=
-UX xfer
->
-> Johannes Berg <johannes.berg@intel.com>
->     wifi: iwlwifi: pcie: don't synchronize IRQs from IRQ
->
-> Jeffrey Hugo <quic_jhugo@quicinc.com>
->     accel/qaic: Implement quirk for SOC_HW_VERSION
->
-> Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
->     accel/qaic: Fix GEM import path code
->
-> Paolo Bonzini <pbonzini@redhat.com>
->     KVM: x86/pmu: fix masking logic for MSR_CORE_PERF_GLOBAL_CTRL
->
-> Shyam Prasad N <sprasad@microsoft.com>
->     cifs: do not depend on release_iface for maintaining iface_list
->
-> Shyam Prasad N <sprasad@microsoft.com>
->     cifs: cifs_chan_is_iface_active should be called with chan_lock held
->
-> Jocelyn Falempe <jfalempe@redhat.com>
->     drm/mgag200: Fix gamma lut not initialized for G200ER, G200EV, G200SE
->
-> Bjorn Helgaas <bhelgaas@google.com>
->     Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"
->
-> Paolo Abeni <pabeni@redhat.com>
->     mptcp: prevent tcp diag from closing listener subflows
->
-> Wayne Lin <wayne.lin@amd.com>
->     drm/amd/display: pbn_div need be updated for hotplug event
->
-> Siddhesh Dharme <siddheshdharme18@gmail.com>
->     ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP ProBook 440 G6
->
-> Andy Chi <andy.chi@canonical.com>
->     ALSA: hda/realtek: fix mute/micmute LEDs for a HP ZBook
->
-> Aabish Malik <aabishmalik3337@gmail.com>
->     ALSA: hda/realtek: enable SND_PCI_QUIRK for hp pavilion 14-ec1xxx ser=
-ies
->
-> Gergo Koteles <soyer@irl.hu>
->     ALSA: hda/tas2781: remove sound controls in unbind
->
-> Gergo Koteles <soyer@irl.hu>
->     ALSA: hda/tas2781: move set_drv_data outside tasdevice_init
->
-> Gergo Koteles <soyer@irl.hu>
->     ALSA: hda/tas2781: do not use regcache
->
-> Edward Adam Davis <eadavis@qq.com>
->     keys, dns: Fix missing size check of V1 server-list header
->
->
-> -------------
->
-> Diffstat:
->
->  Makefile                                           |   4 +-
->  arch/arm/mach-sunxi/mc_smp.c                       |   4 +-
->  arch/powerpc/platforms/pseries/vas.c               |  51 ++++-
->  arch/powerpc/platforms/pseries/vas.h               |   2 +
->  arch/riscv/kernel/cpufeature.c                     |   4 +
->  arch/riscv/kvm/aia_imsic.c                         |  13 ++
->  arch/s390/kvm/vsie.c                               |   4 -
->  arch/x86/events/intel/core.c                       |   7 +-
->  arch/x86/kernel/kprobes/core.c                     |   3 +-
->  crypto/xts.c                                       |  23 +-
->  drivers/accel/qaic/mhi_controller.c                |  15 +-
->  drivers/accel/qaic/qaic_data.c                     |   6 +-
->  drivers/acpi/thermal.c                             |   4 +-
->  drivers/clk/clk-si521xx.c                          |   4 +-
->  drivers/clk/rockchip/clk-rk3128.c                  |  22 +-
->  drivers/crypto/hisilicon/qm.c                      | 117 ++++------
->  drivers/crypto/intel/qat/qat_common/adf_aer.c      |   3 +-
->  drivers/cxl/core/hdm.c                             |   9 +-
->  drivers/cxl/core/mbox.c                            |   2 +-
->  drivers/cxl/core/memdev.c                          |  31 ++-
->  drivers/cxl/core/pmu.c                             |   2 +-
->  drivers/cxl/core/port.c                            |   7 +
->  drivers/cxl/core/region.c                          |   5 -
->  drivers/cxl/cxl.h                                  |   1 +
->  drivers/dma/fsl-edma-main.c                        |  12 +-
->  drivers/dma/idxd/submit.c                          |  14 +-
->  drivers/dma/ti/k3-psil-am62.c                      |  12 +-
->  drivers/dma/ti/k3-psil-am62a.c                     |  12 +-
->  drivers/firewire/ohci.c                            |  51 +++++
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  11 +-
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  11 +-
->  drivers/gpu/drm/amd/display/dc/dml/Makefile        |   4 +
->  drivers/gpu/drm/amd/display/dc/dml/dc_features.h   |   2 +-
->  .../gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c   | 110 +++++++++-
->  .../amd/display/modules/info_packet/info_packet.c  |  13 +-
->  drivers/gpu/drm/bridge/parade-ps8640.c             |   7 +-
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c              |   4 +-
->  drivers/gpu/drm/i915/display/intel_display.c       |   3 +-
->  drivers/gpu/drm/i915/display/intel_dp.c            |   2 +-
->  drivers/gpu/drm/i915/i915_perf.c                   |  39 +++-
->  drivers/gpu/drm/mgag200/mgag200_drv.h              |   5 +
->  drivers/gpu/drm/mgag200/mgag200_g200er.c           |   5 +
->  drivers/gpu/drm/mgag200/mgag200_g200ev.c           |   5 +
->  drivers/gpu/drm/mgag200/mgag200_g200se.c           |   5 +
->  drivers/gpu/drm/mgag200/mgag200_mode.c             |  10 +-
->  drivers/i2c/i2c-core.h                             |   4 +-
->  drivers/iio/imu/adis16475.c                        |   4 +-
->  drivers/infiniband/hw/mlx5/mr.c                    |   2 +
->  drivers/iommu/intel/iommu.c                        |   5 +-
->  drivers/iommu/intel/iommu.h                        |   3 +
->  .../media/platform/qcom/camss/camss-csid-gen2.c    |  14 +-
->  drivers/media/platform/qcom/camss/camss.c          |  45 ++--
->  drivers/mmc/core/block.c                           |   7 +-
->  drivers/mmc/core/host.c                            |   1 +
->  drivers/mmc/host/meson-mx-sdhc-mmc.c               |  26 +--
->  drivers/mmc/host/sdhci-sprd.c                      |  10 +-
->  drivers/net/ethernet/broadcom/bnxt/bnxt.c          |   4 +-
->  drivers/net/ethernet/broadcom/genet/bcmgenet.c     |   4 +-
->  drivers/net/ethernet/intel/i40e/i40e_main.c        |  11 +-
->  drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  34 ++-
->  drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h |   3 +
->  drivers/net/ethernet/intel/ice/ice_main.c          |  12 +-
->  drivers/net/ethernet/intel/igc/igc.h               |   1 +
->  drivers/net/ethernet/intel/igc/igc_ethtool.c       |  42 +++-
->  drivers/net/ethernet/intel/igc/igc_tsn.c           |   2 +-
->  drivers/net/ethernet/marvell/octeontx2/af/npc.h    |   4 +-
->  drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |   1 +
->  .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    |  17 ++
->  .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    | 118 +---------
->  .../ethernet/mellanox/mlxbf_gige/mlxbf_gige_rx.c   |   9 +-
->  drivers/net/ethernet/qlogic/qla3xxx.c              |   2 +
->  drivers/net/ethernet/realtek/r8169_main.c          |   2 +-
->  drivers/net/ethernet/renesas/ravb_main.c           |  65 ++++--
->  drivers/net/ethernet/sfc/rx_common.c               |   4 +-
->  drivers/net/ethernet/wangxun/libwx/wx_lib.c        |  82 +------
->  drivers/net/ethernet/wangxun/libwx/wx_type.h       |   1 -
->  drivers/net/usb/ax88172a.c                         |   4 +-
->  drivers/net/virtio_net.c                           |  90 ++++----
->  drivers/net/wireless/intel/iwlwifi/pcie/internal.h |   4 +-
->  drivers/net/wireless/intel/iwlwifi/pcie/rx.c       |   8 +-
->  drivers/net/wireless/intel/iwlwifi/pcie/trans.c    |  17 +-
->  drivers/pci/pci.c                                  |   6 +
->  drivers/pci/pci.h                                  |   2 +
->  drivers/pci/pcie/aspm.c                            |  19 ++
->  drivers/phy/mediatek/phy-mtk-mipi-dsi-mt8183.c     |   2 +-
->  drivers/phy/sunplus/phy-sunplus-usb2.c             |   2 +-
->  drivers/phy/ti/phy-gmii-sel.c                      |   5 +-
->  fs/dax.c                                           |  24 +--
->  fs/smb/client/cifsglob.h                           |   1 -
->  fs/smb/client/connect.c                            |   9 +-
->  fs/smb/client/smb2ops.c                            |  34 ++-
->  include/linux/dax.h                                |  10 +-
->  include/linux/hisi_acc_qm.h                        |   1 +
->  include/net/netfilter/nf_tables_ipv4.h             |   2 +-
->  include/net/sock.h                                 |   4 +-
->  include/net/tcp.h                                  |   2 +
->  include/net/xdp_sock.h                             |   2 +
->  kernel/rcu/rcu.h                                   |   2 +
->  kernel/rcu/tasks.h                                 |  32 ++-
->  kernel/rcu/tree.c                                  |  43 +++-
->  kernel/resource.c                                  |   4 +-
->  mm/memory-failure.c                                |  52 ++---
->  mm/memory.c                                        |   4 +-
->  mm/vmscan.c                                        |  13 +-
->  net/core/skbuff.c                                  |   3 +-
->  net/core/sock.c                                    |  12 +-
->  net/dns_resolver/dns_key.c                         |  19 +-
->  net/ipv4/tcp.c                                     |   3 +-
->  net/ipv4/tcp_output.c                              |  16 +-
->  net/mptcp/subflow.c                                |  13 ++
->  net/netfilter/nf_nat_ovs.c                         |   3 +-
->  net/netfilter/nf_tables_core.c                     |   2 +-
->  net/netfilter/nft_immediate.c                      |   2 +-
->  net/nfc/llcp_core.c                                |  39 +++-
->  net/sched/em_text.c                                |   4 +-
->  net/smc/smc_diag.c                                 |   3 +-
->  net/socket.c                                       |   2 +
->  net/xdp/xsk.c                                      |   2 +-
->  net/xdp/xsk_buff_pool.c                            |   3 +
->  samples/vfio-mdev/mtty.c                           | 237 +++++++++++++--=
------
->  security/apparmor/apparmorfs.c                     |   1 +
->  security/apparmor/mount.c                          |   4 +
->  sound/pci/hda/patch_realtek.c                      |   3 +
->  sound/pci/hda/tas2781_hda_i2c.c                    | 240 +++++++++++----=
-------
->  sound/soc/codecs/tas2781-comlib.c                  |   4 +-
->  sound/soc/codecs/tas2781-i2c.c                     |   2 +
->  sound/soc/fsl/fsl_rpmsg.c                          |  10 +-
->  sound/soc/mediatek/mt8186/mt8186-dai-adda.c        |   2 +-
->  sound/soc/meson/g12a-toacodec.c                    |   5 +-
->  sound/soc/meson/g12a-tohdmitx.c                    |   8 +-
->  tools/bpf/bpftool/gen.c                            |  15 +-
->  tools/testing/cxl/Kbuild                           |   1 +
->  tools/testing/cxl/cxl_core_exports.c               |   7 +
->  tools/testing/cxl/test/cxl.c                       |   5 +-
->  .../net/bonding/bond-arp-interval-causes-panic.sh  |   6 +-
->  135 files changed, 1449 insertions(+), 844 deletions(-)
->
->
->
+On 1/3/24 11:59, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> When trying to insert a 10MB kernel module kept in a virtiofs with cache
+> disabled, the following warning was reported:
+> 
+>    ------------[ cut here ]------------
+>    WARNING: CPU: 2 PID: 439 at mm/page_alloc.c:4544 ......
+>    Modules linked in:
+>    CPU: 2 PID: 439 Comm: insmod Not tainted 6.7.0-rc7+ #33
+>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ......
+>    RIP: 0010:__alloc_pages+0x2c4/0x360
+>    ......
+>    Call Trace:
+>     <TASK>
+>     ? __warn+0x8f/0x150
+>     ? __alloc_pages+0x2c4/0x360
+>     __kmalloc_large_node+0x86/0x160
+>     __kmalloc+0xcd/0x140
+>     virtio_fs_enqueue_req+0x240/0x6d0
+>     virtio_fs_wake_pending_and_unlock+0x7f/0x190
+>     queue_request_and_unlock+0x58/0x70
+>     fuse_simple_request+0x18b/0x2e0
+>     fuse_direct_io+0x58a/0x850
+>     fuse_file_read_iter+0xdb/0x130
+>     __kernel_read+0xf3/0x260
+>     kernel_read+0x45/0x60
+>     kernel_read_file+0x1ad/0x2b0
+>     init_module_from_file+0x6a/0xe0
+>     idempotent_init_module+0x179/0x230
+>     __x64_sys_finit_module+0x5d/0xb0
+>     do_syscall_64+0x36/0xb0
+>     entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>     ......
+>     </TASK>
+>    ---[ end trace 0000000000000000 ]---
+> 
+> The warning happened as follow. In copy_args_to_argbuf(), virtiofs uses
+> kmalloc-ed memory as bound buffer for fuse args, but
+> fuse_get_user_pages() only limits the length of fuse arg by max_read or
+> max_write for IOV_KVEC io (e.g., kernel_read_file from finit_module()).
+> For virtiofs, max_read is UINT_MAX, so a big read request which is about
+
+
+I find this part of the explanation a bit confusing. I guess you wanted 
+to write something like
+
+fuse_direct_io() -> fuse_get_user_pages() is limited by 
+fc->max_write/fc->max_read and fc->max_pages. For virtiofs max_pages 
+does not apply as ITER_KVEC is used. As virtiofs sets fc->max_read to 
+UINT_MAX basically no limit is applied at all.
+
+I also wonder if it wouldn't it make sense to set a sensible limit in
+virtio_fs_ctx_set_defaults() instead of introducing a new variable?
+
+Also, I guess the issue is kmalloc_array() in virtio_fs_enqueue_req? 
+Wouldn't it make sense to use kvm_alloc_array/kvfree in that function?
+
+
+Thanks,
+Bernd
+
+
+> 10MB is passed to copy_args_to_argbuf(), kmalloc() is called in turn
+> with len=10MB, and triggers the warning in __alloc_pages():
+> WARN_ON_ONCE_GFP(order > MAX_ORDER, gfp)).
+> 
+> A feasible solution is to limit the value of max_read for virtiofs, so
+> the length passed to kmalloc() will be limited. However it will affects
+> the max read size for ITER_IOVEC io and the value of max_write also needs
+> limitation. So instead of limiting the values of max_read and max_write,
+> introducing max_nopage_rw to cap both the values of max_read and
+> max_write when the fuse dio read/write request is initiated from kernel.
+> 
+> Considering that fuse read/write request from kernel is uncommon and to
+> decrease the demand for large contiguous pages, set max_nopage_rw as
+> 256KB instead of KMALLOC_MAX_SIZE - 4096 or similar.
+> 
+> Fixes: a62a8ef9d97d ("virtio-fs: add virtiofs filesystem")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>   fs/fuse/file.c      | 12 +++++++++++-
+>   fs/fuse/fuse_i.h    |  3 +++
+>   fs/fuse/inode.c     |  1 +
+>   fs/fuse/virtio_fs.c |  6 ++++++
+>   4 files changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> index a660f1f21540..f1beb7c0b782 100644
+> --- a/fs/fuse/file.c
+> +++ b/fs/fuse/file.c
+> @@ -1422,6 +1422,16 @@ static int fuse_get_user_pages(struct fuse_args_pages *ap, struct iov_iter *ii,
+>   	return ret < 0 ? ret : 0;
+>   }
+>   
+> +static size_t fuse_max_dio_rw_size(const struct fuse_conn *fc,
+> +				   const struct iov_iter *iter, int write)
+> +{
+> +	unsigned int nmax = write ? fc->max_write : fc->max_read;
+> +
+> +	if (iov_iter_is_kvec(iter))
+> +		nmax = min(nmax, fc->max_nopage_rw);
+> +	return nmax;
+> +}
+> +
+>   ssize_t fuse_direct_io(struct fuse_io_priv *io, struct iov_iter *iter,
+>   		       loff_t *ppos, int flags)
+>   {
+> @@ -1432,7 +1442,7 @@ ssize_t fuse_direct_io(struct fuse_io_priv *io, struct iov_iter *iter,
+>   	struct inode *inode = mapping->host;
+>   	struct fuse_file *ff = file->private_data;
+>   	struct fuse_conn *fc = ff->fm->fc;
+> -	size_t nmax = write ? fc->max_write : fc->max_read;
+> +	size_t nmax = fuse_max_dio_rw_size(fc, iter, write);
+>   	loff_t pos = *ppos;
+>   	size_t count = iov_iter_count(iter);
+>   	pgoff_t idx_from = pos >> PAGE_SHIFT;
+> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> index 1df83eebda92..fc753cd34211 100644
+> --- a/fs/fuse/fuse_i.h
+> +++ b/fs/fuse/fuse_i.h
+> @@ -594,6 +594,9 @@ struct fuse_conn {
+>   	/** Constrain ->max_pages to this value during feature negotiation */
+>   	unsigned int max_pages_limit;
+>   
+> +	/** Maximum read/write size when there is no page in request */
+> +	unsigned int max_nopage_rw;
+> +
+>   	/** Input queue */
+>   	struct fuse_iqueue iq;
+>   
+> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> index 2a6d44f91729..4cbbcb4a4b71 100644
+> --- a/fs/fuse/inode.c
+> +++ b/fs/fuse/inode.c
+> @@ -923,6 +923,7 @@ void fuse_conn_init(struct fuse_conn *fc, struct fuse_mount *fm,
+>   	fc->user_ns = get_user_ns(user_ns);
+>   	fc->max_pages = FUSE_DEFAULT_MAX_PAGES_PER_REQ;
+>   	fc->max_pages_limit = FUSE_MAX_MAX_PAGES;
+> +	fc->max_nopage_rw = UINT_MAX;
+>   
+>   	INIT_LIST_HEAD(&fc->mounts);
+>   	list_add(&fm->fc_entry, &fc->mounts);
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 5f1be1da92ce..3aac31d45198 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -1452,6 +1452,12 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+>   	/* Tell FUSE to split requests that exceed the virtqueue's size */
+>   	fc->max_pages_limit = min_t(unsigned int, fc->max_pages_limit,
+>   				    virtqueue_size - FUSE_HEADER_OVERHEAD);
+> +	/* copy_args_to_argbuf() uses kmalloc-ed memory as bounce buffer
+> +	 * for fuse args, so limit the total size of these args to prevent
+> +	 * the warning in __alloc_pages() and decrease the demand for large
+> +	 * contiguous pages.
+> +	 */
+> +	fc->max_nopage_rw = min(fc->max_nopage_rw, 256U << 10);
+>   
+>   	fsc->s_fs_info = fm;
+>   	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
 
