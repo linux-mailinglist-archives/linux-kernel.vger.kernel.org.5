@@ -1,97 +1,170 @@
-Return-Path: <linux-kernel+bounces-20764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CEE68284EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A8B48284EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF710282AE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:24:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA2C7283732
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E44D381B7;
-	Tue,  9 Jan 2024 11:22:23 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79D0381DC;
+	Tue,  9 Jan 2024 11:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="od+aAxu1"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489C1381AC;
-	Tue,  9 Jan 2024 11:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4T8T593hd4zvQPy;
-	Tue,  9 Jan 2024 19:21:01 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 90CCE14011F;
-	Tue,  9 Jan 2024 19:22:17 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 9 Jan
- 2024 19:22:17 +0800
-Subject: Re: [PATCH net-next 3/6] mm/page_alloc: use initial zero offset for
- page_frag_alloc_align()
-To: Alexander Duyck <alexander.duyck@gmail.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
-	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
-References: <20240103095650.25769-1-linyunsheng@huawei.com>
- <20240103095650.25769-4-linyunsheng@huawei.com>
- <f4abe71b3439b39d17a6fb2d410180f367cadf5c.camel@gmail.com>
- <74c9a3a1-5204-f79a-95ff-5c108ec6cf2a@huawei.com>
- <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <f138193c-30e0-b1ba-1735-5f569230724b@huawei.com>
-Date: Tue, 9 Jan 2024 19:22:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F7237142;
+	Tue,  9 Jan 2024 11:23:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4099xltc003856;
+	Tue, 9 Jan 2024 11:23:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BUOV8m+4DEEUF6xZdv136lnIKPlCxnHVKDVFqa6I66A=; b=od
+	+aAxu1TB3wRFXEFGLOAQDtNHrrmoPg7KXrSbQMSytbLqNIC40mp7FnCn8Rqpgqhd
+	Jzo4l9NiFuXCNWUISXD411YwfkpaZe1uwre7Ij23pise/k/J6Qr87Lwmohw3fq/X
+	gtNiaL5a+lDOmKUA+qHyUn6Fv8nrGKjO26HMEajFgaunxbcPAmmBsj8nMoeVL9hS
+	T4z+ZJ2u9jJW24DiuCtzzFtaM6o13tjGCUVt3KrQciT06slFBnjx+1VrNOtG6+U0
+	itZsc0v9XcWpglMOBg9eUaw7JMkQ9D8y2mp1ZSJmrL9ePHZv6JVxBI6dSb5015cc
+	AKkxGXAtzVLgiK45NH0A==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgr1shfkg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 11:23:05 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409BN5of031079
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 11:23:05 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
+ 2024 03:23:02 -0800
+Message-ID: <b4066862-3d41-3932-379a-9c6358c65962@quicinc.com>
+Date: Tue, 9 Jan 2024 16:52:58 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v11 1/4] firmware: qcom: scm: provide a read-modify-write
+ function
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+To: Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linus.walleij@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>
+References: <1704727654-13999-1-git-send-email-quic_mojha@quicinc.com>
+ <1704727654-13999-2-git-send-email-quic_mojha@quicinc.com>
+ <6e99c4ff-a377-4385-b79c-60438e3e8735@quicinc.com>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <6e99c4ff-a377-4385-b79c-60438e3e8735@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZnSPnutS7mcQcXXDJdevXhpS83Y09Tkw
+X-Proofpoint-GUID: ZnSPnutS7mcQcXXDJdevXhpS83Y09Tkw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 priorityscore=1501 suspectscore=0
+ bulkscore=0 impostorscore=0 adultscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090092
 
-On 2024/1/9 0:25, Alexander Duyck wrote:
-> On Mon, Jan 8, 2024 at 12:59 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 
-..
 
-> 
->>>
->>> 2. By starting at the end and working toward zero we can use built in
->>> functionality of the CPU to only have to check and see if our result
->>> would be signed rather than having to load two registers with the
->>> values and then compare them which saves us a few cycles. In addition
->>> it saves us from having to read both the size and the offset for every
->>> page.
+On 1/9/2024 10:34 AM, Pavan Kondeti wrote:
+> On Mon, Jan 08, 2024 at 08:57:31PM +0530, Mukesh Ojha wrote:
+>> It was realized by Srinivas K. that there is a need of
+>> read-modify-write scm exported function so that it can
+>> be used by multiple clients.
 >>
->> I suppose the above is ok if we only use the page_frag_alloc*() API to
->> allocate memory for skb->data, not for the frag in skb_shinfo(), as by
->> starting at the end and working toward zero, it means we can not do skb
->> coalescing.
+>> Let's introduce qcom_scm_io_rmw() which masks out the bits
+>> and write the passed value to that bit-offset.
 >>
->> As page_frag_alloc*() is returning va now, I am assuming most of users
->> is using the API for skb->data, I guess it is ok to drop this patch for
->> now.
+>> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # IPQ9574 and IPQ5332
+>> ---
+>>   drivers/firmware/qcom/qcom_scm.c       | 26 ++++++++++++++++++++++++++
+>>   include/linux/firmware/qcom/qcom_scm.h |  1 +
+>>   2 files changed, 27 insertions(+)
 >>
->> If we allow page_frag_alloc*() to return struct page, we might need this
->> patch to enable coalescing.
+>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+>> index 520de9b5633a..25549178a30f 100644
+>> --- a/drivers/firmware/qcom/qcom_scm.c
+>> +++ b/drivers/firmware/qcom/qcom_scm.c
+>> @@ -19,6 +19,7 @@
+>>   #include <linux/of_irq.h>
+>>   #include <linux/of_platform.h>
+>>   #include <linux/platform_device.h>
+>> +#include <linux/spinlock.h>
+>>   #include <linux/reset-controller.h>
+>>   #include <linux/types.h>
+>>   
+>> @@ -41,6 +42,8 @@ struct qcom_scm {
+>>   	int scm_vote_count;
+>>   
+>>   	u64 dload_mode_addr;
+>> +	/* Atomic context only */
+>> +	spinlock_t lock;
 > 
-> I would argue this is not the interface for enabling coalescing. This
-> is one of the reasons why this is implemented the way it is. When you
-> are aligning fragments you aren't going to be able to coalesce the
-> frames anyway as the alignment would push the fragments apart.
-
-It seems the alignment requirement is the same for the same user of a page_frag
-instance, so the aligning does not seem to be a problem for coalescing?
-
-> .
+> IMHO, this comment can be confusing later. one might think that
+> qcom_scm_call_atomic() needs to be called with this lock, but that does
+> not seems to be the intention here.
 > 
+>>   };
+>>   
+>>   struct qcom_scm_current_perm_info {
+>> @@ -481,6 +484,28 @@ static int qcom_scm_disable_sdi(void)
+>>   	return ret ? : res.result[0];
+>>   }
+>>   
+>> +int qcom_scm_io_rmw(phys_addr_t addr, unsigned int mask, unsigned int val)
+>> +{
+>> +	unsigned int old, new;
+>> +	int ret;
+>> +
+>> +	if (!__scm)
+>> +		return -EINVAL;
+>> +
+>> +	spin_lock(&__scm->lock);
+> 
+> So, this function can't be called from hardirq context. If that ever
+> happens, with this new spinlock (without disabling interrupts), can
+> result in deadlock.
+
+Ok, let's make it fully atomic with spin_lock_irqsave();
+
+-Mukesh
+> 
+>> +	ret = qcom_scm_io_readl(addr, &old);
+>> +	if (ret)
+>> +		goto unlock;
+>> +
+>> +	new = (old & ~mask) | (val & mask);
+>> +
+>> +	ret = qcom_scm_io_writel(addr, new);
+>> +unlock:
+>> +	spin_unlock(&__scm->lock);
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(qcom_scm_io_rmw);
+> 
+> Thanks,
+> Pavan
 
