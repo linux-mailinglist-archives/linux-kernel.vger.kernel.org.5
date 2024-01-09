@@ -1,90 +1,160 @@
-Return-Path: <linux-kernel+bounces-21211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 061DC828C05
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:10:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F125C828BDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:05:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2DF51F25253
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:04:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 999F228782B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C553C092;
-	Tue,  9 Jan 2024 18:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CEC3C499;
+	Tue,  9 Jan 2024 18:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uYJlVYOp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mXDY8SkG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2AB3BB53;
-	Tue,  9 Jan 2024 18:02:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B109AC433F1;
-	Tue,  9 Jan 2024 18:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557223BB25;
+	Tue,  9 Jan 2024 18:03:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C049C433F1;
+	Tue,  9 Jan 2024 18:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704823333;
-	bh=shSKY1w5aTYzV09A9d9FAgEOsAUKw342DuDn9xlkgN4=;
+	s=k20201202; t=1704823415;
+	bh=0R31HLE3+ZbvwQuChH2OoUhobpCqWxAZJoF/InobdBY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uYJlVYOptKscJ2fmaUvQyjYYNonnnv47GtyIbfdHydJDnKE5BlWJ3yR9swpNfB/IX
-	 CzQ6ddSD5uh+NhJZAnkJstCCu9Q223TBI0pb7ikgOlkOflXa8hvQFs28ri17gmMcWI
-	 dCKTSYUmRqJOYAECXMvuD2cREJCuN7NyP2RrPVmZKwv1lwe+sJ7U/otL1rQibttrbo
-	 DVV1aeesGg+X4brhFKPNXX7lRPh5b0OjjgBCBS3LIxA+k9yW7Xu7cdeFuYMg5X+j4a
-	 uF7h6IdTVLPfWMUX2GsXlCyDviaibZBGK3WrIsbDCvwUBg4OJEmQIona/hQ9YgL6f2
-	 zPZRPZVBmRACA==
-Received: (nullmailer pid 2851599 invoked by uid 1000);
-	Tue, 09 Jan 2024 18:02:11 -0000
-Date: Tue, 9 Jan 2024 12:02:11 -0600
-From: Rob Herring <robh@kernel.org>
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>, Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 2/4] dt-bindings: media: camss: Add
- qcom,sc8280xp-camss binding
-Message-ID: <20240109180211.GA2841248-robh@kernel.org>
-References: <20240109-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v3-0-b8e3a74a6e6a@linaro.org>
- <20240109-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v3-2-b8e3a74a6e6a@linaro.org>
+	b=mXDY8SkGODZzDpOT/lBscYFSFUXcFq6OdQZmxHjeu5J6ndCS7O2be18/WyT+Pybdh
+	 frZeSearhDu/qxK7xrn+iAz/LLJCiSM8uuCq+hZbkHVMtk/8jMEmae+eaU670gfjiF
+	 pGwVGqXCsulrjhsafzsfmdxNBRUObccLt6Ds+6ZX8LLEHxbjUDFES3fKQHlD6pIpAR
+	 wRRJgq/MCtaEzQmW6fUHSmj0YTh+R2FJAWFWVRegmteeZqsAiMmr0K6ek1NSZ2Rrkv
+	 8LzfIr3wPE/EO80FCF9Pcv4ss3c+uipQN1wNPUnn6xKWhhotH5i9aickhLPipGxpDi
+	 vfH1JE+2JBDhA==
+Date: Tue, 9 Jan 2024 18:03:22 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Yang Xiwen <forbidden405@foxmail.com>,
+	Sebastian Reichel <sre@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-fbdev@vger.kernel.org
+Subject: Re: [DO NOT MERGE v6 25/37] dt-bindings: vendor-prefixes: Add iodata
+Message-ID: <20240109-frying-robin-e0f3e83966eb@spud>
+References: <cover.1704788539.git.ysato@users.sourceforge.jp>
+ <17c6381a733d34e8460fd2979f8b53804e808e04.1704788539.git.ysato@users.sourceforge.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="o5q2SluoJveOoLQv"
+Content-Disposition: inline
+In-Reply-To: <17c6381a733d34e8460fd2979f8b53804e808e04.1704788539.git.ysato@users.sourceforge.jp>
+
+
+--o5q2SluoJveOoLQv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240109-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v3-2-b8e3a74a6e6a@linaro.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 09, 2024 at 04:06:03PM +0000, Bryan O'Donoghue wrote:
-> Add bindings for qcom,sc8280xp-camss in order to support the camera
-> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Tue, Jan 09, 2024 at 05:23:22PM +0900, Yoshinori Sato wrote:
+> Add IO DATA DEVICE INC.
+> https://www.iodata.com/
+>=20
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+
+I think you are missing an r-b tag here from Geert:
+https://lore.kernel.org/all/CAMuHMdUvNT1tDTOq4ppqn69cocAeveaXrsoL2VQ2efBQ+h=
+v2aA@mail.gmail.com/
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
 > ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+> index 309b94c328c8..94ed63d9f7de 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -671,6 +671,8 @@ patternProperties:
+>      description: Inventec
+>    "^inversepath,.*":
+>      description: Inverse Path
+> +  "^iodata,.*":
+> +    description: IO DATA DEVICE Inc.
+>    "^iom,.*":
+>      description: Iomega Corporation
+>    "^irondevice,.*":
+> --=20
+> 2.39.2
+>=20
 
-This is where you mention dependencies. Didn't I say this already?
+--o5q2SluoJveOoLQv
+Content-Type: application/pgp-signature; name="signature.asc"
 
->  .../bindings/media/qcom,sc8280xp-camss.yaml        | 512 +++++++++++++++++++++
->  1 file changed, 512 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-> new file mode 100644
-> index 000000000000..c0bc31709873
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-> @@ -0,0 +1,512 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/qcom,sc8280xp-camss.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SC8280XP Camera Subsystem (CAMSS)
-> +
-> +maintainers:
-> +  - Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> +
-> +description: |
+-----BEGIN PGP SIGNATURE-----
 
-If you resend, don't need '|' here.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ2KaQAKCRB4tDGHoIJi
+0mETAQCgS0diIQwRpFymnYZiV1TuFr5jugc1/qE1mlVfoy18EwEA6EVpCvyk1xES
+OQiPDuXqI2XKO8fupXPq+im8bF/hvwU=
+=bocD
+-----END PGP SIGNATURE-----
 
-> +  The CAMSS IP is a CSI decoder and ISP present on Qualcomm platforms.
+--o5q2SluoJveOoLQv--
 
