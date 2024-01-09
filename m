@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-21439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 314B4828F24
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:48:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22670828F2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:49:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7C01B23DB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:48:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA3CB1F2617E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98123DB9C;
-	Tue,  9 Jan 2024 21:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA803DB9D;
+	Tue,  9 Jan 2024 21:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W0v0lAOr"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pSgQggyx"
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53253C6BF;
-	Tue,  9 Jan 2024 21:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-595b208a050so2178394eaf.0;
-        Tue, 09 Jan 2024 13:48:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436393DB9C
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-36074b286d6so20756835ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 13:49:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704836908; x=1705441708; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704836955; x=1705441755; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UvdJeq2ZBGjXZzlPb1uDy/+QxH7QbSi8cCkivdpW86k=;
-        b=W0v0lAOrjixCW3VBfB/7DyErQuGWnd/D5mF7Na1L2XUozE+qcFdIYhxfQvzxgBoWpH
-         BOCnFQGLP88N0ZbO7aSZ+4TuJ7Bs6x1txsS8F/7xXpbaPY9SBPYtopQ0jCBNjMbvGz2o
-         bgUPw9glYgVPXjdV2kAs3NrtFe2Fp1FX0kS6YB9Ex4H5awKzLUs/pbd/4cRHrl4W3jnR
-         NBROdZQGFyIRxfNbwlenftDjeVtKbMgQBSQVHFtheCwuLroghnCz7VLGnsAMjoRJg9co
-         esniL4esdNLuNjXfCq/l0mJATDKOJ1yz3oL09McveM2DebrHIXJpRwZZsplMD6f6Q7/9
-         lDyQ==
+        bh=wo7A9qf9LB8OT3yWghmU76DKbvJhNKbcUKlH0RAw79k=;
+        b=pSgQggyxqdrOEfbKTdGt9A1dJvBEFb3VsNIPstbgBt70UhU6+tp6jucTnrJ1Iiz5Q7
+         Fh1Qq6Kaj/LOVAJsgHPIu1X7Ulo/ruzhLKFRJqiUiPyLGK7WBh/f+LztRTbH1wjuxH+P
+         wx6eEDav1UP/U98UaVmfNu9/5nLJbnla3z6Oeq2MJ5g9f1JQndUJYV7/eoqdgaj04k1h
+         TFNdmclHNWpDRLWF3DSqcANXORykBT0i2ylsz4SDd6c9o6Iqgwkqx5t+sdyQazEXlWB5
+         3lDu/KjFURBjiN91utW/6raS1V80NiG61OU/DJVXbvWqAuTHUuH4Iic+M1ePVSVNUqiK
+         wiPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704836908; x=1705441708;
+        d=1e100.net; s=20230601; t=1704836955; x=1705441755;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UvdJeq2ZBGjXZzlPb1uDy/+QxH7QbSi8cCkivdpW86k=;
-        b=ITxYDhoH8PgMV698z5QTddAOw6fayDwssSXTFD18hz5Q7nL6JBGFwx1ghCffxJXHll
-         bebeG4tcnSjxKeGdDDR5u4vOdTRj7dkWENGD27yihp+zJ7hj6Fn8zQE62vjlSt3v02gq
-         sfL7m2Tncg62tXBEINxJLZinyiIKFi1oZkKKrx59xpM3AUlFSbS2nFMfMDWKMou2SH84
-         1alHU0+lLoYm/8d4xKSN2GEcgEbO4v3Kkbk0px6utKQEjJIhSM3DQl/D6SLK57cv7Lhs
-         KVEoQSxDeknaI3Q2pih6s0+oFkZNX7PzArHZF0AIjwRp9WK1h6HZfjL0mJnL8E3EzAJx
-         iXfA==
-X-Gm-Message-State: AOJu0YyIoVHgTDawDnLWFP0BO+u/9OHpYQg4umrWQvUM4IjokLiiZSFh
-	QP+yTuqaMU8IhS0CpKDDRTo=
-X-Google-Smtp-Source: AGHT+IHUwiTUiTbOOMgRI+gBgs9efvZk8PJoJM0uHPgr/GwHLKas07lU6aQ4pBFuYyzhVoGr8P65fw==
-X-Received: by 2002:a05:6358:5e1d:b0:175:a47b:6616 with SMTP id q29-20020a0563585e1d00b00175a47b6616mr21234rwn.24.1704836907570;
-        Tue, 09 Jan 2024 13:48:27 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:1135:ca4a:123c:5e53])
-        by smtp.gmail.com with ESMTPSA id u12-20020aa7848c000000b006d97cc5cc13sm2137072pfn.8.2024.01.09.13.48.26
+        bh=wo7A9qf9LB8OT3yWghmU76DKbvJhNKbcUKlH0RAw79k=;
+        b=rx3oH6zWm4hotXsEs58XIwaPsRMsTjbjG4WZAhTSshJ0e+D5TqvM70eUFbsL8wbWNr
+         fXUcviSoMZylAMxfChdaXytNSflcqJE/uswRafgNYwGOSyEBn8WZCkOH/ngKfzBKyE65
+         f/CuORGrNcAJgNGLqgTRFJ1NEr/hfTMTmASmIszOWueOTTeOuVTjphLdo/oChqSmaENc
+         DhkJ4MHQBBUy32+o5zN7syUXch+TDOf3R/zC+cny3F6yjnYmgwhxm0pDRWy3F8Sw0HKk
+         8N3SnJkZAyfb+SpEIj+VZgKAXHGJ5n7+a5StUAvrWpEx6v7fN9+O0lxEVrDSgCBg2nhb
+         Fk2A==
+X-Gm-Message-State: AOJu0YxAz2aTJTJ57CgvXdECsB8FbiolrKLY/vdULZ6fupKvWlAs18Mw
+	cFNDRyowkc75Qf9+0wntgH9YKHIkDgZD
+X-Google-Smtp-Source: AGHT+IGL4IMYm3sze+Q8vWqEdPeDAvIFBsLjeBFO7fQBnNQmpX0zX+Ih0rK6+6Vtp61CZ8WVjAKCVA==
+X-Received: by 2002:a05:6e02:168c:b0:360:5d99:65b5 with SMTP id f12-20020a056e02168c00b003605d9965b5mr132829ila.21.1704836955117;
+        Tue, 09 Jan 2024 13:49:15 -0800 (PST)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id y4-20020a92c984000000b0035ff9825323sm838799iln.30.2024.01.09.13.49.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 13:48:27 -0800 (PST)
-Date: Tue, 9 Jan 2024 13:48:24 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Werner Sembach <wse@tuxedocomputers.com>
-Cc: hdegoede@redhat.com, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] i8042: Add forcenorestore quirk to leave
- controller untouched even on s3
-Message-ID: <ZZ2_KMGdokHNWcNL@google.com>
-References: <20240104183118.779778-1-wse@tuxedocomputers.com>
- <20240104183118.779778-2-wse@tuxedocomputers.com>
+        Tue, 09 Jan 2024 13:49:14 -0800 (PST)
+Date: Tue, 9 Jan 2024 21:49:10 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: Tanzir Hasan <tanzhasanwork@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>, Andy Shevchenko <andy@kernel.org>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Nick DeSaulniers <nnn@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH v2 2/2] lib/string: shrink lib/string.i via IWYU
+Message-ID: <20240109214910.oeopqq5j2gyl33dc@google.com>
+References: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
+ <20231214-libstringheader-v2-2-0f195dcff204@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,39 +74,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240104183118.779778-2-wse@tuxedocomputers.com>
+In-Reply-To: <20231214-libstringheader-v2-2-0f195dcff204@google.com>
 
-Hi Werner,
+Hi,
 
-On Thu, Jan 04, 2024 at 07:31:17PM +0100, Werner Sembach wrote:
-> On s3 resume the i8042 driver tries to restore the controller to a known
-> state by reinitializing things, however this can confuse the controller
-> with different effects. Mostly occasionally unresponsive keyboards after
-> resume.
-> 
-> These issues do not rise on s0ix resume as here the controller is assumed
-> to preserved its state from before suspend.
-> 
-> This patch adds a quirk for devices where the reinitialization on s3 resume
-> is not needed and might be harmful as described above. It does this by
-> using the s0ix resume code path at selected locations.
-> 
-> This new quirk goes beyond what the preexisting reset=never quirk does,
-> which only skips some reinitialization steps.
+On Thu, Dec 14, 2023 at 09:06:13PM +0000, tanzirh@google.com wrote:
+> This diff uses an open source tool include-what-you-use (IWYU) to modify
+> the include list changing indirect includes to direct includes.
+> IWYU is implemented using the IWYUScripts github repository which is a tool that is
+> currently undergoing development. These changes seek to improve build times.
+>
+> This change to lib/string.c resulted in a preprocessed size of
+> lib/string.i from 26371 lines to 5259 lines (-80%) for the x86
+> defconfig.
+>
 
-I think the original change mentioned not only issues on resume, but
-also after boot, which this one does not address, at least directly, so
-I am not sure if this patch is the proper replacement.
+Tanzir, I wonder if you could include some of the symbol names used for
+some of these more esoteric headers. Let me describe what I mean:
 
-I would also like to understand better what exact step is troublesome,
-as I would be surprised if any interaction with the keyboard
-controller while suspending causes the issue to manifest. Is it enough,
-by chance, to skip restoring MUX mode and reset?
+Andy talks about "why <vdso/...>" and perhaps some comments (in your
+patch message, not in the source itself) about which symbols are being
+used from these headers would serve useful. I believe IWYU can generate
+this information and should clear up some confusion or lead to better
+suggestions from reviewers if we understand why a header is being
+included.
 
-Also, shoudl this system use s2idle by chance?
+At any rate, this builds for me doing randconfigs on x86_64 with these
+KCONFIG_SEEDs
+1: 0x3DD9D136
+2: 0xB4440EE4
+3: 0x98778270
+4: 0x8C237F26
+5: 0x244F8A64
+6: 0x5A5C5E5C
+7: 0xA77896BC
+8: 0x9B5FF0D5
+9: 0x24F23F6A
+10: 0x35C0A107
 
-Thanks.
+I applied your patch on top of 5db8752c3b81bd33.
 
--- 
-Dmitry
+Tested-by: Justin Stitt <justinstitt@google.com>
+> Link: https://github.com/ClangBuiltLinux/IWYUScripts
+>
+> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+> ---
+>  lib/string.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/lib/string.c b/lib/string.c
+> index be26623953d2..7fe1acefb1a1 100644
+> --- a/lib/string.c
+> +++ b/lib/string.c
+> @@ -16,16 +16,16 @@
+>
+>  #define __NO_FORTIFY
+>  #include <linux/types.h>
+> -#include <linux/string.h>
+> -#include <linux/ctype.h>
+> -#include <linux/kernel.h>
+> -#include <linux/export.h>
+> +#include <linux/bits.h>
+>  #include <linux/bug.h>
+>  #include <linux/errno.h>
+> -#include <linux/slab.h>
+> -
+> +#include <asm/rwonce.h>
+> +#include <linux/linkage.h>
+> +#include <linux/stddef.h>
+> +#include <vdso/limits.h>
+> +#include <linux/string.h>
+> +#include <linux/ctype.h>
+>  #include <asm/unaligned.h>
+> -#include <asm/byteorder.h>
+>  #include <asm/word-at-a-time.h>
+>  #include <asm/page.h>
+>
+>
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
+Thanks
+Justin
 
