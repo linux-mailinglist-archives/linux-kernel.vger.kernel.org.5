@@ -1,172 +1,201 @@
-Return-Path: <linux-kernel+bounces-21022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B3EB8288A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11EA18288B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:04:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93CE61C24731
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:02:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCB191C24589
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA7139AEA;
-	Tue,  9 Jan 2024 15:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A236C39AFC;
+	Tue,  9 Jan 2024 15:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GEw1ZKkR"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="b1q0SDGl"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2052.outbound.protection.outlook.com [40.107.8.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BC939FD7
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a28d61ba65eso340864866b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 07:01:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704812487; x=1705417287; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A6lLJAWfONRkDJJGIC8SRaaAagWSknfMNb43BqN+UjA=;
-        b=GEw1ZKkRKm1yXonT5Y3EiY5cca1sTjsmg5y6cxuFZZ8u4nvSpzNul36h06vVwZy8uQ
-         qmVhXekDk/esOvD6luIgU5jCwfHfLMnwZ5RQvD0Zx7Ia1SsJWEEZofF2FQ4tiX76VaKs
-         1wXMogXckbGaNoegAtUwTm2D9oRRZhr3KxY7cSTJpOFb6IDLGseCKy54zhbObFf6BzD2
-         pBgAI0+U0xJ+Xs9zoX90lODmmLEZpR/4xNQDuMoaSxRCxXxh7CeMthJ2smkaIfOuK04t
-         SIoD7Jaq7ZruseU2vRfb1oSyPk6YIs+K8O1A7a6SSUxQHFHCjid3HYhhjIvmudmQR1JJ
-         KdYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704812487; x=1705417287;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A6lLJAWfONRkDJJGIC8SRaaAagWSknfMNb43BqN+UjA=;
-        b=DqJsYqhpk9QyiXOkouOQOMMCFHlI7gssfHfhajGK8dmhN3qjGTI82Hw5MYN5cLOIe9
-         NHi1z2ktzs20P00NqnMLTgv1noxQFCkeuz8VUfilcV1dq0d7Dcoc0kZZjgZ8JoV9FZd8
-         IneQN8xtxnwJ6MsvXv7n+i5RmOXmnzDTcsTH92d/kO7JU8aYuFXqwu3CZpytmyn60121
-         FR+WvjPtNVnRIK6K0YfQyLopnJZUIYD7/adz2YOHDI66wjIr8lUMRpfDl8H588FY9Aa0
-         qdRlWf1HZOTWN5YmYRmPAJH0cY7MsdMYGOUdqfGGzQ16a0+HuyNQIiTCZiWAi5PmeBOc
-         bw6w==
-X-Gm-Message-State: AOJu0Yxz6fU5ZvMR/4nL/RRsxRlZci03BsqX4juekCLbGlL07To5N1wP
-	3SsL4Ha0vAkyzqXqAPLFOyJR9Tk7n5tmpQ==
-X-Google-Smtp-Source: AGHT+IFp82vzSXIU1eYLm4qR0FanTJ7ctHZvV5fIlNx+HHmkBqjLQ/Q4m91CPoiiEqXgVI1SeoBBBQ==
-X-Received: by 2002:a17:907:6d21:b0:a29:b180:dc73 with SMTP id sa33-20020a1709076d2100b00a29b180dc73mr570997ejc.130.1704812487077;
-        Tue, 09 Jan 2024 07:01:27 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id r4-20020a17090638c400b00a28116285e0sm1122872ejd.165.2024.01.09.07.01.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 07:01:23 -0800 (PST)
-Message-ID: <ea02d7ca-62e2-4d46-8495-ed6e515625a1@linaro.org>
-Date: Tue, 9 Jan 2024 16:01:19 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EBB39AE7;
+	Tue,  9 Jan 2024 15:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jsWvqwv5RhnIKOfrbb8CGC/ryjhNrb36jaktGFVWx+UNLfGGEqneZmwrjHUbxUCoc6pC4BK95X8rAgxFDj74n/Uc5sOYtqSnJWzhrMwTyd3HZUTgvNooW+O1HmYjVnz0Ez/tmLj7FL0xKtt/fWcrfUtUoyabxxb/+ozD1uanb8erEtTb5keXG9//V1XiLNRfbgXmkqX0Q9dyhPs+V54uxwyqAhsDXcS8nVl5GslLxaITq3Tvh2p8kFOqXI2v9Z+TUneMZbeVpJiTUHZpwi6qHyVTDdSOdYQWBG03HWGsTfIJ1I8oaFtRWFEYj2ySpQjxnvUB53En4gk4v/JmjFRZ/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hqpgPRxj/3q3N0RcQb9OQKdbYaEFDxDKGC0PksK3AE0=;
+ b=Qn+c4Zl/A6GihtNwg8AP66RkcNPou+OtPIx6pFioug8l17iRr/TIL7vQzJjXe4NHVFAVXLMUVCbF3fIC7XgDGOCjD+mvCmiDlN3zCECYVb0MCgwpwC1TqbNCmQNxXc9tCPiZHb2COgDBYfAjCQvDZJSFbs8nqlbI8SHnZ7CUrCq+uaO2wCfaOyCJFco36GfpCfZMdVWcyKVdxwYudZZPP1oS1sDqp8ly019K7eIIKTIAdwaxqA28xlEgxa1YNvU17ZyKr1yH+yUDyEXbwwU3+c2I9uNrvesaJVzhGWTREbM6Resf+5A2vMSvGOIq550Ff5D3pbrBljnl/MAS6Odf5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hqpgPRxj/3q3N0RcQb9OQKdbYaEFDxDKGC0PksK3AE0=;
+ b=b1q0SDGlBELR4jxXiBWVjQhOjS4uVfFEJkp92ixwNr0e94p0npO/Fpn5BbP3CwyCF8Tf4WbZ/l+45oex871e0bPn18p8oqWM+QgEfLmcV5fOw35Y+MUMACwa1bz5nc+KhFoZZ+/+YkyIQP/S6BFexJsGniJkSHTpcAfFbogGRpY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS8PR04MB7511.eurprd04.prod.outlook.com (2603:10a6:20b:23f::5)
+ by AS8PR04MB8772.eurprd04.prod.outlook.com (2603:10a6:20b:42f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
+ 2024 15:04:29 +0000
+Received: from AS8PR04MB7511.eurprd04.prod.outlook.com
+ ([fe80::8ee3:bac5:a2da:d469]) by AS8PR04MB7511.eurprd04.prod.outlook.com
+ ([fe80::8ee3:bac5:a2da:d469%4]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
+ 15:04:29 +0000
+Date: Tue, 9 Jan 2024 10:04:21 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Niklas Cassel <Niklas.Cassel@wdc.com>
+Cc: "imx@lists.linux.dev" <imx@lists.linux.dev>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Jon Mason <jdmason@kudzu.us>,
+	"open list:PCI DRIVER FOR SYNOPSYS DESIGNWARE" <linux-pci@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] PCI: dwc: Fix BAR0 wrong map to iATU6 after root
+ complex reinit endpoint
+Message-ID: <ZZ1gdRLuirW473Vu@lizhi-Precision-Tower-5810>
+References: <20231219044844.1195294-1-Frank.Li@nxp.com>
+ <ZYFrUWM7JXdv7rtb@x1-carbon>
+ <ZYGmpaf18pJgM/qj@lizhi-Precision-Tower-5810>
+ <ZYGq6RdCfdhXFF/9@x1-carbon>
+ <ZZ1Pj3MvhQNMnP8M@x1-carbon>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZ1Pj3MvhQNMnP8M@x1-carbon>
+X-ClientProxiedBy: SJ0PR03CA0124.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::9) To AS8PR04MB7511.eurprd04.prod.outlook.com
+ (2603:10a6:20b:23f::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] dt-bindings: clock: google,gs101-clock: add
- PERIC0 clock management unit
-Content-Language: en-US
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, Rob Herring <robh@kernel.org>
-Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
- andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
- cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org,
- andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-serial@vger.kernel.org, kernel-team@android.com
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
- <20231228125805.661725-2-tudor.ambarus@linaro.org>
- <20240109040315.GA2619804-robh@kernel.org>
- <f695f2c0-2d4e-484c-9faa-7d8b28362541@linaro.org>
- <8a55e1d9-c102-4cdf-8f23-edc40889cf6d@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8a55e1d9-c102-4cdf-8f23-edc40889cf6d@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB7511:EE_|AS8PR04MB8772:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7525d6ea-b929-4551-8e46-08dc11244763
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rDGVqOyi3L5wB8w3HXOejrQyXNE+/eUPUd00zRKWny+1fdPUfJYfiUb6kHVcN+4c/Zbkv2J7HlWV9kbFSsaGnTz6SnNPAeiGU9iOiMUX8J3bM6cWg0TzjPhWqUdTvFW82CzmAnk6moJcZ2pu6Zc8XGVlPmnywQD5irbcVB8WdLls3GuvDtF8NLUz1BWnbpH4Zu2jLZJWKqVWD/3Y67ZLdAOnTgvLWxWHM4BQk5xGw34BWTTw+4qu6XgCpe4M8vTSrzPOmzkvO2MIuLnyXI9M6bK5UJ6RmmZLCwEIgYxPvKaBUAJ4UjmSlCugIdxDT8p6u1CshVIfckK8Q2bpmPw/DOU2FYMZgGCbMigmJWW8vlkrg3LBHBXfZ7rqUGhdNTKy7eUBoVQNaiImQBgWYKZGmitKx0y32vcq4zcOUXjNTwIPNyG6gPDbCB/JUlpVnAl6+wvcb3cavPvvbyLlEH1jsWOCOoK7EXIz9uKQyAT0hUAKgFDoozPVFvTmBbIVWHWNi/51vYRO5fIT2BAX74Nft4gEwObj2ShAtpYUs5/sUk/Ru9rddQdL1Ya09+iQeauztC2K0r8uUauAzereWoNl0t2hxaYuWmsTezxjJ3zHK+o=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB7511.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(366004)(39860400002)(396003)(136003)(376002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(33716001)(41300700001)(2906002)(4326008)(52116002)(6512007)(9686003)(6506007)(478600001)(6666004)(8936002)(8676002)(38350700005)(5660300002)(7416002)(54906003)(38100700002)(6916009)(66476007)(66556008)(66946007)(26005)(6486002)(966005)(86362001)(316002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?xnr9b0JLdRFxoqcBdsfYgXuNC+ouh1uFHCyO9deDZgFVDoHfZeH/y4D4zQki?=
+ =?us-ascii?Q?Negi1nlEJZw4qKtodFG7slImj7RQTKikhircDVare+E5JeDTaW5uKXXJmMWO?=
+ =?us-ascii?Q?236axuQGQJPpCxkmXdhqhB5rF4P/V0XcORSOfu0y+alZRTFNbmW/v4vSdob8?=
+ =?us-ascii?Q?m6m6KadiqjKjPDFGeQARiQY90G4zU6cikLcTMjj0HtkR86jXgxBWnw94J8o4?=
+ =?us-ascii?Q?qtiaKLp/r1GSzzdKn6CFg0/puGAzrRKrbJYIGRKz6cZG2ex03jNI0MIluygC?=
+ =?us-ascii?Q?ioPvuHaEhxjJuWb/72fv43b7XfGp77SnncI58fHea1wiuz4J+T3+PXai5b9Z?=
+ =?us-ascii?Q?lSx24hdAyt6YQaVOJxCzJQzXRxmGTzBsH+mPVG6HhqOMsQZU7oA5MqL3JNY6?=
+ =?us-ascii?Q?YGZsAgzbsJWqz59sVH04IMaXz/HHHH1aE7QX8iQkhG41E8CQxDx+LRZqhToq?=
+ =?us-ascii?Q?zomlAYncQJ5omwRv38jJYJ6AyJT10OvVAFmiFkgnzBuyAC6iWzvrhQEVTuZs?=
+ =?us-ascii?Q?0IK0861SzOPNiDjvUCz76+iJ7UfNEES/NSGw2Kc1ffqPdHih0iTlcY6VUw9f?=
+ =?us-ascii?Q?I2VAMh1GOw03HDrP1+2IofRq5xY+aLXvp5NcvjJ6DFzMTNSuQ90HiZ8e9BPg?=
+ =?us-ascii?Q?8Pd/BHKYbgaMd13WaXi97LqGdWX8kcFzc9FhKq+G134pvcLj3Wh1Z6uCh/+A?=
+ =?us-ascii?Q?lZA8J1Aw0PldzT44qTVCh4j0IR4J000P0D9mvzHSOYxGhzl6H1MCJfQ6oMY+?=
+ =?us-ascii?Q?AXXOwBqpHaZWKZ7x0f/YR0RbSy+MeT+vJjI9gSA4DGZn416iwERf61F7myre?=
+ =?us-ascii?Q?EE0ylO6MVwtOA4hHZ6QKwOXi05Qx0tttzlC1xAjeF1gi099GvqrjHFORWKqM?=
+ =?us-ascii?Q?jW/stKHS5So1Rnymq2yUBvV+iG9U03tT4KHD53X6SgJUxQDU9NwqlwdFZ1fC?=
+ =?us-ascii?Q?EwLOWEbnl40gkKTHKOOYJZU1ZdIffrO2qnmRDqGnRs/tG6xDOY6ZLwFdy9f1?=
+ =?us-ascii?Q?7aEKiX0VWGlJV5Rmr76t8XHPcsWXU8FDzthrV4Gwm1EM/qkhRRafzFOMS4jk?=
+ =?us-ascii?Q?QLZENqq7g9fqufmtFPyTuIaRNQJxN44sDT7HMois5zYrCr5mse0t7F+V8xzh?=
+ =?us-ascii?Q?U9d2dLzmx5fvhgblRbqMGnVSEfe0ZCqgat/9+ravsJIOIn55XJSg/O6XpCrZ?=
+ =?us-ascii?Q?LAOtMbIZ0Td2KlbGeMeAKiEEkgLpKZkeeYqe/88cbfCQ01TjBcRVyGjs+UAz?=
+ =?us-ascii?Q?m6w8VJDHOrSGCEmkchZwA5U83ZV9lfqEmE0zAmqAtXTSljy5yuooo6EuzvEU?=
+ =?us-ascii?Q?lQLSTHtjbhVLAG1zj31FjTSX/au/6xf3Wz+VqFhuykmJHAYYRbtxMQCBb19R?=
+ =?us-ascii?Q?zx4mJiwqn+GasnyjaoS+zBOuQtMzwHMbvaiQrgy1iuq78k550BqxKbovV8Rc?=
+ =?us-ascii?Q?5Zk7u3x23Rg4jaxkfZpEJI82Z2jy/0rMiNdh4d5D8Eo8KPyHuoSGwD/D7qIU?=
+ =?us-ascii?Q?F2IzkNiZmBhkYqvJ03/UFNDp6Z7/kNC3RqGkOF3jKDG2S7DQfcsiP7wArrOX?=
+ =?us-ascii?Q?8I9iwS2M2GTRj3JZXY0EJRt9+4sbb0dY/+7Skjmk?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7525d6ea-b929-4551-8e46-08dc11244763
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB7511.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 15:04:29.6724
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tZ7QS+BrS8PFfGTbm5R7w1/EqC/FcLFMhQk5DAZniL7zNyo96aFpj2x1N5u+7VAeGO3mGOKkO5hyod4QhQE7eQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8772
 
-On 09/01/2024 12:58, Tudor Ambarus wrote:
+On Tue, Jan 09, 2024 at 01:52:15PM +0000, Niklas Cassel wrote:
+> Hello Frank,
+> 
+> On Tue, Dec 19, 2023 at 03:38:33PM +0100, Niklas Cassel wrote:
+> > On Tue, Dec 19, 2023 at 09:20:21AM -0500, Frank Li wrote:
+> > > On Tue, Dec 19, 2023 at 10:07:14AM +0000, Niklas Cassel wrote:
+> > > > On Mon, Dec 18, 2023 at 11:48:43PM -0500, Frank Li wrote:
+> > > > > dw_pcie_ep_inbound_atu()
+> > > > > {
+> > > > > 	...
+> > > > > 	if (!ep->bar_to_atu[bar])
+> > > > > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+> > > > > 	else
+> > > > > 		free_win = ep->bar_to_atu[bar];
+> > > > > 	...
+> > > > > }
+> > > > > 
+> > > > > The atu index 0 is valid case for atu number. The find_first_zero_bit()
+> > > > > will return 6 when second time call into this function if atu is 0. Suppose
+> > > > > it should use branch 'free_win = ep->bar_to_atu[bar]'.
+> > > > > 
+> > > > > Change 'bar_to_atu' to s8. Initialize bar_to_atu as -1 to indicate it have
+> > > > > not allocate atu to the bar.
+> > > > > 
+> > > > > Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
+> > > > > Close: https://lore.kernel.org/linux-pci/ZXt2A+Fusfz3luQV@x1-carbon/T/#u
+> > > > > Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
+> > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > ---
+> > > > > 
+> > > > > Notes:
+> > > > >     @Niklas:
+> > > > >     	I have not test your case. I should be equal to previous's fix in
+> > > > >     mail list.
+> > > > 
+> > > > Hello Frank,
+> > > > 
+> > > > Thank you for sending a proper fix for this!
+> > > > 
+> > > > Personally, I slightly prefer your fix that saves the iatu index + 1, and
+> > > > keeps 0 to mean unused. That way, you don't need the memset, and you don't
+> > > > need to change the type to signed, but either way is fine by me, so:
+> > > 
+> > > index + 1 don't match hardware iATU index. It will be confused because
+> > > other parts is 0 based.
+> > > 
+> > > So I choose "-1" as free iATU.
+> > 
+> > A s8 can hold a max value of 127.
+> > CX_ATU_NUM_OUTBOUND_REGIONS seems to be 0-255.
+> > 
+> > Since the DWC code can be synthesized with 256 iATUs,
+> > your code will not work on systems with 128 or more iATUs.
+> > 
+> > If we continue to use a u8, and offset the saved value by one,
+> > we will at least be able to support 255-1 == 254 iATUs.
+> 
+> Do you plan to send out a v2?
+
+It is easy to change to u16. But I hope Manivannan Sadhasivam have time to
+review it.
+
+Frank
+
 > 
 > 
-> On 1/9/24 11:09, Krzysztof Kozlowski wrote:
->> On 09/01/2024 05:03, Rob Herring wrote:
->>> On Thu, Dec 28, 2023 at 12:57:54PM +0000, Tudor Ambarus wrote:
->>>> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
->>>> clock management unit.
->>>>
->>>> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
->>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>>> ---
->>>> v2:
->>>> - fix comments as per Sam's suggestion and collect his R-b tag
->>>> - Rob's suggestion of renaming the clock-names to just "bus" and "ip"
->>>>   was not implemented as I felt it affects readability in the driver
->>>>   and consistency with other exynos clock drivers. I will happily update
->>>>   the names in the -rc phase if someone else has a stronger opinion than
->>>>   mine. 
->>>
->>> I'll defer to Krzysztof.
->>
->> I miss the point why clock-names cannot be fixed now. This is the name
->> of property, not the input clock name.
-> 
-> They can be fixed now. I've just aired the fixes at:
-> https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
-> 
-> Preparing v3 for this patch set to include the updated names here too.
-
-I think I was not that clear enough. I did not get your current patchset
-- so PERIC0 clock controller - cannot use new naming.
-
-Best regards,
-Krzysztof
-
+> Kind regards,
+> Niklas
 
