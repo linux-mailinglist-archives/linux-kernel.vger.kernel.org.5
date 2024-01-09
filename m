@@ -1,115 +1,93 @@
-Return-Path: <linux-kernel+bounces-21361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C47C828E2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:51:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 316C3828E25
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B56D288A5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:51:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76A11F2277C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1983C3D3B4;
-	Tue,  9 Jan 2024 19:51:41 +0000 (UTC)
-Received: from authsmtp.register.it (authsmtp14.register.it [81.88.48.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4922B3DB84;
+	Tue,  9 Jan 2024 19:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WmFMijfi"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6A83D38C
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eventsense.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eventsense.it
-Received: from krn.. ([138.197.190.30])
-	by cmsmtp with ESMTPSA
-	id NI3PrbEZDI6zQNI3UrWDYw; Tue, 09 Jan 2024 20:46:33 +0100
-X-Rid: andrea.fois@eventsense.it@138.197.190.30
-From: Andrea Fois <andrea.fois@eventsense.it>
-To: 
-Cc: andrea.fois@eventsense.it,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Michael Chan <mchan@broadcom.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	George Shuklin <george.shuklin@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] tg3: add new module param to force device power down on reboot
-Date: Tue,  9 Jan 2024 19:45:51 +0000
-Message-Id: <20240109194551.17666-1-andrea.fois@eventsense.it>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ECB13D556
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7bee3761bb4so35432939f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 11:47:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704829634; x=1705434434; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jp3sPNgDn5/w+4+SQ1Qzo5FCSJIVAu5zu+xhNcaS+RE=;
+        b=WmFMijfiyoN4iXHXnNTgp9SZ3FGgajoebCBzBn2+XT8eXw9KYXXP8u8n8RWp5u3U8S
+         diK0rc0TIrU/3540+ag3pm3B4Vzkz0c6ZWHcpVKmtvKbWKCAdU+2fvc8beCJ+M5g07Aa
+         ZutY43ahCZPDU7Wt/qgCxAGFrx9ACN6CryvJk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704829634; x=1705434434;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jp3sPNgDn5/w+4+SQ1Qzo5FCSJIVAu5zu+xhNcaS+RE=;
+        b=Ow0TcCHO+2JSeqkuQYZ7NySOLwl6KuD/gcrOlG1jO0m3X600bIs2c+OSifmAxYuTRt
+         55TNVNeUmrYcI3iysSwNc8eAin2mZJxvUfjgbQBu8rWwdI0+UPU98BiMW50q0tLkzfzq
+         kqzb7RNpEtdEA80tFClkHJMZZcvICXhsutoloVrvk5/FO93isecSb3ddqmoUzFKwrWEo
+         NhT5a1tRPDfMBHTzOIK7x+IVNrd00uPiub1DwkEG2s2cAjjZJ261yZcv2S8tJza3PP42
+         E+Rlgk6bCq6sbOygovvT76Z1aWnqMiZdYQ83T1d9vDBQk56nrh/VXO/ueFJ5njDk35QC
+         Rd5w==
+X-Gm-Message-State: AOJu0YwpZhKyktGwNRRbl3IEsuY5mVP14deBrZivDHg2gi3u2CIBYpzV
+	MmMrTDXaMr0AHlvaV22wW1hHGAjFUdx6
+X-Google-Smtp-Source: AGHT+IF2+p52+a/uGcKh/I7JeXkJJoDrdwxg8dNkuNsj9eVicHWq61t6V8lQJDA2Rjq6uoJanlNaeg==
+X-Received: by 2002:a05:6e02:1989:b0:360:637:f64d with SMTP id g9-20020a056e02198900b003600637f64dmr9062346ilf.6.1704829634495;
+        Tue, 09 Jan 2024 11:47:14 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n68-20020a632747000000b005cd8044c6fesm2019222pgn.23.2024.01.09.11.47.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 11:47:14 -0800 (PST)
+Date: Tue, 9 Jan 2024 11:47:13 -0800
+From: Kees Cook <keescook@chromium.org>
+To: jeffxu@chromium.org
+Cc: akpm@linux-foundation.org, jannh@google.com, sroettger@google.com,
+	willy@infradead.org, gregkh@linuxfoundation.org,
+	torvalds@linux-foundation.org, usama.anjum@collabora.com,
+	jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
+	linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Subject: Re: [RFC PATCH v5 0/4] Introduce mseal()
+Message-ID: <202401091144.2C203AA7@keescook>
+References: <20240109154547.1839886-1-jeffxu@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfPQXaKfWonfFB+huClQ/fRPZupeMxuV2ZGs2JvtZNp6KWdzBy33NZVJ5hWxdsJ0tjVWKiZk64ih5pAuh7HWzC536Jepm3XfweVct7qH53x+FUCMfRxLs
- CuzwR4jkEzE/ew5VpS9clVLigiJOPjNt3FINZMABfH8P70Ak60f138aQX1KtZhnJsAlUts/2A8cHh6VCtuA+aRZVu/fSObtdzN12rjtiVwLSdTiMtFF80pUt
- Th0ZWC4F/G98kYRyLzRP0+qxFAYfRwuVkIh/SRdmHfTuas2hNzyeU/Ps2jcKVIWnYfL/yPGuwsPdIIgUlKBa+YhoE05zLltwoDkogR+wmfVPaDLshljeWVGg
- nz5BaZ+5wDL6E13ZoHouCt/C7ZckrWE2VXRFJUI6aQ4JcnHnrQX2eNe50aPfgvqOaERd+LyeFXk8R6R193K8Iw26BVDXgiOBPwwo0Poxk0PvzxSZfhovrZ6X
- CizoNs56EXflwoE3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109154547.1839886-1-jeffxu@chromium.org>
 
-The bug #1917471 was fixed in commit 2ca1c94ce0b6 ("tg3: Disable tg3
-device on system reboot to avoid triggering AER") but was reintroduced
-by commit 9fc3bc764334 ("tg3: power down device only on
-SYSTEM_POWER_OFF").
+On Tue, Jan 09, 2024 at 03:45:38PM +0000, jeffxu@chromium.org wrote:
+> This patchset proposes a new mseal() syscall for the Linux kernel.
 
-The problem described in #1917471 is still consistently replicable on
-reboots on Dell Servers (i.e. R750xs with BCM5720 LOM), causing NMIs
-(i.e. NMI received for unknown reason 38 on cpu 0) after 9fc3bc764334
-was committed.
+Thanks for continuing to work on this! Given Linus's general approval
+on the v4, I think this series can also drop the "RFC" part -- this code
+is looking to land. :)
 
-The problem is detected also by the Lifecycle controller and logged as
-a PCI Bus Error for the device.
+Since we're in the merge window right now, it'll likely be a couple
+weeks before akpm will consider putting this in -next. But given timing,
+this means it'll have a long time to bake in -next, which is good.
 
-As the problems addressed by 2ca1c94ce0b6 and by 9fc3bc764334 requires
-opposite strategies, a new module param "force_pwr_down_on_reboot"
-<bool> is introduced to fix both scenarios:
+-Kees
 
-	force_pwr_down_on_reboot = 0/N/n = disable, keep the current
-									   behavior, don't force dev
-									   power down on reboot
-
-	force_pwr_down_on_reboot = 1/Y/y = enable, revert to the
-									   behavior of 2ca1c94ce0b6,
-									   force dev power down on reboot
-
-Fixes: 9fc3bc764334 ("tg3: power down device only on SYSTEM_POWER_OFF")
-Signed-off-by: Andrea Fois <andrea.fois@eventsense.it>
----
- drivers/net/ethernet/broadcom/tg3.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index f52830dfb26a..287786357c9b 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -233,6 +233,12 @@ static int tg3_debug = -1;	/* -1 == use TG3_DEF_MSG_ENABLE as value */
- module_param(tg3_debug, int, 0);
- MODULE_PARM_DESC(tg3_debug, "Tigon3 bitmapped debugging message enable value");
- 
-+static bool force_pwr_down_on_reboot;	/* false == Don't force the power down of
-+					 * the device during reboot, only on SYSTEM_POWER_OFF
-+					 */
-+module_param(force_pwr_down_on_reboot, bool, 0x644);
-+MODULE_PARM_DESC(force_pwr_down_on_reboot, "Tigon3 force power down of the device on reboot enable value");
-+
- #define TG3_DRV_DATA_FLAG_10_100_ONLY	0x0001
- #define TG3_DRV_DATA_FLAG_5705_10_100	0x0002
- 
-@@ -18197,7 +18203,7 @@ static void tg3_shutdown(struct pci_dev *pdev)
- 	if (netif_running(dev))
- 		dev_close(dev);
- 
--	if (system_state == SYSTEM_POWER_OFF)
-+	if (system_state == SYSTEM_POWER_OFF || force_pwr_down_on_reboot)
- 		tg3_power_down(tp);
- 
- 	rtnl_unlock();
 -- 
-2.40.1
-
+Kees Cook
 
