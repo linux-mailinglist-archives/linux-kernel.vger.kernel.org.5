@@ -1,151 +1,142 @@
-Return-Path: <linux-kernel+bounces-21521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF2E68290B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:15:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D568290B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D600C1C24CB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:15:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26024B26CD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D68D3E495;
-	Tue,  9 Jan 2024 23:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8FD3EA87;
+	Tue,  9 Jan 2024 23:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jVxJ6tAp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="giEdhK26"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AEF3E48F
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704841604; x=1736377604;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qB6rllY9Y9lF/uM8R45vNgHXRFEg+zZ+eoCghnpCI60=;
-  b=jVxJ6tApQ6k/f84mK8Lonb2Fp0pwhJcxrq95PRCT5diRMkMuKFLwiAaF
-   ap2VoTBIRebHhIXFcSCodqUtc/a4nYYjLKr4iBH3APiUXN8GsT8AmHHZC
-   Q8eSjEeuQZcS3zUiUp01z37J1x2lfmZVupELOWxKmX4OcXmEr2KnoXNhz
-   KVSg9hhCOMG01vL0Jjg0lGvOMbf3kBr3QRRsd+zSfh9rENpOmaTXyg4V0
-   4391sCrziteppLkQfW88uUmEB2oaqu33E1+GmEAE4VkjdU9jCiiTer8yo
-   II4lWXIf9JnpdzITansYeKTk/8ymweaWnEuZxbwrv3U9sL9oS26PcwYJe
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5122170"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="5122170"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 15:06:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="785405104"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="785405104"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Jan 2024 15:05:57 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNLAR-0006LG-0v;
-	Tue, 09 Jan 2024 23:05:55 +0000
-Date: Wed, 10 Jan 2024 07:05:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jun Miao <jun.miao@intel.com>, kirill.shutemov@linux.intel.com,
-	dave.hansen@linux.intel.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, jun.miao@intel.com,
-	x86@kernel.org, linux-coco@lists.linux.dev,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022F83EA74
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e4d1e0e5eso15182375e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:07:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704841630; x=1705446430; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SB32//xbcW4q0bnp0pdqAtTjcsxtx9ia49ME4uFhsuI=;
+        b=giEdhK26zqyzqw9zYaEOAPE7nzqp1A0cd/Z4R14GIefyFZZ7hrOf8XRjrpskX/ZLMu
+         +T8xPsLDtepQM5gtpNupCcQvrFbSqhLTn2OBefcrXNifZc9uKtCScz8b5vHSS39hq1Mh
+         rgK/1faOnZdBsTlYR6MT02PQu2Ca5+9kodpcgx7F/kZUWYpdJt972r9I57q1HJJgzns4
+         rmJWvZxONtFMdYxvJ2FnfBPqQ05b2QxvCCUtUNLqsFz+oK8VzfeYe9wNCahQvsd8QNZE
+         MOunrENzGD1qEYq7dEkTtBnhbwUn/ire0LdlQHxZLUO3OBYRVsUs9fAybZE4smST5Kjo
+         J6gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704841630; x=1705446430;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SB32//xbcW4q0bnp0pdqAtTjcsxtx9ia49ME4uFhsuI=;
+        b=MM1vz3RRHX9YwEvj3pMEEu6lyZ++ukmCu/8EKddY+L3WIWAumtQ39/iKmCDJngEsnD
+         e5VosiDCXgz5o/jDW/antmUgzPGuEPy5hf1mHuqx64TKRg2GzZbMre5W+P/51+WxLpY0
+         3SQH1dXzcndPdfccALx1dkmjKnN9XQMDEC/terivsH1Mal08ghvJo3xMrmIywFAmEpkR
+         XCfQ5K9n6T24+KNm1kO0eQHn6itSq9rOZSZB+MmXfhmmLsrbbBWJ3QWyy+2mv2pD1uO4
+         5yc/hoigiK60WuOn/WZpQcSC5aZDZ4DWMdw/Jx5KTLiqjDiOqkRgyu7DeEWPvRO8vWdG
+         Dnzg==
+X-Gm-Message-State: AOJu0YzZBLsPWrsgec28V0jk/tqJ7P48K5sGPdwTO0/MtG6+Ih6ag7Eo
+	C3YbykE3CipBSRdS7UgAyjE=
+X-Google-Smtp-Source: AGHT+IE2PVEJT8mDhWzJ6iSvWvAbhYiuY5i/hdgn30vebpKJwshevCMFqAjmPMAfHgMekvj9Muzm+A==
+X-Received: by 2002:a05:600c:3c8b:b0:40e:53f4:f979 with SMTP id bg11-20020a05600c3c8b00b0040e53f4f979mr22910wmb.164.1704841629893;
+        Tue, 09 Jan 2024 15:07:09 -0800 (PST)
+Received: from toolbox.. ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id z10-20020a05600c0a0a00b0040e486bc0dfsm54021wmp.27.2024.01.09.15.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 15:07:09 -0800 (PST)
+From: Christian Hewitt <christianshewitt@gmail.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-amlogic@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/tdx: Optimize try_accept_memory() to reduce 1GB page
- accepted failed times
-Message-ID: <202401100620.TjY1Uq2O-lkp@intel.com>
-References: <20240109054824.9023-1-jun.miao@intel.com>
+Cc: Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] drm/meson: vclk: fix calculation of 59.94 fractional rates
+Date: Tue,  9 Jan 2024 23:07:04 +0000
+Message-Id: <20240109230704.4120561-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109054824.9023-1-jun.miao@intel.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Jun,
+Playing 4K media with 59.94 fractional rate (typically VP9) causes the screen to lose
+sync with the following error reported in the system log:
 
-kernel test robot noticed the following build warnings:
+[   89.610280] Fatal Error, invalid HDMI vclk freq 593406
 
-[auto build test WARNING on tip/x86/tdx]
-[also build test WARNING on next-20240109]
-[cannot apply to linus/master v6.7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Modetest shows the following:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jun-Miao/x86-tdx-Optimize-try_accept_memory-to-reduce-1GB-page-accepted-failed-times/20240109-134908
-base:   tip/x86/tdx
-patch link:    https://lore.kernel.org/r/20240109054824.9023-1-jun.miao%40intel.com
-patch subject: [PATCH] x86/tdx: Optimize try_accept_memory() to reduce 1GB page accepted failed times
-config: x86_64-allmodconfig (https://download.01.org/0day-ci/archive/20240110/202401100620.TjY1Uq2O-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401100620.TjY1Uq2O-lkp@intel.com/reproduce)
+3840x2160 59.94 3840 4016 4104 4400 2160 2168 2178 2250 593407 flags: xxxx, xxxx,
+drm calculated value -------------------------------------^
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401100620.TjY1Uq2O-lkp@intel.com/
+Change the fractional rate calculation to stop DIV_ROUND_CLOSEST rounding down which
+results in vclk freq failing to match correctly.
 
-All warnings (new ones prefixed by >>):
+Fixes: e5fab2ec9ca4 ("drm/meson: vclk: add support for YUV420 setup")
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+I'm unable to give a better mathematical description of the fix as I can barely read
+code. The change was inspired by [0] which I chanced upon while looking at how other
+dw-hdmi drivers handle fractional rates.
 
->> arch/x86/coco/tdx/tdx-shared.c:62:3: warning: '/*' within block comment [-Wcomment]
-      62 |                 /* The 4KB page case or accept 2MB page failed case. */
-         |                 ^
->> arch/x86/coco/tdx/tdx-shared.c:63:8: warning: variable 'accept_size' is uninitialized when used here [-Wuninitialized]
-      63 |                 if (!accept_size)
-         |                      ^~~~~~~~~~~
-   arch/x86/coco/tdx/tdx-shared.c:49:28: note: initialize the variable 'accept_size' to silence this warning
-      49 |                 unsigned long accept_size;
-         |                                          ^
-         |                                           = 0
-   2 warnings generated.
+[0] https://github.com/torvalds/linux/commit/4f510aa10468954b1da4e94689c38ac6ea8d3627
 
+ drivers/gpu/drm/meson/meson_vclk.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-vim +62 arch/x86/coco/tdx/tdx-shared.c
-
-    40	
-    41	bool tdx_accept_memory(phys_addr_t start, phys_addr_t end)
-    42	{
-    43		/*
-    44		 * For shared->private conversion, accept the page using
-    45		 * TDG_MEM_PAGE_ACCEPT TDX module call.
-    46		 */
-    47		while (start < end) {
-    48			unsigned long len = end - start;
-    49			unsigned long accept_size;
-    50	
-    51			/*
-    52			 * Try larger accepts first. It gives chance to VMM to keep
-    53			 * 1G/2M Secure EPT entries where possible and speeds up
-    54			 * process by cutting number of hypercalls (if successful).
-    55			 * Since per current TDX spec, only support for adding 4KB or
-    56			 * 2MB page dynamically.
-    57			 * /
-    58	
-    59			if (IS_ALIGNED(start, PMD_SIZE) && len >= PMD_SIZE)
-    60				accept_size = try_accept_one(start, len, PG_LEVEL_2M);
-    61	
-  > 62			/* The 4KB page case or accept 2MB page failed case. */
-  > 63			if (!accept_size)
-    64				accept_size = try_accept_one(start, len, PG_LEVEL_4K);
-    65			if (!accept_size)
-    66				return false;
-    67			start += accept_size;
-    68		}
-    69	
-    70		return true;
-    71	}
-    72	
-
+diff --git a/drivers/gpu/drm/meson/meson_vclk.c b/drivers/gpu/drm/meson/meson_vclk.c
+index 2a82119eb58e..2a942dc6a6dc 100644
+--- a/drivers/gpu/drm/meson/meson_vclk.c
++++ b/drivers/gpu/drm/meson/meson_vclk.c
+@@ -790,13 +790,13 @@ meson_vclk_vic_supported_freq(struct meson_drm *priv, unsigned int phy_freq,
+ 				 FREQ_1000_1001(params[i].pixel_freq));
+ 		DRM_DEBUG_DRIVER("i = %d phy_freq = %d alt = %d\n",
+ 				 i, params[i].phy_freq,
+-				 FREQ_1000_1001(params[i].phy_freq/10)*10);
++				 FREQ_1000_1001(params[i].phy_freq/1000)*1000);
+ 		/* Match strict frequency */
+ 		if (phy_freq == params[i].phy_freq &&
+ 		    vclk_freq == params[i].vclk_freq)
+ 			return MODE_OK;
+ 		/* Match 1000/1001 variant */
+-		if (phy_freq == (FREQ_1000_1001(params[i].phy_freq/10)*10) &&
++		if (phy_freq == (FREQ_1000_1001(params[i].phy_freq/1000)*1000) &&
+ 		    vclk_freq == FREQ_1000_1001(params[i].vclk_freq))
+ 			return MODE_OK;
+ 	}
+@@ -1070,7 +1070,7 @@ void meson_vclk_setup(struct meson_drm *priv, unsigned int target,
+ 
+ 	for (freq = 0 ; params[freq].pixel_freq ; ++freq) {
+ 		if ((phy_freq == params[freq].phy_freq ||
+-		     phy_freq == FREQ_1000_1001(params[freq].phy_freq/10)*10) &&
++		     phy_freq == FREQ_1000_1001(params[freq].phy_freq/1000)*1000) &&
+ 		    (vclk_freq == params[freq].vclk_freq ||
+ 		     vclk_freq == FREQ_1000_1001(params[freq].vclk_freq))) {
+ 			if (vclk_freq != params[freq].vclk_freq)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
