@@ -1,128 +1,191 @@
-Return-Path: <linux-kernel+bounces-20642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9C238282DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:17:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD1158282E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6286B1F22915
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:17:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F48A1F2531D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9222E636;
-	Tue,  9 Jan 2024 09:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E45D360A8;
+	Tue,  9 Jan 2024 09:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y/6ErUjh"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jD1u/SxJ"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78967328D0;
-	Tue,  9 Jan 2024 09:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6dde290d09eso272241a34.2;
-        Tue, 09 Jan 2024 01:17:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57A5328DF
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28d61ba65eso297090966b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:17:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704791860; x=1705396660; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mXs4eXFLnV8TiKAn9u+8OI+mgIAVMlsd0Rv7wG5W1mg=;
-        b=Y/6ErUjhUUps4dMcxH/u2u7JSSzhW6pkwnrXjt+wYA6Ngq7DWyQhrqU359aI6KZbmM
-         4JnHkc8aFKo2DExPbQlEhWroNpt/a/twBoxB6Eib0hEHsln3Wt35Q7bh0atoUhs0pFvQ
-         77sqEQCSvb8NARo50XHgdOB2apVwPqO7aY4Itg4X/sA4LZQZ5VA9h+zARDAZpl88hv0p
-         W3UXc779lK92eLTR2lC0oPHF51Xq+5Jd2CVr+Bivb7dl5DlVGBZjaZpjc58Y8YK9PdL8
-         91zdNS3mzM9smOr7LU+BqmH0376Bmz3tPotz0pG1HNmKo2mx13BVpCOmu78qLzEN+bxy
-         fo+A==
+        d=linaro.org; s=google; t=1704791862; x=1705396662; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GYjQDZU9bf7TMDwBYNdb6wWfnM+ZbpVs+pelo5dxYPg=;
+        b=jD1u/SxJMdcy9wFmY6BnP1YlOpnRrEfs4CWqf8T87rVDIowfHSmhdJn8Dui0x5XcXh
+         avdD45BiJkrBQby/xjpM+8YP0BruyOuQe1SP/7bKJJqlwOuhaji/lALtT7dasr9DU1yn
+         alzozicOUfN5VcW/sjfDkIvEm/334GItQoLEiXrxptrE6Bn1w68cCkv98ghuNKZX9j1h
+         JDOsk6oWuNB51dcqdQeyCABlwk+fxxOfBGsQJMxektgnEV796iqLsIzx4p6YKrNRj6wq
+         mZviN0NUMkt7/5UUeQQq8xk9alVoakuZAiBfDJk+hYL5PWCZKQXCWdBKz9sCPbq6OXrl
+         nG3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704791860; x=1705396660;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mXs4eXFLnV8TiKAn9u+8OI+mgIAVMlsd0Rv7wG5W1mg=;
-        b=EdQWfzkXUkHh7KXTjg5rMz3ToUM//DIzG2buJ6a/IC3r0Q/8PHxS0AHkPD4gFyHHUa
-         Bd4WVXu1orBBNqBoDlnEL47g7YIRoBsFROv7x1l8ct2pVwGFxigHXo/Z2+x7OjFTNNKY
-         cvkSppBcwzzqUK2sa6HJuoX71hOHQsNFpdh+zyhORG5Xsk8P4oM4MT5oIIHO96D+KwPR
-         3/UXzKy+yVe6Q25T4nQsbZC30ml/psYkNan0w4my6meZwJMBuFBGB8B+T76f9ePoLPhK
-         YITMp8EEpTmJw6pOampOxu8ZRRazStha1Sv2iN6NmCNx3OlBSPgydyq3BbxSItZJvqfj
-         n4QQ==
-X-Gm-Message-State: AOJu0Yykd3FJwrJopprXkmPnA/Yq13gUCM3d29n2P8MCWOkCLf0bOobi
-	XL0FJUC403zmiqLaxMcQPTg=
-X-Google-Smtp-Source: AGHT+IG5TJb1vDclA0CAeMnXEGX5CF/pIpS0qcbrdsN3/Y771f6XsB4pMSwsM6DHFg7COEhjJpI10Q==
-X-Received: by 2002:a05:6870:1686:b0:204:762a:f8a1 with SMTP id j6-20020a056870168600b00204762af8a1mr6833578oae.111.1704791860339;
-        Tue, 09 Jan 2024 01:17:40 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id dh1-20020a056830484100b006dbaf72af27sm305243otb.1.2024.01.09.01.17.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 01:17:40 -0800 (PST)
-From: Chen Wang <unicornxw@gmail.com>
-To: aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com,
-	conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	robh+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	guoren@kernel.org,
-	jszhang@kernel.org,
-	inochiama@outlook.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH 3/4] riscv: dts: add reset generator for Sophgo SG2042 SoC
-Date: Tue,  9 Jan 2024 17:17:33 +0800
-Message-Id: <66a3c846d26ab73227dfcd141d021a46cad6672b.1704790558.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1704790558.git.unicorn_wang@outlook.com>
-References: <cover.1704790558.git.unicorn_wang@outlook.com>
+        d=1e100.net; s=20230601; t=1704791862; x=1705396662;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GYjQDZU9bf7TMDwBYNdb6wWfnM+ZbpVs+pelo5dxYPg=;
+        b=ZfB9T7RRqZDU/ZyIKB2UrmR6ikFJy3ZHOAk3gYn0/z+PS30Yvb3/8SUPO31YHoOk6+
+         XAFHL55BxxawrlEyI/Svi2si67TE0J8GBfRgZLQVxVJL5+H6oyTneCN5YYZvL8BDDt0c
+         8j8vHY16D1ky+o4tBBq1y985Uf/HdzTphu3XmCuCpDexdsek12y2+bmXInxP+grKkF++
+         Pklr1qM2TM5mpOCZYxtpIbBm+HtUn+NCxS3lMRfYwgRdelr6D/kV3HFFjMu1eTyAGs97
+         shk0qxoamNtva6FYOV0+T4oUr1dOSD0jT3CPJCHSzE1aHVt+GCHNIj/i0L0wjkfv/NwC
+         lkeg==
+X-Gm-Message-State: AOJu0Yy40VcR/YUFOJL0a79HCSMvxPwrji5fCEZskemGzRkUEWFsy9GX
+	nyMdRr6eEdZx/JStWLlDSIvjB6eyhGjYfw==
+X-Google-Smtp-Source: AGHT+IEBwi4ADrWrNnGH1tndKA9GsrVBisUq6EHWEoHt7kNjHsyzxTAP9o0RivW/rNZrWxY1RDWcBg==
+X-Received: by 2002:a17:906:eece:b0:a26:97f6:723a with SMTP id wu14-20020a170906eece00b00a2697f6723amr226511ejb.103.1704791862100;
+        Tue, 09 Jan 2024 01:17:42 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id r14-20020a17090638ce00b00a26f6b8be1csm810451ejd.75.2024.01.09.01.17.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 01:17:41 -0800 (PST)
+Message-ID: <ac2a2370-322c-4cdd-a940-a07ba99dae06@linaro.org>
+Date: Tue, 9 Jan 2024 10:17:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 6/9] dt-bindings: vendor-prefixes: add a PCI prefix for
+ Qualcomm Atheros
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Chris Morgan <macromorgan@hotmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>,
+ Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>,
+ Terry Bowman <terry.bowman@amd.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-pci@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240104130123.37115-1-brgl@bgdev.pl>
+ <20240104130123.37115-7-brgl@bgdev.pl>
+ <20240108191052.GA1893484-robh@kernel.org>
+ <CAMRc=Mc7D1rVHaA4yoOC2DHDkkCptF4wjAm=24Rr=kkqM1ztjg@mail.gmail.com>
+ <CAL_JsqKGrW-v=fr_9NYKg-8cho_-XbVQ92eXpjYYC1ma0_8UuA@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAL_JsqKGrW-v=fr_9NYKg-8cho_-XbVQ92eXpjYYC1ma0_8UuA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Chen Wang <unicorn_wang@outlook.com>
+On 09/01/2024 03:56, Rob Herring wrote:
+> On Mon, Jan 8, 2024 at 12:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>>
+>> On Mon, Jan 8, 2024 at 8:10 PM Rob Herring <robh@kernel.org> wrote:
+>>>
+>>> On Thu, Jan 04, 2024 at 02:01:20PM +0100, Bartosz Golaszewski wrote:
+>>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>>
+>>>> Document the PCI vendor prefix for Qualcomm Atheros so that we can
+>>>> define the QCA PCI devices on device tree.
+>>>
+>>> Why? vendor-prefixes.yaml is only applied to property names. 'qca'
+>>> should be the prefix for those.
+>>>
+>>> Rob
+>>
+>> I didn't have any better idea. PCI devices on DT are defined by their
+>> "pci<vendor ID>,<model ID>" compatible, not regular human-readable
+>> strings and this makes checkpatch.pl complain.
+>>
+>> I'm open to suggestions.
+> 
+> The checkpatch.pl check predates schemas and we could consider just
+> dropping it. The only thing it provides is checking a patch rather
+> than the tree (which the schema do). It's pretty hacky because it just
+> greps the tree for a compatible string which is not entirely accurate.
+> Also, we can extract an exact list of compatibles with
+> "dt-extract-compatibles" which would make a better check, but I'm not
+> sure making dtschema a dependency on checkpatch would be good.
+> 
+> The other option is just ignore the warning. PCI compatibles are fairly rare.
 
-Add reset generator node to device tree for SG2042.
+Yep, the same warnings are for EEPROM and USB VID/PID compatibles, and
+we live with these, so I don't think PCI should be treated differently.
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- arch/riscv/boot/dts/sophgo/sg2042.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..f59081d4f0ee 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -6,6 +6,8 @@
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
- 
-+#include <dt-bindings/reset/sophgo,sg2042-reset.h>
-+
- #include "sg2042-cpus.dtsi"
- 
- / {
-@@ -311,6 +313,12 @@ intc: interrupt-controller@7090000000 {
- 			riscv,ndev = <224>;
- 		};
- 
-+		rstgen: reset-controller@7030013000 {
-+			compatible = "sophgo,sg2042-reset";
-+			reg = <0x00000070 0x30013000 0x00000000 0x0000000c>;
-+			#reset-cells = <1>;
-+		};
-+
- 		uart0: serial@7040000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
