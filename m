@@ -1,176 +1,173 @@
-Return-Path: <linux-kernel+bounces-20442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97058827F05
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:05:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A21827F10
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 173801F24626
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:05:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1C121F2354A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C84C8F60;
-	Tue,  9 Jan 2024 07:05:15 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B49AB64C;
+	Tue,  9 Jan 2024 07:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BR3uNY2a"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC4BB645
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T8MPV6XL9zbbd8;
-	Tue,  9 Jan 2024 15:04:46 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0F1CE14041B;
-	Tue,  9 Jan 2024 15:05:03 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 9 Jan 2024 15:05:02 +0800
-From: Peng Zhang <zhangpeng362@huawei.com>
-To: <hch@lst.de>, <m.szyprowski@samsung.com>, <robin.murphy@arm.com>,
-	<petr.tesarik1@huawei-partners.com>, <iommu@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-CC: <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>,
-	<zhangpeng362@huawei.com>
-Subject: [PATCH] swiotlb: add debugfs to track swiotlb transient pool usage
-Date: Tue, 9 Jan 2024 15:04:56 +0800
-Message-ID: <20240109070456.3999739-1-zhangpeng362@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D2F8F5A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cd17a979bcso28235751fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:08:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704784124; x=1705388924; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LKZ+huI8zyF9y64Tci/e9CKNNCnYcIoMFreFA1gzux0=;
+        b=BR3uNY2aqxJmT75o7xwDgxeATb4y9fom4lRLSxsyllBe4QDRq2d0GDZQ/OGt7N8LnX
+         1VYqXJ8lSMOZUvQiOTUjnqzIFT7ExjFMPLl5Lh8hTzl/FND/cT2ZEvzEX35ic27taei9
+         66Ymdhj+sS5Y0+j9M0Iti3pUvgQ13Bxv0xIDQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704784124; x=1705388924;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LKZ+huI8zyF9y64Tci/e9CKNNCnYcIoMFreFA1gzux0=;
+        b=dbXlNDq+JM+HDupZW2vl3fMVNf1JXjzkL9WJV9QNXTz6uBVG6ym58ZqbK4XLBxj6cu
+         3SEowef7Sy2bhmTtseszVSEr0n8Puvs2egBJr2sMSCow0JOT63XmrGhVjOgE9o2FYDYc
+         7G8J5Je76cLi5fxE0WJ2CXMTqawXyvDv6r3lmelb5SwBYbveSysqbVinVzQb5HXjhzWj
+         0oDLDMwOELIfuB7+OQwLcyE/FMR5W3XxXkHtCpm+leibHoH2Rl5x/+zkEGtZ9FTiynnB
+         38uHSI2oHH52uZOLEzYRZ+uBrunme5R7KcdyY/Qu5rnBn37Wc32QjhDD3ohSqv7JoivB
+         8D0g==
+X-Gm-Message-State: AOJu0YxHQKGTXacydov9fBqGCy05cCoc4lxucrJc3iJROQbvaizh4xhy
+	n7Rjo73fHVMdMnIo4StRI4eqZU0uNYtLSSSgzLgxKmN8Cg2R
+X-Google-Smtp-Source: AGHT+IHuV7ZXffeImPrQxW5h78uhSNEY4eppTSaVCMuaEKuHEsMq7+O1LGba2p8gHRlJMVF9kVGnSOLYolVvVTYKveM=
+X-Received: by 2002:a2e:a404:0:b0:2cd:1b40:5725 with SMTP id
+ p4-20020a2ea404000000b002cd1b405725mr1063109ljn.212.1704784123625; Mon, 08
+ Jan 2024 23:08:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+References: <20240104130123.37115-1-brgl@bgdev.pl> <a85dbfc3-e327-442a-9aab-5115f86944f7@gmail.com>
+In-Reply-To: <a85dbfc3-e327-442a-9aab-5115f86944f7@gmail.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Tue, 9 Jan 2024 15:08:32 +0800
+Message-ID: <CAGXv+5EtvMgbr9oZ7cfnDCDN15BKqgpuiacHHf8_T5kLqYJpJw@mail.gmail.com>
+Subject: Re: [RFC 0/9] PCI: introduce the concept of power sequencing of PCIe devices
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Kalle Valo <kvalo@kernel.org>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jim Quinlan <jim2101024@gmail.com>, 
+	james.quinlan@broadcom.com, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: ZhangPeng <zhangpeng362@huawei.com>
+On Tue, Jan 9, 2024 at 12:09=E2=80=AFPM Florian Fainelli <f.fainelli@gmail.=
+com> wrote:
+>
+> Hello,
+>
+> On 1/4/2024 5:01 AM, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > During last year's Linux Plumbers we had several discussions centered
+> > around the need to power-on PCI devices before they can be detected on
+> > the bus.
+> >
+> > The consensus during the conference was that we need to introduce a
+> > class of "PCI slot drivers" that would handle the power-sequencing.
+> >
+> > After some additional brain-storming with Manivannan and the realizatio=
+n
+> > that the DT maintainers won't like adding any "fake" nodes not
+> > representing actual devices, we decided to reuse the existing
+> > infrastructure provided by the PCIe port drivers.
+> >
+> > The general idea is to instantiate platform devices for child nodes of
+> > the PCIe port DT node. For those nodes for which a power-sequencing
+> > driver exists, we bind it and let it probe. The driver then triggers a
+> > rescan of the PCI bus with the aim of detecting the now powered-on
+> > device. The device will consume the same DT node as the platform,
+> > power-sequencing device. We use device links to make the latter become
+> > the parent of the former.
+> >
+> > The main advantage of this approach is not modifying the existing DT in
+> > any way and especially not adding any "fake" platform devices.
+>
+> There is prior work in that area which was applied, but eventually revert=
+ed:
+>
+> https://www.spinics.net/lists/linux-pci/msg119136.html
+>
+> and finally re-applied albeit in a different shape:
+>
+> https://lore.kernel.org/all/20220716222454.29914-1-jim2101024@gmail.com/
+>
+> so we might want to think about how to have pcie-brcmstb.c converted
+> over your proposed approach. AFAIR there is also pcie-rockchip.c which
+> has some rudimentary support for voltage regulators of PCIe end-points.
 
-Introduce a new debugfs interface io_tlb_transient_nslabs. The device
-driver can create a new swiotlb transient memory pool once default
-memory pool is full. To export the swiotlb transient memory pool usage
-via debugfs would help the user estimate the size of transient swiotlb
-memory pool or analyze device driver memory leak issue.
+I think the current in-tree approaches mostly target either PCIe slots,
+whether full size or mini-PCIe or M.2, or soldered-on components that
+either only have a single power rail, have internal regulators, or have
+surrounding circuitry that would be incorporated on a PCIe card.
 
-Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
----
- include/linux/swiotlb.h |  3 +++
- kernel/dma/swiotlb.c    | 46 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+These all have standardized power rails (+12V, +3.3V, +3.3V aux, etc.).
 
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index ecde0312dd52..ea23097e351f 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -120,6 +120,8 @@ struct io_tlb_pool {
-  *		debugfs.
-  * @used_hiwater: The high water mark for total_used.  Used only for reporting
-  *		in debugfs.
-+ * @transient_nslabs: The total number of slots in all transient pools that
-+ *		are currently used across all areas.
-  */
- struct io_tlb_mem {
- 	struct io_tlb_pool defpool;
-@@ -137,6 +139,7 @@ struct io_tlb_mem {
- #ifdef CONFIG_DEBUG_FS
- 	atomic_long_t total_used;
- 	atomic_long_t used_hiwater;
-+	atomic_long_t transient_nslabs;
- #endif
- };
- 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index b079a9a8e087..77974cea3e69 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -956,6 +956,28 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
- }
- #endif /* CONFIG_DEBUG_FS */
- 
-+#ifdef CONFIG_SWIOTLB_DYNAMIC
-+#ifdef CONFIG_DEBUG_FS
-+static void inc_transient_used(struct io_tlb_mem *mem, unsigned int nslots)
-+{
-+	atomic_long_add(nslots, &mem->transient_nslabs);
-+}
-+
-+static void dec_transient_used(struct io_tlb_mem *mem, unsigned int nslots)
-+{
-+	atomic_long_sub(nslots, &mem->transient_nslabs);
-+}
-+
-+#else /* !CONFIG_DEBUG_FS */
-+static void inc_transient_used(struct io_tlb_mem *mem, unsigned int nslots)
-+{
-+}
-+static void dec_transient_used(struct io_tlb_mem *mem, unsigned int nslots)
-+{
-+}
-+#endif /* CONFIG_DEBUG_FS */
-+#endif /* CONFIG_SWIOTLB_DYNAMIC */
-+
- /**
-  * swiotlb_search_pool_area() - search one memory area in one pool
-  * @dev:	Device which maps the buffer.
-@@ -1170,6 +1192,7 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
- 	spin_lock_irqsave(&dev->dma_io_tlb_lock, flags);
- 	list_add_rcu(&pool->node, &dev->dma_io_tlb_pools);
- 	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
-+	inc_transient_used(mem, pool->nslabs);
- 
- found:
- 	WRITE_ONCE(dev->dma_uses_io_tlb, true);
-@@ -1415,6 +1438,7 @@ static bool swiotlb_del_transient(struct device *dev, phys_addr_t tlb_addr)
- 
- 	dec_used(dev->dma_io_tlb_mem, pool->nslabs);
- 	swiotlb_del_pool(dev, pool);
-+	dec_transient_used(dev->dma_io_tlb_mem, pool->nslabs);
- 	return true;
- }
- 
-@@ -1557,6 +1581,23 @@ phys_addr_t default_swiotlb_limit(void)
- }
- 
- #ifdef CONFIG_DEBUG_FS
-+#ifdef CONFIG_SWIOTLB_DYNAMIC
-+static unsigned long mem_transient_used(struct io_tlb_mem *mem)
-+{
-+	return atomic_long_read(&mem->transient_nslabs);
-+}
-+
-+static int io_tlb_transient_used_get(void *data, u64 *val)
-+{
-+	struct io_tlb_mem *mem = data;
-+
-+	*val = mem_transient_used(mem);
-+	return 0;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_io_tlb_transient_used, io_tlb_transient_used_get,
-+			 NULL, "%llu\n");
-+#endif /* CONFIG_SWIOTLB_DYNAMIC */
- 
- static int io_tlb_used_get(void *data, u64 *val)
- {
-@@ -1605,6 +1646,11 @@ static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem,
- 			&fops_io_tlb_used);
- 	debugfs_create_file("io_tlb_used_hiwater", 0600, mem->debugfs, mem,
- 			&fops_io_tlb_hiwater);
-+#ifdef CONFIG_SWIOTLB_DYNAMIC
-+	atomic_long_set(&mem->transient_nslabs, 0);
-+	debugfs_create_file("io_tlb_transient_nslabs", 0400, mem->debugfs,
-+			    mem, &fops_io_tlb_transient_used);
-+#endif
- }
- 
- static int __init swiotlb_create_default_debugfs(void)
--- 
-2.25.1
+> What does not yet appear in this RFC is support for suspend/resume,
+> especially for power states where both the RC and the EP might be losing
+> power. There also needs to be some thoughts given to wake-up enabled
+> PCIe devices like Wi-Fi which might need to remain powered on to service
+> Wake-on-WLAN frames if nothing else.
+>
+> I sense a potential for a lot of custom power sequencing drivers being
+> added and ultimately leading to the decision to create a "generic" one
+> which is entirely driven by Device Tree properties...
 
+We can have one "generic" slot power sequencing driver, which just
+enables all the power rails together. I would very much like to see that.
+
+I believe the power sequencing in this series is currently targeting more
+tightly coupled designs that use power rails directly from the PMIC, and
+thus require more explicit power sequencing.
+
+ChenYu
+
+
+> Thanks for doing this!
+> --
+> Florian
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
