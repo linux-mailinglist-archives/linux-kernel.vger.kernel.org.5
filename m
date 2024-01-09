@@ -1,54 +1,50 @@
-Return-Path: <linux-kernel+bounces-20503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E7B3827FD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:57:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E8A827FE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AB452880B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:57:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23C321C23D01
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:58:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2F125742;
-	Tue,  9 Jan 2024 07:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30E82D60D;
+	Tue,  9 Jan 2024 07:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pYDd13yT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Me4pfJh6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D825224FC;
-	Tue,  9 Jan 2024 07:57:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E61DBC43390;
-	Tue,  9 Jan 2024 07:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6BEB66B;
+	Tue,  9 Jan 2024 07:57:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DBCAC433C7;
+	Tue,  9 Jan 2024 07:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704787024;
-	bh=osEjPHFSBRRETsdDQv26/OIMeyS5BBWg439/b7Ob4A8=;
+	s=k20201202; t=1704787056;
+	bh=VLDneZLA6cAnWxtoG7KbCxm8KweXPrrQ2Mn6Ofb6MR8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=pYDd13yTLCtkfqQoESXCMcWnOzWulKNk0gNlddCa0aVZUdp73YdTPb6zOa+NDYu1U
-	 wk2QrfUSBUKYmJwDUkE4hZqOPiU4drhPMeWxRInBVCN3gGpEw3ciEFBE4eZPyhuz+t
-	 5WPB7o7I+QxEc8szDmNMOYcylAEOHfuPQ10YKp2Kj0a1znltyenmmV10G5PDlnlTsh
-	 /By3rMemiSg4sqV1FMX8O68Q1wbv0HZUCQ5TV3GuTTzTGncFjtQCKyQ+ibFpU9LMPg
-	 S6XzseCo2sbnJU0JJFJVEAbT3dHoVSXz602LCHPpGksRYIx7bbxbZQXHT2th40jGKN
-	 b5f99I1NdcA3w==
+	b=Me4pfJh6dlkcobjt6Eefwwv0CZqzwIrWh7igIV5Wxk1VrgKQ0L3y2cd3e2iJibOky
+	 w9bIh2oR9cNnIfumWNhOf5GgJyXoFI7NpSALoLeM24wc9ZAAqpPNUMceKug/BANQEO
+	 QY+E+Up/zXp11/IStSHvYzSDlaNCI9aX2TQXo/KsiF6UgM1tlBzqYjFMVNMjaq9w8a
+	 XOFazkm9TgNWSD06qM5FsLAvm2iCG76aS0fG01Gs82wWG7K0GiiDbmEAvmWgwJgsz4
+	 yhbOC2FDCE6Ch8UrSIaOWGbB8Au5fQcsineQXjTsrjz3txvMELmdrK6b6n1lMurQ0L
+	 vgx248eNSPm+w==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Jiawen Wu <jiawenwu@trustnetic.com>,
-	Mengyuan Lou <mengyuanlou@net-swift.com>,
-	Jakub Kicinski <kuba@kernel.org>
+To: Yishai Hadas <yishaih@nvidia.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	netdev@vger.kernel.org,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	kvm@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] wangxunx: select CONFIG_PHYLINK where needed
-Date: Tue,  9 Jan 2024 08:56:21 +0100
-Message-Id: <20240109075656.2656359-1-arnd@kernel.org>
+Subject: [PATCH] vfio: fix virtio-pci dependency
+Date: Tue,  9 Jan 2024 08:57:19 +0100
+Message-Id: <20240109075731.2726731-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -60,37 +56,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The ngbe driver needs phylink:
+The new vfio-virtio driver already has a dependency on VIRTIO_PCI_ADMIN_LEGACY,
+but that is a bool symbol and allows vfio-virtio to be built-in even if
+virtio-pci itself is a loadable module. This leads to a link failure:
 
-arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/libwx/wx_ethtool.o: in function `wx_nway_reset':
-wx_ethtool.c:(.text+0x458): undefined reference to `phylink_ethtool_nway_reset'
-arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/ngbe/ngbe_main.o: in function `ngbe_remove':
-ngbe_main.c:(.text+0x7c): undefined reference to `phylink_destroy'
-arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/ngbe/ngbe_main.o: in function `ngbe_open':
-ngbe_main.c:(.text+0xf90): undefined reference to `phylink_connect_phy'
-arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/ngbe/ngbe_mdio.o: in function `ngbe_mdio_init':
-ngbe_mdio.c:(.text+0x314): undefined reference to `phylink_create'
+aarch64-linux-ld: drivers/vfio/pci/virtio/main.o: in function `virtiovf_pci_probe':
+main.c:(.text+0xec): undefined reference to `virtio_pci_admin_has_legacy_io'
+aarch64-linux-ld: drivers/vfio/pci/virtio/main.o: in function `virtiovf_pci_init_device':
+main.c:(.text+0x260): undefined reference to `virtio_pci_admin_legacy_io_notify_info'
+aarch64-linux-ld: drivers/vfio/pci/virtio/main.o: in function `virtiovf_pci_bar0_rw':
+main.c:(.text+0x6ec): undefined reference to `virtio_pci_admin_legacy_common_io_read'
+aarch64-linux-ld: main.c:(.text+0x6f4): undefined reference to `virtio_pci_admin_legacy_device_io_read'
+aarch64-linux-ld: main.c:(.text+0x7f0): undefined reference to `virtio_pci_admin_legacy_common_io_write'
+aarch64-linux-ld: main.c:(.text+0x7f8): undefined reference to `virtio_pci_admin_legacy_device_io_write'
 
-Add the missing Kconfig description for this.
+Add another explicit dependency on the tristate symbol.
 
-Fixes: bc2426d74aa3 ("net: ngbe: convert phylib to phylink")
+Fixes: eb61eca0e8c3 ("vfio/virtio: Introduce a vfio driver over virtio devices")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/wangxun/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/vfio/pci/virtio/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/wangxun/Kconfig b/drivers/net/ethernet/wangxun/Kconfig
-index 23cd610bd376..46630f05d8dd 100644
---- a/drivers/net/ethernet/wangxun/Kconfig
-+++ b/drivers/net/ethernet/wangxun/Kconfig
-@@ -26,6 +26,7 @@ config NGBE
- 	tristate "Wangxun(R) GbE PCI Express adapters support"
- 	depends on PCI
- 	select LIBWX
-+	select PHYLINK
- 	select PHYLIB
- 	help
- 	  This driver supports Wangxun(R) GbE PCI Express family of
+diff --git a/drivers/vfio/pci/virtio/Kconfig b/drivers/vfio/pci/virtio/Kconfig
+index fc3a0be9d8d4..bd80eca4a196 100644
+--- a/drivers/vfio/pci/virtio/Kconfig
++++ b/drivers/vfio/pci/virtio/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config VIRTIO_VFIO_PCI
+         tristate "VFIO support for VIRTIO NET PCI devices"
+-        depends on VIRTIO_PCI_ADMIN_LEGACY
++        depends on VIRTIO_PCI && VIRTIO_PCI_ADMIN_LEGACY
+         select VFIO_PCI_CORE
+         help
+           This provides support for exposing VIRTIO NET VF devices which support
 -- 
 2.39.2
 
