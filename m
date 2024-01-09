@@ -1,261 +1,148 @@
-Return-Path: <linux-kernel+bounces-20498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24288827FCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:52:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E63827FD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DB011F25359
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:52:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 082BB287BCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C133B670;
-	Tue,  9 Jan 2024 07:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E8BB670;
+	Tue,  9 Jan 2024 07:56:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="AcyXuc6V"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="OUxXYZx7"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2045.outbound.protection.outlook.com [40.107.104.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3377B652
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cd1232a2c7so30290901fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1704786726; x=1705391526; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SHMsXlWZWaGsrXYEDte+sg2DqzlgrW3ZmXNJD62Sg6A=;
-        b=AcyXuc6VQloyTFcTZU++WFFJ2ThQ82tf4J5BnQEcNouvrPdhpfWuX0Mas46YgFqiXF
-         pKioKe7tsBJBvPM9gVYBxHwIlQW/Rdn6tmkLPANomji+wbPXc54/dwJ5iAnxCfMAOpzQ
-         4rvoEco4Hb0o0QM7aT6M9Wzsvdltb1NujdkJ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704786726; x=1705391526;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SHMsXlWZWaGsrXYEDte+sg2DqzlgrW3ZmXNJD62Sg6A=;
-        b=ZvM2DkXW14blv9fS8MKli763YtcbuGlisbkEZYr2RpSR5yLi88OFOphEDqB6sajzpB
-         rmTPLKgBYNUW40dFUksVKrrc3Ka4+lAUfQjyh9IMJF7iWesYoVtqFTlfMxDUcoGFEjXl
-         rFPXTBvwNVQdqtQfHmMM+liKX5f2LEWbzwSV80DVLZZne6q1MzQuvgWAozr2zKe0RRl9
-         3119TwPOPX4P041FsOTvPxSdlx5jyWMu+e/OHbGIIjmFKO8ZB9r1zrJVHO7l7b93RSBr
-         s1niI0xcEoCtSc1diGzqt71Y9wxUm0pkW6uY1v9M1JnjL01JSoJ5utuOKPDA0gh95u5l
-         F2zQ==
-X-Gm-Message-State: AOJu0Yzqpy0dh4dIkSGabSXqR8SfqOor5crnk2M3VAudohDCnEpL31MP
-	xiMXC+YTve2acoJAE/wGrNVhGouBrnowshYlD1+tbDEfiLVq
-X-Google-Smtp-Source: AGHT+IHuTXV8NIt4gJXv79KBRfV+UGFAihQ0TgFFGOGOxerlXPw9DAp+fttPBvgWz9Og/8JF+FtL8tu+tG90k/BMnMU=
-X-Received: by 2002:a2e:8894:0:b0:2cc:ea0d:f6be with SMTP id
- k20-20020a2e8894000000b002ccea0df6bemr2000733lji.86.1704786725784; Mon, 08
- Jan 2024 23:52:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20650C126;
+	Tue,  9 Jan 2024 07:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=huJBwMR9uzWCMHVWjjjLABPsCoM9PuffWb30xa5PzcueGhyPvlmMyLFS5V51QAEjKQp1fvdlc5Pws6tOLuOK7zOoodMhlbClUM9CFMF0RbRtxKvHfBk5B3puw3MzWfx7uv9GRDLlwuf6eK9u2Yj6s3W+8O9nTqzqEQt7VkZqkKwthzAIc5LyHKX0TlPf8qCgc9URcXYV5Jt1qAvOz80otJb95UeePMDNepMdidA5stRstg81PFfXGPMaBTY+0eaghpT4L5fUDnhAX2ZLhZCynCt90CS/OkufobFLBbn4ygE50p4Nben7TqhajL+5Z42anoBR/IuQqCaexLzp47MqkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eQbiZjA7EDN5zEOGAyQMMtT+F6XBWMl/5IrKpQIGPBo=;
+ b=fbzsQFFy48i4qFnU2yMFDj8no3U+V9t0hozL1F/3deXi3ngA39CLebP9Y3PtSRE0PSUiyn0S+LPzQzf+xxsR1xtJ4jWmSwmGXzLh9MQTHmK+pwH7Bx0FA6a/xoSIvT9pOnYNtvJ3GM3uG5TBS00EiM4T2gFvEATJCuWS/z/o+ucK+5sgS6tSosPqH9v3Pv0+8aCskYfQjXvqokACJ4jFKNA5ox/p55e+g23HZOPfMXuWzWg+SqF8rqBCdQf7BMWSLUMpmmQd8+7sQc2Z0atR5TtOmmlSDmc/0CzHE4Exb9Ebqa3iBe2FvAfm+eDKuPdNnXyETWvZQP8QoHSo4adk2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eQbiZjA7EDN5zEOGAyQMMtT+F6XBWMl/5IrKpQIGPBo=;
+ b=OUxXYZx7z0ZYfE9iCNXjitRt6bnM68xKK1WuMPp6WLe8hLWoOpu08a0GlPuj3ayESGTz0Ej77VqPnJPGkME8gWXgcZ5tR/g39LehDSpISsoPkWv+S0A74m9PjYk3VBvJslLnG+buN5wyex8OLMhaeKmZj49ufk+JolOiBuvld7c=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by GVXPR04MB9994.eurprd04.prod.outlook.com (2603:10a6:150:11a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Tue, 9 Jan
+ 2024 07:56:49 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::2a3c:9a90:b09f:293c]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::2a3c:9a90:b09f:293c%3]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
+ 07:56:49 +0000
+From: Chancel Liu <chancel.liu@nxp.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Cc: Chancel Liu <chancel.liu@nxp.com>
+Subject: [PATCH 0/3] ASoC: Support SAI and MICFIL on i.MX95 platform
+Date: Tue,  9 Jan 2024 16:55:48 +0900
+Message-ID: <20240109075551.870001-1-chancel.liu@nxp.com>
+X-Mailer: git-send-email 2.42.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0184.apcprd06.prod.outlook.com (2603:1096:4:1::16)
+ To DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108-fencei-v5-0-aa1e51d7222f@rivosinc.com>
- <20240108-fencei-v5-2-aa1e51d7222f@rivosinc.com> <CAOnJCUJQ-M1bVC_VhogMLo47mRyk3Pzq-GFH5P7ADn70BN9ObA@mail.gmail.com>
- <ZZyth6Ijtsmy5D84@ghost>
-In-Reply-To: <ZZyth6Ijtsmy5D84@ghost>
-From: Atish Patra <atishp@atishpatra.org>
-Date: Mon, 8 Jan 2024 23:51:54 -0800
-Message-ID: <CAOnJCUL60H16edo6icR-1bzTVk0Tdr+hRf3izharUEEvxCrwhA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] documentation: Document PR_RISCV_SET_ICACHE_FLUSH_CTX
- prctl
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>, 
-	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Randy Dunlap <rdunlap@infradead.org>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|GVXPR04MB9994:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4c4bf19f-549a-444b-0dcf-08dc10e8887a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	XQmF9O0KhgBLrmmjDc/Ve5wwNHa+4hDJfs8a6u03zfXubpQSXJe5BLeDJQRynAi6DGh/ffxA11JRS8FqWu3N60pDtyE+0w1gowv57/G/IM9r4t44Y0sEjLcIqRn8SkDydKMkeKgGpGkmoKC7E0OJ9pfgCVeptl3SfmPYuXf7G6BWTOVYM3nBLb1AU3x/fa5HGx1vSEzEhwuPrPdg/71RK8HFRKOfBsnjLSCcUvwNOmBsK6p8HDh8/7AllvIA/tHolS2g7mfEG2d3x07NqtYeNWyL9FX1NdM6E+pgzQku6Yl6f47ymrNaG9IgKp8+RLz3nXN3wgmABIym+P+DJktLPIeNMhnIK5kI3EwcRxDNQDxHkYeapuCguUTdnTe+1ozZfjgI/6kPS7+gea/L8N3Q8AnJ81j9a6221kvYJHHKsLt3A13ZI3ciKfj/Nlsa4ymIf3dDT3WzI5H3Y4V+S/3sSpTtnQ7h47u05OItniRq74h6ZJa34nEpHO9nJ9azII/7Teg0VguLSYgY+v24hEDgUy6NHVLs9igMJRiE278N5ci9d0NR/X0sg3C1CgS9oChoVF4swKUR9WksPeeAvtZ/BnkZcSIZSWY050XZe8R1lVv8Fury7BnzpL9FmTIyKAGglEqVLNTuJiQaHi5zgyO1uA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(346002)(136003)(366004)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(1076003)(2616005)(26005)(52116002)(478600001)(6506007)(6512007)(6486002)(38100700002)(921011)(36756003)(86362001)(38350700005)(4744005)(2906002)(7416002)(41300700001)(5660300002)(83380400001)(66556008)(4326008)(66946007)(316002)(44832011)(8936002)(8676002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?pNvKrh7DvC11zDfORfF0S762gNEmixDvJ3hB9C5/AB6gGfPNB9kPu6E+F4GO?=
+ =?us-ascii?Q?e/PM4o69ObUVDlDDpx+4TyYxJuoY/zmTY5AmXkqqGasy2HkRFS3QofHbP0r5?=
+ =?us-ascii?Q?p/iRE6ezRF5lH9qyZ5UlYtz6nSshUGbVSRbS3N2jlUCHuufNuQ4vsaHFjq0E?=
+ =?us-ascii?Q?MNe0e2H13N8oPae8TUu1+Pt/lbXAPDIf0OkpaNII6137nTSRlKRfsjQXLLWn?=
+ =?us-ascii?Q?6bAkbiLtjKi3ZMfiG6DJyjJFDRsRZvQ8MnMdPD292QjTgGxMYYjjtMXimQKc?=
+ =?us-ascii?Q?+mNs3InoPAlSfh9SF2uUKMLyytDA1rLSPkqZ1sIbWhhkU66PU1g13rlQVhvL?=
+ =?us-ascii?Q?IXM2Y3oXKuMT56sq3GSihLayvf4uLfhbkBUfVwBMGy/343v9sMKx7G30eY5H?=
+ =?us-ascii?Q?D6Zri8gebSNN2jvmcyWiAMLuaa5ub/SxLUnX5Ow3lPh7RcFoJS6sHjLLWxOP?=
+ =?us-ascii?Q?73Uoi+ORaWFjPJxcqm03S0ljCYRUnefGaa/JECg9QMUIqGuBV2kXZ1D2SL1Y?=
+ =?us-ascii?Q?9DZYGUz2F9U0tpDVMLDwOeqwsFfa736pi7c8qe9wmGJHGSloUWxxtsORWzGR?=
+ =?us-ascii?Q?DkjIAWut+xSrL9QVHceyg+I6vOKhnaLcqM65CzkrGKjv4rNLwHOIK7/fDSHt?=
+ =?us-ascii?Q?rxgpwq+zaE7PC7bA0pC4tlIU8+gYLED54ieaz6cK4RFWoE4hDTCmznWLrDU+?=
+ =?us-ascii?Q?gyObA96sL9OTnYbLTuztLhjTQHiKxPBVCyhiNgJLNXchkLa+WWg/iGVd/Q2B?=
+ =?us-ascii?Q?RG3knf4dZwPV7PO5feMIy9TF9Z4cq0Pyk1hPakR7wLi95CCquLKGRqiAwFnk?=
+ =?us-ascii?Q?zGjPzCOZbKbJSD4vPpk+THftz3wTmIcS1NOGhjkSnTuiFyRZfe0GbbdHt8v7?=
+ =?us-ascii?Q?SYhS1bGNqRBdpbF24nLVaSNZYf2xHWhnjeLrTxm+TsB33YkVOgmF2xdYhlfe?=
+ =?us-ascii?Q?wUnvHNjxEUPBghXJ8AuuX9/7VP0e4MeiPHfBgsZLJuAI67B0Od/UcAV8IwF2?=
+ =?us-ascii?Q?VYvI42iq0KswZ1aEzVgx44+KVWfXo7YBSGT8NzBQVZlWhIY+ZBtWN2Vs0ljm?=
+ =?us-ascii?Q?0NZMG5d6/DED9de5X8xh3a5B2umiUSAwl9KABqFi4XRQHSslQ7/jy0s5OBE+?=
+ =?us-ascii?Q?3IR1jDA0KTIJfbxLF2yZBb9yBnOGseErKBMscXpfFEUk0kUlE4sJPlv3+8uz?=
+ =?us-ascii?Q?6imgWCL9A7PleGtxut5LDNgeVpAg/77vbPDmD9TtnzSBZIHTVGFJh8y5/NHL?=
+ =?us-ascii?Q?FvttA2/IbCo/EswnvCAUzyGqToa0UEazslNNY62QWpXWtSCyYYpDiU06vQ2Z?=
+ =?us-ascii?Q?dbrOwbAdrxtDqF/PrhRcK6sxFqqeQBTq5RgkY9iHNcRV0g2bd6OMk7p77nM4?=
+ =?us-ascii?Q?qi4fnHkikZmdF7nCMJbyZqVFePlSlJSxx0IqAdrR5A+sQ6Xv3WIc69ybwWv+?=
+ =?us-ascii?Q?gfLaLwBhuBMfoiiTHbZpZvavPcD85VBBX8uU2rcw79Dcau963SUxxdgdff/P?=
+ =?us-ascii?Q?tqzByR4C7QDxVhxbaBGiC69z2v4SqW35Me0VaQ5jI+qXaYPChMXqfK40hW5W?=
+ =?us-ascii?Q?LECmwtrWCk81yAdqOqkeaJShu81prGAlIN53wvtA?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c4bf19f-549a-444b-0dcf-08dc10e8887a
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 07:56:49.1007
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r3vwlxZPU7FkZfmVpVWrJhQWBnRPejFFWHpIFnilwDq6vRTMDu2zx3bK3NJSQKVgbDZRS0rt7xjMQR8nuWCxaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9994
 
-On Mon, Jan 8, 2024 at 6:20=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.co=
-m> wrote:
->
-> On Mon, Jan 08, 2024 at 05:24:47PM -0800, Atish Patra wrote:
-> > On Mon, Jan 8, 2024 at 10:42=E2=80=AFAM Charlie Jenkins <charlie@rivosi=
-nc.com> wrote:
-> > >
-> > > Provide documentation that explains how to properly do CMODX in riscv=
-.
-> > >
-> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > ---
-> > >  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++=
-++++++++++
-> > >  Documentation/arch/riscv/index.rst |  1 +
-> > >  2 files changed, 89 insertions(+)
-> > >
-> > > diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/=
-riscv/cmodx.rst
-> > > new file mode 100644
-> > > index 000000000000..afd7086c222c
-> > > --- /dev/null
-> > > +++ b/Documentation/arch/riscv/cmodx.rst
-> > > @@ -0,0 +1,88 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > > +Concurrent Modification and Execution of Instructions (CMODX) for RI=
-SC-V Linux
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > > +
-> > > +CMODX is a programming technique where a program executes instructio=
-ns that were
-> > > +modified by the program itself. Instruction storage and the instruct=
-ion cache
-> > > +(icache) are not guaranteed to be synchronized on RISC-V hardware. T=
-herefore, the
-> > > +program must enforce its own synchronization with the unprivileged f=
-ence.i
-> > > +instruction.
-> > > +
-> > > +However, the default Linux ABI prohibits the use of fence.i in users=
-pace
-> > > +applications. At any point the scheduler may migrate a task onto a n=
-ew hart. If
-> > > +migration occurs after the userspace synchronized the icache and ins=
-truction
-> > > +storage with fence.i, the icache will no longer be clean. This is du=
-e to the
-> > > +behavior of fence.i only affecting the hart that it is called on. Th=
-us, the hart
-> > > +that the task has been migrated to may not have synchronized instruc=
-tion storage
-> > > +and icache.
-> > > +
-> > > +There are two ways to solve this problem: use the riscv_flush_icache=
-() syscall,
-> > > +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.=
-i in
-> > > +userspace. The syscall performs a one-off icache flushing operation.=
- The prctl
-> > > +changes the Linux ABI to allow userspace to emit icache flushing ope=
-rations.
-> > > +
-> > > +prctl() Interface
-> > > +---------------------
-> > > +
-> > > +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first arg=
-ument. The
-> > > +remaining arguments will be delegated to the riscv_set_icache_flush_=
-ctx
-> > > +function detailed below.
-> > > +
-> > > +.. kernel-doc:: arch/riscv/mm/cacheflush.c
-> > > +       :identifiers: riscv_set_icache_flush_ctx
-> > > +
-> >
-> > Document the arguments of the prctl as well ?
->
-> Do you mean to include the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` key in the
-> comment of riscv_set_icache_flush_ctx? The args to
-> riscv_set_icache_flush_ctx are the args to the prctl except for the key.
->
+Support SAI and MICFIL on i.MX95 platform
 
-No, I mean describe the argument2(ctx) and argument3(per_thread) as well.
-Since this is a documentation of the new prctl, we should document all
-args so that an user
-can use it without grepping through the kernel sources.
+Chancel Liu (3):
+  ASoC: dt-bindings: fsl,sai: Add compatible string for i.MX95 platform
+  ASoC: fsl_sai: Add support for i.MX95 platform
+  ASoC: dt-bindings: fsl,micfil: Add compatible string for i.MX95
+    platform
 
-> - Charlie
->
-> >
-> > > +Example usage:
-> > > +
-> > > +The following files are meant to be compiled and linked with each ot=
-her. The
-> > > +modify_instruction() function replaces an add with 0 with an add wit=
-h one,
-> > > +causing the instruction sequence in get_value() to change from retur=
-ning a zero
-> > > +to returning a one.
-> > > +
-> > > +cmodx.c::
-> > > +
-> > > +       #include <stdio.h>
-> > > +       #include <sys/prctl.h>
-> > > +
-> > > +       extern int get_value();
-> > > +       extern void modify_instruction();
-> > > +
-> > > +       int main()
-> > > +       {
-> > > +               int value =3D get_value();
-> > > +               printf("Value before cmodx: %d\n", value);
-> > > +
-> > > +               // Call prctl before first fence.i is called inside m=
-odify_instruction
-> > > +               prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_=
-SW_FENCEI, 0);
-> > > +               modify_instruction();
-> > > +
-> > > +               value =3D get_value();
-> > > +               printf("Value after cmodx: %d\n", value);
-> > > +               return 0;
-> > > +       }
-> > > +
-> > > +cmodx.S::
-> > > +
-> > > +       .option norvc
-> > > +
-> > > +       .text
-> > > +       .global modify_instruction
-> > > +       modify_instruction:
-> > > +       lw a0, new_insn
-> > > +       lui a5,%hi(old_insn)
-> > > +       sw  a0,%lo(old_insn)(a5)
-> > > +       fence.i
-> > > +       ret
-> > > +
-> > > +       .section modifiable, "awx"
-> > > +       .global get_value
-> > > +       get_value:
-> > > +       li a0, 0
-> > > +       old_insn:
-> > > +       addi a0, a0, 0
-> > > +       ret
-> > > +
-> > > +       .data
-> > > +       new_insn:
-> > > +       addi a0, a0, 1
-> > > diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/=
-riscv/index.rst
-> > > index 4dab0cb4b900..eecf347ce849 100644
-> > > --- a/Documentation/arch/riscv/index.rst
-> > > +++ b/Documentation/arch/riscv/index.rst
-> > > @@ -13,6 +13,7 @@ RISC-V architecture
-> > >      patch-acceptance
-> > >      uabi
-> > >      vector
-> > > +    cmodx
-> > >
-> > >      features
-> > >
-> > >
-> > > --
-> > > 2.43.0
-> > >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
+ .../devicetree/bindings/sound/fsl,micfil.yaml     | 15 +++++++++++----
+ .../devicetree/bindings/sound/fsl,sai.yaml        |  1 +
+ sound/soc/fsl/fsl_sai.c                           | 13 +++++++++++++
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
+--
+2.42.0
 
-
---=20
-Regards,
-Atish
 
