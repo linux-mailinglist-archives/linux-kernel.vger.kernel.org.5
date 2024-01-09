@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-21347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F9B4828DFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:45:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E593828E0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E87E51F2A2FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:45:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A453D1C213A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB740482E6;
-	Tue,  9 Jan 2024 19:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EF948CE6;
+	Tue,  9 Jan 2024 19:38:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="M+oc6rkS"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="meB4l/v4"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B2347A45;
-	Tue,  9 Jan 2024 19:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00507481C7;
+	Tue,  9 Jan 2024 19:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409G4aDP020396;
-	Tue, 9 Jan 2024 19:38:11 GMT
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409IPgvb009679;
+	Tue, 9 Jan 2024 19:38:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=CFZQM9HHgwsq85wbA4HaJDXM+Ti//VjdbRwqaGcKBmo
-	=; b=M+oc6rkSFe+jMKMYTEkPOSWJug2g+MbEY+O8KJwHpVmZh7f+2oV2ISiRl0T
-	qjXb+/r2csBU6vfw6lLHFVNhxHcqmMncste+FXqfTcAFEG6lRO4suvajndNqACxZ
-	pQApBfS4U+27uvDwRmQDiNW+CgZvcUzh3xpDS54jdKA2Vvh/GfzSlLFNsuwpZ4zt
-	zdZwPf5aolzF2jJyqNrRDRKg/d2OO0mpECaGnVjU/JcPiVvQ8Kg6XV7KghxBwhi6
-	zF+pH65r5zACqta+UuRK9/8R3yMSRHO74AJWTmVvHupDAdHkKos4CRWAYNAxw1OQ
-	tKyfAs5OD9zgcvnQRuzNwnmz8mg==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9bmggdp-1
+	:cc; s=qcppdkim1; bh=9IXiRln2Duun1O80Yl8EsvifJ9A2nUavg62PHcy0yVQ
+	=; b=meB4l/v4NDsiJs4wRPv7TjhWtf35qjgjlmEZdoe6KtorlH+6+aiyx81qcU+
+	2PSK4XQz5UnVSN7jdEk3INrccSurEXaoUxv6HwXV4Wah+dTHkNcoBGW9Vt1tUYTn
+	D2ystJCaVc519dsmgvFk6EuCPq7DBthg36dkc45Bl06AFbeeR9wVfuQNr3KbslTq
+	bbOqGJJ92LXThkRfDH4ZqQ/f1fPny87Fohj//lhFl6ybLPMoUFkX4+F7nnGa8yq/
+	agQE6NwlTYsZ8lCvPa6yFPR//EvHF5c7jYZR+kKK+EBBCLDnXnWXyd8EgCxS1Bbc
+	5zZpkb70VQJq9PwSBRJrKT+xo6Q==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh85t0pp9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 19:38:11 +0000 (GMT)
+	Tue, 09 Jan 2024 19:38:12 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409JcA3i011573
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409JcBhQ003587
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jan 2024 19:38:10 GMT
+	Tue, 9 Jan 2024 19:38:11 GMT
 Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.40; Tue, 9 Jan 2024 11:38:10 -0800
 From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Tue, 9 Jan 2024 11:38:11 -0800
-Subject: [PATCH v16 33/34] virt: gunyah: Add ioeventfd
+Date: Tue, 9 Jan 2024 11:38:12 -0800
+Subject: [PATCH v16 34/34] MAINTAINERS: Add Gunyah hypervisor drivers
+ section
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,7 +58,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240109-gunyah-v16-33-634904bf4ce9@quicinc.com>
+Message-ID: <20240109-gunyah-v16-34-634904bf4ce9@quicinc.com>
 References: <20240109-gunyah-v16-0-634904bf4ce9@quicinc.com>
 In-Reply-To: <20240109-gunyah-v16-0-634904bf4ce9@quicinc.com>
 To: Alex Elder <elder@linaro.org>,
@@ -97,265 +98,49 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: TqyjYIVU4KJsNF6XyeHikBnwWRuxaqt5
-X-Proofpoint-GUID: TqyjYIVU4KJsNF6XyeHikBnwWRuxaqt5
+X-Proofpoint-ORIG-GUID: kzM0F7NTMKnUvtJCJV2bCf88yMAs95Pq
+X-Proofpoint-GUID: kzM0F7NTMKnUvtJCJV2bCf88yMAs95Pq
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- clxscore=1015 spamscore=0 priorityscore=1501 malwarescore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=744 clxscore=1015
+ priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401090158
 
-Allow userspace to attach an ioeventfd to an mmio address within the
-guest.  Userspace provides a description of the type of write to
-"subscribe" to and eventfd to trigger when that type of write is
-performed by the guest. This mechanism allows userspace to respond
-asynchronously to a guest manipulating a virtualized device and is
-similar to KVM's ioeventfd.
+Add myself and Prakruthi as maintainers of Gunyah hypervisor drivers.
 
 Reviewed-by: Alex Elder <elder@linaro.org>
-Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/virt/gunyah/Kconfig            |   9 +++
- drivers/virt/gunyah/Makefile           |   1 +
- drivers/virt/gunyah/gunyah_ioeventfd.c | 139 +++++++++++++++++++++++++++++++++
- include/uapi/linux/gunyah.h            |  37 +++++++++
- 4 files changed, 186 insertions(+)
+ MAINTAINERS | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/virt/gunyah/Kconfig b/drivers/virt/gunyah/Kconfig
-index 1685b75fb77a..855d41a88b16 100644
---- a/drivers/virt/gunyah/Kconfig
-+++ b/drivers/virt/gunyah/Kconfig
-@@ -36,3 +36,12 @@ config GUNYAH_IRQFD
- 	  on Gunyah virtual machine.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fa67e2624723..64f70ef1ef91 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9306,6 +9306,18 @@ L:	linux-efi@vger.kernel.org
+ S:	Maintained
+ F:	block/partitions/efi.*
  
- 	  Say Y/M here if unsure and you want to support Gunyah VMMs.
++GUNYAH HYPERVISOR DRIVER
++M:	Elliot Berman <quic_eberman@quicinc.com>
++M:	Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
++L:	linux-arm-msm@vger.kernel.org
++S:	Supported
++F:	Documentation/devicetree/bindings/firmware/gunyah-hypervisor.yaml
++F:	Documentation/virt/gunyah/
++F:	arch/arm64/gunyah/
++F:	drivers/virt/gunyah/
++F:	include/linux/gunyah*.h
++K:	gunyah
 +
-+config GUNYAH_IOEVENTFD
-+	tristate "Gunyah ioeventfd interface"
-+	depends on GUNYAH
-+	help
-+	  Enable kernel support for creating ioeventfds which can alert userspace
-+	  when a Gunyah virtual machine accesses a memory address.
-+
-+	  Say Y/M here if unsure and you want to support Gunyah VMMs.
-diff --git a/drivers/virt/gunyah/Makefile b/drivers/virt/gunyah/Makefile
-index b41b02792921..2aec5989402b 100644
---- a/drivers/virt/gunyah/Makefile
-+++ b/drivers/virt/gunyah/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_GUNYAH) += gunyah.o gunyah_rsc_mgr.o gunyah_vcpu.o
- obj-$(CONFIG_GUNYAH_PLATFORM_HOOKS) += gunyah_platform_hooks.o
- obj-$(CONFIG_GUNYAH_QCOM_PLATFORM) += gunyah_qcom.o
- obj-$(CONFIG_GUNYAH_IRQFD) += gunyah_irqfd.o
-+obj-$(CONFIG_GUNYAH_IOEVENTFD) += gunyah_ioeventfd.o
-diff --git a/drivers/virt/gunyah/gunyah_ioeventfd.c b/drivers/virt/gunyah/gunyah_ioeventfd.c
-new file mode 100644
-index 000000000000..e33924d19be4
---- /dev/null
-+++ b/drivers/virt/gunyah/gunyah_ioeventfd.c
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#include <linux/eventfd.h>
-+#include <linux/device/driver.h>
-+#include <linux/file.h>
-+#include <linux/fs.h>
-+#include <linux/gunyah.h>
-+#include <linux/module.h>
-+#include <linux/printk.h>
-+
-+#include <uapi/linux/gunyah.h>
-+
-+struct gunyah_ioeventfd {
-+	struct gunyah_vm_function_instance *f;
-+	struct gunyah_vm_io_handler io_handler;
-+
-+	struct eventfd_ctx *ctx;
-+};
-+
-+static int gunyah_write_ioeventfd(struct gunyah_vm_io_handler *io_dev, u64 addr,
-+				  u32 len, u64 data)
-+{
-+	struct gunyah_ioeventfd *iofd =
-+		container_of(io_dev, struct gunyah_ioeventfd, io_handler);
-+
-+	eventfd_signal(iofd->ctx);
-+	return 0;
-+}
-+
-+static struct gunyah_vm_io_handler_ops io_ops = {
-+	.write = gunyah_write_ioeventfd,
-+};
-+
-+static long gunyah_ioeventfd_bind(struct gunyah_vm_function_instance *f)
-+{
-+	const struct gunyah_fn_ioeventfd_arg *args = f->argp;
-+	struct gunyah_ioeventfd *iofd;
-+	struct eventfd_ctx *ctx;
-+	int ret;
-+
-+	if (f->arg_size != sizeof(*args))
-+		return -EINVAL;
-+
-+	/* All other flag bits are reserved for future use */
-+	if (args->flags & ~GUNYAH_IOEVENTFD_FLAGS_DATAMATCH)
-+		return -EINVAL;
-+
-+	/* must be natural-word sized, or 0 to ignore length */
-+	switch (args->len) {
-+	case 0:
-+	case 1:
-+	case 2:
-+	case 4:
-+	case 8:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* check for range overflow */
-+	if (overflows_type(args->addr + args->len, u64))
-+		return -EINVAL;
-+
-+	/* ioeventfd with no length can't be combined with DATAMATCH */
-+	if (!args->len && (args->flags & GUNYAH_IOEVENTFD_FLAGS_DATAMATCH))
-+		return -EINVAL;
-+
-+	ctx = eventfd_ctx_fdget(args->fd);
-+	if (IS_ERR(ctx))
-+		return PTR_ERR(ctx);
-+
-+	iofd = kzalloc(sizeof(*iofd), GFP_KERNEL);
-+	if (!iofd) {
-+		ret = -ENOMEM;
-+		goto err_eventfd;
-+	}
-+
-+	f->data = iofd;
-+	iofd->f = f;
-+
-+	iofd->ctx = ctx;
-+
-+	if (args->flags & GUNYAH_IOEVENTFD_FLAGS_DATAMATCH) {
-+		iofd->io_handler.datamatch = true;
-+		iofd->io_handler.len = args->len;
-+		iofd->io_handler.data = args->datamatch;
-+	}
-+	iofd->io_handler.addr = args->addr;
-+	iofd->io_handler.ops = &io_ops;
-+
-+	ret = gunyah_vm_add_io_handler(f->ghvm, &iofd->io_handler);
-+	if (ret)
-+		goto err_io_dev_add;
-+
-+	return 0;
-+
-+err_io_dev_add:
-+	kfree(iofd);
-+err_eventfd:
-+	eventfd_ctx_put(ctx);
-+	return ret;
-+}
-+
-+static void gunyah_ioevent_unbind(struct gunyah_vm_function_instance *f)
-+{
-+	struct gunyah_ioeventfd *iofd = f->data;
-+
-+	eventfd_ctx_put(iofd->ctx);
-+	gunyah_vm_remove_io_handler(iofd->f->ghvm, &iofd->io_handler);
-+	kfree(iofd);
-+}
-+
-+static bool gunyah_ioevent_compare(const struct gunyah_vm_function_instance *f,
-+				   const void *arg, size_t size)
-+{
-+	const struct gunyah_fn_ioeventfd_arg *instance = f->argp, *other = arg;
-+
-+	if (sizeof(*other) != size)
-+		return false;
-+
-+	if (instance->addr != other->addr || instance->len != other->len ||
-+	    instance->flags != other->flags)
-+		return false;
-+
-+	if ((instance->flags & GUNYAH_IOEVENTFD_FLAGS_DATAMATCH) &&
-+	    instance->datamatch != other->datamatch)
-+		return false;
-+
-+	return true;
-+}
-+
-+DECLARE_GUNYAH_VM_FUNCTION_INIT(ioeventfd, GUNYAH_FN_IOEVENTFD, 3,
-+				gunyah_ioeventfd_bind, gunyah_ioevent_unbind,
-+				gunyah_ioevent_compare);
-+MODULE_DESCRIPTION("Gunyah ioeventfd VM Function");
-+MODULE_LICENSE("GPL");
-diff --git a/include/uapi/linux/gunyah.h b/include/uapi/linux/gunyah.h
-index cb7b0bb9bef3..fd461e2fe8b5 100644
---- a/include/uapi/linux/gunyah.h
-+++ b/include/uapi/linux/gunyah.h
-@@ -65,10 +65,13 @@ struct gunyah_vm_dtb_config {
-  *              Return: file descriptor to manipulate the vcpu.
-  * @GUNYAH_FN_IRQFD: register eventfd to assert a Gunyah doorbell
-  *               &struct gunyah_fn_desc.arg is a pointer to &struct gunyah_fn_irqfd_arg
-+ * @GUNYAH_FN_IOEVENTFD: register ioeventfd to trigger when VM faults on parameter
-+ *                   &struct gunyah_fn_desc.arg is a pointer to &struct gunyah_fn_ioeventfd_arg
-  */
- enum gunyah_fn_type {
- 	GUNYAH_FN_VCPU = 1,
- 	GUNYAH_FN_IRQFD,
-+	GUNYAH_FN_IOEVENTFD,
- };
- 
- #define GUNYAH_FN_MAX_ARG_SIZE		256
-@@ -120,6 +123,40 @@ struct gunyah_fn_irqfd_arg {
- 	__u32 padding;
- };
- 
-+/**
-+ * enum gunyah_ioeventfd_flags - flags for use in gunyah_fn_ioeventfd_arg
-+ * @GUNYAH_IOEVENTFD_FLAGS_DATAMATCH: the event will be signaled only if the
-+ *                                written value to the registered address is
-+ *                                equal to &struct gunyah_fn_ioeventfd_arg.datamatch
-+ */
-+enum gunyah_ioeventfd_flags {
-+	GUNYAH_IOEVENTFD_FLAGS_DATAMATCH	= 1UL << 0,
-+};
-+
-+/**
-+ * struct gunyah_fn_ioeventfd_arg - Arguments to create an ioeventfd function
-+ * @datamatch: data used when GUNYAH_IOEVENTFD_DATAMATCH is set
-+ * @addr: Address in guest memory
-+ * @len: Length of access
-+ * @fd: When ioeventfd is matched, this eventfd is written
-+ * @flags: See &enum gunyah_ioeventfd_flags
-+ * @padding: padding bytes
-+ *
-+ * Create this function with &GUNYAH_VM_ADD_FUNCTION using type &GUNYAH_FN_IOEVENTFD.
-+ *
-+ * Attaches an ioeventfd to a legal mmio address within the guest. A guest write
-+ * in the registered address will signal the provided event instead of triggering
-+ * an exit on the GUNYAH_VCPU_RUN ioctl.
-+ */
-+struct gunyah_fn_ioeventfd_arg {
-+	__u64 datamatch;
-+	__u64 addr;        /* legal mmio address */
-+	__u32 len;         /* 1, 2, 4, or 8 bytes; or 0 to ignore length */
-+	__s32 fd;
-+	__u32 flags;
-+	__u32 padding;
-+};
-+
- /**
-  * struct gunyah_fn_desc - Arguments to create a VM function
-  * @type: Type of the function. See &enum gunyah_fn_type.
+ HABANALABS PCI DRIVER
+ M:	Oded Gabbay <ogabbay@kernel.org>
+ L:	dri-devel@lists.freedesktop.org
 
 -- 
 2.34.1
