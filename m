@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-20568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320FD82816B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:32:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F4BC828175
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB36A283DB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:31:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 407261F26E09
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA3A3B19B;
-	Tue,  9 Jan 2024 08:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0583B790;
+	Tue,  9 Jan 2024 08:24:34 +0000 (UTC)
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE5F3A8F2;
-	Tue,  9 Jan 2024 08:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28F12C865;
+	Tue,  9 Jan 2024 08:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=users.sourceforge.jp
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-	by sakura.ysato.name (Postfix) with ESMTPSA id 6C8E91C0A9C;
-	Tue,  9 Jan 2024 17:24:28 +0900 (JST)
+	by sakura.ysato.name (Postfix) with ESMTPSA id 3713E1C09D4;
+	Tue,  9 Jan 2024 17:24:30 +0900 (JST)
 From: Yoshinori Sato <ysato@users.sourceforge.jp>
 To: linux-sh@vger.kernel.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -85,9 +85,9 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	linux-pci@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v6 26/37] dt-bindings: vendor-prefixes:  Add smi
-Date: Tue,  9 Jan 2024 17:23:23 +0900
-Message-Id: <c8aaf67e3fcdb7e60632c53a784691aabfc7733e.1704788539.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v6 27/37] dt-bindings: ata: ata-generic: Add new targets
+Date: Tue,  9 Jan 2024 17:23:24 +0900
+Message-Id: <06fdb2cf7927681acf3099b826390ef75ba321af.1704788539.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1704788539.git.ysato@users.sourceforge.jp>
 References: <cover.1704788539.git.ysato@users.sourceforge.jp>
@@ -99,27 +99,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add Silicon Mortion Technology Corporation
-https://www.siliconmotion.com/
+Added new ata-generic target.
+- iodata,usl-5p-ata
+- renesas,rts7751r2d-ata
+
+Each boards have simple IDE Interface. Use ATA generic driver.
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ Documentation/devicetree/bindings/ata/ata-generic.yaml | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 94ed63d9f7de..a338bdd743ab 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1283,6 +1283,8 @@ patternProperties:
-     description: Skyworks Solutions, Inc.
-   "^smartlabs,.*":
-     description: SmartLabs LLC
-+  "^smi,.*":
-+    description: Silicon Motion Technology Corporation
-   "^smsc,.*":
-     description: Standard Microsystems Corporation
-   "^snps,.*":
+diff --git a/Documentation/devicetree/bindings/ata/ata-generic.yaml b/Documentation/devicetree/bindings/ata/ata-generic.yaml
+index 0697927f3d7e..1025b3b351d0 100644
+--- a/Documentation/devicetree/bindings/ata/ata-generic.yaml
++++ b/Documentation/devicetree/bindings/ata/ata-generic.yaml
+@@ -18,6 +18,8 @@ properties:
+       - enum:
+           - arm,vexpress-cf
+           - fsl,mpc8349emitx-pata
++          - iodata,usl-5p-ata
++          - renesas,rts7751r2d-ata
+       - const: ata-generic
+ 
+   reg:
 -- 
 2.39.2
 
