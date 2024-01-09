@@ -1,156 +1,179 @@
-Return-Path: <linux-kernel+bounces-20331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB205827D69
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:39:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97A25827D6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:43:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFD9B1C2321C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:39:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADACF1C231D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521304698;
-	Tue,  9 Jan 2024 03:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14044698;
+	Tue,  9 Jan 2024 03:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="fRksbHJv";
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="fRksbHJv"
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i2U4OK4A"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB8A4418
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 03:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
-Received: by nautica.notk.org (Postfix, from userid 108)
-	id AD89FC01C; Tue,  9 Jan 2024 04:39:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1704771571; bh=EFsqeQpoVPi+aLXOF4MlH5LIHnl+EleljLHKqEwD79Q=;
-	h=From:Date:Subject:To:Cc:From;
-	b=fRksbHJvrUIsLT1B1lrcqnKV5j5kDaPZKepCkUWhW0MrY7S0h+AObVryIK5C2UxS+
-	 w+IR2MSydMJu+KRGLTq/JBC3NsHBywuTLQHmOMkOkIeRi4aI4Gh/BUwFqfFFZx1QGt
-	 u6e88Swvu2vCh6yP5Xifv3OWxUdK5C+Um0VzNJQQiN4ZvSYcksm1BLseUehFHpwO7q
-	 v+BjWfqEPV46OloDm27nynlL47r67jS+BS/X9BfAzEUhwI7OO+OqAv2/GXYL20iBi2
-	 Ye0zANyZaNFvTUjf/HUZrwlmdKKfXZrUHHtRFE8p1oSJmFz4ZdQ8/EM1u8/gJkF1oy
-	 QmBS2WytYD3aQ==
-X-Spam-Level: 
-Received: from gaia (localhost [127.0.0.1])
-	by nautica.notk.org (Postfix) with ESMTPS id E38EDC009;
-	Tue,  9 Jan 2024 04:39:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1704771571; bh=EFsqeQpoVPi+aLXOF4MlH5LIHnl+EleljLHKqEwD79Q=;
-	h=From:Date:Subject:To:Cc:From;
-	b=fRksbHJvrUIsLT1B1lrcqnKV5j5kDaPZKepCkUWhW0MrY7S0h+AObVryIK5C2UxS+
-	 w+IR2MSydMJu+KRGLTq/JBC3NsHBywuTLQHmOMkOkIeRi4aI4Gh/BUwFqfFFZx1QGt
-	 u6e88Swvu2vCh6yP5Xifv3OWxUdK5C+Um0VzNJQQiN4ZvSYcksm1BLseUehFHpwO7q
-	 v+BjWfqEPV46OloDm27nynlL47r67jS+BS/X9BfAzEUhwI7OO+OqAv2/GXYL20iBi2
-	 Ye0zANyZaNFvTUjf/HUZrwlmdKKfXZrUHHtRFE8p1oSJmFz4ZdQ8/EM1u8/gJkF1oy
-	 QmBS2WytYD3aQ==
-Received: from [127.0.0.2] (localhost.lan [::1])
-	by gaia (OpenSMTPD) with ESMTP id 444fb58d;
-	Tue, 9 Jan 2024 03:39:25 +0000 (UTC)
-From: Dominique Martinet <asmadeus@codewreck.org>
-Date: Tue, 09 Jan 2024 12:39:03 +0900
-Subject: [PATCH] 9p: Fix read/write debug statements to report server reply
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F1633EE;
+	Tue,  9 Jan 2024 03:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704771806; x=1736307806;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=EXGALg+04GjIg7VHmOoodLCutmjxuq5kzaEUQbcbKOQ=;
+  b=i2U4OK4AWF4jDzopy9a6L83jkXF73pBoJlGBP5YVSVek8R95HXeSbxwr
+   UJwEZnHEEggC9wmORgOwh1QhMgAMuQIV7trO2Ekiba1HOg1Z2JN/sbIaS
+   aovjtMfAqOcr3Q2SZ1tAOLCkxNFRXDQUNSUAvPv+ABpSI5OPs1Idei3Fr
+   ZEUey4tnVqkL0NfxASU0gA9JoWy76lA/nUvzBBrP/B3Fz6EYdsdTrp73c
+   zypIj5jEcC8SoFD8APNTFP0ucm2teGFPlPgzeS0LGkmwKf2pHW4WmX8Gm
+   0yg/i64gkCQsbPbWtJfcH564qVBK7lYxBoVJWkjgGTHg4/NrNakODrHeM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4833825"
+X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
+   d="scan'208";a="4833825"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 19:43:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="872099709"
+X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
+   d="scan'208";a="872099709"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 19:43:09 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Srinivasulu Thanneeru <sthanneeru@micron.com>,  Srinivasulu Opensrc
+ <sthanneeru.opensrc@micron.com>,  "linux-cxl@vger.kernel.org"
+ <linux-cxl@vger.kernel.org>,  "linux-mm@kvack.org" <linux-mm@kvack.org>,
+  "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+  "dan.j.williams@intel.com" <dan.j.williams@intel.com>,  "mhocko@suse.com"
+ <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,
+  "john@jagalactic.com" <john@jagalactic.com>,  Eishan Mirakhur
+ <emirakhur@micron.com>,  "Vinicius Tavares Petrucci"
+ <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
+  "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,  Johannes
+ Weiner <hannes@cmpxchg.org>,  Wei Xu <weixugc@google.com>,  Hao Xiang
+ <hao.xiang@bytedance.com>,  "Ho-Ren (Jack) Chuang"
+ <horenchuang@bytedance.com>
+Subject: Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
+In-Reply-To: <ZZwrIoP9+ey7rp3C@memverge.com> (Gregory Price's message of "Mon,
+	8 Jan 2024 12:04:34 -0500")
+References: <20231213175329.594-1-sthanneeru.opensrc@micron.com>
+	<87cyv8qcqk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZXyQIJOim1+tE0Qr@memverge.com>
+	<87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZZwrIoP9+ey7rp3C@memverge.com>
+Date: Tue, 09 Jan 2024 11:41:11 +0800
+Message-ID: <87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240109-9p-rw-trace-v1-1-327178114257@codewreck.org>
-X-B4-Tracking: v=1; b=H4sIANe/nGUC/x2NywrCMBAAf6Xs2YUkrY/4K8XDJq52D8ayG6pQ+
- u+mHodhmBWMVdjg2q2gvIjJuzTwhw7yROXJKPfGEFwYnHcR44z6waqUGfPJH2N/ccO599CKRMa
- YlEqe9uZFVll3MSs/5PvfjLdt+wH3x0NkdgAAAA==
-To: Eric Van Hensbergen <ericvh@kernel.org>, 
- Latchesar Ionkov <lucho@ionkov.net>, 
- Christian Schoenebeck <linux_oss@crudebyte.com>, 
- Al Viro <viro@zeniv.linux.org.uk>
-Cc: v9fs@lists.linux.dev, linux-kernel@vger.kernel.org, 
- Dominique Martinet <asmadeus@codewreck.org>
-X-Mailer: b4 0.13-dev-f371f
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2350;
- i=asmadeus@codewreck.org; h=from:subject:message-id;
- bh=KH8+UxTTncKHAbh6u8Ig6CCfYanqBKjiLNUI96FwBaY=;
- b=owEBbQKS/ZANAwAIAatOm+xqmOZwAcsmYgBlnL/tDqMymOF9w2pbjX/AeHsc+Ybi+GBNnx0Av
- lRGjwbiw8yJAjMEAAEIAB0WIQT8g9txgG5a3TOhiE6rTpvsapjmcAUCZZy/7QAKCRCrTpvsapjm
- cAFvEAC43BlpyofxewTGb+IY8PzerfCuFZNfuYNsYsdWtsyzVaIEM+PuQzaIckYPPCQzh1HdNRn
- PbkfEg0bGVb4A9539pYrHx4vo666UGlQQO1yf/P/Hli2bZxxe7IrwN+N5/k5q6fKBEJ0Vd6W4OK
- rB9eVL5WDe7tSecvbBEqqccwXNWE+P0RziuWLCCmAj5mevbQWFhPA2lZXYCwRYSiDQ3BVXiUOXe
- rOKfw8g9RE8mKkdaiHkSmhoCvkhvqEjniHxK6hYfBnoCPHIUxBku0jvKx+AiK2l+zS3ARb6qpcS
- +/fzUM25Z7XnBgEHREKAs21KmBlIPFJMrajNFxLDFK1ndhjUSRyhU+6XdaLUq6GYoB2jzxwnSbt
- CW5YLgMUco90tsOPsuRhd9ltuF2oLro2RBu77NESnulLKZaoruWEQp/GLWFkilPztJ19cdCcmdK
- wi2Zr5cSn5rTKtf3G+x7B75vksP16PbWC9CRyJgovwcJQXolmmojwDHd5ACMW4WNIPgRnBh+mXf
- FFkMqLyo6H7dxA/JO7QVOoaYofoj7VdgJk8n60ZohpS5MTR69WaoXkwwXYo5XA0QWz0hY1qcwiS
- lLKnyjo6E90RUQ8KTnzhp7LB3JgcZT7rPZbV7DBMQQTxeKmNEffVu8FNwNcPdi2OCe/QbMIjWsd
- Iamx1EMp5mwY02Q==
-X-Developer-Key: i=asmadeus@codewreck.org; a=openpgp;
- fpr=B894379F662089525B3FB1B9333F1F391BBBB00A
+Content-Type: text/plain; charset=ascii
 
-Previous conversion to iov missed these debug statements which would now
-always print the requested size instead of the actual server reply.
+Gregory Price <gregory.price@memverge.com> writes:
 
-Write also added a loop in a much older commit but we didn't report
-these, while reads do report each iteration -- it's more coherent to
-keep reporting all requests to server so move that at the same time.
+> On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote:
+>> >
+>> > From  https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Live%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
+>> > abstract_distance_offset: override by users to deal with firmware issue.
+>> >
+>> > say firmware can configure the cxl node into wrong tiers, similar to
+>> > that it may also configure all cxl nodes into single memtype, hence
+>> > all these nodes can fall into a single wrong tier.
+>> > In this case, per node adistance_offset would be good to have ?
+>> 
+>> I think that it's better to fix the error firmware if possible.  And
+>> these are only theoretical, not practical issues.  Do you have some
+>> practical issues?
+>> 
+>> I understand that users may want to move nodes between memory tiers for
+>> different policy choices.  For that, memory_type based adistance_offset
+>> should be good.
+>> 
+>
+> There's actually an affirmative case to change memory tiering to allow
+> either movement of nodes between tiers, or at least base placement on
+> HMAT information. Preferably, membership would be changable to allow
+> hotplug/DCD to be managed (there's no guarantee that the memory passed
+> through will always be what HMAT says on initial boot).
 
-Fixes: 7f02464739da ("9p: convert to advancing variant of iov_iter_get_pages_alloc()")
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
----
- net/9p/client.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+IIUC, from Jonathan Cameron as below, the performance of memory
+shouldn't change even for DCD devices.
 
-diff --git a/net/9p/client.c b/net/9p/client.c
-index e265a0ca6bdd..f7e90b4769bb 100644
---- a/net/9p/client.c
-+++ b/net/9p/client.c
-@@ -1583,7 +1583,7 @@ p9_client_read_once(struct p9_fid *fid, u64 offset, struct iov_iter *to,
- 		received = rsize;
- 	}
- 
--	p9_debug(P9_DEBUG_9P, "<<< RREAD count %d\n", count);
-+	p9_debug(P9_DEBUG_9P, "<<< RREAD count %d\n", received);
- 
- 	if (non_zc) {
- 		int n = copy_to_iter(dataptr, received, to);
-@@ -1609,9 +1609,6 @@ p9_client_write(struct p9_fid *fid, u64 offset, struct iov_iter *from, int *err)
- 	int total = 0;
- 	*err = 0;
- 
--	p9_debug(P9_DEBUG_9P, ">>> TWRITE fid %d offset %llu count %zd\n",
--		 fid->fid, offset, iov_iter_count(from));
--
- 	while (iov_iter_count(from)) {
- 		int count = iov_iter_count(from);
- 		int rsize = fid->iounit;
-@@ -1623,6 +1620,9 @@ p9_client_write(struct p9_fid *fid, u64 offset, struct iov_iter *from, int *err)
- 		if (count < rsize)
- 			rsize = count;
- 
-+		p9_debug(P9_DEBUG_9P, ">>> TWRITE fid %d offset %llu count %d (/%d)\n",
-+			 fid->fid, offset, rsize, count);
-+
- 		/* Don't bother zerocopy for small IO (< 1024) */
- 		if (clnt->trans_mod->zc_request && rsize > 1024) {
- 			req = p9_client_zc_rpc(clnt, P9_TWRITE, NULL, from, 0,
-@@ -1650,7 +1650,7 @@ p9_client_write(struct p9_fid *fid, u64 offset, struct iov_iter *from, int *err)
- 			written = rsize;
- 		}
- 
--		p9_debug(P9_DEBUG_9P, "<<< RWRITE count %d\n", count);
-+		p9_debug(P9_DEBUG_9P, "<<< RWRITE count %d\n", written);
- 
- 		p9_req_put(clnt, req);
- 		iov_iter_revert(from, count - written - iov_iter_count(from));
+https://lore.kernel.org/linux-mm/20231103141636.000007e4@Huawei.com/
 
----
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-change-id: 20240109-9p-rw-trace-c61593804731
+It's possible to change the performance of a NUMA node changed, if we
+hot-remove a memory device, then hot-add another different memory
+device.  It's hoped that the CDAT changes too.
 
-Best regards,
--- 
-Dominique Martinet | Asmadeus
+So, all in all, HMAT + CDAT can help us to put the memory device in
+appropriate memory tiers.  Now, we have HMAT support in upstream.  We
+will working on CDAT support.
 
+--
+Best Regards,
+Huang, Ying
+
+> https://lore.kernel.org/linux-cxl/CAAYibXjZ0HSCqMrzXGv62cMLncS_81R3e1uNV5Fu4CPm0zAtYw@mail.gmail.com/
+>
+> This group wants to enable passing CXL memory through to KVM/QEMU
+> (i.e. host CXL expander memory passed through to the guest), and
+> allow the guest to apply memory tiering.
+>
+> There are multiple issues with this, presently:
+>
+> 1. The QEMU CXL virtual device is not and probably never will be
+>    performant enough to be a commodity class virtualization.  The
+>    reason is that the virtual CXL device is built off the I/O
+>    virtualization stack, which treats memory accesses as I/O accesses.
+>
+>    KVM also seems incompatible with the design of the CXL memory device
+>    in general, but this problem may or may not be a blocker.
+>
+>    As a result, access to virtual CXL memory device leads to QEMU
+>    crawling to a halt - and this is unlikely to change.
+>
+>    There is presently no good way forward to create a performant virtual
+>    CXL device in QEMU.  This means the memory tiering component in the
+>    kernel is functionally useless for virtual CXL memory, because...
+>
+> 2. When passing memory through as an explicit NUMA node, but not as
+>    part of a CXL memory device, the nodes are lumped together in the
+>    DRAM tier.
+>
+> None of this has to do with firmware.
+>
+> Memory-type is an awful way of denoting membership of a tier, but we
+> have HMAT information that can be passed through via QEMU:
+>
+> -object memory-backend-ram,size=4G,id=ram-node0 \
+> -object memory-backend-ram,size=4G,id=ram-node1 \
+> -numa node,nodeid=0,cpus=0-4,memdev=ram-node0 \
+> -numa node,initiator=0,nodeid=1,memdev=ram-node1 \
+> -numa hmat-lb,initiator=0,target=0,hierarchy=memory,data-type=access-latency,latency=10 \
+> -numa hmat-lb,initiator=0,target=0,hierarchy=memory,data-type=access-bandwidth,bandwidth=10485760 \
+> -numa hmat-lb,initiator=0,target=1,hierarchy=memory,data-type=access-latency,latency=20 \
+> -numa hmat-lb,initiator=0,target=1,hierarchy=memory,data-type=access-bandwidth,bandwidth=5242880
+>
+> Not only would it be nice if we could change tier membership based on
+> this data, it's realistically the only way to allow guests to accomplish
+> memory tiering w/ KVM/QEMU and CXL memory passed through to the guest.
+>
+> ~Gregory
 
