@@ -1,312 +1,181 @@
-Return-Path: <linux-kernel+bounces-20268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E8B7827CAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:05:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC9DC827CAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BBF31C23318
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 779721C2336C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482A91C2F;
-	Tue,  9 Jan 2024 02:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A651844;
+	Tue,  9 Jan 2024 02:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TshnAYxc"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="JqNEmyzS"
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5ED617F4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 02:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704765936; x=1736301936;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=dDVp6dSq9reUilE2DHoO6Squ+ylc5/8/8iH1Xo4Rf2Y=;
-  b=TshnAYxc1aG19F9kqbOOjYYQOv3o+Gqf1ESAgh/HkbUankMzGf1I9WCz
-   Hu0edSNwSV1A4DST38+W3iqO/qUD3jkokvXKzpWjzxBSTtDYeU7nTE7jQ
-   6cZ6pNm2crrsPT7vKmHoSSG+tMUJzAb2JXmJ4zN1oZ+OtgiDxrplt30Rq
-   MvipreMyedbLlw8cW67A3d8tF9E5gu24TZ3JR6zMe8Fydv1QN5fJELEWY
-   FSfrmRZOy0zLC5A6a+tRh5/OSFfFhhcIubtNPrwXGOiJmo+Ku1gY3MUuj
-   BL9XixqPF5SPlJSB2EkWuEtgHdmEA6Dlv8thLxNP9wDapK5lCH6Gngqaj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="429246203"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="429246203"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 18:05:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="23381454"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 18:05:29 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Hugh Dickins
- <hughd@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
- <willy@infradead.org>,  Michal Hocko <mhocko@suse.com>,  Yosry Ahmed
- <yosryahmed@google.com>,  David Hildenbrand <david@redhat.com>,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] mm/swap, shmem: use new swapin helper to skip
- readahead conditionally
-In-Reply-To: <20240102175338.62012-10-ryncsn@gmail.com> (Kairui Song's message
-	of "Wed, 3 Jan 2024 01:53:38 +0800")
-References: <20240102175338.62012-1-ryncsn@gmail.com>
-	<20240102175338.62012-10-ryncsn@gmail.com>
-Date: Tue, 09 Jan 2024 10:03:29 +0800
-Message-ID: <871qar9sb2.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C58133DD
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 02:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
+	by cmsmtp with ESMTPS
+	id Mzv5rKufACF6GN1UvrN7Th; Tue, 09 Jan 2024 02:05:45 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id N1UvrwCNUZKctN1UvrJCTm; Tue, 09 Jan 2024 02:05:45 +0000
+X-Authority-Analysis: v=2.4 cv=a+kjSGeF c=1 sm=1 tr=0 ts=659ca9f9
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=GfQleyYEO+cc22AUyTT7qQ==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=4RBUngkUAAAA:8
+ a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8 a=mDV3o1hIAAAA:8 a=cm27Pg_UAAAA:8
+ a=JA-m-T4maVgcW0BiTrcA:9 a=QEXdDO2ut3YA:10 a=_sbA2Q-Kp09kWB8D3iXc:22
+ a=AjGcO6oz07-iQ99wixmX:22 a=_FVE-zBwftR9WsbkzFJk:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=5B0dw/Up6ifNtvRAU765UMOVfZFbZSraBE9QG9ssVwU=; b=JqNEmyzSUnsh8EYFiP4v4OCBA/
+	xVqwtTnSCB9gNCBNgvZCiLxUGwWa2QaW0F1ZNjoQKNEwnWwl8rZACqm5PAOJZOPZdvuxTmTR4JOtW
+	sP62IPVdwFqf4wXOYcJkpGQ20p25ZBMI9frzL1egwtJiicSGXjd2+WljjecPCYf87dmpIEIog18tb
+	aAs9pfeypFV3o6MP6d0GB/2YWhRtEvhBbbnP/IFDBcwQk6XCy34PA3glf8Io4cg7AfAElSYZROxgU
+	OXPHryzuZ+h+HBd3A/8AQY/i0z0t3X2w/2fmTddSVB+qvEMGCjlGLY1obzmTEOczx5/N0B19tHsyF
+	mmmgiomA==;
+Received: from 187.184.157.186.cable.dyn.cableonline.com.mx ([187.184.157.186]:65048 helo=[192.168.0.3])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rN1Us-003hSm-2w;
+	Mon, 08 Jan 2024 20:05:43 -0600
+Message-ID: <9c742547-0021-464b-b7a8-7af46b0a4afa@embeddedor.com>
+Date: Mon, 8 Jan 2024 20:05:38 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
+ dg_dispatch_as_host()
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>,
+ Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc: linux-hardening@vger.kernel.org, error27@gmail.com,
+ gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
+ Vishnu Dasa <vdasa@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
+ darren.kenny@oracle.com, syzkaller <syzkaller@googlegroups.com>
+References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
+ <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
+ <202401081430.9DAB37B46@keescook>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <202401081430.9DAB37B46@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.157.186
+X-Source-L: No
+X-Exim-ID: 1rN1Us-003hSm-2w
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187.184.157.186.cable.dyn.cableonline.com.mx ([192.168.0.3]) [187.184.157.186]:65048
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOWSpWgqF4gA0Pc8w3+ii3NS4K/DK00Rr7j7EJXPX3PkKgkDaagihdhKFphEAxtV3INHMFFLj3KudI9iotpW+K/p+Jsis6I3iWcseWQyoS5aW+sF3Miz
+ 6k+4IwTFGj3fLwJVBZYf29uDElHbOC6RWaXJIfxqFEwZBHh0Goo+74tBc501SVXafjfg0Kph94NpfZh9cKcF3rBQxBp7ZQkECTU09ObbFXLQN7nCDJ4K1ev/
 
-Kairui Song <ryncsn@gmail.com> writes:
 
-> From: Kairui Song <kasong@tencent.com>
->
-> Currently, shmem uses cluster readahead for all swap backends. Cluster
-> readahead is not a good solution for ramdisk based device (ZRAM) at all.
->
-> After switching to the new helper, most benchmarks showed a good result:
->
-> - Single file sequence read:
->   perf stat --repeat 20 dd if=/tmpfs/test of=/dev/null bs=1M count=8192
->   (/tmpfs/test is a zero filled file, using brd as swap, 4G memcg limit)
->   Before: 22.248 +- 0.549
->   After:  22.021 +- 0.684 (-1.1%)
->
-> - Random read stress test:
->   fio -name=tmpfs --numjobs=16 --directory=/tmpfs \
->   --size=256m --ioengine=mmap --rw=randread --random_distribution=random \
->   --time_based --ramp_time=1m --runtime=5m --group_reporting
->   (using brd as swap, 2G memcg limit)
->
->   Before: 1818MiB/s
->   After:  1888MiB/s (+3.85%)
->
-> - Zipf biased random read stress test:
->   fio -name=tmpfs --numjobs=16 --directory=/tmpfs \
->   --size=256m --ioengine=mmap --rw=randread --random_distribution=zipf:1.2 \
->   --time_based --ramp_time=1m --runtime=5m --group_reporting
->   (using brd as swap, 2G memcg limit)
->
->   Before: 31.1GiB/s
->   After:  32.3GiB/s (+3.86%)
->
-> So cluster readahead doesn't help much even for single sequence read,
-> and for random stress test, the performance is better without it.
->
-> Considering both memory and swap device will get more fragmented
-> slowly, and commonly used ZRAM consumes much more CPU than plain
-> ramdisk, false readahead could occur more frequently and waste
-> more CPU. Direct SWAP is cheaper, so use the new helper and skip
-> read ahead for SWP_SYNCHRONOUS_IO device.
 
-It's good to take advantage of swap_direct (no readahead).  I also hopes
-we can take advantage of VMA based swapin if shmem is accessed via mmap.
-That appears possible.
+On 1/8/24 16:37, Kees Cook wrote:
+> On Fri, Jan 05, 2024 at 08:40:00AM -0800, Harshit Mogalapalli wrote:
+>> Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
+>>
+>> memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
+>> at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
+>>
+>> WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
+>> dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
+>>
+>> Some code commentry, based on my understanding:
+>>
+>> 544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
+>> /// This is 24 + payload_size
+>>
+>> memcpy(&dg_info->msg, dg, dg_size);
+>> 	Destination = dg_info->msg ---> this is a 24 byte
+>> 					structure(struct vmci_datagram)
+>> 	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
+>> 	Size = dg_size = 24 + payload_size
+>>
+>> {payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
+>>
+>>   35 struct delayed_datagram_info {
+>>   36         struct datagram_entry *entry;
+>>   37         struct work_struct work;
+>>   38         bool in_dg_host_queue;
+>>   39         /* msg and msg_payload must be together. */
+>>   40         struct vmci_datagram msg;
+>>   41         u8 msg_payload[];
+>>   42 };
+>>
+>> So those extra bytes of payload are copied into msg_payload[], a run time
+>> warning is seen while fuzzing with Syzkaller.
+>>
+>> One possible way to fix the warning is to split the memcpy() into
+>> two parts -- one -- direct assignment of msg and second taking care of payload.
+>>
+>> Gustavo quoted:
+>> "Under FORTIFY_SOURCE we should not copy data across multiple members
+>> in a structure."
+>>
+>> Reported-by: syzkaller <syzkaller@googlegroups.com>
+>> Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
+>> Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> 
+> Thanks for getting this fixed!
+> 
+> Yeah, it's a "false positive" in the sense that the code was expecting
 
+It's a false positive _bug_, and a legitimate _warning_ coming from fortified
+memcpy().
+
+> to write into msg_payload. The warning is triggered because of the write
+> across the flex array boundary, which trips a bug in GCC and Clang,
+> which we're forced to work around.
+
+The warning is triggered because of a write beyond the boundaries of
+`dg_info->msg`. It's not directly related to the fact that there is a
+flexible-array member following `dg_info->msg`.
+
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101832 (fixed in GCC 14+)
+> 	 (not yet fixed in Clang)
+
+This issue is not related to the compiler bugs mentioned above.
+
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+
+Thanks!
 --
-Best Regards,
-Huang, Ying
-
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/shmem.c      | 67 +++++++++++++++++++++++++------------------------
->  mm/swap.h       |  9 -------
->  mm/swap_state.c | 11 ++++++--
->  3 files changed, 43 insertions(+), 44 deletions(-)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 9da9f7a0e620..3c0729fe934d 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1564,20 +1564,6 @@ static inline struct mempolicy *shmem_get_sbmpol(struct shmem_sb_info *sbinfo)
->  static struct mempolicy *shmem_get_pgoff_policy(struct shmem_inode_info *info,
->  			pgoff_t index, unsigned int order, pgoff_t *ilx);
->  
-> -static struct folio *shmem_swapin_cluster(swp_entry_t swap, gfp_t gfp,
-> -			struct shmem_inode_info *info, pgoff_t index)
-> -{
-> -	struct mempolicy *mpol;
-> -	pgoff_t ilx;
-> -	struct folio *folio;
-> -
-> -	mpol = shmem_get_pgoff_policy(info, index, 0, &ilx);
-> -	folio = swap_cluster_readahead(swap, gfp, mpol, ilx);
-> -	mpol_cond_put(mpol);
-> -
-> -	return folio;
-> -}
-> -
->  /*
->   * Make sure huge_gfp is always more limited than limit_gfp.
->   * Some of the flags set permissions, while others set limitations.
-> @@ -1851,9 +1837,12 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
->  {
->  	struct address_space *mapping = inode->i_mapping;
->  	struct shmem_inode_info *info = SHMEM_I(inode);
-> +	enum swap_cache_result cache_result;
->  	struct swap_info_struct *si;
->  	struct folio *folio = NULL;
-> +	struct mempolicy *mpol;
->  	swp_entry_t swap;
-> +	pgoff_t ilx;
->  	int error;
->  
->  	VM_BUG_ON(!*foliop || !xa_is_value(*foliop));
-> @@ -1871,36 +1860,40 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
->  			return -EINVAL;
->  	}
->  
-> -	/* Look it up and read it in.. */
-> -	folio = swap_cache_get_folio(swap, NULL, 0, NULL);
-> +	mpol = shmem_get_pgoff_policy(info, index, 0, &ilx);
-> +	folio = swapin_entry_mpol(swap, gfp, mpol, ilx, &cache_result);
-> +	mpol_cond_put(mpol);
-> +
->  	if (!folio) {
-> -		/* Or update major stats only when swapin succeeds?? */
-> +		error = -ENOMEM;
-> +		goto failed;
-> +	}
-> +	if (cache_result != SWAP_CACHE_HIT) {
->  		if (fault_type) {
->  			*fault_type |= VM_FAULT_MAJOR;
->  			count_vm_event(PGMAJFAULT);
->  			count_memcg_event_mm(fault_mm, PGMAJFAULT);
->  		}
-> -		/* Here we actually start the io */
-> -		folio = shmem_swapin_cluster(swap, gfp, info, index);
-> -		if (!folio) {
-> -			error = -ENOMEM;
-> -			goto failed;
-> -		}
->  	}
->  
->  	/* We have to do this with folio locked to prevent races */
->  	folio_lock(folio);
-> -	if (!folio_test_swapcache(folio) ||
-> -	    folio->swap.val != swap.val ||
-> -	    !shmem_confirm_swap(mapping, index, swap)) {
-> +	if (cache_result != SWAP_CACHE_BYPASS) {
-> +		/* With cache bypass, folio is new allocated, sync, and not in cache */
-> +		if (!folio_test_swapcache(folio) || folio->swap.val != swap.val) {
-> +			error = -EEXIST;
-> +			goto unlock;
-> +		}
-> +		if (!folio_test_uptodate(folio)) {
-> +			error = -EIO;
-> +			goto failed;
-> +		}
-> +		folio_wait_writeback(folio);
-> +	}
-> +	if (!shmem_confirm_swap(mapping, index, swap)) {
->  		error = -EEXIST;
->  		goto unlock;
->  	}
-> -	if (!folio_test_uptodate(folio)) {
-> -		error = -EIO;
-> -		goto failed;
-> -	}
-> -	folio_wait_writeback(folio);
->  
->  	/*
->  	 * Some architectures may have to restore extra metadata to the
-> @@ -1908,12 +1901,19 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
->  	 */
->  	arch_swap_restore(swap, folio);
->  
-> -	if (shmem_should_replace_folio(folio, gfp)) {
-> +	/* With cache bypass, folio is new allocated and always respect gfp flags */
-> +	if (cache_result != SWAP_CACHE_BYPASS && shmem_should_replace_folio(folio, gfp)) {
->  		error = shmem_replace_folio(&folio, gfp, info, index);
->  		if (error)
->  			goto failed;
->  	}
->  
-> +	/*
-> +	 * The expected value checking below should be enough to ensure
-> +	 * only one up-to-date swapin success. swap_free() is called after
-> +	 * this, so the entry can't be reused. As long as the mapping still
-> +	 * has the old entry value, it's never swapped in or modified.
-> +	 */
->  	error = shmem_add_to_page_cache(folio, mapping, index,
->  					swp_to_radix_entry(swap), gfp);
->  	if (error)
-> @@ -1924,7 +1924,8 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
->  	if (sgp == SGP_WRITE)
->  		folio_mark_accessed(folio);
->  
-> -	delete_from_swap_cache(folio);
-> +	if (cache_result != SWAP_CACHE_BYPASS)
-> +		delete_from_swap_cache(folio);
->  	folio_mark_dirty(folio);
->  	swap_free(swap);
->  	put_swap_device(si);
-> diff --git a/mm/swap.h b/mm/swap.h
-> index 8f790a67b948..20f4048c971c 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -57,9 +57,6 @@ void __delete_from_swap_cache(struct folio *folio,
->  void delete_from_swap_cache(struct folio *folio);
->  void clear_shadow_from_swap_cache(int type, unsigned long begin,
->  				  unsigned long end);
-> -struct folio *swap_cache_get_folio(swp_entry_t entry,
-> -		struct vm_area_struct *vma, unsigned long addr,
-> -		void **shadowp);
->  struct folio *filemap_get_incore_folio(struct address_space *mapping,
->  		pgoff_t index);
->  
-> @@ -123,12 +120,6 @@ static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
->  	return 0;
->  }
->  
-> -static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
-> -		struct vm_area_struct *vma, unsigned long addr)
-> -{
-> -	return NULL;
-> -}
-> -
->  static inline
->  struct folio *filemap_get_incore_folio(struct address_space *mapping,
->  		pgoff_t index)
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 3edf4b63158d..10eec68475dd 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -318,7 +318,14 @@ void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
->  
->  static inline bool swap_use_no_readahead(struct swap_info_struct *si, swp_entry_t entry)
->  {
-> -	return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_count(entry) == 1;
-> +	int count;
-> +
-> +	if (!data_race(si->flags & SWP_SYNCHRONOUS_IO))
-> +		return false;
-> +
-> +	count = __swap_count(entry);
-> +
-> +	return (count == 1 || count == SWAP_MAP_SHMEM);
->  }
->  
->  static inline bool swap_use_vma_readahead(void)
-> @@ -334,7 +341,7 @@ static inline bool swap_use_vma_readahead(void)
->   *
->   * Caller must lock the swap device or hold a reference to keep it valid.
->   */
-> -struct folio *swap_cache_get_folio(swp_entry_t entry,
-> +static struct folio *swap_cache_get_folio(swp_entry_t entry,
->  		struct vm_area_struct *vma, unsigned long addr, void **shadowp)
->  {
->  	struct folio *folio;
+Gustavo
 
