@@ -1,192 +1,193 @@
-Return-Path: <linux-kernel+bounces-21177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BFF2828B57
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:34:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85FCB828B58
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:34:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BB8E1C20EBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:34:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A599B23B83
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB0F3B794;
-	Tue,  9 Jan 2024 17:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFC63B790;
+	Tue,  9 Jan 2024 17:34:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WtDy9JMo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="UL4FxFcw"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2068.outbound.protection.outlook.com [40.107.223.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9039739AEA;
-	Tue,  9 Jan 2024 17:34:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4607C433C7;
-	Tue,  9 Jan 2024 17:34:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704821657;
-	bh=syCE0BwfVDeT7qH/cCOtSq9aFIuBR8gzEpq+znSgolk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WtDy9JMoBJ8Bqdzgh4pdgHwfeHnq/lTRlgWOjpVrsVDh9iQUpWTaCcbauLGaYfMVt
-	 PMwEzI3ItkcSQAaYRbsO2fnDxjRWVqpZ2lKto9elLBlu+RHndSsAgQTudV6zbS8G2t
-	 6pUx78AGOpsTp/Yju8lgUpLpNZngGJVCdzP6guysEzeWmlzcEgihoLbbBKBk1yYsH/
-	 NcvQ48SixJR3Kr04zgXJRJ3QazKc3AiWQo0XhMkjJRq99Jo8Tu0bLjbkUclRuFIMMI
-	 nI0N8DtwtWV4H+/0RMm5mzRLRkZeEHJgHA3T3aYzxz0vkI/QU+N6GB2ey/BucqCUEn
-	 M3UxvVa7cdXhQ==
-Date: Tue, 9 Jan 2024 17:34:11 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Fu Wei <wefu@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Drew Fustini <dfustini@baylibre.com>
-Subject: Re: [PATCH v2 3/8] riscv: dts: thead: Add TH1520 pin control nodes
-Message-ID: <20240109-boggle-frugality-03a77cab8308@spud>
-References: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
- <20240103132852.298964-4-emil.renner.berthing@canonical.com>
- <20240108-majorette-overtly-4ec65d0a15e9@spud>
- <CAJM55Z_2zhELW3E7p94J05We17xTC2Rejs5AigNJOHCGHVr_zg@mail.gmail.com>
- <20240109-tiptoeing-twirl-ebb943e17a29@wendy>
- <CAJM55Z9Ka3hiNmgFuy01Yd0YyxL-SzS=A7S3k84=B1xABKbJhA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9928739FF2;
+	Tue,  9 Jan 2024 17:34:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=POYMTdYb8hFknrjVmvPlX6puFWQrQxG1AA5X/Hq878aRrV8FHsgNueG7BQlkRGmnCrAckTqFqygYE5RZeYtftN3xG7Jq3Qu2KHEAp6bLHWiO5oXWhaNapQ59ldtiabP3O34zsyfYjF4mKSpMe7hITEJUgKPqi7se7N9rUgctWu2QHaggSoQM/bIvfnir4AyV21K/LY5W35NNI35hsH7U8vReSMCRZ6q1DMLXMibqC5TMQgM3apjjzVSh0sphNyqmC4S3Hq+ngCEMkrFVoOwIZ78IvWNbgP7uTLVGrNot/DTsgRPDtsLTW544CSlvmPFTyTRshFjQb4hwIdOeC+8jIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MjOuvY7UBb25gmCYkb2hCJsWlb7DInLEbKRdAfFxVqw=;
+ b=FWdwrER5qXiUPad/uX89h62EtuNZroVxm/XiOZU2d6YBuP42Yyq606rWkJzOufBq3sr1MOPCLgTTYpFR3s/QlPO+o+kUOWMr9Ky4sEMDP5NOIF0FfvouktWtBzIIIRLFX3fi+VpW73unuGK3KvFTSHe0ugsIrz4hHdUVg/+gDM9uulmVn5WT6soWEv1Q++7h2vsfDwTToX3MgVKgJT8kE3ZJHmkmq/7bNqBCF3W1NDwRCSV3fOzsJvpdrz5EOtv0nISmPjF6pErf4/DCjg1PIoCwQL+86apSdo6jwYQiO2iWbjsQFaPNenG2PTboIoVuRwqh7e5/6bkVM5ElTFZJAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MjOuvY7UBb25gmCYkb2hCJsWlb7DInLEbKRdAfFxVqw=;
+ b=UL4FxFcw6JUsh4sR+i4GSe6gUiWFJtizBt9TUof+6Csb8iTHmdZFtzNyYfulPPtACuSEMjzixYY0MbooBwN1gXCiS2UdPh7p8QZMVcWPiXAwJ+gMKZ4B8v7wSwiRlhrdp36jZoYSpBrgjT1foZitmrj+7dPoj7u9AB0gOTt0QLE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by SJ0PR17MB4631.namprd17.prod.outlook.com (2603:10b6:a03:374::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
+ 2024 17:34:28 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
+ 17:34:28 +0000
+Date: Tue, 9 Jan 2024 12:34:24 -0500
+From: Gregory Price <gregory.price@memverge.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Srinivasulu Thanneeru <sthanneeru@micron.com>,
+	Srinivasulu Opensrc <sthanneeru.opensrc@micron.com>,
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+	"dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+	"mhocko@suse.com" <mhocko@suse.com>,
+	"tj@kernel.org" <tj@kernel.org>,
+	"john@jagalactic.com" <john@jagalactic.com>,
+	Eishan Mirakhur <emirakhur@micron.com>,
+	Vinicius Tavares Petrucci <vtavarespetr@micron.com>,
+	Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
+	"Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>, Wei Xu <weixugc@google.com>,
+	Hao Xiang <hao.xiang@bytedance.com>,
+	"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+Subject: Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
+Message-ID: <ZZ2DoPT8LzNzXyme@memverge.com>
+References: <ZXyQIJOim1+tE0Qr@memverge.com>
+ <87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+ <87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+ <87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+ <87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZZwrIoP9+ey7rp3C@memverge.com>
+ <87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: BYAPR08CA0005.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::18) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hJD6qYXNgkRLNOMK"
-Content-Disposition: inline
-In-Reply-To: <CAJM55Z9Ka3hiNmgFuy01Yd0YyxL-SzS=A7S3k84=B1xABKbJhA@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SJ0PR17MB4631:EE_
+X-MS-Office365-Filtering-Correlation-Id: 718b7cbf-197d-487b-216d-08dc11393b38
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	vZN28pkpuhmJ4jyNt5W6DAjrXyczgwEA2sZLpzpgh45G77HTw/Tho90wKnxx6d1cJOMtP9cMdj+OflGEgfhLa0CLpsTPu6aI+av4fzkdY5fx30lrhPiHKGyHNN1HYXdV8hJj2sW3/rS53yK0dQJvs644ZP5YICzN//m0jL2ARhrrkXS2n7fCHAidIMRqsvVEmwQMMMDk6vl/b6sPSDglZg04QbnjrRD2CD6Au4hwEEmItQwDET36TVJxNHWnCuTzhL6XWK1DMk2bN493qRjtcoT5T1DSNYePIUjIzjCM0kc6lEKGye3Z3VrAEcCIDtDCeJxg0wZDH0VzRisGKzwhiO9FdOiwNFweiyVkvWW3paZegLQHCCpWLRh0FQPO7v//CTGZ7quGxOMvFVboyQrY+6TmvcWNsNYZXebrmoQzJYtbjTWIq7fnItfRLVTwdeMdtoS//7gcV7vTA3Y9RJzaJ9Ms3of5TAZ1TgKkK6KJqagxAIxVEhx4PwUI08hgYSaRJadvFxcKgiDCzL0W04+dKW+3yXyp3ssiPJyOUyiCDeE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(366004)(39840400004)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(66946007)(66556008)(66476007)(316002)(4326008)(8676002)(8936002)(478600001)(26005)(66899024)(2616005)(83380400001)(966005)(2906002)(5660300002)(7416002)(41300700001)(38100700002)(6916009)(86362001)(6666004)(6506007)(6512007)(6486002)(54906003)(44832011)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?l593e5e8+m1zaNVUffG5jI/KfHq6r1572WN1s9IflGSmrSrRy5rP6tO/49oI?=
+ =?us-ascii?Q?mOEVph1Mkmz4a0P0tj13iHXtcuXj5lb/4X/7AjhNP9fqhDALxGdX96I7kBKg?=
+ =?us-ascii?Q?l+XL31VVGQKqNuMLBVCO35I+CqL8hc3M5dfMY5Uu4DGk0OIdmYbR8jXmIuWk?=
+ =?us-ascii?Q?+Y1/Ymg5YXRJlRb2a1XIu0M7GZhhr1l55yYwADPTbkJevzqwGPfvZbzxikF2?=
+ =?us-ascii?Q?c6jccY62zrKK/DTHg77O5HBv2Kz08G1K6W015XI3nPknEsxVZwn36BDwjQxT?=
+ =?us-ascii?Q?yqRbXxTNwuXzcflwptJME6Kp7tsqvsRRFv6r6yJy3OQj65HDFZoLfn2qWahV?=
+ =?us-ascii?Q?G4fvmnOIRTYMkNMU03kbIOJH8OhfYyqNgaGZ3Fs4nhOUWDY/DYVXIynPsEAs?=
+ =?us-ascii?Q?Q++ixbqr3x0qt9fFxYrhpMZFkrrzl1NxmGnsBvmgAbvCwCD8i4q2jLSbaZvJ?=
+ =?us-ascii?Q?4zwBrheIJZqbFX6N2xJrU0CRUy1U93X+DcCCIi7xJQY7gXuNKB/3N8ommdvj?=
+ =?us-ascii?Q?zzWznvhUqhN0X3HrynY6FG26tauqeQ58AVYh7lC2XhLO+oEbweIbM5DjGQBT?=
+ =?us-ascii?Q?cLO7Ce/CnZWieVcS1q+sPrrqBBhASkLBnfrM7FVMkcwejxYTOu5KaHI0YTlN?=
+ =?us-ascii?Q?VN4EEcebs6zSequ0d7vRn0jZ6rBNhaq41vKQ3JjIrd92FiDqh5d4Moqa6sbj?=
+ =?us-ascii?Q?UQ+YRbkeT0qB+BY9N4oZg47z6PKCP8putfa+7SKf/cxQQHwVLEnnMoIbqzEu?=
+ =?us-ascii?Q?nrwAWaJv7JBNTLFExLTi/5alejnKr3N33g1nQ4vXQIymEsl8pKWFPc+4NQAF?=
+ =?us-ascii?Q?mKPVwNCrq1ryKodSKXhX+2dxbOC9fiK1UuaAD6Hl/y8Ir9kAQYFmE2Stqyde?=
+ =?us-ascii?Q?5wM8YJTqed75g7vD4MMO4nZIrPbHjDwkHSeOIEdN8r3+keu93Ek4gS4yBzXP?=
+ =?us-ascii?Q?XbJT8XLMnDYdSusGGdmLLDwo1Pk0QsbX6ZrTVvFg3SqakBecLhq4xwnmpYfa?=
+ =?us-ascii?Q?Corg1kJLAibFH92yu0solxep/ve3Q/2l9twAjOS7vNS27Tq9fOuMgwph5KYP?=
+ =?us-ascii?Q?2iH6XqfSIJEZS4PCDRUydJmK8VzKd0yCpq1YWumlVjqdVbcXne1+pTTZT7Gy?=
+ =?us-ascii?Q?4WfEKIsMINRnvzOjTqpjGUMam2vSEb6LxOj9csQy5OvGb8t1oQ5RtnY9DDOh?=
+ =?us-ascii?Q?aJQ9D7MPt/M71Cp4ysQpya++mabqFepT3zmgAIgqMzketMKwNqTpOCJTRKny?=
+ =?us-ascii?Q?ltnFnBJ6iEZETK8WKmZdnIt3BYbKoeif3Opy4IKBrF/ikv04dR6NABvE+n6Y?=
+ =?us-ascii?Q?jDevoyw0IvvX1zayrNoqNOlG0WzjKl0ul+JMjPd4inkbVYgBiKwF1w8fbCDR?=
+ =?us-ascii?Q?vd1qHKJnYmHUqMIVtSb6z3Lphe+jfm1woio0vKG5GLsepmJuQdXKX9HkwNL1?=
+ =?us-ascii?Q?1RhgA1YxK02+c+yAc8/HoJchOwCglbPfEB0SZLW4J4aunHBHtqjipTsOhld0?=
+ =?us-ascii?Q?5w2/NNCv0Yw8QicKWC+5yKT/ApjNigwIvUkeMrng78vRAwOnQwk7AruwfjP+?=
+ =?us-ascii?Q?83WT5nVfcppv7znJuLt+Qgr0mdwKXRLI1lQgMvSdto//QUrftuIuqodbOkfk?=
+ =?us-ascii?Q?0A=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 718b7cbf-197d-487b-216d-08dc11393b38
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 17:34:28.6214
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fR8uuaP79JKAtxBuJRB4y3jcxxaISCpbvaMuGflvYAbGH9CPNtEW5bOyZgp78TsiiiHKuq6sPep+PkTqTSm+TNAFTTLPHFWBZsZ7ORsE/54=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR17MB4631
 
-
---hJD6qYXNgkRLNOMK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 09, 2024 at 06:28:19AM -0800, Emil Renner Berthing wrote:
-> Conor Dooley wrote:
-> > On Tue, Jan 09, 2024 at 04:02:01AM -0800, Emil Renner Berthing wrote:
-> > > Conor Dooley wrote:
-> > > > On Wed, Jan 03, 2024 at 02:28:40PM +0100, Emil Renner Berthing wrot=
-e:
-> > > > > Add nodes for pin controllers on the T-Head TH1520 RISC-V SoC.
-> > > > >
-> > > > > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonic=
-al.com>
-> > > > > ---
-> > > > >  .../boot/dts/thead/th1520-beaglev-ahead.dts   |  4 ++++
-> > > > >  .../dts/thead/th1520-lichee-module-4a.dtsi    |  4 ++++
-> > > > >  arch/riscv/boot/dts/thead/th1520.dtsi         | 24 +++++++++++++=
-++++++
-> > > > >  3 files changed, 32 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b=
-/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > > > index 70e8042c8304..6c56318a8705 100644
-> > > > > --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > > > +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > > > @@ -44,6 +44,10 @@ &osc_32k {
-> > > > >  	clock-frequency =3D <32768>;
-> > > > >  };
-> > > > >
-> > > > > +&aonsys_clk {
-> > > > > +	clock-frequency =3D <73728000>;
-> > > > > +};
-> > > > > +
-> > > > >  &apb_clk {
-> > > > >  	clock-frequency =3D <62500000>;
-> > > > >  };
-> > > > > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dt=
-si b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > > > index a802ab110429..9865925be372 100644
-> > > > > --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > > > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > > > @@ -25,6 +25,10 @@ &osc_32k {
-> > > > >  	clock-frequency =3D <32768>;
-> > > > >  };
-> > > > >
-> > > > > +&aonsys_clk {
-> > > > > +	clock-frequency =3D <73728000>;
-> > > > > +};
-> > > > > +
-> > > > >  &apb_clk {
-> > > > >  	clock-frequency =3D <62500000>;
-> > > > >  };
-> > > > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/b=
-oot/dts/thead/th1520.dtsi
-> > > > > index ba4d2c673ac8..e65a306ff575 100644
-> > > > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > @@ -134,6 +134,12 @@ osc_32k: 32k-oscillator {
-> > > > >  		#clock-cells =3D <0>;
-> > > > >  	};
-> > > > >
-> > > > > +	aonsys_clk: aonsys-clk {
-> > > > > +		compatible =3D "fixed-clock";
-> > > > > +		clock-output-names =3D "aonsys_clk";
-> > > > > +		#clock-cells =3D <0>;
-> > > > > +	};
-> > > >
-> > > > Did this stuff sneak into this commit accidentally?
-> > >
-> > > Not really by accident no. It turns out the clock tree has gates for =
-the bus
-> > > clock of each pinctrl block and I think it's better to add this clock
-> > > dependency to the bindings and driver up front.
+On Tue, Jan 09, 2024 at 11:41:11AM +0800, Huang, Ying wrote:
+> Gregory Price <gregory.price@memverge.com> writes:
+> 
+> > On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote:
+> >> >
+> >> > From  https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Live%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
+> >> > abstract_distance_offset: override by users to deal with firmware issue.
+> >> >
+> >> > say firmware can configure the cxl node into wrong tiers, similar to
+> >> > that it may also configure all cxl nodes into single memtype, hence
+> >> > all these nodes can fall into a single wrong tier.
+> >> > In this case, per node adistance_offset would be good to have ?
+> >> 
+> >> I think that it's better to fix the error firmware if possible.  And
+> >> these are only theoretical, not practical issues.  Do you have some
+> >> practical issues?
+> >> 
+> >> I understand that users may want to move nodes between memory tiers for
+> >> different policy choices.  For that, memory_type based adistance_offset
+> >> should be good.
+> >> 
 > >
-> > Maybe if I had looked a wee bit more deeply I would've noticed that it
-> > was used there, but it's always good to mention the rationale in the
-> > commit message so that it's more obvious why you're doin it.
->=20
-> You absolutely right. I forgot to update the commit message.
->=20
-> > > Since there is not yet any clock driver the initial device tree for t=
-he TH1520
-> > > included the dummy apb_clk that two of the pinctrl blocks derive thei=
-r clock
-> > > from, but not the "aonsys" clock needed by the "always-on" pinctrl. I=
- thought
-> > > it was better to add this dummy clock with the only (so far) user of =
-it, but if
-> > > you have a better idea, let me know.
-> >
-> > No, that's fine. I was just wondering why there was an unmentioned set
-> > of clocks being added. If they're stubbed fixed clocks I dunno if it
-> > makes sense to add them to the board.dts/module.dtsi files though. Where
-> > do the initial values come from for the rates? Out of reset values or
-> > set by firmware that may vary from board to board?
->=20
-> The vendor u-boot sets the PLLs different from the reset values. For now I
-> think it's the same code for every board using the Lichee Pi 4A module (a=
-nd
-> probably also for the BeagleV Ahead), but it might still make sense to mo=
-ve the
-> freqency to the board instead of the module device tree.
+> > There's actually an affirmative case to change memory tiering to allow
+> > either movement of nodes between tiers, or at least base placement on
+> > HMAT information. Preferably, membership would be changable to allow
+> > hotplug/DCD to be managed (there's no guarantee that the memory passed
+> > through will always be what HMAT says on initial boot).
+> 
+> IIUC, from Jonathan Cameron as below, the performance of memory
+> shouldn't change even for DCD devices.
+> 
+> https://lore.kernel.org/linux-mm/20231103141636.000007e4@Huawei.com/
+> 
+> It's possible to change the performance of a NUMA node changed, if we
+> hot-remove a memory device, then hot-add another different memory
+> device.  It's hoped that the CDAT changes too.
+> 
+> So, all in all, HMAT + CDAT can help us to put the memory device in
+> appropriate memory tiers.  Now, we have HMAT support in upstream.  We
+> will working on CDAT support.
 
-Yeah, think so. Only temporarily though, do you have a clue if anyone is
-working on the actual clock driver stuff? Seems pretty Deadge?
-https://lore.kernel.org/linux-clk/?q=3Dth1520
+That should be sufficient assuming the `-numa hmat-lb` setting in QEMU
+does the right thing.  I suppose we also need to figure out a way to set
+CDAT information for a memory device that isn't related to CXL (from the
+perspective of the guest).  I'll take a look if I get cycles.
 
-Cheers,
-Conor.
-
---hJD6qYXNgkRLNOMK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ2DkwAKCRB4tDGHoIJi
-0pcOAPoD+P51AMazIRXDSkpKgUQM6eBblVNkqmaR1okaVmmX7wEA7wVS+pAjp9hI
-N8snAcL1efQHu26mrSkIAL4yScknnwg=
-=wI/n
------END PGP SIGNATURE-----
-
---hJD6qYXNgkRLNOMK--
+~Gregory
 
