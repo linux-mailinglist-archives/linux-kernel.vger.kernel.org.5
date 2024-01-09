@@ -1,50 +1,61 @@
-Return-Path: <linux-kernel+bounces-21437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DA91828F1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:43:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD356828F20
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:44:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3F24288875
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:43:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 138AAB2476C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68BD3F8F8;
-	Tue,  9 Jan 2024 21:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303AE3DB98;
+	Tue,  9 Jan 2024 21:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RNWn93Rj"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gcaKChwW"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D5A3F8F1
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=D47kuEUuvY/SrXunoNEbi3Kkq7SL6IKph7l39rRXOkA=; b=RNWn93RjQaoOeXeMsl8H+OA4py
-	NXoKNEhNNHWWuomGV6O8Wr2hOdVYNb7AJxYDZCw6AXMhIj71E1JaZYENde6tEe8+OXgQjpyYiFiok
-	avPWrWxjLKnrJdyKsoUWbpEdQZgQA3R4/pTyTIyo8KBQENc1bDN30WVklnA1woOQ00FBYVp6LRVV9
-	bHBbDJN050IGQmSdZ1jeu+hwWDQDlG1Mq6Ti4Q7YToN7o+6WmquSGmIAqtTNJUbqMF0XAsIzSCreX
-	+LJnKXMBRISm8WJjS+T8K6MHVdp2K+460zdXI9aOLFtdgjKhEXVv7A7AJMj1EAUjdqnwHuSaLX2cV
-	Kzk1+xsQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rNJrH-00AMnq-PL; Tue, 09 Jan 2024 21:42:03 +0000
-Date: Tue, 9 Jan 2024 21:42:03 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Liam R. Howlett" <liam.howlett@oracle.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [RFC] Sleep waiting for an rwsem to be unlocked
-Message-ID: <ZZ29q3x3I0Z3dQ8y@casper.infradead.org>
-References: <ZZ1+ZicgN8dZ3zj3@casper.infradead.org>
- <04d23913-fb0e-4f47-9e6c-dae50ee28a3a@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A943DB89
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704836638; x=1736372638;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=tj+0C4n/drvfg0qVu2elx57BhD5hX6wUCR9fvyug+XQ=;
+  b=gcaKChwWarIlMCIqY8OjVQL9GQGEHdobemlkbvo2g/Fp84VngOYAZlek
+   dxF8hDufhcsiJ7eA/rBau2hv2yoPg15JBchQL4oStZ58qK6q3k2/vNxSz
+   x8ZSaFjcoA8l5Tm3YLt4b/gYGPSmSQNLlaJXMYG9eGFkzFuUfLY999O/5
+   +uaKEkPqerN1iZ0hUO/4HvWNRBW4Iubz0DeeL9e+L5k364+eJUUPZT8XJ
+   +Skd+s3jDoRHpvmxjCfWI4Hn3OGudUU/R3tCEx+F/ssVZKdZf4xG1OdjK
+   NUCgIv0iRT5hjq4N5LbYnM2/qhdozfZnQF6xQCFseSR751il7z5Xvf1BY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11676500"
+X-IronPort-AV: E=Sophos;i="6.04,183,1695711600"; 
+   d="scan'208";a="11676500"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 13:43:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="731618178"
+X-IronPort-AV: E=Sophos;i="6.04,183,1695711600"; 
+   d="scan'208";a="731618178"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 09 Jan 2024 13:43:55 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNJt2-0006Hi-2z;
+	Tue, 09 Jan 2024 21:43:52 +0000
+Date: Wed, 10 Jan 2024 05:43:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>
+Subject: drivers/nvme/target/trace.h:56:9: warning: 'strncpy' specified bound
+ depends on the length of the source argument
+Message-ID: <202401100527.L7RokChn-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,81 +64,122 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <04d23913-fb0e-4f47-9e6c-dae50ee28a3a@redhat.com>
 
-On Tue, Jan 09, 2024 at 04:04:08PM -0500, Waiman Long wrote:
-> On 1/9/24 12:12, Matthew Wilcox wrote:
-> > The problem we're trying to solve is a lock-free walk of
-> > /proc/$pid/maps. If the process is modifying the VMAs at the same time
-> > the reader is walking them, it can see garbage.  For page faults, we
-> > handle this by taking the mmap_lock for read and retrying the page fault
-> > (excluding any further modifications).
-> > 
-> > We don't want to take that approach for the maps file.  The monitoring
-> > task may have a significantly lower process priority, and so taking
-> > the mmap_lock for read can block it for a significant period of time.
-> > The obvious answer is to do some kind of backoff+sleep.  But we already
-> > have a wait queue, so why not use it?
-> > 
-> > I haven't done the rwbase version; this is just a demonstration of what
-> > we could do.  It's also untested other than by compilation.  It might
-> > well be missing something.
-> 
-> It is not clear what exactly is the purpose of this new API. Are you just
+Hi Chaitanya,
 
-.. really?  I wrote it out in the part you quoted, and I wrote it out
-differently in the kernel-doc for the function:
+FYI, the error/warning still remains.
 
-+ * rwsem_wait_killable - Wait for current write lock holder to release lock
-+ * @sem: The semaphore to wait on.
-+ *
-+ * This is equivalent to calling down_read(); up_read() but avoids the
-+ * possibility that the thread will be preempted while holding the lock
-+ * causing threads that want to take the lock for writes to block.  The
-+ * intended use case is for lockless readers who notice an inconsistent
-+ * state and want to wait for the current writer to finish.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
+commit: d86481e924a7d6e8a40477ffa98077c6c0d77ed5 nvmet: use min of device_path and disk len
+date:   2 years, 11 months ago
+config: arm64-randconfig-002-20240106 (https://download.01.org/0day-ci/archive/20240110/202401100527.L7RokChn-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401100527.L7RokChn-lkp@intel.com/reproduce)
 
-Something I forgot to add was that we only guarantee that _a_ writer
-finished; another writer may have the lock when the function returns.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401100527.L7RokChn-lkp@intel.com/
 
-> waiting in the rwsem wait queue until it gets waken up without taking a read
-> or write lock? I see two issues at the moment.
-> 
-> 1) The handoff processing should exclude the new RWSEM_WAITING_FOR_RELEASE
-> waiter types.
+All warnings (new ones prefixed by >>):
 
-Hmm.  I thought I'd done that by only incrementing 'woken' for
-RWSEM_WAITING_FOR_READ types.
+   In file included from drivers/nvme/target/core.c:14:
+   In function '__assign_req_name',
+       inlined from 'trace_event_raw_event_nvmet_req_init' at drivers/nvme/target/./trace.h:61:1:
+>> drivers/nvme/target/trace.h:56:9: warning: 'strncpy' specified bound depends on the length of the source argument [-Wstringop-truncation]
+      56 |         strncpy(name, req->ns->device_path,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/kernel.h:14,
+                    from include/linux/list.h:9,
+                    from include/linux/module.h:12,
+                    from drivers/nvme/target/core.c:7:
+   drivers/nvme/target/trace.h:57:46: note: length computed here
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+   include/linux/minmax.h:38:39: note: in definition of macro '__cmp_once'
+      38 |                 typeof(y) unique_y = (y);               \
+         |                                       ^
+   include/linux/minmax.h:110:33: note: in expansion of macro '__careful_cmp'
+     110 | #define min_t(type, x, y)       __careful_cmp((type)(x), (type)(y), <)
+         |                                 ^~~~~~~~~~~~~
+   drivers/nvme/target/trace.h:57:17: note: in expansion of macro 'min_t'
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ^~~~~
+   In function '__assign_req_name',
+       inlined from 'trace_event_raw_event_nvmet_req_complete' at drivers/nvme/target/./trace.h:103:1:
+>> drivers/nvme/target/trace.h:56:9: warning: 'strncpy' specified bound depends on the length of the source argument [-Wstringop-truncation]
+      56 |         strncpy(name, req->ns->device_path,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/nvme/target/trace.h:57:46: note: length computed here
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+   include/linux/minmax.h:38:39: note: in definition of macro '__cmp_once'
+      38 |                 typeof(y) unique_y = (y);               \
+         |                                       ^
+   include/linux/minmax.h:110:33: note: in expansion of macro '__careful_cmp'
+     110 | #define min_t(type, x, y)       __careful_cmp((type)(x), (type)(y), <)
+         |                                 ^~~~~~~~~~~~~
+   drivers/nvme/target/trace.h:57:17: note: in expansion of macro 'min_t'
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ^~~~~
+   In function '__assign_req_name',
+       inlined from 'perf_trace_nvmet_req_complete' at drivers/nvme/target/./trace.h:103:1:
+>> drivers/nvme/target/trace.h:56:9: warning: 'strncpy' specified bound depends on the length of the source argument [-Wstringop-truncation]
+      56 |         strncpy(name, req->ns->device_path,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/nvme/target/trace.h:57:46: note: length computed here
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+   include/linux/minmax.h:38:39: note: in definition of macro '__cmp_once'
+      38 |                 typeof(y) unique_y = (y);               \
+         |                                       ^
+   include/linux/minmax.h:110:33: note: in expansion of macro '__careful_cmp'
+     110 | #define min_t(type, x, y)       __careful_cmp((type)(x), (type)(y), <)
+         |                                 ^~~~~~~~~~~~~
+   drivers/nvme/target/trace.h:57:17: note: in expansion of macro 'min_t'
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ^~~~~
+   In function '__assign_req_name',
+       inlined from 'perf_trace_nvmet_req_init' at drivers/nvme/target/./trace.h:61:1:
+>> drivers/nvme/target/trace.h:56:9: warning: 'strncpy' specified bound depends on the length of the source argument [-Wstringop-truncation]
+      56 |         strncpy(name, req->ns->device_path,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/nvme/target/trace.h:57:46: note: length computed here
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+   include/linux/minmax.h:38:39: note: in definition of macro '__cmp_once'
+      38 |                 typeof(y) unique_y = (y);               \
+         |                                       ^
+   include/linux/minmax.h:110:33: note: in expansion of macro '__careful_cmp'
+     110 | #define min_t(type, x, y)       __careful_cmp((type)(x), (type)(y), <)
+         |                                 ^~~~~~~~~~~~~
+   drivers/nvme/target/trace.h:57:17: note: in expansion of macro 'min_t'
+      57 |                 min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+         |                 ^~~~~
 
-> 2) If the rwsem is free, it should call rwsem_wake() again to wake up the
-> next waiter, like what is being done in up_write().
 
-because the wait queue might have a waiter followed by a writer?  I
-think calling rwsem_wake() again is probably a bad idea as it will
-defeat the MAX_READERS_WAKEUP limit.  Probably rwsem_mark_wake()
-needs to handle that case itself; maybe something like this?
+vim +/strncpy +56 drivers/nvme/target/trace.h
 
-+++ b/kernel/locking/rwsem.c
-@@ -419,6 +419,7 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
+    48	
+    49	static inline void __assign_req_name(char *name, struct nvmet_req *req)
+    50	{
+    51		if (!req->ns) {
+    52			memset(name, 0, DISK_NAME_LEN);
+    53			return;
+    54		}
+    55	
+  > 56		strncpy(name, req->ns->device_path,
+    57			min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+    58	}
+    59	#endif
+    60	
 
-        lockdep_assert_held(&sem->wait_lock);
-
-+again:
-        /*
-         * Take a peek at the queue head waiter such that we can determine
-         * the wakeup(s) to perform.
-@@ -542,6 +543,12 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
-                 */
-                if (oldcount & RWSEM_FLAG_HANDOFF)
-                        adjustment -= RWSEM_FLAG_HANDOFF;
-+       } else {
-+               /*
-+                * Everybody we woke was a waiter, not a reader.  Wake the
-+                * first writer instead.
-+                */
-+               goto again;
-        }
-
-        if (adjustment)
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
