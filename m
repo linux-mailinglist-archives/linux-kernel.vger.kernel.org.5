@@ -1,144 +1,125 @@
-Return-Path: <linux-kernel+bounces-20635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6FE08282C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B45A8282C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:14:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 877CE287E6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:13:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C37A3287F9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1453E29CF1;
-	Tue,  9 Jan 2024 09:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EAF12E85A;
+	Tue,  9 Jan 2024 09:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TxY/97xm"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="naGn6h5G"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E0D32C64;
-	Tue,  9 Jan 2024 09:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704791611; x=1736327611;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=uRc08WL/Z62WFKu9VzFTDF/ddI774vRvo3ktSDnU+38=;
-  b=TxY/97xmPkB+ZeZDxf3Mj660KDqTkZZL2mj7ocl5zsyvBGCWTOzowL7h
-   1wTNKkRsOLL68RaHLV4KUek1FqnCOxZZQ86bd0eouYS6R3/8XzWUB+A9G
-   IAk8ix1VAHhMeqbi9l9J1foQ8/LoKaSL35+MYchLcwQAhKUoF9UW6A2Ym
-   82hcpp4O8AA0TCiAzCe8dtcc4cMTNL5wCXEPm+P03iFx63fi4bnYfEMfO
-   jW1HBpG0KuWjMqWl4vMY/rieuKkjdCY7LBOJFdwl8cGV/kzUNdE6grdd3
-   bD2qPqHTUSBZDDDIwVkx8rlzH3wUseOf1AE2wbJ5wWQGwTuAKixdB0Xs0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="395298030"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="395298030"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 01:13:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="774778938"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="774778938"
-Received: from bhaddad-mobl.amr.corp.intel.com ([10.251.212.73])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 01:13:27 -0800
-Date: Tue, 9 Jan 2024 11:13:16 +0200 (EET)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-cc: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, 
-    Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] selftests/resctrl: Add non-contiguous CBMs CAT
- test
-In-Reply-To: <fd6acf6a-2610-406b-b363-220121a45aee@intel.com>
-Message-ID: <33787043-5823-6de4-4e5c-a24a136ba541@linux.intel.com>
-References: <cover.1702392177.git.maciej.wieczor-retman@intel.com> <10c3afd7f62c63db31a3d4af86529144a5d7bbf9.1702392177.git.maciej.wieczor-retman@intel.com> <fd6acf6a-2610-406b-b363-220121a45aee@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8822EAF9;
+	Tue,  9 Jan 2024 09:14:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13FA4C433F1;
+	Tue,  9 Jan 2024 09:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704791644;
+	bh=+06NMjLMy7+S0OcYAENUNHQLBwEXKnqYTwCvjFTXoVo=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=naGn6h5G/6LHXS86a+lEsUu6Z0GXyfdbelfib8WBnJgW8wCSOppf2X8p2llo/pSnM
+	 /c3R7m5/EQyL4cwZNRgIVXFQmvp+KJg5lTHNLqL/ztc359qhvQaHOQeRtUOB311KjO
+	 HhQVXTJw3Nhq0BvsCqw7vuEgkGvJfqo7daporh375JTpqat7AX81VZ2ZzVQ3Lan7h8
+	 haEwOfoNrZmYNPjQQB9nyKmx/9LDDWJRW/1qjFZAH1XHihrWapFpeQejQx2JrvOxPN
+	 NbeoHoMkTkaaIOXgmqDbamqDtjHSxyFeYCWwGTb+k2oxYqoGnLfWAWSJBpBhmIXmrs
+	 X/5GNfkYry1hA==
+From: Kalle Valo <kvalo@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,  "David S . Miller"
+ <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub
+ Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Rob Herring
+ <robh+dt@kernel.org>,  Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+  Bjorn Andersson <andersson@kernel.org>,  Konrad Dybcio
+ <konrad.dybcio@linaro.org>,  Catalin Marinas <catalin.marinas@arm.com>,
+  Will Deacon <will@kernel.org>,  Bjorn Helgaas <bhelgaas@google.com>,
+  Heiko Stuebner <heiko@sntech.de>,  Jernej Skrabec
+ <jernej.skrabec@gmail.com>,  Chris Morgan <macromorgan@hotmail.com>,
+  Linus Walleij <linus.walleij@linaro.org>,  Geert Uytterhoeven
+ <geert+renesas@glider.be>,  Arnd Bergmann <arnd@arndb.de>,  Neil Armstrong
+ <neil.armstrong@linaro.org>,  =?utf-8?Q?N=C3=ADcolas?= F . R . A . Prado
+ <nfraprado@collabora.com>,  Marek Szyprowski <m.szyprowski@samsung.com>,
+  Peng Fan <peng.fan@nxp.com>,  Robert Richter <rrichter@amd.com>,  Dan
+ Williams <dan.j.williams@intel.com>,  Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>,  Terry Bowman <terry.bowman@amd.com>,
+  Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+  Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,  Huacai
+ Chen
+ <chenhuacai@kernel.org>,  Alex Elder <elder@linaro.org>,  Srini Kandagatla
+ <srinivas.kandagatla@linaro.org>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  linux-wireless@vger.kernel.org,
+  netdev@vger.kernel.org,  devicetree@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  linux-arm-msm@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-pci@vger.kernel.org,
+  Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC 7/9] dt-bindings: wireless: ath11k: describe QCA6390
+References: <20240104130123.37115-1-brgl@bgdev.pl>
+	<20240104130123.37115-8-brgl@bgdev.pl>
+	<82a669f5-259d-427c-b290-6fa1470fec79@linaro.org>
+Date: Tue, 09 Jan 2024 11:13:54 +0200
+In-Reply-To: <82a669f5-259d-427c-b290-6fa1470fec79@linaro.org> (Krzysztof
+	Kozlowski's message of "Thu, 4 Jan 2024 16:57:52 +0100")
+Message-ID: <87o7duzx65.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 
-On Mon, 8 Jan 2024, Reinette Chatre wrote:
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 
-> Hi Maciej,
-> 
-> On 12/12/2023 6:52 AM, Maciej Wieczor-Retman wrote:
-> > Add tests for both L2 and L3 CAT to verify the return values
-> > generated by writing non-contiguous CBMs don't contradict the
-> > reported non-contiguous support information.
-> > 
-> > Use a logical XOR to confirm return value of write_schemata() and
-> > non-contiguous CBMs support information match.
-> > 
-> > Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> > ---
-> > Changelog v2:
-> > - Redo the patch message. (Ilpo)
-> > - Tidy up __cpuid_count calls. (Ilpo)
-> > - Remove redundant AND in noncont_mask calculations (Ilpo)
-> > - Fix bit_center offset.
-> > - Add newline before function return. (Ilpo)
-> > - Group non-contiguous tests with CAT tests. (Ilpo)
-> > - Use a helper for reading sparse_masks file. (Ilpo)
-> > - Make get_cache_level() available in other source files. (Ilpo)
-> > 
-> >  tools/testing/selftests/resctrl/cat_test.c    | 75 +++++++++++++++++++
-> >  tools/testing/selftests/resctrl/resctrl.h     |  3 +
-> >  .../testing/selftests/resctrl/resctrl_tests.c |  2 +
-> >  tools/testing/selftests/resctrl/resctrlfs.c   |  2 +-
-> >  4 files changed, 81 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> > index 7dc7206b3b99..ecf553a89aae 100644
-> > --- a/tools/testing/selftests/resctrl/cat_test.c
-> > +++ b/tools/testing/selftests/resctrl/cat_test.c
-> > @@ -292,6 +292,65 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
-> >  	return ret;
-> >  }
-> >  
-> > +static int noncont_cat_run_test(const struct resctrl_test *test,
-> > +				const struct user_params *uparams)
-> > +{
-> > +	unsigned long full_cache_mask, cont_mask, noncont_mask;
-> > +	unsigned int eax, ebx, ecx, edx, ret;
-> > +	int level, bit_center, sparse_masks;
-> > +	char schemata[64];
-> > +
-> > +	/* Check to compare sparse_masks content to cpuid output. */
-> 
-> "cpuid" -> "CPUID" (to note it is an instruction)
-> 
-> > +	sparse_masks = read_info_res_file(test->resource, "sparse_masks");
-> > +	if (sparse_masks < 0)
-> > +		return sparse_masks;
-> > +
-> > +	level = get_cache_level(test->resource);
-> > +	if (level < 0)
-> > +		return -EINVAL;
-> > +	__cpuid_count(0x10, 4 - level, eax, ebx, ecx, edx);
-> 
-> Please do not invent relationships. Please replace the "4 - level" with
-> specific index used that depends on particular cache. The cache level
-> may not even be needed, just use the resource to determine the correct
-> index.
+> On 04/01/2024 14:01, Bartosz Golaszewski wrote:
+>
+>> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
+>> index 817f02a8b481..f584c25f4276 100644
+>> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
+>> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
+>> @@ -16,6 +16,7 @@ description: |
+>>  properties:
+>>    compatible:
+>>      enum:
+>> +      - pci17cb,1101  # QCA6390
+>>        - pci17cb,1103  # WCN6855
+>>  
+>>    reg:
+>> @@ -27,6 +28,19 @@ properties:
+>>        string to uniquely identify variant of the calibration data for designs
+>>        with colliding bus and device ids
+>>  
+>> +  enable-gpios:
+>> +    description: GPIO line enabling the ATH11K module when asserted.
+>> +    maxItems: 1
+>> +
+>> +  vddpmu-supply:
+>> +    description: VDD_PMU supply regulator handle
+>> +
+>> +  vddpcie1-supply:
+>> +    description: VDD_PCIE1 supply regulator handle
+>> +
+>> +  vddpcie2-supply:
+>> +    description: VDD_PCIE2 supply regulator handle
+>
+> Looks like these are valid only for specific variant, so you should have
+> allOf:if:then disallowing other properties when not applicable. The same
+> applies for existing properties which might not exist on qca6390.
 
-This is actually my fault, I suggested Maciej could use arithmetics there.
-
-> > +
-> > +	return !ret == !sparse_masks;
-> 
-> Please return negative on error. Ilpo just did a big cleanup to address this.
-
-Test failure is not same as an error. So tests should return negative for 
-errors which prevent even running test at all, and 0/1 for test 
-success/fail.
+And it would be good to provide more information in the commit log about
+the platforms where this is used, otherwise the context might not be
+clear. Or maybe document that in the bindings file, not sure.
 
 -- 
- i.
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
