@@ -1,99 +1,94 @@
-Return-Path: <linux-kernel+bounces-21009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9910582886D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD9F582886E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBFFC1C24564
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:46:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D51A71C244DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A025F39ADD;
-	Tue,  9 Jan 2024 14:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="roCY5IWt"
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC36039AC0;
-	Tue,  9 Jan 2024 14:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1704811582; bh=kW1dPczTH04Crl0tbFUCfcQMkxib/V9/fWFO15vd0ac=;
-	h=From:To:Cc:Subject:Date;
-	b=roCY5IWtGteTzczcJ6Rg5jYCIT2mgvePdtxbY/m+xxSpnwzFi+pnsyBqdLsBvAyCp
-	 vpsfKa/TnPiX9K2O1LLNTDqCHGKbhkUdgIT7i/h2EG43+3eUKlfimWPQ5P/uSolojh
-	 8GCX0wl1jLQ99XCyTmwkdPWatoLOSjUf+J45nRNk=
-Received: from cyy-pc.lan ([2001:da8:c800:d084:c65a:644a:13d7:e72c])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id B8806A65; Tue, 09 Jan 2024 22:46:08 +0800
-X-QQ-mid: xmsmtpt1704811568tjhw333a7
-Message-ID: <tencent_13A0B6B4A3136E46CC448874232A9F956006@qq.com>
-X-QQ-XMAILINFO: MJf32pulH481N5+721FHDLNIsCPMMppGeNjz2u6HG63swzGmnY8jwl7oe52Ui6
-	 DZcnWAjXa93Z9dClvHOMcvdpYU5C73qTscOBPb3nCL/w9utGbUUuPUOZzN7MBkVXkpCd+qPRy7N+
-	 irGWHzeIRxFpPzCzCCqN6rbJbQWqUt4zsAtXXTtH6sj+iWXDlCaIAvWx2qBogRRIkReNvy47Ytbq
-	 7YE8wVeEMrTifNQx6S+aLlKdrdAyRu0lTDnt1tGsUzhXW31UtyDk6pydzCyL8ic+wvpmnrttyJ7o
-	 XOnL3gRCVw6c2ZdxZdVrvQbgSeUhAY2dwhCAPbAuz3ft+BwYa+UJHiUtuNu1jKJNvMg+QNeCP9Qa
-	 H0znsWzWa+9/WAQFFQYTxmCnaEPqQQB/XbUilTf9ZioykuQ/HrIctj/bOyJGQSgHcikt9D4SJS7N
-	 whidKdbYGiFGMnHT32hV4yHMsLC2NBSG/P5rv4FtdSA4W2HJfultP74sQthjUFzAWULP2f1jYtXl
-	 6FMToImFWmp7EValb6ILd5wxCgjv4nK3O6jYk11qDRpP5i6Y8Ns1SlIdH7APxo+uMSBeTRfzV6OL
-	 7iU1KQ1nm9N75RU9mj1dax4MIAe8c3+3dQQkOdd6Usre6DmnwihTaLiFTh19ZsrebEYDf76PGNgx
-	 8GtW3LzRINoW1QRZ5vCy0UUUNayOVFUGa2QsCG2/0PGZygcn7K+tQ4ZNnPQvlE5ySZrG027YkkeT
-	 xnDvThWzmaEgBCmS5IGwU/bxkZv3BUH6OJ0X1kvR8xbsDGdzL29M0CdLYHUh7V3naGdTSJ4YZvXu
-	 ThgkA8V0QZeVBCI+YqNDjf1a1S3RC28HiDGZ795GmtQBoQGcENZdg6Wk0Ybe9Q/Jd+I97sOOzX57
-	 NykiS9ynUeeg6cNSHZnEc2g8o6cWALxP2/2+rHdZ6rgUxuxdyIQmBQeD98nFQNQ5dgtmZE0FPcSc
-	 DCT1M/3VHEzZbo4g1ElO1o5YBlLJQ6uMp8ZjrhA9K048YtOv733gr1Jf4l6ebq
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From: Yangyu Chen <cyy@cyyself.name>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Alexander Potapenko <glider@google.com>,
-	Mike Frysinger <vapier@gentoo.org>,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH] asm-generic: flush icache only when vma->vm_flags has VM_EXEC set
-Date: Tue,  9 Jan 2024 22:45:59 +0800
-X-OQ-MSGID: <20240109144559.315476-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45DB39AEE;
+	Tue,  9 Jan 2024 14:46:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 075AA39ACB
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B048ADA7;
+	Tue,  9 Jan 2024 06:47:20 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.28.161])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B64A3F5A1;
+	Tue,  9 Jan 2024 06:46:33 -0800 (PST)
+Date: Tue, 9 Jan 2024 14:46:30 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: catalin.marinas@arm.com, will@kernel.org, sumit.garg@linaro.org,
+	dianders@chromium.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-team@android.com,
+	andre.draszik@linaro.org, willmcvicker@google.com,
+	peter.griffin@linaro.org
+Subject: Re: [PATCH] arm64: irq: include <linux/cpumask.h>
+Message-ID: <ZZ1cRnjNlryrqAL0@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240109140437.3703330-1-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109140437.3703330-1-tudor.ambarus@linaro.org>
 
-For some ISAs like RISC-V, which may not support bus broadcast-based
-icache flushing instructions, it's necessary to send IPIs to all of the
-CPUs in the system to flush the icache. This process can be expensive for
-these ISAs and introduce disturbances during performance profiling.
-Limiting the icache flush to occur only when the vma->vm_flags has VM_EXEC
-can help minimize the frequency of these operations.
+On Tue, Jan 09, 2024 at 02:04:37PM +0000, Tudor Ambarus wrote:
+> Sorting include files in alphabetic order in
+> drivers/tty/serial/samsung.c revealed the following error:
+> 
+> In file included from drivers/tty/serial/samsung_tty.c:24:
+> ./arch/arm64/include/asm/irq.h:9:43: error: unknown type name 'cpumask_t'
+>     9 | void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
+>       |                                           ^~~~~~~~~
+> 
+> Include cpumask.h to avod unknown type errors for parents of irq.h that
+> don't include cpumask.h.
 
-Signed-off-by: Yangyu Chen <cyy@cyyself.name>
----
- include/asm-generic/cacheflush.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+s/avod/avoid/
 
-diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
-index 84ec53ccc450..729d51536575 100644
---- a/include/asm-generic/cacheflush.h
-+++ b/include/asm-generic/cacheflush.h
-@@ -102,7 +102,8 @@ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
- 	do { \
- 		instrument_copy_to_user((void __user *)dst, src, len); \
- 		memcpy(dst, src, len); \
--		flush_icache_user_page(vma, page, vaddr, len); \
-+		if (vma->vm_flags & VM_EXEC) \
-+			flush_icache_user_page(vma, page, vaddr, len); \
- 	} while (0)
- #endif
- 
--- 
-2.43.0
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  arch/arm64/include/asm/irq.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
+> index 50ce8b697ff3..d5612bc770da 100644
+> --- a/arch/arm64/include/asm/irq.h
+> +++ b/arch/arm64/include/asm/irq.h
+> @@ -5,6 +5,7 @@
+>  #ifndef __ASSEMBLER__
+>  
+>  #include <asm-generic/irq.h>
+> +#include <linux/cpumask.h>
 
+Minor nit: we usually have the <linux/*.h> headers first, then a line space,
+then the <asm/*.h> headers, e.g.
+
+| #include <linux/cpumask.h>
+| 
+| #include <asm-generic/irq.h>
+
+With those changes, the patch itself looks good to me:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+>  void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
+>  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
 
