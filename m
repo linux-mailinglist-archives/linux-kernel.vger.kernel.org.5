@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-20943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C92D98287AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:04:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FC38287AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5934DB24DF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:04:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F2AD1C2341D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541D13986C;
-	Tue,  9 Jan 2024 14:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF1B39AE0;
+	Tue,  9 Jan 2024 14:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LeN794cX"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZQy29gvl"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B3A39850;
-	Tue,  9 Jan 2024 14:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1465F39ACF;
+	Tue,  9 Jan 2024 14:03:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3e6c86868so26220905ad.1;
-        Tue, 09 Jan 2024 06:03:46 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d54b763d15so10476415ad.0;
+        Tue, 09 Jan 2024 06:03:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704809025; x=1705413825; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704809039; x=1705413839; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rZBafw6hob01QS01xBkXqkw9nkyhWNI3hsapBEtWecI=;
-        b=LeN794cXj9IksPz69EwfZ5FwnWREeDnn/YG7+YOwSbG5znEq1Z8w/G8QD8qpV0mkwg
-         iF0+ryKPh+G2PyELN//2Evt9pm9VnydO7V+eW3el0Mc8mldn7eYg9cNzmySuCiBVTOZk
-         yiNurOgnJhP/dLQRjoSzUKTqpNFH4z1M4vyrgd/WikKFvXEL3V2XxSGWomygpFU0+tkC
-         R6r04zBzZexX3AzZGi0txYN+xhhno/gVohy54J5ayCUEBCd4Z1llOgN0Hai0iUEzRCAN
-         FZa/VQeM/iePByYuGqoDnYFNXAZZHYUegDXvNAP8jbvpnLkhS9H7a9icXos7OeYiHiwb
-         QZbQ==
+        bh=9IX5MdgvHzcC45EGoxSUtgBkn4tauaq0JPFZeGgYcY8=;
+        b=ZQy29gvlSQ34hakbklkicCv+KDd9oS1RWxc5nutOYFjYyk45+SiwKaAOZoGMPSpex1
+         bQzkgMBWtYlPaVAmWUYWSq0qGJv+Dv4hP2WPiis8VZaStcbwx6Eh4dsN/kATjKBYDRgA
+         NKgjoNfo+oo+9VZF3KdwfRO/Jb/84MA3XCzfcOcplS4PNafhkP3tl0dackPEjgdFrK7l
+         /ERGl3D74YoquoR5b5nkf0wa4YH9g3J6OPMqqYO9ipW8BY82sA67q5qgtYvYFGnMsMGH
+         Nk9Tdt7vcfcgFpuWnJzBDEvOQa30nQGg84TWLr308D8SZuNnoD3sFS/I5wxQxBiZ/lBX
+         TaXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704809025; x=1705413825;
+        d=1e100.net; s=20230601; t=1704809039; x=1705413839;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rZBafw6hob01QS01xBkXqkw9nkyhWNI3hsapBEtWecI=;
-        b=EO9fUh6ZuPAeJukN93hW9HX5cKN8GomId9MatL7E3w2x3H6jMNAEYYRE2BhEbPFz5c
-         60pDjltvcyko27xAkpIko1Sr9Q9b+uqODl9JbrVpViwRtoCy3p6glVbsCZvSxdSJTeUO
-         OxuW6GefebxisMJWmWFxpJdZUVk7OycQuL5syrHt7p0L3naJnAruFEANEHhMYoI2D1aG
-         IqKeRNX1MSSkE5JbFeO8/6YFj8SSFvHHqRA1d+n+pURcWwgdLkHIbZojbGk1JnX9OJU/
-         CUUSeDd1dFn5PCklIZkkXuch4S1Q2xPs7fG6KDQgMoTtrMuwCXPXKZDtFqiVJFirK0Kk
-         75xA==
-X-Gm-Message-State: AOJu0YyzY2evTAI7ndgrUh7JHE6wIdhJ1cePWgMkEEuPTQ+El9OngGe+
-	yE2foNU15TuSn7uzc/knUV2mi36wjqAXuA==
-X-Google-Smtp-Source: AGHT+IE/JEBDO6v7IzoujrJgFdjXIeuiiUlZp7z8i//0M1qW+IdvYG5VRFSKX3C95yYO9bKCEyYqPQ==
-X-Received: by 2002:a17:902:a50d:b0:1d4:1327:bd15 with SMTP id s13-20020a170902a50d00b001d41327bd15mr5165391plq.32.1704809025335;
-        Tue, 09 Jan 2024 06:03:45 -0800 (PST)
+        bh=9IX5MdgvHzcC45EGoxSUtgBkn4tauaq0JPFZeGgYcY8=;
+        b=rbD0JowrAX2hzE9wnkDLypE2NhEyiHyi9Ea8TvFZPF4yY6PL2vhaAEp+rTxL7szIOT
+         +HWBB9TTCukIGUlhhKxopQdHs6NJ72tZ6oM2Pu6UzkDgAGsQYJa4zSsdnJbOhD8ol3YN
+         lS6xNKRKVo2KV9zFWZzTSIRssRfmE5Cp6ndVneNDt0mJkdcJLNbrzxo0YakfZ+AWVLGc
+         SzA8a/KYgCu7gprfgY87cGOkOMYKBX3IuUrgNf0GkJjwfxvWZLqhnzD9RrO8EdoTMKcd
+         i9SlTlLGkVsY8EwYeIONDih5Sjce3X6mrIyO0rAvjBoV0KY+u5Q66yDv7coLbwolV3in
+         YO0Q==
+X-Gm-Message-State: AOJu0Yz1qoCLKELTrR2DQUguiAcA1eG/kh0t3lx7iD2wxXqKysbyBKXL
+	R2k+3NGF+KEPKgTCFsFA4hERmG4PPLWhEA==
+X-Google-Smtp-Source: AGHT+IE1B+5E4yXZiHr/7k0nR/SqU7friTO3wviR2qf5qMYoO/dj8rWkZ5REohbVVu8PAXIXDlnmAg==
+X-Received: by 2002:a17:902:d389:b0:1d3:2e0e:c889 with SMTP id e9-20020a170902d38900b001d32e0ec889mr3250366pld.62.1704809038948;
+        Tue, 09 Jan 2024 06:03:58 -0800 (PST)
 Received: from rigel.home.arpa (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id jw23-20020a170903279700b001d538b6517asm1818362plb.230.2024.01.09.06.03.42
+        by smtp.gmail.com with ESMTPSA id jw23-20020a170903279700b001d538b6517asm1818362plb.230.2024.01.09.06.03.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 06:03:45 -0800 (PST)
+        Tue, 09 Jan 2024 06:03:58 -0800 (PST)
 From: Kent Gibson <warthog618@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	linux-gpio@vger.kernel.org,
@@ -63,9 +63,9 @@ To: linux-kernel@vger.kernel.org,
 	linus.walleij@linaro.org,
 	andy@kernel.org
 Cc: Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH 1/5] gpio: uapi: improve description of fd fields
-Date: Tue,  9 Jan 2024 22:02:17 +0800
-Message-Id: <20240109140221.77725-2-warthog618@gmail.com>
+Subject: [PATCH 2/5] gpio: uapi: clarify hte references
+Date: Tue,  9 Jan 2024 22:02:18 +0800
+Message-Id: <20240109140221.77725-3-warthog618@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240109140221.77725-1-warthog618@gmail.com>
 References: <20240109140221.77725-1-warthog618@gmail.com>
@@ -77,58 +77,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Only a successful operation modifies fd fields, but the current
-documentation wording could be taken to imply that a positive fd
-value after an ioctl() returns indicates a success.
+The full name of the HTE subsystem is "hardware timestamping engine",
+so correct references and highlight that this refers to the HTE
+subsystem.
 
-Reword documentation to clarify that the fd is only valid after a
-successful operation.
+Extend the description of struct gpio_v2_line_event to clarify that
+the timestamp_ns is sourced from the HTE if the
+GPIO_V2_LINE_FLAG_EVENT_CLOCK_HTE is set.
 
 Signed-off-by: Kent Gibson <warthog618@gmail.com>
 ---
- include/uapi/linux/gpio.h | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ include/uapi/linux/gpio.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/include/uapi/linux/gpio.h b/include/uapi/linux/gpio.h
-index cb9966d49a16..650c1099d1a6 100644
+index 650c1099d1a6..88c2a326940e 100644
 --- a/include/uapi/linux/gpio.h
 +++ b/include/uapi/linux/gpio.h
-@@ -189,9 +189,8 @@ struct gpio_v2_line_config {
-  * buffer. If this field is zero then the buffer size defaults to a minimum
-  * of @num_lines * 16.
-  * @padding: reserved for future use and must be zero filled
-- * @fd: if successful this field will contain a valid anonymous file handle
-- * after a %GPIO_GET_LINE_IOCTL operation, zero or negative value means
-- * error
-+ * @fd: after a successful %GPIO_V2_GET_LINE_IOCTL operation, contains
-+ * a valid anonymous file descriptor representing the request
+@@ -67,7 +67,7 @@ struct gpiochip_info {
+  * @GPIO_V2_LINE_FLAG_BIAS_DISABLED: line has bias disabled
+  * @GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME: line events contain REALTIME timestamps
+  * @GPIO_V2_LINE_FLAG_EVENT_CLOCK_HTE: line events contain timestamps from
+- * hardware timestamp engine
++ * the hardware timestamping engine (HTE) subsystem
   */
- struct gpio_v2_line_request {
- 	__u32 offsets[GPIO_V2_LINES_MAX];
-@@ -402,9 +401,8 @@ struct gpioline_info_changed {
-  * such as "my-bitbanged-relay"
-  * @lines: number of lines requested in this request, i.e. the number of
-  * valid fields in the above arrays, set to 1 to request a single line
-- * @fd: if successful this field will contain a valid anonymous file handle
-- * after a %GPIO_GET_LINEHANDLE_IOCTL operation, zero or negative value
-- * means error
-+ * @fd: after a successful %GPIO_GET_LINEHANDLE_IOCTL operation, contains
-+ * a valid anonymous file descriptor representing the request
+ enum gpio_v2_line_flag {
+ 	GPIO_V2_LINE_FLAG_USED			= _BITULL(0),
+@@ -288,6 +288,10 @@ enum gpio_v2_line_event_id {
   *
-  * Note: This struct is part of ABI v1 and is deprecated.
-  * Use &struct gpio_v2_line_request instead.
-@@ -465,9 +463,8 @@ struct gpiohandle_data {
-  * %GPIOEVENT_REQUEST_RISING_EDGE or %GPIOEVENT_REQUEST_FALLING_EDGE
-  * @consumer_label: a desired consumer label for the selected GPIO line(s)
-  * such as "my-listener"
-- * @fd: if successful this field will contain a valid anonymous file handle
-- * after a %GPIO_GET_LINEEVENT_IOCTL operation, zero or negative value
-- * means error
-+ * @fd: after a successful %GPIO_GET_LINEEVENT_IOCTL operation, contains a
-+ * valid anonymous file descriptor representing the request
-  *
-  * Note: This struct is part of ABI v1 and is deprecated.
-  * Use &struct gpio_v2_line_request instead.
+  * If the %GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME flag is set then the
+  * @timestamp_ns is read from %CLOCK_REALTIME.
++ *
++ * If the %GPIO_V2_LINE_FLAG_EVENT_CLOCK_HTE flag is set then the
++ * @timestamp_ns is provided by the hardware timestamping engine (HTE)
++ * subsystem.
+  */
+ struct gpio_v2_line_event {
+ 	__aligned_u64 timestamp_ns;
 -- 
 2.39.2
 
