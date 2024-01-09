@@ -1,154 +1,130 @@
-Return-Path: <linux-kernel+bounces-21554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03F3D829114
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:56:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C510829119
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28B721C23DCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:56:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCEA31F264B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF3B3E49B;
-	Tue,  9 Jan 2024 23:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729AA3E483;
+	Tue,  9 Jan 2024 23:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KWHdhVHj"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HXgeRiua"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062B93E487;
-	Tue,  9 Jan 2024 23:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409NbJm3009737;
-	Tue, 9 Jan 2024 23:55:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=pIGSxdBl3VdFv5WEtQLCwxeYviazI+Eu7DuRMU0A1oc=;
- b=KWHdhVHj3VKfhziPmSNboFMdSDTaDFdLW9viw4pwp+QoBg7IuvRsRZuBcpZ+5BKqjB1S
- YxCZHa2zuCxWE1AIkjMAWV6GWaGLNqWJ6DrCLkB+Swv5oV2mLt6pjON0FGbYvdlMHCL0
- Fw0Teabh/rqsdHAoSOWJNmHl+VdlRDUNITOjysUl8mx7ThdTaHRnZnVHvnwL3vGvfXWT
- MUblorRxuY30v2EQtSkhaGmFX0J5k5LC5pcAX1z2+vuZso0zkGh9NKLSoqIfshoRUWD+
- SWjUURc4e6D6M3MAwEtmlG5l/G/o0pynqHjVIfE79Qxy/Nzzev61BFdo7JSbu3aGoSwi 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhfykrcf4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 23:55:48 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 409NdZhO015894;
-	Tue, 9 Jan 2024 23:55:47 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhfykrce5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 23:55:47 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409MFg0l022877;
-	Tue, 9 Jan 2024 23:55:45 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfj6nhvxk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 23:55:45 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409Nti5113042216
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Jan 2024 23:55:45 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E2BA658052;
-	Tue,  9 Jan 2024 23:55:44 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BB20458065;
-	Tue,  9 Jan 2024 23:55:43 +0000 (GMT)
-Received: from [9.61.145.235] (unknown [9.61.145.235])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  9 Jan 2024 23:55:43 +0000 (GMT)
-Message-ID: <01974929-dfbf-4989-ba39-369e521827d0@linux.ibm.com>
-Date: Tue, 9 Jan 2024 17:55:43 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au, peterhuewe@gmx.de, jarkko@kernel.org,
-        jgg@ziepe.ca, keescook@chromium.org, tony.luck@intel.com,
-        gpiccoli@igalia.com, johannes.holland@infineon.com, broonie@kernel.org,
-        patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
-        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
-        festevam@denx.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-hardening@vger.kernel.org, geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-8-ninad@linux.ibm.com>
- <20231212-avid-grill-dbead068fac8@spud>
- <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
- <20231212-mouth-choice-40a83caa34ec@spud>
- <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
- <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
- <20240109-pep-coerce-2a86ae88753d@spud>
-From: Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <20240109-pep-coerce-2a86ae88753d@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: EkkFGVaYhXbBhJlALwA8NDTvgmLdFbqX
-X-Proofpoint-ORIG-GUID: RWeIWYqaZ-TKAU0q3z3TP5Kvth-CNNwp
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE8D3E47B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:58:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e43e55b87so24005e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:58:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704844705; x=1705449505; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+TbM8AUIgVHEHSPyXQawjQZn1xoKY8+QruQ6ShVahao=;
+        b=HXgeRiuapsx3bAgHsqfSjzwUR/dp1E1w7Ofd1949Ng56ao2utcdd+r5OrwKIkHFqtK
+         osJ2jNRxouZiqjrwiKmz48nUCndnY9JfzEjZx3uxJc9p1RpsoznJSdRfvBF8zGwGX9dZ
+         exYKWXFPO5M0t4mkGcs1t02xGOvtRga33n1p4J/q+Vfqmf+bGK9oOmbZ+z1LysNN6Hq+
+         wpAspA4cakimhTP9gCZGakd1FL5LQgUxhMJyR4N+x+13xoDYh2yixDZN4kUA/E3vbqwx
+         9kudYkVSdZetD997BzpdAsq0mewL2oaFhVWvnv56Gdeg42ffSp1wBqGSZlx/B5BYm6yx
+         7wwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704844705; x=1705449505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+TbM8AUIgVHEHSPyXQawjQZn1xoKY8+QruQ6ShVahao=;
+        b=siQ7ks5dKJHbEIC2g4mVj6nVMXNqr0cCqzbEmRA6lrAk1bS1HFiXVnPgrInH13TKF/
+         6qtH+1SwV6RezVAaybsYrA6A/qaIQlnDZ0BRvjUb6+v2Rl9a3X56Zhat8A6SaNTUW8n/
+         pc21Tg2Wu0g6nYYmtlbbdcEdanaeHfggZXRtzyz4/rMUZznENxecoeEU6pqlrZNss+Oo
+         rmmV/PVdp0GL4JsK3JO0JnF8yjzI5j4k3m2WC22MhmQfmqW+1rcn/AsbgqjsRi5B/Azl
+         L3Eqdo1qEIiH4bBPmK19GWeEnH2FdPBV8WqvYqzj7CdeM4s+JOeNhUgkvzEc1K8ntIc9
+         XMeA==
+X-Gm-Message-State: AOJu0YwTslFACDKVeocgtAP6Ijlla08bnUUSDZLQYesR72E86bVCzVoe
+	h0Cy+bGqdP1q0hipKUa8LlFsRh0cyAGI4O72A9nFoFp+rJEfpRkXwlyVMvL1lB95
+X-Google-Smtp-Source: AGHT+IG71+3cRooAKrqxm1VJWVGzbnaAqyLyBFYdVbiOZ8yx1Z+1XoVoTpDoxpSli0ie7XCw/qJW5RRnS4Yy3b4RU88=
+X-Received: by 2002:a05:600c:3c82:b0:40e:5274:e2ba with SMTP id
+ bg2-20020a05600c3c8200b0040e5274e2bamr103211wmb.4.1704844705267; Tue, 09 Jan
+ 2024 15:58:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-09_11,2024-01-09_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- impostorscore=0 spamscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
- priorityscore=1501 phishscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401090192
+References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+ <20240103164841.2800183-3-schatzberg.dan@gmail.com> <ZZaDw1Fak_q9BnW-@tiehlicka>
+In-Reply-To: <ZZaDw1Fak_q9BnW-@tiehlicka>
+From: Yu Zhao <yuzhao@google.com>
+Date: Tue, 9 Jan 2024 16:57:49 -0700
+Message-ID: <CAOUHufZsf0WYQcUyMz7EcyvFYpaL4wLDZBW8oz9CgB5qZqSGAQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
+To: Michal Hocko <mhocko@suse.com>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	Yosry Ahmed <yosryahmed@google.com>, David Rientjes <rientjes@google.com>, 
+	Chris Li <chrisl@kernel.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Conor,
+On Thu, Jan 4, 2024 at 3:09=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Wed 03-01-24 08:48:37, Dan Schatzberg wrote:
+> [...]
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index d91963e2d47f..394e0dd46b2e 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -92,6 +92,11 @@ struct scan_control {
+> >       unsigned long   anon_cost;
+> >       unsigned long   file_cost;
+> >
+> > +#ifdef CONFIG_MEMCG
+> > +     /* Swappiness value for proactive reclaim. Always use sc_swappine=
+ss()! */
+> > +     int *proactive_swappiness;
+> > +#endif
+> > +
+> >       /* Can active folios be deactivated as part of reclaim? */
+> >  #define DEACTIVATE_ANON 1
+> >  #define DEACTIVATE_FILE 2
+> > @@ -227,6 +232,13 @@ static bool writeback_throttling_sane(struct scan_=
+control *sc)
+> >  #endif
+> >       return false;
+> >  }
+> > +
+> > +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *m=
+emcg)
+> > +{
+> > +     if (sc->proactive && sc->proactive_swappiness)
+> > +             return *sc->proactive_swappiness;
+> > +     return mem_cgroup_swappiness(memcg);
+> > +}
+>
+> If you really want to make this sc->proactive bound then do not use
+> CONFIG_MEMCG as sc->proactive is not guarded either.
+>
+> I do not think that sc->proactive check is really necessary. A pure NULL
+> check is sufficient to have a valid and self evident code that is future
+> proof. But TBH this is not the most important aspect of the patch to
+> spend much more time discussing. Either go with sc->proactive but make
+> it config space consistent or simply rely on NULL check (with or without
+> MEMCG guard as both are valid options).
 
-On 1/9/24 11:14, Conor Dooley wrote:
-> On Mon, Jan 08, 2024 at 02:05:53PM -0600, Ninad Palsule wrote:
->> Hello Guenter,
->>
->> On 12/12/23 13:50, Guenter Roeck wrote:
->>> On 12/12/23 10:51, Conor Dooley wrote:
->>>> On Tue, Dec 12, 2023 at 10:00:39AM -0800, Guenter Roeck wrote:
->>>>> On Tue, Dec 12, 2023 at 05:15:51PM +0000, Conor Dooley wrote:
->>>>>> On Tue, Dec 12, 2023 at 10:40:03AM -0600, Ninad Palsule wrote:
->>>>>>> From: Joel Stanley <joel@jms.id.au>
->>>>>>>
->>>>>>> The NPCT75x TPM is TIS compatible. It has an I2C and SPI interface.
->>>>>>>
->>>>>>> https://www.nuvoton.com/products/cloud-computing/security/trusted-platform-module-tpm/
->>>>>>>
->>>>>>>
->>>>>>> Add a compatible string for it, and the generic compatible.
->>>>>>>
->>>>>>> OpenBMC-Staging-Count: 3
->>>>>> Delete this from every patch that it appears from.
->>
->> I have send it as a separate commit. https://lore.kernel.org/linux-kernel/20231214144954.3833998-1-ninad@linux.ibm.com/
-> Why did you do that? It now just adds undocumented compatibles to the
-> driver. Please, as Rob requested, work with Lukas on his series to make
-> sure that these devices are documented.
-
-I think krzysztof kozlowski suggested to send these patches separately: 
-https://lore.kernel.org/linux-kernel/1c5ace65-2fd8-4503-b22f-e0f564d1c83f@linaro.org/
-
-Did I misunderstood it? Do you guys want me to include that commit again?
-
-Regards,
-
-Ninad
-
-
+Now you see why I replied. That "hybrid" if statement is just neither
+of what was suggested.
 
