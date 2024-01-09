@@ -1,98 +1,86 @@
-Return-Path: <linux-kernel+bounces-21100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1BA08289D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:19:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F72A8289DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:20:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C75AF1C2463E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:19:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97F16B241D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663F83A1CD;
-	Tue,  9 Jan 2024 16:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0963C3A1D4;
+	Tue,  9 Jan 2024 16:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=svenjoac@gmx.de header.b="X0K2KTyP"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OUNd/Nj+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B267C3A1BB;
-	Tue,  9 Jan 2024 16:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1704817128; x=1705421928; i=svenjoac@gmx.de;
-	bh=B/+Ha5JpMzg6agM7IrG0rPrX3mfaoBhM6Vtpb3jWEwY=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:In-Reply-To:References:
-	 Date;
-	b=X0K2KTyPS62ylmGbSD87xnMCyV4Zejoc2jwCY71d15LmUPhbPSpQxc/Q87hSFC5T
-	 my8bNkvNLhRIJaFG0SXCJ19k0KT8c3bUZ4A7cTLzMd3PAFpRSW+eZ/lw+ZQx9K+y3
-	 KLuXQAun0rHSAkK2Uqo4hQYjAvNEkc6yxIJQdkwko5hDcpBLZt8bGZ6zg5vbO2d8+
-	 1pjJC7SAGchplPUpXt600TyGbJX8Am3uo4GTUgSlqZ/1tkp5a4KZHArazkomwdgZw
-	 tM7o6AuwgAKOjXgdMSLzvOrdnrW96AS4NFhJgYv2BtBt6qeE8PJUDJQHabhnqWEpy
-	 Z0QXOSSEG7aHNHGjaw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.203.84.168]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MFsYx-1rOZip0F03-00HPsm; Tue, 09 Jan 2024 17:18:48 +0100
-Received: by localhost.localdomain (Postfix, from userid 1000)
-	id DE4D08009A; Tue,  9 Jan 2024 17:18:44 +0100 (CET)
-From: Sven Joachim <svenjoac@gmx.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,  patches@lists.linux.dev,
-  linux-kernel@vger.kernel.org,  torvalds@linux-foundation.org,
-  akpm@linux-foundation.org,  linux@roeck-us.net,  shuah@kernel.org,
-  patches@kernelci.org,  lkft-triage@lists.linaro.org,  pavel@denx.de,
-  jonathanh@nvidia.com,  f.fainelli@gmail.com,  sudipm.mukherjee@gmail.com,
-  srw@sladewatkins.net,  rwarsow@gmx.de,  conor@kernel.org,
-  allen.lkml@gmail.com
-Subject: Re: [PATCH 6.1 000/150] 6.1.72-rc1 review
-In-Reply-To: <20240108153511.214254205@linuxfoundation.org> (Greg
-	Kroah-Hartman's message of "Mon, 8 Jan 2024 16:34:11 +0100")
-References: <20240108153511.214254205@linuxfoundation.org>
-Date: Tue, 09 Jan 2024 17:18:44 +0100
-Message-ID: <8734v68opn.fsf@turtle.gmx.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2DB3A1BB;
+	Tue,  9 Jan 2024 16:20:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A26C433F1;
+	Tue,  9 Jan 2024 16:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704817226;
+	bh=P21KAUUxSYEu3xFekCmy23VZ39OvyiMglzFNoXQDU7k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OUNd/Nj+tSHTfoG05OfMde7bK+K7zbjh2J3YcazJEm+gqdfvLfVmdLq0E6eLodTEa
+	 y2sjE8oWnz6y6Qll9DEFuo6opcL/Et2Q3syYE4pHKnVInP/ctYShbFgDhw8qAiicPS
+	 xBAvzdJZM1RDnYUx+dzamO8w9nvyHZ5QRjqnPWW6i2RuknK7BnZWUnHOTYgbRDVNCE
+	 dVjkEs6Lxm/64LjY5qaTEWrzirSxjEoxLyKdgJ0PZTIRaTP3+bXVpZ8USnl4xb8Syf
+	 tkgCjG9Ry2+MeiSAg9jbY6D88xB+mEyynG6qIWHJX0THse9ipJtZv8ATzqfPNe2mXJ
+	 z1zJCDY3OKzRg==
+Date: Tue, 9 Jan 2024 16:20:22 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Elad Nachman <enachman@marvell.com>
+Cc: gregkh@linuxfoundation.org,
+	rowland.harvard.edu@mx0a-0016f401.pphosted.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: usb: Add Marvell ac5
+Message-ID: <20240109-brink-catfight-1f11df16d2b4@spud>
+References: <20240109081044.10515-1-enachman@marvell.com>
+ <20240109081044.10515-2-enachman@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Provags-ID: V03:K1:vuuV/hNuzmk/go4Q2AAaiGfuADd+8gijrlWp/dGjXWOyIDFfkw+
- /iIVgzuokg1BT5tQvSW0bvK8CjlXv3ZBXNXLqIPJogklJGOSzAcVEDpxwwZB5f5LOe1IC0e
- M+gndjSeTaIZFqUcl+PoSwh3ylU4DbshefSkACNjfhUqJpWRWCyVyERO2PFFZoxVBucPCow
- nC2f9UtrJxFghfWuR1g9w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:W+yHFfOa994=;bKCpd+D4k+uaM1cMqBTf7LQTcnd
- 0wtxve/VZy5dqDrvZfoSp3I455k+fHN0kGTLZAhE6qcUQOY06Be6CIbfoVf/GgQGW6bEbFDRR
- S1P/MtckF3riEGa2K2A6Q7eYAAqt5IX2oG3x+9f3nA9Fl4mcTp5smQCi6gHowVIIPSDMAsLHR
- FaAbOyesJ206MsaZmyuB4XGmbbJxH89bBBA5WhpGzkd+Cm7c86PWNEcXmKTjehYO/T6BbHf1R
- x0RwIdakO1MMySf5RyYEh+nFSGWnbUWr1TJERwb4Z5KpYev+HMQLfU9b8CypWv77oaPbO61YP
- 0P3WTXsrPqZjrCHnOZks+8HSQtbW4M0oRDALxGyfNo+FACdIVTIncJySvO9lJqLbp0AUE5ZD7
- Vymi0/4XLnunCa6qFJC4BrJikH9B4GoVbjJ7UhhOWhet8zggl0J4wJjpJfoUqmpgGznuSI00B
- DPF1yyJzD9gZJKFretjDxawYf2YD8qd2VTmgwEQPpTEub1WbRocMO+6p0+kbAWuBXmcC9RdFZ
- U50khJU8G+/0cubeP6Zhfz3BM7qOngOSeUu5hfkne/F8R8a8Xi0v1i/Afc6TmPcqfx32H/kwt
- REGJoiVbEj4VmAU0xX6lZdFzBxH8whn1vBTW5xy0IXdfMIYO24+dIC0YvZLkF1uiDMxLvPHek
- h7YAPv4A4a7NSF1ewTJwwPJNJJgN6PpC2iagPpttnO+DQlK8ghZCiRP4ummQGYwtXlGq0l/j0
- Yajt+WBMH0RNBTsHFhlLrPgL8C9kBtXKDN3coHYBZ+dMM9cJL5M3qY9SnlbkRIvKGH7/ms+02
- Vo5MBD+8hBrsk+r5sUjcuq6R6Q6LT/eiTMvFONHrDCbvjv0r4QDucMf21MA+4Qg/Lr8NXwAVR
- Ra5B+Esm904TH0iW7WsMNnd+Wr2ey07oAVHxgnLyNwZchqAuXosUGCi9Nn2qPXi0oSqGr7sGD
- Q8gAMLlGBoyKkCpbU2gUw7U7azc=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1S6LNRWKf4LsTFJ/"
+Content-Disposition: inline
+In-Reply-To: <20240109081044.10515-2-enachman@marvell.com>
 
-On 2024-01-08 16:34 +0100, Greg Kroah-Hartman wrote:
 
-> This is the start of the stable review cycle for the 6.1.72 release.
-> There are 150 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+--1S6LNRWKf4LsTFJ/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Works fine for me on x86_64.
+On Tue, Jan 09, 2024 at 10:10:43AM +0200, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+>=20
+> Add Marvell ac5 device tree bindings to generic EHCI.
+> This compatible enables the Marvell Orion platform code
+> to properly configure the DMA mask for the Marvell AC5 SOC.
+>=20
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
 
-Tested-by: Sven Joachim <svenjoac@gmx.de>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Cheers,
-       Sven
+--1S6LNRWKf4LsTFJ/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ1yRgAKCRB4tDGHoIJi
+0gPjAP9wdF7OaFb81LFt0ze6rkEowrwGYZZYzCoFBX33capmpQEAp+XVl/+LMmZ/
+qIVIgJSpgdCdXY7VW7zDJcP1flKBwAI=
+=VtJO
+-----END PGP SIGNATURE-----
+
+--1S6LNRWKf4LsTFJ/--
 
