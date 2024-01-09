@@ -1,232 +1,173 @@
-Return-Path: <linux-kernel+bounces-20260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABF5D827C8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:25:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC68A827C8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:30:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D755DB22527
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:25:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4453E1F23654
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38D72912;
-	Tue,  9 Jan 2024 01:25:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3C3186C;
+	Tue,  9 Jan 2024 01:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="DqRomOwC"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="GQ97qUX2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="2r90DEEs"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0458028EA
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 01:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd5c55d6b8so12876421fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 17:25:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1704763500; x=1705368300; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2LI7RsQHT+MQ0HPpr0l5UjU5EPgbfYzbdDPhebxTuko=;
-        b=DqRomOwChNh+9wD2BAnuEHziK8E+tJWZmbF4BEllrhwufIaYJjM/1E0YICBCil6hAB
-         ltk/+uwhEhc5W+6yVhV2CN4YTWOupPYgyOiixwUw9QPncIw8GjpPGHEpIOOvV/f+RcHj
-         CS2kSauOfEogy+pjFccJD+VeTHmhxDOIZNBXo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704763500; x=1705368300;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2LI7RsQHT+MQ0HPpr0l5UjU5EPgbfYzbdDPhebxTuko=;
-        b=O6EQ8gKHwND9/Ps0q0d4hOs/sTNpy5+hr7VGwcqMK0DbkejglyXmNTpL6ZkHTLNNOv
-         MQ3IvIQedTGldWIifLxcLkYDojgv9k6nfSCeMTz7CZNCDJA5FVKoSyJPu8Mg88LnIzXo
-         NuawmL3J9L/AcpLGimvGv61GCLn75L4ZrVONsYSX0tHhfpqZYgIoAW/HSIs5rCWuyGNQ
-         ZS3Gpl7IoJbHTVtdJYNU3GEpKoQl/N29lS3j6ZA4arvocWjYY3mFjhLr5aIIz8PBewRv
-         VFOIGL5MiJSo+6F6+0LRn7aPYw/a4WqpRydjg8VESEK+jPLKDMc/OJxa76CP2R0+N2Cn
-         LwYg==
-X-Gm-Message-State: AOJu0Yynv9eencYJqA0PO4jq70tpxVjZSPHHkYFNvT3Rjf6Flr2ct2ak
-	gL/OATCFn1LEO8zLPa/8pSBmM34wP59jlwvTNGigazXN7tqy
-X-Google-Smtp-Source: AGHT+IEflcpw5PPeAqRFQj+i1KPY2cKdFJ6LjrWaNQDuSU8haUzGWHGve+ARfSRu5qj9ZC0cKrYONFwvq/ROkyUWIr8=
-X-Received: by 2002:a2e:9212:0:b0:2cc:da2a:d266 with SMTP id
- k18-20020a2e9212000000b002ccda2ad266mr1270020ljg.71.1704763500076; Mon, 08
- Jan 2024 17:25:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F03AC15AA
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 01:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 024825C0367;
+	Mon,  8 Jan 2024 20:30:09 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 08 Jan 2024 20:30:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1704763808; x=1704850208; bh=BLkB46kVHq
+	J8HkiTq+Qe0gAnj7qGYO+TVEMJATa8hc8=; b=GQ97qUX2ZTG3hZ6cRQcMUTxpss
+	0VF2w3FaGXu7UZVB2Ugd35CgxtBZF2ScVkstaIdqCHnzirVJPfs2Cljvl/USR6qy
+	veO0kEtXiYlWbFUGk6T3s6XQtnHbPbgKbJDecxlm8NdHuDFp7yBmmAYoiwIbn7SF
+	vIhrMzsczd14XIeHqzeu/dACOnTnz6+mVGT5Ai47Bd1meTlYIpNuVPYbULZ4cMTo
+	tJjvKIBSYrxULhNCalG73dFcHr3krCsB3db3gVIWAmUgdCBChmdTxWm2egSWtrZ8
+	p/v4Eojx3/FRfx4kbgGRBsYJdbklA517we0ddD6Ke7bQAsYcsdzr+tegYJVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704763808; x=1704850208; bh=BLkB46kVHqJ8HkiTq+Qe0gAnj7qG
+	YO+TVEMJATa8hc8=; b=2r90DEEs+w3XHj2lbqdXR8SYd5vSvBU98H0SrOOXLY93
+	WmzY64vNoToUnpYXyDqYd7phqrU6et3TXaehDLEjz/nN42Qem0Kg5hH131tCxIrc
+	W9Bq5XhnMazvzNdyNM8a5uTMfjRBeUXpXlI2SHU7++7yYq15mOlAm0bNHIIIoOpA
+	tTrOCzfbw4W9TUxZFWSM4K1mXa0O94eR2u5cIT9oyKjjuBRM/kgxFx5KAiZvlF4D
+	qRiHZNDLJq8/q0D86LSn2J+aAj2suuCYZdfDs0MhfOK5adVGOuQMSXnUbEf+YwWT
+	kP7pPtcAgSv2LnYVFx2NlCguwjYnpj7U/8Bbh9IJNw==
+X-ME-Sender: <xms:oKGcZY6pJ_WQcqLT7eQ9zVSvTQusO1gvUNftHJOsFa9n4IaRIR9riw>
+    <xme:oKGcZZ7hFr8LRzebisiIe0yH4bPXa4M-3_msh4d50d8UJgSG5yakhaUken9UWspco
+    jAB_ndxDNWHF-QEzUc>
+X-ME-Received: <xmr:oKGcZXdceuSKZP8MgJxZ_jDPd2KM_IqhQDPc6kCEwNn3Ibu-ubC23DYwO6B2-xK_fhP1awWdkKke0xmyiYfpxAKIL98>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehkedgfeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goteeftdduqddtudculdduhedmnecujfgurhepfhgfhffvvefuffgjkfggtgesghdtreer
+    tdertdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghrug
+    esfhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeeileehheehtdeivedu
+    ffdugfdtgfevjeffudfgtefgteffudfhhffftedvieeggeenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghs
+    thhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:oKGcZdK0w-uZMhTgAzBRZ1q33tmsg8PWyFDjsDnCNRfjbUuAmgzEcA>
+    <xmx:oKGcZcJtpEA6-iLnS4Ks9dSPzYA7EbZHzLkVKC7wZDb56MEMNnRStQ>
+    <xmx:oKGcZeyjXSwEOUwHUyEPSCg0l9ttRSCAE5R1h_v1pC6AvqalJHKq4w>
+    <xmx:oKGcZRHSlkADeKDMOnUCGfuENajRX9nNF5qooJFzHZKmnfJtiGBugw>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 8 Jan 2024 20:30:08 -0500 (EST)
+References: <20240108032233.4280-1-garyrookard@fastmail.org>
+ <20240108032233.4280-2-garyrookard@fastmail.org>
+ <897a8bb4-a1d7-46ab-96cf-fd5ba447d2d8@moroto.mountain>
+ <87edesvtrx.fsf@fastmail.org>
+ <62836460ae502097ca8307bcee85a5ae3634e1acc74af843ffc466c28d1a0b95@mu.id>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Gary Rookard <garyrookard@fastmail.org>
+To: Gary Rookard <garyrookard@fastmail.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, gregkh@linuxfoundation.org,
+ philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] staging: rtl8192e: rename variable is40MHz
+Date: Mon, 08 Jan 2024 20:25:55 -0500
+In-reply-to: <62836460ae502097ca8307bcee85a5ae3634e1acc74af843ffc466c28d1a0b95@mu.id>
+Message-ID: <871qarcmzt.fsf@fastmail.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108-fencei-v5-0-aa1e51d7222f@rivosinc.com> <20240108-fencei-v5-2-aa1e51d7222f@rivosinc.com>
-In-Reply-To: <20240108-fencei-v5-2-aa1e51d7222f@rivosinc.com>
-From: Atish Patra <atishp@atishpatra.org>
-Date: Mon, 8 Jan 2024 17:24:47 -0800
-Message-ID: <CAOnJCUJQ-M1bVC_VhogMLo47mRyk3Pzq-GFH5P7ADn70BN9ObA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] documentation: Document PR_RISCV_SET_ICACHE_FLUSH_CTX
- prctl
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>, 
-	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Randy Dunlap <rdunlap@infradead.org>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha256; protocol="application/pgp-signature"
+
+--=-=-=
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 8, 2024 at 10:42=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> Provide documentation that explains how to properly do CMODX in riscv.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++++++=
-++++++
->  Documentation/arch/riscv/index.rst |  1 +
->  2 files changed, 89 insertions(+)
->
-> diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/risc=
-v/cmodx.rst
-> new file mode 100644
-> index 000000000000..afd7086c222c
-> --- /dev/null
-> +++ b/Documentation/arch/riscv/cmodx.rst
-> @@ -0,0 +1,88 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V=
- Linux
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> +
-> +CMODX is a programming technique where a program executes instructions t=
-hat were
-> +modified by the program itself. Instruction storage and the instruction =
-cache
-> +(icache) are not guaranteed to be synchronized on RISC-V hardware. There=
-fore, the
-> +program must enforce its own synchronization with the unprivileged fence=
-i
-> +instruction.
-> +
-> +However, the default Linux ABI prohibits the use of fence.i in userspace
-> +applications. At any point the scheduler may migrate a task onto a new h=
-art. If
-> +migration occurs after the userspace synchronized the icache and instruc=
-tion
-> +storage with fence.i, the icache will no longer be clean. This is due to=
- the
-> +behavior of fence.i only affecting the hart that it is called on. Thus, =
-the hart
-> +that the task has been migrated to may not have synchronized instruction=
- storage
-> +and icache.
-> +
-> +There are two ways to solve this problem: use the riscv_flush_icache() s=
-yscall,
-> +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
-> +userspace. The syscall performs a one-off icache flushing operation. The=
- prctl
-> +changes the Linux ABI to allow userspace to emit icache flushing operati=
-ons.
-> +
-> +prctl() Interface
-> +---------------------
-> +
-> +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argumen=
-t. The
-> +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
-> +function detailed below.
-> +
-> +.. kernel-doc:: arch/riscv/mm/cacheflush.c
-> +       :identifiers: riscv_set_icache_flush_ctx
-> +
 
-Document the arguments of the prctl as well ?
+Gary Rookard <garyrookard@fastmail.org> writes:
 
-> +Example usage:
-> +
-> +The following files are meant to be compiled and linked with each other.=
- The
-> +modify_instruction() function replaces an add with 0 with an add with on=
-e,
-> +causing the instruction sequence in get_value() to change from returning=
- a zero
-> +to returning a one.
-> +
-> +cmodx.c::
-> +
-> +       #include <stdio.h>
-> +       #include <sys/prctl.h>
-> +
-> +       extern int get_value();
-> +       extern void modify_instruction();
-> +
-> +       int main()
-> +       {
-> +               int value =3D get_value();
-> +               printf("Value before cmodx: %d\n", value);
-> +
-> +               // Call prctl before first fence.i is called inside modif=
-y_instruction
-> +               prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_F=
-ENCEI, 0);
-> +               modify_instruction();
-> +
-> +               value =3D get_value();
-> +               printf("Value after cmodx: %d\n", value);
-> +               return 0;
-> +       }
-> +
-> +cmodx.S::
-> +
-> +       .option norvc
-> +
-> +       .text
-> +       .global modify_instruction
-> +       modify_instruction:
-> +       lw a0, new_insn
-> +       lui a5,%hi(old_insn)
-> +       sw  a0,%lo(old_insn)(a5)
-> +       fence.i
-> +       ret
-> +
-> +       .section modifiable, "awx"
-> +       .global get_value
-> +       get_value:
-> +       li a0, 0
-> +       old_insn:
-> +       addi a0, a0, 0
-> +       ret
-> +
-> +       .data
-> +       new_insn:
-> +       addi a0, a0, 1
-> diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/risc=
-v/index.rst
-> index 4dab0cb4b900..eecf347ce849 100644
-> --- a/Documentation/arch/riscv/index.rst
-> +++ b/Documentation/arch/riscv/index.rst
-> @@ -13,6 +13,7 @@ RISC-V architecture
->      patch-acceptance
->      uabi
->      vector
-> +    cmodx
+> Gary Rookard <garyrookard@fastmail.org> writes:
 >
->      features
->
->
-> --
-> 2.43.0
->
+>> [[PGP Signed Part:Undecided]]
+>>
+>> Dan Carpenter <dan.carpenter@linaro.org> writes:
+>>
+>>> On Sun, Jan 07, 2024 at 10:22:29PM -0500, Gary Rookard wrote:
+>>>> Coding style issue, checkpatch avoid CamelCase,
+>>>> rename it. is40MHz -> is_40mhz
+>>>>=20
+>>>> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+>>>> ---
+>>>>  drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 ++++++++--------
+>>>>  1 file changed, 8 insertions(+), 8 deletions(-)
+>>>>=20
+>>>> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/stagi=
+ng/rtl8192e/rtl819x_HTProc.c
+>>>> index 6d0912f90198..1b1cb9514028 100644
+>>>> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>>>> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>>>> @@ -87,36 +87,36 @@ static u16 ht_mcs_to_data_rate(struct rtllib_devic=
+e *ieee, u8 mcs_rate)
+>>>>  {
+>>>>  	struct rt_hi_throughput *ht_info =3D ieee->ht_info;
+>>>>=20=20
+>>>> -	u8	is40MHz =3D (ht_info->cur_bw_40mhz) ? 1 : 0;
+>>>> +	u8	is_40mhz =3D (ht_info->cur_bw_40mhz) ? 1 : 0;
+>>>
+>>> This should be is_40MHz.  It's metric.  M means Mega.  m means milli.
+>>>
+>>> regards,
+>>> dan carpenter
+>> --
+>> Okay, stupid me didin't give it to much thought that way,
+>> ...wow there's more that way then just mine
+>> Good catch!
+>> Regards,
+>> Gary
+=2D-
+There's only mine that I can find, I'll fix them up
+and resubmit them.
 
+Thanks for your insight.
 
---
 Regards,
-Atish
+Gary
+=2D-=20
+Sent with my mu4e on Void GNU/Linux.
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJNBAEBCAA3FiEE1kC7bOvmQRqDVDSVKPZpkA66T0EFAmWcoZYZHGdhcnlyb29r
+YXJkQGZhc3RtYWlsLm9yZwAKCRAo9mmQDrpPQc37D/0Ubc8io4K+JZLcQR6KDY93
+ldeMGQWrWCpffSZxHG2DJJkhO8LOI6ZcWcjeq1B9r8RRRiXwDXYbSXH7Hm9DQCTG
+nC3qaJ2gRpk2MA897WdmVrfLGGYtFJB7Z+GkX+JOZGE1y4g/syL54buXq/UQc0GX
+e7g7+TG/e2x094BWc54axLJC4xq0PvKYZZCw+yXkInP4f2Nvw5Xz5+3s4qwoOiBd
+DB1sx1lHA0ZMNvNuSgF+T7mAeAwHSRBHVFQHUJUGFIvhUIvUH+0YDtNtV9K9vknr
+Z6TKvqwSFRx217xjG1ddi7/099rIdXVtbppOaquVU36lvwbyTAsnl/+MlMnBHiLI
+TggvSTDXvRKQMX1NP1S5K7MOe09YsCsyunlcRm1HtZGCc3NVvjgR1XT9ysNg0tv2
+4rfzQC1XIcrhW+Fnd6p5rZKPXKFR6xdBMr4XuAg+uyJzP0rByh8r03+Vz4jbXpVx
+I0D9U6VRpdY2WCjA1lHVGjeyxDFXF3qOCLh72gLHW+cU9MxYFBBoFTJ9EFUawxW2
+L6fQMwixnMP+Cv7iyqKWCgGLmDzRs1f3r6cDiGqDJrVezCfDGX6YDbf88ia/3q0A
+jJSQqiOoL43Uo1qgyaoRzq5Us3vGcHhGNjR9Jfx9gdL85vfGd4EKBGrPPVpIh1OH
+MDbq7ZH1g2r1v9TfXuKRvg==
+=4+ac
+-----END PGP SIGNATURE-----
+--=-=-=--
 
