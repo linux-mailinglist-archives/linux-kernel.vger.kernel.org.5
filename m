@@ -1,113 +1,123 @@
-Return-Path: <linux-kernel+bounces-21150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97D55828ACB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:13:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EBDE828ACF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A2F6B2331F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:13:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E118D1C243FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91193B2A4;
-	Tue,  9 Jan 2024 17:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1810F3A8FD;
+	Tue,  9 Jan 2024 17:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMjAqNkO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SbN6CCuK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E9D3A8DC;
-	Tue,  9 Jan 2024 17:12:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82155C433C7;
-	Tue,  9 Jan 2024 17:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6BF3A8C7;
+	Tue,  9 Jan 2024 17:14:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 548BCC433C7;
+	Tue,  9 Jan 2024 17:14:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704820347;
-	bh=R68MSDBYhZXBw3JD8klsX3dJnjsUWkASMAeLu74RGAM=;
+	s=k20201202; t=1704820476;
+	bh=siOZC4wOuNDoVWsdLiyPsbZnkPF7a7ofovZKE/nAX/k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nMjAqNkOT8bGrVlAgY2467bcJ4tXSA624As8/+CoYze0gJLu1e1yk+CJ6waXbTOoh
-	 YXP8M+3w8gr6cKZKA9FDWXBn/XxD4IxvhW8E7OALTRrF3ik99qPfFGg9r2925ww9c1
-	 ttssWGQ3Oqsr+ctV2+0izp2L9rpiDx3ls/Y64uE9oU7mxRxUpdhDtJzT4crTnpBRx4
-	 KUTEZkcvZzMkki1TjdoAty9aGYAzL4XAm4h1aEX31KjLdXUlCQzMLGqdoxsk7jgffn
-	 JOd+4I+pbwD1ftitAA1FM+cSdmF/6egwP8c9NiQg7ONTkgwEufeTOV1nMT7kQOXTwI
-	 Pdpa+N1HPFKDA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rNFeM-0005Ty-0f;
-	Tue, 09 Jan 2024 18:12:26 +0100
-Date: Tue, 9 Jan 2024 18:12:26 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
-	Doug Anderson <dianders@google.com>,
-	Stephen Boyd <swboyd@google.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
-Message-ID: <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
-References: <20231227180306.6319-1-johan+linaro@kernel.org>
- <ZZ15c1HUQIH2cY5o@google.com>
+	b=SbN6CCuK5NChl9458MDDbcbs1SdUAG1Fd/5ItykQxgrlxYOt8DA2J14s9SYA8usPM
+	 m5ylQNkriV3WnFbF7c+AFAqUyUAktzZbK3wZoEFB2gKpzmpeF0rHc7zyicWESv7X7n
+	 dFWPf/MH+vgH1EU05HcjMtBdgGFIcA6QVLQ3Zn0XdIe4dg9+PM0H4lp6ZCNA14vqCf
+	 K/XKUGrO0ohFsnTQfU0uJ8mF4pDjRqdZdIN0U0URwMfdzjeGtd6+Jr23csiXdPwDN/
+	 UtmTiCgQlFnX6thWpQcgXP0b9vy5yRfx4+iNclwxUJ8xcjZnZYEPVHPpBX19d0ZaiH
+	 M9/ChPwWdY3CQ==
+Date: Tue, 9 Jan 2024 17:14:29 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Ninad Palsule <ninad@linux.ibm.com>
+Cc: Guenter Roeck <linux@roeck-us.net>, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
+	jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
+	tony.luck@intel.com, gpiccoli@igalia.com,
+	johannes.holland@infineon.com, broonie@kernel.org,
+	patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+	peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+	bhelgaas@google.com, naresh.solanki@9elements.com,
+	alexander.stein@ew.tq-group.com, festevam@denx.de,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+	geissonator@yahoo.com
+Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
+Message-ID: <20240109-pep-coerce-2a86ae88753d@spud>
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-8-ninad@linux.ibm.com>
+ <20231212-avid-grill-dbead068fac8@spud>
+ <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
+ <20231212-mouth-choice-40a83caa34ec@spud>
+ <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
+ <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OEamGw2PREjDYnc1"
+Content-Disposition: inline
+In-Reply-To: <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
+
+
+--OEamGw2PREjDYnc1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZ15c1HUQIH2cY5o@google.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 09, 2024 at 04:50:59PM +0000, Matthias Kaehlcke wrote:
+On Mon, Jan 08, 2024 at 02:05:53PM -0600, Ninad Palsule wrote:
+> Hello Guenter,
+>=20
+> On 12/12/23 13:50, Guenter Roeck wrote:
+> > On 12/12/23 10:51, Conor Dooley wrote:
+> > > On Tue, Dec 12, 2023 at 10:00:39AM -0800, Guenter Roeck wrote:
+> > > > On Tue, Dec 12, 2023 at 05:15:51PM +0000, Conor Dooley wrote:
+> > > > > On Tue, Dec 12, 2023 at 10:40:03AM -0600, Ninad Palsule wrote:
+> > > > > > From: Joel Stanley <joel@jms.id.au>
+> > > > > >=20
+> > > > > > The NPCT75x TPM is TIS compatible. It has an I2C and SPI interf=
+ace.
+> > > > > >=20
+> > > > > > https://www.nuvoton.com/products/cloud-computing/security/trust=
+ed-platform-module-tpm/
+> > > > > >=20
+> > > > > >=20
+> > > > > > Add a compatible string for it, and the generic compatible.
+> > > > > >=20
+> > > > > > OpenBMC-Staging-Count: 3
+> > > > >=20
+> > > > > Delete this from every patch that it appears from.
+>=20
+>=20
+> I have send it as a separate commit. https://lore.kernel.org/linux-kernel=
+/20231214144954.3833998-1-ninad@linux.ibm.com/
 
-> On Wed, Dec 27, 2023 at 07:03:06PM +0100, Johan Hovold wrote:
-> > The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
-> > device address in MSB order when setting it using the
-> > EDL_WRITE_BD_ADDR_OPCODE command.
-> > 
-> > Presumably, this is the case for all non-ROME devices which all use the
-> > EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
-> > use a different command and expect the address in LSB order).
-> > 
-> > Reverse the little-endian address before setting it to make sure that
-> > the address can be configured using tools like btmgmt or using the
-> > 'local-bd-address' devicetree property.
-> > 
-> > Note that this can potentially break systems with boot firmware which
-> > has started relying on the broken behaviour and is incorrectly passing
-> > the address via devicetree in MSB order.
-> 
-> We should not break existing devices. Their byte order for
-> 'local-bd-address' may not adhere to the 'spec', however in practice
-> it is the correct format for existing kernels.
+Why did you do that? It now just adds undocumented compatibles to the
+driver. Please, as Rob requested, work with Lukas on his series to make
+sure that these devices are documented.
 
-That depends on in what way the current devices are broken.
+Thanks,
+Conor.
 
-Any machines that correctly specify their address in little-endian order
-in the devicetree would no longer be configured using the wrong address.
-So no problem there (except requiring users to re-pair their gadgets).
+--OEamGw2PREjDYnc1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-And tools like btgmt is broken on all of these Qualcomm machine in any
-case and would now start working as expected. So no problem there either
-(unless user space had adapted an inverted the addresses to btmgmt).
+-----BEGIN PGP SIGNATURE-----
 
-So the first question is whether there actually is any boot firmware out
-there which passes the BD_ADDR in reverse order?
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ1+9AAKCRB4tDGHoIJi
+0htZAP9a2iXLaNyt9gp80dOzXMKedooH9x1JxCeLqDSn/jQ4FAD7BmzWTG2ck+GX
+6HtPX7JRe5C0eqmAl9taPHOuxon4HQw=
+=q6NZ
+-----END PGP SIGNATURE-----
 
-> I suggest adding a quirk like 'local-bd-address-msb-quirk' or
-> 'qcom,local-bd-address-msb-quirk' to make sure existing devices keep
-> working properly.
-
-I don't think that would work. If this is something that we really need
-to handle, then there's probably no way around introducing new
-compatible strings for boot firmware that isn't broken while maintaining
-the current broken behaviour with respect to 'local-bd-address' for some
-of the current ones.
-
-Johan
+--OEamGw2PREjDYnc1--
 
