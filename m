@@ -1,113 +1,118 @@
-Return-Path: <linux-kernel+bounces-20309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EF2D827D17
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:56:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D8A6827D1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3DF41F2444B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:56:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD3BA1F2445C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290712907;
-	Tue,  9 Jan 2024 02:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47956126;
+	Tue,  9 Jan 2024 02:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k7U5yZ1X"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I+gGxxSN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273752573
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 02:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e490c2115so7502315e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 18:56:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704768961; x=1705373761; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CyON8xZGng1CZkDRa+8BV36Ox5Lq78pRG6dfrn1SZXM=;
-        b=k7U5yZ1XXKAngb/P9g7dc00FZfxy4AKE5IDe8Ge4J5+yuVigj6yWphAryShMZE/vym
-         DufCKg2fQqe7gnHgxJP4JNhHOi56JKdHHjWdhzwrfulVbttv2ftv6btFrkaqCgsPdXTk
-         fOD5vMbBw23yMLsMpeR+cGye4HH3GcMzOBe6AYyd7itDIwziVpB2xgYRAXbTmdu0nYAw
-         68KbjeN6mMxzVoJvqo7JGaF6IhpjFDHVoX44bqzfkxWawRJL5l6HJJp6lwI70r41dEDR
-         hJQ7XrdMz3lULM6PafxdWmfrLWMz4TiowfNMuIRS9pj51xpCWdZJV9aardzV6tH+zASq
-         3yRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704768961; x=1705373761;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CyON8xZGng1CZkDRa+8BV36Ox5Lq78pRG6dfrn1SZXM=;
-        b=HFV4N7kpX+KAHnnd5kj/LYmJoQuWb3G3soLsbbRIYLKI8KQBeucRhZwOCcFPDxLGvj
-         yzwDRhNyYwBm7eqbjXMt46PEQb3nXnDrbA8XLWwkWwANh42FcJVnJGfifNm77zWr0UFU
-         yIrIL0zEaTUatfAp2SKr0ArMXCCXaZohNJunJgSPnPSENF4Ei7uCqduAVdqH8a4ei5F0
-         sIFaq/yTUDL5xfDgAlPL3N9EC/VWjF4SNnLnjNsXpxhGAnBHaUlYkHB6fnHU/OOl64n8
-         0sUqUNfdXBqb7QpZChsZqdvmkiNfJCtgsJ5Y0B2hmAaapWi/hWBEQtyUT4f1dh2zz9RB
-         EuDA==
-X-Gm-Message-State: AOJu0YyQ66o7OYSIcN+Ba/JlgCN8/lbJbF6L9vrQlgBybjWCAsnwlEv3
-	JtwVJvYXoLRSpyLn2ONQU6tDwAeq5HRwqlKaUZc=
-X-Google-Smtp-Source: AGHT+IFQahMQEIqv/er66u3KOIYu5ox9+pZ8qCZwDtxYY/lZjrZUUB8mdgD+XYxBeayuSAoL8sheCUR2Va1DP4vUTcU=
-X-Received: by 2002:a05:600c:501e:b0:40d:5ce8:d3e0 with SMTP id
- n30-20020a05600c501e00b0040d5ce8d3e0mr21225wmr.11.1704768961127; Mon, 08 Jan
- 2024 18:56:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08EFC5665;
+	Tue,  9 Jan 2024 02:56:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80EB9C43390;
+	Tue,  9 Jan 2024 02:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704768993;
+	bh=b4jGBQYI3SAR2SqDXJaYSqlSOJc84bSHKk28Q7eQgnw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=I+gGxxSNtyHRtO2VzhAKG1nYxNlizcmiZoXKFCvtLD/bgKnVZGF5THvcV9vOW7Y05
+	 yUZgE0r1M3irhKm3qay8Y69ltwwDSXV2AI9B0sipIr/4srk23nvmBjZoTL8WoIafpO
+	 WG29mqY7ZkOyanTcGEs7uBduM+Wt+Yj2iEKdthTMAljDgW50WynNYvHtr6dn4ffuH/
+	 llRnMeOprdU7EPuL1qqzKYnVFUNQrpzul6nnayxvMmngpwI1P2cmQYo64JNrKFFfZ/
+	 Vi+k4ksax1JmRik1uyJnNoXTg9oTqQrmjMIX1W/sTViYDlaqk0PBgvorXSKtuIrIyI
+	 sFImw2+6UsTCQ==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2ccec119587so28352311fa.0;
+        Mon, 08 Jan 2024 18:56:33 -0800 (PST)
+X-Gm-Message-State: AOJu0Yzze1mVJlQ+S04p1QibOWengBh4t3O5kMef8019KWu8RJc5fHYg
+	n0zNzitpLos038mBSSW1/tj3aXJHUkk/3o1ZkA==
+X-Google-Smtp-Source: AGHT+IFHEy7UAVttPiN+sVOsHl8ngscwYS/9Rb/gv44VqIDfv2qtD5du9ju0uTnDbeescX9gPj6PS5hAvBUURaQ0pxw=
+X-Received: by 2002:a2e:b7d5:0:b0:2cc:7814:11b with SMTP id
+ p21-20020a2eb7d5000000b002cc7814011bmr2061459ljo.65.1704768991715; Mon, 08
+ Jan 2024 18:56:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJNi4rO+Dw5qYDtyJVbuo0OqAoXpGq_Qq6xjH9cvMCAUnW+77g@mail.gmail.com>
- <CAJNi4rMHtM=39jzkzwqt++kVpSp0=XfDrVdY94WoW6B34oKwDA@mail.gmail.com>
- <ZZb2f0U4qTWDjCGj@FVFF77S0Q05N.cambridge.arm.com> <CAJNi4rOpzmQAW1Fjst-Em=SQ7q8QsQh0PWhVxUizrOW9JukOgQ@mail.gmail.com>
- <ZZvS8rigFJR8L56c@FVFF77S0Q05N> <fb6c8253fd90e66c036a85954c3299bc2c047473.camel@xry111.site>
-In-Reply-To: <fb6c8253fd90e66c036a85954c3299bc2c047473.camel@xry111.site>
-From: richard clark <richard.xnu.clark@gmail.com>
-Date: Tue, 9 Jan 2024 10:55:50 +0800
-Message-ID: <CAJNi4rPj0Wc7ByqrS-GVLUUEnOFPZi8A5nLLCEEJErqAe16EZw@mail.gmail.com>
-Subject: Re: undefined reference to `__aarch64_cas4_sync' error on arm64
- native build
-To: Xi Ruoyao <xry111@xry111.site>
-Cc: Mark Rutland <mark.rutland@arm.com>, gcc-help@gcc.gnu.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240104130123.37115-1-brgl@bgdev.pl> <20240104130123.37115-7-brgl@bgdev.pl>
+ <20240108191052.GA1893484-robh@kernel.org> <CAMRc=Mc7D1rVHaA4yoOC2DHDkkCptF4wjAm=24Rr=kkqM1ztjg@mail.gmail.com>
+In-Reply-To: <CAMRc=Mc7D1rVHaA4yoOC2DHDkkCptF4wjAm=24Rr=kkqM1ztjg@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Mon, 8 Jan 2024 19:56:19 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqKGrW-v=fr_9NYKg-8cho_-XbVQ92eXpjYYC1ma0_8UuA@mail.gmail.com>
+Message-ID: <CAL_JsqKGrW-v=fr_9NYKg-8cho_-XbVQ92eXpjYYC1ma0_8UuA@mail.gmail.com>
+Subject: Re: [RFC 6/9] dt-bindings: vendor-prefixes: add a PCI prefix for
+ Qualcomm Atheros
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Terry Bowman <terry.bowman@amd.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 8, 2024 at 6:56=E2=80=AFPM Xi Ruoyao <xry111@xry111.site> wrote=
-:
+On Mon, Jan 8, 2024 at 12:22=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 >
-> On Mon, 2024-01-08 at 10:51 +0000, Mark Rutland via Gcc-help wrote:
-> > > AFAIK, the native build for the kernel will not link to the libc.so
-> > > but the userland application does, the builtin atomic primitives are
-> > > implemented in the glibc:
-> > > target-host $ objdump -t /lib/aarch64-linux-gnu/libc.so.6 | grep __aa=
-rch64_cas4
-> > > 0000000000130950 l     F .text 0000000000000034 __aarch64_cas4_relax
-> > > 0000000000130a10 l     F .text 0000000000000034 __aarch64_cas4_rel
-> > > 0000000000130990 l     F .text 0000000000000034 __aarch64_cas4_acq
-> > > seems the '__sync_val_compare_and_swap' used in the application will
-> > > be renamed to _aarch64_cas4_{relax, rel, acq}. so the kernel will
-> > > complain it will
-> > > link to an 'undefined reference'. But interesting, why the
-> > > cross-compile kernel will not generate the 'undefined reference', the
-> > > cross-compile/build kernel will link to the glibc?
+> On Mon, Jan 8, 2024 at 8:10=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
 > >
-> > This is due to a difference in default options between the two compiler=
-s; the
-> > kernel isn't linked against libc in either case.
+> > On Thu, Jan 04, 2024 at 02:01:20PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > Document the PCI vendor prefix for Qualcomm Atheros so that we can
+> > > define the QCA PCI devices on device tree.
+> >
+> > Why? vendor-prefixes.yaml is only applied to property names. 'qca'
+> > should be the prefix for those.
+> >
+> > Rob
 >
-> And even if it's not the kernel but a normal application, it still
-> cannot use these functions from Glibc as the objdump output contains
-> "l", meaning these symbols are local symbols and they cannot referred
-> somewhere out of the libc.so.6 itself.
-Actually you can call those builtin atomic functions in you normal
-application without link time error, even execute the output binary in
-the target machine in case of cross-compile, only if the linked .so is
-in your target environment.
+> I didn't have any better idea. PCI devices on DT are defined by their
+> "pci<vendor ID>,<model ID>" compatible, not regular human-readable
+> strings and this makes checkpatch.pl complain.
 >
-> --
-> Xi Ruoyao <xry111@xry111.site>
-> School of Aerospace Science and Technology, Xidian University
+> I'm open to suggestions.
+
+The checkpatch.pl check predates schemas and we could consider just
+dropping it. The only thing it provides is checking a patch rather
+than the tree (which the schema do). It's pretty hacky because it just
+greps the tree for a compatible string which is not entirely accurate.
+Also, we can extract an exact list of compatibles with
+"dt-extract-compatibles" which would make a better check, but I'm not
+sure making dtschema a dependency on checkpatch would be good.
+
+The other option is just ignore the warning. PCI compatibles are fairly rar=
+e.
+
+Rob
 
