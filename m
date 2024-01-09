@@ -1,124 +1,94 @@
-Return-Path: <linux-kernel+bounces-21183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D477828B6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:45:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4561A828B71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:47:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82D2B1C243D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:45:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E900C286991
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0EB3B7A1;
-	Tue,  9 Jan 2024 17:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A6E3B79C;
+	Tue,  9 Jan 2024 17:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KTN1lVvY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="gi6YF23E"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0D439FFB;
-	Tue,  9 Jan 2024 17:45:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99345C433C7;
-	Tue,  9 Jan 2024 17:45:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704822333;
-	bh=iLrzdYBIYAF2icG88gnfun1VCs7gyCvoUntx2WxcflY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KTN1lVvYt+sxgLnAnShFtOh5SYiXBGLKW201AsN0rLeuIWwyT8JfgC7RkDmfc0Zqh
-	 eB/RCuM5yG5AokQ3GaZwrzLdTB7fL7altDzzuFle66ftbVNwalS09GGpSOis/CVuNA
-	 XkBLX9n0k6+L4AVD27kQ/uJcKqaFX7YM7tx3wKm9KRII7bgEUQJybwd2Nh7LojBneG
-	 40A/a29VBdNxn4699Ckf89MEYJeuYspScPSXB1ulpJp84yzoHK1Wg8SR+wNJF3Bgzw
-	 o4AGnCjPT9K+Gss3m1Xt7KFPge+LQGgPsp1jVqvKlcFpAVs/pW7CnWWIFpwGsKaEjd
-	 2xLdYq3oDID5A==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50ea8fbf261so3518648e87.2;
-        Tue, 09 Jan 2024 09:45:33 -0800 (PST)
-X-Gm-Message-State: AOJu0YxUc4uG69dYeBJCQWkFw+Lz0Kg2IrnO3/Pt0WEOX1yKmGSLiZ0g
-	xBuNIHuDC63Ly6NlKpevY9fIsyOUQNN+gea35t0=
-X-Google-Smtp-Source: AGHT+IE6xl9/11+pJwbRZXMWjfKQh8kCA8gvAM5PMX16ALisz3EF6ZZBwrPXyifXN/8urgCTFvhA6BLsbaCK5mBWCyc=
-X-Received: by 2002:a19:910d:0:b0:50e:7846:7acf with SMTP id
- t13-20020a19910d000000b0050e78467acfmr2231281lfd.34.1704822331809; Tue, 09
- Jan 2024 09:45:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9632D39FFB;
+	Tue,  9 Jan 2024 17:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 4B33D221;
+	Tue,  9 Jan 2024 17:47:30 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4B33D221
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1704822450; bh=119owvPStRXntC0wVTBP44oZiyFcNzr43pqlePEwSko=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=gi6YF23EcusM9gK54kKwwcSuDjx/c+MAthsNbVx1BsvwHgFTOfqTHeIwpAQe+Jz5P
+	 rnVRxBKE8an8+NRzAVSq2nsJ+jxK4vhEpZZJ8eGakGJRg9hPYj8UBhYY3o6jLijsuD
+	 2p4J3emgywpDQ7U+e1ABfMMoYQVTSUHcs67dSDCXdn1bAim9NfVvf7ImwORSdNrcuD
+	 vfchFLJo3HxSuKWqimfcBovSVqwx7PyQm+dn7qtJ6txowb98bhuiYxoARV57eFvV12
+	 5enM4xpdgWTDVSlX6qPkvUZ+gmOldkl9DCYvHutAFqA5pvyRH3if/xAf2qnVQ0RQFR
+	 AzfzDtBV42cKQ==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>, Yazen
+ Ghannam <yazen.ghannam@amd.com>
+Cc: Muralidhara M K <muralimk@amd.com>, linux-edac@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Muralidhara M K <muralidhara.mk@amd.com>,
+ linux-doc@vger.kernel.org
+Subject: Re: [PATCH] Documentation: Begin a RAS section
+In-Reply-To: <20231128142049.GTZWX3QQTSaQk/+u53@fat_crate.local>
+References: <20231102114225.2006878-1-muralimk@amd.com>
+ <20231102114225.2006878-2-muralimk@amd.com>
+ <20231128142049.GTZWX3QQTSaQk/+u53@fat_crate.local>
+Date: Tue, 09 Jan 2024 10:47:29 -0700
+Message-ID: <87a5pes8jy.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109095637.35934-1-alessandro.carminati@gmail.com>
-In-Reply-To: <20240109095637.35934-1-alessandro.carminati@gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Tue, 9 Jan 2024 09:45:20 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4vDX70-n3n0wk4XsX7+-kmG=GZZ5PHBr=EO3A7Ju2kZg@mail.gmail.com>
-Message-ID: <CAPhsuW4vDX70-n3n0wk4XsX7+-kmG=GZZ5PHBr=EO3A7Ju2kZg@mail.gmail.com>
-Subject: Re: [RFC PATCH] find_vma BPF test: increase length CPU computation
-To: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Shuah Khan <shuah@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Jan 9, 2024 at 1:57=E2=80=AFAM Alessandro Carminati (Red Hat)
-<alessandro.carminati@gmail.com> wrote:
+Borislav Petkov <bp@alien8.de> writes:
+
+> On Thu, Nov 02, 2023 at 11:42:22AM +0000, Muralidhara M K wrote:
+>> From: Muralidhara M K <muralidhara.mk@amd.com>
+>> 
+>> AMD systems with Scalable MCA, each machine check error of a SMCA bank
+>> type has an associated bit position in the bank's control (CTL) register.
 >
-> Some aarch64 systems running a PREEMPT_RT patched kernel, needs
-> more time to complete the test.
-> This change mirrors:
-> commit ba83af059153 ("Improve stability of find_vma BPF test")
-> addressing similar requirements and allowing the QTI SA8775P based
-> systems, and others, to complete the test when running RT kernel.
+> Ontop of this. It is long overdue:
 >
-> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail=
-com>
 > ---
->  tools/testing/selftests/bpf/prog_tests/find_vma.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+> Date: Tue, 28 Nov 2023 14:37:56 +0100
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/te=
-sting/selftests/bpf/prog_tests/find_vma.c
-> index 5165b38f0e59..43d62db8d57b 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
-> @@ -51,7 +51,7 @@ static void test_find_vma_pe(struct find_vma *skel)
->         struct bpf_link *link =3D NULL;
->         volatile int j =3D 0;
->         int pfd, i;
-> -       const int one_bn =3D 1000000000;
-> +       const int dummy_wait =3D 2500000000;
-
-2500000000 is bigger than INT_MAX.
-
+> Add some initial RAS documentation. The expectation is for this to
+> collect all the user-visible features for interacting with the RAS
+> features of the kernel.
 >
->         pfd =3D open_pe();
->         if (pfd < 0) {
-> @@ -68,10 +68,10 @@ static void test_find_vma_pe(struct find_vma *skel)
->         if (!ASSERT_OK_PTR(link, "attach_perf_event"))
->                 goto cleanup;
->
-> -       for (i =3D 0; i < one_bn && find_vma_pe_condition(skel); ++i)
-> +       for (i =3D 0; i < dummy_wait && find_vma_pe_condition(skel); ++i)
->                 ++j;
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> ---
+>  Documentation/RAS/ras.rst | 26 ++++++++++++++++++++++++++
+>  Documentation/index.rst   |  1 +
+>  2 files changed, 27 insertions(+)
+>  create mode 100644 Documentation/RAS/ras.rst
 
-So we will skip this loop. Right?
+I wish I'd been copied on this ... I've been working to get a handle on
+the top-level Documentation/ directories for a while, and would rather
+not see a new one added for this.  Offhand, based on this first
+document, it looks like material that belongs under
+Documentation/admin-guide; can we move it there, please?
 
 Thanks,
-Song
 
-
->
-> -       test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */, =
-i =3D=3D one_bn);
-> +       test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */, =
-i =3D=3D dummy_wait);
->  cleanup:
->         bpf_link__destroy(link);
->         close(pfd);
-> --
-> 2.34.1
->
+jon
 
