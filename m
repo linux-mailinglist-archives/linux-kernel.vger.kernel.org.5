@@ -1,42 +1,90 @@
-Return-Path: <linux-kernel+bounces-21529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B3BA8290D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:29:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0EC08290D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2320D1C24C52
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:29:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A6F72886E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEA03E484;
-	Tue,  9 Jan 2024 23:28:54 +0000 (UTC)
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402283EA71;
+	Tue,  9 Jan 2024 23:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uk+xmktr"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2485912E41;
-	Tue,  9 Jan 2024 23:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 758F92028F;
-	Wed, 10 Jan 2024 00:28:42 +0100 (CET)
-Date: Wed, 10 Jan 2024 00:28:38 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] net: phy: micrel: reset KSZ9x31 when resuming
-Message-ID: <20240109232838.GA3626@francesco-nb>
-References: <20240109205223.40219-1-wsa+renesas@sang-engineering.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CD63EA70;
+	Tue,  9 Jan 2024 23:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5f75aee31d2so28823137b3.2;
+        Tue, 09 Jan 2024 15:29:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704842942; x=1705447742; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IX9+LBttu/RH0kDncVePa6QCQhOlpQ7I4FJ1PbxVZmc=;
+        b=Uk+xmktrfy0OCgPT+GUXNNA1O+G5DLV+vGZ2+5iYDEqGD0P/MR/N91ukItku1XethG
+         QxaZZaLI9qpkF/D7yjBgeqrum9OR9ssEvNt6rwTNrTO+ImQe2ChGTKvz5Er95wqHlmDt
+         jKjGbLxSafRIKJxZm90G+trUslPw6EdrDCkSfr+6yPSWBVOo70PrSTP8Nhg9U9bi5Qdw
+         xnqAqYkeEtgfCih/zWT98+fca5v0wjEOzvO/f4SqZ2tMn/c/71b79CXThaH7Iilh9Li1
+         /ZiIX97es0ASk/mcWr6WM8G81SK3PaqH+RGq15kAlMfwbys2qYv2yADbFozPFqI1uiFc
+         KNag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704842942; x=1705447742;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IX9+LBttu/RH0kDncVePa6QCQhOlpQ7I4FJ1PbxVZmc=;
+        b=vvZm7Id8Tz3fbqm77LL/MP4CorJTiZplePH7ZsNqoVJ7x+7m9wCWhEZGZ9swpN5PX/
+         NWpr/YKog77MTkez+wVmtJjvaG+JJw8MowgHoCKD7mp1b0E3GlA/hEVhNeiVLSSQmKzx
+         Ey/xgQPfqpZm9sM/JdQPn7QcGLN8K8ghXGCe3woSIgmdzlaaXxEA/cRaFpR8VSjH9JQJ
+         DqI8Y4+e0iZ8iKQk+HyN+6GRhBghEjBdqpVQjZbPwsbI6/1MCQ+1KlRSGSzUA3Ya2MTq
+         4XK0VEyRJIAir1q7p3KPTzcsut2pe6key0Ft2bNFDsMe2HqAVrQBAOKMT10B0xSvfNLJ
+         NhRg==
+X-Gm-Message-State: AOJu0Yxb0sqGfNSBmOm/xKoDw9+obN5DA4OeoF+0x+Ys9NyPyseLQYbV
+	TkRUb+2qZJhIVtBRG2B7+n+g5ZtFxEy96Q==
+X-Google-Smtp-Source: AGHT+IFLEbEq4E6XFd6N6rJvqoswf3ZrDm1OR85FlR/A+EyeCly7n2sRjcGSFwFJTPKer/j0img+Dg==
+X-Received: by 2002:a0d:e305:0:b0:5d7:1941:ab9 with SMTP id m5-20020a0de305000000b005d719410ab9mr272325ywe.84.1704842941668;
+        Tue, 09 Jan 2024 15:29:01 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:5cbb:49c8:4388:70cc])
+        by smtp.gmail.com with ESMTPSA id m184-20020a0dfcc1000000b005f59ba17709sm1119737ywf.18.2024.01.09.15.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 15:29:01 -0800 (PST)
+Date: Tue, 9 Jan 2024 15:28:59 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	"kys@microsoft.com" <kys@microsoft.com>,
+	"haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"decui@microsoft.com" <decui@microsoft.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"longli@microsoft.com" <longli@microsoft.com>,
+	"leon@kernel.org" <leon@kernel.org>,
+	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"schakrabarti@microsoft.com" <schakrabarti@microsoft.com>,
+	"paulros@microsoft.com" <paulros@microsoft.com>
+Subject: Re: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs
+ per CPUs
+Message-ID: <ZZ3Wsxq8rHShTUdA@yury-ThinkPad>
+References: <1704797478-32377-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
+ <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,77 +93,149 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240109205223.40219-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
 
-- Philippe, email address is no longer valid.
+Hi Michael,
 
-On Tue, Jan 09, 2024 at 09:52:22PM +0100, Wolfram Sang wrote:
-> On a Renesas Ebisu board, the KSZ9031 PHY is stalled after resuming if
-> the interface has not been brought up before suspending. If it had been
-> brought up before, phylib ensures that reset is asserted before
-> suspending. But if it had never been brought up, there is no instance
-> which could ensure that reset is asserted. And upon resume, the PHY is
-> in an unknown state without reset being asserted. To bring it back to a
-> known state, simply reset it when it is about to be resumed.
-> 
-> This likely also helps another issue [1] where a KSZ9131 can be powered
-> using regulators. After switching power on again in resume, a reset is
-> also needed.
-> 
-> [1] https://patchwork.kernel.org/project/netdevbpf/patch/20211214121638.138784-4-philippe.schenker@toradex.com/
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
-> 
-> This is a different solution to a problem I already tried to solve
-> here[2]. Back then, I added code to the MAC, but I now believe it should
-> be solved on PHY level. We never saw the problem with other PHYs.
-> Looking at [1], it seems that KSZ9x31 is also sensitive to being
-> powered down without reset being asserted. I know it is not a perfect
-> proof, but I guess these assumptions are all we have.
-> 
-> Philippe, Francesco: do you still have access to machines with this
-> issue? Could you kindly test if so?
+So, I'm just a guy who helped to formulate the heuristics in an
+itemized form, and implement them using the existing kernel API.
+I have no access to MANA machines and I ran no performance tests
+myself.
 
-I have access, however
- - Philippe is long gone from Toradex and he was the one looking into
-   this topic
- - we did solve the issue in a different way, e.g. we no longer
-   power-off the phy in suspend
-
-Therefore is not straightforward to provide valuable feedback to you
-now.
-
-
+On Tue, Jan 09, 2024 at 07:22:38PM +0000, Michael Kelley wrote:
+> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent: Tuesday, January 9, 2024 2:51 AM
+> > 
+> > From: Yury Norov <yury.norov@gmail.com>
+> > 
+> > Souradeep investigated that the driver performs faster if IRQs are
+> > spread on CPUs with the following heuristics:
+> > 
+> > 1. No more than one IRQ per CPU, if possible;
+> > 2. NUMA locality is the second priority;
+> > 3. Sibling dislocality is the last priority.
+> > 
+> > Let's consider this topology:
+> > 
+> > Node            0               1
+> > Core        0       1       2       3
+> > CPU       0   1   2   3   4   5   6   7
+> > 
+> > The most performant IRQ distribution based on the above topology
+> > and heuristics may look like this:
+> > 
+> > IRQ     Nodes   Cores   CPUs
+> > 0       1       0       0-1
+> > 1       1       1       2-3
+> > 2       1       0       0-1
+> > 3       1       1       2-3
+> > 4       2       2       4-5
+> > 5       2       3       6-7
+> > 6       2       2       4-5
+> > 7       2       3       6-7
 > 
-> Patch is based on 6.7. Looking forward for comments if this is the
-> correct layer to tackle the problem. Thanks!
-> 
-> 
-> [2] https://lore.kernel.org/all/20230321103357.18940-1-wsa+renesas@sang-engineering.com/
-> 
->  drivers/net/phy/micrel.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> index 08e3915001c3..c38d7982c06c 100644
-> --- a/drivers/net/phy/micrel.c
-> +++ b/drivers/net/phy/micrel.c
-> @@ -1984,6 +1984,14 @@ static int kszphy_resume(struct phy_device *phydev)
->  	return 0;
->  }
->  
-> +static int ksz9x31_resume(struct phy_device *phydev)
-> +{
-> +	phy_device_reset(phydev, 1);
-> +	phy_device_reset(phydev, 0);
+> I didn't pay attention to the detailed discussion of this issue
+> over the past 2 to 3 weeks during the holidays in the U.S., but
+> the above doesn't align with the original problem as I understood
+> it.  I thought the original problem was to avoid putting IRQs on
+> both hyper-threads in the same core, and that the perf
+> improvements are based on that configuration.  At least that's
+> what the commit message for Patch 4/4 in this series says.
 
-Is something like that fine?
-Don't we need to reconfigure the ethernet phy completely on resume
-if we do reset it? kszphy_config_reset() is taking care of something,
-but I think that the phy being reset on resume is not handled
-correctly.
+Yes, and the original distribution suggested by Souradeep looks very
+similar:
 
-Francesco
+  IRQ     Nodes   Cores   CPUs
+  0       1       0       0
+  1       1       1       2
+  2       1       0       1
+  3       1       1       3
+  4       2       2       4
+  5       2       3       6
+  6       2       2       5
+  7       2       3       7
 
+I just added a bit more flexibility, so that kernel may pick any
+sibling for the IRQ. As I understand, both approaches have similar
+performance. Probably my fine-tune added another half-percent...
+
+Souradeep, can you please share the exact numbers on this?
+
+> The above chart results in 8 IRQs being assigned to the 8 CPUs,
+> probably with 1 IRQ per CPU.   At least on x86, if the affinity
+> mask for an IRQ contains multiple CPUs, matrix_find_best_cpu()
+> should balance the IRQ assignments between the CPUs in the mask.
+> So the original problem is still present because both hyper-threads
+> in a core are likely to have an IRQ assigned.
+
+That's what I think, if the topology makes us to put IRQs in the
+same sibling group, the best thing we can to is to rely on existing
+balancing mechanisms in a hope that they will do their job well.
+
+> Of course, this example has 8 IRQs and 8 CPUs, so assigning an
+> IRQ to every hyper-thread may be the only choice.  If that's the
+> case, maybe this just isn't a good example to illustrate the
+> original problem and solution.
+
+Yeah... This example illustrates the order of IRQ distribution.
+I really doubt that if we distribute IRQs like in the above example,
+there would be any difference in performance. But I think it's quite
+a good illustration. I could write the title for the table like this:
+
+        The order of IRQ distribution for the best performance
+        based on [...] may look like this.
+
+> But even with a better example
+> where the # of IRQs is <= half the # of CPUs in a NUMA node,
+> I don't think the code below accomplishes the original intent.
+> 
+> Maybe I've missed something along the way in getting to this
+> version of the patch.  Please feel free to set me straight. :-)
+
+Hmm. So if the number of IRQs is the half # of CPUs in the nodes,
+which is 2 in the example above, the distribution will look like
+this:
+
+  IRQ     Nodes   Cores   CPUs
+  0       1       0       0-1
+  1       1       1       2-3
+
+And each IRQ belongs to a different sibling group. This follows
+the rules above.
+
+I think of it like we assign an IRQ to a group of 2 CPUs, so from
+the heuristic #1 perspective, each CPU is assigned with 1/2 of the
+IRQ.
+
+If I add one more IRQ, then according to the heuristics, NUMA locality
+trumps sibling dislocality, so we'd assign IRO to the same node on any
+core. My algorithm assigns it to the core #0:
+
+  2       1       0       0-1
+
+This doubles # of IRQs for the CPUs 0 and 1: from 1/2 to 1.
+
+The next IRQ should be assigned to the same node again, and we've got
+the only choice:
+
+
+  3       1       1       2-3
+
+Starting from IRQ #5, the node #1 is full - each CPU is assigned with
+exactly one IRQ, and the heuristic #1 makes us to switch to the other
+node; and then do the same thing:
+
+  4       2       2       4-5
+  5       2       3       6-7
+  6       2       2       4-5
+  7       2       3       6-7
+
+So I think the algorithm is correct... Really hope the above makes
+sense. :) If so, I can add it to the commit message for patch #3.
+
+Nevertheless... Souradeep, in addition to the performance numbers, can
+you share your topology and actual IRQ distribution that gains 15%? I
+think it should be added to the patch #4 commit message.
+
+Thanks,
+Yury
 
