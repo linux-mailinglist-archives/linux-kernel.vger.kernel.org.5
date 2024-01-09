@@ -1,74 +1,189 @@
-Return-Path: <linux-kernel+bounces-21087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C361828990
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D36D6828993
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:04:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C14E01C245CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:02:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D5DF1C2386B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3313A1BF;
-	Tue,  9 Jan 2024 16:02:36 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2743A1A6;
+	Tue,  9 Jan 2024 16:04:43 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F6638DC1;
-	Tue,  9 Jan 2024 16:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 97BB368B05; Tue,  9 Jan 2024 17:02:23 +0100 (CET)
-Date: Tue, 9 Jan 2024 17:02:23 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
-	axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-	ming.lei@redhat.com, bvanassche@acm.org, ojaswin@linux.ibm.com
-Subject: Re: [PATCH v2 00/16] block atomic writes
-Message-ID: <20240109160223.GA7737@lst.de>
-References: <b8b0a9d7-88d2-45a9-877a-ecc5e0f1e645@oracle.com> <20231213154409.GA7724@lst.de> <c729b03c-b1d1-4458-9983-113f8cd752cd@oracle.com> <20231219051456.GB3964019@frogsfrogsfrogs> <20231219052121.GA338@lst.de> <76c85021-dd9e-49e3-80e3-25a17c7ca455@oracle.com> <20231219151759.GA4468@lst.de> <fff50006-ccd2-4944-ba32-84cbb2dbd1f4@oracle.com> <20231221065031.GA25778@lst.de> <73d03703-6c57-424a-80ea-965e636c34d6@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47DB3A1A0;
+	Tue,  9 Jan 2024 16:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T8bKl5mnDz6D91P;
+	Wed, 10 Jan 2024 00:02:19 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 19559140736;
+	Wed, 10 Jan 2024 00:04:37 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 9 Jan
+ 2024 16:04:36 +0000
+Date: Tue, 9 Jan 2024 16:04:35 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Dan Williams <dan.j.williams@intel.com>
+CC: Ira Weiny <ira.weiny@intel.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr Bueso" <dave@stgolabs.net>,
+	Dave Jiang <dave.jiang@intel.com>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Ard
+ Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v5 0/9] efi/cxl-cper: Report CPER CXL component events
+ through trace events
+Message-ID: <20240109160435.00004a4a@Huawei.com>
+In-Reply-To: <659cb684deb2d_127da22945a@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
+	<20240108165855.00002f5a@Huawei.com>
+	<eefc5888-4610-8e39-61ed-2d84e9ebf255@amd.com>
+	<659caa8da651c_127da22947b@dwillia2-xfh.jf.intel.com.notmuch>
+	<659cb0295ac1_8d749294b@iweiny-mobl.notmuch>
+	<659cb684deb2d_127da22945a@dwillia2-xfh.jf.intel.com.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73d03703-6c57-424a-80ea-965e636c34d6@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, Jan 09, 2024 at 09:55:24AM +0000, John Garry wrote:
-> So a user can issue:
->
-> >xfs_io -c "atomic-writes 64K" mnt/file
-> >xfs_io -c "atomic-writes" mnt/file
-> [65536] mnt/file
+On Mon, 8 Jan 2024 18:59:16 -0800
+Dan Williams <dan.j.williams@intel.com> wrote:
 
-Let me try to decipher that:
+> Ira Weiny wrote:
+> > Dan Williams wrote:  
+> > > Smita Koralahalli wrote:  
+> > > > On 1/8/2024 8:58 AM, Jonathan Cameron wrote:  
+> > > > > On Wed, 20 Dec 2023 16:17:27 -0800
+> > > > > Ira Weiny <ira.weiny@intel.com> wrote:
+> > > > >   
+> > > > >> Series status/background
+> > > > >> ========================
+> > > > >>
+> > > > >> Smita has been a great help with this series.  Thank you again!
+> > > > >>
+> > > > >> Smita's testing found that the GHES code ended up printing the events
+> > > > >> twice.  This version avoids the duplicate print by calling the callback
+> > > > >> from the GHES code instead of the EFI code as suggested by Dan.  
+> > > > > 
+> > > > > I'm not sure this is working as intended.
+> > > > > 
+> > > > > There is nothing gating the call in ghes_proc() of ghes_print_estatus()
+> > > > > and now the EFI code handling that pretty printed things is missing we get
+> > > > > the horrible kernel logging for an unknown block instead.
+> > > > > 
+> > > > > So I think we need some minimal code in cper.c to match the guids then not
+> > > > > log them (on basis we are arguing there is no need for new cper records).
+> > > > > Otherwise we are in for some messy kernel logs
+> > > > > 
+> > > > > Something like:
+> > > > > 
+> > > > > {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
+> > > > > {1}[Hardware Error]: event severity: recoverable
+> > > > > {1}[Hardware Error]:  Error 0, type: recoverable
+> > > > > {1}[Hardware Error]:   section type: unknown, fbcd0a77-c260-417f-85a9-088b1621eba6
+> > > > > {1}[Hardware Error]:   section length: 0x90
+> > > > > {1}[Hardware Error]:   00000000: 00000090 00000007 00000000 0d938086  ................
+> > > > > {1}[Hardware Error]:   00000010: 00100000 00000000 00040000 00000000  ................
+> > > > > {1}[Hardware Error]:   00000020: 00000000 00000000 00000000 00000000  ................
+> > > > > {1}[Hardware Error]:   00000030: 00000000 00000000 00000000 00000000  ................
+> > > > > {1}[Hardware Error]:   00000040: 00000000 00000000 00000000 00000000  ................
+> > > > > {1}[Hardware Error]:   00000050: 00000000 00000000 00000000 00000000  ................
+> > > > > {1}[Hardware Error]:   00000060: 00000000 00000000 00000000 00000000  ................
+> > > > > {1}[Hardware Error]:   00000070: 00000000 00000000 00000000 00000000  ................
+> > > > > {1}[Hardware Error]:   00000080: 00000000 00000000 00000000 00000000  ................
+> > > > > cxl_general_media: memdev=mem1 host=0000:10:00.0 serial=4 log=Informational : time=0 uuid=fbcd0a77-c260-417f-85a9-088b1621eba6 len=0 flags='' handle=0 related_handle=0 maint_op_class=0 : dpa=0 dpa_flags='' descriptor='' type='ECC Error' transaction_type='Unknown' channel=0 rank=0 device=0 comp_id=00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 validity_flags=''
+> > > > > 
+> > > > > (I'm filling the record with 0s currently)  
+> > > > 
+> > > > Yeah, when I tested this, I thought its okay for the hexdump to be there 
+> > > > in dmesg from EFI as the handling is done in trace events from GHES.
+> > > > 
+> > > > If, we need to handle from EFI, then it would be a good reason to move 
+> > > > the GUIDs out from GHES and place it in a common location for EFI/cper 
+> > > > to share similar to protocol errors.  
+> > > 
+> > > Ah, yes, my expectation was more aligned with Jonathan's observation to
+> > > do the processing in GHES code *and* skip the processing in the CPER
+> > > code, something like:
+> > >   
+> > 
+> > Agreed this was intended I did not realize the above.
+> >   
+> > > 
+> > > diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+> > > index 35c37f667781..0a4eed470750 100644
+> > > --- a/drivers/firmware/efi/cper.c
+> > > +++ b/drivers/firmware/efi/cper.c
+> > > @@ -24,6 +24,7 @@
+> > >  #include <linux/bcd.h>
+> > >  #include <acpi/ghes.h>
+> > >  #include <ras/ras_event.h>
+> > > +#include <linux/cxl-event.h>
+> > >  #include "cper_cxl.h"
+> > >  
+> > >  /*
+> > > @@ -607,6 +608,15 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
+> > >  			cper_print_prot_err(newpfx, prot_err);
+> > >  		else
+> > >  			goto err_section_too_small;
+> > > +	} else if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID)) {
+> > > +		printk("%ssection_type: CXL General Media Error\n", newpfx);  
+> > 
+> > Do we want the printk's here?  I did not realize that a generic event
+> > would be printed.  So intention was nothing would be done on this path.  
+> 
+> I think we do otherwise the kernel will say
+> 
+>     {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
+>     {1}[Hardware Error]: event severity: recoverable
+>     {1}[Hardware Error]:  Error 0, type: recoverable
+>     ...
+> 
+> ...leaving the user hanging vs:
+>  
+>     {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
+>     {1}[Hardware Error]: event severity: recoverable
+>     {1}[Hardware Error]:  Error 0, type: recoverable
+>     {1}[Hardware Error]:   section type: General Media Error
+> 
+> ...as an indicator to go follow up with rasdaemon or whatever else is
+> doing the detailed monitoring of CXL events.
 
- - the first call sets a 64k fsx_atomicwrites_size size
- - the secon call queries fsx_atomicwrites_size?
+Agreed. Maybe push it out to a static const table though.
+As the argument was that we shouldn't be spitting out big logs in this
+modern world, let's make it easy for people to add more entries.
 
-> The user will still have to issue statx to get the actual atomic write 
-> limit for a file, as 'xfs_io -c "atomic-writes"' does not take into account 
-> any HW/linux block layer atomic write limits.
+struct skip_me {
+	guid_t guid;
+	const char *name;
+};
+static const struct skip_me skip_me = {
+	{ &CPER_SEC_CXL_GEN_MEDIA, "CXL General Media Error" },
+etc.
+};
 
-So will the set side never fail?
+for (i = 0; i < ARRAY_SIZE(skip_me); i++) {
+	if (guid_equal(sec_type, skip_me[i].guid)) {
+		printk("%asection_type: %s\n", newpfx, skip_me[i].name);
+		break;	
+}
 
-> Is this the sort of userspace API which you would like to see?
-
-What I had in mind (and that's doesn't mean it's right..) was that
-the user just sets a binary flag, and the fs reports the best it
-could.  But there might be reasons to do it differently.
-
+or something like that in the final else.
 
