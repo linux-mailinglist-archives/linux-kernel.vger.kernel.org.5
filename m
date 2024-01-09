@@ -1,148 +1,222 @@
-Return-Path: <linux-kernel+bounces-20659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC80B828316
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:25:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4016828319
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A6791F265B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:25:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30A8828136F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207DD35EF0;
-	Tue,  9 Jan 2024 09:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE2B33CD3;
+	Tue,  9 Jan 2024 09:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lq2HYh++"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="HEoFePXh"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 589A835883;
-	Tue,  9 Jan 2024 09:24:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F47FC43399;
-	Tue,  9 Jan 2024 09:24:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704792284;
-	bh=C7H7w4SCOHPEKSbdH/8LWP/KZNEqQ1r60F5xiy24wvc=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Lq2HYh++x5jwY2PFeXFXc90GyBmZyuoFgbvB2Rty2xkTZA5Rc0Pxws+mzVIq++Hx7
-	 ++fodCbaSjc5utdR+5Y91ANd/JrtWeSvjnL5h5vWb3tAvAnQtWjWolpyvMU4d7aDN+
-	 9LST/UQvhWAb2VhEhm4wr0nAMqnyJneKpHiTRJ+Xf5u+6L7EDu6lum44x9YVevJagv
-	 VHy2DRqubgZwhGtms3c7ozDyo+IPgNBsjUv3ea0WSZgZcc0CZb8pzX/wdkrsmr+sat
-	 fu2lSeO8fl9BbF5JGIMcoSzNr4aWEBB9cO6MEjq26++yfer9+c76Mofl4hALQACL5b
-	 /Fd1nO+/5Mqww==
-From: Kalle Valo <kvalo@kernel.org>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,  "David S . Miller"
- <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub
- Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Rob Herring
- <robh+dt@kernel.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Bjorn Andersson <andersson@kernel.org>,  Konrad Dybcio
- <konrad.dybcio@linaro.org>,  Catalin Marinas <catalin.marinas@arm.com>,
-  Will Deacon <will@kernel.org>,  Bjorn Helgaas <bhelgaas@google.com>,
-  Heiko Stuebner <heiko@sntech.de>,  Jernej Skrabec
- <jernej.skrabec@gmail.com>,  Chris Morgan <macromorgan@hotmail.com>,
-  Linus Walleij <linus.walleij@linaro.org>,  Geert Uytterhoeven
- <geert+renesas@glider.be>,  Arnd Bergmann <arnd@arndb.de>,  Neil Armstrong
- <neil.armstrong@linaro.org>,  =?utf-8?Q?N=C3=ADcolas?= F . R . A . Prado
- <nfraprado@collabora.com>,  Marek Szyprowski <m.szyprowski@samsung.com>,
-  Peng Fan <peng.fan@nxp.com>,  Robert Richter <rrichter@amd.com>,  Dan
- Williams <dan.j.williams@intel.com>,  Jonathan Cameron
- <Jonathan.Cameron@huawei.com>,  Terry Bowman <terry.bowman@amd.com>,
-  Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-  Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,  Huacai
- Chen
- <chenhuacai@kernel.org>,  Alex Elder <elder@linaro.org>,  Srini Kandagatla
- <srinivas.kandagatla@linaro.org>,  Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,  Jim Quinlan <jim2101024@gmail.com>,
-  james.quinlan@broadcom.com,  linux-wireless@vger.kernel.org,
-  netdev@vger.kernel.org,  devicetree@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  linux-arm-msm@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org,  linux-pci@vger.kernel.org,
-  Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 0/9] PCI: introduce the concept of power sequencing of
- PCIe devices
-References: <20240104130123.37115-1-brgl@bgdev.pl>
-	<a85dbfc3-e327-442a-9aab-5115f86944f7@gmail.com>
-Date: Tue, 09 Jan 2024 11:24:35 +0200
-In-Reply-To: <a85dbfc3-e327-442a-9aab-5115f86944f7@gmail.com> (Florian
-	Fainelli's message of "Mon, 8 Jan 2024 20:08:33 -0800")
-Message-ID: <87frz6zwoc.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70370364A2;
+	Tue,  9 Jan 2024 09:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409343xj004773;
+	Tue, 9 Jan 2024 10:24:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=PffPX8XtKNmALdkQMwhnZW6kAZxJu3D/e4DIkZpdRa8=; b=HE
+	oFePXh9x/Is1DayLz5t6fFdexw5taCHMsc66nTDH5QCGhikN2ugKcFwl2BCRLRqp
+	EzaFzJifLh5CNOMsQ8ESIO7KzhyUJsr157FTFZvxJoOTSiSm3E9WTOyRumsF8uPm
+	FoZV9rpbrV1XwmKjfFmHp+KQy4NOdHdnyoM0/h3QXeSyKC3vJnlZai23pvV8qts4
+	14wY0ZxtYMjBDx6+i28GprV8OjWTAV0ESA2ixrr2qY0bhTwyvad2wwi2HIJ2zRYi
+	3IDtNYO88G48cz4C8TK184BSXXIvSPwx13OLSPt0SNrAex3VhN2wVSZ4c3LLzQSD
+	UqWOqSzR8oMHSJd8EUWg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vey30jx0a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 10:24:46 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3262810002A;
+	Tue,  9 Jan 2024 10:24:45 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 11AB12122E9;
+	Tue,  9 Jan 2024 10:24:45 +0100 (CET)
+Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 9 Jan
+ 2024 10:24:43 +0100
+Message-ID: <1c76d85c-6f20-4971-a6df-61e4c534b351@foss.st.com>
+Date: Tue, 9 Jan 2024 10:24:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/5] Add support for video hardware codec of
+ STMicroelectronics STM32 SoC series
+To: Alex Bee <knaerzche@gmail.com>,
+        Nicolas Dufresne
+	<nicolas.dufresne@collabora.com>
+CC: Marco Felsch <m.felsch@pengutronix.de>, Adam Ford <aford173@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andrzej Pietrasiewicz
+	<andrzej.p@collabora.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Laurent Pinchart
+	<laurent.pinchart+renesas@ideasonboard.com>,
+        Benjamin Mugnier
+	<benjamin.mugnier@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Daniel Almeida
+	<daniel.almeida@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>, Hans
+ Verkuil <hverkuil@xs4all.nl>,
+        Rob Herring <robh+dt@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-media@vger.kernel.org>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Ezequiel Garcia
+	<ezequiel@vanguardiasur.com.ar>
+References: <20231221084723.2152034-1-hugues.fruchet@foss.st.com>
+ <769a1510-f8d2-4095-9879-42f413141dee@gmail.com>
+ <a240d2ac-db0e-481b-8d13-3ae76cfd2fe7@foss.st.com>
+ <e5ba1e14-4bbf-43e3-933a-fee6d4b90641@gmail.com>
+Content-Language: en-US
+From: Hugues FRUCHET <hugues.fruchet@foss.st.com>
+In-Reply-To: <e5ba1e14-4bbf-43e3-933a-fee6d4b90641@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
 
-Florian Fainelli <f.fainelli@gmail.com> writes:
+Hi Alex,
 
-> Hello,
->
-> On 1/4/2024 5:01 AM, Bartosz Golaszewski wrote:
->> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->> During last year's Linux Plumbers we had several discussions
->> centered
->> around the need to power-on PCI devices before they can be detected on
->> the bus.
->> The consensus during the conference was that we need to introduce a
->> class of "PCI slot drivers" that would handle the power-sequencing.
->> After some additional brain-storming with Manivannan and the
->> realization
->> that the DT maintainers won't like adding any "fake" nodes not
->> representing actual devices, we decided to reuse the existing
->> infrastructure provided by the PCIe port drivers.
->> The general idea is to instantiate platform devices for child nodes
->> of
->> the PCIe port DT node. For those nodes for which a power-sequencing
->> driver exists, we bind it and let it probe. The driver then triggers a
->> rescan of the PCI bus with the aim of detecting the now powered-on
->> device. The device will consume the same DT node as the platform,
->> power-sequencing device. We use device links to make the latter become
->> the parent of the former.
->> The main advantage of this approach is not modifying the existing DT
->> in
->> any way and especially not adding any "fake" platform devices.
->
-> There is prior work in that area which was applied, but eventually reverted:
->
-> https://www.spinics.net/lists/linux-pci/msg119136.html
->
-> and finally re-applied albeit in a different shape:
->
-> https://lore.kernel.org/all/20220716222454.29914-1-jim2101024@gmail.com/
->
-> so we might want to think about how to have pcie-brcmstb.c converted
-> over your proposed approach. AFAIR there is also pcie-rockchip.c which
-> has some rudimentary support for voltage regulators of PCIe
-> end-points.
->
-> What does not yet appear in this RFC is support for suspend/resume,
-> especially for power states where both the RC and the EP might be
-> losing power. There also needs to be some thoughts given to wake-up
-> enabled PCIe devices like Wi-Fi which might need to remain powered on
-> to service Wake-on-WLAN frames if nothing else.
+v6 sent with all the variants in a single file.
 
-Good point, suspend and resume is very important for ath11k and ath12k.
-And although I'm not expecting any issues with hibernation please also
-consider that. Currently ath11k hibernation is broken because of MHI and
-it has been pain trying to fix that. So best to make sure these cases
-work from the beginning.
+Best regards,
+Hugues.
 
-> I sense a potential for a lot of custom power sequencing drivers being
-> added and ultimately leading to the decision to create a "generic" one
-> which is entirely driven by Device Tree properties...
->
-> Thanks for doing this!
-
-A big thank you from me too! It's great to finally see this solved so
-that ath11k and ath12k can be used in wider range of devices.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+On 12/21/23 14:31, Alex Bee wrote:
+> Hi Hugues,
+> 
+> Am 21.12.23 um 14:08 schrieb Hugues FRUCHET:
+>> Hi Alex,
+>>
+>> This is because VDEC and VENC are two separated IPs with their own 
+>> hardware resources and no links between both.
+>> On future SoCs, VDEC can ship on its own, same for VENC.
+>>
+> I think that's what the driver is/was designed for :)
+> 
+> I don't  think there _has_ to be a link between variants in the same file.
+> For Rockchip we only had the issue that there _is_ a link (shared
+> resources) between encoder and decoder and they had (for that reason) to be
+> defined has a _single_ variant. And there is no reason you can ship decoder
+> and encoder seperated when you have two variants (with different
+> compatibles).
+> For Rockchip and iMX those files are even containing variants for completly
+> different generations / different SoCs. I had to cleanup this mess for
+> Rockchip once - and it was no fun :) Anyways: It's up to the maintainers I
+> guess - I just wanted to ask if I missunderstand something here.
+> 
+> Greetings,
+> 
+> Alex
+> 
+>> Hoping that this clarify.
+>>
+>> Best regards,
+>> Hugues.
+>>
+>> On 12/21/23 13:40, Alex Bee wrote:
+>>> Hi Hugues, Hi Nicolas,
+>>>
+>>> is there any specific reason I'm not understanding / seeing why this 
+>>> is added in two seperate vdec* / venc* files and not a single vpu* 
+>>> file? Is it only for the seperate clocks (-names) / irqs (-names) / 
+>>> callbacks? Those are defined per variant and perfectly fit in a 
+>>> single file holding one vdec and one venc variant.
+>>>
+>>> Alex
+>>>
+>>> Am 21.12.23 um 09:47 schrieb Hugues Fruchet:
+>>>> This patchset introduces support for VDEC video hardware decoder
+>>>> and VENC video hardware encoder of STMicroelectronics STM32MP25
+>>>> SoC series.
+>>>>
+>>>> This initial support implements H264 decoding, VP8 decoding and
+>>>> JPEG encoding.
+>>>>
+>>>> This has been tested on STM32MP257F-EV1 evaluation board.
+>>>>
+>>>> ===========
+>>>> = history =
+>>>> ===========
+>>>> version 5:
+>>>>     - Precise that video decoding as been successfully tested up to 
+>>>> full HD
+>>>>     - Add Nicolas Dufresne reviewed-by
+>>>>
+>>>> version 4:
+>>>>     - Fix comments from Nicolas about dropping encoder raw steps
+>>>>
+>>>> version 3:
+>>>>     - Fix remarks from Krzysztof Kozlowski:
+>>>>      - drop "items", we keep simple enum in such case
+>>>>      - drop second example - it is the same as the first
+>>>>     - Drop unused node labels as suggested by Conor Dooley
+>>>>     - Revisit min/max resolutions as suggested by Nicolas Dufresne
+>>>>
+>>>> version 2:
+>>>>     - Fix remarks from Krzysztof Kozlowski on v1:
+>>>>      - single video-codec binding for both VDEC/VENC
+>>>>      - get rid of "-names"
+>>>>      - use of generic node name "video-codec"
+>>>>
+>>>> version 1:
+>>>>    - Initial submission
+>>>>
+>>>> Hugues Fruchet (5):
+>>>>    dt-bindings: media: Document STM32MP25 VDEC & VENC video codecs
+>>>>    media: hantro: add support for STM32MP25 VDEC
+>>>>    media: hantro: add support for STM32MP25 VENC
+>>>>    arm64: dts: st: add video decoder support to stm32mp255
+>>>>    arm64: dts: st: add video encoder support to stm32mp255
+>>>>
+>>>>   .../media/st,stm32mp25-video-codec.yaml       |  50 ++++++++
+>>>>   arch/arm64/boot/dts/st/stm32mp251.dtsi        |  12 ++
+>>>>   arch/arm64/boot/dts/st/stm32mp255.dtsi        |  17 +++
+>>>>   drivers/media/platform/verisilicon/Kconfig    |  14 ++-
+>>>>   drivers/media/platform/verisilicon/Makefile   |   4 +
+>>>>   .../media/platform/verisilicon/hantro_drv.c   |   4 +
+>>>>   .../media/platform/verisilicon/hantro_hw.h    |   2 +
+>>>>   .../platform/verisilicon/stm32mp25_vdec_hw.c  |  92 ++++++++++++++
+>>>>   .../platform/verisilicon/stm32mp25_venc_hw.c  | 115 
+>>>> ++++++++++++++++++
+>>>>   9 files changed, 307 insertions(+), 3 deletions(-)
+>>>>   create mode 100644 
+>>>> Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
+>>>>   create mode 100644 
+>>>> drivers/media/platform/verisilicon/stm32mp25_vdec_hw.c
+>>>>   create mode 100644 
+>>>> drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
+>>>>
+>>>
 
