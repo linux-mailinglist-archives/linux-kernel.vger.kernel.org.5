@@ -1,106 +1,134 @@
-Return-Path: <linux-kernel+bounces-20426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E4B1827EB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:12:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1588E827EB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:17:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2C07B23741
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B41161F24764
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1B163B9;
-	Tue,  9 Jan 2024 06:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B9B79D4;
+	Tue,  9 Jan 2024 06:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hfRDI+0z"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BzLKO1XI"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8A99442;
-	Tue,  9 Jan 2024 06:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-557f4fd1278so376238a12.3;
-        Mon, 08 Jan 2024 22:12:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704780758; x=1705385558; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=svUThaQL4O0jeqe+j6zcJnwnFNsK7pUnz6sFOsPzHXs=;
-        b=hfRDI+0zQwUvjQhSAqAEjziRLpZNCA94TdTO/NsEGHn13ySfj0Hs/pRBuKUu1zD8U/
-         /k6/xrHRRe+haVvJ5fE5/TJkpZEM3VkeuJjYp2gQEQU9kynKxdanwawCfpz80aV+WDXI
-         NpeB1kvCdEdbseaJdlSOej1enE0V4LDgUL0cWiYxLzP5G3ZaCp27ZxABBKXi8XCL3xT1
-         wrakKSgreYbDXxM0a2oE7S4GZIWET5eDR32R9PfQVgl+FP2lpBN+2IYK5ouvclOYI4ad
-         uWWpViDLi7mGdE0/PwEEDDq8mzu5EEWlU+6EW+RbmS5drzfX1yycHM2cxjQr8nyZ94tr
-         +pbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704780758; x=1705385558;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=svUThaQL4O0jeqe+j6zcJnwnFNsK7pUnz6sFOsPzHXs=;
-        b=h7H/1YAmyfzvq51GlM9If8fnqViWuw7vslD3Q8AeWpyaOcyc2hFUrN1Uj/OarwPSVZ
-         RgKyAiWX9H8t8fpV0OfZPi+V5l2onG7VD/IaoEcoq+J5xtxJlxWNnB7CVz0Vxlt70iZG
-         NcNk7B+eSZCoSzrfrp1OCFGEu9qhgru20388CheKUWDr8jH131yb9nCiewjqdnUGYOeC
-         46OlJxtosWILkotYfupVFjHFbqQ3DRKL7pEar8LNYakXGACRIw5znnMzv/rgJOXEPHGu
-         FKcBkCvrW1+EMAkZVD6DSjBAhqe8xv/e/2R9UMhSpI8uMgaUfvlvGfCugXub0mpCox9K
-         SHVQ==
-X-Gm-Message-State: AOJu0YzYE91DYVzl2Nf84uJHEcP7+jrmFKPduP/vNh78cnqwsPGMEB8p
-	yCAruQbN3GyVIpIUAn28Qmg=
-X-Google-Smtp-Source: AGHT+IH9t82biNC1XX+mwqw0X/XMIj5bvFu3P/kSaeV39cU5H2Ey1ialTC3tFvNcWbBMYps99l3iSA==
-X-Received: by 2002:a50:9f2b:0:b0:555:11da:d813 with SMTP id b40-20020a509f2b000000b0055511dad813mr3250528edf.83.1704780757994;
-        Mon, 08 Jan 2024 22:12:37 -0800 (PST)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id t4-20020a056402020400b0055773fb50fbsm572037edv.15.2024.01.08.22.12.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 22:12:37 -0800 (PST)
-Message-ID: <1a9d7f5b-4a00-4026-81b8-7af3031c6656@gmail.com>
-Date: Tue, 9 Jan 2024 07:12:35 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F5717C2;
+	Tue,  9 Jan 2024 06:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4093LIp0019957;
+	Tue, 9 Jan 2024 06:17:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=FmGVh3W2g4mUkpYE5hHFAFoo4UsVNaeXCU8Z582FdZQ=; b=Bz
+	LKO1XI5i1aSz0Y3Ngdv2pdIZlQ9++EztwQnAZgLEuQaPqM0wSEl1EobAsM1yFgEV
+	t7DT66rc5GGG+Zj8vd8dDxaEcMJqDUy+NeBF0hk2Cr/wjWqwS97RmbPt87yjZ7UF
+	d1xrPm/EJ9a2KAtLhIjoFv58mXE3Zb3jRlL+US2pCxNYF2G5FgqlNq73te0d/DhC
+	Fr4drzodfGqeBzB9bAh8EYHPtjXMbDGbI2Mn2KCjk1BqI43WShNRlkkUtDEYZBIG
+	tpA8j+EVe7b0Ie7o4/Tirtxqi7xFWT5RGWxaZ5MqUd64bccpTYT61ykrnUyLOWjt
+	Lq9jf9AJUsxjSRDLj6Kg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgq2ys23f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 06:17:27 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4096HRkC019581
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 06:17:27 GMT
+Received: from hu-ugoswami-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 8 Jan 2024 22:17:24 -0800
+From: Udipto Goswami <quic_ugoswami@quicinc.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern
+	<stern@rowland.harvard.edu>
+CC: Krishna Kurapati <quic_kriskura@quicinc.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        Udipto Goswami
+	<quic_ugoswami@quicinc.com>
+Subject: [PATCH v3] usb: core: Prevent null pointer dereference in update_port_device_state
+Date: Tue, 9 Jan 2024 11:47:08 +0530
+Message-ID: <20240109061708.26288-1-quic_ugoswami@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm64: mediatek: Add MT7988A and BPI-R4
-To: Conor Dooley <conor@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Daniel Golle <daniel@makrotopia.org>,
- Hsin-Yi Wang <hsinyi@chromium.org>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- jason-ch chen <Jason-ch.Chen@mediatek.com>,
- Macpaul Lin <macpaul.lin@mediatek.com>,
- =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
- Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-References: <20240102205941.29654-1-zajec5@gmail.com>
- <20240108-helium-retriever-043ed3e1dbe0@spud>
-Content-Language: en-US
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20240108-helium-retriever-043ed3e1dbe0@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: j7V46y80BPb3l08IrWMq5e68WHn60HEV
+X-Proofpoint-ORIG-GUID: j7V46y80BPb3l08IrWMq5e68WHn60HEV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=718 clxscore=1015 priorityscore=1501 phishscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090045
 
-Hi Conor,
+Currently,the function update_port_device_state gets the usb_hub from
+udev->parent by calling usb_hub_to_struct_hub.
+However, in case the actconfig or the maxchild is 0, the usb_hub would
+be NULL and upon further accessing to get port_dev would result in null
+pointer dereference.
 
-On 8.01.2024 18:38, Conor Dooley wrote:
-> On Tue, Jan 02, 2024 at 09:59:40PM +0100, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> MT7988A is another MediaTek's SoC with just 1 device available right
->> now: Banana Pi BPI-R4.
-> 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Fix this by introducing an if check after the usb_hub is populated.
 
-I sent V2 meanwhile, could you reply to below PATCH instead, please?
+Fixes: 83cb2604f641 ("usb: core: add sysfs entry for usb device state")
+Cc: stable@vger.kernel.org
+Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
+---
+v3: Re-wrote the comment for better context.
+v2: Introduced comment for the if check & CC'ed stable.
 
-[PATCH V2 1/3] dt-bindings: arm64: mediatek: Add MT7988A and BPI-R4
+ drivers/usb/core/hub.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index ffd7c99e24a3..6b514546e59b 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -2053,9 +2053,23 @@ static void update_port_device_state(struct usb_device *udev)
+ 
+ 	if (udev->parent) {
+ 		hub = usb_hub_to_struct_hub(udev->parent);
+-		port_dev = hub->ports[udev->portnum - 1];
+-		WRITE_ONCE(port_dev->state, udev->state);
+-		sysfs_notify_dirent(port_dev->state_kn);
++
++		/*
++		 * The Link Layer Validation System Driver (lvstest)
++		 * has procedure of unbinding the hub before running
++		 * the rest of the procedure. This triggers
++		 * hub_disconnect will set the hub's maxchild to 0.
++		 * This would result usb_hub_to_struct_hub in this
++		 * function to return NULL.
++		 *
++		 * Add if check to avoid running into NULL pointer
++		 * de-reference.
++		 */
++		if (hub) {
++			port_dev = hub->ports[udev->portnum - 1];
++			WRITE_ONCE(port_dev->state, udev->state);
++			sysfs_notify_dirent(port_dev->state_kn);
++		}
+ 	}
+ }
+ 
+-- 
+2.17.1
+
 
