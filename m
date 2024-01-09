@@ -1,132 +1,102 @@
-Return-Path: <linux-kernel+bounces-20483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3396D827F8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:40:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6D0B827F8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:40:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D94A71F24D88
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:40:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C82EA1C25739
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13D0B65F;
-	Tue,  9 Jan 2024 07:39:51 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFCF947A;
+	Tue,  9 Jan 2024 07:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OqdyB/+j"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D74F39455
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 4097d95D027979;
-	Tue, 9 Jan 2024 15:39:09 +0800 (+08)
-	(envelope-from Wenhua.Lin@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4T8N1C2qB7z2Qvpgg;
-	Tue,  9 Jan 2024 15:32:15 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx06.spreadtrum.com
- (10.0.1.11) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 9 Jan 2024
- 15:39:08 +0800
-From: Wenhua Lin <Wenhua.Lin@unisoc.com>
-To: Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko
-	<andy@kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-CC: Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang
-	<baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, wenhua lin
-	<wenhua.lin1994@gmail.com>,
-        Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Xiongpeng Wu
-	<xiongpeng.wu@unisoc.com>
-Subject: [PATCH V4 2/2] gpio: eic-sprd: Optimize the calculation method of eic number
-Date: Tue, 9 Jan 2024 15:38:49 +0800
-Message-ID: <20240109073849.10791-3-Wenhua.Lin@unisoc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240109073849.10791-1-Wenhua.Lin@unisoc.com>
-References: <20240109073849.10791-1-Wenhua.Lin@unisoc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A619468
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33678156e27so2563203f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:39:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704785996; x=1705390796; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FCGnpiVOUgVBf9FWkplPUtkcGPH1yZ1U7MpKIuVpA0s=;
+        b=OqdyB/+jfheR41GiV1sV/u3R4imyL91OuwPqYFcPfK4JSBX2Onjuyl3lHdAdXgfvnL
+         uQn+dB1janbiYi5IkKbfum7xHUR7zPlDOTwCrXuGGCMh2zdxEc9sBvsUMhVOQuWXhEb7
+         wCdqlUEZZrdbNm3NGRlin56i5qP898KAoMoBUzvVrG8tHLGhWxQR836v2qr2Ba1XURky
+         i2QX4NprTJY9izIWhDmStqH854Jrqt8nLgeUTuyQ+4JZWQ8X9JfVXxaTMs676pOEAClZ
+         iPnRQAl5+Wz1oJ+JoaNnfX1SNgTbfWBeWjxkA5oreiA1USaTMWcX4Aoz6w0zAYvK+L2A
+         MqPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704785996; x=1705390796;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FCGnpiVOUgVBf9FWkplPUtkcGPH1yZ1U7MpKIuVpA0s=;
+        b=r2DDqcp5HkoJ8PH5+7N7uQdUBDBcfqbrMsgKsf3wDI0WzMyVMAiwXQteKSw/5Kx52K
+         EpQWeL+7VID2yrTHJWOqINciCdMscCjBQDfNyTSl7yMocbVg5qse9HUIw25gnrKIRpSL
+         MKuGr72Ot34mZS/mudhTZB6tj+OC/Mco5KYal8936NFGQ6Nq/v8cbIkVYK75VAYxJBYm
+         yxx9JXq3bh9d89hA1vwLqory0KRbtPQqL1GIT6+Yg7ahuwxLmiFcbKxSZLlCejx5qoiE
+         QluqNQP1VkKYFzpyYBqjt4frCC/pc2LHZqwXrQC/+kwNNZYVYcgexZ2i/fRzZJDhFRR9
+         D81A==
+X-Gm-Message-State: AOJu0Yw8TbdA9H+rIuw196gObZprkJ4ivcjCj3wfhAG5l6sP+gA0gJgi
+	ejpB0Gc9YCO07xKTPMRC3BK6M12XV/zlyg==
+X-Google-Smtp-Source: AGHT+IEvk3ncbEGc3LkVgi8d+aEnFalCwAwKUCaY4/yteX7pPp3uVJedSRrAiFOv8VuIvMhiRNJVSA==
+X-Received: by 2002:a5d:5966:0:b0:337:6535:3642 with SMTP id e38-20020a5d5966000000b0033765353642mr336509wri.43.1704785996635;
+        Mon, 08 Jan 2024 23:39:56 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id k14-20020a5d6e8e000000b003366c058509sm1618608wrz.23.2024.01.08.23.39.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 23:39:56 -0800 (PST)
+Date: Tue, 9 Jan 2024 10:39:49 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <lsahlber@redhat.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 2/3] cifs: make cifs_chan_update_iface() a void function
+Message-ID: <5c29dddd-2952-4993-9347-7bb11bdf2914@moroto.mountain>
+References: <b628a706-d356-4629-a433-59dfda24bb94@moroto.mountain>
+ <eac139a7-76d4-4067-8c25-15e30692aaf9@moroto.mountain>
+ <4c6b12c9-0502-400a-b2ba-dad89ef4f652@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx06.spreadtrum.com (10.0.1.11)
-X-MAIL:SHSQR01.spreadtrum.com 4097d95D027979
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c6b12c9-0502-400a-b2ba-dad89ef4f652@wanadoo.fr>
 
-The num_eics is a default value, but some SoCs support more than 8.
-In order to adapt to all projects, the total number of eics is
-automatically calculated through dts.
+On Mon, Jan 08, 2024 at 08:09:17PM +0100, Christophe JAILLET wrote:
+> > @@ -478,13 +475,13 @@ cifs_chan_update_iface(struct cifs_ses *ses, struct TCP_Server_Info *server)
+> >   	chan_index = cifs_ses_get_chan_index(ses, server);
+> >   	if (chan_index == CIFS_INVAL_CHAN_INDEX) {
+> >   		spin_unlock(&ses->chan_lock);
+> > -		return 0;
+> > +		return;
+> >   	}
+> >   	ses->chans[chan_index].iface = iface;
+> >   	spin_unlock(&ses->chan_lock);
+> > -	return rc;
+> > +	return;
+> 
+> just remove this one?
+> 
 
-Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
----
- drivers/gpio/gpio-eic-sprd.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+Doh.  Yeah.  I'll send a v2 of this tomorrow.
 
-diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-index 806b88d8dfb7..2dd0e46c42ad 100644
---- a/drivers/gpio/gpio-eic-sprd.c
-+++ b/drivers/gpio/gpio-eic-sprd.c
-@@ -108,7 +108,6 @@ static struct sprd_eic *to_sprd_eic(struct notifier_block *nb)
- 
- struct sprd_eic_variant_data {
- 	enum sprd_eic_type type;
--	u32 num_eics;
- };
- 
- static const char *sprd_eic_label_name[SPRD_EIC_MAX] = {
-@@ -118,22 +117,18 @@ static const char *sprd_eic_label_name[SPRD_EIC_MAX] = {
- 
- static const struct sprd_eic_variant_data sc9860_eic_dbnc_data = {
- 	.type = SPRD_EIC_DEBOUNCE,
--	.num_eics = 8,
- };
- 
- static const struct sprd_eic_variant_data sc9860_eic_latch_data = {
- 	.type = SPRD_EIC_LATCH,
--	.num_eics = 8,
- };
- 
- static const struct sprd_eic_variant_data sc9860_eic_async_data = {
- 	.type = SPRD_EIC_ASYNC,
--	.num_eics = 8,
- };
- 
- static const struct sprd_eic_variant_data sc9860_eic_sync_data = {
- 	.type = SPRD_EIC_SYNC,
--	.num_eics = 8,
- };
- 
- static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd_eic,
-@@ -619,6 +614,7 @@ static int sprd_eic_probe(struct platform_device *pdev)
- 	struct gpio_irq_chip *irq;
- 	struct sprd_eic *sprd_eic;
- 	struct resource *res;
-+	u16 num_banks = 0;
- 	int ret, i;
- 
- 	pdata = of_device_get_match_data(dev);
-@@ -652,10 +648,12 @@ static int sprd_eic_probe(struct platform_device *pdev)
- 		sprd_eic->base[i] = devm_ioremap_resource(dev, res);
- 		if (IS_ERR(sprd_eic->base[i]))
- 			return PTR_ERR(sprd_eic->base[i]);
-+
-+		num_banks++;
- 	}
- 
- 	sprd_eic->chip.label = sprd_eic_label_name[sprd_eic->type];
--	sprd_eic->chip.ngpio = pdata->num_eics;
-+	sprd_eic->chip.ngpio = num_banks * SPRD_EIC_PER_BANK_NR;
- 	sprd_eic->chip.base = -1;
- 	sprd_eic->chip.parent = dev;
- 	sprd_eic->chip.direction_input = sprd_eic_direction_input;
--- 
-2.17.1
+regards,
+dan carpenter
 
 
