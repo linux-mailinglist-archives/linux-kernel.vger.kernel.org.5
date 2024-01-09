@@ -1,83 +1,191 @@
-Return-Path: <linux-kernel+bounces-21396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 707BC828E91
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:40:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 219DC828E96
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:43:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD5F1F269C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:40:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 406A81C24179
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F44F3D983;
-	Tue,  9 Jan 2024 20:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="unzhnCwN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD1E3D986;
+	Tue,  9 Jan 2024 20:43:37 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3BA3D961
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 20:40:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3051AC433C7;
-	Tue,  9 Jan 2024 20:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704832828;
-	bh=QqQqgvArCAFMZzsCuljjBHuZF/IAw38ss/Kp6GE6Tjg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=unzhnCwNzY2FzHAIGxFYL/q2JHHWvjKjX/vpDuWLftJAH2IgvusFhXbttx4yssJdh
-	 CJr0+qfrpzrjiIM/jObh5in1gvK5L3fl4SaOvxhNE+4Dbn8zbeF+sz1dXkrZK//3cA
-	 aLDHvbMq53tjKk9xFBm1jKufJ/vtN47pcdkSzQldAfo3cJcvtmLtyytSwaBuCbMfrI
-	 WTiWgYNwx4YPGKhF2ZudjgnBDR+fL0n5JWFOdOGw629XoRe7FWYilhxapMkcRQgTud
-	 AH05MkJjeFwuPrpkT2Hi78U06Jw/wTyEt8bu0fSBPTSxzailwxeFOso0CBg2yv4XPr
-	 wQwqO3LBjnd/w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 16E8CDFC691;
-	Tue,  9 Jan 2024 20:40:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6DD73D961;
+	Tue,  9 Jan 2024 20:43:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9EA9C433C7;
+	Tue,  9 Jan 2024 20:43:35 +0000 (UTC)
+Date: Tue, 9 Jan 2024 15:44:34 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Vincent Donnefort <vdonnefort@google.com>
+Subject: [PATCH] ring-buffer: Have mmapped ring buffer keep track of missed
+ events
+Message-ID: <20240109154434.6eb61647@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -fixes v2] riscv: Check if the code to patch lies in the exit
- section
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <170483282808.2051.14425561693362087053.git-patchwork-notify@kernel.org>
-Date: Tue, 09 Jan 2024 20:40:28 +0000
-References: <20231214091926.203439-1-alexghiti@rivosinc.com>
-In-Reply-To: <20231214091926.203439-1-alexghiti@rivosinc.com>
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, zong.li@sifive.com,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-This patch was applied to riscv/linux.git (fixes)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+While testing libtracefs on the mmapped ring buffer, the test that checks
+if missed events are accounted for failed when using the mapped buffer.
+This is because the mapped page does not update the missed events that
+were dropped because the writer filled up the ring buffer before the
+reader could catch it.
 
-On Thu, 14 Dec 2023 10:19:26 +0100 you wrote:
-> Otherwise we fall through to vmalloc_to_page() which panics since the
-> address does not lie in the vmalloc region.
-> 
-> Fixes: 043cb41a85de ("riscv: introduce interfaces to patch kernel code")
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
-> 
-> [...]
+Add the missed events to the reader page/sub-buffer when the IOCTL is done
+and a new reader page is acquired.
 
-Here is the summary with links:
-  - [-fixes,v2] riscv: Check if the code to patch lies in the exit section
-    https://git.kernel.org/riscv/c/420370f3ae3d
+Note that all accesses to the reader_page via rb_page_commit() had to be
+switched to rb_page_size(), and rb_page_size() which was just a copy of
+rb_page_commit() but now it masks out the RB_MISSED bits. This is needed
+as the mapped reader page is still active in the ring buffer code and
+where it reads the commit field of the bpage for the size, it now must
+mask it otherwise the missed bits that are now set will corrupt the size
+returned.
 
-You are awesome, thank you!
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/ring_buffer.c | 54 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 48 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 07dae67424a9..90af4f28671f 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -312,6 +312,8 @@ static u64 rb_event_time_stamp(struct ring_buffer_event *event)
+ /* Missed count stored at end */
+ #define RB_MISSED_STORED	(1 << 30)
+ 
++#define RB_MISSED_MASK		(3 << 30)
++
+ struct buffer_data_page {
+ 	u64		 time_stamp;	/* page time stamp */
+ 	local_t		 commit;	/* write committed index */
+@@ -2303,7 +2305,7 @@ rb_iter_head_event(struct ring_buffer_iter *iter)
+ /* Size is determined by what has been committed */
+ static __always_inline unsigned rb_page_size(struct buffer_page *bpage)
+ {
+-	return rb_page_commit(bpage);
++	return rb_page_commit(bpage) & ~RB_MISSED_MASK;
+ }
+ 
+ static __always_inline unsigned
+@@ -2769,6 +2771,7 @@ static void rb_add_timestamp(struct ring_buffer_per_cpu *cpu_buffer,
+ 				once++;
+ 				pr_warn("Ring buffer clock went backwards: %llu -> %llu\n",
+ 					info->before, info->ts);
++				dump_stack();
+ 			}
+ 		} else
+ 			rb_check_timestamp(cpu_buffer, info);
+@@ -3930,7 +3933,7 @@ static bool rb_per_cpu_empty(struct ring_buffer_per_cpu *cpu_buffer)
+ 		return true;
+ 
+ 	/* Reader should exhaust content in reader page */
+-	if (reader->read != rb_page_commit(reader))
++	if (reader->read != rb_page_size(reader))
+ 		return false;
+ 
+ 	/*
+@@ -4401,7 +4404,7 @@ int ring_buffer_iter_empty(struct ring_buffer_iter *iter)
+ 	return ((iter->head_page == commit_page && iter->head >= commit) ||
+ 		(iter->head_page == reader && commit_page == head_page &&
+ 		 head_page->read == commit &&
+-		 iter->head == rb_page_commit(cpu_buffer->reader_page)));
++		 iter->head == rb_page_size(cpu_buffer->reader_page)));
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_iter_empty);
+ 
+@@ -5745,7 +5748,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 	event = rb_reader_event(cpu_buffer);
+ 
+ 	read = reader->read;
+-	commit = rb_page_commit(reader);
++	commit = rb_page_size(reader);
+ 
+ 	/* Check if any events were dropped */
+ 	missed_events = cpu_buffer->lost_events;
+@@ -5822,7 +5825,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 	} else {
+ 		/* update the entry counter */
+ 		cpu_buffer->read += rb_page_entries(reader);
+-		cpu_buffer->read_bytes += rb_page_commit(reader);
++		cpu_buffer->read_bytes += rb_page_size(reader);
+ 
+ 		/* swap the pages */
+ 		rb_init_page(bpage);
+@@ -6349,6 +6352,8 @@ struct page *ring_buffer_map_fault(struct trace_buffer *buffer, int cpu,
+ int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu)
+ {
+ 	struct ring_buffer_per_cpu *cpu_buffer;
++	struct buffer_page *reader;
++	unsigned long missed_events;
+ 	unsigned long reader_size;
+ 	unsigned long flags;
+ 
+@@ -6374,9 +6379,46 @@ int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu)
+ 		goto out;
+ 	}
+ 
+-	if (WARN_ON(!rb_get_reader_page(cpu_buffer)))
++	reader = rb_get_reader_page(cpu_buffer);
++	if (WARN_ON(!reader))
+ 		goto out;
+ 
++	/* Check if any events were dropped */
++	missed_events = cpu_buffer->lost_events;
++
++	if (cpu_buffer->reader_page != cpu_buffer->commit_page) {
++		if (missed_events) {
++			struct buffer_data_page *bpage = reader->page;
++			unsigned int commit;
++			/*
++			 * If there is room at the end of the page to save the
++			 * missed events, then record it there.
++			 */
++			commit = rb_page_size(reader);
++			if (buffer->subbuf_size - commit >= sizeof(missed_events)) {
++				memcpy(&bpage->data[commit], &missed_events,
++				       sizeof(missed_events));
++				local_add(RB_MISSED_STORED, &bpage->commit);
++				commit += sizeof(missed_events);
++			}
++			local_add(RB_MISSED_EVENTS, &bpage->commit);
++			/*
++			 * This page may be off to user land. Zero it out here.
++			 */
++			if (commit < buffer->subbuf_size)
++				memset(&bpage->data[commit], 0,
++				       buffer->subbuf_size - commit);
++		}
++	} else {
++		/*
++		 * There really shouldn't be any missed events if the commit
++		 * is on the reader page.
++		 */
++		WARN_ON_ONCE(missed_events);
++	}
++
++	cpu_buffer->lost_events = 0;
++
+ 	goto consume;
+ out:
+ 	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
