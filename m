@@ -1,240 +1,485 @@
-Return-Path: <linux-kernel+bounces-21482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04E7A829006
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:38:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C68829008
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CE9F1F26255
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:38:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBE9BB22764
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477EF3E46A;
-	Tue,  9 Jan 2024 22:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71DB3E462;
+	Tue,  9 Jan 2024 22:39:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="iqcRV0oW"
-Received: from mx08-001d1705.pphosted.com (mx08-001d1705.pphosted.com [185.183.30.70])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MYF/NLoQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E4612E41;
-	Tue,  9 Jan 2024 22:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sony.com
-Received: from pps.filterd (m0209321.ppops.net [127.0.0.1])
-	by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409MU61p002548;
-	Tue, 9 Jan 2024 22:37:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : mime-version :
- content-type : content-transfer-encoding; s=S1;
- bh=JXzGxs6Stn5IBMnrNbACinWYPG1iyEmivXZPCbRsS6A=;
- b=iqcRV0oWM9+S2ybp2514u10l2/4vfU+nGAsWou/PuQ/UqX6rOXTzjSUE8gf4+zBRHxLe
- lIMgMQCpO4LM96STKf7URqmW3GhE2oX6z8CZ1L0o8whsJrKBPmOHAV1jrHk3S9jCZ2Wk
- KZPS5OyrM15ZDcgDEkSDe4kncyU/pyrmddZg5G2EHJOWpFFD4KKjsjiF/pF10E30p8tl
- 8VwyRSPACBKvAklzG1cDtMFVcdQocymO5+Z/jViy7+/t50nTrPLLCOnFqJqq2GddfwZr
- ZVQe927MM0mD/rNcWjN93EnnDY4kZWYoUlAFVTtx0gcmGMVB/23/ZbiUvH9L59OsgFwa kg== 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
-	by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3vf23w32gq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 09 Jan 2024 22:37:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FRmuIQVDpPYgQDwONAnObnsxHwFNNJk8qQb5W351KGYqtaFVMn2k/BR6cpp0ACiXXtcTloPeR8x0yKY02IK1dK0knUcxif8mvroaDnSwtl+z3rfxnxFYYGGyOjewx6dPJNKDqDrk6qT1m4U/z3sSYeXt9oQc7jViMrBL5XDy0fSnqVQg6RSBbgzMyDD/bKGYYJwuOUWwlr3QYfyKrPOMlRjkBlFSg/k6xYBlvfzvpfhnNz8kjF0efaCq7reGeb83u2Jr8R08joqW55n0zW3rn77pEEN2MYIFUQMapHpXPCpFeujXxKT+Z1yrkgdPu0dixpvw3rk2LNsduShcbRsyIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JXzGxs6Stn5IBMnrNbACinWYPG1iyEmivXZPCbRsS6A=;
- b=Wwqv9ydyF0rlRwpcUS3S2Xvd7WdNUZBnIo+iawznlenl0wW3ggdDIE4p8Y/80JbdvNXCRa/5G2Mj/WI4mQQDSc2xk8brUa7VzsJ3K2dcrpz9XJa3mnTzghOLQ8QFFvGE8C1uRqNuRD8ooPsyjKWZWVsMli82JYYogjnCKqDaYthdCnux31uTeMG4tKqJHoqf5HJpEHLMFK4vFe+S+YCXyl7vO6fJWuUFa5+HE/r6fHK0eSKw8mtZSOhCY0FLeF0OZJwGDNolL1lmQTvbUSggQM5Ty5ZCU9OihYHQjA9Isp0gQszQns8jj91zbIQ7noiWLzRzUSeU2W4TwgVpmpIhHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-Received: from SA3PR13MB6372.namprd13.prod.outlook.com (2603:10b6:806:37d::13)
- by MW4PR13MB5459.namprd13.prod.outlook.com (2603:10b6:303:182::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 22:37:38 +0000
-Received: from SA3PR13MB6372.namprd13.prod.outlook.com
- ([fe80::ca00:2b32:e9c0:805c]) by SA3PR13MB6372.namprd13.prod.outlook.com
- ([fe80::ca00:2b32:e9c0:805c%4]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 22:37:38 +0000
-From: "Bird, Tim" <Tim.Bird@sony.com>
-To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
-CC: Rob Landley <rob@landley.net>, Geert Uytterhoeven <geert@linux-m68k.org>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang <liwang@redhat.com>,
-        Andrea Cervesato <andrea.cervesato@suse.com>,
-        Greg Ungerer
-	<gerg@linux-m68k.org>, Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap
-	<rdunlap@infradead.org>,
-        John Paul Adrian Glaubitz
-	<glaubitz@physik.fu-berlin.de>,
-        Christophe Lyon <christophe.lyon@linaro.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM
-	<linux-arm-kernel@lists.infradead.org>,
-        linux-riscv
-	<linux-riscv@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        "automated-testing@lists.yoctoproject.org"
-	<automated-testing@lists.yoctoproject.org>,
-        "buildroot@buildroot.org"
-	<buildroot@buildroot.org>,
-        Niklas Cassel <niklas.cassel@wdc.com>
-Subject: RE: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-Thread-Topic: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-Thread-Index: AQHaP9i+nPde0Zv90kmfJ6SqZmE5/rDPo4mBgAARuoCAAl6a8A==
-Date: Tue, 9 Jan 2024 22:37:37 +0000
-Message-ID: 
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
-In-Reply-To: <ZZvJXTshFUYSaMVH@yuki>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA3PR13MB6372:EE_|MW4PR13MB5459:EE_
-x-ms-office365-filtering-correlation-id: 4b4df69d-774e-4cb1-ccde-08dc11639512
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- c9G8MZ20E7QAmhxdz4gs5WCazPqAiejWDa6XVNVANQp2ch/lLMHm0H5CxgEE2GCB6N01JXF1fsaJTRzHK44aQ405KQKXMzEBTCLt5IvhcGB7uLjnRw1T8FfhB11USHoNGtFRmiUINY6raeAxl+kF5eyYiziljzCy+s/ePu59ieqJasuqagQRJO79rmWd47B0p10++imEJVBVy9sHtts9kpsGygmg0w9ZGvw9/VtUZPJzF+o1NjS5p0Tp8etJdfdmytWyMFPytjxp4eTFuVcQhY4gKP5FaeVD+0lhkARMPnsi2xgXqMaRfgee6g6mh3+PD4DTaFKpix9R+pZvaTgqMU8OjpkFQWDcdN7gCoZoS3c5jTufw9MYicPgPcBpwA8y1cLymn/YLJGrNyXeKAdt48doiO6iPrF7dHPYiGT+4N10jkJmZXs/t7ToOaYBC1fk5a6NvgDMFhbc/dULvaCoXRLI32txZDrE2FFLROdC5IHFl4k02nKBvw+sN5PSK1BzanLKwM3JS+GbT67/U+euxV+XowLoS+jkJi8PYMR5MhvrETvUglrN8NVxJRLWuQ4Wf7He5ikg4I2OLnN3EpG3IJRvI+ZHcX56zC5otfvcIPAnG2djcx1F0CqYiALGRWl8F5PRXqxncozSQ/fS07hUx2ObatYRsxj+0wzLyJMEwnw=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR13MB6372.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39860400002)(346002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(5660300002)(2906002)(7416002)(33656002)(86362001)(38100700002)(478600001)(82960400001)(83380400001)(7696005)(26005)(122000001)(9686003)(38070700009)(71200400001)(6506007)(8936002)(8676002)(316002)(4326008)(52536014)(76116006)(41300700001)(110136005)(54906003)(64756008)(66476007)(66446008)(66946007)(66556008)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?UK1HE9hrBxsfhaV2n1sECNOAATGeaZ8RkhXQbdBZp4jmMFkeWqcTLGgggOj3?=
- =?us-ascii?Q?zvyPtUCXvYvytWuMzjJFgL9t1mFFHNO7c+EA1y6zR0OUpt/uKqHzIh+y4CQj?=
- =?us-ascii?Q?KwpZCyzJGxKfcQ0IYZCs8xBIpxy7EQvEW+2DX7fhk64QE0LMEI1es1L3t+TF?=
- =?us-ascii?Q?7793i94Qc3pqi4NDBAxrJBLXsM6rKPTR5d4eYA7aPrVhBRRkFl0BohENJBIO?=
- =?us-ascii?Q?pMxGwZVMRhoWEmqWE/0AABkwfM1frpwmMX+thUo2m2eygIJsmtOR8MdAQtbJ?=
- =?us-ascii?Q?9QdNmGg1YM0IhNjO80ybC1pc2mVuOdLEiVYyMAuWzcTjUDgRd+m2jb+vFg/o?=
- =?us-ascii?Q?SbcJUnyRPWlbJYOscZgFGzdHnd9Kh1z4Pvm7earSY7Vqfgs1h7rzuDcjR9Xf?=
- =?us-ascii?Q?ZbJ3xJlh+hSaPEgR0R8uX+Fu+P1GEqMvejcwDW0OtNS2W9iDSfgWWPWp2zrk?=
- =?us-ascii?Q?ieY2HaahAow5KnCCfcfebeeAn1X//aTSsKiOf7fe/UgcPXm/Q4qIr5Ous9Q2?=
- =?us-ascii?Q?mSwlpeCIxAEz3lZCnIujlxh6s7NvSjrTwpn2YyA9HB7Ap7DWhffZWFxxoMHY?=
- =?us-ascii?Q?IZSICToj9xCuq7ONok7eSDbWes7tqSKr4VbRr1LOWl82hE+5akufvVYlZl7I?=
- =?us-ascii?Q?S5LSWPvN3fZXx+zv4Vn0NpSAVg5d8HmO/PMq4qzlunDpEkdmcGB7I9R9sGRf?=
- =?us-ascii?Q?N6Vcq2lkRJBnNV5PUb1fWYjm4oi2Qf0xbB9FF2D+BA2nDT+33uyr2Dg+o4iC?=
- =?us-ascii?Q?J6FN27IpX9DG3bRC+y7TjIr5N7cxFtHT22Vsp+fcm2nEJM6tGSU/q4BMXI6O?=
- =?us-ascii?Q?rQUHs9H7g3Lr3/wBIcZpYChAHmXjW7LfxKZJP7x16x2t6k+0M+WiHk5qp7UO?=
- =?us-ascii?Q?kLyrLnRKvkLFJVG1/H9y9kJkYF/3HigM3szyI9Mh5U/bzqC9jDvRu/EXJKhN?=
- =?us-ascii?Q?4W0GpY1tA4z7Fw7fUndKih6Cxm3sxM5mnsO4c6fGSYudsh/q/E7RsHE7cgFA?=
- =?us-ascii?Q?7xcVDqxZ8Fm2kSTHeAEu2EHI6978U6pXdrmw43qC9vf5InAv6KX/KFxO1Ggn?=
- =?us-ascii?Q?V0knSaKDm41iL04y2XqwZ5hh5sSdVWo98JHEuL8m6r2AOxGi0E+yvda+akXf?=
- =?us-ascii?Q?DxouUgGRErgQfVG5eu7O83w+ojldGs9OTdlya61LhOZcFUQDxag/Mn7SBEJb?=
- =?us-ascii?Q?GzjRNyg11vvJJSwmGtDAEazkLroO9EFWhLg1TR6+Ib9CIvpKHMPEuGYUe7K2?=
- =?us-ascii?Q?sXcXXtEX2zdQ34D44OEPBIcZWlXGSnFnyYyGWkct0h5k2M60TAzJriQSzv7J?=
- =?us-ascii?Q?h9HorrQQUQmd4gUZBvRuKa7bTH8m4nx2dGFRP+iOAtGozM7h0XrJ4ZlUNqkR?=
- =?us-ascii?Q?zkC+IM5F4UzugvuIcRrmywrbWHPTMuzzn/GzFoIflmsR5jr0qKTY0U2G6gAc?=
- =?us-ascii?Q?+Nd68dsXoXWmyo3knIeuVDreiM4l+ih6l/5yu9F0jM+iQu+5AJJrvdgEuV8B?=
- =?us-ascii?Q?J2sdH6sN6GY3/5UnJ+V5ABDdsxNq9yJDwH8A+ai25UW4JR26+ANPs9wHrJpU?=
- =?us-ascii?Q?OJtLMjJH6GsTOUNQU0I=3D?=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AED93C48F;
+	Tue,  9 Jan 2024 22:39:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 836BDC433F1;
+	Tue,  9 Jan 2024 22:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704839969;
+	bh=3Il5zpGsHtvODbdCmMwkvT7qR4ew1CGGPYWuKfZXQys=;
+	h=From:To:Cc:Subject:Date:From;
+	b=MYF/NLoQKo7bVI6yaFCBcSz03vuNsA/R1U5DQEh/47i4+V+NKTmBE6UhB+J7h+NuC
+	 GUo19OyiOVJbH2HJ0CUQcT5Y2y/0Oop3O9GxyX4STXb5LdpKqy1sXvUXJZbqGpH1iE
+	 p9/oPuRv7TmbKfzXxYd1+/V85mit+pqplL53U+lZZp8eJuVytBP4aQeMPgK7tYcE5D
+	 9S7mYIg8FoZDr+0KApcg3jBoqAFjsVOZhB67O7GY2QzFCRWNYB7VVyZuH9LgyY6Gf/
+	 ExbuC/H6hGMfgdpo6t0S5eCkfWK7C9v7iqVIyq9u6c29DcoAw4cOjrOf3CjvvpjUQU
+	 GBus47nC/6KKg==
+From: Stephen Boyd <sboyd@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clk changes for the merge window
+Date: Tue,  9 Jan 2024 14:39:24 -0800
+Message-ID: <20240109223928.2113621-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	hTdxRjf+lC3ldsIG39e6r5UhPevNALKJoEmIGyixVyrBrOMajlFeDCPID14KEdmoZk3dZH8YvV3vuG5LSpbSotF1LGyW01edVt1WzH1d3eic5RmX0ZmXwY/wprEJbSc7aiU4K7044jcUSfkUMTWn83mnJGlaojFCXMPUJ/6Q5mdyU9tbhaBjHF9gTQ3I0msUnUabcjgzdJ6pojDw4JlCpe8VmfmtkZwdY1c8BXrf32JKN6H7QjY2Kk3dY5aZfvkjUt8zp+UXC+z/2KUH9l8jc2JcY9/M3KLotzswEJhyeRioKm7AQ3NjGiVZSRJeOiKC0HF2YKoVeGZaOeQRDSiNZtjnWDO0h2BoXbPrJDcMVjtto9gdwBCrshZY99RjGVdAJIAUt9QKo5FgkMmF4xs2QpAPnKGdcELubchCMxYNt8uR7NlWilpeMI24WR5pxYYt4ri4FDrvEyY4kZ0Jvh7Vxqd8X9K7gre5Db1dc/gWuqTlMvofFGFxmI9PCpBfR5wC131bKNzbS3fNSAbD0Ne+nGEZBEIHtf8nXoOHn2h0/g40+6qx+e9bA3+vbD+H8qNvYTlmEtZu9cDmV1L73By1uS8sCLkOFsK7SoRsJiwxp9ngcCbPUvb/hmTuPf6Ni9F4
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA3PR13MB6372.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b4df69d-774e-4cb1-ccde-08dc11639512
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2024 22:37:37.9824
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NwzkhAudYNNDNf3XbiQJ2XoMWjptUSH9/J20xglEQQe/soX6y1VWgk4dkm2zw7hESDbr/Md5mlazz40zUqJ06g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR13MB5459
-X-Proofpoint-ORIG-GUID: XNttZybjFJ9vBXk87idEj1148j8TZufP
-X-Proofpoint-GUID: XNttZybjFJ9vBXk87idEj1148j8TZufP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-X-Sony-Outbound-GUID: XNttZybjFJ9vBXk87idEj1148j8TZufP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-09_11,2024-01-09_02,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
-> -----Original Message-----
-> From: automated-testing@lists.yoctoproject.org <automated-testing@lists.y=
-octoproject.org> On Behalf Of Cyril Hrubis
-> Hi!
-> > But as I said, if anybody from nommu decides to maintain it in LTP, I'l=
-l try to
-> > support him in my free time (review patches, give advices). And if nobo=
-dy
-> > stands, this patchset which removes the support in the old API will be =
-merged
-> > after next LTP release (in the end of January).
->=20
-> Let me highlight this part, we are eager to help anybody who is willing
-> to pick the nommu work, but we do not have resources to drive it.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-I have a couple of comments here.
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-I think it would be good to give a little bit more time to try to find a he=
-lper/maintainer
-for this.  As Rob pointed out, a lot of embedded Linux developers are using=
- very old
-kernels (and, if they are using LTP, likely very old versions of LTP).  The=
-y are also
-notorious for not being active on the mailing lists.  So this might take so=
-me active
-outreach to find helpers.  (I realize that this thread is part of this
-outreach effort).  For this reason, I'd like a few more weeks to try to adv=
-ertise this
-need within the embedded Linux community.
+are available in the Git repository at:
 
-I am not using nommu systems myself, so I'm in a similar position as Petr i=
-n terms
-of it not making much sense for me to be the maintainer.  However, having s=
-aid that,
-I have had for a few years now an idea for a background project related to =
-LTP
-that might make this a more interesting fit for me.  Sony uses NuttX, and i=
-s considering
-using Zephyr in some of our low-end processor systems.  This includes some =
-nommu
-systems.  For some time now, I have wanted to experiment with using LTP to =
-test
-the compatibility of those systems with the Linux system APIs.  In full dis=
-closure,
-I have no idea if this is a feasible or useful idea or not.  But it's somet=
-hing I'd like
-to investigate.
+  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
 
-I realize that testing non-Linux RTOSes is out-of-scope for LTP.  But given=
- that that is
-something I would like to do, and that it might be relevant to the Linux no=
-mmu tests,
-I would humbly request a few weeks to investigate this before the nommu cod=
-e is removed.
-This delay would be to see if it would make sense for me to volunteer to he=
-lp out with
-maintaining this otherwise abandoned code.
+for you to fetch changes up to 4f964cfef39d48a8e6748847df9a1ed310b96c4e:
 
-I can't promise anything, but I'd like to find out more about:
-1) what parts of the current LTP are not supporting nommu (what's currently=
- broken),
-2) how much code we're talking about, and
-3) what the desired roadmap going forward would be, to continue to support =
-this code.
+  Merge branch 'clk-rs9' into clk-next (2024-01-09 11:55:47 -0800)
 
-Thanks,
- -- Tim
+----------------------------------------------------------------
+Only a couple new SoCs have support added this time, primarily for Qualcomm
+SM8650 based on the diffstat. Otherwise this is a collection of non-critical
+fixes and cleanups to various clk drivers and their DT bindings. Nothing is
+changed in the core clk framework this time, although there's a patch to fix a
+basic clk type initialization function. In general, this pile looks to be on
+the smaller side.
 
+New Drivers:
+ - Global, display, gpu, tcsr, and rpmh clocks on Qualcomm SM8650
+ - Mediatek MT7988 SoC clocks
+
+Updates:
+ - Update Zynqmp driver for Versal NET platforms
+ - Add clk driver for Versal clocking wizard IP
+ - Support for stm32mp25 clks
+ - Add glitch free PLL setting support to si5351 clk driver
+ - Add DSI clocks on Amlogic g12/sm1
+ - Add CSI and ISP clocks on Amlogic g12/sm1
+ - Document bindings for i.MX93 ANATOP clock driver
+ - Free clk_node in i.MX SCU driver for resource with different owner
+ - Update the LVDS clocks to be compatible with i.MX SCU firmware 1.15
+ - Fix the name of the fvco in i.MX pll14xx by renaming it to fout
+ - Add EtherNet TSN and PCIe clocks on the Renesas R-Car V4H SoC
+ - Add interrupt controller and Ethernet clocks and resets on Renesas RZ/G3S
+ - Check reset monitor registers on Renesas RZ/G2L-alike SoCs
+ - Reuse reset functionality in the Renesas RZ/G2L clock driver
+ - Global and RPMh clock support for the Qualcomm X1E80100 SoC
+ - Support for the Stromer APCS PLL found in Qualcomm IPQ5018
+ - Add a new type of branch clock, with support for controlling separate
+   memory control bits, to the Qualcomm clk driver
+ - Use above new branch type in Qualcomm ECPRI clk driver for QDU1000 and
+   QRU1000
+ - Add a number of missing clocks related to CSI2 on Qualcomm MSM8939
+ - Add support for the camera clock controller on Qualcomm SC8280XP
+ - Correct PLL configuration in GPU and video clock controllers for
+   Qualcomm SM8150
+ - Add runtime PM support and a few missing resets to Qualcomm SM8150
+   video clock controller
+ - Fix configuration of various GCC GDSCs on Qualcomm SM8550
+ - Mark shared RCGs appropriately in the Qualcomm SM8550 GCC driver
+ - Fix up GPU and display clock controllers PLL configuration settings
+   on Qualcomm SM8550
+ - Cleanup variable init in Allwinner nkm module
+ - Convert various DT bindings to YAML
+ - A few kernel-doc fixes for Samsung SoC clock controllers
+
+----------------------------------------------------------------
+Alexander Stein (1):
+      clk: imx: clk-imx8qxp: fix LVDS bypass, pixel and phy clocks
+
+Alvin Šipraga (3):
+      dt-bindings: clock: si5351: convert to yaml
+      dt-bindings: clock: si5351: add PLL reset mode property
+      clk: si5351: allow PLLs to be adjusted without reset
+
+AngeloGioacchino Del Regno (3):
+      clk: mediatek: clk-mux: Support custom parent indices for muxes
+      clk: mediatek: mt8195-topckgen: Refactor parents for top_dp/edp muxes
+      clk: mediatek: mt8188-topckgen: Refactor parents for top_dp/edp muxes
+
+Biju Das (5):
+      clk: versaclock3: Update vc3_get_div() to avoid divide by zero
+      clk: versaclock3: Avoid unnecessary padding
+      clk: versaclock3: Use u8 return type for get_parent() callback
+      clk: versaclock3: Add missing space between ')' and '{'
+      clk: versaclock3: Drop ret variable
+
+Bjorn Andersson (5):
+      Merge branch '20231026105345.3376-3-bryan.odonoghue@linaro.org' into clk-for-6.8
+      Merge branch '20231106-topic-sm8650-upstream-clocks-v3-5-761a6fadb4c0@linaro.org' into clk-for-6.8
+      Merge branch '20231123064735.2979802-2-quic_imrashai@quicinc.com' into clk-for-6.8
+      Merge branch '20231205061002.30759-4-quic_sibis@quicinc.com' into clk-for-6.8
+      Merge branch '20231201-videocc-8150-v3-1-56bec3a5e443@quicinc.com' into clk-for-6.8
+
+Bryan O'Donoghue (3):
+      dt-bindings: clock: Use gcc.yaml for common clock properties
+      dt-bindings: clock: Add SC8280XP CAMCC
+      clk: qcom: camcc-sc8280xp: Add sc8280xp CAMCC
+
+Chris Morgan (3):
+      clk: rockchip: rk3568: Add PLL rate for 115.2MHz
+      clk: rockchip: rk3568: Add PLL rate for 126.4MHz
+      clk: rockchip: rk3568: Mark pclk_usb as critical
+
+Claudiu Beznea (4):
+      clk: renesas: rzg2l-cpg: Reuse code in rzg2l_cpg_reset()
+      clk: renesas: r9a08g045: Add IA55 pclk and its reset
+      clk: renesas: rzg2l: Check reset monitor registers
+      clk: renesas: r9a08g045: Add clock and reset support for ETH0 and ETH1
+
+Colin Ian King (1):
+      clk: sunxi-ng: nkm: remove redundant initialization of tmp_parent
+
+Conor Dooley (1):
+      clk: microchip: mpfs-ccc: replace include of asm-generic/errno-base.h
+
+Dan Carpenter (1):
+      clk: qcom: camcc-sc8280xp: Prevent error pointer dereference
+
+Daniel Golle (2):
+      dt-bindings: reset: mediatek: add MT7988 ethwarp reset IDs
+      dt-bindings: clock: mediatek: add clock controllers of MT7988
+
+Emil Renner Berthing (2):
+      clk: starfive: Add flags argument to JH71X0__MUX macro
+      clk: starfive: jh7100: Add CLK_SET_RATE_PARENT to gmac_tx
+
+Gabriel Fernandez (3):
+      clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
+      clk: stm32mp1: use stm32mp13 reset driver
+      dt-bindings: stm32: add clocks and reset binding for stm32mp25 platform
+
+Gokul Sriram Palanisamy (2):
+      dt-bindings: clock: qcom,a53pll: add IPQ5018 compatible
+      clk: qcom: apss-ipq-pll: add support for IPQ5018
+
+Imran Shaik (2):
+      dt-bindings: clock: qcom: Add ECPRICC clocks for QDU1000 and QRU1000
+      clk: qcom: Add ECPRICC driver support for QDU1000 and QRU1000
+
+Inochi Amaoto (1):
+      dt-bindings: clock: sophgo: Add clock controller of CV1800 series SoC
+
+Jay Buddhabhatti (2):
+      drivers: clk: zynqmp: calculate closest mux rate
+      drivers: clk: zynqmp: update divider round rate logic
+
+Jerome Brunet (1):
+      Merge branch 'v6.8/dt-bindings' into v6.8/drivers
+
+Konrad Dybcio (9):
+      clk: qcom: gcc-sm8550: Add the missing RETAIN_FF_ENABLE GDSC flag
+      clk: qcom: gcc-sm8550: Mark the PCIe GDSCs votable
+      clk: qcom: gcc-sm8550: use collapse-voting for PCIe GDSCs
+      clk: qcom: gcc-sm8550: Mark RCGs shared where applicable
+      clk: qcom: gpucc-sm8550: Update GPU PLL settings
+      clk: qcom: dispcc-sm8550: Update disp PLL settings
+      clk: qcom: dispcc-sm8550: Use the correct PLL configuration function
+      clk: qcom: gpucc-sm8650: Add test_ctl parameters to PLL config
+      clk: qcom: dispcc-sm8650: Add test_ctl parameters to PLL config
+
+Kuan-Wei Chiu (3):
+      clk: hi3620: Fix memory leak in hi3620_mmc_clk_init()
+      clk: mmp: pxa168: Fix memory leak in pxa168_clk_init()
+      clk: imx: scu: Fix memory leak in __imx_clk_gpr_scu()
+
+Marek Vasut (5):
+      clk: rs9: Fix DIF OEn bit placement on 9FGV0241
+      dt-bindings: clk: rs9: Add 9FGV0841
+      clk: rs9: Limit check to vendor ID in VID register
+      clk: rs9: Replace model check with bitshift from chip data
+      clk: rs9: Add support for 9FGV0841
+
+Neil Armstrong (16):
+      dt-bindings: clk: g12a-clkc: add CTS_ENCL clock ids
+      clk: meson: g12a: add CTS_ENCL & CTS_ENCL_SEL clocks
+      dt-bindings: clock: g12a-clkc: add MIPI ISP & CSI PHY clock ids
+      clk: meson: g12a: add MIPI ISP clocks
+      clk: meson: g12a: add CSI & ISP gates clocks
+      dt-bindings: clock: qcom: document the SM8650 TCSR Clock Controller
+      dt-bindings: clock: qcom: document the SM8650 General Clock Controller
+      dt-bindings: clock: qcom: document the SM8650 Display Clock Controller
+      dt-bindings: clock: qcom: document the SM8650 GPU Clock Controller
+      dt-bindings: clock: qcom: Document the SM8650 RPMH Clock Controller
+      clk: qcom: add the SM8650 Global Clock Controller driver, part 1
+      clk: qcom: add the SM8650 Global Clock Controller driver, part 2
+      clk: qcom: add the SM8650 TCSR Clock Controller driver
+      clk: qcom: add the SM8650 Display Clock Controller driver
+      clk: qcom: add the SM8650 GPU Clock Controller driver
+      clk: qcom: rpmh: add clocks for SM8650
+
+Niklas Söderlund (1):
+      clk: renesas: r8a779g0: Add EtherTSN clock
+
+Peng Fan (1):
+      dt-bindings: clock: support i.MX93 ANATOP clock module
+
+Rafał Miłecki (1):
+      dt-bindings: arm: mediatek: move ethsys controller & convert to DT schema
+
+Rajendra Nayak (4):
+      dt-bindings: clock: qcom: Add X1E80100 GCC clocks
+      dt-bindings: clock: qcom-rpmhcc: Add RPMHCC bindings for X1E80100
+      clk: qcom: Add Global Clock controller (GCC) driver for X1E80100
+      clk: qcom: rpmh: Add support for X1E80100 rpmh clocks
+
+Robert Marko (1):
+      dt-bindings: clock: qcom,gcc-ipq6018: split to separate schema
+
+Sam Protsenko (2):
+      clk: samsung: Fix kernel-doc comments
+      clk: samsung: Improve kernel-doc comments
+
+Sam Shih (3):
+      dt-bindings: clock: mediatek: add MT7988 clock IDs
+      clk: mediatek: add pcw_chg_bit control for PLLs of MT7988
+      clk: mediatek: add drivers for MT7988 SoC
+
+Satya Priya Kakitapalli (5):
+      clk: qcom: gpucc-sm8150: Update the gpu_cc_pll1 config
+      dt-bindings: clock: Update the videocc resets for sm8150
+      clk: qcom: videocc-sm8150: Update the videocc resets
+      clk: qcom: videocc-sm8150: Add missing PLL config property
+      clk: qcom: videocc-sm8150: Add runtime PM support
+
+Shengjiu Wang (1):
+      clk: imx: pll14xx: change naming of fvco to fout
+
+Shubhrajyoti Datta (3):
+      dt-bindings: Remove alt_ref from versal
+      dt-bindings: clock: xilinx: add versal compatible
+      clocking-wizard: Add support for versal clocking wizard
+
+Stanislav Jakubek (1):
+      dt-bindings: clock: brcm,kona-ccu: convert to YAML
+
+Stephen Boyd (13):
+      Merge tag 'renesas-clk-for-v6.8-tag1' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers into clk-renesas
+      Merge tag 'v6.8-rockchip-clk1' of git://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip into clk-rockchip
+      Merge tag 'sunxi-clk-for-6.8-1' of https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux into clk-allwinner
+      Merge tag 'renesas-clk-for-v6.8-tag2' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers into clk-renesas
+      Merge tag 'samsung-clk-6.8' of https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux into clk-samsung
+      Merge tag 'qcom-clk-for-6.8' of https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux into clk-qcom
+      Merge tag 'clk-imx-6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux into clk-imx
+      Merge tag 'clk-meson-v6.8-1' of https://github.com/BayLibre/clk-meson into clk-amlogic
+      Merge branches 'clk-renesas', 'clk-rockchip', 'clk-allwinner' and 'clk-cleanup' into clk-next
+      Merge branches 'clk-versa', 'clk-silabs', 'clk-samsung', 'clk-starfive' and 'clk-sophgo' into clk-next
+      Merge branches 'clk-imx', 'clk-qcom', 'clk-amlogic' and 'clk-mediatek' into clk-next
+      Merge branches 'clk-zynq', 'clk-xilinx' and 'clk-stm' into clk-next
+      Merge branch 'clk-rs9' into clk-next
+
+Su Hui (1):
+      clk: si5341: fix an error code problem in si5341_output_clk_set_rate
+
+Taniya Das (1):
+      clk: qcom: branch: Add mem ops support for branch2 clocks
+
+Théo Lebrun (1):
+      clk: fixed-rate: fix clk_hw_register_fixed_rate_with_accuracy_parent_hw
+
+Vincent Knecht (2):
+      dt-bindings: clock: qcom,gcc-msm8939: Add CSI2 related clocks
+      clk: qcom: gcc-msm8939: Add missing CSI2 related clocks
+
+Yang Yingliang (1):
+      clk: sp7021: fix return value check in sp7021_clk_probe()
+
+Yoshihiro Shimoda (1):
+      clk: renesas: r8a779g0: Add PCIe clocks
+
+ .../bindings/arm/mediatek/mediatek,ethsys.txt      |   29 -
+ .../bindings/arm/mediatek/mediatek,infracfg.yaml   |    1 +
+ .../devicetree/bindings/clock/brcm,kona-ccu.txt    |  138 -
+ .../devicetree/bindings/clock/brcm,kona-ccu.yaml   |  181 +
+ .../bindings/clock/fsl,imx93-anatop.yaml           |   42 +
+ .../bindings/clock/mediatek,apmixedsys.yaml        |    1 +
+ .../devicetree/bindings/clock/mediatek,ethsys.yaml |   55 +
+ .../bindings/clock/mediatek,mt7988-ethwarp.yaml    |   52 +
+ .../bindings/clock/mediatek,mt7988-xfi-pll.yaml    |   48 +
+ .../bindings/clock/mediatek,topckgen.yaml          |    2 +
+ .../devicetree/bindings/clock/qcom,a53pll.yaml     |    1 +
+ .../bindings/clock/qcom,camcc-sm8250.yaml          |   18 +-
+ .../bindings/clock/qcom,gcc-ipq6018.yaml           |   57 +
+ .../devicetree/bindings/clock/qcom,gcc-other.yaml  |    3 -
+ .../bindings/clock/qcom,qdu1000-ecpricc.yaml       |   68 +
+ .../devicetree/bindings/clock/qcom,rpmhcc.yaml     |    2 +
+ .../bindings/clock/qcom,sc7180-camcc.yaml          |   18 +-
+ .../bindings/clock/qcom,sc7280-camcc.yaml          |   18 +-
+ .../bindings/clock/qcom,sdm845-camcc.yaml          |   18 +-
+ .../bindings/clock/qcom,sm8450-camcc.yaml          |   20 +-
+ .../bindings/clock/qcom,sm8450-gpucc.yaml          |    2 +
+ .../bindings/clock/qcom,sm8550-tcsr.yaml           |    8 +-
+ .../bindings/clock/qcom,sm8650-dispcc.yaml         |  106 +
+ .../devicetree/bindings/clock/qcom,sm8650-gcc.yaml |   65 +
+ .../bindings/clock/qcom,x1e80100-gcc.yaml          |   72 +
+ .../devicetree/bindings/clock/renesas,9series.yaml |   10 +
+ .../devicetree/bindings/clock/silabs,si5351.txt    |  126 -
+ .../devicetree/bindings/clock/silabs,si5351.yaml   |  265 +
+ .../bindings/clock/sophgo,cv1800-clk.yaml          |   46 +
+ .../bindings/clock/st,stm32mp25-rcc.yaml           |   76 +
+ .../bindings/clock/xlnx,clocking-wizard.yaml       |    1 +
+ .../devicetree/bindings/clock/xlnx,versal-clk.yaml |   31 +-
+ .../firmware/xilinx/xlnx,zynqmp-firmware.yaml      |    4 +-
+ .../bindings/net/pcs/mediatek,sgmiisys.yaml        |   65 +-
+ drivers/clk/Kconfig                                |   11 +-
+ drivers/clk/Makefile                               |    1 -
+ drivers/clk/clk-renesas-pcie.c                     |   37 +-
+ drivers/clk/clk-si5341.c                           |    4 +-
+ drivers/clk/clk-si5351.c                           |   47 +-
+ drivers/clk/clk-sp7021.c                           |   12 +-
+ drivers/clk/clk-versaclock3.c                      |   88 +-
+ drivers/clk/hisilicon/clk-hi3620.c                 |    4 +-
+ drivers/clk/imx/clk-imx8qxp.c                      |   24 +-
+ drivers/clk/imx/clk-pll14xx.c                      |   23 +-
+ drivers/clk/imx/clk-scu.c                          |    4 +-
+ drivers/clk/mediatek/Kconfig                       |    9 +
+ drivers/clk/mediatek/Makefile                      |    5 +
+ drivers/clk/mediatek/clk-mt7988-apmixed.c          |  114 +
+ drivers/clk/mediatek/clk-mt7988-eth.c              |  150 +
+ drivers/clk/mediatek/clk-mt7988-infracfg.c         |  275 +
+ drivers/clk/mediatek/clk-mt7988-topckgen.c         |  325 +
+ drivers/clk/mediatek/clk-mt7988-xfipll.c           |   82 +
+ drivers/clk/mediatek/clk-mt8188-topckgen.c         |   27 +-
+ drivers/clk/mediatek/clk-mt8195-topckgen.c         |   27 +-
+ drivers/clk/mediatek/clk-mux.c                     |   14 +
+ drivers/clk/mediatek/clk-mux.h                     |   43 +-
+ drivers/clk/mediatek/clk-pll.c                     |    5 +-
+ drivers/clk/mediatek/clk-pll.h                     |    1 +
+ drivers/clk/meson/g12a.c                           |  115 +
+ drivers/clk/meson/g12a.h                           |    1 +
+ drivers/clk/microchip/clk-mpfs-ccc.c               |    2 +-
+ drivers/clk/mmp/clk-of-pxa168.c                    |    3 +
+ drivers/clk/qcom/Kconfig                           |   63 +
+ drivers/clk/qcom/Makefile                          |    7 +
+ drivers/clk/qcom/apss-ipq-pll.c                    |   21 +
+ drivers/clk/qcom/camcc-sc8280xp.c                  | 3045 +++++++++
+ drivers/clk/qcom/clk-branch.c                      |   38 +
+ drivers/clk/qcom/clk-branch.h                      |   21 +
+ drivers/clk/qcom/clk-rpmh.c                        |   58 +
+ drivers/clk/qcom/dispcc-sm8550.c                   |   12 +-
+ drivers/clk/qcom/dispcc-sm8650.c                   | 1818 ++++++
+ drivers/clk/qcom/ecpricc-qdu1000.c                 | 2456 +++++++
+ drivers/clk/qcom/gcc-msm8939.c                     |  110 +-
+ drivers/clk/qcom/gcc-sm8550.c                      |  110 +-
+ drivers/clk/qcom/gcc-sm8650.c                      | 3849 +++++++++++
+ drivers/clk/qcom/gcc-x1e80100.c                    | 6807 ++++++++++++++++++++
+ drivers/clk/qcom/gpucc-sm8150.c                    |    4 +-
+ drivers/clk/qcom/gpucc-sm8550.c                    |    6 +-
+ drivers/clk/qcom/gpucc-sm8650.c                    |  663 ++
+ drivers/clk/qcom/tcsrcc-sm8650.c                   |  182 +
+ drivers/clk/qcom/videocc-sm8150.c                  |   25 +-
+ drivers/clk/renesas/r8a779g0-cpg-mssr.c            |    3 +
+ drivers/clk/renesas/r9a08g045-cpg.c                |   13 +
+ drivers/clk/renesas/rzg2l-cpg.c                    |   91 +-
+ drivers/clk/rockchip/clk-rk3568.c                  |    3 +
+ drivers/clk/samsung/clk-cpu.h                      |   30 +-
+ drivers/clk/samsung/clk.h                          |  157 +-
+ drivers/clk/starfive/clk-starfive-jh7100-audio.c   |    2 +-
+ drivers/clk/starfive/clk-starfive-jh7100.c         |   32 +-
+ drivers/clk/starfive/clk-starfive-jh7110-aon.c     |    6 +-
+ drivers/clk/starfive/clk-starfive-jh7110-isp.c     |    2 +-
+ drivers/clk/starfive/clk-starfive-jh7110-sys.c     |   26 +-
+ drivers/clk/starfive/clk-starfive-jh71x0.h         |    4 +-
+ drivers/clk/stm32/Kconfig                          |   29 +
+ drivers/clk/stm32/Makefile                         |    1 +
+ drivers/clk/stm32/clk-stm32-core.c                 |    5 +-
+ drivers/clk/stm32/clk-stm32-core.h                 |    5 +-
+ drivers/clk/{ => stm32}/clk-stm32mp1.c             |  127 +-
+ drivers/clk/stm32/clk-stm32mp13.c                  |    9 +-
+ drivers/clk/stm32/reset-stm32.c                    |   14 +-
+ drivers/clk/stm32/reset-stm32.h                    |    8 +-
+ drivers/clk/sunxi-ng/ccu_nkm.c                     |    5 +-
+ drivers/clk/xilinx/clk-xlnx-clock-wizard.c         |  632 +-
+ drivers/clk/zynqmp/clk-mux-zynqmp.c                |    2 +-
+ drivers/clk/zynqmp/divider.c                       |   66 +-
+ include/dt-bindings/clock/g12a-clkc.h              |    8 +
+ include/dt-bindings/clock/mediatek,mt7988-clk.h    |  280 +
+ include/dt-bindings/clock/qcom,gcc-msm8939.h       |    6 +
+ include/dt-bindings/clock/qcom,qdu1000-ecpricc.h   |  147 +
+ include/dt-bindings/clock/qcom,sc8280xp-camcc.h    |  179 +
+ include/dt-bindings/clock/qcom,sm8650-dispcc.h     |  102 +
+ include/dt-bindings/clock/qcom,sm8650-gcc.h        |  254 +
+ include/dt-bindings/clock/qcom,sm8650-gpucc.h      |   43 +
+ include/dt-bindings/clock/qcom,sm8650-tcsr.h       |   18 +
+ include/dt-bindings/clock/qcom,videocc-sm8150.h    |    4 +
+ include/dt-bindings/clock/qcom,x1e80100-gcc.h      |  485 ++
+ include/dt-bindings/clock/sophgo,cv1800.h          |  176 +
+ include/dt-bindings/clock/st,stm32mp25-rcc.h       |  492 ++
+ include/dt-bindings/reset/mediatek,mt7988-resets.h |   13 +
+ include/dt-bindings/reset/qcom,sm8650-gpucc.h      |   20 +
+ include/dt-bindings/reset/st,stm32mp25-rcc.h       |  167 +
+ include/linux/clk-provider.h                       |    4 +-
+ include/linux/platform_data/si5351.h               |    2 +
+ 123 files changed, 25043 insertions(+), 1026 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ethsys.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/brcm,kona-ccu.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/brcm,kona-ccu.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/fsl,imx93-anatop.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,ethsys.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7988-ethwarp.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7988-xfi-pll.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-ipq6018.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,qdu1000-ecpricc.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm8650-dispcc.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm8650-gcc.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,x1e80100-gcc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+ create mode 100644 drivers/clk/mediatek/clk-mt7988-apmixed.c
+ create mode 100644 drivers/clk/mediatek/clk-mt7988-eth.c
+ create mode 100644 drivers/clk/mediatek/clk-mt7988-infracfg.c
+ create mode 100644 drivers/clk/mediatek/clk-mt7988-topckgen.c
+ create mode 100644 drivers/clk/mediatek/clk-mt7988-xfipll.c
+ create mode 100644 drivers/clk/qcom/camcc-sc8280xp.c
+ create mode 100644 drivers/clk/qcom/dispcc-sm8650.c
+ create mode 100644 drivers/clk/qcom/ecpricc-qdu1000.c
+ create mode 100644 drivers/clk/qcom/gcc-sm8650.c
+ create mode 100644 drivers/clk/qcom/gcc-x1e80100.c
+ create mode 100644 drivers/clk/qcom/gpucc-sm8650.c
+ create mode 100644 drivers/clk/qcom/tcsrcc-sm8650.c
+ create mode 100644 drivers/clk/stm32/Kconfig
+ rename drivers/clk/{ => stm32}/clk-stm32mp1.c (95%)
+ create mode 100644 include/dt-bindings/clock/mediatek,mt7988-clk.h
+ create mode 100644 include/dt-bindings/clock/qcom,qdu1000-ecpricc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sc8280xp-camcc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm8650-dispcc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm8650-gcc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm8650-gpucc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm8650-tcsr.h
+ create mode 100644 include/dt-bindings/clock/qcom,x1e80100-gcc.h
+ create mode 100644 include/dt-bindings/clock/sophgo,cv1800.h
+ create mode 100644 include/dt-bindings/clock/st,stm32mp25-rcc.h
+ create mode 100644 include/dt-bindings/reset/mediatek,mt7988-resets.h
+ create mode 100644 include/dt-bindings/reset/qcom,sm8650-gpucc.h
+ create mode 100644 include/dt-bindings/reset/st,stm32mp25-rcc.h
+
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
 
