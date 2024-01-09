@@ -1,145 +1,189 @@
-Return-Path: <linux-kernel+bounces-20908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ABDF82873D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:41:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A888828740
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AA8528651C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:41:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFDEEB237B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0434738FAA;
-	Tue,  9 Jan 2024 13:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94F638FB0;
+	Tue,  9 Jan 2024 13:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="YTQ4z/A4"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fx2gKLx0"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517226D6F9;
-	Tue,  9 Jan 2024 13:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409DcCAv008166;
-	Tue, 9 Jan 2024 13:41:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=5KzBx90TWSMeNOkqrM5SYJyiVmds5T3TK+9/nMMYzxw=;
- b=YTQ4z/A4LZ03zRtsT+K6/50FMRbmW1mFpSekd4Vp89zv002K6XkRo9hde41TG7XzaFmr
- wYJ5PA19l8Wo2jDwiXw5idx/FUsvvjqKMoGRcpIqeKFBE0jFGooc4ZqDUcWBywcns8Ak
- EuwJLaAJkinJtb0IBrYHLXZ2rwZfMupwLxoTeSBdx9JTZWi6oPgTkOo3d5N2cir21mev
- icqmu6qaqI6t2cZu4JZncPcwcH91LRSpPSlE6tp3YEcpL3W0UJ8hXLkCK2ZEdhGQ9H6z
- e0S+Oc25dqvmoTyot1/Rb2VfQaUZgknsjUG8ooZelDUGcP4yRNf1UjpykrvtI09HG3m0 +Q== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh76tg1uk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 13:41:09 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409D1SJ8028052;
-	Tue, 9 Jan 2024 13:41:08 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vgwfsjt9k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 13:41:08 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409Df8Po28574362
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Jan 2024 13:41:08 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 158BC58055;
-	Tue,  9 Jan 2024 13:41:08 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 94AA75804B;
-	Tue,  9 Jan 2024 13:41:07 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.140.202])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  9 Jan 2024 13:41:07 +0000 (GMT)
-Message-ID: <e4c5630fbd56ea57b51df50c4c7b0e865e89f4b6.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity: subsystem updates for v6.8
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel
-	 <linux-kernel@vger.kernel.org>
-Date: Tue, 09 Jan 2024 08:41:07 -0500
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: BJ33rv1GRimv8pFPzoRMJTaiWb-fQuKN
-X-Proofpoint-GUID: BJ33rv1GRimv8pFPzoRMJTaiWb-fQuKN
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9226D39842;
+	Tue,  9 Jan 2024 13:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cd0d05838fso32743541fa.1;
+        Tue, 09 Jan 2024 05:42:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704807720; x=1705412520; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2o/iVAspJoPe7wwOlMbx4e7jS1dNzyLr6xVTp3jus74=;
+        b=Fx2gKLx0oJf8sNNdjYerp9XZs+0TVIWaBd75SqtnT6irnzgFyjH6ZgLDmu/Fk9QEw/
+         F8Q6dP4cs+T9crQRMSdZQzBlaVL6SLetWm6AKmfcSCunW0yklv2X5tXZKQnSuV8sKt/t
+         mY2Yzn/c37f+PyFwIKFv2vWubc46Ec3uFPhgcg7mRFObFf4TMUv8QDw10azZkxzhircr
+         PKPi0XwTDsCJuFYslRWSgA6M9e5bRkbEWDPVw3j3BXovG1zpjHyiTzGTPB2eaVfjEQBx
+         R13RzVhsqMY+w+4fMVR879e3FLD55xUjwVKPqv2ruyBHrKDUKx2JqeBVgVRty2L6ZVr3
+         VUjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704807720; x=1705412520;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2o/iVAspJoPe7wwOlMbx4e7jS1dNzyLr6xVTp3jus74=;
+        b=aBOVNdevccy4vF7B4/q8QcMYy9wg+dFhEpk+a3RTVz9Y3dF9dx3SZeKuS3l7EdPesz
+         w6M3XMYLiQCUEOEZ4O4tXqWe4rA5M4J2rQ+qbZkgES/ogHBAoIAn9gEwOcYQhI02yQyN
+         QPnlFj0uYWIF3jNtrZs77O2tyeL5kfuI5v+PGn+DEv8MvHCgHUsQ3In/OHbzedbVtHpn
+         k9E/y4THoqmT4XnoI15j+7K1m+vuAGPxFcVfIAZmQWJLSCtoov7hkuJcg1QmzFxdr5DR
+         mA7/poYcaxrAvCcb7bccioB+XOd73cswzlMu3sJVb6osuuKZZs+ZK5cWzFMnNR9H8c3V
+         bOng==
+X-Gm-Message-State: AOJu0Yxtx9ePOQ9ZhGHj7Ol25jT7bKh0WLkpfBkpVibKtbuf5VMNrvYs
+	SvBhXhzwiWv0NSS+xoN/iRgvz2u3z8Xeln2Afco=
+X-Google-Smtp-Source: AGHT+IHUtifv+RQldaVvD3tr60Zdyo2DCLNb52fzX/CgtibgnJ8LP3jhRLNEKVqax5ZhAKk3dSY3vezkhqyI38Si+zw=
+X-Received: by 2002:a2e:a0cb:0:b0:2cc:7d70:fa45 with SMTP id
+ f11-20020a2ea0cb000000b002cc7d70fa45mr2495792ljm.27.1704807720240; Tue, 09
+ Jan 2024 05:42:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-09_05,2024-01-09_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 mlxlogscore=768 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401090112
+References: <20240105025625.125895-1-clancy_shang@163.com> <CABBYNZJRTfDUizZ=+JDGT3rZDRJ1HCvYBssrCfgrxOm4U8d-Qw@mail.gmail.com>
+ <5ebcd5f1.2a8d.18ced8b011e.Coremail.clancy_shang@163.com>
+In-Reply-To: <5ebcd5f1.2a8d.18ced8b011e.Coremail.clancy_shang@163.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Tue, 9 Jan 2024 08:41:45 -0500
+Message-ID: <CABBYNZ+GBcoru9F82BNfkr-R8Tv4psEjpKqLWxqRDnr=Ny_nxw@mail.gmail.com>
+Subject: Re: Re: [PATCH] Bluetooth: hci_sync: Fix BLE devices were unable to
+ disable the wakeup function
+To: clancy_shang <clancy_shang@163.com>
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhongjun.yu@quectel.com, Clancy Shang <clancy.shang@quectel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+Hi Clancy,
 
-Adding a new IMA/EVM maintainer and reviewer, disabling EVM on overlay, 1 bug
-fix and 2 cleanups.
+On Tue, Jan 9, 2024 at 4:26=E2=80=AFAM clancy_shang <clancy_shang@163.com> =
+wrote:
+>
+> Hi Luiz Augusto von Dentz,
+>
+> Thanks for you suggestions. is the patch has been accepted? or need me mo=
+dify as your suggested and resend to you?
 
-- The EVM HMAC and the original file signatures contain filesystem specific
-metadata (e.g. i_ino, i_generation and s_uuid), preventing the security.evm
-xattr from directly being copied up to the overlay. Further before calculating
-and writing out the overlay file's EVM HMAC, EVM must first verify the existing
-backing file's 'security.evm' value.  For now until a solution is developed,
-disable EVM on overlayfs.
+It has been applied already:
 
-thanks,
+https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.gi=
+t/commit/?id=3D0bcd317e8b31833d36cd9843902905aafbd70017
 
-Mimi
+> Kind regards,
+>
+> Clancy
+>
+>
+>
+>
+>
+>
+>
+> At 2024-01-05 23:21:59, "Luiz Augusto von Dentz" <luiz.dentz@gmail.com> w=
+rote:
+> >Hi Clancy,
+> >
+> >On Thu, Jan 4, 2024 at 9:56=E2=80=AFPM <clancy_shang@163.com> wrote:
+> >>
+> >> From: Clancy Shang <clancy.shang@quectel.com>
+> >>
+> >> when BLE master enter suspend,  it does not delete the peripheral that
+> >> in acceptlist. so if disable the wakeup function, the BLE master scans=
+ with
+> >> basic filter next time, the peripheral can be scanned which is unexpec=
+ted
+> >>
+> >> Signed-off-by: Clancy Shang <clancy.shang@quectel.com>
+> >> ---
+> >>  net/bluetooth/hci_sync.c | 10 ++++++++++
+> >>  1 file changed, 10 insertions(+)
+> >>
+> >> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> >> index d85a7091a116..abc7f614da5f 100644
+> >> --- a/net/bluetooth/hci_sync.c
+> >> +++ b/net/bluetooth/hci_sync.c
+> >> @@ -2533,6 +2533,7 @@ static u8 hci_update_accept_list_sync(struct hci=
+_dev *hdev)
+> >>         struct bdaddr_list *b, *t;
+> >>         u8 num_entries =3D 0;
+> >>         bool pend_conn, pend_report;
+> >> +       struct hci_conn_params *conn_params;
+> >>         u8 filter_policy;
+> >>         size_t i, n;
+> >>         int err;
+> >> @@ -2585,6 +2586,15 @@ static u8 hci_update_accept_list_sync(struct hc=
+i_dev *hdev)
+> >>                         continue;
+> >>                 }
+> >>
+> >> +               conn_params =3D hci_conn_params_lookup(hdev, &b->bdadd=
+r, b->bdaddr_type);
+> >> +               /* During suspend, only wakeable devices can be in acc=
+eptlist */
+> >> +               if (conn_params && hdev->suspended &&
+> >> +                   !(conn_params->flags & HCI_CONN_FLAG_REMOTE_WAKEUP=
+)) {
+> >> +                       hci_le_del_accept_list_sync(hdev, &b->bdaddr,
+> >> +                                                   b->bdaddr_type);
+> >> +                       continue;
+> >> +               }
+> >
+> >This might require a lock since that is not a copy of the conn_params
+> >which can be updated concurrently, so perhaps something like the
+> >following is might be safer:
+> >
+> >diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> >index b3141e3f9cf6..eeb73a54fd26 100644
+> >--- a/net/bluetooth/hci_sync.c
+> >+++ b/net/bluetooth/hci_sync.c
+> >@@ -2206,8 +2206,11 @@ static int hci_le_add_accept_list_sync(struct
+> >hci_dev *hdev,
+> >
+> >        /* During suspend, only wakeable devices can be in acceptlist */
+> >        if (hdev->suspended &&
+> >-           !(params->flags & HCI_CONN_FLAG_REMOTE_WAKEUP))
+> >+           !(params->flags & HCI_CONN_FLAG_REMOTE_WAKEUP)) {
+> >+               hci_le_del_accept_list_sync(hdev, &params->bdaddr,
+> >+                                           params->bdaddr_type);
+> >                return 0;
+> >+       }
+> >
+> >        /* Select filter policy to accept all advertising */
+> >        if (*num_entries >=3D hdev->le_accept_list_size)
+> >
+> >>                 num_entries++;
+> >>         }
+> >>
+> >> --
+> >> 2.25.1
+> >>
+> >
+> >
+> >--
+> >Luiz Augusto von Dentz
 
-The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
 
-  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v6.8
-
-for you to fetch changes up to c00f94b3a5be428837868c0f2cdaa3fa5b4b1995:
-
-  overlay: disable EVM (2023-12-20 07:40:50 -0500)
-
-----------------------------------------------------------------
-integrity-v6.8
-
-----------------------------------------------------------------
-Chen Ni (1):
-      KEYS: encrypted: Add check for strsep
-
-Eric Snowberg (2):
-      ima: Reword IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY
-      ima: Remove EXPERIMENTAL from Kconfig
-
-Mimi Zohar (5):
-      MAINTAINERS: Add Roberto Sassu as co-maintainer to IMA and EVM
-      MAINTAINERS: Add Eric Snowberg as a reviewer to IMA
-      evm: don't copy up 'security.evm' xattr
-      evm: add support to disable EVM on unsupported filesystems
-      overlay: disable EVM
-
- MAINTAINERS                              |  3 +++
- fs/overlayfs/super.c                     |  1 +
- include/linux/evm.h                      |  6 +++++
- include/linux/fs.h                       |  1 +
- security/integrity/evm/evm_main.c        | 42 +++++++++++++++++++++++++++++++-
- security/integrity/ima/Kconfig           | 10 ++++----
- security/keys/encrypted-keys/encrypted.c |  4 +++
- security/security.c                      |  2 +-
- 8 files changed, 62 insertions(+), 7 deletions(-)
-
+--=20
+Luiz Augusto von Dentz
 
