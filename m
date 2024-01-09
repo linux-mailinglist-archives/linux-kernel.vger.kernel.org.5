@@ -1,98 +1,163 @@
-Return-Path: <linux-kernel+bounces-20969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED8418287E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:17:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D82D8287E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CDCD1F25187
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:17:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B1621C24374
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7818D39FD0;
-	Tue,  9 Jan 2024 14:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CCA39AFD;
+	Tue,  9 Jan 2024 14:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JZWgI/5Q"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Zmlav5tN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="D6dliPd4";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Zmlav5tN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="D6dliPd4"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8704B38FB0
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:16:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704809784;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pc67pwl7wENc1gC3qwSzTrlvrs0jHKvpx7F4yFEiJj0=;
-	b=JZWgI/5Q0Znzp1iD4XdYFGkvhfDpliDKFkqqSZQcfYgGNZpelOo2Cw5s1pWmDqeqTdPLs7
-	jSbxAWh6i6J8zFaKa93+Sx1o4DQZz38X3ynFjfPMLbuSurvMZVktvastIRmla1xm9aG5FQ
-	ZsQSWlroI1NHUeshkSkzRKwmkHIORh0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-349-Chjqz7tbOTeT6Fr81qJYog-1; Tue, 09 Jan 2024 09:16:20 -0500
-X-MC-Unique: Chjqz7tbOTeT6Fr81qJYog-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CAB739ADD;
+	Tue,  9 Jan 2024 14:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8413010259BB;
-	Tue,  9 Jan 2024 14:16:19 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5EDA6492BE6;
-	Tue,  9 Jan 2024 14:16:18 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <CAB9dFdteL97Z8GAry9TwmcOfw0+PQDzL_u14PwwAEq5uUHaUkQ@mail.gmail.com>
-References: <CAB9dFdteL97Z8GAry9TwmcOfw0+PQDzL_u14PwwAEq5uUHaUkQ@mail.gmail.com> <1570781.1704797483@warthog.procyon.org.uk>
-To: Marc Dionne <marc.dionne@auristor.com>
-Cc: dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-    netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] rxrpc: Fix use of Don't Fragment flag
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 053CE21EB7;
+	Tue,  9 Jan 2024 14:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704809781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
+	b=Zmlav5tNGpaoMYrMAXhBPwM5iK5pvTZ/xhEtVFlZiiH+ImONkFr1GIo+HtxFZamctvHVsO
+	rkDxcqW9Ur1ro1/EMzPggocKzPRPzS4iFlC1hNRP619zZNYiOFLszELjqGLF3IXXBg1dlh
+	i+NXIgD4IwPzHevxLzzVjWrotf+cjI4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704809781;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
+	b=D6dliPd4z9BzjIAsTvdGOF4sIXHSlrNgavVUXz9IYHwZE58lyd4+DUj9NOL4MGT39Y77KC
+	0YXE7LaVRhu2ECCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704809781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
+	b=Zmlav5tNGpaoMYrMAXhBPwM5iK5pvTZ/xhEtVFlZiiH+ImONkFr1GIo+HtxFZamctvHVsO
+	rkDxcqW9Ur1ro1/EMzPggocKzPRPzS4iFlC1hNRP619zZNYiOFLszELjqGLF3IXXBg1dlh
+	i+NXIgD4IwPzHevxLzzVjWrotf+cjI4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704809781;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
+	b=D6dliPd4z9BzjIAsTvdGOF4sIXHSlrNgavVUXz9IYHwZE58lyd4+DUj9NOL4MGT39Y77KC
+	0YXE7LaVRhu2ECCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B3765134E8;
+	Tue,  9 Jan 2024 14:16:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dyJiKjRVnWV2CAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 09 Jan 2024 14:16:20 +0000
+Date: Tue, 09 Jan 2024 15:16:20 +0100
+Message-ID: <87le8yr3rf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc: =?ISO-8859-1?Q?=22N=EDcolas_F=2E_R=2E_A=2E_Prado=22?=
+ <nfraprado@collabora.com>,	Mark Brown <broonie@kernel.org>,
+	linux-sound@vger.kernel.org,	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,	Jaroslav Kysela <perex@perex.cz>,	Takashi
+ Iwai <tiwai@suse.com>,	Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v2 0/4] kselftest: alsa: Fix a couple of format specifiers and function parameters
+In-Reply-To: <20240107173704.937824-1-mirsad.todorovac@alu.unizg.hr>
+References: <20240107173704.937824-1-mirsad.todorovac@alu.unizg.hr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1577953.1704809777.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 09 Jan 2024 14:16:17 +0000
-Message-ID: <1577954.1704809777@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: *
+X-Spamd-Bar: +
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Zmlav5tN;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=D6dliPd4
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [1.99 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[11.36%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: 1.99
+X-Rspamd-Queue-Id: 053CE21EB7
+X-Spam-Flag: NO
 
-Marc Dionne <marc.dionne@auristor.com> wrote:
+On Sun, 07 Jan 2024 18:37:00 +0100,
+Mirsad Todorovac wrote:
+> 
+> Minor fixes of compiler warnings and one bug in the number of parameters which
+> would not crash the test but it is better fixed for correctness sake.
+> 
+> As the general climate in the Linux kernel community is to fix all compiler
+> warnings, this could be on the right track, even if only in the testing suite.
+> 
+> Changelog:
+> 
+> v1 -> v2:
+> - Compared to v1, commit subject lines have been adjusted to reflect the style
+>   of the subsystem, as suggested by Mark.
+> - 1/4 was already acked and unchanged (adjusted the subject line as suggested)
+>   (code unchanged)
+> - 2/4 was acked with suggestion to adjust the subject line (done).
+>   (code unchanged)
+> - 3/4 The format specifier was changed from %d to %u as suggested.
+> - The 4/4 submitted for review (in the v1 it was delayed by an omission).
+>   (code unchanged)
+> 
+> Mirsad Todorovac (4):
+>   kselftest/alsa - mixer-test: fix the number of parameters to
+>     ksft_exit_fail_msg()
+>   kselftest/alsa - mixer-test: Fix the print format specifier warning
+>   kselftest/alsa - mixer-test: Fix the print format specifier warning
+>   kselftest/alsa - conf: Stringify the printed errno in sysfs_get()
 
-> > +{
-> > +       if (set)
-> > +               ip_sock_set_mtu_discover(local->socket->sk, IP_PMTUDIS=
-C_DONT);
-> > +       else
-> > +               ip_sock_set_mtu_discover(local->socket->sk, IP_PMTUDIS=
-C_DO);
-> > +}
-> =
+Applied all patches now.  Thanks.
 
-> Shouldn't those be reversed - don't fragment should be IP_PMTUDISC_DO?
 
-Meh.  Yes.
-
-> Also, and this is probably already an issue with current code, I don't
-> think this is effective if the socket is V6, which it will be in most
-> cases.
-
-Hmmm...  I guess I should tweak IPV6_MTU_DISCOVER also.
-
-David
-
+Takashi
 
