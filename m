@@ -1,148 +1,121 @@
-Return-Path: <linux-kernel+bounces-21528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EEB18290C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:22:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3BA8290D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DD261C251E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:22:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2320D1C24C52
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E453E487;
-	Tue,  9 Jan 2024 23:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HJRf6NN0"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEA03E484;
+	Tue,  9 Jan 2024 23:28:54 +0000 (UTC)
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FC93E473;
-	Tue,  9 Jan 2024 23:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba903342c2so254411739f.3;
-        Tue, 09 Jan 2024 15:22:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704842561; x=1705447361; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uPqy+82fb4SEKR56UmyLvl8CBKyqJEkW6ciRME8Jc5k=;
-        b=HJRf6NN07l+nSl7oMoVB2poxhZ0oZ4mncvxIuaVNCGajDuQ2RlsZdaeUvQ+l9fWbyE
-         ycyUgFH43t4SocYJjF7VN5rFHweo40qIBj3pgot/bUZrCVdnFwBirzKv2C6zdjNgwHNv
-         GbV8VEPV1IhTky4z6FOahlylzp8tDoAkxJNrni01EX8bIKjDM8RhOVwGxFSQXWAUJ4pg
-         ldX6QdkGKLxiOtGM7vX3wxc0yiyg++138l4nfwxkFynAzIgswwosdK/8gc9K5H1Xg7UR
-         S/U8Mz5CdhrbYA09Zfz4eKPrOkvSStePfr9YOZschFm+MRm2VfraJDGUYDrzYCnKBmun
-         W7qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704842561; x=1705447361;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uPqy+82fb4SEKR56UmyLvl8CBKyqJEkW6ciRME8Jc5k=;
-        b=WuqFUPhGuTCURI147zBM9Y/EOP4gOvw8+y37jmVV0CIEoIEM61pKhnD6yZV5AnWuXt
-         by0ikQQ18FFKgvcuxbfEBvLqSkcAWWawsU+aqZhUOeBGmT0QYymazBCUTqH40eQJjEGi
-         oxXoXliyeimFvT9Cb7zYvlUp5QzOMConUbT5/co2GBmKZp9UjTgAME9JiMYVF5vhWRJx
-         pKTKzsYKCzuYlHSIMJjknqVW95WBhCrvoK4bGkn7xIHc8tmX14dBq62wIamLK+6Da15j
-         oOI1EhKTV/nsJsDVXJjWpESiODw7UBg/CuM48qnUwYVcHp5vrEzFTkYRMmlaIm/u6hHk
-         0ZXA==
-X-Gm-Message-State: AOJu0YwvjSzfqd1afrdkOG6yo6yScMmsPy3XVzBNUYpWNUqcL6s570Za
-	7FUDkXNzGJo0OAcQHwJlzpM=
-X-Google-Smtp-Source: AGHT+IGGt6OAJV1oxXGi3mKg/cLI3CBEmG5ulIXCjnOwGBwFESR2ItT+BmBDixngwudJjuOzHAmo5A==
-X-Received: by 2002:a05:6e02:b2d:b0:360:976f:d0b8 with SMTP id e13-20020a056e020b2d00b00360976fd0b8mr210234ilu.44.1704842560724;
-        Tue, 09 Jan 2024 15:22:40 -0800 (PST)
-Received: from localhost ([98.97.116.78])
-        by smtp.gmail.com with ESMTPSA id v3-20020a1709029a0300b001d4c316e3a4sm2303718plp.189.2024.01.09.15.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 15:22:40 -0800 (PST)
-Date: Tue, 09 Jan 2024 15:22:39 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Edward Adam Davis <eadavis@qq.com>, 
- syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
-Cc: andrii@kernel.org, 
- ast@kernel.org, 
- borisp@nvidia.com, 
- bpf@vger.kernel.org, 
- daniel@iogearbox.net, 
- davem@davemloft.net, 
- dhowells@redhat.com, 
- edumazet@google.com, 
- jakub@cloudflare.com, 
- john.fastabend@gmail.com, 
- kuba@kernel.org, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- pabeni@redhat.com, 
- syzkaller-bugs@googlegroups.com
-Message-ID: <659dd53f1652b_2796120896@john.notmuch>
-In-Reply-To: <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
-References: <000000000000aa2f41060e363b2b@google.com>
- <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
-Subject: RE: [PATCH] tls: fix WARNING in __sk_msg_free
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2485912E41;
+	Tue,  9 Jan 2024 23:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 758F92028F;
+	Wed, 10 Jan 2024 00:28:42 +0100 (CET)
+Date: Wed, 10 Jan 2024 00:28:38 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] net: phy: micrel: reset KSZ9x31 when resuming
+Message-ID: <20240109232838.GA3626@francesco-nb>
+References: <20240109205223.40219-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109205223.40219-1-wsa+renesas@sang-engineering.com>
 
-Edward Adam Davis wrote:
-> Syzbot constructed 32 scatterlists, and the data members in struct sk_msg_sg 
-> can only store a maximum of MAX_MSG_FRAGS scatterlists.
-> However, the value of MAX_MSG_FRAGS=CONFIG_MAX_SKB_FRAG is less than 32, which
-> leads to the warning reported here.
+- Philippe, email address is no longer valid.
+
+On Tue, Jan 09, 2024 at 09:52:22PM +0100, Wolfram Sang wrote:
+> On a Renesas Ebisu board, the KSZ9031 PHY is stalled after resuming if
+> the interface has not been brought up before suspending. If it had been
+> brought up before, phylib ensures that reset is asserted before
+> suspending. But if it had never been brought up, there is no instance
+> which could ensure that reset is asserted. And upon resume, the PHY is
+> in an unknown state without reset being asserted. To bring it back to a
+> known state, simply reset it when it is about to be resumed.
 > 
-> Prevent similar issues from occurring by checking whether sg.end is greater 
-> than MAX_MSG_FRAGS.
+> This likely also helps another issue [1] where a KSZ9131 can be powered
+> using regulators. After switching power on again in resume, a reset is
+> also needed.
 > 
-> Reported-and-tested-by: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> [1] https://patchwork.kernel.org/project/netdevbpf/patch/20211214121638.138784-4-philippe.schenker@toradex.com/
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > ---
->  net/tls/tls_sw.c | 2 ++
->  1 file changed, 2 insertions(+)
 > 
-> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> index e37b4d2e2acd..68dbe821f61d 100644
-> --- a/net/tls/tls_sw.c
-> +++ b/net/tls/tls_sw.c
-> @@ -1016,6 +1016,8 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
->  
->  		msg_pl = &rec->msg_plaintext;
->  		msg_en = &rec->msg_encrypted;
-> +		if (msg_pl->sg.end >= MAX_MSG_FRAGS)
-> +			return -EINVAL;
->  
->  		orig_size = msg_pl->sg.size;
->  		full_record = false;
-> -- 
-> 2.43.0
+> This is a different solution to a problem I already tried to solve
+> here[2]. Back then, I added code to the MAC, but I now believe it should
+> be solved on PHY level. We never saw the problem with other PHYs.
+> Looking at [1], it seems that KSZ9x31 is also sensitive to being
+> powered down without reset being asserted. I know it is not a perfect
+> proof, but I guess these assumptions are all we have.
 > 
+> Philippe, Francesco: do you still have access to machines with this
+> issue? Could you kindly test if so?
 
-I'll test this in a bit, but I suspect this error is because even
-if the msg_pl is full (the sg.end == MAX_MSG_FRAGS) the code is
-missing a full_record=true set to force the loop to do the send
-and abort. My opinion is we should never iterated the loop if the
-msg_pl was full.
+I have access, however
+ - Philippe is long gone from Toradex and he was the one looking into
+   this topic
+ - we did solve the issue in a different way, e.g. we no longer
+   power-off the phy in suspend
 
-I think something like this is actually needed.
+Therefore is not straightforward to provide valuable feedback to you
+now.
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index e37b4d2e2acd..9cfa6f8d51e3 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -1052,8 +1052,10 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
-                        if (ret < 0)
-                                goto send_end;
-                        tls_ctx->pending_open_record_frags = true;
--                       if (full_record || eor || sk_msg_full(msg_pl))
-+                       if (full_record || eor || sk_msg_full(msg_pl)) {
-+                               full_record = true;
-                                goto copied;
-+                       }
-                        continue;
-                }
+
+> 
+> Patch is based on 6.7. Looking forward for comments if this is the
+> correct layer to tackle the problem. Thanks!
+> 
+> 
+> [2] https://lore.kernel.org/all/20230321103357.18940-1-wsa+renesas@sang-engineering.com/
+> 
+>  drivers/net/phy/micrel.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index 08e3915001c3..c38d7982c06c 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -1984,6 +1984,14 @@ static int kszphy_resume(struct phy_device *phydev)
+>  	return 0;
+>  }
+>  
+> +static int ksz9x31_resume(struct phy_device *phydev)
+> +{
+> +	phy_device_reset(phydev, 1);
+> +	phy_device_reset(phydev, 0);
+
+Is something like that fine?
+Don't we need to reconfigure the ethernet phy completely on resume
+if we do reset it? kszphy_config_reset() is taking care of something,
+but I think that the phy being reset on resume is not handled
+correctly.
+
+Francesco
+
 
