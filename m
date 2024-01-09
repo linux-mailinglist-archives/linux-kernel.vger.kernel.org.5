@@ -1,119 +1,141 @@
-Return-Path: <linux-kernel+bounces-20293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4367827CF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:41:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A452A827CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:43:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 068EE1C233D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:41:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 064F61F23478
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB3A611B;
-	Tue,  9 Jan 2024 02:41:35 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A464F28FE;
+	Tue,  9 Jan 2024 02:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="WEKrAot/"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E000E5665;
-	Tue,  9 Jan 2024 02:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id 8D1B040189;
-	Tue,  9 Jan 2024 02:34:34 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id B02C930;
-	Tue,  9 Jan 2024 02:34:31 +0000 (UTC)
-Message-ID: <10aeef4ddd523b85ab34327bf384119d0d4b6567.camel@perches.com>
-Subject: Re: [HID Patchsets for Samsung driver v2 2/6] HID: Samsung : Fix
- the checkpatch complain.
-From: Joe Perches <joe@perches.com>
-To: "sandeep.cs" <sandeep.cs@samsung.com>, 'Jiri Kosina' <jikos@kernel.org>,
-  'Benjamin Tissoires' <benjamin.tissoires@redhat.com>
-Cc: gaudium.lee@samsung.com, ih0923.kim@samsung.com,
- suhyun_.kim@samsung.com,  jitender.s21@samsung.com, junwan.cho@samsung.com,
- linux-input@vger.kernel.org,  linux-kernel@vger.kernel.org
-Date: Mon, 08 Jan 2024 18:34:30 -0800
-In-Reply-To: <020e01da421f$c0d20660$42761320$@samsung.com>
-References: <20240108091917.1552013-1-sandeep.cs@samsung.com>
-	 <CGME20240108091959epcas5p2559b779424e2fb7c7e268d1b24612b4f@epcas5p2.samsung.com>
-	 <20240108091917.1552013-3-sandeep.cs@samsung.com>
-	 <486973921f89f70bcc5d42501eeca3fd105be2c4.camel@perches.com>
-	 <020e01da421f$c0d20660$42761320$@samsung.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A30B2573
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 02:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e835800adso2329664e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 18:43:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1704768205; x=1705373005; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BwBZsH8BcPmrXBFsDiVkOfnprXScu6S5zpCjH/rm0pM=;
+        b=WEKrAot/firiKLBXu7vEfmZM2aYjHF80nQReVoDU2Jp+rw8+2H2vSXG0rQAUQ6hbqu
+         0CPVQ6G257nLx80wtM5dWe/Lqsfi+3M8Wy8D05lVDh0ALEcNMg58YAPsJNamx5ZtF6Yw
+         gfVwQ/aya5XWsmW946gV39AMOcIniU6O8iSZnwnw7cS4OEj+Q2gw5O4G0itHiwTNuixj
+         LRLwYxDQlw4g35acoTllI5eEcZ4rcziXD1x8x6PnTBiQQGZcucYqxivH9XepHglFhuIP
+         q9+A5141SclMIor4JXKDo1bbzTYJXsCvPUUE3X2VmPvl+unTYoPE2tdPrlvL06p1XXFU
+         9v6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704768205; x=1705373005;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BwBZsH8BcPmrXBFsDiVkOfnprXScu6S5zpCjH/rm0pM=;
+        b=R1d2xtCxqsXK8e5x19u3JUeON219yo8eYBlIquE+czDYCKxJABCb3qs+6UM87m8+vz
+         SD54BiwAV0PCi0tNzjZxDGzZQQI9spxnEuAyqQF68M4jleNTa9tE78jC4S3MWhXBoyQ5
+         QWa7BBu2Pz2yHVnwbudymWthZTVgyA/Gpe+FwLAoaFDwor043EtoBXN2s6yGu+VW9PjX
+         jm/658gZzDBc/bH5rCpNtBMQdz6E0z1dsjdu2HOWa8RFVMO6evB2r9pA3zqq8d3VHrRS
+         tAV1mwoekDiI48fk6gt1rlMSsQsTvCHGFqqWbFQuinyFv24Hs4EviOTmaZWNd6jOi4nu
+         7xpg==
+X-Gm-Message-State: AOJu0Yzq8GaYk6kksBy4ArZRbzyzeCls0z2gzrseQVzFr5sKlrrhXFWn
+	vRPWInvwbudzxpQx3mRTUcIv4NiyQ9mWvbFE39islLN/KcYdVw==
+X-Google-Smtp-Source: AGHT+IG4fOGnqM8Qe4o+balfTJDtscCuFqdajZ1EGzXvWvcho5ajCu5tNvih36fOvsTH/Hd48o8m3d1CvBA84Hy+Re8=
+X-Received: by 2002:a05:6512:1086:b0:50e:811c:65b9 with SMTP id
+ j6-20020a056512108600b0050e811c65b9mr1848810lfg.118.1704768205232; Mon, 08
+ Jan 2024 18:43:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Stat-Signature: 8px9nt77ak184m7pm8kydhce6yd95e4c
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: B02C930
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+WUbPlmxvZTf3rFTUAcrpyC10KPvDb1P0=
-X-HE-Tag: 1704767671-95191
-X-HE-Meta: U2FsdGVkX1+4BlMMN4VYkL7ubNmhBc7tEHFS823XnNWJbctipkN5qo8dsBAtnQBSM23x7/0gA+c8DqFScQmmes356bB6zgWnc166SzJh6NhxxHxLd/oflvJYO6wdUBRpZrsqTs9fHVHFE4aR6HcLkOMUyHyivl6/iqUq8StCgI6QnJy60+QidZoOUQ6mTK8wuSO2t2D/hpiFGb2/O7mWqHNs/HTkANXo1svYPcHmt3QzFNOb9z5+Te7v6GnJlS1ptztuqgvfq2b2y5ZMsA9SVU69XtgfQto4DCZitn84L4iEzAzoQpjADRhZp7TigHat
+References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
+ <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
+ <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
+ <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
+ <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
+ <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
+ <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
+ <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com> <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
+In-Reply-To: <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
+From: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Date: Tue, 9 Jan 2024 10:43:14 +0800
+Message-ID: <CACSyD1NCa4HYmZuXy+8FE9ihoKo1kDfF4O5dMTH+iZeCugNLTA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
+ in zswap_writeback_entry
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, yosryahmed@google.com, 
+	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Chris Li <chrisl@kernel.org>, weijie.yang@samsung.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-01-08 at 16:14 +0530, sandeep.cs wrote:
-> > On Mon, 2024-01-08 at 14:49 +0530, Sandeep C S wrote:
+On Mon, Jan 8, 2024 at 6:00=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> On Sun, Jan 7, 2024 at 1:29=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+> >
+> > On Fri, Jan 5, 2024 at 6:10=E2=80=AFAM Zhongkun He <hezhongkun.hzk@byte=
+dance.com> wrote:
+> > >
+> > > > > There is another option here, which is not to move the page to th=
+e
+> > > > > tail of the inactive
+> > > > > list after end_writeback and delete the following code in
+> > > > > zswap_writeback_entry(),
+> > > > > which did not work properly. But the pages will not be released f=
+irst.
+> > > > >
+> > > > > /* move it to the tail of the inactive list after end_writeback *=
+/
+> > > > > SetPageReclaim(page);
+> >
+> >
+> > Ok, so I took a look at the patch that originally introduced this
+> > piece of logic:
+> >
+> > https://github.com/torvalds/linux/commit/b349acc76b7f65400b85abd09a5379=
+ddd6fa5a97
+> >
+> > Looks like it's not for the sake of correctness, but only as a
+> > best-effort optimization (reducing page scanning). If it doesn't bring
+> > any benefit (i.e due to the newly allocated page still on the cpu
+> > batch), then we can consider removing it. After all, if you're right
+> > and it's not really doing anything here - why bother. Perhaps we can
+> > replace this with some other mechanism to avoid it being scanned for
+> > reclaim.
+>
+> For instance, we can grab the local lock, look for the folio in the
+> add batch and take the folio off it, then add it to the rotate batch
+> instead? Not sure if this is doable within folio_rotate_reclaimable(),
+> or you'll have to manually perform this yourself (and remove the
+> PG_reclaim flag set here so that folio_end_writeback() doesn't try to
+> handle it).
+>
+> There is still some overhead with this, but at least we don't have to
+> *drain everything* (which looks like what's lru_add_drain() ->
+> lru_add_drain_cpu() is doing). The latter sounds expensive and
+> unnecessary, whereas this is just one element addition and one element
+> removal - and if IIUC the size of the per-cpu add batch is capped at
+> 15, so lookup + removal (if possible) shouldn't be too expensive?
+>
+> Just throwing ideas out there :)
 
-Generally, it's better to refactor code that checkpatch
-bleats about than merely shutting up the warning.
+Thanks  for your  time=EF=BC=8CNhat.
+I will try other ways to solve this problem.
 
-> > For this block, I think a rewrite using memcmp would be clearer.
-> > Something like:=20
-> Okay . Thanks for your valuable feedback. We will promptly address your
-> suggestions and enhance our code accordingly.
-> And also please review other patch set as well.
-
-Another way to write the input_mapping function is
-using a static const struct and a for loop like:
-
-static int samsung_kbd_mouse_input_mapping(struct hid_device *hdev,
-	struct hid_input *hi, struct hid_field *field, struct hid_usage *usage,
-	unsigned long **bit, int *max)
-{
-	struct usb_interface *intf =3D to_usb_interface(hdev->dev.parent);
-	unsigned short ifnum =3D intf->cur_altsetting->desc.bInterfaceNumber;
-	static const struct {
-		unsigned hid;
-		__u16 map;
-	} samsung_hid_key_map[] =3D {
-		{0x183, KEY_MEDIA},
-		{0x195, KEY_EMAIL},
-		{0x196, KEY_CALC},
-		{0x197, KEY_COMPUTER},
-		{0x22b, KEY_SEARCH},
-		{0x22c, KEY_WWW},
-		{0x22d, KEY_BACK},
-		{0x22e, KEY_FORWARD},
-		{0x22f, KEY_FAVORITES},
-		{0x230, KEY_REFRESH},
-		{0x231, KEY_STOP},
-	};
-	int i;
-	unsigned hid;
-
-	if (1 !=3D ifnum || HID_UP_CONSUMER !=3D (usage->hid & HID_USAGE_PAGE))
-		return 0;
-
-	hid =3D usage->hid & HID_USAGE;
-
-	dbg_hid("samsung wireless keyboard/mouse input mapping event [0x%x]\n",
-		hid);
-
-	for (i =3D 0; i < ARRAY_SIZE(samsung_hid_key_map); i++) {
-		if (hid =3D=3D samsung_hid_key_map[i].hid) {
-			hid_map_usage_clear(hi, usage, bit, max, EV_KEY,
-					    samsung_hid_key_map[i].map);
-			return 1;
-		}
-	}
-
-	return 0;
-}
-
+>
+> >
+> > I would cc Weijie as well, as he is the original author of this.
 
