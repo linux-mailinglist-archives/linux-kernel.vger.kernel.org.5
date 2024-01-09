@@ -1,132 +1,312 @@
-Return-Path: <linux-kernel+bounces-21169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F456828B2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:23:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F15828B36
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF1A21F24C3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:23:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE74A282FD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51DE3B2A8;
-	Tue,  9 Jan 2024 17:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31F03B2BD;
+	Tue,  9 Jan 2024 17:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GcNwnE+x"
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AaL9xrL8"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC12A3BB27
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.nyi.internal (Postfix) with ESMTP id DFCD45C00CF;
-	Tue,  9 Jan 2024 12:21:50 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 09 Jan 2024 12:21:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704820910; x=1704907310; bh=Q2uwZ9O5GP4GyruMwC3whxZ+X7cK
-	JkKtlqysnlOCtvI=; b=GcNwnE+x3ADlB+MhnzvrXTb25+gguksUQYMQyZxNDBhX
-	WbihqFDwzSTdbr9K4llzitGsHXUIZb9ZUV+m2t/eb263Ayy7TOq9LX8cBqKqEvMv
-	/NEF7/qp9T9qdd8pMDuedNiGLQ5i6sBFQCT6jo/Zv80C1UytqP3px9ZRQA3DX3Hb
-	VQFfoQ4MEaN1D471AjYSKvGu7yJR2cypWr0S0sxXMcstfTPR4Vh/781Dlx1pqhJv
-	tBC2GL9iWkSpOvYT9+4a89vLcInIJ4f8F1kVkqi0E7LWzAv83/DlZ7OHQvTV3O7k
-	L604VBgmRq+Nv7N5UM6P3+zirnJoArSQNEG5sT2gug==
-X-ME-Sender: <xms:roCdZVm0LtzPy4HqN5GesV236B_F_FoBgGxYEG-kPhiPlVNgp7Em2Q>
-    <xme:roCdZQ3c7G0mYb6TawUQ-BZx1qN3TK9_JhIvpzZj8jxD1pYoIPdubvIl9W_DcoWWQ
-    mUm3o9Cb_G9xU4>
-X-ME-Received: <xmr:roCdZbq36bTuTeHWFeYzniEQxJbSIGG1ph0G7bUlKAuPexRUuvfpjRDWZFqB>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehledgleekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepvddufeevkeehueegfedtvdevfefgudeifeduieefgfelkeehgeelgeejjeeg
-    gefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:roCdZVnC7_JcN6TsYGh_J0qWp44JRr7a8OHj6wSftLFHbvNqFbuX1A>
-    <xmx:roCdZT16AW2-CBYOCMcq3K85KIkz7losUO5tbCs28RJQwWjLXGwkGw>
-    <xmx:roCdZUt2ltSUp8Z6hNsqZqq37GgmciVcFquNO4QxCo0ju4ryjbKc4Q>
-    <xmx:roCdZdrhBQluRW7wCeO2Rh621WI2LKNPBMTBRAuvsQTX2-D-wNupOg>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 9 Jan 2024 12:21:49 -0500 (EST)
-Date: Tue, 9 Jan 2024 19:21:45 +0200
-From: Ido Schimmel <idosch@idosch.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, zhangzekun11@huawei.com,
-	john.g.garry@oracle.com, dheerajkumar.srivastava@amd.com,
-	jsnitsel@redhat.com
-Subject: Re: [PATCH v3 0/2] iommu/iova: Make the rcache depot properly
- flexible
-Message-ID: <ZZ2AqZT4dD-s01q9@shredder>
-References: <cover.1694535580.git.robin.murphy@arm.com>
- <ZY1osaGLyT-sdKE8@shredder>
- <c9cf02b5-7add-46ea-8db1-46fdce191c1c@arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD1338DC7;
+	Tue,  9 Jan 2024 17:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409GvpZo016352;
+	Tue, 9 Jan 2024 17:27:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pskhbSQo/hE1+s88/LvrJMsOGawm3lUwErhvYaZxIls=;
+ b=AaL9xrL8u8repX5NdOFKPnbkEHc81amJplTZPu8Nsl1mOSJSTdHNrp9qjPl6Jk3taKLr
+ VhW0y8/s5+oXRcLPWDkZqEXRmwLfS6NaJRG4cRqE6NXjgIyvyQBx5e6qYPilhpeVdFID
+ 7TylOzFqPpKeb+1NeE675nr62mwi/2rnJJgRDBgaArPMG+D5MSeqv3xqdjNsu6BgBNb0
+ +v00EPxZC3ENdhTyQYQ7eSwACPjV1wWQb9f/VG7/69g8i/B4DFLPSskyLldzvTUZ1/qr
+ Paa9JX+wM1ILTt5zg33v0J24cFQiGN6ZR+7eXXVd/qK/twRd1VVzNxB1M6JEzpIt9Vwa vQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vha4b0ykv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:27:00 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 409Gvq6g016392;
+	Tue, 9 Jan 2024 17:26:59 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vha4b0yjw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:26:59 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409F8FrW000954;
+	Tue, 9 Jan 2024 17:26:58 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkdk7qnr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:26:58 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409HQvQv23003800
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Jan 2024 17:26:57 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DC9D45805F;
+	Tue,  9 Jan 2024 17:26:56 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9562858051;
+	Tue,  9 Jan 2024 17:26:47 +0000 (GMT)
+Received: from [9.43.54.75] (unknown [9.43.54.75])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  9 Jan 2024 17:26:47 +0000 (GMT)
+Message-ID: <5c357634-c9c5-4796-9f5c-df00a4a5a523@linux.vnet.ibm.com>
+Date: Tue, 9 Jan 2024 22:56:46 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9cf02b5-7add-46ea-8db1-46fdce191c1c@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 7/8] sched/core: boost/unboost in guest scheduler
+Content-Language: en-US
+To: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc: Suleiman Souhlal <suleiman@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ben Segall
+ <bsegall@google.com>, Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "H . Peter Anvin"
+ <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Steven Rostedt
+ <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        shrikanth hegde <sshegde@linux.vnet.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        svaidy@linux.vnet.ibm.com
+References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
+ <20231214024727.3503870-8-vineeth@bitbyteword.org>
+From: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <20231214024727.3503870-8-vineeth@bitbyteword.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DgTPp2sVU-KgGTclpFl7KzQAgWQGkLcJ
+X-Proofpoint-ORIG-GUID: oS01Y7vpjosDo7xPi0V0bknViZo2VWkd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-09_09,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=832 clxscore=1011
+ malwarescore=0 phishscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401090141
 
-Hi Robin,
 
-Thanks for the reply.
 
-On Mon, Jan 08, 2024 at 05:35:26PM +0000, Robin Murphy wrote:
-> Hmm, we've got what looks to be a set of magazines forming a plausible depot
-> list (or at least the tail end of one):
+On 12/14/23 8:17 AM, Vineeth Pillai (Google) wrote:
+> RT or higher priority tasks in guest is considered a critical workload
+> and guest scheduler can request boost/unboost on a task switch and/or a
+> task wakeup. Also share the preempt status of guest vcpu with the host
+> so that host can take decision on boot/unboost.
 > 
-> ffff8881411f9000 -> ffff8881261c1000
+> CONFIG_TRACE_PREEMPT_TOGGLE is enabled for using the function
+> equivalent of preempt_count_{add,sub} to update the shared memory.
+> Another option is to update the preempt_count_{add,sub} macros, but
+> it will be more code churn and complex.
 > 
-> ffff8881261c1000 -> ffff88812be26400
+> Boost request is lazy, but unboost request is synchronous.
 > 
-> ffff88812be26400 -> ffff8188392ec000
+> Detect the feature in guest from cpuid flags and use the MSR to pass the
+> GPA of memory location for sharing scheduling information.
 > 
-> ffff8188392ec000 -> ffff8881a5301000
+> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+> ---
+>  arch/x86/Kconfig                | 13 +++++
+>  arch/x86/include/asm/kvm_para.h |  7 +++
+>  arch/x86/kernel/kvm.c           | 16 ++++++
+>  include/linux/sched.h           | 21 ++++++++
+>  kernel/entry/common.c           |  9 ++++
+>  kernel/sched/core.c             | 93 ++++++++++++++++++++++++++++++++-
+>  6 files changed, 158 insertions(+), 1 deletion(-)
 > 
-> ffff8881a5301000 -> NULL
-> 
-> which I guess has somehow become detached from its rcache->depot without
-> being freed properly? However I'm struggling to see any conceivable way that
-> could happen which wouldn't already be more severely broken in other ways as
-> well (i.e. either general memory corruption or someone somehow still trying
-> to use the IOVA domain while it's being torn down).
 
-The machine is running a debug kernel that among other things has KASAN
-enabled, but there are no traces in the kernel log so there is no memory
-corruption that I'm aware of.
 
-> Out of curiosity, does reverting just patch #2 alone make a difference?
+Wish you all happy new year!
+Sorry for the late reply. Took a while to go through this. 
 
-Will try and let you know.
+[...]
+>  /*
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index b47f72b6595f..57f211f1b3d7 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -151,6 +151,71 @@ const_debug unsigned int sysctl_sched_nr_migrate = SCHED_NR_MIGRATE_BREAK;
+>  
+>  __read_mostly int scheduler_running;
+>  
+> +#ifdef CONFIG_PARAVIRT_SCHED
+> +#include <linux/kvm_para.h>
+> +
+> +DEFINE_STATIC_KEY_FALSE(__pv_sched_enabled);
+> +
+> +DEFINE_PER_CPU_DECRYPTED(struct pv_sched_data, pv_sched) __aligned(64);
+> +
+> +unsigned long pv_sched_pa(void)
+> +{
+> +	return slow_virt_to_phys(this_cpu_ptr(&pv_sched));
+> +}
+> +
+> +bool pv_sched_vcpu_boosted(void)
+> +{
+> +	return (this_cpu_read(pv_sched.boost_status) == VCPU_BOOST_BOOSTED);
+> +}
+> +
+> +void pv_sched_boost_vcpu_lazy(void)
+> +{
+> +	this_cpu_write(pv_sched.schedinfo.boost_req, VCPU_REQ_BOOST);
+> +}
+> +
+> +void pv_sched_unboost_vcpu_lazy(void)
+> +{
+> +	this_cpu_write(pv_sched.schedinfo.boost_req, VCPU_REQ_UNBOOST);
+> +}
+> +
+> +void pv_sched_boost_vcpu(void)
+> +{
+> +	pv_sched_boost_vcpu_lazy();
+> +	/*
+> +	 * XXX: there could be a race between the boost_status check
+> +	 *      and hypercall.
+> +	 */
+> +	if (this_cpu_read(pv_sched.boost_status) == VCPU_BOOST_NORMAL)
+> +		kvm_pv_sched_notify_host();
+> +}
+> +
+> +void pv_sched_unboost_vcpu(void)
+> +{
+> +	pv_sched_unboost_vcpu_lazy();
+> +	/*
+> +	 * XXX: there could be a race between the boost_status check
+> +	 *      and hypercall.
+> +	 */
+> +	if (this_cpu_read(pv_sched.boost_status) == VCPU_BOOST_BOOSTED &&
+> +			!preempt_count())
+> +		kvm_pv_sched_notify_host();
+> +}
+> +
+> +/*
+> + * Share the preemption enabled/disabled status with host. This will not incur a
+> + * VMEXIT and acts as a lazy boost/unboost mechanism - host will check this on
+> + * the next VMEXIT for boost/unboost decisions.
+> + * XXX: Lazy unboosting may allow cfs tasks to run on RT vcpu till next VMEXIT.
+> + */
+> +static inline void pv_sched_update_preempt_status(bool preempt_disabled)
+> +{
+> +	if (pv_sched_enabled())
+> +		this_cpu_write(pv_sched.schedinfo.preempt_disabled, preempt_disabled);
+> +}
+> +#else
+> +static inline void pv_sched_update_preempt_status(bool preempt_disabled) {}
+> +#endif
+> +
+>  #ifdef CONFIG_SCHED_CORE
+>  
 
-> And is your workload doing anything "interesting" in relation to IOVA
-> domain lifetimes, like creating and destroying SR-IOV virtual
-> functions, changing IOMMU domain types via sysfs, or using that
-> horrible vdpa thing, or are you seeing this purely from regular driver
-> DMA API usage?
+Wouldn't it be better to define a arch hook for this instead? implementation then could 
+follow depending on the architecture. This boosting for vcpu tasks in host may be of 
+interest to other hypervisors as well. 
 
-The machine is running networking related tests, but it is not using
-SR-IOV, VMs or VDPA so there shouldn't be anything "interesting" as far
-as IOMMU is concerned.
 
-The two networking drivers on the machine are "igb" for the management
-port and "mlxsw" for the data ports (the machine is a physical switch).
-I believe the DMA API usage in the latter is quite basic and I don't
-recall any DMA related problems with this driver since it was first
-accepted upstream in 2015.
+Currently I see there are two places where interaction is taking place for paravirt. 
+1. steal time accounting 
+2. vcpu_is_preempted  
+each architecture seems do this in their own way. So one option is an arch hook for 
+other paravirt interfaces as well. Other option is probably what was discussed. i.e 
+define a framework for paravirt interfaces from the ground up. 
 
-Thanks
+
+We are working on resource limiting aspect of para virtualization on powerVM. 
+Interface for that could be done via hypercall or via VPA (he VPA is a memory structure shared 
+between the hypervisor and OS, defined by PAPR). That would be one more paravirt interface. 
+As you mentioned in the cover letter, I am curious to know if you have tried the resource limiting, 
+since you have overcommit of vCPUs.  
+
+>  DEFINE_STATIC_KEY_FALSE(__sched_core_enabled);
+> @@ -2070,6 +2135,19 @@ unsigned long get_wchan(struct task_struct *p)
+>  
+>  static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+>  {
+> +#ifdef CONFIG_PARAVIRT_SCHED
+> +	/*
+> +	 * TODO: currently request for boosting remote vcpus is not implemented. So
+> +	 * we boost only if this enqueue happens for this cpu.
+> +	 * This is not a big problem though, target cpu gets an IPI and then gets
+> +	 * boosted by the host. Posted interrupts is an exception where target vcpu
+> +	 * will not get boosted immediately, but on the next schedule().
+> +	 */
+> +	if (pv_sched_enabled() && this_rq() == rq &&
+> +			sched_class_above(p->sched_class, &fair_sched_class))
+> +		pv_sched_boost_vcpu_lazy();
+> +#endif
+> +
+>  	if (!(flags & ENQUEUE_NOCLOCK))
+>  		update_rq_clock(rq);
+>  
+> @@ -5835,6 +5913,8 @@ static inline void preempt_latency_start(int val)
+>  #ifdef CONFIG_DEBUG_PREEMPT
+>  		current->preempt_disable_ip = ip;
+>  #endif
+> +		pv_sched_update_preempt_status(true);
+> +
+>  		trace_preempt_off(CALLER_ADDR0, ip);
+>  	}
+>  }
+> @@ -5867,8 +5947,10 @@ NOKPROBE_SYMBOL(preempt_count_add);
+>   */
+>  static inline void preempt_latency_stop(int val)
+>  {
+> -	if (preempt_count() == val)
+> +	if (preempt_count() == val) {
+> +		pv_sched_update_preempt_status(false);
+>  		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
+> +	}
+>  }
+>  
+>  void preempt_count_sub(int val)
+> @@ -6678,6 +6760,15 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+>  	rq->last_seen_need_resched_ns = 0;
+>  #endif
+>  
+> +#ifdef CONFIG_PARAVIRT_SCHED
+> +	if (pv_sched_enabled()) {
+> +		if (sched_class_above(next->sched_class, &fair_sched_class))
+> +			pv_sched_boost_vcpu_lazy();
+> +		else if (next->sched_class == &fair_sched_class)
+> +			pv_sched_unboost_vcpu();
+> +	}
+> +#endif
+> +
+>  	if (likely(prev != next)) {
+>  		rq->nr_switches++;
+>  		/*
 
