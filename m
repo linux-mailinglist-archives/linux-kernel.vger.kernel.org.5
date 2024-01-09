@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-21508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C751829093
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:10:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C0E829095
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D50191F26038
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:10:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8A95283304
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B67B6495C1;
-	Tue,  9 Jan 2024 23:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6592C495F2;
+	Tue,  9 Jan 2024 23:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RpgR6PX/"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PNBGrC20"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808DB48CC8
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:03:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5254B48CEC
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbcdf587bd6so4824438276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:03:31 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5f240ace2efso48088047b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:03:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704841410; x=1705446210; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704841412; x=1705446212; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=V3HBLKV9dLG9W0FGZjUnOV/dOoWVZS8lhx6QyuIwmfg=;
-        b=RpgR6PX/Qf72r8uGhy98Ac5N5AZpzPmrsOy6e/FcSAORupfDMZ3k9ZVugwn3Wa983O
-         gzp/FVwIf8maT8wzwz3F4vNn/xgRz/CsTxAtsHv+wv9ZNlQj+6eobNV2s4nHQA4+tYit
-         6DyBqzFehobGxu+MfvmdIjiAjyKbqqohK9DXoQdp3xl7TGpPDYh7PjHIBjvdMb4NZiBb
-         svOshw0bIsgobRmJ61l6J4PbJ8x++DROVLcQWJ4d2lHje7AKFX1YBAodTzzh1w24wAf6
-         V4Ml4ajF0Wfpk0DyG/dNtsAOHCAOGMwtY3vlvciFEkWbNHiwaAwiPsr1DWqEG7SCu3lf
-         rB9g==
+        bh=UmbwugfbZjx9BroAj5L+ZfHrFa8HDb/zVhEfTcoxtfc=;
+        b=PNBGrC20KjTlNRwSmRKglaBQjnWMvV2NhhcSeGpSO/eGbavokHb/tkfZE+BEBoEKrA
+         +NR40h+6MmYuAfYNBdv9VpTE/UthS6U7sGharyAphHCgt3Wz+6OwkpMyiE5DTMXYr0i5
+         n56s+CvBO7pmwLu0fTzrlTpWdbqnocEml/qNodSZ9oZY6+3uXZ690PMwR9OdnZS/x6WD
+         lUugeQDOiA5BaAP0WZiSjKl6iODsx6uvSwyoqFjF0QFnpi53j+Wa3WK4wcUcFqzHLukF
+         7wGmDxp/etNP3oiaAkore0cHA2YxrTV2NNjsUsJHx/X4QU3EdPCYA4FuhdpFgT3Ia6oj
+         RWzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704841410; x=1705446210;
+        d=1e100.net; s=20230601; t=1704841412; x=1705446212;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=V3HBLKV9dLG9W0FGZjUnOV/dOoWVZS8lhx6QyuIwmfg=;
-        b=thKlP9EzNfNhm/B22G+4k7Vv4zx2MBkMpR3fNpgAYf2A5Y7ewbwodOEcYkzasi0R6P
-         n+nJmHUKTHEDTHtEMk2hUuG6bScJgur7QD9TRC+euDi6UR5VZEBztuBKp33cCatWFln8
-         gvnAjZAR3knqrNI8zzvYNo9Ul+1fFtNvdmutGV8JGvAw1PhKhXBiTl+VazPLJczxN3dD
-         rxFQg0bTAtKUVXBuZ4cd9//SFU/X3IpvPCpNwMZOWMlvgBhqIexqR3DzJ5/4McHlK1LC
-         5pzVsG6a1TOm4QCLxXi+TANPZfFhUmU1FE9WwwGYxWi8COujdJ4xRiTo3HlmlIAFmiG9
-         8+pQ==
-X-Gm-Message-State: AOJu0Yza5D7tVlGr25xsd/uZKZn7UulK8Ct+EoroGpXInzCRa802jUdT
-	NDx9tIsNx3xX5kYJulFRAwe2dseL1dKI7T1X0Q==
-X-Google-Smtp-Source: AGHT+IG1Ge95404hqGLT8btxtkMpRkXTbHOLwKNDNUdXtu0RebdAB+W5LspYi2Z7g+Z5RWmq9dd1g6wCFok=
+        bh=UmbwugfbZjx9BroAj5L+ZfHrFa8HDb/zVhEfTcoxtfc=;
+        b=GeG2HVKIJzQJGc6R8BW4nOhMaRnnwVahK3L/zt+JbD2g4wzq3IjqZLuU62NdE/MsYQ
+         0Qyyh3gcXqL8H2cwMvtZywDsemsUTjKc5g64Nptp+PRtK0p3Rl4CWEbQGsjVg/gHsFu5
+         7PjPrSx1DKxOsqYMXkxDYeOx/xb+e9+LtBfnrouEIBSzXLaK5sZRV75Ghng3Dj9DKUt1
+         I5gtYhf81yT7bC/vV8J2a3dveW+ouEhJvHducUGFt1pgEtz/+dc7Nxe9ohbBHWJNzBBc
+         fN5+LyYwkVQaun3PY+Bhdcv+EWrk7RubJLWkJ+IIzM3wus/EfxomTyHZmPpTzZ+nWTi1
+         zAJQ==
+X-Gm-Message-State: AOJu0YzuKWoYoFQ5c/yWnNCK0iRTMaTuaxIU2KJrBkR8YYsUmnLDuiZm
+	jMG8rwMDtjE/uCNc2TCuIeMxKlSDmOq4U6ruPg==
+X-Google-Smtp-Source: AGHT+IH55KoAefoSAgaGx1KUdGWyk7jVjq0nl1o93I+EEXhXygMCZvACNTy+k9279E6nOb8jlXDG24cKxK0=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:83d1:0:b0:dbc:ed8b:feaa with SMTP id
- v17-20020a2583d1000000b00dbced8bfeaamr33135ybm.10.1704841410603; Tue, 09 Jan
- 2024 15:03:30 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:690c:b03:b0:5e3:2a36:b4d with SMTP id
+ cj3-20020a05690c0b0300b005e32a360b4dmr88378ywb.1.1704841412585; Tue, 09 Jan
+ 2024 15:03:32 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue,  9 Jan 2024 15:02:39 -0800
+Date: Tue,  9 Jan 2024 15:02:40 -0800
 In-Reply-To: <20240109230250.424295-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,9 +64,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240109230250.424295-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240109230250.424295-20-seanjc@google.com>
-Subject: [PATCH v10 19/29] KVM: selftests: Test consistency of CPUID with num
- of fixed counters
+Message-ID: <20240109230250.424295-21-seanjc@google.com>
+Subject: [PATCH v10 20/29] KVM: selftests: Add functional test for Intel's
+ fixed PMU counters
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -77,126 +77,83 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Jinrong Liang <cloudliang@tencent.com>
 
-Extend the PMU counters test to verify KVM emulation of fixed counters in
-addition to general purpose counters.  Fixed counters add an extra wrinkle
-in the form of an extra supported bitmask.  Thus quoth the SDM:
+Extend the fixed counters test to verify that supported counters can
+actually be enabled in the control MSRs, that unsupported counters cannot,
+and that enabled counters actually count.
 
-  fixed-function performance counter 'i' is supported if ECX[i] || (EDX[4:0] > i)
-
-Test that KVM handles a counter being available through either method.
-
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
 Co-developed-by: Like Xu <likexu@tencent.com>
 Signed-off-by: Like Xu <likexu@tencent.com>
 Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-Co-developed-by: Sean Christopherson <seanjc@google.com>
+[sean: fold into the rd/wr access test, massage changelog]
+Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/x86_64/pmu_counters_test.c  | 60 ++++++++++++++++++-
- 1 file changed, 57 insertions(+), 3 deletions(-)
+ .../selftests/kvm/x86_64/pmu_counters_test.c  | 31 ++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-index 863418842ef8..b07294af71a3 100644
+index b07294af71a3..f5dedd112471 100644
 --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
 +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-@@ -290,7 +290,7 @@ __GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,			\
- 		       msr, expected_val, val);
+@@ -332,7 +332,6 @@ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters
+ 		vector = wrmsr_safe(msr, 0);
+ 		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
+ 	}
+-	GUEST_DONE();
+ }
  
- static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters,
--				 uint8_t nr_counters)
-+				 uint8_t nr_counters, uint32_t or_mask)
- {
- 	uint8_t i;
- 
-@@ -301,7 +301,13 @@ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters
- 		 */
- 		const uint64_t test_val = 0xffff;
- 		const uint32_t msr = base_msr + i;
--		const bool expect_success = i < nr_counters;
-+
-+		/*
-+		 * Fixed counters are supported if the counter is less than the
-+		 * number of enumerated contiguous counters *or* the counter is
-+		 * explicitly enumerated in the supported counters mask.
-+		 */
-+		const bool expect_success = i < nr_counters || (or_mask & BIT(i));
- 
- 		/*
- 		 * KVM drops writes to MSR_P6_PERFCTR[0|1] if the counters are
-@@ -343,7 +349,7 @@ static void guest_test_gp_counters(void)
- 	else
+ static void guest_test_gp_counters(void)
+@@ -350,6 +349,7 @@ static void guest_test_gp_counters(void)
  		base_msr = MSR_IA32_PERFCTR0;
  
--	guest_rd_wr_counters(base_msr, MAX_NR_GP_COUNTERS, nr_gp_counters);
-+	guest_rd_wr_counters(base_msr, MAX_NR_GP_COUNTERS, nr_gp_counters, 0);
+ 	guest_rd_wr_counters(base_msr, MAX_NR_GP_COUNTERS, nr_gp_counters, 0);
++	GUEST_DONE();
  }
  
  static void test_gp_counters(uint8_t pmu_version, uint64_t perf_capabilities,
-@@ -363,9 +369,50 @@ static void test_gp_counters(uint8_t pmu_version, uint64_t perf_capabilities,
- 	kvm_vm_free(vm);
+@@ -373,6 +373,7 @@ static void guest_test_fixed_counters(void)
+ {
+ 	uint64_t supported_bitmask = 0;
+ 	uint8_t nr_fixed_counters = 0;
++	uint8_t i;
+ 
+ 	/* Fixed counters require Architectural vPMU Version 2+. */
+ 	if (guest_get_pmu_version() >= 2)
+@@ -387,6 +388,34 @@ static void guest_test_fixed_counters(void)
+ 
+ 	guest_rd_wr_counters(MSR_CORE_PERF_FIXED_CTR0, MAX_NR_FIXED_COUNTERS,
+ 			     nr_fixed_counters, supported_bitmask);
++
++	for (i = 0; i < MAX_NR_FIXED_COUNTERS; i++) {
++		uint8_t vector;
++		uint64_t val;
++
++		if (i >= nr_fixed_counters && !(supported_bitmask & BIT_ULL(i))) {
++			vector = wrmsr_safe(MSR_CORE_PERF_FIXED_CTR_CTRL,
++					    FIXED_PMC_CTRL(i, FIXED_PMC_KERNEL));
++			__GUEST_ASSERT(vector == GP_VECTOR,
++				       "Expected #GP for counter %u in FIXED_CTR_CTRL", i);
++
++			vector = wrmsr_safe(MSR_CORE_PERF_GLOBAL_CTRL,
++					    FIXED_PMC_GLOBAL_CTRL_ENABLE(i));
++			__GUEST_ASSERT(vector == GP_VECTOR,
++				       "Expected #GP for counter %u in PERF_GLOBAL_CTRL", i);
++			continue;
++		}
++
++		wrmsr(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
++		wrmsr(MSR_CORE_PERF_FIXED_CTR_CTRL, FIXED_PMC_CTRL(i, FIXED_PMC_KERNEL));
++		wrmsr(MSR_CORE_PERF_GLOBAL_CTRL, FIXED_PMC_GLOBAL_CTRL_ENABLE(i));
++		__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
++		wrmsr(MSR_CORE_PERF_GLOBAL_CTRL, 0);
++		val = rdmsr(MSR_CORE_PERF_FIXED_CTR0 + i);
++
++		GUEST_ASSERT_NE(val, 0);
++	}
++	GUEST_DONE();
  }
  
-+static void guest_test_fixed_counters(void)
-+{
-+	uint64_t supported_bitmask = 0;
-+	uint8_t nr_fixed_counters = 0;
-+
-+	/* Fixed counters require Architectural vPMU Version 2+. */
-+	if (guest_get_pmu_version() >= 2)
-+		nr_fixed_counters = this_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS);
-+
-+	/*
-+	 * The supported bitmask for fixed counters was introduced in PMU
-+	 * version 5.
-+	 */
-+	if (guest_get_pmu_version() >= 5)
-+		supported_bitmask = this_cpu_property(X86_PROPERTY_PMU_FIXED_COUNTERS_BITMASK);
-+
-+	guest_rd_wr_counters(MSR_CORE_PERF_FIXED_CTR0, MAX_NR_FIXED_COUNTERS,
-+			     nr_fixed_counters, supported_bitmask);
-+}
-+
-+static void test_fixed_counters(uint8_t pmu_version, uint64_t perf_capabilities,
-+				uint8_t nr_fixed_counters,
-+				uint32_t supported_bitmask)
-+{
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_vm *vm;
-+
-+	vm = pmu_vm_create_with_one_vcpu(&vcpu, guest_test_fixed_counters,
-+					 pmu_version, perf_capabilities);
-+
-+	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_FIXED_COUNTERS_BITMASK,
-+				supported_bitmask);
-+	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_NR_FIXED_COUNTERS,
-+				nr_fixed_counters);
-+
-+	run_vcpu(vcpu);
-+
-+	kvm_vm_free(vm);
-+}
-+
- static void test_intel_counters(void)
- {
- 	uint8_t nr_arch_events = kvm_cpu_property(X86_PROPERTY_PMU_EBX_BIT_VECTOR_LENGTH);
-+	uint8_t nr_fixed_counters = kvm_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS);
- 	uint8_t nr_gp_counters = kvm_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
- 	uint8_t pmu_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION);
- 	unsigned int i;
-@@ -435,6 +482,13 @@ static void test_intel_counters(void)
- 				v, perf_caps[i]);
- 			for (j = 0; j <= nr_gp_counters; j++)
- 				test_gp_counters(v, perf_caps[i], j);
-+
-+			pr_info("Testing fixed counters, PMU version %u, perf_caps = %lx\n",
-+				v, perf_caps[i]);
-+			for (j = 0; j <= nr_fixed_counters; j++) {
-+				for (k = 0; k <= (BIT(nr_fixed_counters) - 1); k++)
-+					test_fixed_counters(v, perf_caps[i], j, k);
-+			}
- 		}
- 	}
- }
+ static void test_fixed_counters(uint8_t pmu_version, uint64_t perf_capabilities,
 -- 
 2.43.0.472.g3155946c3a-goog
 
