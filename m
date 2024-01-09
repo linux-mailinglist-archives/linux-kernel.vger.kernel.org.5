@@ -1,160 +1,120 @@
-Return-Path: <linux-kernel+bounces-21096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 937DF8289CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:13:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0103E8289CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:15:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B925B1C2386B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:13:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B912852D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7868D3A1D0;
-	Tue,  9 Jan 2024 16:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAEA3A1C4;
+	Tue,  9 Jan 2024 16:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="a1Ok5Tny"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="PTokONlk"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3033A1AE;
-	Tue,  9 Jan 2024 16:13:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=hjOpdiFLaU/rl9xnyUOLlrLmtfPs6+yF3otyUbGH/R4=; b=a1Ok5TnyDwwEPqkbOv/NhT9x7R
-	vsRGEpXQQuagE84o1GOKB+g5J/3SKZHiq7gO7CVhZ9MwbQLrdnXwckcxFgAGvnY9Nk4loJwUNfWTP
-	dmTT4AEb4pqk4eK2+PIhMHYIuLyFfMQgkCgMxXmxbzNgRuL29tI50v1rDgTaj2mHCxoPuAbNQPrUt
-	Km1OPWQBn9drrgdJHriccMuP6O1dmCKstC1QR2adWEFoMNzjxmXhZjSbPWilyBjDSoIpatoeKnAWZ
-	8VR9XluXAKu8zzZRWPmIvh+ZGCcd5RXc90I3qF8F9kbHPYQUINZIyz2P07nQPugKYvhC2BMDt30cD
-	fa7z7JPQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35300)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rNEj9-0004JK-0j;
-	Tue, 09 Jan 2024 16:13:19 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rNEjB-0004Pk-Ap; Tue, 09 Jan 2024 16:13:21 +0000
-Date: Tue, 9 Jan 2024 16:13:21 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
- described as container packages
-Message-ID: <ZZ1woQkpMMCWVnXc@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
- <ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
- <CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F1B38DC1;
+	Tue,  9 Jan 2024 16:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1704816881;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r9bfKWlLqQsQQRAseh4rBecx5vgdDZwtE/9STShTx68=;
+	b=PTokONlkCtK2Opey7wzaUGXQBl1gkiL/El0gDy7rVAM3uIdCi8526WmDnH7BAoqv4sjohM
+	E+c6Fjdg3jByXurVIjk4MzbUw94faHXUv8Cuo2qiK0XoaIqReo+lfTBZ8lcAxvTXaK65Ha
+	Y1j2RjqupTHn2AfhPWr7xGm3xU9GSPSK3B/BypMZ2kU9tHhZMi9spUsrm3ok6RxYxh86U9
+	heitUARfG3q02SMGmnEdfamuIo82pArpgexkNtgwPGKxDAdDpu8/iHAT43SdAhI1cKXXa7
+	w0biVPqEuuiIpxJIzuE4u4G7GMpMCjg1AhMRdyKozjCK5vb1Qy5zzptLLTO/IA==
+Date: Tue, 09 Jan 2024 17:14:41 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc: Quentin Schulz <foss+kernel@0leil.net>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Quentin
+ Schulz <quentin.schulz@theobroma-systems.com>
+Subject: Re: [PATCH 1/2] arm64: dts: rockchip: add spi controller aliases on
+ rk3399
+In-Reply-To: <2305627.1xdlsreqCQ@diego>
+References: <20240109-rk3399-spi-aliases-v1-0-2009e44e734a@theobroma-systems.com>
+ <20240109-rk3399-spi-aliases-v1-1-2009e44e734a@theobroma-systems.com>
+ <685047b0-a907-49c6-919b-e46976d8ef7b@linaro.org> <2305627.1xdlsreqCQ@diego>
+Message-ID: <0b82a9081578644545e8e3c32081aad1@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Tue, Jan 09, 2024 at 05:05:15PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Jan 9, 2024 at 4:49 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Mon, Dec 18, 2023 at 09:17:34PM +0100, Rafael J. Wysocki wrote:
-> > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > > >
-> > > > From: James Morse <james.morse@arm.com>
-> > > >
-> > > > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
-> > > > 5.2.12:
-> > > >
-> > > > "Starting with ACPI Specification 6.3, the use of the Processor() object
-> > > > was deprecated. Only legacy systems should continue with this usage. On
-> > > > the Itanium architecture only, a _UID is provided for the Processor()
-> > > > that is a string object. This usage of _UID is also deprecated since it
-> > > > can preclude an OSPM from being able to match a processor to a
-> > > > non-enumerable device, such as those defined in the MADT. From ACPI
-> > > > Specification 6.3 onward, all processor objects for all architectures
-> > > > except Itanium must now use Device() objects with an _HID of ACPI0007,
-> > > > and use only integer _UID values."
-> > > >
-> > > > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
-> > > >
-> > > > Duplicate descriptions are not allowed, the ACPI processor driver already
-> > > > parses the UID from both devices and containers. acpi_processor_get_info()
-> > > > returns an error if the UID exists twice in the DSDT.
-> > >
-> > > I'm not really sure how the above is related to the actual patch.
-> > >
-> > > > The missing probe for CPUs described as packages
-> > >
-> > > It is unclear what exactly is meant by "CPUs described as packages".
-> > >
-> > > From the patch, it looks like those would be Processor() objects
-> > > defined under a processor container device.
-> > >
-> > > > creates a problem for
-> > > > moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> > > > described like this don't get registered, leading to errors from other
-> > > > subsystems when they try to add new sysfs entries to the CPU node.
-> > > > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> > > >
-> > > > To fix this, parse the processor container and call acpi_processor_add()
-> > > > for each processor that is discovered like this.
-> > >
-> > > Discovered like what?
-> > >
-> > > > The processor container
-> > > > handler is added with acpi_scan_add_handler(), so no detach call will
-> > > > arrive.
-> > >
-> > > The above requires clarification too.
-> >
-> > The above comments... yea. As I didn't write the commit description, but
-> > James did, and James has basically vanished, I don't think these can be
-> > answered, short of rewriting the entire commit message, with me spending
-> > a lot of time with the ACPI specification trying to get the terminology
-> > right - because at lot of the above on the face of it seems to be things
-> > to do with wrong terminology being used.
-> >
-> > I wasn't expecting this level of issues with this patch set, and I now
-> > feel completely out of my depth with this series. I'm wondering whether
-> > I should even continue with it, since I don't have the ACPI knowledge
-> > to address a lot of these comments.
+On 2024-01-09 16:22, Heiko Stübner wrote:
+> Am Dienstag, 9. Januar 2024, 16:15:30 CET schrieb Krzysztof Kozlowski:
+>> On 09/01/2024 14:35, Quentin Schulz wrote:
+>> > From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+>> >
+>> > There are 6 SPI controllers on RK3399 and they are all numbered in the
+>> > TRM, so let's add the appropriate aliases to the main DTSI so that any
+>> > RK3399-based board doesn't need to define the aliases themselves to
+>> > benefit from stable SPI indices in userspace.
+>> 
+>> But that contradicts the point that board should define aliases for
+>> exposable interfaces. Sorry, that's a NAK.
 > 
-> Well, sorry about this.
+> didn't we have this same discussion some weeks ago? ;-) .
 > 
-> I met James at the LPC last year, so he seems to be still around, in
-> some way at least..
+> I.e. spi2 on Rockchip socs is called spi2 in _all_ SoC documentation,
+> lines in _all_ schematics are also always called spi2_foo , so as 
+> before
+> I really don't see any value in repeating the very same aliases in
+> _every_ board.
+> 
+> Same for i2c, uart .
 
-On the previous posting, I wanted James to comment on some of the
-feedback from Jonathan, and despite explicitly asking, there has been
-nothing but radio silence ever since James' last post of this series.
+Yes, and the RK356x SoC dtsi already defines the spiX aliases in the 
+same way as Quentin proposed.  Taking that as an additional example, the 
+RK3399 dtsi can do the same.
 
-So, I now deem this work to be completely dead in the water, and not
-going to happen - not unless others can input on your comments.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> It is of course different for non-numerable interfaces - like the mmcX
+> aliases - where the controller is named sdhci, sdmmc, sdio ... and
+> similar cases. These get to stay in the board dts files of course.
+> 
+> 
+> Heiko
+> 
+>> > Cc: Quentin Schulz <foss+kernel@0leil.net>
+>> 
+>> No need to Cc yourself...
+>> 
+>> > Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+>> > ---
+>> 
+>> Best regards,
+>> Krzysztof
+>> 
+>> 
+> 
+> 
+> 
+> 
+> 
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
