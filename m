@@ -1,87 +1,92 @@
-Return-Path: <linux-kernel+bounces-21242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C560828C6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:20:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08708828C77
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B301B1C253CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:20:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACB3828DE13
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:21:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19F83D0AB;
-	Tue,  9 Jan 2024 18:20:33 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE903D57F;
+	Tue,  9 Jan 2024 18:20:35 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB3F3C087
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A603C47A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35f49926297so42618605ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:20:31 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fc6976630so30400745ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:20:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704824431; x=1705429231;
+        d=1e100.net; s=20230601; t=1704824432; x=1705429232;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=aDfkJh4CRLmymMpjdIE8nKjRY2p4UY3rWbj/huMJ/to=;
-        b=Q/WqaQ9UiaZmlqcn2RWEerECeeHYHU0uaZsQrt0C1erPXqePcydZmcVtQLEHwrZjuX
-         +xQhpLonfirQG70YHjjHMmyyLVm111b5hxHm2fuAzKin+sDes7PsGpiGtdK/kQgHWIXf
-         SABI/ZWR7mUXIujgbTrba4gCKIePcNTI3IoPW/cpKicQIaMUuXWCfsy9tbWnZRr5sHy9
-         ul1RYu43EYguARQVPkVOjQrryfkHgn2mxD/zPU5yFx1D9Xr7t/qwoikOFVlHnyAmjjZB
-         0APANnkRUiU8rxEK/QRJauObTP9AJKRNGEmGwKHMeKhIxlD3y4tpZ0d9KSnnbmlrYj40
-         o8vQ==
-X-Gm-Message-State: AOJu0Yw/25vNazTgA4VEGOjgx0ZUPbOQbJshfupE0bVEgkHWa0R+MHEg
-	3/LX0mF8ZKoQyutKhCdAOTonZq44L8dxChAhlXChvOX4w/jr
-X-Google-Smtp-Source: AGHT+IEQxDTQ/g5ZvU4myL1nDx6Nthpqw+BO0n8TxSeMmUjwKZ4FpI8goW0Ol2pNaeQ26aBgBdoYFA3TePP3Jg9huWLyI6lsSk1C
+        bh=MhRQfuRoLIkuw/ytyqzS8UAwRWBfjYwu1CGl08N+psc=;
+        b=IKEj4qpEo5HTRp9vFVxYjU7ofRpLA/j/n5qCEXsBUN/nxpgyKvNPGGsTOo+n2rXQyW
+         /SC8VtczU56YFvoH3biRh30WZzlQ02VcVzfa/FeQFRaSmi5YPFunGEtzA0frOIUn50Cl
+         ZerDrwAS12ZFoucwlaTkY3a9yIGrR7VKDu6Xys/96sjoS9tIq/aH50HzX21H4Hmde1Cx
+         ohJnBpj3BJskbwoRGP8nrGd/DV3fUZXQZZS7bDgV/eu//MtM7tRyguLiG576HBTGXE2Z
+         RQ6OeNk5bNptnb3bIAAcagc4Hr+CTITep9l2LYKHf6UiOXEKwU+nBTuLU2YHaHCfNOkj
+         LMZQ==
+X-Gm-Message-State: AOJu0YwrTxk4ffpBKF22gVGvx5oFpYbbakdHpHP8ZNIlX5sEZFuvJT0P
+	I0logP1UqoP/Humu3RWpVERheHZB32LiKKSS6zTJpzBddTgi
+X-Google-Smtp-Source: AGHT+IFG3oxyOsal6bz4MJsODPsV80WJ4ajFXFo5ng67mZbhECFV+neQfEYC3xYaZWMs0V+M9Ja3Rev1JRTM7jMv/W0MFFWmNsiw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d9a:b0:360:a0a1:a959 with SMTP id
- h26-20020a056e021d9a00b00360a0a1a959mr146282ila.5.1704824431223; Tue, 09 Jan
- 2024 10:20:31 -0800 (PST)
-Date: Tue, 09 Jan 2024 10:20:31 -0800
+X-Received: by 2002:a05:6e02:218f:b0:35f:8652:5ce8 with SMTP id
+ j15-20020a056e02218f00b0035f86525ce8mr935711ila.4.1704824432056; Tue, 09 Jan
+ 2024 10:20:32 -0800 (PST)
+Date: Tue, 09 Jan 2024 10:20:32 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a0adbe060e875ee7@google.com>
-Subject: [syzbot] Monthly block report (Jan 2024)
-From: syzbot <syzbot+list8e080b639b2ad05d5cd9@syzkaller.appspotmail.com>
-To: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+Message-ID: <000000000000ad615e060e875e78@google.com>
+Subject: [syzbot] Monthly ntfs report (Jan 2024)
+From: syzbot <syzbot+list9d8c4273b58598092f07@syzkaller.appspotmail.com>
+To: anton@tuxera.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello block maintainers/developers,
+Hello ntfs maintainers/developers,
 
-This is a 31-day syzbot report for the block subsystem.
+This is a 31-day syzbot report for the ntfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/block
+https://syzkaller.appspot.com/upstream/s/ntfs
 
 During the period, 1 new issues were detected and 0 were fixed.
-In total, 25 issues are still open and 88 have been fixed so far.
+In total, 26 issues are still open and 8 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref Crashes Repro Title
-<1> 3044    Yes   WARNING in blk_rq_map_user_iov
-                  https://syzkaller.appspot.com/bug?extid=a532b03fdfee2c137666
-<2> 475     Yes   INFO: task hung in blkdev_put (4)
-                  https://syzkaller.appspot.com/bug?extid=9a29d5e745bd7523c851
-<3> 365     Yes   general protection fault in bio_first_folio
-                  https://syzkaller.appspot.com/bug?extid=8b23309d5788a79d3eea
-<4> 144     Yes   INFO: task hung in blkdev_fallocate
-                  https://syzkaller.appspot.com/bug?extid=39b75c02b8be0a061bfc
-<5> 45      Yes   KASAN: use-after-free Read in __dev_queue_xmit (5)
-                  https://syzkaller.appspot.com/bug?extid=b7be9429f37d15205470
-<6> 34      Yes   INFO: task hung in nbd_add_socket (2)
-                  https://syzkaller.appspot.com/bug?extid=cbb4b1ebc70d0c5a8c29
-<7> 26      Yes   WARNING in blk_register_tracepoints
-                  https://syzkaller.appspot.com/bug?extid=c54ded83396afee31eb1
-<8> 12      Yes   INFO: task hung in bdev_release
-                  https://syzkaller.appspot.com/bug?extid=4da851837827326a7cd4
+Ref  Crashes Repro Title
+<1>  5250    Yes   possible deadlock in ntfs_read_folio
+                   https://syzkaller.appspot.com/bug?extid=8ef76b0b1f86c382ad37
+<2>  3663    Yes   kernel BUG at fs/ntfs/aops.c:LINE!
+                   https://syzkaller.appspot.com/bug?extid=6a5a7672f663cce8b156
+<3>  1828    Yes   kernel BUG in __ntfs_grab_cache_pages
+                   https://syzkaller.appspot.com/bug?extid=01b3ade7c86f7dd584d7
+<4>  814     Yes   possible deadlock in map_mft_record
+                   https://syzkaller.appspot.com/bug?extid=cb1fdea540b46f0ce394
+<5>  436     Yes   KASAN: slab-out-of-bounds Read in ntfs_readdir
+                   https://syzkaller.appspot.com/bug?extid=d36761079ac1b585a6df
+<6>  324     No    possible deadlock in __ntfs_clear_inode
+                   https://syzkaller.appspot.com/bug?extid=5ebb8d0e9b8c47867596
+<7>  112     Yes   KMSAN: uninit-value in post_read_mst_fixup (2)
+                   https://syzkaller.appspot.com/bug?extid=82248056430fd49210e9
+<8>  72      Yes   kernel BUG in ntfs_iget
+                   https://syzkaller.appspot.com/bug?extid=d62e6bd2a2d05103d105
+<9>  41      Yes   kernel BUG in ntfs_lookup_inode_by_name
+                   https://syzkaller.appspot.com/bug?extid=d532380eef771ac0034b
+<10> 19      Yes   KASAN: use-after-free Read in ntfs_attr_find (2)
+                   https://syzkaller.appspot.com/bug?extid=ef50f8eb00b54feb7ba2
 
 ---
 This report is generated by a bot. It may contain errors.
