@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-20511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42ABA827FF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:00:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60203827FFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C8CD1C25806
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:00:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EEE8B26318
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9259ABA55;
-	Tue,  9 Jan 2024 08:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3709DC14F;
+	Tue,  9 Jan 2024 08:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hPdLtv+t"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FWEzOZmJ"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DC825757
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18EABE4A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e7b273352so2602904e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 00:00:18 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-557f4fd1278so445057a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 00:01:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704787216; x=1705392016; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704787266; x=1705392066; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9/wcIvpWK+MZ2UE7Poy5j2bxprKql4bVhvNtUjiNWo8=;
-        b=hPdLtv+t0zUH0nah/f2cx0Fm25yuIoA+0xN3BH7uaUV26h250SBivXdzKt8PXpKDLm
-         WaEwyfaYON+4p3R6P/yNCfD4mPcWRKgCGo0bSM+rexEIipkVoUu+WFNWR4jhnp415Pnj
-         p3JL0G4HpeeJ7RrEW6YmReKrF6X32usfHt5bq5W+rAE43Fc3uubZJw7uFAVV8K3O8c3k
-         Afm/+2X3AZqNQ08twALMrC5n/buHhn331o/s9CDd+cpXVFKzxKAnm6tmlkZLXzcXJExn
-         TKX4KScj6DXiRCyxe99yRrp1Ok60qg4q/sJs1G9isRjqW9WjhQ5rgJxU+HYT6+ax7OZk
-         oCjQ==
+        bh=bdxnAmjWNKq4y1w9DC06BYcijknvo3Hfm6Sa3dcMMKc=;
+        b=FWEzOZmJj+ymarQ0B4TkNySru6LX0kLo+8BrP/3Kftq97YDi7F3p51Xi+9xSQaYKKg
+         KUCuuijYfRzf0G7Nlx4SVNpOOYU3PXPyzuELbdbD8ONSoengGb4FhWUVQ0W5NdLXTLuR
+         Xx6PvtLNO8sW5OpY6KmiXXI98vTWqH9zbGgJma0L83SwLnTxn4qj01uMmr1VlQpLaRJn
+         yGGKqHzH6KG65Ak7M8J+V/qqP19TuAAbfhPrwEN4ElRmpT0TIRgawoa8Ep6h7rCBi7YW
+         Vk3IpKFmaRbck5Fxv++AB/ZsBvjwUCPiTIVudIRIyp2v8whoomH1XX9lVddpfng9Euuo
+         JTpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704787216; x=1705392016;
+        d=1e100.net; s=20230601; t=1704787266; x=1705392066;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9/wcIvpWK+MZ2UE7Poy5j2bxprKql4bVhvNtUjiNWo8=;
-        b=PSV4nkHWC0gd6fxM/S9qpmKJH/vUNc869Ov1YNus+qrpT7ZBDaup/EJtUBxQNpWQ7F
-         qM/9UUzRwPoGH4oo2zVgt5vXNPSRR8XbAjbYNI5PcEa79QXaGWH6BIhCtA33okT+6W0y
-         rcK87WjknwxhCvnwqky8jMGW4DRvMAwEeVlfQDo8HX/N1Mfrc4oX3EqcEaFmMuSPAhMu
-         Y5zetsmA16Vd+iBKyRlOC4U8BmQMD9x9XvJx3li12f7I9mgE1SmX9XEpVlGGRcvW1a6j
-         9exChIBnSxR52zG9b9SYhy9tDsFqH3NzX9souaJF5CwPNTVo1oMXxHmmtoGpNg6pw8n1
-         5zGw==
-X-Gm-Message-State: AOJu0YxaiTfv/LOkNC/KSWXes4lutA3wUa+gUuaFp26AkBF6ZNbEGBrH
-	6t/aXfAdHJzI9NbVLlJgGfgBa3IUdODkdQ==
-X-Google-Smtp-Source: AGHT+IEJsWMbloGQXcCdvXrGTuQjCrCil/xKphl0eqKEnhI1jCmT6iZAdWbxrO9kHI36bcyXqK5aIQ==
-X-Received: by 2002:a05:6512:39c5:b0:50e:7bd0:1c3f with SMTP id k5-20020a05651239c500b0050e7bd01c3fmr2132425lfu.137.1704787216296;
-        Tue, 09 Jan 2024 00:00:16 -0800 (PST)
+        bh=bdxnAmjWNKq4y1w9DC06BYcijknvo3Hfm6Sa3dcMMKc=;
+        b=xDOGQqj7a+3uknGPMQNorL4gg/4a0DaEu4E6D/ixdgyMvI1yp0E5cTGpFcqEZ4D8JP
+         Ndn/92nptBEfQt+5AjSaSTj0BYlYPRTRVgx3LcHjdyDs9eISV2dYGU1f1BheDv5KItzE
+         YUhEqBb4pex1NfUdXmO3Jx5LdvQnJ/hKkDpqAuwuXrox4D2jfmk9UwfRgh/5tx+XFMmM
+         IzUmVdXj/PnDQZwiCcD9UcHjlTI3b+rUXw83TnMI2kthTkK+/40LRwbE+wwPVUSj3mRe
+         N986ir5dYTiS+JxDLvv4aszPg1KCPGEQga4jIn8AlLi7XHiJaPvUbQF4Y98mY1GmXvMj
+         8wOQ==
+X-Gm-Message-State: AOJu0YzqTaFRGHRAxTp12ZHKohp+YsLssFP3eQU2XVVxmFMNSKnHwEBb
+	ZNKF/IEVjrwu6BAvNOfvHKSMoWzo9zp5nQ==
+X-Google-Smtp-Source: AGHT+IEa/o2zzbOHIBzotoGx7Xl85bxPkGyo6iosf7bc67LTjXqjkMi5CuZMGjLY2nDSSD4ToGehDg==
+X-Received: by 2002:a50:cc88:0:b0:557:13ad:bc8f with SMTP id q8-20020a50cc88000000b0055713adbc8fmr2800560edi.28.1704787266082;
+        Tue, 09 Jan 2024 00:01:06 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id dn1-20020a05640222e100b00557e0e24abbsm657444edb.59.2024.01.09.00.00.14
+        by smtp.gmail.com with ESMTPSA id dn1-20020a05640222e100b00557e0e24abbsm657444edb.59.2024.01.09.00.01.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 00:00:15 -0800 (PST)
-Message-ID: <bd356c60-7681-47e4-b45f-d25e70068b65@linaro.org>
-Date: Tue, 9 Jan 2024 09:00:14 +0100
+        Tue, 09 Jan 2024 00:01:05 -0800 (PST)
+Message-ID: <11c58108-4851-4378-b7b9-2c302231ac68@linaro.org>
+Date: Tue, 9 Jan 2024 09:01:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,22 +65,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: fpga: Convert bridge binding to yaml
+Subject: Re: [PATCH 1/2] media: i2c: Add GC08A3 image sensor driver
 Content-Language: en-US
-To: Xu Yilun <yilun.xu@linux.intel.com>, Michal Simek <michal.simek@amd.com>
-Cc: linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com,
- git@xilinx.com, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Moritz Fischer <mdf@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
- Xu Yilun <yilun.xu@intel.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, kishore Manne <nava.kishore.manne@amd.com>,
- "open list:FPGA MANAGER FRAMEWORK" <linux-fpga@vger.kernel.org>
-References: <3100bbc4723643ec1ec7d4548e9ab353c856b564.1704470663.git.michal.simek@amd.com>
- <ab6a9a0e-ab03-4d35-9e43-c90c22dbcb1d@linaro.org>
- <4bcac34b-72a0-464e-91cd-d9e924073619@amd.com>
- <ZZzDHxnMPTuraS4D@yilunxu-OptiPlex-7050>
+To: =?UTF-8?B?WmhpIE1hbyAo5q+b5pm6KQ==?= <zhi.mao@mediatek.com>,
+ "mchehab@kernel.org" <mchehab@kernel.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>
+Cc: "heiko@sntech.de" <heiko@sntech.de>,
+ "gerald.loacker@wolfvision.net" <gerald.loacker@wolfvision.net>,
+ "tomi.valkeinen@ideasonboard.com" <tomi.valkeinen@ideasonboard.com>,
+ "yunkec@chromium.org" <yunkec@chromium.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dan.scally@ideasonboard.com" <dan.scally@ideasonboard.com>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ =?UTF-8?B?U2hlbmduYW4gV2FuZyAo546L5Zyj55S3KQ==?=
+ <shengnan.wang@mediatek.com>, "hdegoede@redhat.com" <hdegoede@redhat.com>,
+ "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+ "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+ =?UTF-8?B?WWF5YSBDaGFuZyAo5by16ZuF5riFKQ==?= <Yaya.Chang@mediatek.com>,
+ "bingbu.cao@intel.com" <bingbu.cao@intel.com>,
+ "jacopo.mondi@ideasonboard.com" <jacopo.mondi@ideasonboard.com>,
+ "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Project_Global_Chrome_Upstream_Group
+ <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "10572168@qq.com" <10572168@qq.com>,
+ "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+ "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>,
+ "macromorgan@hotmail.com" <macromorgan@hotmail.com>
+References: <20231207052016.25954-1-zhi.mao@mediatek.com>
+ <20231207052016.25954-2-zhi.mao@mediatek.com>
+ <1d58c2b9-4206-409c-b312-87f4fb649512@linaro.org>
+ <e709beb2acaf0cb68c6922f3b48431644e9a0246.camel@mediatek.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,42 +150,36 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZZzDHxnMPTuraS4D@yilunxu-OptiPlex-7050>
+In-Reply-To: <e709beb2acaf0cb68c6922f3b48431644e9a0246.camel@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 09/01/2024 04:53, Xu Yilun wrote:
-> On Mon, Jan 08, 2024 at 10:16:17AM +0100, Michal Simek wrote:
->>
->>
->> On 1/8/24 10:09, Krzysztof Kozlowski wrote:
->>> On 05/01/2024 17:04, Michal Simek wrote:
->>>> Convert the generic fpga bridge DT binding to json-schema.
->>>>
->>>> Signed-off-by: Michal Simek <michal.simek@amd.com>
->>>
->>>> +$id: http://devicetree.org/schemas/fpga/fpga-bridge.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: FPGA Bridge
->>>> +
->>>> +maintainers:
->>>> +  - Michal Simek <michal.simek@amd.com>
->>>> +
->>>> +properties:
->>>> +  $nodename:
->>>> +    pattern: "^fpga-bridge(@.*)?$"
->>>
->>> Not sure, but maybe we need to allow fpga-bridge-1? Could we have more
->>> than one bridge on given system?
->>
->> Yilun: Any comment on this?
+On 09/01/2024 03:50, Zhi Mao (毛智) wrote:
+> On Thu, 2023-12-07 at 09:18 +0100, Krzysztof Kozlowski wrote:
+> External email : Please do not click links or open attachments until you have verified the sender or the content.
 > 
-> We can have more bridges, but IIUC people use fpga-bridge@0, fpga-bridge@0
-> to identify them. So the expression is OK to me.
+> On 07/12/2023 06:20, Zhi Mao wrote:
+> 
+>> Add a V4L2 sub-device driver for Galaxycore GC08A3 image sensor.
+> 
+>>
+> 
+>> Reviewed-By: yunkec@chromium.org
+> 
+> 
+> I don't see review given here:
+> 
+> 
+> https://lore.kernel.org/linux-media/20231123115104.32094-1-zhi.mao@mediatek.com/
+> 
+> 
+> This does not look like real review. Where was it performed? How
+> 
+> thorough was it? How many review iterations did it include?  Why there
+> 
+> is no name but anonymous review?
 
-So you claim unit address thus reg with some sort of bus address is a
-requirement? Then "?" is not correct in that pattern.
+That was my message, not yours! Fix your quoting and reply again.
 
 Best regards,
 Krzysztof
