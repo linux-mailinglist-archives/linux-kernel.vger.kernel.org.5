@@ -1,261 +1,105 @@
-Return-Path: <linux-kernel+bounces-20246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7492827C61
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:11:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8AF0827C72
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A94228547E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:11:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ACFD1C230C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1ADE10E2;
-	Tue,  9 Jan 2024 01:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5873E186C;
+	Tue,  9 Jan 2024 01:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W2iUp0lw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="EdZY1ZzG"
+Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBF0A41
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 01:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704762662; x=1736298662;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=EvwXiRnbFEjCkclnoZp2pYvmciSarjgraPw+NcDeueE=;
-  b=W2iUp0lwRA46q1da/s0yYLN1DIk6n6IJgaAvQeeanSMxel7tuiunVuAV
-   lXWvGW266BhSLvLMJzdfSYY3wnGw8mAAMSJMABExKJWtkic7xlWe9V6Tq
-   KGhW6f0imsnayZaeYUvg6XLhzp2BwRZOzNxFfZH2+/ZAorqeXMk6spzN9
-   bBix1nPukLU5CnygmwbFxQRKOcz0enqGBQVDgTgqnU5HtPclWacPdLopD
-   ya27jo+B4AynNye1/HeuAg5z23Y5G9C7fkbnBMo/+5xO7JnA5j4c06PCd
-   Hk/s82bojHtwg5Grtr0J5sR58JFKTFjPOpmtVozcWPIJcAv8SGXpGuMYa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5396021"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="5396021"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 17:11:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="815785098"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="815785098"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 17:10:57 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Hugh Dickins
- <hughd@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
- <willy@infradead.org>,  Michal Hocko <mhocko@suse.com>,  Yosry Ahmed
- <yosryahmed@google.com>,  David Hildenbrand <david@redhat.com>,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/9] mm/swap: introduce a helper for swapin without
- vmfault
-In-Reply-To: <20240102175338.62012-9-ryncsn@gmail.com> (Kairui Song's message
-	of "Wed, 3 Jan 2024 01:53:37 +0800")
-References: <20240102175338.62012-1-ryncsn@gmail.com>
-	<20240102175338.62012-9-ryncsn@gmail.com>
-Date: Tue, 09 Jan 2024 09:08:59 +0800
-Message-ID: <875y039utw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED3F15AA
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 01:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 4A454C00164C;
+	Mon,  8 Jan 2024 17:09:18 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 4A454C00164C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1704762558;
+	bh=V4xcLfwSh9yIFBt8S2FOyzIEAI9i04RmDH6sxuuDTC0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EdZY1ZzGIhoiU8CdF9jbjPETPcbplglWMdoAav375MT0Kb0j4eoKWG98AJGvgNp6t
+	 nViQgZUXJvGTQR9AoskQ/tVyOTbWZXhNJvG3d8ergC/J5aK8n1B7jSmpzey7Y5M8+h
+	 D9DnZvbqGGSOaAQg/tfQ5nRrYm6RR8gvmmEVjuPY=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id BBA2E18041CAC4;
+	Mon,  8 Jan 2024 17:09:16 -0800 (PST)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Nhat Pham <nphamcs@gmail.com>,
+	Palmer Dabbelt <palmer@sifive.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Ian Kent <raven@themaw.net>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ARM64: Update __NR_compat_syscalls for statmount/listmount
+Date: Mon,  8 Jan 2024 17:09:04 -0800
+Message-Id: <20240109010906.429652-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 
-Kairui Song <ryncsn@gmail.com> writes:
+Commit d8b0f5465012 ("wire up syscalls for statmount/listmount") added
+two new system calls to arch/arm64/include/asm/unistd32.h but forgot to
+update the __NR_compat_syscalls number, thus causing the following build
+failures:
 
-> From: Kairui Song <kasong@tencent.com>
->
-> There are two places where swapin is not caused by direct anon page fault:
-> - shmem swapin, invoked indirectly through shmem mapping
-> - swapoff
->
-> They used to construct a pseudo vmfault struct for swapin function.
-> Shmem has dropped the pseudo vmfault recently in commit ddc1a5cbc05d
-> ("mempolicy: alloc_pages_mpol() for NUMA policy without vma"). Swapoff
-> path is still using one.
->
-> Introduce a helper for them both, this help save stack usage for swapoff
-> path, and help apply a unified swapin cache and readahead policy check.
->
-> Due to missing vmfault info, the caller have to pass in mempolicy
-> explicitly, make it different from swapin_entry and name it
-> swapin_entry_mpol.
->
-> This commit convert swapoff to use this helper, follow-up commits will
-> convert shmem to use it too.
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/swap.h       |  9 +++++++++
->  mm/swap_state.c | 40 ++++++++++++++++++++++++++++++++--------
->  mm/swapfile.c   | 15 ++++++---------
->  3 files changed, 47 insertions(+), 17 deletions(-)
->
-> diff --git a/mm/swap.h b/mm/swap.h
-> index 9180411afcfe..8f790a67b948 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -73,6 +73,9 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
->  		struct mempolicy *mpol, pgoff_t ilx);
->  struct folio *swapin_entry(swp_entry_t entry, gfp_t flag,
->  			    struct vm_fault *vmf, enum swap_cache_result *result);
-> +struct folio *swapin_entry_mpol(swp_entry_t entry, gfp_t gfp_mask,
-> +				struct mempolicy *mpol, pgoff_t ilx,
-> +				enum swap_cache_result *result);
->  
->  static inline unsigned int folio_swap_flags(struct folio *folio)
->  {
-> @@ -109,6 +112,12 @@ static inline struct folio *swapin_entry(swp_entry_t swp, gfp_t gfp_mask,
->  	return NULL;
->  }
->  
-> +static inline struct page *swapin_entry_mpol(swp_entry_t entry, gfp_t gfp_mask,
-> +		struct mempolicy *mpol, pgoff_t ilx, enum swap_cache_result *result)
-> +{
-> +	return NULL;
-> +}
-> +
->  static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
->  {
->  	return 0;
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 21badd4f0fc7..3edf4b63158d 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -880,14 +880,13 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
->   * in.
->   */
->  static struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
-> -				  struct vm_fault *vmf, void *shadow)
-> +				   struct mempolicy *mpol, pgoff_t ilx,
-> +				   void *shadow)
->  {
-> -	struct vm_area_struct *vma = vmf->vma;
->  	struct folio *folio;
->  
-> -	/* skip swapcache */
-> -	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
-> -				vma, vmf->address, false);
-> +	folio = (struct folio *)alloc_pages_mpol(gfp_mask, 0,
-> +			mpol, ilx, numa_node_id());
->  	if (folio) {
->  		if (mem_cgroup_swapin_charge_folio(folio, NULL,
->  						   GFP_KERNEL, entry)) {
-> @@ -943,18 +942,18 @@ struct folio *swapin_entry(swp_entry_t entry, gfp_t gfp_mask,
->  		goto done;
->  	}
->  
-> +	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
->  	if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
-> -		folio = swapin_direct(entry, gfp_mask, vmf, shadow);
-> +		folio = swapin_direct(entry, gfp_mask, mpol, ilx, shadow);
->  		cache_result = SWAP_CACHE_BYPASS;
->  	} else {
-> -		mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
->  		if (swap_use_vma_readahead())
->  			folio = swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf);
->  		else
->  			folio = swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
-> -		mpol_cond_put(mpol);
->  		cache_result = SWAP_CACHE_MISS;
->  	}
-> +	mpol_cond_put(mpol);
->  done:
->  	if (result)
->  		*result = cache_result;
-> @@ -962,6 +961,31 @@ struct folio *swapin_entry(swp_entry_t entry, gfp_t gfp_mask,
->  	return folio;
->  }
->  
-> +struct folio *swapin_entry_mpol(swp_entry_t entry, gfp_t gfp_mask,
-> +				struct mempolicy *mpol, pgoff_t ilx,
-> +				enum swap_cache_result *result)
-> +{
-> +	enum swap_cache_result cache_result;
-> +	void *shadow = NULL;
-> +	struct folio *folio;
-> +
-> +	folio = swap_cache_get_folio(entry, NULL, 0, &shadow);
-> +	if (folio) {
-> +		cache_result = SWAP_CACHE_HIT;
-> +	} else if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
-> +		folio = swapin_direct(entry, gfp_mask, mpol, ilx, shadow);
-> +		cache_result = SWAP_CACHE_BYPASS;
-> +	} else {
-> +		folio = swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
-> +		cache_result = SWAP_CACHE_MISS;
-> +	}
-> +
-> +	if (result)
-> +		*result = cache_result;
-> +
-> +	return folio;
-> +}
-> +
->  #ifdef CONFIG_SYSFS
->  static ssize_t vma_ra_enabled_show(struct kobject *kobj,
->  				     struct kobj_attribute *attr, char *buf)
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 5aa44de11edc..2f77bf143af8 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1840,18 +1840,13 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->  	do {
->  		struct folio *folio;
->  		unsigned long offset;
-> +		struct mempolicy *mpol;
->  		unsigned char swp_count;
->  		swp_entry_t entry;
-> +		pgoff_t ilx;
->  		int ret;
->  		pte_t ptent;
->  
-> -		struct vm_fault vmf = {
-> -			.vma = vma,
-> -			.address = addr,
-> -			.real_address = addr,
-> -			.pmd = pmd,
-> -		};
-> -
->  		if (!pte++) {
->  			pte = pte_offset_map(pmd, addr);
->  			if (!pte)
-> @@ -1871,8 +1866,10 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->  		pte_unmap(pte);
->  		pte = NULL;
->  
-> -		folio = swapin_entry(entry, GFP_HIGHUSER_MOVABLE,
-> -				     &vmf, NULL);
-> +		mpol = get_vma_policy(vma, addr, 0, &ilx);
-> +		folio = swapin_entry_mpol(entry, GFP_HIGHUSER_MOVABLE,
-> +					  mpol, ilx, NULL);
-> +		mpol_cond_put(mpol);
->  		if (!folio) {
->  			/*
->  			 * The entry could have been freed, and will not
+/arch/arm64/include/asm/unistd32.h:922:24: error: array index in initializer exceeds array bounds
+  922 | #define __NR_statmount 457
+      |                        ^~~
+arch/arm64/kernel/sys32.c:130:34: note: in definition of macro '__SYSCALL'
+  130 | #define __SYSCALL(nr, sym)      [nr] = __arm64_##sym,
+      |                                  ^~
 
-IIUC, after the change, we will always use cluster readahead for
-swapoff.  This may be OK.  But, at least we need some test results which
-show that this will not cause any issue for this behavior change.  And
-the behavior change should be described explicitly in patch description.
+Bump up the number by two to accomodate for the new system calls added.
 
-And I don't think it's a good abstraction to make swapin_entry_mpol()
-always use cluster swapin, while swapin_entry() will try to use vma
-swapin.  I think we can add "struct mempolicy *mpol" and "pgoff_t ilx"
-to swapin_entry() as parameters, and use them if vmf == NULL.  If we
-want to enforce cluster swapin in swapoff path, it will be better to add
-some comments to describe why.
+Fixes: d8b0f5465012 ("wire up syscalls for statmount/listmount")
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+ arch/arm64/include/asm/unistd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---
-Best Regards,
-Huang, Ying
+diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
+index 531effca5f1f..b63f870debaf 100644
+--- a/arch/arm64/include/asm/unistd.h
++++ b/arch/arm64/include/asm/unistd.h
+@@ -39,7 +39,7 @@
+ #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
+ #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
+ 
+-#define __NR_compat_syscalls		457
++#define __NR_compat_syscalls		459
+ #endif
+ 
+ #define __ARCH_WANT_SYS_CLONE
+-- 
+2.34.1
+
 
