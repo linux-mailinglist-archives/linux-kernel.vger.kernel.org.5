@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-21160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA43828B0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:21:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7BD9828B13
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5069A1C24614
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:21:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75D8F1F21F7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A1B3BB3E;
-	Tue,  9 Jan 2024 17:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356DB3C499;
+	Tue,  9 Jan 2024 17:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cBi+P+nv"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DZtdN7je"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1E33B287;
-	Tue,  9 Jan 2024 17:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF673B287;
+	Tue,  9 Jan 2024 17:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 409HJtTH025983;
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 409HJtXb123302;
 	Tue, 9 Jan 2024 11:19:55 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1704820795;
-	bh=w2PB4QobwSiLp9szgtnPOF2ZH+GGBmyRNVSuVnT/JME=;
+	bh=Y34tWMRWALESKgjpdnNRwm6x88Gm+MZVGaqVtyQF1KI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=cBi+P+nvk2CO++KzlK8/+V2CBgqne4LuBWmSLJm3KUu+Bb1OgEDTtZt2EOdgPm01O
-	 bCVxfqvLNxKSDwyK5W/mNI6BDcwNlbW6qkbMD2kzfWW4XuG9i2g18mDy8cPaziiFf4
-	 yoCX7wxyEXb4S5iDlJVdeaXmjh892wdES6x3DbIY=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 409HJtsR053325
+	b=DZtdN7je67yS0kAtznkutv+hO/HcEc1m+tbfPM29hqPdl6FAgwmSQVaZYpthvgBIk
+	 jY/Yku82sgC1xcN4LVIC9xIheQt8UP9B1uOJL3ALEQBcTl4gLlD5twWrt9kLuVRaEO
+	 wUsRxgHaAbkAMTWbmhSSUalxWMIKfIf/8v9qpYNk=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 409HJtIw021632
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Tue, 9 Jan 2024 11:19:55 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Jan 2024 11:19:54 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ Jan 2024 11:19:55 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Jan 2024 11:19:54 -0600
+ Frontend Transport; Tue, 9 Jan 2024 11:19:55 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.40.136])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 409HJou8089645;
-	Tue, 9 Jan 2024 11:19:53 -0600
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 409HJou9089645;
+	Tue, 9 Jan 2024 11:19:54 -0600
 From: Andrew Davis <afd@ti.com>
 To: Frank Binns <frank.binns@imgtec.com>,
         Matt Coster
@@ -76,9 +76,9 @@ CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         <linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
         <linux-mips@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH 03/11] ARM: dts: omap3: Add device tree entry for SGX GPU
-Date: Tue, 9 Jan 2024 11:19:42 -0600
-Message-ID: <20240109171950.31010-4-afd@ti.com>
+Subject: [PATCH 04/11] ARM: dts: omap4: Add device tree entry for SGX GPU
+Date: Tue, 9 Jan 2024 11:19:43 -0600
+Message-ID: <20240109171950.31010-5-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240109171950.31010-1-afd@ti.com>
 References: <20240109171950.31010-1-afd@ti.com>
@@ -92,82 +92,34 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Add SGX GPU device entries to base OMAP3 dtsi files.
+Add SGX GPU device entry to base OMAP4 dtsi file.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
- arch/arm/boot/dts/ti/omap/am3517.dtsi   | 11 ++++++-----
- arch/arm/boot/dts/ti/omap/omap34xx.dtsi | 11 ++++++-----
- arch/arm/boot/dts/ti/omap/omap36xx.dtsi |  9 +++++----
- 3 files changed, 17 insertions(+), 14 deletions(-)
+ arch/arm/boot/dts/ti/omap/omap4.dtsi | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/ti/omap/am3517.dtsi b/arch/arm/boot/dts/ti/omap/am3517.dtsi
-index 77e58e686fb17..19aad715dff70 100644
---- a/arch/arm/boot/dts/ti/omap/am3517.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/am3517.dtsi
-@@ -162,12 +162,13 @@ sgx_module: target-module@50000000 {
- 			clock-names = "fck", "ick";
- 			#address-cells = <1>;
+diff --git a/arch/arm/boot/dts/ti/omap/omap4.dtsi b/arch/arm/boot/dts/ti/omap/omap4.dtsi
+index 2bbff9032be3e..559b2bfe4ca7c 100644
+--- a/arch/arm/boot/dts/ti/omap/omap4.dtsi
++++ b/arch/arm/boot/dts/ti/omap/omap4.dtsi
+@@ -501,10 +501,11 @@ sgx_module: target-module@56000000 {
  			#size-cells = <1>;
--			ranges = <0 0x50000000 0x4000>;
-+			ranges = <0 0x50000000 0x10000>;
+ 			ranges = <0 0x56000000 0x2000000>;
  
 -			/*
 -			 * Closed source PowerVR driver, no child device
 -			 * binding or driver in mainline
 -			 */
 +			gpu@0 {
-+				compatible = "ti,omap3430-gpu", "img,powervr-sgx530";
-+				reg = <0x0 0x10000>; /* 64kB */
-+				interrupts = <21>;
-+			};
- 		};
- 	};
- };
-diff --git a/arch/arm/boot/dts/ti/omap/omap34xx.dtsi b/arch/arm/boot/dts/ti/omap/omap34xx.dtsi
-index fc7233ac183a8..acdd0ee34421d 100644
---- a/arch/arm/boot/dts/ti/omap/omap34xx.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/omap34xx.dtsi
-@@ -164,12 +164,13 @@ sgx_module: target-module@50000000 {
- 			clock-names = "fck", "ick";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
--			ranges = <0 0x50000000 0x4000>;
-+			ranges = <0 0x50000000 0x10000>;
- 
--			/*
--			 * Closed source PowerVR driver, no child device
--			 * binding or driver in mainline
--			 */
-+			gpu@0 {
-+				compatible = "ti,omap3430-gpu", "img,powervr-sgx530";
-+				reg = <0x0 0x10000>; /* 64kB */
-+				interrupts = <21>;
-+			};
- 		};
- 	};
- 
-diff --git a/arch/arm/boot/dts/ti/omap/omap36xx.dtsi b/arch/arm/boot/dts/ti/omap/omap36xx.dtsi
-index e6d8070c1bf88..c3d79ecd56e39 100644
---- a/arch/arm/boot/dts/ti/omap/omap36xx.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/omap36xx.dtsi
-@@ -211,10 +211,11 @@ sgx_module: target-module@50000000 {
- 			#size-cells = <1>;
- 			ranges = <0 0x50000000 0x2000000>;
- 
--			/*
--			 * Closed source PowerVR driver, no child device
--			 * binding or driver in mainline
--			 */
-+			gpu@0 {
-+				compatible = "ti,omap3630-gpu", "img,powervr-sgx530";
++				compatible = "ti,omap4430-gpu", "img,powervr-sgx540";
 +				reg = <0x0 0x2000000>; /* 32MB */
-+				interrupts = <21>;
++				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
 +			};
  		};
- 	};
  
+ 		/*
 -- 
 2.39.2
 
