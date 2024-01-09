@@ -1,117 +1,67 @@
-Return-Path: <linux-kernel+bounces-21116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059D7828A24
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:39:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC906828B68
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:44:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D3E1F25B7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:39:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F3611C2454F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170843A1D4;
-	Tue,  9 Jan 2024 16:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TezDVAY1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6F73BB53;
+	Tue,  9 Jan 2024 17:43:41 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE96D38F9A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704818351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gALjVpnW2FKki+TZoBpk1J20dJjfEldE4c8nd18BouY=;
-	b=TezDVAY1qj/rDpPFhc71Zattm/pw5RIwXVXdKrh2PhA//tvDbUaZZVckI+AWtz0p7wqcT7
-	ca1sCaqrbOzg15QERV2SgbZJWbMgYfxvo+5kng790Z1gOvN6oej5xjqfkI86uHD8zHtktO
-	CCHlRf0UKNh+8yDmN17v5pGT84kcrlQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-622-9pVJLRnBOb-uYCDMV09uJg-1; Tue, 09 Jan 2024 11:39:05 -0500
-X-MC-Unique: 9pVJLRnBOb-uYCDMV09uJg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6D73B782;
+	Tue,  9 Jan 2024 17:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id bd827d036604c4fd; Tue, 9 Jan 2024 17:43:37 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AA16583152B;
-	Tue,  9 Jan 2024 16:39:04 +0000 (UTC)
-Received: from [10.22.9.97] (unknown [10.22.9.97])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 66CC82949;
-	Tue,  9 Jan 2024 16:39:04 +0000 (UTC)
-Message-ID: <9bed61e4-7c08-4c61-a7e4-bdd39335cec1@redhat.com>
-Date: Tue, 9 Jan 2024 11:39:03 -0500
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id D20BF66910A;
+	Tue,  9 Jan 2024 17:43:36 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v1 0/2] thermal: core: Cleanups related to the netlink I/F
+Date: Tue, 09 Jan 2024 17:39:35 +0100
+Message-ID: <2193991.irdbgypaU6@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] workqueue: Add rcu lock check after work execute end
-Content-Language: en-US
-To: Xuewen Yan <xuewen.yan@unisoc.com>, tj@kernel.org, jiangshanlai@gmail.com
-Cc: linux-kernel@vger.kernel.org, ke.wang@unisoc.com
-References: <20240109111014.2689-1-xuewen.yan@unisoc.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240109111014.2689-1-xuewen.yan@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehledgledtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihh
+ rghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 
-On 1/9/24 06:10, Xuewen Yan wrote:
-> Now the workqueue just check the atomic and lock after
-> work execute end. However, sometimes, drivers's work
-> may don't unlock rcu after call rcu_read_lock().
-> And as a result, it would cause rcu stall, but the rcu stall warning
-> can not dump the work func, because the work has finished.
->
-> In order to quickly discover those works that do not call
-> rcu_read_unlock after rcu_read_lock(). Add the rcu lock check.
->
-> Use rcu_preempt_depth() to check the work's rcu status,
-> Normally, this value is 0. If this value is bigger than 0,
-> it means that the rcu lock is still held after the work ends.
-> At this time, we print err info and print the work func.
->
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> ---
->   kernel/workqueue.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 2989b57e154a..a5a0df824df1 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -2634,11 +2634,12 @@ __acquires(&pool->lock)
->   	lock_map_release(&lockdep_map);
->   	lock_map_release(&pwq->wq->lockdep_map);
->   
-> -	if (unlikely(in_atomic() || lockdep_depth(current) > 0)) {
-> -		pr_err("BUG: workqueue leaked lock or atomic: %s/0x%08x/%d\n"
-> +	if (unlikely(in_atomic() || lockdep_depth(current) > 0) ||
-> +		rcu_preempt_depth() > 0) {
+Hi Everyone,
 
-The rcu_preempt_depth() check should be within the unlikely() helper. 
-Other than that, it looks good to me.
+The first patch in this series is a replacement for
 
-Cheers,
-Longman
+https://lore.kernel.org/linux-pm/7628882.EvYhyI6sBW@kreacher/
 
-> +		pr_err("BUG: workqueue leaked lock or atomic: %s/0x%08x/%d/%d\n"
->   		       "     last function: %ps\n",
-> -		       current->comm, preempt_count(), task_pid_nr(current),
-> -		       worker->current_func);
-> +		       current->comm, preempt_count(), rcu_preempt_depth(),
-> +		       task_pid_nr(current), worker->current_func);
->   		debug_show_held_locks(current);
->   		dump_stack();
->   	}
+and it doesn't remove the unused functions as Daniel noticed that they really
+aren't used by mistake.
+
+The second one is just a code layout change based on the first one.
+
+Thanks!
+
+
 
 
