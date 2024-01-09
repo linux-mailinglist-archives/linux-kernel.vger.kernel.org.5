@@ -1,102 +1,180 @@
-Return-Path: <linux-kernel+bounces-21175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DF76828B43
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 067FF828B50
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:31:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5712848F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:29:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2EDE283FE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86FE3BB3E;
-	Tue,  9 Jan 2024 17:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272EC3B79F;
+	Tue,  9 Jan 2024 17:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ni0O8CQJ"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FcCzoDiH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A737C3BB35
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d5aefcc2fso36259735e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704821373; x=1705426173; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wnku5e/u/gHYRgoR0rSRyIOibtasAzsOAPYEKYrhoG8=;
-        b=Ni0O8CQJBsmnvdjz3ETvlBnV6E/cncNHjXqUwQqV2y890eigsWjNzQDUgK2VpFaiqB
-         oIP6zLw+/jbcthE1GTzon/wxAl56Hn0zVQIEkHTmV3kip8RWCKmSRJo1h1/ljgpOI98W
-         eqk2xFK+6SggognUEKA4JXQz89EBRYMLFhSuZ2qu5mer1xpKXITQsTAOm+Hw+crPgtcD
-         hb7Pu9iBf2GDqjt+Xc9fNlCS1ewka8XJkaOuuOJeGyLhQCl//dpRr2/3s0uQ5c2XB6P/
-         /NvA039Qee6ZlJM1RPw/fZzBfCBaJqmCiFXJEcUivO/wCYFKjj364XfMlVdYqIs7Eysq
-         Ykyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704821373; x=1705426173;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wnku5e/u/gHYRgoR0rSRyIOibtasAzsOAPYEKYrhoG8=;
-        b=Vx9GINIz7b8Qaqvsk5ZfsWYagdIPF2sLSb0RcrzDr7LjBpO7Et5+V2MTaWWIbIvp4j
-         FPwJ2bCQhMChCss0E1i5Kv2qjz/zXz9BLmpgRfdUob645T+QMMdraOKCpPgVd+LXRUw1
-         6ulJ9qF+WGp/K8MNniULHxzn3Nu8vxrPcCN1gvJv7RpDy1gddLismTK1ZxEfzfywxNcm
-         L2EpGaKRhaAC14d93KDHw10DaKdrC0U1x5BMYj1A1fqJfnPw6iY0nutkKVWyEBiyLreX
-         hbhX8HnHhEmrkO73TrF+4S/KAIcc2WH6/jC+6T1x4LvzAgOUe4dQIR7Qf91waaLhBQAI
-         lncA==
-X-Gm-Message-State: AOJu0YzsJbKW3Kj9OjbpkarzTd92O/XznSaJvp60/2OY/TKZTsCHenIm
-	bXvXdybRq6TIgWebHPUH3DLEMGi/708vxQ==
-X-Google-Smtp-Source: AGHT+IG/V4UimHzCxAzo6BEJ6VWy/cLJ9CLD4rbjCi/sELyShdt5NHYsGZRCMiDno7rLTgsk+jzu5A==
-X-Received: by 2002:a05:600c:3b8d:b0:40e:4704:5698 with SMTP id n13-20020a05600c3b8d00b0040e47045698mr1812380wms.83.1704821372794;
-        Tue, 09 Jan 2024 09:29:32 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id df8-20020a5d5b88000000b003376d4248a9sm2908868wrb.71.2024.01.09.09.29.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 09:29:32 -0800 (PST)
-Message-ID: <0e90dee3-6247-439f-a70d-becf2531c930@linaro.org>
-Date: Tue, 9 Jan 2024 18:29:32 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B563B2A4;
+	Tue,  9 Jan 2024 17:31:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7782C433F1;
+	Tue,  9 Jan 2024 17:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704821492;
+	bh=UOEYJi4gJtE8sc2Wj07/bfw21ESQfkQyPOaOQJ8ntis=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FcCzoDiHW9klwT7ITiw4GovAPaKPnr72xGYdoRaIK7XAnlsIaojUnauhMcef6+alT
+	 Rm9ONxbPUJh8Bew+DaFyg/rm7F98zKKN76tYI+t0eWNSh3mChToLImHOlZ27csWcmK
+	 A9RsIvRVydPCrdx71CO73qGLeVu91A6M03V0c8dErhG1NmqRg5zQc7+65/2g2o+UV1
+	 OKZfIOQgFL61a5GRIUUU4WRt/RNssERHP21qQenhLA2dHCvOaYxe7LnJ1Yb2foX72k
+	 GZqlnbJj6lyLc2u7YZRUxksAM4Fmjb+Jv6bJNKjh47dK+LISNbCJ5fSJ5btMV276Xm
+	 6aPemIi6bTC8g==
+Received: (nullmailer pid 2808343 invoked by uid 1000);
+	Tue, 09 Jan 2024 17:31:24 -0000
+Date: Tue, 9 Jan 2024 11:31:24 -0600
+From: Rob Herring <robh@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de
+ >, Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Michael Karcher <kernel@mkarc
+ her.dialup.fu-berlin.de>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+Subject: Re: [DO NOT MERGE v6 12/37] dt-bindings: pci: pci-sh7751: Add SH7751
+ PCI
+Message-ID: <20240109173124.GB2783042-robh@kernel.org>
+References: <cover.1704788539.git.ysato@users.sourceforge.jp>
+ <160ee086771703c951c5522d997662aeac122a28.1704788539.git.ysato@users.sourceforge.jp>
+ <CACRpkdZMkyJdkFt_x-6iubLZ-KzewvmT0zi4HAas0Xy9DpPn3g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] thermal: helpers: Rearrange
- thermal_cdev_set_cur_state()
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Linux PM <linux-pm@vger.kernel.org>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, LKML <linux-kernel@vger.kernel.org>,
- Lukasz Luba <lukasz.luba@arm.com>
-References: <2193991.irdbgypaU6@kreacher> <8343955.T7Z3S40VBb@kreacher>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <8343955.T7Z3S40VBb@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdZMkyJdkFt_x-6iubLZ-KzewvmT0zi4HAas0Xy9DpPn3g@mail.gmail.com>
 
-On 09/01/2024 17:42, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Jan 09, 2024 at 01:42:53PM +0100, Linus Walleij wrote:
+> Hi Yoshinori,
 > 
-> Change the code layout in thermal_cdev_set_cur_state() so it returns
-> early on errors which is more consistent with what happens elsewhere.
+> thanks for your patch!
 > 
-> No intentional functional impact.
+> On Tue, Jan 9, 2024 at 9:24 AM Yoshinori Sato
+> <ysato@users.sourceforge.jp> wrote:
 > 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Renesas SH7751 PCI Controller json-schema.
+> >
+> > Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+> (...)
+> > +  renesas,bus-arbit-round-robin:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set DMA bus arbitration to round robin.
+> > +
+> > +  pci-command-reg-fast-back-to-back:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI command register Fast Back-to-Back enable bit.
+> > +
+> > +  pci-command-reg-serr:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI command register SERR# enable.
+> > +
+> > +  pci-command-reg-wait-cycle-control:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI command register Wait cycle control bit.
+> > +
+> > +  pci-command-reg-parity-error-response:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI Command register Parity error response bit.
+> > +
+> > +  pci-command-reg-vga-snoop:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI Command register VGA palette snoop bit.
+> > +
+> > +  pci-command-reg-write-invalidate:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI Command register Memory write and invaldate enable bit.
+> > +
+> > +  pci-command-reg-special-cycle:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI Command register Special cycle bit.
+> > +
+> > +  pci-command-reg-bus-master:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI Command register Bus master bit.
+> > +
+> > +  pci-command-reg-memory-space:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI Command register Memory space bit.
+> > +
+> > +  pci-command-reg-io-space:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Set for PCI Command register I/O space bit.
+> 
+> Do you really need to configure all these things? It seems they are
+> just set to default values anyway?
+> 
+> Can't you just look at the compatible "renesas,sh7751-pci" and
+> set it to the values you know are needed for that compatible?
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Yes. Please drop all these.
 
+> 
+> > +  pci-bar:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > +    description: Overwrite to  PCI CONFIG Base Address Registers value.
+> > +    items:
+> > +      items:
+> > +        - description: BAR register number
+> > +        - description: BAR register value
+> > +    minItems: 1
+> > +    maxItems: 6
+> 
+> Same with this, isn't this always the same (hardcoded) values
+> for "renesas,sh7751-pci" if used?
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+The OpenFirmware PCI bus supplement already defines how to specify BAR 
+values in DT in "reg" or "assigned-addresses". If you need to specify 
+these, use that. Note don't expect the kernel to do anything with them.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Rob
+
+> 
+> > +            interrupt-map = <0x0000 0 0 1 &julianintc 5>,
+> > +                            <0x0000 0 0 2 &julianintc 6>,
+> > +                            <0x0000 0 0 3 &julianintc 7>,
+> > +                            <0x0000 0 0 4 &julianintc 8>,
+> > +                            <0x0800 0 0 1 &julianintc 6>,
+> > +                            <0x0800 0 0 2 &julianintc 7>,
+> > +                            <0x0800 0 0 3 &julianintc 8>,
+> > +                            <0x0800 0 0 4 &julianintc 5>,
+> > +                            <0x1000 0 0 1 &julianintc 7>,
+> > +                            <0x1000 0 0 2 &julianintc 8>,
+> > +                            <0x1000 0 0 3 &julianintc 5>,
+> > +                            <0x1000 0 0 4 &julianintc 6>;
+> 
+> This interrupt-map looks very strange, usually the last cell is the polarity
+> flag and here it is omitted? I would expect something like:
+> 
+> <0x0000 0 0 1 &julianintc 5 IRQ_TYPE_LEVEL_LOW>, (...)
+> 
+> The interrupt-map schema in dtschema isn't really looking at this
+> so it is easy to get it wrong.
+
+dtc should IIRC. Maybe not in the example being incomplete.
+
+Rob
 
 
