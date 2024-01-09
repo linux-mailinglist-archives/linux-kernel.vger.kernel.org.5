@@ -1,74 +1,83 @@
-Return-Path: <linux-kernel+bounces-20972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC3598287EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:18:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B4DA8287F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:22:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85A7EB239FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:18:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AC83286104
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD333987A;
-	Tue,  9 Jan 2024 14:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C382839AC2;
+	Tue,  9 Jan 2024 14:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="J+mmfbRB"
-Received: from mail.avm.de (mail.avm.de [212.42.244.94])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WPZFhREK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243EE39AC3;
-	Tue,  9 Jan 2024 14:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Tue,  9 Jan 2024 15:18:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1704809914; bh=U+vldAfh5/nLtIv1m4acjz14ho6yNXMM8DQJmOys7t8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J+mmfbRBp37YElkZ9SCgN+a0S0LaIMC0L3s29FaN6fWt6khveIfauFANY2q105RS2
-	 GY/Y3wdIjNKgFvs7wrACbtZxGKE0zPdGQAdh5Z4gI/Jkan/EwiKUq55+y/p6N6tQ7Y
-	 ayhazLblRCDT3/9vwKy+TjXb6NoaSmNba55x4t44=
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id CF9008058E;
-	Tue,  9 Jan 2024 15:18:33 +0100 (CET)
-Received: from reykjavik.ads.avm.de (unknown [172.17.89.91])
-	by buildd.core.avm.de (Postfix) with ESMTPS id C250C180D04;
-	Tue,  9 Jan 2024 15:18:33 +0100 (CET)
-Date: Tue, 9 Jan 2024 15:18:29 +0100
-From: Nicolas Schier <n.schier@avm.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] kbuild: deb-pkg: use debian/<package> for tmpdir
-Message-ID: <ZZ1Vtak4SG3KKVnA@reykjavik.ads.avm.de>
-References: <20231230135200.1058873-1-masahiroy@kernel.org>
- <20231230135200.1058873-3-masahiroy@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130033984A;
+	Tue,  9 Jan 2024 14:22:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AF7CC43390;
+	Tue,  9 Jan 2024 14:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704810162;
+	bh=ryRBX6Ywx4bF68XYywhf01hIAAubq13J+4hY1ns2/Z8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WPZFhREKkRbhhlwgxX2UaooPZ+l43cW338J8zQMtDd8C82GKWlFJTy2Gl+dCsghz0
+	 C8w1zzbdZq/OoLS+JFf3cxxIRVdUVjGHS9gEXtqTwQ1IJyLXhKtFuyA6cSZ5GdR8y7
+	 +ke4PR4edvw6MeMaTZYIGvt7ng46GvYklEGspXl7yaHe+aZvERNvCulBZRKFrTR6+p
+	 wDN0Qdhb/TYoCB9YTM2XC3lKRELbUw5YmmTCNrCLDIub5MRpRn1fAFdxBLUshe4EuI
+	 rl+79L7TQ3UVDRGz7VeJcIB2a8E6rgwbqvYZ1fVeiUy+D/e7OYHt7ixgZ7xy6YHI0Y
+	 c4INLzSKkvfDg==
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6dde882e5ccso235605a34.3;
+        Tue, 09 Jan 2024 06:22:42 -0800 (PST)
+X-Gm-Message-State: AOJu0YwIDYETRD/b/KvYUw7h2Ha5AAUYWWhpTgpSgvogx58DJWOAo9yp
+	FIMG1cLsha3vQsK+KToP/fiZDhoDGstGhJTNK5s=
+X-Google-Smtp-Source: AGHT+IG7uz4RcDrqw+FErYNKhx1ue3obCPnmI8Yq6i5H1MvzcGf6YLxWOYuozPD6si4kA2cBuh79PZdjKo1YQ9egr6s=
+X-Received: by 2002:a05:6870:9a0d:b0:203:fbf6:8c36 with SMTP id
+ fo13-20020a0568709a0d00b00203fbf68c36mr7015318oab.68.1704810161980; Tue, 09
+ Jan 2024 06:22:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231230135200.1058873-3-masahiroy@kernel.org>
-X-purgate-ID: 149429::1704809914-6460392C-5A89843D/0/0
-X-purgate-type: clean
-X-purgate-size: 283
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+References: <20240109120738.346061-1-masahiroy@kernel.org> <20240109120738.346061-2-masahiroy@kernel.org>
+In-Reply-To: <20240109120738.346061-2-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 9 Jan 2024 23:22:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASOxi-gzve+_d-sCW9z_eEJ5TMMnzPEvN2Nj2AwgVjF9g@mail.gmail.com>
+Message-ID: <CAK7LNASOxi-gzve+_d-sCW9z_eEJ5TMMnzPEvN2Nj2AwgVjF9g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] kbuild: create a list of all built DTB files
+To: linux-kbuild@vger.kernel.org
+Cc: devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, 
+	Simon Glass <sjg@chromium.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 30, 2023 at 10:51:58PM +0900, Masahiro Yamada wrote:
-> Use debian/<package> for tmpdir, which is the default of debhelper.
-> This simplifies the code.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+On Tue, Jan 9, 2024 at 9:07=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.or=
+g> wrote:
+>
+> It is useful to have a list of all *.dtb and *.dtbo files generated
+> from the current build.
+>
+> With this commit, 'make dtbs' creates arch/*/boot/dts/dtbs-order, which
 
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+
+I meant arch/*/boot/dts/dtbs-list
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
