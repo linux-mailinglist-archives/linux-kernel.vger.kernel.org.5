@@ -1,125 +1,90 @@
-Return-Path: <linux-kernel+bounces-20435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50D9E827EDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:45:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AAF5827EEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:52:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A22E9285805
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:45:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11B681F245B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319838F4F;
-	Tue,  9 Jan 2024 06:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELqD70Qf"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E3B6124;
-	Tue,  9 Jan 2024 06:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5eefd0da5c0so23561137b3.2;
-        Mon, 08 Jan 2024 22:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704782729; x=1705387529; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=80w7kcr2BiF5GwXEFqXyPAg3AD4hnM9w5LfuY1QzR9g=;
-        b=ELqD70QfcbgvZTe1mTHG4N9EDCIdciqe+gbOKJfNA88Iv/dEzM79X/Ppa5EsbDaxCk
-         a2mO0hbPXPbDXKx+Y5jRaYm3llx/7B0r3pfr05VMYdkGmKjI/KqcOWx9eDvHXj0PlfM5
-         BuLhNphVWvhwCHSqKVe1E9uL7Qkah5Jbz2QfPzqlp7UCKFuzFolC+8eNRfpXN7M9fb0H
-         bAnJ4G8H3ELHNT0tbtBsAA6nxjOp6Kg64DZerCg4N+3WnX78isXpY3UDXhP0oxGViJuu
-         zUmwTeA5YoyLbHnKjIPXh3T6RJdNEt5GspPfC1QjxGAAE8QTSqQqz8gGGpM01km5zFJH
-         Q3qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704782729; x=1705387529;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=80w7kcr2BiF5GwXEFqXyPAg3AD4hnM9w5LfuY1QzR9g=;
-        b=JrAFkgFUJiTO9EyuKiazPlPpLVuRTiOFD0rO4EabkOVtx88jsC61KUnx+5oze+hxIf
-         UFnhFbWknt+3zZb0T1504iQ65Ga/EIAhOb4TTr/6Hd+pGRlu8J5TeJQnpH4fx0BHl1Sv
-         Rc7OI8trjCMrH8CXvE19JxUNTt987g+I26Y5PGPlHyR0aRD5PNWqyXvHCsgCuM1S8dYE
-         aj8ZDvBeCYuJutb6Re9tAGxp+g4piAUgyHS5JqrMs9gBINmbT0IlO+M1q4CG9t1rUXyk
-         ZH8n3APS6yLnj1i+kzjzssFvIfZCG7OxOmaZOAquIOC0+BBCS+HkhmLT1vY1G89kI5Xn
-         mBpA==
-X-Gm-Message-State: AOJu0YxuRiMUeNIs0V4nv5sQUSlznRJArg6ZPm6Gl+5YrdH8f4XsBZcr
-	ewOJyDkQh3nFT1Pw2kW3x0fXDwMan0QwBjsN05w=
-X-Google-Smtp-Source: AGHT+IF6yT0FJnKlKhXx/rXnY0cNXPiWZTwPKLF8DD+ZaBFDZq7+NnCGOMow8QTcirbtaj3I4WJ3pTtlcUMgnGyhs8o=
-X-Received: by 2002:a05:6902:250c:b0:db5:3e3b:d2bb with SMTP id
- dt12-20020a056902250c00b00db53e3bd2bbmr2516111ybb.48.1704782728999; Mon, 08
- Jan 2024 22:45:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B94E8F51;
+	Tue,  9 Jan 2024 06:52:15 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BB079E4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 06:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8AxCuoT7Zxl32IDAA--.6697S3;
+	Tue, 09 Jan 2024 14:52:03 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxut0S7ZxlkI0IAA--.22849S2;
+	Tue, 09 Jan 2024 14:52:02 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] LoongArch: Fix definition of ftrace_regs_set_instruction_pointer()
+Date: Tue,  9 Jan 2024 14:52:01 +0800
+Message-ID: <20240109065201.11800-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108135421.684263-1-tmaimon77@gmail.com> <20240108135421.684263-2-tmaimon77@gmail.com>
- <170474817687.2140623.4004065884295248395.robh@kernel.org>
-In-Reply-To: <170474817687.2140623.4004065884295248395.robh@kernel.org>
-From: Tomer Maimon <tmaimon77@gmail.com>
-Date: Tue, 9 Jan 2024 08:45:17 +0200
-Message-ID: <CAP6Zq1iZdcrgc2BJREPvx8T9DZAZ=Sx_3iWbX0g=x2DmaG2MhQ@mail.gmail.com>
-Subject: Re: [PATCH v22 1/8] dt-bindings: clock: npcm845: Add reference 25m
- clock property
-To: Rob Herring <robh@kernel.org>
-Cc: robh+dt@kernel.org, venture@google.com, linux-kernel@vger.kernel.org, 
-	sboyd@kernel.org, tali.perry1@gmail.com, linux-clk@vger.kernel.org, 
-	yuenn@google.com, mturquette@baylibre.com, openbmc@lists.ozlabs.org, 
-	benjaminfair@google.com, krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Bxut0S7ZxlkI0IAA--.22849S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWrZr17Jr18KrWrtr1fZw4rtFc_yoW8JF13pF
+	ZrC3WkJFWUGFs7uF1jgF4rur1fJ395Cry09r1Ikw1ayrnxXw1q9FykKryqyFy5Jay8C342
+	g3WakwnIvFn8ZwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jUsqXUUUUU=
 
-Hi Rob,
+The current definition of ftrace_regs_set_instruction_pointer() is wrong,
+obviously, this function is used to set instruction pointer, so it should
+call instruction_pointer_set() instead of regs_set_return_value().
 
-Thanks for your comment.
+There is no side effect by now because it is used for kernel livepatching
+which is not supported, fix it to avoid failure when testing livepatch in
+the future.
 
-On Mon, 8 Jan 2024 at 23:09, Rob Herring <robh@kernel.org> wrote:
->
->
-> On Mon, 08 Jan 2024 15:54:14 +0200, Tomer Maimon wrote:
-> > The NPCM8XX clock driver uses 25Mhz external clock, therefor adding
-> > refclk property.
-> >
-> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> > ---
-> >  .../bindings/clock/nuvoton,npcm845-clk.yaml      | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
->
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.example.dtb: clock-controller@f0801000: 'clocks' is a required property
->         from schema $id: http://devicetree.org/schemas/clock/nuvoton,npcm845-clk.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.example.dtb: clock-controller@f0801000: 'clock-names' is a required property
->         from schema $id: http://devicetree.org/schemas/clock/nuvoton,npcm845-clk.yaml#
->
-> doc reference errors (make refcheckdocs):
->
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240108135421.684263-2-tmaimon77@gmail.com
->
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema.
->
+Fixes: 6fbff14a6382 ("LoongArch: ftrace: Abstract DYNAMIC_FTRACE_WITH_ARGS accesses")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/loongarch/include/asm/ftrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-probably I missed adding the clock and clock-names to the example
-node, will be fixed next version
+diff --git a/arch/loongarch/include/asm/ftrace.h b/arch/loongarch/include/asm/ftrace.h
+index a11996eb5892..de891c2c83d4 100644
+--- a/arch/loongarch/include/asm/ftrace.h
++++ b/arch/loongarch/include/asm/ftrace.h
+@@ -63,7 +63,7 @@ ftrace_regs_get_instruction_pointer(struct ftrace_regs *fregs)
+ static __always_inline void
+ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs, unsigned long ip)
+ {
+-	regs_set_return_value(&fregs->regs, ip);
++	instruction_pointer_set(&fregs->regs, ip);
+ }
+ 
+ #define ftrace_regs_get_argument(fregs, n) \
+-- 
+2.42.0
+
 
