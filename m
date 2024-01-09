@@ -1,150 +1,109 @@
-Return-Path: <linux-kernel+bounces-20773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C369828504
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:28:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C217C828508
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FDC91C20BD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:28:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714BA282ACE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B1EA37145;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D914F3717D;
 	Tue,  9 Jan 2024 11:27:58 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="jRE56T1L"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3732125A7
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 11:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 409BRfDM002970;
-	Tue, 9 Jan 2024 19:27:41 +0800 (+08)
-	(envelope-from Di.Shen@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4T8T4v4h3Jz2RS3WG;
-	Tue,  9 Jan 2024 19:20:47 +0800 (CST)
-Received: from bj10906pcu1.spreadtrum.com (10.0.73.72) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 9 Jan 2024 19:27:40 +0800
-From: Di Shen <di.shen@unisoc.com>
-To: <lukasz.luba@arm.com>, <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <rui.zhang@intel.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wvw@google.com>, <tkjos@google.com>, <xuewen.yan@unisoc.com>,
-        <zhanglyra@gmail.com>, <orsonzhai@gmail.com>
-Subject: [PATCH V6] thermal/core/power_allocator: avoid thermal cdev can not be reset
-Date: Tue, 9 Jan 2024 19:27:36 +0800
-Message-ID: <20240109112736.32566-1-di.shen@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC6E36B11
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 11:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-555f95cc2e4so3166759a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 03:27:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1704799675; x=1705404475; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oKel/uL1tajPej7Kr+Y3gD2pm0Q/5wlP7q9l4+pRLR8=;
+        b=jRE56T1LeQJAkA6mhHCrJJdZN4io3r5Q1w3lsA3Q5ln52EOtCaCvigxk9b1bKXV0Uc
+         l02SqWOBEwm2aDRxLaY9990nhiSA5bCCcG82N5iXrasCHFLvI//xbMgDEnSApTFTwaIz
+         MSl0tgwuDXnJQAxEyB5RBX4efzT5xCnxG+Eq5WBttWGmroJWSwIZBIRj7t2TRe0e0ToY
+         Qpf93VqfghWjBWrSvIfCg6iHEtX9UAjbvMz4htxGj8R9rgG+Sj0OWoQT1E2nnwbujJxN
+         hFnH3jAgeYx3+0Tlt26MUmgT40Lr3b2vukLkIF832pMOPF7wvUB2JSeGSCXx++3SEnj/
+         0xgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704799675; x=1705404475;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oKel/uL1tajPej7Kr+Y3gD2pm0Q/5wlP7q9l4+pRLR8=;
+        b=GryeTwC/mDRBKODpPih2Ertw6kBtB34VqBABM1IfewBo9xA7gViFGGxBZY6EPJUm2k
+         wzl7RsSSZV3NSKuEA+/2ek83P+Fk7b15eW9cdXliPhlmlDy6spdNn9xKx+4FZqEFpTWL
+         U3t6azIQCpzfgn0uo3BO/WjWzKmlezR7AUFXXdvJyzZICWCCAGGuNj+U4e+hPJKy+3l8
+         c0nXD53hBVUfgeTTXxfYoKhNPdJ6tb9Wmc06UrnyuDqIrHS4QCgsjKpZT+ZSRvh/2FUi
+         TRgJY2F4h54FYHMEXDKeTKIXt7D1AlBe/lJbWvnMmmVaaM8cFKJ0ejsPbFdxUXydWt65
+         B3HA==
+X-Gm-Message-State: AOJu0YyYdvJgn8TV39hRY3AW7T1RC14wx7xgGoEGI0aDetESJsZe8jgx
+	XrqVUaZz7EWxi+0CAhxhm/9iyUgr65VnSg==
+X-Google-Smtp-Source: AGHT+IFLDOEYrnaFAb1pvyYayLgZLIaQwOsuzV7aIZuufvzjoaHL+sD2wiqnSgjHvZSMG2kvOL3hGg==
+X-Received: by 2002:a50:bb2f:0:b0:557:188b:eccb with SMTP id y44-20020a50bb2f000000b00557188beccbmr2752722ede.84.1704799675115;
+        Tue, 09 Jan 2024 03:27:55 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id b6-20020a0564021f0600b0055678085e27sm847587edb.20.2024.01.09.03.27.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 03:27:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 409BRfDM002970
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 09 Jan 2024 12:27:54 +0100
+Message-Id: <CYA51QMVFQZF.3NEPC3R2QY2VM@fairphone.com>
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Andy Gross"
+ <agross@kernel.org>, "Bjorn Andersson" <andersson@kernel.org>, "Thara
+ Gopinath" <thara.gopinath@gmail.com>, "Herbert Xu"
+ <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
+ "Rob Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Bhupesh Sharma" <bhupesh.sharma@linaro.org>
+Cc: <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] Add Crypto Engine support for SM6350
+X-Mailer: aerc 0.15.2
+References: <20240105-sm6350-qce-v1-0-416e5c7319ac@fairphone.com>
+ <c3e82c7a-fc03-44c6-bf83-97dffaf22dba@linaro.org>
+In-Reply-To: <c3e82c7a-fc03-44c6-bf83-97dffaf22dba@linaro.org>
 
-Commit 0952177f2a1f ("thermal/core/power_allocator: Update once
-cooling devices when temp is low") adds an update flag to avoid
-the thermal event is triggered when there is no need, and
-thermal cdev would be updated once when temperature is low.
+On Mon Jan 8, 2024 at 1:40 PM CET, Konrad Dybcio wrote:
+> On 5.01.2024 17:15, Luca Weiss wrote:
+> > Add the compatible and nodes for the QCE found on SM6350 SoC.
+> >=20
+> > Not completely sure how to fully test it but "kcapi-speed --all" shows
+> > no issues. Let me know if I can/should test this more.
+>
+> I think I used `cryptsetup benchmark` with and without the ICE enabled
+> a couple years back. IIRC the CPU should be faaar faster but also chug
+> power while at it.
 
-But when the trips are writable, and switch_on_temp is set
-to be a higher value, the cooling device state may not be
-reset to 0, because last_temperature is smaller than the
-switch_on_temp.
+Are you sure you mean QCE here (which this patch is about) and not ICE?
 
-For example:
-First:
-switch_on_temp=70 control_temp=85;
-Then userspace change the trip_temp:
-switch_on_temp=45 control_temp=55 cur_temp=54
+I'm not aware of them working together somehow but I wouldn't be
+surprised if there's something since I don't know much of this area at
+all.
 
-Then userspace reset the trip_temp:
-switch_on_temp=70 control_temp=85 cur_temp=57 last_temp=54
+Regards
+Luca
 
-At this time, the cooling device state should be reset to 0.
-However, because cur_temp(57) < switch_on_temp(70)
-last_temp(54) < switch_on_temp(70)  ---->  update = false,
-update is false, the cooling device state can not be reset.
-
-Considering tz->passive can also be represented the temperature
-status, this patch modifies the update flag with tz->passive.
-
-When the first time the temperature drops below switch_on, the
-states of cooling devices can be reset once(because tz->passive = 1),
-and the tz->passive is updated to 0. In the next round, because
-tz->passive is 0, the cdev->state would not be updated.
-
-By using the tz->passive as the "update" flag, the issue above
-can be solved, and the cooling devices can be update only once
-when the temperature is low.
-
-Fixes: <0952177f2a1f> (thermal/core/power_allocator: Update once cooling devices when temp is low)
-Signed-off-by: Di Shen <di.shen@unisoc.com>
-
----
-V6:
-Compared to the previous version:
-- Not change the thermal core.
-- Not add new variables and function.
-- Use tz->passive as "update" flag to indicates whether the cooling
-  device should be reset.
-
-V5: [5]
-- Simplify the reset ops, make it no return value and no specific
-  trip ID as argument.
-- Extend the commit message.
-
-V4: [4]
-- Compared to V3, handle it in thermal core instead of in governor.
-- Add an ops to the governor structure, and call it when a trip
-  point is changed.
-- Define reset ops for power allocator.
-
-V3: [3]
-- Add fix tag.
-
-V2: [2]
-- Compared to v1, do not revert.
-- Add a variable(last_switch_on_temp) in power_allocator_params
-  to record the last switch_on_temp value.
-- Adds a function to renew the update flag and update the
-  last_switch_on_temp when thermal trips are writable.
-
-V1: [1]
-- Revert commit 0952177f2a1f.
-
-[1] https://lore.kernel.org/all/20230309135515.1232-1-di.shen@unisoc.com/
-[2] https://lore.kernel.org/all/20230315093008.17489-1-di.shen@unisoc.com/
-[3] https://lore.kernel.org/all/20230320095620.7480-1-di.shen@unisoc.com/
-[4] https://lore.kernel.org/all/20230619063534.12831-1-di.shen@unisoc.com/
-[5] https://lore.kernel.org/all/20230710033234.28641-1-di.shen@unisoc.com/
----
----
- drivers/thermal/gov_power_allocator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index 83d4f451b1a9..931cd88425e4 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -693,7 +693,7 @@ static int power_allocator_throttle(struct thermal_zone_device *tz,
- 
- 	trip = params->trip_switch_on;
- 	if (trip && tz->temperature < trip->temperature) {
--		update = tz->last_temperature >= trip->temperature;
-+		update = tz->passive;
- 		tz->passive = 0;
- 		reset_pid_controller(params);
- 		allow_maximum_power(tz, update);
--- 
-2.17.1
+>
+> Konrad
 
 
