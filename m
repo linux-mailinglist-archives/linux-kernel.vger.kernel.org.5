@@ -1,332 +1,157 @@
-Return-Path: <linux-kernel+bounces-21139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6D87828A93
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:59:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81887828A96
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E253AB22C45
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:59:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C03CDB23210
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516C23A8E5;
-	Tue,  9 Jan 2024 16:59:29 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE3C3A8EA;
+	Tue,  9 Jan 2024 17:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WfP8ZN/e"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074193A8C5;
-	Tue,  9 Jan 2024 16:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 5c1102fa8f2cf404; Tue, 9 Jan 2024 17:59:23 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 40513669107;
-	Tue,  9 Jan 2024 17:59:23 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v1] PM: sleep: Restore asynchronous device resume optimization
-Date: Tue, 09 Jan 2024 17:59:22 +0100
-Message-ID: <10423008.nUPlyArG6x@kreacher>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAB53A8C5;
+	Tue,  9 Jan 2024 17:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dbe78430946so2277778276.0;
+        Tue, 09 Jan 2024 09:00:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704819600; x=1705424400; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zYX4iopU3hH3Lrc97kLCNebamc5oIYTO340ikGT3SMM=;
+        b=WfP8ZN/e2Kg1o+UgqQT5tQYIlh7eDeZQ4kgSa7tbZiCD08Rm3dVFEHCKopOrHiZ3jh
+         h03NVOeUGpH//3C0YXtzrjeDHCtMuZTJ8IXhGrLhtk0zpxvS6c1XNvpSsbnvyIgyDbVR
+         jd2F8mpPwOdiWMYnqb/s6XrrqI/Ky3akl2NkTrx+3/6FkPiLV41KfoLR4LXuLCm1yvua
+         NV/v5XvgtP8FzJcn6ISEXDoUI3vSpfUfsm0aSkewJh6EyXtIYxMhLm260b0onsToxia3
+         eJ+TBZ2HFTio07eudDlBBwCHZXqFASbsTmgZkRGivKWEAfwiyY6EsQf6M5GuMz2iHcgC
+         GypA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704819600; x=1705424400;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zYX4iopU3hH3Lrc97kLCNebamc5oIYTO340ikGT3SMM=;
+        b=EDLNh5n43D4hsWpvO489WARQHPByG4FMJLNeTE3e3eno5neIWACvV1ExugqKWNGakV
+         +ywVtnTZ1u/kLvGIS8a0oEm+W0bIwXcRSo1xYrHj4BjpREypbVwRgbI/tS036sqB3JIQ
+         4hrQgNfhsTV2afowe5BYBuNHAjxfn6EhXw3ibHm1cUxzpgQDKJGozmNjT2vzb93b+7Zb
+         0eMdULIBicf1KCMsJtayagVRpUixc7ZrkfcWNZvb3Up7dbD3ylM6sdbSbnLjdXPkKaNS
+         02LeD8L7QgBOvrnQfvRx+49ZtajXrpODm4n/Q2CtcUQKOLl+uaNTwQfkBUtxnKvi7AWJ
+         BCYA==
+X-Gm-Message-State: AOJu0YyQ2ApzJT1IwmAOieJF6W5kLpCyFRfIDqCVelFTzRJ+FyQBLevv
+	G81/l4PjtULFOpvEyBh/NWWlqbX6vHywcCKUrA==
+X-Google-Smtp-Source: AGHT+IFMAJE/ek3LB/WE3y8xcP5p3Dv1htvD7kcIRjnXqNFqQCw+Uer4Ift09c68Yv/gKmzMtFMsTB/v0Wn3ywkK4xM=
+X-Received: by 2002:a25:d3cb:0:b0:dbe:32a8:12b2 with SMTP id
+ e194-20020a25d3cb000000b00dbe32a812b2mr2943200ybf.106.1704819600280; Tue, 09
+ Jan 2024 09:00:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20240109153609.10185-1-sunhao.th@gmail.com> <f84ffb6623d2901624337e88daf73ac639b37a2c.camel@gmail.com>
+In-Reply-To: <f84ffb6623d2901624337e88daf73ac639b37a2c.camel@gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Tue, 9 Jan 2024 17:59:49 +0100
+Message-ID: <CACkBjsauj7G31uAUB7137+ij5Pf4m-CB=woN35HBbZR5L3E6jg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, willemb@google.com, ast@kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehledgleefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffffffekgfehheffleetieevfeefvefhleetjedvvdeijeejledvieehueevueffnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Transfer-Encoding: quoted-printable
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Jan 9, 2024 at 5:21=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Tue, 2024-01-09 at 16:36 +0100, Hao Sun wrote:
+> > For PTR_TO_FLOW_KEYS, check_flow_keys_access() only uses fixed off
+> > for validation. However, variable offset ptr alu is not prohibited
+> > for this ptr kind. So the variable offset is not checked.
+> >
+> [...]
+> >
+> > Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hoo=
+k")
+> > Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> > ---
+> >  kernel/bpf/verifier.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index adbf330d364b..65f598694d55 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -12826,6 +12826,10 @@ static int adjust_ptr_min_max_vals(struct bpf_=
+verifier_env *env,
+> >       }
+> >
+> >       switch (base_type(ptr_reg->type)) {
+> > +     case PTR_TO_FLOW_KEYS:
+> > +             if (known)
+> > +                     break;
+> > +             fallthrough;
+> >       case CONST_PTR_TO_MAP:
+> >               /* smin_val represents the known value */
+> >               if (known && smin_val =3D=3D 0 && opcode =3D=3D BPF_ADD)
+>
+> This change makes sense, could you please add a testcase?
+>
 
-Before commit 7839d0078e0d ("PM: sleep: Fix possible deadlocks in core
-system-wide PM code"), the resume of devices that were allowed to resume
-asynchronously was scheduled before starting the resume of the other
-devices, so the former did not have to wait for the latter unless
-functional dependencies were present.
+OK, will do it in the next version tomorrow.
 
-Commit 7839d0078e0d removed that optimization in order to address a
-correctness issue, but it can be restored with the help of a new device
-power management flag, so do that now.
+> Also, this switch is written to explicitly disallow and implicitly allow
+> pointer arithmetics, which might be a bit unsafe when new ptr types are a=
+dded.
+> Would it make more sense to instead rewrite it to explicitly allow?
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+Yes, this sounds more safe and clear to me, should be done in another patch=
+.
 
-I said I'd probably do this in 6.9, but then I thought more about it
-and now I think it would be nice to have 6.8-rc1 without a suspend
-performance regression and the change is relatively straightforward,
-so here it goes.
+> E.g. here is what it currently allows / disallows:
+>
+> | Pointer type        | Arithmetics allowed |
+> |---------------------+---------------------|
+> | PTR_TO_CTX          | yes                 |
+> | CONST_PTR_TO_MAP    | conditionally       |
+> | PTR_TO_MAP_VALUE    | yes                 |
+> | PTR_TO_MAP_KEY      | yes                 |
+> | PTR_TO_STACK        | yes                 |
+> | PTR_TO_PACKET_META  | yes                 |
+> | PTR_TO_PACKET       | yes                 |
+> | PTR_TO_PACKET_END   | no                  |
+> | PTR_TO_FLOW_KEYS    | yes                 |
 
----
- drivers/base/power/main.c |  117 +++++++++++++++++++++++++---------------------
- include/linux/pm.h        |    1 
- 2 files changed, 65 insertions(+), 53 deletions(-)
+This one should be `conditionally`, variable offset disallowed, fixed allow=
+ed.
 
-Index: linux-pm/include/linux/pm.h
-===================================================================
---- linux-pm.orig/include/linux/pm.h
-+++ linux-pm/include/linux/pm.h
-@@ -681,6 +681,7 @@ struct dev_pm_info {
- 	bool			wakeup_path:1;
- 	bool			syscore:1;
- 	bool			no_pm_callbacks:1;	/* Owned by the PM core */
-+	bool			in_progress:1;	/* Owned by the PM core */
- 	unsigned int		must_resume:1;	/* Owned by the PM core */
- 	unsigned int		may_skip_resume:1;	/* Set by subsystems */
- #else
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -579,7 +579,7 @@ bool dev_pm_skip_resume(struct device *d
- }
- 
- /**
-- * __device_resume_noirq - Execute a "noirq resume" callback for given device.
-+ * device_resume_noirq - Execute a "noirq resume" callback for given device.
-  * @dev: Device to handle.
-  * @state: PM transition of the system being carried out.
-  * @async: If true, the device is being resumed asynchronously.
-@@ -587,7 +587,7 @@ bool dev_pm_skip_resume(struct device *d
-  * The driver of @dev will not receive interrupts while this function is being
-  * executed.
-  */
--static void __device_resume_noirq(struct device *dev, pm_message_t state, bool async)
-+static void device_resume_noirq(struct device *dev, pm_message_t state, bool async)
- {
- 	pm_callback_t callback = NULL;
- 	const char *info = NULL;
-@@ -674,16 +674,22 @@ static bool dpm_async_fn(struct device *
- {
- 	reinit_completion(&dev->power.completion);
- 
--	if (!is_async(dev))
--		return false;
-+	if (is_async(dev)) {
-+		dev->power.in_progress = true;
- 
--	get_device(dev);
--
--	if (async_schedule_dev_nocall(func, dev))
--		return true;
-+		get_device(dev);
- 
--	put_device(dev);
-+		if (async_schedule_dev_nocall(func, dev))
-+			return true;
- 
-+		put_device(dev);
-+	}
-+	/*
-+	 * Because async_schedule_dev_nocall() above has returned false or it
-+	 * has not been called at all, func() is not running and it safe to
-+	 * update the in_progress flag without additional synchronization.
-+	 */
-+	dev->power.in_progress = false;
- 	return false;
- }
- 
-@@ -691,18 +697,10 @@ static void async_resume_noirq(void *dat
- {
- 	struct device *dev = data;
- 
--	__device_resume_noirq(dev, pm_transition, true);
-+	device_resume_noirq(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
--static void device_resume_noirq(struct device *dev)
--{
--	if (dpm_async_fn(dev, async_resume_noirq))
--		return;
--
--	__device_resume_noirq(dev, pm_transition, false);
--}
--
- static void dpm_noirq_resume_devices(pm_message_t state)
- {
- 	struct device *dev;
-@@ -712,18 +710,28 @@ static void dpm_noirq_resume_devices(pm_
- 	mutex_lock(&dpm_list_mtx);
- 	pm_transition = state;
- 
-+	/*
-+	 * Trigger the resume of "async" devices upfront so they don't have to
-+	 * wait for the "non-async" ones they don't depend on.
-+	 */
-+	list_for_each_entry(dev, &dpm_noirq_list, power.entry)
-+		dpm_async_fn(dev, async_resume_noirq);
-+
- 	while (!list_empty(&dpm_noirq_list)) {
- 		dev = to_device(dpm_noirq_list.next);
--		get_device(dev);
- 		list_move_tail(&dev->power.entry, &dpm_late_early_list);
- 
--		mutex_unlock(&dpm_list_mtx);
-+		if (!dev->power.in_progress) {
-+			get_device(dev);
- 
--		device_resume_noirq(dev);
-+			mutex_unlock(&dpm_list_mtx);
- 
--		put_device(dev);
-+			device_resume_noirq(dev, state, false);
-+
-+			put_device(dev);
- 
--		mutex_lock(&dpm_list_mtx);
-+			mutex_lock(&dpm_list_mtx);
-+		}
- 	}
- 	mutex_unlock(&dpm_list_mtx);
- 	async_synchronize_full();
-@@ -747,14 +755,14 @@ void dpm_resume_noirq(pm_message_t state
- }
- 
- /**
-- * __device_resume_early - Execute an "early resume" callback for given device.
-+ * device_resume_early - Execute an "early resume" callback for given device.
-  * @dev: Device to handle.
-  * @state: PM transition of the system being carried out.
-  * @async: If true, the device is being resumed asynchronously.
-  *
-  * Runtime PM is disabled for @dev while this function is being executed.
-  */
--static void __device_resume_early(struct device *dev, pm_message_t state, bool async)
-+static void device_resume_early(struct device *dev, pm_message_t state, bool async)
- {
- 	pm_callback_t callback = NULL;
- 	const char *info = NULL;
-@@ -820,18 +828,10 @@ static void async_resume_early(void *dat
- {
- 	struct device *dev = data;
- 
--	__device_resume_early(dev, pm_transition, true);
-+	device_resume_early(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
--static void device_resume_early(struct device *dev)
--{
--	if (dpm_async_fn(dev, async_resume_early))
--		return;
--
--	__device_resume_early(dev, pm_transition, false);
--}
--
- /**
-  * dpm_resume_early - Execute "early resume" callbacks for all devices.
-  * @state: PM transition of the system being carried out.
-@@ -845,18 +845,28 @@ void dpm_resume_early(pm_message_t state
- 	mutex_lock(&dpm_list_mtx);
- 	pm_transition = state;
- 
-+	/*
-+	 * Trigger the resume of "async" devices upfront so they don't have to
-+	 * wait for the "non-async" ones they don't depend on.
-+	 */
-+	list_for_each_entry(dev, &dpm_late_early_list, power.entry)
-+		dpm_async_fn(dev, async_resume_early);
-+
- 	while (!list_empty(&dpm_late_early_list)) {
- 		dev = to_device(dpm_late_early_list.next);
--		get_device(dev);
- 		list_move_tail(&dev->power.entry, &dpm_suspended_list);
- 
--		mutex_unlock(&dpm_list_mtx);
-+		if (!dev->power.in_progress) {
-+			get_device(dev);
- 
--		device_resume_early(dev);
-+			mutex_unlock(&dpm_list_mtx);
- 
--		put_device(dev);
-+			device_resume_early(dev, state, false);
-+
-+			put_device(dev);
- 
--		mutex_lock(&dpm_list_mtx);
-+			mutex_lock(&dpm_list_mtx);
-+		}
- 	}
- 	mutex_unlock(&dpm_list_mtx);
- 	async_synchronize_full();
-@@ -876,12 +886,12 @@ void dpm_resume_start(pm_message_t state
- EXPORT_SYMBOL_GPL(dpm_resume_start);
- 
- /**
-- * __device_resume - Execute "resume" callbacks for given device.
-+ * device_resume - Execute "resume" callbacks for given device.
-  * @dev: Device to handle.
-  * @state: PM transition of the system being carried out.
-  * @async: If true, the device is being resumed asynchronously.
-  */
--static void __device_resume(struct device *dev, pm_message_t state, bool async)
-+static void device_resume(struct device *dev, pm_message_t state, bool async)
- {
- 	pm_callback_t callback = NULL;
- 	const char *info = NULL;
-@@ -975,18 +985,10 @@ static void async_resume(void *data, asy
- {
- 	struct device *dev = data;
- 
--	__device_resume(dev, pm_transition, true);
-+	device_resume(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
--static void device_resume(struct device *dev)
--{
--	if (dpm_async_fn(dev, async_resume))
--		return;
--
--	__device_resume(dev, pm_transition, false);
--}
--
- /**
-  * dpm_resume - Execute "resume" callbacks for non-sysdev devices.
-  * @state: PM transition of the system being carried out.
-@@ -1006,16 +1008,25 @@ void dpm_resume(pm_message_t state)
- 	pm_transition = state;
- 	async_error = 0;
- 
-+	/*
-+	 * Trigger the resume of "async" devices upfront so they don't have to
-+	 * wait for the "non-async" ones they don't depend on.
-+	 */
-+	list_for_each_entry(dev, &dpm_suspended_list, power.entry)
-+		dpm_async_fn(dev, async_resume);
-+
- 	while (!list_empty(&dpm_suspended_list)) {
- 		dev = to_device(dpm_suspended_list.next);
- 
- 		get_device(dev);
- 
--		mutex_unlock(&dpm_list_mtx);
-+		if (!dev->power.in_progress) {
-+			mutex_unlock(&dpm_list_mtx);
- 
--		device_resume(dev);
-+			device_resume(dev, state, false);
- 
--		mutex_lock(&dpm_list_mtx);
-+			mutex_lock(&dpm_list_mtx);
-+		}
- 
- 		if (!list_empty(&dev->power.entry))
- 			list_move_tail(&dev->power.entry, &dpm_prepared_list);
+> | PTR_TO_SOCKET       | no                  |
+> | PTR_TO_SOCK_COMMON  | no                  |
+> | PTR_TO_TCP_SOCK     | no                  |
+> | PTR_TO_TP_BUFFER    | yes                 |
+> | PTR_TO_XDP_SOCK     | no                  |
+> | PTR_TO_BTF_ID       | yes                 |
+> | PTR_TO_MEM          | yes                 |
+> | PTR_TO_BUF          | yes                 |
+> | PTR_TO_FUNC         | yes                 |
+> | CONST_PTR_TO_DYNPTR | yes                 |
+>
+> Of these PTR_TO_FUNC and CONST_PTR_TO_DYNPTR (?) should not be allowed
+> as well, probably (not sure if that could be exploited).
 
+I think both should be disallowed.
 
-
+If alu sanitation is triggered, alu op on func and dynptr would be
+rejected by retrieve_ptr_limit();
+otherwise, it could be dangerous.
 
