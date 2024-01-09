@@ -1,90 +1,62 @@
-Return-Path: <linux-kernel+bounces-21530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0EC08290D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:29:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79CA88290D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A6F72886E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:29:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF9D71F265B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402283EA71;
-	Tue,  9 Jan 2024 23:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFC33E483;
+	Tue,  9 Jan 2024 23:29:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uk+xmktr"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fa1EW/89"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CD63EA70;
-	Tue,  9 Jan 2024 23:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5f75aee31d2so28823137b3.2;
-        Tue, 09 Jan 2024 15:29:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704842942; x=1705447742; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IX9+LBttu/RH0kDncVePa6QCQhOlpQ7I4FJ1PbxVZmc=;
-        b=Uk+xmktrfy0OCgPT+GUXNNA1O+G5DLV+vGZ2+5iYDEqGD0P/MR/N91ukItku1XethG
-         QxaZZaLI9qpkF/D7yjBgeqrum9OR9ssEvNt6rwTNrTO+ImQe2ChGTKvz5Er95wqHlmDt
-         jKjGbLxSafRIKJxZm90G+trUslPw6EdrDCkSfr+6yPSWBVOo70PrSTP8Nhg9U9bi5Qdw
-         xnqAqYkeEtgfCih/zWT98+fca5v0wjEOzvO/f4SqZ2tMn/c/71b79CXThaH7Iilh9Li1
-         /ZiIX97es0ASk/mcWr6WM8G81SK3PaqH+RGq15kAlMfwbys2qYv2yADbFozPFqI1uiFc
-         KNag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704842942; x=1705447742;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IX9+LBttu/RH0kDncVePa6QCQhOlpQ7I4FJ1PbxVZmc=;
-        b=vvZm7Id8Tz3fbqm77LL/MP4CorJTiZplePH7ZsNqoVJ7x+7m9wCWhEZGZ9swpN5PX/
-         NWpr/YKog77MTkez+wVmtJjvaG+JJw8MowgHoCKD7mp1b0E3GlA/hEVhNeiVLSSQmKzx
-         Ey/xgQPfqpZm9sM/JdQPn7QcGLN8K8ghXGCe3woSIgmdzlaaXxEA/cRaFpR8VSjH9JQJ
-         DqI8Y4+e0iZ8iKQk+HyN+6GRhBghEjBdqpVQjZbPwsbI6/1MCQ+1KlRSGSzUA3Ya2MTq
-         4XK0VEyRJIAir1q7p3KPTzcsut2pe6key0Ft2bNFDsMe2HqAVrQBAOKMT10B0xSvfNLJ
-         NhRg==
-X-Gm-Message-State: AOJu0Yxb0sqGfNSBmOm/xKoDw9+obN5DA4OeoF+0x+Ys9NyPyseLQYbV
-	TkRUb+2qZJhIVtBRG2B7+n+g5ZtFxEy96Q==
-X-Google-Smtp-Source: AGHT+IFLEbEq4E6XFd6N6rJvqoswf3ZrDm1OR85FlR/A+EyeCly7n2sRjcGSFwFJTPKer/j0img+Dg==
-X-Received: by 2002:a0d:e305:0:b0:5d7:1941:ab9 with SMTP id m5-20020a0de305000000b005d719410ab9mr272325ywe.84.1704842941668;
-        Tue, 09 Jan 2024 15:29:01 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:5cbb:49c8:4388:70cc])
-        by smtp.gmail.com with ESMTPSA id m184-20020a0dfcc1000000b005f59ba17709sm1119737ywf.18.2024.01.09.15.29.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 15:29:01 -0800 (PST)
-Date: Tue, 9 Jan 2024 15:28:59 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	"kys@microsoft.com" <kys@microsoft.com>,
-	"haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"decui@microsoft.com" <decui@microsoft.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"longli@microsoft.com" <longli@microsoft.com>,
-	"leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"schakrabarti@microsoft.com" <schakrabarti@microsoft.com>,
-	"paulros@microsoft.com" <paulros@microsoft.com>
-Subject: Re: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs
- per CPUs
-Message-ID: <ZZ3Wsxq8rHShTUdA@yury-ThinkPad>
-References: <1704797478-32377-1-git-send-email-schakrabarti@linux.microsoft.com>
- <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
- <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9561F3E478;
+	Tue,  9 Jan 2024 23:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704842986; x=1736378986;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t2u3vnCnSzBZl1Tbs5JZmoi/P+epXaSxC9m93kmML2c=;
+  b=Fa1EW/89egH0gK2SRCOmn4/yKVs1wjtF/v9fdSaTYK5g00C4zNP1JiGz
+   xqCKY95/jx4Kg4zxNI/Ji2lwII3ZupEz4GC3/oaG83K0zWgQFHSG1OnFN
+   b9jZGOlbul03xP/9nIRQ4pQ7TBIZOL7+3dkacF+i1CcAzrJBPhdibgZ7n
+   ePM5WmYrWXrdpj7GcUhv4pparSnnpJWohb1wJGO7oUK3Ow9d/EABUGy+k
+   vYc00yzKCyhjJvE2S3EeTZcoI/Nb/qM3s/Yw1oFKrrX/r5cQR1ZDlLHPm
+   0iuKtG22bXz38Dxu1sbx4wQIobzwaRKfBHPkZG4yTbs9ELlu1KFSKHI7q
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="395513766"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="395513766"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 15:29:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="731643767"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="731643767"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.212.199.109])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 15:29:43 -0800
+Date: Tue, 9 Jan 2024 15:29:42 -0800
+From: Alison Schofield <alison.schofield@intel.com>
+To: Ira Weiny <ira.weiny@intel.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] cxl/pci: Skip irq features if irq's are not supported
+Message-ID: <ZZ3W5q4UzvLJ9kG+@aschofie-mobl2>
+References: <20240108-dont-fail-irq-v1-1-4407228debd2@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,149 +65,159 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
+In-Reply-To: <20240108-dont-fail-irq-v1-1-4407228debd2@intel.com>
 
-Hi Michael,
-
-So, I'm just a guy who helped to formulate the heuristics in an
-itemized form, and implement them using the existing kernel API.
-I have no access to MANA machines and I ran no performance tests
-myself.
-
-On Tue, Jan 09, 2024 at 07:22:38PM +0000, Michael Kelley wrote:
-> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent: Tuesday, January 9, 2024 2:51 AM
-> > 
-> > From: Yury Norov <yury.norov@gmail.com>
-> > 
-> > Souradeep investigated that the driver performs faster if IRQs are
-> > spread on CPUs with the following heuristics:
-> > 
-> > 1. No more than one IRQ per CPU, if possible;
-> > 2. NUMA locality is the second priority;
-> > 3. Sibling dislocality is the last priority.
-> > 
-> > Let's consider this topology:
-> > 
-> > Node            0               1
-> > Core        0       1       2       3
-> > CPU       0   1   2   3   4   5   6   7
-> > 
-> > The most performant IRQ distribution based on the above topology
-> > and heuristics may look like this:
-> > 
-> > IRQ     Nodes   Cores   CPUs
-> > 0       1       0       0-1
-> > 1       1       1       2-3
-> > 2       1       0       0-1
-> > 3       1       1       2-3
-> > 4       2       2       4-5
-> > 5       2       3       6-7
-> > 6       2       2       4-5
-> > 7       2       3       6-7
+On Mon, Jan 08, 2024 at 11:51:13PM -0800, Ira Weiny wrote:
+> CXL 3.1 Section 3.1.1 states:
 > 
-> I didn't pay attention to the detailed discussion of this issue
-> over the past 2 to 3 weeks during the holidays in the U.S., but
-> the above doesn't align with the original problem as I understood
-> it.  I thought the original problem was to avoid putting IRQs on
-> both hyper-threads in the same core, and that the perf
-> improvements are based on that configuration.  At least that's
-> what the commit message for Patch 4/4 in this series says.
-
-Yes, and the original distribution suggested by Souradeep looks very
-similar:
-
-  IRQ     Nodes   Cores   CPUs
-  0       1       0       0
-  1       1       1       2
-  2       1       0       1
-  3       1       1       3
-  4       2       2       4
-  5       2       3       6
-  6       2       2       5
-  7       2       3       7
-
-I just added a bit more flexibility, so that kernel may pick any
-sibling for the IRQ. As I understand, both approaches have similar
-performance. Probably my fine-tune added another half-percent...
-
-Souradeep, can you please share the exact numbers on this?
-
-> The above chart results in 8 IRQs being assigned to the 8 CPUs,
-> probably with 1 IRQ per CPU.   At least on x86, if the affinity
-> mask for an IRQ contains multiple CPUs, matrix_find_best_cpu()
-> should balance the IRQ assignments between the CPUs in the mask.
-> So the original problem is still present because both hyper-threads
-> in a core are likely to have an IRQ assigned.
-
-That's what I think, if the topology makes us to put IRQs in the
-same sibling group, the best thing we can to is to rely on existing
-balancing mechanisms in a hope that they will do their job well.
-
-> Of course, this example has 8 IRQs and 8 CPUs, so assigning an
-> IRQ to every hyper-thread may be the only choice.  If that's the
-> case, maybe this just isn't a good example to illustrate the
-> original problem and solution.
-
-Yeah... This example illustrates the order of IRQ distribution.
-I really doubt that if we distribute IRQs like in the above example,
-there would be any difference in performance. But I think it's quite
-a good illustration. I could write the title for the table like this:
-
-        The order of IRQ distribution for the best performance
-        based on [...] may look like this.
-
-> But even with a better example
-> where the # of IRQs is <= half the # of CPUs in a NUMA node,
-> I don't think the code below accomplishes the original intent.
+> 	"A Function on a CXL device must not generate INTx messages if
+> 	that Function participates in CXL.cache protocol or CXL.mem
+> 	protocols."
 > 
-> Maybe I've missed something along the way in getting to this
-> version of the patch.  Please feel free to set me straight. :-)
+> The generic CXL memory driver only supports devices which use the
+> CXL.mem protocol.  The current driver attempts to allocate MSI/MSI-X
+> vectors in anticipation of their need for mailbox interrupts or event
+> processing.  However, the above requirement does not require a device to
+> support interrupts at all.  A device may not use mailbox interrupts and
+> may be configured for firmware first event processing.
+> 
+> Rather than fail device probe if interrupts are not supported; flag such
+> that irqs are not supported and do not enable features which require
+> interrupts.  dev_warn() in those cases which require interrupts but they
+> were not supported.
+> 
+> It is possible for a device to have host based event processing through
+> polling but this patch does not support the addition of such polling.
+> Leave that to the future if such a device comes along.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+> Compile tested only.
+> 
+> This is an RFC based on errors seen by Dave Larson and reported on
+> discord.  Dan requested that the driver not fail if irqs are not
+> required.
+> ---
+>  drivers/cxl/cxlmem.h |  2 ++
+>  drivers/cxl/pci.c    | 25 +++++++++++++++++++------
+>  2 files changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index a2fcbca253f3..422bc9657e5c 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -410,6 +410,7 @@ enum cxl_devtype {
+>   * @ram_res: Active Volatile memory capacity configuration
+>   * @serial: PCIe Device Serial Number
+>   * @type: Generic Memory Class device or Vendor Specific Memory device
+> + * @irq_supported: Flag if irqs are supported by the device
+>   */
+>  struct cxl_dev_state {
+>  	struct device *dev;
+> @@ -424,6 +425,7 @@ struct cxl_dev_state {
+>  	struct resource ram_res;
+>  	u64 serial;
+>  	enum cxl_devtype type;
+> +	bool irq_supported;
+>  };
+>  
+>  /**
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 0155fb66b580..bb90ac011290 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -443,6 +443,12 @@ static int cxl_pci_setup_mailbox(struct cxl_memdev_state *mds)
+>  	if (!(cap & CXLDEV_MBOX_CAP_BG_CMD_IRQ))
+>  		return 0;
+>  
+> +	if (!cxlds->irq_supported) {
+> +		dev_err(cxlds->dev, "Mailbox interrupts enabled but device indicates no interrupt vectors supported.\n");
+> +		dev_err(cxlds->dev, "Skip mailbox iterrupt configuration.\n");
+> +		return 0;
+> +	}
+> +
 
-Hmm. So if the number of IRQs is the half # of CPUs in the nodes,
-which is 2 in the example above, the distribution will look like
-this:
+Commit msg says dev_warn() yet here it is dev_err()
 
-  IRQ     Nodes   Cores   CPUs
-  0       1       0       0-1
-  1       1       1       2-3
+Can you fit in one msg, something like:
+	"Device does not support mailbox interrupts\n"
 
-And each IRQ belongs to a different sibling group. This follows
-the rules above.
+Perhaps skip the hard stops. No other dev_*() in this file adds them.
+Documentation/process/coding-style.rst
 
-I think of it like we assign an IRQ to a group of 2 CPUs, so from
-the heuristic #1 perspective, each CPU is assigned with 1/2 of the
-IRQ.
-
-If I add one more IRQ, then according to the heuristics, NUMA locality
-trumps sibling dislocality, so we'd assign IRO to the same node on any
-core. My algorithm assigns it to the core #0:
-
-  2       1       0       0-1
-
-This doubles # of IRQs for the CPUs 0 and 1: from 1/2 to 1.
-
-The next IRQ should be assigned to the same node again, and we've got
-the only choice:
+Spellcheck
 
 
-  3       1       1       2-3
+>  	msgnum = FIELD_GET(CXLDEV_MBOX_CAP_IRQ_MSGNUM_MASK, cap);
+>  	irq = pci_irq_vector(to_pci_dev(cxlds->dev), msgnum);
+>  	if (irq < 0)
+> @@ -587,7 +593,8 @@ static int cxl_mem_alloc_event_buf(struct cxl_memdev_state *mds)
+>  	return devm_add_action_or_reset(mds->cxlds.dev, free_event_buf, buf);
+>  }
+>  
+> -static int cxl_alloc_irq_vectors(struct pci_dev *pdev)
+> +static void cxl_alloc_irq_vectors(struct pci_dev *pdev,
+> +				  struct cxl_dev_state *cxlds)
+>  {
+>  	int nvecs;
+>  
+> @@ -604,9 +611,10 @@ static int cxl_alloc_irq_vectors(struct pci_dev *pdev)
+>  				      PCI_IRQ_MSIX | PCI_IRQ_MSI);
+>  	if (nvecs < 1) {
+>  		dev_dbg(&pdev->dev, "Failed to alloc irq vectors: %d\n", nvecs);
+> -		return -ENXIO;
+> +		return;
+>  	}
+> -	return 0;
+> +
+> +	cxlds->irq_supported = true;
+>  }
+>  
+>  static irqreturn_t cxl_event_thread(int irq, void *id)
+> @@ -754,6 +762,13 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
+>  	if (!host_bridge->native_cxl_error)
+>  		return 0;
+>  
+> +	/* Polling not supported */
 
-Starting from IRQ #5, the node #1 is full - each CPU is assigned with
-exactly one IRQ, and the heuristic #1 makes us to switch to the other
-node; and then do the same thing:
+I understand this comment while reading it in the context of this patch.
+Lacking that context, maybe it deserves a bit more like you wrote in
+the commit log. Be clear that it's the driver that is not supporting
+polling, and when if or when the driver does add polling support they'll
+be an alternative method for processing events. IIUC  ;)
 
-  4       2       2       4-5
-  5       2       3       6-7
-  6       2       2       4-5
-  7       2       3       6-7
 
-So I think the algorithm is correct... Really hope the above makes
-sense. :) If so, I can add it to the commit message for patch #3.
+> +	if (!mds->cxlds.irq_supported) {
+> +		dev_err(mds->cxlds.dev, "Host events enabled but device indicates no interrupt vectors supported.\n");
+> +		dev_err(mds->cxlds.dev, "Event polling is not supported, skip event processing.\n");
+> +		return 0;
+> +	}
 
-Nevertheless... Souradeep, in addition to the performance numbers, can
-you share your topology and actual IRQ distribution that gains 15%? I
-think it should be added to the patch #4 commit message.
+Similar to above
 
-Thanks,
-Yury
+
+> +
+>  	rc = cxl_mem_alloc_event_buf(mds);
+>  	if (rc)
+>  		return rc;
+> @@ -845,9 +860,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	else
+>  		dev_warn(&pdev->dev, "Media not active (%d)\n", rc);
+>  
+> -	rc = cxl_alloc_irq_vectors(pdev);
+> -	if (rc)
+> -		return rc;
+> +	cxl_alloc_irq_vectors(pdev, cxlds);
+>  
+>  	rc = cxl_pci_setup_mailbox(mds);
+>  	if (rc)
+> 
+> ---
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> change-id: 20240108-dont-fail-irq-a96310368f0f
+> 
+> Best regards,
+> -- 
+> Ira Weiny <ira.weiny@intel.com>
+> 
 
