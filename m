@@ -1,149 +1,230 @@
-Return-Path: <linux-kernel+bounces-21525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765748290C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:18:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 480C08290C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1484A1F277EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:18:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71E11F27A09
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062D63E479;
-	Tue,  9 Jan 2024 23:17:57 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AFBD3E47A;
+	Tue,  9 Jan 2024 23:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eiCe4Lvt"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FB43DB80;
-	Tue,  9 Jan 2024 23:17:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2313DC433C7;
-	Tue,  9 Jan 2024 23:17:51 +0000 (UTC)
-Message-ID: <461a6556-8f24-48f5-811a-498cb44f2d64@linux-m68k.org>
-Date: Wed, 10 Jan 2024 09:17:48 +1000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4713E46E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704842364;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wHVmMNIg/DVwx+LrG/fqarxhc21tkCGhrWRbquNsn9U=;
+	b=eiCe4Lvt82zCtqZz0FhAdn0ukMoFW2pJAqc6IWNLKNepM5yE5pCWM8tRU0cZiFNWnefZTx
+	XU8Y9IhuMVlOJv8zcao1IWRvvsz4mSePjqEuhMy6fMMP1jt69PWg3ovZAR+SYjcdGrVMtP
+	00HnlM6fYHw9y7cW6cDzeDZjx5sOucw=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-634-O3gI1sEPPhqnhWkueODNtA-1; Tue, 09 Jan 2024 18:19:23 -0500
+X-MC-Unique: O3gI1sEPPhqnhWkueODNtA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40e41740b6eso30237815e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:19:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704842362; x=1705447162;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wHVmMNIg/DVwx+LrG/fqarxhc21tkCGhrWRbquNsn9U=;
+        b=XRs20ngVfZQOzkUhzw3i3aoyxJITsB74qkjZ4XnK34aa/QlfpZ8xj2AfQtkfkFHTnZ
+         kbYPi+luArQl0oxnaLA7l+8forsqSk3YU2kP5g6HEKTFui+AdzfWcLJEoH7Qv9vKVvJ9
+         w0KF1/MoJQsjGZiPjbVHXOF+wzB7kuOeNCE3XCSq0ORKRGer5/cY7vRXfQrF7evE/m3x
+         upyN5M7zE3cEdvZVcgTMJ/RXI2IDwaeSpr3HUAEBSbh6BA8tovtbnH/gvSNtvDO2v/PO
+         3GlJ6tldfOZZJGqgwsaCqLnrpRVqN6gKDYcm8+4HuLTrOseZXPWe48KH9Pmf0TqvqBOd
+         yEKg==
+X-Gm-Message-State: AOJu0YyQWfG79Y03r75WMkBmJ5RhFWc4VDh9+SBiVk8U0QzIqtwOz9t5
+	mUiq/X7x0zZFXBByykRBv/WIH85yUUMFh7E18iWsSTIJ6jp6wHSEgKvChTK3kmiz4/tZ0BtsXHv
+	FEsBwzkCCFwpHeF5DiDNVtgZPE2qvUuL3
+X-Received: by 2002:a05:600c:a4c:b0:40e:545b:80e6 with SMTP id c12-20020a05600c0a4c00b0040e545b80e6mr30951wmq.158.1704842361813;
+        Tue, 09 Jan 2024 15:19:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHar4XTexIgvBATKUPtUP4fvkCodLwjEIqa21khgBEAmJpVpxCFabBi/+JKYxxEDSZ4iCKRvA==
+X-Received: by 2002:a05:600c:a4c:b0:40e:545b:80e6 with SMTP id c12-20020a05600c0a4c00b0040e545b80e6mr30947wmq.158.1704842361435;
+        Tue, 09 Jan 2024 15:19:21 -0800 (PST)
+Received: from redhat.com ([2.52.133.193])
+        by smtp.gmail.com with ESMTPSA id bi6-20020a05600c3d8600b0040e3960f46asm76614wmb.14.2024.01.09.15.19.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 15:19:20 -0800 (PST)
+Date: Tue, 9 Jan 2024 18:19:17 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: David Stevens <stevensd@chromium.org>
+Cc: Theodore Ts'o <tytso@mit.edu>, David Hildenbrand <david@redhat.com>,
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: REGRESSION: lockdep warning triggered by 15b9ce7ecd:
+ virtio_balloon: stay awake while adjusting balloon
+Message-ID: <20240109181620-mutt-send-email-mst@kernel.org>
+References: <20240108215015.GA599905@mit.edu>
+ <CAD=HUj4dVm_5yTJG_Ly28-x9mCM5zxg8gb7EGz6ZUoDqV8StsA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
- UCLINUX from LTP]
-Content-Language: en-US
-To: Rob Landley <rob@landley.net>, Petr Vorel <pvorel@suse.cz>
-Cc: Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven
- <geert@linux-m68k.org>, ltp@lists.linux.it, Li Wang <liwang@redhat.com>,
- Andrea Cervesato <andrea.cervesato@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
- Niklas Cassel <niklas.cassel@wdc.com>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik>
- <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=HUj4dVm_5yTJG_Ly28-x9mCM5zxg8gb7EGz6ZUoDqV8StsA@mail.gmail.com>
 
-
-On 10/1/24 06:24, Rob Landley wrote:
-> On 1/8/24 03:03, Petr Vorel wrote:
->> Hi Rob, all,
->>
->> [ Added Niklas Cassel, who is maintainer of qemu_riscv64_nommu_virt_defconfig in
->> buildroot ]
+On Tue, Jan 09, 2024 at 02:50:20PM +0900, David Stevens wrote:
+> On Tue, Jan 9, 2024 at 6:50 AM Theodore Ts'o <tytso@mit.edu> wrote:
+> >
+> > Hi, while doing final testing before sending a pull request, I merged
+> > in linux-next, and commit 5b9ce7ecd7: virtio_balloon: stay awake while
+> > adjusting balloon seems to be causing a lockdep warning (see attached)
+> > when running gce-xfstests on a Google Compute Engine e2 VM.  I was not
+> > able to trigger it using kvm-xfstests, but the following command:
+> > "gce-xfstests -C 10 ext4/4k generic/476) was sufficient to triger the
+> > problem.   For more information please see [1] and [2].
+> >
+> > [1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/gce-xfstests.md
+> > [2] https://thunk.org/gce-xfstests
+> >
+> > I found it by looking at the git logs, and this commit aroused my
+> > suspicions, and I further testing showed that the lockdep warning was
+> > reproducible with this commit, but not when testing with the
+> > immediately preceeding commit (15b9ce7ecd^).
+> >
+> > Cheers,
+> >
+> >                                                 - Ted
+> >
+> >
+> > root: ext4/4k run xfstest generic/476
+> > systemd[1]: Started fstests-generic-476.scope - /usr/bin/bash -c test -w /proc/self/oom_score_adj && echo 250 > /proc/self/oom_score_adj; exec ./tests/generic/476.
+> > kernel: [  399.361181] EXT4-fs (dm-1): mounted filesystem 840e25bd-f650-4819-8562-7eded85ef370 r/w with ordered data mode. Quota mode: none.
+> > systemd[1]: fstests-generic-476.scope: Deactivated successfully.
+> > systemd[1]: fstests-generic-476.scope: Consumed 3min 1.966s CPU time.
+> > systemd[1]: xt\x2dvdb.mount: Deactivated successfully.
+> > kernel: [  537.085404] EXT4-fs (dm-0): unmounting filesystem d3d7a675-f7b6-4384-abec-2e60d885b6da.
+> > systemd[1]: xt\x2dvdc.mount: Deactivated successfully.
+> > kernel: [  540.565870]
+> > kernel: [  540.567523] ================================
+> > kernel: [  540.572007] WARNING: inconsistent lock state
+> > kernel: [  540.576407] 6.7.0-rc3-xfstests-lockdep-00012-g5b9ce7ecd715 #318 Not tainted
+> > kernel: [  540.583532] --------------------------------
+> > kernel: [  540.587928] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+> > kernel: [  540.594326] kworker/0:3/329 [HC0[0]:SC0[0]:HE1:SE1] takes:
+> > kernel: [  540.599955] ffff90b280a548c0 (&vb->adjustment_lock){?...}-{2:2}, at: update_balloon_size_func+0x33/0x190
+> > kernel: [  540.609926] {IN-HARDIRQ-W} state was registered at:
+> > kernel: [  540.614935]   __lock_acquire+0x3f2/0xb30
+> > kernel: [  540.618992]   lock_acquire+0xbf/0x2b0
+> > kernel: [  540.622786]   _raw_spin_lock_irqsave+0x43/0x90
+> > kernel: [  540.627366]   virtballoon_changed+0x51/0xd0
+> > kernel: [  540.631947]   virtio_config_changed+0x5a/0x70
+> > kernel: [  540.636437]   vp_config_changed+0x11/0x20
+> > kernel: [  540.640576]   __handle_irq_event_percpu+0x88/0x230
+> > kernel: [  540.645500]   handle_irq_event+0x38/0x80
+> > kernel: [  540.649558]   handle_edge_irq+0x8f/0x1f0
+> > kernel: [  540.653791]   __common_interrupt+0x47/0xf0
+> > kernel: [  540.658106]   common_interrupt+0x79/0xa0
+> > kernel: [  540.661672] EXT4-fs (dm-1): unmounting filesystem 840e25bd-f650-4819-8562-7eded85ef370.
+> > kernel: [  540.663183]   asm_common_interrupt+0x26/0x40
+> > kernel: [  540.663190]   acpi_safe_halt+0x1b/0x30
+> > kernel: [  540.663196]   acpi_idle_enter+0x7b/0xd0
+> > kernel: [  540.663199]   cpuidle_enter_state+0x90/0x4f0
+> > kernel: [  540.688723]   cpuidle_enter+0x2d/0x40
+> > kernel: [  540.692516]   cpuidle_idle_call+0xe4/0x120
+> > kernel: [  540.697036]   do_idle+0x84/0xd0
+> > kernel: [  540.700393]   cpu_startup_entry+0x2a/0x30
+> > kernel: [  540.704588]   rest_init+0xe9/0x180
+> > kernel: [  540.708118]   arch_call_rest_init+0xe/0x30
+> > kernel: [  540.712426]   start_kernel+0x41c/0x4b0
+> > kernel: [  540.716310]   x86_64_start_reservations+0x18/0x30
+> > kernel: [  540.721164]   x86_64_start_kernel+0x8c/0x90
+> > kernel: [  540.725737]   secondary_startup_64_no_verify+0x178/0x17b
+> > kernel: [  540.731432] irq event stamp: 22681
+> > kernel: [  540.734956] hardirqs last  enabled at (22681): [<ffffffff8b4b5158>] _raw_spin_unlock_irq+0x28/0x50
+> > kernel: [  540.744564] hardirqs last disabled at (22680): [<ffffffff8b4b4ded>] _raw_spin_lock_irq+0x5d/0x90
+> > kernel: [  540.753475] softirqs last  enabled at (22076): [<ffffffff8a58cfa1>] srcu_invoke_callbacks+0x101/0x1c0
+> > kernel: [  540.762904] softirqs last disabled at (22072): [<ffffffff8a58cfa1>] srcu_invoke_callbacks+0x101/0x1c0
+> > kernel: [  540.773298]
+> > kernel: [  540.773298] other info that might help us debug this:
+> > kernel: [  540.780207]  Possible unsafe locking scenario:
+> > kernel: [  540.780207]
+> > kernel: [  540.786438]        CPU0
+> > kernel: [  540.789007]        ----
+> > kernel: [  540.791766]   lock(&vb->adjustment_lock);
+> > kernel: [  540.796014]   <Interrupt>
+> > kernel: [  540.798778]     lock(&vb->adjustment_lock);
+> > kernel: [  540.803605]
 > 
-> Hi Niklas!
+> Oh, that's embarrassing, I completely whiffed on interactions with
+> interrupts. The following patch fixes it, and I've locally repro'ed
+> the issue and verified the fix. What's the process for getting this
+> fix merged? Does it get merged as a seperatch patch, or squashed into
+> the original commit?
 > 
->>> Buildroot also apparently has an LTP package selectable in menuconfig:
->>
->>> https://github.com/buildroot/buildroot/tree/master/package/ltp-testsuite
->>
->>> But I haven't tried it...
->>
->> I'm the maintainer of the LTP package in buildroot in my private time.
->> BTW I spent quite a lot of time fixing LTP (and some other system packages,
->> e.g. nfs-utils) compilation on some old legacy architectures reported via
->> http://autobuild.buildroot.net/ I've never used in the reality.
->> But I certainly don't have time to drive nommu support in my private time.
->> I don't even have an interest, I don't use any nommu device.
+> >From a99a1efa6a2b470a98ea2c87e58bebe90ce329a1 Mon Sep 17 00:00:00 2001
+> From: David Stevens <stevensd@chromium.org>
+> Date: Tue, 9 Jan 2024 14:41:21 +0900
+> Subject: [PATCH] virtio_balloon: Fix interrupt context deadlock
 > 
-> I do, but I've never done much with LTP, and I have my hands full with toybox
-> and mkroot already.
+> Use _irq spinlock functions with the adjustment_lock, since
+> start_update_balloon_size needs to acquire it in an interrupt context.
 > 
->> Therefore nobody who is not involved in nommu will not find a time to support it
->> in LTP (support does not mean just to add the functionality to the new C API,
->> but run tests on nommu and fix failing bugs). I suppose nobody is paid to work
->> on nommu platforms, it would have to be a hobby project, right?
+> Fixes: 5b9ce7ecd715 ("virtio_balloon: stay awake while adjusting balloon")
+> Reported-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: David Stevens <stevensd@chromium.org>
+> ---
+>  drivers/virtio/virtio_balloon.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> A bunch of people are paid to work on nommu platforms, and I've worked with them
-> a bunch, but none of them talk to linux-kernel. They find the culture toxic,
-> insular, and categorically dismissive of their interests.
-
-I have been involved in the kernel nommu space for 20 years, and sure, there is
-some of that. But mostly spending some time and effort to get involved pays off.
-I have seen potential contributors show up with some arrogant attitudes too,
-so it cuts both ways here.
-
-The m68k community I have been part of has been nothing but welcoming. The mm
-people have tried hard to keep nommu support up-to-date where almost none of them
-actually have a vested interest in doing so.
-
-What I have seen is that many companies working in this space just don't want
-to spend the time and effort to go mainline. That is a business decision they
-make, and that is fine. Heck my work in actual mainline has never really been
-paid for by any company and I have sunk a _lot_ of time into it. (Full disclosure
-I did get paid to work on early porting and support - just not geting it into
-mainline and maintain it there).
-
-
-> For example, cortex-m is a large nommu platform on which vendors support Linux
-> BSPs, but notice how page 8 of
-> https://www.microsemi.com/document-portal/doc_view/132181-linux-cortex-m-users-manual
-> points at a cross compiler toolchain from _2010_ and page 4 says they're booting
-> a 2.6.33 kernel?
-
-Any company/person who follows the route of not working with the linux kernel
-community to get their work included is going to inevitably get stuck on older
-versions of everything.
-
-
-> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
-> of people have been happy to consume my work, but getting any of them to post
-> directly to linux-kernel is like pulling teeth.
-
-I regularly test nommu configurations (as in every kernel rc and release) on m68k
-and at least every release on other architectures like arm(*) and recently on
-riscv as well.
-
-(*) somewhat annoyingly needing a minor patch to run the versatile qemu platform
-     I like to test with. But hey, that is on me :-)
-
-Regards
-Greg
-
-
-
->> But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
->> support him in my free time (review patches, give advices). And if nobody
->> stands, this patchset which removes the support in the old API will be merged
->> after next LTP release (in the end of January).
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index aa6a1a649ad6..1f5b3dd31fcf 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -459,12 +459,12 @@ static void start_update_balloon_size(struct
+> virtio_balloon *vb)
 > 
-> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
-> something?
+>  static void end_update_balloon_size(struct virtio_balloon *vb)
+>  {
+> -       spin_lock(&vb->adjustment_lock);
+> +       spin_lock_irq(&vb->adjustment_lock);
+>         if (!vb->adjustment_signal_pending && vb->adjustment_in_progress) {
+>                 vb->adjustment_in_progress = false;
+>                 pm_relax(vb->vdev->dev.parent);
+>         }
+> -       spin_unlock(&vb->adjustment_lock);
+> +       spin_unlock_irq(&vb->adjustment_lock);
+>  }
 > 
-> Rob
+>  static void virtballoon_changed(struct virtio_device *vdev)
+> @@ -506,9 +506,9 @@ static void update_balloon_size_func(struct
+> work_struct *work)
+>         vb = container_of(work, struct virtio_balloon,
+>                           update_balloon_size_work);
+> 
+> -       spin_lock(&vb->adjustment_lock);
+> +       spin_lock_irq(&vb->adjustment_lock);
+>         vb->adjustment_signal_pending = false;
+> -       spin_unlock(&vb->adjustment_lock);
+> +       spin_unlock_irq(&vb->adjustment_lock);
+> 
+>         diff = towards_target(vb);
+
+
+Your patch is damaged (lines wrapped, sha info is wrong). Please post a
+new version of the original one I will replace it with the new one.
+
+-- 
+MST
+
 
