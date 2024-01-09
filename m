@@ -1,158 +1,122 @@
-Return-Path: <linux-kernel+bounces-20521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1020D828017
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:10:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A3DB828016
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:09:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A926284F13
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:10:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88B8A1C23A51
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:09:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E403125A1;
-	Tue,  9 Jan 2024 08:09:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECFDC2DA;
+	Tue,  9 Jan 2024 08:09:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ARGuJp1y"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="AqUHd14a"
+Received: from xry111.site (xry111.site [89.208.246.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA9422063
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d99980b2e0so2315525b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 00:09:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704787794; x=1705392594; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7BTtnGyw1QeZICEXzNWj/b3uZp4Ky6rxO+ouhWgqdio=;
-        b=ARGuJp1yr2WRY/2avNDJ94eF1kyXOMlHE9o0Kswd2CUq8/+mbhLRjSYKSv30UpjDfO
-         8R6/ySIz+UOYP9/TjKGD0fRx1+K8NN2tGf1h037HW+iY5YwGead4XlyXpiCUN0uqr/C7
-         AgKdwvFf6vZOHcHkZ31I+4nYENGCGb9lZM4w8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704787794; x=1705392594;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7BTtnGyw1QeZICEXzNWj/b3uZp4Ky6rxO+ouhWgqdio=;
-        b=WmeLphrQ4/RTOMfr+LywAoFm1deVu/HF/3U4bA6tknE6m4AcVJj81hl9+LN4bZCYfO
-         sxN/642jmFnVKWrmxvCAygyZnI1H4RJKgHkRH8eDXPDxIiGwkaS17r2BhvbUFIuN4B3w
-         FYQQf+g+qWdu4qJiaB4QiyntffSooOVYB/3s8NYDXy58iK9+0HJE3OLHsXgWUxyR2Xo8
-         5OqgihUwO1Lw4TLBFAat0lSs0QCbYISkMIxy+gEBNjKGfSCaXRJOQCVU86ZKRQbel1ys
-         ybYpz+4/KeHo0hRuVTkKI74ivHUVD9eC9uG1Mozup2Xg3yDAQgyeYv5sADi1J0E1UrXE
-         ZTTQ==
-X-Gm-Message-State: AOJu0YyMsqKYvS4YV4NFq7sKr4HmOZydEnPtatd6ydqANOYKkPey7cUx
-	8UKVli9MYg3WsC3g+5T4eTPIDxIFqjae
-X-Google-Smtp-Source: AGHT+IFmkVNBkgtp8ul2fu9yxEhoX7/JSX9fBb/VBWL3OB6woWAa7wzZyq3DfGOV+wd/NLYCkT9E0w==
-X-Received: by 2002:a05:6a20:918a:b0:199:f43d:6cde with SMTP id v10-20020a056a20918a00b00199f43d6cdemr513287pzd.67.1704787793820;
-        Tue, 09 Jan 2024 00:09:53 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:7b29:709a:867f:fec5])
-        by smtp.gmail.com with ESMTPSA id q24-20020a62e118000000b006d9a6953f08sm1072963pfh.103.2024.01.09.00.09.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 00:09:53 -0800 (PST)
-From: Hidenori Kobayashi <hidenorik@chromium.org>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Bingbu Cao <bingbu.cao@intel.com>,
-	Tianshu Qiu <tian.shu.qiu@intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Yong Zhi <yong.zhi@intel.com>
-Cc: Hidenori Kobayashi <hidenorik@chromium.org>,
-	stable@vger.kernel.org,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] media: staging: ipu3-imgu: Set fields before media_entity_pads_init()
-Date: Tue,  9 Jan 2024 17:09:09 +0900
-Message-ID: <20240109080910.2859780-1-hidenorik@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C480C129
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1704787763;
+	bh=FchIJSYcoXmSXKuvjTeBCXHbsskDMujJezGO2se/G/E=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=AqUHd14aJ5WmbYbdLQ6fcGk+t92r95ehoYC2G4h92TR1UOu8UqqEO6snrccosXnMc
+	 P/32+85uBgnGQybcKWT6tq3//c8x0VEHwyabbX+K9db0oXLb+bX74E3y18AxmpW+FC
+	 vZC1caT32fVGDPK2JxQDERHf068AukK2JZyK1EuA=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 767F666D42;
+	Tue,  9 Jan 2024 03:09:22 -0500 (EST)
+Message-ID: <4ee8067e72028b070d92e10fa33ddde3a498cb48.camel@xry111.site>
+Subject: Re: undefined reference to `__aarch64_cas4_sync' error on arm64
+ native build
+From: Xi Ruoyao <xry111@xry111.site>
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Cc: richard clark <richard.xnu.clark@gmail.com>, Mark Rutland
+ <mark.rutland@arm.com>, gcc-help@gcc.gnu.org, linux-kernel@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org
+Date: Tue, 09 Jan 2024 16:09:20 +0800
+In-Reply-To: <20240109074843.GI19790@gate.crashing.org>
+References: 
+	<CAJNi4rO+Dw5qYDtyJVbuo0OqAoXpGq_Qq6xjH9cvMCAUnW+77g@mail.gmail.com>
+	 <CAJNi4rMHtM=39jzkzwqt++kVpSp0=XfDrVdY94WoW6B34oKwDA@mail.gmail.com>
+	 <ZZb2f0U4qTWDjCGj@FVFF77S0Q05N.cambridge.arm.com>
+	 <CAJNi4rOpzmQAW1Fjst-Em=SQ7q8QsQh0PWhVxUizrOW9JukOgQ@mail.gmail.com>
+	 <ZZvS8rigFJR8L56c@FVFF77S0Q05N>
+	 <fb6c8253fd90e66c036a85954c3299bc2c047473.camel@xry111.site>
+	 <CAJNi4rPj0Wc7ByqrS-GVLUUEnOFPZi8A5nLLCEEJErqAe16EZw@mail.gmail.com>
+	 <9aef98eed96ed32962ce90499291cb30ad5e3e14.camel@xry111.site>
+	 <20240109074843.GI19790@gate.crashing.org>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The imgu driver fails to probe with the following message because it
-does not set the pad's flags before calling media_entity_pads_init().
+On Tue, 2024-01-09 at 01:48 -0600, Segher Boessenkool wrote:
+> On Tue, Jan 09, 2024 at 11:05:57AM +0800, Xi Ruoyao via Gcc-help wrote:
+> > But the Linux kernel cannot use neither libc.so nor libgcc.a.
+>=20
+> I have built Linux using libgcc for many years.=C2=A0 It is as easy as
+>=20
+> +LIBGCC :=3D $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+> +libs-y +=3D $(LIBGCC)
+>=20
+> > (I know
+> > some non-Linux kernel developers are overusing libgcc.a for kernels, bu=
+t
+> > IMO this is just wrong and Linux developers also do not do this.=C2=A0 =
+If the
+> > Linux kernel needs a symbol from libgcc the developers just provide
+> > their own implementation.)
+>=20
+> Yes, and often they have fallen behind.=C2=A0 When they eventually catch =
+up
+> they usually just copy the GCC code anyway.
+>=20
+> Originally the only reasonable argument for not linking against libgcc
+> was so kernel code would not accidentally use double-length divisions.
+> There are other simple ways to have all uses of __divti3 and similar
+> create link errors, so that is not really a good argument.
+>=20
+> libgcc is an essential part of the compiler.=C2=A0 For most targets, for =
+most
+> code, GCC will not generate function calls, there usually are faster (or
+> smaller) things it can do, but it still is necessary to have libgcc for
+> more uncommon things.=C2=A0 Using a partial copy of it, behind the times,
+> and maybe even incompatible, is not a great idea.
 
-[   14.596315] ipu3-imgu 0000:00:05.0: failed initialize subdev media entity (-22)
-[   14.596322] ipu3-imgu 0000:00:05.0: failed to register subdev0 ret (-22)
-[   14.596327] ipu3-imgu 0000:00:05.0: failed to register pipes (-22)
-[   14.596331] ipu3-imgu 0000:00:05.0: failed to create V4L2 devices (-22)
+But for many targets the kernel uses the soft-float ABI while the user
+space uses the hard-float ABI and the linker generally refuses to link
+them altogether.  You may argue that "hey, build all multilibs" but I'd
+say it's stupid and it does not solve all issues:
 
-Fix the initialization order so that the driver probe succeeds. The ops
-initialization is also moved together for readability.
+If GCC is configured with things like --with-arch=3Dsomething, libgcc can
+contain (FP/vector) instructions unsafe to use in kernel w/o special
+handling.  Currently this issue is making the process very nasty to
+build systemd-boot on LoongArch desktop distros where the toolchain
+configured with vector extensions enabled by default.
 
-Fixes: a0ca1627b450 ("media: staging/intel-ipu3: Add v4l2 driver based on media framework")
-Cc: <stable@vger.kernel.org> # 6.7
-Cc: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Hidenori Kobayashi <hidenorik@chromium.org>
----
-Changes in v3:
-- Add error output to commit message (Thanks again Dan!)
-- Link to v2: https://lore.kernel.org/lkml/20240109041500.2790754-1-hidenorik@chromium.org
+If libgcc is so vital GCC needs to provide a way to make it work for a
+set of compiler switches incompatible with any pre-built multilib.  For
+example, installing the source of libgcc into /usr/lib/gcc and provide a
+tool to build a libgcc.a with the specified options.
 
-Changes in v2:
-- Add Fixes tag and revise commit message (Thanks Dan!)
-- Link to v1: https://lore.kernel.org/lkml/20231228093926.748001-1-hidenorik@chromium.org
----
- drivers/staging/media/ipu3/ipu3-v4l2.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-index a66f034380c0..3df58eb3e882 100644
---- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-+++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-@@ -1069,6 +1069,11 @@ static int imgu_v4l2_subdev_register(struct imgu_device *imgu,
- 	struct imgu_media_pipe *imgu_pipe = &imgu->imgu_pipe[pipe];
- 
- 	/* Initialize subdev media entity */
-+	imgu_sd->subdev.entity.ops = &imgu_media_ops;
-+	for (i = 0; i < IMGU_NODE_NUM; i++) {
-+		imgu_sd->subdev_pads[i].flags = imgu_pipe->nodes[i].output ?
-+			MEDIA_PAD_FL_SINK : MEDIA_PAD_FL_SOURCE;
-+	}
- 	r = media_entity_pads_init(&imgu_sd->subdev.entity, IMGU_NODE_NUM,
- 				   imgu_sd->subdev_pads);
- 	if (r) {
-@@ -1076,11 +1081,6 @@ static int imgu_v4l2_subdev_register(struct imgu_device *imgu,
- 			"failed initialize subdev media entity (%d)\n", r);
- 		return r;
- 	}
--	imgu_sd->subdev.entity.ops = &imgu_media_ops;
--	for (i = 0; i < IMGU_NODE_NUM; i++) {
--		imgu_sd->subdev_pads[i].flags = imgu_pipe->nodes[i].output ?
--			MEDIA_PAD_FL_SINK : MEDIA_PAD_FL_SOURCE;
--	}
- 
- 	/* Initialize subdev */
- 	v4l2_subdev_init(&imgu_sd->subdev, &imgu_subdev_ops);
-@@ -1177,15 +1177,15 @@ static int imgu_v4l2_node_setup(struct imgu_device *imgu, unsigned int pipe,
- 	}
- 
- 	/* Initialize media entities */
-+	node->vdev_pad.flags = node->output ?
-+		MEDIA_PAD_FL_SOURCE : MEDIA_PAD_FL_SINK;
-+	vdev->entity.ops = NULL;
- 	r = media_entity_pads_init(&vdev->entity, 1, &node->vdev_pad);
- 	if (r) {
- 		dev_err(dev, "failed initialize media entity (%d)\n", r);
- 		mutex_destroy(&node->lock);
- 		return r;
- 	}
--	node->vdev_pad.flags = node->output ?
--		MEDIA_PAD_FL_SOURCE : MEDIA_PAD_FL_SINK;
--	vdev->entity.ops = NULL;
- 
- 	/* Initialize vbq */
- 	vbq->type = node->vdev_fmt.type;
--- 
-2.43.0.472.g3155946c3a-goog
-
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
