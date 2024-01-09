@@ -1,166 +1,131 @@
-Return-Path: <linux-kernel+bounces-20927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E07082877C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:59:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C495828780
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:00:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27CD81F25603
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:59:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FE901C2363D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE9739853;
-	Tue,  9 Jan 2024 13:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E4739ACB;
+	Tue,  9 Jan 2024 13:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePEaYJhs"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="r5WFhP2+"
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FAA38FBB;
-	Tue,  9 Jan 2024 13:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78104f6f692so241039085a.1;
-        Tue, 09 Jan 2024 05:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704808768; x=1705413568; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1zbwLQvCGi9ayqIqzz1ygZ1oEKO7pDe3S64K7yitgQ0=;
-        b=ePEaYJhspVqzmTmxEkAm9U4segPzUmfrJ4+49viIDJ7CscrC+xxJIkuQFFUAqowX6g
-         d7VmePvYwd101z8Doxu+WXtaYGENTirSxJ0peKKAUaa6Bs4mY3dRSZdOK85pICg9y6CQ
-         VZCiyLpjgpqprKnYAbTZb7YQI3mUrSods7sm5CcFByxfzxr4k0YYHpuFYckypjJPVepi
-         2iwncRG0xurpaHRxnPiELRlWAXXQMzROoZAtzsgl0rWj97X5WNo05PLSmQsKoKigcUK0
-         dNK/AMUZklL3ujoXLa4NXP8bLp4Vox0STs9UMjUafAtJXIklGJC6mfW9sGSrRjenwm5Q
-         HCnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704808768; x=1705413568;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1zbwLQvCGi9ayqIqzz1ygZ1oEKO7pDe3S64K7yitgQ0=;
-        b=RGO/3ATU5lPLVBDlNLV4/WUKYEIJHVvzNiRs/Przh643WJbClgl25NkAclAj1I+1vx
-         GVBOFdVL719v8tRkhzyJQl61Bvp3ZId2A7xHlkhkY/K6ejgC5utDBipsTuz0T3fQTzq/
-         VUAzpo/IcfvMVXlCwXysOQAx+dOQOlUrqOrhcVNGNM2GRjgXT4Xk1HSyYgIukm1Wo/G+
-         zhumonLMQwC+Fq2fgkQ63IRZdRgQTyYQqj1KwI7GG7w89mdTCEypjox49DMgf4jQDMcs
-         ynG3CGDyoW9NGX4l/Woo0DgYk2t+/ednj2/3SaeOPiPfEXOGQpNzkyWLBcYwS4otlrJb
-         wdVA==
-X-Gm-Message-State: AOJu0YxgjPQkc3mF/SpdMMm1Px1PcdxQIMJ6LOhyCohKuZo07givpco9
-	OY4uudbsI1l4A+SnyrOvRgA=
-X-Google-Smtp-Source: AGHT+IEp3BCu3ZUnezV9NlJAZ4Av/aGNhE95t0mHb+RdY60yS9YRLqg9GZv6zhC84yBE+s+uuyLI4Q==
-X-Received: by 2002:a37:c20d:0:b0:781:21c6:83a6 with SMTP id i13-20020a37c20d000000b0078121c683a6mr1019863qkm.12.1704808767992;
-        Tue, 09 Jan 2024 05:59:27 -0800 (PST)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id b2-20020a05620a118200b0076db5b792basm806838qkk.75.2024.01.09.05.59.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 05:59:27 -0800 (PST)
-Date: Tue, 09 Jan 2024 08:59:27 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
- Michal Kubiak <michal.kubiak@intel.com>, 
- Larysa Zaremba <larysa.zaremba@intel.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- intel-wired-lan@lists.osuosl.org, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Message-ID: <659d513f5c0f6_161283294f5@willemb.c.googlers.com.notmuch>
-In-Reply-To: <c4afc32c-e9c7-47de-9bc4-243df95644a3@intel.com>
-References: <20231223025554.2316836-1-aleksander.lobakin@intel.com>
- <20231223025554.2316836-6-aleksander.lobakin@intel.com>
- <658c4328425f7_a33e629412@willemb.c.googlers.com.notmuch>
- <c4afc32c-e9c7-47de-9bc4-243df95644a3@intel.com>
-Subject: Re: [PATCH RFC net-next 05/34] idpf: convert header split mode to
- libie + napi_build_skb()
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB5239AC6
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+	by cmsmtp with ESMTPS
+	id MzXHrV7oaMVQiNCdoroaFF; Tue, 09 Jan 2024 13:59:40 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id NCdnrxEC9BnVCNCdnr6I5B; Tue, 09 Jan 2024 13:59:39 +0000
+X-Authority-Analysis: v=2.4 cv=H+TIfsUi c=1 sm=1 tr=0 ts=659d514b
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=GfQleyYEO+cc22AUyTT7qQ==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10
+ a=jCw2ex66E_5x05uIvzYA:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Y2CE/Hs6RAOXjZmVqnvf/IR9hVOQliV1xVMEpOaNeSM=; b=r5WFhP2+75l5rixF+KzySrozXk
+	Em5yzbvm+7Ph8FfkFi1jYJqU1p7OjImbmmn69lEkRzQGLCpnX0ZjBI5fyeVORQXekDp1QsE3VejGI
+	LDIOp1zMKjqde7+a+sAeVwIE4zjQhornHY4VzgVxDmefdWOAWfZjDOLpRLjJoVpVG2jACjt59CiQ6
+	A3U1GJ+betZgIhQjgCJRuelB5T6k5a1udLstM3MifyPgChl79UZcp7KtdRawCN4eobptrE6RKaMqj
+	PcwOgDWaPUOuMeQTvEjB+zO+VgD6l9SQh0xr3CvsOz3fFOUG2YmqB18aVcIxkabyyh5IurA2tNG/g
+	XigtOfQw==;
+Received: from 187.184.157.186.cable.dyn.cableonline.com.mx ([187.184.157.186]:12259 helo=[192.168.0.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rNCdl-004NMd-01;
+	Tue, 09 Jan 2024 07:59:37 -0600
+Message-ID: <d7ac4bae-3ab5-446b-9230-58dd01637375@embeddedor.com>
+Date: Tue, 9 Jan 2024 07:59:33 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] media: venus: hfi_cmds: Replace one-element array
+ with flex-array member and use __counted_by
+Content-Language: en-US
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <ZSRJfRdUXQOzagKr@work> <202310091252.660CFA9@keescook>
+ <20240109124026.GA1012017@google.com>
+ <b8686724-9351-4f40-a587-fcbba5b0eb14@embeddedor.com>
+ <20240109132831.GD1012017@google.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240109132831.GD1012017@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-
-Alexander Lobakin wrote:
-> From: Willem De Bruijn <willemdebruijn.kernel@gmail.com>
-> Date: Wed, 27 Dec 2023 10:30:48 -0500
-> 
-> > Alexander Lobakin wrote:
-> >> Currently, idpf uses the following model for the header buffers:
-> >>
-> >> * buffers are allocated via dma_alloc_coherent();
-> >> * when receiving, napi_alloc_skb() is called and then the header is
-> >>   copied to the newly allocated linear part.
-> >>
-> >> This is far from optimal as DMA coherent zone is slow on many systems
-> >> and memcpy() neutralizes the idea and benefits of the header split.
-> > 
-> > Do you have data showing this?
-> 
-> Showing slow coherent DMA or memcpy()?
-> Try MIPS for the first one.
-> For the second -- try comparing performance on ice with the "legacy-rx"
-> private flag disabled and enabled.
-> 
-> > 
-> > The assumption for the current model is that the headers will be
-> > touched shortly after, so the copy just primes the cache.
-> 
-> They won't be touched in many cases. E.g. XDP_DROP.
-> Or headers can be long. memcpy(32) != memcpy(128).
-> The current model allocates a new skb with a linear part, which is a
-> real memory allocation. napi_build_skb() doesn't allocate anything
-> except struct sk_buff, which is usually available in the NAPI percpu cache.
-> If build_skb() wasn't more effective, it wouldn't be introduced.
-> The current model just assumes default socket traffic with ~40-byte
-> headers and no XDP etc.
-> 
-> > 
-> > The single coherently allocated region for all headers reduces
-> > IOTLB pressure.
-> 
-> page_pool pages are mapped once at allocation.
-> 
-> > 
-> > It is possible that the alternative model is faster. But that is not
-> > trivially obvious.
-> > 
-> > I think patches like this can stand on their own. Probably best to
-> > leave them out of the dependency series to enable XDP and AF_XDP.
-> 
-> You can't do XDP on DMA coherent zone. To do this memcpy(), you need
-> allocate a new skb with a linear part, which is usually done after XDP,
-> otherwise it's too much overhead and little-to-no benefits comparing to
-> generic skb XDP.
-> The current idpf code is just not compatible with the XDP code in this
-> series, it's pointless to do double work.
-> 
-> Disabling header split when XDP is enabled (alternative option) means
-> disabling TCP zerocopy and worse performance in general, I don't
-> consider this.
-
-My concern is if optimizations for XDP might degrade the TCP/IP common
-path. XDP_DROP and all of XDP even is a niche feature by comparison.
-
-The current driver behavior was not the first for IDPF, but arrived
-at based on extensive performance debugging. An earlier iteration used
-separate header buffers. Switching to a single coherent allocated
-buffer region significantly increased throughput / narrowed the gap
-between header-split and non-header-split mode.
-
-I follow your argument and the heuristics are reasonable. My request
-is only that this decision is based on real data for this driver and
-modern platforms. We cannot regress TCP/IP hot path performance.
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.157.186
+X-Source-L: No
+X-Exim-ID: 1rNCdl-004NMd-01
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187.184.157.186.cable.dyn.cableonline.com.mx ([192.168.0.10]) [187.184.157.186]:12259
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 16
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfA+n4e/tHarmwJ3H7d1CHd/3n3h6IWpwEOGiqO6BTaxj3jUrHZQWEXt2elDDTLWELdRtYBlvcrivVrdh/hU5Wywquc9+B575c3hDT198le3eEKzifVPt
+ oy17bMEZzAOHOKQAT0UyX/yCD3Ao42k0HynHWh5WZOItbUayTDkh/DL++0K9nAYofzyjI8MkJOZCRuYlgplLPXS02hwUt5kfUlLmGtsTy9uzZ5QrpBOb22yh
 
 
 
+On 1/9/24 07:28, Sergey Senozhatsky wrote:
+> On (24/01/09 07:17), Gustavo A. R. Silva wrote:
+>>
+>>> Sorry for shameless plug, a quick question: has any compiler implemented
+>>> support for counted_by() at this point?
+>>>
+>>
+>> Not yet. And at least for GCC, it's expected to be released in v15.
+> 
+> I see. Thank you.
+> 
+> I got confused by include/linux/compiler_attributes.h comment, as I'm on
+> clang-18 currently, seems that we need to bump min compilers version.
+
+Ah yes, compiler devs have been running into some issues, and they had to
+postpone the release of the attribute.
+
+> Oh, and clang link 404-s on me. I'll send a quick patch, I guess.
+> 
+
+You're right, ick!
+
+--
+Gustavo
 
