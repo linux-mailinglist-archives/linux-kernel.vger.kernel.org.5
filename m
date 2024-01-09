@@ -1,49 +1,51 @@
-Return-Path: <linux-kernel+bounces-20829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78CC98285C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:08:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113538285CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08D31B21F67
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:08:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2066F1C23F39
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5879B38F99;
-	Tue,  9 Jan 2024 12:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C64238FBE;
+	Tue,  9 Jan 2024 12:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rzw3zg6J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DbvvzB/W"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D9638DFC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B472038FA6;
+	Tue,  9 Jan 2024 12:07:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F25DC43394;
 	Tue,  9 Jan 2024 12:07:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90B53C433C7;
-	Tue,  9 Jan 2024 12:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704802073;
-	bh=yYqdl2V/WrEu6szOfBy/qaZwIUQ0XEnoi+ITcWxYigI=;
+	s=k20201202; t=1704802075;
+	bh=MZbzN22IX64OiGkpAjMsQ5NKuAEc1kV5o4lDIUMEQFM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rzw3zg6JH75t7XiuBwPmn0OJf24D9UAvjZC8JDmGcEL8BaHSamz0VfM5IXu3vo+A/
-	 J+E9jdR5QV/nlNq+setc8BpW/3gYxYB8be0V9D1VTdkNa/8l+UQWYeEyAc9THl2CZr
-	 SGSo+zAQ/+2vs8mwCJHY+IhVvxUNPuiv9m8pzZA+d/YteiGqQCg8QAfg2x5v1PnRq7
-	 IGquQr/f6QIxxHX/wtgkEl+c/ikLOen0zDaZWVWeffh2ngCF0jPrkb8+s1Sk08qkND
-	 7h6EhuPww6H6f/1n+GvkwUV+vRhp4Wf7vUHdV4jHjjm4zJEg3ZqDjrZl9WVLVBxg4r
-	 Xl6Is/9SvBOfw==
+	b=DbvvzB/WipWO1m+9QDyIUGPgsBhQaQ1OsuX1m2GRu7ZM0lKndEJKtlkRqgMAUWXzt
+	 TJzYLXMvrCV/MlTEnRvN7LZgbirbseq2QPuZLdVdI8QaxYiZMlL32KYZMT9+RA8dwC
+	 y3DBkqM7g21tzJd9wKKt6XYksspHLVzZm7FFPAh8jsLAMwGr6i+MHyT0Il4TI1ILj4
+	 1S3xvWz50/z0zMl40PZYZoneUu81Zld07pTddyhS3fNtMw4y3DNm5m3nzVSkPac0VD
+	 xpwpPWUH05jChaK+RHn8VVB6JQiVF2gA44R5RhtsAm560gWml85FxDyhjngRMC//nF
+	 mrABK+fq+yCaw==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: devicetree@vger.kernel.org,
 	Rob Herring <robh+dt@kernel.org>,
 	Simon Glass <sjg@chromium.org>,
 	Masahiro Yamada <masahiroy@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nick Desaulniers <ndesaulniers@google.com>,
 	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] kbuild: create a list of base and overlays for each DTB
-Date: Tue,  9 Jan 2024 21:07:36 +0900
-Message-Id: <20240109120738.346061-4-masahiroy@kernel.org>
+Subject: [PATCH 4/4] kbuild: allow 'make dtbs_install' to install primitive DTBs
+Date: Tue,  9 Jan 2024 21:07:37 +0900
+Message-Id: <20240109120738.346061-5-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240109120738.346061-1-masahiroy@kernel.org>
 References: <20240109120738.346061-1-masahiroy@kernel.org>
@@ -55,80 +57,83 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some *.dtb files are assembled from a base DTB and overlays, but once
-they are built, there is no way to propagate such information to
-succeeding processes.
+Commit 15d16d6dadf6 ("kbuild: Add generic rule to apply fdtoverlay")
+introduced the -dtbs syntax to apply overlays during the build process.
 
-This commit introduces the generation of *.dtlst files, listing the
-component *.dtb(o) files that construct the corresponding *.dtb.
+However, scripts/Makefile.dtbinst is not aware of the -dtbs syntax,
+so 'make dtbs_install' installs the files directly added to dtb-y.
+(Presumably, it was intentional.)
 
-This is analogous to *.mod, which lists component objects for each
-module.
+For example, consider this case:
+
+    foo1-dtbs := foo_base.dtb foo_overlay1.dtbo
+    foo2-dtbs := foo_base.dtb foo_overlay2.dtbo
+    dtb-y := foo1.dtb foo2.dtb
+
+'make dtbs_install' only installs foo1.dtb and foo2.dtb. It is suitable
+when the boot image supports a single hardware configuration, or when
+the boot loader in use does not support applying overlays.
+
+However, when creating a boot image with multiple board supports, it
+wastes storage space, as foo1.dtb and foo2.dtb have foo_base.dtb in
+common.
+
+From a space perspective, a more optimal solution is to install
+foo_base.dtb, foo_overlay1.dtbo, and foo_overlay2.dtbo, then assemble
+the final dtb (either foo1.dtb or foo2.dtb) on the boot loader.
+
+This commit adds a new flag, INSTALL_DTBS_PRIMITIVE.
+
+With INSTALL_DTBS_PRIMITIVE=1, 'make dtbs_install' will install primitive
+files (such as foo_base.dtb, foo_overlay1.dtbo, and foo_overlay2.dtbo in
+this case).
+
+Without INSTALL_DTBS_PRIMITIVE, the current behavior is maintained
+(foo1.dtb and foo2.dtb will be installed in this case).
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- .gitignore             | 1 +
- Makefile               | 2 +-
- scripts/Makefile.build | 6 ++++++
- scripts/Makefile.lib   | 2 ++
- 4 files changed, 10 insertions(+), 1 deletion(-)
+ Documentation/kbuild/kbuild.rst | 6 ++++++
+ scripts/Makefile.dtbinst        | 8 +++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/.gitignore b/.gitignore
-index c59dc60ba62e..912cb713ad74 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -21,6 +21,7 @@
- *.dtbo
- *.dtb.S
- *.dtbo.S
-+*.dtlst
- *.dwo
- *.elf
- *.gcno
-diff --git a/Makefile b/Makefile
-index dae6825b8082..3521bdad6db7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1927,7 +1927,7 @@ clean: $(clean-dirs)
- 		-o -name '*.ko.*' \
- 		-o -name '*.dtb' -o -name '*.dtbo' \
- 		-o -name '*.dtb.S' -o -name '*.dtbo.S' \
--		-o -name '*.dt.yaml' -o -name 'dtbs-list' \
-+		-o -name '*.dt.yaml' -o -name '*.dtlst' -o -name 'dtbs-list' \
- 		-o -name '*.dwo' -o -name '*.lst' \
- 		-o -name '*.su' -o -name '*.mod' \
- 		-o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index d23797dbca0f..e9fcf330ff39 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -252,6 +252,12 @@ cmd_mod = printf '%s\n' $(call real-search, $*.o, .o, -objs -y -m) | \
- $(obj)/%.mod: FORCE
- 	$(call if_changed,mod)
+diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
+index 9c8d1d046ea5..d803ca5afc07 100644
+--- a/Documentation/kbuild/kbuild.rst
++++ b/Documentation/kbuild/kbuild.rst
+@@ -249,6 +249,12 @@ INSTALL_DTBS_PATH specifies where to install device tree blobs for
+ relocations required by build roots.  This is not defined in the
+ makefile but the argument can be passed to make if needed.
  
-+cmd_dt_list = printf '%s\n' $(call real-search, $*.dtb, .dtb, -dtbs) | \
-+	$(AWK) '!x[$$0]++ { print("$(obj)/"$$0) }' > $@
++INSTALL_DTBS_PRIMITIVE
++----------------------
++INSTALL_DTBS_PRIMITIVE, if defined, will cause the dtbs_install target to
++install the base dtb and overlay dtbo files instead of assembled dtb files
++constructed by overlay application.
 +
-+$(obj)/%.dtlst: FORCE
-+	$(call if_changed,dt_list)
+ KBUILD_ABS_SRCTREE
+ --------------------------------------------------
+ Kbuild uses a relative path to point to the tree when possible. For instance,
+diff --git a/scripts/Makefile.dtbinst b/scripts/Makefile.dtbinst
+index 67956f6496a5..14111a86987a 100644
+--- a/scripts/Makefile.dtbinst
++++ b/scripts/Makefile.dtbinst
+@@ -22,7 +22,13 @@ quiet_cmd_dtb_install = INSTALL $@
+ $(dst)/%: $(obj)/%
+ 	$(call cmd,dtb_install)
+ 
+-dtbs := $(patsubst $(obj)/%,%,$(call read-file, $(obj)/dtbs-list))
++dtbs := $(call read-file, $(obj)/dtbs-list)
 +
- quiet_cmd_cc_lst_c = MKLST   $@
-       cmd_cc_lst_c = $(CC) $(c_flags) -g -c -o $*.o $< && \
- 		     $(CONFIG_SHELL) $(srctree)/scripts/makelst $*.o \
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index b35d39022a30..0a492a4e4fbb 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -93,6 +93,8 @@ base-dtb-y := $(filter %.dtb, $(call real-search, $(multi-dtb-y), .dtb, -dtbs))
- 
- always-y			+= $(dtb-y)
- 
-+always-y	+= $(patsubst %.dtb, %.dtlst, $(filter %.dtb, $(dtb-y)))
++ifdef INSTALL_DTBS_PRIMITIVE
++dtbs := $(foreach f, $(dtbs), $(if $(filter %.dtb,$(f)),$(call read-file, $(patsubst %.dtb,%.dtlst,$(f))),$(f)))
++endif
 +
- # Add subdir path
++dtbs := $(patsubst $(obj)/%,%,$(dtbs))
  
- ifneq ($(obj),.)
+ ifdef CONFIG_ARCH_WANT_FLAT_DTB_INSTALL
+ 
 -- 
 2.40.1
 
