@@ -1,117 +1,113 @@
-Return-Path: <linux-kernel+bounces-20625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31492828292
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:00:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF383828293
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:00:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA676B2210D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:00:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60151C239DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDBC829433;
-	Tue,  9 Jan 2024 09:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECFB2E851;
+	Tue,  9 Jan 2024 09:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pqy49XeX"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="LEAICaiX"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADF8250F5;
-	Tue,  9 Jan 2024 09:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36082f3cb05so10168865ab.0;
-        Tue, 09 Jan 2024 01:00:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9332E834
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-554fe147ddeso3091277a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:00:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704790828; x=1705395628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KgMEw0q4WwV2JumGUYsCtc6USbd39YZOyTk5WPojixQ=;
-        b=Pqy49XeXom17JEkH7V1h7k3tO5sj9DSZD07mLb31iU5byzR/XIyekctk45nXRnKFBZ
-         7G5yKlBfpapQg8YgmSbHl+finkBNFA5qSuchDafxTkDrBZCsK6SIYBkQdZbqC/w4s6hd
-         IlkUhGKWnx30edqIe+GoQGp2+vYQvrbhAvDdPCX7PJEWKiFIS+i0n2Q4aDxYZSow2wrK
-         VgCOtfTtlrhOY9vN/esDE+SElovUEwlb7mUlBBKxOT/eVhuyFCiXmcwN2OsTfMFjprwa
-         jGiHxwFIIZy6L2X1ByV2HfbdSa3gnEeIlze1qVv1EPQ5EkBXZ3KWZpobKq+Uv8rNp8PK
-         RxAg==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1704790849; x=1705395649; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TH0vBPQ7ZCebnduaCtu4eyZcvu00ZmUgY2nQfXfrFUg=;
+        b=LEAICaiXk9EoYgo0v971JsF63IUyY84S++uHzr0TvkzXJADzJEnGZc1o9aSAlgdD9v
+         e7UaPKyJrryuZi2ow760qU5/BNdNYPuqiXHSxytN1LMWSw5JNoMDYxtAQ7wKSSCdED3+
+         U6UIrX76sGCLs7ocrLpUeNe5Tj50W37YIqNdvUJjRqMOnlKSJ0Vo0QcHZFBNXO/V0SR/
+         N/lTbU5nUw9LRGgM5XoRszWmx8NFObWIpGXW7XtpleeTTqGwVi2yEnZ0oVHI2jU43apP
+         urc5tTdsnZZmhGG39UQfSpwVUwz1rVv0KHRUrKGtqGaXstmqMjzAZnnePi/gFw9vbcQE
+         KNbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704790828; x=1705395628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KgMEw0q4WwV2JumGUYsCtc6USbd39YZOyTk5WPojixQ=;
-        b=ioaWL3CwbydN3dnJEVV/DQAe4aq19dl8SLTZwvmOXtkoSqOj4bSIQmDxtFpucBccI5
-         L1lyh2/Bqu3hzg6RHvm4DMYmd1PrLeSJUnUsIlDJJMpMyrShHedhPDOwc6/YaivCvA6l
-         tazmmbxk48lLadpK35/ui4LtLTxvlwvZ4QmABhd4A7cEfGAEPQMehIokiaRgJIdpE7mW
-         heYok9aZ++Kyo7nz+v1AMvOrWyXr5Aee9D3WVcIfveipcoCBn5/wMpzfFdN+rHIZDvli
-         Kdbtj6FoR3VGzIGAbZGxd0zYBkzdsE9hfN1VqYZ6ZkAxE2+LvaRfhHQ67Kz6jioQzqy/
-         ZrfA==
-X-Gm-Message-State: AOJu0YxEnm1S4/IfHDU9v08Kg7Gpx2iT2bHWN/b6o1xCRUkbnsTsGMZt
-	JJI/3bqXFHnG/yFW3uXiQStePWSOaJBZjsUtGqk=
-X-Google-Smtp-Source: AGHT+IG9rmegvlzOUYbFciwQULzLSP/qGqK+RLbjVXhQgCS8VFINLPoQ1fOr7bSQCaGxxHgwQbLcmpm6+YCoDXmC/5w=
-X-Received: by 2002:a05:6e02:2387:b0:360:7403:3cca with SMTP id
- bq7-20020a056e02238700b0036074033ccamr6766345ilb.51.1704790827874; Tue, 09
- Jan 2024 01:00:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704790849; x=1705395649;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TH0vBPQ7ZCebnduaCtu4eyZcvu00ZmUgY2nQfXfrFUg=;
+        b=qnTi1cpLyjw4fkYrkmo/yE2LMJMFrxXsY+Dp1RspOnwWpNgs41ilEST0VmN4CboZE7
+         9qvEQXFxx1CQv/PLhyk1ZDrQ8wwFBTzFTdqXqaiLBM/H4f2auG6bhn05igbKyMT6EUMu
+         qkpgqdF0iYe5pVokshHtbtaGjpkXdyW4+fUrZXbp/cD/npZNYMyu9SmwcepbSoKXELco
+         4ip+VO1w8x3EO26qCvMb7XXTJFfCdShaO3Kog5Gvf79qbJohRsYk/WL07bhyqLYJye+a
+         3XnvbrsGBmXzx5z/FaFMu5CyXiQPH8nEFt/f9n49DKtlRxUxIY+305yMIfFG1oly5iyp
+         xs1g==
+X-Gm-Message-State: AOJu0YwB9G+3lsy57VpHTB7WIfpZUxzJZthKXk1p93KsRU2j/Gcm3+vK
+	ecytavMhkh7/U0TuNmJV8VqcOLFXhlsgKA==
+X-Google-Smtp-Source: AGHT+IH30ASTTUP+YrSZh8cY7YN/x67lugONlKiG1xXVGzwP0BKTaZg/KLQlKVoQA9pBxotlfy3L3Q==
+X-Received: by 2002:a17:907:7e84:b0:a27:efb8:6d51 with SMTP id qb4-20020a1709077e8400b00a27efb86d51mr194621ejc.228.1704790849166;
+        Tue, 09 Jan 2024 01:00:49 -0800 (PST)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id bt11-20020a170906b14b00b00a27a766c6c8sm794046ejb.218.2024.01.09.01.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 01:00:48 -0800 (PST)
+Date: Tue, 9 Jan 2024 10:00:46 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jijie Shao <shaojijie@huawei.com>
+Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	horms@kernel.org, shenjian15@huawei.com, wangjie125@huawei.com,
+	liuyonglong@huawei.com, lanhao@huawei.com, wangpeiyang1@huawei.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 net-next 4/4] net: hns3: support dump pfc frame
+ statistics in tx timeout log 
+Message-ID: <ZZ0LPlVUqkJrDr-x@nanopsycho>
+References: <20240105010119.2619873-1-shaojijie@huawei.com>
+ <20240105010119.2619873-5-shaojijie@huawei.com>
+ <ZZfSJoEsoXceI_2q@nanopsycho>
+ <00e5d6e2-168c-4887-8b6d-8498ebaafe6d@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222013352.3873689-1-kcfeng0@nuvoton.com> <20231222013352.3873689-2-kcfeng0@nuvoton.com>
- <20240104001552.GA2096243-robh@kernel.org>
-In-Reply-To: <20240104001552.GA2096243-robh@kernel.org>
-From: Ban Feng <baneric926@gmail.com>
-Date: Tue, 9 Jan 2024 17:00:17 +0800
-Message-ID: <CALz278bzoQEUS+NMP=Xt9+4n4NovBR6bCucbvQp_FhHuMP0bnA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: fan: Add fan binding to schema
-To: Rob Herring <robh@kernel.org>
-Cc: jdelvare@suse.com, linux@roeck-us.net, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, corbet@lwn.net, linux-hwmon@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, openbmc@lists.ozlabs.org, kwliu@nuvoton.com, 
-	kcfeng0@nuvoton.com, DELPHINE_CHIU@wiwynn.com, Bonnie_Lo@wiwynn.com, 
-	naresh.solanki@9elements.com, billy_tsai@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00e5d6e2-168c-4887-8b6d-8498ebaafe6d@huawei.com>
 
-On Thu, Jan 4, 2024 at 8:15=E2=80=AFAM Rob Herring <robh@kernel.org> wrote:
+Tue, Jan 09, 2024 at 09:19:48AM CET, shaojijie@huawei.com wrote:
 >
-> On Fri, Dec 22, 2023 at 09:33:50AM +0800, baneric926@gmail.com wrote:
-> > From: Naresh Solanki <naresh.solanki@9elements.com>
-> >
-> > Add common fan properties bindings to a schema.
-> >
-> > Bindings for fan controllers can reference the common schema for the
-> > fan
-> >
-> > child nodes:
-> >
-> >   patternProperties:
-> >     "^fan@[0-2]":
-> >       type: object
-> >       $ref: fan-common.yaml#
-> >       unevaluatedProperties: false
-> >
-> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> > Signed-off-by: Ban Feng <kcfeng0@nuvoton.com>
-> > ---
-> >  .../devicetree/bindings/hwmon/fan-common.yaml | 76 +++++++++++++++++++
-> >  1 file changed, 76 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.=
-yaml
+>on 2024/1/5 17:55, Jiri Pirko wrote:
+>> > +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> > @@ -2871,8 +2871,10 @@ static bool hns3_get_tx_timeo_queue_info(struct net_device *ndev)
+>> > 		struct hns3_mac_stats mac_stats;
+>> > 
+>> > 		h->ae_algo->ops->get_mac_stats(h, &mac_stats);
+>> > -		netdev_info(ndev, "tx_pause_cnt: %llu, rx_pause_cnt: %llu\n",
+>> > -			    mac_stats.tx_pause_cnt, mac_stats.rx_pause_cnt);
+>> > +		netdev_info(ndev,
+>> > +			    "tx_pause_cnt: %llu, rx_pause_cnt: %llu, tx_pfc_cnt: %llu, rx_pfc_cnt: %llu\n",
+>> > +			    mac_stats.tx_pause_cnt, mac_stats.rx_pause_cnt,
+>> > +			    mac_stats.tx_pfc_cnt, mac_stats.rx_pfc_cnt);
+>> Don't we have a better way to expose this? I mean, whenever there is a
+>> patch that extends the amount of text written in dmesg, it smells.
+>> We should rather reduce it.
+>> 
+>In fact, we include this part of the statistics in the ethtool -S statistics.
+>However, if tx timeout occurs,the driver performs a reset attempt to recover
+>it. And the statistics are cleared after the reset. Therefore, pfc statistics
+>are added to tx timeout log to determine the timeout cause.
+
+Does not sound correct at all. You are basically forcing user to check
+the dmesg to understand the behaviour of stats he gets from ethtool. You
+can expose "reset"/"recover" counter through ethtool to expose this fact
+rather than dmesg print. Please don't add dmesg print.
+
 >
-> Please implement my comments on v10.
 >
-
-Hi Rob,
-
-I saw Aspeed Billy has already added enum to below patch:
-https://patchwork.kernel.org/project/linux-hwmon/patch/20240108074348.73501=
-4-2-billy_tsai@aspeedtech.com/
-
-Thanks,
-Ban
 
