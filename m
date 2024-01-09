@@ -1,192 +1,202 @@
-Return-Path: <linux-kernel+bounces-20352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F3D827D9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:58:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF49827D9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:58:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69D171F2242B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:58:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05F391F23477
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C1CDDAA;
-	Tue,  9 Jan 2024 03:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC1453BE;
+	Tue,  9 Jan 2024 03:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GLLIbgxE"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqbaxTuc"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB7779C4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 03:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e4d64a3fbso4860735e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 19:58:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DBF468B
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 03:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d3ef33e68dso17277395ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 19:58:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1704772680; x=1705377480; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=45zM0R9q7VfUYNYi2fe7xJF+eCb1AlHM9xpqWPMm6Ho=;
-        b=GLLIbgxEYMKvKRfiVbztyzLY0DBxYIS46gDYvheNry/w/b+WwJnRfD2pBBzptQiI5g
-         vl5WbshU7L4bBkQqJd6qtOjSok3BdtAuGyDyw9dA35jk1f6XKQDSE8MuV4BVM7X5ojTw
-         TU87sgV4RbGar7ae+l/nRgNlZY12fSWItF6M4=
+        d=gmail.com; s=20230601; t=1704772700; x=1705377500; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b+JGySNzF1TxXICx+IoE0CwzPZDyIzoBhgAgBf0mPnw=;
+        b=kqbaxTuckHiRilmT77WHdjC1tzwBpgKTLgZPh+1N83FzQZQH4gFPDIWlHCCuVo13CO
+         FLc2XVh9ifuV/UH39jgqgG86BMpuTYVzVMe6RBasOn41PrGUKpqpMygnVvF0Z3MHfq4O
+         E37Esy1J1/KHi7yeSDYvAvMGm6FaYUvDr09yGgZTO166c1dGasPLIIQE2Vo3Vdaa9Jno
+         hF5BbGpBAdCxmz84QmS5kUOBJ+x20EfnwZk6s1uPDLo9Stqw5PqdreowRU3ga85XPBEq
+         a9pY+KbyIQzXHSJpBRf/lBg7k7c59j/u0KA+DSV050nd4Zy/TMvBEROwK7lINXlG6n8u
+         6Rsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704772680; x=1705377480;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1704772700; x=1705377500;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=45zM0R9q7VfUYNYi2fe7xJF+eCb1AlHM9xpqWPMm6Ho=;
-        b=f8qcRcZO7y4kTaixWmmHHIrpu5xby8RnYZB7pYyOz4OAhcgKJNFoaT2eLYYe5X0MmK
-         nbQKkIHlRcOxuj4ngDhPhdSR4TzXsRq3VeGdxktlrerCr6DOtYqHAtWMTgjZt/7vvcjW
-         rXj54G7K274MGWKV0fXl7fi+2dnEjGCP4jbIed/Hc0HRfGQd4DhRi8H7vtRXhtkrByyU
-         ALfD92PZniuSYtoxV254mSz4d4YLvGPfm+x4FbzAEvkRjjo7FXQfDnxQam5sdocGnO/W
-         GknACtHjxf4w0waE3alZCNIWhQotO0y1YCtbkrjAY1DFf/ECW1rugFo75icdYqQDiAVD
-         D6Yg==
-X-Gm-Message-State: AOJu0YxPbZPTDCrYe5ggmGmpSETfTjGSFX7xYeenn1yts55updOOkFtm
-	/17a+XB0IxDOackOIUjjbSUOBm6AvXkamOxYFA3SMb6Ih0lKAadU
-X-Google-Smtp-Source: AGHT+IG8ecKOmQqOnXjN/TNInEsky+JykxDRJutlKHhFaVmdM0kHH3RvXLLtt6I+6LiYnyEJRJy3Vw==
-X-Received: by 2002:a05:600c:3acb:b0:40e:47dd:1c62 with SMTP id d11-20020a05600c3acb00b0040e47dd1c62mr1063345wms.124.1704772679770;
-        Mon, 08 Jan 2024 19:57:59 -0800 (PST)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id i12-20020a170906250c00b00a2693ce340csm556253ejb.59.2024.01.08.19.57.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 19:57:58 -0800 (PST)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2ac304e526so145107566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 19:57:58 -0800 (PST)
-X-Received: by 2002:a17:906:f288:b0:a27:7959:a5a6 with SMTP id
- gu8-20020a170906f28800b00a277959a5a6mr196960ejb.89.1704772677875; Mon, 08 Jan
- 2024 19:57:57 -0800 (PST)
+        bh=b+JGySNzF1TxXICx+IoE0CwzPZDyIzoBhgAgBf0mPnw=;
+        b=qv+h+JjOFOnToCl2iP4dPC7LkSu+1d/meNNJxpmegyPa8VnySnXqmLOvartvr1Sxi+
+         9N118B8bo2E5cPh3OTqK518DWcMYY6rkNgcgvMo9Xun8i0Zpl1DFaluh9HdhHIucotrP
+         T7/c53zh7o6TLoQqxdDsfed/ZD+l1xqqIbJgRJ21vKnLoXZ75Yxno4uhjndVDJGMz0ij
+         nX7GBq5IhmnpHRNqTcV0NFa1dg3tbivKmRMpF6Fi0idSL8SI1O8wPKPA8FbaYWS7fngh
+         Dn+ozNwGm0wlogKAw4YB383YHla+nXaHx3/nx9M01rFAYaSyW0MyiMH0eRh3LNSREvmz
+         hyTw==
+X-Gm-Message-State: AOJu0YwPEWl67dPVrIRgGIRj3YD9BF4zghA2wYlBtxa9FCiowkPzsAtL
+	2weFfV2v+Oayxa/3wI/xujU=
+X-Google-Smtp-Source: AGHT+IG7oanF79UWlje51X1cFGF4No3FJX0a+t24EfCMq48WW1ffXcRhMq6cXjlehe94atY17VaM6w==
+X-Received: by 2002:a17:903:278e:b0:1d4:cae:99f9 with SMTP id jw14-20020a170903278e00b001d40cae99f9mr134076plb.45.1704772699727;
+        Mon, 08 Jan 2024 19:58:19 -0800 (PST)
+Received: from localhost.localdomain ([115.156.141.114])
+        by smtp.gmail.com with ESMTPSA id m20-20020a170902c45400b001cf96a0e4e6sm645452plm.242.2024.01.08.19.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 19:58:19 -0800 (PST)
+From: Wenjie <qwjhust@gmail.com>
+To: jaegeuk@kernel.org,
+	chao@kernel.org,
+	guoweichao@oppo.com,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+Cc: hustqwj@hust.edu.cn,
+	Wenjie Qi <qwjhust@gmail.com>
+Subject: [PATCH v2] f2fs: fix max open zone constraints
+Date: Tue,  9 Jan 2024 11:58:04 +0800
+Message-ID: <20240109035804.642-1-qwjhust@gmail.com>
+X-Mailer: git-send-email 2.43.0.windows.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZZvd5KZKVXAtM1+F@gmail.com> <CAHk-=wi9aEe9BuiM2DQNsGoUg=ZeQS6EfOs+0pz3kTZ=qvf=pg@mail.gmail.com>
-In-Reply-To: <CAHk-=wi9aEe9BuiM2DQNsGoUg=ZeQS6EfOs+0pz3kTZ=qvf=pg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 8 Jan 2024 19:57:40 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiOJOOyWvZOUsKppD068H3D=5dzQOJv5j2DU4rDPsJBBg@mail.gmail.com>
-Message-ID: <CAHk-=wiOJOOyWvZOUsKppD068H3D=5dzQOJv5j2DU4rDPsJBBg@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/mm changes for v6.8
-To: Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "the arch/x86 maintainers" <x86@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>
-Content-Type: multipart/mixed; boundary="000000000000e35a5b060e7b51e8"
+Content-Transfer-Encoding: 8bit
 
---000000000000e35a5b060e7b51e8
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Wenjie Qi <qwjhust@gmail.com>
 
-On Mon, 8 Jan 2024 at 18:06, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> This does not even compile for me.
->
->   arch/x86/include/asm/uaccess_64.h: In function =E2=80=98__untagged_addr=
-=E2=80=99:
->   arch/x86/include/asm/uaccess_64.h:25:28: error: implicit declaration
-> of function =E2=80=98__my_cpu_var=E2=80=99; did you mean =E2=80=98put_cpu=
-_var=E2=80=99?
-> [-Werror=3Dimplicit-function-declaration]
+1. If the max active zones of zoned devices are less than
+the active logs of F2FS, the device may error due to
+insufficient zone resources when multiple active logs are
+being written at the same time.
 
-Side note: the whole __my_cpu_var() reminds me of the attached patch
-that I have in my testing tree, and have been carrying along for a
-number of months now.
+2. We can get the number of remaining available zone
+resources by subtracting the number of active logs from
+the number of max active zones of zoned devices.  We can
+use these available zone resources to reduce the number
+of pending bio when switching zones.
 
-I definitely think it's the right thing to do, so here it is again,
-even if it is only tangentially related to the build failure wrt this
-broken pull request.
+3. The original code for determining zone end was
+after "out":, which would have missed some fio's
+where is_end_zone_blkaddr(sbi, fio->new_blkaddr)
+was true. I've moved this code before "skip:" to
+make sure it's done for each fio.
 
-                   Linus
+Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+---
+ fs/f2fs/data.c  | 38 ++++++++++++++++++++++++++++----------
+ fs/f2fs/f2fs.h  |  2 ++
+ fs/f2fs/super.c |  9 +++++++++
+ 3 files changed, 39 insertions(+), 10 deletions(-)
 
---000000000000e35a5b060e7b51e8
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-x86-clean-up-fpu-switching-to-not-load-current-in-th.patch"
-Content-Disposition: attachment; 
-	filename="0001-x86-clean-up-fpu-switching-to-not-load-current-in-th.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lr5tm9ag0>
-X-Attachment-Id: f_lr5tm9ag0
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index dce8defdf4c7..6b11364e94b8 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -392,6 +392,19 @@ static void f2fs_zone_write_end_io(struct bio *bio)
+ 	complete(&io->zone_wait);
+ 	f2fs_write_end_io(bio);
+ }
++
++static void f2fs_zone_write_end_io_nowait(struct bio *bio)
++{
++#ifdef CONFIG_F2FS_IOSTAT
++	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
++	struct f2fs_sb_info *sbi = iostat_ctx->sbi;
++#else
++	struct f2fs_sb_info *sbi = (struct f2fs_sb_info *)bio->bi_private;
++#endif
++
++	atomic_inc(&sbi->available_active_zones);
++	f2fs_write_end_io(bio);
++}
+ #endif
+ 
+ struct block_device *f2fs_target_device(struct f2fs_sb_info *sbi,
+@@ -1080,22 +1093,27 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	io->last_block_in_bio = fio->new_blkaddr;
+ 
+ 	trace_f2fs_submit_page_write(fio->page, fio);
+-skip:
+-	if (fio->in_list)
+-		goto next;
+-out:
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
+ 			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
+-		bio_get(io->bio);
+-		reinit_completion(&io->zone_wait);
+-		io->bi_private = io->bio->bi_private;
+-		io->bio->bi_private = io;
+-		io->bio->bi_end_io = f2fs_zone_write_end_io;
+-		io->zone_pending_bio = io->bio;
++		if (!atomic_add_negative(-1, &sbi->available_active_zones)) {
++			io->bio->bi_end_io = f2fs_zone_write_end_io_nowait;
++		} else {
++			atomic_inc(&sbi->available_active_zones);
++			bio_get(io->bio);
++			reinit_completion(&io->zone_wait);
++			io->bi_private = io->bio->bi_private;
++			io->bio->bi_private = io;
++			io->bio->bi_end_io = f2fs_zone_write_end_io;
++			io->zone_pending_bio = io->bio;
++		}
+ 		__submit_merged_bio(io);
+ 	}
+ #endif
++skip:
++	if (fio->in_list)
++		goto next;
++out:
+ 	if (is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN) ||
+ 				!f2fs_is_checkpoint_ready(sbi))
+ 		__submit_merged_bio(io);
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 65294e3b0bef..1b1833e1d10e 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1551,6 +1551,8 @@ struct f2fs_sb_info {
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
++	unsigned int max_active_zones;		/* max zone resources of the zoned device */
++	atomic_t available_active_zones;		/* remaining zone resources */
+ #endif
+ 
+ 	/* for node-related operations */
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 206d03c82d96..c79919425d63 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3932,6 +3932,15 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+ 	if (!f2fs_sb_has_blkzoned(sbi))
+ 		return 0;
+ 
++	sbi->max_active_zones = bdev_max_active_zones(bdev);
++	if (sbi->max_active_zones && (sbi->max_active_zones < F2FS_OPTION(sbi).active_logs)) {
++		f2fs_err(sbi,
++			"zoned: max active zones %u is too small, need at least %u active zones",
++				 sbi->max_active_zones, F2FS_OPTION(sbi).active_logs);
++		return -EINVAL;
++	}
++	atomic_set(&sbi->available_active_zones, sbi->max_active_zones - F2FS_OPTION(sbi).active_logs);
++
+ 	zone_sectors = bdev_zone_sectors(bdev);
+ 	if (!is_power_of_2(zone_sectors)) {
+ 		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
+-- 
+2.34.1
 
-RnJvbSAxNGY4MWNmZDNhYTNiNTNiZTlhZDA1ODAxY2RjN2Q3ZGU5MWY4MDdhIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBMaW51cyBUb3J2YWxkcyA8dG9ydmFsZHNAbGludXgtZm91bmRh
-dGlvbi5vcmc+CkRhdGU6IE1vbiwgMTYgT2N0IDIwMjMgMTY6MDQ6MTEgLTA3MDAKU3ViamVjdDog
-W1BBVENIXSB4ODY6IGNsZWFuIHVwIGZwdSBzd2l0Y2hpbmcgdG8gbm90IGxvYWQgJ2N1cnJlbnQn
-IGluIHRoZQogbWlkZGxlIG9mIHRhc2sgc3dpdGNoaW5nCgpJdCBoYXBwZW5zIHRvIHdvcmssIGJ1
-dCBpdCdzIHZlcnkgdmVyeSB3cm9uZywgYmVjYXVzZSBvdXQgJ2N1cnJlbnQnCm1hY3JvIGlzIG1h
-Z2ljIHRoYXQgaXMgc3VwcG9zZWRseSBsb2FkaW5nIGEgc3RhYmxlIHZhbHVlLgoKSXQganVzdCBo
-YXBwZW5zIHRvIGJlIG5vdCBxdWl0ZSBzdGFibGUgZW5vdWdoIGFuZCB0aGUgY29tcGlsZXJzIHJl
-LWxvYWQKdGhlIHZhbHVlIGVub3VnaCBmb3IgdGhpcyBjb2RlIHRvIHdvcmsuICBCdXQgaXQncyB3
-cm9uZy4KCkl0IGFsc28gZ2VuZXJhdGVzIHdvcnNlIGNvZGUuCgpTbyBmaXggaXQuCgpTaWduZWQt
-b2ZmLWJ5OiBMaW51cyBUb3J2YWxkcyA8dG9ydmFsZHNAbGludXgtZm91bmRhdGlvbi5vcmc+Ci0t
-LQogYXJjaC94ODYvaW5jbHVkZS9hc20vZnB1L3NjaGVkLmggfCAxMCArKysrKystLS0tCiBhcmNo
-L3g4Ni9rZXJuZWwvcHJvY2Vzc18zMi5jICAgICB8ICA3ICsrKy0tLS0KIGFyY2gveDg2L2tlcm5l
-bC9wcm9jZXNzXzY0LmMgICAgIHwgIDcgKysrLS0tLQogMyBmaWxlcyBjaGFuZ2VkLCAxMiBpbnNl
-cnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRl
-L2FzbS9mcHUvc2NoZWQuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL2ZwdS9zY2hlZC5oCmluZGV4
-IGNhNmU1ZTVmMTZiMi4uYzQ4NWYxOTQ0YzVmIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9pbmNsdWRl
-L2FzbS9mcHUvc2NoZWQuaAorKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9mcHUvc2NoZWQuaApA
-QCAtMzcsMTAgKzM3LDEyIEBAIGV4dGVybiB2b2lkIGZwdV9mbHVzaF90aHJlYWQodm9pZCk7CiAg
-KiBUaGUgRlBVIGNvbnRleHQgaXMgb25seSBzdG9yZWQvcmVzdG9yZWQgZm9yIGEgdXNlciB0YXNr
-IGFuZAogICogUEZfS1RIUkVBRCBpcyB1c2VkIHRvIGRpc3Rpbmd1aXNoIGJldHdlZW4ga2VybmVs
-IGFuZCB1c2VyIHRocmVhZHMuCiAgKi8KLXN0YXRpYyBpbmxpbmUgdm9pZCBzd2l0Y2hfZnB1X3By
-ZXBhcmUoc3RydWN0IGZwdSAqb2xkX2ZwdSwgaW50IGNwdSkKK3N0YXRpYyBpbmxpbmUgdm9pZCBz
-d2l0Y2hfZnB1X3ByZXBhcmUoc3RydWN0IHRhc2tfc3RydWN0ICpvbGQsIGludCBjcHUpCiB7CiAJ
-aWYgKGNwdV9mZWF0dXJlX2VuYWJsZWQoWDg2X0ZFQVRVUkVfRlBVKSAmJgotCSAgICAhKGN1cnJl
-bnQtPmZsYWdzICYgKFBGX0tUSFJFQUQgfCBQRl9VU0VSX1dPUktFUikpKSB7CisJICAgICEob2xk
-LT5mbGFncyAmIChQRl9LVEhSRUFEIHwgUEZfVVNFUl9XT1JLRVIpKSkgeworCQlzdHJ1Y3QgZnB1
-ICpvbGRfZnB1ID0gJm9sZC0+dGhyZWFkLmZwdTsKKwogCQlzYXZlX2ZwcmVnc190b19mcHN0YXRl
-KG9sZF9mcHUpOwogCQkvKgogCQkgKiBUaGUgc2F2ZSBvcGVyYXRpb24gcHJlc2VydmVkIHJlZ2lz
-dGVyIHN0YXRlLCBzbyB0aGUKQEAgLTYwLDEwICs2MiwxMCBAQCBzdGF0aWMgaW5saW5lIHZvaWQg
-c3dpdGNoX2ZwdV9wcmVwYXJlKHN0cnVjdCBmcHUgKm9sZF9mcHUsIGludCBjcHUpCiAgKiBEZWxh
-eSBsb2FkaW5nIG9mIHRoZSBjb21wbGV0ZSBGUFUgc3RhdGUgdW50aWwgdGhlIHJldHVybiB0byB1
-c2VybGFuZC4KICAqIFBLUlUgaXMgaGFuZGxlZCBzZXBhcmF0ZWx5LgogICovCi1zdGF0aWMgaW5s
-aW5lIHZvaWQgc3dpdGNoX2ZwdV9maW5pc2godm9pZCkKK3N0YXRpYyBpbmxpbmUgdm9pZCBzd2l0
-Y2hfZnB1X2ZpbmlzaChzdHJ1Y3QgdGFza19zdHJ1Y3QgKm5ldykKIHsKIAlpZiAoY3B1X2ZlYXR1
-cmVfZW5hYmxlZChYODZfRkVBVFVSRV9GUFUpKQotCQlzZXRfdGhyZWFkX2ZsYWcoVElGX05FRURf
-RlBVX0xPQUQpOworCQlzZXRfdHNrX3RocmVhZF9mbGFnKG5ldywgVElGX05FRURfRlBVX0xPQUQp
-OwogfQogCiAjZW5kaWYgLyogX0FTTV9YODZfRlBVX1NDSEVEX0ggKi8KZGlmZiAtLWdpdCBhL2Fy
-Y2gveDg2L2tlcm5lbC9wcm9jZXNzXzMyLmMgYi9hcmNoL3g4Ni9rZXJuZWwvcHJvY2Vzc18zMi5j
-CmluZGV4IDcwOGM4N2I4OGNjMS4uMDkxN2M3ZjI1NzIwIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9r
-ZXJuZWwvcHJvY2Vzc18zMi5jCisrKyBiL2FyY2gveDg2L2tlcm5lbC9wcm9jZXNzXzMyLmMKQEAg
-LTE1NiwxMyArMTU2LDEyIEBAIF9fc3dpdGNoX3RvKHN0cnVjdCB0YXNrX3N0cnVjdCAqcHJldl9w
-LCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKm5leHRfcCkKIHsKIAlzdHJ1Y3QgdGhyZWFkX3N0cnVjdCAq
-cHJldiA9ICZwcmV2X3AtPnRocmVhZCwKIAkJCSAgICAgKm5leHQgPSAmbmV4dF9wLT50aHJlYWQ7
-Ci0Jc3RydWN0IGZwdSAqcHJldl9mcHUgPSAmcHJldi0+ZnB1OwogCWludCBjcHUgPSBzbXBfcHJv
-Y2Vzc29yX2lkKCk7CiAKIAkvKiBuZXZlciBwdXQgYSBwcmludGsgaW4gX19zd2l0Y2hfdG8uLi4g
-cHJpbnRrKCkgY2FsbHMgd2FrZV91cCooKSBpbmRpcmVjdGx5ICovCiAKLQlpZiAoIXRlc3RfdGhy
-ZWFkX2ZsYWcoVElGX05FRURfRlBVX0xPQUQpKQotCQlzd2l0Y2hfZnB1X3ByZXBhcmUocHJldl9m
-cHUsIGNwdSk7CisJaWYgKCF0ZXN0X3Rza190aHJlYWRfZmxhZyhwcmV2X3AsIFRJRl9ORUVEX0ZQ
-VV9MT0FEKSkKKwkJc3dpdGNoX2ZwdV9wcmVwYXJlKHByZXZfcCwgY3B1KTsKIAogCS8qCiAJICog
-U2F2ZSBhd2F5ICVncy4gTm8gbmVlZCB0byBzYXZlICVmcywgYXMgaXQgd2FzIHNhdmVkIG9uIHRo
-ZQpAQCAtMjA5LDcgKzIwOCw3IEBAIF9fc3dpdGNoX3RvKHN0cnVjdCB0YXNrX3N0cnVjdCAqcHJl
-dl9wLCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKm5leHRfcCkKIAogCXJhd19jcHVfd3JpdGUocGNwdV9o
-b3QuY3VycmVudF90YXNrLCBuZXh0X3ApOwogCi0Jc3dpdGNoX2ZwdV9maW5pc2goKTsKKwlzd2l0
-Y2hfZnB1X2ZpbmlzaChuZXh0X3ApOwogCiAJLyogTG9hZCB0aGUgSW50ZWwgY2FjaGUgYWxsb2Nh
-dGlvbiBQUVIgTVNSLiAqLwogCXJlc2N0cmxfc2NoZWRfaW4obmV4dF9wKTsKZGlmZiAtLWdpdCBh
-L2FyY2gveDg2L2tlcm5lbC9wcm9jZXNzXzY0LmMgYi9hcmNoL3g4Ni9rZXJuZWwvcHJvY2Vzc182
-NC5jCmluZGV4IDMzYjI2ODc0N2JiNy4uMTU1M2UxOTkwNGUwIDEwMDY0NAotLS0gYS9hcmNoL3g4
-Ni9rZXJuZWwvcHJvY2Vzc182NC5jCisrKyBiL2FyY2gveDg2L2tlcm5lbC9wcm9jZXNzXzY0LmMK
-QEAgLTU2MiwxNCArNTYyLDEzIEBAIF9fc3dpdGNoX3RvKHN0cnVjdCB0YXNrX3N0cnVjdCAqcHJl
-dl9wLCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKm5leHRfcCkKIHsKIAlzdHJ1Y3QgdGhyZWFkX3N0cnVj
-dCAqcHJldiA9ICZwcmV2X3AtPnRocmVhZDsKIAlzdHJ1Y3QgdGhyZWFkX3N0cnVjdCAqbmV4dCA9
-ICZuZXh0X3AtPnRocmVhZDsKLQlzdHJ1Y3QgZnB1ICpwcmV2X2ZwdSA9ICZwcmV2LT5mcHU7CiAJ
-aW50IGNwdSA9IHNtcF9wcm9jZXNzb3JfaWQoKTsKIAogCVdBUk5fT05fT05DRShJU19FTkFCTEVE
-KENPTkZJR19ERUJVR19FTlRSWSkgJiYKIAkJICAgICB0aGlzX2NwdV9yZWFkKHBjcHVfaG90Lmhh
-cmRpcnFfc3RhY2tfaW51c2UpKTsKIAotCWlmICghdGVzdF90aHJlYWRfZmxhZyhUSUZfTkVFRF9G
-UFVfTE9BRCkpCi0JCXN3aXRjaF9mcHVfcHJlcGFyZShwcmV2X2ZwdSwgY3B1KTsKKwlpZiAoIXRl
-c3RfdHNrX3RocmVhZF9mbGFnKHByZXZfcCwgVElGX05FRURfRlBVX0xPQUQpKQorCQlzd2l0Y2hf
-ZnB1X3ByZXBhcmUocHJldl9wLCBjcHUpOwogCiAJLyogV2UgbXVzdCBzYXZlICVmcyBhbmQgJWdz
-IGJlZm9yZSBsb2FkX1RMUygpIGJlY2F1c2UKIAkgKiAlZnMgYW5kICVncyBtYXkgYmUgY2xlYXJl
-ZCBieSBsb2FkX1RMUygpLgpAQCAtNjIzLDcgKzYyMiw3IEBAIF9fc3dpdGNoX3RvKHN0cnVjdCB0
-YXNrX3N0cnVjdCAqcHJldl9wLCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKm5leHRfcCkKIAlyYXdfY3B1
-X3dyaXRlKHBjcHVfaG90LmN1cnJlbnRfdGFzaywgbmV4dF9wKTsKIAlyYXdfY3B1X3dyaXRlKHBj
-cHVfaG90LnRvcF9vZl9zdGFjaywgdGFza190b3Bfb2Zfc3RhY2sobmV4dF9wKSk7CiAKLQlzd2l0
-Y2hfZnB1X2ZpbmlzaCgpOworCXN3aXRjaF9mcHVfZmluaXNoKG5leHRfcCk7CiAKIAkvKiBSZWxv
-YWQgc3AwLiAqLwogCXVwZGF0ZV90YXNrX3N0YWNrKG5leHRfcCk7Ci0tIAoyLjQzLjAuNS5nMzhm
-YjEzN2JkYgoK
---000000000000e35a5b060e7b51e8--
 
