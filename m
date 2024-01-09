@@ -1,107 +1,120 @@
-Return-Path: <linux-kernel+bounces-20530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F472828033
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:13:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C3C828039
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:15:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A62F01C23712
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:13:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D64DBB21CE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8151400F;
-	Tue,  9 Jan 2024 08:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A8013FE7;
+	Tue,  9 Jan 2024 08:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Wx+pSBhg"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IiyRRneE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CE829431
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e490c2115so8488635e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 00:13:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704787984; x=1705392784; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+1COLRupOMO77VMV9Mt2MrHA2R7Q54lSMFZhM27v8nA=;
-        b=Wx+pSBhgZlJuHioCpkpiWn5xDJRH2KWmD+CR5/WJ1uT2lIQvwnivKZVLpVBw8Na8ZE
-         Yz0aG00p7jbKThfkPV1qt1y7u+ZqBTkvkNYlnP7VGpfy/dNnN+TSAp87DfXT4ygMbAMD
-         UCqYNq46EQS/r9bK5kk+G5kFfEqg8rXf3Vu3RRQS/hEGF3sCsVHThV4hWwukgIggHIz/
-         5h4Zoak3mWaHX9buFaHLtUFNQNQgS9E/T70tjNVSm+IIJTCwzsRztVky69lp8USEP1H9
-         /IoAHV6pOTRuRNAOc6/1yLFAbaYaPXFYpDHx4PDjAiU1C1TeCzNemaB4DcWltzoqU8GX
-         FnMQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E29611CAF
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704788096;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XjjwhVNGSNqCSg1vyGrdOD6jXBKYkFrF+Jag2J5d6o4=;
+	b=IiyRRneEU2nXBJYlSYnS8aKDHNAdAXFxkwOBRo1/iOT4qWjOupW0UWizE0ybEZ9NSiS5oc
+	rvM2Fy/rkFFGkvKXtRY/kvjGAD9SrSQ8qCk0T+VTJS3XwX3s108eb6CjVABFGejT1jltFN
+	CGQr3N9sgYF4yvEOX31cfLXFVBY8u6Q=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-607-Wagl5CNvN6-v6lr4twsbEg-1; Tue, 09 Jan 2024 03:14:55 -0500
+X-MC-Unique: Wagl5CNvN6-v6lr4twsbEg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40d1ffbc3b8so20633345e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 00:14:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704787984; x=1705392784;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+1COLRupOMO77VMV9Mt2MrHA2R7Q54lSMFZhM27v8nA=;
-        b=bIEd5s3GnCi/PKYFhS8XMA4p7SG4k6a+SgJIR1mSV8VIQwXH2Y2x8pO65/8ux0b2UA
-         IRWryxwdrZaQ0IdzotBeCFZXhP7zX/aP7osaUPbVW8IaJeB2u/kFmWcp/YMwXTfbnxca
-         AZee9kQUEGlKvVgq74s7LygiUaB7XXne6MgUI1r3JalHK9i3xIzeMKawp79xcoXqGcka
-         NKRBwBt1Sjlu5N1w6regguQtUwJLmDkLIs6Nyg5X0HgJEedKhJzBdWGv5IPh1Xl9xjFU
-         zmoGcWKhGP9PqdAWo+Duq18g20u3k4m4nH5dKiAh4D9jEMg96LQy9aoOE49w7V3bGnV5
-         qRAw==
-X-Gm-Message-State: AOJu0YyhkEgSLOq25iJY66nW5qE/+zr/1EL+6vpJ7F49xIcRItUdI9I5
-	D8PeB9L5o9FqDthOpCt7D6mPzWWItrCb/A==
-X-Google-Smtp-Source: AGHT+IFh4etKDv5DqxBx1VDGukffIzcMl42znwEO74QkPkL0OrCjUXOmjbqhJ31eGCDvDf9YczBJlA==
-X-Received: by 2002:a05:600c:1d09:b0:40e:43db:7174 with SMTP id l9-20020a05600c1d0900b0040e43db7174mr183460wms.27.1704787983804;
-        Tue, 09 Jan 2024 00:13:03 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id t7-20020a05600c198700b0040d6b91efd9sm13811533wmq.44.2024.01.09.00.13.02
+        d=1e100.net; s=20230601; t=1704788094; x=1705392894;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XjjwhVNGSNqCSg1vyGrdOD6jXBKYkFrF+Jag2J5d6o4=;
+        b=u6ILxj4Ng8cTGW1E32upadzbcN3mEFS7P9cPM/prQ4igYLYzh5tOsItBnQcCdPriQI
+         gmjk395MYO4yOwhHx/TWL02fDSzVmlDZMoJZBBL0GaWL1gaRWcVNnV+I/pFt0Sg9OQiC
+         isAU8yfYsfnxiHTHuA0OOrrJuwcJLMYmXG28rIeOikkWrhQ1o1Jiq1s+6r1msIC+yYb4
+         m4DmgWGI4ToG4TpU6UWgeXutZTa94DeFubOo1GpyCb9S/NaPoq3z5U13lgWo+LsWX+G6
+         KZYxsEtIHc+Ip9p0TP22pwlXiVmIWGgJ8Wk/pdVZq7AZOoyMiR5TWZOW2JLjlHUJIkO7
+         1rkg==
+X-Gm-Message-State: AOJu0YzxnhXxEdcnV0g6qZkoWrWTdu4sbuIf/tjVGScfXeiEJfLUE/Ck
+	MhqYkfwtADEfvLZN54jdcDyc5s6HeOb0HVF1CzeuWiOZT3YyDpkX1xEYN0cCf2LPZUiED5MT7j5
+	iLRwiB3/VN4zHg4gGs/o7bci5oqfP4fJ+
+X-Received: by 2002:a05:600c:138d:b0:40d:5aaa:a2d5 with SMTP id u13-20020a05600c138d00b0040d5aaaa2d5mr1256155wmf.201.1704788094059;
+        Tue, 09 Jan 2024 00:14:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGM/zyCyvEk68nBtBHpa8i1HjkLCmgaZkHeoZuSH4LDKPVKXrc1TZ23aOpoe2Y4Ruh2MVABOg==
+X-Received: by 2002:a05:600c:138d:b0:40d:5aaa:a2d5 with SMTP id u13-20020a05600c138d00b0040d5aaaa2d5mr1256135wmf.201.1704788093729;
+        Tue, 09 Jan 2024 00:14:53 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id i5-20020a5d55c5000000b00336e15fbc85sm1696619wrw.82.2024.01.09.00.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 00:13:03 -0800 (PST)
-Date: Tue, 9 Jan 2024 11:12:59 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Hidenori Kobayashi <hidenorik@chromium.org>
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Bingbu Cao <bingbu.cao@intel.com>,
-	Tianshu Qiu <tian.shu.qiu@intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Yong Zhi <yong.zhi@intel.com>, stable@vger.kernel.org,
-	Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-	linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] media: staging: ipu3-imgu: Set fields before
- media_entity_pads_init()
-Message-ID: <398e06b3-351e-4a1d-b3e4-9c02893ccd83@moroto.mountain>
-References: <20240109080910.2859780-1-hidenorik@chromium.org>
+        Tue, 09 Jan 2024 00:14:53 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>, Donald
+ Robson <donald.robson@imgtec.com>, Matt Coster <matt.coster@imgtec.com>,
+ "H .
+ Nikolaus Schaller" <hns@goldelico.com>, Adam Ford <aford173@gmail.com>,
+ Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+ <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>,
+ =?utf-8?Q?Beno=C3=AEt?=
+ Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>,
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero
+ Kristo <kristo@kernel.org>, Paul Cercueil <paul@crapouillou.net>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org, Andrew Davis
+ <afd@ti.com>, linux-omap@vger.kernel.org, linux-sunxi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RFC v2 01/11] dt-bindings: gpu: Rename img, powervr to
+ img, powervr-rogue
+In-Reply-To: <20240108183302.255055-2-afd@ti.com>
+References: <20240108183302.255055-1-afd@ti.com>
+ <20240108183302.255055-2-afd@ti.com>
+Date: Tue, 09 Jan 2024 09:14:52 +0100
+Message-ID: <87zfxerkhv.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109080910.2859780-1-hidenorik@chromium.org>
+Content-Type: text/plain
 
-On Tue, Jan 09, 2024 at 05:09:09PM +0900, Hidenori Kobayashi wrote:
-> The imgu driver fails to probe with the following message because it
-> does not set the pad's flags before calling media_entity_pads_init().
-> 
-> [   14.596315] ipu3-imgu 0000:00:05.0: failed initialize subdev media entity (-22)
-> [   14.596322] ipu3-imgu 0000:00:05.0: failed to register subdev0 ret (-22)
-> [   14.596327] ipu3-imgu 0000:00:05.0: failed to register pipes (-22)
-> [   14.596331] ipu3-imgu 0000:00:05.0: failed to create V4L2 devices (-22)
-> 
-> Fix the initialization order so that the driver probe succeeds. The ops
-> initialization is also moved together for readability.
-> 
-> Fixes: a0ca1627b450 ("media: staging/intel-ipu3: Add v4l2 driver based on media framework")
-> Cc: <stable@vger.kernel.org> # 6.7
-> Cc: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Hidenori Kobayashi <hidenorik@chromium.org>
+Andrew Davis <afd@ti.com> writes:
+
+Hello Andrew,
+
+> Signed-off-by: Andrew Davis <afd@ti.com>
 > ---
 
-Thanks so much!
+I think this deserves a commit message with the rationale for the rename.
 
-regards,
-dan carpenter
+Because kept an eye to the previous version, I know the reason and agree
+with the change. Also, if remember correctly this was suggested by Maxime?
+
+After a adding a commit message and Suggested-by tag:
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
 
