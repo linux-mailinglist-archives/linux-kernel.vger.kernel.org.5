@@ -1,178 +1,111 @@
-Return-Path: <linux-kernel+bounces-21484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC0782900F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:46:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 006C5829010
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:46:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C18928875A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:46:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25A711C24C9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7F93E462;
-	Tue,  9 Jan 2024 22:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2017C3E46E;
+	Tue,  9 Jan 2024 22:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uI6KmVRw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ANXWA5Y/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD723DB8A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 22:45:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA5CC433C7;
-	Tue,  9 Jan 2024 22:45:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704840357;
-	bh=jFPT0HYrVFg+hjPzkZEL5Czqvymb2WT3tD4gy/UQ8m0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=uI6KmVRwCQAfa4/JWMTJqrNBWYE+NxcP1CYQsUold1BMA1s5wc1CZY/yTLoRQm3va
-	 F0PmrlTstgqUR/Jkb9qQIdrmEUEwVYR33ZY+FW5WoL4p1WpHefiMAE+VRYEQtwC4yM
-	 TUX5JxWYpszU7YQ3VUEnzpObsM+i9FGIzG7e2eevlnkgVW6LjBfZcZOlQyNHYFF39K
-	 /6hT4djTTR/VocbTA+jy4lTY4cJLnmObeK82/IV3xXlGKdKCVlW0OF/WzK3ZAryd+i
-	 rigKZZA/rqIczdtioYYpIY4iFqHD2gxE0LuRV72VoeecGyNjcRnhiz57sBXBdRmHDE
-	 Z5tIU0RIigXKA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B9CE1CE042E; Tue,  9 Jan 2024 14:45:56 -0800 (PST)
-Date: Tue, 9 Jan 2024 14:45:56 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Stephen Rothwell <sfr@rothwell.id.au>
-Cc: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>, lucas.dimarchi@intel.com,
-	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org
-Subject: Re: [BUG] allmodconfig build error in next-20240108
-Message-ID: <d61dfe52-9567-4f62-98f5-5c1e00cb4708@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <45ad1d0f-a10f-483e-848a-76a30252edbe@paulmck-laptop>
- <20240109095757.1313b2d9@canb.auug.org.au>
- <341a4955-0cdd-48d0-bfbd-cc6f6f09df37@paulmck-laptop>
- <atbx7mspjbymkzgstk4l64qz3uky3wpmx4isrfg3ixgtvebdd2@cktpe4ejfk7k>
- <20240110081155.48bb0cbd@oak>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936DD3E462
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 22:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704840390; x=1736376390;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=w6kupFrzbFpocVDLGUNde4MWMYhkpk7yL5N6258QRUQ=;
+  b=ANXWA5Y/Wr3ZZeLXS1LV78YqUw++hAphWjKN/DwZDgDNsAB3LH5SF3dd
+   cuiYaPYzNp5aCgNceyBa7G1ADz789l+24G9se4+0X0IUCS+2spaXObnjI
+   Xyg5pvRGz9cn1B7DamKB2WLQxcPuUjCscTzSNxXRG6awu3kc6QysKGqO5
+   ue9GRIov855/GoNrdko2CToHn7dnYHE032VYJxgVvXl9eGmUP0E7g9Ncq
+   SaIUHmuczwjdOGkcFRzsQCObXY4tVq1cgt8JF6KiS9i0xKHkjpv3OptIk
+   OO/3706EsceWB+i7kiePToOlhgsx3as6KKmkmHrLRO6XXgpZNu4FMh2bB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5116937"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="5116937"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 14:46:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="872397599"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="872397599"
+Received: from rflores-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.255.229.33])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 14:46:29 -0800
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+To: lkp@intel.com,
+	x86@kernel.org
+Cc: bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	keescook@chromium.org,
+	linux-kernel@vger.kernel.org,
+	oe-kbuild-all@lists.linux.dev,
+	rick.p.edgecombe@intel.com,
+	yu-cheng.yu@intel.com
+Subject: [PATCH] x86/shstk: Use __force when casting away __user
+Date: Tue,  9 Jan 2024 14:46:19 -0800
+Message-Id: <20240109224619.1013899-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <202401080003.duO4RmjK-lkp@intel.com>
+References: <202401080003.duO4RmjK-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240110081155.48bb0cbd@oak>
 
-On Wed, Jan 10, 2024 at 08:11:55AM +1100, Stephen Rothwell wrote:
-> Hi Lucas,
-> 
-> On Tue, 9 Jan 2024 10:58:40 -0600 Lucas De Marchi <lucas.demarchi@intel.com> wrote:
-> >
-> > On Mon, Jan 08, 2024 at 03:15:23PM -0800, Paul E. McKenney wrote:
-> > >On Tue, Jan 09, 2024 at 09:57:57AM +1100, Stephen Rothwell wrote:  
-> > >> Hi Paul,
-> > >>
-> > >> On Mon, 8 Jan 2024 13:33:36 -0800 "Paul E. McKenney" <paulmck@kernel.org> wrote:  
-> > >> >
-> > >> > Recent -next trees get the following build error for allmodconfig builds:
-> > >> >
-> > >> > ------------------------------------------------------------------------
-> > >> >
-> > >> > drivers/gpu/drm/xe/xe_gt_pagefault.c: In function ‘xe_guc_pagefault_handler’:
-> > >> > ./include/linux/fortify-string.h:57:33: error: writing 16 bytes into a region of  size 0 [-Werror=stringop-overflow=]
-> > >> >    57 | #define __underlying_memcpy     __builtin_memcpy
-> > >> >       |                                 ^
-> > >> > ./include/linux/fortify-string.h:644:9: note: in expansion of macro ‘__underlying_memcpy’
-> > >> >   644 |         __underlying_##op(p, q, __fortify_size); \
-> > >> >       |         ^~~~~~~~~~~~~
-> > >> > ./include/linux/fortify-string.h:689:26: note: in expansion of macro ‘__fortify_memcpy_chk’
-> > >> >   689 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s, \
-> > >> >       |                          ^~~~~~~~~~~~~~~~~~~~
-> > >> > drivers/gpu/drm/xe/xe_gt_pagefault.c:340:17: note: in expansion of macro ‘memcpy’
-> > >> >   340 |                 memcpy(pf_queue->data + pf_queue->tail, msg, len * sizeof(u32));
-> > >> >       |                 ^~~~~~
-> > >> > In file included from drivers/gpu/drm/xe/xe_device_types.h:17,
-> > >> >                  from drivers/gpu/drm/xe/xe_vm_types.h:16,
-> > >> >                  from drivers/gpu/drm/xe/xe_bo.h:13,
-> > >> >                  from drivers/gpu/drm/xe/xe_gt_pagefault.c:16:
-> > >> > drivers/gpu/drm/xe/xe_gt_types.h:102:25: note: at offset [1144, 265324] into destination object ‘tile’ of size 8
-> > >> >   102 |         struct xe_tile *tile;
-> > >> >       |  
-> > >>
-> > >> Which architecture?  What compiler and version?  Anything special in your build
-> > >> setup?  I do x86_64 allmodconfig builds all day with gcc v13.2 and I don't see
-> > >> this failure.  
-> > >
-> > >Good point!
-> > >
-> > >I am using gcc version 11.3.1 20230605 (Red Hat 11.4.1-2) on x86_64.
-> > >I see the same behavior on gcc version 8.5.0, which for all I know might
-> > >be too old.  
-> > 
-> > I could reproduce it with allmodconfig and gcc 11.4.1 from rockylinux,
-> > but not with gcc 9.3 or 12.3. Also it's not reproduced with gcc 11.4.1
-> > when using defconfig + CONFIG_DRM_XE  (even if  -Wstringop-overflow is
-> > still added).
-> > 
-> > I don't see a bug in the code, even if it inverts the head/tail
-> > convention.
-> > 
-> > Searching around showed this which may be relevant: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101854
-> > At least I can reproduce the same issue as in the snippet provided
-> > (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101854#c7) with the buggy
-> > compiler.
-> > 
-> > So, maybe the best thing to do for now is to disable -Wstringop-overflow
-> > for gcc < 12?
-> > 
-> > 
-> > ------8<-----
-> > diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
-> > index 6952da8979ea..0433a3c6cbfd 100644
-> > --- a/drivers/gpu/drm/xe/Makefile
-> > +++ b/drivers/gpu/drm/xe/Makefile
-> > @@ -17,7 +17,7 @@ subdir-ccflags-y += $(call cc-option, -Wunused-const-variable)
-> >   subdir-ccflags-y += $(call cc-option, -Wpacked-not-aligned)
-> >   subdir-ccflags-y += $(call cc-option, -Wformat-overflow)
-> >   subdir-ccflags-y += $(call cc-option, -Wformat-truncation)
-> > -subdir-ccflags-y += $(call cc-option, -Wstringop-overflow)
-> > +subdir-ccflags-$(call gcc-min-version, 120000) += $(call cc-option, -Wstringop-overflow)
-> >   subdir-ccflags-y += $(call cc-option, -Wstringop-truncation)
-> >   # The following turn off the warnings enabled by -Wextra
-> >   ifeq ($(findstring 2, $(KBUILD_EXTRA_WARN)),)
-> > ------8<-----
+In setup_signal_shadow_stack() the kernel needs to push the restorer
+address to the shadow stack. This involves writing the value of the
+restorer pointer to the shadow stack. Since the restorer is defined as a
+__user in struct k_sigaction, the __user needs to be casted away to read
+the value. It is safe to do, because nothing is being dereferenced, and
+the de-__user-ed value is not stashed in an accessible local variable
+where it might accidentally be used for another purpose.
 
-This I did, thank you!
+However, sparse warns about casting away __user. So use __force to
+silence sparse and add a comment to explain why it is ok.
 
-> > and if we are tweaking the warnings, then do similarly in scripts/Makefile.extrawarn
-> > so it doesn't show up again with W=1 builds. Thoughts?
+Fixes: 05e36022c054 ("x86/shstk: Handle signals for shadow stack")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401080003.duO4RmjK-lkp@intel.com/
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+---
+ arch/x86/kernel/shstk.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-But I failed to find anything similar in scripts/Makefile.extrawarn,
-so the failure persists.
+diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+index 59e15dd8d0f8..7cc294482011 100644
+--- a/arch/x86/kernel/shstk.c
++++ b/arch/x86/kernel/shstk.c
+@@ -367,7 +367,11 @@ int setup_signal_shadow_stack(struct ksignal *ksig)
+ 
+ 	/* Push restorer address */
+ 	ssp -= SS_FRAME_SIZE;
+-	err = write_user_shstk_64((u64 __user *)ssp, (u64)restorer);
++	/*
++	 * Use __force because this is just writing the address of the pointer
++	 * to the shadow stack, not dereferencing it.
++	 */
++	err = write_user_shstk_64((u64 __user *)ssp, (u64 __force)restorer);
+ 	if (unlikely(err))
+ 		return -EFAULT;
+ 
+-- 
+2.34.1
 
-> The top level Makefile (in linux-next) has:
-> 
-> #Currently, disable -Wstringop-overflow for GCC 11, globally.
-> KBUILD_CFLAGS-$(CONFIG_CC_NO_STRINGOP_OVERFLOW) += $(call cc-option, -Wno-stringop-overflow)
-> KBUILD_CFLAGS-$(CONFIG_CC_STRINGOP_OVERFLOW) += $(call cc-option, -Wstringop-overflow)
-> 
-> and init/Kconfig has:
-> 
-> # Currently, disable -Wstringop-overflow for GCC 11, globally.
-> config GCC11_NO_STRINGOP_OVERFLOW
->         def_bool y
-> 
-> config CC_NO_STRINGOP_OVERFLOW
->         bool
->         default y if CC_IS_GCC && GCC_VERSION >= 110000 && GCC_VERSION < 120000 && GCC11_NO_STRINGOP_OVERFLOW
-> 
-> config CC_STRINGOP_OVERFLOW
->         bool
->         default y if CC_IS_GCC && !CC_NO_STRINGOP_OVERFLOW
-> 
-> So, what does "grep -E '(STRINGOP_OVERFLOW|GCC_VERSION)' .config" show for your
-> breaking build(s)?
-
-Here you go!
-
-CONFIG_GCC_VERSION=110400
-CONFIG_GCC11_NO_STRINGOP_OVERFLOW=y
-CONFIG_CC_NO_STRINGOP_OVERFLOW=y
-
-							Thanx, Paul
 
