@@ -1,142 +1,203 @@
-Return-Path: <linux-kernel+bounces-21536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496038290E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:37:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD6F48290E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0E71C248BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:37:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D17A1F26603
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89743E486;
-	Tue,  9 Jan 2024 23:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56DE3E484;
+	Tue,  9 Jan 2024 23:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pOdUdYW8"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LsQSeA7/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A618D322B;
-	Tue,  9 Jan 2024 23:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409NMimc018171;
-	Tue, 9 Jan 2024 23:36:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YroQre9O4C8ma+wtdWOu5rcN3Uuco8nK9qLhogwQT7E=;
- b=pOdUdYW8LTr5pNPicdzTJ8uFoVleDhyN9m5xPRF/jP9fNeAJ1GSLnmeo2zpfuDhvcXy+
- azPWPQLvJTbtNRi2Z8Fhdj+Y8F5oLvKPUpRKnStzuKcaHtTgXObDaWDLelwbCuYZBKR1
- 26qOsBDM/PnNQxmM3p53ol1n/M3Ezhq13C+kPoZlUVaq1IjGzQBwBku0SlWtKGoX5ZvV
- gpk794rpmrV5eTngciRxth7zXgH03qmIi+H+r0dHIjNpzJD7AhuBI1GbXdCPwrchgUnZ
- DThdBMQHY1PCKCE5FMoBSmoMo5DwTiO+SvJIk27VbAV+f8RuHh4n6Y7+OXC/9N9inNRW ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhfrtr9e2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 23:36:09 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 409NSfab031576;
-	Tue, 9 Jan 2024 23:36:09 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhfrtr9de-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 23:36:08 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409LvUAi022793;
-	Tue, 9 Jan 2024 23:36:07 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfhjyj0r6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 23:36:07 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409Na74f12452600
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Jan 2024 23:36:07 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2DFB258056;
-	Tue,  9 Jan 2024 23:36:07 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 356CB5805D;
-	Tue,  9 Jan 2024 23:36:06 +0000 (GMT)
-Received: from [9.61.145.235] (unknown [9.61.145.235])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  9 Jan 2024 23:36:06 +0000 (GMT)
-Message-ID: <aeabec28-a3a8-4ce1-b95b-a548cd27d626@linux.ibm.com>
-Date: Tue, 9 Jan 2024 17:36:05 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101EA364C1;
+	Tue,  9 Jan 2024 23:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704843520; x=1736379520;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=xy0vNyWK4NMphtKtF5Twl8XhFt2Jybju4y2NE85IJ2E=;
+  b=LsQSeA7/FyhbypPUCEUEPTwLbJzyWwwKoHY0iVlwrqOXEJDl2m10/vyR
+   hAfjAXTMDNhdSRIQ2x/f0tryx109FDv0eKf/4EiKiJQNX8I40eifw7pW0
+   1sNWvv95OCuCTwuT5EbOlu5dF2uoKKnxad8YaKv7CyTTtPg2BMv29KAua
+   1ZCIUTssTFcM4ksF0V3X/LdCPHswkn2STshYbFFBZ/7PUmRxVYiv09c8r
+   8DGUMdGH+jMTldDqaaqUVVxUqdtYhlJNxbGbndwM3mDX7WKVqQ7LiThnC
+   i7+YcpYC5ekbHWxV4VdIliviLde28NZzT8qiqOdMhLUD7wlGAiKjft/rE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="429540143"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="429540143"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 15:38:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="16440408"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Jan 2024 15:38:39 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 9 Jan 2024 15:38:38 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 9 Jan 2024 15:38:33 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 9 Jan 2024 15:38:33 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 9 Jan 2024 15:38:33 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lBwSRoli9t51/FyLltbYTZmDsiSSwBXsao9lebyv72AyFMGffT2FhfM3v/2teZC+XxwECtfdN/AIROteOQ4m170zxEFnSSszdvgkOb8B3vPDZxMCLY57aTqH1wErVmbDIQWCKNUoqyp4d2PA5J59t90txtSAA7kUODtgKjt9v4cxdl+zVJ7dU0sraWFUdQk3/KQb81z5jmTaI/k8vWDuHGiB7+TpGsBWhvRveNwdHMJAIkZz9ZPyNqkJ+u+Pax5TMg8yYtO6YiMGRCORavfH/Bt1SHGBlif2x5GhWbsePtzmqNy+UZG2Ic12gjvfOBnKGXaaEJ9/ePlJG/1/0Q0PMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aCUsgw683MEk1qoTGdyKY23MukXkcH4UVwcKzxuLlTE=;
+ b=S6xvyYLL+gYk9H/OnKr2mkjx53lC3uaqHJIOnwzBahUBG+DCnHcpAfad61RrdiPtsuvA1TbeEtBmQ428Hp5rMdzkLy2AzTQvnTiiqNyFDxI7OiIfFIMjpkKzPCGNm/HIu9ioJIAoWXyWW6lf/KTA9h6l74OWqKF67F1yhdbJePCwETpsyC8SDwwnSUF0gyC3s5AA9t8H76SesaX9OHkFJ/XHfx2Ydnnuvb6J8whKbDPpxhabwmbr772k9XCEEXOPsbnjLfQySyuHfDGtMrzkMyVHGN55yCbMkfNptczmVzx3jjTsyDwoLE0JW0BRjcwVWj+j6wm8JXciZ6K90i+8LQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by DM6PR11MB4692.namprd11.prod.outlook.com (2603:10b6:5:2aa::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Tue, 9 Jan
+ 2024 23:38:31 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7181.015; Tue, 9 Jan 2024
+ 23:38:31 +0000
+Date: Tue, 9 Jan 2024 15:38:28 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Ira Weiny
+	<ira.weiny@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>, Davidlohr Bueso <dave@stgolabs.net>,
+	Dave Jiang <dave.jiang@intel.com>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Ard
+ Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH v5 4/9] cxl/events: Remove passing a UUID to known event
+ traces
+Message-ID: <659dd8f467dbe_5cee29456@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
+ <20231220-cxl-cper-v5-4-1bb8a4ca2c7a@intel.com>
+ <20240108132325.00000e9c@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240108132325.00000e9c@Huawei.com>
+X-ClientProxiedBy: MW4PR04CA0098.namprd04.prod.outlook.com
+ (2603:10b6:303:83::13) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] ARM: dts: aspeed: System1: IBM system1 BMC board
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
-        tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net,
-        andre.werner@systec-electronic.com,
-        Andrew Geissler <geissonator@yahoo.com>, patrick.rudolph@9elements.com,
-        vincent@vtremblay.dev, peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-        bhelgaas@google.com, naresh.solanki@9elements.com,
-        alexander.stein@ew.tq-group.com, festevam@denx.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geert+renesas@glider.be, luca.ceresoli@bootlin.com
-References: <20240108204114.1041390-1-ninad@linux.ibm.com>
- <20240108204114.1041390-4-ninad@linux.ibm.com>
- <b09d6e54-66e9-482f-8f45-38381fa6b62e@sirena.org.uk>
-From: Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <b09d6e54-66e9-482f-8f45-38381fa6b62e@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5rN_NU02dIQynFsCqZCTop0K698RzYDf
-X-Proofpoint-GUID: VhY3YfXllaRNZKSksK6AniEH2tMu_0Oq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-09_11,2024-01-09_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 suspectscore=0 spamscore=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2401090189
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DM6PR11MB4692:EE_
+X-MS-Office365-Filtering-Correlation-Id: e008c351-e8f5-40b6-5421-08dc116c169c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: swhF1E+ZXEjMmLaQGJNV+MkcrLxndGZzeBcQHQ3Lc+XVvqFeb13mbKHqdEcbVN29axjL5m08V44guXZjWqmTM1SM+hmPWpg794WAXMxQQfaIZq37hV80EhzJoKTLZTHTNDq3jPmD2rHRTClJnX4tgLVYzdkO9Yh9evBfjHjLjC+yrzoCAEVBZNoGP5cHfOwPRAGSJak8hmkYZNrKh2rU1uFehltqdp3dLNbvOJPrCL+5bs8uylre+eWlelqU1dCyxT2TVojpgBgUzKwhTDJtanD6rvJMJ2J0QFwUs2x8JQozdFGeXv1gluFkoXuY5M+4jrhDQyn4ON/Cw6769VoT4SbrxOdVYskwIeugHDKRIqtvz3hU//4v0yy4E1ANS4Kk34DE/xSNmvrJGHj4EYFO/oaOo03RCyl/j4ikUnHC+YzvfcuFdmY4hIh4prOKMtyysVNu7eUSsyQwAf7f2LbzIPcM+0XPZ1qrxIUnBhuqmxhpb5Yxv+eEXnFE1RdQvFeVVMEDJQnhdpxZm+tDtcw4pouC4EVufFvnKiFg8Uju7TpYjrAZlfRcEVYz5Np45Cdf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(366004)(39860400002)(396003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(6512007)(9686003)(26005)(86362001)(38100700002)(82960400001)(5660300002)(4326008)(6506007)(6666004)(8936002)(6636002)(316002)(8676002)(66476007)(66946007)(110136005)(54906003)(66556008)(2906002)(41300700001)(478600001)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zjL5qcbEYB11XxGe2Lrvk1EjizsoANnFXq4lpM0gf7YFVeCLTDyOgReGmcAO?=
+ =?us-ascii?Q?Lz53jmyHqMtHEExJ4KmwZKhFW5eSJAbp03VEgrmFgJkOhS6VUdOXKx0x/89M?=
+ =?us-ascii?Q?x3EEovggsnJfQTFdYupSVft/IhOLe0tQBMcuKT5ttmRuNA4bB+VkZq0mBej3?=
+ =?us-ascii?Q?afDNkbsdpLTfENjAMsms7fUh+vZYsoifdcS7LLd/SObJmiCXD/T4guVACZOS?=
+ =?us-ascii?Q?HyOozFh9fXDjj3EtkfqA1Sx87BiHjRBJpuQDf4AajFooEku92iENp4GIzpOn?=
+ =?us-ascii?Q?QniCDzJ3CCdA6ceIcxTb/tVv1Mk0iufcX8NJMPuavYTEkfBNfCYQORb06sF3?=
+ =?us-ascii?Q?JA142m51UZSbItSB3OY+BiKZal1tfwUnNwIlqIWUyrUB9j0GVJb57EnjcZjr?=
+ =?us-ascii?Q?/ADxsIvIzWLB909kluxbRpCSrdim7Wx6pqsDPczTfb61hALhDYmitV9+LAO5?=
+ =?us-ascii?Q?h04QZJiPu3TSP1DKcnIOuC8r2DT06KUXdQKs457mhkgSI3G04/Snqless6HY?=
+ =?us-ascii?Q?ZjUkcVPauYR26RPKzgDXduDEAIwzTn0ZvVk4TjVVxQcG00NCundzqK2zRCq0?=
+ =?us-ascii?Q?50bjUKVxSJJaorl05BdVqrCIokDFOK/IjKrMt3dIg8y7DCRdrkWmoDMSSYnw?=
+ =?us-ascii?Q?G6s1jOFkJxCGzyf7LJqavJXXPrKkwl+asHY05wrSY17h1f9k5iG0FN8cSUYa?=
+ =?us-ascii?Q?MGAf46767049jky+Xis5ioy0FCg1Kwh8SxjSIqwlUDF6/8jv0sVmyLDeTCjO?=
+ =?us-ascii?Q?JhVTDlb7vFIH4976/OsUQqsA703qTleP2HY6gPxWyEg2miiIZY4MO04Hhu4r?=
+ =?us-ascii?Q?VEydK2zYtuW3IwO26K8Rr0QNh05OCQDAlQASlCGDPOyzqSEd406Zg1eZafU8?=
+ =?us-ascii?Q?7wmOY5TE5ajPuR5OgBVZzcB5jlsYoYiZ06vkI0S55MDSWuGFsFi/bHpbOINu?=
+ =?us-ascii?Q?WKI71ArbPnUItb7P03yMvx3gzRPyd5LEXtldsXtQsMxbOTbMP7u2s028F73G?=
+ =?us-ascii?Q?CoM/VM7STEun1ZmSE1sGVU3oD93Ob3rvLts2+gu3QhAw9coOrYi0UUxAFiuj?=
+ =?us-ascii?Q?X0gdbAeDSKiX5lnxpM3dZpoMWfjdyiEc6b3QgK8j2OdJEB+z7Ysl21l+bWDB?=
+ =?us-ascii?Q?OoxQ4OBjt47PU7ueSg7khcqAhu+E44G3AUPMPbwBPywtCoeak5rE7VkU9JYo?=
+ =?us-ascii?Q?ZjQHtSSui+Frdp2sVn2jWkfAaeWbyCviC6WP+viqR29krRoXWZkxVSqcUJz+?=
+ =?us-ascii?Q?9+j7GCBDGtwSBUkTKN3JJbkqqxN0pBAc9kmxn6FwgtPIPQ9JavJZkwdcCnD3?=
+ =?us-ascii?Q?OKmIwsSTusLHyIvZzzsQzc7H2xpoyFKoi67aHCZOpfOmInTwZCTATJTBcGQd?=
+ =?us-ascii?Q?X1qDeE56DhGE1cHs5y4JCmXQfe6G3dl24kgsUxgRe8Ll3/z0gT/QLSp3oUU6?=
+ =?us-ascii?Q?Ta2tEhzi7On2M+A6Cv30tFCTbRsWp0OscHhRfoQXV8KubsyIdAcpsGJnI2sK?=
+ =?us-ascii?Q?emldZa8LssuqhmBcwVqJuxCGQTwVJPDgu8Ljf3nqakDPh4Y20Jb4ELJWW10F?=
+ =?us-ascii?Q?6nl5vP6wIVondAOt2mak2fMWGBVZEeynO94z/73g+KWaSEvE0dDfI7EOAeu6?=
+ =?us-ascii?Q?Kw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e008c351-e8f5-40b6-5421-08dc116c169c
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 23:38:31.5054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7LjgvFO66wWqzduMiGxpJuhO6mHJRk83MQOmAsdrn32z5jS+6qBK5lIIhPnx/dnaUGpQRa1dfGSMV4c5f/pBf7pI8gYokh78UNHUtTD1+6o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4692
+X-OriginatorOrg: intel.com
 
-Hello Mark,
+Jonathan Cameron wrote:
+> On Wed, 20 Dec 2023 16:17:31 -0800
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > The UUID data is redundant in the known event trace types.  The addition
+> > of static defines allows the trace macros to create the UUID data inside
+> > the trace thus removing unnecessary code.
+> > 
+> > Have well known trace events use static data to set the uuid field based
+> > on the event type.
+> > 
+> > Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> 
+> >  	TP_STRUCT__entry(
+> >  		CXL_EVT_TP_entry
+> > @@ -422,7 +424,8 @@ TRACE_EVENT(cxl_dram,
+> >  	),
+> >  
+> >  	TP_fast_assign(
+> > -		CXL_EVT_TP_fast_assign(cxlmd, log, uuid, rec->hdr);
+> > +		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
+> > +		memcpy(&__entry->hdr_uuid, &CXL_EVENT_DRAM_UUID, sizeof(uuid_t));
+> 
+> Hmm. Why not
+> 
+> 		__entry->hdr_uuid = CXL_EVENT_DRAM_UUID;
+> ?
+> 
+> Compiler should be able to squish the stuff in the define down to data as as the
+> UUID generation logic is pretty simple.
+> 
+> I've not emulated the cper records for these yet, so not tested that works beyond
+> compiling.
 
-On 1/8/24 15:34, Mark Brown wrote:
-> On Mon, Jan 08, 2024 at 02:41:14PM -0600, Ninad Palsule wrote:
->
->> +	regulator@60 {
->> +		compatible = "maxim,max8952";
->> +		reg = <0x60>;
->> +
->> +		max8952,default-mode = <0>;
->> +		max8952,dvs-mode-microvolt = <1250000>, <1200000>,
->> +						<1050000>, <950000>;
->> +		max8952,sync-freq = <0>;
->> +		max8952,ramp-speed = <0>;
->> +
->> +		regulator-name = "VR_1.0V";
->> +		regulator-min-microvolt = <770000>;
->> +		regulator-max-microvolt = <1400000>;
-> A regulator labelled VR_1.0V can vary between 0.77V and 1.4V and has
-> exactly the same configuration as another regulator labelled VR_1.2V?
-> That seems...  odd?
-
-That was a typo. I fixed it.
-
-Thanks for the review.
-
-Regards,
-
-Ninad
-
+We can follow on with this conversion later as I see other usage of uuid
+copying in trace events (bcache for instance). Although I probably would
+not replace it with straight assignment and instead use the uuid_copy()
+helper. Otherwise, why do {uuid,guid}_copy() helpers exist?
 
