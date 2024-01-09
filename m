@@ -1,96 +1,236 @@
-Return-Path: <linux-kernel+bounces-20886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326A58286F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:18:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A99688286F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FB88B239D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:18:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 544C8287198
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E0F38FB7;
-	Tue,  9 Jan 2024 13:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B285438F95;
+	Tue,  9 Jan 2024 13:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k4jiLNNQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UriL1/+z"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030EA38F83
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704806296; x=1736342296;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cJPKiirKT9lqC0Z6wFvcgBdIL3HSIWmPzlmahryzrlo=;
-  b=k4jiLNNQT9Xx9hJ3jAVuo5FjN9RLjPKDP6gUJ2p4EH9zN3c8Gjio+mIf
-   rQTC7I2UzFVnoJml4nWHrg/VtaK+X+TPbYWnvGfcWFpsjIWWLhmXH/Bpy
-   RBK6ilbNHU2ox7/X25lkZpRgz4GeTNogDpZuiiRaENpQRpA1bdvYkmlpd
-   1grnCHv/7ph7WTSyzcpEWH41W/qLfS+V1EhdWrRFYLbGSjPrhCNWzQGjD
-   Fy/FFyJqCuwQBCwNt9QgLuUuLbFu7fF//T5pcEDKBqvM3dzyk9IW5rHcw
-   dx2IL2j43REBA3cvuDsgZgO7svLTC3ipz3lBqG1cJlQVngLH3BzKPs7RM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="19697831"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="19697831"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 05:17:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="781794615"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="781794615"
-Received: from arunjose-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.37.37])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 05:17:43 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id 4CB9010A4E9; Tue,  9 Jan 2024 16:17:40 +0300 (+03)
-Date: Tue, 9 Jan 2024 16:17:40 +0300
-From: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Xiaoyao Li <xiaoyao.li@intel.com>, linux-kernel@vger.kernel.org,
-	linux-coco@lists.linux.dev
-Subject: Re: [PATCH v1] virt: tdx-guest: Handle GetQuote request error code
-Message-ID: <20240109131740.nk54gdmri6gpwkta@box.shutemov.name>
-References: <20240109054604.2562620-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C4C38DD8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:18:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4affeacaff9so466423e0c.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 05:18:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704806293; x=1705411093; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cif/3DajG4jtsQ0qTwaKjg0wOyQ3Etyfdm3e4dJoP9c=;
+        b=UriL1/+zlWx+MTuDLhKbomTpr/0YInks1FP0L1PKUGhyItojuQ3jSAaiVy8qCWiT3I
+         gaVGVbDn/oLcbfb7Bk92AODmux68OtZuGt+pfkxBvGRBmxqTP21DsWrMzPlcVX0J3Rll
+         GdIHHcZffb1GOQi26MAfdTwqigQF7rKNNRZvbFkP9SrLuCbHlUnxb/0KU70kzwmHEqJt
+         YuoZcyYPcq/LlV8FGzOEjiMWAcnqRcK+ssxm90wU1S8C+qc6SCNtMf9eiktYu14oVTD5
+         lrtI1CTqnt/8oHc976ayt87ukjgaR73iCKZ6dOeky1SEUAmEkbkuoS+OZ60x+wP6mn6w
+         IR+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704806293; x=1705411093;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cif/3DajG4jtsQ0qTwaKjg0wOyQ3Etyfdm3e4dJoP9c=;
+        b=OCjE2xx21YkS/VgC2VNJb9tzYp6VembVXcW1MlKemfDmKlz7SMOEbLLOglaVTo1KrG
+         2UnaubryadQ++TJ4gzoURYkh2CQn8ciaPuCZk3br+1p9GwrKQQiNmZSt8gnurOzpN8vI
+         qKhhHbAxQNBZl8K22vd+avpn1QCMchtpQ3xMc5bh4wasOkk+IHOZcnCdMkLOXgH9WRI7
+         PEedLYEgiTxR445q18/ad/8OrQQ5m9nRa+qZfuGxGrn3TWuFcYZJ5RIY7swNbqZ+5+Qy
+         W2fW4S+T89ox8PRg+REZzGtVBaNZx9ft0jSoVuyqgMEREMMk53njBW9+7/U3vAKPWhjG
+         +FsA==
+X-Gm-Message-State: AOJu0Yz5eaWdP2H1fgHIrgrjnIsRM+1GKCtWxMApVJxdScBTF1vChGOp
+	VCVEvhQu/eb3KzkLO+1JISFhd2Qd5PubY574GIAfas1LJBrSeQ==
+X-Google-Smtp-Source: AGHT+IH5LXt+Nh7II/R07B9c9R9Ins8knoOco8CgCxAlroEKiTrQaN+tk5l0f6ASdirWKUHoFJfummKBnPfXoDUKlc4=
+X-Received: by 2002:a05:6122:2388:b0:4b8:ae46:f888 with SMTP id
+ bu8-20020a056122238800b004b8ae46f888mr1511689vkb.23.1704806293244; Tue, 09
+ Jan 2024 05:18:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109054604.2562620-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20240108141854.158274814@linuxfoundation.org>
+In-Reply-To: <20240108141854.158274814@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 9 Jan 2024 18:48:01 +0530
+Message-ID: <CA+G9fYs8d_tPjTFzZ3E6cb+dm9K=GkhusJkhpfWhR1jTa-mw7A@mail.gmail.com>
+Subject: Re: [PATCH 4.14 0/7] 4.14.336-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 09, 2024 at 05:46:04AM +0000, Kuppuswamy Sathyanarayanan wrote:
-> Currently when a user requests for the Quote generation, the Quote
-> generation handler (tdx_report_new()) only checks whether the VMM
-> successfully processes the Quote generation request (status !=
-> GET_QUOTE_IN_FLIGHT) and returns the output to the user without
-> validating the status of the output data. Since VMM can return error
-> even after processing the Quote request, returning success just after
-> successful processing will create confusion to the user. Although for
-> the failed request, output buffer length will be zero and can also be
-> used by the user to identify the failure case, it will be more clear to
-> return error for all failed cases. So validate the Quote output status
-> and return error code for all failed cases.
+On Mon, 8 Jan 2024 at 19:52, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> -------------------------------
+> NOTE, this is the LAST 4.14.y-rc release cycle that is going to happen.
+> After this release, this branch will be end-of-life.  You all should
+> have moved to the 4.19.y branch at the very least by now, as this is it,
+> time to stop using this one.
+> -------------------------------
+>
+> This is the start of the stable review cycle for the 4.14.336 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 10 Jan 2024 14:18:47 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.336-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Could you split commit message into several paragraphs? It would be easier
-to get along.
 
-It can be helpful to follow structure like:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-<Background>
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-<Problem>
+## Build
+* kernel: 4.14.336-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.14.y
+* git commit: 2025e3e69905f3ce0f16202095e343fee09f613e
+* git describe: v4.14.335-8-g2025e3e69905
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+335-8-g2025e3e69905
 
-<Solution>
+## Test Regressions (compared to v4.14.334)
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+## Metric Regressions (compared to v4.14.334)
+
+## Test Fixes (compared to v4.14.334)
+
+## Metric Fixes (compared to v4.14.334)
+
+## Test result summary
+total: 54261, pass: 45419, fail: 1544, skip: 7255, xfail: 43
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 108 total, 103 passed, 5 failed
+* arm64: 35 total, 31 passed, 4 failed
+* i386: 21 total, 18 passed, 3 failed
+* mips: 19 total, 19 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 8 total, 7 passed, 1 failed
+* s390: 6 total, 5 passed, 1 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 27 total, 23 passed, 4 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-crypto
+* ltp-cve
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
