@@ -1,156 +1,155 @@
-Return-Path: <linux-kernel+bounces-20842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9075A828601
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:28:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C589828603
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06B882873BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:28:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7C961F255EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5516A381CD;
-	Tue,  9 Jan 2024 12:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F3A381D4;
+	Tue,  9 Jan 2024 12:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WaTUz7xG"
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="e3uzqzD6"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDD9381B5;
-	Tue,  9 Jan 2024 12:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4b79c5d035fso520978e0c.0;
-        Tue, 09 Jan 2024 04:28:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704803315; x=1705408115; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bMieFkaeG1CJtNxgRjfc0/kcLvoYVNibgc4cmNBWXG8=;
-        b=WaTUz7xGciX4QB5n7a2cNbkYjyh+7M2ygpOCMUTzknpsIgDM5kT6RyDk6hyN14GdDy
-         jkc8Wcz74ErG9gpCoeDf+MFZshwEv+vR0NzLu6d+1FBLZHZxbq6j/RpcKw6DPHc6Ih6e
-         RbVF4wEPf8n1UnkdJz7lDik67uQA8mxHwsCxBy4Nf7MQbZwuQ30/t/vGo1VVXD2dVafL
-         6TbZMH896S8LK1EbkEIvtPejNpRzL9A3oTqvh3Us1U8DtNYiqXbJ6/+NHZmoxgXYPnWs
-         dRkfCxOcVJpdIc+swnQNNGDed+bpAeJnPz7bFoBZDU0UzUc7zIG5Dntg8FH8UGRpaR6t
-         x3RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704803315; x=1705408115;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bMieFkaeG1CJtNxgRjfc0/kcLvoYVNibgc4cmNBWXG8=;
-        b=btwysFV81CWoDLkhkmAIrjmEB0M4h1WtFmCWO8pj/y2ESjiC6RD6EUBlLMOvH35mwk
-         7uiEx6YYRcDtG10YayMKvPh57ydf7raXFWUvxTh/wiHXaDE7DuvsAXqT9JWpeuIPxDRk
-         GxT5osoUS8vl72YJtyXrR7+eFWUbEcWBr6HTZ0A68dImXIYE7ee+SLf6kuqjWHhhq+QA
-         GC4K7F3nYLKl2B7MnC8nW5cPC+1q7s79c7X5Ej5Fp9j3m5Xxbpr9fAlA3PgAiZD5Dnkd
-         EdP8zwXkEyGEd6JKoWy8J2V1IbWKlQWnid6FkVb39/b+1lWpyvd4C7roKdIDTlGseVnq
-         iP5g==
-X-Gm-Message-State: AOJu0Yy/0UgNfAfEarGt8EMZ0iJTDoPvchO9qxZYVDQiBYRbaQrUC/AE
-	hfSz9ATObkZXKOU6n2CFN+1w4BGNFVtsufoKGMI=
-X-Google-Smtp-Source: AGHT+IGZgHi0TSKPHcwYxAnBYjnyLzgjpyXqQgUKp/ldWNYTgZhEGH16ZF2iIx+BIl7EepnFhQbmqpV7k1011V1Ghrw=
-X-Received: by 2002:a05:6122:3683:b0:4b6:bc91:92d with SMTP id
- ec3-20020a056122368300b004b6bc91092dmr2671352vkb.15.1704803315093; Tue, 09
- Jan 2024 04:28:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F28381C0;
+	Tue,  9 Jan 2024 12:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 29D7240E0196;
+	Tue,  9 Jan 2024 12:29:53 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 8LgGsJKL99AU; Tue,  9 Jan 2024 12:29:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704803390; bh=+Ncz7siEkTjAJGaRbmWjV3uElamE3ik/Pui2Em7ihyU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e3uzqzD6Sd0ujUJUSC7MRPxWi8vbuKwJ4aZJ/7hlC5WIahofUZyUqu6erDbkVtFKi
+	 /CFGubT/bagkKI2OzvP8iOpAbgvKCGUTWjZO2fXWeLrv01DN7vwzpg2LQuOg4SYQ5c
+	 rHNecCB5hRIycePIdkdlF2UbRLptkbp6CbKVs3/er+Ry1bO/1VV7Dau+807YKwMa6u
+	 jeL12ntBz1dCGaOaIznhk4bYEgy3OGYr2HRemzpEpQa6Q4tw4YsqULxGCo2TxZewvh
+	 EkZ8s1eqQzmkqEw/T4c3DnAg86Gs/xIiVJO1h+9el0i82Qlmgu1vraVH2f2D9rddnd
+	 4DlViFsbCMmTT55sZIiZwvcahCDpMeUqODB0mDtobxwo1PTYIKOb/t2Baido8+qqPD
+	 ZanyMSPeFcah1u+N9U8Gbs7b8xonaGmffMjGWR+HPMsgRRa9+1T6QHBDzzEvR/3zHx
+	 ZPCkvdjka+ahnZPdOQfgsrfQphChY+NGwYX1/ZXljnBJkahyko326kvCZMr91kOuey
+	 TGQlBpHNhGX9t1haLmDSI4QK+fAdBe6qS12uCaTY7neuVUN4wJ8aOdWjAXaibVyfdm
+	 OZL1rADRWyLuz4u8IAUdY6MSY/14h/A6Ra70eDUxvNbWmcjE6vDDR+mV5NX3ecrDEr
+	 UqQzXXr459AV1ZddaxUfdVGA=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3868140E01F9;
+	Tue,  9 Jan 2024 12:29:11 +0000 (UTC)
+Date: Tue, 9 Jan 2024 13:29:06 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
+	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
+	pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+	jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+	slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
+	ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
+ support
+Message-ID: <20240109122906.GCZZ08Esh86vhGwVx1@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-5-michael.roth@amd.com>
+ <f60c5fe0-9909-468d-8160-34d5bae39305@linux.microsoft.com>
+ <20240105160916.GDZZgprE8T6xbbHJ9E@fat_crate.local>
+ <20240105162142.GEZZgslgQCQYI7twat@fat_crate.local>
+ <0c4aac73-10d8-4e47-b6a8-f0c180ba1900@linux.microsoft.com>
+ <20240108170418.GDZZwrEiIaGuMpV0B0@fat_crate.local>
+ <b5b57b60-1573-44f4-8161-e2249eb6f9b6@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231231131705.2010-1-yongsuyoo0215@gmail.com>
-In-Reply-To: <20231231131705.2010-1-yongsuyoo0215@gmail.com>
-From: YongSu Yoo <yongsuyoo0215@gmail.com>
-Date: Tue, 9 Jan 2024 21:28:23 +0900
-Message-ID: <CANXPkT4CRXzKNR2tjsWV4jkPo5iWFjSPqLO5vCc2WqF-a7884Q@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH] media: dvb_ca_en50221: Add a returing EBUSY logic
- into CA_RESET
-To: mchehab@kernel.org, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, yongsu.yoo@lge.com, v4bel@theori.io, 
-	0215yys@hanmail.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b5b57b60-1573-44f4-8161-e2249eb6f9b6@linux.microsoft.com>
 
-Dear All
+On Tue, Jan 09, 2024 at 12:56:17PM +0100, Jeremi Piotrowski wrote:
+> Can we please not assume I am acting in bad faith.
 
-Do you know how to change
-from [PATCH] [PATCH] media: dvb_ca_en50221: Add a returing EBUSY logic in..=
-.
-to     [PATCH] media: dvb_ca_en50221: Add a returing EBUSY logic in... ?
+No you're not acting with bad faith.
 
-2023=EB=85=84 12=EC=9B=94 31=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 10:17,=
- <yongsuyoo0215@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> From: Yongsu yoo <yongsuyoo0215@gmail.com>
->
-> Signed-off-by:Yongsu Yoo <yongsuyoo0215@gmail.com>
->
-> In source/drivers/media/dvb-core/dvb_ca_en50221.c, if the CA_RESET ioctl
-> is called, in a normal case, the state of the thread of the
-> dvb_ca_en50221_thread_state_machine will transit like below order.
-> DVB_CA_SLOTSTATE_NONE -> DVB_CA_SLOTSTATE_UNINITIALISED ->
-> DVB_CA_SLOTSTATE_WAITREADY -> DVB_CA_SLOTSTATE_VALIDATE ->
-> DVB_CA_SLOTSTATE_WAITFR -> DVB_CA_SLOTSTATE_LINKINIT ->
-> DVB_CA_SLOTSTATE_RUNNING
-> But in some problem cases, the state will become DVB_CA_SLOTSTATE_INVALID=
-.
-> Among the above mentioned states, the DVB_CA_SLOTSTATE_NONE and
-> the DVB_CA_SLOTSTATE_INVALID are "already stablized" states,
-> whereas other states are "transiting" states.
-> The "already stablized" states mean no matter how long time we wait,
-> the state will not be changed.
-> The "transiting" states mean the states whose final state is not yet
-> determined. The state keeps to be changed. Only after some time passes,
-> we get to know whether the final state will be DVB_CA_SLOTSTATE_RUNNING
-> or DVB_CA_SLOTSTATE_INVALID.
-> During the "transiting" states, we do not yet know whether the
-> CA_RESET operation, which triggered the "transiting" states, will
-> succeed or fail. For this reason, during the "transiting" states, if
-> another CA_RESET ioctl is called and if this new CA_RESET ioctl
-> operation begins again, it will be meaningless and waste time.
-> For preventing this problem from happening, we make CA_RESET ioctl do
-> nothing and only return EBUSY if the ioctl is called during the
-> "transiting" states.
-> ---
->  drivers/media/dvb-core/dvb_ca_en50221.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/media/dvb-core/dvb_ca_en50221.c b/drivers/media/dvb-=
-core/dvb_ca_en50221.c
-> index baf64540dc00..2e8aec354b7c 100644
-> --- a/drivers/media/dvb-core/dvb_ca_en50221.c
-> +++ b/drivers/media/dvb-core/dvb_ca_en50221.c
-> @@ -1362,13 +1362,19 @@ static int dvb_ca_en50221_io_do_ioctl(struct file=
- *file,
->                         struct dvb_ca_slot *sl =3D &ca->slot_info[slot];
->
->                         mutex_lock(&sl->slot_lock);
-> -                       if (sl->slot_state !=3D DVB_CA_SLOTSTATE_NONE) {
-> +                       if ((sl->slot_state =3D=3D DVB_CA_SLOTSTATE_RUNNI=
-NG) ||
-> +                           (sl->slot_state =3D=3D DVB_CA_SLOTSTATE_INVAL=
-ID)) {
->                                 dvb_ca_en50221_slot_shutdown(ca, slot);
->                                 if (ca->flags & DVB_CA_EN50221_FLAG_IRQ_C=
-AMCHANGE)
->                                         dvb_ca_en50221_camchange_irq(ca->=
-pub,
->                                                                      slot=
-,
->                                                                      DVB_=
-CA_EN50221_CAMCHANGE_INSERTED);
->                         }
-> +                       else {
-> +                               if (sl->slot_state !=3D DVB_CA_SLOTSTATE_=
-NONE) {
-> +                                       err =3D -EBUSY;
-> +                               }
-> +                       }
->                         mutex_unlock(&sl->slot_lock);
->                 }
->                 ca->next_read_slot =3D 0;
-> --
-> 2.17.1
->
+What you're doing, in my experience so far is, you come with some weird
+HV + guest models which has been invented somewhere, behind some closed
+doors, then you come with some desire that the upstream kernel should
+support it and you're not even documenting it properly and I'm left with
+asking questions all the time, what is this, what's the use case,
+blabla.
+
+Don't take this personally - I guess this is all due to NDAs,
+development schedules, and whatever else and yes, I've heard it all.
+
+But just because you want this, we're not going to jump on it and
+support it unconditionally. It needs to integrate properly with the rest
+of the kernel and if it doesn't, it is not going upstream. That simple.
+
+> I am explicitly trying to integrate nicely with AMD's KVM SNP host
+> patches to cover an additional usecase and get something upstreamable.
+
+And yet I still have no clue what your use case is. I always have to go
+ask behind the scenes and get some half-answers about *maybe* this is
+what they support.
+
+Looking at the patch you pointed at I see there a proper explanation of
+your nested SNP stuff. Finally!
+
+From now on, please make sure your use case is properly explained
+before you come with patches.
+
+> The RMP in nested SNP is only used for kernel bookkeeping and so its
+> allocation is optional. KVM could do without reading the RMP directly
+> altogether (by tracking the assigned bit somewhere) but that would be
+> a design change and I'd rather see the KVM SNP host patches merged in
+> their current shape. Which is why the patch I linked allocates
+> a (shadow) RMP from the kernel.
+
+At least three issues I see with that:
+
+- the allocation can fail so it is a lot more convenient when the
+  firmware prepares it
+
+- the RMP_BASE and RMP_END writes need to be verified they actially did
+  set up the RMP range because if they haven't, you might as well
+  throw SNP security out of the window. In general, letting the kernel
+  do the RMP allocation needs to be verified very very thoroughly.
+
+- a future feature might make this more complicated
+
+> I would very much appreciate if we would not prevent that usecase from
+> working - that's why I've been reviewing and testing multiple
+> revisions of these patches and providing feedback all along.
+
+I very much appreciate the help but we need to get the main SNP host
+stuff in first and then we can talk about modifications.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
