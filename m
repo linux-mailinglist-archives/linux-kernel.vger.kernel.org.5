@@ -1,113 +1,124 @@
-Return-Path: <linux-kernel+bounces-21460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33065828F76
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:12:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18FDA828F9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D598928801C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:12:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28C021C24F1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173AB3DBA7;
-	Tue,  9 Jan 2024 22:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1313E481;
+	Tue,  9 Jan 2024 22:16:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FeUfEWH8"
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qB46A5Sp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44563C6A4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 22:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704838361;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+MEfEwS7YBgABTVs4pBpb90gb7WYrZTDLj1svt0+kOQ=;
-	b=FeUfEWH8NQXFDwxIrMCopRuDErF2CX8T2lyAKILhtxo9p7YHypWHSErr2cSpZ7NUXuCRj4
-	T99H0foXMcRpFqGJbZ1VYyl9mF0EBh3+tvcP+Jqmi7D0ItBLHKMSuoNecWKmCENC7avZ/F
-	xwbCI/whlohiv7GmWiheHgh8pnDt628=
-From: andrey.konovalov@linux.dev
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>,
-	Marco Elver <elver@google.com>,
-	Alexander Potapenko <glider@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	kasan-dev@googlegroups.com,
-	linux-mm@kvack.org,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Liam.Howlett@oracle.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH mm] kasan: avoid resetting aux_lock
-Date: Tue,  9 Jan 2024 23:12:34 +0100
-Message-Id: <20240109221234.90929-1-andrey.konovalov@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D393C6A4;
+	Tue,  9 Jan 2024 22:16:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA61FC433F1;
+	Tue,  9 Jan 2024 22:16:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704838610;
+	bh=EHvco0VkqOSJGuxdue1TEtXAL00jI8VZrVZxCAuX2+E=;
+	h=From:Subject:Date:To:Cc:From;
+	b=qB46A5SpFD/NpmrZNfvwVgTddKr4FozL/Nm6NTWqjJuavIDeYbyWj8WbTz/AJAYAd
+	 rCq1xH2+lrNbAzymhVqtxXCmJQYKKBtigLbuskx+y07oOM7Fuhn5KtE5lAQldU86ff
+	 zsHlTOsJZDWVdq5RMMJKOsWvG0Sf8ZHgtVjZur4CTnnCh2KmHRiE+g9IYh0N3JSxTK
+	 HD8CBIbqmmGPG+MOnwgxTifgp44rGjZZFXk0l6vXeduRl6TLk9LScel7oWlPR5uz1g
+	 UsvtcwNt/LBd82QaDZxv1VzpZC3HDPVzq86WEch1mZNDSm/ODiPUOVtCeJtXC34hlE
+	 7d2vmCHDFTLIQ==
+From: Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 0/3] Update LLVM Phabricator and Bugzilla links
+Date: Tue, 09 Jan 2024 15:16:28 -0700
+Message-Id: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALzFnWUC/x3MQQqAIBBA0avErBtQi8CuEi0kpxoyCy0JwrsnL
+ d/i/xciBaYIffVCoMSRD18g6wqm1fiFkG0xKKFaIYXG+7TmInQu7ejYbxGtaGZtu1aTJCjdGWj
+ m538OY84fszs+Z2MAAAA=
+To: akpm@linux-foundation.org
+Cc: llvm@lists.linux.dev, patches@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, 
+ linux-riscv@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
+ linux-s390@vger.kernel.org, linux-pm@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org, 
+ amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+ linux-media@vger.kernel.org, linux-arch@vger.kernel.org, 
+ kasan-dev@googlegroups.com, linux-mm@kvack.org, bridge@lists.linux.dev, 
+ netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, mykolal@fb.com, 
+ bpf@vger.kernel.org
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2460; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=EHvco0VkqOSJGuxdue1TEtXAL00jI8VZrVZxCAuX2+E=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDKlzj17YHOFbeqmmzSTv+Yl3Dvc2pO2+wn2gftPWtOlmz
+ ZFzErc87ShlYRDjYpAVU2Spfqx63NBwzlnGG6cmwcxhZQIZwsDFKQATcYlj+J+VsOtwv+FtLr6v
+ L2ptJLoTJ1xwvPM+afI7W55fz9vnRocyMsxLsi56rXP33S6VMzNvVJ4tXR/xeu4ma9Zvvc8ruWO
+ PdPIDAA==
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 
-From: Andrey Konovalov <andreyknvl@gmail.com>
+This series updates all instances of LLVM Phabricator and Bugzilla links
+to point to GitHub commits directly and LLVM's Bugzilla to GitHub issue
+shortlinks respectively.
 
-With commit 63b85ac56a64 ("kasan: stop leaking stack trace handles"),
-KASAN zeroes out alloc meta when an object is freed. The zeroed out data
-purposefully includes alloc and auxiliary stack traces but also
-accidentally includes aux_lock.
+I split up the Phabricator patch into BPF selftests and the rest of the
+kernel in case the BPF folks want to take it separately from the rest of
+the series, there are obviously no dependency issues in that case. The
+Bugzilla change was mechanical enough and should have no conflicts.
 
-As aux_lock is only initialized for each object slot during slab
-creation, when the freed slot is reallocated, saving auxiliary stack
-traces for the new object leads to lockdep reports when taking the
-zeroed out aux_lock.
+I am aiming this at Andrew and CC'ing other lists, in case maintainers
+want to chime in, but I think this is pretty uncontroversial (famous
+last words...).
 
-Arguably, we could reinitialize aux_lock when the object is reallocated,
-but a simpler solution is to avoid zeroing out aux_lock when an object
-gets freed.
-
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
-Closes: https://lore.kernel.org/linux-next/5cc0f83c-e1d6-45c5-be89-9b86746fe731@paulmck-laptop/
-Fixes: 63b85ac56a64 ("kasan: stop leaking stack trace handles")
-Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
 ---
- mm/kasan/generic.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Nathan Chancellor (3):
+      selftests/bpf: Update LLVM Phabricator links
+      arch and include: Update LLVM Phabricator links
+      treewide: Update LLVM Bugzilla links
 
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 24c13dfb1e94..df6627f62402 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -487,6 +487,7 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
- 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
- 
- 		/*
-+		 * Prepare the lock for saving auxiliary stack traces.
- 		 * Temporarily disable KASAN bug reporting to allow instrumented
- 		 * raw_spin_lock_init to access aux_lock, which resides inside
- 		 * of a redzone.
-@@ -510,8 +511,13 @@ static void release_alloc_meta(struct kasan_alloc_meta *meta)
- 	stack_depot_put(meta->aux_stack[0]);
- 	stack_depot_put(meta->aux_stack[1]);
- 
--	/* Zero out alloc meta to mark it as invalid. */
--	__memset(meta, 0, sizeof(*meta));
-+	/*
-+	 * Zero out alloc meta to mark it as invalid but keep aux_lock
-+	 * initialized to avoid having to reinitialize it when another object
-+	 * is allocated in the same slot.
-+	 */
-+	__memset(&meta->alloc_track, 0, sizeof(meta->alloc_track));
-+	__memset(meta->aux_stack, 0, sizeof(meta->aux_stack));
- }
- 
- static void release_free_meta(const void *object, struct kasan_free_meta *meta)
+ arch/arm64/Kconfig                                 |  4 +--
+ arch/powerpc/Makefile                              |  4 +--
+ arch/powerpc/kvm/book3s_hv_nested.c                |  2 +-
+ arch/riscv/Kconfig                                 |  2 +-
+ arch/riscv/include/asm/ftrace.h                    |  2 +-
+ arch/s390/include/asm/ftrace.h                     |  2 +-
+ arch/x86/power/Makefile                            |  2 +-
+ crypto/blake2b_generic.c                           |  2 +-
+ drivers/firmware/efi/libstub/Makefile              |  2 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_4_2.c           |  2 +-
+ drivers/media/test-drivers/vicodec/codec-fwht.c    |  2 +-
+ drivers/regulator/Kconfig                          |  2 +-
+ include/asm-generic/vmlinux.lds.h                  |  2 +-
+ include/linux/compiler-clang.h                     |  2 +-
+ lib/Kconfig.kasan                                  |  2 +-
+ lib/raid6/Makefile                                 |  2 +-
+ lib/stackinit_kunit.c                              |  2 +-
+ mm/slab_common.c                                   |  2 +-
+ net/bridge/br_multicast.c                          |  2 +-
+ security/Kconfig                                   |  2 +-
+ tools/testing/selftests/bpf/README.rst             | 32 +++++++++++-----------
+ tools/testing/selftests/bpf/prog_tests/xdpwall.c   |  2 +-
+ .../selftests/bpf/progs/test_core_reloc_type_id.c  |  2 +-
+ 23 files changed, 40 insertions(+), 40 deletions(-)
+---
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+change-id: 20240109-update-llvm-links-d03f9d649e1e
+
+Best regards,
 -- 
-2.25.1
+Nathan Chancellor <nathan@kernel.org>
 
 
