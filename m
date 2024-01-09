@@ -1,108 +1,127 @@
-Return-Path: <linux-kernel+bounces-20712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3468283E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:22:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FDA8283F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58F52287A3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:22:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95FD41F247CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB9A364A9;
-	Tue,  9 Jan 2024 10:22:22 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E119364A3
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 10:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41BAFC15;
-	Tue,  9 Jan 2024 02:23:04 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 211BC3F73F;
-	Tue,  9 Jan 2024 02:22:16 -0800 (PST)
-Message-ID: <1dcfd28c-78d8-4790-8c99-27e15989ca40@arm.com>
-Date: Tue, 9 Jan 2024 10:22:15 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE88364A2;
+	Tue,  9 Jan 2024 10:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gR8WJl1J"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4505360AB
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 10:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbed729a4f2so1966803276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 02:26:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704796015; x=1705400815; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kgqGlkcMY7u56Ey8Ssan/W4yPE2JFQtM3N3GgOR/j04=;
+        b=gR8WJl1J//qv9if6koihIbit0Zd7NxTDX7R0irdnFoqdnSsM5W4AYuMSN/Q1P+Lq9k
+         vc/6hEtrPhFqo9ZNhdcH2Zm/QJ1vQFQOiOU87J6V14C2vYYdc53AZt2Q7JXBnrBUC5Cm
+         FtbqfYYhpdiRIioTF7l2TbUMNd0uz3azs+u7705vmcZ8wqCAcE5DlMTzMZ1FVH8PBtPV
+         nf6oN/wvRmysmK+WpdAgfi2AdzAx1SFcz+WA46hi5WCMIz3JsYjGXCQyc44AkhJsoMLH
+         1k1VKlpdkFSer1fVr9XSWFbLjya6Hjux4gYI28JqoQzhLn1gtFsuLRS1ZpsFcbBoHt9D
+         HCQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704796015; x=1705400815;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kgqGlkcMY7u56Ey8Ssan/W4yPE2JFQtM3N3GgOR/j04=;
+        b=R1eEdBhD9+wgodt54Oar9Xe6wt0dGPvNRt/S4xldbEnIZMi/DoViET2HZPkF/+NPHi
+         yRpgjqm6PQpecZjkaFDvzy9laDOW6KCf2hU3rFgIcBppUz7BnPuFD1V8LNG5KKKet29I
+         EojAzlKfqZe++1acJGULlB8HJmWiY8NTwTwiMj2E/a4iGQpqTsBQIpZ04f5I9ykTrd7R
+         yfLEdTpg3QxFrYpWZv3E06KCJWR7Uscg16mIIszwtSRT91Y6jjzMWwlgWl54TRCrH6hL
+         09TEqAzMnX97XI1UuonGCkbEMB7O/kPqVdpMMwDD42uo1hIq78bB95uFlPlENVXLjWp4
+         x6bw==
+X-Gm-Message-State: AOJu0YwpWvwdxB6JFrgEkjWL0OeEmzbSfeDxxhjTVPQt/Os8GdmGtgff
+	W5GRtFSa0gJpDSVE1CIv5jxITKA1JDau/RRMVv1/oc070ASavg==
+X-Google-Smtp-Source: AGHT+IEQcZ6P9lXrBSBQ98idjcrgG87Zex/N/4zJ2/Drg8bOifKzxnfvcNAyWLYxJMhEyMuLNyRozZ9WLgS7M5DCWzc=
+X-Received: by 2002:a25:fe10:0:b0:dbe:ab5b:c659 with SMTP id
+ k16-20020a25fe10000000b00dbeab5bc659mr2117007ybe.37.1704796014777; Tue, 09
+ Jan 2024 02:26:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/8] coresight: Move all sysfs code to sysfs file
-Content-Language: en-US
-To: James Clark <james.clark@arm.com>, coresight@lists.linaro.org
-Cc: Mike Leach <mike.leach@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20231212155407.1429121-1-james.clark@arm.com>
- <20231212155407.1429121-7-james.clark@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231212155407.1429121-7-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240105-fp4-thermals-v1-0-f95875a536b7@fairphone.com>
+ <20240105-fp4-thermals-v1-2-f95875a536b7@fairphone.com> <18dc5f88-6590-4e2d-948f-fd77f4713f8b@linaro.org>
+In-Reply-To: <18dc5f88-6590-4e2d-948f-fd77f4713f8b@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 9 Jan 2024 12:26:43 +0200
+Message-ID: <CAA8EJpp5ZwJUJbbt7YG=1aAdGoScA+PTEf==7gJk3RUP2yu8uw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm7225-fairphone-fp4: Add PM6150L thermals
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Luca Weiss <luca.weiss@fairphone.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/12/2023 15:54, James Clark wrote:
-> At the moment the core file contains both sysfs functionality and
-> core functionality, while the Perf mode is in a separate file in
-> coresight-etm-perf.c
-> 
-> Many of the functions have ambiguous names like
-> coresight_enable_source() which actually only work in relation to the
-> sysfs mode. To avoid further confusion, move everything that isn't core
-> functionality into the sysfs file and append  _sysfs to the ambiguous
-> functions.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
+On Tue, 9 Jan 2024 at 12:10, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+>
+>
+> On 1/5/24 15:54, Luca Weiss wrote:
+> > Configure the thermals for the PA_THERM1, MSM_THERM, PA_THERM0,
+> > RFC_CAM_THERM, CAM_FLASH_THERM and QUIET_THERM thermistors connected to
+> > PM6150L.
+> >
+> > Due to hardware constraints we can only register 4 zones with
+> > pm6150l_adc_tm, the other 2 we can register via generic-adc-thermal.
+>
+> Ugh.. so the ADC can support more inputs than the ADC_TM that was
+> designed to ship alongside it can?
 
-The changes look good to me. One minor comment below.
+Yes. ADC_TM can support monitoring of 8 channels in total.
 
-..
+>
+> And that's why the "generic-adc-thermal"-provided zones need to
+> be polled?
+>
+> >
+> > The trip points can really only be considered as placeholders, more
+> > configuration with cooling etc. can be added later.
+> >
+> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > ---
+> [...]
+>
+> I've read the sentence above, but..
+> > +             sdm-skin-thermal {
+> > +                     polling-delay-passive = <1000>;
+> > +                     polling-delay = <5000>;
+> > +                     thermal-sensors = <&msm_therm_sensor>;
+> > +
+> > +                     trips {
+> > +                             active-config0 {
+> > +                                     temperature = <125000>;
+> > +                                     hysteresis = <1000>;
+> > +                                     type = "passive";
+>
+> I don't fancy burnt fingers for dinner!
+>
+> Konrad
+>
 
-> +struct device_type coresight_dev_type[] = {
-> +	{
-> +		.name = "sink",
-> +		.groups = coresight_sink_groups,
-> +	},
-> +	{
-> +		.name = "link",
-> +	},
-> +	{
-> +		.name = "linksink",
-> +		.groups = coresight_sink_groups,
-> +	},
-> +	{
-> +		.name = "source",
-> +		.groups = coresight_source_groups,
-> +	},
-> +	{
-> +		.name = "helper",
-> +	}
-> +};
-> +/* Ensure the enum matches the names and groups */
-> +static_assert(ARRAY_SIZE(coresight_dev_type) == CORESIGHT_DEV_TYPE_MAX);
 
-As a general cleanup, while you are at it, could we please replace this 
-with explicit member initialisers as a follow up patch ?
-
-i.e.,
-
-struct device_typ coresight_dev_type[CORESIGHT_DEV_TYPE_MAX] = {
-	[CORESIGHT_DEV_TYPE_SINK] = {
-			.name = "sink",
-			.groups = coresight_sink_groups,
-	},
-	[CORESIGHT_DEV_TYPE_LINK] =
-..
-
-}
-
-Thanks
-Suzuki
+-- 
+With best wishes
+Dmitry
 
