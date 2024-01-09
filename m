@@ -1,119 +1,118 @@
-Return-Path: <linux-kernel+bounces-21290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A04A828D1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58AA1828D1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:07:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 500971C24EC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:07:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538B11C24C64
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7AB3D547;
-	Tue,  9 Jan 2024 19:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1827B3D0BC;
+	Tue,  9 Jan 2024 19:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D3lGgSTZ"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PxwLKX2O"
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6033D540
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-680b1956ca4so24065576d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 11:07:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C37839FC5;
+	Tue,  9 Jan 2024 19:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbc648bed4so3140314b6e.3;
+        Tue, 09 Jan 2024 11:07:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704827228; x=1705432028; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aZWj0c0jaCsyimh25w1gCdR+brwMSXqABqwsZR/XLJU=;
-        b=D3lGgSTZs8TFAynZNVJiGg1jSG5UHtO8YBCcxZTpCe4tOoK0KRgr+NFGH4D4yfQfMW
-         FRDNUQjmeIAh9WG5ZN8AbawEM1yg5FlXYfNNc5rIxLpwU1f5SXKJPiElKI2vhxQxU/+2
-         qoiZztTkzyk6afDOpUsB6UCN0Jn8u+MrokurMpy40JFw3nkU7aupo2G5+SqCmvp09AmM
-         md/AoEL1v+1mANlpMUj1fiVX5TPSpz3MbA/7kGxx4HUvleMudmhtYkJRh2PqePZfHwlr
-         F/ilcnUtqIn9ymYhiqpAuy9kOWpL4fCPQ/tvJeswY8myyyHPh75vAa7vjIPKK+n/U2sf
-         qmCA==
+        d=gmail.com; s=20230601; t=1704827256; x=1705432056; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vktayxzef92MMwztklBgwneA0iC/Pngrp/gUTyKh1oo=;
+        b=PxwLKX2OAtegdREnedq01DCxdcW3gKX6q26Fi2X0IiFpyCjg7YkPPRHwH0HTYF4GyQ
+         yMTU3DsfQt+nzXi/XWRG/fjeex5PnBsRIonmSDkt3A80GAtad/UI/TM3PvCYsap5u5Qx
+         otKGrn4Wi91cGbHo0uzQMTz4wzsg5x4GeQOXbDEA/ansuQbkjAY0qz7sMXrUpZRb66zq
+         HUPfmgtwjLuJzxJMgPrYbqwQPorKXtdMYzVEfjrbETKSyRwecdUsGQ3qG7bSZ2oXpp0V
+         YZt3IPo8HQGwTORz6YRrBTEcIEBqi8aKJpXPClQ0DWwI+z589LtjKlh9CWDBHfy7BXDS
+         cPpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704827228; x=1705432028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1704827256; x=1705432056;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aZWj0c0jaCsyimh25w1gCdR+brwMSXqABqwsZR/XLJU=;
-        b=k6BYvU7GK/wvr3GIBd1qhETNuAnxxyVu9SvE7pZpVzo5AuMRpTMWVSDDc9NVw+eDks
-         hbmBcTO8FyClzp55x4UZquA7P7+58RmehvD1i6PU/2qduVxPwJbo21a/AHsavzihPLbm
-         zCbIyyN/wpqRVDxCJxiLaqR8j2sgYisyqgRTCvTzQtiUBhkRSaF12ub3DMllr9Mn1g/r
-         DJCLCQVajJ8D7yMEI85ho7UI3AjUkZxRLi58+H1rLkL1F8kP944TcEUI8o8GJNggGTNt
-         +ZmJBLyaf+X5UaiWS0RHzMiRtjnqUnRtKDjcPKCPeK9JptqcljOkrFdYILQofS7Q94E6
-         nrcg==
-X-Gm-Message-State: AOJu0Yz/mOHhybpPPZ7Td2S24eSgw97tVFF8n1ULzRy3EJubsnxwPxhR
-	YZcg1dvQPwQyFOpBfppQsAk378c79wh/u7k7Bd1wH2J4JZNu
-X-Google-Smtp-Source: AGHT+IEDkWh5d4jaJoD9wYDQIYJi4sfejD6VqQVpuOO7LI2Yu7a4R7ck8NJoxpQPlDzx+u0MWAM1PTPaOgDOvDfs/ag=
-X-Received: by 2002:a05:6214:2b08:b0:67a:b99e:4228 with SMTP id
- jx8-20020a0562142b0800b0067ab99e4228mr7301604qvb.52.1704827228444; Tue, 09
- Jan 2024 11:07:08 -0800 (PST)
+        bh=vktayxzef92MMwztklBgwneA0iC/Pngrp/gUTyKh1oo=;
+        b=SdKtZOm0SehSboxY0p7J/kmDJkkszKe3dMKJJK/X3JEWMSm3u0wDtF4TMN7rRibo0B
+         6Z2ZsrvisUrWY1f+xKHDrNkt/Usrjw3ny/ob4G8WyN8gHIfvuFu27xtwgizRKeuexFsR
+         Ry2fYLtJR6IIKEISu/WI/7Tx/UXL+UpuujRx8NEtJAxQrfxapAhwXgvBpNj2y3x0jC39
+         CCSr2DL9S4voRen8uBNnwWB8f/nYDyE8JnHTeO5jGptnNearRCmdTns9I0cwP4x2sHjT
+         JVsVZKnGb7D/VD7P08fL8dU4lL/ZAXwzbmABfBci4aOt9/Jqa1kyUXo+9E1yYHjTGssn
+         RcKw==
+X-Gm-Message-State: AOJu0YzVIEaZJdp6Zl8vu9NDqAoZamU3qh5SWa3T1COIEc0yu2eV/p5S
+	rFpQFBZLp/vHGbHBSJgu8GY=
+X-Google-Smtp-Source: AGHT+IHQlFtLZgqEtXiyXC9fL4944RHvq6x/EWWSrBmG2PNh8QZPc/OYPEt6CGMDNrGj179jx6Vl9g==
+X-Received: by 2002:a05:6358:71c3:b0:175:7748:bf65 with SMTP id u3-20020a05635871c300b001757748bf65mr5486553rwu.37.1704827255977;
+        Tue, 09 Jan 2024 11:07:35 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:fd50])
+        by smtp.gmail.com with ESMTPSA id n41-20020a056a000d6900b006d9c1fb00c3sm2037702pfv.9.2024.01.09.11.07.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 11:07:35 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 9 Jan 2024 09:07:34 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org,
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH] kernfs: convert kernfs_idr_lock to an irq safe raw
+ spinlock
+Message-ID: <ZZ2ZdoNyBhR7o83I@slm.duckdns.org>
+References: <20231229074916.53547-1-andrea.righi@canonical.com>
+ <CAMuHMdV=AKt+mwY7svEq5gFPx41LoSQZ_USME5_MEdWQze13ww@mail.gmail.com>
+ <ZZ18xVq4GtQsTC8Z@gpd>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105000632.2484182-1-aahila@google.com> <11317.1704418732@famine>
- <ZZtwKFu4GQLQ5AXM@Laptop-X1>
-In-Reply-To: <ZZtwKFu4GQLQ5AXM@Laptop-X1>
-From: Aahil Awatramani <aahila@google.com>
-Date: Tue, 9 Jan 2024 11:06:56 -0800
-Message-ID: <CAGfWUPyHJ-R98jvqEyJ5KMkv=NyxvOFYLN+wxCoshu7mKXpuVQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2 net-next v2] bonding: Extending LACP MUX State Machine
- to include a Collecting State.
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: Jay Vosburgh <jay.vosburgh@canonical.com>, David Dillow <dave@thedillows.org>, 
-	Mahesh Bandewar <maheshb@google.com>, Andy Gospodarek <andy@greyhouse.net>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZ18xVq4GtQsTC8Z@gpd>
 
-Thank you folk for your feedback.
+On Tue, Jan 09, 2024 at 06:05:09PM +0100, Andrea Righi wrote:
+> On Tue, Jan 09, 2024 at 05:35:36PM +0100, Geert Uytterhoeven wrote:
+> > Reverting commit c312828c37a72fe2 fixes that.
+> > I have seen this issue on several Renesas arm32 and arm64 platforms.
+> > 
+> > Also, I am wondering if the issue fixed by commit c312828c37a72fe2
+> > can still be reproduced on v6.7-rc5 or later?
+> 
+> Yep, I can still reproduce it (this is with v6.7):
+..
+> I'm wondering if using a regular spinlock instead of a raw spinlock
+> could be a reasonable compromise.
 
-Currently due to travelling reasons there will be a slight delay in my upda=
-tes
-but this should be resolved soon and I should be able to provide quicker
-iterative feedback.
+I don't think that'd work on RT as we can end up nesting mutex inside a raw
+spinlock.
 
-Thank you again for your reviews,
-Aahil
+> We have a GFP_ATOMIC allocation in __kernfs_new_node():
+> 
+> 	raw_spin_lock_irqsave(&kernfs_idr_lock, irqflags);
+> 	ret = idr_alloc_cyclic(&root->ino_idr, kn, 1, 0, GFP_ATOMIC);
+> 	...
+>         raw_spin_unlock_irqrestore(&kernfs_idr_lock, irqflags);
+> 
+> That should become valid using a
+> spin_lock_irqsave/spin_unlock_irqrestore(), right?
 
-On Sun, Jan 7, 2024 at 7:46=E2=80=AFPM Hangbin Liu <liuhangbin@gmail.com> w=
-rote:
->
-> On Thu, Jan 04, 2024 at 05:38:52PM -0800, Jay Vosburgh wrote:
-> > >+coupled_control
-> > >+
-> > >+    Specifies whether the LACP state machine's MUX in the 802.3ad mod=
-e
-> > >+    should have separate Collecting and Distributing states.
-> > >+
-> > >+    The default value is 1. This setting does not separate the Collec=
-ting
-> > >+    and Distributing states, maintaining the bond in coupled control.
-> > >+
-> >
-> >       Please reference the standard in the description; this is
-> > implementing the independent control state machine per IEEE 802.1AX-200=
-8
-> > 5.4.15 in addition to the existing coupled control state machine.
->
-> The status of IEEE 802.1AX-2008[1] is "Superseded Standard". Maybe we sho=
-uld
-> use IEEE 802.1AX-2020[2].
->
-> [1] https://standards.ieee.org/ieee/802.1AX/4176/
-> [2] https://standards.ieee.org/ieee/802.1AX/6768/
->
-> Thanks
-> Hangbin
+Yeah, this part should be fine. I think the right thing to do here is making
+the idr RCU safe so that lookup path doesn't depend on the lock.
+
+Greg, can you please revert c312828c37a72fe2 for now?
+
+Thanks.
+
+-- 
+tejun
 
