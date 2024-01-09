@@ -1,179 +1,91 @@
-Return-Path: <linux-kernel+bounces-20334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A25827D6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:43:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BC61827D6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADACF1C231D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:43:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08DE01F241A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14044698;
-	Tue,  9 Jan 2024 03:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i2U4OK4A"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4000C4699;
+	Tue,  9 Jan 2024 03:42:04 +0000 (UTC)
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F1633EE;
-	Tue,  9 Jan 2024 03:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704771806; x=1736307806;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=EXGALg+04GjIg7VHmOoodLCutmjxuq5kzaEUQbcbKOQ=;
-  b=i2U4OK4AWF4jDzopy9a6L83jkXF73pBoJlGBP5YVSVek8R95HXeSbxwr
-   UJwEZnHEEggC9wmORgOwh1QhMgAMuQIV7trO2Ekiba1HOg1Z2JN/sbIaS
-   aovjtMfAqOcr3Q2SZ1tAOLCkxNFRXDQUNSUAvPv+ABpSI5OPs1Idei3Fr
-   ZEUey4tnVqkL0NfxASU0gA9JoWy76lA/nUvzBBrP/B3Fz6EYdsdTrp73c
-   zypIj5jEcC8SoFD8APNTFP0ucm2teGFPlPgzeS0LGkmwKf2pHW4WmX8Gm
-   0yg/i64gkCQsbPbWtJfcH564qVBK7lYxBoVJWkjgGTHg4/NrNakODrHeM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4833825"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="4833825"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 19:43:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="872099709"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="872099709"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 19:43:09 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Srinivasulu Thanneeru <sthanneeru@micron.com>,  Srinivasulu Opensrc
- <sthanneeru.opensrc@micron.com>,  "linux-cxl@vger.kernel.org"
- <linux-cxl@vger.kernel.org>,  "linux-mm@kvack.org" <linux-mm@kvack.org>,
-  "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-  "dan.j.williams@intel.com" <dan.j.williams@intel.com>,  "mhocko@suse.com"
- <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,
-  "john@jagalactic.com" <john@jagalactic.com>,  Eishan Mirakhur
- <emirakhur@micron.com>,  "Vinicius Tavares Petrucci"
- <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
-  "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Wei Xu <weixugc@google.com>,  Hao Xiang
- <hao.xiang@bytedance.com>,  "Ho-Ren (Jack) Chuang"
- <horenchuang@bytedance.com>
-Subject: Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
-In-Reply-To: <ZZwrIoP9+ey7rp3C@memverge.com> (Gregory Price's message of "Mon,
-	8 Jan 2024 12:04:34 -0500")
-References: <20231213175329.594-1-sthanneeru.opensrc@micron.com>
-	<87cyv8qcqk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZXyQIJOim1+tE0Qr@memverge.com>
-	<87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZZwrIoP9+ey7rp3C@memverge.com>
-Date: Tue, 09 Jan 2024 11:41:11 +0800
-Message-ID: <87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9650479C4;
+	Tue,  9 Jan 2024 03:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6dac8955af0so1076512b3a.0;
+        Mon, 08 Jan 2024 19:42:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704771722; x=1705376522;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aRtasBW72KfoDwZ/WxCb0AK88cwbM9CGvhgyqKmj2qs=;
+        b=oBJAecOx7AA74JCFSt03I2pARts5YSFqLgkYpYI3rauTHW5qM4zqRbFkqcRLNJCpqY
+         ImYIFnWlPL9iV5DUrViCVui1quqC3bYY3PPMrSTOZxbxg/cNvYb99QMU6TTCno9ovlNa
+         hsAy60H2zBhsaOtMetEDc8uTaiSnCiDPpXjx25AsfT3eRKAWyEV/NcnG/yj4hNnuPCL4
+         C/cKo+1wyKVqJGuitWBujN22qoUF3IQLMJhjkIqmWibMSBi7b8XWenQdzknNpkNv2pwT
+         i+cP7u0UEKszKvhPhEvAHiTqtCM3XrlRfOR6OCcD/dPcLT4UiHKVGABW479brZkUM9hO
+         vHhQ==
+X-Gm-Message-State: AOJu0Yx7zcMdbOdmHIrVjqKDFG3X6Mz/l9cts/8dfOk+Ozl15Sx4M859
+	d6DZtZevG1wnNkknRSwDbA0=
+X-Google-Smtp-Source: AGHT+IHchAv9sUUY0pJ4PrEniWjBi8YeT0i2qc5gw9KP4S2TS/MsQ6NTHv9pqKerKBoV9HB7dpFcKw==
+X-Received: by 2002:a05:6a00:3a25:b0:6d9:bf50:1c94 with SMTP id fj37-20020a056a003a2500b006d9bf501c94mr2546935pfb.9.1704771721845;
+        Mon, 08 Jan 2024 19:42:01 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id kt3-20020a056a004ba300b006d9aa04574csm603224pfb.52.2024.01.08.19.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 19:42:01 -0800 (PST)
+Date: Tue, 9 Jan 2024 12:41:59 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: lpieralisi@kernel.org, robh@kernel.org, bhelgaas@google.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, ilpo.jarvinen@linux.intel.com,
+	vigneshr@ti.com, r-gunasekaran@ti.com, srk@ti.com
+Subject: Re: [PATCH v3] PCI: keystone: Fix race condition when initializing
+ PHYs
+Message-ID: <20240109034159.GA3301517@rocinante>
+References: <20230927041845.1222080-1-s-vadapalli@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927041845.1222080-1-s-vadapalli@ti.com>
 
-Gregory Price <gregory.price@memverge.com> writes:
+Hello,
 
-> On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote:
->> >
->> > From  https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Live%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
->> > abstract_distance_offset: override by users to deal with firmware issue.
->> >
->> > say firmware can configure the cxl node into wrong tiers, similar to
->> > that it may also configure all cxl nodes into single memtype, hence
->> > all these nodes can fall into a single wrong tier.
->> > In this case, per node adistance_offset would be good to have ?
->> 
->> I think that it's better to fix the error firmware if possible.  And
->> these are only theoretical, not practical issues.  Do you have some
->> practical issues?
->> 
->> I understand that users may want to move nodes between memory tiers for
->> different policy choices.  For that, memory_type based adistance_offset
->> should be good.
->> 
->
-> There's actually an affirmative case to change memory tiering to allow
-> either movement of nodes between tiers, or at least base placement on
-> HMAT information. Preferably, membership would be changable to allow
-> hotplug/DCD to be managed (there's no guarantee that the memory passed
-> through will always be what HMAT says on initial boot).
+> The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
+> function. The PHY in this case is the Serdes. It is possible that the
+> PCI instance is configured for 2 lane operation across two different
+> Serdes instances, using 1 lane of each Serdes. In such a configuration,
+> if the reference clock for one Serdes is provided by the other Serdes,
+> it results in a race condition. After the Serdes providing the reference
+> clock is initialized by the PCI driver by invoking its PHY APIs, it is
+> not guaranteed that this Serdes remains powered on long enough for the
+> PHY APIs based initialization of the dependent Serdes. In such cases,
+> the PLL of the dependent Serdes fails to lock due to the absence of the
+> reference clock from the former Serdes which has been powered off by the
+> PM Core.
+> 
+> Fix this by obtaining reference to the PHYs before invoking the PHY
+> initialization APIs and releasing reference after the initialization is
+> complete.
 
-IIUC, from Jonathan Cameron as below, the performance of memory
-shouldn't change even for DCD devices.
+Applied to controller/keystone, thank you!
 
-https://lore.kernel.org/linux-mm/20231103141636.000007e4@Huawei.com/
+[1/1] PCI: keystone: Fix race condition when initializing PHYs
+      https://git.kernel.org/pci/pci/c/c12ca110c613
 
-It's possible to change the performance of a NUMA node changed, if we
-hot-remove a memory device, then hot-add another different memory
-device.  It's hoped that the CDAT changes too.
-
-So, all in all, HMAT + CDAT can help us to put the memory device in
-appropriate memory tiers.  Now, we have HMAT support in upstream.  We
-will working on CDAT support.
-
---
-Best Regards,
-Huang, Ying
-
-> https://lore.kernel.org/linux-cxl/CAAYibXjZ0HSCqMrzXGv62cMLncS_81R3e1uNV5Fu4CPm0zAtYw@mail.gmail.com/
->
-> This group wants to enable passing CXL memory through to KVM/QEMU
-> (i.e. host CXL expander memory passed through to the guest), and
-> allow the guest to apply memory tiering.
->
-> There are multiple issues with this, presently:
->
-> 1. The QEMU CXL virtual device is not and probably never will be
->    performant enough to be a commodity class virtualization.  The
->    reason is that the virtual CXL device is built off the I/O
->    virtualization stack, which treats memory accesses as I/O accesses.
->
->    KVM also seems incompatible with the design of the CXL memory device
->    in general, but this problem may or may not be a blocker.
->
->    As a result, access to virtual CXL memory device leads to QEMU
->    crawling to a halt - and this is unlikely to change.
->
->    There is presently no good way forward to create a performant virtual
->    CXL device in QEMU.  This means the memory tiering component in the
->    kernel is functionally useless for virtual CXL memory, because...
->
-> 2. When passing memory through as an explicit NUMA node, but not as
->    part of a CXL memory device, the nodes are lumped together in the
->    DRAM tier.
->
-> None of this has to do with firmware.
->
-> Memory-type is an awful way of denoting membership of a tier, but we
-> have HMAT information that can be passed through via QEMU:
->
-> -object memory-backend-ram,size=4G,id=ram-node0 \
-> -object memory-backend-ram,size=4G,id=ram-node1 \
-> -numa node,nodeid=0,cpus=0-4,memdev=ram-node0 \
-> -numa node,initiator=0,nodeid=1,memdev=ram-node1 \
-> -numa hmat-lb,initiator=0,target=0,hierarchy=memory,data-type=access-latency,latency=10 \
-> -numa hmat-lb,initiator=0,target=0,hierarchy=memory,data-type=access-bandwidth,bandwidth=10485760 \
-> -numa hmat-lb,initiator=0,target=1,hierarchy=memory,data-type=access-latency,latency=20 \
-> -numa hmat-lb,initiator=0,target=1,hierarchy=memory,data-type=access-bandwidth,bandwidth=5242880
->
-> Not only would it be nice if we could change tier membership based on
-> this data, it's realistically the only way to allow guests to accomplish
-> memory tiering w/ KVM/QEMU and CXL memory passed through to the guest.
->
-> ~Gregory
+	Krzysztof
 
