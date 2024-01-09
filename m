@@ -1,190 +1,351 @@
-Return-Path: <linux-kernel+bounces-20877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85D4E8286CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:06:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 458478286D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34D82282938
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:06:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEEE81F2752A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267CB38DFB;
-	Tue,  9 Jan 2024 13:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161BE39843;
+	Tue,  9 Jan 2024 13:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="HBc4tMSu"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="LRM8dJzR";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="pIUxFZn5"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE7C374C5;
-	Tue,  9 Jan 2024 13:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1704805562; x=1736341562;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xpBv9CLJKeH2ktyG75BQLyQVSsvCPHK4QXybdij5Pio=;
-  b=HBc4tMSuWs+KnUApm6tWhVDNwbCTmXvmvbrrGwW4zDnJ8WtpID2hFhdy
-   iZ0kBe4eJvO0ZK5ruYWj31LZjybFljxUzW54YYbMEpH1zc2xChX8CCA4K
-   83qV+T96KPD7Bhexubpv230enFwS8BFyVGanUQjK82lrH0G3Drb9Ss9ly
-   KQDmQTBlcnZUvG54TZOTOVzjtbpn97Wf09GCKhvgGcVUbXKLXb4HlTmIt
-   szK42eetPNE3JhIasQ1zIC/MQ/bjjQXjyv7yd44PEsovv23QMYBLsAxb0
-   dA2JlbSUEmK4whZ7GQLULHj3elLA9+snB6qJNad5q4olEG7r/01qE/pbW
-   A==;
-X-CSE-ConnectionGUID: z9oYC0TYRhSMRpXWHeg5bw==
-X-CSE-MsgGUID: iYtnSFXNRk2uY32sOXE+VQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="asc'?scan'208";a="14904599"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Jan 2024 06:06:01 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 9 Jan 2024 06:05:29 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 9 Jan 2024 06:05:27 -0700
-Date: Tue, 9 Jan 2024 13:04:52 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC: Conor Dooley <conor@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei
-	<wefu@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
-	<palmer@dabbelt.com>, Drew Fustini <dfustini@baylibre.com>
-Subject: Re: [PATCH v2 3/8] riscv: dts: thead: Add TH1520 pin control nodes
-Message-ID: <20240109-tiptoeing-twirl-ebb943e17a29@wendy>
-References: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
- <20240103132852.298964-4-emil.renner.berthing@canonical.com>
- <20240108-majorette-overtly-4ec65d0a15e9@spud>
- <CAJM55Z_2zhELW3E7p94J05We17xTC2Rejs5AigNJOHCGHVr_zg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0513738FA4;
+	Tue,  9 Jan 2024 13:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409D4Hnv032103;
+	Tue, 9 Jan 2024 13:08:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=PFPE2x9nbqDXlnI53Mxq6EY9JD1iYGHtFJScj6J0RnI=;
+ b=LRM8dJzRVhFSZ7jNsswLQCfhuT/ZLM3Y3jPzo+jHM+ruInJY46/sHKFOqsjAYrR0mMS7
+ QcAulJhYltwO7tG8Dq67ViymO80oF7rQa1cCpkCS9ucNX8g8n0qPthm09gq/oC1ylJFQ
+ 929MXyodv3T6kXYifnr6n/ejm7ITsYcLq15bLIZ3tRar4veT62m8DQRphiWPorKymO/e
+ u5nqG1o3RKwEx1ZN0DIQ2+/Rlv4cSNlQtGBZWGPqi2i2OKu7F8J31y8abVa/xdACyEmC
+ EjjnPhnzXL0IwdgB3RLgb+8X12113o07er45DvfVAYhuIdZwyn3pIL1lHlK3jqtkCt/O QQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vh6py80hd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 09 Jan 2024 13:08:18 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 409CG9d8035159;
+	Tue, 9 Jan 2024 13:08:17 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vfuu4e5xn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 09 Jan 2024 13:08:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MB9AccT8qI1mR4YZY896ET7szXIzUQ3Jy0onttW7Ap5JAcg3H4Y+IDkKnHnNBDQ7Ib7ForDq9k0W05k7nMV/u3pb/330n1dsAW0r4c9iKvyCr1SCF8pXFioUVEHuA5DqMxRpI0htpouNLNTURPtEe8A5E/Qk/Rzj1E9fHoBqrPm7NeVG9PHQdolfYEWIYUjkpvJitGateVPuniJTE9GkB5R7BjLVBZCoNbMray+icj+zfzj6PJiuPU5fNqQrH6gc02mUBuxoVJb31LONSCSfmENIXc9TI6DE4PqaTSA7EsuAAGCeJaqUa83WJZDrtnSjwMVg3miPLJ+WztYF0Pj5tw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PFPE2x9nbqDXlnI53Mxq6EY9JD1iYGHtFJScj6J0RnI=;
+ b=Zh4go+Dh4gVp56G3iONKNkeuMLdlu53gqbqCNZum6Kz6DfBfTV+V1nJwGLEgFEfGnxZnNMyyt8nZelxLNrC+5VsJX1lN/dobR8iS5WvQSsodMx1iRa3XJevqXIjPk8uh3RCdNByLxMxQNKU9S2ehTZucttLy0xY6eQyG3mtGg509QR6SXw79a4gQVbtvJ6FQy2BCb6AdJcnZ9uZziYM+KBKEyasnq8OntB9xQgXh+RdVStdO2t3wsdpH24tJpbwFjTn/csS06t5DI3jgDH/cubtI7VZ6VxV7NWrqSeeh5kcEyB7oF9vBgCpQnZzNgUsmtOSk0BXF8d70TlzD7VxrNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PFPE2x9nbqDXlnI53Mxq6EY9JD1iYGHtFJScj6J0RnI=;
+ b=pIUxFZn5fqrgG4yAem5hMbZn3KLQ+sEVZgK1lU9oDfq/nVnGDdTIKpMkZIMpvntNAYfzkla2Qg7PIxHEQbG+edZBwntxtbJBHjaoY1dD5bEll/BbgtpLCuxqpQTpxAl56UZxf8NakaS6TB0l2quqPOJN5ioSYEc7s5tWIo0OBk0=
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com (2603:10b6:510:e0::9)
+ by SJ0PR10MB4589.namprd10.prod.outlook.com (2603:10b6:a03:2d0::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
+ 2024 13:08:13 +0000
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::5997:266c:f3fd:6bf4]) by PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::5997:266c:f3fd:6bf4%4]) with mapi id 15.20.7181.015; Tue, 9 Jan 2024
+ 13:08:13 +0000
+Message-ID: <9712abdd-cbca-4ad6-b1e9-ff9bf054b278@oracle.com>
+Date: Tue, 9 Jan 2024 14:08:03 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] Documentation: usb: Document FunctionFS DMABUF API
+Content-Language: en-US
+To: Paul Cercueil <paul@crapouillou.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+        =?UTF-8?Q?Nuno_S=C3=A1?=
+ <noname.nuno@gmail.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+References: <20240108120056.22165-1-paul@crapouillou.net>
+ <20240108120056.22165-5-paul@crapouillou.net>
+From: Vegard Nossum <vegard.nossum@oracle.com>
+Autocrypt: addr=vegard.nossum@oracle.com; keydata=
+ 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 8A==
+In-Reply-To: <20240108120056.22165-5-paul@crapouillou.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PA7P264CA0529.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:3db::22) To PH0PR10MB5433.namprd10.prod.outlook.com
+ (2603:10b6:510:e0::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XthaSr7XjsnpG3pO"
-Content-Disposition: inline
-In-Reply-To: <CAJM55Z_2zhELW3E7p94J05We17xTC2Rejs5AigNJOHCGHVr_zg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5433:EE_|SJ0PR10MB4589:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1d9b0775-be6f-4100-352d-08dc11140916
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	VPJmDnDPp4QfwJh9wSew+HUjegDU8N5dtwtwzFSK1LWK9P+e0H0YRr0UZblLuNOm10ckacS7+YMXpfT2cvOHK+97jltu9RR5Kq1GZ+0APY8z4+sH+zKt9Go0QydmTftvY9hMQLFU6vlr3/lZzxr5WruPHV1UAqgSvOVOSYh3JLMLfhWQtsR3Wtbjt5brTWWjXzzRgHoEgycqibGgLee3sz15KucAlAoIWfMAcC256fg3rakyGzkNHmanDLit9sStK9cdED/fU4+Jvk7wcDhCWIlDVMN2EmkC9kuEwP6DXAjaKZ7EDi2s3l4Vr4WZXxlqHjUcoB42rcSDEK8d7ERirFb3mml1ohAast6Kua6lT24PMjZFDGtMX2zJwpMs0QZTh1S5ao4kgQIYcDegAfc1ZghP+AdX4JW11tlpkz3XziVLDa4iaf66UAE2OYyr+wst4y5B3eTxtTVlHzlEtO3c6gXM7zmT6iVQ3zjs+4sr9h4s+tnITgvpIxdXNR4y1z0w2aUtBSng/qxJuse/teesPdCEQqd+NE/gdSw5DvPfX0ObZ+qFgOTiK1LEBL1FjrAx2Mvdr7rXL36dR6gHUZ53VcYAoTtEwenM0u2DCSKC7JjuXs8YlvBMbkNjLcUUiGWa3RVEtSsbjbRbl5rYdUNGJlnc96egKNj6VEXUbIKTIjjg5qe6cLMc3S51e5tZ1CrM
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5433.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(396003)(39860400002)(366004)(230922051799003)(230273577357003)(230173577357003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(26005)(2616005)(38100700002)(4326008)(5660300002)(8936002)(8676002)(44832011)(7416002)(478600001)(2906002)(6506007)(6512007)(6666004)(53546011)(6486002)(54906003)(66476007)(66556008)(316002)(66946007)(110136005)(41300700001)(36756003)(31696002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?ZFJnekFNQUxXM1R4UE82djdEREdyZjdvQTNCNUViVzhta3BOblJSUk14Sm1O?=
+ =?utf-8?B?SWltSnU0bXZnZVhkK0k2YkEzTWt1V3lsRTFYMUxMelNvSksrOFZ1VGtZVXJI?=
+ =?utf-8?B?YjZIZUFJaFpzaFVscGFqMHlrODdadEExQURjc0ZreHNOeWhRYy9NcWc2UC9m?=
+ =?utf-8?B?T2ZjWFBXcDNZc1lNd2Zla2htMW1tSWV6TGkrN01DSTMrQjBZTGZpalhUZjgw?=
+ =?utf-8?B?K3lDVVZnSTZ2UGdhWnFPYnlESXJHOEZlbHdvN3JTZitoWXIyRXZlUWttVm1x?=
+ =?utf-8?B?TE95YUJ4cHM4R243VG9RM1lqd05sOUZ2WW14eVdNd1V1bXRDdDlwK2toSTBO?=
+ =?utf-8?B?dXR2WGhQa0hFQWNaQVh3UHZ1WjViR1pWZFROc3FsTng5RVBBaDZHeE92R2NU?=
+ =?utf-8?B?QmRqUU1oUkRaZGd4ZG43ZThiSy8wQVN1ZlB2OGdCb2dHS1ZpRUZ6V0t3OHpV?=
+ =?utf-8?B?cnp1YXBsclpvTXFtTHJNU2Z4SnNtdUFBK2tQdVBvMWlHYkNiMk11T3NlZDFO?=
+ =?utf-8?B?aFc0Nldyb09oSGh2N1ZUdE56T0lzSWIrN0U2eFVTQ2Q3WS85ajBhVnQ0cTE5?=
+ =?utf-8?B?Ly9WaFNGcHNZVkFmbmZNaCtZdElRamVLOCs0YW9yemFDZFpQdzV2ZkRuUzdH?=
+ =?utf-8?B?bUZRYWlCRW4rU0FaU0RXRzRLUTIwcVF1NW9ZQ2FVV1NtVGxQd3pPNjRPRnFL?=
+ =?utf-8?B?WmttbjhLWVpVdXF3Vmd5ZWZ1a3JHb1JpN2ZGQTg5WkxHNTVrSnJNVFozc2RG?=
+ =?utf-8?B?TkRGWFQvTk51T3JEblhvTG5ZTTF0aGRLaERqMTdEc2c3cTVyNTEreHJsNkl6?=
+ =?utf-8?B?V2Z5ZGVRS2JURnJjTVJvL05nbCs2c2tLM1k4NFpQa0lpSHB2N3NPYnZaYkJu?=
+ =?utf-8?B?TWJMc2NpWHRpUHlQeldkQlV6NitLTmpJbWtVMjdkZWxoZ241SmphdU5XSWlu?=
+ =?utf-8?B?VEF0bS9rQ0FVaVFySmFLNUo2TXVRKyswcWtUcHMzOGlyWmQvVG5aU2FROW4y?=
+ =?utf-8?B?UlBuT245UjVmTytCcHB5L1M2MmVrQzZFeG9FbVh4S24xWTJmajl0RXVVZVBw?=
+ =?utf-8?B?aWVRUm5xUnVrNysxeHVFL054cWVjOStsUGNKSkxnK0ZQZHdVWUlRS0Y0SFR2?=
+ =?utf-8?B?cUQyQzN6SHZ5TGxCR3dZL2J4cFVjNTVRZ3I2bFpKTFZBeHNhcTJkTEd4SEtx?=
+ =?utf-8?B?ZGJ5bUVCYnhYMUQ2L3FYMTlSd0h0Rmt6cjFPVi9XelJiUTZTNzA1dTVPdWxn?=
+ =?utf-8?B?azRpMncwRXhHZ0hLaGVReC9kcTluQnhrcVErWGVmQVhndkpzdmlCU0xVZzdU?=
+ =?utf-8?B?NFU4T2V2MFZhZThiY1RlekNQZ28wamxya0NNQUFZY0ZxRTdvd2swMHJLTmZP?=
+ =?utf-8?B?dkhPOUVIQWlZNkxBQmpGb2I5Q2lmQTQ3VllQdmtGd3NkRG9rT1huMFV2QVF3?=
+ =?utf-8?B?MndncWJhT095eFg5MTJQU0ZwanRkbERNbS9jWmVCa3dwR3VqdFpmUFE3Nkg2?=
+ =?utf-8?B?b1VsOGZONW5TK3htc3B2T1UzVE5yd0EzZG4xdWJ3V1RjK1pxdjVMdE55VUZz?=
+ =?utf-8?B?TmVUM1dONzhxMmtSR1huUFAvYkxjbHpKRXdNU0tzRStTbmNYaGExckxsSU53?=
+ =?utf-8?B?YnpORTBiaWZFdnJtalZaZXdOcnZuUUxJS1Vrak5rWVhycHV5SWZwOXpMbXVP?=
+ =?utf-8?B?TnFxL1NzaGJCdHRJZFVHaUtTaEVyRDVwRVZLcXhhaXVjUHkxbk8waGdFeWxw?=
+ =?utf-8?B?Zkp0UkhKeXVhVDlHRGE3d2traFBXYWcrbXlTaysybFVTWXhCcHlIa0IzcWVi?=
+ =?utf-8?B?Mkd6azVFblpERDdwU0ZROUV1Y3BxL1o4dEtpYmhJYTN0TjdMazY4TEs5a0Q0?=
+ =?utf-8?B?NEhPVWJjdVR1dUthS2pSazF2YUM2cUxSaEhNaHljVFVsaDlVemNna2lNaXQ3?=
+ =?utf-8?B?eEJCM3c4NDBta05pd3FyZFAwcjRsMUpNVVlsWjVmSlE1N1FpR29FTFRlOHc2?=
+ =?utf-8?B?cmlQWHhLTXhCSDRjN3Fmc0luMUhKdW1tWmdoN2U1QnVnN2tOczkxNTRSU1By?=
+ =?utf-8?B?V2Mwd0pHSWpzREpPT0pvZWVJUFdKRDUrNGF2aEJzTTliNnl6ckhpcS9uNXZU?=
+ =?utf-8?B?MndFRDQ1Mk8vcHk3QW1GYVlvYTFScHA5aVVuc0lobFdZWDdidmRBVHZneU9r?=
+ =?utf-8?B?ZUE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	OXNgZ9vqK+fqPwDE5EJDwjfPBcutAkO57pGzeikOq7VA1qqx5iGJNqwIXGV03lHU7MaQ/No44vB7r8812NIllZsOlkSUL76Nk0aT/uTtPNe+O9EAXZlBqHoaQmX13C+d+P5jdrQSNa6vVPGut+PMamo14VHxlLukqwp91l3KZI8oYTIDdPad4zaqsMqCo14wVTKmrKvoNRjtx6DwiqQuvBaBWhKPCBCZ58mv4oPSVsljlQRfEQtiO19faP1ccup0MHDL0vsu+xAa/9AECUJiZiQGH9XRmHLorclzH3DLbUIrwSKcj8LM9DbsNS4wjZ4AlT/98ev4OSIfVW0mu50aqyr2cHikBFo6UEuKwcOK6GMnvIV8BHh3fCh1e30O2if6CbXRfSYhXQpJLSCvp7rg+ZcHPbC2IZNSD5kTBIdSMy7O8N/XBeK/ceCxy3QrltixYSeNUJRBDLkliHv9sr6O1fORFbvNRhLTi8KzFMH+iBjVhBov9NwG39d139yDZCP+4tjN3N7l6OQD+mFXWjDwCKVwgYjUQ6+Zkt7Ig89+YIA662GHwuJ7VrJQS8JyYoJfsGmxB8ZnJ244n7qN0Ex1zQaRjiB7NfK3ldALluRUJVg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d9b0775-be6f-4100-352d-08dc11140916
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5433.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 13:08:13.0579
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tswgqXDQl+HKwXo/D/6sxysg5F4mlnoMst1W4W+C8cu3hU0XqxAuZaH0rwMDjcwUN3IVAz/Gctg2S1/Ry5+gK0O0x9lQHgOdAURdGSeo1Cw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4589
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-09_05,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401090108
+X-Proofpoint-ORIG-GUID: Cq9rqAGSUT90Ew4G1e124nl9s6k4Wgp_
+X-Proofpoint-GUID: Cq9rqAGSUT90Ew4G1e124nl9s6k4Wgp_
 
---XthaSr7XjsnpG3pO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 08/01/2024 13:00, Paul Cercueil wrote:
+> Add documentation for the three ioctls used to attach or detach
+> externally-created DMABUFs, and to request transfers from/to previously
+> attached DMABUFs.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> 
+> ---
+> v3: New patch
+> ---
+>   Documentation/usb/functionfs.rst | 36 ++++++++++++++++++++++++++++++++
+>   1 file changed, 36 insertions(+)
 
-On Tue, Jan 09, 2024 at 04:02:01AM -0800, Emil Renner Berthing wrote:
-> Conor Dooley wrote:
-> > On Wed, Jan 03, 2024 at 02:28:40PM +0100, Emil Renner Berthing wrote:
-> > > Add nodes for pin controllers on the T-Head TH1520 RISC-V SoC.
-> > >
-> > > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.c=
-om>
-> > > ---
-> > >  .../boot/dts/thead/th1520-beaglev-ahead.dts   |  4 ++++
-> > >  .../dts/thead/th1520-lichee-module-4a.dtsi    |  4 ++++
-> > >  arch/riscv/boot/dts/thead/th1520.dtsi         | 24 +++++++++++++++++=
-++
-> > >  3 files changed, 32 insertions(+)
-> > >
-> > > diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arc=
-h/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > index 70e8042c8304..6c56318a8705 100644
-> > > --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > @@ -44,6 +44,10 @@ &osc_32k {
-> > >  	clock-frequency =3D <32768>;
-> > >  };
-> > >
-> > > +&aonsys_clk {
-> > > +	clock-frequency =3D <73728000>;
-> > > +};
-> > > +
-> > >  &apb_clk {
-> > >  	clock-frequency =3D <62500000>;
-> > >  };
-> > > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b=
-/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > index a802ab110429..9865925be372 100644
-> > > --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > @@ -25,6 +25,10 @@ &osc_32k {
-> > >  	clock-frequency =3D <32768>;
-> > >  };
-> > >
-> > > +&aonsys_clk {
-> > > +	clock-frequency =3D <73728000>;
-> > > +};
-> > > +
-> > >  &apb_clk {
-> > >  	clock-frequency =3D <62500000>;
-> > >  };
-> > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/=
-dts/thead/th1520.dtsi
-> > > index ba4d2c673ac8..e65a306ff575 100644
-> > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > @@ -134,6 +134,12 @@ osc_32k: 32k-oscillator {
-> > >  		#clock-cells =3D <0>;
-> > >  	};
-> > >
-> > > +	aonsys_clk: aonsys-clk {
-> > > +		compatible =3D "fixed-clock";
-> > > +		clock-output-names =3D "aonsys_clk";
-> > > +		#clock-cells =3D <0>;
-> > > +	};
-> >
-> > Did this stuff sneak into this commit accidentally?
->=20
-> Not really by accident no. It turns out the clock tree has gates for the =
-bus
-> clock of each pinctrl block and I think it's better to add this clock
-> dependency to the bindings and driver up front.
+Hi,
 
-Maybe if I had looked a wee bit more deeply I would've noticed that it
-was used there, but it's always good to mention the rationale in the
-commit message so that it's more obvious why you're doin it.
+I'd like to point out that this file (usb/functionfs.rst) is currently
+included by Documentation/subsystem-apis.rst, the top-level file for the
+"Kernel subsystem documentation" set of books, which describe internal
+APIs: "These books get into the details of how specific kernel
+subsystems work from the point of view of a kernel developer".
 
-> Since there is not yet any clock driver the initial device tree for the T=
-H1520
-> included the dummy apb_clk that two of the pinctrl blocks derive their cl=
-ock
-> from, but not the "aonsys" clock needed by the "always-on" pinctrl. I tho=
-ught
-> it was better to add this dummy clock with the only (so far) user of it, =
-but if
-> you have a better idea, let me know.
+However, functionfs.rst (and especially your new additions) are
+documenting a userspace API, so it really belongs somewhere in
+Documentation/userspace-api/ -- that's where /proc, /sys, /dev and ioctl
+descriptions for userspace programmers belong.
 
-No, that's fine. I was just wondering why there was an unmentioned set
-of clocks being added. If they're stubbed fixed clocks I dunno if it
-makes sense to add them to the board.dts/module.dtsi files though. Where
-do the initial values come from for the rates? Out of reset values or
-set by firmware that may vary from board to board?
+I'm not NAKing the patch -- I just want to draw attention to this
+discrepancy. Maybe we can separate the kernel-implementation details
+(stuff about __init sections and stuff) from the new ioctl() info?
 
-Cheers,
-Conor.
+Looking at <https://docs.kernel.org/usb/> I see that there are many
+other adjacent documents that are also not really documenting kernel
+implementation details, rough categorization as follows:
 
---XthaSr7XjsnpG3pO
-Content-Type: application/pgp-signature; name="signature.asc"
+USB support
+-----------
 
------BEGIN PGP SIGNATURE-----
+- Linux ACM driver v0.16 ==> admin/user info
+- Authorizing (or not) your USB devices to connect to the system ==> 
+admin/user info
+- ChipIdea Highspeed Dual Role Controller Driver => admin/user info
+- DWC3 driver ==> driver TODOs (can be moved into source code?)
+- EHCI driver ==> technical info + driver details
+- How FunctionFS works
+- Linux USB gadget configured through configfs ==> userspace API + 
+implementation
+- Linux USB HID gadget driver ==> implementation + userspace API
+- Multifunction Composite Gadget ==> technical + user info
+- Linux USB Printer Gadget Driver ==> userspace API
+- Linux Gadget Serial Driver v2.0 ==> user/admin + userspace API
+- Linux UVC Gadget Driver ==> user/admin + userspace API
+- Gadget Testing ==> user/admin + userspace API
+- Infinity Usb Unlimited Readme ==> user/admin
+- Mass Storage Gadget (MSG) ==> user/admin
+- USB 7-Segment Numeric Display ==> user/admin
+- mtouchusb driver ==> user/admin
+- OHCI ==> technical info
+- USB Raw Gadget ==> userspace API
+- USB/IP protocol ==> technical info
+- usbmon ==> user/admin + userspace API
+- USB serial ==> user/admin + technical info
+- USB references
+- Linux CDC ACM inf
+- Linux inf
+- USB devfs drop permissions source
+- Credits
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ1EdAAKCRB4tDGHoIJi
-0ttJAPsEUXEE+T2o1HyH4EYifCCIDWdJZg4jidJGk2a0Yy+zNQD/UmU1FXzzcPlx
-B6tqiO1KUss7XC5DTIAZ9oVaxy5K9gU=
-=cRuY
------END PGP SIGNATURE-----
+By "admin/user info", I mean things that a user would have to do or run
+(e.g. modprobe + flags) to make use of a driver; "technical info" is
+more like device specifications (transfer speeds, modes of operation,
+etc.); "userspace API" is stuff like configfs and ioctls; "driver
+details" is really implementation details and internal considerations.
 
---XthaSr7XjsnpG3pO--
+The last ones I don't even really know how to categorize.
+
+I'm guessing nobody is really enthralled by the idea of splitting
+Documentation/usb/ up like this?
+
+   Documentation/admin-guide/usb/
+   Documentation/driver-api/usb/ (this one actually exists already)
+   Documentation/userspace-api/usb/
+
+For the stuff that is _actually_ internal to a specific driver (so not
+useful for end users, not useful for admins, not generic USB info, and
+not useful for userspace programmers), I would honestly propose to just
+move it directly into the driver's source code, or, if the text is
+obsolete, just get rid of it completely.
+
+The distinction between user/admin and userspace API is pretty clear
+(one is for end users, the other is for userspace _programmers_), but it
+can sometimes be hard to determine whether something falls in one or the
+other category.
+
+In any case -- it looks like almost all of the usb/ directory does not
+document "how specific kernel subsystems work from the point of view of
+a kernel developer" so maybe we should just move the include to
+userspace-api/ for now as an obvious improvement (if still not 100%
+correct):
+
+diff --git a/Documentation/subsystem-apis.rst 
+b/Documentation/subsystem-apis.rst
+index 2d353fb8ea26..fe972f57bf4c 100644
+--- a/Documentation/subsystem-apis.rst
++++ b/Documentation/subsystem-apis.rst
+@@ -81,7 +81,6 @@ Storage interfaces
+     security/index
+     crypto/index
+     bpf/index
+-   usb/index
+     PCI/index
+     misc-devices/index
+     peci/index
+diff --git a/Documentation/userspace-api/index.rst 
+b/Documentation/userspace-api/index.rst
+index 82f9dbd228f5..e60cd9174ada 100644
+--- a/Documentation/userspace-api/index.rst
++++ b/Documentation/userspace-api/index.rst
+@@ -41,6 +41,7 @@ Subsystem-specific documentation:
+     tee
+     isapnp
+     dcdbas
++   ../usb/index
+
+  Kernel ABIs: These documents describe the the ABI between the Linux
+  kernel and userspace, and the relative stability of these interfaces.
+
+
+Thoughts?
+
+
+Vegard
 
