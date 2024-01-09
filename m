@@ -1,111 +1,101 @@
-Return-Path: <linux-kernel+bounces-20977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0DCE82880A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:27:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E19EB82880D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 427C21F24C37
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:27:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38944286CA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FBC39AC8;
-	Tue,  9 Jan 2024 14:27:22 +0000 (UTC)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F7439AFC;
+	Tue,  9 Jan 2024 14:27:54 +0000 (UTC)
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB12B39AC0
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F3339AEE;
+	Tue,  9 Jan 2024 14:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5f68e2e1749so25109157b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 06:27:20 -0800 (PST)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bc21303a35so344595b6e.0;
+        Tue, 09 Jan 2024 06:27:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704810439; x=1705415239;
+        d=1e100.net; s=20230601; t=1704810471; x=1705415271;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BSNpQrjMxu38IObUGMmHZtLYKM7CsitQLNIL1x6OifQ=;
-        b=FpQ8prfUnNtY8/1rbhRAV4mtKqDBY/aUy8/vs+qQ6p7DNy/+rRblf7CKn7h71qT+Te
-         kpQnOmCVSqckTqo0JnZRpxcSnCjJLy0ItOPIpGNVwPDCU8MlE/oY/640Eqro40TydkiD
-         9Bu/k4LybGySA6dzRXvjykhZtOeyqRK+0Li30GpdomusI43Nps7Zs4ZzELgJxgsSwEp9
-         X3Q46xfUN63u5iJ60Gbmcm02FsAvvGkT4p6VyRTPRPtfXwMlKsOMlavYwLsj2yZnaqPM
-         Fqgil6rBMjwRGFdwhpNgK6G7yTyU854XSWyvtEs7M7QMEbNj5ZwMtuQFJeODl0YJE4eT
-         y2FQ==
-X-Gm-Message-State: AOJu0YzdjqljgbvJTk1SEvsax7KJZuiiqeLEPEJM0uOXSWCrx5yE+TH8
-	Yvj1gQaypealTrlfor0o1c7hJZBvXqqnb8F4
-X-Google-Smtp-Source: AGHT+IE8CTcfgQ4F9BRvaF/A1R3DhsyCPdzSpS+FJVlDO6ftDcABhSzqlur8sMgEQnsU1DKVilP01g==
-X-Received: by 2002:a81:4802:0:b0:5ed:90e1:8bf4 with SMTP id v2-20020a814802000000b005ed90e18bf4mr3398454ywa.47.1704810439489;
-        Tue, 09 Jan 2024 06:27:19 -0800 (PST)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id n69-20020a0dcb48000000b005e81c9ec392sm809019ywd.48.2024.01.09.06.27.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 06:27:19 -0800 (PST)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbdbfaab70eso2003862276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 06:27:19 -0800 (PST)
-X-Received: by 2002:a25:414c:0:b0:dbe:d374:75a7 with SMTP id
- o73-20020a25414c000000b00dbed37475a7mr2374147yba.123.1704810438889; Tue, 09
- Jan 2024 06:27:18 -0800 (PST)
+        bh=speyU9W4fgWPfDREd0VxrelBC2TKMQY2s8f/k65X9Vw=;
+        b=bw9jgu+zGNUQlHaiKashSgUWtwWHannAqm0zuLNGcZ/xe0aF5TN8JL31gceXLqinIS
+         VS/2jQdQ1MM5sHEZsafXgYRSUCUeWY2Y/se9rCbNlhj1VOsyH8GLlSaiUUJa5t46IBDt
+         2WfPRqwgqC2p2aWO4HPj9G/db4ks+hYe3WWLGGc/OGJGfmfWbhNb7u1GpuWZW/VyW8Xv
+         5j406FOqbwtuXtD3zzujhc1j5nN7yOXSbs25yzmoMmh8mKv3oFFSES/sYxtxn1HJuD40
+         zAiajycqfdUoRrMbg6fgPLxeFOwVMfEm+p0+rlfSO44hrwSFlW2imAhjSwKM1DxWZcRA
+         qUNg==
+X-Gm-Message-State: AOJu0YzX1DRYsxTGQiUup+8WcNdVhXWoYK2x7+zcX5qH2/crH6UE6fwp
+	A4sNGYrVktzHI2WNmehn0Ase8EIESE+0YMrtYVw=
+X-Google-Smtp-Source: AGHT+IHY1jFISnsaNGMvSmCaJqgqyDbrcVYMQaLmXNN65Tot1RoyyJ/7Y1Qsx35HBWPmk/RBi3ZHclzvWQyOB3wOZ1s=
+X-Received: by 2002:a05:6808:30a2:b0:3bd:3bf4:8a0f with SMTP id
+ bl34-20020a05680830a200b003bd3bf48a0fmr2316881oib.4.1704810471272; Tue, 09
+ Jan 2024 06:27:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108093221.1477020-1-daniel@0x0f.com> <20240108093221.1477020-3-daniel@0x0f.com>
- <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com> <CAFr9PXn9wqbxToGDkSenW3XTCMPinUg1a9fHrUDQVhRKC6s5TA@mail.gmail.com>
-In-Reply-To: <CAFr9PXn9wqbxToGDkSenW3XTCMPinUg1a9fHrUDQVhRKC6s5TA@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 9 Jan 2024 15:27:05 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVYqojGdKaCkY63mOhxupZ3Ag5+Y-haZZf43wyuCsdKkg@mail.gmail.com>
-Message-ID: <CAMuHMdVYqojGdKaCkY63mOhxupZ3Ag5+Y-haZZf43wyuCsdKkg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] m68k: Fix interrupt stack frames for 68000
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: gerg@linux-m68k.org, fthain@linux-m68k.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20230905104721.52199-1-lpieralisi@kernel.org> <20231227110038.55453-1-lpieralisi@kernel.org>
+ <20231227110038.55453-2-lpieralisi@kernel.org>
+In-Reply-To: <20231227110038.55453-2-lpieralisi@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 9 Jan 2024 15:27:40 +0100
+Message-ID: <CAJZ5v0ik38AkaK6UVkSg9gOOztVzhFotCWBPhvowvRvozoAUVg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] ACPICA: MADT: Add GICC online capable bit handling
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	Mark Rutland <mark.rutland@arm.com>, Robin Murphy <robin.murphy@arm.com>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Fang Xiang <fangxiang3@xiaomi.com>, Marc Zyngier <maz@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Daniel,
-
-On Tue, Jan 9, 2024 at 3:10=E2=80=AFPM Daniel Palmer <daniel@0x0f.com> wrot=
-e:
-> On Mon, 8 Jan 2024 at 18:56, Geert Uytterhoeven <geert@linux-m68k.org> wr=
-ote:
-> > I think it would be better to use the classic m68k stack frame.
-> > That would pave the way for building a single nommu kernel for
-> > MC680[012346]0 that runs on e.g. any Amiga.
-> > MC68000 and Coldfire are incompatible anyway.
+On Wed, Dec 27, 2023 at 12:00=E2=80=AFPM Lorenzo Pieralisi
+<lpieralisi@kernel.org> wrote:
 >
-> While looking at how to do this I realised that the addql #2,%sp in
-> RESTORE_ALL in entry.h will now break the stack frames for those fancy
-> 68010+ users.
-> So that needs to be #ifdef'd to make it only compile for 68000. I saw
-> an error email from the next build stuff so I guess the change has
-> been queued somewhere? If so I should send a fix..
+> ACPICA commit 16f0befdeddf25756f317907798192bbaa417e5e
+>
+> Implement code to handle the GICC online capable bit management
+> added into ACPI v6.5.
+>
+> Link: https://github.com/acpica/acpica/commit/16f0befd
+> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> Cc: Robert Moore <robert.moore@intel.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> ---
+>  include/acpi/actbl2.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 3751ae69432f..2b4dd2c3348f 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
+>  /* ACPI_MADT_ENABLED                    (1)      Processor is usable if =
+set */
+>  #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1) /* 01: Performance Interr=
+upt Mode */
+>  #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2) /* 02: VGIC Maintenance I=
+nterrupt mode */
+> +#define ACPI_MADT_GICC_ONLINE_CAPABLE   (1<<3) /* 03: Processor is onlin=
+e capable  */
+>
+>  /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
+>
+> --
 
-AFAIK it hasn't been applied yet.  These days the bots also test
-patches from mailing lists...
+Applied as 6.8-rc1 material along with the [2/3].
 
-> I'm not sure how to actually make that generic without patching the
-> code at runtime (remove the 68000 specific bit, reserve enough extra
-> space to rewrite the code..) but it's a macro so not so simple.
-
-Or use different entry points depending on CPU type?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Thanks!
 
