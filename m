@@ -1,174 +1,156 @@
-Return-Path: <linux-kernel+bounces-21552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64577829109
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:55:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BAC0829112
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD3BCB23BD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:55:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B1BC1F26409
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144A53E48E;
-	Tue,  9 Jan 2024 23:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30733EA74;
+	Tue,  9 Jan 2024 23:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fRDd3Gmz"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZpfH1gCD"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7B73E480
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e4a606183so21195e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704844493; x=1705449293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s8TS1nLrUKAIFkkWa3SxEx8yDQZVgIO6/irtFJFIovg=;
-        b=fRDd3Gmz+q4QVgB9cK9jFwrWYbFNR1wbJQP7XGWDQgwcpVjyPO4OWeX4B3MA04wlR6
-         nVRrJZT+ireW+2dwHo5eiNzYHfqVMSeh2/fGcX0haBHLT01dS83XH6ldP2O8HDxALIww
-         7pqm80vFJL+ZFqnTbzSTbFVBar3/mq7F5NFnKrAqoiFGkALB4sFNw8Mmvsb8FKNpytDc
-         V4/LVK7A00ycnUVoGrKGGsFA7+KpH6dQC9OtFH8YETm6MTvSCufZH56xWex5Lfxxit90
-         fsPwFViVw0NVrtxkg+RHpjUR2JABfA/WpzXOUYCC2j/vevLWAkj5BRAd2ap6etZDtuk2
-         xCjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704844493; x=1705449293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s8TS1nLrUKAIFkkWa3SxEx8yDQZVgIO6/irtFJFIovg=;
-        b=LRMTsd5tjCUgmrJqDroqxdprbNE689hxm5JSY9pYk6N5gcoV31EkLVp4/e/clHupia
-         jhPauULNx/Ka/4NdUmP/irKKmVWFNk3wEhOBInTcCfw3yO6Sv2To7rXDxqmuSTRGTdex
-         oGmvjVLwf2llUdp1aDhJnUv7mczb5sqAiY9U1GJZ/9r+JApqLLT+fyNevD2IjO2fMmNy
-         mQ3r5a/i1tXR/IeI6dlQjU4bFOv6Czx9bH0xj1fNsBJ3+DZ3o/0I13z1epKhc08YOzJK
-         gCWGOyTXyPIOAryHNZscY8HZliWKXF3HpymsrK8bs11ZRgLo8Gw7A2HUwJoRgAuDt5vl
-         L1bg==
-X-Gm-Message-State: AOJu0Yz6ifcSTQrWBW5RqKW9b9O0+2gHHRpnvTia9bWn5FTb5R5eSvlY
-	14NZ90kvxD9eBof7dVOn8mVZDhkOD57YURc0NyoFSqIQoarB
-X-Google-Smtp-Source: AGHT+IHnVyCz6SSfqCzYFM+Jm12othHqlyx9vavQpdTKez22yrHgvpFo4duCvDoolAcTA2kj8bvDBtUqSdv5GmLPHQM=
-X-Received: by 2002:a05:600c:5118:b0:40d:887b:6979 with SMTP id
- o24-20020a05600c511800b0040d887b6979mr102042wms.0.1704844492708; Tue, 09 Jan
- 2024 15:54:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60ED53E49A;
+	Tue,  9 Jan 2024 23:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409NgGId025342;
+	Tue, 9 Jan 2024 23:55:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=coUqhojDtCV+5O9qYrOFzPaaw+yGNGV3C/Tk6YzwbEk=;
+ b=ZpfH1gCDhl18K1vnq7dBH8+NvpklpA4kdXEbayxSsvfy5q3uPKm8ybb7b8fnalMD9cpP
+ uKM4xajmkEVv+Rf3EdaA74nLP1ujzslGxM+2kNQufEoiuxNEfqNwTl57jyuX1W9V6rHZ
+ HKnCXgIvfBe1/bWBK1Pt5Ek+gJVZBng8VGDhHDuY8mNRqfo1uwdemxfq8ua6VzOhpeZK
+ TDc0PeTC6FI+k+QPsrnHqP1vDJxOZMqo4iTotzp4SEKbqOPDRhRJnjSuEr2U5juWqmZy
+ ZDT0/jHCEJlGcyMW3GPj8LCvkt92OmiafbiZ0A9awGLWv8P/wRcE8ptS11C4CWw1lzo7 lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhg21g5qk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 23:55:13 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 409NtCKj020726;
+	Tue, 9 Jan 2024 23:55:12 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhg21g5pu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 23:55:12 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409LfTKQ022787;
+	Tue, 9 Jan 2024 23:55:10 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfhjyj2yj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 23:55:10 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409NtABQ18023082
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Jan 2024 23:55:10 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 143EA58052;
+	Tue,  9 Jan 2024 23:55:10 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 381C05805D;
+	Tue,  9 Jan 2024 23:55:09 +0000 (GMT)
+Received: from [9.61.145.235] (unknown [9.61.145.235])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  9 Jan 2024 23:55:09 +0000 (GMT)
+Message-ID: <43a9b568-69b3-4f59-9f7b-c85880a55929@linux.ibm.com>
+Date: Tue, 9 Jan 2024 17:55:08 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
+Content-Language: en-US
+To: Conor Dooley <conor@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au, peterhuewe@gmx.de, jarkko@kernel.org,
+        jgg@ziepe.ca, keescook@chromium.org, tony.luck@intel.com,
+        gpiccoli@igalia.com, johannes.holland@infineon.com, broonie@kernel.org,
+        patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
+        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+        festevam@denx.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-hardening@vger.kernel.org, geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-8-ninad@linux.ibm.com>
+ <20231212-avid-grill-dbead068fac8@spud>
+ <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
+ <20231212-mouth-choice-40a83caa34ec@spud>
+ <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
+ <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
+ <20240109-pep-coerce-2a86ae88753d@spud>
+From: Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <20240109-pep-coerce-2a86ae88753d@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Uf48EK8vqPqZj9oX-j3Y7eL_vKoKWJRq
+X-Proofpoint-ORIG-GUID: xBvSjs4MU-BP-LVxs0ZB4SKLCJ5sCMLR
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
- <20240103164841.2800183-3-schatzberg.dan@gmail.com> <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
- <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN> <ZZYE36e0BFFzi0X3@google.com> <ZZZw5NSEFNYwbjZM@tiehlicka>
-In-Reply-To: <ZZZw5NSEFNYwbjZM@tiehlicka>
-From: Yu Zhao <yuzhao@google.com>
-Date: Tue, 9 Jan 2024 16:54:15 -0700
-Message-ID: <CAOUHufbEuAWwz-51tq6OB7SPJ8W3UJ9Roq2-yXesWAbmzstdKw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
-To: Michal Hocko <mhocko@suse.com>
-Cc: Dan Schatzberg <schatzberg.dan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	Yosry Ahmed <yosryahmed@google.com>, David Rientjes <rientjes@google.com>, 
-	Chris Li <chrisl@kernel.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
-	Matthew Wilcox <willy@infradead.org>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-09_11,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2401090192
 
-On Thu, Jan 4, 2024 at 1:48=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
+Hi Conor,
+
+On 1/9/24 11:14, Conor Dooley wrote:
+> On Mon, Jan 08, 2024 at 02:05:53PM -0600, Ninad Palsule wrote:
+>> Hello Guenter,
+>>
+>> On 12/12/23 13:50, Guenter Roeck wrote:
+>>> On 12/12/23 10:51, Conor Dooley wrote:
+>>>> On Tue, Dec 12, 2023 at 10:00:39AM -0800, Guenter Roeck wrote:
+>>>>> On Tue, Dec 12, 2023 at 05:15:51PM +0000, Conor Dooley wrote:
+>>>>>> On Tue, Dec 12, 2023 at 10:40:03AM -0600, Ninad Palsule wrote:
+>>>>>>> From: Joel Stanley <joel@jms.id.au>
+>>>>>>>
+>>>>>>> The NPCT75x TPM is TIS compatible. It has an I2C and SPI interface.
+>>>>>>>
+>>>>>>> https://www.nuvoton.com/products/cloud-computing/security/trusted-platform-module-tpm/
+>>>>>>>
+>>>>>>>
+>>>>>>> Add a compatible string for it, and the generic compatible.
+>>>>>>>
+>>>>>>> OpenBMC-Staging-Count: 3
+>>>>>> Delete this from every patch that it appears from.
+>>
+>> I have send it as a separate commit. https://lore.kernel.org/linux-kernel/20231214144954.3833998-1-ninad@linux.ibm.com/
+> Why did you do that? It now just adds undocumented compatibles to the
+> driver. Please, as Rob requested, work with Lukas on his series to make
+> sure that these devices are documented.
+
+I think krzysztof kozlowski suggested to send these patches separately: 
+https://lore.kernel.org/linux-kernel/1c5ace65-2fd8-4503-b22f-e0f564d1c83f@linaro.org/
+
+Did I misunderstood it? Do you guys want me to include that commit again?
+
+Regards,
+
+Ninad
+
 >
-> On Wed 03-01-24 18:07:43, Yu Zhao wrote:
-> > On Wed, Jan 03, 2024 at 01:19:59PM -0500, Dan Schatzberg wrote:
-> > > On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
-> > > [...]
-> > > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > > > index d91963e2d47f..394e0dd46b2e 100644
-> > > > > --- a/mm/vmscan.c
-> > > > > +++ b/mm/vmscan.c
-> > > > > @@ -92,6 +92,11 @@ struct scan_control {
-> > > > >         unsigned long   anon_cost;
-> > > > >         unsigned long   file_cost;
-> > > > >
-> > > > > +#ifdef CONFIG_MEMCG
-> > > > > +       /* Swappiness value for proactive reclaim. Always use sc_=
-swappiness()! */
-> > > > > +       int *proactive_swappiness;
-> > > > > +#endif
-> > > >
-> > > > Why is proactive_swappiness still a pointer? The whole point of the
-> > > > previous conversation is that sc->proactive can tell whether
-> > > > sc->swappiness is valid or not, and that's less awkward than using =
-a
-> > > > pointer.
-> > >
-> > > It's the same reason as before - zero initialization ensures that the
-> > > pointer is NULL which tells us if it's valid or not. Proactive reclai=
-m
-> > > might not set swappiness and you need to distinguish swappiness of 0
-> > > and not-set. See this discussion with Michal:
-> > >
-> > > https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
-> >
-> >  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> >                               size_t nbytes, loff_t off)
-> >  {
-> >         struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
-> >         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
-> >         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
-> > +       int swappiness =3D -1;
-> > ...
-> >                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
-> >                                         min(nr_to_reclaim - nr_reclaime=
-d, SWAP_CLUSTER_MAX),
-> > -                                       GFP_KERNEL, reclaim_options);
-> > +                                       GFP_KERNEL, reclaim_options,
-> > +                                       swappiness);
-> >
-> > ...
-> >
-> > +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *m=
-emcg)
-> > +{
-> > +       return sc->proactive && sc->proactive_swappiness > -1 ?
-> > +              sc->proactive_swappiness : mem_cgroup_swappiness(memcg);
-> > +}
->
-> Tpo be completely honest I really fail to see why this is such a hot
-> discussion point. To be completely clear both approaches are feasible.
-
-Feasible but not equal.
-
-> The main argument for NULL check based approach is that it is less error
-> prone from an incorrect ussage because any bug becomes obvious.
-
-Any bug becomes *fatal*, and fatal isn't only obvious but also hurts
-in production systems.
-
-This was the reason for going through the trouble switching from
-VM_BUG_ON() to VM_WARN_ON() and documenting it in
-Documentation/process/coding-style.rst:
-
-22) Do not crash the kernel
----------------------------
-
-In general, the decision to crash the kernel belongs to the user, rather
-than to the kernel developer.
-
-Isn't?
-
-> If we
-> use any other special constant a missing initialization would be much
-> harder to spot because they would be subtle behavior change.
->
-> Are there really any strong arguments to go against this "default
-> initialization is safe" policy?
-
-Just wanted to point out an alternative. Fine details (best practices)
-matter to me.
+> Thanks,
+> Conor.
 
