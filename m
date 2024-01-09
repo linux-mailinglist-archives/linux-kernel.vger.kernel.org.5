@@ -1,95 +1,120 @@
-Return-Path: <linux-kernel+bounces-20702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2E2B8283BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:12:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FB228283C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:14:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77C511F2544E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:12:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69D22B22818
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:14:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC6836094;
-	Tue,  9 Jan 2024 10:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FB1364AB;
+	Tue,  9 Jan 2024 10:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UNn1MWZy"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J6NQlFlw"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C6635EE5;
-	Tue,  9 Jan 2024 10:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704795114; x=1736331114;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PIz0832IToUShwNOmJbHvHbLY4ejciHsh8Or9Lx0aYU=;
-  b=UNn1MWZyUnXAgjZTOxdTj4qdfWtyaimhKBKBTI6LaleBiqDPXgnPA1hm
-   NHrq3GujtxZ5gP0GsvvY6OQHjHXACx4853ut63pl2bQVCew6R/1ZvBhVH
-   c1Ka4vFKhf/YUcTHbvfSOm1TmwOsIavZQbuPKR9Ixa5YkOmOawdz69XE4
-   bVqwYFyhByUUie9AdKDTYdA8x3SNKXIIz8j+a5vF7tSiWwFwb1bKKxagt
-   QbhAf5xcWe1yZVN4GVDZFStGfbvbp21MlKYG+7Q19/3AToSJxaDm+jIWD
-   xaS1ahOVuepcRq/EpJ25CWbu4JvbTSPxbONnygNggGT1MTjOXv57ziYlq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4901973"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="4901973"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 02:11:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="900706395"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="900706395"
-Received: from display-adlp-laptop.fi.intel.com (HELO [10.237.72.166]) ([10.237.72.166])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Jan 2024 02:11:46 -0800
-Message-ID: <e059928c-6fab-4ca2-9615-4401ee16fb82@linux.intel.com>
-Date: Tue, 9 Jan 2024 12:11:46 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C9C364A0
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 10:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d420aaa2abso14790095ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 02:14:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704795285; x=1705400085; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cYcz+lLy7jxQiN/nMDH+1tTyWaKqSRKEE7oqXtsGGtM=;
+        b=J6NQlFlwAuoBx20Hu40o6Uxomq5reGhxLwYW4BmC+j5Gs/VNYfR7ueMdR08eYXHCyd
+         kH+t7L7tuZSxkWwAG+XmpwpYQbYtFEPyvjEhizZARNSq29Icy2c+KUXUR1FMV7Uq8uS4
+         DWEeJa67a4DpN0o9B6YOD4XwooCtaaWpzxv8jLwNn/47o6skIZB9gKY8B5Gb00f8YzQ7
+         XA1YlqI1W3FwRC8344OdeKq9HBGaxPObw0ziIfe2nxhjI8HR71W8ZtHSSnGp9tmziRXL
+         d8GR9t/YBcRinUocM7kBRZNsOQasdZrG9xt4V5e8YJkffmN7yDKiNLL7j3vd/0UP8sP1
+         ckyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704795285; x=1705400085;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cYcz+lLy7jxQiN/nMDH+1tTyWaKqSRKEE7oqXtsGGtM=;
+        b=vMIEzWQpZ90DxB1uCjb+jyBhVI1g09aZMs+jJf1ZdUOBvx2ER7frziQcSlphEyV5nG
+         GA+qHIeaMvxqlZDVCy3ck1hRD0V+iBsp2fjgJ0Z1xUaVtt2kucyflMMKcqZjJbdICiiA
+         JvBCGnsytznC0yFul0J8tHsxSjozk3CgR45uMdgBslbVlg1/RyrtRmntMZmXGn3Ik4xL
+         Z4qvR6tTCZigtzje0lBtqKaD4tq27o61ujviZPABIezoft4DGVsXWta0gvqrlkFyXwQU
+         hVqQNBh3jk8j9GGjjpa7HtJpEOSXAeww08XH4ETtRE9rCvGxlA24BNyk+M7Jmu+30FVJ
+         440g==
+X-Gm-Message-State: AOJu0YxxGG69CXUgL3n9n8UEKqNbnJk98m7bVmjuLi10pe0EmTG94FFF
+	4iyO4BaUY+KWyBShB883YHHeLQfl5yzSiSq1OAApS4YWKA==
+X-Google-Smtp-Source: AGHT+IEN6vSrQgf2nJ60+D4f1GqwnDums4anxoIH3Ok/QP6okou9cs21IINCrtyBoivetFA6vG8d1A==
+X-Received: by 2002:a17:903:280c:b0:1d4:672f:1f45 with SMTP id kp12-20020a170903280c00b001d4672f1f45mr2218725plb.102.1704795285234;
+        Tue, 09 Jan 2024 02:14:45 -0800 (PST)
+Received: from [127.0.1.1] ([117.213.102.45])
+        by smtp.gmail.com with ESMTPSA id je5-20020a170903264500b001d40ca98b9esm1423663plb.65.2024.01.09.02.14.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 02:14:44 -0800 (PST)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date: Tue, 09 Jan 2024 15:44:31 +0530
+Subject: [PATCH] mailmap: Update entry for Manivannan Sadhasivam
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: i2c-designware: NULL ptr at RIP: 0010:regmap_read+0x12/0x70
-To: "V, Narasimhan" <Narasimhan.V@amd.com>, Borislav Petkov <bp@alien8.de>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
-Cc: lkml <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
- "Limonciello, Mario" <Mario.Limonciello@amd.com>
-References: <20231229120820.GCZY62tM7z4v2XmOAZ@fat_crate.local>
- <8169d773-f9ec-4092-b036-9e4fd59966c3@linux.intel.com>
- <DM4PR12MB508654DF49FE079D6C283D658961A@DM4PR12MB5086.namprd12.prod.outlook.com>
- <888da30a-c1ed-4fb0-af81-787fd868ce20@linux.intel.com>
- <DM4PR12MB5086DE2882C7C5044697B1C38967A@DM4PR12MB5086.namprd12.prod.outlook.com>
- <adf6c24a-d94b-40e5-b645-0c6b23b2d513@linux.intel.com>
- <DM4PR12MB508652E9A422CF639C2FEEC0896A2@DM4PR12MB5086.namprd12.prod.outlook.com>
-Content-Language: en-US
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <DM4PR12MB508652E9A422CF639C2FEEC0896A2@DM4PR12MB5086.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240109-update-mailmap-v1-1-bf7a39f15fb7@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAIYcnWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDQwNL3dKClMSSVN3cxMyc3MQC3TRLC3MLCyNjIJ2sBNRUUJSallkBNjA
+ 6trYWAGuBEUZgAAAA
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1195;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=3dSN5qGmRVk/NptTYj/p2KLlrbSvmuAZHHD0VvGKIGE=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBlnRySlhnHNGwZ/DCa1iZnYuWxxHx9jDJ4JRuLD
+ 7gN9TLbpxCJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZZ0ckgAKCRBVnxHm/pHO
+ 9R2TB/9Axtq2td4W5SgIG3PtNJsIzb4Kcy0AbxnZI28b8c+A8xqp6pf7HMfaLqiWhxzGpGJNB/F
+ npSVcj5Ea0cdrBuH1kbNDI1BgrIftp2IIJl4+szkpk65GlWkfQnGJCRZ4i14aj465uQW8eYqqKi
+ yjR8cRQfqj7pj2nn3LYmJn4winh7c8ZCTISlBy/C4C7h9ns7/R0W2ySa3Zlx80CC2V6MoLJ/lOt
+ 1h6NrWEqBG7EjUAUdW/UXezldzCUPPLAQ/Sm6IFYFKlVY7Obfr4J+y1c76EkxIZo7u37KHzZ/0l
+ XDR6SznUnWNDynTL6/v32oeqvAExF5pDozmxZ60bOjXg6P6w
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-Hi
+Remove the map for Linaro id as it is still in use and I want to use it for
+submitting patches. Otherwise, git uses kernel.org as the author id for
+patches created using Linaro id.
 
-On 1/9/24 09:56, V, Narasimhan wrote:
->   * Looks like the issue is with this below commit:
->   * i2c: designware: Fix lock probe call order in dw_i2c_plat_probe()
-> 
-Hmm... This makes me even more confused since your device AMDI0010 
-should not even use the access semaphore.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ .mailmap | 1 -
+ 1 file changed, 1 deletion(-)
 
-So linux-next works if you run a commit before it or revert these three 
-patches? (commit 2f571a725434 ("i2c: designware: Fix lock probe call 
-order in dw_i2c_plat_probe()") doesn't revert without reverting two 
-other related commits after it)
+diff --git a/.mailmap b/.mailmap
+index 9a9069235f0d..00c4c1431d25 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -363,7 +363,6 @@ Maheshwar Ajja <quic_majja@quicinc.com> <majja@codeaurora.org>
+ Malathi Gottam <quic_mgottam@quicinc.com> <mgottam@codeaurora.org>
+ Manikanta Pubbisetty <quic_mpubbise@quicinc.com> <mpubbise@codeaurora.org>
+ Manivannan Sadhasivam <mani@kernel.org> <manivannanece23@gmail.com>
+-Manivannan Sadhasivam <mani@kernel.org> <manivannan.sadhasivam@linaro.org>
+ Manoj Basapathi <quic_manojbm@quicinc.com> <manojbm@codeaurora.org>
+ Marcin Nowakowski <marcin.nowakowski@mips.com> <marcin.nowakowski@imgtec.com>
+ Marc Zyngier <maz@kernel.org> <marc.zyngier@arm.com>
 
-git show f9b51f600217b38f46ea39d6aa445e594bf3eb30 |patch -p1 -R
-git show b8034c7d28a988be82efbf4d65faa847334811f7 |patch -p1 -R
-git show 2f571a72543463ef07dc3ac61e7b703b9ad997f9 |patch -p1 -R
+---
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+change-id: 20240109-update-mailmap-f9878823f98c
+
+Best regards,
+-- 
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
 
