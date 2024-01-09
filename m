@@ -1,113 +1,99 @@
-Return-Path: <linux-kernel+bounces-21008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EFB82886A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:44:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9910582886D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BFF1B23F62
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:44:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBFFC1C24564
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960E139FF5;
-	Tue,  9 Jan 2024 14:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A025F39ADD;
+	Tue,  9 Jan 2024 14:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HcP9Zxmu"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="roCY5IWt"
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7763A39FEE
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so10479a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 06:43:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704811425; x=1705416225; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7hTSp/621JuWdOzYoBlVmVqh7hDK5oBkPf++B3jV4j8=;
-        b=HcP9Zxmu9/16084eHJ+NmuGWlYUcc3QFeS8uSSZikkoUXQ2UL34hLVUWuyh8LCzKqo
-         cjOWd9oOovsMQdqebHbAnSNlQ4dwOvx579RlYjeYArqv8zP1jgbFYBC/GxZ4UryfpigA
-         iKnRxmjHY1Sv0SMZpzdwk+E/sxXNheVudyV4VghUE6HoJ1gf2p7pruFQVUPiOPcqzH+m
-         Hc3Ca43z67IPYoB/WQCIYSOrKh5zR17Ajyx+qZKltH/zKdWuAhpZTt4YUWmlSw0fkjJj
-         wqBbs67uGIg65/6wc0iL7qeaU/vz+2uWc6RQkQVu7fSPF0CMqzsSUEMA/Br6QS/wjKQg
-         KgNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704811425; x=1705416225;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7hTSp/621JuWdOzYoBlVmVqh7hDK5oBkPf++B3jV4j8=;
-        b=lwnXp3n4MEsbrjCsbTKKwfFvl62EGQMep3/yLEleUbtYpcxLEymgksmkX1SFwMfcqT
-         LJn2TN098Umr4AL+1t5FT7TSLRTx4jkWy6BzNdIe/SLF3DkLROxpR0c/blRqivF235zs
-         NqKljzImXF1/JJhozEhlAsNyGbL2weKwyysgiLtDMyGUPdAmLRkGgapKY+heDyUfCagC
-         alNpL3uiDRy72gl1Q6Y45CC6hoqceJm868TUlUXIQRb7KjbDqDOZ49zks6DCkBG0pPrZ
-         eOqKMB6pZU2+diHLIWcX38N7Jn8HDMib65p/YgFGdFIu3EWLeVyAmWr0CaYTwNSD3px9
-         Mq2Q==
-X-Gm-Message-State: AOJu0Ywhla8RaSVe6L6koFrbLDM/bxB3OgTjFgAKfmb6HH7rLN0MFyj9
-	Kc+fFaNu9JVtObP5Ln0E282+35o2dDl69cF7jVTi42Utyb1a
-X-Google-Smtp-Source: AGHT+IGCzpJkHmbkISlJEaLGwgFS/54jBbdaQxFTLs2DxUORYa3GyuTiAnd2AjxmVJ16Ps8zGgj4wzF+PsKfXzpopCc=
-X-Received: by 2002:a50:9548:0:b0:554:1b1c:72c4 with SMTP id
- v8-20020a509548000000b005541b1c72c4mr101455eda.1.1704811424481; Tue, 09 Jan
- 2024 06:43:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC36039AC0;
+	Tue,  9 Jan 2024 14:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1704811582; bh=kW1dPczTH04Crl0tbFUCfcQMkxib/V9/fWFO15vd0ac=;
+	h=From:To:Cc:Subject:Date;
+	b=roCY5IWtGteTzczcJ6Rg5jYCIT2mgvePdtxbY/m+xxSpnwzFi+pnsyBqdLsBvAyCp
+	 vpsfKa/TnPiX9K2O1LLNTDqCHGKbhkUdgIT7i/h2EG43+3eUKlfimWPQ5P/uSolojh
+	 8GCX0wl1jLQ99XCyTmwkdPWatoLOSjUf+J45nRNk=
+Received: from cyy-pc.lan ([2001:da8:c800:d084:c65a:644a:13d7:e72c])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id B8806A65; Tue, 09 Jan 2024 22:46:08 +0800
+X-QQ-mid: xmsmtpt1704811568tjhw333a7
+Message-ID: <tencent_13A0B6B4A3136E46CC448874232A9F956006@qq.com>
+X-QQ-XMAILINFO: MJf32pulH481N5+721FHDLNIsCPMMppGeNjz2u6HG63swzGmnY8jwl7oe52Ui6
+	 DZcnWAjXa93Z9dClvHOMcvdpYU5C73qTscOBPb3nCL/w9utGbUUuPUOZzN7MBkVXkpCd+qPRy7N+
+	 irGWHzeIRxFpPzCzCCqN6rbJbQWqUt4zsAtXXTtH6sj+iWXDlCaIAvWx2qBogRRIkReNvy47Ytbq
+	 7YE8wVeEMrTifNQx6S+aLlKdrdAyRu0lTDnt1tGsUzhXW31UtyDk6pydzCyL8ic+wvpmnrttyJ7o
+	 XOnL3gRCVw6c2ZdxZdVrvQbgSeUhAY2dwhCAPbAuz3ft+BwYa+UJHiUtuNu1jKJNvMg+QNeCP9Qa
+	 H0znsWzWa+9/WAQFFQYTxmCnaEPqQQB/XbUilTf9ZioykuQ/HrIctj/bOyJGQSgHcikt9D4SJS7N
+	 whidKdbYGiFGMnHT32hV4yHMsLC2NBSG/P5rv4FtdSA4W2HJfultP74sQthjUFzAWULP2f1jYtXl
+	 6FMToImFWmp7EValb6ILd5wxCgjv4nK3O6jYk11qDRpP5i6Y8Ns1SlIdH7APxo+uMSBeTRfzV6OL
+	 7iU1KQ1nm9N75RU9mj1dax4MIAe8c3+3dQQkOdd6Usre6DmnwihTaLiFTh19ZsrebEYDf76PGNgx
+	 8GtW3LzRINoW1QRZ5vCy0UUUNayOVFUGa2QsCG2/0PGZygcn7K+tQ4ZNnPQvlE5ySZrG027YkkeT
+	 xnDvThWzmaEgBCmS5IGwU/bxkZv3BUH6OJ0X1kvR8xbsDGdzL29M0CdLYHUh7V3naGdTSJ4YZvXu
+	 ThgkA8V0QZeVBCI+YqNDjf1a1S3RC28HiDGZ795GmtQBoQGcENZdg6Wk0Ybe9Q/Jd+I97sOOzX57
+	 NykiS9ynUeeg6cNSHZnEc2g8o6cWALxP2/2+rHdZ6rgUxuxdyIQmBQeD98nFQNQ5dgtmZE0FPcSc
+	 DCT1M/3VHEzZbo4g1ElO1o5YBlLJQ6uMp8ZjrhA9K048YtOv733gr1Jf4l6ebq
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Yangyu Chen <cyy@cyyself.name>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Alexander Potapenko <glider@google.com>,
+	Mike Frysinger <vapier@gentoo.org>,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>
+Subject: [PATCH] asm-generic: flush icache only when vma->vm_flags has VM_EXEC set
+Date: Tue,  9 Jan 2024 22:45:59 +0800
+X-OQ-MSGID: <20240109144559.315476-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231223025554.2316836-1-aleksander.lobakin@intel.com> <20231223025554.2316836-6-aleksander.lobakin@intel.com>
-In-Reply-To: <20231223025554.2316836-6-aleksander.lobakin@intel.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 9 Jan 2024 15:43:30 +0100
-Message-ID: <CANn89iLbRnakLSuuoAF7eeN8KGqc7wy0bEgCmHCP1mU6LB912A@mail.gmail.com>
-Subject: Re: [PATCH RFC net-next 05/34] idpf: convert header split mode to
- libie + napi_build_skb()
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
-	Michal Kubiak <michal.kubiak@intel.com>, Larysa Zaremba <larysa.zaremba@intel.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, intel-wired-lan@lists.osuosl.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Dec 23, 2023 at 3:58=E2=80=AFAM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
-> Currently, idpf uses the following model for the header buffers:
->
-> * buffers are allocated via dma_alloc_coherent();
-> * when receiving, napi_alloc_skb() is called and then the header is
->   copied to the newly allocated linear part.
->
-> This is far from optimal as DMA coherent zone is slow on many systems
-> and memcpy() neutralizes the idea and benefits of the header split.
-> Instead, use libie to create page_pools for the header buffers, allocate
-> them dynamically and then build an skb via napi_build_skb() around them
-> with no memory copy. With one exception...
-> When you enable header split, you except you'll always have a separate
-> header buffer, so that you could reserve headroom and tailroom only
-> there and then use full buffers for the data. For example, this is how
-> TCP zerocopy works -- you have to have the payload aligned to PAGE_SIZE.
-> The current hardware running idpf does *not* guarantee that you'll
-> always have headers placed separately. For example, on my setup, even
-> ICMP packets are written as one piece to the data buffers. You can't
-> build a valid skb around a data buffer in this case.
-> To not complicate things and not lose TCP zerocopy etc., when such thing
-> happens, use the empty header buffer and pull either full frame (if it's
-> short) or the Ethernet header there and build an skb around it. GRO
-> layer will pull more from the data buffer later. This W/A will hopefully
-> be removed one day.
+For some ISAs like RISC-V, which may not support bus broadcast-based
+icache flushing instructions, it's necessary to send IPIs to all of the
+CPUs in the system to flush the icache. This process can be expensive for
+these ISAs and introduce disturbances during performance profiling.
+Limiting the icache flush to occur only when the vma->vm_flags has VM_EXEC
+can help minimize the frequency of these operations.
 
-We definitely want performance numbers here, for systems that truly matter.
+Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+---
+ include/asm-generic/cacheflush.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-We spent a lot of time trying to make idpf slightly better than it
-was, we do not want regressions.
+diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
+index 84ec53ccc450..729d51536575 100644
+--- a/include/asm-generic/cacheflush.h
++++ b/include/asm-generic/cacheflush.h
+@@ -102,7 +102,8 @@ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
+ 	do { \
+ 		instrument_copy_to_user((void __user *)dst, src, len); \
+ 		memcpy(dst, src, len); \
+-		flush_icache_user_page(vma, page, vaddr, len); \
++		if (vma->vm_flags & VM_EXEC) \
++			flush_icache_user_page(vma, page, vaddr, len); \
+ 	} while (0)
+ #endif
+ 
+-- 
+2.43.0
 
-Thank you.
 
