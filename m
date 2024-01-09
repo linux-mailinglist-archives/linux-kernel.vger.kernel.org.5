@@ -1,523 +1,109 @@
-Return-Path: <linux-kernel+bounces-20709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 791838283D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:21:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A048D8283E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:22:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 674D11C2459B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:21:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94C7E1C24714
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F67364B8;
-	Tue,  9 Jan 2024 10:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494F0360BA;
+	Tue,  9 Jan 2024 10:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y0asqcBm"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="C6+AM1CU"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8582364B1
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 10:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704795649;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kMTEEq3AsQe2TdpantqsP/tLBypPshyH9GIKsnl/dK0=;
-	b=Y0asqcBmGrGp6t8Tq8tK9nhwGnubKOVr7CCO5LU71Q/V7v8WoWUxNZWDPf+w94AXLpujF2
-	QqcV6pJT5jrjFkYbr8jl3nCplhfNpMtZckDruZvAV8kYl3t6wp6XhO6SFe3kPb7U2ZoR6P
-	tCiZZJP9ZC85+lnzRYLOU9VuRkcDxHA=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-128-oKT7cDepNISPmkSXGDZX7w-1; Tue, 09 Jan 2024 05:20:48 -0500
-X-MC-Unique: oKT7cDepNISPmkSXGDZX7w-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-781314b6298so51184585a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 02:20:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704795648; x=1705400448;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kMTEEq3AsQe2TdpantqsP/tLBypPshyH9GIKsnl/dK0=;
-        b=dxN68GA0t5YqXPylnsUJlPK4knL72tyBJXI1UziTpuIJ/AYtuDQGUsUcW7FPjkkigi
-         hpG5ubkN0zFVVuoOW4p36ou0+y6QSSwSglzI6EhFREUwq1YXM4UhKCERIXVKvZHdBso5
-         vC3RDtTe1DD9jFj38d62bPLbmwRn0HDvRaFDMhN9D7XqxXRp3EIgXKO3way+SFypZ9AN
-         u4MYZHp7U6xh/6kZtpEmTMwkclgmqK98C18N8Auk+LdRR4QRycehem/DqVs7zCPeqL7z
-         19C7VeONaFGSrbcMjF2yS/DUxWcyk6+8NRlkGKWqIZH3gObqKQyMFagINUr4prWkHnhq
-         IRYQ==
-X-Gm-Message-State: AOJu0YyroWe5kebTJ2ufLG8m+BSJGTQXqUiP3qyj9RBDSPcM8uXuYElE
-	hBj7r9iE2wzCSJqIoN0FmDDaNfutMUsCSepWrQNSZRDc5H38qGrMUb+Ec6AxduPtlM++Rj9SQrD
-	Sfp9XVq6jL0JuP9bnO32HYUUntcf9H1Wk
-X-Received: by 2002:a05:620a:8a89:b0:783:202f:594f with SMTP id qu9-20020a05620a8a8900b00783202f594fmr5165334qkn.1.1704795647827;
-        Tue, 09 Jan 2024 02:20:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF2JL++L27GVmuL0o0pA/G9Z2tjOGqYUmDVqbYE0/CBggar9eduv+9cZepc+vbvwFgu5VXAbw==
-X-Received: by 2002:a05:620a:8a89:b0:783:202f:594f with SMTP id qu9-20020a05620a8a8900b00783202f594fmr5165318qkn.1.1704795647500;
-        Tue, 09 Jan 2024 02:20:47 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id m24-20020ae9e018000000b00783217607d6sm679695qkk.115.2024.01.09.02.20.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 02:20:47 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Philipp Stanner <pstanner@redhat.com>
-Subject: [PATCH v2 2/2] drm/imx/dcss: have all init functions use devres
-Date: Tue,  9 Jan 2024 11:20:32 +0100
-Message-ID: <20240109102032.16165-3-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240109102032.16165-1-pstanner@redhat.com>
-References: <20240109102032.16165-1-pstanner@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAEA36AE1;
+	Tue,  9 Jan 2024 10:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3C33540E0196;
+	Tue,  9 Jan 2024 10:21:58 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id n29gUFQZ12Kl; Tue,  9 Jan 2024 10:21:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704795715; bh=xjuqUo1N9un7QD2OXvyR+5fIfImqWhSyt6kzFoGIsSI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C6+AM1CUovm2+HNjxZyX+e4EIKEIps6SduVpK8vGtpGYTqJPSLpmUesTeMBRYtC/l
+	 ncstqX3pXn8srWdzIdVsdEKq8ooWFHdCSaJvj1AQAGPytLN1msAn3y+y1MgL6Djb5m
+	 lBtxP1+/M5nS1WhPCIIc6T23ro5CTW9UHQCw4UwRS+sCzB2HzY9oobVxcH93eT4ZY1
+	 qxlNQqdozYylfVrn9n+ZK6sNc/Yw0iTaKOmklZ/lOA3zc1ywZB0lvPNy8Rz5WOKViX
+	 qeG7s/66rfaIrNP9qJdAk2eIOWYE62hpFVxD0YKsKiq+wpEY7Fnzu59mFxY/JQbI0F
+	 IkV5PllliIvA+/lAhfJgDqXjpbkRSWGjJSz+v4UhymUp4gHatNfK3VmRRLR5xBYJ/b
+	 Gr0UXBYuwxvokdHt7ta0E7Kd0RHMW8VGUe3Nkc9ZgwU4KzpOXS+zfNGsR3HSvC5x+z
+	 TNaIuhT76gqu8sXGV4OzVoA2faEwSbMK12i5lb9BHwZH5If8QWiMSF6V7gcZLZlvOL
+	 nNx7pex887OQ3TJO7erJ3ljOVbRVnAKtWgsdYUBebxYgE9lul/RU7WYc2Nk1YboaXc
+	 aMFr95IfvEdRMlN0UaeDskrX02L0lJlG5QGnS9BTd8Gi6dtM8hPzlY5Q/Sk5OZ2RrG
+	 kJcYCWFSUzab6KPrW90pG7EM=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 68D2740E016C;
+	Tue,  9 Jan 2024 10:21:28 +0000 (UTC)
+Date: Tue, 9 Jan 2024 11:21:21 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Alexey Makhalov <alexey.makhalov@broadcom.com>
+Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	hpa@zytor.com, dave.hansen@linux.intel.com, mingo@redhat.com,
+	tglx@linutronix.de, x86@kernel.org, netdev@vger.kernel.org,
+	richardcochran@gmail.com, linux-input@vger.kernel.org,
+	dmitry.torokhov@gmail.com, zackr@vmware.com,
+	linux-graphics-maintainer@vmware.com, pv-drivers@vmware.com,
+	namit@vmware.com, timothym@vmware.com, akaher@vmware.com,
+	jsipek@vmware.com, dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+	airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+	maarten.lankhorst@linux.intel.com, horms@kernel.org,
+	kirill.shutemov@linux.intel.com
+Subject: Re: [PATCH v6 0/7] VMware hypercalls enhancements
+Message-ID: <20240109102121.GAZZ0eIZXV03k52jDX@fat_crate.local>
+References: <20240109084052.58661-1-amakhalov@vmware.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240109084052.58661-1-amakhalov@vmware.com>
 
-dcss currently allocates and ioremaps quite a few resources in its probe
-function's call graph. Devres now provides convenient functions which
-perform the same task but do the cleanup automatically.
+On Tue, Jan 09, 2024 at 12:40:45AM -0800, Alexey Makhalov wrote:
+> v5->v6 change:
+> - Added ack by Kirill A. Shutemov in patch 7.
 
-Port all memory allocations and ioremap() calls to the devres
-counterparts.
+Please do not spam. Adding someone's Ack does not mean you have to
+resend the whole thing immediately again.
 
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- drivers/gpu/drm/imx/dcss/dcss-blkctl.c | 14 +++-----------
- drivers/gpu/drm/imx/dcss/dcss-ctxld.c  | 15 ++++-----------
- drivers/gpu/drm/imx/dcss/dcss-dev.c    | 11 ++---------
- drivers/gpu/drm/imx/dcss/dcss-dpr.c    | 25 ++++++-------------------
- drivers/gpu/drm/imx/dcss/dcss-drv.c    | 12 +++---------
- drivers/gpu/drm/imx/dcss/dcss-dtg.c    | 23 ++++-------------------
- drivers/gpu/drm/imx/dcss/dcss-scaler.c | 22 ++++------------------
- drivers/gpu/drm/imx/dcss/dcss-ss.c     | 11 +++--------
- 8 files changed, 29 insertions(+), 104 deletions(-)
+While waiting, please read Documentation/process/submitting-patches.rst
 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-index c9b54bb2692d..58e12ec65f80 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-@@ -41,15 +41,15 @@ void dcss_blkctl_cfg(struct dcss_blkctl *blkctl)
- int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
- {
- 	struct dcss_blkctl *blkctl;
-+	struct device *dev = dcss->dev;
- 
--	blkctl = kzalloc(sizeof(*blkctl), GFP_KERNEL);
-+	blkctl = devm_kzalloc(dev, sizeof(*blkctl), GFP_KERNEL);
- 	if (!blkctl)
- 		return -ENOMEM;
- 
--	blkctl->base_reg = ioremap(blkctl_base, SZ_4K);
-+	blkctl->base_reg = devm_ioremap(dev, blkctl_base, SZ_4K);
- 	if (!blkctl->base_reg) {
- 		dev_err(dcss->dev, "unable to remap BLK CTRL base\n");
--		kfree(blkctl);
- 		return -ENOMEM;
- 	}
- 
-@@ -60,11 +60,3 @@ int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
- 
- 	return 0;
- }
--
--void dcss_blkctl_exit(struct dcss_blkctl *blkctl)
--{
--	if (blkctl->base_reg)
--		iounmap(blkctl->base_reg);
--
--	kfree(blkctl);
--}
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-index 3a84cb3209c4..444511d0f382 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-@@ -199,10 +199,11 @@ static int dcss_ctxld_alloc_ctx(struct dcss_ctxld *ctxld)
- 
- int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- {
-+	struct device *dev = dcss->dev;
- 	struct dcss_ctxld *ctxld;
- 	int ret;
- 
--	ctxld = kzalloc(sizeof(*ctxld), GFP_KERNEL);
-+	ctxld = devm_kzalloc(dev, sizeof(*ctxld), GFP_KERNEL);
- 	if (!ctxld)
- 		return -ENOMEM;
- 
-@@ -217,7 +218,7 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- 		goto err;
- 	}
- 
--	ctxld->ctxld_reg = ioremap(ctxld_base, SZ_4K);
-+	ctxld->ctxld_reg = devm_ioremap(dev, ctxld_base, SZ_4K);
- 	if (!ctxld->ctxld_reg) {
- 		dev_err(dcss->dev, "ctxld: unable to remap ctxld base\n");
- 		ret = -ENOMEM;
-@@ -226,18 +227,14 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- 
- 	ret = dcss_ctxld_irq_config(ctxld, to_platform_device(dcss->dev));
- 	if (ret)
--		goto err_irq;
-+		goto err;
- 
- 	dcss_ctxld_hw_cfg(ctxld);
- 
- 	return 0;
- 
--err_irq:
--	iounmap(ctxld->ctxld_reg);
--
- err:
- 	dcss_ctxld_free_ctx(ctxld);
--	kfree(ctxld);
- 
- 	return ret;
- }
-@@ -246,11 +243,7 @@ void dcss_ctxld_exit(struct dcss_ctxld *ctxld)
- {
- 	free_irq(ctxld->irq, ctxld);
- 
--	if (ctxld->ctxld_reg)
--		iounmap(ctxld->ctxld_reg);
--
- 	dcss_ctxld_free_ctx(ctxld);
--	kfree(ctxld);
- }
- 
- static int dcss_ctxld_enable_locked(struct dcss_ctxld *ctxld)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-index 1f93313c89b7..206452cf98d6 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-@@ -109,8 +109,6 @@ static int dcss_submodules_init(struct dcss_dev *dcss)
- 	dcss_ctxld_exit(dcss->ctxld);
- 
- ctxld_err:
--	dcss_blkctl_exit(dcss->blkctl);
--
- 	dcss_clocks_disable(dcss);
- 
- 	return ret;
-@@ -190,7 +188,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- 		return ERR_PTR(-EBUSY);
- 	}
- 
--	dcss = kzalloc(sizeof(*dcss), GFP_KERNEL);
-+	dcss = devm_kzalloc(dev, sizeof(*dcss), GFP_KERNEL);
- 	if (!dcss)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -201,7 +199,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- 	ret = dcss_clks_init(dcss);
- 	if (ret) {
- 		dev_err(dev, "clocks initialization failed\n");
--		goto err;
-+		return ret;
- 	}
- 
- 	dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
-@@ -233,9 +231,6 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- clks_err:
- 	dcss_clks_release(dcss);
- 
--err:
--	kfree(dcss);
--
- 	return ERR_PTR(ret);
- }
- 
-@@ -253,8 +248,6 @@ void dcss_dev_destroy(struct dcss_dev *dcss)
- 	dcss_submodules_stop(dcss);
- 
- 	dcss_clks_release(dcss);
--
--	kfree(dcss);
- }
- 
- static int dcss_dev_suspend(struct device *dev)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dpr.c b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-index df9dab949bf2..d6b2ad5e6977 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-@@ -125,7 +125,8 @@ static void dcss_dpr_write(struct dcss_dpr_ch *ch, u32 val, u32 ofs)
- 	dcss_ctxld_write(dpr->ctxld, dpr->ctx_id, val, ch->base_ofs + ofs);
- }
- 
--static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
-+static int dcss_dpr_ch_init_all(struct device *dev, struct dcss_dpr *dpr,
-+		unsigned long dpr_base)
- {
- 	struct dcss_dpr_ch *ch;
- 	int i;
-@@ -135,7 +136,7 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
- 
- 		ch->base_ofs = dpr_base + i * 0x1000;
- 
--		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-+		ch->base_reg = devm_ioremap(dev, ch->base_ofs, SZ_4K);
- 		if (!ch->base_reg) {
- 			dev_err(dpr->dev, "dpr: unable to remap ch %d base\n",
- 				i);
-@@ -154,8 +155,9 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
- int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
- {
- 	struct dcss_dpr *dpr;
-+	struct device *dev = dcss->dev;
- 
--	dpr = kzalloc(sizeof(*dpr), GFP_KERNEL);
-+	dpr = devm_kzalloc(dev, sizeof(*dpr), GFP_KERNEL);
- 	if (!dpr)
- 		return -ENOMEM;
- 
-@@ -164,18 +166,8 @@ int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
- 	dpr->ctxld = dcss->ctxld;
- 	dpr->ctx_id = CTX_SB_HP;
- 
--	if (dcss_dpr_ch_init_all(dpr, dpr_base)) {
--		int i;
--
--		for (i = 0; i < 3; i++) {
--			if (dpr->ch[i].base_reg)
--				iounmap(dpr->ch[i].base_reg);
--		}
--
--		kfree(dpr);
--
-+	if (dcss_dpr_ch_init_all(dev, dpr, dpr_base))
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
-@@ -189,12 +181,7 @@ void dcss_dpr_exit(struct dcss_dpr *dpr)
- 		struct dcss_dpr_ch *ch = &dpr->ch[ch_no];
- 
- 		dcss_writel(0, ch->base_reg + DCSS_DPR_SYSTEM_CTRL0);
--
--		if (ch->base_reg)
--			iounmap(ch->base_reg);
- 	}
--
--	kfree(dpr);
- }
- 
- static u32 dcss_dpr_x_pix_wide_adjust(struct dcss_dpr_ch *ch, u32 pix_wide,
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-drv.c b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-index b61cec0cc79d..bd3f9d58042c 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-drv.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-@@ -51,15 +51,13 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
- 
- 	of_node_put(remote);
- 
--	mdrv = kzalloc(sizeof(*mdrv), GFP_KERNEL);
-+	mdrv = devm_kzalloc(dev, sizeof(*mdrv), GFP_KERNEL);
- 	if (!mdrv)
- 		return -ENOMEM;
- 
- 	mdrv->dcss = dcss_dev_create(dev, hdmi_output);
--	if (IS_ERR(mdrv->dcss)) {
--		err = PTR_ERR(mdrv->dcss);
--		goto err;
--	}
-+	if (IS_ERR(mdrv->dcss))
-+		return PTR_ERR(mdrv->dcss);
- 
- 	dev_set_drvdata(dev, mdrv);
- 
-@@ -75,8 +73,6 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
- dcss_shutoff:
- 	dcss_dev_destroy(mdrv->dcss);
- 
--err:
--	kfree(mdrv);
- 	return err;
- }
- 
-@@ -87,8 +83,6 @@ static int dcss_drv_platform_remove(struct platform_device *pdev)
- 	dcss_kms_detach(mdrv->kms);
- 	dcss_dev_destroy(mdrv->dcss);
- 
--	kfree(mdrv);
--
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dtg.c b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-index 30de00540f63..5c0f697587e6 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-@@ -151,8 +151,9 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- {
- 	int ret = 0;
- 	struct dcss_dtg *dtg;
-+	struct device *dev = dcss->dev;
- 
--	dtg = kzalloc(sizeof(*dtg), GFP_KERNEL);
-+	dtg = devm_kzalloc(dev, sizeof(*dtg), GFP_KERNEL);
- 	if (!dtg)
- 		return -ENOMEM;
- 
-@@ -160,11 +161,10 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- 	dtg->dev = dcss->dev;
- 	dtg->ctxld = dcss->ctxld;
- 
--	dtg->base_reg = ioremap(dtg_base, SZ_4K);
-+	dtg->base_reg = devm_ioremap(dev, dtg_base, SZ_4K);
- 	if (!dtg->base_reg) {
- 		dev_err(dcss->dev, "dtg: unable to remap dtg base\n");
--		ret = -ENOMEM;
--		goto err_ioremap;
-+		return -ENOMEM;
- 	}
- 
- 	dtg->base_ofs = dtg_base;
-@@ -176,16 +176,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- 		((dtg->alpha << DEFAULT_FG_ALPHA_POS) & DEFAULT_FG_ALPHA_MASK);
- 
- 	ret = dcss_dtg_irq_config(dtg, to_platform_device(dcss->dev));
--	if (ret)
--		goto err_irq;
--
--	return 0;
--
--err_irq:
--	iounmap(dtg->base_reg);
--
--err_ioremap:
--	kfree(dtg);
- 
- 	return ret;
- }
-@@ -193,11 +183,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- void dcss_dtg_exit(struct dcss_dtg *dtg)
- {
- 	free_irq(dtg->ctxld_kick_irq, dtg);
--
--	if (dtg->base_reg)
--		iounmap(dtg->base_reg);
--
--	kfree(dtg);
- }
- 
- void dcss_dtg_sync_set(struct dcss_dtg *dtg, struct videomode *vm)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-index 47852b9dd5ea..3dbd0ed68ac1 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-@@ -302,7 +302,7 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
- 
- 		ch->base_ofs = scaler_base + i * 0x400;
- 
--		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-+		ch->base_reg = devm_ioremap(dev, ch->base_ofs, SZ_4K);
- 		if (!ch->base_reg) {
- 			dev_err(scl->dev, "scaler: unable to remap ch base\n");
- 			return -ENOMEM;
-@@ -317,8 +317,9 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
- int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
- {
- 	struct dcss_scaler *scaler;
-+	struct device *dev = dcss->dev;
- 
--	scaler = kzalloc(sizeof(*scaler), GFP_KERNEL);
-+	scaler = devm_kzalloc(dev, sizeof(*scaler), GFP_KERNEL);
- 	if (!scaler)
- 		return -ENOMEM;
- 
-@@ -327,18 +328,8 @@ int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
- 	scaler->ctxld = dcss->ctxld;
- 	scaler->ctx_id = CTX_SB_HP;
- 
--	if (dcss_scaler_ch_init_all(scaler, scaler_base)) {
--		int i;
--
--		for (i = 0; i < 3; i++) {
--			if (scaler->ch[i].base_reg)
--				iounmap(scaler->ch[i].base_reg);
--		}
--
--		kfree(scaler);
--
-+	if (dcss_scaler_ch_init_all(dev, scaler, scaler_base))
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
-@@ -351,12 +342,7 @@ void dcss_scaler_exit(struct dcss_scaler *scl)
- 		struct dcss_scaler_ch *ch = &scl->ch[ch_no];
- 
- 		dcss_writel(0, ch->base_reg + DCSS_SCALER_CTRL);
--
--		if (ch->base_reg)
--			iounmap(ch->base_reg);
- 	}
--
--	kfree(scl);
- }
- 
- void dcss_scaler_ch_enable(struct dcss_scaler *scl, int ch_num, bool en)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-ss.c b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-index 8ddf08da911b..0a8320adc302 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-ss.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-@@ -82,8 +82,9 @@ static void dcss_ss_write(struct dcss_ss *ss, u32 val, u32 ofs)
- int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
- {
- 	struct dcss_ss *ss;
-+	struct device *dev = dcss->dev;
- 
--	ss = kzalloc(sizeof(*ss), GFP_KERNEL);
-+	ss = devm_kzalloc(dev, sizeof(*ss), GFP_KERNEL);
- 	if (!ss)
- 		return -ENOMEM;
- 
-@@ -91,10 +92,9 @@ int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
- 	ss->dev = dcss->dev;
- 	ss->ctxld = dcss->ctxld;
- 
--	ss->base_reg = ioremap(ss_base, SZ_4K);
-+	ss->base_reg = devm_ioremap(dev, ss_base, SZ_4K);
- 	if (!ss->base_reg) {
- 		dev_err(dcss->dev, "ss: unable to remap ss base\n");
--		kfree(ss);
- 		return -ENOMEM;
- 	}
- 
-@@ -108,11 +108,6 @@ void dcss_ss_exit(struct dcss_ss *ss)
- {
- 	/* stop SS */
- 	dcss_writel(0, ss->base_reg + DCSS_SS_SYS_CTRL);
--
--	if (ss->base_reg)
--		iounmap(ss->base_reg);
--
--	kfree(ss);
- }
- 
- void dcss_ss_subsam_set(struct dcss_ss *ss)
+and especially:
+
+"Don't get discouraged - or impatient
+------------------------------------
+
+After you have submitted your change, be patient and wait.  Reviewers are
+busy people and may not get to your patch right away.
+
+Once upon a time, patches used to disappear into the void without comment,
+but the development process works more smoothly than that now.  You should
+receive comments within a few weeks (typically 2-3); if that does not
+happen, make sure that you have sent your patches to the right place.
+Wait for a minimum of one week before resubmitting or pinging reviewers
+- possibly longer during busy times like merge windows."
+
 -- 
-2.43.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
