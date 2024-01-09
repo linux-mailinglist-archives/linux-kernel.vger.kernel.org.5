@@ -1,304 +1,137 @@
-Return-Path: <linux-kernel+bounces-21300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5906828D4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:23:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164D1828D4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:24:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6A78B23960
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:23:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4841C20AC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC623D387;
-	Tue,  9 Jan 2024 19:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D198B3D393;
+	Tue,  9 Jan 2024 19:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="t4CAeHCo"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2023.outbound.protection.outlook.com [40.92.19.23])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eWaId/QD"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2063.outbound.protection.outlook.com [40.107.212.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99523D0C3;
-	Tue,  9 Jan 2024 19:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F6E3D0CD;
+	Tue,  9 Jan 2024 19:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=emrfKrEfi93ptKSQjwgDh4P7Niz08kzCBinSVBpi/QB65hc/Eh0Yn2YN68sfYs7PG9bZJMDLI4y27sEkA1Du4xIj3A5dGFBdnbtJnrcymbUF/iZ/BAZzQGKibw22FW+u0o34Y3LbWn9tjgLQME3iikowPsqG+OiVm4UKYcNf6S/PBdYwMmxkjJ1sqSy2wIwit8mS8V/zqdmn7O6cSOPf0kATHmqPnbkDeSp3jFv6Yj9SW46Xjv6eVJp6efR04KcjFwncPtwX7J3BzEgLojWqgqxVGs4aj25ov7J9u0gfa6EPUP6UlKWfXI6wKLFs+nyK/qin9hEGmjgDDolHHA5iUw==
+ b=CNMuQ3RqwLARfpgNg+2bYpcqQnAz81NjSMypbR3cWhAb3mpuDCO6OgkLU9IMdx75IzszjnnNeG3EAfaehNNzZ5YQ+LKeYT/h6Hf9FFVSUbp5VMwy1bu84Dkopf9OdXVtrYjtFuClXi/sqUX4Rtac4zNnF9BrJHmLpsRFkcwNmPwhJNplkUSwEBaRFi4Qm+E6/53egUdpbXxYcganFp7Djz5UnKAAJSRJtDO7yrMA6a2rzaxtUKv6AiNZQN/4titV11mddW1Xw/2pX4dSwFKZO+fyIEsWQuw3PHCb1BwkEwRtVd+6N1h8++U20EtPxexnpu9DBuvdT99+riBEvcu+vg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8DnUWaf8aBr9DCCZU2qNfaCqur6vXMFXuZ6vg80Uglk=;
- b=U9QMubYFvx3kzaQWM0TyRLIcUADJbbssucgou6qpZaqjaLIPpEaFp102zlDU9iTCa83dPd8iUK9t9hTzAz398viu0HkJTryrZlbPhtUaXJttzSE0k7cZwf2hUVIv3ol+sg3HYfdkbe8tSezGEoTQMNhtNb6yl2x0nlbXgrOSiehGUBVBsZ8gxv4KBRqNfS7yjLL4KuLR92dsI7FCIVqkRU2CfN1/RGeGUTLdYsqBHZTBl2Bx31h4tmJMYfiG6XU2CfvKHK31lUuCG25hnS2GAekOl+yIRxqywEDRUgNuhg89Ji0qDDUdF+QBMYAs9c70Xtht7eM+1KIRaA8+hv1WRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
+ bh=CFl34CDZeuQ/Ua+KK1MpJMTf95Xw+2Fae2Wfl3NcrwQ=;
+ b=S1o5Cvh5Icm2RMxXwpjs7YAkNILDyjW4GpUye33t83hYzKTAmKZk+EwL1xOmUR/1Medjg7iYtDZmhK3DP0eujER3JVQ/M+cjuQXjvN9DBgBaIFSJmWWth796VTzpT/327DB1vwR9qjaKFOjeUBUogVxVnndgquOMAXPSDCS5Ijo10i9GxzYOCoQEPkg+OwCFuzcxFsFj/XHFPo3Q8tiN+SGot5goYsHvT7fFiCMiiMzwbPUr1OjgK0D0dE9/ojPYlPsyZAtMqEArpoq4+mXN9Sqqz+7RkHioyO13LTN8Ch/BD2FdQT08486giMXj8U162xMVqDifH53eUJA5rYHR3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8DnUWaf8aBr9DCCZU2qNfaCqur6vXMFXuZ6vg80Uglk=;
- b=t4CAeHCoAyKpJGfwFT/mjuilYrT+SttN4nrw9Fp43w6NC8cuPAeL5OMPGGCXHhwVQq6+jN45JzZHVaPAskoPbqgI9ER+PjVOAMoFDNjpdVxiBbJ02DEzbO1rZY73ntr5MS5XB+6hiF6FyHyufRG44zNAgWgXsnEGRxxcU2dTJe/xpRViBdlm426DNAPhesftK5t7+1yu898BjFIXwOn9BvUhMxSJOR8640l/lLeh5zsTbP13Z9/+beARedok3X4pVv1Rd9j0Swe3+qzhwZjM6aeJ5TU1torYdsmk5zdJhbHj0StpH5iJkr6P4JovuRWBmGSKCcR10GywTOBXkIaLJw==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by SJ2PR02MB9391.namprd02.prod.outlook.com (2603:10b6:a03:4c5::17) with
+ bh=CFl34CDZeuQ/Ua+KK1MpJMTf95Xw+2Fae2Wfl3NcrwQ=;
+ b=eWaId/QDgLu/S9AXDwhYIqBxih3rACQ5mgl6+0/NJK1fLWORV0SMBOMUH5LyTtfOwCqRkpfF9ZKaywfzjpmGBMpRj6sRQxKmk4HpD2IfaAUMILkTTsqK4O8+3mRXbgdPVUTzdufRZxHvrrKfmmhcxkvWZpIBelAAiYbC9kF4/rT2WBm87xyutmqyimlH1mb9EbwZ/nemkoyOugj7ynJp2k9bUDKYbxwOLluKmUspKW7/LPk133zAbmypsskW34LQtbV6hVz72VLsMHkoiQ1s+UPaiiaY1PwrNgqs3CsqWSiydaSKTLIBHOmn76Gx/oFtl6nwIjDfs7uWNSyY5P4Yhw==
+Received: from SJ0PR03CA0136.namprd03.prod.outlook.com (2603:10b6:a03:33c::21)
+ by PH7PR12MB6786.namprd12.prod.outlook.com (2603:10b6:510:1ac::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Tue, 9 Jan
- 2024 19:22:38 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2%4]) with mapi id 15.20.7181.015; Tue, 9 Jan 2024
- 19:22:38 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	"kys@microsoft.com" <kys@microsoft.com>, "haiyangz@microsoft.com"
-	<haiyangz@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"decui@microsoft.com" <decui@microsoft.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"longli@microsoft.com" <longli@microsoft.com>, "yury.norov@gmail.com"
-	<yury.norov@gmail.com>, "leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-CC: "schakrabarti@microsoft.com" <schakrabarti@microsoft.com>,
-	"paulros@microsoft.com" <paulros@microsoft.com>
-Subject: RE: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs per
- CPUs
-Thread-Topic: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs
- per CPUs
-Thread-Index: AQHaQuoWNi7Bv1N390Ch4p7DlTYrcLDR1sMg
-Date: Tue, 9 Jan 2024 19:22:38 +0000
-Message-ID:
- <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References:
- <1704797478-32377-1-git-send-email-schakrabarti@linux.microsoft.com>
- <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
-In-Reply-To:
- <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [az8VlYiVcp0dizlN0Us9ZOOpYPC77r+2]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ2PR02MB9391:EE_
-x-ms-office365-filtering-correlation-id: 017b3198-5264-4632-3a14-08dc11485796
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Y7tziniuchePv0HBDCJNeUQ+a+HmJOK/fvIAvV3+aPYcExGeiws1sobaW0H3jMnTD8+Le8wAiTKG64hJKuBC2n7H4363gX3fPYfuLCqhYNO9qxR1I4j2VUdoYMAwX1miZD85WlvoVsTxKDpW0MDx5sc8ngEUJUlTzX3FSfbL1HuIb3Zdblii8jJcXFPAFjEjUTIpcXiGCLSAAAJB9RpDEy1XXlC9hh5GUJEfOXnHic96dc+0g7f2UswAvug9rLFLV7dTGdu+dVkF6bRlY4u8s6hIgMrDreLAYIFOOh/ABPRr6Jvet9KOoh571Y1RhZv+0GZINht8dfdQj95DQshaklVRi9dJe3Du9oigIzdTr3KG9AIhN0KlJEl7mgnisnHpukSz588F2zU4JhJYr570dhBfJbSA/eFcAK9tcN1YzRKMD5Z7ObhNtvrdNPTnq1OH4jwiLBNCDSdeyKLTjWB24UB6cVzcZJGT2XR/j3ow6LybADP+USGs0Jnan3u+A1DxIxKqXuCBB3e0n+oYUqo2d/0w5+KXUGdItuJRBRl049zDp+uV9tfnreZXpMbjmvIjawiYtLoOHpv3gVdMI1FP1Qx/BTfl18tfCctJfO42WfE=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?Lo6bdNbnE3ahHHCSwc4weDuiylMdgtQZ1lXt6nIXi37YHsFUFfatCTjSeQf0?=
- =?us-ascii?Q?oKLrAdwhhf8gkXsz6PocRsk2+RkOyKsWf2soCLJ5sJ8dpLgzHFmzsiU/P54X?=
- =?us-ascii?Q?pyd7eOF1iJonKdoSZn6XE7ZU1Gcmk60f4VS8Bc40aAAAa1t+jovh92PlI0IO?=
- =?us-ascii?Q?T1gWxxl6e+VjlwAcodDUy0VEJqRribEvY/ctGxlpknKtoEk+QZ5c4RRW/OwX?=
- =?us-ascii?Q?oLMdD0tX2e+qhlapiNPER4OFEh5TdZWLOSocdr5iTKf96N2DUEFDZ0oIPlr3?=
- =?us-ascii?Q?b+7qAnTfAxpsAq395aBVTsRFpILnxn82Za76lA4UiDwVwApoAeek5wF6W353?=
- =?us-ascii?Q?ZjpfKrWYVm9AjT+u4EL5566+qUMtQbZqw1F1Ln2p6BZRp3vdujUbItMrKNjt?=
- =?us-ascii?Q?B4Z2Tbd9uzgFOT/elIKY3DU0uvpxmcLRZmDuiJ/j5ykISDxwe7fomrB2eUfJ?=
- =?us-ascii?Q?EDaHxu26nVGYhqiIVf5J1XOvZVk5DgXJGgaOpIyrLCQPM9v8FCBYCAXT0M64?=
- =?us-ascii?Q?EwP83zWkQC6PYV9F4pNwcXRAC4sjmlinFc/nb3g0MbciRmxm04CGfZ+DQPG1?=
- =?us-ascii?Q?aFASA4wqTy4PuBT9owHDo7dcP6VcBlgoXigLib0gXNfQoOCOr1q3sPvWtLbj?=
- =?us-ascii?Q?vVw+q4hOozwKgkRcLh9NnrqquXVlcdFyr1IZrPiMeiTa0LYT6rsqSk9grziJ?=
- =?us-ascii?Q?Np2We4z3ZOL5z9rh6SlS4LDPXNn0APBBIEsv7TCkP20Hg+yeKpBnCGQTfnXV?=
- =?us-ascii?Q?PxAnjypc2orKiTU8uZQ7hN35cahhnyRP8jNd7O7LqrO6TkNWtzQtnEw3Rp0q?=
- =?us-ascii?Q?6koahfBUgTg58JapmN205o3Suq3AvDEl5yz08klWbf1Fc71/QHOsBNj/pMBJ?=
- =?us-ascii?Q?529oNXMq0kIsoVZlZRLrSrcP2wmMA7iOkPD5IHFp/8nS6l5pexEoj2z9uKoK?=
- =?us-ascii?Q?SFDJfzQBL4ZcRk5CCI/xWzCHMcp/BCR5WZW2k4NRi8ZWjG67D/YeTUdGX9lZ?=
- =?us-ascii?Q?Nu1/1M6tK2jh3u6LVSypWDq9lAdQK1s0h369Mf6f+Hq7jWNLysRhwMJdXesP?=
- =?us-ascii?Q?Qg1RC7kJCXjADeEZIZayaSk2yVCfrGCPnJPrauS0Z5NtgyCL3huNQ8dZf9JT?=
- =?us-ascii?Q?1I7eKOYss/fnj4CES52zXSDC13sLfA1CSe4ou0aLnRuWRo0RAO9P0bEh65Z6?=
- =?us-ascii?Q?oQFjQOL+F6QmqT+9cWJafaEHhiYKtZE1DsUFbg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
+ 2024 19:24:04 +0000
+Received: from MWH0EPF000989EC.namprd02.prod.outlook.com
+ (2603:10b6:a03:33c:cafe::74) by SJ0PR03CA0136.outlook.office365.com
+ (2603:10b6:a03:33c::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23 via Frontend
+ Transport; Tue, 9 Jan 2024 19:24:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000989EC.mail.protection.outlook.com (10.167.241.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7181.14 via Frontend Transport; Tue, 9 Jan 2024 19:24:03 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 9 Jan 2024
+ 11:23:47 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 9 Jan 2024
+ 11:23:47 -0800
+Received: from msst-build.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Tue, 9 Jan 2024 11:23:45 -0800
+From: Besar Wicaksono <bwicaksono@nvidia.com>
+To: <acme@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
+	<john.g.garry@oracle.com>, <james.clark@arm.com>, <mike.leach@linaro.org>,
+	<peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<namhyung@kernel.org>, <irogers@google.com>, <alisaidi@amazon.com>,
+	<vsethi@nvidia.com>, <rwiley@nvidia.com>, <ywan@nvidia.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-perf-users@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+	<treding@nvidia.com>, <jonathanh@nvidia.com>, Besar Wicaksono
+	<bwicaksono@nvidia.com>
+Subject: [PATCH v1 0/3] arm64: Support Neoverse-V2 for Perf Arm SPE
+Date: Tue, 9 Jan 2024 13:23:07 -0600
+Message-ID: <20240109192310.16234-1-bwicaksono@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 017b3198-5264-4632-3a14-08dc11485796
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2024 19:22:38.3996
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EC:EE_|PH7PR12MB6786:EE_
+X-MS-Office365-Filtering-Correlation-Id: b2b75b1e-5153-4cc1-bbc6-08dc11488a6a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	sZrK74vLQbh/rKBvRFjkTh/WPxwjXUEIp6JREf51rHx2MQTFEDlS6hkmdEkhppjvE21e+obvAKWfVI3jSqvJ7X6dCerJdrcfuMvuFpP++c8rdaoNj3g5JfSk1UEx+3h1Xcn1+VNprU6l+FiMGVxDINMAITsajwY/Ci+ZN8MmsqUDiW0Klx4StJRZwk/bLoepqL7ke71Yn0PQG56Y9M1Tw7qNqzm2fek9Rx1TK01W2iHD6XiGRqpffkZ7VUfNkG7kRkMWRzEGompv6hoKAgHVpJKL5c+BMMVg58mREDVnfRenvveBBxXzRNUjWdaHRY/l+ywY5ZQWctRBUMYaYcG1d2eQku2zOvh2CDfCvBc9/dDQF/cTTrcV5iU6/LKMdshBFZTW40vkUlPhZrD8jyicMSjsPsnDSA1hgR7Tdxkrwz6W7YEm+JNuv+7J4pYZvVV8yR+fGVqFJBaVTinfSpEl67Js6n+IFevqM2Hn8vxQEje3hev5+Zpu7oJMkT9u9/YwE7VV4OjYxCnPedqEVEfb3OQPVqWipTmbulCzQDvchoRLsEMTsoRnlgJ15y3qY/d4z9jlNR7ILuDqJvofkir7GReRMsTyVPSapa7JlrRY6vyGYj3+YT89gym0Bq0rOJynWWhs5d94Xgk17g6zXDJKru22kyWkvmZsrZMSE7uxzYlASkatf+GCm0ZXOKo5Dvs46VMHcSdEVETA+D7HP2sUH6cMsXkDnPVh5lmkvfRdxLAhxTA8so1H4LRVhvTZVbPE2XdDjIPex92BRUn7UqOPz55VsWGX5fxP+vUER2QyWYw=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39860400002)(230922051799003)(186009)(451199024)(82310400011)(64100799003)(1800799012)(36840700001)(46966006)(40470700004)(316002)(107886003)(336012)(2616005)(1076003)(426003)(26005)(82740400003)(47076005)(36860700001)(8936002)(8676002)(5660300002)(4744005)(7416002)(6636002)(2906002)(478600001)(54906003)(7696005)(6666004)(4326008)(110136005)(70206006)(70586007)(921011)(41300700001)(356005)(7636003)(36756003)(86362001)(40480700001)(40460700003)(2101003)(83996005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 19:24:03.5461
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR02MB9391
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2b75b1e-5153-4cc1-bbc6-08dc11488a6a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000989EC.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6786
 
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent: Tuesda=
-y, January 9, 2024 2:51 AM
->=20
-> From: Yury Norov <yury.norov@gmail.com>
->=20
-> Souradeep investigated that the driver performs faster if IRQs are
-> spread on CPUs with the following heuristics:
->=20
-> 1. No more than one IRQ per CPU, if possible;
-> 2. NUMA locality is the second priority;
-> 3. Sibling dislocality is the last priority.
->=20
-> Let's consider this topology:
->=20
-> Node            0               1
-> Core        0       1       2       3
-> CPU       0   1   2   3   4   5   6   7
->=20
-> The most performant IRQ distribution based on the above topology
-> and heuristics may look like this:
->=20
-> IRQ     Nodes   Cores   CPUs
-> 0       1       0       0-1
-> 1       1       1       2-3
-> 2       1       0       0-1
-> 3       1       1       2-3
-> 4       2       2       4-5
-> 5       2       3       6-7
-> 6       2       2       4-5
-> 7       2       3       6-7
+This series support Neoverse-V2 CPU in Perf Arm SPE.
+The first patch adds the Neoverse-V2 part number in kernel header.
+The second patch syncs the kernel change to the tools header.
+The third patch adds Neoverse-V2 into perf's Neoverse SPE data source list.
 
-I didn't pay attention to the detailed discussion of this issue
-over the past 2 to 3 weeks during the holidays in the U.S., but
-the above doesn't align with the original problem as I understood
-it.  I thought the original problem was to avoid putting IRQs on
-both hyper-threads in the same core, and that the perf
-improvements are based on that configuration.  At least that's
-what the commit message for Patch 4/4 in this series says.
+Besar Wicaksono (3):
+  arm64: Add Neoverse-V2 part
+  tools headers arm64: Add Neoverse-V2 part
+  perf arm-spe: Add Neoverse-V2 to neoverse list
 
-The above chart results in 8 IRQs being assigned to the 8 CPUs,
-probably with 1 IRQ per CPU.   At least on x86, if the affinity
-mask for an IRQ contains multiple CPUs, matrix_find_best_cpu()
-should balance the IRQ assignments between the CPUs in the mask.
-So the original problem is still present because both hyper-threads
-in a core are likely to have an IRQ assigned.
+ arch/arm64/include/asm/cputype.h       | 2 ++
+ tools/arch/arm64/include/asm/cputype.h | 2 ++
+ tools/perf/util/arm-spe.c              | 1 +
+ 3 files changed, 5 insertions(+)
 
-Of course, this example has 8 IRQs and 8 CPUs, so assigning an
-IRQ to every hyper-thread may be the only choice.  If that's the
-case, maybe this just isn't a good example to illustrate the
-original problem and solution.  But even with a better example
-where the # of IRQs is <=3D half the # of CPUs in a NUMA node,
-I don't think the code below accomplishes the original intent.
 
-Maybe I've missed something along the way in getting to this
-version of the patch.  Please feel free to set me straight. :-)
-
-Michael
-
->=20
-> The irq_setup() routine introduced in this patch leverages the
-> for_each_numa_hop_mask() iterator and assigns IRQs to sibling groups
-> as described above.
->=20
-> According to [1], for NUMA-aware but sibling-ignorant IRQ distribution
-> based on cpumask_local_spread() performance test results look like this:
->=20
-> /ntttcp -r -m 16
-> NTTTCP for Linux 1.4.0
-> ---------------------------------------------------------
-> 08:05:20 INFO: 17 threads created
-> 08:05:28 INFO: Network activity progressing...
-> 08:06:28 INFO: Test run completed.
-> 08:06:28 INFO: Test cycle finished.
-> 08:06:28 INFO: #####  Totals:  #####
-> 08:06:28 INFO: test duration    :60.00 seconds
-> 08:06:28 INFO: total bytes      :630292053310
-> 08:06:28 INFO:   throughput     :84.04Gbps
-> 08:06:28 INFO:   retrans segs   :4
-> 08:06:28 INFO: cpu cores        :192
-> 08:06:28 INFO:   cpu speed      :3799.725MHz
-> 08:06:28 INFO:   user           :0.05%
-> 08:06:28 INFO:   system         :1.60%
-> 08:06:28 INFO:   idle           :96.41%
-> 08:06:28 INFO:   iowait         :0.00%
-> 08:06:28 INFO:   softirq        :1.94%
-> 08:06:28 INFO:   cycles/byte    :2.50
-> 08:06:28 INFO: cpu busy (all)   :534.41%
->=20
-> For NUMA- and sibling-aware IRQ distribution, the same test works
-> 15% faster:
->=20
-> /ntttcp -r -m 16
-> NTTTCP for Linux 1.4.0
-> ---------------------------------------------------------
-> 08:08:51 INFO: 17 threads created
-> 08:08:56 INFO: Network activity progressing...
-> 08:09:56 INFO: Test run completed.
-> 08:09:56 INFO: Test cycle finished.
-> 08:09:56 INFO: #####  Totals:  #####
-> 08:09:56 INFO: test duration    :60.00 seconds
-> 08:09:56 INFO: total bytes      :741966608384
-> 08:09:56 INFO:   throughput     :98.93Gbps
-> 08:09:56 INFO:   retrans segs   :6
-> 08:09:56 INFO: cpu cores        :192
-> 08:09:56 INFO:   cpu speed      :3799.791MHz
-> 08:09:56 INFO:   user           :0.06%
-> 08:09:56 INFO:   system         :1.81%
-> 08:09:56 INFO:   idle           :96.18%
-> 08:09:56 INFO:   iowait         :0.00%
-> 08:09:56 INFO:   softirq        :1.95%
-> 08:09:56 INFO:   cycles/byte    :2.25
-> 08:09:56 INFO: cpu busy (all)   :569.22%
->=20
-> [1]
-> https://lore.kernel.org/all/20231211063726.GA4977@linuxonhyperv3.guj3
-> yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net/
->=20
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> Co-developed-by: Souradeep Chakrabarti
-> <schakrabarti@linux.microsoft.com>
-> ---
->  .../net/ethernet/microsoft/mana/gdma_main.c   | 29
-> +++++++++++++++++++
->  1 file changed, 29 insertions(+)
->=20
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> index 6367de0c2c2e..6a967d6be01e 100644
-> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> @@ -1243,6 +1243,35 @@ void mana_gd_free_res_map(struct gdma_resource *r)
->  	r->size =3D 0;
->  }
->=20
-> +static __maybe_unused int irq_setup(unsigned int *irqs, unsigned int len=
-, int node)
-> +{
-> +	const struct cpumask *next, *prev =3D cpu_none_mask;
-> +	cpumask_var_t cpus __free(free_cpumask_var);
-> +	int cpu, weight;
-> +
-> +	if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	rcu_read_lock();
-> +	for_each_numa_hop_mask(next, node) {
-> +		weight =3D cpumask_weight_andnot(next, prev);
-> +		while (weight > 0) {
-> +			cpumask_andnot(cpus, next, prev);
-> +			for_each_cpu(cpu, cpus) {
-> +				if (len-- =3D=3D 0)
-> +					goto done;
-> +				irq_set_affinity_and_hint(*irqs++, topology_sibling_cpumask(cpu));
-> +				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
-> +				--weight;
-> +			}
-> +		}
-> +		prev =3D next;
-> +	}
-> +done:
-> +	rcu_read_unlock();
-> +	return 0;
-> +}
-> +
->  static int mana_gd_setup_irqs(struct pci_dev *pdev)
->  {
->  	unsigned int max_queues_per_port =3D num_online_cpus();
-> --
-> 2.34.1
->=20
+base-commit: d988c9f511af71a3445b6a4f3a2c67208ff8e480
+-- 
+2.17.1
 
 
