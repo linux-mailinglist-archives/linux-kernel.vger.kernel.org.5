@@ -1,173 +1,136 @@
-Return-Path: <linux-kernel+bounces-20443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A21827F10
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:09:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5081A827F12
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1C121F2354A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:09:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E271F245D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B49AB64C;
-	Tue,  9 Jan 2024 07:08:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4CAC127;
+	Tue,  9 Jan 2024 07:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BR3uNY2a"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XsI0alcB"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D2F8F5A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cd17a979bcso28235751fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:08:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD05ABE4A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:08:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4298bd85e33so14884841cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:08:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704784124; x=1705388924; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=gmail.com; s=20230601; t=1704784132; x=1705388932; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LKZ+huI8zyF9y64Tci/e9CKNNCnYcIoMFreFA1gzux0=;
-        b=BR3uNY2aqxJmT75o7xwDgxeATb4y9fom4lRLSxsyllBe4QDRq2d0GDZQ/OGt7N8LnX
-         1VYqXJ8lSMOZUvQiOTUjnqzIFT7ExjFMPLl5Lh8hTzl/FND/cT2ZEvzEX35ic27taei9
-         66Ymdhj+sS5Y0+j9M0Iti3pUvgQ13Bxv0xIDQ=
+        bh=mWKZBm49HTKJsSVTqSFKBSK/qcMrSE6KA1YgsZXKd+s=;
+        b=XsI0alcBIbC5KWOhXw92SV9e9mEed1N8Mr2Fqp1+NlGImqOwayPSgwrUWW879lwgYO
+         YgsR6TRwLe7cauaH5JFCZeSe645xyfsYPv+9pZ07+uv5Z9CL2gdo8OPf/R9jO3Hmav7o
+         KK7j1aiehcIqlWyiybp6Bf0JziCFLaaSNRbRu/BjWWPFCpSXccscUeo58gKioxnlSsXT
+         lGbugmL+6m9CAOxtUff9pn0IHB2Lsl48fQfnZXY7/HJXrY5d/WNPkOVZ6YWzcnRQgpCB
+         AXtI1mtUaQlGOvHAQHa/1PIyH1dlTNAWSgiADH9RpEOL15Bf0ICZnU/zLRAsqT9aaKW1
+         TtMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704784124; x=1705388924;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1704784132; x=1705388932;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LKZ+huI8zyF9y64Tci/e9CKNNCnYcIoMFreFA1gzux0=;
-        b=dbXlNDq+JM+HDupZW2vl3fMVNf1JXjzkL9WJV9QNXTz6uBVG6ym58ZqbK4XLBxj6cu
-         3SEowef7Sy2bhmTtseszVSEr0n8Puvs2egBJr2sMSCow0JOT63XmrGhVjOgE9o2FYDYc
-         7G8J5Je76cLi5fxE0WJ2CXMTqawXyvDv6r3lmelb5SwBYbveSysqbVinVzQb5HXjhzWj
-         0oDLDMwOELIfuB7+OQwLcyE/FMR5W3XxXkHtCpm+leibHoH2Rl5x/+zkEGtZ9FTiynnB
-         38uHSI2oHH52uZOLEzYRZ+uBrunme5R7KcdyY/Qu5rnBn37Wc32QjhDD3ohSqv7JoivB
-         8D0g==
-X-Gm-Message-State: AOJu0YxHQKGTXacydov9fBqGCy05cCoc4lxucrJc3iJROQbvaizh4xhy
-	n7Rjo73fHVMdMnIo4StRI4eqZU0uNYtLSSSgzLgxKmN8Cg2R
-X-Google-Smtp-Source: AGHT+IHuV7ZXffeImPrQxW5h78uhSNEY4eppTSaVCMuaEKuHEsMq7+O1LGba2p8gHRlJMVF9kVGnSOLYolVvVTYKveM=
-X-Received: by 2002:a2e:a404:0:b0:2cd:1b40:5725 with SMTP id
- p4-20020a2ea404000000b002cd1b405725mr1063109ljn.212.1704784123625; Mon, 08
- Jan 2024 23:08:43 -0800 (PST)
+        bh=mWKZBm49HTKJsSVTqSFKBSK/qcMrSE6KA1YgsZXKd+s=;
+        b=TdPwVQDSiK9wrrH3aRedpE8xX1IAmv52/k1l2V0etawBBxTNkj++2j3Un4HmJBOYrG
+         EFaxS4/NkAipTDZWNTpP/0LtrKAXKpREtV4mPSD7HixCcZR+4LXHVNU8l7Xzko1UzhfO
+         5YVTTy66NP6418pfofRaqFTOCH2heMC47rfwShKlvsb4AOxg+WutaWnbEggp0BAMPirZ
+         k3w6AjSeIU46dH/b2zI6i44kJEKr7cKRnaGnQL3YUZEMizXaQW1+U5FmW77N0R2KQFfD
+         sSDCJGvbhtPPFdLyeOVgpbntefnzjT+REmAnwVfazo0n2yqaEcZAstvXy8XYqjJB4qH0
+         eNJg==
+X-Gm-Message-State: AOJu0YzqfbN8egcWTEm51ixRIWSntVKtdPtenhHnwG5Fmsps2bAIQrl8
+	uCP1IXUhstH4qTOtA62ziAbE09JPOZrdjqUAlC8=
+X-Google-Smtp-Source: AGHT+IHyNz4lnf3pR9yAD3GY4+j+Tua6f4ik1QBbsJ0ck80NNcsn8VPe0EOqPlw5mtfd1rEUVcvQ8OKVe/7YPBGHXL8=
+X-Received: by 2002:ac8:5a8b:0:b0:428:400c:ed0 with SMTP id
+ c11-20020ac85a8b000000b00428400c0ed0mr6682061qtc.35.1704784132660; Mon, 08
+ Jan 2024 23:08:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104130123.37115-1-brgl@bgdev.pl> <a85dbfc3-e327-442a-9aab-5115f86944f7@gmail.com>
-In-Reply-To: <a85dbfc3-e327-442a-9aab-5115f86944f7@gmail.com>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Tue, 9 Jan 2024 15:08:32 +0800
-Message-ID: <CAGXv+5EtvMgbr9oZ7cfnDCDN15BKqgpuiacHHf8_T5kLqYJpJw@mail.gmail.com>
-Subject: Re: [RFC 0/9] PCI: introduce the concept of power sequencing of PCIe devices
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Kalle Valo <kvalo@kernel.org>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
-	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jim Quinlan <jim2101024@gmail.com>, 
-	james.quinlan@broadcom.com, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240107131236.625-1-qwjhust@gmail.com>
+In-Reply-To: <20240107131236.625-1-qwjhust@gmail.com>
+From: =?UTF-8?B?5LqT5paH5p2w?= <qwjhust@gmail.com>
+Date: Tue, 9 Jan 2024 15:08:41 +0800
+Message-ID: <CAGFpFsQsRm0s3OG1zENHSgPB+TcbGG6NKXKhugCYnzX=shf00A@mail.gmail.com>
+Subject: Re: [PATCH] f2fs: fix NULL pointer dereference in f2fs_submit_page_write()
+To: jaegeuk@kernel.org, chao@kernel.org, guoweichao@oppo.com, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 9, 2024 at 12:09=E2=80=AFPM Florian Fainelli <f.fainelli@gmail.=
-com> wrote:
->
-> Hello,
->
-> On 1/4/2024 5:01 AM, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > During last year's Linux Plumbers we had several discussions centered
-> > around the need to power-on PCI devices before they can be detected on
-> > the bus.
-> >
-> > The consensus during the conference was that we need to introduce a
-> > class of "PCI slot drivers" that would handle the power-sequencing.
-> >
-> > After some additional brain-storming with Manivannan and the realizatio=
-n
-> > that the DT maintainers won't like adding any "fake" nodes not
-> > representing actual devices, we decided to reuse the existing
-> > infrastructure provided by the PCIe port drivers.
-> >
-> > The general idea is to instantiate platform devices for child nodes of
-> > the PCIe port DT node. For those nodes for which a power-sequencing
-> > driver exists, we bind it and let it probe. The driver then triggers a
-> > rescan of the PCI bus with the aim of detecting the now powered-on
-> > device. The device will consume the same DT node as the platform,
-> > power-sequencing device. We use device links to make the latter become
-> > the parent of the former.
-> >
-> > The main advantage of this approach is not modifying the existing DT in
-> > any way and especially not adding any "fake" platform devices.
->
-> There is prior work in that area which was applied, but eventually revert=
-ed:
->
-> https://www.spinics.net/lists/linux-pci/msg119136.html
->
-> and finally re-applied albeit in a different shape:
->
-> https://lore.kernel.org/all/20220716222454.29914-1-jim2101024@gmail.com/
->
-> so we might want to think about how to have pcie-brcmstb.c converted
-> over your proposed approach. AFAIR there is also pcie-rockchip.c which
-> has some rudimentary support for voltage regulators of PCIe end-points.
+This patch has been merged into the new patch.
 
-I think the current in-tree approaches mostly target either PCIe slots,
-whether full size or mini-PCIe or M.2, or soldered-on components that
-either only have a single power rail, have internal regulators, or have
-surrounding circuitry that would be incorporated on a PCIe card.
-
-These all have standardized power rails (+12V, +3.3V, +3.3V aux, etc.).
-
-> What does not yet appear in this RFC is support for suspend/resume,
-> especially for power states where both the RC and the EP might be losing
-> power. There also needs to be some thoughts given to wake-up enabled
-> PCIe devices like Wi-Fi which might need to remain powered on to service
-> Wake-on-WLAN frames if nothing else.
->
-> I sense a potential for a lot of custom power sequencing drivers being
-> added and ultimately leading to the decision to create a "generic" one
-> which is entirely driven by Device Tree properties...
-
-We can have one "generic" slot power sequencing driver, which just
-enables all the power rails together. I would very much like to see that.
-
-I believe the power sequencing in this series is currently targeting more
-tightly coupled designs that use power rails directly from the PMIC, and
-thus require more explicit power sequencing.
-
-ChenYu
+[PATCH v2] f2fs: fix max open zone constraints
+https://lore.kernel.org/linux-f2fs-devel/20240109035804.642-1-qwjhust@gmail=
+com/
 
 
-> Thanks for doing this!
+Wenjie <qwjhust@gmail.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=887=E6=97=A5=E5=91=
+=A8=E6=97=A5 21:12=E5=86=99=E9=81=93=EF=BC=9A
+>
+> From: Wenjie Qi <qwjhust@gmail.com>
+>
+> BUG: kernel NULL pointer dereference, address: 0000000000000014
+> RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+> Call Trace:
+> <TASK>
+> ? show_regs+0x6e/0x80
+> ? __die+0x29/0x70
+> ? page_fault_oops+0x154/0x4a0
+> ? prb_read_valid+0x20/0x30
+> ? __irq_work_queue_local+0x39/0xd0
+> ? irq_work_queue+0x36/0x70
+> ? do_user_addr_fault+0x314/0x6c0
+> ? exc_page_fault+0x7d/0x190
+> ? asm_exc_page_fault+0x2b/0x30
+> ? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+> ? f2fs_submit_page_write+0x736/0x780 [f2fs]
+> do_write_page+0x50/0x170 [f2fs]
+> f2fs_outplace_write_data+0x61/0xb0 [f2fs]
+> f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
+> f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
+> f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
+> ...
+>
+> It is possible that other threads have added this fio to io->bio
+> and submitted the io->bio before entering f2fs_submit_page_write().
+> At this point io->bio =3D NULL.
+> If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
+> then an NULL pointer dereference error occurs at bio_get(io->bio).
+> In this case, the code to determine the zone end can simply be skipped.
+>
+> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+> ---
+>  fs/f2fs/data.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 1896928cae77..d08e92bb2621 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -1100,7 +1100,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fi=
+o)
+>                 goto next;
+>  out:
+>  #ifdef CONFIG_BLK_DEV_ZONED
+> -       if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
+> +       if (io->bio && f2fs_sb_has_blkzoned(sbi) && btype < META &&
+>                         is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
+>                 spin_lock_bh(&sbi->available_active_zones_lock);
+>                 if (sbi->available_active_zones > 0) {
 > --
-> Florian
+> 2.34.1
 >
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
