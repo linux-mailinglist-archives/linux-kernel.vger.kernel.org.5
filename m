@@ -1,146 +1,163 @@
-Return-Path: <linux-kernel+bounces-21123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 257E8828A4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:46:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32214828A4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:47:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A38D6B24AFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:46:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B4841F26393
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44043A8EA;
-	Tue,  9 Jan 2024 16:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D703A278;
+	Tue,  9 Jan 2024 16:47:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="VyaeIcjt";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="zMey0KZ1"
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cp29K+++"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1D33A1D4;
-	Tue,  9 Jan 2024 16:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 41E42580933;
-	Tue,  9 Jan 2024 11:46:27 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 09 Jan 2024 11:46:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704818787; x=1704825987; bh=K+8Wy1yAZf
-	vzApUYsoKLUmFMzPbqlojtP1IkaCbKgfI=; b=VyaeIcjtDpEW47hLyV9G+DBj9k
-	HG/mtiqQbFsH1eRArSMdod8WPjm1GjlPTFPsC2yYEafy/nW+ssHQKN2xTjbFXfpI
-	ypDviyglCkWZDG5Mw2UQfrrdHIUqxeJPvMLlxAL6/psSoA1CnerjSb3Rv97vkGk1
-	QwrsOZ9nDxKKUSCNd1xIf4IO3aYxMhpODCRI1xf1MzajVea+o6HoI14qbae15gW3
-	POLaeYl+l3qNeKsI+7vOMjmLMXiJHd7r3g9Vr5fz3xYp520eLcJV0o3zvxfTFhSh
-	aPSpuzuV8EQJhyYEGbYv4AUA+86+Dx7QaKeCku00HLsw2mi/C9oCuYEsq5MA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704818787; x=1704825987; bh=K+8Wy1yAZfvzApUYsoKLUmFMzPbq
-	lojtP1IkaCbKgfI=; b=zMey0KZ1NMHzMjkGYizpN9ueFSUqMj79vquTd4VEgRKn
-	rEQ0MfzQGiOOTSs3qj63YUdiMOKwBSkepqUNeds13SqEj+w/Dm3Q3PMe6U0Xn1tP
-	qNpaCAoKC/MYucYxYvL64pLgafOTWsHvVOpkqJ7LboqU+9eooA8yGyeWc59xmebv
-	jrb4WgZz0NSi50+hRMPyvndGxsAovnN5Us9bJG4iRhmoYZ1fniZ02Cy58VPzOYiS
-	gG5LxtmtCsqhXUTBm/fFdeVlDc4bhrrI1N+PM5ZEQIlaGE7c7MHh52GOplPcvhjO
-	D/6/yWEUc3HvV5DDwolEB3XVHlf3UuFey9IVhoY0EA==
-X-ME-Sender: <xms:YHidZWwXxCs0BNw-jN_XU-9eK8zaqKSCw7D8QyHK_Q9aRH_ZETUqng>
-    <xme:YHidZSQdD1c5ccCAimIb6Dsy1jviMDF4tG1AiTig4kudIS_o7LdkCmvxEP0d_Z7Kt
-    DKHKI_r5SZdnMSmzdw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehledgleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:YHidZYUYLrLk8L1MUZljRLK9L29wd0ixRqxCprN_HIBA_wJH9nL0LA>
-    <xmx:YHidZchaJ303hNGYonHCLtZ9daJOcVKQUkt30mk08WrMozi7P_OrPQ>
-    <xmx:YHidZYAb9QGB6jaZr_TLwhZnpSrwWA7ddbDvRQH6eShmkmDablHDgQ>
-    <xmx:Y3idZVU8vFz4Xjvj8h-Ozx7C1awdnweF5b71NNbJigmjHymjox90sQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 897C8B6008D; Tue,  9 Jan 2024 11:46:24 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8933A1D4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d5aefcc2fso35731025e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:47:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704818819; x=1705423619; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kyb6CN2MTJ0KrepLWGAugAgymHc/HiwDmVkQZF3Jz+E=;
+        b=cp29K+++Oy4/Vn7OfXe9ZoO+/1ViLgt5OhQUP915YB0MmAK1WBVPFW6AhCC/L7/nzR
+         4DrH5uJh49YpE2xJLlBdrdX+8PFYV6jJo8yr2sARo54wbimFqsiEFDBhipe0xKIPu/1r
+         DbNfxo+mk99p4FRTzVnsJPcYZwQcXORK4NNN9Y8gOZpGG3ZaJoM/EOq0PWa+1BrxHpJi
+         E/SeH7Sf6R4Avk/roUWRc2zPNBSjL6IrHBKpwVB+hJdElr0EGFP/eoQJLCXp+KBkp8k9
+         fyjVoT7bqNIi/ll7WnTFb6hWDiVFaQ6H0GBFdX5WS5FEKstHhA7xn9NdQFlA4GXIKepg
+         mgbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704818819; x=1705423619;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kyb6CN2MTJ0KrepLWGAugAgymHc/HiwDmVkQZF3Jz+E=;
+        b=TQXLRSXX52MgikwRpalfQDOsnQnHwWBNbdIxIB0x5CApaq7nYqHpCsuM1wICoMXKPp
+         odCCOTTuQqHGpwI+7O26gqDt4I2I2vTJAT1/VNor15ZhDbL8CwLe+sXVw2aOSfVESTWx
+         1Jvagw30Fnv9jObwNTOoX0RpOVapzSSuP8bFy89VnjEeGuR4nspQKLktVY74gSZ/SFRR
+         x+wibWKkr6Qc1bvJ4paleIAqb94UrUDZzclQNMeYdUPPdF8SEETUl2pB5kXqgKIR1gk2
+         GJG+oacPuoIszk7AQhxB6BfTe7kt7D+dFgJMtNgmyHoQ8ERQDUSyOoBLC07SRb72lCCu
+         7g/Q==
+X-Gm-Message-State: AOJu0Yy1z6/TCW+2v/mqlTSGrLOZJPrZ9x5Y3vhHHfhSn1+nef/spWf6
+	4+mTziGjh3XWbt9qg9bpLD9B0/6DuaZ1TQ==
+X-Google-Smtp-Source: AGHT+IF9dRAWRS2L2cDEzdxGpgrA4GkSU0CGNenchoR2D4PFYAdKqLE6O0kUT8J5tmPJebBS3lDDGw==
+X-Received: by 2002:a05:600c:22d0:b0:40d:8199:c3f with SMTP id 16-20020a05600c22d000b0040d81990c3fmr3183585wmg.153.1704818818906;
+        Tue, 09 Jan 2024 08:46:58 -0800 (PST)
+Received: from vingu-book.. ([2a01:e0a:f:6020:378:51f6:d46e:8457])
+        by smtp.gmail.com with ESMTPSA id r4-20020adff104000000b00336a0c083easm2847845wro.53.2024.01.09.08.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 08:46:58 -0800 (PST)
+From: Vincent Guittot <vincent.guittot@linaro.org>
+To: linux@armlinux.org.uk,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	sudeep.holla@arm.com,
+	rafael@kernel.org,
+	viresh.kumar@linaro.org,
+	agross@kernel.org,
+	andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	lukasz.luba@arm.com,
+	rui.zhang@intel.com,
+	mhiramat@kernel.org,
+	daniel.lezcano@linaro.org,
+	amit.kachhap@gmail.com,
+	corbet@lwn.net,
+	gregkh@linuxfoundation.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Cc: qyousef@layalina.io,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH v4 0/5] Rework system pressure interface to the scheduler
+Date: Tue,  9 Jan 2024 17:46:50 +0100
+Message-Id: <20240109164655.626085-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <477477cd-a35e-4964-b8b3-8040255c3bf1@app.fastmail.com>
-In-Reply-To: <87y1cycv9h.fsf@kernel.org>
-References: <20240104130123.37115-1-brgl@bgdev.pl>
- <20240104130123.37115-9-brgl@bgdev.pl>
- <15443d5d-6544-45d0-afeb-b23e6a041ecf@quicinc.com>
- <87jzoizwz7.fsf@kernel.org>
- <CAGXv+5FhYY+qyyT8wxY5DggvWPibfM2ypHVKQbsJZ30VkZDAkQ@mail.gmail.com>
- <87bk9uzum9.fsf@kernel.org>
- <5904461c-ca3c-4eb1-a44a-876872234545@app.fastmail.com>
- <87y1cycv9h.fsf@kernel.org>
-Date: Tue, 09 Jan 2024 17:46:03 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Kalle Valo" <kvalo@kernel.org>
-Cc: "Chen-Yu Tsai" <wenst@chromium.org>,
- "Jeff Johnson" <quic_jjohnson@quicinc.com>,
- "Bartosz Golaszewski" <brgl@bgdev.pl>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
- "Conor Dooley" <conor+dt@kernel.org>,
- "Bjorn Andersson" <andersson@kernel.org>,
- "Konrad Dybcio" <konrad.dybcio@linaro.org>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Bjorn Helgaas" <bhelgaas@google.com>,
- =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
- "Jernej Skrabec" <jernej.skrabec@gmail.com>,
- "Chris Morgan" <macromorgan@hotmail.com>,
- "Linus Walleij" <linus.walleij@linaro.org>,
- "Geert Uytterhoeven" <geert+renesas@glider.be>,
- "Neil Armstrong" <neil.armstrong@linaro.org>,
- =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>,
- "Marek Szyprowski" <m.szyprowski@samsung.com>,
- "Peng Fan" <peng.fan@nxp.com>, "Robert Richter" <rrichter@amd.com>,
- "Dan Williams" <dan.j.williams@intel.com>,
- "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
- "Terry Bowman" <terry.bowman@amd.com>,
- "Kuppuswamy Sathyanarayanan"
- <sathyanarayanan.kuppuswamy@linux.intel.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Huacai Chen" <chenhuacai@kernel.org>, "Alex Elder" <elder@linaro.org>,
- "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-pci@vger.kernel.org,
- "Bartosz Golaszewski" <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 8/9] PCI/pwrseq: add a pwrseq driver for QCA6390
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 9, 2024, at 17:43, Kalle Valo wrote:
-> "Arnd Bergmann" <arnd@arndb.de> writes:
->> On Tue, Jan 9, 2024, at 11:09, Kalle Valo wrote:
->>
->> If this is indeed what you want, it's still better to do the
->> equivalent expression in PCIE_PWRSEQ_QCA6390 rather than ATH11K:
->>
->> config PCIE_PWRSEQ_QCA6390
->>       tristate "PCIe Power Sequencing driver for QCA6390"
->>       default ATH11K && ARCH_QCOM
->
-> Sounds good to me but should it be 'default ATH11K_PCI && ARCH_QCOM'? My
-> understanding is that we don't need PWRSEQ for ATH11K_AHB devices.
+Following the consolidation and cleanup of CPU capacity in [1], this serie
+reworks how the scheduler gets the pressures on CPUs. We need to take into
+account all pressures applied by cpufreq on the compute capacity of a CPU
+for dozens of ms or more and not only cpufreq cooling device or HW
+mitigiations. We split the pressure applied on CPU's capacity in 2 parts:
+- one from cpufreq and freq_qos
+- one from HW high freq mitigiation.
 
-Right, that is better.
+The next step will be to add a dedicated interface for long standing
+capping of the CPU capacity (i.e. for seconds or more) like the
+scaling_max_freq of cpufreq sysfs. The latter is already taken into
+account by this serie but as a temporary pressure which is not always the
+best choice when we know that it will happen for seconds or more.
 
-    Arnd
+[1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
+
+Change since v3:
+- Fix uninitialized variables in cpufreq_update_pressure()
+
+Change since v2:
+- Rework cpufreq_update_pressure()
+
+Change since v1:
+- Use struct cpufreq_policy as parameter of cpufreq_update_pressure()
+- Fix typos and comments
+- Make sched_thermal_decay_shift boot param as deprecated
+
+Vincent Guittot (5):
+  cpufreq: Add a cpufreq pressure feedback for the scheduler
+  sched: Take cpufreq feedback into account
+  thermal/cpufreq: Remove arch_update_thermal_pressure()
+  sched: Rename arch_update_thermal_pressure into
+    arch_update_hw_pressure
+  sched/pelt: Remove shift of thermal clock
+
+ .../admin-guide/kernel-parameters.txt         |  1 +
+ arch/arm/include/asm/topology.h               |  6 +-
+ arch/arm64/include/asm/topology.h             |  6 +-
+ drivers/base/arch_topology.c                  | 26 ++++----
+ drivers/cpufreq/cpufreq.c                     | 36 +++++++++++
+ drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
+ drivers/thermal/cpufreq_cooling.c             |  3 -
+ include/linux/arch_topology.h                 |  8 +--
+ include/linux/cpufreq.h                       | 10 +++
+ include/linux/sched/topology.h                |  8 +--
+ .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
+ include/trace/events/sched.h                  |  2 +-
+ init/Kconfig                                  | 12 ++--
+ kernel/sched/core.c                           |  8 +--
+ kernel/sched/fair.c                           | 63 +++++++++----------
+ kernel/sched/pelt.c                           | 18 +++---
+ kernel/sched/pelt.h                           | 16 ++---
+ kernel/sched/sched.h                          | 22 +------
+ 18 files changed, 144 insertions(+), 119 deletions(-)
+ rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
+
+-- 
+2.34.1
+
 
