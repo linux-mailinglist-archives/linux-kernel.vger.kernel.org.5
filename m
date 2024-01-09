@@ -1,122 +1,174 @@
-Return-Path: <linux-kernel+bounces-21551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B55C6829108
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:53:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64577829109
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69BFE1F20CCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:53:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD3BCB23BD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EE93E485;
-	Tue,  9 Jan 2024 23:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144A53E48E;
+	Tue,  9 Jan 2024 23:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GQeKOsM9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fRDd3Gmz"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ACB3E480
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:53:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA85C433F1;
-	Tue,  9 Jan 2024 23:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704844384;
-	bh=vwKOfafdCokp96wmQa5YnL/u1Ge2PlNEhiViBts/sFs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=GQeKOsM9loQGp1zsYZo2Ns4aITy4Bx5NsNZ6NpeGLfODyY2WIFfPB11V+dLP4hQP/
-	 wZw/arEokJSSZIdgE+A5vuuFSBVevUvYvs+uPBjegwHctA3P+MlF/9Cx1b1eEMLC8U
-	 x35olFTHZDwmeBdk+F9EbS9pcG2HbFz821JRhGjgNAj1GMO1HYD+TpnjrtVTF8UYcz
-	 sjSx8BYq3e1nKhokkvC33C4ejGxWbNBOkUzNtbnW4h3H6iOnSH3m+9/fVxi0K2tKJK
-	 wNiKbe0ozv259XI60pWL3eO84tIipxR9aTBLBSHbL0GACiQD71UXRjNphMaSoBUZee
-	 DkVecu0kPFhJA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 485A0CE15CD; Tue,  9 Jan 2024 15:53:04 -0800 (PST)
-Date: Tue, 9 Jan 2024 15:53:04 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: andrey.konovalov@linux.dev
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Marco Elver <elver@google.com>,
-	Alexander Potapenko <glider@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	kasan-dev@googlegroups.com, linux-mm@kvack.org,
-	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mm] kasan: avoid resetting aux_lock
-Message-ID: <b56444a5-c2f6-42f8-8722-badcdbb3de62@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240109221234.90929-1-andrey.konovalov@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7B73E480
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e4a606183so21195e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704844493; x=1705449293; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s8TS1nLrUKAIFkkWa3SxEx8yDQZVgIO6/irtFJFIovg=;
+        b=fRDd3Gmz+q4QVgB9cK9jFwrWYbFNR1wbJQP7XGWDQgwcpVjyPO4OWeX4B3MA04wlR6
+         nVRrJZT+ireW+2dwHo5eiNzYHfqVMSeh2/fGcX0haBHLT01dS83XH6ldP2O8HDxALIww
+         7pqm80vFJL+ZFqnTbzSTbFVBar3/mq7F5NFnKrAqoiFGkALB4sFNw8Mmvsb8FKNpytDc
+         V4/LVK7A00ycnUVoGrKGGsFA7+KpH6dQC9OtFH8YETm6MTvSCufZH56xWex5Lfxxit90
+         fsPwFViVw0NVrtxkg+RHpjUR2JABfA/WpzXOUYCC2j/vevLWAkj5BRAd2ap6etZDtuk2
+         xCjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704844493; x=1705449293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s8TS1nLrUKAIFkkWa3SxEx8yDQZVgIO6/irtFJFIovg=;
+        b=LRMTsd5tjCUgmrJqDroqxdprbNE689hxm5JSY9pYk6N5gcoV31EkLVp4/e/clHupia
+         jhPauULNx/Ka/4NdUmP/irKKmVWFNk3wEhOBInTcCfw3yO6Sv2To7rXDxqmuSTRGTdex
+         oGmvjVLwf2llUdp1aDhJnUv7mczb5sqAiY9U1GJZ/9r+JApqLLT+fyNevD2IjO2fMmNy
+         mQ3r5a/i1tXR/IeI6dlQjU4bFOv6Czx9bH0xj1fNsBJ3+DZ3o/0I13z1epKhc08YOzJK
+         gCWGOyTXyPIOAryHNZscY8HZliWKXF3HpymsrK8bs11ZRgLo8Gw7A2HUwJoRgAuDt5vl
+         L1bg==
+X-Gm-Message-State: AOJu0Yz6ifcSTQrWBW5RqKW9b9O0+2gHHRpnvTia9bWn5FTb5R5eSvlY
+	14NZ90kvxD9eBof7dVOn8mVZDhkOD57YURc0NyoFSqIQoarB
+X-Google-Smtp-Source: AGHT+IHnVyCz6SSfqCzYFM+Jm12othHqlyx9vavQpdTKez22yrHgvpFo4duCvDoolAcTA2kj8bvDBtUqSdv5GmLPHQM=
+X-Received: by 2002:a05:600c:5118:b0:40d:887b:6979 with SMTP id
+ o24-20020a05600c511800b0040d887b6979mr102042wms.0.1704844492708; Tue, 09 Jan
+ 2024 15:54:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109221234.90929-1-andrey.konovalov@linux.dev>
+References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+ <20240103164841.2800183-3-schatzberg.dan@gmail.com> <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
+ <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN> <ZZYE36e0BFFzi0X3@google.com> <ZZZw5NSEFNYwbjZM@tiehlicka>
+In-Reply-To: <ZZZw5NSEFNYwbjZM@tiehlicka>
+From: Yu Zhao <yuzhao@google.com>
+Date: Tue, 9 Jan 2024 16:54:15 -0700
+Message-ID: <CAOUHufbEuAWwz-51tq6OB7SPJ8W3UJ9Roq2-yXesWAbmzstdKw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
+To: Michal Hocko <mhocko@suse.com>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	Yosry Ahmed <yosryahmed@google.com>, David Rientjes <rientjes@google.com>, 
+	Chris Li <chrisl@kernel.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 09, 2024 at 11:12:34PM +0100, andrey.konovalov@linux.dev wrote:
-> From: Andrey Konovalov <andreyknvl@gmail.com>
-> 
-> With commit 63b85ac56a64 ("kasan: stop leaking stack trace handles"),
-> KASAN zeroes out alloc meta when an object is freed. The zeroed out data
-> purposefully includes alloc and auxiliary stack traces but also
-> accidentally includes aux_lock.
-> 
-> As aux_lock is only initialized for each object slot during slab
-> creation, when the freed slot is reallocated, saving auxiliary stack
-> traces for the new object leads to lockdep reports when taking the
-> zeroed out aux_lock.
-> 
-> Arguably, we could reinitialize aux_lock when the object is reallocated,
-> but a simpler solution is to avoid zeroing out aux_lock when an object
-> gets freed.
-> 
-> Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> Closes: https://lore.kernel.org/linux-next/5cc0f83c-e1d6-45c5-be89-9b86746fe731@paulmck-laptop/
-> Fixes: 63b85ac56a64 ("kasan: stop leaking stack trace handles")
-> Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
+On Thu, Jan 4, 2024 at 1:48=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Wed 03-01-24 18:07:43, Yu Zhao wrote:
+> > On Wed, Jan 03, 2024 at 01:19:59PM -0500, Dan Schatzberg wrote:
+> > > On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
+> > > [...]
+> > > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > > > index d91963e2d47f..394e0dd46b2e 100644
+> > > > > --- a/mm/vmscan.c
+> > > > > +++ b/mm/vmscan.c
+> > > > > @@ -92,6 +92,11 @@ struct scan_control {
+> > > > >         unsigned long   anon_cost;
+> > > > >         unsigned long   file_cost;
+> > > > >
+> > > > > +#ifdef CONFIG_MEMCG
+> > > > > +       /* Swappiness value for proactive reclaim. Always use sc_=
+swappiness()! */
+> > > > > +       int *proactive_swappiness;
+> > > > > +#endif
+> > > >
+> > > > Why is proactive_swappiness still a pointer? The whole point of the
+> > > > previous conversation is that sc->proactive can tell whether
+> > > > sc->swappiness is valid or not, and that's less awkward than using =
+a
+> > > > pointer.
+> > >
+> > > It's the same reason as before - zero initialization ensures that the
+> > > pointer is NULL which tells us if it's valid or not. Proactive reclai=
+m
+> > > might not set swappiness and you need to distinguish swappiness of 0
+> > > and not-set. See this discussion with Michal:
+> > >
+> > > https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
+> >
+> >  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> >                               size_t nbytes, loff_t off)
+> >  {
+> >         struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
+> >         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
+> >         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
+> > +       int swappiness =3D -1;
+> > ...
+> >                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+> >                                         min(nr_to_reclaim - nr_reclaime=
+d, SWAP_CLUSTER_MAX),
+> > -                                       GFP_KERNEL, reclaim_options);
+> > +                                       GFP_KERNEL, reclaim_options,
+> > +                                       swappiness);
+> >
+> > ...
+> >
+> > +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *m=
+emcg)
+> > +{
+> > +       return sc->proactive && sc->proactive_swappiness > -1 ?
+> > +              sc->proactive_swappiness : mem_cgroup_swappiness(memcg);
+> > +}
+>
+> Tpo be completely honest I really fail to see why this is such a hot
+> discussion point. To be completely clear both approaches are feasible.
 
-Very good!
+Feasible but not equal.
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> The main argument for NULL check based approach is that it is less error
+> prone from an incorrect ussage because any bug becomes obvious.
 
-> ---
->  mm/kasan/generic.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index 24c13dfb1e94..df6627f62402 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -487,6 +487,7 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
->  		__memset(alloc_meta, 0, sizeof(*alloc_meta));
->  
->  		/*
-> +		 * Prepare the lock for saving auxiliary stack traces.
->  		 * Temporarily disable KASAN bug reporting to allow instrumented
->  		 * raw_spin_lock_init to access aux_lock, which resides inside
->  		 * of a redzone.
-> @@ -510,8 +511,13 @@ static void release_alloc_meta(struct kasan_alloc_meta *meta)
->  	stack_depot_put(meta->aux_stack[0]);
->  	stack_depot_put(meta->aux_stack[1]);
->  
-> -	/* Zero out alloc meta to mark it as invalid. */
-> -	__memset(meta, 0, sizeof(*meta));
-> +	/*
-> +	 * Zero out alloc meta to mark it as invalid but keep aux_lock
-> +	 * initialized to avoid having to reinitialize it when another object
-> +	 * is allocated in the same slot.
-> +	 */
-> +	__memset(&meta->alloc_track, 0, sizeof(meta->alloc_track));
-> +	__memset(meta->aux_stack, 0, sizeof(meta->aux_stack));
->  }
->  
->  static void release_free_meta(const void *object, struct kasan_free_meta *meta)
-> -- 
-> 2.25.1
-> 
+Any bug becomes *fatal*, and fatal isn't only obvious but also hurts
+in production systems.
+
+This was the reason for going through the trouble switching from
+VM_BUG_ON() to VM_WARN_ON() and documenting it in
+Documentation/process/coding-style.rst:
+
+22) Do not crash the kernel
+---------------------------
+
+In general, the decision to crash the kernel belongs to the user, rather
+than to the kernel developer.
+
+Isn't?
+
+> If we
+> use any other special constant a missing initialization would be much
+> harder to spot because they would be subtle behavior change.
+>
+> Are there really any strong arguments to go against this "default
+> initialization is safe" policy?
+
+Just wanted to point out an alternative. Fine details (best practices)
+matter to me.
 
