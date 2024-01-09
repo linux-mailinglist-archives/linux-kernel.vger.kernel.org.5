@@ -1,114 +1,140 @@
-Return-Path: <linux-kernel+bounces-20889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BBD18286FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:22:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE5A8286FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72ECA1C243A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:22:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 731AF287234
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B294739842;
-	Tue,  9 Jan 2024 13:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2C338F97;
+	Tue,  9 Jan 2024 13:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kYdI5mgg"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="XbOUl1YL"
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7500D38FB7
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e52ebd643so1653425e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 05:22:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704806532; x=1705411332; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BqpeTcL0k5oGVabBc1U+iO/jvu/aOAZcR1mMG7pClgQ=;
-        b=kYdI5mggI88RkRb9f/wl6szMNqm0wunJ5LMB8h4Sl8lW15JKfoUGb8pKETWJdoCNGY
-         w5Q7dRRCY7e8SRB8Hqetul/AFFbAzE2R/L9SPNWM4R01Tz7zSfNkrJd5RcKdJoJN/Y7G
-         AMG1aax8Z6hUyF7W//2uXaPE21rC+auJUwhdEDIjVxMrB6UbsRhgvkrQVPtHQRwI9icl
-         El8GqknFuM1EKCF6tS3j8OKu6dCLf4E+zauEBrRu6IvnaZY5Ms+ZqIgKwx2LPsRASg1x
-         /vJyHE8hx3NgKiN8Bdd7p092VauekiTBLbx+CXzTtyzKmN+fwo0mV278Wir5ZgYFZbZ0
-         bkMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704806532; x=1705411332;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BqpeTcL0k5oGVabBc1U+iO/jvu/aOAZcR1mMG7pClgQ=;
-        b=f44enp1bCWUNwIvZ7unUvoj1eBKT4o4hIMiDlMaJmC0Xe3/MMj8TGa061c9SxGEGgu
-         KtIpblSj82fMWnBEF+83N0L5oziNWF2hj/rHjhZ5UYkA8y9OMdSlGAyQ9kDLyfdfxC1P
-         65G6bSb/JPd5diKxqNmQ6l3hxzGdJlJYLfqBdUnMZkoidN6aN7vSY7PhU/TMo3dElpLL
-         Fgbhvu2r0sk2P/LCSLYn57w14vSS5lrM43ohDCa4NBYD8m2L69nhJOg3++8Sq2zPvIg3
-         8E6gMANEZQdCkQe7/1ZzlTqCBlyIPSROm1OQtujsugvL3cmjiTPLcgLnQcB8S57mKdkE
-         avnw==
-X-Gm-Message-State: AOJu0Yy4DAMWpo7tgwLL+wgUQWE66CdP5F99QdLJtBHkErHU2sn/NbZx
-	yVCdsJb0epdABy+RJvy/J/BT/d3F6C/1xw==
-X-Google-Smtp-Source: AGHT+IGHU5onWBzSXDDK6xzwiAJ6Do7Z1PdUmbySUVdyTMwb8DuI8Pj6wTTd28JDR/tvi7JlWFWMSw==
-X-Received: by 2002:a05:600c:458b:b0:40e:4f7a:bc29 with SMTP id r11-20020a05600c458b00b0040e4f7abc29mr481967wmo.159.1704806531714;
-        Tue, 09 Jan 2024 05:22:11 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id d14-20020adfef8e000000b003373fe3d345sm2393561wro.65.2024.01.09.05.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 05:22:11 -0800 (PST)
-Date: Tue, 9 Jan 2024 16:22:07 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	linux-hardening@vger.kernel.org, error27@gmail.com,
-	gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
-	Vishnu Dasa <vdasa@vmware.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
-	darren.kenny@oracle.com, syzkaller <syzkaller@googlegroups.com>
-Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
- dg_dispatch_as_host()
-Message-ID: <36aecc9a-ac30-436f-b42b-39f63513d743@moroto.mountain>
-References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
- <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
- <202401081430.9DAB37B46@keescook>
- <9c742547-0021-464b-b7a8-7af46b0a4afa@embeddedor.com>
- <79ca2f85-1f8d-4a12-aa5a-09137033605f@moroto.mountain>
- <7d7b94ba-9a1f-44de-8491-dc4864338f80@embeddedor.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD0438F89;
+	Tue,  9 Jan 2024 13:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Tue,  9 Jan 2024 14:24:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1704806650; bh=tMStWelCVVDu4o3rBq23Y0TJCZcZ13Gsa2QHe6beLOY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XbOUl1YLQzT+Q5pGYYeIrGuUkIFunMxyTZ3ap8V5rYuiUE1MXPgt+aWXXNCOOt4nk
+	 gJLKWYOqidHStMn1nCQLL8bCpspF9ePqnkGdDAjMn1+XQkBetXY8sBya7aIX+jMDF2
+	 WU4hSJNNgAW4uPeyCHRMGxcg6RZjZ3Jd6vGK3pdc=
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id 8FF5C8001F;
+	Tue,  9 Jan 2024 14:24:10 +0100 (CET)
+Received: from reykjavik.ads.avm.de (unknown [172.17.89.91])
+	by buildd.core.avm.de (Postfix) with ESMTPS id 848DC180DE2;
+	Tue,  9 Jan 2024 14:24:10 +0100 (CET)
+Date: Tue, 9 Jan 2024 14:24:07 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kernel@vger.kernel.org, Nicolas Schier <nicolas@fjasle.eu>
+Subject: Re: [PATCH 1/5] kbuild: deb-pkg: move 'make headers' to build-arch
+Message-ID: <ZZ1I95oHTayfygue@reykjavik.ads.avm.de>
+References: <20231230135200.1058873-1-masahiroy@kernel.org>
+ <CAK7LNATLZ2rt8fFZYu1KX4HW5s0EjNbDEXp8csCPGtA5a-6qPw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7d7b94ba-9a1f-44de-8491-dc4864338f80@embeddedor.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNATLZ2rt8fFZYu1KX4HW5s0EjNbDEXp8csCPGtA5a-6qPw@mail.gmail.com>
+X-purgate-ID: 149429::1704806650-92EC05FF-B30D294E/0/0
+X-purgate-type: clean
+X-purgate-size: 2372
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 
-On Tue, Jan 09, 2024 at 06:31:41AM -0600, Gustavo A. R. Silva wrote:
+On Tue, Jan 09, 2024 at 01:38:07PM +0900, Masahiro Yamada wrote:
+> On Sat, Dec 30, 2023 at 10:52 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Strictly speaking, 'make headers' should be a part of build-arch
+> > instead of binary-arch.
+> >
+> > 'make headers' constructs read-to-copy UAPI headers in the kernel
+
+s/read/ready/ ?
+
+> > directory.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  scripts/package/builddeb     | 1 -
+> >  scripts/package/debian/rules | 4 ++--
+> >  2 files changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+> > index cc8c7a807fcc..842ee4b40528 100755
+> > --- a/scripts/package/builddeb
+> > +++ b/scripts/package/builddeb
+> > @@ -155,7 +155,6 @@ install_libc_headers () {
+> >
+> >         rm -rf $pdir
+> >
+> > -       $MAKE -f $srctree/Makefile headers
+> >         $MAKE -f $srctree/Makefile headers_install INSTALL_HDR_PATH=$pdir/usr
+> >
+> >         # move asm headers to /usr/include/<libc-machine>/asm to match the structure
+> > diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
+> > index cb084e387469..a686c37d0d02 100755
+> > --- a/scripts/package/debian/rules
+> > +++ b/scripts/package/debian/rules
+> > @@ -26,8 +26,8 @@ binary-arch: build-arch
+> >  build: build-arch build-indep
+> >  build-indep:
+> >  build-arch:
+> > -       $(MAKE) $(make-opts) \
+> > -       olddefconfig all
+> > +       $(MAKE) $(make-opts) olddefconfig
+> > +       $(MAKE) $(make-opts) headers all
 > 
-> You're arguing that fortify caused a problem.
+> 
+> 
+> 
+> To avoid a build error for ARCH=um,
+> I will apply the following fix-up.
+> 
+> 
+> 
+> 
+> 
+> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
+> index 1a18ca3c43db..098307780062 100755
+> --- a/scripts/package/debian/rules
+> +++ b/scripts/package/debian/rules
+> @@ -27,7 +27,7 @@ build: build-arch build-indep
+>  build-indep:
+>  build-arch:
+>         $(MAKE) $(make-opts) olddefconfig
+> -       $(MAKE) $(make-opts) headers all
+> +       $(MAKE) $(make-opts) $(if $(filter um,$(ARCH)),,headers) all
 
-Yes.
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
 
-Before: Code working correctly
-After: Kernel Panic
+I'm wondering if we might want to change the headers target in top-level
+Makefile to not bail-out for ARCH=um but only show a warning that there
+is nothing to export.
 
-At first, I started to question if I was going mad, but then I looked
-through the email thread and Harshit tested it and proved that the
-kernel does actually panic depending on the .config.
-
-I mean realistically we should backport this patch to old kernels,
-right?  And if we had to assign a Fixes tag to this it would need to be
-the commit which adds Fortify to the kernel.  Prior to that commit the
-code was fine.
-
-Again, I'm not saying that Fortify is bad overall.  Probably in DnD it
-would be Chaotic Good where it's overall good but sometimes a pain.
-
-regards,
-dan carpenter
-
+Kind regards,
+Nicolas
 
