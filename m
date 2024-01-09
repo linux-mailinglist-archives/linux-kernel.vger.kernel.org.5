@@ -1,174 +1,136 @@
-Return-Path: <linux-kernel+bounces-21309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B923D828D63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:28:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E483828D66
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:29:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4258A1F24493
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:27:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72BAB1C2391C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D7473D3A7;
-	Tue,  9 Jan 2024 19:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD9F3D39A;
+	Tue,  9 Jan 2024 19:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="MU44z6ma"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hQuoBpjn"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937293D541;
-	Tue,  9 Jan 2024 19:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=L5q9G4EH+GvNtL+Wb8XKMCOl8tTep7D40VZuegMyoOA=; b=MU44z6maYlvs7GL6v/GT26fHEs
-	JywflQgaRGHzndkpt+lSurBg+ao2mQxU+/oGRSPRiPNkKcdcrWFvi+6rItnyaLc7f+FPAYo7I83W5
-	d2s5ZugUXxshlJZGVGdrzrlIPCvqO/paJ1S3aBQEm5m9WcY0LPaxU5tR2kGwmEZzaY4deEjqCqu4u
-	DArVZFITrAPbLhv9xLhr/UgPtS73DxSn0SkJEK4PDTSMy+YZBXGTEYK/DtGROgF9J5QMkTF/3HvTA
-	umaXB+rcdQQpV3GgnIh74H38yrte9HF9bmmSsTVhQfTau7kl/lzJA4JTLkbtSQEyuHbASkLLoClqJ
-	gOO/RXgQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56366)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rNHkv-0004Ud-0B;
-	Tue, 09 Jan 2024 19:27:21 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rNHku-0004Wn-DT; Tue, 09 Jan 2024 19:27:20 +0000
-Date: Tue, 9 Jan 2024 19:27:20 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 14/21] irqchip/gic-v3: Don't return errors from
- gic_acpi_match_gicc()
-Message-ID: <ZZ2eGLwlkqZrh0In@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOgx-00Dvkv-Bb@rmk-PC.armlinux.org.uk>
- <20231215163301.0000183a@Huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1433A1AF;
+	Tue,  9 Jan 2024 19:28:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-20400d5b54eso2252532fac.1;
+        Tue, 09 Jan 2024 11:28:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704828538; x=1705433338; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fvSkB8NcbH6dCf0f6q6mmenWoRpDu3bkcddPRwNi4/Q=;
+        b=hQuoBpjn5fBYdyA4ubB+sgYUhsyFLpUAux38BczzN7e3BrKOpK3QaO06xeE1uzyPxf
+         je5B3ywhHP6uqRWR2ql+z+pZFsHjNjcr0msAcSMLyjwLwh++tN1wFI1S2GB07++wrQEa
+         CCMx1uQ9gesj9RoDjHSM5OidqobiBrfEhjYIWw+aIP2GUBWceVqEmmh+diwLZfctJW6e
+         oPIL5gSaIkXI35LMJG2oCP6yc1FgLdSrWbqBWONc8RDbfvn56upb/K6j8jMoQbQ2dEQ4
+         IoMkPbfyjRTTom2CQUQWH/vWAj6tJpq/XpCruorcJ79cZoSQ2Iq+S9o6AQ1dNlvn4ywB
+         XZ1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704828538; x=1705433338;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fvSkB8NcbH6dCf0f6q6mmenWoRpDu3bkcddPRwNi4/Q=;
+        b=C4q9zhMWNzHrgQjgprHOPwCOxkNlhiSQBDjVau7Gy8cw3svlRqFNfB69QDq0U1gOik
+         LQJ4yOO0+Czq68XrlG6xr5iX/0uLvPRc2b8N9HYl6FmFLVkPnyRqfzoFuIEcTFcpyhtb
+         d/4e+vsZl/36Qe3kGuVh0DS8CjwsdfU9og6gtHwdUshLeb5E2TzhKuk1geJECx9Jysqt
+         WrymjoM22OQeKT8zwMtTce1u3wwtWPDYpLf3Dmtb94yedXV9Wr7MPQLU48favzI4OumN
+         hTnLx/Va3dThjvJrp/K7DV9k5YXkBHyn5aewYaIG1YVPyyt0x/na/bq3Tm9/D7t+ZIu4
+         rIuA==
+X-Gm-Message-State: AOJu0YxVe+9n1mBhYo2WsfnNfdVFp83kzYVTYoFN8AFfEQOREV7nQuCu
+	4bPRAS1hbU2T0E+TSgP1UuI=
+X-Google-Smtp-Source: AGHT+IGFird2agEMQv/48+wpoPiULmWbtUHqrMLdGGWWdHYj7BlplRfptc67RPtPQPgsGTSfM2TYQA==
+X-Received: by 2002:a05:6870:5e4c:b0:1fa:1f3e:b8a7 with SMTP id ne12-20020a0568705e4c00b001fa1f3eb8a7mr6865965oac.20.1704828537642;
+        Tue, 09 Jan 2024 11:28:57 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:1135:ca4a:123c:5e53])
+        by smtp.gmail.com with ESMTPSA id m185-20020a6326c2000000b005bd627c05c3sm1978266pgm.19.2024.01.09.11.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 11:28:57 -0800 (PST)
+Date: Tue, 9 Jan 2024 11:28:54 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Jonathan Denose <jdenose@chromium.org>
+Cc: linux-input@vger.kernel.org, Jonathan Denose <jdenose@google.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+	Takashi Iwai <tiwai@suse.de>,
+	Werner Sembach <wse@tuxedocomputers.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: i8042 - add quirk for Lenovo ThinkPad T14 Gen 1
+Message-ID: <ZZ2eduF_h7lcBrSL@google.com>
+References: <20230925163313.1.I55bfb5880d6755094a995d3ae44c13810ae98be4@changeid>
+ <ZWF76ALANQwP_9b1@google.com>
+ <CALNJtpUHHaq6g0wSuyaNBxtOE9kt6vDzdAGGu6j=JJdJmerDWQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231215163301.0000183a@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALNJtpUHHaq6g0wSuyaNBxtOE9kt6vDzdAGGu6j=JJdJmerDWQ@mail.gmail.com>
 
-On Fri, Dec 15, 2023 at 04:33:01PM +0000, Jonathan Cameron wrote:
-> On Wed, 13 Dec 2023 12:50:23 +0000
-> Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+Hi Jonathan,
+
+On Mon, Nov 27, 2023 at 10:38:57AM -0600, Jonathan Denose wrote:
+> Hi Dmitry
 > 
-> > From: James Morse <james.morse@arm.com>
-> > 
-> > gic_acpi_match_gicc() is only called via gic_acpi_count_gicr_regions().
-> > It should only count the number of enabled redistributors, but it
-> > also tries to sanity check the GICC entry, currently returning an
-> > error if the Enabled bit is set, but the gicr_base_address is zero.
-> > 
-> > Adding support for the online-capable bit to the sanity check
-> > complicates it, for no benefit. The existing check implicitly
-> > depends on gic_acpi_count_gicr_regions() previous failing to find
-> > any GICR regions (as it is valid to have gicr_base_address of zero if
-> > the redistributors are described via a GICR entry).
-> > 
-> > Instead of complicating the check, remove it. Failures that happen
-> > at this point cause the irqchip not to register, meaning no irqs
-> > can be requested. The kernel grinds to a panic() pretty quickly.
-> > 
-> > Without the check, MADT tables that exhibit this problem are still
-> > caught by gic_populate_rdist(), which helpfully also prints what
-> > went wrong:
-> > | CPU4: mpidr 100 has no re-distributor!
-> > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > ---
-> >  drivers/irqchip/irq-gic-v3.c | 18 ++++++------------
-> >  1 file changed, 6 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > index 98b0329b7154..ebecd4546830 100644
-> > --- a/drivers/irqchip/irq-gic-v3.c
-> > +++ b/drivers/irqchip/irq-gic-v3.c
-> > @@ -2420,21 +2420,15 @@ static int __init gic_acpi_match_gicc(union acpi_subtable_headers *header,
-> >  
-> >  	/*
-> >  	 * If GICC is enabled and has valid gicr base address, then it means
-> > -	 * GICR base is presented via GICC
-> > +	 * GICR base is presented via GICC. The redistributor is only known to
-> > +	 * be accessible if the GICC is marked as enabled. If this bit is not
-> > +	 * set, we'd need to add the redistributor at runtime, which isn't
-> > +	 * supported.
-> >  	 */
-> > -	if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
-> > +	if (gicc->flags & ACPI_MADT_ENABLED && gicc->gicr_base_address)
+> On Fri, Nov 24, 2023 at 10:45 PM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> >
+> > Hi Jonathan,
+> >
+> > On Mon, Sep 25, 2023 at 04:33:20PM -0500, Jonathan Denose wrote:
+> > > The ThinkPad T14 Gen 1 touchpad works fine except that clicking
+> > > and dragging by tapping the touchpad or depressing the touchpad
+> > > do not work. Disabling PNP for controller setting discovery enables
+> > > click and drag without negatively impacting other touchpad features.
+> >
+> > I would like to understand more on how enabling PnP discovery for i8042
+> > affects the touchpad. Do you see it using different interrupt or IO
+> > ports? What protocol does the touchpad use with/without PnP? If the
+> > protocol is the same, do you see difference in the ranges (pressure,
+> > etc) reported by the device?
+> >
+> > Thanks.
+> >
+> > --
+> > Dmitry
 > 
-> I was very vague in previous review.  I think the reasons you are switching
-> from acpi_gicc_is_useable(gicc) to the gicc->flags & ACPI_MADT_ENABLED
-> needs calling out as I'm fairly sure that this point in the series at least
-> acpi_gicc_is_usable is same as current upstream:
-> 
-> static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
-> {
-> 	return gicc->flags & ACPI_MADT_ENABLED;
-> }
+> Without PnP discovery the touchpad is using the SynPS/2 protocol, with
+> PnP discovery, the touchpad is using the rmi4 protocol. Since the
+> protocols are different, so are the ranges but let me know if you
+> still want to see them.
 
-In a previous patch adding acpi_gicc_is_usable() c54e52f84d7a ("arm64,
-irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a helper") this
-was:
+Thank you for this information. So it is not PnP discovery that appears
+harmful in your case, but rather that legacy PS/2 mode appears to be
+working better than RMI4 for the device in question.
 
--       if ((gicc->flags & ACPI_MADT_ENABLED) && gicc->gicr_base_address) {
-+       if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
+I will note that the original enablement of RMI4 for T14 was done by
+Hans in [1]. Later T14 with AMD were added to the list of devices that
+should use RMI4 [2], however this was reverted in [3].
 
-so effectively this is undoing that particular change, which raises in
-my mind why the change was made in the first place if it's just going
-to be reverted in a later patch (because in a following patch,
-acpi_gicc_is_usable() has an additional condition added to it that
-isn't applicable here.) which effectively makes acpi_gicc_is_usable()
-return true if either ACPI_MADT_ENABLED _or_
-ACPI_MADT_GICC_ONLINE_CAPABLE (as it is now known) are set.
+Could you please tell me what exact device you are dealing with? What's
+it ACPI ID?
 
-However, if ACPI_MADT_GICC_ONLINE_CAPABLE is set, does that actually
-mean that the GICC is usable? I'm not sure it does. ACPI v6.5 says that
-this bit indicates that the system supports enabling this processor
-later. Is the GICC of a currently disabled processor "usable"...
+[1] https://lore.kernel.org/all/20201005114919.371592-1-hdegoede@redhat.com/
+[2] https://lore.kernel.org/r/20220318113949.32722-1-snafu109@gmail.com
+[3] https://lore.kernel.org/r/20220920193936.8709-1-markpearson@lenovo.com
 
-Clearly, the intention of this change is not to count this GICC entry
-if it is marked ACPI_MADT_GICC_ONLINE_CAPABLE, but I feel that isn't
-described in the commit message.
-
-Moreover, I am getting the feeling that there are _two_ changes going
-on here - there's the change that's talked about in the commit message
-(the complex validation that seems unnecessary) and then there's the
-preparation for the change to acpi_gicc_is_usable() - which maybe
-should be in the following patch where it would be less confusing.
-
-Would you agree?
+Thanks.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Dmitry
 
