@@ -1,150 +1,149 @@
-Return-Path: <linux-kernel+bounces-21089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD4882899D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:05:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C938289A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84EA41C24342
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:05:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 709C51C2463E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A4B3A1BC;
-	Tue,  9 Jan 2024 16:05:29 +0000 (UTC)
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C427F3A1C9;
+	Tue,  9 Jan 2024 16:06:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GKH8HYD9"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C043F38DC1;
-	Tue,  9 Jan 2024 16:05:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5958b9cda7aso99270eaf.0;
-        Tue, 09 Jan 2024 08:05:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D079939FF5
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e4f692d06so5026225e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:06:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704816360; x=1705421160; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Qc/vvxUtut28gBqiU/tMv3dTcetgCjY3qqi9afW9Oc=;
+        b=GKH8HYD9mr+ZqCevcOgC7cU69zodoQ2Z3YIIYDdRFrvL82M2fi8RWvLd3DyfMEDvR3
+         VvO1nP61u9hOxqBwRLHiNEx340UZnNTfW8P2IqDguIvlqg+iENrh4F1p5WnWSuYopYDU
+         ZJcM8w9MbpISssqucsKhZslrBeu3gjSFmVwyQrNaRUzZf5KFBU0hS9eTVIWQMH4TyoR/
+         H4K+JaV8Bwpa6HrbPMZgl9fqQOGaLMaJJ2TBv4Zqw0oPqxApB0Qg3PaYR7BDrMpWn1vM
+         B8rDfzigLTG5QbSB1tR7yD7/Wc6aKggId2QFqQYHfjTjf98Lvx+VJKjhI7Kl96ZA/uIM
+         zyxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704816327; x=1705421127;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TTP9EiyEeva0GUJp/wJKIwTcNHCIZPpR3j0J43X6b+g=;
-        b=nxWnuh45KgkIE081cfLsGH5hj6NpGc+NaDu+eKB87d8LKa3hjPtZ4KvZPUpgpdj7xC
-         7ZQiO87BccZkoBUKabImwdG6lh01VlUM+GMhYBIxKVmZLNfy5xeAaBt0LKLMCu0FUlI7
-         aDia4Gp9x991h9tNw3RhsSZnWYUHDOd01ADtuHQvtC0WGfl6y4aviZMteJruWpjJv0ZA
-         kssQiU5/WU0Ij98pOWqozDfZ1XHP6cCFtfmmXZA6vCwYjGUPaL/YdISciconI+Y9PLnk
-         hNA79xCd1MRRzoleQv7LWvmHs5IGaPwE9k4C3mZP+yn9ukFmMOgcf0Q234npRDC278ls
-         52IQ==
-X-Gm-Message-State: AOJu0YzX1nmipWVKmckDWLkNZxGMYx2Tgs5hZ1TtPGqKhVGjl/d/yC/n
-	ElEnKY1qyJKKDGDvgTT3EN+bKe877N8Gi4H0D1w=
-X-Google-Smtp-Source: AGHT+IHRqsiYjS0UsEPStnFKOygnAmrZHBpCnrANvUVJi1e1QtXAE7l8zfFAjXuasM2dCT8ERtMsi1F9sFJ5XRWSXf8=
-X-Received: by 2002:a05:6820:d0a:b0:598:8d98:286d with SMTP id
- ej10-20020a0568200d0a00b005988d98286dmr696771oob.0.1704816326785; Tue, 09 Jan
- 2024 08:05:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704816360; x=1705421160;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Qc/vvxUtut28gBqiU/tMv3dTcetgCjY3qqi9afW9Oc=;
+        b=Ox90xWbgtNR1d8PiQfUA8dieTxVHTaq3jb1jkGnmc6b/bCCtX831mg9H8+yP1VY2GS
+         cyOwNYie7f08tXjnQIxfVuMjVwNQqTGwY9Y9Grp3AOeeC3/IVHllhrXhUTOQ8uMlvGcH
+         HzaKDCuA+XTOBpzkjc/FkrAC2aVo4GuMWtfgopFB3xFJAJDRUsqEVYm1ap44jpTnVUfm
+         FApk7UnyShx3PICi7TKB2k7ooFMOjAnQtGkRcCepO4UefwuKRcAtT1G4DXCkba6n97cD
+         yHxlfEQIfHhWKn7yfLygc2qJp93HOpiYA86zcXM4Qah5be28cNAUwpBaAKNQAV4QgU00
+         f6XA==
+X-Gm-Message-State: AOJu0YytRJzj1KTl1BD4MzcnsGYJuHjvcaN+9LwtB3s3hpOBXLXALY0x
+	tLGV4fKSE6u34Y7XQrBcc8dUs7CUEmKHkA==
+X-Google-Smtp-Source: AGHT+IGQRaFP2/kECYnlZAZufs5Gb9JPYK1yZO1uA69A5fVjjPu8GoWpAOZrUQsutcDurnBk+JStAw==
+X-Received: by 2002:a05:600c:1695:b0:40e:43d3:209d with SMTP id k21-20020a05600c169500b0040e43d3209dmr500493wmn.168.1704816360088;
+        Tue, 09 Jan 2024 08:06:00 -0800 (PST)
+Received: from [127.0.1.1] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id z8-20020adfec88000000b0033762d4ad5asm2726490wrn.81.2024.01.09.08.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 08:05:59 -0800 (PST)
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH v3 0/4] arm64: dts: qcom: sc8280xp: Add CAMSS core dtsi
+ support
+Date: Tue, 09 Jan 2024 16:06:01 +0000
+Message-Id: <20240109-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v3-0-b8e3a74a6e6a@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com> <ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
-In-Reply-To: <ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 9 Jan 2024 17:05:15 +0100
-Message-ID: <CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
- described as container packages
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOlunWUC/5WNQQ6DIBBFr2JYdxoEFeyq92i6GBGVpBUDltAY7
+ 140adIuXb4/mfcW4rUz2pNLthCng/HGjgn4KSNqwLHXYNrEhFFW0JwyeJjxFWHUcQZWAM0hbV5
+ JJmmcQOHTe1DWaWhnb4AJTrHshO5qSZJycrozcc/d7okH42fr3ns95Nv6DfFjoZDOgA0qxIpjX
+ eXX9I7Onq3ryVYK7NdeHrSzZBdYikY2VPBa/tnXdf0AMBFKxkcBAAA=
+To: Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13-dev-4e032
 
-On Tue, Jan 9, 2024 at 4:49=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Mon, Dec 18, 2023 at 09:17:34PM +0100, Rafael J. Wysocki wrote:
-> > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlin=
-ux.org.uk> wrote:
-> > >
-> > > From: James Morse <james.morse@arm.com>
-> > >
-> > > ACPI has two ways of describing processors in the DSDT. From ACPI v6.=
-5,
-> > > 5.2.12:
-> > >
-> > > "Starting with ACPI Specification 6.3, the use of the Processor() obj=
-ect
-> > > was deprecated. Only legacy systems should continue with this usage. =
-On
-> > > the Itanium architecture only, a _UID is provided for the Processor()
-> > > that is a string object. This usage of _UID is also deprecated since =
-it
-> > > can preclude an OSPM from being able to match a processor to a
-> > > non-enumerable device, such as those defined in the MADT. From ACPI
-> > > Specification 6.3 onward, all processor objects for all architectures
-> > > except Itanium must now use Device() objects with an _HID of ACPI0007=
-,
-> > > and use only integer _UID values."
-> > >
-> > > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_a=
-nd_Control.html#declaring-processors
-> > >
-> > > Duplicate descriptions are not allowed, the ACPI processor driver alr=
-eady
-> > > parses the UID from both devices and containers. acpi_processor_get_i=
-nfo()
-> > > returns an error if the UID exists twice in the DSDT.
-> >
-> > I'm not really sure how the above is related to the actual patch.
-> >
-> > > The missing probe for CPUs described as packages
-> >
-> > It is unclear what exactly is meant by "CPUs described as packages".
-> >
-> > From the patch, it looks like those would be Processor() objects
-> > defined under a processor container device.
-> >
-> > > creates a problem for
-> > > moving the cpu_register() calls into the acpi_processor driver, as CP=
-Us
-> > > described like this don't get registered, leading to errors from othe=
-r
-> > > subsystems when they try to add new sysfs entries to the CPU node.
-> > > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> > >
-> > > To fix this, parse the processor container and call acpi_processor_ad=
-d()
-> > > for each processor that is discovered like this.
-> >
-> > Discovered like what?
-> >
-> > > The processor container
-> > > handler is added with acpi_scan_add_handler(), so no detach call will
-> > > arrive.
-> >
-> > The above requires clarification too.
->
-> The above comments... yea. As I didn't write the commit description, but
-> James did, and James has basically vanished, I don't think these can be
-> answered, short of rewriting the entire commit message, with me spending
-> a lot of time with the ACPI specification trying to get the terminology
-> right - because at lot of the above on the face of it seems to be things
-> to do with wrong terminology being used.
->
-> I wasn't expecting this level of issues with this patch set, and I now
-> feel completely out of my depth with this series. I'm wondering whether
-> I should even continue with it, since I don't have the ACPI knowledge
-> to address a lot of these comments.
+This series adds the yaml, CAMSS and CCI dts definitions for the sc8280xp.
 
-Well, sorry about this.
+4 x CCI master busses
+4 x VFE
+4 x VFE Lite
+4 x CSID
+4 x CSIPHY
 
-I met James at the LPC last year, so he seems to be still around, in
-some way at least..
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-24-01-02-sc8280xp-camss-core-dtsi
+
+To: Robert Foss <rfoss@kernel.org>
+To: Todor Tomov <todor.too@gmail.com>
+To: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+Cc:  <linux-media@vger.kernel.org>
+Cc:  <linux-arm-msm@vger.kernel.org>
+Cc:  <devicetree@vger.kernel.org>
+Cc:  <linux-kernel@vger.kernel.org>
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
+Changes in v2:
+- This series depends on "clk: qcom: camcc-sc8280xp: Add sc8280xp CAMCC"
+  in linux-next. - Rob, Krzysztof, dts Robot
+- Drops cci_src clock - Konrad
+- Adds sc8280xp-cci - Konrad
+
+Link: https://lore.kernel.org/r/20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-0-abacaa63a961@linaro.org
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-24-01-02-sc8280xp-camss-core-dtsi-v2
+
+Changes in v3:
+- This series depends on "clk: qcom: camcc-sc8280xp: Add sc8280xp CAMCC"
+  in linux-next. - Rob, Krzysztof, dts Robot
+- Fixes spurious "media: dt-bindings: media" in patch title - bod
+- Reorders pinctrl declarations per dts-coding-style.rts - Konrad
+- Adds Krzysztofs RB where indicated
+
+Link: https://lore.kernel.org/r/20240105-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v2-0-7a57b8b07398@linaro.org
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-24-01-02-sc8280xp-camss-core-dtsi-v3
+---
+Bryan O'Donoghue (4):
+      dt-bindings: i2c: qcom-cci: Document sc8280xp compatible
+      dt-bindings: media: camss: Add qcom,sc8280xp-camss binding
+      arm64: dts: qcom: sc8280xp: camss: Add CCI definitions
+      arm64: dts: qcom: sc8280xp: camss: Add CAMSS block definition
+
+ .../devicetree/bindings/i2c/qcom,i2c-cci.yaml      |  19 +
+ .../bindings/media/qcom,sc8280xp-camss.yaml        | 512 +++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi             | 546 +++++++++++++++++++++
+ 3 files changed, 1077 insertions(+)
+---
+base-commit: ab0b3e6ef50d305278b1971891cf1d82ab050b35
+change-id: 20240102-linux-next-24-01-02-sc8280xp-camss-core-dtsi-2730a5f7ef98
+
+Best regards,
+-- 
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
 
