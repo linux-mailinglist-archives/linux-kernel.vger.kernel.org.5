@@ -1,336 +1,172 @@
-Return-Path: <linux-kernel+bounces-21020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C91C48288A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:01:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3EB8288A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DBB11F2598B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:01:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93CE61C24731
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D93639AEB;
-	Tue,  9 Jan 2024 15:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA7139AEA;
+	Tue,  9 Jan 2024 15:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I0csb2EM"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GEw1ZKkR"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6285736AFB;
-	Tue,  9 Jan 2024 15:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d60c49ee7so34799935e9.0;
-        Tue, 09 Jan 2024 07:01:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BC939FD7
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a28d61ba65eso340864866b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 07:01:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704812480; x=1705417280; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kFSSTbq7IPBf5s843uaxKy0JnvdppW2Wga9+VXd4oEI=;
-        b=I0csb2EMXTHAt9mBrt7T1DKe6+bVXCRUbwKGPP7H1jV78VANdwkKjkdbMkX62GJUJ5
-         flgKVhgUFNN2ArpYOs/SZC/ir2a7xo/+b7kiFtuaFcw6ceRpsvFWJJzzmgUlAYNvgMZk
-         71sY2VZw5ZJksuFsvpDXZMLG16yUSnkJQsjcI3YoVXDwb5uWs5jhMwD8tc+EhLpB1kJR
-         yPCs9MWiQX7zj/ix1maeEYyXzNFRK5GR2NKAHu2RppyP309HO4pp0DtZaTJi7LGVHN4m
-         hTGQQqFgVG+lzB0BzZM1eQT/mompXzxg46QB9FaA1i54o5wtsr2A5HYNM8t8zsbvr8OZ
-         BDZg==
+        d=linaro.org; s=google; t=1704812487; x=1705417287; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A6lLJAWfONRkDJJGIC8SRaaAagWSknfMNb43BqN+UjA=;
+        b=GEw1ZKkRKm1yXonT5Y3EiY5cca1sTjsmg5y6cxuFZZ8u4nvSpzNul36h06vVwZy8uQ
+         qmVhXekDk/esOvD6luIgU5jCwfHfLMnwZ5RQvD0Zx7Ia1SsJWEEZofF2FQ4tiX76VaKs
+         1wXMogXckbGaNoegAtUwTm2D9oRRZhr3KxY7cSTJpOFb6IDLGseCKy54zhbObFf6BzD2
+         pBgAI0+U0xJ+Xs9zoX90lODmmLEZpR/4xNQDuMoaSxRCxXxh7CeMthJ2smkaIfOuK04t
+         SIoD7Jaq7ZruseU2vRfb1oSyPk6YIs+K8O1A7a6SSUxQHFHCjid3HYhhjIvmudmQR1JJ
+         KdYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704812480; x=1705417280;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kFSSTbq7IPBf5s843uaxKy0JnvdppW2Wga9+VXd4oEI=;
-        b=Eek/c5U845G6pWpha0WKKKsdo6GKdPmmmQUnC9wnRDeSaGYU6XdbA+J0IEwAd6EEDv
-         c/Nog3OfS8QsEE1Ri5bQUxCOgAeNgWyvqxyXwEbWCN+EBSV4zdzp9yo97XHL4OeChC6i
-         K1H9geb/tWaSs3j7Gs3F3nHiqt+HaIkDxETAWvXmV+fE9VXYkvGLQHGvm441lRuOHQ8g
-         btc3SrYxpt5/eBmFR/j3IMvGzCqlOPs6zmYvA64yh1l7xjnO1EhNGpUHm4V050erUNmy
-         vpSa2R164kWhBK+BJKnREG7fvb65+MTcKuHAq13G6QwixXVonzY1T8NmKTtJXr3pVOsK
-         YBcw==
-X-Gm-Message-State: AOJu0Yy0tYAmE5r4xq8Jpmba0QaLD8Z/2YIByBuZAjKT9RnRhYILed3+
-	WNUL6QMhJ5z8z/sX31iweIg=
-X-Google-Smtp-Source: AGHT+IFnCZV4eOcSwHP2r/qM2xNuE/Uh53VLu5Icgk7vJJUxvGy3erlqRBeM/fpa2jWk5pyp9xPW+A==
-X-Received: by 2002:a05:600c:21c7:b0:40e:46b3:fe3a with SMTP id x7-20020a05600c21c700b0040e46b3fe3amr1964801wmj.47.1704812480117;
-        Tue, 09 Jan 2024 07:01:20 -0800 (PST)
-Received: from localhost (a109-49-32-45.cpe.netcabo.pt. [109.49.32.45])
-        by smtp.gmail.com with ESMTPSA id h4-20020a05600c314400b0040d7c3d5454sm15009382wmo.3.2024.01.09.07.01.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 07:01:19 -0800 (PST)
-From: Rui Miguel Silva <rmfrfs@gmail.com>
-To: Arnd Bergmann <arnd@kernel.org>, Pavel Machek <pavel@ucw.cz>, Lee Jones
- <lee@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>, Heiner
- Kallweit <hkallweit1@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
- Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
- linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, Johan Hovold
- <johan@kernel.org>, Alex Elder <elder@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Andreas Kemnade
- <andreas@kemnade.info>, greybus-dev@lists.linaro.org,
- linux-staging@lists.linux.dev
-Subject: Re: [PATCH 2/2] leds: make flash and multicolor dependencies
- unconditional
-In-Reply-To: <20240109090715.982332-2-arnd@kernel.org>
-References: <20240109090715.982332-1-arnd@kernel.org>
- <20240109090715.982332-2-arnd@kernel.org>
-Date: Tue, 09 Jan 2024 15:01:18 +0000
-Message-ID: <m3mstey2ip.fsf@gmail.com>
+        d=1e100.net; s=20230601; t=1704812487; x=1705417287;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A6lLJAWfONRkDJJGIC8SRaaAagWSknfMNb43BqN+UjA=;
+        b=DqJsYqhpk9QyiXOkouOQOMMCFHlI7gssfHfhajGK8dmhN3qjGTI82Hw5MYN5cLOIe9
+         NHi1z2ktzs20P00NqnMLTgv1noxQFCkeuz8VUfilcV1dq0d7Dcoc0kZZjgZ8JoV9FZd8
+         IneQN8xtxnwJ6MsvXv7n+i5RmOXmnzDTcsTH92d/kO7JU8aYuFXqwu3CZpytmyn60121
+         FR+WvjPtNVnRIK6K0YfQyLopnJZUIYD7/adz2YOHDI66wjIr8lUMRpfDl8H588FY9Aa0
+         qdRlWf1HZOTWN5YmYRmPAJH0cY7MsdMYGOUdqfGGzQ16a0+HuyNQIiTCZiWAi5PmeBOc
+         bw6w==
+X-Gm-Message-State: AOJu0Yxz6fU5ZvMR/4nL/RRsxRlZci03BsqX4juekCLbGlL07To5N1wP
+	3SsL4Ha0vAkyzqXqAPLFOyJR9Tk7n5tmpQ==
+X-Google-Smtp-Source: AGHT+IFp82vzSXIU1eYLm4qR0FanTJ7ctHZvV5fIlNx+HHmkBqjLQ/Q4m91CPoiiEqXgVI1SeoBBBQ==
+X-Received: by 2002:a17:907:6d21:b0:a29:b180:dc73 with SMTP id sa33-20020a1709076d2100b00a29b180dc73mr570997ejc.130.1704812487077;
+        Tue, 09 Jan 2024 07:01:27 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id r4-20020a17090638c400b00a28116285e0sm1122872ejd.165.2024.01.09.07.01.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 07:01:23 -0800 (PST)
+Message-ID: <ea02d7ca-62e2-4d46-8495-ed6e515625a1@linaro.org>
+Date: Tue, 9 Jan 2024 16:01:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/12] dt-bindings: clock: google,gs101-clock: add
+ PERIC0 clock management unit
+Content-Language: en-US
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, Rob Herring <robh@kernel.org>
+Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+ mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
+ andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+ jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org,
+ andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org, kernel-team@android.com
+References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
+ <20231228125805.661725-2-tudor.ambarus@linaro.org>
+ <20240109040315.GA2619804-robh@kernel.org>
+ <f695f2c0-2d4e-484c-9faa-7d8b28362541@linaro.org>
+ <8a55e1d9-c102-4cdf-8f23-edc40889cf6d@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <8a55e1d9-c102-4cdf-8f23-edc40889cf6d@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hey Arnd,
-Many thanks for the patch.
+On 09/01/2024 12:58, Tudor Ambarus wrote:
+> 
+> 
+> On 1/9/24 11:09, Krzysztof Kozlowski wrote:
+>> On 09/01/2024 05:03, Rob Herring wrote:
+>>> On Thu, Dec 28, 2023 at 12:57:54PM +0000, Tudor Ambarus wrote:
+>>>> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
+>>>> clock management unit.
+>>>>
+>>>> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>>>> ---
+>>>> v2:
+>>>> - fix comments as per Sam's suggestion and collect his R-b tag
+>>>> - Rob's suggestion of renaming the clock-names to just "bus" and "ip"
+>>>>   was not implemented as I felt it affects readability in the driver
+>>>>   and consistency with other exynos clock drivers. I will happily update
+>>>>   the names in the -rc phase if someone else has a stronger opinion than
+>>>>   mine. 
+>>>
+>>> I'll defer to Krzysztof.
+>>
+>> I miss the point why clock-names cannot be fixed now. This is the name
+>> of property, not the input clock name.
+> 
+> They can be fixed now. I've just aired the fixes at:
+> https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
+> 
+> Preparing v3 for this patch set to include the updated names here too.
 
-Arnd Bergmann <arnd@kernel.org> writes:
+I think I was not that clear enough. I did not get your current patchset
+- so PERIC0 clock controller - cannot use new naming.
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Along the same lines as making devm_led_classdev_register() declared
-> extern unconditional, do the same thing for the two sub-classes
-> that have similar stubs.
->
-> The users of these interfaces go to great lengths to allow building
-> with both the generic leds API and the extended version, but realistically
-> there is not much use in this, so just simplify it to always rely
-> on it and remove the confusing fallback logic.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/leds/Kconfig                 |  4 ++--
->  drivers/leds/flash/Kconfig           |  4 ++--
->  drivers/staging/greybus/Kconfig      |  2 +-
->  drivers/staging/greybus/light.c      | 21 --------------------
->  include/linux/led-class-flash.h      | 24 -----------------------
->  include/linux/led-class-multicolor.h | 29 ----------------------------
->  6 files changed, 5 insertions(+), 79 deletions(-)
->
-> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> index d721b254e1e4..9613a45a35bd 100644
-> --- a/drivers/leds/Kconfig
-> +++ b/drivers/leds/Kconfig
-> @@ -395,7 +395,7 @@ config LEDS_LP3952
->  config LEDS_LP50XX
->  	tristate "LED Support for TI LP5036/30/24/18/12/09 LED driver chip"
->  	depends on LEDS_CLASS && REGMAP_I2C
-> -	depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
-> +	depends on LEDS_CLASS_MULTICOLOR
->  	help
->  	  If you say yes here you get support for the Texas Instruments
->  	  LP5036, LP5030, LP5024, LP5018, LP5012 and LP5009 LED driver.
-> @@ -406,7 +406,7 @@ config LEDS_LP50XX
->  config LEDS_LP55XX_COMMON
->  	tristate "Common Driver for TI/National LP5521/5523/55231/5562/8501"
->  	depends on LEDS_CLASS
-> -	depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
-> +	depends on LEDS_CLASS_MULTICOLOR
->  	depends on OF
->  	depends on I2C
->  	select FW_LOADER
-> diff --git a/drivers/leds/flash/Kconfig b/drivers/leds/flash/Kconfig
-> index 4e08dbc05709..b95f90cd5749 100644
-> --- a/drivers/leds/flash/Kconfig
-> +++ b/drivers/leds/flash/Kconfig
-> @@ -51,8 +51,8 @@ config LEDS_MAX77693
->  config LEDS_MT6360
->  	tristate "LED Support for Mediatek MT6360 PMIC"
->  	depends on LEDS_CLASS && OF
-> -	depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
-> -	depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
-> +	depends on LEDS_CLASS_FLASH
-> +	depends on LEDS_CLASS_MULTICOLOR
->  	depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
->  	depends on MFD_MT6360
->  	help
-> diff --git a/drivers/staging/greybus/Kconfig b/drivers/staging/greybus/Kconfig
-> index 927cfa4bc989..1e745a8d439c 100644
-> --- a/drivers/staging/greybus/Kconfig
-> +++ b/drivers/staging/greybus/Kconfig
-> @@ -64,7 +64,7 @@ config GREYBUS_HID
->  
->  config GREYBUS_LIGHT
->  	tristate "Greybus LED Class driver"
-> -	depends on LEDS_CLASS
-> +	depends on LEDS_CLASS_FLASH
+Best regards,
+Krzysztof
 
-Agree with the change for the greybus driver, one note, since you are
-cleaning up this, maybe also remove the other #if down when setting
-the flash specific operations, right?
-
-#if IS_REACHABLE(CONFIG_LEDS_CLASS_FLASH)
-/* Flash specific operations */
-static int gb_lights_flash_intensity_set(struct led_classdev_flash *fcdev,
-					 u32 brightness)
-{
-	struct gb_channel *channel = container_of(fcdev, struct gb_channel,
-						  fled);
-	int ret;
-.
-.
-.
-.
-
-#else
-static int gb_lights_channel_flash_config(struct gb_channel *channel)
-{
-	struct gb_connection *connection = get_conn_from_channel(channel);
-
-	dev_err(&connection->bundle->dev, "no support for flash devices\n");
-	return 0;
-}
-.
-.
-.
-
-
-Thanks again.
-
-Cheers,
-    Rui
-
->  	help
->  	  Select this option if you have a device that follows the
->  	  Greybus LED Class specification.
-> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-> index 87d36948c610..d62f97249aca 100644
-> --- a/drivers/staging/greybus/light.c
-> +++ b/drivers/staging/greybus/light.c
-> @@ -29,13 +29,9 @@ struct gb_channel {
->  	struct attribute_group		*attr_group;
->  	const struct attribute_group	**attr_groups;
->  	struct led_classdev		*led;
-> -#if IS_REACHABLE(CONFIG_LEDS_CLASS_FLASH)
->  	struct led_classdev_flash	fled;
->  	struct led_flash_setting	intensity_uA;
->  	struct led_flash_setting	timeout_us;
-> -#else
-> -	struct led_classdev		cled;
-> -#endif
->  	struct gb_light			*light;
->  	bool				is_registered;
->  	bool				releasing;
-> @@ -84,7 +80,6 @@ static bool is_channel_flash(struct gb_channel *channel)
->  				   | GB_CHANNEL_MODE_INDICATOR));
->  }
->  
-> -#if IS_REACHABLE(CONFIG_LEDS_CLASS_FLASH)
->  static struct gb_channel *get_channel_from_cdev(struct led_classdev *cdev)
->  {
->  	struct led_classdev_flash *fled_cdev = lcdev_to_flcdev(cdev);
-> @@ -153,22 +148,6 @@ static int __gb_lights_flash_brightness_set(struct gb_channel *channel)
->  
->  	return __gb_lights_flash_intensity_set(channel, intensity);
->  }
-> -#else
-> -static struct gb_channel *get_channel_from_cdev(struct led_classdev *cdev)
-> -{
-> -	return container_of(cdev, struct gb_channel, cled);
-> -}
-> -
-> -static struct led_classdev *get_channel_cdev(struct gb_channel *channel)
-> -{
-> -	return &channel->cled;
-> -}
-> -
-> -static int __gb_lights_flash_brightness_set(struct gb_channel *channel)
-> -{
-> -	return 0;
-> -}
-> -#endif
->  
->  static int gb_lights_color_set(struct gb_channel *channel, u32 color);
->  static int gb_lights_fade_set(struct gb_channel *channel);
-> diff --git a/include/linux/led-class-flash.h b/include/linux/led-class-flash.h
-> index 612b4cab3819..36df927ec4b7 100644
-> --- a/include/linux/led-class-flash.h
-> +++ b/include/linux/led-class-flash.h
-> @@ -85,7 +85,6 @@ static inline struct led_classdev_flash *lcdev_to_flcdev(
->  	return container_of(lcdev, struct led_classdev_flash, led_cdev);
->  }
->  
-> -#if IS_ENABLED(CONFIG_LEDS_CLASS_FLASH)
->  /**
->   * led_classdev_flash_register_ext - register a new object of LED class with
->   *				     init data and with support for flash LEDs
-> @@ -116,29 +115,6 @@ int devm_led_classdev_flash_register_ext(struct device *parent,
->  void devm_led_classdev_flash_unregister(struct device *parent,
->  					struct led_classdev_flash *fled_cdev);
->  
-> -#else
-> -
-> -static inline int led_classdev_flash_register_ext(struct device *parent,
-> -				    struct led_classdev_flash *fled_cdev,
-> -				    struct led_init_data *init_data)
-> -{
-> -	return 0;
-> -}
-> -
-> -static inline void led_classdev_flash_unregister(struct led_classdev_flash *fled_cdev) {};
-> -static inline int devm_led_classdev_flash_register_ext(struct device *parent,
-> -				     struct led_classdev_flash *fled_cdev,
-> -				     struct led_init_data *init_data)
-> -{
-> -	return 0;
-> -}
-> -
-> -static inline void devm_led_classdev_flash_unregister(struct device *parent,
-> -					struct led_classdev_flash *fled_cdev)
-> -{};
-> -
-> -#endif  /* IS_ENABLED(CONFIG_LEDS_CLASS_FLASH) */
-> -
->  static inline int led_classdev_flash_register(struct device *parent,
->  					   struct led_classdev_flash *fled_cdev)
->  {
-> diff --git a/include/linux/led-class-multicolor.h b/include/linux/led-class-multicolor.h
-> index 210d57bcd767..db9f34c6736e 100644
-> --- a/include/linux/led-class-multicolor.h
-> +++ b/include/linux/led-class-multicolor.h
-> @@ -30,7 +30,6 @@ static inline struct led_classdev_mc *lcdev_to_mccdev(
->  	return container_of(led_cdev, struct led_classdev_mc, led_cdev);
->  }
->  
-> -#if IS_ENABLED(CONFIG_LEDS_CLASS_MULTICOLOR)
->  /**
->   * led_classdev_multicolor_register_ext - register a new object of led_classdev
->   *				      class with support for multicolor LEDs
-> @@ -64,34 +63,6 @@ int devm_led_classdev_multicolor_register_ext(struct device *parent,
->  
->  void devm_led_classdev_multicolor_unregister(struct device *parent,
->  					    struct led_classdev_mc *mcled_cdev);
-> -#else
-> -
-> -static inline int led_classdev_multicolor_register_ext(struct device *parent,
-> -					    struct led_classdev_mc *mcled_cdev,
-> -					    struct led_init_data *init_data)
-> -{
-> -	return 0;
-> -}
-> -
-> -static inline void led_classdev_multicolor_unregister(struct led_classdev_mc *mcled_cdev) {};
-> -static inline int led_mc_calc_color_components(struct led_classdev_mc *mcled_cdev,
-> -					       enum led_brightness brightness)
-> -{
-> -	return 0;
-> -}
-> -
-> -static inline int devm_led_classdev_multicolor_register_ext(struct device *parent,
-> -					  struct led_classdev_mc *mcled_cdev,
-> -					  struct led_init_data *init_data)
-> -{
-> -	return 0;
-> -}
-> -
-> -static inline void devm_led_classdev_multicolor_unregister(struct device *parent,
-> -					    struct led_classdev_mc *mcled_cdev)
-> -{};
-> -
-> -#endif  /* IS_ENABLED(CONFIG_LEDS_CLASS_MULTICOLOR) */
->  
->  static inline int led_classdev_multicolor_register(struct device *parent,
->  					    struct led_classdev_mc *mcled_cdev)
-> -- 
-> 2.39.2
 
