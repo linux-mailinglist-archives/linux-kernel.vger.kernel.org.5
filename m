@@ -1,144 +1,160 @@
-Return-Path: <linux-kernel+bounces-21095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9D218289C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:13:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 937DF8289CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E689B23779
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:13:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B925B1C2386B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0553A1C1;
-	Tue,  9 Jan 2024 16:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7868D3A1D0;
+	Tue,  9 Jan 2024 16:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="moYAk1aW"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="a1Ok5Tny"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BC839ADE
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d5aefcc2fso35359135e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:12:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704816765; x=1705421565; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QLuwkV3YqBM7cDd6d4I1FcvjfJRMJpmS9TLQKnHh3LA=;
-        b=moYAk1aWEGU0e8vAsJW8p6tr3Pu3tFN1GgQ3d9dEVFjVhBeCHaDokjiYn2BhKUlyPf
-         3iRyD1fs3Q4O2xnXTEMy3bXHFRpZC6IUmZlTrej3NVPTsapUOhCNtUzy63gFTPFmOW3Q
-         Eh3BGgpXQJ5wcOkG64Fh+cPM5CZQkK0eOuJmK+ErNwFobl3XY/iSnRRtY7JSjrt+ujxS
-         dsfAISc+YydQIUhYZHiF62tXmlygb6OhUUCMJ6ht5igjYz6RUtWUHeVrZVjAYRZvByOy
-         x0ukRHA5AoY0VIVFtXObDSkhZZqXn5QVJGkR63whs9JoPZASAIJHCXLoRIN8DX4HHPF1
-         IxKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704816765; x=1705421565;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QLuwkV3YqBM7cDd6d4I1FcvjfJRMJpmS9TLQKnHh3LA=;
-        b=hL28YvOvzpTrI4CWOHDPUNpc44fMnVLPdu1ixKvdY1rqCzkXPN7iCneNFYP8MLG2o5
-         bZlhY1GAWtDMDSkq/pHmMiZZN/c7xlA4SWg+IWHDH2ABtWsETwgaCCG2ujIsxl8MAJsf
-         jc05edX39oBb3NO/b1T0NPet/+BYt7fZBf2J8tu55C2UqTAnDykyQrOlDkfEej/HtSGC
-         NXqOgKspzb0okN7WIGDtE8LX8jCxupOxeYio+7rsaZ+WyG5019AvqGEHNtoY//omHuEs
-         AmKZgMYpjnJFAljSYt5KAF5T3s+6s9uv2dXjjI3sUz25AtwQ8brZAy8bFDyYMj8evZ5d
-         pNFw==
-X-Gm-Message-State: AOJu0Yx5G2BC0ldt1+EhJac3HPmIKEPxyuxebcV/2Y51sgmmf5gFzXgE
-	QqRgaFc/CahkQutDtoSPZDJ43Uahlv2HIA==
-X-Google-Smtp-Source: AGHT+IE+jtYqbzFOWQJKYy4Sd1zW2XS5XwcHZK4TTZRMLsCeki8cy1luWp6DEum2EBB3JZlw2mRT8A==
-X-Received: by 2002:a05:600c:ccd:b0:40e:52cf:3c2c with SMTP id fk13-20020a05600c0ccd00b0040e52cf3c2cmr313625wmb.73.1704816764893;
-        Tue, 09 Jan 2024 08:12:44 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05600c1d8600b0040e4c1dade4sm4205471wms.36.2024.01.09.08.12.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 08:12:44 -0800 (PST)
-Message-ID: <38523622-4963-44a5-a5d6-64896ae47e09@linaro.org>
-Date: Tue, 9 Jan 2024 16:12:42 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3033A1AE;
+	Tue,  9 Jan 2024 16:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=hjOpdiFLaU/rl9xnyUOLlrLmtfPs6+yF3otyUbGH/R4=; b=a1Ok5TnyDwwEPqkbOv/NhT9x7R
+	vsRGEpXQQuagE84o1GOKB+g5J/3SKZHiq7gO7CVhZ9MwbQLrdnXwckcxFgAGvnY9Nk4loJwUNfWTP
+	dmTT4AEb4pqk4eK2+PIhMHYIuLyFfMQgkCgMxXmxbzNgRuL29tI50v1rDgTaj2mHCxoPuAbNQPrUt
+	Km1OPWQBn9drrgdJHriccMuP6O1dmCKstC1QR2adWEFoMNzjxmXhZjSbPWilyBjDSoIpatoeKnAWZ
+	8VR9XluXAKu8zzZRWPmIvh+ZGCcd5RXc90I3qF8F9kbHPYQUINZIyz2P07nQPugKYvhC2BMDt30cD
+	fa7z7JPQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35300)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rNEj9-0004JK-0j;
+	Tue, 09 Jan 2024 16:13:19 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rNEjB-0004Pk-Ap; Tue, 09 Jan 2024 16:13:21 +0000
+Date: Tue, 9 Jan 2024 16:13:21 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
+ described as container packages
+Message-ID: <ZZ1woQkpMMCWVnXc@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+ <ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
+ <CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] dt-bindings: clock: google,gs101-clock: add
- PERIC0 clock management unit
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Rob Herring <robh@kernel.org>
-Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
- andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
- cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org,
- andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-serial@vger.kernel.org, kernel-team@android.com
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
- <20231228125805.661725-2-tudor.ambarus@linaro.org>
- <20240109040315.GA2619804-robh@kernel.org>
- <f695f2c0-2d4e-484c-9faa-7d8b28362541@linaro.org>
- <8a55e1d9-c102-4cdf-8f23-edc40889cf6d@linaro.org>
- <ea02d7ca-62e2-4d46-8495-ed6e515625a1@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <ea02d7ca-62e2-4d46-8495-ed6e515625a1@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-
-
-On 1/9/24 15:01, Krzysztof Kozlowski wrote:
-> On 09/01/2024 12:58, Tudor Ambarus wrote:
->>
->>
->> On 1/9/24 11:09, Krzysztof Kozlowski wrote:
->>> On 09/01/2024 05:03, Rob Herring wrote:
->>>> On Thu, Dec 28, 2023 at 12:57:54PM +0000, Tudor Ambarus wrote:
->>>>> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
->>>>> clock management unit.
->>>>>
->>>>> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
->>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>>>> ---
->>>>> v2:
->>>>> - fix comments as per Sam's suggestion and collect his R-b tag
->>>>> - Rob's suggestion of renaming the clock-names to just "bus" and "ip"
->>>>>   was not implemented as I felt it affects readability in the driver
->>>>>   and consistency with other exynos clock drivers. I will happily update
->>>>>   the names in the -rc phase if someone else has a stronger opinion than
->>>>>   mine. 
->>>>
->>>> I'll defer to Krzysztof.
->>>
->>> I miss the point why clock-names cannot be fixed now. This is the name
->>> of property, not the input clock name.
->>
->> They can be fixed now. I've just aired the fixes at:
->> https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
->>
->> Preparing v3 for this patch set to include the updated names here too.
+On Tue, Jan 09, 2024 at 05:05:15PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Jan 9, 2024 at 4:49 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Mon, Dec 18, 2023 at 09:17:34PM +0100, Rafael J. Wysocki wrote:
+> > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > >
+> > > > From: James Morse <james.morse@arm.com>
+> > > >
+> > > > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+> > > > 5.2.12:
+> > > >
+> > > > "Starting with ACPI Specification 6.3, the use of the Processor() object
+> > > > was deprecated. Only legacy systems should continue with this usage. On
+> > > > the Itanium architecture only, a _UID is provided for the Processor()
+> > > > that is a string object. This usage of _UID is also deprecated since it
+> > > > can preclude an OSPM from being able to match a processor to a
+> > > > non-enumerable device, such as those defined in the MADT. From ACPI
+> > > > Specification 6.3 onward, all processor objects for all architectures
+> > > > except Itanium must now use Device() objects with an _HID of ACPI0007,
+> > > > and use only integer _UID values."
+> > > >
+> > > > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
+> > > >
+> > > > Duplicate descriptions are not allowed, the ACPI processor driver already
+> > > > parses the UID from both devices and containers. acpi_processor_get_info()
+> > > > returns an error if the UID exists twice in the DSDT.
+> > >
+> > > I'm not really sure how the above is related to the actual patch.
+> > >
+> > > > The missing probe for CPUs described as packages
+> > >
+> > > It is unclear what exactly is meant by "CPUs described as packages".
+> > >
+> > > From the patch, it looks like those would be Processor() objects
+> > > defined under a processor container device.
+> > >
+> > > > creates a problem for
+> > > > moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> > > > described like this don't get registered, leading to errors from other
+> > > > subsystems when they try to add new sysfs entries to the CPU node.
+> > > > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> > > >
+> > > > To fix this, parse the processor container and call acpi_processor_add()
+> > > > for each processor that is discovered like this.
+> > >
+> > > Discovered like what?
+> > >
+> > > > The processor container
+> > > > handler is added with acpi_scan_add_handler(), so no detach call will
+> > > > arrive.
+> > >
+> > > The above requires clarification too.
+> >
+> > The above comments... yea. As I didn't write the commit description, but
+> > James did, and James has basically vanished, I don't think these can be
+> > answered, short of rewriting the entire commit message, with me spending
+> > a lot of time with the ACPI specification trying to get the terminology
+> > right - because at lot of the above on the face of it seems to be things
+> > to do with wrong terminology being used.
+> >
+> > I wasn't expecting this level of issues with this patch set, and I now
+> > feel completely out of my depth with this series. I'm wondering whether
+> > I should even continue with it, since I don't have the ACPI knowledge
+> > to address a lot of these comments.
 > 
-> I think I was not that clear enough. I did not get your current patchset
-> - so PERIC0 clock controller - cannot use new naming.
+> Well, sorry about this.
 > 
+> I met James at the LPC last year, so he seems to be still around, in
+> some way at least..
 
-Ok, I understand that the fixes from
-https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
+On the previous posting, I wanted James to comment on some of the
+feedback from Jonathan, and despite explicitly asking, there has been
+nothing but radio silence ever since James' last post of this series.
 
-are NACK-ed and I shall use the full clock-names in this patch set as
-well, thus "dout_cmu_peric0_bus", and "dout_cmu_peric0_ip". I don't mind
-changing them back, will send a v4 using the full clock names.
+So, I now deem this work to be completely dead in the water, and not
+going to happen - not unless others can input on your comments.
 
-Out of curiosity, why can't we change the names? All gs101 patches are
-for v6.8, thus they haven't made a release yet. We still have the -rc
-phase where we can fix things.
-
-Thanks for the guidance.
-ta
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
