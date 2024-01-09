@@ -1,53 +1,63 @@
-Return-Path: <linux-kernel+bounces-21098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A99E8289D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:16:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7DE8289D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A360DB23E2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:16:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C84F28624F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD4B3A1CA;
-	Tue,  9 Jan 2024 16:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522DE3A27B;
+	Tue,  9 Jan 2024 16:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DCu/0Xjk"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fec97Xkm"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7677A38DC1;
-	Tue,  9 Jan 2024 16:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 409GEqUp101353;
-	Tue, 9 Jan 2024 10:14:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704816892;
-	bh=+s45SriCMFg4wyEvqkMYU7sO4P+s/YfoTTH1GytTXY0=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=DCu/0XjkGzbx4AhW4Q1Bb3nB8rlACZEnZAY0Bpm2ojwjiUTg/cetEuTlDffhw56Yi
-	 JHfZdc5IIQ5KXToNOXeS7i84Lh9OyN5sM8buQlmsnnC/JfTQnTg0SIHnUVI8RMvNlW
-	 o8UI9tzB5evh4h7HsKJ+3yV2TT+cZ+pbdjn9SWKs=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 409GEqtO030730
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 9 Jan 2024 10:14:52 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 9
- Jan 2024 10:14:52 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 9 Jan 2024 10:14:52 -0600
-Received: from [10.249.40.136] ([10.249.40.136])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 409GEoPJ008319;
-	Tue, 9 Jan 2024 10:14:50 -0600
-Message-ID: <4cdd5c4a-f940-4635-837b-872ab776f5c4@ti.com>
-Date: Tue, 9 Jan 2024 10:14:50 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E3B3A264
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3367a304091so2960995f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:16:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704817003; x=1705421803; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uM4bx9JfogXOCEh/2zqOEU5Nxv4Lz17EfumQJ6uXjyk=;
+        b=fec97Xkmo3qH7pvVWZB9j/tGZR9x8/uv7nWoHaf37DB4CwIzljbVnC1nGMzpjrLJgN
+         QQLtYtmD6OEjh79idU0hpKOwX4KYX7drZ+iSl8xmzshvQlHaG4Ezgl1bokRkpzVekc61
+         sVdvUaKdvRM8EGPNHgbK39dXQzrpr8haFfJuLtutxxVgFBOJPfakTx4817NT9ltVM76E
+         Avr4j5RPslT96RPPoKjntghmTihhwUSDcMprEs8W/5gUnQHQPx3ifEyzkKcpX5JPiVu8
+         FNKEaVqD+TGzl4we9Qt0VgnWwPWLVo+IZhQR6BbIksQPd005iK3xN0AHTAG/yooDXHnf
+         qDig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704817003; x=1705421803;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uM4bx9JfogXOCEh/2zqOEU5Nxv4Lz17EfumQJ6uXjyk=;
+        b=cUZwDdcDMbD+cZpRogtJp/9GXpdyjL4QzTQX1bOJSNpktDqL9wERC5n14BewEz+jRR
+         zeshTajfeLSxEjM+NFQNAhtBR/+iNu8PNRxtt4c1RQ3aFt903HjGM7v9lBIvU5pbwZva
+         4bbwKmT43YWkvuBtX8JXgWUPbq5VTCYO8y7MrSwGz9wBp33w0QQ/lpUi5kyI0G5v17F7
+         7WpKCrklNNc2W9GYu1HU1WoDmFLMhF6cqNXROdb3ZRSYlB44vRCCZcdHXrEENlMKxGl6
+         u7KJOE0J/smxjAOYDWpn8oTtkMJUWPbF4QxslhAa34cudayyxF/U6jOfhwMSUYRmlraa
+         faXQ==
+X-Gm-Message-State: AOJu0YyAM+g2oHtGWyNp5sA5LXkpSGSu2pKhJht74vvl7gkvT+39XS0R
+	Thh53ZAOHBIE8lr7mkScnSpVfMiG7n+CoQ==
+X-Google-Smtp-Source: AGHT+IGfcNr8gQ8XeZWGAKIbA/pKPo4p3CzphQ1F3insA3jF4nV4kM9Ll4oWdaxMT0F+3y0NrXx44Q==
+X-Received: by 2002:a5d:6308:0:b0:336:c963:25e8 with SMTP id i8-20020a5d6308000000b00336c96325e8mr457336wru.109.1704817003273;
+        Tue, 09 Jan 2024 08:16:43 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id p11-20020a5d59ab000000b00336ebf93416sm2817775wrr.17.2024.01.09.08.16.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 08:16:42 -0800 (PST)
+Message-ID: <65b4168f-f9cd-45dc-a712-d5daabc9dbda@linaro.org>
+Date: Tue, 9 Jan 2024 16:16:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,70 +65,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 01/11] dt-bindings: gpu: Rename img,powervr to
- img,powervr-rogue
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Frank Binns
-	<frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt
- Coster <matt.coster@imgtec.com>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Adam Ford <aford173@gmail.com>,
-        Ivaylo Dimitrov
-	<ivo.g.dimitrov.75@gmail.com>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec
-	<jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren
-	<tony@atomide.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, Paul Cercueil
-	<paul@crapouillou.net>
-CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>
-References: <20240108183302.255055-1-afd@ti.com>
- <20240108183302.255055-2-afd@ti.com>
- <c99b898f-61d2-46a3-b639-b4de828dcab1@linaro.org>
+Subject: Re: [PATCH] arm64: irq: include <linux/cpumask.h>
 Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <c99b898f-61d2-46a3-b639-b4de828dcab1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, sumit.garg@linaro.org,
+ dianders@chromium.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel-team@android.com,
+ andre.draszik@linaro.org, willmcvicker@google.com, peter.griffin@linaro.org
+References: <20240109140437.3703330-1-tudor.ambarus@linaro.org>
+ <ZZ1cRnjNlryrqAL0@FVFF77S0Q05N.cambridge.arm.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <ZZ1cRnjNlryrqAL0@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 1/9/24 5:28 AM, Krzysztof Kozlowski wrote:
-> On 08/01/2024 19:32, Andrew Davis wrote:
->> Signed-off-by: Andrew Davis <afd@ti.com>
+
+
+On 1/9/24 14:46, Mark Rutland wrote:
+> On Tue, Jan 09, 2024 at 02:04:37PM +0000, Tudor Ambarus wrote:
+>> Sorting include files in alphabetic order in
+>> drivers/tty/serial/samsung.c revealed the following error:
+>>
+>> In file included from drivers/tty/serial/samsung_tty.c:24:
+>> ./arch/arm64/include/asm/irq.h:9:43: error: unknown type name 'cpumask_t'
+>>     9 | void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
+>>       |                                           ^~~~~~~~~
+>>
+>> Include cpumask.h to avod unknown type errors for parents of irq.h that
+>> don't include cpumask.h.
+> 
+> s/avod/avoid/
+
+ah, will fix, thanks.
+
+> 
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 >> ---
->>   .../bindings/gpu/{img,powervr.yaml => img,powervr-rogue.yaml} | 4 ++--
->>   MAINTAINERS                                                   | 2 +-
->>   2 files changed, 3 insertions(+), 3 deletions(-)
+>>  arch/arm64/include/asm/irq.h | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
+>> index 50ce8b697ff3..d5612bc770da 100644
+>> --- a/arch/arm64/include/asm/irq.h
+>> +++ b/arch/arm64/include/asm/irq.h
+>> @@ -5,6 +5,7 @@
+>>  #ifndef __ASSEMBLER__
+>>  
+>>  #include <asm-generic/irq.h>
+>> +#include <linux/cpumask.h>
 > 
-> If you are renaming it, why not renaming to match compatible as we
-> usually expect?
-> 
+> Minor nit: we usually have the <linux/*.h> headers first, then a line space,
+> then the <asm/*.h> headers, e.g.
 
-There are (or will be) multiple compatible strings described in this
-file, naming the file after just one would not fully convey the content
-of the file. This generic style naming seems common already for bindings
-with multiple compatibles.
+I wasn't aware of this habit. Will update accordingly in v2.
 
-Andrew
-
-> Best regards,
-> Krzysztof
-> 
+Thanks!
+ta
 
