@@ -1,180 +1,161 @@
-Return-Path: <linux-kernel+bounces-21132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6ED828A6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:50:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C61FE828A74
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:51:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 862BCB22369
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:50:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 510CEB24454
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C7A3A8EA;
-	Tue,  9 Jan 2024 16:49:56 +0000 (UTC)
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B973A8E7;
+	Tue,  9 Jan 2024 16:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d98OVYiv"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CBF38DFE;
-	Tue,  9 Jan 2024 16:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5958b9cda7aso104906eaf.0;
-        Tue, 09 Jan 2024 08:49:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E6138DFE
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3606ebda57cso18525225ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:51:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704819060; x=1705423860; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uV5MEnsTPvblCSpnlyxwVtt9fk763n7/MDrWTIfZnok=;
+        b=d98OVYivllbnDuKnYQ2IRawOBiPUDUUCI8BkXAlC0/zoODQ46L+sHVPO4eUZo4wpAK
+         HRuKsEvnSPerUfpNfnToo47LtHj9b2Ad6KtimED8MdzJ49eYnvl6rTNR2vyOARaKf9D9
+         6vp+kWqvUUj3PiFJ7/SMYPKrqVVE/a6KuVkAg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704818993; x=1705423793;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=No8KMU8qZ/MBPmmYQ2D3vNYLw4T9zvu4iu2lUnnwn8g=;
-        b=B04inhgZA6LJiRY9ci3vYBs7VaBMmrXH8K3nEX7hbYQEOT2BIgbqNsiQceEeLj+IeG
-         7Vo+4HSQQaQHlZy0CRcsFEK0h8Z2QM6oXGcZkOCyY5HRBBnLxxLAsesdwYysmxZrs+YT
-         qWd06F4XHQLRHLNVSzFaaFJ6UgwOKqBsV9mFp7U1HNGiVG8pNxY3fFsXDU3EqU2iqJAb
-         m6+3NbEiPFwOMy2n8uFNZpiLYmcEjx3uoCrbyG4Bp/8ShSq7iWU3/FVlCsMvVD+KXl6c
-         gMMspuk9TyjbQgmPjAW5FGr/65DBRI3/GEOzUY4stZloOatldxL4YHY6SGl4EUWYfgfV
-         Xhpg==
-X-Gm-Message-State: AOJu0Yz6YhBFySeLAn10QHTjv9c1SlGILJuKMGuh/wkYg4P0k2eBkH8N
-	3h5OcABRITMyxYJGpfkhxCs7rT2ieiTBxEbh7Qw=
-X-Google-Smtp-Source: AGHT+IG3BVad80XxuD9TpPjaf5THqmwVW6ufT7pdCFhKkFasMPugtZYNRedyhvTcfTGxohP1l8YdxUf3QX57jacTy58=
-X-Received: by 2002:a05:6820:d0a:b0:598:8d98:286d with SMTP id
- ej10-20020a0568200d0a00b005988d98286dmr818427oob.0.1704818993639; Tue, 09 Jan
- 2024 08:49:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704819060; x=1705423860;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uV5MEnsTPvblCSpnlyxwVtt9fk763n7/MDrWTIfZnok=;
+        b=tFcqBrer/0nSG+7yjW6Ao8zN7PkBIVUtOz8wvExmXAodDRdbrHNTAGJU3vvmodkgdA
+         t82ZyT/qitb2s1b1hedpOgzpfW5defAc8EWv0N5FGcrGUoWeyDui5wOQ6RJR4HVtbuiU
+         gX07tSvDr8xLOFnTgNN1qRtDriO93U6sdu3jmQ9GMY+cdsu/DF+P31x5X4vT57J1GW+e
+         j9bZpAASog5rO3n4BitPFpd4JGhigRtLvDCZhoUUwGTDJ30bidxvtmyXTw2dAd97NtSU
+         I1HQ6R0QyQfdB1hmS3v9tFojNE7bHPi72lRV2Jl9N5oClBPVd4121ExXk54p7eHCH7lF
+         aJIg==
+X-Gm-Message-State: AOJu0YzXHiX2dUIs9q1HXl8Vj5P60cnn2hBJRVq53VsF8nqPK7Q69dLJ
+	sMsJsjXzXGXatWTO0113yEcaAfhPdnSo
+X-Google-Smtp-Source: AGHT+IHlU8waFtg4YB7aQ65CXpn+4z/PCbvQeBpftavO899tUFqMDX2wxm5vCuDdVh2D10JRxrXaZA==
+X-Received: by 2002:a92:ca09:0:b0:360:7c05:e479 with SMTP id j9-20020a92ca09000000b003607c05e479mr9251232ils.47.1704819059849;
+        Tue, 09 Jan 2024 08:50:59 -0800 (PST)
+Received: from localhost (110.41.72.34.bc.googleusercontent.com. [34.72.41.110])
+        by smtp.gmail.com with UTF8SMTPSA id t12-20020a92c90c000000b003607ff64574sm689592ilp.64.2024.01.09.08.50.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 08:50:59 -0800 (PST)
+Date: Tue, 9 Jan 2024 16:50:59 +0000
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+	Doug Anderson <dianders@google.com>,
+	Stephen Boyd <swboyd@google.com>
+Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
+Message-ID: <ZZ15c1HUQIH2cY5o@google.com>
+References: <20231227180306.6319-1-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109164655.626085-1-vincent.guittot@linaro.org> <20240109164655.626085-2-vincent.guittot@linaro.org>
-In-Reply-To: <20240109164655.626085-2-vincent.guittot@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 9 Jan 2024 17:49:42 +0100
-Message-ID: <CAJZ5v0ixmEiOhwBHkDqH8QNtchiszAEi0rY2pDCGHXiWHob0NA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/5] cpufreq: Add a cpufreq pressure feedback for the scheduler
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, 
-	sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org, 
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, lukasz.luba@arm.com, 
-	rui.zhang@intel.com, mhiramat@kernel.org, daniel.lezcano@linaro.org, 
-	amit.kachhap@gmail.com, corbet@lwn.net, gregkh@linuxfoundation.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	qyousef@layalina.io
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231227180306.6319-1-johan+linaro@kernel.org>
 
-On Tue, Jan 9, 2024 at 5:47=E2=80=AFPM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> Provide to the scheduler a feedback about the temporary max available
-> capacity. Unlike arch_update_thermal_pressure, this doesn't need to be
-> filtered as the pressure will happen for dozens ms or more.
->
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Hi Johan,
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+On Wed, Dec 27, 2023 at 07:03:06PM +0100, Johan Hovold wrote:
+> The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
+> device address in MSB order when setting it using the
+> EDL_WRITE_BD_ADDR_OPCODE command.
+> 
+> Presumably, this is the case for all non-ROME devices which all use the
+> EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
+> use a different command and expect the address in LSB order).
+> 
+> Reverse the little-endian address before setting it to make sure that
+> the address can be configured using tools like btmgmt or using the
+> 'local-bd-address' devicetree property.
+> 
+> Note that this can potentially break systems with boot firmware which
+> has started relying on the broken behaviour and is incorrectly passing
+> the address via devicetree in MSB order.
 
-and I think I've given the tag on this patch already.
+We should not break existing devices. Their byte order for
+'local-bd-address' may not adhere to the 'spec', however in practice
+it is the correct format for existing kernels.
 
+I suggest adding a quirk like 'local-bd-address-msb-quirk' or
+'qcom,local-bd-address-msb-quirk' to make sure existing devices keep
+working properly.
+
+Thanks
+
+Matthias
+
+> 
+> Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
+> Cc: stable@vger.kernel.org      # 5.1
+> Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
+> Cc: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 > ---
->  drivers/cpufreq/cpufreq.c | 36 ++++++++++++++++++++++++++++++++++++
->  include/linux/cpufreq.h   | 10 ++++++++++
->  2 files changed, 46 insertions(+)
->
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 44db4f59c4cc..f4eee3d107f1 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -2563,6 +2563,40 @@ int cpufreq_get_policy(struct cpufreq_policy *poli=
-cy, unsigned int cpu)
->  }
->  EXPORT_SYMBOL(cpufreq_get_policy);
->
-> +DEFINE_PER_CPU(unsigned long, cpufreq_pressure);
-> +
-> +/**
-> + * cpufreq_update_pressure() - Update cpufreq pressure for CPUs
-> + * @policy: cpufreq policy of the CPUs.
-> + *
-> + * Update the value of cpufreq pressure for all @cpus in the policy.
-> + */
-> +static void cpufreq_update_pressure(struct cpufreq_policy *policy)
-> +{
-> +       unsigned long max_capacity, capped_freq, pressure;
-> +       u32 max_freq;
-> +       int cpu;
-> +
-> +       cpu =3D cpumask_first(policy->related_cpus);
-> +       max_freq =3D arch_scale_freq_ref(cpu);
-> +       capped_freq =3D policy->max;
-> +
-> +       /*
-> +        * Handle properly the boost frequencies, which should simply cle=
-an
-> +        * the cpufreq pressure value.
-> +        */
-> +       if (max_freq <=3D capped_freq) {
-> +               pressure =3D 0;
-> +       } else {
-> +               max_capacity =3D arch_scale_cpu_capacity(cpu);
-> +               pressure =3D max_capacity -
-> +                          mult_frac(max_capacity, capped_freq, max_freq)=
-;
-> +       }
-> +
-> +       for_each_cpu(cpu, policy->related_cpus)
-> +               WRITE_ONCE(per_cpu(cpufreq_pressure, cpu), pressure);
-> +}
-> +
->  /**
->   * cpufreq_set_policy - Modify cpufreq policy parameters.
->   * @policy: Policy object to modify.
-> @@ -2618,6 +2652,8 @@ static int cpufreq_set_policy(struct cpufreq_policy=
- *policy,
->         policy->max =3D __resolve_freq(policy, policy->max, CPUFREQ_RELAT=
-ION_H);
->         trace_cpu_frequency_limits(policy);
->
-> +       cpufreq_update_pressure(policy);
-> +
->         policy->cached_target_freq =3D UINT_MAX;
->
->         pr_debug("new min and max freqs are %u - %u kHz\n",
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index afda5f24d3dd..b1d97edd3253 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -241,6 +241,12 @@ struct kobject *get_governor_parent_kobj(struct cpuf=
-req_policy *policy);
->  void cpufreq_enable_fast_switch(struct cpufreq_policy *policy);
->  void cpufreq_disable_fast_switch(struct cpufreq_policy *policy);
->  bool has_target_index(void);
-> +
-> +DECLARE_PER_CPU(unsigned long, cpufreq_pressure);
-> +static inline unsigned long cpufreq_get_pressure(int cpu)
-> +{
-> +       return per_cpu(cpufreq_pressure, cpu);
-> +}
->  #else
->  static inline unsigned int cpufreq_get(unsigned int cpu)
+> 
+> Hi Qualcomm people,
+> 
+> Could you please verify with your documentation that all non-ROME
+> devices expect the address provided in the EDL_WRITE_BD_ADDR_OPCODE
+> command in MSB order?
+> 
+> I assume this is not something that anyone would change between firmware
+> revisions, but if that turns out to be the case, we'd need to reverse
+> the address based on firmware revision or similar.
+> 
+> Johan
+> 
+> 
+>  drivers/bluetooth/btqca.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+> index fdb0fae88d1c..29035daf21bc 100644
+> --- a/drivers/bluetooth/btqca.c
+> +++ b/drivers/bluetooth/btqca.c
+> @@ -826,11 +826,15 @@ EXPORT_SYMBOL_GPL(qca_uart_setup);
+>  
+>  int qca_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
 >  {
-> @@ -263,6 +269,10 @@ static inline bool cpufreq_supports_freq_invariance(=
-void)
->         return false;
->  }
->  static inline void disable_cpufreq(void) { }
-> +static inline unsigned long cpufreq_get_pressure(int cpu)
-> +{
-> +       return 0;
-> +}
->  #endif
->
->  #ifdef CONFIG_CPU_FREQ_STAT
-> --
-> 2.34.1
->
+> +	bdaddr_t bdaddr_swapped;
+>  	struct sk_buff *skb;
+>  	int err;
+>  
+> -	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6, bdaddr,
+> -				HCI_EV_VENDOR, HCI_INIT_TIMEOUT);
+> +	baswap(&bdaddr_swapped, bdaddr);
+> +
+> +	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6,
+> +				&bdaddr_swapped, HCI_EV_VENDOR,
+> +				HCI_INIT_TIMEOUT);
+>  	if (IS_ERR(skb)) {
+>  		err = PTR_ERR(skb);
+>  		bt_dev_err(hdev, "QCA Change address cmd failed (%d)", err);
+> -- 
+> 2.41.0
+> 
 
