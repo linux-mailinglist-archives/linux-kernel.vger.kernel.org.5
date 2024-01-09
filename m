@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-20589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4150E828204
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:39:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08208828089
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7AFB1F27381
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:39:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FA621C23F98
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:24:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55366381DD;
-	Tue,  9 Jan 2024 08:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D186B25102;
+	Tue,  9 Jan 2024 08:23:52 +0000 (UTC)
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695A926AF2;
-	Tue,  9 Jan 2024 08:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B947D22063;
+	Tue,  9 Jan 2024 08:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=users.sourceforge.jp
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-	by sakura.ysato.name (Postfix) with ESMTPSA id 6A1D11C053C;
-	Tue,  9 Jan 2024 17:23:46 +0900 (JST)
+	by sakura.ysato.name (Postfix) with ESMTPSA id 3009D1C0572;
+	Tue,  9 Jan 2024 17:23:48 +0900 (JST)
 From: Yoshinori Sato <ysato@users.sourceforge.jp>
 To: linux-sh@vger.kernel.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -85,9 +85,9 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	linux-pci@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v6 04/37] dt-bindings: interrupt-controller: Add header for Renesas SH3/4 INTC.
-Date: Tue,  9 Jan 2024 17:23:01 +0900
-Message-Id: <b9cea5b530a6d68ea921174fbbda60afb8dd4432.1704788539.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v6 05/37] sh: GENERIC_IRQ_CHIP support for CONFIG_OF=y
+Date: Tue,  9 Jan 2024 17:23:02 +0900
+Message-Id: <4d01ae9b3c5881b79095e6d98e1bdf8a008e2658.1704788539.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1704788539.git.ysato@users.sourceforge.jp>
 References: <cover.1704788539.git.ysato@users.sourceforge.jp>
@@ -99,39 +99,123 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Renesas SH7751 Interrupt controller priority register define.
+Remove unused function prototype.
+Add helper update_sr_imask. use for SH7751 irq driver.
+Add stub intc_finalize.
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
- .../renesas,sh7751-intc.h                     | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
- create mode 100644 include/dt-bindings/interrupt-controller/renesas,sh7751-intc.h
+ arch/sh/include/asm/io.h       |  2 ++
+ arch/sh/include/asm/irq.h      | 10 ++++++++--
+ arch/sh/kernel/cpu/Makefile    |  5 +----
+ arch/sh/kernel/cpu/irq/imask.c | 17 +++++++++++++++++
+ include/linux/sh_intc.h        |  7 ++++++-
+ 5 files changed, 34 insertions(+), 7 deletions(-)
 
-diff --git a/include/dt-bindings/interrupt-controller/renesas,sh7751-intc.h b/include/dt-bindings/interrupt-controller/renesas,sh7751-intc.h
-new file mode 100644
-index 000000000000..0543bd1b895e
---- /dev/null
-+++ b/include/dt-bindings/interrupt-controller/renesas,sh7751-intc.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+ *
-+ * SH3/4 INTC IPR register offsets (Address / bits)
-+ */
-+
-+#ifndef __DT_BINDINGS_RENESAS_SH7751_INTC
-+#define __DT_BINDINGS_RENESAS_SH7751_INTC
-+
-+#define IPRA			0
-+#define IPRB			4
-+#define IPRC			8
-+#define IPRD			12
-+#define INTPRI00		256
-+#define IPR_B12			12
-+#define IPR_B8			8
-+#define IPR_B4			4
-+#define IPR_B0			0
-+
+diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+index ac521f287fa5..5429b4169dc8 100644
+--- a/arch/sh/include/asm/io.h
++++ b/arch/sh/include/asm/io.h
+@@ -121,7 +121,9 @@ __BUILD_MEMORY_STRING(__raw_, q, u64)
+ 
+ #define ioport_map ioport_map
+ #define ioport_unmap ioport_unmap
++#ifndef CONFIG_SH_DEVICE_TREE
+ #define pci_iounmap pci_iounmap
 +#endif
+ 
+ #define ioread8 ioread8
+ #define ioread16 ioread16
+diff --git a/arch/sh/include/asm/irq.h b/arch/sh/include/asm/irq.h
+index 0f384b1f45ca..3d897229dcc4 100644
+--- a/arch/sh/include/asm/irq.h
++++ b/arch/sh/include/asm/irq.h
+@@ -16,8 +16,8 @@
+ /*
+  * Simple Mask Register Support
+  */
+-extern void make_maskreg_irq(unsigned int irq);
+-extern unsigned short *irq_mask_register;
++
++void update_sr_imask(unsigned int irq, bool enable);
+ 
+ /*
+  * PINT IRQs
+@@ -54,4 +54,10 @@ extern void irq_finish(unsigned int irq);
+ 
+ #include <asm-generic/irq.h>
+ 
++/* SH3/4 INTC stuff */
++/* IRL level 0 - 15 */
++#define NR_IRL 15
++/* IRL0 -> IRQ16 */
++#define IRL_BASE_IRQ	16
++
+ #endif /* __ASM_SH_IRQ_H */
+diff --git a/arch/sh/kernel/cpu/Makefile b/arch/sh/kernel/cpu/Makefile
+index e00ebf134985..ad12807fae9c 100644
+--- a/arch/sh/kernel/cpu/Makefile
++++ b/arch/sh/kernel/cpu/Makefile
+@@ -20,7 +20,4 @@ ifndef CONFIG_COMMON_CLK
+ obj-y += clock.o
+ obj-$(CONFIG_SH_CLK_CPG_LEGACY)	+= clock-cpg.o
+ endif
+-ifndef CONFIG_GENERIC_IRQ_CHIP
+-obj-y	+= irq/
+-endif
+-obj-y	+= init.o fpu.o pfc.o proc.o
++obj-y	+= init.o fpu.o pfc.o proc.o irq/
+diff --git a/arch/sh/kernel/cpu/irq/imask.c b/arch/sh/kernel/cpu/irq/imask.c
+index 572585c3f2fd..7589ca7c506c 100644
+--- a/arch/sh/kernel/cpu/irq/imask.c
++++ b/arch/sh/kernel/cpu/irq/imask.c
+@@ -51,6 +51,7 @@ static inline void set_interrupt_registers(int ip)
+ 		     : "t");
+ }
+ 
++#ifndef CONFIG_GENERIC_IRQ_CHIP
+ static void mask_imask_irq(struct irq_data *data)
+ {
+ 	unsigned int irq = data->irq;
+@@ -83,3 +84,19 @@ void make_imask_irq(unsigned int irq)
+ 	irq_set_chip_and_handler_name(irq, &imask_irq_chip, handle_level_irq,
+ 				      "level");
+ }
++#else
++void update_sr_imask(unsigned int irq, bool enable)
++{
++	if (enable) {
++		set_bit(irq, imask_mask);
++		interrupt_priority = IMASK_PRIORITY -
++		  find_first_bit(imask_mask, IMASK_PRIORITY);
++	} else {
++		clear_bit(irq, imask_mask);
++		if (interrupt_priority < IMASK_PRIORITY - irq)
++			interrupt_priority = IMASK_PRIORITY - irq;
++	}
++	set_interrupt_registers(interrupt_priority);
++}
++EXPORT_SYMBOL(update_sr_imask);
++#endif
+diff --git a/include/linux/sh_intc.h b/include/linux/sh_intc.h
+index 27ae79191bdc..994b5b05a0d7 100644
+--- a/include/linux/sh_intc.h
++++ b/include/linux/sh_intc.h
+@@ -139,8 +139,13 @@ struct intc_desc symbol __initdata = {					\
+ int register_intc_controller(struct intc_desc *desc);
+ int intc_set_priority(unsigned int irq, unsigned int prio);
+ int intc_irq_lookup(const char *chipname, intc_enum enum_id);
++#ifndef CONFIG_SH_DEVICE_TREE
+ void intc_finalize(void);
+-
++#else
++static inline void intc_finalize(void)
++{
++}
++#endif
+ #ifdef CONFIG_INTC_USERIMASK
+ int register_intc_userimask(unsigned long addr);
+ #else
 -- 
 2.39.2
 
