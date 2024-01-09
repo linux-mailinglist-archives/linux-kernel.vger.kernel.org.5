@@ -1,112 +1,204 @@
-Return-Path: <linux-kernel+bounces-21152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AB0E828AD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:16:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E87D3828AD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:16:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3953E1F24891
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:16:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4FC01C244A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086803A8F9;
-	Tue,  9 Jan 2024 17:16:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4093B1B7;
+	Tue,  9 Jan 2024 17:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iASeUiit"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="StDNcWHj"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AD83A1B7;
-	Tue,  9 Jan 2024 17:16:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBF81C433F1;
-	Tue,  9 Jan 2024 17:15:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704820562;
-	bh=8vHH4TA7YAbmHU9PwkkVzfxY8bEZBUphiHO0pMprnow=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iASeUiit0WvZcOUa1bS5XKWgTQQLqrKQdIP+Fl0Uwmma7hSan2dyQOvG6RPeY8O94
-	 gcsXiR9Hafm3TDy7AZgDQGiOioEFsx0JIbHtVjWjlhD8+FZscQoz38LVm/B9Xi1DR0
-	 ZGIjqdJpa7vgCmz2wqjDailt7hDiA1/3h9+lb3Pf+nU3amxvDNb49nWi61He8WS7kB
-	 uXW9LI9cjgROFBnwocWC+sbcFLSk5r2TUkUvL+UpeewafF1nn4oYq/0JFHXLf9afBB
-	 r3tEY2SfIlTWQkvzXSAnByrdIxOzDFQBBucG1KX6Gm7pTe/hjD4SYBmVaKxzzOBU/A
-	 xx8yx6Uom6vwg==
-Date: Tue, 9 Jan 2024 17:15:57 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Conor Dooley <conor+dt@kernel.org>,
-	William Qiu <william.qiu@starfivetech.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Rob Herring <robh+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v10 1/4] dt-bindings: pwm: Add bindings for OpenCores PWM
- Controller
-Message-ID: <20240109-sleeve-squatted-e0943e659b2e@spud>
-References: <20231222094548.54103-1-william.qiu@starfivetech.com>
- <20231222094548.54103-2-william.qiu@starfivetech.com>
- <t3w2p765fs633nanqsx5yqres7taqpk6juwyl4iex5v4jpobo2@rqw6r4myjmv3>
- <p22vjdwk35yc66mb4pkntnst6kjyhhmnv3eb2n25c3dhi5bdeo@bj7amwepprab>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E3A3B198;
+	Tue,  9 Jan 2024 17:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409GDcW8002997;
+	Tue, 9 Jan 2024 17:16:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=3svU7b0tyFCpSBoa3yLQ52v339bU9u/QNEENmlt0W+E=; b=St
+	DNcWHjRUH1bPF1HGvbVTXE2WRNLOnIK1GiYgNDsg9nNE3UDcgN+pQkgaE1FoSaJc
+	jOsI06cu5WLQ29HaA8KUF7m+kevkxhliZpHI/pYzjdbKwYz7DuK4CCnEFuqkD40y
+	qyTXegK4BtD+KW7JMxpNLAGtcnogXWCE+cYVdKQNg3FhEDoTF1z7w39xCnlt6iVs
+	dYzZiP1j1XxqX/D8No95TjTGkYELKmarT1VWcIBstzVDp6nJjNuw6oA3mPVOzgQS
+	VoukeDflxjqIykUBbiAuQ1JcDi4bh5KYwrg3oUadErPvRwCUpcp+tUhng5OeUhHj
+	q357ovpM1sxOWoV0yB6Q==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9evr53b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:16:04 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409HG2SF011247
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 17:16:02 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
+ 2024 09:16:02 -0800
+Message-ID: <865486be-df38-c732-b329-13b4cfdafe1c@quicinc.com>
+Date: Tue, 9 Jan 2024 09:16:01 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="l1ROEXz9Iy/Ywcok"
-Content-Disposition: inline
-In-Reply-To: <p22vjdwk35yc66mb4pkntnst6kjyhhmnv3eb2n25c3dhi5bdeo@bj7amwepprab>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/ci: Add msm tests
+Content-Language: en-US
+To: Rob Clark <robdclark@gmail.com>
+CC: Rob Clark <robdclark@chromium.org>, <linux-arm-msm@vger.kernel.org>,
+        open
+ list <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        Helen
+ Koike <helen.koike@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas
+ Zimmermann <tzimmermann@suse.de>,
+        <freedreno@lists.freedesktop.org>
+References: <20240108195016.156583-1-robdclark@gmail.com>
+ <454873e5-1b5a-28d3-ffed-c1e502898d17@quicinc.com>
+ <CAF6AEGuVk=a-SwHyVwqOew-+WAdH1Gt011H50kvkSBe1j5ri_A@mail.gmail.com>
+ <CAF6AEGs7NxB2ox+JMW0tP_XOkFie=f=w1sWSQjTUM8AZQ0V3TQ@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAF6AEGs7NxB2ox+JMW0tP_XOkFie=f=w1sWSQjTUM8AZQ0V3TQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yA1HLDZbL39XdULj4kQn7-QSriDkRYc0
+X-Proofpoint-ORIG-GUID: yA1HLDZbL39XdULj4kQn7-QSriDkRYc0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ adultscore=0 suspectscore=0 clxscore=1015 spamscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090140
 
 
---l1ROEXz9Iy/Ywcok
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 08, 2024 at 10:03:49PM +0100, Uwe Kleine-K=F6nig wrote:
-> Hello Conor,
->=20
-> On Thu, Jan 04, 2024 at 11:43:13PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Fri, Dec 22, 2023 at 05:45:45PM +0800, William Qiu wrote:
-> > > Add bindings for OpenCores PWM Controller.
-> > >=20
-> > > Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-> > > Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> >=20
-> > Looks fine to me. I'll assume you reiterate the series for patch #2 and
-> > so I will mark this patch as deferred in patchwork.
-> >=20
-> > Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
->=20
-> If you want, pick this patch up that it goes along with the dts changes.
->=20
-> To make this formal:
->=20
-> Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+On 1/9/2024 7:31 AM, Rob Clark wrote:
+> On Mon, Jan 8, 2024 at 6:13 PM Rob Clark <robdclark@gmail.com> wrote:
+>>
+>> On Mon, Jan 8, 2024 at 2:58 PM Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>>
+>>>
+>>>
+>>> On 1/8/2024 11:50 AM, Rob Clark wrote:
+>>>> From: Rob Clark <robdclark@chromium.org>
+>>>>
+>>>> The msm tests should skip on non-msm hw, so I think it should be safe to
+>>>> enable everywhere.
+>>>>
+>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+>>>> ---
+>>>>    drivers/gpu/drm/ci/testlist.txt | 49 +++++++++++++++++++++++++++++++++
+>>>>    1 file changed, 49 insertions(+)
+>>>>
+>>>
+>>> I do see that all these tests use igt_msm_dev_open() to make sure it
+>>> opens only the MSM card.
+>>>
+>>> But if igt_msm_dev_open() fails, I dont see a igt_require() on some of
+>>> the tests to skip them. So how will it safely skip on non-msm HW?
+>>>
+>>> Unless i am missing something here ....
+>>
+>> hmm, at the time I added the initial msm tests, and
+>> igt_msm_dev_open(), I verified that they skipped on intel.. but since
+>> then I'd switched from intel to sc8280xp device for primary dev
+>> device, so I'd need to re-test to remember how it works.  If these
+>> aren't skipping on !msm, it is a bug
+> 
+> I double checked, these tests skip in drm_open_driver() with "No known
+> gpu found for chipset flags 0x64 (msm)", so no problem to run them on
+> all CI runners.
+> 
+> BR,
+> -R
+> 
 
-Cool. I'll do that after the merge window closes :)
+Ack, thanks for checking
 
-Thanks!
 
---l1ROEXz9Iy/Ywcok
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ1/TQAKCRB4tDGHoIJi
-0v7HAQCyHgwcpyb9uqwBTi+Ww/Qblt+7MpgHC270lUcxAYkU4QEA3DWB4bXtpFA1
-qblPMvrOJPbChkjkwy2FCF9finMrhAI=
-=ZZGb
------END PGP SIGNATURE-----
-
---l1ROEXz9Iy/Ywcok--
+> 
+>> BR,
+>> -R
+>>
+>>>> diff --git a/drivers/gpu/drm/ci/testlist.txt b/drivers/gpu/drm/ci/testlist.txt
+>>>> index f82cd90372f4..eaeb751bb0ad 100644
+>>>> --- a/drivers/gpu/drm/ci/testlist.txt
+>>>> +++ b/drivers/gpu/drm/ci/testlist.txt
+>>>> @@ -2910,3 +2910,52 @@ kms_writeback@writeback-invalid-parameters
+>>>>    kms_writeback@writeback-fb-id
+>>>>    kms_writeback@writeback-check-output
+>>>>    prime_mmap_kms@buffer-sharing
+>>>> +msm_shrink@copy-gpu-sanitycheck-8
+>>>> +msm_shrink@copy-gpu-sanitycheck-32
+>>>> +msm_shrink@copy-gpu-8
+>>>> +msm_shrink@copy-gpu-32
+>>>> +msm_shrink@copy-gpu-madvise-8
+>>>> +msm_shrink@copy-gpu-madvise-32
+>>>> +msm_shrink@copy-gpu-oom-8
+>>>> +msm_shrink@copy-gpu-oom-32
+>>>> +msm_shrink@copy-mmap-sanitycheck-8
+>>>> +msm_shrink@copy-mmap-sanitycheck-32
+>>>> +msm_shrink@copy-mmap-8
+>>>> +msm_shrink@copy-mmap-32
+>>>> +msm_shrink@copy-mmap-madvise-8
+>>>> +msm_shrink@copy-mmap-madvise-32
+>>>> +msm_shrink@copy-mmap-oom-8
+>>>> +msm_shrink@copy-mmap-oom-32
+>>>> +msm_shrink@copy-mmap-dmabuf-sanitycheck-8
+>>>> +msm_shrink@copy-mmap-dmabuf-sanitycheck-32
+>>>> +msm_shrink@copy-mmap-dmabuf-8
+>>>> +msm_shrink@copy-mmap-dmabuf-32
+>>>> +msm_shrink@copy-mmap-dmabuf-madvise-8
+>>>> +msm_shrink@copy-mmap-dmabuf-madvise-32
+>>>> +msm_shrink@copy-mmap-dmabuf-oom-8
+>>>> +msm_shrink@copy-mmap-dmabuf-oom-32
+>>>> +msm_mapping@ring
+>>>> +msm_mapping@sqefw
+>>>> +msm_mapping@shadow
+>>>> +msm_submitoverhead@submitbench-10-bos
+>>>> +msm_submitoverhead@submitbench-10-bos-no-implicit-sync
+>>>> +msm_submitoverhead@submitbench-100-bos
+>>>> +msm_submitoverhead@submitbench-100-bos-no-implicit-sync
+>>>> +msm_submitoverhead@submitbench-250-bos
+>>>> +msm_submitoverhead@submitbench-250-bos-no-implicit-sync
+>>>> +msm_submitoverhead@submitbench-500-bos
+>>>> +msm_submitoverhead@submitbench-500-bos-no-implicit-sync
+>>>> +msm_submitoverhead@submitbench-1000-bos
+>>>> +msm_submitoverhead@submitbench-1000-bos-no-implicit-sync
+>>>> +msm_recovery@hangcheck
+>>>> +msm_recovery@gpu-fault
+>>>> +msm_recovery@gpu-fault-parallel
+>>>> +msm_recovery@iova-fault
+>>>> +msm_submit@empty-submit
+>>>> +msm_submit@invalid-queue-submit
+>>>> +msm_submit@invalid-flags-submit
+>>>> +msm_submit@invalid-in-fence-submit
+>>>> +msm_submit@invalid-duplicate-bo-submit
+>>>> +msm_submit@invalid-cmd-idx-submit
+>>>> +msm_submit@invalid-cmd-type-submit
+>>>> +msm_submit@valid-submit
 
