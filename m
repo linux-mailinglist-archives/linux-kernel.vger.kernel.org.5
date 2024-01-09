@@ -1,109 +1,99 @@
-Return-Path: <linux-kernel+bounces-20974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 136888287F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:23:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B9088287F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:24:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FBEAB24464
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:23:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27D4E1F24CE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8A039AC2;
-	Tue,  9 Jan 2024 14:23:16 +0000 (UTC)
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4A5B39AC5;
+	Tue,  9 Jan 2024 14:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PIL4c66Y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3FE39AC0;
-	Tue,  9 Jan 2024 14:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bbc47db8a9so387635b6e.1;
-        Tue, 09 Jan 2024 06:23:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704810194; x=1705414994;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mREYysZpGdKxJT/PP4XzvgEVe5mAm4kijQUj6uChCLc=;
-        b=n2FWwRTNPHtWiLKeVNUBeJX291G5Y1Nfx6gKTLP/f+W6XUqWHcgpcd9/rYzIsx5sfI
-         IO3/vqx7sXvmD5zkALiB/6U7HWRng/UH3y/g5V2OXULpOdBYI8vF43CKhFtYpfpsweZi
-         2ZBhomMzTWj9vX7/k8urJ9zWuqL52xqHTVfHicvh8X2+759alSIToiVi2j5yupVqEg2J
-         owY3y0dmIgCwzS2gVSIC3WcOMvXhrCQKkWC7q1RxvKbb/vG7j3cR+pgkGzeXE2Sgf9y7
-         zBbIFlXNoAgK7WCOUDTr1+7epBMWFp0y0UyWRX1yn7N/sYwBEdMEnTMKM7d6YvAIoDg/
-         w5kA==
-X-Gm-Message-State: AOJu0YwoxZw3zsSOJcyc4sHcA1UdX/lTwQ8Lk1LnLaD35toxg9KF1cxp
-	f6k7QOP6u4xaYRw8vo96T2/8Y4gQkOQd3ZbrOA8=
-X-Google-Smtp-Source: AGHT+IGE5fCiqJ3Gw1wlD2i7O14i3Ynciv+iM6vwTzkFERr9JEeTDmyexZA4ds4xG8+EaL0j+V7+ywq/2TVzAaEYPFQ=
-X-Received: by 2002:a05:6808:60d:b0:3bb:74da:bf82 with SMTP id
- y13-20020a056808060d00b003bb74dabf82mr9022153oih.4.1704810194108; Tue, 09 Jan
- 2024 06:23:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2A539848;
+	Tue,  9 Jan 2024 14:24:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12ACFC433C7;
+	Tue,  9 Jan 2024 14:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704810243;
+	bh=jtlAf7GbJEb8KC+GO5s0+NRGfPU8y1/U2gB+ZyxG2Jg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PIL4c66YEFKrl/oUi0AvJbJow6+eqXBvJQu3E+B7mkXl2QWTeN5MVNYOnU/r5AH8G
+	 PR185TTOjTqifbB+AOt5KCoz/7HBQH0JKdsxBooULuNEs8w5O5E/GtTxYDKJwwq0K6
+	 erIklOjQErOoFhuIEX+rfwb1Pq1IRox1d+1evUCsrsKYDCNpZD9ZUw9f/P0V9fd3RC
+	 Cqnz1GQURYtRAaVfVCo5y7o4wAVjuYn79Smv1qda4AUrXGNvpbUyVHZpXRHC3ZR4YO
+	 ICZYHFSXUwrpIdP/tkzkEZXI2jC1o73UboGqTkDvqp23QT2JK4hUbVi353lxqzfOy/
+	 02DzZBYrOOQaQ==
+Date: Tue, 9 Jan 2024 15:23:58 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] vfs mount api updates
+Message-ID: <20240109-bitten-anzetteln-af76df71c9b3@brauner>
+References: <20240105-vfs-mount-5e94596bd1d1@brauner>
+ <CAHk-=wjfbjuNxx7jWa144qVb5ykwPCwVWa26tcFMvE-Cr6=vMg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240107085305.6981-1-mekosko@projectyo.network>
-In-Reply-To: <20240107085305.6981-1-mekosko@projectyo.network>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 9 Jan 2024 15:23:03 +0100
-Message-ID: <CAJZ5v0izfETgX_652rk9q83JyP4Tne5H7CaH3DGqr5+xHMttKA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: resource: Skip IRQ override on ASUS ExpertBook B1502CGA
-To: Michael Maltsev <mekosko@projectyo.network>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjfbjuNxx7jWa144qVb5ykwPCwVWa26tcFMvE-Cr6=vMg@mail.gmail.com>
 
-On Sun, Jan 7, 2024 at 9:59=E2=80=AFAM Michael Maltsev
-<mekosko@projectyo.network> wrote:
->
-> Like the ASUS ExpertBook B1502CBA and various ASUS laptops, the
-> ASUS ExpertBook B1502CGA has an ACPI DSDT table that describes IRQ 1 as
-> ActiveLow while the kernel overrides it to Edge_High.
->
->         $ sudo dmesg | grep DMI
->         [    0.000000] DMI: ASUSTeK COMPUTER INC. ASUS EXPERTBOOK B1502CG=
-A_B1502CGA/B1502CGA, BIOS B1502CGA.303 06/05/2023
->         $ grep -A 40 PS2K dsdt.dsl | grep IRQ -A 1
->                         IRQ (Level, ActiveLow, Exclusive, )
->                             {1}
->
-> This prevents the keyboard from working. To fix this issue, add this lapt=
-op
-> to the skip_override_table so that the kernel does not override IRQ 1.
->
-> Signed-off-by: Michael Maltsev <mekosko@projectyo.network>
-> ---
->  drivers/acpi/resource.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-> index c297e40c5bdc..b0c3da70f809 100644
-> --- a/drivers/acpi/resource.c
-> +++ b/drivers/acpi/resource.c
-> @@ -453,6 +453,13 @@ static const struct dmi_system_id asus_laptop[] =3D =
-{
->                         DMI_MATCH(DMI_BOARD_NAME, "B1402CVA"),
->                 },
->         },
-> +       {
-> +               .ident =3D "Asus ExpertBook B1502CGA",
-> +               .matches =3D {
-> +                       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."=
-),
-> +                       DMI_MATCH(DMI_BOARD_NAME, "B1502CGA"),
-> +               },
-> +       },
->         {
->                 .ident =3D "Asus ExpertBook B2402CBA",
->                 .matches =3D {
-> --
+On Mon, Jan 08, 2024 at 05:02:48PM -0800, Linus Torvalds wrote:
+> On Fri, 5 Jan 2024 at 04:47, Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > This contains the work to retrieve detailed information about mounts via two
+> > new system calls.
+> 
+> Gaah. While I have an arm64 laptop now, I don't do arm64 builds in
+> between each pull like I do x86 ones.
+> 
+> I *did* just start one, because I got the arm64 pull request.
+> 
+> And this fails the arm64 build, because __NR_statmount and
+> __NR_listmount (457 and 458 respectively) exceed the compat system
+> call array size, which is
+> 
+> arch/arm64/include/asm/unistd.h:
+>   #define __NR_compat_syscalls            457
+> 
+> I don't think this is a merge error, I think the error is there in the
+> original, but I'm about to go off and have dinner, so I'm just sending
+> this out for now.
+> 
+> How was this not noted in linux-next? Am I missing something?
+> 
+> Now, admittedly this looks like an easy mistake to make due to that
+> whole odd situation where the compat system calls are listed in
+> unistd32.h, but then the max number is in unistd.h, but I would still
+> have expected this to have raised flags before it hit my tree..
 
-Applied as 6.8-rc1 material, but I've replaced the unnecessary .ident
-field with a comment.
+Bah.
 
-Thanks!
+I think Will already provided a good explantion for how this came to be.
+But for full transparency: I've ran into this exact issue before with
+other system calls we added and I've been notified/saved by Arnd who
+pointed out that this file needs to be updated.
+
+32 bit arm has this annoying extra file where you need to bump that
+single line. But it'd be nice if we finally had some:
+
+/add-new-syscall
+
+script that could automate adding a new system call number into all
+relevant architectures.
+
+Sorry for the breakage. I see that it's already fixed. I'll make a note
+to reactivate my cross-compilation toolsuite.
 
