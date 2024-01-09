@@ -1,97 +1,124 @@
-Return-Path: <linux-kernel+bounces-20813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D2A582858B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:56:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8235082858E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CC46B23C38
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:56:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DD741F251C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91726381CB;
-	Tue,  9 Jan 2024 11:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB4438DDC;
+	Tue,  9 Jan 2024 11:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="JAgmpAIs"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABEB037160;
-	Tue,  9 Jan 2024 11:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704801374;
-	bh=J2KyjqURSPA1gUY97Bi/m2UU1dp9Uu6ge1Ve3KIiJak=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JAgmpAIsL5Anr72TOiGJDd239SEDEyOcxaUV8QXwyeO9iRWBkPhQE2x09bzyeQE+J
-	 2sq8x6a+8bdUC8LLciI0X5/7E9UGga8jYs5GIFCoHSUokmY3zgLO22mbMEfWJom1Qg
-	 1UvJa6aGatlxkFKTPsAdXPLxrOQ15fuSntPi9R9CkLGcFzkTENRxVbjZTsuyxE2a9d
-	 s6vYmBQWTVHf11tuLOETnA13vkWDH9wWn0B7P+efuy8dmCLJs5B4DI0IvdbHGsIFPS
-	 VlbR5TIWIvexMnNgIN5rVdULSIHO1VM3Ve+STn3XOjBchrXDoY6LOgFIhAPulCihQe
-	 lkaIJdi+5iVBg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T8Tsp1K8dz4wcd;
-	Tue,  9 Jan 2024 22:56:14 +1100 (AEDT)
-Date: Tue, 9 Jan 2024 22:56:13 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] vfs mount api updates
-Message-ID: <20240109225613.644a25f4@canb.auug.org.au>
-In-Reply-To: <CAHk-=wjfbjuNxx7jWa144qVb5ykwPCwVWa26tcFMvE-Cr6=vMg@mail.gmail.com>
-References: <20240105-vfs-mount-5e94596bd1d1@brauner>
-	<CAHk-=wjfbjuNxx7jWa144qVb5ykwPCwVWa26tcFMvE-Cr6=vMg@mail.gmail.com>
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="leEnvgxm"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8952938DD8;
+	Tue,  9 Jan 2024 11:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [192.168.1.210] (181-28-144-85.ftth.glasoperator.nl [85.144.28.181])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 5DA60209AF69;
+	Tue,  9 Jan 2024 03:56:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5DA60209AF69
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1704801386;
+	bh=qTrKm5gfDaGVKWMebrVJloyB8rgSl281DiQxs9lsdz4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=leEnvgxmqMyQcS71Cg/lDkkVYOlAo1MdVzP4smUzAvnnaHz4jrz2ndUmu4HVjlYiQ
+	 pQ9ufr8kiXyrTyy7o8s4h6REGjMhslEU9OG1i/Gy8bxqDNExlO0wS6czjMnGF8TyoQ
+	 P4TKIMEclkSk/uRWSxMfgue1qpFPR6T4Eu81gM/Y=
+Message-ID: <b5b57b60-1573-44f4-8161-e2249eb6f9b6@linux.microsoft.com>
+Date: Tue, 9 Jan 2024 12:56:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hz/3hh4w=b8XsC4LmnbZTeO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
+ support
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>
+Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org, kvm@vger.kernel.org,
+ linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+ thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
+ pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+ jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+ slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+ srinivas.pandruvada@linux.intel.com, rientjes@google.com, tobin@ibm.com,
+ vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+ tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+ alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+ nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com,
+ zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-5-michael.roth@amd.com>
+ <f60c5fe0-9909-468d-8160-34d5bae39305@linux.microsoft.com>
+ <20240105160916.GDZZgprE8T6xbbHJ9E@fat_crate.local>
+ <20240105162142.GEZZgslgQCQYI7twat@fat_crate.local>
+ <0c4aac73-10d8-4e47-b6a8-f0c180ba1900@linux.microsoft.com>
+ <20240108170418.GDZZwrEiIaGuMpV0B0@fat_crate.local>
+From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20240108170418.GDZZwrEiIaGuMpV0B0@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---Sig_/hz/3hh4w=b8XsC4LmnbZTeO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 08/01/2024 18:04, Borislav Petkov wrote:
+> On Mon, Jan 08, 2024 at 05:49:01PM +0100, Jeremi Piotrowski wrote:
+>> What I wrote: "allow for the kernel to allocate the rmptable".
+> 
+> What?!
+> 
+> "15.36.5 Hypervisor RMP Management
+> 
+> ...
+> 
+> Because the RMP is initialized by the AMD-SP to prevent direct access to
+> the RMP, the hypervisor must use the RMPUPDATE instruction to alter the
+> entries of the RMP. RMPUPDATE allows the hypervisor to alter the
+> Guest_Physical_Address, Assigned, Page_Size, Immutable, and ASID fields
+> of an RMP entry."
+>> What you want is something that you should keep far and away from the
+> upstream kernel.
+>
 
-Hi Linus,
+Can we please not assume I am acting in bad faith. I am explicitly trying to
+integrate nicely with AMD's KVM SNP host patches to cover an additional usecase
+and get something upstreamable.
 
-On Mon, 8 Jan 2024 17:02:48 -0800 Linus Torvalds <torvalds@linux-foundation=
-org> wrote:
->=20
-> How was this not noted in linux-next? Am I missing something?
+Let's separate RMP allocation from who (and how) maintains the entries.
 
-I suspect I noticed this when the other syscall adding commits arrived
-(in the security tree) and sent
-https://lore.kernel.org/all/20231120143106.3f8faedd@canb.auug.org.au/
- - which gave a hint and would have hidden the error you got.  I also do
-not do arm64 builds along the way and only at the end of my day.
---=20
-Cheers,
-Stephen Rothwell
+"""
+15.36.4 Initializing the RMP
+..
+Software must program RMP_BASE and RMP_END identically for each core in the
+system and before enabling SEV-SNP globally.
+"""
 
---Sig_/hz/3hh4w=b8XsC4LmnbZTeO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+KVM expects UEFI to do this, Hyper-V does the allocation itself (on bare-metal).
+Both are valid. Afaik it is the SNP_INIT command that hands over control of the
+RMP from software to AMD-SP.
 
------BEGIN PGP SIGNATURE-----
+When it comes to "who and how maintains the rmp" - that is of course the AMD-SP
+and hypervisor issues RMPUPDATE instructions. The paragraph you cite talks about
+the physical RMP and AMD-SP - not virtualized SNP (aka "SNP-host VM"/nested SNP).
+AMD specified an MSR-based RMPUPDATE for us for that usecase (15.36.19 SEV-SNP
+Instruction Virtualization). The RMP inside the SNP-host VM is not related to
+the physical RMP and is an entirely software based construct.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWdNF0ACgkQAVBC80lX
-0GwNigf8D0KGE59/GAr+9EuqVRawD5fDLvVJHMcHYhhshKpajHVjWgaw1Ix8EV4f
-07mvGT97GYhqLDpAIS3cvBNfE4wzZ+OSEyuBmn40+sUu0ZhbvoraD8BCKzy9AW1d
-LPKYTPRi6RZTY6IIeCTw8+VeEcPXfcgAgTc1N+m64MJeZRT2XcqeNKONqPBDH4vX
-Qau/lTLG53TbBxlNm0yNK6L+Kh1/lLGENnzr2SOHHeTDghhY73OC6Yo2cpUUp+sH
-xBzeIOlHMkBmWoHvQ6BFw6j5pgSj7BxKjNmn9GOVYcy/RAcSHcr1qJT/jLWZbwkD
-nGGacwCCR56Vuy9pc/ay71DU7WLheg==
-=otWA
------END PGP SIGNATURE-----
+The RMP in nested SNP is only used for kernel bookkeeping and so its allocation
+is optional. KVM could do without reading the RMP directly altogether (by tracking
+the assigned bit somewhere) but that would be a design change and I'd rather see
+the KVM SNP host patches merged in their current shape. Which is why the patch
+I linked allocates a (shadow) RMP from the kernel.
 
---Sig_/hz/3hh4w=b8XsC4LmnbZTeO--
+I would very much appreciate if we would not prevent that usecase from working -
+that's why I've been reviewing and testing multiple revisions of these patches
+and providing feedback all along.
 
