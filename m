@@ -1,120 +1,124 @@
-Return-Path: <linux-kernel+bounces-21447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 343B2828F33
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:50:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB089828F3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41BA2B2591B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:50:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB2C31C23FDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44863E497;
-	Tue,  9 Jan 2024 21:50:10 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496F63DB9B;
+	Tue,  9 Jan 2024 21:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XWHQz/3w"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 052F13E464
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rNJz3-0001vm-5L; Tue, 09 Jan 2024 22:50:05 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rNJz2-001Z3k-Mt; Tue, 09 Jan 2024 22:50:04 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rNJz2-0066TS-1z;
-	Tue, 09 Jan 2024 22:50:04 +0100
-Date: Tue, 9 Jan 2024 22:50:04 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	linux-input@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.19 4/7] Input: amimouse - convert to platform
- remove callback returning void
-Message-ID: <qkb22czelncqf43vr2kuz6i6npuq4juyr3ggl3jkdbp6t2uzfs@ftbna3qj6qhq>
-References: <20231226002649.7290-1-sashal@kernel.org>
- <20231226002649.7290-4-sashal@kernel.org>
- <ZZ0xt75z/qSf5f8V@duo.ucw.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7A83DB89;
+	Tue,  9 Jan 2024 21:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3e05abcaeso20750905ad.1;
+        Tue, 09 Jan 2024 13:51:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704837089; x=1705441889; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p4XACuuvaxg6iNNy3U1OF2HVW2+gq8zC1xPatIaJOAU=;
+        b=XWHQz/3wmsJ7wPuDR2XmqxB8Q1DKHeny5uPB2eaJjoAU49spZYThOdvtSMfvNG9hLp
+         wkRGggFUZY7tcZJmzrPjx3kAhelkUbaaQh1IMwEap5F2h8nQpIY/fp7CHrlvoht+0jZd
+         aEPQCJ/XgiTADe/IShczxqoMLb1jn1ZdNCJ4b38nqUc/45BoJlmZNbZyEfgaeHur7/IN
+         qAEqaJdh/QlDGOnZoP7PLeu9d40t9u6MsmXEctZQdtm0lCAqIBMOEGTkw7GAbFAqQIde
+         ZVdpUVwUgL/FCMvxEu6TlPR7UeWWnDJOmYeg/CRBZD73R4b10KfqurveWzDlf8ZAe7R+
+         kHmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704837089; x=1705441889;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p4XACuuvaxg6iNNy3U1OF2HVW2+gq8zC1xPatIaJOAU=;
+        b=d9c7Cu3qJHE404AoyaXo36DNX61MQmNweVPsDEcUEINJJ1uNTt+RidoUvcffHVbySY
+         UmgznPa8fDUZMzUTKzezOlFgRXvdGeJjJ7nNLh9KH8j8dPI/F6N5N4D6rQ3UinliTHWv
+         U9+MhwcWgR+WH5nBpOC7rzEXFP9M5rVrj5+FpnSuKfj2IkKHkvG7LSgEMDJodZiLiSxs
+         +1L/MN66XKKa1jmASn/E/VbZuZ+kThbZrM/AZuS1mVgrfhA0qxcDIu06awS68ZHTih64
+         lkst4kdYr3zQQpbeJ5/D6JJ9iNzEQQyAHrlCexNuEOLapehBjgESXeZO3DNQ9SYFBmao
+         eDPQ==
+X-Gm-Message-State: AOJu0YywJ3b9YNlTIuQgDT/wBPN78L08m1NkqfMBfZRQ7iHB9im+sMw2
+	X/goTwELosfPU/79CnxpElbZNFgmmxk=
+X-Google-Smtp-Source: AGHT+IGQoepg3uVolJbpdyHgBEwX4/pMIRql3JTpVTXDgDIA1REodRjuLopMrrujNQWq4ChAhIRUcg==
+X-Received: by 2002:a17:90a:d811:b0:285:b3a8:40ac with SMTP id a17-20020a17090ad81100b00285b3a840acmr2945010pjv.19.1704837088696;
+        Tue, 09 Jan 2024 13:51:28 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:fd50])
+        by smtp.gmail.com with ESMTPSA id o1-20020a17090aac0100b0028bd303dc58sm2472323pjq.11.2024.01.09.13.51.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 13:51:28 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 9 Jan 2024 11:51:26 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org,
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH] kernfs: convert kernfs_idr_lock to an irq safe raw
+ spinlock
+Message-ID: <ZZ2_3n9rJnhcYmpk@slm.duckdns.org>
+References: <20231229074916.53547-1-andrea.righi@canonical.com>
+ <CAMuHMdV=AKt+mwY7svEq5gFPx41LoSQZ_USME5_MEdWQze13ww@mail.gmail.com>
+ <ZZ18xVq4GtQsTC8Z@gpd>
+ <ZZ2ZdoNyBhR7o83I@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="z4dqfcfoobhdzq6r"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZ0xt75z/qSf5f8V@duo.ucw.cz>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <ZZ2ZdoNyBhR7o83I@slm.duckdns.org>
 
+On Tue, Jan 09, 2024 at 09:07:34AM -1000, Tejun Heo wrote:
+> On Tue, Jan 09, 2024 at 06:05:09PM +0100, Andrea Righi wrote:
+> > On Tue, Jan 09, 2024 at 05:35:36PM +0100, Geert Uytterhoeven wrote:
+> > > Reverting commit c312828c37a72fe2 fixes that.
+> > > I have seen this issue on several Renesas arm32 and arm64 platforms.
+> > > 
+> > > Also, I am wondering if the issue fixed by commit c312828c37a72fe2
+> > > can still be reproduced on v6.7-rc5 or later?
+> > 
+> > Yep, I can still reproduce it (this is with v6.7):
+> ...
+> > I'm wondering if using a regular spinlock instead of a raw spinlock
+> > could be a reasonable compromise.
+> 
+> I don't think that'd work on RT as we can end up nesting mutex inside a raw
+> spinlock.
+> 
+> > We have a GFP_ATOMIC allocation in __kernfs_new_node():
+> > 
+> > 	raw_spin_lock_irqsave(&kernfs_idr_lock, irqflags);
+> > 	ret = idr_alloc_cyclic(&root->ino_idr, kn, 1, 0, GFP_ATOMIC);
+> > 	...
+> >         raw_spin_unlock_irqrestore(&kernfs_idr_lock, irqflags);
+> > 
+> > That should become valid using a
+> > spin_lock_irqsave/spin_unlock_irqrestore(), right?
+> 
+> Yeah, this part should be fine. I think the right thing to do here is making
+> the idr RCU safe so that lookup path doesn't depend on the lock.
+> 
+> Greg, can you please revert c312828c37a72fe2 for now?
 
---z4dqfcfoobhdzq6r
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I sent out a patchset to revert the commit and implement a different fix.
 
-On Tue, Jan 09, 2024 at 12:44:55PM +0100, Pavel Machek wrote:
-> Hi!
->=20
-> > From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> >=20
-> > [ Upstream commit 42b8ff47720258d1f6a4412e780a480c139773a0 ]
-> >=20
-> > The .remove() callback for a platform driver returns an int which makes
-> > many driver authors wrongly assume it's possible to do error handling by
-> > returning an error code. However the value returned is ignored (apart
-> > from emitting a warning) and this typically results in resource leaks.
-> >=20
-> > To improve here there is a quest to make the remove callback return
-> > void. In the first step of this quest all drivers are converted to
-> > .remove_new(), which already returns void. Eventually after all drivers
-> > are converted, .remove_new() will be renamed to .remove().
-> >=20
-> > Trivially convert this driver from always returning zero in the remove
-> > callback to the void returning variant.
->=20
-> We don't really need this for -stable.
+  http://lkml.kernel.org/r/20240109214828.252092-1-tj@kernel.org
 
-Agreed! These patches shouldn't get backported to stable. Even if they
-are a dependency (which isn't the case for this patch AFAICT),
-backporting of later patches isn't hard even when dropping these
-patches.
+Thanks.
 
-Best regards
-Uwe
-
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---z4dqfcfoobhdzq6r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWdv4sACgkQj4D7WH0S
-/k7Ikgf9Ff56k8gPg9Rqm0wNd4bcxm3xlWSN6sjrtlYtZ7hUFMbbo9GjjHFzwMS8
-HxZm3aP5BMJx4BwkCGd01taCgJmANyrw6ZWZ9Um66my+592guOUVdEerXalMm9Yx
-bI6UjPrHNcEm9LhVdBhuEM7vXI3pvIESsfgJX/gMpUCgCkFfqSJKRwsvfavZ5pnS
-5SKkJ8LXgj9oMO7Kvehpyq71T6mLk7bhlz608Ns2euCY/plYxm8YYVtD0Y47wlhs
-N7LIUDpK42CgAbCpP1pI9gfkAdxR2IwX7x5cPT05lHj2UV+J9ofwo+hxvWPwlkzq
-ROZCoWdY52UhGFL4jRiZpnJ3VOnDjw==
-=FCqt
------END PGP SIGNATURE-----
-
---z4dqfcfoobhdzq6r--
+-- 
+tejun
 
