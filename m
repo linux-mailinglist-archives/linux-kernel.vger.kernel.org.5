@@ -1,173 +1,158 @@
-Return-Path: <linux-kernel+bounces-20716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A198283FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:27:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59CED828411
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:35:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B3342843CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:27:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D9601C23BD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21AE364D6;
-	Tue,  9 Jan 2024 10:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA699364B6;
+	Tue,  9 Jan 2024 10:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VhkYgAMh"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jWiapSy2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="7xYaP8h9"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6557C364C0
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 10:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cd33336b32so36156861fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 02:27:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704796019; x=1705400819; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KqCs7xVcoH/Y335TS6+AvlQypI4PD3ESEDIAEMa+9Hk=;
-        b=VhkYgAMhO7m5TnvRWFXeaN2j+exrFFMz8//NhnccrsQpqArRU14OviQGQvA1MwKXnr
-         gqFoaFUaj9/R/5kFHRT9SnSjTWEHKis1grFmiExoXzBomhK7+m3JA9oqUkfR37s+MekT
-         ECIdVndwnRfI3TwD8B17VCb07O2FKUDlDBf2U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704796019; x=1705400819;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KqCs7xVcoH/Y335TS6+AvlQypI4PD3ESEDIAEMa+9Hk=;
-        b=LmHUD3m2RrwSIhGRj0CoLQc0N6zPJU8r1gYTbTKG0MDsyqWH4ByGbsr9vkBO3+5l/5
-         QA10yuq6HeYcBQZnOMIfJ36BsZl4g6rMuNLrZuEpjbDkoqYvxo1RxL9gicoBb0f43d/E
-         i7i71gYK7wI22A1GV2kUYkHvSKiWhJU5QHHsa0xeXpxi66ysyxKk2YEE2ohKVDM/3VVd
-         hYRoiYUptmSF9esXJhTxnF5ECzf5VqaD31X2fOPaLLrE8nUM0Gpa/d4cLuYEU170oQib
-         nFbrOgK/YwsAag2hsaj8/JJLaeIPHAJSeeXNyIDPsCF+w36EBRZgVe9y3Wcw2IFhtK8O
-         EvZQ==
-X-Gm-Message-State: AOJu0YyrTdC8yYseXXr6IvBJMKXvVJ1x2dqGIY3c9wcZ6b0FTmg/HVtl
-	xzwkFYry+94cuVFjoSLvzGk2IN7LvWBjgY8x5Kzsvz7OdTQw
-X-Google-Smtp-Source: AGHT+IGQso15KMjS2y4XlmEYUeEkRxHzMQ28n8NcqMI0p1GE1exj8UpVAFn8ANEkOOkgRsxqhphrTsJBnkvvGkjEwO8=
-X-Received: by 2002:a2e:c42:0:b0:2cc:9882:4cb5 with SMTP id
- o2-20020a2e0c42000000b002cc98824cb5mr2242827ljd.45.1704796019352; Tue, 09 Jan
- 2024 02:26:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECBB13FE0;
+	Tue,  9 Jan 2024 10:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id B579A3200A51;
+	Tue,  9 Jan 2024 05:35:47 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 09 Jan 2024 05:35:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1704796547; x=1704882947; bh=DgG9tCDREy
+	TfxAwH9mDVpC/UFPRAXNZSHBS2vcSJXRU=; b=jWiapSy2JW7izbbWmSzVs7RHGy
+	NYrT/mP0CmV2uSUWKFoTiLgU2aLm3HH7zxQbmpqnFerzFFas2LevMfawtBzbA21/
+	6v6gS6FV5yzPH19s0wTx/x0H6VGa4wDACgkmQNzYstwJIqGhGzxi4H4N16yfAnUf
+	Pt1Lzs22mpi4artsj9c5FHd6ZBWktc6Hm/WU0+6JRQn2Xj5LqDMU6PScnGpGybyn
+	EWeyT+9uczVokEfqp64mLFxRXE44Y/4Li71gkF2rmJydO3RJRrBSDEP/HbSAoh13
+	Z+byJFgUoimTjicJGGpUgyZT0Hja9tZj4Ojl1fEFc+BTncvqF2opTFvGNufA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704796547; x=1704882947; bh=DgG9tCDREyTfxAwH9mDVpC/UFPRA
+	XNZSHBS2vcSJXRU=; b=7xYaP8h9UrHAJ+SEQA2d0sh8T9lgXKtXfhz7L/ctcO6m
+	o2LC21vB2dwZ+BMW5T51rOTtYk5W2TuWaJt0Q5KEErupShgEUupuRC+EIemJL+2y
+	Uk4P6/8yA+VVvYtaat6upbpwfAkIhs9q+yp+xIn+W5a58IPDfBnIkptEPuDYAh5f
+	vmRx9jwvSyWmWwgy7J+7+o62fWT2TOgZ3Lrv7vtsXBoP3TiG9FmNS/fqtz0M+O4x
+	oUxWnmY0djEj/ogNCfN2gTShnkd7HFvOl78cfBTDOvAzJglXTmIHqeKQhVlcbwKu
+	3i9uk9fEC4TGGgC8+SCMycak2wmwg2pqedMWW6Yhqg==
+X-ME-Sender: <xms:giGdZY-PegoksqYrZRanLBhTqZVVFv-DRKm7bu2rw1yRRGDmbHLHZg>
+    <xme:giGdZQu28zTkxel3LogUfLSzJcFR10IY7WoGL-VfIxoPVxgK8Q4o5dTp4TkuElwgS
+    Tjht46wuNLhtB0dCX0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehledgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:giGdZeC81tTlvnFmALc-wQhcV6FNbl3C0ydHmAju8mN2Jomw-zihvQ>
+    <xmx:giGdZYcXgzAU3cbWsycUQc9iJsOMvsxU8jqcxPqnRCZEnD82NXlNYQ>
+    <xmx:giGdZdMSrG0d9-vyy7aZ7_uZX2IzqRxOzX3jGxafbTH_MYqZC1_FeA>
+    <xmx:gyGdZZD2dvZNN4ekKml_HGglqJScMv8XauUYoLa3RKkaYmVWChESRw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 973E4B6008F; Tue,  9 Jan 2024 05:35:46 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104130123.37115-1-brgl@bgdev.pl> <20240104130123.37115-9-brgl@bgdev.pl>
- <15443d5d-6544-45d0-afeb-b23e6a041ecf@quicinc.com> <87jzoizwz7.fsf@kernel.org>
- <CAGXv+5FhYY+qyyT8wxY5DggvWPibfM2ypHVKQbsJZ30VkZDAkQ@mail.gmail.com>
- <87bk9uzum9.fsf@kernel.org> <5904461c-ca3c-4eb1-a44a-876872234545@app.fastmail.com>
-In-Reply-To: <5904461c-ca3c-4eb1-a44a-876872234545@app.fastmail.com>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Tue, 9 Jan 2024 18:26:48 +0800
-Message-ID: <CAGXv+5EHc08sv5+=tnFmoDAQhbD7ZS+XBOyaiSndaiSFhMksAA@mail.gmail.com>
-Subject: Re: [RFC 8/9] PCI/pwrseq: add a pwrseq driver for QCA6390
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, 
-	=?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
-	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, 
-	Netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <468ce58a-9f4a-4a75-adbf-7beb8fa13580@app.fastmail.com>
+In-Reply-To: <4c859da1-9551-4d0b-a19c-f20f1133acac@gmail.com>
+References: <20240109090715.982332-1-arnd@kernel.org>
+ <4c859da1-9551-4d0b-a19c-f20f1133acac@gmail.com>
+Date: Tue, 09 Jan 2024 11:35:25 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Heiner Kallweit" <hkallweit1@gmail.com>,
+ "Arnd Bergmann" <arnd@kernel.org>, "Pavel Machek" <pavel@ucw.cz>,
+ "Lee Jones" <lee@kernel.org>
+Cc: "Andrew Lunn" <andrew@lunn.ch>, "Hans de Goede" <hdegoede@redhat.com>,
+ "Jean-Jacques Hiblot" <jjhiblot@traphandler.com>, linux-leds@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] leds: remove led_init_default_state_get() and
+ devm_led_classdev_register_ext() stubs
+Content-Type: text/plain
 
-On Tue, Jan 9, 2024 at 6:15=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
+On Tue, Jan 9, 2024, at 11:10, Heiner Kallweit wrote:
+> On 09.01.2024 10:06, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> These two functions have stub implementations that are called when
+>> NEW_LEDS and/or LEDS_CLASS are disabled, theorerically allowing drivers
+>> to optionally use the LED subsystem.
+>> 
+>> However, this has never really worked because a built-in driver is
+>> unable to link against these functions if the LED class is in a loadable
+>> module. Heiner ran into this problem with a driver that newly gained
+>> a LEDS_CLASS dependency and suggested using an IS_REACHABLE() check.
+>> 
+>> This is the reverse approach, removing the stub entirely to acknowledge
+>> that it is pointless in its current form, and that not having it avoids
+>> misleading developers into thinking that they can rely on it.
+>> 
+>> This survived around 1000 randconfig builds to validate that any callers
+>> of the interface already have the correct Kconfig dependency already,
+>> with the exception of the one that Heiner just added.
+>> 
+>> Cc: Heiner Kallweit <hkallweit1@gmail.com>
+>> Link: https://lore.kernel.org/linux-leds/0f6f432b-c650-4bb8-a1b5-fe3372804d52@gmail.com/T/#u
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
 >
-> On Tue, Jan 9, 2024, at 11:09, Kalle Valo wrote:
-> > Chen-Yu Tsai <wenst@chromium.org> writes:
-> >> On Tue, Jan 9, 2024 at 5:18=E2=80=AFPM Kalle Valo <kvalo@kernel.org> w=
-rote:
-> >>> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
-> >>>
-> >>> > On 1/4/2024 5:01 AM, Bartosz Golaszewski wrote:
-> >>> >> diff --git a/drivers/pci/pcie/pwrseq/Kconfig b/drivers/pci/pcie/pw=
-rseq/Kconfig
-> >>> >> index 010e31f432c9..f9fe555b8506 100644
-> >>> >> --- a/drivers/pci/pcie/pwrseq/Kconfig
-> >>> >> +++ b/drivers/pci/pcie/pwrseq/Kconfig
-> >>> >> @@ -6,3 +6,14 @@ menuconfig PCIE_PWRSEQ
-> >>> >>      help
-> >>> >>        Say yes here to enable support for PCIe power sequencing
-> >>> >>        drivers.
-> >>> >> +
-> >>> >> +if PCIE_PWRSEQ
-> >>> >> +
-> >>> >> +config PCIE_PWRSEQ_QCA6390
-> >>> >> +    tristate "PCIe Power Sequencing driver for QCA6390"
-> >>> >> +    depends on ARCH_QCOM || COMPILE_TEST
-> >>> >> +    help
-> >>> >> +      Enable support for the PCIe power sequencing driver for the
-> >>> >> +      ath11k module of the QCA6390 WLAN/BT chip.
-> >>> >> +
-> >>> >> +endif
-> >>> >
-> >>> > As I mentioned in the 5/9 patch I'm concerned that the current
-> >>> > definition of PCIE_PWRSEQ and PCIE_PWRSEQ_QCA6390 will effectively =
-hide
-> >>> > the fact that QCA6390 may need additional configuration since the m=
-enu
-> >>> > item will only show up if you have already enabled PCIE_PWRSEQ.
-> >>> > Yes I see that these are set in the defconfig in 9/9 but I'm concer=
-ned
-> >>> > about the more generic case.
-> >>> >
-> >>> > I'm wondering if there should be a separate config QCA6390 within a=
-th11k
-> >>> > which would then select PCIE_PWRSEQ and PCIE_PWRSEQ_QCA6390
-> >>>
-> >>> Or is it possible to provide an optional dependency in Kconfig (I gue=
-ss
-> >>
-> >> imply PCIE_PWRSEQ
-> >> imply PCIE_PWRSEQ_QCA6390
-> >> ?
-> >
-> > Nice, I had forgotten imply altogether. Would 'imply
-> > PCIE_PWRSEQ_QCA6390' in ath11k Kconfig be enough to address Jeff's
-> > concern?
+> For r8169 we have a Kconfig-based solution now, right. I had a brief look
+> at other drivers using LED functionality, and already the first one I looked
+> at seems to suffer from the same problem. input/keyboard/qt2160.c has the
+> following what should result in the same link error if qt2160 is built-in
+> and CONFIG_LEDS_CLASS=m. qt2160 has a Kconfig dependency only on I2C.
 >
-> Please don't use imply (ever), it doesn't normally do
-> what you want. In this case, the only effect the
-> 'imply' has is to change the default of the PCIE_PWRSEQ_QCA6390
-> option when a defconfig contains QCA6390.
->
-> If this is indeed what you want, it's still better to do the
-> equivalent expression in PCIE_PWRSEQ_QCA6390 rather than ATH11K:
->
-> config PCIE_PWRSEQ_QCA6390
->       tristate "PCIe Power Sequencing driver for QCA6390"
->       default ATH11K && ARCH_QCOM
+> #ifdef CONFIG_LEDS_CLASS
+> static int qt2160_register_leds(struct qt2160_data *qt2160)
+> {
+> [...]
+> 	error = devm_led_classdev_register(&client->dev, &led->cdev);
+> [...]		
+> }
+> #else
 
-PCIE_PWRSEQ_QCA6390 is also guarded by PCIE_PWRSEQ though. That would
-require the default statement to be duplicated to the PCIE_PWRSEQ option
-as well.
+This is a bug, but I think a different one, with a similar effect.
 
-Presumably we'd get a few more power sequencing drivers, and the list of
-default statements for PCIE_PWRSEQ would grow.
+Part of the problem in this driver is that it uses #ifdef instead
+of "#if IS_ENABLED(CONFIG_LEDS_CLASS)". As a result, it just
+never uses the LEDS when LEDS_CLASS=m, because that would
+define CONFIG_LEDS_CLASS_MODULE but not CONFIG_LEDS_CLASS.
 
-If that's acceptable then Arnd's proposal plus duplicating it to
-PCIE_PWRSEQ should work as described.
+Changing it to IS_ENABLED() would cause the link failure
+you describe, but would do it regardless of my change.
 
-ChenYu
+The same bug seems to be present in other files as well.
+
+> 2. If stubs are removed (but also in the current situation, see example),
+>    then it seems some drivers need adding proper build dependencies.
+
+I don't see any driver that actually relies on the stub, since
+that would only work a driver that can never be built-in.
+
+If a driver can be built-in (like your r8169 code) and uses
+the stub, we would have seen it fail to link in randconfig
+kernels and added a LEDS_CLASS dependency.
+
+     Arnd
 
