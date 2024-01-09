@@ -1,53 +1,63 @@
-Return-Path: <linux-kernel+bounces-20409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ABD1827E63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CCF1827E71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21E172859A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 05:39:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC384285954
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 05:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B826D6EF;
-	Tue,  9 Jan 2024 05:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF31D63B9;
+	Tue,  9 Jan 2024 05:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LaIDiLb2"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="nb3pvqSF"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E396B15A7;
-	Tue,  9 Jan 2024 05:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4093wwaL020733;
-	Tue, 9 Jan 2024 05:38:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=U+lcuxDe7O11/MzKnHWkDOfp0ywpOp5eG391IDLVbfY=; b=La
-	IDiLb2PLc4HXguJzU08uSzecECe+ucaYh2WJhrkZndntfL+QzNEXMHtaeLwdBXai
-	/ombnrzMp8sYRi8bRe/YH1PnKCwXi/GEM0u6cpbFq1hwpfaofnQw3RLOA6jYKMpA
-	p00JP2xTpx10kRe2NEr0BFEkaU9j0lLJC28KoHV6EVvuHdzz6TGNr0I+TJGcrOQR
-	WzCih1SJvFFQR0OEsWXcGR5bHXDvB6zP8Dsqe9vax9tGJWuhelgoVXZycRNkMP+z
-	iIH3XGRV5Sj3VDY/mDhEZDIEJZfoSMNYzt0J6qOs1Wsaju09sLkPVdoIALXMtolW
-	EM4/bjlyewe7qxb/JWPw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgr1sgv15-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 05:38:52 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4095cp0E004093
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jan 2024 05:38:51 GMT
-Received: from [10.204.67.150] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
- 2024 21:38:49 -0800
-Message-ID: <04500984-6bc0-4a07-9940-235e4b932172@quicinc.com>
-Date: Tue, 9 Jan 2024 11:08:45 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D35717C2
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 05:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a298accc440so283052666b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 21:43:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1704778980; x=1705383780; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xcgdr1I9kndIxRfT90cgq6tEB3GwG2M4TsfK1tAjKE0=;
+        b=nb3pvqSFawouaLEgEjyY6rxyx/UbpR5sjVWebS/VxOfEQNZeenGXahcitQtpvkTSHE
+         G8PzgIp91ILZ3MpZkVdyDiIKJ5foOYop33v1x42ObURVminhKZNjgj4ElcP+ZH2acso5
+         za6h+MfVbrR09xOYGIyVDFb1Bb+18qQqFI3tBZKP8vvZL8IAQnhut8sAi4kwm+FZaXjJ
+         +ghSNDNT61MjZ38o3GJTLohmDGiN6/ZigDWGeeM8IgiEtiJGkIowMajmlv7Wo+365dtT
+         hqfHVC394OltAgjSFi8y5Q94gA6Nfwaj10KwK/TaAqPNb3mlZWZOmXrx2gt7HIGfTI6v
+         15XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704778980; x=1705383780;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xcgdr1I9kndIxRfT90cgq6tEB3GwG2M4TsfK1tAjKE0=;
+        b=fui4VeqasvaBMr6QUMSchQrmEz9ySKoDJE8rlw575e5oKIXWAk9FgNiuQI++C71YKt
+         CMug1RjSVP0hURxHbbYAh5KpFj3R/PcVWeWVNul7ZC27m24HfisHQAl56sYhRBjC+HCV
+         +KEgyLLDEIfadZ7ZLApqdqVTLd/2kzFS8Qd/ql1jNeKG7hxmEFI2OE9JldD/38w8BMLL
+         tU6tlLAGdnNLWfWK7dSwp4+FmCc9k7wOUx4V07qrY6DudBqqYtexN4ppsuyjtTx8ezTQ
+         t3X3GqjwORIgyzQDNb1JggghQeIZrk7mIL6IoIktYNfKlJfIG1e47AjesfkvZsQ93s+p
+         fW3w==
+X-Gm-Message-State: AOJu0YzodQ6Kbs3JZnx9oSTjREDexq1CvqWCw1oISvTZrXO9jjyIJ/6i
+	L6j8N6kDZ/FxzEgBxLcjoCmAMNPLg9x0Lw==
+X-Google-Smtp-Source: AGHT+IGuhQReqUvlv0RJ3ciCIToVLxlJJB3Esmba5Yo60V5bwghrRTOYWBE89ho73FfJ+oSHxrV7gw==
+X-Received: by 2002:a17:907:9483:b0:a28:cde1:43a9 with SMTP id dm3-20020a170907948300b00a28cde143a9mr303838ejc.9.1704778980269;
+        Mon, 08 Jan 2024 21:43:00 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.5])
+        by smtp.gmail.com with ESMTPSA id i12-20020a170906250c00b00a2693ce340csm632804ejb.59.2024.01.08.21.42.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 21:42:59 -0800 (PST)
+Message-ID: <f23e9ff2-9792-460f-863e-72c8d44cfbda@tuxon.dev>
+Date: Tue, 9 Jan 2024 07:42:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,124 +65,109 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] misc: fastrpc: Pass proper arguments to scm call
+Subject: Re: [PATCH net-next v3 13/19] net: ravb: Set config mode in ndo_open
+ and reset mode in ndo_close
 Content-Language: en-US
-To: Elliot Berman <quic_eberman@quicinc.com>, <srinivas.kandagatla@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>
-CC: <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        stable
-	<stable@kernel.org>
-References: <20240108100513.19993-1-quic_ekangupt@quicinc.com>
- <79851641-8b56-4d25-b4c9-2d56a5bf41e9@quicinc.com>
-From: Ekansh Gupta <quic_ekangupt@quicinc.com>
-In-Reply-To: <79851641-8b56-4d25-b4c9-2d56a5bf41e9@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de,
+ yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, geert+renesas@glider.be,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-14-claudiu.beznea.uj@bp.renesas.com>
+ <feb1c87e-a84d-4e61-3e58-f61d5402170d@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <feb1c87e-a84d-4e61-3e58-f61d5402170d@omp.ru>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ryAL2WnwQ3Yeqy1nUohN_soRBrPfsa7M
-X-Proofpoint-GUID: ryAL2WnwQ3Yeqy1nUohN_soRBrPfsa7M
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- lowpriorityscore=0 mlxscore=0 priorityscore=1501 suspectscore=0
- bulkscore=0 impostorscore=0 adultscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401090039
 
 
-On 1/9/2024 6:42 AM, Elliot Berman wrote:
->
-> On 1/8/2024 2:05 AM, Ekansh Gupta wrote:
->> For CMA memory allocation, ownership is assigned to DSP to make it
->> accessible by the PD running on the DSP. With current implementation
->> HLOS VM is stored in the channel structure during rpmsg_probe and
->> this VM is passed to qcom_scm call as the source VM.
+
+On 08.01.2024 21:28, Sergey Shtylyov wrote:
+> On 1/5/24 11:23 AM, Claudiu wrote:
+> 
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >>
->> The qcom_scm call will overwrite the passed source VM with the next
->> VM which would cause a problem in case the scm call is again needed.
->> Adding a local copy of source VM whereever scm call is made to avoid
->> this problem.
+>> As some IP variants switch to reset mode (and thus registers content is
+>> lost) when setting clocks (due to module standby functionality) to be able
+>> to implement runtime PM and save more power, set the IP's operating mode to
+>> reset at the end of the probe. Along with it, in the ndo_open API the IP
+>> will be switched to configuration, then operation mode. In the ndo_close
+>> API, the IP will be switched back to reset mode. This allows implementing
+>> runtime PM and, along with it, save more power when the IP is not used.
 >>
-> The perms in fastrpc_channel_ctx should always reflect the current
-> permission bits, so I'm surprised you see problem.
->
-> What is the scenario where that's not the case?
-
-Thanks for reviewing the changes, Elliot. FastRPC driver is storing
-the bitfield of HLOS VMID in fastrpc_channel_ctx in perms(cctx->perms)
-and remoteproc specific VMID information from device tree in vmperms(cctx->vmperms).
-This information is intended to be passed to qcom_scm call when there is
-a requirement to move the ownership of memory to any remoteproc VM. As
-the srcvm is overwritten with the new VM, cctx->perms cannot be reused if
-the same request comes for any other memory allocation.
-
-The problem is seen with audioPD daemon. When the daemon is stated, it
-allocates some memory for audioPD and moves the ownership from HLOS to
-ADSP VM using qcom_scm call. After this, audioPD makes a request for some
-more memory which is again allocated in kernel and as per current
-implementation, qcom_scm call is again made with cctx->perms as srcVm
-which is no longer storing HLOS vmid. Hence using a local variable to
-make qcom_scm call where there is a need to move ownership from HLOS
-to remoteproc VM.
-
-Please let me know if you have any more queries.
-
---ekansh
-
->
->> Fixes: 0871561055e6 ("misc: fastrpc: Add support for audiopd")> Cc: stable <stable@kernel.org>
->> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >> ---
->>   drivers/misc/fastrpc.c | 10 ++++++----
->>   1 file changed, 6 insertions(+), 4 deletions(-)
 >>
->> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
->> index 1c6c62a7f7f5..c13efa7727e0 100644
->> --- a/drivers/misc/fastrpc.c
->> +++ b/drivers/misc/fastrpc.c
->> @@ -263,7 +263,6 @@ struct fastrpc_channel_ctx {
->>   	int domain_id;
->>   	int sesscount;
->>   	int vmcount;
->> -	u64 perms;
->>   	struct qcom_scm_vmperm vmperms[FASTRPC_MAX_VMIDS];
->>   	struct rpmsg_device *rpdev;
->>   	struct fastrpc_session_ctx session[FASTRPC_MAX_SESSIONS];
->> @@ -1279,9 +1278,11 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
->>   
->>   		/* Map if we have any heap VMIDs associated with this ADSP Static Process. */
->>   		if (fl->cctx->vmcount) {
->> +			u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
+>> Changes in v3:
+>> - fixed typos in patch description
+>> - in ravb_probe() switch the hardware to reset mode just after phy
+>>   initialization
+>>
+>> Changes in v2:
+>> - none; this patch is new
+>>
+>>
+>>  drivers/net/ethernet/renesas/ravb_main.c | 78 ++++++++++++++----------
+>>  1 file changed, 46 insertions(+), 32 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index 1cc1ecd8d6a8..434b4777de5e 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> [...]
+>> @@ -2746,11 +2755,6 @@ static int ravb_probe(struct platform_device *pdev)
+>>  	ndev->netdev_ops = &ravb_netdev_ops;
+>>  	ndev->ethtool_ops = &ravb_ethtool_ops;
+>>  
+>> -	/* Set AVB config mode */
+>> -	error = ravb_set_config_mode(ndev);
+>> -	if (error)
+>> -		goto out_rpm_put;
+>> -
+>>  	error = ravb_compute_gti(ndev);
+>>  	if (error)
+>>  		goto out_rpm_put;
+>> @@ -2785,13 +2789,23 @@ static int ravb_probe(struct platform_device *pdev)
+>>  		eth_hw_addr_random(ndev);
+>>  	}
+>>  
+>> +	/* Set config mode as this is needed for PHY initialization. */
+>> +	error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
+> 
+>    Hm... don't you need this at laest before calling ravb_read_mac_address()
+> just above?
+
+I asked myself this, haven't experienced issues w/ it while working on this
+patch thus I kept it as is. In theory, yes, it should be above that call.
+I'll move it there.
+
+Thank you,
+Claudiu Beznea
+
+> 
+>> +	if (error)
+>> +		goto out_rpm_put;
 >> +
->>   			err = qcom_scm_assign_mem(fl->cctx->remote_heap->phys,
->>   							(u64)fl->cctx->remote_heap->size,
->> -							&fl->cctx->perms,
->> +							&src_perms,
->>   							fl->cctx->vmperms, fl->cctx->vmcount);
->>   			if (err) {
->>   				dev_err(fl->sctx->dev, "Failed to assign memory with phys 0x%llx size 0x%llx err %d",
->> @@ -1915,8 +1916,10 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
->>   
->>   	/* Add memory to static PD pool, protection thru hypervisor */
->>   	if (req.flags == ADSP_MMAP_REMOTE_HEAP_ADDR && fl->cctx->vmcount) {
->> +		u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
+>>  	/* MDIO bus init */
+>>  	error = ravb_mdio_init(priv);
+>>  	if (error) {
+>>  		dev_err(&pdev->dev, "failed to initialize MDIO\n");
+>> -		goto out_dma_free;
+>> +		goto out_reset_mode;
+>>  	}
+>>  
+>> +	/* Undo previous switch to config opmode. */
+>> +	error = ravb_set_opmode(ndev, CCC_OPC_RESET);
+>> +	if (error)
+>> +		goto out_mdio_release;
 >> +
->>   		err = qcom_scm_assign_mem(buf->phys, (u64)buf->size,
->> -			&fl->cctx->perms, fl->cctx->vmperms, fl->cctx->vmcount);
->> +			&src_perms, fl->cctx->vmperms, fl->cctx->vmcount);
->>   		if (err) {
->>   			dev_err(fl->sctx->dev, "Failed to assign memory phys 0x%llx size 0x%llx err %d",
->>   					buf->phys, buf->size, err);
->> @@ -2290,7 +2293,6 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
->>   
->>   	if (vmcount) {
->>   		data->vmcount = vmcount;
->> -		data->perms = BIT(QCOM_SCM_VMID_HLOS);
->>   		for (i = 0; i < data->vmcount; i++) {
->>   			data->vmperms[i].vmid = vmids[i];
->>   			data->vmperms[i].perm = QCOM_SCM_PERM_RWX;
+>>  	netif_napi_add(ndev, &priv->napi[RAVB_BE], ravb_poll);
+>>  	if (info->nc_queues)
+>>  		netif_napi_add(ndev, &priv->napi[RAVB_NC], ravb_poll);
+> [...]
+> 
+> MBR, Sergey
 
