@@ -1,278 +1,148 @@
-Return-Path: <linux-kernel+bounces-21193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8638C828B8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:54:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9D7828B87
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA50828248A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:54:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4CE5285FB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F5E3BB26;
-	Tue,  9 Jan 2024 17:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529FC3BB31;
+	Tue,  9 Jan 2024 17:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="Qvus/sT/"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ONGmHqBf"
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADFA3C466
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50eaa8b447bso3375008e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:54:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4615F3C070
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7ba9f1cfe94so109386239f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:54:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1704822853; x=1705427653; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CeM+hho/qwbP9Z55ZVvdC0wwc1f1sWXXK1EVcgFxsIo=;
-        b=Qvus/sT/+nA2q0woVUrPGBWCFUKZL1B6aNU9v5fLikXcsQwJo1KYrMQbMRW5+x8FTh
-         FJSweKrqHATBfo/S2KhJQadbhKb4MTTPxmVrXfQqLDDA3gKaJvrToCnpZtlgYz+eKrxn
-         Wi7GytCXvj1sgHIjJiKHmUS9njp7n85HNz6Sg=
+        d=chromium.org; s=google; t=1704822842; x=1705427642; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uvxQk9rfheLP9Xtji27sCGT3Sv4bNLZc44jbbgusrDU=;
+        b=ONGmHqBfC1ejBCiK95L/gKcx3N81BvYLZ0b2EkYRCOJoWTJ9/Yhz4EdmUERPQWGhus
+         FptUlXtgTzBIsA/xeUfVugvbhq8iALAGLmHftOKjPoYrJDeZbh4K1KTQg/vYQOJ+8yj9
+         +dCc+ruL4a31Dh1J9oHMbkzlOMLlucY9szbPg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704822853; x=1705427653;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CeM+hho/qwbP9Z55ZVvdC0wwc1f1sWXXK1EVcgFxsIo=;
-        b=MizVO2dQJIHNlzEp86/XdUKKG3AuvA2rmiKbHP1RPuRhgxCpUenHe24Eu3xUG5kVF3
-         ixC/6jC0ecxKKqBgk03MX3jYwdolWBOF1DaMTCHrD2thdfoZgRFrriyNKvjp3fBEYK6C
-         gEuq3OT4OB00jlw3ezOsFOyM6obfesT9OprUig5c1EyDjiwFfY5W7MwdyquruCO0rWiX
-         ZKvZ7uvOYw9ORmYILPXx5zIO8Ob5kaOO84d7NG3uOusVZiEfQgHAROOsd1+3zFTCdu2Q
-         8O67dn1KKYezytHEN6HpT7o+Tq977mc9ZoYSw/P1LpLyggWdyZd/GaLYJ1mq90JCeu6s
-         O2cQ==
-X-Gm-Message-State: AOJu0YxAoMXqEHLnXzBr/KcNRSKSlrq9UD2jD+f0DoCu4QbC4Y2RCfRI
-	EmH9jUkZrYP6CpE3wwv3p58O8YKSQ5Jppok8+fSEuaurU/Dk
-X-Google-Smtp-Source: AGHT+IH3m0+wbSzkJ3HS0+ZxHNhvZU64C2KWl2ZLlE00HvrrjpKMtf0cf5i3Ja1KwC83KNs3w46QjXNSKdQtgEFskAs=
-X-Received: by 2002:a05:651c:2208:b0:2cd:52fd:9bb with SMTP id
- y8-20020a05651c220800b002cd52fd09bbmr1112283ljq.30.1704822852166; Tue, 09 Jan
- 2024 09:54:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704822842; x=1705427642;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvxQk9rfheLP9Xtji27sCGT3Sv4bNLZc44jbbgusrDU=;
+        b=FzUFefpP+FsJL9JgXlwKklPAmkW8Hqw8bR4U/uiZO34wK7Ha0j8BcggSv7oNwq07f8
+         VUUrqc9xYg0/dCoDBHYqJfWGYydFhLyReScCytu+I/ZSJEcNUj6MYvMgB/MoilqY9EGh
+         iDAa01ijUKtp6X6H3RoaxFSBj9guRiqBgTh9M0fVcT/5efpr8+SNCQSDmqEaaLQe8Okx
+         STFggd2U6IdQo66PpgVnst6A8CghrH7hVBoRwdOtJM274aId13XiitS3gtW36HVKbIzH
+         ETOEyOczxfNIA9OaNdVusskEgG57sYkuvYHa9rhYu0UhoHgGdq0zfSPQ2n3VmJHhc2yD
+         9PGA==
+X-Gm-Message-State: AOJu0Ywk/YUIiHCi99dM+IHkZuX2Ww7RxDo0Rjj2nPU/7Vpsbeh5pmEY
+	NSYt8cDlMkVulfh4cxb3Wqzqb5D/HawG
+X-Google-Smtp-Source: AGHT+IETNvPU0pqR+rjwETC6lClyltQG+AAsL2rUrDmov8iCP0gjm6NfVC+6GYU4F02uh16JW6lf7g==
+X-Received: by 2002:a5d:94ce:0:b0:7bc:2607:7caf with SMTP id y14-20020a5d94ce000000b007bc26077cafmr850204ior.21.1704822842469;
+        Tue, 09 Jan 2024 09:54:02 -0800 (PST)
+Received: from localhost (110.41.72.34.bc.googleusercontent.com. [34.72.41.110])
+        by smtp.gmail.com with UTF8SMTPSA id e15-20020a6b500f000000b007bedb7d78b3sm441971iob.24.2024.01.09.09.54.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 09:54:02 -0800 (PST)
+Date: Tue, 9 Jan 2024 17:54:01 +0000
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+	Doug Anderson <dianders@google.com>,
+	Stephen Boyd <swboyd@google.com>
+Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
+Message-ID: <ZZ2IOQEekFffJoHQ@google.com>
+References: <20231227180306.6319-1-johan+linaro@kernel.org>
+ <ZZ15c1HUQIH2cY5o@google.com>
+ <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108-fencei-v5-0-aa1e51d7222f@rivosinc.com>
- <20240108-fencei-v5-2-aa1e51d7222f@rivosinc.com> <CAOnJCUJQ-M1bVC_VhogMLo47mRyk3Pzq-GFH5P7ADn70BN9ObA@mail.gmail.com>
- <ZZyth6Ijtsmy5D84@ghost> <CAOnJCUL60H16edo6icR-1bzTVk0Tdr+hRf3izharUEEvxCrwhA@mail.gmail.com>
-In-Reply-To: <CAOnJCUL60H16edo6icR-1bzTVk0Tdr+hRf3izharUEEvxCrwhA@mail.gmail.com>
-From: Atish Patra <atishp@atishpatra.org>
-Date: Tue, 9 Jan 2024 09:54:00 -0800
-Message-ID: <CAOnJCU+FonOS4N_WiHPij4ZWv=qAdHo4WY9_+kzLT738CqhM1w@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] documentation: Document PR_RISCV_SET_ICACHE_FLUSH_CTX
- prctl
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>, 
-	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Randy Dunlap <rdunlap@infradead.org>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
 
-On Mon, Jan 8, 2024 at 11:51=E2=80=AFPM Atish Patra <atishp@atishpatra.org>=
- wrote:
->
-> On Mon, Jan 8, 2024 at 6:20=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.=
-com> wrote:
-> >
-> > On Mon, Jan 08, 2024 at 05:24:47PM -0800, Atish Patra wrote:
-> > > On Mon, Jan 8, 2024 at 10:42=E2=80=AFAM Charlie Jenkins <charlie@rivo=
-sinc.com> wrote:
-> > > >
-> > > > Provide documentation that explains how to properly do CMODX in ris=
-cv.
-> > > >
-> > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > > ---
-> > > >  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++=
-++++++++++++
-> > > >  Documentation/arch/riscv/index.rst |  1 +
-> > > >  2 files changed, 89 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arc=
-h/riscv/cmodx.rst
-> > > > new file mode 100644
-> > > > index 000000000000..afd7086c222c
-> > > > --- /dev/null
-> > > > +++ b/Documentation/arch/riscv/cmodx.rst
-> > > > @@ -0,0 +1,88 @@
-> > > > +.. SPDX-License-Identifier: GPL-2.0
-> > > > +
-> > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > > > +Concurrent Modification and Execution of Instructions (CMODX) for =
-RISC-V Linux
-> > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > > > +
-> > > > +CMODX is a programming technique where a program executes instruct=
-ions that were
-> > > > +modified by the program itself. Instruction storage and the instru=
-ction cache
-> > > > +(icache) are not guaranteed to be synchronized on RISC-V hardware.=
- Therefore, the
-> > > > +program must enforce its own synchronization with the unprivileged=
- fence.i
-> > > > +instruction.
-> > > > +
-> > > > +However, the default Linux ABI prohibits the use of fence.i in use=
-rspace
-> > > > +applications. At any point the scheduler may migrate a task onto a=
- new hart. If
-> > > > +migration occurs after the userspace synchronized the icache and i=
-nstruction
-> > > > +storage with fence.i, the icache will no longer be clean. This is =
-due to the
-> > > > +behavior of fence.i only affecting the hart that it is called on. =
-Thus, the hart
-> > > > +that the task has been migrated to may not have synchronized instr=
-uction storage
-> > > > +and icache.
-> > > > +
-> > > > +There are two ways to solve this problem: use the riscv_flush_icac=
-he() syscall,
-> > > > +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fenc=
-e.i in
-> > > > +userspace. The syscall performs a one-off icache flushing operatio=
-n. The prctl
-> > > > +changes the Linux ABI to allow userspace to emit icache flushing o=
-perations.
-> > > > +
-> > > > +prctl() Interface
-> > > > +---------------------
-> > > > +
-> > > > +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first a=
-rgument. The
-> > > > +remaining arguments will be delegated to the riscv_set_icache_flus=
-h_ctx
-> > > > +function detailed below.
-> > > > +
-> > > > +.. kernel-doc:: arch/riscv/mm/cacheflush.c
-> > > > +       :identifiers: riscv_set_icache_flush_ctx
-> > > > +
-> > >
-> > > Document the arguments of the prctl as well ?
-> >
-> > Do you mean to include the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` key in the
-> > comment of riscv_set_icache_flush_ctx? The args to
-> > riscv_set_icache_flush_ctx are the args to the prctl except for the key=
-.
-> >
->
-> No, I mean describe the argument2(ctx) and argument3(per_thread) as well.
-> Since this is a documentation of the new prctl, we should document all
-> args so that an user
-> can use it without grepping through the kernel sources.
->
+On Tue, Jan 09, 2024 at 06:12:26PM +0100, Johan Hovold wrote:
+> On Tue, Jan 09, 2024 at 04:50:59PM +0000, Matthias Kaehlcke wrote:
+> 
+> > On Wed, Dec 27, 2023 at 07:03:06PM +0100, Johan Hovold wrote:
+> > > The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
+> > > device address in MSB order when setting it using the
+> > > EDL_WRITE_BD_ADDR_OPCODE command.
+> > > 
+> > > Presumably, this is the case for all non-ROME devices which all use the
+> > > EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
+> > > use a different command and expect the address in LSB order).
+> > > 
+> > > Reverse the little-endian address before setting it to make sure that
+> > > the address can be configured using tools like btmgmt or using the
+> > > 'local-bd-address' devicetree property.
+> > > 
+> > > Note that this can potentially break systems with boot firmware which
+> > > has started relying on the broken behaviour and is incorrectly passing
+> > > the address via devicetree in MSB order.
+> > 
+> > We should not break existing devices. Their byte order for
+> > 'local-bd-address' may not adhere to the 'spec', however in practice
+> > it is the correct format for existing kernels.
+> 
+> That depends on in what way the current devices are broken.
+> 
+> Any machines that correctly specify their address in little-endian order
+> in the devicetree would no longer be configured using the wrong address.
+> So no problem there (except requiring users to re-pair their gadgets).
+> 
+> And tools like btgmt is broken on all of these Qualcomm machine in any
+> case and would now start working as expected. So no problem there either
+> (unless user space had adapted an inverted the addresses to btmgmt).
+> 
+> So the first question is whether there actually is any boot firmware out
+> there which passes the BD_ADDR in reverse order?
 
-Never mind. I missed the identifiers tag for kernel doc. Thanks for
-the reminder.
-The patch looks good to me.
+Yes, (at least) the boot firmware for sc7180-trogdor devices.
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+hexdump -C /proc/device-tree/soc\@0/geniqup\@8c0000/serial\@88c000/bluetooth/local-bd-address
+00000000  8c fd f0 40 15 dc
 
-> > - Charlie
-> >
-> > >
-> > > > +Example usage:
-> > > > +
-> > > > +The following files are meant to be compiled and linked with each =
-other. The
-> > > > +modify_instruction() function replaces an add with 0 with an add w=
-ith one,
-> > > > +causing the instruction sequence in get_value() to change from ret=
-urning a zero
-> > > > +to returning a one.
-> > > > +
-> > > > +cmodx.c::
-> > > > +
-> > > > +       #include <stdio.h>
-> > > > +       #include <sys/prctl.h>
-> > > > +
-> > > > +       extern int get_value();
-> > > > +       extern void modify_instruction();
-> > > > +
-> > > > +       int main()
-> > > > +       {
-> > > > +               int value =3D get_value();
-> > > > +               printf("Value before cmodx: %d\n", value);
-> > > > +
-> > > > +               // Call prctl before first fence.i is called inside=
- modify_instruction
-> > > > +               prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CT=
-X_SW_FENCEI, 0);
-> > > > +               modify_instruction();
-> > > > +
-> > > > +               value =3D get_value();
-> > > > +               printf("Value after cmodx: %d\n", value);
-> > > > +               return 0;
-> > > > +       }
-> > > > +
-> > > > +cmodx.S::
-> > > > +
-> > > > +       .option norvc
-> > > > +
-> > > > +       .text
-> > > > +       .global modify_instruction
-> > > > +       modify_instruction:
-> > > > +       lw a0, new_insn
-> > > > +       lui a5,%hi(old_insn)
-> > > > +       sw  a0,%lo(old_insn)(a5)
-> > > > +       fence.i
-> > > > +       ret
-> > > > +
-> > > > +       .section modifiable, "awx"
-> > > > +       .global get_value
-> > > > +       get_value:
-> > > > +       li a0, 0
-> > > > +       old_insn:
-> > > > +       addi a0, a0, 0
-> > > > +       ret
-> > > > +
-> > > > +       .data
-> > > > +       new_insn:
-> > > > +       addi a0, a0, 1
-> > > > diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arc=
-h/riscv/index.rst
-> > > > index 4dab0cb4b900..eecf347ce849 100644
-> > > > --- a/Documentation/arch/riscv/index.rst
-> > > > +++ b/Documentation/arch/riscv/index.rst
-> > > > @@ -13,6 +13,7 @@ RISC-V architecture
-> > > >      patch-acceptance
-> > > >      uabi
-> > > >      vector
-> > > > +    cmodx
-> > > >
-> > > >      features
-> > > >
-> > > >
-> > > > --
-> > > > 2.43.0
-> > > >
-> > >
-> > >
-> > > --
-> > > Regards,
-> > > Atish
->
->
->
-> --
-> Regards,
-> Atish
+hciconfig
+hci0:   Type: Primary  Bus: UART
+        BD Address: 8C:FD:F0:40:15:DC  ACL MTU: 1024:8  SCO MTU: 240:8
+        UP RUNNING 
+        RX bytes:1700 acl:0 sco:0 events:95 errors:0
+        TX bytes:128949 acl:0 sco:0 commands:578 errors:0
 
+> > I suggest adding a quirk like 'local-bd-address-msb-quirk' or
+> > 'qcom,local-bd-address-msb-quirk' to make sure existing devices keep
+> > working properly.
+> 
+> I don't think that would work. If this is something that we really need
+> to handle, then there's probably no way around introducing new
+> compatible strings for boot firmware that isn't broken while maintaining
+> the current broken behaviour with respect to 'local-bd-address' for some
+> of the current ones.
 
+I think it should work for sc7180-trogdor. For these devices the device tree
+is bundled with the kernel image and can be updated. That might not be true
+for other devices though.
 
---=20
-Regards,
-Atish
+Matthias
 
