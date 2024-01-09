@@ -1,177 +1,145 @@
-Return-Path: <linux-kernel+bounces-20913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1CE0828748
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:43:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ABDF82873D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:41:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4956A1F25562
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:43:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AA8528651C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DFC73986E;
-	Tue,  9 Jan 2024 13:43:10 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0434738FAA;
+	Tue,  9 Jan 2024 13:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="YTQ4z/A4"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7274739AC0;
-	Tue,  9 Jan 2024 13:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T8XDy6YpWz4f3jJH;
-	Tue,  9 Jan 2024 21:42:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 66EBE1A0272;
-	Tue,  9 Jan 2024 21:43:02 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBnOBFkTZ1lVgZPAQ--.55732S4;
-	Tue, 09 Jan 2024 21:43:02 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: song@kernel.org
-Cc: linux-raid@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH] md: fix md_seq_ops() regressions
-Date: Tue,  9 Jan 2024 21:39:57 +0800
-Message-Id: <20240109133957.2975272-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517226D6F9;
+	Tue,  9 Jan 2024 13:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409DcCAv008166;
+	Tue, 9 Jan 2024 13:41:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=5KzBx90TWSMeNOkqrM5SYJyiVmds5T3TK+9/nMMYzxw=;
+ b=YTQ4z/A4LZ03zRtsT+K6/50FMRbmW1mFpSekd4Vp89zv002K6XkRo9hde41TG7XzaFmr
+ wYJ5PA19l8Wo2jDwiXw5idx/FUsvvjqKMoGRcpIqeKFBE0jFGooc4ZqDUcWBywcns8Ak
+ EuwJLaAJkinJtb0IBrYHLXZ2rwZfMupwLxoTeSBdx9JTZWi6oPgTkOo3d5N2cir21mev
+ icqmu6qaqI6t2cZu4JZncPcwcH91LRSpPSlE6tp3YEcpL3W0UJ8hXLkCK2ZEdhGQ9H6z
+ e0S+Oc25dqvmoTyot1/Rb2VfQaUZgknsjUG8ooZelDUGcP4yRNf1UjpykrvtI09HG3m0 +Q== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh76tg1uk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 13:41:09 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409D1SJ8028052;
+	Tue, 9 Jan 2024 13:41:08 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vgwfsjt9k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 13:41:08 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409Df8Po28574362
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Jan 2024 13:41:08 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 158BC58055;
+	Tue,  9 Jan 2024 13:41:08 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 94AA75804B;
+	Tue,  9 Jan 2024 13:41:07 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.140.202])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  9 Jan 2024 13:41:07 +0000 (GMT)
+Message-ID: <e4c5630fbd56ea57b51df50c4c7b0e865e89f4b6.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity: subsystem updates for v6.8
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel
+	 <linux-kernel@vger.kernel.org>
+Date: Tue, 09 Jan 2024 08:41:07 -0500
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: BJ33rv1GRimv8pFPzoRMJTaiWb-fQuKN
+X-Proofpoint-GUID: BJ33rv1GRimv8pFPzoRMJTaiWb-fQuKN
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBnOBFkTZ1lVgZPAQ--.55732S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw17uFWDXrW8Jw47Ww47twb_yoW5ZFy8pF
-	sxZFW3ArWUXrWxKwsxAa1ku3WFq3Wvy34qgr9rG395Cr1UXrnru3W3Xay7XFn8Way8Wwn8
-	Xa1DKFy5GrWUJwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-	vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-	xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-09_05,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 mlxlogscore=768 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401090112
 
-From: Yu Kuai <yukuai3@huawei.com>
+Hi Linus,
 
-Commit cf1b6d4441ff ("md: simplify md_seq_ops") introduce following
-regressions:
+Adding a new IMA/EVM maintainer and reviewer, disabling EVM on overlay, 1 bug
+fix and 2 cleanups.
 
-1) If list all_mddevs is emptly, personalities and unused devices won't
-   be showed to user anymore.
-2) If seq_file buffer overflowed from md_seq_show(), then md_seq_start()
-   will be called again, hence personalities will be showed to user
-   again.
-3) If seq_file buffer overflowed from md_seq_stop(), seq_read_iter()
-   doesn't handle this, hence unused devices won't be showed to user.
+- The EVM HMAC and the original file signatures contain filesystem specific
+metadata (e.g. i_ino, i_generation and s_uuid), preventing the security.evm
+xattr from directly being copied up to the overlay. Further before calculating
+and writing out the overlay file's EVM HMAC, EVM must first verify the existing
+backing file's 'security.evm' value.  For now until a solution is developed,
+disable EVM on overlayfs.
 
-Fix above problems by print personalities and unused devices in
-md_seq_show(), as it used to be.
+thanks,
 
-Fixes: cf1b6d4441ff ("md: simplify md_seq_ops")
+Mimi
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/md.c | 40 +++++++++++++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 13 deletions(-)
+The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index e351e6c51cc7..ff3057c787c1 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -8135,6 +8135,19 @@ static void status_unused(struct seq_file *seq)
- 	seq_printf(seq, "\n");
- }
- 
-+static void status_personalities(struct seq_file *seq)
-+{
-+	struct md_personality *pers;
-+
-+	seq_puts(seq, "Personalities : ");
-+	spin_lock(&pers_lock);
-+	list_for_each_entry(pers, &pers_list, list)
-+		seq_printf(seq, "[%s] ", pers->name);
-+
-+	spin_unlock(&pers_lock);
-+	seq_puts(seq, "\n");
-+}
-+
- static int status_resync(struct seq_file *seq, struct mddev *mddev)
- {
- 	sector_t max_sectors, resync, res;
-@@ -8276,20 +8289,10 @@ static int status_resync(struct seq_file *seq, struct mddev *mddev)
- static void *md_seq_start(struct seq_file *seq, loff_t *pos)
- 	__acquires(&all_mddevs_lock)
- {
--	struct md_personality *pers;
--
--	seq_puts(seq, "Personalities : ");
--	spin_lock(&pers_lock);
--	list_for_each_entry(pers, &pers_list, list)
--		seq_printf(seq, "[%s] ", pers->name);
--
--	spin_unlock(&pers_lock);
--	seq_puts(seq, "\n");
- 	seq->poll_event = atomic_read(&md_event_count);
--
- 	spin_lock(&all_mddevs_lock);
- 
--	return seq_list_start(&all_mddevs, *pos);
-+	return seq_list_start_head(&all_mddevs, *pos);
- }
- 
- static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-@@ -8300,16 +8303,23 @@ static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- static void md_seq_stop(struct seq_file *seq, void *v)
- 	__releases(&all_mddevs_lock)
- {
--	status_unused(seq);
- 	spin_unlock(&all_mddevs_lock);
- }
- 
- static int md_seq_show(struct seq_file *seq, void *v)
- {
--	struct mddev *mddev = list_entry(v, struct mddev, all_mddevs);
-+	struct mddev *mddev;
- 	sector_t sectors;
- 	struct md_rdev *rdev;
- 
-+	if (v == &all_mddevs) {
-+		status_personalities(seq);
-+		if (list_empty(&all_mddevs))
-+			status_unused(seq);
-+		return 0;
-+	}
-+
-+	mddev = list_entry(v, struct mddev, all_mddevs);
- 	if (!mddev_get(mddev))
- 		return 0;
- 
-@@ -8385,6 +8395,10 @@ static int md_seq_show(struct seq_file *seq, void *v)
- 	}
- 	spin_unlock(&mddev->lock);
- 	spin_lock(&all_mddevs_lock);
-+
-+	if (mddev == list_last_entry(&all_mddevs, struct mddev, all_mddevs))
-+		status_unused(seq);
-+
- 	if (atomic_dec_and_test(&mddev->active))
- 		__mddev_put(mddev);
- 
--- 
-2.39.2
+  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v6.8
+
+for you to fetch changes up to c00f94b3a5be428837868c0f2cdaa3fa5b4b1995:
+
+  overlay: disable EVM (2023-12-20 07:40:50 -0500)
+
+----------------------------------------------------------------
+integrity-v6.8
+
+----------------------------------------------------------------
+Chen Ni (1):
+      KEYS: encrypted: Add check for strsep
+
+Eric Snowberg (2):
+      ima: Reword IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY
+      ima: Remove EXPERIMENTAL from Kconfig
+
+Mimi Zohar (5):
+      MAINTAINERS: Add Roberto Sassu as co-maintainer to IMA and EVM
+      MAINTAINERS: Add Eric Snowberg as a reviewer to IMA
+      evm: don't copy up 'security.evm' xattr
+      evm: add support to disable EVM on unsupported filesystems
+      overlay: disable EVM
+
+ MAINTAINERS                              |  3 +++
+ fs/overlayfs/super.c                     |  1 +
+ include/linux/evm.h                      |  6 +++++
+ include/linux/fs.h                       |  1 +
+ security/integrity/evm/evm_main.c        | 42 +++++++++++++++++++++++++++++++-
+ security/integrity/ima/Kconfig           | 10 ++++----
+ security/keys/encrypted-keys/encrypted.c |  4 +++
+ security/security.c                      |  2 +-
+ 8 files changed, 62 insertions(+), 7 deletions(-)
 
 
