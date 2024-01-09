@@ -1,245 +1,190 @@
-Return-Path: <linux-kernel+bounces-20673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58086828355
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:38:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFA7E828357
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF653B221ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:38:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E01361C25174
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C2F341A9;
-	Tue,  9 Jan 2024 09:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91D9833CF8;
+	Tue,  9 Jan 2024 09:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EZTNeTd+"
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L+lFp5EM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42DE3399D
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-467d8906368so402500137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:37:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704793072; x=1705397872; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qPps9fQJfqYekR0JiSwWXcOXuBKy/iLT3+xFGPb1+3I=;
-        b=EZTNeTd+kmTfsuVVjk3pM9nJ7SKSuku9J9IDdUDfAjzjZ+ynqcQiRRhcBnXKfGhKWZ
-         OQRp2UiJjOLPVma1MfCZ8aQB6f1IIpg/isvQf0yUyJGG42oqMx+e63dv6k5NSC0FTdtJ
-         uMnIzCU2Wo4xAmwJDRWDV+dfQAhRvmIG45zIicxxcBriWqeOBT5BG4YRb5fO2MwRY87g
-         n01WvA0SspLKFCf0AMQS3UwBv/MEUpNe/ubKaeeb9wRb3zTh9wVRMIdBRI0RBkjCeLcw
-         y2pV3CiutD0MRR8zHjGTIUAmBJISUM8CRPTszLvoXuWEi/8EwVCyqZOVW9gNEh57dExO
-         D3nQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0668235EFC
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704793082;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ky5q4Lye4xDM1EU7ISSxxpSTjWDC6pdqfZjOsW+ZzgY=;
+	b=L+lFp5EMAHkSe5GhHIXcs3Tv3nYVkO5pjnVtd6zNOg+1HV379WH4At7S95gB73imojxpQ9
+	lqdnr4hjqopfz+lZv6rzKLJLy7u3GzV174gW34HO21h6tqxWy4VlEVjEDQ80p4gIDSRbPG
+	EfakmV85qIr4L7x5zq5h0iugi2SQgV8=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-504-llCnPQgNNVC6Qc2zUdI76w-1; Tue, 09 Jan 2024 04:38:01 -0500
+X-MC-Unique: llCnPQgNNVC6Qc2zUdI76w-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4299cbf080bso2699111cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:38:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704793072; x=1705397872;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qPps9fQJfqYekR0JiSwWXcOXuBKy/iLT3+xFGPb1+3I=;
-        b=d/9ySmTio/crevqNYN+Xf66W/7J3V0L7UEGpSnGi5T40++ZD1vC6AFGWvdFItvsXIY
-         nKwgijNlpUCINJdRnJ9cEDY0cIR3btAAu9VSoRWP2TM2ZXOxV+OXBiBf1wjeWpo6OiIO
-         6h7vN90wFE49RL1pdygltOGu2Nh1VIKu+pUYu/EkoVtxFNJcDxmQGHtphUsYhV75JH6Q
-         IOcBWVzeatIjhnZLeug3dYncL2uFN/rqRnqJcrI4QcjgW4g5EW71zYMTgLl+nKrNvTa/
-         bqvyMOMDsa5ltdtxbe+Z8b2ricuvpPfMRVuMURKsQQNzJsFOgZQU92dVuPa6sxcSULc/
-         IFQg==
-X-Gm-Message-State: AOJu0YzrM1r1qJh/LDh/QpeHlrqwRTmV4X4+T11VZMBuhYeoMIHpshCh
-	zUj0BiacohNcmfBPBfthC8dWN7287pMDMiUfbmJPHAvkvF69hw==
-X-Google-Smtp-Source: AGHT+IHpuZXX1y0Vv8xOJwt5I7st9NydG0ZAw3LOuORXwYg8h+lco8Qa+qGXoYwHlETtmkwKrMCn1vJzX1nLuZoB5Jg=
-X-Received: by 2002:a67:e70f:0:b0:466:eb74:5ae8 with SMTP id
- hw15-20020a67e70f000000b00466eb745ae8mr3282084vsb.34.1704793071716; Tue, 09
- Jan 2024 01:37:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704793080; x=1705397880;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ky5q4Lye4xDM1EU7ISSxxpSTjWDC6pdqfZjOsW+ZzgY=;
+        b=sYHBqlcQL9RisvoRRu90bH6rH9kOJssiZWXYErxYgZgXuxhkPSH/2BYEgcm+F4bRam
+         j/EPfZvR6WpYto5aeNP89qYlxuumNogx5ird4gZ6Pnstpfp+ajsjFR50X1w4ZeY/6ftY
+         9yZchtcmu0aeFV7mRqNwN578NfOWposh4yqXzt/T7GJ2GlPm/0WIoLg/O7MXRnHcc0K8
+         VaADNJbXkfmNHeygb53r4FTrgr3HlhNdWlR4pgzNijhECLTjq2vQjTm3Y3aQovhIyma5
+         U7phhGi5L1+jT/F0JkouWw0EjnssFCDgwNBZqH36xPLh5GS1bSX4OlSwPYxIeM6zVoJ+
+         FWYg==
+X-Gm-Message-State: AOJu0Yw/fqq4BKfx/BQ6KPUQf2M/YHAJaZ76nM62avHK6jkZSBF5M2zS
+	03NUZAlpD9yIY0NzmShiozPhdOyWMrbIa4BwcYEBqKw6z7BCgLxF/TsqPfJWtbxxSZEApGBIZaf
+	E72vDmBArs9qYt563kMDGt2ZSxyhDe8vs
+X-Received: by 2002:ac8:7e96:0:b0:429:7bf4:f6df with SMTP id w22-20020ac87e96000000b004297bf4f6dfmr11145563qtj.4.1704793080548;
+        Tue, 09 Jan 2024 01:38:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH7DZjLgo1mS+4fbiobPrucDM8xf3Zq3INpPYhYQwz3yTpWNUvJ5BzG6Y3jQpGhehseYzzM4w==
+X-Received: by 2002:ac8:7e96:0:b0:429:7bf4:f6df with SMTP id w22-20020ac87e96000000b004297bf4f6dfmr11145547qtj.4.1704793080276;
+        Tue, 09 Jan 2024 01:38:00 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id g8-20020ac84808000000b0042987870887sm708466qtq.10.2024.01.09.01.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 01:38:00 -0800 (PST)
+Message-ID: <da747c7ca3424cfa5a0d7ecf1733dc1a7303a9ee.camel@redhat.com>
+Subject: Re: [PATCH v2 1/2] platform_device: add devres function region-reqs
+From: Philipp Stanner <pstanner@redhat.com>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: dri-devel@lists.freedesktop.org, Fabio Estevam <festevam@gmail.com>, 
+ Daniel Vetter <daniel@ffwll.ch>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>, Mark
+ Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,  Thomas
+ Zimmermann <tzimmermann@suse.de>, Laurentiu Palcu
+ <laurentiu.palcu@oss.nxp.com>, David Gow <davidgow@google.com>,  Shawn Guo
+ <shawnguo@kernel.org>, David Airlie <airlied@gmail.com>, Pengutronix Kernel
+ Team <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Lucas
+ Stach <l.stach@pengutronix.de>
+Date: Tue, 09 Jan 2024 10:37:56 +0100
+In-Reply-To: <ixywpvuwlhdpv6szvssipy2ygjhzdvt6nrbcppy4yx5ix5b3is@pq7s6hpse2ni>
+References: <20240108092042.16949-2-pstanner@redhat.com>
+	 <20240108092042.16949-3-pstanner@redhat.com>
+	 <hywkbwwwkddbd5vye366bhz64dlpet4chv3kzwfu5dx6rvvix6@2jnk3xx6vfiy>
+	 <404aea6b7bb7874064153044f04f3b8f6fccb97b.camel@redhat.com>
+	 <ixywpvuwlhdpv6szvssipy2ygjhzdvt6nrbcppy4yx5ix5b3is@pq7s6hpse2ni>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108153511.214254205@linuxfoundation.org>
-In-Reply-To: <20240108153511.214254205@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 9 Jan 2024 15:07:40 +0530
-Message-ID: <CA+G9fYvkBKmg-CUz4OmSOAKVd-asqKaxPtc26H7BY2FF1P6dGA@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/150] 6.1.72-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 8 Jan 2024 at 21:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.72 release.
-> There are 150 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Jan 2024 15:34:37 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.72-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Yo!
+
+On Mon, 2024-01-08 at 12:46 +0100, Uwe Kleine-K=C3=B6nig wrote:
+> On Mon, Jan 08, 2024 at 10:45:31AM +0100, Philipp Stanner wrote:
+> > On Mon, 2024-01-08 at 10:37 +0100, Uwe Kleine-K=C3=B6nig wrote:
+> > > Other than that I indifferent if this is a good idea. There are
+> > > so many
+> > > helpers around these functions ...
+> >=20
+> > Around which, the devres functions in general? There are, but
+> > that's
+> > kind of the point, unless we'd want everyone to call into the
+> > lowest
+> > level region-request functions with their own devres callbacks.
+> >=20
+> > In any case: What would your suggestion be, should parties who
+> > can't
+> > (without restructuring very large parts of their code) ioremap()
+> > and
+> > request() simultaneously just not use devres? See my patch #2
+> > Or is there another way to reach that goal that I'm not aware of?
+>=20
+> This wasn't a constructive feedback unfortunately and more a feeling
+> than a measurable criticism. To actually improve the state, maybe
+> first
+> check what helpers are actually there, how they are used and if they
+> are
+> suitable to what they are used for.
+>=20
+> Having many helpers is a hint that the usage is complicated. Is that
+> because the situation is complicated, or is this just a big pile of
+> inconsistency that can be simplified and consolidated?
+
+I thought about that and tend to believe that you are right in this
+case. The reason being that there'd be very few callers to such a
+wrapper.
+We have the functions for doing pure requests and pure ioremaps, so
+that should be sufficient.
+
+I think we can do sth like this in the rare cases where someone needs
+to request without (immediately) mapping:
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
+{
+	struct platform_device *pdev =3D to_platform_device(dev);
+	int ret;
+	struct resource *res;
+	struct dcss_dev *dcss;
+	const struct dcss_type_data *devtype;
+	resource_size_t res_len;
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+	devtype =3D of_device_get_match_data(dev);
+	if (!devtype) {
+		dev_err(dev, "no device match found\n");
+		return ERR_PTR(-ENODEV);
+	}
 
-## Build
-* kernel: 6.1.72-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: 28e6ce52ce1863adfe7e865ad3b12063bba539e1
-* git describe: v6.1.71-151-g28e6ce52ce18
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.7=
-1-151-g28e6ce52ce18
+	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res) {
+		dev_err(dev, "cannot get memory resource\n");
+		return ERR_PTR(-EINVAL);
+	}
 
-## Test Regressions (compared to v6.1.70)
+	res_len =3D res->end - res->start;
+	if (!devm_request_mem_region(pdev->dev, res->start, res_len, "dcss")) {
+		dev_err(dev, "cannot request memory region\n");
+		return ERR_PTR(-EBUSY);
+	}
 
-## Metric Regressions (compared to v6.1.70)
 
-## Test Fixes (compared to v6.1.70)
+And then do the associated devm_ioremap()s where they're needed.
 
-## Metric Fixes (compared to v6.1.70)
 
-## Test result summary
-total: 136423, pass: 115293, fail: 2954, skip: 18021, xfail: 155
+So I'd 'close' this patch series and handle it entirely through my dcss
+patch-series.
 
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 151 total, 150 passed, 1 failed
-* arm64: 52 total, 52 passed, 0 failed
-* i386: 39 total, 39 passed, 0 failed
-* mips: 26 total, 26 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 15 total, 14 passed, 1 failed
-* s390: 16 total, 16 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 46 passed, 0 failed
+Thx for the feedback
 
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
+P.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+
+>=20
+> Also I think there are helpers that take a resource type parameter
+> (as
+> your function) and others hard code it in the function name. Maybe
+> unifying that would be nice, too.
+>=20
+> Best regards
+> Uwe
+>=20
+
 
