@@ -1,372 +1,152 @@
-Return-Path: <linux-kernel+bounces-20921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A811828763
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:49:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AF83828769
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72B041C24336
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:49:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 273F41F237CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB46C39AC6;
-	Tue,  9 Jan 2024 13:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C567D38FBB;
+	Tue,  9 Jan 2024 13:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K7I9GQHG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="k+bvkKpm"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C142839AC1
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704808126;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M8MWpk09OQuDs87AoNXwxvL0Dxd7gugP0Z+NGe+ASM8=;
-	b=K7I9GQHG+KtpL+xofEBHXNV0z5DgF3XQdlzm4eeEFPh/EE8FMa5xlb1J6ZfSz6mb++cY8d
-	6cOxOrEXYjbDbljVQv/ZZkTmlymbSKi8ltw40vTeXH9II+5le7s82R7PkdRP9ZXNbdknZO
-	izMeXXlvLIW8fS3yAqDBSRAtBiYO4IM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-691-jOgiBFJ4NcWdubicmw4OwA-1; Tue, 09 Jan 2024 08:48:45 -0500
-X-MC-Unique: jOgiBFJ4NcWdubicmw4OwA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e4478a3afso11283655e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 05:48:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704808123; x=1705412923;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M8MWpk09OQuDs87AoNXwxvL0Dxd7gugP0Z+NGe+ASM8=;
-        b=M4jHsFFYQ2cxG7W5bGkWMwdsZ8QZ2uDlLCaPCVAUFh8yt0iPNOrtwvOd+pLxNwW3oZ
-         tVyxkz4Fl1rzdtCGmJYSCnXG8DK/RsCVYGxnQN7afXhl5gsqdy2+UBj+C1IfLH/yplxI
-         P+YcHApOdrQ9zZcgxG+BjFx/S+2KWHmuusu533vilnaX9ck04bXyjCcC5T/4EYiY4Xmf
-         fjWJsoZK8D3zDURqj8Wd9RUuWdrPkWKjizmYz14OKdNSq9n/l9L2YNLCozfhcgcgKZn2
-         HdjzRJTzZzUBaPrRdyCsmLE+TdfRmot8vv4WmBjfqcqT6Ln3ks2r+aMrBNnK6t4xjNmY
-         2/nQ==
-X-Gm-Message-State: AOJu0Yxt34AW9NkVnvTuVWeVI4zP7kk2E6ztfZmrJRSvFqtFqM8AxR48
-	vCI60vGSFamor+4zGiBHRcy3nipOZeLTFZrDZ/6Y+kubnq0D5SJ+e7AphO+yJywIDSH/74gSug5
-	uT5BDIdNMMNEEzIYbDVCWaMlebvrDhbqTf3ubuw9H
-X-Received: by 2002:a7b:cd17:0:b0:40e:364d:d526 with SMTP id f23-20020a7bcd17000000b0040e364dd526mr510541wmj.87.1704808123736;
-        Tue, 09 Jan 2024 05:48:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGCa84zrH28KSvMgLx7Cb7jp4WCSd+4pulKgR7Vjd/YUqadrK/0HeoSukDb/qnNIbHxwb4oiQ==
-X-Received: by 2002:a7b:cd17:0:b0:40e:364d:d526 with SMTP id f23-20020a7bcd17000000b0040e364dd526mr510532wmj.87.1704808123414;
-        Tue, 09 Jan 2024 05:48:43 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id o14-20020a05600c4fce00b0040d8cd116e4sm14883637wmq.37.2024.01.09.05.48.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 05:48:43 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>, Erico
- Nunes <nunes.erico@gmail.com>, =?utf-8?Q?Jos=C3=A9_Exp=C3=B3sito?=
- <jose.exposito89@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Donald
- Robson <donald.robson@imgtec.com>, Frank Binns <frank.binns@imgtec.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Matt Coster
- <matt.coster@imgtec.com>, Sarah Walker <sarah.walker@imgtec.com>, Thomas
- Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/imagination: Defer probe if requested firmware is
- not available
-In-Reply-To: <ZZ1IellMvvyFlQaF@phenom.ffwll.local>
-References: <20240109120604.603700-1-javierm@redhat.com>
- <ZZ1IellMvvyFlQaF@phenom.ffwll.local>
-Date: Tue, 09 Jan 2024 14:48:42 +0100
-Message-ID: <8734v6r51h.fsf@minerva.mail-host-address-is-not-set>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD2E339B6;
+	Tue,  9 Jan 2024 13:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409Dgf03005564;
+	Tue, 9 Jan 2024 13:50:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=ymKWYi8Z65Trhul0I0GccChFLj4eXF904h1FUWP0hJQ=;
+ b=k+bvkKpmf3iiMtK06hUlfeog0dywwVwG9vrrW3YdrQna6ysKZaPOUmcd4/JTXYJlV82v
+ 9YPynhoyzxJSuLCzq5ClOkYYhwBPjvh1jZA2aYhBCrTtxEK9VYdHZKl3Vm8o93xqtQvx
+ 8wFtGRLnuiZ8DAvvTOe8jhtrc8re455eBZ/Z+iqaNlByta0LWZQOnbuI18PiWYfHZU9r
+ tWldBLm3rS4neEO8CmUdSxSIIi5rsleyjBFb5zUy0QdcmbKmsBuG8JkgapaZjqGuZpjH
+ 2A4erMBMNabpWj6HJbgXFgKyFZ2I51Hsry1Rkc7ohOT43/l5OIyOoHy+ZW7ATg8RXhb8 aA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh78vg69w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 13:50:12 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 409Dh5i3006163;
+	Tue, 9 Jan 2024 13:50:11 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh78vg697-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 13:50:11 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409D1SL9028052;
+	Tue, 9 Jan 2024 13:50:10 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vgwfsjub2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 13:50:10 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409Do73W23986828
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Jan 2024 13:50:07 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5BB6420043;
+	Tue,  9 Jan 2024 13:50:07 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B27B620040;
+	Tue,  9 Jan 2024 13:50:06 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.148])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  9 Jan 2024 13:50:06 +0000 (GMT)
+Date: Tue, 9 Jan 2024 14:50:05 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: linux-hardening@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org, steven.price@arm.com,
+        Phong Tran <tranmanphong@gmail.com>, mark.rutland@arm.com,
+        Greg KH <greg@kroah.com>
+Subject: Re: [PATCH 4/4] ptdump: add check_wx_pages debugfs attribute
+Message-ID: <20240109135005.7302-A-hca@linux.ibm.com>
+References: <cover.1704800524.git.christophe.leroy@csgroup.eu>
+ <2e8806da45a4b00249d5c449130b5f9ce78b3403.1704800524.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e8806da45a4b00249d5c449130b5f9ce78b3403.1704800524.git.christophe.leroy@csgroup.eu>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GWEkJgHDQrp2b62jDGJkkX_iMwFv_Sr-
+X-Proofpoint-ORIG-GUID: MorbjN2VJcppxv7aT443XRfsyD1mKQHI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-09_06,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=853
+ suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
+ impostorscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401090114
 
-Daniel Vetter <daniel@ffwll.ch> writes:
+On Tue, Jan 09, 2024 at 01:14:38PM +0100, Christophe Leroy wrote:
+> Add a writable attribute in debugfs to trigger a
+> W^X pages check at any time.
+> 
+> To trigger the test, just echo any numeric value into
+> /sys/kernel/debug/check_wx_pages
+> 
+> The result is provided into dmesg.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  mm/ptdump.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+..
+> +static int check_wx_debugfs_set(void *data, u64 val)
+> +{
+> +	ptdump_check_wx();
+> +
+> +	return 0;
+> +}
+> +
+> +DEFINE_SIMPLE_ATTRIBUTE(check_wx_fops, NULL, check_wx_debugfs_set, "%llu\n");
+> +
+> +static int ptdump_debugfs_init(void)
+> +{
+> +	debugfs_create_file("check_wx_pages", 0200, NULL, NULL, &check_wx_fops);
+> +
+> +	return 0;
+> +}
 
-Hello Sima,
-
-Thanks for your feedback.
-
-> On Tue, Jan 09, 2024 at 01:05:59PM +0100, Javier Martinez Canillas wrote:
->> The device is initialized in the driver's probe callback and as part of
->> that initialization, the required firmware is loaded. But this fails if
->> the driver is built-in and the firmware isn't present in the initramfs:
->> 
->> $ dmesg | grep powervr
->> [    2.969757] powervr fd00000.gpu: Direct firmware load for powervr/rogue_33.15.11.3_v1.fw failed with error -2
->> [    2.979727] powervr fd00000.gpu: [drm] *ERROR* failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-2)
->> [    2.989885] powervr: probe of fd00000.gpu failed with error -2
->> 
->> $ ls -lh /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
->> -rw-r--r-- 1 root root 51K Dec 12 19:00 /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
->> 
->> To prevent the probe to fail for this case, let's defer the probe if the
->> firmware isn't available. That way, the driver core can retry it and get
->> the probe to eventually succeed once the root filesystem has been mounted.
->> 
->> If the firmware is also not present in the root filesystem, then the probe
->> will never succeed and the reason listed in the debugfs devices_deferred:
->> 
->> $ cat /sys/kernel/debug/devices_deferred
->> fd00000.gpu     powervr: failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-517)
->> 
->> Fixes: f99f5f3ea7ef ("drm/imagination: Add GPU ID parsing and firmware loading")
->> Suggested-by: Maxime Ripard <mripard@kernel.org>
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
->
-> Uh that doesn't work.
->
-> Probe is for "I'm missing a struct device" and _only_ that. You can't
-> assume that probe deferral will defer enough until the initrd shows up.
->
-
-Fair.
-
-> You need to fix this by fixing the initrd to include the required
-> firmwares. This is what MODULE_FIRMWARE is for, and if your initrd fails
-> to observe that it's just broken.
->
-
-Tha's already the case, when is built as a module the initrd (dracut in
-this particular case) does figure out that the firmware needs to be added
-but that doesn't work when the DRM driver is built-in. Because dracut is
-not able to figure out and doesn't even have a powervr.ko info to look at
-whatever is set by the MODULE_FIRMWARE macro.
-
-> Yes I know as long as you have enough stuff built as module so that there
-> will be _any_ kind of device probe after the root fs is mounted, this
-> works, because that triggers a re-probe of everything. But that's the most
-> kind of fragile fix there is.
->
-
-Is fragile that's true but on the other hand it does solve the issue in
-pratice. The whole device probal mechanism is just a best effort anyways.
-
-> If you want to change that then I think that needs an official blessing
-> from Greg KH/device core folks.
->
-
-I liked this approach due its simplicity but an alternative (and more
-complex) solution could be to delay the firmware request and not do it at
-probe time.
-
-For example, the following (only barely tested) patch solves the issue for
-me as well but it's a bigger change to this driver and wasn't sure if will
-be acceptable:
-
-From c3fb715047a44691412196d8408f2bd495bcd1ed Mon Sep 17 00:00:00 2001
-From: Javier Martinez Canillas <javierm@redhat.com>
-Date: Tue, 9 Jan 2024 14:47:05 +0100
-Subject: [RFC PATCH] drm/imagination: Move PowerVR GPU init to the drivers's open
- callback
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Currently the device is initialized in the driver's probe callback. But as
-part of this initialization, the required firmware is loaded and this will
-fail when the driver is built-in, unless FW is included in the initramfs:
-
-$ dmesg | grep powervr
-[    2.969757] powervr fd00000.gpu: Direct firmware load for powervr/rogue_33.15.11.3_v1.fw failed with error -2
-[    2.979727] powervr fd00000.gpu: [drm] *ERROR* failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-2)
-[    2.989885] powervr: probe of fd00000.gpu failed with error -2
-
-$ ls -lh /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
--rw-r--r-- 1 root root 51K Dec 12 19:00 /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
-
-To prevent this, let's delay the PowerVR GPU-specific initialization until
-the render device is opened by user-space. By then, the root filesystem
-will be mounted already and the driver able to find the required firmware.
-
-Besides the mentioned problem, it seems more correct to only load firmware
-and request the IRQ if the device is opened rather than do these on probe.
-
-Fixes: f99f5f3ea7ef ("drm/imagination: Add GPU ID parsing and firmware loading")
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
- drivers/gpu/drm/imagination/pvr_device.c | 41 +++++++-----------------
- drivers/gpu/drm/imagination/pvr_device.h |  2 ++
- drivers/gpu/drm/imagination/pvr_drv.c    | 19 +++++++----
- 3 files changed, 27 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/gpu/drm/imagination/pvr_device.c b/drivers/gpu/drm/imagination/pvr_device.c
-index 1704c0268589..1e0a3868394e 100644
---- a/drivers/gpu/drm/imagination/pvr_device.c
-+++ b/drivers/gpu/drm/imagination/pvr_device.c
-@@ -404,7 +404,7 @@ pvr_set_dma_info(struct pvr_device *pvr_dev)
-  *  * Any error returned by pvr_memory_context_init(), or
-  *  * Any error returned by pvr_request_firmware().
-  */
--static int
-+int
- pvr_device_gpu_init(struct pvr_device *pvr_dev)
- {
- 	int err;
-@@ -444,6 +444,10 @@ pvr_device_gpu_init(struct pvr_device *pvr_dev)
- 	if (err)
- 		goto err_vm_ctx_put;
- 
-+	err = pvr_device_irq_init(pvr_dev);
-+	if (err)
-+		goto err_vm_ctx_put;
-+
- 	return 0;
- 
- err_vm_ctx_put:
-@@ -459,9 +463,15 @@ pvr_device_gpu_init(struct pvr_device *pvr_dev)
-  * pvr_device_gpu_fini() - GPU-specific deinitialization for a PowerVR device
-  * @pvr_dev: Target PowerVR device.
-  */
--static void
-+void
- pvr_device_gpu_fini(struct pvr_device *pvr_dev)
- {
-+	/*
-+	 * Deinitialization stages are performed in reverse order compared to
-+	 * the initialization stages in pvr_device_gpu_init().
-+	 */
-+	pvr_device_irq_fini(pvr_dev);
-+
- 	pvr_fw_fini(pvr_dev);
- 
- 	if (pvr_dev->fw_dev.processor_type != PVR_FW_PROCESSOR_TYPE_MIPS) {
-@@ -519,43 +529,16 @@ pvr_device_init(struct pvr_device *pvr_dev)
- 	if (err)
- 		goto err_pm_runtime_put;
- 
--	/* Perform GPU-specific initialization steps. */
--	err = pvr_device_gpu_init(pvr_dev);
--	if (err)
--		goto err_pm_runtime_put;
--
--	err = pvr_device_irq_init(pvr_dev);
--	if (err)
--		goto err_device_gpu_fini;
--
- 	pm_runtime_put(dev);
- 
- 	return 0;
- 
--err_device_gpu_fini:
--	pvr_device_gpu_fini(pvr_dev);
--
- err_pm_runtime_put:
- 	pm_runtime_put_sync_suspend(dev);
- 
- 	return err;
- }
- 
--/**
-- * pvr_device_fini() - Deinitialize a PowerVR device
-- * @pvr_dev: Target PowerVR device.
-- */
--void
--pvr_device_fini(struct pvr_device *pvr_dev)
--{
--	/*
--	 * Deinitialization stages are performed in reverse order compared to
--	 * the initialization stages in pvr_device_init().
--	 */
--	pvr_device_irq_fini(pvr_dev);
--	pvr_device_gpu_fini(pvr_dev);
--}
--
- bool
- pvr_device_has_uapi_quirk(struct pvr_device *pvr_dev, u32 quirk)
- {
-diff --git a/drivers/gpu/drm/imagination/pvr_device.h b/drivers/gpu/drm/imagination/pvr_device.h
-index 2ca7e535799f..3083fcd3f91e 100644
---- a/drivers/gpu/drm/imagination/pvr_device.h
-+++ b/drivers/gpu/drm/imagination/pvr_device.h
-@@ -481,6 +481,8 @@ packed_bvnc_to_pvr_gpu_id(u64 bvnc, struct pvr_gpu_id *gpu_id)
- 	gpu_id->c = bvnc & GENMASK_ULL(15, 0);
- }
- 
-+int pvr_device_gpu_init(struct pvr_device *pvr_dev);
-+void pvr_device_gpu_fini(struct pvr_device *pvr_dev);
- int pvr_device_init(struct pvr_device *pvr_dev);
- void pvr_device_fini(struct pvr_device *pvr_dev);
- void pvr_device_reset(struct pvr_device *pvr_dev);
-diff --git a/drivers/gpu/drm/imagination/pvr_drv.c b/drivers/gpu/drm/imagination/pvr_drv.c
-index 5c3b2d58d766..f8fb45136326 100644
---- a/drivers/gpu/drm/imagination/pvr_drv.c
-+++ b/drivers/gpu/drm/imagination/pvr_drv.c
-@@ -1309,10 +1309,18 @@ pvr_drm_driver_open(struct drm_device *drm_dev, struct drm_file *file)
- {
- 	struct pvr_device *pvr_dev = to_pvr_device(drm_dev);
- 	struct pvr_file *pvr_file;
-+	int err;
-+
-+	/* Perform GPU-specific initialization steps. */
-+	err = pvr_device_gpu_init(pvr_dev);
-+	if (err)
-+		return err;
- 
- 	pvr_file = kzalloc(sizeof(*pvr_file), GFP_KERNEL);
--	if (!pvr_file)
-+	if (!pvr_file) {
-+		pvr_device_gpu_fini(pvr_dev);
- 		return -ENOMEM;
-+	}
- 
- 	/*
- 	 * Store reference to base DRM file private data for use by
-@@ -1354,6 +1362,7 @@ static void
- pvr_drm_driver_postclose(__always_unused struct drm_device *drm_dev,
- 			 struct drm_file *file)
- {
-+	struct pvr_device *pvr_dev = to_pvr_device(drm_dev);
- 	struct pvr_file *pvr_file = to_pvr_file(file);
- 
- 	/* Kill remaining contexts. */
-@@ -1364,6 +1373,8 @@ pvr_drm_driver_postclose(__always_unused struct drm_device *drm_dev,
- 	pvr_destroy_hwrt_datasets_for_file(pvr_file);
- 	pvr_destroy_vm_contexts_for_file(pvr_file);
- 
-+	pvr_device_gpu_fini(pvr_dev);
-+
- 	kfree(pvr_file);
- 	file->driver_priv = NULL;
- }
-@@ -1430,16 +1441,13 @@ pvr_probe(struct platform_device *plat_dev)
- 
- 	err = drm_dev_register(drm_dev, 0);
- 	if (err)
--		goto err_device_fini;
-+		goto err_watchdog_fini;
- 
- 	xa_init_flags(&pvr_dev->free_list_ids, XA_FLAGS_ALLOC1);
- 	xa_init_flags(&pvr_dev->job_ids, XA_FLAGS_ALLOC1);
- 
- 	return 0;
- 
--err_device_fini:
--	pvr_device_fini(pvr_dev);
--
- err_watchdog_fini:
- 	pvr_watchdog_fini(pvr_dev);
- 
-@@ -1464,7 +1472,6 @@ pvr_remove(struct platform_device *plat_dev)
- 	xa_destroy(&pvr_dev->free_list_ids);
- 
- 	pm_runtime_suspend(drm_dev->dev);
--	pvr_device_fini(pvr_dev);
- 	drm_dev_unplug(drm_dev);
- 	pvr_watchdog_fini(pvr_dev);
- 	pvr_queue_device_fini(pvr_dev);
--- 
-2.43.0
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Wouldn't it be better to have (only?) a readable attribute which triggers
+this, and provides the result via this attribute?
+That would allow for automated tests without having to parse dmesg.
 
