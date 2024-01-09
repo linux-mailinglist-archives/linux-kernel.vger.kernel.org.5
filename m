@@ -1,177 +1,229 @@
-Return-Path: <linux-kernel+bounces-20787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B50E382853C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:41:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDBA0828546
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:43:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55F76286B36
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:41:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 523A81F24E75
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC6937167;
-	Tue,  9 Jan 2024 11:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A408381B3;
+	Tue,  9 Jan 2024 11:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m1SxpyZZ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jMeBQHIo"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F7036B1B
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 11:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704800461; x=1736336461;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=AoPRblfBYSSpxI4NW0UoohG5awkc5/gNHCwPgvymxJ0=;
-  b=m1SxpyZZ//mAVpPeNxSy2D5FFs5MlhJ5KAlsEwFJu93gDMOdYGRGaahT
-   +fNAAsEhjvjgIGVL89UdNqiR4tq5ch7oh2vRlKYvbxcfo3+d1GdhSFe2o
-   /DMsFcb7GxvKqiyUg+3GfMg6xjcjHLToHoGebd/YVSl2u3iEKKHHVtyF1
-   5m8s8+o0czCvZyfjhZI6inYNsM/FdnO3dbPK1iqePFXKz5J/Bam0zD+ye
-   D/INmEfj14m3+th+kjG6OpHGeCfUvlkQFvDy4AN8Uw+IKOkOxL9cddgwv
-   9Ta6kcXSyRPS8TmcG5ox20Q9WGD1f47Yanos5q5G8HMVBFEKI2orPOuzy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4946118"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="4946118"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 03:41:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="757957217"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="757957217"
-Received: from arunjose-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.37.37])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 03:40:58 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id F2CA710A4E9; Tue,  9 Jan 2024 14:40:54 +0300 (+03)
-Date: Tue, 9 Jan 2024 14:40:54 +0300
-From: kirill.shutemov@linux.intel.com
-To: Jun Miao <jun.miao@intel.com>
-Cc: dave.hansen@linux.intel.com, x86@kernel.org, linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/tdx: Optimize try_accept_memory() to reduce 1GB page
- accepted failed times
-Message-ID: <20240109114054.s2mzvhp2dgbihcvy@box.shutemov.name>
-References: <20240109054824.9023-1-jun.miao@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D839836B1B;
+	Tue,  9 Jan 2024 11:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40965oJK009535;
+	Tue, 9 Jan 2024 11:42:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=j6ljNmKClZbonGoOjzkttbgSR808yEo5G51DEnlUtWQ=; b=jM
+	eBQHIo0uzFqX94UBx/lvjUeeWR7EI/7opiZi6KnqArAomhEtC4xCBrR+HsWbHcKP
+	Vq4N2OByM7cZ2y8LomOOD7JO83+kM73ggYQUoOcQzmqXSA6DUI8Mmw50oyjmjEeb
+	8GVUfmwV99hySfqNwsabzfj/ah70qSjBVH9I9xU+utbGnjMwjyxfYOaJ5Ar610dh
+	XPiyvhLtjKr0xWbbhYn5CVn6DHVCaLI4QjuCMalYvBccRwiirV1ifHxmcVwpu9ET
+	Ybch7xvsRKyclCzkto07xJfbEHNWP+7PwZ/Y6QaFb2LBjneGdFw4LRsEgAQjBroU
+	ACHHbVcrDGuEAOKUUeqw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgw1k0xy5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 11:42:43 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409BgfeJ029770
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 11:42:42 GMT
+Received: from hu-bibekkum-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 9 Jan 2024 03:42:35 -0800
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <dmitry.baryshkov@linaro.org>, <konrad.dybcio@linaro.org>,
+        <jsnitsel@redhat.com>, <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <qipl.kernel.upstream@quicinc.com>,
+        Bibek Kumar Patro
+	<quic_bibekkum@quicinc.com>
+Subject: [PATCH v7 0/5] iommu/arm-smmu: introduction of ACTLR implementation for Qualcomm SoCs
+Date: Tue, 9 Jan 2024 17:12:15 +0530
+Message-ID: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240109054824.9023-1-jun.miao@intel.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XmVyVtlHKilTG8nFvwmxITv3Rh_TcURz
+X-Proofpoint-ORIG-GUID: XmVyVtlHKilTG8nFvwmxITv3Rh_TcURz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ impostorscore=0 suspectscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090095
 
-On Tue, Jan 09, 2024 at 01:48:24PM +0800, Jun Miao wrote:
-> Since the current TDX module ABI spec TDG.MEM.PAGE.ACCEPT Leaf show:
-> "Level of the Secure EPT leaf entry that maps the private page to be
-> accepted: either 0 (4KB) or 1 (2MB)".
+This patch series consist of five parts and covers the following:
 
-Well, that's true that current implementation supports only 4k and 2M, but
-note reference to "Secure EPT level" table. This as well as size of the
-field suggests that it can be extended to more page levels.
+1. Re-enable context caching for Qualcomm SoCs to retain prefetcher
+   settings during reset and runtime suspend.
 
-> There is not 1G page accept dynamically, if every time try to accept 1G
-> size but always fail, then cost more time from two cases:
-> 	- When size < 1G, judge failed return 0
-> 	- Really TDCALL<ACCEPT_PAGE> 1G failed when size >= 1G
-> So skip the 1G and optimize it to 2M directly to save time.
+2. Remove cfg inside qcom_smmu structure and replace it with single
+   pointer to qcom_smmu_match_data avoiding replication of multiple
+   members from same.
 
-Do you actually see issued TDCALL for 1G pages? It shouldn't be the case.
+3. Introduce intital set of driver changes to implement ACTLR register
+   for custom prefetcher settings in Qualcomm SoCs.
 
-Kernel accepts memory in MAX_ORDER chunks -- 4MiB a time. try_accept_one()
-will fail on alignment check 511 times of 512 and on len check for the
-one. I expected these checks to be within noise compared to TDCALL.
+4. Add ACTLR data and implementation operations for SM8550.
 
-I don't oppose the patch in principal, but let's establish facts first.
+5. Add ACTLR data and implementation operations for SC7280.
 
-> 
-> Run the eatmemory with different memories to get the cost time as follow:
-> 	[root@td-guest ~]# ./eatmemory 8G
-> 	Currently total memory: 100169027584
-> 	Currently avail memory: 99901911040
-> 	Eating 8589934592 bytes in chunks of 1024...
-> 
-> 	  Start time：1704699207487 ms
-> 	  End time：1704699222966 ms
-> 	  Cost time: 15479 ms
->   #
->   # Compare with/without this optimization
->   #
->   # Hardware: ArcherCity Sapphire Rapids 128cores
->   # Test eatmemory: https://github.com/jmiao2018/eatmemory.git
->   # Detail test log link: https://github.com/jmiao2018/eatmemory/blob/master/log-tdx.txt
->   #
->   # Accept Memeory Sizes      Before(ms)       After(ms)      Trigger 1G Failed Times      Reduce Time%
->   # ....................      ..........       .........      .......................	   .............
->   #
-> 		  1G                3414         3402                        751824        -12(-0.035%)
-> 		  2G                3853         3804                       1015126       -349(-0.128%)
-> 		  4G                7773         7561                       1557834       -212(-0.281%)
-> 		  8G               15479        15173                       2633686       -306(-0.201%)
->   		 16G               31527        30379                       4785649      -1148(-0.378%)
->   		 32G               65058        63723                       9087686      -1335(-0.209%)
-> 		 64G              133379       128354                      17693366      -5025(-0.391%)
-> 
-> Co-developed-by: Zhiquan Li <zhiquan1.li@intel.com>
-> Signed-off-by: Jun Miao <jun.miao@intel.com>
-> ---
->  arch/x86/coco/tdx/tdx-shared.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/coco/tdx/tdx-shared.c b/arch/x86/coco/tdx/tdx-shared.c
-> index 1655aa56a0a5..1694b7eba93b 100644
-> --- a/arch/x86/coco/tdx/tdx-shared.c
-> +++ b/arch/x86/coco/tdx/tdx-shared.c
-> @@ -18,7 +18,7 @@ static unsigned long try_accept_one(phys_addr_t start, unsigned long len,
->  	 * Pass the page physical address to the TDX module to accept the
->  	 * pending, private page.
->  	 *
-> -	 * Bits 2:0 of RCX encode page size: 0 - 4K, 1 - 2M, 2 - 1G.
-> +	 * Bits 2:0 of RCX encode page size: 0 - 4K, 1 - 2M.
->  	 */
->  	switch (pg_level) {
->  	case PG_LEVEL_4K:
-> @@ -27,9 +27,6 @@ static unsigned long try_accept_one(phys_addr_t start, unsigned long len,
->  	case PG_LEVEL_2M:
->  		page_size = TDX_PS_2M;
->  		break;
-> -	case PG_LEVEL_1G:
-> -		page_size = TDX_PS_1G;
-> -		break;
->  	default:
->  		return 0;
->  	}
-> @@ -55,11 +52,14 @@ bool tdx_accept_memory(phys_addr_t start, phys_addr_t end)
->  		 * Try larger accepts first. It gives chance to VMM to keep
->  		 * 1G/2M Secure EPT entries where possible and speeds up
->  		 * process by cutting number of hypercalls (if successful).
-> -		 */
-> +		 * Since per current TDX spec, only support for adding 4KB or
-> +		 * 2MB page dynamically.
-> +		 * /
->  
-> -		accept_size = try_accept_one(start, len, PG_LEVEL_1G);
-> -		if (!accept_size)
-> +		if (IS_ALIGNED(start, PMD_SIZE) && len >= PMD_SIZE)
+Changes in v7 from v6:
+ Changes to incorporate suggestions from Dmitry as follows:
+ - Use io_start address instead of compatible string to identify the
+   correct instance by comparing with smmu start address and check for
+   which smmu the corresponding actlr table is to be picked.
+Link to v6:
+https://lore.kernel.org/all/20231220133808.5654-1-quic_bibekkum@quicinc.com/
 
-You duplicate checks inside try_to_accept_on().
+Changes in v6 from v5:
+ - Remove extra Suggested-by tags.
+ - Add return check for arm_mmu500_reset in 1/5 as discussed.
+Link to v5:
+https://lore.kernel.org/all/20231219135947.1623-1-quic_bibekkum@quicinc.com/
 
->  			accept_size = try_accept_one(start, len, PG_LEVEL_2M);
-> +
-> +		/* The 4KB page case or accept 2MB page failed case. */
->  		if (!accept_size)
->  			accept_size = try_accept_one(start, len, PG_LEVEL_4K);
->  		if (!accept_size)
-> -- 
-> 2.32.0
-> 
+Changes in v5 from v4:
+ New addition:
+ - Modify copyright year in arm-smmu-qcom.h to 2023 from 2022.
+ Changes to incorporate suggestions from Dmitry as follows:
+ - Modify the defines for prefetch in (foo << bar) format
+   as suggested.(FIELD_PREP could not be used in defines
+   is not inside any block/function)
+ Changes to incorporate suggestions from Konrad as follows:
+ - Shift context caching enablement patch as 1/5 instead of 5/5 to
+   be picked up as independent patch.
+ - Fix the codestyle to orient variables in reverse xmas tree format
+   for patch 1/5.
+ - Fix variable name in patch 1/5 as suggested.
+ Link to v4:
+https://lore.kernel.org/all/20231215101827.30549-1-quic_bibekkum@quicinc.com/
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Changes in v4 from v3:
+ New addition:
+ - Remove actlrcfg_size and use NULL end element instead to traverse
+   the actlr table, as this would be a cleaner approach by removing
+   redundancy of actlrcfg_size.
+ - Renaming of actlr set function to arm_smmu_qcom based proprietary
+   convention.
+ - break from loop once sid is found and ACTLR value is initialized
+   in qcom_smmu_set_actlr.
+ - Modify the GFX prefetch value separating into 2 sensible defines.
+ - Modify comments for prefetch defines as per SMMU-500 TRM.
+ Changes to incorporate suggestions from Konrad as follows:
+ - Use Reverse-Christmas-tree sorting wherever applicable.
+ - Pass arguments directly to arm_smmu_set_actlr instead of creating
+   duplicate variables.
+ - Use array indexing instead of direct pointer addressed by new
+   addition of eliminating actlrcfg_size.
+ - Switch the HEX value's case from upper to lower case in SC7280
+   actlrcfg table.
+ Changes to incorporate suggestions from Dmitry as follows:
+ - Separate changes not related to ACTLR support to different commit
+   with patch 5/5.
+ - Using pointer to struct for arguments in smr_is_subset().
+ Changes to incorporate suggestions from Bjorn as follows:
+ - fix the commit message for patch 2/5 to properly document the
+   value space to avoid confusion.
+ Fixed build issues reported by kernel test robot [1] for
+ arm64-allyesconfig [2].
+ [1]: https://lore.kernel.org/all/202312011750.Pwca3TWE-lkp@intel.com/
+ [2]:
+https://download.01.org/0day-ci/archive/20231201/202312011750.Pwca3TWE-lkp@intel.com/config
+ Link to v3:
+https://lore.kernel.org/all/20231127145412.3981-1-quic_bibekkum@quicinc.com/
+
+Changes in v3 from v2:
+ New addition:
+ - Include patch 3/4 for adding ACTLR support and data for SC7280.
+ - Add driver changes for actlr support in gpu smmu.
+ - Add target wise actlr data and implementation ops for gpu smmu.
+ Changes to incorporate suggestions from Robin as follows:
+ - Match the ACTLR values with individual corresponding SID instead
+   of assuming that any SMR will be programmed to match a superset of
+   the data.
+ - Instead of replicating each elements from qcom_smmu_match_data to
+   qcom_smmu structre during smmu device creation, replace the
+   replicated members with qcom_smmu_match_data structure inside
+   qcom_smmu structre and handle the dereference in places that
+   requires them.
+ Changes to incorporate suggestions from Dmitry and Konrad as follows:
+ - Maintain actlr table inside a single structure instead of
+   nested structure.
+ - Rename prefetch defines to more appropriately describe their
+   behavior.
+ - Remove SM8550 specific implementation ops and roll back to default
+   qcom_smmu_500_impl implementation ops.
+ - Add back the removed comments which are NAK.
+ - Fix commit description for patch 4/4.
+ Link to v2:
+https://lore.kernel.org/all/20231114135654.30475-1-quic_bibekkum@quicinc.com/
+
+Changes in v2 from v1:
+ - Incorporated suggestions on v1 from Dmitry,Konrad,Pratyush.
+ - Added defines for ACTLR values.
+ - Linked sm8550 implementation structure to corresponding
+   compatible string.
+ - Repackaged actlr value set implementation to separate function.
+ - Fixed indentation errors.
+ - Link to v1:
+https://lore.kernel.org/all/20231103215124.1095-1-quic_bibekkum@quicinc.com/
+
+Changes in v1 from RFC:
+ - Incorporated suggestion form Robin on RFC
+ - Moved the actlr data table into driver, instead of maintaining
+   it inside soc specific DT and piggybacking on exisiting iommus
+   property (iommu = <SID, MASK, ACTLR>) to set this value during
+   smmu probe.
+ - Link to RFC:
+https://lore.kernel.org/all/a01e7e60-6ead-4a9e-ba90-22a8a6bbd03f@quicinc.com/
+
+Bibek Kumar Patro (5):
+  iommu/arm-smmu: re-enable context caching in smmu reset operation
+  iommu/arm-smmu: refactor qcom_smmu structure to include single pointer
+  iommu/arm-smmu: introduction of ACTLR for custom prefetcher settings
+  iommu/arm-smmu: add ACTLR data and support for SM8550
+  iommu/arm-smmu: add ACTLR data and support for SC7280
+
+ .../iommu/arm/arm-smmu/arm-smmu-qcom-debug.c  |   2 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c    | 216 +++++++++++++++++-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h    |  13 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c         |   5 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h         |   5 +
+ 5 files changed, 231 insertions(+), 10 deletions(-)
+
+--
+2.17.1
+
 
