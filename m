@@ -1,137 +1,115 @@
-Return-Path: <linux-kernel+bounces-20947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 750F98287B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:05:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03AEA8287B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DE68285B21
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:05:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62BB7287D10
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E7839AE5;
-	Tue,  9 Jan 2024 14:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8458439AC2;
+	Tue,  9 Jan 2024 14:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="kPi6NH8C"
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yTXHxlcb"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1636C39AC5
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
-	by cmsmtp with ESMTPS
-	id NAm4rdC8xTHHuNCiOrjYvt; Tue, 09 Jan 2024 14:04:24 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id NCiNrik5hD6lhNCiNrwfz2; Tue, 09 Jan 2024 14:04:23 +0000
-X-Authority-Analysis: v=2.4 cv=LNR1/ba9 c=1 sm=1 tr=0 ts=659d5267
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=GfQleyYEO+cc22AUyTT7qQ==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=cm27Pg_UAAAA:8
- a=VwQbUJbxAAAA:8 a=mDV3o1hIAAAA:8 a=Twlkf-z8AAAA:8 a=NEAV23lmAAAA:8
- a=1aWQwmh1cChWapziH08A:9 a=QEXdDO2ut3YA:10 a=xmb-EsYY8bH0VWELuYED:22
- a=AjGcO6oz07-iQ99wixmX:22 a=_FVE-zBwftR9WsbkzFJk:22 a=-74SuR6ZdpOK_LpdRCUo:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=uvdyQdGzfT0A8h+hoTqs6rlhElqEBmHJSqddMJ5qdek=; b=kPi6NH8CRvPxouEWeClMnHA7jf
-	/LRlRLQu4hrPNkXUermY1YK7HfZ6O9ejSDLZyoBh4JGH/EKRKAg118auyA8mbZ1Rv7tZDbtpv3Yfu
-	v02r+md2I1q450BfoN6bdmQLG9IS75blkmyaITNg2E6Mh7kJ1V/dLuqe240Xwg+ADzb/UkRXPWkc6
-	41cIy0afe9Ru8NZc8tsWQ+ZH1SV4U4W3xpWsXDkUUg1p/BVXhuTmVR48yy9c4kR06QfFZNVtzvUHK
-	MAjePADpKn/camno87g9HLHHMH9R0zyB4Qo5dt6vOlSu+JQQfFtNIUbI06uT5SAFWwqs9nt4IOLKZ
-	69r8zn9A==;
-Received: from 187.184.157.186.cable.dyn.cableonline.com.mx ([187.184.157.186]:58081 helo=[192.168.0.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rNCiM-0004lh-1x;
-	Tue, 09 Jan 2024 08:04:22 -0600
-Message-ID: <374bf411-9f51-4326-adb3-ca384ded1e4a@embeddedor.com>
-Date: Tue, 9 Jan 2024 08:04:20 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E7D3A1AA
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-336dcebcdb9so3118012f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 06:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704809085; x=1705413885; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y4eDBGUcsDSDL8WR80JtlsXII8Q6J7ftU5c15K+YQyE=;
+        b=yTXHxlcbWCtFzbMEoK7veXkcj5whfB078tGeImE4BKpwXfTnlcqiFHfqCT6twGSO6x
+         ITHUznrxhaWGRCePCuXUxGDN3A/7ymllQ55X7iQFMvPDcg9uMHjkhZA7IL6GV9Aue0Fo
+         3Qm1aXA6PmG/SKQ94GfZ5tICgYfKYx8fkxHPkickj7jPbNbMtwwLsUq4h//eLJ2V9GjC
+         E/MZI/uh0zOb0ljUSTRud5S+OmZP5n3xBzD89ICUxLXTHJ1mcsL14KHgzlEg62U72YCa
+         9IqITrsCzZ1Stwg0dy7ZRR5LCN2LUf/LTQZN6OjMvCsdjAE8Rtb6DJfWO64qNCDM+AKk
+         PvwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704809085; x=1705413885;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y4eDBGUcsDSDL8WR80JtlsXII8Q6J7ftU5c15K+YQyE=;
+        b=XjIBAZDIsHLkMuxRtYSf6ccR+f75jfXMJwfdFL1xFSmY7qZToTs5tVZVdIl2gMjUHX
+         MI74WiwEkVAiffZrB02KYvvZeNpzfRRnKjh+FVHTaW+58hXHLuuCDnJAWO/GsbRsQ/+W
+         ZWh2da1EUz1Ez0zGG8psD0HCI9ihxQ4lrOGtlOkX4FwNFZbEnYVWMVnDLcfnSdMiOuVx
+         XaJQ3sS+qQwaPDDSWBkFO/hpUxuiiB9f5sTyuoNVoSHFj/fpRqO+hIFqE+Dy3uM0VJS0
+         kMcmIl1JriTPnzID8M6wY0r4v/TUai8V/xARL8KdRp1SctPVGp5ZOx5ov4MX0tKzKLL1
+         eSGg==
+X-Gm-Message-State: AOJu0YxQwwNqNeHY2oZ7kpgl/g+JTpwkiudLrws+N21I7TYUCYjziiR8
+	a+5ESAufzNXvRkPT1tFsM74kYPyL+pn7AQ==
+X-Google-Smtp-Source: AGHT+IFMqVBgwU7mE18AKDtOKcW01AIFweyT2he9q5FcoMTAeHwxeFs+tozpNfDbYbb3bPuXZQCNng==
+X-Received: by 2002:adf:fdcc:0:b0:337:5568:363 with SMTP id i12-20020adffdcc000000b0033755680363mr260609wrs.201.1704809085292;
+        Tue, 09 Jan 2024 06:04:45 -0800 (PST)
+Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id z17-20020a5d4c91000000b0033342338a24sm2521337wrs.6.2024.01.09.06.04.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 06:04:44 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: catalin.marinas@arm.com,
+	will@kernel.org
+Cc: sumit.garg@linaro.org,
+	dianders@chromium.org,
+	mark.rutland@arm.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@android.com,
+	andre.draszik@linaro.org,
+	willmcvicker@google.com,
+	peter.griffin@linaro.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH] arm64: irq: include <linux/cpumask.h>
+Date: Tue,  9 Jan 2024 14:04:37 +0000
+Message-ID: <20240109140437.3703330-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Compiler Attributes: counted_by: bump compiler versions
-Content-Language: en-US
-To: Sergey Senozhatsky <senozhatsky@chromium.org>,
- Miguel Ojeda <ojeda@kernel.org>, Kees Cook <keescook@chromium.org>
-Cc: Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20240109133633.1103876-1-senozhatsky@chromium.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240109133633.1103876-1-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.157.186
-X-Source-L: No
-X-Exim-ID: 1rNCiM-0004lh-1x
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187.184.157.186.cable.dyn.cableonline.com.mx ([192.168.0.10]) [187.184.157.186]:58081
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfFUTr32L11+bYSq6rumseHnTf+acT3G5jFrva7As+SZrmG9KQxYYLZNCCqoSLjyqRNA3tLfuEkH/ph17IVgH7g8+pTIytMLoVlYqU3GD9tutD8P3qo49
- v/BbhxbFsGPEJ+cIXtlUIXNw/SjxdeX9/Vjgp4YnMoaQq2Ak9z/gUIqC+KZpylLeazy/gXuSp6LoOAupNz45tKL021T80dyBWOIUHiylB4lBSDw6/ontCfFc
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Sorting include files in alphabetic order in
+drivers/tty/serial/samsung.c revealed the following error:
 
+In file included from drivers/tty/serial/samsung_tty.c:24:
+/arch/arm64/include/asm/irq.h:9:43: error: unknown type name ‘cpumask_t’
+    9 | void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
+      |                                           ^~~~~~~~~
 
-On 1/9/24 07:36, Sergey Senozhatsky wrote:
-> Bump compiler versions, as GCC is expected to implement it
-> in version 15 and current clang-18 still has no support for
-> counted_by(). Also fix clang URL - the project has moved
-> to github.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Include cpumask.h to avod unknown type errors for parents of irq.h that
+don't include cpumask.h.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ arch/arm64/include/asm/irq.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks!
---
-Gustavo
+diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
+index 50ce8b697ff3..d5612bc770da 100644
+--- a/arch/arm64/include/asm/irq.h
++++ b/arch/arm64/include/asm/irq.h
+@@ -5,6 +5,7 @@
+ #ifndef __ASSEMBLER__
+ 
+ #include <asm-generic/irq.h>
++#include <linux/cpumask.h>
+ 
+ void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
+ #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+-- 
+2.43.0.472.g3155946c3a-goog
 
-> ---
->   include/linux/compiler_attributes.h | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-> index 28566624f008..1829c24c3357 100644
-> --- a/include/linux/compiler_attributes.h
-> +++ b/include/linux/compiler_attributes.h
-> @@ -95,11 +95,11 @@
->   #endif
->   
->   /*
-> - * Optional: only supported since gcc >= 14
-> - * Optional: only supported since clang >= 18
-> + * Optional: only supported since gcc >= 15
-> + * Optional: only supported since clang >= 19
->    *
->    *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
-> - * clang: https://reviews.llvm.org/D148381
-> + * clang: https://github.com/llvm/llvm-project/pull/76348
->    */
->   #if __has_attribute(__counted_by__)
->   # define __counted_by(member)		__attribute__((__counted_by__(member)))
 
