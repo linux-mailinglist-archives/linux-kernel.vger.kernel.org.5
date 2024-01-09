@@ -1,109 +1,130 @@
-Return-Path: <linux-kernel+bounces-20711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A048D8283E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:22:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C0F48283EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:25:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94C7E1C24714
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EA101F21FF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494F0360BA;
-	Tue,  9 Jan 2024 10:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B955E360B9;
+	Tue,  9 Jan 2024 10:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="C6+AM1CU"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dhZ+LEgq"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAEA36AE1;
-	Tue,  9 Jan 2024 10:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3C33540E0196;
-	Tue,  9 Jan 2024 10:21:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id n29gUFQZ12Kl; Tue,  9 Jan 2024 10:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704795715; bh=xjuqUo1N9un7QD2OXvyR+5fIfImqWhSyt6kzFoGIsSI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=C6+AM1CUovm2+HNjxZyX+e4EIKEIps6SduVpK8vGtpGYTqJPSLpmUesTeMBRYtC/l
-	 ncstqX3pXn8srWdzIdVsdEKq8ooWFHdCSaJvj1AQAGPytLN1msAn3y+y1MgL6Djb5m
-	 lBtxP1+/M5nS1WhPCIIc6T23ro5CTW9UHQCw4UwRS+sCzB2HzY9oobVxcH93eT4ZY1
-	 qxlNQqdozYylfVrn9n+ZK6sNc/Yw0iTaKOmklZ/lOA3zc1ywZB0lvPNy8Rz5WOKViX
-	 qeG7s/66rfaIrNP9qJdAk2eIOWYE62hpFVxD0YKsKiq+wpEY7Fnzu59mFxY/JQbI0F
-	 IkV5PllliIvA+/lAhfJgDqXjpbkRSWGjJSz+v4UhymUp4gHatNfK3VmRRLR5xBYJ/b
-	 Gr0UXBYuwxvokdHt7ta0E7Kd0RHMW8VGUe3Nkc9ZgwU4KzpOXS+zfNGsR3HSvC5x+z
-	 TNaIuhT76gqu8sXGV4OzVoA2faEwSbMK12i5lb9BHwZH5If8QWiMSF6V7gcZLZlvOL
-	 nNx7pex887OQ3TJO7erJ3ljOVbRVnAKtWgsdYUBebxYgE9lul/RU7WYc2Nk1YboaXc
-	 aMFr95IfvEdRMlN0UaeDskrX02L0lJlG5QGnS9BTd8Gi6dtM8hPzlY5Q/Sk5OZ2RrG
-	 kJcYCWFSUzab6KPrW90pG7EM=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 68D2740E016C;
-	Tue,  9 Jan 2024 10:21:28 +0000 (UTC)
-Date: Tue, 9 Jan 2024 11:21:21 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Alexey Makhalov <alexey.makhalov@broadcom.com>
-Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-	hpa@zytor.com, dave.hansen@linux.intel.com, mingo@redhat.com,
-	tglx@linutronix.de, x86@kernel.org, netdev@vger.kernel.org,
-	richardcochran@gmail.com, linux-input@vger.kernel.org,
-	dmitry.torokhov@gmail.com, zackr@vmware.com,
-	linux-graphics-maintainer@vmware.com, pv-drivers@vmware.com,
-	namit@vmware.com, timothym@vmware.com, akaher@vmware.com,
-	jsipek@vmware.com, dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-	airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
-	maarten.lankhorst@linux.intel.com, horms@kernel.org,
-	kirill.shutemov@linux.intel.com
-Subject: Re: [PATCH v6 0/7] VMware hypercalls enhancements
-Message-ID: <20240109102121.GAZZ0eIZXV03k52jDX@fat_crate.local>
-References: <20240109084052.58661-1-amakhalov@vmware.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE9C36084;
+	Tue,  9 Jan 2024 10:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704795916; x=1736331916;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qybVg1yF1U6mARID1UkppiGKiT8bQ1f8SyBzaQJjJGQ=;
+  b=dhZ+LEgqwvh/4f41E1YdCJQYzL+Wc3d2NQuvmfErICY+ck4kyIbIuvQr
+   5T9nu7H3lmC1yP7h/VuhTrBiG90A9xDSM3HjKQOT7DwZ8+vjMbEaEGdGy
+   ZawRH8mOPdHr61VhbwkavAxkG7UHl6N1lgEssw+i79rROTkqxkQVtcX2d
+   w3F2kbn3Za+TQaXCuwx9jua4t04NiXci95l0+9hU7PplJjheZiOzhq01i
+   a3lANB7I7m9fzsp1rL6RZVSxhP1UIW/H4vAzrkAaqoUPBON8sW6HfhTIZ
+   7bWeoLB1EgpVnnuFPT4aTIFHSGvGxNAgY5k4jVbrs7O/y4UE6oBVs56yq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5238297"
+X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
+   d="scan'208";a="5238297"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 02:25:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
+   d="scan'208";a="30134895"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa001.jf.intel.com with ESMTP; 09 Jan 2024 02:25:11 -0800
+Date: Tue, 9 Jan 2024 18:22:13 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+	monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Moritz Fischer <mdf@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	kishore Manne <nava.kishore.manne@amd.com>,
+	"open list:FPGA MANAGER FRAMEWORK" <linux-fpga@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: fpga: Convert bridge binding to yaml
+Message-ID: <ZZ0eVZGcYJ0sFxh2@yilunxu-OptiPlex-7050>
+References: <3100bbc4723643ec1ec7d4548e9ab353c856b564.1704470663.git.michal.simek@amd.com>
+ <ab6a9a0e-ab03-4d35-9e43-c90c22dbcb1d@linaro.org>
+ <4bcac34b-72a0-464e-91cd-d9e924073619@amd.com>
+ <ZZzDHxnMPTuraS4D@yilunxu-OptiPlex-7050>
+ <bd356c60-7681-47e4-b45f-d25e70068b65@linaro.org>
+ <3bfaab38-6831-41f8-8a7b-9f1f434e0f9c@amd.com>
+ <e88205a2-f8b6-42c7-82cc-bfc08a680f3d@linaro.org>
+ <f3aeff02-2560-46e7-a712-1f8d323f43a4@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240109084052.58661-1-amakhalov@vmware.com>
+In-Reply-To: <f3aeff02-2560-46e7-a712-1f8d323f43a4@linaro.org>
 
-On Tue, Jan 09, 2024 at 12:40:45AM -0800, Alexey Makhalov wrote:
-> v5->v6 change:
-> - Added ack by Kirill A. Shutemov in patch 7.
+On Tue, Jan 09, 2024 at 09:16:33AM +0100, Krzysztof Kozlowski wrote:
+> On 09/01/2024 09:15, Krzysztof Kozlowski wrote:
+> >>>>>>> +properties:
+> >>>>>>> +  $nodename:
+> >>>>>>> +    pattern: "^fpga-bridge(@.*)?$"
+> >>>>>>
+> >>>>>> Not sure, but maybe we need to allow fpga-bridge-1? Could we have more
+> >>>>>> than one bridge on given system?
+> >>>>>
+> >>>>> Yilun: Any comment on this?
+> >>>>
+> >>>> We can have more bridges, but IIUC people use fpga-bridge@0, fpga-bridge@0
+> >>>> to identify them. So the expression is OK to me.
+> >>>
+> >>> So you claim unit address thus reg with some sort of bus address is a
+> >>> requirement? Then "?" is not correct in that pattern.
+> >>
+> >> I expect it is about that people are using fpga-bridge@0 but bridge is not on 
+> >> the bus. Yilun said that reg property in altr,socfpga-fpga2sdram-bridge.yaml is 
+> >> optional which means no reg property no @XXX in node name.
+> >> That's why I think that expression is correct. If there are more bridges without 
+> >> reg property then I expect we need to get more examples to align expression.
+> > 
+> > If we allow node name without unit address, thus not being part of any
 
-Please do not spam. Adding someone's Ack does not mean you have to
-resend the whole thing immediately again.
+This is valid usecase.
 
-While waiting, please read Documentation/process/submitting-patches.rst
+> > bus, then the only question is whether it is possible to have system
+> > with more than two FPGA bridges. If the answer is "yes", which I think
 
-and especially:
+The answer is yes.
 
-"Don't get discouraged - or impatient
-------------------------------------
+> > is the case, then the pattern should already allow it:
+> > 
+> > (@[0-9a-f]+|-[0-9]+)?
+> 
+> Or better go with what I used recently for narrowed choices:
+> 
+> (@.*|-([0-9]|[1-9][0-9]+))?
 
-After you have submitted your change, be patient and wait.  Reviewers are
-busy people and may not get to your patch right away.
+It is good to me.
 
-Once upon a time, patches used to disappear into the void without comment,
-but the development process works more smoothly than that now.  You should
-receive comments within a few weeks (typically 2-3); if that does not
-happen, make sure that you have sent your patches to the right place.
-Wait for a minimum of one week before resubmitting or pinging reviewers
-- possibly longer during busy times like merge windows."
+I actually didn't know much about DTS & its Schema, thanks for all your
+input.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
 
