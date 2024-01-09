@@ -1,136 +1,107 @@
-Return-Path: <linux-kernel+bounces-21249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5451D828C82
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:23:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8CAC828C85
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 092C51F28D9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:23:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ACD01F29382
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EA63D0DD;
-	Tue,  9 Jan 2024 18:22:26 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0603C490;
+	Tue,  9 Jan 2024 18:23:26 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7073D0A0
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80AA3C482
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7beeb9acd59so39733439f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:22:23 -0800 (PST)
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3607ddfac7eso32945485ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:23:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704824543; x=1705429343;
+        d=1e100.net; s=20230601; t=1704824604; x=1705429404;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=6TNa4G43q4cO/ACdKNuWCSRQEIf696MY0iwPAGfopVg=;
-        b=k9yLuIH5y9ScBjSRz6QRCPj6uaMnL7GcLmqU/DCq9Q02cUX5Mq53oWL06nR2dg2s1q
-         aVPx5lbTHttLFQcFQZ5Hvi0qeXdtdWvHhRkNhtl+NgfpqBKR6+Wp/xLpsBcsYcRKgAcK
-         05kQHDXpWk5oqXgClXEKoHfdgsj5kEajAWzuO2Ye07B/gOKQuOAz+VaXBtfrkCjYCz/z
-         69vxDSOcs6TNZ7nZ4QcPvmuBEdByS5sYmFXw/8430CiORJzMkgCcsyYFzRQik4Qm6y3N
-         B/F4YAoAGOFOsE7gNeNFckQyMbN8e9uKqEg1bGRkTU6IX3fF0MOPOrcUxsfcENt4X2Qh
-         UZaA==
-X-Gm-Message-State: AOJu0YyOQ64Za3IrGqJmVBDyliuPa70L0wlrB6Z+9ZrOy8piX9Y0+8aU
-	xMcqfBT0/Sj6L8G1LXuGLVQBA0XPrK0i7lNgTZg0Fu6+fJ38
-X-Google-Smtp-Source: AGHT+IGcahAoJvWzpIDo8zselVAoErzwnmmPyfYagYp8tWmDT1/06Ar5CgeRsu+dCZ9Ij37sRUaWExl5csQOSMZG2PlNgjF4GY5u
+        bh=UJEJRrLrt1LImXCvSuqlzD3XA5p1zoDBQlLofwUGh9s=;
+        b=pJKQkxL3Yc7ZLzUCaIQFly2D4cODZm5aRdhOIYjaC42KR/r9v9guv1cDUPJmlzvXOW
+         9Hcftr6gdz76NZwa8u3SsDmz0R5oljZx1OAlCHaHHqQ+5pnOaciRvFSvZcEtE54BDrbh
+         obcMU/LgMIIag+Q/76fykXzw4233+EG+sPZtEEIlNMD+sH/UA9+zf1rY2jcW8LLh3v5Q
+         SrhLp46ypQEY1UUXhW8Zdh/rUlzYV6tOhp7kraNWQoYrQnRFNIN8rpSY73SdekMiN7qp
+         Ulpd60Sc9JsD/zU+1z6DvanyuQVcehjsiciugdjlVOIKhheUnjoqz7fAE7g/duk9I0a0
+         ywkQ==
+X-Gm-Message-State: AOJu0YzEq8pPj5mUYVeF7qNdLTxyOkK81vLdim7q5W78drzXIfZiB4+7
+	Dtis/3snBjDu9mUpR/Ex0TeI09HtY91mHTQVC1D2nq84uEki
+X-Google-Smtp-Source: AGHT+IGI5i81wz65S2PK1EkPeicNF4Z5I0pxFyxXUjdHnIkap1w8FTz5+a+UyPRgJcrdpOLfrAj2NKo4MHj8caFVZRSXO4CtEwMf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2185:b0:35f:d99a:7b1 with SMTP id
- j5-20020a056e02218500b0035fd99a07b1mr752486ila.0.1704824543083; Tue, 09 Jan
- 2024 10:22:23 -0800 (PST)
-Date: Tue, 09 Jan 2024 10:22:23 -0800
+X-Received: by 2002:a05:6e02:1ba2:b0:35f:d4dc:1b1d with SMTP id
+ n2-20020a056e021ba200b0035fd4dc1b1dmr756254ili.1.1704824604168; Tue, 09 Jan
+ 2024 10:23:24 -0800 (PST)
+Date: Tue, 09 Jan 2024 10:23:24 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b841a060e876595@google.com>
-Subject: [syzbot] [kernel?] WARNING in input_unregister_device (2)
-From: syzbot <syzbot+617f4ccb03b9869f6494@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, rafael@kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000ef988f060e876862@google.com>
+Subject: [syzbot] [mm?] WARNING in hpage_collapse_scan_pmd
+From: syzbot <syzbot+ed79e0896ae923de13fa@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    e7d3b9f28654 usb: yurex: Fix inconsistent locking bug in y..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=1766e845e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1dd225f9d04a5286
-dashboard link: https://syzkaller.appspot.com/bug?extid=617f4ccb03b9869f6494
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+HEAD commit:    5eff55d725a4 Merge tag 'platform-drivers-x86-v6.7-7' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17472409e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
+dashboard link: https://syzkaller.appspot.com/bug?extid=ed79e0896ae923de13fa
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5bf2bb53c85f/disk-e7d3b9f2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5f6e5a287ee7/vmlinux-e7d3b9f2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8259e694a7e3/bzImage-e7d3b9f2.xz
+disk image: https://storage.googleapis.com/syzbot-assets/496bf4f0c628/disk-5eff55d7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/43482bd7ec93/vmlinux-5eff55d7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/fa81d2743202/bzImage-5eff55d7.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+617f4ccb03b9869f6494@syzkaller.appspotmail.com
+Reported-by: syzbot+ed79e0896ae923de13fa@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-add_uevent_var: buffer size too small
-WARNING: CPU: 0 PID: 2442 at lib/kobject_uevent.c:671 add_uevent_var+0x32d/0x390 lib/kobject_uevent.c:671
+WARNING: CPU: 1 PID: 35 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
+WARNING: CPU: 1 PID: 35 at arch/x86/include/asm/pgtable.h:403 hpage_collapse_scan_pmd+0x233e/0x4fe0 mm/khugepaged.c:1309
 Modules linked in:
-CPU: 0 PID: 2442 Comm: kworker/0:6 Not tainted 6.7.0-rc5-syzkaller-ge7d3b9f28654 #0
+CPU: 1 PID: 35 Comm: khugepaged Not tainted 6.7.0-rc8-syzkaller-00055-g5eff55d725a4 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:add_uevent_var+0x32d/0x390 lib/kobject_uevent.c:671
-Code: fb 48 c7 c7 c0 7c 4e 87 e8 50 63 d9 fa 0f 0b bb f4 ff ff ff e9 57 ff ff ff e8 0f 24 10 fb 48 c7 c7 60 7d 4e 87 e8 33 63 d9 fa <0f> 0b eb e1 4c 89 ee 48 c7 c7 a0 f5 22 89 e8 b0 d0 12 fc e9 b4 fe
-RSP: 0018:ffffc90001daf2b8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff888108b08000 RCX: ffffc9000c6ad000
-RDX: 0000000000040000 RSI: ffffffff811733c6 RDI: 0000000000000001
-RBP: ffffc90001daf3a8 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 00000000006559c8 R12: 1ffff920003b5e5a
-R13: 00000000000007f5 R14: ffff888108b08218 R15: 00000000000007f5
-FS:  0000000000000000(0000) GS:ffff8881f6600000(0000) knlGS:0000000000000000
+RIP: 0010:pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
+RIP: 0010:hpage_collapse_scan_pmd+0x233e/0x4fe0 mm/khugepaged.c:1309
+Code: 24 d8 00 00 00 49 81 c6 00 10 00 00 4c 3b b4 24 f0 00 00 00 0f 83 a8 06 00 00 e8 bd 72 9d ff e9 61 fc ff ff e8 b3 72 9d ff 90 <0f> 0b 90 41 bc 09 00 00 00 45 31 f6 e9 45 f4 ff ff e8 9c 72 9d ff
+RSP: 0018:ffffc90000abf780 EFLAGS: 00010293
+RAX: ffffffff81f1073d RBX: 0000000000000002 RCX: ffff8880142f1dc0
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000000
+RBP: ffffc90000abfbf0 R08: ffffffff81f0ea47 R09: 1ffffd400022a006
+R10: dffffc0000000000 R11: fffff9400022a007 R12: 00000000203ea000
+R13: 1ffff92000157f14 R14: 00000000455eac67 R15: 00000000000001ea
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb1ddf92c98 CR3: 0000000104e44000 CR4: 00000000003506f0
+CR2: 00007f942157a038 CR3: 000000008cd03000 CR4: 00000000003506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- kobject_uevent_env+0x995/0x1800 lib/kobject_uevent.c:588
- device_del+0x642/0xa50 drivers/base/core.c:3832
- input_unregister_device+0xb9/0x100 drivers/input/input.c:2440
- hidinput_disconnect+0x160/0x3e0 drivers/hid/hid-input.c:2388
- hid_disconnect+0x143/0x1b0 drivers/hid/hid-core.c:2280
- hid_hw_stop+0x16/0x70 drivers/hid/hid-core.c:2329
- ms_remove+0x16/0xa0 drivers/hid/hid-microsoft.c:409
- hid_device_remove+0xce/0x250 drivers/hid/hid-core.c:2689
- device_remove+0xc8/0x170 drivers/base/dd.c:567
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
- bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
- device_del+0x39a/0xa50 drivers/base/core.c:3814
- hid_remove_device drivers/hid/hid-core.c:2867 [inline]
- hid_destroy_device+0xe5/0x150 drivers/hid/hid-core.c:2887
- usbhid_disconnect+0xa0/0xe0 drivers/hid/usbhid/hid-core.c:1456
- usb_unbind_interface+0x1dd/0x8d0 drivers/usb/core/driver.c:461
- device_remove drivers/base/dd.c:569 [inline]
- device_remove+0x11f/0x170 drivers/base/dd.c:561
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
- bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
- device_del+0x39a/0xa50 drivers/base/core.c:3814
- usb_disable_device+0x36c/0x7f0 drivers/usb/core/message.c:1416
- usb_disconnect+0x2e1/0x910 drivers/usb/core/hub.c:2257
- hub_port_connect drivers/usb/core/hub.c:5305 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5605 [inline]
- port_event drivers/usb/core/hub.c:5765 [inline]
- hub_event+0x1be0/0x4f40 drivers/usb/core/hub.c:5847
- process_one_work+0x884/0x15c0 kernel/workqueue.c:2627
- process_scheduled_works kernel/workqueue.c:2700 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2781
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ khugepaged_scan_mm_slot mm/khugepaged.c:2415 [inline]
+ khugepaged_do_scan mm/khugepaged.c:2503 [inline]
+ khugepaged+0x9bf/0x17a0 mm/khugepaged.c:2559
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
  </TASK>
 
