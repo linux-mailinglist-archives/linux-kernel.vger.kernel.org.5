@@ -1,236 +1,221 @@
-Return-Path: <linux-kernel+bounces-21085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37752828985
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:57:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 206E282898A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F1881C245D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:57:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F9C288162
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D349B3A1D0;
-	Tue,  9 Jan 2024 15:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AA53A1A2;
+	Tue,  9 Jan 2024 15:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AB4qyjH9"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2060.outbound.protection.outlook.com [40.107.95.60])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="d3DBv95S"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFBC39FE8;
-	Tue,  9 Jan 2024 15:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W814sEKkK2Uclal5E5djdEFSOZKSnyJvdnYIdg83DWDLGTllj0jYJ/XkFrz/1zUcODvKT+AMClWShRJTKAFiQyNh+Igyfi4BZN6x2sypM0plovzbZ6jkl2rQqigxlRX8M1PQHNO9nM8OqXL5zr53em8DFjfvr75rkVmpXZRZ7OKJ7oM/pPTkAU6wENRmGNMVSLf1p/wBC/ImD9q0C4crXmFMCfpj/iyH6fw9y3gf6xmAh5vDmDfvK7qz7qBtircCijNgmGfHOiVqfcQVYSPTajCSU6Ztjuil7KM+uG1Pem7YgTdDUXybbIXQlVbnmjkDXnbKDnpIpeMdUPb4ddnZdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=67csm03dMuxVzC+WJ123BgapIAofK7Fqg6WZczWTLZw=;
- b=VwD0WClhMRqz8a4M56zIjOGmxRE2zAOGDKNbwGFXgTWeFes6XeLQKzH5oihfs9wY1ZpJF1yZRigDciOHkzKw1vp6dWrzQpjfQhOK39j5PAwUzVtZLVE3dFab2gYlyq92ZgFP//JFcio9qP+UiW0AIrf+19hOuFRmzIo6ycRdJOog70ZpEfAHGyazqU9ek8UDPCnpzY4DaBQWccEdTxwVTo4pU2uzip6IwhbeJf3+623DoGTj+iytxmoaRpXBlOJuh8x5OCIgJTmJukZCgm/8cchuPW6WYcXoFQqlNyTvGynKD6xwzv9qtM57WHqQXaFLWz+N8W/q5dyfKpANtvTznA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=67csm03dMuxVzC+WJ123BgapIAofK7Fqg6WZczWTLZw=;
- b=AB4qyjH91g+tkFPFIlIut179zIvd4A/QFU6fY4gz2sp/y9kI+Y0DEqtUgUf/AByve+0cI34sHdaoyGbRb5fpRywoWa9QLTczVVutyma+/9z8phvCB5b4YljgY7hT+BBA3shhKghVM2ALm0+CKwFH/DVbDrPkE6G1Yk8qCOvyV84=
-Received: from SJ0PR05CA0078.namprd05.prod.outlook.com (2603:10b6:a03:332::23)
- by DS0PR12MB7826.namprd12.prod.outlook.com (2603:10b6:8:148::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 15:56:47 +0000
-Received: from CO1PEPF000044F8.namprd21.prod.outlook.com
- (2603:10b6:a03:332:cafe::88) by SJ0PR05CA0078.outlook.office365.com
- (2603:10b6:a03:332::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17 via Frontend
- Transport; Tue, 9 Jan 2024 15:56:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044F8.mail.protection.outlook.com (10.167.241.198) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.4 via Frontend Transport; Tue, 9 Jan 2024 15:56:46 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 9 Jan
- 2024 09:56:45 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 9 Jan
- 2024 09:56:45 -0600
-Received: from iron-maiden.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Tue, 9 Jan 2024 09:56:44 -0600
-From: Carlos Bilbao <carlos.bilbao@amd.com>
-To: <corbet@lwn.net>, <rdunlap@infradead.org>, <vegard.nossum@oracle.com>
-CC: <bilbao@vt.edu>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Carlos Bilbao <carlos.bilbao@amd.com>
-Subject: [PATCH v2 2/2] docs: Include simplified link titles in main index
-Date: Tue, 9 Jan 2024 09:56:43 -0600
-Message-ID: <20240109155643.3489369-3-carlos.bilbao@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240109155643.3489369-1-carlos.bilbao@amd.com>
-References: <20240109155643.3489369-1-carlos.bilbao@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D2939FE5;
+	Tue,  9 Jan 2024 15:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409DASe0021854;
+	Tue, 9 Jan 2024 15:59:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=nK4
+	Hf4fWSXmLG/xYQ4mMhiWXDuk5dRvBPIYZXj8BQFo=; b=d3DBv95SaehR5lG46nb
+	tYgvnpTcPNOTnSdYK4kFNA59hJ3rbZjcSn8JIGLZCT0pWbLFJ3MsRSbwPN4fwSzu
+	FCEMeZEIa0xFO7ozP8yuzIYMsXEEckag80YTg8KCVJFnaeAkzu2SGPNRdY8aAfr8
+	9ahf/Hjf4vQEg2UHImsZhl4EX5la5K3xrqKZKvYhiy1cdspzBqVRPlW9u+K9NGTF
+	Wp8sT+uv+f1LlZCvFUdvmuXzffRkHnIpCXz07sQ6Vyz25Gq7Jor4Qkgut+UVsVeK
+	AW8edCze3ooI6OJdm9+h4q1izG6dvQhj+I8fsdfkkgtzr8bCCcTHu7QnDpbRhBdn
+	qmA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh3me0q1b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 15:59:28 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409FxRgT013128
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 15:59:27 GMT
+Received: from hu-mkshah-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 9 Jan 2024 07:59:23 -0800
+From: Maulik Shah <quic_mkshah@quicinc.com>
+Date: Tue, 9 Jan 2024 21:28:52 +0530
+Subject: [PATCH v2] arm64: dts: qcom: sc7280: Update domain-idle-states for
+ cluster sleep
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F8:EE_|DS0PR12MB7826:EE_
-X-MS-Office365-Filtering-Correlation-Id: 66324a41-cee9-4ed9-a882-08dc112b9567
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xdrwvK/2NYNr1JvPzd5Gq9Q0dQRVC8qsS5AhuAHlbxr8xIh5SwpS05tLVAZy180iEa/v7Vbvk3PVfEmizXX9iyas6rEo0mEC79ZRqx9UY/tiTxi57JQNLFfn1seQJ90UovTZwK2U1DuzKg1/XR3eGn5OjddBq69Fyb+fCcuzTEDmk6HZOH7psMYY71ALHzw/sVt335mE73PvcfFAMDX1VgOxSFxdGEiODf4hAfnWftqtgPSE1T1aKu/kaJp+3tsc+NjZTdb5/TO1TD9DAXuJWma1LxYwGdi0JW89OKaeFzm2z35mnoogKejDGPG4f1QOvLgJIChEG/dA2KxNFvdwUf3P/+cZRV/K/jWEzTAV6AmTQ2o/wdCXP9admo/g3rZN8a4lmXZycrAfDqmjZF71m4HsKx5JJlJMQxz0ZxBhpQ30LRVhqmOw3hhIS6llMZxfqKWbcZEdKgwaccIb05vIZSEk+F0OhTT1OGgdmxIx8MuQbF98emB8Yw9ao7cbhTpmcj6ehs2tcg1fu6L6aTmMoudE4VYWiEuYAXuSkUCy0QtsxVTDAro2N1V+WC6cyvzrE32Izr129ag1XyIy9cQOe//cSKc2aA/koKk8GsYqicsgo75ukBG1s01MCQNHpm9w2uqBYlWAAVeUBCylov+CvLBt4AXDq+XMcW7tQR44frcHT8WAIUQgPETNffTQylFTFcJ8xP0kvOxa4ENA2kLDa5ri1MQ6x1oZ5Rpwosmz7zg=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(136003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(82310400011)(40470700004)(46966006)(36840700001)(40480700001)(40460700003)(83380400001)(41300700001)(70206006)(70586007)(36756003)(81166007)(356005)(86362001)(82740400003)(36860700001)(47076005)(316002)(1076003)(336012)(426003)(2616005)(26005)(478600001)(2906002)(54906003)(110136005)(7696005)(4326008)(44832011)(8936002)(8676002)(5660300002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 15:56:46.6226
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66324a41-cee9-4ed9-a882-08dc112b9567
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044F8.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7826
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240109-qcm6490_cluster_sleep-v2-1-8f94f1ad188d@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIADttnWUC/03Myw6CMBCF4Vchs7akU4uIK9/DGILjYCdSLi0YE
+ 8K7W125O9/i/CtEDsIRTtkKgV8SZegTzC4Dck3/YCX3ZDDaWI26UhP5g610Td0SZw517JhHZci
+ 2WBZHtLcDpO8YuJX3r3u5Jrdh8Gp2gZv/WqFLbcw+R7RYKFTTIlT7Z3SNO3+39JTT4GHbPqiHy
+ IGoAAAA
+To: <agross@kernel.org>, <cros-qcom-dts-watchers@chromium.org>,
+        "Bjorn
+ Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <luca.weiss@fairphone.com>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_lsrao@quicinc.com>,
+        Maulik Shah
+	<quic_mkshah@quicinc.com>
+X-Mailer: b4 0.12.5-dev-2aabd
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704815963; l=3670;
+ i=quic_mkshah@quicinc.com; s=20240109; h=from:subject:message-id;
+ bh=HsiLymAapDxICNsJm8RvR9nghbPna45N73qjzdrRzlo=;
+ b=OdMiayAB6VBVip4oObSIOW2EVh8xOQqWSFMElAuVCEtQ88JD6PcCQnPVvpqRFr8wwKvkOh8cW
+ PmiSvrFM2doB8eXEVsihBaZCVALGK6Zz1za9iC/1Mp0a2RQvDbGsEum
+X-Developer-Key: i=quic_mkshah@quicinc.com; a=ed25519;
+ pk=bd9h5FIIliUddIk8p3BlQWBlzKEQ/YW5V+fe759hTWQ=
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Jiby65QDFMFSDLzIg2fJEItjMmt2Rzni
+X-Proofpoint-GUID: Jiby65QDFMFSDLzIg2fJEItjMmt2Rzni
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ priorityscore=1501 mlxlogscore=923 lowpriorityscore=0 mlxscore=0
+ suspectscore=0 impostorscore=0 clxscore=1015 adultscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090129
 
-Include simplified link titles in the main page's documentation index to
-enhance website's readability and UX. Update the text that directs users to
-various documents without changing the actual titles chosen by the authors.
+QCM6490 uses Trustzone as firmware whereas SC7280 uses arm trusted firmware.
+The PSCI suspend param and the number of domain-idle-states supported is
+different in Trustzone for cluster sleep.
 
-Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
+Move the arm trusted firmware supported domain-idle-states in chrome specific
+sc7280-chrome-common.dtsi and add the Trustzone supported sleep states as default
+domain-idle-states in sc7280.dtsi
+
+Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
 ---
- Documentation/index.rst | 52 ++++++++++++++++++++---------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+Changes in v2:
+- Move chrome specific domain-idle-states to sc7280-chrome-common.dtsi
+- Keep LA+LE+WP+friends values as default
+- Add additional cluster sleep states
+- Link to v1: https://lore.kernel.org/lkml/20240105070223.11415-1-quic_mkshah@quicinc.com/
+---
+ arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi | 17 +++++++++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 28 ++++++++++++++++------
+ 2 files changed, 38 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 9dfdc826618c..5298611e00ee 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -22,10 +22,10 @@ community and getting your work upstream.
- .. toctree::
-    :maxdepth: 1
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+index c4d00a81da39..3fcf2e65afca 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+@@ -18,6 +18,7 @@
+  */
  
--   process/development-process
--   process/submitting-patches
-+   Development process <process/development-process>
-+   Submitting patches <process/submitting-patches>
-    Code of conduct <process/code-of-conduct>
--   maintainer/index
-+   Maintainer handbook <maintainer/index>
-    All development-process docs <process/index>
+ /delete-node/ &cdsp_mem;
++/delete-node/ &domain_idle_states;
+ /delete-node/ &gpu_zap_mem;
+ /delete-node/ &gpu_zap_shader;
+ /delete-node/ &hyp_mem;
+@@ -26,6 +27,18 @@
+ /delete-node/ &sec_apps_mem;
  
+ / {
++	cpus {
++		domain_idle_states: domain-idle-states {
++			CLUSTER_SLEEP_0: cluster-sleep-0 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x40003444>;
++				entry-latency-us = <2752>;
++				exit-latency-us = <6562>;
++				min-residency-us = <9926>;
++			};
++		};
++	};
++
+ 	reserved-memory {
+ 		camera_mem: memory@8ad00000 {
+ 			reg = <0x0 0x8ad00000 0x0 0x500000>;
+@@ -39,6 +52,10 @@
+ 	};
+ };
  
-@@ -38,10 +38,10 @@ kernel.
- .. toctree::
-    :maxdepth: 1
++&CLUSTER_PD {
++	domain-idle-states = <&CLUSTER_SLEEP_0>;
++};
++
+ &lpass_aon {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 83b5b76ba179..9f4df595dd21 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -453,15 +453,29 @@
+ 			};
+ 		};
  
--   core-api/index
--   driver-api/index
--   subsystem-apis
--   Locking in the kernel <locking/index>
-+   Core API <core-api/index>
-+   Driver APIs <driver-api/index>
-+   Subsystems <subsystem-apis>
-+   Locking <locking/index>
+-		domain-idle-states {
+-			CLUSTER_SLEEP_0: cluster-sleep-0 {
++		domain_idle_states: domain-idle-states {
++			CLUSTER_SLEEP_APSS_OFF: cluster-sleep-0 {
+ 				compatible = "domain-idle-state";
+-				idle-state-name = "cluster-power-down";
+-				arm,psci-suspend-param = <0x40003444>;
++				arm,psci-suspend-param = <0x41000044>;
++				entry-latency-us = <2752>;
++				exit-latency-us = <3048>;
++				min-residency-us = <6118>;
++			};
++
++			CLUSTER_SLEEP_CX_RET: cluster-sleep-1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x41001344>;
+ 				entry-latency-us = <3263>;
++				exit-latency-us = <4562>;
++				min-residency-us = <8467>;
++			};
++
++			CLUSTER_SLEEP_LLCC_OFF: cluster-sleep-2 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x4100b344>;
++				entry-latency-us = <3638>;
+ 				exit-latency-us = <6562>;
+-				min-residency-us = <9926>;
+-				local-timer-stop;
++				min-residency-us = <9826>;
+ 			};
+ 		};
+ 	};
+@@ -872,7 +886,7 @@
  
- Development tools and processes
- ===============================
-@@ -51,15 +51,15 @@ Various other manuals with useful information for all kernel developers.
- .. toctree::
-    :maxdepth: 1
+ 		CLUSTER_PD: power-domain-cluster {
+ 			#power-domain-cells = <0>;
+-			domain-idle-states = <&CLUSTER_SLEEP_0>;
++			domain-idle-states = <&CLUSTER_SLEEP_APSS_OFF &CLUSTER_SLEEP_CX_RET &CLUSTER_SLEEP_LLCC_OFF>;
+ 		};
+ 	};
  
--   process/license-rules
--   doc-guide/index
--   dev-tools/index
--   dev-tools/testing-overview
--   kernel-hacking/index
--   trace/index
--   fault-injection/index
--   livepatch/index
--   rust/index
-+   Licensing rules <process/license-rules>
-+   Writing documentation <doc-guide/index>
-+   Development tools <dev-tools/index>
-+   Testing guide <dev-tools/testing-overview>
-+   Hacking guide <kernel-hacking/index>
-+   Tracing <trace/index>
-+   Fault injection <fault-injection/index>
-+   Livepatching <livepatch/index>
-+   Rust <rust/index>
- 
- 
- User-oriented documentation
-@@ -72,11 +72,11 @@ developers seeking information on the kernel's user-space APIs.
- .. toctree::
-    :maxdepth: 1
- 
--   admin-guide/index
--   The kernel build system <kbuild/index>
--   admin-guide/reporting-issues.rst
--   User-space tools <tools/index>
--   userspace-api/index
-+   Administration <admin-guide/index>
-+   Build system <kbuild/index>
-+   Reporting issues <admin-guide/reporting-issues.rst>
-+   Userspace tools <tools/index>
-+   Userspace API <userspace-api/index>
- 
- See also: the `Linux man pages <https://www.kernel.org/doc/man-pages/>`_,
- which are kept separately from the kernel's own documentation.
-@@ -89,8 +89,8 @@ platform firmwares.
- .. toctree::
-    :maxdepth: 1
- 
--   firmware-guide/index
--   devicetree/index
-+   Firmware <firmware-guide/index>
-+   Firmware and Devicetree <devicetree/index>
- 
- 
- Architecture-specific documentation
-@@ -99,7 +99,7 @@ Architecture-specific documentation
- .. toctree::
-    :maxdepth: 2
- 
--   arch/index
-+   CPU architectures <arch/index>
- 
- 
- Other documentation
-@@ -112,7 +112,7 @@ to ReStructured Text format, or are simply too old.
- .. toctree::
-    :maxdepth: 1
- 
--   staging/index
-+   Unsorted documentation <staging/index>
- 
- 
- Translations
-@@ -121,7 +121,7 @@ Translations
- .. toctree::
-    :maxdepth: 2
- 
--   translations/index
-+   Translations <translations/index>
- 
- Indices and tables
- ==================
+
+---
+base-commit: bffdfd2e7e63175ae261131a620f809d946cf9a7
+change-id: 20240109-qcm6490_cluster_sleep-2c4f175814b6
+
+Best regards,
 -- 
-2.34.1
+Maulik Shah <quic_mkshah@quicinc.com>
 
 
