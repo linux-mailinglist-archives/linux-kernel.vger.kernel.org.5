@@ -1,97 +1,79 @@
-Return-Path: <linux-kernel+bounces-20976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D877828801
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:25:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC19D82880C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2572FB2444C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:25:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 287EA286A85
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3882E39AC4;
-	Tue,  9 Jan 2024 14:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58BC439ACD;
+	Tue,  9 Jan 2024 14:27:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GWAUjpmX"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PtJmAIXF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E41139877
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5f2aab1c0c5so29349217b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 06:25:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704810312; x=1705415112; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g0jRmYFxyXqqyod1EILUSU0d1jpB9EyuAxZzGSyEy4U=;
-        b=GWAUjpmXLgTriEEiLRrVxfrU2wZjaOkjPeMk5FO4Q3lvYBUdDBXH7vKUZmcImjLPcU
-         sPSWBFq6u42KqiUAFEMqYgkI8oyBW7foJYsfcZN9C3PvTYX7R7AK+xrfO6fj7PS39tvp
-         SETQqrtbjkk7XsNEoYEivGVdZh15NO1MRxmOPDO3GZbAyUdxSY4gPEf4J+x9e25qEBCI
-         UeTukPGhDxe8wgt+q+0tK8EARS84fbkMEBNZWWesEpPwA5LtJSMAbeC9+Pk+CBihEtz0
-         TwiwYF4pZEw2WLhQKtoNcB2WArKS55YiHL0kMZoDLKVa6h2TFlt+gsYoZwP2h5kHZE6o
-         8miw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704810312; x=1705415112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g0jRmYFxyXqqyod1EILUSU0d1jpB9EyuAxZzGSyEy4U=;
-        b=xGbn4uvsDuKatCfSWDNYw/BleN7514g0ETcDb83mLhP2hvVcwAYVNS6M/r5k1woVtM
-         u+CQne7EIzMVmoqXzdWRHBkHBC1AI+xQeK2q8JyJZLCyxAJpUmXhAsVlMRxzeZQWnPgo
-         0JOv9MtkD6shlHW+Pv3WKzz2uP/MiiKUS703L/8q2UY6WGtOPLJvGYoR1EGzIBrMsn43
-         erK2K1/37dWchJMSZ5yNqDKlAspHhMaf0omhGLtM4M8+7A1Pcu6SdTzqIsZ7SEGgh2av
-         HSUA+rnvDUZBap8bupwKkTcME5zlteoMkJ3UA6TPIM1hRHkmfTL2T8tXVe27Nys/Lm9N
-         SBMg==
-X-Gm-Message-State: AOJu0YwhsKsEOU33f7ani1ja0y49FECLFA7F1MTSr/5S0gAeWL5gMtAZ
-	2tXT7Ncyg1ZZhIgsa8V5dcYiJapYsOwyE1/Ebgwf803QpGGIfQ==
-X-Google-Smtp-Source: AGHT+IFurq3cBuNOgcehIXjqiUCCcK6/Nxe5gbiowFcxxVVg2NwMw2ej6jKJBwkmx6aYWD46obc91hznYms/cHNMqqM=
-X-Received: by 2002:a05:6902:220c:b0:dbd:2ae7:f363 with SMTP id
- dm12-20020a056902220c00b00dbd2ae7f363mr474571ybb.4.1704810312262; Tue, 09 Jan
- 2024 06:25:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63C339AC0;
+	Tue,  9 Jan 2024 14:27:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7681FC433C7;
+	Tue,  9 Jan 2024 14:27:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704810469;
+	bh=5UKutk+ST+B6lxLgZc3b+MyL/xXT4h1umGkakQFzmn0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=PtJmAIXFOXHRxRTjpft2PmPErgltsZmhAjEByylyN+TPbLoDprQzs8rEDSnzbKN0H
+	 9yJIXIPF5o1FbOPcBKSssCpzKGrPQ7RX77M1MtfQVaxnOA6URaVU/C24QD5MtIzfZ8
+	 gsxtIHXRLvqc6+QMv6Zzykx1NerEkTlCZIW1ZaLPiSeJh5ADNoeffYBVbs8Q2+hCDk
+	 m2y3M/kcfBwTDpFv0siu+kS/X0lxMSq9oSBhC07sw/IViFstTrZk/jeZI2DImhliPi
+	 4KXN1MBCEuaN8hca5SLJ0MSspDeAvJvNFbu5zdEO8IarsI4rqaqj80gmPt0uN54fcH
+	 lTe+s4ksOGAHw==
+From: Christian Brauner <brauner@kernel.org>
+To: Jay <merqqcury@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	viro@zeniv.linux.org.uk
+Subject: Re: [PATCH] fs: fix a typo in attr.c
+Date: Tue,  9 Jan 2024 15:27:04 +0100
+Message-ID: <20240109-amtssiegel-erdboden-02a6731745a9@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240109072927.29626-1-merqqcury@gmail.com>
+References: <20240109072927.29626-1-merqqcury@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
- <20240108201618.2798649-6-dario.binacchi@amarulasolutions.com>
- <CACRpkdb73Qrs6MuiC427f=RnyD=rydH_4xVhBx-2bS8bX0mJCw@mail.gmail.com> <CABGWkvq0kbjDZTZj-PN+Sj3jo7SAx0G5PcTeA9KDfceh4D8_yw@mail.gmail.com>
-In-Reply-To: <CABGWkvq0kbjDZTZj-PN+Sj3jo7SAx0G5PcTeA9KDfceh4D8_yw@mail.gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 9 Jan 2024 15:25:00 +0100
-Message-ID: <CACRpkdY99si4+KZAVdHBTYr-3=jDBsphTgUNi9NMhZekEpXsEA@mail.gmail.com>
-Subject: Re: [PATCH v5 5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Sam Ravnborg <sam@ravnborg.org>, Thomas Zimmermann <tzimmermann@suse.de>, devicetree@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=839; i=brauner@kernel.org; h=from:subject:message-id; bh=5UKutk+ST+B6lxLgZc3b+MyL/xXT4h1umGkakQFzmn0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTODb+hZil4+MT8F3lTbRJznToLutMFujIrEiw+VDyZy 3m8mS2no5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCIl2xgZFoe66Lr91Aplyv1T vH9ZHus+gwZbGb//mncVtrvw3+2tZGT47n1mXXBZ18NHn7a8WsJY8eh+1jmrrKYtF8PmXVl9QZ+ LDwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 9, 2024 at 1:54=E2=80=AFPM Dario Binacchi
-<dario.binacchi@amarulasolutions.com> wrote:
+On Tue, 09 Jan 2024 15:29:27 +0800, Jay wrote:
+> The word "filesytem" should be "filesystem"
+> 
+> 
 
-> > do you want me to apply patches 5,7,8 to the dri-misc
-(...)
-> Yes, I would appreciate that very much.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-Pushed to drm-misc-next!
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Please submit the DTS files through the ST SoC tree.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-Yours,
-Linus Walleij
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] fs: fix a typo in attr.c
+      https://git.kernel.org/vfs/vfs/c/6aad0d7ba166
 
