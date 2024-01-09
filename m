@@ -1,144 +1,212 @@
-Return-Path: <linux-kernel+bounces-21102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FD238289E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:21:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96CE18289E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB84D2864AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:21:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF60C1F25BD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8AFB3A1D1;
-	Tue,  9 Jan 2024 16:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473253A8D7;
+	Tue,  9 Jan 2024 16:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PR7qmHAg"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eXb71HRN"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1683A1BB;
-	Tue,  9 Jan 2024 16:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d4a2526a7eso15507285ad.3;
-        Tue, 09 Jan 2024 08:21:11 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294483A29A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1d3fa1ff824so16221245ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:21:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704817271; x=1705422071; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rLGCUYOtvZFqPUeEdn5IWQkZdmyJ+I3280MJ8sH9Pf4=;
-        b=PR7qmHAgts5FGTeKP5DQemuwFmdCqzDYV+3AQ58TXwSIp+neAIb20Jn2EUcoFu/FFh
-         i8N/CeXUmO0JbpyH4gZEVfh+3ZVeN7EXcHB2LVLDV7T1NVC4QC4udMvU13yH3tsforM9
-         lwHFOwuVX10F1bGJNfILAKQfjvnlmju5gMKdxgVNSQXPhR8VhUcorAHFjz+f9SvkRLVO
-         ckzmBZLEGz7Gwq4cHONWoytK3o7p18tKZCvtNujE5TBdAKEAkk5fkJ6hUiuK5LQdIqWz
-         vNiTxvhym7VMBo0Brt9ei6zuxaSd/NoDKDBg8fE0+tKzDIr4hBo//y9VVnFA6yWqVICY
-         c5og==
+        d=google.com; s=20230601; t=1704817275; x=1705422075; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C1QljfHuBYifZoSINkWQXPLhbOWgB2wu97cY9uJdSqw=;
+        b=eXb71HRNaSYXIM/fwofyVtht4DMwVZ904v3q4I/TTcQTBOFSCMRc6wB7vhc2cyAmif
+         JqlC7M8Ggk3WYmOfYzi11JTwBRuBPE7uMJO/RCJGH0/xTYuni1eozaaTrWwa2RmUcE8E
+         afBVnRVr3RML2OFoZX1rC4JrANPF6vFWHsiS47cSq0ceyZ9DaXbQAvG9fUCehsSvBiZf
+         i6bUzmy6UQrGQyADHKilrpT9PzDFgd6yfdEo+xHvWNSP5vEcpNsR3jFcarTgwDfHYt79
+         rNmmGECdl4gfpIRYrRCGHXHPa97FayW1mU8MlIxSUJwyaF23yYm1aqA3vMKE2aJtZmL6
+         dB+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704817271; x=1705422071;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rLGCUYOtvZFqPUeEdn5IWQkZdmyJ+I3280MJ8sH9Pf4=;
-        b=MplkMxvH6TPZZcsPmpqzPS2fkKfqAYqHbXgdL47o9SxqK7+yEYr3770IBNnVDi6M1v
-         8WvzVw4nqsC9MQlAYi8yOpWe42NbpEcwMNdC/IkVJlly07SJd0eTyC0zswWlRBSKW+KL
-         38ZswLJjY/hM4vg8mKRBu93yMp62b4JzA+0Qr83o7g64XEzU7dPDLXOb3B0z2bGKJ3nP
-         pIY6zjvh3Td3sHjB/knxmhIrHrOCTcO6Iswn8xEWmMbsroeLrT5Q3o/offEID7bETv4y
-         HImSqZcmHTYl1O30vCpg9frREp30LxXw6kuXoeaop7I5iMnEYl0V6oywRLJQxagmHTns
-         ETpw==
-X-Gm-Message-State: AOJu0YwplWFG2lZvm98iyHYx/ct+9HobszySyht0/uRqXEvKl5aNktUY
-	BiWII9+L84BRYKFhSrEfh3ye2KIijLc=
-X-Google-Smtp-Source: AGHT+IFaIM4V41PiGQ5xkpArRCIWYAoCym44oilji47jQQmepKHHdzOnbUh24TshOMZQffC2NjCKjw==
-X-Received: by 2002:a17:902:d506:b0:1d4:44cf:abf4 with SMTP id b6-20020a170902d50600b001d444cfabf4mr3676812plg.122.1704817270964;
-        Tue, 09 Jan 2024 08:21:10 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id o7-20020a170902d4c700b001d362b6b0eesm1993108plg.168.2024.01.09.08.21.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 08:21:10 -0800 (PST)
-Message-ID: <f84ffb6623d2901624337e88daf73ac639b37a2c.camel@gmail.com>
-Subject: Re: [PATCH] bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org
-Cc: ppenkov@google.com, willemb@google.com, ast@kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Tue, 09 Jan 2024 18:21:01 +0200
-In-Reply-To: <20240109153609.10185-1-sunhao.th@gmail.com>
-References: <20240109153609.10185-1-sunhao.th@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+        d=1e100.net; s=20230601; t=1704817275; x=1705422075;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=C1QljfHuBYifZoSINkWQXPLhbOWgB2wu97cY9uJdSqw=;
+        b=Br58ybXpSjpHxNG48mRrePKWUqUoE8lUMZ6/KwMB8DonWsGuurEqnCJJk8YDkkyRnm
+         EpLeUwBTZdjcfFx4zLuN1PlFWIKXzZShtHzA5Gz0rGGeWdnLQgtAfc7QzHZZVULcEnzx
+         tJaS3mk2IxNaP/FFXc/0wY1CO175tZm6TUob23jYYFFag0Bvbxto2+XzcryT+WN+UYkP
+         bwqH/BT1dQNKm6QPfScX8RMXR+oYldeMb0mNjeu1JNCZ1bx5ZMgP7f0qZTPZlcQusmxp
+         HWlYvPxDBefTR6hMGdJYEgjke4NQtWqLSPJuwfomQORhXmLn63nMcjYTm3exiRBjPIn6
+         5P2A==
+X-Gm-Message-State: AOJu0Yyrcq3qp6m5YlcQHHfs6du5B6qcuhhh2Nzi5Tbe2PydPcxAxW+Y
+	a6cGJ77Kn5hmFqbz2Zl1ImX5vD7SbLKr3JQehQ==
+X-Google-Smtp-Source: AGHT+IGV8/ULEe3M2qwHzudjngx0cTn6Q7dyzC6iRpAHOxHlK8K8x9ybRqADHaQ05tYFX2UBRgPVs3ESUg8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:c946:b0:1d5:82f:4fe9 with SMTP id
+ i6-20020a170902c94600b001d5082f4fe9mr31097pla.2.1704817275575; Tue, 09 Jan
+ 2024 08:21:15 -0800 (PST)
+Date: Tue, 9 Jan 2024 08:21:13 -0800
+In-Reply-To: <ZZuDp+Pl0BHKEfPt@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <cover.1699368322.git.isaku.yamahata@intel.com>
+ <7ca4b7af33646e3f5693472b4394ba0179b550e1.1699368322.git.isaku.yamahata@intel.com>
+ <ZZiLKKobVcmvrPmb@google.com> <ZZuDp+Pl0BHKEfPt@chao-email>
+Message-ID: <ZZ1yeYyXiYlB_7-N@google.com>
+Subject: Re: [PATCH v17 092/116] KVM: TDX: Handle TDX PV HLT hypercall
+From: Sean Christopherson <seanjc@google.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, 
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, Sagi Shahar <sagis@google.com>, 
+	David Matlack <dmatlack@google.com>, Kai Huang <kai.huang@intel.com>, 
+	Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com, hang.yuan@intel.com, 
+	tina.zhang@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-01-09 at 16:36 +0100, Hao Sun wrote:
-> For PTR_TO_FLOW_KEYS, check_flow_keys_access() only uses fixed off
-> for validation. However, variable offset ptr alu is not prohibited
-> for this ptr kind. So the variable offset is not checked.
->=20
-[...]
->=20
-> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook"=
+On Mon, Jan 08, 2024, Chao Gao wrote:
+> On Fri, Jan 05, 2024 at 03:05:12PM -0800, Sean Christopherson wrote:
+> >On Tue, Nov 07, 2023, isaku.yamahata@intel.com wrote:
+> >> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> >>=20
+> >> Wire up TDX PV HLT hypercall to the KVM backend function.
+> >>=20
+> >> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> >> ---
+> >>  arch/x86/kvm/vmx/tdx.c | 42 +++++++++++++++++++++++++++++++++++++++++=
+-
+> >>  arch/x86/kvm/vmx/tdx.h |  3 +++
+> >>  2 files changed, 44 insertions(+), 1 deletion(-)
+> >>=20
+> >> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> >> index 3a1fe74b95c3..4e48989d364f 100644
+> >> --- a/arch/x86/kvm/vmx/tdx.c
+> >> +++ b/arch/x86/kvm/vmx/tdx.c
+> >> @@ -662,7 +662,32 @@ void tdx_vcpu_load(struct kvm_vcpu *vcpu, int cpu=
 )
-> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> >> =20
+> >>  bool tdx_protected_apic_has_interrupt(struct kvm_vcpu *vcpu)
+> >>  {
+> >> -	return pi_has_pending_interrupt(vcpu);
+> >> +	bool ret =3D pi_has_pending_interrupt(vcpu);
+> >> +	struct vcpu_tdx *tdx =3D to_tdx(vcpu);
+> >> +
+> >> +	if (ret || vcpu->arch.mp_state !=3D KVM_MP_STATE_HALTED)
+> >> +		return true;
+> >> +
+> >> +	if (tdx->interrupt_disabled_hlt)
+> >> +		return false;
+> >> +
+> >> +	/*
+> >> +	 * This is for the case where the virtual interrupt is recognized,
+> >> +	 * i.e. set in vmcs.RVI, between the STI and "HLT".  KVM doesn't hav=
+e
+> >> +	 * access to RVI and the interrupt is no longer in the PID (because =
+it
+> >> +	 * was "recognized".  It doesn't get delivered in the guest because =
+the
+> >> +	 * TDCALL completes before interrupts are enabled.
+> >> +	 *
+> >> +	 * TDX modules sets RVI while in an STI interrupt shadow.
+> >> +	 * - TDExit(typically TDG.VP.VMCALL<HLT>) from the guest to TDX modu=
+le.
+> >> +	 *   The interrupt shadow at this point is gone.
+> >> +	 * - It knows that there is an interrupt that can be delivered
+> >> +	 *   (RVI > PPR && EFLAGS.IF=3D1, the other conditions of 29.2.2 don=
+'t
+> >> +	 *    matter)
+> >> +	 * - It forwards the TDExit nevertheless, to a clueless hypervisor t=
+hat
+> >> +	 *   has no way to glean either RVI or PPR.
+> >
+> >WTF.  Seriously, what in the absolute hell is going on.  I reported this=
+ internally
+> >four ***YEARS*** ago.  This is not some obscure theoretical edge case, t=
+his is core
+> >functionality and it's completely broken garbage.
+> >
+> >NAK.  Hard NAK.  Fix the TDX module, full stop.
+> >
+> >Even worse, TDX 1.5 apparently _already_ has the necessary logic for dea=
+ling with
+> >interrupts that are pending in RVI when handling NESTED VM-Enter.  Reall=
+y!?!?!
+> >Y'all went and added nested virtualization support of some kind, but can=
+'t find
+> >the time to get the basics right?
 >=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index adbf330d364b..65f598694d55 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -12826,6 +12826,10 @@ static int adjust_ptr_min_max_vals(struct bpf_ve=
-rifier_env *env,
->  	}
-> =20
->  	switch (base_type(ptr_reg->type)) {
-> +	case PTR_TO_FLOW_KEYS:
-> +		if (known)
-> +			break;
-> +		fallthrough;
->  	case CONST_PTR_TO_MAP:
->  		/* smin_val represents the known value */
->  		if (known && smin_val =3D=3D 0 && opcode =3D=3D BPF_ADD)
+> We actually fixed the TDX module. See 11.9.5. Pending Virtual Interrupt
+> Delivery Indication in TDX module 1.5 spec [1]
+>=20
+>   The host VMM can detect whether a virtual interrupt is pending delivery=
+ to a
+>   VCPU in the Virtual APIC page, using TDH.VP.RD to read the VCPU_STATE_D=
+ETAILS
+>   TDVPS field.
+>  =20
+>   The typical use case is when the guest TD VCPU indicates to the host VM=
+M, using
+>   TDG.VP.VMCALL, that it has no work to do and can be halted. The guest T=
+D is
+>   expected to pass an =E2=80=9Cinterrupt blocked=E2=80=9D flag. The guest=
+ TD is expected to set
+>   this flag to 0 if and only if RFLAGS.IF is 1 or the TDCALL instruction =
+that
+>   invokes TDG.VP.VMCALL immediately follows an STI instruction. If the =
+=E2=80=9Cinterrupt
+>   blocked=E2=80=9D flag is 0, the host VMM can determine whether to re-sc=
+hedule the guest
+>   TD VCPU based on VCPU_STATE_DETAILS.
+>=20
+> Isaku, this patch didn't read VCPU_STATE_DETAILS. Maybe you missed someth=
+ing
+> during rebase? Regarding buggy_hlt_workaround, do you aim to avoid readin=
+g
+> VCPU_STATE_DETAILS as much as possible (because reading it via SEAMCALL i=
+s
+> costly, ~3-4K cycles)?=20
 
-This change makes sense, could you please add a testcase?
+*sigh*  Why only earth doesn't the TDX module simply compute VMXIP on TDVMC=
+ALL?
+It's literally one bit and one extra VMREAD.  There are plenty of register =
+bits
+available, and I highly doubt ~20 cycles in the TDVMCALL path will be notic=
+eable,
+let alone problematic.  Such functionality could even be added on top in a =
+TDX
+module update, and Intel could even bill it as a performance optimization.
 
-Also, this switch is written to explicitly disallow and implicitly allow
-pointer arithmetics, which might be a bit unsafe when new ptr types are add=
-ed.
-Would it make more sense to instead rewrite it to explicitly allow?
-E.g. here is what it currently allows / disallows:
+Eating 4k cycles in the HLT path isn't the end of the world, but it's far f=
+rom
+optimal and it's just so incredibly wasteful.  I wouldn't be surprised if t=
+he
+latency is measurable for certain workloads, which will lead to guests usin=
+g
+idle=3Dpoll and/or other games being played in the guest.
 
-| Pointer type        | Arithmetics allowed |
-|---------------------+---------------------|
-| PTR_TO_CTX          | yes                 |
-| CONST_PTR_TO_MAP    | conditionally       |
-| PTR_TO_MAP_VALUE    | yes                 |
-| PTR_TO_MAP_KEY      | yes                 |
-| PTR_TO_STACK        | yes                 |
-| PTR_TO_PACKET_META  | yes                 |
-| PTR_TO_PACKET       | yes                 |
-| PTR_TO_PACKET_END   | no                  |
-| PTR_TO_FLOW_KEYS    | yes                 |
-| PTR_TO_SOCKET       | no                  |
-| PTR_TO_SOCK_COMMON  | no                  |
-| PTR_TO_TCP_SOCK     | no                  |
-| PTR_TO_TP_BUFFER    | yes                 |
-| PTR_TO_XDP_SOCK     | no                  |
-| PTR_TO_BTF_ID       | yes                 |
-| PTR_TO_MEM          | yes                 |
-| PTR_TO_BUF          | yes                 |
-| PTR_TO_FUNC         | yes                 |
-| CONST_PTR_TO_DYNPTR | yes                 |
+And AFAICT, the TDX module doesn't support HLT passthrough, so fully dedica=
+ted
+CPUs can't even mitigate the pain that way.
 
-Of these PTR_TO_FUNC and CONST_PTR_TO_DYNPTR (?) should not be allowed
-as well, probably (not sure if that could be exploited).
+Anyways, regarding the "workaround", my NAK stands.  It has bad tradeoffs o=
+f its
+own, e.g. will result in spurious wakeups, and can't possibly work for VMs =
+with
+passthrough devices.  Not to mention that the implementation has several ra=
+ces
+and false positives.
 
