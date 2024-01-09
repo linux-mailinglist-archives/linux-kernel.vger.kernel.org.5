@@ -1,145 +1,251 @@
-Return-Path: <linux-kernel+bounces-20493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BE2827FAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 77259827FC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:48:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30C091C21072
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:46:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F7441C22B99
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:48:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A566BA34;
-	Tue,  9 Jan 2024 07:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MVwDePrP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BBFB671;
+	Tue,  9 Jan 2024 07:48:33 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19EECB66C
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704786388;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QGFHDC9oHxTINUdDMjSvkJISj41ABGmGm6sZiEEVDbg=;
-	b=MVwDePrPtJuIKJ1Ik+32CUNb5IR18OsB8SLRQWQbYnfGqbBkN6KYZ4HfOJG5dXvN25jr9M
-	2a7+LduVG1yWGHaQliP9sU9tc1c4Dbv6j95JJjeFAaCUgs49o1XL1FtMRhQ3P4onuof63N
-	GP53Km/pM0dCbyDzZojAPu6hx2N+JMA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-600-E7p6yuQ_NJWGFOHRz8Z6XA-1; Tue, 09 Jan 2024 02:46:21 -0500
-X-MC-Unique: E7p6yuQ_NJWGFOHRz8Z6XA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a29de6a12adso48028366b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:46:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704786380; x=1705391180;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QGFHDC9oHxTINUdDMjSvkJISj41ABGmGm6sZiEEVDbg=;
-        b=nMl+8Y23KeinNl5EAhw0ePJeYhxaAVV7NmIan3wuXvPnBfTd/ADeMawi7if1Q+I0Ke
-         KlEJd/lHrNVCVOz1moiNjs36A6bh2En4CipQHjmOYMOBWeHJfE7u66o1g5ETm6ZVlOsZ
-         gW6/nRRm2NAygccIY9Qr6QV13X8d26v2xeq0rvBCOjVFCTPPao6uJJbwSxNqw4hlsUkb
-         vDqhmIB7/zXYQJXq4MYu8fvEyJecZOJQ0/ZUNo4DqGr1EHMwQ4A4nxqTVXBgZDYi6pqq
-         KpK1l8z8lMHz9xP/kAxFi6M9LJT1oMl3d3/Ep5AjX3kxVna56jBrzuIQbHVVSoMYftzy
-         ONjQ==
-X-Gm-Message-State: AOJu0YxqziY/1SRaNLuwiG6JNImx7moD/ZIUwq+UfmtOtC7neilMaNor
-	/ISQB5pzhYxggZu2imincSmzRE8SLibxhrpr7gepC4owQSu8VutxtVuicegemFZqAprtA49KrTq
-	gZtb7JQV6Ee07Txe/+vVS1xUQvIMLn6JEmDSU9LWI
-X-Received: by 2002:a17:907:7288:b0:a2a:6916:60de with SMTP id dt8-20020a170907728800b00a2a691660demr3699820ejc.4.1704786380030;
-        Mon, 08 Jan 2024 23:46:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGkhvEn8orHAZqTQA3hc4oarELhBfB09RFGV8IweDJ4ETUZb05mm6NMPSZT1LGbifnVVnGW+Q==
-X-Received: by 2002:a17:907:7288:b0:a2a:6916:60de with SMTP id dt8-20020a170907728800b00a2a691660demr3699807ejc.4.1704786379697;
-        Mon, 08 Jan 2024 23:46:19 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-252-40.dyn.eolo.it. [146.241.252.40])
-        by smtp.gmail.com with ESMTPSA id u18-20020a17090617d200b00a26e490e3f2sm731824eje.181.2024.01.08.23.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 23:46:19 -0800 (PST)
-Message-ID: <8a06f42e3a7028f88920764d5a70637a6a174eac.camel@redhat.com>
-Subject: Re: [PATCH net-next v7 1/5] ptp: clockmatrix: support 32-bit
- address space
-From: Paolo Abeni <pabeni@redhat.com>
-To: Min Li <lnimi@hotmail.com>, richardcochran@gmail.com, lee@kernel.org
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Min Li
-	 <min.li.xe@renesas.com>
-Date: Tue, 09 Jan 2024 08:46:17 +0100
-In-Reply-To: <PH7PR03MB7064B821752DCD99610ED72CA0672@PH7PR03MB7064.namprd03.prod.outlook.com>
-References: 
-	<PH7PR03MB7064B821752DCD99610ED72CA0672@PH7PR03MB7064.namprd03.prod.outlook.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521216D6E2;
+	Tue,  9 Jan 2024 07:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T8NMp6tvqz4f3kjN;
+	Tue,  9 Jan 2024 15:48:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 6EB0D1A0272;
+	Tue,  9 Jan 2024 15:48:26 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBXKBFJ+pxlGV82AQ--.34051S3;
+	Tue, 09 Jan 2024 15:48:26 +0800 (CST)
+Subject: Re: [PATCH v3 2/2] md: simplify md_seq_ops
+To: Yu Kuai <yukuai1@huaweicloud.com>, Song Liu <song@kernel.org>
+Cc: mariusz.tkaczyk@linux.intel.com, xni@redhat.com,
+ linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230927061241.1552837-1-yukuai1@huaweicloud.com>
+ <20230927061241.1552837-3-yukuai1@huaweicloud.com>
+ <CAPhsuW6sdnJYtE+iy+x=C2qVKzeN18zibx+qQBF4Y=KRsAmTTg@mail.gmail.com>
+ <b6a79bb8-e0fc-09b4-90e7-8112100a3fd0@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <753615cc-16d6-3c58-99ee-b5e1f0aa0cde@huaweicloud.com>
+Date: Tue, 9 Jan 2024 15:48:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <b6a79bb8-e0fc-09b4-90e7-8112100a3fd0@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBXKBFJ+pxlGV82AQ--.34051S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFyrAryDWr43AFy7Ww18AFb_yoWrtFyDpa
+	9xZFWUAr4DZFWrtw4DXa1kua4Fv3ZFqryqgr9rG3s3Cr1jqr9a93W3XrWjvF98uFW8W3Z8
+	Zw4UKFyUWrW8JwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+	IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHU
+	DUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Thu, 2024-01-04 at 11:36 -0500, Min Li wrote:
-> @@ -553,11 +554,11 @@ static int _sync_pll_output(struct idtcm *idtcm,
->  	val =3D SYNCTRL1_MASTER_SYNC_RST;
-> =20
->  	/* Place master sync in reset */
-> -	err =3D idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
-> +	err =3D idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
->  	if (err)
->  		return err;
+Hi,
 
-I'm sorry for the late feedback: I lost track the last replies in the
-previous revision and later I was on PTO.
+在 2024/01/09 9:21, Yu Kuai 写道:
+> Hi,
+> 
+> 在 2024/01/09 7:38, Song Liu 写道:
+>> On Tue, Sep 26, 2023 at 11:19 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> Before this patch, the implementation is hacky and hard to understand:
+>>>
+>>> 1) md_seq_start set pos to 1;
+>>> 2) md_seq_show found pos is 1, then print Personalities;
+>>> 3) md_seq_next found pos is 1, then it update pos to the first mddev;
+>>> 4) md_seq_show found pos is not 1 or 2, show mddev;
+>>> 5) md_seq_next found pos is not 1 or 2, update pos to next mddev;
+>>> 6) loop 4-5 until the last mddev, then md_seq_next update pos to 2;
+>>> 7) md_seq_show found pos is 2, then print unused devices;
+>>> 8) md_seq_next found pos is 2, stop;
+>>>
+>>> This patch remove the magic value and use seq_list_start/next/stop()
+>>> directly, and move printing "Personalities" to md_seq_start(),
+>>> "unsed devices" to md_seq_stop():
+>>>
+>>> 1) md_seq_start print Personalities, and then set pos to first mddev;
+>>> 2) md_seq_show show mddev;
+>>> 3) md_seq_next update pos to next mddev;
+>>> 4) loop 2-3 until the last mddev;
+>>> 5) md_seq_stop print unsed devices;
+>>>
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Just realized this introduced a behavior change:
+>>
+>> When there is not md devices, before this patch, we have
+>>
+>> [root@eth50-1 ~]# cat /proc/mdstat
+>> Personalities : [raid0] [raid1] [raid10] [raid6] [raid5] [raid4]
+>> unused devices: <none>
+>>
+>> After this patch, "cat /proc/mdstat" returns nothing. This causes
+>> some confusion for users who want to read "Personalities" line,
+>> for example, the mdadm test suite reads it.
+>>
+>> I haven't figured out the best fix yet.
+> 
+> Yes, that's a problem. And after reviewing seq_read_iter() in detail, I
+> realize that I also can't use seq_printf() in m->op->start() directly,
+> because if seq buffer overflowed, md_seq_start() can be called more than
+> once.
+> 
+> I'll fix these problems soon.
+How about following patch(already tested)?
 
-Let me extract the relevant slice from such thread:
+Thanks,
+Kuai
 
-On  Wed, 13 Dec 2023 21:04:07 +0000 Min Li wrote:
-> > My reading is that this patch reverses the usage of module and regaddr.
-> > F.e. the following hunk:
-> >=20
-> > @@ -553,11 +554,11 @@ static int _sync_pll_output(struct idtcm *idtcm,
-> > 	val =3D SYNCTRL1_MASTER_SYNC_RST;
-> >=20
-> > 	/* Place master sync in reset */
-> > 	err =3D idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
-> > 	err =3D idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
-> > 	if (err)
-> > 		return err;
-> >=20
-> > 	err =3D idtcm_write(idtcm, 0, sync_ctrl0, &sync_src, sizeof(sync_src))=
-;
-> > 	err =3D idtcm_write(idtcm, sync_ctrl0, 0, &sync_src, sizeof(sync_src))=
-;
-> > 	if (err)
-> > 		return err;
-> >=20
-> > If that is really intended I think it needs to be explained, or possibl=
-y a
-> > separate patch.
->
-> Hi Simon
-> sync_ctrl0/1 was meant to be a module and it was in a wrong place.=C2=A0
-> And this patch is just correcting it.
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index e351e6c51cc7..289d3d89e73d 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -8135,6 +8135,19 @@ static void status_unused(struct seq_file *seq)
+         seq_printf(seq, "\n");
+  }
 
-Then you need to move this chunk (and all the later on swapping the
-'address' and the 'module' argument in a separate patch. Mixing this
-fix and  the address space extension is confusing.
++static void status_personalities(struct seq_file *seq)
++{
++       struct md_personality *pers;
++
++       seq_puts(seq, "Personalities : ");
++       spin_lock(&pers_lock);
++       list_for_each_entry(pers, &pers_list, list)
++               seq_printf(seq, "[%s] ", pers->name);
++
++       spin_unlock(&pers_lock);
++       seq_puts(seq, "\n");
++}
++
+  static int status_resync(struct seq_file *seq, struct mddev *mddev)
+  {
+         sector_t max_sectors, resync, res;
+@@ -8273,43 +8286,53 @@ static int status_resync(struct seq_file *seq, 
+struct mddev *mddev)
+         return 1;
+  }
 
-Additionally we are currently preparing the net-next PR for 6.8 and I
-don't feel very confident to apply such a large refactor this late. I
-think it should be better postpone to the next cycle.
++#define MDDEV_NONE (void *)1
++
+  static void *md_seq_start(struct seq_file *seq, loff_t *pos)
+         __acquires(&all_mddevs_lock)
+  {
+-       struct md_personality *pers;
+-
+-       seq_puts(seq, "Personalities : ");
+-       spin_lock(&pers_lock);
+-       list_for_each_entry(pers, &pers_list, list)
+-               seq_printf(seq, "[%s] ", pers->name);
+-
+-       spin_unlock(&pers_lock);
+-       seq_puts(seq, "\n");
+         seq->poll_event = atomic_read(&md_event_count);
+-
+         spin_lock(&all_mddevs_lock);
 
-Cheers,
+-       return seq_list_start(&all_mddevs, *pos);
++       if (!list_empty(&all_mddevs))
++               return seq_list_start(&all_mddevs, *pos);
++       else if (*pos == 0)
++               return MDDEV_NONE;
++       else
++               return NULL;
+  }
 
-Paolo
+  static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+  {
++       if (v == MDDEV_NONE) {
++               ++*pos;
++               return NULL;
++       }
++
+         return seq_list_next(v, &all_mddevs, pos);
+  }
+
+  static void md_seq_stop(struct seq_file *seq, void *v)
+         __releases(&all_mddevs_lock)
+  {
+-       status_unused(seq);
+         spin_unlock(&all_mddevs_lock);
+  }
+  static int md_seq_show(struct seq_file *seq, void *v)
+  {
+-       struct mddev *mddev = list_entry(v, struct mddev, all_mddevs);
++       struct mddev *mddev;
+         sector_t sectors;
+         struct md_rdev *rdev;
+
++       if (v == MDDEV_NONE) {
++               status_personalities(seq);
++               status_unused(seq);
++               return 0;
++       }
++
++       mddev = list_entry(v, struct mddev, all_mddevs);
++       if (mddev == list_first_entry(&all_mddevs, struct mddev, 
+all_mddevs))
++               status_personalities(seq);
+         if (!mddev_get(mddev))
+                 return 0;
+
+@@ -8385,6 +8408,10 @@ static int md_seq_show(struct seq_file *seq, void *v)
+         }
+         spin_unlock(&mddev->lock);
+         spin_lock(&all_mddevs_lock);
++
++       if (mddev == list_last_entry(&all_mddevs, struct mddev, all_mddevs))
++               status_unused(seq);
++
+         if (atomic_dec_and_test(&mddev->active))
+                 __mddev_put(mddev);
+
+
+
+
+> 
+> Thanks,
+> Kuai
+> 
+>>
+>> Thanks,
+>> Song
+>>
+>> .
+>>
+> 
+> .
+> 
 
 
