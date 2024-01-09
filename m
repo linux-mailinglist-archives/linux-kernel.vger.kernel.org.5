@@ -1,136 +1,162 @@
-Return-Path: <linux-kernel+bounces-20444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5081A827F12
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:09:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D67DA827F6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:27:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E271F245D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:09:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80934288A81
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4CAC127;
-	Tue,  9 Jan 2024 07:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XsI0alcB"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A019474;
+	Tue,  9 Jan 2024 07:24:36 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2086.outbound.protection.partner.outlook.cn [139.219.146.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD05ABE4A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4298bd85e33so14884841cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:08:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704784132; x=1705388932; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mWKZBm49HTKJsSVTqSFKBSK/qcMrSE6KA1YgsZXKd+s=;
-        b=XsI0alcBIbC5KWOhXw92SV9e9mEed1N8Mr2Fqp1+NlGImqOwayPSgwrUWW879lwgYO
-         YgsR6TRwLe7cauaH5JFCZeSe645xyfsYPv+9pZ07+uv5Z9CL2gdo8OPf/R9jO3Hmav7o
-         KK7j1aiehcIqlWyiybp6Bf0JziCFLaaSNRbRu/BjWWPFCpSXccscUeo58gKioxnlSsXT
-         lGbugmL+6m9CAOxtUff9pn0IHB2Lsl48fQfnZXY7/HJXrY5d/WNPkOVZ6YWzcnRQgpCB
-         AXtI1mtUaQlGOvHAQHa/1PIyH1dlTNAWSgiADH9RpEOL15Bf0ICZnU/zLRAsqT9aaKW1
-         TtMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704784132; x=1705388932;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mWKZBm49HTKJsSVTqSFKBSK/qcMrSE6KA1YgsZXKd+s=;
-        b=TdPwVQDSiK9wrrH3aRedpE8xX1IAmv52/k1l2V0etawBBxTNkj++2j3Un4HmJBOYrG
-         EFaxS4/NkAipTDZWNTpP/0LtrKAXKpREtV4mPSD7HixCcZR+4LXHVNU8l7Xzko1UzhfO
-         5YVTTy66NP6418pfofRaqFTOCH2heMC47rfwShKlvsb4AOxg+WutaWnbEggp0BAMPirZ
-         k3w6AjSeIU46dH/b2zI6i44kJEKr7cKRnaGnQL3YUZEMizXaQW1+U5FmW77N0R2KQFfD
-         sSDCJGvbhtPPFdLyeOVgpbntefnzjT+REmAnwVfazo0n2yqaEcZAstvXy8XYqjJB4qH0
-         eNJg==
-X-Gm-Message-State: AOJu0YzqfbN8egcWTEm51ixRIWSntVKtdPtenhHnwG5Fmsps2bAIQrl8
-	uCP1IXUhstH4qTOtA62ziAbE09JPOZrdjqUAlC8=
-X-Google-Smtp-Source: AGHT+IHyNz4lnf3pR9yAD3GY4+j+Tua6f4ik1QBbsJ0ck80NNcsn8VPe0EOqPlw5mtfd1rEUVcvQ8OKVe/7YPBGHXL8=
-X-Received: by 2002:ac8:5a8b:0:b0:428:400c:ed0 with SMTP id
- c11-20020ac85a8b000000b00428400c0ed0mr6682061qtc.35.1704784132660; Mon, 08
- Jan 2024 23:08:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DED4381BB;
+	Tue,  9 Jan 2024 07:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BPHhfrQ/MMjMqSvOodFrjanOxsMAetYTtKmjwOsH8z2UQFLDnavXfsjgNvR2cGfMR2LpLRHjt34q/o/J8U1TyrPQ1mywQZV1P+gzHCj12eHCxokC5X91qytXt9hf0hwPr99pRu6vNfn9qDeZOeEkE9pUF2mJBJJvMWuAjwRUO/jYN8f2+jJl/yY33lf/R1DwvVFUw57WW1yAbmAHXZeFiZpvgwrOIbUiuCBZh2kzNrHQwrdei5SQoI8lwhg7v2g3/RyWT4Y57Zsk9RqKQHdKXi4Zb5E+dHEEp23LE5x00dmqwrym0HLWjACQWg4bRA58Vj5QzCKbNXCuVb3SMQY6XA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3tSI6bwsql5B2iKsJOZJuslOyuEHljrzwWiX3sGKD/k=;
+ b=UVnDfe3OuJn81MEdzApqsExB5D6xL7u2NM8WbNWdlgTWBjpyst9z3OF98E7oGBshBjrGfko5uhmqUcPdApUzmvxXQAhmbo8XZeyqlT4fwlTvV1qs98SpcuiN14qlrVK7Lcg8CJahEndzzCk9jF0nPeHJDYuG3TA3x/fgx8NZNwPqp1miojj8DIdL/iYAHWomhxOubCXKfbacoHjIiQkaOlywDI/bVd/0mM6Ev4xDBHMnkB/XrlnGzBb8AQzHCxkm7c+9SIwMO52DJ8PC5FoXsc6KYJxHEs26lQfzYkBtH5qEFGIUiUM6Ftgpt3aflsbggmA0Wp1Tuy241XbIyjGs8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:3::6) by NT0PR01MB1133.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:6::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20; Tue, 9 Jan
+ 2024 07:09:57 +0000
+Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ ([fe80::85fc:7fb9:8b00:dd88]) by
+ NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn ([fe80::85fc:7fb9:8b00:dd88%3])
+ with mapi id 15.20.7135.019; Tue, 9 Jan 2024 07:09:57 +0000
+From: Shengyang Chen <shengyang.chen@starfivetech.com>
+To: devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Cc: neil.armstrong@linaro.org,
+	quic_jesszhan@quicinc.com,
+	sam@ravnborg.org,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	wahrenst@gmx.net,
+	dave.stevenson@raspberrypi.com,
+	thierry.reding@gmail.com,
+	changhuang.liang@starfivetech.com,
+	keith.zhao@starfivetech.com,
+	shengyang.chen@starfivetech.com,
+	jack.zhu@starfivetech.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Add waveshare 7inch touchscreen panel support
+Date: Tue,  9 Jan 2024 15:09:47 +0800
+Message-Id: <20240109070949.23957-1-shengyang.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: NT0PR01CA0013.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510::17) To NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:3::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240107131236.625-1-qwjhust@gmail.com>
-In-Reply-To: <20240107131236.625-1-qwjhust@gmail.com>
-From: =?UTF-8?B?5LqT5paH5p2w?= <qwjhust@gmail.com>
-Date: Tue, 9 Jan 2024 15:08:41 +0800
-Message-ID: <CAGFpFsQsRm0s3OG1zENHSgPB+TcbGG6NKXKhugCYnzX=shf00A@mail.gmail.com>
-Subject: Re: [PATCH] f2fs: fix NULL pointer dereference in f2fs_submit_page_write()
-To: jaegeuk@kernel.org, chao@kernel.org, guoweichao@oppo.com, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: NT0PR01MB1070:EE_|NT0PR01MB1133:EE_
+X-MS-Office365-Filtering-Correlation-Id: 097b2250-45f2-4524-9847-08dc10e1fc6d
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	E1zSTqNPEo8Ulbqi2hXpZHM+nWxh1z74TgGoITO6tB8uk7/N1RFJwCcNwcQGAPcz77YG9/YQYXGC7pdN/hwwm9WN44m/B+XKvYAmIVZ/eoEGgRErNqFA4hJGlZmVTVIzifu7NGv6jLs7NT9QG4gVKyLeSUTbDfpqSE5ryjmBE9DZu3z2uCdNf2RltvxnRNuWN5qJ5R89ynT3l2gC/RkDtVvedgc5HFkXoIYx6oAMKv/Ezp4VyQ0mOc+nwP213yhsBa+buVkk/D69vi0MhQnThD5qloQkBbWILVSIB/47AGdUTZvifLMLoDcciStl2fyf4CmGHH1+iw/64tCE7pAmRSAAXsQ/c7pqygoL8Vick5ZDIlTy9BsfTIIiP/697nFsMRMJTmIfP6romffVgOt/SjW5gEuP3fewSgYFLV8+4ndvYyTe33dR725hMm7P5CoxAsGaSUwXf4/vThK47x9dX10VZiD7UZ75eVGHVdzOzK2qyilOB2Wm0uTMk6YTOZ0ZrqXkzZCRm6JU3lFYZUsrFmA6OZDlBYNLo+e4XssY9JRFphF7VSdGIsPSOE9/OkN3
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(396003)(39830400003)(366004)(346002)(136003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(66476007)(66946007)(4326008)(66556008)(8936002)(44832011)(36756003)(26005)(2616005)(966005)(6666004)(1076003)(508600001)(8676002)(41320700001)(41300700001)(5660300002)(2906002)(4744005)(7416002)(52116002)(83380400001)(40180700001)(38350700005)(40160700002)(86362001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?C4m/yr4V5Ax9haXYVQprJJLrMYCriV9J99mqMM4Ez4IVQaszC4NCTs5igbmp?=
+ =?us-ascii?Q?95hjnxQdwTbjXOhxi2tZ0Lc+vuNqs4Z1UHt11extpeBltxkAyHJgXHjt1rpq?=
+ =?us-ascii?Q?hqPD4jC6o8iOZVnH2WahWs+TMyvC/j3RFnixQo/B89RzTK54icWdFi/kma17?=
+ =?us-ascii?Q?ryuEDbOh95S1lc5cNTmbjuGeD8TGwGNxD3fuUD3LoN3l9j5ActIH7VFlm8Sd?=
+ =?us-ascii?Q?Bf6cypFMwSqAUA7Txqf8tEjovIwHOqnnvFcswa+S39puLsAT627JWiUA8iOH?=
+ =?us-ascii?Q?l5A5AjSVJQ3klqCf0o8xRa30ShfuTiIEEGbSpBV4pgZinnKnJjXcaIjGnrTI?=
+ =?us-ascii?Q?OAuGaMXbTymeLYbSgKaYd2x+SEPutdksseK8K+UMzOkXKZlzHtnvIe58pQbW?=
+ =?us-ascii?Q?Xwd9mX/Y3AvdrvM4vtAiwiHG56pWfzkvXcit9Crx60RgSwiN2RNRMQirkqQG?=
+ =?us-ascii?Q?va9I91zzMAVA/gN1ttvajbP0uokGQOI7aqYuBXVRa8F/32hAATdG8PSIr+A/?=
+ =?us-ascii?Q?dErAEbbrLdjeaV1gb282lCFWUMnZmKasalPuPjdzJqaIve+juk6/FXCVvluu?=
+ =?us-ascii?Q?baO0V0vCkVR/VcJBwZFcB14th/Sj/YZVy/5WlNw3qZhMgHItTCLXuLG7f821?=
+ =?us-ascii?Q?tMo0Z7L8W3LGEQI2b4RIWlGC/bp4zD8nE4BovrHjucTrA8tDEIEVaoMHt9bD?=
+ =?us-ascii?Q?x62qEoypmHDGdBP+W/mPcxIfsy9hVdlyJIw/4Ti5fdQWF06ltI9a1MrILYAE?=
+ =?us-ascii?Q?j0MlOkhcnBynnh2UgNKSZU1HpnLnOew5MCQwTOLdIIF9EolXApdOpXVo8Z2E?=
+ =?us-ascii?Q?VeBKP7M0nbYJly/Z6A9zzgarjLaEsJdKJDU1V+20OSRRX9Rw3wNy5xVEiKty?=
+ =?us-ascii?Q?j6qnUzra0M/1G444FOqrLm+Xzs2LQKkkbzkrAukk+1U4W/2atGyTSTNgwcVE?=
+ =?us-ascii?Q?CWzE3KBKvPvN4hZO/AynbzorfspbE8MydSV2FVthbnXA9o9SNLjVleUpQOuS?=
+ =?us-ascii?Q?CF/uzJlSViy+Ad8VGJOVIFpCOF3ZSKH/zFH2OmyeoxWgr5yfr5MJFPj32ou0?=
+ =?us-ascii?Q?nn77xKeUGnjtgslh6sqY9IQdDD89yUfJl59WSS3SsXoT7TXBd7hRkoVfTohP?=
+ =?us-ascii?Q?WIk24/DKEoqInMCuzU+xOj951jqZFOuJG8AJZYbGKyIqHM0tSmpkZliNht4I?=
+ =?us-ascii?Q?feUrK8eDScQHNaa5pVJELdVQeMaOuA1lbSebr91GKDIh0chI/jhnVGE5s2Hs?=
+ =?us-ascii?Q?yE2SWbxA06EIXtuTsLU7ggfF683jFcUbnrz1FIxeiNfYWY7S6dJsBuL0gwQN?=
+ =?us-ascii?Q?Jzr9sJ+rw6a/kgZmsHk7R6WIwzlimcmNM2n0ENz/L1s2WoC+M8Wn6Oe4c42C?=
+ =?us-ascii?Q?96iJUexIWRH0TvQn6MGmhhu71a+651A5g0kbseIjigFDyKQSWeoMbCD57qHH?=
+ =?us-ascii?Q?Zfb+a1Gp5HrEFGlqct9vMHwgdCTljjidK4UFP2/2dA1fl4UqezI1RP8xn3ik?=
+ =?us-ascii?Q?/Cqb7UtaDT7MGvgxi40xpEIbtvN7VRubQVg5VAnPWn3pzKp3Kzov/P+sAgAD?=
+ =?us-ascii?Q?qvyxXO/924Ys9V02/4IJyGNzAgRQuG6cl4mcV+VhkUZV+vBiHSumdZL6ICyh?=
+ =?us-ascii?Q?EJok0pD3IY7prklcHm2zyec=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 097b2250-45f2-4524-9847-08dc10e1fc6d
+X-MS-Exchange-CrossTenant-AuthSource: NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 07:09:57.0439
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TlzVIVyFki9ph9Zn/lcTMkPiUgUTi5ZnAiTix4gHxR+/fS3151R7nM8nra9nMcKqKJyfEuHy8EDsTaDLTrYmoOYvPrs7jptrxRxPpUzQw14=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: NT0PR01MB1133
 
-This patch has been merged into the new patch.
-
-[PATCH v2] f2fs: fix max open zone constraints
-https://lore.kernel.org/linux-f2fs-devel/20240109035804.642-1-qwjhust@gmail=
-com/
+This patchset adds waveshare 7inch touchscreen panel support
+for the StarFive JH7110 SoC.
 
 
-Wenjie <qwjhust@gmail.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=887=E6=97=A5=E5=91=
-=A8=E6=97=A5 21:12=E5=86=99=E9=81=93=EF=BC=9A
->
-> From: Wenjie Qi <qwjhust@gmail.com>
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000014
-> RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
-> Call Trace:
-> <TASK>
-> ? show_regs+0x6e/0x80
-> ? __die+0x29/0x70
-> ? page_fault_oops+0x154/0x4a0
-> ? prb_read_valid+0x20/0x30
-> ? __irq_work_queue_local+0x39/0xd0
-> ? irq_work_queue+0x36/0x70
-> ? do_user_addr_fault+0x314/0x6c0
-> ? exc_page_fault+0x7d/0x190
-> ? asm_exc_page_fault+0x2b/0x30
-> ? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
-> ? f2fs_submit_page_write+0x736/0x780 [f2fs]
-> do_write_page+0x50/0x170 [f2fs]
-> f2fs_outplace_write_data+0x61/0xb0 [f2fs]
-> f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
-> f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
-> f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
-> ...
->
-> It is possible that other threads have added this fio to io->bio
-> and submitted the io->bio before entering f2fs_submit_page_write().
-> At this point io->bio =3D NULL.
-> If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
-> then an NULL pointer dereference error occurs at bio_get(io->bio).
-> In this case, the code to determine the zone end can simply be skipped.
->
-> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
-> ---
->  fs/f2fs/data.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 1896928cae77..d08e92bb2621 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1100,7 +1100,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fi=
-o)
->                 goto next;
->  out:
->  #ifdef CONFIG_BLK_DEV_ZONED
-> -       if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
-> +       if (io->bio && f2fs_sb_has_blkzoned(sbi) && btype < META &&
->                         is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
->                 spin_lock_bh(&sbi->available_active_zones_lock);
->                 if (sbi->available_active_zones > 0) {
-> --
-> 2.34.1
->
+changes since v1:
+- Rebased on tag v6.7.
+
+patch 1:
+- Gave up original changing.
+- Changed the commit message.
+- Add compatible in panel-simple.yaml
+
+patch 2:
+- Gave up original changing.
+- Changed the commit message.
+- Add new mode for the panel in panel-simple.c
+
+v1: https://patchwork.kernel.org/project/dri-devel/cover/20231124104451.44271-1-shengyang.chen@starfivetech.com/
+
+Shengyang Chen (2):
+  dt-bindings: display: panel: panel-simple: Add compatible property for
+    waveshare 7inch touchscreen panel
+  gpu: drm: panel: panel-simple: add new display mode for waveshare
+    7inch touchscreen panel
+
+ .../bindings/display/panel/panel-simple.yaml  |  2 ++
+ drivers/gpu/drm/panel/panel-simple.c          | 28 +++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+
+-- 
+2.17.1
+
 
