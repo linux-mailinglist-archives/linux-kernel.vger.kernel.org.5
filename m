@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-20620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1EC8828283
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:53:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6729B828285
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:54:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6623B237E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:53:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73BFE1C22CA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:54:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F3B35F18;
-	Tue,  9 Jan 2024 08:52:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDC629410;
+	Tue,  9 Jan 2024 08:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="MC2Elf6V"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="CYtU+7nI"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEF629427;
-	Tue,  9 Jan 2024 08:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A98364CC;
+	Tue,  9 Jan 2024 08:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40924Sn5006375;
-	Tue, 9 Jan 2024 09:52:03 +0100
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4091joSS022003;
+	Tue, 9 Jan 2024 09:53:04 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=iSjyXXBlLU8CmpUXVSZCKnI2Y7L6CFxxoTsOMTlPK98=; b=MC
-	2Elf6V9cwoMlVlIcT7Ks2GnvDP9ugzsDh22nsD2vI7LTWTbS94Zz8lwCWc1lszRT
-	qgmMaTcwEiyXrO1prgLJEwxnp7lUsTeX50m43pgiv00bJ0kJL3EbAtLDHRpVUVoH
-	IaoKog5Qzody/PMlkBEDXG/uTvWxynEmQr0r21WYKct6Cny/sMabRlletkhe43Rr
-	jQdvCqVZoQnHWsOPOKiDL8GYN6T2M79aldlExoKHd5Q9KCqBFTAmL3c1HcTR2QJR
-	qOYxM5hdSCjX8U4aXqeqPha550wgzGHhOzin7DhS4D5BDwjjsbUJQmBbA1OwGbUY
-	f/b0qRIQnJg5RyVjAeTg==
+	selector1; bh=gOTJOkgkUXjyDgxkghIjHED6KsoYJ6xYXo9usGGB+Xk=; b=CY
+	tU+7nIKqTvdGSGCsJFxaidkzMCAuZ40odViR4qwIcQW5kqqoLHcPgr4fa5nemqEq
+	pd1v2JPDtU4SPoYXjZ5aBOE5QGH/IctOmpXRuD34Qwrfs3d3joXbVKu6K2uCcFqH
+	zVlqgZnGxIbVpV4dphD72AkU7RaPPxR3IgprhPe+PDyse5nBdsT5HGq/8DPH8+ru
+	RXpRiitkuCqrG7DgxzHJOakgyPzAcKrMbugouH1jEGPWs5kg4FLz8PNrpUrU1dcF
+	VSrYMV1Lvof90KgcBCfZEEqEC3JS4vTvWaoaeTSp9t+jRrZJobRZmGhaznebnLuZ
+	yFccDQdSvbwgDwmmK9Uw==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vexmfaetv-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vfha4ghex-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 09:52:03 +0100 (CET)
+	Tue, 09 Jan 2024 09:53:04 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3B85610004A;
-	Tue,  9 Jan 2024 09:52:03 +0100 (CET)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1431810002A;
+	Tue,  9 Jan 2024 09:53:04 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2F9B322FA2D;
-	Tue,  9 Jan 2024 09:52:03 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 09FA322FA27;
+	Tue,  9 Jan 2024 09:53:04 +0100 (CET)
 Received: from localhost (10.201.20.120) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 9 Jan
- 2024 09:52:02 +0100
+ 2024 09:53:03 +0100
 From: Hugues Fruchet <hugues.fruchet@foss.st.com>
 To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
         Philipp Zabel
@@ -77,9 +77,9 @@ CC: Hugues Fruchet <hugues.fruchet@foss.st.com>,
         Marco Felsch
 	<m.felsch@pengutronix.de>,
         Adam Ford <aford173@gmail.com>
-Subject: [PATCH v6 4/5] arm64: dts: st: add video decoder support to stm32mp255
-Date: Tue, 9 Jan 2024 09:51:54 +0100
-Message-ID: <20240109085155.252358-5-hugues.fruchet@foss.st.com>
+Subject: [PATCH v6 5/5] arm64: dts: st: add video encoder support to stm32mp255
+Date: Tue, 9 Jan 2024 09:51:55 +0100
+Message-ID: <20240109085155.252358-6-hugues.fruchet@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240109085155.252358-1-hugues.fruchet@foss.st.com>
 References: <20240109085155.252358-1-hugues.fruchet@foss.st.com>
@@ -97,24 +97,24 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
 
-Add VDEC hardware video decoder support to STM32MP255.
+Add VENC hardware video encoder support to STM32MP255.
 
 Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
 ---
- arch/arm64/boot/dts/st/stm32mp251.dtsi |  6 ++++++
- arch/arm64/boot/dts/st/stm32mp255.dtsi | 10 ++++++++++
- 2 files changed, 16 insertions(+)
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
+ arch/arm64/boot/dts/st/stm32mp255.dtsi | 7 +++++++
+ 2 files changed, 13 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 96859d098ef8..8fc7e9199499 100644
+index 8fc7e9199499..5dd4f3580a60 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -52,6 +52,12 @@ ck_icn_ls_mcu: ck-icn-ls-mcu {
+@@ -58,6 +58,12 @@ ck_icn_p_vdec: ck-icn-p-vdec {
  			compatible = "fixed-clock";
  			clock-frequency = <200000000>;
  		};
 +
-+		ck_icn_p_vdec: ck-icn-p-vdec {
++		ck_icn_p_venc: ck-icn-p-venc {
 +			#clock-cells = <0>;
 +			compatible = "fixed-clock";
 +			clock-frequency = <200000000>;
@@ -123,23 +123,22 @@ index 96859d098ef8..8fc7e9199499 100644
  
  	firmware {
 diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index e6fa596211f5..aea5096dac3c 100644
+index aea5096dac3c..17f197c5b22b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -6,4 +6,14 @@
- #include "stm32mp253.dtsi"
- 
- / {
-+	soc@0 {
-+		rifsc: rifsc-bus@42080000 {
-+			vdec: vdec@480d0000 {
-+				compatible = "st,stm32mp25-vdec";
-+				reg = <0x480d0000 0x3c8>;
-+				interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&ck_icn_p_vdec>;
+@@ -14,6 +14,13 @@ vdec: vdec@480d0000 {
+ 				interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&ck_icn_p_vdec>;
+ 			};
++
++			venc: venc@480e0000 {
++				compatible = "st,stm32mp25-venc";
++				reg = <0x480e0000 0x800>;
++				interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&ck_icn_ls_mcu>;
 +			};
-+		};
-+	};
+ 		};
+ 	};
  };
 -- 
 2.25.1
