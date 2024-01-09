@@ -1,149 +1,188 @@
-Return-Path: <linux-kernel+bounces-20699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D75818283B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:09:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76AD38283A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 171E3B2325D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:09:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DA1F1C23CEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E6B35F12;
-	Tue,  9 Jan 2024 10:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7824535F18;
+	Tue,  9 Jan 2024 10:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="ra8Abjhd"
-Received: from mail.tkos.co.il (hours.tkos.co.il [84.110.109.230])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CvrV83x3"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B045364CA;
-	Tue,  9 Jan 2024 10:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
-Received: from localhost (unknown [10.0.8.2])
-	by mail.tkos.co.il (Postfix) with ESMTP id 4BF75440525;
-	Tue,  9 Jan 2024 12:07:02 +0200 (IST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
-	s=default; t=1704794822;
-	bh=43xE3vA91KlBiHYDQYZH4+I07czZ0PHwWXpeBYujzyo=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-	b=ra8Abjhd3wYdSlybleRufYMxkaE1+BMC4kbkA4imvxpBloAdLz+3ebgDaMB/W1Azc
-	 9v15fDP3UQogHqy6VsccDLOJS3EipJuuoz0UYtXV7iJHgiDknsQx5DLY0O+SFJpqTb
-	 mAVYUR0auLIBB39aooMOEFQSr5JLJXTJC7BGkaW9pn0Tw/dXHD9qrKUo/R+eg0wkNX
-	 iNsasprvywnJBZXfPAQDRwslVPQnDZSvOaJxEIv+HO72TOzf+fkcscL3Zxe4KYVO/7
-	 1foNh71grgTMkCMzS773WPRrxS2IgNoUt3s0qVYTL8HKxvTs3FswJjX0iONRNiSVbp
-	 I7IeKaZZQTjJA==
-References: <cover.1703683642.git.baruch@tkos.co.il>
- <fae5b1180161a7d8cd626a96f5df80b0a0796b8b.1703683642.git.baruch@tkos.co.il>
- <ZZw3FDy8800NScEk@arm.com>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Baruch Siach <baruch@tkos.co.il>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>, Will Deacon <will@kernel.org>, Robin Murphy
- <robin.murphy@arm.com>, iommu@lists.linux.dev, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Petr
- =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>, Ramon Fried
- <ramon@neureality.ai>, Elad
- Nachman <enachman@marvell.com>
-Subject: Re: [PATCH RFC 3/4] dma-direct: add offset to zone_dma_bits
-Date: Tue, 09 Jan 2024 12:03:43 +0200
-In-reply-to: <ZZw3FDy8800NScEk@arm.com>
-Message-ID: <87msterf7b.fsf@tarshish>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B30933CF4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 10:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cd33336b32so35847761fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 02:04:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704794691; x=1705399491; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=miknyKwLNWMTM/CUdCtv3GjPRYtDM3k634e3VG5YdIA=;
+        b=CvrV83x34Y4EGSGtqAzXFU3lVkrU2llswQ8qKlAXJL5hI5CW8lbqDGyMGx6vOSiRL7
+         Y/NoqNRfmY3EdNr1MMV4SMaW/UZ/O6D96xtqYJYwFFIYS/yTXthUWcIr3640Ianxfc1c
+         tdkQmmEkJGRGLpIXTltOkbhbKMhOBCCPEZZOqbY4TnVv21RAsb1WtKgT7nYXSB1wl8/i
+         xeQPTvgQ5gKLauPwzjJnvrgWeSAlVCAggKrpXq2NdEcnyeWQheYvt3PPaBWPPrCpxUtn
+         ndRaX33Ogci7TY7dqcbvGL78dCSoR1h8S4fURIjVJsuJ7x0P8NIR5beugOJJxrjemswD
+         oDRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704794691; x=1705399491;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=miknyKwLNWMTM/CUdCtv3GjPRYtDM3k634e3VG5YdIA=;
+        b=RF1xSgbNTqcECQPn3xIWy+pkbzphjaKs59Ijd5rBB4fH4uTruUuio0Qsfow2VM2hiH
+         U6SwCyR+0yKYR1qjaoD0GBySflXxeDW23XuB/iAP587hfBV1KJ6IDdmQQqWyW/rFLGqd
+         WSuJNIVuWbJzeD4HabOZKBUAgGUqjcOjjTxgeZpolh6k97urNdwN1ZugKOE338ZmXFF3
+         fsv+BlhNo9Hr6wVUJ/gcbDb/VOLBLp96VtzG1IPGrXKK48Oao1GtpYghQUEAVvQmD/VK
+         RH6BSIngFB5mKxPsK0Jp4h+QefmGkfGT5nhU3AZll6mcrx7H9tbNq2tpGf8keWJPMvxK
+         htCg==
+X-Gm-Message-State: AOJu0YwRhoPYbbaQRPglF0z0o2xkkQdnUmZLIJFDT0t7zYbApOA8KFzC
+	FWEJuqY+5v6tTl0EOGOwW4v9W2FdsZqoJA==
+X-Google-Smtp-Source: AGHT+IF1PQdzWPHmXLfPvFu9bbrKMv2YpXR8bSAhucmKxaDT2gZanTZAhc8UHgp22OlOcsfbgMqWxw==
+X-Received: by 2002:a2e:9b03:0:b0:2cd:4a84:2b2f with SMTP id u3-20020a2e9b03000000b002cd4a842b2fmr1887094lji.57.1704794690930;
+        Tue, 09 Jan 2024 02:04:50 -0800 (PST)
+Received: from [127.0.1.1] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id b24-20020a05651c033800b002cd2cdda9besm314529ljp.50.2024.01.09.02.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 02:04:50 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Date: Tue, 09 Jan 2024 11:04:49 +0100
+Subject: [PATCH v3] regulator: qcom_smd: Keep one rpm handle for all vregs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240109-rpm_vreg_cleanup-v3-1-fa0201029f78@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAEAanWUC/2WNwQqDMBAFf0Vy7pYkWiU99T9KkRg3GohJ2KgUx
+ H9vKPTU4zyYNwfLSA4zu1cHI9xddjEUqC8VM7MOE4IbCzPJZcMFV0Bp6XfCqTceddgSKDsObY3
+ KytvIijbojDCQDmYuYti8L2MitO797TxfhS3FBdaZUP/eayFlB2tMzvw3dgkCeGM6ZRqrRNs+v
+ Aua4jXSxM7zAwOGyMzGAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.13-dev-0438c
 
-Hi Catalin,
+For no apparent reason (as there's just one RPM per SoC), all vregs
+currently store a copy of a pointer to smd_rpm. Introduce a single,
+global one to save up on space in each definition.
 
-On Mon, Jan 08 2024, Catalin Marinas wrote:
-> On Wed, Dec 27, 2023 at 05:04:27PM +0200, Baruch Siach wrote:
->> Current code using zone_dma_bits assume that all addresses range in the
->> bits mask are suitable for DMA. For some existing platforms this
->> assumption is not correct. DMA range might have non zero lower limit.
->> 
->> Add 'zone_dma_off' for platform code to set base address for DMA zone.
->> 
->> Rename the dma_direct_supported() local 'min_mask' variable to better
->> describe its use as limit.
->> 
->> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
->
-> When I suggested taking the DMA offsets into account, that's not exactly
-> what I meant. Based on patch 4, it looks like zone_dma_off is equivalent
-> to the lower CPU address. Let's say a system has DRAM starting at 2GB
-> and all 32-bit DMA-capable devices has a DMA offset of 0. We want
-> ZONE_DMA32 to end at 4GB rather than 6GB.
+bloat-o-meter reports a slight uptick:
 
-Patch 4 sets zone_dma_off to the lower limit from 'dma-ranges' property
-that determines zone_dma_bits. This is not necessarily equivalent to
-start of DRAM, though it happens to be that way on my platform.
+Total: Before=44008, After=44080, chg +0.16%
 
->> @@ -59,7 +60,7 @@ static gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 *phys_limit)
->>  	 * zones.
->>  	 */
->>  	*phys_limit = dma_to_phys(dev, dma_limit);
->> -	if (*phys_limit <= DMA_BIT_MASK(zone_dma_bits))
->> +	if (*phys_limit <= zone_dma_off + DMA_BIT_MASK(zone_dma_bits))
->>  		return GFP_DMA;
->>  	if (*phys_limit <= DMA_BIT_MASK(32))
->>  		return GFP_DMA32;
->
-> Ah, you ignore the zone_dma_off for 32-bit calculations. But the
-> argument still stands, the start of DRAM does not necessarily mean that
-> all non-64-bit devices have such DMA offset.
->
-> The current dma_direct_optimal_gfp_mask() confuses me a bit, I think it
-> gives the wrong flag if we have a zone_dma_bits of 30 and a device with
-> a coherent_dma_mask of 31, it incorrectly ends up with GFP_DMA32 (I'm
-> ignoring dma offsets in this example). Luckily I don't think we have any
-> set up where this would fail. Basically if *phys_limit is strictly
-> smaller than DMA_BIT_MASK(32), we want GFP_DMA rather than GFP_DMA32
-> even if it is larger than DMA_BIT_MASK(zone_dma_bits).
->
-> Anyway, current mainline assumes that DMA_BIT_MASK(zone_dma_bits) and
-> DMA_BIT_MASK(32) are CPU addresses. The problem is that we may have the
-> start of RAM well above 4GB and neither ZONE_DMA nor ZONE_DMA32 upper
-> limits would be a power-of-two. We could change the DMA_BIT_MASK(...) to
-> be DMA address limits and we end up with something like:
->
-> static gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 *phys_limit)
-> {
-> 	u64 dma_limit = min_not_zero(
-> 		dev->coherent_dma_mask,
-> 		dev->bus_dma_limit);
-> 	u64 dma32_limit = dma_to_phys(dev, DMA_BIT_MASK(32));
->
-> 	*phys_limit = dma_to_phys(dev, dma_limit);
-> 	if (*phys_limit > dma_limit)
-> 		return 0;
-> 	if (*phys_limit = dma32_limit)
-> 		return GFP_DMA32;
-> 	return GFP_DMA;
-> }
->
-> The alternative is to get rid of the *_bits variants and go for
-> zone_dma_limit and zone_dma32_limit in the generic code. For most
-> architectures they would match the current DMA_BIT_MASK(32) etc. but
-> arm64 would be able to set some higher values.
->
-> My preference would be to go for zone_dma{,32}_limit, it's easier to
-> change all the places where DMA_BIT_MASK({zone_dma_bits,32}) is used.
+However the saved n * sizeof(ptr) for every dynamically allocated
+regulator quickly makes up for it.
 
-Sounds good to me.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v3:
+- Validate that the global pointer didn't change
+- Update the bloat-o-meter report
+- Link to v2: https://lore.kernel.org/r/20231227-topic-rpm_vreg_cleanup-v2-1-04c79c4f9166@linaro.org
+Changes in v2:
+- Remove unused function argument from rpm_regulator_init_vreg kerneldoc
+- Do NOT add a mutex around the rpm assignment, talked to Dmitry offline
+  and we concluded it makes no sense
+- Link to v1: https://lore.kernel.org/r/20231227-topic-rpm_vreg_cleanup-v1-1-949da0864ac5@linaro.org
+---
+ drivers/regulator/qcom_smd-regulator.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-Thanks for your review of this confusing piece of code.
+diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
+index d1be9568025e..3b7e06b9f5ce 100644
+--- a/drivers/regulator/qcom_smd-regulator.c
++++ b/drivers/regulator/qcom_smd-regulator.c
+@@ -11,11 +11,10 @@
+ #include <linux/regulator/of_regulator.h>
+ #include <linux/soc/qcom/smd-rpm.h>
+ 
++struct qcom_smd_rpm *smd_vreg_rpm;
++
+ struct qcom_rpm_reg {
+ 	struct device *dev;
+-
+-	struct qcom_smd_rpm *rpm;
+-
+ 	u32 type;
+ 	u32 id;
+ 
+@@ -70,7 +69,7 @@ static int rpm_reg_write_active(struct qcom_rpm_reg *vreg)
+ 	if (!reqlen)
+ 		return 0;
+ 
+-	ret = qcom_rpm_smd_write(vreg->rpm, QCOM_SMD_RPM_ACTIVE_STATE,
++	ret = qcom_rpm_smd_write(smd_vreg_rpm, QCOM_SMD_RPM_ACTIVE_STATE,
+ 				 vreg->type, vreg->id,
+ 				 req, sizeof(req[0]) * reqlen);
+ 	if (!ret) {
+@@ -1384,14 +1383,13 @@ MODULE_DEVICE_TABLE(of, rpm_of_match);
+  * @dev:		Pointer to the top level qcom_smd-regulator PMIC device
+  * @node:		Pointer to the individual qcom_smd-regulator resource
+  *			device node
+- * @rpm:		Pointer to the rpm bus node
+  * @pmic_rpm_data:	Pointer to a null-terminated array of qcom_smd-regulator
+  *			resources defined for the top level PMIC device
+  *
+  * Return: 0 on success, errno on failure
+  */
+ static int rpm_regulator_init_vreg(struct qcom_rpm_reg *vreg, struct device *dev,
+-				   struct device_node *node, struct qcom_smd_rpm *rpm,
++				   struct device_node *node,
+ 				   const struct rpm_regulator_data *pmic_rpm_data)
+ {
+ 	struct regulator_config config = {};
+@@ -1409,7 +1407,6 @@ static int rpm_regulator_init_vreg(struct qcom_rpm_reg *vreg, struct device *dev
+ 	}
+ 
+ 	vreg->dev	= dev;
+-	vreg->rpm	= rpm;
+ 	vreg->type	= rpm_data->type;
+ 	vreg->id	= rpm_data->id;
+ 
+@@ -1449,6 +1446,11 @@ static int rpm_reg_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
++	if (smd_vreg_rpm && rpm != smd_vreg_rpm)
++		return dev_err_probe(dev, -EINVAL, "RPM mismatch\n");
++
++	smd_vreg_rpm = rpm;
++
+ 	vreg_data = of_device_get_match_data(dev);
+ 	if (!vreg_data)
+ 		return -ENODEV;
+@@ -1460,8 +1462,7 @@ static int rpm_reg_probe(struct platform_device *pdev)
+ 			return -ENOMEM;
+ 		}
+ 
+-		ret = rpm_regulator_init_vreg(vreg, dev, node, rpm, vreg_data);
+-
++		ret = rpm_regulator_init_vreg(vreg, dev, node, vreg_data);
+ 		if (ret < 0) {
+ 			of_node_put(node);
+ 			return ret;
 
-baruch
+---
+base-commit: 0f067394dd3b2af3263339cf7183bdb6ee0ac1f8
+change-id: 20240109-rpm_vreg_cleanup-9fdb63e9f25d
 
+Best regards,
 -- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
