@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-21302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 164D1828D4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:24:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76E3C828D50
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:24:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4841C20AC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:24:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3E07B23DBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D198B3D393;
-	Tue,  9 Jan 2024 19:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BC53D38D;
+	Tue,  9 Jan 2024 19:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eWaId/QD"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2063.outbound.protection.outlook.com [40.107.212.63])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dqp6pI1d"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2058.outbound.protection.outlook.com [40.107.220.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F6E3D0CD;
-	Tue,  9 Jan 2024 19:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13AB73D0CD;
+	Tue,  9 Jan 2024 19:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CNMuQ3RqwLARfpgNg+2bYpcqQnAz81NjSMypbR3cWhAb3mpuDCO6OgkLU9IMdx75IzszjnnNeG3EAfaehNNzZ5YQ+LKeYT/h6Hf9FFVSUbp5VMwy1bu84Dkopf9OdXVtrYjtFuClXi/sqUX4Rtac4zNnF9BrJHmLpsRFkcwNmPwhJNplkUSwEBaRFi4Qm+E6/53egUdpbXxYcganFp7Djz5UnKAAJSRJtDO7yrMA6a2rzaxtUKv6AiNZQN/4titV11mddW1Xw/2pX4dSwFKZO+fyIEsWQuw3PHCb1BwkEwRtVd+6N1h8++U20EtPxexnpu9DBuvdT99+riBEvcu+vg==
+ b=iMF+9pArs1vhCamtWcHXsfUjmKYio6pjj1qVYrXfio+j3hl150+eDMUTojf/9uYsYdHbo7a1a/I0pj3A76r12eCnbVCx2+F71Pet7eoZP6bDc3pUySVsMT7YhGDQNJIHlWZjmOz7Ss3QzkiUdtLKDIf9ZNWVAOl0pqifVZ6fhnup+P0wsSm0sRyxtKAjdkFuaj7q0ZLuXoYd0uzUS3ZNuUERt6UjTUPQQRxltX7VSEyTqyA5pbYIkS/qpsZgMiEd4wizBeRC9mr6/luLQvKG0H2X+0pxQprIsmu0C/2D4hUCcN5sTqalHSVqJoMVTLoj465rY7ahTI+MgFLRqOwszw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CFl34CDZeuQ/Ua+KK1MpJMTf95Xw+2Fae2Wfl3NcrwQ=;
- b=S1o5Cvh5Icm2RMxXwpjs7YAkNILDyjW4GpUye33t83hYzKTAmKZk+EwL1xOmUR/1Medjg7iYtDZmhK3DP0eujER3JVQ/M+cjuQXjvN9DBgBaIFSJmWWth796VTzpT/327DB1vwR9qjaKFOjeUBUogVxVnndgquOMAXPSDCS5Ijo10i9GxzYOCoQEPkg+OwCFuzcxFsFj/XHFPo3Q8tiN+SGot5goYsHvT7fFiCMiiMzwbPUr1OjgK0D0dE9/ojPYlPsyZAtMqEArpoq4+mXN9Sqqz+7RkHioyO13LTN8Ch/BD2FdQT08486giMXj8U162xMVqDifH53eUJA5rYHR3Q==
+ bh=DBJyTN1b9V8CFlpxLjATl8H79QcpsxU4Q7NUgK9cPh0=;
+ b=fDx3VhNhIqiogkGkSaiZvnfw/OA6l88XB4KrtuyoyypwgQJ0QN0wuG8g2ycfIZzYtOnCWQ5e3bPkCE+iAOtw1J00gr9NupLSzP8k5GqNPGkDdM/K0mBfZ+8hNl5uKlhaGFfsqhpFZHcwcs3gB+3st40nrR3Le1A14zTEr4Euq4rfmMks1gPqo3PQr8kuKlWqOwWMkFZpjg60yTY7kHkn7ZtB6/y32Y6yA0Z92X2dq43nEViQzZLiA5qkx7A0p4QEf1rrZrAwG/L4GKm0GYShepsSz4LiQeS3CbjbzEU43jYwPOLj1+DnkEmkgak5+dxjQZd1aB4HYJVQtNgactattQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CFl34CDZeuQ/Ua+KK1MpJMTf95Xw+2Fae2Wfl3NcrwQ=;
- b=eWaId/QDgLu/S9AXDwhYIqBxih3rACQ5mgl6+0/NJK1fLWORV0SMBOMUH5LyTtfOwCqRkpfF9ZKaywfzjpmGBMpRj6sRQxKmk4HpD2IfaAUMILkTTsqK4O8+3mRXbgdPVUTzdufRZxHvrrKfmmhcxkvWZpIBelAAiYbC9kF4/rT2WBm87xyutmqyimlH1mb9EbwZ/nemkoyOugj7ynJp2k9bUDKYbxwOLluKmUspKW7/LPk133zAbmypsskW34LQtbV6hVz72VLsMHkoiQ1s+UPaiiaY1PwrNgqs3CsqWSiydaSKTLIBHOmn76Gx/oFtl6nwIjDfs7uWNSyY5P4Yhw==
-Received: from SJ0PR03CA0136.namprd03.prod.outlook.com (2603:10b6:a03:33c::21)
- by PH7PR12MB6786.namprd12.prod.outlook.com (2603:10b6:510:1ac::18) with
+ bh=DBJyTN1b9V8CFlpxLjATl8H79QcpsxU4Q7NUgK9cPh0=;
+ b=dqp6pI1do+wwPN0pYp80NKROCMiaA0AJ4bqpAsINn9LnCjYzflMUW4xWIFAaItE7DANQXwuArspYPizPhGozPElssDV3ycgMWyCgO1ugkBgD/oJNitwvj7LJIuLDo8cweUu04Zxo8N6+xOssdRqGi8Iocplfa2hI7mRWEFUy//j8TrTI6HU27FCgnf1ENzikY6pRuPTmFXd1ferue/yV9y9DtFyTuDIIw2ousT55k0TNNTFCAe3kAdWqKx45opCKK5eC5I/zVxsuHwIDxKPBs0IPMT/3AJx+cebLmfLRKzwVXTlfauRNd1w9wdGztKDNsL+kbBArSGkvDjvkBuCqhQ==
+Received: from PH8PR02CA0003.namprd02.prod.outlook.com (2603:10b6:510:2d0::29)
+ by DM6PR12MB4370.namprd12.prod.outlook.com (2603:10b6:5:2aa::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 19:24:04 +0000
-Received: from MWH0EPF000989EC.namprd02.prod.outlook.com
- (2603:10b6:a03:33c:cafe::74) by SJ0PR03CA0136.outlook.office365.com
- (2603:10b6:a03:33c::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23 via Frontend
- Transport; Tue, 9 Jan 2024 19:24:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ 2024 19:24:33 +0000
+Received: from SA2PEPF000015C7.namprd03.prod.outlook.com
+ (2603:10b6:510:2d0:cafe::fe) by PH8PR02CA0003.outlook.office365.com
+ (2603:10b6:510:2d0::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.24 via Frontend
+ Transport; Tue, 9 Jan 2024 19:24:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- MWH0EPF000989EC.mail.protection.outlook.com (10.167.241.139) with Microsoft
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SA2PEPF000015C7.mail.protection.outlook.com (10.167.241.197) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7181.14 via Frontend Transport; Tue, 9 Jan 2024 19:24:03 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.7181.14 via Frontend Transport; Tue, 9 Jan 2024 19:24:32 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 9 Jan 2024
- 11:23:47 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 11:24:10 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 9 Jan 2024
- 11:23:47 -0800
+ 11:24:10 -0800
 Received: from msst-build.nvidia.com (10.127.8.14) by mail.nvidia.com
  (10.129.68.8) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Tue, 9 Jan 2024 11:23:45 -0800
+ Transport; Tue, 9 Jan 2024 11:24:08 -0800
 From: Besar Wicaksono <bwicaksono@nvidia.com>
 To: <acme@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
 	<john.g.garry@oracle.com>, <james.clark@arm.com>, <mike.leach@linaro.org>,
@@ -79,10 +79,12 @@ CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-perf-users@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
 	<treding@nvidia.com>, <jonathanh@nvidia.com>, Besar Wicaksono
 	<bwicaksono@nvidia.com>
-Subject: [PATCH v1 0/3] arm64: Support Neoverse-V2 for Perf Arm SPE
-Date: Tue, 9 Jan 2024 13:23:07 -0600
-Message-ID: <20240109192310.16234-1-bwicaksono@nvidia.com>
+Subject: [PATCH v1 1/3] arm64: Add Neoverse-V2 part
+Date: Tue, 9 Jan 2024 13:23:08 -0600
+Message-ID: <20240109192310.16234-2-bwicaksono@nvidia.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240109192310.16234-1-bwicaksono@nvidia.com>
+References: <20240109192310.16234-1-bwicaksono@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,44 +95,54 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989EC:EE_|PH7PR12MB6786:EE_
-X-MS-Office365-Filtering-Correlation-Id: b2b75b1e-5153-4cc1-bbc6-08dc11488a6a
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C7:EE_|DM6PR12MB4370:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1666ad53-a8b3-428c-d65b-08dc11489bd7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	sZrK74vLQbh/rKBvRFjkTh/WPxwjXUEIp6JREf51rHx2MQTFEDlS6hkmdEkhppjvE21e+obvAKWfVI3jSqvJ7X6dCerJdrcfuMvuFpP++c8rdaoNj3g5JfSk1UEx+3h1Xcn1+VNprU6l+FiMGVxDINMAITsajwY/Ci+ZN8MmsqUDiW0Klx4StJRZwk/bLoepqL7ke71Yn0PQG56Y9M1Tw7qNqzm2fek9Rx1TK01W2iHD6XiGRqpffkZ7VUfNkG7kRkMWRzEGompv6hoKAgHVpJKL5c+BMMVg58mREDVnfRenvveBBxXzRNUjWdaHRY/l+ywY5ZQWctRBUMYaYcG1d2eQku2zOvh2CDfCvBc9/dDQF/cTTrcV5iU6/LKMdshBFZTW40vkUlPhZrD8jyicMSjsPsnDSA1hgR7Tdxkrwz6W7YEm+JNuv+7J4pYZvVV8yR+fGVqFJBaVTinfSpEl67Js6n+IFevqM2Hn8vxQEje3hev5+Zpu7oJMkT9u9/YwE7VV4OjYxCnPedqEVEfb3OQPVqWipTmbulCzQDvchoRLsEMTsoRnlgJ15y3qY/d4z9jlNR7ILuDqJvofkir7GReRMsTyVPSapa7JlrRY6vyGYj3+YT89gym0Bq0rOJynWWhs5d94Xgk17g6zXDJKru22kyWkvmZsrZMSE7uxzYlASkatf+GCm0ZXOKo5Dvs46VMHcSdEVETA+D7HP2sUH6cMsXkDnPVh5lmkvfRdxLAhxTA8so1H4LRVhvTZVbPE2XdDjIPex92BRUn7UqOPz55VsWGX5fxP+vUER2QyWYw=
+	MC28ZejVDVqkw9nRk+GGmIQqsYYfmLgEyOCu9u+iBlWb7uPfMLqRfAZKOwm8UI3vu8pj1L4Os/JTW5iMTDDgo/ocY5RAyCaTidOidJdcrnTMQ3zFD+WIMuyWBylHEjUd0E87L5/nOvEeAWhbjIariKzPmMx8C6qrZT0Dn3sxZJAvnjtwB3pZUcneGb7qCta6cSlINxmyQ75B4xjgc4qTDmZM7HJbcRn94yqSGbZtksVEPPLo2ENStzGD1VLRxesy+RzNc8VokqmwG694+OuJZEB84f08zXdQ6ed9FmFGOpGbqWUCCIb9ZirL5q4VJv9sFqnSDJYjYtdjZojDKaiUVjRtiya2MnpgMXdG5ovsxBUGemegfATglH0KaS6txZPORB+v1ZKgCiUSEJT2+3kpm7DatGqh1Ltk5tqO+SJcxPGFjBBtdFXkCNWUXFoKVwWBrk38zZ7o6cqqj3Y+iRGg3smLJOVfksj+8QG2UtDn14+SoCQ1ha7CArlzZBsLRY3tMNop3ZTU1OC8ntD5Thl45eK33TBTOHkegTjiyqlTGitMFSYT0A0joXOEJn+rcavyCn+3BW+IQ6IzWPRYR3dah3/ONzJvA/3XxEMKvjYAu2pFRMd3g5M5i4QoKwdrhnJweBwkkgR1cuMMugejChM2sF9pv1pZPIdPdnCwuapk/oSTq8l7mGVcGBeDGpGWPbB4nSIDGbiH8KjCEGovuQP2TnxCUvu3EQgeXXZparr81Dpd1R8NUSDqGunxNJ+c6atf4c3eXWlIMPTK36CrJ5Lt9DlU4AYOf4G8rlAYev2VnUZVXSo88ji3GCs0rzArxvg1
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39860400002)(230922051799003)(186009)(451199024)(82310400011)(64100799003)(1800799012)(36840700001)(46966006)(40470700004)(316002)(107886003)(336012)(2616005)(1076003)(426003)(26005)(82740400003)(47076005)(36860700001)(8936002)(8676002)(5660300002)(4744005)(7416002)(6636002)(2906002)(478600001)(54906003)(7696005)(6666004)(4326008)(110136005)(70206006)(70586007)(921011)(41300700001)(356005)(7636003)(36756003)(86362001)(40480700001)(40460700003)(2101003)(83996005);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(230922051799003)(1800799012)(186009)(82310400011)(64100799003)(451199024)(46966006)(36840700001)(40470700004)(26005)(2616005)(1076003)(336012)(426003)(478600001)(7696005)(47076005)(107886003)(316002)(5660300002)(41300700001)(7416002)(2906002)(70586007)(6636002)(70206006)(110136005)(54906003)(4326008)(8676002)(8936002)(356005)(921011)(82740400003)(36860700001)(36756003)(7636003)(86362001)(40460700003)(40480700001)(2101003)(83996005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 19:24:03.5461
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 19:24:32.8292
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2b75b1e-5153-4cc1-bbc6-08dc11488a6a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1666ad53-a8b3-428c-d65b-08dc11489bd7
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000989EC.namprd02.prod.outlook.com
+	SA2PEPF000015C7.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6786
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4370
 
-This series support Neoverse-V2 CPU in Perf Arm SPE.
-The first patch adds the Neoverse-V2 part number in kernel header.
-The second patch syncs the kernel change to the tools header.
-The third patch adds Neoverse-V2 into perf's Neoverse SPE data source list.
+Add the part number and MIDR for Neoverse-V2
 
-Besar Wicaksono (3):
-  arm64: Add Neoverse-V2 part
-  tools headers arm64: Add Neoverse-V2 part
-  perf arm-spe: Add Neoverse-V2 to neoverse list
+Signed-off-by: Besar Wicaksono <bwicaksono@nvidia.com>
+---
+ arch/arm64/include/asm/cputype.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
- arch/arm64/include/asm/cputype.h       | 2 ++
- tools/arch/arm64/include/asm/cputype.h | 2 ++
- tools/perf/util/arm-spe.c              | 1 +
- 3 files changed, 5 insertions(+)
-
-
-base-commit: d988c9f511af71a3445b6a4f3a2c67208ff8e480
+diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+index 7c7493cb571f..fe13a25fa082 100644
+--- a/arch/arm64/include/asm/cputype.h
++++ b/arch/arm64/include/asm/cputype.h
+@@ -85,6 +85,7 @@
+ #define ARM_CPU_PART_CORTEX_X2		0xD48
+ #define ARM_CPU_PART_NEOVERSE_N2	0xD49
+ #define ARM_CPU_PART_CORTEX_A78C	0xD4B
++#define ARM_CPU_PART_NEOVERSE_V2	0xD4F
+ 
+ #define APM_CPU_PART_XGENE		0x000
+ #define APM_CPU_VAR_POTENZA		0x00
+@@ -156,6 +157,7 @@
+ #define MIDR_CORTEX_X2 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_X2)
+ #define MIDR_NEOVERSE_N2 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N2)
+ #define MIDR_CORTEX_A78C	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78C)
++#define MIDR_NEOVERSE_V2 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_V2)
+ #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
+ #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
+ #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
 -- 
 2.17.1
 
