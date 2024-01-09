@@ -1,321 +1,145 @@
-Return-Path: <linux-kernel+bounces-20648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E8078282ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:20:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56F1B828301
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDD4D1F25C1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:20:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7C881F21FAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD5535887;
-	Tue,  9 Jan 2024 09:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A79B364B0;
+	Tue,  9 Jan 2024 09:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="XS6t1Pvs"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLhFpub+"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CB673714C;
-	Tue,  9 Jan 2024 09:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94E51124F;
-	Tue,  9 Jan 2024 10:17:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1704791823;
-	bh=EMEKdhlgpVaeI/UFFuuWKHAvayHYKBnc3hWBbb8Ogi8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XS6t1PvsuiInuTInPlG4BRm3BSQIngB4LMiQB5n0mCKZ8zqzRbbLdT/FU/Orjwx1s
-	 An6j1TLY6G+aBmUPjlf508ARJpep2IVa9HKIeSw4xKBEp2K1WvCROjs+y9K3ht+iK2
-	 hKc1OA6igPfspTXmuxaNlCrvD0YImOdol77vGSWI=
-Date: Tue, 9 Jan 2024 11:18:16 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Zhi Mao =?utf-8?B?KOavm+aZuik=?= <zhi.mao@mediatek.com>
-Cc: "conor@kernel.org" <conor@kernel.org>,
-	"heiko@sntech.de" <heiko@sntech.de>,
-	"tomi.valkeinen@ideasonboard.com" <tomi.valkeinen@ideasonboard.com>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"yunkec@chromium.org" <yunkec@chromium.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dan.scally@ideasonboard.com" <dan.scally@ideasonboard.com>,
-	"gerald.loacker@wolfvision.net" <gerald.loacker@wolfvision.net>,
-	Shengnan Wang =?utf-8?B?KOeOi+Wco+eUtyk=?= <shengnan.wang@mediatek.com>,
-	"hdegoede@redhat.com" <hdegoede@redhat.com>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-	"andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-	Yaya Chang =?utf-8?B?KOW8tembhea4hSk=?= <Yaya.Chang@mediatek.com>,
-	"mchehab@kernel.org" <mchehab@kernel.org>,
-	"jacopo.mondi@ideasonboard.com" <jacopo.mondi@ideasonboard.com>,
-	"jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"bingbu.cao@intel.com" <bingbu.cao@intel.com>,
-	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"10572168@qq.com" <10572168@qq.com>,
-	"sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-	"hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
-	"macromorgan@hotmail.com" <macromorgan@hotmail.com>
-Subject: Re: [PATCH 1/2] media: dt-bindings: media: i2c: Document GC08A3
- bindings
-Message-ID: <20240109091816.GI20868@pendragon.ideasonboard.com>
-References: <20231123115104.32094-1-zhi.mao@mediatek.com>
- <20231123115104.32094-2-zhi.mao@mediatek.com>
- <20231123-magical-rupture-83251807e995@spud>
- <20231207102505.GI29417@pendragon.ideasonboard.com>
- <96fee4c737300e6b834ae0761c161edb6bf48aec.camel@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0C82EB11;
+	Tue,  9 Jan 2024 09:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e5280a381so917395e9.2;
+        Tue, 09 Jan 2024 01:19:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704791943; x=1705396743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DJQguPbha7MXCmeJtqCzdTaw5Ni1LUD1cj0B0gGvNS4=;
+        b=hLhFpub+Fkghf4pxKAB/+ijFJvNw/oCruLQn1MA1aYnftCul6ahyAkKdq89AhvCiI5
+         NYiyK2kY3XBh/2j1pE78PaCnOZuGm6lxCZLqiLv+9elIXsndxx6ZuRa/M0xnNvEX37JF
+         UIBgSAUUDP1Z4p08itFmqJEbsPWVHEw7clkbXJ3UtYMpjQUdYmJ46ixAdsBdufoWN4E7
+         LIHUXyc0r2x4K7QXjsotKYjyjmp8cmGaHhUzVfLGIfJ1iqhJfJ7yaIv/h3rD6Vzsa61a
+         f2dlyVDJm1P5aEpnub621Umyym7qeIt/6n9t+PA4uhVj7v3bxn5G8dLuG960heSeWL5T
+         Ubsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704791943; x=1705396743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DJQguPbha7MXCmeJtqCzdTaw5Ni1LUD1cj0B0gGvNS4=;
+        b=wmQvbT6OLSTqUGtMJ4qN9CPzEmf7bvma6hN/5fAaabSCZ9ZVx2iS5d47PqXCcT+rgA
+         vj2eLQRr2fS1e5X9Ch3tza0kPy8plIePvYz0HHaAE+yIw4upgxfLn8bRLZSoOrYsw6do
+         ayVH3dwW6W8BUm25z9qmufdvJ0uOCGdc1J8SMliFn7h32V3U3o+kJiPvJUwq0Zp0fwGF
+         3GsCCYtQNGkBkFrUjYwRq1vXgj594uh5RlVQfyWYb47oK48zgfNdQN7G/nutGsRbcVt3
+         ogJkVbNS9/mn5x10F4mEmcr38MtZik7VCTlN638lBtuic6nrjpaNulHz+8MOecIRVxWG
+         hohQ==
+X-Gm-Message-State: AOJu0Yyj659jgWFYd694L9YOit/yyC6Vuxma3eCJ2vs5bJak3/G4C3U9
+	Q21ZV3Y2Wf0VKTpLYbYFV3G6qyegn26KSLSVj04=
+X-Google-Smtp-Source: AGHT+IH8kjBr6y/PUVs76Dmc5ivmhvqMJo6M7Nycjc2+bCF2ImQ4/rGA/kQrj8cLE6C6hFpmgE0ip2s1p/rhyjCeWRA=
+X-Received: by 2002:a05:600c:4745:b0:40e:491d:acaa with SMTP id
+ w5-20020a05600c474500b0040e491dacaamr968576wmo.22.1704791942945; Tue, 09 Jan
+ 2024 01:19:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <96fee4c737300e6b834ae0761c161edb6bf48aec.camel@mediatek.com>
+References: <CAM+7aWvmmyyLN5YHuJhg_X402OFmP_sVe6h_mr5tURjv0Ti5vQ@mail.gmail.com>
+In-Reply-To: <CAM+7aWvmmyyLN5YHuJhg_X402OFmP_sVe6h_mr5tURjv0Ti5vQ@mail.gmail.com>
+From: =?UTF-8?Q?G=C3=A1bor_Stefanik?= <netrolller.3d@gmail.com>
+Date: Tue, 9 Jan 2024 10:18:53 +0100
+Message-ID: <CA+XFjiqUxOPwP7O1qa0zUO8p8deVHQEqQ5kJtr6QsHcSf+YkMQ@mail.gmail.com>
+Subject: Re: USB PD TYPEC - FUSB302B port controller hard reset issue
+To: Suniel Mahesh <sunil@amarulasolutions.com>
+Cc: Guenter Roeck <linux@roeck-us.net>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, 
+	USB list <linux-usb@vger.kernel.org>, Jagan Teki <jagan@amarulasolutions.com>, 
+	Da Xue <da.xue@libretech.co>, Da Xue <da@lessconfused.com>, Da Xue <da@libre.computer>, 
+	Kyle Tso <kyletso@google.com>, RD Babiera <rdbabiera@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Zhi,
+Unfortunately this seems to just be the behavior of many wall
+chargers, triggered by either an excessive delay between first drawing
+power and beginning PD communication, or by an incorrect sequence
+number. From what I've heard, this is a workaround for a bug in the
+earliest USB-C MacBooks, but it unfortunately makes those chargers
+unusable for powering anything that doesn't have an internal battery.
 
-Your e-mail still came as HTML, with the same footer. Please fix this
-first, I'm afraid we can't communicate properly on mailing lists
-otherwise.
-
-On Tue, Jan 09, 2024 at 09:11:32AM +0000, Zhi Mao (毛智) wrote:
-> On Thu, 2023-12-07 at 12:25 +0200, Laurent Pinchart wrote:
-> >
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On Thu, Nov 23, 2023 at 05:31:35PM +0000, Conor Dooley wrote:
-> > > On Thu, Nov 23, 2023 at 07:51:03PM +0800, Zhi Mao wrote:
-> > > > Add YAML device tree binding for GC08A3 CMOS image sensor,
-> > > > and the relevant MAINTAINERS entries.
-> > > >
-> > > > Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
-> > >
-> > > Please test your bindings.
-> > >
-> > > > ---
-> > > >  .../bindings/media/i2c/galaxycore,gc08a3.yaml | 128
-> > ++++++++++++++++++
-> > > >  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
-> > > >  2 files changed, 130 insertions(+)
-> > > >  create mode 100644
-> > Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
-> > > >
-> > > > diff --git
-> > a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
-> > b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..089ea321da91
-> > > > --- /dev/null
-> > > > +++
-> > b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
-> > > > @@ -0,0 +1,128 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id:
-> > http://devicetree.org/schemas/media/i2c/galaxycore,gc08a3.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: GalaxyCore gc08a3 1/4" 8M Pixel MIPI CSI-2 sensor
-> > > > +
-> > > > +maintainers:
-> > > > +  - Zhi Mao <zhi.mao@mediatek.com>
-> > > > +
-> > > > +description: |-
-> > >
-> > > The |- is not needed, you have no formatting to preserve.
-> > >
-> > > > +  The gc08a3 is a raw image sensor with an MIPI CSI-2 image data
-> > > > +  interface and CCI (I2C compatible) control bus. The output
-> > format
-> > > > +  is raw Bayer.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: GalaxyCore,gc08a3
-> > >
-> > > Please remove the capitals.
-> > >
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  clocks:
-> > > > +    items:
-> > > > +      - description: Reference to the mclk clock.
-> > >
-> > > Pointless, just use maxItems: 1.
-> > >
-> > > > +
-> > > > +  assigned-clocks:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  assigned-clock-rates:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  enable-gpios:
-> > > > +    description: Reference to the GPIO connected to the RESETB
-> > pin. Active low.
-> > > > +    maxItems: 1
-> > > > +
-> >
-> > If that's the RESETB pin, it should be reset-gpios.
-> [mtk]: yes, it's reset-pin, fixed in patch:v3.
-> and some other comments also fixed, please review patch:v3.
-> 
-> https://lore.kernel.org/linux-media/20240109022715.30278-1-zhi.mao@mediatek.com/
-> >
-> > > > +  vddio-supply:
-> > > > +    description: Definition of the regulator used for the VDDIO
-> > power supply.
-> > > > +
-> > > > +  vdda-supply:
-> > > > +    description: Definition of the regulator used for the VDDA
-> > power supply.
-> > > > +
-> > > > +  vddd-supply:
-> > > > +    description: Definition of the regulator used for the VDDD
-> > power supply.
-> > >
-> > > These descriptions can all be replaced with "foo-supply: true" IMO.
-> > >
-> > > > +  port:
-> > > > +    $ref: /schemas/graph.yaml#/$defs/port-base
-> > > > +    unevaluatedProperties: false
-> > > > +
-> > > > +    properties:
-> > > > +      endpoint:
-> > > > +        $ref: /schemas/media/video-interfaces.yaml#
-> > > > +        unevaluatedProperties: false
-> > > > +
-> > > > +        properties:
-> > > > +          data-lanes:
-> > > > +            oneOf:
-> > > > +              - items:
-> > > > +                  - const: 1
-> > > > +                  - const: 2
-> > > > +                  - const: 3
-> > > > +                  - const: 4
-> > > > +              - items:
-> > > > +                  - const: 1
-> > > > +                  - const: 2
-> > > > +
-> > > > +          link-frequencies: true
-> > > > +
-> > > > +        required:
-> > > > +          - data-lanes
-> > > > +          - link-frequencies
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +  - clocks
-> > >
-> > > > +  - assigned-clocks
-> > > > +  - assigned-clock-rates
-> > >
-> > > Why are these required?
-> > >
-> > > > +  - vddio-supply
-> > > > +  - vdda-supply
-> > > > +  - vddd-supply
-> > > > +  - port
-> > > > +
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    #include <dt-bindings/gpio/gpio.h>
-> > > > +
-> > > > +    i2c {
-> > > > +        #address-cells = <1>;
-> > > > +        #size-cells = <0>;
-> > > > +
-> > > > +        sensor0@2 {
-> > > > +            status = "okay";
-> > > > +            compatible = "GalaxyCore,gc08a3";
-> > > > +            reg = <0x31>;
-> > > > +
-> > > > +            clocks = <&topckgen CLK_TOP_CAMTG>,
-> > > > +                <&topckgen CLK_TOP_UNIVPLL_192M_D8>;
-> > > > +            clock-names = "xvclk", "freq_mux";
-> > > > +            clock-frequency = <24000000>;
-> > > > +
-> > > > +            assigned-clocks = <&topckgen CLK_TOP_CAMTG>,
-> > > > +                    <&topckgen CLK_TOP_UNIVPLL_192M_D8>;
-> > > > +            assigned-clock-parents = <&topckgen
-> > CLK_TOP_UNIVPLL_192M_D8>;
-> > > > +            assigned-clock-rates = <0>, <24000000>;
-> > > > +
-> > > > +            enable-gpios = <&pio 19 GPIO_ACTIVE_HIGH>;
-> > > > +
-> > > > +            pinctrl-names = "default";
-> > > > +            pinctrl-0 = <&camera_pins_cam0>;
-> > > > +
-> > > > +            avdd-supply = <&mt6359_vfe28_ldo_reg>;
-> > > > +
-> > > > +            port {
-> > > > +                sensor0_out_2: endpoint {
-> > > > +                    data-lanes = <1 2 3 4>;
-> > > > +                    link-frequencies = /bits/ 64 <336000000
-> > 207000000>;
-> > > > +                    remote-endpoint = <&seninf_csi_port_0_in_2>;
-> > > > +                };
-> > > > +            };
-> > > > +        };
-> > > > +
-> > > > +    };
-> > > > +
-> > > > +...
-> > > > diff --git a/Documentation/devicetree/bindings/vendor-
-> > prefixes.yaml b/Documentation/devicetree/bindings/vendor-
-> > prefixes.yaml
-> > > > index 309b94c328c8..a0bbec0bfee2 100644
-> > > > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > > @@ -502,6 +502,8 @@ patternProperties:
-> > > >      description: Fujitsu Ltd.
-> > > >    "^fxtec,.*":
-> > > >      description: FX Technology Ltd.
-> > > > +  "^GalaxyCore,.*":
-> > > > +    description: GalaxyCore Inc.
-> > > >    "^gardena,.*":
-> > > >      description: GARDENA GmbH
-> > > >    "^gateway,.*":
-> >
-> > --
-> > Regards,
-> >
-> > Laurent Pinchart
-> 
-> 
-> ************* MEDIATEK Confidentiality Notice ********************
-> The information contained in this e-mail message (including any
-> attachments) may be confidential, proprietary, privileged, or otherwise
-> exempt from disclosure under applicable laws. It is intended to be
-> conveyed only to the designated recipient(s). Any use, dissemination,
-> distribution, printing, retaining or copying of this e-mail (including its
-> attachments) by unintended recipient(s) is strictly prohibited and may
-> be unlawful. If you are not an intended recipient of this e-mail, or believe
-> that you have received this e-mail in error, please notify the sender
-> immediately (by replying to this e-mail), delete any and all copies of
-> this e-mail (including any attachments) from your system, and do not
-> disclose the content of this e-mail to any other person. Thank you!
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
+Suniel Mahesh <sunil@amarulasolutions.com> ezt =C3=ADrta (id=C5=91pont: 202=
+4.
+jan. 9., K, 8:17):
+>
+> Hi Guenter/Heikki/Greg and all,
+>
+> This email is a narrowed version of the earlier discussion at:
+> https://lore.kernel.org/all/CAM+7aWt7hJSmJQ78Fes0jMcrF9E8yhN=3DsDgYuU-hBx=
+O0+1Uj0g@mail.gmail.com/T/
+>
+> Please guide/suggest on why the FUSB302B port controller on a target boar=
+d
+> is getting reset(hard reset) on reception of a 0x0 packet from source(PD =
+Wall
+> charger 100W - 20V@5A).
+>
+> log when reset:
+>
+> [    1.599049] FUSB302: IRQ: 0x80, a: 0x00, b: 0x00, status0: 0x83
+> [    1.602836] FUSB302: IRQ: 0x00, a: 0x40, b: 0x00, status0: 0x83
+> [    1.606210] TCPM: tcpm_pd_event_handler: in TCPM_CC_EVENT
+> [    1.968179] FUSB302: IRQ: 0x80, a: 0x00, b: 0x00, status0: 0x83
+> [    2.133140] FUSB302: IRQ: 0x41, a: 0x04, b: 0x00, status0: 0x93
+> [    2.133704] FUSB302: IRQ: PD tx success
+> [    2.136046] FUSB302: PD message header: 161
+> [    2.136392] FUSB302: PD message len: 0
+> [    2.136845] TCPM: PD TX complete, status: 0
+> [    2.139382] FUSB302: IRQ: 0x51, a: 0x00, b: 0x00, status0: 0x93
+> [    2.142192] FUSB302: IRQ: 0x51, a: 0x00, b: 0x01, status0: 0x93
+> [    2.142804] FUSB302: IRQ: PD sent good CRC
+> [    2.145274] FUSB302: PD message header: 1a3
+> [    2.145674] FUSB302: PD message len: 0
+> [    2.146072] FUSB302: fusb302_pd_read_message: to tcpm_pd_receive
+> [    2.146478] TCPM: PD RX, header: 0x1a3 [1]
+> [    2.147042] TCPM: tcpm_pd_ctrl_request: type:0x3
+> [    2.147435] TCPM: tcpm_pd_ctrl_request: case PD_CTRL_ACCEPT
+> [    2.146309] TCPM: tcpm_pd_ctrl_request: case SOFT_RESET_SEND
+> [    2.148266] TCPM: tcpm_pd_rx_handler: done
+> [    2.158196] FUSB302: IRQ: 0x51, a: 0x00, b: 0x01, status0: 0x93
+> [    2.158600] FUSB302: IRQ: PD sent good CRC
+> [    2.161283] FUSB302: PD message header: 0
+> [    2.161710] FUSB302: PD message len: 0
+> [    2.162092] FUSB302: fusb302_pd_read_message: to tcpm_pd_receive
+> [    2.162608] TCPM: PD RX, header: 0x0 [1]
+> [    2.163181] TCPM: tcpm_pd_rx_handler: done
+> [    2.179843] FUSB302: IRQ: 0x41, a: 0x01, b: 0x00, status0: 0x83
+> [    2.180314] FUSB302: IRQ: PD received hardreset: interrupta: 1
+> [    2.181125] FUSB302: fusb302_pd_reset:
+> [    2.182597] TCPM: tcpm_pd_event_handler:
+> [    2.182937] TCPM: tcpm_pd_event_handler: TCPM_RESET_EVENT
+> [    2.183292] TCPM: _tcpm_pd_hard_reset: Received hard reset
+> [    2.183770] TCPM: _tcpm_pd_hard_reset:
+>
+> Let me know if you need anymore details.
+>
+> Thanks and Regards
+> --
+> Suniel Mahesh
+> Embedded Linux and Kernel Engineer
+> Amarula Solutions India
+>
 
