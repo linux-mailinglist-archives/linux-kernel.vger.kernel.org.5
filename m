@@ -1,160 +1,232 @@
-Return-Path: <linux-kernel+bounces-20259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF3E3827C88
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:24:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF5D827C8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D1AD1F2434D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:24:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D755DB22527
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5BA1844;
-	Tue,  9 Jan 2024 01:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38D72912;
+	Tue,  9 Jan 2024 01:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dtf5FdSV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="DqRomOwC"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72E8186E;
-	Tue,  9 Jan 2024 01:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704763450; x=1736299450;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=tztNPMuvQXiNw1r7vUmDEia96WTG9eqw7fOwv3oe8+k=;
-  b=Dtf5FdSVkuYo5mOXUe2Ei1or5b2KQU2LARRyDzgPz8et9JRP+YDcEc3D
-   bhOAcPjkyMy4eilmabBoMC9laZgbv551HMpd63Z8pSAiFeQFK62+64tnz
-   oeDf7Cke8UePACm6efud4aSSG8RKJYPgx1ttgnDg9xmafX5hK70Hnfvlo
-   M04cjnrLo3fDPOhi9elonZgIu/MjsszK/mbZzYxXuEcXuuccgKbf1pEgh
-   V16ah0EY8bJsuxueF2DDhlrBp+uwskOw5nANIWuOC8J+HoMb7HT0lTu+G
-   gpht8COcGjCambaWuitNgpzErbT88vxnZhkRo1NBe6Hj/nxkzzw5UQQ4k
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11399747"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="11399747"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 17:24:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="904984767"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="904984767"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.19.162]) ([10.93.19.162])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 17:24:07 -0800
-Message-ID: <fb4f62a9-131d-4c3c-b290-e77041ee0019@linux.intel.com>
-Date: Tue, 9 Jan 2024 09:24:05 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0458028EA
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 01:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd5c55d6b8so12876421fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 17:25:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google; t=1704763500; x=1705368300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2LI7RsQHT+MQ0HPpr0l5UjU5EPgbfYzbdDPhebxTuko=;
+        b=DqRomOwChNh+9wD2BAnuEHziK8E+tJWZmbF4BEllrhwufIaYJjM/1E0YICBCil6hAB
+         ltk/+uwhEhc5W+6yVhV2CN4YTWOupPYgyOiixwUw9QPncIw8GjpPGHEpIOOvV/f+RcHj
+         CS2kSauOfEogy+pjFccJD+VeTHmhxDOIZNBXo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704763500; x=1705368300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2LI7RsQHT+MQ0HPpr0l5UjU5EPgbfYzbdDPhebxTuko=;
+        b=O6EQ8gKHwND9/Ps0q0d4hOs/sTNpy5+hr7VGwcqMK0DbkejglyXmNTpL6ZkHTLNNOv
+         MQ3IvIQedTGldWIifLxcLkYDojgv9k6nfSCeMTz7CZNCDJA5FVKoSyJPu8Mg88LnIzXo
+         NuawmL3J9L/AcpLGimvGv61GCLn75L4ZrVONsYSX0tHhfpqZYgIoAW/HSIs5rCWuyGNQ
+         ZS3Gpl7IoJbHTVtdJYNU3GEpKoQl/N29lS3j6ZA4arvocWjYY3mFjhLr5aIIz8PBewRv
+         VFOIGL5MiJSo+6F6+0LRn7aPYw/a4WqpRydjg8VESEK+jPLKDMc/OJxa76CP2R0+N2Cn
+         LwYg==
+X-Gm-Message-State: AOJu0Yynv9eencYJqA0PO4jq70tpxVjZSPHHkYFNvT3Rjf6Flr2ct2ak
+	gL/OATCFn1LEO8zLPa/8pSBmM34wP59jlwvTNGigazXN7tqy
+X-Google-Smtp-Source: AGHT+IEflcpw5PPeAqRFQj+i1KPY2cKdFJ6LjrWaNQDuSU8haUzGWHGve+ARfSRu5qj9ZC0cKrYONFwvq/ROkyUWIr8=
+X-Received: by 2002:a2e:9212:0:b0:2cc:da2a:d266 with SMTP id
+ k18-20020a2e9212000000b002ccda2ad266mr1270020ljg.71.1704763500076; Mon, 08
+ Jan 2024 17:25:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v10 0/5] fix vt-d hard lockup when hotplug ATS capable
- device
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-To: kevin.tian@intel.com, bhelgaas@google.com, baolu.lu@linux.intel.com,
- dwmw2@infradead.org, will@kernel.org, robin.murphy@arm.com, lukas@wunner.de
-Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
-In-Reply-To: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240108-fencei-v5-0-aa1e51d7222f@rivosinc.com> <20240108-fencei-v5-2-aa1e51d7222f@rivosinc.com>
+In-Reply-To: <20240108-fencei-v5-2-aa1e51d7222f@rivosinc.com>
+From: Atish Patra <atishp@atishpatra.org>
+Date: Mon, 8 Jan 2024 17:24:47 -0800
+Message-ID: <CAOnJCUJQ-M1bVC_VhogMLo47mRyk3Pzq-GFH5P7ADn70BN9ObA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] documentation: Document PR_RISCV_SET_ICACHE_FLUSH_CTX
+ prctl
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>, 
+	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 8, 2024 at 10:42=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
+>
+> Provide documentation that explains how to properly do CMODX in riscv.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++++++=
+++++++
+>  Documentation/arch/riscv/index.rst |  1 +
+>  2 files changed, 89 insertions(+)
+>
+> diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/risc=
+v/cmodx.rst
+> new file mode 100644
+> index 000000000000..afd7086c222c
+> --- /dev/null
+> +++ b/Documentation/arch/riscv/cmodx.rst
+> @@ -0,0 +1,88 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V=
+ Linux
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +
+> +CMODX is a programming technique where a program executes instructions t=
+hat were
+> +modified by the program itself. Instruction storage and the instruction =
+cache
+> +(icache) are not guaranteed to be synchronized on RISC-V hardware. There=
+fore, the
+> +program must enforce its own synchronization with the unprivileged fence=
+i
+> +instruction.
+> +
+> +However, the default Linux ABI prohibits the use of fence.i in userspace
+> +applications. At any point the scheduler may migrate a task onto a new h=
+art. If
+> +migration occurs after the userspace synchronized the icache and instruc=
+tion
+> +storage with fence.i, the icache will no longer be clean. This is due to=
+ the
+> +behavior of fence.i only affecting the hart that it is called on. Thus, =
+the hart
+> +that the task has been migrated to may not have synchronized instruction=
+ storage
+> +and icache.
+> +
+> +There are two ways to solve this problem: use the riscv_flush_icache() s=
+yscall,
+> +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
+> +userspace. The syscall performs a one-off icache flushing operation. The=
+ prctl
+> +changes the Linux ABI to allow userspace to emit icache flushing operati=
+ons.
+> +
+> +prctl() Interface
+> +---------------------
+> +
+> +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argumen=
+t. The
+> +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
+> +function detailed below.
+> +
+> +.. kernel-doc:: arch/riscv/mm/cacheflush.c
+> +       :identifiers: riscv_set_icache_flush_ctx
+> +
 
-On 12/29/2023 1:02 AM, Ethan Zhao wrote:
-> This patchset is used to fix vt-d hard lockup reported when surprise
-> unplug ATS capable endpoint device connects to system via PCIe switch
-> as following topology.
->                                                                      
->       +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d
->       |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe
->       |           +-00.2  Intel Corporation Ice Lake RAS
->       |           +-00.4  Intel Corporation Device 0b23
->       |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0
->                                             NVIDIA Corporation Device 2324
->       |                                           +-01.0-[19]----00.0
->                            Mellanox Technologies MT2910 Family [ConnectX-7]
->                                                                            
-> User brought endpoint device 19:00.0's link down by flapping it's hotplug
-> capable slot 17:01.0 link control register, as sequence DLLSC response,
-> pciehp_ist() will unload device driver and power it off, durning device
-> driver is unloading an iommu device-TLB invalidation (Intel VT-d spec, or
-> 'ATS Invalidation' in PCIe spec) request issued to that link down device,
-> thus a long time completion/timeout waiting in interrupt context causes
-> continuous hard lockup warnning and system hang.
->                                                                           
-> Other detail, see every patch commit log.
->                                                                           
-> patch [3&4] were tested by yehaorong@bytedance.com on stable v6.7-rc4.
-> patch [1-5] passed compiling on stable v6.7-rc6.
->                                                                           
->                                                                           
-> change log:
-> v10:
-> - refactor qi_submit_sync() and its callers to get pci_dev instance, as
->    Kevin pointed out add target_flush_dev to iommu is not right.
-> v9:
-> - unify all spelling of ATS Invalidation adhere to PCIe spec per Bjorn's
->    suggestion.
-> v8:
-> - add a patch to break the loop for timeout device-TLB invalidation, as
->    Bjorn said there is possibility device just no response but not gone.
-> v7:
-> - reorder patches and revise commit log per Bjorn's guide.
-> - other code and commit log revise per Lukas' suggestion.
-> - rebased to stable v6.7-rc6.
-> v6:
-> - add two patches to break out device-TLB invalidation if device is gone.
-> v5:
-> - add a patch try to fix the rare case (surprise remove a device in
->    safe removal process). not work because surprise removal handling can't
->    re-enter when another safe removal is in process.
-> v4:
-> - move the PCI device state checking after ATS per Baolu's suggestion.
-> v3:
-> - fix commit description typo.
-> v2:
-> - revise commit[1] description part according to Lukas' suggestion.
-> - revise commit[2] description to clarify the issue's impact.
-> v1:
-> - https://lore.kernel.org/lkml/20231213034637.2603013-1-haifeng.zhao@
-> linux.intel.com/T/
->                                                                            
->                                                                            
-> Thanks,
-> Ethan
+Document the arguments of the prctl as well ?
+
+> +Example usage:
+> +
+> +The following files are meant to be compiled and linked with each other.=
+ The
+> +modify_instruction() function replaces an add with 0 with an add with on=
+e,
+> +causing the instruction sequence in get_value() to change from returning=
+ a zero
+> +to returning a one.
+> +
+> +cmodx.c::
+> +
+> +       #include <stdio.h>
+> +       #include <sys/prctl.h>
+> +
+> +       extern int get_value();
+> +       extern void modify_instruction();
+> +
+> +       int main()
+> +       {
+> +               int value =3D get_value();
+> +               printf("Value before cmodx: %d\n", value);
+> +
+> +               // Call prctl before first fence.i is called inside modif=
+y_instruction
+> +               prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_F=
+ENCEI, 0);
+> +               modify_instruction();
+> +
+> +               value =3D get_value();
+> +               printf("Value after cmodx: %d\n", value);
+> +               return 0;
+> +       }
+> +
+> +cmodx.S::
+> +
+> +       .option norvc
+> +
+> +       .text
+> +       .global modify_instruction
+> +       modify_instruction:
+> +       lw a0, new_insn
+> +       lui a5,%hi(old_insn)
+> +       sw  a0,%lo(old_insn)(a5)
+> +       fence.i
+> +       ret
+> +
+> +       .section modifiable, "awx"
+> +       .global get_value
+> +       get_value:
+> +       li a0, 0
+> +       old_insn:
+> +       addi a0, a0, 0
+> +       ret
+> +
+> +       .data
+> +       new_insn:
+> +       addi a0, a0, 1
+> diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/risc=
+v/index.rst
+> index 4dab0cb4b900..eecf347ce849 100644
+> --- a/Documentation/arch/riscv/index.rst
+> +++ b/Documentation/arch/riscv/index.rst
+> @@ -13,6 +13,7 @@ RISC-V architecture
+>      patch-acceptance
+>      uabi
+>      vector
+> +    cmodx
+>
+>      features
 >
 >
-> Ethan Zhao (5):
->    iommu/vt-d: add pci_dev parameter to qi_submit_sync and refactor
->      callers
->    iommu/vt-d: break out ATS Invalidation if target device is gone
->    PCI: make pci_dev_is_disconnected() helper public for other drivers
->    iommu/vt-d: don't issue ATS Invalidation request when device is
->      disconnected
->    iommu/vt-d: don't loop for timeout ATS Invalidation request forever
+> --
+> 2.43.0
 >
->   drivers/iommu/intel/dmar.c          | 55 ++++++++++++++++++++++-------
->   drivers/iommu/intel/iommu.c         | 26 ++++----------
->   drivers/iommu/intel/iommu.h         | 17 +++++----
->   drivers/iommu/intel/irq_remapping.c |  2 +-
->   drivers/iommu/intel/pasid.c         | 13 +++----
->   drivers/iommu/intel/svm.c           | 13 ++++---
->   drivers/pci/pci.h                   |  5 ---
->   include/linux/pci.h                 |  5 +++
->   8 files changed, 74 insertions(+), 62 deletions(-)
-
-Any new comment for this patchset ?
 
 
-Thanks,
-
-Ethan
-
+--
+Regards,
+Atish
 
