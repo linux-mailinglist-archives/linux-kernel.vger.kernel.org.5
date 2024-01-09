@@ -1,103 +1,174 @@
-Return-Path: <linux-kernel+bounces-21246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08708828C77
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:22:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 543FE828C7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:22:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACB3828DE13
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:21:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE1611F28721
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE903D57F;
-	Tue,  9 Jan 2024 18:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C293C46B;
+	Tue,  9 Jan 2024 18:21:24 +0000 (UTC)
 Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A603C47A
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF5CC3C470
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fc6976630so30400745ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:20:32 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fe8c398a2so24453515ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:21:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704824432; x=1705429232;
+        d=1e100.net; s=20230601; t=1704824482; x=1705429282;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=MhRQfuRoLIkuw/ytyqzS8UAwRWBfjYwu1CGl08N+psc=;
-        b=IKEj4qpEo5HTRp9vFVxYjU7ofRpLA/j/n5qCEXsBUN/nxpgyKvNPGGsTOo+n2rXQyW
-         /SC8VtczU56YFvoH3biRh30WZzlQ02VcVzfa/FeQFRaSmi5YPFunGEtzA0frOIUn50Cl
-         ZerDrwAS12ZFoucwlaTkY3a9yIGrR7VKDu6Xys/96sjoS9tIq/aH50HzX21H4Hmde1Cx
-         ohJnBpj3BJskbwoRGP8nrGd/DV3fUZXQZZS7bDgV/eu//MtM7tRyguLiG576HBTGXE2Z
-         RQ6OeNk5bNptnb3bIAAcagc4Hr+CTITep9l2LYKHf6UiOXEKwU+nBTuLU2YHaHCfNOkj
-         LMZQ==
-X-Gm-Message-State: AOJu0YwrTxk4ffpBKF22gVGvx5oFpYbbakdHpHP8ZNIlX5sEZFuvJT0P
-	I0logP1UqoP/Humu3RWpVERheHZB32LiKKSS6zTJpzBddTgi
-X-Google-Smtp-Source: AGHT+IFG3oxyOsal6bz4MJsODPsV80WJ4ajFXFo5ng67mZbhECFV+neQfEYC3xYaZWMs0V+M9Ja3Rev1JRTM7jMv/W0MFFWmNsiw
+        bh=qVC59Vc23lgT6cCDMP/0LxeIGJAbvJ9xzH67hQSixik=;
+        b=cX9XqtVHhxOGLy7D3l8yJU1/WZ8ugaQSHrBYAeCUr9qIYlj8Y3gUzNIyeVKAZrIZbu
+         qO9nlZYJ+mc+Bs5BDwBUmacRY0B5w+FeAxZAO2a29zr4geq3wJw2YZuoz6B5pkGcQ4RR
+         cyViTNF/BSqXzOREjYDe0nRFyCHffOSJ2+Co1xyZf3fOWyqGhVQclZzJ3DsAxWbpOjSb
+         LGF9F4LqK0D4CbqP57RKaaVYINy0prp9mlAHe93Rh4DiXlgsR9awdGqMzFp84BtHW4ao
+         6TIgYxqkadqQMiIpBj+TxxLzuPX/Sl0J5QUiGcgD9dsMaaPpTjf6biZWfO49J2DdDVic
+         A3RQ==
+X-Gm-Message-State: AOJu0YxMe0QHxHBbLqQ+VLKMoBCFBSnYFWxVXd/ubEK/GwZ3bpmfPjQk
+	n+K06pJmvweipRNm60UU+jmqBblweP91TOFpftUYvxG+/jg5
+X-Google-Smtp-Source: AGHT+IERKeoTEFtGwaMVTAC83n/K6i2RlH970TbrnaxqeQCzDF3WTECRu6bDMsSSRc8x7je4/lvtmWezux6R8KExIjDPXOCxk1v3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218f:b0:35f:8652:5ce8 with SMTP id
- j15-20020a056e02218f00b0035f86525ce8mr935711ila.4.1704824432056; Tue, 09 Jan
- 2024 10:20:32 -0800 (PST)
-Date: Tue, 09 Jan 2024 10:20:32 -0800
+X-Received: by 2002:a05:6e02:1a6b:b0:360:6243:433f with SMTP id
+ w11-20020a056e021a6b00b003606243433fmr652670ilv.1.1704824482075; Tue, 09 Jan
+ 2024 10:21:22 -0800 (PST)
+Date: Tue, 09 Jan 2024 10:21:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ad615e060e875e78@google.com>
-Subject: [syzbot] Monthly ntfs report (Jan 2024)
-From: syzbot <syzbot+list9d8c4273b58598092f07@syzkaller.appspotmail.com>
-To: anton@tuxera.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
-	syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000a89b3d060e876153@google.com>
+Subject: [syzbot] [gfs2?] KMSAN: uninit-value in inode_go_dump (3)
+From: syzbot <syzbot+82373528417bbb67ec62@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello ntfs maintainers/developers,
+Hello,
 
-This is a 31-day syzbot report for the ntfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ntfs
+syzbot found the following issue on:
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 26 issues are still open and 8 have been fixed so far.
+HEAD commit:    2639772a11c8 get_maintainer: remove stray punctuation when..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17090a91e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d4130d4bb32c48ef
+dashboard link: https://syzkaller.appspot.com/bug?extid=82373528417bbb67ec62
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Some of the still happening issues:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Ref  Crashes Repro Title
-<1>  5250    Yes   possible deadlock in ntfs_read_folio
-                   https://syzkaller.appspot.com/bug?extid=8ef76b0b1f86c382ad37
-<2>  3663    Yes   kernel BUG at fs/ntfs/aops.c:LINE!
-                   https://syzkaller.appspot.com/bug?extid=6a5a7672f663cce8b156
-<3>  1828    Yes   kernel BUG in __ntfs_grab_cache_pages
-                   https://syzkaller.appspot.com/bug?extid=01b3ade7c86f7dd584d7
-<4>  814     Yes   possible deadlock in map_mft_record
-                   https://syzkaller.appspot.com/bug?extid=cb1fdea540b46f0ce394
-<5>  436     Yes   KASAN: slab-out-of-bounds Read in ntfs_readdir
-                   https://syzkaller.appspot.com/bug?extid=d36761079ac1b585a6df
-<6>  324     No    possible deadlock in __ntfs_clear_inode
-                   https://syzkaller.appspot.com/bug?extid=5ebb8d0e9b8c47867596
-<7>  112     Yes   KMSAN: uninit-value in post_read_mst_fixup (2)
-                   https://syzkaller.appspot.com/bug?extid=82248056430fd49210e9
-<8>  72      Yes   kernel BUG in ntfs_iget
-                   https://syzkaller.appspot.com/bug?extid=d62e6bd2a2d05103d105
-<9>  41      Yes   kernel BUG in ntfs_lookup_inode_by_name
-                   https://syzkaller.appspot.com/bug?extid=d532380eef771ac0034b
-<10> 19      Yes   KASAN: use-after-free Read in ntfs_attr_find (2)
-                   https://syzkaller.appspot.com/bug?extid=ef50f8eb00b54feb7ba2
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8ce611d4ffb7/disk-2639772a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b5d39093f7c1/vmlinux-2639772a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dfc8359e9375/bzImage-2639772a.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+82373528417bbb67ec62@syzkaller.appspotmail.com
+
+gfs2: fsid=syz:syz.0: G:  s:SH n:2/13 f:qobnN t:SH d:EX/0 a:0 v:0 r:3 m:20 p:1
+gfs2: fsid=syz:syz.0:  H: s:SH f:eEcH e:0 p:0 [(none)] init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
+=====================================================
+BUG: KMSAN: uninit-value in inode_go_dump+0x471/0x4b0 fs/gfs2/glops.c:549
+ inode_go_dump+0x471/0x4b0 fs/gfs2/glops.c:549
+ gfs2_dump_glock+0x2219/0x2340 fs/gfs2/glock.c:2373
+ gfs2_consist_inode_i+0x19f/0x220 fs/gfs2/util.c:456
+ gfs2_dinode_in fs/gfs2/glops.c:470 [inline]
+ gfs2_inode_refresh+0xf42/0x1550 fs/gfs2/glops.c:490
+ inode_go_instantiate+0x6e/0xc0 fs/gfs2/glops.c:509
+ gfs2_instantiate+0x26f/0x4b0 fs/gfs2/glock.c:454
+ gfs2_glock_holder_ready fs/gfs2/glock.c:1319 [inline]
+ gfs2_glock_wait+0x2a4/0x3e0 fs/gfs2/glock.c:1339
+ gfs2_glock_nq+0x1d9f/0x2a00 fs/gfs2/glock.c:1579
+ gfs2_glock_nq_init fs/gfs2/glock.h:237 [inline]
+ init_journal+0x1208/0x38b0 fs/gfs2/ops_fstype.c:790
+ init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
+ gfs2_fill_super+0x3c05/0x42a0 fs/gfs2/ops_fstype.c:1263
+ get_tree_bdev+0x6b5/0x8f0 fs/super.c:1598
+ gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
+ vfs_get_tree+0xa5/0x520 fs/super.c:1771
+ do_new_mount+0x68d/0x1550 fs/namespace.c:3337
+ path_mount+0x73d/0x1f20 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3863
+ __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3863
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:346
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
+ entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+
+Uninit was created at:
+ __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
+ alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
+ alloc_pages+0x1be/0x1e0 mm/mempolicy.c:2204
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x421/0x1570 mm/slub.c:2070
+ ___slab_alloc+0x13db/0x33d0 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc_lru+0x552/0x970 mm/slub.c:3509
+ alloc_inode_sb include/linux/fs.h:2937 [inline]
+ gfs2_alloc_inode+0x66/0x210 fs/gfs2/super.c:1554
+ alloc_inode+0x83/0x440 fs/inode.c:261
+ iget5_locked+0xa9/0x210 fs/inode.c:1271
+ gfs2_inode_lookup+0xbe/0x1440 fs/gfs2/inode.c:124
+ gfs2_lookup_root fs/gfs2/ops_fstype.c:460 [inline]
+ init_sb+0xe62/0x1880 fs/gfs2/ops_fstype.c:527
+ gfs2_fill_super+0x327e/0x42a0 fs/gfs2/ops_fstype.c:1230
+ get_tree_bdev+0x6b5/0x8f0 fs/super.c:1598
+ gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
+ vfs_get_tree+0xa5/0x520 fs/super.c:1771
+ do_new_mount+0x68d/0x1550 fs/namespace.c:3337
+ path_mount+0x73d/0x1f20 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3863
+ __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3863
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:346
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
+ entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+
+CPU: 0 PID: 6179 Comm: syz-executor.5 Not tainted 6.7.0-rc7-syzkaller-00051-g2639772a11c8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
 
 ---
 This report is generated by a bot. It may contain errors.
 See https://goo.gl/tpsmEJ for more information about syzbot.
 syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-You may send multiple commands in a single email message.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
