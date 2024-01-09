@@ -1,92 +1,102 @@
-Return-Path: <linux-kernel+bounces-21393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67112828E8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:35:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F51D828E8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83D271C240FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:35:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E3081C2410B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3C93D97C;
-	Tue,  9 Jan 2024 20:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020983D981;
+	Tue,  9 Jan 2024 20:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFpX4G7K"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ceez6eWN"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7012BD0A;
-	Tue,  9 Jan 2024 20:35:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34A43C433C7;
-	Tue,  9 Jan 2024 20:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704832531;
-	bh=WWum26QKMFh6vGvEJyJ4MOL9e+MqfFaHurfUS5t9l5M=;
-	h=From:To:Cc:Subject:Date:From;
-	b=KFpX4G7KtoXpXwi2h60jBAtMA+jWNdiGvfTfVYgP0xHuKT4FjbZzx53X0KEfztEjC
-	 LRaDENxfYF7dvON5pQwNOaWPcdyxP9Y+wdlCEyim9l0N3Bue/9sYd4MlCb01X3pEBA
-	 1N9IOFptghlzzInxIXccmzOx0GnN3KzgwC6zysA3so3WoQIilwrrxKY2gcEbtRAVX4
-	 5Y/KoE+af5chvd48sKmSazGyer2ZlG5ynsnFbk8zsiFERHrxI6xfJzS+q9SM3CtxVG
-	 y3d51BK67U1tvtHplYGsB6dndV26gLNXRr9PHYfMvgT+FqrrSlCcT4H3N5aaCjHWA7
-	 APoExHWz+KSZA==
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>,
-	Peter Huewe <peterhuewe@gmx.de>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	David Howells <dhowells@redhat.com>,
-	linux-integrity@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org
-Subject: [GIT PULL] tpmdd changes for v6.8
-Date: Tue,  9 Jan 2024 22:35:14 +0200
-Message-Id: <20240109203514.1511503-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90CA3A8E3;
+	Tue,  9 Jan 2024 20:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=b2HomVXY7FzMXkiwOxrMKlwOQEHDYNZAL5sKCtuBtfk=; b=Ceez6eWNOAP75GYM7O6sxoxLMK
+	sEyjYspnASHzv4goTZkwM3Azj9T0S7OArOGxOU0BOxqwe41T54sximqesBg7tYZ2EljvmUQbzuqfs
+	HtwprQ1pepzRo3YWq4OU0ZII2MeOfSxGvO9mWRXg+B1f4bGSCsXK93nokeodRy1CNMbURutmgvIXr
+	0KZ+RyDs4RA8S5DouFLHfXW22t6qXMqJWoS2/KlDbl+InFqT8xmW7WSXCHnEoq+Zz7ODVYHdpWcbX
+	4+8Ux7WmXEdCstEG7wBE3mnDIhmtbpiK7ct9wzwe/d/z5PliZNsv5D0yOj0TOzGJyppNW3vNYrnVF
+	herDEtbw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rNIq7-00AIGa-4i; Tue, 09 Jan 2024 20:36:47 +0000
+Date: Tue, 9 Jan 2024 20:36:47 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: jeffxu@chromium.org
+Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
+	sroettger@google.com, gregkh@linuxfoundation.org,
+	torvalds@linux-foundation.org, usama.anjum@collabora.com,
+	jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
+	linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Subject: Re: [RFC PATCH v5 2/4] mseal: add mseal syscall
+Message-ID: <ZZ2uXyPCE+l2Uccr@casper.infradead.org>
+References: <20240109154547.1839886-1-jeffxu@chromium.org>
+ <20240109154547.1839886-3-jeffxu@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109154547.1839886-3-jeffxu@chromium.org>
 
-  Merge tag 'cgroup-for-6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup (2024-01-08 20:04:02 -0800)
+On Tue, Jan 09, 2024 at 03:45:40PM +0000, jeffxu@chromium.org wrote:
+> +extern bool can_modify_mm(struct mm_struct *mm, unsigned long start,
+> +		unsigned long end);
+> +extern bool can_modify_mm_madv(struct mm_struct *mm, unsigned long start,
+> +		unsigned long end, int behavior);
 
-are available in the Git repository at:
+unnecessary use of extern.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.8
+> +static inline unsigned long get_mmap_seals(unsigned long prot,
+> +	unsigned long flags)
 
-for you to fetch changes up to 2b6fad7a900d2a378b475e5c196c146fb71856be:
+needs more than one tab indent so it doesn't look like part of the body.
 
-  tpm: cr50: fix kernel-doc warning and spelling (2024-01-09 11:12:27 +0200)
+> +{
+> +	unsigned long vm_seals;
+> +
+> +	if (prot & PROT_SEAL)
+> +		vm_seals = VM_SEALED | VM_SEALABLE;
+> +	else
+> +		vm_seals = (flags & MAP_SEALABLE) ? VM_SEALABLE:0;
 
-----------------------------------------------------------------
-Hi,
+need spaces around the :
 
-Just a couple fixes and no new features. I've been reviewing and testing
-TPM patches for encrypted and integrity protected commuinications [1] but
-they did not made yet to this release.
+> +++ b/include/uapi/asm-generic/mman-common.h
+> @@ -17,6 +17,11 @@
+>  #define PROT_GROWSDOWN	0x01000000	/* mprotect flag: extend change to start of growsdown vma */
+>  #define PROT_GROWSUP	0x02000000	/* mprotect flag: extend change to end of growsup vma */
+>  
+> +/*
+> + * The PROT_SEAL defines memory sealing in the prot argument of mmap().
+> + */
+> +#define PROT_SEAL	_BITUL(26)	/* 0x04000000 */
 
-This was also first release I tested with my still heavily in-development
-test suite for linux integrity [2]. I'm refining this at the moment
-to run keyutils test suite, which could be potentially also run by a Gitlab
-runner for keyutis repository.
+why not follow the existing style?
 
-[1] https://lore.kernel.org/linux-integrity/20240102170408.21969-1-James.Bottomley@HansenPartnership.com/T/#t
-[2] https://github.com/jarkkojs/tpmdd-buildroot-external
+> +static inline void set_vma_sealed(struct vm_area_struct *vma)
+> +{
+> +	vma->__vm_flags |= VM_SEALED;
+> +}
 
-BR, Jarkkaso
+uhh ... vm_flags_set() ?
 
-----------------------------------------------------------------
-Randy Dunlap (1):
-      tpm: cr50: fix kernel-doc warning and spelling
-
-Rob Herring (1):
-      tpm: nuvoton: Use i2c_get_match_data()
-
- drivers/char/tpm/tpm_i2c_nuvoton.c  | 15 ++++-----------
- drivers/char/tpm/tpm_tis_i2c_cr50.c |  3 +--
- 2 files changed, 5 insertions(+), 13 deletions(-)
 
