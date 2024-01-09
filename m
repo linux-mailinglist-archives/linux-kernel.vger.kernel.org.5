@@ -1,163 +1,176 @@
-Return-Path: <linux-kernel+bounces-20968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D82D8287E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:16:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE6C8287E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:18:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B1621C24374
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:16:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 712841F251CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CCA39AFD;
-	Tue,  9 Jan 2024 14:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9DD39AC0;
+	Tue,  9 Jan 2024 14:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Zmlav5tN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="D6dliPd4";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Zmlav5tN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="D6dliPd4"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FaByO4AF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CAB739ADD;
-	Tue,  9 Jan 2024 14:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 053CE21EB7;
-	Tue,  9 Jan 2024 14:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704809781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B016E3984A
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704809899;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
-	b=Zmlav5tNGpaoMYrMAXhBPwM5iK5pvTZ/xhEtVFlZiiH+ImONkFr1GIo+HtxFZamctvHVsO
-	rkDxcqW9Ur1ro1/EMzPggocKzPRPzS4iFlC1hNRP619zZNYiOFLszELjqGLF3IXXBg1dlh
-	i+NXIgD4IwPzHevxLzzVjWrotf+cjI4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704809781;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
-	b=D6dliPd4z9BzjIAsTvdGOF4sIXHSlrNgavVUXz9IYHwZE58lyd4+DUj9NOL4MGT39Y77KC
-	0YXE7LaVRhu2ECCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704809781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
-	b=Zmlav5tNGpaoMYrMAXhBPwM5iK5pvTZ/xhEtVFlZiiH+ImONkFr1GIo+HtxFZamctvHVsO
-	rkDxcqW9Ur1ro1/EMzPggocKzPRPzS4iFlC1hNRP619zZNYiOFLszELjqGLF3IXXBg1dlh
-	i+NXIgD4IwPzHevxLzzVjWrotf+cjI4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704809781;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ase84CEJhxi2XOYq2zDYFAUKWRmb+ZfRJUDpaFwdHpY=;
-	b=D6dliPd4z9BzjIAsTvdGOF4sIXHSlrNgavVUXz9IYHwZE58lyd4+DUj9NOL4MGT39Y77KC
-	0YXE7LaVRhu2ECCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B3765134E8;
-	Tue,  9 Jan 2024 14:16:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dyJiKjRVnWV2CAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 09 Jan 2024 14:16:20 +0000
-Date: Tue, 09 Jan 2024 15:16:20 +0100
-Message-ID: <87le8yr3rf.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: =?ISO-8859-1?Q?=22N=EDcolas_F=2E_R=2E_A=2E_Prado=22?=
- <nfraprado@collabora.com>,	Mark Brown <broonie@kernel.org>,
-	linux-sound@vger.kernel.org,	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,	Jaroslav Kysela <perex@perex.cz>,	Takashi
- Iwai <tiwai@suse.com>,	Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2 0/4] kselftest: alsa: Fix a couple of format specifiers and function parameters
-In-Reply-To: <20240107173704.937824-1-mirsad.todorovac@alu.unizg.hr>
-References: <20240107173704.937824-1-mirsad.todorovac@alu.unizg.hr>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	bh=M3THNFHQS5wwo4cI4QVHpCKin2eJ0VsiVpReOMSRKkw=;
+	b=FaByO4AFMIloAe0Lx4OWS9QUBDg6Klz+ULPtzq0axKDMjaHfJETY1lGdnnKYkz0VuR86t7
+	zdV7IvFLDSpyQ/M6O8USNurgobC0FgXn2FddppIkoSIQq1XsqMT7d6OAd3+4t8oAMJGFq/
+	PoF8mAC/ox/31EfnzDd9cnpSwUuaEX0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-axC3MfuLMQacYPlSe3Wr4w-1; Tue, 09 Jan 2024 09:18:18 -0500
+X-MC-Unique: axC3MfuLMQacYPlSe3Wr4w-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-554acc951faso1941076a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 06:18:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704809897; x=1705414697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M3THNFHQS5wwo4cI4QVHpCKin2eJ0VsiVpReOMSRKkw=;
+        b=IbiRY6J8XE/hSwEopqWXFwED9AKp0SaiHKAL2FakGxtfWKksjR040OOKB+2+CnYsJI
+         D4IWRfdcEuvTf16Q/z0daRwxXchdE8BDl+7HwmP4EoP/VoZ3UWHPLU9KanTSSneNaU+p
+         FjLC6PvTA0Y+Vrj1Oc70VCIQ/aFqB3C+nfzpaN2DsAysWFduMaUqNyxIxUmdNXT5ZHZo
+         /6B/znWhlpD8f6wkBskdrGNmMvmR28y/qTzHRCV+qs+szxcawhAmNGlxrvDXi0a49gUh
+         ks4aB0J6Rb0FdvXB6tMm8nZF+4aLrUwVsYItcFgb+TqdQ+SFCamBJjtKB+rpOdPwdOM0
+         oK2Q==
+X-Gm-Message-State: AOJu0YxTgfmpgILC8GTkUYFPGLj0rmnjz3s62BekZ/nMUuSbq5ByAUwl
+	7hylTukxLUlxpvOteJ5eCvcn+BrtZzGZuk21GDwlJuZer/1bZEwZ6oXvOW3dvCQsAfbPVWIDSQ7
+	GLkXWSOhB2arsIfQnKjtTbDwCH/NiMZU7emxIxvtbbEJWfnc4
+X-Received: by 2002:a50:a69a:0:b0:557:17d5:9afe with SMTP id e26-20020a50a69a000000b0055717d59afemr2594698edc.66.1704809897191;
+        Tue, 09 Jan 2024 06:18:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHnxz/MmvkNTxaoNNw0HTzCCSkv+92BVZ2g1k8dn0fX+gCCKNB5Cu4wEGfVWClLdQrqXvDCk1kHOD1FtOQuk7Q=
+X-Received: by 2002:a50:a69a:0:b0:557:17d5:9afe with SMTP id
+ e26-20020a50a69a000000b0055717d59afemr2594687edc.66.1704809896861; Tue, 09
+ Jan 2024 06:18:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: *
-X-Spamd-Bar: +
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Zmlav5tN;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=D6dliPd4
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [1.99 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[11.36%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: 1.99
-X-Rspamd-Queue-Id: 053CE21EB7
-X-Spam-Flag: NO
+MIME-Version: 1.0
+References: <3277085.44csPzL39Z@natalenko.name> <824573bb-ae01-41b9-8f97-a760ae8f3f18@redhat.com>
+In-Reply-To: <824573bb-ae01-41b9-8f97-a760ae8f3f18@redhat.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Tue, 9 Jan 2024 15:18:05 +0100
+Message-ID: <CAO-hwJ+GLVYzYKUv=NyhEVb-_h_3NAstv6sjL8stqDMkS98j+w@mail.gmail.com>
+Subject: Re: Flood of logitech-hidpp-device messages in v6.7
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oleksandr Natalenko <oleksandr@natalenko.name>, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, =?UTF-8?Q?Filipe_La=C3=ADns?= <lains@riseup.net>, 
+	Bastien Nocera <hadess@hadess.net>, Jiri Kosina <jikos@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 07 Jan 2024 18:37:00 +0100,
-Mirsad Todorovac wrote:
-> 
-> Minor fixes of compiler warnings and one bug in the number of parameters which
-> would not crash the test but it is better fixed for correctness sake.
-> 
-> As the general climate in the Linux kernel community is to fix all compiler
-> warnings, this could be on the right track, even if only in the testing suite.
-> 
-> Changelog:
-> 
-> v1 -> v2:
-> - Compared to v1, commit subject lines have been adjusted to reflect the style
->   of the subsystem, as suggested by Mark.
-> - 1/4 was already acked and unchanged (adjusted the subject line as suggested)
->   (code unchanged)
-> - 2/4 was acked with suggestion to adjust the subject line (done).
->   (code unchanged)
-> - 3/4 The format specifier was changed from %d to %u as suggested.
-> - The 4/4 submitted for review (in the v1 it was delayed by an omission).
->   (code unchanged)
-> 
-> Mirsad Todorovac (4):
->   kselftest/alsa - mixer-test: fix the number of parameters to
->     ksft_exit_fail_msg()
->   kselftest/alsa - mixer-test: Fix the print format specifier warning
->   kselftest/alsa - mixer-test: Fix the print format specifier warning
->   kselftest/alsa - conf: Stringify the printed errno in sysfs_get()
+On Tue, Jan 9, 2024 at 12:58=E2=80=AFPM Hans de Goede <hdegoede@redhat.com>=
+ wrote:
+>
+> Hi Oleksandr,
+>
+> On 1/9/24 12:45, Oleksandr Natalenko wrote:
+> > Hello Hans et al.
+> >
+> > Starting from v6.7 release I get the following messages repeating in `d=
+mesg` regularly:
+> >
+> > ```
+> > Jan 09 10:05:06 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: Disconnected
+> > Jan 09 10:07:15 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: Disconnected
+> > Jan 09 10:16:51 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: HID++ 4.5 device connected.
+> > Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: HID++ 4.5 device connected.
+> > Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: HID++ 4.5 device connected.
+> > Jan 09 10:36:31 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: Disconnected
+> > Jan 09 10:37:07 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: HID++ 4.5 device connected.
+> > Jan 09 10:46:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: Disconnected
+> > Jan 09 10:48:23 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: Disconnected
+> > Jan 09 11:12:27 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: HID++ 4.5 device connected.
+> > Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: HID++ 4.5 device connected.
+> > Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: HID++ 4.5 device connected.
+> > Jan 09 11:38:32 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: Disconnected
+> > Jan 09 11:43:32 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: Disconnected
+> > Jan 09 11:45:10 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: HID++ 4.5 device connected.
+> > Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: HID++ 4.5 device connected.
+> > Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005=
+: HID++ 4.5 device connected.
+> > Jan 09 12:31:48 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: Disconnected
+> > Jan 09 12:33:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006=
+: HID++ 4.5 device connected.
+> > ```
+> >
+> > I've got the following hardware:
+> >
+> > * Bus 006 Device 004: ID 046d:c52b Logitech, Inc. Unifying Receiver
+> > * Logitech MX Keys
+> > * Logitech M510v2
+> >
+> > With v6.6 I do not get those messages.
+> >
+> > I think this is related to 680ee411a98e ("HID: logitech-hidpp: Fix conn=
+ect event race").
+> >
+> > My speculation is that some of the devices enter powersaving state afte=
+r being idle for some time (5 mins?), and then wake up and reconnect once I=
+ touch either keyboard or mouse. I should highlight that everything works j=
+ust fine, it is the flood of messages that worries me.
+> >
+> > Is it expected?
+>
+> Yes this is expected, looking at your logs I see about 10 messages per
+> hour which IMHO is not that bad.
+>
+> I guess we could change things to track we have logged the connect
+> message once and if yes then log future connect messages (and all
+> disconnect messages) at debug level.
 
-Applied all patches now.  Thanks.
+
+Sounds reasonable to me.
+
+Cheers,
+Benjamin
 
 
-Takashi
+>
+>
+> Jiri, Benjamin, do you have any opinion on this ?
+>
+> Regards,
+>
+> Hans
+>
+>
+>
+
 
