@@ -1,101 +1,101 @@
-Return-Path: <linux-kernel+bounces-20688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED43D828381
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:52:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57BA8828382
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C35A2866A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:52:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 094CF1F280C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CC335EFD;
-	Tue,  9 Jan 2024 09:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8FC358A0;
+	Tue,  9 Jan 2024 09:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oZ5jiUNl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WcXXsHyc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1AB73588B;
-	Tue,  9 Jan 2024 09:52:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0674BC433F1;
-	Tue,  9 Jan 2024 09:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0E4612E;
+	Tue,  9 Jan 2024 09:53:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED03BC433C7;
+	Tue,  9 Jan 2024 09:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704793939;
-	bh=E0zakJMzNcSQvgcgc8AtRvLO3GWb7iOulE6UYhMFa9s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oZ5jiUNlx+uIcVw0jOrCRHD/HIgkYHSdkfMeXRC7H6k9CdsTHIT6ytv0You6CYPJP
-	 JL2e8ac+pU9wQgh7KeYlMahawI2dCz5kICh0rd9VCJ/Aw4dl4tBwJaNzkSgT66QeZF
-	 t5BL4TZD1oRNAL9gqpqSKF6K3ix7ZFHWv8GEdt+qY/tyL1/DtsiuS/VbK5m3amG05b
-	 ojdmgauWZcv0NL+IwvdbxBoASiVBsgG41pr6N7/s9C1Qp4Z9VBQd49g6gdfkGlmdAo
-	 Nb5Sct9ydw0Iz8l8UbVVGTzz02Xv4ZS5+GV2FAn+uR3NdSCPy+pKd4/cvg7AZxlIfW
-	 tBn2k1JrUKWmQ==
-Date: Tue, 9 Jan 2024 09:52:14 +0000
-From: Will Deacon <will@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] vfs mount api updates
-Message-ID: <20240109095214.GB12915@willie-the-truck>
-References: <20240105-vfs-mount-5e94596bd1d1@brauner>
- <CAHk-=wjfbjuNxx7jWa144qVb5ykwPCwVWa26tcFMvE-Cr6=vMg@mail.gmail.com>
+	s=k20201202; t=1704794020;
+	bh=ZzK6Vp42TEIsfIyJQNP28NhtlMFkU94Dmq0D+Z7QDdY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=WcXXsHycg7s8ZD808aEB0IuRC/Bag1Sc2v1jQ1iPEZTISo/tm2USeZdeUBa8t5M2T
+	 KR0d4J4uyeFP46pmE8UD79VBJoFRzYRScKZ/BAgt+0ukv1CPzT+2ZtirRFupNTafW9
+	 3xg0RMGDRU0b8/Ni3Ftj6CXsGn/jlyG+x6z3pVtf/V5lUC0Sfd0I1qi1vfTmuJyjPB
+	 d+UKsA0AYpYGPUmpYC30JvsItCj+vccj4sFO7bTVWw/RdrRWAPpRlvXTHUte7IRFmq
+	 wJBvfO2EfGZIkIt8AdooIFeMvU4GM3YFBmdw/XCwuirYcdqr+/NfCoFVeKhnPZkiFG
+	 EtXgf/VEpHetg==
+From: Mark Brown <broonie@kernel.org>
+To: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ kernel@collabora.com, Jaroslav Kysela <perex@perex.cz>, 
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado_via_Alsa-devel?= <alsa-devel@alsa-project.org>, 
+ Rob Herring <robh@kernel.org>, Takashi Iwai <tiwai@suse.com>, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, linux-sound@vger.kernel.org
+In-Reply-To: <20240108204508.691739-1-nfraprado@collabora.com>
+References: <20240108204508.691739-1-nfraprado@collabora.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8192: Check existence of dai_name
+ before dereferencing
+Message-Id: <170479401767.23951.13089659929333674161.b4-ty@kernel.org>
+Date: Tue, 09 Jan 2024 09:53:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjfbjuNxx7jWa144qVb5ykwPCwVWa26tcFMvE-Cr6=vMg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.13-dev-5c066
 
-Hi Linus,
-
-On Mon, Jan 08, 2024 at 05:02:48PM -0800, Linus Torvalds wrote:
-> On Fri, 5 Jan 2024 at 04:47, Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > This contains the work to retrieve detailed information about mounts via two
-> > new system calls.
+On Mon, 08 Jan 2024 17:44:58 -0300, Nícolas F. R. A. Prado wrote:
+> Following commit 13f58267cda3 ("ASoC: soc.h: don't create dummy
+> Component via COMP_DUMMY()"), the dai_name field is only populated for
+> dummy components after the card is registered. This causes a null
+> pointer dereference in the mt8192-mt6359 sound card driver's probe
+> function when searching for a dai_name among all the card's dai links.
 > 
-> Gaah. While I have an arm64 laptop now, I don't do arm64 builds in
-> between each pull like I do x86 ones.
+> Verify that the dai_name is non-null before passing it to strcmp. While
+> at it, also check that there's at least one codec.
 > 
-> I *did* just start one, because I got the arm64 pull request.
-> 
-> And this fails the arm64 build, because __NR_statmount and
-> __NR_listmount (457 and 458 respectively) exceed the compat system
-> call array size, which is
-> 
-> arch/arm64/include/asm/unistd.h:
->   #define __NR_compat_syscalls            457
-> 
-> I don't think this is a merge error, I think the error is there in the
-> original, but I'm about to go off and have dinner, so I'm just sending
-> this out for now.
-> 
-> How was this not noted in linux-next? Am I missing something?
+> [...]
 
-Urgh, that is surprising, and I just confirmed that linux-next builds
-fine! The reason seems to be because there are also some new lsm
-syscalls being added there (lsm_get_self_attr and friends) which bump
-__NR_compat_syscalls to 460 and then Stephen Rothwell's mighty merging
-magic adjusted this up to 462 in the merge of the lsm tree.
+Applied to
 
-> Now, admittedly this looks like an easy mistake to make due to that
-> whole odd situation where the compat system calls are listed in
-> unistd32.h, but then the max number is in unistd.h, but I would still
-> have expected this to have raised flags before it hit my tree..
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I suppose the two options for now are either to merge the lsm stuff and
-adjust __NR_compat_syscalls as Stephen did, or to take this patch from
-Florian in the meantime:
+Thanks!
 
-https://lore.kernel.org/r/20240109010906.429652-1-florian.fainelli@broadcom.com
+[1/1] ASoC: mediatek: mt8192: Check existence of dai_name before dereferencing
+      commit: 4d4e1b6319e5c4425ea3faeaf9a10b8b4c16c1e1
 
-Cheers,
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Will
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
