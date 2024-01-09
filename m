@@ -1,121 +1,123 @@
-Return-Path: <linux-kernel+bounces-21119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D67E828A2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF6D828A29
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:41:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43BDB1C214AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:41:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCE931C2383B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:41:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC913A8C1;
-	Tue,  9 Jan 2024 16:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GO3ICfKv"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A543A278;
+	Tue,  9 Jan 2024 16:41:04 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD643A26E;
-	Tue,  9 Jan 2024 16:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409GbbS0020661;
-	Tue, 9 Jan 2024 16:41:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rdy7cRVvDz1ivprbP/Jb3r7TRUspqYk3N6p4pQ6+aSg=;
- b=GO3ICfKv9N9aAtOuM6b0gI0895ZJm4XW/JIOjrPnEoEs4gFYni3OwiAdCSEMoSdwM5uJ
- JgzDeb8PvrwjpE4tzY784+bEAEE2O+q056ilDI6nNU7j3mYKx6jNOZNkT8bP+Nln1KGU
- EqOGWjou4ZK/we/Sm7+Oe0U9rhDsx5d4/Mg5ns+RHrGW72af3vf5Me1g+eQPKZDWsY1a
- XCSuTtpWhI+tntHCtpf+wMqZ2B7OR4RvgSyBDZOOgbvf6CZvyqYux6ew2Pt9JWwL5DB7
- 4gbUeg/Lh9em6f7msNAsQl8WdRyJa76ffzPxQJIH3zhK5v9UjZ3dRn/HjuZ6P9QkkYqa Xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh9tt04bm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 16:41:25 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 409GdnWE029564;
-	Tue, 9 Jan 2024 16:41:24 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh9tt043v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 16:41:24 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409Fsu9E028027;
-	Tue, 9 Jan 2024 16:41:06 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vgwfsks99-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 16:41:06 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409Gf5wB27132596
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Jan 2024 16:41:05 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0372658053;
-	Tue,  9 Jan 2024 16:41:05 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D82485805D;
-	Tue,  9 Jan 2024 16:41:03 +0000 (GMT)
-Received: from [9.61.76.57] (unknown [9.61.76.57])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  9 Jan 2024 16:41:03 +0000 (GMT)
-Message-ID: <bc5d11db-fb7a-4975-8896-d1cf271a8f95@linux.ibm.com>
-Date: Tue, 9 Jan 2024 11:41:03 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325113A267;
+	Tue,  9 Jan 2024 16:41:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9ECAC433C7;
+	Tue,  9 Jan 2024 16:41:02 +0000 (UTC)
+Date: Tue, 9 Jan 2024 11:42:00 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ kernel-team@android.com
+Subject: Re: [PATCH v10 1/2] ring-buffer: Introducing ring-buffer mapping
+ functions
+Message-ID: <20240109114200.01367342@gandalf.local.home>
+In-Reply-To: <ZZ1ir0edlY3OzjyC@google.com>
+References: <20240105094729.2363579-1-vdonnefort@google.com>
+	<20240105094729.2363579-2-vdonnefort@google.com>
+	<20240109234230.e99da87104d58fee59ad75c6@kernel.org>
+	<ZZ1ir0edlY3OzjyC@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] s390/vfio-ap: reset queues removed from guest's AP
- configuration
-To: Janosch Frank <frankja@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc: jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
-        pbonzini@redhat.com, imbrenda@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com
-References: <20231212212522.307893-1-akrowiak@linux.ibm.com>
- <11ac008c-9bea-4b34-bc4b-e0d7e7ed9bef@linux.ibm.com>
- <d5c3d69e-3405-4cf2-a2e7-0dad7d941e0c@linux.ibm.com>
-Content-Language: en-US
-From: Anthony Krowiak <akrowiak@linux.ibm.com>
-In-Reply-To: <d5c3d69e-3405-4cf2-a2e7-0dad7d941e0c@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: gjl9uLGpBX2_lzvNfSlBZCnF4fWKIFNm
-X-Proofpoint-GUID: YBIf8ZPezp6etBNrnQaKK32bBIIS1DOX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-09_08,2024-01-09_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- adultscore=0 phishscore=0 mlxlogscore=756 clxscore=1015 bulkscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401090136
+
+On Tue, 9 Jan 2024 15:13:51 +0000
+Vincent Donnefort <vdonnefort@google.com> wrote:
+
+> > > @@ -388,6 +389,7 @@ struct rb_irq_work {
+> > >  	bool				waiters_pending;
+> > >  	bool				full_waiters_pending;
+> > >  	bool				wakeup_full;
+> > > +	bool				is_cpu_buffer;  
+> > 
+> > I think 'is_cpu_buffer' is a bit unclear (or generic),
+> > what about 'meta_page_update'?  
+> 
+> Hum not sure about that change. This was really to identify if parent of
+> rb_irq_work is a cpu_buffer or a trace_buffer. It can be a cpu_buffer regardless
+> of the need to update the meta-page.
+
+Yeah, this was added because the irq_work is called with the rb_work for
+both the cpu_buffer and the global struct tracing_buffer object. The
+meta_page is only available to the cpu_buffer and does not exist on the
+struct trace_buffer, so this is checked before doing a "container_of()" on
+the wrong structure. Both the cpu_buffer and the global buffer call the
+same function with the rb_work structure.
+
+So "is_cpu_buffer" is the right terminology as it's unrelated to the meta page:
+
+struct trace_buffer {
+	[..]
+	struct rb_irq_work	irq_work;
+	[..]
+};
+
+	struct trace_buffer *buffer;
+	buffer->irq_work.is_cpu_buffer = false;
+
+struct ring_buffer_per_cpu {
+	[..]
+	struct rb_irq_work	irq_work;
+	[..]
+}
+
+	struct ring_buffer_per_cpu *cpu_buffer;
+	cpu_buffer->irq_work.is_cpu_buffer = true;
 
 
-On 1/9/24 3:27 AM, Janosch Frank wrote:
-> On 1/8/24 17:52, Anthony Krowiak wrote:
->> PING!
->>
-> You're waiting for review of the last patch, right?
+[..]
+	init_irq_work(&buffer->irq_work.work, rb_wake_up_waiters);
+[..]
+	init_irq_work(&cpu_buffer->irq_work.work, rb_wake_up_waiters);
+
+// both the buffer and cpu_buffer call rb_wake_up_waiters()
+
+static void rb_wake_up_waiters(struct irq_work *work)
+{
+	struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
+
+// This container_of() gets rbwork which is the rb_irq_work structure that
+// both buffer and cpu_buffer have.
+
+	if (rbwork->is_cpu_buffer) {
+		struct ring_buffer_per_cpu *cpu_buffer;
+
+		cpu_buffer = container_of(rbwork, struct ring_buffer_per_cpu,
+					  irq_work);
+
+// The above crashes if done by the buffer and not the cpu_buffer.
+// The "is_cpu_buffer" is there to differentiate the two rb_work entities.
+// It is a way to say this is safe to do the above "container_of()".
+
+		/*
+		 * If the waiter is a cpu_buffer, this might be due to a
+		 * userspace mapping. Let's update the meta-page.
+		 */
+		rb_update_meta_page(cpu_buffer);
+	}
 
 
-Patch 6/6 does not have an r-b, so yes, that is one thing. The other's 
-have been reviewed internally with some receiving only an acked-by, so I 
-guess I'm looking for a final blessing so they can be merged. If I'm not 
-mistaken, the primary problem for which theses patches were created - 
-i.e., not resetting all queues when an adapter is removed from the guest 
-- will cause unique problems for SE guests that are bound/associated. 
-That being the case, I think these patches need to be merged sooner 
-rather than later.
-
-
+-- Steve
 
