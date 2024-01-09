@@ -1,112 +1,80 @@
-Return-Path: <linux-kernel+bounces-20952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4BB18287BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:07:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 780EC828778
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53323283E92
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:07:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55AA41C23A78
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93FF39877;
-	Tue,  9 Jan 2024 14:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEC939854;
+	Tue,  9 Jan 2024 13:55:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="aAyidV3w"
-Received: from mail.tkos.co.il (guitar.tkos.co.il [84.110.109.230])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="GLm0jjhZ"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C4339848;
-	Tue,  9 Jan 2024 14:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
-Received: from localhost (unknown [10.0.8.2])
-	by mail.tkos.co.il (Postfix) with ESMTP id A125F4403F1;
-	Tue,  9 Jan 2024 16:04:42 +0200 (IST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
-	s=default; t=1704809082;
-	bh=nWkMWvzxZARucV9BKvxgMiKFVZFgW9ZAI35CPkgiN1w=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-	b=aAyidV3wDfegVJgn3hj2aDw+IJDBsWlDNykw4JwSxDMX60QxAwvxku7WYwfhglKQX
-	 2r0YYJ4vBr+Je8oNZDOdl03Cx6gpEWss69lfGvbPCQRUa+su3KRCQ2L5JP5uk8NSsT
-	 gKR3SjuvtHwmVr93lXLKe85z8EGw5nJYRq2LITFBorKEpSQoWSM5eydLbl6TM5LuMc
-	 qXaOIwyps6aHgGJmM3j3vuH3oGosFp6h+DNn1Bl79twF0pH0Ke49ZYDFe/6A7k52C/
-	 2zLQhUqhtvbGT9bWpW1uWcR/oxlGh2ALKR9AqV8kfKCO+UVdQa2VwrxbqNbvbyDtKL
-	 AZGd+7diylz+Q==
-References: <cover.1703683642.git.baruch@tkos.co.il>
- <fae5b1180161a7d8cd626a96f5df80b0a0796b8b.1703683642.git.baruch@tkos.co.il>
- <ZZw3FDy8800NScEk@arm.com> <87msterf7b.fsf@tarshish>
- <ZZ0mAxGupZKRPzWR@arm.com>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Baruch Siach <baruch@tkos.co.il>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>, Will Deacon <will@kernel.org>, Robin Murphy
- <robin.murphy@arm.com>, iommu@lists.linux.dev, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Petr
- =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>, Ramon Fried
- <ramon@neureality.ai>, Elad
- Nachman <enachman@marvell.com>
-Subject: Re: [PATCH RFC 3/4] dma-direct: add offset to zone_dma_bits
-Date: Tue, 09 Jan 2024 15:54:13 +0200
-In-reply-to: <ZZ0mAxGupZKRPzWR@arm.com>
-Message-ID: <871qaqr477.fsf@tarshish>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F272038F9A;
+	Tue,  9 Jan 2024 13:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=HOt3XKn1cL8RiCwi3hZoWQh0woHeYDJpEgyYREq1Hn8=; b=GLm0jjhZJxgMyW7v6lQku4aFI4
+	TUuwdUGIHq8de+u+1HY0EehjLNVA7Ml2PKh38t2EALGEVtRhVv2qCZ25Y3hxoucW5Vt47LrElXYGQ
+	/RnVBvMn0bXWArRk/lkUTbVPGd9X6LEd9nWTeTxLP/UeVxZJ48zx0A5iOT8cdPW/UyFw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rNCZi-004pz2-4i; Tue, 09 Jan 2024 14:55:26 +0100
+Date: Tue, 9 Jan 2024 14:55:26 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Christian Marangi <ansuelsmth@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	William Zhang <william.zhang@broadcom.com>,
+	Anand Gore <anand.gore@broadcom.com>,
+	Kursad Oney <kursad.oney@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	=?iso-8859-1?Q?Fern=E1ndez?= Rojas <noltari@gmail.com>,
+	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
+	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	netdev@vger.kernel.org
+Subject: Re: [net-next PATCH v9 0/5] net: phy: generic polarity + LED support
+ for qca808x
+Message-ID: <edfd300f-224f-4ce6-930c-d9419a2077ab@lunn.ch>
+References: <20240105142719.11042-1-ansuelsmth@gmail.com>
+ <20240108191427.6455185a@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108191427.6455185a@kernel.org>
 
-Hi Catalin,
+> Looks like we're missing some tags from DTB maintainers here.
+> Andrew, is there some urgency in getting this merged or can we
+> defer until v6.9?
 
-On Tue, Jan 09 2024, Catalin Marinas wrote:
-> On Tue, Jan 09, 2024 at 12:03:43PM +0200, Baruch Siach wrote:
->> On Mon, Jan 08 2024, Catalin Marinas wrote:
->> > On Wed, Dec 27, 2023 at 05:04:27PM +0200, Baruch Siach wrote:
->> >> Current code using zone_dma_bits assume that all addresses range in the
->> >> bits mask are suitable for DMA. For some existing platforms this
->> >> assumption is not correct. DMA range might have non zero lower limit.
->> >> 
->> >> Add 'zone_dma_off' for platform code to set base address for DMA zone.
->> >> 
->> >> Rename the dma_direct_supported() local 'min_mask' variable to better
->> >> describe its use as limit.
->> >> 
->> >> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
->> >
->> > When I suggested taking the DMA offsets into account, that's not exactly
->> > what I meant. Based on patch 4, it looks like zone_dma_off is equivalent
->> > to the lower CPU address. Let's say a system has DRAM starting at 2GB
->> > and all 32-bit DMA-capable devices has a DMA offset of 0. We want
->> > ZONE_DMA32 to end at 4GB rather than 6GB.
->> 
->> Patch 4 sets zone_dma_off to the lower limit from 'dma-ranges' property
->> that determines zone_dma_bits. This is not necessarily equivalent to
->> start of DRAM, though it happens to be that way on my platform.
->
-> A bit better but it still assumes that all devices have the same DMA
-> offset which may not be the case.
+It can wait.
 
-Current code calculates zone_dma_bits based on the lowest high limit of
-all 'dma-ranges' properties. The assumption appears to be that this
-limit fits all devices. This series does not change this assumption. It
-only extends the logic to the lower limit of the "winning" 'dma-ranges'
-to set the base address for DMA zone.
-
-Moving to dma_zone_limit would not change that logic. Unless I'm missing
-something.
-
-Breaking the "one DMA zone fits all devices" assumption as Petr
-suggested is a much larger change.
-
-baruch
-
--- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
+	Andrew
 
