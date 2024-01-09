@@ -1,210 +1,127 @@
-Return-Path: <linux-kernel+bounces-21114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E720A828A1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:37:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD478289F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9152C286672
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:37:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39C941C246B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A4B3A267;
-	Tue,  9 Jan 2024 16:37:03 +0000 (UTC)
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDFF23A1DF;
+	Tue,  9 Jan 2024 16:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yzzA21IB"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC603A1CE;
-	Tue,  9 Jan 2024 16:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 0F427520442;
-	Tue,  9 Jan 2024 17:27:38 +0100 (CET)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 9 Jan
- 2024 17:27:37 +0100
-Date: Tue, 9 Jan 2024 17:27:32 +0100
-From: Hardik Gajjar <hgajjar@de.adit-jv.com>
-To: John Keeping <john@keeping.me.uk>
-CC: Hardik Gajjar <hgajjar@de.adit-jv.com>, <gregkh@linuxfoundation.org>,
-	<stern@rowland.harvard.edu>, <linux-usb@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <erosca@de.adit-jv.com>,
-	<jlayton@kernel.org>, <brauner@kernel.org>
-Subject: Re: [PATCH v3] usb: gadget: f_fs: Add the missing get_alt callback
-Message-ID: <20240109162732.GA22184@vmlxhi-118.adit-jv.com>
-References: <20240102123419.13491-1-hgajjar@de.adit-jv.com>
- <ZZaTl3mqeCY5xD_d@keeping.me.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318483A1C4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9ef2422cso3306683276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:28:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704817688; x=1705422488; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X5OuBSK2ue8Kgm1k8HYnk3iBNLImCMNlra+LgIioncU=;
+        b=yzzA21IByFPLyQzVXsFpW/hisjZetZ4FJaOWOSFOwPJQCToW9XcidnmPI5Bb5wEOaS
+         3G9cjVUoTTI1ZZYqteaVG2jj9X4HTpHJPj+t4e0LCNnvSX6xGf71ceQQ4oWrwB7OcbMc
+         qpxPSt+bGMpLjEB8/7ztdrh2iGtex1wtETo1BvvYczEOWLJb/rVktZfaC1LgKyiTKLYl
+         2aPah1P3Eh07H0NbBi30i7rrPzMZ1QZ4tp9E8fjXv5dgWkD/r0+3axOXFoB+64e67wzW
+         bGI31Tr7gdQ0nLJ/yVtNo6I3YvHEP8omg4kTlxMOWVZkIqrJ9Z4fd6UK2w9KWEJjxeGq
+         RLHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704817688; x=1705422488;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X5OuBSK2ue8Kgm1k8HYnk3iBNLImCMNlra+LgIioncU=;
+        b=o8XNwhRAQMl8CYJ/9QnvPWpUtg4G2UPWSrJTS0Znds48tkSJU+Bs7oyCEDYMVeeaQB
+         LNPZrzKwZeaeMKHcJpUOXRHlYJD+yo5xdmB/LICSn/YghrCttkD3dcpvu9r72BqakeqK
+         r1o3gRWkTRT3DDNVw2G5sC/oJM58jvnt4pFr179UsbO7rA/SCjBqXVW0Urwn7h628lTm
+         gkuXTLgTS0nX+jJTTbkrDr8lHd/ARG/AuVf4fRkWWsOHszwXkquodYlpCnMwZhaF/L6L
+         diJFf1LHjpPdutpxmxp68hTy3cWUl3P/iFpL8ql+FjsT6e9WwX+RgTIApG8bwGUw+auG
+         AkSQ==
+X-Gm-Message-State: AOJu0YyeQ6l3hOLKz/T03WT6m4z7kmA+p5M7PC2S2q7yDsDuGj/o4p1s
+	YndXwwHN5gNh2BffyXafe3aFMIPYW7pzgzizZA==
+X-Google-Smtp-Source: AGHT+IFSDvWVPac68q4BzCp/M7oq0Dprmnoi25LHdAWG2rkmmNus3vqOs8OrjdJwg44iO8Kai9BqtK53kUw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8186:0:b0:dbc:1b48:dc1e with SMTP id
+ p6-20020a258186000000b00dbc1b48dc1emr211467ybk.2.1704817688232; Tue, 09 Jan
+ 2024 08:28:08 -0800 (PST)
+Date: Tue, 9 Jan 2024 08:28:06 -0800
+In-Reply-To: <20240109112445.590736-1-usama.anjum@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20240109112445.590736-1-usama.anjum@collabora.com>
+Message-ID: <ZZ10FqvnVWIbyo-9@google.com>
+Subject: Re: [PATCH] fs/proc/task_mmu: move mmu notification mechanism inside
+ mm lock
+From: Sean Christopherson <seanjc@google.com>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	Andrei Vagin <avagin@google.com>, Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	"=?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?=" <mirq-linux@rere.qmqm.pl>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Arnd Bergmann <arnd@arndb.de>, kernel@collabora.com, 
+	syzbot+81227d2bd69e9dedb802@syzkaller.appspotmail.com, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZZaTl3mqeCY5xD_d@keeping.me.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
 
-On Thu, Jan 04, 2024 at 11:16:39AM +0000, John Keeping wrote:
-> On Tue, Jan 02, 2024 at 01:34:19PM +0100, Hardik Gajjar wrote:
-> > The Apple CarLife iAP gadget has a descriptor with two alternate
-> > settings. The host sends the set_alt request to configure alt_setting
-> > 0 or 1, and this is verified by the subsequent get_alt request.
-> > 
-> > This patch implements and sets the get_alt callback. Without the
-> > get_alt callback, composite.c abruptly concludes the
-> > USB_REQ_GET/SET_INTERFACE request, assuming only one alt setting
-> > for the endpoint.
+On Tue, Jan 09, 2024, Muhammad Usama Anjum wrote:
+> Move mmu notification mechanism inside mm lock to prevent race condition
+> in other components which depend on it. The notifier will invalidate
+> memory range. Depending upon the number of iterations, different memory
+> ranges would be invalidated.
 > 
-> I still do not understand what happens if different alternate settings
-> have different endpoints.
+> The following warning would be removed by this patch:
+> WARNING: CPU: 0 PID: 5067 at arch/x86/kvm/../../../virt/kvm/kvm_main.c:734 kvm_mmu_notifier_change_pte+0x860/0x960 arch/x86/kvm/../../../virt/kvm/kvm_main.c:734
 > 
-> Changing the alternate calls ffs_func_eps_disable() /
-> ffs_func_eps_enable() but those functions affect _all_ the configured
-> endpoints.  If f_fs moves to support multiple alternate settings, then
-> isn't there a problem with that behaviour?  Don't we need
-> ffs_func_eps_enable() to enable only the endpoints used by the current
-> alternate setting?
+> There is no behavioural and performance change with this patch when
+> there is no component registered with the mmu notifier.
 > 
-> The commit message does not explain why this patch can be as simple as
-> it is and why there is no need to address any wider issues that there
-> seem to be from supporting multiple alternate settings.
->
-If I understand correctly, for example, there are two alt settings: one with bNumEndpoint 3
-and the other with bNumEndpoint 2. So when there is a request from the host to switch to the
-alt setting that has two endpoints, with this patch, all three endpoints are reset and reconfigured
-again as altsetting one instead of altsetting two. This happens because there is no input yet from
-userspace about the endpoint descriptor for the newly requested alt-settings.
+> Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
+> Reported-by: syzbot+81227d2bd69e9dedb802@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/all/000000000000f6d051060c6785bc@google.com/
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+>  fs/proc/task_mmu.c | 22 ++++++++++++----------
+>  1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 62b16f42d5d2..56c2e7357494 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -2448,13 +2448,6 @@ static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
+>  	if (ret)
+>  		return ret;
+>  
+> -	/* Protection change for the range is going to happen. */
+> -	if (p.arg.flags & PM_SCAN_WP_MATCHING) {
+> -		mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_VMA, 0,
+> -					mm, p.arg.start, p.arg.end);
+> -		mmu_notifier_invalidate_range_start(&range);
+> -	}
+> -
+>  	for (walk_start = p.arg.start; walk_start < p.arg.end;
+>  			walk_start = p.arg.walk_end) {
+>  		long n_out;
 
-I believe this should not happen in the case of the f_fs gadget because the composite/f_fs driver
-initializes all endpoints of all interfaces during the bind process, creates epfile, and increments the eps count.
-This means that when reinitializing the endpoints during the set_alt, it reinitializes all the endpoints, including
-the endpoints of the proposed alt setting.
+Nit, might be worth moving
 
-Userspace drivers need to ensure that they write the correct epfile after switching in altsettings.
-Also, they should make sure that the endpoints are not overridden when defining the descriptor.
-Below is an example of the descriptors we are using from userspace.
+		struct mmu_notifier_range range;
 
-			// Interface descriptor - fs_descs
-            // interface: 0 band width
-            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0xFF,
-            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
+inside the loop to guard against stale usage, but that's definitely optional.
 
-            // interface: alt 1
-            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0xFF,
-            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
-            //  Endpoint descriptor
-            (byte) 0x07, (byte) 0x05, (byte) 0x81, (byte) 0x02, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-            (byte) 0x07, (byte) 0x05, (byte) 0x02, (byte) 0x02, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-
-            // Interface descriptor - hs_descs
-            // interface: 0 band width
-            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0xFF,
-            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
-
-            // Initialize high-speed interface descriptors
-            (byte) 0x09, (byte) 0x04, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0xFF,
-            (byte) 0xF0, (byte) 0x01, (byte) 0x01,
-            // Initialize high-speed end-point descriptors
-            (byte) 0x07, (byte) 0x05, (byte) 0x81, (byte) 0x02, (byte) 0x00, (byte) 0x02, (byte) 0x00,
-            (byte) 0x07, (byte) 0x05, (byte) 0x02, (byte) 0x02, (byte) 0x00, (byte) 0x02, (byte) 0x01,
-
-Please confirm and share your view.
- 
-> > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> > ---
-> > changes since version 1:
-> > 	- improve commit message to indicate why the get_alt callback
-> > 	  is necessary
-> > 	- Link to v1 - https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_20231124164435.74727-2D1-2Dhgajjar-40de.adit-2Djv.com_&d=DwICAg&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=vWvELMp9SHJnKh1jvRtJiGjnwn47jqfKsAjBDdMGF1-wjK3hGliKdP2ap6Az4efB&s=ajL0PmatFt2otvpDyZsjbMozcLP3OI4VhspIzjoUTLE&e=
-> > 
-> > changes since version 2:
-> > 	- Add the limit to allow set up to 2 alt settings.
-> > 	- Link to v2 - https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_20231201145234.97452-2D1-2Dhgajjar-40de.adit-2Djv.com_&d=DwICAg&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=vWvELMp9SHJnKh1jvRtJiGjnwn47jqfKsAjBDdMGF1-wjK3hGliKdP2ap6Az4efB&s=BSvxAb0iHeXEhufs_mU2MfCKbsrAwJMe7cCiAZq53yY&e=
-> > ---
-> >  drivers/usb/gadget/function/f_fs.c | 20 +++++++++++++++++++-
-> >  1 file changed, 19 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
-> > index efe3e3b85769..22200d618184 100644
-> > --- a/drivers/usb/gadget/function/f_fs.c
-> > +++ b/drivers/usb/gadget/function/f_fs.c
-> > @@ -42,6 +42,7 @@
-> >  #include "configfs.h"
-> >  
-> >  #define FUNCTIONFS_MAGIC	0xa647361 /* Chosen by a honest dice roll ;) */
-> > +#define MAX_ALT_SETTINGS	2		  /* Allow up to 2 alt settings to be set. */
-> >  
-> >  /* Reference counter handling */
-> >  static void ffs_data_get(struct ffs_data *ffs);
-> > @@ -75,6 +76,7 @@ struct ffs_function {
-> >  	short				*interfaces_nums;
-> >  
-> >  	struct usb_function		function;
-> > +	int				cur_alt[MAX_CONFIG_INTERFACES];
-> >  };
-> >  
-> >  
-> > @@ -98,6 +100,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
-> >  static int ffs_func_bind(struct usb_configuration *,
-> >  			 struct usb_function *);
-> >  static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
-> > +static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
-> >  static void ffs_func_disable(struct usb_function *);
-> >  static int ffs_func_setup(struct usb_function *,
-> >  			  const struct usb_ctrlrequest *);
-> > @@ -3232,6 +3235,15 @@ static void ffs_reset_work(struct work_struct *work)
-> >  	ffs_data_reset(ffs);
-> >  }
-> >  
-> > +static int ffs_func_get_alt(struct usb_function *f,
-> > +			    unsigned int interface)
-> > +{
-> > +	struct ffs_function *func = ffs_func_from_usb(f);
-> > +	int intf = ffs_func_revmap_intf(func, interface);
-> > +
-> > +	return (intf < 0) ? intf : func->cur_alt[interface];
-> > +}
-> > +
-> >  static int ffs_func_set_alt(struct usb_function *f,
-> >  			    unsigned interface, unsigned alt)
-> >  {
-> > @@ -3239,6 +3251,9 @@ static int ffs_func_set_alt(struct usb_function *f,
-> >  	struct ffs_data *ffs = func->ffs;
-> >  	int ret = 0, intf;
-> >  
-> > +	if (alt > MAX_ALT_SETTINGS)
-> > +		return -EINVAL;
-> > +
-> >  	if (alt != (unsigned)-1) {
-> >  		intf = ffs_func_revmap_intf(func, interface);
-> >  		if (intf < 0)
-> > @@ -3266,8 +3281,10 @@ static int ffs_func_set_alt(struct usb_function *f,
-> >  
-> >  	ffs->func = func;
-> >  	ret = ffs_func_eps_enable(func);
-> > -	if (ret >= 0)
-> > +	if (ret >= 0) {
-> >  		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
-> > +		func->cur_alt[interface] = alt;
-> > +	}
-> >  	return ret;
-> >  }
-> >  
-> > @@ -3574,6 +3591,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
-> >  	func->function.bind    = ffs_func_bind;
-> >  	func->function.unbind  = ffs_func_unbind;
-> >  	func->function.set_alt = ffs_func_set_alt;
-> > +	func->function.get_alt = ffs_func_get_alt;
-> >  	func->function.disable = ffs_func_disable;
-> >  	func->function.setup   = ffs_func_setup;
-> >  	func->function.req_match = ffs_func_req_match;
-> > -- 
-> > 2.17.1
-> > 
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
