@@ -1,186 +1,116 @@
-Return-Path: <linux-kernel+bounces-21194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4098D828B8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:55:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073A6828B9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 585731C23703
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:55:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 178141C22D2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3B03BB2D;
-	Tue,  9 Jan 2024 17:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D273C08D;
+	Tue,  9 Jan 2024 17:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="p0BtbpMm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AX6XZXx3"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01773B796;
-	Tue,  9 Jan 2024 17:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409HDTKf015085;
-	Tue, 9 Jan 2024 17:55:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=df2bpcTkA2YoQF8C0twkiKVvQVi/CLaa4ZuoZBl7OY4=; b=p0
-	BtbpMmZmc7oGmYTSmn8oltx5rOkXRB7BbmjetyBU2cs6oob0tZ8NiFGUuEc4zST+
-	Ex/BLBer1UnszygMmonqVfiefFbHW0ppMlu1rl0E81JtoOXWtDtM/e5hw39WcU3c
-	MBaca7r15TVcimw+ylBAHJjRJHUwpEYFMyBwxbrU3LE8comOOAN5T2spikfgcSEg
-	8Vc4wOeeHwWyLMoXanmcqGOHffhIjWoRFCi5CEm5uuifKvWsTYXWEQM/razUBYSx
-	nsVmBXzHJDKXxxvOk7KYhTQvmaYypiLDngsO8TbJbRpAn/mxgltx0Fsr2h6beuR7
-	ncm3ciAw8Zxx922fPw1A==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9vfg5nr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 17:55:03 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409Ht1Gk008599
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jan 2024 17:55:02 GMT
-Received: from [10.71.108.105] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
- 2024 09:55:00 -0800
-Message-ID: <00a337d0-a82a-43cd-a106-dfe1ac5f9a11@quicinc.com>
-Date: Tue, 9 Jan 2024 09:55:00 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43393BB4C;
+	Tue,  9 Jan 2024 17:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e43e48a16so28598095e9.2;
+        Tue, 09 Jan 2024 09:58:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704823098; x=1705427898; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jpUtuzXOnCEqHGuFl9LL4Al2mrUJlNSjgLnKSAf1Ws0=;
+        b=AX6XZXx3cFGDVjyLiWXk8oT9oSecKCEIH3u3ZEdW/F6gQrooS/PFVRPByGOBSXR6Ry
+         4ov2unT2T4jNQeX3pXVFPyYZ4Uij1n/iThTp5JoZgaaQo+PbhCf2nb1yo9T557rb0DPW
+         2g/AMPjE4hITqzBbEVgxnWkFc+ndBieH9ZxK8EJs5cZHe0944FZwyCWuuDI9QMOXq541
+         VCTvS8eM6gpsD5YV1Ei8woRvG4fzlgecAF2QOoTMC6MGdRj+JB/eJCQWP1aO8WsJfffo
+         KalvAIZtihBVXQeRZI/id3759No19ifjsEBe9/oH1z7TjE0edyBf/bAeqGqn1j4CgFCc
+         94PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704823098; x=1705427898;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jpUtuzXOnCEqHGuFl9LL4Al2mrUJlNSjgLnKSAf1Ws0=;
+        b=Ti4O3tbL0WRecEkZ2g+dqm3Ri3wXfF080IFu8BilvyQKyfmiQXRI1FyvP0fWWO3JwT
+         zlsI7kKSq23WG8cDbFzCidjVhT33TFI78j99hq/dsfYTEUtxZY9palRzzWs6OPdYhEOm
+         aELtPwSsL2CfcCsbkCsZjExKllU4NV7ynidcf5tw+iCy8QhdcZP44mMxOZmHpL26jY9b
+         fepkfoffZEmfzlaSVHB0VcGMvKzyE+FDwBC1v7sSk5Eoa0pytwIBJqoJHDgz1tVO5+kl
+         /32inACeR76E1CtzrvJmz7kDCnrPkicO0oO1i4dBUwW7v7avudcDdDCVyjnF7eBtzMQk
+         iVEA==
+X-Gm-Message-State: AOJu0Yz8RVG40xJz8F5EpwiS8XkHVP1ZVJUVTgiZdRWtMH+EhZO8Adyc
+	XXGgRqje0VZEqQK5aHojQBf9WbUtG5s=
+X-Google-Smtp-Source: AGHT+IHKcG3xLgIZvkIf6WXKaw2viLsbGnjXdHGB+gUG0ScLL60G2Y8/mqRCqsevl+1FE7O5XIddlw==
+X-Received: by 2002:a05:600c:a05:b0:40d:9237:dada with SMTP id z5-20020a05600c0a0500b0040d9237dadamr2958932wmp.103.1704823097807;
+        Tue, 09 Jan 2024 09:58:17 -0800 (PST)
+Received: from macminim1.retailmedia.com ([2a01:e0a:b14:c1f0:617b:c61e:d65f:861e])
+        by smtp.googlemail.com with ESMTPSA id iv14-20020a05600c548e00b0040e3733a32bsm15777075wmb.41.2024.01.09.09.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 09:58:17 -0800 (PST)
+From: Erwan Velu <erwanaliasr1@gmail.com>
+X-Google-Original-From: Erwan Velu <e.velu@criteo.com>
+To: 
+Cc: Erwan Velu <e.velu@criteo.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Huang Rui <ray.huang@amd.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Subject: [PATCH 1/2] admin-guide: Fixing typos
+Date: Tue,  9 Jan 2024 18:57:53 +0100
+Message-ID: <20240109175801.447943-1-e.velu@criteo.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] misc: fastrpc: Pass proper arguments to scm call
-To: Ekansh Gupta <quic_ekangupt@quicinc.com>, <srinivas.kandagatla@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>
-CC: <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        stable
-	<stable@kernel.org>
-References: <20240108100513.19993-1-quic_ekangupt@quicinc.com>
- <79851641-8b56-4d25-b4c9-2d56a5bf41e9@quicinc.com>
- <04500984-6bc0-4a07-9940-235e4b932172@quicinc.com>
-Content-Language: en-US
-From: Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <04500984-6bc0-4a07-9940-235e4b932172@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Gw3Hmph0ocKtwh3dwBk8R0yPiyREGP8F
-X-Proofpoint-ORIG-GUID: Gw3Hmph0ocKtwh3dwBk8R0yPiyREGP8F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 spamscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401090145
 
+This commit fixes two typos in the admin-guide.
 
+- a missing e in "reference_perf".
+- the amd_pstate sysfs path uses a dash instead of an underscore.
 
-On 1/8/2024 9:38 PM, Ekansh Gupta wrote:
-> 
-> On 1/9/2024 6:42 AM, Elliot Berman wrote:
->>
->> On 1/8/2024 2:05 AM, Ekansh Gupta wrote:
->>> For CMA memory allocation, ownership is assigned to DSP to make it
->>> accessible by the PD running on the DSP. With current implementation
->>> HLOS VM is stored in the channel structure during rpmsg_probe and
->>> this VM is passed to qcom_scm call as the source VM.
->>>
->>> The qcom_scm call will overwrite the passed source VM with the next
->>> VM which would cause a problem in case the scm call is again needed.
->>> Adding a local copy of source VM whereever scm call is made to avoid
->>> this problem.
->>>
->> The perms in fastrpc_channel_ctx should always reflect the current
->> permission bits, so I'm surprised you see problem.
->>
->> What is the scenario where that's not the case?
-> 
-> Thanks for reviewing the changes, Elliot. FastRPC driver is storing
-> the bitfield of HLOS VMID in fastrpc_channel_ctx in perms(cctx->perms)
-> and remoteproc specific VMID information from device tree in vmperms(cctx->vmperms).
-> This information is intended to be passed to qcom_scm call when there is
-> a requirement to move the ownership of memory to any remoteproc VM. As
-> the srcvm is overwritten with the new VM, cctx->perms cannot be reused if
-> the same request comes for any other memory allocation.
-> 
-> The problem is seen with audioPD daemon. When the daemon is stated, it
-> allocates some memory for audioPD and moves the ownership from HLOS to
-> ADSP VM using qcom_scm call. After this, audioPD makes a request for some
-> more memory which is again allocated in kernel and as per current
-> implementation, qcom_scm call is again made with cctx->perms as srcVm
-> which is no longer storing HLOS vmid. Hence using a local variable to
-> make qcom_scm call where there is a need to move ownership from HLOS
-> to remoteproc VM.
-> 
-> Please let me know if you have any more queries.
-> 
+Signed-off-by: Erwan Velu <e.velu@criteo.com>
+---
+ Documentation/admin-guide/acpi/cppc_sysfs.rst | 2 +-
+ Documentation/admin-guide/pm/amd-pstate.rst   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Ah, got it. There can be multiple allocations/assignments per fastrpc_channel_ctx.
+diff --git a/Documentation/admin-guide/acpi/cppc_sysfs.rst b/Documentation/admin-guide/acpi/cppc_sysfs.rst
+index e53d76365aa7..36981c667823 100644
+--- a/Documentation/admin-guide/acpi/cppc_sysfs.rst
++++ b/Documentation/admin-guide/acpi/cppc_sysfs.rst
+@@ -75,4 +75,4 @@ taking two different snapshots of feedback counters at time T1 and T2.
+   delivered_counter_delta = fbc_t2[del] - fbc_t1[del]
+   reference_counter_delta = fbc_t2[ref] - fbc_t1[ref]
+ 
+-  delivered_perf = (refernce_perf x delivered_counter_delta) / reference_counter_delta
++  delivered_perf = (reference_perf x delivered_counter_delta) / reference_counter_delta
+diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+index 1cf40f69278c..9eb26014d34b 100644
+--- a/Documentation/admin-guide/pm/amd-pstate.rst
++++ b/Documentation/admin-guide/pm/amd-pstate.rst
+@@ -361,7 +361,7 @@ Global Attributes
+ 
+ ``amd-pstate`` exposes several global attributes (files) in ``sysfs`` to
+ control its functionality at the system level.  They are located in the
+-``/sys/devices/system/cpu/amd-pstate/`` directory and affect all CPUs.
++``/sys/devices/system/cpu/amd_pstate/`` directory and affect all CPUs.
+ 
+ ``status``
+ 	Operation mode of the driver: "active", "passive" or "disable".
+-- 
+2.43.0
 
-In that case:
-
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
-
-> --ekansh
-> 
->>
->>> Fixes: 0871561055e6 ("misc: fastrpc: Add support for audiopd")> Cc: stable <stable@kernel.org>
->>> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
->>> ---
->>>   drivers/misc/fastrpc.c | 10 ++++++----
->>>   1 file changed, 6 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
->>> index 1c6c62a7f7f5..c13efa7727e0 100644
->>> --- a/drivers/misc/fastrpc.c
->>> +++ b/drivers/misc/fastrpc.c
->>> @@ -263,7 +263,6 @@ struct fastrpc_channel_ctx {
->>>       int domain_id;
->>>       int sesscount;
->>>       int vmcount;
->>> -    u64 perms;
->>>       struct qcom_scm_vmperm vmperms[FASTRPC_MAX_VMIDS];
->>>       struct rpmsg_device *rpdev;
->>>       struct fastrpc_session_ctx session[FASTRPC_MAX_SESSIONS];
->>> @@ -1279,9 +1278,11 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
->>>             /* Map if we have any heap VMIDs associated with this ADSP Static Process. */
->>>           if (fl->cctx->vmcount) {
->>> +            u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
->>> +
->>>               err = qcom_scm_assign_mem(fl->cctx->remote_heap->phys,
->>>                               (u64)fl->cctx->remote_heap->size,
->>> -                            &fl->cctx->perms,
->>> +                            &src_perms,
->>>                               fl->cctx->vmperms, fl->cctx->vmcount);
->>>               if (err) {
->>>                   dev_err(fl->sctx->dev, "Failed to assign memory with phys 0x%llx size 0x%llx err %d",
->>> @@ -1915,8 +1916,10 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
->>>         /* Add memory to static PD pool, protection thru hypervisor */
->>>       if (req.flags == ADSP_MMAP_REMOTE_HEAP_ADDR && fl->cctx->vmcount) {
->>> +        u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
->>> +
->>>           err = qcom_scm_assign_mem(buf->phys, (u64)buf->size,
->>> -            &fl->cctx->perms, fl->cctx->vmperms, fl->cctx->vmcount);
->>> +            &src_perms, fl->cctx->vmperms, fl->cctx->vmcount);
->>>           if (err) {
->>>               dev_err(fl->sctx->dev, "Failed to assign memory phys 0x%llx size 0x%llx err %d",
->>>                       buf->phys, buf->size, err);
->>> @@ -2290,7 +2293,6 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
->>>         if (vmcount) {
->>>           data->vmcount = vmcount;
->>> -        data->perms = BIT(QCOM_SCM_VMID_HLOS);
->>>           for (i = 0; i < data->vmcount; i++) {
->>>               data->vmperms[i].vmid = vmids[i];
->>>               data->vmperms[i].perm = QCOM_SCM_PERM_RWX;
 
