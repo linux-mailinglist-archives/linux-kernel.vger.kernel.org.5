@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-21293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1BBB828D2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:13:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44170828D2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:14:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA7541C24C06
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:13:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C756728197E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3CDB3D0D8;
-	Tue,  9 Jan 2024 19:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159983D0C5;
+	Tue,  9 Jan 2024 19:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dF+rxK99"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r49G/2yu"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BC23C07B
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD593A8D9
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33694bf8835so2977444f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 11:13:27 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-336788cb261so2991647f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 11:14:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704827605; x=1705432405; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704827680; x=1705432480; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ji+t72/iK+mXhtOq3QrKsZ3sDwVCsKx30AiokbcmA4I=;
-        b=dF+rxK99eQAmEkRfH00Fd+8o3+edoZ+gdwRTlLUcCC1iSG4tLdtzH1AGNMQMDQvHME
-         PrMEZAu2imyCrMow47/ZvR0+JKvjtd+HyuKG9gW0vaCQ1zhndDW2m38+JN7i3j4Y3XH/
-         q2y9PnS3Wed3MghpyA2r8SCyqVlKvvKQ51WuV44TIT6gvw4TG4v+4OVH5T5GL+cFm5Pp
-         +qMyHP6Ttcgzu2324ifAVn0Iy8Gk1dcGZR7XIaoVJ+1Qf5a9fgduDBAc3LcCPO6/oTfT
-         NQUDv059HBnwwlYgjSXBeHsj67Pi4PNzlQMFxscxX0McTGmL0ZmovnMz21KxcQuR050L
-         eu/w==
+        bh=m2MeK/V2qBqsbBcpViEfyXZnDNgIZUZI/pYNdPHh1Hs=;
+        b=r49G/2yutI6lcFzvBdvd5quTGn5rW1//sYsctts5wivlYKdL782jGv7jAIKdPk8SDT
+         OrT7R2feWnpnSPPczNXdJZAoVTcXCfxonmGp2E4Xmn2MkW319pkCHc8xCBUDYi6X4GsP
+         a+XjZSAUDYfZeVESDPaqmF/4nRVmxt7Fs6Ke2yj4LSMq/L953t1R1z1I5SjSKVry8S0T
+         /E7s9PGCcXgVj4L93Py6ySCXipKdXMeI+//bZhqHClkxwNdcCnHWsmhJ6Y2fXPzSQzwE
+         pZfMXtDMFAEopyG+3jtIsnPPaot25Fa46d7PzBPtEdr4zTMVaX/LX/8EWveKg0txgkuo
+         bQtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704827605; x=1705432405;
+        d=1e100.net; s=20230601; t=1704827680; x=1705432480;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ji+t72/iK+mXhtOq3QrKsZ3sDwVCsKx30AiokbcmA4I=;
-        b=WW0Dkt0VtlExRcdO75Jaw2pDAaj+/stDE7J8itVFT4zUEbCcxPOQQcQlTHSf+5rFCs
-         2kBo69sZ+g2EZa5CAdc6KrsQogj+e9lmpsUpvr+HpwBxnZLykQ5t4alDQ5O0hiPq23+W
-         BA+A3Xi5naOr2h64aSajm5ifkf9NXFmqbYxh+cj/wTUPy5djqeujmjoFn+EDMx85QPFv
-         QNMj+eeNeS9p1ii0ipgvwvrsbFDdscO/DHlRKsVFrJ+WH9u3MlOstCALWXKwqbrL8LMY
-         uq9XVlY7VpBXEFjoJNx5JAahLDwWqPna9wbnNz1UpeG1uI789rzmURswFvy4KNVVyKlW
-         4QmA==
-X-Gm-Message-State: AOJu0YwPmiWO9CZBPM5TVkZArP+pAo03bV/Y/yo6HTCC0bAcRctj9/9g
-	/ttKRa/SBjJ+xgD3GDiCdq8n81edDDU16A==
-X-Google-Smtp-Source: AGHT+IHuaNgC0qWPYzMBp8x4ot/8i1b063c5ZMumrsotv2/hHzeK0+kWQ1EGL43IilKnAGDF6d3QHA==
-X-Received: by 2002:adf:eb81:0:b0:337:6a70:78ae with SMTP id t1-20020adfeb81000000b003376a7078aemr778541wrn.19.1704827605580;
-        Tue, 09 Jan 2024 11:13:25 -0800 (PST)
+        bh=m2MeK/V2qBqsbBcpViEfyXZnDNgIZUZI/pYNdPHh1Hs=;
+        b=s4rBYYKyA3nT67XCpYnRS9zjLY78DLXYUWity4SWC7cUfA72OimH3rDmDExFfScqws
+         YVRt4lEuGpPTtvJeTjqvv631b3sqw/Yxsh+bt9guV0POgq91gp2HC/mqOzUcVB3HjGgj
+         rL/TmybKFe+iskeACPJPtQAwFtjctJncZsLHV/2PfjPX46pjuXtb/KoKEZgvgAJzK7Fm
+         xbm4eIIPnlKdU8kSr53j56SOp4HdKd/TvCHvQcZmMreCXBLdQVMI0g3Hie7YeOe/A/Ff
+         XO9PLeM1UgaDvpRN7QETAltreIzYTVVpslcRTW0PBzQ+wNi+hwme287BeqJiOUzrT5Re
+         kxdA==
+X-Gm-Message-State: AOJu0YwaT3Rvrx7mTzVWzzAKL8XyvjvI0h/r9tyW8NAbEJTyUbUviotc
+	5bBFSkn4kn/PUmIRreFwEqfsTt32MJmh8Q==
+X-Google-Smtp-Source: AGHT+IEPveZme1aSJDCbiFj3sdF937DxVzMA8fHTv7ZXHrgv/NjeESUoLtztsUyMtXcXvv+38V2v8g==
+X-Received: by 2002:a5d:4a45:0:b0:337:7680:8ccf with SMTP id v5-20020a5d4a45000000b0033776808ccfmr779186wrs.56.1704827680169;
+        Tue, 09 Jan 2024 11:14:40 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id c15-20020adffb0f000000b003374d8306cesm3102746wrr.86.2024.01.09.11.13.23
+        by smtp.gmail.com with ESMTPSA id c15-20020adffb0f000000b003374d8306cesm3102746wrr.86.2024.01.09.11.14.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 11:13:24 -0800 (PST)
-Message-ID: <e5737533-a7fa-4949-a8ca-d2c5c0a6210f@linaro.org>
-Date: Tue, 9 Jan 2024 20:13:23 +0100
+        Tue, 09 Jan 2024 11:14:39 -0800 (PST)
+Message-ID: <48f1b3cb-0a98-4b14-89f6-e1ca6b858512@linaro.org>
+Date: Tue, 9 Jan 2024 20:14:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,8 +65,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: rockchip: add spi controller aliases on
- rk3399
+Subject: Re: [PATCH 2/2] arm64: dts: rockchip: remove duplicate SPI aliases
+ for helios64
 Content-Language: en-US
 To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
  Quentin Schulz <foss+kernel@0leil.net>, Rob Herring <robh+dt@kernel.org>,
@@ -76,8 +76,8 @@ Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
  Quentin Schulz <quentin.schulz@theobroma-systems.com>
 References: <20240109-rk3399-spi-aliases-v1-0-2009e44e734a@theobroma-systems.com>
- <20240109-rk3399-spi-aliases-v1-1-2009e44e734a@theobroma-systems.com>
- <685047b0-a907-49c6-919b-e46976d8ef7b@linaro.org> <2305627.1xdlsreqCQ@diego>
+ <20240109-rk3399-spi-aliases-v1-2-2009e44e734a@theobroma-systems.com>
+ <103b45c8-3e16-480d-9f39-c677da747090@linaro.org> <2258938.QZUTf85G27@diego>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,54 +123,31 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <2305627.1xdlsreqCQ@diego>
+In-Reply-To: <2258938.QZUTf85G27@diego>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 09/01/2024 16:22, Heiko Stübner wrote:
-> Hi Krzysztof,
-> 
-> Am Dienstag, 9. Januar 2024, 16:15:30 CET schrieb Krzysztof Kozlowski:
+On 09/01/2024 16:23, Heiko Stübner wrote:
+> Am Dienstag, 9. Januar 2024, 16:16:15 CET schrieb Krzysztof Kozlowski:
 >> On 09/01/2024 14:35, Quentin Schulz wrote:
 >>> From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
 >>>
->>> There are 6 SPI controllers on RK3399 and they are all numbered in the
->>> TRM, so let's add the appropriate aliases to the main DTSI so that any
->>> RK3399-based board doesn't need to define the aliases themselves to
->>> benefit from stable SPI indices in userspace.
+>>> An earlier commit defined an alias for all SPI controllers found on the
+>>> RK3399, so there's no need to duplicate the aliases in helios64's device
+>>> tree.
 >>
->> But that contradicts the point that board should define aliases for
->> exposable interfaces. Sorry, that's a NAK.
+>> That's not what we want. Boards should define aliases for what is
+>> available, according to the board labeling.
 > 
-> didn't we have this same discussion some weeks ago? ;-) .
+> and the board labeling for spi2 has always been spi2-miso, spi2-miso etc.
+> In the last 10 years of doing Rockchip stuff, I haven't seen any schematic
+> doing it differently.
 
-We could have and my feedback might be repeated every time someone does
-something against common policy or common sense without explaining it.
+OK, this could be a case... but then you add aliases for things which
+are not labeled on the board.
 
-> 
-> I.e. spi2 on Rockchip socs is called spi2 in _all_ SoC documentation,
-
-This does not matter.
-
-> lines in _all_ schematics are also always called spi2_foo , so as before
-
-If you mean board schematics, then this matters.
-
-
-> I really don't see any value in repeating the very same aliases in
-> _every_ board.
-> 
-> Same for i2c, uart .
-> 
-
-The same as in all previous discussions: the board labels them and these
-should match the board labeling.
-
-https://lore.kernel.org/linux-rockchip/CAK8P3a25iYksubCnQb1-e5yj=crEsK37RB9Hn4ZGZMwcVVrG7g@mail.gmail.com/
-
-https://lore.kernel.org/all/27455049.omNFrla0xU@wuerfel/
-
-These are replies from your upstream maintainer, if you disagree with me.
+Let's bring Arnd again:
+https://lore.kernel.org/linux-rockchip/CAK8P3a0ALgbhTVJ7t3XRXALs9vBM=XBvkGhNKXxB+QTepo-3AQ@mail.gmail.com/
 
 Best regards,
 Krzysztof
