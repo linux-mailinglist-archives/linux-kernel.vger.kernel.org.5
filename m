@@ -1,127 +1,146 @@
-Return-Path: <linux-kernel+bounces-20831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4649B8285CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:09:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D835828641
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B2DC1C23EC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:09:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE94E28500A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582A8381AB;
-	Tue,  9 Jan 2024 12:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kCok9Ksf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78268381DA;
+	Tue,  9 Jan 2024 12:50:08 +0000 (UTC)
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A544A374C4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 12:09:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C51FC433F1;
-	Tue,  9 Jan 2024 12:09:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704802145;
-	bh=0UXA96UITGWVTAyTTVFwYwM+/KwQBWRpkuMjMf/eaV8=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=kCok9KsfO7rcLq/0hIE/NCKa8R2iD09O6pRntZ0Eq9ezvOY2oh55OHJHRkThTToL2
-	 a2TQd2viRFJd1ath/QX1U8zep33v7kC+/ZncqG1eCyDH8VaAM6FdBnJTuXm8SwgWHb
-	 hka4zL/ZsO69MPimwUbqp4JfkMTpJ9MxmLX33VrD3Hda1dJOcy6Nzt69vzOgAFootp
-	 060ZV1opsJSOCAr1ZjNoFNdO3QkN4iwo1hBlrsyl6IOMF/vCZrkNMrJABC4vSJ3I8F
-	 ZHHgS9e+0m1l9nUj3kZlaCb7+chr5BYEb3CSggkDHNmw7BnC+6F7hoV5dtupUdbE6f
-	 /tOUAzu1e3F6w==
-From: Kalle Valo <kvalo@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jiri Slaby <jirislaby@gmail.com>,  David Laight
- <David.Laight@aculab.com>,  "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>,  Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  "Matthew Wilcox (Oracle)"
- <willy@infradead.org>,  Christoph Hellwig <hch@infradead.org>,  "Jason A.
- Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
-References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
-	<18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com>
-	<CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
-Date: Tue, 09 Jan 2024 14:09:01 +0200
-In-Reply-To: <CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
-	(Linus Torvalds's message of "Mon, 8 Jan 2024 10:19:07 -0800")
-Message-ID: <877ckizp2a.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8F5364AE;
+	Tue,  9 Jan 2024 12:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4T8VHN1DB7z9v5M;
+	Tue,  9 Jan 2024 13:14:56 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 3UZY3QTji_ou; Tue,  9 Jan 2024 13:14:56 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4T8VHN0Hfvz9v2V;
+	Tue,  9 Jan 2024 13:14:56 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 003308B77D;
+	Tue,  9 Jan 2024 13:14:55 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id HBR04NexVvw3; Tue,  9 Jan 2024 13:14:55 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.233.126])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 6EFF18B774;
+	Tue,  9 Jan 2024 13:14:54 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: linux-hardening@vger.kernel.org,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-mm@kvack.org,
+	steven.price@arm.com,
+	Phong Tran <tranmanphong@gmail.com>,
+	mark.rutland@arm.com,
+	Greg KH <greg@kroah.com>
+Subject: [PATCH 0/4] Refactor CONFIG_DEBUG_WX and check_wx_pages debugfs attribute
+Date: Tue,  9 Jan 2024 13:14:34 +0100
+Message-ID: <cover.1704800524.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704802473; l=2144; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=Rosrc8SJ5lP3rVnXrjZMc3fjClOukQO/LV2fzgZVpQs=; b=s3Okt6I7tVLtHH9cIsW0wOp8leAGxF9lRsidic0YqOYcxb/GPUWk/wsLaGOrOrDVlBeQJRl4d A3TZyNi11uFDTOsNtgCv9Dd/0t2LrUpaUdzKjfrAy93UgJ/oTqyg9E5
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+Refer old discussion at https://lore.kernel.org/lkml/20200422152656.GF676@willie-the-truck/T/#m802eaf33efd6f8d575939d157301b35ac0d4a64f
+And https://github.com/KSPP/linux/issues/35
 
-> On Mon, 8 Jan 2024 at 03:46, Jiri Slaby <jirislaby@gmail.com> wrote:
->>
->>    CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
->> real    0m45,002s
->>
->> $ git revert 867046cc7027703f60a46339ffde91a1970f2901
->>    CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
->> real    0m11,132s
->>
->> $ git revert 4ead534fba42fc4fd41163297528d2aa731cd121
->>    CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
->> real    0m3,711s
->
-> Ouch. Yeah, that's unfortunate. There's a lot of nested nasty macro
-> expansion there, but that timing is excessive.
->
-> Sparse actually complains about that file:
->
->   drivers/media/pci/solo6x10/solo6x10-p2m.c:309:13: error: too long
-> token expansion
->   drivers/media/pci/solo6x10/solo6x10-p2m.c:310:17: error: too long
-> token expansion
->
-> and while that is a sparse limitation, it's still interesting. Having
-> that file expand to 122M is not ok.
->
-> In this case, I suspect the right thing to do is to simply not use
-> min()/max() in that header at all, but do something like
->
->   --- a/drivers/media/pci/solo6x10/solo6x10-offsets.h
->   +++ b/drivers/media/pci/solo6x10/solo6x10-offsets.h
->   @@ -56,2 +56,5 @@
->
->   +#define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
->   +#define MAX(X, Y) ((X) > (Y) ? (X) : (Y))
->   +
->    #define SOLO_MP4E_EXT_ADDR(__solo) \
->   @@ -59,4 +62,4 @@
->    #define SOLO_MP4E_EXT_SIZE(__solo) \
->   -     max((..),                               \
->   -         min(((..) - \
->   +     MAX((..),                               \
->   +         MIN(((..) - \
->                  ..), 0x00ff0000))
->   @@ -67,4 +70,4 @@
->    #define SOLO_JPEG_EXT_SIZE(__solo) \
->   -     max(..,                         \
->   -         min(..)
->   +     MAX(..,                         \
->   +         MIN(..)
->
-> and avoid this issue.
->
-> That said, I'm sure this thing exists to a smaller degree elsewhere. I
-> wonder if we could simplify our min/max type tests..
+This series refactors CONFIG_DEBUG_WX for the 5 architectures
+implementing CONFIG_GENERIC_PTDUMP
 
-FWIW we had similar sparse warnings in ath11k for which I added a
-workaround:
+First rename stuff in ARM which uses similar names while not
+implementing CONFIG_GENERIC_PTDUMP.
 
-https://git.kernel.org/netdev/net-next/c/fd6ed1772b2c
+Then define a generic version of debug_checkwx() that calls
+ptdump_check_wx() when CONFIG_DEBUG_WX is set. Call it immediately
+after calling mark_rodata_ro() instead of calling it at the end of
+every mark_rodata_ro().
+
+Then implement a debugfs attribute that can be used to trigger
+a W^X test at anytime and regardless of CONFIG_DEBUG_WX
+
+Christophe Leroy (4):
+  arm: ptdump: Rename CONFIG_DEBUG_WX to CONFIG_ARM_DEBUG_WX
+  arm64, powerpc, riscv, s390, x86: Refactor CONFIG_DEBUG_WX
+  powerpc,s390: Define ptdump_check_wx() regardless of CONFIG_DEBUG_WX
+  ptdump: add check_wx_pages debugfs attribute
+
+ arch/arm/Kconfig.debug          |  2 +-
+ arch/arm/include/asm/ptdump.h   |  6 +++---
+ arch/arm64/include/asm/ptdump.h |  7 -------
+ arch/arm64/mm/mmu.c             |  2 --
+ arch/powerpc/mm/mmu_decl.h      |  6 ------
+ arch/powerpc/mm/pgtable_32.c    |  4 ----
+ arch/powerpc/mm/pgtable_64.c    |  3 ---
+ arch/powerpc/mm/ptdump/ptdump.c | 10 ++++++----
+ arch/riscv/include/asm/ptdump.h | 22 ----------------------
+ arch/riscv/mm/init.c            |  3 ---
+ arch/riscv/mm/ptdump.c          |  1 -
+ arch/s390/include/asm/ptdump.h  | 14 --------------
+ arch/s390/mm/dump_pagetables.c  |  8 ++------
+ arch/s390/mm/init.c             |  2 --
+ arch/x86/include/asm/pgtable.h  |  3 +--
+ arch/x86/mm/dump_pagetables.c   |  3 +++
+ arch/x86/mm/init_32.c           |  2 --
+ arch/x86/mm/init_64.c           |  2 --
+ include/linux/ptdump.h          |  7 +++++++
+ init/main.c                     |  2 ++
+ mm/ptdump.c                     | 19 +++++++++++++++++++
+ 21 files changed, 44 insertions(+), 84 deletions(-)
+ delete mode 100644 arch/riscv/include/asm/ptdump.h
+ delete mode 100644 arch/s390/include/asm/ptdump.h
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.41.0
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
