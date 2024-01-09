@@ -1,292 +1,252 @@
-Return-Path: <linux-kernel+bounces-21143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3AEF828AAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:05:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92F57828AAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 460D4B24867
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:05:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB58D1C236E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33A53A8E2;
-	Tue,  9 Jan 2024 17:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1283A8DC;
+	Tue,  9 Jan 2024 17:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="pmanODW3"
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="IZzcaXmH"
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8154F3A8CA
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A5A0D3F286
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704819914;
-	bh=mvuBAN5vY5BSs05ydQn6t4RSmM2z+OLVW9ZETHmicAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=pmanODW3aK8J0KUM/0SMeXOzPjf4BiuOhf2Z8RsGaL32JOoYVToLEOufEkvwsEVoZ
-	 0Fz0/KEoCSLd5oAwT4OGOIY7G0Du7Hizos/xgc5AhTzYZIBe0q4wbizog6yIbjYqP5
-	 PJCQ1u70dtCXGvN2jhoXsBviD5gjrdczn3cYSLoW/719aATfw/YXJ5gz7zXJJpYgdv
-	 9V5diejmsxxT89rNUXLpS/1DVo93TTG8ksZxyfKjkTTSbeq7mid9dTykwljz+qRp4P
-	 222l2JPLRyC2ALfF5ls9xfYVw15agZefygmEhJpBgiDyRleC8Zx9VAE9rshklN92rg
-	 QDo1PifGE/JPg==
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50e81d186e2so2666413e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:05:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7725A3A1C2
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-67f9ace0006so12987666d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1704819941; x=1705424741; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3/JD96D8kElcnaUBplgr0wUKjFagBgC41s9ePMDDIig=;
+        b=IZzcaXmHEZo2RnFyqvBRUVeuk2M5d67WK6MQ6z6dpEE1gSYVpLe0kd11ZIbd8GM2l+
+         biU4HxnnkVLjHODDFpxtKPJQTgdZ+2cQZMDYQxkICS1Ap1aV6m2q1MnsJF6IDDhqagPF
+         8tzF38ji4VcMSzcj+PJ3/Oxnue0Lj1dh9qbbw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704819914; x=1705424714;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mvuBAN5vY5BSs05ydQn6t4RSmM2z+OLVW9ZETHmicAA=;
-        b=myraUqAYFa8qwTsAF3Cvcqjc7WJEpTiCIvfCD6p2NYcw7DYx78M8feDPGBtM8rH8Ob
-         ErCmzpVl1ewcBs64xsqCV/lqiC4GlQpyHG2HEWH2LhniQ6whZBQBHKEod+w4Iv+b9B6m
-         leEfvujYy3FYPa8VljQh/iTBxhxLldlXLSu5ZD2bVqfn6OPY7i6tUouy68TwXmQUvlZY
-         Ii9DrYfbk74+OmZRKf9qA60s4f8iBJNBRkKRc8CazTvxMcmLsPh8I84fx0lQaKmu8dCa
-         3pQZo8IW4l/Gw7DRmoBeTGA+b7YdzEfsImJ+2xt8FphnZgk6NaBrrKnvgsurpPs6aCbf
-         tUdg==
-X-Gm-Message-State: AOJu0YwvtzfhP1MMDp8zT3+03YQf+kZu3fbRzZQIsuDowWMqGWY7M0HD
-	AlVL4bQWTRhIZ6iKu2I42LfjJfcBDR8x9lYm6zpfvkowBWyEsk185q+GhdISblpsn4z9NyqEg12
-	9/tQu908SqpaZSI0XjKyXtsz4q/bZP+uy+7QnmXoXThVn6suxLcDNXMxT
-X-Received: by 2002:a05:6512:31d6:b0:50e:7f67:b465 with SMTP id j22-20020a05651231d600b0050e7f67b465mr2829829lfe.81.1704819914039;
-        Tue, 09 Jan 2024 09:05:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHhaHCdJfN8iU/N41WmGuZJIfMnik+AGyk03qIRzCbPKB5k2jNvlV9MfKQ/KDyW405HOP1eyQ==
-X-Received: by 2002:a05:6512:31d6:b0:50e:7f67:b465 with SMTP id j22-20020a05651231d600b0050e7f67b465mr2829818lfe.81.1704819913519;
-        Tue, 09 Jan 2024 09:05:13 -0800 (PST)
-Received: from localhost (host-87-18-244-72.retail.telecomitalia.it. [87.18.244.72])
-        by smtp.gmail.com with ESMTPSA id gv2-20020a170906f10200b00a26a80a58fcsm1209076ejb.196.2024.01.09.09.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 09:05:13 -0800 (PST)
-Date: Tue, 9 Jan 2024 18:05:09 +0100
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH] kernfs: convert kernfs_idr_lock to an irq safe raw
- spinlock
-Message-ID: <ZZ18xVq4GtQsTC8Z@gpd>
-References: <20231229074916.53547-1-andrea.righi@canonical.com>
- <CAMuHMdV=AKt+mwY7svEq5gFPx41LoSQZ_USME5_MEdWQze13ww@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1704819941; x=1705424741;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3/JD96D8kElcnaUBplgr0wUKjFagBgC41s9ePMDDIig=;
+        b=YJl/njYjB9hFnaoiHkITeVupseHly8QaeqlvGUjZoyPv/NNxuPOU64weYlOh4COcIi
+         I2fwRM+na/J+BUeZiU/19At1tHEqNQx6ivLijkUeg69429jESuE3cG985gXNU16yjBW6
+         XPbOipSNX2dkDeYZG2RvWYsHcVNXchvCGhJi3/D3COvHJ8sAIomQ7BfhJ16gdoXs5Zl2
+         s554stgKlU2hWWxMAJ7rLB6k5CN9JN1Evgp0xZlw00370tK5YHwdKS60SRGNWXDLtpnn
+         G1rMi3ISSY84l1Yvtm9kXDzr7LaNiv1cg2ouWPRRAWYEDUdPRgTjPK3rH+sM3qBxqhrq
+         QF8A==
+X-Gm-Message-State: AOJu0Yy/5frEnctR6gCaJfILB+ly03gj24zp/ecpdTrxb1SYGydBr78c
+	k9bk2qAZD+MWJACRLl7uytr2aNI/2l1W
+X-Google-Smtp-Source: AGHT+IHuTYQujwHt2wFl8G5ocxefJdD8NrW7saFSJZwm+uMabCMuqfdMUv9qQa82+ZcD01YVGbAjKw==
+X-Received: by 2002:a05:6214:5012:b0:67f:4ef4:2eb9 with SMTP id jo18-20020a056214501200b0067f4ef42eb9mr5265304qvb.30.1704819941150;
+        Tue, 09 Jan 2024 09:05:41 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id p3-20020a0cfd83000000b00680c7c14d4bsm1037798qvr.129.2024.01.09.09.05.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 09:05:40 -0800 (PST)
+Message-ID: <401df01f-d2d8-4af1-94c4-8e36b968a847@broadcom.com>
+Date: Tue, 9 Jan 2024 09:05:35 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdV=AKt+mwY7svEq5gFPx41LoSQZ_USME5_MEdWQze13ww@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ARM64: Update __NR_compat_syscalls for
+ statmount/listmount
+To: Will Deacon <will@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>, Nhat Pham <nphamcs@gmail.com>,
+ Palmer Dabbelt <palmer@sifive.com>, Sohil Mehta <sohil.mehta@intel.com>,
+ Miklos Szeredi <mszeredi@redhat.com>, Christian Brauner
+ <brauner@kernel.org>, Ian Kent <raven@themaw.net>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240109010906.429652-1-florian.fainelli@broadcom.com>
+ <20240109095050.GA12915@willie-the-truck>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <20240109095050.GA12915@willie-the-truck>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000050edd060e86536a"
 
-On Tue, Jan 09, 2024 at 05:35:36PM +0100, Geert Uytterhoeven wrote:
-..
-> Thanks for your patch, which is now commit c312828c37a72fe2
-> ("kernfs: convert kernfs_idr_lock to an irq safe raw spinlock")
-> in driver-core/driver-core-next.
-> 
-> Unfortunately this interacts badly with commit 4eff7d62abdeb293 ("Revert
-> "mm/kmemleak: move the initialisation of object to __link_object"")
-> in v6.7-rc5.
-> 
-> driver-core/driver-core-next is still at v6.7-rc3, so it does not
-> yet have commit 4eff7d62abdeb293, and thus still triggers:
-> 
->     =============================
->     [ BUG: Invalid wait context ]
->     6.7.0-rc3-kzm9g-00052-gc312828c37a7 #576 Not tainted
->     -----------------------------
->     swapper/0 is trying to lock:
->     c0c6e3c4 (&zone->lock){....}-{3:3}, at: __rmqueue_pcplist+0x358/0x3c8
->     other info that might help us debug this:
->     context-{5:5}
->     3 locks held by swapper/0:
->      #0: c0bf35a0 (slab_mutex){....}-{4:4}, at:
-> kmem_cache_create_usercopy+0xc8/0x2d0
->      #1: c0bfab0c (kmemleak_lock){....}-{2:2}, at: __create_object+0x2c/0x7c
->      #2: dfbc8c90 (&pcp->lock){....}-{3:3}, at:
-> get_page_from_freelist+0x1a0/0x684
->     stack backtrace:
->     CPU: 0 PID: 0 Comm: swapper Not tainted
-> 6.7.0-rc3-kzm9g-00052-gc312828c37a7 #576
->     Hardware name: Generic SH73A0 (Flattened Device Tree)
->      unwind_backtrace from show_stack+0x10/0x14
->      show_stack from dump_stack_lvl+0x68/0x90
->      dump_stack_lvl from __lock_acquire+0x3cc/0x168c
->      __lock_acquire from lock_acquire+0x274/0x30c
->      lock_acquire from _raw_spin_lock_irqsave+0x50/0x64
->      _raw_spin_lock_irqsave from __rmqueue_pcplist+0x358/0x3c8
->      __rmqueue_pcplist from get_page_from_freelist+0x3bc/0x684
->      get_page_from_freelist from __alloc_pages+0xe8/0xad8
->      __alloc_pages from __stack_depot_save+0x160/0x398
->      __stack_depot_save from set_track_prepare+0x48/0x74
->      set_track_prepare from __link_object+0xac/0x204
->      __link_object from __create_object+0x48/0x7c
->      __create_object from kmemleak_alloc+0x2c/0x38
->      kmemleak_alloc from slab_post_alloc_hook.constprop.0+0x9c/0xac
->      slab_post_alloc_hook.constprop.0 from kmem_cache_alloc+0xcc/0x148
->      kmem_cache_alloc from kmem_cache_create_usercopy+0x1c4/0x2d0
->      kmem_cache_create_usercopy from kmem_cache_create+0x1c/0x24
->      kmem_cache_create from kmemleak_init+0x58/0xfc
->      kmemleak_init from mm_core_init+0x244/0x2c8
->      mm_core_init from start_kernel+0x274/0x528
->      start_kernel from 0x0
-> 
-> After merging driver-core/driver-core-next into a tree based on
-> v6.7-rc5, or after cherry-picking commit 4eff7d62abdeb293 into
-> driver-core/driver-core-next, the above BUG is gone, but a different
-> one appears:
-> 
->     =============================
->     [ BUG: Invalid wait context ]
->     6.7.0-rc5-kzm9g-00251-g655022a45b1c #578 Not tainted
->     -----------------------------
->     swapper/0/0 is trying to lock:
->     dfbcd488 (&c->lock){....}-{3:3}, at: local_lock_acquire+0x0/0xa4
->     other info that might help us debug this:
->     context-{5:5}
->     2 locks held by swapper/0/0:
->      #0: dfbc9c60 (lock){+.+.}-{3:3}, at: local_lock_acquire+0x0/0xa4
->      #1: c0c012a8 (kernfs_idr_lock){....}-{2:2}, at:
-> __kernfs_new_node.constprop.0+0x68/0x258
->     stack backtrace:
->     CPU: 0 PID: 0 Comm: swapper/0 Not tainted
-> 6.7.0-rc5-kzm9g-00251-g655022a45b1c #578
->     Hardware name: Generic SH73A0 (Flattened Device Tree)
->      unwind_backtrace from show_stack+0x10/0x14
->      show_stack from dump_stack_lvl+0x68/0x90
->      dump_stack_lvl from __lock_acquire+0x3cc/0x168c
->      __lock_acquire from lock_acquire+0x274/0x30c
->      lock_acquire from local_lock_acquire+0x28/0xa4
->      local_lock_acquire from ___slab_alloc+0x234/0x8a8
->      ___slab_alloc from __slab_alloc.constprop.0+0x30/0x44
->      __slab_alloc.constprop.0 from kmem_cache_alloc+0x7c/0x148
->      kmem_cache_alloc from radix_tree_node_alloc.constprop.0+0x44/0xdc
->      radix_tree_node_alloc.constprop.0 from idr_get_free+0x110/0x2b8
->      idr_get_free from idr_alloc_u32+0x9c/0x108
->      idr_alloc_u32 from idr_alloc_cyclic+0x50/0xb8
->      idr_alloc_cyclic from __kernfs_new_node.constprop.0+0x88/0x258
->      __kernfs_new_node.constprop.0 from kernfs_create_root+0xbc/0x154
->      kernfs_create_root from sysfs_init+0x18/0x5c
->      sysfs_init from mnt_init+0xc4/0x220
->      mnt_init from vfs_caches_init+0x6c/0x88
->      vfs_caches_init from start_kernel+0x474/0x528
->      start_kernel from 0x0
-> 
-> Reverting commit c312828c37a72fe2 fixes that.
-> I have seen this issue on several Renesas arm32 and arm64 platforms.
-> 
-> Also, I am wondering if the issue fixed by commit c312828c37a72fe2
-> can still be reproduced on v6.7-rc5 or later?
+--000000000000050edd060e86536a
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yep, I can still reproduce it (this is with v6.7):
-
-[    3.082273] 
-[    3.082822] =====================================================
-[    3.084543] WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
-[    3.086252] 6.7.0-virtme #4 Not tainted
-[    3.087002] -----------------------------------------------------
-[    3.087385] swapper/5/0 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
-[    3.087768] ffffffff8f9c5378 (kernfs_idr_lock){+.+.}-{2:2}, at: kernfs_find_and_get_node_by_id+0x1d/0x80
-[    3.088335] 
-[    3.088335] and this task is already holding:
-[    3.088685] ffff8a83becbf758 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0xda/0xef0
-[    3.089128] which would create a new lock dependency:
-[    3.089435]  (&rq->__lock){-.-.}-{2:2} -> (kernfs_idr_lock){+.+.}-{2:2}
-[    3.089827] 
-[    3.089827] but this new dependency connects a HARDIRQ-irq-safe lock:
-[    3.090296]  (&rq->__lock){-.-.}-{2:2}
-[    3.090297] 
-[    3.090297] ... which became HARDIRQ-irq-safe at:
-[    3.090885]   lock_acquire+0xcb/0x2c0
-[    3.091108]   _raw_spin_lock_nested+0x2e/0x40
-[    3.091374]   scheduler_tick+0x5b/0x3d0
-[    3.091607]   update_process_times+0x9c/0xb0
-[    3.091867]   tick_periodic+0x27/0xe0
-[    3.092089]   tick_handle_periodic+0x24/0x70
-[    3.092351]   timer_interrupt+0x18/0x30
-[    3.092585]   __handle_irq_event_percpu+0x8b/0x240
-[    3.092865]   handle_irq_event+0x38/0x80
-[    3.093095]   handle_level_irq+0x90/0x170
-[    3.093340]   __common_interrupt+0x4a/0xf0
-[    3.093586]   common_interrupt+0x83/0xa0
-[    3.093820]   asm_common_interrupt+0x26/0x40
-[    3.094080]   _raw_spin_unlock_irqrestore+0x36/0x70
-[    3.094381]   __setup_irq+0x441/0x6a0
-[    3.094602]   request_threaded_irq+0xe5/0x190
-[    3.094862]   hpet_time_init+0x3a/0x60
-[    3.095090]   x86_late_time_init+0x1b/0x40
-[    3.095344]   start_kernel+0x53a/0x6a0
-[    3.095569]   x86_64_start_reservations+0x18/0x30
-[    3.095849]   x86_64_start_kernel+0xc5/0xe0
-[    3.096097]   secondary_startup_64_no_verify+0x178/0x17b
-[    3.096426] 
-[    3.096426] to a HARDIRQ-irq-unsafe lock:
-[    3.096749]  (kernfs_idr_lock){+.+.}-{2:2}
-[    3.096751] 
-[    3.096751] ... which became HARDIRQ-irq-unsafe at:
-[    3.097372] ...
-[    3.097372]   lock_acquire+0xcb/0x2c0
-[    3.097701]   _raw_spin_lock+0x30/0x40
-[    3.097925]   __kernfs_new_node.isra.0+0x83/0x280
-[    3.098205]   kernfs_create_root+0xf6/0x1d0
-[    3.098463]   sysfs_init+0x1b/0x70
-[    3.098670]   mnt_init+0xd9/0x2a0
-[    3.098872]   vfs_caches_init+0xcf/0xe0
-[    3.099105]   start_kernel+0x58a/0x6a0
-[    3.099334]   x86_64_start_reservations+0x18/0x30
-[    3.099613]   x86_64_start_kernel+0xc5/0xe0
-[    3.099862]   secondary_startup_64_no_verify+0x178/0x17b
-[    3.100175] 
-[    3.100175] other info that might help us debug this:
-[    3.100175] 
-[    3.100652]  Possible interrupt unsafe locking scenario:
-[    3.100652] 
-[    3.101049]        CPU0                    CPU1
-[    3.101323]        ----                    ----
-[    3.101641]   lock(kernfs_idr_lock);
-[    3.101909]                                local_irq_disable();
-[    3.102473]                                lock(&rq->__lock);
-[    3.102854]                                lock(kernfs_idr_lock);
-[    3.103171]   <Interrupt>
-[    3.103308]     lock(&rq->__lock);
-[    3.103492] 
-[    3.103492]  *** DEADLOCK ***
-
-I'm wondering if using a regular spinlock instead of a raw spinlock
-could be a reasonable compromise.
-
-We have a GFP_ATOMIC allocation in __kernfs_new_node():
-
-	raw_spin_lock_irqsave(&kernfs_idr_lock, irqflags);
-	ret = idr_alloc_cyclic(&root->ino_idr, kn, 1, 0, GFP_ATOMIC);
-	...
-        raw_spin_unlock_irqrestore(&kernfs_idr_lock, irqflags);
-
-That should become valid using a
-spin_lock_irqsave/spin_unlock_irqrestore(), right?
-
-Thanks,
--Andrea
-
+On 1/9/24 01:50, Will Deacon wrote:
+> On Mon, Jan 08, 2024 at 05:09:04PM -0800, Florian Fainelli wrote:
+>> Commit d8b0f5465012 ("wire up syscalls for statmount/listmount") added
+>> two new system calls to arch/arm64/include/asm/unistd32.h but forgot to
+>> update the __NR_compat_syscalls number, thus causing the following build
+>> failures:
+>>
+>> ./arch/arm64/include/asm/unistd32.h:922:24: error: array index in initializer exceeds array bounds
+>>    922 | #define __NR_statmount 457
+>>        |                        ^~~
+>> arch/arm64/kernel/sys32.c:130:34: note: in definition of macro '__SYSCALL'
+>>    130 | #define __SYSCALL(nr, sym)      [nr] = __arm64_##sym,
+>>        |                                  ^~
+>>
+>> Bump up the number by two to accomodate for the new system calls added.
+>>
+>> Fixes: d8b0f5465012 ("wire up syscalls for statmount/listmount")
+>> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+>> ---
+>>   arch/arm64/include/asm/unistd.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
+>> index 531effca5f1f..b63f870debaf 100644
+>> --- a/arch/arm64/include/asm/unistd.h
+>> +++ b/arch/arm64/include/asm/unistd.h
+>> @@ -39,7 +39,7 @@
+>>   #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
+>>   #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
+>>   
+>> -#define __NR_compat_syscalls		457
+>> +#define __NR_compat_syscalls		459
+>>   #endif
+>>   
+>>   #define __ARCH_WANT_SYS_CLONE
+>> -- 
+>> 2.34.1
 > 
-> Thanks!
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> Acked-by: Will Deacon <will@kernel.org>
+
+Thanks Will, looks like Linus already fast tracked the change:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f0a78b3e2a0c842cc7b4c2686f4a35681f02ca72
+-- 
+Florian
+
+
+--000000000000050edd060e86536a
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPZTya+I5ogBmTXw
+XdVq3Akk7mdBEhMOxu4xVEZG/PHHMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDEwOTE3MDU0MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC1letj4q1jaejeQGCjHh2E7i2kyuyICsCK
++G51zAAYJWU4lbejCJ++spkp/dJP5/ql+GqO+RGmV/pybvcKzXx1bNDcEAPNftt+U9klhir4RiWO
+aoqeh/NxsBn1vW64lV3Bv2FZsor1L44ulrH3xPFfbaQKuRXHgAdJaT4Uezu3KH8yon1K9uoCmGdT
+bVI56XpGvB7LM0KFXJjTh0QRDnpxxmnil2gkReqQBXF1OhentcR2TJ6xLxyAgn+zyYN6g741sRIV
+AoiJo9lV5ksgqintJRrLoQqnz7M1PXHazzcj0/l7U46GccKh4M/WP7JH95WNiFg+oKOcFz0FJZxL
+6cIU
+--000000000000050edd060e86536a--
 
