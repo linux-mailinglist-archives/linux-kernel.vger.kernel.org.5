@@ -1,124 +1,148 @@
-Return-Path: <linux-kernel+bounces-21527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 646F98290C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:22:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EEB18290C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13862288155
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:22:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DD261C251E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADE63E478;
-	Tue,  9 Jan 2024 23:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E453E487;
+	Tue,  9 Jan 2024 23:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yngvason.is header.i=@yngvason.is header.b="IHr+JpU4"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HJRf6NN0"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003893BB20
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yngvason.is
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yngvason.is
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5f8cf76ef5bso22099457b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:22:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FC93E473;
+	Tue,  9 Jan 2024 23:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba903342c2so254411739f.3;
+        Tue, 09 Jan 2024 15:22:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=yngvason.is; s=google; t=1704842534; x=1705447334; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1704842561; x=1705447361; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ebXuRtZ+jV+LA1Jw2fSqPglODs+5bJfr1352MU2Bcvc=;
-        b=IHr+JpU4D9WgsuCfEhOl4L4y6MIEnOKIkBOaH8gYN/MXBjgge3LmhtbYsy9C9j8EcR
-         xC9pF57oBeen/JYZItNFHxPen3Xm1rAgq8egHPyEpJ6bQmPyh9JdyrnoEhAI2V9FtTGu
-         U6xV16tBWoIRz/ToTbMZ0Eu18netQ69R7Fvd4=
+        bh=uPqy+82fb4SEKR56UmyLvl8CBKyqJEkW6ciRME8Jc5k=;
+        b=HJRf6NN07l+nSl7oMoVB2poxhZ0oZ4mncvxIuaVNCGajDuQ2RlsZdaeUvQ+l9fWbyE
+         ycyUgFH43t4SocYJjF7VN5rFHweo40qIBj3pgot/bUZrCVdnFwBirzKv2C6zdjNgwHNv
+         GbV8VEPV1IhTky4z6FOahlylzp8tDoAkxJNrni01EX8bIKjDM8RhOVwGxFSQXWAUJ4pg
+         ldX6QdkGKLxiOtGM7vX3wxc0yiyg++138l4nfwxkFynAzIgswwosdK/8gc9K5H1Xg7UR
+         S/U8Mz5CdhrbYA09Zfz4eKPrOkvSStePfr9YOZschFm+MRm2VfraJDGUYDrzYCnKBmun
+         W7qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704842534; x=1705447334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ebXuRtZ+jV+LA1Jw2fSqPglODs+5bJfr1352MU2Bcvc=;
-        b=OKdedrHEz6qOA+XLuqAwaSfhU+LOQwTYTduWBW/UfPFHa95mnQC89rZujyo6Z6lign
-         xGm4Ht1UtyUbS02iYLGFtjY2mP6EMJch2tlKu9zmoqKiuSqD1zK84J4P5aMIY+fHIQs+
-         pF1VDkaU0V17cnzexLH4Y9H1TxWDCq669WfSUeXBNCvYwKpPcBIL6wTYuY1f37Cswv8m
-         oeYayN9C9R2lRTWwnfMpx9F4tU/ocVHfS5yWDTFswfvwBbvdBvR6xeL5t8rRfgXUgkcO
-         GBQvDCR1QfiwUUmeFZ87Lml3SnG0TWQEdeAqnX9JLX/FFL7/ZrrSheNdCD30W8XqfiX1
-         XnTA==
-X-Gm-Message-State: AOJu0Yy+mGhk+sxRnfXUgnOSXf+ouVAs/KpNmDo5lL0lE9DFaZm/nPjZ
-	WoW2/aZaGBDhqwKIsgPB10oi/qYVROaiyhbLk8d+ig7Bu0AiOQ==
-X-Google-Smtp-Source: AGHT+IE8JDGH9ecjWUCMBMUouMOhuyEPG+0LSA+8kz0oPtVDBlLstNCfdQ5skELRjOnAGKeDWrBS6QE4QfdwIuqGTVo=
-X-Received: by 2002:a81:4857:0:b0:5ee:1ca0:b7ef with SMTP id
- v84-20020a814857000000b005ee1ca0b7efmr258078ywa.42.1704842533828; Tue, 09 Jan
- 2024 15:22:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704842561; x=1705447361;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uPqy+82fb4SEKR56UmyLvl8CBKyqJEkW6ciRME8Jc5k=;
+        b=WuqFUPhGuTCURI147zBM9Y/EOP4gOvw8+y37jmVV0CIEoIEM61pKhnD6yZV5AnWuXt
+         by0ikQQ18FFKgvcuxbfEBvLqSkcAWWawsU+aqZhUOeBGmT0QYymazBCUTqH40eQJjEGi
+         oxXoXliyeimFvT9Cb7zYvlUp5QzOMConUbT5/co2GBmKZp9UjTgAME9JiMYVF5vhWRJx
+         pKTKzsYKCzuYlHSIMJjknqVW95WBhCrvoK4bGkn7xIHc8tmX14dBq62wIamLK+6Da15j
+         oOI1EhKTV/nsJsDVXJjWpESiODw7UBg/CuM48qnUwYVcHp5vrEzFTkYRMmlaIm/u6hHk
+         0ZXA==
+X-Gm-Message-State: AOJu0YwvjSzfqd1afrdkOG6yo6yScMmsPy3XVzBNUYpWNUqcL6s570Za
+	7FUDkXNzGJo0OAcQHwJlzpM=
+X-Google-Smtp-Source: AGHT+IGGt6OAJV1oxXGi3mKg/cLI3CBEmG5ulIXCjnOwGBwFESR2ItT+BmBDixngwudJjuOzHAmo5A==
+X-Received: by 2002:a05:6e02:b2d:b0:360:976f:d0b8 with SMTP id e13-20020a056e020b2d00b00360976fd0b8mr210234ilu.44.1704842560724;
+        Tue, 09 Jan 2024 15:22:40 -0800 (PST)
+Received: from localhost ([98.97.116.78])
+        by smtp.gmail.com with ESMTPSA id v3-20020a1709029a0300b001d4c316e3a4sm2303718plp.189.2024.01.09.15.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 15:22:40 -0800 (PST)
+Date: Tue, 09 Jan 2024 15:22:39 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Edward Adam Davis <eadavis@qq.com>, 
+ syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
+Cc: andrii@kernel.org, 
+ ast@kernel.org, 
+ borisp@nvidia.com, 
+ bpf@vger.kernel.org, 
+ daniel@iogearbox.net, 
+ davem@davemloft.net, 
+ dhowells@redhat.com, 
+ edumazet@google.com, 
+ jakub@cloudflare.com, 
+ john.fastabend@gmail.com, 
+ kuba@kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com, 
+ syzkaller-bugs@googlegroups.com
+Message-ID: <659dd53f1652b_2796120896@john.notmuch>
+In-Reply-To: <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
+References: <000000000000aa2f41060e363b2b@google.com>
+ <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
+Subject: RE: [PATCH] tls: fix WARNING in __sk_msg_free
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240109181104.1670304-1-andri@yngvason.is> <20240109181104.1670304-3-andri@yngvason.is>
- <CAPj87rNan8B5urDFkmD_Vti4to6p3NmvXYsTFQTNg-Ue2ieDug@mail.gmail.com> <CAFNQBQwiqqSRqzXAnC035UWCGF3=GGFR5SpDd=biPTOEA+cWbQ@mail.gmail.com>
-In-Reply-To: <CAFNQBQwiqqSRqzXAnC035UWCGF3=GGFR5SpDd=biPTOEA+cWbQ@mail.gmail.com>
-From: Andri Yngvason <andri@yngvason.is>
-Date: Tue, 9 Jan 2024 23:21:38 +0000
-Message-ID: <CAFNQBQxM3dxdWRRY28jyXi4PZbgh7V+L7L6W1HQn40PwUGPNaA@mail.gmail.com>
-Subject: Re: [PATCH 2/7] drm/uAPI: Add "active color format" drm property as
- feedback for userspace
-To: Daniel Stone <daniel@fooishbar.org>
-Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>, 
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, Simon Ser <contact@emersion.fr>, 
-	Werner Sembach <wse@tuxedocomputers.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Hi Daniel,
+Edward Adam Davis wrote:
+> Syzbot constructed 32 scatterlists, and the data members in struct sk_msg_sg 
+> can only store a maximum of MAX_MSG_FRAGS scatterlists.
+> However, the value of MAX_MSG_FRAGS=CONFIG_MAX_SKB_FRAG is less than 32, which
+> leads to the warning reported here.
+> 
+> Prevent similar issues from occurring by checking whether sg.end is greater 
+> than MAX_MSG_FRAGS.
+> 
+> Reported-and-tested-by: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  net/tls/tls_sw.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+> index e37b4d2e2acd..68dbe821f61d 100644
+> --- a/net/tls/tls_sw.c
+> +++ b/net/tls/tls_sw.c
+> @@ -1016,6 +1016,8 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+>  
+>  		msg_pl = &rec->msg_plaintext;
+>  		msg_en = &rec->msg_encrypted;
+> +		if (msg_pl->sg.end >= MAX_MSG_FRAGS)
+> +			return -EINVAL;
+>  
+>  		orig_size = msg_pl->sg.size;
+>  		full_record = false;
+> -- 
+> 2.43.0
+> 
 
-Please excuse my misconfigured email client. HTML was accidentally
-enabled in my previous messages, so I'll re-send it for the benefit of
-mailing lists.
+I'll test this in a bit, but I suspect this error is because even
+if the msg_pl is full (the sg.end == MAX_MSG_FRAGS) the code is
+missing a full_record=true set to force the loop to do the send
+and abort. My opinion is we should never iterated the loop if the
+msg_pl was full.
 
-=C3=BEri., 9. jan. 2024 kl. 22:32 skrifa=C3=B0i Daniel Stone <daniel@fooish=
-bar.org>:
->
-> On Tue, 9 Jan 2024 at 18:12, Andri Yngvason <andri@yngvason.is> wrote:
-> > + * active color format:
-> > + *     This read-only property tells userspace the color format actual=
-ly used
-> > + *     by the hardware display engine "on the cable" on a connector. T=
-he chosen
-> > + *     value depends on hardware capabilities, both display engine and
-> > + *     connected monitor. Drivers shall use
-> > + *     drm_connector_attach_active_color_format_property() to install =
-this
-> > + *     property. Possible values are "not applicable", "rgb", "ycbcr44=
-4",
-> > + *     "ycbcr422", and "ycbcr420".
->
-> How does userspace determine what's happened without polling? Will it
-> only change after an `ALLOW_MODESET` commit, and be guaranteed to be
-> updated after the commit has completed and the event being sent?
-> Should it send a HOTPLUG event? Other?
+I think something like this is actually needed.
 
-Userspace does not determine what's happened without polling. The
-purpose of this property is not for programmatic verification that the
-preferred property was applied. It is my understanding that it's
-mostly intended for debugging purposes. It should only change as a
-consequence of modesetting, although I didn't actually look into what
-happens if you set the "preferred color format" outside of a modeset.
-
-The way I've implemented things in sway, calling the
-"preferred_signal_format" command triggers a modeset with the
-"preferred color format" set and calling "get_outputs", immediately
-queries the "actual color format" and displays it.
-
-Regards,
-Andri
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index e37b4d2e2acd..9cfa6f8d51e3 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1052,8 +1052,10 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+                        if (ret < 0)
+                                goto send_end;
+                        tls_ctx->pending_open_record_frags = true;
+-                       if (full_record || eor || sk_msg_full(msg_pl))
++                       if (full_record || eor || sk_msg_full(msg_pl)) {
++                               full_record = true;
+                                goto copied;
++                       }
+                        continue;
+                }
 
