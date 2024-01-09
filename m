@@ -1,298 +1,190 @@
-Return-Path: <linux-kernel+bounces-21038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49E948288E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:22:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D2448288E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 479A81C23B89
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:22:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2F33287DE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C1339FFC;
-	Tue,  9 Jan 2024 15:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155E83A1AC;
+	Tue,  9 Jan 2024 15:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e5b+d0Hp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZBtt0KCj"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2061.outbound.protection.outlook.com [40.107.95.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF67839FD6
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:21:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704813712;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A0vlnWDmYgjsjQdIBVQqu0hvaJod3A6G6ehCH509XEc=;
-	b=e5b+d0Hpct/NpIbXDhZCvmSVIjDuBxUJhD1HB+TUvLJt0iXDW5yWSQ0/w8Hw5/W4Rr8qsl
-	VMwSCrYj2mAXhrUp9mtXmbEetYctWwhZKz2It2m7TgFSYahUf2ZrjYZOvu3qG1N+sJwYAo
-	6M7z99osRUd9oe7wZZunmuyMWZOVf4g=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-540-C5qE20oUNlmieGFzQx9cqw-1; Tue, 09 Jan 2024 10:21:51 -0500
-X-MC-Unique: C5qE20oUNlmieGFzQx9cqw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3374e909bf0so2064103f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 07:21:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704813710; x=1705418510;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A0vlnWDmYgjsjQdIBVQqu0hvaJod3A6G6ehCH509XEc=;
-        b=Rk8A7cjcyesIMjJ31rtTN0kJyomjcuuNAJbPYu76yiD5rUoWW6bdbbaJ5VlLybV9ju
-         Jw5pq+Q4XPUnDJu9Y09wPEJjoYzJkYi3BzpOM24MYXfxmkmPhgONNgeQmsn9UavdV/so
-         zkQfqWczRIE9K6YH26CeR3mUcsmA4Iq+sGKOCfeZU7tSznVn5ekKExukMori0R8tFa3F
-         1tS0qHCCHG5xJQtQz5l5dj+W9FBCbOEU4vXGhLjwF1T2UGR2ER74xm6x1uL+ND7kA5ih
-         yIGhYpucYhyXCYyChmHalqRSOb/zLewfZi03Q36DNBbFtpaVshmzdptajeCz7XhsVLQQ
-         G/TA==
-X-Gm-Message-State: AOJu0YwXouXv0R0fuztMJ1ABlIHhvZRHU06ZjST0aW4OneRDEuKVom6v
-	ySGy7gH6SblOFoKcTUSKdTVbiu1bVAp95U0fSc0byE+G2Ld5OG4VgcRXiga5mZTnb0/eLANatDI
-	hlhm5wIo9gQRE0IIg6ZwWylK8VmgXyijm
-X-Received: by 2002:a05:6000:1841:b0:337:78a7:559d with SMTP id c1-20020a056000184100b0033778a7559dmr391903wri.16.1704813710304;
-        Tue, 09 Jan 2024 07:21:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH/4434fsZ8vrLq0dFEbXoQrDdtSflkOAHiWGf5RnB8a8efIQKXp/1XTfbUlvaLbPVcO1dWYQ==
-X-Received: by 2002:a05:6000:1841:b0:337:78a7:559d with SMTP id c1-20020a056000184100b0033778a7559dmr391895wri.16.1704813709951;
-        Tue, 09 Jan 2024 07:21:49 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id p11-20020a056000018b00b003362d0eefd3sm2661781wrx.20.2024.01.09.07.21.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 07:21:49 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org, Maxime
- Ripard <mripard@kernel.org>, Erico Nunes <nunes.erico@gmail.com>,
- =?utf-8?Q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>, David
- Airlie <airlied@gmail.com>,
- Donald Robson <donald.robson@imgtec.com>, Frank Binns
- <frank.binns@imgtec.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Matt Coster <matt.coster@imgtec.com>,
- Sarah Walker <sarah.walker@imgtec.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/imagination: Defer probe if requested firmware is
- not available
-In-Reply-To: <ZZ1R7WopPeaW3y44@phenom.ffwll.local>
-References: <20240109120604.603700-1-javierm@redhat.com>
- <ZZ1IellMvvyFlQaF@phenom.ffwll.local>
- <8734v6r51h.fsf@minerva.mail-host-address-is-not-set>
- <ZZ1R7WopPeaW3y44@phenom.ffwll.local>
-Date: Tue, 09 Jan 2024 16:21:48 +0100
-Message-ID: <87ttnmpm5v.fsf@minerva.mail-host-address-is-not-set>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A26939FD7;
+	Tue,  9 Jan 2024 15:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GW/v+2wNlYboIBdhdJ9+ceVIZlrCwnVslwRiesLa9h+/FNm4I6Vq53OQtF7DLHgDF9XD8ZOiuog7/SUaRkSyDtyV7lsCFu3y3xtEPE4jEI/JxvhMCw5ARXucxy9htjaHFlV7APiJtXQyRKnLmJGSr9JIIHzv2qgcY0IFB+DfegXXzgdbeB7DUVcciJrPSBiaG6LmR5Z82jrPcUiiJz2wREkKlRvjNJtpmOMkmAtsAGcE92Z+K5P/7M961DQbDmdHQD0rHwTGUKCNymDptx/JxbRH9Dkr6+HJsmVFKnb8sQFkGbKUjFdfbRZDqRI1oM9lf4dMaFTCQJp/GxJZsU6e3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JfsaY1YQhPxcKLLdmfn/Rt+dTHJNhVqt+jnKuwNyOEw=;
+ b=Awj1FHiZzDLkHZVHsYFyemvL8cxdSoXcEtp+NFiLh6D+DwHDpBL8RhCJu8bbdYssad2hOOiREkIZXO7WwSUvA2zGQlqnTVqGzbAJUP154c8Lel6KM+JTOtW9FvCvrA7M63A5TrQL+kNVjVioxfHHEIcJUYNYAQwXG3YrvYWIZpSGqX3DWmu16PzdF+uOBlp2mBhzNMMHJggTcSaGYoQAxIFChEtS6V5dqjqL+9B+d+GVFGT7W9Om0OHd7bGQHcD2bNFbheen3sI4fjp2LRDdnBY6r+WgKUxqgopu34wxCgA9e+rvPYK9jXiginkdqscd1UsY7O/nYV2CjoCXTz51JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JfsaY1YQhPxcKLLdmfn/Rt+dTHJNhVqt+jnKuwNyOEw=;
+ b=ZBtt0KCjPgdXYkhr9/NRNOyRGbcdZmGys6TfGEbprJ/NLCvPBBE6pVli5+JRXzwsZ6se4kMlRe2sCc07LSGiWtuA02E9m5iXLlm6JVZVxSZtb+IA0J01Y43b9Do0B7WXpouge37jM/xDIANFSFjHBp4hcZk9BkxQyk6ufS7qH8I=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
+ by MN0PR12MB6002.namprd12.prod.outlook.com (2603:10b6:208:37e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Tue, 9 Jan
+ 2024 15:21:52 +0000
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::6452:1eb:50fa:311d]) by BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::6452:1eb:50fa:311d%4]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
+ 15:21:52 +0000
+Message-ID: <01f5686d-2fcc-49e5-8e78-7b4048c8be7b@amd.com>
+Date: Tue, 9 Jan 2024 09:21:49 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/1] docs: Include simplified link titles in main page's
+ index
+Content-Language: en-US
+To: Randy Dunlap <rdunlap@infradead.org>,
+ Vegard Nossum <vegard.nossum@oracle.com>, Jonathan Corbet <corbet@lwn.net>,
+ Carlos Bilbao <bilbao@vt.edu>, Miguel Ojeda <ojeda@kernel.org>
+Cc: Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+References: <20231211005442.95457-1-bilbao@vt.edu>
+ <87o7erqxhm.fsf@meer.lwn.net>
+ <b55dc12b-0cd3-4f56-803e-4b26f1117c91@oracle.com>
+ <aa2ddfcc-8f2e-42c7-a81d-651a281eb6a3@infradead.org>
+From: Carlos Bilbao <carlos.bilbao@amd.com>
+In-Reply-To: <aa2ddfcc-8f2e-42c7-a81d-651a281eb6a3@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SN6PR04CA0076.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::17) To BL1PR12MB5874.namprd12.prod.outlook.com
+ (2603:10b6:208:396::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|MN0PR12MB6002:EE_
+X-MS-Office365-Filtering-Correlation-Id: 233d7cec-bc7e-483f-08cc-08dc1126b4e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	qwIclbL6lSoMv23M9oHYjFiC7KApZByXi2+AzpCjqDNU8EJ3ulfDLvwiXRM6NKPfAnlpL5arkNgeEik1M4HJTXJNhb9Qcoxahz+CYB7gS8J7QgEBo6I2g/Pva5tM9cFKug2js1I6wAK7NBB6McvmMZxGMr5Yq+1AIt5TH1RjatM4AQZO/0m1Ae1ay1jaF5D+vWOA6aNYockyiPZ5TX0HoVeaMfmaGxXf5b/EjULnKwTfs0IMCB3nZQbjyZ8P952cFOHPmx6a2vCAv4KZ1iZlo1xNXZBsFY/X7RiYjmMWFAeIIA/S7XXzPUJVHn5bdc+OLlja7Zn4vSvGhTNSiqApRwmaQwiW2NSd/J86c/8X4Y/vdjKj3Eq7AvkkzuukNAw66Td3OwD6KbDbQCrUJNAUjWAEaVdaMMsDAcEzkQQgSO1kWgiKHYNmQQvPqEgyzJvAJe+ZR5+UuVZGWmDA1kQBMg7C4yKyXpcUxXZdVv6vke7BxjxAoJKd/JtgOWa5m0/uYgtgDjGr8Lkn9YImU9JOAVge99UrZD03E3jwyKzemQxemnh2oO6kB51glm9FZj6jrk4j1TiyxV7ggHBXVxJQA5eIFP2SKQTJt13u2Tfcojl1pcq4P9/i/EAVVHpGFt+HTm7a3l4OOq6Gfd2QmAkcvQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(376002)(366004)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(31686004)(66946007)(41300700001)(36756003)(86362001)(31696002)(38100700002)(26005)(2616005)(6512007)(53546011)(6506007)(966005)(6486002)(2906002)(66556008)(66476007)(110136005)(6666004)(316002)(54906003)(478600001)(8676002)(4326008)(8936002)(7416002)(44832011)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Tkd6ZFZDNnJ0bTdZTnJrcG1PaHBUUWpVOFhTTmpib29QNjRJbU1WTWZFVzF6?=
+ =?utf-8?B?a2hhbTFQWlphaXJpZEdiamk0REVTUFZPbnVzNUZVOTlOZU9FMCtlWXY4QVdR?=
+ =?utf-8?B?czlna3lqZ1hxUGxnU3VsSDVlR0RMMHBaTHo1ZDJFZmpIWFFaRkh2Z3RTVmpz?=
+ =?utf-8?B?Skl3M1ZTWmtJM3c4NlZuUDRTcnVvMHdjeThtRmcrWHJDcVlhT0JybXlxbVY4?=
+ =?utf-8?B?cXo3OXZFZ2NYMGUwQ0MvZkoyVnhtZ0VVbXZvM0ZkUVl4dS96UGdqY014aDNT?=
+ =?utf-8?B?MHFlZWllK3ZXRSs2STRNaG01MEhPZXRtOW5USTRUVnZGcU5LWkpxL2dDZmkx?=
+ =?utf-8?B?aFJ0RENFT0xibndQRUgyV012MGcvbEcxOTFRcUlkNVNvQ0pTN2xtQ1hRRjJQ?=
+ =?utf-8?B?ZUFHcTZDTFBSNkkwNHp4UUY2eEVlNDVaR25ZQUNObDg2OGxUMTkyenlXejhn?=
+ =?utf-8?B?L3M1bExBWUhmZlp5amhzeTNqM2Q2UnVDOXh5SDRzS3hzSUVYbnEzUzR6RWRG?=
+ =?utf-8?B?WXBYamdXaVB6U1F5SCtpMWlpcVF4b01kSnlsN2MxSTJTWDRzdjZsSFMxT3Az?=
+ =?utf-8?B?Q3o4enI3MllzZnhhQzFUYmdWZFZRdHNYSFhKQm5aaDRadnNtMUh5bDYzUzJz?=
+ =?utf-8?B?YXJlOFBtV0xxNFlWSTl1TDRqMkFDTCtLRUJCREVHMGpzTmRhS1pIVkVJTmZa?=
+ =?utf-8?B?Z0E1MzlvY3VoQmd3RXNnTDRkNHRwN3V2dGY2WFhqS1hGd0RlWVI5OEt1WGs1?=
+ =?utf-8?B?eXoza0ZXcG9hU1F6V09kb1BTVStCeFZWY3hYbmZOQUxuNHZmQnRuTWt6bER6?=
+ =?utf-8?B?dzFORGVaY0VtWFJjVzFCZ3NpZ2llQ0JaTXUzb3lnUEFVZXVNRWFOSGtmSkFH?=
+ =?utf-8?B?L1BwUkFIalZKMWkyV2JEa2hBamh0OG10bXNyVDZtM3ZIZXNKanpFczZBcktv?=
+ =?utf-8?B?ZGJHN3ZuakJYQzRXb0V5eE8xdFN2NURDQWdZR0NHMHQ2YjNSRkRLTndnOS95?=
+ =?utf-8?B?MVBkSFJxS1hDYU5adDFLUnlSSlNhaXhtelRpU1NUWjZRa0tEUE1tOWtqMGFO?=
+ =?utf-8?B?WnFUdUtJeDZsNmh1ODluVlFZQUxzRi84SnpKcVhoY3NlODh1Sk1sTWppaE9V?=
+ =?utf-8?B?eEdaSTFyZFZ2MDNsSXczODhWVUgvZkhjQ3JnZ2pmcEpXWVZ5Tzg1YjRhd0NK?=
+ =?utf-8?B?U1NVcnBlODF0QmVXYzdhVWlRRTg0NVlUanY4clo5VU5zUFBoZTBtOWdCYk42?=
+ =?utf-8?B?S1pSR1YvalpuOFpLQ0l5YW9MUy85YjZoN0tMTUhYTC8rVDhZWkRoTlVZc1cr?=
+ =?utf-8?B?WEhJd2duMk9JNHlrU3RaaFNVQitVSmt1RzBINFVqTmRaWCtMTTVNcXZtejlk?=
+ =?utf-8?B?MTVsR2E4Ukx2MEJZZEhpVXlDVDhqRWZtZXMzTkI0cWcxUW9FU3BNOGZ2ZDZQ?=
+ =?utf-8?B?eFNFUlhCZStMWDNROGZodWlwSUwrQmVXTUpwcFBwOE1zb09aWlFGdjh2WHBx?=
+ =?utf-8?B?cm5xbXRKTXBWbWZJNGJIRGZuQmxxNFYycmlKUTliN0tad3FPZFAxRnMvd3J1?=
+ =?utf-8?B?dGc5bXlyTXNkc2o4clFiVlUrdEU5YVlWTHBOUklKNDR1UnZPeC9LeEZUUnM2?=
+ =?utf-8?B?VVRNM2R1NUREWWh5S1dFdXNYMmF1dVp3REVVT2VJcGloSVkwYzBsOXVmNytX?=
+ =?utf-8?B?VVhwcHFWYXhaeGk4WTdHeEtHRnNQM0tRaTR5aHVDOTZlZHZXVE1rUmRzVzJV?=
+ =?utf-8?B?VDdtOTVGWXp2bE84WHhQaVAxaUFaemM2K0U3WFk5MGVBNnVscUk1SmR4TFNp?=
+ =?utf-8?B?R3MvWnJ2N1Y0THpDNFRFVEE4K0FsZ21LWFJ3MmRrMldDM2IrZGxoM2NPK2ZU?=
+ =?utf-8?B?c0tBL0dMa29ZLzRpb3h4cmU1RVFzWjd6WUExdklBclBtMGEwMEt4a2VnN0xm?=
+ =?utf-8?B?dW5lc25yRnVhaGwwU0htZGY3aS8yWDZkcXBWbU9GcHdtV2wrSlBVbDRJN1hr?=
+ =?utf-8?B?dlhVWjduMzdkK01zN2NiQmxpZW5BU3lwQktLRlBxMTBpaUNYWkdoeGhYRmtQ?=
+ =?utf-8?B?UXl0UTdXU2E0aWJGODJVWG9oZkc3ZTRTc01NT3hqbXRVYXFyM1AyT2VseVhv?=
+ =?utf-8?Q?V2dC7gf09Sjc9WdtObPiGHQhi?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 233d7cec-bc7e-483f-08cc-08dc1126b4e3
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 15:21:52.2651
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A0MIqH9JJO25zJekT6udKxzLdqcDBMsDqrf2xsBV1eoPvJ50n349bLQ5MRXOc4Pdc+cwvAzfdP1gJe7AmumVBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6002
 
-Daniel Vetter <daniel@ffwll.ch> writes:
+On 12/21/23 00:11, Randy Dunlap wrote:
+> 
+> 
+> On 12/20/23 21:59, Vegard Nossum wrote:
+>> On 15/12/2023 16:47, Jonathan Corbet wrote:
+>>> Carlos Bilbao <bilbao@vt.edu> writes:
+>>>
+>>>> The general consensus is that the documentation's website main entry point
+>>>> and its sidebar leave room for improvement.
+>> [...]
+>>> Meanwhile, I'm pondering on this patch, would like to know what others
+>>> think.  Carlos nicely put up some comparison images for us:
+>>>
+>>>     https://github.com/Zildj1an/linux-kernel-docs-compare/blob/main/comparison.png
+>>
+>> FWIW, I like it, but I would suggest these changes:
+>>
+>> Driver implementation API -> Driver APIs
+>> Testing -> Testing guide
+>> Hacking -> Hacking guides
+>> User-space tools -> Userspace tools
+>> User-space API -> Userspace APIs
+>> CPU Architectures -> CPU architectures
+>>
+>> I know "user space" is technically two words, but the one-word form is
+>> MUCH more prevalent in the kernel, for example if you check the mainline
+>> log you'll see something like:
+>>
+>> $ git log --grep 'user.*space' | grep -o 'user.*space' | sort | uniq -c | sort -g | tail -n 3
+>>     3135 user-space
+>>     7835 user space
+>>    26917 userspace
+>>
+>> I think it makes sense to pluralize API -> APIs in most places, so e.g.
+>> "Core APIs", "Driver APIs", "Userspace APIs". Just to emphasize that
+>> these are really collections of disparate APIs (e.g. workqueues is one
+>> API, linked lists is another, etc.).
+> 
+> +1 for all suggestions.
 
-> On Tue, Jan 09, 2024 at 02:48:42PM +0100, Javier Martinez Canillas wrote:
->> Daniel Vetter <daniel@ffwll.ch> writes:
->> 
->> Hello Sima,
->> 
->> Thanks for your feedback.
->> 
->> > On Tue, Jan 09, 2024 at 01:05:59PM +0100, Javier Martinez Canillas wrote:
->> >> The device is initialized in the driver's probe callback and as part of
->> >> that initialization, the required firmware is loaded. But this fails if
->> >> the driver is built-in and the firmware isn't present in the initramfs:
->> >> 
->> >> $ dmesg | grep powervr
->> >> [    2.969757] powervr fd00000.gpu: Direct firmware load for powervr/rogue_33.15.11.3_v1.fw failed with error -2
->> >> [    2.979727] powervr fd00000.gpu: [drm] *ERROR* failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-2)
->> >> [    2.989885] powervr: probe of fd00000.gpu failed with error -2
->> >> 
->> >> $ ls -lh /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
->> >> -rw-r--r-- 1 root root 51K Dec 12 19:00 /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
->> >> 
->> >> To prevent the probe to fail for this case, let's defer the probe if the
->> >> firmware isn't available. That way, the driver core can retry it and get
->> >> the probe to eventually succeed once the root filesystem has been mounted.
->> >> 
->> >> If the firmware is also not present in the root filesystem, then the probe
->> >> will never succeed and the reason listed in the debugfs devices_deferred:
->> >> 
->> >> $ cat /sys/kernel/debug/devices_deferred
->> >> fd00000.gpu     powervr: failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-517)
->> >> 
->> >> Fixes: f99f5f3ea7ef ("drm/imagination: Add GPU ID parsing and firmware loading")
->> >> Suggested-by: Maxime Ripard <mripard@kernel.org>
->> >> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
->> >
->> > Uh that doesn't work.
->> >
->> > Probe is for "I'm missing a struct device" and _only_ that. You can't
->> > assume that probe deferral will defer enough until the initrd shows up.
->> >
->> 
->> Fair.
->> 
->> > You need to fix this by fixing the initrd to include the required
->> > firmwares. This is what MODULE_FIRMWARE is for, and if your initrd fails
->> > to observe that it's just broken.
->> >
->> 
->> Tha's already the case, when is built as a module the initrd (dracut in
->> this particular case) does figure out that the firmware needs to be added
->> but that doesn't work when the DRM driver is built-in. Because dracut is
->> not able to figure out and doesn't even have a powervr.ko info to look at
->> whatever is set by the MODULE_FIRMWARE macro.
->
-> Yeah built-in drivers that require firmware don't really work. I'm not
-> sure it changed, but a while ago you had to actually include these in the
-> kernel image itself (initrd was again too late), and that gives you
-> something you can't even ship because it links blobs with gplv2 kernel.
->
+These are good suggestions, sending v2.
 
-Indeed and even let the legal question aside, doing that makes the kernel
-too platform specific, even more than building drivers in.
+> 
+> Thanks.
 
-> Maybe that changed and the initramfs is set up early enough now that it's
-> sufficient to have it there ...
->
-
-It does work if I force to include the firmware file in the initrd, e.g:
-
-$ cat /etc/dracut.conf.d/firmware.conf 
-install_items+=" /lib/firmware/powervr/rogue_33.15.11.3_v1.fw "
-
-> Either way I think this needs module/kernel-image build changes so that
-> the list of firmware images needed for the kernel itself is dumped
-> somewhere, so that dracut can consume it and tdrt. My take at least.
->
-
-That's a very good idea indeed. Dracut just looking at loaded modules and
-their respective module info doesn't really work for built-in drivers...
-
->> > Yes I know as long as you have enough stuff built as module so that there
->> > will be _any_ kind of device probe after the root fs is mounted, this
->> > works, because that triggers a re-probe of everything. But that's the most
->> > kind of fragile fix there is.
->> >
->> 
->> Is fragile that's true but on the other hand it does solve the issue in
->> pratice. The whole device probal mechanism is just a best effort anyways.
->> 
->> > If you want to change that then I think that needs an official blessing
->> > from Greg KH/device core folks.
->> >
-
-Ok. Let's see what Greg says, I think $SUBJECT is the path of least
-resistance and something that is simple enough that could be easy to
-backport / cherry-pick if needed.
-
-But also agree with you that it's fragile (just like the driver as is).
-
-Something that I forgot to mention but came up in our IRC discussion is
-that the powervr driver is render only, so deferring the probe won't
-affect the display that's driven by a different driver (tidss in my case).
-
->> 
->> I liked this approach due its simplicity but an alternative (and more
->> complex) solution could be to delay the firmware request and not do it at
->> probe time.
->> 
->> For example, the following (only barely tested) patch solves the issue for
->> me as well but it's a bigger change to this driver and wasn't sure if will
->> be acceptable:
->
-> I think this is still barking up the wrong tree. I think there's two
-> proper fixes:
->
-> - make the "EPROBE_DEFER delays until rootfs no matter what" official and
->   documented policy. That's much better than drivers hand-rolling
->   EPROBE_DEFER each in their own driver code.
->
-
-I would love that to be the case but the whole probe and deferral is
-already quite messy. Most subsystems just keep deferring but there are
-some that timeout after an arbitrary value (currently that being 30 secs)
-and there's  a "deferred_probe_timeout" kernel cmdline param to change it.
-
-I even tried to disable that timeout by default to have an official and
-consistent deferral policy but unfortunately the patches were nacked due
-some people relying on the existing beahviour of the deferral timing out:
-
-https://lore.kernel.org/lkml/20221116115348.517599-1-javierm@redhat.com/
-
-> - fix kernel build and dracut so it can pick up the firmware images the
->   kernel itself needs. Because having a driver built-in but it still fails
->   to load until the rootfs is there is some very confusing failure mode.
->   Due to that failure mode I think this is the right fix, otherwise
->   built-in drivers become confusing.
->
-
-That's a good idea but that will mean adding a new kernel interface (and
-unsure where that should live since sysfs for example has the "one entry,
-one value" rule. I don't know where is a good place to expose such list.
-
->   Alternatively I guess you could disallow drm/img as a built-in driver
->   ... And also any other driver that requires fw to function.
->
-
-That's an option too. But I still think that retrying is better than forcing
-the driver to be built as a module.
-
-> I don't think a "mostly works due to undocumented driver-specific hack" is
-> a good fix, since this is entirely a generic issue.
->
-
-Maybe something that could be proposed is to have a request_firmware_defer()
-helper that changes the request_firmare() behaviour to return -EPROBE_DEFER
-instead of -ENOENT? At least is something that could be documented and will
-avoid drivers to open code a if (ret == -ENOENT) return -EPROBE_DEFER logic?
-
-> I think it's different if the fw is only needed for optional features,
-> e.g. for i915 some of the display firmware is only needed for self refresh
-> and low power modes. And a runtime_pm_get until the firmware has shown up
-> to prevent mayhem is imo a clean design for that, since the hardware is
-> fully working aside from using a bit too much power.
->
-
-As mentioned is only needed for rendering, display works without the FW
-since is handled by another driver.
-
-[...]
-
->> diff --git a/drivers/gpu/drm/imagination/pvr_drv.c b/drivers/gpu/drm/imagination/pvr_drv.c
->> index 5c3b2d58d766..f8fb45136326 100644
->> --- a/drivers/gpu/drm/imagination/pvr_drv.c
->> +++ b/drivers/gpu/drm/imagination/pvr_drv.c
->> @@ -1309,10 +1309,18 @@ pvr_drm_driver_open(struct drm_device *drm_dev, struct drm_file *file)
->>  {
->>  	struct pvr_device *pvr_dev = to_pvr_device(drm_dev);
->>  	struct pvr_file *pvr_file;
->> +	int err;
->> +
->> +	/* Perform GPU-specific initialization steps. */
->> +	err = pvr_device_gpu_init(pvr_dev);
->
-> Ok this is full blas "init hw on first open" drm 1 design. I think what
-> would be ok somewhat is delaying the drm_dev_register, but this here gives
-> me nightmares ...
->
-> Please no :-)
->
-
-Ok, that's why I added a RFC prefix to this patch's subject :)
-
-> Cheers, Sima
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
->
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Thanks,
+Carlos
 
