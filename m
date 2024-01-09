@@ -1,160 +1,185 @@
-Return-Path: <linux-kernel+bounces-21518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F1CE8290A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:14:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B4CD8290AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5616B27C99
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:14:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 839B31C250D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1284D12E;
-	Tue,  9 Jan 2024 23:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7C54D5AA;
+	Tue,  9 Jan 2024 23:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ad/fdzU8"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="olMukpd8"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B244D103
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5f38d676cecso50401487b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:03:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FBF34D594
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6daa89a6452so2165444b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704841430; x=1705446230; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=KPmV5XTeXIjrJabLJdrKSKnfueERqfbYH9Vd6C8BrEE=;
-        b=ad/fdzU8zoAarCh2kPmtvWjzsYFcdCgNeFlKbGbXUN47nLaO7FkHokEgAvnkMpVLOB
-         hgoZJADaV4hN+X7inq9HWftIthyE7bP34CLUbHL0Mex8dguNB/XkvQn/VEtH9D/ajGbC
-         UDtYMBoyVs7hbUBY83Wde1jPjGW77mdDLcD+c5iKZjJf/59txOtoNP7UrJjnoaB0y8of
-         ewfau7T5KsbPq04QEHhU23xKiaygNHQb1eOSzKwNFlTAIIWyBIywNFGjQ3pEfgJBpfes
-         iuKafT0xHBESUOZUulO6FJoLN/g04RuMayW4qAzaPuMJ9RNhLg5Dy0ZhMV9Cxmg48V0H
-         922A==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1704841443; x=1705446243; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GVskAbFQn1uVXaOO+q7ZemcnAH1k41TKnSXZBeHYzrY=;
+        b=olMukpd8457FDVL6h0M69V0r8ezyJTvPfIYpkW+JH/LSruTp7+PsQ1jIDoJLJ+/i+i
+         BipaQLTb8S39RmXJYFEjSoonuU/MkKKJPOQqjbTTMFQVcr42TqGGayha6OObILz4rqnL
+         ks5na4pyacpoOP5vokIWO0XUCOXmJw6eWVtjbxAGMNSIzU2+nbEN0cD9gXd7FoEG5bdq
+         q2VDbHctmJEFpa/p8puLEkHCVByvOX0fVl/pR5Th1lbFFdFT+ATCGMeaZ1Hufgav7h88
+         qoJdTyIJMnz/yfqC5/l73H/MkWm7L8EuSq+wEynQNwf6idZXz3K9jrWG9DqqkTi1Mn3e
+         T5zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704841430; x=1705446230;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KPmV5XTeXIjrJabLJdrKSKnfueERqfbYH9Vd6C8BrEE=;
-        b=sVJQNMAD+D2+oWCFVSTivOehR1iNMirFflJ6/+zTo4CGmdMEWj9NamIYzsVnywt0nK
-         TwYVAqfi+aPvjhfxHSHSWMg3tA4TU4PzRJWIAhhVr0yhEsepUY2ybOonA1A1+PChJUcy
-         VmuLtBgRe+dtUlXHCG4u9mLkHKRMC4RE/J0SOrrrirpMo9P+0TPVsryl46ZDb3b7B8wF
-         hlLkGg+p93/AJKpbIvaCf2ozJ25yQk7Tu4DDn00U9DonBGIuS3q+1Cc/MKTZdTjCyh1/
-         LGOsaVuDv7Bi3PnQ0MVQdoNj03n0x5HuQGbfgKLuFaFXbZxT2yCTTrtif58jVzFEGrSZ
-         55tw==
-X-Gm-Message-State: AOJu0YxbPC3D9sHjjan+s0Pe9Ud6XVvVEfhfwbXphztYzlx47FhQE+/6
-	QU2JUrvj/zoLQsqn3s3zlgZbiNLLNw8961L0uA==
-X-Google-Smtp-Source: AGHT+IFKFj7UWt0nW0skQEeBaGqmZnlHaiJGfY0quyK3EQ+1Sm76KUaFfHiI6t6TK+z1TaL1Os331OvwqRw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8750:0:b0:dbd:30b0:828e with SMTP id
- e16-20020a258750000000b00dbd30b0828emr98708ybn.1.1704841430539; Tue, 09 Jan
- 2024 15:03:50 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue,  9 Jan 2024 15:02:49 -0800
-In-Reply-To: <20240109230250.424295-1-seanjc@google.com>
+        d=1e100.net; s=20230601; t=1704841443; x=1705446243;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GVskAbFQn1uVXaOO+q7ZemcnAH1k41TKnSXZBeHYzrY=;
+        b=QQzw0OE1aWJ6nQKr3ZeDzVbv5qcW4psQxUvMA0yyWEb4d7uKcXRd5+ZeUCPulJ7R45
+         csb2BP7xOuq7bmwak+539j5OoAA6x9MIp6/BRAuZ+3NOAUDKZfAU7FOVaERtPlAUYFbX
+         fwJua0RtyyM+oK57bv+XSqJkWSTwQnk/ZNJPz3eZ41HuH9m1NNIQcePntEYoreJXV0kW
+         jRIsABdH5FdxPLmYIR3Z7prpV2/ty/IvsNf3CLPqIUPjtJbFn3pgtDkMgd9hmemLuUnm
+         X/tJNd51Hy6fEsqnUo0SmXENlNixiyrZCQDdBW1ncNKQl1+TZrl14Jblvx4cIZCktNJ0
+         6tWQ==
+X-Gm-Message-State: AOJu0Yww9uf3aU1p5toFOjf+XWPslLCiBcFzyLRZqWAK9VPzV8kb38/7
+	3BoJf5tetuIsf/IfrNGlCQ5zhzi9WonEyw==
+X-Google-Smtp-Source: AGHT+IEzELO00cjbdQ5MoAae4PmrX2wGL2oSaAb1TtprT5iO1eenc3qlgGb6zh1GdAb8Vowe9WZkyA==
+X-Received: by 2002:a05:6a00:a01:b0:6d9:b8e3:9137 with SMTP id p1-20020a056a000a0100b006d9b8e39137mr245785pfh.10.1704841443394;
+        Tue, 09 Jan 2024 15:04:03 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-249-6.pa.nsw.optusnet.com.au. [49.180.249.6])
+        by smtp.gmail.com with ESMTPSA id fj1-20020a056a003a0100b006d9b66f3d07sm2241185pfb.95.2024.01.09.15.04.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 15:04:02 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rNL8a-008GXv-15;
+	Wed, 10 Jan 2024 10:04:00 +1100
+Date: Wed, 10 Jan 2024 10:04:00 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
+	axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+	ming.lei@redhat.com, bvanassche@acm.org, ojaswin@linux.ibm.com
+Subject: Re: [PATCH v2 00/16] block atomic writes
+Message-ID: <ZZ3Q4GPrKYo91NQ0@dread.disaster.area>
+References: <b8b0a9d7-88d2-45a9-877a-ecc5e0f1e645@oracle.com>
+ <20231213154409.GA7724@lst.de>
+ <c729b03c-b1d1-4458-9983-113f8cd752cd@oracle.com>
+ <20231219051456.GB3964019@frogsfrogsfrogs>
+ <20231219052121.GA338@lst.de>
+ <76c85021-dd9e-49e3-80e3-25a17c7ca455@oracle.com>
+ <20231219151759.GA4468@lst.de>
+ <fff50006-ccd2-4944-ba32-84cbb2dbd1f4@oracle.com>
+ <20231221065031.GA25778@lst.de>
+ <73d03703-6c57-424a-80ea-965e636c34d6@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240109230250.424295-1-seanjc@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240109230250.424295-30-seanjc@google.com>
-Subject: [PATCH v10 29/29] KVM: selftests: Extend PMU counters test to
- validate RDPMC after WRMSR
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kan Liang <kan.liang@linux.intel.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>, 
-	Jim Mattson <jmattson@google.com>, Jinrong Liang <cloudliang@tencent.com>, 
-	Aaron Lewis <aaronlewis@google.com>, Like Xu <likexu@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73d03703-6c57-424a-80ea-965e636c34d6@oracle.com>
 
-Extend the read/write PMU counters subtest to verify that RDPMC also reads
-back the written value.  Opportunsitically verify that attempting to use
-the "fast" mode of RDPMC fails, as the "fast" flag is only supported by
-non-architectural PMUs, which KVM doesn't virtualize.
+On Tue, Jan 09, 2024 at 09:55:24AM +0000, John Garry wrote:
+> On 21/12/2023 06:50, Christoph Hellwig wrote:
+> > On Tue, Dec 19, 2023 at 04:53:27PM +0000, John Garry wrote:
+> > > On 19/12/2023 15:17, Christoph Hellwig wrote:
+> > > > On Tue, Dec 19, 2023 at 12:41:37PM +0000, John Garry wrote:
+> > > > > How about something based on fcntl, like below? We will prob also require
+> > > > > some per-FS flag for enabling atomic writes without HW support. That flag
+> > > > > might be also useful for XFS for differentiating forcealign for atomic
+> > > > > writes with just forcealign.
+> > > > I would have just exposed it through a user visible flag instead of
+> > > > adding yet another ioctl/fcntl opcode and yet another method.
+> > > > 
+> > > Any specific type of flag?
+> > > 
+> > > I would suggest a file attribute which we can set via chattr, but that is
+> > > still using an ioctl and would require a new inode flag; but at least there
+> > > is standard userspace support.
+> > I'd be fine with that, but we're kinda running out of flag there.
+> > That's why I suggested the FS_XFLAG_ instead, which basically works
+> > the same.
+> 
+> Hi Christoph,
+> 
+> Coming back to this topic... how about this FS_XFLAG_ and fsxattr update:
+> 
+> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> index da43810b7485..9ef15fced20c 100644
+> --- a/include/uapi/linux/fs.h
+> +++ b/include/uapi/linux/fs.h
+> @@ -118,7 +118,8 @@ struct fsxattr {
+>        __u32           fsx_nextents;   /* nextents field value (get)   */
+>        __u32           fsx_projid;     /* project identifier (get/set) */
+>        __u32           fsx_cowextsize; /* CoW extsize field value
+> (get/set)*/
+> -       unsigned char   fsx_pad[8];
+> +       __u32           fsx_atomicwrites_size; /* unit max */
+> +       unsigned char   fsx_pad[4];
+> };
+> 
+> /*
+> @@ -140,6 +141,7 @@ struct fsxattr {
+> #define FS_XFLAG_FILESTREAM    0x00004000      /* use filestream allocator
+> */
+> #define FS_XFLAG_DAX           0x00008000      /* use DAX for IO */
+> #define FS_XFLAG_COWEXTSIZE    0x00010000      /* CoW extent size
+> allocator hint */
+> +#define FS_XFLAG_ATOMICWRITES  0x00020000
+> #define FS_XFLAG_HASATTR       0x80000000      /* no DIFLAG for this   */
+> 
+> /* the read-only stuff doesn't really belong here, but any other place is
+> lines 1-22/22 (END)
+> 
+> Having FS_XFLAG_ATOMICWRITES set will lead to FMODE_CAN_ATOMIC_WRITE being
+> set.
+> 
+> So a user can issue:
+> 
+> >xfs_io -c "atomic-writes 64K" mnt/file
+> >xfs_io -c "atomic-writes" mnt/file
+> [65536] mnt/file
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- .../selftests/kvm/x86_64/pmu_counters_test.c  | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
+Where are you going to store this value in the inode?  It requires a
+new field in the inode and so is a change of on-disk format, right?
 
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-index cb808ac827ba..ae5f6042f1e8 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-@@ -325,9 +325,30 @@ __GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,			\
- 		       "Expected " #insn "(0x%x) to yield 0x%lx, got 0x%lx",	\
- 		       msr, expected_val, val);
- 
-+static void guest_test_rdpmc(uint32_t rdpmc_idx, bool expect_success,
-+			     uint64_t expected_val)
-+{
-+	uint8_t vector;
-+	uint64_t val;
-+
-+	vector = rdpmc_safe(rdpmc_idx, &val);
-+	GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
-+	if (expect_success)
-+		GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
-+
-+	if (!is_forced_emulation_enabled)
-+		return;
-+
-+	vector = rdpmc_safe_fep(rdpmc_idx, &val);
-+	GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
-+	if (expect_success)
-+		GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
-+}
-+
- static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters,
- 				 uint8_t nr_counters, uint32_t or_mask)
- {
-+	const bool pmu_has_fast_mode = !guest_get_pmu_version();
- 	uint8_t i;
- 
- 	for (i = 0; i < nr_possible_counters; i++) {
-@@ -352,6 +373,7 @@ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters
- 		const uint64_t expected_val = expect_success ? test_val : 0;
- 		const bool expect_gp = !expect_success && msr != MSR_P6_PERFCTR0 &&
- 				       msr != MSR_P6_PERFCTR1;
-+		uint32_t rdpmc_idx;
- 		uint8_t vector;
- 		uint64_t val;
- 
-@@ -365,6 +387,25 @@ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters
- 		if (!expect_gp)
- 			GUEST_ASSERT_PMC_VALUE(RDMSR, msr, val, expected_val);
- 
-+		/*
-+		 * Redo the read tests with RDPMC, which has different indexing
-+		 * semantics and additional capabilities.
-+		 */
-+		rdpmc_idx = i;
-+		if (base_msr == MSR_CORE_PERF_FIXED_CTR0)
-+			rdpmc_idx |= INTEL_RDPMC_FIXED;
-+
-+		guest_test_rdpmc(rdpmc_idx, expect_success, expected_val);
-+
-+		/*
-+		 * KVM doesn't support non-architectural PMUs, i.e. it should
-+		 * impossible to have fast mode RDPMC.  Verify that attempting
-+		 * to use fast RDPMC always #GPs.
-+		 */
-+		GUEST_ASSERT(!expect_success || !pmu_has_fast_mode);
-+		rdpmc_idx |= INTEL_RDPMC_FAST;
-+		guest_test_rdpmc(rdpmc_idx, false, -1ull);
-+
- 		vector = wrmsr_safe(msr, 0);
- 		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
- 	}
+As it is, I really don't see this as a better solution than the
+original generic "force align" flag that simply makes the extent
+size hint alignment a hard physical alignment requirement rather
+than just a hint. This has multiple uses (DAX PMD alignment is
+another), so I just don't see why something that has a single,
+application specific API that implements a hard physical alignment
+is desirable.
+
+Indeed, the whole reason that extent size hints are so versatile is
+that they implement a generic allocation alignment/size function
+that can be used for anything your imagination extends to. If they
+were implemented as a "only allow RAID stripe aligned/sized
+allocation" for the original use case then that functionality would
+have been far less useful than it has proven to be over the past
+couple of decades.
+
+Hence history teaches us that we should be designing the API around
+the generic filesystem function required (hard alignment of physical
+extent allocation), not the specific use case that requires that
+functionality.
+
+-Dave.
 -- 
-2.43.0.472.g3155946c3a-goog
-
+Dave Chinner
+david@fromorbit.com
 
