@@ -1,222 +1,125 @@
-Return-Path: <linux-kernel+bounces-20434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DAD1827ED4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50D9E827EDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:45:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9D512858EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:38:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A22E9285805
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A638F51;
-	Tue,  9 Jan 2024 06:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319838F4F;
+	Tue,  9 Jan 2024 06:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Anlb5Q3E"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELqD70Qf"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90DD7497
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 06:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E3B6124;
+	Tue,  9 Jan 2024 06:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28c467446f0so2431832a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 22:38:25 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5eefd0da5c0so23561137b3.2;
+        Mon, 08 Jan 2024 22:45:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704782305; x=1705387105; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JNAj1SK6BtI+I3qFl1weozUNNWGQcGEAhjad6VEb8FA=;
-        b=Anlb5Q3EjISbVPt6yIMbR028jv5QYlFGskzwH0fDMkBUHjQZ1QoH5ac7AfZOQdln4c
-         zy3kvtGmldS/Y3aPpfdu+OLFQw582pHLhEREb5VwwgbiqVz7YGmk5cDoNshRWJqANsQk
-         0a02pP+jjjbQInKAVbdS1ZZaYbrn1zZziKfQVyyXcl/n4V9Afs8IwoTWnfK7vQtNI23M
-         W7IxptnBfX1CQWu9r3FbdY03dddhtEOFukI6aUf6SuPzWtdWDcx14HnpB1A/n3jYdtNt
-         fZ0BrL+q71LcrkL6Wf1S6hUwdHFKd7bJc2FlfKI3X2uPzSgRvJzBwS0TnWZKmh4GmMKj
-         BBMQ==
+        d=gmail.com; s=20230601; t=1704782729; x=1705387529; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=80w7kcr2BiF5GwXEFqXyPAg3AD4hnM9w5LfuY1QzR9g=;
+        b=ELqD70QfcbgvZTe1mTHG4N9EDCIdciqe+gbOKJfNA88Iv/dEzM79X/Ppa5EsbDaxCk
+         a2mO0hbPXPbDXKx+Y5jRaYm3llx/7B0r3pfr05VMYdkGmKjI/KqcOWx9eDvHXj0PlfM5
+         BuLhNphVWvhwCHSqKVe1E9uL7Qkah5Jbz2QfPzqlp7UCKFuzFolC+8eNRfpXN7M9fb0H
+         bAnJ4G8H3ELHNT0tbtBsAA6nxjOp6Kg64DZerCg4N+3WnX78isXpY3UDXhP0oxGViJuu
+         zUmwTeA5YoyLbHnKjIPXh3T6RJdNEt5GspPfC1QjxGAAE8QTSqQqz8gGGpM01km5zFJH
+         Q3qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704782305; x=1705387105;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1704782729; x=1705387529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JNAj1SK6BtI+I3qFl1weozUNNWGQcGEAhjad6VEb8FA=;
-        b=C0jbU1lrfzPJb3KEZVgkx2eVEnA2Sot4fu3bAPfLfRM/kfp2sOvvwjzDYkvXUxIyLX
-         NQC20Fxt0ys0667geWx6hq+b1++MoWfMeXu3O5YuNlDYvLOJKm6G6yGEmJmKVTgrh+vH
-         IRDkXqYJMh0Kx82gFZ1LHsQpS0FGh7OWz1L8gR2o9zWiioG5BFU1yJ6okKiMo/sNE1gN
-         7Z3cZ0svFaQX71hysoKifjVkH68qxwy6UMZoBKmCMe9iGdy+B6L/V6XBZhquT+0O7zTe
-         d7R2PBgRQoKd6k10wFdz2ocz8Oe4yX7KDZm7vjA/NMXcj3OvlEQ09qh/BSwcbLNwHEr0
-         83uA==
-X-Gm-Message-State: AOJu0YxpUVG7Ol6Cuj6uSdR1P3mmWo67bUECqAHJNJlATx2uIVSJMwmW
-	fpYCGSMvVPLfYGkkvSKdc1S2QZ+MoZUAHw==
-X-Google-Smtp-Source: AGHT+IGnUwnoimws7LOCtPUVEFFxlMdF46OpqogdJafi3aWG8Xkd+2Ha3F0LxpYWZ/JlqzHIw4Ag0g==
-X-Received: by 2002:a17:90a:acf:b0:28d:1c39:f15b with SMTP id r15-20020a17090a0acf00b0028d1c39f15bmr351030pje.21.1704782304919;
-        Mon, 08 Jan 2024 22:38:24 -0800 (PST)
-Received: from mgyee-VirtualBox ([47.152.33.114])
-        by smtp.gmail.com with ESMTPSA id lt20-20020a17090b355400b0028d9fc97c29sm344877pjb.14.2024.01.08.22.38.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 22:38:24 -0800 (PST)
-From: Matthias Yee <mgyee9@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Matthias Yee <mgyee9@gmail.com>
-Subject: [PATCH] staging: vt6655: fixed check alignment of open parenthesis in card.c
-Date: Mon,  8 Jan 2024 22:36:19 -0800
-Message-Id: <20240109063618.2810-1-mgyee9@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=80w7kcr2BiF5GwXEFqXyPAg3AD4hnM9w5LfuY1QzR9g=;
+        b=JrAFkgFUJiTO9EyuKiazPlPpLVuRTiOFD0rO4EabkOVtx88jsC61KUnx+5oze+hxIf
+         UFnhFbWknt+3zZb0T1504iQ65Ga/EIAhOb4TTr/6Hd+pGRlu8J5TeJQnpH4fx0BHl1Sv
+         Rc7OI8trjCMrH8CXvE19JxUNTt987g+I26Y5PGPlHyR0aRD5PNWqyXvHCsgCuM1S8dYE
+         aj8ZDvBeCYuJutb6Re9tAGxp+g4piAUgyHS5JqrMs9gBINmbT0IlO+M1q4CG9t1rUXyk
+         ZH8n3APS6yLnj1i+kzjzssFvIfZCG7OxOmaZOAquIOC0+BBCS+HkhmLT1vY1G89kI5Xn
+         mBpA==
+X-Gm-Message-State: AOJu0YxuRiMUeNIs0V4nv5sQUSlznRJArg6ZPm6Gl+5YrdH8f4XsBZcr
+	ewOJyDkQh3nFT1Pw2kW3x0fXDwMan0QwBjsN05w=
+X-Google-Smtp-Source: AGHT+IF6yT0FJnKlKhXx/rXnY0cNXPiWZTwPKLF8DD+ZaBFDZq7+NnCGOMow8QTcirbtaj3I4WJ3pTtlcUMgnGyhs8o=
+X-Received: by 2002:a05:6902:250c:b0:db5:3e3b:d2bb with SMTP id
+ dt12-20020a056902250c00b00db53e3bd2bbmr2516111ybb.48.1704782728999; Mon, 08
+ Jan 2024 22:45:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240108135421.684263-1-tmaimon77@gmail.com> <20240108135421.684263-2-tmaimon77@gmail.com>
+ <170474817687.2140623.4004065884295248395.robh@kernel.org>
+In-Reply-To: <170474817687.2140623.4004065884295248395.robh@kernel.org>
+From: Tomer Maimon <tmaimon77@gmail.com>
+Date: Tue, 9 Jan 2024 08:45:17 +0200
+Message-ID: <CAP6Zq1iZdcrgc2BJREPvx8T9DZAZ=Sx_3iWbX0g=x2DmaG2MhQ@mail.gmail.com>
+Subject: Re: [PATCH v22 1/8] dt-bindings: clock: npcm845: Add reference 25m
+ clock property
+To: Rob Herring <robh@kernel.org>
+Cc: robh+dt@kernel.org, venture@google.com, linux-kernel@vger.kernel.org, 
+	sboyd@kernel.org, tali.perry1@gmail.com, linux-clk@vger.kernel.org, 
+	yuenn@google.com, mturquette@baylibre.com, openbmc@lists.ozlabs.org, 
+	benjaminfair@google.com, krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-This patch adjusts whitespace to fix the checkpatch warning Alignment Should Match Open Parenthesis.
+Hi Rob,
 
-Signed-off-by: Matthias Yee <mgyee9@gmail.com>
----
- drivers/staging/vt6655/card.c | 74 +++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
+Thanks for your comment.
 
-diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-index 36183f2a64c1..688c870d89bc 100644
---- a/drivers/staging/vt6655/card.c
-+++ b/drivers/staging/vt6655/card.c
-@@ -81,9 +81,9 @@ static void vt6655_mac_set_bb_type(void __iomem *iobase, u32 mask)
-  * Return Value: none
-  */
- static void calculate_ofdmr_parameter(unsigned char rate,
--				       u8 bb_type,
--				       unsigned char *tx_rate,
--				       unsigned char *rsv_time)
-+				      u8 bb_type,
-+				      unsigned char *tx_rate,
-+				      unsigned char *rsv_time)
- {
- 	switch (rate) {
- 	case RATE_6M:
-@@ -288,7 +288,7 @@ bool card_set_phy_parameter(struct vnt_private *priv, u8 bb_type)
-  * Return Value: none
-  */
- bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
--		    u64 bss_timestamp)
-+		     u64 bss_timestamp)
- {
- 	u64 local_tsf;
- 	u64 tsf_offset = 0;
-@@ -297,7 +297,7 @@ bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
- 
- 	if (bss_timestamp != local_tsf) {
- 		tsf_offset = card_get_tsf_offset(rx_rate, bss_timestamp,
--						local_tsf);
-+						 local_tsf);
- 		/* adjust TSF, HW's TSF add TSF Offset reg */
- 		tsf_offset =  le64_to_cpu(tsf_offset);
- 		iowrite32((u32)tsf_offset, priv->port_offset + MAC_REG_TSFOFST);
-@@ -321,7 +321,7 @@ bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
-  * Return Value: true if succeed; otherwise false
-  */
- bool card_set_beacon_period(struct vnt_private *priv,
--			  unsigned short beacon_interval)
-+			    unsigned short beacon_interval)
- {
- 	u64 next_tbtt;
- 
-@@ -586,61 +586,61 @@ void card_set_rspinf(struct vnt_private *priv, u8 bb_type)
- 
- 	/* RSPINF_a_6 */
- 	calculate_ofdmr_parameter(RATE_6M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_6);
- 	/* RSPINF_a_9 */
- 	calculate_ofdmr_parameter(RATE_9M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_9);
- 	/* RSPINF_a_12 */
- 	calculate_ofdmr_parameter(RATE_12M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_12);
- 	/* RSPINF_a_18 */
- 	calculate_ofdmr_parameter(RATE_18M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_18);
- 	/* RSPINF_a_24 */
- 	calculate_ofdmr_parameter(RATE_24M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_24);
- 	/* RSPINF_a_36 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_36M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_36M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_36);
- 	/* RSPINF_a_48 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_48M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_48M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_48);
- 	/* RSPINF_a_54 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_54M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_54M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_54);
- 	/* RSPINF_a_72 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_54M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_54M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_72);
- 	/* Set to Page0 */
- 	VT6655_MAC_SELECT_PAGE0(priv->port_offset);
--- 
-2.34.1
+On Mon, 8 Jan 2024 at 23:09, Rob Herring <robh@kernel.org> wrote:
+>
+>
+> On Mon, 08 Jan 2024 15:54:14 +0200, Tomer Maimon wrote:
+> > The NPCM8XX clock driver uses 25Mhz external clock, therefor adding
+> > refclk property.
+> >
+> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> > ---
+> >  .../bindings/clock/nuvoton,npcm845-clk.yaml      | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+>
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.example.dtb: clock-controller@f0801000: 'clocks' is a required property
+>         from schema $id: http://devicetree.org/schemas/clock/nuvoton,npcm845-clk.yaml#
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.example.dtb: clock-controller@f0801000: 'clock-names' is a required property
+>         from schema $id: http://devicetree.org/schemas/clock/nuvoton,npcm845-clk.yaml#
+>
+> doc reference errors (make refcheckdocs):
+>
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240108135421.684263-2-tmaimon77@gmail.com
+>
+> The base for the series is generally the latest rc1. A different dependency
+> should be noted in *this* patch.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your schema.
+>
 
+probably I missed adding the clock and clock-names to the example
+node, will be fixed next version
 
