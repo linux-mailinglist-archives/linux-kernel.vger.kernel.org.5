@@ -1,75 +1,78 @@
-Return-Path: <linux-kernel+bounces-21381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90752828E65
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:13:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2FE5828E6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B02811C23D30
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:13:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E1232867B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C91E3D962;
-	Tue,  9 Jan 2024 20:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE473D967;
+	Tue,  9 Jan 2024 20:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hXyArfN9"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UrqEk1PO"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42DC3A8E5;
-	Tue,  9 Jan 2024 20:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203C13B789;
+	Tue,  9 Jan 2024 20:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e461c1f5bso27638515e9.3;
-        Tue, 09 Jan 2024 12:13:34 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3367632ce7bso2700295f8f.2;
+        Tue, 09 Jan 2024 12:15:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704831213; x=1705436013; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704831309; x=1705436109; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ri1A4PylPs61GP02N60LyoFg+L+Yu7M2YLplX+7G6Qk=;
-        b=hXyArfN9XRb3TpG+A62w8bVZYJLGVNzx0mKBp5JWS42BIFNRgy5bzCjGsET9gpimMP
-         bxplGRH/L7bjbIvl4Rxl+PGDzvVo1v0qdEH2VTO1dMd3B3occ4twh6qX2ScMVV/yfjvL
-         3xjw4z/JotBwRwrM1CVOX79bBbYe8/Lof5ID4j1cMxP1Mj+6lOCzKb7MreyzUOHMoGXk
-         a3wKtegzaN/+OAzFWsucV0mjJLTo1jyaFo3SaSaezuVEF+edLwMAcUnHBH5MnvbadBnq
-         pB7v8MFOU7guPfGaSdo9kM50AQbGCvlegTOiRR5gdWmVlTPfd+29X03dRlOXzpvqmBBz
-         s/IA==
+        bh=M+B0yD7FjBgqTqLo7b2/IVuy2rnma81MvruhVPGvifo=;
+        b=UrqEk1POUffrf1aE98dSIWSZikviyFIO4/rL/LYb6+aBFnLHXbjYKRs7UCPJy/EFa7
+         P3kIYPrP7cHBa9IA2weL9dMiSQ3iz9kyFssGWVZZ/9kFod6Ig3/EwUaj5ZTMcj3/CUox
+         M8QGFxj85ZyrBSqZAebEOJGfXlBaXwVvPzi9HT8VXwag1RNzIKKi50LoR3R5sheUjs8U
+         g4HRNW88C1VYxQ+0rb5NQv5vxb3InAExj1/DjfTOyVl/NWV7TgAktvuzmQBJXHXHwTHn
+         jAyJt8rpCuLMjHVk1LUdfnH89lwVK2w9/3SkXTmVJd6eKo9DkBF8nZccX4STDxiLDTZW
+         5DLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704831213; x=1705436013;
+        d=1e100.net; s=20230601; t=1704831309; x=1705436109;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ri1A4PylPs61GP02N60LyoFg+L+Yu7M2YLplX+7G6Qk=;
-        b=B9q/jHofoWHZ0jjKOSHkFmc0Q0Fx+fmIeiUDlJx3vWiT2Punanxzmmt+QO88xYuXAG
-         dIcQfS2oD1gQMeLqlDNXaxrINMeLa73Uh83cRMtRKhNIEs8LMe5uFNjuF9OiSfhjKAwn
-         L3uWztV3najy1NsafRwiLmfgxVHTewHewq/Ja38Zvz2I8Z+FDRDP50qa+IydAbttMXuv
-         1zYwC33TWTa36HR6CtI+xrWS30MrKHmvYQGceFb1kzGzyRYE+Ztk+Yv0Vf2sUl22Ja/p
-         6LuEt9+kG5zdnWPAUi0GEpW/wy32uPF8NbuZUcHBW3EIKZlPNwEj8uA1tN7XFf8RMPdl
-         V7IQ==
-X-Gm-Message-State: AOJu0YxNCm5FR5mC12FVU+vklLXth0BkBU718nddoL6WCkmCFb/+HpcX
-	aLbLrd84CAaY7TIPg4hOeuAKY2yI1ZY=
-X-Google-Smtp-Source: AGHT+IFWeqJH8v4d6+tnLLqV4BNVKn2y5I5WhwFYoAeVK8N9t53Q9defYknIcJu4v4RiYmRY0DHgYA==
-X-Received: by 2002:a05:600c:34cd:b0:40e:44eb:c3a with SMTP id d13-20020a05600c34cd00b0040e44eb0c3amr2112091wmq.31.1704831212907;
-        Tue, 09 Jan 2024 12:13:32 -0800 (PST)
+        bh=M+B0yD7FjBgqTqLo7b2/IVuy2rnma81MvruhVPGvifo=;
+        b=jkOxYBBkMZyeJD/NPyblkPJmwRT8MJGbu9s6G8Rccm9grNlZsCInvuedLkVHviz+WJ
+         et0NtGZ/a+5ZLAR8WSMk84ygN6dIwziPe0vFkh6JXg/VggFXOuSghgNn1YTncamKlu0r
+         BHadx4p8kgXbIVHLJLLStw30GWnJtZWt6SiMDfKtxlPK16QK3aOZ+xnhDuZSXbOEQk1t
+         JrIVVOY391uQam1cN937mPl+fwMQpTDlboky70w3TePci1hw3O0ek2X5wDVkI3y1v4Rq
+         PWKE7X64pdIBUzyDQ14VRYY3MxhzPEhf2pk71SpwHUI70uVSEKF6ScmMghQYI/ymrSen
+         OdtA==
+X-Gm-Message-State: AOJu0YySufpR/mn+BJxbW5Ph8EdcamMFJVRgDF7I/iHGJ+YoPYg672pr
+	qoiHMulADtDwEjarE+Q+B7k=
+X-Google-Smtp-Source: AGHT+IHCUv6AIBjSaTr/8HPaqeDyMqGvcLyT6MaYhYhF7PYV0/3Jv2044yKOg30ZXyxDXKOcj8h8FQ==
+X-Received: by 2002:a5d:5406:0:b0:336:5b14:525f with SMTP id g6-20020a5d5406000000b003365b14525fmr1021417wrv.132.1704831309212;
+        Tue, 09 Jan 2024 12:15:09 -0800 (PST)
 Received: from jernej-laptop.localnet (213-161-3-116.dynamic.telemach.net. [213.161.3.116])
-        by smtp.gmail.com with ESMTPSA id s11-20020a05600c45cb00b0040e395cd20bsm15857094wmo.7.2024.01.09.12.13.06
+        by smtp.gmail.com with ESMTPSA id cg4-20020a5d5cc4000000b003377c5b8a43sm45539wrb.93.2024.01.09.12.15.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 12:13:32 -0800 (PST)
+        Tue, 09 Jan 2024 12:15:08 -0800 (PST)
 From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: anarsoul@gmail.com, tiny.windzz@gmail.com, linux-sunxi@lists.linux.dev,
- Alexey Klimov <alexey.klimov@linaro.org>
-Cc: rafael@kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- wens@csie.org, samuel@sholland.org, daniel.lezcano@linaro.org,
- peter.griffin@linaro.org, klimov.linux@gmail.com
-Subject:
- Re: [PATCH RESEND] arm64: dts: allwinner: a64: Add thermal trip points for
- GPU
-Date: Tue, 09 Jan 2024 21:13:02 +0100
-Message-ID: <2252115.iZASKD2KPV@jernej-laptop>
-In-Reply-To: <20240101000008.65747-1-alexey.klimov@linaro.org>
-References: <20240101000008.65747-1-alexey.klimov@linaro.org>
+To: fuyao <fuyao@sjterm.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org,
+ =?utf-8?B?6bqm5YGl5bu6?= <maijianzhang@allwinnertech.com>
+Subject: Re: [PATCH] gmac: sun8i: r40: add gmac tx_delay support
+Date: Tue, 09 Jan 2024 21:15:07 +0100
+Message-ID: <22143664.EfDdHjke4D@jernej-laptop>
+In-Reply-To: <20240102075807.1a4cac92@kernel.org>
+References:
+ <ZYKvCQBD-SY9uVLF@debian.cyg> <ZYPmZj8l01eQsDS5@debian.cyg>
+ <20240102075807.1a4cac92@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,108 +82,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-Hi Alexey!
+Dne torek, 02. januar 2024 ob 16:58:07 CET je Jakub Kicinski napisal(a):
+> On Thu, 21 Dec 2023 15:16:54 +0800 fuyao wrote:
+> > I don't see it in the user manual also.
+> > 
+> > it works fine in 100M, but it doesn't work good in 1G without tx_delay
+> > in my board.
+> > 
+> > Read the sdk from allwinner I found in:
+> > 
+> > https://sourcegraph.com/github.com/tinalinux/linux-3.10/-/blob/arch/arm/boot/dts/sun8iw11p1.dtsi?L1826
+> > https://sourcegraph.com/github.com/tinalinux/linux-3.10@r40-v1.y/-/blob/drivers/net/ethernet/allwinner/sunxi-gmac.c?L877
+> > 
+> > And I add it to my board, it works fine.
+> > 
+> > So, I think it may be exist register but not documented.
+> 
+> Unless Allwinner can chime in we should at least document the situation
+> clearly in the commit message (incl. what HW+config was tested, exactly)
+> and add a comment in the code?
+> 
 
-Dne ponedeljek, 01. januar 2024 ob 01:00:08 CET je Alexey Klimov napisal(a):
-> Without trip points for GPU, the following errors are printed in the
-> dmesg log and the sun8i-thermal driver fails to load:
-> 
-> thermal_sys: Failed to find 'trips' node
-> thermal_sys: Failed to find trip points for thermal-sensor id=1
-> sun8i-thermal: probe of 1c25000.thermal-sensor failed with error -22
-
-Please no Linux specific talk. Since DT is OS neutral let just talk about HW.
-
-> 
-> When thermal zones are defined, trip points definitions are mandatory.
-> Trip values for the GPU are assumed to be the same values as the CPU
-> ones. The available specs do not provide any hints about thermal regimes
-> for the GPU and it seems GPU is implemented on the same die as the CPU.
-> 
-> Tested on Pine a64+.
-> 
-> Cc: Samuel Holland <samuel@sholland.org>
-> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 46 +++++++++++++++++++
->  1 file changed, 46 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> index 62f45f71ec65..07963eea1bf0 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> @@ -243,6 +243,29 @@ gpu0_thermal: gpu0-thermal {
->  			polling-delay-passive = <0>;
->  			polling-delay = <0>;
->  			thermal-sensors = <&ths 1>;
-> +
-> +			trips {
-> +				gpu0_alert0: gpu0_alert0 {
-> +					/* milliCelsius */
-> +					temperature = <75000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-
-Since GPU has OPP, can you add cooling maps with at least first trip point?
+I agree. Fuyao, please do that.
 
 Best regards,
 Jernej
-
-> +
-> +				gpu0_alert1: gpu0_alert1 {
-> +					/* milliCelsius */
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				gpu0_crit: gpu0_crit {
-> +					/* milliCelsius */
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
->  		};
->  
->  		gpu1_thermal: gpu1-thermal {
-> @@ -250,6 +273,29 @@ gpu1_thermal: gpu1-thermal {
->  			polling-delay-passive = <0>;
->  			polling-delay = <0>;
->  			thermal-sensors = <&ths 2>;
-> +
-> +			trips {
-> +				gpu1_alert0: gpu1_alert0 {
-> +					/* milliCelsius */
-> +					temperature = <75000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				gpu1_alert1: gpu1_alert1 {
-> +					/* milliCelsius */
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				gpu1_crit: gpu1_crit {
-> +					/* milliCelsius */
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
->  		};
->  	};
->  
-> 
-
 
 
 
