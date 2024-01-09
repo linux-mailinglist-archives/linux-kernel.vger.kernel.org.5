@@ -1,63 +1,53 @@
-Return-Path: <linux-kernel+bounces-20781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0D8828523
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:32:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC29482852B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:34:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2052C1C23804
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:32:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75846285B4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086A83715E;
-	Tue,  9 Jan 2024 11:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33F8374ED;
+	Tue,  9 Jan 2024 11:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GkiKEFCi"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eWy5B/Ss"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E460C36AFA
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 11:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e7e55c0f6so2878469e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 03:32:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704799938; x=1705404738; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uZH9xu4+KP5NZ2SVNdhbpi1SJ+MZUxb3PM+kZHRuKf4=;
-        b=GkiKEFCiqIAKZ9wwF9UNgnXxRpJTvL/QnqvBMt8NqnWwP3luy4AvGRMeDJriHd8VoM
-         n2P/0J6MtfXJHj0NxVeatrmqqDcEPa76KBF6tK2K3B+3b8acC6CjnW1KSc1gE7O1w21J
-         nxSz+bZDs5npvJ/yQcsea0mN9gfPMWn/XwheInlh5RDDVt23Dxk/hHyr2lIHm4pPyI7f
-         wTWHaZjHIdrz2ifxCw1a9p6nHI7ruF0FlVsHMHcvGTq6GpidQvblSuv1tAcvJrbsXenT
-         xepTfIsf1lNv5j7pn+F/jm7Yp6bB2k4EHNwDE6DenHzv86+9kLkXxfGtqTWr1RDGqOVc
-         Bfzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704799938; x=1705404738;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uZH9xu4+KP5NZ2SVNdhbpi1SJ+MZUxb3PM+kZHRuKf4=;
-        b=Mj/qhkjlMmHOi0ecS+4mJmLtLNH/6haY9+TEmc+Qm3pi3JaXIm7JY3Tno8Hf2verOI
-         n2gQJk0cD7nlyqIFmRJcKCXFTMOnSNUSCkpNe1E+PI2Idjp/bOSVJrcVY5vfoHRU3NAB
-         SkwXDJDSaxK0T4F/ZBxdZ89EvRTA6RCT3DZvWgtnvhY33dRf/ADDU0dq6rUlP3T6wa+F
-         sEOKa8lifMigRHqxOdKLd0oHy9POgs8nQ0x9nKpW/uijlbMcMUBGDjRRFjCYaz3JGwTQ
-         gJfxeuBVEp0EnUtORjmsdGu/gOAE/FKvdqNxtqojmWaKGxRLtwhkfJmi6oBi7Yi3lgFT
-         /0pA==
-X-Gm-Message-State: AOJu0Yz8LSFs9aZEPCz4DyCOybxzJ918xXNMx1Rne+Kg6H1Yj5KJoNbr
-	J7LE6+v4pe1irzfFrMdQf0+NLmICx/nIpw==
-X-Google-Smtp-Source: AGHT+IE5ktJgQ7ykYbTxCEBKZnkPgIkgOquOJ5E/DUU4U/ysFCRTldTTfhXMTlfNxEAVjhbEKRDTMA==
-X-Received: by 2002:a05:6512:32bb:b0:50e:9353:5344 with SMTP id q27-20020a05651232bb00b0050e93535344mr1124855lfe.79.1704799937901;
-        Tue, 09 Jan 2024 03:32:17 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id v12-20020a1709061dcc00b00a2af672cdd8sm935315ejh.161.2024.01.09.03.32.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 03:32:17 -0800 (PST)
-Message-ID: <e68b3b0c-7a03-4771-b6e8-c1a263e31425@linaro.org>
-Date: Tue, 9 Jan 2024 12:32:15 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B534C374D4;
+	Tue,  9 Jan 2024 11:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4099UjfP030376;
+	Tue, 9 Jan 2024 11:33:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BFDoTnGaouRkhGufZSmVdgklTbBF92kYJkToRoZxYAg=; b=eW
+	y5B/SsW7t7iLZNA5p7HbUXaCiSA243Kh741Xu53V4NKINt9ys0RMSxF5PRCMF0cj
+	WAOnhnJR+ZoOVkryraB0lDeqOVVeoPeXsLmeJYNaBIr4Yn1uxXcT0jSBs6qlH9jQ
+	+mbDlOC1mxINUWA+d+PQuPHH5OWrglkJpNpA3KTBMBVRluw11Mxpxtd0SK2AvwRC
+	f3IwHhQu43MgitsSP7EM6shO1ry9G2jW8wrp2RNz8QpA+VXxnYvrGG6rjqHvmhVT
+	bHsT14+QP9aHzBoIWXo9yxWm3lzE4zgAX7anyDASaKL/zAOxQTjekOIONhfATOgd
+	fi7kPEtHkc6SGcAYRMfA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh234gdfh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 11:33:52 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409BXpH0012561
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 11:33:51 GMT
+Received: from [10.253.15.239] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
+ 2024 03:33:45 -0800
+Message-ID: <ba8767a2-b81a-4462-a65d-0096c7df26dd@quicinc.com>
+Date: Tue, 9 Jan 2024 19:33:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,179 +55,78 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 02/11] dt-bindings: gpu: Add PowerVR Series5 SGX
- GPUs
+Subject: Re: [PATCH v4 0/5] support ipq5332 platform
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Sergey Ryazanov <ryazanov.s.a@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <robert.marko@sartura.hr>, <linux-arm-msm@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
+References: <20231225084424.30986-1-quic_luoj@quicinc.com>
+ <a6a50fb6-871f-424c-a146-12b2628b8b64@gmail.com>
+ <cfb04c82-3cc3-49f6-9a8a-1f6d1a22df40@quicinc.com>
+ <dd05a599-247a-4516-8ad3-7550ceea99f7@gmail.com>
+ <ac1977f5-cd6a-4f16-b0a0-f4322c34c5f5@quicinc.com>
+ <bdeca791-f2e5-4256-b386-a75c03f93686@gmail.com>
+ <895eadd7-1631-4b6b-8db4-d371f2e52611@lunn.ch>
+ <e8722b79-e58a-4856-ae56-e44e2860c2f6@quicinc.com>
+ <3ae7f014-5b51-4198-a8e1-c042a7926969@lunn.ch>
 Content-Language: en-US
-To: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
- Donald Robson <donald.robson@imgtec.com>,
- Matt Coster <matt.coster@imgtec.com>,
- "H . Nikolaus Schaller" <hns@goldelico.com>, Adam Ford <aford173@gmail.com>,
- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, =?UTF-8?Q?Beno=C3=AEt_Cousson?=
- <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>,
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Paul Cercueil <paul@crapouillou.net>
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
- linux-mips@vger.kernel.org
-References: <20240108183302.255055-1-afd@ti.com>
- <20240108183302.255055-3-afd@ti.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240108183302.255055-3-afd@ti.com>
-Content-Type: text/plain; charset=UTF-8
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <3ae7f014-5b51-4198-a8e1-c042a7926969@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: mv-2Fo_RQplrYO8EqhADtPuZLdqHZMS2
+X-Proofpoint-GUID: mv-2Fo_RQplrYO8EqhADtPuZLdqHZMS2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=437 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2401090094
 
-On 08/01/2024 19:32, Andrew Davis wrote:
-> The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs from
-> multiple vendors. Describe how the SGX GPU is integrated in these SoC,
-> including register space and interrupts. Clocks, reset, and power domain
-> information is SoC specific.
+
+
+On 1/8/2024 9:27 PM, Andrew Lunn wrote:
+>> The IPQ PPE includes MAC and UNIPHY integrated, the connection with
+>> external PHY is as below.
+>> MAC ---- UNIPHY(PCS) ---- (PCS)external PHY.
+>>
+>> The UNIPHY here is the Ethernet dedicated SERDES for connecting with
+>> external PHY.
 > 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  .../bindings/gpu/img,powervr-sgx.yaml         | 124 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 125 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr-sgx.yaml
+> You call it a PCS here. So does it implement clause 37 or 73 of the
+> 802.3 standard? If it does, the driver for it belongs in
+> drivers/net/pcs.
 > 
-> diff --git a/Documentation/devicetree/bindings/gpu/img,powervr-sgx.yaml b/Documentation/devicetree/bindings/gpu/img,powervr-sgx.yaml
-> new file mode 100644
-> index 0000000000000..bb821e1184de9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpu/img,powervr-sgx.yaml
-> @@ -0,0 +1,124 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (c) 2023 Imagination Technologies Ltd.
+> 	Andrew
 
-Your email has @TI domain, are you sure you attribute your copyrights to
-Imagination?
+Hi Andrew,
+The PPE integrated PCSes support multiple interface modes such as SGMII,
+UXSGMII, QSGMII, PSGMII and 10g-baser etc. which is configurable for
+connecting the different PHY devices.
 
-..
+the SGMII and UXSGMII follows Cisco standard, which does not implement
+the 802.3 standard in this interface modes.
+PSGMII includes the qcom private protocol.
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks: true
+The PPE driver also including the integrated PCS driver will be
+posted for the review in the near future, we can discuss in detail
+based on that patch series raised.
 
-Missing min/maxItems
-
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    items:
-> +      - const: core
-> +      - const: mem
-> +      - const: sys
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-
-This goes after allOf: block.
-
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: ti,am6548-gpu
-> +    then:
-> +      required:
-> +        - power-domains
-> +    else:
-> +      properties:
-> +        power-domains: false
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - allwinner,sun6i-a31-gpu
-> +              - ingenic,jz4780-gpu
-> +    then:
-> +      allOf:
-> +        - if:
-
-I don't understand why do you need to embed allOf inside another allOf.
-The upper (outer) if:then: looks entirely useless.
-
-> +            properties:
-> +              compatible:
-> +                contains:
-> +                  const: allwinner,sun6i-a31-gpu
-> +          then:
-> +            properties:
-> +              clocks:
-> +                minItems: 2
-> +                maxItems: 2
-> +              clock-names:
-> +                minItems: 2
-> +                maxItems: 2
+Thanks for the suggestions.
 
 
-Best regards,
-Krzysztof
+
 
 
