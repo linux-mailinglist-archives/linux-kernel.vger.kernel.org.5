@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-20566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5E5828153
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:30:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1738782815F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF7728183E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:30:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B92652823C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1243A264;
-	Tue,  9 Jan 2024 08:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B573A8EB;
+	Tue,  9 Jan 2024 08:24:30 +0000 (UTC)
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12393A1A9;
-	Tue,  9 Jan 2024 08:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A723A267;
+	Tue,  9 Jan 2024 08:24:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=users.sourceforge.jp
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-	by sakura.ysato.name (Postfix) with ESMTPSA id D09BB1C0A22;
-	Tue,  9 Jan 2024 17:24:24 +0900 (JST)
+	by sakura.ysato.name (Postfix) with ESMTPSA id 979201C0A2A;
+	Tue,  9 Jan 2024 17:24:26 +0900 (JST)
 From: Yoshinori Sato <ysato@users.sourceforge.jp>
 To: linux-sh@vger.kernel.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -85,9 +85,9 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	linux-pci@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v6 24/37] dt-binding: sh: cpus: Add SH CPUs json-schema
-Date: Tue,  9 Jan 2024 17:23:21 +0900
-Message-Id: <2e8be1e493f315c486b3113adf5d2164c3cd29e2.1704788539.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v6 25/37] dt-bindings: vendor-prefixes: Add iodata
+Date: Tue,  9 Jan 2024 17:23:22 +0900
+Message-Id: <17c6381a733d34e8460fd2979f8b53804e808e04.1704788539.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1704788539.git.ysato@users.sourceforge.jp>
 References: <cover.1704788539.git.ysato@users.sourceforge.jp>
@@ -99,94 +99,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Renesas SH series and compatible ISA CPUs.
+Add IO DATA DEVICE INC.
+https://www.iodata.com/
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
- .../devicetree/bindings/sh/cpus.yaml          | 74 +++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sh/cpus.yaml
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sh/cpus.yaml b/Documentation/devicetree/bindings/sh/cpus.yaml
-new file mode 100644
-index 000000000000..c04f897d2c2a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sh/cpus.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sh/cpus.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Renesas SuperH CPUs
-+
-+maintainers:
-+  - Yoshinori Sato <ysato@users.sourceforge.jp>
-+
-+description: |+
-+  The device tree allows to describe the layout of CPUs in a system through
-+  the "cpus" node, which in turn contains a number of subnodes (ie "cpu")
-+  defining properties for every cpu.
-+
-+  Bindings for CPU nodes follow the Devicetree Specification, available from:
-+
-+  https://www.devicetree.org/specifications/
-+
-+properties:
-+  compatible:
-+    anyOf:
-+      - items:
-+          - enum:
-+              - renesas,sh2a
-+              - renesas,sh3
-+              - renesas,sh4
-+              - renesas,sh4a
-+              - jcore,j2
-+          - const: renesas,sh2
-+      - const: renesas,sh2
-+
-+  clock-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: CPU core clock frequency.
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names: true
-+
-+  reg:
-+    maxItems: 1
-+
-+  device_type: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - device_type
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/sh7750-cpg.h>
-+    cpus {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        cpu: cpu@0 {
-+            compatible = "renesas,sh4", "renesas,sh2";
-+            device_type = "cpu";
-+            reg = <0>;
-+            clocks = <&cpg SH7750_CPG_ICK>;
-+            clock-names = "ick";
-+            icache-size = <16384>;
-+            icache-line-size = <32>;
-+            dcache-size = <32768>;
-+            dcache-line-size = <32>;
-+        };
-+    };
-+...
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 309b94c328c8..94ed63d9f7de 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -671,6 +671,8 @@ patternProperties:
+     description: Inventec
+   "^inversepath,.*":
+     description: Inverse Path
++  "^iodata,.*":
++    description: IO DATA DEVICE Inc.
+   "^iom,.*":
+     description: Iomega Corporation
+   "^irondevice,.*":
 -- 
 2.39.2
 
