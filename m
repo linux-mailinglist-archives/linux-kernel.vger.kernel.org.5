@@ -1,88 +1,82 @@
-Return-Path: <linux-kernel+bounces-20888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DCF58286FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:22:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BBD18286FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3645A1C23B68
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:22:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72ECA1C243A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4DC38F94;
-	Tue,  9 Jan 2024 13:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B294739842;
+	Tue,  9 Jan 2024 13:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="CCveQLyS"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kYdI5mgg"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587B6374D9
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2328f2b6e5so75282766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 05:22:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7500D38FB7
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e52ebd643so1653425e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 05:22:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1704806526; x=1705411326; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8nyMGssowFI2DlaMmQ3Tpss+UtDdR+faxTS8hNAvao=;
-        b=CCveQLySshz7k2ru4M4ppbgS8kxsulNJEaNj7eXYbh4JktAwOMJfpXed+lNRPLObH9
-         caLkWyW+M7nBcgw5Wu3CDfoXki638jXuhp6FmI0RRzHSClvj+wNTbyGsX0NG0dLKKujZ
-         xzIVzXHAs4sArvhQYY5fGdxXSSW8ZDt3sUvdE=
+        d=linaro.org; s=google; t=1704806532; x=1705411332; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BqpeTcL0k5oGVabBc1U+iO/jvu/aOAZcR1mMG7pClgQ=;
+        b=kYdI5mggI88RkRb9f/wl6szMNqm0wunJ5LMB8h4Sl8lW15JKfoUGb8pKETWJdoCNGY
+         w5Q7dRRCY7e8SRB8Hqetul/AFFbAzE2R/L9SPNWM4R01Tz7zSfNkrJd5RcKdJoJN/Y7G
+         AMG1aax8Z6hUyF7W//2uXaPE21rC+auJUwhdEDIjVxMrB6UbsRhgvkrQVPtHQRwI9icl
+         El8GqknFuM1EKCF6tS3j8OKu6dCLf4E+zauEBrRu6IvnaZY5Ms+ZqIgKwx2LPsRASg1x
+         /vJyHE8hx3NgKiN8Bdd7p092VauekiTBLbx+CXzTtyzKmN+fwo0mV278Wir5ZgYFZbZ0
+         bkMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704806526; x=1705411326;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8nyMGssowFI2DlaMmQ3Tpss+UtDdR+faxTS8hNAvao=;
-        b=J8+gTjQZ8uCdr0GJviMqfN0t1FblthUpuNYu/ZFyA0ijpXsE3F4YULamlo4utcEGez
-         Prp5kgqVy4nuGKwl5fhXcAWB5ZQG3e7Opno3ZoXr6+WpPwv5tpoJiz/tlbMzCesUSMz2
-         yvkFiyyn9Nmy7Z0w9+002WSIaeXELSqIHLl4zILrXjwHy5XImeWD0a+GB/IlbPuuuCbZ
-         nrtmCHbbai2mFJZiIUMzaSXN4ne6ozREYskHKMjRexGIauEfoVhuoQNLFlCwlah+fMxj
-         Hqq08vGmnKBi7e7KHZoW0xQ+TXdQ5INuAkukRc6miNp7jGBXlgp1juoDY0r5TKp8UiOZ
-         g5hw==
-X-Gm-Message-State: AOJu0YyQLAeTEU+SXs022m8ZeJWNiBo5Vbp7Z6Q/5M6cBHw14L0zjb/+
-	iNOBQMRCDEka9TlQzj62/zERsE4jHRPRmg==
-X-Google-Smtp-Source: AGHT+IFi7RfzXVRLPVWIVsSbvJo+89aCiOIdxE8Is6w6/5ECdWmo4tLla9mz3sECM1F7viqHnFP/0w==
-X-Received: by 2002:a17:907:9282:b0:a26:a4e8:5454 with SMTP id bw2-20020a170907928200b00a26a4e85454mr4655999ejc.0.1704806526503;
-        Tue, 09 Jan 2024 05:22:06 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id s23-20020a170906455700b00a27a32e6502sm1026398ejq.117.2024.01.09.05.22.04
+        d=1e100.net; s=20230601; t=1704806532; x=1705411332;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BqpeTcL0k5oGVabBc1U+iO/jvu/aOAZcR1mMG7pClgQ=;
+        b=f44enp1bCWUNwIvZ7unUvoj1eBKT4o4hIMiDlMaJmC0Xe3/MMj8TGa061c9SxGEGgu
+         KtIpblSj82fMWnBEF+83N0L5oziNWF2hj/rHjhZ5UYkA8y9OMdSlGAyQ9kDLyfdfxC1P
+         65G6bSb/JPd5diKxqNmQ6l3hxzGdJlJYLfqBdUnMZkoidN6aN7vSY7PhU/TMo3dElpLL
+         Fgbhvu2r0sk2P/LCSLYn57w14vSS5lrM43ohDCa4NBYD8m2L69nhJOg3++8Sq2zPvIg3
+         8E6gMANEZQdCkQe7/1ZzlTqCBlyIPSROm1OQtujsugvL3cmjiTPLcgLnQcB8S57mKdkE
+         avnw==
+X-Gm-Message-State: AOJu0Yy4DAMWpo7tgwLL+wgUQWE66CdP5F99QdLJtBHkErHU2sn/NbZx
+	yVCdsJb0epdABy+RJvy/J/BT/d3F6C/1xw==
+X-Google-Smtp-Source: AGHT+IGHU5onWBzSXDDK6xzwiAJ6Do7Z1PdUmbySUVdyTMwb8DuI8Pj6wTTd28JDR/tvi7JlWFWMSw==
+X-Received: by 2002:a05:600c:458b:b0:40e:4f7a:bc29 with SMTP id r11-20020a05600c458b00b0040e4f7abc29mr481967wmo.159.1704806531714;
+        Tue, 09 Jan 2024 05:22:11 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id d14-20020adfef8e000000b003373fe3d345sm2393561wro.65.2024.01.09.05.22.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 05:22:05 -0800 (PST)
-Date: Tue, 9 Jan 2024 14:22:02 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Javier Martinez Canillas <javierm@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-	Erico Nunes <nunes.erico@gmail.com>,
-	=?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	Donald Robson <donald.robson@imgtec.com>,
-	Frank Binns <frank.binns@imgtec.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Matt Coster <matt.coster@imgtec.com>,
-	Sarah Walker <sarah.walker@imgtec.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/imagination: Defer probe if requested firmware is
- not available
-Message-ID: <ZZ1IellMvvyFlQaF@phenom.ffwll.local>
-Mail-Followup-To: Javier Martinez Canillas <javierm@redhat.com>,
-	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-	Erico Nunes <nunes.erico@gmail.com>,
-	=?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>,
-	David Airlie <airlied@gmail.com>,
-	Donald Robson <donald.robson@imgtec.com>,
-	Frank Binns <frank.binns@imgtec.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Matt Coster <matt.coster@imgtec.com>,
-	Sarah Walker <sarah.walker@imgtec.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org
-References: <20240109120604.603700-1-javierm@redhat.com>
+        Tue, 09 Jan 2024 05:22:11 -0800 (PST)
+Date: Tue, 9 Jan 2024 16:22:07 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	linux-hardening@vger.kernel.org, error27@gmail.com,
+	gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
+	Vishnu Dasa <vdasa@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
+	darren.kenny@oracle.com, syzkaller <syzkaller@googlegroups.com>
+Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
+ dg_dispatch_as_host()
+Message-ID: <36aecc9a-ac30-436f-b42b-39f63513d743@moroto.mountain>
+References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
+ <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
+ <202401081430.9DAB37B46@keescook>
+ <9c742547-0021-464b-b7a8-7af46b0a4afa@embeddedor.com>
+ <79ca2f85-1f8d-4a12-aa5a-09137033605f@moroto.mountain>
+ <7d7b94ba-9a1f-44de-8491-dc4864338f80@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,89 +85,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240109120604.603700-1-javierm@redhat.com>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+In-Reply-To: <7d7b94ba-9a1f-44de-8491-dc4864338f80@embeddedor.com>
 
-On Tue, Jan 09, 2024 at 01:05:59PM +0100, Javier Martinez Canillas wrote:
-> The device is initialized in the driver's probe callback and as part of
-> that initialization, the required firmware is loaded. But this fails if
-> the driver is built-in and the firmware isn't present in the initramfs:
+On Tue, Jan 09, 2024 at 06:31:41AM -0600, Gustavo A. R. Silva wrote:
 > 
-> $ dmesg | grep powervr
-> [    2.969757] powervr fd00000.gpu: Direct firmware load for powervr/rogue_33.15.11.3_v1.fw failed with error -2
-> [    2.979727] powervr fd00000.gpu: [drm] *ERROR* failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-2)
-> [    2.989885] powervr: probe of fd00000.gpu failed with error -2
-> 
-> $ ls -lh /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
-> -rw-r--r-- 1 root root 51K Dec 12 19:00 /lib/firmware/powervr/rogue_33.15.11.3_v1.fw.xz
-> 
-> To prevent the probe to fail for this case, let's defer the probe if the
-> firmware isn't available. That way, the driver core can retry it and get
-> the probe to eventually succeed once the root filesystem has been mounted.
-> 
-> If the firmware is also not present in the root filesystem, then the probe
-> will never succeed and the reason listed in the debugfs devices_deferred:
-> 
-> $ cat /sys/kernel/debug/devices_deferred
-> fd00000.gpu     powervr: failed to load firmware powervr/rogue_33.15.11.3_v1.fw (err=-517)
-> 
-> Fixes: f99f5f3ea7ef ("drm/imagination: Add GPU ID parsing and firmware loading")
-> Suggested-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> You're arguing that fortify caused a problem.
 
-Uh that doesn't work.
+Yes.
 
-Probe is for "I'm missing a struct device" and _only_ that. You can't
-assume that probe deferral will defer enough until the initrd shows up.
+Before: Code working correctly
+After: Kernel Panic
 
-You need to fix this by fixing the initrd to include the required
-firmwares. This is what MODULE_FIRMWARE is for, and if your initrd fails
-to observe that it's just broken.
+At first, I started to question if I was going mad, but then I looked
+through the email thread and Harshit tested it and proved that the
+kernel does actually panic depending on the .config.
 
-Yes I know as long as you have enough stuff built as module so that there
-will be _any_ kind of device probe after the root fs is mounted, this
-works, because that triggers a re-probe of everything. But that's the most
-kind of fragile fix there is.
+I mean realistically we should backport this patch to old kernels,
+right?  And if we had to assign a Fixes tag to this it would need to be
+the commit which adds Fortify to the kernel.  Prior to that commit the
+code was fine.
 
-If you want to change that then I think that needs an official blessing
-from Greg KH/device core folks.
+Again, I'm not saying that Fortify is bad overall.  Probably in DnD it
+would be Chaotic Good where it's overall good but sometimes a pain.
 
-Cheers, Sima
+regards,
+dan carpenter
 
-> ---
-> 
->  drivers/gpu/drm/imagination/pvr_device.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/imagination/pvr_device.c b/drivers/gpu/drm/imagination/pvr_device.c
-> index 1704c0268589..6eda25366431 100644
-> --- a/drivers/gpu/drm/imagination/pvr_device.c
-> +++ b/drivers/gpu/drm/imagination/pvr_device.c
-> @@ -295,8 +295,16 @@ pvr_request_firmware(struct pvr_device *pvr_dev)
->  	 */
->  	err = request_firmware(&fw, filename, pvr_dev->base.dev);
->  	if (err) {
-> -		drm_err(drm_dev, "failed to load firmware %s (err=%d)\n",
-> -			filename, err);
-> +		/*
-> +		 * Defer probe if the firmware is not available yet (e.g: the driver
-> +		 * is built-in and the firmware not present in the initramfs image).
-> +		 */
-> +		if (err == -ENOENT)
-> +			err = -EPROBE_DEFER;
-> +
-> +		dev_err_probe(drm_dev->dev, err, "failed to load firmware %s (err=%d)\n",
-> +			      filename, err);
-> +
->  		goto err_free_filename;
->  	}
->  
-> -- 
-> 2.43.0
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
 
