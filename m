@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-20679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7CDE828368
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:42:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD8B828369
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 521A91F2738A
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1D561F2739C
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E71A35883;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621C6364C7;
 	Tue,  9 Jan 2024 09:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mEsDLkTX"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GwEAsIdC"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD11D360B7
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92AF1364A1
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e43e48a16so23096235e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:41:29 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e43e48a16so23096305e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:41:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704793288; x=1705398088; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rvq+tGxj6HwJnWyLU5AYk3wE3tRgl1hgJxfsjuQ7xJw=;
-        b=mEsDLkTX7ku+J8l0Hz5hQFPoUrwyRUYWHwtQbKUAW7RBBWP0SjET51wOcpC5zHTX7u
-         ZIeMX3p8z2V84EUKyLCVtfnwLVM0oA7e8O5nRFRIg9VDTUCj9iqpwu6Rlmq0VsLHZvB9
-         P2eolfdfikEYHYBL6BqZrCUrWyylOnzOueB4rwtImuHyJnNjHJDKBs14I1mh5cNHnLQl
-         d6eWtACpfNyVVWkKizDqI67m2uJXN+4QmI1m11mh6oxt+MjAs6GBE5O0KbGLwTWqx3If
-         nHTmKe05qqlC1S2t6eD/Zhd2yejvG2mCK+1EkVSfEYq+rTd6fECtGXEiubrtpcsx26Qe
-         TD9g==
+        d=linaro.org; s=google; t=1704793289; x=1705398089; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V7MJiCvLo/jKmCJa7CzUVzvfGfV/pr2Rtd+bWShZcMg=;
+        b=GwEAsIdCvsvbtGtNEpkrPXZxUe2c2FW4fwG65vVzcUksoxtDTT8rYE/XSzTt2lfik3
+         ZNA1HUWLjF7bIjiWfi103DcjrEk8nKqc1BjbxEKpM8hdclNurydvyEaeScnwR9IYrToD
+         DddUwkcbZp8J7+cEybpuekoeaYPVNwREA9oyza3hvuK4h6p+z6jlKj9IIkZf/1Og7TR8
+         xi3CEAWrWK0wY/OUw4O4N/4LqSiOwhxSRsS5JTORHbm0yTdERKQthsfQQemz0tGAFw3c
+         wX2Zq2X8pa9EuLHPfJJ6OeU1j/7AgdcvL9t3podrzKoH11Cl2jF9wRkReblY/z+eX+av
+         hl3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704793288; x=1705398088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rvq+tGxj6HwJnWyLU5AYk3wE3tRgl1hgJxfsjuQ7xJw=;
-        b=xOdR1l5aHWE5a88V8mPXDPv/4xFb5y6Dw5xUKhzE3qAFgb9KbhzH7Sw114NEz0b684
-         pXuv5R3rbwZGV9FWEZRmMA72irFX7XsJgpOb6Lu7aZIM6sYu90MbccKIf2cAIjJKKsVw
-         zwk4+bZ0b1WTZIILWY7hmmEbcobylw3y7Yw0flTyF/24Md7VXsYsfxuIv9iPDJB566B8
-         MICbra8kmcadsceNVN3wleVTZBYSAlIyD+klmiRyDvu89PgOge7gzzfxEQcHTUBoUXr9
-         +q95wlY9SlctngTky1MSTwK3CiTFFO1V8tMIfaJLwlDWQGKDAyQjm+DFg9JtwRl6r9D2
-         X2rQ==
-X-Gm-Message-State: AOJu0Yzuyan6jIi4fZ8qfcj8hmKceRmF+bvg5adEPYR8gZZ7Fd8Ilr35
-	EaAVC/fRJjxfqEf/hqmw2ZUYQu7T38S6Hg==
-X-Google-Smtp-Source: AGHT+IFykomqh4Lkm8HZeu8a+BCYuz/0uA4ekB6W8dHmmDq3AhSgHUPS6ya108AfJJKIKBYjmbB/Kg==
-X-Received: by 2002:a05:600c:cc3:b0:40e:52b4:b873 with SMTP id fk3-20020a05600c0cc300b0040e52b4b873mr47902wmb.125.1704793287958;
-        Tue, 09 Jan 2024 01:41:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704793289; x=1705398089;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V7MJiCvLo/jKmCJa7CzUVzvfGfV/pr2Rtd+bWShZcMg=;
+        b=N4lBQzQWjrnYTEKaHrNPUo5iUj9HlqWBxST3PsE5MLDldiQfLJGUgX5b2xdOicNdNS
+         Fmxd196A9soUgkmQTfcLCwAqG7n/HOnI+JoT1cWOaZfEwfbHBl/Ul8vJP3nd/PddnrJi
+         VmLK0CPttMlj7OfnBLmjJVe7evHUspH+C58RJCuWpGB8bflEA2TEU84XlvCZrsmdLyXh
+         YlhSSzW9vihdkPWZ/LjFi8Q29fc0vh20D1St5OzRcVrbzDZrp7uebWAGKu8d8lk7nCkk
+         LywinLgyX/Se/pEZo4lj63wwWDJciztMU1urli6TERPN4RGJE5Efk9zKGWUOTUd4QWaW
+         Kqpg==
+X-Gm-Message-State: AOJu0YwjLq9RsnTSaQ7SkQiOQqLsA9iQOMWMcYvv81UdTKLdCKRWP6w4
+	uvnJR9B21nFGokPyXeg7fkpyRNXKSZ8B6A==
+X-Google-Smtp-Source: AGHT+IEHPpzN1dUWfpuTGUQRmBClJbT0l7QjJbXwvM8fesxSis6UKISNmpnW+ZXOJGcKs+XIyhoU9w==
+X-Received: by 2002:a05:600c:190e:b0:40d:5ca1:80bc with SMTP id j14-20020a05600c190e00b0040d5ca180bcmr2463647wmq.107.1704793288692;
+        Tue, 09 Jan 2024 01:41:28 -0800 (PST)
 Received: from mai.. (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.gmail.com with ESMTPSA id jg28-20020a05600ca01c00b0040e45518c1csm2803863wmb.18.2024.01.09.01.41.27
+        by smtp.gmail.com with ESMTPSA id jg28-20020a05600ca01c00b0040e45518c1csm2803863wmb.18.2024.01.09.01.41.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 01:41:27 -0800 (PST)
+        Tue, 09 Jan 2024 01:41:28 -0800 (PST)
 From: Daniel Lezcano <daniel.lezcano@linaro.org>
 To: daniel.lezcano@linaro.org,
 	rjw@rjwysocki.net,
@@ -62,745 +63,640 @@ To: daniel.lezcano@linaro.org,
 Cc: rui.zhang@intel.com,
 	linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH v6 1/2] thermal/debugfs: Add thermal cooling device debugfs information
-Date: Tue,  9 Jan 2024 10:41:11 +0100
-Message-Id: <20240109094112.2871346-1-daniel.lezcano@linaro.org>
+Subject: [PATCH v6 2/2] thermal/debugfs: Add thermal debugfs information for mitigation episodes
+Date: Tue,  9 Jan 2024 10:41:12 +0100
+Message-Id: <20240109094112.2871346-2-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240109094112.2871346-1-daniel.lezcano@linaro.org>
+References: <20240109094112.2871346-1-daniel.lezcano@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The thermal framework does not have any debug information except a
-sysfs stat which is a bit controversial. This one allocates big chunks
-of memory for every cooling devices with a high number of states and
-could represent on some systems in production several megabytes of
-memory for just a portion of it. As the sysfs is limited to a page
-size, the output is not exploitable with large data array and gets
-truncated.
-
-The patch provides the same information than sysfs except the
-transitions are dynamically allocated, thus they won't show more
-events than the ones which actually occurred. There is no longer a
-size limitation and it opens the field for more debugging information
-where the debugfs is designed for, not sysfs.
+The mitigation episodes are recorded. A mitigation episode happens
+when the first trip point is crossed the way up and then the way
+down. During this episode other trip points can be crossed also and
+are accounted for this mitigation episode. The interesting information
+is the average temperature at the trip point, the undershot and the
+overshot. The standard deviation of the mitigated temperature will be
+added later.
 
 The thermal debugfs directory structure tries to stay consistent with
 the sysfs one but in a very simplified way:
 
 thermal/
- -- cooling_devices
-    |-- 0
-    |   |-- clear
-    |   |-- time_in_state_ms
-    |   |-- total_trans
-    |   `-- trans_table
-    |-- 1
-    |   |-- clear
-    |   |-- time_in_state_ms
-    |   |-- total_trans
-    |   `-- trans_table
-    |-- 2
-    |   |-- clear
-    |   |-- time_in_state_ms
-    |   |-- total_trans
-    |   `-- trans_table
-    |-- 3
-    |   |-- clear
-    |   |-- time_in_state_ms
-    |   |-- total_trans
-    |   `-- trans_table
-    `-- 4
-        |-- clear
-        |-- time_in_state_ms
-        |-- total_trans
-        `-- trans_table
+ `-- thermal_zones
+     |-- 0
+     |   `-- mitigations
+     `-- 1
+         `-- mitigations
 
-The content of the files in the cooling devices directory is the same
-as the sysfs one except for the trans_table which has the following
-format:
+The content of the mitigations file has the following format:
 
-Transition	Hits
-1->0      	246
-0->1      	246
-2->1      	632
-1->2      	632
-3->2      	98
-2->3      	98
+,-Mitigation at 349988258us, duration=130136ms
+| trip |     type | temp(°mC) | hyst(°mC) |  duration  |  avg(°mC) |  min(°mC) |  max(°mC) |
+|    0 |  passive |     65000 |      2000 |     130136 |     68227 |     62500 |     75625 |
+|    1 |  passive |     75000 |      2000 |     104209 |     74857 |     71666 |     77500 |
+,-Mitigation at 272451637us, duration=75000ms
+| trip |     type | temp(°mC) | hyst(°mC) |  duration  |  avg(°mC) |  min(°mC) |  max(°mC) |
+|    0 |  passive |     65000 |      2000 |      75000 |     68561 |     62500 |     75000 |
+|    1 |  passive |     75000 |      2000 |      60714 |     74820 |     70555 |     77500 |
+,-Mitigation at 238184119us, duration=27316ms
+| trip |     type | temp(°mC) | hyst(°mC) |  duration  |  avg(°mC) |  min(°mC) |  max(°mC) |
+|    0 |  passive |     65000 |      2000 |      27316 |     73377 |     62500 |     75000 |
+|    1 |  passive |     75000 |      2000 |      19468 |     75284 |     69444 |     77500 |
+,-Mitigation at 39863713us, duration=136196ms
+| trip |     type | temp(°mC) | hyst(°mC) |  duration  |  avg(°mC) |  min(°mC) |  max(°mC) |
+|    0 |  passive |     65000 |      2000 |     136196 |     73922 |     62500 |     75000 |
+|    1 |  passive |     75000 |      2000 |      91721 |     74386 |     69444 |     78125 |
+
+More information for a better understanding of the thermal behavior
+will be added after. The idea is to give detailed statistics
+information about the undershots and overshots, the temperature speed,
+etc... As all the information in a single file is too much, the idea
+would be to create a directory named with the mitigation timestamp
+where all data could be added.
+
+Please note this code is immune against trip ordering but not against
+a trip temperature change while a mitigation is happening. However,
+this situation should be extremely rare, perhaps not happening and we
+might question ourselves if something should be done in the core
+framework for other components first.
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
 Changelog:
   - v6
-    - No changes
+    - Renamed s/tz_event/tz_episode/ (Rafael)
+    - Used number of trip point crossed and loop through the stored
+      ones in order to be immune to trip point reordering (Rafael)
+    - Fixed variable names in description (Rafael/kbuild)
+    - Used macro for_each_trip (Rafael)
+    - Removed blank line (Rafael)
+    - Fixed tz_events structure description (Rafael)
   - v5
-    - Removed a spurious change in thermal_helper.c, missed to remove it in v4 (Rafael)
+    - No changes
   - v4
-    - Fixed kerneldoc description ordering (Rafael)
-    - Fixed comment (Rafael)
-    - Renamed s/cdev_value/cdev_record/ (Rafael)
-    - Used union instead of a common 'value' field in cdev_record (Rafael)
-    - Renamed s/cdev/cdev_dbg/ for clarity (Rafael)
+    - Reworded "trip violation" (Rafael)
+    - Reworded some comments and clarified other ones (Rafael)
+    - Renamed s/tz/tz_dbg/ for clarity (Rafael)
+    - Used flexible array and struct_size for allocation (Rafael)
     - Renamed s/dfs/thermal_dbg/ for clarity (Rafael)
-    - Renamed s/list/lists/ in the place where there are array of lists (Rafael)
-    - Inverted initialization logic when allocating a cdev_record (Rafael)
-    - Moved now = ktime_get() closer to the place where it is used (Rafael)
-    - Moved two lines down to a condition (Rafael)
-    - Removed strange and unexpected addition of function (Rafael)
+    - Used intermediate variable to prevent dereferencing multiple times a structure (Rafael)
+    - Renamed variable s/trip/trip_id/ (Rafael)
+    - Clarified trip_index usage in the comment (Rafael)
   - v3
-    - Fixed kerneldoc description (kbuild)
-    - Made some functions static
+    - Fixed kerneldoc (kbuild)
+    - Fixed wrong indentation s/<space>/<tab>/
   - v2
-    - Added parameter names to fix kbuild report
-    - Renamed 'reset' to 'clear' to avoid confusion (Rafael)
-    - Fixed several typos and rephrased some sentences (Rafael)
-    - Renamed structure field name s/list/node/ (Rafael)
-    - Documented structures and exported functions (Rafael)
-    - s/trans_list/transitions/ (Rafael)
-    - s/duration_list/durations/ (Rafael)
-    - Folded 'alloc' and 'insert' into a single function (Rafael)
-    - s/list/lists/ as it is an array of lists (Rafael)
-    - s/pos/entry/ (Rafael)
-    - Introduced a locking in the 'clear' callback function (Rafael)
-    - s/to/new_state/ and s/from/old_state/ (Rafael)
-    - Added some comments in thermal_debug_cdev_transition() (Rafael)
-    - Explained why char[11] (Rafael)
-    - s/Hits/Occurrences/ (Rafael)
-    - s/Time/Residency/ (Rafael)
-    - Constified structure pointer passed to thermal_debug_cdev_transition()
-    - s/thermal_debug_cdev_transition()/thermal_debug_cdev_state_update()/
+    - Applied changes based on comments from patch 1/2
+    - Constified structure in function parameters
   - v1 (from RFC):
-    - Fixed typo "occurred"
-    - Changed Kconfig option name and description
-    - Removed comment in the Makefile
-    - Renamed exported function name s/debugfs/debug/
-    - Replaced thermal_debug_cdev_[unregister|register] by [add|remove]
+    - Replaced exported function name s/debugfs/debug/
+    - Used "struct thermal_trip" parameter instead of "trip_id"
+    - Renamed handle_way_[up|down] by tz_trip_[up|down]
+    - Replaced thermal_debug_tz_[unregister|register] by [add|remove]
 ---
- drivers/thermal/Kconfig           |   7 +
- drivers/thermal/Makefile          |   2 +
- drivers/thermal/thermal_core.c    |   6 +
- drivers/thermal/thermal_core.h    |   1 +
- drivers/thermal/thermal_debugfs.c | 445 ++++++++++++++++++++++++++++++
- drivers/thermal/thermal_debugfs.h |  14 +
- drivers/thermal/thermal_helpers.c |  20 +-
- include/linux/thermal.h           |   7 +
- 8 files changed, 496 insertions(+), 6 deletions(-)
- create mode 100644 drivers/thermal/thermal_debugfs.c
- create mode 100644 drivers/thermal/thermal_debugfs.h
+ drivers/thermal/thermal_core.c    |   7 +
+ drivers/thermal/thermal_debugfs.c | 399 +++++++++++++++++++++++++++++-
+ drivers/thermal/thermal_debugfs.h |  14 ++
+ 3 files changed, 416 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-index c81a00fbca7d..3ff7add3fb7c 100644
---- a/drivers/thermal/Kconfig
-+++ b/drivers/thermal/Kconfig
-@@ -33,6 +33,13 @@ config THERMAL_STATISTICS
- 
- 	  If in doubt, say N.
- 
-+config THERMAL_DEBUGFS
-+	bool "Thermal subsystem debug support"
-+	depends on DEBUG_FS
-+	help
-+	  Say Y to allow the thermal subsystem to collect diagnostic
-+	  information that can be accessed via debugfs.
-+
- config THERMAL_EMERGENCY_POWEROFF_DELAY_MS
- 	int "Emergency poweroff delay in milli-seconds"
- 	default 0
-diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-index c934cab309ae..0f65ae86a9c6 100644
---- a/drivers/thermal/Makefile
-+++ b/drivers/thermal/Makefile
-@@ -10,6 +10,8 @@ thermal_sys-y			+= thermal_trip.o thermal_helpers.o
- # netlink interface to manage the thermal framework
- thermal_sys-$(CONFIG_THERMAL_NETLINK)		+= thermal_netlink.o
- 
-+thermal_sys-$(CONFIG_THERMAL_DEBUGFS)	+= thermal_debugfs.o
-+
- # interface to/from other layers providing sensors
- thermal_sys-$(CONFIG_THERMAL_HWMON)		+= thermal_hwmon.o
- thermal_sys-$(CONFIG_THERMAL_OF)		+= thermal_of.o
 diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 625ba07cbe2f..33332d401b13 100644
+index 33332d401b13..a0cbe8d7b945 100644
 --- a/drivers/thermal/thermal_core.c
 +++ b/drivers/thermal/thermal_core.c
-@@ -945,6 +945,8 @@ __thermal_cooling_device_register(struct device_node *np,
+@@ -367,6 +367,7 @@ static void handle_thermal_trip(struct thermal_zone_device *tz,
+ 			thermal_notify_tz_trip_up(tz->id,
+ 						  thermal_zone_trip_id(tz, trip),
+ 						  tz->temperature);
++			thermal_debug_tz_trip_up(tz, trip);
+ 			trip->threshold = trip->temperature - trip->hysteresis;
+ 		} else {
+ 			trip->threshold = trip->temperature;
+@@ -386,6 +387,7 @@ static void handle_thermal_trip(struct thermal_zone_device *tz,
+ 			thermal_notify_tz_trip_down(tz->id,
+ 						    thermal_zone_trip_id(tz, trip),
+ 						    tz->temperature);
++			thermal_debug_tz_trip_down(tz, trip);
+ 			trip->threshold = trip->temperature;
+ 		} else {
+ 			trip->threshold = trip->temperature - trip->hysteresis;
+@@ -417,6 +419,7 @@ static void update_temperature(struct thermal_zone_device *tz)
+ 	trace_thermal_temperature(tz);
  
- 	mutex_unlock(&thermal_list_lock);
+ 	thermal_genl_sampling_temp(tz->id, temp);
++	thermal_debug_update_temp(tz);
+ }
  
-+	thermal_debug_cdev_add(cdev);
-+	
- 	return cdev;
+ static void thermal_zone_device_init(struct thermal_zone_device *tz)
+@@ -1396,6 +1399,8 @@ thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *t
  
- out_cooling_dev:
-@@ -1151,6 +1153,8 @@ void thermal_cooling_device_unregister(struct thermal_cooling_device *cdev)
- 	if (!cdev)
+ 	thermal_notify_tz_create(tz->id, tz->type);
+ 
++	thermal_debug_tz_add(tz);
++
+ 	return tz;
+ 
+ unregister:
+@@ -1461,6 +1466,8 @@ void thermal_zone_device_unregister(struct thermal_zone_device *tz)
+ 	if (!tz)
  		return;
  
-+	thermal_debug_cdev_remove(cdev);
++	thermal_debug_tz_remove(tz);
 +
+ 	tz_id = tz->id;
+ 
  	mutex_lock(&thermal_list_lock);
- 
- 	if (!thermal_cooling_device_present(cdev)) {
-@@ -1570,6 +1574,8 @@ static int __init thermal_init(void)
- {
- 	int result;
- 
-+	thermal_debug_init();
-+
- 	result = thermal_netlink_init();
- 	if (result)
- 		goto error;
-diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-index 7dfe6c8deb8e..4b3452a65a2f 100644
---- a/drivers/thermal/thermal_core.h
-+++ b/drivers/thermal/thermal_core.h
-@@ -13,6 +13,7 @@
+diff --git a/drivers/thermal/thermal_debugfs.c b/drivers/thermal/thermal_debugfs.c
+index 84e5ef3dc16c..54c8401ac93b 100644
+--- a/drivers/thermal/thermal_debugfs.c
++++ b/drivers/thermal/thermal_debugfs.c
+@@ -1,4 +1,3 @@
+-
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright 2023 Linaro Limited
+@@ -14,8 +13,11 @@
+ #include <linux/mutex.h>
  #include <linux/thermal.h>
  
- #include "thermal_netlink.h"
-+#include "thermal_debugfs.h"
++#include "thermal_core.h"
++
+ static struct dentry *d_root;
+ static struct dentry *d_cdev;
++static struct dentry *d_tz;
  
- /* Default Thermal Governor */
- #if defined(CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE)
-diff --git a/drivers/thermal/thermal_debugfs.c b/drivers/thermal/thermal_debugfs.c
-new file mode 100644
-index 000000000000..84e5ef3dc16c
---- /dev/null
-+++ b/drivers/thermal/thermal_debugfs.c
-@@ -0,0 +1,445 @@
-+
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2023 Linaro Limited
-+ *
-+ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-+ *
-+ * Thermal subsystem debug support
-+ */
-+#include <linux/debugfs.h>
-+#include <linux/ktime.h>
-+#include <linux/list.h>
-+#include <linux/minmax.h>
-+#include <linux/mutex.h>
-+#include <linux/thermal.h>
-+
-+static struct dentry *d_root;
-+static struct dentry *d_cdev;
-+
-+/*
-+ * Length of the string containing the thermal zone id or the cooling
-+ * device id, including the ending nul character. We can reasonably
-+ * assume there won't be more than 256 thermal zones as the maximum
-+ * observed today is around 32.
-+ */
-+#define IDSLENGTH 4
-+
-+/*
-+ * The cooling device transition list is stored in a hash table where
-+ * the size is CDEVSTATS_HASH_SIZE. The majority of cooling devices
-+ * have dozen of states but some can have much more, so a hash table
-+ * is more adequate in this case, because the cost of browsing the entire
-+ * list when storing the transitions may not be negligible.
-+ */
-+#define CDEVSTATS_HASH_SIZE 16
-+
+ /*
+  * Length of the string containing the thermal zone id or the cooling
+@@ -60,7 +62,7 @@ struct cdev_debugfs {
+ };
+ 
+ /**
+- * struct cdev_value - Common structure for cooling device entry
++ * struct cdev_record - Common structure for cooling device entry
+  *
+  * The following common structure allows to store the information
+  * related to the transitions and to the state residencies. They are
+@@ -81,22 +83,89 @@ struct cdev_record {
+         };
+ };
+ 
 +/**
-+ * struct cdev_debugfs - per cooling device statistics structure
-+ * A cooling device can have a high number of states. Showing the
-+ * transitions on a matrix based representation can be overkill given
-+ * most of the transitions won't happen and we end up with a matrix
-+ * filled with zero. Instead, we show the transitions which actually
-+ * happened.
++ * struct trip_stats - Thermal trip statistics
 + *
-+ * Every transition updates the current_state and the timestamp. The
-+ * transitions and the durations are stored in lists.
++ * The trip_stats structure has the relevant information to show the
++ * statistics related to temperature going above a trip point.
 + *
-+ * @total: the number of transitions for this cooling device
-+ * @current_state: the current cooling device state
-+ * @timestamp: the state change timestamp
-+ * @transitions: an array of lists containing the state transitions
-+ * @durations: an array of lists containing the residencies of each state
++ * @timestamp: the trip crossing timestamp
++ * @duration: total time when the zone temperature was above the trip point
++ * @count: the number of times the zone temperature was above the trip point
++ * @max: maximum recorded temperature above the trip point
++ * @min: minimum recorded temperature above the trip point
++ * @avg: average temperature above the trip point
 + */
-+struct cdev_debugfs {
-+	u32 total;
-+	int current_state;
++struct trip_stats {
 +	ktime_t timestamp;
-+	struct list_head transitions[CDEVSTATS_HASH_SIZE];
-+	struct list_head durations[CDEVSTATS_HASH_SIZE];
++	ktime_t duration;
++	int count;
++	int max;
++	int min;
++	int avg;
 +};
 +
 +/**
-+ * struct cdev_value - Common structure for cooling device entry
++ * struct tz_episode - A mitigation episode information
 + *
-+ * The following common structure allows to store the information
-+ * related to the transitions and to the state residencies. They are
-+ * identified with a id which is associated to a value. It is used as
-+ * nodes for the "transitions" and "durations" above.
++ * The tz_episode structure describes a mitigation episode. A
++ * mitigation episode begins the trip point with the lower temperature
++ * is crossed the way up and ends when it is crossed the way
++ * down. During this episode we can have multiple trip points crossed
++ * the way up and down if there are multiple trip described in the
++ * firmware after the lowest temperature trip point.
 + *
-+ * @node: node to insert the structure in a list
-+ * @id: identifier of the value which can be a state or a transition
-+ * @residency: a ktime_t representing a state residency duration
-+ * @count: a number of occurrences
++ * @timestamp: first trip point crossed the way up
++ * @duration: total duration of the mitigation episode
++ * @node: a list element to be added to the list of tz events
++ * @trip_stats: per trip point statistics, flexible array
 + */
-+struct cdev_record {
++struct tz_episode {
++	ktime_t timestamp;
++	ktime_t duration;
 +	struct list_head node;
-+	int id;
-+	union {
-+                ktime_t residency;
-+                u64 count;
-+        };
++	struct trip_stats trip_stats[];
 +};
 +
 +/**
-+ * struct thermal_debugfs - High level structure for a thermal object in debugfs
++ * struct tz_debugfs - Store all mitigation episodes for a thermal zone
 + *
-+ * The thermal_debugfs structure is the common structure used by the
-+ * cooling device to compute the statistics.
++ * The tz_debugfs structure contains the list of the mitigation
++ * episodes and has to track which trip point has been crossed in
++ * order to handle correctly nested trip point mitigation episodes.
 + *
-+ * @d_top: top directory of the thermal object directory
-+ * @lock: per object lock to protect the internals
++ * We keep the history of the trip point crossed in an array and as we
++ * can go back and forth inside this history, eg. trip 0,1,2,1,2,1,0,
++ * we keep track of the current position in the history array.
 + *
-+ * @cdev: a cooling device debug structure
++ * @tz_episode: a list of thermal mitigation episodes
++ * @trips_crossed: an array of trip points crossed by id
++ * @nr_trips: the number of trip points currently being crossed
 + */
-+struct thermal_debugfs {
-+	struct dentry *d_top;
-+	struct mutex lock;
-+	union {
-+		struct cdev_debugfs cdev_dbg;
-+	};
++struct tz_debugfs {
++	struct list_head tz_episodes;
++	int *trips_crossed;
++	int nr_trips;
 +};
 +
-+void thermal_debug_init(void)
-+{
-+	d_root = debugfs_create_dir("thermal", NULL);
-+	if (!d_root)
+ /**
+  * struct thermal_debugfs - High level structure for a thermal object in debugfs
+  *
+  * The thermal_debugfs structure is the common structure used by the
+- * cooling device to compute the statistics.
++ * cooling device or the thermal zone to store the statistics.
+  *
+  * @d_top: top directory of the thermal object directory
+  * @lock: per object lock to protect the internals
+  *
+- * @cdev: a cooling device debug structure
++ * @cdev_dbg: a cooling device debug structure
++ * @tz_dbg: a thermal zone debug structure
+  */
+ struct thermal_debugfs {
+ 	struct dentry *d_top;
+ 	struct mutex lock;
+ 	union {
+ 		struct cdev_debugfs cdev_dbg;
++		struct tz_debugfs tz_dbg;
+ 	};
+ };
+ 
+@@ -107,6 +176,10 @@ void thermal_debug_init(void)
+ 		return;
+ 
+ 	d_cdev = debugfs_create_dir("cooling_devices", d_root);
++	if (!d_cdev)
 +		return;
 +
-+	d_cdev = debugfs_create_dir("cooling_devices", d_root);
-+}
++	d_tz = debugfs_create_dir("thermal_zones", d_root);
+ }
+ 
+ static struct thermal_debugfs *thermal_debugfs_add_id(struct dentry *d, int id)
+@@ -443,3 +516,321 @@ void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev)
+ 
+ 	mutex_unlock(&thermal_dbg->lock);
+ }
 +
-+static struct thermal_debugfs *thermal_debugfs_add_id(struct dentry *d, int id)
++static struct tz_episode *thermal_debugfs_tz_event_alloc(struct thermal_zone_device *tz,
++							ktime_t now)
 +{
-+	struct thermal_debugfs *thermal_dbg;
-+	char ids[IDSLENGTH];
-+
-+	thermal_dbg = kzalloc(sizeof(*thermal_dbg), GFP_KERNEL);
-+	if (!thermal_dbg)
-+		return NULL;
-+
-+	mutex_init(&thermal_dbg->lock);
-+	
-+	snprintf(ids, IDSLENGTH, "%d", id);
-+
-+	thermal_dbg->d_top = debugfs_create_dir(ids, d);
-+	if (!thermal_dbg->d_top) {
-+		kfree(thermal_dbg);
-+		return NULL;
-+	}
-+
-+	return thermal_dbg;
-+}
-+
-+static void thermal_debugfs_remove_id(struct thermal_debugfs *thermal_dbg)
-+{
-+	if (!thermal_dbg)
-+		return;
-+
-+	debugfs_remove(thermal_dbg->d_top);
-+
-+	kfree(thermal_dbg);
-+}
-+
-+static struct cdev_record *
-+thermal_debugfs_cdev_record_alloc(struct thermal_debugfs *thermal_dbg,
-+				  struct list_head *lists, int id)
-+{
-+	struct cdev_record *cdev_record;
-+
-+	cdev_record = kzalloc(sizeof(*cdev_record), GFP_KERNEL);
-+	if (!cdev_record)
-+		return NULL;
-+
-+	cdev_record->id = id;
-+	INIT_LIST_HEAD(&cdev_record->node);
-+	list_add_tail(&cdev_record->node,
-+		      &lists[cdev_record->id % CDEVSTATS_HASH_SIZE]);
-+
-+	return cdev_record;
-+}
-+
-+static struct cdev_record *
-+thermal_debugfs_cdev_record_find(struct thermal_debugfs *thermal_dbg,
-+				 struct list_head *lists, int id)
-+{
-+	struct cdev_record *entry;
-+
-+	list_for_each_entry(entry, &lists[id % CDEVSTATS_HASH_SIZE], node)
-+		if (entry->id == id)
-+			return entry;
-+
-+	return NULL;
-+}
-+
-+static struct cdev_record *
-+thermal_debugfs_cdev_record_get(struct thermal_debugfs *thermal_dbg,
-+				struct list_head *lists, int id)
-+{
-+	struct cdev_record *cdev_record;
-+
-+	cdev_record = thermal_debugfs_cdev_record_find(thermal_dbg, lists, id);
-+	if (cdev_record)
-+		return cdev_record;
-+
-+	return thermal_debugfs_cdev_record_alloc(thermal_dbg, lists, id);
-+}
-+
-+static void thermal_debugfs_cdev_clear(struct cdev_debugfs *cdev_dbg)
-+{
++	struct tz_episode *tze;
 +	int i;
-+	struct cdev_record *entry, *tmp;
 +
-+	for (i = 0; i < CDEVSTATS_HASH_SIZE; i++) {
++	tze = kzalloc(struct_size(tze, trip_stats, tz->num_trips), GFP_KERNEL);
++	if (!tze)
++		return NULL;
 +
-+		list_for_each_entry_safe(entry, tmp,
-+					 &cdev_dbg->transitions[i], node) {
-+			list_del(&entry->node);
-+			kfree(entry);
-+		}
++	INIT_LIST_HEAD(&tze->node);
++	tze->timestamp = now;
 +
-+		list_for_each_entry_safe(entry, tmp,
-+					 &cdev_dbg->durations[i], node) {
-+			list_del(&entry->node);
-+			kfree(entry);
-+		}
++	for (i = 0; i < tz->num_trips; i++) {
++		tze->trip_stats[i].min = INT_MAX;
++		tze->trip_stats[i].max = INT_MIN;
 +	}
-+
-+	cdev_dbg->total = 0;
++	
++	return tze;
 +}
 +
-+static void *cdev_seq_start(struct seq_file *s, loff_t *pos)
++void thermal_debug_tz_trip_up(struct thermal_zone_device *tz,
++			      const struct thermal_trip *trip)
 +{
-+	struct thermal_debugfs *thermal_dbg = s->private;
++	struct tz_episode *tze;
++	struct tz_debugfs *tz_dbg;
++	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	int temperature = tz->temperature;
++	int trip_id = thermal_zone_trip_id(tz, trip);
++	ktime_t now = ktime_get();
++
++	if (!thermal_dbg)
++		return;
 +
 +	mutex_lock(&thermal_dbg->lock);
 +
-+	return (*pos < CDEVSTATS_HASH_SIZE) ? pos : NULL;
-+}
++	tz_dbg = &thermal_dbg->tz_dbg;
++	
++	/*
++	 * The mitigation is starting. A mitigation can contain
++	 * several episodes where each of them is related to a
++	 * temperature crossing a trip point. The episodes are
++	 * nested. That means when the temperature is crossing the
++	 * first trip point, the duration begins to be measured. If
++	 * the temperature continues to increase and reaches the
++	 * second trip point, the duration of the first trip must be
++	 * also accumulated.
++	 *
++	 * eg.
++	 *
++	 * temp
++	 *   ^
++	 *   |             --------
++	 * trip 2         /        \         ------
++	 *   |           /|        |\      /|      |\
++	 * trip 1       / |        | `----  |      | \
++	 *   |         /| |        |        |      | |\
++	 * trip 0     / | |        |        |      | | \
++	 *   |       /| | |        |        |      | | |\
++	 *   |      / | | |        |        |      | | | `--
++	 *   |     /  | | |        |        |      | | |     
++	 *   |-----   | | |        |        |      | | |      
++	 *   |        | | |        |        |      | | |
++	 *    --------|-|-|--------|--------|------|-|-|------------------> time
++	 *            | | |<--t2-->|        |<-t2'>| | |
++	 *            | |                            | |
++	 *            | |<------------t1------------>| |
++	 *            |                                |
++	 *            |<-------------t0--------------->|
++	 *
++	 */
++	if (!tz_dbg->nr_trips) {
++		tze = thermal_debugfs_tz_event_alloc(tz, now);
++		if (!tze)
++			return;
 +
-+static void *cdev_seq_next(struct seq_file *s, void *v, loff_t *pos)
-+{
-+	(*pos)++;
++		list_add(&tze->node, &tz_dbg->tz_episodes);
++	}
 +
-+	return (*pos < CDEVSTATS_HASH_SIZE) ? pos : NULL;
-+}
++	/*
++	 * Each time a trip point is crossed the way up, the trip_id
++	 * is stored in the trip_crossed array and the nr_trips is
++	 * incremented. A nr_trips equal to zero means we are entering
++	 * a mitigation episode.
++	 *
++	 * The trip ids may not be in the ascending order but the
++	 * result in the array trips_crossed will be in the ascending
++	 * temperature order. The function detecting when a trip point
++	 * is crossed the way down will handle the very rare case when
++	 * the trip points may have been reordered during this
++	 * mitigation episode.
++	 */
++	tz_dbg->trips_crossed[tz_dbg->nr_trips++] = trip_id;
 +
-+static void cdev_seq_stop(struct seq_file *s, void *v)
-+{
-+	struct thermal_debugfs *thermal_dbg = s->private;
++	tze = list_first_entry(&tz_dbg->tz_episodes, struct tz_episode, node);
++	tze->trip_stats[trip_id].timestamp = now;
++	tze->trip_stats[trip_id].max = max(tze->trip_stats[trip_id].max, temperature);
++	tze->trip_stats[trip_id].min = min(tze->trip_stats[trip_id].min, temperature);
++	tze->trip_stats[trip_id].avg = tze->trip_stats[trip_id].avg +
++		(temperature - tze->trip_stats[trip_id].avg) /
++		tze->trip_stats[trip_id].count;
 +
 +	mutex_unlock(&thermal_dbg->lock);
 +}
 +
-+static int cdev_tt_seq_show(struct seq_file *s, void *v)
++void thermal_debug_tz_trip_down(struct thermal_zone_device *tz,
++				const struct thermal_trip *trip)
 +{
-+	struct thermal_debugfs *thermal_dbg = s->private;	
-+	struct cdev_debugfs *cdev_dbg = &thermal_dbg->cdev_dbg;
-+	struct list_head *transitions = cdev_dbg->transitions;
-+	struct cdev_record *entry;
-+	int i = *(loff_t *)v;
++	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct tz_episode *tze;
++	struct tz_debugfs *tz_dbg;
++	ktime_t delta, now = ktime_get();
++	int trip_id = thermal_zone_trip_id(tz, trip);
++	int i;
 +
-+	if (!i)
-+		seq_puts(s, "Transition\tOccurences\n");
++	if (!thermal_dbg)
++		return;
 +
-+	list_for_each_entry(entry, &transitions[i], node) {
++	mutex_lock(&thermal_dbg->lock);
++
++	tz_dbg = &thermal_dbg->tz_dbg;
++	
++	/*
++	 * The temperature crosses the way down but there was not
++	 * mitigation detected before. That may happen when the
++	 * temperature is greater than a trip point when registering a
++	 * thermal zone, which is a common use case as the kernel has
++	 * no mitigation mechanism yet at boot time.
++	 */
++	if (!tz_dbg->nr_trips)
++		goto out;
++	
++	for (i = tz_dbg->nr_trips - 1; i >= 0; i--) {
++		if (tz_dbg->trips_crossed[i] == trip_id)
++			break;
++	}
++
++	if (i < 0)
++		goto out;
++
++	tz_dbg->nr_trips--;
++
++	if (i < tz_dbg->nr_trips)
++		tz_dbg->trips_crossed[i] = tz_dbg->trips_crossed[tz_dbg->nr_trips];
++
++	tze = list_first_entry(&tz_dbg->tz_episodes, struct tz_episode, node);
++
++	delta = ktime_sub(now, tze->trip_stats[trip_id].timestamp);
++
++	tze->trip_stats[trip_id].duration =
++		ktime_add(delta, tze->trip_stats[trip_id].duration);
++
++	/*
++	 * This event closes the mitigation as we are crossing the
++	 * last trip point the way down.
++	 */
++	if (!tz_dbg->nr_trips)
++		tze->duration = ktime_sub(now, tze->timestamp);
++
++out:
++	mutex_unlock(&thermal_dbg->lock);
++}
++
++void thermal_debug_update_temp(struct thermal_zone_device *tz)
++{
++	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct tz_episode *tze;
++	struct tz_debugfs *tz_dbg;
++	int trip_id, i;
++
++	if (!thermal_dbg)
++		return;
++
++	mutex_lock(&thermal_dbg->lock);
++
++	tz_dbg = &thermal_dbg->tz_dbg;
++
++	if (!tz_dbg->nr_trips)
++		goto out;
++
++	for (i = 0; i < tz_dbg->nr_trips; i++) {
++		trip_id = tz_dbg->trips_crossed[i];
++		tze = list_first_entry(&tz_dbg->tz_episodes, struct tz_episode, node);
++		tze->trip_stats[trip_id].count++;
++		tze->trip_stats[trip_id].max = max(tze->trip_stats[trip_id].max, tz->temperature);
++		tze->trip_stats[trip_id].min = min(tze->trip_stats[trip_id].min, tz->temperature);
++		tze->trip_stats[trip_id].avg = tze->trip_stats[trip_id].avg +
++			(tz->temperature - tze->trip_stats[trip_id].avg) /
++			tze->trip_stats[trip_id].count;
++	}
++out:
++	mutex_unlock(&thermal_dbg->lock);
++}
++
++static void *tze_seq_start(struct seq_file *s, loff_t *pos)
++{
++	struct thermal_zone_device *tz = s->private;
++	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct tz_debugfs *tz_dbg = &thermal_dbg->tz_dbg;
++
++	mutex_lock(&thermal_dbg->lock);
++
++	return seq_list_start(&tz_dbg->tz_episodes, *pos);
++}
++
++static void *tze_seq_next(struct seq_file *s, void *v, loff_t *pos)
++{
++	struct thermal_zone_device *tz = s->private;
++	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct tz_debugfs *tz_dbg = &thermal_dbg->tz_dbg;
++
++	return seq_list_next(v, &tz_dbg->tz_episodes, pos);
++}
++
++static void tze_seq_stop(struct seq_file *s, void *v)
++{
++	struct thermal_zone_device *tz = s->private;
++	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++
++	mutex_unlock(&thermal_dbg->lock);
++}
++
++static int tze_seq_show(struct seq_file *s, void *v)
++{
++	struct thermal_zone_device *tz = s->private;
++	struct thermal_trip *trip;
++	struct tz_episode *tze;
++	const char *type;
++	int trip_id;
++
++	tze = list_entry((struct list_head *)v, struct tz_episode, node);
++
++	seq_printf(s, ",-Mitigation at %lluus, duration=%llums\n",
++		   ktime_to_us(tze->timestamp),
++		   ktime_to_ms(tze->duration));
++
++	seq_printf(s, "| trip |     type | temp(°mC) | hyst(°mC) |  duration  |  avg(°mC) |  min(°mC) |  max(°mC) |\n");
++	
++	for_each_trip(tz, trip) {
 +		/*
-+		 * Assuming maximum cdev states is 1024, the longer
-+		 * string for a transition would be "1024->1024\0"
++		 * There is no possible mitigation happening at the
++		 * critical trip point, so the stats will be always
++		 * zero, skip this trip point
 +		 */
-+		char buffer[11];
++		if (trip->type == THERMAL_TRIP_CRITICAL)
++			continue;
++
++		if (trip->type == THERMAL_TRIP_PASSIVE)
++			type = "passive";
++		else if (trip->type == THERMAL_TRIP_ACTIVE)
++			type = "active";
++		else
++			type = "hot";
++
++		trip_id = thermal_zone_trip_id(tz, trip);
 +		
-+		snprintf(buffer, ARRAY_SIZE(buffer), "%d->%d",
-+			 entry->id >> 16, entry->id & 0xFFFF);
-+
-+		seq_printf(s, "%-10s\t%-10llu\n", buffer, entry->count);
++		seq_printf(s, "| %*d | %*s | %*d | %*d | %*lld | %*d | %*d | %*d |\n",
++			   4 , trip_id,
++			   8, type,
++			   9, trip->temperature,
++			   9, trip->hysteresis,
++			   10, ktime_to_ms(tze->trip_stats[trip_id].duration),
++			   9, tze->trip_stats[trip_id].avg,
++			   9, tze->trip_stats[trip_id].min,
++			   9, tze->trip_stats[trip_id].max);
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct seq_operations tt_sops = {
-+	.start = cdev_seq_start,
-+	.next = cdev_seq_next,
-+	.stop = cdev_seq_stop,
-+	.show = cdev_tt_seq_show,
++static const struct seq_operations tze_sops = {
++	.start = tze_seq_start,
++	.next = tze_seq_next,
++	.stop = tze_seq_stop,
++	.show = tze_seq_show,
 +};
 +
-+DEFINE_SEQ_ATTRIBUTE(tt);
++DEFINE_SEQ_ATTRIBUTE(tze);
 +
-+static int cdev_dt_seq_show(struct seq_file *s, void *v)
-+{
-+	struct thermal_debugfs *thermal_dbg = s->private;
-+	struct cdev_debugfs *cdev_dbg = &thermal_dbg->cdev_dbg;
-+	struct list_head *durations = cdev_dbg->durations;
-+	struct cdev_record *entry;
-+	int i = *(loff_t *)v;
-+
-+	if (!i)
-+		seq_puts(s, "State\tResidency\n");
-+
-+	list_for_each_entry(entry, &durations[i], node) {
-+		s64 duration = ktime_to_ms(entry->residency);
-+
-+		if (entry->id == cdev_dbg->current_state)
-+			duration += ktime_ms_delta(ktime_get(),
-+						   cdev_dbg->timestamp);
-+
-+		seq_printf(s, "%-5d\t%-10llu\n", entry->id, duration);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct seq_operations dt_sops = {
-+	.start = cdev_seq_start,
-+	.next = cdev_seq_next,
-+	.stop = cdev_seq_stop,
-+	.show = cdev_dt_seq_show,
-+};
-+
-+DEFINE_SEQ_ATTRIBUTE(dt);
-+
-+static int cdev_clear_set(void *data, u64 val)
-+{
-+	struct thermal_debugfs *thermal_dbg = data;
-+
-+	if (!val)
-+		return -EINVAL;
-+
-+	mutex_lock(&thermal_dbg->lock);
-+	
-+	thermal_debugfs_cdev_clear(&thermal_dbg->cdev_dbg);
-+
-+	mutex_unlock(&thermal_dbg->lock);
-+
-+	return 0;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(cdev_clear_fops, NULL, cdev_clear_set, "%llu\n");
-+
-+/**
-+ * thermal_debug_cdev_state_update - Update a cooling device state change
-+ *
-+ * Computes a transition and the duration of the previous state residency.
-+ *
-+ * @cdev : a pointer to a cooling device
-+ * @new_state: an integer corresponding to the new cooling device state
-+ */
-+void thermal_debug_cdev_state_update(const struct thermal_cooling_device *cdev,
-+				     int new_state)
-+{
-+	struct thermal_debugfs *thermal_dbg = cdev->debugfs;
-+	struct cdev_debugfs *cdev_dbg;
-+	struct cdev_record *cdev_record;
-+	int transition, old_state;
-+
-+	if (!thermal_dbg || (thermal_dbg->cdev_dbg.current_state == new_state))
-+		return;
-+
-+	mutex_lock(&thermal_dbg->lock);
-+
-+	cdev_dbg = &thermal_dbg->cdev_dbg;
-+
-+	old_state = cdev_dbg->current_state;
-+
-+	/*
-+	 * Get the old state information in the durations list. If
-+	 * this one does not exist, a new allocated one will be
-+	 * returned. Recompute the total duration in the old state and
-+	 * get a new timestamp for the new state.
-+	 */
-+	cdev_record = thermal_debugfs_cdev_record_get(thermal_dbg,
-+						      cdev_dbg->durations,
-+						      old_state);
-+	if (cdev_record) {
-+		ktime_t now = ktime_get();
-+		ktime_t delta = ktime_sub(now, cdev_dbg->timestamp);
-+		cdev_record->residency = ktime_add(cdev_record->residency, delta);
-+		cdev_dbg->timestamp = now;
-+	}
-+
-+	cdev_dbg->current_state = new_state;
-+	transition = (old_state << 16) | new_state;
-+	
-+	/*
-+	 * Get the transition in the transitions list. If this one
-+	 * does not exist, a new allocated one will be returned.
-+	 * Increment the occurrence of this transition which is stored
-+	 * in the value field.
-+	 */
-+	cdev_record = thermal_debugfs_cdev_record_get(thermal_dbg,
-+						      cdev_dbg->transitions,
-+						      transition);
-+	if (cdev_record)
-+		cdev_record->count++;
-+
-+	cdev_dbg->total++;
-+
-+	mutex_unlock(&thermal_dbg->lock);
-+}
-+
-+/**
-+ * thermal_debug_cdev_add - Add a cooling device debugfs entry
-+ *
-+ * Allocates a cooling device object for debug, initializes the
-+ * statistics and create the entries in sysfs.
-+ * @cdev: a pointer to a cooling device
-+ */
-+void thermal_debug_cdev_add(struct thermal_cooling_device *cdev)
++void thermal_debug_tz_add(struct thermal_zone_device *tz)
 +{
 +	struct thermal_debugfs *thermal_dbg;
-+	struct cdev_debugfs *cdev_dbg;
-+	int i;
++	struct tz_debugfs *tz_dbg;
 +
-+	thermal_dbg = thermal_debugfs_add_id(d_cdev, cdev->id);
++	thermal_dbg = thermal_debugfs_add_id(d_tz, tz->id);
 +	if (!thermal_dbg)
 +		return;
 +
-+	cdev_dbg = &thermal_dbg->cdev_dbg;
++	tz_dbg = &thermal_dbg->tz_dbg;
 +
-+	for (i = 0; i < CDEVSTATS_HASH_SIZE; i++) {
-+		INIT_LIST_HEAD(&cdev_dbg->transitions[i]);
-+		INIT_LIST_HEAD(&cdev_dbg->durations[i]);
++	tz_dbg->trips_crossed = kzalloc(sizeof(int) * tz->num_trips, GFP_KERNEL);
++	if (!tz_dbg->trips_crossed) {
++		thermal_debugfs_remove_id(thermal_dbg);
++		return;
 +	}
 +
-+	cdev_dbg->current_state = 0;
-+	cdev_dbg->timestamp = ktime_get();
++	INIT_LIST_HEAD(&tz_dbg->tz_episodes);
 +
-+	debugfs_create_file("trans_table", 0400, thermal_dbg->d_top,
-+			    thermal_dbg, &tt_fops);
-+
-+	debugfs_create_file("time_in_state_ms", 0400, thermal_dbg->d_top,
-+			    thermal_dbg, &dt_fops);
-+
-+	debugfs_create_file("clear", 0200, thermal_dbg->d_top,
-+			    thermal_dbg, &cdev_clear_fops);
-+
-+	debugfs_create_u32("total_trans", 0400, thermal_dbg->d_top,
-+			   &cdev_dbg->total);
-+
-+	cdev->debugfs = thermal_dbg;
++	debugfs_create_file("mitigations", 0400, thermal_dbg->d_top, tz, &tze_fops);
++	
++	tz->debugfs = thermal_dbg;
 +}
 +
-+/**
-+ * thermal_debug_cdev_remove - Remove a cooling device debugfs entry
-+ *
-+ * Frees the statistics memory data and remove the debugfs entry
-+ *
-+ * @cdev: a pointer to a cooling device
-+ */
-+void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev)
++void thermal_debug_tz_remove(struct thermal_zone_device *tz)
 +{
-+	struct thermal_debugfs *thermal_dbg = cdev->debugfs;
++	struct thermal_debugfs *thermal_dbg = tz->debugfs;
 +
 +	if (!thermal_dbg)
 +		return;
 +
 +	mutex_lock(&thermal_dbg->lock);
-+	
-+	thermal_debugfs_cdev_clear(&thermal_dbg->cdev_dbg);
-+	cdev->debugfs = NULL;
++
++	tz->debugfs = NULL;
 +	thermal_debugfs_remove_id(thermal_dbg);
 +
 +	mutex_unlock(&thermal_dbg->lock);
 +}
 diff --git a/drivers/thermal/thermal_debugfs.h b/drivers/thermal/thermal_debugfs.h
-new file mode 100644
-index 000000000000..341499388448
---- /dev/null
+index 341499388448..155b9af5fe87 100644
+--- a/drivers/thermal/thermal_debugfs.h
 +++ b/drivers/thermal/thermal_debugfs.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifdef CONFIG_THERMAL_DEBUGFS
-+void thermal_debug_init(void);
-+void thermal_debug_cdev_add(struct thermal_cooling_device *cdev);
-+void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev);
-+void thermal_debug_cdev_state_update(const struct thermal_cooling_device *cdev, int state);
-+#else
-+static inline void thermal_debug_init(void) {}
-+static inline void thermal_debug_cdev_add(struct thermal_cooling_device *cdev) {}
-+static inline void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev) {}
-+static inline void thermal_debug_cdev_state_update(const struct thermal_cooling_device *cdev,
-+						   int state) {}
-+#endif /* CONFIG_THERMAL_DEBUGFS */
-diff --git a/drivers/thermal/thermal_helpers.c b/drivers/thermal/thermal_helpers.c
-index 69e8ea4aa908..c9e3d6626453 100644
---- a/drivers/thermal/thermal_helpers.c
-+++ b/drivers/thermal/thermal_helpers.c
-@@ -151,14 +151,22 @@ int thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp)
- }
- EXPORT_SYMBOL_GPL(thermal_zone_get_temp);
- 
--static void thermal_cdev_set_cur_state(struct thermal_cooling_device *cdev,
--				       int target)
-+static int thermal_cdev_set_cur_state(struct thermal_cooling_device *cdev, int state)
- {
--	if (cdev->ops->set_cur_state(cdev, target))
--		return;
-+	int ret;
-+
-+	/*
-+	 * No check is needed for the ops->set_cur_state as the
-+	 * registering function checked the ops are correctly set
-+	 */
-+	ret = cdev->ops->set_cur_state(cdev, state);
-+	if (!ret) {
-+		thermal_notify_cdev_state_update(cdev->id, state);
-+		thermal_cooling_device_stats_update(cdev, state);
-+		thermal_debug_cdev_state_update(cdev, state);
-+	}
- 
--	thermal_notify_cdev_state_update(cdev->id, target);
--	thermal_cooling_device_stats_update(cdev, target);
-+	return ret;
- }
- 
- void __thermal_cdev_update(struct thermal_cooling_device *cdev)
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index 0ea99f50d57c..8461f008c3de 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -32,6 +32,7 @@
- struct thermal_zone_device;
- struct thermal_cooling_device;
- struct thermal_instance;
-+struct thermal_debugfs;
- struct thermal_attr;
- 
- enum thermal_trend {
-@@ -110,6 +111,9 @@ struct thermal_cooling_device {
- 	struct mutex lock; /* protect thermal_instances list */
- 	struct list_head thermal_instances;
- 	struct list_head node;
-+#ifdef CONFIG_THERMAL_DEBUGFS
-+	struct thermal_debugfs *debugfs;
-+#endif
- };
- 
- /**
-@@ -183,6 +187,9 @@ struct thermal_zone_device {
- 	struct list_head node;
- 	struct delayed_work poll_queue;
- 	enum thermal_notify_event notify_event;
-+#ifdef CONFIG_THERMAL_DEBUGFS
-+	struct thermal_debugfs *debugfs;
-+#endif
- };
- 
- /**
+@@ -5,10 +5,24 @@ void thermal_debug_init(void);
+ void thermal_debug_cdev_add(struct thermal_cooling_device *cdev);
+ void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev);
+ void thermal_debug_cdev_state_update(const struct thermal_cooling_device *cdev, int state);
++void thermal_debug_tz_add(struct thermal_zone_device *tz);
++void thermal_debug_tz_remove(struct thermal_zone_device *tz);
++void thermal_debug_tz_trip_up(struct thermal_zone_device *tz,
++			      const struct thermal_trip *trip);
++void thermal_debug_tz_trip_down(struct thermal_zone_device *tz,
++				const struct thermal_trip *trip);
++void thermal_debug_update_temp(struct thermal_zone_device *tz);
+ #else
+ static inline void thermal_debug_init(void) {}
+ static inline void thermal_debug_cdev_add(struct thermal_cooling_device *cdev) {}
+ static inline void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev) {}
+ static inline void thermal_debug_cdev_state_update(const struct thermal_cooling_device *cdev,
+ 						   int state) {}
++static inline void thermal_debug_tz_add(struct thermal_zone_device *tz) {}
++static inline void thermal_debug_tz_remove(struct thermal_zone_device *tz) {}
++static inline void thermal_debug_tz_trip_up(struct thermal_zone_device *tz,
++					    const struct thermal_trip *trip) {};
++static inline void thermal_debug_tz_trip_down(struct thermal_zone_device *tz,
++					      const struct thermal_trip *trip) {}
++static inline void thermal_debug_update_temp(struct thermal_zone_device *tz) {}
+ #endif /* CONFIG_THERMAL_DEBUGFS */
 -- 
 2.34.1
 
