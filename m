@@ -1,129 +1,188 @@
-Return-Path: <linux-kernel+bounces-20211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74D9E827BF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:25:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99C9A827BF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AC051C21A48
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:25:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF26CB22925
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550C14A30;
-	Tue,  9 Jan 2024 00:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BC43C1C;
+	Tue,  9 Jan 2024 00:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AkXwX/7w"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="d6w61vLx"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2052.outbound.protection.outlook.com [40.107.102.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194A13209
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 00:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704759880;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wBgrmkRdNGMcly6vlN7IHOo4uqMRRCrvatkr8PlQXzA=;
-	b=AkXwX/7wZ5FM3S8fuPTNp8j77KnqDymIIKZ76/UBTbIC1izrVHbqC/uZ6V3YgP6oWvy9Ad
-	423Z0DmXsdL9Z91eh7cKR/m0Ca+3BJeIzCTfPSrn4+pP6jwnUlkKXjZkWuEZNcuyOVGTJS
-	iI2FEysmmK5L4u7DuRR6EvEff1j0NSA=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-411-VSR7N5svP_qxgd09Onklxg-1; Mon, 08 Jan 2024 19:24:33 -0500
-X-MC-Unique: VSR7N5svP_qxgd09Onklxg-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6d9bd4fa279so1321376b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 16:24:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704759872; x=1705364672;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wBgrmkRdNGMcly6vlN7IHOo4uqMRRCrvatkr8PlQXzA=;
-        b=juTwk7aLHsJ5ZJV9xScUB27wwdLiVsBWOjqYxRbikKm5cXtslo6rZNIYFiIZpF0OQV
-         i5C8kl93dm65Am2UBB8OqxEtfTcWtR/gXZzdzw8Y1kDhRJIxUNKuTL0Gd3Ro3/foitj5
-         LnacLmGIJkpd5RivwRUtoiNEANRueG8me01zwJfPy9J6ICRhU+T6xEux9jJlc9xrbra+
-         WRVhBqvYC5703Q1414euGvHyslyJpducdmWm5YEuLGZ77aZxTXqhux38QoicsRsaASmy
-         zdohcLKh1VVC1CRdNN+qmES7LGWAeCXgFBePzliu+bTKCZcfSFk8p7omeP7h5RnPslyv
-         XJOg==
-X-Gm-Message-State: AOJu0YwBQqZPTlUH4FZExbtUnNku2TdpVkYdx7+g3S1TFVvvWVHDb4KX
-	Vsm4VukPuVsza1fw+kJNhHoKmPCWWlXF5bsoOlZz5sjFCyRcK9q5CNNW4FBdki0xn0WS46oJxO1
-	1gxv5+p+9ZRElLC/ucikH9nvJSVvbFrav
-X-Received: by 2002:a05:6a20:1044:b0:195:192c:e5a5 with SMTP id gt4-20020a056a20104400b00195192ce5a5mr1584019pzc.56.1704759872390;
-        Mon, 08 Jan 2024 16:24:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFAYwqOIUUbzS4Z6Wh9myf9nF6QYMlenNKzdIdCeZBN2nChQ2/gE/uHykLmJ60rmWnGCpKmUA==
-X-Received: by 2002:a05:6a20:1044:b0:195:192c:e5a5 with SMTP id gt4-20020a056a20104400b00195192ce5a5mr1584007pzc.56.1704759871993;
-        Mon, 08 Jan 2024 16:24:31 -0800 (PST)
-Received: from localhost ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id jg11-20020a17090326cb00b001d403f114d2sm459444plb.303.2024.01.08.16.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 16:24:31 -0800 (PST)
-From: Coiby Xu <coxu@redhat.com>
-To: linux-integrity@vger.kernel.org
-Cc: itrymybest80@protonmail.com,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] integrity: eliminate unnecessary "Problem loading X.509 certificate" msg
-Date: Tue,  9 Jan 2024 08:24:28 +0800
-Message-ID: <20240109002429.1129950-1-coxu@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231227044156.166009-1-coxu@redhat.com>
-References: <20231227044156.166009-1-coxu@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AA433CA;
+	Tue,  9 Jan 2024 00:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oCXeNjKX9ZE3Zat/TSpOYeYl8yV1pseWfbEm5/v5NkeWVhtUybX6a5kc6KAVqXdzDuzFDiLJk51xteFr4/d/CZYtRPOJ4Qw0Efta7x0caEaIZ35QvcmaC8INoSwe9BAewEFQYPr0x+qjjC9AMJuIdivS3GHjQ+/eX2CRGGsk9ik6Cq+LmNnrUEHW2EpBjpRXxL+00edzky15BQypR4Pq7XsoI/IdyqFQDNZQtD8NDFSeGPjdJBVLP5jDWW0IIXUHlLtnujiHtQwh8mvcDO9JTxeY0SI5HvIvLKLewBR5URZdZf9ZDQJe7wJZ0BR+76NK/mHO3hN7Pm12X2ljD/+XTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=czsj+FVe+tpuutpvbeGzNMeAwdVovb4uYOVBw2npVVU=;
+ b=LH+h1olUcN8R9QZrgNWOwU6XlpdJ8FGK290s4bonVA0bThL5Ipysp/ixJeQUv3dtNi/YpJb+MxvAAmYXPScPlHQamjEb0bmW6vGV/eawZfVx+zucE+WTqL6JD6uQEGSjQrbxiTezBzRAK0aeTEFqy/idZATbNko/8Q2bX+VO+kBWzaLwlrfGrCpQuPAAZwNf+AVxf8RTuFyLUCos6SSXrIl86Y0or4TQTyXepB+I7UYlOgo8/FqPVecxxhKVB5DImKXjB8BXadlzGXZV6Vw6esDvumbKFalIbQfpt1meyqWFVNGX/XEzdas6z7PrRZmNJuuHIHbhaRzRztuRkaH1Gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=czsj+FVe+tpuutpvbeGzNMeAwdVovb4uYOVBw2npVVU=;
+ b=d6w61vLx4fvXi4jYgILyfrQd0Vq9Qw4m8NpJRuTREg2caHNPMf1WyQZm7eobsc9IzUGetw6ZSK9RAcf4JX8NJkR8/DRsKjsNM/SKHQqLlIKFajuWu3xgpbCRM0rF75cFEuxpZqtaDraj32uApofKBBzpMlZMJJ2kJvbQ9nSApWQ1RoO3gtaujbZTFZI+3A0eeLpBF9uHQVjxCIL/0+b1uCb7mLd+JCOCsjEbrrraSdRHpJH7y7PIMHtjZSb7bvxxccMh672hBPbCA35Fvx5AIrPwzV+8zB3/rCVE71AT801C+pxKogQTV+R8mrPFYgre2bJFP2dbjkIBSficppdzeg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ2PR12MB7991.namprd12.prod.outlook.com (2603:10b6:a03:4d1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Tue, 9 Jan
+ 2024 00:24:39 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
+ 00:24:38 +0000
+Date: Mon, 8 Jan 2024 20:24:37 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+	James Houghton <jthoughton@google.com>,
+	Peter Xu <peterx@redhat.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Isaku Yamahata <isaku.yamahata@linux.intel.com>,
+	David Matlack <dmatlack@google.com>, Marc Zyngier <maz@kernel.org>,
+	Michael Roth <michael.roth@amd.com>,
+	Aaron Lewis <aaronlewis@google.com>
+Subject: Re: [ANNOUNCE / RFC] PUCK Future Topics
+Message-ID: <20240109002437.GB439767@nvidia.com>
+References: <20231214001753.779022-1-seanjc@google.com>
+ <ZXs3OASFnic62LL6@linux.dev>
+ <ZXyzZ8GOtWVhXety@google.com>
+ <ZX/bOwVVsnO5OEhI@yzhao56-desk.sh.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZX/bOwVVsnO5OEhI@yzhao56-desk.sh.intel.com>
+X-ClientProxiedBy: MN2PR02CA0001.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::14) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ2PR12MB7991:EE_
+X-MS-Office365-Filtering-Correlation-Id: af758aff-8744-41f6-10d9-08dc10a95d4e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9CSvj9p/JG4xipMFBhCnh2oCi0PloMN7irFWQKB2H+amFgeDP0ZdPfwpjzpgb/cWMfxMxWsX2BwRSvgjHmsvZnEnzyRXuHmdbE0f5IipuzTn0nANfyYb/ZherOm2td4m5tsFzXDZDYoAGPSV1nxtilXjIBYu+mnkZl5K0HqvM5KDaaiyuZQvjtPqnUUu7kGTYGF1IiZz3ZEghD9hkdjtNHytjn2fztj99vFtk2djZR+aAWB1xWjj465CFdakICUZSrxj0bGanwAKtYiruGDdUyzpbionayY3kiJi+mf/lLZm/5S3IwflEXs4cy9lAzygJ/N34voEsXGw2Ztww+NKomLH9MOq3WO7Og+pEYrgU0FjcXg7O8r1B3ekxru6+pkSOWjd4ttJbemIcY418BzMqAg6fq7ODjiA2Ra57x4MuJKVTdCZQvA1EUWDd902O7dgmkGO0Zp8xtyOdDN0dD4AeAcRum66nO/2zioAJg+UXSa2aaLLZtbc4NvD1aQcTXDmOiHEj5sNPTc8lQNp1j0r0xgMhsgvUrogoynxOio1lfPJO0TgMWqoJ+efXSUrzXCIOKQHUezEeY606Xg+9mhE0ctUlTSgh4gAWdQ4Pt7yoFoOus2abetN0Z361z29T38KReE0AFCvqy0O71HgPNN0tcjGuPL2JQcH6cMRl1cPjPWgrFVU0o8PEyf0Rv+d104v
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(366004)(376002)(396003)(230922051799003)(230273577357003)(230173577357003)(1800799012)(186009)(451199024)(64100799003)(7416002)(2906002)(6486002)(2616005)(1076003)(26005)(66556008)(66476007)(66946007)(41300700001)(33656002)(86362001)(36756003)(5660300002)(4326008)(54906003)(6506007)(83380400001)(6512007)(478600001)(966005)(6916009)(316002)(8936002)(38100700002)(8676002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?xuTPWZEAEcgUOcnfzqQbNtNoN1s2F9Eg9hMDcHfzHJ9DWJLfPO/UEk0F7gBQ?=
+ =?us-ascii?Q?8cx8FdlJbrWABZcUYEkWX5nJBJgwn/sQ1S2Bza8+ps5Yc9I5khXKc0LwTVk3?=
+ =?us-ascii?Q?OD6Bqb+3VvktEDGs2m6dr35r2VKNqEDMjt+nnRNbdYV2w3ort65QiQGw4x/b?=
+ =?us-ascii?Q?u9M+yqtpK/RAPHslfmdgn+m8QlqMOHrNoP3q1FfLJilf+mwVk8RzBsL4nLvr?=
+ =?us-ascii?Q?tfTulUH89U1eRXe6/LllZYpjGMr3mSBsfSZlQWKC6GVowW70On79O4JkxXxI?=
+ =?us-ascii?Q?BTycQSUYpMBiLY6m8mPr/mdDKyFYlmUk7zbqjUzgvG7pRpKfmkiNYhA1AoIU?=
+ =?us-ascii?Q?A+uQ802gJxTHeYTnF5tGry+wTzTjrRjRUm0gmcx4zYFP/JKAqcQeFHxgZLxz?=
+ =?us-ascii?Q?BfFZaRoOeu7V6ndd0WVvE10HDYqFsJDMhQVzjNJBjgirhVgfT9w4MNVlb42g?=
+ =?us-ascii?Q?AeKjXByTU0jQv/QXqfF54PlfsCkuK8Rpncpr9Sc+AAUHhIX52IQyKVMN+EiY?=
+ =?us-ascii?Q?OqqmbYMI9nc3VyoEx2Jj9v8aJcsUCcaGXM0xfxn56dXVt72nqA10xykrFlUL?=
+ =?us-ascii?Q?e6IU00M/aNZ3tvNEsm1JJi337PMzCVgExmQTIdY0nc9L2UZiqcoY0sOFUwhH?=
+ =?us-ascii?Q?imsr55LCRTRq+Hwk3GQf9kjsfvCD246N6XH5C6j6tA60t5wYcNo6+6mRpkeL?=
+ =?us-ascii?Q?bk5Ay6WmFbsDACgBWhA5HfzGEexMdi9VMYqvZnpea5znEacWG0r7tsRE+X3b?=
+ =?us-ascii?Q?utqFD3yg9BJ9T5XXiRAaUlWAIT87pQrTNNymXETfsIs0mGJBS08qH5oWpndp?=
+ =?us-ascii?Q?fzGEJuBdB7SRNI5Nh39wiG1ZGJ9U8AA1L+uE/pzgiraX9yJW99Kj7JD3QMNm?=
+ =?us-ascii?Q?2Hvr2U0mNt5XFEsRn6QKjD64y4gcsXmCDXupaiVpzvTg9qBmlIGPNuIvymqi?=
+ =?us-ascii?Q?6PvAnkGKzNiaaOFCVWnm/+6BXOZuPAeSIIgr6D48bNDFs3R/GFPBHa7o1K4f?=
+ =?us-ascii?Q?hezXYSRJoUKuWeAVWtJgLTepckT4tjYNd6vjrWYUrGPPsEWOEhyGCi5WtNxf?=
+ =?us-ascii?Q?wq60QrKZjV4/0Hthm+5tDNfnd6Bpw5kn7XsJ2yS2sbTg8kq7i7FE2Y6dMiQi?=
+ =?us-ascii?Q?KrTWoJh2p4EzOacGxW2USC0YGhaJCHmy8ixhyTtY/qz1sEa+IySlUory8cnM?=
+ =?us-ascii?Q?g6HA6Ndfepbb2Aft3k2ML0kxRfslg90E2+W/qZurwl0o0wuq1H7XbN7chFCL?=
+ =?us-ascii?Q?PPpR7hPrRKGf4SVN4AzsS7pOQkuKUXlno9YVIA/ghmd7lvGo0MT6RWqakTpK?=
+ =?us-ascii?Q?x0CtWBDsEQBDpCKSmZBiBdLHCvGTIbO4oVT7Ltb5joLE+e46ikBJsmM2Pxob?=
+ =?us-ascii?Q?IJ7yBS6WtMmL2ELqWdXVmvsxu+I3tFaWkpsjw30+EQ6CLZLKQNWERYYWVmBZ?=
+ =?us-ascii?Q?mmcNi7GdL4WRHsaUFqvZKkuUIPGl+ihjJWmG8FFvsnYlw9gXSjsMf5C1zjaS?=
+ =?us-ascii?Q?8lw7n9mGbTvYqYbqfEDVIXKrf7JDqbFf/j3K9KxcTuLompkqKW4t0QJbiXJb?=
+ =?us-ascii?Q?eIVKDd48zhxHpL/WJMqp34JzUNfntGcN0g/F4c+L?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af758aff-8744-41f6-10d9-08dc10a95d4e
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 00:24:38.1743
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GRXseB0Qd0al9VwF4Sc03YCWTBYk8heeFHNBX1tu1BmKh0JxtIf7RunACUP69d6a
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7991
 
-Currently when the kernel fails to add a cert to the .machine keyring,
-it will throw an error immediately in the function integrity_add_key.
+On Mon, Dec 18, 2023 at 01:40:11PM +0800, Yan Zhao wrote:
+> +Jason,
+> On Fri, Dec 15, 2023 at 12:13:27PM -0800, Sean Christopherson wrote:
+> > On Thu, Dec 14, 2023, Oliver Upton wrote:
+> > > On Wed, Dec 13, 2023 at 04:17:53PM -0800, Sean Christopherson wrote:
+> > > > Hi all!  There are a handful of PUCK topics that I want to get scheduled, and
+> > > > would like your help/input in confirming attendance to ensure we reach critical
+> > > > mass.
+> > > > 
+> > > > If you are on the Cc, please confirm that you are willing and able to attend
+> > > > PUCK on the proposed/tentative date for any topics tagged with your name.  Or
+> > > > if you simply don't want to attend, I suppose that's a valid answer too. :-)
+> > > > 
+> > > > If you are not on the Cc but want to ensure that you can be present for a given
+> > > > topic, please speak up asap if you have a conflict.  I will do my best to
+> > > > accomodate everyone's schedules, and the more warning I get the easier that will
+> > > > be.
+> > > > 
+> > > > Note, the proposed schedule is largely arbitrary, I am not wedded to any
+> > > > particular order.  The only known conflict at this time is the guest_memfd()
+> > > > post-copy discussion can't land on Jan 10th.
+> > > > 
+> > > > Thanks!
+> > > > 
+> > > > 
+> > > > 2024.01.03 - Post-copy for guest_memfd()
+> > > >     Needs: David M, Paolo, Peter Xu, James, Oliver, Aaron
+> > > > 
+> > > > 2024.01.10 - Unified uAPI for protected VMs
+> > > >     Needs: Paolo, Isaku, Mike R
+> > > > 
+> > > > 2024.01.17 - Memtypes for non-coherent MDA
+> > > >     Needs: Paolo, Yan, Oliver, Marc, more ARM folks?
+> > > 
+> > > Can we move this one? I'm traveling 01.08-01.16 and really don't want
+> > > to miss this due to jetlag or travel delays.
+> > 
+> > Ya, can do.  I'll pencil it in for 01.24.
+> > 
+> > Yan (and others) would 01.31 work for the "TDP MMU for IOMMU" discussion?  Or if
+> > you think you'll be ready earlier, 01.17 is also available (at least for now).
+> Either 01.17 or 01.31 is working for me.
+> But looks earlier is better :)
+> 
+> hi Jason,
+> Would you like to join the session to discuss "TDP MMU for IOMMU", which is on
+> 01.17 or 01.31?
+> (6am PDT
+>  Video: https://meet.google.com/vdb-aeqo-knk
+>  Phone: https://tel.meet/vdb-aeqo-knk?pin=3003112178656
+> )
 
-Since the kernel will try adding to the .platform keyring next or throw
-an error (in the caller of integrity_add_key i.e. add_to_machine_keyring),
-so there is no need to throw an error immediately in integrity_add_key.
+Yes, I can make the 17 it looks like
 
-Reported-by: itrymybest80@protonmail.com
-Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2239331
-Fixes: d19967764ba8 ("integrity: Introduce a Linux keyring called machine")
-Reviewed-by: Eric Snowberg <eric.snowberg@oracle.com>
-Signed-off-by: Coiby Xu <coxu@redhat.com>
----
-v2
- - improve patch subject [Mimi]
- - add Fixes tag [Jarkko]
- - add Reviewed-by tag from Eric
----
- security/integrity/digsig.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
-index df387de29bfa..45c3e5dda355 100644
---- a/security/integrity/digsig.c
-+++ b/security/integrity/digsig.c
-@@ -179,7 +179,8 @@ static int __init integrity_add_key(const unsigned int id, const void *data,
- 				   KEY_ALLOC_NOT_IN_QUOTA);
- 	if (IS_ERR(key)) {
- 		rc = PTR_ERR(key);
--		pr_err("Problem loading X.509 certificate %d\n", rc);
-+		if (id != INTEGRITY_KEYRING_MACHINE)
-+			pr_err("Problem loading X.509 certificate %d\n", rc);
- 	} else {
- 		pr_notice("Loaded X.509 cert '%s'\n",
- 			  key_ref_to_ptr(key)->description);
--- 
-2.43.0
-
+Thanks,
+Jason
 
