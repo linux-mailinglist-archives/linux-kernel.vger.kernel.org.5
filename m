@@ -1,107 +1,160 @@
-Return-Path: <linux-kernel+bounces-22546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0707E829F78
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:42:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A7FE829F7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ACC11C22B5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:42:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5239E1C22B74
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF0B4D107;
-	Wed, 10 Jan 2024 17:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE164D100;
+	Wed, 10 Jan 2024 17:44:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dvlAHQar"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="n67RvaI6"
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981874D586
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e9e5c97e1so5304976e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704908535; x=1705513335; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YjMoBaJslgOWw0PjOC5tF8h+iRVzEHZGeY/kRdR3+Yg=;
-        b=dvlAHQar4GJFXERCWrckZBE+0/jIA/JuiPUZ+D9LYW/z8sjehVt5ikv2jAbFLfGWva
-         Nok8C+TJGceViM8MV0U+lAhcfu8ynjsb6UQzAUDclqxhzf2ue4+IwRUVlOJKz62j1FZv
-         +u4vX70sDB7DFWtd3Bbqy3Hr1A0sqfMO0tM0h1WxYqcV1oeEUVF1oA2yFmeKoiPl3jm8
-         7SLgfCVkKzedKP3Gjzp5BR/5zRcEUd3qiWQh2vB+T7YG5oGyaTPE86ld9q35MymA7R92
-         PvnIK5e1/ok7F630RQk3EKGYOgInhF0Ezc1s01209DIkeKpII+m3cdiMmUGxXPQfzKtz
-         neuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704908536; x=1705513336;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YjMoBaJslgOWw0PjOC5tF8h+iRVzEHZGeY/kRdR3+Yg=;
-        b=LxJD6Q2BcOnbyvMYiQgbsE/bxGOWgP6PMgqPnqOTEriSg+B4TlvUZdhsGNUHN+lopz
-         tA+7SUlro3dKaGmqUr63/oCkQ3VS6JCHsGHEYfQ43zjKfnlbkKMHjuVKb7m6VWSgnGd7
-         mS79PSHfY7ETgX9rqrqMEs4fj7R+AJwvzifYjq4PbmP8XCmUCv54f/0s7na2bZU4OT9y
-         VF1hAmEDfvR8SKvGX+tJKfNekOrKXjgYfXsCmqxnGlHC3VLQUCoM5AKJZb2P2LO9oOyQ
-         4kV7yfBtpoCqTSvyqQYlNV65Rk+4i/ZF/aWTXjsocZ88RNMZtx7V90Hl18GgCBdwuE+0
-         s/Sw==
-X-Gm-Message-State: AOJu0YzYHu8rtpYojplcHuH3M9jXGfhKVpm1mn8OGIoHtu5jNel/4R/2
-	EgQt1B8HQ1IDXwrZUIAoD2KKx+4n9kbQ3Q==
-X-Google-Smtp-Source: AGHT+IHT1prjATADHPcha+6hRVeVajAEKA9n2RxWsP2L6hY0yEyK/iXNVOuhwOgvmCbXJi+mqMHvqw==
-X-Received: by 2002:a05:6512:128c:b0:50e:30a8:4c8e with SMTP id u12-20020a056512128c00b0050e30a84c8emr682347lfs.43.1704908535603;
-        Wed, 10 Jan 2024 09:42:15 -0800 (PST)
-Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id a27-20020a195f5b000000b0050e8cd014d7sm741726lfj.16.2024.01.10.09.42.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 09:42:15 -0800 (PST)
-Message-ID: <2d200f5f-37a5-408d-9ca9-3137ec717647@linaro.org>
-Date: Wed, 10 Jan 2024 18:42:14 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6300E4CB4E;
+	Wed, 10 Jan 2024 17:44:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4T9FXr6ZsYz9xGd;
+	Wed, 10 Jan 2024 17:44:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1704908653; bh=rTk1KRQfBuElUNFtlTDf/yfk4wDvRlY+/DuxvH5lO0w=;
+	h=From:Subject:Date:To:Cc:From;
+	b=n67RvaI6rVM9YKagI6ysawPXr7ASFVSJNtwi3EefNPPr03T8kF6eKC9sQjJYiSEUS
+	 yo2lmE2RmaF6qdfvTLezra6dnk3k+FasU+LI4fBPHn6i7wk5WtqrJXMcnRDAffNulv
+	 85XQrWXNspfLQpsYrsxFBB3YqpEQ+hQegNdChUAw=
+X-Riseup-User-ID: DDE24846D5B7353908825AAF958A18C2BC5A8C6BC92B957431BEE6699EADD5FD
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4T9FXm2tSvzJmtT;
+	Wed, 10 Jan 2024 17:44:08 +0000 (UTC)
+From: Arthur Grillo <arthurgrillo@riseup.net>
+Subject: [PATCH v2 0/7] Add YUV formats to VKMS
+Date: Wed, 10 Jan 2024 14:44:00 -0300
+Message-Id: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sm7225-fairphone-fp4: Enable
- display and GPU
-Content-Language: en-US
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Andy Gross <agross@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
- <20240110-fp4-panel-v2-4-8ad11174f65b@fairphone.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240110-fp4-panel-v2-4-8ad11174f65b@fairphone.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGHXnmUC/0XMSw6CMBSF4a2QO7amT0RH7sMwMO2t3BgLaaGRk
+ O7dwsThf3LybZAwEia4NRtEzJRoDDXkqQE7PMMLGbnaILlUQsqW5fcnsXXJrPWXzly9ks53UO9
+ TRE/fg3r0tQdK8xjXQ85iX3dEc8HNH8mCcaa01dYpbQzye6SEy3QOOENfSvkBSVX/D6EAAAA=
+To: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+ Haneen Mohammed <hamohammed.sa@gmail.com>, 
+ Harry Wentland <harry.wentland@amd.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, 
+ =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>, 
+ Melissa Wen <melissa.srw@gmail.com>, 
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
+ Thomas Zimmermann <tzimmermann@suse.de>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, Arthur Grillo <arthurgrillo@riseup.net>
 
+This patchset aims to add support for additional buffer YUV formats.
+More specifically, it adds support to:
 
+Semi-planar formats:
 
-On 1/10/24 16:14, Luca Weiss wrote:
-> Add the description for the display panel found on this phone.
-> Unfortunately the LCDB module on PM6150L isn't yet supported upstream so
-> we need to use a dummy regulator-fixed in the meantime.
-> 
-> And with this done we can also enable the GPU and set the zap shader
-> firmware path.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
+- NV12
+- NV16
+- NV24
+- NV21
+- NV61
+- NV42
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Planar formats:
 
-Konrad
+- YUV440
+- YUV422
+- YUV444
+- YVU440
+- YVU422
+- YVU444
+
+These formats have more than one plane, and most have chroma
+subsampling. These properties don't have support on VKMS, so I had to
+work on this before.
+
+To ensure that the conversions from YUV to RGB are working, I wrote a
+KUnit test. As the work from Harry on creating KUnit tests on VKMS[1] is
+not yet merged, I took the setup part (Kconfig entry and .kunitfile)
+from it.
+
+Furthermore, I couldn't find any sources with the conversion matrices,
+so I had to work out the values myself based on the ITU papers[2][3][4].
+So, I'm not 100% sure if the values are accurate. I'd appreciate some
+input if anyone has more knowledge in this area.
+
+Also, I used two IGT tests to check if the formats were having a correct
+conversion (all with the --extended flag):
+
+- kms_plane@pixel_format
+- kms_plane@pixel_format_source_clamping.
+
+The nonsubsampled formats don't have support on IGT, so I sent a patch
+fixing this[5].
+
+Currently, this patchset does not add those formats to the writeback, as
+it would require a rewrite of how the conversions are done (similar to
+what was done on a previous patch[6]). So, I would like to review this
+patchset before I start the work on this other part.
+
+[1]: https://lore.kernel.org/all/20231108163647.106853-5-harry.wentland@amd.com/
+[2]: https://www.itu.int/rec/R-REC-BT.601-7-201103-I/en
+[3]: https://www.itu.int/rec/R-REC-BT.709-6-201506-I/en
+[4]: https://www.itu.int/rec/R-REC-BT.2020-2-201510-I/en
+[5]: https://lists.freedesktop.org/archives/igt-dev/2024-January/066937.html
+[6]: https://lore.kernel.org/dri-devel/20230414135151.75975-2-mcanal@igalia.com/
+
+Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+---
+Changes in v2:
+- Use EXPORT_SYMBOL_IF_KUNIT instead of including the .c test
+  file (Maxime)
+- Link to v1: https://lore.kernel.org/r/20240105-vkms-yuv-v1-0-34c4cd3455e0@riseup.net
+
+---
+Arthur Grillo (7):
+      drm/vkms: Use drm_frame directly
+      drm/vkms: Add support for multy-planar framebuffers
+      drm/vkms: Add range and encoding properties to pixel_read function
+      drm/vkms: Add chroma subsampling
+      drm/vkms: Add YUV support
+      drm/vkms: Drop YUV formats TODO
+      drm/vkms: Create KUnit tests for YUV conversions
+
+ Documentation/gpu/vkms.rst                    |   3 +-
+ drivers/gpu/drm/vkms/Kconfig                  |  15 ++
+ drivers/gpu/drm/vkms/Makefile                 |   1 +
+ drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
+ drivers/gpu/drm/vkms/tests/Makefile           |   3 +
+ drivers/gpu/drm/vkms/tests/vkms_format_test.c | 156 ++++++++++++++++
+ drivers/gpu/drm/vkms/vkms_drv.h               |   6 +-
+ drivers/gpu/drm/vkms/vkms_formats.c           | 247 ++++++++++++++++++++++----
+ drivers/gpu/drm/vkms/vkms_formats.h           |   9 +
+ drivers/gpu/drm/vkms/vkms_plane.c             |  26 ++-
+ drivers/gpu/drm/vkms/vkms_writeback.c         |   5 -
+ 11 files changed, 426 insertions(+), 49 deletions(-)
+---
+base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
+change-id: 20231226-vkms-yuv-6f7859f32df8
+
+Best regards,
+-- 
+Arthur Grillo <arthurgrillo@riseup.net>
+
 
