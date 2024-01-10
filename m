@@ -1,229 +1,142 @@
-Return-Path: <linux-kernel+bounces-21928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 489F78296B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B918296BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:58:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC1C41F26D80
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:57:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 163E51F26F85
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559923F8E1;
-	Wed, 10 Jan 2024 09:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8B33FB26;
+	Wed, 10 Jan 2024 09:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8ibeTC8"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gwSvrbps"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23C23EA9F;
-	Wed, 10 Jan 2024 09:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e7b273352so4116178e87.1;
-        Wed, 10 Jan 2024 01:56:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704880610; x=1705485410; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NpW13ArSUR3hiGaGG4MBnpyKypHsipH6j/gs/ejQL1g=;
-        b=L8ibeTC8T3qVuLihUWPlaWUJbkLeC2xm+e4BN89Y6d5MrX7Fl4K7FHSRXtJaE+QFfi
-         +qg4WJfLnLcwGkcPi6JGxbSkR2+3QpJyhhEYMI9O5vgYUdznpt9ZHQV1bd9QcaTTNgbw
-         KQYogJOJn1Id6ZMNz1LKrxhCJPeB6EoSvdl12By9qbKdtujko4dfJBwurY95kMEJsoeT
-         xAWBS9Z7OvlcfsCTIkF2X+AlgJi6mNxMBfwAQK2s61bE+RpNsdpHmyi6T4qWUPbfIxII
-         1g6k5kvzrRSzWg27+ZzK4l3PkI/ZVKPZlHdURL16E+v3FicCwh+iYsEh0bwsJfQu3NLK
-         RQXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704880610; x=1705485410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NpW13ArSUR3hiGaGG4MBnpyKypHsipH6j/gs/ejQL1g=;
-        b=Ae7aCHZna1lJQTsi8fzWzlkTLLsnHlEpHnrdGbpShM4RyoQjRmSECDPUeQY7MSG2C3
-         6MVDkYamPK41Iy2r7u8PiNjPzUc9dkbiNw198UrHHJLrUIIUi8TyOL2wygAQ4XCJWRZt
-         7wt/KRIqRotMVqgOfZ9sCJPxK2hyXKKdI412i638UG63VAkBb4TM7B6X33knFlYnBOxX
-         2N9WTTUf/3d9MIf41lKeNtgpGRNH6UiJzAu6g2XtQ/ZTKC0Jy1OZIka4bdxDBT5l8/N8
-         ubzIGoI+2bCBOosjl0Ztd2xomEIt2nvWisJQ0p6GnhzZcXHGoTgiQxNVWKYxv+8vF6Rw
-         NcsA==
-X-Gm-Message-State: AOJu0YwvbHBfxya1yBcFDFdP/xgLAfK1H/edd61TPFTTYz8J//TyqsID
-	fIS+AuQllYOJlZdv8/ENarw=
-X-Google-Smtp-Source: AGHT+IFZX1SYitdtL/PrGHK/QPZ4ajIdAjRbAxPJ8ut2kihr+QX5/b+FNeiGkhlOo5ECcM2O5oqMDQ==
-X-Received: by 2002:a05:6512:3b8b:b0:50e:4389:12c5 with SMTP id g11-20020a0565123b8b00b0050e438912c5mr395125lfv.14.1704880610146;
-        Wed, 10 Jan 2024 01:56:50 -0800 (PST)
-Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
-        by smtp.gmail.com with ESMTPSA id l4-20020a170906a40400b00a2bfd60c6a8sm126314ejz.80.2024.01.10.01.56.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 01:56:48 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 10 Jan 2024 10:56:46 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
-	x86@kernel.org, leit@meta.com, linux-kernel@vger.kernel.org,
-	pawan.kumar.gupta@linux.intel.com, bpf@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v6 00/13] x86/bugs: Add a separate config for each
- mitigation
-Message-ID: <ZZ5p3vdnTtU5TeJe@gmail.com>
-References: <20231121160740.1249350-1-leitao@debian.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF42A3F8FF;
+	Wed, 10 Jan 2024 09:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A9kKas018787;
+	Wed, 10 Jan 2024 09:57:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=tsVnBji+CX6UauGvaGmTOaJaiIeGC7M8aqQ1BW98I7w=; b=gw
+	SvrbpsKk55/zJT4EPjitawV0cNpu4NCERuTjIABtRfrLrOzT1Y5ZqMG4xwN3Fa80
+	rNWbJHH1y7B63ZE1Qz9chBijNsiU7s0qvLLtmZCeD+N6II7coGEW4IRUdXeM3tB0
+	s4ylmf/oMoTRac0+8bB67vzVegEN1LEi8L5baaYusBTdawqlj7yleD6BwVKZHwhm
+	cW//lAdiDm1nw54cIOdoukaY9iH9wLCEZL7Snd0h5j0O0bbc3tlO2EeqDuyfEm0T
+	hpDtgqlPwwVLp+TG01HiAXpzEVy3F1OPcRv7u6lJEdvSHS6EHoAuOBgwW+q7p0iM
+	aZvKrHsE5vERQd6eW01Q==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhq2h086y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 09:57:51 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40A9voiW003332
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 09:57:50 GMT
+Received: from [10.217.219.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
+ 2024 01:57:47 -0800
+Message-ID: <556f3d87-1a38-423a-82c0-c7471b232e43@quicinc.com>
+Date: Wed, 10 Jan 2024 15:27:45 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121160740.1249350-1-leitao@debian.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] usb: core: Prevent null pointer dereference in
+ update_port_device_state
+Content-Language: en-US
+To: Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+CC: Krishna Kurapati <quic_kriskura@quicinc.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20240110091422.25347-1-quic_ugoswami@quicinc.com>
+ <4e272d5d-ec19-7621-1346-4363b0070b1c@gmail.com>
+From: Udipto Goswami <quic_ugoswami@quicinc.com>
+In-Reply-To: <4e272d5d-ec19-7621-1346-4363b0070b1c@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ngUbGCKc8h2k2BZeLif8b7s_wTo8zi-5
+X-Proofpoint-ORIG-GUID: ngUbGCKc8h2k2BZeLif8b7s_wTo8zi-5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ spamscore=0 bulkscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 suspectscore=0
+ mlxlogscore=604 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401100081
 
 
-* Breno Leitao <leitao@debian.org> wrote:
 
-> Currently, the CONFIG_SPECULATION_MITIGATIONS is halfway populated,
-> where some mitigations have entries in Kconfig, and they could be
-> modified, while others mitigations do not have Kconfig entries, and
-> could not be controlled at build time.
+On 1/10/2024 2:52 PM, Sergei Shtylyov wrote:
+> On 1/10/24 12:14 PM, Udipto Goswami wrote:
 > 
-> The fact of having a fine grained control can help in a few ways:
+>> Currently,the function update_port_device_state gets the usb_hub from
 > 
-> 1) Users can choose and pick only mitigations that are important for
-> their workloads.
+>     Need space between comma and "the"...
+got it.
 > 
-> 2) Users and developers can choose to disable mitigations that mangle
-> the assembly code generation, making it hard to read.
+>> udev->parent by calling usb_hub_to_struct_hub.
+>> However, in case the actconfig or the maxchild is 0, the usb_hub would
+>> be NULL and upon further accessing to get port_dev would result in null
+>> pointer dereference.
+>>
+>> Fix this by introducing an if check after the usb_hub is populated.
+>>
+>> Fixes: 83cb2604f641 ("usb: core: add sysfs entry for usb device state")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
+> [...]
 > 
-> 3) Separate configs for just source code readability,
-> so that we see *which* butt-ugly piece of crap code is for what
-> reason.
+>> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+>> index ffd7c99e24a3..5ba1875e6bf4 100644
+>> --- a/drivers/usb/core/hub.c
+>> +++ b/drivers/usb/core/hub.c
+>> @@ -2053,9 +2053,22 @@ static void update_port_device_state(struct usb_device *udev)
+>>   
+>>   	if (udev->parent) {
+>>   		hub = usb_hub_to_struct_hub(udev->parent);
+>> -		port_dev = hub->ports[udev->portnum - 1];
+>> -		WRITE_ONCE(port_dev->state, udev->state);
+>> -		sysfs_notify_dirent(port_dev->state_kn);
+>> +
+>> +		/*
+>> +		 * The Link Layer Validation System Driver (lvstest)
+>> +		 * has step to unbind the hub before running the rest
+>> +		 * of the procedure. This triggers hub_disconnect which
+>> +		 * will set the hub's maxchild to 0, further resulting
 > 
-> Important to say, if a mitigation is disabled at compilation time, it
-> could be enabled at runtime using kernel command line arguments.
+>     Resulting in.
+
+got it.
 > 
-> Discussion about this approach:
-> https://lore.kernel.org/all/CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com/
-> and
-> https://lore.kernel.org/lkml/20231011044252.42bplzjsam3qsasz@treble/
+>> +		 * usb_hub_to_struct_hub returning NULL.
+>> +		 *
+>> +		 * Add if check to avoid running into NULL pointer
+>> +		 * de-reference.
 > 
-> In order to get the missing mitigations, some clean up was done.
-> 
-> 1) Get a namespace for mitigations, prepending MITIGATION to the Kconfig
-> entries.
-> 
-> 2) Adding the missing mitigations, so, the mitigations have entries in the
-> Kconfig that could be easily configure by the user.
-> 
-> With this patchset applied, all configs have an individual entry under
-> CONFIG_SPECULATION_MITIGATIONS, and all of them starts with CONFIG_MITIGATION.
-
-Yeah, so:
-
- - I took this older series and updated it to current upstream, and made
-   sure all renames were fully done: there were two new Kconfig option
-   uses, which I integrated into the series. (Sorry about the delay, holiday & stuff.)
-
- - I also widened the renames to comments and messages, which were not
-   always covered.
-
- - Then I took this cover letter and combined it with a more high level
-   description of the reasoning behind this series I wrote up, and added it
-   to patch #1. (see it below.)
-
- - Then I removed the changelog repetition from the other patches and just
-   referred them back to patch #1.
-
- - Then I stuck the resulting updated series into tip:x86/bugs, without the 
-   last 3 patches that modify behavior.
-
- - You might notice the somewhat weird extra whitespaces in the titles - 
-   I've done that so that it all looks tidy in the shortlog:
-
-   Breno Leitao (10):
-      x86/bugs: Rename CONFIG_GDS_FORCE_MITIGATION => CONFIG_MITIGATION_GDS_FORCE
-      x86/bugs: Rename CONFIG_CPU_IBPB_ENTRY       => CONFIG_MITIGATION_IBPB_ENTRY
-      x86/bugs: Rename CONFIG_CALL_DEPTH_TRACKING  => CONFIG_MITIGATION_CALL_DEPTH_TRACKING
-      x86/bugs: Rename CONFIG_PAGE_TABLE_ISOLATION => CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
-      x86/bugs: Rename CONFIG_RETPOLINE            => CONFIG_MITIGATION_RETPOLINE
-      x86/bugs: Rename CONFIG_SLS                  => CONFIG_MITIGATION_SLS
-      x86/bugs: Rename CONFIG_CPU_UNRET_ENTRY      => CONFIG_MITIGATION_UNRET_ENTRY
-      x86/bugs: Rename CONFIG_CPU_IBRS_ENTRY       => CONFIG_MITIGATION_IBRS_ENTRY
-      x86/bugs: Rename CONFIG_CPU_SRSO             => CONFIG_MITIGATION_SRSO
-      x86/bugs: Rename CONFIG_RETHUNK              => CONFIG_MITIGATION_RETHUNK
-
-I think the resulting tree is all mostly good, but still I'd like to see 
-just the 10 pure low-risk renames done in this first step, to not carry too 
-much of this around unnecessarily - maybe even send it Linuswards in this 
-cycle if it's problem-free - without any real regression risk to upstream.
+>     This is obvious from the code below, I think...
+ok will remove this.
 
 Thanks,
-
-	Ingo
-
-=============================>
-commit be83e809ca67bca98fde97ad6b9344237963220b
-Author: Breno Leitao <leitao@debian.org>
-Date:   Tue Nov 21 08:07:28 2023 -0800
-
-    x86/bugs: Rename CONFIG_GDS_FORCE_MITIGATION => CONFIG_MITIGATION_GDS_FORCE
-    
-    So the CPU mitigations Kconfig entries - there's 10 meanwhile - are named
-    in a historically idiosyncratic and hence rather inconsistent fashion
-    and have become hard to relate with each other over the years:
-    
-       https://lore.kernel.org/lkml/20231011044252.42bplzjsam3qsasz@treble/
-    
-    When they were introduced we never expected that we'd eventually have
-    about a dozen of them, and that more organization would be useful,
-    especially for Linux distributions that want to enable them in an
-    informed fashion, and want to make sure all mitigations are configured
-    as expected.
-    
-    For example, the current CONFIG_SPECULATION_MITIGATIONS namespace is only
-    halfway populated, where some mitigations have entries in Kconfig, and
-    they could be modified, while others mitigations do not have Kconfig entries,
-    and can not be controlled at build time.
-    
-    Fine-grained control over these Kconfig entries can help in a number of ways:
-    
-      1) Users can choose and pick only mitigations that are important for
-         their workloads.
-    
-      2) Users and developers can choose to disable mitigations that mangle
-         the assembly code generation, making it hard to read.
-    
-      3) Separate Kconfigs for just source code readability,
-         so that we see *which* butt-ugly piece of crap code is for what
-         reason...
-    
-    In most cases, if a mitigation is disabled at compilation time, it
-    can still be enabled at runtime using kernel command line arguments.
-    
-    This is the first patch of an initial series that renames various
-    mitigation related Kconfig options, unifying them under a single
-    CONFIG_MITIGATION_* namespace:
-    
-        CONFIG_GDS_FORCE_MITIGATION => CONFIG_MITIGATION_GDS_FORCE
-        CONFIG_CPU_IBPB_ENTRY       => CONFIG_MITIGATION_IBPB_ENTRY
-        CONFIG_CALL_DEPTH_TRACKING  => CONFIG_MITIGATION_CALL_DEPTH_TRACKING
-        CONFIG_PAGE_TABLE_ISOLATION => CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
-        CONFIG_RETPOLINE            => CONFIG_MITIGATION_RETPOLINE
-        CONFIG_SLS                  => CONFIG_MITIGATION_SLS
-        CONFIG_CPU_UNRET_ENTRY      => CONFIG_MITIGATION_UNRET_ENTRY
-        CONFIG_CPU_IBRS_ENTRY       => CONFIG_MITIGATION_IBRS_ENTRY
-        CONFIG_CPU_SRSO             => CONFIG_MITIGATION_SRSO
-        CONFIG_RETHUNK              => CONFIG_MITIGATION_RETHUNK
-    
-    Implement step 1/10 of the namespace unification of CPU mitigations related
-    Kconfig options and rename CONFIG_GDS_FORCE_MITIGATION to
-    CONFIG_MITIGATION_GDS_FORCE.
-    
-    [ mingo: Rewrote changelog for clarity. ]
-    
-    Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
-    Signed-off-by: Breno Leitao <leitao@debian.org>
-    Signed-off-by: Ingo Molnar <mingo@kernel.org>
-    Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
-    Cc: Linus Torvalds <torvalds@linux-foundation.org>
-    Link: https://lore.kernel.org/r/20231121160740.1249350-2-leitao@debian.org
+-Udipto
 
