@@ -1,240 +1,123 @@
-Return-Path: <linux-kernel+bounces-21691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66A368292CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:36:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A62428292D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E659289350
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:36:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 039A1B238E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B2C4691;
-	Wed, 10 Jan 2024 03:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F904A3E;
+	Wed, 10 Jan 2024 03:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="kCaEGGcM"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2072.outbound.protection.outlook.com [40.107.243.72])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="JB96nfXx"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EAB63A7;
-	Wed, 10 Jan 2024 03:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nBZV8J4PQWS5pwGLvUefhqbPb1RWBfDxlr6ZJSxxeAZukkbdsvsB3YteE3PFmidH5yVxeHx/LmYAbXCBzxLh4tji8y6xg1jBNQGmCA7chEdcL45BZppbaTqgQT4WmYwk0FBYyTUs9w+fhXk1cXTqXd+mVnxa1fGChJkTnmxxuMbbUj3mdIJ197KDfiKd4dqcUTfQ30IeK2Nh8lITkouA7J0qT5xYUl7MV1dbHCQqKcOD2FfhGbudDU6jyPl1traps8m2oHPOPAmA21pdtoYRyt5BFaXw9mXCXzxALrBpaDiOkIiPm+zqolztQTTM6atDZfD/zVGWCR6YFSZUCzAMeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pVk2yMJOhPcCnt14t6HVc9NiSyloWmEKGkCzLOTgEMs=;
- b=JrioeC7tF4UJm5E9BAnyMQxuiRWu5IZvTdxhcZdgZKhGw+BPFVN2CSlRKofTqMlks2zvWR2lXSzt4EPkn5nfX933GxRWy5PGhdC0mwRYjtYhjBT5STFhqI7fSsrhOLD0172AhrN8tO0HTEHTtyj6lrBQYZeeqUjPoeO+uyfG1VHYJ9atiHpBYqN9PuG/+gHk3CXUO/AhyY0wW5XRlALg1bboPLi64vx4xedTNWrY8CV/apu0ns8G0NKpeD2v7xeshRU/B+RAC0cU7qros2eowduEeGxPqQWnrVfolHQppghu5ZPvrDHflSKt+e3WbuHo8n7O/sztA/iuUmN0snI0lQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=jms.id.au smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pVk2yMJOhPcCnt14t6HVc9NiSyloWmEKGkCzLOTgEMs=;
- b=kCaEGGcMDdvVP+f8lPX1817oRdK7HkUwZ2kU6DW2faVIE3GjVtQ7716bvnH4wSVVHtC9ZPVC9vuq78tLZ+jmB2gYecRh38gnMo9AALqFQYQInlLM2LNldb/4u1pMz5MqSeFC9Tu/q4ylZe40Fku96uMukV/0c9RsQhQnymTR2r4=
-Received: from MW3PR06CA0019.namprd06.prod.outlook.com (2603:10b6:303:2a::24)
- by SA3PR12MB9092.namprd12.prod.outlook.com (2603:10b6:806:37f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Wed, 10 Jan
- 2024 03:36:05 +0000
-Received: from MWH0EPF000971E6.namprd02.prod.outlook.com
- (2603:10b6:303:2a:cafe::9e) by MW3PR06CA0019.outlook.office365.com
- (2603:10b6:303:2a::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23 via Frontend
- Transport; Wed, 10 Jan 2024 03:36:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E6.mail.protection.outlook.com (10.167.243.74) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 03:36:05 +0000
-Received: from BMCDEV-TH3.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 9 Jan
- 2024 21:36:04 -0600
-From: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
-To: <joel@jms.id.au>, <andrew@aj.id.au>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-aspeed@lists.ozlabs.org>,
-	<linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>,
-	<robh+dt@kernel.org>
-CC: <supreeth.venkatesh@amd.com>
-Subject: [PATCH 1/1] ARM:dts:aspeed: Initial device tree for AMD Onyx Platform
-Date: Tue, 9 Jan 2024 21:35:43 -0600
-Message-ID: <20240110033543.799919-1-supreeth.venkatesh@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22363C32
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7045E3F2C5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:44:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704858253;
+	bh=pLgcyTZenokYx0uGkUKde9DGt3BHdUFOCmdzdzfj8Zs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=JB96nfXxcu3WdHAzoWp0Puat/DIC8YgfFA4e41kKDPBDc3vvQS8PS2OfoQbizRvyp
+	 Rt0Ggj7Ya89rua1xY2NEr9sAdA2nBgRPX7+204dKkt0UlFvD0ZJYinTLUDxe4gEJQa
+	 4LWfSevm2gvXUjRCpEjFeKvxk/xdjVLrBICXgeSKejia1bkddJGGFv7QM8DfOYFefI
+	 SqjdW2+6DW15sv9ipbPUNBRtUoVpFRLJRK916ZXthfT47yQcF9KylGjLGjpafSqGlk
+	 DoNHuaFiRWqOuLukvhyZWLbeyoCbRULx0A4V7p48S8zEmcBywDmB7AYpQnZ5OpNt0o
+	 x5og6i7lrWdsQ==
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-594f08f3768so3619136eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 19:44:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704858252; x=1705463052;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pLgcyTZenokYx0uGkUKde9DGt3BHdUFOCmdzdzfj8Zs=;
+        b=Nr4SDwtIS3jhcPr2lEGN8ftvMrO1lCtwo++/ComWGXVr/S655+LFiOcV5Ibf2ZOun6
+         zVuDvyU29Y2cZOwhExgRYPqP3y2+MFgtPD9293ym65guOSOLOpKxqZ6qBQW9f2EJ89KY
+         FTUBdbVbEbd6TsAKNcILtTpKCXkCTWriblhinSKS4jwPxhdj3eHL/sOABlv1VClKjs88
+         EPsevFmGY2mNU+J+lghcnmdYs2PZcbXQdtpqZkaSplogiAdlHn79U83EvIM8omL9KDnG
+         brXD8WtMS3nS72YReBdAnWsXjvsjkRU9Nqam/qeHk7JC45T5QWlHCxpSOLO8iEp1LTTV
+         QvKw==
+X-Gm-Message-State: AOJu0YyFHdYATiJANs+D8YLzECRhRL2f4JHVnaaezJDQwTbvsx1NdDQS
+	w0BFw+hfo63Cr2Xrjd3G1T+6qmLL8bNQz4JXr17Fo0mnZhxOmLrX0J3mKcncoKvMSh3xu77SXtr
+	Aa3VgXd1/sqTC/DZm8RNvw8I5+8HdY5Cm+1FCXRnp28ohp9+2OVFR35L9pU4gAgeUKjwdiBCc+Q
+	o=
+X-Received: by 2002:a05:6359:4c1a:b0:175:6b16:437 with SMTP id kj26-20020a0563594c1a00b001756b160437mr372160rwc.41.1704858251848;
+        Tue, 09 Jan 2024 19:44:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHP3KLBfcLw7NKm+OUg78KN9DAiPdJNkz+1tdABIJcKUQk//5olHZgCKbLN9WY67WMLQLRq+vqwQ7ef67NbgVI=
+X-Received: by 2002:a05:6359:4c1a:b0:175:6b16:437 with SMTP id
+ kj26-20020a0563594c1a00b001756b160437mr372145rwc.41.1704858251500; Tue, 09
+ Jan 2024 19:44:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E6:EE_|SA3PR12MB9092:EE_
-X-MS-Office365-Filtering-Correlation-Id: 441f3d2f-5ba6-4237-21a6-08dc118d46ab
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	7R3XIU4j9APp/3biogsosMeewQnIrOzsWUxlM0UilR7A7OPh0Iieev7VgXZ3sRaR99eNb/SLpMGoNVybzsClSEKu3FISOHy2gJaRMhBo/sr2BrrYigjPJ4+zW8M762p5/omRI8IZjYCamoDgRYV1ZRV5PVcwURQSfmFCURqB/IruuwNtLSpMZAcBkxP9uzaaHCDXgz7BUzs5v1uHAddPVgopb2WVI7DD1d68Iy6wIZLvZkVjpmJvCtZwCgIP8vhfv7Gfnl/pu/PkjYIsRylTuXre0Cx4DjK33AVxvoCBhtuqZ8vlybGddOyD9voH23pebLd8zWgVG+p4kUzLe5qB/9v4KtcGZR3OjSQUCvxqBHKwe3lJSphW72+tZzx4vVTiR1f1YxW6h0Apnu28dJF5VGWizgG3a/iiFWj02EuNnz+e7ANohW0giSvDQecN7bMddbxnOPq0i++Y78/Wmo975t+K6QA38RX9SD9joA6y7cWaZrY9OyS8L9ntcKWXs8rzppl+xyp+KFl4erxLTtizefPoNNLeoSTS5dz6gmCeINA/yrDYDIYGHTZwyuN7IR4HBFbSiHm0vmbbxpBKOt3AzE3AglyuuikCRrwYzAGtIkam88JLKDFof/Njdrc8ff11ahk7SkDPxmIJi012x0yoWUlI5GcWQ92DvGVtCiRW2VzSk8C71x8B7QcdafDL8XESydI3v+zKupL3jqFqMoEA5JnyDWKBTLMyiuT4g7o2E8pMCB/R2oQ6PxfnKuwXAWf7Xkgav+RcC960PH3tUuIrjVj7GRhQ95zyXE/CmQ49dAE=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(376002)(39860400002)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(82310400011)(36840700001)(40470700004)(46966006)(2906002)(5660300002)(41300700001)(478600001)(40460700003)(83380400001)(40480700001)(16526019)(426003)(1076003)(26005)(2616005)(336012)(36860700001)(47076005)(7696005)(6666004)(86362001)(81166007)(356005)(44832011)(8936002)(8676002)(4326008)(36756003)(82740400003)(70206006)(70586007)(110136005)(316002)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 03:36:05.1886
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 441f3d2f-5ba6-4237-21a6-08dc118d46ab
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000971E6.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9092
+References: <954f0b86-dd9e-4d84-8d67-fba7e80bc94e@5challer.de> <20240105155100.GA1861423@bhelgaas>
+In-Reply-To: <20240105155100.GA1861423@bhelgaas>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Wed, 10 Jan 2024 11:43:58 +0800
+Message-ID: <CAAd53p5Eg4J9bRtAHY+JZ11cy1D0TnKmAaLfzcRJzw15VRBxXw@mail.gmail.com>
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Michael Schaller <michael@5challer.de>, bhelgaas@google.com, linux-pci@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, regressions@lists.linux.dev, macro@orcam.me.uk, 
+	ajayagarwal@google.com, sathyanarayanan.kuppuswamy@linux.intel.com, 
+	gregkh@linuxfoundation.org, hkallweit1@gmail.com, 
+	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds initial device tree and makefile updates for
-AMD Onyx platform.
+On Fri, Jan 5, 2024 at 11:51=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> =
+wrote:
+>
+> On Fri, Jan 05, 2024 at 12:18:32PM +0100, Michael Schaller wrote:
+> > On 05.01.24 04:25, Kai-Heng Feng wrote:
+> > > Just wondering, does `echo 0 > /sys/power/pm_asysnc` help?
+> >
+> > Yes, `echo 0 | sudo tee /sys/power/pm_async` does indeed also result in=
+ a
+> > working resume. I've tested this on kernel 6.6.9 (which still has commi=
+t
+> > 08d0cc5f3426). I've also attached the relevant dmesg output of the
+> > suspend/resume cycle in case this helps.
+>
+> Thanks for testing that!
+>
+> > Furthermore does this mean that commit 08d0cc5f3426 isn't at fault but
+> > rather that we are dealing with a timing issue?
+>
+> PCI does have a few software timing requirements, mostly related to
+> reset and power state (D0/D3cold).  ASPM has some timing parameters,
+> too, but I think they're all requirements on the hardware, not on
+> software.
+>
+> Adding an arbitrary delay anywhere shouldn't break anything, and other
+> than those few required situations, it shouldn't fix anything either.
 
-AMD Onyx platform is an AMD customer reference board with an Aspeed
-ast2600 BMC manufactured by AMD.
-It describes I2c devices, Fans, Kcs devices, Uarts, Mac, LEDs, etc.
-present on AMD Onyx platform.
+At least it means 8d0cc5f3426 isn't the culprit?
 
-Signed-off-by: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
----
- arch/arm/boot/dts/aspeed/Makefile             |  1 +
- .../boot/dts/aspeed/aspeed-bmc-amd-onyx.dts   | 98 +++++++++++++++++++
- 2 files changed, 99 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts
+Michael, does the issue happen when iwlwifi module is not loaded? It
+can be related to iwlwifi firmware.
 
-diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-index fb9cc95f1b60..2b27d377aae2 100644
---- a/arch/arm/boot/dts/aspeed/Makefile
-+++ b/arch/arm/boot/dts/aspeed/Makefile
-@@ -5,6 +5,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-ast2600-evb.dtb \
- 	aspeed-bmc-amd-daytonax.dtb \
- 	aspeed-bmc-amd-ethanolx.dtb \
-+	aspeed-bmc-amd-onyx.dtb \
- 	aspeed-bmc-ampere-mtjade.dtb \
- 	aspeed-bmc-ampere-mtmitchell.dtb \
- 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts
-new file mode 100644
-index 000000000000..a7056cd29553
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+// Copyright (c) 2021 - 2024 AMD Inc.
-+// Author: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
-+
-+/dts-v1/;
-+
-+#include "aspeed-g6.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+
-+/ {
-+       model = "AMD Onyx BMC";
-+       compatible = "amd,onyx-bmc", "aspeed,ast2600";
-+
-+       aliases {
-+               serial0 = &uart1;
-+               serial4 = &uart5;
-+      };
-+
-+       chosen {
-+               stdout-path = &uart5;
-+               bootargs = "console=ttyS4,115200 earlyprintk vmalloc=512MB";
-+       };
-+
-+       memory@80000000 {
-+               device_type = "memory";
-+               reg = <0x80000000 0x80000000>;
-+       };
-+
-+};
-+
-+&mdio0 {
-+       status = "okay";
-+
-+       ethphy0: ethernet-phy@0 {
-+               compatible = "ethernet-phy-ieee802.3-c22";
-+               reg = <0>;
-+       };
-+};
-+
-+&mac3 {
-+       status = "okay";
-+       phy-mode = "rgmii";
-+       phy-handle = <&ethphy0>;
-+
-+       pinctrl-names = "default";
-+       pinctrl-0 = <&pinctrl_rgmii4_default>;
-+};
-+
-+
-+
-+&fmc {
-+       status = "okay";
-+       flash@0 {
-+               compatible = "jedec,spi-nor";
-+               status = "okay";
-+               #include "openbmc-flash-layout-128.dtsi"
-+       };
-+};
-+
-+//Host Console
-+&uart1 {
-+       status = "okay";
-+};
-+
-+//BMC Console
-+&uart5 {
-+       status = "okay";
-+};
-+
-+&gpio0 {
-+        gpio-line-names =
-+        /*A0-A7*/       "","","","","","","","",
-+        /*B0-B7*/       "","","","","MON_POST_COMPLETE","P0_PRESENT_L","","",
-+        /*C0-C7*/       "","","","","","","","",
-+        /*D0-D7*/       "","","","","","","","",
-+        /*E0-E7*/       "","","","","","","","",
-+        /*F0-F7*/       "","","","","","","","",
-+        /*G0-G7*/       "","","","","","","","",
-+        /*H0-H7*/       "","ASSERT_WARM_RST_BTN_L","ASSERT_SOC_RST_BTN_L","","","","","",
-+        /*I0-I7*/       "","","","","","","","P0_I3C_APML_ALERT_L",
-+        /*J0-J7*/       "","","","","","","","",
-+        /*K0-K7*/       "","","","","","","","",
-+        /*L0-L7*/       "","","","","","","","",
-+        /*M0-M7*/       "","","","","","","","",
-+        /*N0-N7*/       "","","","","","","PSP_SOFT_FUSE_NOTIFY","ASSERT_BMC_READY",
-+        /*O0-O7*/       "","","HDT_SEL","HDT_XTRIG5","HDT_XTRIG6","JTAG_TRST_N","","",
-+        /*P0-P7*/       "MON_RST_BTN_L","ASSERT_RST_BTN_L","MON_PWR_BTN_L","ASSERT_PWR_BTN_L","HPM_FPGA_LOCKOUT","ASSERT_NMI_BTN_L","MON_PWR_GOOD","",
-+        /*Q0-Q7*/       "","","HDT_DBREQ_L","","BIOS_SPD_MUX_CTRL_RELEASED_L","","","",
-+        /*R0-R7*/       "","","","","","","","",
-+        /*S0-S7*/       "","","","","","","P0_DIMM_AF_ERROR","P0_DIMM_GL_ERROR",
-+        /*T0-T7*/       "","","","","","","","",
-+        /*U0-U7*/       "","","","","","","","",
-+        /*V0-V7*/       "","","","","","","","",
-+        /*W0-W7*/       "","","","","","","","",
-+        /*X0-X7*/       "","","","","","","","",
-+        /*Y0-Y7*/       "","","","","","","","",
-+        /*Z0-Z7*/       "","","","","","","","";
-+};
--- 
-2.34.1
+Kai-Heng
 
+>
+> Bjorn
 
