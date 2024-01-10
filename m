@@ -1,156 +1,202 @@
-Return-Path: <linux-kernel+bounces-21649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87B79829258
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:10:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8437D82925F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:18:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B469281EF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:10:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2F2FB23442
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF3A1C2D;
-	Wed, 10 Jan 2024 02:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB59F1870;
+	Wed, 10 Jan 2024 02:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nRebz5nQ"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HCV5SaO2";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="K9YCORHo"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2669610F4;
-	Wed, 10 Jan 2024 02:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A0MEZ9012118;
-	Wed, 10 Jan 2024 02:10:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=krkaV+/3T5HCfsTM719GgUw4uSOlXRKe/hrTtbLRB+c=; b=nR
-	ebz5nQJXjTCvRWTm3mb4u5A6tyWFheXl5HQtKad7ARtEZ1bhGqhiwLxDC5itvt7t
-	/DjsKswjh/4D2e4+Vx8M6v3eGWoGU1U93sjSBI/TVoysZSguwD2OjUYXT6ObZAK5
-	I6KPG7ORFGcQ30ay/7JAilRZntSEX1oF+xaKR/jK5ZAxI0U1I/tIDQ3l6hDbuPFk
-	LiMMX/RpcFTCq7RpbAJETjD8a+g5c4Cqq20k0S4jBqNlXXsfYQgrbVQQeg9b/uNb
-	psbndEQXUPfLOd4xY0AKorhVrzfO3h1A79U+7JiZ8tMidhF7oP5oc/7BH+BmvDre
-	v/2D4raZtue4wM0p9/eA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh85t1bts-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 02:10:08 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40A2A7jn008701
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 02:10:07 GMT
-Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
- 2024 18:10:04 -0800
-Message-ID: <9e13c2f5-b8e2-410c-9bf4-1ed4a4735dbb@quicinc.com>
-Date: Wed, 10 Jan 2024 10:10:01 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E321FA6;
+	Wed, 10 Jan 2024 02:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40A1mcOJ029427;
+	Wed, 10 Jan 2024 02:17:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=rgMcC7AfzFLFrwHKgXp56OyoqoxVcIpfRQniU3mpMQs=;
+ b=HCV5SaO2ZLoAmJleiedfuP2XJUKz58BskSV/02WtmJyPkbUiLwwrfoDDsBvGgf70UbUn
+ iumJAsZDCQIkinCtqHTmOneskmszUMIS1RHQ6EmzwfFCl1I2nOhx09PRzXTCftym88bl
+ qijJQtrdbs+Vjcf4m7PAxHoZw35aK7HipoE7jIf4TGzNe4XjpKJm3Yst7ZCNGY+4qPXz
+ fsk7Na1Dj3BYQrbOGCevwfGoOCI7KESbIPOmrnG8uXfXTuxmdON2NladLruwO7DgNXFf
+ hHPfqbXz1ykoSBITmPaXdPb+mTBRi5U7xe94yqwcAsWaWCmJx5xvfQ7Lz6YJNdVfQiMS oQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vh9r990tk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jan 2024 02:17:03 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40A2B7n3030110;
+	Wed, 10 Jan 2024 02:17:02 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vfutmx324-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jan 2024 02:17:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QoOs7XwcfKBUsygE8F9PEN+BqFwnT5LPE6uDpW4gSNXyEexXdVg0cuzBcK21/c38hflzaoYhH5JPSecle1fpZx5A7Dj2johMRk4gD2YO8y9Pw+VeQBa0BSaYm3JMw8U2L1Mo70o06N1QcWwbHTNru+Arc50JNsbEjrGG5tyZ0XgXboKENuo5BJDLnIjIC0AZR3FahiHAK7iX8xLNEMwLQtsBMQC53wyDl6APqiaS0Zq4BKkCxTKlQ9R+MAyqI5TFHEH477nA6oM7pT5NErH8D7ka37HQhNwizMqn45k8iscPZMHs+c4yT5HY9DqqrVWL3aVwZs4grbNOSpDC2ZmCMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rgMcC7AfzFLFrwHKgXp56OyoqoxVcIpfRQniU3mpMQs=;
+ b=g0mccNZ+CdMHPk1ACEDaWuZhGhVjvPVGUrso3VqnNYyekJSMBj0wHh/9QADMXL2KgY6nJ3UotClIk0kApTgDvAJSrwrmQcdzvpptT58WMxIoMc0/SLsHkKBp8Yef909Xue/EhNbJY1HAAxatGeFgAlD4MR/7h7O9yERLI/BCDrf9+RB4zbFC3iucZ/KJXyCi7LC2JGcszsEt2JYSek2aQrogsANvoxSqWrGtUUh0zWXWYsiX7SmbvZAY8XB9aVaZnYOV8cz//n1MBzFeNaRF0uW8Bb5DX2+IjNxbO0rYWOxL3WhSg+uGRjKIA8DEYElTTll13okVbUAI3bx/P4RQag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rgMcC7AfzFLFrwHKgXp56OyoqoxVcIpfRQniU3mpMQs=;
+ b=K9YCORHoZ8A6B88oMb5uchWpWcYYa0UIEZ+VKFjP5U4lB8AYhwd2vjgm+6saRAKwr16J8fIrduUDRKn/uUqrhDsSylHnbCNTKANl8IU4GaMYvST7Pvr9L7iyILa7c84pIAtsiuZjDUc2+TDijUQkIiOOTvfpMbDleu+8pWaZbNY=
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+ by CYYPR10MB7570.namprd10.prod.outlook.com (2603:10b6:930:c0::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
+ 2024 02:17:00 +0000
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::f41b:4111:b10e:4fa5]) by PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::f41b:4111:b10e:4fa5%4]) with mapi id 15.20.7159.020; Wed, 10 Jan 2024
+ 02:16:59 +0000
+Message-ID: <6945da59-f341-46a5-a6bd-819d488430dd@oracle.com>
+Date: Wed, 10 Jan 2024 07:46:48 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/124] 6.6.11-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+        rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Darren Kenny <darren.kenny@oracle.com>
+References: <20240108150602.976232871@linuxfoundation.org>
+Content-Language: en-US
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20240108150602.976232871@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BM1PR01CA0144.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:68::14) To PH8PR10MB6290.namprd10.prod.outlook.com
+ (2603:10b6:510:1c1::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: mtd: Change the schema for nodename which
- includes "sram"
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Bjorn Andersson <quic_bjorande@quicinc.com>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_tingweiz@quicinc.com>
-References: <1704367382-29979-1-git-send-email-quic_zhenhuah@quicinc.com>
- <20240109184323.GA24189@hu-bjorande-lv.qualcomm.com>
- <20240109212202.GA3236341-robh@kernel.org>
-From: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-In-Reply-To: <20240109212202.GA3236341-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: U54xXklOXClsEtD6dvfhWKaVf9VA9pjB
-X-Proofpoint-GUID: U54xXklOXClsEtD6dvfhWKaVf9VA9pjB
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|CYYPR10MB7570:EE_
+X-MS-Office365-Filtering-Correlation-Id: 028d9c8e-fbcf-4fbb-027c-08dc11823975
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	TrIwv3/4/lFAn8po96yw4EA/YB5ZW113j6VHPqwzzY+I0YD6eVCDiJfMfo9kk+8r+a/RPx2QOsv4hIuFoyqXihhmJlKu6Qo8UPxtMcLZtEZ1yaIhNoi3NudFD6zlNNBcrISzRuZEa6erVKjdx+LzhRt4Em98g6KO/Sstbsbm8noWFPvPzKRoVdEXGECtjkNgSkrbC1d5ds+8U5mJnP1VSdJc/ciIVTCYxaBTCpLalUqh4BaXqTlMaSZrua72pP4lXID2uEfPD/lfcH8M+UWxF4lViqrBLMavWDBPG7URcYvdiv49gnrZfrU/NBwqxYzI6pu66zD+E+iHUVXG/nCoaBwOyHC1+wprVAv6fZziF9PcGsjkPdUQBaapnVuOIOMx6QGXXifnUF7HCvL45lfRUeHv2D5fbO4GhEL9E22TypUBpJv0NvuHWWQMsDxdI3fIifem06BVR+VMbuIEdGBqYPLDfDPKPrWt+7R7POTwbuNbeWq4MFsFGPVFWhbR5uIlP9XObNNzlQb2MKLuYkYEgb0WNCfaRg6U2BZsIbjyVGlG2rV8i7OFIenZhhgh/qfQkSNKh0q4VpRqpDgKi7Lk54kQIBZpCEToh5k+kCIb3sO2XHWg0FTifOpeMPxlewxs5zi2Z+v8sGZLdCDsyepv2Q==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(136003)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(31686004)(7416002)(2906002)(4744005)(5660300002)(8936002)(36756003)(4326008)(66946007)(316002)(54906003)(66476007)(41300700001)(66556008)(6506007)(966005)(31696002)(86362001)(6486002)(107886003)(8676002)(478600001)(6512007)(6666004)(53546011)(26005)(2616005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?UGwwc2gvb09PZis3dUpLZTIrSGUxWkRWM1E4b1V4VEEyWHJQZ1BxRDZTUkJ2?=
+ =?utf-8?B?aUxVZVU4U1ZyWWt0VWtSb2xEQUFXVDZDeGZpNDJRR20xZ2NLSEMvL2pKdlAy?=
+ =?utf-8?B?dGhvbk5jVk52WnBSeG9ZRVM3NWtFMUtRL0V2Z2lxb0E4RS9sYUdXNzgwQnRT?=
+ =?utf-8?B?NUVibzJRV21IYkFTOVlDVU0vdGhYdEdqVnJES0pxNWo1Nld2OHhCSXM3Z29n?=
+ =?utf-8?B?LzV6cGtLcGdXYUFET093bmFVZzlwT2VSTngwaXUwYzFIUnd2S2MxTDNYR0FT?=
+ =?utf-8?B?K3NkeEg4RTJwMlowOW5HL1VnVGEwTHordnBIYjE5RmRLSTBaSVJ2c3BqVHBj?=
+ =?utf-8?B?ZnBmTnBBMTBKclcvTG96RU0xSEhzelFaYWZUa2piS3V6QlN3MXFpVENyWTBD?=
+ =?utf-8?B?SU9SR1lHZzVpSU1Rd1JPQXlESGpPZjJxclpVSHpLRGR2a3l0djB0M3NlSVlC?=
+ =?utf-8?B?ZlpvbGZKQWplaG8rQ09ESzIrTEtRQUxKTjh2eWtJNlBBM285SUo1dURpQWMr?=
+ =?utf-8?B?OW8rYTMzcFhqdE9rUUtTT0EvS0tLSzVVMENzb0IyUUMyZTk1d0tQaWtKR25E?=
+ =?utf-8?B?eE9WK0Y5UndvVkJGNXdhTER1WVZ3bURlY3lFaVpNOVgzNUF6ajZiUXV2U2JL?=
+ =?utf-8?B?dWd1TXBjdmxHd0IwbFNXRy9XdHZjZEorUGhPYml2L2NPUlBab0dsUWtzcUUr?=
+ =?utf-8?B?QTY5OTlVbGc1aFdzL0JFVllFNjNBTWFxSnlFbHhxSFVVQlFUaWtuelNoaGFY?=
+ =?utf-8?B?Vmd1Q1ArTHBmVHkvR01XK09yeXZUbHZISTQ3RlZCOGxPaDJFbmtQWkRNT0JI?=
+ =?utf-8?B?RHl1NGFWaDczeGRoV0c1cFNsRkMvV09zN1oxV25ZcElJSkVBZWkzbUhaaWRG?=
+ =?utf-8?B?WXp4MkFGYk9qWG5xNGlxKzlvaTBmdzBUSDdUVEM3UU53L0hVRlYzMzR5b1p3?=
+ =?utf-8?B?UXcya0JkRzkvNGlzRm5qRVpxMW5qOFZScHJzWHZPWUpyMWRmSUlvUURsSDRC?=
+ =?utf-8?B?R0IxVTNPczVjbXV2S09NRFNGUHZrQ0VNeHRHc0kzRVFuYWNMekllTURXWEVv?=
+ =?utf-8?B?cTZLMVZrcG5QREhTQTlDdzRHY3pBakxRV0w3VzhVTWFlL3M5ZWgxUS9DOTFk?=
+ =?utf-8?B?aW9aQ095UEpCOHhLTmxIQlZFRk9IUHRubkFnL0l2Tkx3aDV6dndieXBmWHBy?=
+ =?utf-8?B?eUlJcFA1Nml5d1NqeFZQVk8rM1IwUFp3c1YxcXdac3BNOTNOUU9qaGgxd3FT?=
+ =?utf-8?B?eGt5NzRnaEhmb2IvczNpRlkwdzgxZUhndmRWU1JJNEptSGhvUlo2VnBRNldE?=
+ =?utf-8?B?NkxWSE0xZ1RsY2M2bDFrV2JKNWIwM1piK0RuOHNrUnViUHhzVHVLdWVFa3c3?=
+ =?utf-8?B?Z3pycVZOL3Ezb044Z0JiZ0hTY0VMWkcxamxVTkl6MUdDREE0MzFuNHh4Y2Ry?=
+ =?utf-8?B?Z1Nzc3E5TU9oRkNUaFg3NUF6UTBXdnluWW5nSy82OWJwdE9sSFR1YzNYd01S?=
+ =?utf-8?B?b1hRY2NvcmQxaFhKV2pTNmQ5OGVTaUs1ek5kandyb1VETlhGRTYxNnlQeGt3?=
+ =?utf-8?B?OXA2V3psVWtlVXFsOFRFYWhMUExTY1hYZFlLdUVadTl1dEJQelVmN01xVkxZ?=
+ =?utf-8?B?MnB3bHVkNElZUEZQM0FrMm9SOHdxTGNta0pkSGRRVnA5Ym1tNC84M0xaN2s0?=
+ =?utf-8?B?Z21wZlVVZVp2NmJUMWp2RUdJL1pxeDI0Y2pzS2djVEVYTStCMTBYbHg5VkQ5?=
+ =?utf-8?B?UjlmbGNkbUcrZFl6QW9UWFBwTGhRNURmazRlTzZlK3Zqak9NQWtQNzlnMkMy?=
+ =?utf-8?B?ckc5cWdueWpKbW0rQ2JmREFHMDhJOW1hNElmeGFUNHU2eW9hRzQ0UEd1UTBh?=
+ =?utf-8?B?NEZBVEo0VG5UellzTDJhZGJuSXBRNXFoSVBzdjF2NThkSk1tM0IrdHdzdUkx?=
+ =?utf-8?B?dmJwd1FLMGxnRC9xTVRKRStCbk55enFIdGZtdk9zQ1RpQWVKeGlqK0IzUTZB?=
+ =?utf-8?B?SmhZbFNQZEZOeTRJdUlIQlJQRThaZ09oMUJMT01jd3FlQWt4c1pNKzAzRGVt?=
+ =?utf-8?B?SzA1OEpJTTVWV2lUa25ER2ZaZ2t4K1R6QWhMTWtqVFZBVzBBditQcm1ieXdt?=
+ =?utf-8?B?aE85S2YvN2lFS0lSNGpXSU5iM2dFK2NEVzd5NGxWeU96dUVJSXRmNzY2Z2Ez?=
+ =?utf-8?Q?fg6Z5B8AgySZkdWxmuXJaPE=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	Mrodq2bBlmgzs8k5meomRoc7FWMwvzSB6Na5vfYQmSqoj1rac+xRj8pZPEQKHG9UsoYFhch6iECjiIUKE5+q7MTtsIawC2xU+3LkxNRslco2BFH4vw5T6csHLqWJzskNm29N/wOi5Ztzz2cCslWDXw+eiaYdbIs9sE+0RH6QLpib98rhFz6skowyMdSEGKnypjK9q1fqEc1WrO7L8Wc0DZuWgA3kElk0Se2jhtGIyFc3z4B8mCewxOu4YCyl58bdkCoBhr2OOxCGvf7AgCvjRi/r0FamFHpL5+/H9XBOxR44GSAcFJC0Y+cYU/99yQ3w4pOHsAFyjMQk+qCD3D4b1H21XYnxt4H2sHgV2/0USEmjGaCLxKgYOHql3iI53uh4YDDza0jVFnc269nEjzB7zgZZdCD2U4yTBI/TTZXiMDVDQ99yfRbxahdtm488Ri1yOqULHSiytR9GGyw/TORz0NS+5jQVeC3diaO6ojqCuL2OhAKxAed8AVGWo34GeSP8ZEyz9InqZwwlI/W0GvgrPDJPLQq4yek1umQ+Su0Y0Cghzr4iENhaRfe01/3TdjXLtb45ppVBY0DD8bbuZFY/5CumGoTt6LMvPfk8lMbOGZ4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 028d9c8e-fbcf-4fbb-027c-08dc11823975
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 02:16:59.0749
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V8JU0xrRFakBjDh8a6zFak1/9xBKeJ6qD5r5aAgvDP49HG505sYt7HR/R28d/lf+PtaYHjOIOIquK96C+hue+v5F4prFPAoc6izF2BMOJer/VQb+DEfv50yPkGZ0vErf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR10MB7570
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 clxscore=1011
- priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100016
+ definitions=2024-01-09_13,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 adultscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401100017
+X-Proofpoint-ORIG-GUID: 19koq6eXT1DVgNnT62G4SmaJ-tO0NLx6
+X-Proofpoint-GUID: 19koq6eXT1DVgNnT62G4SmaJ-tO0NLx6
 
+Hi Greg,
 
-
-On 2024/1/10 5:22, Rob Herring wrote:
-> On Tue, Jan 09, 2024 at 10:43:23AM -0800, Bjorn Andersson wrote:
->> On Thu, Jan 04, 2024 at 07:23:02PM +0800, Zhenhua Huang wrote:
->>> Node name which includes "sram" not only represents MTD devices, but also
->>> lots of sram devices(eg, qcom,imem.yaml, rules in folder sram/*).
->>>
->>> To avoid the conflicts, change the schema as:
->>>   - if node name includes "sram", must select "compatible" to match
->>> (I have listed all "comptible" string in mtd.yaml by searching
->>> drivers/mtd/* to find applicable drivers)
->>>   - if node name is nand/flash, use "nodename" to select.
->>>
->>
->> You're right, it doesn't seem appropriate for the mtd binding to be
->> selected for nodes intended to match e.g. the qcom,imem binding.
->>
->>> Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
->>> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
->>> ---
->>> Hello,
->>>
->>> Tested a few devicetree nodes, which confirms:
->>> "qcom,imem.yaml" which in sram/ not matches with mtd.yaml anymore.
->>> All nodes include string "sram" must have "compatible" which listed in
->>> mtd.yaml to be matched.
->>>
->>> Current I just modify the rule for "sram" as it is definitely conflicting with
->>> rules in sram/*. I have not much backgrounds on nand/flash whether they may have
->>> similar conflicts.
->>>
->>>   Documentation/devicetree/bindings/mtd/mtd.yaml | 24 +++++++++++++++++++++---
->>>   1 file changed, 21 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
->>> index f322290..1704437 100644
->>> --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
->>> +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
->>> @@ -10,10 +10,28 @@ maintainers:
->>>     - Miquel Raynal <miquel.raynal@bootlin.com>
->>>     - Richard Weinberger <richard@nod.at>
->>>   
->>> -properties:
->>> -  $nodename:
->>
->> The mtd binding is $ref'ed by other bindings, similar to how we do with
->> other bindings of common properties.
->>
->> So, I think the problem with mtd is that this ($nodename) turns into a
->> "select" automatically, which causes this binding to match nodes by
->> name, rather than just those $ref'ing it.
->>
->>
->> We should be able to avoid the automatically created select from the
->> $nodename, and rely on $ref, by just adding:
->>
->> select: false
+On 08/01/24 8:37 pm, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.11 release.
+> There are 124 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Yes.
+> Responses should be made by Wed, 10 Jan 2024 15:05:35 +0000.
+> Anything received after that time might be too late.
 > 
-> Rob
 
-Thanks Bjorn and Rob for your suggestion. Let me try and update one new 
-version.
+Built and boot tested on x86_64 and aarch64.
+
+Tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
 Thanks,
-Zhenhua
+Harshit
+
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
