@@ -1,150 +1,244 @@
-Return-Path: <linux-kernel+bounces-22770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC4DA82A2A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:46:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76B6782A2B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ADCF289B8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:46:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EB6E283608
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67CF53E0A;
-	Wed, 10 Jan 2024 20:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DBB58133;
+	Wed, 10 Jan 2024 20:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bUtYgltG"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GpJ/3OUV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69AF153808
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a2c375d2430so11724166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:41:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704919280; x=1705524080; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5c2P75I6tH5xbB+BZT/E99LYv9vZ1bxMQav6GFha8Ao=;
-        b=bUtYgltGglxRvzUoSVa2VOnO6jOSjWo0/USUqoo/PSiwwp6qrbqGCM4XmcBKhBr4Xq
-         Om/Eny/MqzuedqMtziuDTjgvMWsYS9TDqVe+a1yLKOneYYSojZCE8WCxs8bvADbzbqfQ
-         UZQJcUhYaRdc0S/jzEXLfeBpBwKmqOFBXa1DbaT9ANL6A1gcL0Dnd2HccJelx0/glD4s
-         aG+x3wCfJVU76TgNxeAi2eMUy4F6CmZK/hlehEmNRD3nascJIZZYbIewkPl13N70XTxC
-         xarFK9wLfRA7CC8fkricCmFKKCHhGPIP4C9lHWD1nq1rXsbNoFv1XsjrqII0j+vg05AY
-         sqvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704919280; x=1705524080;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5c2P75I6tH5xbB+BZT/E99LYv9vZ1bxMQav6GFha8Ao=;
-        b=rEknpjiV1xNer7l5O82NT91mKjg2tpdFXy+glMo+CCfUPxcR8SFIHK5MFnG5MKFUdY
-         OwQFM/dnCs0Nztk0JRr3u0oZahdrvT07BRY7NQhd1pCefSXANe1vx37ifCMCwv6CWCUe
-         hh6IzT4o8LvGvRGN9jn9hRfQwVuICuxSJ4Ozk5po+R1ne84fKz+1sPrqWDByS3nxwH/h
-         gpNM4B72sXJIQk2GZhIILwnf1+sDTcgOQL7DdjHRVefPfA/N3bKXObtrz/uaraQIikbX
-         NrEfooP7esBu7a26xY37qP/8LvVtPudliEtwSmU09XGCEC00s9vZL8MfHYLEhijLbgIp
-         UCOA==
-X-Gm-Message-State: AOJu0YxXctCyBqC2o60kfNaQ4QRWoHZdATaHdkP+KnEA7PlabRu0FS5v
-	Ev+6S5qTKqyVQ9zysVeNy2+2NjXZWXvMGZ/TWnRArYiEElk=
-X-Google-Smtp-Source: AGHT+IH+06sD7ze/FrzJsUWZKdUbGpTCPdLN+CWNg9h+KYMZzro3g3AdYbnWNhvgFkB8V9jUs0t3mQ==
-X-Received: by 2002:a17:906:2a44:b0:a28:b71d:ac5b with SMTP id k4-20020a1709062a4400b00a28b71dac5bmr37652eje.131.1704919279694;
-        Wed, 10 Jan 2024 12:41:19 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id bw8-20020a170906c1c800b00a269b4692a9sm2422964ejb.84.2024.01.10.12.41.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 12:41:18 -0800 (PST)
-Message-ID: <1a293c69-c767-4640-a9c0-fe8544fb96ba@linaro.org>
-Date: Wed, 10 Jan 2024 21:41:17 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A589458101;
+	Wed, 10 Jan 2024 20:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704919305; x=1736455305;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=ffGcAklL2lninX1ZFIw2hyes7AsdGzZjRBETjam5ZnU=;
+  b=GpJ/3OUVuwx3RkI4scY91kFZ+DLAXNtV5OwpABCOpxKPIHFzLg5owPD2
+   IY3gXAXT+jTbOKaAvN/v0AyYPlbSBivl7jjImTiA/QFqA7kerKHjDSg+b
+   kgF3xMDX41ThQHa5zcGmp3x4hrZEurHYqlMG8ehpgx3HCf1CjrfqrGbqw
+   kN4K7sn/StAnbQHPZcpQr57w9d27Qi1BM0/IchRdNDRYW3dIDPms/tdIA
+   0Gfb+rG/5hJAZhDgZrMh8Wi9ZJMV5uYiWlc31FU4Jo9BvxqVyYjRChw7/
+   vdI8tUvOEHcilqg0I7ZGhFLFlI4sg+04PrrDA8Qk2A3YDXkgtLdVELs15
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5380533"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="5380533"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 12:41:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="925771272"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="925771272"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jan 2024 12:41:28 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 10 Jan 2024 12:41:28 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 10 Jan 2024 12:41:27 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 10 Jan 2024 12:41:27 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Jan 2024 12:41:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d+VmXPUrY8yfixC13vrL+6Olyi8MuDoq0uSIB5tMXHzG58PbK6bZ6GHXHOujb6mBW1nzqrLCo1xNZjxLH99gMtUwKCJi7Nh4TbYsBicuPaR0zpZAzvOm98HoNx1mUc5vAup0wGCHNXUFibK58lv38/Q1lTFFSymbJYc+jShun4P1w9GzneQD5rO3Vt0iFn9L0Op0+RLXvgdItIY15Rr08qB0fv+Z15Sffrlj4xYR52UOjhHlPs6teDnTqv9jHYUB9lzqsae33j3SdrehgngWqyYtnRj9l+QrWn/aO0WIz1XpoE8uwWPPw2Ow3E6fOkwdWWsgVCVdP1Vz/7CO0svrsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n6hZCnv3dg+fI5RBw3kVRLKzndNDUh/Q35f8fBTjEVM=;
+ b=lTn9g8TmGNt1pIteWrIRkfrJ/wOMQqKTjMGGxKTNnD7N+AaFAKme0FPmwyj5UA8jJr6+I83GSuHDbB8bdwIqiX0SN/wyUK9NOx15xRSw+lV6wOrj0zE+n131ZdwozXo+LhIwD1djLJrkeaSrfxeuxCMX3dAeimyL1EVtcyty12e9kZmeTq0ae1e8ZWPLr5mG+dMj05OBBnjxF8nuf0/tb/LqOCoxZowm7WUDnSllq70dRrY9YwX7P2KSHtPjCiX9PqcvR1JzDTyKSKVM7v3qxLayf5508SN0phldaCZhO5gY6jfgHpZ5447KWvSQYUAj9sSXX4jewfzsePwPBLxu4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by IA1PR11MB7678.namprd11.prod.outlook.com (2603:10b6:208:3f4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Wed, 10 Jan
+ 2024 20:41:22 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7181.015; Wed, 10 Jan 2024
+ 20:41:22 +0000
+Date: Wed, 10 Jan 2024 12:41:17 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Lukas Wunner <lukas@wunner.de>, Bartosz Golaszewski <brgl@bgdev.pl>
+CC: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
+	<konrad.dybcio@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, "Will
+ Deacon" <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, "Heiko
+ Stuebner" <heiko@sntech.de>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+	"Chris Morgan" <macromorgan@hotmail.com>, Linus Walleij
+	<linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>,
+	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>,
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman
+	<terry.bowman@amd.com>, Kuppuswamy Sathyanarayanan
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, Ilpo
+ =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, Huacai Chen
+	<chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, Srini Kandagatla
+	<srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, <linux-wireless@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>, "Bartosz
+ Golaszewski" <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
+Message-ID: <659f00ed271b3_5cee2942@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20240104130123.37115-1-brgl@bgdev.pl>
+ <20240104130123.37115-4-brgl@bgdev.pl>
+ <20240109144327.GA10780@wunner.de>
+ <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
+ <20240110132853.GA6860@wunner.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240110132853.GA6860@wunner.de>
+X-ClientProxiedBy: MW2PR16CA0001.namprd16.prod.outlook.com (2603:10b6:907::14)
+ To PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/16] arm64: dts: ti: k3-am625: Add MIT license along
- with GPL-2.0
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Guillaume La Roque <glaroque@baylibre.com>,
- Julien Panis <jpanis@baylibre.com>, Pierre Gondois <pierre.gondois@arm.com>,
- Roger Quadros <rogerq@kernel.org>, Ronald Wahl <ronald.wahl@raritan.com>,
- Sarah Walker <sarah.walker@imgtec.com>, Tony Lindgren <tony@atomide.com>
-References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-4-nm@ti.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110140903.4090946-4-nm@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|IA1PR11MB7678:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6369179d-9efb-4eee-f92a-08dc121c81a2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: p524JGEwFSS2uHxKmuFSyqimT7zAyPY8tLoHD/cFs83sOUyLgZngMed10qNrbE4qHc+VJuFds0300I4cSkry64wrjdvmP26tmIxMX8t78RVW6FTXEp3OCNZUl+8Dl0o+5Mo63E9vlx+0Sv3n8JT9Z9h9csYSESyGqVlWuJ3O+OT+CXmgYqKN4B3l5cBsPgenV5hIMZqQjaOcRiL1IlSjR22BMsIH6cwNk+daOPc9hDPKeO3EsZu5VR9l6/RgWIdenNZuRm7iAXX39jgobRW3KarrdObyCGEzJU8VGNZhMmRp4latG1spI9Kr/NLCPmcHrxxek/E9nlt/cAax57/RgtqQJyERW0uqI63txRYoCRNcBLENty1++XCVa7oZ1dihEYOt+00dP+m85zfvKyNfRzQOx0heckAuWMHti+kwdx1L7Q5AwlsG78uYSm/uBAGwsoGtHhIenNMAV0xuQSUMlPGjC3t91135c9RASIj0SgyMA6nYkq+JJQJhOBzp3HY9RCgLsXMbiEeCTDt4gpMwS7NR1wkCTTe934iw/p5QBsM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(39860400002)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(478600001)(6506007)(966005)(6486002)(26005)(9686003)(6666004)(6512007)(7416002)(66476007)(316002)(83380400001)(41300700001)(2906002)(66946007)(5660300002)(4326008)(8936002)(110136005)(8676002)(54906003)(66556008)(86362001)(38100700002)(82960400001)(7406005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OUkq4zuUmoXIShFbM6OuObXnRqokWY8iG1wKStMKxlJnCFzLmri9D8eAdVcx?=
+ =?us-ascii?Q?xld7Nwf7xjvmQWiRIcsAZIxNLMkgGBkQHJFVG+YJsn0mQdCZUu2/eQ5/BFto?=
+ =?us-ascii?Q?Z7s0Ou5cbg/Pj/0hoeMu6YjRGgxAwss7kL03ItxUPWFOH8eO+eVoy1clm2RI?=
+ =?us-ascii?Q?Dh5NM4ejAVmnF5+VM7HPwsHDi4luUtrTZ9WrFCqVPQIAjBhC0l9IMF8DfcJZ?=
+ =?us-ascii?Q?pdjC6d65rPGf2xWB2EoucL8L3JvGRUWEKWMLIRI6pLyS8gmzK6I1ubYTr9Ou?=
+ =?us-ascii?Q?how6V7veL0nN3osHFJ+KmZvnYm9pRgAvG/wIYebr5mhoERZrI1uiBgbkTySS?=
+ =?us-ascii?Q?GDJINlXz565P80ymUjdEhS1gdhow8Ozl7enUpwFb2h/UdwgNCaWMSw5tUJb0?=
+ =?us-ascii?Q?kjojftNUdXrY4ScWDHZUzkljMUIrrH/DSgsafE0HgKWThyOrsgmnfl9cMhvt?=
+ =?us-ascii?Q?2vmk4JT9Mv3A4fGbfnop9sDzjzCidg9o4cLE9lnFfYfx5zNhakpVZmy1jkBy?=
+ =?us-ascii?Q?33RENiwhYdiKzdA1sUvugLRWeVZmdVu1WDn6ctcILpb9JyMTCSd5a49BzIpc?=
+ =?us-ascii?Q?nnxVjPXpIzZEfRObBw9ta3dIiciQmucKJvZQS2urLFD4XXt9iq+IyuNOzyIo?=
+ =?us-ascii?Q?jmKJIa5BJdy0FIglhuYZJQu4eaMZnOunuKgNR0nhady6XW/AzsB+yR/aENfD?=
+ =?us-ascii?Q?JgZ7bSGzZfuvX0FXkWN1+6+rlZ8zKPBjaoqhLhwzbDjneD2udrTbU1sgntEj?=
+ =?us-ascii?Q?THoQOlaKoD4qrnQJIPQwtXrRtM455IOLnQhM4tExOPHNBsGIPM4BcdBs9ECk?=
+ =?us-ascii?Q?dUGtFcQxzWccmfAcW3ZjBN9LmzOfSa/THRe5ZENnv/Y3aCTL/DrcOAsIF2h9?=
+ =?us-ascii?Q?gBMdpP59CYTfoieGdtSktG7o5tLHUaoeCpcJrbqYDkESXzfJFM3NLSUSHsbe?=
+ =?us-ascii?Q?exlIo2F8Pugmh5gJp25de5iGAgsHKtnXlLHwmmKpUY8iD9rp5Vu542/n2mTP?=
+ =?us-ascii?Q?9zt/OnTeBJ2saUpmEiXOxNMBPZS6F1fvRQ0/IYFOqvHcKpzbQOvgFV4B0vPX?=
+ =?us-ascii?Q?OcKOPJWTWEcGUyd2doPx/nrYtlSFUuvnHA3CaaeGZsdMIe3zzyEtkjUswFDc?=
+ =?us-ascii?Q?S17aXN9q+NoqladvhFLg9awFkVM5Hip/V85OdB7d+Rc2zXzQPEfqMq8n0D+m?=
+ =?us-ascii?Q?XrK1U2hiypWoKZ+E9TFu2rdvYSiOkE5Tm9cEFNsR1aqruVwMGeknZpY0SFVY?=
+ =?us-ascii?Q?KTWpy69zRvnqFLqozK2dcRADGrviNbRxBLtRQXItWwzasCrBi1qA+V++Lf4j?=
+ =?us-ascii?Q?wi5ZtWdDiKYbHCxWENhmJx/HGB5S5huwIu2i1ZD9TspEjbVPV+P14OOr3hKa?=
+ =?us-ascii?Q?uYwd9KI9FkAP14dRx1XbZ7FeJVe6cY1JyaxnuNV5jwvM0YLxYUiaPfFRvNuX?=
+ =?us-ascii?Q?pXn469V7S0NPnUg/ZBFiJrdFtOlgDRs45lzdazzvb5iGy3QDAoMf+oX42856?=
+ =?us-ascii?Q?2wHxH5nWtrqs5Cp+Xzk5JKbCjlnv50gC9HRzMwKN/jqg5o1yclwCUErJuS0K?=
+ =?us-ascii?Q?eMp5dlt3dxo6SjIItoD0sVpRiKFqLOAdUrgU4uqTWMhNwYFFjTML3f1y6dzd?=
+ =?us-ascii?Q?wQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6369179d-9efb-4eee-f92a-08dc121c81a2
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 20:41:22.4522
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UMgbOgl7lgfXWezTYZtX6Mp6rQowgBZRqFhuSApoHiCPASKMnvS2Lm9UOxqIfshoNLNjMCv1g5dHS7XffY9DGAKCjDK3NnKhvj6+HN0lz5I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7678
+X-OriginatorOrg: intel.com
 
-On 10/01/2024 15:08, Nishanth Menon wrote:
-> Modify license to include dual licensing as GPL-2.0-only OR MIT
-> license for SoC and TI evm device tree files. This allows for Linux
-> kernel device tree to be used in other Operating System ecosystems
-> such as Zephyr or FreeBSD.
+[ add Terry ]
+
+
+Lukas Wunner wrote:
+> On Wed, Jan 10, 2024 at 01:55:18PM +0100, Bartosz Golaszewski wrote:
+> > On Tue, Jan 9, 2024 at 3:43???PM Lukas Wunner <lukas@wunner.de> wrote:
+> > > On Thu, Jan 04, 2024 at 02:01:17PM +0100, Bartosz Golaszewski wrote:
+> > > > In order to introduce PCIe power-sequencing, we need to create platform
+> > > > devices for child nodes of the port driver node. They will get matched
+> > > > against the pwrseq drivers (if one exists) and then the actuak PCIe
+> > > > device will reuse the node once it's detected on the bus.
+> > > [...]
+> > > > --- a/drivers/pci/pcie/portdrv.c
+> > > > +++ b/drivers/pci/pcie/portdrv.c
+> > > > @@ -715,7 +716,7 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
+> > > >               pm_runtime_allow(&dev->dev);
+> > > >       }
+> > > >
+> > > > -     return 0;
+> > > > +     return devm_of_platform_populate(&dev->dev);
+> > > >  }
+> > >
+> > > I think this belongs in of_pci_make_dev_node(), portdrv seems totally
+> > > the wrong place.  Note that you're currently calling this for RCECs
+> > > (Root Complex Event Collectors) as well, which is likely not what
+> > > you want.
+> > >
+> > 
+> > of_pci_make_dev_node() is only called when the relevant PCI device is
+> > instantiated which doesn't happen until it's powered-up and scanned -
+> > precisely the problem I'm trying to address.
 > 
-> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
-> with latest SPDX conventions (GPL-2.0 is deprecated).
+> No, of_pci_make_dev_node() is called *before* device_attach(),
+> i.e. before portdrv has even probed.  So it seems this should
+> work perfectly well for your use case.
 > 
-> While at this, update the TI copyright year to sync with current year
-> to indicate license change (and add it at least for one file which was
-> missing TI copyright).
+> 
+> > > devm functions can't be used in the PCI core, so symmetrically call
+> > > of_platform_unpopulate() from of_pci_remove_node().
+> > 
+> > I don't doubt what you're saying is true (I've seen worse things) but
+> > this is the probe() callback of a driver using the driver model. Why
+> > wouldn't devres work?
+> 
+> The long term plan is to move the functionality in portdrv to
+> the PCI core.  Because devm functions can't be used in the PCI
+> core, adding new ones to portdrv will *add* a new roadblock to
+> migrating portdrv to the PCI core.  In other words, it makes
+> future maintenance more difficult.
+> 
+> Generally, only PCIe port services which share the same interrupt
+> (hotplug, PME, bandwith notification, flit error counter, ...)
+> need to live in portdrv.  Arbitrary other stuff should not be
+> shoehorned into portdrv.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I came here to say the same thing. It is already the case that portdrv
+is not a good model to build new functionality upon [1], and PCI core
+enlightenment should be considered first.
 
-Best regards,
-Krzysztof
+The portdrv model is impeding Terry's CXL Port error handling effort, so
+I am on the lookout for portdrv growing new entanglements to unwind
+later.
 
+[1]: http://lore.kernel.org/r/20221025232535.GA579167@bhelgaas
 
