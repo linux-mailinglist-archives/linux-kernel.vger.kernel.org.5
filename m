@@ -1,147 +1,144 @@
-Return-Path: <linux-kernel+bounces-22612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3C3E82A06A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:49:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 982DF82A06B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE6A91C226C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:48:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05C5EB258AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503724D59D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00894D5A8;
 	Wed, 10 Jan 2024 18:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yy37O5/a"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E6ojPa93"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970A94D580
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44CE4D587
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50eaaf2c7deso4857599e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:48:43 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-28bcc273833so4014608a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:48:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704912521; x=1705517321; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B6mb0czv63qlEAoF67252Cwq/CzM41U890/VQajpAFQ=;
-        b=Yy37O5/aBNKJLMK/i1JsDBJ7DbBSu+pDKXoTfY/l/69BCaYLh5/pLf7aI+kLRp7Cnt
-         PAaTZUfVEXzUwRjjkpGwA/r8bbkDMQQBeqQeG7UZo3cwVeRl/Pmh8aMhvzF9N4JU2sUZ
-         sCakASOhrt6+/fQS8/sVf/svnBYcMYNI2wcghlDR8XLm6S1cDSB25vVtYKmNbphs1Cpp
-         Un2aG9HOkk4dzPUMdKHkKqQOf/1zln9rocRUmShO1mVMeIKv6Xfix2jg5r0zJAFeCxfl
-         6Mv/1ARIQiZbaF4e1nLKGYgXOb4O0JMtth563sx7ffM8J87u/Ta0lT3MNIeV8I8alVP8
-         EP6A==
+        d=linaro.org; s=google; t=1704912524; x=1705517324; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=akr6CIw5c9giePcQiETe5sre9R6VrjuOFaMQiXaiTBM=;
+        b=E6ojPa93EFOMr/euUnp0YOcZwwUIHtQExFNdCm/hgprRKqfYEgdp+1bIdWAcqhQ+0P
+         i3a09xa5C2Hydj36+KwVi7ftPqExQcMKCoDvXKdnoH1AP3D27rGQozywEGsjZBmpgqi8
+         V9bc/87R6rEMExoDcD9NiPQ6fzsHeb0ol7d5UskI75w6MYZdsOPKnLpYzrwhbF3MQcB0
+         nRrei2F828AeUxUMdqQq3birAsOj3C747rK3lMYl3ietJj/PeEqDHiQtfi13HnzScA6L
+         nDh8G4k7KYIAar8LGfHvRKrM4EvpKTYiEKUi82Ze+I1OabRcZ/D9Qon7n73ssuUM33bd
+         rlDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704912521; x=1705517321;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B6mb0czv63qlEAoF67252Cwq/CzM41U890/VQajpAFQ=;
-        b=Ri7jjPLZhUhYCBt1sqYqtAp/TPHDx/BbHeXVKwZofS16Hne7cawC4xvSfe+cLnB7IB
-         cpcN25ixI/pT4+USD/fdq2bJZWAb5Y7f/F28xe4tgvqbd672egMKruY5d3jWScWSX3pq
-         IL8TuT/sZjsfI8MCXx3r+j8dAu+D8sSa13xVGt9qShvp9RiUmwye9NvCCz/nBrdasqy3
-         3GN/UQxZl0DtzClxZCqJ3h+BDtjpIo9dHdoNVtL/lv1DqpHbmzBMQVzv0wZ3kxRAvRBi
-         T6w48/GbQ3ql5G/EqTCFXa0rZsv8ed9J2LZrOuKmh5UcNVtaoEaqLl4cZrQ8Lp87kH4L
-         /Mgg==
-X-Gm-Message-State: AOJu0Yy+a3bCG7tOBz1lp9d73BCq07/aGeCZLkPl/46FfBk35hSUv9TV
-	XGcdyktzKHfbybxTxQ2X51q/fLf5Wl/J+A==
-X-Google-Smtp-Source: AGHT+IESqPBfudA5/PiNvgIQQzsX/Vby8wgWwcNRloulQWEzGGWD7r25drolBQukqQG3hrkuXIvglQ==
-X-Received: by 2002:a05:6512:110d:b0:50e:7bf5:5424 with SMTP id l13-20020a056512110d00b0050e7bf55424mr793665lfg.47.1704912521468;
-        Wed, 10 Jan 2024 10:48:41 -0800 (PST)
-Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id f13-20020a05651232cd00b0050e137ef4adsm732212lfg.155.2024.01.10.10.48.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 10:48:41 -0800 (PST)
-Message-ID: <f44c45d8-92fd-44de-a730-4fc3a3df3afe@linaro.org>
-Date: Wed, 10 Jan 2024 19:48:38 +0100
+        d=1e100.net; s=20230601; t=1704912524; x=1705517324;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=akr6CIw5c9giePcQiETe5sre9R6VrjuOFaMQiXaiTBM=;
+        b=TBE0OMvpimSNSb5XKxvg0Ej+R2zYUXirsWURfy8r+q4whEbr76uS6REUp7bPsN26I0
+         t8Gm49QIGUBwQsTNvf7oUBswzATtF6M0Q9k0yXekeavlJ7RCc08zFEWMM/XXnJp9k9K+
+         PXWZo1lGvTXhY3pLMlMCYbLDXFPHvedfm9gFxQJWW9yuGJUNr1dxa3WPJ1/qQQyEWjt4
+         CVCXC9MJw2PIncaCpvjZk08sd+AkTMzgIhI3ZDsuRUV2Gigfs0ey7XhvlA5fF/fPPff7
+         F2a2Rfv8nrWm6JSQdYe2D2FAcdGL43uEj/FpdlO/f6/vyv9xXhcRrSzHRNF5R6xUourV
+         k8vA==
+X-Gm-Message-State: AOJu0Yz0mFMzMVUd+ZNybmx5CwKKd3z0ZGJY+hTFN1SVq/6fFx6cX43I
+	UoDJ1LqJ080aeyDgIWJNYVxhs8vgZ6b0pV4bH2/5Q7EuBY0=
+X-Google-Smtp-Source: AGHT+IG+Tj79AIadsBNASJ7uqTmlb9AQRUMel1OR4eJqyenpH/pAepfhWx4MXHF4y4U5CZwCHp5GIQ==
+X-Received: by 2002:a17:90a:fc96:b0:28c:4b8c:9729 with SMTP id ci22-20020a17090afc9600b0028c4b8c9729mr1191345pjb.2.1704912523945;
+        Wed, 10 Jan 2024 10:48:43 -0800 (PST)
+Received: from p14s ([2604:3d09:148c:c800:a56c:270b:b7a6:a474])
+        by smtp.gmail.com with ESMTPSA id s19-20020a17090aa11300b0028ceeca04a1sm1916286pjp.19.2024.01.10.10.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 10:48:43 -0800 (PST)
+Date: Wed, 10 Jan 2024 11:48:41 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: joakim.zhang@cixtech.com
+Cc: andersson@kernel.org, arnaud.pouliquen@foss.st.com,
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cix-kernel-upstream@cixtech.com
+Subject: Re: [PATCH V3] remoteproc: virtio: Fix wdg cannot recovery remote
+ processor
+Message-ID: <ZZ7miRHTe2LJ2PAh@p14s>
+References: <20231217053659.3245745-1-joakim.zhang@cixtech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm7225-fairphone-fp4: Add PMK8003
- thermals
-Content-Language: en-US
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240105-fp4-thermals-v1-0-f95875a536b7@fairphone.com>
- <20240105-fp4-thermals-v1-1-f95875a536b7@fairphone.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240105-fp4-thermals-v1-1-f95875a536b7@fairphone.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231217053659.3245745-1-joakim.zhang@cixtech.com>
 
+Good day Joakim,
 
+On Sun, Dec 17, 2023 at 01:36:59PM +0800, joakim.zhang@cixtech.com wrote:
+> From: Joakim Zhang <joakim.zhang@cixtech.com>
+> 
+> Recovery remote processor failed when wdg irq received:
+> [    0.842574] remoteproc remoteproc0: crash detected in cix-dsp-rproc: type watchdog
+> [    0.842750] remoteproc remoteproc0: handling crash #1 in cix-dsp-rproc
+> [    0.842824] remoteproc remoteproc0: recovering cix-dsp-rproc
+> [    0.843342] remoteproc remoteproc0: stopped remote processor cix-dsp-rproc
+> [    0.847901] rproc-virtio rproc-virtio.0.auto: Failed to associate buffer
+> [    0.847979] remoteproc remoteproc0: failed to probe subdevices for cix-dsp-rproc: -16
+> 
+> The reason is that dma coherent mem would not be released when
+> recovering the remote processor, due to rproc_virtio_remove()
+> would not be called, where the mem released. It will fail when
+> it try to allocate and associate buffer again.
+> 
+> Releasing reserved memory from rproc_virtio_dev_release(), instead of
+> rproc_virtio_remove().
+> 
+> Fixes: 1d7b61c06dc3 ("remoteproc: virtio: Create platform device for the remoteproc_virtio")
+> Signed-off-by: Joakim Zhang <joakim.zhang@cixtech.com>
 
-On 1/5/24 15:54, Luca Weiss wrote:
-> Configure the thermals for the XO_THERM thermistor connected to the
-> PMK8003 (which is called PMK8350 in software).
-> 
-> The ADC configuration for PMK8350_ADC7_AMUX_THM1_100K_PU has already
-> been added in the past.
-> 
-> The trip points can really only be considered as placeholders, more
-> configuration with cooling etc. can be added later.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+I am in agreement with your patch.  I will apply it when 6.8-rc1 comes out.
+
+Thanks,
+Mathieu
+
 > ---
->   arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts | 25 +++++++++++++++++++++++
->   1 file changed, 25 insertions(+)
+> ChangeLogs:
+> V1->V2:
+> 	* the same for of_reserved_mem_device_release()
+> V2->V3:
+> 	* release reserved memory in rproc_virtio_dev_release()
+> ---
+>  drivers/remoteproc/remoteproc_virtio.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-> index ade619805519..b7ccfe4011bb 100644
-> --- a/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-> @@ -112,6 +112,20 @@ active-config0 {
->   				};
->   			};
->   		};
+> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+> index 83d76915a6ad..25b66b113b69 100644
+> --- a/drivers/remoteproc/remoteproc_virtio.c
+> +++ b/drivers/remoteproc/remoteproc_virtio.c
+> @@ -351,6 +351,9 @@ static void rproc_virtio_dev_release(struct device *dev)
+>  
+>  	kfree(vdev);
+>  
+> +	of_reserved_mem_device_release(&rvdev->pdev->dev);
+> +	dma_release_coherent_memory(&rvdev->pdev->dev);
 > +
-> +		xo-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +			thermal-sensors = <&pmk8350_adc_tm 0>;
-> +
-> +			trips {
-> +				active-config0 {
-> +					temperature = <125000>;
-> +					hysteresis = <1000>;
-> +					type = "passive";
-> +				};
-> +			};
-> +		};
->   	};
->   };
->   
-> @@ -490,6 +504,17 @@ conn-therm@1 {
->   	};
->   };
->   
-> +&pmk8350_adc_tm {
-> +	status = "okay";
-> +
-> +	xo-therm@0 {
-> +		reg = <0>;
-> +		io-channels = <&pmk8350_vadc PMK8350_ADC7_AMUX_THM1_100K_PU>;
-> +		qcom,ratiometric;
-> +		qcom,hw-settle-time-us = <200>;
-
-My ocd would rather see the boolean property at the end
-
-anyway
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
+>  	put_device(&rvdev->pdev->dev);
+>  }
+>  
+> @@ -584,9 +587,6 @@ static void rproc_virtio_remove(struct platform_device *pdev)
+>  	rproc_remove_subdev(rproc, &rvdev->subdev);
+>  	rproc_remove_rvdev(rvdev);
+>  
+> -	of_reserved_mem_device_release(&pdev->dev);
+> -	dma_release_coherent_memory(&pdev->dev);
+> -
+>  	put_device(&rproc->dev);
+>  }
+>  
+> -- 
+> 2.25.1
+> 
 
