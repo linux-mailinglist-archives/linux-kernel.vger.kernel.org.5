@@ -1,80 +1,111 @@
-Return-Path: <linux-kernel+bounces-22851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E09582A3F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:32:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D00082A3FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:33:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CB4928550A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:32:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06FCE285BE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:33:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B584F888;
-	Wed, 10 Jan 2024 22:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5BC4F89C;
+	Wed, 10 Jan 2024 22:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d1xw9GZr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QkQWgqz9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5HYw1OMB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QkQWgqz9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5HYw1OMB"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE4A4F886
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704925915;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7AD4F888;
+	Wed, 10 Jan 2024 22:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3CC431F8D6;
+	Wed, 10 Jan 2024 22:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704926000;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DP7v475vF9i2mjWODzqqIUAcLzw1NqFNzyO2KHguQ4g=;
-	b=d1xw9GZrjTupg3qOT9YzX3S82ocFA/KZv5AB3lwjsf3FHcyvN2jpMK9jtcNhtR0QE/t63P
-	WxExikz38GK+oYmbVkpGqvbIMWIVW0ldECqKsdJV1iUEJ9VKzCj09bwp1xEPP235esNGxy
-	gDklpevNYmQ0nXe9JfwCoOLRIIcP13I=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-365-kg93waf1Ns2RLQh_MlVePQ-1; Wed, 10 Jan 2024 17:31:53 -0500
-X-MC-Unique: kg93waf1Ns2RLQh_MlVePQ-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-78335ae3fa8so119234285a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:31:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704925912; x=1705530712;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DP7v475vF9i2mjWODzqqIUAcLzw1NqFNzyO2KHguQ4g=;
-        b=M9OVDRqSyYpq6CRy09Bh9Rr3bO0Q4ZuVZwiYDh14MWzLPppz9o5Zc2eGF7/h4ptIZA
-         0ut11fDBUpLsiMQ0Z7hoyjPYBT/9b+cX8bKCZXQGwlUBT9GSuh4q3i/rGyz/XxwZoW3q
-         s6i50df+Dh6m3tva/ZVHxuZGv8oaeKMuZzv4Wc99cf96k3iA+umMkLgwfH+HFl8aTWx1
-         XPD6n2wSdd3A976iKLLN9Od691tx/phzDfoucP7yX9XALoWdZclrwa3QKr8oeBQJ2fsU
-         OxIUtNBhpPxFfs6Yh0VW+lOL7iJ/ow5O1lqZMVgptqfM/qp7UwSGhl7pUJRniupweD9s
-         S1EA==
-X-Gm-Message-State: AOJu0Yy6cpwbaTma/xFnwORtwr6y/6s3vxv6st6vYzELmhyXmd0yxFmk
-	lp3JecuO45gqi8KEwqrI8fyRZdU2oAXCjjyKre0mzUDnDkAsoZE5vkGdLlmcRxObW91QhfLnFyt
-	uoMTNT0aVvpt6jikLRDiKWDddMKjK2N+L
-X-Received: by 2002:a37:f508:0:b0:783:29f9:9a86 with SMTP id l8-20020a37f508000000b0078329f99a86mr298122qkk.79.1704925912492;
-        Wed, 10 Jan 2024 14:31:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF1sg08TM9beGsOJp2Z1CR+XLiC4N+BpnpEy2fGGvxB9ZUF4DjpI0TMmSOS3C+FVRC/m7sCoQ==
-X-Received: by 2002:a37:f508:0:b0:783:29f9:9a86 with SMTP id l8-20020a37f508000000b0078329f99a86mr298112qkk.79.1704925912241;
-        Wed, 10 Jan 2024 14:31:52 -0800 (PST)
-Received: from optiplex-fbsd ([76.152.42.226])
-        by smtp.gmail.com with ESMTPSA id x3-20020ae9f803000000b007815c8ab309sm1918969qkh.34.2024.01.10.14.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 14:31:51 -0800 (PST)
-Date: Wed, 10 Jan 2024 17:31:49 -0500
-From: Rafael Aquini <aquini@redhat.com>
-To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc: Audra Mitchell <audra@redhat.com>, linux-kernel@vger.kernel.org,
-	tj@kernel.org, jiangshanlai@gmail.com,
-	hirokazu.yamauchi.hk@hitachi.com, ddouwsma@redhat.com,
-	loberman@redhat.com, raquini@redhat.com
-Subject: Re: [PATCH v2] workqueue.c: Increase workqueue name length
-Message-ID: <ZZ8a1RvwpDZvwfg9@optiplex-fbsd>
-References: <20231215193954.1785069-1-audra@redhat.com>
- <20240110202959.249296-1-audra@redhat.com>
- <2f0efed5-f9f3-4a5c-9fd4-a4837cada298@prevas.dk>
- <ZZ8RtfKCmOQqj5KC@optiplex-fbsd>
- <f5ded466-cbe1-4a46-b042-1c65839c9e02@prevas.dk>
+	bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+	b=QkQWgqz9NjnfgXPVYQcoX+4SPrI7JDaq9ZrREmAxylHoT24zOJZQtyEKmNsfJgNYbQQZ5z
+	BdEcBF4Qcil5Onp+ryTczBatY7VQwdWWjUcprwfFYhAJ4jzB6MwV3fQh2egK6/xelDE21u
+	Cr3GObjh2Eell5VYCP+WcfysVxuuKeA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704926000;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+	b=5HYw1OMBCSBUpNbDqkpWvOZdJgexcKFKN5UAD8NVzy49GQW7do2s5UpMyt8yvM2eJT2aRl
+	2FVvxrr+YrHrmYAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704926000;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+	b=QkQWgqz9NjnfgXPVYQcoX+4SPrI7JDaq9ZrREmAxylHoT24zOJZQtyEKmNsfJgNYbQQZ5z
+	BdEcBF4Qcil5Onp+ryTczBatY7VQwdWWjUcprwfFYhAJ4jzB6MwV3fQh2egK6/xelDE21u
+	Cr3GObjh2Eell5VYCP+WcfysVxuuKeA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704926000;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Dsmcv/m++OLLdvBOu4juiHQKcxC0cbZOXjWtk4fZ1Lw=;
+	b=5HYw1OMBCSBUpNbDqkpWvOZdJgexcKFKN5UAD8NVzy49GQW7do2s5UpMyt8yvM2eJT2aRl
+	2FVvxrr+YrHrmYAw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E127139C6;
+	Wed, 10 Jan 2024 22:32:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Sph8EeMan2VQQQAAn2gu4w
+	(envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 22:32:03 +0000
+Date: Wed, 10 Jan 2024 23:33:32 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Rob Landley <rob@landley.net>
+Cc: Cyril Hrubis <chrubis@suse.cz>,
+	Geert Uytterhoeven <geert@linux-m68k.org>, ltp@lists.linux.it,
+	Li Wang <liwang@redhat.com>,
+	Andrea Cervesato <andrea.cervesato@suse.com>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Christophe Lyon <christophe.lyon@linaro.org>,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	Linux-sh list <linux-sh@vger.kernel.org>,
+	automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
+	Niklas Cassel <niklas.cassel@wdc.com>
+Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
+ UCLINUX from LTP]
+Message-ID: <20240110223332.GA1797182@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki>
+ <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik>
+ <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+ <20240110133358.GB1698252@pevik>
+ <c065bbb0-e5cb-04ae-cedc-258264162405@landley.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,89 +114,144 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5ded466-cbe1-4a46-b042-1c65839c9e02@prevas.dk>
+In-Reply-To: <c065bbb0-e5cb-04ae-cedc-258264162405@landley.net>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.50
+X-Spamd-Result: default: False [-3.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	 REPLYTO_EQ_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[gnu.org:url];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On Wed, Jan 10, 2024 at 11:06:22PM +0100, Rasmus Villemoes wrote:
-> On 10/01/2024 22.52, Rafael Aquini wrote:
-> > On Wed, Jan 10, 2024 at 09:47:56PM +0100, Rasmus Villemoes wrote:
-> >> On 10/01/2024 21.29, Audra Mitchell wrote:
-> >>
-> >>> @@ -4663,9 +4663,10 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
-> >>>  					 unsigned int flags,
-> >>>  					 int max_active, ...)
-> >>>  {
-> >>> -	va_list args;
-> >>> +	va_list args, args_copy;
-> >>>  	struct workqueue_struct *wq;
-> >>>  	struct pool_workqueue *pwq;
-> >>> +	int len;
-> >>>  
-> >>>  	/*
-> >>>  	 * Unbound && max_active == 1 used to imply ordered, which is no longer
-> >>> @@ -4692,6 +4693,13 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
-> >>>  	}
-> >>>  
-> >>>  	va_start(args, max_active);
-> >>> +	va_copy(args_copy, args);
-> >>> +	len = vsnprintf(NULL, 0, fmt, args_copy);
-> >>> +	WARN(len > WQ_NAME_LEN,
-> >>> +		"workqueue: wq->name too long (%d). Truncated to WQ_NAME_LEN (%d)\n",
-> >>> +		len, WQ_NAME_LEN);
-> >>> +
-> >>> +	va_end(args_copy);
-> >>>  	vsnprintf(wq->name, sizeof(wq->name), fmt, args);
-> >>
-> >> Eh, why not just _not_ throw away the return value from the existing
-> >> vsnprintf() and do "len >= sizeof(wq->name)" to know if truncation
-> >> happened? There's really no need need to do vsnprintf() twice. (And yes,
-> >> you want >=, not >).
-> >>
-> > 
-> > The extra vsnprintf call is required because the return of the existing 
-> > vsnprintf() is going to be already capped by sizeof(wq->name).
-> 
-> No, it is not. vsnprintf() returns the length of the would-be-created
-> string if the buffer was big enough. That is independent of whether one
-> does a dummy NULL,0 call or just calls it with a real, but possibly too
-> small, buffer.
-> 
-> This is true for userspace (as required by posix) as well as the kernel
-> implementation of vsnprintf(). What makes you think otherwise?
->
+> On 1/10/24 07:33, Petr Vorel wrote:
+> >> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
+> >> of people have been happy to consume my work, but getting any of them to post
+> >> directly to linux-kernel is like pulling teeth.
 
-this snippet from PRINTF(3) man page
+> > Interesting, thanks for sharing this. BTW I'm not saying anybody is using nommu,
+> > but I wonder if anybody really test it with LTP. And if yes, I wonder why we
+> > don't have reports about tests broken in new API.
 
-RETURN VALUE
-       Upon successful return, these functions return the number of characters 
-       printed (excluding the null byte used to end output to strings).
+> I don't expect a lot of nommu users are aware you ever _could_ run LTP on nommu.
+
+> But I'd like to get nommu more regularly supported. You _should_ be able to
+> build a musl-linux userspace with busybox or toybox and be able to build a
+> recognizable system (even an alpine-alike) which could then get the basic
+> plumbing regression tested on qemu even without access to nommu hardware.
+
+> >> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+> >> > support him in my free time (review patches, give advices). And if nobody
+> >> > stands, this patchset which removes the support in the old API will be merged
+> >> > after next LTP release (in the end of January).
+
+> >> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
+> >> something?
+
+> > New C API is documented at our wiki: the API for using in the tests [1]
+> > and the library itself [2]. (We also have shell API, but we can ignore it for
+> > nommu.)
+
+> I'm writing a bash-compatible shell, which (thanks to Elliott forwarding
+> questions) has involved surprisingly long threads with the bash maintainer about
+> weird corner cases neither the man page nor my testing made clear:
+
+> http://lists.landley.net/pipermail/toybox-landley.net/2023-July/029631.html
+
+> (Alas I try NOT to involve him because when I bring stuff up he keeps FIXING
+> BASH which from my point of view just makes it a moving target...)
+
+> Anyway, running the shell API on nommu doesn't seem out of the question, but
+> probably not any time soon. (The fact the shell isn't finished yet is one of the
+> big REASONS I haven't got enough time to take on LTP. That and I haven't started
+> writing "awk" and "make" yet". And I need to cycle back to
+> https://landley.net/notes-2023.html#12-10-2023 . And after that debian, ala
+> https://peertube.debian.social/w/chzkKrMvEczG7qQyjbMKPr and
+> https://peertube.debian.social/w/45XroN9CnbYLNLKQH3GD9F . And follow up on
+> https://lists.gnu.org/archive/html/coreutils/2023-08/msg00009.html . And...)
+
+> > All files in lib/ directory which include tst_test.h are part of new C API. Main
+> > file is lib/tst_test.c.
+
+> safe_fork(), safe_clone(), fork_testrun()...
+
+> > LTP tests, which has been rewritten to new API include
+> > tst_test.h, they are in testcases/ directory. Library has it's own tests (for
+> > testing regression in in lib/newlib_tests/*.c.
+
+> Library meaning... libc? Or does LTP have a library?
+
+Yes, LTP has a library (lib/libltp.a). That's what I meant here and in all my
+text. So far I did not mention anything libc specific.
+
+> > The reason why Cyril wrote in 2016 new C API was that the old API was buggy
+> > (tests randomly fails). Tests which are still using the old API (there is
+> > ongoing rewrite) include test.h. The old API is not much documented.
+
+> > Feel free to ask any more question.
+
+> My standard questions are "what does success look like" and "how do I reproduce
+> the problem".
+
+> For the first: if there previously was nommu support in LTP, what's the last
+> version that's known to work? Is there an existing build/test setup that can be
+> reproduced?
+
+I have no idea whether it worked. Best would be to ask Mike Frysinger (the
+author of m4/ltp-nommu-linux.m4). The code was added 14 years ago, even before
+all of the current maintainers were involved.
+
+> For the second... If I try to run LTP on sh2eb (my current nommu test board)
+> with the current LTP... do I get a build break? Additional test failures at
+> runtime? You talk about "removing nommu support", but... what's the current
+> status? (A subset of tests still use the old api...?)
+
+Yes, subset of the tests which use the old API (git grep UCLINUX).
+
+> Yes I need to read https://github.com/linux-test-project/ltp/wiki/C-Test-API but
+> I also need to know how to build LTP from source. I'm looking at the README's
+> list of "autoconf, automake, m4, pkgconf / pkg-config" and wincing
+> significantly. (What does gnu/autoconf DO here? Disable tests? I never
+> understand why anybody uses that giant hairball of complexity. Half of cross
+> compiling is figuring out how to lie to autoconf, and my normal workaround for
+> that is to bootstrap a target system and build natively, but while I've gotten
+> gcc to run natively on nommu systems, I never _tried_ gnu/autoconf.
+> Bootstrapping some subset of LFS on a nommu system so it has the dependencies
+> LFS needs to natively build seems like the long way 'round...
+
+Well, one day we might migrate to use something else (meson?), but until then
+autoconf + m4 + pkgconf is used (instead of automake there is LTP custom
+system). This was written in 2009 and nobody plans to change it (well, Andrea
+played with meson [1] [2]). But we got far away from the original topic :).
+
+Kind regards,
+Petr
+
+[1] https://github.com/acerv/ltp-core
+[2] https://github.com/acerv/ltp-testcases
 
 
+> (I am not the right guy for "make it work the easy way". I am the guy who will
+> step on every land mine between here and there. I code by debugging an empty
+> screen. If I don't start from "known working" setup... it would take a while.)
 
-
- 
-> The kernel _also_ happens to have a non-standardized function called
-> vscnprintf (note the c) which returns the possibly-truncated result. But
-> that's irrelevant here.
-> 
-> >> Oh, and definitely not WARN,  pr_warn() or pr_warn_once() please.
-> >>
-> > 
-> > Then you lose the ability to figure out what was trying to create the
-> > wq with the inflated name. Also, the _once variants don't seem to do
-> > good here, because alloc_workqueue() can be called by different 
-> > drivers.
-> 
-> I assume that whatever creates the wq will do so on every boot, and the
-> name is most likely some fixed thing. So you're essentially setting up
-> some configurations to do a WARN on every single boot, not to mention
-> that for some machines that implies a panic... It really is not
-> something that warrants a WARN.
-> 
-> As for figuring out what caused that too-long name, well, I'd hope that
-> the 31 meaningful bytes that did get produced would provide a
-> sufficiently good hint.
-> 
-> Rasmus
-> 
-
+> Rob
 
