@@ -1,196 +1,261 @@
-Return-Path: <linux-kernel+bounces-22687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AB4B82A19A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BE6D82A19E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 001D8B25AD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:55:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73559B260A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88F74E1D4;
-	Wed, 10 Jan 2024 19:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E50B4EB28;
+	Wed, 10 Jan 2024 19:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OKqsyv6v"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U3fJXjHd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FF24F1E6
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 19:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cd0c17e42bso51247411fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704916492; x=1705521292; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rpDfRf3Herj6H9nv9ttm39vJv2PeXPMa/nxjiDv/ci0=;
-        b=OKqsyv6vmnQyojZa1faP9iBTHEZXch9+EqQtoz49/gaVCrtRHzfoiv9fO5ppCi7XEV
-         5oUa0os+2NfLr/Ql+L4yW86hxXOBhzvG7KC6nNa2//6/3yJG71keQQuhx5Jkw3eaDjhv
-         9ry6CBpysLGdt9OQExzXRpLUCuRsBuSid0RF2/3L2KelH3XrWOSf+7KorT/HqBytYSXm
-         Q6MxAQxj57kOpeT3MRV6x0wc95fRbwJ4VA0OtLxbaMVO1ujR23ZEBYlryc/xo0l4M6PD
-         s+mEl1e4DR9QN7oEgOzc6r/C5ziKFxyWG7ha5nRlDqPKtwBF5xr2FlupgMoQNfRQwuNj
-         W8Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704916492; x=1705521292;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rpDfRf3Herj6H9nv9ttm39vJv2PeXPMa/nxjiDv/ci0=;
-        b=iR+NzCRq5rLi+vS3cCW5tc4gEVhxDvF3rpu6jpKe9+0FZGMqwb4Kln/3X/2UFgMrKd
-         dziyGFjuJbo536oPCkdVfhR2rp688dC1gD84IWBF/Jbjders5iyZrGOGXKi65CSw1Rm/
-         9XRoqoedpG5NQc4b3E/d9LaQeP6+BKdf47DrXGqw7kFU5wRWohOZ3yLDWgk1cffGNOUw
-         FzssHMpW6Or2l8qslvypXQkI/Kt9WIZhCtxThy8jwoWeSYfdJ95d0GvP5KYGJRTJ2lzQ
-         7qsxKMMnHS/yNUIsxVRydDAeI7j4s5mrByvf7bL8y0MbXIymaGPcpEA0hHL0CinVNgZi
-         wOPg==
-X-Gm-Message-State: AOJu0YyaJZrwYCeJzpI1TJv+lOXuWaY+f8Ul26rWMbplhMJSXgtafeW8
-	Y6oAdltCngKe3sTBUv5v3lrDFHF9Q2rtIA==
-X-Google-Smtp-Source: AGHT+IEDCughZVzw5wOMUKkSQKd4e1z2Jjt3ksK+z3TvQxPJcEhGbo2wdlnH+IgVa5aHDzORCm56JQ==
-X-Received: by 2002:a2e:bc14:0:b0:2cd:7e24:321d with SMTP id b20-20020a2ebc14000000b002cd7e24321dmr64210ljf.62.1704916492671;
-        Wed, 10 Jan 2024 11:54:52 -0800 (PST)
-Received: from ?IPv6:2804:30c:1668:b300:8fcd:588d:fb77:ed04? ([2804:30c:1668:b300:8fcd:588d:fb77:ed04])
-        by smtp.gmail.com with ESMTPSA id x9-20020a170902820900b001d4cad5bcf0sm4020511pln.237.2024.01.10.11.54.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 11:54:52 -0800 (PST)
-Message-ID: <3be436cf49b8850b95eb74ce7b7c45e05bc4ad82.camel@suse.com>
-Subject: Re: [PATCH v1 5/5] documentation: Update on livepatch elf format
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Lukas Hruska <lhruska@suse.cz>, Petr Mladek <pmladek@suse.com>, Miroslav
-	Benes <mbenes@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Joe Lawrence <joe.lawrence@redhat.com>, live-patching@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Date: Wed, 10 Jan 2024 16:54:48 -0300
-In-Reply-To: <20231106162513.17556-6-lhruska@suse.cz>
-References: <20231106162513.17556-1-lhruska@suse.cz>
-	 <20231106162513.17556-6-lhruska@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56BB4E1BA;
+	Wed, 10 Jan 2024 19:55:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7E5C433C7;
+	Wed, 10 Jan 2024 19:55:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704916530;
+	bh=KwO40mF2TaGoN9OywGDTZ0ebE2f6XtctCT+Z4+jxzak=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=U3fJXjHdIbN5pHeqJe99LWZstSLQomhmaZKWvn8P4G9sF0cCXE+MEV/W3mUYiEzhI
+	 +R5ZoG/uPY2cUchRVtyDdPQVpwi9uNj/sWgmJ1y3bwS1ycrTfK66BjmN48RniJrpK5
+	 XTWrQCDXo9wUjHBOFJIsLPJepaqkqlYl8Lj9xiu8yGYiO3UzOLYbLfH6PSC+6cjxR/
+	 s9gltdJ523USV1DL0Ily/xIyv9G6aMHgIFALMQSVt899aCyVXZUuS2+/CRKTaELt+D
+	 uasHmHF9U8uY4QdKzdepD8N5yL+3GTm6htCVv/ePcjhzO416aJUjuOvLB0wVWbrzmb
+	 oHp31IMyt04jg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 10 Jan 2024 21:55:24 +0200
+Message-Id: <CYBAGUN08GGW.1WHQOHZ7XUHL9@suppilovahvero>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 01/12] cgroup/misc: Add per resource callbacks for
+ CSS events
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-2-haitao.huang@linux.intel.com>
+ <CWZO1RHFPIS6.P82WIOYW54YP@kernel.org>
+ <op.2g9gcoz5wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2g9gcoz5wjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Mon, 2023-11-06 at 17:25 +0100, Lukas Hruska wrote:
-> Add a section to Documentation/livepatch/module-elf-format.rst
-> describing how klp-convert works for fixing relocations.
->=20
-> Signed-off-by: Lukas Hruska <lhruska@suse.cz>
+On Tue Jan 9, 2024 at 5:37 AM EET, Haitao Huang wrote:
+> On Wed, 15 Nov 2023 14:25:59 -0600, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> > On Mon Oct 30, 2023 at 8:20 PM EET, Haitao Huang wrote:
+> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >>
+> >> The misc cgroup controller (subsystem) currently does not perform
+> >> resource type specific action for Cgroups Subsystem State (CSS) events=
+:
+> >> the 'css_alloc' event when a cgroup is created and the 'css_free' even=
+t
+> >> when a cgroup is destroyed.
+> >>
+> >> Define callbacks for those events and allow resource providers to
+> >> register the callbacks per resource type as needed. This will be
+> >> utilized later by the EPC misc cgroup support implemented in the SGX
+> >> driver.
+> >>
+> >> Also add per resource type private data for those callbacks to store a=
+nd
+> >> access resource specific data.
+> >>
+> >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> ---
+> >> V6:
+> >> - Create ops struct for per resource callbacks (Jarkko)
+> >> - Drop max_write callback (Dave, Michal)
+> >> - Style fixes (Kai)
+> >> ---
+> >>  include/linux/misc_cgroup.h | 14 ++++++++++++++
+> >>  kernel/cgroup/misc.c        | 27 ++++++++++++++++++++++++---
+> >>  2 files changed, 38 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+> >> index e799b1f8d05b..5dc509c27c3d 100644
+> >> --- a/include/linux/misc_cgroup.h
+> >> +++ b/include/linux/misc_cgroup.h
+> >> @@ -27,16 +27,30 @@ struct misc_cg;
+> >>
+> >>  #include <linux/cgroup.h>
+> >>
+> >> +/**
+> >> + * struct misc_operations_struct: per resource callback ops.
+> >> + * @alloc: invoked for resource specific initialization when cgroup i=
+s =20
+> >> allocated.
+> >> + * @free: invoked for resource specific cleanup when cgroup is =20
+> >> deallocated.
+> >> + */
+> >> +struct misc_operations_struct {
+> >> +	int (*alloc)(struct misc_cg *cg);
+> >> +	void (*free)(struct misc_cg *cg);
+> >> +};
+> >
+> > Maybe just misc_operations, or even misc_ops?
+> >
+>
+> With Michal's suggestion to make ops per-resource-type, I'll rename this =
+=20
+> misc_res_ops  (I was following vm_operations_struct as example)
+>
+> >> +
+> >>  /**
+> >>   * struct misc_res: Per cgroup per misc type resource
+> >>   * @max: Maximum limit on the resource.
+> >>   * @usage: Current usage of the resource.
+> >>   * @events: Number of times, the resource limit exceeded.
+> >> + * @priv: resource specific data.
+> >> + * @misc_ops: resource specific operations.
+> >>   */
+> >>  struct misc_res {
+> >>  	u64 max;
+> >>  	atomic64_t usage;
+> >>  	atomic64_t events;
+> >> +	void *priv;
+> >
+> > priv is the wrong patch, it just confuses the overall picture heere.
+> > please move it to 04/12. Let's deal with the callbacks here.
+> >
+>
+> Ok
+>
+> >> +	const struct misc_operations_struct *misc_ops;
+> >>  };
+> >
+> > misc_ops would be at least consistent with this, as misc_res also has a=
+n
+> > acronym.
+> >
+> >>
+> >>  /**
+> >> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+> >> index 79a3717a5803..d971ede44ebf 100644
+> >> --- a/kernel/cgroup/misc.c
+> >> +++ b/kernel/cgroup/misc.c
+> >> @@ -383,23 +383,37 @@ static struct cftype misc_cg_files[] =3D {
+> >>  static struct cgroup_subsys_state *
+> >>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
+> >>  {
+> >> +	struct misc_cg *parent_cg, *cg;
+> >>  	enum misc_res_type i;
+> >> -	struct misc_cg *cg;
+> >> +	int ret;
+> >>
+> >>  	if (!parent_css) {
+> >> -		cg =3D &root_cg;
+> >> +		parent_cg =3D cg =3D &root_cg;
+> >>  	} else {
+> >>  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
+> >>  		if (!cg)
+> >>  			return ERR_PTR(-ENOMEM);
+> >> +		parent_cg =3D css_misc(parent_css);
+> >>  	}
+> >>
+> >>  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
+> >>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+> >>  		atomic64_set(&cg->res[i].usage, 0);
+> >> +		if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc=
+) =20
+> >> {
+> >> +			ret =3D parent_cg->res[i].misc_ops->alloc(cg);
+> >> +			if (ret)
+> >> +				goto alloc_err;
+> >
+> > The patch set only has a use case for both operations defined - any
+> > partial combinations should never be allowed.
+> >
+> > To enforce this invariant you could create a set of operations (written
+> > out of top of my head):
+> >
+> > static int misc_res_init(struct misc_res *res, struct misc_ops *ops)
+> > {
+> > 	if (!misc_ops->alloc) {
+> > 		pr_err("%s: alloc missing\n", __func__);
+> > 		return -EINVAL;
+> > 	}
+> >
+> > 	if (!misc_ops->free) {
+> > 		pr_err("%s: free missing\n", __func__);
+> > 		return -EINVAL;
+> > 	}
+> >
+> > 	res->misc_ops =3D misc_ops;
+> > 	return 0;
+> > }
+> >
+> > static inline int misc_res_alloc(struct misc_cg *cg, struct misc_res =
+=20
+> > *res)
+> > {
+> > 	int ret;
+> >
+> > 	if (!res->misc_ops)
+> > 		return 0;
+> > =09
+> > 	return res->misc_ops->alloc(cg);
+> > }
+> >
+> > static inline void misc_res_free(struct misc_cg *cg, struct misc_res =
+=20
+> > *res)
+> > {
+> > 	int ret;
+> >
+> > 	if (!res->misc_ops)
+> > 		return 0;
+> > =09
+> > 	return res->misc_ops->alloc(cg);
+> > }
+> >
+> > Now if anything has misc_ops, it will also always have *both* callback,
+> > and nothing half-baked gets in.
+> >
+> > The above loops would be then:
+> >
+> > 	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
+> > 		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+> > 		atomic64_set(&cg->res[i].usage, 0);
+> > 		ret =3D misc_res_alloc(&parent_cg->res[i]);
+> > 		if (ret)
+> > 			goto alloc_err;
+> >
+> > Cleaner and better guards for state consistency. In 04/12 you need to
+> > then call misc_res_init() instead of direct assignment.
+> >
+> > BR, Jarkko
+>
+> Will combine these with the use of a static operations array suggested by=
+ =20
+> Michal.
 
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+OK, great, thanks!
 
-> ---
-> =C2=A0Documentation/livepatch/module-elf-format.rst | 67
-> +++++++++++++++++++
-> =C2=A01 file changed, 67 insertions(+)
->=20
-> diff --git a/Documentation/livepatch/module-elf-format.rst
-> b/Documentation/livepatch/module-elf-format.rst
-> index a03ed02ec57e..2aa9b11cd806 100644
-> --- a/Documentation/livepatch/module-elf-format.rst
-> +++ b/Documentation/livepatch/module-elf-format.rst
-> @@ -300,3 +300,70 @@ symbol table, and relocation section indices,
-> ELF information is preserved for
-> =C2=A0livepatch modules and is made accessible by the module loader
-> through
-> =C2=A0module->klp_info, which is a :c:type:`klp_modinfo` struct. When a
-> livepatch module
-> =C2=A0loads, this struct is filled in by the module loader.
-> +
-> +6. klp-convert tool
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +The livepatch relocation sections might be created using
-> +scripts/livepatch/klp-convert. It is called automatically during
-> +the build as part of a module post processing.
-> +
-> +The tool is not able to find the symbols and all the metadata
-> +automatically. Instead, all needed information must already be
-> +part of rela entry for the given symbol. Such a rela can
-> +be created easily by using KLP_RELOC_SYMBOL() macro after
-> +the symbol declaration.
-> +
-> +KLP_RELOC_SYMBOL causes that the relocation entries for
-> +the given symbol will be created in the following format::
-> +
-> +=C2=A0 .klp.sym.rela.lp_object.sym_object.sym_name,sympos
-> +=C2=A0 ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^ ^=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^ ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 ^ ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^=C2=A0=C2=A0 ^
-> +=C2=A0 |___________| |_______| |________| |______|=C2=A0=C2=A0 |
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [A]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 [B]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [C]=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [D]=C2=A0=C2=A0=C2=A0 [E]
-> +
-> +[A]
-> +=C2=A0 The symbol name is prefixed with the string ".klp.sym.rela."
-> +
-> +[B]
-> +=C2=A0 The name of the object (i.e. "vmlinux" or name of module) which
-> +=C2=A0 is livepatched.
-> +
-> +[C]
-> +=C2=A0 The name of the object (i.e. "vmlinux" or name of module) to
-> +=C2=A0 which the symbol belongs follows immediately after the prefix.
-> +
-> +[D]
-> +=C2=A0 The actual name of the symbol.
-> +
-> +[E]
-> +=C2=A0 The position of the symbol in the object (as according to
-> kallsyms)
-> +=C2=A0 This is used to differentiate duplicate symbols within the same
-> +=C2=A0 object. The symbol position is expressed numerically (0, 1, 2...)=
-.
-> +=C2=A0 The symbol position of a unique symbol is 0.
-> +
-> +Example:
-> +--------
-> +**Livepatch source code:**
-> +
-> +::
-> +
-> +=C2=A0 extern char *saved_command_line \
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 KLP_RELOC_SYMBOL(vmlinux, vmlinux,
-> saved_command_line, 0);
-> +
-> +**`readelf -r -W` output of compiled module:**
-> +
-> +::
-> +
-> +=C2=A0 Relocation section '.rela.text' at offset 0x32e60 contains 10
-> entries:
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Offset=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Info=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> Symbol's Value=C2=A0 Symbol's Name + Addend
-> +=C2=A0 ...
-> +=C2=A0 0000000000000068=C2=A0 0000003c00000002 R_X86_64_PC32=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> 0000000000000000 .klp.sym.rela.vmlinux.vmlinux.saved_command_line,0 -
-> 4
-> +=C2=A0 ...
-> +
-> +**`readelf -r -W` output of transformed module by klp-convert:**
-> +
-> +::
-> +
-> +=C2=A0 Relocation section '.klp.rela.vmlinux.text' at offset 0x5cb60
-> contains 1 entry:
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Offset=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Info=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> Symbol's Value=C2=A0 Symbol's Name + Addend
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0000000000000068=C2=A0 0000003c00000002 R=
-_X86_64_PC32=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> 0000000000000000 .klp.sym.vmlinux.saved_command_line,0 - 4
-
+BR, Jarkko
 
