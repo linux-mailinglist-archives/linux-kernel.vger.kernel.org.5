@@ -1,170 +1,181 @@
-Return-Path: <linux-kernel+bounces-22784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A1D82A2D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:51:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42AF282A2D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:51:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389DB1F224D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:51:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B7121C26364
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03A75025E;
-	Wed, 10 Jan 2024 20:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012D751038;
+	Wed, 10 Jan 2024 20:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b="Su7T/iwf"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2104.outbound.protection.outlook.com [40.107.22.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KQptysEg"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775AF50258
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=prevas.dk
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V0RAptYqY4eS6nQsQ+5GLEOaxICFOWFh88kSt8jjhvpxO4TIkIpkUhJ3sMubzq6lBdHM8jAMi7eoGty8umU5xQWXaxi6tVmzxER+W7s80NpMscbK0Bhc2EHTqeIjTd6VQll6DSrTgRz2iYtGb72WCXGn7cUv0KbbO+3mIt8qpnChjvfpSsMJwFF9QlILgX927Vy3tXy/sj7h++7uvEZjumwqnW6FuKSLtGGEdH8RSVxSsy4EYMkS4c8ZQCw2JAvTB8rtIL6nr9KHwuUxhuWxZ4fAy/aHii6Y65hPdVdWeGMGoA8EmrzlG+JTSvgoqKMuDsGytiKmGAe4bDrUAstoew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YFxFSaSnjiPayojv/lF6m8jM95XcjU4j2tHvfhxlSxw=;
- b=mN++/CKNxwJ1N9ZhxRsoBKhgqzEFU81Lf1qeKUDnGxaPz9M8CkwBnKq4+tyhGoerrsrC88YWyHGxRVS9EdO9lmh5F+W0GXl0Hj0ChFI+gARn047ZWpdR9is68W+WfL+JmVtBoElnGRTCweaPEdX2/1KaSJqp2TdSNE/pttJS/3kMkCvNJ2Qh9GFaL19Begsep4N+5n6uLVhuLJAeRieKrqV+4xKnQzEUuRsggpqnPk6mNFeMl5WbPUDFxG2iUComT/Ua3bCRJ0m1/UF1u62dCiO2mQF89iWuqE6F98dAz5IqceEFWqJaUPc128L2uFl2KmJA2nWtdzsGxuxlt5wj7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YFxFSaSnjiPayojv/lF6m8jM95XcjU4j2tHvfhxlSxw=;
- b=Su7T/iwfTLHSDoyH0lot/mdnIIRkd/VaquUSzdKcF+WpvtpLhALQnjuq5E0fIRya7BtSlN1POF0kgUKIRShu5D4JinDclsyDbt/0Mxb52qw3EvErV32DdeCyLwuCk5rjXcFtm4JPjcXb2OIJSbMlB+W3LFiNNfGZke9yjMDa9sY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=prevas.dk;
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:45a::14)
- by DU0PR10MB7002.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:41d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
- 2024 20:47:59 +0000
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f059:23ad:b039:15de]) by DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f059:23ad:b039:15de%7]) with mapi id 15.20.7159.020; Wed, 10 Jan 2024
- 20:47:59 +0000
-Message-ID: <2f0efed5-f9f3-4a5c-9fd4-a4837cada298@prevas.dk>
-Date: Wed, 10 Jan 2024 21:47:56 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] workqueue.c: Increase workqueue name length
-Content-Language: en-US, da
-To: Audra Mitchell <audra@redhat.com>, linux-kernel@vger.kernel.org
-Cc: tj@kernel.org, jiangshanlai@gmail.com, hirokazu.yamauchi.hk@hitachi.com,
- ddouwsma@redhat.com, loberman@redhat.com, raquini@redhat.com
-References: <20231215193954.1785069-1-audra@redhat.com>
- <20240110202959.249296-1-audra@redhat.com>
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-In-Reply-To: <20240110202959.249296-1-audra@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0047.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:b::28) To DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:45a::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5082D51013
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40e4d64a431so24495035e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:48:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704919717; x=1705524517; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R1M7ps4WkHmNkGZ5ie9/GgPQiwPprEwmBMC0OtQiSIE=;
+        b=KQptysEg6FRvwy4NrwrXC0EqaMoyt5t3dLV3+40MyOrqzJ6g3w535Ym8ucPUsrFmL8
+         ho5kuBORycW/+Gkk5Y/+alc1xZeo5l27qtK6xPeFIaptfegPoYr5JwED900DANs0qHCg
+         V4Qo13bNxKYf7IsTq/0FEHHx3HxtucrFAyaeroO8YcaCOZpCCpBgYGEhvXKbWgmYdsWW
+         qsGmLm5ZG00hVyFuwe+XxGeYB9OhXAzEY9MgwzA4icFNaBBe33/85vq0+GqcIjs3V5Di
+         zSFrsVW55oq3B9QuClzZws2d9IneAxF1vZb5bUsdu4qRo74eYDF+9sAD0xAsO35w4LP6
+         gUlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704919717; x=1705524517;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R1M7ps4WkHmNkGZ5ie9/GgPQiwPprEwmBMC0OtQiSIE=;
+        b=vDtFXhbN09sJqdwO0bmgK2p/pWcxPpxD8DtIMej2pJdvNYZCjiPemnbYUhOjcTi1lR
+         z+7v8/oDGe+rsM/y7fOxxozHYXT3wnuYPq45uqHaDjf1so+9/Yh7whvFRHgK5xav/8V9
+         9S2IzgpRM0QDVZL9nO3mP4azLVulXI7SOZYKEkizVLosEg5hS3exkeSPIEtGVXcgLvWG
+         dJCrZnIru97bNFLUU60iyXqV4CM0cIG7FVYHoB+OeDfRBrivXnTiDC4VOAC703mRafpX
+         Q00RNbMZaq6apWLEFtah/5Duzlo/CyJthFg6z/p83cIJq5VSThw6eyJqRaWVQ04QYwnI
+         mXgQ==
+X-Gm-Message-State: AOJu0Yx5TSpnrU2yPjDi9xhONexrg5MaewDiPQ7OjSVWf/fSO5QXhCP7
+	rnnr+CGfiGyPpyYENjBzvDuAgG7f92rq1g==
+X-Google-Smtp-Source: AGHT+IFFBFLsGgbs9TNQvPPt+398YFKa222APcbfnqPfNgMc1s2czccJJiiPIanyznR2wN82QXE/eQ==
+X-Received: by 2002:a05:6000:885:b0:337:3f72:3dd5 with SMTP id cs5-20020a056000088500b003373f723dd5mr41314wrb.32.1704919717656;
+        Wed, 10 Jan 2024 12:48:37 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id k14-20020a5d6e8e000000b003366c058509sm5659636wrz.23.2024.01.10.12.48.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 12:48:36 -0800 (PST)
+Message-ID: <bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
+Date: Wed, 10 Jan 2024 21:48:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR10MB7100:EE_|DU0PR10MB7002:EE_
-X-MS-Office365-Filtering-Correlation-Id: 72d3654b-7dae-4d43-283a-08dc121d6e3d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	cgEtOREyzWrd+++LVvZLoX0tIbZcrMyx5t7tY8nfJBnSPBGTDgnb1055bh7UT7o+qbPzMmZz7Pm0c+OKFKoy0PpcexOPWC9Y9c/fuWtCCy+XSEWBO1tb1wd8wypcnqMkvEsuL6ZStySbA6eCB7Spo3QfZ7zciKHDJlhlLlehP/BfOXq3KA6tn8FbHwWfuEzJoOOSw9u5PS8cbqSNF33UWDKc9uw5IV+16RvFEgBCfkzl3L64ULMYKrBl9F92r0c6e7nwpqK4twsN1ZXf8GGaP34wOUybQwy4Kb8cwHxv3fTq671AhjPr+Mz4pz6t8XQ2ht5Mkitn0KsCpILbecQ8gdJpU4q7JouvOxAagAm780WXLxXmrpoCB5wE+mOFz4i96orMDk1Xpv/3QV7izVmYluT7m5ynSNKc0e+Xrof2OW0jhDLOfHjVSesuoOWFVrXfBhhHNWUPl2SrEnUv9yjs8zLe+ytj6D+2xnAL7TGMyYlJrAuLMsSpGBb1JFXzIlTOiwPyLX4pIUYCYNvBs1kaXHpajAu+nPOfzCiUudhC8BcXplaR4pma/jacVV8jS6YExFbOlCyyjYZ8bx+YnDux7FUZGVbFrYWsO63fEakMpPCyIZ5yRal38mJn50QwIufJ9m7rOj/b3w7IzjmjcSuxKw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(39850400004)(376002)(136003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(66946007)(36756003)(6512007)(6486002)(478600001)(6666004)(31696002)(86362001)(6506007)(5660300002)(2906002)(8936002)(8676002)(8976002)(66556008)(66476007)(316002)(44832011)(4326008)(41300700001)(83380400001)(38100700002)(31686004)(2616005)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aVZGN0JaV2Y5cXBVOVE0dG9LWEhPcE1rK3B1WTNjQUpXeWtUd0lPbHpmS2tE?=
- =?utf-8?B?MlpncTJTSVdqY3BzYUVvaVMvbkQ4QnF0RThsTkMzaXJDNWRZZTFtZ3RvM1Ex?=
- =?utf-8?B?TEplUS9ObVJjS0RES3VTM0k5Ujl1Y1lTVks1NFNoWGRkRWhUVFVjZFBYZUR2?=
- =?utf-8?B?UEVJVWFYNzBha0J4SGtIeENnKyt6b0lyeExjZEEzKzBaWGFsMkN1UHdOQTZJ?=
- =?utf-8?B?Vzg0YzZQa1YzcEhhU1M3QXVBVExubGZBK2JvNjdUQTc1R09xcEZHcGFNcEVN?=
- =?utf-8?B?Sk1OZitvVmpJNGhOV2hXZ1ZwL01ydUV6SEQvYmlTY0RpYzVBZkMrT2dlTXVm?=
- =?utf-8?B?NVN2Tm9DZEdHek0wTkRhSTIweUdRYkpnNXk2aHAvUHNwSzJJZjRNWDNoOTkv?=
- =?utf-8?B?THo3c2RLRnFLdnhBZkJSemtEYVZnbHNJOFk4MzdoL3J0UFAvRm4rZE5Kck9J?=
- =?utf-8?B?NlpONnUwM2hCazhaNE41MmVvVEtEWjBSbkRtbUZkRWxoU3kxTlI2RGZFenhr?=
- =?utf-8?B?QzQzU2M0eWxUb1lNc1JNQjFVYXJPN2VGQ0dvWVQvc0sxcWc2eFQzR3g3bmRL?=
- =?utf-8?B?SDJvRnRnN3hleTEzajV6RzIyUSs2M3lvaHRUWDdJWThrZTVZczdUV3lFR1lC?=
- =?utf-8?B?amUwTmFKcFo5ZWJwc1Q3UVMzTWQ4ZVR1aGxJSlVxRmRjc1Fab21KUCt1REdn?=
- =?utf-8?B?bkUydjRpQ1h1c01sT2luNDNSajlVUDJFeGJhaVBDMUlXMm4xZnhpQTVjeDA3?=
- =?utf-8?B?dHZVc2l4VFNhVG5EQ2VOSHp4bVVTeUR0TVpMODA2MC9xYVFFR0ovbFdTRHZV?=
- =?utf-8?B?SmovbDl2aWdkU3M2U0xmWndsS1dsODh1aFY2M05pSTZaRWhSY3R1dTdzekZL?=
- =?utf-8?B?L3FDRXlPWFpCTnNUQ2hvQjR4K082RUtYS2lqOXdvVEw0WStxN1JKMk93V3JR?=
- =?utf-8?B?NGw2UG9ydGlSNEVXT3ZnbSsxbGlYQUlaTFBPTHh6NFdDeHZMSjJmam9aenBC?=
- =?utf-8?B?L29DdTJaRFJjclZ5am03eUpNQUgyM2o3Z1ltZkNTUmtQV0k0QjFBNk52YWJL?=
- =?utf-8?B?cCtRNm5WTFFzbHhXZXBQeE94dmFnQ2Jta0F3VTF2bFpWU3pkMjVyN1pHWjl5?=
- =?utf-8?B?K3lSNzFGVkt4VFdXYkdXRGh1eW5KdHloRG9LWVFQOU1abUpZdnVVTXV4MEZy?=
- =?utf-8?B?OXU3K3Q2NEJhdHl0bkxNVTJDTW50L2N1U1dmTjdzTWt0YWRaTmh0VTFEamZv?=
- =?utf-8?B?Wm5YWmxuTE5XRUZKMnlDa0RNbFZiVlAzY0tOWWlEM21ZRFZweW5PbXdVTnEw?=
- =?utf-8?B?RlRWVkt0ME9SZjM0ZkQ2WHNkaUdPVU42TjUyejZsSmRiQ3FJMTlGd2huMVh2?=
- =?utf-8?B?ZzN1T1RCUTRzcHgyeHdPbEFuM1F6RllVSEhCdmFGQmlob3h0eUEvMEJwNzhW?=
- =?utf-8?B?M0N6dStqSU1zOVpEU3NGbWs2QnM2WWVmV2pIK21jUFFBOXlEVGJoSWwyQ054?=
- =?utf-8?B?eTJQR3M4bWEzRmtHVVBMcnFVQk92dDNEelFTYXJNb0djZlRQWFMxQkRZWnp5?=
- =?utf-8?B?NEJQenhlR3QrMitrTmpZTnE1dEp5RnB2d0hpbmIvY2haN1VHbjQ3LzFKdlhF?=
- =?utf-8?B?R1hydXdjY2pMdWxCcVJEdXp3WTBXSE5HTTJOQkZ3Q25uSUJ4R3FScFNEY3kz?=
- =?utf-8?B?cjJjRDE2WnlKc0ZoamlnUmU5TkNQRCthYTE3dU4yb0E0M0c4cVNXcWNPbThG?=
- =?utf-8?B?bXpyVnNsQitpdUd6T2o2SzZOdmp0ckU0QzB3V2d6TlBCakxTNTJSS2ZHeGlt?=
- =?utf-8?B?WE1mUFM3dHFMYnJENUREOUdEMUlxRlZFSlQzL1N3VUNHOFBEQ3RraE9MRkFj?=
- =?utf-8?B?aVJVTG5uY1o1WXRGYXJmRm9SRm5RTmF2Z01QMTUwdzJ3ait5RXlSVHRHb1lu?=
- =?utf-8?B?bnNGWWtycGgyZlZxR09HYTVaOUxROUNvekkvdlcxclEraXA0dlZHQmYrR1RY?=
- =?utf-8?B?OFMxSmpLNHdIOGFkUkRxbjViUTg0ME1nTWl3R3g2T2dIUkRwVUoza05JcWgv?=
- =?utf-8?B?ZnA2c0VoZklnOFF6TW1UaG9vczA0UlFjRWF4YXk0NGpwdjFFSjVTMVhkV1ZZ?=
- =?utf-8?B?bnplTTdPemk1L2pXeHlqZVBUU2J4OTRRQklzTHBHd3cvMkUvcHhraTdKWFR2?=
- =?utf-8?B?Y2c9PQ==?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72d3654b-7dae-4d43-283a-08dc121d6e3d
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 20:47:59.3998
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d2d9VYm1eMJtOYKvK6wyJcwbW4gPJWXa9Arm2w+tRapnP/VKS4TL7jETKDjoajlSLVYINVmZZF+7SiXQr5UHCaibjb932bsywSRD4Vp1DdI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR10MB7002
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
+ add sleep-mode
+Content-Language: en-US
+To: Petre Rodan <petre.rodan@subdimension.ro>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
+ <20240110172306.31273-3-petre.rodan@subdimension.ro>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240110172306.31273-3-petre.rodan@subdimension.ro>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 10/01/2024 21.29, Audra Mitchell wrote:
+On 10/01/2024 18:22, Petre Rodan wrote:
+> Add sleep-mode property present in some custom chips.
+> 
+> This flag activates a special wakeup sequence prior to conversion.
+> 
+> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+> ---
+>  .../bindings/iio/pressure/honeywell,hsc030pa.yaml      | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> index 89977b9f01cf..350da1d6991b 100644
+> --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> @@ -86,6 +86,15 @@ properties:
+>        Maximum pressure value the sensor can measure in pascal.
+>        To be specified only if honeywell,pressure-triplet is set to "NA".
+> 
+> +  honeywell,sleep-mode:
 
-> @@ -4663,9 +4663,10 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
->  					 unsigned int flags,
->  					 int max_active, ...)
->  {
-> -	va_list args;
-> +	va_list args, args_copy;
->  	struct workqueue_struct *wq;
->  	struct pool_workqueue *pwq;
-> +	int len;
->  
->  	/*
->  	 * Unbound && max_active == 1 used to imply ordered, which is no longer
-> @@ -4692,6 +4693,13 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
->  	}
->  
->  	va_start(args, max_active);
-> +	va_copy(args_copy, args);
-> +	len = vsnprintf(NULL, 0, fmt, args_copy);
-> +	WARN(len > WQ_NAME_LEN,
-> +		"workqueue: wq->name too long (%d). Truncated to WQ_NAME_LEN (%d)\n",
-> +		len, WQ_NAME_LEN);
+"Sleep mode" naming suggests there are choices, like mode foo and mode
+bar. Probably you want something like "sleep-between-measurements" or
+something matching how does it work.
+
+
+> +    description: |
+
+Do not need '|' unless you need to preserve formatting.
+
+> +      'Sleep Mode' is a special factory set mode of the chip that allows the
+> +      sensor to power down between measurements. It is implemented only on
+> +      special request, and it is an attribute not present in the HSC/SSC series
+> +      nomenclature.
+> +      Set in order to enable the special wakeup sequence prior to conversion.
+> +    $ref: /schemas/types.yaml#/definitions/flag
 > +
-> +	va_end(args_copy);
->  	vsnprintf(wq->name, sizeof(wq->name), fmt, args);
+>    vdd-supply:
+>      description:
+>        Provide VDD power to the sensor (either 3.3V or 5V depending on the chip)
+> @@ -140,6 +149,7 @@ examples:
+>              honeywell,pressure-triplet = "NA";
+>              honeywell,pmin-pascal = <0>;
+>              honeywell,pmax-pascal = <200000>;
+> +            //honeywell,sleep-mode;
 
-Eh, why not just _not_ throw away the return value from the existing
-vsnprintf() and do "len >= sizeof(wq->name)" to know if truncation
-happened? There's really no need need to do vsnprintf() twice. (And yes,
-you want >=, not >).
+Drop comment.
 
-Oh, and definitely not WARN,  pr_warn() or pr_warn_once() please.
+> 2.41.0
+> 
 
-Rasmus
+Best regards,
+Krzysztof
 
 
