@@ -1,180 +1,278 @@
-Return-Path: <linux-kernel+bounces-21898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 434C682963D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 406EC82964E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E892B1F25F9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:24:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C34F71F25A8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151A83EA6D;
-	Wed, 10 Jan 2024 09:24:05 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C566D3EA74;
+	Wed, 10 Jan 2024 09:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="juD6hpZR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B12210B;
-	Wed, 10 Jan 2024 09:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T92Nh0wG2z6K8yL;
-	Wed, 10 Jan 2024 17:21:24 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id BED65140DEC;
-	Wed, 10 Jan 2024 17:23:44 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 10 Jan
- 2024 09:23:41 +0000
-Date: Wed, 10 Jan 2024 09:23:40 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: =?ISO-8859-1?Q?M=E5rten?= Lindahl <martenli@axis.com>
-CC: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
-	<linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@axis.com>
-Subject: Re: [PATCH] iio: light: vcnl4000: Set ps high definition for
- 4040/4200
-Message-ID: <20240110092340.00003540@Huawei.com>
-In-Reply-To: <58319706-dbc5-4ee9-b894-cecbbd23fc1b@axis.com>
-References: <20231221-vcnl4000-ps-hd-v1-1-a024bfb28896@axis.com>
-	<20231226161934.52c8d801@jic23-huawei>
-	<58319706-dbc5-4ee9-b894-cecbbd23fc1b@axis.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D083E49A
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:27:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09FA2C433F1;
+	Wed, 10 Jan 2024 09:27:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704878837;
+	bh=nzNAaOqvaUL57D/V9epEYzVxZ7pYbWWXoeDDRRHs+/k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=juD6hpZRALBSBgsoKCWJmV0pVswWCkfgSB5gygZYm22wB6tFLF/GCnNhGjsnwkKdp
+	 pNVg/8oaNf172cQ4jZnmULRpAwB7yY7SpHQdeDgLRyfukjUp4YImdJiVITXeSb5RBj
+	 lv6R8hPinxo9nMfphpcDsx9UccrLhocX9H1bpJzIuJFkMlz6oFuIwq1yEtfkZR0kMa
+	 ksEy5xxZwq+mQg2B81zeC1VjRfTbPR0EMe2jyTC+HK4+ajT4zdWXPfZlkeH1+8y5Os
+	 lgYbczWKk3EemUbeDmQxeMvWKGlmxqP7evxQ16nsZ3xVSDEfzuzwu0sIVAtE6d5fTf
+	 T8fnq7PmuqINw==
+Date: Wed, 10 Jan 2024 10:27:14 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Andri Yngvason <andri@yngvason.is>
+Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>, 
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, 
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	intel-gfx@lists.freedesktop.org, Simon Ser <contact@emersion.fr>, 
+	Werner Sembach <wse@tuxedocomputers.com>, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH 5/7] drm/uAPI: Add "preferred color format" drm property
+ as setting for userspace
+Message-ID: <qdwv7sagqs5nmmsy5lko5hypldanfodafyzamrs3loj3n7jzlr@n5bacxkknkj4>
+References: <20240109181104.1670304-1-andri@yngvason.is>
+ <20240109181104.1670304-6-andri@yngvason.is>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="f6j2j4rphibvcs2b"
+Content-Disposition: inline
+In-Reply-To: <20240109181104.1670304-6-andri@yngvason.is>
+
+
+--f6j2j4rphibvcs2b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, 9 Jan 2024 19:25:25 +0100
-M=E5rten Lindahl <martenli@axis.com> wrote:
+Hi,
 
-> On 12/26/23 17:19, Jonathan Cameron wrote:
-> > On Thu, 21 Dec 2023 17:33:09 +0100
-> > M=E5rten Lindahl<marten.lindahl@axis.com>  wrote:
-> > =20
-> >> The vcnl4040/vcnl4200 proximity sensor defaults to 12 bit data
-> >> resolution, but the chip also supports 16 bit data resolution, which is
-> >> called proximity high definition (PS_HD).
-> >>
-> >> Make the vcnl4040/vcnl4200 proximity sensor use the high definition for
-> >> all data readings.
-> >>
-> >> Signed-off-by: M=E5rten Lindahl<marten.lindahl@axis.com> =20
-> Hi Jonathan!
-> > Hmm. Was about to apply this and had a nasty thought.  Whilst proximity=
- isn't
-> > 'scaled' as such because there is no absolute scale applied, I assume t=
-his change
-> > divides the effective scale (so what someone may be applying in userspa=
-ce) by 16?
-> >
-> > So this might cause someone a visible userspace regression?
-> >
-> > If so we may have to report it IIO_VAL_FRACTIONAL with the bottom set t=
-o 16
-> > so we end up with a suitable fixed point value from sysfs.
-> >
-> > Jonathan =20
+On Tue, Jan 09, 2024 at 06:11:02PM +0000, Andri Yngvason wrote:
+> From: Werner Sembach <wse@tuxedocomputers.com>
 >=20
-> Yes, your assumption is correct. And I found that this can easily pass=20
-> unnoticed, at least on our HW. To get full 16 bit data width the sensor=20
-> needs higher proximity integration time, current, and sample rate, or=20
-> else it will give a raw output very close to the 12 bit steps with a=20
-> maximum around 4150 compared to 12 bit max 4095. With our HW only few=20
-> would notice the difference.
+> Add a new general drm property "preferred color format" which can be used
+> by userspace to tell the graphic drivers to which color format to use.
 >=20
-> Increasing integration time/current/sample rate is already supported=20
-> from sysfs, and to get the proper scaling I can use the=20
-> IIO_VAL_FRACTIONAL as you suggest, but then I also need to set these=20
-> higher values from the beginning (where PS_HD is set) or else sysfs=20
-> in_proximity_raw will give output "259.375000000" for 4150, instead of=20
-> "4095.937500000" for 65535. If not, userspace will have to change the=20
-> values manually before first read can be done.
-
-Ok. Then I think we are fine.
-
+> Possible options are:
+>     - auto (default/current behaviour)
+>     - rgb
+>     - ycbcr444
+>     - ycbcr422 (not supported by both amdgpu and i915)
+>     - ycbcr420
 >=20
-> Regarding the changed output format, is it ok to change it from "4095"=20
-> to "4095.937500000", without making users upset?
+> In theory the auto option should choose the best available option for the
+> current setup, but because of bad internal conversion some monitors look
+> better with rgb and some with ycbcr444.
 
-Should be fine.  Generic userspace code already has to deal with
-fixed point values (treating them as if they were fp) as other drivers will
-produce this anyway.   We 'might' break a flakey script, but this is
-in the category of hoping no one notices!
+I looked at the patch and I couldn't find what is supposed to happen if
+you set it to something else than auto, and the driver can't match that.
+Are we supposed to fallback to the "auto" behaviour, or are we suppose
+to reject the mode entirely?
 
-Jonathan
+The combination with the active output format property suggests the
+former, but we should document it explicitly.
 
+> Also, because of bad shielded connectors and/or cables, it might be
+> preferable to use the less bandwidth heavy ycbcr422 and ycbcr420 formats
+> for a signal that is less deceptible to interference.
 >=20
-> Kind regards
+> In the future, automatic color calibration for screens might also depend =
+on
+> this option being available.
 >=20
-> M=E5rten
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Andri Yngvason <andri@yngvason.is>
+> Tested-by: Andri Yngvason <andri@yngvason.is>
+> ---
+>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
+>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
+>  drivers/gpu/drm/drm_connector.c     | 50 ++++++++++++++++++++++++++++-
+>  include/drm/drm_connector.h         | 17 ++++++++++
+>  4 files changed, 74 insertions(+), 1 deletion(-)
 >=20
-> >> ---
-> >>   drivers/iio/light/vcnl4000.c | 13 +++++++++++++
-> >>   1 file changed, 13 insertions(+)
-> >>
-> >> diff --git a/drivers/iio/light/vcnl4000.c b/drivers/iio/light/vcnl4000=
-c
-> >> index fdf763a04b0b..4846f3b698b5 100644
-> >> --- a/drivers/iio/light/vcnl4000.c
-> >> +++ b/drivers/iio/light/vcnl4000.c
-> >> @@ -90,6 +90,7 @@
-> >>   #define VCNL4040_PS_CONF1_PS_SHUTDOWN	BIT(0)
-> >>   #define VCNL4040_PS_CONF2_PS_IT	GENMASK(3, 1) /* Proximity integrati=
-on time */
-> >>   #define VCNL4040_CONF1_PS_PERS	GENMASK(5, 4) /* Proximity interrupt =
-persistence setting */
-> >> +#define VCNL4040_PS_CONF2_PS_HD		BIT(11)	/* Proximity high definition=
- */
-> >>   #define VCNL4040_PS_CONF2_PS_INT	GENMASK(9, 8) /* Proximity interrup=
-t mode */
-> >>   #define VCNL4040_PS_CONF3_MPS		GENMASK(6, 5) /* Proximity multi puls=
-e number */
-> >>   #define VCNL4040_PS_MS_LED_I		GENMASK(10, 8) /* Proximity current */
-> >> @@ -345,6 +346,7 @@ static int vcnl4200_set_power_state(struct vcnl400=
-0_data *data, bool on)
-> >>   static int vcnl4200_init(struct vcnl4000_data *data)
-> >>   {
-> >>   	int ret, id;
-> >> +	u16 regval;
-> >>  =20
-> >>   	ret =3D i2c_smbus_read_word_data(data->client, VCNL4200_DEV_ID);
-> >>   	if (ret < 0)
-> >> @@ -389,6 +391,17 @@ static int vcnl4200_init(struct vcnl4000_data *da=
-ta)
-> >>   	mutex_init(&data->vcnl4200_al.lock);
-> >>   	mutex_init(&data->vcnl4200_ps.lock);
-> >>  =20
-> >> +	/* Use 16 bits proximity sensor readings */
-> >> +	ret =3D i2c_smbus_read_word_data(data->client, VCNL4200_PS_CONF1);
-> >> +	if (ret >=3D 0) {
-> >> +		regval =3D (ret | VCNL4040_PS_CONF2_PS_HD);
-> >> +		ret =3D i2c_smbus_write_word_data(data->client, VCNL4200_PS_CONF1,
-> >> +						regval);
-> >> +	}
-> >> +
-> >> +	if (ret < 0)
-> >> +		dev_info(&data->client->dev, "Default to 12 bits sensor data");
-> >> +
-> >>   	ret =3D data->chip_spec->set_power_state(data, true);
-> >>   	if (ret < 0)
-> >>   		return ret;
-> >>
-> >> ---
-> >> base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
-> >> change-id: 20231221-vcnl4000-ps-hd-863f4f8fcea7
-> >>
-> >> Best regards, =20
->=20
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_at=
+omic_helper.c
+> index 68ffcc0b00dca..745a43d9c5da3 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -707,6 +707,10 @@ drm_atomic_helper_check_modeset(struct drm_device *d=
+ev,
+>  			if (old_connector_state->max_requested_bpc !=3D
+>  			    new_connector_state->max_requested_bpc)
+>  				new_crtc_state->connectors_changed =3D true;
+> +
+> +			if (old_connector_state->preferred_color_format !=3D
+> +			    new_connector_state->preferred_color_format)
+> +				new_crtc_state->connectors_changed =3D true;
+>  		}
+> =20
+>  		if (funcs->atomic_check)
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
+ic_uapi.c
+> index 98d3b10c08ae1..eba5dea1249e5 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -798,6 +798,8 @@ static int drm_atomic_connector_set_property(struct d=
+rm_connector *connector,
+>  		state->max_requested_bpc =3D val;
+>  	} else if (property =3D=3D connector->privacy_screen_sw_state_property)=
+ {
+>  		state->privacy_screen_sw_state =3D val;
+> +	} else if (property =3D=3D connector->preferred_color_format_property) {
+> +		state->preferred_color_format =3D val;
+>  	} else if (connector->funcs->atomic_set_property) {
+>  		return connector->funcs->atomic_set_property(connector,
+>  				state, property, val);
+> @@ -881,6 +883,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
+r *connector,
+>  		*val =3D state->max_requested_bpc;
+>  	} else if (property =3D=3D connector->privacy_screen_sw_state_property)=
+ {
+>  		*val =3D state->privacy_screen_sw_state;
+> +	} else if (property =3D=3D connector->preferred_color_format_property) {
+> +		*val =3D state->preferred_color_format;
+>  	} else if (connector->funcs->atomic_get_property) {
+>  		return connector->funcs->atomic_get_property(connector,
+>  				state, property, val);
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
+tor.c
+> index 30d62e505d188..4de48a38792cf 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1061,6 +1061,14 @@ static const struct drm_prop_enum_list drm_dp_subc=
+onnector_enum_list[] =3D {
+>  	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
+>  };
+> =20
+> +static const struct drm_prop_enum_list drm_preferred_color_format_enum_l=
+ist[] =3D {
+> +	{ 0, "auto" },
+> +	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
+> +	{ DRM_COLOR_FORMAT_YCBCR444, "ycbcr444" },
+> +	{ DRM_COLOR_FORMAT_YCBCR422, "ycbcr422" },
+> +	{ DRM_COLOR_FORMAT_YCBCR420, "ycbcr420" },
+> +};
+> +
+>  static const struct drm_prop_enum_list drm_active_color_format_enum_list=
+[] =3D {
+>  	{ 0, "not applicable" },
+>  	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
+> @@ -1398,11 +1406,20 @@ static const u32 dp_colorspaces =3D
+>   *	drm_connector_attach_max_bpc_property() to create and attach the
+>   *	property to the connector during initialization.
+>   *
+> + * preferred color format:
+> + *	This property is used by userspace to change the used color format. W=
+hen
+> + *	used the driver will use the selected format if valid for the hardwar=
+e,
+> + *	sink, and current resolution and refresh rate combination. Drivers to
+> + *	use the function drm_connector_attach_preferred_color_format_property=
+()
+> + *	to create and attach the property to the connector during
+> + *	initialization. Possible values are "auto", "rgb", "ycbcr444",
+> + *	"ycbcr422", and "ycbcr420".
+> + *
+>   * active color format:
+>   *	This read-only property tells userspace the color format actually used
+>   *	by the hardware display engine "on the cable" on a connector. The cho=
+sen
+>   *	value depends on hardware capabilities, both display engine and
+> - *	connected monitor. Drivers shall use
+> + *	connected monitor, and the "preferred color format". Drivers shall use
+>   *	drm_connector_attach_active_color_format_property() to install this
+>   *	property. Possible values are "not applicable", "rgb", "ycbcr444",
+>   *	"ycbcr422", and "ycbcr420".
+> @@ -2468,6 +2485,37 @@ int drm_connector_attach_max_bpc_property(struct d=
+rm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+> =20
+> +/**
+> + * drm_connector_attach_preferred_color_format_property - attach "prefer=
+red color format" property
+> + * @connector: connector to attach preferred color format property on.
+> + *
+> + * This is used to add support for selecting a color format on a connect=
+or.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_preferred_color_format_property(struct drm_conn=
+ector *connector)
+> +{
+> +	struct drm_device *dev =3D connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	if (!connector->preferred_color_format_property) {
+> +		prop =3D drm_property_create_enum(dev, 0, "preferred color format",
+> +						drm_preferred_color_format_enum_list,
+> +						ARRAY_SIZE(drm_preferred_color_format_enum_list));
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->preferred_color_format_property =3D prop;
+> +	}
+> +
+> +	drm_object_attach_property(&connector->base, prop, 0);
+> +	connector->state->preferred_color_format =3D 0;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_preferred_color_format_property);
+> +
+>  /**
+>   * drm_connector_attach_active_color_format_property - attach "active co=
+lor format" property
+>   * @connector: connector to attach active color format property on.
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 9ae73cfdceeb1..d7bc54c8b42cb 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1026,6 +1026,16 @@ struct drm_connector_state {
+>  	 */
+>  	enum drm_privacy_screen_status privacy_screen_sw_state;
+> =20
+> +	/**
+> +	 * preferred_color_format: Property set by userspace to tell the GPU
 
+That's not the proper doc format, you're missing a @
+
+Maxime
+
+--f6j2j4rphibvcs2b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZZ5i8QAKCRDj7w1vZxhR
+xUKrAQC6+1rVAO7umPgfBq9P7nimTGhAG69n4i9MYMS1adFqoAD/T5SQ1Tsm9Ybw
+vTELQXqv0M32Kqp1PKhW+w+WiQTzAQw=
+=CrvP
+-----END PGP SIGNATURE-----
+
+--f6j2j4rphibvcs2b--
 
