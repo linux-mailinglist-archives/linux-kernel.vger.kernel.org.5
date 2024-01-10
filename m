@@ -1,185 +1,92 @@
-Return-Path: <linux-kernel+bounces-21786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AEAA829445
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:26:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16CFB829446
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 830FF1F25CEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:26:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9D2A1F21468
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7D139AE0;
-	Wed, 10 Jan 2024 07:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F6239AFB;
+	Wed, 10 Jan 2024 07:26:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OAas/FW3"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="voNkWseM"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B15839851
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63B439877
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3376f71fcbbso2179563f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:26:00 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d604b4b30so28316185e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:26:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704871559; x=1705476359; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3OiOLhRr/v/UoX6M5hASdWKUoK8n0S9t0J6jvZFucNA=;
-        b=OAas/FW3fsdbePoaO8FMoctN5Z/GFK/mmquIdXpthWjUb9jDyC4Vz16kjhhm6CEvEs
-         zwS4EHfc3zMsf8Lil256/5eHixzvJwiZoMx7LZ/Ijau9m1yqe+gQNhlxssQ7qSRf0h35
-         LWJ3o8WQ2+KGRDuylDJ9BdJJHuS+lPmS71r37J3cggczHFwvvZl9ikw6KnejlUINtaOr
-         vWtM952hwAxXzHAIQOFmR28TYyWYVNAiKsfjRE3Wm+5jJUKAVTqKbopgdH9ec0Lz2w6s
-         8KYIS95MqJxkEvsmAn0Yk1thscAOeiGoTzqbmKhC71w8haKXGYy1Fma8+J9DJUAxaGFl
-         OPQA==
+        d=linaro.org; s=google; t=1704871581; x=1705476381; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oB8bFEksgA/hP4pzljJqPyULshxwwfCWATJRRhxV3mo=;
+        b=voNkWseMlfS3qaOFbhzSA7TRnn7PZnJvcHWcLkwbPfvYLwvvdG/DZZtRAg9aLmntRS
+         iqP0Le6yZqkjEZYA0d5pqPZ+29/aRw0XjFL7ag3ADH0cb2D+jCs4F/7Pymq4W/McMPSK
+         0Oh7cwB0kVfpbWJC89fHxiEhVXHshQY9Oj9TbCnoinKEA8nopRmcw+jEZk7ux8XVLCnL
+         AKfyvrDraXmVLDNYKqMX+pwVZdrAw2L41heaNfQUH2ZJKQTO8ceVeC334yDMVwCkc5Mf
+         41VBBqAsLmKFR1bIC00RCl74r0KUoLPh3qWqv6stG3Mqt8Wn/ZKFacVZAts1hOKd5CTb
+         LKyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704871559; x=1705476359;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3OiOLhRr/v/UoX6M5hASdWKUoK8n0S9t0J6jvZFucNA=;
-        b=R7HYSdxiV3rSDYVWwdZYSpn3yfVOQ1pdqEhhH0yKBiSC5cioIXZ3yzyoVyCXcI1Ton
-         N3jo3du9s1O7wV3/zTxX8fbjVhK6lLi01s4ImrMFeR2D95otg2DaVseaVgtZ0EVqzzvh
-         HGVTZNKlsxAnITL+v8JZAFKj9i/iembEWRIWmM2gzkMg1ttri6EzRgyNqlmyowNBfgA1
-         LGMYQNkqHDcffB1f7BKjtCbKz/1Ab/zS2UOdY2fuDcRSGWOQyafXRJdFUkOydwsrF/aB
-         UQTVIwncp7gMSwAOFeGsN2MvfxV/nvF5mesGSFLFFf6lw9xKKtAmmL5vhvIBNt7zK2To
-         2K7Q==
-X-Gm-Message-State: AOJu0Yz/IeC1UAbARFt0uBxk89t8YfXmDVBNPrI8YTpogsOplQjT9IoN
-	qg79Ey2BG37UafhrLWRbNh1vMMOcPIsqrA==
-X-Google-Smtp-Source: AGHT+IE1O/Q18uyQ9bgM0s5oBgheZhm9Raon+NZw5D/zhrfsAJdZYSoWCcIqwTEWmKfgCMrEQYnWfw==
-X-Received: by 2002:adf:f107:0:b0:336:ca90:3a1a with SMTP id r7-20020adff107000000b00336ca903a1amr195607wro.114.1704871558869;
-        Tue, 09 Jan 2024 23:25:58 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id z16-20020a5d4d10000000b0033686e8f02dsm4125387wrt.45.2024.01.09.23.25.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 23:25:58 -0800 (PST)
-Message-ID: <e35ebe97-1349-4c37-afa5-54c131a9dcbb@linaro.org>
-Date: Wed, 10 Jan 2024 07:25:56 +0000
+        d=1e100.net; s=20230601; t=1704871581; x=1705476381;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oB8bFEksgA/hP4pzljJqPyULshxwwfCWATJRRhxV3mo=;
+        b=Ra2dRrx4T8lBJ8bFmsHrj/ZvIQ87V8z38+hbZzxOY0teLPvAGw09V0h32OA4rIp8t9
+         FXlbCBr/uHHHHDCpckoz8wD42BmHs3bXnu6Gk7SnCq3S7JCmv5LzBn6fy0pbgRO9V2IM
+         JFvXMbVFSCVfODNpSQ5J+yJfNMMYBjwMDInGlIuC92GOiTgbRrhpIP3zBXRMa3+anHZo
+         4z22f9S7XedD49sBMf+ypjUm2hRHbzAUfZwkoXeQJo6eGOs7DSHMF9KYS43ARWcHcmNQ
+         sEsv21RixounJSAsP5xZ975P2anVDFDu0EJhm9w8HlXvlR0GneXuCTmLLUjZI4HIG8P0
+         +s1A==
+X-Gm-Message-State: AOJu0YwANWg6ZMnZPW8kShaSCppcnuSQrey9upTU/qbAujojBOMfqox7
+	vP6aSXn6pR2AOrf1YJ9t19GztQJiP81MXA==
+X-Google-Smtp-Source: AGHT+IE76Y8hprK6/FX8obW26kFU4/Ec8lUy0x0+lATk6+++AhIfumsuIrzjjbjO9pLr10ZilSlScg==
+X-Received: by 2002:a05:600c:1d08:b0:40d:8ed9:ce8c with SMTP id l8-20020a05600c1d0800b0040d8ed9ce8cmr302530wms.120.1704871581188;
+        Tue, 09 Jan 2024 23:26:21 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id fs23-20020a05600c3f9700b0040c11fbe581sm1129574wmb.27.2024.01.09.23.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 23:26:20 -0800 (PST)
+Date: Wed, 10 Jan 2024 10:26:17 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Matthias Yee <mgyee9@gmail.com>
+Cc: gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: vt6655: fix open parentheses alignment
+Message-ID: <3778e52d-9ac5-4648-85e9-539b13e19d25@moroto.mountain>
+References: <20240110072304.2226-1-mgyee9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] dt-bindings: clock: google,gs101-clock: add
- PERIC0 clock management unit
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Rob Herring <robh@kernel.org>
-Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
- andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
- cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org,
- andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-serial@vger.kernel.org, kernel-team@android.com
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
- <20231228125805.661725-2-tudor.ambarus@linaro.org>
- <20240109040315.GA2619804-robh@kernel.org>
- <f695f2c0-2d4e-484c-9faa-7d8b28362541@linaro.org>
- <8a55e1d9-c102-4cdf-8f23-edc40889cf6d@linaro.org>
- <ea02d7ca-62e2-4d46-8495-ed6e515625a1@linaro.org>
- <38523622-4963-44a5-a5d6-64896ae47e09@linaro.org>
- <ddd31326-8901-476f-949f-2d1291ba07a0@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <ddd31326-8901-476f-949f-2d1291ba07a0@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110072304.2226-1-mgyee9@gmail.com>
 
-
-
-On 1/9/24 18:38, Krzysztof Kozlowski wrote:
-> On 09/01/2024 17:12, Tudor Ambarus wrote:
->>
->>
->> On 1/9/24 15:01, Krzysztof Kozlowski wrote:
->>> On 09/01/2024 12:58, Tudor Ambarus wrote:
->>>>
->>>>
->>>> On 1/9/24 11:09, Krzysztof Kozlowski wrote:
->>>>> On 09/01/2024 05:03, Rob Herring wrote:
->>>>>> On Thu, Dec 28, 2023 at 12:57:54PM +0000, Tudor Ambarus wrote:
->>>>>>> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
->>>>>>> clock management unit.
->>>>>>>
->>>>>>> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
->>>>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>>>>>> ---
->>>>>>> v2:
->>>>>>> - fix comments as per Sam's suggestion and collect his R-b tag
->>>>>>> - Rob's suggestion of renaming the clock-names to just "bus" and "ip"
->>>>>>>   was not implemented as I felt it affects readability in the driver
->>>>>>>   and consistency with other exynos clock drivers. I will happily update
->>>>>>>   the names in the -rc phase if someone else has a stronger opinion than
->>>>>>>   mine. 
->>>>>>
->>>>>> I'll defer to Krzysztof.
->>>>>
->>>>> I miss the point why clock-names cannot be fixed now. This is the name
->>>>> of property, not the input clock name.
->>>>
->>>> They can be fixed now. I've just aired the fixes at:
->>>> https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
->>>>
->>>> Preparing v3 for this patch set to include the updated names here too.
->>>
->>> I think I was not that clear enough. I did not get your current patchset
->>> - so PERIC0 clock controller - cannot use new naming.
->>>
->>
->> Ok, I understand that the fixes from
->> https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
->>
->> are NACK-ed and I shall use the full clock-names in this patch set as
->> well, thus "dout_cmu_peric0_bus", and "dout_cmu_peric0_ip". I don't mind
->> changing them back, will send a v4 using the full clock names.
+On Tue, Jan 09, 2024 at 11:23:05PM -0800, Matthias Yee wrote:
+> Adjusted whitespace to fix checkpatch warning Alignment Should Match
+> Open Parenthesis.
 > 
-> They are not rejected, it is just independent thing. At least looks like
-> independent.
+> Signed-off-by: Matthias Yee <mgyee9@gmail.com>
+> ---
+> Changes in v3
+> -fixed line wrapping for commit message
 
-The datasheet is not so verbose, but as I understand, CMU_MISC and
-CMU_PERIC0 are clock domains of the same clock controller, thus I think
-they should be treated the same. We should either get rid of the name of
-the block in the clock names or keep it, but be consistent across all
-the clock domains.
-> 
->> Out of curiosity, why can't we change the names? All gs101 patches are
->> for v6.8, thus they haven't made a release yet. We still have the -rc
->> phase where we can fix things.
-> 
-> We can change. I would not bother that much with doing that, because I
-> sent already them to arm-soc. That means I need to consider this as
-> fixes and I just did not want to deal with it.
-> 
-> The question is quite different for a new clock controller - peric0.
-> What parts of driver readability is affected by using "bus" name?
-> 
+Thanks!
 
-As Peter pointed out, if keeping the shorter names, one would have to
-cross reference with the device tree in order to determine which clock
-is used, its type, whether it's a gate or a divider. Whereas if we keep
-the full name, one can see what's the clock about with a glance. The
-full name coincides with the clock names that are defined in the clock
-driver, thus one can grep for the full name from the device tree and hit
-the clock definition from the clock driver.
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-The cons of keeping the full name is that keeping the name of the block
-in the DT's clock name is just redundant. Rob was clear and said that
-including the block name in the -names is a pattern we don't want.
+regards,
+dan carpenter
 
-In what concerns my personal preference, I like the full name. At the
-same time, I see Rob's point, and if that turns out to be a rule, let's
-respect it. So I'm fine with both, but let's be consistent across the
-driver and have the same clock name scheme for all the clock domains,
-otherwise it will just look weird.
-
-Thanks,
-ta
 
