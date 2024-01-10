@@ -1,253 +1,185 @@
-Return-Path: <linux-kernel+bounces-22342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991D8829C65
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67713829C66
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:20:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADB031C24A00
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:20:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0761C26275
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99804BAB8;
-	Wed, 10 Jan 2024 14:18:28 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F30F4A9AD;
+	Wed, 10 Jan 2024 14:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yasro/ST"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF2C4A9B8;
-	Wed, 10 Jan 2024 14:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T98wg0GTRz67g6l;
-	Wed, 10 Jan 2024 22:16:03 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id E63FD140736;
-	Wed, 10 Jan 2024 22:18:22 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 10 Jan
- 2024 14:18:22 +0000
-Date: Wed, 10 Jan 2024 14:18:21 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Hao Xiang <hao.xiang@bytedance.com>
-CC: Gregory Price <gregory.price@memverge.com>, "Huang, Ying"
-	<ying.huang@intel.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>,
-	Srinivasulu Opensrc <sthanneeru.opensrc@micron.com>,
-	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>, "linux-mm@kvack.org"
-	<linux-mm@kvack.org>, "aneesh.kumar@linux.ibm.com"
-	<aneesh.kumar@linux.ibm.com>, "dan.j.williams@intel.com"
-	<dan.j.williams@intel.com>, "mhocko@suse.com" <mhocko@suse.com>,
-	"tj@kernel.org" <tj@kernel.org>, "john@jagalactic.com" <john@jagalactic.com>,
-	Eishan Mirakhur <emirakhur@micron.com>, "Vinicius Tavares Petrucci"
-	<vtavarespetr@micron.com>, Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Johannes
- Weiner <hannes@cmpxchg.org>, "Wei Xu" <weixugc@google.com>, "Ho-Ren (Jack)
- Chuang" <horenchuang@bytedance.com>
-Subject: Re: [External] Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration
- between memory tiers
-Message-ID: <20240110141821.0000370d@Huawei.com>
-In-Reply-To: <CAAYibXhe81ez06tP5K7zGkX9P=Ot+DcSysVyDvh13aSEDD63aA@mail.gmail.com>
-References: <87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZZwrIoP9+ey7rp3C@memverge.com>
-	<87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<20240109155049.00003f13@Huawei.com>
-	<ZZ2Jd7/7rFD0o5S3@memverge.com>
-	<CAAYibXhe81ez06tP5K7zGkX9P=Ot+DcSysVyDvh13aSEDD63aA@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D993495C5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704896369; x=1736432369;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=/v4Pe2wYyZ8N0uUbVO5jFeTCzK60fuWt0/MXhWCIN4M=;
+  b=Yasro/ST9/Gn975zGOLqa5m0FkBgJkj2aZqup3PgHFT6hMkncaz068Zg
+   +cJ9yxjt+TA78uWoimGN/XtZvPLUGEicoppbCuGXna9EvEiNgcFNnmpXS
+   uFeFXKDGeh3RIcIkjtK6bZapyKZs3WK2UXCIWnxUfcevI1a/KTE+BsU8D
+   ZlsrvY4dgA6Mp2vawfU1QVgkEFUACzOD+KkSulseV3jSVNHHtdd6cJLOx
+   5VmF9V6usPCWeergRDDi+HmHFBA8VEcAe1ceN4m7iP3gNBPxXwyorjkWI
+   xgc1KiXydLSJD6PD0iY1Ee7LwlZZUGeksLpA1akW8LxqwTf4J6YKAY6vR
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="17122343"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="17122343"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 06:19:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="782194725"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="782194725"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jan 2024 06:19:27 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 10 Jan 2024 06:19:27 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 10 Jan 2024 06:19:27 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Jan 2024 06:19:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nXO198xarOt6AQWa22xlr5oDIMI4qHkbGb+TJ8+R1z1ezqPLEVQjtv0r/Wb7+C/OxbjwGdt/WqxoU2lTKcmrB9EbboieAZl0wr2QSFSLTdtuLTVBp1RDhZg4gPmuw99cUuVOn9Dq82Cugz9lOX81UoD6OECLw3s0UWlCkXYaA8bSH3NeKL6Ui+3op19bnYXSshrpKddXI6ncFWvBaXYkD4VQpBCdup9kY1qR/2spWjJqBTZMjYAvIDWOxvLNjsm1cbvTUYvpBwIg7qSh9e82c4xZZ5QTgHYS1XL1dPg6oOq1TXrgHVz44oJg20VCaiu0v7G+SIm9t/HQ86AYntozvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/v4Pe2wYyZ8N0uUbVO5jFeTCzK60fuWt0/MXhWCIN4M=;
+ b=oOMoHF0AThHxkFeZ05x+zjTseGpiMNpEK5Tbtv4pnRnsPy0ok0jfLl4W++tnh5UfzVaQ+yzfKoPDYBdIM+S1WAymfYK/Pwss+3g3tUP40EnCJq8NR0f+l+iLVizsYssNyhkL0pfthUH8fHQJYb6xChgtoOEarSBIpAJczDiBfGXVjMGBVUqR7GPDsAl23qa+v/0xUPDQeyW6Lax9nbp4xKMfOnBWpd5MhJzLjAwhH7MKVF70xzDKExpOlyHxGRsMWoyUFGI8BUxAYrQzKWKwaoXldtVR1uv7bdWY3KUr5Z2TsJAg0SGfxJ1LyEHhMJ7OYZ4cG0IA/iOKJH7x7SPPcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CH0PR11MB5330.namprd11.prod.outlook.com (2603:10b6:610:bd::7)
+ by BN9PR11MB5403.namprd11.prod.outlook.com (2603:10b6:408:11c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18; Wed, 10 Jan
+ 2024 14:19:24 +0000
+Received: from CH0PR11MB5330.namprd11.prod.outlook.com
+ ([fe80::f01d:1c6a:3c11:80af]) by CH0PR11MB5330.namprd11.prod.outlook.com
+ ([fe80::f01d:1c6a:3c11:80af%7]) with mapi id 15.20.7181.015; Wed, 10 Jan 2024
+ 14:19:24 +0000
+From: "Winiarska, Iwona" <iwona.winiarska@intel.com>
+To: "rdunlap@infradead.org" <rdunlap@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+Subject: Re: [PATCH] peci: linux/peci.h: fix Excess kernel-doc description
+ warning
+Thread-Topic: [PATCH] peci: linux/peci.h: fix Excess kernel-doc description
+ warning
+Thread-Index: AQHaNV3Lws/7mluG4kOf3i4WHyUkf7DTNUaA
+Date: Wed, 10 Jan 2024 14:19:24 +0000
+Message-ID: <a3ea93b54911f553a6ca37d33181be0cf9f89b07.camel@intel.com>
+References: <20231223050605.13961-1-rdunlap@infradead.org>
+In-Reply-To: <20231223050605.13961-1-rdunlap@infradead.org>
+Accept-Language: en-US, pl-PL
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH0PR11MB5330:EE_|BN9PR11MB5403:EE_
+x-ms-office365-filtering-correlation-id: a74a5ffd-ec97-4175-5a6c-08dc11e72557
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gssgwVgGD/2eIB1eFPf29ZQveQOIXe7BgyXPdqQVfIh562YODlVzDlWOy2akbm6cjMij4wNIarl1oOKfMarUdU5C/VtUA8q1Ce2kVvgOipCwF2y+r8rUi32zpHwq8d4I6ElDFgt/y8q3hJUTjC7egklLUSofLrG/aNchOKM76fSThD04RXnVRFm6sA8pXv5+UVFQH6Jv5dKaEr6iZtlmyiibWAvnjh8wVJMhznkENy4rLZwK1r0Bj2Kh3N5IJwGktDHz/2+I+St7hLQ05hPfJf4gy1sWwaqQQGDn6fScflZ2voSz9Cf/UWG3C/p3i4QArg7yTI87e+63jLsqnQLUMKNqgavwjLhJZid6jXmqxq+6PB146JFCoIL+cKk7NhKOLcxSHgsIcDouZ0nXKqYGKnSfutD0L6Z806PqjyHAb7129ZEdVlSGZw6rf02EXpWWHUs7oxgwsq9MhcaVouKLsgodJE9dgYeVHHhAkNS7yKoSlZojjj6NkH/lm8lh37vKQnUVibZKaPEyzWBmZlG15KUy0ONOQxzSffXOj0idQStjqSRbXpt3oIv/qhMUcRa47wRZArnRm+r36GVYUVknTSqzbk+iM/3pLYtb7XI2BoXw7wW6uBMdrp2bhWqMcjbQcSnNuzyDYHUQ17DI2ufWqZfreR5fY+pw64NavSCBNFc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5330.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(136003)(39860400002)(366004)(230922051799003)(230173577357003)(230273577357003)(64100799003)(451199024)(186009)(1800799012)(83380400001)(71200400001)(26005)(2616005)(122000001)(38100700002)(8676002)(4326008)(8936002)(5660300002)(2906002)(41300700001)(4744005)(4001150100001)(6486002)(6512007)(6506007)(66446008)(64756008)(66476007)(66556008)(316002)(478600001)(66946007)(76116006)(91956017)(110136005)(86362001)(82960400001)(36756003)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bjJpVkRmeEtlYlpLeWpkSS9hOUtoeTljRkExSVVtdW5uR240NFBoTkJ2V1Z3?=
+ =?utf-8?B?UUhTOTlLd1A2aUFUejJoTklRaTM2Tjc2dmtVZE1hd1JYWVRyT1dEUWtrbzJ1?=
+ =?utf-8?B?VXlXY0NTM0JHTmxlTnBrMjhIVElsR2dCNnBJKy9IdFNwYzBNR3lxL0NGY2p1?=
+ =?utf-8?B?V00zN1BPUHB1WENWK3hUK2RXM0pNa0F5bjZKU001UlU3Z3lNQ09wMi9jQk5w?=
+ =?utf-8?B?SGFnVS9xTUJIS2VWditXTjNJTWRKVHhoY0dxSTFvdWdoenkreTQyTll2enl2?=
+ =?utf-8?B?VHBsR0ZyaVZRZDJhNldTQi9rZFg0REgwNWpwbGdkN3NGaHdFRlUrRnJwbnZj?=
+ =?utf-8?B?UzhOcGdrK2JBY1FCdUQzaEMvNWRmSFVsWGJzaHVIKzVubDZXcGV4YVczckg2?=
+ =?utf-8?B?WExiMHd6dkxNWmNSTnk5Qzh4a01WNW0vMVFQOWwybTgrTnByclBrR2VDanAr?=
+ =?utf-8?B?K3dMMlNPdGxvWlNPLzFBc3YvUXIvT1NmN1VVRXc4Y09GZUIvK0tXaS9Fc1F2?=
+ =?utf-8?B?UmN0NzZpcTg2RUpBcnZTRG5xOUcvT2lTUS94OWtTbW9MWnVnRU8wYis3VkJ5?=
+ =?utf-8?B?eUdnYmdWRVIvYWI0d3drUDkvQ1plUUFGc1NOYlhub3g2R0IvbkE3WkVxL2ts?=
+ =?utf-8?B?cG83bThrcUR1T1VUK05vMldUVkEzbHlUc0xyeTJudTJkclI1NFJoSWsrRHBY?=
+ =?utf-8?B?TFJ5OHk1MytpWVlxMzdhSU51b0pCODBEUldGNk5xRkhTQUVsVjVUMno2eXo5?=
+ =?utf-8?B?OU5qcnVURnBReldxdHp5QUtLcnZGdkhTd1M4N09scGVpMmRLeG5icUdxbWVw?=
+ =?utf-8?B?M1JnUUQwVWVETHNqNHpLQWJzb3BaYVMxaWd4T1hRY1F3M3NrczR6L1BjVytU?=
+ =?utf-8?B?UEtCL1ZPMWxIYnYzWUxHaUxTMW5zd1kramlTc0xFSW5aUnZabVBCR3BYN1Zh?=
+ =?utf-8?B?UjhXeHJQZXV1SW5OZnNuNElqQjZ5TWpoSlBnVW1odnIyT2dVcGxXZmE1N3Ry?=
+ =?utf-8?B?VUZvbGdHaHdkYTQvN1gxcWsrQkFqS1B4d0xtcUkyR2Q3Tk5UaXc2K0RsN2pT?=
+ =?utf-8?B?anhWalJTQWVGVGM5L09udlBoekdJeW9rNGMrRHRHQy9oTlVveGUvemVKYmhB?=
+ =?utf-8?B?WW1pdXc2U3lHYjlPNE5ITVl2UWllMWU1SStHZGNpM1YrV1pMcWdQWU5HQTdJ?=
+ =?utf-8?B?c1lFVHVwVmRtRUpIb0NkcVdxTllPMWRTeWoyMUZGSklSRm9DV2VtRXkxQ09s?=
+ =?utf-8?B?VlJTaGlwY1NuUFJzTFl4NFBLR20wdThUTFU5RWhiL2RJd3hwc2NSZm5mZEpR?=
+ =?utf-8?B?VXdCUnR4bFVNTW5sL1dXcnN0SmhBYzZPcGUxNVdRSmtiVytKNXhpcmR4NGdi?=
+ =?utf-8?B?ZjNrdUVnc2JpT3dHM3dwQjB5RTV0Y1hTb3h3R3dlQUhEMXl1cmxOdkEwSFI4?=
+ =?utf-8?B?Qmt6emtvS2lwV0tBNHl4WWdGRDRXYmtnaUhQQjY5MzkrWS9jczQyaEFxLytM?=
+ =?utf-8?B?OWErS09DS0FoZG1uR3MwemVlSUY4RkExMWQ4RE9JSXpHNWJ5R3BydDRsdUxm?=
+ =?utf-8?B?NHd3Y0RzbHN5Vk5jdzVzd1dUTG5xVWtrQ3RNVm9VZk9TMC84TENnVy9HMHlN?=
+ =?utf-8?B?NW9xa2FnN01aUGxNd3JpVWtmVVdiWUtsaWVrSlB6dEkvc2I5Q2tXRlgzWm1L?=
+ =?utf-8?B?bHp4L1MxRVV5TW5ZUG1tRVp2Szc0TFVQTXdHQlJ6bXRGS2ZseENDWG5xZVdm?=
+ =?utf-8?B?c2o0bUhHU2wwZEdOOEVMdTVnMGluQzFTdGxKYWE4QUxUWEhvMVZ3MmRLK25n?=
+ =?utf-8?B?WE5HeTN3VGxrZFI2MEZ3WjY1OXVsWm1aK0lOS0FHdVVSM2hpQW9ZV1ZxR05h?=
+ =?utf-8?B?VkEycDB4RndubUhFMm1FSDZsZ3ptS01tMDN5MkEyRWR1U0EyVExPcS9ScGRp?=
+ =?utf-8?B?T0Exek5jbEhsVldOVDhhd29CK3NzQXJ0MlhIdjZUZDgrZklOazF5clZtZyth?=
+ =?utf-8?B?R3VRT1VPd2Z6R244cWozWUF2STErY0ZrdW1SbXRMOHZsWE95cVNzbFN1WTkr?=
+ =?utf-8?B?WjJwTFRHcnNKYXBwVnpkOU4ycW9ZYXhQZHpPQUlYdms1anEzZkUwMGpKaGdK?=
+ =?utf-8?B?ZldyTnl1SEJmZzhlNFoybE1LUURjK2EweVNrbUkyd0s4MjBNSndjbmttalFu?=
+ =?utf-8?B?U1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4717A7178DAEB648AF0ED5FE9E1648E9@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5330.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a74a5ffd-ec97-4175-5a6c-08dc11e72557
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 14:19:24.0776
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: peNOkYgIyuI6C0eVnCOjuAWSGL41TKaHKJyo5Wmzb0Ft0UWryre2GJxhHJT/yLU4PwV5vIAK0M1BikxBh0yw73+0vpMD8r6jD4BDMMDwMDI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5403
+X-OriginatorOrg: intel.com
 
-On Tue, 9 Jan 2024 16:28:15 -0800
-Hao Xiang <hao.xiang@bytedance.com> wrote:
-
-> On Tue, Jan 9, 2024 at 9:59=E2=80=AFAM Gregory Price <gregory.price@memve=
-rge.com> wrote:
-> >
-> > On Tue, Jan 09, 2024 at 03:50:49PM +0000, Jonathan Cameron wrote: =20
-> > > On Tue, 09 Jan 2024 11:41:11 +0800
-> > > "Huang, Ying" <ying.huang@intel.com> wrote: =20
-> > > > Gregory Price <gregory.price@memverge.com> writes: =20
-> > > > > On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote: =20
-> > > > It's possible to change the performance of a NUMA node changed, if =
-we
-> > > > hot-remove a memory device, then hot-add another different memory
-> > > > device.  It's hoped that the CDAT changes too. =20
-> > >
-> > > Not supported, but ACPI has _HMA methods to in theory allow changing
-> > > HMAT values based on firmware notifications...  So we 'could' make
-> > > it work for HMAT based description.
-> > >
-> > > Ultimately my current thinking is we'll end up emulating CXL type3
-> > > devices (hiding topology complexity) and you can update CDAT but
-> > > IIRC that is only meant to be for degraded situations - so if you
-> > > want multiple performance regions, CDAT should describe them form the=
- start.
-> > > =20
-> >
-> > That was my thought.  I don't think it's particularly *realistic* for
-> > HMAT/CDAT values to change at runtime, but I can imagine a case where
-> > it could be valuable.
-> > =20
-> > > > > https://lore.kernel.org/linux-cxl/CAAYibXjZ0HSCqMrzXGv62cMLncS_81=
-R3e1uNV5Fu4CPm0zAtYw@mail.gmail.com/
-> > > > >
-> > > > > This group wants to enable passing CXL memory through to KVM/QEMU
-> > > > > (i.e. host CXL expander memory passed through to the guest), and
-> > > > > allow the guest to apply memory tiering.
-> > > > >
-> > > > > There are multiple issues with this, presently:
-> > > > >
-> > > > > 1. The QEMU CXL virtual device is not and probably never will be
-> > > > >    performant enough to be a commodity class virtualization. =20
-> > >
-> > > I'd flex that a bit - we will end up with a solution for virtualizati=
-on but
-> > > it isn't the emulation that is there today because it's not possible =
-to
-> > > emulate some of the topology in a peformant manner (interleaving with=
- sub
-> > > page granularity / interleaving at all (to a lesser degree)). There a=
-re
-> > > ways to do better than we are today, but they start to look like
-> > > software dissagregated memory setups (think lots of page faults in th=
-e host).
-> > > =20
-> >
-> > Agreed, the emulated device as-is can't be the virtualization device,
-> > but it doesn't mean it can't be the basis for it.
-> >
-> > My thought is, if you want to pass host CXL *memory* through to the
-> > guest, you don't actually care to pass CXL *control* through to the
-> > guest.  That control lies pretty squarely with the host/hypervisor.
-> >
-> > So, at least in theory, you can just cut the type3 device out of the
-> > QEMU configuration entirely and just pass it through as a distinct numa
-> > node with specific hmat qualities.
-> >
-> > Barring that, if we must go through the type3 device, the question is
-> > how difficult would it be to just make a stripped down type3 device
-> > to provide the informational components, but hack off anything
-> > topology/interleave related? Then you just do direct passthrough as you
-> > described below.
-> >
-> > qemu/kvm would report errors if you tried to touch the naughty bits.
-> >
-> > The second question is... is that device "compliant" or does it need
-> > super special handling from the kernel driver :D?  If what i described
-> > is not "compliant", then it's probably a bad idea, and KVM/QEMU should
-> > just hide the CXL device entirely from the guest (for this use case)
-> > and just pass the memory through as a numa node.
-> >
-> > Which gets us back to: The memory-tiering component needs a way to
-> > place nodes in different tiers based on HMAT/CDAT/User Whim. All three
-> > of those seem like totally valid ways to go about it.
-> > =20
-> > > > >
-> > > > > 2. When passing memory through as an explicit NUMA node, but not =
-as
-> > > > >    part of a CXL memory device, the nodes are lumped together in =
-the
-> > > > >    DRAM tier.
-> > > > >
-> > > > > None of this has to do with firmware.
-> > > > >
-> > > > > Memory-type is an awful way of denoting membership of a tier, but=
- we
-> > > > > have HMAT information that can be passed through via QEMU:
-> > > > >
-> > > > > -object memory-backend-ram,size=3D4G,id=3Dram-node0 \
-> > > > > -object memory-backend-ram,size=3D4G,id=3Dram-node1 \
-> > > > > -numa node,nodeid=3D0,cpus=3D0-4,memdev=3Dram-node0 \
-> > > > > -numa node,initiator=3D0,nodeid=3D1,memdev=3Dram-node1 \
-> > > > > -numa hmat-lb,initiator=3D0,target=3D0,hierarchy=3Dmemory,data-ty=
-pe=3Daccess-latency,latency=3D10 \
-> > > > > -numa hmat-lb,initiator=3D0,target=3D0,hierarchy=3Dmemory,data-ty=
-pe=3Daccess-bandwidth,bandwidth=3D10485760 \
-> > > > > -numa hmat-lb,initiator=3D0,target=3D1,hierarchy=3Dmemory,data-ty=
-pe=3Daccess-latency,latency=3D20 \
-> > > > > -numa hmat-lb,initiator=3D0,target=3D1,hierarchy=3Dmemory,data-ty=
-pe=3Daccess-bandwidth,bandwidth=3D5242880
-> > > > >
-> > > > > Not only would it be nice if we could change tier membership base=
-d on
-> > > > > this data, it's realistically the only way to allow guests to acc=
-omplish
-> > > > > memory tiering w/ KVM/QEMU and CXL memory passed through to the g=
-uest. =20
-> > >
-> > > This I fully agree with.  There will be systems with a bunch of norma=
-l DDR with different
-> > > access characteristics irrespective of CXL. + likely HMAT solutions w=
-ill be used
-> > > before we get anything more complex in place for CXL.
-> > > =20
-> >
-> > Had not even considered this, but that's completely accurate as well.
-> >
-> > And more discretely: What of devices that don't provide HMAT/CDAT? That
-> > isn't necessarily a violation of any standard.  There probably could be
-> > a release valve for us to still make those devices useful.
-> >
-> > The concern I have with not implementing a movement mechanism *at all*
-> > is that a one-size-fits-all initial-placement heuristic feels gross
-> > when we're, at least ideologically, moving toward "software defined mem=
-ory".
-> >
-> > Personally I think the movement mechanism is a good idea that gets folks
-> > where they're going sooner, and it doesn't hurt anything by existing. We
-> > can change the initial placement mechanism too. =20
->=20
-> I think providing users a way to "FIX" the memory tiering is a backup
-> option. Given that DDRs with different access characteristics provide
-> the relevant CDAT/HMAT information, the kernel should be able to
-> correctly establish memory tiering on boot.
-
-Include hotplug and I'll be happier!  I know that's messy though.
-
-> Current memory tiering code has
-> 1) memory_tier_init() to iterate through all boot onlined memory
-> nodes. All nodes are assumed to be fast tier (adistance
-> MEMTIER_ADISTANCE_DRAM is used).
-> 2) dev_dax_kmem_probe to iterate through all devdax controlled memory
-> nodes. This is the place the kernel reads the memory attributes from
-> HMAT and recognizes the memory nodes into the correct tier (devdax
-> controlled CXL, pmem, etc).
-> If we want DDRs with different memory characteristics to be put into
-> the correct tier (as in the guest VM memory tiering case), we probably
-> need a third path to iterate the boot onlined memory nodes and also be
-> able to read their memory attributes. I don't think we can do that in
-> 1) because the ACPI subsystem is not yet initialized.
-
-Can we move it later in general?  Or drag HMAT parsing earlier?
-ACPI table availability is pretty early, it's just that we don't bother
-with HMAT because nothing early uses it.
-IIRC SRAT parsing occurs way before memory_tier_init() will be called.
-
-Jonathan
-
-
-
->=20
-> >
-> > </2cents>
-> >
-> > ~Gregory =20
-
+T24gRnJpLCAyMDIzLTEyLTIyIGF0IDIxOjA2IC0wODAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+
+IFJlbW92ZSB0aGUgQGNvbnRyb2xsZXI6IGxpbmUgdG8gcHJldmVudCB0aGUga2VybmVsLWRvYyB3
+YXJuaW5nOg0KPiANCj4gaW5jbHVkZS9saW51eC9wZWNpLmg6ODQ6IHdhcm5pbmc6IEV4Y2VzcyBz
+dHJ1Y3QgbWVtYmVyICdjb250cm9sbGVyJw0KPiBkZXNjcmlwdGlvbiBpbiAncGVjaV9kZXZpY2Un
+DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9y
+Zz4NCj4gQ2M6IEl3b25hIFdpbmlhcnNrYSA8aXdvbmEud2luaWFyc2thQGludGVsLmNvbT4NCj4g
+Q2M6IG9wZW5ibWNAbGlzdHMub3psYWJzLm9yZw0KDQpSZXZpZXdlZC1ieTogSXdvbmEgV2luaWFy
+c2thIDxpd29uYS53aW5pYXJza2FAaW50ZWwuY29tPg0KDQpUaGFua3MNCi1Jd29uYQ0KDQo+IC0t
+LQ0KPiDCoGluY2x1ZGUvbGludXgvcGVjaS5oIHzCoMKgwqAgMSAtDQo+IMKgMSBmaWxlIGNoYW5n
+ZWQsIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS0gYS9pbmNsdWRlL2xpbnV4L3BlY2kuaCBi
+L2luY2x1ZGUvbGludXgvcGVjaS5oDQo+IC0tLSBhL2luY2x1ZGUvbGludXgvcGVjaS5oDQo+ICsr
+KyBiL2luY2x1ZGUvbGludXgvcGVjaS5oDQo+IEBAIC01OCw3ICs1OCw2IEBAIHN0YXRpYyBpbmxp
+bmUgc3RydWN0IHBlY2lfY29udHJvbGxlciAqdG8NCj4gwqAvKioNCj4gwqAgKiBzdHJ1Y3QgcGVj
+aV9kZXZpY2UgLSBQRUNJIGRldmljZQ0KPiDCoCAqIEBkZXY6IGRldmljZSBvYmplY3QgdG8gcmVn
+aXN0ZXIgUEVDSSBkZXZpY2UgdG8gdGhlIGRldmljZSBtb2RlbA0KPiAtICogQGNvbnRyb2xsZXI6
+IG1hbmFnZXMgdGhlIGJ1cyBzZWdtZW50IGhvc3RpbmcgdGhpcyBQRUNJIGRldmljZQ0KPiDCoCAq
+IEBpbmZvOiBQRUNJIGRldmljZSBjaGFyYWN0ZXJpc3RpY3MNCj4gwqAgKiBAaW5mby5mYW1pbHk6
+IGRldmljZSBmYW1pbHkNCj4gwqAgKiBAaW5mby5tb2RlbDogZGV2aWNlIG1vZGVsDQoNCg==
 
