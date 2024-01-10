@@ -1,102 +1,177 @@
-Return-Path: <linux-kernel+bounces-22463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B19A4829E0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:56:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D70B829E08
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:56:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0C601C26446
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:56:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5481B22199
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2334CB3D;
-	Wed, 10 Jan 2024 15:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DvO7RhNe"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36924CB20;
-	Wed, 10 Jan 2024 15:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0290C40E016C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A624C60B;
 	Wed, 10 Jan 2024 15:56:11 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id jhy-WvyI-ZKl; Wed, 10 Jan 2024 15:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704902168; bh=9AXlWCYHyGlZWoMBjnEdXnJNXAAZdOZ1mMO8CIYljuM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DvO7RhNeuoKySKUfs6PH0zwrctKvn30zN4ZJDSb4SJEyCcf/+ZUAT51AnHdipMAh7
-	 rm0RrWrys+aUa/IzTcaKG3XQZypPVKlUvek2MEpQmkr+NuF5q9tRLpICGdc0/QWziU
-	 MwU/PkCLVGULD/bD5kg83YuJkvlWJO6QsaEenRoEObBox8gQVQvOU+FYNLztanY1Yq
-	 Rg6EiSfJWGaWHw6zbN51AyuRDr+Gta1viaxdbG/MHFJN8DQlIaS0GDhyhpuBGYXiZd
-	 QXHYO3b1r66t6qXOhXGV1ZPN+Ftm4y7/vGYv1NcEhVaqZtGue97HlNS0yT53vMp/+/
-	 o7gi4l2nlH6zVoGaNly8UNIs8TfMAcJxu/jPx6VwPlFgpkLdPWqcg2r1CCH+l9I1vn
-	 IUn3st1d8C838EjqjP+1VkwM0KrZDrQw2voJaJIKrvOM15E1+WhXiIbZBgaHOPcc90
-	 FXp61xtJLgEtlnKTodZAGCn+aXb9dm7jz+fiSKkzJlKzi7V+fiUMnpIsARIk/0FffF
-	 xdLIK8mYSVKwdgB00rWb/VTCt9noXUDjeGEYMbMPWGTF19zJxZNDhLwTBK8Px0bF8u
-	 CXpBdrtdMuIoGpqfvJx9e+EmE4Yrut8ZwqkQGOad2y15r9Q0D4m1gM7uN3plRwBes3
-	 XjO8/dwgOZn6I30W6HVlZEXA=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IwkwTOZt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vRFh6QaK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LxJpvf6b";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4djvRbWr"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 73DF440E01A9;
-	Wed, 10 Jan 2024 15:55:30 +0000 (UTC)
-Date: Wed, 10 Jan 2024 16:55:23 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
-	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
-	hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com,
-	seanjc@google.com, vkuznets@redhat.com, jmattson@google.com,
-	luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
-	pgonda@google.com, peterz@infradead.org,
-	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
-	ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 07/26] x86/fault: Add helper for dumping RMP entries
-Message-ID: <20240110155523.GEZZ696yxCY-oOvygR@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-8-michael.roth@amd.com>
- <20240110111344.GBZZ576DpwHHs997Zl@fat_crate.local>
- <625926f9-6c45-4242-ac62-8f36abfcb099@amd.com>
- <20240110152745.GDZZ63cekYEDqdajjO@fat_crate.local>
- <9e3a6d33-cc04-46cb-b97d-e903a263800f@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2195C4BAB0;
+	Wed, 10 Jan 2024 15:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0D5D921DAA;
+	Wed, 10 Jan 2024 15:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704902167;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=IwkwTOZtv7ajVhA/5CvKHdyniAKga32pMta2wOp8nXr3cudKUgTomYjcSG3gs3b9rRMg4d
+	PhAWUJll8pYexlQuBSWuZnhzihzmXwM+w/jRiD54/f/TliUVxmy8HMte1F0fQ912ZfVajK
+	MF0uVflO1BO8vtRry6RXx1Nv2VwzaK8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704902167;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=vRFh6QaKZLCtewgzrn/xS+Xef4VEaTfMmB/vzV7jc4JfDCgf/yj1YGJ8I1nciByEJ6p2Zb
+	ktPAj0XOfIWfwiCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704902165;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=LxJpvf6bvAJILRNeexKQvYPfazdQ+6AL1IsUmFMkQvMUE/CxCxBDYRSVn/USsWZfujmMOb
+	ZxlrLJ/oML+5dZsfegyh8QVFa6BrqZ1+od/YoMhCSJuKDxAKoRKRXvgzMo5VR3tUT9hioI
+	k7xn69NRi2tflzKdFyF9qiRteXdwfmw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704902165;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=4djvRbWro38jKXhPTJlPnJNlJrXQrB0GBsZGY6L7MyexqJ2BtloG2vvxYJFe3F/5A+eQEW
+	VqVoETZCx2gYDDAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D86EE13786;
+	Wed, 10 Jan 2024 15:56:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id y6pxNBS+nmWmHgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 10 Jan 2024 15:56:04 +0000
+Date: Wed, 10 Jan 2024 16:55:46 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com, clm@fb.com,
+	daniel@iogearbox.net, dsterba@suse.com, john.fastabend@gmail.com,
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	liujian56@huawei.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] btrfs: fix oob Read in getname_kernel
+Message-ID: <20240110155545.GW28693@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9e3a6d33-cc04-46cb-b97d-e903a263800f@amd.com>
+In-Reply-To: <tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[qq.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[33f23b49ac24f986c9e8];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,qq.com:email,suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[syzkaller.appspotmail.com,fb.com,iogearbox.net,suse.com,gmail.com,toxicpanda.com,vger.kernel.org,huawei.com,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: -2.71
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 0D5D921DAA
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LxJpvf6b;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4djvRbWr
 
-On Wed, Jan 10, 2024 at 09:51:04AM -0600, Tom Lendacky wrote:
-> I'm only suggesting getting rid of the else that prints "..." when the entry
-> is all zeroes. Printing the non-zero entries would still occur.
+On Tue, Dec 19, 2023 at 06:19:10PM +0800, Edward Adam Davis wrote:
+> If ioctl does not pass in the correct tgtdev_name string, oob will occur because
+> "\0" cannot be found.
+> 
+> Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  fs/btrfs/dev-replace.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index f9544fda38e9..e7e96e57f682 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+>  int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+>  			    struct btrfs_ioctl_dev_replace_args *args)
+>  {
+> -	int ret;
+> +	int ret, len;
+>  
+>  	switch (args->start.cont_reading_from_srcdev_mode) {
+>  	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
+> @@ -740,8 +740,10 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+>  		return -EINVAL;
+>  	}
+>  
+> +	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
+>  	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+> -	    args->start.tgtdev_name[0] == '\0')
+> +	    args->start.tgtdev_name[0] == '\0' ||
+> +	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
 
-Sure, one should be able to to infer that the missing entries are null.
-
-:-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+I think srcdev_name would have to be checked the same way, but instead
+of strnlen I'd do memchr(name, 0, BTRFS_DEVICE_PATH_NAME_MAX). The check
+for 0 in [0] is probably pointless, it's just a shortcut for an empty
+buffer. We expect a valid 0-terminated string, which could be an invalid
+path but that will be found out later when opening the block device.
 
