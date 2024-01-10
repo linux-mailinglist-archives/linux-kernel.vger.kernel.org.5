@@ -1,233 +1,364 @@
-Return-Path: <linux-kernel+bounces-22507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18E99829EC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:51:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE086829ECA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:53:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817A41F22F54
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:51:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A1071C2244D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A7F4CDFF;
-	Wed, 10 Jan 2024 16:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736604CDFF;
+	Wed, 10 Jan 2024 16:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R+QYt+5R"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6kbCs0M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE470482DC;
-	Wed, 10 Jan 2024 16:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704905494; x=1736441494;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=GQlXF/KbaRxCz/3T2QPcLjKwhqBdOi6wmxIQbLVfr3k=;
-  b=R+QYt+5Rx3F63K6JSEAO4GcWZM/EupKgDzApweZAKKMZs3JqAiQJ4piY
-   lZsLXngwf/AZDoznbS5f41uehV0APJwmcNTMssNTCEpRk3ZefU2lnGgcB
-   d9Mj5Fvzv9tA89jEwzmJFk9Cn4gio6lNJM6wwTa0aSqEQIl1XjQMUh2EL
-   DGVIu+J5bnIWALbVRU1UI9TFJLkBgEno58HJEJAbokEi/WVlm7HZGt8W8
-   pRs4fdBkEyyTLEZs1zQ556I0MNXzoVzcsagPQoNB9j+vxc7cOCJbwjpEU
-   rt+/kIOA2nFz6pD/4VJOZHvSOqD7mPmgBgCJZkKmI8Ae6aATAL28FM4YA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="402353389"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="402353389"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 08:51:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="872700359"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="872700359"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jan 2024 08:51:32 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 10 Jan 2024 08:51:31 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 10 Jan 2024 08:51:31 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 10 Jan 2024 08:51:31 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=juAdExOG5pzC1PyO3GVBuRNaiq4/VmwFw/ZlhyWPiXpeJB3JvtWEM/TDxzq4n9NBBJ7OYlvFDDWI2N+/Sde42cqSB/FzJaFRKJWX5cE9a3fxuqvvHAwMbqR0vnsJp+6zuatO6so28BF39dEKYkbKc1KBV2OzZ521kHZmWQ993dCtZ0mFgM8JTdyyCZ+WSGlwzSZmAbmNj9SqKUeSaXN6t+3U65FJ9ltpAFp32o3TaB1Vqq7Aam3LhnANEMoHRNAeGtcGMGbjksuPzTKlQZ7V10awYEb+pV6CtSwSJohD8VVVfORpeavHNcY2p+/B5dEmmPWo52uv8Crzxn+b1uCWlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TV9impBd+TMnBjW/ECe25ufIJJPpOW5dg7yDKHdoYZM=;
- b=d1J7BANrpqT+LsHqeDhccHWykrqcOxIQNeYFkKhVMMd9wPm8FlZg3rZ31vWGzOiqyvSDKZxphN7dhQXmzGc4or8Q5INiXrD/LtMrzB42hUFp4Am0qQUzg2guLiXnTsZHVcqZevsT9lvaI/lsloa1GIfhGvMt1sHqrMiU+E+Bj/gvPf6DAFs3AupGnPTTvkOUjZvlm4FgiMjzBRcTo2jIvkPmwoG6eF8AK0AxXfaZD57twr5YDYPWqdb7KJUVTgT801OJploqOHGIVTXFcz0AahkNpke1/MYMs7NUpRe+ds2PFKZZKUfKTErLsTh0SPuXq3DWvZILVaEYKTpECZPv4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by IA0PR11MB7695.namprd11.prod.outlook.com (2603:10b6:208:400::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
- 2024 16:51:28 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7159.020; Wed, 10 Jan 2024
- 16:51:28 +0000
-Date: Wed, 10 Jan 2024 08:51:23 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Alison Schofield <alison.schofield@intel.com>, Ira Weiny
-	<ira.weiny@intel.com>
-CC: Davidlohr Bueso <dave@stgolabs.net>, Jonathan Cameron
-	<jonathan.cameron@huawei.com>, Dave Jiang <dave.jiang@intel.com>, "Vishal
- Verma" <vishal.l.verma@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC] cxl/pci: Skip irq features if irq's are not supported
-Message-ID: <659ecb0b70b8f_a3379294e9@iweiny-mobl.notmuch>
-References: <20240108-dont-fail-irq-v1-1-4407228debd2@intel.com>
- <ZZ3W5q4UzvLJ9kG+@aschofie-mobl2>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZZ3W5q4UzvLJ9kG+@aschofie-mobl2>
-X-ClientProxiedBy: BYAPR06CA0049.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::26) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E2B4CDE6;
+	Wed, 10 Jan 2024 16:53:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA243C433F1;
+	Wed, 10 Jan 2024 16:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704905621;
+	bh=fcuYgt74f2P4yBAhexY/8EHVuIglVpbVwK0yCD4Ffh4=;
+	h=Date:From:To:Subject:From;
+	b=a6kbCs0MT39Yx/h1cAbOOlgEUHYix4EqTTNAnUex4VCK9WM7jDvfu6HBL3psXz5Vy
+	 9dM+savCYpvsrj3oOOSMNu3rgOVAIP4r3pdcpcn/nFUqtcn6iHdvT51PvjXpkrBpV3
+	 UJjrBg+VZedRb2xcrpdrZHmikxx/LeCl6hiKIm1gUe0qdGuGU07PLdILJvAK1ftaSG
+	 ugxNsZ6jjNJ9o4O8D1HiVR2o0I+n4RWi2cfb4htajbYWCzGEKAG9VJ3e5AMSUtzN6j
+	 f47sX3RPFFbAcxKQtrTfKtDHhd5vWcsAdhLSJyPrxqgbjcDnpvNbEBhPiKpAbePgyp
+	 L1zpt05j4XBJA==
+Date: Wed, 10 Jan 2024 09:53:39 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org
+Subject: [RFC] Bumping the minimum supported version of LLVM to 13.0.1
+Message-ID: <20240110165339.GA3105@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|IA0PR11MB7695:EE_
-X-MS-Office365-Filtering-Correlation-Id: de4f034e-7f37-4cc6-7956-08dc11fc63c8
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2yTjwboNNd2wkPf4BTC5EAAcohxXmzCU5s8lVTmx9FZa/Bj220HUb2rVd7uU/ZaAUsG7PvfkFHBTYIxWmiM/PRErT5bmOiH+BEFRzVfzek8S1t8cBd7O4kaxx+DfCXuXtNNNFDM5v7DD1kYng4CAbJFG8GyD2B4TnvuNWm+564eSuIYH0YrxYNfWxzbRAQ72MajVk9Zjfm0e6EFnh7NJEujhrMux6XK6VKkiLF0R3Jbju1bmgq+5gtBk8+Osxj4Pe+Yqhpjw0FDvJGy/Ap4wcsphOhkT8pQSewySmknD/ZT3WNtbA+qm6X5D8F5/CbiZb/hERgYI5Kma0mDi0nD4nIoJvQcbGQSXlJ0AZb1VejkBM6zPm8q4w2ZkeCXW6MT+uQeNpW3zp4E9OSqHiFUlRpQ04MD42yarjA5Yx3/UctXyisbWLY35cXeIb6I/Pdo6oEDXJDg6cYbJ8NXtakI/h801h3EI2b259Xot4neTm3QB81khCzhUob0E/BSzN5D7xgkdFI+x+fbI6UwiZLvioPfyQS7bmX+hR0tUJQXvODzg7QWYQtcyAL0ytYFE804p
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39860400002)(136003)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(6506007)(9686003)(6486002)(478600001)(6666004)(6512007)(26005)(38100700002)(82960400001)(86362001)(2906002)(41300700001)(5660300002)(316002)(83380400001)(66946007)(54906003)(110136005)(4326008)(66556008)(66476007)(8676002)(8936002)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BNKr944r/v31aV3/Ahp1bFKRGETldpCY2iZsadsJ5zo3ULWcfPLU6WWPafCA?=
- =?us-ascii?Q?AwSoZqAIKM58AMBifNU34iB6KUKTATP9QSQsTvuFIFdLOFrNukQMkj8XvhPL?=
- =?us-ascii?Q?yiBLw0jF3iqyx72402OMFB7Cz6TrF9XlbfFNkZhCM12dXPFE/xVe+jFA+Mze?=
- =?us-ascii?Q?2pHxNZ0d7NTJQ1bhqiMQs+F5CUVMmoZytzoGYdDDpJC/IozJat2Md6+5Wbrz?=
- =?us-ascii?Q?F0//qE4r+lT5i7lLjXF8LfmazINyoO7MG8mPOPwIhu8oApRpij750W5KVGLW?=
- =?us-ascii?Q?BiJVMT6Oza1RLLE8zTje6YeWDEfFHmFshjQ4nBhwhNNiBuMHC/HfyGsD7mJr?=
- =?us-ascii?Q?P2mA612Vu1Thl0lSsT36dhKhDXdAbKD1frnVvQWIYISmGhF8rixFR6rogPtJ?=
- =?us-ascii?Q?RBFUE34UrjSXO3onlSE7GfnkX22pqZu5nUtXpibEE6XyDtJAe5poowuBoCqn?=
- =?us-ascii?Q?ROECLVpAY5f6edfxILqsIeDtIU75N4LEA3dpwUaR0dSovCeLnJJZClClVyg6?=
- =?us-ascii?Q?+xkXLRtQ+0DStCqhlbFqlljuZX6JXV28RPLDhpBdc2htXQpD1m70mIoJsPYR?=
- =?us-ascii?Q?+B1YswFoAT9UAaWk2EFvJh+cXvnYvXIZobjs7MZJeTw5hLDLoz11MxjJSBpx?=
- =?us-ascii?Q?GUIBcfYw+qVx6vjljn2R0HXEGkqj38CW7oGiwUAKAo77vos07bQrGVdXO489?=
- =?us-ascii?Q?0tu0lW+OMvnC+2e8cF9v3xRgDP6MeWIGS/h2XR0td14USyhvVf8aPPvLwRRF?=
- =?us-ascii?Q?9AqU6SjpuT3i9jFPgDdvwfOuB7+nOhocfXBGyexAA3N6amXFESJEmTcIFOgu?=
- =?us-ascii?Q?QqjGPuOg8BR5jxrw6N9m2WOzMtRv+GYurgPpnZtLdn2ekA3HzhgbSq/eXY8C?=
- =?us-ascii?Q?SrFLdJpRfCGD2MyeNi0bX/wiWFCaK2yM23q1fbaztNo5IpWrxGRggkNMPN2y?=
- =?us-ascii?Q?eyuIhYCfvVfWqoow5OGv4P/vNxLsPjquO5j0LuL2+Hlg/yALNXfn+GTsMYel?=
- =?us-ascii?Q?+vya4qFoHDfb/VqncdECNiYjpYoHDXMwhmJ0T9r9tEY+s9YWQbZk1gTUo8on?=
- =?us-ascii?Q?jHtKlikMXCfqAIVWbGr/NYDRqpW4HJe61FbudvXe0fA2G8vw5e1tOTazPPsx?=
- =?us-ascii?Q?f1BUNF7VkMOXRj1zL8l/gQS16CK21rSnwKERG+L7QbT3At1a8ZG/Wf0w/p7Z?=
- =?us-ascii?Q?uRgfSaI3BstK1SDmy/akajN2gdLnY23vqYjx0naN3eqm8fz2k4yKNRjsXemS?=
- =?us-ascii?Q?mgnFPotI0sEFkZXn8NsKt6dpEGAwPh92rD1YcY01BMKygO2RrqJO4Tqe5grk?=
- =?us-ascii?Q?Lp65Qz0eol+loYObwfzeqLceEhly3GhqjIR+HWWR52g671NbJ1w5mQz1AI/o?=
- =?us-ascii?Q?WBrmiWybWZKhj2BshXtfZtaa8LB/D6N3lQvHh46KtmhRsl3pxqLena9E0VRj?=
- =?us-ascii?Q?jjUlwtcQvTz/Rg9wXLSglctLknFP28qOdDaNh9KLfouSNGL1fS5fI1zNskej?=
- =?us-ascii?Q?BUsQnaXfSyiE+kqgRXQdSiXcxNMnTr1retS0uu7r9qF4o67dblM5aAPKCgFd?=
- =?us-ascii?Q?Vuucdu2VDGBOR0jMbdsPmtvXZ415TewEzI28pr1a?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: de4f034e-7f37-4cc6-7956-08dc11fc63c8
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 16:51:28.5426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dU259ULK+gZTIk6FrPbeZ84L3c4qsD6mUpWBODoP+FU9YSTSpX7A67VY0ojbZry88s3tObp/SO7Xrk4XOvYQPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7695
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Alison Schofield wrote:
-> On Mon, Jan 08, 2024 at 11:51:13PM -0800, Ira Weiny wrote:
-> > CXL 3.1 Section 3.1.1 states:
-> >  
+Hi all,
 
-[snip]
+It has been some time since we have bumped the minimum supported version
+of LLVM for building the kernel, the last time being commit df05c0e9496c
+("Documentation: Raise the minimum supported version of LLVM to 11.0.0")
+in November of 2021. While I think we have done a pretty good job around
+supporting the current range of LLVM versions, it may be worth
+considering bumping the minimum supported version to 13.0.1 for a few
+reasons:
 
-> >  /**
-> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> > index 0155fb66b580..bb90ac011290 100644
-> > --- a/drivers/cxl/pci.c
-> > +++ b/drivers/cxl/pci.c
-> > @@ -443,6 +443,12 @@ static int cxl_pci_setup_mailbox(struct cxl_memdev_state *mds)
-> >  	if (!(cap & CXLDEV_MBOX_CAP_BG_CMD_IRQ))
-> >  		return 0;
-> >  
-> > +	if (!cxlds->irq_supported) {
-> > +		dev_err(cxlds->dev, "Mailbox interrupts enabled but device indicates no interrupt vectors supported.\n");
-> > +		dev_err(cxlds->dev, "Skip mailbox iterrupt configuration.\n");
-> > +		return 0;
-> > +	}
-> > +
-> 
-> Commit msg says dev_warn() yet here it is dev_err()
-> 
-> Can you fit in one msg, something like:
-> 	"Device does not support mailbox interrupts\n"
-> 
-> Perhaps skip the hard stops. No other dev_*() in this file adds them.
+1. It would immediately resolve the massive build breakage with LLVM 11
+   in -next:
 
-Dan had comments on cleaning up the error messages.  I'll do those.
+   https://github.com/ClangBuiltLinux/linux/issues/1958#issuecomment-1836559075
 
-> Documentation/process/coding-style.rst
-> 
-> Spellcheck
+2. It would immediately save us almost 1300 builds per week with our
+   current CI matrix, as we would be able to drop mainline and -next,
+   which are our most frequently built trees.
 
-Thanks.
+3. It allows us to drop a good number of Kconfig and source workarounds.
+   I have included a sample diff below.
 
-[snip]
+The downside of upgrading the minimum version is leaving distributions
+that have an older clang version behind. However, based on examining
+Docker images for the currently supported versions of the big
+distributions, I do not believe this upgrade should impact distribution
+support too much.
 
-> >  
-> >  static irqreturn_t cxl_event_thread(int irq, void *id)
-> > @@ -754,6 +762,13 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
-> >  	if (!host_bridge->native_cxl_error)
-> >  		return 0;
-> >  
-> > +	/* Polling not supported */
-> 
-> I understand this comment while reading it in the context of this patch.
-> Lacking that context, maybe it deserves a bit more like you wrote in
-> the commit log. Be clear that it's the driver that is not supporting
-> polling, and when if or when the driver does add polling support they'll
-> be an alternative method for processing events. IIUC  ;)
+    archlinux:latest              clang version 16.0.6
+    debian:oldoldstable-slim      clang version 7.0.1-8+deb10u2 (tags/RELEASE_701/final)
+    debian:oldstable-slim         Debian clang version 11.0.1-2
+    debian:stable-slim            Debian clang version 14.0.6
+    debian:testing-slim           Debian clang version 16.0.6 (19)
+    debian:unstable-slim          Debian clang version 16.0.6 (19)
+    fedora:38                     clang version 16.0.6 (Fedora 16.0.6-3.fc38)
+    fedora:latest                 clang version 17.0.6 (Fedora 17.0.6-1.fc39)
+    fedora:rawhide                clang version 17.0.6 (Fedora 17.0.6-1.fc40)
+    opensuse/leap:latest          clang version 15.0.7
+    opensuse/tumbleweed:latest    clang version 17.0.6
+    ubuntu:focal                  clang version 10.0.0-4ubuntu1
+    ubuntu:latest                 Ubuntu clang version 14.0.0-1ubuntu1.1
+    ubuntu:rolling                Ubuntu clang version 16.0.6 (15)
+    ubuntu:devel                  Ubuntu clang version 17.0.6 (3)
 
-Yea I wanted to make it clear that polling is an option for the driver but
-it was not supported because I don't anticipate the need.  But should a
-device come along which requires polling (ie no irq support) it would be
-nice to leave breadcrumbs...  but...
+As we can see, the only distribution in that list that would be impacted
+by this change would be Debian Bullseye (oldstable), as its clang
+version in the default repositories is 11.0.1. Other distributions that
+have a clang older than 11.0.1 already cannot build the upstream kernel.
+In Debian's case, access to newer versions of LLVM is relatively simple
+because of https://apt.llvm.org. There is also the kernel.org LLVM
+toolchains I publish: https://mirrors.edge.kernel.org/pub/tools/llvm/
 
-> 
-> 
-> > +	if (!mds->cxlds.irq_supported) {
-> > +		dev_err(mds->cxlds.dev, "Host events enabled but device indicates no interrupt vectors supported.\n");
-> > +		dev_err(mds->cxlds.dev, "Event polling is not supported, skip event processing.\n");
+Thoughts or concerns?
 
-.. here I mention polling not supported which is redundant to the
-comment.  Comment should be deleted.
+I have posted this on GitHub as well in case people want to chime in
+there instead of here for some reason:
 
-> > +		return 0;
-> > +	}
-> 
-> Similar to above
+https://github.com/ClangBuiltLinux/linux/issues/1975
 
-Yep will clean up based on Dan's feedback.
+Cheers,
+Nathan
 
-Thanks for the review!
-Ira
-
-[snip]
+diff --git a/Makefile b/Makefile
+index f1b2fd977275..32f42f4470ec 100644
+--- a/Makefile
++++ b/Makefile
+@@ -948,15 +948,6 @@ CC_FLAGS_LTO	+= -fvisibility=hidden
+ # Limit inlining across translation units to reduce binary size
+ KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
+ 
+-# Check for frame size exceeding threshold during prolog/epilog insertion
+-# when using lld < 13.0.0.
+-ifneq ($(CONFIG_FRAME_WARN),0)
+-ifeq ($(call test-lt, $(CONFIG_LLD_VERSION), 130000),y)
+-KBUILD_LDFLAGS	+= -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
+-endif
+-endif
+-endif
+-
+ ifdef CONFIG_LTO
+ KBUILD_CFLAGS	+= -fno-lto $(CC_FLAGS_LTO)
+ KBUILD_AFLAGS	+= -fno-lto
+diff --git a/arch/arm/include/asm/current.h b/arch/arm/include/asm/current.h
+index 1e1178bf176d..5225cb1c803b 100644
+--- a/arch/arm/include/asm/current.h
++++ b/arch/arm/include/asm/current.h
+@@ -18,18 +18,12 @@ static __always_inline __attribute_const__ struct task_struct *get_current(void)
+ {
+ 	struct task_struct *cur;
+ 
+-#if __has_builtin(__builtin_thread_pointer) && \
+-    defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO) && \
+-    !(defined(CONFIG_THUMB2_KERNEL) && \
+-      defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 130001)
++#if __has_builtin(__builtin_thread_pointer) && defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO)
+ 	/*
+ 	 * Use the __builtin helper when available - this results in better
+ 	 * code, especially when using GCC in combination with the per-task
+ 	 * stack protector, as the compiler will recognize that it needs to
+ 	 * load the TLS register only once in every function.
+-	 *
+-	 * Clang < 13.0.1 gets this wrong for Thumb2 builds:
+-	 * https://github.com/ClangBuiltLinux/linux/issues/1485
+ 	 */
+ 	cur = __builtin_thread_pointer();
+ #elif defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO) || defined(CONFIG_SMP)
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 8f6cf1221b6a..576c203fc2b7 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -382,7 +382,7 @@ config BUILTIN_RETURN_ADDRESS_STRIPS_PAC
+ 	bool
+ 	# Clang's __builtin_return_adddress() strips the PAC since 12.0.0
+ 	# https://reviews.llvm.org/D75044
+-	default y if CC_IS_CLANG && (CLANG_VERSION >= 120000)
++	default y if CC_IS_CLANG
+ 	# GCC's __builtin_return_address() strips the PAC since 11.1.0,
+ 	# and this was backported to 10.2.0, 9.4.0, 8.5.0, but not earlier
+ 	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94891
+@@ -1368,7 +1368,6 @@ choice
+ 
+ config CPU_BIG_ENDIAN
+ 	bool "Build big-endian kernel"
+-	depends on !LD_IS_LLD || LLD_VERSION >= 130000
+ 	# https://github.com/llvm/llvm-project/commit/1379b150991f70a5782e9a143c2ba5308da1161c
+ 	depends on AS_IS_GNU || AS_VERSION >= 150000
+ 	help
+@@ -1999,8 +1998,6 @@ config ARM64_BTI_KERNEL
+ 	depends on !CC_IS_GCC || GCC_VERSION >= 100100
+ 	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106671
+ 	depends on !CC_IS_GCC
+-	# https://github.com/llvm/llvm-project/commit/a88c722e687e6780dcd6a58718350dc76fcc4cc9
+-	depends on !CC_IS_CLANG || CLANG_VERSION >= 120000
+ 	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_ARGS)
+ 	help
+ 	  Build the kernel with Branch Target Identification annotations
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 414b978b8010..58ab1e546c98 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -333,7 +333,6 @@ config PANIC_TIMEOUT
+ config COMPAT
+ 	bool "Enable support for 32bit binaries"
+ 	depends on PPC64
+-	depends on !CC_IS_CLANG || CLANG_VERSION >= 120000
+ 	default y if !CPU_LITTLE_ENDIAN
+ 	select ARCH_WANT_OLD_COMPAT_IPC
+ 	select COMPAT_OLD_SIGACTION
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index cd4c9a204d08..6dc601dc6f06 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -167,8 +167,6 @@ config RISCV
+ 
+ config CLANG_SUPPORTS_DYNAMIC_FTRACE
+ 	def_bool CC_IS_CLANG
+-	# https://github.com/llvm/llvm-project/commit/6ab8927931851bb42b2c93a00801dc499d7d9b1e
+-	depends on CLANG_VERSION >= 130000
+ 	# https://github.com/ClangBuiltLinux/linux/issues/1817
+ 	depends on AS_IS_GNU || (AS_IS_LLVM && (LD_IS_LLD || LD_VERSION >= 23600))
+ 
+diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
+index 2b2f5df7ef2c..7113b010cf1f 100644
+--- a/arch/riscv/include/asm/ftrace.h
++++ b/arch/riscv/include/asm/ftrace.h
+@@ -13,19 +13,9 @@
+ #endif
+ #define HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+ 
+-/*
+- * Clang prior to 13 had "mcount" instead of "_mcount":
+- * https://reviews.llvm.org/D98881
+- */
+-#if defined(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION >= 130000
+-#define MCOUNT_NAME _mcount
+-#else
+-#define MCOUNT_NAME mcount
+-#endif
+-
+ #define ARCH_SUPPORTS_FTRACE_OPS 1
+ #ifndef __ASSEMBLY__
+-void MCOUNT_NAME(void);
++void _mcount(void);
+ static inline unsigned long ftrace_call_adjust(unsigned long addr)
+ {
+ 	return addr;
+@@ -75,7 +65,7 @@ struct dyn_arch_ftrace {
+  * both auipc and jalr at the same time.
+  */
+ 
+-#define MCOUNT_ADDR		((unsigned long)MCOUNT_NAME)
++#define MCOUNT_ADDR		((unsigned long)_mcount)
+ #define JALR_SIGN_MASK		(0x00000800)
+ #define JALR_OFFSET_MASK	(0x00000fff)
+ #define AUIPC_OFFSET_MASK	(0xfffff000)
+diff --git a/arch/riscv/kernel/mcount.S b/arch/riscv/kernel/mcount.S
+index b4dd9ed6849e..da00fa3536c8 100644
+--- a/arch/riscv/kernel/mcount.S
++++ b/arch/riscv/kernel/mcount.S
+@@ -50,8 +50,8 @@
+ 
+ SYM_TYPED_FUNC_START(ftrace_stub)
+ #ifdef CONFIG_DYNAMIC_FTRACE
+-       .global MCOUNT_NAME
+-       .set    MCOUNT_NAME, ftrace_stub
++       .global _mcount
++       .set    _mcount, ftrace_stub
+ #endif
+ 	ret
+ SYM_FUNC_END(ftrace_stub)
+@@ -80,7 +80,7 @@ SYM_FUNC_END(return_to_handler)
+ #endif
+ 
+ #ifndef CONFIG_DYNAMIC_FTRACE
+-SYM_FUNC_START(MCOUNT_NAME)
++SYM_FUNC_START(_mcount)
+ 	la	t4, ftrace_stub
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 	la	t0, ftrace_graph_return
+@@ -126,6 +126,6 @@ SYM_FUNC_START(MCOUNT_NAME)
+ 	jalr	t5
+ 	RESTORE_ABI_STATE
+ 	ret
+-SYM_FUNC_END(MCOUNT_NAME)
++SYM_FUNC_END(_mcount)
+ #endif
+-EXPORT_SYMBOL(MCOUNT_NAME)
++EXPORT_SYMBOL(_mcount)
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 1a068de12a56..de30a8b35c41 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -217,12 +217,6 @@ endif
+ 
+ KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
+ 
+-ifdef CONFIG_LTO_CLANG
+-ifeq ($(call test-lt, $(CONFIG_LLD_VERSION), 130000),y)
+-KBUILD_LDFLAGS	+= -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
+-endif
+-endif
+-
+ ifdef CONFIG_X86_NEED_RELOCS
+ LDFLAGS_vmlinux := --emit-relocs --discard-none
+ else
+diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+index ddab1ef22bee..e7633723dad6 100644
+--- a/include/linux/compiler-clang.h
++++ b/include/linux/compiler-clang.h
+@@ -114,11 +114,7 @@
+ #define __diag_str(s)		__diag_str1(s)
+ #define __diag(s)		_Pragma(__diag_str(clang diagnostic s))
+ 
+-#if CONFIG_CLANG_VERSION >= 110000
+-#define __diag_clang_11(s)	__diag(s)
+-#else
+-#define __diag_clang_11(s)
+-#endif
++#define __diag_clang_13(s)	__diag(s)
+ 
+ #define __diag_ignore_all(option, comment) \
+-	__diag_clang(11, ignore, option)
++	__diag_clang(13, ignore, option)
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 97ce28f4d154..6919f0e5fb46 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2081,7 +2081,7 @@ config KCOV
+ 	depends on ARCH_HAS_KCOV
+ 	depends on CC_HAS_SANCOV_TRACE_PC || GCC_PLUGINS
+ 	depends on !ARCH_WANTS_NO_INSTR || HAVE_NOINSTR_HACK || \
+-		   GCC_VERSION >= 120000 || CLANG_VERSION >= 130000
++		   GCC_VERSION >= 120000 || CC_IS_CLANG
+ 	select DEBUG_FS
+ 	select GCC_PLUGIN_SANCOV if !CC_HAS_SANCOV_TRACE_PC
+ 	select OBJTOOL if HAVE_NOINSTR_HACK
+diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
+index fd5ffdb81bab..d48bd9c87c7b 100755
+--- a/scripts/min-tool-version.sh
++++ b/scripts/min-tool-version.sh
+@@ -27,7 +27,7 @@ llvm)
+ 	if [ "$SRCARCH" = s390 ]; then
+ 		echo 15.0.0
+ 	else
+-		echo 11.0.0
++		echo 13.0.1
+ 	fi
+ 	;;
+ rustc)
+diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
+index 6a4645a57976..5794b3a43137 100755
+--- a/scripts/recordmcount.pl
++++ b/scripts/recordmcount.pl
+@@ -359,7 +359,7 @@ if ($arch eq "x86_64") {
+     $mcount_regex = "^\\s*([0-9a-fA-F]+):.*\\s_mcount\$";
+ } elsif ($arch eq "riscv") {
+     $function_regex = "^([0-9a-fA-F]+)\\s+<([^.0-9][0-9a-zA-Z_\\.]+)>:";
+-    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL(_PLT)?\\s_?mcount\$";
++    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL(_PLT)?\\s_mcount\$";
+     $type = ".quad";
+     $alignment = 2;
+ } elsif ($arch eq "csky") {
+diff --git a/security/Kconfig b/security/Kconfig
+index 52c9af08ad35..412e76f1575d 100644
+--- a/security/Kconfig
++++ b/security/Kconfig
+@@ -142,8 +142,6 @@ config HARDENED_USERCOPY
+ config FORTIFY_SOURCE
+ 	bool "Harden common str/mem functions against buffer overflows"
+ 	depends on ARCH_HAS_FORTIFY_SOURCE
+-	# https://bugs.llvm.org/show_bug.cgi?id=41459
+-	depends on !CC_IS_CLANG || CLANG_VERSION >= 120001
+ 	# https://github.com/llvm/llvm-project/issues/53645
+ 	depends on !CC_IS_CLANG || !X86_32
+ 	help
 
