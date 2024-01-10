@@ -1,119 +1,105 @@
-Return-Path: <linux-kernel+bounces-22088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5597D8298FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:26:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E38F8298EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:25:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB176285D5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:26:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2ED71C2622F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97E34879A;
-	Wed, 10 Jan 2024 11:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04EA747F5F;
+	Wed, 10 Jan 2024 11:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lZGq1KKj"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFbdmt5J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA36348793;
-	Wed, 10 Jan 2024 11:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40AA33Bf014480;
-	Wed, 10 Jan 2024 11:24:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=J6w8/2Uaivc+IhxWpx33fUyFHAcLJNahWcoAf86tYLU=; b=lZ
-	Gq1KKj+QmNxD0sKY8WW9yn6/tRPSSwTozMn2tMp2Z4RBoTZN4Ogk0RKdQjs4uo1i
-	6AZKgWjDwyHr9Dr6Hi0qwIWdlckTS2KoUEALKY59OzlwfREaY7gnMfrBvkF4yIeF
-	2/3Rz1etd+LZASdOLvXZ8rxCajQd4GujDNRaluTgY6YWdLnpgl520rLkpo9ck+cM
-	5O/JO4BYcYCoLpNn1CLKWfx7JzPnRjUcBfzMkMAhl/G2+4rzDQLxIHlxm5V6PiJe
-	rXkJP7GAx5QRLLalL9GjVkCAjFHnMDY5QQU/EZ9PkFlvx056ZlmH6FuE8oI1aob8
-	TO5nk2GaMwrz0H+Xr7wQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhs4mg634-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:24:37 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ABOa1j018220
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:24:36 GMT
-Received: from zhenhuah-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 10 Jan 2024 03:24:33 -0800
-From: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_tingweiz@quicinc.com>,
-        <quic_bjorande@quicinc.com>, Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: [PATCH v2] dt-bindings: mtd: avoid automatically select from mtd.yaml
-Date: Wed, 10 Jan 2024 19:21:45 +0800
-Message-ID: <1704885705-7486-1-git-send-email-quic_zhenhuah@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3949747F46;
+	Wed, 10 Jan 2024 11:23:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C84AC433F1;
+	Wed, 10 Jan 2024 11:23:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704885804;
+	bh=RCE2y0eor3dKdkA/sjI7c35eXtYn52uyvFYjl/ELECE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fFbdmt5JAETnqcBpMj304al9iIy+OKopuhuAL8TSGKC17wOLB3U0RnSvhLpcQhvOV
+	 h38dNnVcUhYxNo+DMqTDLF/dhvo7rHfjz31dEGPUzs+/Vg102gdxl3dUOLPha3LEsq
+	 8EYdNAiLk3uL/OqKann72I2YA9wS3jMA2echwuEDJFsk0bUktIhhg1rrLTckS9yx9H
+	 DiVZZdFLcWb7t5qNNugp0MRoLjJcu3B/T3SHnkcQs/TOWdNOD5U4q+/yHcki1VwEsY
+	 htIA2SwfsDx8kktKtv6xIZelEmNchGn0sJLkR0H4eDdXu259z40QNc1TZyAllcEqDY
+	 yAUWl+yCsKUVw==
+Date: Wed, 10 Jan 2024 12:23:21 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht, 
+	phone-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm7225-fairphone-fp4: Enable
+ display and GPU
+Message-ID: <2zkiop7xg7w4vkpjpol25qna5wwbq4ja5o6iwuqh25m34k6mgd@aemrbzqgx2oe>
+References: <20240105-fp4-panel-v1-0-1afbabc55276@fairphone.com>
+ <20240105-fp4-panel-v1-3-1afbabc55276@fairphone.com>
+ <3fdc6e74-d817-4341-bf64-9096608990d6@linaro.org>
+ <CYAZ37LBKG4E.2096GKVUXN8Y2@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eVtUjBz7nsmPqilmuphc3XYpZr017eOc
-X-Proofpoint-ORIG-GUID: eVtUjBz7nsmPqilmuphc3XYpZr017eOc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=882
- adultscore=0 impostorscore=0 spamscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100093
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rxtk5satlzcpouxq"
+Content-Disposition: inline
+In-Reply-To: <CYAZ37LBKG4E.2096GKVUXN8Y2@fairphone.com>
 
-The mtd binding is always $ref'ed by other bindings, default selector
-should be from other binding files which ref'ed it. Now, "$nodename" in
-mtd.yaml turns into a "select" automatically such that a few binding check
-issues reported because it conflicts with sram devices(eg, qcom,imem.yaml,
-rules in folder sram/*)
 
-To avoid the automatically created "select" in mtd.yaml, adding:
+--rxtk5satlzcpouxq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-select: false
+On Wed, Jan 10, 2024 at 12:00:23PM +0100, Luca Weiss wrote:
+> On Wed Jan 10, 2024 at 11:58 AM CET, Konrad Dybcio wrote:
+> >
+> >
+> > On 1/5/24 15:29, Luca Weiss wrote:
+> > > Add the description for the display panel found on this phone and rem=
+ove
+> > > the simple-framebuffer that was in place until now
+> >
+> > Why? They should be able to coexist with a smooth-ish handoff
+>=20
+> Does that work upstream? I'm aware that downstream can do this but
+> thought this was still missing upstream.
 
-Suggested-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
-Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
----
-Hi Bjorn,
+It depends what you call smooth-ish I guess, but KMS handles the
+handover just fine. You're likely to get a flicker during the transition
+though.
 
-As the idea is from your comment, I added "Suggested-by" you.
-Please tell me if that's not suitable. Thanks.
+Either way, the DT isn't the right place to choose, you should enable
+both, and the distro will choose its policy through configuration.
 
- Documentation/devicetree/bindings/mtd/mtd.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+Maxime
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-index f322290..ee442ec 100644
---- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-+++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-@@ -10,6 +10,8 @@ maintainers:
-   - Miquel Raynal <miquel.raynal@bootlin.com>
-   - Richard Weinberger <richard@nod.at>
- 
-+select: false
-+
- properties:
-   $nodename:
-     pattern: "^(flash|.*sram|nand)(@.*)?$"
--- 
-2.7.4
+--rxtk5satlzcpouxq
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZZ5+KQAKCRDj7w1vZxhR
+xVOLAQDvZ9TCy7oTZ8R3ORWkJYRiOzes6hRevRhddXAk7aj6JAD5ARIiiJFNSXvY
+jIoRZnBI9TvNc0CDDCeZEGZ2XFkj2AI=
+=AWk3
+-----END PGP SIGNATURE-----
+
+--rxtk5satlzcpouxq--
 
