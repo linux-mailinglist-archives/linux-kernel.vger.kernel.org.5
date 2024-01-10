@@ -1,174 +1,121 @@
-Return-Path: <linux-kernel+bounces-22497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DFFB829EA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 32806829EA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E50C41F23286
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:29:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6DD31F27318
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33E14CB55;
-	Wed, 10 Jan 2024 16:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4F44CDF0;
+	Wed, 10 Jan 2024 16:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="glZGQqaX"
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nS/ZPVYt"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3747D487B4
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5D0523F745
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704904155;
-	bh=uv9EP/w/9lKiqxJDFswe5iRGGwCnnVkmNEold/I0ZHc=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=glZGQqaXBD4oKJYeWFxkmEMQnxEa4jXgMMVyXdrshZJeItnwZgpkdnL7zNeXYVakP
-	 VuB24rAqXF0ob99aNVbqrtY6BTjrRpquv7gGKe8tU9+A8R+f5APLa8KGpPpXMSQPxF
-	 g0NHjbNEXNCT9A4cdy4e5O3F8ldM/SEWLF6fTt5nVD9adix4fR8BxvTVqU8S3Z9o2o
-	 uDkfO8O9iCDulYe1VhBaa3yGZwW/aVpB9y0HlxtiiHVJDsu7AqJsSPk9rsV2S52/jO
-	 GaHQ9NyyJQ5tX/di9FjDyRhjUgMqRFjcqVLc74WXy8PiDZP7b/MTVcuNtMvnoSq8WD
-	 F1eawYtRLtgqg==
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6de353881d7so522861a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:29:15 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFA34CDE9
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e36375f91so2894e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:29:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704904170; x=1705508970; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cYd13Zejpu03Q/f4ErgpB8c40cbt6HWQmYbgmsVrrrI=;
+        b=nS/ZPVYt/WFSBZS4JpFk2hobSuBW7l1mICI6a60EsxEqD8KcPpdA3RJ+dpwYytoDUZ
+         3nFVHGCbD3ryL9iGFESC8U4Ukx6hscao6wCvfllN0xgG4MB/TZ8vPbnTxsS+HJKtuf8E
+         aKVuuq3Faw4YfWCMAmpFLburaqKN8r2up6bHgxa/he9wZKz84bBCHMfRFFVvvWlIru/D
+         3FArvcuUVC8xWGFHcSei8PMAx70JOiNWjQHTO6tSEIfIXbMoCwDyrEk5v7iVzC9rCpYK
+         9wDrPJDesDSttlAvs8U/SK9xc8cGLfmJkmodLgpXXbVeSRSpyMw6YnsK+IZe4KbeYvIy
+         jkJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704904154; x=1705508954;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uv9EP/w/9lKiqxJDFswe5iRGGwCnnVkmNEold/I0ZHc=;
-        b=ofBzloRty+c3P6DMm0qAhJL+PZv5P8RTQq0PhjizfKXJwRFF1gRV/plTapNDMIXnW9
-         fTfaZ9qVZcJOUiZ1uZYowz1UaJ9u5cpHm0Is9Idp+OWV+F43yBflSTXbh83GJfkvSsIF
-         zKOClvsHlao7qKqR1eLJjIa+Owm2yZeLsVgj7732Hav9gI+AYivsRXS6fS/q4zPFrgCa
-         IxgmaG7xV19FPex9WL5+241LoLkCU5Spcvbwx1DO85aJHZs8mTcIQn67v7N5kOPLPGgB
-         O+aXHKyrUsnYceiiqcvUiC2CHG6fekRpTLwFSbHL1suFqekf7nFQhMvxI2qA9Ywy9k7d
-         ns2A==
-X-Gm-Message-State: AOJu0YzUaPVR7bi1eLWcP9EokrPbjlwK+XDr8+j2oszjJ+t/Bd9g24Xn
-	s5YkxbYdgyeQDygVMLEkMRhm9K3fCRIif1ZFj4xnbP/urq/MY5oX+12eRvl7meB8Pe7sDwupeYX
-	9LHSaSqg/HQ27vHqeI8PocoWiSNuJUeWgSBOmZueE8AoCftkY7htpL4YpvAo8capB
-X-Received: by 2002:a05:6830:1184:b0:6dd:e1a7:985c with SMTP id u4-20020a056830118400b006dde1a7985cmr853572otq.64.1704904154046;
-        Wed, 10 Jan 2024 08:29:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFbHlXIe2CrSKgMXB12cTUPD3lT7PL5ZyJdEPF2+t0EcSUNyc5cEMlt0ZMzdAuC3C3APnreiaTINaV7wsxklKM=
-X-Received: by 2002:a05:6830:1184:b0:6dd:e1a7:985c with SMTP id
- u4-20020a056830118400b006dde1a7985cmr853563otq.64.1704904153819; Wed, 10 Jan
- 2024 08:29:13 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 10 Jan 2024 11:29:13 -0500
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <ZQ0PR01MB098182407F5F427D9A6C7CD9826BA@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
-References: <20231214072839.2367-1-minda.chen@starfivetech.com>
- <7hfrzeavmj.fsf@baylibre.com> <ZQ0PR01MB098128579D86207B4B9BA7D28266A@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
- <7h34vbbsfj.fsf@baylibre.com> <ZQ0PR01MB098182407F5F427D9A6C7CD9826BA@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
+        d=1e100.net; s=20230601; t=1704904170; x=1705508970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cYd13Zejpu03Q/f4ErgpB8c40cbt6HWQmYbgmsVrrrI=;
+        b=t+NGkWgCatluJkWkWqbJnPgohWREJDT1D/iG9fgODydaEYHxFz345xJmS/lq8EWNjY
+         DGE7yr9Lwawlpb1a6WW8ekVktUglEB6xy2HXIVDGBPiyHXpT34PtyzWEI3Mah/9f1pm1
+         sWbr0fbolui06ag1yK7UdBPmqq+t2I2EkmR7iPZ9UPUAz9Gm4crGbAKXH/lKBKVQHcbn
+         Sz4GfB3AELHtO/4+ncUeizwPzS7IXWDZs60KKUmTjIbtuD56uxF+7SyGfyibnXUY1S+w
+         khIh79PbOSPq3nxAXZEVR6DpGn9K09Us/TqWaFeLELN/p6e/PWILqv3QiYhsIJ1xBPUs
+         hxSQ==
+X-Gm-Message-State: AOJu0Yw4Z2oLci9dfVDO4mh8sJZJke+yRqeJIEcObmxWcEJz7kHFvuUP
+	JbzlB6BsBtU/I0w4MKjego9x3vNzrwIV/54retyqNAZ5n0PW
+X-Google-Smtp-Source: AGHT+IF5vM4N157aKb2AtB6x57aJsQ++ajAOqzDCXdw5TMmo4troBe/GusuB30ksORNAUtvkL8aYJotylri36ah/+bs=
+X-Received: by 2002:a05:6512:2205:b0:50e:d1f8:461d with SMTP id
+ h5-20020a056512220500b0050ed1f8461dmr44339lfu.4.1704904169658; Wed, 10 Jan
+ 2024 08:29:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Wed, 10 Jan 2024 11:29:13 -0500
-Message-ID: <CAJM55Z9HtBSyCq7rDEDFdw644pOWCKJfPqhmi3SD1x6p3g2SLQ@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTog5Zue5aSNOiBbUEFUQ0ggdjEzIDAvMjFdIFJlZmFjdG9yaW5nIE1pYw==?=
-	=?UTF-8?B?cm9jaGlwIFBDSWUgZHJpdmVyIGFuZCBhZGQgU3RhckZpdmUgUENJZQ==?=
-To: Kevin Xie <kevin.xie@starfivetech.com>, Kevin Hilman <khilman@baylibre.com>, 
-	Minda Chen <minda.chen@starfivetech.com>, Conor Dooley <conor@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Daire McNamara <daire.mcnamara@microchip.com>, 
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Mason Huo <mason.huo@starfivetech.com>, 
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>
+MIME-Version: 1.0
+References: <ZYbm5L7tw7bdpDpE@kernel.org> <4d86f3b6-eaee-4673-bdf5-3b97c1c1ad17@linux.intel.com>
+ <CAP-5=fUfJ-VBGS1D2+WM_eBu4uPGvxJ2KyD4WXzgKRCfGKHTQQ@mail.gmail.com>
+ <ZZfwjG-HL5yOEh6z@FVFF77S0Q05N> <CAP-5=fUK+t1p0g3dKtgyP0g3oixM1G7Xm4BFneY5EMzRW_urdw@mail.gmail.com>
+ <ZZ12PhUfA_wPAaRR@FVFF77S0Q05N.cambridge.arm.com>
+In-Reply-To: <ZZ12PhUfA_wPAaRR@FVFF77S0Q05N.cambridge.arm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 10 Jan 2024 08:29:18 -0800
+Message-ID: <CAP-5=fWCn88KchSdQg87FRY0cpH4tVqO0UEYMhE=ioANeRBdwg@mail.gmail.com>
+Subject: Re: perf test hybrid failing on 14700K
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "Liang, Kan" <kan.liang@linux.intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Kan Liang <kan.liang@intel.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, linux-perf-users@vger.kernel.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kevin Xie wrote:
-> > Kevin Xie <kevin.xie@starfivetech.com> writes:
-> >
-> > >> Minda Chen <minda.chen@starfivetech.com> writes:
-> > >>
-> > >> > This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
-> > >> > JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
-> > >> > same IP and have commit their codes, which are mixed with PLDA
-> > >> > controller codes and Microchip platform codes.
-> > >>
-> > >> Thank you for this series.
-> > >>
-> > >> I tested this on a VisionFive v2 board, and it seems to probe and
-> > >> find my
-> > >> M.2 NVMe SSD, but then gets timeouts when trying to use the NVMe (e.g.
-> > >> 'blkid' command)
-> > >>
-> > >
-> > > Hi, Kevin:
-> > > Could you please provide the manufacturer and model of the M.2 NVMe
-> > > SSD you tested?
-> >
-> > I have a 256 Gb Silicon Power P34A60 M.2 NVMe SSD (part number:
-> > sp256gbp34a60m28)
-> >
-> Thanks, Kevin, we will buy one to test.
+On Tue, Jan 9, 2024 at 8:37=E2=80=AFAM Mark Rutland <mark.rutland@arm.com> =
+wrote:
 >
-> Before doing this refactoring, we encountered the same bug with Kingston M.2 SSD,
-> and we workaround the problem with the below patch, please have a try:
-> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-> index 507bc149046d..5be37f1ee150 100644
-> --- a/drivers/nvme/host/pci.c
-> +++ b/drivers/nvme/host/pci.c
-> @@ -1059,6 +1059,16 @@ static inline int nvme_poll_cq(struct nvme_queue *nvmeq,
->  {
->         int found = 0;
+> On Fri, Jan 05, 2024 at 09:21:21AM -0800, Ian Rogers wrote:
+> > While much has been done in the perf tool to work around latent issues
+> > with ARM's PMU drivers and the behavior changes they have instigated,
+> > except for 5c816728651a ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE
+> > capability") where I wrote the original version, there doesn't seem to
+> > have been progress made on the ARM PMU driver nor on ARM testing -
+> > which was why such an issue could exist for so long, across numerous
+> > Linux releases and ultimately break Hector and Martin.
 >
-> +       /*
-> +        * In some cases, such as JH7110 SoC working with Kingston SSD,
-> +        * the CQE status may update a little bit later than the MSI,
-> +        * which cause an IRQ handle missing.
-> +        * As a workaround, here we will check the status first, and wait
-> +        * 1us if we get nothing.
-> +        */
-> +       if (!nvme_cqe_pending(nvmeq))
-> +               udelay(1);
-> +
->         while (nvme_cqe_pending(nvmeq)) {
->                 found++;
->                 /*
+> Ian, which latent issues in the PMU drivers are you referring to?
+
+Core PMUs generally have a lookup from legacy to non-legacy event,
+from the past discussion this was missing on the problematic PMUs
+hence the sysfs versions.
+
+> I already pointed out that one of the problems you have claimed to be a d=
+river
+> bug is actually due to userspace incorrectly detecting support for the ex=
+tended
+> HW type, and I suggested some options which you have so far ignored:
 >
+>   https://lore.kernel.org/lkml/ZV-CUlQhlkdOzfFZ@FVFF77S0Q05N.cambridge.ar=
+m.com/
+>   https://lore.kernel.org/lkml/ZV-ItX1eMeIdo_00@FVFF77S0Q05N.cambridge.ar=
+m.com/
 
-Hi Kevin,
+Those suggestions look fine but you seemed to be suggesting testing.
+Lacking hardware with the broken PMU(s) I'm not able to do this. Could
+you turn the suggestion into a patch and test on BIG.little? I can
+test on Intel Alderlake.
 
-Thanks, this fixes the same problem on my WD Blue SN570 250GB.
+Thanks,
+Ian
 
-Before this patch I found that CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y fixed the
-problem, but it's now clear that this only slowed my kernel enough that this
-wouldn't trigger as often.
-
-/Emil
-
-> > Also for reference, I tested the same SSD on another arm platform (Khadas
-> > VIM3) and it works fine.
-> >
-> > Kevin
+> I agree that testing is a problem, and we need to do better from the arm =
+side.
 >
-> Hi, Bjorn:
-> Do you have any idea about the late CQE phase update condition as mentioned
-> in the patch comments above?
-> This is an issue that occurs with a small probability on individual devices in our
-> platform.
-> Thus, I suggest the refactoring patch set should go forward.
-> Later we will try to find a more formal solution instead, and send a new patch.
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Thanks,
+> Mark.
 
