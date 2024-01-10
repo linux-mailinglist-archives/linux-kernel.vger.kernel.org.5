@@ -1,112 +1,81 @@
-Return-Path: <linux-kernel+bounces-22626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ADAD82A09C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:00:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C4282A0A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF15CB26291
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:00:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B8241C22A5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6D74D5AA;
-	Wed, 10 Jan 2024 19:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE994D5B1;
+	Wed, 10 Jan 2024 19:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g7nruqNC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iPFr1TpW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE0541A86;
-	Wed, 10 Jan 2024 19:00:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00D23C433C7;
-	Wed, 10 Jan 2024 19:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704913223;
-	bh=anQjN0x5VGSmfBB0IWVmK180LXiah3BHUEKoVRwvMfU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=g7nruqNCyn9ZKeYSfPvatg0/J1OWuB4JotRQaKHaT10ErQ7jrPOI49GWFBGSsbQ64
-	 BeS4c3+jbHThShUvF9lgxUHUeALGsva7PreghaB+sm8XNtEooft9RkftmJ87mHQmJU
-	 9GSpum7hONtjDF0m76Y7Dq0scplmp2YQfeSeaoUtRwv1P5dR4XW+CsKxngXbkUupQt
-	 ek4NsbVmanVKVH0848odvsmlRcNuppnYotEatmdrBHQfev9eDLPWgru3WleTTV/LkZ
-	 /SEaL2+Q2AfyJJDioF5DfZoB5Nrm+7HsjyQdoFTQaoQn98u80LYUNWnPuFZM8Rllwo
-	 3J3gf5+U77b1Q==
-Date: Wed, 10 Jan 2024 13:00:21 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Alex Williamson <alex.williamson@redhat.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Sanath S <Sanath.S@amd.com>, shyam-sundar.s-k@amd.com,
-	Andreas Noever <andreas.noever@gmail.com>,
-	Michael Jamet <michael.jamet@intel.com>,
-	Yehezkel Bernat <YehezkelShB@gmail.com>, linux-usb@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [bugzilla-daemon@kernel.org: =?utf-8?Q?=5B?=
- =?utf-8?Q?Bug_218360=5D_New=3A_Disk_drive_of_TBT3=2FUSB4_storage_device_c?=
- =?utf-8?Q?an=E2=80=99t_show_up_i?= =?utf-8?Q?f?= connecting behind TBT3 dock
- or some USB4 docks DFP TBT port]
-Message-ID: <20240110190021.GA2113949@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4014F4D5A1
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 19:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704913307;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pJpTNHjkrdudfIITkK7u4W2zrdtA79u2wxg+UQ854QE=;
+	b=iPFr1TpWHNCb+VJZn3Ym4uQmka8KeE7gKPqdZg7Q0UWYLFBFGkxAgMXipXnqT+kZQnB72e
+	SUxR0s7PteLZ7TlcwtX3c+Cb/xgVKk9MM2gghv5vzgb6y/9Oj7lfV+ces2smkaVoj9eEtF
+	Nt4gVccblZPDJQW3QKmZoctZ4+JKN40=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-587-GkCjAoSgOlOd9KvahLP1FQ-1; Wed,
+ 10 Jan 2024 14:01:42 -0500
+X-MC-Unique: GkCjAoSgOlOd9KvahLP1FQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 270511C060E2;
+	Wed, 10 Jan 2024 19:01:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 395822026F95;
+	Wed, 10 Jan 2024 19:01:41 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <9872f991-56a8-4915-b9b0-53accd6db0ef@moroto.mountain>
+References: <9872f991-56a8-4915-b9b0-53accd6db0ef@moroto.mountain>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+    linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] netfs, fscache: Prevent Oops in fscache_put_cache()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1788107.1704913300.1@warthog.procyon.org.uk>
+Date: Wed, 10 Jan 2024 19:01:40 +0000
+Message-ID: <1788108.1704913300@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-#regzbot introduced: d3fcd7360338 ("PCI: Fix runtime PM race with PME polling")
+Dan Carpenter <dan.carpenter@linaro.org> wrote:
 
-Sanath, thank you very much for this report and the bisection!
+>  	zero = __refcount_dec_and_test(&cache->ref, &ref);
+> -	trace_fscache_cache(debug_id, ref - 1, where);
+> +	trace_fscache_cache(cache->debug_id, ref - 1, where);
 
-I assume this happens on hot-adds, i.e., you boot the kernel, then
-connect a USB4 dock, then connect the TBT3/USB4 storage device to the
-dock?
+You can't do that if !zero.  cache may be deallocated between the two lines.
 
-Would you be able to attach the complete dmesgs log from working and
-failing kernels?  The ideal would be from d3fcd7360338 ("PCI: Fix
-runtime PM race with PME polling"), which fails, and 5cd903bce9dd
-("PCI/VPD: Add runtime power management to sysfs interface"), which
-presumably works.  But v6.7 and v6.5 is OK too.
+David
 
-Also the output of "sudo lspci -vv", which I assume doesn't depend on
-which kernel you're running.
-
-Bjorn
-
------ Forwarded message from bugzilla-daemon@kernel.org -----
-
-Date: Wed, 10 Jan 2024 10:52:40 +0000
-From: bugzilla-daemon@kernel.org
-To: bjorn@helgaas.com
-Subject: [Bug 218360] New: Disk drive of TBT3/USB4 storage device can’t show up if connecting behind TBT3 dock
-	or some USB4 docks DFP TBT port
-Message-ID: <bug-218360-41252@https.bugzilla.kernel.org/>
-
-https://bugzilla.kernel.org/show_bug.cgi?id=218360
-
-            Bug ID: 218360
-           Summary: Disk drive of TBT3/USB4 storage device can’t show up
-                    if connecting behind TBT3 dock or some USB4 docks DFP
-                    TBT port
-          Reporter: Sanath.S@amd.com
-
-The disk drive of the TBT3/USB4 storage device can’t show up behind TBT3 dock
-and some USB4 docks have a DFP TBT port.
-
-TBT3/USB4 storage device can be authorized, the disk drive doesn’t show up.
-
-Issue reproduce sequence: Connect USB4 dock to host → Connect TBT3/USB4 storage
-device to dock DFP TBT3 port → TBT3/USB4 storage device disk driver can’t show
-up.
-
-The issue was observed in the latest mainline kernel 6.7.
-
-
-Failing on all the below combination
-
-HP Thunderbolt Dock 120W G2 HSN-IX01    
-HP Hook 2.0 USB4/TBT4 Dock (PV Phase)   
-CalDigit TS3Plus+ Thunderbolt Station 3 Plus    
-Dell Thunderbolt Dock – WD19TB
 
