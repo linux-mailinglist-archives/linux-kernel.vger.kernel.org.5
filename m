@@ -1,107 +1,155 @@
-Return-Path: <linux-kernel+bounces-22278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE3F829BC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:51:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC16C829BC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:51:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CDE11F226F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:51:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B73728148D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3926495E9;
-	Wed, 10 Jan 2024 13:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0EAD495FA;
+	Wed, 10 Jan 2024 13:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="r8yTPC0A"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="aiGHYzZl"
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6465D48CCC;
-	Wed, 10 Jan 2024 13:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GX5bG0xRiBvxCnOZ5F88dbP2mNg6pTI/ZRvFLly5pvQ=; b=r8yTPC0A90DSc89HoQvul1RYFX
-	Qy+qlIYTv+35x/SIpf5fa+UjJI34h41d9f/hnGFBuo1/GJJghpkcxdj/drTH/WKuI3/ZabKKBfSbq
-	Wy3HD6CpcznTipMn+k62r8UdwNrFJhG0bB0ZnOBjnfDK+TMuFBNSp1vGIE6xu1SgrDzaZjyU2GrV/
-	ZP5h+8tD6yjpFmAKXkvrtc+WnNyB15e0FUsPmX9P1Go+unuZteyt9QIS9s0BoB9yRd1svxZyCWp/P
-	hwV0KqN7pMdj5H4nLOOpauQ+7XUeDRnz3maAv/a+fdGpyNEjVpGqZ5tKqcNz1umvIsVQhxhv0tyk7
-	Lh5nGCIg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47362)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rNYyW-0005Th-2k;
-	Wed, 10 Jan 2024 13:50:32 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rNYyZ-0005Mc-J9; Wed, 10 Jan 2024 13:50:35 +0000
-Date: Wed, 10 Jan 2024 13:50:35 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-Subject: Re: [0/2] ARM: Adjustments for init_atags_procfs()
-Message-ID: <ZZ6gq5sOFf33GhM7@shell.armlinux.org.uk>
-References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
- <562a6f99-3f8e-9a77-e519-b668e24dced2@web.de>
- <b3c42397-c879-4381-aa96-c7887e81c068@web.de>
- <7dd19987-6590-4756-a929-1ff01503ad1c@web.de>
- <ZZ6MZl14bcIaCaQn@shell.armlinux.org.uk>
- <1c38e495-5c9c-4ff8-b453-93b882dd2c4c@web.de>
- <ZZ6R6KSQo9ph3ARZ@shell.armlinux.org.uk>
- <09c4cb2e-967b-4d0e-b5c6-f959e80290d9@web.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9119048CD2;
+	Wed, 10 Jan 2024 13:51:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Wed, 10 Jan 2024 14:50:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1704894659; bh=E2TcI7cs2XAlktwXte8/dwg+LAVaBEtqAxnz/V1z+RE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aiGHYzZlLH204W9GS9EqZlVqbiCD6xB792fBuF7ckDdlV9s5xduDYlyG3W+glB0QC
+	 vwMQfDblVwprRPOyezC6b+G+gYkDtKQ0XX2VHzyzCZekG/MUP7WJTWZlDMTmz0FR2F
+	 kjGixXZ+qFFxtqJblXrJujl8MQm1KGJakbk5JGrY=
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id 98702802B0;
+	Wed, 10 Jan 2024 14:50:59 +0100 (CET)
+Received: by buildd.core.avm.de (Postfix, from userid 1000)
+	id 8B84C180D88; Wed, 10 Jan 2024 14:50:59 +0100 (CET)
+Date: Wed, 10 Jan 2024 14:50:59 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] kbuild: deb-pkg: call more misc debhelper commands
+Message-ID: <ZZ6gwwryhC6gnJxV@buildd.core.avm.de>
+Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kernel@vger.kernel.org
+References: <20231230135200.1058873-1-masahiroy@kernel.org>
+ <20231230135200.1058873-5-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <09c4cb2e-967b-4d0e-b5c6-f959e80290d9@web.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20231230135200.1058873-5-masahiroy@kernel.org>
+Organization: AVM GmbH
+X-purgate-ID: 149429::1704894659-A0EEC5FF-A60195C8/0/0
+X-purgate-type: clean
+X-purgate-size: 2931
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 
-On Wed, Jan 10, 2024 at 01:52:34PM +0100, Markus Elfring wrote:
-> >>>>> Is this patch series still in review queues?
-> >>>>
-> >>>> See also:
-> >>>> https://lore.kernel.org/cocci/562a6f99-3f8e-9a77-e519-b668e24dced2@web.de/
-> >>>> https://sympa.inria.fr/sympa/arc/cocci/2023-03/msg00098.html
-> >>>
-> >>> I suspect no one looked at it, sorry.
-> >>
-> >> Special mailing list settings probably influenced this situation.
+On Sat, Dec 30, 2023 at 10:52:00PM +0900, Masahiro Yamada wrote:
+> Use dh_prep instead of removing old build directories manually.
 > 
-> Did any communication filters hinder the clarification of further development ideas?
-
-How about doing the research yourself? Using lore, it's possible to
-work it out. Find the message id. Then visit
-
-https://lore.kernel.org/r/<message-id>
-
-and study the result. It will give you the answer you want.
-
-> >>>                                       I don't catch everything that is
-> >>> on the mailing list. Looks fine to me but it needs to end up in the
-> >>> patch system to be applied.
-> >>
-> >> Can you collaborate also with mentioned mailing list archive interfaces?
-> >
-> > Err what? Sorry, I don't understand your comment.
+> Use dh_clean instead of removing build directories and debian/files
+> manually.
 > 
-> Are you going to pick any patches up from linked information sources?
+> Call dh_testdir and dh_testroot for preliminary checks.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/package/builddeb     | 8 --------
+>  scripts/package/debian/rules | 6 +++++-
+>  2 files changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+> index d31b16afe0db..e797ad360f7a 100755
+> --- a/scripts/package/builddeb
+> +++ b/scripts/package/builddeb
+> @@ -28,8 +28,6 @@ install_linux_image () {
+>  	pname=$1
+>  	pdir=debian/$1
+>  
+> -	rm -rf ${pdir}
+> -
+>  	# Only some architectures with OF support have this target
+>  	if is_enabled CONFIG_OF_EARLY_FLATTREE && [ -d "${srctree}/arch/${SRCARCH}/boot/dts" ]; then
+>  		${MAKE} -f ${srctree}/Makefile INSTALL_DTBS_PATH="${pdir}/usr/lib/linux-image-${KERNELRELEASE}" dtbs_install
+> @@ -97,8 +95,6 @@ install_linux_image () {
+>  install_linux_image_dbg () {
+>  	pdir=debian/$1
+>  
+> -	rm -rf ${pdir}
+> -
+>  	# Parse modules.order directly because 'make modules_install' may sign,
+>  	# compress modules, and then run unneeded depmod.
+>  	while read -r mod; do
+> @@ -128,8 +124,6 @@ install_kernel_headers () {
+>  	pdir=debian/$1
+>  	version=${1#linux-headers-}
+>  
+> -	rm -rf $pdir
+> -
+>  	"${srctree}/scripts/package/install-extmod-build" "${pdir}/usr/src/linux-headers-${version}"
+>  
+>  	mkdir -p $pdir/lib/modules/$version/
+> @@ -139,8 +133,6 @@ install_kernel_headers () {
+>  install_libc_headers () {
+>  	pdir=debian/$1
+>  
+> -	rm -rf $pdir
+> -
+>  	$MAKE -f $srctree/Makefile headers_install INSTALL_HDR_PATH=$pdir/usr
+>  
+>  	# move asm headers to /usr/include/<libc-machine>/asm to match the structure
+> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
+> index 407f46a4a655..5c5554c70949 100755
+> --- a/scripts/package/debian/rules
+> +++ b/scripts/package/debian/rules
+> @@ -32,6 +32,9 @@ package = $($(@:binary-%=%-package))
+>  DH_OPTIONS = -p$(package)
+>  
+>  define binary
+> +	$(Q)dh_testdir $(DH_OPTIONS)
+> +	$(Q)dh_testroot $(DH_OPTIONS)
+> +	$(Q)dh_prep $(DH_OPTIONS)
+>  	$(Q)+$(MAKE) $(make-opts) run-command KBUILD_RUN_COMMAND='+$$(srctree)/scripts/package/builddeb $(package)'
+>  	$(Q)dh_installdocs $(DH_OPTIONS)
+>  	$(Q)dh_installchangelogs $(DH_OPTIONS)
+> @@ -62,7 +65,8 @@ build-arch:
+>  
+>  .PHONY: clean
+>  clean:
+> -	$(Q)rm -rf debian/files debian/linux-* debian/deb-env.vars* debian/*.files
+> +	$(Q)dh_clean
+> +	$(Q)rm -rf debian/deb-env.vars* debian/*.files
+>  	$(Q)$(MAKE) ARCH=$(ARCH) clean
+>  
+>  # If DEB_HOST_ARCH is empty, it is likely that debian/rules was executed
+> -- 
+> 2.40.1
+> 
 
-No. Did you read my first reply which told you how patches get applied
-to arch/arm? If you didn't, your patch won't get applied.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
 
