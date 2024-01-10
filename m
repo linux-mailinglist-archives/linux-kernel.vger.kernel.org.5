@@ -1,227 +1,159 @@
-Return-Path: <linux-kernel+bounces-21782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AB62829431
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:24:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE69829434
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:24:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9E441F26F59
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:24:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72F4B1C24224
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0333A1C8;
-	Wed, 10 Jan 2024 07:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573FA39AF4;
+	Wed, 10 Jan 2024 07:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b+YKoIu+"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NhPCxOn4"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9323A1AA
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:23:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9bba6d773so3251719b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:23:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6743D98C
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28ee72913aso837968266b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:24:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704871435; x=1705476235; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4pX+siGsa1lcjn5ja6SnM7esk+Fn5pql479Lrw3+G9o=;
-        b=b+YKoIu+fXim8RDAJVqyD5XnLlFyVl0NfXWB+NhqXQIDo/qPmNBtZ/pc/HyW6zEdBu
-         lGM8qyWg0VRNECEJ9A2U/hBCgoN9MTLHFtyq030nUhVhJpaIxDHnA2MRZ2shn6Q0JNFg
-         EYNUoT2BUW4L2RzkeNcnGNVs8+3GWBJWvTxV4A+iP7THiL3W3dP55PQIzM8dV0HDgK3G
-         BOpG7TPVnvzltZBRMKmpL5Aq4GzMSTE9oEkgm2OiP0DwnVMJneoNzxFDGO3PBZ0Sofni
-         +mMk+BLEY7eKM6KGh6qMdvWWYGg/qrG4QL72ZIbFmkeVpIC7SNxyjh9Rb9myq9aqq6q7
-         T7pw==
+        d=linaro.org; s=google; t=1704871460; x=1705476260; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Azmp4KYfdL3dOyr5tehq9G4ZZFHnH/CcRj4pQ5xag0A=;
+        b=NhPCxOn4BS6id78e+bjmeqbUXcjXPsK6QqFPeMp954JI7pFXs6qtfZ6nM5RreyN1xx
+         KUCE/3VsxKdAd9MwZLecl6Lch/Fkp31QncQj3+l7hD6dwp9MuBc+k8VyOmWv3vC0kvcq
+         B3GgoDgfFOhK3Zywp0KStLGpTuvGZ0gKOZUFEeko+eSq/zn5rDiau6e9U3FRlBMsUx74
+         b3OdBOHc34SE2UoSI131IiGgBl4R4un+IOW8Cq1iSWsPfh4mlim/NUV1sqOOUzUMINWv
+         Vahr7pzkFXpgm8cJmDyHttqnXRWRUHePuHULyfoAPdoYxLjwQwO10fzp4khIUVB0d5zE
+         tKoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704871435; x=1705476235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4pX+siGsa1lcjn5ja6SnM7esk+Fn5pql479Lrw3+G9o=;
-        b=iniWeNyTUtj8VGyJqcDHifh0Ds+9PscJrIVTW0wSskAN+gTZ0VlE50ZjaR9enX7Bad
-         If4UWOadsUw8D2fi1/Xr78meaE+YjpUx+fQeFkDVpvvGHyWGkmpvOpjKeVwzUXKTETsc
-         hmUNu98CC0j9qFi0LSgE2z0ElJtYXC7XQhKFpTGB4rOZUtCSXoUUyQaA0SeHIoqXTENm
-         i8p+ID76uYhqmFAsWZ+sIX6GJPaw72OF55L4EM9EhwXcRtHH04dmKY+RZPlguFPr8bdg
-         IxQjVheb0lYtptZYjYK0D+8D4if9nDoaE1Llp1LOaaTKiumkfeUJulRd9PwEHY2A4iJx
-         h+nQ==
-X-Gm-Message-State: AOJu0Yy1P1HIvGgivD7y9xMQp4mdXV75Fzqy/l0FaziuK5/mNnqbiECC
-	Pj0qu21lviBz30IJV93lDWM=
-X-Google-Smtp-Source: AGHT+IFkJFbGrfUWwgHXOJs8Oz90Hfeou1ogUwYrvTaxwXqKQfMgZzYszox2Uyl/gw/NiWS/UhVgIQ==
-X-Received: by 2002:a05:6a00:2395:b0:6d9:bce7:d8e3 with SMTP id f21-20020a056a00239500b006d9bce7d8e3mr978629pfc.24.1704871434893;
-        Tue, 09 Jan 2024 23:23:54 -0800 (PST)
-Received: from mgyee-VirtualBox ([47.152.33.114])
-        by smtp.gmail.com with ESMTPSA id a24-20020a62d418000000b006d70b0d4639sm2914529pfh.107.2024.01.09.23.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 23:23:54 -0800 (PST)
-From: Matthias Yee <mgyee9@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: dan.carpenter@linaro.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Matthias Yee <mgyee9@gmail.com>
-Subject: [PATCH v3] staging: vt6655: fix open parentheses alignment
-Date: Tue,  9 Jan 2024 23:23:05 -0800
-Message-Id: <20240110072304.2226-1-mgyee9@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1704871460; x=1705476260;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Azmp4KYfdL3dOyr5tehq9G4ZZFHnH/CcRj4pQ5xag0A=;
+        b=uEKy5jWtilOE00fIo5LoDY3sNBJqV23MAHXSeZmrCRYmBAYCL2wcXQqj5VtoFu746o
+         ysW8EBR4ucQALLYYH1+CPGpBh1+cHPzNHLO/miARVXYR+biUOfqoSVO/N9Farpq841L0
+         jX+XByWJtF1S3eEwLO166t4aYEF7w4uVHt8sszuRYshHElJHWpHwBwb0uVOzIld3g40t
+         ai5BsZyNa5pCWYPz7iWpYU/wy26iDwTXT4bZKi37HaxEVZjO2XEbDtScCXFHqSgeyZML
+         XXXqjHMm7bgpXXfcTeqZwtHseoeGuuv8hGVVMSx185Pku/XMVnA3jAbqriq2J0cfv+oU
+         vHhQ==
+X-Gm-Message-State: AOJu0YzPYNnavCfiRsq4Bichi+nnISWeJYgorRfqxZrkWP9GO/C6+0yC
+	KuXTFpvKOU6FMPpuVShyzEidoMrtqNsCLw==
+X-Google-Smtp-Source: AGHT+IFkVQyE5+aFuxGwgRFAAjNGnDl/rHG5MuVqbRusqX4yFBREGEWzFohuKpqGHIN4f7vgEZ4+aA==
+X-Received: by 2002:a17:907:77c1:b0:a2a:19eb:9144 with SMTP id kz1-20020a17090777c100b00a2a19eb9144mr2067875ejc.1.1704871460370;
+        Tue, 09 Jan 2024 23:24:20 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id p11-20020a170906140b00b00a26b3f29f3dsm1801270ejc.43.2024.01.09.23.24.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 23:24:19 -0800 (PST)
+Message-ID: <36531917-7319-40d5-a5d9-1b5977be7849@linaro.org>
+Date: Wed, 10 Jan 2024 08:24:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 1/4] dt-bindings: soc: sophgo: Add Sophgo system
+ control module
+Content-Language: en-US
+To: Chen Wang <unicorn_wang@outlook.com>, Chen Wang <unicornxw@gmail.com>,
+ aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+ palmer@dabbelt.com, paul.walmsley@sifive.com, richardcochran@gmail.com,
+ robh+dt@kernel.org, sboyd@kernel.org, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, haijiao.liu@sophgo.com,
+ xiaoguang.xing@sophgo.com, guoren@kernel.org, jszhang@kernel.org,
+ inochiama@outlook.com, samuel.holland@sifive.com
+References: <cover.1704694903.git.unicorn_wang@outlook.com>
+ <acebc88db3e5fcd2a2607b56842af7443a6e1289.1704694903.git.unicorn_wang@outlook.com>
+ <cc7cc943-7242-4fd1-9b56-3ece0a418e05@linaro.org>
+ <MA0P287MB2822E54A6DD36F914DB56E98FE6B2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+ <1e1ef0a0-6639-4a4d-9b4e-50bcee3fb3c5@linaro.org>
+ <MA0P287MB2822C1F51E9F03137EF42093FE6A2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+ <60abfdcc-3d61-4df1-b77b-23d4a5d26a46@linaro.org>
+ <MA0P287MB28223C0D5BD8E2A6A042A7BEFE692@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <MA0P287MB28223C0D5BD8E2A6A042A7BEFE692@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Adjusted whitespace to fix checkpatch warning Alignment Should Match
-Open Parenthesis.
+On 10/01/2024 01:44, Chen Wang wrote:
 
-Signed-off-by: Matthias Yee <mgyee9@gmail.com>
----
-Changes in v3
--fixed line wrapping for commit message
----
- drivers/staging/vt6655/card.c | 74 +++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
+>>> clocks." may cause misunderstanding. I plan to change it to "The Sophgo
+>>> SG2042 SoC system controller provides register information such as
+>>> offset, mask and shift to configure related modules such as clock." Is
+>>> this better?
+>>>
+>> Still does not make sense. To provide "offset" means that some other
+>> hardware reads sophgo module to get the value of offset. That's not the
+>> case here.
+> 
+> I'm probably starting to understand what you mean. How about changing it 
+> to the following?
+> 
+> The Sophgo system controller is a registers block, providing multiple 
+> low level platform functions like chip configuration, clock control, etc.
 
-diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-index 36183f2a64c1..688c870d89bc 100644
---- a/drivers/staging/vt6655/card.c
-+++ b/drivers/staging/vt6655/card.c
-@@ -81,9 +81,9 @@ static void vt6655_mac_set_bb_type(void __iomem *iobase, u32 mask)
-  * Return Value: none
-  */
- static void calculate_ofdmr_parameter(unsigned char rate,
--				       u8 bb_type,
--				       unsigned char *tx_rate,
--				       unsigned char *rsv_time)
-+				      u8 bb_type,
-+				      unsigned char *tx_rate,
-+				      unsigned char *rsv_time)
- {
- 	switch (rate) {
- 	case RATE_6M:
-@@ -288,7 +288,7 @@ bool card_set_phy_parameter(struct vnt_private *priv, u8 bb_type)
-  * Return Value: none
-  */
- bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
--		    u64 bss_timestamp)
-+		     u64 bss_timestamp)
- {
- 	u64 local_tsf;
- 	u64 tsf_offset = 0;
-@@ -297,7 +297,7 @@ bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
- 
- 	if (bss_timestamp != local_tsf) {
- 		tsf_offset = card_get_tsf_offset(rx_rate, bss_timestamp,
--						local_tsf);
-+						 local_tsf);
- 		/* adjust TSF, HW's TSF add TSF Offset reg */
- 		tsf_offset =  le64_to_cpu(tsf_offset);
- 		iowrite32((u32)tsf_offset, priv->port_offset + MAC_REG_TSFOFST);
-@@ -321,7 +321,7 @@ bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
-  * Return Value: true if succeed; otherwise false
-  */
- bool card_set_beacon_period(struct vnt_private *priv,
--			  unsigned short beacon_interval)
-+			    unsigned short beacon_interval)
- {
- 	u64 next_tbtt;
- 
-@@ -586,61 +586,61 @@ void card_set_rspinf(struct vnt_private *priv, u8 bb_type)
- 
- 	/* RSPINF_a_6 */
- 	calculate_ofdmr_parameter(RATE_6M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_6);
- 	/* RSPINF_a_9 */
- 	calculate_ofdmr_parameter(RATE_9M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_9);
- 	/* RSPINF_a_12 */
- 	calculate_ofdmr_parameter(RATE_12M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_12);
- 	/* RSPINF_a_18 */
- 	calculate_ofdmr_parameter(RATE_18M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_18);
- 	/* RSPINF_a_24 */
- 	calculate_ofdmr_parameter(RATE_24M,
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_24);
- 	/* RSPINF_a_36 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_36M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_36M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_36);
- 	/* RSPINF_a_48 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_48M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_48M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_48);
- 	/* RSPINF_a_54 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_54M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_54M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_54);
- 	/* RSPINF_a_72 */
- 	calculate_ofdmr_parameter(CARDwGetOFDMControlRate((void *)priv,
--							   RATE_54M),
--				   bb_type,
--				   &byTxRate,
--				   &byRsvTime);
-+							  RATE_54M),
-+				  bb_type,
-+				  &byTxRate,
-+				  &byRsvTime);
- 	iowrite16(MAKEWORD(byTxRate, byRsvTime), priv->port_offset + MAC_REG_RSPINF_A_72);
- 	/* Set to Page0 */
- 	VT6655_MAC_SELECT_PAGE0(priv->port_offset);
--- 
-2.34.1
+Yes, that sounds good.
+
+Best regards,
+Krzysztof
 
 
