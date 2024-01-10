@@ -1,79 +1,152 @@
-Return-Path: <linux-kernel+bounces-22752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F11A82A281
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:41:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AE1382A291
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAA0428DD1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:40:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 930411C22C6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8E953E3C;
-	Wed, 10 Jan 2024 20:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC8E4F899;
+	Wed, 10 Jan 2024 20:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ngjMnmh6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MPXVECQ/"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C42952F83;
-	Wed, 10 Jan 2024 20:38:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 55250C43142;
-	Wed, 10 Jan 2024 20:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704919126;
-	bh=od8ATEcsWESiCSB7pkmppJARE/+9hRLv/g6UpS5J1BI=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=ngjMnmh6KIq+Y4E9lfDNs4V12CFmtM0n4RFqxnMxXMZNyZWobgMChWDqJ1uzBmVIr
-	 tEgdLEw838EcIWzOg9aRS4CdwSdDIn+EhvLax8MuotmkKJTFAG3tzDMSCyyyoWq2GR
-	 Lja5n2TQLBpis3SgdBbnyrLcNCgjeQZ5VUntfIwqrA9D7u4k3s2FMTD/dlSkwEOXIG
-	 zcO2y6iJ8Q+aSgH2qk7m2JC2xogVvlbADxU2TDVhWQu27fSmcIxgzxSpSRXXjitxWc
-	 H2RQ+lyY++F3nhEx+ybhwXN5fs4EciALyev8Ekxz4DNCHg5WNva5inSFo7OmdjZAyx
-	 alPLSss0TiHJQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 415BDDFC686;
-	Wed, 10 Jan 2024 20:38:46 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Update for 6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
-References: <YkUdKiJflWqxBmx5@gondor.apana.org.au>
- <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
- <Yui+kNeY+Qg4fKVl@gondor.apana.org.au>
- <Yzv0wXi4Uu2WND37@gondor.apana.org.au>
- <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
- <Y/MDmL02XYfSz8XX@gondor.apana.org.au>
- <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
- <ZJ0RSuWLwzikFr9r@gondor.apana.org.au>
- <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
- <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au> <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.8-p1
-X-PR-Tracked-Commit-Id: b8910630c967ffee582289451ddb5f9f19c26872
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0cb552aa97843f24549ce808883494138471c16b
-Message-Id: <170491912626.22036.12940633878070587625.pr-tracker-bot@kernel.org>
-Date: Wed, 10 Jan 2024 20:38:46 +0000
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0DE4F1E2
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40AHuFUC013759;
+	Wed, 10 Jan 2024 20:40:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2023-11-20;
+ bh=yEP4TWDAy69XkemuYw4WGO8L6fdu/vnXGOJdbDSg9O8=;
+ b=MPXVECQ/Mr74dQuDn+I/fM2u3GBwwc/5pV0LXpTwH6XcSEXan5Iga7ztzIcQtL2L5a1G
+ xaLnPg4A34gKZNLJg2KOwHj/YRk3Al1SIH7AaTA55bXkZTC87tPvTaHecbg/Zd9j/2kQ
+ czQbZP5YgtOAH3k7aSevhkN1IR6El4+6PbLLmHMG8b9DTM1z+k3lSuSqKkAgC76xyxx/
+ 3JZzoiAhAsCPU13/rY37u2LWDDuQ61ytP/ApX5frheeIF9H9js4TBSu1RNdtVvvyC+JD
+ K6f35AzH15T8FAszzTf3UGUKlYfv17R3oKDt49krqKxk30wiL+yuNz6od57gLsVmtClf JQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vhs1x1b3f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jan 2024 20:40:18 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40AJJfQ2030062;
+	Wed, 10 Jan 2024 20:40:17 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vfutp5x5w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jan 2024 20:40:17 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40AKeGrP005067;
+	Wed, 10 Jan 2024 20:40:16 GMT
+Received: from ca-dev63.us.oracle.com (ca-dev63.us.oracle.com [10.211.8.221])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3vfutp5x5e-1;
+	Wed, 10 Jan 2024 20:40:16 +0000
+From: Steve Sistare <steven.sistare@oracle.com>
+To: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Eugenio Perez Martin <eperezma@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Dragos Tatulea <dtatulea@nvidia.com>, Eli Cohen <elic@nvidia.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        Steve Sistare <steven.sistare@oracle.com>
+Subject: [RFC V1 00/13] vdpa live update
+Date: Wed, 10 Jan 2024 12:40:02 -0800
+Message-Id: <1704919215-91319-1-git-send-email-steven.sistare@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-10_10,2024-01-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 adultscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=554 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401100163
+X-Proofpoint-ORIG-GUID: QgvA-PCAnCNlnNiZJFQDskCPJxxozxm-
+X-Proofpoint-GUID: QgvA-PCAnCNlnNiZJFQDskCPJxxozxm-
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Wed, 10 Jan 2024 06:17:32 +0800:
+Live update is a technique wherein an application saves its state, exec's
+to an updated version of itself, and restores its state.  Clients of the
+application experience a brief suspension of service, on the order of 
+100's of milliseconds, but are otherwise unaffected.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.8-p1
+Define and implement interfaces that allow vdpa devices to be preserved
+across fork or exec, to support live update for applications such as qemu.
+The device must be suspended during the update, but its dma mappings are
+preserved, so the suspension is brief.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0cb552aa97843f24549ce808883494138471c16b
+The VHOST_NEW_OWNER ioctl transfers device ownership and pinned memory
+accounting from one process to another.
 
-Thank you!
+The VHOST_BACKEND_F_NEW_OWNER backend capability indicates that
+VHOST_NEW_OWNER is supported.
+
+The VHOST_IOTLB_REMAP message type updates a dma mapping with its userland
+address in the new process.
+
+The VHOST_BACKEND_F_IOTLB_REMAP backend capability indicates that
+VHOST_IOTLB_REMAP is supported and required.  Some devices do not
+require it, because the userland address of each dma mapping is discarded
+after being translated to a physical address.
+
+Here is a pseudo-code sequence for performing live update, based on
+suspend + reset because resume is not yet available.  The vdpa device
+descriptor, fd, remains open across the exec.
+
+  ioctl(fd, VHOST_VDPA_SUSPEND)
+  ioctl(fd, VHOST_VDPA_SET_STATUS, 0)
+  exec 
+
+  ioctl(fd, VHOST_NEW_OWNER)
+
+  issue ioctls to re-create vrings
+
+  if VHOST_BACKEND_F_IOTLB_REMAP
+      foreach dma mapping
+          write(fd, {VHOST_IOTLB_REMAP, new_addr})
+
+  ioctl(fd, VHOST_VDPA_SET_STATUS,
+            ACKNOWLEDGE | DRIVER | FEATURES_OK | DRIVER_OK)
+
+
+Steve Sistare (13):
+  vhost-vdpa: count pinned memory
+  vhost-vdpa: pass mm to bind
+  vhost-vdpa: VHOST_NEW_OWNER
+  vhost-vdpa: VHOST_BACKEND_F_NEW_OWNER
+  vhost-vdpa: VHOST_IOTLB_REMAP
+  vhost-vdpa: VHOST_BACKEND_F_IOTLB_REMAP
+  vhost-vdpa: flush workers on suspend
+  vduse: flush workers on suspend
+  vdpa_sim: reset must not run
+  vdpa_sim: flush workers on suspend
+  vdpa/mlx5: new owner capability
+  vdpa_sim: new owner capability
+  vduse: new owner capability
+
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  |   3 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim.c   |  24 ++++++-
+ drivers/vdpa/vdpa_user/vduse_dev.c |  32 +++++++++
+ drivers/vhost/vdpa.c               | 101 +++++++++++++++++++++++++++--
+ drivers/vhost/vhost.c              |  15 +++++
+ drivers/vhost/vhost.h              |   1 +
+ include/uapi/linux/vhost.h         |  10 +++
+ include/uapi/linux/vhost_types.h   |  15 ++++-
+ 8 files changed, 191 insertions(+), 10 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.39.3
+
 
