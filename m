@@ -1,78 +1,46 @@
-Return-Path: <linux-kernel+bounces-22606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B98382A053
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06D8A82A057
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:40:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D4611C22551
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:37:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BACD1C22587
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2E34D58B;
-	Wed, 10 Jan 2024 18:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B7B4D587;
+	Wed, 10 Jan 2024 18:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B4y9m4px"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6QA385J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D350E4D582
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d87df95ddso46234605e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:37:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704911866; x=1705516666; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0bRmYP/rNPWw+8+5BllGhXOmL25I0DLXSeKEgWDNQLs=;
-        b=B4y9m4pxhpxRGOujWf+e9E3fjzFu5dOFOwf6HawGfDo4SP73owmvHqGT6+ep0hBuY4
-         RhU2Ca7MzBDbCnCSE0A47ldGPGAuyW6Y1qnIecRaj3u43zkfAJWb0ab9G8E52rw//fjV
-         xg8dYajX+RjVoFVP9Lbpk3hT85MqmDH4e/BzkXUjcT45ZHgtVkHlR0If7NLkvwkZVr24
-         K4Cd6BxoKiQyanYjNYrHvcnOeUFowoUl0JOyRNQqpKhZ+1TOfmVGQtbZibTsjkViDfzi
-         hJQRObKO+yDpY88g+6Wz6rmYy3NDFY7IgKHiieRrWGZLomxHaSza63XMzBJ0AOONSoF1
-         szBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704911866; x=1705516666;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0bRmYP/rNPWw+8+5BllGhXOmL25I0DLXSeKEgWDNQLs=;
-        b=cUihJlPasx0EouyPPwKmtQS0jBQlCXAIHmBESQAtAjdNqOoYxJZXU5CSurPbZg733b
-         kmHpPD4EdJLS7rdxqd7lX0rDQ/zvks33xTuNlRMiCdUGUdiOOx4DT2UKBItuBXPzUCZl
-         pAY8ds4+GmzmY4tB008HtC1a9k5hWwwp0yTn8V6DmiHcQv8MuNvBxRNdMkESumIA/E8L
-         gjl8m0QvPvXXkkdRFlROmk06QleTd9ktmyq+nRqyzJsFtg5f+qXj/r3G57zCMIZ2Gu9p
-         +jtxfFK6BepZBEmN1s33aR/oRZSQHOCDik3T1l2H2jLk7qPhexq/QEENN0F3HjqlPiGF
-         2NIA==
-X-Gm-Message-State: AOJu0Yww5yIl+VSybgWuPZo59c35BHiHim6RjreohoFwpylugZQityMM
-	sYBl005SD0DDvPQl6W7t49NAo0pTBvT55w==
-X-Google-Smtp-Source: AGHT+IEOYHVXjBcX1zYY8aTR9nE/xddM0bNI/sKTb4IkdC06BAEXBpFk57A1vGcVFhzX51Zgcm0+0w==
-X-Received: by 2002:a05:600c:1603:b0:40e:54f1:5d3e with SMTP id m3-20020a05600c160300b0040e54f15d3emr372091wmn.199.1704911866001;
-        Wed, 10 Jan 2024 10:37:46 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id bg3-20020a05600c3c8300b0040d91fa270fsm3064239wmb.36.2024.01.10.10.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 10:37:45 -0800 (PST)
-Date: Wed, 10 Jan 2024 21:37:42 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: Markus Elfring <Markus.Elfring@web.de>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, "cocci@inria.fr" <cocci@inria.fr>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Drivers: hv: vmbus: One function call less in
- create_gpadl_header() after error detection
-Message-ID: <d3c13efc-a1a3-4f19-b0b9-f8c02cc674d5@moroto.mountain>
-References: <6d97cafb-ad7c-41c1-9f20-41024bb18515@web.de>
- <SN6PR02MB4157AA51AD8AEBB24D0668B7D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
- <82054a0a-72e5-45b2-8808-e411a9587406@web.de>
- <SN6PR02MB4157CA3901DD8D069C755C72D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244754CDEB
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:40:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CCB3C433F1;
+	Wed, 10 Jan 2024 18:40:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704912031;
+	bh=1Bisy52+4v+u+GwuKg5Tzrfw8JADYsFRUtOE99jsZPQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L6QA385JFf7m8iRGMu5ALTiAL/XVPYKPMviprK2QJZHYbktlYrV+nwLKQ/Cs0Hc7A
+	 rBDwO2tSiUPsVmFysnIoNeW6CfAvy/1ZcqgvJD4oVJwGrP/4i9YB1VbLXRofhJPnmW
+	 Sc/i2T65Cmmo4zidwHPfbpJQfuF3JQwn5q2v8JAoR/EqWAQoF+grcNsmQbIx/Fenz8
+	 nOHBVBRLx++duafZnUBwortRsjkArIqJ9VbfCpO9/FNLmdyBOQZdNgLaDGMXeuODiZ
+	 dsjCPHMdEARdX4uUWqi2PNKtPSe4aK+4Rzgpp5seXeZ2ytpovcxeIDpK+Mg9KXM8AY
+	 0TUGgv/2L8Geg==
+Date: Wed, 10 Jan 2024 11:40:28 -0700
+From: Keith Busch <kbusch@kernel.org>
+To: William Butler <wab@google.com>
+Cc: Pavel Emelyanov <xemul@openvz.org>, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
+Subject: Re: [PATCH] nvme: Inform controller of doorbell config before
+ unquiescing IO queues
+Message-ID: <ZZ7knJGSVx8hWvaW@kbusch-mbp>
+References: <20240110182855.1833512-1-wab@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,62 +49,17 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN6PR02MB4157CA3901DD8D069C755C72D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
+In-Reply-To: <20240110182855.1833512-1-wab@google.com>
 
-The second half of the if statement is basically duplicated.  It doesn't
-need to be treated as a special case.  We could do something like below.
-I deliberately didn't delete the tabs.  Also I haven't tested it.
+On Wed, Jan 10, 2024 at 06:28:55PM +0000, William Butler wrote:
+> During resets, if queues are unquiesced first, then the host can submit
+> IOs to the controller using shadow doorbell logic but the controller
+> won't be aware. This can lead to necessary MMIO doorbells from being
+> not issued, causing requests to be delayed and timed-out.
 
-regards,
-dan carpenter
+Good catch. I guess we wouldn't normally expect any requests to be in
+queue at this point, but plenty of reasons it could happen.
 
-diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-index 56f7e06c673e..2ba65f9ad3f1 100644
---- a/drivers/hv/channel.c
-+++ b/drivers/hv/channel.c
-@@ -328,9 +328,9 @@ static int create_gpadl_header(enum hv_gpadl_type type, void *kbuffer,
- 		  sizeof(struct gpa_range);
- 	pfncount = pfnsize / sizeof(u64);
- 
--	if (pagecount > pfncount) {
--		/* we need a gpadl body */
--		/* fill in the header */
-+	if (pagecount < pfncount)
-+		pfncount = pagecount;
-+
- 		msgsize = sizeof(struct vmbus_channel_msginfo) +
- 			  sizeof(struct vmbus_channel_gpadl_header) +
- 			  sizeof(struct gpa_range) + pfncount * sizeof(u64);
-@@ -410,31 +410,6 @@ static int create_gpadl_header(enum hv_gpadl_type type, void *kbuffer,
- 			pfnsum += pfncurr;
- 			pfnleft -= pfncurr;
- 		}
--	} else {
--		/* everything fits in a header */
--		msgsize = sizeof(struct vmbus_channel_msginfo) +
--			  sizeof(struct vmbus_channel_gpadl_header) +
--			  sizeof(struct gpa_range) + pagecount * sizeof(u64);
--		msgheader = kzalloc(msgsize, GFP_KERNEL);
--		if (msgheader == NULL)
--			goto nomem;
--
--		INIT_LIST_HEAD(&msgheader->submsglist);
--		msgheader->msgsize = msgsize;
--
--		gpadl_header = (struct vmbus_channel_gpadl_header *)
--			msgheader->msg;
--		gpadl_header->rangecount = 1;
--		gpadl_header->range_buflen = sizeof(struct gpa_range) +
--					 pagecount * sizeof(u64);
--		gpadl_header->range[0].byte_offset = 0;
--		gpadl_header->range[0].byte_count = hv_gpadl_size(type, size);
--		for (i = 0; i < pagecount; i++)
--			gpadl_header->range[0].pfn_array[i] = hv_gpadl_hvpfn(
--				type, kbuffer, size, send_offset, i);
--
--		*msginfo = msgheader;
--	}
- 
- 	return 0;
- nomem:
+Applied to nvme-6.8 with a slightly updated title to match the local
+conventions.
 
