@@ -1,116 +1,86 @@
-Return-Path: <linux-kernel+bounces-22588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2654A82A014
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:08:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DE6482A019
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4A2AB24AD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:08:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 565242829CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE55F4D5A6;
-	Wed, 10 Jan 2024 18:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1A34D13D;
+	Wed, 10 Jan 2024 18:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9qgtmHq"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="k/Dg44H3"
+Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A929E4D59E;
-	Wed, 10 Jan 2024 18:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28e31563ebso471815766b.2;
-        Wed, 10 Jan 2024 10:07:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704910072; x=1705514872; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ImSW9dJ5OhIFxXDfouCu83AUqDIEdVU3BTvjdmmGKUI=;
-        b=T9qgtmHqFwmb29lpzqmFTb+LnA4pb6emAYRhdmI4Gx0QXtGr/b50wkYdyYKGVwcD4A
-         /WYu80zBhBOLfTb7DqovOtLaas33f0K+j1R3OEPZd1YYY/vlEAKX9P3X7ttX5xnhxDug
-         2gW80drUW5EW1CBpeKnQakunAfOAmCbF6JqbxYQ1xfeEoAUsKTtRYR4Blz3FuO5s8RoT
-         yPYPVDuzaWlluvQEtFnzanDZUIDXStMWZIPdsw6sta3xZXhdlPQYLTvvnaQvtT6+zKpZ
-         mNY0FItC6hai4zKlKun1x60jLhSKvvXYr8crEhVyUt0K+9CD6wZOHbTZ+AH6WfF1+2yt
-         iwiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704910072; x=1705514872;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ImSW9dJ5OhIFxXDfouCu83AUqDIEdVU3BTvjdmmGKUI=;
-        b=GAne3IAXP/VhnAXnOxklk7IB+16hmr0o0uFYjlXmHGRFDe4b6MgmS6NNx0Vv0EaiyY
-         ISBhVZOWXrnCWgQxpL4dB2jjOjT67nBZv6+Vhkin0nAiR1tJ1bXv3tmA/BhN3eDr8HdC
-         +WcClSdy53uS3siXdcRbcwxh9MYw538ya6rzgb6kY9udMRh6VbqQs4VjoTAH4c3L8ldY
-         SYp0kjFENYt7VHR+d3C+YTK3G5Jno6OuQDqE4ePcYicc0X6noDfgqrKj0V3NKXQ3IER1
-         tOUZCL+T9vKN1ESPa3BvNKFh8gUATXjMIVWJ6mQ8ykn31Z1kq1DksQ5jNSqOdxWEKh8A
-         b26w==
-X-Gm-Message-State: AOJu0YyOnaFQ3NxGcR4VLel/k8gBpMcY7x3fInRQxWnfA0dv0IlX6pdK
-	MmIikuEgQegzHIPgtjxHxos=
-X-Google-Smtp-Source: AGHT+IHVmkSlaMO6nXyB7+3eYD0Hr+K1p/Xyu5oUuWWOw8m59EPJYxlo5t3gG4VHD10OXbxzOCmCbw==
-X-Received: by 2002:a17:907:510:b0:a26:fb5e:15e9 with SMTP id wj16-20020a170907051000b00a26fb5e15e9mr688896ejb.119.1704910071704;
-        Wed, 10 Jan 2024 10:07:51 -0800 (PST)
-Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
-        by smtp.gmail.com with ESMTPSA id g7-20020a1709061e0700b00a26abdff0ebsm2331937ejj.142.2024.01.10.10.07.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 10:07:51 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 10 Jan 2024 19:07:48 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
-	x86@kernel.org, leit@meta.com, linux-kernel@vger.kernel.org,
-	pawan.kumar.gupta@linux.intel.com, bpf@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v6 00/13] x86/bugs: Add a separate config for each
- mitigation
-Message-ID: <ZZ7c9EbJ71zU5TOF@gmail.com>
-References: <20231121160740.1249350-1-leitao@debian.org>
- <ZZ5p3vdnTtU5TeJe@gmail.com>
- <ZZ6FwMTRppSa2eOG@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956184D114
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id Nd1PrEy2wZnJmNd1PrktNi; Wed, 10 Jan 2024 19:09:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1704910188;
+	bh=I/Syw+xZ1pMl3p/4Pizf8euGIKMqYvenieatrvL0vyA=;
+	h=From:To:Cc:Subject:Date;
+	b=k/Dg44H33idzjy/Lxxmk1vCacVmQWz88sutI9Wms8RoOQ9UazHFwyPl1GFaFJe5kc
+	 Tt2WTk37HBS9x41OBc9Buwn2TPz4HaMSUPpIU8JcgNbGMUSgp1TYFhZI7TE1tq1vlU
+	 kbd0FPzKGRgLgY2VwdxVVgyZ4BQBS6HQQ37fTckAZ1v/yh8SlS1O7Hlg/3/7tCPMOs
+	 CTdnxmXaBSr3fHBxQvd+JfMbNU8pcHjO+OIDeYSFixOnKSvWNZG3d07z3xMEpbnQOa
+	 CdJ9Kyv62ebYm+giq4rqnXpqrN+/wh+iMwhLiG7Oknsck5lSJqBSx2aWwAAghBFydL
+	 raNndpjfsQLyQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 10 Jan 2024 19:09:48 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: vkoul@kernel.org,
+	jiaheng.fan@nxp.com,
+	peng.ma@nxp.com,
+	wen.he_1@nxp.com
+Cc: dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] MIPS: Alchemy: Fix an out-of-bound access in db1550_dev_setup()
+Date: Wed, 10 Jan 2024 19:09:46 +0100
+Message-Id: <8069c4aa2328555cceded66d7dc4e5332a6299ae.1704910173.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZ6FwMTRppSa2eOG@gmail.com>
+Content-Transfer-Encoding: 8bit
 
+When calling spi_register_board_info(),
 
-* Breno Leitao <leitao@debian.org> wrote:
+Fixes: f869d42e580f ("MIPS: Alchemy: Improved DB1550 support, with audio and serial busses.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ arch/mips/alchemy/devboards/db1550.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > Yeah, so:
-> > 
-> >  - I took this older series and updated it to current upstream, and made
-> >    sure all renames were fully done: there were two new Kconfig option
-> >    uses, which I integrated into the series. (Sorry about the delay, holiday & stuff.)
-> > 
-> >  - I also widened the renames to comments and messages, which were not
-> >    always covered.
-> > 
-> >  - Then I took this cover letter and combined it with a more high level
-> >    description of the reasoning behind this series I wrote up, and added it
-> >    to patch #1. (see it below.)
-> > 
-> >  - Then I removed the changelog repetition from the other patches and just
-> >    referred them back to patch #1.
-> > 
-> >  - Then I stuck the resulting updated series into tip:x86/bugs, without the 
-> >    last 3 patches that modify behavior.
-> 
-> Thanks for your work. I am currently reviwing the tip branch and the
-> merge seems go so far.
-> 
-> Regarding the last 3 patches, what are the next steps?
+diff --git a/arch/mips/alchemy/devboards/db1550.c b/arch/mips/alchemy/devboards/db1550.c
+index fd91d9c9a252..6c6837181f55 100644
+--- a/arch/mips/alchemy/devboards/db1550.c
++++ b/arch/mips/alchemy/devboards/db1550.c
+@@ -589,7 +589,7 @@ int __init db1550_dev_setup(void)
+ 	i2c_register_board_info(0, db1550_i2c_devs,
+ 				ARRAY_SIZE(db1550_i2c_devs));
+ 	spi_register_board_info(db1550_spi_devs,
+-				ARRAY_SIZE(db1550_i2c_devs));
++				ARRAY_SIZE(db1550_spi_devs));
+ 
+ 	c = clk_get(NULL, "psc0_intclk");
+ 	if (!IS_ERR(c)) {
+-- 
+2.34.1
 
-Please resubmit them in a few days (with Josh's Acked-by added and any 
-fixes/enhancements done along the way), on top of tip:x86/bugs.
-
-Thanks,
-
-	Ingo
 
