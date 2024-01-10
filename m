@@ -1,97 +1,94 @@
-Return-Path: <linux-kernel+bounces-22739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F8982A25C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:36:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9B082A25F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9B6BB261B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:36:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F4D28910B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438B24F1E2;
-	Wed, 10 Jan 2024 20:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KkKoyZuV"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9C64B5BB;
+	Wed, 10 Jan 2024 20:36:29 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED15E4F1E0;
-	Wed, 10 Jan 2024 20:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=hm+GOWLWZMlQYiUykVPkXxcZsaeHx3xTaM9h8zPhfMw=; b=KkKoyZuVd8JKHa4QJxJwkcS1Cd
-	D91R5tFWaNIAGiKYHzg+9pVyjQVzgJCabMfF8DCgfXbKu+/N8XHWp/4NW4jZVObdlqF4i2c3ql/ux
-	p47R6bEUjYDJRDmCThWASEIJki0SDf1h2jswBDHHBqwli352TajDPYHZESc8Avymv0lR915IehkMB
-	b5HYXqmFgn8MIizRPfuMpfz4y7q87nSGTxThWYLQUXGSuW3O381uGBIDAEApeBAKu9B1kGvQtGdM3
-	t3aDcmfpEuQdVNiGTLlKEB6y5FXn/WYELDOOSYA4M0m6OtaE43WAC5ZeqU2IvaVHyK86iiYBioPJq
-	na9jppQg==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNfIt-00E13W-1W;
-	Wed, 10 Jan 2024 20:35:59 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Krishna Kurapati <quic_kriskura@quicinc.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: [PATCH] usb: gadget: fix max_segment_size malformed table
-Date: Wed, 10 Jan 2024 12:35:58 -0800
-Message-ID: <20240110203558.2638-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AD44EB34
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36089faa032so32879905ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:36:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704918986; x=1705523786;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+p7GeMIt7RgYHRE3hg0nWVt+PaUhCpGiXFxdl2iGNEE=;
+        b=Av4/OacvRsQZS7rTu8UoXwKa9AyrlMw3sUPpZ+sgRNUTAkecPVdXdRxzNMKnp0mp7k
+         vmHk2UO1+CQsXs1hU0BRtLxgYdzOd0+SRSOVeAbAxyAJGp6tN+XTU0ypRgsE5N0ppmva
+         CHv6o5qAZkHZB9LQ8wZ0MNY0Ed3iFv2DgmlSPoHiW8SWxy/wTjbFOCmLTxIn+5A+mlaF
+         UkMDDOcL7S5VeIsb+u6/I9ErEMM1M/qyZ685W3CPAkNgZI5g5gVFW0EC+c5MqqEr73ql
+         XTEUCAxrCDi2naTwAbe3E9LxmYej0T2zYgoBrlNfn3ei65eS9x+NOydj7hjfn8faoECe
+         E/eQ==
+X-Gm-Message-State: AOJu0Ywm+cZ4kdjMb9BU4VUQKllrWqekN23S1O38dc0evdBgbAsvidH9
+	87Q1h6Bn4ujB/iKKlzYJJm92APDEDQ1fWUO/sB/erhtmGja0yrA=
+X-Google-Smtp-Source: AGHT+IGLlOxLjItJQrVX4A8bxrpwF+SodSX/V+F+ZdQxO96ocPjvHMBFGfDaO9ZafPjnyL0PBqqM7XfFuBrJkEnIa9XPTaZeTM8M
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c269:0:b0:35f:eceb:fc42 with SMTP id
+ h9-20020a92c269000000b0035fecebfc42mr11700ild.3.1704918986854; Wed, 10 Jan
+ 2024 12:36:26 -0800 (PST)
+Date: Wed, 10 Jan 2024 12:36:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000951e73060e9d627a@google.com>
+Subject: [syzbot] Monthly media report (Jan 2024)
+From: syzbot <syzbot+listf9a52addc2d8713c0b5e@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Sphinx reports a malformed table due to the table begin/end line
-segments being too short for the word "max_segment_size", so
-extend them by one more '=' character to prevent to error.
+Hello media maintainers/developers,
 
-Documentation/usb/gadget-testing.rst:459: ERROR: Malformed table.
-Text in column margin in table line 9.
+This is a 31-day syzbot report for the media subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/media
 
-Fixes: 1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegmentSize via configfs")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 13 issues are still open and 85 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 855     Yes   general protection fault in ir_raw_event_store_with_filter
+                  https://syzkaller.appspot.com/bug?extid=34008406ee9a31b13c73
+<2> 108     Yes   inconsistent lock state in sync_timeline_debug_remove
+                  https://syzkaller.appspot.com/bug?extid=7dcd254b8987a29f6450
+<3> 100     Yes   WARNING in media_create_pad_link
+                  https://syzkaller.appspot.com/bug?extid=dd320d114deb3f5bb79b
+<4> 86      Yes   WARNING in smsusb_start_streaming/usb_submit_urb
+                  https://syzkaller.appspot.com/bug?extid=12002a39b8c60510f8fb
+<5> 55      Yes   KASAN: use-after-free Read in send_packet
+                  https://syzkaller.appspot.com/bug?extid=f1a69784f6efe748c3bf
+<6> 3       Yes   KASAN: use-after-free Read in em28xx_init_extension (2)
+                  https://syzkaller.appspot.com/bug?extid=99d6c66dbbc484f50e1c
+
 ---
- Documentation/usb/gadget-testing.rst |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff -- a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
---- a/Documentation/usb/gadget-testing.rst
-+++ b/Documentation/usb/gadget-testing.rst
-@@ -448,7 +448,7 @@ Function-specific configfs interface
- The function name to use when creating the function directory is "ncm".
- The NCM function provides these attributes in its function directory:
- 
--	===============   ==================================================
-+	================  ==================================================
- 	ifname		  network device interface name associated with this
- 			  function instance
- 	qmult		  queue length multiplier for high and super speed
-@@ -458,7 +458,7 @@ The NCM function provides these attribut
- 			  Ethernet over USB link
- 	max_segment_size  Segment size required for P2P connections. This
- 			  will set MTU to (max_segment_size - 14 bytes)
--	===============   ==================================================
-+	================  ==================================================
- 
- and after creating the functions/ncm.<instance name> they contain default
- values: qmult is 5, dev_addr and host_addr are randomly selected.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
