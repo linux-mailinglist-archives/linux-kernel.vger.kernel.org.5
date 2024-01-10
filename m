@@ -1,154 +1,122 @@
-Return-Path: <linux-kernel+bounces-21738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2130829395
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:08:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF4F182939B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:13:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96DBB1F26D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:08:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10C24B24738
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CA632C71;
-	Wed, 10 Jan 2024 06:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552E732C80;
+	Wed, 10 Jan 2024 06:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="grS0AZGh"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="c4V0veSQ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2186DF6C;
-	Wed, 10 Jan 2024 06:08:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704866928; x=1736402928;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=xCUpG7MPuTydGqWkJiwHDdaFqNDHXSJYG5vfi+6flw4=;
-  b=grS0AZGhNq8soDcw6nbog9S8KeGUMle8P2BED5TJf+QI7Bbv4pwyINI+
-   AhFVbeljHYndWyjl2eZYZMbEHvn55vyagcRpzfcOxLmLdpxmoBRa/Yzxk
-   PIjaIdnXJRm+/EJC7iRPQW8e1BtE55jqP8vQOp5lxEHQe21YhmRYq+HU9
-   p401qReKBNpTcWfe1MvRheh0Yn4JCcNNoIaY3y0eHzAwVUkF1xRkzUgln
-   lHPJVyAQWCRh3XWT8Py2Nwfwawwx8Q7SO7uP3DkXq6sWAxfoRM0OZd4jU
-   ZoAOhHXI35eHwkTQjAsXGxKoX9IVTYB4SkXTGJ3qp904K18/c3HRt2rOd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11765306"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="11765306"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 22:08:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="852435366"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="852435366"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 22:08:42 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc: Gregory Price <gregory.price@memverge.com>,  Srinivasulu Thanneeru
- <sthanneeru@micron.com>,  Srinivasulu Opensrc
- <sthanneeru.opensrc@micron.com>,  "linux-cxl@vger.kernel.org"
- <linux-cxl@vger.kernel.org>,  "linux-mm@kvack.org" <linux-mm@kvack.org>,
-  "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-  "dan.j.williams@intel.com" <dan.j.williams@intel.com>,  "mhocko@suse.com"
- <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,
-  "john@jagalactic.com" <john@jagalactic.com>,  Eishan Mirakhur
- <emirakhur@micron.com>,  Vinicius Tavares Petrucci
- <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
-  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,  "Johannes
- Weiner" <hannes@cmpxchg.org>,  Wei Xu <weixugc@google.com>,  Hao Xiang
- <hao.xiang@bytedance.com>,  "Ho-Ren (Jack) Chuang"
- <horenchuang@bytedance.com>
-Subject: Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
-In-Reply-To: <20240109155049.00003f13@Huawei.com> (Jonathan Cameron's message
-	of "Tue, 9 Jan 2024 15:50:49 +0000")
-References: <20231213175329.594-1-sthanneeru.opensrc@micron.com>
-	<87cyv8qcqk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZXyQIJOim1+tE0Qr@memverge.com>
-	<87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
-	<87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZZwrIoP9+ey7rp3C@memverge.com>
-	<87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<20240109155049.00003f13@Huawei.com>
-Date: Wed, 10 Jan 2024 14:06:44 +0800
-Message-ID: <874jfl90y3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C5F8C1A;
+	Wed, 10 Jan 2024 06:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A307fi013283;
+	Wed, 10 Jan 2024 06:12:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=B5ouaHYiX5AW
+	dbZ7NSH7SvAb5JmdaWdv865fJJ5wI9Y=; b=c4V0veSQI3N4KmTf17J1RxsG1cau
+	vH9SUaqDvTs4W2CxxZZcMOWpTXFvpzUVGwr0y6VDmdmH7iASJ99TPw0I0KwLHtUd
+	RNkVC49ZVJNvxJgLXAhwad2niVvn6Ig3F3YdTSfmQijbMJxKRXSr5Q2+mL5/n7+x
+	Olc/T/8U/PCslPmYc7KZ0jLRKsvPJiSzjrwfvIsLMl+1hG7I/iJRLt0k0f22UQKX
+	t2mNQU6idQLUsgXWMuM105ZqL2Zdik/PYzQWYv5LtYMhqQd1uSWKz6NZ/IQqbsxR
+	5GivRhoU+umvA8Wgla3tp6ECLXhH24R42AOH3PwvXZd3YJYg0OXsnmddng==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9vfhghg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 06:12:41 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 40A6CbAs006500;
+	Wed, 10 Jan 2024 06:12:37 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3veyxku493-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 10 Jan 2024 06:12:37 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40A6Cb5m006494;
+	Wed, 10 Jan 2024 06:12:37 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-dikshita-hyd.qualcomm.com [10.213.110.13])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 40A6Cb6e006493;
+	Wed, 10 Jan 2024 06:12:37 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 347544)
+	id 32E1B2511; Wed, 10 Jan 2024 11:42:36 +0530 (+0530)
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+To: Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dikshita Agarwal <quic_dikshita@quicinc.com>
+Subject: [PATCH v2] media: venus: flush all buffers in output plane streamoff
+Date: Wed, 10 Jan 2024 11:42:14 +0530
+Message-Id: <1704867134-5522-1-git-send-email-quic_dikshita@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Xkb_cSNPdyGiOr_mKzcLSTF42cKVBzKm
+X-Proofpoint-ORIG-GUID: Xkb_cSNPdyGiOr_mKzcLSTF42cKVBzKm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1011 priorityscore=1501
+ impostorscore=0 adultscore=0 bulkscore=0 mlxlogscore=862 spamscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401100049
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
 
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> writes:
+For scenarios, when source change is followed by VIDIOC_STREAMOFF
+on output plane, driver should discard any queued OUTPUT
+buffers, which are not decoded or dequeued.
+Flush with HFI_FLUSH_INPUT does not have any actual impact.
+So, fix it, by invoking HFI_FLUSH_ALL, which will flush all
+queued buffers.
 
-> On Tue, 09 Jan 2024 11:41:11 +0800
-> "Huang, Ying" <ying.huang@intel.com> wrote:
->
->> Gregory Price <gregory.price@memverge.com> writes:
->> 
->> > On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote:  
->> >> >
->> >> > From  https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Live%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
->> >> > abstract_distance_offset: override by users to deal with firmware issue.
->> >> >
->> >> > say firmware can configure the cxl node into wrong tiers, similar to
->> >> > that it may also configure all cxl nodes into single memtype, hence
->> >> > all these nodes can fall into a single wrong tier.
->> >> > In this case, per node adistance_offset would be good to have ?  
->> >> 
->> >> I think that it's better to fix the error firmware if possible.  And
->> >> these are only theoretical, not practical issues.  Do you have some
->> >> practical issues?
->> >> 
->> >> I understand that users may want to move nodes between memory tiers for
->> >> different policy choices.  For that, memory_type based adistance_offset
->> >> should be good.
->> >>   
->> >
->> > There's actually an affirmative case to change memory tiering to allow
->> > either movement of nodes between tiers, or at least base placement on
->> > HMAT information. Preferably, membership would be changable to allow
->> > hotplug/DCD to be managed (there's no guarantee that the memory passed
->> > through will always be what HMAT says on initial boot).  
->> 
->> IIUC, from Jonathan Cameron as below, the performance of memory
->> shouldn't change even for DCD devices.
->> 
->> https://lore.kernel.org/linux-mm/20231103141636.000007e4@Huawei.com/
->> 
->> It's possible to change the performance of a NUMA node changed, if we
->> hot-remove a memory device, then hot-add another different memory
->> device.  It's hoped that the CDAT changes too.
->
-> Not supported, but ACPI has _HMA methods to in theory allow changing
-> HMAT values based on firmware notifications...  So we 'could' make
-> it work for HMAT based description.
->
-> Ultimately my current thinking is we'll end up emulating CXL type3
-> devices (hiding topology complexity) and you can update CDAT but
-> IIRC that is only meant to be for degraded situations - so if you
-> want multiple performance regions, CDAT should describe them form the start.
+Fixes: 85872f861d4c ("media: venus: Mark last capture buffer")
+Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+---
+Changes since v1:
+- Added fixes tag (Bryan)
 
-Thank you very much for input!  So, to support degraded performance, we
-will need to move a NUMA node between memory tiers.  And, per my
-understanding, we should do that in kernel.
+ drivers/media/platform/qcom/venus/vdec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> 
->> So, all in all, HMAT + CDAT can help us to put the memory device in
->> appropriate memory tiers.  Now, we have HMAT support in upstream.  We
->> will working on CDAT support.
->> 
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 29130a9..0d2ab95 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1255,7 +1255,7 @@ static int vdec_stop_output(struct venus_inst *inst)
+ 		break;
+ 	case VENUS_DEC_STATE_INIT:
+ 	case VENUS_DEC_STATE_CAPTURE_SETUP:
+-		ret = hfi_session_flush(inst, HFI_FLUSH_INPUT, true);
++		ret = hfi_session_flush(inst, HFI_FLUSH_ALL, true);
+ 		break;
+ 	default:
+ 		break;
+-- 
+2.7.4
 
---
-Best Regards,
-Huang, Ying
 
