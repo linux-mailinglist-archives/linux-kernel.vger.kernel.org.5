@@ -1,167 +1,262 @@
-Return-Path: <linux-kernel+bounces-22736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7C1882A252
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:33:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B52CC82A256
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71FBE281169
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59E09281DAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D524F616;
-	Wed, 10 Jan 2024 20:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EF34EB56;
+	Wed, 10 Jan 2024 20:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="xbMqzXT6"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LbVpedX8"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA60F4EB34
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33674f60184so4513333f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:32:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBDE22063
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2b6593ae10so235705266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:34:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704918752; x=1705523552; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xH5jTr5aU0xfloUoZ4e4ojWO1uQm4oQS8ylJSBoL6uQ=;
-        b=xbMqzXT6stNQwOSGEF4TKGCpRnQOd6QT1tOh6Ce9t9voyBgxAQbeqB/S8wJXSGRDJS
-         RB/em+pZk4qULwl1Fuq6n2XPEo6DeZkIxYedQsL3gitV6Q/e9kdutei0vih14x4YRLyI
-         lkVdN3YA55zyo02h/u1LhgswVYQpfStxRXARRys85opSjTU28T7M2aCq/LltUDH4LbGk
-         82h42UHGy/8OFOS/IJz3LNwYcda4w15NUaxnsvWAfSiQxZSIQXzLMEoiuwY/uAAcENTg
-         n23XxLg7GqiirQ5qARDff/GNkFWT0byJ1N8BxyVhTpc7jr/v6E4Izgf/S7Mw3ktPbcLW
-         KmHw==
+        d=linaro.org; s=google; t=1704918898; x=1705523698; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=cG5TS7jiRBzka4KOCkj5yKF26OcvPSo8/7HLaJO0co4=;
+        b=LbVpedX8+x/kphqc028LaZchOVUsC1NNuqDghxDUTtCWSNJo4bBpkkSkr5YDQi9HmS
+         zvh9MfUfQY6fgsR/XqG9EPpmb/XH58yFq4cpIcy/nQvr6HNsL4wyBrFuV7URfvPYGFCQ
+         Re3PZ1Qc+rhdrphES3de0v0OCtcCiakIfs5QpGX2RGaurw3aBcU1PEl6vnmCZ+98DIyc
+         Pr+1HPcsIpHqC9VZFVRuehdvB22PvzREG8kY0Fjj83T0sor01G+EjWON9VGtTINN9pdu
+         XdMYmhluQ76UfkCK2EICC10RiInr4MfM/BVBjWV7Ha9OCMZo+lnzN6a5l1QjuM+AL75C
+         0+wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704918752; x=1705523552;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xH5jTr5aU0xfloUoZ4e4ojWO1uQm4oQS8ylJSBoL6uQ=;
-        b=DUoch9ADfzdXb/5g/OUEwV1m426hk3x+NTJZcpCt5UfOHMFYf10dndpiq1eeSoOJ2s
-         HmbMeegCS8GEK1ooGKh1pcluUMezrO5cFJK4S/iMSUvMjiT7dQuD3P44RwJzlddxndVd
-         1L/HePeiI0PSvqRQq1+qHwO5zg7ji5aspzQAXoGxbpfwtWgR1uk4qidRtgO00yb2z42W
-         ePdgP/rnWbrGqtew4dqyJtBUGhFPptPyyVlydgDz0pS9VENdIXBLCpqsUiCxTZkCO68e
-         B9vveZtTyESe5oqfnjj0zzOXz3ydQN6Z98CqocxOPU47pXPhQaSY9tgLPymMQ9GrQuVy
-         5MgQ==
-X-Gm-Message-State: AOJu0YyJLK684qjueW9v+mpoo+/BVNMqQzXA5+f//DnT9yCIJoYc+chB
-	TUHcxPrw/rXWJocf2j1Yj75xoGwBOVNr2g==
-X-Google-Smtp-Source: AGHT+IHuqat0eKssBubXT+iurOkhZRe56orJMHJGefWABPD4z8mSZqUu5SuIAslg9U0SLC0yT9YsNg==
-X-Received: by 2002:a5d:4f03:0:b0:336:7f45:bc0f with SMTP id c3-20020a5d4f03000000b003367f45bc0fmr29434wru.46.1704918752208;
-        Wed, 10 Jan 2024 12:32:32 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:3342:1411:3dd8:cb70])
-        by smtp.gmail.com with ESMTPSA id z17-20020a5d44d1000000b003377e22ffdcsm2072172wrr.85.2024.01.10.12.32.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 12:32:31 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 3/3] gpiolib: pin GPIO devices in place during descriptor lookup
-Date: Wed, 10 Jan 2024 21:32:15 +0100
-Message-Id: <20240110203215.36396-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240110203215.36396-1-brgl@bgdev.pl>
-References: <20240110203215.36396-1-brgl@bgdev.pl>
+        d=1e100.net; s=20230601; t=1704918898; x=1705523698;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cG5TS7jiRBzka4KOCkj5yKF26OcvPSo8/7HLaJO0co4=;
+        b=NLW3D2p1t4dEtCb1QSLM4nw0v/IjeKKPneo8dggM3XrhWXgxmbPIMZUJMfxbstI0fN
+         Do24zdE3reKoJ7bMIkM8QfzLGYVqttw5nXVBThxxJP+vemxLbt/JobGRzOD/h4CCHcPw
+         Sn6rwBs/oqbApdeaXOtuKXaTL3ceVVWK+qW0ycNOUa8W+JWg4NBuv+wR69JVpShdBpNo
+         7uTfiCPJI0hllkvmnzX/7tXOB3SK7Cnqs25K4c+G23ojAyiYnbxo0PPjT2pXZAX/DNTZ
+         DDHDsJITG9vubi7oLE2zqGm9Y3Ib7zDVB0Z9Sko58a/ki3t6l7qsRIRLxwD5V5UHCOGs
+         4PHw==
+X-Gm-Message-State: AOJu0Yw8j+eT/TErwdI6reOu1s/9SSm2YadA0MauFtVOlDuLlxT+KFJk
+	jzgyvEqF4AI7pz/uTnhiLBfV+Wy2yGkCjw==
+X-Google-Smtp-Source: AGHT+IF9i+Vzo/TCYeq0AMp4Pyqei21onU9Y0fXaMJ34FS3LZjw+khtv4F7nGHJr7Mn1p1DXuAnh4g==
+X-Received: by 2002:a17:907:6d10:b0:a2c:17cb:8f21 with SMTP id sa16-20020a1709076d1000b00a2c17cb8f21mr51828ejc.145.1704918897787;
+        Wed, 10 Jan 2024 12:34:57 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id dt13-20020a170906b78d00b00a26b057df46sm2392480ejb.126.2024.01.10.12.34.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 12:34:56 -0800 (PST)
+Message-ID: <32d46b64-d4a5-437a-8737-c2d172608559@linaro.org>
+Date: Wed, 10 Jan 2024 21:34:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
+To: Guenter Roeck <linux@roeck-us.net>, Ninad Palsule <ninad@linux.ibm.com>,
+ Conor Dooley <conor@kernel.org>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+ peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
+ tony.luck@intel.com, gpiccoli@igalia.com, johannes.holland@infineon.com,
+ broonie@kernel.org, patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+ peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
+ naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+ festevam@denx.de, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-hardening@vger.kernel.org, geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-8-ninad@linux.ibm.com>
+ <20231212-avid-grill-dbead068fac8@spud>
+ <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
+ <20231212-mouth-choice-40a83caa34ec@spud>
+ <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
+ <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
+ <20240109-pep-coerce-2a86ae88753d@spud>
+ <01974929-dfbf-4989-ba39-369e521827d0@linux.ibm.com>
+ <3d194e84-bf1a-48e4-a376-e5c327c6508d@linaro.org>
+ <2dd37d2b-28da-4e73-9047-61ec5d64bdb5@linux.ibm.com>
+ <edbefdfd-eb59-4d86-ad07-feb066a21082@linaro.org>
+ <385b06e9-1daa-408a-a0ed-7b09d7d539df@linux.ibm.com>
+ <d56b1e3e-72c4-427f-937d-8c8146bf5b28@linaro.org>
+ <3830c26d-96be-4084-a04d-8edb9ccbab5e@roeck-us.net>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <3830c26d-96be-4084-a04d-8edb9ccbab5e@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 10/01/2024 20:06, Guenter Roeck wrote:
+> On 1/10/24 09:54, Krzysztof Kozlowski wrote:
+>> On 10/01/2024 16:54, Ninad Palsule wrote:
+>>> Hello Krzysztof,
+>>>
+>>>
+>>> On 1/10/24 09:37, Krzysztof Kozlowski wrote:
+>>>> On 10/01/2024 15:31, Ninad Palsule wrote:
+>>>>> Hello Krzysztof,
+>>>>>
+>>>>>
+>>>>>
+>>>>>>>>> I have send it as a separate commit. https://lore.kernel.org/linux-kernel/20231214144954.3833998-1-ninad@linux.ibm.com/
+>>>>>>>> Why did you do that? It now just adds undocumented compatibles to the
+>>>>>>>> driver. Please, as Rob requested, work with Lukas on his series to make
+>>>>>>>> sure that these devices are documented.
+>>>>>>> I think krzysztof kozlowski suggested to send these patches separately:
+>>>>>>> https://lore.kernel.org/linux-kernel/1c5ace65-2fd8-4503-b22f-e0f564d1c83f@linaro.org/
+>>>>>>>
+>>>>>>> Did I misunderstood it? Do you guys want me to include that commit again?
+>>>>>> My comment was in DTS thread under specific DTS patch. How did you
+>>>>>> figure out it applies to driver and bindings? This does not make sense.
+>>>>> Sorry for the misunderstanding. Where do you want me to add driver
+>>>>> patch? Before all DTS patches or after all DTS patches?
+>>>> Does not matter, why do you insist on combining them with DTS? Drivers
+>>>> and bindings are going together. DTS better separate, although depending
+>>>> on the case can be together.
+>>>>
+>>> I have combined DTS and Driver because DTS was using compatibility
+>>> string which is not upstream yet hence I thought it is logical to send
+>>> it under same patchset.
+>>
+>> Sometimes yes, sometimes not. DTS must not go via driver subsystem, so
+>> sending it in the same patchset has implications on maintainers applying
+>> it. Some like it, some don't and you will be nagged for combining them.
+>>
+> 
+> "DTS must not go via driver subsystem"
+> 
+> I always thought the guideline was to submit separate _patches_ for dts
+> and driver changes, but as part of a single series. I didn't know that
+> there is a rule to submit separate patch _series_. I also didn't know
+> (and as far as I know no one called me on it) that I am not supposed
+> to _apply_ dts changes. So far, I typically applied dts changes together
+> with driver patches after receiving an Acked-by: or Reviewed-by:
+> from a devicetree maintainer.
 
-There's time between when we locate the relevant descriptor during
-lookup and when we actually take the reference to its parent GPIO
-device where - if the GPIO device in question is removed - we'll end up
-with a dangling pointer to freed memory. Make sure devices cannot be
-removed until we hold a new reference to the device.
+I did not notice you applying them, but such guideline - DTS must go via
+respective SoC tree - was always repeated by me and SoC maintainers.
+Just like gazillion other things probably was not documented... or even
+if it was documented, it would be so deep among hundreds of other rules
+nobody would find it. :)
 
-In order to not overcomplicate the code with locking and unlocking
-variants of the same functions, just use the nesting feature of RW
-semaphores in gpio_device_find().
+> 
+> This exchange suggests that I did it all wrong. Should I reject devicetree
+> patches submitted as part of a driver patch series going forward ?
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpiolib.c | 42 ++++++++++++++++++++++++------------------
- 1 file changed, 24 insertions(+), 18 deletions(-)
+I propose: just ignore them. The SoC maintainer will pick them up.
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 4c93cf73a826..972f33bc1a72 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1114,7 +1114,7 @@ struct gpio_device *gpio_device_find(void *data,
- 	 */
- 	might_sleep();
- 
--	guard(rwsem_read)(&gpio_devices_sem);
-+	guard(rwsem_read_nested)(&gpio_devices_sem, SINGLE_DEPTH_NESTING);
- 
- 	list_for_each_entry(gdev, &gpio_devices, list) {
- 		if (gdev->chip && match(gdev->chip, data))
-@@ -4134,27 +4134,33 @@ static struct gpio_desc *gpiod_find_and_request(struct device *consumer,
- 	struct gpio_desc *desc;
- 	int ret;
- 
--	desc = gpiod_find_by_fwnode(fwnode, consumer, con_id, idx, &flags, &lookupflags);
--	if (gpiod_not_found(desc) && platform_lookup_allowed) {
-+	scoped_guard(rwsem_read, &gpio_devices_sem) {
-+		desc = gpiod_find_by_fwnode(fwnode, consumer, con_id, idx,
-+					    &flags, &lookupflags);
-+		if (gpiod_not_found(desc) && platform_lookup_allowed) {
-+			/*
-+			 * Either we are not using DT or ACPI, or their lookup
-+			 * did not return a result. In that case, use platform
-+			 * lookup as a fallback.
-+			 */
-+			dev_dbg(consumer,
-+				"using lookup tables for GPIO lookup\n");
-+			desc = gpiod_find(consumer, con_id, idx, &lookupflags);
-+		}
-+
-+		if (IS_ERR(desc)) {
-+			dev_dbg(consumer, "No GPIO consumer %s found\n",
-+				con_id);
-+			return desc;
-+		}
-+
- 		/*
--		 * Either we are not using DT or ACPI, or their lookup did not
--		 * return a result. In that case, use platform lookup as a
--		 * fallback.
-+		 * If a connection label was passed use that, else attempt to
-+		 * use the device name as label
- 		 */
--		dev_dbg(consumer, "using lookup tables for GPIO lookup\n");
--		desc = gpiod_find(consumer, con_id, idx, &lookupflags);
-+		ret = gpiod_request(desc, label);
- 	}
- 
--	if (IS_ERR(desc)) {
--		dev_dbg(consumer, "No GPIO consumer %s found\n", con_id);
--		return desc;
--	}
--
--	/*
--	 * If a connection label was passed use that, else attempt to use
--	 * the device name as label
--	 */
--	ret = gpiod_request(desc, label);
- 	if (ret) {
- 		if (!(ret == -EBUSY && flags & GPIOD_FLAGS_BIT_NONEXCLUSIVE))
- 			return ERR_PTR(ret);
--- 
-2.40.1
+> Should I not apply dts patches submitted as part of a patch series ?
+
+No, please do not apply them.
+
+> If so, it would help to have some documentation I can point to to explain
+> the rationale to submitters (and myself). Also, in that case, how is the
+
+Yes, it would. I can try to create something.
+
+> synchronization between device tree patches and driver patches supposed
+> to happen ?
+
+There should not be synchronization. Just to remind: we talk about DTS
+(so also DTSI and DTSO), thus everything being in arch/*/boot/dts/. We
+do not talk about DT bindings, right? The bindings are obvious (and
+documented): preferably go via driver subsystem, with fallback/special
+cases via SoC tree and fallback to Rob.
+
+The DTS must be independent from driver changes. If synchronization is
+needed, it means it is not independent. It happens from time to time,
+kind of expected exception, with proper justifications. In such case,
+recommendation is to send DTS for the next kernel release, so after the
+driver changes hit rc1.
+
+> 
+> FWIW, if dts changes are sent as separate series, I don't know how I would
+> be able to review driver changes/submissions without being copied on the
+> associated dts changes.
+
+People are also encouraged to provide links between them. One lore link
+is required: the DTS patchset, if sent in parallel, should have a link
+to the thread with the bindings being reviewed on the list. Of course if
+bindings are already accepted (in linux-next), then it's not necessary.
+We all know how to use git grep.
+
+Now about your specific question:
+
+As a driver subsystem maintainer you are not expected, as a requirement,
+to review DTS code. You can, you are welcomed, but don't you have
+already too much stuff to review? Why would like to jump to DTS? If you
+do, your help is appreciated, though. However think for a sec how would
+it even work? Imagine we send new driver + bindings + DTS for OMAP in
+one thread, so you see the DTS for your review. Now 2 months later I
+send DTS for Qualcomm using that driver. You would never be Cc-ed on
+this second submission. It wouldn't be even possible: get_maintainers.pl
+would not print your email. Why would you be expected to be CCed on
+first DTS to review and not on all others/further ones? This does not
+make sense, really.
+
+BTW, I am not saying here anything new. I was babbling about this every
+second month since few years. :)
+
+Best regards,
+Krzysztof
 
 
