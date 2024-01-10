@@ -1,143 +1,109 @@
-Return-Path: <linux-kernel+bounces-21565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7452829139
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A9082913C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:24:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 716A6288CD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:23:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40CAE288C50
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:24:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D31FA21;
-	Wed, 10 Jan 2024 00:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D1C1C01;
+	Wed, 10 Jan 2024 00:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kFRcYVr4"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JHqplrN0"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D736A7ED
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbea05a6de5so4030595276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 16:23:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704846224; x=1705451024; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jX94VLx9ltQFhw3V1qWJ4WPVt8m5uqFAZ74Ysuxim9g=;
-        b=kFRcYVr4x7Dxd59Xv69YEpk3apcb8vZ1CoC9RxzK+dpPy/ESW2833ogW/GcaiP9o7h
-         Z3B7Qd1VbJMy65sF2kTmLO5GXCcAAX1v6sBT8y6aMs0nORsf3t4YrGIKEDjXi9O1qdcu
-         r13kBhRmREvqJowZD7VMWipNwnGA4aBmRppmQpZcQ5RJRhaNNFGpbr+WkvVojekL3/FU
-         FmlFXdavfWxypeq5EbREi0wEAbh4ZZVoGMwILYW2vNRoiQv1JmIYmDSpmdP/NE/GKn9O
-         QyCK7Ro2m0eaISThu70U1e68f4xuI/rtFPWAF7CFDOB8kMxlCkhtRoeHhdZW2QNvK9tg
-         8sAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704846224; x=1705451024;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jX94VLx9ltQFhw3V1qWJ4WPVt8m5uqFAZ74Ysuxim9g=;
-        b=aLKqrbIz3JOwl2lghrywR4VKomma8XUMc3AAkcD02O6GnNnYio/65NMLrcs7XV9bVK
-         EQxz/QFGXGgUcHEYvMe/it/4uZ54+/1fIv+SJKGWolxqeRv3O+xbtk3w+/H7YfFmKbvy
-         p44QNZqetraCSEbOyKPQj8afXkGhPUPDvzcLq8Y8Pd6TVUfX/CPKp9cEPY/kmKSzPMiA
-         PJoOETHuR+SceVeL5YJg/QwVskQjloIrSzUs8kPU9dzXkqEtc8fYO3L2uWa7s7NPigF7
-         ibnY4eft62JfOou7o4D02jgvRf5OVhjxtTegGlaBAy42ORaaYYBbpSuGVpvOLgQhOUen
-         A+6A==
-X-Gm-Message-State: AOJu0YwslvwYojLng/qvCd7z3rsz5ifMZrsimkZ9Osf1L3LrIT8QE3Uj
-	gGw14o4mCcmFajovPlVAgNfxAGtTfbG8jy/gbw==
-X-Google-Smtp-Source: AGHT+IHmGCf/Yc/5QY/OVN5dMC09KbL07TkUpA6mxvhd6FvJXWoh0NzkVtKJDTVft9fYCxrkKWPtkwJgngs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8686:0:b0:dbe:111b:8875 with SMTP id
- z6-20020a258686000000b00dbe111b8875mr6564ybk.12.1704846223913; Tue, 09 Jan
- 2024 16:23:43 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue,  9 Jan 2024 16:23:40 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A622717E4
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:23:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=bF0k0tFraimuHpTxlpeFxettK+6lOSjFaik485rQmnU=; b=JHqplrN0VLcDSd2g3cK40qKbMv
+	bLTSFEiVSde18qwFh1nAeDYleqtxs8pdl9m2FAUGQlIrlh8Pd4YxbtxAjAuRob8Ch6MJ7NGCjotZE
+	oJybtbIYRtRpKPoaXNqbf7DrOJNTMzJ4RNuQsIs5l9wPT2OQAau3OSRrCgySeHXMHsYbBd5W8jdIO
+	sLRH93vL3eW3qMyegjvFmWrQcZNZUYXTZChBC1YR4H2dpHtpnOb/l3/8/kmN7w/6o+QNDKJ18jbvt
+	kP0+FUDwwIvtCbTYsDAgjpLXyZdey9EtVrnl8LIrChtKcmlkKEAgUIfOqMnaqJUFnwxUx4yj1/N5T
+	LJlQwORA==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rNMNr-009wAB-1h;
+	Wed, 10 Jan 2024 00:23:51 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Donald Robson <donald.robson@imgtec.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Frank Binns <frank.binns@imgtec.com>,
+	Matt Coster <matt.coster@imgtec.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/imagination: fix ARRAY_SIZE build error
+Date: Tue,  9 Jan 2024 16:23:50 -0800
+Message-ID: <20240110002350.1096-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240110002340.485595-1-seanjc@google.com>
-Subject: [PATCH] x86/cpu: Add a VMX flag to enumerate 5-level EPT support to userspace
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yi Lai <yi1.lai@intel.com>, Tao Su <tao1.su@linux.intel.com>, 
-	Xudong Hao <xudong.hao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Add a VMX flag in /proc/cpuinfo, ept_5level, so that userspace can query
-whether or not the CPU supports 5-level EPT paging.  EPT capabilities are
-enumerated via MSR, i.e. aren't accessible to userspace without help from
-the kernel, and knowing whether or not 5-level EPT is supported is sadly
-necessary for userspace to correctly configure KVM VMs.
+Fix a build error when using GCC 13.2.0 from kernel.org crosstools
+by changing ARRAY_SIZE() to the macro PVR_MIPS_PT_PAGE_COUNT:
 
-When EPT is enabled, bits 51:49 of guest physical addresses are consumed
-if and only if 5-level EPT is enabled.  For CPUs with MAXPHYADDR > 48, KVM
-*can't* map all legal guest memory if 5-level EPT is unsupported, e.g.
-creating a VM with RAM (or anything that gets stuffed into KVM's memslots)
-above bit 48 will be completely broken.
+drivers/gpu/drm/imagination/pvr_vm_mips.c: In function 'pvr_vm_mips_fini':
+./include/linux/array_size.h:11:25: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551615' to '-1' [-Woverflow]
+   11 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+      |                         ^
+drivers/gpu/drm/imagination/pvr_vm_mips.c:105:24: note: in expansion of macro 'ARRAY_SIZE'
+  105 |         for (page_nr = ARRAY_SIZE(mips_data->pt_pages) - 1; page_nr >= 0; page_nr--) {
+      |                        ^~~~~~~~~~
 
-Having KVM enumerate guest.MAXPHYADDR=48 in this scenario doesn't work
-either, as architecturally guest accesses to illegal addresses generate
-RSVD #PF, i.e. advertising guest.MAXPHYADDR < host.MAXPHYADDR when EPT is
-enabled would also result in broken guests.  KVM does provide a knob,
-allow_smaller_maxphyaddr, to let userspace opt-in to such setups, but
-that support is firmly best-effort, i.e. not something KVM wants to force
-upon userspace.
-
-While it's decidedly odd for a CPU to support a 52-bit MAXPHYADDR but not
-5-level EPT, the combination is architecturally legal and such CPUs do
-exist (and can easily be "created" with nested virtualization).
-
-Reported-by: Yi Lai <yi1.lai@intel.com>
-Cc: Tao Su <tao1.su@linux.intel.com>
-Cc: Xudong Hao <xudong.hao@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Fixes: 927f3e0253c1 ("drm/imagination: Implement MIPS firmware processor and MMU support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Donald Robson <donald.robson@imgtec.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Frank Binns <frank.binns@imgtec.com>
+Cc: Matt Coster <matt.coster@imgtec.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: David Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
 ---
+ drivers/gpu/drm/imagination/pvr_vm_mips.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-tip-tree folks, this is obviously not technically KVM code, but I'd like to
-take this through the KVM tree so that we can use the information to fix
-KVM selftests (hopefully this cycle).
-
- arch/x86/include/asm/vmxfeatures.h | 1 +
- arch/x86/kernel/cpu/feat_ctl.c     | 2 ++
- 2 files changed, 3 insertions(+)
-
-diff --git a/arch/x86/include/asm/vmxfeatures.h b/arch/x86/include/asm/vmxfeatures.h
-index c6a7eed03914..266daf5b5b84 100644
---- a/arch/x86/include/asm/vmxfeatures.h
-+++ b/arch/x86/include/asm/vmxfeatures.h
-@@ -25,6 +25,7 @@
- #define VMX_FEATURE_EPT_EXECUTE_ONLY	( 0*32+ 17) /* "ept_x_only" EPT entries can be execute only */
- #define VMX_FEATURE_EPT_AD		( 0*32+ 18) /* EPT Accessed/Dirty bits */
- #define VMX_FEATURE_EPT_1GB		( 0*32+ 19) /* 1GB EPT pages */
-+#define VMX_FEATURE_EPT_5LEVEL		( 0*32+ 20) /* 5-level EPT paging */
+diff -- a/drivers/gpu/drm/imagination/pvr_vm_mips.c b/drivers/gpu/drm/imagination/pvr_vm_mips.c
+--- a/drivers/gpu/drm/imagination/pvr_vm_mips.c
++++ b/drivers/gpu/drm/imagination/pvr_vm_mips.c
+@@ -46,7 +46,7 @@ pvr_vm_mips_init(struct pvr_device *pvr_
+ 	if (!mips_data)
+ 		return -ENOMEM;
  
- /* Aggregated APIC features 24-27 */
- #define VMX_FEATURE_FLEXPRIORITY	( 0*32+ 24) /* TPR shadow + virt APIC */
-diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-index 03851240c3e3..1640ae76548f 100644
---- a/arch/x86/kernel/cpu/feat_ctl.c
-+++ b/arch/x86/kernel/cpu/feat_ctl.c
-@@ -72,6 +72,8 @@ static void init_vmx_capabilities(struct cpuinfo_x86 *c)
- 		c->vmx_capability[MISC_FEATURES] |= VMX_F(EPT_AD);
- 	if (ept & VMX_EPT_1GB_PAGE_BIT)
- 		c->vmx_capability[MISC_FEATURES] |= VMX_F(EPT_1GB);
-+	if (ept & VMX_EPT_PAGE_WALK_5_BIT)
-+		c->vmx_capability[MISC_FEATURES] |= VMX_F(EPT_5LEVEL);
+-	for (page_nr = 0; page_nr < ARRAY_SIZE(mips_data->pt_pages); page_nr++) {
++	for (page_nr = 0; page_nr < PVR_MIPS_PT_PAGE_COUNT; page_nr++) {
+ 		mips_data->pt_pages[page_nr] = alloc_page(GFP_KERNEL | __GFP_ZERO);
+ 		if (!mips_data->pt_pages[page_nr]) {
+ 			err = -ENOMEM;
+@@ -102,7 +102,7 @@ pvr_vm_mips_fini(struct pvr_device *pvr_
+ 	int page_nr;
  
- 	/* Synthetic APIC features that are aggregates of multiple features. */
- 	if ((c->vmx_capability[PRIMARY_CTLS] & VMX_F(VIRTUAL_TPR)) &&
-
-base-commit: 1c6d984f523f67ecfad1083bb04c55d91977bb15
--- 
-2.43.0.472.g3155946c3a-goog
-
+ 	vunmap(mips_data->pt);
+-	for (page_nr = ARRAY_SIZE(mips_data->pt_pages) - 1; page_nr >= 0; page_nr--) {
++	for (page_nr = PVR_MIPS_PT_PAGE_COUNT - 1; page_nr >= 0; page_nr--) {
+ 		dma_unmap_page(from_pvr_device(pvr_dev)->dev,
+ 			       mips_data->pt_dma_addr[page_nr], PAGE_SIZE, DMA_TO_DEVICE);
+ 
 
