@@ -1,170 +1,198 @@
-Return-Path: <linux-kernel+bounces-22478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4C6829E47
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:12:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C27B3829E6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A4A3B25AA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:12:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56A921F231B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABE34CB46;
-	Wed, 10 Jan 2024 16:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a3/tV8d/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B16C4CB4C;
+	Wed, 10 Jan 2024 16:23:01 +0000 (UTC)
+Received: from smtp2-kfki.kfki.hu (smtp2-kfki.kfki.hu [148.6.0.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6914CB28;
-	Wed, 10 Jan 2024 16:11:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2CAC433C7;
-	Wed, 10 Jan 2024 16:11:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704903118;
-	bh=TjB+hX1j46U+CflASkOHj4zTVTFUzA+ZbdAbWk2ryio=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a3/tV8d/TpSrMMPBNe5Bio2tR6BViJo6DwIaOLYJ6dXTqqXN76rzMj52xy/TIVYU7
-	 YzbZtfDGI1pGi7Q//oC4Lp0Acc/UwQQCLOjmh7jQh7VaiOqDdh1HTPGwZSaIbsiby+
-	 cCWurXhUDUygFH/SHOzL1xtk0z4CjUb628cwyw7KwK5NQyVn9isyvX7rtXkjU4nI6S
-	 DQNgr5OzBM4Aitk1dNvvk+XrhQ2Lg0d0lHZa/o80mZ7ygooh+LXNeO/Yn7VkenHUa+
-	 tA/u0+X+ndRiC+QBeR8hwS9cofweI4PMtsBo9b5Fdo2xUbrp3dUKq39pJv1WiqrCDO
-	 edCMvCyR2u92g==
-Date: Wed, 10 Jan 2024 16:11:44 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, linux-sh@vger.kernel.org,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Yang Xiwen <forbidden405@foxmail.com>,
-	Sebastian Reichel <sre@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-fbdev@vger.kernel.org
-Subject: Re: [DO NOT MERGE v6 26/37] dt-bindings: vendor-prefixes: Add smi
-Message-ID: <20240110-sincere-tripod-9d34175fcbce@spud>
-References: <cover.1704788539.git.ysato@users.sourceforge.jp>
- <c8aaf67e3fcdb7e60632c53a784691aabfc7733e.1704788539.git.ysato@users.sourceforge.jp>
- <20240109-fructose-bundle-05d01033277b@spud>
- <CAMuHMdU1z64QHJOVd3jUsOfyuDApB1+khkUV8PvjoKbwsi327g@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63F74CB3D;
+	Wed, 10 Jan 2024 16:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=netfilter.org
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.kfki.hu (Postfix) with ESMTP id 0089DCC0120;
+	Wed, 10 Jan 2024 17:14:33 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+	by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP; Wed, 10 Jan 2024 17:14:30 +0100 (CET)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+	by smtp2.kfki.hu (Postfix) with ESMTP id 17D41CC011E;
+	Wed, 10 Jan 2024 17:14:30 +0100 (CET)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+	id 11436343167; Wed, 10 Jan 2024 17:14:30 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by blackhole.kfki.hu (Postfix) with ESMTP id 0F06C343166;
+	Wed, 10 Jan 2024 17:14:30 +0100 (CET)
+Date: Wed, 10 Jan 2024 17:14:30 +0100 (CET)
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: David Wang <00107082@163.com>
+cc: ale.crismani@automattic.com, xiaolinkui@kylinos.cn, pablo@netfilter.org, 
+    linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: Performance regression in ip_set_swap on 6.1.69
+In-Reply-To: <661cb613.7974.18cf30c4a42.Coremail.00107082@163.com>
+Message-ID: <956ec7cd-16ef-7f72-dad8-dfa2ec5f4d77@netfilter.org>
+References: <C0829B10-EAA6-4809-874E-E1E9C05A8D84@automattic.com> <20240110102342.4978-1-00107082@163.com> <a4dfc3d9-f028-7ab4-c3a7-11dcbb12e377@netfilter.org> <661cb613.7974.18cf30c4a42.Coremail.00107082@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NUFAcOAItrfxYJZq"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdU1z64QHJOVd3jUsOfyuDApB1+khkUV8PvjoKbwsi327g@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 
+Hi,
 
---NUFAcOAItrfxYJZq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 10 Jan 2024, David Wang wrote:
 
-On Wed, Jan 10, 2024 at 12:23:37PM +0100, Geert Uytterhoeven wrote:
-> Hi Conor,
->=20
-> On Tue, Jan 9, 2024 at 7:06=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
-ote:
-> > On Tue, Jan 09, 2024 at 05:23:23PM +0900, Yoshinori Sato wrote:
-> > > Add Silicon Mortion Technology Corporation
->=20
-> Motion
->=20
-> > > https://www.siliconmotion.com/
-> > >
-> > > Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-> > > ---
-> > >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b=
-/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > index 94ed63d9f7de..a338bdd743ab 100644
-> > > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > @@ -1283,6 +1283,8 @@ patternProperties:
-> > >      description: Skyworks Solutions, Inc.
-> > >    "^smartlabs,.*":
-> > >      description: SmartLabs LLC
-> > > +  "^smi,.*":
-> > > +    description: Silicon Motion Technology Corporation
+> At 2024-01-10 18:35:02, "Jozsef Kadlecsik" <kadlec@netfilter.org> wrote:
+> >On Wed, 10 Jan 2024, David Wang wrote:
 > >
-> > How come "smi" is used for a company with this name?
-> > Why is it not something like SMTC? There's probably some history here
-> > that I am unaware of.
->=20
-> See Documentation/devicetree/bindings/display/sm501fb.txt
-> The stock ticker is "SIMO", though.
-> https://www.nasdaq.com/market-activity/stocks/simo
+> >> I confirmed this on 6.7 that this was introduced by commit 
+> >> 28628fa952fefc7f2072ce6e8016968cc452b1ba with following changes:
+> >> 
+> >> 	 static inline void
+> >> 	@@ -1397,6 +1394,9 @@ static int ip_set_swap(struct sk_buff *skb, const struct nfnl_info *info,
+> >> 		ip_set(inst, to_id) = from;
+> >> 		write_unlock_bh(&ip_set_ref_lock);
+> >> 	 
+> >> 	+       /* Make sure all readers of the old set pointers are completed. */
+> >> 	+       synchronize_rcu();
+> >> 	+
+> >> 		return 0;
+> >> 	 }
+> >> 
+> >> synchronize_rcu causes the delay, and its usage here is very confusing, 
+> >> there is no reclaimer code after it.
+> >
+> >As I'm seeing just the end of the discussion, please send a full report of 
+> >the problem and how to reproduce it.
+> >
+> 
+> This was reported in 
+> https://lore.kernel.org/lkml/C0829B10-EAA6-4809-874E-E1E9C05A8D84@automattic.com/ 
+> by ale.crismani@automattic.com Just out of interest of performance 
+> issues, I tried to reproduce it with a test stressing ipset_swap:
+> 
+> My test code is as following, it would stress swapping ipset 'foo' with 
+> 'bar'; (foo/bar ipset needs to be created before the test.) With latest 
+> 6.7, the stress would take about 180 seconds to finish, but with 
+> `synchronize_rcu` removed, it only took 3seconds.
+> 
+> 
+> ```
+> unsigned char mbuffer[4096];
+> int main() {
+> 	int err;
+> 	int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
+> 	if (sock<0) {
+> 		perror("Fail to create socket");
+> 		return 1;
+> 	}
+> 	struct sockaddr_nl addr = {
+> 		.nl_family = AF_NETLINK,
+> 		.nl_pad = 0,
+> 		.nl_pid = 0,
+> 		.nl_groups = 0
+> 	};
+> 	struct sockaddr raddr = {0};
+> 	socklen_t rsize;
+> 	int seq = 0x12345678;
+> 	err = bind(sock, (struct sockaddr*)&addr, sizeof(addr));
+> 	if (err) {
+> 		perror("Fail to bind");
+> 		return 1;
+> 	}
+> 	err = getsockname(sock, &raddr, &rsize);
+> 	if (err) {
+> 		perror("Fail to getsockname");
+> 		return 1;
+> 	}
+> 	unsigned char buf[64];
+> 	struct nlmsghdr *phdr;
+> 	struct nfgenmsg *pnfg;
+> 	struct nlattr *pnla;
+> 	unsigned int total;
+> 	ssize_t rz;
+> 	struct iovec iovs;
+> 	iovs.iov_base = mbuffer;
+> 	iovs.iov_len = sizeof(mbuffer);
+> 	struct msghdr msg = {0};
+> 	msg.msg_name = &addr;
+> 	msg.msg_namelen = sizeof(addr);
+> 	msg.msg_iov = &iovs;
+> 	msg.msg_iovlen = 1;
+> 
+> 	memset(buf, 0, sizeof(buf));
+> 	total = 0;
+> 	phdr = (struct nlmsghdr*)(buf+total);
+> 	total += sizeof(struct nlmsghdr);
+> 	phdr->nlmsg_type=NFNL_SUBSYS_IPSET<<8|IPSET_CMD_PROTOCOL;
+> 	phdr->nlmsg_seq = seq;
+> 	phdr->nlmsg_flags = NLM_F_REQUEST;
+> 	pnfg = (struct nfgenmsg*)(buf+total);
+> 	total += sizeof(struct nfgenmsg);
+> 	pnfg->nfgen_family=AF_INET;
+>     	pnfg->version= NFNETLINK_V0;
+> 	pnfg->res_id=htons(0);
+> 	pnla = (struct nlattr *)(buf+total);
+> 	pnla->nla_len = 5;
+> 	pnla->nla_type = 1;
+> 	buf[total+sizeof(struct nlattr)]=0x06;
+> 	total+=8;
+> 	phdr->nlmsg_len = total;
+> 	rz = sendto(sock, buf, total, 0, (struct sockaddr*)&addr, sizeof(addr));
+> 	rz = recvmsg(sock, &msg, 0);
+> 
+> 	pnla = (struct nlattr *)(buf+total);
+> 	pnla->nla_len = 8;
+> 	pnla->nla_type = 2;
+> 	char *p = buf+(total+sizeof(struct nlattr));
+> 	p[0]='f'; p[1]='o'; p[2]='o'; p[3]=0;
+> 	total+=8;
+> 	pnla = (struct nlattr *)(buf+total);
+> 	pnla->nla_len = 8;
+> 	pnla->nla_type = 3;
+> 	p = buf+(total+sizeof(struct nlattr));
+> 	p[0]='b'; p[1]='a'; p[2]='r'; p[3]=0;
+> 	total+=8;
+> 	phdr->nlmsg_type = NFNL_SUBSYS_IPSET<<8|IPSET_CMD_SWAP;
+> 	phdr->nlmsg_flags = NLM_F_REQUEST|NLM_F_ACK;
+> 	phdr->nlmsg_len = total;
+> 
+> 	
+> 	for (int i=0; i<10000; i++) {
+> 		// stress swap foo bar
+> 		phdr->nlmsg_seq++;
+> 		sendto(sock, buf, total, 0, (struct sockaddr*)&addr, sizeof(addr));
+> 		recvmsg(sock, &msg, 0);
+> 	}
+> 
+> 	close(sock);
+> 	return 0;
+> }
+> ```
 
-If there's an existing user, there's little reason to stand in the way I
-think.
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Thanks, I'll look into it. The race condition fix between swap/destroy and 
+kernel side add/del/test had several versions, either penalizing destroy 
+or swap. Finally swap seemed to be the less intrusive. I'm going to 
+explore other possibilities.
 
-Cheers,
-Conor.
-
---NUFAcOAItrfxYJZq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ7BwAAKCRB4tDGHoIJi
-0q9OAQDdFxNbk8a1RbWhCTMkuhEoMnbyCFIJrJbkoyX9CvOgjgEA+TlXk2NSR1lR
-ie4wsGsQcBrpiUsYvM61XxlwsOPsRgg=
-=6SO8
------END PGP SIGNATURE-----
-
---NUFAcOAItrfxYJZq--
+Best regards,
+Jozsef
+-- 
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
