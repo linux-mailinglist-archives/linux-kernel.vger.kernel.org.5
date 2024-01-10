@@ -1,230 +1,166 @@
-Return-Path: <linux-kernel+bounces-22398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86B7829D28
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:11:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E771829D2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:12:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01A0EB25DFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:11:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFC86287816
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CF24BAAE;
-	Wed, 10 Jan 2024 15:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6264C3AF;
+	Wed, 10 Jan 2024 15:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="TklbYuii"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZJ90PBHG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VwEz0ob6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZJ90PBHG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VwEz0ob6"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAB84BA9A
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3608bdb484fso9992455ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:11:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1704899488; x=1705504288; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u7dnx0armDk/+RvWWpSg/XyhmNCzgM7h7SgaiA/YSV0=;
-        b=TklbYuiioxlzjnWfAA24zNXJlHUJ8ZH1uZVbhZ696vnd2G3jJ8Ko9rhkdiyfh9xLgX
-         t/jTP9OI8Q2iBqKqYFYV1Znshpcsaic/1pHXVGjj7RKbjOiRGZoKch11IulXC4GIEpk5
-         5+rFCjENgBwniQJDhzFSIpRa6fHzcSNalGWibqv/H0xUxCMFJme3WZGxMg7exb3TCWvX
-         wk5Fw+/Cqv5IwmHFsuUVq26CrXMUvE99iaJGPNzPD4IHYo4GzU1n9MnHUIBGSXMzm5L0
-         nQW7v0rrntORL8uHR5hAF/mQ6odNs5Qh/ethdEEwtCbtHxgP6CX8uzZxE1PwvU50JFGM
-         eFgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704899488; x=1705504288;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u7dnx0armDk/+RvWWpSg/XyhmNCzgM7h7SgaiA/YSV0=;
-        b=otEjEvrdntDCbQhsIUEeAk/3lBZO4pd/XOlCD9TqkCUM2bppGJg9tC81CTbG4qR6jG
-         EnEgyfd3jynnIeISxZGuh+LfvScrkwCnv7E7Dx0ybfpIfmdi0rusU/ZRHYYUYe5jjWkN
-         aS0j0XyhD9XKBBlJcnHg8dlnidiSJq2HILL7WufxsJitxKXl2bkK6L5Yd3TGBU+1xied
-         PY50c1+hDkV77k87FDHDEMMlg7zsAqoGUAqgM1Uj/sp4grgBQmgAtvp0E81JSbjFy/GJ
-         CNgYTFGAlTFDMoiw9MLPYyRCyprcC4FitALXsYnS9pKBCNDCwQlke5t4kLtQOr6nqGxO
-         uSIQ==
-X-Gm-Message-State: AOJu0YyU4Jt5wRRdwTXjlx+FGehQktOdRwjizsNa+LwmZ/gwZqNipfou
-	jwO56fdCsC7x8vdt+5T/XZeHqWZwnPyXNBw1scUaI7A2l6kyhg==
-X-Google-Smtp-Source: AGHT+IEuq58zauZkEQ1xO5LVtDSLalCCv+/Jivx2TA3XmedpEjlVHqJRGlt6ZOsWmnTKoMBajwuUrebUCLahkbpfozk=
-X-Received: by 2002:a92:c56b:0:b0:360:8a0b:50dc with SMTP id
- b11-20020a92c56b000000b003608a0b50dcmr143554ilj.10.1704899488291; Wed, 10 Jan
- 2024 07:11:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7844C3A0;
+	Wed, 10 Jan 2024 15:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 43E651F8B4;
+	Wed, 10 Jan 2024 15:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704899547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ngam/HRyYzoj85sv8uX/jXHAXpXjri79QCqTP+n6cIU=;
+	b=ZJ90PBHG2SobtAgLaK2ekYY2cTkWTef+Id1mAMw1d7bZt1vEAMkh+IUS0ASL/n7eJsTzKn
+	5fMqC9R1dXCXt0LRe6//lR4xTUjsFygsy9nzcMLf863HLsUY/RDY9tCHP7XAhpqR/4tPLd
+	ccExpOj9K1gpmmtyOAhWMm0cZWlNGLI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704899547;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ngam/HRyYzoj85sv8uX/jXHAXpXjri79QCqTP+n6cIU=;
+	b=VwEz0ob6BjJr8e5GUUgPWXs8sIeORJfBMw2XAqoIDrzvj6+EBCqDGVxfiKHjLB3O8lOEst
+	YYYlF91pNhO8IgDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704899547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ngam/HRyYzoj85sv8uX/jXHAXpXjri79QCqTP+n6cIU=;
+	b=ZJ90PBHG2SobtAgLaK2ekYY2cTkWTef+Id1mAMw1d7bZt1vEAMkh+IUS0ASL/n7eJsTzKn
+	5fMqC9R1dXCXt0LRe6//lR4xTUjsFygsy9nzcMLf863HLsUY/RDY9tCHP7XAhpqR/4tPLd
+	ccExpOj9K1gpmmtyOAhWMm0cZWlNGLI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704899547;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ngam/HRyYzoj85sv8uX/jXHAXpXjri79QCqTP+n6cIU=;
+	b=VwEz0ob6BjJr8e5GUUgPWXs8sIeORJfBMw2XAqoIDrzvj6+EBCqDGVxfiKHjLB3O8lOEst
+	YYYlF91pNhO8IgDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D79713786;
+	Wed, 10 Jan 2024 15:12:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /6fKBtuznmVEUgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 10 Jan 2024 15:12:27 +0000
+Message-ID: <3f9e3cfa-c86d-4770-b531-87138803156f@suse.cz>
+Date: Wed, 10 Jan 2024 16:12:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110073917.2398826-1-peterlin@andestech.com> <20240110073917.2398826-3-peterlin@andestech.com>
-In-Reply-To: <20240110073917.2398826-3-peterlin@andestech.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Wed, 10 Jan 2024 20:41:16 +0530
-Message-ID: <CAAhSdy1KLSFBA_vD+NX15wuiOsz5QadQWj4ZWOK11qfL1LuHqA@mail.gmail.com>
-Subject: Re: [PATCH v7 02/16] irqchip/riscv-intc: Allow large non-standard
- interrupt number
-To: Yu Chien Peter Lin <peterlin@andestech.com>
-Cc: acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com, 
-	alexander.shishkin@linux.intel.com, andre.przywara@arm.com, 
-	aou@eecs.berkeley.edu, atishp@atishpatra.org, conor+dt@kernel.org, 
-	conor.dooley@microchip.com, conor@kernel.org, devicetree@vger.kernel.org, 
-	dminus@andestech.com, evan@rivosinc.com, geert+renesas@glider.be, 
-	guoren@kernel.org, heiko@sntech.de, irogers@google.com, 
-	jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, locus84@andestech.com, magnus.damm@gmail.com, 
-	mark.rutland@arm.com, mingo@redhat.com, n.shubin@yadro.com, 
-	namhyung@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, 
-	peterz@infradead.org, prabhakar.mahadev-lad.rj@bp.renesas.com, 
-	rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org, 
-	sunilvl@ventanamicro.com, tglx@linutronix.de, tim609@andestech.com, 
-	uwu@icenowy.me, wens@csie.org, will@kernel.org, ycliang@andestech.com, 
-	inochiama@outlook.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, 
-	wefu@redhat.com, Randolph <randolph@andestech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/4] supplement of slab allocator removal
+Content-Language: en-US
+To: sxwjean@me.com, 42.hyeyoo@gmail.com, cl@linux.com, linux-mm@kvack.org
+Cc: penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+ roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
+ arnd@arndb.de, akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+ quic_jjohnson@quicinc.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Xiongwei Song <xiongwei.song@windriver.com>
+References: <20231215034150.108783-1-sxwjean@me.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231215034150.108783-1-sxwjean@me.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.16
+X-Spamd-Result: default: False [0.16 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RL8m16cxuawb3bjqy6gedmikd6)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 BAYES_HAM(-0.05)[60.61%];
+	 RCPT_COUNT_TWELVE(0.00)[17];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[windriver.com:email,me.com:email];
+	 FREEMAIL_TO(0.00)[me.com,gmail.com,linux.com,kvack.org];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Wed, Jan 10, 2024 at 1:10=E2=80=AFPM Yu Chien Peter Lin
-<peterlin@andestech.com> wrote:
->
-> Currently, the implementation of the RISC-V INTC driver uses the
-> interrupt cause as the hardware interrupt number, with a maximum of
-> 64 interrupts. However, the platform can expand the interrupt number
-> further for custom local interrupts.
->
-> To fully utilize the available local interrupt sources, switch
-> to using irq_domain_create_tree() that creates the radix tree
-> map, add global variables (riscv_intc_nr_irqs, riscv_intc_custom_base
-> and riscv_intc_custom_nr_irqs) to determine the valid range of local
-> interrupt number (hwirq).
->
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> Reviewed-by: Randolph <randolph@andestech.com>
-
-Looks good to me.
-
-Reviewed-by: Anup Patel <anup@brainfault.org>
-
-Regards,
-Anup
-
+On 12/15/23 04:41, sxwjean@me.com wrote:
+> From: Xiongwei Song <xiongwei.song@windriver.com>
+> 
+> Hi,
+> 
+> Patch 1 is to remove an unused parameter. It has a longer history, please
+> see the change history inside the patch.
+> 
 > ---
-> Changes v1 -> v2:
->   - Fixed irq mapping failure checking (suggested by Cl=C3=A9ment and Anu=
-p)
-> Changes v2 -> v3:
->   - No change
-> Changes v3 -> v4: (Suggested by Thomas [1])
->   - Use pr_warn_ratelimited instead
->   - Fix coding style and commit message
-> Changes v4 -> v5: (Suggested by Thomas)
->   - Fix commit message
-> Changes v5 -> v6: (Suggested by Anup [2])
->   - Add riscv_intc_* global variables for checking range in riscv_intc_do=
-main_alloc()
->   - Advertise the number of interrupts allowed
-> Changes v6 -> v7:
->   - No functional change
->
-> [1] https://patchwork.kernel.org/project/linux-riscv/patch/20231023004100=
-2663486-3-peterlin@andestech.com/#25573085
-> [2] https://patchwork.kernel.org/project/linux-riscv/patch/20231213070301=
-1684751-3-peterlin@andestech.com/#25636589
+> Patch 2 is to replace slub_$params with slab_$params.
+> Vlastimil Babka pointed out we should use "slab_$param" as the primary
+> prefix for long-term plan. Please see [1] for more information.
+> 
+> I did the basic tests with qemu, which passed values by sl[au]b_max_order,
+> sl[au]b_min_order, sl[au]b_min_objects and sl[au]b_debug in command line.
+> The values looks correct by printing them out before calculating orders.
+> 
 > ---
->  drivers/irqchip/irq-riscv-intc.c | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv=
--intc.c
-> index e8d01b14ccdd..b13a16b164c9 100644
-> --- a/drivers/irqchip/irq-riscv-intc.c
-> +++ b/drivers/irqchip/irq-riscv-intc.c
-> @@ -19,15 +19,17 @@
->  #include <linux/smp.h>
->
->  static struct irq_domain *intc_domain;
-> +static unsigned int riscv_intc_nr_irqs __ro_after_init;
-> +static unsigned int riscv_intc_custom_base __ro_after_init;
-> +static unsigned int riscv_intc_custom_nr_irqs __ro_after_init;
->
->  static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
->  {
->         unsigned long cause =3D regs->cause & ~CAUSE_IRQ_FLAG;
->
-> -       if (unlikely(cause >=3D BITS_PER_LONG))
-> -               panic("unexpected interrupt cause");
-> -
-> -       generic_handle_domain_irq(intc_domain, cause);
-> +       if (generic_handle_domain_irq(intc_domain, cause))
-> +               pr_warn_ratelimited("Failed to handle interrupt (cause: %=
-ld)\n",
-> +                                   cause);
->  }
->
->  /*
-> @@ -93,6 +95,14 @@ static int riscv_intc_domain_alloc(struct irq_domain *=
-domain,
->         if (ret)
->                 return ret;
->
-> +       /*
-> +        * Only allow hwirq for which we have corresponding standard or
-> +        * custom interrupt enable register.
-> +        */
-> +       if ((riscv_intc_nr_irqs <=3D hwirq && hwirq < riscv_intc_custom_b=
-ase) ||
-> +           (riscv_intc_custom_base + riscv_intc_custom_nr_irqs) <=3D hwi=
-rq)
-> +               return -EINVAL;
-> +
->         for (i =3D 0; i < nr_irqs; i++) {
->                 ret =3D riscv_intc_domain_map(domain, virq + i, hwirq + i=
-);
->                 if (ret)
-> @@ -117,8 +127,7 @@ static int __init riscv_intc_init_common(struct fwnod=
-e_handle *fn)
->  {
->         int rc;
->
-> -       intc_domain =3D irq_domain_create_linear(fn, BITS_PER_LONG,
-> -                                              &riscv_intc_domain_ops, NU=
-LL);
-> +       intc_domain =3D irq_domain_create_tree(fn, &riscv_intc_domain_ops=
-, NULL);
->         if (!intc_domain) {
->                 pr_err("unable to add IRQ domain\n");
->                 return -ENXIO;
-> @@ -132,7 +141,10 @@ static int __init riscv_intc_init_common(struct fwno=
-de_handle *fn)
->
->         riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
->
-> -       pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
-> +       pr_info("%d local interrupts mapped\n", riscv_intc_nr_irqs);
-> +       if (riscv_intc_custom_nr_irqs)
-> +               pr_info("%d custom local interrupts mapped\n",
-> +                       riscv_intc_custom_nr_irqs);
->
->         return 0;
->  }
-> @@ -166,6 +178,10 @@ static int __init riscv_intc_init(struct device_node=
- *node,
->                 return 0;
->         }
->
-> +       riscv_intc_nr_irqs =3D BITS_PER_LONG;
-> +       riscv_intc_custom_base =3D riscv_intc_nr_irqs;
-> +       riscv_intc_custom_nr_irqs =3D 0;
-> +
->         return riscv_intc_init_common(of_node_to_fwnode(node));
->  }
->
-> --
-> 2.34.1
->
+> Patch 3 is to replace slub_$params in Documentation/mm/slub.rst based on
+> the changes of patch 2.
+> 
+> ---
+> Patch 4 is original patch 3. It is not related to slab allocator removal.
+> It's to correct the description of default value of slab_min_objects in
+> Documentation/mm/slub.rst. 
+> 
+> ---
+> This series is based on [2].
+
+I will queue this for 6.9 after the merge window. But since the changes are
+mostly in Documentation, maybe Jon would prefer his tree, then we would
+split away the code comments changes in patch 2 to go through slab tree.
+
+Vlastimil
 
