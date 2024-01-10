@@ -1,154 +1,111 @@
-Return-Path: <linux-kernel+bounces-22154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01FFA829A24
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:06:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3014829A48
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:17:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5B2E28AADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:06:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34DEDB209C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2068481D0;
-	Wed, 10 Jan 2024 12:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B314481DD;
+	Wed, 10 Jan 2024 12:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="PJtUFaYl"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i7gHOtgs"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A964C47F7D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d9af1f52bcso1953079b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 04:06:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E512C481A5;
+	Wed, 10 Jan 2024 12:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3367601a301so3758024f8f.2;
+        Wed, 10 Jan 2024 04:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1704888363; x=1705493163; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l8cKztzv2ZktLOe0dzMuixqOyjC0S8dozIynxhbNLCA=;
-        b=PJtUFaYlvrO5pZ/l4ETd5F/BPGWcdK9syqEBKz7ARCHtTxn3QP/aujLMCw3/Dejj/r
-         abT6WdbwqedaIU90uhQbNbR0zGVsaEOavXLAe+teunPX13SkyMbgWujpBdSEWWg1uMV2
-         A4ja+jyQdgycjg7qmn65D3XBbG8529pbOsdlFAWzhXAmePHu6cdBkx3mTIGz5p9aTASC
-         Oi7GTnY5REMW+srPlJ2buiPKuL3+smB+duhsJv4ocXGfOa1h5FC16XBeOwO9iJ6XJ8ce
-         a8a+yY1XLWZc4/wXe8QzNtDp7iWFGuf9/+yLHMm/vdpT/IfP/ukSEqxdX2iVHWqsz/Ho
-         CzIQ==
+        d=gmail.com; s=20230601; t=1704889053; x=1705493853; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:to:from:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VdITS2A3HXIwVFLWA5DKjHp2pw9bnbR6N/Avumcyr0w=;
+        b=i7gHOtgsxqojueKMPwamM1WlnJceIQvF4YbpNR67NNZz21YaAM0BR7SIWIlY5gUL0r
+         Bg93zNCKxBsGN9Qp1Mhs1egL2qcqlKecjI7xkPVYQMTWHKl5iwtYWO6TVvMJL8CtA3Gp
+         1Hgk8m5np362X/qwi8Nkq7MSsNXs5eBbpuu4xcnyQTd0xJZtuvfxJ9iD2gYrpsG6hPng
+         8EgQrpfd2DKIQ40Wo4Q9TNfF3XL3fx9sAyW4qcDAAUVaTMy5FbmVojiqa0yqLgyKHQL4
+         y0tdTsGwVSKUNcQZWXqBaOHglWXTu0NpXQZfIMwbv9DDprCdzxl7HZhxsM4o+KbW482f
+         dWUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704888363; x=1705493163;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=l8cKztzv2ZktLOe0dzMuixqOyjC0S8dozIynxhbNLCA=;
-        b=MXcLfhz0PBr81qUszUWX6ax74Ni8j+mj82nLPyNiDyQU5ckM9wbfi0LtRMVFVlkLIG
-         nNszR60LDz8rQwmrhAZ4gN6LHXKactzRTEZp/xWxdqqfJaao8LQ0cNoTFQSz0A1YpDxr
-         Gk92wOYCHzF7q66iHo70gqE6QUzRmeYTs5DLdYH9TFUY+C25gXgRcSeS9IkMkgFtLBS6
-         l63ADoGvRr3Kr/QkPMTlaQv4IAeBne0TDVIZARDotaC8MEf2fs2Rnyi37xVbqDh3yaVY
-         qLsndZMtD7wn3vsPDUEfasYvIlhVeFHzH7IMwWcyLm4DXCFYRmzr91GFSBL875dBszS8
-         g2vg==
-X-Gm-Message-State: AOJu0YybawGqgdmZFI4GZg4yj5qeKq7Sb6pe++2m+1G3byb9L48oCPVK
-	vWFRIC6VcTy/DZv2z168EVsKU+XBNYm8lg==
-X-Google-Smtp-Source: AGHT+IFsVj/4XzAFKalFZR2COx2846rqnoRx+GhgwtyxD4J0CYsNkiv/V9CNEvpVyo59dEDH4l9dyw==
-X-Received: by 2002:a05:6a00:3204:b0:6da:63a5:3f32 with SMTP id bm4-20020a056a00320400b006da63a53f32mr612723pfb.66.1704888362874;
-        Wed, 10 Jan 2024 04:06:02 -0800 (PST)
-Received: from [10.255.187.86] ([139.177.225.245])
-        by smtp.gmail.com with ESMTPSA id i128-20020a625486000000b006d99056c4edsm3470845pfb.187.2024.01.10.04.05.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 04:06:02 -0800 (PST)
-Message-ID: <abcc18ec-4006-4c51-96a8-e61d0ec2f092@bytedance.com>
-Date: Wed, 10 Jan 2024 20:05:50 +0800
+        d=1e100.net; s=20230601; t=1704889053; x=1705493853;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VdITS2A3HXIwVFLWA5DKjHp2pw9bnbR6N/Avumcyr0w=;
+        b=iEpQYgMvUNsMAKwdSJxSy7c4bNIZrTf1Cy6KzVNDg8+kENPYZ46V2ifopCCgaqKg25
+         sZ5U9n9RcEJjeqY8PM74cAipAwdxpXqpJiSNB90mZAtd6KQ4otDCj6r2wdJkPn33Gi08
+         A5UPNvKx2E71CqIecL7k5FXcOw5+oa3PN0yQeXiBjcYXOjNidydykyOdVy3sfVtMpEOk
+         4enMd1immzTYvrcA30laOTJmfOu7/XID2t4aaDS08TwBQQni+A9v7pl5l66KZ0F0Sxw4
+         7oIoWS2kjDXfIQ/guu0gQxkBmrfZtq70RpRKd0pm8/kMWfYArr/y7hyk4xaPZ9XZL7KQ
+         zHqQ==
+X-Gm-Message-State: AOJu0YwofkA8Ig9gsqsdCP7D8YSqvI/kD+l0UPFr//r0qBqA9j3eu9zb
+	/+GT4HvGYbAL14DJsbTvTXk=
+X-Google-Smtp-Source: AGHT+IFjuBro6pt2nIQvGPGs+YNEUND9FumnFa2uhSwD1rF6spuB3B8buMz5zeXxdPjYLCmVyKTuAQ==
+X-Received: by 2002:a5d:6288:0:b0:333:2fd2:3bcf with SMTP id k8-20020a5d6288000000b003332fd23bcfmr389741wru.136.1704889052985;
+        Wed, 10 Jan 2024 04:17:32 -0800 (PST)
+Received: from Ansuel-xps. ([78.209.40.150])
+        by smtp.gmail.com with ESMTPSA id z16-20020a5d4d10000000b0033686e8f02dsm4748067wrt.45.2024.01.10.04.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 04:17:32 -0800 (PST)
+Message-ID: <659e8adc.5d0a0220.a73cd.069f@mx.google.com>
+X-Google-Original-Message-ID: <ZZ6IW3qXtE8B99ga@Ansuel-xps.>
+Date: Wed, 10 Jan 2024 13:06:51 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+	Daniel Golle <daniel@makrotopia.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-leds@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] leds: trigger: netdev: display only supported
+ link speed attribute
+References: <20231221171125.1732-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] [PATCH 5/6] cachefiles: Fix signed/unsigned mixup
-To: David Howells <dhowells@redhat.com>,
- Christian Brauner <christian@brauner.io>, Jeff Layton <jlayton@kernel.org>,
- Gao Xiang <hsiangkao@linux.alibaba.com>,
- Dominique Martinet <asmadeus@codewreck.org>
-Cc: Steve French <smfrench@gmail.com>, Matthew Wilcox <willy@infradead.org>,
- Marc Dionne <marc.dionne@auristor.com>, Paulo Alcantara <pc@manguebit.com>,
- Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
- Eric Van Hensbergen <ericvh@kernel.org>, Ilya Dryomov <idryomov@gmail.com>,
- linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
- linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Simon Horman <horms@kernel.org>, kernel test robot <lkp@intel.com>,
- Yiqun Leng <yqleng@linux.alibaba.com>, zhujia.zj@bytedance.com
-References: <20240109112029.1572463-1-dhowells@redhat.com>
- <20240109112029.1572463-6-dhowells@redhat.com>
-From: Jia Zhu <zhujia.zj@bytedance.com>
-In-Reply-To: <20240109112029.1572463-6-dhowells@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231221171125.1732-1-ansuelsmth@gmail.com>
 
-Tested-by: Jia Zhu <zhujia.zj@bytedance.com>
+On Thu, Dec 21, 2023 at 06:11:24PM +0100, Christian Marangi wrote:
+> With the addition of more link speed mode to the netdev trigger, it was
+> pointed out that there may be a problem with bloating the attribute list
+> with modes that won't ever be supported by the trigger as the attached
+> device name doesn't support them.
+> 
+> To clear and address this problem, change the logic where these
+> additional trigger modes are listed.
+> 
+> Since the netdev trigger REQUIRE a device name to be set, attach to the
+> device name change function additional logic to parse the supported link
+> speed modes using ethtool APIs and show only the supported link speed
+> modes attribute.
+> 
+> Link speed attribute are refreshed on device_name set and on
+> NETDEV_CHANGE events.
+> 
+> This only apply to the link speed modes and every other mode is still
+> provided by default.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Reviewed-by: Marek Beh�n <kabel@kernel.org>
 
-在 2024/1/9 19:20, David Howells 写道:
-> In __cachefiles_prepare_write(), the start and pos variables were made
-> unsigned 64-bit so that the casts in the checking could be got rid of -
-> which should be fine since absolute file offsets can't be negative, except
-> that an error code may be obtained from vfs_llseek(), which *would* be
-> negative.  This breaks the error check.
-> 
-> Fix this for now by reverting pos and start to be signed and putting back
-> the casts.  Unfortunately, the error value checks cannot be replaced with
-> IS_ERR_VALUE() as long might be 32-bits.
-> 
-> Fixes: 7097c96411d2 ("cachefiles: Fix __cachefiles_prepare_write()")
-> Reported-by: Simon Horman <horms@kernel.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401071152.DbKqMQMu-lkp@intel.com/
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Reviewed-by: Simon Horman <horms@kernel.org>
-> cc: Gao Xiang <hsiangkao@linux.alibaba.com>
-> cc: Yiqun Leng <yqleng@linux.alibaba.com>
-> cc: Jia Zhu <zhujia.zj@bytedance.com>
-> cc: Jeff Layton <jlayton@kernel.org>
-> cc: linux-cachefs@redhat.com
-> cc: linux-erofs@lists.ozlabs.org
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
-> ---
->   fs/cachefiles/io.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
-> index 3eec26967437..9a2cb2868e90 100644
-> --- a/fs/cachefiles/io.c
-> +++ b/fs/cachefiles/io.c
-> @@ -522,7 +522,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
->   			       bool no_space_allocated_yet)
->   {
->   	struct cachefiles_cache *cache = object->volume->cache;
-> -	unsigned long long start = *_start, pos;
-> +	loff_t start = *_start, pos;
->   	size_t len = *_len;
->   	int ret;
->   
-> @@ -556,7 +556,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
->   					  cachefiles_trace_seek_error);
->   		return pos;
->   	}
-> -	if (pos >= start + *_len)
-> +	if ((u64)pos >= (u64)start + *_len)
->   		goto check_space; /* Unallocated region */
->   
->   	/* We have a block that's at least partially filled - if we're low on
-> @@ -575,7 +575,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
->   					  cachefiles_trace_seek_error);
->   		return pos;
->   	}
-> -	if (pos >= start + *_len)
-> +	if ((u64)pos >= (u64)start + *_len)
->   		return 0; /* Fully allocated */
->   
->   	/* Partially allocated, but insufficient space: cull. */
-> 
+Any news for this?
+
+-- 
+	Ansuel
 
