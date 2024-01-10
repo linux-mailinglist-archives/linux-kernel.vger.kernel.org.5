@@ -1,107 +1,135 @@
-Return-Path: <linux-kernel+bounces-22273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 328DB829BB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:49:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E59D829BC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6D9D28468E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:49:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B0EFB23F24
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22B84B5D4;
-	Wed, 10 Jan 2024 13:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V1jPPPfb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3671E4A994;
+	Wed, 10 Jan 2024 13:49:00 +0000 (UTC)
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20F4495CC;
-	Wed, 10 Jan 2024 13:48:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14496C433C7;
-	Wed, 10 Jan 2024 13:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704894507;
-	bh=Mpj9MmpWsZ0QXa3z+JG9y8iO9570kyRUme6G8UyY3ns=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V1jPPPfbtZjWicjR/pXvV3fvfEd+WTpUYKesK1ver/unl0yUXsY4TkjQIutQjBRsP
-	 rP/Oz0q/0h14UEjOgFaxFG624+eWlJ/AO+ivv3TYC1sZnL+hL4/+Alo/46tP000hXg
-	 zplNZ64lLrfkj8J9hOzdzzP2smKm7MeEZ/IYISeNp94tvvX509RdtM1WHeyhjMm5jx
-	 6PVp6J9lR2f0adpYnosG4kNDW+C6yKAzSmFoUpH39oONuTUSb402zXo2PYbzqdDyDw
-	 8BKfIvBQaR2VfeSzJy9k28uur98lcaUtFQRjhOYk1Xziu9Q+q1jecwOjEuD67FrH9y
-	 AnuUlci6GEj1Q==
-Date: Wed, 10 Jan 2024 13:48:20 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: akpm@linux-foundation.org, llvm@lists.linux.dev,
-	patches@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	kvm@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-efi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-	linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
-	linux-mm@kvack.org, bridge@lists.linux.dev, netdev@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/3] arch and include: Update LLVM Phabricator links
-Message-ID: <20240110-apostle-trident-533d4c2c9c97@spud>
-References: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
- <20240109-update-llvm-links-v1-2-eb09b59db071@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911F04CB21;
+	Wed, 10 Jan 2024 13:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W-MODhG_1704894525;
+Received: from 30.212.171.107(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W-MODhG_1704894525)
+          by smtp.aliyun-inc.com;
+          Wed, 10 Jan 2024 21:48:47 +0800
+Message-ID: <cf0259fc-4a44-4507-97be-e7b38d693604@linux.alibaba.com>
+Date: Wed, 10 Jan 2024 21:48:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="p6SYI+U6gP5vpK1M"
-Content-Disposition: inline
-In-Reply-To: <20240109-update-llvm-links-v1-2-eb09b59db071@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] perf scripts python: arm-cs-trace-disasm.py: add
+ option to print virtual address
+To: Leo Yan <leo.yan@linaro.org>
+Cc: linux-kernel@vger.kernel.org, james.clark@arm.com,
+ coresight@lists.linaro.org, suzuki.poulose@arm.com, mike.leach@linaro.org,
+ alexander.shishkin@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+ adrian.hunter@intel.com, linux-perf-users@vger.kernel.org, al.grant@arm.com,
+ mathieu.poirier@linaro.org, tor@ti.com, acme@redhat.com
+References: <20231214123304.34087-1-tianruidong@linux.alibaba.com>
+ <20240110025617.66646-1-tianruidong@linux.alibaba.com>
+ <20240110025617.66646-2-tianruidong@linux.alibaba.com>
+ <20240110125544.GG44@debian-dev>
+Content-Language: en-US
+From: Ruidong Tian <tianruidong@linux.alibaba.com>
+In-Reply-To: <20240110125544.GG44@debian-dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Hi Leo:
+
+Thank you very much for your advice. I will remove your SoB
+and add 02 and 03 patch in V3.
 
 
---p6SYI+U6gP5vpK1M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 09, 2024 at 03:16:30PM -0700, Nathan Chancellor wrote:
-> reviews.llvm.org was LLVM's Phabricator instances for code review. It
-> has been abandoned in favor of GitHub pull requests. While the majority
-> of links in the kernel sources still work because of the work Fangrui
-> has done turning the dynamic Phabricator instance into a static archive,
-> there are some issues with that work, so preemptively convert all the
-> links in the kernel sources to point to the commit on GitHub.
->=20
-> Most of the commits have the corresponding differential review link in
-> the commit message itself so there should not be any loss of fidelity in
-> the relevant information.
->=20
-> Link: https://discourse.llvm.org/t/update-on-github-pull-requests/71540/1=
-72
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
-
->  arch/riscv/Kconfig              | 2 +-
->  arch/riscv/include/asm/ftrace.h | 2 +-
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
---p6SYI+U6gP5vpK1M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ6gJAAKCRB4tDGHoIJi
-0mIlAQCj5ZP6QEhEswWYjX38obn/p3pF8mt+Ve+vlBnVEhAW8QD8ClRvKxDiajR5
-Zp8ES/FLDyH/QJ5QjGuYLP5PATLeFAY=
-=SqXc
------END PGP SIGNATURE-----
-
---p6SYI+U6gP5vpK1M--
+在 2024/1/10 20:55, Leo Yan 写道:
+> Hi Ruidong,
+>
+> On Wed, Jan 10, 2024 at 10:56:17AM +0800, Ruidong Tian wrote:
+>> arm-cs-trace-disasm just print offset for library dso now:
+>>
+>>      0000000000002200 <memcpy>:
+>>          2200: d503201f      nop
+>>          2204: 8b020024      add     x4, x1, x2
+>>          2208: 8b020005      add     x5, x0, x2
+>>
+>> Add a option `-a` to print virtual offset other than offset:
+>>
+>>      # perf script -s scripts/python/arm-cs-trace-disasm.py -- -d llvm-objdump -a
+>>      ...
+>>      ffffb4c23200 <memcpy>:
+>>          ffffb4c23200: d503201f      nop
+>>          ffffb4c23204: 8b020024      add     x4, x1, x2
+>>          ffffb4c23208: 8b020005      add     x5, x0, x2
+>>      ...
+>>
+>> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> I only gave suggestion, it's no need to add my SoB and this might break
+> the SoB chain and rejected by maintainers.
+>
+> So with removing my SoB, the patch is fine for me:
+>
+> Reviewed-by: Leo Yan <leo.yan@linaro.org>
+>
+> I would like to suggest you to resend patch set v2 with all patches
+> - though patches 02 and 03 have no any change, but it would be easier
+> for maintainers to pick up the whole patches (especially this can save
+> time with b4 tool).
+>
+> Thanks,
+> Leo
+>
+>> ---
+>>   tools/perf/scripts/python/arm-cs-trace-disasm.py | 13 ++++++++++++-
+>>   1 file changed, 12 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py b/tools/perf/scripts/python/arm-cs-trace-disasm.py
+>> index d973c2baed1c..78419498237e 100755
+>> --- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
+>> +++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
+>> @@ -36,7 +36,10 @@ option_list = [
+>>   		    help="Set path to objdump executable file"),
+>>   	make_option("-v", "--verbose", dest="verbose",
+>>   		    action="store_true", default=False,
+>> -		    help="Enable debugging log")
+>> +		    help="Enable debugging log"),
+>> +	make_option("-a", "--vaddr", dest="vaddr",
+>> +			action="store_true", default=False,
+>> +			help="Enable virtual address")
+>>   ]
+>>   
+>>   parser = OptionParser(option_list=option_list)
+>> @@ -108,6 +111,14 @@ def print_disam(dso_fname, dso_start, start_addr, stop_addr):
+>>   			m = disasm_re.search(line)
+>>   			if m is None:
+>>   				continue
+>> +
+>> +		# Replace offset with virtual address
+>> +		if (options.vaddr == True):
+>> +			offset = re.search(r"^\s*([0-9a-fA-F]+)", line).group()
+>> +			if offset:
+>> +				virt_addr = dso_start + int(offset, 16)
+>> +				line = line.replace(offset.lstrip(), "%x" % virt_addr)
+>> +
+>>   		print("\t" + line)
+>>   
+>>   def print_sample(sample):
+>> -- 
+>> 2.33.1
+>>
 
