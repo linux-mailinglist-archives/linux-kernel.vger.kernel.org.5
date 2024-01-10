@@ -1,186 +1,243 @@
-Return-Path: <linux-kernel+bounces-22148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A21278299FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:59:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F49829A0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:01:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4920A287EED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:59:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 915C41F213E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07974487B3;
-	Wed, 10 Jan 2024 11:58:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A74947F5D;
+	Wed, 10 Jan 2024 11:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mWFAff6h"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bTqvLxCV"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A5148787
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e5521dab6so7745795e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:57:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704887878; x=1705492678; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nk5CcraP8tb0HLUYKKWn5feJXh3b9PprQEz09+8nh94=;
-        b=mWFAff6hlAJfcJYKtTHBD1ri2vNE7cjYzc7coMBpTdkhNuoGBf1sB9L8Kfv7na/jTr
-         mFPibPdlc5snztvZAd7xkh6iVRXMNYiRWESbz5BCJPsONt9GkEABdZB4gwHjGvca3SOS
-         vqnbv3DPOXWyCnG+oGg7b57Og0yNfPz1BjO3QtZbsCTLLnHb7r2TkFbUgZ2T6dM2+mjp
-         OPUNFjo84BuTeUj1hg1G++sbpkA7sc5dVhW9L4apx2uVJV88UPizj1uedezwhOZuxeLf
-         wnYhoiMua/cYY0bMeDTNKruy2KLSJMX/b5VIBjkpLcF7Bi9PbYQcJCrKbjsj7VSsjt9e
-         iq0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704887878; x=1705492678;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nk5CcraP8tb0HLUYKKWn5feJXh3b9PprQEz09+8nh94=;
-        b=PEMfIIpMSRl2abso2fN35edC7xrde8UiNvtvIMJ1oPBEBysI5t7xBj1tlnV0pVAL8Z
-         AXSzXhyZ2omhUnhvbOFOdxrKWsZpOdSm/mAdu4p/C5uY4IoYSemhexw67YsRA1LK5BAm
-         OH0IoB2IuuqbSaBh0SU6jKPwCB1LS9uxieIyLHgJEvWrXfOJf2a4cP7pBsJYXoC0EcHX
-         sgJ+rvO1f0ZatuDylUzgdoD9Lzrxr9pJnPe6wJMVpQR+C+fa1KvBukDTHcJVRtG/26SF
-         qEda6DmzgYp7Dts9Th1zhddRcOIPLip5R+fDEJSf9XH63OU71ixq8dbY6zkBOPqya/Vr
-         CTKw==
-X-Gm-Message-State: AOJu0YyLmDnZA1y7Ewm8fKq7AbZRaeYefK4WN/x6t3f2YNkqCiuGxjH5
-	+v3eebKJvLxTEZgsCobGExN6HdZ8rp6a3Q==
-X-Google-Smtp-Source: AGHT+IHspS3WBHNq8pc7wZVlvwZCg/EF5lgWNe6VwhEdGt3wjVjh3C6jYUZHj3niz7zmNxfUOpodKw==
-X-Received: by 2002:a05:600c:1c13:b0:40e:5332:1939 with SMTP id j19-20020a05600c1c1300b0040e53321939mr598054wms.50.1704887877866;
-        Wed, 10 Jan 2024 03:57:57 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id j17-20020a05600c1c1100b0040c46719966sm1973854wms.25.2024.01.10.03.57.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 03:57:57 -0800 (PST)
-Message-ID: <3f18b997-46a7-466c-ad89-10dbafe2708d@linaro.org>
-Date: Wed, 10 Jan 2024 12:57:54 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF4447F5F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704887944; x=1736423944;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=/QdH6kRQ236+guhsbkCOMJQvN+dOj67iSemfGrJcy1I=;
+  b=bTqvLxCVkbjfNBH1na5OCZ9bURXFXp78xIHqXIG05cZCONOii4XsLgj9
+   iFCz5iIYF4B0DLGefPzRckqXMyKWkehsjOwe6O+CqMnadixO8vFqcpbEw
+   KxN+L++Bo+bhaFEbHG0+UYJcTss6SdPeRbu0Q5TRj4LTOItpVMc7rmkgg
+   J7OjNZLW1dlA+wKAFim55yvdzruT/u10XkaafHyf5ph42gzDnzUbH6/4n
+   wEph4Iug+hpXaGcxM+/hXq2n5Og5noL6GfpFOB4FNy2KifxsFfrfLXGKh
+   PcpEovHEkUppcQAZuZbGi8huf4by66Swir8rxfTc2AwyOB6NRcm10Izc8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="397348025"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="397348025"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 03:59:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="1029132155"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="1029132155"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 10 Jan 2024 03:59:02 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNXEa-0006xw-0B;
+	Wed, 10 Jan 2024 11:59:00 +0000
+Date: Wed, 10 Jan 2024 19:58:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>
+Subject: lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from
+ constant value (ffffff01 becomes 1)
+Message-ID: <202401101916.N7fPxjk2-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] arm64: dts: qcom: ipq5332: Add RDP441 board device
- tree
-Content-Language: en-US
-To: Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- quic_kkumarcs@quicinc.com, quic_suruchia@quicinc.com, quic_soni@quicinc.com,
- quic_pavir@quicinc.com, quic_souravp@quicinc.com, quic_linchen@quicinc.com,
- quic_leiwei@quicinc.com
-References: <20240110112059.2498-1-quic_luoj@quicinc.com>
- <20240110112059.2498-6-quic_luoj@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110112059.2498-6-quic_luoj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 10/01/2024 12:20, Luo Jie wrote:
-> From: Lei Wei <quic_leiwei@quicinc.com>
-> 
-> RDP441 board has onboard QCA8386 switch and 10G SFP port.
-> 
-> Signed-off-by: Lei Wei <quic_leiwei@quicinc.com>
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/ipq5332-rdp441.dts | 51 +++++++++++++++++++++
->  1 file changed, 51 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5332-rdp441.dts b/arch/arm64/boot/dts/qcom/ipq5332-rdp441.dts
-> index 846413817e9a..d51968e9d601 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5332-rdp441.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq5332-rdp441.dts
-> @@ -12,6 +12,15 @@
->  / {
->  	model = "Qualcomm Technologies, Inc. IPQ5332 MI01.2";
->  	compatible = "qcom,ipq5332-ap-mi01.2", "qcom,ipq5332";
-> +
-> +	soc@0 {
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
+commit: 4b21d25bf519c9487935a664886956bb18f04f6d overflow: Introduce overflows_type() and castable_to_type()
+date:   1 year, 2 months ago
+config: arm-randconfig-r122-20240105 (https://download.01.org/0day-ci/archive/20240110/202401101916.N7fPxjk2-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240110/202401101916.N7fPxjk2-lkp@intel.com/reproduce)
 
-Nope, DTS does not define soc nodes.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401101916.N7fPxjk2-lkp@intel.com/
 
-> +		sfp1: sfp-1 {
+sparse warnings: (new ones prefixed by >>)
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:300:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:301:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:302:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:303:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:304:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:313:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:319:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:326:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:333:1: sparse: sparse: self-comparison always evaluates to true
+   lib/overflow_kunit.c:427:9: sparse: sparse: cast truncates bits from constant value (12c becomes 2c)
+   lib/overflow_kunit.c:429:9: sparse: sparse: cast truncates bits from constant value (1112c becomes 112c)
+   lib/overflow_kunit.c:431:9: sparse: sparse: cast truncates bits from constant value (10811112c becomes 811112c)
+   lib/overflow_kunit.c:432:9: sparse: sparse: cast truncates bits from constant value (10811112c becomes 811112c)
+   lib/overflow_kunit.c:449:9: sparse: sparse: cast truncates bits from constant value (12c becomes 2c)
+   lib/overflow_kunit.c:451:9: sparse: sparse: cast truncates bits from constant value (1112c becomes 112c)
+   lib/overflow_kunit.c:453:9: sparse: sparse: cast truncates bits from constant value (10811112c becomes 811112c)
+   lib/overflow_kunit.c:454:9: sparse: sparse: cast truncates bits from constant value (10811112c becomes 811112c)
+   lib/overflow_kunit.c:466:9: sparse: sparse: cast truncates bits from constant value (100 becomes 0)
+   lib/overflow_kunit.c:468:9: sparse: sparse: cast truncates bits from constant value (10000 becomes 0)
+   lib/overflow_kunit.c:470:9: sparse: sparse: cast truncates bits from constant value (100000000 becomes 0)
+   lib/overflow_kunit.c:471:9: sparse: sparse: cast truncates bits from constant value (100000000 becomes 0)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+>> lib/overflow_kunit.c:998:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:999:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:1000:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:1000:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:1001:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:1001:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:1002:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:1002:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:1003:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:1003:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:1098:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:1098:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:1098:9: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+   lib/overflow_kunit.c:1099:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:1099:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+   lib/overflow_kunit.c:1099:9: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
 
-Why is this soc? Where is the MMIO address?
+vim +998 lib/overflow_kunit.c
 
-> +			compatible = "sff,sfp";
-> +			i2c-bus = <&blsp1_i2c1>;
-> +			los-gpios = <&tlmm 45 GPIO_ACTIVE_HIGH>;
-> +			tx-disable-gpios = <&tlmm 24 GPIO_ACTIVE_HIGH>;
-> +		};
-> +	};
->  };
->  
->  &blsp1_i2c1 {
-> @@ -63,3 +72,45 @@ data-pins {
->  		};
->  	};
->  };
-> +
-> +&qcom_ppe {
-> +	qcom,port_phyinfo {
+   997	
+ > 998		TEST_TYPE_SETS(u8,   true, false, false, false, false, false, false, false);
+   999		TEST_TYPE_SETS(u16, false,  true, false, false, false, false, false, false);
+  1000		TEST_TYPE_SETS(u32, false, false,  true, false, false, false, false, false);
+  1001		TEST_TYPE_SETS(s8,  false, false, false,  true, false, false, false, false);
+  1002		TEST_TYPE_SETS(s16, false, false, false, false,  true, false, false, false);
+  1003		TEST_TYPE_SETS(s32, false, false, false, false, false,  true, false, false);
+  1004	#if BITS_PER_LONG == 64
+  1005		TEST_TYPE_SETS(u64, false, false, false, false, false, false,  true, false);
+  1006		TEST_TYPE_SETS(s64, false, false, false, false, false, false, false,  true);
+  1007	#endif
+  1008	
+  1009		/* Check for macro side-effects. */
+  1010		var = 4;
+  1011		KUNIT_EXPECT_EQ(test, var, 4);
+  1012		KUNIT_EXPECT_TRUE(test, __same_type(var++, int));
+  1013		KUNIT_EXPECT_EQ(test, var, 4);
+  1014		KUNIT_EXPECT_TRUE(test, __same_type(int, var++));
+  1015		KUNIT_EXPECT_EQ(test, var, 4);
+  1016		KUNIT_EXPECT_TRUE(test, __same_type(var++, var++));
+  1017		KUNIT_EXPECT_EQ(test, var, 4);
+  1018	
+  1019		kunit_info(test, "%d __same_type() tests finished\n", count);
+  1020	
 
-Eh... We talk now about basics: please don't post downstream code, but
-first clean it up from all the junk. All the basic issues which you have
-in downstream and which we do not accept upstream.
-
-I do not believe that this code passed internal review.
-
-NAK.
-
-Best regards,
-Krzysztof
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
