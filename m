@@ -1,90 +1,208 @@
-Return-Path: <linux-kernel+bounces-21585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31903829180
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:38:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADDD829184
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD9AB1F2699D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:38:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAD99288FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB23644;
-	Wed, 10 Jan 2024 00:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57858644;
+	Wed, 10 Jan 2024 00:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0+T+/toh"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jsxzncE1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D50383
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5f6f51cd7e8so47160817b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 16:38:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704847080; x=1705451880; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dubuu6a5RHKTDSizXfGG9mFtdlp6O0bStYMvscHwBes=;
-        b=0+T+/tohbLWHL3+uQa63dhWLCLKAscpLLxxp5zKqVH6eOGbNnj+FiJvERIdxjtXTxR
-         5lDsJueMXVZX6DwvwjC2jzFz1qOEQLgOhvvkEiIQpqfObwhdshUmbl6cUxri71bx9xFm
-         0tFwYeqyLK24Vf/eushj7AnxIg08xJ6HuPK2rPt7q1Ab3FRXYvvXYTisXE41p1sItbka
-         dMivjcj7E7sEEtGb9253BPlDBosWPz6oFlWjl2j9tk+HZ8zB74dJMgDjmjG1GoDjZVux
-         2m1gKqEefEIgs4JlD2ElON+vamWPYJSqP4ETihmxODHumBPTaNFVq4P9lH+ffhFLb4rt
-         KCVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704847080; x=1705451880;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dubuu6a5RHKTDSizXfGG9mFtdlp6O0bStYMvscHwBes=;
-        b=kivemPlXon/t+aSM+Kbj8YRJKqaAOAfn2cv1yjrQg0V9bbwsziFkAjqGRKmsX6ogRd
-         hPwn946pPUG/k6bLPegwjZhtCs8LCRINtcMbMRs4R4PJHyUuJ8cUca156jbo2tqkcWp3
-         d8j8+UiyjIpuc78Y3EUAOa2uMAdsFEu3IaS1dr4InmXOYfgu1wHjbCcqnBiyicBRejmU
-         zY6Uyy6dDT52CfnzJceFjpld0gZWnj3pysAFyUUG/h5RXXcAKsqdO/o1KKUWUPiF7i0R
-         yU8tNZqYE0RgAM8jni93nS35uaOoblTPq+bTRO0gheh7Drh6aHGvcemqneICjD6cTT1z
-         bdZw==
-X-Gm-Message-State: AOJu0YwKy48OcEZtDEfW56S2Cu80cYGYPOCgSio0k7feAFnRh/ma0x/N
-	sxjotOKsqFHZ3+rWz3lPDC6c1mIo3nmz77AIQQ==
-X-Google-Smtp-Source: AGHT+IE58SJtAWoao4lQ3L+CQGDpyiHkisQ7a1GVbOwazTP5MsPQkuMyveEBs2xdo/w5fqoVGzIYh/HuEE4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:5f48:0:b0:dbd:f6e3:19a with SMTP id
- h8-20020a255f48000000b00dbdf6e3019amr6727ybm.11.1704847080291; Tue, 09 Jan
- 2024 16:38:00 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue,  9 Jan 2024 16:37:56 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9290383
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704847163; x=1736383163;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6VSUhxHcVKYf8XcSqAKay5YGN0ehzbjWp+67JrBDyYY=;
+  b=jsxzncE13hJrGEk1x13DzCpCKD/Y26ij1FLjIJDxQ4e8yjINTe9GbtJr
+   QK8MLIk0c+5DS/WdZMobLCo8vGDrqaGcSE3aAdIEKgLW+/xblmUJfKl7Y
+   O719JOxyZ74MH4a8h6vUZzU/SkWB31++2ItweJuLacUiOg2YEjnDew7hC
+   OD1cVuFNgs0l1YUzd3vbV/QZz6e7AtrZK3yc4ZTTWfulPoOetWh8S6598
+   Fb/Qvdq+CSsxjozX71CvcCR6LpmBxWDielT4g7gvaGu38qpFi2Fs74JFh
+   9Sk9cr7iEndonJLDlxBYMz2jthG0D0og1sODkV3e1iQslwpB88ItbN/uX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="398059697"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="398059697"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 16:39:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="1113257196"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="1113257196"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Jan 2024 16:39:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNMcn-0006Qw-07;
+	Wed, 10 Jan 2024 00:39:17 +0000
+Date: Wed, 10 Jan 2024 08:39:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Philipp Stanner <pstanner@redhat.com>,
+	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, NXP Linux Team <linux-imx@nxp.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Philipp Stanner <pstanner@redhat.com>
+Subject: Re: [PATCH v2 1/2] drm/dcss: request memory region
+Message-ID: <202401100801.1Wiy3ZEd-lkp@intel.com>
+References: <20240109102032.16165-2-pstanner@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240110003756.489861-1-seanjc@google.com>
-Subject: [ANNOUNCE] PUCK Agenda - 2024.01.10 - Unified uAPI for protected VMs
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Paolo Bonzini <pbonzini@redhat.com>, Isaku Yamahata <isaku.yamahata@linux.intel.com>, 
-	Michael Roth <michael.roth@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109102032.16165-2-pstanner@redhat.com>
 
-Tomorrow's PUCK topic is unifying KVM's uAPI for protected VMs, courtesy of
-Isaku.  Note, this was originally planned for LPC, but it got moved to PUCK as
-Isaku was unable to attend LPC.
+Hi Philipp,
 
-https://lpc.events/event/17/contributions/1495
+kernel test robot noticed the following build errors:
 
-Time:     6am PDT
-Video:    https://meet.google.com/vdb-aeqo-knk
-Phone:    https://tel.meet/vdb-aeqo-knk?pin=3003112178656
+[auto build test ERROR on v6.7]
+[also build test ERROR on linus/master next-20240109]
+[cannot apply to drm-misc/drm-misc-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
-Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
+url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/drm-dcss-request-memory-region/20240109-182239
+base:   v6.7
+patch link:    https://lore.kernel.org/r/20240109102032.16165-2-pstanner%40redhat.com
+patch subject: [PATCH v2 1/2] drm/dcss: request memory region
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240110/202401100801.1Wiy3ZEd-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401100801.1Wiy3ZEd-lkp@intel.com/reproduce)
 
-Future Schedule:
-January 17th - TDP MMU for IOMMU
-January 24th - Memtypes for non-coherent DMA
-January 31st - Available!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401100801.1Wiy3ZEd-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/device.h:17,
+                    from include/linux/platform_device.h:13,
+                    from drivers/gpu/drm/imx/dcss/dcss-dev.c:9:
+   drivers/gpu/drm/imx/dcss/dcss-dev.c: In function 'dcss_dev_create':
+>> drivers/gpu/drm/imx/dcss/dcss-dev.c:188:42: error: incompatible type for argument 1 of '__devm_request_region'
+     188 |         if (!devm_request_mem_region(pdev->dev, res->start, res_len, "dcss")) {
+         |                                      ~~~~^~~~~
+         |                                          |
+         |                                          struct device
+   include/linux/ioport.h:306:31: note: in definition of macro 'devm_request_mem_region'
+     306 |         __devm_request_region(dev, &iomem_resource, (start), (n), (name))
+         |                               ^~~
+   include/linux/ioport.h:308:63: note: expected 'struct device *' but argument is of type 'struct device'
+     308 | extern struct resource * __devm_request_region(struct device *dev,
+         |                                                ~~~~~~~~~~~~~~~^~~
+
+
+vim +/__devm_request_region +188 drivers/gpu/drm/imx/dcss/dcss-dev.c
+
+   165	
+   166	struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
+   167	{
+   168		struct platform_device *pdev = to_platform_device(dev);
+   169		int ret;
+   170		struct resource *res;
+   171		struct dcss_dev *dcss;
+   172		const struct dcss_type_data *devtype;
+   173		resource_size_t res_len;
+   174	
+   175		devtype = of_device_get_match_data(dev);
+   176		if (!devtype) {
+   177			dev_err(dev, "no device match found\n");
+   178			return ERR_PTR(-ENODEV);
+   179		}
+   180	
+   181		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+   182		if (!res) {
+   183			dev_err(dev, "cannot get memory resource\n");
+   184			return ERR_PTR(-EINVAL);
+   185		}
+   186	
+   187		res_len = res->end - res->start;
+ > 188		if (!devm_request_mem_region(pdev->dev, res->start, res_len, "dcss")) {
+   189			dev_err(dev, "cannot request memory region\n");
+   190			return ERR_PTR(-EBUSY);
+   191		}
+   192	
+   193		dcss = kzalloc(sizeof(*dcss), GFP_KERNEL);
+   194		if (!dcss)
+   195			return ERR_PTR(-ENOMEM);
+   196	
+   197		dcss->dev = dev;
+   198		dcss->devtype = devtype;
+   199		dcss->hdmi_output = hdmi_output;
+   200	
+   201		ret = dcss_clks_init(dcss);
+   202		if (ret) {
+   203			dev_err(dev, "clocks initialization failed\n");
+   204			goto err;
+   205		}
+   206	
+   207		dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
+   208		if (!dcss->of_port) {
+   209			dev_err(dev, "no port@0 node in %pOF\n", dev->of_node);
+   210			ret = -ENODEV;
+   211			goto clks_err;
+   212		}
+   213	
+   214		dcss->start_addr = res->start;
+   215	
+   216		ret = dcss_submodules_init(dcss);
+   217		if (ret) {
+   218			of_node_put(dcss->of_port);
+   219			dev_err(dev, "submodules initialization failed\n");
+   220			goto clks_err;
+   221		}
+   222	
+   223		init_completion(&dcss->disable_completion);
+   224	
+   225		pm_runtime_set_autosuspend_delay(dev, 100);
+   226		pm_runtime_use_autosuspend(dev);
+   227		pm_runtime_set_suspended(dev);
+   228		pm_runtime_allow(dev);
+   229		pm_runtime_enable(dev);
+   230	
+   231		return dcss;
+   232	
+   233	clks_err:
+   234		dcss_clks_release(dcss);
+   235	
+   236	err:
+   237		kfree(dcss);
+   238	
+   239		return ERR_PTR(ret);
+   240	}
+   241	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
