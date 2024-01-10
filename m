@@ -1,177 +1,220 @@
-Return-Path: <linux-kernel+bounces-22510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A932829EDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:02:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BBB5829EDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8CCB284F55
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:01:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADE48285D62
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1C64CE12;
-	Wed, 10 Jan 2024 17:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DFA4CE04;
+	Wed, 10 Jan 2024 17:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="JhKXfxEw"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eHJpqrcC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4AA4C3B9
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-557535489d0so5071167a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:01:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1704906100; x=1705510900; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TMdahoRkIeSNvUO1/WTM07GuENYoa11J1zdxByY1pQM=;
-        b=JhKXfxEw7t83N6BPhPGnkDdy6k57zSfXKNeuIuVEUdxOgKuKgnO2UVLn6oxWKTpCaS
-         8yrYGi6JM6oyylZVYu1SD/RFC31TwJj3zeaMFgMzVNoLSnY3h509mQFyai74DNQ2WBrW
-         NSiZP1t87Psmr+Zx/mxaO7oACRoUTJ9NmrN8g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704906100; x=1705510900;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TMdahoRkIeSNvUO1/WTM07GuENYoa11J1zdxByY1pQM=;
-        b=MONI27ybemP7/4iZ6HaaqkCywFtca/WolqRQH+N0o4dQKtXsB0ZpkcHdbH2O6EEvmL
-         gn02V57txGHYFBHGXoTV6ct3U1PDzt6tss/phmLj5R/eTwQhdi6DwuBD4OLMUdvskpR5
-         G62TS2zVhIEzuX1TWBrqFlw619FqYAzauP0WgPUfVsR0RRZ8JbpSfD0WTucTopLqQObA
-         qGSjgwAIeVa14QZ6Dhu8/MwXw6d7GpO1djvW+DOeNxUEiN06uMDOvxLo7NX2p74ZKlyI
-         nEQR4bw9HQoiOJ7J3pMYYEJsLHMviU5iocbAiAwWkdZa9bVQ1aZnZ3o/MeLMyLwwU3au
-         qJvg==
-X-Gm-Message-State: AOJu0YzRFjOHszjZiY/K1WFJnUrO2LEgizkTGO5VKG5q2qcKe1rMY5fs
-	s2KVBJB3S00oTF8yhYC1IYeWLBtVVVC3uChPXGXTuNSvLsZC
-X-Google-Smtp-Source: AGHT+IGMR6nkZR8XmOCgalYT73K20vWVRxvFQMTipLDtaHrm/bgp3dwiqktX9a1QZN7TsQrxKvIQ/0Ae9JjXBZ3T68Q=
-X-Received: by 2002:a50:8719:0:b0:553:73c4:87db with SMTP id
- i25-20020a508719000000b0055373c487dbmr732827edb.15.1704906099507; Wed, 10 Jan
- 2024 09:01:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5984C3B9
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704906311; x=1736442311;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=+Atxt8C9SVTdRf6ArBwu7HmFWQJNOjxzhJTTXf01IWY=;
+  b=eHJpqrcCbwzpiNbDpcy7e/83Mtl+HaIQAL7mY9Bt0iPEU2YsNAN0OQNT
+   Ig7rBI5UwpIvQw5by4quiy2FgmyDXfSD319dGPMm5lbZJU12Vstdmn5lD
+   HVoTilt2KvG7QrmLqJOVqYKHS+p9PrLr4UARY5q8U99cHGtyVw67EsG3P
+   4ifL05u3GErHo7OeuVNeZmhNgXPd7TRyekwQVgeqOSWKcUQYvLM+e30MU
+   eSi+SvzBY3atGZO97f5llBwhP4M82VZiNivQPxM2eUg9WtdHWSJHcGYOc
+   pJQytzSYS43Q9m+83dV0OnvWSQ+BQv3eb4LSivy1tjiMLweo7VuVdAlSY
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="11931990"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="11931990"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 09:04:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="758449817"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="758449817"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 10 Jan 2024 09:04:09 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNbzr-0007IZ-2M;
+	Wed, 10 Jan 2024 17:04:07 +0000
+Date: Thu, 11 Jan 2024 01:03:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Michal Simek <monstr@monstr.eu>
+Subject: arch/microblaze/kernel/entry.S:945: Error: unknown opcode "suspend"
+Message-ID: <202401110054.XBP4dq5D-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109194551.17666-1-andrea.fois@eventsense.it>
- <d8ed4af1-5c83-4895-9fc3-9aea25724fd9@gmail.com> <CALs4sv2_JZd5K-ZgBkjL=QpXVEXnoJrjuqwwKg0+jo2-4taHJw@mail.gmail.com>
- <18249a21-7aec-4a66-bc5a-3aa077c2b190@gmail.com> <CACKFLinZ=pkRn7oertS8W96bGmMjr8T+BvqSAN3BZ7SiEm5gxQ@mail.gmail.com>
- <a26b3079-f5fa-47b0-8b83-42db9fbbf3c4@gmail.com>
-In-Reply-To: <a26b3079-f5fa-47b0-8b83-42db9fbbf3c4@gmail.com>
-From: Michael Chan <michael.chan@broadcom.com>
-Date: Wed, 10 Jan 2024 09:01:28 -0800
-Message-ID: <CACKFLikZoXq17tp_152Oi4eYPd8BQLAv+LTxDgb4sHxX+8XiSA@mail.gmail.com>
-Subject: Re: [PATCH] tg3: add new module param to force device power down on reboot
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Pavan Chebbi <pavan.chebbi@broadcom.com>, Andrea Fois <andrea.fois@eventsense.it>, 
-	Michael Chan <mchan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	George Shuklin <george.shuklin@gmail.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000007ebab8060e9a6222"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---0000000000007ebab8060e9a6222
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Appana,
 
-On Tue, Jan 9, 2024 at 11:34=E2=80=AFPM Heiner Kallweit <hkallweit1@gmail.c=
-om> wrote:
->
-> On 10.01.2024 08:17, Michael Chan wrote:
-> > We already call dev_close() which will call tg3_close() -> tg3_stop()
-> > a few lines above.
->
-> tg3_stop() calls tg3_disable_ints(), so I wonder how a MSI interrupt can
-> occur after that. Does tg3_disable_ints() disable interrupts synchronousl=
-y?
-> Or maybe some kind of commit is needed?
->
+FYI, the error/warning still remains.
 
-Yes, it is synchronous.  The tg3_full_lock() call before
-tg3_disable_ints() makes it synchronous.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
+commit: 88707ebe77e23e856981e597f322cabbf6415662 microblaze: Add custom break vector handler for mb manager
+date:   1 year, 3 months ago
+config: microblaze-allmodconfig (https://download.01.org/0day-ci/archive/20240111/202401110054.XBP4dq5D-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240111/202401110054.XBP4dq5D-lkp@intel.com/reproduce)
 
---0000000000007ebab8060e9a6222
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401110054.XBP4dq5D-lkp@intel.com/
 
-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
-OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
-/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
-L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
-kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
-5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
-hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
-E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILDwouOXhYz6E6+MC17XVrizGdKLjqCb
-cUN5zImETymzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDEx
-MDE3MDE0MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQA0LCnontmIZMbpPFdck2xF9hyEJg3cie9jCA4hvPvUTXdZuefA
-mjksmAp/jmLlOZkEVcaWUqGN/BwTDV8KVnakS225fZQSOjPxgkedHaMXhpgPix84bguppW01+ROk
-iVCQpg/bihB9xlpNi4xkURDavNG39XWi/mJTpfgkcFKOOZ3C78SxVmndIMEkhon3XTEyxsJzfK6S
-Uo/GVKAPtDAnAqKOag89Ushu1vpGBCXjrjyeMpadLRwZ+Lu+i8HD2K62u4+Dl4PU/OEmTmrWn+7u
-Y7BD7BMew1nNI9DYvJw/Kz+cjh6zonf1DK7AnXl8OzBWfN9FG4aUbu5lXenvFx/R
---0000000000007ebab8060e9a6222--
+All errors (new ones prefixed by >>):
+
+   arch/microblaze/kernel/entry.S: Assembler messages:
+>> arch/microblaze/kernel/entry.S:945: Error: unknown opcode "suspend"
+
+
+vim +/suspend +945 arch/microblaze/kernel/entry.S
+
+   825	
+   826		/* restore all the tlb's */
+   827		addik	r3, r0, TOPHYS(tlb_skip)
+   828		addik	r6, r0, PT_TLBL0
+   829		addik	r7, r0, PT_TLBH0
+   830	restore_tlb:
+   831		add	r6, r6, r1
+   832		add	r7, r7, r1
+   833		lwi	r2, r6, 0
+   834		mts 	rtlblo, r2
+   835		lwi	r2, r7, 0
+   836		mts	rtlbhi, r2
+   837		addik	r6, r6, 4
+   838		addik	r7, r7, 4
+   839		bgtid	r3, restore_tlb
+   840		addik	r3, r3, -1
+   841	
+   842		lwi  	r5, r0, TOPHYS(xmb_manager_dev)
+   843		lwi	r8, r0, TOPHYS(xmb_manager_reset_callback)
+   844		set_vms
+   845		/* return from reset need -8 to adjust for rtsd r15, 8 */
+   846		addik   r15, r0, ret_from_reset - 8
+   847		rtbd	r8, 0
+   848		nop
+   849	
+   850	ret_from_reset:
+   851		set_bip /* Ints masked for state restore */
+   852		VM_OFF
+   853		/* MS: Restore all regs */
+   854		RESTORE_REGS
+   855		lwi	r14, r1, PT_R14
+   856		lwi	r16, r1, PT_PC
+   857		addik	r1, r1, PT_SIZE + 36
+   858		rtbd	r16, 0
+   859		nop
+   860	
+   861	/*
+   862	 * Break handler for MB Manager. Enter to _xmb_manager_break by
+   863	 * injecting fault in one of the TMR Microblaze core.
+   864	 * FIXME: This break handler supports getting
+   865	 * called from kernel space only.
+   866	 */
+   867	C_ENTRY(_xmb_manager_break):
+   868		/*
+   869		 * Reserve memory in the stack for context store/restore
+   870		 * (which includes memory for storing tlbs (max two tlbs))
+   871		 */
+   872		addik	r1, r1, -PT_SIZE - 36
+   873		swi	r1, r0, xmb_manager_stackpointer
+   874		SAVE_REGS
+   875		swi	r14, r1, PT_R14	/* rewrite saved R14 value */
+   876		swi	r16, r1, PT_PC; /* PC and r16 are the same */
+   877	
+   878		lwi	r6, r0, TOPHYS(xmb_manager_baseaddr)
+   879		lwi	r7, r0, TOPHYS(xmb_manager_crval)
+   880		/*
+   881		 * When the break vector gets asserted because of error injection,
+   882		 * the break signal must be blocked before exiting from the
+   883		 * break handler, below code configures the tmr manager
+   884		 * control register to block break signal.
+   885		 */
+   886		swi	r7, r6, 0
+   887	
+   888		/* Save the special purpose registers  */
+   889		mfs	r2, rpid
+   890		swi	r2, r1, PT_PID
+   891	
+   892		mfs	r2, rtlbx
+   893		swi	r2, r1, PT_TLBI
+   894	
+   895		mfs	r2, rzpr
+   896		swi	r2, r1, PT_ZPR
+   897	
+   898	#if CONFIG_XILINX_MICROBLAZE0_USE_FPU
+   899		mfs	r2, rfsr
+   900		swi	r2, r1, PT_FSR
+   901	#endif
+   902		mfs	r2, rmsr
+   903		swi	r2, r1, PT_MSR
+   904	
+   905		/* Save all the tlb's */
+   906		addik	r3, r0, TOPHYS(tlb_skip)
+   907		addik	r6, r0, PT_TLBL0
+   908		addik	r7, r0, PT_TLBH0
+   909	save_tlb:
+   910		add	r6, r6, r1
+   911		add	r7, r7, r1
+   912		mfs	r2, rtlblo
+   913		swi	r2, r6, 0
+   914		mfs	r2, rtlbhi
+   915		swi	r2, r7, 0
+   916		addik	r6, r6, 4
+   917		addik	r7, r7, 4
+   918		bgtid	r3, save_tlb
+   919		addik	r3, r3, -1
+   920	
+   921		lwi  	r5, r0, TOPHYS(xmb_manager_dev)
+   922		lwi	r8, r0, TOPHYS(xmb_manager_callback)
+   923		/* return from break need -8 to adjust for rtsd r15, 8 */
+   924		addik   r15, r0, ret_from_break - 8
+   925		rtbd	r8, 0
+   926		nop
+   927	
+   928	ret_from_break:
+   929		/* flush the d-cache */
+   930		bralid	r15, mb_flush_dcache
+   931		nop
+   932	
+   933		/*
+   934		 * To make sure microblaze i-cache is in a proper state
+   935		 * invalidate the i-cache.
+   936		 */
+   937		bralid	r15, mb_invalidate_icache
+   938		nop
+   939	
+   940		set_bip; /* Ints masked for state restore */
+   941		VM_OFF;
+   942		mbar	1
+   943		mbar	2
+   944		bri	4
+ > 945		suspend
+   946		nop
+   947	#endif
+   948	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
