@@ -1,120 +1,141 @@
-Return-Path: <linux-kernel+bounces-22789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA0D82A2DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:52:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32A7E82A2E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:53:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 712BA1C26523
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:52:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD9CB28281F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54B84F219;
-	Wed, 10 Jan 2024 20:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B12B4F1EF;
+	Wed, 10 Jan 2024 20:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g7W6pNwj"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="YjtzUWxR"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF0A4EB5B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704919888; x=1736455888;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QHnyFo9ejNaykr4G0UljJ5k6cMGEXXchv5ezu/u559Y=;
-  b=g7W6pNwjtj3c6XZJemugNfafgY+IYhqoA7/uuPIpAFdY1rCbp8kjHXJ1
-   HHXBMp5g2L735PEvRQYD4HHrzLwAE04Mb7xldTE0ktGzFfQrIEB40IFSg
-   NAkR6UvrGNzUbhF2lTAcAWCTR+YxYBRAHmGB6+C5iooI8jYr6cWIAGmog
-   AtbBVRMKouGq7GRfKC+0Za1D9Q+6vDBsJ9kwXPGOO63t3FGH11+jiYRzs
-   Aoen4vA90n2k4sUi2c+y6RD24QqstWlC1T2K7HjVAF9g0c1Y+pbFXU31Z
-   6evswRDUTcaQW44txAH2CeFmeBXC6n1S0rmm5nBaWAp1asUGuRdu+3Gx9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5729010"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="5729010"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 12:51:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="785735678"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="785735678"
-Received: from viggo.jf.intel.com (HELO ray2.sr71.net) ([10.54.77.144])
-  by fmsmga007.fm.intel.com with ESMTP; 10 Jan 2024 12:51:26 -0800
-From: Dave Hansen <dave.hansen@linux.intel.com>
-To: torvalds@linux-foundation.org
-Cc: x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [GIT PULL] x86/sgx for 6.8
-Date: Wed, 10 Jan 2024 12:51:24 -0800
-Message-Id: <20240110205124.3007385-1-dave.hansen@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F227D4E1C6;
+	Wed, 10 Jan 2024 20:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1704920027;
+	bh=rBlGuLxYhPO4Q5+DuTMP3udTcgw/RgKOGGYRl4n1514=;
+	h=Date:To:From:Subject:From;
+	b=YjtzUWxRRez+XoxmspiC3XRAaDzLmC/z22Ev4zgL2hJzydWRpAnPOyPE9l6K3jKk3
+	 7LUeEpSUKCLv+7I/NCHET8BkXn63497FAFjJHLjD7guQXBFqwiwEnZBbrbez6Rs/OF
+	 +3E3O44ilNeox6QUTv8BM9h3EujC3ysEAo/Jj1k6cLkJT0aob7vKDzSBi/ZoQD8gEF
+	 mpzEg/fnx7Sxk4S5cpvlS9e+5JYQdqlatzzG7AxU/vHyfIoQ9xtTEJAo8ceo2kkavJ
+	 2cipI7vblDq2bsGD5DB4tDPYrl9bReryYFTadtTMJA4qCjM++0cECelgFm+bPcqDAJ
+	 AhjYFHcARmMnw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4T9Klb5fFTzKc8;
+	Wed, 10 Jan 2024 15:53:47 -0500 (EST)
+Message-ID: <3c38a8f7-8323-46b2-a29a-2ca06bc60448@efficios.com>
+Date: Wed, 10 Jan 2024 15:53:47 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: lttng-dev <lttng-dev@lists.lttng.org>,
+ Diamon discuss <diamon-discuss@lists.linuxfoundation.org>,
+ linux-trace-users <linux-trace-users@vger.kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [RELEASE] LTTng-modules 2.12.15 and 2.13.11 (Linux kernel tracer)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Linus,
+The LTTng modules provide Linux kernel tracing capability to the LTTng
+tracer toolset.
 
-Please pull some x86/sgx changes for 6.8.  This time, these are
-entirely confined to SGX selftests fixes.
+* New and noteworthy in these releases:
 
-The mini SGX enclave built by the selftests has garnered some
-attention because it stands alone and does not need the sizable
-infrastructure of the official SGX SDK. I think that's why folks
-are suddently interested in cleaning it up.
+Newer Linux kernels (v6.6 and v6.7) are now supported by LTTng modules
+2.13.11. If you need support for recent kernels (v5.18+), you will
+need to upgrade to a recent LTTng-modules 2.13.x.
 
---
+The "prio" context has been fixed in 2.13.11 to eliminate a crash
+triggered by calling a NULL pointer address when using the "prio"
+context (lttng add-context -k -t prio). This issue was introduced
+when refactoring the prio context code during the 2.13 development.
+The missing initialization was re-introduced, and the use of the kernel
+"task_prio()" symbol was entirely replaced by inlining a copy of this
+trivial function into lttng-modules instead.
 
-The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
+The "built-in.sh" script which can be used to add a link to lttng-modules
+within a kernel source tree to built LTTng into a Linux kernel image
+has been updated to adapt to changes introduced in Linux v6.1.
 
-  Linux 6.7-rc4 (2023-12-03 18:52:56 +0900)
+A work-around to ensure that LTTng-modules works fine on CPUs and kernels
+with IBT support enabled has been integrated:
 
-are available in the Git repository at:
+     When the Intel IBT feature is enabled, a CPU supporting this feature
+     validates that all indirect jumps/calls land on an ENDBR64 instruction.
+     
+     The kernel seals functions which are not meant to be called indirectly,
+     which means that calling functions indirectly from their address fetched
+     using kallsyms or kprobes trigger a crash.
+     
+     Use the MSR_IA32_S_CET CET_ENDBR_EN MSR bit to temporarily disable ENDBR
+     validation around indirect calls to kernel functions. Considering that
+     the main purpose of this feature is to prevent ROP-style attacks,
+     disabling the ENDBR validation temporarily around the call from a kernel
+     module does not affect the ROP protection.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sgx_for_6.8
 
-for you to fetch changes up to 981cf568a8644161c2f15c02278ebc2834b51ba6:
+Both 2.13.11 and 2.12.15:
 
-  selftests/sgx: Skip non X86_64 platform (2023-12-08 10:08:17 -0800)
+- Fix an issue with importing VFS namespace for Android kernels.
 
-----------------------------------------------------------------
- - Clean up selftest compilation issues, mostly from non-gcc compilers
- - Avoid building selftests when not on x86
+- Fix build for RHEL 8.8 with linux 4.18.0-477.10.1+
 
-----------------------------------------------------------------
-Jo Van Bulck (13):
-      selftests/sgx: Fix uninitialized pointer dereference in error path
-      selftests/sgx: Fix uninitialized pointer dereferences in encl_get_entry
-      selftests/sgx: Include memory clobber for inline asm in test enclave
-      selftests/sgx: Separate linker options
-      selftests/sgx: Specify freestanding environment for enclave compilation
-      selftests/sgx: Remove redundant enclave base address save/restore
-      selftests/sgx: Produce static-pie executable for test enclave
-      selftests/sgx: Handle relocations in test enclave
-      selftests/sgx: Fix linker script asserts
-      selftests/sgx: Ensure test enclave buffer is entirely preserved
-      selftests/sgx: Ensure expected location of test enclave buffer
-      selftests/sgx: Discard unsupported ELF sections
-      selftests/sgx: Remove incomplete ABI sanitization code in test enclave
+- Fix a hardening OOPS during validation of immediate strings in the bytecode
+   validator when CONFIG_UBSAN_BOUNDS and/or CONFIG_FORTIFY_SOURCE are
+   configured. It boils down to changing 0-len arrays to flexible arrays
+   to let the toolchain know about our intent.
 
-Zhao Mengmeng (1):
-      selftests/sgx: Skip non X86_64 platform
+- Add Ubuntu Kinetic kernel ranges for jbd2 instrumentation.
 
- tools/testing/selftests/sgx/Makefile              | 14 +++--
- tools/testing/selftests/sgx/defines.h             |  2 +
- tools/testing/selftests/sgx/load.c                |  9 ++-
- tools/testing/selftests/sgx/sigstruct.c           |  5 +-
- tools/testing/selftests/sgx/test_encl.c           | 67 +++++++++++++++--------
- tools/testing/selftests/sgx/test_encl.lds         | 10 ++--
- tools/testing/selftests/sgx/test_encl_bootstrap.S | 28 +++-------
- 7 files changed, 78 insertions(+), 57 deletions(-)
+Project website: https://lttng.org
+Documentation: https://lttng.org/docs
+Download link: https://lttng.org/download
+
+Detailed change logs:
+
+2024-01-10 (National Houseplant Appreciation Day) LTTng modules 2.13.11
+         * Fix: Include linux/sched/rt.h for kernels v3.9 to v3.14
+         * Fix: Disable IBT around indirect function calls
+         * Inline implementation of task_prio()
+         * Fix: prio context NULL pointer exception
+         * Fix: MODULE_IMPORT_NS is introduced in kernel 5.4
+         * Android: Import VFS namespace for android common kernel
+         * Fix: get_file_rcu is missing in kernels < 4.1
+         * fix: lookup_fd_rcu replaced by lookup_fdget_rcu in linux 6.7.0-rc1
+         * fix: mm, vmscan signatures changed in linux 6.7.0-rc1
+         * fix: phys_proc_id and cpu_core_id moved in linux 6.7.0-rc1
+         * Fix build for RHEL 8.8 with linux 4.18.0-477.10.1+
+         * Fix: bytecode validator: oops during validation of immediate string
+         * fix: lttng-probe-kvm-x86-mmu build with linux 6.6
+         * fix: built-in lttng with kernel >= v6.1
+         * fix: ubuntu kinetic kernel range for jdb2
+
+2024-01-10 (National Houseplant Appreciation Day) 2.12.15
+         * Fix: MODULE_IMPORT_NS is introduced in kernel 5.4
+         * Android: Import VFS namespace for android common kernel
+         * Fix build for RHEL 8.8 with linux 4.18.0-477.10.1+
+         * Fix: bytecode validator: oops during validation of immediate string
+         * fix: ubuntu kinetic kernel range for jdb2
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
