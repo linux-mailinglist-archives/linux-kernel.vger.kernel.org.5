@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-22501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21CD4829EAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 496AE829EAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38E021C21EED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:36:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4409F1C22051
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08474CB41;
-	Wed, 10 Jan 2024 16:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992F24D102;
+	Wed, 10 Jan 2024 16:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tenstorrent.com header.i=@tenstorrent.com header.b="cb8bAGIY"
+	dkim=pass (2048-bit key) header.d=tenstorrent.com header.i=@tenstorrent.com header.b="W5qmbDdr"
 Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81B2433C0
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F35C24CDEC
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tenstorrent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tenstorrent.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d427518d52so31893715ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:35:57 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d41bb4da91so22758225ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:35:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tenstorrent.com; s=google; t=1704904557; x=1705509357; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NUfXOVWjFppBmkTP9/JtvhS+iSH/scaSCcV++osCkg4=;
-        b=cb8bAGIYbccgMwt3dBJmBkKJOLE9WrQfAwAI2g437s6M9DJtPr+LReZWz0Ao4kit2J
-         RSlJrJ/FXkTyCtTYCffNbYaUcVzd4LhlYC52/4UbX8nSrN3mZV11mzEtPlW+8r7/FWGV
-         +1F3PhgiOrAroZ+LfC/RxEb90dRv0ZUQ5NKN1jvVipj1aQRQ+MI5zpeExPwAZME1jaxW
-         8RcBaPqbiGJCmKJCVislUOwbDW3/nVN7rK1xLk5mRzJEuH10HqY3wsisrnfLKUXYpwx8
-         dDMYadITCdMURKOFXew1qU103z1dCK8bPD4EX5wOpKnQu3YyYoHqIc9SjtUw+864pYnx
-         aE2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704904557; x=1705509357;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=tenstorrent.com; s=google; t=1704904558; x=1705509358; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NUfXOVWjFppBmkTP9/JtvhS+iSH/scaSCcV++osCkg4=;
-        b=URe7U5FIiofSRcn5iIH6Ih0PPpjKbeVTNKK0bdoDHILHHrQCN+iOn86NZy496IvcOv
-         6vt5imP7M5seD9u++mkKdDNOgJH+71OqQsKOnqXWy7rZU3B94lQDE2XKJXaSf2Sayd3K
-         +6ir6gUgKA3TE5Re5VE2SmUH2OVJxa1ohdMPXpYSEis41oMQIqh1qxm0KcNHO/asgqm+
-         2YD6PSPHo0wEqmRjPi1giPz1ETkb3ZduAwkzUEg2SyO3o6lpKsTJ4XXqZuNV+YEq5mmV
-         IvRi1ywZXdrk5ZrmQAO/Lro/Fzzi5Ab7eMC0Z5nZHL9kchDkTDfiYCuZ+j9ksLE9LjP/
-         IcOg==
-X-Gm-Message-State: AOJu0Yzd/mjyp9Lq54/peLusVMegFZirfOCzzvhhZlQC1XnY3F/xl05c
-	oTEXNOwoNZGSvhjuzJSMTC0KnHgYdIpB1g==
-X-Google-Smtp-Source: AGHT+IELbgnMH0ltz/uBIUx7pCZ9sWm8n1TjbxqSStE2MTG0+o4QTGL1FeKISXzpn48z88cNXmnpkw==
-X-Received: by 2002:a17:903:124a:b0:1d5:65c7:dea5 with SMTP id u10-20020a170903124a00b001d565c7dea5mr368928plh.35.1704904557138;
-        Wed, 10 Jan 2024 08:35:57 -0800 (PST)
+        bh=QD1dVdUukFSGWgOm+8YErUh8UR6nSG5y/Y+Z803DKGA=;
+        b=W5qmbDdrRYih0qWP2q5RDnizVwfF1Hb4cydyZEA6H54d2Vd0Dl1W/lKHVq/qCOaW27
+         s8jr2VuxyIOuvUG129D+f86yF8uZLMJrvAYb7kaScEfIQLx+/PtnsVIFm3CbOnZRXNY9
+         f+eTe11NRfkPq22/ohQYRvA6BFNDcX+pETbk6qo4k9S5XDa8gFaNrxY2UvM/Bw7T1Kfm
+         MH/u1Wp+ySMVxw227BWd2hK/ekrDlkKoq7hVFzqa5xoUVhh18myaBG5wF+aMhmNBoTjD
+         AHnwy3NOfYQOZKATLobRS6ExvjV1+dnUJB/6NnowyPrGWjxcbj4xLodOeQ+tdosrSapM
+         bqug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704904558; x=1705509358;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QD1dVdUukFSGWgOm+8YErUh8UR6nSG5y/Y+Z803DKGA=;
+        b=Ri5vPV9vf2IC72M5dPZXNxSM2vvjVWrJhbCVFrC9fxist4DNAaP3aaNM7Yn7Ao1FIE
+         25ac5J8nDd7cmwz0oWeKuqtlKKGV6jgez1OglRaIeuyeNb/oCVszy7KmMZWcdKhQWhvu
+         W6YUQLhE5jTWZqI1eccOagfeniGXP2EpExq2drkRaXkIfFfn8tfxt+sYfXcatdZncVS4
+         XVmfw3MrAQPmp1ZuJWPrHG2FFTHw5tstuqYxU+vfVNXo36NHBMxPVwDEIFabuBFEPo3b
+         8d2/yE6woE7/q7bX9jmwCsGOO9F+aCZl/G8zyVEG4mBTCsSvssRYrKFAtfmyaQHeux8V
+         rIuw==
+X-Gm-Message-State: AOJu0YxErXNB0Og2djlqm5BWZELcX2C16rk1aeUK6EU2+2NdOSKz3jJ6
+	vLD/CQvyegTN/KT+ZapmFJ0OlQLSAKCnIA==
+X-Google-Smtp-Source: AGHT+IGJrbgz90idf6ne3m+6HdkkkJnFmYsOcpLxtQWQ01bboj/iLz1TgTJ7i0nyibr1AtoLTx8lag==
+X-Received: by 2002:a17:903:2347:b0:1d4:672f:1f30 with SMTP id c7-20020a170903234700b001d4672f1f30mr1000762plh.78.1704904558271;
+        Wed, 10 Jan 2024 08:35:58 -0800 (PST)
 Received: from [127.0.1.1] ([2601:1c2:1800:f680:858a:4f95:cb29:907c])
-        by smtp.gmail.com with ESMTPSA id p20-20020a170903249400b001d4b5e444d2sm3872265plw.48.2024.01.10.08.35.55
+        by smtp.gmail.com with ESMTPSA id p20-20020a170903249400b001d4b5e444d2sm3872265plw.48.2024.01.10.08.35.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 08:35:56 -0800 (PST)
+        Wed, 10 Jan 2024 08:35:57 -0800 (PST)
 From: Drew Fustini <dfustini@tenstorrent.com>
-Subject: [PATCH RFC 0/3] clk: thead: add support for T-HEAD TH1520 AP clock
- controller
-Date: Wed, 10 Jan 2024 08:35:14 -0800
-Message-Id: <20240110-clk-th1520-v1-0-8b0682567984@tenstorrent.com>
+Date: Wed, 10 Jan 2024 08:35:15 -0800
+Subject: [PATCH RFC 1/3] dt-bindings: clock: Add T-Head TH1520 AP clock
+ definitions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,9 +68,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAELHnmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDQwNL3eScbN2SDENTIwNdY0tLEyNLI0vLFFNDJaCGgqLUtMwKsGHRSkF
- uzkqxtbUAtAQHxWEAAAA=
+Message-Id: <20240110-clk-th1520-v1-1-8b0682567984@tenstorrent.com>
+References: <20240110-clk-th1520-v1-0-8b0682567984@tenstorrent.com>
+In-Reply-To: <20240110-clk-th1520-v1-0-8b0682567984@tenstorrent.com>
 To: Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, 
  Fu Wei <wefu@redhat.com>, Michael Turquette <mturquette@baylibre.com>, 
  Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
@@ -83,77 +83,146 @@ Cc: linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
  Robert Nelson <robertcnelson@beagleboard.org>, 
  Jason Kridner <jkridner@beagleboard.org>, 
  Drew Fustini <dfustini@tenstorrent.com>, 
- Drew Fustini <dfustini@tenstorrent.org>, 
- Drew Fustini <drew@tenstorrent.org>
+ Drew Fustini <dfustini@tenstorrent.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704904555; l=2938;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704904555; l=3682;
  i=dfustini@tenstorrent.com; s=20230430; h=from:subject:message-id;
- bh=uYm/4xZs1+S7XBO0sv9/6rdMfUgmhq4fXQa0VDf/0xI=;
- b=2FFXTCrI1s1CiaVfwXB8XhukXEsvF5hrYCBYiXXPHwq8UfGI0eqE8RV6ocp8CsnYaMDazKEF+
- C5KmMTEj5uzBXS8I0wRPWllTrjOq4lRPQRxyRP7ELnCqw5YB00qCY84
+ bh=E//ielryYS+ZFfSnl5vU4Bgc/qxt3Y3UKPop02QmMe0=;
+ b=XrvAv/aJBCEJ3XXSMhsaJJUaq9SmldPahW0QtrfRKG9ut/+o2bqXqDv9j8TwCokjQLACA66m/
+ Dj+eFtCnHhLAPp6nOcuyFi9OK6IaByhRC8G84zPU2/iuAsjRoaSGhJ0
 X-Developer-Key: i=dfustini@tenstorrent.com; a=ed25519;
  pk=p3GKE9XFmjhwAayAHG4U108yag7V8xQVd4zJLdW0g7g=
 
-This series adds support for the AP sub system clock controller in the
-T-HEAD TH1520. This include CPU, DPU, GMAC and TEE PLLs.
+From: Yangtao Li <frank.li@vivo.com>
 
-Yangtao Li originally submitted this series back in May [1]. Jisheng
-made additional improvements and then passed on the work in progress to
-me. The driver code is cleaner than the version in the T-Head SDK [2].
+Add the clock definitions for T-Head TH1520 AP sub-system.
 
-I fixed checkpatch and dt_binding_check warnings along with:
-- deduplicated CLK_NPU and CLK_NPU_AXI number in header
-- corrected the npu_clk enable bit
-- fixed c910_i0_clk reg typo
-
-I am marking this as an RFC because I have not been able to get the eMMC
-controller to work with the clock driver yet. The T-Head SDK does have
-full clock driver support but it still uses a fixed clock for the mmc
-controller. I've not yet determined why that is.
-
-According to the documentation [4], the "emmc sdio ref clk" is listed as
-792 MHz in table "4.3.4 Clock Frequency of Key Module". PERI_CLK_CFG
-contains the clock gate. 792 MHz divided by 4 is 198 MHz which is the
-fixed clock frequency used for the mmc controller. However, I can't seem
-to figured how the divider is controlled for the "emmc sdio ref clk".
-
-Anyways, Emil is working on the pinctrl driver and Conor asked about the
-state of the clock driver [5]. I thought it best to send this RFC now so
-that discussion can take place on the list.
-
-Thank you,
-Drew
-
-[1] https://lore.kernel.org/linux-riscv/20230515054402.27633-1-frank.li@vivo.com/
-[2] https://openbeagle.org/beaglev-ahead/beaglev-ahead-linux/-/blob/beaglev-v5.10.113-1.1.2/drivers/clk/thead/clk-light-fm.c
-[3] https://openbeagle.org/beaglev-ahead/beaglev-ahead-linux/-/blob/beaglev-v5.10.113-1.1.2/arch/riscv/boot/dts/thead/light.dtsi
-[4] https://openbeagle.org/beaglev-ahead/beaglev-ahead/-/blob/main/docs/TH1520%20System%20User%20Manual.pdf
-[5] https://lore.kernel.org/linux-riscv/20240109-boggle-frugality-03a77cab8308@spud/
-
-Signed-off-by: Drew Fustini <dfustini@tenstorrent.com>
+Link: https://openbeagle.org/beaglev-ahead/beaglev-ahead/-/blob/main/docs/TH1520%20System%20User%20Manual.pdf
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+[fixed duplicate number for CLK_NPU and CLK_NPU_AXI]
+[revised commit description]
+Signed-off-by: Drew Fustini <dfustini@tenstorrent.org>
 ---
-Jisheng Zhang (1):
-      clk: thead: add support for T-HEAD TH1520 AP clocks
+ MAINTAINERS                                  |  1 +
+ include/dt-bindings/clock/thead,th1520-clk.h | 96 ++++++++++++++++++++++++++++
+ 2 files changed, 97 insertions(+)
 
-Yangtao Li (2):
-      dt-bindings: clock: Add T-Head TH1520 AP clock definitions
-      dt-bindings: clock: Document T-Head TH1520 AP clock controller
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bcacd665f259..a52dbf3c5606 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18857,6 +18857,7 @@ M:	Fu Wei <wefu@redhat.com>
+ L:	linux-riscv@lists.infradead.org
+ S:	Maintained
+ F:	arch/riscv/boot/dts/thead/
++F:	include/dt-bindings/clock/thead,th1520-clk.h
+ 
+ RNBD BLOCK DRIVERS
+ M:	Md. Haris Iqbal <haris.iqbal@ionos.com>
+diff --git a/include/dt-bindings/clock/thead,th1520-clk.h b/include/dt-bindings/clock/thead,th1520-clk.h
+new file mode 100644
+index 000000000000..d0d1ab1e672a
+--- /dev/null
++++ b/include/dt-bindings/clock/thead,th1520-clk.h
+@@ -0,0 +1,96 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (C) 2023 Vivo Communication Technology Co. Ltd.
++ * Authors: Yangtao Li <frank.li@vivo.com>
++ */
++
++#ifndef _DT_BINDINGS_CLK_TH1520_H_
++#define _DT_BINDINGS_CLK_TH1520_H_
++
++#define CLK_CPU_PLL0		0
++#define CLK_CPU_PLL1		1
++#define CLK_GMAC_PLL		2
++#define CLK_VIDEO_PLL		3
++#define CLK_DPU0_PLL		4
++#define CLK_DPU1_PLL		5
++#define CLK_TEE_PLL		6
++#define CLK_C910_I0		7
++#define CLK_C910		8
++#define CLK_BROM		9
++#define CLK_BMU			10
++#define CLK_AHB2_CPUSYS_HCLK	11
++#define CLK_APB3_CPUSYS_PCLK	12
++#define CLK_AXI4_CPUSYS2_ACLK	13
++#define CLK_AON2CPU_A2X		14
++#define CLK_X2X_CPUSYS		15
++#define CLK_AXI_ACLK		16
++#define CLK_CPU2AON_X2H		17
++#define CLK_PERI_AHB_HCLK	18
++#define CLK_CPU2PERI_X2H	19
++#define CLK_PERI_APB_PCLK	20
++#define CLK_PERI2APB_PCLK	21
++#define CLK_PERI_APB1_HCLK	22
++#define CLK_PERI_APB2_HCLK	23
++#define CLK_PERI_APB3_HCLK	24
++#define CLK_PERI_APB4_HCLK	25
++#define CLK_OSC12M		26
++#define CLK_OUT1		27
++#define CLK_OUT2		28
++#define CLK_OUT3		29
++#define CLK_OUT4		30
++#define CLK_APB_PCLK		31
++#define CLK_NPU			32
++#define CLK_NPU_AXI		33
++#define CLK_VI			34
++#define CLK_VI_AHB		35
++#define CLK_VO_AXI		36
++#define CLK_VP_APB		37
++#define CLK_VP_AXI		38
++#define CLK_CPU2VP		39
++#define CLK_VENC		40
++#define CLK_DPU0		41
++#define CLK_DPU1		42
++#define CLK_EMMC_SDIO		43
++#define CLK_GMAC1		44
++#define CLK_PADCTRL1		45
++#define CLK_DSMART		46
++#define CLK_PADCTRL0		47
++#define CLK_GMAC_AXI		48
++#define CLK_GPIO3		49
++#define CLK_GMAC0		50
++#define CLK_PWM			51
++#define CLK_QSPI0		52
++#define CLK_QSPI1		53
++#define CLK_SPI			54
++#define CLK_UART0_PCLK		55
++#define CLK_UART1_PCLK		56
++#define CLK_UART2_PCLK		57
++#define CLK_UART3_PCLK		58
++#define CLK_UART4_PCLK		59
++#define CLK_UART5_PCLK		60
++#define CLK_GPIO0		61
++#define CLK_GPIO1		62
++#define CLK_GPIO2		63
++#define CLK_I2C0		64
++#define CLK_I2C1		65
++#define CLK_I2C2		66
++#define CLK_I2C3		67
++#define CLK_I2C4		68
++#define CLK_I2C5		69
++#define CLK_SPINLOCK		70
++#define CLK_DMA			71
++#define CLK_MBOX0		72
++#define CLK_MBOX1		73
++#define CLK_MBOX2		74
++#define CLK_MBOX3		75
++#define CLK_WDT0		76
++#define CLK_WDT1		77
++#define CLK_TIMER0		78
++#define CLK_TIMER1		79
++#define CLK_SRAM0		80
++#define CLK_SRAM1		81
++#define CLK_SRAM2		82
++#define CLK_SRAM3		83
++#define CLK_PLL_GMAC_100M	84
++#define CLK_UART_SCLK		85
++#endif
 
- .../bindings/clock/thead,th1520-clk-ap.yaml        |   65 ++
- MAINTAINERS                                        |    3 +
- drivers/clk/Kconfig                                |    1 +
- drivers/clk/Makefile                               |    1 +
- drivers/clk/thead/Kconfig                          |   12 +
- drivers/clk/thead/Makefile                         |    2 +
- drivers/clk/thead/clk-th1520-ap.c                  | 1018 ++++++++++++++++++++
- include/dt-bindings/clock/thead,th1520-clk.h       |   96 ++
- 8 files changed, 1198 insertions(+)
----
-base-commit: 8cb47d7cd090a690c1785385b2f3d407d4a53ad0
-change-id: 20240109-clk-th1520-399429299d51
-
-Best regards,
 -- 
-Drew Fustini <dfustini@tenstorrent.com>
+2.34.1
 
 
