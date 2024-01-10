@@ -1,142 +1,122 @@
-Return-Path: <linux-kernel+bounces-22840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DD782A3D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:23:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 112A482A3DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E745C1F28358
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEFD11C26808
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598384F897;
-	Wed, 10 Jan 2024 22:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7ACD4F8A5;
+	Wed, 10 Jan 2024 22:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="FqCD0nKH"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNtPaD4k"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 707334CE1D;
-	Wed, 10 Jan 2024 22:22:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704925368;
-	bh=Wo4Mp1A7ns+9PBY4a2oxRYPubeQSBQsRulo2OhT3c7o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=FqCD0nKHHxoewLiQS37cjmM2fUDSmra8JEJaTm1gngJhbRpeubH5+hPrYjfPKmMLN
-	 5Tx8+9fTz3THom3tfn5gstSSr58Tv+EgJ+CWi/jWwGhoExIl7x59VgvPlds5lXa76K
-	 BFAdi8jRQq6THFCS9XYh0eHoZ6k4tbA1Go8mIEBql+/CzKiEs80AM2pfon2tb1PeSr
-	 FOEVFcrpPS4wclyP+pjE8u8qZpa2wZ+hud6ZKz2nWWD98TYExqG9VVTYRZ5yspqy6V
-	 oH5MR/be7ol6xO7fsO/kck6dGsXeSYlNBsfWdcvN6so/PnSLiqI5TlyETTbEyaNHMq
-	 aaYamp1KjLEPQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T9MkJ2JsYz4wxx;
-	Thu, 11 Jan 2024 09:22:47 +1100 (AEDT)
-Date: Thu, 11 Jan 2024 09:22:46 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the asm-generic tree with the mm
- tree
-Message-ID: <20240111092246.10ba37af@canb.auug.org.au>
-In-Reply-To: <20231205090546.7dffe3aa@canb.auug.org.au>
-References: <20231205090546.7dffe3aa@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB344F882;
+	Wed, 10 Jan 2024 22:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d4ca2fd2fbso24861035ad.2;
+        Wed, 10 Jan 2024 14:23:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704925409; x=1705530209; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YxsxElpc+jT4mmfFhZPh3DZtom6DY7JYexQS1ckDeao=;
+        b=HNtPaD4kJRUspPNKpAUr2dxoiG8LyYKKlLz247S4HTflSjv54I01jFxnLeaxPplTKq
+         JL5L2ui0g8zSJfFie9jlZ8/n/LODPmODsrKOkWvBPWOTBlJlvcRBKIoYnSSJIDS5XbKz
+         e0MufS6DsxAexT8E7O6UgDpuHBoiarsdaTQjZp9YTyEQKIrpMTCZWPYIv3Ns4oKJ606I
+         XQ7eP7eLQAJCHSjByllqx8D0qj1bUXy61yxVO/Zhiaxxaud42LX0RW/iECrAioeLad1F
+         quq2NYU30qnuhN5yCjl3avY/1G0fY5iPsnemHGKzeRB+O+YrYu4+UakLYFS38GVxS5ri
+         FtuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704925409; x=1705530209;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YxsxElpc+jT4mmfFhZPh3DZtom6DY7JYexQS1ckDeao=;
+        b=TkKzWy2hqWN7eP/jxQGEk5nnugI9YSV+Kd00lBRS6rjSNDyevCALOHNanZvgyGjcxt
+         a8PV9XWKzlQUqtKOI0KkokdghfHxuciCbSemIMz4wC4GCH/2f66eo6PuwY7ThNcBjUO2
+         /GDmNVMINCT754PRR1ASd4h4SeXIHTZF29SX0F1C685oqh+Ud9kIKMjcy28Mto7OPWYf
+         DAan5cbS9dRlN9KxTBTVvClPgdQOS2YbycFYwSQ5l5lvbOg/z9EmEAomVLkRPWPNcCtp
+         PVHw+9gRvkNbyJLOuqfWjtaoowJeAy9lfdf9btU1nBaEnauKpUOvb9ybFMxCjuiNZu5w
+         6C6Q==
+X-Gm-Message-State: AOJu0YwaLBJU6uW1TOsuH0ppW4GAYtz6cgcOK5Zp0rJy55diBcV9Ls0U
+	IfpZp2dRLaGPv1tlOwFLdt4=
+X-Google-Smtp-Source: AGHT+IGeLGDDAGN9Ml97cgT8MOww4VOvyzegLjaWhxhlroPbTTKHlKjmxi9wcV5Ku03hRVlwCCLv3w==
+X-Received: by 2002:a17:90b:4d91:b0:28b:d90c:c724 with SMTP id oj17-20020a17090b4d9100b0028bd90cc724mr180672pjb.54.1704925408886;
+        Wed, 10 Jan 2024 14:23:28 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id gk9-20020a17090b118900b0028d19ddb1afsm2095854pjb.33.2024.01.10.14.23.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 14:23:28 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 10 Jan 2024 14:23:26 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Miklos Szeredi <mszeredi@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+	linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+	Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <christian@brauner.io>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Matthew House <mattlloydhouse@gmail.com>,
+	Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
+Message-ID: <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
+References: <20231025140205.3586473-1-mszeredi@redhat.com>
+ <20231025140205.3586473-6-mszeredi@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.Gd64o/4MFJ7UuxtDOxM92N";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025140205.3586473-6-mszeredi@redhat.com>
 
---Sig_/.Gd64o/4MFJ7UuxtDOxM92N
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+On Wed, Oct 25, 2023 at 04:02:03PM +0200, Miklos Szeredi wrote:
+> Add way to query the children of a particular mount.  This is a more
+> flexible way to iterate the mount tree than having to parse the complete
+> /proc/self/mountinfo.
+> 
+> Allow listing either
+> 
+>  - immediate child mounts only, or
+> 
+>  - recursively all descendant mounts (depth first).
+> 
+> Lookup the mount by the new 64bit mount ID.  If a mount needs to be queried
+> based on path, then statx(2) can be used to first query the mount ID
+> belonging to the path.
+> 
+> Return an array of new (64bit) mount ID's.  Without privileges only mounts
+> are listed which are reachable from the task's root.
+> 
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 
-On Tue, 5 Dec 2023 09:05:46 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->=20
-> Today's linux-next merge of the asm-generic tree got a conflict in:
->=20
->   arch/mips/include/asm/traps.h
->=20
-> between commit:
->=20
->   6b281b05cbcc ("mips: add missing declarations for trap handlers")
->=20
-> from the mm tree and commit:
->=20
->   23f8c1823bd4 ("arch: add do_page_fault prototypes")
->=20
-> from the asm-generic tree.
->=20
->=20
-> diff --cc arch/mips/include/asm/traps.h
-> index 2c2b26f1e464,d4d9f8a8fdea..000000000000
-> --- a/arch/mips/include/asm/traps.h
-> +++ b/arch/mips/include/asm/traps.h
-> @@@ -39,28 -39,7 +39,30 @@@ extern char except_vec_nmi[]
->   	register_nmi_notifier(&fn##_nb);				\
->   })
->  =20
->  +asmlinkage void do_ade(struct pt_regs *regs);
->  +asmlinkage void do_be(struct pt_regs *regs);
->  +asmlinkage void do_ov(struct pt_regs *regs);
->  +asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31);
->  +asmlinkage void do_bp(struct pt_regs *regs);
->  +asmlinkage void do_tr(struct pt_regs *regs);
->  +asmlinkage void do_ri(struct pt_regs *regs);
->  +asmlinkage void do_cpu(struct pt_regs *regs);
->  +asmlinkage void do_msa_fpe(struct pt_regs *regs, unsigned int msacsr);
->  +asmlinkage void do_msa(struct pt_regs *regs);
->  +asmlinkage void do_mdmx(struct pt_regs *regs);
->  +asmlinkage void do_watch(struct pt_regs *regs);
->  +asmlinkage void do_mcheck(struct pt_regs *regs);
->  +asmlinkage void do_mt(struct pt_regs *regs);
->  +asmlinkage void do_dsp(struct pt_regs *regs);
->  +asmlinkage void do_reserved(struct pt_regs *regs);
->  +asmlinkage void do_ftlb(void);
->  +asmlinkage void do_gsexc(struct pt_regs *regs, u32 diag1);
->  +asmlinkage void do_daddi_ov(struct pt_regs *regs);
->  +
->  +asmlinkage void cache_parity_error(void);
->  +asmlinkage void ejtag_exception_handler(struct pt_regs *regs);
->  +asmlinkage void __noreturn nmi_exception_handler(struct pt_regs *regs);
-> + asmlinkage void do_page_fault(struct pt_regs *regs,
-> + 	unsigned long write, unsigned long address);
->  =20
->   #endif /* _ASM_TRAPS_H */
+with this patch in the tree, all sh4 builds fail with ICE.
 
-This is now a conflict between the asm-generic tree and Linus' tree.
+during RTL pass: final
+In file included from fs/namespace.c:11:
+fs/namespace.c: In function '__se_sys_listmount':
+include/linux/syscalls.h:258:9: internal compiler error: in change_address_1, at emit-rtl.c:2275
 
---=20
-Cheers,
-Stephen Rothwell
+I tested with gcc 8.2, 11.3, 11.4, and 12.3. The compiler version
+does not make a difference. Has anyone else seen the same problem ?
+If so, any idea what to do about it ?
 
---Sig_/.Gd64o/4MFJ7UuxtDOxM92N
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWfGLYACgkQAVBC80lX
-0Gw8kwf9Hol3IDHWryGa9fEXsiDz7efGVKK5gGjdPFyE13n3/wya4nR8WlyzzpM4
-yTaeN0M8TxcxT61kIwtRge5wtH5q+FP8BObSAaUr3ixh3SnZMogUS56DwTHBMsZw
-1a80oQzQqQ51ARgcGtrOQER68ZkjMsFtWwMk4oaZKgqZoquR+67QgrjaFCTfCraI
-9ek1xlNXq/YEPbWrpeQHnNmoRSffZbvT8v55lgIwsMBC1q6YD+T0MC1FNcbaKbB4
-Qm4jd+4s8BKU79nbmloQ6B+RhwHFOJ55S4OWoANXHBal+GKqvj9QSnArxgN6Kd0s
-mjn6tqk1JKQl/zPrQqtlLB7/jSfNtQ==
-=6QX7
------END PGP SIGNATURE-----
-
---Sig_/.Gd64o/4MFJ7UuxtDOxM92N--
+Thanks,
+Guenter
 
