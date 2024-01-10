@@ -1,158 +1,94 @@
-Return-Path: <linux-kernel+bounces-22261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEDE0829B8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:43:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C00F3829B8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E47EF1C25C32
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:43:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A51728A4BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D975948CD8;
-	Wed, 10 Jan 2024 13:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE02D495E0;
+	Wed, 10 Jan 2024 13:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yngvason.is header.i=@yngvason.is header.b="ckg760GL"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="FvtbhynD"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B2F48CC1
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yngvason.is
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yngvason.is
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5f2aab1c0c5so39127167b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:43:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 450A6495CC
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a28ee72913aso892425566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:43:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=yngvason.is; s=google; t=1704894180; x=1705498980; darn=vger.kernel.org;
+        d=szeredi.hu; s=google; t=1704894195; x=1705498995; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yQ/U0Sa8v/CRYiVU6kq/by3KQsxjn5M1baHcHHM4a3M=;
-        b=ckg760GLn6TVkMpbP+PCzZXevlkjDTa0V03VH026JRlN0tarCp3toLH9rfbGSn7WWt
-         e7OSVDjbNgu0UvIx77zQxhn1bTMg1vAkXNbRsnkG+gSIiby3L5lvSy1+BhIzSAYUzU4c
-         tj7aCz6wNBdeDADqj9zy+/eKi+Al3ihQFZJl4=
+        bh=XxoWcecCZExIIFdN0xtey41fgRaKWC8kWgC6rhb/9dY=;
+        b=FvtbhynDeAZzJAeE4FygbcENptRvCzftVGzuSnYU/AjtGyK/P9cyVoIloJPB0H/Dqa
+         PP+8LsVlwLDDm0zpHfYB+LYdsUSTa4dvyN3afb0VdXyLTGTvnHy9P1is2hIQBqNF1p1G
+         /zX0/KkjbFxq3fdpq/GovpQAUIBmCxQY3nIyA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704894180; x=1705498980;
+        d=1e100.net; s=20230601; t=1704894195; x=1705498995;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yQ/U0Sa8v/CRYiVU6kq/by3KQsxjn5M1baHcHHM4a3M=;
-        b=MPtiJeVRH6wEk6+GMm9X9QKB5boe17qU/Yuyber5EqUMZvuVtDkQZIbzAiPbtDNGVR
-         q4ZxXKQAn2TR3fngMuQGbP7n6My0ZWfxFT/b9ary+1WDCPXQZzNMnWMeVP2tz8NGm2bE
-         o/rT6u2vuqaOu7g28l1M9HE9CpluznzL7U6PCiwu6aQmCVFUEKbVYqNuPAHWmsOIxbb9
-         LejDJUjNJmJoXFWWNYi6UjoZTkq9IkXi/vwm/J6CqejdYXzKKK2iApfEC31O+APL+RGt
-         oHN9d3sDzPPhgfS1/71PyjtlaO+S9MeqAT3E0P15sMW5NeQUmNkWpy65ot+d7hZo8tW1
-         zPpA==
-X-Gm-Message-State: AOJu0YwwOrzMlVs3x6BFdYrZgiWQDq0B+jb2r4YoO+rQXDZ5A0VE2vum
-	BzT6KOYbsTSDtEtekpJ0Lpv/mADwXBeyvZFO8ugqt2OxqJvX7g==
-X-Google-Smtp-Source: AGHT+IGDsuO4mYJVVDxBUOZbdTOdu8bmcbR4SC1ZuMtCkzl9DP9p6Vo22kYDPHUl7Rp57fzCruInRV3SA2OPXVlQoBk=
-X-Received: by 2002:a0d:db57:0:b0:5e8:a75f:df63 with SMTP id
- d84-20020a0ddb57000000b005e8a75fdf63mr49273ywe.47.1704894180474; Wed, 10 Jan
- 2024 05:43:00 -0800 (PST)
+        bh=XxoWcecCZExIIFdN0xtey41fgRaKWC8kWgC6rhb/9dY=;
+        b=tvt11lJex0WJx8WluHQBLK2AKDopcDK3OEGuRqEW/2c5tzo/xc6G6hAra8WBNp09ca
+         CAMIsr7drON3BhP0myTjf9LLKJZ0QmUMCC48gbVGLBl5vON6ZRyXLeqQRegfwBsCxHph
+         Vh/mpsMwWYuWqL9gfsmCrshCAoeNPIdO2Dy/okBuxpF7b8G+kR/wIUPlx6yno1x6oj3H
+         KMXvzMBeCoXNX29aqQTsq7DK5QZJHtdYQLJ/62zvB31M55TOdFBYP6oCGrPPYmAvf8zh
+         M3JP6c3z+br1YUp8XphWY4HsJk2KXtAoThQw7wt3nNh95JeTudHyWfoXPrPerQ7FcpOG
+         5P6Q==
+X-Gm-Message-State: AOJu0YxN526QiDPUuG8pLIFbvbtiUsAWoblxykkv2wrRfSDgXipJ35O/
+	2edFCGAUYio4hYH7/H28qoq8ESwLYKWsR1CDXT8q88oC8fjCIa12Bo/L/SLn
+X-Google-Smtp-Source: AGHT+IE7qXen0WzP3eRsTcPJeemmFisOpVGUmxTT0jNIjPU7JJsIbdU7hVIVpCEM3HkGIuIOnfGDYc1af8uv1zg7w4Q=
+X-Received: by 2002:a17:906:fa85:b0:a2c:dfa:4f6 with SMTP id
+ lt5-20020a170906fa8500b00a2c0dfa04f6mr92733ejb.16.1704894195507; Wed, 10 Jan
+ 2024 05:43:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109181104.1670304-1-andri@yngvason.is> <20240109181104.1670304-6-andri@yngvason.is>
- <qdwv7sagqs5nmmsy5lko5hypldanfodafyzamrs3loj3n7jzlr@n5bacxkknkj4>
- <CAFNQBQzijyE4wR34AOLM45m+ryx128igVKO9zPJ5-M3afFQMxQ@mail.gmail.com> <92e20f9b-2cbf-4efe-b61b-989da0cc1668@tuxedocomputers.com>
-In-Reply-To: <92e20f9b-2cbf-4efe-b61b-989da0cc1668@tuxedocomputers.com>
-From: Andri Yngvason <andri@yngvason.is>
-Date: Wed, 10 Jan 2024 13:42:24 +0000
-Message-ID: <CAFNQBQxnMh4aPfm+U8vEfxoTdQ+FByfqwUUDnMTzgkrW2+ZZqw@mail.gmail.com>
-Subject: Re: [PATCH 5/7] drm/uAPI: Add "preferred color format" drm property
- as setting for userspace
-To: Werner Sembach <wse@tuxedocomputers.com>
-Cc: Maxime Ripard <mripard@kernel.org>, Harry Wentland <harry.wentland@amd.com>, 
-	Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, 
-	Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, Simon Ser <contact@emersion.fr>, 
-	Dan Carpenter <dan.carpenter@oracle.com>
+References: <cover.1703126594.git.nabijaczleweli@nabijaczleweli.xyz> <9b5cd13bc9e9c570978ec25b25ba5e4081b3d56b.1703126594.git.nabijaczleweli@nabijaczleweli.xyz>
+In-Reply-To: <9b5cd13bc9e9c570978ec25b25ba5e4081b3d56b.1703126594.git.nabijaczleweli@nabijaczleweli.xyz>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Wed, 10 Jan 2024 14:43:04 +0100
+Message-ID: <CAJfpegugS1y4Lwznju+qD2K-kBEctxU5ABCnaE2eOGhtFFZUYg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/11] fuse: file: limit splice_read to virtiofs
+To: =?UTF-8?Q?Ahelenia_Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc: Jens Axboe <axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, 
+	Vivek Goyal <vgoyal@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org, 
+	virtualization@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-mi=C3=B0., 10. jan. 2024 kl. 13:09 skrifa=C3=B0i Werner Sembach <wse@tuxedo=
-computers.com>:
+On Thu, 21 Dec 2023 at 04:09, Ahelenia Ziemia=C5=84ska
+<nabijaczleweli@nabijaczleweli.xyz> wrote:
 >
-> Hi,
+> Potentially-blocking splice_reads are allowed for normal filesystems
+> like NFS because they're blessed by root.
 >
-> Am 10.01.24 um 11:11 schrieb Andri Yngvason:
-> > Hi,
-> >
-> > mi=C3=B0., 10. jan. 2024 kl. 09:27 skrifa=C3=B0i Maxime Ripard <mripard=
-@kernel.org>:
-> >> On Tue, Jan 09, 2024 at 06:11:02PM +0000, Andri Yngvason wrote:
-> >>> From: Werner Sembach <wse@tuxedocomputers.com>
-> >>>
-> >>> Add a new general drm property "preferred color format" which can be =
-used
-> >>> by userspace to tell the graphic drivers to which color format to use=
-.
-> >>>
-> >>> Possible options are:
-> >>>      - auto (default/current behaviour)
-> >>>      - rgb
-> >>>      - ycbcr444
-> >>>      - ycbcr422 (not supported by both amdgpu and i915)
-> >>>      - ycbcr420
-> >>>
-> >>> In theory the auto option should choose the best available option for=
- the
-> >>> current setup, but because of bad internal conversion some monitors l=
-ook
-> >>> better with rgb and some with ycbcr444.
-> >> I looked at the patch and I couldn't find what is supposed to happen i=
-f
-> >> you set it to something else than auto, and the driver can't match tha=
-t.
-> >> Are we supposed to fallback to the "auto" behaviour, or are we suppose
-> >> to reject the mode entirely?
-> >>
-> >> The combination with the active output format property suggests the
-> >> former, but we should document it explicitly.
-> > It is also my understanding that it should fall back to the "auto"
-> > behaviour. I will add this to the documentation.
+> FUSE is commonly used suid-root, and allows anyone to trivially create
+> a file that, when spliced from, will just sleep forever with the pipe
+> lock held.
 >
-> Yes, that was the intention, and then userspace can check, but it wasn't =
-well
-> received: https://gitlab.freedesktop.org/drm/amd/-/issues/476#note_964530
->
-> Actually a lot of the thoughts that went into the original patch set can =
-be
-> found in that topic.
->
-> There was another iteration of the patch set that I never finished and se=
-nt to
-> the LKML because I got discouraged by this:
-> https://lore.kernel.org/dri-devel/20210623102923.70877c1a@eldfell/
+> The only way IPC to the fusing process could be avoided is if
+> !(ff->open_flags & FOPEN_DIRECT_IO) and the range was already cached
+> and we weren't past the end. Just refuse it.
 
-Well, I've implemented this for sway and wlroots now and Simon has
-reacted positively, so this does appear likely to end up as a feature
-in wlroots based compositors.
+How is this not going to cause regressions out there?
 
->
-> I can try to dig it up, but it is completely untested and I don't think I=
- still
-> have the respective TODO list anymore, so I don't know if it is a better =
-or
-> worst starting point than the last iteration I sent to the LKML.
->
-
-You can send the patches to me if you want and I can see if they're
-useful. I'm really only interested in the color format part though.
-Alternatively, you can continue your work and post it to LKML and I
-can focus on the userspace side and testing. By the way, I have an
-HDMI analyzer that can tell me the actual color format.
+We need to find an alternative to refusing splice, since this is not
+going to fly, IMO.
 
 Thanks,
-Andri
+Miklos
 
