@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-22795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBCC282A2F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:00:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B72482A2F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F25D283F03
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:00:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88FB21F221CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46964F1E7;
-	Wed, 10 Jan 2024 20:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B434F20E;
+	Wed, 10 Jan 2024 21:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Zm78/0Lu"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nuPRlgAS"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740B64F1E5
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F1E4EB5D
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 21:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e5521dab6so13101775e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:59:55 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3366e78d872so4902683f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:01:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704920394; x=1705525194; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704920464; x=1705525264; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JI+q1ygWucp0jEs2/K2kvo/jwjjqtn8Owxgmjhxgbus=;
-        b=Zm78/0LuXO3Fau87Cg7bh6Rkfh2m4QThkXFCc1c51TXyPTd/poik2agiqu6YfSIeHh
-         5M1/uU4pEWzyTw1U9Kd4Jq39R0keRsNBCjZ6ZOGueH+2PnnOh+0244p1w9w/33whlM1e
-         SDao2GWzcJTjClvxHBLDuv56COMAl2/O2dy1rWA1NTBXsAJ3x71MIkSCtYEHzmup3ErQ
-         HU/+BH4axtbk0doCxQfnO5t8B6d1yTFBXFKYfCcsU1ACZN31+iQKcBh2kMYyNxeK/+Ha
-         RQBkoUAcpnxclbyJFSzIp8rXknkKM0C71jrL2g0FCLefWRIEQG0U/xvoE9zljFvJSrsW
-         8g9w==
+        bh=gtGONfHAu/IEGXrUf6iu+COZeP2X33alZi+TZMyD4xc=;
+        b=nuPRlgASsjRNYPmHzLqeZQ4yjSr7atuW2mj2cHOlTxJ/nkpVlVVKtkNqd9NoBnV3uq
+         VXr7X3y64c8ClOM9RpySc1ND7jx28DQcT/GIdQX3BdJn3XJpGQ0QBMXZZXcnfWHTNsNW
+         xZOm7ABGVJl/C3sbk4MUgbTuCiASkqKJG1Yt1swoFfJF7TkItXFDBjxBoJ81mrJyiP+a
+         17imR+PB+Tz3mgx6kLhNYa4oBTRlzVJ2QgZAQpCCVnfUEKCqheJGBFgpNqo9gpVsDpj3
+         mpQGk2i3/W+/f9lDT1LCj5bnCm3/OtwtycoPbrmHhWHEiABrRf43n4KxSYcotLUG7GUN
+         dC+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704920394; x=1705525194;
+        d=1e100.net; s=20230601; t=1704920464; x=1705525264;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JI+q1ygWucp0jEs2/K2kvo/jwjjqtn8Owxgmjhxgbus=;
-        b=YuyMl0xjkWRnU1ArtlaF25/2f0LW61x/DpH51We07YJfyYB2X8eAz5EMhyOPHc9x4H
-         Y+xH4CJckSMKzogWik5Giv2KVuSbNzMeYvlDRiToa06arIUH7Jfx096ySngP881dYh1q
-         onwE4o4LQwRrn3/pNOVq4tePRZnawReSpDEJ0TQkDLKTGSby4bxaoouN21wBviauDOfg
-         KiUuleaVc1xjoisfbJRFdBeshlhH/9jVQ/QxKY4jDHaXjScZauhXg2VOB3g+aCkPSwy4
-         q5kIN1UNdZS44V347x/VlY5B4kE0XHdcbLE6Rj1gzeJg2qP/DK+l4e8qVvaPSlPWNXu1
-         wJQA==
-X-Gm-Message-State: AOJu0YyhcYweJeLSCvHGOwGyEvatz9wp2HPlgOaAPe0AK4ogvaW//UIs
-	xigk1L0ig14eq0Cib5b6dLxNg17l/0ITPw==
-X-Google-Smtp-Source: AGHT+IG78SOtofGPU9po9urYVVfeiUv7DQMjtQurhL8ph7WU9LQlkGnuxn/lalj5HJhOtBGIvMiVKA==
-X-Received: by 2002:a05:600c:6011:b0:40d:8dda:fb4c with SMTP id az17-20020a05600c601100b0040d8ddafb4cmr17283wmb.79.1704920393871;
-        Wed, 10 Jan 2024 12:59:53 -0800 (PST)
+        bh=gtGONfHAu/IEGXrUf6iu+COZeP2X33alZi+TZMyD4xc=;
+        b=uKUyQ7DQujTxSXUYS/T4oUPMe2TTbz65ITzhljpHRk0P5EMp+QHZemobkRC988DTJa
+         vSFfghVozs3iexxYR7BMQKL/8S51+QAhoWCBO/BOnip+UPUSteGM6zF+5j6RDIGtgeSg
+         OgsDcWUmJd/zVNx9kG1hSR79N9FCcgB8H+Mw4LTPQRkd04Cg9xGTHzssNWkXODVqtpC3
+         eSRo/V9ndtAFtnkEcQ6RQDoj8djD0vDziQTLVHCY+TPDUAOJnhV9yPfzyMEtIdVeN9MN
+         Pl5caq5fVAyeg18jyWv/7O+Dgd4nVpAilXrTYuZKeFPXec+dP/EFDoUPvcRJ7mmqj8Nw
+         K57g==
+X-Gm-Message-State: AOJu0YxTAsOx6LY+pjKFdt+dig/iOG705byEdCUCwR7GwH2oB8D3IBmq
+	XjSXbY+GnVeyoTC8vH6phuRXlHsvUtJ7iQ==
+X-Google-Smtp-Source: AGHT+IHb1OxJu8kv9/wwpgSac8HbcxGmz5FxehJvMfMa1Hl1SLTfmk5ymgdQyllHOUdADDHIdfyOXA==
+X-Received: by 2002:a5d:420e:0:b0:336:6914:4fa0 with SMTP id n14-20020a5d420e000000b0033669144fa0mr18340wrq.257.1704920463681;
+        Wed, 10 Jan 2024 13:01:03 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id k12-20020a5d6e8c000000b00336f43fa654sm5686931wrz.22.2024.01.10.12.59.52
+        by smtp.gmail.com with ESMTPSA id k12-20020a5d6e8c000000b00336f43fa654sm5686931wrz.22.2024.01.10.13.01.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 12:59:53 -0800 (PST)
-Message-ID: <23fdd643-ae30-474b-93b0-fb98edeb0071@linaro.org>
-Date: Wed, 10 Jan 2024 21:59:52 +0100
+        Wed, 10 Jan 2024 13:01:02 -0800 (PST)
+Message-ID: <99eca166-7d78-4ada-ac0a-ad67f3d8eb33@linaro.org>
+Date: Wed, 10 Jan 2024 22:01:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,8 +65,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v22 7/8] arm64: dts: nuvoton: npcm8xx: replace reg with
- syscon property
+Subject: Re: [PATCH v22 3/8] arm: dts: nuvoton: npcm7xx: modify rst syscon
+ node
 Content-Language: en-US
 To: Tomer Maimon <tmaimon77@gmail.com>, mturquette@baylibre.com,
  sboyd@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -75,7 +75,7 @@ To: Tomer Maimon <tmaimon77@gmail.com>, mturquette@baylibre.com,
 Cc: openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 References: <20240108135421.684263-1-tmaimon77@gmail.com>
- <20240108135421.684263-8-tmaimon77@gmail.com>
+ <20240108135421.684263-4-tmaimon77@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,18 +121,33 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240108135421.684263-8-tmaimon77@gmail.com>
+In-Reply-To: <20240108135421.684263-4-tmaimon77@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 08/01/2024 14:54, Tomer Maimon wrote:
-> Replace reg with syscon property since the clock registers handle the
-> reset registers as well.
+> rst node name and compatible property modified since clock and reset are
+> handled in the same memory region.
 > 
 > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
 > ---
+>  arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+> index 868454ae6bde..f72c5a03d04c 100644
+> --- a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+> +++ b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+> @@ -93,8 +93,8 @@ gcr: gcr@800000 {
+>  			reg = <0x800000 0x1000>;
+>  		};
+>  
+> -		rst: rst@801000 {
+> -			compatible = "nuvoton,npcm750-rst", "syscon", "simple-mfd";
+> +		clk_rst: syscon@801000 {
+> +			compatible = "nuvoton,npcm750-clk-rst", "syscon", "simple-mfd";
 
-NAK for the same reasons as previous patch.
+NAK. This breakes the users, is not justified, is not explained.
 
 Best regards,
 Krzysztof
