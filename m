@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-22683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9434182A188
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8BD082A189
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:54:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94CBC1C22D35
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:54:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEA981C22D03
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C089453E09;
-	Wed, 10 Jan 2024 19:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7C85576B;
+	Wed, 10 Jan 2024 19:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="cbfW3zrC"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="w7f2pkFZ"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418DD50254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCF45027C
 	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 19:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-598a5448ef5so270389eaf.0
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-59502aa878aso2286457eaf.1
         for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:51:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704916280; x=1705521080; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704916281; x=1705521081; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EAfisbraTIzPK5DNS+hXkieTeMFvO6LSXMmUPvgA/Yc=;
-        b=cbfW3zrCzDrC2BsJDrvGh2OelkTFByfUxrTt4miiSoq3fT2DmiaOTNftPRWZpCoOMx
-         d2gRMxkafALFBhuUMrgpW94onVz/j6zq9twsooZAcfDJjKfKEzZgraYwAbGXhD6Zghsq
-         jJx0T8rDjFrVaUrO+t8X0MvaVxOgQ1xgAUgJ7fvEBYdarHT4UnehFRbSfLRMMDBJXRTn
-         K9GOLzBYfxx6vyu/gIx8rYr65+rrnCasMncpBEp/1+vTM69O9WL8Au56+V2Lkx0qVqFO
-         oWYSHYXHlXnI4J7I5KebEWMiw2meBOD2gser2+Kfzy+h/VdaDE9HkkEk7D0wSLUYyIdz
-         MmRg==
+        bh=PEIVZQBdPUNnjAlN4uqFphv/2LrUKMCMcEQYLMsoqo8=;
+        b=w7f2pkFZfTgn8a/UxuzC9V+sUXfy70U27Cq2Grf+5kwldDIsXZFMt+s7LLZ5UNBXXs
+         B9TTqh0z6HVewLwvFBUduFTSc96+anVUQG+iB2cWmHunGVL+U952IlQqau7eguDlKa5Y
+         bNXgiaGecmNdxX8LqsQ312wPxqm58niFPlJuBAFY+rwTxpI/3XwPeLqoS+PoAPX7NsMb
+         vvEUFFaMU0qu3v5xF9YLGKZflRTEFuK2zXN4mjHy0Jv4OmjhXNXAuEDgi8ZXrDuDNqJH
+         ftAQ5x1NhbuQdgYvrIsgc4Iy2NHF0nWQiDBnRT8C+qVNKTkhGe0+2XLFKZb5L/mxfR38
+         Lyzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704916280; x=1705521080;
+        d=1e100.net; s=20230601; t=1704916281; x=1705521081;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EAfisbraTIzPK5DNS+hXkieTeMFvO6LSXMmUPvgA/Yc=;
-        b=VVWtVYp+WxiOuBn8aK91EVcotEuzCA1zkqTyEykJDOwrENJNUs64sjX4H0kbiqPg58
-         u/UYbYeofU3wxd+X6AmTaY3lkZlBLSmLjB9OgC15e5J+QicqKWFAPqVztzDFG3IAAonq
-         NLfGH/MzkMknt5YQ9hX7K+sTmIXC3xPrVC9YuqHrUEWm8tLENHREzXQ4EPcqmSpkQnXz
-         cMVhM8O+tlLsAMujuZe0wW2DMdwGLETGXGzbru3JvdqRjrJTfGODZWF0c6dXsKFw6OrW
-         nJDhLx4eBVdrk8rpVVmPyRp6eusVpvQeBhLLOe8wlJxj//oMY6ur6XLKeS7Busfq9m5/
-         Vfqw==
-X-Gm-Message-State: AOJu0YzIFvBqEpx32weLE+QWJx8IcFECUOvH4CAN7eGvTKS/l+PIp13h
-	FTRRpLRqoqMDPMktiB1keufwhPDzuIU8K1oS4kE9T6nAzKo=
-X-Google-Smtp-Source: AGHT+IHTumG0RvNmGteYGaGu6Rft2bQuoGUvLiP+GdymDcLixB0l11q6v2G9HH89HiPnDLtdCilfmg==
-X-Received: by 2002:a4a:3503:0:b0:590:2b6d:a862 with SMTP id l3-20020a4a3503000000b005902b6da862mr94634ooa.15.1704916280323;
-        Wed, 10 Jan 2024 11:51:20 -0800 (PST)
+        bh=PEIVZQBdPUNnjAlN4uqFphv/2LrUKMCMcEQYLMsoqo8=;
+        b=MVCpMJHjgbIrc433/4/nUe9GCiBqXkImS0jEEBDtj2WQsgyWeOjwrwmE7ZdMTmb+xq
+         yIhAEJ16DVxLbPRz0C/mTbzjrqC57FgMqJH7xdHifaDtvpgM6x4Wlu49L7eKJHPfdCJV
+         8x/eT2zLLLwNpXlwX1H6yDnL5ySdyzjqTrSl+p/JEWHL5sFu4zaAFM4zZsDpMWsHrIZj
+         mGVVao3llboIH76WvFYWQQzFu9mUEf2AKkvjyWhbUSemuz8FUQbVYJ8FFVZoGGueWvPp
+         6EiP0ijGKQjha+zAIFzMy32zT86LMFGfUQHkUxYtHcfYDX8f//3ukrSiaMo0TwCsX2Gi
+         kqFQ==
+X-Gm-Message-State: AOJu0Yy9ZodKtLDLYZioVkZeHH+RdhgmV27pgR2VOqcrnqyEg+1QnTeg
+	ujlEVr/lT7gfWVyFsiuqWuJZlVko+fT2Vw==
+X-Google-Smtp-Source: AGHT+IGVUnlE5QFB5qOf5dH/lNuXEUJWtpYSg/QjEdM8LJ0UAk97dhRGFSNb5W/kbU8O5dA7eDesFA==
+X-Received: by 2002:a05:6820:1ac3:b0:596:31c6:c13c with SMTP id bu3-20020a0568201ac300b0059631c6c13cmr119862oob.12.1704916281170;
+        Wed, 10 Jan 2024 11:51:21 -0800 (PST)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id 187-20020a4a0dc4000000b00595b35927a3sm938513oob.39.2024.01.10.11.51.19
+        by smtp.gmail.com with ESMTPSA id 187-20020a4a0dc4000000b00595b35927a3sm938513oob.39.2024.01.10.11.51.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 10 Jan 2024 11:51:20 -0800 (PST)
 From: David Lechner <dlechner@baylibre.com>
@@ -75,9 +75,9 @@ Cc: David Lechner <dlechner@baylibre.com>,
 	linux-doc@vger.kernel.org,
 	linux-pwm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 12/13] iio: offload: add new PWM triggered DMA buffer driver
-Date: Wed, 10 Jan 2024 13:49:53 -0600
-Message-ID: <20240109-axi-spi-engine-series-3-v1-12-e42c6a986580@baylibre.com>
+Subject: [PATCH 13/13] iio: adc: ad7380: add SPI offload support
+Date: Wed, 10 Jan 2024 13:49:54 -0600
+Message-ID: <20240109-axi-spi-engine-series-3-v1-13-e42c6a986580@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
 References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
@@ -91,310 +91,149 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.4
 Content-Transfer-Encoding: 8bit
 
-This adds a new driver for handling SPI offloading using a PWM as the
-trigger and DMA for the received data. This will be used by ADCs in
-conjunction with SPI controllers with offloading support to be able
-to sample at high rates without CPU intervention.
+This extends the ad7380 ADC driver to use the offload capabilities of
+capable SPI controllers. When offload support is available, a hardware
+triggered buffer is used to allow sampling a high rates without CPU
+intervention.
+
+To keep things simple, when this feature is present in hardware we
+disable the usual IIO triggered buffer and software timestamp rather
+than trying to support multiple buffers.
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
- drivers/iio/Kconfig                                |   1 +
- drivers/iio/Makefile                               |   1 +
- .../iio/buffer/industrialio-hw-triggered-buffer.c  |   1 +
- drivers/iio/offload/Kconfig                        |  21 ++
- drivers/iio/offload/Makefile                       |   2 +
- drivers/iio/offload/iio-pwm-triggered-dma-buffer.c | 212 +++++++++++++++++++++
- 6 files changed, 238 insertions(+)
+ drivers/iio/adc/Kconfig  |  1 +
+ drivers/iio/adc/ad7380.c | 84 +++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 80 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/Kconfig b/drivers/iio/Kconfig
-index 52eb46ef84c1..56738282d82f 100644
---- a/drivers/iio/Kconfig
-+++ b/drivers/iio/Kconfig
-@@ -90,6 +90,7 @@ source "drivers/iio/imu/Kconfig"
- source "drivers/iio/light/Kconfig"
- source "drivers/iio/magnetometer/Kconfig"
- source "drivers/iio/multiplexer/Kconfig"
-+source "drivers/iio/offload/Kconfig"
- source "drivers/iio/orientation/Kconfig"
- source "drivers/iio/test/Kconfig"
- if IIO_TRIGGER
-diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
-index 9622347a1c1b..20acf5e1a4a7 100644
---- a/drivers/iio/Makefile
-+++ b/drivers/iio/Makefile
-@@ -34,6 +34,7 @@ obj-y += imu/
- obj-y += light/
- obj-y += magnetometer/
- obj-y += multiplexer/
-+obj-y += offload/
- obj-y += orientation/
- obj-y += position/
- obj-y += potentiometer/
-diff --git a/drivers/iio/buffer/industrialio-hw-triggered-buffer.c b/drivers/iio/buffer/industrialio-hw-triggered-buffer.c
-index 7a8a71066b0e..a2fae6059616 100644
---- a/drivers/iio/buffer/industrialio-hw-triggered-buffer.c
-+++ b/drivers/iio/buffer/industrialio-hw-triggered-buffer.c
-@@ -86,6 +86,7 @@ static int iio_hw_trigger_buffer_probe(struct auxiliary_device *adev,
- }
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index cbfd626712e3..da44b585ea46 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -128,6 +128,7 @@ config AD7380
+ 	select IIO_BUFFER
+ 	select IIO_TRIGGER
+ 	select IIO_TRIGGERED_BUFFER
++	select IIO_HW_TRIGGERED_BUFFER
+ 	help
+ 	  AD7380 is a family of simultaneous sampling ADCs that share the same
+ 	  SPI register map and have similar pinouts.
+diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
+index 80712aaa9548..a71e8b81950b 100644
+--- a/drivers/iio/adc/ad7380.c
++++ b/drivers/iio/adc/ad7380.c
+@@ -20,6 +20,7 @@
+ #include <linux/sysfs.h>
  
- static const struct auxiliary_device_id iio_hw_trigger_buffer_id_table[] = {
-+	{ .name = "pwm-triggered-dma-buffer.triggered-buffer" },
- 	{ }
+ #include <linux/iio/buffer.h>
++#include <linux/iio/hw_triggered_buffer.h>
+ #include <linux/iio/iio.h>
+ #include <linux/iio/sysfs.h>
+ #include <linux/iio/trigger_consumer.h>
+@@ -133,6 +134,7 @@ struct ad7380_state {
+ 	struct spi_device *spi;
+ 	struct regulator *vref;
+ 	struct regmap *regmap;
++	struct spi_offload *spi_offload;
+ 	/*
+ 	 * DMA (thus cache coherency maintenance) requires the
+ 	 * transfer buffers to live in their own cache lines.
+@@ -335,6 +337,50 @@ static const struct iio_info ad7380_info = {
+ 	.debugfs_reg_access = &ad7380_debugfs_reg_access,
  };
- MODULE_DEVICE_TABLE(auxiliary, iio_hw_trigger_buffer_id_table);
-diff --git a/drivers/iio/offload/Kconfig b/drivers/iio/offload/Kconfig
-new file mode 100644
-index 000000000000..760c0cfe0e9c
---- /dev/null
-+++ b/drivers/iio/offload/Kconfig
-@@ -0,0 +1,21 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# SPI offload handlers for Industrial I/O
-+#
-+# When adding new entries keep the list in alphabetical order
-+
-+menu "SPI offload handlers"
-+
-+config IIO_PWM_TRIGGERED_DMA_BUFFER
-+	tristate "PWM trigger and DMA buffer connected to SPI offload"
-+	select AUXILIARY_BUS
-+	select IIO_BUFFER_DMAENGINE
-+	help
-+	  Provides a periodic hardware trigger via a PWM connected to the
-+	  trigger input of a SPI offload and a hardware buffer implemented
-+	  via DMA connected to the data output stream the a SPI offload.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called "iio-pwm-triggered-dma-buffer".
-+
-+endmenu
-diff --git a/drivers/iio/offload/Makefile b/drivers/iio/offload/Makefile
-new file mode 100644
-index 000000000000..7300ce82f066
---- /dev/null
-+++ b/drivers/iio/offload/Makefile
-@@ -0,0 +1,2 @@
-+
-+obj-$(CONFIG_IIO_PWM_TRIGGERED_DMA_BUFFER) := iio-pwm-triggered-dma-buffer.o
-diff --git a/drivers/iio/offload/iio-pwm-triggered-dma-buffer.c b/drivers/iio/offload/iio-pwm-triggered-dma-buffer.c
-new file mode 100644
-index 000000000000..970ea82316f6
---- /dev/null
-+++ b/drivers/iio/offload/iio-pwm-triggered-dma-buffer.c
-@@ -0,0 +1,212 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Platform driver for a PWM trigger and DMA buffer connected to a SPI
-+ * controller offload instance implementing the iio-hw-triggered-buffer
-+ * interface.
-+ *
-+ * Copyright (C) 2023 Analog Devices, Inc.
-+ * Copyright (C) 2023 BayLibre, SAS
-+ */
-+
-+#include <linux/auxiliary_bus.h>
-+#include <linux/pwm.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/iio/buffer.h>
-+#include <linux/iio/hw_triggered_buffer_impl.h>
-+#include <linux/iio/iio.h>
-+#include <linux/iio/trigger.h>
-+#include <linux/iio/sysfs.h>
-+#include <linux/iio/buffer-dmaengine.h>
-+#include <linux/sysfs.h>
-+
-+struct iio_pwm_triggered_dma_buffer {
-+	struct iio_hw_triggered_buffer_device hw;
-+	struct pwm_device *pwm;
-+};
-+
-+static const struct iio_trigger_ops iio_pwm_triggered_dma_buffer_ops;
-+
-+static int iio_pwm_triggered_dma_buffer_set_state(struct iio_trigger *trig, bool state)
+ 
++static int ad7380_buffer_preenable(struct iio_dev *indio_dev)
 +{
-+	struct iio_pwm_triggered_dma_buffer *st = iio_trigger_get_drvdata(trig);
++	struct ad7380_state *st = iio_priv(indio_dev);
++	struct spi_transfer xfer = {
++		.bits_per_word = st->chip_info->channels[0].scan_type.realbits,
++		.len = 4,
++		.rx_buf = SPI_OFFLOAD_RX_SENTINEL,
++	};
 +
-+	if (state)
-+		return pwm_enable(st->pwm);
++	return spi_offload_prepare(st->spi_offload, st->spi, &xfer, 1);
++}
 +
-+	pwm_disable(st->pwm);
++static int ad7380_buffer_postenable(struct iio_dev *indio_dev)
++{
++	struct ad7380_state *st = iio_priv(indio_dev);
++
++	return spi_offload_enable(st->spi_offload);
++}
++
++static int ad7380_buffer_predisable(struct iio_dev *indio_dev)
++{
++	struct ad7380_state *st = iio_priv(indio_dev);
++
++	spi_offload_disable(st->spi_offload);
 +
 +	return 0;
 +}
 +
-+static int iio_pwm_triggered_dma_buffer_validate_device(struct iio_trigger *trig,
-+							struct iio_dev *indio_dev)
++static int ad7380_buffer_postdisable(struct iio_dev *indio_dev)
 +{
-+	/* Don't allow assigning trigger via sysfs. */
-+	return -EINVAL;
-+}
++	struct ad7380_state *st = iio_priv(indio_dev);
 +
-+static const struct iio_trigger_ops iio_pwm_triggered_dma_buffer_ops = {
-+	.set_trigger_state = iio_pwm_triggered_dma_buffer_set_state,
-+	.validate_device = iio_pwm_triggered_dma_buffer_validate_device,
-+};
-+
-+static u32 axi_spi_engine_offload_pwm_trigger_get_rate(struct iio_trigger *trig)
-+{
-+	struct iio_pwm_triggered_dma_buffer *st = iio_trigger_get_drvdata(trig);
-+	u64 period_ns = pwm_get_period(st->pwm);
-+
-+	if (period_ns)
-+		return DIV_ROUND_CLOSEST_ULL(NSEC_PER_SEC, period_ns);
++	spi_offload_unprepare(st->spi_offload);
 +
 +	return 0;
 +}
 +
-+static int
-+axi_spi_engine_offload_set_samp_freq(struct iio_pwm_triggered_dma_buffer *st,
-+				     u32 requested_hz)
-+{
-+	int period_ns;
-+
-+	if (requested_hz == 0)
-+		return -EINVAL;
-+
-+	period_ns = DIV_ROUND_UP(NSEC_PER_SEC, requested_hz);
-+
-+	/*
-+	 * FIXME: We really just need a clock, not a PWM. The current duty cycle
-+	 * value is a hack to work around the edge vs. level offload trigger
-+	 * issue in the ADI AXI SPI Engine firmware.
-+	 */
-+	return pwm_config(st->pwm, 10, period_ns);
-+}
-+
-+static ssize_t sampling_frequency_show(struct device *dev,
-+				       struct device_attribute *attr, char *buf)
-+{
-+	struct iio_trigger *trig = to_iio_trigger(dev);
-+
-+	return sysfs_emit(buf, "%u\n",
-+			  axi_spi_engine_offload_pwm_trigger_get_rate(trig));
-+}
-+
-+static ssize_t sampling_frequency_store(struct device *dev,
-+					struct device_attribute *attr,
-+					const char *buf, size_t len)
-+{
-+	struct iio_trigger *trig = to_iio_trigger(dev);
-+	struct iio_pwm_triggered_dma_buffer *st = iio_trigger_get_drvdata(trig);
-+	int ret;
-+	u32 val;
-+
-+	ret = kstrtou32(buf, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	ret = axi_spi_engine_offload_set_samp_freq(st, val);
-+	if (ret)
-+		return ret;
-+
-+	return len;
-+}
-+
-+static DEVICE_ATTR_RW(sampling_frequency);
-+
-+static struct attribute *iio_pwm_triggered_dma_buffer_attrs[] = {
-+	&dev_attr_sampling_frequency.attr,
-+	NULL
++static const struct iio_buffer_setup_ops ad7380_buffer_ops = {
++	.preenable = &ad7380_buffer_preenable,
++	.postenable = &ad7380_buffer_postenable,
++	.predisable = &ad7380_buffer_predisable,
++	.postdisable = &ad7380_buffer_postdisable,
 +};
 +
-+ATTRIBUTE_GROUPS(iio_pwm_triggered_dma_buffer);
+ static int ad7380_init(struct ad7380_state *st)
+ {
+ 	int ret;
+@@ -417,11 +463,39 @@ static int ad7380_probe(struct spi_device *spi)
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->available_scan_masks = ad7380_2_channel_scan_masks;
+ 
+-	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
+-					      iio_pollfunc_store_time,
+-					      ad7380_trigger_handler, NULL);
+-	if (ret)
+-		return ret;
++	st->spi_offload = spi_offload_get(spi, 0);
++	if (IS_ERR(st->spi_offload)) {
++		ret = PTR_ERR(st->spi_offload);
 +
-+static void iio_pwm_triggered_dma_buffer_adev_release(struct device *dev)
-+{
-+}
-+
-+static void iio_pwm_triggered_dma_buffer_unregister_adev(void *adev)
-+{
-+	auxiliary_device_delete(adev);
-+	auxiliary_device_uninit(adev);
-+}
-+
-+static int iio_pwm_triggered_dma_buffer_probe(struct platform_device *pdev)
-+{
-+	struct iio_pwm_triggered_dma_buffer *st;
-+	struct auxiliary_device *adev;
-+	int ret;
-+
-+	st = devm_kzalloc(&pdev->dev, sizeof(*st), GFP_KERNEL);
-+	if (!st)
-+		return -ENOMEM;
-+
-+	st->pwm = devm_pwm_get(&pdev->dev, NULL);
-+	if (IS_ERR(st->pwm))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(st->pwm),
-+				     "failed to get PWM\n");
-+
-+	st->hw.buffer = devm_iio_dmaengine_buffer_alloc(&pdev->dev, "rx");
-+	if (IS_ERR(st->hw.buffer))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(st->hw.buffer),
-+				     "failed to allocate buffer\n");
-+
-+	st->hw.trig = devm_iio_trigger_alloc(&pdev->dev, "%s-%s-pwm-trigger",
-+					     dev_name(pdev->dev.parent),
-+					     dev_name(&pdev->dev));
-+	if (!st->hw.trig)
-+		return -ENOMEM;
-+
-+	st->hw.trig->ops = &iio_pwm_triggered_dma_buffer_ops;
-+	st->hw.trig->dev.parent = &pdev->dev;
-+	st->hw.trig->dev.groups = iio_pwm_triggered_dma_buffer_groups;
-+	iio_trigger_set_drvdata(st->hw.trig, st);
-+
-+	/* start with a reasonable default value */
-+	ret = axi_spi_engine_offload_set_samp_freq(st, 1000);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "failed to set sampling frequency\n");
-+
-+	ret = devm_iio_trigger_register(&pdev->dev, st->hw.trig);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "failed to register trigger\n");
-+
-+	adev = &st->hw.adev;
-+	adev->name = "triggered-buffer";
-+	adev->dev.parent = &pdev->dev;
-+	adev->dev.release = iio_pwm_triggered_dma_buffer_adev_release;
-+	adev->id = 0;
-+
-+	ret = auxiliary_device_init(adev);
-+	if (ret)
-+		return ret;
-+
-+	ret = auxiliary_device_add(adev);
-+	if (ret) {
-+		auxiliary_device_uninit(adev);
-+		return ret;
++		if (ret == -EOPNOTSUPP)
++			st->spi_offload = NULL;
++		else
++			return dev_err_probe(&spi->dev, ret,
++					     "failed to get SPI offload\n");
 +	}
 +
-+	return devm_add_action_or_reset(&pdev->dev,
-+			iio_pwm_triggered_dma_buffer_unregister_adev, adev);
-+}
++	if (st->spi_offload) {
++		/*
++		 * We can't have a soft timestamp (always last channel) when
++		 * using a hardware triggered buffer.
++		 */
++		indio_dev->num_channels -= 1;
 +
-+static const struct of_device_id iio_pwm_triggered_dma_buffer_match_table[] = {
-+	{ .compatible = "adi,spi-offload-pwm-trigger-dma-buffer" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, iio_pwm_triggered_dma_buffer_match_table);
-+
-+static struct platform_driver iio_pwm_triggered_dma_buffer_driver = {
-+	.probe = iio_pwm_triggered_dma_buffer_probe,
-+	.driver = {
-+		.name = "iio-pwm-triggered-dma-buffer",
-+		.of_match_table = iio_pwm_triggered_dma_buffer_match_table,
-+	},
-+};
-+module_platform_driver(iio_pwm_triggered_dma_buffer_driver);
-+
-+MODULE_AUTHOR("David Lechner <dlechner@baylibre.com>");
-+MODULE_DESCRIPTION("AXI SPI Engine Offload PWM Trigger");
-+MODULE_LICENSE("GPL");
++		ret = devm_iio_hw_triggered_buffer_setup(&spi->dev,
++							 indio_dev,
++							 st->spi_offload->dev,
++							 &ad7380_buffer_ops);
++		if (ret)
++			return dev_err_probe(&spi->dev, ret,
++					     "failed to setup offload\n");
++	} else {
++		ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
++						      iio_pollfunc_store_time,
++						      ad7380_trigger_handler,
++						      NULL);
++		if (ret)
++			return ret;
++	}
+ 
+ 	ret = ad7380_init(st);
+ 	if (ret)
 
 -- 
 2.43.0
