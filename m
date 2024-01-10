@@ -1,154 +1,132 @@
-Return-Path: <linux-kernel+bounces-21860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF11829558
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE5BB82955A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D331BB25FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:47:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AA5DB24F12
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EAA73B198;
-	Wed, 10 Jan 2024 08:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8763C47D;
+	Wed, 10 Jan 2024 08:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rbRHB8TW";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rbRHB8TW"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Mth3+QK9"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23CCB3B190
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B6AB421C56;
-	Wed, 10 Jan 2024 08:46:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704876399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dAMBtYxlnvekwyaz5hr/7HwB3du2CWI3iMgQMYoSubo=;
-	b=rbRHB8TWWTkXJMRrgKyAZpxrf8arJY85UXcKVMHZKx7eChVd0m6TdKbHFIB4qQO1h3LB2N
-	MVnWx7DLNNSy+BzPPoYdylwOCQbJ5wU5eHe7wvjCQNdwAbGaNGbdCfcJ1ypMKkc2Z3oRuQ
-	xF6hZWpzS62/V9mI32lqHnr6cqn+XyI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704876399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dAMBtYxlnvekwyaz5hr/7HwB3du2CWI3iMgQMYoSubo=;
-	b=rbRHB8TWWTkXJMRrgKyAZpxrf8arJY85UXcKVMHZKx7eChVd0m6TdKbHFIB4qQO1h3LB2N
-	MVnWx7DLNNSy+BzPPoYdylwOCQbJ5wU5eHe7wvjCQNdwAbGaNGbdCfcJ1ypMKkc2Z3oRuQ
-	xF6hZWpzS62/V9mI32lqHnr6cqn+XyI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 930B613786;
-	Wed, 10 Jan 2024 08:46:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aIINIm9ZnmUDcQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 10 Jan 2024 08:46:39 +0000
-Date: Wed, 10 Jan 2024 09:46:39 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm, oom: Add lru_add_drain() in __oom_reap_task_mm()
-Message-ID: <ZZ5Zb3FYqY8FZgB3@tiehlicka>
-References: <20240109091511.8299-1-jianfeng.w.wang@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721FE3C467
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6d9bd63ec7fso2065186b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1704876436; x=1705481236; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xrFYtdFHy0dekIS+EQHaYj3FzdnI4ZilQGeBdruHSrs=;
+        b=Mth3+QK94wnW5+Wpr/qnJKk3X3/AKUfNLHmCOAOwLEXZcpXQIOFSE+tgdW9Upv4jHg
+         kowW0jwrzyC8Kla+RMl8r81Vbf40OWtevjcriBNxBV2S0F5Y3WgDbPob6NR3ntrniKSm
+         vAvvHwHbraPMBcJqKdAkllVq1KMZXpPdm56N+X0iipkLrPIkEC5zS2fGnYXN8+xIHfI2
+         I+jK4mBcZ3tS9vBaocVZNixBoOInCe94Clvjt5hCFBeKgF16s+V0tckoXnONaWcG1QtX
+         /F4TIi7UxsdS1QriuJz/EBBEY1G4CBJQyalpRuymcvvZsxnSmoG/kiq9GzvmPasxb3KL
+         v5dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704876436; x=1705481236;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xrFYtdFHy0dekIS+EQHaYj3FzdnI4ZilQGeBdruHSrs=;
+        b=c61T7pHuGWY39meTN0Y4tGML92ca6778Lr79SyazF23UvqdPQ4XgfKrKHIQpHM8lQ4
+         S39oWcyGWWhPPthaSP61UadApxQzkVLjm53YqXm0bBHnI3f6kf9uo8Klziu+kUaOpLIv
+         F78j2MlSKdEHqQA99YUoUbAstaxWmhde6/r3IAl+fjCW0Eol8gOOr9i783a2dFMvbEZH
+         zOoBd12gsxdFGRoF8yqaiYERKyB13SmvLa+VDg6EBxhBaKZcc+z+L/UBIeySOVDCY65R
+         gTujY7hKR+KicXrlad3fO4QgpViEk/VvKHv3Ny0oUpB1/DT49wcf0BRD3tznBeXZ316Q
+         /CRw==
+X-Gm-Message-State: AOJu0Yw7RsrrEsQQG1n1ZEsFo9QiV0LqKom4+7O7IFUKA1cVCnZosrXY
+	xwsqMnvxMhPiuDWoXf3E1Pk+uAP3fZBfOw==
+X-Google-Smtp-Source: AGHT+IGELo8LQap2T2LTUajAaEUMGUUrnUSXc0oi668dRr6EXDUBlg2FFO0Me00p9KLkNBUBveR4FA==
+X-Received: by 2002:a05:6a00:1490:b0:6d9:9dde:8999 with SMTP id v16-20020a056a00149000b006d99dde8999mr604312pfu.58.1704876434354;
+        Wed, 10 Jan 2024 00:47:14 -0800 (PST)
+Received: from 3PW47C3.bytedance.net ([203.208.189.10])
+        by smtp.gmail.com with ESMTPSA id x21-20020aa793b5000000b006dabe67bb85sm2973690pff.216.2024.01.10.00.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 00:47:14 -0800 (PST)
+From: Bin Zhong <zhongbin@bytedance.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kuniyu@amazon.com,
+	alexander@mihalicyn.com,
+	dhowells@redhat.com,
+	john.fastabend@gmail.com,
+	daan.j.demeyer@gmail.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	liubo.0617@bytedance.com,
+	zhangjinshan.smile@bytedance.com,
+	Bin Zhong <zhongbin@bytedance.com>
+Subject: [PATCH net] af_unix: Avoid a wakeup if data has been not arrived
+Date: Wed, 10 Jan 2024 16:47:03 +0800
+Message-Id: <20240110084703.2708053-1-zhongbin@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109091511.8299-1-jianfeng.w.wang@oracle.com>
-X-Spam-Level: **
-X-Spamd-Bar: ++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=rbRHB8TW
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [2.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.20)[89.15%]
-X-Spam-Score: 2.29
-X-Rspamd-Queue-Id: B6AB421C56
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Tue 09-01-24 01:15:11, Jianfeng Wang wrote:
-> The oom_reaper tries to reclaim additional memory owned by the oom
-> victim. In __oom_reap_task_mm(), it uses mmu_gather for batched page
-> free. After oom_reaper was added, mmu_gather feature introduced
-> CONFIG_MMU_GATHER_NO_GATHER (in 'commit 952a31c9e6fa ("asm-generic/tlb:
-> Introduce CONFIG_HAVE_MMU_GATHER_NO_GATHER=y")', an option to skip batched
-> page free. If set, tlb_batch_pages_flush(), which is responsible for
-> calling lru_add_drain(), is skipped during tlb_finish_mmu(). Without it,
-> pages could still be held by per-cpu fbatches rather than be freed.
-> 
-> This fix adds lru_add_drain() prior to mmu_gather. This makes the code
-> consistent with other cases where mmu_gather is used for freeing pages.
+In the following scenarios, unnecessary wake-up may occur.
+When a thread sends a piece of data and then immediately
+calls recv to wait for the server's data, the server, upon
+receiving this thread's data, calls back unix_write_space
+to wake up this thread.
 
-Does this fix any actual problem or is this pure code consistency thing?
-I am asking because it doesn't make much sense to me TBH, LRU cache
-draining is usually important when we want to ensure that cached pages
-are put to LRU to be dealt with because otherwise the MM code wouldn't
-be able to deal with them. OOM reaper doesn't necessarily run on the
-same CPU as the oom victim so draining on a local CPU doesn't
-necessarily do anything for the victim's pages.
+Therefore, add the filtering conditions of EPOLLIN and
+EPOLLERR in the callback function of the waiting queue in
+the unix_stream_data_wait function to reduce unnecessary
+wake-ups.
 
-While this patch is not harmful I really do not see much point in adding
-the local draining here. Could you clarify please?
+Signed-off-by: Bin Zhong <zhongbin@bytedance.com>
+---
+ net/unix/af_unix.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index ac1f2bc18fc9..bd4e7beb02d5 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2500,6 +2500,14 @@ static int unix_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
+ 	return recv_actor(sk, skb);
+ }
  
-> Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-> ---
->  mm/oom_kill.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 9e6071fde34a..e2fcf4f062ea 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -537,6 +537,7 @@ static bool __oom_reap_task_mm(struct mm_struct *mm)
->  			struct mmu_notifier_range range;
->  			struct mmu_gather tlb;
->  
-> +			lru_add_drain();
->  			mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0,
->  						mm, vma->vm_start,
->  						vma->vm_end);
-> -- 
-> 2.42.1
-> 
-
++static int unix_stream_data_wake_function(wait_queue_entry_t *wait, unsigned int mode,
++					int sync, void *key)
++{
++	if (key && !(key_to_poll(key) & (EPOLLIN | EPOLLERR)))
++		return 0;
++	return autoremove_wake_function(wait, mode, sync, key);
++}
++
+ /*
+  *	Sleep until more data has arrived. But check for races..
+  */
+@@ -2509,7 +2517,7 @@ static long unix_stream_data_wait(struct sock *sk, long timeo,
+ {
+ 	unsigned int state = TASK_INTERRUPTIBLE | freezable * TASK_FREEZABLE;
+ 	struct sk_buff *tail;
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, unix_stream_data_wake_function);
+ 
+ 	unix_state_lock(sk);
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
 
