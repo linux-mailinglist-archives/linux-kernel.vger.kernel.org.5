@@ -1,106 +1,96 @@
-Return-Path: <linux-kernel+bounces-22017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55066829800
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:50:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AC52829802
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09DEC1F26799
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:50:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 092C61F26A90
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F272347780;
-	Wed, 10 Jan 2024 10:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACD547A64;
+	Wed, 10 Jan 2024 10:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iHMKf8Ik"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEVeTbYb"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6A741779
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e7c6e3c63so4113417e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 02:49:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622E847A58;
+	Wed, 10 Jan 2024 10:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5f0c0ca5ef1so39824217b3.2;
+        Wed, 10 Jan 2024 02:49:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704883772; x=1705488572; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4HAwidvb0e6ayLYLy7I8ixYSx1g7DRV+B9kcqw/hieg=;
-        b=iHMKf8IkXh7fOSlSG15azryW47XKx238o+gr8RPX3CubNzw9MSfg9cLZ9P0dZTLjZt
-         qmeG20Ey4S7kC8mKbEijqtUBLXkwRzN+ybH5XU/K0+t9Ru7Megl2TY1MaPD+SCdJAQKS
-         IGd3JQrN99lewOzjhWMSjncpSBz4CgqIErtFFRypnzwtsHn31v/IQAWvdVRgzAxBT5ka
-         vrBmYaTeibRwxfpsEwYyHJZoxw+GshaLKKOzXmuOxcfVKLFU1rutA56G9j9LMRPoiCmA
-         mmBFu45NjfAvuyEODbI5zwIIIiblz6CTrxJHRVcT+ChkSOwrv4K/cLj7oZWwHbEaDyHU
-         YTvA==
+        d=gmail.com; s=20230601; t=1704883780; x=1705488580; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nkyAuv09jckrb1xtJ7Sn9m5uY5gMhi9Dyi8024qOado=;
+        b=iEVeTbYbUGnuNg/OARaHQc1dkH2wlTGkrw5/TIenxuFDpm8xkWFLHK/BPB5uNY/RFi
+         Z9k66nf4AXzcvNeUsYed49KcZdgftSgaop2Y7Pg5SLL+3+qpJ86iKDoTjYaLcMoAcdP5
+         WGJsHdVl5ejDnjsbB6gg5fyqC0MHsosXUvFhbAqHbZn/n1wQDAbfQtpNc5/AWyIw0mQu
+         zLZjBNjvTHHYX52bVrEiCSMhc0P3qSMxcwQD+7UESZ3zyIBRSB/q+7b3bZqJeMVXnt1y
+         ehkbAKSibKkyYnv4P0ij8tJtui5HsE8OnNWWx1tcuSN4biCAtqSAMbxJvSfWeP9IcmT6
+         wnng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704883772; x=1705488572;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4HAwidvb0e6ayLYLy7I8ixYSx1g7DRV+B9kcqw/hieg=;
-        b=lC1cxs5SJGzsnIWsJQY9y0AgXGv/FDhMQ83HzSXgErcSXZS7HNaqI2EuTyCeowuH1y
-         9bFy+ODSRQS/kXOwFFnNtFWtPnbz5bsCKyYJ+jmVpxv5oajpRKVum2eWpzqA6NNMCQyu
-         N1UtrGL8fB7lIw5X90uPCZUgJkm8Qo8wRrCGbQymVfket30iDSd6CqndMfnOVHNzJG4y
-         ZVJCczakx0HYwpW27eyoHeaFoZq7pIt3uPhDvV41QBhSLCxcilB4yjnebD+pnhF9Iq4o
-         k2IobCSuMJCyRMWWF6DWNYDkiynfbXvoZcqMIIYsd6SZajno9zW7CIBzAqNqAOAh4SQI
-         PCPQ==
-X-Gm-Message-State: AOJu0Yw7G5HgxitlmnA9eQPwBw0kOKCchQCdQFX0Ahdh8YebVXb0ESSo
-	N8LOv1df8TFf8tCRYlBvd8sNP08DjsAYlw==
-X-Google-Smtp-Source: AGHT+IGH4Qz7/5tf/bBFWTnAs92jT0yCKBWnsVfiMJH5KiWKl3BVTMjQvfanZ3xGGYxdJZu1ZO+YtQ==
-X-Received: by 2002:a19:5f50:0:b0:50e:700:bdbb with SMTP id a16-20020a195f50000000b0050e0700bdbbmr145927lfj.21.1704883771729;
-        Wed, 10 Jan 2024 02:49:31 -0800 (PST)
-Received: from [172.30.205.119] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id o5-20020ac24bc5000000b0050ecae41c51sm590120lfq.135.2024.01.10.02.49.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 02:49:31 -0800 (PST)
-Message-ID: <45314345-36ba-4d85-9d3b-298de26eb069@linaro.org>
-Date: Wed, 10 Jan 2024 11:49:27 +0100
+        d=1e100.net; s=20230601; t=1704883780; x=1705488580;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nkyAuv09jckrb1xtJ7Sn9m5uY5gMhi9Dyi8024qOado=;
+        b=GOWA2P4Ipf8vewYKN2dvW415CHmEk+6ut7r9zas2RiUcrI2bJsld0UwSKCmzRyOW8q
+         CGYgMl+I2CGRcqGnB6YnSBA3YHhMw+bXkA9c//+PdAM2voed+iMXla+/6jB/DHoGdrJq
+         7bimL7+hVhcyCRbzNXSCNZrZzXAXxVL1UEU3Uc9RzhPjYePWp7vj+AeG39U8hBy5TEzE
+         ckGHjZDZCEUpVQKKrereGe/Mr4+AlwpFwol+PDr7p5ZgrPX3gFjdyvR9N47UKqBwTzA0
+         8WubDYcSMjKs6GylaBzjztScID7v7iEjLe6eWCIPgal+sD+u+z6gYhyOiEb8uArqj5sy
+         NxeQ==
+X-Gm-Message-State: AOJu0YxTfDZWW3Eve+vzV2HFvPN1oe0RBE8cAgyurnKC8uQ27b0adNtR
+	tvvC8/DNYSvnE8KDL/ecYziFXp9QaX2Exnide0M=
+X-Google-Smtp-Source: AGHT+IFeCydfST7aDCwuFPDsuw2cwzVOE8Fv3I4KKk4ctjbM0/io4Cl/D+NT6BNGEexZTsX+/kt1LFfmucwY15LWnKw=
+X-Received: by 2002:a81:6d0f:0:b0:5e8:8053:70d1 with SMTP id
+ i15-20020a816d0f000000b005e8805370d1mr793142ywc.50.1704883780409; Wed, 10 Jan
+ 2024 02:49:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 4/5] iommu/arm-smmu: add ACTLR data and support for
- SM8550
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>, will@kernel.org,
- robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
- jsnitsel@redhat.com, quic_bjorande@quicinc.com, mani@kernel.org,
- quic_eberman@quicinc.com, robdclark@chromium.org,
- u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com,
- quic_pkondeti@quicinc.com, quic_molvera@quicinc.com
-Cc: linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- qipl.kernel.upstream@quicinc.com
-References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
- <20240109114220.30243-5-quic_bibekkum@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240109114220.30243-5-quic_bibekkum@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240108032117.215171-1-wangrui@loongson.cn> <ZZ2fn0scbDKBXWe5@boqun-archlinux>
+ <CAHirt9iox8FGV2wrMyxwFRjab2avfOcyLKvBc9K=AqiHxqHXKg@mail.gmail.com>
+ <ZZ38XMQw18mw2sTA@Boquns-Mac-mini.home> <CAHirt9jQSVvBF=1wc=sT9FxngeSP30P4FDpu8m0JH_0fOPSO-w@mail.gmail.com>
+In-Reply-To: <CAHirt9jQSVvBF=1wc=sT9FxngeSP30P4FDpu8m0JH_0fOPSO-w@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 10 Jan 2024 11:49:29 +0100
+Message-ID: <CANiq72=X3cggAn0HLMi7jVFAfypBhog=ZkPB57yfaX4ZUzT-HA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Rust enablement for LoongArch
+To: WANG Rui <wangrui@loongson.cn>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, WANG Xuerui <kernel@xen0n.name>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-doc@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 10, 2024 at 3:49=E2=80=AFAM WANG Rui <wangrui@loongson.cn> wrot=
+e:
+>
+> LLVM 17 doesn't work. The minimum LLVM version required for LoongArch
+> is 18.0.0. This is the reason why we have updated the
+> scripts/min-tool-version.sh. [1]
+>
+> [1] https://lore.kernel.org/loongarch/20240108033138.217032-1-wangrui@loo=
+ngson.cn/
 
+Thanks! Is this targeted at 6.9?
 
-On 1/9/24 12:42, Bibek Kumar Patro wrote:
-> Add ACTLR data table for SM8550 along with support for
-> same including SM8550 specific implementation operations.
-> 
-> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-> ---
-[...]
-
-> +static const struct actlr_variant sm8550_actlr[] = {
-> +	{ sm8550_apps_actlr_cfg, 0x15000000 },
-> +	{ sm8550_gfx_actlr_cfg, 0x03da0000 },
-> +	{},
-> +};
-
-Please use C99 designated initializers and put the address first.
-
-Konrad
+Cheers,
+Miguel
 
