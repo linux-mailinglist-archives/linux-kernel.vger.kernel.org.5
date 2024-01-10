@@ -1,134 +1,216 @@
-Return-Path: <linux-kernel+bounces-22464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BD61829E0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:57:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5057829E18
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ACE428A9B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:57:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8A51C22AF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA124C3DC;
-	Wed, 10 Jan 2024 15:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38EAD4C615;
+	Wed, 10 Jan 2024 16:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IeDcPZYq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WMrsvWd1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914B84C3C6
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:56:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B85F1C433C7;
-	Wed, 10 Jan 2024 15:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704902190;
-	bh=Mev9R+M1cLaYjYBU2ZgT5jQ2ZNfBaieaMpJ0LyeLUqQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IeDcPZYqZH/yosqHy6J0lKKIXTr87XKELYPhOa4vt9rK8HdOlohar0v95Bx8OTdGH
-	 qFkCOu0OtN6mz/BohFHwbJekpq/cRig3FNJMy81gq7ZjCx4Q+GqZRFbdFk2LWKfLwU
-	 UqW8AC16aRfgHhoGD+CVoZibaW2tuPgF5iuMbzilseJNpgvVjFgYAZrwuFPgEB78OG
-	 WV0NkkyJ+qt57r+azS6oThayuTFamklZZWYXTFl52aiYMK+5hVeAsy/CZ3k7mu4Zvw
-	 gsotv0QM55jZHaZKlclvTSBRs5wPTZS/GgIMp2z1pttlcZwrYyX+zCDFpfpMi3TWWO
-	 PcI2MR49Yy+Rw==
-Date: Wed, 10 Jan 2024 16:56:27 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
-Cc: intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Michal Wajdeczko <michal.wajdeczko@intel.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Javier Martinez Canillas <javierm@redhat.com>, 
-	=?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Subject: Re: [PATCH v4 6/6] drm/tests: managed: Add a simple test for
- drmm_managed_release
-Message-ID: <2mgrb5lrm5oskkcauhdbegdb5jwhqx6unzlaltz6e2bzaqrzyr@dnkbsr3ykj7k>
-References: <20240105101324.26811-1-michal.winiarski@intel.com>
- <20240105101324.26811-7-michal.winiarski@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A354C3BD
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704902397;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XQnGeG1QGEu/QBtp4/TBUL4MRasK2rgYQhSF+ZicemU=;
+	b=WMrsvWd17oLCmT/9W6JkzBX+p+Dwzb92qj4j0s9uP0n4VX1sypNbxsfYP8DxSPwXQAFEae
+	bWJRlV7xpx51URsfSw9KX7i/TRIMQymeXTlobh+GH5Dhrm3K3Kw2bL08krkh9TP4tNpkUd
+	6NhQlHlUaYKwcnXiNK/1FMYx3q8ttHc=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-246-RA40ty5YMICD3bgqUv1APQ-1; Wed, 10 Jan 2024 10:59:56 -0500
+X-MC-Unique: RA40ty5YMICD3bgqUv1APQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7831be985c0so517707985a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:59:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704902395; x=1705507195;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XQnGeG1QGEu/QBtp4/TBUL4MRasK2rgYQhSF+ZicemU=;
+        b=rs68l/Gpp+9CTjJc5fHODR6OWWEI6dVj6fr+Osoz4oaXOtISKBN38umrEBdve24Zu2
+         lhZ40lt4AWcmMvu2kw1HQ8ole9lp6dzrZYIHFPKvnYNmKd52dhqhd4KZCuFOh0OxHGjC
+         fuyK/ixyzxYgOBdaZf8LAtOZ9cfSOVqW42xMV6x6lcH/olt+V2KDkUs36Z+oKOb+DX/I
+         W49miRCcw/t4I0MGOQrAkd8IlwriCXbq5yYtRB4y4RoVROQeWA1VK0dUciMqIxjH43JQ
+         DPUpqzMwyJi6WvlzpePtN3wdHH09QyDRDKQjmhPEwf/W2c6sBRgCegDBaRoPRFF5Z9Pz
+         COhg==
+X-Gm-Message-State: AOJu0YwZwBk52JJPH2BKKVdN7RoCoXS1yfCAafIaAgQxYZenQrwtcjLE
+	en6h00kABCTKVoENh2/djftOFKNnxFzusmHKQF8uwqyyPqiDkFCjBediCngXn3oX4itS3EUlKVL
+	VOwJSP/AoMG0St7YRTXRXznt6pzJC1pM=
+X-Received: by 2002:a05:620a:5604:b0:781:a2bc:3211 with SMTP id vu4-20020a05620a560400b00781a2bc3211mr1186465qkn.128.1704902395537;
+        Wed, 10 Jan 2024 07:59:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH/bzCATczOMB0vRgD1epB1FaXF/PgxKumauea4s3H5r12+zW5Kxf78GIo1oE4XXqbp03PmNA==
+X-Received: by 2002:a05:620a:5604:b0:781:a2bc:3211 with SMTP id vu4-20020a05620a560400b00781a2bc3211mr1186454qkn.128.1704902395222;
+        Wed, 10 Jan 2024 07:59:55 -0800 (PST)
+Received: from klayman.redhat.com (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
+        by smtp.gmail.com with ESMTPSA id z11-20020a05620a08cb00b00783206b9fedsm1691930qkz.86.2024.01.10.07.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 07:59:54 -0800 (PST)
+From: Marco Pagani <marpagan@redhat.com>
+To: Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Rae Moar <rmoar@google.com>,
+	Shuah Khan <skhan@linuxfoundation.org>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4] kunit: run test suites only after module initialization completes
+Date: Wed, 10 Jan 2024 16:59:47 +0100
+Message-ID: <20240110155948.90964-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="low44rvsz3fnl7ut"
-Content-Disposition: inline
-In-Reply-To: <20240105101324.26811-7-michal.winiarski@intel.com>
+Content-Transfer-Encoding: 8bit
 
+Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
+kunit_free_suite_set()") fixed a wild-memory-access bug that could have
+happened during the loading phase of test suites built and executed as
+loadable modules. However, it also introduced a problematic side effect
+that causes test suites modules to crash when they attempt to register
+fake devices.
 
---low44rvsz3fnl7ut
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
+MODULE_STATE_COMING states before reaching the normal operating state
+MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
+MODULE_STATE_GOING before being released. However, if the loading
+function load_module() fails between complete_formation() and
+do_init_module(), the module goes directly from MODULE_STATE_COMING to
+MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
 
-On Fri, Jan 05, 2024 at 11:13:24AM +0100, Micha=C5=82 Winiarski wrote:
-> Add a simple test that checks whether the action is indeed called right
-> away and that it is not called on the final drm_dev_put().
->=20
-> Signed-off-by: Micha=C5=82 Winiarski <michal.winiarski@intel.com>
-> ---
->  drivers/gpu/drm/tests/drm_managed_test.c | 28 ++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/t=
-ests/drm_managed_test.c
-> index c1fc1f0aac9b2..91863642efc13 100644
-> --- a/drivers/gpu/drm/tests/drm_managed_test.c
-> +++ b/drivers/gpu/drm/tests/drm_managed_test.c
-> @@ -41,6 +41,33 @@ static void drm_test_managed_run_action(struct kunit *=
-test)
->  	KUNIT_EXPECT_TRUE_MSG(test, priv->action_done, "Release action was not =
-called");
->  }
-> =20
-> +/*
-> + * The test verifies that the release action is called immediately when
-> + * drmm_release_action is called and that it is not called for a second =
-time
-> + * when the device is released.
-> + */
-> +static void drm_test_managed_release_action(struct kunit *test)
-> +{
-> +	struct managed_test_priv *priv =3D test->priv;
-> +	int ret;
-> +
-> +	ret =3D drmm_add_action_or_reset(priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	ret =3D drm_dev_register(priv->drm, 0);
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
-> +	drmm_release_action(priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_TRUE_MSG(test, priv->action_done, "Release action was not =
-called");
-> +	priv->action_done =3D false;
-> +
-> +	drm_dev_unregister(priv->drm);
-> +	drm_kunit_helper_free_device(test, priv->drm->dev);
-> +
-> +	KUNIT_EXPECT_FALSE_MSG(test, priv->action_done,
-> +			       "Unexpected release action call during cleanup");
-> +}
-> +
+This behavior was causing kunit_module_exit() to be called without
+having first executed kunit_module_init(). Since kunit_module_exit() is
+responsible for freeing the memory allocated by kunit_module_init()
+through kunit_filter_suites(), this behavior was resulting in a
+wild-memory-access bug.
 
-I guess we can have something simpler if we switch action_done to a
-counter and just check that the counter didn't increase.
+Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
+kunit_free_suite_set()") fixed this issue by running the tests when the
+module is still in MODULE_STATE_COMING. However, modules in that state
+are not fully initialized, lacking sysfs kobjects. Therefore, if a test
+module attempts to register a fake device, it will inevitably crash.
 
-And I think the custom messages should be removed there too.
+This patch proposes a different approach to fix the original
+wild-memory-access bug while restoring the normal module execution flow
+by making kunit_module_exit() able to detect if kunit_module_init() has
+previously initialized the tests suite set. In this way, test modules
+can once again register fake devices without crashing.
 
-Maxime
+This behavior is achieved by checking whether mod->kunit_suites is a
+virtual or direct mapping address. If it is a virtual address, then
+kunit_module_init() has allocated the suite_set in kunit_filter_suites()
+using kmalloc_array(). On the contrary, if mod->kunit_suites is still
+pointing to the original address that was set when looking up the
+kunit_test_suites section of the module, then the loading phase has
+failed and there's no memory to be freed.
 
---low44rvsz3fnl7ut
-Content-Type: application/pgp-signature; name="signature.asc"
+v4:
+- rebased on 6.8
+- noted that kunit_filter_suites() must return a virtual address
+v3:
+- add a comment to clarify why the start address is checked
+v2:
+- add include <linux/mm.h>
 
------BEGIN PGP SIGNATURE-----
+Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
+Reviewed-by: David Gow <davidgow@google.com>
+Tested-by: Rae Moar <rmoar@google.com>
+Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
+---
+ lib/kunit/executor.c |  4 ++++
+ lib/kunit/test.c     | 14 +++++++++++---
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZZ6+KwAKCRDj7w1vZxhR
-xTSyAP9WBatDxCR53O+71y/N+u/TGRvmdsq04Tz8iV4qA/vs8wD9E/+kUzgF0hBT
-sPyni9+ICPNJdDcxH9Yh9B/2rk4Z6AY=
-=1Mfc
------END PGP SIGNATURE-----
+diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+index 717b9599036b..689fff2b2b10 100644
+--- a/lib/kunit/executor.c
++++ b/lib/kunit/executor.c
+@@ -146,6 +146,10 @@ void kunit_free_suite_set(struct kunit_suite_set suite_set)
+ 	kfree(suite_set.start);
+ }
+ 
++/*
++ * Filter and reallocate test suites. Must return the filtered test suites set
++ * allocated at a valid virtual address or NULL in case of error.
++ */
+ struct kunit_suite_set
+ kunit_filter_suites(const struct kunit_suite_set *suite_set,
+ 		    const char *filter_glob,
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index f95d2093a0aa..31a5a992e646 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -17,6 +17,7 @@
+ #include <linux/panic.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched.h>
++#include <linux/mm.h>
+ 
+ #include "debugfs.h"
+ #include "device-impl.h"
+@@ -801,12 +802,19 @@ static void kunit_module_exit(struct module *mod)
+ 	};
+ 	const char *action = kunit_action();
+ 
++	/*
++	 * Check if the start address is a valid virtual address to detect
++	 * if the module load sequence has failed and the suite set has not
++	 * been initialized and filtered.
++	 */
++	if (!suite_set.start || !virt_addr_valid(suite_set.start))
++		return;
++
+ 	if (!action)
+ 		__kunit_test_suites_exit(mod->kunit_suites,
+ 					 mod->num_kunit_suites);
+ 
+-	if (suite_set.start)
+-		kunit_free_suite_set(suite_set);
++	kunit_free_suite_set(suite_set);
+ }
+ 
+ static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
+@@ -816,12 +824,12 @@ static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
+ 
+ 	switch (val) {
+ 	case MODULE_STATE_LIVE:
++		kunit_module_init(mod);
+ 		break;
+ 	case MODULE_STATE_GOING:
+ 		kunit_module_exit(mod);
+ 		break;
+ 	case MODULE_STATE_COMING:
+-		kunit_module_init(mod);
+ 		break;
+ 	case MODULE_STATE_UNFORMED:
+ 		break;
 
---low44rvsz3fnl7ut--
+base-commit: 539e582a375dedee95a4fa9ca3f37cdb25c441ec
+-- 
+2.43.0
+
 
