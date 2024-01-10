@@ -1,88 +1,165 @@
-Return-Path: <linux-kernel+bounces-21736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CDBE829384
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:00:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6320382938D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 645FB1C2161A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:00:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26B5FB246C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721DF24A14;
-	Wed, 10 Jan 2024 06:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3959432C71;
+	Wed, 10 Jan 2024 06:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eloBkqhq"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cqmx5cEY"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FFA62F37
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 06:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so3461759f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 22:00:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704866405; x=1705471205; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kPeXYoAmCLYf1j8ahUbrM6AOYKYmAzDrbvQF6GEOMok=;
-        b=eloBkqhqW+5Upu0ryviMYl5V2rwTI1PwBJwdcpTjXdoHjGzzmenuUdE/VnJ6++gpDA
-         tIJBQvIeGdX/n/K5Zy+JjkQTIxR7OCHKmvyw87WsdBWs3W/Scm+OQXS67bdWS7mc3Mou
-         s9a4NU60aDbObZi+JJb+277Lz98KM4Up5kKyFtQ3NezhEY3EPTVKa12sO/AdK5mcUis2
-         eIolvCIY2tujxszRmGuVBrKwIjU1ANa5xoCMqhFFXpxWKamht9MKgkJZAFtgQOrPXTp6
-         dYI1aHQkJ1feFSasecRQwFHN+C7daXvDQsQDAbE65GHbTtjgocbQTPsuzYyd+ITKJFbT
-         MNzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704866405; x=1705471205;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kPeXYoAmCLYf1j8ahUbrM6AOYKYmAzDrbvQF6GEOMok=;
-        b=AL2D0hGDl8xMGsiczNulvPhWg+QkD8hbqfuqWOwp+jcjKrvjDEPGqOoFvy0HGepY/4
-         UvIyvdsQ27fTCfNcS+4ng2IW+P2rTvSy3BYdhD36JplKyJ4/ki8cD5nMrBDBm5syZrxi
-         c8X8SHyBVhBtf7oNFQWK/NmvZ+ZDSJkHOswro4vvFDjtD9zcqKnIAqpHt7ekH9gqb4l8
-         AcQaoN2gFwltL+9yP6Xlt4GMpyyY8j5aypUloyd5hdIAQXMzcXYabShXzC61znUk0zFH
-         dPVitxj7f7xzpNgrKWPsRdlRyyVojHvNh8e9+35w8WxgnTWsAMLJaekt4hIOlMcbf2oJ
-         jZlw==
-X-Gm-Message-State: AOJu0YwaTfR3jhboimn/2zSyKVz1kU0/m759MAFI2uAU8bs8orwEu2oS
-	TbgMTCoO1OMymrw0KdSIlrC/TazFRnWVYJyQocu6EN2eAxk=
-X-Google-Smtp-Source: AGHT+IHtUtnhqCk4yVP5kMCpqHp7bM26pNDSBAjHHvyDk9phnXi2Zde5FpTxSnJ7iUAEVMxVayOx72WBjoWCAcGlsQ0=
-X-Received: by 2002:a5d:4602:0:b0:337:61b1:68d4 with SMTP id
- t2-20020a5d4602000000b0033761b168d4mr219120wrq.35.1704866405170; Tue, 09 Jan
- 2024 22:00:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFBD8C1A;
+	Wed, 10 Jan 2024 06:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40A65Vvi056970;
+	Wed, 10 Jan 2024 00:05:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704866732;
+	bh=yFsMpt0PZNf6JUgPlvVYPwAe1PAy39S8K8+Q7tYKhQA=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=cqmx5cEYvim8cKLqKbv9TH9RwTjaMw2oxjSZ62HszbJeeAd3bu4NNYF45bGJf4gGN
+	 5nri+MnVNt17nUD/exe/Mpks5AoTLQbodqPs6+RMStGcEl0O1GQid8kjuOWPnF/SAc
+	 GFy/t3PA52zbmZmyxrs7CwG7C6shMtS9BIGp6zlU=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40A65VWs085615
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 10 Jan 2024 00:05:31 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
+ Jan 2024 00:05:31 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 10 Jan 2024 00:05:29 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40A65P5Y095356;
+	Wed, 10 Jan 2024 00:05:25 -0600
+Message-ID: <f8dbbffd-c209-44bc-8d1e-42b6f1b08aef@ti.com>
+Date: Wed, 10 Jan 2024 11:35:24 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJNi4rO+Dw5qYDtyJVbuo0OqAoXpGq_Qq6xjH9cvMCAUnW+77g@mail.gmail.com>
- <CAJNi4rMHtM=39jzkzwqt++kVpSp0=XfDrVdY94WoW6B34oKwDA@mail.gmail.com>
- <ZZb2f0U4qTWDjCGj@FVFF77S0Q05N.cambridge.arm.com> <CAJNi4rOpzmQAW1Fjst-Em=SQ7q8QsQh0PWhVxUizrOW9JukOgQ@mail.gmail.com>
- <ZZvS8rigFJR8L56c@FVFF77S0Q05N> <fb6c8253fd90e66c036a85954c3299bc2c047473.camel@xry111.site>
- <CAJNi4rPj0Wc7ByqrS-GVLUUEnOFPZi8A5nLLCEEJErqAe16EZw@mail.gmail.com>
- <9aef98eed96ed32962ce90499291cb30ad5e3e14.camel@xry111.site>
- <20240109074843.GI19790@gate.crashing.org> <4ee8067e72028b070d92e10fa33ddde3a498cb48.camel@xry111.site>
- <20240109082647.GJ19790@gate.crashing.org>
-In-Reply-To: <20240109082647.GJ19790@gate.crashing.org>
-From: richard clark <richard.xnu.clark@gmail.com>
-Date: Wed, 10 Jan 2024 13:59:53 +0800
-Message-ID: <CAJNi4rM_w5JKjug1PtV+tHyk11DUhRJ-K1pSDE6P1x8KSU2wrg@mail.gmail.com>
-Subject: Re: undefined reference to `__aarch64_cas4_sync' error on arm64
- native build
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Cc: Xi Ruoyao <xry111@xry111.site>, Mark Rutland <mark.rutland@arm.com>, gcc-help@gcc.gnu.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+User-Agent: Mozilla Thunderbird
+CC: <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
+        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <ilpo.jarvinen@linux.intel.com>, <vigneshr@ti.com>,
+        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH v3] PCI: keystone: Fix race condition when initializing
+ PHYs
+To: Bjorn Helgaas <helgaas@kernel.org>
+References: <20240109212326.GA2018284@bhelgaas>
+Content-Language: en-US
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <20240109212326.GA2018284@bhelgaas>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Segher,
+Hello Bjorn,
 
-A ported driver in linux kernel calls '__sync_val_compare_and_swap',
-the cross-compiler 'aarch64-linux-gnu-gcc' doesn't complain
-'__aarch64_cas1_sync' undefined reference, but the native compiler
-will complain. As Mark mentioned, I double check that both cross and
-native compiler should have  ''-moutline-atomics' option enabled, do
-you know the reason for that?
+On 10/01/24 02:53, Bjorn Helgaas wrote:
+> On Wed, Sep 27, 2023 at 09:48:45AM +0530, Siddharth Vadapalli wrote:
+>> The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
+>> function. The PHY in this case is the Serdes. It is possible that the
+>> PCI instance is configured for 2 lane operation across two different
+
+..
+
+>>  
+>> +	/* Obtain reference(s) to the phy(s) */
+>> +	for (i = 0; i < num_lanes; i++)
+>> +		phy_pm_runtime_get_sync(ks_pcie->phy[i]);
+>> +
+>>  	ret = ks_pcie_enable_phy(ks_pcie);
+>> +
+>> +	/* Release reference(s) to the phy(s) */
+>> +	for (i = 0; i < num_lanes; i++)
+>> +		phy_pm_runtime_put_sync(ks_pcie->phy[i]);
+> 
+> This looks good and has already been applied, so no immediate action
+> required.
+> 
+> This is the only call to ks_pcie_enable_phy(), and these loops get and
+> put the PM references for the same PHYs initialized in
+> ks_pcie_enable_phy(), so it seems like maybe these loops could be
+> moved *into* ks_pcie_enable_phy().
+
+Does the following look fine?
+===============================================================================
+diff --git a/drivers/pci/controller/dwc/pci-keystone.c
+b/drivers/pci/controller/dwc/pci-keystone.c
+index e02236003b46..6e9f9589d26c 100644
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -962,6 +962,9 @@ static int ks_pcie_enable_phy(struct keystone_pcie *ks_pcie)
+        int num_lanes = ks_pcie->num_lanes;
+
+        for (i = 0; i < num_lanes; i++) {
++               /* Obtain reference to the phy */
++               phy_pm_runtime_get_sync(ks_pcie->phy[i]);
++
+                ret = phy_reset(ks_pcie->phy[i]);
+                if (ret < 0)
+                        goto err_phy;
+@@ -977,12 +980,18 @@ static int ks_pcie_enable_phy(struct keystone_pcie *ks_pcie)
+                }
+        }
+
++       /* Release reference(s) to the phy(s) */
++       for (i = 0; i < num_lanes; i++)
++               phy_pm_runtime_put_sync(ks_pcie->phy[i]);
++
+        return 0;
+
+ err_phy:
+        while (--i >= 0) {
+                phy_power_off(ks_pcie->phy[i]);
+                phy_exit(ks_pcie->phy[i]);
++               /* Release reference to the phy */
++               phy_pm_runtime_put_sync(ks_pcie->phy[i]);
+        }
+
+        return ret;
+===============================================================================
+
+> 
+> Is there any similar issue in ks_pcie_disable_phy()?  What if we
+> power-off a PHY that provides a reference clock to other PHYs that are
+> still powered-up?  Will the dependent PHYs still power-off cleanly?
+
+While debugging the issue fixed by this patch, I had bisected and identified
+that prior to the following commit:
+https://github.com/torvalds/linux/commit/e611f8cd8717c8fe7d4229997e6cd029a1465253
+despite the race condition being present, there was no issue. While I am not
+fully certain, I believe that the above observation indicates that prior to the
+aforementioned commit, the race condition did exist, but there was a slightly
+longer delay between the PHY providing the reference clock being powered off
+within "ks_pcie_enable_phy()". That delay was sufficient for the dependent PHY
+to lock its PLL based on the reference clock provided, following which, despite
+the PHY providing the reference clock being powered off and the dependent PHY
+staying powered on, there was no issue observed. Therefore, it appears to me
+that holding reference to the PHY providing the reference clock isn't necessary
+once the dependent PHY's PLL is locked.
+
+..
+
+-- 
+Regards,
+Siddharth.
 
