@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-22617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAED82A07E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:53:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFAA082A081
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50F261C22846
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:53:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A57A289484
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDF44D5BE;
-	Wed, 10 Jan 2024 18:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5C54D5A0;
+	Wed, 10 Jan 2024 18:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kac6Ecfx"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r0nllWcX"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4134D5B2
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:53:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B6E4CDE0
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40d60c49ee7so50766715e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:53:05 -0800 (PST)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3376f71fcbbso2743270f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:54:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704912784; x=1705517584; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704912842; x=1705517642; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=p8Udsj305jfYXf+ANpLqSmYsA6MVtaE/P0L4mlkgDYI=;
-        b=kac6EcfxexHE+TPOY8F6yMMroPMrx4DVbQlE3xgum2G07zKztN2trWbVeDrKdvatph
-         3SxyVbGDcmn8lAZ1wFp1snw/E64/sCCxcQpr8s+q9VO4NZfC7Xssh1zFMjqaQEES2pXs
-         P7v/xNqS/hqn+EjTM3oMZmhxUL+2lHd+19QdKql/ir3H94Vu2/nNbL/s0dg+Zg5i8YJP
-         vqayqO4VhgCVd7LvTHObjXNYv5uuSiaIUFcTP0QpEixSKTNGO+ESqoZchGmf8yEWQT7l
-         uDR1k+LEHE2dgp1eVxFgfFYk0ZxYqnBIMhzxEFHXijogsLPbfzvJXZxpgl+D5+Oqp+cu
-         mXqA==
+        bh=Ss0T+jeGd3iEpXbsD78ddZjuQMQNPqW6KGHNG8S5dhg=;
+        b=r0nllWcXuqQ1kAdId1EKxhcATqA+Fyv3U4XFbb674X3AEp/Px2dvj8vNUuudoH7ppw
+         RjEp6XYZvn0vwNhRBeins2+SEzqSrXP9uCPG6lJf0m2OHmyNFCFPfxcAZjVmL+f8NQhj
+         jm+iduk0mY5py6KqQ8ucR1JepzH6T/CFT2DdJOmtcB3gqZl6oBerTFxw5JZbk7yp4fP4
+         iRhxbNOeU+1Fuv1VQVvR4yWAD2s7iYiUhkNZFBaz22XibTkIHY1U7cU30BoQKkdWVzuS
+         97euo62T2vtvDlG8mnWtzupKc5isMy1E6+veITvyXTFNhL2GXiI7lzW+zfiHah0YPFr2
+         nHdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704912784; x=1705517584;
+        d=1e100.net; s=20230601; t=1704912842; x=1705517642;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p8Udsj305jfYXf+ANpLqSmYsA6MVtaE/P0L4mlkgDYI=;
-        b=MYJPxOTfCao4hwWp7r81C+MluUPu+2phPRJJvEsX+AZDq2q070+mbmLs4xASY6mo27
-         XJ68pJthSnkQdct/3gM2E4lJx0BTbqU0h1bQTGBA59QDQORpesCaClSXsI6WHskrBTji
-         E9t3lDWsjtXUftZ4bfVQHYH7uA7ol/+UVA9dpQ3CE/GTiH5O2zHg+Ss0VSi4QcTOfuHC
-         Xdca1x7IFq8nQO/vNGabqfmW4F3mM/UgmnvFfJlsVDfYLK/T0qHFcFsde6M7O04sZbSr
-         01JLs9YZCw3ZZnJxOK9nOCg4GGWB5w+raGjoAVNU+y0q3exQpV6s2E8zovncvzR8wpfA
-         pkeQ==
-X-Gm-Message-State: AOJu0YyfETr8M9jTaOFjfGJgOb6APJg0cBpcgyA+PCI19aYFT530/Pas
-	DAbLtlFDIQ4VWLEBMkzvnnxd/9OwMvrqsw==
-X-Google-Smtp-Source: AGHT+IFMqicPz1t0QvAqV4wJDjMeK/H8oTRRuHT1ganju3XBJ11l6ngH9PTevRnk8K+l3J6EJRTxBg==
-X-Received: by 2002:a7b:c8d8:0:b0:40e:555f:12d4 with SMTP id f24-20020a7bc8d8000000b0040e555f12d4mr806449wml.91.1704912784519;
-        Wed, 10 Jan 2024 10:53:04 -0800 (PST)
+        bh=Ss0T+jeGd3iEpXbsD78ddZjuQMQNPqW6KGHNG8S5dhg=;
+        b=vp6SbGgVg7QaRRH6BvyWM+OdbiWL/w9xFqHN5Fkz5gI6Ik9eczrWd2Z638hm70eYyR
+         NrqlmNEVtt391jQACGBDbqsmoZMsZ+gx5Dc0J5v/TkaXfpCcB6X7eqD2zwCcM2hHhwTs
+         O1mR2HJHs8G065BDngdkkJPVYJTfynuLHE9AtIohoF+/qbV1HJDd2K6fhetSveeQClH9
+         Pi1WEPK6NohW0dVgSFLg7eceoJXHm7fJgzabCVv9ZHYUM/wm84gIIh+1Wxk5BuhhuwI6
+         k0R/lXsybUfgxzqlzInfPZ2WuL49JEL/YBHLT+l+y7RX0qu8ZzJ1KKNx0Sn1+RYzgib8
+         KFow==
+X-Gm-Message-State: AOJu0YxN8Nt5NkrarTAfpQ7lLNP1+BqRKnkAUtp2zuj3uO3dsmbOzEte
+	c2Uzq4UQ8qjA2QOFUfnNIcFsHQoOKfsQLw==
+X-Google-Smtp-Source: AGHT+IHgh8MEBBHgsDW6RzyU+WQoeW6nbmU0C3kT7kbCDr1JRNGf3kVKFPfeMfDsuCPh4XkpwetvTg==
+X-Received: by 2002:a05:6000:184b:b0:337:6529:1dd8 with SMTP id c11-20020a056000184b00b0033765291dd8mr823385wri.168.1704912842572;
+        Wed, 10 Jan 2024 10:54:02 -0800 (PST)
 Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id n13-20020a05600c500d00b0040e5a0515aesm1183372wmr.14.2024.01.10.10.53.03
+        by smtp.gmail.com with ESMTPSA id dp7-20020a0560000c8700b003366e974cacsm5538195wrb.73.2024.01.10.10.54.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 10:53:04 -0800 (PST)
-Date: Wed, 10 Jan 2024 21:53:01 +0300
+        Wed, 10 Jan 2024 10:54:02 -0800 (PST)
+Date: Wed, 10 Jan 2024 21:53:59 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Hans de Goede <hdegoede@redhat.com>, Henry Shi <henryshi2018@gmail.com>
-Cc: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] platform/x86: silicom-platform: clean up a check
-Message-ID: <0402e613-446a-40d1-b676-0422f6223aa8@moroto.mountain>
+To: Chandan Babu R <chandan.babu@oracle.com>,
+	Eric Sandeen <sandeen@redhat.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] xfs: delete unnecessary check in xfs_growfs_data_private()
+Message-ID: <b1708d9d-53eb-4275-82f4-f389f0200a7f@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,30 +72,29 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 
-"value" is either non-zero, or zero.  There isn't a third option.
-Delete the unnecessary code.
+Commit 84712492e6da ("xfs: short circuit xfs_growfs_data_private() if
+delta is zero") added a check for whether delta is zero to the start of
+the function and now this check is no longer required.
 
 Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/platform/x86/silicom-platform.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/xfs/xfs_fsops.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
-index 6ce43ccb3112..5cac698bf98d 100644
---- a/drivers/platform/x86/silicom-platform.c
-+++ b/drivers/platform/x86/silicom-platform.c
-@@ -258,10 +258,8 @@ static void silicom_gpio_set(struct gpio_chip *gc,
+diff --git a/fs/xfs/xfs_fsops.c b/fs/xfs/xfs_fsops.c
+index 83f708f62ed9..6de8c5f428b6 100644
+--- a/fs/xfs/xfs_fsops.c
++++ b/fs/xfs/xfs_fsops.c
+@@ -180,8 +180,7 @@ xfs_growfs_data_private(
+ 	 */
+ 	if (nagcount > oagcount)
+ 		xfs_trans_mod_sb(tp, XFS_TRANS_SB_AGCOUNT, nagcount - oagcount);
+-	if (delta)
+-		xfs_trans_mod_sb(tp, XFS_TRANS_SB_DBLOCKS, delta);
++	xfs_trans_mod_sb(tp, XFS_TRANS_SB_DBLOCKS, delta);
+ 	if (id.nfree)
+ 		xfs_trans_mod_sb(tp, XFS_TRANS_SB_FDBLOCKS, id.nfree);
  
- 	if (value)
- 		silicom_mec_port_set(channel, 0);
--	else if (value == 0)
--		silicom_mec_port_set(channel, 1);
- 	else
--		pr_err("Wrong argument value: %d\n", value);
-+		silicom_mec_port_set(channel, 1);
- }
- 
- static int silicom_gpio_direction_output(struct gpio_chip *gc,
 -- 
 2.43.0
 
