@@ -1,140 +1,137 @@
-Return-Path: <linux-kernel+bounces-22781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B890382A2C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:50:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A230E82A2BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:49:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 596912820C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:50:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8C911C2545A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:49:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48F24F883;
-	Wed, 10 Jan 2024 20:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4FC4F20D;
+	Wed, 10 Jan 2024 20:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="KWnMut0t";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EXwWXkvv"
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ITZ49Vws"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256B74F602;
-	Wed, 10 Jan 2024 20:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 1864C580ACA;
-	Wed, 10 Jan 2024 15:44:04 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 10 Jan 2024 15:44:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704919444; x=1704926644; bh=swCJD9Fvop
-	hNa/YkfcNjNrylvPuJdTYmLEobiCsz9KQ=; b=KWnMut0tt2cIG/amb4AXGI5g8w
-	YoCQshQyMCD7PX1QHoaWnhx8BmDenZ13YFz0Q4oWEGwQziz58V/PuWWsRKpr4az6
-	3TPX50+gs88afAypjeSE13kGIrQ3OEttOSWf/K+g0PAKgJaLHlTeCu85jjYjsc+e
-	om4sYKVwBB2Gxa49uQdH+Z4KKOzSbPrH3A8CbfrIMu93271HA5XmO534EJAN7tel
-	8kkoTj8BtG4yF3FmVqPUuu3UzTaIK0qstUExFmGa7RPFtUn7SLqq2/C6pQxbmNs0
-	sqgwZEcIR2vHgCFG0D9hf8QEICU2tZM43LubweRGEI33P6NHNtD8ZxoLwxgA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704919444; x=1704926644; bh=swCJD9FvophNa/YkfcNjNrylvPuJ
-	dTYmLEobiCsz9KQ=; b=EXwWXkvvpnzWDZJ8zWZ4YSDRAy1pijyf4PqvHWBwyITV
-	7b0Q6JQ9rJKeGQM5QP0wePvrCc9tJT3sGtmQ86bKTrPGCy8FFcudtpbOcMrDORKF
-	MV0jI3A39lpJ/WqA2PWNIgOuYaCtOOWx+bJ3PdRnpOzZoPgsrCLn4Ym673cQNmil
-	/Heoj6JgIeuCrtAUjR8I31wnDEwbw1MJ27N0BVslb3vL5NoeIgyfQ1aQG+w+XT8m
-	UQRaDfMD+9rdyAgHJJzO3pGRtIa4eMpdwE7Dm9Ye1WWXYwZHvR1weYmeZFSkNCyX
-	e3hOvm01aKeaxwTQ2mO0Rq76NNyPDPa/FzKHOP81qw==
-X-ME-Sender: <xms:kQGfZU8PlM7CA0aYK4V6brNP6R0d-zxdQJ1P3IxWYzfnex5J1NLJ3Q>
-    <xme:kQGfZcualeFJQYSYSx3XzEPC3UMwFQk3uY8lZJt040GkYS2RxvSbljuRnElArHrJg
-    7psyMHAF2iDoupcp3c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiuddgudefkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:kQGfZaCiSSrv3HJIjW5lrIlpJBs13VbbS-aW4LFRoMspyJTWIsB6Pg>
-    <xmx:kQGfZUdq2Rm9UmEj06v-BC3916J0934HbGLgr2_jP14x35GiAeAsbA>
-    <xmx:kQGfZZPOxR7MLcGy09RbjxNxZZ2XJR_bdXbzXGquNFT9yhSOF-CyXg>
-    <xmx:lAGfZZKrTcf0Bt-eKNY4pGrAfMPlN32u2wpFiIhGjkd3ET5RsOprnw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C88EEB6008D; Wed, 10 Jan 2024 15:44:01 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766344F1E7
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3373bc6d625so4113292f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:44:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704919439; x=1705524239; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gMeSaWB3mBAvtjNkA6eGhsBguuVj7QZcpMfuJTXudxI=;
+        b=ITZ49VwsmussKe+8nSouGlf7cH+/hTHh3COaMozwFHNR5AocbA+lfLHwSpbnu+dlf2
+         PIL5f6vEeFfDC6bR6VWFSExJKu5tfaqEHdJnwl3RlBB1eVWJEK6oRih9eg8rlLIp3eci
+         dAJo5mVOPM8vUIZxn3yRGOansEGFAvDIc2muk2c8aWEKzrysRWN8mPvkqzGvBlzNQ+L9
+         vlPxz4QXih0l/5nFFNYucgfDWjZ5ekKEhlqYj7p9qzTxZzq2CdbI/C8NOKJEaQSOOnib
+         ZMJddQp1WgA2bZGbQpz2ydUl3eT2J4ZtNiaNfNIvyvdsjI4dtNkgZUv1Am6BYhOA4qsp
+         pgwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704919439; x=1705524239;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gMeSaWB3mBAvtjNkA6eGhsBguuVj7QZcpMfuJTXudxI=;
+        b=qellQmen2aGbnbDh09VQtG63EPMWfawGyiNwdpMCVkbqW56AqscTbETjVu3cSP9FyY
+         mT9o606QkyCOKVJNb+zsKTeAxLqphUWsjk17yyuSrfY9hlYXs57dkTMP8XcGR0rjLRdP
+         4No9XEeoIZitJooUh98OY9JDTJnlQazFWDXEYphGQt4d0Y5ZvYSMznrq+9xIUs5k15mq
+         KlDvcC83FQ/thWsuLcGQ09JAqaaGgVDfh8BTKDcfkfOoIRYGtw+aCpWcTtqSl/QAqoDh
+         FZwV2InHpmF9UEHqVBVmDL9hJN4pJFNtS3mhkGKM9S/ZfdKrgwGMwvdGsgD2e/7NU4RG
+         471Q==
+X-Gm-Message-State: AOJu0YxztDTvihykVn9cf8FHC1rWnxRYIYuU7URX1KWTzRHpgPG/gjqK
+	19GgGMANTd7L8oxRGqm2UdWsV8wkyiZC2w==
+X-Google-Smtp-Source: AGHT+IFwa5sPlTNLRtgIzXRgzmENBDJvDYcW59BfLsiLOVACZSzNbAu47yMbVTATfbooPy3hVeDNtg==
+X-Received: by 2002:a5d:4a92:0:b0:337:33a:c880 with SMTP id o18-20020a5d4a92000000b00337033ac880mr42365wrq.26.1704919438773;
+        Wed, 10 Jan 2024 12:43:58 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id i25-20020aa7c719000000b005571c7e4934sm2321714edq.93.2024.01.10.12.43.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 12:43:57 -0800 (PST)
+Message-ID: <0f976e76-9f6b-4ec2-a39f-96ccb90f1a55@linaro.org>
+Date: Wed, 10 Jan 2024 21:43:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <7a79c037-ac91-448a-b6e0-b38cacccd971@app.fastmail.com>
-In-Reply-To: <ab94f844-a4ec-4b4f-b67b-2b67347596d9@roeck-us.net>
-References: <20231123110506.707903-1-arnd@kernel.org>
- <20231123110506.707903-7-arnd@kernel.org>
- <ab94f844-a4ec-4b4f-b67b-2b67347596d9@roeck-us.net>
-Date: Wed, 10 Jan 2024 21:43:40 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Guenter Roeck" <linux@roeck-us.net>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Andrew Morton" <akpm@linux-foundation.org>,
- "David S . Miller" <davem@davemloft.net>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Dinh Nguyen" <dinguyen@kernel.org>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Masahiro Yamada" <masahiroy@kernel.org>,
- "Matt Turner" <mattst88@gmail.com>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nicolas Schier" <nicolas@fjasle.eu>,
- "Peter Zijlstra" <peterz@infradead.org>, "Rich Felker" <dalias@libc.org>,
- "Richard Henderson" <richard.henderson@linaro.org>,
- "Richard Weinberger" <richard@nod.at>,
- "Stephen Rothwell" <sfr@canb.auug.org.au>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "Yoshinori Sato" <ysato@users.sourceforge.jp>,
- Linux-Arch <linux-arch@vger.kernel.org>, linux-alpha@vger.kernel.org,
- linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
- sparclinux@vger.kernel.org, x86@kernel.org,
- "Kees Cook" <keescook@chromium.org>,
- "Palmer Dabbelt" <palmer@rivosinc.com>
-Subject: Re: [PATCH v3 6/6] Makefile.extrawarn: turn on missing-prototypes globally
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
+ add spi props
+Content-Language: en-US
+To: Petre Rodan <petre.rodan@subdimension.ro>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
+ <20240110172306.31273-2-petre.rodan@subdimension.ro>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240110172306.31273-2-petre.rodan@subdimension.ro>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024, at 20:45, Guenter Roeck wrote:
-> On Thu, Nov 23, 2023 at 12:05:06PM +0100, Arnd Bergmann wrote:
->> At this point, there are five architectures with a number of known
->> regressions: alpha, nios2, mips, sh and sparc. In the previous version
->> of this patch, I had turned off the missing prototype warnings for the 15
->> architectures that still had issues, but since there are only five left,
->> I think we can leave the rest to the maintainers (Cc'd here) as well.
->> 
->
-> Not sure I understand why this was so important that it warrants the
-> resulting buildtest failures.
->
-> FWIW, I'll disable WERROR in my build tests for the affected architectures.
-> That is kind of counter-productive, but the only real alternative would be
-> to stop build (and sometimes, such as for ppc, runtime) tests entirely,
-> which would be even worse.
+On 10/01/2024 18:22, Petre Rodan wrote:
+> Add spi-peripheral-props.yaml requirement
 
-If you prefer, I can go back to the older version and just disable
-the warning for the architectures with defconfig build failures. I did
-a lot of fixes for mips, so at least defconfig and allmodconfig
-should be fine now, leaving only alpha, nios2, sh and sparc as
-far as I can tell, at least once Linus merges the asm-generic
-pull request hat has a bunch of the currently missing fixes.
+This we see. What we do not see is: why? Please fix commit msg.
 
-   Arnd
+
+Best regards,
+Krzysztof
+
 
