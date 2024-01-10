@@ -1,114 +1,134 @@
-Return-Path: <linux-kernel+bounces-21580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9823282916B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:30:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F80C829173
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:32:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B95DE1C2310C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:30:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80AB02849C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF2A63DF;
-	Wed, 10 Jan 2024 00:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E275681F;
+	Wed, 10 Jan 2024 00:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cnD/Opmn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ClAXZTQc"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FACC6116
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704846569;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3UBCSAP+i4rFiL/6w+6TRuBgPaXgWBvM8cIe5uHLFsI=;
-	b=cnD/OpmnzbShIlSU4hg2KWUQb1VjAaLDwQEK8s6f1sy0u6NXzbZ/EsvkP/6hBtAmZs/+/k
-	VtWB0pcRhAMsLOqiWDq6fQTXB2A8Vj2QODoBenVakC3zBIOMlRjplPoWD7SIn4erTjETlr
-	iYBpwnm5npwViQotATcc3RGJerXXfTQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-225-rRqSgByQNiiaVW-p7jmNbQ-1; Tue, 09 Jan 2024 19:29:25 -0500
-X-MC-Unique: rRqSgByQNiiaVW-p7jmNbQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9EACB82DFE4;
-	Wed, 10 Jan 2024 00:29:25 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 182D6492BC7;
-	Wed, 10 Jan 2024 00:29:24 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <CA+=Sn1n18OmcDzDrZky_KqMW76ttTLGnMYnH5CPg7m9SXor1qQ@mail.gmail.com>
-References: <CA+=Sn1n18OmcDzDrZky_KqMW76ttTLGnMYnH5CPg7m9SXor1qQ@mail.gmail.com> <152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk> <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
-To: Andrew Pinski <pinskia@gmail.com>
-Cc: dhowells@redhat.com, "H. Peter Anvin" <hpa@zytor.com>,
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A0DC383;
+	Wed, 10 Jan 2024 00:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=9Z+eVnm12UxQBSd/stAX1lfcKTZHfLEybCIQDl9VjPg=; b=ClAXZTQcvmlytmHEW1rReNZPml
+	406IseUvgxd35jLCH3XfSpR6DBkUgUfvGsmo93nhA5bSA8Qw1zESFFt11fJv+5ppab/7dC8aO+8zR
+	D1qou94flnxgj7FOwLV64Ys4/Z1+iJe0iotMg1uD8t6rVK+9dIPkIToFkpE8k0ecYy5sxROe/9iLz
+	snCfD2Nmbgb+wKPY3xL1LpJyOUtZRh8aLFCFYeWFnhsk4/zfHuJHmN+fBq2rAOpf3sr7B+PPjaVEE
+	D17l8Kaqp0uwlL9QkbP00Rb6MB5OENEq+rVE0EKq+GJ6KUEhwGVo8bt6aZzig8XGVLIZxYz3BSwol
+	GEJ44gzA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rNMVU-009xdu-07;
+	Wed, 10 Jan 2024 00:31:44 +0000
+Message-ID: <fbbac337-8414-4903-8a7d-5cb0b6d05282@infradead.org>
+Date: Tue, 9 Jan 2024 16:31:42 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1682636.1704846564.1@warthog.procyon.org.uk>
-Date: Wed, 10 Jan 2024 00:29:24 +0000
-Message-ID: <1682637.1704846564@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v16 01/34] docs: gunyah: Introduce Gunyah Hypervisor
+Content-Language: en-US
+To: Elliot Berman <quic_eberman@quicinc.com>, Alex Elder <elder@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Murali Nalajal <quic_mnalajal@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>,
+ Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+ Carl van Schaik <quic_cvanscha@quicinc.com>,
+ Philip Derrin <quic_pderrin@quicinc.com>,
+ Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+ Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Fuad Tabba
+ <tabba@google.com>, Sean Christopherson <seanjc@google.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
+References: <20240109-gunyah-v16-0-634904bf4ce9@quicinc.com>
+ <20240109-gunyah-v16-1-634904bf4ce9@quicinc.com>
+ <d5b041d9-1691-4259-a76c-176c5b3d8be3@infradead.org>
+ <731ee7a9-72c8-4ae7-8fcd-2c9bb07b09ac@quicinc.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <731ee7a9-72c8-4ae7-8fcd-2c9bb07b09ac@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Andrew Pinski <pinskia@gmail.com> wrote:
 
-> Note even in GCC, we disable exceptions and RTTI while building GCC.
-> This is specifically due to not wanting to use them and use other
-> methods to do that.
-> Note GDB on the other hand used to use setjmp/longjmp for their
-> exception handling in C and I think they moved over to using C++
-> exceptions which simplified things there. But as far as I know the
-> Linux kernel does not use a mechanism like that (I know of copy
-> from/to user using HW exceptions/error/interrupt handling but that is
-> a special case only).
 
-If we were to allow exception handling, I wonder if we would actually need to
-throw anything other than a signed long integer (e.g. an error code) and just
-disable RTTI.  Maybe something like:
+On 1/9/24 16:28, Elliot Berman wrote:
+> 
+> 
+> On 1/9/2024 3:31 PM, Randy Dunlap wrote:
+>>
+>>
+>> On 1/9/24 11:37, Elliot Berman wrote:
+>>> Gunyah is an open-source Type-1 hypervisor developed by Qualcomm. It
+>>> does not depend on any lower-privileged OS/kernel code for its core
+>>> functionality. This increases its security and can support a smaller
+>>> trusted computing based when compared to Type-2 hypervisors.
+>>>
+>>> Add documentation describing the Gunyah hypervisor and the main
+>>> components of the Gunyah hypervisor which are of interest to Linux
+>>> virtualization development.
+>>>
+>>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+>>> ---
+>>>  Documentation/virt/gunyah/index.rst         | 134 ++++++++++++++++++++++++++++
+>>>  Documentation/virt/gunyah/message-queue.rst |  68 ++++++++++++++
+>>>  Documentation/virt/index.rst                |   1 +
+>>>  3 files changed, 203 insertions(+)
+>>>
+>>> diff --git a/Documentation/virt/gunyah/index.rst b/Documentation/virt/gunyah/index.rst
+>>> new file mode 100644
+>>> index 000000000000..da8e5e4b9cac
+>>> --- /dev/null
+>>> +++ b/Documentation/virt/gunyah/index.rst
+>>> @@ -0,0 +1,134 @@
+>>> +.. SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +=================
+>>> +Gunyah Hypervisor
+>>> +=================
+>>> +
+>>> +.. toctree::
+>>> +   :maxdepth: 1
+>>> +
+>>> +   message-queue
+>>> +
+>>> +Gunyah is a Type-1 hypervisor which is independent of any OS kernel, and runs in
+>>> +a higher CPU privilege level. It does not depend on any lower-privileged
+>>
+>> Is this the usual meaning of higher and lower? Seems backwards to me.
+>>
+> 
+> Hmm, I guess this x86 having ring 0 as most privileged and arm using EL3 as most
+> privileged. I'll switch to "more" and "less" privilege rather than implying
+> a numbering scheme.
 
-	long sys_rename(...)
-	{
-		struct rwsem_lock lock_a, lock_b;
-		struct inode *dir_a, *dir_b;
-		...
-		try {
-			if (dir_a > dir_b) {
-				lock_a.down_write_killable(dir_a);
-				lock_b.down_write_killable(dir_b);
-			} else {
-				lock_b.down_write_killable(dir_b);
-				lock_a.down_write_killable(dir_a);
-			}
-		} catch (-EINTR) {
-			throw -ERESTARTSYS;
-		}
-		...
-	}
+I suspected that. Thanks for the change.
 
-then have a cut-down exception unwinder that only needs to deal with long
-values.
-
-However, I think rolling out exception handling in the kernel might be too big
-a task, given the huge amount of code involved - however much we might like to
-avoid all those return value checks.
-
-David
-
+-- 
+#Randy
 
