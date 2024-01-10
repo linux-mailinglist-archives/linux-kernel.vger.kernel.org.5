@@ -1,206 +1,134 @@
-Return-Path: <linux-kernel+bounces-21689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 911078292CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:33:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA058292CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:36:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7774289391
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:33:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6FC7B24835
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3510E63DF;
-	Wed, 10 Jan 2024 03:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FC34689;
+	Wed, 10 Jan 2024 03:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="jAWRYXFH"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HyN2KNCF"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE47C63A0
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:33:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7bee328027bso39998839f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 19:33:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C74C1FA6
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cd56dac1adso31383161fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 19:35:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1704857605; x=1705462405; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=gmail.com; s=20230601; t=1704857751; x=1705462551; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TTJAAReDmCgeUKZ+956Wk5F3FplJWRu8shC9LpiGkOg=;
-        b=jAWRYXFHAYfURSxZ91SQzcTSTZ+PVcnaxL3h55bLmGbMhqF19eqLrDiJNY64fv5XbH
-         8xU8qECCr4wfFPq09ZlOCA7MJcIKtP/6+Ny4K/Vgpn/woALjM0CxtupioccUplkFWsBP
-         3k9XygQGrGiy5tw0U0W2gcNTLA/I1GUnrMnmv9wNjrt0caS6C7tha1SKD0SrZ1ma69eE
-         Cg7Rfsybxpp8U4R/NjgD/0UgdlvdUTBiK5NShkFWIUrra31kW3o2nR6DNYun/96Eoco5
-         FlLY5TcHG2BOzW0RcPRw91i9FBAIBNDCEBohSHq1PM2IUi1kUo9XYXW3A14h0kKqA+RT
-         7m/A==
+        bh=jAtbAqBqpbMowm+Bo4+mhDNB5Xj5y96f9fpVSyKbNyc=;
+        b=HyN2KNCFlV0GoSLzjApJOIgLVgaUl5KO//L6r9wjh3oEY+jL69p+GBji9X1LTn7Y/3
+         EPumOgZinOxQSwNm5IfHTElghfnblrgi1KPPlt4DouzOJscchsV7vghe9M1czyuxtKuQ
+         vaH1JnRNMSgzlP5AdNn1HYqkU47sQJ9LzTDOH+GEHzrm5AYP1OQNlC89LB51wrjDFcWL
+         y+PvMMr9dlG5RHOlXWvfllOeJHzdsi0Mf/dMQLqqb/efE8GdS+543R9HCoHZlCDslHnr
+         NFN2GFQXQCVh8Uynz+vxOHOpdWY1EFYpiE8laY//i+vwS4HFNh0b43pgCRIHjRwhJAHw
+         dTzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704857605; x=1705462405;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1704857751; x=1705462551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TTJAAReDmCgeUKZ+956Wk5F3FplJWRu8shC9LpiGkOg=;
-        b=f+FIWxUbGJ3MlDOxRNktJlw3KkNFYiYLq3zIxcRM5t+vmfz2hHFW/AaKYx66voiDkB
-         fXQ8twWM3i5ynxKAJObjolFjWx8e2rycPOQlEi64o9xTASIJJSL96PsuCRUfYgKC5fe7
-         tbLXOV/gWoMZP/Hk4m3fYyQKaCf3Pm/ZsuyElHJDkX87Gx2tj23cZeg4HJ+7WrxWMStu
-         +VXZUaujERBbqpkJi7ZgzlbyrXwmyBMbho4f+ZlAm4zZ18/t232kKTn9gLMk76GBt5hR
-         gTPqFu3T88HFGVaHhr2YvBzy/6xEPRyX11xNzIUP/4oKR1shnw+1MoGmZXScySOu4TnM
-         uTmQ==
-X-Gm-Message-State: AOJu0YylIeTTzbH9tQKLeuJm5S6oxZ/bIHP0flppORS+vzCyzKOHwDbw
-	uCqlpbPoDshaFjpitGc/IfJ5FNEPQNx7mPBgPwS3kSl1tJ7prg==
-X-Google-Smtp-Source: AGHT+IE+Q4lCxj83n8dzXZtXItlsHWcdYJuMOSNLQ15/SAx2kBai8iiFDS0hL5lBmDAKIsyRm/GyFDDg66IIJLFk4kI=
-X-Received: by 2002:a6b:5f05:0:b0:7be:d961:6b0a with SMTP id
- t5-20020a6b5f05000000b007bed9616b0amr107497iob.18.1704857604934; Tue, 09 Jan
- 2024 19:33:24 -0800 (PST)
+        bh=jAtbAqBqpbMowm+Bo4+mhDNB5Xj5y96f9fpVSyKbNyc=;
+        b=E+i/MjkYo50OHmAbRY2Vgp2wfH0fWxsbYLpsVpaT4tAr4l0RPyMTjOrKFncBMCd/I3
+         oh0wFQtDpCtX6vMp8Z5dNXbFsqq9+5VTeOX6RQu06Da4KvTIJLKbVtgbYkHPevsTSDkD
+         Wyd3JLmpKbbuxVeCCA5cymdiV04+2UbRtIQ9tPa0sD4VivLhekrL/nd4wX2vGTLaxvwX
+         8Q6qFVWvQW/cBt7L4sgxpJnxF1e8hzcA4CCcjqrJo/vDyasUGcf2EMbxwhpig/zQJjKW
+         mbww73o3T6TIXNMcGWPcbTQSlKCw4hFdUOth3ILfUTIjS90c899wJrkxwJFoRZW54Wai
+         tx0w==
+X-Gm-Message-State: AOJu0YznxX8WfZL9KGUeZMkZFQ9by/LtMDvej2s4MgYH6WlBUGZvvua7
+	N2lIxxjM1i4ikvYubTHRPVu/cq4F3sZtZaDPHLc=
+X-Google-Smtp-Source: AGHT+IFABm1wwLGCemQUNH/kzgc/mO+J8eaHGimAlF8bank3Z3kVYl/IbYvA6UAlxLubCWKC53xdJs2mzmA99c1D4aY=
+X-Received: by 2002:a2e:9ed7:0:b0:2cd:56ab:caa1 with SMTP id
+ h23-20020a2e9ed7000000b002cd56abcaa1mr166538ljk.5.1704857751029; Tue, 09 Jan
+ 2024 19:35:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205085959.32177-1-zong.li@sifive.com> <CANXhq0r6A48q+ehayaURLO6snDEjzVJO6Ti+1we-57i0ORT9yg@mail.gmail.com>
-In-Reply-To: <CANXhq0r6A48q+ehayaURLO6snDEjzVJO6Ti+1we-57i0ORT9yg@mail.gmail.com>
-From: Zong Li <zong.li@sifive.com>
-Date: Wed, 10 Jan 2024 11:33:14 +0800
-Message-ID: <CANXhq0qqv3MBEt8zsWBT+gkdyt1PD4ZjDSrznEotdFM7M7K+yQ@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add CALLER_ADDRx support
-To: palmer@dabbelt.com, Palmer Dabbelt <palmer@rivosinc.com>, paul.walmsley@sifive.com, 
-	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
+References: <20240102175338.62012-1-ryncsn@gmail.com> <20240102175338.62012-10-ryncsn@gmail.com>
+ <871qar9sb2.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <871qar9sb2.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Wed, 10 Jan 2024 11:35:32 +0800
+Message-ID: <CAMgjq7CkKZ9-ogkU52xwQ1YRj+-jwt4fpOLhtKkumVc8ky3OFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 9/9] mm/swap, shmem: use new swapin helper to skip
+ readahead conditionally
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Chris Li <chrisl@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 29, 2023 at 2:34=E2=80=AFPM Zong Li <zong.li@sifive.com> wrote:
+Huang, Ying <ying.huang@intel.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=889=E6=97=
+=A5=E5=91=A8=E4=BA=8C 10:05=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Tue, Dec 5, 2023 at 5:00=E2=80=AFPM Zong Li <zong.li@sifive.com> wrote=
+> Kairui Song <ryncsn@gmail.com> writes:
+>
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > Currently, shmem uses cluster readahead for all swap backends. Cluster
+> > readahead is not a good solution for ramdisk based device (ZRAM) at all=
+.
+> >
+> > After switching to the new helper, most benchmarks showed a good result=
 :
 > >
-> > CALLER_ADDRx returns caller's address at specified level, they are used
-> > for several tracers. These macros eventually use
-> > __builtin_return_address(n) to get the caller's address if arch doesn't
-> > define their own implementation.
+> > - Single file sequence read:
+> >   perf stat --repeat 20 dd if=3D/tmpfs/test of=3D/dev/null bs=3D1M coun=
+t=3D8192
+> >   (/tmpfs/test is a zero filled file, using brd as swap, 4G memcg limit=
+)
+> >   Before: 22.248 +- 0.549
+> >   After:  22.021 +- 0.684 (-1.1%)
 > >
-> > In RISC-V, __builtin_return_address(n) only works when n =3D=3D 0, we n=
-eed
-> > to walk the stack frame to get the caller's address at specified level.
+> > - Random read stress test:
+> >   fio -name=3Dtmpfs --numjobs=3D16 --directory=3D/tmpfs \
+> >   --size=3D256m --ioengine=3Dmmap --rw=3Drandread --random_distribution=
+=3Drandom \
+> >   --time_based --ramp_time=3D1m --runtime=3D5m --group_reporting
+> >   (using brd as swap, 2G memcg limit)
 > >
-> > data.level started from 'level + 3' due to the call flow of getting
-> > caller's address in RISC-V implementation. If we don't have additional
-> > three iteration, the level is corresponding to follows:
+> >   Before: 1818MiB/s
+> >   After:  1888MiB/s (+3.85%)
 > >
-> > callsite -> return_address -> arch_stack_walk -> walk_stackframe
-> > |           |                 |                  |
-> > level 3     level 2           level 1            level 0
+> > - Zipf biased random read stress test:
+> >   fio -name=3Dtmpfs --numjobs=3D16 --directory=3D/tmpfs \
+> >   --size=3D256m --ioengine=3Dmmap --rw=3Drandread --random_distribution=
+=3Dzipf:1.2 \
+> >   --time_based --ramp_time=3D1m --runtime=3D5m --group_reporting
+> >   (using brd as swap, 2G memcg limit)
 > >
-> > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > ---
-> >  arch/riscv/include/asm/ftrace.h    |  5 ++++
-> >  arch/riscv/kernel/Makefile         |  2 ++
-> >  arch/riscv/kernel/return_address.c | 48 ++++++++++++++++++++++++++++++
-> >  3 files changed, 55 insertions(+)
-> >  create mode 100644 arch/riscv/kernel/return_address.c
+> >   Before: 31.1GiB/s
+> >   After:  32.3GiB/s (+3.86%)
 > >
-> > diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/f=
-trace.h
-> > index 2b2f5df7ef2c..42777f91a9c5 100644
-> > --- a/arch/riscv/include/asm/ftrace.h
-> > +++ b/arch/riscv/include/asm/ftrace.h
-> > @@ -25,6 +25,11 @@
+> > So cluster readahead doesn't help much even for single sequence read,
+> > and for random stress test, the performance is better without it.
 > >
-> >  #define ARCH_SUPPORTS_FTRACE_OPS 1
-> >  #ifndef __ASSEMBLY__
-> > +
-> > +extern void *return_address(unsigned int level);
-> > +
-> > +#define ftrace_return_address(n) return_address(n)
-> > +
-> >  void MCOUNT_NAME(void);
-> >  static inline unsigned long ftrace_call_adjust(unsigned long addr)
-> >  {
-> > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> > index fee22a3d1b53..40d054939ae2 100644
-> > --- a/arch/riscv/kernel/Makefile
-> > +++ b/arch/riscv/kernel/Makefile
-> > @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
-> >  CFLAGS_REMOVE_ftrace.o =3D $(CC_FLAGS_FTRACE)
-> >  CFLAGS_REMOVE_patch.o  =3D $(CC_FLAGS_FTRACE)
-> >  CFLAGS_REMOVE_sbi.o    =3D $(CC_FLAGS_FTRACE)
-> > +CFLAGS_REMOVE_return_address.o =3D $(CC_FLAGS_FTRACE)
-> >  endif
-> >  CFLAGS_syscall_table.o +=3D $(call cc-option,-Wno-override-init,)
-> >  CFLAGS_compat_syscall_table.o +=3D $(call cc-option,-Wno-override-init=
-,)
-> > @@ -46,6 +47,7 @@ obj-y +=3D irq.o
-> >  obj-y  +=3D process.o
-> >  obj-y  +=3D ptrace.o
-> >  obj-y  +=3D reset.o
-> > +obj-y  +=3D return_address.o
-> >  obj-y  +=3D setup.o
-> >  obj-y  +=3D signal.o
-> >  obj-y  +=3D syscall_table.o
-> > diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel/ret=
-urn_address.c
-> > new file mode 100644
-> > index 000000000000..c2008d4aa6e5
-> > --- /dev/null
-> > +++ b/arch/riscv/kernel/return_address.c
-> > @@ -0,0 +1,48 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * This code come from arch/arm64/kernel/return_address.c
-> > + *
-> > + * Copyright (C) 2023 SiFive.
-> > + */
-> > +
-> > +#include <linux/export.h>
-> > +#include <linux/kprobes.h>
-> > +#include <linux/stacktrace.h>
-> > +
-> > +struct return_address_data {
-> > +       unsigned int level;
-> > +       void *addr;
-> > +};
-> > +
-> > +static bool save_return_addr(void *d, unsigned long pc)
-> > +{
-> > +       struct return_address_data *data =3D d;
-> > +
-> > +       if (!data->level) {
-> > +               data->addr =3D (void *)pc;
-> > +               return false;
-> > +       }
-> > +
-> > +       --data->level;
-> > +
-> > +       return true;
-> > +}
-> > +NOKPROBE_SYMBOL(save_return_addr);
-> > +
-> > +void *return_address(unsigned int level)
-> > +{
-> > +       struct return_address_data data;
-> > +
-> > +       data.level =3D level + 3;
-> > +       data.addr =3D NULL;
-> > +
-> > +       arch_stack_walk(save_return_addr, &data, current, NULL);
-> > +
-> > +       if (!data.level)
-> > +               return data.addr;
-> > +       else
-> > +               return NULL;
-> > +
-> > +}
-> > +EXPORT_SYMBOL_GPL(return_address);
-> > +NOKPROBE_SYMBOL(return_address);
-> > --
-> > 2.17.1
-> >
+> > Considering both memory and swap device will get more fragmented
+> > slowly, and commonly used ZRAM consumes much more CPU than plain
+> > ramdisk, false readahead could occur more frequently and waste
+> > more CPU. Direct SWAP is cheaper, so use the new helper and skip
+> > read ahead for SWP_SYNCHRONOUS_IO device.
 >
-> Hi Palmer and all,
-> I was wondering whether this patch is good for everyone? Thanks
+> It's good to take advantage of swap_direct (no readahead).  I also hopes
+> we can take advantage of VMA based swapin if shmem is accessed via mmap.
+> That appears possible.
 
-Hi Palmer,
-Is there any chance to include this patch in 6.8-rc1? Thanks
+Good idea, that should be doable, will update the series.
 
