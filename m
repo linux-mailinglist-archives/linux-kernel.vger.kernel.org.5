@@ -1,234 +1,193 @@
-Return-Path: <linux-kernel+bounces-22056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259EE829881
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:14:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04930829884
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 279921C25CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:14:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BD4C1F2849E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4924E47795;
-	Wed, 10 Jan 2024 11:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E14C47786;
+	Wed, 10 Jan 2024 11:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DRISGyRR"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="Lpkh2SCb"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138B346BB1;
-	Wed, 10 Jan 2024 11:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2B03040E01A9;
-	Wed, 10 Jan 2024 11:14:30 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id rk1GXipRnNvY; Wed, 10 Jan 2024 11:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704885267; bh=fwWP59DQZ/MSSlZK6nSA8WJmcHMonAP5bkUAu0nzMfE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DRISGyRRH2Yb8ljr7qzKxmjDv5PDR//i1JNCPji2bZmoSqvXC2CEFgz/un4zlwdOd
-	 1gE3QpuxPCOS/AO49UojJngUhe+gslvuDort5mT6YKdB6PxdpW6SSQ6zI36SoQuZR2
-	 j+RNLNTXzjvJQgrviDjXNmGcHbG5Mhmfs3WnhbYXRMEeLIMF9EE/Sfiam/v3lfpkqD
-	 jmyhL1yhBFmtW21wCivpy1KA++k78OC13Jex3T8KKx2xdYeruw7kBahsHOSGi83Nc6
-	 zsmsThRTTmzDRmCRXhyv4Wh7snbFm9Jn0fzha+wd4J2CxbS65LeqhPk/ZyYjL29/bo
-	 uzu+pKOPJQzyhB3gyH2U0vw/1s2cnfvdj8f4glLTntMjkAbIhBlBYRxUu+5LM16j5D
-	 U55MFzVMl22H06LDmtwxnqgrBxOzam7Rf4F2Fu/NM/qSWgrU3fe+/dUsfjXHbxCZ5G
-	 e7qT409qJNtDLgXCJ76zb6Vl1icGQQwZPxoS/Wdei8VQcHsSvz5xp6cU2JEctfs62k
-	 7S7u9Tu+1rKxVl8sIi+n7DFgdXO+dkjJJ2aOKwBMXd4jKb0z/ex7gzelEMo/Qew5t7
-	 pM9QC4FIj9hngIZR138Qa4DFSWnFwdYzXo60YT4dvPw5Je2/cOL9wzPkTcg6JofhE0
-	 8CJKjCNIb4GEyJfUyPXLgMxs=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 67EAF40E01F9;
-	Wed, 10 Jan 2024 11:13:49 +0000 (UTC)
-Date: Wed, 10 Jan 2024 12:13:44 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 07/26] x86/fault: Add helper for dumping RMP entries
-Message-ID: <20240110111344.GBZZ576DpwHHs997Zl@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-8-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F543FB34;
+	Wed, 10 Jan 2024 11:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 83115FF809;
+	Wed, 10 Jan 2024 11:15:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1704885365;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=esqVAeFguK1WuZvtxZXY5PD9UqDdBuwkKAf6r4Z6RBA=;
+	b=Lpkh2SCb+qZtcgGcqghZA9pk/9RmHEpOG6N3CxfbO1NQFSZbSkqMhx5HhPHY9cRK5I/z3L
+	JtnbQYLM2iO/BMSfhp5nmNBWYmFvJtCz/rp7qBt/+hq20CHfPbl49VsHRdFTpedWrlugdR
+	yychWVEjI/VznMOXiZsVtOH1KAGtbzOqGFVA20396iXKc4v4Qmc68HZKiN+v6w6j2s/Giy
+	cgJguxkCqEuUvuT5vIzCswQZMwzkvatSP/403HWNH9HDPoW5YOuTRxTtXQN0BMCX/wdyJh
+	tnIBRMuz7OERq0JGUe+3fS9vI8yWCwPwtCNXIgQ/sfz9lBjQGPnxisqaf+o/NQ==
+Message-ID: <9308fa1a-6de3-490b-9aeb-eb207b0432df@arinc9.com>
+Date: Wed, 10 Jan 2024 14:15:57 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231230161954.569267-8-michael.roth@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 08/30] net: dsa: mt7530: change p{5,6}_interface
+ to p{5,6}_configured
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ Sean Wang <sean.wang@mediatek.com>, Landen Chao <Landen.Chao@mediatek.com>,
+ DENG Qingfang <dqfext@gmail.com>, Daniel Golle <daniel@makrotopia.org>,
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Richard van Schagen <richard@routerhints.com>,
+ Richard van Schagen <vschagen@cs.com>,
+ Frank Wunderlich <frank-w@public-files.de>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, erkin.bozoglu@xeront.com,
+ mithat.guner@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <826fd2fc-fbf8-dab7-9c90-b726d15e2983@arinc9.com>
+ <ZHyA/AmXmCxO6YMq@shell.armlinux.org.uk>
+ <20230604125517.fwqh2uxzvsa7n5hu@skbuf>
+ <ZHyMezyKizkz2+Wg@shell.armlinux.org.uk>
+ <d269ac88-9923-c00c-8047-cc8c9f94ef2c@arinc9.com>
+ <ZHyqI2oOI4KkvgB8@shell.armlinux.org.uk>
+ <ZHy1C7wzqaj5KCmy@shell.armlinux.org.uk>
+ <ZHy2jQLesdYFMQtO@shell.armlinux.org.uk>
+ <0542e150-5ff4-5f74-361a-1a531d19eb7d@arinc9.com>
+ <7c224663-7588-988d-56cb-b9de5b43b504@arinc9.com>
+ <20230610175553.hle2josd5s5jfhjo@skbuf>
+ <22fba48c-054d-ff0a-ae2c-b38f192b26f7@arinc9.com>
+In-Reply-To: <22fba48c-054d-ff0a-ae2c-b38f192b26f7@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Sat, Dec 30, 2023 at 10:19:35AM -0600, Michael Roth wrote:
-> +	while (pfn_current < pfn_end) {
-> +		e = __snp_lookup_rmpentry(pfn_current, &level);
-> +		if (IS_ERR(e)) {
-> +			pfn_current++;
-> +			continue;
-> +		}
-> +
-> +		e_data = (u64 *)e;
-> +		if (e_data[0] || e_data[1]) {
-> +			pr_info("No assigned RMP entry for PFN 0x%llx, but the 2MB region contains populated RMP entries, e.g.: PFN 0x%llx: [high=0x%016llx low=0x%016llx]\n",
-> +				pfn, pfn_current, e_data[1], e_data[0]);
-> +			return;
-> +		}
-> +		pfn_current++;
-> +	}
-> +
-> +	pr_info("No populated RMP entries in the 2MB region containing PFN 0x%llx\n",
-> +		pfn);
-> +}
+On 11.06.2023 10:23, Arınç ÜNAL wrote:
+> 
+> On 10.06.2023 20:55, Vladimir Oltean wrote:
+>> On Sat, Jun 10, 2023 at 01:57:27PM +0300, Arınç ÜNAL wrote:
+>>> I was able to confirm all user ports of the MT7531BE switch transmit/receive
+>>> traffic to/from the SGMII CPU port and computer fine after getting rid of
+>>> priv->info->cpu_port_config().
+>>>
+>>> Tried all user ports being affine to the RGMII CPU port, that works too.
+>>>
+>>> https://github.com/arinc9/linux/commit/4e79313a95d45950cab526456ef0030286ba4d4e
+>>
+>> Did you do black-box testing after removing the code, or were you
+>> also able to independently confirm that the configurations done by
+>> cpu_port_config() were later overwritten? I'm trying to disambiguate
+>> between "works by coincidence" and "works because the analysis was
+>> correct".
+> 
+> I did my testing, merely to make sure we didn't miss anything as Russell already stated that the configuration from cpu_port_config() is later overwritten.
+> 
+> I could put some dev_info around to confirm the code path that overwrites the configuration.
 
-Ok, I went and reworked this, see below.
+I have finally tested this.
 
-Yes, I think it is important - at least in the beginning - to dump the
-whole 2M PFN region for debugging purposes. If that output starts
-becoming too unwieldy and overflowing terminals or log files, we'd
-shorten it or put it behind a debug option or so.
-
-Thx.
-
----
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index a8cf33b7da71..259a1dd655a7 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -35,16 +35,21 @@
-  * Family 19h Model 01h, Rev B1 processor.
-  */
- struct rmpentry {
--	u64	assigned	: 1,
--		pagesize	: 1,
--		immutable	: 1,
--		rsvd1		: 9,
--		gpa		: 39,
--		asid		: 10,
--		vmsa		: 1,
--		validated	: 1,
--		rsvd2		: 1;
--	u64 rsvd3;
-+	union {
-+		struct {
-+			u64	assigned	: 1,
-+				pagesize	: 1,
-+				immutable	: 1,
-+				rsvd1		: 9,
-+				gpa		: 39,
-+				asid		: 10,
-+				vmsa		: 1,
-+				validated	: 1,
-+				rsvd2		: 1;
-+		};
-+		u64 lo;
-+	};
-+	u64 hi;
- } __packed;
- 
- /*
-@@ -272,22 +277,20 @@ EXPORT_SYMBOL_GPL(snp_lookup_rmpentry);
-  */
- static void dump_rmpentry(u64 pfn)
- {
--	u64 pfn_current, pfn_end;
-+	u64 pfn_i, pfn_end;
- 	struct rmpentry *e;
--	u64 *e_data;
- 	int level;
- 
- 	e = __snp_lookup_rmpentry(pfn, &level);
- 	if (IS_ERR(e)) {
--		pr_info("Failed to read RMP entry for PFN 0x%llx, error %ld\n",
--			pfn, PTR_ERR(e));
-+		pr_err("Error %ld reading RMP entry for PFN 0x%llx\n",
-+			PTR_ERR(e), pfn);
- 		return;
- 	}
- 
--	e_data = (u64 *)e;
- 	if (e->assigned) {
--		pr_info("RMP entry for PFN 0x%llx: [high=0x%016llx low=0x%016llx]\n",
--			pfn, e_data[1], e_data[0]);
-+		pr_info("PFN 0x%llx, RMP entry: [0x%016llx - 0x%016llx]\n",
-+			pfn, e->lo, e->hi);
- 		return;
- 	}
- 
-@@ -299,27 +302,28 @@ static void dump_rmpentry(u64 pfn)
- 	 * certain situations, such as when the PFN is being accessed via a 2MB
- 	 * mapping in the host page table.
- 	 */
--	pfn_current = ALIGN(pfn, PTRS_PER_PMD);
--	pfn_end = pfn_current + PTRS_PER_PMD;
-+	pfn_i = ALIGN(pfn, PTRS_PER_PMD);
-+	pfn_end = pfn_i + PTRS_PER_PMD;
- 
--	while (pfn_current < pfn_end) {
--		e = __snp_lookup_rmpentry(pfn_current, &level);
-+	pr_info("PFN 0x%llx unassigned, dumping the whole 2M PFN region: [0x%llx - 0x%llx]\n",
-+		pfn, pfn_i, pfn_end);
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index a4468468b53c..7b60a67d016a 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -968,9 +968,11 @@ mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
+  
+  	/* Setup max capability of CPU port at first */
+  	if (priv->info->cpu_port_config) {
++		dev_info(priv->dev, "running cpu_port_config()\n");
+  		ret = priv->info->cpu_port_config(ds, port);
+  		if (ret)
+  			return ret;
++		dev_info(priv->dev, "cpu_port_config() ran\n");
+  	}
+  
+  	/* Enable Mediatek header mode on the cpu port */
+@@ -1024,6 +1026,9 @@ mt7530_port_enable(struct dsa_switch *ds, int port,
+  		   priv->ports[port].pm);
+  	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
+  
++	if ((port == 5 || port == 6) && dsa_port_is_cpu(dp))
++		dev_info(priv->dev, "MT7530_PMCR_P%d PMCR_LINK_SETTINGS_MASK is cleared\n", port);
 +
-+	while (pfn_i < pfn_end) {
-+		e = __snp_lookup_rmpentry(pfn_i, &level);
- 		if (IS_ERR(e)) {
--			pfn_current++;
-+			pr_err("Error %ld reading RMP entry for PFN 0x%llx\n",
-+				PTR_ERR(e), pfn_i);
-+			pfn_i++;
- 			continue;
- 		}
- 
--		e_data = (u64 *)e;
--		if (e_data[0] || e_data[1]) {
--			pr_info("No assigned RMP entry for PFN 0x%llx, but the 2MB region contains populated RMP entries, e.g.: PFN 0x%llx: [high=0x%016llx low=0x%016llx]\n",
--				pfn, pfn_current, e_data[1], e_data[0]);
--			return;
--		}
--		pfn_current++;
--	}
-+		if (e->lo || e->hi)
-+			pr_info("PFN: 0x%llx, [0x%016llx - 0x%016llx]\n", pfn_i, e->lo, e->hi);
-+		else
-+			pr_info("PFN: 0x%llx ...\n", pfn_i);
- 
--	pr_info("No populated RMP entries in the 2MB region containing PFN 0x%llx\n",
--		pfn);
-+		pfn_i++;
-+	}
- }
- 
- void snp_dump_hva_rmpentry(unsigned long hva)
-@@ -339,4 +343,3 @@ void snp_dump_hva_rmpentry(unsigned long hva)
- 
- 	dump_rmpentry(pte_pfn(*pte));
- }
--EXPORT_SYMBOL_GPL(snp_dump_hva_rmpentry);
+  	mutex_unlock(&priv->reg_mutex);
+  
+  	return 0;
+@@ -2693,6 +2698,9 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+  	mcr_new |= PMCR_IFG_XMIT(1) | PMCR_MAC_MODE | PMCR_BACKOFF_EN |
+  		   PMCR_BACKPR_EN | PMCR_FORCE_MODE_ID(priv->id);
+  
++	if ((port == 5 && dsa_is_cpu_port(ds, 5)) || (port == 6 && dsa_is_cpu_port(ds, 6)))
++		dev_info(priv->dev, "MT7530_PMCR_P%d PMCR_CPU_PORT_SETTING equivalent is set\n", port);
++
+  	/* Are we connected to external phy */
+  	if (port == 5 && dsa_is_user_port(ds, 5))
+  		mcr_new |= PMCR_EXT_PHY;
+@@ -2760,6 +2768,9 @@ static void mt753x_phylink_mac_link_up(struct dsa_switch *ds, int port,
+  	}
+  
+  	mt7530_set(priv, MT7530_PMCR_P(port), mcr);
++
++	if ((port == 5 && dsa_is_cpu_port(ds, 5)) || (port == 6 && dsa_is_cpu_port(ds, 6)))
++		dev_info(priv->dev, "MT7530_PMCR_P%d PMCR_LINK_SETTINGS_MASK equivalent is set\n", port);
+  }
+  
+  static int
+@@ -2796,6 +2807,9 @@ mt7531_cpu_port_config(struct dsa_switch *ds, int port)
+  
+  	mt7530_write(priv, MT7530_PMCR_P(port),
+  		     PMCR_CPU_PORT_SETTING(priv->id));
++
++	dev_info(priv->dev, "MT7530_PMCR_P%d PMCR_CPU_PORT_SETTING is set\n", port);
++
+  	mt753x_phylink_mac_link_up(ds, port, MLO_AN_FIXED, interface, NULL,
+  				   speed, DUPLEX_FULL, true, true);
+  
 
--- 
-Regards/Gruss,
-    Boris.
+[    1.763066] mt7530-mdio mdio-bus:00: running cpu_port_config()
+[    1.769237] mt7530-mdio mdio-bus:00: MT7530_PMCR_P5 PMCR_CPU_PORT_SETTING is set
+[    1.776724] mt7530-mdio mdio-bus:00: MT7530_PMCR_P5 PMCR_LINK_SETTINGS_MASK equivalent is set
+[    1.785254] mt7530-mdio mdio-bus:00: cpu_port_config() ran
+[    1.792098] mt7530-mdio mdio-bus:00: running cpu_port_config()
+[    1.798019] mt7530-mdio mdio-bus:00: MT7530_PMCR_P6 PMCR_CPU_PORT_SETTING is set
+[    1.805502] mt7530-mdio mdio-bus:00: MT7530_PMCR_P6 PMCR_LINK_SETTINGS_MASK equivalent is set
+[    1.814023] mt7530-mdio mdio-bus:00: cpu_port_config() ran
+[    1.844941] mt7530-mdio mdio-bus:00: MT7530_PMCR_P5 PMCR_LINK_SETTINGS_MASK is cleared
+[    1.852972] mt7530-mdio mdio-bus:00: configuring for fixed/rgmii link mode
+[    1.859944] mt7530-mdio mdio-bus:00: MT7530_PMCR_P5 PMCR_CPU_PORT_SETTING equivalent is set
+[    1.868658] mt7530-mdio mdio-bus:00: MT7530_PMCR_P5 PMCR_LINK_SETTINGS_MASK equivalent is set
+[    1.868913] mt7530-mdio mdio-bus:00: MT7530_PMCR_P6 PMCR_LINK_SETTINGS_MASK is cleared
+[    1.877190] mt7530-mdio mdio-bus:00: Link is Up - 1Gbps/Full - flow control rx/tx
+[    1.885179] mt7530-mdio mdio-bus:00: configuring for fixed/2500base-x link mode
+[    1.899973] mt7530-mdio mdio-bus:00: MT7530_PMCR_P6 PMCR_CPU_PORT_SETTING equivalent is set
+[    1.910147] mt7530-mdio mdio-bus:00: MT7530_PMCR_P6 PMCR_LINK_SETTINGS_MASK equivalent is set
+[    1.918681] mt7530-mdio mdio-bus:00: Link is Up - 2.5Gbps/Full - flow control rx/tx
+[    1.920654] mt7530-mdio mdio-bus:00 wan (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7531 PHY] (irq=137)
+[    1.948453] mt7530-mdio mdio-bus:00 lan0 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7531 PHY] (irq=138)
+[    1.970382] mt7530-mdio mdio-bus:00 lan1 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7531 PHY] (irq=139)
+[    1.992423] mt7530-mdio mdio-bus:00 lan2 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7531 PHY] (irq=140)
+[    2.014310] mt7530-mdio mdio-bus:00 lan3 (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7531 PHY] (irq=141)
+[    2.025396] mtk_soc_eth 1b100000.ethernet eth1: entered promiscuous mode
+[    2.032160] mtk_soc_eth 1b100000.ethernet eth0: entered promiscuous mode
+[    2.038912] DSA: tree 0 setup
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Arınç
 
