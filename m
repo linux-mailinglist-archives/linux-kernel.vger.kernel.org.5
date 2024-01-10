@@ -1,309 +1,104 @@
-Return-Path: <linux-kernel+bounces-22155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FB79829A2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:07:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B290829A30
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E925D1F28236
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:07:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0F7B1F286CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE782481D6;
-	Wed, 10 Jan 2024 12:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GXo0dVIc";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="A7gouSP8";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qkiPF+SU";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5HbnFhyF"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEAE947A7D;
-	Wed, 10 Jan 2024 12:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B0C2421B33;
-	Wed, 10 Jan 2024 12:07:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704888453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GkPRohHGBk2H8lU4le6T3CfYLQeGNdahHf4aZdqwAOQ=;
-	b=GXo0dVIcry/Ug2colfyMyFtyaGMPbcSfOJ0dPgkWWTIWjEgJgKW4BLQdKRLBFIyazoWkqn
-	IFbOUPGQhm+jVB5Iw3p9Yrq5KYy2npwLzbgOjn6cgfexccABIpxyad2FoBKGrrrYAj7/Dl
-	1/XoQhEXyLj4WZlHQb23dubAB6qQSlM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704888453;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GkPRohHGBk2H8lU4le6T3CfYLQeGNdahHf4aZdqwAOQ=;
-	b=A7gouSP8isLENUdI3ZjSwa44IRvIjtey3+W0j7WVVFvuxxHlSuFLzKDgL2SMGCJBJL6s8O
-	fU14qFbLpebdmAAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704888452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GkPRohHGBk2H8lU4le6T3CfYLQeGNdahHf4aZdqwAOQ=;
-	b=qkiPF+SUTo1bBsfQ4nDCJvuHKTQBZq3t4O4/PUTWlL+LO8AMf5Kz/3q7/tP4lPDwylWwH8
-	Tku2YPxze68USwyBVeeZQKfdYnJrbY0JCFySOa9fboZ5eJXeY1u4ettVoDydKnBOgPUFgJ
-	NiBRWpSdrWD78Z70dcM/eD1o6v8Xw2Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704888452;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GkPRohHGBk2H8lU4le6T3CfYLQeGNdahHf4aZdqwAOQ=;
-	b=5HbnFhyFjuLRk17+6YWbxDDXkVuIsgo/Da+Gio8/OTYLUWOSLETdUXw6BLZCJQsmd04xvv
-	Erm1wrMFiTTWGTCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1113E1398A;
-	Wed, 10 Jan 2024 12:07:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TRJ9AIOInmV3GgAAD6G6ig
-	(envelope-from <dkirjanov@suse.de>); Wed, 10 Jan 2024 12:07:31 +0000
-Message-ID: <633ff61d-f73d-4221-a2fd-79f913880761@suse.de>
-Date: Wed, 10 Jan 2024 15:07:30 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A6D481A8;
+	Wed, 10 Jan 2024 12:10:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C16447F72
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD7BE2F4;
+	Wed, 10 Jan 2024 04:10:42 -0800 (PST)
+Received: from pluto.fritz.box (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 524BF3F73F;
+	Wed, 10 Jan 2024 04:09:56 -0800 (PST)
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: sudeep.holla@arm.com,
+	Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH] firmware: arm_scmi: Rework Clock domains info lookups
+Date: Wed, 10 Jan 2024 12:09:16 +0000
+Message-ID: <20240110120916.2482603-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 3/3] net: stmmac: Add driver support for
- DWMAC5 common safety IRQ
-Content-Language: en-US
-To: Suraj Jaiswal <quic_jsuraj@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
- Bhupesh Sharma <bhupesh.sharma@linaro.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- Prasad Sodagudi <psodagud@quicinc.com>, Andrew Halaney
- <ahalaney@redhat.com>, Rob Herring <robh@kernel.org>
-Cc: kernel@quicinc.com
-References: <20240110111649.2256450-1-quic_jsuraj@quicinc.com>
- <20240110111649.2256450-4-quic_jsuraj@quicinc.com>
-From: Denis Kirjanov <dkirjanov@suse.de>
-In-Reply-To: <20240110111649.2256450-4-quic_jsuraj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLxjbr97tr36oppoipqx4dezfa)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 FREEMAIL_TO(0.00)[quicinc.com,kernel.org,linaro.org,davemloft.net,google.com,foss.st.com,synopsys.com,gmail.com,vger.kernel.org,st-md-mailman.stormreply.com,redhat.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TAGGED_RCPT(0.00)[dt];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[24];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,quicinc.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -3.80
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: B0C2421B33
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=qkiPF+SU;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=5HbnFhyF
+Content-Transfer-Encoding: 8bit
 
+Accessing Clock domains descriptors by the index from the SCMI drivers
+can potentially lead to out-of-bound violations if the SCMI drivers
+misbehaves.
 
+Use a common helper to check the consistency of such accesses.
 
-On 1/10/24 14:16, Suraj Jaiswal wrote:
-> Add support to listen HW safety IRQ like ECC(error
-> correction code), DPP(data path parity), FSM(finite state
-> machine) fault in common IRQ line.
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/firmware/arm_scmi/clock.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-As I see .safety_feat_irq_status available not just in dwmac5 but 
-in dwxgmac2_core and that means that the subject line is not just about dwmac5
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index b76ff23721df..ff1aa04e5a10 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -167,6 +167,15 @@ static enum scmi_clock_protocol_cmd evt_2_cmd[] = {
+ 	CLOCK_RATE_CHANGE_REQUESTED_NOTIFY,
+ };
+ 
++static inline struct scmi_clock_info *
++scmi_clock_domain_lookup(struct clock_info *ci, u32 clk_id)
++{
++	if (clk_id >= ci->num_clocks)
++		return ERR_PTR(-EINVAL);
++
++	return ci->clk + clk_id;
++}
++
+ static int
+ scmi_clock_protocol_attributes_get(const struct scmi_protocol_handle *ph,
+ 				   struct clock_info *ci)
+@@ -580,10 +589,9 @@ scmi_clock_set_parent(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 	struct clock_info *ci = ph->get_priv(ph);
+ 	struct scmi_clock_info *clk;
+ 
+-	if (clk_id >= ci->num_clocks)
+-		return -EINVAL;
+-
+-	clk = ci->clk + clk_id;
++	clk = scmi_clock_domain_lookup(ci, clk_id);
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
+ 
+ 	if (parent_id >= clk->num_parents)
+ 		return -EINVAL;
+@@ -800,10 +808,10 @@ scmi_clock_info_get(const struct scmi_protocol_handle *ph, u32 clk_id)
+ 	struct scmi_clock_info *clk;
+ 	struct clock_info *ci = ph->get_priv(ph);
+ 
+-	if (clk_id >= ci->num_clocks)
++	clk = scmi_clock_domain_lookup(ci, clk_id);
++	if (IS_ERR(clk))
+ 		return NULL;
+ 
+-	clk = ci->clk + clk_id;
+ 	if (!clk->name[0])
+ 		return NULL;
+ 
+-- 
+2.43.0
 
-> 
-> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 41 ++++++++++++++++++-
->  .../ethernet/stmicro/stmmac/stmmac_platform.c |  8 ++++
->  4 files changed, 51 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> index 721c1f8e892f..b9233b09b80f 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> @@ -344,6 +344,7 @@ enum request_irq_err {
->  	REQ_IRQ_ERR_ALL,
->  	REQ_IRQ_ERR_TX,
->  	REQ_IRQ_ERR_RX,
-> +	REQ_IRQ_ERR_SFTY,
->  	REQ_IRQ_ERR_SFTY_UE,
->  	REQ_IRQ_ERR_SFTY_CE,
->  	REQ_IRQ_ERR_LPI,
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> index 9f89acf31050..ca3d93851bed 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> @@ -31,6 +31,7 @@ struct stmmac_resources {
->  	int wol_irq;
->  	int lpi_irq;
->  	int irq;
-> +	int sfty_irq;
->  	int sfty_ce_irq;
->  	int sfty_ue_irq;
->  	int rx_irq[MTL_MAX_RX_QUEUES];
-> @@ -297,6 +298,7 @@ struct stmmac_priv {
->  	void __iomem *ptpaddr;
->  	void __iomem *estaddr;
->  	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
-> +	int sfty_irq;
->  	int sfty_ce_irq;
->  	int sfty_ue_irq;
->  	int rx_irq[MTL_MAX_RX_QUEUES];
-> @@ -305,6 +307,7 @@ struct stmmac_priv {
->  	char int_name_mac[IFNAMSIZ + 9];
->  	char int_name_wol[IFNAMSIZ + 9];
->  	char int_name_lpi[IFNAMSIZ + 9];
-> +	char int_name_sfty[IFNAMSIZ + 10];
->  	char int_name_sfty_ce[IFNAMSIZ + 10];
->  	char int_name_sfty_ue[IFNAMSIZ + 10];
->  	char int_name_rx_irq[MTL_MAX_TX_QUEUES][IFNAMSIZ + 14];
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 47de466e432c..e0192a282121 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -3592,6 +3592,10 @@ static void stmmac_free_irq(struct net_device *dev,
->  		if (priv->wol_irq > 0 && priv->wol_irq != dev->irq)
->  			free_irq(priv->wol_irq, dev);
->  		fallthrough;
-> +	case REQ_IRQ_ERR_SFTY:
-> +		if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq)
-> +			free_irq(priv->sfty_irq, dev);
-> +		fallthrough;
->  	case REQ_IRQ_ERR_WOL:
->  		free_irq(dev->irq, dev);
->  		fallthrough;
-> @@ -3661,6 +3665,23 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  		}
->  	}
->  
-> +	/* Request the common Safety Feature Correctible/Uncorrectible
-> +	 * Error line in case of another line is used
-> +	 */
-> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-> +		int_name = priv->int_name_sfty;
-> +		sprintf(int_name, "%s:%s", dev->name, "safety");
-> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-> +				  0, int_name, dev);
-> +		if (unlikely(ret < 0)) {
-> +			netdev_err(priv->dev,
-> +				   "%s: alloc sfty MSI %d (error: %d)\n",
-> +				   __func__, priv->sfty_irq, ret);
-> +			irq_err = REQ_IRQ_ERR_SFTY;
-> +			goto irq_error;
-> +		}
-> +	}
-> +
->  	/* Request the Safety Feature Correctible Error line in
->  	 * case of another line is used
->  	 */
-> @@ -3798,6 +3819,21 @@ static int stmmac_request_irq_single(struct net_device *dev)
->  		}
->  	}
->  
-> +	/* Request the common Safety Feature Correctible/Uncorrectible
-> +	 * Error line in case of another line is used
-> +	 */
-> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-> +				  IRQF_SHARED, dev->name, dev);
-> +		if (unlikely(ret < 0)) {
-> +			netdev_err(priv->dev,
-> +				   "%s: ERROR: allocating the sfty IRQ %d (%d)\n",
-> +				   __func__, priv->sfty_irq, ret);
-> +			irq_err = REQ_IRQ_ERR_SFTY;
-> +			goto irq_error;
-> +		}
-> +	}
-> +
->  	return 0;
->  
->  irq_error:
-> @@ -6022,8 +6058,8 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id)
->  	if (test_bit(STMMAC_DOWN, &priv->state))
->  		return IRQ_HANDLED;
->  
-> -	/* Check if a fatal error happened */
-> -	if (stmmac_safety_feat_interrupt(priv))
-> +	/* Check ASP error if it isn't delivered via an individual IRQ */
-> +	if (priv->sfty_irq <= 0 && stmmac_safety_feat_interrupt(priv))
->  		return IRQ_HANDLED;
->  
->  	/* To handle Common interrupts */
-> @@ -7462,6 +7498,7 @@ int stmmac_dvr_probe(struct device *device,
->  	priv->dev->irq = res->irq;
->  	priv->wol_irq = res->wol_irq;
->  	priv->lpi_irq = res->lpi_irq;
-> +	priv->sfty_irq = res->sfty_irq;
->  	priv->sfty_ce_irq = res->sfty_ce_irq;
->  	priv->sfty_ue_irq = res->sfty_ue_irq;
->  	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> index 70eadc83ca68..ab250161fd79 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> @@ -743,6 +743,14 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
->  		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
->  	}
->  
-> +	stmmac_res->sfty_irq =
-> +		platform_get_irq_byname_optional(pdev, "sfty");
-> +	if (stmmac_res->sfty_irq < 0) {
-> +		if (stmmac_res->sfty_irq == -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +		dev_info(&pdev->dev, "IRQ safety IRQ not found\n");
-> +	}
-> +
->  	stmmac_res->addr = devm_platform_ioremap_resource(pdev, 0);
->  
->  	return PTR_ERR_OR_ZERO(stmmac_res->addr);
 
