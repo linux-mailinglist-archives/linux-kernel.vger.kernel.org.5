@@ -1,92 +1,78 @@
-Return-Path: <linux-kernel+bounces-22605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3560682A052
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B98382A053
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:37:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4151C2245A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:36:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D4611C22551
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1C64D580;
-	Wed, 10 Jan 2024 18:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2E34D58B;
+	Wed, 10 Jan 2024 18:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZuvixDev";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FGELZhzK";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zW6RmUf2";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pvlGl9Vy"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B4y9m4px"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7937F495C1
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D14A01FDF7;
-	Wed, 10 Jan 2024 18:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704911765; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
-	b=ZuvixDevB7TtNQ01YjA3bXL1ngX8kHyw+vFp2QxZ0+itkApfg9ht2BtKcX7kyH1etL3l9u
-	LPqR8nsc7alYTLflOXTN4SrVx6PkJLIQz0ExKYPC2GyDeHOi/40gt03Xqav4OJH7AS31AH
-	eeml3vQGIKnTT3d1epDNbxmlYH4fevs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704911765;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
-	b=FGELZhzKylJyXG9DCI5zdjUsC9Z7TARtrtOp2mUst21QT0lRWSUYY8OvuAogARzXXVyded
-	o0zQ2/s8gL1kpHBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704911764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
-	b=zW6RmUf2axVM4Eru9DUbg82hLTsUsVrT6CVyrOLoBEApoivKuNng5zsPNiuTH8E5tTPOXZ
-	iu31N/FpdN+CtnUk/DUA3QESxDyKafAHeb+vmUDuWvYV22CNxSmN2DRg09N1K6x/6gpneD
-	9zGjYAzuE/qURrzS0i0xIC6jWtWy0lg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704911764;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
-	b=pvlGl9Vy7jh5R2wUKPgMjt5xxxmObf4j9XlvQrgBW/R9YTBqCY1x6Sulqd7q3MwmEtBWiz
-	aCtrWZKY4DuYPDDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A59EE13306;
-	Wed, 10 Jan 2024 18:34:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dN0aKEjjnmVuLwAAD6G6ig
-	(envelope-from <jwiesner@suse.de>); Wed, 10 Jan 2024 18:34:48 +0000
-Received: by incl.suse.cz (Postfix, from userid 1000)
-	id BB8FB9C468; Wed, 10 Jan 2024 19:36:18 +0100 (CET)
-Date: Wed, 10 Jan 2024 19:36:18 +0100
-From: Jiri Wiesner <jwiesner@suse.de>
-To: linux-kernel@vger.kernel.org
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, Feng Tang <feng.tang@intel.com>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] clocksource: Skip watchdog check for large watchdog
- intervals
-Message-ID: <20240110183618.GG3303@incl>
-References: <20240103112113.GA6108@incl>
- <202401082125.4ec42f71-oliver.sang@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D350E4D582
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d87df95ddso46234605e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:37:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704911866; x=1705516666; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0bRmYP/rNPWw+8+5BllGhXOmL25I0DLXSeKEgWDNQLs=;
+        b=B4y9m4pxhpxRGOujWf+e9E3fjzFu5dOFOwf6HawGfDo4SP73owmvHqGT6+ep0hBuY4
+         RhU2Ca7MzBDbCnCSE0A47ldGPGAuyW6Y1qnIecRaj3u43zkfAJWb0ab9G8E52rw//fjV
+         xg8dYajX+RjVoFVP9Lbpk3hT85MqmDH4e/BzkXUjcT45ZHgtVkHlR0If7NLkvwkZVr24
+         K4Cd6BxoKiQyanYjNYrHvcnOeUFowoUl0JOyRNQqpKhZ+1TOfmVGQtbZibTsjkViDfzi
+         hJQRObKO+yDpY88g+6Wz6rmYy3NDFY7IgKHiieRrWGZLomxHaSza63XMzBJ0AOONSoF1
+         szBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704911866; x=1705516666;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0bRmYP/rNPWw+8+5BllGhXOmL25I0DLXSeKEgWDNQLs=;
+        b=cUihJlPasx0EouyPPwKmtQS0jBQlCXAIHmBESQAtAjdNqOoYxJZXU5CSurPbZg733b
+         kmHpPD4EdJLS7rdxqd7lX0rDQ/zvks33xTuNlRMiCdUGUdiOOx4DT2UKBItuBXPzUCZl
+         pAY8ds4+GmzmY4tB008HtC1a9k5hWwwp0yTn8V6DmiHcQv8MuNvBxRNdMkESumIA/E8L
+         gjl8m0QvPvXXkkdRFlROmk06QleTd9ktmyq+nRqyzJsFtg5f+qXj/r3G57zCMIZ2Gu9p
+         +jtxfFK6BepZBEmN1s33aR/oRZSQHOCDik3T1l2H2jLk7qPhexq/QEENN0F3HjqlPiGF
+         2NIA==
+X-Gm-Message-State: AOJu0Yww5yIl+VSybgWuPZo59c35BHiHim6RjreohoFwpylugZQityMM
+	sYBl005SD0DDvPQl6W7t49NAo0pTBvT55w==
+X-Google-Smtp-Source: AGHT+IEOYHVXjBcX1zYY8aTR9nE/xddM0bNI/sKTb4IkdC06BAEXBpFk57A1vGcVFhzX51Zgcm0+0w==
+X-Received: by 2002:a05:600c:1603:b0:40e:54f1:5d3e with SMTP id m3-20020a05600c160300b0040e54f15d3emr372091wmn.199.1704911866001;
+        Wed, 10 Jan 2024 10:37:46 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id bg3-20020a05600c3c8300b0040d91fa270fsm3064239wmb.36.2024.01.10.10.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 10:37:45 -0800 (PST)
+Date: Wed, 10 Jan 2024 21:37:42 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Markus Elfring <Markus.Elfring@web.de>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, "cocci@inria.fr" <cocci@inria.fr>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Drivers: hv: vmbus: One function call less in
+ create_gpadl_header() after error detection
+Message-ID: <d3c13efc-a1a3-4f19-b0b9-f8c02cc674d5@moroto.mountain>
+References: <6d97cafb-ad7c-41c1-9f20-41024bb18515@web.de>
+ <SN6PR02MB4157AA51AD8AEBB24D0668B7D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <82054a0a-72e5-45b2-8808-e411a9587406@web.de>
+ <SN6PR02MB4157CA3901DD8D069C755C72D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,74 +81,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202401082125.4ec42f71-oliver.sang@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=zW6RmUf2;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=pvlGl9Vy
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.37 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.36)[76.80%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -2.37
-X-Rspamd-Queue-Id: D14A01FDF7
-X-Spam-Flag: NO
+In-Reply-To: <SN6PR02MB4157CA3901DD8D069C755C72D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
 
-On Mon, Jan 08, 2024 at 09:44:31PM +0800, kernel test robot wrote:
-> commit: ceacf0b27b5d9cdc574f8d0a0bcb11d3272e7b9f ("[PATCH] clocksource: Skip watchdog check for large watchdog intervals")
-> url: https://github.com/intel-lab-lkp/linux/commits/Jiri-Wiesner/clocksource-Skip-watchdog-check-for-large-watchdog-intervals/20240103-192257
-> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git da65f29dada7f7cbbf0d6375b88a0316f5f7d6f5
-> patch link: https://lore.kernel.org/all/20240103112113.GA6108@incl/
-> patch subject: [PATCH] clocksource: Skip watchdog check for large watchdog intervals
-> 
-> [   54.778895][   T41] ------------[ cut here ]------------
-> [ 54.781279][ T41] WARNING: CPU: 0 PID: 41 at kernel/time/clocksource-wdtest.c:162 wdtest_func (kernel/time/clocksource-wdtest.c:162 (discriminator 1)) 
-> [   54.785405][   T41] Modules linked in:
-> [   54.787152][   T41] CPU: 0 PID: 41 Comm: wdtest Tainted: G                 N 6.7.0-rc2-00014-gceacf0b27b5d #1 30e4ebd22e7da702dfdab1313ae74e5a246df970
-> [   54.791633][   T41] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [ 54.795124][ T41] EIP: wdtest_func (kernel/time/clocksource-wdtest.c:162 (discriminator 1)) 
+The second half of the if statement is basically duplicated.  It doesn't
+need to be treated as a special case.  We could do something like below.
+I deliberately didn't delete the tabs.  Also I haven't tested it.
 
-The code:
-        pr_info("--- Watchdog clock-value-fuzz error injection, expect clock skew and per-CPU mismatches.\n");
-        WRITE_ONCE(wdtest_ktime_read_fuzz, true);
-        schedule_timeout_uninterruptible(2 * HZ);
-        WARN_ON_ONCE(!(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
+regards,
+dan carpenter
 
-The warning is the consequence of the watchdog not running on i386 builds of the kernel. The watchdog does not run because the "interval > WATCHDOG_INTR_MAX_NS" check is always true on account of the WATCHDOG_INTR_MAX_NS constant evaluating to a negative number on account of integer overflow.
-
-> [   54.801794][   T41] EAX: c4a1fe8c EBX: 00000004 ECX: 00000000 EDX: 00000000
-> [   54.803569][   T41] ESI: c4a1ff2e EDI: 00000000 EBP: c74aff70 ESP: c74aff60
-> [   54.805314][   T41] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010246
-> [   54.807278][   T41] CR0: 80050033 CR2: ffda9000 CR3: 05979000 CR4: 000406d0
-> [   54.808856][   T41] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [   54.810216][   T41] DR6: fffe0ff0 DR7: 00000400
-> [   54.811218][   T41] Call Trace:
-
--- 
-Jiri Wiesner
-SUSE Labs
+diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+index 56f7e06c673e..2ba65f9ad3f1 100644
+--- a/drivers/hv/channel.c
++++ b/drivers/hv/channel.c
+@@ -328,9 +328,9 @@ static int create_gpadl_header(enum hv_gpadl_type type, void *kbuffer,
+ 		  sizeof(struct gpa_range);
+ 	pfncount = pfnsize / sizeof(u64);
+ 
+-	if (pagecount > pfncount) {
+-		/* we need a gpadl body */
+-		/* fill in the header */
++	if (pagecount < pfncount)
++		pfncount = pagecount;
++
+ 		msgsize = sizeof(struct vmbus_channel_msginfo) +
+ 			  sizeof(struct vmbus_channel_gpadl_header) +
+ 			  sizeof(struct gpa_range) + pfncount * sizeof(u64);
+@@ -410,31 +410,6 @@ static int create_gpadl_header(enum hv_gpadl_type type, void *kbuffer,
+ 			pfnsum += pfncurr;
+ 			pfnleft -= pfncurr;
+ 		}
+-	} else {
+-		/* everything fits in a header */
+-		msgsize = sizeof(struct vmbus_channel_msginfo) +
+-			  sizeof(struct vmbus_channel_gpadl_header) +
+-			  sizeof(struct gpa_range) + pagecount * sizeof(u64);
+-		msgheader = kzalloc(msgsize, GFP_KERNEL);
+-		if (msgheader == NULL)
+-			goto nomem;
+-
+-		INIT_LIST_HEAD(&msgheader->submsglist);
+-		msgheader->msgsize = msgsize;
+-
+-		gpadl_header = (struct vmbus_channel_gpadl_header *)
+-			msgheader->msg;
+-		gpadl_header->rangecount = 1;
+-		gpadl_header->range_buflen = sizeof(struct gpa_range) +
+-					 pagecount * sizeof(u64);
+-		gpadl_header->range[0].byte_offset = 0;
+-		gpadl_header->range[0].byte_count = hv_gpadl_size(type, size);
+-		for (i = 0; i < pagecount; i++)
+-			gpadl_header->range[0].pfn_array[i] = hv_gpadl_hvpfn(
+-				type, kbuffer, size, send_offset, i);
+-
+-		*msginfo = msgheader;
+-	}
+ 
+ 	return 0;
+ nomem:
 
