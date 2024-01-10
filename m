@@ -1,123 +1,117 @@
-Return-Path: <linux-kernel+bounces-21603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0912D8291BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:05:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91F9D8291BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:07:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B61D2891DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:05:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FB13286D8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20BE1870;
-	Wed, 10 Jan 2024 01:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E5D1373;
+	Wed, 10 Jan 2024 01:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b0mFzWXX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PK1ewSEO"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7CF1113
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704848725;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lDuMstrISFSfKQKJSfyzZh7RGQR46ElR13WcY4pdUew=;
-	b=b0mFzWXXslFekhnX08QVCAyafujrSxzboyNtkM4HsqkZp72PbCf9IE542Lm36aQISFP5sO
-	xliaJAZq29ODsqOFiEWEqwX2KzcKJZGiDsStW/8c0CPXSqyRm0e2tcOX7T48zv62fGKcbU
-	V95TQ90EFsWFRzkr7Y6VXRlNCudVVUM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-97-RmTGW7OJOO65X9qFFHI8Sw-1; Tue, 09 Jan 2024 20:05:23 -0500
-X-MC-Unique: RmTGW7OJOO65X9qFFHI8Sw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40e41740b6eso30787445e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 17:05:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B6163D;
+	Wed, 10 Jan 2024 01:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-336746c7b6dso3212420f8f.0;
+        Tue, 09 Jan 2024 17:07:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704848829; x=1705453629; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0kzeKZQ2q2UJ+/AdvmSxOy2poTn653uHKZFwHZADhUA=;
+        b=PK1ewSEOyIhnYsEFalGRfMoGuaz15quBsfYIuMyxwfCj+0jXEk8XfwKudmKM97wiwG
+         ayh9qDDbmtlfvuCb/X29SBRDTcSCKifE0vUgen+7T6chdjFYl2Y9nsxHOIVeL6zhRlp6
+         /ZByq1XXTxVNcn20YscSv3+LS2OYw8mm74cM0fg4PbiWzrHWdGM282kUFR1uPPrImqgi
+         0SY2nkzGdTjrhc/3WRV7esa5V0Gfy+AAononmtwHmZvMo3L3AnV4Ure5CiWBACruLHyZ
+         VJHTjYGEj6OSJoZRez70ySLVctPatFs8CHvrj43oc+Bb88j44lnwurtxj2tKgoPejeYE
+         nOug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704848721; x=1705453521;
+        d=1e100.net; s=20230601; t=1704848829; x=1705453629;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lDuMstrISFSfKQKJSfyzZh7RGQR46ElR13WcY4pdUew=;
-        b=f54Eth1ZDVKK2vVh79APbVccVFjfewVHIfcN9yFUlbvSwSBKkTcpLW7ujFKHbmg9SY
-         YwEYxlzYOt6vLwrRaSDM2QBLcLMPzTcjmv6TAPovX4CBHsWwIoSGxtyd1mQMEL73iTGJ
-         fqAaI7IbaZu2Ncy78soQfcdAjfyqvZ8gxMeFr50tciJ86V2alL9/DcEHrG94mJvluss3
-         krNYmVYDR0EegdodfMGXklv5VMo4Hztij2NopHjh1IGl0pHcu5CmCbEykGvWT5F+cqCG
-         Fi4Ohc6DAD4sstyzu+aPCHMdjPwlRNVN0bFykBZbuik4MsaPDCp75gpQziwbajmgIb7l
-         9suA==
-X-Gm-Message-State: AOJu0YynSrmz3Oni02/G4OwqK5X0aUFmkAkf7RoWQ33KvFLykSL/2dDv
-	kKi99vYewgxH93ptZ6PIcf4fEtNLjhbsMLLc4jYaeoZZUMFRh6vr+4mFEKfrVFYwamF2CtXlTVU
-	m2jDVubviIdMfF8uhde+3O53WddkjRLNA5mvYE9rBFJmfBOqQf2a82fm2SzY=
-X-Received: by 2002:a05:600c:a007:b0:40e:47d1:5929 with SMTP id jg7-20020a05600ca00700b0040e47d15929mr90342wmb.194.1704848721435;
-        Tue, 09 Jan 2024 17:05:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFO/oKaTYNEjGYuCr6C67mnkh30/qw8eVG3XHpGebumEk5NYxM9UWvntMr2Xi5gnxWSmx+sY1pCCHDJ/5lLErw=
-X-Received: by 2002:a05:600c:a007:b0:40e:47d1:5929 with SMTP id
- jg7-20020a05600ca00700b0040e47d15929mr90334wmb.194.1704848721095; Tue, 09 Jan
- 2024 17:05:21 -0800 (PST)
+        bh=0kzeKZQ2q2UJ+/AdvmSxOy2poTn653uHKZFwHZADhUA=;
+        b=fgYKYpT9f3L/v7GGOiWlhdoGkS80dqTsFJU6c/+uYDQvnTXh1l62/hYXRJ8krR7a7s
+         cWvUDojeLvRWkbNLvFPaBxCMU08Pl57/NoVA2u1ZKMjzNFLIoLCzxMmg0s/4Y5znWFmN
+         fkfJbgYzgoQoBr6296er169Z/oSU5GEoH9vfG/8Z4/2jqWhyipr15oGTJbrIRWF8uVc6
+         htqI9+5MFU3mzlrDyAqFmrXffPEgcDnuJGprufoMDIXVTJcFi+rBqy2LFGlUJEckNanI
+         IjmCyfuHtzoXgj3AXvM9kP5DvPFtUxoVnKbbD6HVOA5UNuh/sHHgWGw6FY7yngrygYrX
+         dWqQ==
+X-Gm-Message-State: AOJu0YzKdhQP4gzB6cFCg5b7EMScXUZ9yYyS6i21OyYNsSRDFsqrm84B
+	I1Rb2JRGceZfT93uY1UyeQ7OY2SdC3DH8oXKmNw=
+X-Google-Smtp-Source: AGHT+IGV9WLPuMXKi0Vbgm70R8j+bSkmHafpkKxqf6u31ilHScPgFRoWafpi6OVIQX3HQmXo9PxPT49v8PnjBlEELgk=
+X-Received: by 2002:a5d:453a:0:b0:336:9689:bc70 with SMTP id
+ j26-20020a5d453a000000b003369689bc70mr78104wra.44.1704848829109; Tue, 09 Jan
+ 2024 17:07:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108181610.2697017-1-leitao@debian.org> <20240108181610.2697017-8-leitao@debian.org>
- <CAK-6q+jy-0+bZRUKhRsB2RMtpJ=Sw1A5qHk+rpnYaOzV8WFD5A@mail.gmail.com>
-In-Reply-To: <CAK-6q+jy-0+bZRUKhRsB2RMtpJ=Sw1A5qHk+rpnYaOzV8WFD5A@mail.gmail.com>
-From: Alexander Aring <aahringo@redhat.com>
-Date: Tue, 9 Jan 2024 20:05:10 -0500
-Message-ID: <CAK-6q+iMkVKQZjkhFussJ-f62Yza87u3Ep8rtukP_kPk3Ebz4w@mail.gmail.com>
-Subject: Re: [PATCH net-next 07/10] net: fill in MODULE_DESCRIPTION()s for 6LoWPAN
-To: Breno Leitao <leitao@debian.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, Alexander Aring <alex.aring@gmail.com>, netdev@vger.kernel.org, 
-	"open list:6LOWPAN GENERIC (BTLE/IEEE 802.15.4)" <linux-bluetooth@vger.kernel.org>, 
-	"open list:6LOWPAN GENERIC (BTLE/IEEE 802.15.4)" <linux-wpan@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20240103185403.610641-1-brho@google.com> <20240103185403.610641-3-brho@google.com>
+ <ZZa1668ft4Npd1DA@krava> <f3dd9d80-3fab-4676-b589-1d4667431287@linux.dev>
+ <e5e52e0a-7494-47bb-8a6a-9819b0c93bd8@google.com> <781a86b1-c02b-4bb8-bc79-bfbd4f2ff146@google.com>
+In-Reply-To: <781a86b1-c02b-4bb8-bc79-bfbd4f2ff146@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 9 Jan 2024 17:06:57 -0800
+Message-ID: <CAADnVQ+BOBh-XnsCPWHUCkwhAe41TxPRm9Nqi2r39WnJh3iF6g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
+ helpers to access array elements
+To: Barret Rhoden <brho@google.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Jan 9, 2024 at 5:02=E2=80=AFPM Barret Rhoden <brho@google.com> wrot=
+e:
+>
+> On 1/4/24 16:30, Barret Rhoden wrote:
+> [snip]
+> >>
+> >> The LLVM bpf backend has made some improvement to handle the case like
+> >>    r1 =3D ...
+> >>    r2 =3D r1 + 1
+> >>    if (r2 < num) ...
+> >>    using r1
+> >> by preventing generating the above code pattern.
+> >>
+> >> The implementation is a pattern matching style so surely it won't be
+> >> able to cover all cases.
+> >>
+> >> Do you have specific examples which has verification failure due to
+> >> false array out of bound access?
+> >
+> [ snip ]
+>
+> >
+> > I'll play around and see if I can come up with a selftest that can run
+> > into any of these "you did the check, but threw the check away" scenari=
+os.
+>
+> I got an example for this, and will include it in my next patch version,
+> which I'll CC you on.
+>
+> If we can get the compiler to spill the register r1 to the stack (L11 in
+> the asm below), it might spill it before doing the bounds check.  Then
+> it checks the register (L12), but the verifier doesn't know that applies
+> to the stack variable too.  Later, we refill r1 from the stack (L21).
 
-On Tue, Jan 9, 2024 at 8:04=E2=80=AFPM Alexander Aring <aahringo@redhat.com=
-> wrote:
->
-> Hi,
->
-> On Mon, Jan 8, 2024 at 1:21=E2=80=AFPM Breno Leitao <leitao@debian.org> w=
-rote:
-> >
-> > W=3D1 builds now warn if module is built without a MODULE_DESCRIPTION()=
-.
-> > Add descriptions to IPv6 over Low power Wireless Personal Area Network.
-> >
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  net/6lowpan/core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/net/6lowpan/core.c b/net/6lowpan/core.c
-> > index 7b3341cef926..80d83151ef29 100644
-> > --- a/net/6lowpan/core.c
-> > +++ b/net/6lowpan/core.c
-> > @@ -178,5 +178,5 @@ static void __exit lowpan_module_exit(void)
-> >
-> >  module_init(lowpan_module_init);
-> >  module_exit(lowpan_module_exit);
-> > -
-> > +MODULE_DESCRIPTION("IPv6 over Low power Wireless Personal Area Network=
- module");
->
-> Here is a nitpick as well. The correct acronym [0] is "IPv6 over
-> Low-Power Wireless Personal Area Network", otherwise it is okay.
->
-> Acked-by: Alexander Aring <aahringo@redhat.com>
->
-> - Alex
-
-[0] https://datatracker.ietf.org/wg/6lowpan/about/
-
+This is a known issue.
+It's addressed as part of Maxim's series:
+https://patchwork.kernel.org/user/todo/netdevbpf/?series=3D815208
 
