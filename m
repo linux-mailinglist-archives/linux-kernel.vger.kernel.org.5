@@ -1,317 +1,288 @@
-Return-Path: <linux-kernel+bounces-22659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EA882A106
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:28:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9563482A10E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:29:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56F8E28485E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:28:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23DB91F2397E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958D44E1CA;
-	Wed, 10 Jan 2024 19:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9354EB33;
+	Wed, 10 Jan 2024 19:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="zrX31dRv";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="wPFeV1XW"
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="WvQqHhrA"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB0074D5A8;
-	Wed, 10 Jan 2024 19:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id E74DE5C0148;
-	Wed, 10 Jan 2024 14:28:35 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Wed, 10 Jan 2024 14:28:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704914915; x=1705001315; bh=NfoIIOwm5D
-	N8HwySWxVOPW2RCyuUbKrQT1Wiw7ASY/s=; b=zrX31dRvmNLuUjljQFx2p/nf16
-	jKUsjijNpfTV8Tr87iPusUu6Rf4AyWD8QoYYKDj3DLs/GaT9DWzGrCrL7Plo+3Cg
-	485Fe8Ei5keLtPh61BbJ4YbtFaBccQfESKe5EZz2BJbzeLBESpzk7wRPxCBHk1Ps
-	/KvVzaTLm8ZlzO+kEfq+s+OHnC1DsTriSd7ze/ALtf2D4rasUfT1qkqmm6rqQFCP
-	F+xVV+vA+VVXX8MRl07kenq5kgSQ4RqpCUvwnIBXYDvd8ZKCchGgNUJgP1AnKDd1
-	jdKsIjbFsnhPW0viCKMNGRlgSpoeZ3rIDU8IBdQk3QPbuTYnteNXboB41Aeg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704914915; x=1705001315; bh=NfoIIOwm5DN8HwySWxVOPW2RCyuU
-	bKrQT1Wiw7ASY/s=; b=wPFeV1XW7VwQ07gqSP0wkKrg2oX1fXnA8ZcjEMX52OHl
-	bW2ukaryhgH4IdlmnhViI0ghVz8/JfyVREsbklr1cJ2FVS9UL0ITxlUaomissc/j
-	wnWnHbkDZtmXViln40s5NTKCMZxAubJUGZsvQ04CeuVEw2faXJ2b0LdnQluPlFNM
-	zrgD+cdTF1PXZlnBGCsNZN53NNGTA/F9q7HpyO3ikTQhLO+X0xw8PDIVkgWrFmzt
-	vkBx4q9//fVWKn3Ii474tQm+fOmCdnuDi2cuM+wGjvSeApFElL6lRAVWNUV5LVmq
-	RbBqiU9LmGdTktDGIStZjYvsnZeCTm6YP7KgLAgcjA==
-X-ME-Sender: <xms:4--eZfXD-KiuPP5MsTrt3u8UFkNBGnRXq17P-BWcoVwQeQn1Wawh8g>
-    <xme:4--eZXmpy9XwxiWcC7cocnC8kfijvDcPQ8530FWdNdkL1IsVEwHdtLoOAVoeciZ3V
-    6cW9gEjIMqXA-1oFA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiuddguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdfu
-    thgvfhgrnhcuqfdktfgvrghrfdcuoehsohhrvggrrhesfhgrshhtmhgrihhlrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeefudejvdejuddvjeejudekgfeikeevveevleeitddvtedu
-    jeegjeejgfeugfeiudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehsohhrvggrrhesfhgrshhtmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:4--eZbY25iKZ1M5QHgAqmoplCAsGHpIbaUJVPruU1T-BMDw_6rsqCw>
-    <xmx:4--eZaU72Dm_HpH5TJ5GUkQFGKGgz7bC4IM3n79KY8ojJGTPUzPnPg>
-    <xmx:4--eZZlnBzWvfxue6eOASH3EtgTPAu0ENcug-h_R-181AsBBIPvEjg>
-    <xmx:4--eZc-yBs-6T3quhWUCn5eKcOeodzsryJd-D_aJeTFZVQmL_ao5kQ>
-Feedback-ID: i84414492:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 259251700096; Wed, 10 Jan 2024 14:28:35 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DE84E1CD
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 19:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5585fe04266so1043627a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1704914966; x=1705519766; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XF/kkrIsaG794mVwrrAfpZE9995QUYT1bMP4o8ReX7Q=;
+        b=WvQqHhrARPDegULMf10+YOiuYdEb2EPK7z5S38HyCs3NtQmfXDevGtYsZlw+hSaESo
+         V4N8UACkXj5xUauBJRspcEevoPcdnOrN1DCqUMV020H42NnfJ1w++Wf9y09JO6Seppxc
+         6MmwPbG30riRLNmjIEBb3dH+y5QjQNybsnKIn/LkWE8kGy4MPIelqX73ek1Wux3fgP8k
+         /OIkbAlc9pjJ4VovD2Ay2lMdjA17TZVSeHgAW1XAH+esJOm5VQonxZY58V5jgqo32M/Q
+         YAeElTeEVaQFXdbDi+PyISNnkgFvraFP6qSRiKZKc8LVPnrlZ6Tg7U5zhG8tGkITxf9K
+         /tSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704914966; x=1705519766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XF/kkrIsaG794mVwrrAfpZE9995QUYT1bMP4o8ReX7Q=;
+        b=LOo0HG8PB4fG0VZhFYuwbT5FdwH4WbO+XDW8jMR5pO5O0BlMJKcn6PmTTeudow95Ep
+         2Fg1HWQZ7h/fViu84/+jz2lj9MbvQi4Bwh7PKH82w2F3GF47E9gedvDkfRGGgOLCc4jg
+         hnlL5CYTj2gKVdFg9HhWp/pt4Wd0p6pEtzLMjnggPOsKD8m8K+g2kvvdThx/GbLvJnAG
+         +xaxljy5U7qncmzWETfk4CQl4Skadxf9RkMw1dLeEG/N/eWE0GuuISx93BoMX9CxTO3Y
+         of0Tu76p5n+5mgRC9Vbtk9V7EPDoSnJlyVtx0O1SQWRIYGxON4sA0ytiiVSsBknojMRx
+         zFkQ==
+X-Gm-Message-State: AOJu0Yzl3DsksIged2S/P3hCJQyRVpfF1oEsQmuoZgt9iKQ3WeXdjsIU
+	6rEk+YYIflA5CJguRpReSWZeTBzA3ZCobklIo46Lpc+cDd7XsA==
+X-Google-Smtp-Source: AGHT+IGvbQcEEgvmp16OVS1C36qH64KspcuiSNtSm+dV5L85ETMA6+jldtw2mOoqiHwjDJy0RzCb258FX3Elz9K8krs=
+X-Received: by 2002:a17:907:9606:b0:a28:9d4e:f065 with SMTP id
+ gb6-20020a170907960600b00a289d4ef065mr16815ejc.13.1704914966385; Wed, 10 Jan
+ 2024 11:29:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <add243df-47ea-4956-99c5-7bcf19dd2679@app.fastmail.com>
-In-Reply-To: <20240110145533.60234-5-parri.andrea@gmail.com>
-References: <20240110145533.60234-1-parri.andrea@gmail.com>
- <20240110145533.60234-5-parri.andrea@gmail.com>
-Date: Wed, 10 Jan 2024 14:27:51 -0500
-From: "Stefan O'Rear" <sorear@fastmail.com>
-To: "Andrea Parri" <parri.andrea@gmail.com>, paul.walmsley@sifive.com,
- "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>,
- mathieu.desnoyers@efficios.com, paulmck@kernel.org,
- "Jonathan Corbet" <corbet@lwn.net>
-Cc: mmaas@google.com, "Hans Boehm" <hboehm@google.com>, striker@us.ibm.com,
- charlie@rivosinc.com, rehn@rivosinc.com, linux-riscv@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] membarrier: riscv: Provide core serializing command
-Content-Type: text/plain
+References: <87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+ <87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com> <PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+ <87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com> <PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+ <87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com> <ZZwrIoP9+ey7rp3C@memverge.com>
+ <87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com> <20240109155049.00003f13@Huawei.com>
+ <ZZ2Jd7/7rFD0o5S3@memverge.com> <CAAYibXhe81ez06tP5K7zGkX9P=Ot+DcSysVyDvh13aSEDD63aA@mail.gmail.com>
+ <20240110141821.0000370d@Huawei.com>
+In-Reply-To: <20240110141821.0000370d@Huawei.com>
+From: Hao Xiang <hao.xiang@bytedance.com>
+Date: Wed, 10 Jan 2024 11:29:14 -0800
+Message-ID: <CAAYibXgwqY6Og_4NqGGEni=2Xgx=DPxaMc3GdBUE6FREKVCq8w@mail.gmail.com>
+Subject: Re: [External] Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration
+ between memory tiers
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Gregory Price <gregory.price@memverge.com>, "Huang, Ying" <ying.huang@intel.com>, 
+	Srinivasulu Thanneeru <sthanneeru@micron.com>, Srinivasulu Opensrc <sthanneeru.opensrc@micron.com>, 
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>, 
+	"dan.j.williams@intel.com" <dan.j.williams@intel.com>, "mhocko@suse.com" <mhocko@suse.com>, 
+	"tj@kernel.org" <tj@kernel.org>, "john@jagalactic.com" <john@jagalactic.com>, 
+	Eishan Mirakhur <emirakhur@micron.com>, Vinicius Tavares Petrucci <vtavarespetr@micron.com>, 
+	Ravis OpenSrc <Ravis.OpenSrc@micron.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Wei Xu <weixugc@google.com>, "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024, at 9:55 AM, Andrea Parri wrote:
-> RISC-V uses xRET instructions on return from interrupt and to go back
-> to user-space; the xRET instruction is not core serializing.
+On Wed, Jan 10, 2024 at 6:18=E2=80=AFAM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
 >
-> Use FENCE.I for providing core serialization as follows:
+> On Tue, 9 Jan 2024 16:28:15 -0800
+> Hao Xiang <hao.xiang@bytedance.com> wrote:
 >
->  - by calling sync_core_before_usermode() on return from interrupt (cf.
->    ipi_sync_core()),
+> > On Tue, Jan 9, 2024 at 9:59=E2=80=AFAM Gregory Price <gregory.price@mem=
+verge.com> wrote:
+> > >
+> > > On Tue, Jan 09, 2024 at 03:50:49PM +0000, Jonathan Cameron wrote:
+> > > > On Tue, 09 Jan 2024 11:41:11 +0800
+> > > > "Huang, Ying" <ying.huang@intel.com> wrote:
+> > > > > Gregory Price <gregory.price@memverge.com> writes:
+> > > > > > On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote:
+> > > > > It's possible to change the performance of a NUMA node changed, i=
+f we
+> > > > > hot-remove a memory device, then hot-add another different memory
+> > > > > device.  It's hoped that the CDAT changes too.
+> > > >
+> > > > Not supported, but ACPI has _HMA methods to in theory allow changin=
+g
+> > > > HMAT values based on firmware notifications...  So we 'could' make
+> > > > it work for HMAT based description.
+> > > >
+> > > > Ultimately my current thinking is we'll end up emulating CXL type3
+> > > > devices (hiding topology complexity) and you can update CDAT but
+> > > > IIRC that is only meant to be for degraded situations - so if you
+> > > > want multiple performance regions, CDAT should describe them form t=
+he start.
+> > > >
+> > >
+> > > That was my thought.  I don't think it's particularly *realistic* for
+> > > HMAT/CDAT values to change at runtime, but I can imagine a case where
+> > > it could be valuable.
+> > >
+> > > > > > https://lore.kernel.org/linux-cxl/CAAYibXjZ0HSCqMrzXGv62cMLncS_=
+81R3e1uNV5Fu4CPm0zAtYw@mail.gmail.com/
+> > > > > >
+> > > > > > This group wants to enable passing CXL memory through to KVM/QE=
+MU
+> > > > > > (i.e. host CXL expander memory passed through to the guest), an=
+d
+> > > > > > allow the guest to apply memory tiering.
+> > > > > >
+> > > > > > There are multiple issues with this, presently:
+> > > > > >
+> > > > > > 1. The QEMU CXL virtual device is not and probably never will b=
+e
+> > > > > >    performant enough to be a commodity class virtualization.
+> > > >
+> > > > I'd flex that a bit - we will end up with a solution for virtualiza=
+tion but
+> > > > it isn't the emulation that is there today because it's not possibl=
+e to
+> > > > emulate some of the topology in a peformant manner (interleaving wi=
+th sub
+> > > > page granularity / interleaving at all (to a lesser degree)). There=
+ are
+> > > > ways to do better than we are today, but they start to look like
+> > > > software dissagregated memory setups (think lots of page faults in =
+the host).
+> > > >
+> > >
+> > > Agreed, the emulated device as-is can't be the virtualization device,
+> > > but it doesn't mean it can't be the basis for it.
+> > >
+> > > My thought is, if you want to pass host CXL *memory* through to the
+> > > guest, you don't actually care to pass CXL *control* through to the
+> > > guest.  That control lies pretty squarely with the host/hypervisor.
+> > >
+> > > So, at least in theory, you can just cut the type3 device out of the
+> > > QEMU configuration entirely and just pass it through as a distinct nu=
+ma
+> > > node with specific hmat qualities.
+> > >
+> > > Barring that, if we must go through the type3 device, the question is
+> > > how difficult would it be to just make a stripped down type3 device
+> > > to provide the informational components, but hack off anything
+> > > topology/interleave related? Then you just do direct passthrough as y=
+ou
+> > > described below.
+> > >
+> > > qemu/kvm would report errors if you tried to touch the naughty bits.
+> > >
+> > > The second question is... is that device "compliant" or does it need
+> > > super special handling from the kernel driver :D?  If what i describe=
+d
+> > > is not "compliant", then it's probably a bad idea, and KVM/QEMU shoul=
+d
+> > > just hide the CXL device entirely from the guest (for this use case)
+> > > and just pass the memory through as a numa node.
+> > >
+> > > Which gets us back to: The memory-tiering component needs a way to
+> > > place nodes in different tiers based on HMAT/CDAT/User Whim. All thre=
+e
+> > > of those seem like totally valid ways to go about it.
+> > >
+> > > > > >
+> > > > > > 2. When passing memory through as an explicit NUMA node, but no=
+t as
+> > > > > >    part of a CXL memory device, the nodes are lumped together i=
+n the
+> > > > > >    DRAM tier.
+> > > > > >
+> > > > > > None of this has to do with firmware.
+> > > > > >
+> > > > > > Memory-type is an awful way of denoting membership of a tier, b=
+ut we
+> > > > > > have HMAT information that can be passed through via QEMU:
+> > > > > >
+> > > > > > -object memory-backend-ram,size=3D4G,id=3Dram-node0 \
+> > > > > > -object memory-backend-ram,size=3D4G,id=3Dram-node1 \
+> > > > > > -numa node,nodeid=3D0,cpus=3D0-4,memdev=3Dram-node0 \
+> > > > > > -numa node,initiator=3D0,nodeid=3D1,memdev=3Dram-node1 \
+> > > > > > -numa hmat-lb,initiator=3D0,target=3D0,hierarchy=3Dmemory,data-=
+type=3Daccess-latency,latency=3D10 \
+> > > > > > -numa hmat-lb,initiator=3D0,target=3D0,hierarchy=3Dmemory,data-=
+type=3Daccess-bandwidth,bandwidth=3D10485760 \
+> > > > > > -numa hmat-lb,initiator=3D0,target=3D1,hierarchy=3Dmemory,data-=
+type=3Daccess-latency,latency=3D20 \
+> > > > > > -numa hmat-lb,initiator=3D0,target=3D1,hierarchy=3Dmemory,data-=
+type=3Daccess-bandwidth,bandwidth=3D5242880
+> > > > > >
+> > > > > > Not only would it be nice if we could change tier membership ba=
+sed on
+> > > > > > this data, it's realistically the only way to allow guests to a=
+ccomplish
+> > > > > > memory tiering w/ KVM/QEMU and CXL memory passed through to the=
+ guest.
+> > > >
+> > > > This I fully agree with.  There will be systems with a bunch of nor=
+mal DDR with different
+> > > > access characteristics irrespective of CXL. + likely HMAT solutions=
+ will be used
+> > > > before we get anything more complex in place for CXL.
+> > > >
+> > >
+> > > Had not even considered this, but that's completely accurate as well.
+> > >
+> > > And more discretely: What of devices that don't provide HMAT/CDAT? Th=
+at
+> > > isn't necessarily a violation of any standard.  There probably could =
+be
+> > > a release valve for us to still make those devices useful.
+> > >
+> > > The concern I have with not implementing a movement mechanism *at all=
+*
+> > > is that a one-size-fits-all initial-placement heuristic feels gross
+> > > when we're, at least ideologically, moving toward "software defined m=
+emory".
+> > >
+> > > Personally I think the movement mechanism is a good idea that gets fo=
+lks
+> > > where they're going sooner, and it doesn't hurt anything by existing.=
+ We
+> > > can change the initial placement mechanism too.
+> >
+> > I think providing users a way to "FIX" the memory tiering is a backup
+> > option. Given that DDRs with different access characteristics provide
+> > the relevant CDAT/HMAT information, the kernel should be able to
+> > correctly establish memory tiering on boot.
 >
->  - via switch_mm() and sync_core_before_usermode() (respectively, for
->    uthread->uthread and kthread->uthread transitions) to go back to
->    user-space.
+> Include hotplug and I'll be happier!  I know that's messy though.
 >
-> On RISC-V, the serialization in switch_mm() is activated by resetting
-> the icache_stale_mask of the mm at prepare_sync_core_cmd().
+> > Current memory tiering code has
+> > 1) memory_tier_init() to iterate through all boot onlined memory
+> > nodes. All nodes are assumed to be fast tier (adistance
+> > MEMTIER_ADISTANCE_DRAM is used).
+> > 2) dev_dax_kmem_probe to iterate through all devdax controlled memory
+> > nodes. This is the place the kernel reads the memory attributes from
+> > HMAT and recognizes the memory nodes into the correct tier (devdax
+> > controlled CXL, pmem, etc).
+> > If we want DDRs with different memory characteristics to be put into
+> > the correct tier (as in the guest VM memory tiering case), we probably
+> > need a third path to iterate the boot onlined memory nodes and also be
+> > able to read their memory attributes. I don't think we can do that in
+> > 1) because the ACPI subsystem is not yet initialized.
 >
-> Suggested-by: Palmer Dabbelt <palmer@dabbelt.com>
-> Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
-> ---
->  .../membarrier-sync-core/arch-support.txt     | 18 +++++++++++-
->  MAINTAINERS                                   |  1 +
->  arch/riscv/Kconfig                            |  3 ++
->  arch/riscv/include/asm/membarrier.h           | 19 ++++++++++++
->  arch/riscv/include/asm/sync_core.h            | 29 +++++++++++++++++++
->  kernel/sched/core.c                           |  4 +++
->  kernel/sched/membarrier.c                     |  4 +++
->  7 files changed, 77 insertions(+), 1 deletion(-)
->  create mode 100644 arch/riscv/include/asm/sync_core.h
+> Can we move it later in general?  Or drag HMAT parsing earlier?
+> ACPI table availability is pretty early, it's just that we don't bother
+> with HMAT because nothing early uses it.
+> IIRC SRAT parsing occurs way before memory_tier_init() will be called.
+
+I tested the call sequence under a debugger earlier. hmat_init() is
+called after memory_tier_init(). Let me poke around and see what our
+options are.
+
 >
-> diff --git 
-> a/Documentation/features/sched/membarrier-sync-core/arch-support.txt 
-> b/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-> index d96b778b87ed8..a163170fc0f48 100644
-> --- a/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-> +++ b/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-> @@ -10,6 +10,22 @@
->  # Rely on implicit context synchronization as a result of exception 
-> return
->  # when returning from IPI handler, and when returning to user-space.
->  #
-> +# * riscv
-> +#
-> +# riscv uses xRET as return from interrupt and to return to user-space.
-> +#
-> +# Given that xRET is not core serializing, we rely on FENCE.I for 
-> providing
-> +# core serialization:
-
-"core serialization" is a meaningless sequence of words for RISC-V users,
-and an extremely strange way to describe running fence.i on all remote
-cores.  fence.i is a _fence_; it is not required to affect a core pipeline
-beyond what is needed to ensure that all instruction fetches after the
-barrier completes see writes performed before the barrier.
-
-The feature seems useful, but it should document what it does using
-terminology actually used in the RISC-V specifications.
-
-> +#
-> +#  - by calling sync_core_before_usermode() on return from interrupt 
-> (cf.
-> +#    ipi_sync_core()),
-> +#
-> +#  - via switch_mm() and sync_core_before_usermode() (respectively, for
-> +#    uthread->uthread and kthread->uthread transitions) to go back to
-> +#    user-space.
-> +#
-> +#  The serialization in switch_mm() is activated by 
-> prepare_sync_core_cmd().
-> +#
->  # * x86
->  #
->  # x86-32 uses IRET as return from interrupt, which takes care of the 
-> IPI.
-> @@ -43,7 +59,7 @@
->      |    openrisc: | TODO |
->      |      parisc: | TODO |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: | TODO |
->      |       sparc: | TODO |
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6bce0aeecb4f2..e4ca6288ea3d1 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13817,6 +13817,7 @@ L:	linux-kernel@vger.kernel.org
->  S:	Supported
->  F:	Documentation/scheduler/membarrier.rst
->  F:	arch/*/include/asm/membarrier.h
-> +F:	arch/*/include/asm/sync_core.h
->  F:	include/uapi/linux/membarrier.h
->  F:	kernel/sched/membarrier.c
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 33d9ea5fa392f..2ad63a216d69a 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -28,14 +28,17 @@ config RISCV
->  	select ARCH_HAS_GIGANTIC_PAGE
->  	select ARCH_HAS_KCOV
->  	select ARCH_HAS_MEMBARRIER_CALLBACKS
-> +	select ARCH_HAS_MEMBARRIER_SYNC_CORE
->  	select ARCH_HAS_MMIOWB
->  	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->  	select ARCH_HAS_PMEM_API
-> +	select ARCH_HAS_PREPARE_SYNC_CORE_CMD
->  	select ARCH_HAS_PTE_SPECIAL
->  	select ARCH_HAS_SET_DIRECT_MAP if MMU
->  	select ARCH_HAS_SET_MEMORY if MMU
->  	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
->  	select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
-> +	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
->  	select ARCH_HAS_SYSCALL_WRAPPER
->  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->  	select ARCH_HAS_UBSAN_SANITIZE_ALL
-> diff --git a/arch/riscv/include/asm/membarrier.h 
-> b/arch/riscv/include/asm/membarrier.h
-> index 6c016ebb5020a..47b240d0d596a 100644
-> --- a/arch/riscv/include/asm/membarrier.h
-> +++ b/arch/riscv/include/asm/membarrier.h
-> @@ -22,6 +22,25 @@ static inline void membarrier_arch_switch_mm(struct 
-> mm_struct *prev,
->  	/*
->  	 * The membarrier system call requires a full memory barrier
->  	 * after storing to rq->curr, before going back to user-space.
-> +	 *
-> +	 * This barrier is also needed for the SYNC_CORE command when
-> +	 * switching between processes; in particular, on a transition
-> +	 * from a thread belonging to another mm to a thread belonging
-> +	 * to the mm for which a membarrier SYNC_CORE is done on CPU0:
-> +	 *
-> +	 *   - [CPU0] sets all bits in the mm icache_stale_mask (in
-> +	 *     prepare_sync_core_cmd());
-> +	 *
-> +	 *   - [CPU1] stores to rq->curr (by the scheduler);
-> +	 *
-> +	 *   - [CPU0] loads rq->curr within membarrier and observes
-> +	 *     cpu_rq(1)->curr->mm != mm, so the IPI is skipped on
-> +	 *     CPU1; this means membarrier relies on switch_mm() to
-> +	 *     issue the sync-core;
-> +	 *
-> +	 *   - [CPU1] switch_mm() loads icache_stale_mask; if the bit
-> +	 *     is zero, switch_mm() may incorrectly skip the sync-core.
-> +	 *
->  	 * Matches a full barrier in the proximity of the membarrier
->  	 * system call entry.
->  	 */
-> diff --git a/arch/riscv/include/asm/sync_core.h 
-> b/arch/riscv/include/asm/sync_core.h
-> new file mode 100644
-> index 0000000000000..9153016da8f14
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/sync_core.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_RISCV_SYNC_CORE_H
-> +#define _ASM_RISCV_SYNC_CORE_H
-> +
-> +/*
-> + * RISC-V implements return to user-space through an xRET instruction,
-> + * which is not core serializing.
-> + */
-> +static inline void sync_core_before_usermode(void)
-> +{
-> +	asm volatile ("fence.i" ::: "memory");
-> +}
-
-Not standard terminology.
-
-> +
-> +#ifdef CONFIG_SMP
-> +/*
-> + * Ensure the next switch_mm() on every CPU issues a core serializing
-> + * instruction for the given @mm.
-> + */
-> +static inline void prepare_sync_core_cmd(struct mm_struct *mm)
-> +{
-> +	cpumask_setall(&mm->context.icache_stale_mask);
-> +}
-> +#else
-> +static inline void prepare_sync_core_cmd(struct mm_struct *mm)
-> +{
-> +}
-> +#endif /* CONFIG_SMP */
-> +
-> +#endif /* _ASM_RISCV_SYNC_CORE_H */
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index b51bc86f8340c..82de2b7d253cd 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6682,6 +6682,10 @@ static void __sched notrace __schedule(unsigned 
-> int sched_mode)
->  		 *
->  		 * The barrier matches a full barrier in the proximity of
->  		 * the membarrier system call entry.
-> +		 *
-> +		 * On RISC-V, this barrier pairing is also needed for the
-> +		 * SYNC_CORE command when switching between processes, cf.
-> +		 * the inline comments in membarrier_arch_switch_mm().
->  		 */
->  		++*switch_count;
-> 
-> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-> index 6d1f31b3a967b..703e8d80a576d 100644
-> --- a/kernel/sched/membarrier.c
-> +++ b/kernel/sched/membarrier.c
-> @@ -342,6 +342,10 @@ static int membarrier_private_expedited(int flags, 
-> int cpu_id)
->  	/*
->  	 * Matches memory barriers after rq->curr modification in
->  	 * scheduler.
-> +	 *
-> +	 * On RISC-V, this barrier pairing is also needed for the
-> +	 * SYNC_CORE command when switching between processes, cf.
-> +	 * the inline comments in membarrier_arch_switch_mm().
->  	 */
->  	smp_mb();	/* system call entry is not a mb. */
-> 
-> -- 
-> 2.34.1
-
--s
+> Jonathan
+>
+>
+>
+> >
+> > >
+> > > </2cents>
+> > >
+> > > ~Gregory
+>
 
