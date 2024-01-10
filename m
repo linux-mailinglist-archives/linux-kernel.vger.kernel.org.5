@@ -1,85 +1,138 @@
-Return-Path: <linux-kernel+bounces-21885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A0F829607
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:15:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 829FF82960A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:15:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B6BB1F26EC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:15:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21B4F1F22586
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D62C3E49C;
-	Wed, 10 Jan 2024 09:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37EB3E49B;
+	Wed, 10 Jan 2024 09:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WEhML+gG"
-Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jwzagr8r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1833C68C
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--nogikh.bounces.google.com
-Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-a28fbc49006so100358366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:15:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704878112; x=1705482912; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=22meeCLCLk1sr+ZeBgBSyZzfHRxkkpMLTBZ1RKzMp7A=;
-        b=WEhML+gGbJxSrenA9eLRKjZ2KY/fNPoUWSxHR4Y941VVr5FmdKrnEkJhVZxvmFubD/
-         OMxvAvEHo/w1xuxRI8nQIYBpalGDHSNnqPsqZ5KDCAbKL6Xo8gJl23yvR6fqRwY0nmru
-         JzRUp7GaoulXOt+vdJ8K3NxDyOHa/fZU9mqAlFR/yuAbeFB9Ob1vywbAinI67cKnhDwl
-         jA+XtdBKj+BMxMcoxhQKlY0Ht8gYNVivF9nyxH71hrrrB0f85iJRCySX+pkryPRILHCZ
-         9zRfiYreNbhhI9NSchkDxB6GfufcwXt24rgUuq8LBSqtWdrHmguTXYJaMZUILcwJvou6
-         rbLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704878112; x=1705482912;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=22meeCLCLk1sr+ZeBgBSyZzfHRxkkpMLTBZ1RKzMp7A=;
-        b=i9aPJTLld0XHz2CH+gJShiCLlJEpUHQYB7DmU7kZQwB2jTPDv66FwTlH1SR0/UQz2u
-         /6w6JBfHpn5lNAbmSzMiwU12YKbwvngMjX3OkwUcmUOE388GVaqogdKNpYpCsJkrSd6x
-         nj2Slt6U5zewhqUIMg/reVYnnYEAgPpTxz4WvIVZH7lqx0KxGFuCTqBuMNYpQiAPpXzL
-         oeStWkn7SU2rO4X+GWaeN+4eQ4Bf9lYRC6I2E06fMJAQEcF3kjHPhLkVfoJ20bVHawGp
-         tIO/V9WuHLIGCcA5g7OxRk/4dVIDBVr5EA2j3LnSxl+mzXB9gAmIOj8d/43rGeoNXfxi
-         300w==
-X-Gm-Message-State: AOJu0YzCN63TftcdE+GqKCyTbL8VnRd7MDrZFwkoGbpWk69CAMEPpiPJ
-	fgHUh0F2C5edzsDFAnTs2XQ8rM775eeAx/lqjg==
-X-Google-Smtp-Source: AGHT+IHM8JuNl/FzfRgv7kFNtWTX/Dshz79l5nmXtz4XHV7Kd5Q8CYGVBOXDaIntaQbKbitkmYqtlcdcPDY=
-X-Received: from nogikhp920.muc.corp.google.com ([2a00:79e0:9c:201:8a0f:76e:1832:6c58])
- (user=nogikh job=sendgmr) by 2002:a17:906:36cf:b0:a28:e1a4:ae3e with SMTP id
- b15-20020a17090636cf00b00a28e1a4ae3emr22935ejc.0.1704878112336; Wed, 10 Jan
- 2024 01:15:12 -0800 (PST)
-Date: Wed, 10 Jan 2024 10:15:09 +0100
-In-Reply-To: <CAEf4BzYMx_TbBY4yeK_iJqq65XHY5V3yQQ1PzfOh6OMQwyz5cA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234082E846;
+	Wed, 10 Jan 2024 09:15:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47841C433C7;
+	Wed, 10 Jan 2024 09:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704878137;
+	bh=ahio7T25Z11avb9NbE7tOGh6X6/776n8O1/ownXKe10=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jwzagr8rUcwaOjiUjF3gbJ54Tl1s+O9RpmfCsYDue3E1YUowoTRPX4cEtYJx5qD3A
+	 j3seAQxKPwmyfv7lVKhWRyVHLJDQbaCvNX3qlFkXQ4ZlaUX+508N/MjNy2+wlVaLNZ
+	 sekmwa4NU2A+KjyNUmrzeFCzV3zXtL0W28NJP2NU=
+Date: Wed, 10 Jan 2024 10:15:34 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Pavel Machek <pavel@ucw.cz>, bvanassche@acm.org, hch@lst.de,
+	hare@suse.de, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, torvalds@linux-foundation.org,
+	stable@vger.kernel.org, lwn@lwn.net, jslaby@suse.cz
+Subject: Re: scsi_get_lba breakage in 5.10 -- Re: Linux 5.10.206
+Message-ID: <2024011047-clench-scheme-1f46@gregkh>
+References: <2024010527-revision-ended-aea2@gregkh>
+ <ZZ042FejzwMM5vDW@duo.ucw.cz>
+ <yq1jzoi7hrt.fsf@ca-mkp.ca.oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <CAEf4BzYMx_TbBY4yeK_iJqq65XHY5V3yQQ1PzfOh6OMQwyz5cA@mail.gmail.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240110091509.1155824-1-nogikh@google.com>
-Subject: Re: Re: [syzbot] [bpf?] WARNING in __mark_chain_precision (3)
-From: Aleksandr Nogikh <nogikh@google.com>
-To: andrii.nakryiko@gmail.com
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yq1jzoi7hrt.fsf@ca-mkp.ca.oracle.com>
+
+On Tue, Jan 09, 2024 at 08:55:52AM -0500, Martin K. Petersen wrote:
+> 
+> Pavel,
+> 
+> > This is bad idea. This changes return value, but without fixing
+> > callers; there will be subtle bugs somewhere.
+> 
+> I'm not sure why this particular change was backported since it was part
+> of a larger cleanup of explicitly distinguishing between block layer
+> sectors and device-specific LBAs. This was done to fix devices using PI
+> with 4 KB blocks which would otherwise end up getting programmed with
+> the wrong reference tag value.
+> 
+> > At minimum, we need this:
+> >
+> > 87662a472a9d8980b26ba5803447df2c4981d467 scsi: iser: Use scsi_get_sector() instead of scsi_get_lba()
+> 
+> I agree this would be appropriate. Otherwise we'll print the error being
+> at the wrong sector in case of an error on a PI device with 4 KB blocks.
+> However, the message is purely informative.
+> 
+> > That will fix iser, but there's also:
+> >
+> > drivers/s390/scsi/zfcp_fsf.c:           io->ref_tag_value = scsi_get_lba(scsi_cmnd) & 0xFFFFFFFF;
+> > drivers/scsi/isci/request.c:            tc->ref_tag_seed_gen = scsi_get_lba(scmd) & 0xffffffff;
+> > drivers/scsi/isci/request.c:            tc->ref_tag_seed_verify = scsi_get_lba(scmd) & 0xffffffff;
+> > drivers/scsi/lpfc/lpfc_scsi.c:  lba = scsi_get_lba(sc);
+> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
+> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
+> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
+> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
+> > drivers/scsi/lpfc/lpfc_scsi.c:          start_ref_tag = (uint32_t)scsi_get_lba(cmd); /* Truncate LBA */
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:          failing_sector = scsi_get_lba(cmd);
+> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                                   (unsigned long long)scsi_get_lba(cmnd),
+> > drivers/scsi/lpfc/lpfc_scsi.c:                                   (unsigned long long)scsi_get_lba(cmnd),
+> > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
+> > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
+> > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
+> > drivers/scsi/qla2xxx/qla_isr.c:     cmd->cmnd[0], (u64)scsi_get_lba(cmd), a_ref_tag, e_ref_tag,
+> > drivers/scsi/qla2xxx/qla_isr.c:         sector_t lba_s = scsi_get_lba(cmd);
+> 
+> Save for two cases in lpfc_queuecommand (which like the iser case will
+> print the wrong sector number on error) all these look OK to me. Note
+> that almost all callers of scsi_get_lba() actually intended to get the
+> protocol LBA as the name indicates and not the block layer sector
+> number.
+
+Ick, this is going to get complex fast.  How about I revert the whole
+series, and then just add the one bugfix at the end, in a "fixed by
+hand" version like I have here below.  Would that be better overall?
+
+Thanks,
+
+greg k-h
 
 
-> #syz fix: 482d548d bpf: handle fake register spill to stack with
-> BPF_ST_MEM instruction
-
-It needs to stay on one line, otherwise only part of the title
-is considered.
-
-#syz fix: bpf: handle fake register spill to stack with BPF_ST_MEM instruction
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index 0c4bc42b55c2..3d3d139127ee 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -1069,6 +1069,7 @@ static int scsi_send_eh_cmnd(struct scsi_cmnd *scmd, unsigned char *cmnd,
+ 
+ 	scsi_log_send(scmd);
+ 	scmd->scsi_done = scsi_eh_done;
++	scmd->flags |= SCMD_LAST;
+ 
+ 	/*
+ 	 * Lock sdev->state_mutex to avoid that scsi_device_quiesce() can
+@@ -2361,6 +2362,7 @@ scsi_ioctl_reset(struct scsi_device *dev, int __user *arg)
+ 	scsi_init_command(dev, scmd);
+ 	scmd->request = rq;
+ 	scmd->cmnd = scsi_req(rq)->cmd;
++	scmd->flags |= SCMD_LAST;
+ 
+ 	scmd->scsi_done		= scsi_reset_provider_done_command;
+ 	memset(&scmd->sdb, 0, sizeof(scmd->sdb));
 
