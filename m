@@ -1,112 +1,158 @@
-Return-Path: <linux-kernel+bounces-22260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC6FA829B88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:42:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEDE0829B8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:43:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 647081F247DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:42:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E47EF1C25C32
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A75F48CD8;
-	Wed, 10 Jan 2024 13:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D975948CD8;
+	Wed, 10 Jan 2024 13:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="FSYSViSC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LjMJGc5c"
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=yngvason.is header.i=@yngvason.is header.b="ckg760GL"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A18548CC1;
-	Wed, 10 Jan 2024 13:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id B169B3200B40;
-	Wed, 10 Jan 2024 08:42:44 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 10 Jan 2024 08:42:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704894164; x=1704980564; bh=BmHdlujemK
-	Tt47oYKjP4mcCwFNBw0dvdYdm7mWMOS1A=; b=FSYSViSC2HmmHEdU8iG/Pm0B7/
-	0lVOCBmFGOdxzFynNzEiZvBT8791kHGkqdqHs+89oyxPyMg368ySC5F9AQ5zDkwp
-	eyWZf8uk6JVHrewvLbam2aCpBF5K5+epVbNpGOlYgrxTavqZ4i8VcJb6vmxxeUzw
-	TdA7VIWudKtw7yNWv+WBRBgouGRg9284T5kKWipb7Y9l0In0ewObfvWrAGdhKWzD
-	ZLNj22wVCzlthWStObyo3/KCOCGZwyMs+zdF2GK+jCzWP35V3O0FPonsBQyO90Du
-	Pqzrr6YazJwsANqD/VoZVNMDddWKBNycQe5zF0WbTv08AFkC5v1Q8qAlGeIQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704894164; x=1704980564; bh=BmHdlujemKTt47oYKjP4mcCwFNBw
-	0dvdYdm7mWMOS1A=; b=LjMJGc5c26PEODjc+KnVJFpKLhBmcZ19hhMC4c1gFy1d
-	rE/35yB6KiE/dCZQ+muUF4XLzD/hXpNRXMWZKpPRk9zd+SsqaUYbKeE+8UziqxJT
-	1NG37LUqmIPdafSVCpj5TjRKK18bG7JR9ynPM6HRBuGIR6iYaFOuufEfDagcVg8u
-	VT3sSrYzkho/T988ODuWwRsZrTf4mLReUeHvjLd3aDd43Q6mO3MJYey6iV3941We
-	ev3YhRCT2Wuw/UniDSaTx1X3GO4sGrLkj8URVqidhzyc8IilQZvhl5R5Zk9JGX1S
-	9Gxxuj9Qhdnm/IMedil8usV3JjCP6P6qxAC6dJGRiQ==
-X-ME-Sender: <xms:056eZc6AunfMbpdUJjN1VRHddp9meAu36R5UmmvP5jApnzDbzNlC1A>
-    <xme:056eZd4HADRZL2RAV_MPPe3Nfh1gWXqRyYYvofIm9G0ZvZ_sP4llVRJjqAVIY6wi_
-    w5LP--bSD4VLQTXcYU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiuddgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:056eZbclHecWM0jrjKxsSrRZJQd9uOImluO2miOvuXX4JHqWdBQ1DQ>
-    <xmx:056eZRLl4lKvuRBixBM6zg301d2WrCKvqKqvjG6osj_l8S45l9q2jw>
-    <xmx:056eZQJ5RSkfi9oxEonFrDhj7qfuIDV8hUlxKgvS_LGptflBErKiLw>
-    <xmx:1J6eZXXkMfAn2j5UMtmzXGM2rIUyy_pNzrPcB2z9gYzPEEgPtFoYpQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A3DC5B6008D; Wed, 10 Jan 2024 08:42:43 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B2F48CC1
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yngvason.is
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yngvason.is
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5f2aab1c0c5so39127167b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:43:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=yngvason.is; s=google; t=1704894180; x=1705498980; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yQ/U0Sa8v/CRYiVU6kq/by3KQsxjn5M1baHcHHM4a3M=;
+        b=ckg760GLn6TVkMpbP+PCzZXevlkjDTa0V03VH026JRlN0tarCp3toLH9rfbGSn7WWt
+         e7OSVDjbNgu0UvIx77zQxhn1bTMg1vAkXNbRsnkG+gSIiby3L5lvSy1+BhIzSAYUzU4c
+         tj7aCz6wNBdeDADqj9zy+/eKi+Al3ihQFZJl4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704894180; x=1705498980;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yQ/U0Sa8v/CRYiVU6kq/by3KQsxjn5M1baHcHHM4a3M=;
+        b=MPtiJeVRH6wEk6+GMm9X9QKB5boe17qU/Yuyber5EqUMZvuVtDkQZIbzAiPbtDNGVR
+         q4ZxXKQAn2TR3fngMuQGbP7n6My0ZWfxFT/b9ary+1WDCPXQZzNMnWMeVP2tz8NGm2bE
+         o/rT6u2vuqaOu7g28l1M9HE9CpluznzL7U6PCiwu6aQmCVFUEKbVYqNuPAHWmsOIxbb9
+         LejDJUjNJmJoXFWWNYi6UjoZTkq9IkXi/vwm/J6CqejdYXzKKK2iApfEC31O+APL+RGt
+         oHN9d3sDzPPhgfS1/71PyjtlaO+S9MeqAT3E0P15sMW5NeQUmNkWpy65ot+d7hZo8tW1
+         zPpA==
+X-Gm-Message-State: AOJu0YwwOrzMlVs3x6BFdYrZgiWQDq0B+jb2r4YoO+rQXDZ5A0VE2vum
+	BzT6KOYbsTSDtEtekpJ0Lpv/mADwXBeyvZFO8ugqt2OxqJvX7g==
+X-Google-Smtp-Source: AGHT+IGDsuO4mYJVVDxBUOZbdTOdu8bmcbR4SC1ZuMtCkzl9DP9p6Vo22kYDPHUl7Rp57fzCruInRV3SA2OPXVlQoBk=
+X-Received: by 2002:a0d:db57:0:b0:5e8:a75f:df63 with SMTP id
+ d84-20020a0ddb57000000b005e8a75fdf63mr49273ywe.47.1704894180474; Wed, 10 Jan
+ 2024 05:43:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <6c82c4b9-297d-44a0-87dc-9413e15fa48a@app.fastmail.com>
-In-Reply-To: <20240110130122.3836513-1-nik.borisov@suse.com>
-References: <20240110130122.3836513-1-nik.borisov@suse.com>
-Date: Wed, 10 Jan 2024 14:42:22 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Nikolay Borisov" <nik.borisov@suse.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org
-Cc: linux-api@vger.kernel.org, "Richard Palethorpe" <rpalethorpe@suse.com>
-Subject: Re: [PATCH RESEND] x86/entry/ia32: Ensure s32 is sign extended to s64
-Content-Type: text/plain
+References: <20240109181104.1670304-1-andri@yngvason.is> <20240109181104.1670304-6-andri@yngvason.is>
+ <qdwv7sagqs5nmmsy5lko5hypldanfodafyzamrs3loj3n7jzlr@n5bacxkknkj4>
+ <CAFNQBQzijyE4wR34AOLM45m+ryx128igVKO9zPJ5-M3afFQMxQ@mail.gmail.com> <92e20f9b-2cbf-4efe-b61b-989da0cc1668@tuxedocomputers.com>
+In-Reply-To: <92e20f9b-2cbf-4efe-b61b-989da0cc1668@tuxedocomputers.com>
+From: Andri Yngvason <andri@yngvason.is>
+Date: Wed, 10 Jan 2024 13:42:24 +0000
+Message-ID: <CAFNQBQxnMh4aPfm+U8vEfxoTdQ+FByfqwUUDnMTzgkrW2+ZZqw@mail.gmail.com>
+Subject: Re: [PATCH 5/7] drm/uAPI: Add "preferred color format" drm property
+ as setting for userspace
+To: Werner Sembach <wse@tuxedocomputers.com>
+Cc: Maxime Ripard <mripard@kernel.org>, Harry Wentland <harry.wentland@amd.com>, 
+	Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, 
+	Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	intel-gfx@lists.freedesktop.org, Simon Ser <contact@emersion.fr>, 
+	Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024, at 14:01, Nikolay Borisov wrote:
+mi=C3=B0., 10. jan. 2024 kl. 13:09 skrifa=C3=B0i Werner Sembach <wse@tuxedo=
+computers.com>:
 >
-> This patch has been sent previously by Richard back in 2021 [0]. 
-> However it
-> seems to have been dropped at some point and never merged. So I'm 
-> resending again
-> to consider it for merging given that io_pgetevents_time64 LTP test 
-> still fails.
+> Hi,
 >
+> Am 10.01.24 um 11:11 schrieb Andri Yngvason:
+> > Hi,
+> >
+> > mi=C3=B0., 10. jan. 2024 kl. 09:27 skrifa=C3=B0i Maxime Ripard <mripard=
+@kernel.org>:
+> >> On Tue, Jan 09, 2024 at 06:11:02PM +0000, Andri Yngvason wrote:
+> >>> From: Werner Sembach <wse@tuxedocomputers.com>
+> >>>
+> >>> Add a new general drm property "preferred color format" which can be =
+used
+> >>> by userspace to tell the graphic drivers to which color format to use=
+.
+> >>>
+> >>> Possible options are:
+> >>>      - auto (default/current behaviour)
+> >>>      - rgb
+> >>>      - ycbcr444
+> >>>      - ycbcr422 (not supported by both amdgpu and i915)
+> >>>      - ycbcr420
+> >>>
+> >>> In theory the auto option should choose the best available option for=
+ the
+> >>> current setup, but because of bad internal conversion some monitors l=
+ook
+> >>> better with rgb and some with ycbcr444.
+> >> I looked at the patch and I couldn't find what is supposed to happen i=
+f
+> >> you set it to something else than auto, and the driver can't match tha=
+t.
+> >> Are we supposed to fallback to the "auto" behaviour, or are we suppose
+> >> to reject the mode entirely?
+> >>
+> >> The combination with the active output format property suggests the
+> >> former, but we should document it explicitly.
+> > It is also my understanding that it should fall back to the "auto"
+> > behaviour. I will add this to the documentation.
 >
-> [0] https://lore.kernel.org/all/20210927161955.28494-1-rpalethorpe@suse.com/
+> Yes, that was the intention, and then userspace can check, but it wasn't =
+well
+> received: https://gitlab.freedesktop.org/drm/amd/-/issues/476#note_964530
+>
+> Actually a lot of the thoughts that went into the original patch set can =
+be
+> found in that topic.
+>
+> There was another iteration of the patch set that I never finished and se=
+nt to
+> the LKML because I got discouraged by this:
+> https://lore.kernel.org/dri-devel/20210623102923.70877c1a@eldfell/
 
-Thank you for resending this, I hadn't noticed that this never
-went in, but I also see that I still keep the same patch in
-my testing tree.
+Well, I've implemented this for sway and wlroots now and Simon has
+reacted positively, so this does appear likely to end up as a feature
+in wlroots based compositors.
 
-I think the entire syscall entry logic needs a larger
-cross-architecture overhaul to avoid these confusing macros
-and make sure we get it right everywhere, but that's not
-going to happen overnight, so this patch is what should
-get merged and backported to LTS kernels first.
+>
+> I can try to dig it up, but it is completely untested and I don't think I=
+ still
+> have the respective TODO list anymore, so I don't know if it is a better =
+or
+> worst starting point than the last iteration I sent to the LKML.
+>
 
-    arnd
+You can send the patches to me if you want and I can see if they're
+useful. I'm really only interested in the color format part though.
+Alternatively, you can continue your work and post it to LKML and I
+can focus on the userspace side and testing. By the way, I have an
+HDMI analyzer that can tell me the actual color format.
+
+Thanks,
+Andri
 
