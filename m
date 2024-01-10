@@ -1,165 +1,154 @@
-Return-Path: <linux-kernel+bounces-21737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6320382938D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:06:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2130829395
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26B5FB246C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:06:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96DBB1F26D9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:08:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3959432C71;
-	Wed, 10 Jan 2024 06:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CA632C71;
+	Wed, 10 Jan 2024 06:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cqmx5cEY"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="grS0AZGh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFBD8C1A;
-	Wed, 10 Jan 2024 06:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40A65Vvi056970;
-	Wed, 10 Jan 2024 00:05:31 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704866732;
-	bh=yFsMpt0PZNf6JUgPlvVYPwAe1PAy39S8K8+Q7tYKhQA=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=cqmx5cEYvim8cKLqKbv9TH9RwTjaMw2oxjSZ62HszbJeeAd3bu4NNYF45bGJf4gGN
-	 5nri+MnVNt17nUD/exe/Mpks5AoTLQbodqPs6+RMStGcEl0O1GQid8kjuOWPnF/SAc
-	 GFy/t3PA52zbmZmyxrs7CwG7C6shMtS9BIGp6zlU=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40A65VWs085615
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 10 Jan 2024 00:05:31 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
- Jan 2024 00:05:31 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 10 Jan 2024 00:05:29 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40A65P5Y095356;
-	Wed, 10 Jan 2024 00:05:25 -0600
-Message-ID: <f8dbbffd-c209-44bc-8d1e-42b6f1b08aef@ti.com>
-Date: Wed, 10 Jan 2024 11:35:24 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2186DF6C;
+	Wed, 10 Jan 2024 06:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704866928; x=1736402928;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=xCUpG7MPuTydGqWkJiwHDdaFqNDHXSJYG5vfi+6flw4=;
+  b=grS0AZGhNq8soDcw6nbog9S8KeGUMle8P2BED5TJf+QI7Bbv4pwyINI+
+   AhFVbeljHYndWyjl2eZYZMbEHvn55vyagcRpzfcOxLmLdpxmoBRa/Yzxk
+   PIjaIdnXJRm+/EJC7iRPQW8e1BtE55jqP8vQOp5lxEHQe21YhmRYq+HU9
+   p401qReKBNpTcWfe1MvRheh0Yn4JCcNNoIaY3y0eHzAwVUkF1xRkzUgln
+   lHPJVyAQWCRh3XWT8Py2Nwfwawwx8Q7SO7uP3DkXq6sWAxfoRM0OZd4jU
+   ZoAOhHXI35eHwkTQjAsXGxKoX9IVTYB4SkXTGJ3qp904K18/c3HRt2rOd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11765306"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="11765306"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 22:08:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="852435366"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="852435366"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 22:08:42 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc: Gregory Price <gregory.price@memverge.com>,  Srinivasulu Thanneeru
+ <sthanneeru@micron.com>,  Srinivasulu Opensrc
+ <sthanneeru.opensrc@micron.com>,  "linux-cxl@vger.kernel.org"
+ <linux-cxl@vger.kernel.org>,  "linux-mm@kvack.org" <linux-mm@kvack.org>,
+  "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+  "dan.j.williams@intel.com" <dan.j.williams@intel.com>,  "mhocko@suse.com"
+ <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,
+  "john@jagalactic.com" <john@jagalactic.com>,  Eishan Mirakhur
+ <emirakhur@micron.com>,  Vinicius Tavares Petrucci
+ <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,  "Johannes
+ Weiner" <hannes@cmpxchg.org>,  Wei Xu <weixugc@google.com>,  Hao Xiang
+ <hao.xiang@bytedance.com>,  "Ho-Ren (Jack) Chuang"
+ <horenchuang@bytedance.com>
+Subject: Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration between memory tiers
+In-Reply-To: <20240109155049.00003f13@Huawei.com> (Jonathan Cameron's message
+	of "Tue, 9 Jan 2024 15:50:49 +0000")
+References: <20231213175329.594-1-sthanneeru.opensrc@micron.com>
+	<87cyv8qcqk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZXyQIJOim1+tE0Qr@memverge.com>
+	<87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZZwrIoP9+ey7rp3C@memverge.com>
+	<87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<20240109155049.00003f13@Huawei.com>
+Date: Wed, 10 Jan 2024 14:06:44 +0800
+Message-ID: <874jfl90y3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
-        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <ilpo.jarvinen@linux.intel.com>, <vigneshr@ti.com>,
-        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH v3] PCI: keystone: Fix race condition when initializing
- PHYs
-To: Bjorn Helgaas <helgaas@kernel.org>
-References: <20240109212326.GA2018284@bhelgaas>
-Content-Language: en-US
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20240109212326.GA2018284@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=ascii
 
-Hello Bjorn,
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> writes:
 
-On 10/01/24 02:53, Bjorn Helgaas wrote:
-> On Wed, Sep 27, 2023 at 09:48:45AM +0530, Siddharth Vadapalli wrote:
->> The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
->> function. The PHY in this case is the Serdes. It is possible that the
->> PCI instance is configured for 2 lane operation across two different
+> On Tue, 09 Jan 2024 11:41:11 +0800
+> "Huang, Ying" <ying.huang@intel.com> wrote:
+>
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> 
+>> > On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote:  
+>> >> >
+>> >> > From  https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Live%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
+>> >> > abstract_distance_offset: override by users to deal with firmware issue.
+>> >> >
+>> >> > say firmware can configure the cxl node into wrong tiers, similar to
+>> >> > that it may also configure all cxl nodes into single memtype, hence
+>> >> > all these nodes can fall into a single wrong tier.
+>> >> > In this case, per node adistance_offset would be good to have ?  
+>> >> 
+>> >> I think that it's better to fix the error firmware if possible.  And
+>> >> these are only theoretical, not practical issues.  Do you have some
+>> >> practical issues?
+>> >> 
+>> >> I understand that users may want to move nodes between memory tiers for
+>> >> different policy choices.  For that, memory_type based adistance_offset
+>> >> should be good.
+>> >>   
+>> >
+>> > There's actually an affirmative case to change memory tiering to allow
+>> > either movement of nodes between tiers, or at least base placement on
+>> > HMAT information. Preferably, membership would be changable to allow
+>> > hotplug/DCD to be managed (there's no guarantee that the memory passed
+>> > through will always be what HMAT says on initial boot).  
+>> 
+>> IIUC, from Jonathan Cameron as below, the performance of memory
+>> shouldn't change even for DCD devices.
+>> 
+>> https://lore.kernel.org/linux-mm/20231103141636.000007e4@Huawei.com/
+>> 
+>> It's possible to change the performance of a NUMA node changed, if we
+>> hot-remove a memory device, then hot-add another different memory
+>> device.  It's hoped that the CDAT changes too.
+>
+> Not supported, but ACPI has _HMA methods to in theory allow changing
+> HMAT values based on firmware notifications...  So we 'could' make
+> it work for HMAT based description.
+>
+> Ultimately my current thinking is we'll end up emulating CXL type3
+> devices (hiding topology complexity) and you can update CDAT but
+> IIRC that is only meant to be for degraded situations - so if you
+> want multiple performance regions, CDAT should describe them form the start.
 
-..
+Thank you very much for input!  So, to support degraded performance, we
+will need to move a NUMA node between memory tiers.  And, per my
+understanding, we should do that in kernel.
 
->>  
->> +	/* Obtain reference(s) to the phy(s) */
->> +	for (i = 0; i < num_lanes; i++)
->> +		phy_pm_runtime_get_sync(ks_pcie->phy[i]);
->> +
->>  	ret = ks_pcie_enable_phy(ks_pcie);
->> +
->> +	/* Release reference(s) to the phy(s) */
->> +	for (i = 0; i < num_lanes; i++)
->> +		phy_pm_runtime_put_sync(ks_pcie->phy[i]);
-> 
-> This looks good and has already been applied, so no immediate action
-> required.
-> 
-> This is the only call to ks_pcie_enable_phy(), and these loops get and
-> put the PM references for the same PHYs initialized in
-> ks_pcie_enable_phy(), so it seems like maybe these loops could be
-> moved *into* ks_pcie_enable_phy().
+>> 
+>> So, all in all, HMAT + CDAT can help us to put the memory device in
+>> appropriate memory tiers.  Now, we have HMAT support in upstream.  We
+>> will working on CDAT support.
+>> 
 
-Does the following look fine?
-===============================================================================
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c
-b/drivers/pci/controller/dwc/pci-keystone.c
-index e02236003b46..6e9f9589d26c 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -962,6 +962,9 @@ static int ks_pcie_enable_phy(struct keystone_pcie *ks_pcie)
-        int num_lanes = ks_pcie->num_lanes;
-
-        for (i = 0; i < num_lanes; i++) {
-+               /* Obtain reference to the phy */
-+               phy_pm_runtime_get_sync(ks_pcie->phy[i]);
-+
-                ret = phy_reset(ks_pcie->phy[i]);
-                if (ret < 0)
-                        goto err_phy;
-@@ -977,12 +980,18 @@ static int ks_pcie_enable_phy(struct keystone_pcie *ks_pcie)
-                }
-        }
-
-+       /* Release reference(s) to the phy(s) */
-+       for (i = 0; i < num_lanes; i++)
-+               phy_pm_runtime_put_sync(ks_pcie->phy[i]);
-+
-        return 0;
-
- err_phy:
-        while (--i >= 0) {
-                phy_power_off(ks_pcie->phy[i]);
-                phy_exit(ks_pcie->phy[i]);
-+               /* Release reference to the phy */
-+               phy_pm_runtime_put_sync(ks_pcie->phy[i]);
-        }
-
-        return ret;
-===============================================================================
-
-> 
-> Is there any similar issue in ks_pcie_disable_phy()?  What if we
-> power-off a PHY that provides a reference clock to other PHYs that are
-> still powered-up?  Will the dependent PHYs still power-off cleanly?
-
-While debugging the issue fixed by this patch, I had bisected and identified
-that prior to the following commit:
-https://github.com/torvalds/linux/commit/e611f8cd8717c8fe7d4229997e6cd029a1465253
-despite the race condition being present, there was no issue. While I am not
-fully certain, I believe that the above observation indicates that prior to the
-aforementioned commit, the race condition did exist, but there was a slightly
-longer delay between the PHY providing the reference clock being powered off
-within "ks_pcie_enable_phy()". That delay was sufficient for the dependent PHY
-to lock its PLL based on the reference clock provided, following which, despite
-the PHY providing the reference clock being powered off and the dependent PHY
-staying powered on, there was no issue observed. Therefore, it appears to me
-that holding reference to the PHY providing the reference clock isn't necessary
-once the dependent PHY's PLL is locked.
-
-..
-
--- 
-Regards,
-Siddharth.
+--
+Best Regards,
+Huang, Ying
 
