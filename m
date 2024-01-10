@@ -1,159 +1,142 @@
-Return-Path: <linux-kernel+bounces-22842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D648482A3DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:24:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46DD782A3D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:23:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7B631C2585D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:23:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E745C1F28358
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F994F899;
-	Wed, 10 Jan 2024 22:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598384F897;
+	Wed, 10 Jan 2024 22:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5wSflxF"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="FqCD0nKH"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55454F601;
-	Wed, 10 Jan 2024 22:23:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e4f692d06so14706805e9.1;
-        Wed, 10 Jan 2024 14:23:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704925417; x=1705530217; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X/QfoypIDMO0K2Ndnvr0HB3tyVcDqG7prMuOY7ywE+0=;
-        b=M5wSflxFA6hBL0MG8HWJrcWPsCO93dZS5Xtw7PUZdF5GmRWF+5PheI4uQYVn/qaA5J
-         ehBtNVjnCIhdUvktSaPYik56l71xhWWB7S/Ndf6TfEjDPZUPnIo4+Jn+hu+KBzk6oH0M
-         lEPD+L8NbVbdGEl5PHu/Ny9vQNMCI9NefDvc+Dfmk+CNV+nBreMZhfUKDQh2+SgwbE4I
-         EbaWbxZVF2q1pqEgPCw0qpAtHSX2s8MOs3Xt+U5l8u8Wdf/VZTZK3Y11UG6wfgW4b0hK
-         2XrJ7oPf1+skl7+cn2pCsIDo65zfSydu4OaXDCtyYd5jNB3ux3dSlOT7FqwR9KK3KtIt
-         sOJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704925417; x=1705530217;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X/QfoypIDMO0K2Ndnvr0HB3tyVcDqG7prMuOY7ywE+0=;
-        b=f22ifJIgQhKIgZjVpBQFKvTKS9OmG273YSazQx8us9FPtkS6sI7tsENJ3ilssVgYzw
-         Tj8x8qxu1xkHz2GwYHcaPaqOlLf55i0lPzvZNA+J+4OWq114EQQy2JdICJ1K8TNqZFDH
-         eg6mV4Gisz0KSOV2X9nMuOpz8/ruiTmvi5BP8hVtMOOHW9/qRyj7ow2t9DraigeKOWT8
-         ihlE5wM/t45HFnfXphYUqjFDOMQY6s3wF4FLWHfA4lg8reu9tglJLYzZguVvM7Gpfyhq
-         GgXHNVMaCYA5gnQ2g5jHtswuzo227IyiHYvp3pduLXVRevN6SWJsLVwpRHa5/cqGp8/K
-         LYfQ==
-X-Gm-Message-State: AOJu0Yzvo2yqDdnIyULV8yKAVyCYVnfpirqiHmbtbqzfWSUFDrbcGmJF
-	b/D2Wcu6t/rAqf64b1tRBYU=
-X-Google-Smtp-Source: AGHT+IEQSzkrGcyzOzDt5HHZwxk+SVLjbEhbbOLOo1a99znKrBnoXfptSw+f92Jwo0GKCKhxJYyVRg==
-X-Received: by 2002:a05:600c:a12:b0:40d:8a05:33a4 with SMTP id z18-20020a05600c0a1200b0040d8a0533a4mr74502wmp.33.1704925416622;
-        Wed, 10 Jan 2024 14:23:36 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:3989:437:3f03:172f])
-        by smtp.gmail.com with ESMTPSA id v21-20020a05600c445500b0040e3bdff98asm3494498wmn.23.2024.01.10.14.23.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 14:23:36 -0800 (PST)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Kees Cook <keescook@chromium.org>
-Cc: dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
-Date: Wed, 10 Jan 2024 22:22:10 +0000
-Message-Id: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 707334CE1D;
+	Wed, 10 Jan 2024 22:22:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704925368;
+	bh=Wo4Mp1A7ns+9PBY4a2oxRYPubeQSBQsRulo2OhT3c7o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FqCD0nKHHxoewLiQS37cjmM2fUDSmra8JEJaTm1gngJhbRpeubH5+hPrYjfPKmMLN
+	 5Tx8+9fTz3THom3tfn5gstSSr58Tv+EgJ+CWi/jWwGhoExIl7x59VgvPlds5lXa76K
+	 BFAdi8jRQq6THFCS9XYh0eHoZ6k4tbA1Go8mIEBql+/CzKiEs80AM2pfon2tb1PeSr
+	 FOEVFcrpPS4wclyP+pjE8u8qZpa2wZ+hud6ZKz2nWWD98TYExqG9VVTYRZ5yspqy6V
+	 oH5MR/be7ol6xO7fsO/kck6dGsXeSYlNBsfWdcvN6so/PnSLiqI5TlyETTbEyaNHMq
+	 aaYamp1KjLEPQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T9MkJ2JsYz4wxx;
+	Thu, 11 Jan 2024 09:22:47 +1100 (AEDT)
+Date: Thu, 11 Jan 2024 09:22:46 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the asm-generic tree with the mm
+ tree
+Message-ID: <20240111092246.10ba37af@canb.auug.org.au>
+In-Reply-To: <20231205090546.7dffe3aa@canb.auug.org.au>
+References: <20231205090546.7dffe3aa@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/.Gd64o/4MFJ7UuxtDOxM92N";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+--Sig_/.Gd64o/4MFJ7UuxtDOxM92N
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-gcc points out that the fix-byte buffer might be too small:
-drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
-drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing between 1 and 10 bytes into a region of size 3 [-Wformat-overflow=]
-  720 |         sprintf(pdev_irqname, "ch%u", index);
-      |                                  ^~
-In function 'usb_dmac_chan_probe',
-    inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
-drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range [0, 4294967294]
-  720 |         sprintf(pdev_irqname, "ch%u", index);
-      |                               ^~~~~~
-drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 13 bytes into a destination of size 5
-  720 |         sprintf(pdev_irqname, "ch%u", index);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hi all,
 
-Maximum number of channels for USB-DMAC as per the driver is 1-99 so use
-u8 instead of unsigned int/int for DMAC channel indexing and make the
-pdev_irqname string long enough to avoid the warning.
+On Tue, 5 Dec 2023 09:05:46 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> Today's linux-next merge of the asm-generic tree got a conflict in:
+>=20
+>   arch/mips/include/asm/traps.h
+>=20
+> between commit:
+>=20
+>   6b281b05cbcc ("mips: add missing declarations for trap handlers")
+>=20
+> from the mm tree and commit:
+>=20
+>   23f8c1823bd4 ("arch: add do_page_fault prototypes")
+>=20
+> from the asm-generic tree.
+>=20
+>=20
+> diff --cc arch/mips/include/asm/traps.h
+> index 2c2b26f1e464,d4d9f8a8fdea..000000000000
+> --- a/arch/mips/include/asm/traps.h
+> +++ b/arch/mips/include/asm/traps.h
+> @@@ -39,28 -39,7 +39,30 @@@ extern char except_vec_nmi[]
+>   	register_nmi_notifier(&fn##_nb);				\
+>   })
+>  =20
+>  +asmlinkage void do_ade(struct pt_regs *regs);
+>  +asmlinkage void do_be(struct pt_regs *regs);
+>  +asmlinkage void do_ov(struct pt_regs *regs);
+>  +asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31);
+>  +asmlinkage void do_bp(struct pt_regs *regs);
+>  +asmlinkage void do_tr(struct pt_regs *regs);
+>  +asmlinkage void do_ri(struct pt_regs *regs);
+>  +asmlinkage void do_cpu(struct pt_regs *regs);
+>  +asmlinkage void do_msa_fpe(struct pt_regs *regs, unsigned int msacsr);
+>  +asmlinkage void do_msa(struct pt_regs *regs);
+>  +asmlinkage void do_mdmx(struct pt_regs *regs);
+>  +asmlinkage void do_watch(struct pt_regs *regs);
+>  +asmlinkage void do_mcheck(struct pt_regs *regs);
+>  +asmlinkage void do_mt(struct pt_regs *regs);
+>  +asmlinkage void do_dsp(struct pt_regs *regs);
+>  +asmlinkage void do_reserved(struct pt_regs *regs);
+>  +asmlinkage void do_ftlb(void);
+>  +asmlinkage void do_gsexc(struct pt_regs *regs, u32 diag1);
+>  +asmlinkage void do_daddi_ov(struct pt_regs *regs);
+>  +
+>  +asmlinkage void cache_parity_error(void);
+>  +asmlinkage void ejtag_exception_handler(struct pt_regs *regs);
+>  +asmlinkage void __noreturn nmi_exception_handler(struct pt_regs *regs);
+> + asmlinkage void do_page_fault(struct pt_regs *regs,
+> + 	unsigned long write, unsigned long address);
+>  =20
+>   #endif /* _ASM_TRAPS_H */
 
-While at it use scnprintf() instead of sprintf() to make the code more
-robust.
+This is now a conflict between the asm-generic tree and Linus' tree.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/dma/sh/usb-dmac.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+--=20
+Cheers,
+Stephen Rothwell
 
-diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
-index a9b4302f6050..f7cd0cad056c 100644
---- a/drivers/dma/sh/usb-dmac.c
-+++ b/drivers/dma/sh/usb-dmac.c
-@@ -706,10 +706,10 @@ static const struct dev_pm_ops usb_dmac_pm = {
- 
- static int usb_dmac_chan_probe(struct usb_dmac *dmac,
- 			       struct usb_dmac_chan *uchan,
--			       unsigned int index)
-+			       u8 index)
- {
- 	struct platform_device *pdev = to_platform_device(dmac->dev);
--	char pdev_irqname[5];
-+	char pdev_irqname[6];
- 	char *irqname;
- 	int ret;
- 
-@@ -717,7 +717,7 @@ static int usb_dmac_chan_probe(struct usb_dmac *dmac,
- 	uchan->iomem = dmac->iomem + USB_DMAC_CHAN_OFFSET(index);
- 
- 	/* Request the channel interrupt. */
--	sprintf(pdev_irqname, "ch%u", index);
-+	scnprintf(pdev_irqname, sizeof(pdev_irqname), "ch%u", index);
- 	uchan->irq = platform_get_irq_byname(pdev, pdev_irqname);
- 	if (uchan->irq < 0)
- 		return -ENODEV;
-@@ -768,8 +768,8 @@ static int usb_dmac_probe(struct platform_device *pdev)
- 	const enum dma_slave_buswidth widths = USB_DMAC_SLAVE_BUSWIDTH;
- 	struct dma_device *engine;
- 	struct usb_dmac *dmac;
--	unsigned int i;
- 	int ret;
-+	u8 i;
- 
- 	dmac = devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
- 	if (!dmac)
-@@ -869,7 +869,7 @@ static void usb_dmac_chan_remove(struct usb_dmac *dmac,
- static void usb_dmac_remove(struct platform_device *pdev)
- {
- 	struct usb_dmac *dmac = platform_get_drvdata(pdev);
--	int i;
-+	u8 i;
- 
- 	for (i = 0; i < dmac->n_channels; ++i)
- 		usb_dmac_chan_remove(dmac, &dmac->channels[i]);
--- 
-2.34.1
+--Sig_/.Gd64o/4MFJ7UuxtDOxM92N
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWfGLYACgkQAVBC80lX
+0Gw8kwf9Hol3IDHWryGa9fEXsiDz7efGVKK5gGjdPFyE13n3/wya4nR8WlyzzpM4
+yTaeN0M8TxcxT61kIwtRge5wtH5q+FP8BObSAaUr3ixh3SnZMogUS56DwTHBMsZw
+1a80oQzQqQ51ARgcGtrOQER68ZkjMsFtWwMk4oaZKgqZoquR+67QgrjaFCTfCraI
+9ek1xlNXq/YEPbWrpeQHnNmoRSffZbvT8v55lgIwsMBC1q6YD+T0MC1FNcbaKbB4
+Qm4jd+4s8BKU79nbmloQ6B+RhwHFOJ55S4OWoANXHBal+GKqvj9QSnArxgN6Kd0s
+mjn6tqk1JKQl/zPrQqtlLB7/jSfNtQ==
+=6QX7
+-----END PGP SIGNATURE-----
+
+--Sig_/.Gd64o/4MFJ7UuxtDOxM92N--
 
