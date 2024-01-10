@@ -1,130 +1,183 @@
-Return-Path: <linux-kernel+bounces-22576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48A5D829FE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:56:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5023A829FE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:55:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECAF128AA57
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:56:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA32CB21E42
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E82A4E1AB;
-	Wed, 10 Jan 2024 17:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D684D587;
+	Wed, 10 Jan 2024 17:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ak/oainG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="unxZMiZb"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4E34E1A9
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704909258; x=1736445258;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=gtvsdoAJOoObIN3HaFddrGHg0dn7/+7yx2T6oMJotJ8=;
-  b=ak/oainGe0J837nRQ2NOmaSwxDyM8lz+5VuLbrdfw1q+g2OODu3zSXJB
-   Uqbl/GYvUyyELy42DkN11driAjOzvKui834Rc1pTqGzQz/J848p+B2Bbe
-   CdwKxhMOI4sVjqeApaIMw/YIkujArrV3UCFCGNQp/DFPEh/FRZA7ma9od
-   2J3WQsdWr2EpTntRAdOid0G37M5IlPQ2lRBXamHcKJoWuewJqwG9EFJiU
-   AlH0KVrpJ+pH9J4SxaXnloa+McUlYrq5PL3s0dqvOULPT8em1HBEj0FQV
-   AemNQ3OoXuZcMWuKEjJdojUsOQNPA9P54ABz99Whgs+ymCC9rd0lk/0Vz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="20087892"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="20087892"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 09:54:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="901222722"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="901222722"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Jan 2024 09:54:12 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNcmH-0007Lu-2x;
-	Wed, 10 Jan 2024 17:54:09 +0000
-Date: Thu, 11 Jan 2024 01:53:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: drivers/iio/adc/axp20x_adc.c:572:26: sparse: sparse: dubious: x & !y
-Message-ID: <202401110159.j4qEZUPp-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71EAE4F5E5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2ccae380df2so48207041fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:54:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704909248; x=1705514048; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=kvMzBse4tVjeut96PfV9zxYWHFB1ufmDQpWnOV79llA=;
+        b=unxZMiZb2pgRv8euAEmORDQSVdzDb2QtlkbcbaF6nOKKzCAziTYTcW1FGiqdEkbX6H
+         uxmMj3h2qYGF+xmBJRuizb1iK8WJie6ghDl2zeR6ZC7MUBMT1upudzR25gLwm9R7BCto
+         sJFOcaOXZPzPiHRQciTZK0NeiSnPcTr3xTc+sb7OAKlD19O9IZaFZZnAz1TYrEHvLTBp
+         h9IF1JQN9sNxLOz4ymBDtrMVCpa6mN3didg85spZwHwiPaeUfmj4VM9IVuuknwsKGyao
+         3u3yhkmNM10VoJRnruPy178kmVJ1137fIQYXozIf3HBdCfcLgiEzG1Zw/jUDq0zPb1Mu
+         6hwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704909248; x=1705514048;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kvMzBse4tVjeut96PfV9zxYWHFB1ufmDQpWnOV79llA=;
+        b=XSh2dFbxCnWqJ/RndoxH/7ht85/8sOhPDEpfrxgPXVp/elt5SHU1cnw5zU7jvXTzDR
+         FbybhwOUhdU5A6ZRNDL8DvMFwbXvWPrMxy9fluvKga7G3ukKnlYWyrMZ/mrdY2kQuxXG
+         mD3NTFms9QASYG0I82DFepjl6wQPw+MwInCijgvjbqy1kn5sN1aEqB4ZaP8E0XpyN7G1
+         hzuyb9e7GMEN2s5FSzhFHM5tvofNwY002a1QVk2vuHUxQffucQvEw3rMVPeBJ1jQolDt
+         Q/LLP/kPwbmWaCbTUrMdkXueWnM4H1B1DaKsaZq3cxcd9N5X3GK4sEFpaRGbwkVlIuhy
+         xkAg==
+X-Gm-Message-State: AOJu0YzpgvGb/7/NtgCecSb0/k7HaVrPRRJFesPyOFPnHcVK9IrFwWYA
+	8dfBOgCWP/ZY5f1CP1IKMPBGKRCunRjM1A==
+X-Google-Smtp-Source: AGHT+IH7xBFmGHV6gLlIklRE0Nyy6+nflA9JejrHxTYnHGO4ji3CJI0/pksx0hF7EjSO9KiVGdXr7g==
+X-Received: by 2002:a05:651c:169c:b0:2cd:48d9:4d96 with SMTP id bd28-20020a05651c169c00b002cd48d94d96mr760690ljb.49.1704909248545;
+        Wed, 10 Jan 2024 09:54:08 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id z17-20020aa7c651000000b0055510f6527dsm2204566edr.26.2024.01.10.09.54.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 09:54:07 -0800 (PST)
+Message-ID: <d56b1e3e-72c4-427f-937d-8c8146bf5b28@linaro.org>
+Date: Wed, 10 Jan 2024 18:54:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
+To: Ninad Palsule <ninad@linux.ibm.com>, Conor Dooley <conor@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au,
+ andrew@codeconstruct.com.au, peterhuewe@gmx.de, jarkko@kernel.org,
+ jgg@ziepe.ca, keescook@chromium.org, tony.luck@intel.com,
+ gpiccoli@igalia.com, johannes.holland@infineon.com, broonie@kernel.org,
+ patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+ peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
+ naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+ festevam@denx.de, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-hardening@vger.kernel.org, geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-8-ninad@linux.ibm.com>
+ <20231212-avid-grill-dbead068fac8@spud>
+ <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
+ <20231212-mouth-choice-40a83caa34ec@spud>
+ <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
+ <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
+ <20240109-pep-coerce-2a86ae88753d@spud>
+ <01974929-dfbf-4989-ba39-369e521827d0@linux.ibm.com>
+ <3d194e84-bf1a-48e4-a376-e5c327c6508d@linaro.org>
+ <2dd37d2b-28da-4e73-9047-61ec5d64bdb5@linux.ibm.com>
+ <edbefdfd-eb59-4d86-ad07-feb066a21082@linaro.org>
+ <385b06e9-1daa-408a-a0ed-7b09d7d539df@linux.ibm.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <385b06e9-1daa-408a-a0ed-7b09d7d539df@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-commit: 8957e5344353e9cd3f6b1e3004942e35449fa0e8 iio: adc: axp20x_adc: Minor code cleanups
-date:   10 months ago
-config: csky-buildonly-randconfig-r006-20230413 (https://download.01.org/0day-ci/archive/20240111/202401110159.j4qEZUPp-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20240111/202401110159.j4qEZUPp-lkp@intel.com/reproduce)
+On 10/01/2024 16:54, Ninad Palsule wrote:
+> Hello Krzysztof,
+> 
+> 
+> On 1/10/24 09:37, Krzysztof Kozlowski wrote:
+>> On 10/01/2024 15:31, Ninad Palsule wrote:
+>>> Hello Krzysztof,
+>>>
+>>>
+>>>
+>>>>>>> I have send it as a separate commit. https://lore.kernel.org/linux-kernel/20231214144954.3833998-1-ninad@linux.ibm.com/
+>>>>>> Why did you do that? It now just adds undocumented compatibles to the
+>>>>>> driver. Please, as Rob requested, work with Lukas on his series to make
+>>>>>> sure that these devices are documented.
+>>>>> I think krzysztof kozlowski suggested to send these patches separately:
+>>>>> https://lore.kernel.org/linux-kernel/1c5ace65-2fd8-4503-b22f-e0f564d1c83f@linaro.org/
+>>>>>
+>>>>> Did I misunderstood it? Do you guys want me to include that commit again?
+>>>> My comment was in DTS thread under specific DTS patch. How did you
+>>>> figure out it applies to driver and bindings? This does not make sense.
+>>> Sorry for the misunderstanding. Where do you want me to add driver
+>>> patch? Before all DTS patches or after all DTS patches?
+>> Does not matter, why do you insist on combining them with DTS? Drivers
+>> and bindings are going together. DTS better separate, although depending
+>> on the case can be together.
+>>
+> I have combined DTS and Driver because DTS was using compatibility 
+> string which is not upstream yet hence I thought it is logical to send 
+> it under same patchset.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401110159.j4qEZUPp-lkp@intel.com/
+Sometimes yes, sometimes not. DTS must not go via driver subsystem, so
+sending it in the same patchset has implications on maintainers applying
+it. Some like it, some don't and you will be nagged for combining them.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/iio/adc/axp20x_adc.c:572:26: sparse: sparse: dubious: x & !y
-   drivers/iio/adc/axp20x_adc.c:577:26: sparse: sparse: dubious: x & !y
-   drivers/iio/adc/axp20x_adc.c: note: in included file (through include/linux/mmzone.h, include/linux/topology.h, include/linux/irq.h, ...):
-   include/linux/page-flags.h:246:46: sparse: sparse: self-comparison always evaluates to false
+Best regards,
+Krzysztof
 
-vim +572 drivers/iio/adc/axp20x_adc.c
-
-   551	
-   552	static int axp20x_write_raw(struct iio_dev *indio_dev,
-   553				    struct iio_chan_spec const *chan, int val, int val2,
-   554				    long mask)
-   555	{
-   556		struct axp20x_adc_iio *info = iio_priv(indio_dev);
-   557		unsigned int regmask, regval;
-   558	
-   559		/*
-   560		 * The AXP20X PMIC allows the user to choose between 0V and 0.7V offsets
-   561		 * for (independently) GPIO0 and GPIO1 when in ADC mode.
-   562		 */
-   563		if (mask != IIO_CHAN_INFO_OFFSET)
-   564			return -EINVAL;
-   565	
-   566		if (val != 0 && val != 700000)
-   567			return -EINVAL;
-   568	
-   569		switch (chan->channel) {
-   570		case AXP20X_GPIO0_V:
-   571			regmask = AXP20X_GPIO10_IN_RANGE_GPIO0;
- > 572			regval = FIELD_PREP(AXP20X_GPIO10_IN_RANGE_GPIO0, !!val);
-   573			break;
-   574	
-   575		case AXP20X_GPIO1_V:
-   576			regmask = AXP20X_GPIO10_IN_RANGE_GPIO1;
-   577			regval = FIELD_PREP(AXP20X_GPIO10_IN_RANGE_GPIO1, !!val);
-   578			break;
-   579	
-   580		default:
-   581			return -EINVAL;
-   582		}
-   583	
-   584		return regmap_update_bits(info->regmap, AXP20X_GPIO10_IN_RANGE, regmask, regval);
-   585	}
-   586	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
