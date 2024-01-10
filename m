@@ -1,128 +1,89 @@
-Return-Path: <linux-kernel+bounces-22585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93C4B82A00A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:05:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C099382A012
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9AFB1C214F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:05:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C21AB220E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880074D135;
-	Wed, 10 Jan 2024 18:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82AB4D13C;
+	Wed, 10 Jan 2024 18:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nf3Hjz3+"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="SfNvsRDe"
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613114D581;
-	Wed, 10 Jan 2024 18:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2a225e9449so475552566b.0;
-        Wed, 10 Jan 2024 10:05:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704909929; x=1705514729; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eSgFVUPD+lhj2fkhdLXiapb7C+A3P82l8Au/eKfRJKw=;
-        b=nf3Hjz3+IHgdlnIZ5natPk6EeddYVcTGuXoDF90at6+DkqJjLqlAeBFm2+0gze7EO5
-         /ITQbZN46XoFIU99sUY+FrU3pUdNxrRl95e52PFnQ6KYEnzbuiJn+P8godhDr/vMLZwB
-         NVE59C+vDdTGJh80gFCKIlcYLYDhO7y3eID75OnG+mgEKCaCXwPDyxn2WH4q1jc7pgD2
-         q5Rev8SaC5DI5PZ/AdmdN1GtQ1baap63XzWuiUKLwmr/DBhGehRjWNaJtW1D2cRi3FK7
-         rkL7RVkIbRdt44ybLPOstHM+gqAyw9A3A+pSS3XwjaX3Dn59ARqvLmuAovhVn9arEfAb
-         /Kvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704909929; x=1705514729;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eSgFVUPD+lhj2fkhdLXiapb7C+A3P82l8Au/eKfRJKw=;
-        b=eLT5MVnkxrL+tgUJroNSAi+CkO5iPzZ2elAiTHJ4Ry8bahEPpf5KAlyH35SFfM/DuF
-         qSHKAr/n3oV442j/WpBvlf3OUmPsO6g6mXL97GvZoYUQaq+GobRmKyknaAufwIMWqA56
-         Jg+Zz6iNzJZfh1ccOY6L/mtplXjmZG55rq6kX9IXrgi6h+cg6x/BB6w5OTsbPy7fgK2I
-         mmOMcWQV81U0zMzVJNqfXdQPdhOqEVu+pboVQ9eldBM4su8icz7g0E9PisA4XzbIUm/r
-         EWLViNt5rLTfV2p0nKZNs5JBgDWvACDRwLBoK9S3pmfsDbGkLDDGeWRLAvLubvk9wzlE
-         yvQQ==
-X-Gm-Message-State: AOJu0Yz6zwvEuShXk59xmonYDXQdkIYkvYuiPopf1Ydxs377xHMBoFt1
-	tqIqDFk91zQ1ambihTJDBfA=
-X-Google-Smtp-Source: AGHT+IGbx7BchYP1qhwI8qDfBQPy+wc1dgtHkZDQ3u4HiZTqJo3HVnAOZSXIaR1m4CUy1jtou3dIyw==
-X-Received: by 2002:a17:906:5fd9:b0:a26:874f:4847 with SMTP id k25-20020a1709065fd900b00a26874f4847mr804587ejv.65.1704909928742;
-        Wed, 10 Jan 2024 10:05:28 -0800 (PST)
-Received: from skbuf ([188.25.255.36])
-        by smtp.gmail.com with ESMTPSA id p17-20020a1709060dd100b00a2689e28445sm2317376eji.106.2024.01.10.10.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 10:05:28 -0800 (PST)
-Date: Wed, 10 Jan 2024 20:05:25 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Richard van Schagen <richard@routerhints.com>,
-	Richard van Schagen <vschagen@cs.com>,
-	Frank Wunderlich <frank-w@public-files.de>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	erkin.bozoglu@xeront.com, mithat.guner@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next 08/30] net: dsa: mt7530: change p{5,6}_interface
- to p{5,6}_configured
-Message-ID: <20240110180525.wwxkkoqam37oqm2f@skbuf>
-References: <ZHy1C7wzqaj5KCmy@shell.armlinux.org.uk>
- <ZHy2jQLesdYFMQtO@shell.armlinux.org.uk>
- <0542e150-5ff4-5f74-361a-1a531d19eb7d@arinc9.com>
- <7c224663-7588-988d-56cb-b9de5b43b504@arinc9.com>
- <20230610175553.hle2josd5s5jfhjo@skbuf>
- <22fba48c-054d-ff0a-ae2c-b38f192b26f7@arinc9.com>
- <9308fa1a-6de3-490b-9aeb-eb207b0432df@arinc9.com>
- <9308fa1a-6de3-490b-9aeb-eb207b0432df@arinc9.com>
- <20240110142721.vuthnnwhmuvghiw4@skbuf>
- <b47311f8-315d-46d9-bd5b-757141708a3f@arinc9.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEC844397
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id NczKrhnvRmbVqNczKr2hj7; Wed, 10 Jan 2024 19:07:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1704910059;
+	bh=h++82EIQan+T88yr5j4kPHz9mviSiCceIg7Aa1y11k4=;
+	h=From:To:Cc:Subject:Date;
+	b=SfNvsRDeR8TdAkQvt4n/OVL4ewdeG2WRAmbqHt+JNPVGd8G225QnXgQtnQQJm2etq
+	 EfrA+UgeNCDbGx5C898BjKYnVinspvdOUiZ/QOY0liqqyTnmAoueh69f0mwj6ELOfi
+	 tdkik6o6b8wYZBHqufFDXeUfSxE7XoT9RpS/742z11yggpxcaAReGMpPZN4jipriVf
+	 OOq6F6vsn50X6PbdJiBq+7l/GQKSGS0Rn6sHNJsGtO3g4BF30UfkMEbvGosVpk+eWv
+	 pXRUNXp3BrsOSpjTejQjk776F1B5yKp5zbHphaf02zqiDFdxbz0PzFHcDlfv0D3k/S
+	 AxQss8G3Jx3Ag==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 10 Jan 2024 19:07:39 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: vkoul@kernel.org,
+	jiaheng.fan@nxp.com,
+	peng.ma@nxp.com,
+	wen.he_1@nxp.com
+Cc: dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] MIPS: Alchemy: Fix an out-of-bound access in db1200_dev_setup()
+Date: Wed, 10 Jan 2024 19:07:36 +0100
+Message-Id: <ed2a1d5f41c5e83ae82fe6a16cfd40c78eeb8093.1704910022.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b47311f8-315d-46d9-bd5b-757141708a3f@arinc9.com>
 
-On Wed, Jan 10, 2024 at 08:15:20PM +0300, Arınç ÜNAL wrote:
-> __builtin_return_address(1) doesn't seem to work. I'm running this on arm64.
+When calling spi_register_board_info(), we should pass the number of
+elements in 'db1200_spi_devs', not 'db1200_i2c_devs'.
 
-I can't tell you why either, I'm sorry. I can just point to the
-documentation, which does specify that "On some machines it may be
-impossible to determine the return address of any function other than
-the current one". If somebody knows what this depends on, feel free to
-interject.
-https://gcc.gnu.org/onlinedocs/gcc/Return-Address.html
+Fixes: 63323ec54a7e ("MIPS: Alchemy: Extended DB1200 board support.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only
+---
+ arch/mips/alchemy/devboards/db1200.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On my NXP LS1028A (also arm64) plus clang-16 compiler, __builtin_return_address()
-does work with multiple nesting levels.
+diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
+index f521874ebb07..67f067706af2 100644
+--- a/arch/mips/alchemy/devboards/db1200.c
++++ b/arch/mips/alchemy/devboards/db1200.c
+@@ -847,7 +847,7 @@ int __init db1200_dev_setup(void)
+ 	i2c_register_board_info(0, db1200_i2c_devs,
+ 				ARRAY_SIZE(db1200_i2c_devs));
+ 	spi_register_board_info(db1200_spi_devs,
+-				ARRAY_SIZE(db1200_i2c_devs));
++				ARRAY_SIZE(db1200_spi_devs));
+ 
+ 	/* SWITCHES:	S6.8 I2C/SPI selector  (OFF=I2C	 ON=SPI)
+ 	 *		S6.7 AC97/I2S selector (OFF=AC97 ON=I2S)
+-- 
+2.34.1
 
-> This is very helpful, thank you very much. This is what I deduct I should
-> do:
-> 
-> First patch: Get rid of cpu_port_config().
-> 
-> Second patch: Collect port link control register operations from
-> port_enable/port_disable and phylink_mac_config to
-> phylink_mac_link_up/phylink_mac_link_down.
-
-I guess. Sounds good.
 
