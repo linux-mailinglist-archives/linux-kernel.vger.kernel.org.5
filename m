@@ -1,217 +1,89 @@
-Return-Path: <linux-kernel+bounces-22539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36FB8829F35
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:30:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CFD829F43
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:35:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A147D1F2955C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:30:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0C381C22AA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADF54D109;
-	Wed, 10 Jan 2024 17:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426144D105;
+	Wed, 10 Jan 2024 17:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EVcJekcy"
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZxlPX0uB"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79FE4CE19;
-	Wed, 10 Jan 2024 17:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4b74a9a9d4cso1297855e0c.1;
-        Wed, 10 Jan 2024 09:30:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0C354CDEA
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2a225e9449so472113466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:34:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704907827; x=1705512627; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MJQgqA7+RGkd/C8XliFqeVj2JUHDnwbsBfW3+WX0Iqw=;
-        b=EVcJekcyRGCgEw6AMfHbhpvrecVtmpyt81U4PR1oai3qZ6IVxKiEUXNVELqNaNgmIu
-         BZkjUG4az6i7sI3TO4DlPpjIFKXkuP3cybVGUQqT7i4fV6jf231vGNtQPDN/ZGQ5k3si
-         UQQQpoRdYxQhEfmVvx44QbDZPU2+jvrnOLXfMCr//CEUyAuoDKack+EQNWtHtze7zwPF
-         CfnotlO2MlSCdyN4f6Y+QBkZbGqjebIrekfMFe6HiPxvnmJxEjuDcpidD1uLiCPhYVLF
-         vNQnMVN/6Y1dfMZLEz2M0yitabkzkzfY6H6ZtPwmzI5JbB43F+fBJIjV7JBkyXS8uhoV
-         hLkA==
+        d=linux-foundation.org; s=google; t=1704908086; x=1705512886; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/49oXKnbPjZF5ZGzYE7U5F6wOvnnpExXGG3oQotPgWM=;
+        b=ZxlPX0uBFLqfUVhPHvPB16d9tub5EwmOi8SEPACcteE6p1eu1yMgdwQxPAWtxuQa12
+         HRsBRDpt28Y2rfx+c6jzjJiNqxVy4zjoz1sHhnk9gtR1VSPwntsdzuOMysWfBbiKkilq
+         h/B3+bzPnZOIBx7i/eBCH7O++fbu72kiKkFBs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704907827; x=1705512627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MJQgqA7+RGkd/C8XliFqeVj2JUHDnwbsBfW3+WX0Iqw=;
-        b=dawCnbEdftFVAiyWMOjcrDOABset9H4BJvhMzwNkL0QeKxLePwY7caKmw+tTV4TdCU
-         JRQOfPsLUG3waUROfXCQH/fFVSCJdervoQmkncRjzixoWoaKBher0C96PMKPyA4mAl3D
-         KcoFXFb9L0lmaBFMz3cIxA1Iwle4kAyNKcJMxRFabKJwEC5dermtVHXQu7Lhdy5y/ttj
-         1jWp3O5GTIJipmnyVfosrYAqIyV4/VLe2mp6zKUGphJrRbqQ+5rH0UnBS4KxYNNf3tqz
-         pasnKXI05Z9w5GAP9YUii1unHOJcBQT7k0XZi7OaW04wCbVWhGx9S/HnQ17w3hgHJ0TW
-         3CIQ==
-X-Gm-Message-State: AOJu0YyBMqNqjtvukjI7/hTWneS1GJjvwOkRUl2tsNYQ2BG0nsy+Jp37
-	PRzUiRbXIXlVLT/1PjIvTPkx+r7vjGf6H00Pmk7NAzYDp3g=
-X-Google-Smtp-Source: AGHT+IFwsjDlGrbGidyU61F0q8HzZj82rD7bqz7vCZ2gVOIcmrsxMB3AARc8xlHG9Y904DKoCa2/ORHgkABYG1i9oLY=
-X-Received: by 2002:a05:6122:278e:b0:4b6:eb5a:ee98 with SMTP id
- el14-20020a056122278e00b004b6eb5aee98mr828898vkb.14.1704907827212; Wed, 10
- Jan 2024 09:30:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704908086; x=1705512886;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/49oXKnbPjZF5ZGzYE7U5F6wOvnnpExXGG3oQotPgWM=;
+        b=oJgZ7atQ+NnUHh2TTKPeLlJ+zZRFJt3UZ0pl8hMOF7zQJH9dkBJr3wspgHkWNXbW/q
+         m3XEhHWGbtVeezXiwfCRtRdndpFIz2KF1CSGogcvEvcwBK2C6QYl7aNeyNJ1ecX8y/vw
+         0T+Q/KK9KsqPpKzmrBd+V6PaMp8QzlnGPcPnl6pUyfvUgqG1LG6bX5/iRu+L9G6qp/X2
+         ZahmGme6ujqITXwjyYPAkbDWvjnI5DT7GsQJ+skM2AdsC8U1guPJNUsL/k53W6BoypxD
+         Yja5UrmZyeKkTdUy3eTPwsbMaEJ33h83E3fp9JuD+STA5tvHZ5rUMjjfl0Uwak9dcBsN
+         K3Rg==
+X-Gm-Message-State: AOJu0YxYpeqwUxUGbjXzAJF9Jp/4+9+M2IAGNEjkEYba4mZSs7xVkV3k
+	WwbfyCv6FRH3MssDHbOl4uj0KsJI/a+bJITNJ9M1mX44fELs3Q==
+X-Google-Smtp-Source: AGHT+IFPVvMqgm2u9yydn3l6Xzw19capN8oFp791bgcs1eG1PQi84RgsvfTxCIy5YIqPm+3qD1Qtcw==
+X-Received: by 2002:a17:906:110d:b0:a28:6bca:9f8b with SMTP id h13-20020a170906110d00b00a286bca9f8bmr869911eja.126.1704908086566;
+        Wed, 10 Jan 2024 09:34:46 -0800 (PST)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id qk9-20020a170906d9c900b00a28da51438asm2269826ejb.157.2024.01.10.09.34.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 09:34:45 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a298accc440so526919566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:34:45 -0800 (PST)
+X-Received: by 2002:a17:907:31ce:b0:a26:98a1:9e89 with SMTP id
+ xf14-20020a17090731ce00b00a2698a19e89mr1099695ejb.41.1704908085231; Wed, 10
+ Jan 2024 09:34:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231201131551.201503-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20231201131551.201503-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdUiaL__+CDaFxRbUFgrz69SYBNfZm4JvY_qQRKLMTCY0w@mail.gmail.com>
- <CA+V-a8tTWf8Kx-Ex=DPsSR2ZWHC29N_pAoEZN1sR5Nqobf139A@mail.gmail.com>
- <CAMuHMdXosvV=EuRtL69r6=UT0SO8Aq-XjWwJMJQpWAhT2z+ffA@mail.gmail.com>
- <CA+V-a8tNeiyvK90urPF9s3JZOav77TRO8xdAEiCmYurrf3-4RA@mail.gmail.com> <CAMuHMdXYEBg7MMJG7tqDib8eaKdvd4Fxo+ZR8K8Vq82DzjSaqg@mail.gmail.com>
-In-Reply-To: <CAMuHMdXYEBg7MMJG7tqDib8eaKdvd4Fxo+ZR8K8Vq82DzjSaqg@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Wed, 10 Jan 2024 17:30:01 +0000
-Message-ID: <CA+V-a8sBWTd4UfSm=mFN96aLL7BvFMTovfaXjdbC4uH=UDR_Fg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] pinctrl: renesas: rzg2l: Include pinmap in
- RZG2L_GPIO_PORT_PACK() macro
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Linus Walleij <linus.walleij@linaro.org>, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <cover.1704481157.git.dsterba@suse.com>
+In-Reply-To: <cover.1704481157.git.dsterba@suse.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 10 Jan 2024 09:34:28 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjju0S87C+pdF=0i0hVky+HeMj1xVFwUdV867YoLheL5Q@mail.gmail.com>
+Message-ID: <CAHk-=wjju0S87C+pdF=0i0hVky+HeMj1xVFwUdV867YoLheL5Q@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs updates for 6.8
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+On Fri, 5 Jan 2024 at 11:04, David Sterba <dsterba@suse.com> wrote:
+>
+> There are possible minor merge conflicts reported by linux-next.
 
-On Thu, Jan 4, 2024 at 4:25=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68k=
-org> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Jan 4, 2024 at 4:55=E2=80=AFPM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
-> > On Tue, Jan 2, 2024 at 10:18=E2=80=AFAM Geert Uytterhoeven <geert@linux=
--m68k.org> wrote:
-> > > On Thu, Dec 21, 2023 at 10:04=E2=80=AFPM Lad, Prabhakar
-> > > <prabhakar.csengg@gmail.com> wrote:
-> > > > On Wed, Dec 6, 2023 at 1:13=E2=80=AFPM Geert Uytterhoeven <geert@li=
-nux-m68k.org> wrote:
-> > > > > On Fri, Dec 1, 2023 at 2:16=E2=80=AFPM Prabhakar <prabhakar.cseng=
-g@gmail.com> wrote:
-> > > > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > > >
-> > > > > > Currently we assume all the port pins are sequential ie always =
-PX_0 to
-> > > > > > PX_n (n=3D1..7) exist, but on RZ/Five SoC we have additional pi=
-ns P19_1 to
-> > > > > > P28_5 which have holes in them, for example only one pin on por=
-t19 is
-> > > > > > available and that is P19_1 and not P19_0. So to handle such ca=
-ses
-> > > > > > include pinmap for each port which would indicate the pin avail=
-ability
-> > > > > > on each port. As the pincount can be calculated based on pinmap=
- drop this
-> > > > > > from RZG2L_GPIO_PORT_PACK() macro and update RZG2L_GPIO_PORT_GE=
-T_PINCNT()
-> > > > > > macro.
-> > > > > >
-> > > > > > Previously we had a max of 7 pins on each port but on RZ/Five P=
-ort-20
-> > > > > > has 8 pins, so move the single pin configuration to BIT(63).
-> > > > > >
-> > > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renes=
-as.com>
-> > > > >
-> > > > > Thanks for your patch!
-> > > > >
-> > > > > > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > > > > > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > > > > > @@ -80,15 +80,17 @@
-> > > > > >   * n indicates number of pins in the port, a is the register i=
-ndex
-> > > > > >   * and f is pin configuration capabilities supported.
-> > > > > >   */
-> > > > > > -#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) << 28) | ((a) << =
-20) | (f))
-> > > > > > -#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (((x) & GENMASK(30, 28)=
-) >> 28)
-> > > > > > +#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) > 0 ? ((u64)(GENM=
-ASK_ULL(((n) - 1 + 28), 28))) : 0) | \
-> > > > >
-> > > > > The mask creation can be simplified to
-> > > > >
-> > > > >     ((1ULL << (n)) - 1) << 28
-> > > > >
-> > > > OK.
-> > > >
-> > > > > but see below...
-> > > > >
-> > > > > > +                                        ((a) << 20) | (f))
-> > > > > > +#define RZG2L_GPIO_PORT_GET_PINMAP(x)  (((x) & GENMASK_ULL(35,=
- 28)) >> 28)
-> > > > > > +#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (hweight8(RZG2L_GPIO_PO=
-RT_GET_PINMAP((x))))
-> > > > >
-> > > > > I think we've reached the point where it would be easier for the
-> > > > > casual reviewer to #define PIN_CFG_*_MASK for all fields, and use
-> > > > > FIELD_{PREP,GET}() to pack resp. extract values.  That would also
-> > > > > make it more obvious which bits are in use, and how many bits are
-> > > > > still available for future use.
->
-> > To clarify, you mean to define PIN_CFG_*_MASK for all
-> > PIN_CFG_IOLH_A..PIN_CFG_OEN macros? I ask because we dont extract the
-> > respective CFG flags in the code.
->
-> The PIN_CFG_IOLH_A..PIN_CFG_OEN macros are single-bit definitions.
-> I mean to #define PIN_CFG_*_MASK macros for all multi-bit fields, current=
-ly
-> accessed using open-coded GENMASK().
->
-> You already tried:
->
->     #define RZG2L_GPIO_PORT_PIN_CNT_MASK    GENMASK(31, 28)
->     #define RZG2L_GPIO_PORT_PIN_REG_MASK    GENMASK(27, 20)
->     #define RZG2L_GPIO_PORT_PIN_CFG_MASK    GENMASK(19, 0)
->
-> As they actually share the PIN_CFG_* bit space, I'd call them:
->
->     #define PIN_CFG_PIN_CNT_MASK    GENMASK(31, 28)
->     #define PIN_CFG_PIN_REG_MASK    GENMASK(27, 20)
->     #define PIN_CFG_MASK    GENMASK(19, 0)
->
-> Also, you already have:
->
->     #define MUX_PIN_ID_MASK         GENMASK(15, 0)
->     #define MUX_FUNC_MASK           GENMASK(31, 16)
->     #define MUX_FUNC_OFFS           16
->
-> But all of
->
->     #define MUX_FUNC(pinconf)       (((pinconf) & MUX_FUNC_MASK) >>
-> MUX_FUNC_OFFS)
->
->     pins[i] =3D value & MUX_PIN_ID_MASK;
->
-> can use FIELD_GET(), removing the need for MUX_FUNC_OFFS.
->
-> Also:
->
->     u8 pincount =3D RZG2L_GPIO_PORT_GET_PINCNT(cfg);
->
-> can become
->
->     u8 pincount =3D FIELD_GET(PIN_CFG_PIN_CNT_MASK, cfg);
->
-> Same for all the other macros using GENMASK().
->
-> I hope this makes it more clear what I had in mind?
-> Thanks!
->
-Thanks for the detailed explanation. I'll get that sorted soon.
+Bah. The block open mode changes were ugly. I did my best to make the
+end result legible.
 
-Cheers,
-Prabhakar
+You may want to note the btrfs_open_mode() helper I added and possibly
+do it differently.
+
+                    Linus
 
