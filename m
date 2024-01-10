@@ -1,155 +1,132 @@
-Return-Path: <linux-kernel+bounces-21804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF015829488
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:53:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A0082948A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A41B21C25B67
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:53:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 211AC1F280B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137B33C47B;
-	Wed, 10 Jan 2024 07:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723543C46A;
+	Wed, 10 Jan 2024 07:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gPEoc4Nm"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XHvz8zwR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1273C3E460;
-	Wed, 10 Jan 2024 07:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6db0c49e93eso1286106b3a.1;
-        Tue, 09 Jan 2024 23:53:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704873211; x=1705478011; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DlVkfwSR0KhVQsqSLqhfZx1Bsn/0daw+ebFcj5qo+4s=;
-        b=gPEoc4NmfrP5CJJDz4T0d0LEDfhfQiBtGMmTQ2Uv9kUEbzE2TO3cYAhclCbBTIe8YL
-         wN/VPJoHz0NQ6RtElvF7ajaIpFe/NLbvs8/xi2/0CZyIsvn9LCqxsTYfhsrmlnjWthwf
-         gmkqPozUxl6FOmq597M9AW/Be7/w+iTQzCzYYMfyyHWwS1KSNd5FMom5L75kccdmAkiX
-         qgL1pOgQUTib358g1jDKFd81lTYsvTI548uwQF1b9ZnKCMSFpTYm0opwo6prMTFFysUJ
-         PrxVPq3uoETu9a1KNQTs+H084vFa+h9nZpVxfkSkuwKzF9FsfoYuiNo1MVxVwOsvj7JN
-         l9cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704873211; x=1705478011;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DlVkfwSR0KhVQsqSLqhfZx1Bsn/0daw+ebFcj5qo+4s=;
-        b=VcItm9MmmEBYAPtsEGT+GRiYLasHaT7cUSe6feizm3j1EW1zMQQejBHHidTaCvY32C
-         vq/M6atc/b9vH43/qOsB992xOl7TdID9LSPxsV+uDos8NcmSgxrOTh+KaH5fxSDW/8Dd
-         EhCJXKXXmVHHA0R71O4+NDgsR/qmN1PdVhVDxLAn5WEuNM4UhayRvDKxvaaPh7A/F2eY
-         UgxVxlqEfMAwazU0nuBn7hfmUA7HuplZDJXwaFB4PTgPZqPRGAClAdD2uEn9qyqjWo6W
-         njrZvxk9bJXLAhFslMsIHXmM0anj8Ai1GMVZLn7Ksd3npkxfPGeSGB3Y522sIPYXVYya
-         IsEw==
-X-Gm-Message-State: AOJu0YwhiM8p0BjzACGu9PtUi4yKXjrBRZsZQ88sOh6VZ7QZJC6xtIfB
-	fK2fREbPfG46BVsstD4YEMA=
-X-Google-Smtp-Source: AGHT+IGef+AIUYFPUgDh2F7pkq6gUHNd12WepVFH29+8g1TMJjZTSpFBb+q96we/xyvmH44Lwl3g1g==
-X-Received: by 2002:a05:6a20:7883:b0:199:76d8:402d with SMTP id d3-20020a056a20788300b0019976d8402dmr508563pzg.111.1704873211316;
-        Tue, 09 Jan 2024 23:53:31 -0800 (PST)
-Received: from localhost ([98.97.113.214])
-        by smtp.gmail.com with ESMTPSA id f12-20020a17090274cc00b001d4301325a6sm2974264plt.247.2024.01.09.23.53.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 23:53:29 -0800 (PST)
-Date: Tue, 09 Jan 2024 23:53:28 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: John Fastabend <john.fastabend@gmail.com>, 
- Edward Adam Davis <eadavis@qq.com>, 
- syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
-Cc: andrii@kernel.org, 
- ast@kernel.org, 
- borisp@nvidia.com, 
- bpf@vger.kernel.org, 
- daniel@iogearbox.net, 
- davem@davemloft.net, 
- dhowells@redhat.com, 
- edumazet@google.com, 
- jakub@cloudflare.com, 
- john.fastabend@gmail.com, 
- kuba@kernel.org, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- pabeni@redhat.com, 
- syzkaller-bugs@googlegroups.com
-Message-ID: <659e4cf817b78_60d7a208c3@john.notmuch>
-In-Reply-To: <659dd53f1652b_2796120896@john.notmuch>
-References: <000000000000aa2f41060e363b2b@google.com>
- <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
- <659dd53f1652b_2796120896@john.notmuch>
-Subject: RE: [PATCH] tls: fix WARNING in __sk_msg_free
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D58C364B4;
+	Wed, 10 Jan 2024 07:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704873324; x=1736409324;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=y6Mii2fEJq+LAezalOLGEKnkrctOM7rZFhPVgIL+OZ8=;
+  b=XHvz8zwRrr6DFExfWFPovc/2CO26dL0riCneradj15QPSiGfDddDehiq
+   iZ9h47B4HR0ed9xFXdK6OM5kGiHLzEoJ3Ns2MnXtWaP3cUpWd88Bkribg
+   /uax6uHdm1CfhzzC4t+wKMdTz9xtZQ5o1PLCHDC0SdIeikvReHibMVCtc
+   i/89261ML+RzpO9mXF3ZNRFelPPC/7rXcnl98sPyC9HLkXad+Ebk9PMW0
+   bG1AtmUGBQUP4A6Qfpm/mgt49n079oIWKH4022AAxgjbArHOhqKU0mS41
+   JH6Hqdl6ZX2xBujmbAqu4qo128OStIdkikafaqKSACRM4NVXELYJjrjtz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="398130262"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="398130262"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 23:55:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="901054996"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="901054996"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by fmsmga002.fm.intel.com with ESMTP; 09 Jan 2024 23:55:21 -0800
+Date: Wed, 10 Jan 2024 15:55:20 +0800
+From: Yuan Yao <yuan.yao@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Like Xu <like.xu.linux@gmail.com>
+Subject: Re: [PATCH 2/4] KVM: x86: Rely solely on preempted_in_kernel flag
+ for directed yield
+Message-ID: <20240110075520.psahkt47hoqodqqf@yy-desk-7060>
+References: <20240110003938.490206-1-seanjc@google.com>
+ <20240110003938.490206-3-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110003938.490206-3-seanjc@google.com>
+User-Agent: NeoMutt/20171215
 
-John Fastabend wrote:
-> Edward Adam Davis wrote:
-> > Syzbot constructed 32 scatterlists, and the data members in struct sk_msg_sg 
-> > can only store a maximum of MAX_MSG_FRAGS scatterlists.
-> > However, the value of MAX_MSG_FRAGS=CONFIG_MAX_SKB_FRAG is less than 32, which
-> > leads to the warning reported here.
-> > 
-> > Prevent similar issues from occurring by checking whether sg.end is greater 
-> > than MAX_MSG_FRAGS.
-> > 
-> > Reported-and-tested-by: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
-> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> > ---
-> >  net/tls/tls_sw.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> > index e37b4d2e2acd..68dbe821f61d 100644
-> > --- a/net/tls/tls_sw.c
-> > +++ b/net/tls/tls_sw.c
-> > @@ -1016,6 +1016,8 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
-> >  
-> >  		msg_pl = &rec->msg_plaintext;
-> >  		msg_en = &rec->msg_encrypted;
-> > +		if (msg_pl->sg.end >= MAX_MSG_FRAGS)
-> > +			return -EINVAL;
-> >  
-> >  		orig_size = msg_pl->sg.size;
-> >  		full_record = false;
-> > -- 
-> > 2.43.0
-> > 
-> 
-> I'll test this in a bit, but I suspect this error is because even
-> if the msg_pl is full (the sg.end == MAX_MSG_FRAGS) the code is
-> missing a full_record=true set to force the loop to do the send
-> and abort. My opinion is we should never iterated the loop if the
-> msg_pl was full.
-> 
-> I think something like this is actually needed.
-> 
-> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> index e37b4d2e2acd..9cfa6f8d51e3 100644
-> --- a/net/tls/tls_sw.c
-> +++ b/net/tls/tls_sw.c
-> @@ -1052,8 +1052,10 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
->                         if (ret < 0)
->                                 goto send_end;
->                         tls_ctx->pending_open_record_frags = true;
-> -                       if (full_record || eor || sk_msg_full(msg_pl))
-> +                       if (full_record || eor || sk_msg_full(msg_pl)) {
-> +                               full_record = true;
->                                 goto copied;
-> +                       }
->                         continue;
->                 }
+On Tue, Jan 09, 2024 at 04:39:36PM -0800, Sean Christopherson wrote:
+> Snapshot preempted_in_kernel using kvm_arch_vcpu_in_kernel() so that the
+> flag is "accurate" (or rather, consistent and deterministic within KVM)
+> for guest with protected state, and explicitly use preempted_in_kernel
+> when checking if a vCPU was preempted in kernel mode instead of bouncing
+> through kvm_arch_vcpu_in_kernel().
+>
+> Drop the gnarly logic in kvm_arch_vcpu_in_kernel() that redirects to
+> preempted_in_kernel if the target vCPU is not the "running", i.e. loaded,
+> vCPU, as the only reason that code existed was for the directed yield case
+> where KVM wants to check the CPL of a vCPU that may or may not be loaded
+> on the current pCPU.
+>
+> Cc: Like Xu <like.xu.linux@gmail.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/x86.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 415509918c7f..77494f9c8d49 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5062,8 +5062,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>  	int idx;
+>
+>  	if (vcpu->preempted) {
+> -		if (!vcpu->arch.guest_state_protected)
+> -			vcpu->arch.preempted_in_kernel = !static_call(kvm_x86_get_cpl)(vcpu);
+> +		vcpu->arch.preempted_in_kernel = kvm_arch_vcpu_in_kernel(vcpu);
+>
+>  		/*
+>  		 * Take the srcu lock as memslots will be accessed to check the gfn
+> @@ -13093,7 +13092,7 @@ bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
+>
+>  bool kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
+>  {
+> -	return kvm_arch_vcpu_in_kernel(vcpu);
+> +	return vcpu->arch.preempted_in_kernel;
+>  }
+>
+>  bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
+> @@ -13116,9 +13115,6 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+>  	if (vcpu->arch.guest_state_protected)
+>  		return true;
+>
+> -	if (vcpu != kvm_get_running_vcpu())
+> -		return vcpu->arch.preempted_in_kernel;
+> -
 
-Actually, it needs a bit more than above. That will fix the warning,
-but it returns an error on when it should flush the full_record in
-some cases. I'll send a fix shortly.
+Now this function accepts vcpu parameter but can only get
+information from "current" vcpu loaded on hardware for VMX.
+I'm not sure whether need "WARN_ON(vcpu != kvm_get_running_vcpu())"
+here to guard it. i.e. kvm_guest_state() still
+uses this function (although it did chekcing before).
+
+>  	return static_call(kvm_x86_get_cpl)(vcpu) == 0;
+>  }
+>
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
+>
 
