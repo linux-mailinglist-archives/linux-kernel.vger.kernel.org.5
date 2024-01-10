@@ -1,82 +1,102 @@
-Return-Path: <linux-kernel+bounces-21711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE7882931C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 683F0829328
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C9AF28929C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:52:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17D672892D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3624AD51A;
-	Wed, 10 Jan 2024 04:52:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667A4D51E;
+	Wed, 10 Jan 2024 05:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YDDeqim8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB016FB8
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 04:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7baae0a27efso213328439f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 20:52:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704862324; x=1705467124;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x936MVynPSqzvoZrst1AzDJ72ez9E+22/8OyqN1nYYA=;
-        b=rtKU3R6+JmujXSxpj6bEYTf72v9b3Embie+TF76ywITYg9ojKZwa487/z480IOskFm
-         S/kTnXx3HYqmv7GKHll56NiMFQXi5aVy4PRmoIzwrggJNZDDFrP3Gun2kf2I55tMHrvv
-         VBqNuWwTOgsnkSTcZYZCfSFDnT0AenDFwJgSvrsj0UzJiUvteM3bXphYIA7Fek2sUdpK
-         /vKWkhptexJRR2LXlT9VXCRhY+NzyVnqrofQfWkSKJbrZ6dI/hp5SaEwSs2B0PPDgQPh
-         +Nd5KZQymdVsa7342UTDfmaiWFtCCExV1NOTXWGMLXQwnLBAe8/CM1xLpmIvMkRgc7yk
-         WS0w==
-X-Gm-Message-State: AOJu0Yw3pmkQh6+Yd14V6wPCQvE7E2b122Ca68P55KC60V3Ii2IGH7mC
-	Ikq8LIBe3WTPC8yMDNAJd6XBL5OQhc4ldZNU4crAiFjd1Iod
-X-Google-Smtp-Source: AGHT+IHYbFb/OECz75DeG4E5fovu1SDI9wSD2or30Ds/3l2B+ns/ARh+06LhIoCTpkxZIZK4NuTofbUw5IWphq42AEDONOTC8Pbm
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465FDD512;
+	Wed, 10 Jan 2024 05:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704863074; x=1736399074;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=k64/f9r7Qp36i1XX1i9jcMtrmGXtcJyhgHq6uyIFl64=;
+  b=YDDeqim8fSjoE4zYkzLIvVa6FjWGHOs9v7u6o3goFL/oiEY+QLiTCpqx
+   iJRFjdMGAMJPZjpBU1wqTifvhewGw31VgIGNtMWshdnilxmLcQ7ASaVrs
+   Wt5ZSOF5jYvYKsgXCVzldNC4ywvJ5XaxsPOFiO4XBtTxm5faUm9eIBuPk
+   0zxUCNn2k4Ozyk935r/FHB4DRb0Rx7//R4qAAOVFXVI6vkTA7ahsCMKYF
+   juk+nVCu8oDx5lBXLMLCEUVvFmlNl+ga9MAMR0BtTuGAzRgpIvJrgd0Yb
+   shvRdxj5k4TLEMyhm5MvOLnqKgLeeCDvVkp7EIbqcmAZm68PGHDs1mcpG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="429596918"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="429596918"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 21:04:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="16511841"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa002.fm.intel.com with ESMTP; 09 Jan 2024 21:04:30 -0800
+Message-ID: <a2e507b3-a018-44d8-9e92-459670505bcd@linux.intel.com>
+Date: Wed, 10 Jan 2024 12:59:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1926:b0:46e:4815:3ed3 with SMTP id
- p38-20020a056638192600b0046e48153ed3mr3888jal.2.1704862323550; Tue, 09 Jan
- 2024 20:52:03 -0800 (PST)
-Date: Tue, 09 Jan 2024 20:52:03 -0800
-In-Reply-To: <0000000000008023b805ff38a0af@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002fb443060e903163@google.com>
-Subject: Re: [syzbot] [reiserfs?] general protection fault in
- __hrtimer_run_queues (3)
-From: syzbot <syzbot+f13a9546e229c1a6e378@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v10 1/5] iommu/vt-d: add pci_dev parameter to
+ qi_submit_sync and refactor callers
+Content-Language: en-US
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, kevin.tian@intel.com,
+ bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
+ robin.murphy@arm.com, lukas@wunner.de
+References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
+ <20231228170206.720675-2-haifeng.zhao@linux.intel.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231228170206.720675-2-haifeng.zhao@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
+On 12/29/23 1:02 AM, Ethan Zhao wrote:
+> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Please don't leave the message body empty. You should describe why do
+you want to add the change in this patch.
 
-    fs: Block writes to mounted block devices
+> ---
+>   drivers/iommu/intel/dmar.c          | 45 +++++++++++++++++++++--------
+>   drivers/iommu/intel/iommu.c         | 26 +++++------------
+>   drivers/iommu/intel/iommu.h         | 17 +++++------
+>   drivers/iommu/intel/irq_remapping.c |  2 +-
+>   drivers/iommu/intel/pasid.c         | 11 ++-----
+>   drivers/iommu/intel/svm.c           | 13 ++++-----
+>   6 files changed, 58 insertions(+), 56 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index 23cb80d62a9a..3d661f2b7946 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -1344,7 +1344,7 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>    * can be part of the submission but it will not be polled for completion.
+>    */
+>   int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+> -		   unsigned int count, unsigned long options)
+> +		   unsigned int count, unsigned long options, struct pci_dev *pdev)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1730f285e80000
-start commit:   e8f75c0270d9 Merge tag 'x86_sgx_for_v6.5' of git://git.ker..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a98ec7f738e43bd4
-dashboard link: https://syzkaller.appspot.com/bug?extid=f13a9546e229c1a6e378
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1227af7b280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13803daf280000
+How about adding a bit in options parameter to tell whether the @pdev is
+valid?
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Best regards,
+baolu
 
