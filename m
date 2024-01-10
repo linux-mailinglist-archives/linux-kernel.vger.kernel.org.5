@@ -1,115 +1,94 @@
-Return-Path: <linux-kernel+bounces-22645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC0682A0E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:12:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 784CB82A0E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CB401F22BE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:12:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26D2A286550
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055474E1C5;
-	Wed, 10 Jan 2024 19:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069F74E1C6;
+	Wed, 10 Jan 2024 19:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="TpQ+dFrB"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f1oRklxr"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF614E1BA;
-	Wed, 10 Jan 2024 19:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=x5OoD7LDB+eOxQrGKVf5GoRlWflkCg8BImPGaKiaic0=; b=TpQ+dFrBOHWSt37kDizuvoIi50
-	IE+lWrloFW8FskmBT1w1NPZk6E7VB8tgm9YfW4eo5biZ3xvv8uNPKCnYH2D9aTxVON9pjYRre+Bay
-	03AClvXGl3sh4lYNaWy0TXaLTdzpNgHEwnarOKMEr7bo5kBt3YLkAwfNZq3AeRDtQbbk=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:48230 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rNdzP-0008DC-Br; Wed, 10 Jan 2024 14:11:47 -0500
-Date: Wed, 10 Jan 2024 14:11:46 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Rengarajan S <rengarajan.s@microchip.com>, Kumaravel Thiagarajan
- <kumaravel.thiagarajan@microchip.com>, Tharun Kumar P
- <tharunkumar.pasumarthi@microchip.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>,
- linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Message-Id: <20240110141146.6422e7517fe7e07a833b66df@hugovil.com>
-In-Reply-To: <59f8aa13-3f88-4174-8e20-aa4467e7adac@moroto.mountain>
-References: <59f8aa13-3f88-4174-8e20-aa4467e7adac@moroto.mountain>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC75A4D5AF;
+	Wed, 10 Jan 2024 19:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-555f581aed9so5297990a12.3;
+        Wed, 10 Jan 2024 11:15:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704914130; x=1705518930; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=41lpfdueieQfrzn2GM7CXNzHqpSPhXGHpp4P6ZTjuX8=;
+        b=f1oRklxrbPhQbQvcDxp8DzY81YJIrzf2Ym3OzsXbUL5OqkeVRvK3q7QpppiDkdqyA/
+         +RHXXBvT4WCDRn/zSUULRYEDthNv6/+owOC8LFKCtI9q9Fs2TGatJeYfpz6hCho3Oq8q
+         NZI27o0ItbVXIu4EBlJ69O2StITBpTn6nCikcuriQUJpLbJsgsPkWqPqeOg/PggW1J9J
+         dZfGd2T1a2Xm9WQt6/N9OZFgfXgcLV0Ch2x8zADfFbBwxvptuhNNH7BiuP3lNQgZxmQ7
+         vODH41K5nBdCQS5RbatpZTaGODshz0JkZP2sHQ0J5wThgXr5F9aOF2VoPRWvRr5xWwo4
+         XQ+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704914130; x=1705518930;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=41lpfdueieQfrzn2GM7CXNzHqpSPhXGHpp4P6ZTjuX8=;
+        b=qU7MHx8Wyfy0pGB5PqvQLmNucW8mZf81JjJmQHc+7qypWOkMbYJSCorXyZUj7QZSEs
+         g+LeCjOjfGKyV3ZiAOAezPRnzH37vj+kqiJ+TEU9zwmySBzk6RPXY2yTpM07wYvwoo6o
+         PnsScc5cbDaq8cZQbWYHW3nFkcAkJN2CqFZBoaxK7mdNSCzE1p5fWyzkTeeL4blO6om5
+         tdXDkDUobn8Za1/eHWDoAvHlv5HPThkdl+0pa7dPofIAbG+2LSytSwBIiqoi6nEX9VrO
+         BoPMUQwieGF/89DhuLVnUGUrcdqwrXh09bwh5LYdyKdN9pKo4k94406oLQtxhSAWfFN7
+         cqAA==
+X-Gm-Message-State: AOJu0Yxz4Un9hDjs48tOaBw3OuZccwFpw26RmWP0tFZgMpZqmxC0zmM+
+	jqu2uHmeTz0sTx0KodqxA9J2coeyEpHw8NSOZfu6yFJS
+X-Google-Smtp-Source: AGHT+IF8vkAzBkZAIeJbSxx3hkH1JlBWY4JjumpzHswcjiU5wNRgaci7YEyu7xhqgmIH135JpP+ZoNjnwAvi3TXI5oA=
+X-Received: by 2002:a50:c008:0:b0:558:5fe0:213c with SMTP id
+ r8-20020a50c008000000b005585fe0213cmr753042edb.28.1704914130053; Wed, 10 Jan
+ 2024 11:15:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -3.1 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH] serial: 8250_pci1xxxx: off by one in
- pci1xxxx_process_read_data()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+References: <CAEf4BzYMx_TbBY4yeK_iJqq65XHY5V3yQQ1PzfOh6OMQwyz5cA@mail.gmail.com>
+ <20240110091509.1155824-1-nogikh@google.com>
+In-Reply-To: <20240110091509.1155824-1-nogikh@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 10 Jan 2024 11:15:18 -0800
+Message-ID: <CAEf4BzaZOJumas-UYgoU96PS8kfJ0xsgYFfyhEmWBcpSsP7zdQ@mail.gmail.com>
+Subject: Re: Re: [syzbot] [bpf?] WARNING in __mark_chain_precision (3)
+To: Aleksandr Nogikh <nogikh@google.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 10 Jan 2024 21:52:28 +0300
-Dan Carpenter <dan.carpenter@linaro.org> wrote:
+On Wed, Jan 10, 2024 at 1:15=E2=80=AFAM Aleksandr Nogikh <nogikh@google.com=
+> wrote:
+>
+>
+> > #syz fix: 482d548d bpf: handle fake register spill to stack with
+> > BPF_ST_MEM instruction
+>
+> It needs to stay on one line, otherwise only part of the title
+> is considered.
 
-> These > comparisons should be >= to prevent writing one element beyond
-> the end of the rx_buff[] array.  The buffer has RX_BUF_SIZE[] elements.
+Gmail is not very cooperative here, unfortunately. Thanks!
 
-Hi,
-your commit title message is very confusing and doesn't hint that this
-is a bug fix (or a potential bug fix)...
-
-Hugo Villeneuve
-
-
-> 
-> Fixes: aba8290f368d ("8250: microchip: pci1xxxx: Add Burst mode reception support in uart driver for writing into FIFO")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
-> From static analysis, not testing.
-> 
->  drivers/tty/serial/8250/8250_pci1xxxx.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci1xxxx.c b/drivers/tty/serial/8250/8250_pci1xxxx.c
-> index 558c4c7f3104..cd258922bd78 100644
-> --- a/drivers/tty/serial/8250/8250_pci1xxxx.c
-> +++ b/drivers/tty/serial/8250/8250_pci1xxxx.c
-> @@ -302,7 +302,7 @@ static void pci1xxxx_process_read_data(struct uart_port *port,
->  	 * to read, the data is received one byte at a time.
->  	 */
->  	while (valid_burst_count--) {
-> -		if (*buff_index > (RX_BUF_SIZE - UART_BURST_SIZE))
-> +		if (*buff_index >= (RX_BUF_SIZE - UART_BURST_SIZE))
->  			break;
->  		burst_buf = (u32 *)&rx_buff[*buff_index];
->  		*burst_buf = readl(port->membase + UART_RX_BURST_FIFO);
-> @@ -311,7 +311,7 @@ static void pci1xxxx_process_read_data(struct uart_port *port,
->  	}
->  
->  	while (*valid_byte_count) {
-> -		if (*buff_index > RX_BUF_SIZE)
-> +		if (*buff_index >= RX_BUF_SIZE)
->  			break;
->  		rx_buff[*buff_index] = readb(port->membase +
->  					     UART_RX_BYTE_FIFO);
-> -- 
-> 2.43.0
-> 
-> 
+>
+> #syz fix: bpf: handle fake register spill to stack with BPF_ST_MEM instru=
+ction
 
