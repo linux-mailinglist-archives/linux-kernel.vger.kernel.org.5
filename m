@@ -1,163 +1,101 @@
-Return-Path: <linux-kernel+bounces-22043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5C982985A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:10:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F346D829860
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89A31F20F5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:10:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76CC4B25B62
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B89346BA6;
-	Wed, 10 Jan 2024 11:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440B646B81;
+	Wed, 10 Jan 2024 11:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="D/6yxlr8"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UjvX9ZLf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B3C47762;
-	Wed, 10 Jan 2024 11:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704885005;
-	bh=opfjRhVHCA5uWTnxeh45vbr3mHfSSMHaqalR6SccCOI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=D/6yxlr8V5vU3xvkd9oO0PJqihGbovndB0pXsrcsxWe5fhIBvnSnP+ktzFPVlUeWE
-	 RDnmBNBCDYlq2MKxs++cBLGHfptUKdCLbwP5rabk2dDDmOx77m/2kUF+2t0dglKpP2
-	 BI8Lb6IKkBeO6U+TwjbEnTqjSC3T0bGu4R5L5GILqJaier/HyaRUfv/ZhtIKSPQsY4
-	 Z4zr6ZD2ijVcJN6HJRHzy0CYN6ecNiFZScA6ajXxzRxNutgl6HiB2HEZTdaizxnnfT
-	 EW2znBdh5ogyKNLt/mnWI9jezRRurlUFdrez1Yk1DIccZuArMslJNRmY3cgrfyxfxq
-	 ChSxIxyqPy/tw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 40B6A3780C21;
-	Wed, 10 Jan 2024 11:10:05 +0000 (UTC)
-Message-ID: <679f35f9-3265-4b2f-8de5-df9460881de6@collabora.com>
-Date: Wed, 10 Jan 2024 12:10:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86B947A73
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704885060; x=1736421060;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=X5QEjl0DJ9jDmcuH+SDJ2ODSt3udQokya7z4e6MJXk8=;
+  b=UjvX9ZLfMhvPJAiuxztgs2TdjangfA2j3mnmFlrjTQEM5wZrPnyBJVVl
+   9eraK4/KKrMYY9bLfIHQ1E7d+1wWD7pfdSpYOEFPRg4b4g7C35i5umc3b
+   gZ9Uq3LefC6hEemp27jEEZurUD0qzj374On8FdR4DKUAXbDeypbuqAaMi
+   NNudo58u5+ApBuE0P9dAVAtcrGoq+Cq8bgNM55BTo5E1r1sCwZhq75N6L
+   IN+mrZ1twrj5nWuj5l3l1F+eJtKxRCc+edCyd/YBNTTpHxp/AEfV0eXe4
+   uhxrXzbl6rHm7zzhwNOxvg6ulnMEk4OgOu4S4NA//bD4sRnimCdg6UwNY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5229477"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="5229477"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 03:10:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="816312527"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="816312527"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 10 Jan 2024 03:10:57 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNWU3-0006us-1p;
+	Wed, 10 Jan 2024 11:10:55 +0000
+Date: Wed, 10 Jan 2024 19:10:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/base/regmap/regmap-raw-ram.c:24:24: sparse: sparse: cast to
+ restricted __be16
+Message-ID: <202401101945.4P5qaf35-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] arm64: dts: mediatek: mt8186: Increase CCI
- frequency
-To: =?UTF-8?B?Q2h1bi1KZW4gVHNlbmcgKOabvuS/iuS7gSk=?=
- <Chun-Jen.Tseng@mediatek.com>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "wenst@chromium.org" <wenst@chromium.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>
-References: <20230914121035.17320-1-chun-jen.tseng@mediatek.com>
- <20230914121035.17320-2-chun-jen.tseng@mediatek.com>
- <c9881e63-a52a-4d14-895e-9a14d31004e3@collabora.com>
- <894594bd2adb156fa8f290f4e603edbccdbbcdab.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <894594bd2adb156fa8f290f4e603edbccdbbcdab.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Il 10/01/24 06:44, Chun-Jen Tseng (曾俊仁) ha scritto:
-> On Wed, 2023-11-29 at 14:22 +0100, AngeloGioacchino Del Regno wrote:
->> Il 14/09/23 14:10, Mark Tseng ha scritto:
->>> The original CCI OPP table's lowest frequency 500 MHz is too low
->>> and causes
->>> system stalls. Increase the frequency range to 1.05 GHz ~ 1.4 GHz
->>> and adjust
->>> the OPPs accordingly.
->>>
->>> Fixes: 32dfbc03fc26 ("arm64: dts: mediatek: mt8186: Add CCI node
->>> and CCI OPP table")
->>>
->>> Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
->>
->> You ignored my comment [1] on the v1 of this patch.
->>
->> Besides, I think that you should at least keep the 500MHz frequency
->> for a
->> sleep-only/idle OPP to save power.
->>
->> It would also be helpful to understand why you chose this new
->> frequency range,
->> so if you can, please put some numbers in the commit description,
->> showing the
->> stall in terms of requested BW vs actual BW (as I'd imagine that a 2x
->> increase
->> in CCI frequency means that we need *twice* the bandwidth compared to
->> what we
->> have for the workloads that are stalling the system).
->>
-> Hi AngeloGioacchino Del Regno,
-> 
-> Thanks your reminder this issue. After ajdustment CCI OPP, we also do
-> power test benchmark and the result is PASS.
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
+commit: 65dd2f671875b1d97b6fa9bcf7677f5e1c55f776 regmap: Provide a ram backed regmap with raw support
+date:   7 months ago
+config: x86_64-randconfig-123-20240106 (https://download.01.org/0day-ci/archive/20240110/202401101945.4P5qaf35-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401101945.4P5qaf35-lkp@intel.com/reproduce)
 
-Sorry but `PASS` is not a number; I actually wanted a before and after power
-consumption measurement in microwatts.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401101945.4P5qaf35-lkp@intel.com/
 
-> The original CCI table has stall issue.  When the Big CPU frequency set
-> on 2.05G and CCI frequency keep on 500MHz then run CTS MediaTest will
-> system stall then trigger watchdog reset SoC.
-> 
-> The CPU and CCI frequency setting are not in the same driver. So it
-> will have timing issue cause CPU stall side effect.
-> 
+sparse warnings: (new ones prefixed by >>)
+>> drivers/base/regmap/regmap-raw-ram.c:24:24: sparse: sparse: cast to restricted __be16
+>> drivers/base/regmap/regmap-raw-ram.c:26:24: sparse: sparse: cast to restricted __le16
 
-Are you trying to fix a frequency setting delay/desync with raising the
-frequency of the CCI?
-That's not the right way of doing it.
+vim +24 drivers/base/regmap/regmap-raw-ram.c
 
-Asserting that we have a timing issue because the two frequency settings
-are not done by the same driver is borderline wrong - but anyway - if there
-is a frequency setting timing issue because of the interaction between the
-two drivers (cpufreq/ccifreq), the right way of eliminating the stall is to
-actually solve the root cause of that.
+    18	
+    19	static unsigned int decode_reg(enum regmap_endian endian, const void *reg)
+    20	{
+    21		const u16 *r = reg;
+    22	
+    23		if (endian == REGMAP_ENDIAN_BIG)
+  > 24			return be16_to_cpu(*r);
+    25		else
+  > 26			return le16_to_cpu(*r);
+    27	}
+    28	
 
-I'm insisting on this because if there's a "timing issue" this means that
-even though the "base" CCI frequency is higher, during a scaling up operation
-depending on how much the CCI gets flooded, you might *either*:
-  - Have this same stall issue again, and/or
-  - Have performance issues/drops while waiting for the CCI to scale up.
-
-Even though you may not (or may...) get a stall issue again with this change,
-you will surely get (very short) temporary performance drops during scaling up.
-
-...and this is why your CCI frequency increase solution does *not* resolve
-this issue, but only partially mitigates it.
-
-That should get solved, not partially mitigated.
-
-Besides that, can you please tell me how to replicate the stall issue, making
-me able to better understand what's going on here?
-
-Regards,
-Angelo
-
-> BRs,
-> 
-> Mark Tseng
-> 
->> [1]:
->> https://lore.kernel.org/all/799325f5-29b5-f0c0-16ea-d47c06830ed3@collabora.com/
->>
->> Regards,
->> Angelo
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
