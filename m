@@ -1,121 +1,120 @@
-Return-Path: <linux-kernel+bounces-21996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 241818297A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:30:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E90598297A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:30:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFB11289D2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:30:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FCCA28AF11
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:30:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F078D3FE2F;
-	Wed, 10 Jan 2024 10:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F094121F;
+	Wed, 10 Jan 2024 10:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dnVn92wl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZCwUmany"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11231481A2
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704882456; x=1736418456;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=w3UfH/E0Wkb7H3FEj0d6n/toU9zc9ZUDXjEFbTfBd1c=;
-  b=dnVn92wlDaXddk4SkVqbdA8Mw6JyWkcKiOtv1O0z743UN5p9IJ2cP8kn
-   S6zSDf6W9hbDxcrsdsABaOT1QgOR4FJqkjvxThWI3zD5XAscsqLb2o424
-   JK10IlTCMWS8HdbYXGWg4Tmd/sif1tM3kdvgkLWFNMvSEb3EpBAMBVt1E
-   lcmNWsWDxgVbeq+oSVNhxNoRj8BKBbj1eRfUWCp8d+lxY9QmdubaGVUdO
-   l2panYU5GCUC+xzVJ82lF9LLg/AI3GrB+34+IXuo9H9tX9OeKNq/j8ult
-   0mV8XYTQA9lAy/Y3kGSveYITkXkGTeN0O3Dz/+uWsK2sk0bkxe85jOjgY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5841546"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="5841546"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 02:27:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="872579009"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="872579009"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Jan 2024 02:27:33 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNVo3-0006sg-1i;
-	Wed, 10 Jan 2024 10:27:31 +0000
-Date: Wed, 10 Jan 2024 18:27:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejas Joglekar <Tejas.Joglekar@synopsys.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: drivers/usb/host/xhci.c:1414: warning: Function parameter or member
- 'desc' not described in 'xhci_get_endpoint_index'
-Message-ID: <202401101820.I1t9z9cv-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A0740C04;
+	Wed, 10 Jan 2024 10:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A8cp1w020844;
+	Wed, 10 Jan 2024 10:28:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=5Paa55GUVgZ+hembfGyj7xkKH2+Z6loGiS8NR1WqkBs=; b=ZC
+	wUmanymbcjgOcrsNaiAQGHcvAWyQmxDz4i5YemJb4KShtFTffy/wUKHZIfbqA4Hm
+	dJPJ8wJluMxEqa52TSTCVJ2IP/9PS7Net9IVkhJ3/4Ho8xnOKGaSEbSg6vDl53Kv
+	IuF+8ovc6wbojgX/BdWNgd/tjgNZo2XC7FHr4FBE9UjyjRrYBSZSIFCRRjuNHhMR
+	aqCxfiGsabZArdNuWJV6heyz3lSCGTSzHcVI1jcI1UB6i9bdnT2h0kbCUcEIcvsa
+	FNPiyceVfrdaol2BX19t6VcrCQbwEPQLNdy7/QHJxQvuFgjIC36UxUv+yHgKlaEi
+	p3lxnTVII4wInpBglvzg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhjh2rum5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 10:28:56 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40AAStoO014641
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 10:28:55 GMT
+Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
+ 2024 02:28:48 -0800
+Message-ID: <bea0aa48-605e-b2fe-d1ea-d2ace73e42d6@quicinc.com>
+Date: Wed, 10 Jan 2024 15:58:45 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 3/3] clk: qcom: gcc-sm8150: Update the gcc resets
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Michael
+ Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Deepak Katragadda" <dkatraga@codeaurora.org>,
+        Vinod Koul <vkoul@kernel.org>, "Taniya Das" <quic_tdas@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Ajit Pandey
+	<quic_ajipan@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        "Jagadeesh Kona" <quic_jkona@quicinc.com>
+References: <20240104-sm8150-dfs-support-v1-0-a5eebfdc1b12@quicinc.com>
+ <20240104-sm8150-dfs-support-v1-3-a5eebfdc1b12@quicinc.com>
+ <f2a8f12d-1f1a-4717-b837-69c01e57c677@linaro.org>
+From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
+In-Reply-To: <f2a8f12d-1f1a-4717-b837-69c01e57c677@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LAemPs0k_EEFQ3b8YB9CK1dswN94KUu_
+X-Proofpoint-GUID: LAemPs0k_EEFQ3b8YB9CK1dswN94KUu_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=711 clxscore=1015 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 priorityscore=1501 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401100085
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-commit: 2017a1e58472a27e532b9644b4a61dfe18f6baac usb: xhci: Use temporary buffer to consolidate SG
-date:   3 years, 1 month ago
-config: x86_64-buildonly-randconfig-006-20240105 (https://download.01.org/0day-ci/archive/20240110/202401101820.I1t9z9cv-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401101820.I1t9z9cv-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401101820.I1t9z9cv-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/usb/host/xhci.c:1414: warning: Function parameter or member 'desc' not described in 'xhci_get_endpoint_index'
+On 1/4/2024 9:14 PM, Krzysztof Kozlowski wrote:
+> On 04/01/2024 15:23, Satya Priya Kakitapalli wrote:
+>> Add all the available resets for the global clock controller
+>> on sm8150.
+>>
+>> Fixes: 2a1d7eb854bb ("clk: qcom: gcc: Add global clock controller driver for SM8150")
+> If this is a fix, then please describe observable issue and how users
+> are affected. See stable kernel rules document.
 
 
-vim +1414 drivers/usb/host/xhci.c
+No issues are observed as of now, just wanted to make sure all the 
+available resets are added. I'll remove the fixes tag.
 
-2017a1e58472a2 drivers/usb/host/xhci.c     Tejas Joglekar 2020-12-08  1402  
-2017a1e58472a2 drivers/usb/host/xhci.c     Tejas Joglekar 2020-12-08  1403  /**
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1404   * xhci_get_endpoint_index - Used for passing endpoint bitmasks between the core and
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1405   * HCDs.  Find the index for an endpoint given its descriptor.  Use the return
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1406   * value to right shift 1 for the bitmask.
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1407   *
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1408   * Index  = (epnum * 2) + direction - 1,
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1409   * where direction = 0 for OUT, 1 for IN.
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1410   * For control endpoints, the IN index is used (OUT index is unused), so
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1411   * index = (epnum * 2) + direction - 1 = (epnum * 2) + 1 - 1 = (epnum * 2)
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1412   */
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1413  unsigned int xhci_get_endpoint_index(struct usb_endpoint_descriptor *desc)
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27 @1414  {
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1415  	unsigned int index;
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1416  	if (usb_endpoint_xfer_control(desc))
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1417  		index = (unsigned int) (usb_endpoint_num(desc)*2);
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1418  	else
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1419  		index = (unsigned int) (usb_endpoint_num(desc)*2) +
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1420  			(usb_endpoint_dir_in(desc) ? 1 : 0) - 1;
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1421  	return index;
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1422  }
-d0e96f5a71a032 drivers/usb/host/xhci-hcd.c Sarah Sharp    2009-04-27  1423  
 
-:::::: The code at line 1414 was first introduced by commit
-:::::: d0e96f5a71a032ced0c35f521c1cbd67e816922a USB: xhci: Control transfer support.
-
-:::::: TO: Sarah Sharp <sarah.a.sharp@linux.intel.com>
-:::::: CC: Greg Kroah-Hartman <gregkh@suse.de>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Best regards,
+> Krzysztof
+>
 
