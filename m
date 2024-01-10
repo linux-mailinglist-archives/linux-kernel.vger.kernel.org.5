@@ -1,180 +1,233 @@
-Return-Path: <linux-kernel+bounces-21718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93B1829334
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:11:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57E2282933D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:22:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BF111F22B57
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:11:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FA841C2501C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211F6D51D;
-	Wed, 10 Jan 2024 05:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F954DDA5;
+	Wed, 10 Jan 2024 05:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="gs2QXTZh"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2069.outbound.protection.outlook.com [40.92.22.69])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ARn7qWhp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C248BF7;
-	Wed, 10 Jan 2024 05:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MhZVl+42G+hrIne6JN+doHda4swuk8FnJNviJnbHgtzfpDAMDhZ1WNYRqc8cuUg6vwRxP++1zD0i5ZWQtBcTINKgF9zC8uQx3x3CpFtkRYogMfvJK2FjihZrJ+TC9KjB8RNdsEO9tECL28x20q739vHgNOqW9u3DRMWo+qs+kOCOB1eq6tCU2GK59UzMCARWo7DjpNsR5UUmsmtvzbxAPFWwqqJW7vcESO/ayP7tlbGi+65GCUbhFXxz3PBvTvX0ZTPhlIBuuVWtEGz7UndcvulD9L+xOyA7HGx84BNYJeLpOucjkNg19t3J/AST2AzXVBe1hK53SU+91hlS7qTJPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FiHhL2gkfLyNkU7NsrfzXauhRJs+V//SwRXlXKOlRbg=;
- b=PwV1Rov1PZDf9uBP2iNNZ0pI+olZeIvmR+AJOMy2AfB4w9dAJxO2PiXI79CemtRdbYWJf9Rgf3/TsBaHb5vCcUcA8KQEmHMIGT8MgQPp07Tz800qx4flTiqDMJiNDeOqV6tfT+p0Fwx3XAgsG9p+tQgSlBrR1zJ8LShroaFa7SmXeSoWdjUvKA44SFGFDJ0nX8Yf5YygDCb2VmaE6aHFSdysVXuWRLjbLvsegie2HjKECN9fsTcWfJ8eYoOEn9L8GwUQ+nqrly2q1PSb3c25yJ2+I6g+6k/W3SscQLVaGWnfUuFavNZ4gxyyccM5XqWQGnaAKz8lpRMSm+Sl7+ZU6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FiHhL2gkfLyNkU7NsrfzXauhRJs+V//SwRXlXKOlRbg=;
- b=gs2QXTZhup5fr3LXaSWTGlZvNTr6cr8x0RAdX5JDe2u4Py4MVrgUVhK/ZpZ0CwFbCEyowY3eic2R6Fl6T488CEP/Xh3YhF776byDWErwflF2z7gvZMkT86tWKdzr+k5aU7rgQThnOj0hZEttv8OIbNEpK+N4otZctx4dQ9fihR5Jx897pMtHSYZjo2xDv7L6KiDc54RQSZHztk3HEt4in3IdvuCcFPLwPs+ZrvCRQBj2EeQ5stTUWIzDIzJ1Lywnq/XyaOlXpBmlIxEcuY3MQu6Dm6CBf6RELDXJLGw9aMZR/T2T/NlHaJT1K4WkEE9BANn51828yst4UqRYuxhZxg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by SJ0PR02MB8561.namprd02.prod.outlook.com (2603:10b6:a03:3f0::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.27; Wed, 10 Jan
- 2024 05:10:47 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2%4]) with mapi id 15.20.7181.015; Wed, 10 Jan 2024
- 05:10:47 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Saurabh Sengar <ssengar@linux.microsoft.com>, "kys@microsoft.com"
-	<kys@microsoft.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "decui@microsoft.com"
-	<decui@microsoft.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org"
-	<x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "ssengar@microsoft.com" <ssengar@microsoft.com>
-Subject: RE: [PATCH] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
-Thread-Topic: [PATCH] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
-Thread-Index: AQHaP8IdXpQMxQOq3EyxPvaEs1hvhLDShPQw
-Date: Wed, 10 Jan 2024 05:10:47 +0000
-Message-ID:
- <SN6PR02MB415740C3EE66618A37A658EED4692@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <1704450566-26576-1-git-send-email-ssengar@linux.microsoft.com>
-In-Reply-To: <1704450566-26576-1-git-send-email-ssengar@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [loTHMp+r8FO1u8f5sJjv1UX6ByBgMifN]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ0PR02MB8561:EE_
-x-ms-office365-filtering-correlation-id: 0a657a98-8c20-4444-36ba-08dc119a8191
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 0ZKTpQ1ggf6IPbMRC5XB2EkNBH7kf5unkKpNT3Q2XB0uewrCROmtOgNd6n0KjSYSrjn+vynIGOO8uc1WIsI/n4Yo4Z2DfHOsyClj2W/rXWuRRRicyFYb1IBlIpVqxHqYFGIgLYBOCZI8Fx8fqEJlxogJUDKVdKsmJt3THaPgnVLvX8LY31g1tYHcdx5+mYx3aBHWRQ0t6n5silx+4chRsl1yD6HjNG4z1nTegPOKsjm5EHc0bEtK27lb1OZTmCxI4I6OX+39zsGzB4WdYJf/YnMbpbDe3+7Y26AWl4cFzPopRMwiW05Vrb/i99Lo0ayNCNTsNOHMlGvStNBzNcD/p79X2NEMh9JUXKwuZI3zoSh6EXEn0A7sktpAEXBEYj4/NxlYYOcm2HQ8x0yN6xXRjAARlTHo5caCrts/CIGbd78+xQBHLw4bdqf6gWO7d/nVHwWHvv9DuY95s+153UGUzlSdOBRDnxOYyaLaUihnYzSY1+wQMWk+OLv3TOz9ERUUn6025xqWhfQG4HZ7L1PDOjSTVa0KLQhY9dOPehQK3h+srHdeQiPpGAgIpKZ6OiaH
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?IbBcD6h6n3KKoKUkJlggI6+A49YsfwfjXZNnoiETaYjcL0k18xyt7QCatXuO?=
- =?us-ascii?Q?1GtZNXRmDmkf4W562/EJNPCzVTmHCUeGQV1u/gZc/D6c4OnBIKU2/kl0ud2E?=
- =?us-ascii?Q?zJvuKF3IgEdG7f0G3fUOChs6WLt8tFWYebnoNqRZpLXXb2LadX0RLsnsIV6u?=
- =?us-ascii?Q?ET7SfQVHUkqpIiz0sNXGyjDMUlBZgrPFLyVI0EDBJFAGuToydgggXkExzUcz?=
- =?us-ascii?Q?rnLG8Y++8lol2Xo1ly4CVx/O9XPOdPZpCM5WOIh79q8I1E0qHIfrnbLCkrDj?=
- =?us-ascii?Q?DV4Zci8PGBGmLF1sFXum2IPz3tuV3QjW5JzNPCfjH3B7hDyzj0I24yQty8Nv?=
- =?us-ascii?Q?Dmu6yHGw6LneWAWZBAcggFiEQLY70Mdmtx5YLps4MoUszWGWgq2HpJbhigME?=
- =?us-ascii?Q?E5EW7fA5shaheC/5h4u4sC2K3UINlj9PYikl/bYnv7ZRW+V1DxFmXDRNfIl0?=
- =?us-ascii?Q?X3d5fw7CIKX/hIQ1K3PdozFRCuEdCpy1Rgm22CLqkGXT9wFO0mUK19wtsocX?=
- =?us-ascii?Q?opZa2Ha6ztltj1lkO+vFZY9Re73EeHq097t+D5Pky3kQ49IgB89YzOkGqlc1?=
- =?us-ascii?Q?Li07sBQoDRTEa4Kc3ttNey2jsvA7XphX/smTTqQyRGtqH4nn891Y6kZbd6sJ?=
- =?us-ascii?Q?b45Cndpjo/H9HCmYPdxTQW0Ohpu56HlyO+JQyLV8t5VzwOKyXren1OIpgH9E?=
- =?us-ascii?Q?5cw4QZlpdR6W7+qFl5YUT+AmN8Vk1+Lw3tiDbO6f224tIpZuWjhEvCkz/0U5?=
- =?us-ascii?Q?5nwZnrSBBFFutOuTMDQ7/gxagWkaFi6KrkvwDFqROxC1nSUiXT35ZobNsw2v?=
- =?us-ascii?Q?/fvkKkO7Ji+Hk+FuUKmRSk7+i0oTYjEMro15CxWD7wwFIxKZH+oCyTQW6xpx?=
- =?us-ascii?Q?6LAv8vSbxWsQ6c9q7xfF5VRZUxTdoYE4wNmntGT7HjopqQIJdDWqEeHC0p4B?=
- =?us-ascii?Q?dtf+dKLGoL3684dWYqk2kBQx600O8Gwp7omUw8d4OObvPPuOYH68VODfdlG2?=
- =?us-ascii?Q?LjLyIzg+h7ls1cwnFqKy6TeFSi1GE/GQWvgZFJe4peczI4+6R9nHgHW5uV78?=
- =?us-ascii?Q?uq8t6pslPo0TVT2V+6+xEvDxG1rdp2BXQ3vdCiQJ0/mL5/loDO30/eNvR2rO?=
- =?us-ascii?Q?L8vdBDtvRQKXO0Eovq/PS1FdB34JSDITy4TciI30kz45iZkl1D+yb6w5EcSa?=
- =?us-ascii?Q?OBDNdUpOgz3hQ5y0F19o1QdCEH+deWDNfe8BDg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D0AD52E;
+	Wed, 10 Jan 2024 05:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704864153; x=1736400153;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=UV5g3+7ZTX54v02h71Q45PN86B2ugHWyHpfziqwM3Do=;
+  b=ARn7qWhp1FS2HQUvqBZS1BiJWhqVtJJqBDQg1f26nn3FSzjjl5G4jV7D
+   5Ex+mhqe2ZTwkE/oVlYCkgFihA360BVpyxKOgnmjV8GneVaD9mx12bWS8
+   gdnYzI4Iz0Z72gfvAKv/OY9ynNF58M71Zx33AFMOTdfZsOVkRWPJcYNWT
+   N0Rl0Fss8y1+UmoY7R0+VUM7fcqGO8Q//6JuGSjdZl49oVAGx+COUn2B2
+   ZqS4qhaRIGOaLiyeA1Jmjz4fSeRnaueV5g1yhF9BY0aTRLkCiA/lUZVOM
+   mK0mBSvEwhHxlVwJOSi0w4oYWOhrAtYFmNaoRIb2N4AnmboF7HK2iSJ8y
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5779845"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="5779845"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 21:22:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="758251239"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="758251239"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga006.jf.intel.com with ESMTP; 09 Jan 2024 21:22:28 -0800
+Message-ID: <d0446efb-936c-4abc-839b-8e6c3f28ee07@linux.intel.com>
+Date: Wed, 10 Jan 2024 13:17:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a657a98-8c20-4444-36ba-08dc119a8191
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 05:10:47.6006
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB8561
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v10 2/5] iommu/vt-d: break out ATS Invalidation if
+ target device is gone
+Content-Language: en-US
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, kevin.tian@intel.com,
+ bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
+ robin.murphy@arm.com, lukas@wunner.de
+References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
+ <20231228170206.720675-3-haifeng.zhao@linux.intel.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231228170206.720675-3-haifeng.zhao@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Saurabh Sengar <ssengar@linux.microsoft.com> Sent: Friday, January 5,=
- 2024 2:29 AM
->=20
-> The current method for signaling the compatibility of a Hyper-V host
-> with MSIs featuring 15-bit APIC IDs relies on a synthetic cpuid leaf.
-> However, for higher VTLs, this leaf is not reported, due to the absence
-> of an IO-APIC.
->=20
-> As an alternative, assume that when running at a high VTL, the host
-> supports 15-bit APIC IDs. This assumption is now deemed safe, as no
-> architectural MSIs are employed at higher VTLs.
-
-I'm trying to fully understand this last sentence.  It has the words
-"now" and "deemed" as qualifiers.  Can you say anything more about
-why "now" (implying it wasn't safe at some point in the past)?
-And what are the implications of "deemed"?  Or are both just
-wordiness, and it would be just as good to say "This assumption is safe,
-as Hyper-V does not employ any architectural MSIs at higher VTLs." ?
-
-The code LGTM.
-
-Michael
-
->=20
-> This unblocks startup of VTL2 environments with more than 256 CPUs.
->=20
-> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+On 12/29/23 1:02 AM, Ethan Zhao wrote:
+> For those endpoint devices connect to system via hotplug capable ports,
+> users could request a warm reset to the device by flapping device's link
+> through setting the slot's link control register, as pciehp_ist() DLLSC
+> interrupt sequence response, pciehp will unload the device driver and
+> then power it off. thus cause an IOMMU device-TLB invalidation (Intel
+> VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for device to
+> be sent and a long time completion/timeout waiting in interrupt context.
+> 
+> That would cause following continuous hard lockup warning and system hang
+> 
+> [ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
+> [ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
+> [ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
+> [ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+>           OE    kernel version xxxx
+> [ 4223.822623] Hardware name: vendorname xxxx 666-106,
+> BIOS 01.01.02.03.01 05/15/2023
+> [ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
+> [ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
+> 0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+> [ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+> [ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+> [ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+> [ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+> [ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+> [ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+> [ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
+> knlGS:0000000000000000
+> [ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
+> [ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+> [ 4223.822628] PKRU: 55555554
+> [ 4223.822628] Call Trace:
+> [ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
+> [ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
+> [ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
+> [ 4223.822629]  intel_iommu_release_device+0x1f/0x30
+> [ 4223.822629]  iommu_release_device+0x33/0x60
+> [ 4223.822629]  iommu_bus_notifier+0x7f/0x90
+> [ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
+> [ 4223.822630]  device_del+0x2e5/0x420
+> [ 4223.822630]  pci_remove_bus_device+0x70/0x110
+> [ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
+> [ 4223.822631]  pciehp_disable_slot+0x6b/0x100
+> [ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
+> [ 4223.822631]  pciehp_ist+0x176/0x180
+> [ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
+> [ 4223.822632]  irq_thread_fn+0x19/0x50
+> [ 4223.822632]  irq_thread+0x104/0x190
+> [ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
+> [ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
+> [ 4223.822633]  kthread+0x114/0x130
+> [ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
+> [ 4223.822633]  ret_from_fork+0x1f/0x30
+> [ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
+> [ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+>           OE     kernel version xxxx
+> [ 4223.822634] Hardware name: vendorname xxxx 666-106,
+> BIOS 01.01.02.03.01 05/15/2023
+> [ 4223.822634] Call Trace:
+> [ 4223.822634]  <NMI>
+> [ 4223.822635]  dump_stack+0x6d/0x88
+> [ 4223.822635]  panic+0x101/0x2d0
+> [ 4223.822635]  ? ret_from_fork+0x11/0x30
+> [ 4223.822635]  nmi_panic.cold.14+0xc/0xc
+> [ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
+> [ 4223.822636]  __perf_event_overflow+0x4f/0xf0
+> [ 4223.822636]  handle_pmi_common+0x1ef/0x290
+> [ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
+> [ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
+> [ 4223.822637]  ? __native_set_fixmap+0x24/0x30
+> [ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
+> [ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
+> [ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
+> [ 4223.822638]  perf_event_nmi_handler+0x24/0x40
+> [ 4223.822638]  nmi_handle+0x4d/0xf0
+> [ 4223.822638]  default_do_nmi+0x49/0x100
+> [ 4223.822638]  exc_nmi+0x134/0x180
+> [ 4223.822639]  end_repeat_nmi+0x16/0x67
+> [ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
+> [ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
+>   74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+> [ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+> [ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+> [ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+> [ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+> [ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+> [ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+> [ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
+> [ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
+> [ 4223.822642]  </NMI>
+> [ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
+> [ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
+> [ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
+> [ 4223.822643]  intel_iommu_release_device+0x1f/0x30
+> [ 4223.822643]  iommu_release_device+0x33/0x60
+> [ 4223.822643]  iommu_bus_notifier+0x7f/0x90
+> [ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
+> [ 4223.822644]  device_del+0x2e5/0x420
+> [ 4223.822644]  pci_remove_bus_device+0x70/0x110
+> [ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
+> [ 4223.822644]  pciehp_disable_slot+0x6b/0x100
+> [ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
+> [ 4223.822645]  pciehp_ist+0x176/0x180
+> [ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
+> [ 4223.822645]  irq_thread_fn+0x19/0x50
+> [ 4223.822646]  irq_thread+0x104/0x190
+> [ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
+> [ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
+> [ 4223.822646]  kthread+0x114/0x130
+> [ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
+> [ 4223.822647]  ret_from_fork+0x1f/0x30
+> [ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
+> range: 0xffffffff80000000-0xffffffffbfffffff)
+> 
+> Furthermore even an in-process safe removal unplugged device could be
+> surprise removed anytime, thus need to check the ATS Invalidation target
+> device state to see if it is gone, and don't wait for the completion/
+> timeout blindly, thus avoid the up to 1min+50% (see Implementation Note
+> in PCIe spec r6.1 sec 10.3.1) waiting and cause hard lockup or system
+> hang.
+> 
+> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
 > ---
->  arch/x86/hyperv/hv_vtl.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
-> index 539c7b5cfa2b..1c225362f88e 100644
-> --- a/arch/x86/hyperv/hv_vtl.c
-> +++ b/arch/x86/hyperv/hv_vtl.c
-> @@ -16,6 +16,11 @@
->  extern struct boot_params boot_params;
->  static struct real_mode_header hv_vtl_real_mode_header;
->=20
-> +static bool __init hv_vtl_msi_ext_dest_id(void)
-> +{
-> +	return true;
-> +}
-> +
->  void __init hv_vtl_init_platform(void)
->  {
->  	pr_info("Linux runs in Hyper-V Virtual Trust Level\n");
-> @@ -39,6 +44,8 @@ void __init hv_vtl_init_platform(void)
->  	x86_platform.legacy.warm_reset =3D 0;
->  	x86_platform.legacy.reserve_bios_regions =3D 0;
->  	x86_platform.legacy.devices.pnpbios =3D 0;
-> +
-> +	x86_init.hyper.msi_ext_dest_id =3D hv_vtl_msi_ext_dest_id;
->  }
->=20
->  static inline u64 hv_vtl_system_desc_base(struct ldttss_desc *desc)
-> --
-> 2.25.1
->=20
+>   drivers/iommu/intel/dmar.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index 3d661f2b7946..0a8d628a42ee 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -1423,6 +1423,14 @@ int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+>   	writel(qi->free_head << shift, iommu->reg + DMAR_IQT_REG);
+>   
+>   	while (qi->desc_status[wait_index] != QI_DONE) {
+> +		/*
+> +		 * if the device-TLB invalidation target device is gone, don't
+> +		 * wait anymore, it might take up to 1min+50%, causes system
+> +		 * hang. (see Implementation Note in PCIe spec r6.1 sec 10.3.1)
+> +		 */
+> +		if ((type == QI_DIOTLB_TYPE || type == QI_DEIOTLB_TYPE) && pdev)
+> +			if (!pci_device_is_present(pdev))
+> +					break;
+>   		/*
+>   		 * We will leave the interrupts disabled, to prevent interrupt
+>   		 * context to queue another cmd while a cmd is already submitted
 
+How about handing this in qi_check_fault() when it detects an ITE error?
+
+qi_check_fault() should returns -ETIMEDOUT instead of -EAGAIN, if
+
+- qi_submit_sync() is called for a device TLB invalidation request
+   (indicated by pdev is valid);
+- device is not present.
+
+Best regards,
+baolu
 
