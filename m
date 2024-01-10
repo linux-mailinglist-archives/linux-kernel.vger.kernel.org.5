@@ -1,142 +1,116 @@
-Return-Path: <linux-kernel+bounces-22814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC94F82A33E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:25:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B91F82A34F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:33:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EB251C266C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:25:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0993D287E3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0482B4F61E;
-	Wed, 10 Jan 2024 21:25:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE404F5FB;
+	Wed, 10 Jan 2024 21:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c82lIG0a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P13+70tD"
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253274F5FA;
-	Wed, 10 Jan 2024 21:25:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06175C433C7;
-	Wed, 10 Jan 2024 21:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704921931;
-	bh=3C5WR76W5kbSoAjJb2xbYfw3mBaMSnsnkbKc1nq/il0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=c82lIG0ast6+R/k3mcOb81ehqGD5ghGGAUET00ZwgfXIoKt5DIbDRUsiW9YNIQba3
-	 e74LXV+mJZBFqtcp/syKfcMHoy7P2ZJXOtGjs6jQ4AGfCCYJkVwGdukJkqWu/q1yg4
-	 54Tov4w87pe+sXdJYHBnV470VTwznFf+aI2xUmQcJiaTwTdE7RumUNqSANJBYcfiAw
-	 90759UGovYTB9FsZMb3fjaTP72qCPEd4e6b0dOJl3YxpKPOXZHU6j9XaifSVjbBbrM
-	 AaIfWHeCdv96ejdZcz8GOD33LI2tvG97XukxgJfCePRQYbEoHuBLvhVgVXnEcyadDG
-	 vbBFYvkHpkVfQ==
-Received: (nullmailer pid 2648565 invoked by uid 1000);
-	Wed, 10 Jan 2024 21:25:28 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114D34F881;
+	Wed, 10 Jan 2024 21:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-46788b25f95so1082931137.0;
+        Wed, 10 Jan 2024 13:33:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704922389; x=1705527189; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o6v5CI9Rd44b7UOY4K7sfex6hxeFhVRcBTEwwVc9S/k=;
+        b=P13+70tDRoqfn6d1xpTIx6Fr69Hmy7Yy4k5cQlWFzneSvMbPrptUhXaLQlhMPlEnw8
+         V/YhQnIVgdPow8fkRR38ggN5c9eGO52jmA8lqQNclf718JYWYIpav0VmCLxIkMemJxbl
+         QrvUNCU4d/MwjmBycaIj3uqrnPo7Y7Jt21Tm6IvLmi2dVFlEM55tERhHVlakaDno/Juq
+         dAnqSCdtdt49c4Mkwa8rVNKvIW/VbmvDJ2uyAplm+cy779mzwfTa03WtXHYPMFUN3Zw3
+         jOrXVWXTM1teavU+pmjZHk6/M5imXB0tVo41TvSn/e6AqhfyyC7udzJ0ewZm2xREpe28
+         GXwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704922389; x=1705527189;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o6v5CI9Rd44b7UOY4K7sfex6hxeFhVRcBTEwwVc9S/k=;
+        b=NVcL+ZQFWxotWSeX4Qf+Y4qD9LnfxF0tvy9fSLFR3vj31KYxyYnGkBKHTvym5p9Cf3
+         e/yO3t7n0dY37eBFpglNNzofOJ8GtiufJlo1WFHVbJCXx2ROICf3NJT0eaE6XIEOFsyZ
+         bYjfIfWkClsrHEHwtAFWtAlOVj0zlNoqDm+rNDpC7wDh1IaT+Mohr7EHGzusYAKNikW+
+         cZpbjwX8nT5jF1zLvbjNUYVgJuWgTCEGOvQTGHRDEnER/m6Z7Iw2aZhxVWcersl75n2w
+         E53VK2RqW15GlXq4bpEDfAmubiYMJMxpkG8Km4VDdp2dqJmzlLwCrHkUiVFdPdkyt637
+         /XWA==
+X-Gm-Message-State: AOJu0Yy0yLjCxypnnY0nWlb+iq41cBXIbptx/t0V5jfoC37JO6xrp3OQ
+	piqwIaiGqMWX6wZAybse6iuvCJ8mC7GdsJVMjFc=
+X-Google-Smtp-Source: AGHT+IGuu/ugNHXGHzU9RbZdCb2DhxvyajPX/SjB5pTt5H6IQbtyutWMSsB5qTFq1e+9kKzFTrHGUbPAiWbibjdDW40=
+X-Received: by 2002:a67:c085:0:b0:467:f6c3:14c5 with SMTP id
+ x5-20020a67c085000000b00467f6c314c5mr149205vsi.16.1704922388712; Wed, 10 Jan
+ 2024 13:33:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Hennerich <michael.hennerich@analog.com>, devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, Thierry Reding <thierry.reding@gmail.com>, =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-spi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, linux-iio@vger.kernel.org, linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Mark Brown <broonie@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-In-Reply-To: <20240109-axi-spi-engine-series-3-v1-11-e42c6a986580@baylibre.com>
-References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
- <20240109-axi-spi-engine-series-3-v1-11-e42c6a986580@baylibre.com>
-Message-Id: <170492192827.2648172.5496531414858882853.robh@kernel.org>
-Subject: Re: [PATCH 11/13] dt-bindings: iio: offload: add binding for
- PWM/DMA triggered buffer
-Date: Wed, 10 Jan 2024 15:25:28 -0600
+References: <20240110140903.4090946-1-nm@ti.com> <20240110140903.4090946-14-nm@ti.com>
+In-Reply-To: <20240110140903.4090946-14-nm@ti.com>
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Wed, 10 Jan 2024 15:32:42 -0600
+Message-ID: <CAOCHtYgFtBXdY7_PpsBi4ep0VqHOEXbqBu5+O8rB4qkChPx15w@mail.gmail.com>
+Subject: Re: [PATCH 13/16] arm64: dts: ti: beagle*: Add MIT license along with GPL-2.0
+To: Nishanth Menon <nm@ti.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, Ayush Singh <ayushdevel1325@gmail.com>, 
+	Jason Kridner <jkridner@beagleboard.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tony Lindgren <tony@atomide.com>, 
+	Wadim Egorov <w.egorov@phytec.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On Wed, 10 Jan 2024 13:49:52 -0600, David Lechner wrote:
-> This adds a new binding for a PWM trigger and DMA data output connected
-> to an SPI controller offload instance.
-> 
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
+On Wed, Jan 10, 2024 at 8:09=E2=80=AFAM Nishanth Menon <nm@ti.com> wrote:
+>
+> Modify license to include dual licensing as GPL-2.0-only OR MIT
+> license for device trees belonging to BeagleBoard.org Foundation
+> platforms. This allows for Linux kernel device tree to be used in
+> other Operating System ecosystems such as Zephyr or FreeBSD.
+>
+> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
+> with latest SPDX conventions (GPL-2.0 is deprecated).
+>
+> While at this, update the copyright year to sync with current year
+> to indicate license change.
+>
+> Cc: Ayush Singh <ayushdevel1325@gmail.com>
+> Cc: Jason Kridner <jkridner@beagleboard.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Cc: Robert Nelson <robertcnelson@gmail.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Wadim Egorov <w.egorov@phytec.de>
+>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 > ---
->  .../adi,spi-offload-pwm-trigger-dma-buffer.yaml    | 59 ++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
-> 
+>  .../boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso      | 4 ++--
+>  .../boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts            | 6 +++---
+>  arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts        | 8 ++++----
+>  4 files changed, 11 insertions(+), 11 deletions(-)
+>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Acked-by: Robert Nelson <robertcnelson@gmail.com>
 
-yamllint warnings/errors:
+Regards,
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/offload/adi,spi-offload-pwm-trigger-dma-buffer.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/spi/adi,axi-spi-engine.yaml
-Documentation/devicetree/bindings/iio/offload/adi,spi-offload-pwm-trigger-dma-buffer.example.dts:22.22-32.15: Warning (spi_bus_reg): /example-0/spi/offloads: missing or empty reg property
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 966, in resolve_fragment
-    document = document[part]
-               ~~~~~~~~^^^^^^
-TypeError: 'bool' object is not subscriptable
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-validate", line 8, in <module>
-    sys.exit(main())
-             ^^^^^^
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 144, in main
-    sg.check_dtb(filename)
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 89, in check_dtb
-    self.check_subtree(dt, subtree, False, "/", "/", filename)
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
-    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
-    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
-    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
-  [Previous line repeated 1 more time]
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 77, in check_subtree
-    self.check_node(tree, subtree, disabled, nodename, fullname, filename)
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 33, in check_node
-    for error in self.validator.iter_errors(node, filter=match_schema_file):
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/validator.py", line 405, in iter_errors
-    for error in self.DtValidator(sch,
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 288, in iter_errors
-    for error in errors:
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/_validators.py", line 414, in if_
-    yield from validator.descend(instance, then, schema_path="then")
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 305, in descend
-    for error in self.evolve(schema=schema).iter_errors(instance):
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 288, in iter_errors
-    for error in errors:
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/_validators.py", line 294, in ref
-    scope, resolved = validator.resolver.resolve(ref)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 898, in resolve
-    return url, self._remote_cache(url)
-                ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 916, in resolve_from_url
-    return self.resolve_fragment(document, fragment)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 968, in resolve_fragment
-    raise exceptions.RefResolutionError(
-jsonschema.exceptions.RefResolutionError: Unresolvable JSON pointer: '$defs/offload'
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240109-axi-spi-engine-series-3-v1-11-e42c6a986580@baylibre.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--=20
+Robert Nelson
+https://rcn-ee.com/
 
