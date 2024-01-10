@@ -1,135 +1,112 @@
-Return-Path: <linux-kernel+bounces-21661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69C8C829287
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:54:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4628682928D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:56:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC6CD1C20C64
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:54:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B52C288081
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82299320C;
-	Wed, 10 Jan 2024 02:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 456C02579;
+	Wed, 10 Jan 2024 02:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cz1CR0Zl"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FPm+94mZ"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FBE23B1
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 02:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cd1aeb1bf3so33830101fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 18:54:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F34A1870
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 02:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d54b763d15so15381095ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 18:56:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704855240; x=1705460040; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oD7bzsVHDyZVaIw1WEtjfdf6X1QN0YaIlFCaqqO1VuM=;
-        b=Cz1CR0ZlUXtm/1br5zpPr0knRFNgPojPMyIRWibhoPQGfb6mtXFKjqcBTWRbxZRzAQ
-         f9XBLtZfPqB1ZUbqmIEkg3IW1+dQR0FbCEh+gtSU0bLPvJ8OvFlFIc2Xd9sn8Ia6DsWA
-         g2qzByq2yudBTo516XsjuPspfOmfxAQQJoczStNWkj52FvLKnLYI3AcHTh9SccL3hLJW
-         rlLE2/pdsLro5lCnD9qcjCs/vELr832CUIpptDmLhjo32I/xz3W1mobxo9KkvVH6zwVR
-         eoGSDS7qQf+FrPbTokv1WaW8EChMLRnKFRZuukJhviazKnm6rtWxtETdwydd8aOt4nj/
-         l+Wg==
+        d=chromium.org; s=google; t=1704855380; x=1705460180; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Cqsu0sVJlmIzMpcIruHiSjowcwNftxKzZNL1LWKgYE=;
+        b=FPm+94mZHeke6GkUW3YdzzIhmKooBc1EEhE6dcDtgS+C73yWAxJBFBz2BYSVTlOz+1
+         7GM7sLjC7YYHfvFeBqr2GINGVHtn/vd60gzcUebyQfaPRTMnlCSXEcz+N8qVUvm8QWGF
+         As1cftU+lYuDLb/v8Zs5pWM0ZgpW22RNfChXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704855240; x=1705460040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oD7bzsVHDyZVaIw1WEtjfdf6X1QN0YaIlFCaqqO1VuM=;
-        b=MfuW7vvNhiM+Ism4pBertuHNYMlAfME1bJI/dYqhn5heJ9zV0uJXB1X2YVa+zNkYhy
-         FfDSkzXc2EAtlREp8w539O+V4K6ZUHyqlxo0uz2xEI5WhnK7acO3Wb1TCUwJYT6FQtWX
-         SaM2PKVySuEAQlyP3K1Og8Gq7WUuu5qgAeangP7SLB0Dj8lEa5wfimBjmheNxgQ6U4Hw
-         4yhhESF9nvIRxIRE52f28jF4jkwCnjr3TAQjZ3U8VlS0uWOLg2qUrRW9jFf4jF1qOUMu
-         f8aPYAOE2ETc1Ff79UNHmmWYOjO4MJZGodc3qSoJo6h+be1fZLaA2glZ2VEYOG9iudbj
-         6qGg==
-X-Gm-Message-State: AOJu0YwkE+Kz1Jsaxt291w6tiZePjpRYcJ3N9GWxQx1oF07tBgjpiVJB
-	rOSh5g58HqcdC53uSJtAwWttNNJ2nglxIOKYQOUyjN7dUXPTL/Rz
-X-Google-Smtp-Source: AGHT+IHQN4O+MHJ48DV2x61/acZugFlcfT7v1vm9DSTQ8kXrGy6Cxt3Ro+CwkAH+vOJyvBwx5pmwfXX0VubD6jIlWFU=
-X-Received: by 2002:a2e:a90a:0:b0:2cd:6ea2:bff9 with SMTP id
- j10-20020a2ea90a000000b002cd6ea2bff9mr1180838ljq.21.1704855239938; Tue, 09
- Jan 2024 18:53:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704855380; x=1705460180;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Cqsu0sVJlmIzMpcIruHiSjowcwNftxKzZNL1LWKgYE=;
+        b=ASVRE6XV1UJQcDd/DE40eP0b5F3bye4yFkbbBY5bG1WHn9HrmC/kKrDzQ7/1TB9p96
+         4tYWlLp2MdX6Q9ua+IDClSJTo0s77jBMSvW1F84cQxin9Q1GjCncPz3psvLK1lRbu19e
+         FYuHOoeH/LtVH3YnDxS13hDSbaXM4Z8pDF2eO/GQQxw4WOf0IeFDUIv7fnIIIPny3v++
+         pkZdPDprLWTryHZM5ODMYgt8pW+jTbjXCW6sNA7LHWbWyhqxglQtMAiUJNUae2bFfQlC
+         Z/1EXpP8JcbwsXJOXy3kLgKqkSBLz7wzxGlB3Qf9fhtuQdbPNDkmtzf3DzKKV+YFJCAM
+         ZDUg==
+X-Gm-Message-State: AOJu0Yyw5+czVpVjabMj1lbxnDFpYn3TrFkASAf7BLqvfDFwbSqX+TgT
+	V8cwQ7xX1/oV/Wso/2RwQV/UUKoQoHXs6FiRfiwuheTJ1Q==
+X-Google-Smtp-Source: AGHT+IEngKshpq/yhOR1WVK0GZhLIsH5bOdw67YXV/WIQFr2uAaYISZM9GXBETQxfJL/bytuG/mwLA==
+X-Received: by 2002:a17:903:32c7:b0:1d4:c97f:e6e4 with SMTP id i7-20020a17090332c700b001d4c97fe6e4mr349227plr.80.1704855379715;
+        Tue, 09 Jan 2024 18:56:19 -0800 (PST)
+Received: from google.com ([2401:fa00:8f:203:b1d0:e755:54c2:4518])
+        by smtp.gmail.com with ESMTPSA id jg5-20020a17090326c500b001d4ac461a6fsm2521332plb.86.2024.01.09.18.56.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 18:56:19 -0800 (PST)
+Date: Wed, 10 Jan 2024 11:56:14 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	"Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH] Compiler Attributes: counted_by: bump compiler versions
+Message-ID: <20240110025614.GA1282549@google.com>
+References: <20240109133633.1103876-1-senozhatsky@chromium.org>
+ <20240109153249.GA205400@dev-arch.thelio-3990X>
+ <CANiq72kjHCh-inyv1aU=eNca1-+E0_85MGU-8qbZZtzbC_VwOQ@mail.gmail.com>
+ <20240109195652.GA1253215@dev-arch.thelio-3990X>
+ <202401091311.08D6FF677@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102175338.62012-1-ryncsn@gmail.com> <20240102175338.62012-7-ryncsn@gmail.com>
- <87a5pg9qno.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87a5pg9qno.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Wed, 10 Jan 2024 10:53:42 +0800
-Message-ID: <CAMgjq7Ce6sCSTRd==N3ihrAcvVd2ggszdZuTwxDbFYcBWzcE_g@mail.gmail.com>
-Subject: Re: [PATCH v2 6/9] mm/swap: handle swapcache lookup in swapin_entry
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Chris Li <chrisl@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202401091311.08D6FF677@keescook>
 
-Huang, Ying <ying.huang@intel.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=888=E6=97=
-=A5=E5=91=A8=E4=B8=80 16:28=E5=86=99=E9=81=93=EF=BC=9A
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Since all callers of swapin_entry need to check the swap cache first, w=
-e
-> > can merge this common routine into swapin_entry, so it can be shared an=
-d
-> > optimized later.
-> >
-> > Also introduce a enum to better represent possible swap cache usage, an=
-d
-> > add some comments about it, make the usage of swap cache easier to
-> > understand.
->
-> I don't find any benefit to do this.  The code line number isn't
-> reduced.  The concept of swap cache isn't hided either.
+On (24/01/09 13:12), Kees Cook wrote:
+> > If I understand the doucmentation at [1] correctly, the first round of
+> > testing starts with -rc1 and ends with -rc2, so if the feature is not
+> > merged by -rc2, it won't make that release cycle. I think counted_by
+> > might be a hard sell even after -rc1 because the feature is not exactly
+> > small but it is also not expansive (it is relatively self contained
+> > from what I can tell). So I think your plan is reasonable.
+> > 
+> > Another alternative would be to split this patch in to three distinct
+> > patches, not sure if that would be overkill for this though.
+> > 
+> > 1. Update the clang review link from reviews.llvm.org to github.com
+> > 2. Update the GCC version from 14 to 15.
+> > 3. Update the Clang version from 18 to 19.
+> > 
+> > The first two patches could be picked up immediately and the third one
+> > could be sat on to see how the review and acceptance process works out
+> > over the next couple of weeks. Up to you/Sergey. Thanks for taking a
+> > look!
+> 
+> Yeah, I think either the above split or just wait until the Clang 18
+> cut, since we've got a while before the next kernel merge window.
 
-Hi Ying
+Thanks everyone for the comments!
 
-Thanks for the comments.
-
-Maybe I should squash this with the following commit? The following
-commit want to do cache lookup in swapin_entry to avoid a redundant
-shadow lookup, it can help to improve the performance by about 4% for
-swapin path. So it need to return a enum to represent cache status.
-
-Further more, note the comments added here:
-
-+/*
-+ * Caller of swapin_entry may need to know the cache lookup result:
-+ *
-+ * SWAP_CACHE_HIT: cache hit, cached folio is retured.
-+ * SWAP_CACHE_MISS: cache miss, folio is allocated, read from swap device
-+ *                  and adde to swap cache, but still may return a cached
-+ *                  folio if raced (check __read_swap_cache_async).
-+ * SWAP_CACHE_BYPASS: cache miss, folio is new allocated and read
-+ *                    from swap device bypassing the cache.
-+ */
-
-SWAP_CACHE_MISS might be inaccurate, this is not an issue introduced
-by this commit, but better exposed. May worth a fix later. So far I
-can see two benefits fixing it:
-- More accurate maj/min page fault count.
-- Note the PageHWPoison check in do_swap_page, it ignored the race
-case, if a page getting poisoned is raced with swapcache then it may
-not work as expected.
-
-These are all minor issue indeed, some other optimization might also
-be doable, but at least a comment might be helpful.
-
-> --
-> Best Regards,
-> Huang, Ying
->
+I'd probably prefer to split the patch and take the obvious and
+trivial fixups now, and once clang -rc2 is tagged we can return
+to clang min version requirement (if we won't forget :))
 
