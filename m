@@ -1,103 +1,133 @@
-Return-Path: <linux-kernel+bounces-21571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BFF0829152
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48D72829157
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:27:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC80B288F68
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:26:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D49FB288FA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643B6644;
-	Wed, 10 Jan 2024 00:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859A139F;
+	Wed, 10 Jan 2024 00:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GAmpRe8P"
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="I27gy5NA"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72EEC389
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42998e38716so10903071cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 16:26:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A15EA3
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cd65f803b7so15333191fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 16:27:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704846390; x=1705451190; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7hriQJykUGbCZHrp0p8WR5gw3Nx0Y5gCOyCGd42caIQ=;
-        b=GAmpRe8PtfzRR6/eKLcRSf+xpey/uzdv13NWI4nh/j6b2JxCDGsYFf/jN8quGamZt5
-         0CNErSx8OoTH/LH+lqa8avR0HDbJ+aPrW1Qh+oKQus7GV2O8RLCBrFCWK+tozTZF8th4
-         mmwt2oeabagXzr3RjjrYjqYKO9kQhJ5tgW3YfLiW8JjT4wM88yqjvD3agjSzf0kLYWYF
-         6fwvNQz8UVjTOUjCovas/uaBRHSzvwhyV4AVe3RlZWrKabCI0W6cEXKYUHDTaEJINd8+
-         puv64ia/Q0HhOOygkKpwnboLOyFAJFrtVDhvuaLaJ2WBdD/m3ZJw3gQd0V7VMT6eIIV8
-         ZlSQ==
+        d=suse.com; s=google; t=1704846462; x=1705451262; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dyyk71hEnUH8o+yU27Ica0B5hnuq4HgZWd0sqVp36iI=;
+        b=I27gy5NAkrwS27o+UFWt4GiitEODjtHGgLvpf5U4To5GiFyiag8m/bFDjvClWkwzUq
+         tkbpI//Z2DDD0YMaktuC8E6fzZ2ibJ2XIcNqui5IU9DuQkR74seal/wjXaSEyUiVfCHR
+         PZCVydIffLiZGP3je/p+l9UhBSSIBcN+3MfwBydtCIk3NlPcF+WPu5sEBkkgT8PNJ6Pi
+         mkmTjxCEPZSzAkMZjO4LMktJpeYcZSor5h6QW3WAlYlnA+rCPBm6X8Q4uP/Ata0M1wFE
+         wAIhfaizSzyrkWEjfmLqUvg/6LlSuDQeiD3bsxYIlTpr4Ra3J/AEysl9Ms9V05takTqQ
+         ravg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704846390; x=1705451190;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7hriQJykUGbCZHrp0p8WR5gw3Nx0Y5gCOyCGd42caIQ=;
-        b=EMiGJWWgp3rkszf7Uqqqrab1UTN21dpZqCxnAafeLiZQJsGacNOEtdxF7kbLskU/Bx
-         hWGNLmZw50+K0RS2MTf0BduFJn24JCPIRKooMUcSgi85EqLplpscK1mfzMHXm1fBtIhJ
-         hKJk6eiUcxUvxwMBCPg5nofbBM8iZchtvJX9RbyOnWCVeIsWB7AKUNZ4ilmqyAeh8TIs
-         gLHL1+F24qyJkoALE5xExD3WfnwmzLGvhdu6irIx+xMxfagPVrjeaKhKYDj1VszSkfrI
-         msafhY3UVQmet1LyJozEbngJid64X2+23OjW2aV57HTd14eiMVKaPAqbbdLavyyXpkbk
-         gq1w==
-X-Gm-Message-State: AOJu0YzZWOB6Aw8EItVUUhff4hYNxGY6hY0tgv+7i00iew2TQ86HFOv3
-	mv/dkEPVE5vaKKTWOuIUPwxNpqDZiHR+
-X-Google-Smtp-Source: AGHT+IF+52nsDiokOz506BLJb9c/T/9dxaWvDrKk5j2HauIr3W+OqiBD/UsEQ8ZMZ4bptGTMmV9eRA==
-X-Received: by 2002:ac8:580d:0:b0:429:972d:8781 with SMTP id g13-20020ac8580d000000b00429972d8781mr316318qtg.38.1704846390186;
-        Tue, 09 Jan 2024 16:26:30 -0800 (PST)
-Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
-        by smtp.gmail.com with ESMTPSA id ex16-20020a05622a519000b00427f47af434sm1325635qtb.61.2024.01.09.16.26.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 16:26:29 -0800 (PST)
-Message-ID: <1ebf65a2-810b-482c-85f9-7ce02ec4970a@google.com>
-Date: Tue, 9 Jan 2024 19:26:28 -0500
+        d=1e100.net; s=20230601; t=1704846462; x=1705451262;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dyyk71hEnUH8o+yU27Ica0B5hnuq4HgZWd0sqVp36iI=;
+        b=sry/c6SYfiomQ0mII6yFKorl96fsQwo8AEZjpIfQLUUo+2/FVfPSeGavuTSwIPkgGZ
+         D2fZXhPsH0q7UvvX3B+JJp3sDtUW+M6oi2oBjMrduE0q5NEiB7aEaFvX4dZUwvaRZo2j
+         TqRIzJv6wSywIdH2+rvddQyK+b5GYpuei7mIv4EcCxrbFY/biBJ4M7/i5cs0d0n6juzB
+         9gQzM1EC9iYGuwaZQFm2wsDBj/RuRrTAlZmQZQ2BXf1h4aCVwJO59INLfDH1hr7l4A/V
+         foLbVijqejoRW3C3MckJzJzRCm4zI9qrJ6Ecv1BszzxHwdaK5O4ExrDX+q9f9fBAAqRG
+         vREw==
+X-Gm-Message-State: AOJu0YwxL+Zc9gvCEfpOkXtO80D1ZpMmKJ0D1P6kN6VZ0QNHEr6oBx8E
+	Blno7zzpkgc4lOMW0jV5qy4ZFuXy4rGmrA==
+X-Google-Smtp-Source: AGHT+IHrPfMyoRcp9SJQJNfwgTAOMS35Hg1hTDLX2tyHfdnWr4LZ1cgREPzxpiaVrsGwmdO64/AgPA==
+X-Received: by 2002:a2e:98d3:0:b0:2cd:433:bdfc with SMTP id s19-20020a2e98d3000000b002cd0433bdfcmr88914ljj.5.1704846461991;
+        Tue, 09 Jan 2024 16:27:41 -0800 (PST)
+Received: from ?IPv6:2804:30c:1668:b300:8fcd:588d:fb77:ed04? ([2804:30c:1668:b300:8fcd:588d:fb77:ed04])
+        by smtp.gmail.com with ESMTPSA id bw10-20020a056638460a00b0046e33773c09sm940129jab.36.2024.01.09.16.27.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 16:27:41 -0800 (PST)
+Message-ID: <79e4f9c604a8e2a9165a84473a7c5354dd11c2db.camel@suse.com>
+Subject: Re: [PATCH RESEND v4 1/3] kselftests: lib.mk: Add TEST_GEN_MODS_DIR
+ variable
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: Shuah Khan <skhan@linuxfoundation.org>, Joe Lawrence
+	 <joe.lawrence@redhat.com>
+Cc: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Heiko
+ Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander
+ Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>,  Sven Schnelle <svens@linux.ibm.com>, Josh
+ Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>,  Miroslav
+ Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, 
+ linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
+ live-patching@vger.kernel.org
+Date: Tue, 09 Jan 2024 21:27:34 -0300
+In-Reply-To: <87b55a25-4288-4add-b2b3-0038ed41b08e@linuxfoundation.org>
+References: <20231220-send-lp-kselftests-v4-0-3458ec1b1a38@suse.com>
+	 <20231220-send-lp-kselftests-v4-1-3458ec1b1a38@suse.com>
+	 <ZZSOtsbzpy2mvmUC@redhat.com>
+	 <4fb169fd-393c-441e-b0f7-32a3777c1d11@linuxfoundation.org>
+	 <11c112df801008f6bc4b7813645d505388894e29.camel@suse.com>
+	 <87b55a25-4288-4add-b2b3-0038ed41b08e@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
- helpers to access array elements
-Content-Language: en-US
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, mattbobrowski@google.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240103185403.610641-1-brho@google.com>
- <20240103185403.610641-3-brho@google.com> <ZZa1668ft4Npd1DA@krava>
-From: Barret Rhoden <brho@google.com>
-In-Reply-To: <ZZa1668ft4Npd1DA@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 1/4/24 08:43, Jiri Olsa wrote:
-> I wonder we could use the existing RUN_TESTS macro and use tags
-> in programs like we do for example in progs/test_global_func1.c:
-> 
->    SEC("tc")
->    __failure __msg("combined stack size of 4 calls is 544")
->    int global_func1(struct __sk_buff *skb)
+On Tue, 2024-01-09 at 12:31 -0700, Shuah Khan wrote:
+> On 1/8/24 10:13, Marcos Paulo de Souza wrote:
+> > On Wed, 2024-01-03 at 15:09 -0700, Shuah Khan wrote:
+>=20
+> > >=20
+> > > Copying source files and object files doesn't sound right. This
+> > > isn't
+> > > how the ksleftest installs work. Let's fix this.
+> >=20
+> > Hi Shuah,
+> >=20
+> > what do you think about the proposed solution? Could you please
+> > amend
+> > the fix into the first patch if you think it's the right approach?
+> >=20
+>=20
+> I would like to see a new revision of the patch series with the fix
+> to
+> the problem. I will pull this into a separate test branch for us all
+> to test different scenarios. I would like to make sure the repo will
+> stay clean after install in the case of when out of tree builds.
+>=20
+> Sorry I can't amend the patch as this isn't a trivial merge change.
+> This change requires more testing.
 
-This worked, thanks.
+I sent a v5 of the patches. This new version has that diff that I sent
+earlier to avoid copying the Kbuild files. It worked on make install
+and with gen_tar.
 
-The style of test I have right now is that each test is a separate 
-program, with all programs in the same skeleton.  RUN_TESTS attempted to 
-load the __failure programs, with the side-effect of loading all of the 
-non-failures too.
+Feel free to use this version in your test branch then.
 
-Thanks,
+Thanks in advance,
+  Marcos
 
-Barret
-
+>=20
+> thanks,
+> -- Shuah
+>=20
+>=20
+>=20
 
 
