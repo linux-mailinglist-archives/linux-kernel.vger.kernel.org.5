@@ -1,153 +1,157 @@
-Return-Path: <linux-kernel+bounces-22140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C46E8299E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:55:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232188299E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:56:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BC3BB219BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:55:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 497D71C21A79
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B1C47F67;
-	Wed, 10 Jan 2024 11:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="aXWv6Vmz"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CBDC481C6;
+	Wed, 10 Jan 2024 11:55:57 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76DF47F44
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d4f5d902dso42927945e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:55:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1704887722; x=1705492522; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p22+unadpjiuSy6RGYATC6dS70dMkUd0mDAJ61uro9I=;
-        b=aXWv6VmzjH5x7RWHFSyBQC5qfCLssOfMva95/wI6S21LP0NBkVvstfZR+Gqm1V6dow
-         KwsUt7hIY+F6IUPzZm1B2HAGtVmARYUMAO2Hx1Wx/i4jyWSRYgrKjr2Uq1WMbm53/Rw/
-         Ro8oQlAI6R8ATShhNYSEF/LBT4CLSR3ED3A7JL1F1EcT9uYYXuCXWcN9XRRYisPH+Kxf
-         sxG0vLB5BW7rfn9ddWHmAHWfLnPz2AJpm5kDjQu9Df7RbAuZNb2A3kbFjbpk/Wpuo+sw
-         jFwbXWEyex7fi5dwz+eDjCQuBxUFwfg26XM1x3iRM8CL9DZfzsqTKdKt/hi8+GKJlvfj
-         LelQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704887722; x=1705492522;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p22+unadpjiuSy6RGYATC6dS70dMkUd0mDAJ61uro9I=;
-        b=MqKGKTC+IMG/ygBUGcRGn5uKzyh5tGr6akGVyxkxBmn6c9BB3BpYVb5pk6oMsauyUy
-         6T8hWSrevo3z7ML3RPKGtU6A4JaXuCqWnVxGtpbzy3ssNrLc8XHJRHGr1Fkuj8p+bxZN
-         KpRQx7bf21mWxjWvfWtHcBNl+Ti0RjUUMkgB3Ov6y7rdNVWkdKAU+ceTaM2rttloANHC
-         jXswLn33QpQfvpDDPDtMWOdqYZzCulRsK23ZPVF6KDeNhhTXQayd0qCwJD7Ndam6yHgF
-         ooJue/RsIP1/RYS2f8Sf80c+YOdAleVapuGGAXp7yw/bX2pGyvGrNy/nFkxamjgO6qIR
-         C9Pg==
-X-Gm-Message-State: AOJu0YxphbDpxWs6KK3gSXAiC0tDrC2Xtv6WTKE5C5jhB3gI/FB1KtMj
-	c/jVNqiT+44QX1728uqmaQD7HcfyXVd1Sg==
-X-Google-Smtp-Source: AGHT+IEce4ODuGwcEn2BKXeEu1OoSU3T5p4yP+WdC1xjqjakHlYuOMiREbeBunnkwWykVuXti0AI4A==
-X-Received: by 2002:a05:600c:84ca:b0:40e:52ce:f05 with SMTP id er10-20020a05600c84ca00b0040e52ce0f05mr482062wmb.70.1704887721880;
-        Wed, 10 Jan 2024 03:55:21 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.5])
-        by smtp.gmail.com with ESMTPSA id g4-20020adfa484000000b00336344c3c3fsm4739160wrb.90.2024.01.10.03.55.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 03:55:21 -0800 (PST)
-Message-ID: <3e430f8e-b327-485f-ae19-6f1938083dd3@tuxon.dev>
-Date: Wed, 10 Jan 2024 13:55:18 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806B0481A2
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 40ABtV4Y048116;
+	Wed, 10 Jan 2024 19:55:31 +0800 (+08)
+	(envelope-from Di.Shen@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4T95fV60jCz2NZjch;
+	Wed, 10 Jan 2024 19:48:34 +0800 (CST)
+Received: from bj10906pcu1.spreadtrum.com (10.0.73.72) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 10 Jan 2024 19:55:28 +0800
+From: Di Shen <di.shen@unisoc.com>
+To: <lukasz.luba@arm.com>, <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
+        <rui.zhang@intel.com>
+CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wvw@google.com>, <tkjos@google.com>, <xuewen.yan@unisoc.com>,
+        <zhanglyra@gmail.com>, <orsonzhai@gmail.com>, <cindygm567@gmail.com>
+Subject: [PATCH V7] thermal/core/power_allocator: avoid thermal cdev can not be reset
+Date: Wed, 10 Jan 2024 19:55:26 +0800
+Message-ID: <20240110115526.30776-1-di.shen@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 08/19] net: ravb: Move the IRQs get and
- request in the probe function
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, p.zabel@pengutronix.de,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, geert+renesas@glider.be,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-9-claudiu.beznea.uj@bp.renesas.com>
- <02548b1b-d32c-78b1-f1b6-5fdb505d31bb@omp.ru>
- <ee783b61-95fc-44ab-a311-0ca7d058ac39@tuxon.dev>
- <dce944a1-9557-9ab0-d30d-7a51a47c6d96@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <dce944a1-9557-9ab0-d30d-7a51a47c6d96@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 40ABtV4Y048116
 
+Commit 0952177f2a1f ("thermal/core/power_allocator: Update once
+cooling devices when temp is low") adds an update flag to avoid
+the thermal event is triggered when there is no need, and
+thermal cdev would be updated once when temperature is low.
 
+But when the trips are writable, and switch_on_temp is set
+to be a higher value, the cooling device state may not be
+reset to 0, because last_temperature is smaller than the
+switch_on_temp.
 
-On 09.01.2024 22:47, Sergey Shtylyov wrote:
-> On 1/8/24 11:58 AM, claudiu beznea wrote:
-> 
-> [...]
->>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>
->>>> The runtime PM implementation will disable clocks at the end of
->>>> ravb_probe(). As some IP variants switch to reset mode as a result of
->>>> setting module standby through clock disable APIs, to implement runtime PM
->>>> the resource parsing and requesting are moved in the probe function and IP
->>>> settings are moved in the open function. This is done because at the end of
->>>> the probe some IP variants will switch anyway to reset mode and the
->>>> registers content is lost. Also keeping only register specific operations
->>>> in the ravb_open()/ravb_close() functions will make them faster.
->>>>
->>>> Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
->>>> the interface is open. As now IRQs gets and requests are in a single place
->>>> there is no need to keep intermediary data (like ravb_rx_irqs[] and
->>>> ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
->>>
->>>    There's one thing that you probably didn't take into account: after
->>> you call request_irq(), you should be able to handle your IRQ as it's
->>> automatically unmasked, unless you pass IRQF_NO_AUTOEN to request_irq().
->>> Your device may be held i reset or even powered off but if you pass IRQF_SHARED to request_irq() (you do in a single IRQ config), you must
->>> be prepared to get your device's registers read (in order to ascertain
-> 
->    And, at least on arm32, reading a powered off (or not clocked?) device's
-> register causes an imprecise external abort exception -- which results in a
-> kernel oops...
-> 
->>> whether it's your IRQ or not). And you can't even pass IRQF_NO_AUTOEN
->>> along with IRQF_SHARED, according to my reading of the IRQ code...
->>
->> Good point!
->>
->>>> This is a preparatory change to add runtime PM support for all IP variants.
->>>
->>>   I don't readily see why this is necessary for the full-fledged RPM
->>> support...
->>
->> I tried to speed up the ravb_open()/ravb_close() but missed the IRQF_SHARED
-> 
->    I doubt that optimizing ravb_{open,close}() is worth pursuing, frankly...
-> 
->> IRQ. As there is only one IRQ requested w/ IRQF_SHARED, are you OK with
->> still keeping the rest of IRQs handled as proposed by this patch?
-> 
->    I'm not, as this doesn't really seem necessary for your main goal.
-> It's not clear in what state U-Boot leaves EtherAVB...
+For example:
+First:
+switch_on_temp=70 control_temp=85;
+Then userspace change the trip_temp:
+switch_on_temp=45 control_temp=55 cur_temp=54
 
-Ok. One other reason I did this is, as commit message states, to keep
-resource parsing and allocation/freeing in probe/remove and hardware
-settings in open/close.
+Then userspace reset the trip_temp:
+switch_on_temp=70 control_temp=85 cur_temp=57 last_temp=54
 
-Anyway, I'll revert all the changes IRQ related.
+At this time, the cooling device state should be reset to 0.
+However, because cur_temp(57) < switch_on_temp(70)
+last_temp(54) < switch_on_temp(70)  ---->  update = false,
+update is false, the cooling device state can not be reset.
 
-Thank you,
-Claudiu Beznea
+Considering tz->passive can also be represented the temperature
+status, this patch modifies the update flag with tz->passive.
 
-> 
-> [...]
-> 
-> MBR, Sergey
+When the first time the temperature drops below switch_on, the
+states of cooling devices can be reset once, and the tz->passive
+is updated to 0. In the next round, because tz->passive is 0,
+the cdev->state would not be updated.
+
+By using the tz->passive as the "update" flag, the issue above
+can be solved, and the cooling devices can be update only once
+when the temperature is low.
+
+Fixes: 0952177f2a1f ("thermal/core/power_allocator: Update once cooling devices when temp is low")
+Cc: <stable@vger.kernel.org> # v5.13+
+Suggested-by: Wei Wang <wvw@google.com>
+Signed-off-by: Di Shen <di.shen@unisoc.com>
+
+---
+V7:
+- Some formatting changes.
+- Add Suggested-by tag.
+
+V6: [6]
+Compared to the previous version:
+- Not change the thermal core.
+- Not add new variables and function.
+- Use tz->passive as "update" flag to indicate whether the cooling
+  devices should be reset.
+
+V5: [5]
+- Simplify the reset ops, make it no return value and no specific
+  trip ID as argument.
+- Extend the commit message.
+
+V4: [4]
+- Compared to V3, handle it in thermal core instead of in governor.
+- Add an ops to the governor structure, and call it when a trip
+  point is changed.
+- Define reset ops for power allocator.
+
+V3: [3]
+- Add fix tag.
+
+V2: [2]
+- Compared to v1, do not revert.
+- Add a variable(last_switch_on_temp) in power_allocator_params
+  to record the last switch_on_temp value.
+- Adds a function to renew the update flag and update the
+  last_switch_on_temp when thermal trips are writable.
+
+V1: [1]
+- Revert commit 0952177f2a1f.
+
+[1] https://lore.kernel.org/all/20230309135515.1232-1-di.shen@unisoc.com/
+[2] https://lore.kernel.org/all/20230315093008.17489-1-di.shen@unisoc.com/
+[3] https://lore.kernel.org/all/20230320095620.7480-1-di.shen@unisoc.com/
+[4] https://lore.kernel.org/all/20230619063534.12831-1-di.shen@unisoc.com/
+[5] https://lore.kernel.org/all/20230710033234.28641-1-di.shen@unisoc.com/
+[6] https://lore.kernel.org/all/20240109112736.32566-1-di.shen@unisoc.com/
+---
+---
+ drivers/thermal/gov_power_allocator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+index 7b6aa265ff6a..81e061f183ad 100644
+--- a/drivers/thermal/gov_power_allocator.c
++++ b/drivers/thermal/gov_power_allocator.c
+@@ -762,7 +762,7 @@ static int power_allocator_throttle(struct thermal_zone_device *tz,
+ 
+ 	trip = params->trip_switch_on;
+ 	if (trip && tz->temperature < trip->temperature) {
+-		update = tz->last_temperature >= trip->temperature;
++		update = tz->passive;
+ 		tz->passive = 0;
+ 		reset_pid_controller(params);
+ 		allow_maximum_power(tz, update);
+-- 
+2.17.1
+
 
