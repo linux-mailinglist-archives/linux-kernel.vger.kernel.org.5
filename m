@@ -1,92 +1,141 @@
-Return-Path: <linux-kernel+bounces-21787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CFB829446
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:26:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C05829448
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9D2A1F21468
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:26:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE50928942E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F6239AFB;
-	Wed, 10 Jan 2024 07:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A834039FC9;
+	Wed, 10 Jan 2024 07:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="voNkWseM"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="T5qJ7b4x"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63B439877
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d604b4b30so28316185e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:26:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704871581; x=1705476381; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oB8bFEksgA/hP4pzljJqPyULshxwwfCWATJRRhxV3mo=;
-        b=voNkWseMlfS3qaOFbhzSA7TRnn7PZnJvcHWcLkwbPfvYLwvvdG/DZZtRAg9aLmntRS
-         iqP0Le6yZqkjEZYA0d5pqPZ+29/aRw0XjFL7ag3ADH0cb2D+jCs4F/7Pymq4W/McMPSK
-         0Oh7cwB0kVfpbWJC89fHxiEhVXHshQY9Oj9TbCnoinKEA8nopRmcw+jEZk7ux8XVLCnL
-         AKfyvrDraXmVLDNYKqMX+pwVZdrAw2L41heaNfQUH2ZJKQTO8ceVeC334yDMVwCkc5Mf
-         41VBBqAsLmKFR1bIC00RCl74r0KUoLPh3qWqv6stG3Mqt8Wn/ZKFacVZAts1hOKd5CTb
-         LKyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704871581; x=1705476381;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oB8bFEksgA/hP4pzljJqPyULshxwwfCWATJRRhxV3mo=;
-        b=Ra2dRrx4T8lBJ8bFmsHrj/ZvIQ87V8z38+hbZzxOY0teLPvAGw09V0h32OA4rIp8t9
-         FXlbCBr/uHHHHDCpckoz8wD42BmHs3bXnu6Gk7SnCq3S7JCmv5LzBn6fy0pbgRO9V2IM
-         JFvXMbVFSCVfODNpSQ5J+yJfNMMYBjwMDInGlIuC92GOiTgbRrhpIP3zBXRMa3+anHZo
-         4z22f9S7XedD49sBMf+ypjUm2hRHbzAUfZwkoXeQJo6eGOs7DSHMF9KYS43ARWcHcmNQ
-         sEsv21RixounJSAsP5xZ975P2anVDFDu0EJhm9w8HlXvlR0GneXuCTmLLUjZI4HIG8P0
-         +s1A==
-X-Gm-Message-State: AOJu0YwANWg6ZMnZPW8kShaSCppcnuSQrey9upTU/qbAujojBOMfqox7
-	vP6aSXn6pR2AOrf1YJ9t19GztQJiP81MXA==
-X-Google-Smtp-Source: AGHT+IE76Y8hprK6/FX8obW26kFU4/Ec8lUy0x0+lATk6+++AhIfumsuIrzjjbjO9pLr10ZilSlScg==
-X-Received: by 2002:a05:600c:1d08:b0:40d:8ed9:ce8c with SMTP id l8-20020a05600c1d0800b0040d8ed9ce8cmr302530wms.120.1704871581188;
-        Tue, 09 Jan 2024 23:26:21 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id fs23-20020a05600c3f9700b0040c11fbe581sm1129574wmb.27.2024.01.09.23.26.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 23:26:20 -0800 (PST)
-Date: Wed, 10 Jan 2024 10:26:17 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Matthias Yee <mgyee9@gmail.com>
-Cc: gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] staging: vt6655: fix open parentheses alignment
-Message-ID: <3778e52d-9ac5-4648-85e9-539b13e19d25@moroto.mountain>
-References: <20240110072304.2226-1-mgyee9@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D5C3A8CB;
+	Wed, 10 Jan 2024 07:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 203EFC0005;
+	Wed, 10 Jan 2024 07:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1704871623;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a/FlQC5Q2ET2tc73S8vRew9D2w/9C51b4ONdPMKoY6Y=;
+	b=T5qJ7b4xaA0GBYZYKmmBMQKQm9GhK5NqUzyB+rLGNLIeULaidw/I5/MEhJVsdwAAGmNJRz
+	zzqorDR0yLw4ihEE+TL5uwC7cOAgwx3E53ERubOLFzmdBoQMbBgLfreaXTIKgoA26NChsG
+	+QLDoHl0qkRTAdOskGqKY+qVf+aGId/cMXu2gnJAgP1/D5XH6782V5ZmyiFx2hRq57iRRs
+	FAmZ2PdvdGIKBokpN+jYpGF4Zyf5Rchd5F6as+3sbWz4lT1Mpx38udHAUSaNI1TkW4iY8e
+	UCcI47FhTkyGU53/+pFPLIaqPrpXfhZim+0Ad36Irl2RmE1xQP3PsaXBhsX7pQ==
+Message-ID: <0a086b5f-b319-4f08-9513-a38c214e1da7@arinc9.com>
+Date: Wed, 10 Jan 2024 10:26:54 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110072304.2226-1-mgyee9@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 07/15] net: dsa: mt7530: do not run
+ mt7530_setup_port5() if port 5 is disabled
+Content-Language: en-US
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, Simon Horman
+ <horms@kernel.org>, Daniel Golle <daniel@makrotopia.org>,
+ Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,
+ Frank Wunderlich <frank-w@public-files.de>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com
+References: <20231118123205.266819-8-arinc.unal@arinc9.com>
+ <20231121185358.GA16629@kernel.org>
+ <a2826485-70a6-4ba7-89e1-59e68e622901@arinc9.com>
+ <90fde560-054e-4188-b15c-df2e082d3e33@moroto.mountain>
+ <20231207184015.u7uoyfhdxiyuw6hh@skbuf>
+ <9b729dab-aebc-4c0c-a5e1-164845cd0948@suswa.mountain>
+ <20231208184652.k2max4kf7r3fgksg@skbuf>
+ <c3a0fc6a-825c-4de3-b5cf-b454a6d4d3cf@arinc9.com>
+ <48b664fb-edf9-4170-abde-2eb99e04f0e5@suswa.mountain>
+ <2ad136ed-be3a-407f-bf3c-5faf664b927c@arinc9.com>
+ <20240109145740.3vbtkuowiwedz5hx@skbuf>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240109145740.3vbtkuowiwedz5hx@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Tue, Jan 09, 2024 at 11:23:05PM -0800, Matthias Yee wrote:
-> Adjusted whitespace to fix checkpatch warning Alignment Should Match
-> Open Parenthesis.
+On 9.01.2024 17:57, Vladimir Oltean wrote:
+> Yes, well _now_ it is a false positive, probably because smatch cannot
+> determine that when priv->p5_intf_sel has been set to P5_INTF_SEL_PHY_P0
+> or P5_INTF_SEL_PHY_P4, "interface" should have been also initialized.
+> But it doesn't matter, you can ignore a false positive. I'm also seeing it.
+> Although you should check whether treating -ENODEV as a hard error is fine
+> and won't cause regressions.
 > 
-> Signed-off-by: Matthias Yee <mgyee9@gmail.com>
-> ---
-> Changes in v3
-> -fixed line wrapping for commit message
+>> Just so you know, I intend to remove this whole PHY muxing feature once I
+>> bring changing DSA conduit support to this subdriver. I've got two strong
+>> reasons for this.
+>> - Changing the DSA conduit achieves the same result with the only overhead
+>>    being the DSA header included on every frame.
+>>
+>> - There can't be proper dt-bindings for it as the nature of the feature
+>>    shows that it represents an optional way to operate the hardware, it does
+>>    not represent a hardware design. Overall, the implementation is a hack to
+>>    make it work for specific hardware (switch must be connected to gmac1 of
+>>    a MediaTek SoC, no PHY must be present at address 0 or 4 on the MDIO bus
+>>    of the SoC. It should rather be configurable on userspace. Which will
+>>    never happen as it is specific to this switch and the changing DSA
+>>    conduit feature is the perfect substitute for this.
+> 
+> Is PHY muxing a "true" switch bypass, or is it just a route through the
+> switch for all packets coming from GMAC5 to go to phy0 or phy4? If the
+> latter, I agree that dynamic conduit changing is a more flexible option,
+> not to mention the user space tooling is already there.
 
-Thanks!
+It's the latter, and that's exactly what I think.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+> 
+> Are there existing systems that use PHY muxing? The possible problem I
+> see is breaking those boards which have a phy-handle on gmac5, if the
+> mt7530 driver is no longer going to modify its HWTRAP register.
 
-regards,
-dan carpenter
+Ah see, for PHY muxing, the driver actually wants the phy-handle to be put
+on the SoC MAC, and the PHY to be defined on the SoC ethernet's MDIO bus.
+We don't even define gmac5 as a port on the switch dt-bindings.
 
+While none of the DTs on the Linux repository utilise this, some of the
+mt7621 DTs on OpenWrt do. The change in behaviour will only be that phy0/4
+will be inaccessible from the SoC MAC's network interface. I de-facto
+maintain the mt7621 device tree source files there. I intend to revert it
+along with adding port 5 as a CPU port so that the conduit changing feature
+becomes available.
+
+> 
+>>
+>> Let me know if you've got any suggestions that can get rid of the warning
+>> without reworking the whole code block. Otherwise, I'm just going to ignore
+>> it until I get rid of the whole code block.
+> 
+> The obvious way would be to leave the initialization to PHY_INTERFACE_MODE_NA
+> there. Or to just ignore the warning.
+
+I'll ignore.
+
+Arınç
 
