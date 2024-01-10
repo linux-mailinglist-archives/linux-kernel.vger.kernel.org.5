@@ -1,192 +1,135 @@
-Return-Path: <linux-kernel+bounces-21623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EF2F829209
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:22:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01E3382920A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:22:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05D5CB24CEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:22:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7316289CC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2C017E4;
-	Wed, 10 Jan 2024 01:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34CD133D6;
+	Wed, 10 Jan 2024 01:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="Qs4KCv4i"
-Received: from esa14.fujitsucc.c3s2.iphmx.com (esa14.fujitsucc.c3s2.iphmx.com [68.232.156.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MvyDGcAf"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D555381;
-	Wed, 10 Jan 2024 01:22:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1704849746; x=1736385746;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=p1cq66PxuZqqpI9Gm4Hh/28sdEYtxsxJOCvmxYzR2Qg=;
-  b=Qs4KCv4ifoNufC6hbVm5wfKDApGa2fGkCvCo1iJG/2epFmF+MwaiprUt
-   ga2qwxb5C4YsL7eNYIR6iaUBD6iKBxUWzpCm+0UWr35usyaN6AKZc8ueD
-   Eql316DkgzADh36974BSo5XJXej6LlpOnLpEO0qm7iBhpe/aTEhBm0ij9
-   QGEhCTFbStnZzeC8TbYUpUw4gd1/uO62FtG6OupnA8nAHhsf17wHmf5Wk
-   mrd89m86rC+hWgyrl/XltNz7mIsJrZyqcAd47x1QNacaiNOai0nUOzUmC
-   eCRvK6XJb0Kc4W+iyZZYg7QtHXk1E0zDsZTrMiF8NSwA/3gznuq9MABKY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="107299157"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695654000"; 
-   d="scan'208";a="107299157"
-Received: from mail-tycjpn01lp2169.outbound.protection.outlook.com (HELO JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.169])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 10:22:15 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XpiC+dU7Qfk2kzV/VEPSf0iQgmA2maGGBA/UsMlmJl2yQDUoXAPnL7xPeC1gkOdIrCrNaJryFHfPG6HMuEFqDhvGzOguHCbkzVqaPyVcubB2BKt4/+8qiDEW9uRsQbLL+qyRsmaxRwl+uDOwVXwdsOfXy+6uCkPQc869Uhc9L8ZXT9cgbETniT3TQXr9O4JMU5cBJVk2PbCkK0PwAFBB2wZlP9LzL4fP5M3h3bdYWaBE1Wcin3GD9ZLp2fd9B92ltLC4/Oeex5jwRE0eVvIcr0zRbd4Qi2jxdzYcLhTdST5+oVrUXKMMwPvgWtOFMDs9YRlfWWgz5wOIo0QUbVRsng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p1cq66PxuZqqpI9Gm4Hh/28sdEYtxsxJOCvmxYzR2Qg=;
- b=BLQK8uf9P8uOBRmC4Bsa1e/o5bgSG/XfuiIsTISMO1GlWJRu2ZVFqObZShzSJkFTHA1KgiU9j37UpOZ87dfJP+BdCTSl/6MCJky5jq8ZQonEb982dst2Lx3hOipdPxg8gQqmwzhiNdjDF/IzDSeUYV9mMi0vI1ZCecsTMNh50r31uME7Wt2TuKENVspiwDa9E4vpAQ+avwHO5n2hcQQFS/HPF8Vwam96jR66IcoiUpWLNAN/Wvi7LUBherpF+BbG6Mq3Q7dkQIJihM0UV617m0p+1whx+DPRS0z17AmAWjhhMwQDXM2yDjmCej+SQUkivHofbUmQ69OU2ykC6gpebA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com (2603:1096:604:a6::10)
- by TYYPR01MB8216.jpnprd01.prod.outlook.com (2603:1096:400:111::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Wed, 10 Jan
- 2024 01:22:12 +0000
-Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com
- ([fe80::c96f:52b0:dd4e:8d50]) by OS0PR01MB5442.jpnprd01.prod.outlook.com
- ([fe80::c96f:52b0:dd4e:8d50%6]) with mapi id 15.20.7181.015; Wed, 10 Jan 2024
- 01:22:12 +0000
-From: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-To: Greg Sword <gregsword0@gmail.com>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"leon@kernel.org" <leon@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "rpearsonhpe@gmail.com"
-	<rpearsonhpe@gmail.com>
-Subject: Re: [PATCH for-next v4 2/2] RDMA/rxe: Remove rxe_info from
- rxe_set_mtu
-Thread-Topic: [PATCH for-next v4 2/2] RDMA/rxe: Remove rxe_info from
- rxe_set_mtu
-Thread-Index: AQHaQtZ2mvX2SodGUEeuRZ4rIPppQ7DRNF0AgAEM1IA=
-Date: Wed, 10 Jan 2024 01:22:12 +0000
-Message-ID: <dbbd1887-af93-4323-ac27-f937bafc5756@fujitsu.com>
-References: <20240109083253.3629967-1-lizhijian@fujitsu.com>
- <20240109083253.3629967-2-lizhijian@fujitsu.com>
- <CAEz=LcvphS6QECpHTFhrRoC=FcSbEU4j_XuqJF7ognjJu+uF6Q@mail.gmail.com>
-In-Reply-To:
- <CAEz=LcvphS6QECpHTFhrRoC=FcSbEU4j_XuqJF7ognjJu+uF6Q@mail.gmail.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5442:EE_|TYYPR01MB8216:EE_
-x-ms-office365-filtering-correlation-id: 0c03f417-00a8-4477-301c-08dc117a92c2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Xxmn4S7bNc7ldtwgm3aVH2ZPVtl00hf90NhFAQTz1qSa0flyp8FJE/5sa3F3ZCZRXHFvI++JPtOMym/JCx3EUI9ViQTbBwF3t2uM+U0g6w4Y0x7GDRt0Gs03NW445av1zIFgyF8c8LtY+L55PYBFb2wXYQHCyEvvKVoha0aWqec6mBNEVUzv3LWjiNSVvJ5eo6hOPnfPvQbfjmpLVzL+k1KUOZvGCo6MM5iaeC+b4DiiC0YxiNT+qEz6ZrPdw/31i6SzaLSM5dg8HFk7ObrINtqqlkP8OAyTjxZRRjZb7b28YZpzFewg6FWhhOPIggh65YwPL184kEizkt9MPLgmapioEqw1voUNAO/+UAuAmsab7/XbqCg+YROwhwqFHSZGgIQMPgvGuH9QPi1Uxr4NExOhXUmjOHpdoRSmxbjNrTb4R9vDE1nXRrXceEBybFoQAFAA34vYsE7J//9KQiRYhfnVpA40defCvkgX+6WvEW9//gp2oZzIg7QHp0A34Ng/i1h8yPUmaUGZldEJZZjFchRyRoqNuba5iVf+4brCfVCEtNOtFi2JkxhVS5+gNlkCYyseQIs7/v9e1lDcBobj3jzfkeBMQQn7p3jw8sM3L+4X3SMqAnJ3G+JJz14Cvf0lIM1VNE2su5O2DOI313z/xHPiglzi0YhW10tzFQNDBS2OCX7VF96ms7d5kPtxMDFyXnM0oS2a4f7M+UwkQSJncA==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5442.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(346002)(136003)(366004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(1590799021)(6512007)(6916009)(478600001)(71200400001)(66446008)(64756008)(66946007)(66556008)(66476007)(91956017)(54906003)(8676002)(8936002)(76116006)(316002)(6486002)(6506007)(53546011)(2616005)(26005)(83380400001)(2906002)(4326008)(5660300002)(41300700001)(38070700009)(36756003)(85182001)(38100700002)(82960400001)(122000001)(1580799018)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?d2RkQjVQd2E2TlhpeCswS3FNMUxUd3dyMUhwUmx1QVFoSzJrSE9jU0tNTjRZ?=
- =?utf-8?B?YUN3a3Z5aXlLVnd3ZWFNWGRILzQyLzNMNzlhVGNmVFlYeG5uSjExWkJQb3JC?=
- =?utf-8?B?bUY1UzlMMzI3WExRVHRuZUpTWGk3aEZpYy9yQ21xODM1ZGdseEJGNFdUWngw?=
- =?utf-8?B?VHU1azZzWVg3eEZndGRKR2o4a1NUaGQ3S2NRMTU0UnNUV25KZS9qaGtaYzhI?=
- =?utf-8?B?NUdkbXlheXR0RVAva3RVQVBiY3ZoekN1VGFjdkhDSFhobHdRYkVvNk9keHdY?=
- =?utf-8?B?TUU0blZ6dFQ1VXdxcEdmcmtMM1Nja0drOXIzZExGblMyYWQvS3VWWW14QTNR?=
- =?utf-8?B?UElZTHBtT2dmcFFoYzBZR2dCK0RmUzR6Q1c5dnFnRHp5WURreHVQdFZtUjk3?=
- =?utf-8?B?dG5Ra05LSHFDdFpXdzhPQm1zMzhncE1UOWhKSi9NZS90Y2RycER4azl5bGVt?=
- =?utf-8?B?MHF0Y2tpelR6RlNsZy9iVXRraHlENU5oZHFCbDUwaTQyUE12K21jbUNzaURm?=
- =?utf-8?B?TUcyc25naW5pT3IvenhhTjVMSVhldHhjYlIzV1RJcEFadWQ0dGlObytOL05E?=
- =?utf-8?B?c1daN0U2VWN5bGo3QkxZSm14bWVQMHZEZFBmL1gyWHNEYWtiZXFvNlNwVENX?=
- =?utf-8?B?dDNseFk1V1lEVUU4VE42NnVvK0lkcUNXTVo1ajc4MktMSzFyVWRZOFlEUlQz?=
- =?utf-8?B?ZXpOMndFaDlOdk42a0E3Q2g4Ujllcno2ZmpiQ3JRZ2dWbDhYdmFURDRJREE4?=
- =?utf-8?B?NkMrUlV6SlpmQzZDK0xmVlNST0lSWTlsUFdPaU1uRS9WV3NxbHdRVWNNTHpG?=
- =?utf-8?B?SkdYQVVjdllmSGpGZnFnK1E1a0d3RGdpQjVrRTJwbzFtY3ZFSWhxMXJCR2t2?=
- =?utf-8?B?NzhxVUNzbVlQNkVrOFF2N0pBOWFOQTAzRUxxK2ZHeEFYMXNGYmdCRUFCWUxH?=
- =?utf-8?B?VTFJbjMwSitlYnlxSS9wdjRmNjRmdm9XTHFGYkM4VHJxQnNvbXNCMXIyeWw1?=
- =?utf-8?B?SHdBZ1hCanUzMTFITEliMDZyM2FtdDk2THJJYmxrMUltZU1WaS93NXBPYVho?=
- =?utf-8?B?SDZuTkxPL3gyVmJpUkYxbCtJNVVVclBzT05ycTdzMjFxZDVManZjK2pqcjRp?=
- =?utf-8?B?aDArUm9NYzZVUC9BeUhVdyszR0hPNEVrWnRpTVlhcDdCaGZ2YkxZY29jVk51?=
- =?utf-8?B?d3krd0dYOTBqZXNodHdUWkxwN2JLZmxPam1yUTZ2M0VkNmQ0RVc2WmxDUUhF?=
- =?utf-8?B?Z01tRFhBNDBqdWtLdDIzanhNU2VVQ0J2dGNEdVVWQVZ3c1VCWURkanRhMEhY?=
- =?utf-8?B?WGZVR3lNc3p3ZzhVTkd3VlRURlQ1bVNycHJ3TVdKd2ZlcmdTN2NXeDFLMHpQ?=
- =?utf-8?B?RXVrZjJyMU9WZEpGRmE3ODk4MXg3bWVkLytIRTJvaFlxVE95ekE3MFFqOC9X?=
- =?utf-8?B?aDNoVDc0M0RmWStjK0VEbTQrbEJuazRDSVg1ckVtK05IN0JINUdZNFRVWThI?=
- =?utf-8?B?STYwVU04MHNtNFc1RkxPWTB1aXZiQXA5WmcrcjZ1RXhDdG9ieDE2bXVrdWIy?=
- =?utf-8?B?bUprQW9TNU9nUU1lODdBY05MdmNza0NLU01hWVBaZXVnMWFGWEd2NjJJTjhN?=
- =?utf-8?B?NHNpQjVhSlVRbU5GSFFhRHlhRnJTT0l6MFo2c0VaeEVlV0tvaTFTaUZRMTlD?=
- =?utf-8?B?RFZWQTcxcUtzd3NqTFkrM3ZyZVBFK1pDV2ZwM3ZFalZ4VWs5Y2lESUd2SGtK?=
- =?utf-8?B?ZmhCYXh2ZENzSmtKSkZIL2tqNkdLdnRxbksraDF3UFhOdkY0UThwN1VYQytD?=
- =?utf-8?B?cktVbGdZK0N0dXNuZVZLcGJhemJ2VHBsMHhIN3YvLzFmVEVKY29PMXJoN2x6?=
- =?utf-8?B?TG5XWDM1ZFBNVzRibmZKSFpmWnJRdGpFM1JaQU5yNlpCYzNEVkR5WHRNWXhs?=
- =?utf-8?B?SUtmV0ZVR0RaWlMwQVgzeVJlZ01xUWJmVS9sUWRqdS9oeTNIZGRjTHl4QTY1?=
- =?utf-8?B?OWZxM28rYy9nelNvbFFzbldkVG01VWI3eUhUSk9FUWtXVVF4NFBVN21maVds?=
- =?utf-8?B?UkNNSVZ6azNtQlJtMFZCMEE1NVE5QWFwRUNZd0JiL21NU2hvckVsN2ZIRit3?=
- =?utf-8?B?amtyNUplemFJelB3R3hNclpNa3hyd2MxY2YwdW1MOWxuYVBKZ2tLRnowSzhr?=
- =?utf-8?B?dnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <632EAE14FDC453448290203FC95E6966@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D362595
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kaleshsingh.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbed375def6so4640467276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 17:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704849758; x=1705454558; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oxelwYVTfqx3BsJBc98Q1mFz+9jmLLkrSjInccUU7OY=;
+        b=MvyDGcAffBko7JXl6ZvADYXaW9PT5o3mXomrOjt1msiwbPgEq9QB421i9smJEP6ofY
+         rcLaz1VNFStIwRT2oyk2S/3WgdYOpTyP6rzRWjcLxPswIkiBqykHFHHC+EAk3oV8wRvL
+         v1au1Ga4mWlSkjzbgmH4vnfV4mUruTYRMRfhcJzS4b5oDE06x9SFGTLlTjrIVRe4IKnN
+         r4cLxrvcDqAs/46ZhURnxZCkg4nqiJPUowSAYTifYt7vA82ubbFDiwi6SKmu3PXH+cEh
+         MaA+sKQjHh10Igfg4+3GF5wpU/hEuaEx2ekXHvwCc/GTwVW0dy4xZRf32ha+9+7r50Xg
+         mQfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704849758; x=1705454558;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oxelwYVTfqx3BsJBc98Q1mFz+9jmLLkrSjInccUU7OY=;
+        b=Wp6hhvFmJsV6aVAxNe14l5DfTumFVnUA08UWsLK8lCWbN/hKk7+ae8j3IlT9oFi5WK
+         SBx6ZtF0aDAjQm9VRhrvra5ebqL20uoA0jihWjke9UFVQAncR+W5XvI1FNSyCOqOUfqI
+         U1pW2D9aqMXznjVNaFvpARyzTOeLguSFxJ0Z6tEUkPaHhqOkRFpbjts0jrtIMiuMQEkj
+         2jtTC/wp9scRPmXcpmZ7g/avbwvL4Dot0Y5DKpXCFT5oLmI7HpTloDSi3cqmtWlpz0sV
+         WpWpEKknAv/Mf4BikdB9f48EJqnuemvJQDa71Q5fH4Zu9VwUmzue/oNBnHjBBrmsP+wH
+         1C8w==
+X-Gm-Message-State: AOJu0YwRtPqj6ap7a9Xb6q3GZE7A5jWHH39fiE1JWEMxUzmN1oEBhv87
+	lg+TfmUnYne3E8IJCFwFMn1qA8wB/YJt+8wm1fn1ecEO
+X-Google-Smtp-Source: AGHT+IEwO3CkIi5BqYZ7/kmBvc2O4ubrd60l4MicjgcfNaoXF4Ph5JwiFjmqNVehIeJw8ttt7GJreAzLDO8sOWM1AA==
+X-Received: from kalesh.mtv.corp.google.com ([2620:15c:211:201:c35c:511:8258:7aa2])
+ (user=kaleshsingh job=sendgmr) by 2002:a25:8404:0:b0:dbe:d797:ef35 with SMTP
+ id u4-20020a258404000000b00dbed797ef35mr644980ybk.3.1704849757983; Tue, 09
+ Jan 2024 17:22:37 -0800 (PST)
+Date: Tue,  9 Jan 2024 17:22:33 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	YkOg6shPxZoHOEbpEcsR5iXccqAu7LXzg0g2owziFL8pgepq98entfPSSBEL2N/TsuYjO175R/m8T7sqYa2iP1om0ELjTuRPb5jJc8OQNd1mGTZfdKGvzVMxlpbG0zDJXAInATZFfK/s5jw9FwKpCPrFhe/QyMomRNgwKoZ37elHnOuvU6ly+bHz93FbtpmhbNPP/DZvwaMZnqM2Wll8pNyfQzc5HyKRmNgyIg7jnbt84J7GX6pc5rjCB/aIgUcUMcKQgnDOnnoqFVYuTTNncQkX37NoXvnMYW7w8ZYGP11LA6nbrkH0/D8NR2bu8WqCgPZlNaSS5ahvnE8k3ojme+nGB30OLesUlkYJI5AaZCBX1V7nwQi2U2dAaN8IPGEYGTh6y1VYJ2Q13u3bTyJVyAROqeUv5lAuwwByadJALkg55xUaZL8pW7XhgJqOC/Tx5cL8VdNpTSUnN//weFNAICdbrJz5oT9aIJ0UVMqJXY89o9P490inkhwtPmfm0t9/nNcBsXERN2+/8n25UpUs2r3k8So1jZXq5X+4JPUXEfkY2DUUFUNgZMTS3lqxhY2Eeob3cs5CJcD45H3UIMXZfBFfUFwmKB++jAxHRcOamh9IVwSCaEapHFJgL8pJxlo5
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5442.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c03f417-00a8-4477-301c-08dc117a92c2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 01:22:12.5255
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tGIx8B+tRmGTSBCOiSAzjwlM+B/NLlDJ3FDGno60x8m+PXmROvTH4UP7ycGrb0chXuNBlYFiauPfziiGdT+jNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB8216
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20240110012234.3793639-1-kaleshsingh@google.com>
+Subject: [PATCH] mm/cma: Fix placement of trace_cma_alloc_start/finish
+From: Kalesh Singh <kaleshsingh@google.com>
+To: minchan@kernel.org, akpm@linux-foundation.org, lmark@codeaurora.org
+Cc: surenb@google.com, android-mm@google.com, kernel-team@android.com, 
+	Kalesh Singh <kaleshsingh@google.com>, Georgi Djakov <djakov@kernel.org>, 
+	Liam Mark <quic_lmark@quicinc.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-DQoNCk9uIDA5LzAxLzIwMjQgMTc6MjAsIEdyZWcgU3dvcmQgd3JvdGU6DQo+IE9uIFR1ZSwgSmFu
-IDksIDIwMjQgYXQgNDo0MeKAr1BNIExpIFpoaWppYW4gPGxpemhpamlhbkBmdWppdHN1LmNvbT4g
-d3JvdGU6DQo+Pg0KPj4gY29tbWl0IDlhYzAxZjQzNGExZSAoIlJETUEvcnhlOiBFeHRlbmQgZGJn
-IGxvZyBtZXNzYWdlcyB0byBlcnIgYW5kIGluZm8iKQ0KPj4gbmV3bHkgYWRkZWQgdGhpcyBpbmZv
-LiBCdXQgaXQgZGlkIG9ubHkgc2hvdyBudWxsIGRldmljZSB3aGVuDQo+PiB0aGUgcmRtYV9yeGUg
-aXMgYmVpbmcgbG9hZGVkIGJlY2F1c2UgZGV2X25hbWUocnhlLT5pYl9kZXYtPmRldikNCj4+IGhh
-cyBub3QgeWV0IGJlZW4gYXNzaWduZWQgYXQgdGhlIG1vbWVudDoNCj4+DQo+PiAiKG51bGwpOiBy
-eGVfc2V0X210dTogU2V0IG10dSB0byAxMDI0Ig0KPj4NCj4+IFJlbW92ZSBpdCB0byBzaWxlbnQg
-dGhpcyBtZXNzYWdlLCBjaGVjayB0aGUgbXR1IGZyb20gaXQgYmFja2VuZCBsaW5rDQo+PiBpbnN0
-ZWFkIGlmIG5lZWRlZC4NCj4+DQo+PiBDQzogQm9iIFBlYXJzb24gPHJwZWFyc29uaHBlQGdtYWls
-LmNvbT4NCj4+IFNpZ25lZC1vZmYtYnk6IExpIFpoaWppYW4gPGxpemhpamlhbkBmdWppdHN1LmNv
-bT4NCj4+IC0tLQ0KPj4gVjQ6IFJlbW92ZSBpdCByYXRoZXIgdGhhbiByZS1vcmRlciByeGVfc2V0
-X210dSgpIGFuZCByeGVfcmVnaXN0ZXJfZGV2aWNlKCkNCj4+IC0tLQ0KPj4gICBkcml2ZXJzL2lu
-ZmluaWJhbmQvc3cvcnhlL3J4ZS5jIHwgMiAtLQ0KPj4gICAxIGZpbGUgY2hhbmdlZCwgMiBkZWxl
-dGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9y
-eGUuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9yeGUvcnhlLmMNCj4+IGluZGV4IGEwODZkNTg4
-ZTE1OS4uYWU0NjZlNzJmYzQzIDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL3N3
-L3J4ZS9yeGUuYw0KPj4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGUuYw0KPj4g
-QEAgLTE2MCw4ICsxNjAsNiBAQCB2b2lkIHJ4ZV9zZXRfbXR1KHN0cnVjdCByeGVfZGV2ICpyeGUs
-IHVuc2lnbmVkIGludCBuZGV2X210dSkNCj4+DQo+PiAgICAgICAgICBwb3J0LT5hdHRyLmFjdGl2
-ZV9tdHUgPSBtdHU7DQo+PiAgICAgICAgICBwb3J0LT5tdHVfY2FwID0gaWJfbXR1X2VudW1fdG9f
-aW50KG10dSk7DQo+PiAtDQo+PiAtICAgICAgIHJ4ZV9pbmZvX2RldihyeGUsICJTZXQgbXR1IHRv
-ICVkXG4iLCBwb3J0LT5tdHVfY2FwKTsNCj4gDQo+IEknZCBsaWtlIHRvIGtlZXAgdGhpcyBzdGF0
-ZW1lbnQgc28gSSBjYW4gdGVsbCBpZiB0aGUgbXR1IHNldHVwIHdhcw0KPiBzdWNjZXNzZnVsIG9y
-IG5vdC4NCg0KRHVyaW5nIHRoZSBtb2R1bGUgbG9hZGluZywgb25jZSBpdCdzIGxvYWRlZCBzdWNj
-ZXNzZnVsbHksIHRoZSBtdHUgaXMgc2V0IGFzIHdlbGwuDQoNClRoZSBhbm90aGVyIGNhbGxlciBy
-eGVfbm90aWZ5KCktPnJ4ZV9zZXRfbXR1KCkgYWxyZWFkeSBoYWQgaXRzIG93biBkYmcgbWVzc2Fn
-ZSBmb3IgdGhpcywNCnBlb3BsZSBjYW4gZW5hYmxlIHRoZSBkYmcgaWYgbmVlZGVkLg0KDQpBbnl3
-YXksIEknbSBvcGVuIHRvIHlvdXIgcG9pbnQuDQoNCg0KVGhhbmtzDQpaaGlqaWFuDQoNCg0KPiAN
-Cj4+ICAgfQ0KPj4NCj4+ICAgLyogY2FsbGVkIGJ5IGlmYyBsYXllciB0byBjcmVhdGUgbmV3IHJ4
-ZSBkZXZpY2UuDQo+PiAtLQ0KPj4gMi4yOS4yDQo+Pg0KPj4=
+The current placement of trace_cma_alloc_start/finish misses the
+fail cases: !cma || !cma->count || !cma->bitmap.
+
+trace_cma_alloc_finish is also not emitted for the failure case
+where bitmap_count > bitmap_maxno.
+
+Fix these missed cases by moving the start event before the failure
+checks and moving the finish event to the out label.
+
+Fixes: 7bc1aec5e287 ("mm: cma: add trace events for CMA alloc perf testing")
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+---
+ mm/cma.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mm/cma.c b/mm/cma.c
+index 2b2494fd6b59..8341f1217a85 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -436,6 +436,9 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+ 	unsigned long i;
+ 	struct page *page = NULL;
+ 	int ret = -ENOMEM;
++	const char *name = cma ? cma->name : NULL;
++
++	trace_cma_alloc_start(name, count, align);
+ 
+ 	if (!cma || !cma->count || !cma->bitmap)
+ 		goto out;
+@@ -446,8 +449,6 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+ 	if (!count)
+ 		goto out;
+ 
+-	trace_cma_alloc_start(cma->name, count, align);
+-
+ 	mask = cma_bitmap_aligned_mask(cma, align);
+ 	offset = cma_bitmap_aligned_offset(cma, align);
+ 	bitmap_maxno = cma_bitmap_maxno(cma);
+@@ -496,8 +497,6 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+ 		start = bitmap_no + mask + 1;
+ 	}
+ 
+-	trace_cma_alloc_finish(cma->name, pfn, page, count, align, ret);
+-
+ 	/*
+ 	 * CMA can allocate multiple page blocks, which results in different
+ 	 * blocks being marked with different tags. Reset the tags to ignore
+@@ -516,6 +515,7 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+ 
+ 	pr_debug("%s(): returned %p\n", __func__, page);
+ out:
++	trace_cma_alloc_finish(name, pfn, page, count, align, ret);
+ 	if (page) {
+ 		count_vm_event(CMA_ALLOC_SUCCESS);
+ 		cma_sysfs_account_success_pages(cma, count);
+
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+-- 
+2.43.0.472.g3155946c3a-goog
+
 
