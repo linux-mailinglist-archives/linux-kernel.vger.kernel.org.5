@@ -1,108 +1,126 @@
-Return-Path: <linux-kernel+bounces-21802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A52829483
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:51:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D06C829485
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB72C281F6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:51:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE471F27A05
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA663DB85;
-	Wed, 10 Jan 2024 07:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CFD3B292;
+	Wed, 10 Jan 2024 07:52:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="z8uBaUIX"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R3mFbeWh"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67CA83D966
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e43fb2659so33252045e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:51:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704873103; x=1705477903; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YP56O+ka9egXRogxRY/IcuNAqoutWmWtHH4NGgeMzmE=;
-        b=z8uBaUIXtAGvxU/avXjjVUqq44MWWE0zMUksAxH35tC5huME9hVgkyvMB9Ca7iW4DR
-         HDm3trdaD9onNBvxJ2d5o2ugtEw8Mzyoky8iAIZjHanJOF8KV/QYaVsuQEQBrcLrJsX5
-         9gFkq7jhBd+OWRwRJxpjDpwjBeJ8ihZjWaWUxfp3GX1l5nkMXFrGaVWLV3/yHz74lc2i
-         6bQ93PiC/PZe6EZhM2yboT6zzpP3BGrWZRQSmN/7PdxkUNRExKRJkFJ4WRS3/RDzfw1a
-         wAtn3ImsLNKwcAtFUQcN76viAYpzM3QSPlCeP4r2vMC736+e7f83ZtvpLJGPokmtt5xy
-         Ix6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704873103; x=1705477903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YP56O+ka9egXRogxRY/IcuNAqoutWmWtHH4NGgeMzmE=;
-        b=BkbA6tDbCbyORoM0heCP10HoMRbDW50pfDDd1EH8Buqj0fH+Df3QWJQiVb5E1FORjK
-         BjOZRHQvdBd55fhVQbSKcGjx69g4rcUoda4IOdeCJGCD50qQ0RcbeU0LvHRvFLJEpbqL
-         FrQHHvc9LADgV7QyxJPg7u3IGXTIwZ95Fk4Avtw8jA3Yr6KoQfycAQ8HtTISfQPgOauX
-         /1CdVIGS+HgKDhHTSLfmMyypkWSLy85J1lwbkJB3KRjGLGR/AULWS8C4LtAobcllTgDu
-         eS7PbDTWmoMlpNu5oAiyQqrgOUxucIC7GHwAhIIWR/Cbj/X3bXaDTuEQdhVys0TeqMsX
-         mLYA==
-X-Gm-Message-State: AOJu0Ywy47WsRD5jmiaRU7G4WuBs49QqB8JQe8W00Dbk/rPet3w6k29I
-	iLpfAKzFEln6kLR76rV1U6QZU2tb/LKzZYobgvfScHxOLL4=
-X-Google-Smtp-Source: AGHT+IG9rGcLM44Fx06MOQlPAy6X0qV7njAUYmbcepFhr/WKeb4ywh4TgTxAt+9HF5bj4FVogxLGRQ==
-X-Received: by 2002:a05:600c:18a6:b0:40e:4ab8:639b with SMTP id x38-20020a05600c18a600b0040e4ab8639bmr249138wmp.39.1704873103535;
-        Tue, 09 Jan 2024 23:51:43 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id m26-20020a05600c3b1a00b0040d83ab2ecdsm1191216wms.21.2024.01.09.23.51.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 23:51:42 -0800 (PST)
-Date: Wed, 10 Jan 2024 10:51:39 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Matthias Yee <mgyee9@gmail.com>, gregkh@linuxfoundation.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] staging: vt6655: fix open parentheses alignment
-Message-ID: <f22e751e-863a-46a9-8dd6-0ac55f1ad9c8@moroto.mountain>
-References: <20240110072304.2226-1-mgyee9@gmail.com>
- <e3941caa-7546-415f-be7b-b955cf13aa8b@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7333E470;
+	Wed, 10 Jan 2024 07:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704873121; x=1736409121;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=pDvYrmhpBlr6Ouka9BO91HIwFCHKwrpkfzJvRUkQeIU=;
+  b=R3mFbeWhyfTUC4FatA/V4kS8eggkySaN2+0iDerTfS8nFdJNEOs59AW8
+   hnaLEjkpJdTpDgR2zVaA1hICj1jIitUkixP6hzv3RWv/6UNDQhdJDYgH6
+   P/i4FNdk0m8l03K5y2DSlKAt6mlphJCVBiJ780e4G2loW35W1clx47hO/
+   Q0YU3YnzNerzXK9kIAI3xEPRycpwXbjMZMuQyYbolWmh9vczdVWAbnvsn
+   AXFlqJ7MJUDgk2I3TldgO68iIfeWzLRupx9O0r4uQkeN8nuNcYgP21CdQ
+   3Mh1ixQFhjmt9OywY0P/ZlHLqGSYBwlsFzvROvLiSl56DOAPfCyACHEDd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="388882588"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="388882588"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 23:52:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="955281702"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="955281702"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.11.157]) ([10.93.11.157])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 23:51:57 -0800
+Message-ID: <5de13afa-4079-467a-a7b1-badfb9ac95cc@linux.intel.com>
+Date: Wed, 10 Jan 2024 15:51:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3941caa-7546-415f-be7b-b955cf13aa8b@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v10 1/5] iommu/vt-d: add pci_dev parameter to
+ qi_submit_sync and refactor callers
+To: Baolu Lu <baolu.lu@linux.intel.com>, kevin.tian@intel.com,
+ bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
+ robin.murphy@arm.com, lukas@wunner.de
+Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
+ <20231228170206.720675-2-haifeng.zhao@linux.intel.com>
+ <a2e507b3-a018-44d8-9e92-459670505bcd@linux.intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <a2e507b3-a018-44d8-9e92-459670505bcd@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 09, 2024 at 11:30:17PM -0800, Randy Dunlap wrote:
-> > diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-> > index 36183f2a64c1..688c870d89bc 100644
-> > --- a/drivers/staging/vt6655/card.c
-> > +++ b/drivers/staging/vt6655/card.c
-> > @@ -81,9 +81,9 @@ static void vt6655_mac_set_bb_type(void __iomem *iobase, u32 mask)
-> >   * Return Value: none
-> >   */
-> >  static void calculate_ofdmr_parameter(unsigned char rate,
-> > -				       u8 bb_type,
-> > -				       unsigned char *tx_rate,
-> > -				       unsigned char *rsv_time)
-> > +				      u8 bb_type,
-> > +				      unsigned char *tx_rate,
-> > +				      unsigned char *rsv_time)
-> >  {
-> >  	switch (rate) {
-> >  	case RATE_6M:
-> 
-> Is there any chance that checkpatch is wrong about this warning?
-> 
-> I much prefer the alignment as it was before this patch: following lines
-> are aligned with the first parameter after the '('.
-> 
 
-It just looks weird in the diff because of the + character at the front
-and how the tabs work out.  It looks ok in the code.
+On 1/10/2024 12:59 PM, Baolu Lu wrote:
+> On 12/29/23 1:02 AM, Ethan Zhao wrote:
+>> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
+>
+> Please don't leave the message body empty. You should describe why do
+> you want to add the change in this patch.
+Seems the description part was lost, will append next version.
+>
+>> ---
+>>   drivers/iommu/intel/dmar.c          | 45 +++++++++++++++++++++--------
+>>   drivers/iommu/intel/iommu.c         | 26 +++++------------
+>>   drivers/iommu/intel/iommu.h         | 17 +++++------
+>>   drivers/iommu/intel/irq_remapping.c |  2 +-
+>>   drivers/iommu/intel/pasid.c         | 11 ++-----
+>>   drivers/iommu/intel/svm.c           | 13 ++++-----
+>>   6 files changed, 58 insertions(+), 56 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>> index 23cb80d62a9a..3d661f2b7946 100644
+>> --- a/drivers/iommu/intel/dmar.c
+>> +++ b/drivers/iommu/intel/dmar.c
+>> @@ -1344,7 +1344,7 @@ static int qi_check_fault(struct intel_iommu 
+>> *iommu, int index, int wait_index)
+>>    * can be part of the submission but it will not be polled for 
+>> completion.
+>>    */
+>>   int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+>> -           unsigned int count, unsigned long options)
+>> +           unsigned int count, unsigned long options, struct pci_dev 
+>> *pdev)
+>
+> How about adding a bit in options parameter to tell whether the @pdev is
+> valid?
 
-regards,
-dan carpenter
+well, checking the option bit or checking pdev == NULL, use one parameter
 
+to describe another one is common function defination method if one
+
+parameter couldn't self-describe.
+
+This case, we always check pdev(one checking), and if we check option 
+bit first, then have
+
+to check pdev again (one or two checking).  I prefer checking pdev only.
+
+
+Thanks,
+
+Ethan
+
+>
+> Best regards,
+> baolu
 
