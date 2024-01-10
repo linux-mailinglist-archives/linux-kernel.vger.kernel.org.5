@@ -1,168 +1,141 @@
-Return-Path: <linux-kernel+bounces-21827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D86D8294E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 455328294E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:15:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC8C91F24ADA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:13:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D24CD1F27505
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674FC3EA6B;
-	Wed, 10 Jan 2024 08:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2693E492;
+	Wed, 10 Jan 2024 08:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bVeMmdAa"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LSTX9FCY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E863EA82;
-	Wed, 10 Jan 2024 08:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d3b84173feso7686205ad.1;
-        Wed, 10 Jan 2024 00:12:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704874349; x=1705479149; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iYaz82mYYzCwX1xxNWNg9eztYs/P62dbK5BPPUgSW7A=;
-        b=bVeMmdAa/ZnF9uxmuvX0BQN6P9WSbE46OShI8wg4e4R5wFZBJUyXohtUnHb5iks8/o
-         YbW8wxO9xnA5N+A6FhJK4OTtj6YQtX9VvfstnIJY+kli1XVUUCONHtPSrou7nqK3AyVO
-         xKotmeXzgWAvpX7rUO8E7exlnwAe5OIQLBzFUgifq5Cq6DSxd9Mw0gUv2u1fibB2ygw0
-         uLlUuHifuf+/anVaG4TrmGGdW/bQoawdVwi3ME+I+nKya+IWKjJgoJ6AJRHP3W6IGwzS
-         sIzbrU10XwkuOcLpa/Zv6EJIOeY2lQsQ9yXdDlYKkVwkcSzZwFUm/qKP5JD9ENCr2yN/
-         QOWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704874349; x=1705479149;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iYaz82mYYzCwX1xxNWNg9eztYs/P62dbK5BPPUgSW7A=;
-        b=RmShWWfO9gAz9ylv6DUkNVFS3SB9wSfyN11ZT/0Sx4Nqko6dWW64UJisU2eFSltSZe
-         KTjX4CMw0nOeEu4qRKrvXyr109AqcHVSaUANYpyqK7BdXKhmEKeMdALtCwAm2x84sPE0
-         x2TPmpmvaY0QHQmAauT7VAjvT1cZPBms73WC9Ccb3P1YzfE/+5srmHZEJHRdwN765avQ
-         bNdr8zSAjOJfMm+1PukPmiSWoZf+8hsg4N5gvR7dQsoMHyLMQTG63wJnCcnsJSdnMwvz
-         5dX4OQG2IfkXpFLC/HLPfQAESYvE+8hT3HN89QxQfJOYNghHbCAEJ6dCOeqWs6LUpMZl
-         ixAg==
-X-Gm-Message-State: AOJu0YzmIGf1nGOV0doTdS7PBh7L0u3idgat8J1FjGDFuOFlj6dBNZqM
-	nLF4N4YRheFfIylYWB91B20=
-X-Google-Smtp-Source: AGHT+IHpdXji4t0wxJVbSPH8Z2/slBHqUAFGgIFZITd1/McXsQZu63Yz4Pa307KIahaW3bvcuHPVrw==
-X-Received: by 2002:a17:902:9a90:b0:1d4:e308:d6fb with SMTP id w16-20020a1709029a9000b001d4e308d6fbmr1207351plp.5.1704874349630;
-        Wed, 10 Jan 2024 00:12:29 -0800 (PST)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id c12-20020a170902b68c00b001cf51972586sm3044243pls.292.2024.01.10.00.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 00:12:29 -0800 (PST)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: akpm@linux-foundation.org
-Cc: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [RESEND PATCH v2 2/2] lib min_heap: Optimize number of comparisons in min_heapify()
-Date: Wed, 10 Jan 2024 16:12:13 +0800
-Message-Id: <20240110081213.2289636-3-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240110081213.2289636-1-visitorckw@gmail.com>
-References: <20240110081213.2289636-1-visitorckw@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EDC3D966
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704874498;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QGG/2geE26TRJsrsVr6H+l4Msp6AEXHSx5RkZnJct/Y=;
+	b=LSTX9FCY/Rk22LV1X87GeOBXWhqNlrnWUyhn2MyJqao3GmCtzeCaV85hK8SP3T4gOByNgy
+	sOw+uixyw+swmwWZlqNs9OfRKTTwdgUHkXvXL+vuhE9ks5rFahbzhGNFtyle+XEVaVDUMR
+	WpRi61rKtC6ROwhPMwEk19wy/r7OJGI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-462-Sa_Xnn_eOqS4KaK6Q35JPQ-1; Wed,
+ 10 Jan 2024 03:14:55 -0500
+X-MC-Unique: Sa_Xnn_eOqS4KaK6Q35JPQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7724A1C0514A;
+	Wed, 10 Jan 2024 08:14:54 +0000 (UTC)
+Received: from wtfbox.lan (unknown [10.45.225.130])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 24DA140C6EB9;
+	Wed, 10 Jan 2024 08:14:53 +0000 (UTC)
+Date: Wed, 10 Jan 2024 09:14:51 +0100
+From: Artem Savkov <asavkov@redhat.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, jolsa@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix potential premature unload
+ in bpf_testmod
+Message-ID: <ZZ5R-3FAHNoDStqc@wtfbox.lan>
+References: <20240109164317.16371-1-asavkov@redhat.com>
+ <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Optimize the min_heapify() function, resulting in a significant
-reduction of approximately 50% in the number of comparisons for large
-random inputs, while maintaining identical results.
+On Tue, Jan 09, 2024 at 11:40:38AM -0800, Yonghong Song wrote:
+> 
+> On 1/9/24 8:43 AM, Artem Savkov wrote:
+> > It is possible for bpf_kfunc_call_test_release() to be called from
+> > bpf_map_free_deferred() when bpf_testmod is already unloaded and
+> > perf_test_stuct.cnt which it tries to decrease is no longer in memory.
+> > This patch tries to fix the issue by waiting for all references to be
+> > dropped in bpf_testmod_exit().
+> > 
+> > The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
+> > but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
+> > synchronous grace periods urgently").
+> > 
+> > Fixes: 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
+> 
+> Please add your Signed-off-by tag.
 
-The current implementation performs two comparisons per level to
-identify the minimum among three elements. In contrast, the proposed
-bottom-up variation uses only one comparison per level to assess two
-children until reaching the leaves. Then, it sifts up until the correct
-position is determined.
+Thanks for noticing. Will resend with signed-off-by and your ack.
 
-Typically, the process of sifting down proceeds to the leaf level,
-resulting in O(1) secondary comparisons instead of log2(n). This
-optimization significantly reduces the number of costly indirect
-function calls and improves overall performance.
+> I think the root cause is that bpf_kfunc_call_test_acquire() kfunc
+> is defined in bpf_testmod and the kfunc returns some data in bpf_testmod.
+> But the release function bpf_kfunc_call_test_release() is in the kernel.
+> The release func tries to access some data in bpf_testmod which might
+> have been unloaded. The prog_test_ref_kfunc is defined in the kernel, so
+> no bpf_testmod btf reference is hold so bpf_testmod can be unloaded before
+> bpf_kfunc_call_test_release().
+> As you mentioned, we won't have this issue if bpf_kfunc_call_test_acquire()
+> is also in the kernel.
+> 
+> I think putting bpf_kfunc_call_test_acquire() in bpf_testmod and
+> bpf_kfunc_call_test_release() in kernel is not a good idea and confusing.
+> But since this is only for tests, I guess we can live with that. With that,
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- include/linux/min_heap.h | 42 +++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 20 deletions(-)
-
-diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-index 18a581310eb3..d52daf45861b 100644
---- a/include/linux/min_heap.h
-+++ b/include/linux/min_heap.h
-@@ -35,31 +35,33 @@ static __always_inline
- void min_heapify(struct min_heap *heap, int pos,
- 		const struct min_heap_callbacks *func)
- {
--	void *left, *right, *parent, *smallest;
-+	void *left, *right;
- 	void *data = heap->data;
-+	void *root = data + pos * func->elem_size;
-+	int i = pos, j;
+Correct. 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
+also mentions why bpf_kfunc_call_test_release() is not in the module and
+states that this is temporary. I'll add a comment in v2 so the wait can
+be removed once the functions are re-united.
  
-+	/* Find the sift-down path all the way to the leaves. */
- 	for (;;) {
--		if (pos * 2 + 1 >= heap->nr)
-+		if (i * 2 + 2 >= heap->nr)
- 			break;
-+		left = data + (i * 2 + 1) * func->elem_size;
-+		right = data + (i * 2 + 2) * func->elem_size;
-+		i = func->less(left, right) ? i * 2 + 1 : i * 2 + 2;
-+	}
- 
--		left = data + ((pos * 2 + 1) * func->elem_size);
--		parent = data + (pos * func->elem_size);
--		smallest = parent;
--		if (func->less(left, smallest))
--			smallest = left;
--
--		if (pos * 2 + 2 < heap->nr) {
--			right = data + ((pos * 2 + 2) * func->elem_size);
--			if (func->less(right, smallest))
--				smallest = right;
--		}
--		if (smallest == parent)
--			break;
--		func->swp(smallest, parent);
--		if (smallest == left)
--			pos = (pos * 2) + 1;
--		else
--			pos = (pos * 2) + 2;
-+	/* Special case for the last leaf with no sibling. */
-+	if (i * 2 + 2 == heap->nr)
-+		i = i * 2 + 1;
-+
-+	/* Backtrack to the correct location. */
-+	while (i != pos && func->less(root, data + i * func->elem_size))
-+		i = (i - 1) / 2;
-+
-+	/* Shift the element into its correct place. */
-+	j = i;
-+	while (i != pos) {
-+		i = (i - 1) / 2;
-+		func->swp(data + i * func->elem_size, data + j * func->elem_size);
- 	}
- }
- 
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> 
+> > ---
+> >   tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > index 91907b321f913..63f0dbd016703 100644
+> > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > @@ -2,6 +2,7 @@
+> >   /* Copyright (c) 2020 Facebook */
+> >   #include <linux/btf.h>
+> >   #include <linux/btf_ids.h>
+> > +#include <linux/delay.h>
+> >   #include <linux/error-injection.h>
+> >   #include <linux/init.h>
+> >   #include <linux/module.h>
+> > @@ -544,6 +545,9 @@ static int bpf_testmod_init(void)
+> >   static void bpf_testmod_exit(void)
+> >   {
+> > +	while (refcount_read(&prog_test_struct.cnt) > 1)
+> > +		msleep(20);
+> > +
+> >   	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
+> >   }
+> 
+
 -- 
-2.25.1
+Regards,
+  Artem
 
 
