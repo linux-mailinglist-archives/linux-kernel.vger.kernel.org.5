@@ -1,221 +1,153 @@
-Return-Path: <linux-kernel+bounces-22139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 236C68299DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:54:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C46E8299E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:55:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 266A21C25E59
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:54:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BC3BB219BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B6C47F47;
-	Wed, 10 Jan 2024 11:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B1C47F67;
+	Wed, 10 Jan 2024 11:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="knSbypC6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="aXWv6Vmz"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AD347A74
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704887644; x=1736423644;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=rqHAolN3UW97zYZCEDyf1IA3g2EhCTdzU+H8qJnZp6U=;
-  b=knSbypC6bISCVIvOFI670Ts+QGyAQP1UWOU9i5K+6Dj0jj1E67Yi9wG8
-   IbnPiRf9fk4xdH0xDS7y1Fy9ydAK+Gatk+Bde+dVxbkx0SA0dF1uipbCe
-   lwjU1lXUYxrUXNIPGtk5prmMItU9AmxPc++lHpD7yzkFALl8dqs8k5xiA
-   9WWjQqotgc4r76cfEWfNfl6p6xK7e3/56Vwm13PsUGa14wyseJdDYemny
-   oD0eU/LFpKDlONMH4A8We6iFfFWiqpfCi73OXUj5fzaubrnGFfXyvvQpa
-   6B6lp1cxKIQ0shTp3rzKgbfvyIm7U+vOZfxtaQUT73cchOQhr4dER23bE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="484675008"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="484675008"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 03:54:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="731833730"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="731833730"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 10 Jan 2024 03:54:02 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNX9j-0006xe-2p;
-	Wed, 10 Jan 2024 11:53:59 +0000
-Date: Wed, 10 Jan 2024 19:53:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Wei Hu <weh@microsoft.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Sasha Levin <sashal@kernel.org>
-Subject: drivers/video/fbdev/hyperv_fb.c:1053:43: sparse: sparse: incorrect
- type in assignment (different address spaces)
-Message-ID: <202401101916.zIZPu2Kn-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76DF47F44
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:55:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d4f5d902dso42927945e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:55:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1704887722; x=1705492522; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p22+unadpjiuSy6RGYATC6dS70dMkUd0mDAJ61uro9I=;
+        b=aXWv6VmzjH5x7RWHFSyBQC5qfCLssOfMva95/wI6S21LP0NBkVvstfZR+Gqm1V6dow
+         KwsUt7hIY+F6IUPzZm1B2HAGtVmARYUMAO2Hx1Wx/i4jyWSRYgrKjr2Uq1WMbm53/Rw/
+         Ro8oQlAI6R8ATShhNYSEF/LBT4CLSR3ED3A7JL1F1EcT9uYYXuCXWcN9XRRYisPH+Kxf
+         sxG0vLB5BW7rfn9ddWHmAHWfLnPz2AJpm5kDjQu9Df7RbAuZNb2A3kbFjbpk/Wpuo+sw
+         jFwbXWEyex7fi5dwz+eDjCQuBxUFwfg26XM1x3iRM8CL9DZfzsqTKdKt/hi8+GKJlvfj
+         LelQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704887722; x=1705492522;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p22+unadpjiuSy6RGYATC6dS70dMkUd0mDAJ61uro9I=;
+        b=MqKGKTC+IMG/ygBUGcRGn5uKzyh5tGr6akGVyxkxBmn6c9BB3BpYVb5pk6oMsauyUy
+         6T8hWSrevo3z7ML3RPKGtU6A4JaXuCqWnVxGtpbzy3ssNrLc8XHJRHGr1Fkuj8p+bxZN
+         KpRQx7bf21mWxjWvfWtHcBNl+Ti0RjUUMkgB3Ov6y7rdNVWkdKAU+ceTaM2rttloANHC
+         jXswLn33QpQfvpDDPDtMWOdqYZzCulRsK23ZPVF6KDeNhhTXQayd0qCwJD7Ndam6yHgF
+         ooJue/RsIP1/RYS2f8Sf80c+YOdAleVapuGGAXp7yw/bX2pGyvGrNy/nFkxamjgO6qIR
+         C9Pg==
+X-Gm-Message-State: AOJu0YxphbDpxWs6KK3gSXAiC0tDrC2Xtv6WTKE5C5jhB3gI/FB1KtMj
+	c/jVNqiT+44QX1728uqmaQD7HcfyXVd1Sg==
+X-Google-Smtp-Source: AGHT+IEce4ODuGwcEn2BKXeEu1OoSU3T5p4yP+WdC1xjqjakHlYuOMiREbeBunnkwWykVuXti0AI4A==
+X-Received: by 2002:a05:600c:84ca:b0:40e:52ce:f05 with SMTP id er10-20020a05600c84ca00b0040e52ce0f05mr482062wmb.70.1704887721880;
+        Wed, 10 Jan 2024 03:55:21 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.5])
+        by smtp.gmail.com with ESMTPSA id g4-20020adfa484000000b00336344c3c3fsm4739160wrb.90.2024.01.10.03.55.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 03:55:21 -0800 (PST)
+Message-ID: <3e430f8e-b327-485f-ae19-6f1938083dd3@tuxon.dev>
+Date: Wed, 10 Jan 2024 13:55:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 08/19] net: ravb: Move the IRQs get and
+ request in the probe function
+Content-Language: en-US
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de,
+ yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, geert+renesas@glider.be,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-9-claudiu.beznea.uj@bp.renesas.com>
+ <02548b1b-d32c-78b1-f1b6-5fdb505d31bb@omp.ru>
+ <ee783b61-95fc-44ab-a311-0ca7d058ac39@tuxon.dev>
+ <dce944a1-9557-9ab0-d30d-7a51a47c6d96@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <dce944a1-9557-9ab0-d30d-7a51a47c6d96@omp.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-commit: 3a6fb6c4255c3893ab61e2bd4e9ae01ca6bbcd94 video: hyperv: hyperv_fb: Use physical memory for fb on HyperV Gen 1 VMs.
-date:   3 years, 11 months ago
-config: i386-randconfig-061-20240106 (https://download.01.org/0day-ci/archive/20240110/202401101916.zIZPu2Kn-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401101916.zIZPu2Kn-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401101916.zIZPu2Kn-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/video/fbdev/hyperv_fb.c:1053:43: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got unsigned char *mmio_vp @@
-   drivers/video/fbdev/hyperv_fb.c:1053:43: sparse:     expected char [noderef] __iomem *screen_base
-   drivers/video/fbdev/hyperv_fb.c:1053:43: sparse:     got unsigned char *mmio_vp
-   drivers/video/fbdev/hyperv_fb.c:1107:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/video/fbdev/hyperv_fb.c:1111:27: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got unsigned char *dio_vp @@
-   drivers/video/fbdev/hyperv_fb.c:1111:27: sparse:     expected char [noderef] __iomem *screen_base
-   drivers/video/fbdev/hyperv_fb.c:1111:27: sparse:     got unsigned char *dio_vp
+On 09.01.2024 22:47, Sergey Shtylyov wrote:
+> On 1/8/24 11:58 AM, claudiu beznea wrote:
+> 
+> [...]
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> The runtime PM implementation will disable clocks at the end of
+>>>> ravb_probe(). As some IP variants switch to reset mode as a result of
+>>>> setting module standby through clock disable APIs, to implement runtime PM
+>>>> the resource parsing and requesting are moved in the probe function and IP
+>>>> settings are moved in the open function. This is done because at the end of
+>>>> the probe some IP variants will switch anyway to reset mode and the
+>>>> registers content is lost. Also keeping only register specific operations
+>>>> in the ravb_open()/ravb_close() functions will make them faster.
+>>>>
+>>>> Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
+>>>> the interface is open. As now IRQs gets and requests are in a single place
+>>>> there is no need to keep intermediary data (like ravb_rx_irqs[] and
+>>>> ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
+>>>
+>>>    There's one thing that you probably didn't take into account: after
+>>> you call request_irq(), you should be able to handle your IRQ as it's
+>>> automatically unmasked, unless you pass IRQF_NO_AUTOEN to request_irq().
+>>> Your device may be held i reset or even powered off but if you pass IRQF_SHARED to request_irq() (you do in a single IRQ config), you must
+>>> be prepared to get your device's registers read (in order to ascertain
+> 
+>    And, at least on arm32, reading a powered off (or not clocked?) device's
+> register causes an imprecise external abort exception -- which results in a
+> kernel oops...
+> 
+>>> whether it's your IRQ or not). And you can't even pass IRQF_NO_AUTOEN
+>>> along with IRQF_SHARED, according to my reading of the IRQ code...
+>>
+>> Good point!
+>>
+>>>> This is a preparatory change to add runtime PM support for all IP variants.
+>>>
+>>>   I don't readily see why this is necessary for the full-fledged RPM
+>>> support...
+>>
+>> I tried to speed up the ravb_open()/ravb_close() but missed the IRQF_SHARED
+> 
+>    I doubt that optimizing ravb_{open,close}() is worth pursuing, frankly...
+> 
+>> IRQ. As there is only one IRQ requested w/ IRQF_SHARED, are you OK with
+>> still keeping the rest of IRQs handled as proposed by this patch?
+> 
+>    I'm not, as this doesn't really seem necessary for your main goal.
+> It's not clear in what state U-Boot leaves EtherAVB...
 
-vim +1053 drivers/video/fbdev/hyperv_fb.c
+Ok. One other reason I did this is, as commit message states, to keep
+resource parsing and allocation/freeing in probe/remove and hardware
+settings in open/close.
 
-  1011	
-  1012	
-  1013	/* Get framebuffer memory from Hyper-V video pci space */
-  1014	static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
-  1015	{
-  1016		struct hvfb_par *par = info->par;
-  1017		struct pci_dev *pdev  = NULL;
-  1018		void __iomem *fb_virt;
-  1019		int gen2vm = efi_enabled(EFI_BOOT);
-  1020		resource_size_t pot_start, pot_end;
-  1021		phys_addr_t paddr;
-  1022		int ret;
-  1023	
-  1024		info->apertures = alloc_apertures(1);
-  1025		if (!info->apertures)
-  1026			return -ENOMEM;
-  1027	
-  1028		if (!gen2vm) {
-  1029			pdev = pci_get_device(PCI_VENDOR_ID_MICROSOFT,
-  1030				PCI_DEVICE_ID_HYPERV_VIDEO, NULL);
-  1031			if (!pdev) {
-  1032				pr_err("Unable to find PCI Hyper-V video\n");
-  1033				kfree(info->apertures);
-  1034				return -ENODEV;
-  1035			}
-  1036	
-  1037			info->apertures->ranges[0].base = pci_resource_start(pdev, 0);
-  1038			info->apertures->ranges[0].size = pci_resource_len(pdev, 0);
-  1039	
-  1040			/*
-  1041			 * For Gen 1 VM, we can directly use the contiguous memory
-  1042			 * from VM. If we succeed, deferred IO happens directly
-  1043			 * on this allocated framebuffer memory, avoiding extra
-  1044			 * memory copy.
-  1045			 */
-  1046			paddr = hvfb_get_phymem(hdev, screen_fb_size);
-  1047			if (paddr != (phys_addr_t) -1) {
-  1048				par->mmio_pp = paddr;
-  1049				par->mmio_vp = par->dio_vp = __va(paddr);
-  1050	
-  1051				info->fix.smem_start = paddr;
-  1052				info->fix.smem_len = screen_fb_size;
-> 1053				info->screen_base = par->mmio_vp;
-  1054				info->screen_size = screen_fb_size;
-  1055	
-  1056				par->need_docopy = false;
-  1057				goto getmem_done;
-  1058			}
-  1059			pr_info("Unable to allocate enough contiguous physical memory on Gen 1 VM. Using MMIO instead.\n");
-  1060		} else {
-  1061			info->apertures->ranges[0].base = screen_info.lfb_base;
-  1062			info->apertures->ranges[0].size = screen_info.lfb_size;
-  1063		}
-  1064	
-  1065		/*
-  1066		 * Cannot use the contiguous physical memory.
-  1067		 * Allocate mmio space for framebuffer.
-  1068		 */
-  1069		dio_fb_size =
-  1070			screen_width * screen_height * screen_depth / 8;
-  1071	
-  1072		if (gen2vm) {
-  1073			pot_start = 0;
-  1074			pot_end = -1;
-  1075		} else {
-  1076			if (!(pci_resource_flags(pdev, 0) & IORESOURCE_MEM) ||
-  1077			    pci_resource_len(pdev, 0) < screen_fb_size) {
-  1078				pr_err("Resource not available or (0x%lx < 0x%lx)\n",
-  1079				       (unsigned long) pci_resource_len(pdev, 0),
-  1080				       (unsigned long) screen_fb_size);
-  1081				goto err1;
-  1082			}
-  1083	
-  1084			pot_end = pci_resource_end(pdev, 0);
-  1085			pot_start = pot_end - screen_fb_size + 1;
-  1086		}
-  1087	
-  1088		ret = vmbus_allocate_mmio(&par->mem, hdev, pot_start, pot_end,
-  1089					  screen_fb_size, 0x100000, true);
-  1090		if (ret != 0) {
-  1091			pr_err("Unable to allocate framebuffer memory\n");
-  1092			goto err1;
-  1093		}
-  1094	
-  1095		fb_virt = ioremap(par->mem->start, screen_fb_size);
-  1096		if (!fb_virt)
-  1097			goto err2;
-  1098	
-  1099		/* Allocate memory for deferred IO */
-  1100		par->dio_vp = vzalloc(round_up(dio_fb_size, PAGE_SIZE));
-  1101		if (par->dio_vp == NULL)
-  1102			goto err3;
-  1103	
-  1104		/* Physical address of FB device */
-  1105		par->mmio_pp = par->mem->start;
-  1106		/* Virtual address of FB device */
-  1107		par->mmio_vp = (unsigned char *) fb_virt;
-  1108	
-  1109		info->fix.smem_start = par->mem->start;
-  1110		info->fix.smem_len = dio_fb_size;
-  1111		info->screen_base = par->dio_vp;
-  1112		info->screen_size = dio_fb_size;
-  1113	
-  1114	getmem_done:
-  1115		remove_conflicting_framebuffers(info->apertures,
-  1116						KBUILD_MODNAME, false);
-  1117		if (!gen2vm)
-  1118			pci_dev_put(pdev);
-  1119		kfree(info->apertures);
-  1120	
-  1121		return 0;
-  1122	
-  1123	err3:
-  1124		iounmap(fb_virt);
-  1125	err2:
-  1126		vmbus_free_mmio(par->mem->start, screen_fb_size);
-  1127		par->mem = NULL;
-  1128	err1:
-  1129		if (!gen2vm)
-  1130			pci_dev_put(pdev);
-  1131		kfree(info->apertures);
-  1132	
-  1133		return -ENOMEM;
-  1134	}
-  1135	
+Anyway, I'll revert all the changes IRQ related.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thank you,
+Claudiu Beznea
+
+> 
+> [...]
+> 
+> MBR, Sergey
 
