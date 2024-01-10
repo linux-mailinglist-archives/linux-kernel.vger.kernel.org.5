@@ -1,122 +1,152 @@
-Return-Path: <linux-kernel+bounces-21912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFA88829681
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:47:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E96829679
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E0CC288DC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:47:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 163C21F2554C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA11F3FB25;
-	Wed, 10 Jan 2024 09:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UPEoGCz1"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9393FB20;
+	Wed, 10 Jan 2024 09:45:24 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 901333F8F4;
-	Wed, 10 Jan 2024 09:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A8dZTp021783;
-	Wed, 10 Jan 2024 09:45:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=TJWOUqqOWfLSHwbrjDN1CSgQZxgpmxtxhOl651aGMzQ=; b=UP
-	EoGCz1JIcJI7najrHCxJQwR8o/m+doI/I+1jBZUEDUeH0wV/JgukuXcC+HK8hZ7P
-	9yVMeGxAl+T2YfE6Qgdc+5kkfqI5jNvJfgF+NO2w08BlghoHSfq3mxh+ct36ZW8p
-	TCbEWCPmVIfUR/xduUOG8UVT9eTIx3Cxvdst/IyApQ+0sSjk6nS9afaN31NNFeKH
-	b4UC93/oxzVG7hbrTJ1YMnBrDeI/A2QMzmYr2kFNZtPm4Sr3Cryg1UJL8Z8tDnkY
-	KSmQ24xE0lndkMFrtWw42dW+pdEzjbOrCsEIxy63wCwmVzpDDyGRSJQjzgdH/mC/
-	kRj53YjMop1hscVvf8jQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9vfhw4g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 09:45:18 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40A9jISZ023539
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 09:45:18 GMT
-Received: from [10.217.217.69] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 01:45:12 -0800
-Message-ID: <c839d2b9-1b4b-f2a0-ff5d-9e841daec9f2@quicinc.com>
-Date: Wed, 10 Jan 2024 15:15:08 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EC863EA96;
+	Wed, 10 Jan 2024 09:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T92vJ1Zscz1Q7gB;
+	Wed, 10 Jan 2024 17:44:28 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 83AA018006F;
+	Wed, 10 Jan 2024 17:45:12 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 10 Jan
+ 2024 17:45:11 +0800
+Subject: Re: [PATCH net-next 3/6] mm/page_alloc: use initial zero offset for
+ page_frag_alloc_align()
+To: Alexander Duyck <alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
+References: <20240103095650.25769-1-linyunsheng@huawei.com>
+ <20240103095650.25769-4-linyunsheng@huawei.com>
+ <f4abe71b3439b39d17a6fb2d410180f367cadf5c.camel@gmail.com>
+ <74c9a3a1-5204-f79a-95ff-5c108ec6cf2a@huawei.com>
+ <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
+ <f138193c-30e0-b1ba-1735-5f569230724b@huawei.com>
+ <CAKgT0UcujEktOnHx7mxWd+Jah1J9mHFWnTx35vc3x25uUadxaA@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <b77ef32e-64b9-2e4f-8041-ccb46dea4caa@huawei.com>
+Date: Wed, 10 Jan 2024 17:45:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 2/3] dt-bindings: clock: Update the gcc resets for sm8150
+In-Reply-To: <CAKgT0UcujEktOnHx7mxWd+Jah1J9mHFWnTx35vc3x25uUadxaA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Michael
- Turquette" <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Deepak Katragadda" <dkatraga@codeaurora.org>,
-        Vinod Koul <vkoul@kernel.org>, "Taniya Das" <quic_tdas@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Ajit Pandey
-	<quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>
-References: <20240104-sm8150-dfs-support-v1-0-a5eebfdc1b12@quicinc.com>
- <20240104-sm8150-dfs-support-v1-2-a5eebfdc1b12@quicinc.com>
- <218f9822-0bbf-489e-b3ac-bb5ec6cee8d4@linaro.org>
-From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <218f9822-0bbf-489e-b3ac-bb5ec6cee8d4@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: bKXOcpCmGzCMjtTd2VmxKzNWt2EPMUPl
-X-Proofpoint-ORIG-GUID: bKXOcpCmGzCMjtTd2VmxKzNWt2EPMUPl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1011 priorityscore=1501
- impostorscore=0 adultscore=0 bulkscore=0 mlxlogscore=774 spamscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100079
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-
-On 1/4/2024 9:13 PM, Krzysztof Kozlowski wrote:
-> On 04/01/2024 15:23, Satya Priya Kakitapalli wrote:
->> Add all the available resets for the global clock controller
->> on sm8150.
+On 2024/1/9 23:37, Alexander Duyck wrote:
+> On Tue, Jan 9, 2024 at 3:22 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 >>
->> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
->> ---
-> Subject:
-> Everything can be an update. You also miss prefix. Instead:
-> dt-bindings: clock: qcom,gcc-sm8150: Add Video camcc whatever foobar
-> reset IDs
+>> On 2024/1/9 0:25, Alexander Duyck wrote:
+>>> On Mon, Jan 8, 2024 at 12:59 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> ...
+>>
+>>>
+>>>>>
+>>>>> 2. By starting at the end and working toward zero we can use built in
+>>>>> functionality of the CPU to only have to check and see if our result
+>>>>> would be signed rather than having to load two registers with the
+>>>>> values and then compare them which saves us a few cycles. In addition
+>>>>> it saves us from having to read both the size and the offset for every
+>>>>> page.
+>>>>
+>>>> I suppose the above is ok if we only use the page_frag_alloc*() API to
+>>>> allocate memory for skb->data, not for the frag in skb_shinfo(), as by
+>>>> starting at the end and working toward zero, it means we can not do skb
+>>>> coalescing.
+>>>>
+>>>> As page_frag_alloc*() is returning va now, I am assuming most of users
+>>>> is using the API for skb->data, I guess it is ok to drop this patch for
+>>>> now.
+>>>>
+>>>> If we allow page_frag_alloc*() to return struct page, we might need this
+>>>> patch to enable coalescing.
+>>>
+>>> I would argue this is not the interface for enabling coalescing. This
+>>> is one of the reasons why this is implemented the way it is. When you
+>>> are aligning fragments you aren't going to be able to coalesce the
+>>> frames anyway as the alignment would push the fragments apart.
+>>
+>> It seems the alignment requirement is the same for the same user of a page_frag
+>> instance, so the aligning does not seem to be a problem for coalescing?
+> 
+> I'm a bit confused as to what coalescing you are referring to. If you
+> can provide a link it would be useful.
+> 
+> The problem is page_frag is a very generic item and can be generated
+> from a regular page on NICs that can internally reuse the same page
+> instance for multiple buffers. So it is possible to coalesce page
+> frags, however it is very unlikely to be coalescing them in the case
+> of them being used for skb buffers since it would require aligned
+> payloads on the network in order to really make it work without
+> hardware intervention of some sort and on such devices they are likely
+> allocating entire pages instead of page frags for the buffers.
+
+The main usecase in my mind is the page_frag used in the tx part for
+networking if we are able to unify the page_frag and page_frag_cache in
+the future:
+https://elixir.bootlin.com/linux/v6.7-rc8/source/net/ipv4/tcp.c#L1183
+
+Do you think if it makes sense to unify them using below unified struct,
+and provide API for returning 'page' and 'va' as page_pool does now?
+It may mean we need to add one pointer to the new struct and are not able
+do some trick for performance, I suppose that is ok as there are always
+some trade off for maintainability and evolvability?
+
+struct page_frag {
+        struct *page;
+	void *va;
+#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+	__u16 offset;
+	__u16 size;
+#else
+	__u32 offset;
+#endif
+	/* we maintain a pagecount bias, so that we dont dirty cache line
+	 * containing page->_refcount every time we allocate a fragment.
+	 */
+	unsigned int		pagecnt_bias;
+	bool pfmemalloc;
+};
 
 
-Okay, will update the subject.
+Another usecase that is not really related is: hw may be configured with
+a small BD buf size, for 2K and configured with a big mtu size or have
+hw gro enabled, for 4K pagesize, that means we may be able to reduce the
+number of the frag num to half as it is usually the case that two
+consecutive BD pointing to the same page. I implemented a POC in hns3
+long time ago using the frag implememtation in page_pool, it did show
+some obvious peformance gain, But as the priority shifts, I have not
+been able to continue that POC yet.
 
-
-> Best regards,
-> Krzysztof
->
+> 
+> .
+> 
 
