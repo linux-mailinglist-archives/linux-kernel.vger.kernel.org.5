@@ -1,131 +1,128 @@
-Return-Path: <linux-kernel+bounces-22586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3075082A00D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:06:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C4B82A00A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6F0CB24ED9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:06:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9AFB1C214F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B604D5A9;
-	Wed, 10 Jan 2024 18:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880074D135;
+	Wed, 10 Jan 2024 18:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="geKefePS"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nf3Hjz3+"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833984D12E;
-	Wed, 10 Jan 2024 18:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613114D581;
+	Wed, 10 Jan 2024 18:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7cc14b91230so3066906241.0;
-        Wed, 10 Jan 2024 10:05:34 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2a225e9449so475552566b.0;
+        Wed, 10 Jan 2024 10:05:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704909933; x=1705514733; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LGS8rxlW8J08cvxQUR+pLZrZLbq/2MHwQf3nkmNV2JU=;
-        b=geKefePSrSR0895IcValV1sCDNDQoLsvzgIaRzutdAd7qU8uNaQkuXwrx9BqwyFMJR
-         R6W4uvzW6aaLDEpMOEjImrUyyTsYMsnIq0vbhMOtoqZWf2+tWcV9n+EU0X5OPjL9fNgZ
-         ymDrRm8z7kzSIWmxf77wAengwpB1T9Pv1y9yPu8uZGSYhq7EkczPqP49LCS3L63Yy4/F
-         qKl4KvxbqkKKhDA4hNZaaQ1mVPZ64LzoJKEbg7wgXCcPAoh16OuCo5Lfo84w5a7tvVGN
-         VSn+GexcJYWrw1jFg89hcSFgHuRk1d5uckuloLPeLeN5ad08pfEfzDOpurT80ZoOfC+f
-         OVqw==
+        d=gmail.com; s=20230601; t=1704909929; x=1705514729; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eSgFVUPD+lhj2fkhdLXiapb7C+A3P82l8Au/eKfRJKw=;
+        b=nf3Hjz3+IHgdlnIZ5natPk6EeddYVcTGuXoDF90at6+DkqJjLqlAeBFm2+0gze7EO5
+         /ITQbZN46XoFIU99sUY+FrU3pUdNxrRl95e52PFnQ6KYEnzbuiJn+P8godhDr/vMLZwB
+         NVE59C+vDdTGJh80gFCKIlcYLYDhO7y3eID75OnG+mgEKCaCXwPDyxn2WH4q1jc7pgD2
+         q5Rev8SaC5DI5PZ/AdmdN1GtQ1baap63XzWuiUKLwmr/DBhGehRjWNaJtW1D2cRi3FK7
+         rkL7RVkIbRdt44ybLPOstHM+gqAyw9A3A+pSS3XwjaX3Dn59ARqvLmuAovhVn9arEfAb
+         /Kvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704909933; x=1705514733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LGS8rxlW8J08cvxQUR+pLZrZLbq/2MHwQf3nkmNV2JU=;
-        b=cD8KpUhEXI9AZOYSkEXG+bY5TESHNW9pQyopWGOECGHl099xyF83rDzL49T6HlKxqO
-         yygbQSFQ2Oy8jphRGZFTnGxzkxoceFnXRNgu7wQyF9Pnn9YRs+kYGJabb1+umj49S9YB
-         6q8RXVmxtBH0DoAt27ZE2KAiWHjyj6YH3i/5WV24Mjb/n89LctRtI5jHN4iCskU6Pgql
-         y1k7QvhPfbMSFnc78cUjy041bmC8dZcEtRUUDrELX16lYLhPAB053FgE1VDy+3NoH19H
-         wUXD2pcnimA1kfplw9brzH1xglw8HFvahafQR1yiWAgTqmvJeK+l+1yfX36Q+ps/sa3m
-         Rx5Q==
-X-Gm-Message-State: AOJu0Yy6ETH+x7SuDgHFVMipwFssrZErcsngw7WrH0e/PeXEaf2T1bDt
-	pHwZ2mfPpcHsn9GJ+J/ybz6td31WDp5xe1RcNmODjXnI
-X-Google-Smtp-Source: AGHT+IE23LsAiAIKhQL4KDsQhexTV/OLZ248oekpaOPGxLxTENBqLtWU+Ubtj9IHXcdEFFm1TUxEZcQgSmkFU0g68wg=
-X-Received: by 2002:a05:6122:328d:b0:4b7:185e:b866 with SMTP id
- cj13-20020a056122328d00b004b7185eb866mr668271vkb.9.1704909933279; Wed, 10 Jan
- 2024 10:05:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704909929; x=1705514729;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eSgFVUPD+lhj2fkhdLXiapb7C+A3P82l8Au/eKfRJKw=;
+        b=eLT5MVnkxrL+tgUJroNSAi+CkO5iPzZ2elAiTHJ4Ry8bahEPpf5KAlyH35SFfM/DuF
+         qSHKAr/n3oV442j/WpBvlf3OUmPsO6g6mXL97GvZoYUQaq+GobRmKyknaAufwIMWqA56
+         Jg+Zz6iNzJZfh1ccOY6L/mtplXjmZG55rq6kX9IXrgi6h+cg6x/BB6w5OTsbPy7fgK2I
+         mmOMcWQV81U0zMzVJNqfXdQPdhOqEVu+pboVQ9eldBM4su8icz7g0E9PisA4XzbIUm/r
+         EWLViNt5rLTfV2p0nKZNs5JBgDWvACDRwLBoK9S3pmfsDbGkLDDGeWRLAvLubvk9wzlE
+         yvQQ==
+X-Gm-Message-State: AOJu0Yz6zwvEuShXk59xmonYDXQdkIYkvYuiPopf1Ydxs377xHMBoFt1
+	tqIqDFk91zQ1ambihTJDBfA=
+X-Google-Smtp-Source: AGHT+IGbx7BchYP1qhwI8qDfBQPy+wc1dgtHkZDQ3u4HiZTqJo3HVnAOZSXIaR1m4CUy1jtou3dIyw==
+X-Received: by 2002:a17:906:5fd9:b0:a26:874f:4847 with SMTP id k25-20020a1709065fd900b00a26874f4847mr804587ejv.65.1704909928742;
+        Wed, 10 Jan 2024 10:05:28 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id p17-20020a1709060dd100b00a2689e28445sm2317376eji.106.2024.01.10.10.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 10:05:28 -0800 (PST)
+Date: Wed, 10 Jan 2024 20:05:25 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Richard van Schagen <richard@routerhints.com>,
+	Richard van Schagen <vschagen@cs.com>,
+	Frank Wunderlich <frank-w@public-files.de>,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	erkin.bozoglu@xeront.com, mithat.guner@xeront.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next 08/30] net: dsa: mt7530: change p{5,6}_interface
+ to p{5,6}_configured
+Message-ID: <20240110180525.wwxkkoqam37oqm2f@skbuf>
+References: <ZHy1C7wzqaj5KCmy@shell.armlinux.org.uk>
+ <ZHy2jQLesdYFMQtO@shell.armlinux.org.uk>
+ <0542e150-5ff4-5f74-361a-1a531d19eb7d@arinc9.com>
+ <7c224663-7588-988d-56cb-b9de5b43b504@arinc9.com>
+ <20230610175553.hle2josd5s5jfhjo@skbuf>
+ <22fba48c-054d-ff0a-ae2c-b38f192b26f7@arinc9.com>
+ <9308fa1a-6de3-490b-9aeb-eb207b0432df@arinc9.com>
+ <9308fa1a-6de3-490b-9aeb-eb207b0432df@arinc9.com>
+ <20240110142721.vuthnnwhmuvghiw4@skbuf>
+ <b47311f8-315d-46d9-bd5b-757141708a3f@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ae49227b-5026-43a4-8e19-aeeb63865a6a@broadcom.com> <20231213195947.GA1056194@bhelgaas>
-In-Reply-To: <20231213195947.GA1056194@bhelgaas>
-From: Jim Quinlan <jim2101024@gmail.com>
-Date: Wed, 10 Jan 2024 13:05:21 -0500
-Message-ID: <CANCKTBvaFBXAVTBtr4tpz5mYcyP1w84nAEGHbOnGJugogHx4fQ@mail.gmail.com>
-Subject: Re: [PATCH v8 0/2] PCI: brcmstb: Configure appropriate HW CLKREQ# mode
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Cyril Brulebois <kibi@debian.org>, 
-	Jim Quinlan <james.quinlan@broadcom.com>, linux-pci@vger.kernel.org, 
-	Nicolas Saenz Julienne <nsaenz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Phil Elwell <phil@raspberrypi.com>, 
-	bcm-kernel-feedback-list@broadcom.com, Conor Dooley <conor+dt@kernel.org>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-rpi-kernel@lists.infradead.org>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b47311f8-315d-46d9-bd5b-757141708a3f@arinc9.com>
 
-On Wed, Dec 13, 2023 at 2:59=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
->
-> On Tue, Dec 12, 2023 at 03:51:12PM -0800, Florian Fainelli wrote:
-> > On 11/26/23 12:19, Cyril Brulebois wrote:
-> > > Hi Jim,
-> > >
-> > > Jim Quinlan <james.quinlan@broadcom.com> (2023-11-13):
-> > > > V8 -- Un-advertise L1SS capability when in "no-l1ss" mode (Bjorn)
-> > > >     -- Squashed last two commits of v7 (Bjorn)
-> > > >     -- Fix DT binding description text wrapping (Bjorn)
-> > > >     -- Fix incorrect Spec reference (Bjorn)
-> > > >           s/PCIe Spec/PCIe Express Mini CEM 2.1 specification/
-> > > >     -- Text substitutions (Bjorn)
-> > > >           s/WRT/With respect to/
-> > > >           s/Tclron/T_CLRon/
-> > > >
-> > > > v7 -- Manivannan Sadhasivam suggested (a) making the property look =
-like a
-> > > >        network phy-mode and (b) keeping the code simple (not counti=
-ng clkreq
-> > > >        signal appearances, un-advertising capabilites, etc).  This =
-is
-> > > >        what I have done.  The property is now "brcm,clkreq-mode" an=
-d
-> > > >        the values may be one of "safe", "default", and "no-l1ss".  =
-The
-> > > >        default setting is to employ the most capable power savings =
-mode.
-> > >
-> > > Still:
-> > >
-> > > Tested-by: Cyril Brulebois <cyril@debamax.com>
-> >
-> > Thanks Cyril! Bjorn, Lorenzo, any chance this can be applied soon? Than=
-ks!
->
-> Seems OK to me if Lorenzo or Krzysztof W. are OK with it.
->
-Bjorn,
+On Wed, Jan 10, 2024 at 08:15:20PM +0300, Arınç ÜNAL wrote:
+> __builtin_return_address(1) doesn't seem to work. I'm running this on arm64.
 
-What is the status of this submission?  Stock Linux on RPi4 CM4
-systems with a PCIe device  panic on boot until this commit is
-applied.
+I can't tell you why either, I'm sorry. I can just point to the
+documentation, which does specify that "On some machines it may be
+impossible to determine the return address of any function other than
+the current one". If somebody knows what this depends on, feel free to
+interject.
+https://gcc.gnu.org/onlinedocs/gcc/Return-Address.html
 
-Regards,
-Jim Quinilan
-Broadcom STB/CM
+On my NXP LS1028A (also arm64) plus clang-16 compiler, __builtin_return_address()
+does work with multiple nesting levels.
+
+> This is very helpful, thank you very much. This is what I deduct I should
+> do:
+> 
+> First patch: Get rid of cpu_port_config().
+> 
+> Second patch: Collect port link control register operations from
+> port_enable/port_disable and phylink_mac_config to
+> phylink_mac_link_up/phylink_mac_link_down.
+
+I guess. Sounds good.
 
