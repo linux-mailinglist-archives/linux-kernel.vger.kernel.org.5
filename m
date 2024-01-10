@@ -1,137 +1,174 @@
-Return-Path: <linux-kernel+bounces-22496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02EDF829E9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:29:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DFFB829EA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:29:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18CE01C257AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:29:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E50C41F23286
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809024CB51;
-	Wed, 10 Jan 2024 16:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33E14CB55;
+	Wed, 10 Jan 2024 16:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jKNe8sSY"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="glZGQqaX"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575264439B;
-	Wed, 10 Jan 2024 16:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e461c1f5cso39369415e9.3;
-        Wed, 10 Jan 2024 08:29:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704904145; x=1705508945; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zYhs5kBzLpHa7nfxElLc7f+8hwZgrm0a/n3jZ3lJWbI=;
-        b=jKNe8sSY8IbZRu8GlEerTEFyrkxZB0aS1DVtyyF8clbe/24lEgYBsgQEThN3RgKwWF
-         odutLepiq5YN79Ge1QXfAdvpJoS1UYdqWMusTdrxVjlywssNNDAjNOSTdEqTYQs8YFPe
-         GIdVKE/6zlniXt8ctHfmE9KzxlBfJcU7L33MhbIT75SwbV1acWI1Y1PeO+GuFj3qXhL0
-         kic/94kIK3Y2GlvzWTkIOfSw1XCnbr4DGHzO+SC/ao+tD4BctQm3/ZDdgUsLYd1FRvvh
-         WqcpwkI8DzeSf7/Ngc98JL/MnG7RyMZlcsM6pWPT1mz7URJFAsap1O26yDyBE2RMawa7
-         Mfow==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3747D487B4
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5D0523F745
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704904155;
+	bh=uv9EP/w/9lKiqxJDFswe5iRGGwCnnVkmNEold/I0ZHc=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=glZGQqaXBD4oKJYeWFxkmEMQnxEa4jXgMMVyXdrshZJeItnwZgpkdnL7zNeXYVakP
+	 VuB24rAqXF0ob99aNVbqrtY6BTjrRpquv7gGKe8tU9+A8R+f5APLa8KGpPpXMSQPxF
+	 g0NHjbNEXNCT9A4cdy4e5O3F8ldM/SEWLF6fTt5nVD9adix4fR8BxvTVqU8S3Z9o2o
+	 uDkfO8O9iCDulYe1VhBaa3yGZwW/aVpB9y0HlxtiiHVJDsu7AqJsSPk9rsV2S52/jO
+	 GaHQ9NyyJQ5tX/di9FjDyRhjUgMqRFjcqVLc74WXy8PiDZP7b/MTVcuNtMvnoSq8WD
+	 F1eawYtRLtgqg==
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6de353881d7so522861a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:29:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704904145; x=1705508945;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zYhs5kBzLpHa7nfxElLc7f+8hwZgrm0a/n3jZ3lJWbI=;
-        b=hkF5QOHzlQ3gMEAyiZVrAneYkr9EMfY+AyCeCIPO+srM/XyG+SE3TpTvzgZEuPY8YB
-         oU5nVQ3ToGaav88MI59lRZqkoFCj2kdsM72dZ5+DxiR8O+wO7zuVFev5q+7Zuwrx0NQy
-         ghetnFZzqSofwaqbmjNRSh9ecJ3+Uv66Rej1JHX9C3h/8txrw6HN7Oqh9miUj2fEtVW0
-         wQrQk6ySh1pGv27eCAzY6dWVsoZ3oh1Ax8gyrI8yQUEMJlZFGkuwsMzYwMcXwpjRz7Rj
-         AE5On8E41yNulWUMz1Nu1IlJLifO+oCyU4aCmUQ7kj1JTsBCkqq7vHMQrDNd1X5gUtuA
-         +D0g==
-X-Gm-Message-State: AOJu0YyYb2sjTvKnhNxTJ8u5ug88TSWdAlOgpBPTZ/0Q+IraoKlSIUSV
-	sL4qcd/hoF4sl2bkfeFZ89tcNL6ajgA=
-X-Google-Smtp-Source: AGHT+IEeiu2Ep8vaqs2OqZuOyjc6PpxtgZTxdqYicHmlfPPueKR2XPXUAWsxTkHJtJDPnv16exLt1A==
-X-Received: by 2002:a05:600c:54e3:b0:40e:55a5:85f0 with SMTP id jb3-20020a05600c54e300b0040e55a585f0mr522093wmb.87.1704904145171;
-        Wed, 10 Jan 2024 08:29:05 -0800 (PST)
-Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
-        by smtp.gmail.com with ESMTPSA id s3-20020adff803000000b00336843ae919sm5215839wrp.49.2024.01.10.08.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 08:29:04 -0800 (PST)
-From: Amir Goldstein <amir73il@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs updates for 6.8
-Date: Wed, 10 Jan 2024 18:29:00 +0200
-Message-Id: <20240110162900.174626-1-amir73il@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1704904154; x=1705508954;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uv9EP/w/9lKiqxJDFswe5iRGGwCnnVkmNEold/I0ZHc=;
+        b=ofBzloRty+c3P6DMm0qAhJL+PZv5P8RTQq0PhjizfKXJwRFF1gRV/plTapNDMIXnW9
+         fTfaZ9qVZcJOUiZ1uZYowz1UaJ9u5cpHm0Is9Idp+OWV+F43yBflSTXbh83GJfkvSsIF
+         zKOClvsHlao7qKqR1eLJjIa+Owm2yZeLsVgj7732Hav9gI+AYivsRXS6fS/q4zPFrgCa
+         IxgmaG7xV19FPex9WL5+241LoLkCU5Spcvbwx1DO85aJHZs8mTcIQn67v7N5kOPLPGgB
+         O+aXHKyrUsnYceiiqcvUiC2CHG6fekRpTLwFSbHL1suFqekf7nFQhMvxI2qA9Ywy9k7d
+         ns2A==
+X-Gm-Message-State: AOJu0YzUaPVR7bi1eLWcP9EokrPbjlwK+XDr8+j2oszjJ+t/Bd9g24Xn
+	s5YkxbYdgyeQDygVMLEkMRhm9K3fCRIif1ZFj4xnbP/urq/MY5oX+12eRvl7meB8Pe7sDwupeYX
+	9LHSaSqg/HQ27vHqeI8PocoWiSNuJUeWgSBOmZueE8AoCftkY7htpL4YpvAo8capB
+X-Received: by 2002:a05:6830:1184:b0:6dd:e1a7:985c with SMTP id u4-20020a056830118400b006dde1a7985cmr853572otq.64.1704904154046;
+        Wed, 10 Jan 2024 08:29:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFbHlXIe2CrSKgMXB12cTUPD3lT7PL5ZyJdEPF2+t0EcSUNyc5cEMlt0ZMzdAuC3C3APnreiaTINaV7wsxklKM=
+X-Received: by 2002:a05:6830:1184:b0:6dd:e1a7:985c with SMTP id
+ u4-20020a056830118400b006dde1a7985cmr853563otq.64.1704904153819; Wed, 10 Jan
+ 2024 08:29:13 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 10 Jan 2024 11:29:13 -0500
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <ZQ0PR01MB098182407F5F427D9A6C7CD9826BA@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
+References: <20231214072839.2367-1-minda.chen@starfivetech.com>
+ <7hfrzeavmj.fsf@baylibre.com> <ZQ0PR01MB098128579D86207B4B9BA7D28266A@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
+ <7h34vbbsfj.fsf@baylibre.com> <ZQ0PR01MB098182407F5F427D9A6C7CD9826BA@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Date: Wed, 10 Jan 2024 11:29:13 -0500
+Message-ID: <CAJM55Z9HtBSyCq7rDEDFdw644pOWCKJfPqhmi3SD1x6p3g2SLQ@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTog5Zue5aSNOiBbUEFUQ0ggdjEzIDAvMjFdIFJlZmFjdG9yaW5nIE1pYw==?=
+	=?UTF-8?B?cm9jaGlwIFBDSWUgZHJpdmVyIGFuZCBhZGQgU3RhckZpdmUgUENJZQ==?=
+To: Kevin Xie <kevin.xie@starfivetech.com>, Kevin Hilman <khilman@baylibre.com>, 
+	Minda Chen <minda.chen@starfivetech.com>, Conor Dooley <conor@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Daire McNamara <daire.mcnamara@microchip.com>, 
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Mason Huo <mason.huo@starfivetech.com>, 
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Linus,
+Kevin Xie wrote:
+> > Kevin Xie <kevin.xie@starfivetech.com> writes:
+> >
+> > >> Minda Chen <minda.chen@starfivetech.com> writes:
+> > >>
+> > >> > This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+> > >> > JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+> > >> > same IP and have commit their codes, which are mixed with PLDA
+> > >> > controller codes and Microchip platform codes.
+> > >>
+> > >> Thank you for this series.
+> > >>
+> > >> I tested this on a VisionFive v2 board, and it seems to probe and
+> > >> find my
+> > >> M.2 NVMe SSD, but then gets timeouts when trying to use the NVMe (e.g.
+> > >> 'blkid' command)
+> > >>
+> > >
+> > > Hi, Kevin:
+> > > Could you please provide the manufacturer and model of the M.2 NVMe
+> > > SSD you tested?
+> >
+> > I have a 256 Gb Silicon Power P34A60 M.2 NVMe SSD (part number:
+> > sp256gbp34a60m28)
+> >
+> Thanks, Kevin, we will buy one to test.
+>
+> Before doing this refactoring, we encountered the same bug with Kingston M.2 SSD,
+> and we workaround the problem with the below patch, please have a try:
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index 507bc149046d..5be37f1ee150 100644
+> --- a/drivers/nvme/host/pci.c
+> +++ b/drivers/nvme/host/pci.c
+> @@ -1059,6 +1059,16 @@ static inline int nvme_poll_cq(struct nvme_queue *nvmeq,
+>  {
+>         int found = 0;
+>
+> +       /*
+> +        * In some cases, such as JH7110 SoC working with Kingston SSD,
+> +        * the CQE status may update a little bit later than the MSI,
+> +        * which cause an IRQ handle missing.
+> +        * As a workaround, here we will check the status first, and wait
+> +        * 1us if we get nothing.
+> +        */
+> +       if (!nvme_cqe_pending(nvmeq))
+> +               udelay(1);
+> +
+>         while (nvme_cqe_pending(nvmeq)) {
+>                 found++;
+>                 /*
+>
 
-Please pull overlayfs updates for 6.8.
+Hi Kevin,
 
-This is a very small update with no bug fixes and no new features.
+Thanks, this fixes the same problem on my WD Blue SN570 250GB.
 
-The larger update of overlayfs for this cycle, the re-factoring
-of overlayfs code into generic backing_file helpers, was already
-merged via a PR that I had sent Christian before the merge window.
+Before this patch I found that CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y fixed the
+problem, but it's now clear that this only slowed my kernel enough that this
+wouldn't trigger as often.
 
-This branch has been sitting in linux-next for a few weeks and
-it has gone through the usual overlayfs test routines.
+/Emil
 
-The branch merges cleanly with master branch of the moment.
-
-Thanks,
-Amir.
-
-----------------------------------------------------------------
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
-
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.git ovl-update-6.8
-
-for you to fetch changes up to d17bb4620f90f81d8a8a45c3d025c679a1b5efcd:
-
-  overlayfs.rst: fix ReST formatting (2023-12-15 12:31:36 +0200)
-
-----------------------------------------------------------------
-overlayfs updates for 6.8
-
-- Simplify/clarify some code
-
-  No bug fixes here, just some changes following questions from Al
-  about overlayfs code that could be a little more simple to follow.
-
-- Overlayfs documentation style fixes
-
-  Mainly fixes for ReST formatting suggested by documentation developers.
-
-----------------------------------------------------------------
-Amir Goldstein (4):
-      ovl: remove redundant ofs->indexdir member
-      ovl: initialize ovl_copy_up_ctx.destname inside ovl_do_copy_up()
-      overlayfs.rst: use consistent feature names
-      overlayfs.rst: fix ReST formatting
-
- Documentation/filesystems/overlayfs.rst | 104 +++++++++++++++++---------------
- fs/overlayfs/copy_up.c                  |   8 ++-
- fs/overlayfs/export.c                   |   4 +-
- fs/overlayfs/namei.c                    |   4 +-
- fs/overlayfs/ovl_entry.h                |   5 +-
- fs/overlayfs/params.c                   |   2 -
- fs/overlayfs/readdir.c                  |   2 +-
- fs/overlayfs/super.c                    |  19 +++---
- fs/overlayfs/util.c                     |   2 +-
- 9 files changed, 76 insertions(+), 74 deletions(-)
+> > Also for reference, I tested the same SSD on another arm platform (Khadas
+> > VIM3) and it works fine.
+> >
+> > Kevin
+>
+> Hi, Bjorn:
+> Do you have any idea about the late CQE phase update condition as mentioned
+> in the patch comments above?
+> This is an issue that occurs with a small probability on individual devices in our
+> platform.
+> Thus, I suggest the refactoring patch set should go forward.
+> Later we will try to find a more formal solution instead, and send a new patch.
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
