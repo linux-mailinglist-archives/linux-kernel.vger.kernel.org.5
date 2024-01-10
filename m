@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-22405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1017A829D41
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:14:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B28CB829D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 126E61C2221F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:14:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F67F288302
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC624C614;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF454C601;
 	Wed, 10 Jan 2024 15:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="it+DHZrv"
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="ASB0evTS"
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3064BA9B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404CD4BAAC
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:14:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so496321266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:14:18 -0800 (PST)
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-40e43e489e4so47907175e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:14:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fairphone.com; s=fair; t=1704899657; x=1705504457; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8SieuMzS9DY3Pq9rPlup7/9ZFoFKz0B/pmDiOQsHEqI=;
-        b=it+DHZrvdiYS4KhFY35+ZNPhhteyoUoUJVav3AoO7iuDv95w2HVE0s9NNAVT77PtCJ
-         vHuJVj20ocCUb/H6D6qBktjZVVUFz+z7SB+fILUkdHMfdYo2rfQyuuyWtJlgvlP7hRBQ
-         OXoypi5lAGbt3IFReJj6wWHfGd3cC10u4gZrZlL07TSbUSMyg4Kw2Xof3YvuI+XjfD7f
-         zQPUZq+Q5Bn56fOBj2TJazI6i/AvTPhqWogWqu7M5AgwbsLVVGZ8ish62f0FVfjBaE0Q
-         J4Q78BWU2Y0oF9s7Zd2lFiw9CCi/4GGA7NGfr+iPm5hfjapClHr8r5iA8FFJ23sgsb5N
-         uLdQ==
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Sy3lixVdO+ssOCBS2YWjdDhiY4KhMhsBIz9dLLKsi4=;
+        b=ASB0evTSIyJ8rkwyCgCQB8gDS1MCsjrs8/UyM1tuBnDUmNTEioQH826cFFsRzEQ22f
+         EAo6E4bvBxQRW2elm9IoRYviJCmaPSXWYwfkwdBuxFKf7bTyHZJfPju2QOCr5uhCfI5W
+         AA3FpKt1LVeru6hveBIIsKi37ts+ygrHk1A+ugBDNcmDf1x/0do+Jf7QWM5gRGLkCK/e
+         g503dt0Hcz1WyA4QBK1e7hemkiW+n7UKFzlXtnNAKDv7rxlb/riZUPfUm7E8/3fYDYR5
+         Y9YYDRMrOBzEeP0ttaFQE9DBru0FB0ezPko7GURpB+Y7r15OfyarrWN8gqxRX8X2LUxO
+         37zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1704899657; x=1705504457;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8SieuMzS9DY3Pq9rPlup7/9ZFoFKz0B/pmDiOQsHEqI=;
-        b=uHrEVpKCGbn3Qo8TgzwY+qZaxJ0DFOyxa/mHgnNqH4YbSIymexkOkT6uvbyU6CojRA
-         dcxzj/gX5glC59Q0KyzGK7a9QJLfn95cxsZjsUXlhwWEod54amZCWBZSXiqRXwiiLLci
-         KEJTkA/OWRkuWfnjHbWKVxsjhFvfktnwWKM05uNRNQOEJDiNgj8SuvrS7+EAg0RDsfAr
-         khWuddrKMgLyeQBH0GpqUn0acLlmnYGxF8IiBqz+yExe5s90LAEIv1YqKPDGv3Q3kKAI
-         1KArBMDjIqnvUM6xnwOsHHyJoyngkRybq3wcfjM6VhwwQWgmqTsNPLxBbMFGinhJHYpa
-         jPmA==
-X-Gm-Message-State: AOJu0YzG8JDI5UW6xGSRmHo99ng0WFf6ragys1Bn7zaKmJ2bo7q7CwVV
-	15DqI5NxIgOkFU54bBrGJKS3eS+hM8aLIA==
-X-Google-Smtp-Source: AGHT+IH+JVoLAsdIeBSP0v7Ta68ZvOe71Gvt3z5QTKw+y+MKcspk7OUyJ0XvP7JECETBN5UybvP+hg==
-X-Received: by 2002:a17:906:6d59:b0:a26:b37d:bab4 with SMTP id a25-20020a1709066d5900b00a26b37dbab4mr484522ejt.171.1704899656621;
-        Wed, 10 Jan 2024 07:14:16 -0800 (PST)
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5Sy3lixVdO+ssOCBS2YWjdDhiY4KhMhsBIz9dLLKsi4=;
+        b=H29SYyU7H/PDJqTxqblXTKPxAqqpz0HiTQepjdImz53G+l/58bQgobdOA6JXTBmllF
+         HeFAZ8qIcB62XR9j4owEkC5EvZ+m6/nnhMsFGmutrvxE7FVtzuQ+V93uNpEDZsaW7RYI
+         snVH1r2AOBH/guZF7gxdmTjI9VWccC+cMDMvgh2FKoj6XcFORlzHW6qbueommNaIJ7dX
+         +/4+ayQBLz/NOIZQC2qPMfSI6xNrR/gXLtqQy6UwCRvMJKTH76UbHn5U6dddvDX0nDCy
+         tiWyzTz6CL5DqUU/hvaY1IyN8n0H6NivzuF1i8KB6NsP1Sg6DpBODJAhfoXOjOjsTEJh
+         L8OQ==
+X-Gm-Message-State: AOJu0YxMdcNzdyCAvff7PpxLfCWCBfgumDip2f0XRQxXQJ71XR+tHCRB
+	7ixQ7GVV1NxqaAP4kRl+tqF2mCeD6ZxfMw==
+X-Google-Smtp-Source: AGHT+IGVu1Xwg6HHebOGdxAq74eDIEF0T/L/qFlmD5lnH0vOca8XN01eTTuA9zLK7Yh+9y4To+F4xA==
+X-Received: by 2002:a05:600c:310f:b0:40e:3ab9:102d with SMTP id g15-20020a05600c310f00b0040e3ab9102dmr661174wmo.181.1704899657574;
+        Wed, 10 Jan 2024 07:14:17 -0800 (PST)
 Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id jx22-20020a170906ca5600b00a27a25afaf2sm2174517ejb.98.2024.01.10.07.14.15
+        by smtp.gmail.com with ESMTPSA id jx22-20020a170906ca5600b00a27a25afaf2sm2174517ejb.98.2024.01.10.07.14.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 07:14:16 -0800 (PST)
+        Wed, 10 Jan 2024 07:14:17 -0800 (PST)
 From: Luca Weiss <luca.weiss@fairphone.com>
-Subject: [PATCH v2 0/4] Add display support for Fairphone 4
-Date: Wed, 10 Jan 2024 16:14:07 +0100
-Message-Id: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
+Date: Wed, 10 Jan 2024 16:14:08 +0100
+Subject: [PATCH v2 1/4] dt-bindings: display: panel: Add Himax HX83112A
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,9 +67,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAD+0nmUC/23MQQ7CIBCF4as0sxYDWKpx5T1MFwMOMokCAdNoG
- u4udu3yf3n5VqhUmCqchxUKLVw5xR56N4ALGO8k+NYbtNSjVNIIn0eRMdJDGIkWT+YwoUTo/1z
- I83uzrnPvwPWVymejF/Vb/ymLElIo9BatM0Yfp4tHLjmkSHuXnjC31r5TdxQppgAAAA==
+Message-Id: <20240110-fp4-panel-v2-1-8ad11174f65b@fairphone.com>
+References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
+In-Reply-To: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
 To: Neil Armstrong <neil.armstrong@linaro.org>, 
  Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
  David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
@@ -86,46 +86,98 @@ Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.4
 
-Introduce the bindings and panel driver for the DJN LCD panel using
-HX83112A driver IC.
+Himax HX83112A is a display driver IC used to drive LCD DSI panels.
+Describe it.
 
-Then we can add the panel to the device dts and also enable the GPU.
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
-Changes in v2:
-- Driver:
-  - Drop "bool prepared" from driver (Dmitry)
-  - Use drm_connector_helper_get_modes_fixed (Dmitry)
-  - Use dev_err_probe in error path (Dmitry)
-  - Fix width/height variables (myself)
-- Dts:
-  - Don't drop simple-framebuffer (Konrad)
-  - Drop disablement of gmu in dtsi (Konrad)
-  - Set zap shader path (myself)
-- Pick up tags
-- Link to v1: https://lore.kernel.org/r/20240105-fp4-panel-v1-0-1afbabc55276@fairphone.com
+ .../bindings/display/panel/himax,hx83112a.yaml     | 75 ++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
----
-Luca Weiss (4):
-      dt-bindings: display: panel: Add Himax HX83112A
-      drm/panel: Add driver for DJN HX83112A LCD panel
-      arm64: dts: qcom: sm6350: Remove "disabled" state of GMU
-      arm64: dts: qcom: sm7225-fairphone-fp4: Enable display and GPU
+diff --git a/Documentation/devicetree/bindings/display/panel/himax,hx83112a.yaml b/Documentation/devicetree/bindings/display/panel/himax,hx83112a.yaml
+new file mode 100644
+index 000000000000..22f58f1da9fd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/himax,hx83112a.yaml
+@@ -0,0 +1,75 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/himax,hx83112a.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Himax HX83112A-based DSI display panels
++
++maintainers:
++  - Luca Weiss <luca.weiss@fairphone.com>
++
++description:
++  The Himax HX83112A is a generic DSI Panel IC used to control
++  LCD panels.
++
++allOf:
++  - $ref: panel-common.yaml#
++
++properties:
++  compatible:
++    items:
++      - const: fairphone,fp4-hx83112a-djn
++      - const: himax,hx83112a
++
++  vdd1-supply:
++    description: Digital voltage rail
++
++  vsn-supply:
++    description: Positive source voltage rail
++
++  vsp-supply:
++    description: Negative source voltage rail
++
++  reg: true
++  port: true
++
++required:
++  - compatible
++  - reg
++  - reset-gpios
++  - vdd1-supply
++  - vsn-supply
++  - vsp-supply
++  - port
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        panel@0 {
++            compatible = "fairphone,fp4-hx83112a-djn", "himax,hx83112a";
++            reg = <0>;
++
++            backlight = <&pm6150l_wled>;
++            reset-gpios = <&pm6150l_gpios 9 GPIO_ACTIVE_LOW>;
++
++            vdd1-supply = <&vreg_l1e>;
++            vsn-supply = <&pm6150l_lcdb_ncp>;
++            vsp-supply = <&pm6150l_lcdb_ldo>;
++
++            port {
++                panel_in_0: endpoint {
++                    remote-endpoint = <&dsi0_out>;
++                };
++            };
++        };
++    };
++
++...
 
- .../bindings/display/panel/himax,hx83112a.yaml     |  75 +++++
- arch/arm64/boot/dts/qcom/sm6350.dtsi               |   4 +-
- arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts  |  53 ++++
- drivers/gpu/drm/panel/Kconfig                      |  10 +
- drivers/gpu/drm/panel/Makefile                     |   1 +
- drivers/gpu/drm/panel/panel-himax-hx83112a.c       | 352 +++++++++++++++++++++
- 6 files changed, 492 insertions(+), 3 deletions(-)
----
-base-commit: c03393f04b540b66d267a402fcc9ac2d3733b9e3
-change-id: 20240105-fp4-panel-50aba8536a0a
-
-Best regards,
 -- 
-Luca Weiss <luca.weiss@fairphone.com>
+2.43.0
 
 
