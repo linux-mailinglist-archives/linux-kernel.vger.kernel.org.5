@@ -1,152 +1,185 @@
-Return-Path: <linux-kernel+bounces-22861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C098482A41A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB7A82A42E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AFADB23958
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:45:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBFC2B2306F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A264F892;
-	Wed, 10 Jan 2024 22:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DED4F88F;
+	Wed, 10 Jan 2024 22:47:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DuRQG6zY"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiZMvBPT"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C494F886
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704926721;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4dxvjz/LguywFF+dMC+eIAohdJIL/n8s2jYF9k2gVi0=;
-	b=DuRQG6zYVhdzdYCSYF44MQE4JMP3nm4Jm3FLfSLKkD43u6ziHRuHzOOPg51rOmeS6Nd/2t
-	zHhIdhfYDDAKnIc9ZI8WN1HfCCRIaF9DoouMGhB6tTHH9jHu9MyZCSd+07iIkJZT3VPh1q
-	6KDODrwBo514XnaSgKoxlH0Z5DkMz6g=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-628-X1ov8-cEOqa-mTUR4Wqc0g-1; Wed, 10 Jan 2024 17:45:19 -0500
-X-MC-Unique: X1ov8-cEOqa-mTUR4Wqc0g-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-429a8494838so21212911cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:45:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704926719; x=1705531519;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157474EB4A;
+	Wed, 10 Jan 2024 22:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7cdb24b3ac3so641946241.3;
+        Wed, 10 Jan 2024 14:47:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704926823; x=1705531623; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4dxvjz/LguywFF+dMC+eIAohdJIL/n8s2jYF9k2gVi0=;
-        b=kcFFJfbURdm+CJKqfgTkpOj7SJ3nXJnisCwVtOfCtjuibIZJ9YPHXncifMlQfew/Iw
-         k5Xw6iPXoEq54gl5nxN+PP6rY9obwgYQ9pe6lAcUKWwIkJRy6qWwQtJtQLsxuOR6xTEX
-         VvMdoj+bEUElc5p2X0sGRInZzzziq5FY2ones7a1n0BLLUtLOlsOC6m5uro7KXYYVEmA
-         BO/AxpWKymq4WO/tPtGY1GcHKEP47P9Ewdpt6acv38ne2zpQyLj5tx3QBbOV/n8RsdCE
-         Rz5GjoVTtSbDFfMn4YMa8F3rr+G26HtIUoUqhqko9v3vrREYalIyU6Y8L7pxPNiOEKFE
-         jc2Q==
-X-Gm-Message-State: AOJu0Yz1b18BWDHAqjmTMu/ngZuOyt147udSh7xLvc4qaJvDKQS7cntF
-	u95kRUJjByx32X0c9WihASc2r11PvoSBxouxM7R9C73y/D8VMzZguhO49xHuiS0stc+W88SKXLy
-	1md95TlHCgf1U2nMoQiDDXHkeqpB13ZuE
-X-Received: by 2002:ac8:4e55:0:b0:425:a5ef:a70d with SMTP id e21-20020ac84e55000000b00425a5efa70dmr223966qtw.51.1704926718967;
-        Wed, 10 Jan 2024 14:45:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHtvnUrslBpQt+z+LcK44YZj5fdJ5ZcnfMS7Ju8WpEV4JGtgvpyt4JXHgtEvn5J1KJzfUj6Tg==
-X-Received: by 2002:ac8:4e55:0:b0:425:a5ef:a70d with SMTP id e21-20020ac84e55000000b00425a5efa70dmr223959qtw.51.1704926718715;
-        Wed, 10 Jan 2024 14:45:18 -0800 (PST)
-Received: from optiplex-fbsd ([76.152.42.226])
-        by smtp.gmail.com with ESMTPSA id f5-20020a05622a114500b00429a8751bf2sm1679965qty.36.2024.01.10.14.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 14:45:18 -0800 (PST)
-Date: Wed, 10 Jan 2024 17:45:15 -0500
-From: Rafael Aquini <aquini@redhat.com>
-To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc: Audra Mitchell <audra@redhat.com>, linux-kernel@vger.kernel.org,
-	tj@kernel.org, jiangshanlai@gmail.com,
-	hirokazu.yamauchi.hk@hitachi.com, ddouwsma@redhat.com,
-	loberman@redhat.com, raquini@redhat.com
-Subject: Re: [PATCH v2] workqueue.c: Increase workqueue name length
-Message-ID: <ZZ8d-7TUJ5F9GvRV@optiplex-fbsd>
-References: <20231215193954.1785069-1-audra@redhat.com>
- <20240110202959.249296-1-audra@redhat.com>
- <2f0efed5-f9f3-4a5c-9fd4-a4837cada298@prevas.dk>
- <ZZ8RtfKCmOQqj5KC@optiplex-fbsd>
- <f5ded466-cbe1-4a46-b042-1c65839c9e02@prevas.dk>
- <ZZ8a1RvwpDZvwfg9@optiplex-fbsd>
+        bh=+qyeFnhiDNNURDIz+8zP28sEs2jFs16Y/vSKhjup2hM=;
+        b=HiZMvBPT+O7h/7xjqCAJmbVAz3rYVxFNu9tS2alTzhHPq/cnrJEpmCAlu9kkIFV7vm
+         FXRAIHvUHmW5DSyQY6vOVsZ/ybdacxB2KoC8yd+nb4gnthuVJA+J9PHFCZlh8dZA232u
+         sehqtQcCxt3D80PNkucUB5D7b5IDN5fZXAf2pJrEJFWi64de13Pysl92CWn5hxMJ13f1
+         XXahca8EyFICF8XYMR5EcvjcyfWjtoABV93ZyfvELrHsQ+IFKux/nOu3R/JEfA5p0aoh
+         DRxjfcZEhpHgn/II9t6JG8G0O4CcQb+jqNfUU8CSmlnpRT/jgHIncaLxkzrTkINwML5p
+         PNDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704926823; x=1705531623;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+qyeFnhiDNNURDIz+8zP28sEs2jFs16Y/vSKhjup2hM=;
+        b=DF9+WPWmtia2yBUDvTRf+saPQIiEWi5g752EGxySfgRUEICMPmzYD/Ayo94qeLfI+s
+         o0NymgjYwfDR1oz0ovSPkrtRdafZsIN1ZHmMr4zEgFx9hvWkA1GYyi+1j5VdIJ9Elvbo
+         uLVMB2lBIS1OKouripFRpiwgCphe5HWkuSe93DjYdP2OWywa4ML4aSbySnZZLqJ3516K
+         hNxWRLhWtCX9vRYuk/0vVyRC0CfuXSLXuGZfVOtdrcY3RiTITmQJhKcQeg0v0NtDfhCn
+         SOSg6spkzzQlpvueM5q5/zXKWfEEnOiHcpIsBtz6ldB73NYd0v4h4DqoUq/S4ummyPol
+         f5IA==
+X-Gm-Message-State: AOJu0YyESO4QtOs0Q5I4N7MlnIzMpYqbVQaIKzONoPm0bZnXFfNWgxeI
+	Q8krLO+osDw/o3xTt9RhAsGW0O4p1RhIlG9WaUA=
+X-Google-Smtp-Source: AGHT+IErYXdaqVQL0eC34Yw6VgKXqvq53WTEBIuAKR40+eZMmSzOQBupbrlv0NjcJ14ujDZxQWZtxf9+1UAMOuQsKj4=
+X-Received: by 2002:a05:6122:c4:b0:4b6:b37c:5a42 with SMTP id
+ h4-20020a05612200c400b004b6b37c5a42mr120455vkc.25.1704926822736; Wed, 10 Jan
+ 2024 14:47:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZ8a1RvwpDZvwfg9@optiplex-fbsd>
+References: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <202401101437.48C52CF6@keescook>
+In-Reply-To: <202401101437.48C52CF6@keescook>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Wed, 10 Jan 2024 22:46:02 +0000
+Message-ID: <CA+V-a8tdmD7PB1Rp5K9doXKGzSLwhbSAXD1=UisQebUrug507A@mail.gmail.com>
+Subject: Re: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
+To: Kees Cook <keescook@chromium.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 05:31:49PM -0500, Rafael Aquini wrote:
-> On Wed, Jan 10, 2024 at 11:06:22PM +0100, Rasmus Villemoes wrote:
-> > On 10/01/2024 22.52, Rafael Aquini wrote:
-> > > On Wed, Jan 10, 2024 at 09:47:56PM +0100, Rasmus Villemoes wrote:
-> > >> On 10/01/2024 21.29, Audra Mitchell wrote:
-> > >>
-> > >>> @@ -4663,9 +4663,10 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
-> > >>>  					 unsigned int flags,
-> > >>>  					 int max_active, ...)
-> > >>>  {
-> > >>> -	va_list args;
-> > >>> +	va_list args, args_copy;
-> > >>>  	struct workqueue_struct *wq;
-> > >>>  	struct pool_workqueue *pwq;
-> > >>> +	int len;
-> > >>>  
-> > >>>  	/*
-> > >>>  	 * Unbound && max_active == 1 used to imply ordered, which is no longer
-> > >>> @@ -4692,6 +4693,13 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
-> > >>>  	}
-> > >>>  
-> > >>>  	va_start(args, max_active);
-> > >>> +	va_copy(args_copy, args);
-> > >>> +	len = vsnprintf(NULL, 0, fmt, args_copy);
-> > >>> +	WARN(len > WQ_NAME_LEN,
-> > >>> +		"workqueue: wq->name too long (%d). Truncated to WQ_NAME_LEN (%d)\n",
-> > >>> +		len, WQ_NAME_LEN);
-> > >>> +
-> > >>> +	va_end(args_copy);
-> > >>>  	vsnprintf(wq->name, sizeof(wq->name), fmt, args);
-> > >>
-> > >> Eh, why not just _not_ throw away the return value from the existing
-> > >> vsnprintf() and do "len >= sizeof(wq->name)" to know if truncation
-> > >> happened? There's really no need need to do vsnprintf() twice. (And yes,
-> > >> you want >=, not >).
-> > >>
-> > > 
-> > > The extra vsnprintf call is required because the return of the existing 
-> > > vsnprintf() is going to be already capped by sizeof(wq->name).
-> > 
-> > No, it is not. vsnprintf() returns the length of the would-be-created
-> > string if the buffer was big enough. That is independent of whether one
-> > does a dummy NULL,0 call or just calls it with a real, but possibly too
-> > small, buffer.
-> > 
-> > This is true for userspace (as required by posix) as well as the kernel
-> > implementation of vsnprintf(). What makes you think otherwise?
-> >
-> 
-> this snippet from PRINTF(3) man page
-> 
-> RETURN VALUE
->        Upon successful return, these functions return the number of characters 
->        printed (excluding the null byte used to end output to strings).
+Hi Kees,
+
+Thank you for the review.
+
+On Wed, Jan 10, 2024 at 10:41=E2=80=AFPM Kees Cook <keescook@chromium.org> =
+wrote:
 >
+> On Wed, Jan 10, 2024 at 10:22:10PM +0000, Prabhakar wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > gcc points out that the fix-byte buffer might be too small:
+> > drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
+> > drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing betwe=
+en 1 and 10 bytes into a region of size 3 [-Wformat-overflow=3D]
+> >   720 |         sprintf(pdev_irqname, "ch%u", index);
+> >       |                                  ^~
+> > In function 'usb_dmac_chan_probe',
+> >     inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
+> > drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range=
+ [0, 4294967294]
+> >   720 |         sprintf(pdev_irqname, "ch%u", index);
+> >       |                               ^~~~~~
+> > drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 1=
+3 bytes into a destination of size 5
+> >   720 |         sprintf(pdev_irqname, "ch%u", index);
+> >       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > Maximum number of channels for USB-DMAC as per the driver is 1-99 so us=
+e
+> > u8 instead of unsigned int/int for DMAC channel indexing and make the
+> > pdev_irqname string long enough to avoid the warning.
+> >
+> > While at it use scnprintf() instead of sprintf() to make the code more
+> > robust.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> This looks like good fixes; thanks! I see n_channels is sanity checked
+> during the probe in usb_dmac_chan_probe(), so this looks good.
+>
+> (Is there a reason not to also change n_channels to a u8?)
+>
+Good point, I oversighted it by just looking at the loop indices. I
+will send a v2 with that change.
 
-Perhaps the man page should be amended to indicate vsnprintf returns the
-number of characters that would have been printed if the buffer size 
-were unlimited.
+Cheers,
+Prabhakar
 
-We based the assumption of kernel's vsnprintf behavior out of the 
-documented POSIX behavior as stated on the man page.
-
+> -Kees
+>
+> > ---
+> >  drivers/dma/sh/usb-dmac.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
+> > index a9b4302f6050..f7cd0cad056c 100644
+> > --- a/drivers/dma/sh/usb-dmac.c
+> > +++ b/drivers/dma/sh/usb-dmac.c
+> > @@ -706,10 +706,10 @@ static const struct dev_pm_ops usb_dmac_pm =3D {
+> >
+> >  static int usb_dmac_chan_probe(struct usb_dmac *dmac,
+> >                              struct usb_dmac_chan *uchan,
+> > -                            unsigned int index)
+> > +                            u8 index)
+> >  {
+> >       struct platform_device *pdev =3D to_platform_device(dmac->dev);
+> > -     char pdev_irqname[5];
+> > +     char pdev_irqname[6];
+> >       char *irqname;
+> >       int ret;
+> >
+> > @@ -717,7 +717,7 @@ static int usb_dmac_chan_probe(struct usb_dmac *dma=
+c,
+> >       uchan->iomem =3D dmac->iomem + USB_DMAC_CHAN_OFFSET(index);
+> >
+> >       /* Request the channel interrupt. */
+> > -     sprintf(pdev_irqname, "ch%u", index);
+> > +     scnprintf(pdev_irqname, sizeof(pdev_irqname), "ch%u", index);
+> >       uchan->irq =3D platform_get_irq_byname(pdev, pdev_irqname);
+> >       if (uchan->irq < 0)
+> >               return -ENODEV;
+> > @@ -768,8 +768,8 @@ static int usb_dmac_probe(struct platform_device *p=
+dev)
+> >       const enum dma_slave_buswidth widths =3D USB_DMAC_SLAVE_BUSWIDTH;
+> >       struct dma_device *engine;
+> >       struct usb_dmac *dmac;
+> > -     unsigned int i;
+> >       int ret;
+> > +     u8 i;
+> >
+> >       dmac =3D devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
+> >       if (!dmac)
+> > @@ -869,7 +869,7 @@ static void usb_dmac_chan_remove(struct usb_dmac *d=
+mac,
+> >  static void usb_dmac_remove(struct platform_device *pdev)
+> >  {
+> >       struct usb_dmac *dmac =3D platform_get_drvdata(pdev);
+> > -     int i;
+> > +     u8 i;
+> >       for (i =3D 0; i < dmac->n_channels; ++i)
+> >               usb_dmac_chan_remove(dmac, &dmac->channels[i]);
+> > --
+> > 2.34.1
+> >
+>
+> --
+> Kees Cook
 
