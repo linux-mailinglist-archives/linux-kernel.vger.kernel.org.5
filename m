@@ -1,183 +1,133 @@
-Return-Path: <linux-kernel+bounces-22602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7703282A047
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:31:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 436C982A04F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:34:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B9F2886B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:31:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD8F9B25DA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2853B4D5B2;
-	Wed, 10 Jan 2024 18:30:56 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9114D13B;
+	Wed, 10 Jan 2024 18:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FMGBdkCd"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A114D5A8;
-	Wed, 10 Jan 2024 18:30:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE05C433C7;
-	Wed, 10 Jan 2024 18:30:54 +0000 (UTC)
-Date: Wed, 10 Jan 2024 13:31:54 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
- default ownership
-Message-ID: <20240110133154.6e18feb9@gandalf.local.home>
-In-Reply-To: <20240110105251.48334598@gandalf.local.home>
-References: <20240103203246.115732ec@gandalf.local.home>
-	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
-	<20240105095954.67de63c2@gandalf.local.home>
-	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
-	<20240107132912.71b109d8@rorschach.local.home>
-	<20240108-ortsrand-ziehen-4e9a9a58e708@brauner>
-	<20240108102331.7de98cab@gandalf.local.home>
-	<20240110-murren-extra-cd1241aae470@brauner>
-	<20240110080746.50f7767d@gandalf.local.home>
-	<20240110105251.48334598@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EC81E4A6
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557535489d0so5196932a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:34:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704911682; x=1705516482; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h+79PBe1CaM3kL/+sGAaA8TQXREzbo/JCsExVphnqkI=;
+        b=FMGBdkCdEs2wMT13KMcwWPv17EpuhZNsOyUmlaiWdMqRP+uqZYWvlqyHCDEN8nn1wZ
+         B5r1umd+1bw95zhaBCXgTOKZt0/p/Kr6RgRKlLc9lBYY/7YCgeKG27bpA4NNkXB/dkja
+         7/i3trOn1RIsHctNEvSRQwrZiCBhn6tbOB59A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704911682; x=1705516482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h+79PBe1CaM3kL/+sGAaA8TQXREzbo/JCsExVphnqkI=;
+        b=M1lAvBSZvvRDq+w7YQZMMjU7pjm9ko7XoT44vHpDvHcfxnQfH0vbAnJaFZhVOqDACs
+         9nWRwAMF7rbMTFA81In7kwCdDUVeHoAPpQs+lMPPiKzHdlE3ixbHJbjOGE5Pf5yvRfVP
+         8FRXLiL6Q8TSCmeTMGA/+CaWbuRK7k70wDHzo1Nm4GT7yKy39W0dVccwW+hJ3sy5dD2h
+         nSBtYw+DzDfmiWSwFU3zea+2kGLkwMLlrwY4Vr13pQxBO9rYquOsqiKHg2R9hYsBvz0T
+         SCv/l3UyWWGwKO597OpxWO+kdWL8wR91euTD+NkcMzQaZtmVkfSsyBtPo5kvZ8keHal2
+         DxQQ==
+X-Gm-Message-State: AOJu0YysQLoEu6NlfpsKhfYtsaVNkdClK7j8LQx1RXxQiqhXBwcvvxHy
+	KXAVk3smb/MRRepYABfzC0iUUMZBMQlmJ4wyGvtM0OtKDl8LhO4=
+X-Google-Smtp-Source: AGHT+IH3vx0er/dsL7RrZfuowWhy9N5xwrYGMGAyfC2fJQaKC6G6A8z0wJ5mlex31jaGSyIjf2OuGw==
+X-Received: by 2002:a50:aa9b:0:b0:557:e00f:a499 with SMTP id q27-20020a50aa9b000000b00557e00fa499mr617796edc.78.1704911681875;
+        Wed, 10 Jan 2024 10:34:41 -0800 (PST)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id x17-20020aa7d391000000b00556cf695da0sm2219373edq.78.2024.01.10.10.34.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 10:34:41 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso891a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:34:41 -0800 (PST)
+X-Received: by 2002:aa7:cd70:0:b0:557:1142:d5bb with SMTP id
+ ca16-20020aa7cd70000000b005571142d5bbmr12737edb.4.1704911680835; Wed, 10 Jan
+ 2024 10:34:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240103003355.747335-1-kai.heng.feng@canonical.com>
+ <CAD=FV=VmGNB5dP5WO7=txNDScNfhCDEsfFFivXqz+PH6rt=x8g@mail.gmail.com> <CAAd53p4gPkbDyNLiYGtcvqWwEgBqVhri+qgh+=Ha0xsVfYy92g@mail.gmail.com>
+In-Reply-To: <CAAd53p4gPkbDyNLiYGtcvqWwEgBqVhri+qgh+=Ha0xsVfYy92g@mail.gmail.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Wed, 10 Jan 2024 10:34:23 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WwCL0Z4rOMGD+i2zOTZMz6qi_Ctm_wWC2sbv0STGi8AQ@mail.gmail.com>
+Message-ID: <CAD=FV=WwCL0Z4rOMGD+i2zOTZMz6qi_Ctm_wWC2sbv0STGi8AQ@mail.gmail.com>
+Subject: Re: [PATCH] HID: i2c-hid: Remove SET_POWER SLEEP on system suspend
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: jikos@kernel.org, benjamin.tissoires@redhat.com, 
+	Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	Johan Hovold <johan+linaro@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 10 Jan 2024 10:52:51 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi,
 
-> On Wed, 10 Jan 2024 08:07:46 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > Or are you saying that I don't need the ".permission" callback, because
-> > eventfs does it when it creates the inodes? But for eventfs to know what
-> > the permissions changes are, it uses .getattr and .setattr.  
-> 
-> OK, if your main argument is that we do not need .permission, I agree with
-> you. But that's a trivial change and doesn't affect the complexity that
-> eventfs is doing. In fact, removing the "permission" check is simply this
-> patch:
-> 
-> --
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index fdff53d5a1f8..f2af07a857e2 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -192,18 +192,10 @@ static int eventfs_get_attr(struct mnt_idmap *idmap,
->  	return 0;
->  }
->  
-> -static int eventfs_permission(struct mnt_idmap *idmap,
-> -			      struct inode *inode, int mask)
-> -{
-> -	set_top_events_ownership(inode);
-> -	return generic_permission(idmap, inode, mask);
-> -}
-> -
->  static const struct inode_operations eventfs_root_dir_inode_operations = {
->  	.lookup		= eventfs_root_lookup,
->  	.setattr	= eventfs_set_attr,
->  	.getattr	= eventfs_get_attr,
-> -	.permission	= eventfs_permission,
->  };
->  
->  static const struct inode_operations eventfs_file_inode_operations = {
-> --
-> 
-> I only did that because Linus mentioned it, and I thought it was needed.
-> I'll apply this patch too, as it appears to work with this code.
+On Tue, Jan 9, 2024 at 11:31=E2=80=AFPM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> > I'd also note that I'm really not sure what ChromeOS dark resume has
+> > to do with anything here. Dark resume is used for certain types of
+> > events that wakeup the system where we can identify that the event
+> > shouldn't turn the screen on, then we do some processing, then we go
+> > back to sleep. I'm nearly certain that a trackpad / touchscreen wakeup
+> > event would never qualify for "dark resume". If we see a
+> > trackpad/touchscreen event then we'll wakeup the system. If the system
+> > is in a state where trackpad/touchscreen events shouldn't wake us up
+> > then we disable those wakeups before going to suspend...
+>
+> Doesn't Dark Resume use wakeup count to decide whether the system
+> should wake up or go back to suspend?
+> For this case the input report is empty, hence wakeup count remains
+> the same after the wakeup. I assumed Dark Resume will check the wakeup
+> count and decide to put the system back to suspend.
 
-Oh, eventfs files and directories don't need the .permissions because its
-inodes and dentries are not created until accessed. But the "events"
-directory itself has its dentry and inode created at boot up, but still
-uses the eventfs_root_dir_inode_operations. So the .permissions is still
-needed!
+Ah, I understand now. So you're saying that the issue wouldn't be so
+bad (or maybe we wouldn't notice it) on systems with dark resume.
+However, even with dark resume we're not in a super great shape. Doing
+a dark resume isn't exactly a lightweight operation, since it can take
+a bit of time to resume the system, realize that there were no wakeup
+events, and then go back to sleep. I'm not a total expert on dark
+resume, but I believe that even with dark resume, there may also be
+artifacts that a user might notice (like perhaps USB devices powering
+up or perhaps the suspend LED on the system showing that we're not in
+suspend anymore).
 
-If you look at the "set_top_events_ownership()" function, it has:
 
-	/* The top events directory doesn't get automatically updated */
-	if (!ei || !ei->is_events || !(ei->attr.mode & EVENTFS_TOPLEVEL))
-		return;
+> > It seems to me like the board you're testing on has some strange bug
+> > and that bug should be fixed, or (in the worst case) you should send a
+> > patch to detect this broken touchpad and disable wakeup for it.
+>
+> It's desired to keep the wakeup capability, disabling wakeup isn't ideal =
+here.
+> I'll write a patch to use touchpad specific quirk instead of applying
+> the change universally.
 
-That is, it does nothing if the entry is not the "events" directory. It
-falls back to he default "->permissions()" function for everything but the
-top level "events" directory.
+Thanks! I'd also be curious if this is a problem for everyone with the
+Cirque touchpad or if it's board-specific. I could imagine the
+behavior you describe as coming about due to a missing or
+misconfigured pull resistor on the IRQ line. ...or perhaps a pull
+resistor pulling up to the wrong voltage rail...
 
-But this and .getattr are still needed for the events directory, because it
-suffers the same issue as the other tracefs entries. That is, it's inodes
-and dentries are created at boot up before it is mounted. So if the mount
-has gid=1000, it will be ignored.
-
-The .getattr is called by "stat" which ls does. So after boot up if you
-just do:
-
- # chmod 0750 /sys/kernel/events
- # chmod 0770 /sys/kernel/tracing
- # mount -o remount,gid=1000 /sys/kernel/tracing
- # su - rostedt
- $ id
-uid=1000(rostedt) gid=1000(rostedt) groups=1000(rostedt)
- $ ls /sys/kernel/tracing/events/
-9p            ext4            iomap        module      raw_syscalls  thermal
-alarmtimer    fib             iommu        msr         rcu           thp
-avc           fib6            io_uring     napi        regmap        timer
-block         filelock        ipi          neigh       regulator     tlb
-bpf_test_run  filemap         irq          net         resctrl       udp
-bpf_trace     ftrace          irq_matrix   netfs       rpm           virtio_gpu[
-..]
-
-The above works because "ls" does a stat() on the directory first, which
-does a .getattr() call that updates the permissions of the existing "events"
-directory inode.
-
-  BUT!
-
-If I had used my own getents() program that has:
-
-        fd = openat(AT_FDCWD, argv[1], O_RDONLY);
-        if (fd < 0)
-                perror("openat");
-
-        n = getdents64(fd, buf, BUF_SIZE);
-        if (n < 0)
-                perror("getdents64");
-
-Where it calls the openat() without doing a stat fist, and after boot, had done:
-
- # chmod 0750 /sys/kernel/events
- # chmod 0770 /sys/kernel/tracing
- # mount -o remount,gid=1000 /sys/kernel/tracing
- # su - rostedt
- $ id
-uid=1000(rostedt) gid=1000(rostedt) groups=1000(rostedt)
- $ ./getdents /sys/kernel/tracing/events
-openat: Permission denied
-getdents64: Bad file descriptor
-
-It errors because he "events" inode permission hasn't been updated yet.
-Now after getting the above error, if I do the "ls" and then run it again:
-
- $ ls /sys/kernel/tracing/events > /dev/null
- $ ./getdents /sys/kernel/tracing/events
-enable
-header_page
-header_event
-initcall
-vsyscall
-syscalls
-
-it works!
-
-so no, I can't remove that .permissions callback from eventfs.
-
--- Steve
+-Doug
 
