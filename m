@@ -1,91 +1,156 @@
-Return-Path: <linux-kernel+bounces-22449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 607D6829DDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:45:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61822829DDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:46:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE914B26EE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:45:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECBA428A932
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03C44C3D7;
-	Wed, 10 Jan 2024 15:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DF44CB2E;
+	Wed, 10 Jan 2024 15:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mn3RcY5/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Y3uEX2GT"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117274D597;
-	Wed, 10 Jan 2024 15:44:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C1DDC433F1;
-	Wed, 10 Jan 2024 15:44:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704901465;
-	bh=UGLylYGp4OT/HO+0IwkDTTy262kYznvfcm8xA4pCvH0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mn3RcY5/10Ai0jFubxRI66229hWCMvG1Sx9wDSXlxvYR8fGidL6QyIs7j0HBoNQKD
-	 uqi/iReaGBUMEUIdasQmRT3G5WE3nstCXi6w0d0eYtgewSqycVHvcYfQEKgitds+fY
-	 apu5cTuJ4YJARV3ujWCNZ1vlyQu0raxvsLPYA+rbfncoraMnIbeAypnRCWGXvzvoEw
-	 i8rat7ttfYTchAbLPgKqJff6219AsPHQK7WilY53fTvmO1QvQ4/I5y2ZNaR5kcjxgn
-	 47lOV4B0Aw20Yhw2B+4yo9V5BC3a/CmDix8+oFZoECpPvy0WcYY5D3xhr0PP4Bn2ez
-	 8kTljaKT6kGIA==
-Date: Wed, 10 Jan 2024 15:44:14 +0000
-From: Simon Horman <horms@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
-	andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, corbet@lwn.net, catalin.marinas@arm.com,
-	will@kernel.org, p.zabel@pengutronix.de, linux@armlinux.org.uk,
-	shannon.nelson@amd.com, anthony.l.nguyen@intel.com,
-	jasowang@redhat.com, brett.creeley@amd.com, rrameshbabu@nvidia.com,
-	joshua.a.hay@intel.com, arnd@arndb.de, geert+renesas@glider.be,
-	neil.armstrong@linaro.org, dmitry.baryshkov@linaro.org,
-	nfraprado@collabora.com, m.szyprowski@samsung.com, u-kumar1@ti.com,
-	jacob.e.keller@intel.com, andrew@lunn.ch, netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, ryazanov.s.a@gmail.com,
-	ansuelsmth@gmail.com, quic_kkumarcs@quicinc.com,
-	quic_suruchia@quicinc.com, quic_soni@quicinc.com,
-	quic_pavir@quicinc.com, quic_souravp@quicinc.com,
-	quic_linchen@quicinc.com, quic_leiwei@quicinc.com
-Subject: Re: [PATCH net-next 00/20] net: ethernet: Add qcom PPE driver
-Message-ID: <20240110154414.GH9296@kernel.org>
-References: <20240110114033.32575-1-quic_luoj@quicinc.com>
- <a72405c2-c891-4db5-9ac5-42ca1c36cafb@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652B74CB21;
+	Wed, 10 Jan 2024 15:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40AEtT60007939;
+	Wed, 10 Jan 2024 15:44:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=46davaovqwEtnCcydpQdJJqyzVaiWwhAxC2+wADQOeE=;
+ b=Y3uEX2GTc+BOW/lGynTiqOoi9fhgxYA8FLKgyRVh+7WQC1SBfScL0862Hlsj3ZlMdQO9
+ ZiW6y8KxAOnc+XJcIOKDcs52X7+N+CFvYIZnfwUQVtEHSoOeux2VVOaWgZis6EY5mh1r
+ Xu7bScke2Bz5ex3AEUxhKuOzNiGU+Wm1dxuBf8/C07ng0crWo4F/a9wOrqCmFhe6Ug16
+ Am1LQ8vRQfJgflDi69AbteF6tB3bC/qwXTkrD6jfOi5twDwL5abAUGStNUCU/O4jW/MI
+ bvgTNCYUXxE/PnLcHzEsZIeCcR42fhRwqU3PBuXYJhpja007OG4kbhl6v0Ctlacx83UE yw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhuu9m3yb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 15:44:46 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40AFfrYZ016567;
+	Wed, 10 Jan 2024 15:44:45 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhuu9m3xp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 15:44:45 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40AEc1JD028030;
+	Wed, 10 Jan 2024 15:44:44 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vgwfst3bu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 15:44:44 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40AFiguL11993778
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jan 2024 15:44:43 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D94FC5805B;
+	Wed, 10 Jan 2024 15:44:42 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4B4C458058;
+	Wed, 10 Jan 2024 15:44:41 +0000 (GMT)
+Received: from [9.61.170.131] (unknown [9.61.170.131])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 10 Jan 2024 15:44:41 +0000 (GMT)
+Message-ID: <41baa1b2-4afd-9adb-2121-b14c8943d9b1@linux.ibm.com>
+Date: Wed, 10 Jan 2024 10:44:40 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a72405c2-c891-4db5-9ac5-42ca1c36cafb@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 6/6] s390/vfio-ap: do not reset queue removed from host
+ config
+To: Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc: borntraeger@de.ibm.com, pasic@linux.ibm.com, pbonzini@redhat.com,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org
+References: <20231212212522.307893-1-akrowiak@linux.ibm.com>
+ <20231212212522.307893-7-akrowiak@linux.ibm.com>
+Content-Language: en-US
+From: "Jason J. Herne" <jjherne@linux.ibm.com>
+In-Reply-To: <20231212212522.307893-7-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: IsjIOTzPVQKvr0QmfztB0n_OxtMcN7ET
+X-Proofpoint-ORIG-GUID: 17mlDLuzrl3HOz48TJCLJGVBUouciBuT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-10_07,2024-01-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ adultscore=0 bulkscore=0 impostorscore=0 priorityscore=1501 phishscore=0
+ mlxscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401100128
 
-On Wed, Jan 10, 2024 at 01:24:06PM +0100, Krzysztof Kozlowski wrote:
-> On 10/01/2024 12:40, Luo Jie wrote:
-> > The PPE(packet process engine) hardware block is available in Qualcomm
-> > IPQ chipsets that support PPE architecture, such as IPQ9574 and IPQ5332.
-> > The PPE includes integrated ethernet MAC and PCS(uniphy), which is used
-> > to connect with external PHY devices by PCS. The PPE also includes
-> > various packet processing offload capabilities such as routing and
-> > briding offload, L2 switch capability, VLAN and tunnel processing
-> > offload.
-> > 
-> > This patch series enables support for the PPE driver which intializes
-> > and configures the PPE, and provides various services for higher level
-> > network drivers in the system such as EDMA (Ethernet DMA) driver or a
-> > DSA switch driver for PPE L2 Switch, for Qualcomm IPQ SoCs.
+
+
+On 12/12/23 4:25 PM, Tony Krowiak wrote:
+> When a queue is unbound from the vfio_ap device driver, it is reset to
+> ensure its crypto data is not leaked when it is bound to another device
+> driver. If the queue is unbound due to the fact that the adapter or domain
+> was removed from the host's AP configuration, then attempting to reset it
+> will fail with response code 01 (APID not valid) getting returned from the
+> reset command. Let's ensure that the queue is assigned to the host's
+> configuration before resetting it.
 > 
-> net-next is closed.
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Fixes: eeb386aeb5b7 ("s390/vfio-ap: handle config changed and scan complete notification")
+> Cc: <stable@vger.kernel.org>
+> ---
+>   drivers/s390/crypto/vfio_ap_ops.c | 14 ++++++++++++--
+>   1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index e014108067dc..84decb0d5c97 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -2197,6 +2197,8 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
+>   	q = dev_get_drvdata(&apdev->device);
+>   	get_update_locks_for_queue(q);
+>   	matrix_mdev = q->matrix_mdev;
+> +	apid = AP_QID_CARD(q->apqn);
+> +	apqi = AP_QID_QUEUE(q->apqn);
+>   
+>   	if (matrix_mdev) {
+>   		/* If the queue is assigned to the guest's AP configuration */
+> @@ -2214,8 +2216,16 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
+>   		}
+>   	}
+>   
+> -	vfio_ap_mdev_reset_queue(q);
+> -	flush_work(&q->reset_work);
+> +	/*
+> +	 * If the queue is not in the host's AP configuration, then resetting
+> +	 * it will fail with response code 01, (APQN not valid); so, let's make
+> +	 * sure it is in the host's config.
+> +	 */
+> +	if (test_bit_inv(apid, (unsigned long *)matrix_dev->info.apm) &&
+> +	    test_bit_inv(apqi, (unsigned long *)matrix_dev->info.aqm)) {
+> +		vfio_ap_mdev_reset_queue(q);
+> +		flush_work(&q->reset_work);
+> +	}
+>   
+>   done:
+>   	if (matrix_mdev)
 
-Also, please try to avoid sending patch-sets with more than 15 patches
-for net or net-next.
-
-https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#dividing-work-into-patches
+Reviewed-by: Jason J. Herne <jjherne@linux.ibm.com>
 
