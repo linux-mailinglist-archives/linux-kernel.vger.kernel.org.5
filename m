@@ -1,155 +1,150 @@
-Return-Path: <linux-kernel+bounces-22848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBB1D82A3EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:26:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5773682A3F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:28:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69C75B21949
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:26:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51ABC1C22E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E414F897;
-	Wed, 10 Jan 2024 22:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6FE4F899;
+	Wed, 10 Jan 2024 22:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YLE5pm4N"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JUZ8P90n"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90554F88D;
-	Wed, 10 Jan 2024 22:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23DD4F88A;
+	Wed, 10 Jan 2024 22:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cd1ca52f31so53795021fa.3;
-        Wed, 10 Jan 2024 14:26:46 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e5508ecb9so19726675e9.3;
+        Wed, 10 Jan 2024 14:27:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704925605; x=1705530405; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=V29kBokrHx3n8oCh6ytVABM8/fIDeu9CR++lJ6/5YjY=;
-        b=YLE5pm4NEXhi8YDAr+a+ggpTpYQGFYehbDaSKgQfh1+KYrYPBoCO06l0crS70YB8sn
-         eWw6T/h9Rr177TG9RnMT0jZDAeJWsHv8Qsa8uSl+/HkAbjYZlxg7uclXB8fqISweimNY
-         73VfOYyix+RvYyao/iMYlU0840uteWIFtygkPTB8NlsTky0FNwYDk8ccrYYZL04Yn6EA
-         lzeTUdYiuiFehAGf31jEOkaAdftcrszEAknZxbgsw92C4rpw45ZACjwXAqeSk8wZ+jdp
-         7Et1syqG2A4sKJxK8enwZ1uBCnrWo56ZD0u2FIqnP+/fxvI2zVpp/W1lBGrLxrC89Q8u
-         cLpA==
+        d=gmail.com; s=20230601; t=1704925674; x=1705530474; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tV1DZHUcUVZrnewacKcGxbUMRr8vxmCiDHV3WTeMLmU=;
+        b=JUZ8P90nhLvv0mWmCaSxWsarNRaY1hnkNe+3cYZbxR//2iLCRgggX0zRk+UuKlPtlb
+         oYsPg/y6/Zqb4BUAUxmyXnw8lgXYuVjdinDdC78AEdksOPIpcBMCK5A/9w5403dIJHVB
+         nxyACGNvMwWdiQfkOlN3HJ39ayXvvcjP7vkq79GeHO/K77mg3eEZ2eUPjS9fBMFg27V9
+         SCUFVmudHTPI7wV8Esp6kCndJFiDrMvktcceW1+nyE8xqItRq/vQMhTExQ5wrvb/O4KG
+         dKlr+SVnTb0K2oWRbdbiYSuVeRcBqFKyK+VrkJsaZxPy/5guaN5aT7E9l28Hy1ThITGG
+         nlxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704925605; x=1705530405;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V29kBokrHx3n8oCh6ytVABM8/fIDeu9CR++lJ6/5YjY=;
-        b=SQ9JDv6BsdpHU0LQ0fWr/kgfT1pFdQgi6JQyte6so05KT9EFEOBgth1JLiNz/Ft9Gi
-         jPJs1/wnryS7HZ6O9X/W35YePDFs60ytzaJ5wVCDUbSaL5n5bjLh3FTUhRSEPyrUv0ha
-         tkG/nMVtN5+7zjHKSZXefA1gyXVAuZoNzDJSd0+N86MyMsFzq6S+cTAmf6Irv/DwqBdG
-         v5n2RXtOF8pkPsvJG51QJqJQYP0aMF3XqoUNg3gKy+888GNy+n+m0PDB9qD5xbRqkHPP
-         ZN8UoGnAHH/fE5lXJ50TSFvWZrIqZZehlq7G8E5pW8SBxrFZwslp9fzGY6ZTc6hT5BAO
-         rvbw==
-X-Gm-Message-State: AOJu0YxRQyWLUyyUZQ+mTdQjoNwbYRSR4ncjbFQueqq9ysZVzBOvB9tL
-	SIxjeaMUwbFyzRlIuqZcGVeutWfhBxHO8YhUr/YtgxfaF50Wiw==
-X-Google-Smtp-Source: AGHT+IHU11L8GyLuc37Sc8+wJ2JZraOEVuqmNjj76cMLvlLSJJRLB2C41dOgVFdkgbEiX9KTCUnILe7jV06SEKapcKo=
-X-Received: by 2002:a2e:a201:0:b0:2cd:122a:7edd with SMTP id
- h1-20020a2ea201000000b002cd122a7eddmr98410ljm.44.1704925604519; Wed, 10 Jan
- 2024 14:26:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704925674; x=1705530474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tV1DZHUcUVZrnewacKcGxbUMRr8vxmCiDHV3WTeMLmU=;
+        b=NDBoCFZK+dbkARp5cg6L0PmWzMGnSJEYxDwDlIujS9fpFruEUP2GcS76uY8kcLHaQG
+         a1EDAxONde+KAMP2K28nUYk1MdxuYN0dleS7xn1T605x1lBIfoEQae4Wpd9vn3aQkuJa
+         y1nyxaWb1pR1JiH3Gc4NXnECiISkQj+Infk8tcV78KcYYSqvHzZwglhNEjrjT9eKmiBf
+         t72doZbvEUue9Q30VcCICgIVJoCOl/kJ+sWVw21ih/QJTBLbfhBsaWvI1XSR9qmHFCFu
+         E0ddpMbQYwmTTAAtRdNSe8tqs/NWyDe3ieHyhAPwk2kv/qca/LZZ7PpbhJ3SUK8wth7u
+         XScQ==
+X-Gm-Message-State: AOJu0YyLxiRx/QfbvZZnY650jkPvOgPEBLij2OdOePEKrPhoC3ABUuoS
+	7oLKeI5A8o1Q0yiUCRpUAUw=
+X-Google-Smtp-Source: AGHT+IGgcKxsjJ5XLQF/nuLg27niyjgQizwrV8LQV7EMJR/OLVcaUufsQ8IKHpTWo+JNwGlcf2yhBg==
+X-Received: by 2002:a05:600c:2d15:b0:40e:4a88:2de2 with SMTP id x21-20020a05600c2d1500b0040e4a882de2mr54041wmf.155.1704925673813;
+        Wed, 10 Jan 2024 14:27:53 -0800 (PST)
+Received: from prasmi.home ([2a00:23c8:2500:a01:3989:437:3f03:172f])
+        by smtp.gmail.com with ESMTPSA id l37-20020a05600c1d2500b0040e4ca7fcb4sm3637953wms.37.2024.01.10.14.27.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 14:27:53 -0800 (PST)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] dmaengine: sh: rz-dmac: Avoid format-overflow warning
+Date: Wed, 10 Jan 2024 22:27:17 +0000
+Message-Id: <20240110222717.193719-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Steve French <smfrench@gmail.com>
-Date: Wed, 10 Jan 2024 16:26:33 -0600
-Message-ID: <CAH2r5muCHfBddtoXwKmFZFnQ8+H+PA_gAf8htYEGhN0az6vV8g@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: CIFS <linux-cifs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Please phe following changes since commit
-0dd3ee31125508cd67f7e7172247f05b7fd1753a:
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-  Linux 6.7 (2024-01-07 12:18:38 -0800)
+The max channel count for RZ DMAC is 16, hence use u8 instead of unsigned
+int and make the pdev_irqname string long enough to avoid the warning.
 
-are available in the Git repository at:
+This fixes the below issue:
+drivers/dma/sh/rz-dmac.c: In function ‘rz_dmac_probe’:
+drivers/dma/sh/rz-dmac.c:770:34: warning: ‘%u’ directive writing between 1 and 10 bytes into a region of size 3 [-Wformat-overflow=]
+  770 |         sprintf(pdev_irqname, "ch%u", index);
+      |                                  ^~
+In function ‘rz_dmac_chan_probe’,
+    inlined from ‘rz_dmac_probe’ at drivers/dma/sh/rz-dmac.c:910:9:
+drivers/dma/sh/rz-dmac.c:770:31: note: directive argument in the range [0, 4294967294]
+  770 |         sprintf(pdev_irqname, "ch%u", index);
+      |                               ^~~~~~
+drivers/dma/sh/rz-dmac.c:770:9: note: ‘sprintf’ output between 4 and 13 bytes into a destination of size 5
+  770 |         sprintf(pdev_irqname, "ch%u", index);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/v6.8-rc-part1-smb-client
+While at it use scnprintf() instead of sprintf() to make the code
+more robust.
 
-for you to fetch changes up to 26ba1bf310f0ed43f249a93d0cf8a93675cd8ae8:
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/dma/sh/rz-dmac.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-  cifs: update internal module version number for cifs.ko (2024-01-09
-23:42:51 -0600)
-
-----------------------------------------------------------------
-Various smb client fixes, most related to better handling special file
-types including:
-- Six minor cleanups
-- Multichannel logging improvement
-- Exception handling fix
-- Ten relating to improving handling of special file types including
-   performance improvement (better compounding and better caching of
-readdir entries that are reparse points)
-   extend support for creating special files (sockets, fifos,
-block/char devices)
-   fix renaming and hardlinking of reparse points
-   extend support for creating symlinks with IO_REPARSE_TAG_SYMLINK
-
-Still testing additional patches to send next week
-----------------------------------------------------------------
-Dan Carpenter (2):
-      cifs: delete unnecessary NULL checks in cifs_chan_update_iface()
-      cifs: make cifs_chan_update_iface() a void function
-
-David Howells (1):
-      cifs: Pass unbyteswapped eof value into SMB2_set_eof()
-
-Markus Elfring (1):
-      smb3: Improve exception handling in allocate_mr_list()
-
-Paulo Alcantara (10):
-      smb: client: extend smb2_compound_op() to accept more commands
-      smb: client: allow creating special files via reparse points
-      smb: client: optimise reparse point querying
-      smb: client: fix renaming of reparse points
-      smb: client: fix hardlinking of reparse points
-      smb: client: allow creating symlinks via reparse points
-      smb: client: cleanup smb2_query_reparse_point()
-      smb: client: handle special files and symlinks in SMB3 POSIX
-      smb: client: stop revalidating reparse points unnecessarily
-      cifs: get rid of dup length check in parse_reparse_point()
-
-Pierre Mariani (1):
-      smb: client: Fix minor whitespace errors and warnings
-
-Shyam Prasad N (1):
-      cifs: fix in logging in cifs_chan_update_iface
-
-Steve French (2):
-      cifs: remove unneeded return statement
-      cifs: update internal module version number for cifs.ko
-
- fs/smb/client/cifsfs.h    |    4 +-
- fs/smb/client/cifsglob.h  |   47 ++-
- fs/smb/client/cifsproto.h |   32 +-
- fs/smb/client/cifssmb.c   |   31 +-
- fs/smb/client/connect.c   |   25 +-
- fs/smb/client/dir.c       |    7 +-
- fs/smb/client/file.c      |   10 +-
- fs/smb/client/inode.c     |  138 +++++---
- fs/smb/client/link.c      |   29 +-
- fs/smb/client/readdir.c   |  133 +++-----
- fs/smb/client/sess.c      |   53 ++-
- fs/smb/client/smb2glob.h  |   26 +-
- fs/smb/client/smb2inode.c | 1025
-++++++++++++++++++++++++++++++++++----------------------
- fs/smb/client/smb2ops.c   |  352 ++++++++++---------
- fs/smb/client/smb2pdu.c   |    6 +-
- fs/smb/client/smb2proto.h |   31 +-
- fs/smb/client/smbdirect.c |    4 +-
- fs/smb/client/trace.h     |    7 +-
- 18 files changed, 1131 insertions(+), 829 deletions(-)
-
+diff --git a/drivers/dma/sh/rz-dmac.c b/drivers/dma/sh/rz-dmac.c
+index fea5bda34bc2..1f1e86ba5c66 100644
+--- a/drivers/dma/sh/rz-dmac.c
++++ b/drivers/dma/sh/rz-dmac.c
+@@ -755,11 +755,11 @@ static struct dma_chan *rz_dmac_of_xlate(struct of_phandle_args *dma_spec,
+ 
+ static int rz_dmac_chan_probe(struct rz_dmac *dmac,
+ 			      struct rz_dmac_chan *channel,
+-			      unsigned int index)
++			      u8 index)
+ {
+ 	struct platform_device *pdev = to_platform_device(dmac->dev);
+ 	struct rz_lmdesc *lmdesc;
+-	char pdev_irqname[5];
++	char pdev_irqname[6];
+ 	char *irqname;
+ 	int ret;
+ 
+@@ -767,7 +767,7 @@ static int rz_dmac_chan_probe(struct rz_dmac *dmac,
+ 	channel->mid_rid = -EINVAL;
+ 
+ 	/* Request the channel interrupt. */
+-	sprintf(pdev_irqname, "ch%u", index);
++	scnprintf(pdev_irqname, sizeof(pdev_irqname), "ch%u", index);
+ 	channel->irq = platform_get_irq_byname(pdev, pdev_irqname);
+ 	if (channel->irq < 0)
+ 		return channel->irq;
+@@ -845,9 +845,9 @@ static int rz_dmac_probe(struct platform_device *pdev)
+ 	struct dma_device *engine;
+ 	struct rz_dmac *dmac;
+ 	int channel_num;
+-	unsigned int i;
+ 	int ret;
+ 	int irq;
++	u8 i;
+ 
+ 	dmac = devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
+ 	if (!dmac)
 -- 
-Thanks,
+2.34.1
 
-Steve
 
