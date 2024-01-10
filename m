@@ -1,50 +1,38 @@
-Return-Path: <linux-kernel+bounces-22185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FD57829A9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:49:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD59A829A80
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:40:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA751B22EF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:49:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A873E1C24880
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E659487A9;
-	Wed, 10 Jan 2024 12:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="NfOw+sVr";
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="vu4X0JnD"
-Received: from mta-04.yadro.com (mta-04.yadro.com [89.207.88.248])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9A8482C5;
+	Wed, 10 Jan 2024 12:40:40 +0000 (UTC)
+Received: from sender3-of-o59.zoho.com (sender3-of-o59.zoho.com [136.143.184.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD934878F;
-	Wed, 10 Jan 2024 12:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=syntacore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=syntacore.com
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-04.yadro.com B54A0C0003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-04; t=1704890332;
-	bh=J2Cdag0SuCiSQAWOmyVPFOmg2nxY7XKZX8eRVsmCIQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=NfOw+sVr0+9CvT+I1G82AInbTIKDUOutRQe6K4dcHnTu+uUGvfAiAajMCuS3nz5vX
-	 LhD76rRtKrRtgvEg1pSsTsyT5HcMY7pvDSMhZxx3b9mnXy6wZdeULW771qv3qv3zfU
-	 m6l6q66W0cFmBx+R+6TL+jCgyDQUGpq9QLxdOtVWcWp3E0z7IMcjugvxD6uMoioukQ
-	 bvjjWcZ9KCne/a9XZ68uEadc+mHGUhLPe4ZEsNQSHKQGOL1/1WP5rCSO/q1YyUrjEr
-	 x4NPGWK6cfr4VhyzXJysTn0+4k8nEhPhM6lz+yFuYieK+PzwuogPXjZeUqEQVjkpE7
-	 vHqtfB8DMnR1A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-03; t=1704890332;
-	bh=J2Cdag0SuCiSQAWOmyVPFOmg2nxY7XKZX8eRVsmCIQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=vu4X0JnDjWBje00FmcUwzz7wWRBMY0yaDLrqwoIM1vEp7Sn8pInu5tzInaHjCxDi1
-	 oyIa54sUFlSzbHbE0BaDihK/m1vsiJrv6MVHteu3ezaHehFujrQnafRpWMIrxBkYl2
-	 eZwhnDtOtQ7FJpsMZOfJ93qW5dZWwLpIIF0KAz7AmDaz6EKQyud4vTMm+eyV7Xxhdw
-	 vlT/BzFJisfX4oqsyFpca++GVXjYi+UblLLoui+30SM8GBvEO4u7YgIcFLcSBUsv5z
-	 d8iMy95vAnD7A+W6W48APrNs16RXlJfeVQ0Hl4fig6ziLPMunNIs3FcMB6TazkLLqw
-	 r42VT7QT/RuMA==
-Message-ID: <db38f118-3682-4b2f-b0a6-76b1c9fba557@syntacore.com>
-Date: Wed, 10 Jan 2024 15:38:49 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0284360BF;
+	Wed, 10 Jan 2024 12:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=5challer.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=5challer.de
+ARC-Seal: i=1; a=rsa-sha256; t=1704890402; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=mG81irjWHD2GNpjXHI6NXTaBaUt6KnE8HU9ckk8n1HZnSkyNIKLDqS6iCCPn7vnSuHAnu6bsX1+q571wM1phLbwMWntNqdhLY4twSFPBxXiwgFA7Zp1AAejeV16lIbv5S6jlcmsix+ZPl46/n6DBtd6LLX8PBfeBfC4ySiUWmpQ=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1704890402; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=kQJVZ8eFzAvmE5pkA462bXLU4g6YIbvStnFGD7XPwXo=; 
+	b=inlhKa9pYKX77SPbldFG2ZiTLavAEaJrVAr6oJkwxxd2uMDVDBjPpOypEx2mrFNeb6Bzs4gsPyU4GU1bDoZCnWH4RTStwXX850cnqM3etMQpsEf8kVT4xsHiAWJzxUhAFqwCMc8Doxmi3PxShCRtNK7ibvpgWCNuqp93eO806/E=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	spf=pass  smtp.mailfrom=michael@5challer.de;
+	dmarc=pass header.from=<michael@5challer.de>
+Received: from [192.168.144.187] (ipbcc11913.dynamic.kabel-deutschland.de [188.193.25.19]) by mx.zohomail.com
+	with SMTPS id 1704890400279286.1034435570938; Wed, 10 Jan 2024 04:40:00 -0800 (PST)
+Message-ID: <9f0f9de4-2d34-4ff3-a901-c3e4b48e4ab0@5challer.de>
+Date: Wed, 10 Jan 2024 13:39:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,304 +40,70 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [v2 09/10] RISC-V: KVM: Add perf sampling support for guests
-Content-Language: en-US, ru-RU
-To: Atish Patra <atishp@rivosinc.com>, <linux-kernel@vger.kernel.org>
-CC: Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti
-	<alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, Anup Patel
-	<anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, Conor Dooley
-	<conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>, Heiko Stuebner
-	<heiko@sntech.de>, <kvm-riscv@lists.infradead.org>, <kvm@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Will Deacon <will@kernel.org>
-References: <20231229214950.4061381-1-atishp@rivosinc.com>
- <20231229214950.4061381-10-atishp@rivosinc.com>
-From: Vladimir Isaev <vladimir.isaev@syntacore.com>
-In-Reply-To: <20231229214950.4061381-10-atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: T-EXCH-10.corp.yadro.com (172.17.11.60) To
- S-Exch-01.corp.yadro.com (10.78.5.241)
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+ macro@orcam.me.uk, ajayagarwal@google.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, gregkh@linuxfoundation.org,
+ hkallweit1@gmail.com, michael.a.bottini@linux.intel.com,
+ johan+linaro@kernel.org
+References: <954f0b86-dd9e-4d84-8d67-fba7e80bc94e@5challer.de>
+ <20240105155100.GA1861423@bhelgaas>
+ <CAAd53p5Eg4J9bRtAHY+JZ11cy1D0TnKmAaLfzcRJzw15VRBxXw@mail.gmail.com>
+Content-Language: en-US
+From: Michael Schaller <michael@5challer.de>
+In-Reply-To: <CAAd53p5Eg4J9bRtAHY+JZ11cy1D0TnKmAaLfzcRJzw15VRBxXw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
 
-30.12.2023 00:49, Atish Patra wrote:
+On 10.01.24 04:43, Kai-Heng Feng wrote:
+> On Fri, Jan 5, 2024 at 11:51 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>>
+>> On Fri, Jan 05, 2024 at 12:18:32PM +0100, Michael Schaller wrote:
+>>> On 05.01.24 04:25, Kai-Heng Feng wrote:
+>>>> Just wondering, does `echo 0 > /sys/power/pm_asysnc` help?
+>>>
+>>> Yes, `echo 0 | sudo tee /sys/power/pm_async` does indeed also result in a
+>>> working resume. I've tested this on kernel 6.6.9 (which still has commit
+>>> 08d0cc5f3426). I've also attached the relevant dmesg output of the
+>>> suspend/resume cycle in case this helps.
+>>
+>> Thanks for testing that!
+>>
+>>> Furthermore does this mean that commit 08d0cc5f3426 isn't at fault but
+>>> rather that we are dealing with a timing issue?
+>>
+>> PCI does have a few software timing requirements, mostly related to
+>> reset and power state (D0/D3cold).  ASPM has some timing parameters,
+>> too, but I think they're all requirements on the hardware, not on
+>> software.
+>>
+>> Adding an arbitrary delay anywhere shouldn't break anything, and other
+>> than those few required situations, it shouldn't fix anything either.
 > 
-> KVM enables perf for guest via counter virtualization. However, the
-> sampling can not be supported as there is no mechanism to enabled
-> trap/emulate scountovf in ISA yet. Rely on the SBI PMU snapshot
-> to provide the counter overflow data via the shared memory.
+> At least it means 8d0cc5f3426 isn't the culprit?
 > 
-> In case of sampling event, the host first guest the LCOFI interrupt
-> and injects to the guest via irq filtering mechanism defined in AIA
-> specification. Thus, ssaia must be enabled in the host in order to
-> use perf sampling in the guest. No other AIA dpeendancy w.r.t kernel
-> is required.
+> Michael, does the issue happen when iwlwifi module is not loaded? It
+> can be related to iwlwifi firmware.
 > 
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  arch/riscv/include/asm/csr.h          |  3 +-
->  arch/riscv/include/asm/kvm_vcpu_pmu.h |  1 +
->  arch/riscv/include/uapi/asm/kvm.h     |  1 +
->  arch/riscv/kvm/main.c                 |  1 +
->  arch/riscv/kvm/vcpu.c                 |  8 +--
->  arch/riscv/kvm/vcpu_onereg.c          |  2 +
->  arch/riscv/kvm/vcpu_pmu.c             | 70 +++++++++++++++++++++++++--
->  7 files changed, 77 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-> index 88cdc8a3e654..bec09b33e2f0 100644
-> --- a/arch/riscv/include/asm/csr.h
-> +++ b/arch/riscv/include/asm/csr.h
-> @@ -168,7 +168,8 @@
->  #define VSIP_TO_HVIP_SHIFT     (IRQ_VS_SOFT - IRQ_S_SOFT)
->  #define VSIP_VALID_MASK                ((_AC(1, UL) << IRQ_S_SOFT) | \
->                                  (_AC(1, UL) << IRQ_S_TIMER) | \
-> -                                (_AC(1, UL) << IRQ_S_EXT))
-> +                                (_AC(1, UL) << IRQ_S_EXT) | \
-> +                                (_AC(1, UL) << IRQ_PMU_OVF))
-> 
->  /* AIA CSR bits */
->  #define TOPI_IID_SHIFT         16
-> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> index d56b901a61fc..af6d0ff5ce41 100644
-> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> @@ -36,6 +36,7 @@ struct kvm_pmc {
->         bool started;
->         /* Monitoring event ID */
->         unsigned long event_idx;
-> +       struct kvm_vcpu *vcpu;
->  };
-> 
->  /* PMU data structure per vcpu */
-> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
-> index d6b7a5b95874..d5aea43bc797 100644
-> --- a/arch/riscv/include/uapi/asm/kvm.h
-> +++ b/arch/riscv/include/uapi/asm/kvm.h
-> @@ -139,6 +139,7 @@ enum KVM_RISCV_ISA_EXT_ID {
->         KVM_RISCV_ISA_EXT_ZIHPM,
->         KVM_RISCV_ISA_EXT_SMSTATEEN,
->         KVM_RISCV_ISA_EXT_ZICOND,
-> +       KVM_RISCV_ISA_EXT_SSCOFPMF,
->         KVM_RISCV_ISA_EXT_MAX,
->  };
-> 
-> diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
-> index 225a435d9c9a..5a3a4cee0e3d 100644
-> --- a/arch/riscv/kvm/main.c
-> +++ b/arch/riscv/kvm/main.c
-> @@ -43,6 +43,7 @@ int kvm_arch_hardware_enable(void)
->         csr_write(CSR_HCOUNTEREN, 0x02);
-> 
->         csr_write(CSR_HVIP, 0);
-> +       csr_write(CSR_HVIEN, 1UL << IRQ_PMU_OVF);\
+> Kai-Heng
+>
+The issue still happens if the iwlwifi module has been blacklisted and 
+after a reboot. This was again with vanilla kernel 6.6.9 and I've 
+confirmed via dmesg that iwlwifi wasn't loaded.
 
-Hi Atish,
+I've also checked if there is a newer firmware but Ubuntu 23.10 is 
+already using the newest firmware available from 
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/log/iwlwifi-8265-36.ucode 
+(version 36.ca7b901d.0 according to dmesg).
 
-Maybe I missed something, but I thought you planned to move CSR_HVIEN to kvm_riscv_aia_enable() and
-add dependency for KVM sscofpmf and AIA since this register is part of AIA spec.
+Michael
 
-Thank you
-Vladimir Isaev
-
-> 
->         kvm_riscv_aia_enable();
-> 
-> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-> index b5ca9f2e98ac..f83f0226439f 100644
-> --- a/arch/riscv/kvm/vcpu.c
-> +++ b/arch/riscv/kvm/vcpu.c
-> @@ -382,7 +382,8 @@ int kvm_riscv_vcpu_set_interrupt(struct kvm_vcpu *vcpu, unsigned int irq)
->         if (irq < IRQ_LOCAL_MAX &&
->             irq != IRQ_VS_SOFT &&
->             irq != IRQ_VS_TIMER &&
-> -           irq != IRQ_VS_EXT)
-> +           irq != IRQ_VS_EXT &&
-> +           irq != IRQ_PMU_OVF)
->                 return -EINVAL;
-> 
->         set_bit(irq, vcpu->arch.irqs_pending);
-> @@ -397,14 +398,15 @@ int kvm_riscv_vcpu_set_interrupt(struct kvm_vcpu *vcpu, unsigned int irq)
->  int kvm_riscv_vcpu_unset_interrupt(struct kvm_vcpu *vcpu, unsigned int irq)
->  {
->         /*
-> -        * We only allow VS-mode software, timer, and external
-> +        * We only allow VS-mode software, timer, counter overflow and external
->          * interrupts when irq is one of the local interrupts
->          * defined by RISC-V privilege specification.
->          */
->         if (irq < IRQ_LOCAL_MAX &&
->             irq != IRQ_VS_SOFT &&
->             irq != IRQ_VS_TIMER &&
-> -           irq != IRQ_VS_EXT)
-> +           irq != IRQ_VS_EXT &&
-> +           irq != IRQ_PMU_OVF)
->                 return -EINVAL;
-> 
->         clear_bit(irq, vcpu->arch.irqs_pending);
-> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
-> index 581568847910..1eaaa919aa61 100644
-> --- a/arch/riscv/kvm/vcpu_onereg.c
-> +++ b/arch/riscv/kvm/vcpu_onereg.c
-> @@ -36,6 +36,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
->         /* Multi letter extensions (alphabetically sorted) */
->         KVM_ISA_EXT_ARR(SMSTATEEN),
->         KVM_ISA_EXT_ARR(SSAIA),
-> +       KVM_ISA_EXT_ARR(SSCOFPMF),
->         KVM_ISA_EXT_ARR(SSTC),
->         KVM_ISA_EXT_ARR(SVINVAL),
->         KVM_ISA_EXT_ARR(SVNAPOT),
-> @@ -88,6 +89,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
->         case KVM_RISCV_ISA_EXT_I:
->         case KVM_RISCV_ISA_EXT_M:
->         case KVM_RISCV_ISA_EXT_SSTC:
-> +       case KVM_RISCV_ISA_EXT_SSCOFPMF:
->         case KVM_RISCV_ISA_EXT_SVINVAL:
->         case KVM_RISCV_ISA_EXT_SVNAPOT:
->         case KVM_RISCV_ISA_EXT_ZBA:
-> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-> index e980235b8436..f2bf5b5bdd61 100644
-> --- a/arch/riscv/kvm/vcpu_pmu.c
-> +++ b/arch/riscv/kvm/vcpu_pmu.c
-> @@ -229,6 +229,47 @@ static int kvm_pmu_validate_counter_mask(struct kvm_pmu *kvpmu, unsigned long ct
->         return 0;
->  }
-> 
-> +static void kvm_riscv_pmu_overflow(struct perf_event *perf_event,
-> +                                  struct perf_sample_data *data,
-> +                                  struct pt_regs *regs)
-> +{
-> +       struct kvm_pmc *pmc = perf_event->overflow_handler_context;
-> +       struct kvm_vcpu *vcpu = pmc->vcpu;
-> +       struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
-> +       struct riscv_pmu *rpmu = to_riscv_pmu(perf_event->pmu);
-> +       u64 period;
-> +
-> +       /*
-> +        * Stop the event counting by directly accessing the perf_event.
-> +        * Otherwise, this needs to deferred via a workqueue.
-> +        * That will introduce skew in the counter value because the actual
-> +        * physical counter would start after returning from this function.
-> +        * It will be stopped again once the workqueue is scheduled
-> +        */
-> +       rpmu->pmu.stop(perf_event, PERF_EF_UPDATE);
-> +
-> +       /*
-> +        * The hw counter would start automatically when this function returns.
-> +        * Thus, the host may continue to interrupt and inject it to the guest
-> +        * even without the guest configuring the next event. Depending on the hardware
-> +        * the host may have some sluggishness only if privilege mode filtering is not
-> +        * available. In an ideal world, where qemu is not the only capable hardware,
-> +        * this can be removed.
-> +        * FYI: ARM64 does this way while x86 doesn't do anything as such.
-> +        * TODO: Should we keep it for RISC-V ?
-> +        */
-> +       period = -(local64_read(&perf_event->count));
-> +
-> +       local64_set(&perf_event->hw.period_left, 0);
-> +       perf_event->attr.sample_period = period;
-> +       perf_event->hw.sample_period = period;
-> +
-> +       set_bit(pmc->idx, kvpmu->pmc_overflown);
-> +       kvm_riscv_vcpu_set_interrupt(vcpu, IRQ_PMU_OVF);
-> +
-> +       rpmu->pmu.start(perf_event, PERF_EF_RELOAD);
-> +}
-> +
->  static long kvm_pmu_create_perf_event(struct kvm_pmc *pmc, struct perf_event_attr *attr,
->                                       unsigned long flags, unsigned long eidx,
->                                       unsigned long evtdata)
-> @@ -248,7 +289,7 @@ static long kvm_pmu_create_perf_event(struct kvm_pmc *pmc, struct perf_event_att
->          */
->         attr->sample_period = kvm_pmu_get_sample_period(pmc);
-> 
-> -       event = perf_event_create_kernel_counter(attr, -1, current, NULL, pmc);
-> +       event = perf_event_create_kernel_counter(attr, -1, current, kvm_riscv_pmu_overflow, pmc);
->         if (IS_ERR(event)) {
->                 pr_err("kvm pmu event creation failed for eidx %lx: %ld\n", eidx, PTR_ERR(event));
->                 return PTR_ERR(event);
-> @@ -473,6 +514,12 @@ int kvm_riscv_vcpu_pmu_ctr_start(struct kvm_vcpu *vcpu, unsigned long ctr_base,
->                 }
->         }
-> 
-> +       /* The guest have serviced the interrupt and starting the counter again */
-> +       if (test_bit(IRQ_PMU_OVF, vcpu->arch.irqs_pending)) {
-> +               clear_bit(pmc_index, kvpmu->pmc_overflown);
-> +               kvm_riscv_vcpu_unset_interrupt(vcpu, IRQ_PMU_OVF);
-> +       }
-> +
->  out:
->         retdata->err_val = sbiret;
-> 
-> @@ -539,7 +586,13 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
->                         else if (pmc->perf_event)
->                                 pmc->counter_val += perf_event_read_value(pmc->perf_event,
->                                                                           &enabled, &running);
-> -                       /* TODO: Add counter overflow support when sscofpmf support is added */
-> +                       /*
-> +                        * The counter and overflow indicies in the snapshot region are w.r.to
-> +                        * cbase. Modify the set bit in the counter mask instead of the pmc_index
-> +                        * which indicates the absolute counter index.
-> +                        */
-> +                       if (test_bit(pmc_index, kvpmu->pmc_overflown))
-> +                               kvpmu->sdata->ctr_overflow_mask |= (1UL << i);
->                         kvpmu->sdata->ctr_values[i] = pmc->counter_val;
->                         kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr, kvpmu->sdata,
->                                              sizeof(struct riscv_pmu_snapshot_data));
-> @@ -548,15 +601,20 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
->                 if (flags & SBI_PMU_STOP_FLAG_RESET) {
->                         pmc->event_idx = SBI_PMU_EVENT_IDX_INVALID;
->                         clear_bit(pmc_index, kvpmu->pmc_in_use);
-> +                       clear_bit(pmc_index, kvpmu->pmc_overflown);
->                         if (snap_flag_set) {
->                                 /* Clear the snapshot area for the upcoming deletion event */
->                                 kvpmu->sdata->ctr_values[i] = 0;
-> +                               /*
-> +                                * Only clear the given counter as the caller is responsible to
-> +                                * validate both the overflow mask and configured counters.
-> +                                */
-> +                               kvpmu->sdata->ctr_overflow_mask &= ~(1UL << i);
->                                 kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr, kvpmu->sdata,
->                                                      sizeof(struct riscv_pmu_snapshot_data));
->                         }
->                 }
->         }
-> -
->  out:
->         retdata->err_val = sbiret;
-> 
-> @@ -699,6 +757,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
->                 pmc = &kvpmu->pmc[i];
->                 pmc->idx = i;
->                 pmc->event_idx = SBI_PMU_EVENT_IDX_INVALID;
-> +               pmc->vcpu = vcpu;
->                 if (i < kvpmu->num_hw_ctrs) {
->                         pmc->cinfo.type = SBI_PMU_CTR_TYPE_HW;
->                         if (i < 3)
-> @@ -731,13 +790,14 @@ void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *vcpu)
->         if (!kvpmu)
->                 return;
-> 
-> -       for_each_set_bit(i, kvpmu->pmc_in_use, RISCV_MAX_COUNTERS) {
-> +       for_each_set_bit(i, kvpmu->pmc_in_use, RISCV_KVM_MAX_COUNTERS) {
->                 pmc = &kvpmu->pmc[i];
->                 pmc->counter_val = 0;
->                 kvm_pmu_release_perf_event(pmc);
->                 pmc->event_idx = SBI_PMU_EVENT_IDX_INVALID;
->         }
-> -       bitmap_zero(kvpmu->pmc_in_use, RISCV_MAX_COUNTERS);
-> +       bitmap_zero(kvpmu->pmc_in_use, RISCV_KVM_MAX_COUNTERS);
-> +       bitmap_zero(kvpmu->pmc_overflown, RISCV_KVM_MAX_COUNTERS);
->         memset(&kvpmu->fw_event, 0, SBI_PMU_FW_MAX * sizeof(struct kvm_fw_event));
->         kvm_pmu_clear_snapshot_area(vcpu);
->  }
-> --
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>
+>> Bjorn
 
