@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-22315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15365829C1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:11:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29A1B829C15
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B16F7289BDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:11:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 424741C2217B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F834D10F;
-	Wed, 10 Jan 2024 14:09:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F914C62D;
+	Wed, 10 Jan 2024 14:09:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SO8m9Yeu"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ReIrpcHb"
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200264BA9B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8954BA86;
 	Wed, 10 Jan 2024 14:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40AE971A082837;
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40AE97W3082845;
 	Wed, 10 Jan 2024 08:09:07 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1704895747;
-	bh=L5VLsrL0Bqa0SgidGjHRgq79IVi8Co3IsXwFN895ax4=;
+	bh=93QnWTwpjLdmFplR5QOGy0kgdS5AD0e+GekQxYjtSrU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=SO8m9Yeuh1Bg3EXc7zqW/of5vPMxRRKEHw/NQJQMM/UcxnCOrMEbQmIHBW5Z9q72s
-	 40ZO9nYPRElzpzPb2arlb4y5ZzbbDGfzXCUaIT9+AvNCPROdNgaMmsXlJ3lbDia6Ve
-	 1QjsaLt9eUIhkb1EuQ7y6ZRnP7u6zjkESb8QUz8s=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40AE97uJ103025
+	b=ReIrpcHbbYFpJZoe0Y4N0t6qArl3PLU5f1yrPwb/nQ1Jh9sJVyW16DLLbbO13uWjT
+	 MUAryzFREWHuzXfIwTcqeddZolm9D7J9KowoIWUd/Zm5h+VmBlj7vLWknDMVv8O66i
+	 ugSjsowC23lwd0ZFU/6eN62sMA2ozetxde7i6kbQ=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40AE97Yi022991
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Wed, 10 Jan 2024 08:09:07 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
  Jan 2024 08:09:07 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Wed, 10 Jan 2024 08:09:07 -0600
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40AE96bP041080;
-	Wed, 10 Jan 2024 08:09:06 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40AE97Tq025526;
+	Wed, 10 Jan 2024 08:09:07 -0600
 From: Nishanth Menon <nm@ti.com>
 To: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>,
@@ -54,17 +54,13 @@ To: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>,
-        Ayush
- Singh <ayushdevel1325@gmail.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Robert Nelson
-	<robertcnelson@gmail.com>,
-        Tony Lindgren <tony@atomide.com>, Wadim Egorov
-	<w.egorov@phytec.de>
-Subject: [PATCH 13/16] arm64: dts: ti: beagle*: Add MIT license along with GPL-2.0
-Date: Wed, 10 Jan 2024 08:09:00 -0600
-Message-ID: <20240110140903.4090946-14-nm@ti.com>
+        Chao Zeng
+	<chao.zeng@siemens.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>, Le Jin
+	<le.jin@siemens.com>
+Subject: [PATCH 14/16] arm64: dts: ti: iot2050*: Clarify GPL-2.0 as GPL-2.0-only
+Date: Wed, 10 Jan 2024 08:09:01 -0600
+Message-ID: <20240110140903.4090946-15-nm@ti.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240110140903.4090946-1-nm@ti.com>
 References: <20240110140903.4090946-1-nm@ti.com>
@@ -78,95 +74,127 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Modify license to include dual licensing as GPL-2.0-only OR MIT
-license for device trees belonging to BeagleBoard.org Foundation
-platforms. This allows for Linux kernel device tree to be used in
-other Operating System ecosystems such as Zephyr or FreeBSD.
+SPDX identifier GPL-2.0 has been deprecated since license list version
+3.0. Use GPL-2.0-only to be specific.
 
-While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
-with latest SPDX conventions (GPL-2.0 is deprecated).
-
-While at this, update the copyright year to sync with current year
-to indicate license change.
-
-Cc: Ayush Singh <ayushdevel1325@gmail.com>
-Cc: Jason Kridner <jkridner@beagleboard.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Robert Nelson <robertcnelson@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Wadim Egorov <w.egorov@phytec.de>
+Cc: Chao Zeng <chao.zeng@siemens.com>
+Cc: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Le Jin <le.jin@siemens.com>
 
 Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
- .../boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso      | 4 ++--
- .../boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso | 4 ++--
- arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts            | 6 +++---
- arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts        | 8 ++++----
- 4 files changed, 11 insertions(+), 11 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi        | 2 +-
+ arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi        | 2 +-
+ arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi            | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi    | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts        | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts            | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts      | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts     | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts         | 2 +-
+ 10 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso
-index 5e80ca7033ba..3b4643b7d19c 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso
-@@ -1,7 +1,7 @@
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
+index 1d1979859583..c424fef19d5f 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
+@@ -1,4 +1,4 @@
 -// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
++// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * ALINX AN5641 & Digilent PCam 5C - OV5640 camera module
-- * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-  */
- 
- /dts-v1/;
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso
-index 5e1cbbc27c8f..81a2763d43c6 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso
-@@ -1,7 +1,7 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
- /*
-  * Technexion TEVI-OV5640-*-RPI - OV5640 camera module
-- * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-  */
- 
- /dts-v1/;
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-index eadbdd9ffe37..600db09b8ad3 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-@@ -1,9 +1,9 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
- /*
-  * https://beagleplay.org/
+  * Copyright (c) Siemens AG, 2021-2023
   *
-- * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
-- * Copyright (C) 2022-2023 Robert Nelson, BeagleBoard.org Foundation
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Robert Nelson, BeagleBoard.org Foundation
-  */
- 
- /dts-v1/;
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts b/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts
-index 2f954729f353..dfc9adacd511 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts
-@@ -1,9 +1,9 @@
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+index e9b57b87e42e..5eeeca27dee6 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+@@ -1,4 +1,4 @@
 -// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
++// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * https://beagleboard.org/ai-64
-- * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
-- * Copyright (C) 2022 Jason Kridner, BeagleBoard.org Foundation
-- * Copyright (C) 2022 Robert Nelson, BeagleBoard.org Foundation
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Jason Kridner, BeagleBoard.org Foundation
-+ * Copyright (C) 2022-2024 Robert Nelson, BeagleBoard.org Foundation
-  */
- 
- /dts-v1/;
+  * Copyright (c) Siemens AG, 2021
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+index 61a634afaa4f..00520c75e0f5 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2021
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
+index 1d6cddb11991..c927c8679017 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2021
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+index c62549a4b436..ec62dd7921d6 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2021
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
+index 87928ff28214..4968a47f31ea 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2021
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
+index 3864ec54e371..ae842b85b70d 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2021
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts
+index bd6f2e696e94..8f559f4e7dda 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2023
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+index f00dc86d01b9..173c941b1c4b 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2021
+  *
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
+index 077f165bdc68..48b908c19ef7 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Siemens AG, 2018-2021
+  *
 -- 
 2.43.0
 
