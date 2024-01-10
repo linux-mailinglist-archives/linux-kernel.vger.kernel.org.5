@@ -1,182 +1,173 @@
-Return-Path: <linux-kernel+bounces-22834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8A982A3AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:56:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2E4382A3BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE68C1C23013
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:56:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 551C8289C98
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42CE54F881;
-	Wed, 10 Jan 2024 21:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42D94F881;
+	Wed, 10 Jan 2024 22:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="i3azVk9c"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2ebZWsb"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BFAF4EB5C
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 21:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28beb1d946fso4002256a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:56:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F042AE69;
+	Wed, 10 Jan 2024 22:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-783195e57c7so306591685a.2;
+        Wed, 10 Jan 2024 14:00:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704923763; x=1705528563; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UE7RP3C8HDn4Er6YTFEjRqxJbAFevtcwVndsQRkg/dE=;
-        b=i3azVk9cSHxfHW6ECV7E12/ODJfYM5VfPsxKj6m1G35dY21rKzqgKsxIuULk4LR9ct
-         TPLhU7/paPWPnQUnqBahmrXZHgj8JBACC1TFJ6fNL5W8DIIvmO1cBe/HqMEH1nQ43Hjp
-         /gjcGIOFt7bTvGWDxxUiIUajJWo5tHeGU/hMs=
+        d=gmail.com; s=20230601; t=1704924045; x=1705528845; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NQNHWwGHv1BR7NcjbT1UUV9pjYFn1oFVtE7FaHO24PU=;
+        b=g2ebZWsb5MOmslfKDHZ8/etQvSQAmXZvjLt3xeWhBQBP3DQMFJEUp8uyFnaU7OR2+R
+         FpbyZTCshmWR/YSp7hZyGPoGQaY2R2LJ5fQaEolgLLyMLejIsXqJ853OIEH7wttX4veW
+         GpKJ19zmJmg4O9A4SRxzhr7MGFkGh3pumFYteBgK54I6pxV6vT8P2STnU/BY9Mn48OsG
+         iqcpUefOOUE9TiqNuxcvwFXtUqX1QDjcskbnTs4myIPY8VCFDI/r7sTiCsahl6pTjNx2
+         PYGgecEIPXPEOFPyBz0gqTYw7tzlBKcFssTKP5G/D8lyBZlq/DI2gFbuYEbXu3Q9kOSr
+         BtGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704923763; x=1705528563;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UE7RP3C8HDn4Er6YTFEjRqxJbAFevtcwVndsQRkg/dE=;
-        b=hEC7yMz7d0fdvCrxKFwbCJbmhmpM0Z8HyHTFdO2nZ62+6Ocry0xUGqbwE08it0a1Xk
-         gR4Xm5MljMjR0Vsx69M1neVSSGK/lChT+X6wrOl8DItViZkFe+MJk/k6p5jOPAETJXju
-         66Jfd+2rcwVyGZxEb19zMLjKlELtEyp6PCQrtRoQ3j0qVnjDCuq9cZ/j4L61e1YEUDX0
-         kaBy4o/vgturLSgtdG2U6QxDGIJ0YqmSu8x9Ashq1RwWzVtF3wd10qa+3CkfXKPK0f3i
-         akUUOgWM6a5JrKuRp6J3WXixkFnjaL4TO/lYIdGso1sNpT79gzzJfYQntK3zgWURsgO5
-         O2sw==
-X-Gm-Message-State: AOJu0YwSghJa2X/Hfz7HqQYlzRAY7XUELUVSznhj8cn61qglZeZDrMUK
-	Tpbk0OGpmMF7NwYGi29BC5Gcm/6R+m+W
-X-Google-Smtp-Source: AGHT+IGYDsmjlb74Cpw9MqShCp6RonR7fAVt63wWNrXhkFCn8e843x/Is+JTRvCJ6x/Cv0FCiw0qMw==
-X-Received: by 2002:a17:90b:3b45:b0:28d:bd27:f81 with SMTP id ot5-20020a17090b3b4500b0028dbd270f81mr160165pjb.15.1704923763489;
-        Wed, 10 Jan 2024 13:56:03 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m5-20020a170902db8500b001d4c955cc00sm4110254pld.271.2024.01.10.13.56.02
+        d=1e100.net; s=20230601; t=1704924045; x=1705528845;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NQNHWwGHv1BR7NcjbT1UUV9pjYFn1oFVtE7FaHO24PU=;
+        b=hFcCXo+UbwZszWLaPjord6n5X6jKNcYGXSbpQjZmNsK/XxbmDrVQzxpso7s2WBaE0w
+         nEcph2+nsCFK1vy3gSf4PZH5ZTyYcGOuIKM6lNwG78FQSgmEXSuzfj0AQcyL9XZ5/OM0
+         LaQTHeHaXQMcZVewxbsfGD3ebPohZsD+jcrivp9C1U9otKb4/uWREHJgcGLNs4toFUYd
+         FLLyupLhVpNZqNJLzug0IrV1RqmJEF9Rn0KuOY0PG83P4MDlSiOWjPTfsctHeyKxV8U8
+         /FjaiDDmUwEebDG44tTSxRRFuiPh2QJtZROusHgS1WRP4dHEPF5gMSTgaAx4gIH5lPfL
+         jFpQ==
+X-Gm-Message-State: AOJu0YwAwZSBAylYAjXBQE8kg8whsKsV3A4AnSJwyFq0G0cZ6aqJ/XTe
+	KM6lXgQtsC9IGYD2cICcTQA=
+X-Google-Smtp-Source: AGHT+IFUIrL1dAXi6ergGzOc7fEKoRe5k/hU2s+fGJog242xj+MFcIOC1U5/LPvVXeVBLEUVsF93hw==
+X-Received: by 2002:a05:6214:d65:b0:67a:a721:9e91 with SMTP id 5-20020a0562140d6500b0067aa7219e91mr134706qvs.66.1704924045288;
+        Wed, 10 Jan 2024 14:00:45 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id j17-20020a0cf9d1000000b0067f678747ffsm2003463qvo.50.2024.01.10.14.00.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 13:56:03 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Russell King <linux@armlinux.org.uk>
-Cc: Kees Cook <keescook@chromium.org>,
-	Mark Brown <broonie@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Vladimir Murzin <vladimir.murzin@arm.com>,
-	Zhen Lei <thunder.leizhen@huawei.com>,
-	Keith Packard <keithpac@amazon.com>,
-	Haibo Li <haibo.li@mediatek.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alexandre Mergnat <amergnat@baylibre.com>,
+        Wed, 10 Jan 2024 14:00:44 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 1FCB127C005A;
+	Wed, 10 Jan 2024 17:00:44 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 10 Jan 2024 17:00:44 -0500
+X-ME-Sender: <xms:ixOfZbFtzQwDIEckOFRARRJ8970Q4bmPHJi4yPcafuxDYtLE9d_GPQ>
+    <xme:ixOfZYXWJuk4lAbzb5U2GwNnTev9TABAgyhUcNrRz9TEWvfbtIN-VY0xlj8-DPIri
+    aNVjuGmqSt-5N13sw>
+X-ME-Received: <xmr:ixOfZdIsQTrHOjU70r7dWXM7I0zVYKPrbPJxOqki3isHYB61z6EF-YL8vIA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiuddgudehfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
+    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:ixOfZZEtgA4Z3ftWYEgfyaM_oBY2vXXbxtr-R9guGXK2eUJHebO-Yw>
+    <xmx:ixOfZRVxc1EWC0TvcEZ8RER8T0WzMx1R7a-XT1ue47O1jKYLvHdGvQ>
+    <xmx:ixOfZUOgAlzPludOxHkF9NCwxaDVe2dg2zjW2NRWZpX0wy-JT223IQ>
+    <xmx:jBOfZdrtvJNow290I62PRbxVtVxfpTvcsqZd9puD6NFJYfvc43CwMw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Jan 2024 17:00:42 -0500 (EST)
+Date: Wed, 10 Jan 2024 14:00:41 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, linux-gpio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] ARM: unwind: Add missing "Call trace:" line
-Date: Wed, 10 Jan 2024 13:56:01 -0800
-Message-Id: <20240110215554.work.460-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 1/3] cleanup: provide DEFINE_LOCK_GUARD_ARGS()
+Message-ID: <ZZ8TiS9S6aRmtjna@boqun-archlinux>
+References: <20240110203215.36396-1-brgl@bgdev.pl>
+ <20240110203215.36396-2-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3019; i=keescook@chromium.org;
- h=from:subject:message-id; bh=shusvn//qeczStLMEc4sOO3Q/yQ3K0G/IIulu4uAdzA=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlnxJwth4D06xus0FK0kAp+T77TiWufHO4SgKAy
- dJYl30Wr8OJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZZ8ScAAKCRCJcvTf3G3A
- JjrZD/4hW/WVt5AVfKfP4x0ScGVIRwPLgBKrVNfked86KBRVaRSICfogjYkyIRX1W+681EpReWH
- B2d1ZTmHFYjzzA9YMF906bRhHKr6zoS69ugb/7DOGEEJCSxD6nsKIH5w0Nb5ck+/Ag5xqeJuPCj
- 85POkwuIdHGy6VNfWCAVbryKykOG7WA/V5NPflHF9oL58DJ0MZpTrbW+tBg6iAf3S8j2pTkDl5T
- ssYyhGyXmjQl9BYjxW48wyyWnJPR6Sx0C7gn+8sOYP1ThWKFXyjRjXWNXgHyRqzZNEtXkrhg3tz
- KNbJ+sHzhzQrXjhZ2njjUOyMy+wT8qiVa8c8jCdMdvwUmE2Jtv9SBQBTp8vj4v0WSEnBn6+S0rB
- SqG8mwRUDAWnPZkH2YnFORrlS35nrB9GLzf1FeyRhZQrKpwH5fhcjjSwvxydgN/5f0oGm36BCWE
- v5p2GOtW88Rwee0uUQNZXfCqeG/VV5c/FFTs6IN3ZKYItQBnPsGaz1DC0nU81Wa1ceHuX/0M39r
- y/KoacAvpy34gGL/W6NDEsvh/a/ODUqM95bczY6vWFtfYSOJhgcUplcda1PWYsOkAGoNdfGNzx8
- iR11aMQHMPizouz/uoSJltVLJn7D8EnuJga5y1ftxoCD5MCGNWD4RTPHXyKTfL98t7qixHmT1Ag
- ci35/YR Vk8TZhIg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110203215.36396-2-brgl@bgdev.pl>
 
-Every other architecture in Linux includes the line "Call trace:" before
-backtraces. In some cases ARM would print "Backtrace:", but this was
-only via 1 specific call path, and wasn't included in CPU Oops nor things
-like KASAN, UBSAN, etc that called dump_stack(). Regularize this line
-so CI systems and other things (like LKDTM) that depend on parsing
-"Call trace:" out of dmesg will see it for ARM.
+On Wed, Jan 10, 2024 at 09:32:13PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> This macro allows defining lock guard with additional arguments that
+> can be passed to the locking function. This is useful for implementing
+> guards for nested locking.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  include/linux/cleanup.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+> index c2d09bc4f976..921db45023bb 100644
+> --- a/include/linux/cleanup.h
+> +++ b/include/linux/cleanup.h
+> @@ -246,5 +246,11 @@ __DEFINE_LOCK_GUARD_0(_name, _lock)
+>  	static inline void * class_##_name##_ext##_lock_ptr(class_##_name##_t *_T) \
+>  	{ return class_##_name##_lock_ptr(_T); }
+>  
+> +/*
+> + * Helper for implementing guard locks with additional arguments passed to
+> + * the locking function.
+> + */
+> +#define DEFINE_LOCK_GUARD_ARGS(_name, _type, _lock, _unlock, _args...)	\
+> +DEFINE_CLASS(_name, _type, _unlock, ({ _lock; _T; }), _type _T, _args)
+>  
 
-Before this patch:
+First I think the name should really be DEFINE_GUARD_ARGS(), these
+DEFINE_LOCK_GUARD_*() functions have different meaning. Also this should
+really be a more generic case than DEFINE_GUARD(), so how about the
+following:
 
-	UBSAN: array-index-out-of-bounds in ../drivers/misc/lkdtm/bugs.c:376:16
-	index 8 is out of range for type 'char [8]'
-	CPU: 0 PID: 1402 Comm: cat Not tainted 6.7.0-rc2 #1
-	Hardware name: Generic DT based system
-	 dump_backtrace from show_stack+0x20/0x24
-	 r7:00000042 r6:00000000 r5:60070013 r4:80cf5d7c
-	 show_stack from dump_stack_lvl+0x88/0x98
-	 dump_stack_lvl from dump_stack+0x18/0x1c
-	 r7:00000042 r6:00000008 r5:00000008 r4:80fab118
-	 dump_stack from ubsan_epilogue+0x10/0x3c
-	 ubsan_epilogue from __ubsan_handle_out_of_bounds+0x80/0x84
-	...
-
-After this patch:
-
-	UBSAN: array-index-out-of-bounds in ../drivers/misc/lkdtm/bugs.c:376:16
-	index 8 is out of range for type 'char [8]'
-	CPU: 0 PID: 1402 Comm: cat Not tainted 6.7.0-rc2 #1
-	Hardware name: Generic DT based system
-	Call trace:
-	 dump_backtrace from show_stack+0x20/0x24
-	 r7:00000042 r6:00000000 r5:60070013 r4:80cf5d7c
-	 show_stack from dump_stack_lvl+0x88/0x98
-	 dump_stack_lvl from dump_stack+0x18/0x1c
-	 r7:00000042 r6:00000008 r5:00000008 r4:80fab118
-	 dump_stack from ubsan_epilogue+0x10/0x3c
-	 ubsan_epilogue from __ubsan_handle_out_of_bounds+0x80/0x84
-	...
-
-Reported-by: Mark Brown <broonie@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Vladimir Murzin <vladimir.murzin@arm.com>
-Cc: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: Keith Packard <keithpac@amazon.com>
-Cc: Haibo Li <haibo.li@mediatek.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/arm/kernel/traps.c  | 2 +-
- arch/arm/kernel/unwind.c | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index 3bad79db5d6e..72c82a4d63ac 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -220,7 +220,7 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
- 	unsigned int fp, mode;
- 	int ok = 1;
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index c2d09bc4f976..4fcdcb478fd1 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -148,11 +148,14 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+  *
+  */
  
--	printk("%sBacktrace: ", loglvl);
-+	printk("%sCall trace: ", loglvl);
+-#define DEFINE_GUARD(_name, _type, _lock, _unlock) \
+-	DEFINE_CLASS(_name, _type, if (_T) { _unlock; }, ({ _lock; _T; }), _type _T); \
++#define DEFINE_GUARD_ARGS(_name, _type, _lock, _unlock, _args...) \
++	DEFINE_CLASS(_name, _type, if (_T) { _unlock; }, ({ _lock; _T; }), _type _T, ##_args) \
+ 	static inline void * class_##_name##_lock_ptr(class_##_name##_t *_T) \
+ 	{ return *_T; }
  
- 	if (!tsk)
- 		tsk = current;
-diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
-index 9d2192156087..f60547dadc93 100644
---- a/arch/arm/kernel/unwind.c
-+++ b/arch/arm/kernel/unwind.c
-@@ -524,6 +524,8 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk,
- {
- 	struct stackframe frame;
- 
-+	printk("%sCall trace: ", loglvl);
++#define DEFINE_GUARD(_name, _type, _lock, _unlock) \
++	DEFINE_GUARD_ARGS(_name, _type, _lock, _unlock)
 +
- 	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
- 
- 	if (!tsk)
--- 
-2.34.1
+ #define DEFINE_GUARD_COND(_name, _ext, _condlock) \
+ 	EXTEND_CLASS(_name, _ext, \
+ 		     ({ void *_t = _T; if (_T && !(_condlock)) _t = NULL; _t; }), \
 
+Thoughts?
+
+Regards,
+Boqun
+
+
+>  #endif /* __LINUX_GUARDS_H */
+> -- 
+> 2.40.1
+> 
 
