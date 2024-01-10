@@ -1,287 +1,154 @@
-Return-Path: <linux-kernel+bounces-22811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8871C82A331
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:19:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C8B682A333
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1370928AC81
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:19:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E8701C22D40
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C074F5F2;
-	Wed, 10 Jan 2024 21:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F934F5F2;
+	Wed, 10 Jan 2024 21:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rXs0OUXY"
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="PLcFdp9C"
+Received: from sonic306-28.consmr.mail.ne1.yahoo.com (sonic306-28.consmr.mail.ne1.yahoo.com [66.163.189.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC734F5E9
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 21:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 10 Jan 2024 16:19:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704921561;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=HI8A04KTA/X8cjMZs3tJddTAJlEEniaOSwHSAydbK/0=;
-	b=rXs0OUXYYLiHdHawQZouyW/TkworJnwUjlQLRZDUHklrD4/BunlroYySbOstKS2dzOm9Up
-	aOxBtIm0uMIsLO1sAB3C3vCtKUMm5LOqc3m690fCk5e80HkoNAFdtxal50rdxClgRQ49/n
-	07u19Y/2Xh3zzw06TtQuPyJfQ1aZe/c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>, 
-	Boqun Feng <boqun.feng@gmail.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Kees Cook <keescook@chromium.org>, 
-	Paul McKenney <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, Thomas Gleixner <tglx@linutronix.de>, 
-	Waiman Long <longman@redhat.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, 
-	Will Drewry <wad@chromium.org>, Suren Baghdasaryan <surenb@google.com>
-Subject: [GIT PULL] header cleanups for 6.8
-Message-ID: <ualbkbj75ulsbwbjuphntw7ztb45r2q7iysvxvklmyv5ndnvh7@zxr56mv33vyv>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99BA4F21E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 21:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1704921648; bh=l5+KobhWul760UC4b7E+cA9g/7+mWN7ANTqooZq8SD0=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=PLcFdp9Cj9b3dOtcUx3Z204hBOy09s7ap0o2mkmReETQjHq2TFDbkoc0c8BMmawh7fIUA5V3EWxsWBzb8JaHvJnNr8kZlGyxaPn5atFHlyjShwA6fhS9xZ5ISaeLZvpIVxeEiiJu9EmP7Wx8Y3tLIo/Hbr7FkTi0inyvuZoBojw/BCse5/4BTJxztkUVx+6c7afFoxQ/D6Q31n4rRDoPtbMVvcec/hQnPDLZLbvnTMLyww9blLHI0tgDMPyVjv3IubZF1BHSO+1RuvqNQ3usvJi4JyNyPC6BgYkRpNy5/TasMIL+g574jHBHD1fTO6eTUIwnGRi3nnpfbJvuPlB7tQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1704921648; bh=pWbwjxe+fWr8AWOaM9H99/ScF2UjNpawa7nCIFMxTaH=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=uWAdbu0qthRU1a8ffS1QCG6vA1+JWoXuHbE2Uxq/mBhLb26rwYFPi5hG0FsmBtrzXIcdcqahsJtOkZ1n9D2nq5j2Q++lMlLgI+y54vZDnlq2yNI0TUfeUnLDd4BK84nCSTASGo0ZXm9Jcd6rMLCgWs0Oe1tk8ISmdL3uTuBeIpQNV8nRXNrsUPryPhrAqY1lopy0ubCPTG3cqbqgis/N7LXn3G2c938ebEzMl40PcFFiqTZp5nQAvXLGA8E8heSMnKkGnOyT1+L6NJaMQ3LmyIDlkmxlQob3fIJTkr7yUXmuuRqg/XoUN5f18G9HEMFm9RUctiz75MUNtQ1spAc9mA==
+X-YMail-OSG: dyKlW2AVM1leLBklMmzWtrGFpslxD54cNGy0.UbGgc9DjdBDBCZLH_vUYLgn.Wu
+ HFaNX8e7S0WsVbwslOqtMHxZNWw94UoA9lsyFanYxvMlWLm503DQa9qgJ48SDhncFl17RtPeHbNg
+ NUozce2wBRhuLOGlxYUgUDXeKlpzNWhC4YQTyJp6DuCwWdEATvjGgy_x4ddS6ed5WGNVZL0ckPVy
+ iqsXpFMWaSVzQ_0zuMAma4J_gbfJNddjbDLPTxiXyyDiM_0ivx4xznfAy1cIKEm_KwAJ1V0dMsUq
+ Wso8pEVF5iHmN75x7PbYW4F12wFzFSOzE1YNtM.DpWq6f4x6IXLSSQd1hoNMfe7UgBOhp.csk6Qi
+ Saev27vpNUhEnOO3vfc1mGTmS7pcc9cYiKjNcblQTwXU1_x7Gj_T4bN3w3IjDIaLmCQ9fKKAkj06
+ TCKYF4gbTkYajloSZRxdn8yIRv4Heo7Li.dd.1r95bnqD3KPvS8KDo7UlQm14bY69LRkzSkGiYN6
+ ovn5BBsXo_d6zfwl05gjsfRbAkoffb9hHY5jK_yt98nemWtY0oiMMx.LYyYryOFGQTyQtTORUzKA
+ R_dq8RY3v0QNJnHEfsCFmpQcSr5OS6iGNPli2tqUqQtT8DZBMnQPPlkm5kLppfMMI_dBePvZbPPy
+ 7RY7b_w5fzRS91tpuajCcnDd87SKQ5EC3O_bBmU6GdsmVZlm9RxsdTHPLYeA1T1q0Cgf71G4ZbGS
+ .o87qq3rY9Sj_CF0QEdgqmqZjfrZXnyHzFjT0mr.zgEG36T4BXlr1LecB8uTS7tmRP2KEpaXoYCk
+ e8ilhPuWNRr.SAYZ8EFsWLFZgfVd_Mr1gf6_TyBzWpMDNHARnnf06gK96XzGw5W35Zget.Xbot_u
+ O8BVznhOMVP6WxGKlVZK2W_YvPKN7zwNENfoKM6GwCrdz86QyFFu9KHnkxf2StBezLvTCQe7pRxJ
+ 27lstRx5qo9atLmad8r8LQhQvsPIm970rfbOiwYUaLoF21kGPtjpBKbnMy7LG5CnCKCT7I9ItrH_
+ 8jHt2tkyxkYRZIRX82MALw04HmrCKqY3TU4LpSBCie7GVZomrJNxGvJG8u7wRgWJB.2dG.i1KsRd
+ dP6_D8YpFPPOPh014pIFw3lij58cs2_M.YtHHMxUg_JGokvhMZTLEp1wh9pyIJ99ODfO6S9Vq_VV
+ wf3.kFrcxE8tDSXT3W3GGVsvKiwMeQgA2v_3K9HDxm_Rs4hvHxlYFyrFijoQP0Mv8WWQLUK1Rh7x
+ NEciYKo9SIjbSveCWtN4tAvvUpIya2jRB8Lm3pXVefN1EN1RJglwxl6gTvD2wtooiZvCeeOTLfOt
+ KnS_yWywVIBnQdmvHb5y4eUT7VzQ5MxL.6oskLgQCpXF44a3KqMzkSJLDU3Q.UPLNlT8zZTy3YBx
+ Y6Dx78SaThbqxDVNZGFIqK4ngswfl148C6GUQNnFfQyC9JrTvr.BoV41tnwTs5Njwi5eYD9kksiU
+ vwWfSF_C98pNbz.a6p0dGGzzDkD6U79z8.Nd9waULSSty05PKqOSA5CpYHRuzm8IXWU.hW9kjTnR
+ bfEkKIoips39dvtqBc4NcAzklJ2twDtjdtZdUVRYneTLKfe4ldKMO7vkErrIRrbSxuvLVNIgRIE2
+ 53NGxpasRan04Ih0tWD6uBOwfMjpbxjmqYRy20y6S5Vh.KxEZZFPNijioKk2YtB9LlLHiNGE3xIA
+ _tEXHyWMtt6rF67lmVjWxHyVc0EYWkMgRv7lMB2uP9vpZS4dw5mVu8YCsBiSxIutFyKDZWcQ8ZUZ
+ NYGvno0XVyOMTUvNAbdURYka.SQevftSgCc.7or5PPyN0gyWfH5dqi5mYge1jwLYIeAFzIvlFZPC
+ E5BmXHdLEI8tvBO2B4339tNnmFNYRRYSnS45Ih6EmvTW_fXfJqy.reK0Ez.WIoRkI2Bt98IcDsPO
+ MOX17bOz5dLw_nL9hbFmnd6mWBLTC7LC0GbX72uT0OrYKLXut4Yv6f6S24whzsFXt5uVYHv03N8G
+ gE.QzGag8AP9Qakd3rP121U9D9L4dBYpGz9.atD7JNUSM2givGehhX8zBizFm_5rnEsG2oHnHzYf
+ QPEjUCbAjaBe3X3s8UcqcNgvw86qOi1.CGebU9bN2T2ELpR09Vbfe3TYf17_.Inyav5J4ecFKld0
+ gk3UUfTBOJ0EnKl2Fvg0wAU6F7jvBVDoIyZm386vCvUWxeon0yQPiknY8UWAwwNXudpPErNUnog9
+ W9jjjjE49Tdt0M5LPLGs8dqTpgnzfWkdVXbeYk8MO8RdZNIHnNFDgeDn7OwFJ4m6tgTdzVQuW7KI
+ -
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 490d74c6-aa2e-4de1-a7de-c7dde27d1384
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Wed, 10 Jan 2024 21:20:48 +0000
+Received: by hermes--production-gq1-78d49cd6df-xzd4p (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID c391b3f137e599abbd26c2364db764a4;
+          Wed, 10 Jan 2024 21:20:42 +0000 (UTC)
+Message-ID: <ed9a5c2f-2a67-41c1-b72e-a97eaebda1a5@schaufler-ca.com>
+Date: Wed, 10 Jan 2024 13:20:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] lsm/lsm-pr-20240105
+To: Paul Moore <paul@paul-moore.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <3f5a7bc467d221543444a268dd1a1fe0@paul-moore.com>
+ <CAHk-=whb9anXdo4odpP-ybYbmQs0UaPp1fmDjsWFiGxV5aOmig@mail.gmail.com>
+ <CAHC9VhRxG2jYayjpC=bLuBpfZsXnfYj_GoDBeK527sZWRe0ZrQ@mail.gmail.com>
+ <CAHk-=winAVoX=u+uX1Cdf0ekmFHETumRr60rvC_z6jbno0ApPg@mail.gmail.com>
+ <CAHC9VhQ6qcPZuL8jE0smNSeCfEbyk+6L0--t0iF4Awh7HHo1Jg@mail.gmail.com>
+Content-Language: en-US
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAHC9VhQ6qcPZuL8jE0smNSeCfEbyk+6L0--t0iF4Awh7HHo1Jg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.22010 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Hi Linus, here's some header cleanups, as discussed.
+On 1/10/2024 12:58 PM, Paul Moore wrote:
+> On Wed, Jan 10, 2024 at 3:22 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>> On Wed, 10 Jan 2024 at 11:54, Paul Moore <paul@paul-moore.com> wrote:
+>>> Thanks for pulling the changes, I'm sorry the syscall table entries
+>>> for the LSM syscalls were not how you want to see them, but I'm more
+>>> than a little confused as to what exactly we did wrong here.
+>> Look at commit 5f42375904b0 ("LSM: wireup Linux Security Module
+>> syscalls") and notice for example this:
+>>
+>>   --- a/arch/x86/entry/syscalls/syscall_64.tbl
+>>   +++ b/arch/x86/entry/syscalls/syscall_64.tbl
+>>   @@ -378,6 +378,9 @@
+>>    454    common  futex_wake              sys_futex_wake
+>>    455    common  futex_wait              sys_futex_wait
+>>    456    common  futex_requeue           sys_futex_requeue
+>>   +457    common  lsm_get_self_attr       sys_lsm_get_self_attr
+>>   +458    common  lsm_set_self_attr       sys_lsm_set_self_attr
+>>   +459    common  lsm_list_modules        sys_lsm_list_modules
+>>
+>> Ok, fine - you added your new system calls to the end of the table.
+>> Sure, I ended up having to fix them up because the "end of the table"
+>> was different by the time I merged your tree, but that wasn't the
+>> problem.
+>>
+>> The problem is here - in the same commit:
+>>
+>>   --- a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+>>   +++ b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+>>   @@ -375,6 +375,9 @@
+>>    451    common  cachestat               sys_cachestat
+>>    452    common  fchmodat2               sys_fchmodat2
+>>    453    64      map_shadow_stack        sys_map_shadow_stack
+>>   +454    common  lsm_get_self_attr       sys_lsm_get_self_attr
+>>   +455    common  lsm_set_self_attr       sys_lsm_set_self_attr
+>>   +456    common  lsm_list_modules        sys_lsm_list_modules
+>>
+>> note how you updated the tools copy WITH THE WRONG NUMBERS!
+>>
+>> You just added them at the end of the table again, and just
+>> incremented the numbers, but that was complete nonsense, because the
+>> numbers didn't actually match the real system call numbers, because
+>> that tools table hadn't been updated for new system calls - because it
+>> hadn't needed them.
+>>
+>> Yeah, our tooling header duplication is annoying, but the old
+>> situation where the tooling just used various kernel headers directly
+>> and would randomly break when kernel changes were made was even worse.
+>>
+>> End result: avoid touching the tooling headers - and if you have to,
+>> you need to *think* about it.
+> Thanks for the explanation, when I read your comment about "tools" I
+> was thinking of whatever tooling transforms the arch/**/*.tbl file and
+> not the tools/perf directory.  I should have caught the tools/perf
+> mismatch when reviewing the patches from Casey, but I didn't, I'm
+> sorry.  My guess is that my mind was just in the "use the next three
+> numbers" due to the lack of syscall number sync across architectures,
+> but who knows.  My mistake, I'll make sure it doesn't happen again.
 
-Nothing drastic has changed since it was mailed out, wanted to give this
-plenty of soak time in -next.
+No, It's my mistake. I could have asked for help when I found my head
+spinning from the syscall numbering scheme and its various implications.
+I will have a look at how it might be improved. Sorry to have mucked it
+up, and thank you for the explanation.
 
-There were two merge conflicts in arch headers in next; they looked
-pretty trivial. But now I'm wondering - do we have standard
-tools/process for recording what the merge conflict and resolution were?
-I'm sure we must.
 
-The following changes since commit a39b6ac3781d46ba18193c9dbb2110f31e9bffe9:
-
-  Linux 6.7-rc5 (2023-12-10 14:33:40 -0800)
-
-are available in the Git repository at:
-
-  https://evilpiepirate.org/git/bcachefs.git tags/header_cleanup-2024-01-10
-
-for you to fetch changes up to 1e2f2d31997a9496f99e2b43255d6a48b06fbcc2:
-
-  Kill sched.h dependency on rcupdate.h (2023-12-27 11:50:20 -0500)
-
-----------------------------------------------------------------
-header cleanups for 6.8
-
-The goal is to get sched.h down to a type only header, so the main thing
-happening in this patchset is splitting out various _types.h headers and
-dependency fixups, as well as moving some things out of sched.h to
-better locations.
-
-This is prep work for the memory allocation profiling patchset which
-adds new sched.h interdepencencies.
-
-Testing - it's been in -next, and fixes from pretty much all
-architectures have percolated in - nothing major.
-
-----------------------------------------------------------------
-Kent Overstreet (49):
-      drivers/gpu/drm/i915/i915_memcpy.c: fix missing includes
-      media: vidtv: fix missing include
-      x86: fix missing includes/forward declarations
-      m68k: Fix missing include
-      microblaze: add missing forward declaration
-      task_stack.h: add missing include
-      nsproxy.h: add missing include
-      kernel/fork.c: add missing include
-      kmsan: add missing types.h dependency
-      time_namespace.h: fix missing include
-      PM: fix missing rculist.h dependency
-      torture: add missing dependency on hrtimer.h
-      nodemask: Split out include/linux/nodemask_types.h
-      prandom: Remove unused include
-      timekeeping: Kill percpu.h dependency
-      arm64: Fix circular header dependency
-      kernel/numa.c: Move logging out of numa.h
-      sched.h: Move (spin|rwlock)_needbreak() to spinlock.h
-      ktime.h: move ktime_t to types.h
-      hrtimers: Split out hrtimer_types.h
-      locking/mutex: split out mutex_types.h
-      posix-cpu-timers: Split out posix-timers_types.h
-      locking/seqlock: Split out seqlock_types.h
-      pid: Split out pid_types.h
-      sched.h: move pid helpers to pid.h
-      plist: Split out plist_types.h
-      rslib: kill bogus dependency on list.h
-      timerqueue: Split out timerqueue_types.h
-      signal: Kill bogus dependency on list.h
-      timers: Split out timer_types.h
-      workqueue: Split out workqueue_types.h
-      shm: Slim down dependencies
-      ipc: Kill bogus dependency on spinlock.h
-      Split out irqflags_types.h
-      mm_types_task.h: Trim dependencies
-      syscall_user_dispatch.h: split out *_types.h
-      x86/signal: kill dependency on time.h
-      uapi/linux/resource.h: fix include
-      refcount: Split out refcount_types.h
-      seccomp: Split out seccomp_types.h
-      uidgid: Split out uidgid_types.h
-      sem: Split out sem_types.h
-      lockdep: move held_lock to lockdep_types.h
-      restart_block: Trim includes
-      rseq: Split out rseq.h from sched.h
-      preempt.h: Kill dependency on list.h
-      Kill unnecessary kernel.h include
-      kill unnecessary thread_info.h include
-      Kill sched.h dependency on rcupdate.h
-
-Matthew Wilcox (Oracle) (1):
-      wait: Remove uapi header file from main header file
-
-Randy Dunlap (1):
-      LoongArch: signal.c: add header file to fix build error
-
- arch/arm64/include/asm/spectre.h             |   4 +-
- arch/arm64/kernel/ptrace.c                   |   1 +
- arch/loongarch/kernel/signal.c               |   1 +
- arch/m68k/include/asm/processor.h            |   1 +
- arch/microblaze/include/asm/pgtable.h        |   1 +
- arch/parisc/mm/init.c                        |   1 +
- arch/powerpc/kernel/interrupt.c              |   1 +
- arch/powerpc/kvm/book3s_64_vio.c             |   1 +
- arch/s390/kernel/signal.c                    |   1 +
- arch/x86/include/asm/current.h               |   1 +
- arch/x86/include/asm/debugreg.h              |   1 +
- arch/x86/include/asm/fpu/types.h             |   2 +
- arch/x86/include/asm/paravirt.h              |   4 +
- arch/x86/include/asm/paravirt_types.h        |   2 +
- arch/x86/include/asm/percpu.h                |   2 +-
- arch/x86/include/asm/preempt.h               |   1 -
- arch/x86/include/uapi/asm/signal.h           |   1 -
- arch/x86/kernel/fpu/bugs.c                   |   1 +
- arch/x86/kernel/signal.c                     |   1 +
- arch/x86/lib/cache-smp.c                     |   1 +
- arch/x86/um/sysrq_64.c                       |   1 +
- drivers/base/power/runtime.c                 |   1 +
- drivers/gpu/drm/i915/i915_memcpy.c           |   2 +
- drivers/gpu/drm/lima/lima_ctx.c              |   1 +
- drivers/irqchip/irq-gic-v4.c                 |   1 +
- drivers/media/test-drivers/vidtv/vidtv_pes.c |   1 +
- drivers/target/target_core_xcopy.c           |   1 +
- fs/exec.c                                    |   1 +
- include/linux/audit.h                        |   1 +
- include/linux/dma-fence.h                    |   1 +
- include/linux/hrtimer.h                      |  46 +---
- include/linux/hrtimer_types.h                |  50 +++++
- include/linux/ipc.h                          |   2 +-
- include/linux/irqflags.h                     |  14 +-
- include/linux/irqflags_types.h               |  22 ++
- include/linux/kmsan_types.h                  |   2 +
- include/linux/ktime.h                        |   8 +-
- include/linux/lockdep.h                      |  57 -----
- include/linux/lockdep_types.h                |  57 +++++
- include/linux/mm_types_task.h                |   5 +-
- include/linux/mutex.h                        |  52 +----
- include/linux/mutex_types.h                  |  71 ++++++
- include/linux/nodemask.h                     |   2 +-
- include/linux/nodemask_types.h               |  10 +
- include/linux/nsproxy.h                      |   1 +
- include/linux/numa.h                         |  19 +-
- include/linux/pid.h                          | 140 ++++++++++--
- include/linux/pid_types.h                    |  16 ++
- include/linux/plist.h                        |  12 +-
- include/linux/plist_types.h                  |  17 ++
- include/linux/posix-timers.h                 |  69 +-----
- include/linux/posix-timers_types.h           |  80 +++++++
- include/linux/prandom.h                      |   1 -
- include/linux/preempt.h                      |   6 +-
- include/linux/rcupdate_wait.h                |  10 +
- include/linux/refcount.h                     |  13 +-
- include/linux/refcount_types.h               |  19 ++
- include/linux/restart_block.h                |   2 +-
- include/linux/resume_user_mode.h             |   1 +
- include/linux/rhashtable-types.h             |   2 +-
- include/linux/rseq.h                         | 131 +++++++++++
- include/linux/rslib.h                        |   1 -
- include/linux/sched.h                        | 325 +++------------------------
- include/linux/sched/signal.h                 |   1 +
- include/linux/sched/task.h                   |   2 +
- include/linux/sched/task_stack.h             |   1 +
- include/linux/seccomp.h                      |  24 +-
- include/linux/seccomp_types.h                |  35 +++
- include/linux/sem.h                          |  10 +-
- include/linux/sem_types.h                    |  13 ++
- include/linux/seqlock.h                      |  79 +------
- include/linux/seqlock_types.h                |  93 ++++++++
- include/linux/shm.h                          |   4 +-
- include/linux/signal.h                       |   1 +
- include/linux/signal_types.h                 |   2 +-
- include/linux/spinlock.h                     |  31 +++
- include/linux/syscall_user_dispatch.h        |   9 +-
- include/linux/syscall_user_dispatch_types.h  |  22 ++
- include/linux/time_namespace.h               |   3 +
- include/linux/timekeeping.h                  |   1 +
- include/linux/timer.h                        |  16 +-
- include/linux/timer_types.h                  |  23 ++
- include/linux/timerqueue.h                   |  13 +-
- include/linux/timerqueue_types.h             |  17 ++
- include/linux/torture.h                      |   1 +
- include/linux/types.h                        |   3 +
- include/linux/uidgid.h                       |  11 +-
- include/linux/uidgid_types.h                 |  15 ++
- include/linux/wait.h                         |   1 -
- include/linux/workqueue.h                    |  16 +-
- include/linux/workqueue_types.h              |  25 +++
- include/uapi/linux/resource.h                |   2 +-
- init/init_task.c                             |   1 +
- ipc/shm.c                                    |   1 +
- ipc/util.h                                   |   1 +
- kernel/Makefile                              |   1 +
- kernel/async.c                               |   5 +-
- kernel/bpf/hashtab.c                         |   1 +
- kernel/exit.c                                |   4 +-
- kernel/fork.c                                |   2 +
- kernel/futex/core.c                          |   1 +
- kernel/futex/requeue.c                       |   1 +
- kernel/futex/waitwake.c                      |   1 +
- kernel/locking/spinlock_debug.c              |   1 +
- kernel/numa.c                                |  26 +++
- kernel/pid_namespace.c                       |   1 +
- kernel/sched/core.c                          |   1 +
- lib/test_rhashtable.c                        |   1 +
- mm/filemap.c                                 |   1 +
- mm/khugepaged.c                              |   1 +
- mm/shmem.c                                   |   1 +
- mm/swapfile.c                                |   1 +
- net/ipv4/fib_trie.c                          |   1 +
- net/netfilter/ipset/ip_set_bitmap_gen.h      |   2 +
- net/netfilter/ipset/ip_set_hash_gen.h        |   1 +
- net/netfilter/ipvs/ip_vs_conn.c              |   1 +
- net/netfilter/ipvs/ip_vs_est.c               |   1 +
- security/selinux/hooks.c                     |   1 +
- security/smack/smack_lsm.c                   |   1 +
- 119 files changed, 1063 insertions(+), 775 deletions(-)
- create mode 100644 include/linux/hrtimer_types.h
- create mode 100644 include/linux/irqflags_types.h
- create mode 100644 include/linux/mutex_types.h
- create mode 100644 include/linux/nodemask_types.h
- create mode 100644 include/linux/pid_types.h
- create mode 100644 include/linux/plist_types.h
- create mode 100644 include/linux/posix-timers_types.h
- create mode 100644 include/linux/refcount_types.h
- create mode 100644 include/linux/rseq.h
- create mode 100644 include/linux/seccomp_types.h
- create mode 100644 include/linux/sem_types.h
- create mode 100644 include/linux/seqlock_types.h
- create mode 100644 include/linux/syscall_user_dispatch_types.h
- create mode 100644 include/linux/timer_types.h
- create mode 100644 include/linux/timerqueue_types.h
- create mode 100644 include/linux/uidgid_types.h
- create mode 100644 include/linux/workqueue_types.h
- create mode 100644 kernel/numa.c
 
