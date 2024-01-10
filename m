@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-22672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F406882A145
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:51:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE0F82A14D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:51:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 253E01C22642
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:51:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90E481C22836
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBEA44F1EE;
-	Wed, 10 Jan 2024 19:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A934F211;
+	Wed, 10 Jan 2024 19:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="yKV/+Qfr"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="YdUX1Pq7"
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09D84EB26
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 19:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64BF4EB3A
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 19:51:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5955a4a9b23so2450117eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:51:11 -0800 (PST)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-598a2cb5a7cso229417eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:51:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704916271; x=1705521071; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704916272; x=1705521072; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8tQFXGB0UBE3yQVmYcImKXXjk/ehD/gF98AYs7jrXzE=;
-        b=yKV/+Qfriqeu0qBj16IXEt1rSLw90lnlhjOy+tyC7v7TdhP6uGBuPEMCUXuy1c4O7t
-         avMDDkMYaHi7r3eppgI2HoVRyNAxiTYvpiisrGng2hZn609pSm9uAgau+o0nDORZYyRF
-         S7wrVb3HuSBn9M4f41ZLCyXDvAMNwS/bZz7rkfhFi0cBecwBe8GMG+PnCG4yV7bUUbDc
-         Ao0Mz4cbNDXxNtB/sp/GBvFVqhBqNVJEX+E4dAwSxlI3qJwx9X2jbEroAcAGoVgsP7xa
-         yaP2LVm/b9zkPJ9n/zYrm6TZ2OUzZBl1jPuIKCYquxUU5+taZlpjjC3jlL72wx4FYUiz
-         1mCA==
+        bh=QGJNLPLyI0esp3kiyP6ekV4MJE/CQ1txcBdZozy1qY4=;
+        b=YdUX1Pq76By7xCBv/J0TNuqf+K4DeKMAjdxNFoln4YpV3JPYDimyHzZ9OKy0jWvPnv
+         I9g5aFG2jnjg+0Ieg7J7KYEi77+9tGnr2EPFGJGj+ywmm0YYVDUeYUZCWOPErIzQOiCp
+         ZXPcya2G/X44xaT0h8x4CSnCaryhgiO3diTTJJb3qcVenWhDiHySWTVb9ngvTmEkrnYT
+         X8bsHNWnEie8hosmA2b0pmo4cLhPpkAquYaHubQu5kWkHYQyQDvGFDV1Cm9TE2Z6h4th
+         GtP1YCNc2pZCZNMsWVH4QuLdJ88MvzSEEhda/L7k4sZKX180Ajiwm5VeOBTYa8tXLmsP
+         iCkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704916271; x=1705521071;
+        d=1e100.net; s=20230601; t=1704916272; x=1705521072;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8tQFXGB0UBE3yQVmYcImKXXjk/ehD/gF98AYs7jrXzE=;
-        b=wCD0Tir6Sp4v+C4fNYdwJJa3FT8+ce5BPHqiBRrOGNRVPvzEOaJY5003bkp7AXAKEf
-         JFgSkztujKEOUWYOa7QaZ/R1Li+KlfAOUrrj1Dm2Lgw/aDq5MLBS69CULajhaDUJ3A5M
-         jIGPHjHW+P28MYg1baFs8Ym33e+0ebZKbzapnleocoHtaKLLaKIcGUwZJH4bpf/Slrus
-         9zYlsB2N6SGMNrbTFXzdECgbmFCpoxJNYMSN93qXND3+jQkUdoIuLKl3mL/O//JjOZxX
-         1SX66ny+/ZPwLiMv3lRm0++jdEOq7TZzVQmqD3/mU8m96Ix1kCc1hW0o36kl0dG+Ksds
-         7W3A==
-X-Gm-Message-State: AOJu0YyydR1qmxkvL1OgB611pD7h6iM274uRq+2+euF6TuqRpwWzOl/e
-	kreZW3xxKgkJO3YbF295SkuxGCwxX6Nnfg==
-X-Google-Smtp-Source: AGHT+IGLTZ7rbIwDjuwU/b4aEWgy3uOE14zbEekH51p0401rK+4z9X/59v8/8YDpPt2l2qc30H7TDg==
-X-Received: by 2002:a05:6820:2382:b0:591:acf8:d08f with SMTP id co2-20020a056820238200b00591acf8d08fmr140554oob.11.1704916270980;
-        Wed, 10 Jan 2024 11:51:10 -0800 (PST)
+        bh=QGJNLPLyI0esp3kiyP6ekV4MJE/CQ1txcBdZozy1qY4=;
+        b=udDv6kErj6HTg0QNF8/sEOSB+WYq3mUqz/xMjjMYbBIb3Bovx7zu6o9nMKgWZ7Ku6w
+         YrhEFLRDZerjPDEQxmw28mkG6fs5QSJMTxAzYlEDATt9eoFEEnaOv+0+37fnF8tb7yKe
+         Qe5oSEBf+QBAqYlGm7TflIkxy0UisMUAI7L2baftd4lEHKXCR1bTRYrZZy65f32vC8to
+         035XSOjILZxMt8Py4V0ytAioa2tH1uJ3cSBArFi98TMdcG12wt+xS+2gchymKnZF3EFo
+         GPAJIIAJ/ivRdoQO9IwvcF5UO6tv9gnpg/QfT5aTxKqvZ/+MYrXAvkBUiKAbfOr1IW3A
+         eOWw==
+X-Gm-Message-State: AOJu0Yxf0U43KL2+b6ayn8KbyZD0veX/SZ86vldYm2ovEwLcA7TmszF1
+	R4r46O+bzl6Ns2MP1mfoanKhlJoJEr0gQw==
+X-Google-Smtp-Source: AGHT+IFqQsQrIOCFpE4RsIKPQ3gHKMPk+6t2PPhDGvVXODesiyE6VwJfYeEefY+r+svD2MqX1koi+g==
+X-Received: by 2002:a05:6820:2406:b0:598:6fb0:ba36 with SMTP id cp6-20020a056820240600b005986fb0ba36mr130528oob.1.1704916271980;
+        Wed, 10 Jan 2024 11:51:11 -0800 (PST)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id 187-20020a4a0dc4000000b00595b35927a3sm938513oob.39.2024.01.10.11.51.10
+        by smtp.gmail.com with ESMTPSA id 187-20020a4a0dc4000000b00595b35927a3sm938513oob.39.2024.01.10.11.51.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 11:51:10 -0800 (PST)
+        Wed, 10 Jan 2024 11:51:11 -0800 (PST)
 From: David Lechner <dlechner@baylibre.com>
 To: Mark Brown <broonie@kernel.org>,
 	Jonathan Cameron <jic23@kernel.org>,
@@ -75,9 +75,9 @@ Cc: David Lechner <dlechner@baylibre.com>,
 	linux-doc@vger.kernel.org,
 	linux-pwm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 02/13] scripts: dtc: checks: don't warn on SPI non-peripheral child nodes
-Date: Wed, 10 Jan 2024 13:49:43 -0600
-Message-ID: <20240109-axi-spi-engine-series-3-v1-2-e42c6a986580@baylibre.com>
+Subject: [PATCH 03/13] spi: do not attempt to register DT nodes without @ in name
+Date: Wed, 10 Jan 2024 13:49:44 -0600
+Message-ID: <20240109-axi-spi-engine-series-3-v1-3-e42c6a986580@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
 References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
@@ -91,55 +91,37 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.4
 Content-Transfer-Encoding: 8bit
 
-According to the spi-controller.yaml bindings, SPI peripheral child
-nodes match the pattern "^.*@[0-9a-f]+$".
+In the DT bindings for SPI devices, it is specified that peripheral
+nodes have the @ character in the node name. A SPI controller may need
+to create bindings with child nodes that are not peripherals. For
+example, the AXI SPI Engine bindings will use an "offloads" child node
+to describe what is connected to the offload interfaces of the SPI
+controller.
 
-A SPI controller binding may require a child object node that is not a
-peripheral. For example, the adi,axi-spi-engine binding requires an
-"offloads" child node that is not a peripheral but rather a part of the
-controller itself.
-
-By checking for '@' in the node name, we can avoids a warnings like:
-
-    Warning (spi_bus_reg): /example-0/spi@44a00000/offloads: missing or empty reg property
-
-for a binding like:
-
-    spi {
-        ...
-
-        offloads {
-            offload@0 {
-                ...
-            };
-            ...
-        };
-
-        peripheral@0 {
-            ...
-        };
-    };
+Without this change, the SPI controller would attempt to register all
+child nodes as SPI devices. After this change, only nodes with '@' in
+the name will be registered as SPI devices.
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
- scripts/dtc/checks.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/spi/spi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/dtc/checks.c b/scripts/dtc/checks.c
-index 9f31d2607182..5af68642f231 100644
---- a/scripts/dtc/checks.c
-+++ b/scripts/dtc/checks.c
-@@ -1144,6 +1144,10 @@ static void check_spi_bus_reg(struct check *c, struct dt_info *dti, struct node
- 	if (!node->parent || (node->parent->bus != &spi_bus))
- 		return;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index f1d66b5d5491..5be5e654284c 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2379,7 +2379,9 @@ static void of_register_spi_devices(struct spi_controller *ctlr)
+ 	struct device_node *nc;
  
-+	/* only nodes with '@' in name are SPI devices */
-+	if (!strchr(unitname, '@'))
-+		return;
-+
- 	if (get_property(node->parent, "spi-slave"))
- 		return;
- 
+ 	for_each_available_child_of_node(ctlr->dev.of_node, nc) {
+-		if (of_node_test_and_set_flag(nc, OF_POPULATED))
++		/* Only nodes with '@' in the name are peripheral nodes. */
++		if (of_node_test_and_set_flag(nc, OF_POPULATED) ||
++		    !strchr(kbasename(nc->full_name), '@'))
+ 			continue;
+ 		spi = of_register_spi_device(ctlr, nc);
+ 		if (IS_ERR(spi)) {
 
 -- 
 2.43.0
