@@ -1,118 +1,103 @@
-Return-Path: <linux-kernel+bounces-22895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9DC82A512
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:49:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B960082A516
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:51:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70416B225BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:48:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFC551C22EA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B3D4F8A1;
-	Wed, 10 Jan 2024 23:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AEC4F8AE;
+	Wed, 10 Jan 2024 23:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="e520My48"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bmo+oYOS"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD004F89F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 23:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d3f3ee00a2so23330155ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:48:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BF84F883
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 23:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-db3a09e96daso3895055276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:50:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704930524; x=1705535324; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SwuTP7EzLEPd51rCmWc5l3FryuUpUIDaJ3oLG7EKxvs=;
-        b=e520My48wrc6W1VBmjEKzXuD1l4aGEQr9pEN9UAoEUhQd/QUYuqS44jBW1Zw8B7Vwn
-         rrGjOu7rPy2Wuan6f9O5ksZVKuA6URdB0/bxh/IavXl5ikWeLH0TmAyCUV9KNYOG23Tm
-         fqS/uKRfi0lqWFMNaWxyrTbKEOGG3RQ9v03gU=
+        d=linaro.org; s=google; t=1704930648; x=1705535448; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IY2WHo656dlJft78J6VUeykbQH3OBUSeMuyIpTpTn1Y=;
+        b=Bmo+oYOSaJ0xZ16vSCdSpMyXzm5gawk84S0rDaHGmBG6nUqLh2QUliuy/Ciwl83hfZ
+         pOwx76LQFrCxRdc5aenk7sW2+2w7NI7H5y92f371xaoNUrjWkIseY+Pi6gC1PgcSRbhO
+         AwQKiQAAYspqERWNpNBloPKn76f/xeX96UWsgUGaE+Y3pUErP9noqI13bJIBY6wcPWnP
+         Ezik3MyFwNqgXxgar+teYEw0oHMHciPou675m9qY73vo9pr+j52mBWbzD5kdQkLlsTku
+         N1ByQ32B9VZO/g3npNTkWo7gljN9J3Yttty/1ngd0qcwhZ8PohWX3W03uTG7X1D3TNZ5
+         vepw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704930524; x=1705535324;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SwuTP7EzLEPd51rCmWc5l3FryuUpUIDaJ3oLG7EKxvs=;
-        b=oXVonTIQtHqtJI21ChylwS8qHi+U3Zk+KAue2ZcZMH0nprMjnRlcjvB4eh49xngASD
-         qyflPCyL+WKmKONNjE60CBgs2MSTLOB/bPyTcXEDBoqyYSdNE+RdJ906FdWLAGRap1Qy
-         G8sHdDRxNecCX5ziOIdB4+Q7DpAYuAK9lIL9h6R0GAbg2/qQagU4UB4MHVP1Me5B6hFe
-         7JRrlJGv+eGyXRVoAdCUaHTKKhBYhG9bkbJeUeE2sMMr9swQD98CbOJVUlX6jmEkEkpZ
-         3v7p/s7PmE1AGS4gdJWF8Ox7K3od1zy5qi2lc1vWL6d5ksXVUkDIJTAUNTRPgh+DCxGZ
-         Kt2g==
-X-Gm-Message-State: AOJu0Yzfm2AWBwFjKBGHmSUg+tfhWOjRY+MY1TZtPZ2hubYAcuOeyTmY
-	xch0hfhTlAzxf8YgxQ+whK1ydKW6cj81
-X-Google-Smtp-Source: AGHT+IF8fgccVOtXqOEaJFh9qZqdhLe5dF5tch6GtJyBls2H2Ztl8x5oLrB9yayQo3OC6NpC/wcPaA==
-X-Received: by 2002:a17:902:e80d:b0:1d4:f114:62c4 with SMTP id u13-20020a170902e80d00b001d4f11462c4mr399322plg.86.1704930524297;
-        Wed, 10 Jan 2024 15:48:44 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f12-20020a170902ab8c00b001d3bf27000csm4210321plr.293.2024.01.10.15.48.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 15:48:43 -0800 (PST)
-Date: Wed, 10 Jan 2024 15:48:43 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <202401101525.112E8234@keescook>
-References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+        d=1e100.net; s=20230601; t=1704930648; x=1705535448;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IY2WHo656dlJft78J6VUeykbQH3OBUSeMuyIpTpTn1Y=;
+        b=AgyWcb2CAMy6O53LnmeoOZ2zDl7RrF+Dww5UhXxHgKx38EHelgHxK0u/puNNCfigcq
+         /pEi+aS33ER2gfbkBlb4wLG5J4KP62IoptHp9Rk+kromRmHpHupqETkMgwP8wJwwjjJH
+         CC8he5zwt9FCCuxAHAimoUlGq5yZolrxqaS2dpQ+zxm+4/Qwh7+bgomKog+WmxMuZt5Y
+         NGocL5cLR88StVC/NbWqwNHG/o/m9fN+/1udXToW5VRfysOhCOoAwkeE3dFMe/aQfOP1
+         y69rwQeKiJ0mtNbXOt/lzP3g2Jq6CHk+tNXpsjeQUdifjethsXDJM9KLV1/XEspJY2IG
+         8gOA==
+X-Gm-Message-State: AOJu0YxHq7Ukt7p7e87fcm46+bLKLzgtCKdDHcY53XjcIlq1lBSqjmMO
+	7qCg8TKDbD/fo+198qq1u0hYX4h0dPFTtCQy2k0e0sFBSLjuIA==
+X-Google-Smtp-Source: AGHT+IE0M9W/0P2Ae6mYe8PCrJ9dMKg+/Sc+SJ/3RpX4hnY2c5YNeNuY5R4SrTJIFAZOV6C8lq2rU9YH1tu7XsHEaA4=
+X-Received: by 2002:a5b:651:0:b0:dbd:b17c:802 with SMTP id o17-20020a5b0651000000b00dbdb17c0802mr409911ybq.52.1704930648185;
+ Wed, 10 Jan 2024 15:50:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+References: <1704917931-30133-1-git-send-email-quic_khsieh@quicinc.com>
+In-Reply-To: <1704917931-30133-1-git-send-email-quic_khsieh@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 11 Jan 2024 01:50:37 +0200
+Message-ID: <CAA8EJppcsQtS7h4g+hK+sss7pDuvKjkJX1o7_DUO-rTg1BtWLQ@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/msms/dp: fixed link clock divider bits be over
+ written in BPC unknown case
+To: Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc: dri-devel@lists.freedesktop.org, robdclark@gmail.com, sean@poorly.run, 
+	swboyd@chromium.org, dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch, 
+	airlied@gmail.com, agross@kernel.org, andersson@kernel.org, 
+	quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com, 
+	quic_sbillaka@quicinc.com, marijn.suijten@somainline.org, 
+	freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 10, 2024 at 02:36:30PM -0500, Kent Overstreet wrote:
-> [...]
->       bcachefs: %pg is banished
+On Wed, 10 Jan 2024 at 22:19, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+> Since the value of DP_TEST_BIT_DEPTH_8 is already left shifted, in the
+> BPC unknown case, the additional shift causes spill over to the other
+> bits of the [DP_CONFIGURATION_CTRL] register.
+> Fix this by changing the return value of dp_link_get_test_bits_depth()
+> in the BPC unknown case to (DP_TEST_BIT_DEPTH_8 >> DP_TEST_BIT_DEPTH_SHIFT).
+>
+> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
 
-Hi!
+For the patch itself:
 
-Not a PR blocker, but this patch re-introduces users of strlcpy() which
-has been otherwise removed this cycle. I'll send a patch to replace
-these new uses, but process-wise, I'd like check on how bcachefs patches
-are reviewed.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Normally I'd go find the original email that posted the patch and reply
-there, but I couldn't find a development list where this patch was
-posted. Where is this happening? (Being posted somewhere is supposed
-to be a prerequisite for living in -next. E.g. quoting from the -next
-inclusion boiler-plate: "* posted to the relevant mailing list,") It
-looks like it was authored 5 days ago, which is cutting it awfully close
-to the merge window opening:
+Additional note. Since this made me look at how DP_TEST_BIT_DEPTH is
+handled in the driver, I stumbled upon dp_link_bit_depth_to_bpc() vs
+dp_link_bit_depth_to_bpp(). These two functions look pretty redundant.
+Since the former one is used only for the debugfs, please consider
+sending a patch that removes it for the sake of using the latter one
+and /3 in dp_test_data_show().
 
-	AuthorDate: Fri Jan 5 11:58:50 2024 -0500
-
-Actually, it looks like you rebased onto v6.7-rc7? This is normally
-strongly discouraged. The common merge base is -rc2.
-
-It also seems it didn't get a run through scripts/checkpatch.pl, which
-shows 4 warnings, 2 or which point out the strlcpy deprecation:
-
-WARNING: Prefer strscpy over strlcpy - see: https://github.com/KSPP/linux/issues/89
-#123: FILE: fs/bcachefs/super.c:1389:
-+               strlcpy(c->name, name.buf, sizeof(c->name));
-
-WARNING: Prefer strscpy over strlcpy - see: https://github.com/KSPP/linux/issues/89
-#124: FILE: fs/bcachefs/super.c:1390:
-+       strlcpy(ca->name, name.buf, sizeof(ca->name));
-
-Please make sure you're running checkpatch.pl -- it'll make integration,
-technical debt reduction, and coding style adjustments much easier. :)
-
-Thanks!
-
--Kees
 
 -- 
-Kees Cook
+With best wishes
+Dmitry
 
