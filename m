@@ -1,163 +1,229 @@
-Return-Path: <linux-kernel+bounces-21930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D273A8296BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:57:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489F78296B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D48421C2425B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:57:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC1C41F26D80
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:57:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6A83F8D9;
-	Wed, 10 Jan 2024 09:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559923F8E1;
+	Wed, 10 Jan 2024 09:56:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="uEg2izlF"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2049.outbound.protection.outlook.com [40.107.237.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8ibeTC8"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59E63F8C7
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZtQ0q+HWZGVTJaiGC9gtlWz5o1U4FPY+Wy9gXAyDCtGWfc9AB4TBh013KXntOlKf7AHuYEgD27I2dxcphgp5FBmZR8US3h1+FT8B3aTxaybJVcgeA0QNOrDgHOtV4LF7Inxn8yiHNPlkgX4bTTZiqus5F19+PoenrnC7JAvsAw5+MXnMRT2QxrAdUuOxDPM+k1VoeeSkcbVKhHHoRCOT6X9j9A9PjS1YtR52rtfRQvB65gkvGsaZRD+iQrL8iVwS44MKJ2sY9miWVdPyqwjf6JhU++fKKojP4o351M1jLYtgAinSiov8gNPNYwGmzVjiD8e+TwwO5/JSCpITPZg2+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xXMnVkdAg8WfloOGPFMB6DzaP0QH3hdEz7mtCAjvdY4=;
- b=P4iCt+aIxhG33XgVkQaBxc7k/ROw+hyNMJHDdisHv5g7Fv5loc2z+ce/0SOpUrfkXiFBEAgkdy2Kk2nGcIdKCeItrPrOa80xAZAC7zOeq2dcNBmDCV7Vq6nxA6iff4FqF/d6tpN61bxr7DlQZvgDyNpSda1GdgE5RfcLSS+b8W96qaWAWNl+bE1E5/R1boKSgN+A8Ah9Nm9Yi8pQHVbc4o9uLcM/5KpKo1svIFd748poeJxdLGi7WPpzfTawqZc8PfJI1MgZZfLyspPWBfoPwr22t2hKnKOSsLDZyZR7oSkDP6T8ogxc/PaaDcddDDJ6UXzo9rbmKHsZUiqzs/4Y2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xXMnVkdAg8WfloOGPFMB6DzaP0QH3hdEz7mtCAjvdY4=;
- b=uEg2izlF7gy/rWa911JuR9Rbmnfm1PLlWfq0XmTzlBhRzpYe2NMkc9GNm6W52b+DfDt++ErUXC1q7Le4qc3R2kMbtCluYSt+KMAUHfVktIYac7tYliVd/Q7VGle2H3mm9aUvuXklWB5y1wR7G+FACn3SkochNtlrvOqwKPQYNOs=
-Received: from SJ0PR03CA0175.namprd03.prod.outlook.com (2603:10b6:a03:338::30)
- by DM6PR12MB4960.namprd12.prod.outlook.com (2603:10b6:5:1bc::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
- 2024 09:57:28 +0000
-Received: from MWH0EPF000971E2.namprd02.prod.outlook.com
- (2603:10b6:a03:338:cafe::75) by SJ0PR03CA0175.outlook.office365.com
- (2603:10b6:a03:338::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18 via Frontend
- Transport; Wed, 10 Jan 2024 09:57:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E2.mail.protection.outlook.com (10.167.243.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 09:57:27 +0000
-Received: from jenkins-julia.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 10 Jan
- 2024 03:57:22 -0600
-From: Julia Zhang <julia.zhang@amd.com>
-To: Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
-	<olvaffe@gmail.com>, David Airlie <airlied@redhat.com>, Gerd Hoffmann
-	<kraxel@redhat.com>, <linux-kernel@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
-	<virtualization@lists.linux-foundation.org>
-CC: Alex Deucher <alexander.deucher@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, Daniel Vetter
-	<daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Erik Faye-Lund
-	<kusmabite@gmail.com>, =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?=
-	<marek.olsak@amd.com>, Pierre-Eric Pelloux-Prayer
-	<pierre-eric.pelloux-prayer@amd.com>, Honglei Huang <honglei1.huang@amd.com>,
-	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>, Julia Zhang
-	<julia.zhang@amd.com>
-Subject: [PATCH 1/1] drm/virtio: Implement device_attach
-Date: Wed, 10 Jan 2024 17:56:28 +0800
-Message-ID: <20240110095627.227454-2-julia.zhang@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240110095627.227454-1-julia.zhang@amd.com>
-References: <20240110095627.227454-1-julia.zhang@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23C23EA9F;
+	Wed, 10 Jan 2024 09:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e7b273352so4116178e87.1;
+        Wed, 10 Jan 2024 01:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704880610; x=1705485410; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NpW13ArSUR3hiGaGG4MBnpyKypHsipH6j/gs/ejQL1g=;
+        b=L8ibeTC8T3qVuLihUWPlaWUJbkLeC2xm+e4BN89Y6d5MrX7Fl4K7FHSRXtJaE+QFfi
+         +qg4WJfLnLcwGkcPi6JGxbSkR2+3QpJyhhEYMI9O5vgYUdznpt9ZHQV1bd9QcaTTNgbw
+         KQYogJOJn1Id6ZMNz1LKrxhCJPeB6EoSvdl12By9qbKdtujko4dfJBwurY95kMEJsoeT
+         xAWBS9Z7OvlcfsCTIkF2X+AlgJi6mNxMBfwAQK2s61bE+RpNsdpHmyi6T4qWUPbfIxII
+         1g6k5kvzrRSzWg27+ZzK4l3PkI/ZVKPZlHdURL16E+v3FicCwh+iYsEh0bwsJfQu3NLK
+         RQXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704880610; x=1705485410;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NpW13ArSUR3hiGaGG4MBnpyKypHsipH6j/gs/ejQL1g=;
+        b=Ae7aCHZna1lJQTsi8fzWzlkTLLsnHlEpHnrdGbpShM4RyoQjRmSECDPUeQY7MSG2C3
+         6MVDkYamPK41Iy2r7u8PiNjPzUc9dkbiNw198UrHHJLrUIIUi8TyOL2wygAQ4XCJWRZt
+         7wt/KRIqRotMVqgOfZ9sCJPxK2hyXKKdI412i638UG63VAkBb4TM7B6X33knFlYnBOxX
+         2N9WTTUf/3d9MIf41lKeNtgpGRNH6UiJzAu6g2XtQ/ZTKC0Jy1OZIka4bdxDBT5l8/N8
+         ubzIGoI+2bCBOosjl0Ztd2xomEIt2nvWisJQ0p6GnhzZcXHGoTgiQxNVWKYxv+8vF6Rw
+         NcsA==
+X-Gm-Message-State: AOJu0YwvbHBfxya1yBcFDFdP/xgLAfK1H/edd61TPFTTYz8J//TyqsID
+	fIS+AuQllYOJlZdv8/ENarw=
+X-Google-Smtp-Source: AGHT+IFZX1SYitdtL/PrGHK/QPZ4ajIdAjRbAxPJ8ut2kihr+QX5/b+FNeiGkhlOo5ECcM2O5oqMDQ==
+X-Received: by 2002:a05:6512:3b8b:b0:50e:4389:12c5 with SMTP id g11-20020a0565123b8b00b0050e438912c5mr395125lfv.14.1704880610146;
+        Wed, 10 Jan 2024 01:56:50 -0800 (PST)
+Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
+        by smtp.gmail.com with ESMTPSA id l4-20020a170906a40400b00a2bfd60c6a8sm126314ejz.80.2024.01.10.01.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 01:56:48 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Wed, 10 Jan 2024 10:56:46 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
+	x86@kernel.org, leit@meta.com, linux-kernel@vger.kernel.org,
+	pawan.kumar.gupta@linux.intel.com, bpf@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v6 00/13] x86/bugs: Add a separate config for each
+ mitigation
+Message-ID: <ZZ5p3vdnTtU5TeJe@gmail.com>
+References: <20231121160740.1249350-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E2:EE_|DM6PR12MB4960:EE_
-X-MS-Office365-Filtering-Correlation-Id: af03c550-8888-41a2-c12c-08dc11c28d76
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YssyQKpVwJpAwj2yvE1Ex6tcd69/iELwXcTclJC0sQCk6F8vwVecAv9WWunkBq1OgwBddCdiqw1J8y3Qx8VtLy7encAtuhrXdloxiRulOrlKxBtwGsl39Xj1HmhnG4FSaCPeusop0kYSU0kGdAWtKo5CCrHLkzeDIznkeaXkNWt7VFtRObEdOQMdabP6E/72OtUd/wy7EHEixH3p1cA/9yNxLS0p+MxVfJmOqI4FZNJkxlftQSx1x/DlvzSsD4sOYgjPFvOOg2GqTohBFUzcKq0Jjnovv66yRspk/lVeaovnBj+rBl5ZIiVhkGSNstH4PNM9R/5BJuUm2JUVmr24vLEsDFdOh1fR7JQxkQGmUw5T40k4AOyliawAlyUlvVe+JRcgrEnTSvQPmAicil3gDNp0THCsd/j3iaiSajdw4RyPK/lbnoncN2JDHi1v5TBUTCbKTqWYFTLqgF40/zuqHAzZWcQQZ+U7MHYMX5rGbh549HDDj2Zk4LLXCcCaA6PCuXhQQNYtbtXKo48in7HtSkUpbngxK4iq4tr9NDI/UCPNw9Gr9vZZ3Ph/odM2X5TjsLQthUzeTbA1hcAS0+k3cvkwZeXdPp9kDiLuhQjxhca6uUYaXZw0ET7Oi3U2b9kyUUulmLVRaQBysqLn/VKncP+Nr/rK/XL7sQ5FOiC13XjBvErsgFxj0wX7MfP9vi6in0o8bIYiMaNQ5xAVUW+dsoForjgexaD/NN470YIArBtT9uSdwRlXDVbd9at9AY8jMCS1e4SbJxGugDNwIziksA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(82310400011)(186009)(46966006)(36840700001)(40470700004)(47076005)(356005)(5660300002)(7416002)(2906002)(81166007)(41300700001)(36756003)(86362001)(82740400003)(40480700001)(36860700001)(40460700003)(8936002)(8676002)(4326008)(478600001)(7696005)(83380400001)(70206006)(110136005)(316002)(54906003)(70586007)(16526019)(336012)(426003)(1076003)(26005)(44832011)(2616005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 09:57:27.3059
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: af03c550-8888-41a2-c12c-08dc11c28d76
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000971E2.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4960
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121160740.1249350-1-leitao@debian.org>
 
-drm_gem_map_attach() requires drm_gem_object_funcs.get_sg_table to be
-implemented, or else return ENOSYS. Virtio has no get_sg_table
-implemented for vram object. To fix this, add a new device_attach to
-call drm_gem_map_attach() for shmem object and return 0 for vram object
-instead of calling drm_gem_map_attach for both of these two kinds of
-object.
 
-Signed-off-by: Julia Zhang <julia.zhang@amd.com>
----
- drivers/gpu/drm/virtio/virtgpu_prime.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+* Breno Leitao <leitao@debian.org> wrote:
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_prime.c b/drivers/gpu/drm/virtio/virtgpu_prime.c
-index 44425f20d91a..f0b0ff6f3813 100644
---- a/drivers/gpu/drm/virtio/virtgpu_prime.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_prime.c
-@@ -71,6 +71,18 @@ static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
- 	drm_gem_unmap_dma_buf(attach, sgt, dir);
- }
- 
-+static int virtgpu_gem_device_attach(struct dma_buf *dma_buf,
-+				     struct dma_buf_attachment *attach)
-+{
-+	struct drm_gem_object *obj = attach->dmabuf->priv;
-+	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
-+
-+	if (virtio_gpu_is_vram(bo))
-+		return 0;
-+
-+	return drm_gem_map_attach(dma_buf, attach);
-+}
-+
- static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
- 	.ops = {
- 		.cache_sgt_mapping = true,
-@@ -83,7 +95,7 @@ static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
- 		.vmap = drm_gem_dmabuf_vmap,
- 		.vunmap = drm_gem_dmabuf_vunmap,
- 	},
--	.device_attach = drm_gem_map_attach,
-+	.device_attach = virtgpu_gem_device_attach,
- 	.get_uuid = virtgpu_virtio_get_uuid,
- };
- 
--- 
-2.34.1
+> Currently, the CONFIG_SPECULATION_MITIGATIONS is halfway populated,
+> where some mitigations have entries in Kconfig, and they could be
+> modified, while others mitigations do not have Kconfig entries, and
+> could not be controlled at build time.
+> 
+> The fact of having a fine grained control can help in a few ways:
+> 
+> 1) Users can choose and pick only mitigations that are important for
+> their workloads.
+> 
+> 2) Users and developers can choose to disable mitigations that mangle
+> the assembly code generation, making it hard to read.
+> 
+> 3) Separate configs for just source code readability,
+> so that we see *which* butt-ugly piece of crap code is for what
+> reason.
+> 
+> Important to say, if a mitigation is disabled at compilation time, it
+> could be enabled at runtime using kernel command line arguments.
+> 
+> Discussion about this approach:
+> https://lore.kernel.org/all/CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com/
+> and
+> https://lore.kernel.org/lkml/20231011044252.42bplzjsam3qsasz@treble/
+> 
+> In order to get the missing mitigations, some clean up was done.
+> 
+> 1) Get a namespace for mitigations, prepending MITIGATION to the Kconfig
+> entries.
+> 
+> 2) Adding the missing mitigations, so, the mitigations have entries in the
+> Kconfig that could be easily configure by the user.
+> 
+> With this patchset applied, all configs have an individual entry under
+> CONFIG_SPECULATION_MITIGATIONS, and all of them starts with CONFIG_MITIGATION.
 
+Yeah, so:
+
+ - I took this older series and updated it to current upstream, and made
+   sure all renames were fully done: there were two new Kconfig option
+   uses, which I integrated into the series. (Sorry about the delay, holiday & stuff.)
+
+ - I also widened the renames to comments and messages, which were not
+   always covered.
+
+ - Then I took this cover letter and combined it with a more high level
+   description of the reasoning behind this series I wrote up, and added it
+   to patch #1. (see it below.)
+
+ - Then I removed the changelog repetition from the other patches and just
+   referred them back to patch #1.
+
+ - Then I stuck the resulting updated series into tip:x86/bugs, without the 
+   last 3 patches that modify behavior.
+
+ - You might notice the somewhat weird extra whitespaces in the titles - 
+   I've done that so that it all looks tidy in the shortlog:
+
+   Breno Leitao (10):
+      x86/bugs: Rename CONFIG_GDS_FORCE_MITIGATION => CONFIG_MITIGATION_GDS_FORCE
+      x86/bugs: Rename CONFIG_CPU_IBPB_ENTRY       => CONFIG_MITIGATION_IBPB_ENTRY
+      x86/bugs: Rename CONFIG_CALL_DEPTH_TRACKING  => CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+      x86/bugs: Rename CONFIG_PAGE_TABLE_ISOLATION => CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
+      x86/bugs: Rename CONFIG_RETPOLINE            => CONFIG_MITIGATION_RETPOLINE
+      x86/bugs: Rename CONFIG_SLS                  => CONFIG_MITIGATION_SLS
+      x86/bugs: Rename CONFIG_CPU_UNRET_ENTRY      => CONFIG_MITIGATION_UNRET_ENTRY
+      x86/bugs: Rename CONFIG_CPU_IBRS_ENTRY       => CONFIG_MITIGATION_IBRS_ENTRY
+      x86/bugs: Rename CONFIG_CPU_SRSO             => CONFIG_MITIGATION_SRSO
+      x86/bugs: Rename CONFIG_RETHUNK              => CONFIG_MITIGATION_RETHUNK
+
+I think the resulting tree is all mostly good, but still I'd like to see 
+just the 10 pure low-risk renames done in this first step, to not carry too 
+much of this around unnecessarily - maybe even send it Linuswards in this 
+cycle if it's problem-free - without any real regression risk to upstream.
+
+Thanks,
+
+	Ingo
+
+=============================>
+commit be83e809ca67bca98fde97ad6b9344237963220b
+Author: Breno Leitao <leitao@debian.org>
+Date:   Tue Nov 21 08:07:28 2023 -0800
+
+    x86/bugs: Rename CONFIG_GDS_FORCE_MITIGATION => CONFIG_MITIGATION_GDS_FORCE
+    
+    So the CPU mitigations Kconfig entries - there's 10 meanwhile - are named
+    in a historically idiosyncratic and hence rather inconsistent fashion
+    and have become hard to relate with each other over the years:
+    
+       https://lore.kernel.org/lkml/20231011044252.42bplzjsam3qsasz@treble/
+    
+    When they were introduced we never expected that we'd eventually have
+    about a dozen of them, and that more organization would be useful,
+    especially for Linux distributions that want to enable them in an
+    informed fashion, and want to make sure all mitigations are configured
+    as expected.
+    
+    For example, the current CONFIG_SPECULATION_MITIGATIONS namespace is only
+    halfway populated, where some mitigations have entries in Kconfig, and
+    they could be modified, while others mitigations do not have Kconfig entries,
+    and can not be controlled at build time.
+    
+    Fine-grained control over these Kconfig entries can help in a number of ways:
+    
+      1) Users can choose and pick only mitigations that are important for
+         their workloads.
+    
+      2) Users and developers can choose to disable mitigations that mangle
+         the assembly code generation, making it hard to read.
+    
+      3) Separate Kconfigs for just source code readability,
+         so that we see *which* butt-ugly piece of crap code is for what
+         reason...
+    
+    In most cases, if a mitigation is disabled at compilation time, it
+    can still be enabled at runtime using kernel command line arguments.
+    
+    This is the first patch of an initial series that renames various
+    mitigation related Kconfig options, unifying them under a single
+    CONFIG_MITIGATION_* namespace:
+    
+        CONFIG_GDS_FORCE_MITIGATION => CONFIG_MITIGATION_GDS_FORCE
+        CONFIG_CPU_IBPB_ENTRY       => CONFIG_MITIGATION_IBPB_ENTRY
+        CONFIG_CALL_DEPTH_TRACKING  => CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+        CONFIG_PAGE_TABLE_ISOLATION => CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
+        CONFIG_RETPOLINE            => CONFIG_MITIGATION_RETPOLINE
+        CONFIG_SLS                  => CONFIG_MITIGATION_SLS
+        CONFIG_CPU_UNRET_ENTRY      => CONFIG_MITIGATION_UNRET_ENTRY
+        CONFIG_CPU_IBRS_ENTRY       => CONFIG_MITIGATION_IBRS_ENTRY
+        CONFIG_CPU_SRSO             => CONFIG_MITIGATION_SRSO
+        CONFIG_RETHUNK              => CONFIG_MITIGATION_RETHUNK
+    
+    Implement step 1/10 of the namespace unification of CPU mitigations related
+    Kconfig options and rename CONFIG_GDS_FORCE_MITIGATION to
+    CONFIG_MITIGATION_GDS_FORCE.
+    
+    [ mingo: Rewrote changelog for clarity. ]
+    
+    Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+    Signed-off-by: Breno Leitao <leitao@debian.org>
+    Signed-off-by: Ingo Molnar <mingo@kernel.org>
+    Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
+    Cc: Linus Torvalds <torvalds@linux-foundation.org>
+    Link: https://lore.kernel.org/r/20231121160740.1249350-2-leitao@debian.org
 
