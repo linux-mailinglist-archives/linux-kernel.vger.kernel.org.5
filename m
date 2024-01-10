@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-21820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D399A8294CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:09:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756348294D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 496A11F26390
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:09:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8672A1C25B95
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9780A3DBB4;
-	Wed, 10 Jan 2024 08:08:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758903EA80;
+	Wed, 10 Jan 2024 08:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SvQQ0u8D"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O48ezNcM"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E8F3FB39
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD1A3EA6C
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e43e489e4so43064355e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:08:05 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e43e48a16so35394155e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:08:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704874083; x=1705478883; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704874096; x=1705478896; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=18onmT8kvZ7gg4EOu5RWr8v/3MvP/Hv+MH9CkNR/0WY=;
-        b=SvQQ0u8DT0Khjm1B9Sg1Um6uqICVm4Ak/cN3DahJnyumn9La+ksYU8OkS0KQYar25A
-         r60pcX9PAJEmWfWpbIFZxRbBkYmuRLRcbgL0HTfl2o9UzEG242iYyP22sxXuHUFopqZM
-         ijCKr25M4HOaotYRc4Q+vM3tv1WnVb/hPY4hdm0HDc+Bdo3Xk03kYxPSTnDuUFSO3IQh
-         DE+r3p/Y+gnw7Qk9EOcPHTC2wl3TyDRKZagU9GUgoyADP135Nh34QGtIP7s+A3upcoyR
-         wnONrybBO3jBw/4WFzEJ0VQPeNohcSGLJLRUXvtDa0z2cGZH5NnqbsgZ4tuaWi1o6utP
-         jisw==
+        bh=XYXngrHTEBeSDLYfilYygQq5JY+FPVcYlOLFqaCW7+o=;
+        b=O48ezNcMuxvVox79Ycd4qIOwYaDnqJXM7cRlL2F23m1CBs2Kk57chpKJONq6llPuuf
+         M17f9amDIn7FYUGZm2j1EjWgsArn8YvSPSQVJTmwk4qXeQeacs/5jjb2n6RpyWPQr/4u
+         T+o5E8wG2gMsbGjvOtGkH/93aHSMaJdaz5LvnQbhez1sxizLCNOS9qv2hwP1ieWVVpAJ
+         6XJkyU3XIw4RHfxEqaC7BXcmcwZpCP/6lrdstHufNcpPlJWypMsdJzlt8ZpajQhxdV1U
+         UJBwQfbtrQeHA/uIMUCyvZnC+sq/GXOevyphHzVdWlNCylJJVD4vRpBAnFbOV8RXHwSG
+         KP0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704874083; x=1705478883;
+        d=1e100.net; s=20230601; t=1704874096; x=1705478896;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=18onmT8kvZ7gg4EOu5RWr8v/3MvP/Hv+MH9CkNR/0WY=;
-        b=QBbu6/z4w6loTEUDoMhMphezXVscpAyc4nqtaLp6X7Y8FK79LLARemS8329rZKlLSm
-         s1hLJ7rsgebqqWJ3mfzj6z5RWhA8AWXTmDGFtCyiksaOy3jivSaRk9feTuvGXIr2fCf/
-         d12p3JHd657GPjcI4uD0MCxyNv3g6OaP03dSw8KK99ipTsKZq5ILAbzJ+x6eDyqJjYCC
-         MuEcfGRzo+vXM4JYo9dvUd0M95l7RzF5AxHPJLtPDmP2QnTdPkx5swPORbmU9U95yDLF
-         XNf1KNzQh7Z4jnGD2viTjyk7ZY47TP8ZSLxe/aarEvbeog0/G8OY7UCltCl0NToIW23Z
-         VChw==
-X-Gm-Message-State: AOJu0YxfyPyjp3u72d2uOLMaUGwoBhr5u96oE96Teg9SRS2xk0Ghiaxn
-	GSGDgo4B/jnBQxrtVeM9Ms5qxQvO71ilVYYJgxaVIXIg2x0=
-X-Google-Smtp-Source: AGHT+IEnEoMK6jAgo0ZVcM/+QdcenMiKU/9mNLBH5UAdGVviCbrl39mjLQPfkwPq/0mL+v6OHi7lKQ==
-X-Received: by 2002:a05:600c:3155:b0:40d:aa42:b4cb with SMTP id h21-20020a05600c315500b0040daa42b4cbmr363750wmo.171.1704874083693;
-        Wed, 10 Jan 2024 00:08:03 -0800 (PST)
+        bh=XYXngrHTEBeSDLYfilYygQq5JY+FPVcYlOLFqaCW7+o=;
+        b=iH3y9ykVsCtVIdfWEXF/jMXF1vj82aPJH3vgqRBMbL0QUD5KNPnIKiE5Oo7+O24EJC
+         t+n4quMlAmMj9K2SSvXihu7DJ06iF44j0FWyDuaAil6OUSAYs6tJxkk2x2IuoZFgWNXD
+         FWhtbW5tztG0osEaYMIaU+1eLuyMFWYAT0R/mFNIg4eB93CBtjWtX8xm0WNdQRh34zET
+         IFQjiTPqTGKCm8p6xqXJIEbwqgGKTwWuXV8aYEDgw1LNwVPzKagn3jsa6XADHmeYLjNA
+         7pVK9Oudf47xPL06lBy7Qdy8BulFUDV6KR31t3U6V5TCZwEMA/6HHQX8L4r1TPxZTI2o
+         b7EA==
+X-Gm-Message-State: AOJu0YzM8ZkfK2kE40w76txvYh29T6O09Wiw30Zshw2yirH3KkXep+Tn
+	j3LzhZE2GoyNCUYUpDbCZjO+FgsCAqYLdQ==
+X-Google-Smtp-Source: AGHT+IEw03RK9V1ucgY7wix/Q03JnUMJR9e1wZmPq6lImv4IiK1YmwwNJM98GBqFARTN3nRf7xLGbQ==
+X-Received: by 2002:a05:600c:491d:b0:40e:47db:9a3b with SMTP id f29-20020a05600c491d00b0040e47db9a3bmr311047wmp.75.1704874096477;
+        Wed, 10 Jan 2024 00:08:16 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id bh21-20020a05600c3d1500b0040d987aae3esm1233597wmb.13.2024.01.10.00.08.00
+        by smtp.gmail.com with ESMTPSA id bh21-20020a05600c3d1500b0040d987aae3esm1233597wmb.13.2024.01.10.00.08.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 00:08:02 -0800 (PST)
-Message-ID: <f2a8d55e-2048-4d81-92dc-4533dc02a604@linaro.org>
-Date: Wed, 10 Jan 2024 09:08:00 +0100
+        Wed, 10 Jan 2024 00:08:15 -0800 (PST)
+Message-ID: <2fb8754a-2e79-4432-a4e4-812e34877e05@linaro.org>
+Date: Wed, 10 Jan 2024 09:08:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,8 +65,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/12] tty: serial: samsung: set UPIO_MEM32 iotype for
- gs101
+Subject: Re: [PATCH v3 06/12] tty: serial: samsung: add gs101 earlycon support
 Content-Language: en-US
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
  krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org
@@ -79,7 +78,7 @@ Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
  linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
  andre.draszik@linaro.org, kernel-team@android.com, willmcvicker@google.com
 References: <20240109125814.3691033-1-tudor.ambarus@linaro.org>
- <20240109125814.3691033-6-tudor.ambarus@linaro.org>
+ <20240109125814.3691033-7-tudor.ambarus@linaro.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,23 +124,25 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240109125814.3691033-6-tudor.ambarus@linaro.org>
+In-Reply-To: <20240109125814.3691033-7-tudor.ambarus@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 09/01/2024 13:58, Tudor Ambarus wrote:
-> GS101's Connectivity Peripheral blocks (peric0/1 blocks) which
-> include the I3C and USI (I2C, SPI, UART) only allow 32-bit
-> register accesses.
+> The entire bus (PERIC) on which the GS101 serial resides only allows
+> 32-bit register accesses. The reg-io-width dt property is disallowed
+> for the "google,gs101-uart" compatible and instead the iotype is
+> inferred from the compatible. Always set UPIO_MEM32 iotype for the
+> gs101 earlycon.
 > 
-> Instead of specifying the reg-io-width = 4 everywhere, for each node,
-> the requirement should be deduced from the compatible.
+> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+> v3: collect Peter's R-b tag
+> v2: update commit message
 > 
-> Infer UPIO_MEM32 iotype from the "google,gs101-uart" compatible.
-> Update the uart info name to be GS101 specific in order to
-> differentiate from the other exynos platforms. All the other settings
-> are not changed.
-> 
+>  drivers/tty/serial/samsung_tty.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
