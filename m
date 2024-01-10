@@ -1,122 +1,103 @@
-Return-Path: <linux-kernel+bounces-22100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC67829938
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:35:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68E0682993B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B0E3B277FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:35:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 061DA1F22F05
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3CA47A74;
-	Wed, 10 Jan 2024 11:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DF047A79;
+	Wed, 10 Jan 2024 11:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="L9sEmcEL"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TLl5KJoI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20945256;
-	Wed, 10 Jan 2024 11:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A8eRnS025173;
-	Wed, 10 Jan 2024 11:35:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=zZr3ydscPJEtSmuUGIcDASkCGcSCsQLJWNIpwguKSA8=; b=L9
-	sEmcELyrU+GDg3cUoufiRehahIJlEMCzq5uTnBRZF7jD1WT5j6nGYGKBB8IS6zOY
-	jFYtgZUN+MivLHCbo2GB9iuTTgkfVLuTwYNv56Jm7sXagl3pnHWSxVXwZlkfoYMn
-	R++tfgJ+f2Qixl4uiW/vdpOKu6Gq5r4LYEv/vXxfNH6T0L+1UzuapT9g5OtZy60i
-	3wEkKQbHIVB0BmhjkLtLQXkGR0WQ7Wpai/HTsczG6X/stA0aaSwPgZC/49tnjvT+
-	rX8QkwFuTfZZOvrFmaRWeAHn5VJzKdS71KP8UWQb9GO92l15OG5xqTR66lW6bffN
-	aPtix9i9b635A2da2uZQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhjh2s1eg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:35:24 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ABZNj3032150
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:35:23 GMT
-Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 03:35:17 -0800
-Message-ID: <9d143762-da25-4bdc-b33f-66a03a144c2e@quicinc.com>
-Date: Wed, 10 Jan 2024 17:05:14 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150AC803;
+	Wed, 10 Jan 2024 11:37:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94CDAC433F1;
+	Wed, 10 Jan 2024 11:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704886634;
+	bh=mwJrCpsKvuUCqcMvNxsHnQZmtYyfQD9QX3G8uiaffuQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TLl5KJoIiS72N38mQw9egsP0cnZ89Kvj5RF5MUorG0cl7hSslxX8G7NxfXiwkdpyH
+	 SA+zfbuR12Cl/uUrInXED9S2i9I/2EdLGrpLU6rsPAV9eXK743H4NTqVBSONGyifJw
+	 7ko/f8B/4v5OjJYiaDcRTMNtOTIixdRa+ATiEf9dqCYDrP1f3SxwnbrzfonaU1lzxE
+	 0hQLPZArQDUy3izg6lsdcnMJnNhnUjHWH6NmBt1V1UfLaaS+9/h8jtJsm+60ZOetI5
+	 hFZKvmBFbmER3Xr7M8JakP5barYxMTf9laImGOteBPBs//hJAOjrsZAD6/fTyHBD1f
+	 3EtCKQ5rHeprA==
+Date: Wed, 10 Jan 2024 11:37:09 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dt-bindings: dai-common: Narrow possible
+ sound-dai-cells
+Message-ID: <7e312b05-857f-40a6-a1a1-a954dfea7044@sirena.org.uk>
+References: <20240109213812.558492-1-krzysztof.kozlowski@linaro.org>
+ <1ja5pdzb7k.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 4/5] iommu/arm-smmu: add ACTLR data and support for
- SM8550
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <will@kernel.org>,
-        <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <dmitry.baryshkov@linaro.org>, <jsnitsel@redhat.com>,
-        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
-        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
-        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
-        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
-        <quic_molvera@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <qipl.kernel.upstream@quicinc.com>
-References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
- <20240109114220.30243-5-quic_bibekkum@quicinc.com>
- <45314345-36ba-4d85-9d3b-298de26eb069@linaro.org>
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-In-Reply-To: <45314345-36ba-4d85-9d3b-298de26eb069@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: De980EDPawXSdyqq1M4nDTubxLRsR_An
-X-Proofpoint-GUID: De980EDPawXSdyqq1M4nDTubxLRsR_An
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=837 clxscore=1015 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 priorityscore=1501 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100094
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="uPIbnbsl4a7wx/f4"
+Content-Disposition: inline
+In-Reply-To: <1ja5pdzb7k.fsf@starbuckisacylon.baylibre.com>
+X-Cookie: Do you have lysdexia?
 
 
+--uPIbnbsl4a7wx/f4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/10/2024 4:19 PM, Konrad Dybcio wrote:
-> 
-> 
-> On 1/9/24 12:42, Bibek Kumar Patro wrote:
->> Add ACTLR data table for SM8550 along with support for
->> same including SM8550 specific implementation operations.
->>
->> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
->> ---
-> [...]
-> 
->> +static const struct actlr_variant sm8550_actlr[] = {
->> +    { sm8550_apps_actlr_cfg, 0x15000000 },
->> +    { sm8550_gfx_actlr_cfg, 0x03da0000 },
->> +    {},
->> +};
-> 
-> Please use C99 designated initializers and put the address first.
-> 
+On Wed, Jan 10, 2024 at 12:07:30PM +0100, Jerome Brunet wrote:
+> On Tue 09 Jan 2024 at 22:38, Krzysztof Kozlowski <krzysztof.kozlowski@lin=
+aro.org> wrote:
+>=20
+> > Instead of accepting any value for sound-dai-cells, the common DAI
+> > properties schema should narrow them to sane choice.
 
-Noted, thanks for this input. Will take care of this in next patch.
+> Adding a constraint solely based on current usage feels wrong.
 
-Thanks & regards,
-Bibek
+> A DAI provider in its generic form must have the sound-dai-cells to
+> provide one. It says nothing about how many parameters an actual device
+> might need. That is the idea behind this binding.
 
-> Konrad
+> It is up to the device specific bindings to define that value.
+
+> If restricting things here is really important, defaulting to 0 (with a
+> comment explaining it) and letting actual devices then override the
+> value would feel less 'made up'
+
+I tend to agree.
+
+--uPIbnbsl4a7wx/f4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWegWQACgkQJNaLcl1U
+h9Dc7wf+P2n83klonD5EiADHNArTPBrzWtVooyEDf3soqckt8MR+DtlIo0460+NS
+2oTbfl6e2b1tYShEhraljnpAewMBnsexZWfnszWDt6aMtm1MBQxj0TnK0LTIp6lz
+CYr5voMqzQtQaJOO2XqdlExuT7oK34tf1JA8yg7699wqsdrrPrYq0cYZw3QOMCJx
+i0bTfY4dMNNmBahx9aNeoQdIOfu0272dk9Rj9d8U7TwN3vQSFnt0kz3/bswGhjCx
+gKs81/Kn/sChLbTOzZel4Ctw/AAFBUYpnVsm+JZwpp3ma77LTnmFWw1ogEXq4HZl
+yEfxszZgp4ylkHQ5WLPSFFkR9D5qHw==
+=W+Yk
+-----END PGP SIGNATURE-----
+
+--uPIbnbsl4a7wx/f4--
 
