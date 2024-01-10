@@ -1,91 +1,143 @@
-Return-Path: <linux-kernel+bounces-22197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E7A4829AB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:55:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CCA3829ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14CF3285CEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:55:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4059B26814
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:55:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDED1487A1;
-	Wed, 10 Jan 2024 12:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3BA487B2;
+	Wed, 10 Jan 2024 12:55:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fUn8qYiD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="s20dKFSX"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6E248791;
-	Wed, 10 Jan 2024 12:54:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 952CCC433C7;
-	Wed, 10 Jan 2024 12:54:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704891299;
-	bh=5n8+CXGpbcg2EukFcN9GH3kiPhkvu8XAbFD9ugJEqO8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fUn8qYiDRQ8oiPkJuPpQGjABUZmMKQm5uuNqcRgXABYS9zK6SKk2So3nWtvKabFUw
-	 PFJL5c1GtM6OUk5DE/Rqd7Sv9540B4JfPQZ7jSDewrSvMBZFwesnBjdY5Ay90Nj+9C
-	 pqX21jHByezFcQ3De9rleGzR5Iz5ealyfNCJViQ8M/c3ClvH1IZBjvX9UWy1g4095V
-	 rYjdpHJu4lMZClINUPhxpvvpHxRd3CvzpfFHtEtcn/9thYEB75QyuESqml3YArYeZQ
-	 FTJBDXR7iqwp6Sjl5xP+n+QZ0FdGQFk9z5R2t1rweUBYff5L16HeZY2Df+/Jn7Yl4l
-	 gT3KzSR2QX7tw==
-Date: Wed, 10 Jan 2024 12:54:54 +0000
-From: Lee Jones <lee@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Pavel Machek <pavel@ucw.cz>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Daniel Golle <daniel@makrotopia.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-leds@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] leds: trigger: netdev: display only supported
- link speed attribute
-Message-ID: <20240110125454.GI7948@google.com>
-References: <20231221171125.1732-1-ansuelsmth@gmail.com>
- <659e8adc.5d0a0220.a73cd.069f@mx.google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6F7482FE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7cc7bae27b5so1303554241.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 04:55:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704891329; x=1705496129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7Ee+hHkfAfIFS6WHvmIg35YEx3vQHJAhovJ3w3cPXwo=;
+        b=s20dKFSXv9X0Dth46Eq9po8i1zw++gJAeAovANgJUWtSt/94qMDdNE6z161bIEdp2Z
+         atELqW/ToP33dGrkoHBTOChulkv8Cw7Kv4FTMAuyypFZUkfrX5/Kh6YB3DlBueZvYdEp
+         hzs/zmifuFPCqPeNZwb1WQVnPJHOBHxMIazawurhzd9sIsPVuFMU+IygCX8PilCPsQUr
+         6rZIP5SHmB3SL+0nfD6hPl1tSEpU7f7BOl8k2oh7MKxCiO5WWpJ4hE5B1l1pVP8bf94c
+         1gmLonYfjIGcPzZ8dzA2N7wL0S6x5gcjnngKgw86LHphKpQvU/fy+Ut4dVwNSwtJoZS8
+         MS1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704891329; x=1705496129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7Ee+hHkfAfIFS6WHvmIg35YEx3vQHJAhovJ3w3cPXwo=;
+        b=QflhRUofXWVHJtjLnbxXNgFwdUykFbkLBZrtirPjDyhw0SouObeOUVW2pBvhHzX+F2
+         5+3eBIt4I8PLjm64jd/yF6kfnCQtAO8gmRzTu6lHooM8brnNzHp1WVbe8/4LLzh0eEak
+         ly6NuqQD3P2P++dE9ROuZoOhFitEc3nGCONeB9GODbvTzQ95L/gw0KCkbVwCpvTweIfT
+         RDFXevCpkJYmnxVbYVPXBYnw/J0UXsM9g0/u51hDaJaCRbqvxxjyRcCT4dpfnWg3bF4N
+         D/YExWodtwpVf2pCx07kBRTmnh7T09xyNqY0qh7AYrxc/CL2a8RE53OISDCrPFTocgVF
+         xTmg==
+X-Gm-Message-State: AOJu0YxBBnprKakexrvhIJhu9ZGd4i2hHZWsreUtBkD9+BZgFYPV8TW/
+	0yL944tRJulnX+68UGt4TMWIh4lNPbq0janIhA8AO11e4bLu6g==
+X-Google-Smtp-Source: AGHT+IFJf1lA0zydsqWg4MMlDwI7GY7aqZwXYX8MZwXUGKbgxRrG/GbjToxomMdYf3iIjG2NRkt8G9T0sjS/5fZgDGY=
+X-Received: by 2002:a05:6102:6248:b0:466:fd31:def8 with SMTP id
+ gd8-20020a056102624800b00466fd31def8mr866005vsb.55.1704891329157; Wed, 10 Jan
+ 2024 04:55:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <659e8adc.5d0a0220.a73cd.069f@mx.google.com>
+References: <20240104130123.37115-1-brgl@bgdev.pl> <20240104130123.37115-4-brgl@bgdev.pl>
+ <20240109144327.GA10780@wunner.de>
+In-Reply-To: <20240109144327.GA10780@wunner.de>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 10 Jan 2024 13:55:18 +0100
+Message-ID: <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
+Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 10 Jan 2024, Christian Marangi wrote:
+On Tue, Jan 9, 2024 at 3:43=E2=80=AFPM Lukas Wunner <lukas@wunner.de> wrote=
+:
+>
+> On Thu, Jan 04, 2024 at 02:01:17PM +0100, Bartosz Golaszewski wrote:
+> > In order to introduce PCIe power-sequencing, we need to create platform
+> > devices for child nodes of the port driver node. They will get matched
+> > against the pwrseq drivers (if one exists) and then the actuak PCIe
+> > device will reuse the node once it's detected on the bus.
+> [...]
+> > --- a/drivers/pci/pcie/portdrv.c
+> > +++ b/drivers/pci/pcie/portdrv.c
+> > @@ -715,7 +716,7 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
+> >               pm_runtime_allow(&dev->dev);
+> >       }
+> >
+> > -     return 0;
+> > +     return devm_of_platform_populate(&dev->dev);
+> >  }
+>
+> I think this belongs in of_pci_make_dev_node(), portdrv seems totally
+> the wrong place.  Note that you're currently calling this for RCECs
+> (Root Complex Event Collectors) as well, which is likely not what
+> you want.
+>
 
-> On Thu, Dec 21, 2023 at 06:11:24PM +0100, Christian Marangi wrote:
-> > With the addition of more link speed mode to the netdev trigger, it was
-> > pointed out that there may be a problem with bloating the attribute list
-> > with modes that won't ever be supported by the trigger as the attached
-> > device name doesn't support them.
-> > 
-> > To clear and address this problem, change the logic where these
-> > additional trigger modes are listed.
-> > 
-> > Since the netdev trigger REQUIRE a device name to be set, attach to the
-> > device name change function additional logic to parse the supported link
-> > speed modes using ethtool APIs and show only the supported link speed
-> > modes attribute.
-> > 
-> > Link speed attribute are refreshed on device_name set and on
-> > NETDEV_CHANGE events.
-> > 
-> > This only apply to the link speed modes and every other mode is still
-> > provided by default.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > Reviewed-by: Marek Behún <kabel@kernel.org>
-> 
-> Any news for this?
+of_pci_make_dev_node() is only called when the relevant PCI device is
+instantiated which doesn't happen until it's powered-up and scanned -
+precisely the problem I'm trying to address.
 
-Not yet.  It's on the list.  Holidays, merge window, etc.
+Calling this for whomever isn't really a problem though, is it? We
+will create a platform device alright - if it's defined on the DT -
+and at worst it won't match against any driver. It seems harmless IMO.
 
--- 
-Lee Jones [李琼斯]
+> devm functions can't be used in the PCI core, so symmetrically call
+> of_platform_unpopulate() from of_pci_remove_node().
+
+I don't doubt what you're saying is true (I've seen worse things) but
+this is the probe() callback of a driver using the driver model. Why
+wouldn't devres work?
+
+Bart
+
+>
+> Thanks,
+>
+> Lukas
+>
 
