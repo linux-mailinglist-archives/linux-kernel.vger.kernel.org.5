@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-22815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B90AB82A343
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:26:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC94F82A33E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:25:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 518682877AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:26:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EB251C266C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D3B4F8A7;
-	Wed, 10 Jan 2024 21:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0482B4F61E;
+	Wed, 10 Jan 2024 21:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WV/+YMoO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c82lIG0a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0250D4F890;
-	Wed, 10 Jan 2024 21:25:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C01ECC43390;
-	Wed, 10 Jan 2024 21:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253274F5FA;
+	Wed, 10 Jan 2024 21:25:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06175C433C7;
+	Wed, 10 Jan 2024 21:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704921934;
-	bh=Ax58DmDjPNW74NGwRvhHHGsYqpwIGIZxv4FkZoGcxV4=;
+	s=k20201202; t=1704921931;
+	bh=3C5WR76W5kbSoAjJb2xbYfw3mBaMSnsnkbKc1nq/il0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WV/+YMoOvCEyWpaRpYZfa87kc6mbQ0JnVBbDnIG5yf/huJPTEyQwx8cXxan8KxinN
-	 6sNBXfQFoVBxzqwDGumSVysnHcLmYq9nvcNjV5hKJ7VVI/muQ0GlHvgx+x3+niVmq9
-	 RuxS7Zd6MOXiXUhr0aTG2YCs+G4j0caWW01HTd+aL1Hy5Lw/lJ9cj/lZOsySBKvQWB
-	 er+OO8VqSbL3cviSAhyf8p2dZWVLVPhS4OLTE6iChmLPRf4MhEPa0XRlj+JhQFQ55u
-	 m/xZtqRUdeC3VwXCXxl9xZQ9TjdHsXZYksEUz4gTQpIoWVCmyU/4A+oymlcDeOrDbP
-	 DQq9jAA3AdwNQ==
-Received: (nullmailer pid 2648568 invoked by uid 1000);
+	b=c82lIG0ast6+R/k3mcOb81ehqGD5ghGGAUET00ZwgfXIoKt5DIbDRUsiW9YNIQba3
+	 e74LXV+mJZBFqtcp/syKfcMHoy7P2ZJXOtGjs6jQ4AGfCCYJkVwGdukJkqWu/q1yg4
+	 54Tov4w87pe+sXdJYHBnV470VTwznFf+aI2xUmQcJiaTwTdE7RumUNqSANJBYcfiAw
+	 90759UGovYTB9FsZMb3fjaTP72qCPEd4e6b0dOJl3YxpKPOXZHU6j9XaifSVjbBbrM
+	 AaIfWHeCdv96ejdZcz8GOD33LI2tvG97XukxgJfCePRQYbEoHuBLvhVgVXnEcyadDG
+	 vbBFYvkHpkVfQ==
+Received: (nullmailer pid 2648565 invoked by uid 1000);
 	Wed, 10 Jan 2024 21:25:28 -0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,24 +42,25 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Alexey Romanov <avromanov@salutedevices.com>
-Cc: kernel@salutedevices.com, herbert@gondor.apana.org.au, davem@davemloft.net, neil.armstrong@linaro.org, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, khilman@baylibre.com, robh+dt@kernel.org, linux-amlogic@lists.infradead.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, narmstrong@baylibre.com, clabbe@baylibre.com, jbrunet@baylibre.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, artin.blumenstingl@googlemail.com
-In-Reply-To: <20240110201216.18016-17-avromanov@salutedevices.com>
-References: <20240110201216.18016-1-avromanov@salutedevices.com>
- <20240110201216.18016-17-avromanov@salutedevices.com>
-Message-Id: <170492192887.2648505.6187306596898979418.robh@kernel.org>
-Subject: Re: [PATCH v1 16/24] dt-bindings: crypto: meson: add new
- compatibles
+To: David Lechner <dlechner@baylibre.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Hennerich <michael.hennerich@analog.com>, devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, Thierry Reding <thierry.reding@gmail.com>, =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-spi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, linux-iio@vger.kernel.org, linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Mark Brown <broonie@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20240109-axi-spi-engine-series-3-v1-11-e42c6a986580@baylibre.com>
+References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+ <20240109-axi-spi-engine-series-3-v1-11-e42c6a986580@baylibre.com>
+Message-Id: <170492192827.2648172.5496531414858882853.robh@kernel.org>
+Subject: Re: [PATCH 11/13] dt-bindings: iio: offload: add binding for
+ PWM/DMA triggered buffer
 Date: Wed, 10 Jan 2024 15:25:28 -0600
 
 
-On Wed, 10 Jan 2024 23:11:32 +0300, Alexey Romanov wrote:
-> Now we can use crypto driver at G12A/G12B/S4/A1/SM1/AXG.
+On Wed, 10 Jan 2024 13:49:52 -0600, David Lechner wrote:
+> This adds a new binding for a PWM trigger and DMA data output connected
+> to an SPI controller offload instance.
 > 
-> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 > ---
->  .../devicetree/bindings/crypto/amlogic,gxl-crypto.yaml          | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../adi,spi-offload-pwm-trigger-dma-buffer.yaml    | 59 ++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -68,12 +69,62 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.example.dtb: crypto-engine@c883e000: compatible: ['amlogic,gxl-crypto'] is too short
-	from schema $id: http://devicetree.org/schemas/crypto/amlogic,gxl-crypto.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/offload/adi,spi-offload-pwm-trigger-dma-buffer.yaml:
+Error in referenced schema matching $id: http://devicetree.org/schemas/spi/adi,axi-spi-engine.yaml
+Documentation/devicetree/bindings/iio/offload/adi,spi-offload-pwm-trigger-dma-buffer.example.dts:22.22-32.15: Warning (spi_bus_reg): /example-0/spi/offloads: missing or empty reg property
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 966, in resolve_fragment
+    document = document[part]
+               ~~~~~~~~^^^^^^
+TypeError: 'bool' object is not subscriptable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-validate", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 144, in main
+    sg.check_dtb(filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 89, in check_dtb
+    self.check_subtree(dt, subtree, False, "/", "/", filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
+    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
+    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
+    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
+  [Previous line repeated 1 more time]
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 77, in check_subtree
+    self.check_node(tree, subtree, disabled, nodename, fullname, filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 33, in check_node
+    for error in self.validator.iter_errors(node, filter=match_schema_file):
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/validator.py", line 405, in iter_errors
+    for error in self.DtValidator(sch,
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 288, in iter_errors
+    for error in errors:
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/_validators.py", line 414, in if_
+    yield from validator.descend(instance, then, schema_path="then")
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 305, in descend
+    for error in self.evolve(schema=schema).iter_errors(instance):
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 288, in iter_errors
+    for error in errors:
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/_validators.py", line 294, in ref
+    scope, resolved = validator.resolver.resolve(ref)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 898, in resolve
+    return url, self._remote_cache(url)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 916, in resolve_from_url
+    return self.resolve_fragment(document, fragment)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 968, in resolve_fragment
+    raise exceptions.RefResolutionError(
+jsonschema.exceptions.RefResolutionError: Unresolvable JSON pointer: '$defs/offload'
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240110201216.18016-17-avromanov@salutedevices.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240109-axi-spi-engine-series-3-v1-11-e42c6a986580@baylibre.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
