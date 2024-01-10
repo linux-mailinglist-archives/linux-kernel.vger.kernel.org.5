@@ -1,126 +1,155 @@
-Return-Path: <linux-kernel+bounces-21803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D06C829485
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:52:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF015829488
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE471F27A05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:52:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A41B21C25B67
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CFD3B292;
-	Wed, 10 Jan 2024 07:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137B33C47B;
+	Wed, 10 Jan 2024 07:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R3mFbeWh"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gPEoc4Nm"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7333E470;
-	Wed, 10 Jan 2024 07:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704873121; x=1736409121;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=pDvYrmhpBlr6Ouka9BO91HIwFCHKwrpkfzJvRUkQeIU=;
-  b=R3mFbeWhyfTUC4FatA/V4kS8eggkySaN2+0iDerTfS8nFdJNEOs59AW8
-   hnaLEjkpJdTpDgR2zVaA1hICj1jIitUkixP6hzv3RWv/6UNDQhdJDYgH6
-   P/i4FNdk0m8l03K5y2DSlKAt6mlphJCVBiJ780e4G2loW35W1clx47hO/
-   Q0YU3YnzNerzXK9kIAI3xEPRycpwXbjMZMuQyYbolWmh9vczdVWAbnvsn
-   AXFlqJ7MJUDgk2I3TldgO68iIfeWzLRupx9O0r4uQkeN8nuNcYgP21CdQ
-   3Mh1ixQFhjmt9OywY0P/ZlHLqGSYBwlsFzvROvLiSl56DOAPfCyACHEDd
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="388882588"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="388882588"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 23:52:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="955281702"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="955281702"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.11.157]) ([10.93.11.157])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 23:51:57 -0800
-Message-ID: <5de13afa-4079-467a-a7b1-badfb9ac95cc@linux.intel.com>
-Date: Wed, 10 Jan 2024 15:51:53 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1273C3E460;
+	Wed, 10 Jan 2024 07:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6db0c49e93eso1286106b3a.1;
+        Tue, 09 Jan 2024 23:53:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704873211; x=1705478011; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DlVkfwSR0KhVQsqSLqhfZx1Bsn/0daw+ebFcj5qo+4s=;
+        b=gPEoc4NmfrP5CJJDz4T0d0LEDfhfQiBtGMmTQ2Uv9kUEbzE2TO3cYAhclCbBTIe8YL
+         wN/VPJoHz0NQ6RtElvF7ajaIpFe/NLbvs8/xi2/0CZyIsvn9LCqxsTYfhsrmlnjWthwf
+         gmkqPozUxl6FOmq597M9AW/Be7/w+iTQzCzYYMfyyHWwS1KSNd5FMom5L75kccdmAkiX
+         qgL1pOgQUTib358g1jDKFd81lTYsvTI548uwQF1b9ZnKCMSFpTYm0opwo6prMTFFysUJ
+         PrxVPq3uoETu9a1KNQTs+H084vFa+h9nZpVxfkSkuwKzF9FsfoYuiNo1MVxVwOsvj7JN
+         l9cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704873211; x=1705478011;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DlVkfwSR0KhVQsqSLqhfZx1Bsn/0daw+ebFcj5qo+4s=;
+        b=VcItm9MmmEBYAPtsEGT+GRiYLasHaT7cUSe6feizm3j1EW1zMQQejBHHidTaCvY32C
+         vq/M6atc/b9vH43/qOsB992xOl7TdID9LSPxsV+uDos8NcmSgxrOTh+KaH5fxSDW/8Dd
+         EhCJXKXXmVHHA0R71O4+NDgsR/qmN1PdVhVDxLAn5WEuNM4UhayRvDKxvaaPh7A/F2eY
+         UgxVxlqEfMAwazU0nuBn7hfmUA7HuplZDJXwaFB4PTgPZqPRGAClAdD2uEn9qyqjWo6W
+         njrZvxk9bJXLAhFslMsIHXmM0anj8Ai1GMVZLn7Ksd3npkxfPGeSGB3Y522sIPYXVYya
+         IsEw==
+X-Gm-Message-State: AOJu0YwhiM8p0BjzACGu9PtUi4yKXjrBRZsZQ88sOh6VZ7QZJC6xtIfB
+	fK2fREbPfG46BVsstD4YEMA=
+X-Google-Smtp-Source: AGHT+IGef+AIUYFPUgDh2F7pkq6gUHNd12WepVFH29+8g1TMJjZTSpFBb+q96we/xyvmH44Lwl3g1g==
+X-Received: by 2002:a05:6a20:7883:b0:199:76d8:402d with SMTP id d3-20020a056a20788300b0019976d8402dmr508563pzg.111.1704873211316;
+        Tue, 09 Jan 2024 23:53:31 -0800 (PST)
+Received: from localhost ([98.97.113.214])
+        by smtp.gmail.com with ESMTPSA id f12-20020a17090274cc00b001d4301325a6sm2974264plt.247.2024.01.09.23.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 23:53:29 -0800 (PST)
+Date: Tue, 09 Jan 2024 23:53:28 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: John Fastabend <john.fastabend@gmail.com>, 
+ Edward Adam Davis <eadavis@qq.com>, 
+ syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
+Cc: andrii@kernel.org, 
+ ast@kernel.org, 
+ borisp@nvidia.com, 
+ bpf@vger.kernel.org, 
+ daniel@iogearbox.net, 
+ davem@davemloft.net, 
+ dhowells@redhat.com, 
+ edumazet@google.com, 
+ jakub@cloudflare.com, 
+ john.fastabend@gmail.com, 
+ kuba@kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com, 
+ syzkaller-bugs@googlegroups.com
+Message-ID: <659e4cf817b78_60d7a208c3@john.notmuch>
+In-Reply-To: <659dd53f1652b_2796120896@john.notmuch>
+References: <000000000000aa2f41060e363b2b@google.com>
+ <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
+ <659dd53f1652b_2796120896@john.notmuch>
+Subject: RE: [PATCH] tls: fix WARNING in __sk_msg_free
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v10 1/5] iommu/vt-d: add pci_dev parameter to
- qi_submit_sync and refactor callers
-To: Baolu Lu <baolu.lu@linux.intel.com>, kevin.tian@intel.com,
- bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
- robin.murphy@arm.com, lukas@wunner.de
-Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
- <20231228170206.720675-2-haifeng.zhao@linux.intel.com>
- <a2e507b3-a018-44d8-9e92-459670505bcd@linux.intel.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <a2e507b3-a018-44d8-9e92-459670505bcd@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
+John Fastabend wrote:
+> Edward Adam Davis wrote:
+> > Syzbot constructed 32 scatterlists, and the data members in struct sk_msg_sg 
+> > can only store a maximum of MAX_MSG_FRAGS scatterlists.
+> > However, the value of MAX_MSG_FRAGS=CONFIG_MAX_SKB_FRAG is less than 32, which
+> > leads to the warning reported here.
+> > 
+> > Prevent similar issues from occurring by checking whether sg.end is greater 
+> > than MAX_MSG_FRAGS.
+> > 
+> > Reported-and-tested-by: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
+> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > ---
+> >  net/tls/tls_sw.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+> > index e37b4d2e2acd..68dbe821f61d 100644
+> > --- a/net/tls/tls_sw.c
+> > +++ b/net/tls/tls_sw.c
+> > @@ -1016,6 +1016,8 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+> >  
+> >  		msg_pl = &rec->msg_plaintext;
+> >  		msg_en = &rec->msg_encrypted;
+> > +		if (msg_pl->sg.end >= MAX_MSG_FRAGS)
+> > +			return -EINVAL;
+> >  
+> >  		orig_size = msg_pl->sg.size;
+> >  		full_record = false;
+> > -- 
+> > 2.43.0
+> > 
+> 
+> I'll test this in a bit, but I suspect this error is because even
+> if the msg_pl is full (the sg.end == MAX_MSG_FRAGS) the code is
+> missing a full_record=true set to force the loop to do the send
+> and abort. My opinion is we should never iterated the loop if the
+> msg_pl was full.
+> 
+> I think something like this is actually needed.
+> 
+> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+> index e37b4d2e2acd..9cfa6f8d51e3 100644
+> --- a/net/tls/tls_sw.c
+> +++ b/net/tls/tls_sw.c
+> @@ -1052,8 +1052,10 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+>                         if (ret < 0)
+>                                 goto send_end;
+>                         tls_ctx->pending_open_record_frags = true;
+> -                       if (full_record || eor || sk_msg_full(msg_pl))
+> +                       if (full_record || eor || sk_msg_full(msg_pl)) {
+> +                               full_record = true;
+>                                 goto copied;
+> +                       }
+>                         continue;
+>                 }
 
-On 1/10/2024 12:59 PM, Baolu Lu wrote:
-> On 12/29/23 1:02 AM, Ethan Zhao wrote:
->> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
->
-> Please don't leave the message body empty. You should describe why do
-> you want to add the change in this patch.
-Seems the description part was lost, will append next version.
->
->> ---
->>   drivers/iommu/intel/dmar.c          | 45 +++++++++++++++++++++--------
->>   drivers/iommu/intel/iommu.c         | 26 +++++------------
->>   drivers/iommu/intel/iommu.h         | 17 +++++------
->>   drivers/iommu/intel/irq_remapping.c |  2 +-
->>   drivers/iommu/intel/pasid.c         | 11 ++-----
->>   drivers/iommu/intel/svm.c           | 13 ++++-----
->>   6 files changed, 58 insertions(+), 56 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
->> index 23cb80d62a9a..3d661f2b7946 100644
->> --- a/drivers/iommu/intel/dmar.c
->> +++ b/drivers/iommu/intel/dmar.c
->> @@ -1344,7 +1344,7 @@ static int qi_check_fault(struct intel_iommu 
->> *iommu, int index, int wait_index)
->>    * can be part of the submission but it will not be polled for 
->> completion.
->>    */
->>   int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
->> -           unsigned int count, unsigned long options)
->> +           unsigned int count, unsigned long options, struct pci_dev 
->> *pdev)
->
-> How about adding a bit in options parameter to tell whether the @pdev is
-> valid?
-
-well, checking the option bit or checking pdev == NULL, use one parameter
-
-to describe another one is common function defination method if one
-
-parameter couldn't self-describe.
-
-This case, we always check pdev(one checking), and if we check option 
-bit first, then have
-
-to check pdev again (one or two checking).  I prefer checking pdev only.
-
-
-Thanks,
-
-Ethan
-
->
-> Best regards,
-> baolu
+Actually, it needs a bit more than above. That will fix the warning,
+but it returns an error on when it should flush the full_record in
+some cases. I'll send a fix shortly.
 
