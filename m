@@ -1,201 +1,101 @@
-Return-Path: <linux-kernel+bounces-22838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC50C82A3D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4A6582A3D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5591528A7C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:17:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AB2528A86B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:19:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7AF4F898;
-	Wed, 10 Jan 2024 22:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F0C4F892;
+	Wed, 10 Jan 2024 22:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="CQ3uNjL1"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2099.outbound.protection.outlook.com [40.92.22.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="CYXg4ZNP"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE2E4F1E5;
-	Wed, 10 Jan 2024 22:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WdZcJ555afit3bQ0gZVOzN9i8ZBotEkSTknX4mxIxVRTNxOVav8WMqbGUIhrxG/tdcLlVaVW1kBZxfrxxcyeS8IwttxwXqoCCR9Z3PT7BjpNpKoUb1EjiOKcL96s0YSJC5i8xU5oFz5DvMSv2wId7Gi7PssoS9U4ASs+FITRP1zL6ZT1+kYOWmhW/1JjYuDhouszBAorliJhcvarQuIOiVH9KVkyH5PTsx9gfwmBxJK69Ie4euIm+S1QoJOOMarbG2fl4XETtmXhH7yiO3bSPik5fbty0frD8Cjbg1Sej66YvwJm9F151/5+QjsQib559QO7ikYQxI8mxVS33nE/KQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=46iwDve333VEzAk7mIsqsvXOMlh9AlR/MUYTnYkOn5s=;
- b=fa03yf/Qr0n15pl7m7dJEkCOU0aIBpg9yCzpqFY1WhO23KUlebqKsZPVMuwiJsPnb6PONrW2cIgqYARfTZPvotIsn6kPcGCEDHYUjw5aDwNDQFbBhyLooNAfLwnxQl5IVnqt4zXsEU6rLjCA8saaqb/pVo6wnxDQ/x79eSLCyl7PAzGJNU12QHl2zwQM+DW+LJgoVMNnclCxAof6/OqNs8MM7Hstjwr30myppFszZKfbrFTn3f2jTORqsjSQt6lyO5YelMj/guPa0XcVNzrAuqh90/ZbLwRfuWMAazS/vGb2QrQlOf/Z9/WI83GcJnCDZPsqDGN0Us4ZnDKnckzJGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=46iwDve333VEzAk7mIsqsvXOMlh9AlR/MUYTnYkOn5s=;
- b=CQ3uNjL1G/Lpjd0P3F0zFu2DxUoKLLCHMDqHs7082Ycq3kajq7IK7CfKQYo9jfr3FlG0elFW/vWh/mMHK0PzsmFvy0MWunjqEmCrHpgyZaQRnLK1gU9M6pwDTrLK8hl3YliB1ZLH3hkecK9wxwJbFOXMkTnrPl4WUQ24L6LhW0FQL7aW6yTuL/BfzPOjSStiEklTIeW+KU1SVLpwL9Tkv/CEuRryrDqGd0kjVoeaUAb547i3CrIQQwRqDpfjhYJxtIJMaLWnl09CzPtZuKSULiXHmforePJ2UuIANGu6TqMEgAU5burOADxZK+7pgVbZJi7X8Kp35qkTxFiYzneeSQ==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by CO1PR02MB8619.namprd02.prod.outlook.com (2603:10b6:303:15e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
- 2024 22:17:17 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2%4]) with mapi id 15.20.7181.015; Wed, 10 Jan 2024
- 22:17:17 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: Markus Elfring <Markus.Elfring@web.de>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "kernel-janitors@vger.kernel.org"
-	<kernel-janitors@vger.kernel.org>, Dexuan Cui <decui@microsoft.com>, Haiyang
- Zhang <haiyangz@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Wei
- Liu <wei.liu@kernel.org>, "cocci@inria.fr" <cocci@inria.fr>, LKML
-	<linux-kernel@vger.kernel.org>
-Subject: RE: Drivers: hv: vmbus: One function call less in
- create_gpadl_header() after error detection
-Thread-Topic: Drivers: hv: vmbus: One function call less in
- create_gpadl_header() after error detection
-Thread-Index: AQHaQ7PyvvrIb8tUYUye7rRKlkvVrLDTNj6ggAAqigCAADt1QA==
-Date: Wed, 10 Jan 2024 22:17:17 +0000
-Message-ID:
- <SN6PR02MB415710A52835BC82B1FA1EAFD4692@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <6d97cafb-ad7c-41c1-9f20-41024bb18515@web.de>
- <SN6PR02MB4157AA51AD8AEBB24D0668B7D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
- <82054a0a-72e5-45b2-8808-e411a9587406@web.de>
- <SN6PR02MB4157CA3901DD8D069C755C72D4692@SN6PR02MB4157.namprd02.prod.outlook.com>
- <d3c13efc-a1a3-4f19-b0b9-f8c02cc674d5@moroto.mountain>
-In-Reply-To: <d3c13efc-a1a3-4f19-b0b9-f8c02cc674d5@moroto.mountain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [9Bnj9+onyGg/XP3kqltg4msot4eUqsM/]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CO1PR02MB8619:EE_
-x-ms-office365-filtering-correlation-id: 21cc1c4c-ba3b-425d-8d1f-08dc1229e7d4
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- xqq9BZIkQOntMnpTxJhV1yvUk34jWlchMNgQSKd8NeKnLJt6Onzo+vh7RzERCfBRD3A2R68TtMPwJVq4R3PiGbPVvph0W9EyV1Krtnmp6Zwj/iKMoo8vTHNpz5SxPt8Ogt9bXTF58WQXfbX7CjvTZWyCXLC/BkR2ykg3kbpWXiMuXFxi8Z9ch3YNyTjqMDqlwt/mZ4WLZ8eJrrY2K5Y6iEH7fqdeAUmtQegzdiPi1V4fWeqzdrrKSAIgHWAc/tCEjx6o9qHgIZ1lnlygNn9z/e0kDyqA2prtUjIdniMz3VcIZrswLLG+AIg1OGtj8oDLQDMWDiSEo8/A5ACOctxZKOvCKEkwy+xNYP5rklNcTsSqsulq6tzmkUgQNPDOlZXF2CuxD4VhOVD5/0pyJX1FGDanEQl2TbZpmT3gFXQ2QUcgM52nELAodLmhk+qcNgGie3M1cBOg8Y7fUGsAm58szdawDs2SYZAsHUI68py5H3kg6xl5Zjr2+CmVJLV6ldfTd8PCjQc1EX3NIXppCZLYpnQM5Y64fZlDjHT9vyht457j9cF8SaZRS+j/CMlQizG7
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?owCur0JVW0jvzPDWaN0tI3QKkG2hSWDSwvgoH3imqVS2ObAbQv/hzrYVk5NC?=
- =?us-ascii?Q?6VbuI2OjTlPY5SRX60aaNybj6hTAP6N5oGG6ldcbZJSmTp+RdJJovXu6o16M?=
- =?us-ascii?Q?EED8WkzTG9kctPoKrULEVCxHAvPS+qQhjy//ZcIrOQe8hRC67ojswDLzrknp?=
- =?us-ascii?Q?XDcT+6xbFTdYNq9FyvITq8Qc9mV/NC6HtC5Qu3LLA79PkFwj6sCi8NvPLugo?=
- =?us-ascii?Q?pVFh+Jqs816rcOo3VG+VWC1fwnztyOId7oqpNVcQZlIe7AIWUhNhGxLzGdpv?=
- =?us-ascii?Q?dDg3VQZs+jcYZwuFTOcMfFIBd/Geni2FHTj2RhzDXIdtUZvmL5nmDf3dQv3x?=
- =?us-ascii?Q?SltdDIXR7nZj6MSbuAhMGNV9IVdSJMJGF/2AZUEnujc8HgQ1fOkhYIMt0L3H?=
- =?us-ascii?Q?gHMBKgJb9fM0P60ZOvo/+Jrlg679eg3GBiN7+WGnD0oX22hvJrLtEJuhDTpr?=
- =?us-ascii?Q?/AHnqt/uV98Ri/oUXoKggeMWFYzNzr+UyRVYfRaOfNyYcxZc5ct7T9+5Bxel?=
- =?us-ascii?Q?plUYfx9Pf+R9cImpVnDT+ahfRtDUB57CCfy7rE5Fv148+GwqRoEKTRX9Fb02?=
- =?us-ascii?Q?ueqmnmCv4Lo5OGJxrRZ2RoL7DNdMxRdCD9wWoszoJIS186proCvW/pH8iqJH?=
- =?us-ascii?Q?R5TiReHfyalJ8FE16bSOxXEMQGKuDKRZxHn059rdJx3KI3A91AhwH2/eNEXn?=
- =?us-ascii?Q?0FGHxBCt6ik9Y6L7tnw/UquXoh3CFDmAjpePQpzwG0CZ7HyFEbAb7aZ3eFym?=
- =?us-ascii?Q?CdzSRpzi2Ae5BEycGG1v/lx2a4hV6+B0mbqQxBVjbB8ev8T33geS+S2Ya5x+?=
- =?us-ascii?Q?v0WGlo9lrtR18qlvvu8bHh0/oAgd/h3Ojoq8qthG9uBYDa4ME4P1GB97S9uW?=
- =?us-ascii?Q?J/P/2kj+Auvbkw1/n8AVl6RGR0g56PUm/L1xON+R4hYpul32xXTGy/ewiUJV?=
- =?us-ascii?Q?k7s6KlJ3HXpVZTXa0oVwLoZFUAWnxReEO5ijFrv7OdgdmTrgBSUT4x6lXzFI?=
- =?us-ascii?Q?ZiATV6OatYuULNIErDboP88qFNz3iP3u+GYr71ztFFH5bzJoa4XpvxXv5sFW?=
- =?us-ascii?Q?rriUtX9GCeJiMKXxXtCgmYHYVXUEALtuFFProXzIwfi6wHIXS5NCZhqkWXIv?=
- =?us-ascii?Q?JzJaEUTGdUEaLYGRt0nZwIMzmSkGaktNVVMxpSW/mBE54wvFoYm+UybBNjFR?=
- =?us-ascii?Q?dzA/YL6X+609KAPdwv6CJT+yBgxnyo4FufD+Pw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E404CE1D
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-555e07761acso5620221a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:19:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1704925172; x=1705529972; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1pn+yGlQbDvVpIEQ51Lj63hjmKrdoB01ABnRTe1WXO8=;
+        b=CYXg4ZNPeBah6O/diokgPMR+p4RY6KyF1d9t5oxf5jYTduGslBcqbp5eddaaa7sqdQ
+         In4+nxPy25RpMxqgE2+D4CI5HOoWPqxovmPCf3YTkpeEULsY+orcxzgB3Koz+ofNjNWg
+         8dhLL6znU1DGkut9FSLT/uFJTbBDYBMfe5Wak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704925172; x=1705529972;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1pn+yGlQbDvVpIEQ51Lj63hjmKrdoB01ABnRTe1WXO8=;
+        b=aN773XhGpIDHH3gjIAT/w8Z79pYHhi+B20eoeFFZD6dILS0GoB8pgU55ZcEQmBoswP
+         GIti5souL18V9+gh5iBy/oHuLs1+jpO+naVKDtHqZ12zOGN4ILddda5zQmROcglcsfr8
+         U3TcS631zCI8e27Hb6oSnjIcz8VGiBi6ZPs0iUyTYmd3dGyoBjTcOqa486tzd+ZH/3fY
+         hwYCJE5eBCxRmqjn1lwYgp+t0XUx8dt7gL6/740G4+cgV099Ryc50YCwZT4hoXVupBci
+         lh+DX9fP7Q/Qn+UpFrTdYNgHQraYYmm+kiET6236kqdPnoHL690eKmCfe+UMhg9kAfEL
+         afUg==
+X-Gm-Message-State: AOJu0Yxrkg+2F/L8rgl1soCUpKsbzCf0I9X72yxYd1dPoYXWxsadhPzT
+	wYPPt9pnt52JkEI0Six5x1MIAUfR9VkmX9ObkfD+b18pMRdY/DyH
+X-Google-Smtp-Source: AGHT+IEyAPK8hk3wkYV8KwI58Jfhhld/6bO4Wp65D/GETQNo8IQppOQkgfk7MaZEPsdKk0lWt0EZXg==
+X-Received: by 2002:a05:6402:26cf:b0:556:ef38:9b04 with SMTP id x15-20020a05640226cf00b00556ef389b04mr46413edd.122.1704925172692;
+        Wed, 10 Jan 2024 14:19:32 -0800 (PST)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id s7-20020a056402014700b005576f4471besm2396853edu.42.2024.01.10.14.19.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 14:19:30 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so549691066b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:19:29 -0800 (PST)
+X-Received: by 2002:a17:907:3a08:b0:a1c:b6f8:6987 with SMTP id
+ fb8-20020a1709073a0800b00a1cb6f86987mr57694ejc.16.1704925169419; Wed, 10 Jan
+ 2024 14:19:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21cc1c4c-ba3b-425d-8d1f-08dc1229e7d4
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 22:17:17.1966
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR02MB8619
+References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com>
+In-Reply-To: <ZZwBi/YmnMqm7zrO@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 10 Jan 2024 14:19:11 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+Message-ID: <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Dan Carpenter <dan.carpenter@linaro.org> Sent: Wednesday, January 10,=
- 2024 10:38 AM
->=20
-> The second half of the if statement is basically duplicated.  It doesn't
-> need to be treated as a special case.  We could do something like below.
-> I deliberately didn't delete the tabs.  Also I haven't tested it.
+On Mon, 8 Jan 2024 at 06:07, Ingo Molnar <mingo@kernel.org> wrote:
+>
+> Please pull the latest sched/core git tree from:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2024-01-08
 
-Indeed!  I looked at the history, and this function has been
-structured with the duplication since sometime in 2010, which
-pre-dates my involvement by several years.  I don't know of
-any reason why the duplication is needed, and agree it could
-be eliminated.
+Just a note that I'm currently bisecting into this merge for a
+horrendous performance regression.
 
-Assuming Markus is OK with my proposal on the handling of
-memory allocation failures, a single patch could simplify this
-function quite a bit.
+It makes my empty kernel build go from 22 seconds to 44 seconds, and
+makes a full kernel build enormously slower too.
 
-Dan -- do you want to create and submit the patch?  I'll test the
-code on Hyper-V.  Or I can create, test, and submit the patch with
-a "Suggested-by: Dan Carpenter".
+I haven't finished the bisection, but it's now inside *just* this
+pull, so I can already tell that I'm going to revert something in
+here, because this has been making my merge window miserable.
 
-Michael
+You've been warned,
 
->=20
-> regards,
-> dan carpenter
->=20
-> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-> index 56f7e06c673e..2ba65f9ad3f1 100644
-> --- a/drivers/hv/channel.c
-> +++ b/drivers/hv/channel.c
-> @@ -328,9 +328,9 @@ static int create_gpadl_header(enum hv_gpadl_type typ=
-e, void *kbuffer,
->  		  sizeof(struct gpa_range);
->  	pfncount =3D pfnsize / sizeof(u64);
->=20
-> -	if (pagecount > pfncount) {
-> -		/* we need a gpadl body */
-> -		/* fill in the header */
-> +	if (pagecount < pfncount)
-> +		pfncount =3D pagecount;
-> +
->  		msgsize =3D sizeof(struct vmbus_channel_msginfo) +
->  			  sizeof(struct vmbus_channel_gpadl_header) +
->  			  sizeof(struct gpa_range) + pfncount * sizeof(u64);
-> @@ -410,31 +410,6 @@ static int create_gpadl_header(enum hv_gpadl_type ty=
-pe, void *kbuffer,
->  			pfnsum +=3D pfncurr;
->  			pfnleft -=3D pfncurr;
->  		}
-> -	} else {
-> -		/* everything fits in a header */
-> -		msgsize =3D sizeof(struct vmbus_channel_msginfo) +
-> -			  sizeof(struct vmbus_channel_gpadl_header) +
-> -			  sizeof(struct gpa_range) + pagecount * sizeof(u64);
-> -		msgheader =3D kzalloc(msgsize, GFP_KERNEL);
-> -		if (msgheader =3D=3D NULL)
-> -			goto nomem;
-> -
-> -		INIT_LIST_HEAD(&msgheader->submsglist);
-> -		msgheader->msgsize =3D msgsize;
-> -
-> -		gpadl_header =3D (struct vmbus_channel_gpadl_header *)
-> -			msgheader->msg;
-> -		gpadl_header->rangecount =3D 1;
-> -		gpadl_header->range_buflen =3D sizeof(struct gpa_range) +
-> -					 pagecount * sizeof(u64);
-> -		gpadl_header->range[0].byte_offset =3D 0;
-> -		gpadl_header->range[0].byte_count =3D hv_gpadl_size(type, size);
-> -		for (i =3D 0; i < pagecount; i++)
-> -			gpadl_header->range[0].pfn_array[i] =3D hv_gpadl_hvpfn(
-> -				type, kbuffer, size, send_offset, i);
-> -
-> -		*msginfo =3D msgheader;
-> -	}
->=20
->  	return 0;
->  nomem:
+                Linus
 
