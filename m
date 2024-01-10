@@ -1,41 +1,63 @@
-Return-Path: <linux-kernel+bounces-22790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32A7E82A2E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:53:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC8BA82A2E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD9CB28281F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:53:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 463ED1F295AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B12B4F1EF;
-	Wed, 10 Jan 2024 20:53:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C64EE4F1F4;
+	Wed, 10 Jan 2024 20:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="YjtzUWxR"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dBjOg9HK"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F227D4E1C6;
-	Wed, 10 Jan 2024 20:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1704920027;
-	bh=rBlGuLxYhPO4Q5+DuTMP3udTcgw/RgKOGGYRl4n1514=;
-	h=Date:To:From:Subject:From;
-	b=YjtzUWxRRez+XoxmspiC3XRAaDzLmC/z22Ev4zgL2hJzydWRpAnPOyPE9l6K3jKk3
-	 7LUeEpSUKCLv+7I/NCHET8BkXn63497FAFjJHLjD7guQXBFqwiwEnZBbrbez6Rs/OF
-	 +3E3O44ilNeox6QUTv8BM9h3EujC3ysEAo/Jj1k6cLkJT0aob7vKDzSBi/ZoQD8gEF
-	 mpzEg/fnx7Sxk4S5cpvlS9e+5JYQdqlatzzG7AxU/vHyfIoQ9xtTEJAo8ceo2kkavJ
-	 2cipI7vblDq2bsGD5DB4tDPYrl9bReryYFTadtTMJA4qCjM++0cECelgFm+bPcqDAJ
-	 AhjYFHcARmMnw==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4T9Klb5fFTzKc8;
-	Wed, 10 Jan 2024 15:53:47 -0500 (EST)
-Message-ID: <3c38a8f7-8323-46b2-a29a-2ca06bc60448@efficios.com>
-Date: Wed, 10 Jan 2024 15:53:47 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5F74F1E5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2bdc3a3c84so112026766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:54:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704920057; x=1705524857; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AZlzwz2Xm3MExiEQLHcNCcs3pt3gp3Qvxyp+Wgxqrio=;
+        b=dBjOg9HKae+a2uEJY5KwtHvgyPmaEXdbQFw5Qn2P8e/bhQA+jrApqDSv4CfcKXLVEm
+         0CJWRnfDSKg8CCL6BfqMPFfNOi2sXc6yZuUH53LTDDW8QU1g1Ie1W952WKF+LINtig2H
+         /eosTRZELGLaDDNsZkEt7E5y11KkZIlR+ffsH+wAu+W6P0F2gS72vs3dU3Ng6i0bPGvv
+         RvF0on2Z+27zXyeTpVo8/da5b5/VbCNdI01qmValoRwMG2Z7MmyIZCH3qPLypqquWKEb
+         MS7IW4Xrr+YaEzjqeTk/RT+AkZSasXK5bGINWJfiuQIR/72tIi8qpbXxBsgAGRpgQzjc
+         jUkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704920057; x=1705524857;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AZlzwz2Xm3MExiEQLHcNCcs3pt3gp3Qvxyp+Wgxqrio=;
+        b=ZroVjbEbA9kEUJ605v1I9uHAnaPh4AvtJvqVG5Zm1t9Rms/SsqZMz8fYTdTGCO77iG
+         26YHLy+rT+nqvTmcq982X9TpB3AJie7W8HRfxqPKNbTZI1UVK77cRpw0aJlyQhLsBf2B
+         CZczXb4HNTZmEAUxIvJ761HpC7RAJmjVmckdwlxnuS+1D/SKCuBAkOO+zsHuIco+5DUk
+         bT8jL2+FKxCsb91ROeE/AkYsy28fPoYSxFAd+rPMfr0lYl+fe4W/z9DrUG/gzM2dhkKV
+         CF6K5Vi6uLceXaY/w9PSn0/j7QLRteoljuG77BSdyn5f72tbce3Ag6WpPJ/FaauZpeS2
+         bJEQ==
+X-Gm-Message-State: AOJu0YwGykOAzaBD5kDxtB+kw6UqGjLfN2qtJr68BusuNwYE4KrVEM6c
+	f5G4HheP7IeeMaXz6ALy9l3Z1D459twv+w==
+X-Google-Smtp-Source: AGHT+IFUciwUr/SQowab2PkYeuRHlqoN0WjtFUpKgZtmwgxcCaSf+3r2a4D1dPOQeU6kiMXiP37R/w==
+X-Received: by 2002:a17:906:a2c8:b0:a27:e214:96b with SMTP id by8-20020a170906a2c800b00a27e214096bmr52214ejb.112.1704920057575;
+        Wed, 10 Jan 2024 12:54:17 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id v23-20020a1709061dd700b00a2c2a9b5766sm190411ejh.97.2024.01.10.12.54.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 12:54:16 -0800 (PST)
+Message-ID: <dc739435-d955-44f7-b5ee-9de4d5336725@linaro.org>
+Date: Wed, 10 Jan 2024 21:54:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,99 +65,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v22 1/8] dt-bindings: clock: npcm845: Add reference 25m
+ clock property
 Content-Language: en-US
-To: lttng-dev <lttng-dev@lists.lttng.org>,
- Diamon discuss <diamon-discuss@lists.linuxfoundation.org>,
- linux-trace-users <linux-trace-users@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [RELEASE] LTTng-modules 2.12.15 and 2.13.11 (Linux kernel tracer)
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Tomer Maimon <tmaimon77@gmail.com>, Rob Herring <robh@kernel.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, tali.perry1@gmail.com, joel@jms.id.au,
+ venture@google.com, yuenn@google.com, benjaminfair@google.com,
+ openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240108135421.684263-1-tmaimon77@gmail.com>
+ <20240108135421.684263-2-tmaimon77@gmail.com>
+ <20240109170830.GA2772086-robh@kernel.org>
+ <CAP6Zq1jCHVrFfRa6c3DZ4t2aaJTkWukeEkia0AqhzppC0mjbfg@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAP6Zq1jCHVrFfRa6c3DZ4t2aaJTkWukeEkia0AqhzppC0mjbfg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-The LTTng modules provide Linux kernel tracing capability to the LTTng
-tracer toolset.
+On 10/01/2024 14:47, Tomer Maimon wrote:
+>>> +
+>>> +  clock-names:
+>>> +    items:
+>>> +      - const: refclk
+>>> +
+>>>    '#clock-cells':
+>>>      const: 1
+>>>      description:
+>>> @@ -30,12 +38,20 @@ properties:
+>>>  required:
+>>>    - compatible
+>>>    - reg
+>>> +  - clocks
+>>> +  - clock-names
+>>
+>> New required properties are an ABI break. That's fine if you explain why
+>> that's okay in the commit msg.
+> What do you mean?
 
-* New and noteworthy in these releases:
+I think it was clear. Which part is not clear?
 
-Newer Linux kernels (v6.6 and v6.7) are now supported by LTTng modules
-2.13.11. If you need support for recent kernels (v5.18+), you will
-need to upgrade to a recent LTTng-modules 2.13.x.
+> Could I add the new required properties to the required list?
 
-The "prio" context has been fixed in 2.13.11 to eliminate a crash
-triggered by calling a NULL pointer address when using the "prio"
-context (lttng add-context -k -t prio). This issue was introduced
-when refactoring the prio context code during the 2.13 development.
-The missing initialization was re-introduced, and the use of the kernel
-"task_prio()" symbol was entirely replaced by inlining a copy of this
-trivial function into lttng-modules instead.
+You just did, didn't you? And received feedback that you are breaking
+the ABI.
 
-The "built-in.sh" script which can be used to add a link to lttng-modules
-within a kernel source tree to built LTTng into a Linux kernel image
-has been updated to adapt to changes introduced in Linux v6.1.
+Best regards,
+Krzysztof
 
-A work-around to ensure that LTTng-modules works fine on CPUs and kernels
-with IBT support enabled has been integrated:
-
-     When the Intel IBT feature is enabled, a CPU supporting this feature
-     validates that all indirect jumps/calls land on an ENDBR64 instruction.
-     
-     The kernel seals functions which are not meant to be called indirectly,
-     which means that calling functions indirectly from their address fetched
-     using kallsyms or kprobes trigger a crash.
-     
-     Use the MSR_IA32_S_CET CET_ENDBR_EN MSR bit to temporarily disable ENDBR
-     validation around indirect calls to kernel functions. Considering that
-     the main purpose of this feature is to prevent ROP-style attacks,
-     disabling the ENDBR validation temporarily around the call from a kernel
-     module does not affect the ROP protection.
-
-
-Both 2.13.11 and 2.12.15:
-
-- Fix an issue with importing VFS namespace for Android kernels.
-
-- Fix build for RHEL 8.8 with linux 4.18.0-477.10.1+
-
-- Fix a hardening OOPS during validation of immediate strings in the bytecode
-   validator when CONFIG_UBSAN_BOUNDS and/or CONFIG_FORTIFY_SOURCE are
-   configured. It boils down to changing 0-len arrays to flexible arrays
-   to let the toolchain know about our intent.
-
-- Add Ubuntu Kinetic kernel ranges for jbd2 instrumentation.
-
-Project website: https://lttng.org
-Documentation: https://lttng.org/docs
-Download link: https://lttng.org/download
-
-Detailed change logs:
-
-2024-01-10 (National Houseplant Appreciation Day) LTTng modules 2.13.11
-         * Fix: Include linux/sched/rt.h for kernels v3.9 to v3.14
-         * Fix: Disable IBT around indirect function calls
-         * Inline implementation of task_prio()
-         * Fix: prio context NULL pointer exception
-         * Fix: MODULE_IMPORT_NS is introduced in kernel 5.4
-         * Android: Import VFS namespace for android common kernel
-         * Fix: get_file_rcu is missing in kernels < 4.1
-         * fix: lookup_fd_rcu replaced by lookup_fdget_rcu in linux 6.7.0-rc1
-         * fix: mm, vmscan signatures changed in linux 6.7.0-rc1
-         * fix: phys_proc_id and cpu_core_id moved in linux 6.7.0-rc1
-         * Fix build for RHEL 8.8 with linux 4.18.0-477.10.1+
-         * Fix: bytecode validator: oops during validation of immediate string
-         * fix: lttng-probe-kvm-x86-mmu build with linux 6.6
-         * fix: built-in lttng with kernel >= v6.1
-         * fix: ubuntu kinetic kernel range for jdb2
-
-2024-01-10 (National Houseplant Appreciation Day) 2.12.15
-         * Fix: MODULE_IMPORT_NS is introduced in kernel 5.4
-         * Android: Import VFS namespace for android common kernel
-         * Fix build for RHEL 8.8 with linux 4.18.0-477.10.1+
-         * Fix: bytecode validator: oops during validation of immediate string
-         * fix: ubuntu kinetic kernel range for jdb2
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
 
