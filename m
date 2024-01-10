@@ -1,128 +1,125 @@
-Return-Path: <linux-kernel+bounces-22217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92DC7829B07
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:14:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D7C7829B0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA2DA1C20C3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:14:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1574D289A44
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056B0487A4;
-	Wed, 10 Jan 2024 13:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E311487B5;
+	Wed, 10 Jan 2024 13:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="tFOiG5JG"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="e71sjScO"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB2C48794
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:14:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id C562B2FC005B;
-	Wed, 10 Jan 2024 14:14:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1704892461;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D3XXWzf6RfsompBPEpJXXqoA3QY72hJE9BCknBlltgU=;
-	b=tFOiG5JGP63gUPxytuSaXh/9yy7SdS7kKoiE7F9gkO9wjO53+5d/H/jqPdNpMuqTjvGHft
-	5DQe+5DPNJez8uLzSscCUnvJ3yoCroj6fr/rGUf0B+1bO27Wyr7h0rL9JcST9M0Q94BjTG
-	ZJXjiUdQlmZjvUbgXnM+Tij+l93L6nA=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <67808818-ee34-4d04-ad90-cd5c6eb9bb26@tuxedocomputers.com>
-Date: Wed, 10 Jan 2024 14:14:20 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03CB7487AE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-555e07761acso4967664a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:15:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704892516; x=1705497316; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2K17fFBJpR1/Y1vdZDJP422VcROIDsHIcrNjjivdS1A=;
+        b=e71sjScO8RPwLTyihOY1+0hD566166UF0mq1g3Ok9wXFRz+fxtCSHtCgit9v9tBudd
+         Hfn/k3kRSAcljLsvcYluQxgXhoY0yH3jANR9llXa1btYKcbrXkjBIIdpoLn3ZyLa5tch
+         6oSN/PH17d0GE6jOJn98MZQq3H/xvhbepzwwI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704892516; x=1705497316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2K17fFBJpR1/Y1vdZDJP422VcROIDsHIcrNjjivdS1A=;
+        b=TMIiTs4v+8erZIm32axwcogkUbp2ln6D+hp3bHQF2fkS4kfzbeX3t5HknsqveZ7vSw
+         8RRXmWBZovS4WyJxnwtzy6AFf88evvYXwqja7guAeJeD1XNzTz1sRuDnGRJGYFlA/bkM
+         T4dCBT22PKYkDlT1aM4IQrSnBlRiCZoZlwcUywp5XDjUoJQUVe8Zfd/JZ/21hJbk+GV3
+         n/23Ls2tf6JWg00uh1SRHmFxUgPWQ7PoF0n9Vz3cYg1jMTYidBC21ECEgeWSP25CON0s
+         Vc/83reQRT59dzwq65Glv235SO76wrU8g9FTGO1/4lsECh6ZR7zU8YCOqgC43LwEvxqn
+         7ZrA==
+X-Gm-Message-State: AOJu0Yxr7mzUoW3LFTfr7s2jkW6K5eaQ0fJ8dGyIHoqba3JUexvIFYvp
+	OunMyYwVTwcmbl7vGKGaxvru7frPEoFbrBYyXIh9+Z4EaMvO
+X-Google-Smtp-Source: AGHT+IFaHRToEh7MctoJ9rqm7wMBN0baxAzYGL/DL39FO/FFRxTs4xDWhMyJnC8Oze1sKbSVLr7CcA==
+X-Received: by 2002:a50:8d4d:0:b0:557:32bd:1fc9 with SMTP id t13-20020a508d4d000000b0055732bd1fc9mr274784edt.4.1704892516455;
+        Wed, 10 Jan 2024 05:15:16 -0800 (PST)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
+        by smtp.gmail.com with ESMTPSA id n14-20020aa7d04e000000b005574af4acd0sm1998318edo.83.2024.01.10.05.15.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 05:15:16 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3373a30af67so3836902f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:15:16 -0800 (PST)
+X-Received: by 2002:a5d:444d:0:b0:337:555c:6b7d with SMTP id
+ x13-20020a5d444d000000b00337555c6b7dmr378407wrr.173.1704892515835; Wed, 10
+ Jan 2024 05:15:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] drm/amd/display: Add handling for new "active color
- format" property
-Content-Language: en-US
-To: Daniel Vetter <daniel@ffwll.ch>, Andri Yngvason <andri@yngvason.is>
-Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- Simon Ser <contact@emersion.fr>
-References: <20240109181104.1670304-1-andri@yngvason.is>
- <20240109181104.1670304-4-andri@yngvason.is>
- <ZZ57Nl3CnRMPcfbj@phenom.ffwll.local>
- <CAFNQBQzo17cK4M-S=Mje8Lxub9Y74xFGj7iEq57vKJr47oiz5Q@mail.gmail.com>
- <CAKMK7uGhMCwbztGdEmG4gFgpyhw6j-JFow-AaprFxcX710=qXA@mail.gmail.com>
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <CAKMK7uGhMCwbztGdEmG4gFgpyhw6j-JFow-AaprFxcX710=qXA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231228070941.3611649-1-tfiga@chromium.org> <CAK7LNASbgXSZNiwhMf8jm7511eyDm8oCqY=MzWhgWwNuVLk5Vw@mail.gmail.com>
+In-Reply-To: <CAK7LNASbgXSZNiwhMf8jm7511eyDm8oCqY=MzWhgWwNuVLk5Vw@mail.gmail.com>
+From: Tomasz Figa <tfiga@chromium.org>
+Date: Wed, 10 Jan 2024 22:14:55 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5CRtgMUN8xZ_4BOv04KzCvXtrKHhWGQhhqgENyMCVWbKw@mail.gmail.com>
+Message-ID: <CAAFQd5CRtgMUN8xZ_4BOv04KzCvXtrKHhWGQhhqgENyMCVWbKw@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Add a build target for checking current config
+ for issues
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Dec 29, 2023 at 1:11=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Thu, Dec 28, 2023 at 4:09=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> =
+wrote:
+> >
+> > The new target is called 'checkconfig' and currently is basically an
+> > alias for `listnewconfig` with KCONFIG_WARN_UNKNOWN_SYMBOLS set to true=
+.
+> > It can be used to validate if the current config is directly compatible
+> > with the current kernel version or needs some manual adjustment.
+> >
+> > Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+>
+>
+> I rejected a new target in the past.
+>
+> https://lore.kernel.org/all/20230817012007.131868-1-senozhatsky@chromium.=
+org/T/#m55c37e3091158f8cb008d9e0b5c6bf3f5ead225a
+>
 
-Am 10.01.24 um 14:09 schrieb Daniel Vetter:
-> On Wed, 10 Jan 2024 at 13:53, Andri Yngvason <andri@yngvason.is> wrote:
->> mið., 10. jan. 2024 kl. 11:10 skrifaði Daniel Vetter <daniel@ffwll.ch>:
->>> On Tue, Jan 09, 2024 at 06:11:00PM +0000, Andri Yngvason wrote:
->>>> +     /* Extract information from crtc to communicate it to userspace as connector properties */
->>>> +     for_each_new_connector_in_state(state, connector, new_con_state, i) {
->>>> +             struct drm_crtc *crtc = new_con_state->crtc;
->>>> +             struct dc_stream_state *stream;
->>>> +
->>>> +             if (crtc) {
->>>> +                     new_crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
->>>> +                     dm_new_crtc_state = to_dm_crtc_state(new_crtc_state);
->>>> +                     stream = dm_new_crtc_state->stream;
->>>> +
->>>> +                     if (stream) {
->>>> +                             drm_connector_set_active_color_format_property(connector,
->>>> +                                     convert_dc_pixel_encoding_into_drm_color_format(
->>>> +                                             dm_new_crtc_state->stream->timing.pixel_encoding));
->>>> +                     }
->>>> +             } else {
->>>> +                     drm_connector_set_active_color_format_property(connector, 0);
->>> Just realized an even bigger reason why your current design doesn't work:
->>> You don't have locking here.
->>>
->>> And you cannot grab the required lock, which is
->>> drm_dev->mode_config.mutex, because that would result in deadlocks. So
->>> this really needs to use the atomic state based design I've described.
->>>
->> Maybe we should just drop "actual color format" and instead fail the
->> modeset if the "preferred color format" property cannot be satisfied?
->> It seems like the simplest thing to do here, though it is perhaps less
->> convenient for userspace. In that case, the "preferred color format"
->> property should just be called "color format".
-> Yeah that's more in line with how other atomic properties work. This
-> way userspace can figure out what works with a TEST_ONLY commit too.
-> And for this to work you probably want to have an "automatic" setting
-> too.
-> -Sima
+That was specifically for the unrecognized symbols warning. What I'm
+proposing is a universal target that would include any possible
+diagnostics.
 
-The problem with TEST_ONLY probing is that color format settings are 
-interdependent: https://gitlab.freedesktop.org/drm/amd/-/issues/476#note_966634
+>
+>
+> Instead, you can run
+>
+>   KCONFIG_WARN_UNKNOWN_SYMBOLS=3D1 make listnewconfig
+>
+> or
+>
+>   make W=3Dc listnewconfig
+>
+>
 
-So changing any other setting may require every color format to be TEST_ONLY 
-probed again.
+I can do so, because my team member implemented it and told me and
+other team members about it. But how would someone who hasn't heard
+about it be aware of the existence of this useful feature?
 
-Greetings
-
-Werner
-
+Best regards,
+Tomasz
 
