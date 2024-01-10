@@ -1,257 +1,253 @@
-Return-Path: <linux-kernel+bounces-22338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F556829C58
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:18:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 991D8829C65
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:20:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94233B282A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:17:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADB031C24A00
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:20:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE1D4D593;
-	Wed, 10 Jan 2024 14:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="axywVzU0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OxbBVAmg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="axywVzU0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OxbBVAmg"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99804BAB8;
+	Wed, 10 Jan 2024 14:18:28 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A82B4D113;
-	Wed, 10 Jan 2024 14:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2EA9C1FD4F;
-	Wed, 10 Jan 2024 14:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704896097;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
-	b=axywVzU0qfXkI0dwkXp2+fXubEDIJhi6loKe7hEmkc3ShqFyIvVAs/4GU9OXR9+MUbmWzQ
-	2Tjc6bYN7j0JXrPmpJlypsM8+wRYVei7aFYxlVp9XL8o094G3ziXurTe67oDaIH20b8tNc
-	L+r6nB9M6mb8qw+JGCfsXpLURskFp6g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704896097;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
-	b=OxbBVAmgoTmOcYfw7uE2vG0Xe/o4jWPGi3hB1LW68Qe2hl8mffzjDJMGzDWV4/zabNp1G0
-	YUh1dz1o7sXtlCAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704896097;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
-	b=axywVzU0qfXkI0dwkXp2+fXubEDIJhi6loKe7hEmkc3ShqFyIvVAs/4GU9OXR9+MUbmWzQ
-	2Tjc6bYN7j0JXrPmpJlypsM8+wRYVei7aFYxlVp9XL8o094G3ziXurTe67oDaIH20b8tNc
-	L+r6nB9M6mb8qw+JGCfsXpLURskFp6g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704896097;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l+y97negwruEwGRvrpJNRJsVcpzY8X3VX6VhDUdV1Xc=;
-	b=OxbBVAmgoTmOcYfw7uE2vG0Xe/o4jWPGi3hB1LW68Qe2hl8mffzjDJMGzDWV4/zabNp1G0
-	YUh1dz1o7sXtlCAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90FFF1398A;
-	Wed, 10 Jan 2024 14:14:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +XwGIWCmnmUgcQAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 14:14:56 +0000
-Date: Wed, 10 Jan 2024 15:14:55 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Tim Bird <tim.bird@sony.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>, Rob Landley <rob@landley.net>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"ltp@lists.linux.it" <ltp@lists.linux.it>,
-	Li Wang <liwang@redhat.com>,
-	Andrea Cervesato <andrea.cervesato@suse.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Christophe Lyon <christophe.lyon@linaro.org>,
-	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	Linux-sh list <linux-sh@vger.kernel.org>,
-	"automated-testing@lists.yoctoproject.org" <automated-testing@lists.yoctoproject.org>,
-	"buildroot@buildroot.org" <buildroot@buildroot.org>,
-	Niklas Cassel <niklas.cassel@wdc.com>
-Subject: Re: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-Message-ID: <20240110141455.GC1698252@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki>
- <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik>
- <ZZvJXTshFUYSaMVH@yuki>
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF2C4A9B8;
+	Wed, 10 Jan 2024 14:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T98wg0GTRz67g6l;
+	Wed, 10 Jan 2024 22:16:03 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id E63FD140736;
+	Wed, 10 Jan 2024 22:18:22 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 10 Jan
+ 2024 14:18:22 +0000
+Date: Wed, 10 Jan 2024 14:18:21 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Hao Xiang <hao.xiang@bytedance.com>
+CC: Gregory Price <gregory.price@memverge.com>, "Huang, Ying"
+	<ying.huang@intel.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>,
+	Srinivasulu Opensrc <sthanneeru.opensrc@micron.com>,
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>, "linux-mm@kvack.org"
+	<linux-mm@kvack.org>, "aneesh.kumar@linux.ibm.com"
+	<aneesh.kumar@linux.ibm.com>, "dan.j.williams@intel.com"
+	<dan.j.williams@intel.com>, "mhocko@suse.com" <mhocko@suse.com>,
+	"tj@kernel.org" <tj@kernel.org>, "john@jagalactic.com" <john@jagalactic.com>,
+	Eishan Mirakhur <emirakhur@micron.com>, "Vinicius Tavares Petrucci"
+	<vtavarespetr@micron.com>, Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Johannes
+ Weiner <hannes@cmpxchg.org>, "Wei Xu" <weixugc@google.com>, "Ho-Ren (Jack)
+ Chuang" <horenchuang@bytedance.com>
+Subject: Re: [External] Re: [EXT] Re: [RFC PATCH v2 0/2] Node migration
+ between memory tiers
+Message-ID: <20240110141821.0000370d@Huawei.com>
+In-Reply-To: <CAAYibXhe81ez06tP5K7zGkX9P=Ot+DcSysVyDvh13aSEDD63aA@mail.gmail.com>
+References: <87fs00njft.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87edezc5l1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB79550922630FEC47E4B4D3A3A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87a5pmddl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<PH0PR08MB79552F35351FA57EF4BD64B4A860A@PH0PR08MB7955.namprd08.prod.outlook.com>
+	<87wmspbpma.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZZwrIoP9+ey7rp3C@memverge.com>
+	<87o7dv897s.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<20240109155049.00003f13@Huawei.com>
+	<ZZ2Jd7/7rFD0o5S3@memverge.com>
+	<CAAYibXhe81ez06tP5K7zGkX9P=Ot+DcSysVyDvh13aSEDD63aA@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.50
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	 REPLYTO_EQ_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[20];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Tim, all,
+On Tue, 9 Jan 2024 16:28:15 -0800
+Hao Xiang <hao.xiang@bytedance.com> wrote:
 
-> > -----Original Message-----
-> > From: automated-testing@lists.yoctoproject.org <automated-testing@lists.yoctoproject.org> On Behalf Of Cyril Hrubis
-> > Hi!
-> > > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
-> > > support him in my free time (review patches, give advices). And if nobody
-> > > stands, this patchset which removes the support in the old API will be merged
-> > > after next LTP release (in the end of January).
+> On Tue, Jan 9, 2024 at 9:59=E2=80=AFAM Gregory Price <gregory.price@memve=
+rge.com> wrote:
+> >
+> > On Tue, Jan 09, 2024 at 03:50:49PM +0000, Jonathan Cameron wrote: =20
+> > > On Tue, 09 Jan 2024 11:41:11 +0800
+> > > "Huang, Ying" <ying.huang@intel.com> wrote: =20
+> > > > Gregory Price <gregory.price@memverge.com> writes: =20
+> > > > > On Thu, Jan 04, 2024 at 02:05:01PM +0800, Huang, Ying wrote: =20
+> > > > It's possible to change the performance of a NUMA node changed, if =
+we
+> > > > hot-remove a memory device, then hot-add another different memory
+> > > > device.  It's hoped that the CDAT changes too. =20
+> > >
+> > > Not supported, but ACPI has _HMA methods to in theory allow changing
+> > > HMAT values based on firmware notifications...  So we 'could' make
+> > > it work for HMAT based description.
+> > >
+> > > Ultimately my current thinking is we'll end up emulating CXL type3
+> > > devices (hiding topology complexity) and you can update CDAT but
+> > > IIRC that is only meant to be for degraded situations - so if you
+> > > want multiple performance regions, CDAT should describe them form the=
+ start.
+> > > =20
+> >
+> > That was my thought.  I don't think it's particularly *realistic* for
+> > HMAT/CDAT values to change at runtime, but I can imagine a case where
+> > it could be valuable.
+> > =20
+> > > > > https://lore.kernel.org/linux-cxl/CAAYibXjZ0HSCqMrzXGv62cMLncS_81=
+R3e1uNV5Fu4CPm0zAtYw@mail.gmail.com/
+> > > > >
+> > > > > This group wants to enable passing CXL memory through to KVM/QEMU
+> > > > > (i.e. host CXL expander memory passed through to the guest), and
+> > > > > allow the guest to apply memory tiering.
+> > > > >
+> > > > > There are multiple issues with this, presently:
+> > > > >
+> > > > > 1. The QEMU CXL virtual device is not and probably never will be
+> > > > >    performant enough to be a commodity class virtualization. =20
+> > >
+> > > I'd flex that a bit - we will end up with a solution for virtualizati=
+on but
+> > > it isn't the emulation that is there today because it's not possible =
+to
+> > > emulate some of the topology in a peformant manner (interleaving with=
+ sub
+> > > page granularity / interleaving at all (to a lesser degree)). There a=
+re
+> > > ways to do better than we are today, but they start to look like
+> > > software dissagregated memory setups (think lots of page faults in th=
+e host).
+> > > =20
+> >
+> > Agreed, the emulated device as-is can't be the virtualization device,
+> > but it doesn't mean it can't be the basis for it.
+> >
+> > My thought is, if you want to pass host CXL *memory* through to the
+> > guest, you don't actually care to pass CXL *control* through to the
+> > guest.  That control lies pretty squarely with the host/hypervisor.
+> >
+> > So, at least in theory, you can just cut the type3 device out of the
+> > QEMU configuration entirely and just pass it through as a distinct numa
+> > node with specific hmat qualities.
+> >
+> > Barring that, if we must go through the type3 device, the question is
+> > how difficult would it be to just make a stripped down type3 device
+> > to provide the informational components, but hack off anything
+> > topology/interleave related? Then you just do direct passthrough as you
+> > described below.
+> >
+> > qemu/kvm would report errors if you tried to touch the naughty bits.
+> >
+> > The second question is... is that device "compliant" or does it need
+> > super special handling from the kernel driver :D?  If what i described
+> > is not "compliant", then it's probably a bad idea, and KVM/QEMU should
+> > just hide the CXL device entirely from the guest (for this use case)
+> > and just pass the memory through as a numa node.
+> >
+> > Which gets us back to: The memory-tiering component needs a way to
+> > place nodes in different tiers based on HMAT/CDAT/User Whim. All three
+> > of those seem like totally valid ways to go about it.
+> > =20
+> > > > >
+> > > > > 2. When passing memory through as an explicit NUMA node, but not =
+as
+> > > > >    part of a CXL memory device, the nodes are lumped together in =
+the
+> > > > >    DRAM tier.
+> > > > >
+> > > > > None of this has to do with firmware.
+> > > > >
+> > > > > Memory-type is an awful way of denoting membership of a tier, but=
+ we
+> > > > > have HMAT information that can be passed through via QEMU:
+> > > > >
+> > > > > -object memory-backend-ram,size=3D4G,id=3Dram-node0 \
+> > > > > -object memory-backend-ram,size=3D4G,id=3Dram-node1 \
+> > > > > -numa node,nodeid=3D0,cpus=3D0-4,memdev=3Dram-node0 \
+> > > > > -numa node,initiator=3D0,nodeid=3D1,memdev=3Dram-node1 \
+> > > > > -numa hmat-lb,initiator=3D0,target=3D0,hierarchy=3Dmemory,data-ty=
+pe=3Daccess-latency,latency=3D10 \
+> > > > > -numa hmat-lb,initiator=3D0,target=3D0,hierarchy=3Dmemory,data-ty=
+pe=3Daccess-bandwidth,bandwidth=3D10485760 \
+> > > > > -numa hmat-lb,initiator=3D0,target=3D1,hierarchy=3Dmemory,data-ty=
+pe=3Daccess-latency,latency=3D20 \
+> > > > > -numa hmat-lb,initiator=3D0,target=3D1,hierarchy=3Dmemory,data-ty=
+pe=3Daccess-bandwidth,bandwidth=3D5242880
+> > > > >
+> > > > > Not only would it be nice if we could change tier membership base=
+d on
+> > > > > this data, it's realistically the only way to allow guests to acc=
+omplish
+> > > > > memory tiering w/ KVM/QEMU and CXL memory passed through to the g=
+uest. =20
+> > >
+> > > This I fully agree with.  There will be systems with a bunch of norma=
+l DDR with different
+> > > access characteristics irrespective of CXL. + likely HMAT solutions w=
+ill be used
+> > > before we get anything more complex in place for CXL.
+> > > =20
+> >
+> > Had not even considered this, but that's completely accurate as well.
+> >
+> > And more discretely: What of devices that don't provide HMAT/CDAT? That
+> > isn't necessarily a violation of any standard.  There probably could be
+> > a release valve for us to still make those devices useful.
+> >
+> > The concern I have with not implementing a movement mechanism *at all*
+> > is that a one-size-fits-all initial-placement heuristic feels gross
+> > when we're, at least ideologically, moving toward "software defined mem=
+ory".
+> >
+> > Personally I think the movement mechanism is a good idea that gets folks
+> > where they're going sooner, and it doesn't hurt anything by existing. We
+> > can change the initial placement mechanism too. =20
+>=20
+> I think providing users a way to "FIX" the memory tiering is a backup
+> option. Given that DDRs with different access characteristics provide
+> the relevant CDAT/HMAT information, the kernel should be able to
+> correctly establish memory tiering on boot.
 
-> > Let me highlight this part, we are eager to help anybody who is willing
-> > to pick the nommu work, but we do not have resources to drive it.
+Include hotplug and I'll be happier!  I know that's messy though.
 
-> I have a couple of comments here.
+> Current memory tiering code has
+> 1) memory_tier_init() to iterate through all boot onlined memory
+> nodes. All nodes are assumed to be fast tier (adistance
+> MEMTIER_ADISTANCE_DRAM is used).
+> 2) dev_dax_kmem_probe to iterate through all devdax controlled memory
+> nodes. This is the place the kernel reads the memory attributes from
+> HMAT and recognizes the memory nodes into the correct tier (devdax
+> controlled CXL, pmem, etc).
+> If we want DDRs with different memory characteristics to be put into
+> the correct tier (as in the guest VM memory tiering case), we probably
+> need a third path to iterate the boot onlined memory nodes and also be
+> able to read their memory attributes. I don't think we can do that in
+> 1) because the ACPI subsystem is not yet initialized.
 
-> I think it would be good to give a little bit more time to try to find a helper/maintainer
-> for this.  As Rob pointed out, a lot of embedded Linux developers are using very old
-> kernels (and, if they are using LTP, likely very old versions of LTP).  They are also
-> notorious for not being active on the mailing lists.  So this might take some active
-> outreach to find helpers.  (I realize that this thread is part of this
-> outreach effort).  For this reason, I'd like a few more weeks to try to advertise this
-> need within the embedded Linux community.
+Can we move it later in general?  Or drag HMAT parsing earlier?
+ACPI table availability is pretty early, it's just that we don't bother
+with HMAT because nothing early uses it.
+IIRC SRAT parsing occurs way before memory_tier_init() will be called.
 
-Thank you.
-
-> I am not using nommu systems myself, so I'm in a similar position as Petr in terms
-> of it not making much sense for me to be the maintainer.  However, having said that,
-> I have had for a few years now an idea for a background project related to LTP
-> that might make this a more interesting fit for me.  Sony uses NuttX, and is considering
-> using Zephyr in some of our low-end processor systems.  This includes some nommu
-> systems.  For some time now, I have wanted to experiment with using LTP to test
-> the compatibility of those systems with the Linux system APIs.  In full disclosure,
-> I have no idea if this is a feasible or useful idea or not.  But it's something I'd like
-> to investigate.
-
-> I realize that testing non-Linux RTOSes is out-of-scope for LTP.  But given that that is
-> something I would like to do, and that it might be relevant to the Linux nommu tests,
-> I would humbly request a few weeks to investigate this before the nommu code is removed.
-> This delay would be to see if it would make sense for me to volunteer to help out with
-> maintaining this otherwise abandoned code.
-
-> I can't promise anything, but I'd like to find out more about:
-> 1) what parts of the current LTP are not supporting nommu (what's currently broken),
-The new C API, I described it in my reply to Rob:
-https://lore.kernel.org/ltp/20240110133358.GB1698252@pevik/
-
-But I don't know whether the code in the old API was even working,
-whole old API suffered with random failures, that was one of the reasons to
-write a new one from the scratch.
-
-> 2) how much code we're talking about, and
-
-There was FORK_OR_VFORK(), which would probably in the new API call vfork() for
-nommu targets (tst_old_flush() is probably not needed in the new API).
-
-There is a special handling of getopts in lib/parse_opts.c + -C param for it.
-One would have to integrate these two functions from lib/self_exec.c to the new
-API (and port them to use new API via tst_test.h with #define
-TST_NO_DEFAULT_MAIN):
-
-    void maybe_run_child(void (*child)(), const char *fmt, ...);
-    int self_exec(const char *argv0, const char *fmt, ...);
-
-char *child_args is somehow integrated to lib/tst_test.c via -C arg, I haven't
-found what uses that option.
-
-There is m4, that would be usable (m4/ltp-nommu-linux.m4).
-
-Various tests and testsuites were not compiled for nommu (e.g. capget).
-
-There is MAP_PRIVATE_EXCEPT_UCLINUX constant to avoid using MAP_PRIVATE on
-uClinux, who knows if this is relevant on nommu?
-
-> 3) what the desired roadmap going forward would be, to continue to support this code.
-
-All LTP tests are being rewritten to use new API since 2016 (new API was
-introduced in 20160510), thus we are loosing the support with old API going
-away. Sure, I can hold on this patchset and we continue removing the
-functionality tests manually. But sooner or later it's gone.
-
-One can check files which had special handling in the old API:
-
-$ git grep -l UCLINUX 20160126 -- testcases/ | wc -l
-173
-
-What is supported now:
-
-$ git grep -l UCLINUX  -- testcases/  |wc -l
-55
-
-=> We have now removed nearly 2/3 of it (this means we're arguing about 1/3 of
-the tests which initially somehow supported nommu).
-
-Kind regards,
-Petr
-
-> Thanks,
->  -- Tim
+Jonathan
 
 
 
-> -=-=-=-=-=-=-=-=-=-=-=-
-> Links: You receive all messages sent to this group.
-> View/Reply Online (#1271): https://lists.yoctoproject.org/g/automated-testing/message/1271
-> Mute This Topic: https://lists.yoctoproject.org/mt/103541824/3616762
-> Group Owner: automated-testing+owner@lists.yoctoproject.org
-> Unsubscribe: https://lists.yoctoproject.org/g/automated-testing/unsub [pvorel@suse.cz]
-> -=-=-=-=-=-=-=-=-=-=-=-
-
+>=20
+> >
+> > </2cents>
+> >
+> > ~Gregory =20
 
 
