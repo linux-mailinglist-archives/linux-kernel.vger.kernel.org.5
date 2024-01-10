@@ -1,157 +1,115 @@
-Return-Path: <linux-kernel+bounces-22207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC13829ADF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE42829AE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:06:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D70B2891B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:03:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B19F281572
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2174B4879E;
-	Wed, 10 Jan 2024 13:03:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F634176B;
-	Wed, 10 Jan 2024 13:03:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A8522F4;
-	Wed, 10 Jan 2024 05:04:19 -0800 (PST)
-Received: from [10.57.87.179] (unknown [10.57.87.179])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C61F3F64C;
-	Wed, 10 Jan 2024 05:03:31 -0800 (PST)
-Message-ID: <0cbc1708-bc50-459c-ad57-0cf283921f2e@arm.com>
-Date: Wed, 10 Jan 2024 13:04:53 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65A64879C;
+	Wed, 10 Jan 2024 13:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mXWcgmJE"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB3348790
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50ea98440a7so4052940e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:05:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704891952; x=1705496752; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r3fYiUXc8cxYAbqnzO/jzfI53DkZ5gWWk2eUOw5iFG0=;
+        b=mXWcgmJET9cdsw54wZbtBpfD523o75hayqx4fcRd0lMFNxElQwh3VBOcfMxo2g8o4x
+         gvnPXiOV/o4TkEaWMzFwukbzFG7KFtt1gCDArWQiWJGlorEVLWVQSUSVJclmV953Sqay
+         G07QWgYXdwD8cnL4RQf/d/CwsH5zuLQAG//sY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704891952; x=1705496752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r3fYiUXc8cxYAbqnzO/jzfI53DkZ5gWWk2eUOw5iFG0=;
+        b=kaPUgs8CU13d7q4LM7+Px1YB9xkfqtbQ8a/9gbjY0kKJEXhfJM5JRtnRBDKjHb7RMM
+         VSh2TsjqiHmXP3IxZAL0G3gDbqUSGBY6NeT4ordGQREkiKVlFPOkwWLCfT2gJz5NSlyz
+         tFkI1MuqISgzlSMHxmOlvc2IiEXoxiUJaEcdphCYzlVaTYrkFVW6ATq+VWysSDPgcPkE
+         YksdDH++UGYkiUArbQEJ/oAOjALUAnTEHF+rDWe54uxGz5FKGaGTmjqIs5b5z2mn8bTb
+         95/X3rWIwEdBALKsQxjwb2U0Ne+ekBEb/fxdCQomQeUmT78s9ZZJsuGMufbcNZ3yVWHM
+         jqng==
+X-Gm-Message-State: AOJu0YykxCUnKTeXSoOM+52qsii+ocjIbO75ocvsHWRrpGP3Pj9fvluS
+	5CZtxtaLsWXwybiG90cg8qTphTatO483WGRMvanpqvqiLTIj
+X-Google-Smtp-Source: AGHT+IFt9LtNMkMXZ6gNCxpiVlWpHHtlffylW5vVhnpe8vQkXxImIXJrH2WKUU6ZxRLJSX5+oOPbkg==
+X-Received: by 2002:ac2:410a:0:b0:50e:80d3:55f4 with SMTP id b10-20020ac2410a000000b0050e80d355f4mr234568lfi.131.1704891951998;
+        Wed, 10 Jan 2024 05:05:51 -0800 (PST)
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
+        by smtp.gmail.com with ESMTPSA id ch19-20020a170906c2d300b00a2b091e93aesm2048007ejb.115.2024.01.10.05.05.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 05:05:51 -0800 (PST)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3373a30af67so3829489f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:05:51 -0800 (PST)
+X-Received: by 2002:adf:f604:0:b0:336:6422:708d with SMTP id
+ t4-20020adff604000000b003366422708dmr349222wrp.116.1704891950857; Wed, 10 Jan
+ 2024 05:05:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V7] thermal/core/power_allocator: avoid thermal cdev can
- not be reset
-Content-Language: en-US
-To: Di Shen <di.shen@unisoc.com>
-Cc: linux-pm@vger.kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
- rafael@kernel.org, linux-kernel@vger.kernel.org, wvw@google.com,
- tkjos@google.com, xuewen.yan@unisoc.com, zhanglyra@gmail.com,
- orsonzhai@gmail.com, cindygm567@gmail.com
-References: <20240110115526.30776-1-di.shen@unisoc.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20240110115526.30776-1-di.shen@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231228054630.3595093-1-tfiga@chromium.org> <CAK7LNATBipJtprjvvRVYg8JcYOFXQdpLEyEc+4+8j1PtBQ+PUg@mail.gmail.com>
+In-Reply-To: <CAK7LNATBipJtprjvvRVYg8JcYOFXQdpLEyEc+4+8j1PtBQ+PUg@mail.gmail.com>
+From: Tomasz Figa <tfiga@chromium.org>
+Date: Wed, 10 Jan 2024 22:05:33 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5C3vAUJhKiQ1LPkZv3dJxNvK4QinRezV9Q8rz_Ov6FSUQ@mail.gmail.com>
+Message-ID: <CAAFQd5C3vAUJhKiQ1LPkZv3dJxNvK4QinRezV9Q8rz_Ov6FSUQ@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: menuconfig: Make hidden options show as dim
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Jesse Taube <Mr.Bossman075@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Dec 29, 2023 at 1:10=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Thu, Dec 28, 2023 at 2:46=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> =
+wrote:
+> >
+> > When hidden options are toggled on (using 'z'), the number of options
+> > on the screen can be overwhelming and may make it hard to distinguish
+> > between available and hidden ones. Make them easier to distinguish by
+> > displaying the hidden one as dim (using the A_DIM curses attribute).
+> >
+> > Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+>
+>
+>
+> Do you think this is useful?
+>
+> This changes the color only when you select a hidden item.
+>
+>
+> For unselected items, you cannot distinguish hidden ones,
+> as A_DIM has no effect to black text.
+>
+>
 
+Hmm, are you sure about that? For me it seems to dim the text. it
+seems to be also used in the existing code for dlg.button_inactive.atr
+of the mono theme:
 
-On 1/10/24 11:55, Di Shen wrote:
-> Commit 0952177f2a1f ("thermal/core/power_allocator: Update once
-> cooling devices when temp is low") adds an update flag to avoid
-> the thermal event is triggered when there is no need, and
-> thermal cdev would be updated once when temperature is low.
-> 
-> But when the trips are writable, and switch_on_temp is set
-> to be a higher value, the cooling device state may not be
-> reset to 0, because last_temperature is smaller than the
-> switch_on_temp.
-> 
-> For example:
-> First:
-> switch_on_temp=70 control_temp=85;
-> Then userspace change the trip_temp:
-> switch_on_temp=45 control_temp=55 cur_temp=54
-> 
-> Then userspace reset the trip_temp:
-> switch_on_temp=70 control_temp=85 cur_temp=57 last_temp=54
-> 
-> At this time, the cooling device state should be reset to 0.
-> However, because cur_temp(57) < switch_on_temp(70)
-> last_temp(54) < switch_on_temp(70)  ---->  update = false,
-> update is false, the cooling device state can not be reset.
-> 
-> Considering tz->passive can also be represented the temperature
-> status, this patch modifies the update flag with tz->passive.
-> 
-> When the first time the temperature drops below switch_on, the
-> states of cooling devices can be reset once, and the tz->passive
-> is updated to 0. In the next round, because tz->passive is 0,
-> the cdev->state would not be updated.
-> 
-> By using the tz->passive as the "update" flag, the issue above
-> can be solved, and the cooling devices can be update only once
-> when the temperature is low.
-> 
-> Fixes: 0952177f2a1f ("thermal/core/power_allocator: Update once cooling devices when temp is low")
-> Cc: <stable@vger.kernel.org> # v5.13+
-> Suggested-by: Wei Wang <wvw@google.com>
-> Signed-off-by: Di Shen <di.shen@unisoc.com>
-> 
-> ---
-> V7:
-> - Some formatting changes.
-> - Add Suggested-by tag.
-> 
-> V6: [6]
-> Compared to the previous version:
-> - Not change the thermal core.
-> - Not add new variables and function.
-> - Use tz->passive as "update" flag to indicate whether the cooling
->    devices should be reset.
-> 
-> V5: [5]
-> - Simplify the reset ops, make it no return value and no specific
->    trip ID as argument.
-> - Extend the commit message.
-> 
-> V4: [4]
-> - Compared to V3, handle it in thermal core instead of in governor.
-> - Add an ops to the governor structure, and call it when a trip
->    point is changed.
-> - Define reset ops for power allocator.
-> 
-> V3: [3]
-> - Add fix tag.
-> 
-> V2: [2]
-> - Compared to v1, do not revert.
-> - Add a variable(last_switch_on_temp) in power_allocator_params
->    to record the last switch_on_temp value.
-> - Adds a function to renew the update flag and update the
->    last_switch_on_temp when thermal trips are writable.
-> 
-> V1: [1]
-> - Revert commit 0952177f2a1f.
-> 
-> [1] https://lore.kernel.org/all/20230309135515.1232-1-di.shen@unisoc.com/
-> [2] https://lore.kernel.org/all/20230315093008.17489-1-di.shen@unisoc.com/
-> [3] https://lore.kernel.org/all/20230320095620.7480-1-di.shen@unisoc.com/
-> [4] https://lore.kernel.org/all/20230619063534.12831-1-di.shen@unisoc.com/
-> [5] https://lore.kernel.org/all/20230710033234.28641-1-di.shen@unisoc.com/
-> [6] https://lore.kernel.org/all/20240109112736.32566-1-di.shen@unisoc.com/
-> ---
-> ---
->   drivers/thermal/gov_power_allocator.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-> index 7b6aa265ff6a..81e061f183ad 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -762,7 +762,7 @@ static int power_allocator_throttle(struct thermal_zone_device *tz,
->   
->   	trip = params->trip_switch_on;
->   	if (trip && tz->temperature < trip->temperature) {
-> -		update = tz->last_temperature >= trip->temperature;
-> +		update = tz->passive;
->   		tz->passive = 0;
->   		reset_pid_controller(params);
->   		allow_maximum_power(tz, update);
+https://elixir.bootlin.com/linux/latest/source/scripts/kconfig/lxdialog/uti=
+l.c#L26
 
-Thanks for the patch, LGTM.
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Best regards,
+Tomasz
 
