@@ -1,101 +1,159 @@
-Return-Path: <linux-kernel+bounces-22839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4A6582A3D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:19:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D648482A3DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AB2528A86B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:19:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7B631C2585D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F0C4F892;
-	Wed, 10 Jan 2024 22:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F994F899;
+	Wed, 10 Jan 2024 22:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="CYXg4ZNP"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5wSflxF"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E404CE1D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-555e07761acso5620221a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:19:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55454F601;
+	Wed, 10 Jan 2024 22:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e4f692d06so14706805e9.1;
+        Wed, 10 Jan 2024 14:23:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1704925172; x=1705529972; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1pn+yGlQbDvVpIEQ51Lj63hjmKrdoB01ABnRTe1WXO8=;
-        b=CYXg4ZNPeBah6O/diokgPMR+p4RY6KyF1d9t5oxf5jYTduGslBcqbp5eddaaa7sqdQ
-         In4+nxPy25RpMxqgE2+D4CI5HOoWPqxovmPCf3YTkpeEULsY+orcxzgB3Koz+ofNjNWg
-         8dhLL6znU1DGkut9FSLT/uFJTbBDYBMfe5Wak=
+        d=gmail.com; s=20230601; t=1704925417; x=1705530217; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=X/QfoypIDMO0K2Ndnvr0HB3tyVcDqG7prMuOY7ywE+0=;
+        b=M5wSflxFA6hBL0MG8HWJrcWPsCO93dZS5Xtw7PUZdF5GmRWF+5PheI4uQYVn/qaA5J
+         ehBtNVjnCIhdUvktSaPYik56l71xhWWB7S/Ndf6TfEjDPZUPnIo4+Jn+hu+KBzk6oH0M
+         lEPD+L8NbVbdGEl5PHu/Ny9vQNMCI9NefDvc+Dfmk+CNV+nBreMZhfUKDQh2+SgwbE4I
+         EbaWbxZVF2q1pqEgPCw0qpAtHSX2s8MOs3Xt+U5l8u8Wdf/VZTZK3Y11UG6wfgW4b0hK
+         2XrJ7oPf1+skl7+cn2pCsIDo65zfSydu4OaXDCtyYd5jNB3ux3dSlOT7FqwR9KK3KtIt
+         sOJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704925172; x=1705529972;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1704925417; x=1705530217;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1pn+yGlQbDvVpIEQ51Lj63hjmKrdoB01ABnRTe1WXO8=;
-        b=aN773XhGpIDHH3gjIAT/w8Z79pYHhi+B20eoeFFZD6dILS0GoB8pgU55ZcEQmBoswP
-         GIti5souL18V9+gh5iBy/oHuLs1+jpO+naVKDtHqZ12zOGN4ILddda5zQmROcglcsfr8
-         U3TcS631zCI8e27Hb6oSnjIcz8VGiBi6ZPs0iUyTYmd3dGyoBjTcOqa486tzd+ZH/3fY
-         hwYCJE5eBCxRmqjn1lwYgp+t0XUx8dt7gL6/740G4+cgV099Ryc50YCwZT4hoXVupBci
-         lh+DX9fP7Q/Qn+UpFrTdYNgHQraYYmm+kiET6236kqdPnoHL690eKmCfe+UMhg9kAfEL
-         afUg==
-X-Gm-Message-State: AOJu0Yxrkg+2F/L8rgl1soCUpKsbzCf0I9X72yxYd1dPoYXWxsadhPzT
-	wYPPt9pnt52JkEI0Six5x1MIAUfR9VkmX9ObkfD+b18pMRdY/DyH
-X-Google-Smtp-Source: AGHT+IEyAPK8hk3wkYV8KwI58Jfhhld/6bO4Wp65D/GETQNo8IQppOQkgfk7MaZEPsdKk0lWt0EZXg==
-X-Received: by 2002:a05:6402:26cf:b0:556:ef38:9b04 with SMTP id x15-20020a05640226cf00b00556ef389b04mr46413edd.122.1704925172692;
-        Wed, 10 Jan 2024 14:19:32 -0800 (PST)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id s7-20020a056402014700b005576f4471besm2396853edu.42.2024.01.10.14.19.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 14:19:30 -0800 (PST)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so549691066b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:19:29 -0800 (PST)
-X-Received: by 2002:a17:907:3a08:b0:a1c:b6f8:6987 with SMTP id
- fb8-20020a1709073a0800b00a1cb6f86987mr57694ejc.16.1704925169419; Wed, 10 Jan
- 2024 14:19:29 -0800 (PST)
+        bh=X/QfoypIDMO0K2Ndnvr0HB3tyVcDqG7prMuOY7ywE+0=;
+        b=f22ifJIgQhKIgZjVpBQFKvTKS9OmG273YSazQx8us9FPtkS6sI7tsENJ3ilssVgYzw
+         Tj8x8qxu1xkHz2GwYHcaPaqOlLf55i0lPzvZNA+J+4OWq114EQQy2JdICJ1K8TNqZFDH
+         eg6mV4Gisz0KSOV2X9nMuOpz8/ruiTmvi5BP8hVtMOOHW9/qRyj7ow2t9DraigeKOWT8
+         ihlE5wM/t45HFnfXphYUqjFDOMQY6s3wF4FLWHfA4lg8reu9tglJLYzZguVvM7Gpfyhq
+         GgXHNVMaCYA5gnQ2g5jHtswuzo227IyiHYvp3pduLXVRevN6SWJsLVwpRHa5/cqGp8/K
+         LYfQ==
+X-Gm-Message-State: AOJu0Yzvo2yqDdnIyULV8yKAVyCYVnfpirqiHmbtbqzfWSUFDrbcGmJF
+	b/D2Wcu6t/rAqf64b1tRBYU=
+X-Google-Smtp-Source: AGHT+IEQSzkrGcyzOzDt5HHZwxk+SVLjbEhbbOLOo1a99znKrBnoXfptSw+f92Jwo0GKCKhxJYyVRg==
+X-Received: by 2002:a05:600c:a12:b0:40d:8a05:33a4 with SMTP id z18-20020a05600c0a1200b0040d8a0533a4mr74502wmp.33.1704925416622;
+        Wed, 10 Jan 2024 14:23:36 -0800 (PST)
+Received: from prasmi.home ([2a00:23c8:2500:a01:3989:437:3f03:172f])
+        by smtp.gmail.com with ESMTPSA id v21-20020a05600c445500b0040e3bdff98asm3494498wmn.23.2024.01.10.14.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 14:23:36 -0800 (PST)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Kees Cook <keescook@chromium.org>
+Cc: dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
+Date: Wed, 10 Jan 2024 22:22:10 +0000
+Message-Id: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com>
-In-Reply-To: <ZZwBi/YmnMqm7zrO@gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 10 Jan 2024 14:19:11 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
-Message-ID: <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Scheduler changes for v6.8
-To: Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 8 Jan 2024 at 06:07, Ingo Molnar <mingo@kernel.org> wrote:
->
-> Please pull the latest sched/core git tree from:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2024-01-08
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Just a note that I'm currently bisecting into this merge for a
-horrendous performance regression.
+gcc points out that the fix-byte buffer might be too small:
+drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
+drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing between 1 and 10 bytes into a region of size 3 [-Wformat-overflow=]
+  720 |         sprintf(pdev_irqname, "ch%u", index);
+      |                                  ^~
+In function 'usb_dmac_chan_probe',
+    inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
+drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range [0, 4294967294]
+  720 |         sprintf(pdev_irqname, "ch%u", index);
+      |                               ^~~~~~
+drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 13 bytes into a destination of size 5
+  720 |         sprintf(pdev_irqname, "ch%u", index);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It makes my empty kernel build go from 22 seconds to 44 seconds, and
-makes a full kernel build enormously slower too.
+Maximum number of channels for USB-DMAC as per the driver is 1-99 so use
+u8 instead of unsigned int/int for DMAC channel indexing and make the
+pdev_irqname string long enough to avoid the warning.
 
-I haven't finished the bisection, but it's now inside *just* this
-pull, so I can already tell that I'm going to revert something in
-here, because this has been making my merge window miserable.
+While at it use scnprintf() instead of sprintf() to make the code more
+robust.
 
-You've been warned,
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/dma/sh/usb-dmac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-                Linus
+diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
+index a9b4302f6050..f7cd0cad056c 100644
+--- a/drivers/dma/sh/usb-dmac.c
++++ b/drivers/dma/sh/usb-dmac.c
+@@ -706,10 +706,10 @@ static const struct dev_pm_ops usb_dmac_pm = {
+ 
+ static int usb_dmac_chan_probe(struct usb_dmac *dmac,
+ 			       struct usb_dmac_chan *uchan,
+-			       unsigned int index)
++			       u8 index)
+ {
+ 	struct platform_device *pdev = to_platform_device(dmac->dev);
+-	char pdev_irqname[5];
++	char pdev_irqname[6];
+ 	char *irqname;
+ 	int ret;
+ 
+@@ -717,7 +717,7 @@ static int usb_dmac_chan_probe(struct usb_dmac *dmac,
+ 	uchan->iomem = dmac->iomem + USB_DMAC_CHAN_OFFSET(index);
+ 
+ 	/* Request the channel interrupt. */
+-	sprintf(pdev_irqname, "ch%u", index);
++	scnprintf(pdev_irqname, sizeof(pdev_irqname), "ch%u", index);
+ 	uchan->irq = platform_get_irq_byname(pdev, pdev_irqname);
+ 	if (uchan->irq < 0)
+ 		return -ENODEV;
+@@ -768,8 +768,8 @@ static int usb_dmac_probe(struct platform_device *pdev)
+ 	const enum dma_slave_buswidth widths = USB_DMAC_SLAVE_BUSWIDTH;
+ 	struct dma_device *engine;
+ 	struct usb_dmac *dmac;
+-	unsigned int i;
+ 	int ret;
++	u8 i;
+ 
+ 	dmac = devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
+ 	if (!dmac)
+@@ -869,7 +869,7 @@ static void usb_dmac_chan_remove(struct usb_dmac *dmac,
+ static void usb_dmac_remove(struct platform_device *pdev)
+ {
+ 	struct usb_dmac *dmac = platform_get_drvdata(pdev);
+-	int i;
++	u8 i;
+ 
+ 	for (i = 0; i < dmac->n_channels; ++i)
+ 		usb_dmac_chan_remove(dmac, &dmac->channels[i]);
+-- 
+2.34.1
+
 
