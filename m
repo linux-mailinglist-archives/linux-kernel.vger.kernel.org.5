@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-22236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E325829B41
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:32:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 257B5829B44
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:33:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F80F289914
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:32:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 934DA1F24E22
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:33:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C69487AF;
-	Wed, 10 Jan 2024 13:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1AEF495D8;
+	Wed, 10 Jan 2024 13:32:28 +0000 (UTC)
 Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2051.outbound.protection.partner.outlook.cn [139.219.146.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661EC48CCA;
-	Wed, 10 Jan 2024 13:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E13348CEB;
+	Wed, 10 Jan 2024 13:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lZVMNFLisAoAp73CJXvy534SiwuQTRbNvd/s9AtBXJPgc1DSs8KCngx1tilmomoWOB0FPpyoYeHxH089mFByyP5C5niaZJCpHf3D41whVEEEYsIfuem6E1+LeIce/03XRcwyB3lv16g7IJA5ZAiK6ruq/dUngnAaZEYJL/VodpFbBz1zejAkcb90tl4l0G8bNx8U1uOPb2+32/XhmZ+pQpnnggR80Ty+DB24pmQrGLq1RbrOM9TecLjJUxZNnqd/V2VOT9btWSgDBM6IASSN4ersSQBeMPl6amX7pX6Nf8JwqHjp+8N9e33KXXFN7NXdMMjGG3mMMEB9S0UcEtdQeQ==
+ b=WW02hHSqnk0yBRcLfEvQBuyTyiwiWggH50WwQU3ibWMhxJykrRr1WZrigCCsP0hOWXuGDa6QjoC5UxBs82pQ76sqsfbFcZlec0sFIsQCKZXFnlKMgmGZDdVQV6R45bUZjNGOKo3O6uQ1GM017FNcJ+E9B1gkIBvNKUJm9MnBD0bW2rKrWhRY/lgd21Loza250njE9H4A7+M/twuXNrzKt8GjF7zhXrYCu6lqEBgtWEMwVrVZHxaed6kLXLfprQXDWGMJjZQmj8I9RFzBy8FUa47L/HU9pcoiJEbnDpSI1VOaW1ccLUxp//uNF98pcUHVnGv5s85KNoEY1sYvCq74IA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qnXNwJcBmYMxpU2vI+F/w4D2rbSa27tu39q2yXTnC0s=;
- b=oP+4SNEDorZWtBLkXgzZrmkPgqNzzb2T21ZW9hOY8EBIDPEoaq0Wd76VjM6v565froOHBAMoguINWLyMz8wMEFsmwcz8fY3JjdPuD8YFNRkc/kb1z1cB7RRxyPsTN6y0jBqeP0haRgL29gb2vFW8tlzsPK2eTgg7dD63SPC+Tzrq4DBBEBhbtwrfoBey1a/h8mkPacP/84kO0BTnUwYlTE9PyxwEH6aL8Ukgr2M13MqJdKowoxY5L8Xa7u0vtT5M7b4VgDURgRSbMeojsbdjxD3J7RZsh775txhkZkFIQic8s8GeGMxz3zStnl7U+UZ0cnlJgwxv7/lLRP5Evh7G6g==
+ bh=Eri7qDQ5Xr4knoEOeX0QzfbwHPtJCgnsbkXb2xcfC2Y=;
+ b=Uowht90lOy+9AD9+p5bpQxtFyIiJ40puWnkDPHDw9ywpXwiE5xNuWGk8p4yngDxO2VoJjK55JX6L8yopLiCbVnASMXzHKJLpa/q3O8KNnDYUUAlskhFPTirFJwscJO9dO7kLXnB/wt8fV2z/lSoYHjFk65fUmZ1QnTiVqXZtLnRmA+P1yh1Ci+Veoh247+yK99r58dMTwMlW8lw3GbccCZ5YCN5zZfqTw9XP0GtAwvvM7MofhxtAa1Iy3TfbZ/A5ivPiH7k4AzcliliuWF4g9/Rox3/JHUUfS4FpFGqiRCEK9sMTBOa/zws2YH1v+PaI8zGrM/jiNRkZFAtZJgshXQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=starfivetech.com; dmarc=pass action=none
  header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
@@ -35,11 +35,11 @@ Received: from BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c211:f::16) by BJSPR01MB0626.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c211:10::20) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.33; Wed, 10 Jan
- 2024 13:32:12 +0000
+ 2024 13:32:16 +0000
 Received: from BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn
  ([fe80::3862:65b4:c857:c4a6]) by
  BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn ([fe80::3862:65b4:c857:c4a6%4])
- with mapi id 15.20.7135.033; Wed, 10 Jan 2024 13:32:12 +0000
+ with mapi id 15.20.7135.033; Wed, 10 Jan 2024 13:32:16 +0000
 From: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 To: kernel@esmil.dk,
 	conor@kernel.org,
@@ -59,10 +59,11 @@ Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	jeeheng.sia@starfivetech.com,
-	leyfoon.tan@starfivetech.com
-Subject: [RFC v3 08/16] clk: starfive: Add JH8100 North-West clock generator driver
-Date: Wed, 10 Jan 2024 21:31:20 +0800
-Message-Id: <20240110133128.286657-9-jeeheng.sia@starfivetech.com>
+	leyfoon.tan@starfivetech.com,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [RFC v3 09/16] dt-bindings: clock: Add StarFive JH8100 North-East clock and reset generator
+Date: Wed, 10 Jan 2024 21:31:21 +0800
+Message-Id: <20240110133128.286657-10-jeeheng.sia@starfivetech.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240110133128.286657-1-jeeheng.sia@starfivetech.com>
 References: <20240110133128.286657-1-jeeheng.sia@starfivetech.com>
@@ -79,317 +80,481 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BJSPR01MB0561:EE_|BJSPR01MB0626:EE_
-X-MS-Office365-Filtering-Correlation-Id: aed82801-5393-4652-9daa-08dc11e08d48
+X-MS-Office365-Filtering-Correlation-Id: 7706d732-1d8b-47ee-3bad-08dc11e08f9a
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	jlz4cYJXwIBE1eEd9vV1xgBEkIksbQRbyLWFtXECbBUe3bzmfhIeKFYAHNaoGgcWPzGhI0rLL4tnkrLLBFrvd5FaplKNs00xP6QI7u66uG6AJqH6gqzX1eYkFPUuwKFyiBnb4ybUGqa+TkHaI0vsCf5nKMiPEiTmb2C111MjSj+ia9y+S/w3J5LwdD6P1c+fm/UhLTSBLbCGYp1vvKOSRFMVtSeHWyRZNUa8QeqNb/uaeWjMvmhWkLvbKgd3vtdeLZv/ElZL35g2nLBab7Kqw5txGe8Kh/9Ppox9JHP7tbUSbhziImWNey0KwgHyp+iPNRRMNqYyqkV4iOKE0hz8mc+yycqk/aZ389nIg5WVopWXn+y4EOkrhwWLvekll7OugE18GZRjRuYmHBWAqdehYbx+212dE2yxJaGFz4ASl+CoutIWCzc8V5X0uJvFCEsgNxzvUC+pzAGBwTyVWQ1yz+XXhEe61LGCo+9ubd0npwKhPInl8anxwHWVaou/GFGEwN2CE1aC04hHDy5VWTmdXfSzHpt/OPHtHerV5nqIvI4beciI5kSoZPNeYKTzK43vAAhxz3yZp34hIfo2LzC3qHcvT9IoOVwIIJBGQWa0+N3HgRM4IkbSVmqybRJc8FC+
+	RYpK0pclWH5ozU3Ek35UXnFtG4DbNp8jbM+aT+WiPt7z3YnkSLCJv2nnT+ArU5Nx6ZqtzI/gH2+q74lZrBt9rQtJBxwrliajH2iXEtHAdiPNuQT9UXteby80wEr20Qm2ED6U0cea6m5KFDEp585iCDu7LurorGVj5AjkCueknEQFuEEoCbZAIDKiFA+i1ZDUC1ylnkTfAkGhBDPX3Ojgb96daIlOyr+PotFc59JPkROpHahqzm27RFw0dYPiDuCx438TdYXDhOqXcwwPc/Q5wXvyTNOvQPtXw9xInyab57QqOKA7zoFJApbFj+W0+P+RECc0oeieG3wma4MHVCzAu3m6XVZTz6G8ynWC5XbmtQuQ3bO/t2dFJSEk0o1rOVlRmee2Jhb0Zb0BZ5VR1Bn/crWl691f8ns5UAfedUpSGXTRNZxxbEw9M195Hah5z2nyfLHo8F4247gEPi8kpWhliZVw/gjsUyHRnCET/RnirSyJHGuSkDrWYzsI+UqM5W27pcRUOh8PtOFnlVzQAmX9etGp2SvgRkooqGjMtDB25LFdXRzN1UrZtLWbPxlSSBHD5fJ1rslQNjrkB/YkHxAGv36XqB2k9dWFxNiHMzXTkyNBgFe9h633v+ZD1MWSJ2cb
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(136003)(346002)(396003)(366004)(230273577357003)(230922051799003)(230173577357003)(186009)(64100799003)(451199024)(1800799012)(921011)(26005)(107886003)(52116002)(2616005)(41320700001)(6666004)(83380400001)(1076003)(86362001)(40160700002)(40180700001)(38100700002)(36756003)(38350700005)(5660300002)(30864003)(7416002)(4326008)(55236004)(6636002)(66556008)(66476007)(66946007)(41300700001)(2906002)(8936002)(8676002)(508600001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(136003)(346002)(396003)(366004)(230273577357003)(230922051799003)(230173577357003)(186009)(64100799003)(451199024)(1800799012)(921011)(26005)(52116002)(2616005)(41320700001)(6666004)(83380400001)(1076003)(86362001)(40160700002)(40180700001)(38100700002)(36756003)(38350700005)(5660300002)(30864003)(7416002)(4326008)(55236004)(6636002)(66556008)(66476007)(66946007)(41300700001)(2906002)(8936002)(8676002)(966005)(508600001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?oxKUvg0NIZzGBzqruTqgGIo5rDAzCUmrtEZLNHFUCOkOp9tCwzOoCcYIY/7U?=
- =?us-ascii?Q?8FeJgNrg1M0Kir53g7GpIxZTrlZ0tBJeoKxJOp/r0F4eTU+p7WpWxnJr4+tf?=
- =?us-ascii?Q?lgj9fhOuwSMMBqSWEC1gN8OGYZ0NKnqtNRzO0YT8bE4E72NiIJG0KTFmZf3f?=
- =?us-ascii?Q?4KF9808l9A6+6hKKNLSVeDtwuFnE7/OufiI06UWwttkwyl+1IESnAMPtyDh2?=
- =?us-ascii?Q?zzvV9ad8uEnxnJkCOoxao+skqRnWKFiWRxJJ4Yv6DKKGQX3juHTxlIW9xnxE?=
- =?us-ascii?Q?kCp6rYOSNfW8IbwMlxyQLW0FnlS5CcxBJHtKSRHY9AVDt1h2Ds/wr6y0sd+B?=
- =?us-ascii?Q?RwpCxTo2VcKvwfff2TnSQqRUqHPvC3s8Os+toOIbobzNyTcoWm+/PDQFw/gE?=
- =?us-ascii?Q?TzCfM9YSl6a65A+GtlQ7AEh8qOAmv0S5gBJUdm7uZUyOGaPRCWS7sBISEbXt?=
- =?us-ascii?Q?ifNzb8FKyLKmAtUQErw02SIDzILzatU2CnWPwe+jmEafcX/uyeoS5Pxt4eNn?=
- =?us-ascii?Q?zEr/D72fzkAakVRvEd69rF6k6OjWXnRitIZxQh8UJhoBZLS+mwuznOFsMIm/?=
- =?us-ascii?Q?Fc9MAMn6FDY/dc31PrJYvLCQ/obGA8Z8SUGQo1EJRnrLA3kPGnPeFu6hADSl?=
- =?us-ascii?Q?0W5bEKQd3RXlrWBFIHMBrc+3QZE5O+zTgMWYjuUA2cpYx9tOyO8La6JZbGT1?=
- =?us-ascii?Q?5fA6DN9oORJHvsU+zurgVIsXg1KGMLSIqPuGlDjp7jlan0bSIaH8JGHtLNAU?=
- =?us-ascii?Q?Pbv3rZEHYF9iHMzYOh1FzSmZm85b6f7qaMDSz30vliTDaB7C4VniVcKxUImE?=
- =?us-ascii?Q?h9Hw1MTGsah8m6quysPyENTkd5YvSDzsWaGxYct/vSkt2e52kd9tCIoIsY1L?=
- =?us-ascii?Q?W9JTFPPfvCv8uJkIFrT84nyY+zVCMJBp2AnHibjv3qFivAJmSLkNpzav0++C?=
- =?us-ascii?Q?MQlxCNXZ+dNEXUcdqNwKrEp9fO7BCkAbRswkLcLFleRnJRF+GhYoA1cDQ5O3?=
- =?us-ascii?Q?2TjURxtScVe//52+7EGwjCm+kOTA9kqOA5k64/dez1qPyenr99YkYWWk/49M?=
- =?us-ascii?Q?JxLSFx9jjgsXt976KkImsa6jA863IQWEsLYBPu/jMFpwEMbKKoBtZZo9FgLF?=
- =?us-ascii?Q?NCvcCKMrYsbduVC8k/hxk5bYcJv9fionbUkufDjpXVQF0tYU+1IeMawkymQ9?=
- =?us-ascii?Q?zKZoKayI2bUnuEKsgydUVWtUYMc6IRgtXM3UghZ2gm8AeMKUoMic3ZAiptxH?=
- =?us-ascii?Q?5B7Wj67NkarGa6DdcwVbyQrNyR+uHtF68XggTBd74NtI0XbN6k1ftnZT4JTI?=
- =?us-ascii?Q?1XPo/mfkBMJsXwqEqWELMCK9rg2CWlXkMFZM5hVzpMHK4XySlZRCkqCocRv7?=
- =?us-ascii?Q?Ropk/VEVgOgqHci9/SGgpQgY1E7yc9PBdho/rocb743N5OAqQVLt1PZxu0PW?=
- =?us-ascii?Q?No2Vo5b4YOc/PwvD5cO5V6A6VU6Tgan0AnrfBS04oAFVvEupU6eRgOVc06rC?=
- =?us-ascii?Q?tyjS6yaIrlYYIY+GfVbRKlR9GcHtfCVhXA+COzUK8Sm47fYPBR1dnGs15xhz?=
- =?us-ascii?Q?L+GYq6nqQDGEl5y1QzYhDmlVSMh3I66z/VQsMKoi/px+WUz+wd9FwOcVevVG?=
- =?us-ascii?Q?LkPHwqe7PpMxrR741f42X38=3D?=
+	=?us-ascii?Q?OwoHGJF6T7iu3vrYteWmO2rATczbrv2oZMfNlD/nXEiqYMq00wURBs89SD/D?=
+ =?us-ascii?Q?YiY406gMLI/eNxSRyfgLfw3FiRMDDq+FRFbl0qyqq8uCw/qCTg0PZ/X/IyR2?=
+ =?us-ascii?Q?b/boLmWWURuCs88vfC5tuOUpg0kwadAsmNLPGpUHS+IzBZK/ljuodSzaEtMy?=
+ =?us-ascii?Q?tPsF2p1V3wi10QMJcgkPb8V9zAy3a7iIt/KvyR/I7MRiv0gcaRyYATE+Aaf7?=
+ =?us-ascii?Q?dZ2AfC0pzkKIE0Neml/Zc5GcUqoBxEbY6c3j7waeUKfmWxT75fwVzyGEDB/b?=
+ =?us-ascii?Q?7d836D3K3FS4urePYa6BVvD2UyP/VRp5w0EhLIKdO+OmIymLFEjhYwylE+2l?=
+ =?us-ascii?Q?aHudNpQOoiEr9hPeIVbX+wz5cujO+7vakx/xajryYXWGp/XWTDJnRLlSKkUR?=
+ =?us-ascii?Q?gsi6npRoBlYQOtf5QPm57aeKHH+jwulSJzo/O8v3QwfeoFbDbja1nMgmSfI2?=
+ =?us-ascii?Q?qmbbp818KsxwzGrrC+/I+B5uW5YiwSk8WsyMmIvLkrL34/2bCzzp/dOiKXxe?=
+ =?us-ascii?Q?BHN9D+3oNijjiaAPu9sfW/73COb/oJpPyaKRD5B4RMpV86Nw0zVFxJsm6BzW?=
+ =?us-ascii?Q?keL4dJ1yczRmcmc3UTWhZv+zlMTrNfX8o6YdXOjwL5By1TOsBRqqVIGZ4qUy?=
+ =?us-ascii?Q?cf3WlOvFWSiCCCs/A/ishipXLc5dZ3151YypiL/9U24130/FNpa8vUVMTNku?=
+ =?us-ascii?Q?wJAa73HZOABEM+JFvj9iMOuVvRhBHjRocbwzgguN9aP4ZesHBU42aM3USc3r?=
+ =?us-ascii?Q?iB1NjZBD/9jimrLu6dHtf6Ji8F25MbeYDSAFhuePgmte9ZzERDLyl3QT/4MA?=
+ =?us-ascii?Q?x4CnIZ4hY8TvdejujvCehVgIVU6LRTeUSyvDTEz0M9vw6tr4zZrb156E5mDM?=
+ =?us-ascii?Q?j2CNVgBIiPIMEts4MTh63UE/2wfecg+nDOBDobpqvXKpiQVjVei7ytpDAWdq?=
+ =?us-ascii?Q?6TvARdPzGAaOgGKdgvEjSxKeiWjk8YzXTace4Ildcqw6HuNLNHvjiAE57Wxr?=
+ =?us-ascii?Q?Da77qOWdhXSWHgBAhk1v+7k/ARYlk3Ozusvwp56PDLMcxex+7lWNmKsCjOdx?=
+ =?us-ascii?Q?YmrzAF/Jf009A6YlO3RJdymOhwtBeFilNvuMYCuamSbbZid8cmZeTJpBkIrx?=
+ =?us-ascii?Q?ESz+6ipHqYoZNhPkIiZ1s9664NQQAWzExDfUUNm0HnNo6pzomrPA54erEUN3?=
+ =?us-ascii?Q?yfRzbJD+p353J8qZHhLGanjMFJ43N+a9ukFcDm8wg6HSrt5vPKepdegTg4Ec?=
+ =?us-ascii?Q?kt4WCae3cMAwmPQc90PitAUJAB6qMvBxIBY8uwlsY4VSanOOCjBmUqcVv5Mx?=
+ =?us-ascii?Q?a87Iy/A2N1DIXkBsQLv25uxhT8RgGp7baoc+C2IISrlUV7oiyr/yGpLza2SS?=
+ =?us-ascii?Q?WMup3BUhjNVheDiZP0pp0sV0o8rnvYmk9Vdcg5M4cvNtd+EfbqwL254iS1hw?=
+ =?us-ascii?Q?RUXHaUrJxiZvUXA8fWTb0/YYvHi6lsy+lNMkDoDPWWxaDQkfdeGfb1oUzFep?=
+ =?us-ascii?Q?qN7Iy1wMMIWbc6KqS3WbKPbZ8zIr5P/RGMg/7nafNp7yTlwdkZe+FHO72cvT?=
+ =?us-ascii?Q?SmyUxGhlxx40SXeBtQQkSeKArBeVkpVbdy5TQUKPBmZZdJWUADMUxfW6qmVl?=
+ =?us-ascii?Q?mULYcXBd6dPDoF3rtpew6CI=3D?=
 X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aed82801-5393-4652-9daa-08dc11e08d48
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7706d732-1d8b-47ee-3bad-08dc11e08f9a
 X-MS-Exchange-CrossTenant-AuthSource: BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 13:32:12.3020
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 13:32:16.1295
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yEUWv1jhqe9/DCfUEki90Fxf6n9qylxkB7k+FeYoicT0OXioG7RgkHllmtNvpCILXizbX8r3uHM9mn/IFx7woaGlkdutHDH3qaur/Kd8uG0=
+X-MS-Exchange-CrossTenant-UserPrincipalName: +RvZMnKGlbAKrgEjR/L1g6ApHZ078PFNzaUgbsV8WO8nPB1JTxAUkyYtMUkjjrAKRDMytFBT/SPEtKebTFkfJ55nEKxwrT+S6vfO+0nHFsc=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJSPR01MB0626
 
-Add support for JH8100 North-West (NWCRG) clock generator.
+Add bindings for the North-East clock and reset generator (NECRG) on
+JH8100 SoC.
 
 Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/clk/starfive/Makefile                 |   1 +
- drivers/clk/starfive/clk-starfive-jh8100-nw.c | 237 ++++++++++++++++++
- 3 files changed, 245 insertions(+)
- create mode 100644 drivers/clk/starfive/clk-starfive-jh8100-nw.c
+ .../bindings/clock/starfive,jh8100-necrg.yaml | 153 +++++++++++++++
+ .../dt-bindings/clock/starfive,jh8100-crg.h   | 177 ++++++++++++++++++
+ .../dt-bindings/reset/starfive,jh8100-crg.h   |  59 ++++++
+ 3 files changed, 389 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh8100-necrg.yaml
 
-diff --git a/drivers/clk/starfive/Makefile b/drivers/clk/starfive/Makefile
-index af6903c4f987..2ba07d3398f0 100644
---- a/drivers/clk/starfive/Makefile
-+++ b/drivers/clk/starfive/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_CLK_STARFIVE_JH7110_ISP)	+= clk-starfive-jh7110-isp.o
- obj-$(CONFIG_CLK_STARFIVE_JH7110_VOUT)	+= clk-starfive-jh7110-vout.o
- 
- obj-$(CONFIG_CLK_STARFIVE_JH8100_SYS)	+= clk-starfive-jh8100-sys.o
-+obj-$(CONFIG_CLK_STARFIVE_JH8100_NW)	+= clk-starfive-jh8100-nw.o
-diff --git a/drivers/clk/starfive/clk-starfive-jh8100-nw.c b/drivers/clk/starfive/clk-starfive-jh8100-nw.c
+diff --git a/Documentation/devicetree/bindings/clock/starfive,jh8100-necrg.yaml b/Documentation/devicetree/bindings/clock/starfive,jh8100-necrg.yaml
 new file mode 100644
-index 000000000000..018f5af6c777
+index 000000000000..f747b85fa457
 --- /dev/null
-+++ b/drivers/clk/starfive/clk-starfive-jh8100-nw.c
-@@ -0,0 +1,237 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/Documentation/devicetree/bindings/clock/starfive,jh8100-necrg.yaml
+@@ -0,0 +1,153 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/starfive,jh8100-necrg.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: StarFive JH8100 North-East Clock and Reset Generator
++
++maintainers:
++  - Sia Jee Heng <jeeheng.sia@starfivetech.com>
++
++properties:
++  compatible:
++    const: starfive,jh8100-necrg
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Main Oscillator (24 MHz)
++      - description: AXI_400 clock from SYSCRG
++      - description: VOUT_ROOT0 clock from SYSCRG
++      - description: VOUT_ROOT1 clock from SYSCRG
++      - description: USB_WRAP_480 clock from SYSCRG
++      - description: USB_WRAP_625 clock from SYSCRG
++      - description: USB_WRAP_240 clock from SYSCRG
++      - description: USB_WRAP_60 clock from SYSCRG
++      - description: USB_WRAP_156P25 clock from SYSCRG
++      - description: USB_WRAP_312P5 clock from SYSCRG
++      - description: USB_125M clock from SYSCRG
++      - description: GPIO_100 clock from NWCRG
++      - description: PERH_ROOT clock from SYSCRG
++      - description: Master clock from SYSCRG
++      - description: PERH_ROOT_PREOSC clock from SYSCRG
++      - description: AHB0 clock from SYSCRG
++      - description: APB_BUS_PER1 clock from SYSCRG
++      - description: APB_BUS PER2 clock from SYSCRG
++      - description: APB_BUS_PER3 clock from SYSCRG
++      - description: APB_BUS_PER5 clock from SYSCRG
++      - description: VENC_ROOT clock from SYSCRG
++      - description: SPI_CORE_100 clock from SYSCRG
++      - description: External global clock
++      - description: External USB3_TAP_TCK clock
++      - description: External USB1_TAP_TCK clock
++      - description: External USB2_TAP_TCK clock
++      - description: External TYPEC_TAP_TCK clock
++      - description: External SPI_IN0 clock
++      - description: External SPI_IN1 clock
++      - description: External I2STX_BCLK clock
++      - description: External I2STX_LRCK clock
++
++  clock-names:
++    items:
++      - const: osc
++      - const: axi_400
++      - const: vout_root0
++      - const: vout_root1
++      - const: usb_wrap_480
++      - const: usb_wrap_625
++      - const: usb_wrap_240
++      - const: usb_wrap_60
++      - const: usb_wrap_156p25
++      - const: usb_wrap_312p5
++      - const: usb_125m
++      - const: gpio_100
++      - const: perh_root
++      - const: mclk
++      - const: perh_root_preosc
++      - const: ahb0
++      - const: apb_bus_per1
++      - const: apb_bus_per2
++      - const: apb_bus_per3
++      - const: apb_bus_per5
++      - const: venc_root
++      - const: spi_core_100
++      - const: glb-ext-clk
++      - const: usb3-tap-tck-ext
++      - const: usb1-tap-tck-ext
++      - const: usb2-tap-tck-ext
++      - const: typec-tap-tck-ext
++      - const: spi-in0-ext
++      - const: spi-in1-ext
++      - const: i2stx-bclk-ext
++      - const: i2stx-lrck-ext
++
++  '#clock-cells':
++    const: 1
++    description:
++      See <dt-bindings/clock/starfive,jh8100-crg.h> for valid indices.
++
++  '#reset-cells':
++    const: 1
++    description:
++      See <dt-bindings/reset/starfive,jh8100-crg.h> for valid indices.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - '#clock-cells'
++  - '#reset-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/starfive,jh8100-crg.h>
++
++    clock-controller@12320000 {
++        compatible = "starfive,jh8100-necrg";
++        reg = <0x12320000 0x10000>;
++        clocks = <&osc>, <&syscrg JH8100_SYSCLK_AXI_400>,
++                 <&syscrg JH8100_SYSCLK_VOUT_ROOT0>,
++                 <&syscrg JH8100_SYSCLK_VOUT_ROOT1>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_480>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_625>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_240>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_60>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_156P25>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_312P5>,
++                 <&syscrg JH8100_SYSCLK_USB_125M>,
++                 <&nwcrg JH8100_NWCLK_GPIO_100>,
++                 <&syscrg JH8100_SYSCLK_PERH_ROOT>,
++                 <&syscrg JH8100_SYSCLK_MCLK>,
++                 <&syscrg JH8100_SYSCLK_PERH_ROOT_PREOSC>,
++                 <&syscrg JH8100_SYSCLK_AHB0>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER1>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER2>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER3>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER5>,
++                 <&syscrg JH8100_SYSCLK_VENC_ROOT>,
++                 <&syscrg JH8100_SYSCLK_SPI_CORE_100>,
++                 <&glb_ext_clk>, <&usb3_tap_tck_ext>,
++                 <&usb1_tap_tck_ext>, <&usb2_tap_tck_ext>,
++                 <&typec_tap_tck_ext>, <&spi_in0_ext>,
++                 <&spi_in1_ext>, <&i2stx_bclk_ext>,
++                 <&i2stx_lrck_ext>;
++        clock-names = "osc", "axi_400", "vout_root0", "vout_root1",
++                      "usb_wrap_480", "usb_wrap_625", "usb_wrap_240",
++                      "usb_wrap_60", "usb_wrap_156p25", "usb_wrap_312p5",
++                      "usb_125m", "gpio_100", "perh_root", "mclk",
++                      "perh_root_preosc", "ahb0", "apb_bus_per1",
++                      "apb_bus_per2", "apb_bus_per3", "apb_bus_per5",
++                      "venc_root", "spi_core_100", "glb-ext-clk",
++                      "usb3-tap-tck-ext", "usb1-tap-tck-ext",
++                      "usb2-tap-tck-ext", "typec-tap-tck-ext",
++                      "spi-in0-ext", "spi-in1-ext", "i2stx-bclk-ext",
++                      "i2stx-lrck-ext";
++        #clock-cells = <1>;
++        #reset-cells = <1>;
++    };
+diff --git a/include/dt-bindings/clock/starfive,jh8100-crg.h b/include/dt-bindings/clock/starfive,jh8100-crg.h
+index 626173e14940..c37b42f3eacd 100644
+--- a/include/dt-bindings/clock/starfive,jh8100-crg.h
++++ b/include/dt-bindings/clock/starfive,jh8100-crg.h
+@@ -162,4 +162,181 @@
+ #define JH8100_NWCLK_UART5_ICG_EN					39
+ #define JH8100_NWCLK_UART6_ICG_EN					40
+ 
++/* NECRG clocks */
++#define JH8100_NECLK_FLEXNOC_DMASLV					0
++#define JH8100_NECLK_MAILBOX_APB					1
++#define JH8100_NECLK_SR5_TIMER0_APB					2
++#define JH8100_NECLK_SR5_TIMER0_CH0					3
++#define JH8100_NECLK_SR5_TIMER0_CH1					4
++#define JH8100_NECLK_SR5_TIMER0_CH2					5
++#define JH8100_NECLK_SR5_TIMER0_CH3					6
++#define JH8100_NECLK_SR5_TIMER1_APB					7
++#define JH8100_NECLK_SR5_TIMER1_CH0					8
++#define JH8100_NECLK_SR5_TIMER1_CH1					9
++#define JH8100_NECLK_SR5_TIMER1_CH2					10
++#define JH8100_NECLK_SR5_TIMER1_CH3					11
++#define JH8100_NECLK_USB3_CMN_SCAN_PLL					12
++#define JH8100_NECLK_USB3_CMN_SCAN_SER					13
++#define JH8100_NECLK_USB3_PIPE_IN_SCAN					14
++#define JH8100_NECLK_USB3_SCAN_PIPE					15
++#define JH8100_NECLK_USB3_SCAN_PSM					16
++#define JH8100_NECLK_USB3_SCAN_REF					17
++#define JH8100_NECLK_USB3_USB2_SCAN					18
++#define JH8100_NECLK_USB3_HSCLK						19
++#define JH8100_NECLK_USB3_HSSICLK					20
++#define JH8100_NECLK_USB3_SIECLK					21
++#define JH8100_NECLK_USB3_XCVR_SCAN_PLL					22
++#define JH8100_NECLK_USB3_XCVR_SCAN_SER					23
++#define JH8100_NECLK_USB3_TAP_TCK					24
++#define JH8100_NECLK_USB1_CMN_SCAN_PLL					25
++#define JH8100_NECLK_USB1_CMN_SCAN_SER					26
++#define JH8100_NECLK_USB1_PIPE_IN_SCAN					27
++#define JH8100_NECLK_USB1_SCAN_PIPE					28
++#define JH8100_NECLK_USB1_SCAN_PSM					29
++#define JH8100_NECLK_USB1_SCAN_REF					30
++#define JH8100_NECLK_USB1_USB2_SCAN					31
++#define JH8100_NECLK_USB1_HSCLK						32
++#define JH8100_NECLK_USB1_HSSICLK					33
++#define JH8100_NECLK_USB1_SIECLK					34
++#define JH8100_NECLK_USB1_XCVR_SCAN_PLL					35
++#define JH8100_NECLK_USB1_XCVR_SCAN_SER					36
++#define JH8100_NECLK_USB1_TAP_TCK					37
++#define JH8100_NECLK_USB2_CMN_SCAN_PLL					38
++#define JH8100_NECLK_USB2_CMN_SCAN_SER					39
++#define JH8100_NECLK_USB2_PIPE_IN_SCAN					40
++#define JH8100_NECLK_USB2_SCAN_PIPE					41
++#define JH8100_NECLK_USB2_SCAN_PSM					42
++#define JH8100_NECLK_USB2_SCAN_REF					43
++#define JH8100_NECLK_USB2_USB2_SCAN					44
++#define JH8100_NECLK_USB2_HSCLK						45
++#define JH8100_NECLK_USB2_HSSICLK					46
++#define JH8100_NECLK_USB2_SIECLK					47
++#define JH8100_NECLK_USB2_XCVR_SCAN_PLL					48
++#define JH8100_NECLK_USB2_XCVR_SCAN_SER					49
++#define JH8100_NECLK_USB2_TAP_TCK					50
++#define JH8100_NECLK_TYPEC_PIPE_DIV_SCAN				51
++#define JH8100_NECLK_TYPEC_CMN_SCAN_PLL					52
++#define JH8100_NECLK_TYPEC_CMN_SCAN_SER					53
++#define JH8100_NECLK_TYPEC_SCAN_PIPE					54
++#define JH8100_NECLK_TYPEC_SCAN_PSM					55
++#define JH8100_NECLK_TYPEC_SCAN_REF					56
++#define JH8100_NECLK_TYPEC_USB2_SCAN					57
++#define JH8100_NECLK_TYPEC_HSCLK					58
++#define JH8100_NECLK_TYPEC_HSSICLK					59
++#define JH8100_NECLK_TYPEC_SIECLK					60
++#define JH8100_NECLK_TYPEC_VID0						61
++#define JH8100_NECLK_TYPEC_VID1						62
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL0				63
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL1				64
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL2				65
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL3				66
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER0				67
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER1				68
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER2				69
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER3				70
++#define JH8100_NECLK_TYPEC_TAP_TCK					71
++#define JH8100_NECLK_VENC_AXI						72
++#define JH8100_NECLK_VC9000LE_AXI					73
++#define JH8100_NECLK_VC9000LE_APB					74
++#define JH8100_NECLK_VC9000LE_CORECLK					75
++#define JH8100_NECLK_INT_CTRL_APB					76
++#define JH8100_NECLK_PWM_8CH_APB					77
++#define JH8100_NECLK_WDT_APB						78
++#define JH8100_NECLK_WDT						79
++#define JH8100_NECLK_SPI0_APB						80
++#define JH8100_NECLK_SPI0_CORE						81
++#define JH8100_NECLK_SPI0_SCLK_IN					82
++#define JH8100_NECLK_SPI1_APB						83
++#define JH8100_NECLK_SPI1_CORE						84
++#define JH8100_NECLK_SPI1_SCLK_IN					85
++#define JH8100_NECLK_I2C0_APB						86
++#define JH8100_NECLK_I2C1_APB						87
++#define JH8100_NECLK_I2C2_APB						88
++#define JH8100_NECLK_I2C3_APB						89
++#define JH8100_NECLK_I2C4_APB						90
++#define JH8100_NECLK_I2C5_APB						91
++#define JH8100_NECLK_UART0_APB						92
++#define JH8100_NECLK_UART0_CORE						93
++#define JH8100_NECLK_UART1_CORE_PREOSC					94
++#define JH8100_NECLK_UART1_APB						95
++#define JH8100_NECLK_UART1_CORE						96
++#define JH8100_NECLK_UART2_CORE_PREOSC					97
++#define JH8100_NECLK_UART2_APB						98
++#define JH8100_NECLK_UART2_CORE						99
++#define JH8100_NECLK_UART3_CORE_PREOSC					100
++#define JH8100_NECLK_UART3_APB						101
++#define JH8100_NECLK_UART3_CORE						102
++#define JH8100_NECLK_UART4_CORE_PREOSC					103
++#define JH8100_NECLK_UART4_APB						104
++#define JH8100_NECLK_UART4_CORE						105
++#define JH8100_NECLK_I2S0_BCLK						106
++#define JH8100_NECLK_I2S0_LRCK						107
++#define JH8100_NECLK_I2S0_APB						108
++#define JH8100_NECLK_I2S0						109
++#define JH8100_NECLK_I2S0_N						110
++#define JH8100_NECLK_I2S0_BCLK_TX					111
++#define JH8100_NECLK_I2S0_LRCK_TX					112
++#define JH8100_NECLK_I2S0_BCLK_RX					113
++#define JH8100_NECLK_I2S0_LRCK_RX					114
++#define JH8100_NECLK_I2S1_BCLK						115
++#define JH8100_NECLK_I2S1_LRCK						116
++#define JH8100_NECLK_I2S1_APB						117
++#define JH8100_NECLK_I2S1						118
++#define JH8100_NECLK_I2S1_N						119
++#define JH8100_NECLK_I2S1_BCLK_TX					120
++#define JH8100_NECLK_I2S1_LRCK_TX					121
++#define JH8100_NECLK_I2S1_BCLK_RX					122
++#define JH8100_NECLK_I2S1_LRCK_RX					123
++#define JH8100_NECLK_I2S2_BCLK						124
++#define JH8100_NECLK_I2S2_LRCK						125
++#define JH8100_NECLK_I2S2_APB						126
++#define JH8100_NECLK_I2S2						127
++#define JH8100_NECLK_I2S2_N						128
++#define JH8100_NECLK_I2S2_BCLK_TX					129
++#define JH8100_NECLK_I2S2_LRCK_TX					130
++#define JH8100_NECLK_I2S2_BCLK_RX					131
++#define JH8100_NECLK_I2S2_LRCK_RX					132
++#define JH8100_NECLK_I2S3_BCLK						133
++#define JH8100_NECLK_I2S3_LRCK						134
++#define JH8100_NECLK_I2S0_STEREO_APB					135
++#define JH8100_NECLK_I2S0_STEREO					136
++#define JH8100_NECLK_I2S0_STEREO_N					137
++#define JH8100_NECLK_I2S0_STEREO_BCLK_TX				138
++#define JH8100_NECLK_I2S0_STEREO_LRCK_TX				139
++#define JH8100_NECLK_I2S0_STEREO_BCLK_RX_ICG				140
++#define JH8100_NECLK_I2S0_STEREO_LRCK_RX				141
++#define JH8100_NECLK_PDM_4MIC_DMIC					142
++#define JH8100_NECLK_PDM_4MIC_APB					143
++#define JH8100_NECLK_PDM_4MIC_SCAN					144
++#define JH8100_NECLK_CAN0_CTRL_PCLK					145
++#define JH8100_NECLK_CAN0_CTRL						146
++#define JH8100_NECLK_CAN0_CTRL_TIMER					147
++#define JH8100_NECLK_CAN1_CTRL_PCLK					148
++#define JH8100_NECLK_CAN1_CTRL						149
++#define JH8100_NECLK_CAN1_CTRL_TIMER					150
++#define JH8100_NECLK_SMBUS0_APB						151
++#define JH8100_NECLK_SMBUS0_CORE					152
++#define JH8100_NECLK_IOMUX_EAST_PCLK					153
++#define JH8100_NECLK_USB3_ICG_EN					154
++#define JH8100_NECLK_USB1_ICG_EN					155
++#define JH8100_NECLK_USB2_ICG_EN					156
++#define JH8100_NECLK_USBC_ICG_EN					157
++#define JH8100_NECLK_VENC_ICG_EN					158
++#define JH8100_NECLK_WDT0_ICG_EN					159
++#define JH8100_NECLK_SPI0_ICG_EN					160
++#define JH8100_NECLK_SPI1_ICG_EN					161
++#define JH8100_NECLK_UART0_ICG_EN					162
++#define JH8100_NECLK_UART1_ICG_EN					163
++#define JH8100_NECLK_UART2_ICG_EN					164
++#define JH8100_NECLK_UART3_ICG_EN					165
++#define JH8100_NECLK_UART4_ICG_EN					166
++#define JH8100_NECLK_I2S0_ICG_EN					167
++#define JH8100_NECLK_I2S1_ICG_EN					168
++#define JH8100_NECLK_I2S2_ICG_EN					169
++#define JH8100_NECLK_I2S_STEREO_ICG_EN					170
++#define JH8100_NECLK_PDM_4MIC_ICG_EN					171
++#define JH8100_NECLK_CAN0_ICG_EN					172
++#define JH8100_NECLK_CAN1_ICG_EN					173
++#define JH8100_NECLK_SMBUS0_ICG_EN					174
++
+ #endif /* __DT_BINDINGS_CLOCK_STARFIVE_JH8100_H__ */
+diff --git a/include/dt-bindings/reset/starfive,jh8100-crg.h b/include/dt-bindings/reset/starfive,jh8100-crg.h
+index b25f6522f3d4..30a99c78341a 100644
+--- a/include/dt-bindings/reset/starfive,jh8100-crg.h
++++ b/include/dt-bindings/reset/starfive,jh8100-crg.h
+@@ -32,4 +32,63 @@
+ #define JH8100_NWRST_MERAK0_TVSENSOR				8
+ #define JH8100_NWRST_MERAK1_TVSENSOR				9
+ 
 +/*
-+ * StarFive JH8100 North-West Clock Driver
-+ *
-+ * Copyright (C) 2023 StarFive Technology Co., Ltd.
-+ *
-+ * Author: Jee Heng Sia <jeeheng.sia@starfivetech.com>
-+ *
++ * NECRG resets: assert0
++ */
++#define JH8100_NERST_PRESETN					0
++#define JH8100_NERST_USB3_APB					1
++#define JH8100_NERST_USB3_TORR_PHY				2
++#define JH8100_NERST_USB3_CONFIG				3
++#define JH8100_NERST_USB1_APB					4
++#define JH8100_NERST_USB1_TORRENT_PHY				5
++#define JH8100_NERST_USB1_CONFIG				6
++#define JH8100_NERST_USB2_APB					7
++#define JH8100_NERST_USB2_TORRENT_PHY				8
++#define JH8100_NERST_USB2_CONFIG				9
++#define JH8100_NERST_USBC_APB					10
++#define JH8100_NERST_USBC_CONFIG				11
++#define JH8100_NERST_VC9000LE					12
++#define JH8100_NERST_INT_CTRL_APB				13
++#define JH8100_NERST_PWM_8CH_APB				14
++#define JH8100_NERST_WDT0					15
++#define JH8100_NERST_SPI0					16
++#define JH8100_NERST_SPI1					17
++#define JH8100_NERST_I2C0					18
++#define JH8100_NERST_I2C1					19
++#define JH8100_NERST_I2C2					20
++#define JH8100_NERST_I2C3					21
++#define JH8100_NERST_I2C4					22
++#define JH8100_NERST_I2C5					23
++#define JH8100_NERST_UART0					24
++#define JH8100_NERST_UART1					25
++#define JH8100_NERST_UART2					26
++#define JH8100_NERST_UART3					27
++#define JH8100_NERST_UART4					28
++#define JH8100_NERST_MAILBOX_PRESETN				29
++#define JH8100_NERST_TIMER0_APB					30
++#define JH8100_NERST_TIMER0_CH0					31
++
++/*
++ * NECRG resets: assert1
 + */
 +
-+#include <linux/clk-provider.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
++#define JH8100_NERST_TIMER0_CH1					32
++#define JH8100_NERST_TIMER0_CH2					33
++#define JH8100_NERST_TIMER0_CH3					34
++#define JH8100_NERST_TIMER1_APB					35
++#define JH8100_NERST_TIMER1_CH0					36
++#define JH8100_NERST_TIMER1_CH1					37
++#define JH8100_NERST_TIMER1_CH2					38
++#define JH8100_NERST_TIMER1_CH3					39
++#define JH8100_NERST_I2S0_RSTN_APB				40
++#define JH8100_NERST_I2S1_RSTN_APB				41
++#define JH8100_NERST_I2S2_RSTN_APB				42
++#define JH8100_NERST_I2S0_STEREO_APB				43
++#define JH8100_NERST_PDM					44
++#define JH8100_NERST_CAN0					45
++#define JH8100_NERST_CAN1					46
++#define JH8100_NERST_SMBUS0					47
++#define JH8100_NERST_SYS_IOMUX_E				48
++#define JH8100_NERST_DUBHE_TVSENSOR				49
 +
-+#include <dt-bindings/clock/starfive,jh8100-crg.h>
-+
-+#include "clk-starfive-jh8100.h"
-+
-+#define JH8100_NWCLK_NUM_CLKS				(JH8100_NWCLK_UART6_ICG_EN + 1)
-+
-+/* external clocks */
-+#define JH8100_NWCLK_OSC				(JH8100_NWCLK_NUM_CLKS + 0)
-+#define JH8100_NWCLK_APB_BUS				(JH8100_NWCLK_NUM_CLKS + 1)
-+#define JH8100_NWCLK_APB_BUS_PER4			(JH8100_NWCLK_NUM_CLKS + 2)
-+#define JH8100_NWCLK_SPI_CORE_100			(JH8100_NWCLK_NUM_CLKS + 3)
-+#define JH8100_NWCLK_ISP_2X				(JH8100_NWCLK_NUM_CLKS + 4)
-+#define JH8100_NWCLK_ISP__AXI				(JH8100_NWCLK_NUM_CLKS + 5)
-+#define JH8100_NWCLK_VOUT_ROOT0				(JH8100_NWCLK_NUM_CLKS + 6)
-+#define JH8100_NWCLK_VOUT_ROOT1				(JH8100_NWCLK_NUM_CLKS + 7)
-+#define JH8100_NWCLK_VOUT_SCAN__ATS			(JH8100_NWCLK_NUM_CLKS + 8)
-+#define JH8100_NWCLK_VOUT_DC__CORE			(JH8100_NWCLK_NUM_CLKS + 9)
-+#define JH8100_NWCLK_VOUT__AXI				(JH8100_NWCLK_NUM_CLKS + 10)
-+#define JH8100_NWCLK_AXI_400				(JH8100_NWCLK_NUM_CLKS + 11)
-+#define JH8100_NWCLK_DVP_EXT				(JH8100_NWCLK_NUM_CLKS + 12)
-+#define JH8100_NWCLK_ISP_DPHY_TAP_TCK_EXT		(JH8100_NWCLK_NUM_CLKS + 13)
-+#define JH8100_NWCLK_GLB_EXT				(JH8100_NWCLK_NUM_CLKS + 14)
-+#define JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK_EXT		(JH8100_NWCLK_NUM_CLKS + 15)
-+#define JH8100_NWCLK_VOUT_EDP_TAP_TCK_EXT		(JH8100_NWCLK_NUM_CLKS + 16)
-+#define JH8100_NWCLK_SPI_IN2_EXT			(JH8100_NWCLK_NUM_CLKS + 17)
-+#define JH8100_NWCLK_PERH_ROOT_PREOSC			(JH8100_NWCLK_NUM_CLKS + 18)
-+#define JH8100_NWCLK_AHB_VOUT				(JH8100_NWCLK_NUM_CLKS + 19)
-+#define JH8100_NWCLK_PLL5_OUT				(JH8100_NWCLK_NUM_CLKS + 20)
-+
-+static const struct starfive_clk_data jh8100_nwcrg_clk_data[] = {
-+	/* root */
-+	STARFIVE__DIV(JH8100_NWCLK_PLL5_DIV2, "pll5_div2", 2, JH8100_NWCLK_PLL5_OUT),
-+	STARFIVE_GDIV(JH8100_NWCLK_GCLK5, "gclk5", CLK_IS_CRITICAL, 120, JH8100_NWCLK_PLL5_DIV2),
-+	/* gpio */
-+	STARFIVE_GATE(JH8100_NWCLK_GPIO_100, "gpio_100", CLK_IS_CRITICAL, JH8100_NWCLK_PLL5_OUT),
-+	STARFIVE_GATE(JH8100_NWCLK_GPIO_50, "gpio_50", CLK_IS_CRITICAL, JH8100_NWCLK_PLL5_OUT),
-+	STARFIVE_GATE(JH8100_NWCLK_GPIO_150, "gpio_150", CLK_IS_CRITICAL, JH8100_NWCLK_PLL5_OUT),
-+	STARFIVE_GDIV(JH8100_NWCLK_GPIO_60, "gpio_60", CLK_IS_CRITICAL, 30, JH8100_NWCLK_PLL5_OUT),
-+	/* iomux */
-+	STARFIVE_GATE(JH8100_NWCLK_IOMUX_WEST_PCLK, "iomux_west_pclk", 0,
-+		      JH8100_NWCLK_APB_BUS_PER4),
-+	/* i2c */
-+	STARFIVE_GATE(JH8100_NWCLK_I2C6_APB, "i2c6_apb", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_I2C7_APB, "i2c7_apb", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	/* spi */
-+	STARFIVE_GATE(JH8100_NWCLK_SPI2_APB, "spi2_apb", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_SPI2_CORE, "spi2_core", 0, JH8100_NWCLK_SPI_CORE_100),
-+	STARFIVE__MUX(JH8100_NWCLK_SPI2_SCLK_IN, "spi2_sclk_in", 2,
-+		      JH8100_NWCLK_SPI_IN2_EXT, JH8100_NWCLK_GPIO_100),
-+	/* smbus */
-+	STARFIVE_GATE(JH8100_NWCLK_SMBUS1_APB, "smbus1_apb", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GDIV(JH8100_NWCLK_SMBUS1_CORE, "smbus1_core", CLK_IGNORE_UNUSED, 120,
-+		      JH8100_NWCLK_PERH_ROOT_PREOSC),
-+	/* isp */
-+	STARFIVE__MUX(JH8100_NWCLK_ISP_DVP, "isp_dvp", 2, JH8100_NWCLK_DVP_EXT,
-+		      JH8100_NWCLK_GPIO_150),
-+	STARFIVE_GATE(JH8100_NWCLK_ISP_CORE_2X, "isp_core_2x", 0, JH8100_NWCLK_ISP_2X),
-+	STARFIVE_GATE(JH8100_NWCLK_ISP_AXI, "isp_axi_nw", 0, JH8100_NWCLK_ISP__AXI),
-+	STARFIVE__MUX(JH8100_NWCLK_ISP_DPHY_TAP_TCK, "isp_dphy_tap_tck", 2,
-+		      JH8100_NWCLK_ISP_DPHY_TAP_TCK_EXT, JH8100_NWCLK_GLB_EXT),
-+	STARFIVE_GATE(JH8100_NWCLK_FLEXNOC_ISPSLV, "flexnoc_ispslv", 0, JH8100_NWCLK_ISP__AXI),
-+	/* vout */
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_PIX0, "vout_pix0", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_VOUT_ROOT0),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_PIX1, "vout_pix1", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_VOUT_ROOT1),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_SCAN_ATS, "vout_scan_ats_nw",
-+		      CLK_IGNORE_UNUSED, JH8100_NWCLK_VOUT_SCAN__ATS),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_DC_CORE, "vout_dc_core_nw",
-+		      CLK_IGNORE_UNUSED, JH8100_NWCLK_VOUT_DC__CORE),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_APB, "vout_apb", CLK_IGNORE_UNUSED, JH8100_NWCLK_APB_BUS),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_DSI, "vout_dsi", CLK_IGNORE_UNUSED, JH8100_NWCLK_AXI_400),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_AHB, "vout_ahb", CLK_IGNORE_UNUSED, JH8100_NWCLK_AHB_VOUT),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_AXI, "vout_axi_nw", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_VOUT__AXI),
-+	STARFIVE__MUX(JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK, "vout_mipi_dphy_tap_tck", 2,
-+		      JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK_EXT, JH8100_NWCLK_GLB_EXT),
-+	STARFIVE__MUX(JH8100_NWCLK_VOUT_EDP_PHY_TAP_TCK, "vout_edp_phy_tap_tck", 2,
-+		      JH8100_NWCLK_VOUT_EDP_TAP_TCK_EXT, JH8100_NWCLK_GLB_EXT),
-+	/* uart */
-+	STARFIVE__DIV(JH8100_NWCLK_UART5_CORE_PREOSC, "uart5_core_preosc", 131071,
-+		      JH8100_NWCLK_PERH_ROOT_PREOSC),
-+	STARFIVE_GATE(JH8100_NWCLK_UART5_APB, "uart5_apb", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GMUX(JH8100_NWCLK_UART5_CORE, "uart5_core", 0, 2,
-+		      JH8100_NWCLK_OSC, JH8100_NWCLK_UART5_CORE_PREOSC),
-+	STARFIVE__DIV(JH8100_NWCLK_UART6_CORE_PREOSC, "uart6_core_preosc", 131071,
-+		      JH8100_NWCLK_PERH_ROOT_PREOSC),
-+	STARFIVE_GATE(JH8100_NWCLK_UART6_APB, "uart6_apb", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GMUX(JH8100_NWCLK_UART6_CORE, "uart6_core", 0, 2,
-+		      JH8100_NWCLK_OSC, JH8100_NWCLK_UART6_CORE_PREOSC),
-+	/* icg_en */
-+	STARFIVE_GATE(JH8100_NWCLK_SPI2_ICG_EN, "spi2_en", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_SMBUS1_ICG_EN, "smbus1_en", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_ISP_ICG_EN, "isp_en", 0, JH8100_NWCLK_ISP__AXI),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_ICG_EN, "vout_en", 0, JH8100_NWCLK_VOUT_ROOT0),
-+	STARFIVE_GATE(JH8100_NWCLK_UART5_ICG_EN, "uart5_en", 0, JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_UART6_ICG_EN, "uart6_en", 0, JH8100_NWCLK_APB_BUS_PER4),
-+};
-+
-+static struct clk_hw *jh8100_nwcrg_clk_get(struct of_phandle_args *clkspec, void *data)
-+{
-+	struct starfive_clk_priv *priv = data;
-+	unsigned int idx = clkspec->args[0];
-+
-+	if (idx < JH8100_NWCLK_NUM_CLKS)
-+		return &priv->reg[idx].hw;
-+
-+	return ERR_PTR(-EINVAL);
-+}
-+
-+static int jh8100_nwcrg_probe(struct platform_device *pdev)
-+{
-+	struct starfive_clk_priv *priv;
-+	unsigned int idx;
-+	int ret;
-+
-+	priv = devm_kzalloc(&pdev->dev,
-+			    struct_size(priv, reg, JH8100_NWCLK_NUM_CLKS),
-+			    GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&priv->rmw_lock);
-+	priv->dev = &pdev->dev;
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	for (idx = 0; idx < JH8100_NWCLK_NUM_CLKS; idx++) {
-+		u32 max = jh8100_nwcrg_clk_data[idx].max;
-+		struct clk_parent_data parents[4] = {};
-+		struct clk_init_data init = {
-+			.name = jh8100_nwcrg_clk_data[idx].name,
-+			.ops = starfive_clk_ops(max),
-+			.parent_data = parents,
-+			.num_parents =
-+				((max & STARFIVE_CLK_MUX_MASK) >> STARFIVE_CLK_MUX_SHIFT) + 1,
-+			.flags = jh8100_nwcrg_clk_data[idx].flags,
-+		};
-+		struct starfive_clk *clk = &priv->reg[idx];
-+		unsigned int i;
-+
-+		for (i = 0; i < init.num_parents; i++) {
-+			unsigned int pidx = jh8100_nwcrg_clk_data[idx].parents[i];
-+
-+			if (pidx < JH8100_NWCLK_NUM_CLKS)
-+				parents[i].hw = &priv->reg[pidx].hw;
-+			else if (pidx == JH8100_NWCLK_OSC)
-+				parents[i].fw_name = "osc";
-+			else if (pidx == JH8100_NWCLK_APB_BUS)
-+				parents[i].fw_name = "apb_bus";
-+			else if (pidx == JH8100_NWCLK_APB_BUS_PER4)
-+				parents[i].fw_name = "apb_bus_per4";
-+			else if (pidx == JH8100_NWCLK_SPI_CORE_100)
-+				parents[i].fw_name = "spi_core_100";
-+			else if (pidx == JH8100_NWCLK_ISP_2X)
-+				parents[i].fw_name = "isp_2x";
-+			else if (pidx == JH8100_NWCLK_ISP__AXI)
-+				parents[i].fw_name = "isp_axi";
-+			else if (pidx == JH8100_NWCLK_VOUT_ROOT0)
-+				parents[i].fw_name = "vout_root0";
-+			else if (pidx == JH8100_NWCLK_VOUT_ROOT1)
-+				parents[i].fw_name = "vout_root1";
-+			else if (pidx == JH8100_NWCLK_VOUT_SCAN__ATS)
-+				parents[i].fw_name = "vout_scan_ats";
-+			else if (pidx == JH8100_NWCLK_VOUT_DC__CORE)
-+				parents[i].fw_name = "vout_dc_core";
-+			else if (pidx == JH8100_NWCLK_VOUT__AXI)
-+				parents[i].fw_name = "vout_axi";
-+			else if (pidx == JH8100_NWCLK_AXI_400)
-+				parents[i].fw_name = "axi_400";
-+			else if (pidx == JH8100_NWCLK_DVP_EXT)
-+				parents[i].fw_name = "dvp-ext";
-+			else if (pidx == JH8100_NWCLK_ISP_DPHY_TAP_TCK_EXT)
-+				parents[i].fw_name = "isp-dphy-tap-tck-ext";
-+			else if (pidx == JH8100_NWCLK_GLB_EXT)
-+				parents[i].fw_name = "glb-ext-clk";
-+			else if (pidx == JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK_EXT)
-+				parents[i].fw_name = "vout-mipi-dphy-tap-tck-ext";
-+			else if (pidx == JH8100_NWCLK_VOUT_EDP_TAP_TCK_EXT)
-+				parents[i].fw_name = "vout-edp-tap-tck-ext";
-+			else if (pidx == JH8100_NWCLK_SPI_IN2_EXT)
-+				parents[i].fw_name = "spi-in2-ext";
-+			else if (pidx == JH8100_NWCLK_PERH_ROOT_PREOSC)
-+				parents[i].fw_name = "perh_root_preosc";
-+			else if (pidx == JH8100_NWCLK_AHB_VOUT)
-+				parents[i].fw_name = "ahb0";
-+			else
-+				parents[i].fw_name = "pll5";
-+		}
-+
-+		clk->hw.init = &init;
-+		clk->idx = idx;
-+		clk->max_div = max & STARFIVE_CLK_DIV_MASK;
-+
-+		ret = devm_clk_hw_register(&pdev->dev, &clk->hw);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = devm_of_clk_add_hw_provider(&pdev->dev, jh8100_nwcrg_clk_get, priv);
-+	if (ret)
-+		return ret;
-+
-+	return jh8100_reset_controller_register(priv, "rst-nw", 1);
-+}
-+
-+static const struct of_device_id jh8100_nwcrg_match[] = {
-+	{ .compatible = "starfive,jh8100-nwcrg" },
-+	{ /* sentinel */ }
-+};
-+
-+static struct platform_driver jh8100_nwcrg_driver = {
-+	.driver = {
-+		.name = "clk-starfive-jh8100-nw",
-+		.of_match_table = jh8100_nwcrg_match,
-+		.suppress_bind_attrs = true,
-+	},
-+};
-+builtin_platform_driver_probe(jh8100_nwcrg_driver, jh8100_nwcrg_probe);
+ #endif /* __DT_BINDINGS_RESET_STARFIVE_JH8100_H__ */
 -- 
 2.34.1
 
