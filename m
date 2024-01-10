@@ -1,30 +1,42 @@
-Return-Path: <linux-kernel+bounces-22590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E371E82A01F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:10:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02A4082A022
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:16:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9204B1F21DF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A32C28589B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25414D586;
-	Wed, 10 Jan 2024 18:10:17 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9734CDF8;
-	Wed, 10 Jan 2024 18:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EE252F4;
-	Wed, 10 Jan 2024 10:10:59 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 659FF3F5A1;
-	Wed, 10 Jan 2024 10:10:09 -0800 (PST)
-Message-ID: <5ac0df44-82b6-463b-a805-65f93d181215@arm.com>
-Date: Wed, 10 Jan 2024 19:10:08 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDCF4D581;
+	Wed, 10 Jan 2024 18:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sBlFWikV"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894E94CDE0;
+	Wed, 10 Jan 2024 18:16:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=P5W+XAlOAJNlDZf97/sRKEcWMM8n4myFRv+RWU0uogg=; b=sBlFWikVsbCqtAgADtOuCnGoH4
+	AxTBDxMZubyBoGX2ShmD+3I6g20CX7Sa9L7RRg7Za5/ElF9tutC3DN+twgSv4e69niS6m3dbcO1l+
+	TvRJJ1fqh1PHT52GZxjsqkUox+k9rE1nQcglt5vHXJInVfN/kTZdMfV8TLgkifocSK5nKfX4pwY+5
+	us825GDF1swrTKdL3epwGT9EABOtEaggge4V8T5tl1OJ7K0ckNK4H3PikqVE8FTa6wCKVji0xrXrF
+	zD+oU4/pVJVtITj49/T7b1aUvIVSz11HnY0L+XpTqYY8Wp8txqp5d/hWwPvnBZTBszAX2avcAAzH5
+	aSKoF8zQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rNd7H-00DOoO-0n;
+	Wed, 10 Jan 2024 18:15:51 +0000
+Message-ID: <63046420-264a-4e7c-b45c-17f0486ba4d9@infradead.org>
+Date: Wed, 10 Jan 2024 10:15:49 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -32,108 +44,104 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/5] Rework system pressure interface to the scheduler
+Subject: Re: [PATCH v3 2/4] membarrier: Create
+ Documentation/scheduler/membarrier.rst
 Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
- sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
- agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
- mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
- bristot@redhat.com, vschneid@redhat.com, lukasz.luba@arm.com,
- rui.zhang@intel.com, mhiramat@kernel.org, daniel.lezcano@linaro.org,
- amit.kachhap@gmail.com, corbet@lwn.net, gregkh@linuxfoundation.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- qyousef@layalina.io
-References: <20240108134843.429769-1-vincent.guittot@linaro.org>
- <d37e3d06-d9fc-4fc3-ad92-e7031489660a@arm.com>
- <CAKfTPtAOSgnStDSao1QarHuUW9BTfk1o7r6NO4LhwEJMhq1drg@mail.gmail.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <CAKfTPtAOSgnStDSao1QarHuUW9BTfk1o7r6NO4LhwEJMhq1drg@mail.gmail.com>
+To: Andrea Parri <parri.andrea@gmail.com>, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, mathieu.desnoyers@efficios.com,
+ paulmck@kernel.org, corbet@lwn.net
+Cc: mmaas@google.com, hboehm@google.com, striker@us.ibm.com,
+ charlie@rivosinc.com, rehn@rivosinc.com, linux-riscv@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240110145533.60234-1-parri.andrea@gmail.com>
+ <20240110145533.60234-3-parri.andrea@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240110145533.60234-3-parri.andrea@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 09/01/2024 14:29, Vincent Guittot wrote:
-> On Tue, 9 Jan 2024 at 12:34, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>
->> On 08/01/2024 14:48, Vincent Guittot wrote:
->>> Following the consolidation and cleanup of CPU capacity in [1], this serie
->>> reworks how the scheduler gets the pressures on CPUs. We need to take into
->>> account all pressures applied by cpufreq on the compute capacity of a CPU
->>> for dozens of ms or more and not only cpufreq cooling device or HW
->>> mitigiations. we split the pressure applied on CPU's capacity in 2 parts:
->>> - one from cpufreq and freq_qos
->>> - one from HW high freq mitigiation.
->>>
->>> The next step will be to add a dedicated interface for long standing
->>> capping of the CPU capacity (i.e. for seconds or more) like the
->>> scaling_max_freq of cpufreq sysfs. The latter is already taken into
->>> account by this serie but as a temporary pressure which is not always the
->>> best choice when we know that it will happen for seconds or more.
->>
->> I guess this is related to the 'user space system pressure' (*) slide of
->> your OSPM '23 talk.
+Hi,
+
+On 1/10/24 06:55, Andrea Parri wrote:
+> To gather the architecture requirements of the "private/global
+> expedited" membarrier commands.  The file will be expanded to
+> integrate further information about the membarrier syscall (as
+> needed/desired in the future).  While at it, amend some related
+> inline comments in the membarrier codebase.
 > 
-> yes
+> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
+> ---
+>  Documentation/scheduler/index.rst      |  1 +
+>  Documentation/scheduler/membarrier.rst | 37 ++++++++++++++++++++++++++
+>  MAINTAINERS                            |  1 +
+>  kernel/sched/core.c                    |  7 ++++-
+>  kernel/sched/membarrier.c              |  8 +++---
+>  5 files changed, 49 insertions(+), 5 deletions(-)
+>  create mode 100644 Documentation/scheduler/membarrier.rst
 > 
->>
->> Where do you draw the line when it comes to time between (*) and the
->> 'medium pace system pressure' (e.g. thermal and FREQ_QOS).
-> 
-> My goal is to consider the /sys/../scaling_max_freq as the 'user space
-> system pressure'
-> 
->>
->> IIRC, with (*) you want to rebuild the sched domains etc.
-> 
-> The easiest way would be to rebuild the sched_domain but the cost is
-> not small so I would prefer to skip the rebuild and add a new signal
-> that keep track on this capped capacity
+> diff --git a/Documentation/scheduler/index.rst b/Documentation/scheduler/index.rst
+> index 3170747226f6d..43bd8a145b7a9 100644
+> --- a/Documentation/scheduler/index.rst
+> +++ b/Documentation/scheduler/index.rst
+> @@ -7,6 +7,7 @@ Scheduler
+>  
+>  
+>      completion
+> +    membarrier
+>      sched-arch
+>      sched-bwc
+>      sched-deadline
+> diff --git a/Documentation/scheduler/membarrier.rst b/Documentation/scheduler/membarrier.rst
+> new file mode 100644
+> index 0000000000000..ab7ee3824b407
+> --- /dev/null
+> +++ b/Documentation/scheduler/membarrier.rst
+> @@ -0,0 +1,37 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +========================
+> +membarrier() System Call
+> +========================
+> +
+> +MEMBARRIER_CMD_{PRIVATE,GLOBAL}_EXPEDITED - Architecture requirements
+> +=====================================================================
+> +
+> +Memory barriers before updating rq->curr
+> +----------------------------------------
+> +
+> +The command requires each architecture to have a full memory barrier after
+> +coming from user-space, before updating rq->curr.  This barrier is implied
+> +by the sequence rq_lock(); smp_mb__after_spinlock() in __schedule().  The
+> +barrier matches a full barrier in the proximity of the membarrier system
+> +call exit, cf. membarrier_{private,global}_expedited().
+> +
 
-Are you saying that you don't need to rebuild sched domains since
-cpu_capacity information of the sched domain hierarchy is
-independently updated via: 
+What does "The command" refer to above and below, please?
 
-update_sd_lb_stats() {
+Thanks.
 
-  update_group_capacity() {
-
-    if (!child)
-      update_cpu_capacity(sd, cpu) {
-
-        capacity = scale_rt_capacity(cpu) {
-
-          max = get_actual_cpu_capacity(cpu) <- (*)
-        }
-
-        sdg->sgc->capacity = capacity;
-        sdg->sgc->min_capacity = capacity;
-        sdg->sgc->max_capacity = capacity;
-      }
-
-  }
-
-}
-        
-(*) influence of temporary and permanent (to be added) frequency
-pressure on cpu_capacity (per-cpu and in sd data)
+> +Memory barriers after updating rq->curr
+> +---------------------------------------
+> +
+> +The command requires each architecture to have a full memory barrier after
+> +updating rq->curr, before returning to user-space.  The schemes providing
+> +this barrier on the various architectures are as follows.
+> +
+> + - alpha, arc, arm, hexagon, mips rely on the full barrier implied by
+> +   spin_unlock() in finish_lock_switch().
+> +
+> + - arm64 relies on the full barrier implied by switch_to().
+> +
+> + - powerpc, riscv, s390, sparc, x86 rely on the full barrier implied by
+> +   switch_mm(), if mm is not NULL; they rely on the full barrier implied
+> +   by mmdrop(), otherwise.  On powerpc and riscv, switch_mm() relies on
+> +   membarrier_arch_switch_mm().
+> +
+> +The barrier matches a full barrier in the proximity of the membarrier system
+> +call entry, cf. membarrier_{private,global}_expedited().
 
 
-example: hackbench on h960 with IPA:
-                                                                                  cap  min  max
-..
-hackbench-2284 [007] .Ns..  2170.796726: update_group_capacity: sdg !child cpu=7 1017 1017 1017
-hackbench-2456 [007] ..s..  2170.920729: update_group_capacity: sdg !child cpu=7 1018 1018 1018
-    <...>-2314 [007] ..s1.  2171.044724: update_group_capacity: sdg !child cpu=7 1011 1011 1011
-hackbench-2541 [007] ..s..  2171.168734: update_group_capacity: sdg !child cpu=7  918  918  918
-hackbench-2558 [007] .Ns..  2171.228716: update_group_capacity: sdg !child cpu=7  912  912  912
-    <...>-2321 [007] ..s..  2171.352718: update_group_capacity: sdg !child cpu=7  812  812  812
-hackbench-2553 [007] ..s..  2171.476721: update_group_capacity: sdg !child cpu=7  640  640  640
-    <...>-2446 [007] ..s2.  2171.600743: update_group_capacity: sdg !child cpu=7  610  610  610
-hackbench-2347 [007] ..s..  2171.724738: update_group_capacity: sdg !child cpu=7  406  406  406
-hackbench-2331 [007] .Ns1.  2171.848768: update_group_capacity: sdg !child cpu=7  390  390  390
-hackbench-2421 [007] ..s..  2171.972733: update_group_capacity: sdg !child cpu=7  388  388  388
-..
+-- 
+#Randy
 
