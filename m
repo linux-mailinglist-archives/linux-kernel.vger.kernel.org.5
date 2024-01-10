@@ -1,74 +1,133 @@
-Return-Path: <linux-kernel+bounces-21926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B658296AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:56:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE1B8296B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:57:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4DE41C239AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:56:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 125A91C25474
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1EEF3F8D4;
-	Wed, 10 Jan 2024 09:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB503FE33;
+	Wed, 10 Jan 2024 09:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="YcpeB0b3"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5Ec0NjNi"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1BD3A1B7;
-	Wed, 10 Jan 2024 09:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1704880594; x=1705139794;
-	bh=G5ZY+WDMakXQ+A9kkyY+1Zweqn5BA5eHIwkKZO9iYKQ=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=YcpeB0b3VX7/GpBoMKn1mndlZCFdb59O1BSfSkQZ4H3Fsnbb7NuRIEHPcLdlDGj4R
-	 PMYfqA4uM58gDa1TE0wfLsBTv2W/YIboon/C3kKkNPvjDausG5B8XMEEvEwca/MZ2P
-	 z7NJhGsbjia725+UFHHieel28RE5bMBvYSt6GkJ4Hd1NsRlh3PMezy1BUSf0FelewO
-	 jB9WPKJojBT0EwLFJWQiNgtYPJULdYKY+vrwWYcNr8KVn/xehXHg1IDBuiEZgrKdrC
-	 gDQxkbP4QoLOUEEq4DwqU8hc5zbD7eNNB5/oyh/mZ+bm12FEiQXhQ4nmEI49m0E0W+
-	 a4ar3oMjmQ0AQ==
-Date: Wed, 10 Jan 2024 09:56:22 +0000
-To: Charalampos Mitrodimas <charmitro@posteo.net>, ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com, boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com, aliceryhl@google.com, a.hindborg@samsung.com
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: sync: `CondVar` rename "wait_list" to "wait_queue_head"
-Message-ID: <b11521cc-b873-4734-bb51-83f313300509@proton.me>
-In-Reply-To: <20240105012930.1426214-1-charmitro@posteo.net>
-References: <20240105012930.1426214-1-charmitro@posteo.net>
-Feedback-ID: 71780778:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7E03FB3D
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=StNIPGDYUoZtB3dBQ9rKrxT14/pyd2QruX6d6NO+hmDsCUoiAXhMqxYcRHLVLy+K9DbPStW/WmlAZQU1QsbodloLdylerttmxNWOVnR6kTFpEN5bWRIq19KiI0exgUYcVP77TQwYJy0csgMh7GOUgvcfNpceH83tXdBVzweEZWay56WDB2CSuN8TRUdbNAuFzegy9Qj3BmsWU3wwPtZ5dcf5H0S2E5ii3GV4Qm9s+OP0A6jqvXagrrkXKVP7zKrj1bW8il8GZBvhFaVto6D5C3icBNUl7f4Hvje3qszwTGaXyWp2+ko6ZYN8LbnfCvgYHh8YsDoKWj2nurHPUjshcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b/cfS3KQMQVpEL831Ezu1yw2BuuTIvLrxvn2VFTtMTU=;
+ b=kz+1p77eI5PYX7H+UWf6khkf9aesEh4avb7izYQiCkYVo1z7boSaz2j66FunBkD8Q0PuhqIBRaRdPTSga47MybPIq73mr6Lo+mmQ18kAtnBZ+V49W3SmKOrUptPwL3AIMcEF1n9POLlQ0KS2FeiflfAyluEQp+SdN24VagEGZeaoGHZnukdAHK2fIVTFsGomC1W7sHDYYYzCVw0mzjt14pIVKGbq7R6WvsC8p58oCiOlW7KXoXIoEKbbwRU4R2CGRICTFugMXT5b4FP5CAvraN998MxfifY5g8rsyWNHEXfMYoxeWTWPtxScs2739HWN6Z9AZ8oBVIJruhk129Shfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b/cfS3KQMQVpEL831Ezu1yw2BuuTIvLrxvn2VFTtMTU=;
+ b=5Ec0NjNiU5hzcISj7ZGCRWS3qGZKKOpJmZkZIEL6z6nVcRyWXemlUjhhyxW8jBIUE3ouNYB91yKcaMkT6ZDRHTJYf64fjgc0UJQxGacQTBr5/kLxkjVgHxLrlY3jBmsD4gGfaxhMRSioOfu2trtw+IEuWBYS3mG0FN4aQvPqA2k=
+Received: from MW4PR04CA0295.namprd04.prod.outlook.com (2603:10b6:303:89::30)
+ by BL3PR12MB6403.namprd12.prod.outlook.com (2603:10b6:208:3b3::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16; Wed, 10 Jan
+ 2024 09:56:55 +0000
+Received: from MWH0EPF000971E9.namprd02.prod.outlook.com
+ (2603:10b6:303:89:cafe::3b) by MW4PR04CA0295.outlook.office365.com
+ (2603:10b6:303:89::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23 via Frontend
+ Transport; Wed, 10 Jan 2024 09:56:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000971E9.mail.protection.outlook.com (10.167.243.71) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 09:56:54 +0000
+Received: from jenkins-julia.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 10 Jan
+ 2024 03:56:49 -0600
+From: Julia Zhang <julia.zhang@amd.com>
+To: Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+	<olvaffe@gmail.com>, David Airlie <airlied@redhat.com>, Gerd Hoffmann
+	<kraxel@redhat.com>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+	<virtualization@lists.linux-foundation.org>
+CC: Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, Daniel Vetter
+	<daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Erik Faye-Lund
+	<kusmabite@gmail.com>, =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?=
+	<marek.olsak@amd.com>, Pierre-Eric Pelloux-Prayer
+	<pierre-eric.pelloux-prayer@amd.com>, Honglei Huang <honglei1.huang@amd.com>,
+	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>, Julia Zhang
+	<julia.zhang@amd.com>
+Subject: [PATCH 0/1] Implement device_attach for virtio gpu
+Date: Wed, 10 Jan 2024 17:56:26 +0800
+Message-ID: <20240110095627.227454-1-julia.zhang@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E9:EE_|BL3PR12MB6403:EE_
+X-MS-Office365-Filtering-Correlation-Id: 744cff6d-0c5b-47ef-16f0-08dc11c279ff
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	OK0+8rkRbCvYMmM77eV+mdBBsvw4NpIUNV/V2yeyd7uBQWOIEym7CduLsbEWZ0HN45Ggn3o0uXIcs5fBziZHQDXf185rXhhJaSpUd/GLBHTAj8eB1ICXUlWKwYLj2YRx/RhA/wJ2o6pmHHq41rzuA5uiPSXHkaVI87L5WsNmKVcqMn4PuL7drr7r0oe0tc5n5BfKbS5oSlP4kiR/t8VxSFZbLpgxWh8lDMQc5kjVhDPclUdDh8uTn7ZbJrLdGImBOYzbjWacBPFoC2QpPpJ8G/Qt4B2W3K94spGRBLydTs3mNE19+tWGae0x43cdgefaCYYAFuQqmEvlSQgBtSjU5g2xzdB0z86MOLwZl722S0QETY4Wsqx5HxSXohrZ3XbCF18e0N/8e/ydn8hUuSeCEWAC/pICaxqkrm6KqOD2HOU7b2kP7R8ekfMqwtaa0h9d5SiCzJfzMS99gsxuELvEOCsKFcOZZF8jA2nFadolsPXYlj66P2MQOniVwhX0uC/jXvelsCi88je9+tpaLLhXPoPIiaJJ6Dom3hPyfj31IH2vWXSFmh4LSpg7VM1hsIvJ4H2Jft2vdfodEoHOXMwk9tkDZhYoMsFWl0ALnTDEeZ5YTSrfic+LFrQI5npf/JrVC6eDdejgoglyYo0m0HuSsF2ci1NYKakEui9eui1m2dUsi4BtZoV33fRkSurztAlVfyruGMp8HuUNcflvrgRvlL+ZYXg7bfaU8AYp07CRjSrEz2p62b0OgglNm0TCHR5AZ2voupF++ztEfZfSrfBD1A==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(39860400002)(396003)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(82310400011)(36840700001)(46966006)(40470700004)(16526019)(36756003)(83380400001)(2616005)(5660300002)(426003)(336012)(26005)(1076003)(47076005)(2906002)(8676002)(478600001)(4744005)(4326008)(7416002)(54906003)(6666004)(7696005)(8936002)(316002)(36860700001)(44832011)(110136005)(70206006)(70586007)(356005)(41300700001)(82740400003)(81166007)(86362001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 09:56:54.6293
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 744cff6d-0c5b-47ef-16f0-08dc11c279ff
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E9.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6403
 
-On 05.01.24 02:29, Charalampos Mitrodimas wrote:
-> Fields named "wait_list" usually are of type "struct list_head". To
-> avoid confusion and because it is of type
-> "Opaque<bindings::wait_queue_head>" we are renaming "wait_list" to
-> "wait_queue_head".
->=20
-> Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
-> ---
->   rust/kernel/sync/condvar.rs | 20 ++++++++++++--------
->   1 file changed, 12 insertions(+), 8 deletions(-)
+To realize dGPU prime feature for virtio gpu, we are trying let dGPU import
+vram object of virtio gpu. But this feature would finally call function
+virtio_dma_buf_ops.device_attach(), which was set as drm_gem_map_attach().
+drm_gem_map_attach() requires drm_gem_object_funcs.get_sg_table to be
+implemented, or else return ENOSYS. But virtio gpu driver has not
+implemented it for vram object and actually vram object does not require
+it. So this add a new implementation of device_attach() to call
+drm_gem_map_attach() for shmem object and return 0 for vram object as it
+actually did before the requirement was added.
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+Julia Zhang (1):
+  drm/virtio: Implement device_attach
 
-Thanks for the patch!
+ drivers/gpu/drm/virtio/virtgpu_prime.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
---=20
-Cheers,
-Benno
-
+-- 
+2.34.1
 
 
