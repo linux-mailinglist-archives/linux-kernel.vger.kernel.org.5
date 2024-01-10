@@ -1,120 +1,144 @@
-Return-Path: <linux-kernel+bounces-22032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD398829835
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:00:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55AEC829837
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D6A9B2371B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:00:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 770091C21C55
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3234439B;
-	Wed, 10 Jan 2024 11:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B2A4439B;
+	Wed, 10 Jan 2024 11:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="IVNTihcm"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H/dSOAFw"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8515541205
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a26f73732c5so459005466b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:00:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114DA41205
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e7f58c5fbso5109980e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:00:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1704884424; x=1705489224; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ONi/SB9nLqgwdclaMN3RyBOpRG19jO44sGJgFACT67g=;
-        b=IVNTihcm+vRSs/l7RJQ/Ty7O8XdgPaIZUKJnF8cpWhci6F2+kNMWB9wr4LcNEhMD+y
-         BzhqC4OPpyFUzKzKJz4efIWl1sb3Jrq6wcV6r8zRt6gLxvSjSt6iHF/2frpuQQAjBnOY
-         ILmj/85CJzSlER353HH9qJKo1bBKOaf4O4S70Hh4hwLjCJdBgJ4XU1G2N1akMkFQoT1N
-         BIO/Wyc+qW0SsVh4ajxTm1Quc74ZpiH/KLA/o64NiDgvZk1cCrE1cZxUV8EanZrmD+ve
-         CBFP+hYWWqSWYDzWBVCSIwXPx+WBV+HXEDh7Crzhrd7sHNlXrG1Ev2locE/XDCGSE5YC
-         FkWQ==
+        d=linaro.org; s=google; t=1704884440; x=1705489240; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RfeKeWELsUXSOsoX/4w9IRfss9fiLzU6vIaJLnkhKk8=;
+        b=H/dSOAFwvou2rKPgvKuitSKE7egPG9TAs/Uo9L0LPZt7LR05d2IyDHbS/QWbnOfH2b
+         +ba2tcq/QkjdNY04fuMHG4BkQiT7GLGv0Q3fZCoLlqZWxyIzYTynC6cS2R2RedlTHE7V
+         fbV7WeKKDJlEzhMFDE47Tvq2SK05v+fMIFHl+JSoSQFfsLK2FMKxkCsmYRaow96dMRrg
+         ZePhGjrZ9WfpEx6hqr/YGKgEaFX7FjkzFcBQsPpnG+ZbkTinRM6M0Y9QaL/pwHaKGrGJ
+         o0gRN+CHi/O+Qe2EUOxOSeZ+XM6S0ewy7UZ3FHqRELSglNf/35twUalWuKqB/wk2GyVB
+         UtCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704884424; x=1705489224;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ONi/SB9nLqgwdclaMN3RyBOpRG19jO44sGJgFACT67g=;
-        b=CjjlbGPkq/PdAku3/WdX79j7JcjT8Zj5bDJZR444WbRhdbZJT/+dvEzthDQFkR/OXt
-         C5/a8Rf8VkyIJ6IXp+OlHWJimBhFfrnTK355OA8hy7A2PgMRZ5LOvxh+3uLLhlhXh4kX
-         eyrxKSHAHWfZNdf9ChrI7XnnC8h3YXIJz88M5DSJqi9B1naarKtl66zjGj35nBad/GsE
-         WQjyOq/IdkLAxs/CPwFSsU5FtqOvas2QvakFBZc0t8nhmHgveknK1CuMcKAqavxcFJ8L
-         u0yzBCNA29qSSTqjes6GR+W3AGtEIdIRNoJAVR7sn2rESomtP2k+DuaScNLwchhJiGsh
-         EEtQ==
-X-Gm-Message-State: AOJu0YwMCx0I95vUBTXg987uOhsF5PIxRh5MnuKejCOhLKYsGR4xIBBt
-	Fbz17Ww337pIFdOiT5Qv52mzi9efRpHJiw==
-X-Google-Smtp-Source: AGHT+IF5G3ti7drOafPhH/oJnH4OEjkohZU5G6wl1Gh/kLq1Rluh5+3uo+b16GQfeNr7IUyy5r+CMw==
-X-Received: by 2002:a17:907:9017:b0:a28:e3b6:ae4a with SMTP id ay23-20020a170907901700b00a28e3b6ae4amr400415ejc.57.1704884423732;
-        Wed, 10 Jan 2024 03:00:23 -0800 (PST)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id lh13-20020a170906f8cd00b00a2bd425eab2sm464326ejb.2.2024.01.10.03.00.23
+        d=1e100.net; s=20230601; t=1704884440; x=1705489240;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RfeKeWELsUXSOsoX/4w9IRfss9fiLzU6vIaJLnkhKk8=;
+        b=sxp8DIavWJgOuw2NocRXzC3b5w9KX2LyaMWrb1cyok6+AMKsWAYjovNvI8rhJa9Nqd
+         2Dc044Y39LRna1Jeqb14wNputCCXJxzumq/ORoKLHYxiL3oEO4oN//GUzoI+mCkbn5jE
+         PsGZuL5pnQXxf0em7GhfyybjhuvyG/ac+lmvveUmzg4zGtEQPXVQRuVy5WGyBcJQkX28
+         j3fz5z4DUpQwyI1DHdgNTLULfH1wbA+l9H+ANi5elVfsn04U9JiZ2oJFn3IWWqF0h2b4
+         ZDIWW+oe6atWopMCS/pcV0bbYk7Aid3efytVvRrivbSPJxPoVZ1wAwuCs4ObZjXr/K8B
+         pHag==
+X-Gm-Message-State: AOJu0Yy4JYhfD6CXxhpj894uth/ZigddZtIBoivvFHdERVSrAAdrT2a7
+	RfFYNE+0cDQW8bPguqzW+M1OdmfjJUNXUQ==
+X-Google-Smtp-Source: AGHT+IHxHBhrhaM+rqV9BsRHT6XAftzD06A/BcYSyyty/0KA0tCunnAFj1XF5aWGoLi7Er3fmNTdWg==
+X-Received: by 2002:a19:9117:0:b0:50e:7be9:52fb with SMTP id t23-20020a199117000000b0050e7be952fbmr326167lfd.82.1704884439955;
+        Wed, 10 Jan 2024 03:00:39 -0800 (PST)
+Received: from [172.30.205.119] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id eo30-20020a056512481e00b0050e7ed9585asm617280lfb.233.2024.01.10.03.00.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 03:00:23 -0800 (PST)
+        Wed, 10 Jan 2024 03:00:39 -0800 (PST)
+Message-ID: <36f9eac0-3086-4d18-9879-02738e99d262@linaro.org>
+Date: Wed, 10 Jan 2024 12:00:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 10 Jan 2024 12:00:23 +0100
-Message-Id: <CYAZ37LBKG4E.2096GKVUXN8Y2@fairphone.com>
-Cc: <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
- <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm7225-fairphone-fp4: Enable
- display and GPU
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Neil Armstrong"
- <neil.armstrong@linaro.org>, "Jessica Zhang" <quic_jesszhan@quicinc.com>,
- "Sam Ravnborg" <sam@ravnborg.org>, "David Airlie" <airlied@gmail.com>,
- "Daniel Vetter" <daniel@ffwll.ch>, "Maarten Lankhorst"
- <maarten.lankhorst@linux.intel.com>, "Maxime Ripard" <mripard@kernel.org>,
- "Thomas Zimmermann" <tzimmermann@suse.de>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Bjorn Andersson" <andersson@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240105-fp4-panel-v1-0-1afbabc55276@fairphone.com>
- <20240105-fp4-panel-v1-3-1afbabc55276@fairphone.com>
- <3fdc6e74-d817-4341-bf64-9096608990d6@linaro.org>
-In-Reply-To: <3fdc6e74-d817-4341-bf64-9096608990d6@linaro.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 1/5] iommu/arm-smmu: re-enable context caching in smmu
+ reset operation
+Content-Language: en-US
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>, will@kernel.org,
+ robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
+ jsnitsel@redhat.com, quic_bjorande@quicinc.com, mani@kernel.org,
+ quic_eberman@quicinc.com, robdclark@chromium.org,
+ u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com,
+ quic_pkondeti@quicinc.com, quic_molvera@quicinc.com
+Cc: linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ qipl.kernel.upstream@quicinc.com
+References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
+ <20240109114220.30243-2-quic_bibekkum@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240109114220.30243-2-quic_bibekkum@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed Jan 10, 2024 at 11:58 AM CET, Konrad Dybcio wrote:
->
->
-> On 1/5/24 15:29, Luca Weiss wrote:
-> > Add the description for the display panel found on this phone and remov=
-e
-> > the simple-framebuffer that was in place until now
->
-> Why? They should be able to coexist with a smooth-ish handoff
 
-Does that work upstream? I'm aware that downstream can do this but
-thought this was still missing upstream.
 
-Didn't check what happens when you have both enabled.
+On 1/9/24 12:42, Bibek Kumar Patro wrote:
+> Default MMU-500 reset operation disables context caching in
+> prefetch buffer. It is however expected for context banks using
+> the ACTLR register to retain their prefetch value during reset
+> and runtime suspend.
+> 
+> Replace default MMU-500 reset operation with Qualcomm specific reset
+> operation which envelope the default reset operation and re-enables
+> context caching in prefetch buffer for Qualcomm SoCs.
+> 
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 37 ++++++++++++++++++++--
+>   1 file changed, 34 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 549ae4dba3a6..000e207346af 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -14,6 +14,16 @@
+> 
+>   #define QCOM_DUMMY_VAL	-1
+> 
+> +/*
+> + * SMMU-500 TRM defines BIT(0) as CMTLB (Enable context caching in the
+> + * macro TLB) and BIT(1) as CPRE (Enable context caching in the prefetch
+> + * buffer). The remaining bits are implementation defined and vary across
+> + * SoCs.
+> + */
+> +
+> +#define CPRE			(1 << 1)
+> +#define CMTLB			(1 << 0)
+> +
+>   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>   {
+>   	return container_of(smmu, struct qcom_smmu, smmu);
+> @@ -376,11 +386,32 @@ static int qcom_smmu_def_domain_type(struct device *dev)
+>   	return match ? IOMMU_DOMAIN_IDENTITY : 0;
+>   }
+> 
+> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+> +{
+> +	int ret;
+> +	u32 val;
+> +	int i;
+> +
+> +	ret = arm_mmu500_reset(smmu);
+> +
+> +	if (ret)
+Weird empty line.. Please remove it in the next revision since you're
+already going to send a new one..
 
->
-> [...]
->
-> >  =20
-> > +&gmu {
-> > +	status =3D "okay";
->
-> Please kick the disablement from the SoC dtsi instead, it won't
-> probe without the GPU being enabled
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Ack, will include a patch in v2 for that.
-
->
-> Konrad
-
+Konrad
 
