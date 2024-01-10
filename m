@@ -1,114 +1,183 @@
-Return-Path: <linux-kernel+bounces-22603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7671A82A04A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7703282A047
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:31:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D72E2885EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:31:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B9F2886B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C9844D586;
-	Wed, 10 Jan 2024 18:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Altj7fFE"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2853B4D5B2;
+	Wed, 10 Jan 2024 18:30:56 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375A44D582;
-	Wed, 10 Jan 2024 18:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ygJO/yfS/kYURGo632XL+UAKC6HRU0bCt+QfkkSA/jQ=; b=Altj7fFEgmnst3pkUyvqp/ev10
-	l8KOLFzehOuc1jSUkQ/pKC5Dr5WSCqjyO67puXiqXG1Sz+x+DYTyX5m1XDJsdvqRFRJdccIXFuwtZ
-	f3qUcAw+XChvxpSGtvl7S7pfLiUaFbjj+Xh2mm6OKniuh+4h3rSm82IA/KeANy4uD3lgyUrGlgcyF
-	lQCz+bnsqvqzTHaGbcXe4jrGT1DPToEkIdTYVW9oRXAgc0gJxQ/fofdHYIA902JAW0+rMS/wQvQ3E
-	/FDlBX3atzL92Ci3v6VVOqAagyqzTsYJq57SCv1sASq7QTsfYPsFsATL+ejKr+3FsxbtfXePkCoy8
-	vxb/pohQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40166)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rNdMB-0005hi-25;
-	Wed, 10 Jan 2024 18:31:15 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rNdM7-0005XE-DA; Wed, 10 Jan 2024 18:31:11 +0000
-Date: Wed, 10 Jan 2024 18:31:11 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Richard van Schagen <richard@routerhints.com>,
-	Richard van Schagen <vschagen@cs.com>,
-	Frank Wunderlich <frank-w@public-files.de>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	erkin.bozoglu@xeront.com, mithat.guner@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next 08/30] net: dsa: mt7530: change p{5,6}_interface
- to p{5,6}_configured
-Message-ID: <ZZ7ib5WWyH4TyirS@shell.armlinux.org.uk>
-References: <ZHy2jQLesdYFMQtO@shell.armlinux.org.uk>
- <0542e150-5ff4-5f74-361a-1a531d19eb7d@arinc9.com>
- <7c224663-7588-988d-56cb-b9de5b43b504@arinc9.com>
- <20230610175553.hle2josd5s5jfhjo@skbuf>
- <22fba48c-054d-ff0a-ae2c-b38f192b26f7@arinc9.com>
- <9308fa1a-6de3-490b-9aeb-eb207b0432df@arinc9.com>
- <9308fa1a-6de3-490b-9aeb-eb207b0432df@arinc9.com>
- <20240110142721.vuthnnwhmuvghiw4@skbuf>
- <b47311f8-315d-46d9-bd5b-757141708a3f@arinc9.com>
- <20240110180525.wwxkkoqam37oqm2f@skbuf>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A114D5A8;
+	Wed, 10 Jan 2024 18:30:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE05C433C7;
+	Wed, 10 Jan 2024 18:30:54 +0000 (UTC)
+Date: Wed, 10 Jan 2024 13:31:54 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
+ <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
+ default ownership
+Message-ID: <20240110133154.6e18feb9@gandalf.local.home>
+In-Reply-To: <20240110105251.48334598@gandalf.local.home>
+References: <20240103203246.115732ec@gandalf.local.home>
+	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+	<20240105095954.67de63c2@gandalf.local.home>
+	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
+	<20240107132912.71b109d8@rorschach.local.home>
+	<20240108-ortsrand-ziehen-4e9a9a58e708@brauner>
+	<20240108102331.7de98cab@gandalf.local.home>
+	<20240110-murren-extra-cd1241aae470@brauner>
+	<20240110080746.50f7767d@gandalf.local.home>
+	<20240110105251.48334598@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240110180525.wwxkkoqam37oqm2f@skbuf>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 08:05:25PM +0200, Vladimir Oltean wrote:
-> On Wed, Jan 10, 2024 at 08:15:20PM +0300, Arınç ÜNAL wrote:
-> > __builtin_return_address(1) doesn't seem to work. I'm running this on arm64.
+On Wed, 10 Jan 2024 10:52:51 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Wed, 10 Jan 2024 08:07:46 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> I can't tell you why either, I'm sorry. I can just point to the
-> documentation, which does specify that "On some machines it may be
-> impossible to determine the return address of any function other than
-> the current one". If somebody knows what this depends on, feel free to
-> interject.
-> https://gcc.gnu.org/onlinedocs/gcc/Return-Address.html
+> > Or are you saying that I don't need the ".permission" callback, because
+> > eventfs does it when it creates the inodes? But for eventfs to know what
+> > the permissions changes are, it uses .getattr and .setattr.  
 > 
-> On my NXP LS1028A (also arm64) plus clang-16 compiler, __builtin_return_address()
-> does work with multiple nesting levels.
+> OK, if your main argument is that we do not need .permission, I agree with
+> you. But that's a trivial change and doesn't affect the complexity that
+> eventfs is doing. In fact, removing the "permission" check is simply this
+> patch:
+> 
+> --
+> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+> index fdff53d5a1f8..f2af07a857e2 100644
+> --- a/fs/tracefs/event_inode.c
+> +++ b/fs/tracefs/event_inode.c
+> @@ -192,18 +192,10 @@ static int eventfs_get_attr(struct mnt_idmap *idmap,
+>  	return 0;
+>  }
+>  
+> -static int eventfs_permission(struct mnt_idmap *idmap,
+> -			      struct inode *inode, int mask)
+> -{
+> -	set_top_events_ownership(inode);
+> -	return generic_permission(idmap, inode, mask);
+> -}
+> -
+>  static const struct inode_operations eventfs_root_dir_inode_operations = {
+>  	.lookup		= eventfs_root_lookup,
+>  	.setattr	= eventfs_set_attr,
+>  	.getattr	= eventfs_get_attr,
+> -	.permission	= eventfs_permission,
+>  };
+>  
+>  static const struct inode_operations eventfs_file_inode_operations = {
+> --
+> 
+> I only did that because Linus mentioned it, and I thought it was needed.
+> I'll apply this patch too, as it appears to work with this code.
 
-gcc will probably need to be using frame pointers so it can walk the
-stack, if gcc even implements non-zero values to
-__builtin_return_address(). Without frame pointers, it would need an
-unwinder.
+Oh, eventfs files and directories don't need the .permissions because its
+inodes and dentries are not created until accessed. But the "events"
+directory itself has its dentry and inode created at boot up, but still
+uses the eventfs_root_dir_inode_operations. So the .permissions is still
+needed!
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+If you look at the "set_top_events_ownership()" function, it has:
+
+	/* The top events directory doesn't get automatically updated */
+	if (!ei || !ei->is_events || !(ei->attr.mode & EVENTFS_TOPLEVEL))
+		return;
+
+That is, it does nothing if the entry is not the "events" directory. It
+falls back to he default "->permissions()" function for everything but the
+top level "events" directory.
+
+But this and .getattr are still needed for the events directory, because it
+suffers the same issue as the other tracefs entries. That is, it's inodes
+and dentries are created at boot up before it is mounted. So if the mount
+has gid=1000, it will be ignored.
+
+The .getattr is called by "stat" which ls does. So after boot up if you
+just do:
+
+ # chmod 0750 /sys/kernel/events
+ # chmod 0770 /sys/kernel/tracing
+ # mount -o remount,gid=1000 /sys/kernel/tracing
+ # su - rostedt
+ $ id
+uid=1000(rostedt) gid=1000(rostedt) groups=1000(rostedt)
+ $ ls /sys/kernel/tracing/events/
+9p            ext4            iomap        module      raw_syscalls  thermal
+alarmtimer    fib             iommu        msr         rcu           thp
+avc           fib6            io_uring     napi        regmap        timer
+block         filelock        ipi          neigh       regulator     tlb
+bpf_test_run  filemap         irq          net         resctrl       udp
+bpf_trace     ftrace          irq_matrix   netfs       rpm           virtio_gpu[
+..]
+
+The above works because "ls" does a stat() on the directory first, which
+does a .getattr() call that updates the permissions of the existing "events"
+directory inode.
+
+  BUT!
+
+If I had used my own getents() program that has:
+
+        fd = openat(AT_FDCWD, argv[1], O_RDONLY);
+        if (fd < 0)
+                perror("openat");
+
+        n = getdents64(fd, buf, BUF_SIZE);
+        if (n < 0)
+                perror("getdents64");
+
+Where it calls the openat() without doing a stat fist, and after boot, had done:
+
+ # chmod 0750 /sys/kernel/events
+ # chmod 0770 /sys/kernel/tracing
+ # mount -o remount,gid=1000 /sys/kernel/tracing
+ # su - rostedt
+ $ id
+uid=1000(rostedt) gid=1000(rostedt) groups=1000(rostedt)
+ $ ./getdents /sys/kernel/tracing/events
+openat: Permission denied
+getdents64: Bad file descriptor
+
+It errors because he "events" inode permission hasn't been updated yet.
+Now after getting the above error, if I do the "ls" and then run it again:
+
+ $ ls /sys/kernel/tracing/events > /dev/null
+ $ ./getdents /sys/kernel/tracing/events
+enable
+header_page
+header_event
+initcall
+vsyscall
+syscalls
+
+it works!
+
+so no, I can't remove that .permissions callback from eventfs.
+
+-- Steve
 
