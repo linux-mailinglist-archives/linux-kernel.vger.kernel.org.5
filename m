@@ -1,69 +1,93 @@
-Return-Path: <linux-kernel+bounces-22327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C016829C37
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:15:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6AD829C3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:15:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A75342822E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:15:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D90C1F2572A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:15:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553CB4B5A7;
-	Wed, 10 Jan 2024 14:13:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27DA04B5B6;
+	Wed, 10 Jan 2024 14:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="mCCUeypz"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n8rvpcHO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F3F4A9AB;
-	Wed, 10 Jan 2024 14:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4T98s770n7z9t3w;
-	Wed, 10 Jan 2024 15:12:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1704895980;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ECG5e9wIUmeNqRsln6dF7Mycb34NtIxoMGw5Bg5bw8Q=;
-	b=mCCUeypz7TL2I1fenTBBweZdNqxJbQbqKKY5Ygg9lfN60IRIy06tcCR5rVxDGH1OJWrGlB
-	TCB4hhfefJDYp1ZY1yWXUMjUfsdYdb1qz9xx5JoSBepOJoSuVL40MgxP8daVcg14IHEG03
-	R+yhgd1pcFcbjbNHXdtnFGjVU5OhoH2bvclC8k08eGJneSy2waD7cKXOfn40YLUy2NjqYk
-	YWVDvTGnrh9gAEDY40JGme/0k8N+mPt9cQliOC09nDRizh1hloBaI/4g9lQ2kUreaoKl7E
-	afrEU18lIDWlRU//+/w4C/TSnLL+llTKtVz1i2sKZPj4Xi0hpOtOpOcnIMbxCg==
-Date: Wed, 10 Jan 2024 15:12:56 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v2 2/8] buffer: Add kernel-doc for block_dirty_folio()
-Message-ID: <20240110141256.yx4cwtvv5fa7uxbp@localhost>
-References: <20240109143357.2375046-1-willy@infradead.org>
- <20240109143357.2375046-3-willy@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7DC4CDE1;
+	Wed, 10 Jan 2024 14:13:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04CA2C433F1;
+	Wed, 10 Jan 2024 14:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704896000;
+	bh=ubT3JpCdUdX478eUAkGKG4N/VQnjYxl/ajam8KuCzW0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n8rvpcHO+s4fz4TNsN/HyfY+EIuzENurVJp3ihv32jRMWh3bE5uRVQ6yn6TDagupv
+	 AK+L8u0WZmOWZeJKFpLzri36x03PmKAbtEsHTGABMWcA5CnL1Yao6Kh6m/kS/F5UFP
+	 IJ5LBTyhV023i+Ds4OxmscnIxA0mja58bmWf7sszIrKcEjtp9A+oki/mICAftF25o0
+	 vc+dOdx+Tk/A7zsoH9ASJXqLKcottwvx0Paqx/QHCtG8hweuQC/p9/0Dh8g2M94KOP
+	 wxOAjGIw5oq+T5OGqRrrs5PeEkdml7/gM4bdYpuQL7KWSZaV4qLlw0tgu/8Z9w4WDG
+	 osLhuF9hoT/0w==
+Date: Wed, 10 Jan 2024 14:13:13 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Chen Wang <unicornxw@gmail.com>
+Cc: aou@eecs.berkeley.edu, chao.wei@sophgo.com,
+	krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+	palmer@dabbelt.com, paul.walmsley@sifive.com,
+	richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+	guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+	samuel.holland@sifive.com, Chen Wang <unicorn_wang@outlook.com>
+Subject: Re: [PATCH v7 4/4] riscv: dts: add clock generator for Sophgo SG2042
+ SoC
+Message-ID: <20240110-sedative-reggae-389839cef8c4@spud>
+References: <cover.1704694903.git.unicorn_wang@outlook.com>
+ <25650372c373b15309cd9f3822306838e556d3c7.1704694903.git.unicorn_wang@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nm/CphfyKzDGNTF4"
+Content-Disposition: inline
+In-Reply-To: <25650372c373b15309cd9f3822306838e556d3c7.1704694903.git.unicorn_wang@outlook.com>
+
+
+--nm/CphfyKzDGNTF4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240109143357.2375046-3-willy@infradead.org>
 
-On Tue, Jan 09, 2024 at 02:33:51PM +0000, Matthew Wilcox (Oracle) wrote:
-> Turn the excellent documentation for this function into kernel-doc.
-> Replace 'page' with 'folio' and make a few other minor updates.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Mon, Jan 08, 2024 at 02:49:53PM +0800, Chen Wang wrote:
 
-Looks good,
-Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
+> +	cgi: oscillator {
+> +		compatible = "fixed-clock";
+> +		clock-output-names = "cgi";
+> +		#clock-cells = <0>;
+> +	};
+
+Where does the name "cgi" come from and what does it mean?
+Clock Generator Input? Does the sg2042 documentation call it that?
+
+Cheers,
+Conor.
+
+--nm/CphfyKzDGNTF4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ6l+QAKCRB4tDGHoIJi
+0qa+AQCAkXm3hnS/5roeUv9wiqA5TkGqnJfy0iNrxNKOnLioewEA+fTdCxQZM2mJ
+WwMBMSTwB4ADTuG2ZWVcgoFa66ptYw4=
+=MhZh
+-----END PGP SIGNATURE-----
+
+--nm/CphfyKzDGNTF4--
 
