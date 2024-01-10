@@ -1,234 +1,201 @@
-Return-Path: <linux-kernel+bounces-21960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D187829726
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:19:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 004C182972A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 130571C25CCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:19:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D39C2817E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:19:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD973FB13;
-	Wed, 10 Jan 2024 10:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8438A3FB12;
+	Wed, 10 Jan 2024 10:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="QIlgLaD5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BbshDz4z"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2b4krAvh"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2069.outbound.protection.outlook.com [40.107.237.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3103FB02;
-	Wed, 10 Jan 2024 10:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 513873200AE6;
-	Wed, 10 Jan 2024 05:19:13 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 10 Jan 2024 05:19:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:subject:subject:to:to; s=fm2; t=1704881952; x=1704968352; bh=tz
-	ttvDUX93pOgvU5O2v5sdJ4w+bYyfhKUlqgeYo0g68=; b=QIlgLaD5d6LcJbLbTE
-	3lTQQf9AA6Et7bHuZtEbXdByb2UFkVbyzgo9yhfYiUsLTPJ6uJgJvjlgJZcNKZtH
-	ly/BhCqI915Srzow5fbITCQIAtjKZ43Wh5EUbCsDpcSWJHoxLXFw+ZtWXQwiHGP8
-	z9UZfbNN3QC0zNBELXLIhterbjFowk3dYsUc7HHyS3fWMjOhkMePweMqq9nNIYTY
-	c6qw18adKY1gKpw1p4Zww8EdYbubLT/gHD19zi0AeRHBTOI2pLRyoXgkekjwPIoI
-	hFD9tvTgUF4pR01Gbd9oegblIk8p3uTNDauiySADxrao6yI8VLQ5FvIVAL2emh2L
-	19VA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1704881952; x=1704968352; bh=tzttvDUX93pOg
-	vU5O2v5sdJ4w+bYyfhKUlqgeYo0g68=; b=BbshDz4zd1hTisUwXxj/k21KnzC+J
-	Ey3ysXF6xssunYFv5REuM7xnog6doHy0V0CzsNSmOCiDXvKGtOmEsnfYSVLUHcTI
-	6XFopjXIc6F+gdBNnQd27rqg8gYGO8exkKPiwqdTCo6W6GMZJCPblmJOKZdXYq0g
-	V3PL3QrQNZFSYvZDpNrCaDnwyobF4cyCY619w+Is0VnkpSAbRT5qDNXvwcoU2iQs
-	2/8DGbDUXQ60TFkvUAYR7T/Zn3e5FYFq3qQ5yq8zqSvFg2cvcvNC8O4DO4E2i1Fj
-	v07H29BTrEN88TGS+4hNT31DsFeQJDPOj8hLXpyowsqszGGOI953hF8jA==
-X-ME-Sender: <xms:IG-eZRBFdQH06Wb4N_Mj5WIhi2Bron6FqITv3c3oM9Mo5BjLSUtiKw>
-    <xme:IG-eZfjjsM33q06ArhDbeii2rr2gZDPAu9nblGn-MNt9j9e1To5khcmPaXeKFf-uE
-    xD89t2qR2aq-A960QM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiuddgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkfffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpefgffevuddtledthfduiedtvddvtdelfeekhfeggfevveelgfeitdeileeffefg
-    ieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:IG-eZck4IrEjC-qYAxL6ZzeaJAyzpPbjF0F3kLTgxduvU46ceBVd9Q>
-    <xmx:IG-eZbwvxhZ_HwpxACt6dq5Gg-N80SU1OolIBLKzxYZ7daH02E6hEQ>
-    <xmx:IG-eZWT_2AbFMxCNqDXxKJGHR82Q1JIAPpEU30Lq7bIpBcJqNlIx3w>
-    <xmx:IG-eZf5FCEtIWpyDuWnJEI44OthYcDwnDqH25bXUHEjTyJkRjs0B4g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 786C4B6008D; Wed, 10 Jan 2024 05:19:12 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18C33FB06
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hi5G4FybTxxZ3Y4YPJE95xgfYmYqU4b0C/O9Y/KshX/ZpwI+n8pQHTFvGs+d24u3U/yhiMmRl5izzuDQhscmGXFBTCIQPF1+ENNdGpQh1pz8zV8TWErqp0wnZUxKfFkSGhxPyJMjBr34UggpFVWQPd6ceZkR7o49xMXeLh6BoYmgtGvOqmPaAVPm+RSKaPg3mMpiH+SQ1uDoDleQu4Fkc96Zi6I3396a81c9lKcwMbSJQYXD5XRGmVmt8Jzhoso39tLmBNIShkXybUDMQNn8EIueCDbBOhbj0eEXw9KqMMJov6CkLjvLF/56KIOCKQ89oUatK312heBwNVT11GlqEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KSe33ReXy2QZfZWV/vxe3fJmKOevSrdGX86ju4zIdd4=;
+ b=GBsPnDp4EOKLNpVpxBaxHBR8RIT/TDwvL2znC0kKMZxJOZbd7a0s6CREJAb0TXIMD6oYMF/ag6b78QuTMOhAQugAyItie82+w9TSqZL1YEpIVg2HoZ1lAy21lQNKcJx1uO8VIZMj0plMwaiv8XvwvAsPigaa2izNnGQnE8Jsh/XvUSlssIQwOSn17IUeso1d2WdS3r7FH5CCfyuNiLCmBZUxmcQWCOiwuyhs0s4TegZwFmxonGQwTKM2FuP+ggaCbd6Vt3ROhDCoqBp6lwyH/KdwNg3bZ6ygF5SF+/fss4M9Zom21cI31WPkPrfJxhSk/lGBq4nl1R6jC/pLep41hQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KSe33ReXy2QZfZWV/vxe3fJmKOevSrdGX86ju4zIdd4=;
+ b=2b4krAvhdzlV9ouHN9MX4e4B3l8rQ6M/kEzY5B+rD+0PJEhqNsXD5V2jnhXd9Q76gKKvQ6L/DvGIXKMuAuFq3xs42AbecCPfglNgpn6AdZfQoMVFsdT3KvZ3aEPpt16Tq92Sieh7JJbrfhkOel3WXf+jWQvQZjcGjwEraGgnAHo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by IA1PR12MB8263.namprd12.prod.outlook.com (2603:10b6:208:3f8::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
+ 2024 10:19:45 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Wed, 10 Jan 2024
+ 10:19:45 +0000
+Message-ID: <8ce0d90d-c751-4250-8656-fcab27aec6c2@amd.com>
+Date: Wed, 10 Jan 2024 11:19:37 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] drm/virtio: Implement device_attach
+Content-Language: en-US
+To: Julia Zhang <julia.zhang@amd.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, David Airlie <airlied@redhat.com>,
+ Gerd Hoffmann <kraxel@redhat.com>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+ virtualization@lists.linux-foundation.org
+Cc: Alex Deucher <alexander.deucher@amd.com>, Daniel Vetter
+ <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Erik Faye-Lund <kusmabite@gmail.com>, =?UTF-8?B?TWFyZWsgT2zFocOhaw==?=
+ <marek.olsak@amd.com>,
+ Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
+ Honglei Huang <honglei1.huang@amd.com>, Chen Jiqian <Jiqian.Chen@amd.com>,
+ Huang Rui <ray.huang@amd.com>
+References: <20240110095627.227454-1-julia.zhang@amd.com>
+ <20240110095627.227454-2-julia.zhang@amd.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20240110095627.227454-2-julia.zhang@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0009.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:15::14) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <8d87c3da-fe7e-4b2d-9078-4421e4ca7727@app.fastmail.com>
-Date: Wed, 10 Jan 2024 11:18:36 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>
-Subject: [GIT PULL] asm-generic cleanups for 6.8
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|IA1PR12MB8263:EE_
+X-MS-Office365-Filtering-Correlation-Id: 769097ee-2eb6-4e11-559a-08dc11c5aaf8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Pfy0H+112ihqgJrzcx7isRvnbs6+fyW2nhYpTkdzqv08zeUFNMDs3ItnRjmhBgAM/DRkzMtBvnrKR8m5WVwo6E8bqwRn0KmH6df0XOownGKTdtE1gdhZEk7BN8N7bLJ+LKyOeuy8o0O3XbUnx4h7Ts/MZUot9JMkIdbr4q9OZjTVfgeesDZaF0jLHyMQu1PpB5J4znMR+45TcSHOBs6gidqVvXV71+sbgpJt8l4sJg6wk3xluqHe8PQHbq/PtwSvzuVzT1ptQ8bOumsBFtnhgxRNeQQGhwbvgkky100CtH56N5NK6bfTnqNKoh7SFHZfNcVjmJ6MttftGLcTPGUIHKfUkrq2cslo4dc+qONdspveND9ZtvGb75dU9Yeze0DICu3VhLBw0F1qWLG0c0SDBZMRr9kXOweJ1xcp8IQzW6KxdcA1P6YjtR0cyTiQ87kcfvjdNE/fGBq/w0273LdN9VlPgz9u0RKGWb2tfbYZgAynoVQIny+O4iIxL0AqnhXqDp9S+3+6CWYPcZ3NPJbLJ+m6eXaia7MStpG+fsCcgt4q3G4xmTzeYF6qFZ7SOH1uIbZEnmcKEruRNI1arp/Tz9XBHUrKmBis7gXl3annXSYV5I4sNU/yUerHOGFJsDf6debwDosyWApM0KrrWnmRLQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(136003)(376002)(39860400002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(41300700001)(86362001)(8676002)(6486002)(31686004)(8936002)(31696002)(6506007)(5660300002)(7416002)(2906002)(6666004)(2616005)(26005)(66476007)(66556008)(36756003)(110136005)(66946007)(6512007)(478600001)(54906003)(83380400001)(316002)(38100700002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aXcrQ2FuRVVJMTJNRmFzVDdDQWU4WU5Obk9wRkJadkRXWGdocmRONGRyNGJD?=
+ =?utf-8?B?RWVhUEFHeFFVVkRLd3BVSkpGc05uZnBhci9vUHM2Y3NETWNtUVpWUVErbG81?=
+ =?utf-8?B?Y0piTzlCSVZBTUJTYmQ3OUFlZUkxaUFPOEh3ZUo0eWc4dTFobWM3LzhLSDdR?=
+ =?utf-8?B?MHUwWHVveWtPTG5xeXFsRyt6RDd1YkpiWVRaTnI3cHNvTWdaa1lzVDNoZTFq?=
+ =?utf-8?B?MGhwbmdwRVNlcHBXQ25sZmdNd056czREOW9pM1RtaThhMURraUNtT3F3b01x?=
+ =?utf-8?B?Sm1nZjllM0YwRXd2RTJDRXBoclhSTFRUZ1RGMnRYZHlReWRDVndJaVlYL0o5?=
+ =?utf-8?B?SnlEQU9pSlBpeDZ3Wi81UVpacjNXayt6cGNqRTNybDEzRlJ3ODRYRnpBUUhN?=
+ =?utf-8?B?dEN1dkw0M3NlajRBRkt6dlVVUnZ4ejhmL0tzNXk4cktNMjdBYS96amVtRlcx?=
+ =?utf-8?B?VGVWZUxydGlxRkcvUmdzeGdad0gvZmZlVWhJekFhQlBmeXVXNWl0NlRLYi82?=
+ =?utf-8?B?TFAyQ0ZmVTMrVHQzckQzbFR2MTE0Wi9adFMyZzlmbndBbHQ2YlpMYU1YNjg4?=
+ =?utf-8?B?WGcwNUVrVjJud096R1h4bWdpaXhoRmpEeEp1VjN5QU4wSFlFU040THNsbzhp?=
+ =?utf-8?B?NTEvbDlFUzl4czVBaDRZQVRVNjJpSGxNR3ppcGVpOC9lbnZCRk91Z0VmbkF2?=
+ =?utf-8?B?czA1NVB2OG5YQjI1WHRUMGFRMm9FanpJWGM0ZlN6YWwvMnZMdGwwY2ZYOGpq?=
+ =?utf-8?B?VW1iWEhJTzBjVUtpVTRjOTQ2a2NnNDc3MlFGUVY5TEM0eVZ5eXZxOWJtWVJh?=
+ =?utf-8?B?UUZFU2FqdXdQQzFSYUZMcG5kamIxc2FrZ0JkT2JNVFdkYmRMT3o5cDJnRjhV?=
+ =?utf-8?B?bTRtY3RQMWk2M3ZtRm4rRGpsZHRKSEswckkyU1UycGFsbXJJN3dzOUl3dXk1?=
+ =?utf-8?B?V1Nvb2dVZ1pwdUpLZ0I5eUdBbDFLc2pQeFhUYVo1N1QydzhIVUgzUFN2UmRn?=
+ =?utf-8?B?MTI5MksrTHNWSkg4OXZYanIwQzdzYjlLa0h5bGQwODB3OUxpekVFZFMyRVhM?=
+ =?utf-8?B?SklURjV4Z3FhNjlMZ0ZRVml1Ty9pZDBJV1NQV0pRQmdxaElLaFQzL3hiL3Mv?=
+ =?utf-8?B?Y3hUa3RGWTVpMXpRdEx0Uk5nbGdpTldGcENnbFc3Y05QQkxROVBkaVlCR0lO?=
+ =?utf-8?B?UTJtMWxESW93aFFFa3I2UzdVUU1keWN5MnBYMi92YmtUYURmc0dGOG9XcHB3?=
+ =?utf-8?B?bUNnb3F5V0dqSXZIU3BUNFJsZEdkUWpzdUtOdjNGUTBzTXRkZVI5d1FiNVFt?=
+ =?utf-8?B?L1JyWldFdUJoZ045ZVc2MmpSVUN1NkNXRCs5NEFDbmc5bnVXZGNiQ3ZGc1VM?=
+ =?utf-8?B?RUtkQWk1RjJUWE9EYjZ0Ui85YWZNc3doSy8zMzFZdmRXa2tCTkJMU2UxSVdn?=
+ =?utf-8?B?K2VKMkZ2ZHBFZVF3OWE1dWZMY0tRK25nYnpTckdFNldjNmE5SFAxWmc3UVNw?=
+ =?utf-8?B?d25VWFdoajk3RktCSFoxSVZEUzFQcCt4RlN6bHdTeGFiY2FyL0l0d2tzS2U2?=
+ =?utf-8?B?TzlxU2ltSmwwdUNDVDNKRjhISHZLNm45Nmo5cDVtR2Q5cEFnbmN0YjkwbUJt?=
+ =?utf-8?B?QjZOc0dESTdsWUF6TmNwSnZMcTE1eE5GbDIreGdUakk5OGJkUTJIVXQ0Q2pV?=
+ =?utf-8?B?dk8xQlE0YjdCTElIcnhlRzZRTUhDNnBSc1ZXSjZLTE5DZ1c5R2F6U000aVdC?=
+ =?utf-8?B?eGtNaDZOLyszeFhXdWhwQ09aM2lVWFFGaUprbW9KTER2ZnlyeWZNa3F1OE5i?=
+ =?utf-8?B?SElXZDV0ZzE0aHpDY242b05xUDNHdFlNajdLQjl1a21KM1pFTEgyRFhFc3BY?=
+ =?utf-8?B?anhUMUQ0Nm9kYk1JNko3c3d3a0lVZVdaekRoMXlpYXE0Y29hNmxmM1k4UU1t?=
+ =?utf-8?B?M21Id3FpY0VlNXNOTWlkQWxmaTBRQUZOVmxJa3pUV1pQV1pPZ25xcXowbTZq?=
+ =?utf-8?B?NFN4RGJzdHlVemNSSUxMb2xqaHFrTWttWXVoNHNBVjYrQWd6QUdabVVLUk1N?=
+ =?utf-8?B?ZDlFVElaZ05mVldOdStZMzcwMEgrWkNkSU1xRnA4WlJwbU4wOEFuaTU0QzlH?=
+ =?utf-8?Q?2qe7TfjRAZwErJhjq7aa74ZjU?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 769097ee-2eb6-4e11-559a-08dc11c5aaf8
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 10:19:45.5885
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L/beyhPHjmUj0RRVGCtxaMrq6lEGlJ9Cb1HDUhg5rkqbSQUteIAoVKqeKju1xU26
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8263
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328f=
-a86:
+Am 10.01.24 um 10:56 schrieb Julia Zhang:
+> drm_gem_map_attach() requires drm_gem_object_funcs.get_sg_table to be
+> implemented, or else return ENOSYS. Virtio has no get_sg_table
+> implemented for vram object. To fix this, add a new device_attach to
+> call drm_gem_map_attach() for shmem object and return 0 for vram object
+> instead of calling drm_gem_map_attach for both of these two kinds of
+> object.
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+Well as far as I can see this is nonsense from the DMA-buf side of things.
 
-are available in the Git repository at:
+SG tables are always needed as long as you don't re-import the same 
+object into your driver and then you shouldn't end up in this function 
+in the first place.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git t=
-ags/asm-generic-6.8
+So that drm_gem_map_attach() requires get_sg_table to be implemented is 
+intentional and should never be overridden like this.
 
-for you to fetch changes up to d93cca2f3109f88c94a32d3322ec8b2854a9c339:
+Regards,
+Christian.
 
-  asm-generic: Fix 32 bit __generic_cmpxchg_local (2024-01-05 23:19:14 +=
-0100)
+>
+> Signed-off-by: Julia Zhang <julia.zhang@amd.com>
+> ---
+>   drivers/gpu/drm/virtio/virtgpu_prime.c | 14 +++++++++++++-
+>   1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_prime.c b/drivers/gpu/drm/virtio/virtgpu_prime.c
+> index 44425f20d91a..f0b0ff6f3813 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_prime.c
+> +++ b/drivers/gpu/drm/virtio/virtgpu_prime.c
+> @@ -71,6 +71,18 @@ static void virtgpu_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
+>   	drm_gem_unmap_dma_buf(attach, sgt, dir);
+>   }
+>   
+> +static int virtgpu_gem_device_attach(struct dma_buf *dma_buf,
+> +				     struct dma_buf_attachment *attach)
+> +{
+> +	struct drm_gem_object *obj = attach->dmabuf->priv;
+> +	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(obj);
+> +
+> +	if (virtio_gpu_is_vram(bo))
+> +		return 0;
+> +
+> +	return drm_gem_map_attach(dma_buf, attach);
+> +}
+> +
+>   static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
+>   	.ops = {
+>   		.cache_sgt_mapping = true,
+> @@ -83,7 +95,7 @@ static const struct virtio_dma_buf_ops virtgpu_dmabuf_ops =  {
+>   		.vmap = drm_gem_dmabuf_vmap,
+>   		.vunmap = drm_gem_dmabuf_vunmap,
+>   	},
+> -	.device_attach = drm_gem_map_attach,
+> +	.device_attach = virtgpu_gem_device_attach,
+>   	.get_uuid = virtgpu_virtio_get_uuid,
+>   };
+>   
 
-----------------------------------------------------------------
-asm-generic cleanups for 6.8
-
-A series from Baoquan He cleans up the asm-generic/io.h to remove the
-ioremap_uc() definition from everything except x86, which still needs it
-for pre-PAT systems. This series notably contains a patch from Jiaxun Ya=
-ng
-that converts MIPS to use asm-generic/io.h like every other architecture
-does, enabling future cleanups.
-
-Some of my own patches fix -Wmissing-prototype warnings in architecture
-specific code across several architectures. This is now needed as the
-warning is enabled by default. There are still some remaining warnings
-in minor platforms, but the series should catch most of the widely used
-ones make them more consistent with one another.
-
-David McKay fixes a bug in __generic_cmpxchg_local() when this is used
-on 64-bit architectures. This could currently only affect parisc64
-and sparc64.
-
-Additional cleanups address from Linus Walleij, Uwe Kleine-K=C3=B6nig,
-Thomas Huth, and Kefeng Wang help reduce unnecessary inconsistencies
-between architectures.
-
-----------------------------------------------------------------
-Arnd Bergmann (10):
-      Merge branch 'asm-generic-io.h-cleanup' into asm-generic
-      arch: consolidate arch_irq_work_raise prototypes
-      arch: fix asm-offsets.c building with -Wmissing-prototypes
-      arch: include linux/cpu.h for trap_init() prototype
-      arch: vdso: consolidate gettime prototypes
-      arch: add missing prepare_ftrace_return() prototypes
-      arch: add do_page_fault prototypes
-      csky: fix arch_jump_label_transform_static override
-      Merge branch 'asm-generic-prototypes' into asm-generic
-      mips: remove extraneous asm-generic/iomap.h include
-
-Baoquan He (2):
-      arch/*/io.h: remove ioremap_uc in some architectures
-      mips: io: remove duplicated codes
-
-David McKay (1):
-      asm-generic: Fix 32 bit __generic_cmpxchg_local
-
-Jiaxun Yang (1):
-      mips: add <asm-generic/io.h> including
-
-Kefeng Wang (1):
-      asm/io: remove unnecessary xlate_dev_mem_ptr() and unxlate_dev_mem=
-_ptr()
-
-Linus Walleij (2):
-      ARC: mm: Make virt_to_pfn() a static inline
-      Hexagon: Make pfn accessors statics inlines
-
-Nathan Chancellor (1):
-      arm64: vdso32: Define BUILD_VDSO32_64 to correct prototypes
-
-Thomas Huth (1):
-      hexagon: Remove CONFIG_HEXAGON_ARCH_VERSION from uapi header
-
-Uwe Kleine-K=C3=B6nig (1):
-      sparc: Use $(kecho) to announce kernel images being ready
-
- Documentation/driver-api/device-io.rst   |   9 ++-
- arch/alpha/include/asm/io.h              |   7 --
- arch/alpha/include/asm/mmu_context.h     |   2 +
- arch/alpha/kernel/asm-offsets.c          |   2 +-
- arch/alpha/kernel/traps.c                |   1 +
- arch/arc/include/asm/page.h              |  21 ++---
- arch/arc/include/asm/pgtable-levels.h    |   2 +-
- arch/arm/include/asm/io.h                |   6 --
- arch/arm/include/asm/irq_work.h          |   2 -
- arch/arm/include/asm/vdso.h              |   5 --
- arch/arm/vdso/vgettimeofday.c            |   1 +
- arch/arm64/include/asm/irq_work.h        |   2 -
- arch/arm64/kernel/vdso32/vgettimeofday.c |   2 +
- arch/csky/include/asm/ftrace.h           |   4 +
- arch/csky/include/asm/irq_work.h         |   2 +-
- arch/csky/include/asm/jump_label.h       |   5 ++
- arch/csky/include/asm/traps.h            |   2 +-
- arch/csky/kernel/traps.c                 |   1 +
- arch/csky/kernel/vdso/vgettimeofday.c    |  11 +--
- arch/hexagon/include/asm/io.h            |   9 ---
- arch/hexagon/include/asm/page.h          |  15 +++-
- arch/hexagon/include/uapi/asm/user.h     |   7 +-
- arch/hexagon/kernel/ptrace.c             |   7 +-
- arch/loongarch/kernel/asm-offsets.c      |  26 +++----
- arch/loongarch/vdso/vgettimeofday.c      |   7 +-
- arch/m68k/coldfire/vectors.c             |   3 +-
- arch/m68k/coldfire/vectors.h             |   3 -
- arch/m68k/include/asm/io_mm.h            |   6 --
- arch/m68k/include/asm/kmap.h             |   1 -
- arch/microblaze/include/asm/ftrace.h     |   1 +
- arch/microblaze/kernel/traps.c           |   1 +
- arch/mips/include/asm/ftrace.h           |   4 +
- arch/mips/include/asm/io.h               | 128 +++++++++++++++++-------=
--------
- arch/mips/include/asm/mmiowb.h           |   4 +-
- arch/mips/include/asm/smp-ops.h          |   2 -
- arch/mips/include/asm/smp.h              |   4 +-
- arch/mips/include/asm/traps.h            |   3 +
- arch/mips/kernel/setup.c                 |   1 +
- arch/mips/pci/pci-ip27.c                 |   3 +
- arch/mips/vdso/vgettimeofday.c           |   1 +
- arch/nios2/include/asm/traps.h           |   2 +
- arch/parisc/include/asm/io.h             |   8 --
- arch/powerpc/include/asm/io.h            |   7 --
- arch/powerpc/include/asm/irq_work.h      |   1 -
- arch/riscv/include/asm/irq_work.h        |   2 +-
- arch/riscv/kernel/vdso/vgettimeofday.c   |   7 +-
- arch/s390/include/asm/irq_work.h         |   2 -
- arch/sh/include/asm/io.h                 |   9 ---
- arch/sh/include/asm/traps_32.h           |   3 +
- arch/sparc/boot/Makefile                 |  10 +--
- arch/sparc/include/asm/io_64.h           |   7 --
- arch/sparc/kernel/asm-offsets.c          |   6 +-
- arch/sparc/kernel/traps_32.c             |   1 +
- arch/sparc/kernel/traps_64.c             |   1 +
- arch/x86/entry/vdso/vclock_gettime.c     |  10 +--
- arch/x86/include/asm/irq_work.h          |   1 -
- arch/x86/include/asm/traps.h             |   1 -
- arch/x86/include/asm/vdso/gettimeofday.h |   2 -
- arch/x86/kernel/traps.c                  |   1 +
- include/asm-generic/cmpxchg-local.h      |   2 +-
- include/linux/irq_work.h                 |   3 +
- include/vdso/gettime.h                   |  23 ++++++
- scripts/headers_install.sh               |   1 -
- 63 files changed, 204 insertions(+), 229 deletions(-)
- delete mode 100644 arch/m68k/coldfire/vectors.h
- create mode 100644 include/vdso/gettime.h
 
