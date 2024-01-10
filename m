@@ -1,133 +1,168 @@
-Return-Path: <linux-kernel+bounces-22604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 436C982A04F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:34:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3560682A052
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD8F9B25DA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:34:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4151C2245A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9114D13B;
-	Wed, 10 Jan 2024 18:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1C64D580;
+	Wed, 10 Jan 2024 18:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FMGBdkCd"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZuvixDev";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FGELZhzK";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zW6RmUf2";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pvlGl9Vy"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EC81E4A6
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557535489d0so5196932a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704911682; x=1705516482; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h+79PBe1CaM3kL/+sGAaA8TQXREzbo/JCsExVphnqkI=;
-        b=FMGBdkCdEs2wMT13KMcwWPv17EpuhZNsOyUmlaiWdMqRP+uqZYWvlqyHCDEN8nn1wZ
-         B5r1umd+1bw95zhaBCXgTOKZt0/p/Kr6RgRKlLc9lBYY/7YCgeKG27bpA4NNkXB/dkja
-         7/i3trOn1RIsHctNEvSRQwrZiCBhn6tbOB59A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704911682; x=1705516482;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h+79PBe1CaM3kL/+sGAaA8TQXREzbo/JCsExVphnqkI=;
-        b=M1lAvBSZvvRDq+w7YQZMMjU7pjm9ko7XoT44vHpDvHcfxnQfH0vbAnJaFZhVOqDACs
-         9nWRwAMF7rbMTFA81In7kwCdDUVeHoAPpQs+lMPPiKzHdlE3ixbHJbjOGE5Pf5yvRfVP
-         8FRXLiL6Q8TSCmeTMGA/+CaWbuRK7k70wDHzo1Nm4GT7yKy39W0dVccwW+hJ3sy5dD2h
-         nSBtYw+DzDfmiWSwFU3zea+2kGLkwMLlrwY4Vr13pQxBO9rYquOsqiKHg2R9hYsBvz0T
-         SCv/l3UyWWGwKO597OpxWO+kdWL8wR91euTD+NkcMzQaZtmVkfSsyBtPo5kvZ8keHal2
-         DxQQ==
-X-Gm-Message-State: AOJu0YysQLoEu6NlfpsKhfYtsaVNkdClK7j8LQx1RXxQiqhXBwcvvxHy
-	KXAVk3smb/MRRepYABfzC0iUUMZBMQlmJ4wyGvtM0OtKDl8LhO4=
-X-Google-Smtp-Source: AGHT+IH3vx0er/dsL7RrZfuowWhy9N5xwrYGMGAyfC2fJQaKC6G6A8z0wJ5mlex31jaGSyIjf2OuGw==
-X-Received: by 2002:a50:aa9b:0:b0:557:e00f:a499 with SMTP id q27-20020a50aa9b000000b00557e00fa499mr617796edc.78.1704911681875;
-        Wed, 10 Jan 2024 10:34:41 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id x17-20020aa7d391000000b00556cf695da0sm2219373edq.78.2024.01.10.10.34.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 10:34:41 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso891a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:34:41 -0800 (PST)
-X-Received: by 2002:aa7:cd70:0:b0:557:1142:d5bb with SMTP id
- ca16-20020aa7cd70000000b005571142d5bbmr12737edb.4.1704911680835; Wed, 10 Jan
- 2024 10:34:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7937F495C1
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D14A01FDF7;
+	Wed, 10 Jan 2024 18:34:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704911765; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
+	b=ZuvixDevB7TtNQ01YjA3bXL1ngX8kHyw+vFp2QxZ0+itkApfg9ht2BtKcX7kyH1etL3l9u
+	LPqR8nsc7alYTLflOXTN4SrVx6PkJLIQz0ExKYPC2GyDeHOi/40gt03Xqav4OJH7AS31AH
+	eeml3vQGIKnTT3d1epDNbxmlYH4fevs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704911765;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
+	b=FGELZhzKylJyXG9DCI5zdjUsC9Z7TARtrtOp2mUst21QT0lRWSUYY8OvuAogARzXXVyded
+	o0zQ2/s8gL1kpHBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704911764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
+	b=zW6RmUf2axVM4Eru9DUbg82hLTsUsVrT6CVyrOLoBEApoivKuNng5zsPNiuTH8E5tTPOXZ
+	iu31N/FpdN+CtnUk/DUA3QESxDyKafAHeb+vmUDuWvYV22CNxSmN2DRg09N1K6x/6gpneD
+	9zGjYAzuE/qURrzS0i0xIC6jWtWy0lg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704911764;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1C/6nVrkazDL3vofZ6DMrhFSQHXwRYIyDZ0gn1Si83g=;
+	b=pvlGl9Vy7jh5R2wUKPgMjt5xxxmObf4j9XlvQrgBW/R9YTBqCY1x6Sulqd7q3MwmEtBWiz
+	aCtrWZKY4DuYPDDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A59EE13306;
+	Wed, 10 Jan 2024 18:34:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dN0aKEjjnmVuLwAAD6G6ig
+	(envelope-from <jwiesner@suse.de>); Wed, 10 Jan 2024 18:34:48 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+	id BB8FB9C468; Wed, 10 Jan 2024 19:36:18 +0100 (CET)
+Date: Wed, 10 Jan 2024 19:36:18 +0100
+From: Jiri Wiesner <jwiesner@suse.de>
+To: linux-kernel@vger.kernel.org
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, Feng Tang <feng.tang@intel.com>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] clocksource: Skip watchdog check for large watchdog
+ intervals
+Message-ID: <20240110183618.GG3303@incl>
+References: <20240103112113.GA6108@incl>
+ <202401082125.4ec42f71-oliver.sang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103003355.747335-1-kai.heng.feng@canonical.com>
- <CAD=FV=VmGNB5dP5WO7=txNDScNfhCDEsfFFivXqz+PH6rt=x8g@mail.gmail.com> <CAAd53p4gPkbDyNLiYGtcvqWwEgBqVhri+qgh+=Ha0xsVfYy92g@mail.gmail.com>
-In-Reply-To: <CAAd53p4gPkbDyNLiYGtcvqWwEgBqVhri+qgh+=Ha0xsVfYy92g@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 10 Jan 2024 10:34:23 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WwCL0Z4rOMGD+i2zOTZMz6qi_Ctm_wWC2sbv0STGi8AQ@mail.gmail.com>
-Message-ID: <CAD=FV=WwCL0Z4rOMGD+i2zOTZMz6qi_Ctm_wWC2sbv0STGi8AQ@mail.gmail.com>
-Subject: Re: [PATCH] HID: i2c-hid: Remove SET_POWER SLEEP on system suspend
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: jikos@kernel.org, benjamin.tissoires@redhat.com, 
-	Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	Johan Hovold <johan+linaro@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202401082125.4ec42f71-oliver.sang@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=zW6RmUf2;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=pvlGl9Vy
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.37 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.36)[76.80%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: -2.37
+X-Rspamd-Queue-Id: D14A01FDF7
+X-Spam-Flag: NO
 
-Hi,
+On Mon, Jan 08, 2024 at 09:44:31PM +0800, kernel test robot wrote:
+> commit: ceacf0b27b5d9cdc574f8d0a0bcb11d3272e7b9f ("[PATCH] clocksource: Skip watchdog check for large watchdog intervals")
+> url: https://github.com/intel-lab-lkp/linux/commits/Jiri-Wiesner/clocksource-Skip-watchdog-check-for-large-watchdog-intervals/20240103-192257
+> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git da65f29dada7f7cbbf0d6375b88a0316f5f7d6f5
+> patch link: https://lore.kernel.org/all/20240103112113.GA6108@incl/
+> patch subject: [PATCH] clocksource: Skip watchdog check for large watchdog intervals
+> 
+> [   54.778895][   T41] ------------[ cut here ]------------
+> [ 54.781279][ T41] WARNING: CPU: 0 PID: 41 at kernel/time/clocksource-wdtest.c:162 wdtest_func (kernel/time/clocksource-wdtest.c:162 (discriminator 1)) 
+> [   54.785405][   T41] Modules linked in:
+> [   54.787152][   T41] CPU: 0 PID: 41 Comm: wdtest Tainted: G                 N 6.7.0-rc2-00014-gceacf0b27b5d #1 30e4ebd22e7da702dfdab1313ae74e5a246df970
+> [   54.791633][   T41] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [ 54.795124][ T41] EIP: wdtest_func (kernel/time/clocksource-wdtest.c:162 (discriminator 1)) 
 
-On Tue, Jan 9, 2024 at 11:31=E2=80=AFPM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> > I'd also note that I'm really not sure what ChromeOS dark resume has
-> > to do with anything here. Dark resume is used for certain types of
-> > events that wakeup the system where we can identify that the event
-> > shouldn't turn the screen on, then we do some processing, then we go
-> > back to sleep. I'm nearly certain that a trackpad / touchscreen wakeup
-> > event would never qualify for "dark resume". If we see a
-> > trackpad/touchscreen event then we'll wakeup the system. If the system
-> > is in a state where trackpad/touchscreen events shouldn't wake us up
-> > then we disable those wakeups before going to suspend...
->
-> Doesn't Dark Resume use wakeup count to decide whether the system
-> should wake up or go back to suspend?
-> For this case the input report is empty, hence wakeup count remains
-> the same after the wakeup. I assumed Dark Resume will check the wakeup
-> count and decide to put the system back to suspend.
+The code:
+        pr_info("--- Watchdog clock-value-fuzz error injection, expect clock skew and per-CPU mismatches.\n");
+        WRITE_ONCE(wdtest_ktime_read_fuzz, true);
+        schedule_timeout_uninterruptible(2 * HZ);
+        WARN_ON_ONCE(!(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
 
-Ah, I understand now. So you're saying that the issue wouldn't be so
-bad (or maybe we wouldn't notice it) on systems with dark resume.
-However, even with dark resume we're not in a super great shape. Doing
-a dark resume isn't exactly a lightweight operation, since it can take
-a bit of time to resume the system, realize that there were no wakeup
-events, and then go back to sleep. I'm not a total expert on dark
-resume, but I believe that even with dark resume, there may also be
-artifacts that a user might notice (like perhaps USB devices powering
-up or perhaps the suspend LED on the system showing that we're not in
-suspend anymore).
+The warning is the consequence of the watchdog not running on i386 builds of the kernel. The watchdog does not run because the "interval > WATCHDOG_INTR_MAX_NS" check is always true on account of the WATCHDOG_INTR_MAX_NS constant evaluating to a negative number on account of integer overflow.
 
+> [   54.801794][   T41] EAX: c4a1fe8c EBX: 00000004 ECX: 00000000 EDX: 00000000
+> [   54.803569][   T41] ESI: c4a1ff2e EDI: 00000000 EBP: c74aff70 ESP: c74aff60
+> [   54.805314][   T41] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010246
+> [   54.807278][   T41] CR0: 80050033 CR2: ffda9000 CR3: 05979000 CR4: 000406d0
+> [   54.808856][   T41] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+> [   54.810216][   T41] DR6: fffe0ff0 DR7: 00000400
+> [   54.811218][   T41] Call Trace:
 
-> > It seems to me like the board you're testing on has some strange bug
-> > and that bug should be fixed, or (in the worst case) you should send a
-> > patch to detect this broken touchpad and disable wakeup for it.
->
-> It's desired to keep the wakeup capability, disabling wakeup isn't ideal =
-here.
-> I'll write a patch to use touchpad specific quirk instead of applying
-> the change universally.
-
-Thanks! I'd also be curious if this is a problem for everyone with the
-Cirque touchpad or if it's board-specific. I could imagine the
-behavior you describe as coming about due to a missing or
-misconfigured pull resistor on the IRQ line. ...or perhaps a pull
-resistor pulling up to the wrong voltage rail...
-
--Doug
+-- 
+Jiri Wiesner
+SUSE Labs
 
