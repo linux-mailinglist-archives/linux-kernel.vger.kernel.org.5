@@ -1,125 +1,128 @@
-Return-Path: <linux-kernel+bounces-22098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 088BE82992F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:32:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E968829934
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8A97283040
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:32:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0571281AA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:32:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0744247A6B;
-	Wed, 10 Jan 2024 11:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A381847A67;
+	Wed, 10 Jan 2024 11:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRByQrTh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="myUJcrFj"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6E2481A0;
-	Wed, 10 Jan 2024 11:32:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35ABBC433C7;
-	Wed, 10 Jan 2024 11:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704886334;
-	bh=X9QbxNBN6JyW1oeyEZmWRgibEZdnoLhcaRrM0O9CHk4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WRByQrTh7LUjUhEU7sOl3vvSeW1RpOIERkA8IwQlyQLSqQxmn3qJLcaQ+P5ZKa288
-	 st8wEViJt9CzoVWOHucgOo5i+iuAk6vhSFhVUUpGOan8DcM+Gmybn/VlH9YJeS4zkP
-	 lCI6bb/2npds4NSzVmDfaULwF7pMQAgBQkkIoDU2fNdt6Li8IXmf8DZLJ5tyOF10eF
-	 hpb2qAGCeHQaHyyhSdCRAKJeAze3PbCB5IcLnN03LBY6f82TjZxAz/CsKvCtj0yGQ+
-	 oN8xSJRdro3ixG21D0cSHQgm/SD9BlGc2GlfXjWAjs1GJ66kCqZpApZV+Jj5thSkNA
-	 Da7fp4EBb42PA==
-Date: Wed, 10 Jan 2024 11:32:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc: linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Robbin Ehn <rehn@rivosinc.com>,
-	Gianluca Guida <gianluca@rivosinc.com>
-Subject: Re: [PATCH v2 1/6] riscv: add ISA extension parsing for Ztso
-Message-ID: <20240110-childish-magnetic-75dacb4fb265@spud>
-References: <20231220155723.684081-1-cleger@rivosinc.com>
- <20231220155723.684081-2-cleger@rivosinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F82347F40
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50ea9e189ebso4117870e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:32:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704886349; x=1705491149; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pEYNQVl4EfVcsy1yzh6J8gEcbt+r98QebOoStpii/nY=;
+        b=myUJcrFjTl9ZqjZf7AcZxgux1afGCi1RuGuZNA6BAkNg7IcuTQlAvncxiGN/IcgLuc
+         N/xpTyqAyRFd6722pthMi06bm0j+YydQOjTVxUpFje2mWl49K9nT2OuzpPmNQQhfn3h4
+         pqv6bGVKNLMfeHz8eMV5QDsj2J+6tY4KmWxKj0/Q/NvbKRzG3wsRds5lDyZ0uLLypF9r
+         sj4Rf8/VkrbbNET82v2RtNd9DqkxZEMvKVmUiu96/y/tqGfZEP1XGR1/k0DxXi2vW9kc
+         mZXSiXwdEEhIel7W1XTq+B7chKRzlCS7JO/44mV4NMlUx1TpnNZzHlCV9QXoTvt8fHFb
+         DU1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704886349; x=1705491149;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pEYNQVl4EfVcsy1yzh6J8gEcbt+r98QebOoStpii/nY=;
+        b=EWOVZ0Oqbak0bu0cyKU4rwnHCAeEOZiSSfZ9vK4SAfjrBSCPHsLwp085CkNHKYl3dJ
+         HzD86z0j+GV4iIPXRRSTa0y2rlJjuBQNMqFVxaGZb2G0DXSjh6yWJCpQrvJuL3E1rVr2
+         Ob/Zn7vi5aqaksX8Sn/bDuhnnDvJCowk/dZSHhZp9sPQRXpwkbW8iv5LcEx3iKGIkHDe
+         SN7zm6jx9YWsp2cKFAJlwcq/xNVO861biHR+3i/Tbx9IVfFzvsk80srSiLHqrXcY252f
+         Kat+8P1A8+KzWGoDl+/4swGQ5XGTVIT4o7tf0Aw+f48I0enp8q60BoZ9XNu+AVYJRaMw
+         kYwA==
+X-Gm-Message-State: AOJu0YypTwY/GkAK9RwlPREmfbHTYNH+z3g9P9/f3z219tZgiCFJCFKs
+	XM52tmrgvYQN0gHxSLL+Dpk78fyZIj9qjg==
+X-Google-Smtp-Source: AGHT+IGAMkvcpAUqyxRbD5/R78Qb2kagPxgsXLcXC0AOuJ2ThqexDzA5wsbcuzXqLXPlb2wTFi9INw==
+X-Received: by 2002:a19:3856:0:b0:50e:8487:1ec6 with SMTP id d22-20020a193856000000b0050e84871ec6mr253105lfj.56.1704886349316;
+        Wed, 10 Jan 2024 03:32:29 -0800 (PST)
+Received: from [172.30.205.119] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id z22-20020ac25df6000000b0050e6df07728sm629214lfq.180.2024.01.10.03.32.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 03:32:28 -0800 (PST)
+Message-ID: <0ac211de-e3d4-4a41-b0ed-d2bf393e58cb@linaro.org>
+Date: Wed, 10 Jan 2024 12:32:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rEohnyKvwS23qCv0"
-Content-Disposition: inline
-In-Reply-To: <20231220155723.684081-2-cleger@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] Add PPE device tree node for Qualcomm IPQ SoC
+Content-Language: en-US
+To: Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ quic_kkumarcs@quicinc.com, quic_suruchia@quicinc.com, quic_soni@quicinc.com,
+ quic_pavir@quicinc.com, quic_souravp@quicinc.com, quic_linchen@quicinc.com,
+ quic_leiwei@quicinc.com
+References: <20240110112059.2498-1-quic_luoj@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240110112059.2498-1-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---rEohnyKvwS23qCv0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 04:57:17PM +0100, Cl=E9ment L=E9ger wrote:
-> Add support to parse the Ztso string in the riscv,isa string. The
-> bindings already supports it but not the ISA parsing code.
->=20
-> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+On 1/10/24 12:20, Luo Jie wrote:
+> The PPE(packet process engine) hardware block is supported by Qualcomm
+> IPQ platforms, such as IPQ9574 and IPQ5332. The PPE includes the various
+> packet processing modules such as the routing and bridging flow engines,
+> L2 switch capability, VLAN and tunnels. Also included are integrated
+> ethernet MAC and PCS(uniphy), which is used to connect with the external
+> PHY devices by PCS.
+> 
+> This patch series enables support for the following DTSI functionality
+> for Qualcomm IPQ9574 and IPQ5332 chipsets.
+> 
+> 1. Add PPE (Packet Processing Engine) HW support
+> 
+> 2. Add IPQ9574 RDP433 board support, where the PPE is connected
+>     with qca8075 PHY and AQ PHY.
+> 
+> 3. Add IPQ5332 RDP441 board support, where the PPE is connected
+>     with qca8386 and SFP
+> 
+> PPE DTS depends on the NSSCC clock driver below, which provides the
+> clocks for the PPE driver.
+> https://lore.kernel.org/linux-arm-msm/20230825091234.32713-1-quic_devipriy@quicinc.com/
+> https://lore.kernel.org/linux-arm-msm/20231211-ipq5332-nsscc-v3-0-ad13bef9b137@quicinc.com/
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+None of these describe (or even use) the compatible in the first
+patch of this series ("qcom,ipq9574-ppe"). I didn't check the
+subsequent ones, as I assume it's the same situtation, so this
+is a NAK.
 
-Cheers,
-Conor.
+> Lei Wei (2):
+>    arm64: dts: qcom: ipq5332: Add RDP441 board device tree
+>    arm64: dts: qcom: ipq9574: Add RDP433 board device tree
 
-> ---
->  arch/riscv/include/asm/hwcap.h | 1 +
->  arch/riscv/kernel/cpufeature.c | 1 +
->  2 files changed, 2 insertions(+)
->=20
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
-p.h
-> index 2438d4685da6..3b31efe2f716 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -84,6 +84,7 @@
->  #define RISCV_ISA_EXT_ZVFH		69
->  #define RISCV_ISA_EXT_ZVFHMIN		70
->  #define RISCV_ISA_EXT_ZFA		71
-> +#define RISCV_ISA_EXT_ZTSO		72
-> =20
->  #define RISCV_ISA_EXT_MAX		128
->  #define RISCV_ISA_EXT_INVALID		U32_MAX
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index dc0ab3e97cd2..3eb48a0eecb3 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -279,6 +279,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(zkt, RISCV_ISA_EXT_ZKT),
->  	__RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
->  	__RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
-> +	__RISCV_ISA_EXT_DATA(ztso, RISCV_ISA_EXT_ZTSO),
->  	__RISCV_ISA_EXT_SUPERSET(zvbb, RISCV_ISA_EXT_ZVBB, riscv_zvbb_exts),
->  	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
->  	__RISCV_ISA_EXT_DATA(zvfh, RISCV_ISA_EXT_ZVFH),
-> --=20
-> 2.43.0
->=20
+These two look unrelated?
 
---rEohnyKvwS23qCv0
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> Luo Jie (4):
+>    arm64: dts: qcom: ipq9574: Add PPE device tree node
+>    arm64: dts: qcom: ipq5332: Add PPE device tree node
+>    arm64: dts: qcom: ipq5332: Add MDIO device tree
+>    arm64: dts: qcom: ipq9574: Add MDIO device tree
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ6AOQAKCRB4tDGHoIJi
-0gi6AQDMTvHshgmIxeYYvER5QNLkJGGnk9Du0Z4e5q/5yAhdnwD7BDk5kOnuXzyq
-U0LrzFyiX6cUknwFyCuN0/arBBh3zgY=
-=J7XO
------END PGP SIGNATURE-----
-
---rEohnyKvwS23qCv0--
+Konrad
 
