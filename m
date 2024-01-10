@@ -1,204 +1,82 @@
-Return-Path: <linux-kernel+bounces-22170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 656BD829A6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:26:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 781ED829B08
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:15:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FBC21F23981
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:26:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 191431F24D4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C38482C9;
-	Wed, 10 Jan 2024 12:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0115548CC8;
+	Wed, 10 Jan 2024 13:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JR3zlrgY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE0847A55
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:26:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09F79C433C7;
-	Wed, 10 Jan 2024 12:26:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704889589;
-	bh=XTnWr+9VNkl5OsNFjjoXhV8rPgRa0MXt2pzN1cgNXPc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JR3zlrgYA7lOCjs4GVYtYGYyhC/vRXJev678JjNXRRr0XulTWG1KJ/mclm7iTh7DN
-	 x3W1+kbs1qcwJ2O0R5ZOa7FadgSBgdaMd9Qk426qEXGAn0gGk+7C8j4j6E1x1iwRkv
-	 YwaGpkPWs4EwUxk798bJk/MlEhMVs2cLIHrzgXSxn7plFnKKIVCo8ivr+aRLMeop1R
-	 7gFJfyOH1M5IwGXmtWkDmdtNbAtOkI5Xr+aaSkRymagpnufZvqYBg0OEuKM4DLxvK5
-	 B7DRVsnSaOT5MvV9JPpArda/lCFoK9AvJ3R1c6sKFzlHyDmY99EykW5e8XzN1Htpyp
-	 I3g2Dm2XHa+Jw==
-Date: Wed, 10 Jan 2024 20:26:24 +0800
-From: Gao Xiang <xiang@kernel.org>
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-	Jingbo Xu <jefflexu@linux.alibaba.com>, Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>
-Subject: some update // Re: [GIT PULL] erofs updates for 6.8-rc1
-Message-ID: <ZZ6M8CCkunjfbt+/@debian>
-Mail-Followup-To: Linus Torvalds <torvalds@linuxfoundation.org>,
-	linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-	Jingbo Xu <jefflexu@linux.alibaba.com>, Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>
-References: <ZZq07DNl8EB/wlgK@debian>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="oSjWTJ2M"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184E848CC0
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=SnWxI
+	IZoT2+9NwtCVXP3nMqr5IrKTVI4AnhzowzhThg=; b=oSjWTJ2MWRA8ilepHlsrK
+	EM+qxn8N2dujb3rUqu21ybEU8k3XcUJDXupOlGvu2nNvfa5gsFi+oqXbYzG37tiM
+	QqacMYDE0iuJ+1sZDWaGrgP8NFnkpX5B9KnUYsVFaD6+sjlObv5ra1Lgt2JYylqj
+	Hc8npjbg+0MzqYdsZ6atW4=
+Received: from ubuntu.lan (unknown [120.229.70.208])
+	by gzga-smtp-mta-g0-2 (Coremail) with SMTP id _____wDHD60ujZ5lR2ZVAA--.7604S2;
+	Wed, 10 Jan 2024 20:27:28 +0800 (CST)
+From: Junwen Wu <wudaemon@163.com>
+To: bristot@redhat.com
+Cc: bsegall@google.com,
+	dietmar.eggemann@arm.com,
+	juri.lelli@redhat.com,
+	laoar.shao@gmail.com,
+	linux-kernel@vger.kernel.org,
+	mgorman@suse.de,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	vincent.guittot@linaro.org,
+	vschneid@redhat.com,
+	wudaemon@163.com
+Subject: Re: [PATCH v3] sched/stats: Fix rt/dl task's sched latency statistics error in sched_stat_wait trace_point
+Date: Wed, 10 Jan 2024 12:27:26 +0000
+Message-Id: <20240110122726.4309-1-wudaemon@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <87d33909-ef8c-43a6-a556-d01fe692d5cd@redhat.com>
+References: <87d33909-ef8c-43a6-a556-d01fe692d5cd@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZZq07DNl8EB/wlgK@debian>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDHD60ujZ5lR2ZVAA--.7604S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjTRMFALUUUUU
+X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/xtbBzRRhbWVOBWrIugAAsj
 
-Hi Linus,
+>This error happens when the rt task balances off the source CPU because
+>the dequeue operation is not updating the sched_statistics. So, follow
+>update_stats_wait_end_fair() and update the stats. Do the same for
+>SCHED_DEADLINE.
 
-Sorry, could you consider pull this tag "erofs-for-6.8-rc1-2" instead of
-the previous email one since commit de9bced860d4 ("erofs: fix
-inconsistent per-file compression format") was just found
-problematically on some LZMA images.
+>[ feel free to change ]
 
-Since the previous email hasn't been processed, it'd be better to drop
-this problematic patch directly and submit a new fix later instead of
-fixing a fix commit.
-
-The description for this pull request is still as below:
-
-In this cycle, we'd like to enable basic sub-page compressed data
-support for Android ecosystem (for vendors to try out 16k page size
-with 4k-block images in their compatibility mode) as well as container
-images (so that 4k-block images can be parsed on arm64 cloud servers
-using 64k page size.)
-
-In addition, there are several bugfixes and cleanups as usual.  All
-commits have been in -next for a while and no potential merge conflict
-is observed.
-
-Sorry again,
-Gao Xiang
-
-The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
-
-  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.8-rc1-2
-
-for you to fetch changes up to aa12a790d31be14b289d5a2c6f41ca535fcc7841:
-
-  erofs: make erofs_{err,info}() support NULL sb parameter (2024-01-10 19:59:39 +0800)
-
-----------------------------------------------------------------
-Changes since last update:
-
- - Add basic sub-page compressed data support;
-
- - Fix a memory leak on MicroLZMA and DEFLATE compression;
-
- - Fix a rare LZ4 inplace decompression issue on recent x86 CPUs;
-
- - Fix a KASAN issue reported by syzbot around crafted images;
-
- - Some cleanups.
-
-----------------------------------------------------------------
-Chunhai Guo (1):
-      erofs: make erofs_{err,info}() support NULL sb parameter
-
-Gao Xiang (9):
-      erofs: fix memory leak on short-lived bounced pages
-      erofs: fix lz4 inplace decompression
-      erofs: support I/O submission for sub-page compressed blocks
-      erofs: record `pclustersize` in bytes instead of pages
-      erofs: fix up compacted indexes for block size < 4096
-      erofs: fix ztailpacking for subpage compressed blocks
-      erofs: refine z_erofs_transform_plain() for sub-page block support
-      erofs: enable sub-page compressed block support
-      erofs: avoid debugging output for (de)compressed data
-
-Yue Hu (1):
-      erofs: allow partially filled compressed bvecs
-
- fs/erofs/decompressor.c         | 120 +++++++++---------
- fs/erofs/decompressor_deflate.c |   2 +-
- fs/erofs/inode.c                |   6 +-
- fs/erofs/super.c                |  10 +-
- fs/erofs/zdata.c                | 267 ++++++++++++++++++----------------------
- fs/erofs/zmap.c                 |  32 +++--
- 6 files changed, 211 insertions(+), 226 deletions(-)
+ok
 
 
-On Sun, Jan 07, 2024 at 10:27:56PM +0800, Gao Xiang wrote:
-> Hi Linus,
-> 
-> Could you consider this pull request for 6.8-rc1?
-> 
-> In this cycle, we'd like to enable basic sub-page compressed data
-> support for Android ecosystem (for vendors to try out 16k page size
-> with 4k-block images in their compatibility mode) as well as container
-> images (so that 4k-block images can be parsed on arm64 cloud servers
-> using 64k page size.)
-> 
-> In addition, there are several bugfixes and cleanups as usual.  All
-> commits have been in -next for a while and no potential merge conflict
-> is observed.
-> 
-> Thanks,
-> Gao Xiang
-> 
-> The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
-> 
->   Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.8-rc1
-> 
-> for you to fetch changes up to 070aafcd2482dc31a12a3eda5d459c45496d6fb6:
-> 
->   erofs: make erofs_{err,info}() support NULL sb parameter (2024-01-04 00:23:13 +0800)
-> 
-> ----------------------------------------------------------------
-> Changes since last update:
-> 
->  - Add basic sub-page compressed data support;
-> 
->  - Fix a memory leak on MicroLZMA and DEFLATE compression;
-> 
->  - Fix a rare LZ4 inplace decompression issue on recent x86 CPUs;
-> 
->  - Two syzbot fixes around crafted images;
-> 
->  - Some cleanups.
-> 
-> ----------------------------------------------------------------
-> Chunhai Guo (1):
->       erofs: make erofs_{err,info}() support NULL sb parameter
-> 
-> Gao Xiang (10):
->       erofs: fix memory leak on short-lived bounced pages
->       erofs: fix lz4 inplace decompression
->       erofs: support I/O submission for sub-page compressed blocks
->       erofs: record `pclustersize` in bytes instead of pages
->       erofs: fix up compacted indexes for block size < 4096
->       erofs: fix ztailpacking for subpage compressed blocks
->       erofs: refine z_erofs_transform_plain() for sub-page block support
->       erofs: enable sub-page compressed block support
->       erofs: fix inconsistent per-file compression format
->       erofs: avoid debugging output for (de)compressed data
-> 
-> Yue Hu (1):
->       erofs: allow partially filled compressed bvecs
-> 
->  fs/erofs/decompressor.c         | 122 +++++++++---------
->  fs/erofs/decompressor_deflate.c |   2 +-
->  fs/erofs/inode.c                |   6 +-
->  fs/erofs/super.c                |  10 +-
->  fs/erofs/zdata.c                | 267 ++++++++++++++++++----------------------
->  fs/erofs/zmap.c                 |  41 +++---
->  6 files changed, 218 insertions(+), 230 deletions(-)
+>> +	/*
+>> +	 * Mark the end of the wait period
+>> +	 * if dequeueing a waiting task.
+>> +	 */
+>make this a single line comment.
+ok
+--
+Best regards
+
 
