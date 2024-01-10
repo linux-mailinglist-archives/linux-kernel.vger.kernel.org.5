@@ -1,79 +1,89 @@
-Return-Path: <linux-kernel+bounces-21807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ADA582948E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:58:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0F63829491
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:59:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D9DF1F27581
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:58:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 492F228A702
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B658F3E472;
-	Wed, 10 Jan 2024 07:57:54 +0000 (UTC)
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5D53C461;
+	Wed, 10 Jan 2024 07:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0ZxeCzBw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87D13E460
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W-LGmrI_1704873460;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W-LGmrI_1704873460)
-          by smtp.aliyun-inc.com;
-          Wed, 10 Jan 2024 15:57:43 +0800
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-To: kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: maz@kernel.org,
-	oliver.upton@linux.dev,
-	james.morse@arm.com,
-	suzuki.poulose@arm.com,
-	yuzenghui@huawei.com,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	Ruidong Tian <tianruidong@linux.alibaba.com>
-Subject: [PATCH] KVM: arm64: Add missing ERX*_EL1 registers
-Date: Wed, 10 Jan 2024 15:57:39 +0800
-Message-Id: <20240110075739.8291-1-tianruidong@linux.alibaba.com>
-X-Mailer: git-send-email 2.33.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101783A1CF;
+	Wed, 10 Jan 2024 07:58:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0F50C433C7;
+	Wed, 10 Jan 2024 07:58:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704873539;
+	bh=lE9/mgHGGaw+iCzOhrYVTWyL3krx3bVGhgsCRq2dNtU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0ZxeCzBw1fNktCiKJyKjgyS1UxzrXlwuino0MaqulPIBcDECORT42uxKZ4B3u1Jkw
+	 Mus5ASEYcxCX750f2SqbaRWiJHc4krjZOiLhebpeLF7rZSk8CurOosheNz19o2wDfW
+	 iWKW62iH1b8nQtmX6+MrVfi8C9gP0kJ3VQp8AE/c=
+Date: Wed, 10 Jan 2024 08:58:56 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	Darren Kenny <darren.kenny@oracle.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Lieven Hey <lieven.hey@kdab.com>
+Subject: Re: [PATCH for-5.15] perf inject: Fix GEN_ELF_TEXT_OFFSET for jit
+Message-ID: <2024011043-unearned-manned-12b7@gregkh>
+References: <2024010711-skeletal-material-15e8@gregkh>
+ <20240109214955.451513-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109214955.451513-1-namhyung@kernel.org>
 
-Commit 464f2164da7e ("arm64: Add missing ERX*_EL1 encodings") add some
-new RAS registers. Trap them to kvm.
+On Tue, Jan 09, 2024 at 01:49:55PM -0800, Namhyung Kim wrote:
+> From: Adrian Hunter <adrian.hunter@intel.com>
+> 
+> When a program header was added, it moved the text section but
+> GEN_ELF_TEXT_OFFSET was not updated.
+> 
+> Fix by adding the program header size and aligning.
+> 
+> Fixes: babd04386b1df8c3 ("perf jit: Include program header in ELF files")
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Lieven Hey <lieven.hey@kdab.com>
+> Link: https://lore.kernel.org/r/20221014170905.64069-7-adrian.hunter@intel.com
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> [namhyung: use "linux/kernel.h" instead to avoid build failure]
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/genelf.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
----
- arch/arm64/kvm/sys_regs.c | 5 +++++
- 1 file changed, 5 insertions(+)
+What is the git commit id of this change in Linus's tree?
 
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 30253bd19917..76a9ba155d58 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -2389,8 +2389,13 @@ static const struct sys_reg_desc sys_reg_descs[] = {
- 	{ SYS_DESC(SYS_ERXCTLR_EL1), trap_raz_wi },
- 	{ SYS_DESC(SYS_ERXSTATUS_EL1), trap_raz_wi },
- 	{ SYS_DESC(SYS_ERXADDR_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXPFGF_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXPFGCTL_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXPFGCDN_EL1), trap_raz_wi },
- 	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
- 	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXMISC2_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXMISC3_EL1), trap_raz_wi },
- 
- 	MTE_REG(TFSR_EL1),
- 	MTE_REG(TFSRE0_EL1),
--- 
-2.33.1
+thanks,
 
+greg k-h
 
