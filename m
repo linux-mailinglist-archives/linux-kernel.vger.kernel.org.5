@@ -1,119 +1,125 @@
-Return-Path: <linux-kernel+bounces-21797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8258982946F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:40:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0241B829472
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E82A528744E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:40:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93263B2558A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:40:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA7E3A1D3;
-	Wed, 10 Jan 2024 07:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90673D994;
+	Wed, 10 Jan 2024 07:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NRMK08S2"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="uqzi/qd6"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D22B3A1B5
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3376555b756so2126767f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:40:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704872410; x=1705477210; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NLPe7rN96jPmcBQ+yEx7r8GzqAJEfJNRmgl3HhO41JE=;
-        b=NRMK08S2mCTi6UNBwrhBRDxsxThiYHvB3GHnuM7LVmCQboaDHD8uoZD8JCbb3Tb6wZ
-         7dbcn1dqiqytm/5vpvhYkDmcBzIHJkB6iDb8HtIaSNI1eBLkAnCt+Gz8tNw2ouWmcGyd
-         IK7Jeubr4dTFoccpXm50C2XtasOKLiqYS7Uxl47Gqo6VmttqVI7ws81Cp+XuTXg9+WR1
-         K6fVtt7RxfbwsUKw3Lr7+z/mDp4N5V1ECQAM3mdSaPhkeBGqed2IzzkfgE/HU1f6bAwm
-         MgiIaJhWgjrYuJPPuzW/4zGa0Io8jQAeqx+J2yYdA31b++dQXCxsKDrdGIoO5VjEL72B
-         Z0Sg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F363D964
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id F2C563F2D3
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704872429;
+	bh=gqWONg/RdAipmRUniv6l6rz28Dcm60IsseyPA4ghbII=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=uqzi/qd6CFcnm7AQp39X4tQdWXK6MDhkZau5kumOecuN6+F/vv+RP/su0O1k/SAun
+	 E8dhZe/lzIJXhcxrIqp6qJb+PQNVdOFJgwfxDIBXXsIY/kd2jl3bDh+W2J+7vXhx3M
+	 n0tZmVxZswv+Wu05Qgeo4uyEXzrtHtmgLksvF2faKBla6NFAgx9JPyvDBvYSpcyKZ0
+	 MJUr6M1LYMBoJ+1f/uDZhaCZVuvWzKuNrazwa2A7cudJYTw/vIZg8fEYIbRktG8JAD
+	 RuLm8600PyviYmwfCtDlGUEVI9RScy9NZGwQn3c+qgDHh/IR+6oRA8Ce+brYlEGvD/
+	 eb1xFAJTCKceA==
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a2b068401b4so233109166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:40:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704872410; x=1705477210;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NLPe7rN96jPmcBQ+yEx7r8GzqAJEfJNRmgl3HhO41JE=;
-        b=tiyYzG0GS9nE+kzYCCu/Xyl/DL5tbpI3q3QtQJ7u9qvPGWVG8yVE84RnOLjQDGZdQB
-         ypvZ50zL2UcYC+6nwGe9McJ3d2aBWrv5lUXzJShYv+BJ4uCidXNJ65+2zCKVx24Y8hdd
-         rh6UWpXXtvHXkIY03PM7QH+qFgs3cO3jNhOzpO2P8Qk7lYZCVgsvn3Qv/C2iTsijuSL+
-         6+5EXojAaFpMWChatPF0EBdbH3j3GtVyyAJGaPn8rdPkOnkY/bVm+pBBqR2Ex5lTH7QV
-         V3T78o/kgza5NuNxZiGDOuw2+GHH08XbzSGfIwNzkTcgvvXYzjM3Kb3qvM2r7ppM5Epo
-         2ZNQ==
-X-Gm-Message-State: AOJu0YzVOlaXyexx78zMFiA7haO1NG/RXVHgrSxDJ6N/Dc4wE09z5NLI
-	ShxYeutfIqxm65D0AVGX/PIZFydpJxaIVA==
-X-Google-Smtp-Source: AGHT+IEWGg/TtsHpb+8OZcJ3s5rg1vjUJ0YbvyUGPN2Et40F9kQT6rgF5c9MQnw9Vlk0josWMt/8Vw==
-X-Received: by 2002:adf:fec1:0:b0:337:64eb:1c4 with SMTP id q1-20020adffec1000000b0033764eb01c4mr1098496wrs.7.1704872409835;
-        Tue, 09 Jan 2024 23:40:09 -0800 (PST)
-Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id n10-20020a5d420a000000b0033719111458sm4148928wrq.36.2024.01.09.23.40.09
+        d=1e100.net; s=20230601; t=1704872429; x=1705477229;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gqWONg/RdAipmRUniv6l6rz28Dcm60IsseyPA4ghbII=;
+        b=mTsFTok6wx6gWbuaWbTRCnXuqoi2PLGk94BYsKgKQYhZ15wo/J+rtSy6cMmLYWJ3HL
+         tam11FzVmxOdlm4/XqwxqBw3Ch//ZyRR4mD3URRLCwjhNKil3pDo7DDV7jcrxwNJAcUo
+         tCDoCLTdAbwKdqthncRFP7sprvEIqJ87c4UqcgoyVNbx/A6loUhEMiSaZJZdoX6zxnxm
+         de5NJQKYzUZIx93/4zmi3j6T8WNd0H4cHlpU6+M7G5U6a5bSIyNw7hebnH9oQ1JYS1BE
+         nTAhlh/ApLA0k8ADI6M2hBm4l1pwDxqOY39S5vJxrBpnLyhDRs+AW6CwHZAaoXqGP/y1
+         20bw==
+X-Gm-Message-State: AOJu0YwIl0EVAbYPVEb31kmuUUo+vuqXCf+Md+KXpsBQ/yhhupjkNtFm
+	QpxRbF1bCPrqju2aN8m/u5nz2a3dirxU/9hCmnIRhzGofiwlJ34+QlXsNpwbEVHJcwkCZkqnVmU
+	n01BV4rJlaoYr2/+nPh8BCO90dZl7KbNvgiRKcHxOi6G9Jm41
+X-Received: by 2002:a17:907:5c4:b0:a26:8c4d:b0b6 with SMTP id wg4-20020a17090705c400b00a268c4db0b6mr2356453ejb.9.1704872429681;
+        Tue, 09 Jan 2024 23:40:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEKRVvpOQeOqJu//YjOAqylshbUQxBSAyLUbTQIb1vTDgK4Ex/+pKZIK77MQHzlICA788YN9A==
+X-Received: by 2002:a17:907:5c4:b0:a26:8c4d:b0b6 with SMTP id wg4-20020a17090705c400b00a268c4db0b6mr2356437ejb.9.1704872429384;
+        Tue, 09 Jan 2024 23:40:29 -0800 (PST)
+Received: from localhost (host-87-18-244-72.retail.telecomitalia.it. [87.18.244.72])
+        by smtp.gmail.com with ESMTPSA id z4-20020a170906714400b00a26f63d16f6sm1814846ejj.25.2024.01.09.23.40.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 23:40:09 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	mark.rutland@arm.com
-Cc: swboyd@chromium.org,
-	dianders@chromium.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2] arm64: irq: include <linux/cpumask.h>
-Date: Wed, 10 Jan 2024 07:40:07 +0000
-Message-ID: <20240110074007.4020016-1-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+        Tue, 09 Jan 2024 23:40:28 -0800 (PST)
+Date: Wed, 10 Jan 2024 08:40:26 +0100
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: gregkh@linuxfoundation.org, ast@kernel.org,
+	linux-kernel@vger.kernel.org, geert@linux-m68k.org
+Subject: Re: [PATCHSET driver-core-next] kernfs: Protect
+ kernfs_find_and_get_node_by_id() with RCU
+Message-ID: <ZZ5J6jAxF38v-Tfg@gpd>
+References: <20240109214828.252092-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109214828.252092-1-tj@kernel.org>
 
-Sorting include files in alphabetic order in
-drivers/tty/serial/samsung.c revealed the following error:
+On Tue, Jan 09, 2024 at 11:48:01AM -1000, Tejun Heo wrote:
+> The BPF helper bpf_cgroup_from_id() calls kernfs_find_and_get_node_by_id()
+> which acquires kernfs_idr_lock, which is an non-raw non-IRQ-safe lock.
+> kernfs_idr_lock used to be a non-irq-safe lock which could lead to deadlocks
+> as bpf_cgroup_from_id() can be called from any BPF programs including e.g.
+> the ones that attach to functions which are holding the scheduler rq lock.
+> 
+> To resolve the situation dad3fb67ca1c ("kernfs: convert kernfs_idr_lock to
+> an irq safe raw spinlock") converted kernfs_idr_lock to an irq-safe raw
+> spinlock. However, this was also broken as we call idr_alloc*() while
+> holding the lock and idr itself uses an non-irq-safe lock and also calls
+> into memory allocator.
+> 
+> Let's instead RCU protect kernfs_node and kernfs_root so that
+> kernfs_find_and_get_node_by_id() can use rcu_read_lock() instead of
+> kernfs_idr_lock. While this unfortunately increases the size of kernfs_node,
+> it's the most straightforward thing to do and there likely are other places
+> that can take advantage of RCU protection and improve scalability too.
+> 
+> Please see the patch descriptions for more details.
+> 
+> This patchset is on top of the current driver-core-next - dad3fb67ca1c
+> ("kernfs: convert kernfs_idr_lock to an irq safe raw spinlock"), and also
+> available in the following git branch.
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tj/misc.git kernfs-use-rcu
+> 
+> Thanks.
+> 
+> --
+> tejun
 
-In file included from drivers/tty/serial/samsung_tty.c:24:
-/arch/arm64/include/asm/irq.h:9:43: error: unknown type name ‘cpumask_t’
-    9 | void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
-      |                                           ^~~~~~~~~
+Everything looks good to me and I can't trigger any oops with this one
+applied. You can add my:
 
-Include cpumask.h to avoid unknown type errors for parents of irq.h that
-don't include cpumask.h.
+Tested-by: Andrea Righi <andrea.righi@canonical.com>
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
-v2:
-- fix typo, s/avod/avoid
-- include the linux header first and then add a new line to differentiate
-  from the asm header
-- collect Mark's Acked-by tag
-
- arch/arm64/include/asm/irq.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
-index 50ce8b697ff3..e93548914c36 100644
---- a/arch/arm64/include/asm/irq.h
-+++ b/arch/arm64/include/asm/irq.h
-@@ -4,6 +4,8 @@
- 
- #ifndef __ASSEMBLER__
- 
-+#include <linux/cpumask.h>
-+
- #include <asm-generic/irq.h>
- 
- void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
--- 
-2.43.0.472.g3155946c3a-goog
-
+Thanks!
+-Andrea
 
