@@ -1,122 +1,149 @@
-Return-Path: <linux-kernel+bounces-22224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25620829B20
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E8A829B21
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B88B31F25E71
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:20:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 669911F255E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9700A48CD6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D472E48CD2;
 	Wed, 10 Jan 2024 13:20:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="UuX2BVFl"
-Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80634878E
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=mpOgP
-	P0xKV58Qwv7Ooq5G/jaeJlpdbbBCzuHowdlvv0=; b=UuX2BVFlGAm6NfqTBZn+I
-	g6gN0Jpcwamy4N4xWewIlxBbMXUdqnb3MjOuSE3zfmDg+yAO2C5I/zjlDEY8HGeV
-	clOdBy26Vq0T13dr2b4bSIZQY9z3YGcIqCPagKPpPt5pKjxqya0oRnHKcmVPYeTg
-	GFTkxOnIab3Oll9a239IPo=
-Received: from ubuntu.lan (unknown [120.229.70.208])
-	by gzga-smtp-mta-g0-0 (Coremail) with SMTP id _____wDXX5RumZ5l+HlXAA--.7591S2;
-	Wed, 10 Jan 2024 21:19:44 +0800 (CST)
-From: Junwen Wu <wudaemon@163.com>
-To: bristot@redhat.com,
-	mingo@redhat.com,
-	laoar.shao@gmail.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com
-Cc: mgorman@suse.de,
-	vschneid@redhat.com,
-	linux-kernel@vger.kernel.org,
-	Junwen Wu <wudaemon@163.com>
-Subject: [PATCH v4] sched/stats: Fix rt/dl task's sched latency statistics error in sched_stat_wait trace_point
-Date: Wed, 10 Jan 2024 13:19:40 +0000
-Message-Id: <20240110131940.42979-1-wudaemon@163.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="MFyST6Py"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99525487A5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e5508ecb9so12412245e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:20:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1704892822; x=1705497622; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YCkcD8LjRksDas2PtB8JO47e3MMJedookR84ZvoZyac=;
+        b=MFyST6Py6D6ev3dlzQ1fiUFvB93vMMhbBXy1A20u1nMLJfRRFBqB06UduA88eZLsnr
+         2+2cufqDBFdWANXQP1eMhTAogXwOGy+MUztrqAoat1JOeX9XyfWAMONtIkob1YEg/Mac
+         4AeLI8g1oJMPAG2dauT8yfLa3OKKss5pzao35u2OJ2HnsqSLlHt/BzOcUOCiAH2TJY66
+         o+CiB6SVQ//HIvvO70oJrII65qBpGS1odPvuTq/5OEzbmiBX9/AyN1SQ3XfSYrkN2fcS
+         ee35NVeC+lZi2aNFDQZGFz12R3PqUnNvH6zI3LjRCndukKMx868w5MlLy3rqBiIV68ub
+         Vofw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704892822; x=1705497622;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YCkcD8LjRksDas2PtB8JO47e3MMJedookR84ZvoZyac=;
+        b=vGOQovYf+e1JN6cRun6zZcSaL2kEE3a3ThYskOcg/P98VbVcW2JW+uXNMQHB7M751M
+         vQihUzEUQkr5xICthDv0YUaXnRjpOKZNw6Xgv1YjbNTBL24A6pIGaaJjRFSRR0NqJyNF
+         CFMOqRLKwTPeOljy9JBrxDmpGb/c3DTrqKh6/6zu0DXODmw62Gx2PDAZpNDywrrZam/G
+         RhgdhECzTw6SSjsyqm1X4Q/1u4aQBc9Jx0d3wKzcDG4sVpZCz5V2TIh2thtx1v3opRp/
+         cukr6KUD9azRN/tSj6xZ6IbHmoxVb7NRan5kVtvd5obn+XU+leAKAiFY3S8qo/SxoV6y
+         +7/w==
+X-Gm-Message-State: AOJu0Yx6umWkTgjW3bmTO3Rc2yn8r4hXeSn7A//iDA0SQlokRHUPkNK8
+	no/yt8fIxJwIDv1mkb5TZt7/tsZk18OQmQ==
+X-Google-Smtp-Source: AGHT+IEUPnL34ET99Hj/hIbknkQ8fEWGM+WKPwQzx8/5fT7oXahWMojBXFdXXo1XxGp6qARdTIUlJw==
+X-Received: by 2002:a05:600c:5014:b0:40d:91b9:436b with SMTP id n20-20020a05600c501400b0040d91b9436bmr611598wmr.183.1704892821813;
+        Wed, 10 Jan 2024 05:20:21 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.5])
+        by smtp.gmail.com with ESMTPSA id n16-20020a05600c4f9000b0040d62f97e3csm2200114wmq.10.2024.01.10.05.20.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 05:20:21 -0800 (PST)
+Message-ID: <c0b5ca41-c145-4adc-86c0-067e5043523b@tuxon.dev>
+Date: Wed, 10 Jan 2024 15:20:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDXX5RumZ5l+HlXAA--.7591S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CF15CF4fWw1UKw1DAFy5Jwb_yoW8Cryfp3
-	yDGaykJw4qg3yjgw4UZr4Du3yrWwn3J342gF93GayftF4Yyr1Yq3ZaqFW3XFZ09r95CF12
-	qr409rZrKw409F7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piX4S7UUUUU=
-X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisQphbWVOA-hZVAADsp
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net: phy: micrel: populate .soft_reset for KSZ9131
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>,
+ "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: hkallweit1@gmail.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, yuiko.oshino@microchip.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240105085242.1471050-1-claudiu.beznea.uj@bp.renesas.com>
+ <ZZfPOky2p/ZJMKCQ@shell.armlinux.org.uk>
+ <a2651f98-b598-4a05-9e05-d2912eeb55d2@lunn.ch>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <a2651f98-b598-4a05-9e05-d2912eeb55d2@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The sched_stat_wait tracepoint is showing unreasonably long
-latencies for real-time tasks. For example:
+Hi, Andrew, Russell,
 
-sched_stat_wait: comm=rcu_preempt pid=14 delay=4936139545261 [ns]
+On 05.01.2024 16:36, Andrew Lunn wrote:
+> On Fri, Jan 05, 2024 at 09:43:22AM +0000, Russell King (Oracle) wrote:
+>> On Fri, Jan 05, 2024 at 10:52:42AM +0200, Claudiu wrote:
+>>> The order of PHY-related operations in ravb_open() is as follows:
+>>> ravb_open() ->
+>>>   ravb_phy_start() ->
+>>>     ravb_phy_init() ->
+>>>       of_phy_connect() ->
+>>>         phy_connect_direct() ->
+>>> 	  phy_attach_direct() ->
+>>> 	    phy_init_hw() ->
+>>> 	      phydev->drv->soft_reset()
+>>> 	      phydev->drv->config_init()
+>>> 	      phydev->drv->config_intr()
+>>> 	    phy_resume()
+>>> 	      kszphy_resume()
+>>>
+>>> The order of PHY-related operations in ravb_close is as follows:
+>>> ravb_close() ->
+>>>   phy_stop() ->
+>>>     phy_suspend() ->
+>>>       kszphy_suspend() ->
+>>>         genphy_suspend()
+>>> 	  // set BMCR_PDOWN bit in MII_BMCR
+>>
+>> Andrew,
+>>
+>> This looks wrong to me - shouldn't we be resuming the PHY before
+>> attempting to configure it?
+> 
+> Hummm. The opposite of phy_stop() is phy_start(). So it would be the
+> logical order to perform the resume as the first action of
+> phy_start(), not phy_attach_direct().
+> 
+> In phy_connect_direct(), we don't need the PHY to be operational
+> yet. That happens with phy_start().
+> 
+> The standard says:
+> 
+>   22.2.4.1.5 Power down
+> 
+>   The PHY may be placed in a low-power consumption state by setting
+>   bit 0.11 to a logic one. Clearing bit 0.11 to zero allows normal
+>   operation. The specific behavior of a PHY in the power-down state is
+>   implementation specific. While in the power-down state, the PHY
+>   shall respond to management transactions.
+> 
+> So i would say this PHY is broken, its not responding to all
+> management transactions. So in that respect, Claudiu fix is correct.
+> 
+> But i also somewhat agree with you, this looks wrong, but in a
+> different way to how you see it. However, moving the phy_resume() to
+> phy_start() seems a bit risky. So i'm not sure we should actually do
+> that.
 
-This error happens when the rt task balances off the source CPU because
-the dequeue operation is not updating the sched_statistics. So, follow
-update_stats_wait_end_fair() and update the stats. Do the same for
-SCHED_DEADLINE.
+It's not clear to me if you both agree with this fix. Could you please let
+me know?
 
-Signed-off-by: Junwen Wu <wudaemon@163.com>
----
- kernel/sched/deadline.c | 5 ++++-
- kernel/sched/rt.c       | 4 ++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+Thank you,
+Claudiu Beznea
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index b28114478b82..4a9aad291fb9 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1558,10 +1558,13 @@ update_stats_dequeue_dl(struct dl_rq *dl_rq, struct sched_dl_entity *dl_se,
- 			int flags)
- {
- 	struct task_struct *p = dl_task_of(dl_se);
-+	struct rq *rq = rq_of_dl_rq(dl_rq);
- 
- 	if (!schedstat_enabled())
- 		return;
--
-+	/*  Mark the end of the wait period if dequeueing a waiting task.*/
-+	if (p && (p != rq->curr))
-+		 update_stats_wait_end_dl(dl_rq, dl_se);
- 	if ((flags & DEQUEUE_SLEEP)) {
- 		unsigned int state;
- 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 6aaf0a3d6081..5cb3a54d6b13 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1360,12 +1360,16 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
- 			int flags)
- {
- 	struct task_struct *p = NULL;
-+	struct rq *rq = rq_of_rt_se(rt_se);
- 
- 	if (!schedstat_enabled())
- 		return;
- 
- 	if (rt_entity_is_task(rt_se))
- 		p = rt_task_of(rt_se);
-+	/* Mark the end of the wait period if dequeueing a waiting task. */
-+	if (p && (p != rq->curr))
-+		update_stats_wait_end_rt(rt_rq, rt_se);
- 
- 	if ((flags & DEQUEUE_SLEEP) && p) {
- 		unsigned int state;
--- 
-2.34.1
-
+> 
+> 	Andrew
 
