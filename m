@@ -1,103 +1,91 @@
-Return-Path: <linux-kernel+bounces-22178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFE6F829A89
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:44:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF81829A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 508CF2872B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A55285796
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1A3482EE;
-	Wed, 10 Jan 2024 12:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D134879A;
+	Wed, 10 Jan 2024 12:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="r6wNb2QL"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="HVAgopfK"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BBC48794;
-	Wed, 10 Jan 2024 12:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704890642; x=1705495442; i=markus.elfring@web.de;
-	bh=la73kn+TFTFDaF+8Q3UYpU2TqjBC/104wbhwQuU4dVA=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=r6wNb2QLlvgzanAylRuVIUnrnIhoQHCghVrgE0np/3FuNwDKHeXAdtQy8FLFx7id
-	 RWlL1xR/Etldcu55AikeqKyJq4cXTtWAk15hIhpx0m69fkfjRur/edlcXl/biHlNn
-	 cPIlstKwno5OkxSFwkbVaZaGl+jgByLS0aYNj6qAFliaxcp2UxvDcC7JOwPCdtvbP
-	 DxJqJKsC3keKNNTzoS+2fZN0jewnuvm56CNw8yzxHNUvPpScoe4cryv3O2pB1JRRG
-	 NlU4lYTPchb2vQfvRhkinoPDPjKnWvwsitdWvhahSrqC/XckxjtaFHkFkECKpTiyZ
-	 i7M0XDdSGq/h30pHmw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N6JxT-1r8NZb2ynx-016YEe; Wed, 10
- Jan 2024 13:44:02 +0100
-Message-ID: <1c38e495-5c9c-4ff8-b453-93b882dd2c4c@web.de>
-Date: Wed, 10 Jan 2024 13:44:01 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D89048797
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1704890794; x=1736426794;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=NOI1de7t6pyVOs6jsOoRo4x39WzrGdDD2xRLy0QjDOY=;
+  b=HVAgopfKJ3unPSMT3wLyeLVKXvyA5biGCmSTf+0e3QUN0b2BBaqRTgxj
+   /Kuc6bX7TiipNWm5ZFKIMcW7zv+Up7/ZHFSOQ7fbbe3Qxw5UurkakL7gU
+   1y5fWmY7WbRbB689tmzfXnOW04PpNV0DV9yq+yIuAXhOy0bYne9tkHdWd
+   w0FGqwmOTlHa84wTVW2RUOTQINYaw4NOtjYBjuMhP0xOsI87sjuvqFzMV
+   DXgnc0utL7GYAL5hqKKOIzzU7dqvg8pdb0apyGk2xd4yIJCJsBElPpHQn
+   D58wC5VipYGk/X69Q9QwKlyeoIdLZCFjrXpY4NNNdoLhIBMqBtUvgynbk
+   w==;
+X-IronPort-AV: E=Sophos;i="6.04,184,1695679200"; 
+   d="scan'208";a="34829298"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 10 Jan 2024 13:46:31 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 6D807280075;
+	Wed, 10 Jan 2024 13:46:31 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] regmap: debugfs: runtime resume a device when reading registers
+Date: Wed, 10 Jan 2024 13:46:31 +0100
+Message-ID: <7625183.EvYhyI6sBW@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <3bc9c762-3573-4d8b-bfcf-6c8e91938dcd@sirena.org.uk>
+References: <20240110095358.473663-1-alexander.stein@ew.tq-group.com> <3bc9c762-3573-4d8b-bfcf-6c8e91938dcd@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [0/2] ARM: Adjustments for init_atags_procfs()
-Content-Language: en-GB
-To: Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- cocci@inria.fr
-References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
- <562a6f99-3f8e-9a77-e519-b668e24dced2@web.de>
- <b3c42397-c879-4381-aa96-c7887e81c068@web.de>
- <7dd19987-6590-4756-a929-1ff01503ad1c@web.de>
- <ZZ6MZl14bcIaCaQn@shell.armlinux.org.uk>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <ZZ6MZl14bcIaCaQn@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CdzX4zLJRKZiTncQNCOSQvc+4e103tCDmLiHfON4OVsvsJodBn4
- Y+SFuLIXC2xvnz5QfL2UL3MBVukgf+QqUMavAu0AbyULgt/T/FIqEY/kCTz7zZGeV27Svj7
- sSc2Jxbr/q/e5kCNJvcKuY0zWpJqxed9bKExbGIxcki165O5urwF3HvrStTtBvlc4mTQGjO
- 9LbqwN09hU9l17l7QxhUw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:uIIKa0+Co88=;a0o93Pace7y+DJpz4dPP0YadH7y
- kUAmPkvK54GswrVaj/QWwAYFmpKrhZaw56a8e3J3J9eGXx+/SiN69tNuFKO3V6VIcYGH42sqi
- yra5mmX+Xk5K2bYbetfYshKXYUM02QA4TPXh4JipPrlklWXq5heYcS45ngb92kV2o6k/Hp+oO
- OpdKhsfk4xHnv7RJ1P3hRujSnrqyO7WTutJIHXqXLE1BQ4/DhBE9cD/BxT6Lzigs3LklUjDyE
- poBfln4jtmJ8LK7hVe0snKplnG65nrWbJ+NTQfGs9NtwvqGaqebjPQ5e71Rq5CUzA7gzt19jQ
- FWlUKCVkZ+yg4KOyQAIUM0gMzholkrjqLHgHH9xgAy8bqIhfUCNRm5Sc0nIA7fygfU3aPakBM
- 3I7c3BW98RuMI4DlxkvuIBfpS2fn99nx9BTXCwUuSe8ZyBnX48cPwByM1dzChAViaLHBM1GqR
- ES9zie1ufpdEGX5T0k8R4Hp0Pqzv0wQyePNsnkn5PMLZRmWoRWgPsYmNow5l53fFSp0sFplWk
- sTT0wMPt3ODH3xaTOCgBSv8EB36KDVZw6JzFfz5MAXx7kX1C86UGfV2PMJQqoIQpE5ztWI4N0
- 1GtW4I/8QE2laovyTVmX40EYaf41EsWFZAd7/hUzJMIVSeCSH4TaTfbnPJBRYsVK/vKFWFE78
- vwlu045mF2Vu+Os5Svy4iGP5z+d+EAoU+qIQ9EC211AK6bfn4691MfOOsSqlXBeyzG3n9LtwA
- +LZIYY1HoVBuLZEhgudwKEj4G2fRFKZFAsG/ZiEuIgQNvNwV6xdztfY/IJnYKH5hWSLVUkG5c
- ZQTFl6KqehppMJv8yT4FSBFBtoHTHgjuYA4V1dtO1iyWlr5/81lqjvolsEK01pq1RCiZmFPcU
- ymdH8yIXvIgrXKgyT0U6Hh8h/3qFoq7d56vGUcNokjHXad2HlEVzfLMmtaqSRwC3+3QUXlOqB
- J7GFpQ==
+Content-Type: text/plain; charset="iso-8859-1"
 
->>> Is this patch series still in review queues?
->>
->> See also:
->> https://lore.kernel.org/cocci/562a6f99-3f8e-9a77-e519-b668e24dced2@web.=
-de/
->> https://sympa.inria.fr/sympa/arc/cocci/2023-03/msg00098.html
->
-> I suspect no one looked at it, sorry.
+Am Mittwoch, 10. Januar 2024, 13:23:17 CET schrieb Mark Brown:
+> On Wed, Jan 10, 2024 at 10:53:58AM +0100, Alexander Stein wrote:
+> > If the registers shall be read from device, runtime resume it in order
+> > to enable a possiblly attached power domain before accessing the device.
+>=20
+> The idea is that the debugfs interface isn't supposed to be disruptive
+> to the thing being debugged.  It would be better to detect if there will
+> be problems and report the status as busy.
 
-Special mailing list settings probably influenced this situation.
+In my case the device is actually unused, runtime suspended, thus disabled=
+=20
+power domain. That's totally different to busy. In this case dumping the=20
+registers is non-disruptive, unless you account enabling/disabling the powe=
+r=20
+domain as well. Any attached clock is already enabled/disabled, but power=20
+domains are not.
+
+Best regards,
+Alexander
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
 
->                                       I don't catch everything that is
-> on the mailing list. Looks fine to me but it needs to end up in the
-> patch system to be applied.
-
-Can you collaborate also with mentioned mailing list archive interfaces?
-
-Regards,
-Markus
 
