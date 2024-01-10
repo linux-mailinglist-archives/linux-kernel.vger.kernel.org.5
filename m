@@ -1,87 +1,196 @@
-Return-Path: <linux-kernel+bounces-22135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3CC68299D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:53:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6698299D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:53:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1E211C25AEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:53:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D34D11F23737
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9241548788;
-	Wed, 10 Jan 2024 11:48:14 +0000 (UTC)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEE0487BF;
+	Wed, 10 Jan 2024 11:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="VVgp4dqZ"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D643482D3;
-	Wed, 10 Jan 2024 11:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so2918264a12.2;
-        Wed, 10 Jan 2024 03:48:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704887291; x=1705492091;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I9Zq9GKWqta6ICAtqEU6fr3Wjl7exxbBxBD4kWvF4dU=;
-        b=GdEidBTiQ05EJ9Or91814Oz2VGlUe7cDUDyWyOX+F7RXXK//zjopVZm66JKbD5BQjR
-         kIOQw2HzV/WUxIT/eslpaC273A5WSuqXpZJOwCz/VDphUPoNV7AHvx+1opKDsAb3GCL/
-         4BCOCiUUcsvvmgh7vsMPDN12niszPyJWVTPcDc2dEGiNyZhzMe7ezUHqlvwceeRrZ4vM
-         6f2tFRHN8Cq7tuOGYUa9VKqcY99iinUcLAvq7N2WAPp0Fq4anQUml7v8f625JRTdI6Sn
-         cou86kDtcHW3EgU6cWOYrTtRynKlZzWo8JZZPbEo9+Wt8LDyQ3X5HXdGq4Sok52s4mcb
-         eF1A==
-X-Gm-Message-State: AOJu0YxI5Bj/xm29J3ITfLAfgM0ZV0a+r1kRNz59C8E8C/OmfJHRt3M2
-	emW4nooVV4FdFTtpVOOID1k=
-X-Google-Smtp-Source: AGHT+IGjzvnapI0zijY7x5/NYywNVV1ffVnagAX2zyHlUgtQbten23Ytlf8qlfI9RIg1uAtJdyiFDg==
-X-Received: by 2002:a05:6402:26c7:b0:557:91e1:25aa with SMTP id x7-20020a05640226c700b0055791e125aamr410983edd.78.1704887290635;
-        Wed, 10 Jan 2024 03:48:10 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
-        by smtp.gmail.com with ESMTPSA id x3-20020aa7d6c3000000b00557463cdc76sm1894746edr.69.2024.01.10.03.48.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 03:48:10 -0800 (PST)
-Date: Wed, 10 Jan 2024 03:48:08 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, Alexander Couzens <lynxis@fe80.eu>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	netdev@vger.kernel.org,
-	"open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
-	"moderated list:ARM/Mediatek SoC support" <linux-arm-kernel@lists.infradead.org>,
-	"moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH net-next 10/10] net: fill in MODULE_DESCRIPTION()s for
- PCS Layer
-Message-ID: <ZZ6D+AylYTNDW9F9@gmail.com>
-References: <20240108181610.2697017-1-leitao@debian.org>
- <20240108181610.2697017-11-leitao@debian.org>
- <cf825e28-cceb-49e1-9880-7971cc955b2c@lunn.ch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3682487AC;
+	Wed, 10 Jan 2024 11:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1704887297; x=1736423297;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ea1LooPjn1EmXpCfsnqv36G7KDBDnulmi18AGgzvGbw=;
+  b=VVgp4dqZcv/SyauaDlMsuMWsxGVdt6U8eJCxsJNhB9weldn1X+/qwon4
+   AX5zEirW7OLndTVWYDF/2Unb7fZTqCQ5LVxPCInS+2hoQp9pxMupfFKEC
+   iNKKOAjsESpEOU4F7LD6wcFru9XjDRK4wFe0Luk808HIlMh48fTriILxi
+   BfsOo/RLMcXLFCYHaIeSqKovNZ/YHyaxWw+D65gx/QsQypQ6fYhlOurVU
+   23ddhb5S0GuRjWi/T2Fu9eX/iZIMikEnt7XZ52CveK5YfQde/aB6VGCSx
+   gRMq6uNZglKOUWCkXS5kzDqrXcudG6/uvHLJ+K9KCPPKE/g32GALa8KCD
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.04,184,1695679200"; 
+   d="scan'208";a="34827806"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 10 Jan 2024 12:48:14 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 23C77280075;
+	Wed, 10 Jan 2024 12:48:14 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: dri-devel@lists.freedesktop.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor.dooley@microchip.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Fabio Estevam <festevam@gmail.com>, Robert Foss <rfoss@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Jonas Karlman <jonas@kwiboo.se>, Liu Ying <victor.liu@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, Maxime Ripard <mripard@kernel.org>, Rob Herring <robh+dt@kernel.org>, Adam Ford <aford173@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Neil Armstrong <neil.armstrong@linaro.org>, linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, Adam Ford <aford173@gmail.com>
+Subject: Re: [PATCH V7 1/2] dt-bindings: display: imx: add binding for i.MX8MP HDMI PVI
+Date: Wed, 10 Jan 2024 12:48:13 +0100
+Message-ID: <10409718.nUPlyArG6x@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240106215146.147922-1-aford173@gmail.com>
+References: <20240106215146.147922-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf825e28-cceb-49e1-9880-7971cc955b2c@lunn.ch>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On Mon, Jan 08, 2024 at 08:21:03PM +0100, Andrew Lunn wrote:
-> On Mon, Jan 08, 2024 at 10:16:10AM -0800, Breno Leitao wrote:
-> > W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> > Add descriptions to the LynxI PCS MediaTek's SoC.
-> 
-> Does pcs-lynx.c also have this issue? It can be built at a module.
+Hi Adam,
 
-Absolutely. I can see the warning in pcs-lynx and pcs-pts.
+thanks for pushing this forward.
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/pcs/pcs_xpcs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/pcs/pcs-lynx.o
+Am Samstag, 6. Januar 2024, 22:51:44 CET schrieb Adam Ford:
+> From: Lucas Stach <l.stach@pengutronix.de>
+>=20
+> Add binding for the i.MX8MP HDMI parallel video interface block.
+>=20
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V7:  No Change
+>=20
+> V6:  Add s-o-b message for myself (Adam)
+>=20
+> V5:  I tried to help move this along, so I took Lucas' patch and
+>      attempted to apply fixes based on feedback.  I don't have
+>      all the history, so apologies for that.
+>      Removed the pipe character from the Description.
+>      Increased the register size from 0x40 to 0x44.
+> diff --git
+> a/Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.yaml
+> b/Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.yaml
+> new file mode 100644
+> index 000000000000..3377f152f319
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.y=
+aml
+> @@ -0,0 +1,83 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/imx/fsl,imx8mp-hdmi-pvi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale i.MX8MP HDMI Parallel Video Interface
+> +
+> +maintainers:
+> +  - Lucas Stach <l.stach@pengutronix.de>
+> +
+> +description:
+> +  The HDMI parallel video interface is a timing and sync generator block=
+ in
+> the +  i.MX8MP SoC, that sits between the video source and the HDMI TX
+> controller. +
+> +properties:
+> +  compatible:
+> +    const: fsl,imx8mp-hdmi-pvi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Input from the LCDIF controller.
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Output to the HDMI TX controller.
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - power-domains
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/power/imx8mp-power.h>
+> +
+> +    display-bridge@32fc4000 {
+> +        compatible =3D "fsl,imx8mp-hdmi-pvi";
+> +        reg =3D <0x32fc4000 0x44>;
+
+Shall interrupt-parent =3D <&irqsteer_hdmi>; be added here as well?
+
+Best regards,
+Alexander
+
+> +        interrupts =3D <12 IRQ_TYPE_LEVEL_HIGH>;
+> +        power-domains =3D <&hdmi_blk_ctrl IMX8MP_HDMIBLK_PD_PVI>;
+> +
+> +        ports {
+> +            #address-cells =3D <1>;
+> +            #size-cells =3D <0>;
+> +
+> +            port@0 {
+> +                reg =3D <0>;
+> +                pvi_from_lcdif3: endpoint {
+> +                    remote-endpoint =3D <&lcdif3_to_pvi>;
+> +                };
+> +            };
+> +
+> +            port@1 {
+> +                reg =3D <1>;
+> +                pvi_to_hdmi_tx: endpoint {
+> +                    remote-endpoint =3D <&hdmi_tx_from_pvi>;
+> +                };
+> +            };
+> +        };
+> +    };
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
 
