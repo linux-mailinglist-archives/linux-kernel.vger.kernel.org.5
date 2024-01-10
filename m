@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-21633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD512829229
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:31:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 468CB82922E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF31B2885EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:31:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 053B21C25018
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8505291C;
-	Wed, 10 Jan 2024 01:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02E23D960;
+	Wed, 10 Jan 2024 01:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XN5pPPgh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gEW+We9R"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03DBC17E4;
-	Wed, 10 Jan 2024 01:30:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C7B56C433C7;
-	Wed, 10 Jan 2024 01:30:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C366364C5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:31:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 03244C433A6;
+	Wed, 10 Jan 2024 01:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704850256;
-	bh=ndgCTDOUkRLw3O/CI3BWboDpmFGl4pmg7O36nRs0fSc=;
+	s=k20201202; t=1704850266;
+	bh=DJuidrvUYciWTEy85d/BbC7qoSN0XIxrWGpxyTQomVc=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=XN5pPPghS5EcJXsPkPAxGkWpuRR1i/6LrYQASjwX5HmIL5W2xpcyid+G2S1uKkXzb
-	 BaEpnmIqJGhXB0SotQrxZZYCyD6hSZ37oOrj9kFBOSKP38mH7r8K14g3g8KR3IWy61
-	 fw6hwhJSlFR1PSweSPYkAX3pfeIegj810y9NzUb50XB4EhzVRKrCowKZYt77qrbu3E
-	 jzw7zNmwZBhjBt66nt8/86vWD2+O4xj78uEioSbj8khRscZWhLwnNTXkzxPZg1J/8I
-	 SszjeCgdYzjG6YmQr2ofllXz4VDE/6Lmp/ZAIOvfyMCTm0Ii3yb8ofJFiDnp1ZaIIV
-	 8M7tgv6ZKkNFA==
+	b=gEW+We9RbQmNuTSx+3iFF+IJJiQcn0bTKI6geHLA8E8PQwXu4c2njyF6BmxO+hnLc
+	 dz0LCZ0lDN4q73UE5yWtmoRw04032Vk9obrpxckhxigbj5U51a4D/NyGx9FqlJBT4b
+	 NfsSIG3VwP8LrFw41bvvtUyo4EG8aXK9P2pXgU2Ylt+FOC1sF+MDAzFM+WxP9YTkBW
+	 Tywdin+ELtujNucv80mYT+r+0QbymnSRVs7ZAltGBdzaA98qyQcFR01WtNkLcPoHBF
+	 BOs/BSNadACsBNpJQX+/acK/GbJ1lok1SmlsRgAVMYBB5XxI2aV6t9xLhs3/aT7/aD
+	 igWlI2Xi7B7KA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B5F46C4166F;
-	Wed, 10 Jan 2024 01:30:56 +0000 (UTC)
-Subject: Re: [GIT PULL] nolibc changes for Linux 6.8-rc1
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DCF9DDFC690;
+	Wed, 10 Jan 2024 01:31:05 +0000 (UTC)
+Subject: Re: [GIT PULL] platform-drivers-x86 for 6.8-1
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <c5ac0cff-c947-4d44-b671-ba3e816329d7@linuxfoundation.org>
-References: <c5ac0cff-c947-4d44-b671-ba3e816329d7@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kselftest.vger.kernel.org>
-X-PR-Tracked-Message-Id: <c5ac0cff-c947-4d44-b671-ba3e816329d7@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-nolibc-6.8-rc1
-X-PR-Tracked-Commit-Id: d543d9ddf593b1f4cb1d57d9ac0ad279fe18adaf
+In-Reply-To: <8fc798ad-7235-467e-a31f-a79ae33a4324@redhat.com>
+References: <8fc798ad-7235-467e-a31f-a79ae33a4324@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <8fc798ad-7235-467e-a31f-a79ae33a4324@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.8-1
+X-PR-Tracked-Commit-Id: 236f7d8034ff401d02fa6d74bae494a2b54e1834
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5d09f61e505a614250df24a0f7e646802e40fc87
-Message-Id: <170485025673.7649.13961087946661349885.pr-tracker-bot@kernel.org>
-Date: Wed, 10 Jan 2024 01:30:56 +0000
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Willy Tarreau <w@1wt.eu>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, paulmck@kernel.org, Shuah Khan <skhan@linuxfoundation.org>, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-PR-Merge-Commit-Id: 5fda5698c289b2ff21d53d935c43351c424f8388
+Message-Id: <170485026590.7649.4971732105513415464.pr-tracker-bot@kernel.org>
+Date: Wed, 10 Jan 2024 01:31:05 +0000
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andy Shevchenko <andy@kernel.org>, LKML <linux-kernel@vger.kernel.org>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Mon, 8 Jan 2024 17:41:31 -0700:
+The pull request you sent on Mon, 8 Jan 2024 13:04:50 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-nolibc-6.8-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.8-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5d09f61e505a614250df24a0f7e646802e40fc87
+https://git.kernel.org/torvalds/c/5fda5698c289b2ff21d53d935c43351c424f8388
 
 Thank you!
 
