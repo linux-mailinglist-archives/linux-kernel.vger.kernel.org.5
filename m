@@ -1,72 +1,163 @@
-Return-Path: <linux-kernel+bounces-22375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9860829CD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:52:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AA1C829CD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FA5F2828EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:52:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE357282553
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE1C4BA91;
-	Wed, 10 Jan 2024 14:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209F04B5DE;
+	Wed, 10 Jan 2024 14:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bktM5zWa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="fBAd9Iel"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3911E4BA80;
-	Wed, 10 Jan 2024 14:51:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ACE5C433C7;
-	Wed, 10 Jan 2024 14:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704898316;
-	bh=JxNVaKHwkBaUWUxhyRTq5wm+F4uKwNW37fw6ZLUIqhc=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=bktM5zWaVWAE6uFFo4z3nDnaQF2iIEfL+k5MasboLTIUfd9t8wFEcGtd38vGWQBsZ
-	 GeyOf5n7Qf1TlbPf3DWRhtilL+uzsNkLA4/rQCfNd55jgKYqmPqKqQxpmrsrUvDTm9
-	 qfqmwVVzEy5MlMiHPbw7FaeguOtCzogufKZ4h4YdrJmVFV73xXF8++fccz7hcj68RY
-	 uYBvUJ7fFJwozwB8/wowQx6NzEvYyN4cti+lbffAdiRBDjpXiIqkvw2JnBpsEiwtzv
-	 DBemw9t8xtNLihcDbBXOKSMKDjpX2DixEEo23nm2T03muuYYN1FAx1aOQcmbEKe27T
-	 Z60q/IH4gWoSw==
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2474BA84
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3606f57e08aso19451695ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 06:52:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1704898354; x=1705503154; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pVtS8rM9wqn1PqYUXWdr8pk/hBP2Hc85AVIVtCVRz8Y=;
+        b=fBAd9Ielfai7WtsDEiImQ+n13vIY5JGFL4UN4Frm8tf5PH+KJiw9nsut0HqsTk34FV
+         CJX0ulbEAjTRJTkGjFFK5Gxv4o+Zpl5F5sT1n3bPUnmQtR+WF+NKdih1trzmTv3++COp
+         LdrSw/6GFQra2zDd7tMLVdJ9dIawUsIOplwkxD1VpUKwj9qHQZzgtC0CkOdG7mLKGAIF
+         yToVlKmiAX7EUyECETvtzeCHIOaL9xrr9DEsKJN/h/AIdz+cZwZpt8M8jGnUQD4pBPNe
+         IB4AFDt+vOsTSF8kLXQlj9LLR3p2NR/eNgumqRN9tDDR0Lhrhzz7/eGQhnhs0Ub9i7Pe
+         80lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704898354; x=1705503154;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pVtS8rM9wqn1PqYUXWdr8pk/hBP2Hc85AVIVtCVRz8Y=;
+        b=cUSw6g9FeoolyLB4IzjW/7yCsMAI19PRxpsfPq3qttAA73u648i119oQ8tnjCNTUYm
+         6rhKYde5WHJgMUMhvGY645bIPgzJtj9DYg2TOGDbVE8NL5TqVL/08uEEsrh8lSrqReYs
+         fuz6nmPNA3zOVVr8xAyvH6i76Sr5NjcqfNJ68a7Io+VYu/b7D8yyj9fx9FJyxmOQfiJ0
+         nMID7u/ftRDsDrRQ8YcsZfpgEtsGKfzqQ4SOJaZaPCzN0tDXlXbDjV69g6cv9tOZ3DMT
+         kwnG3KUju5oT7J0xHWeIniP+VLzbGwowZv/iDifkIdxlqTbaUJnROF9QP73Fuv6bOHtn
+         ZRJw==
+X-Gm-Message-State: AOJu0Yw5ozf+lx961WF0KGRLKD5oj3fdwYJvWSr5abYxq6SPI9QQ9sni
+	pTTqKkD2K1B228eM1LxFmJarp/JRYj/lbg==
+X-Google-Smtp-Source: AGHT+IFvaD94WRGIWckQ9Hv3P7P0TvTdYRGacf1iIOKv8qIUaj9Zvtv4eSDrKd5J5ma8n/u1tTQeFQ==
+X-Received: by 2002:a05:6e02:34a0:b0:360:90c2:f7ca with SMTP id bp32-20020a056e0234a000b0036090c2f7camr1673156ilb.40.1704898354434;
+        Wed, 10 Jan 2024 06:52:34 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id bc25-20020a056e02009900b0035fabab7985sm1278883ilb.21.2024.01.10.06.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 06:52:33 -0800 (PST)
+Date: Wed, 10 Jan 2024 06:52:33 -0800 (PST)
+X-Google-Original-Date: Wed, 10 Jan 2024 06:52:32 PST (-0800)
+Subject:     Re: [PATCH 1/4] riscv: tlb: fix __p*d_free_tlb()
+In-Reply-To: <36166acf-aa32-40b6-806a-ade59bc645ad@ghiti.fr>
+CC: jszhang@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+  aou@eecs.berkeley.edu, Will Deacon <will@kernel.org>, aneesh.kumar@linux.ibm.com,
+  akpm@linux-foundation.org, npiggin@gmail.com, peterz@infradead.org,
+  Conor Dooley <conor.dooley@microchip.com>, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+  linux-arch@vger.kernel.org, linux-mm@kvack.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: alex@ghiti.fr
+Message-ID: <mhng-53f8ef0e-67ee-4a85-ba8a-84124df534ce@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify"
- ->
- "notify"
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20231220141831.10063-1-colin.i.king@gmail.com>
-References: <20231220141831.10063-1-colin.i.king@gmail.com>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Ping-Ke Shih <pkshih@realtek.com>, linux-wireless@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170489831370.471554.11120935204830262187.kvalo@kernel.org>
-Date: Wed, 10 Jan 2024 14:51:55 +0000 (UTC)
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Colin Ian King <colin.i.king@gmail.com> wrote:
+On Thu, 04 Jan 2024 02:55:40 PST (-0800), alex@ghiti.fr wrote:
+> On 19/12/2023 18:50, Jisheng Zhang wrote:
+>> If non-leaf PTEs I.E pmd, pud or p4d is modified, a sfence.vma is
+>> a must for safe, imagine if an implementation caches the non-leaf
+>> translation in TLB, although I didn't meet this HW so far, but it's
+>> possible in theory.
+>
+>
+> And since this is a fix, it would be worth trying to add a Fixes tag
+> here. Not easy I agree because it fixes several commits (I have
+> 07037db5d479f,  e8a62cc26ddf5, d10efa21a9374 and c5e9b2c2ae822 if you
+> implement tlb_flush() as I suggested).
+>
+> So I would add the latest commit as the Fixes commit (which would be
+> c5e9b2c2ae822), and then I'd send a patch to stable for each commit with
+> the right Fixes tag...@Conor: let me know if you have a simpler idea or
+> if this is wrong.
 
-> There are two spelling mistakes in rtw89_err error messages. Fix these
-> and also add space between [ERR] and message text.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+I just went with
 
-Patch applied to wireless-next.git, thanks.
+Fixes: c5e9b2c2ae82 ("riscv: Improve tlb_flush()")
+Cc: stable@vger.kernel.org
 
-6aeaa379291b wifi: rtw89: mac: Fix spelling mistakes "notfify" -> "notify"
+hopefully that's fine.  It's still getting tested, it's batched up with 
+some other stuff and I managed to find a bad merge so it might take a 
+bit...
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20231220141831.10063-1-colin.i.king@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+>
+> Thanks,
+>
+> Alex
+>
+>
+>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>> ---
+>>   arch/riscv/include/asm/pgalloc.h | 20 +++++++++++++++++---
+>>   1 file changed, 17 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
+>> index d169a4f41a2e..a12fb83fa1f5 100644
+>> --- a/arch/riscv/include/asm/pgalloc.h
+>> +++ b/arch/riscv/include/asm/pgalloc.h
+>> @@ -95,7 +95,13 @@ static inline void pud_free(struct mm_struct *mm, pud_t *pud)
+>>   		__pud_free(mm, pud);
+>>   }
+>>
+>> -#define __pud_free_tlb(tlb, pud, addr)  pud_free((tlb)->mm, pud)
+>> +#define __pud_free_tlb(tlb, pud, addr)					\
+>> +do {									\
+>> +	if (pgtable_l4_enabled) {					\
+>> +		pagetable_pud_dtor(virt_to_ptdesc(pud));		\
+>> +		tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));	\
+>> +	}								\
+>> +} while (0)
+>>
+>>   #define p4d_alloc_one p4d_alloc_one
+>>   static inline p4d_t *p4d_alloc_one(struct mm_struct *mm, unsigned long addr)
+>> @@ -124,7 +130,11 @@ static inline void p4d_free(struct mm_struct *mm, p4d_t *p4d)
+>>   		__p4d_free(mm, p4d);
+>>   }
+>>
+>> -#define __p4d_free_tlb(tlb, p4d, addr)  p4d_free((tlb)->mm, p4d)
+>> +#define __p4d_free_tlb(tlb, p4d, addr)					\
+>> +do {									\
+>> +	if (pgtable_l5_enabled)						\
+>> +		tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(p4d));	\
+>> +} while (0)
+>>   #endif /* __PAGETABLE_PMD_FOLDED */
+>>
+>>   static inline void sync_kernel_mappings(pgd_t *pgd)
+>> @@ -149,7 +159,11 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+>>
+>>   #ifndef __PAGETABLE_PMD_FOLDED
+>>
+>> -#define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
+>> +#define __pmd_free_tlb(tlb, pmd, addr)				\
+>> +do {								\
+>> +	pagetable_pmd_dtor(virt_to_ptdesc(pmd));		\
+>> +	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));	\
+>> +} while (0)
+>>
+>>   #endif /* __PAGETABLE_PMD_FOLDED */
+>>
 
