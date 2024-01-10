@@ -1,138 +1,103 @@
-Return-Path: <linux-kernel+bounces-21886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 829FF82960A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:15:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25D7D829611
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:16:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21B4F1F22586
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 376F71C2177E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37EB3E49B;
-	Wed, 10 Jan 2024 09:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jwzagr8r"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734213EA95;
+	Wed, 10 Jan 2024 09:16:25 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234082E846;
-	Wed, 10 Jan 2024 09:15:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47841C433C7;
-	Wed, 10 Jan 2024 09:15:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704878137;
-	bh=ahio7T25Z11avb9NbE7tOGh6X6/776n8O1/ownXKe10=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jwzagr8rUcwaOjiUjF3gbJ54Tl1s+O9RpmfCsYDue3E1YUowoTRPX4cEtYJx5qD3A
-	 j3seAQxKPwmyfv7lVKhWRyVHLJDQbaCvNX3qlFkXQ4ZlaUX+508N/MjNy2+wlVaLNZ
-	 sekmwa4NU2A+KjyNUmrzeFCzV3zXtL0W28NJP2NU=
-Date: Wed, 10 Jan 2024 10:15:34 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Pavel Machek <pavel@ucw.cz>, bvanassche@acm.org, hch@lst.de,
-	hare@suse.de, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, torvalds@linux-foundation.org,
-	stable@vger.kernel.org, lwn@lwn.net, jslaby@suse.cz
-Subject: Re: scsi_get_lba breakage in 5.10 -- Re: Linux 5.10.206
-Message-ID: <2024011047-clench-scheme-1f46@gregkh>
-References: <2024010527-revision-ended-aea2@gregkh>
- <ZZ042FejzwMM5vDW@duo.ucw.cz>
- <yq1jzoi7hrt.fsf@ca-mkp.ca.oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792EB3E48E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-360a49993dfso7791955ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:16:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704878182; x=1705482982;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gUGvX4y4QaiPINbAkyOx4k6jpyVEymh+2uUyfbZrWPE=;
+        b=OldnyotdFKBwXycrzSwBK+9M4ezfU7lX1z4Vy8NPPUtmmtgqhCZRfy5mjckvGSszNT
+         iBBmxBFEG+hWeU+jg/OVviX7LSxoJihtmETy35nr2txtzS4mlyGg9bDJqNh+ikRTTWil
+         fmt0ukjPBAVEEAl1zjpVGtcJ0d22kpcuhOGd/lKsyYOxcqfDSAOM4Nz4Z8WUX3Qt9kdt
+         MsbV5Bb9YwvBhgow74LeMi3c/MlWA40RGp0uWpTCrrAocJaY2MpZO/q+elUzS5XARpvl
+         1EkvnBlGXzQUyjoPf5QfJZSKjGz9LcacFUk2wrQZO+JcnvcU1N4mY48V6iS96dckDzXD
+         Vq/w==
+X-Gm-Message-State: AOJu0YzkdbGF3ka0GMC9FvpJENeJ7/JHpHBKwBs/7zBulCNa3uzzIDVu
+	xQVMX/SuvfUtAksrVTKris2pI/kH4Q3d35D5FNXCRL+pMkL+
+X-Google-Smtp-Source: AGHT+IEmn7036tW7IKagIJWOf7Detbx4DDOLXRpQMqx/jh0GnLApfpN2TCZSsFY2MF97G9WjF8zEGtc9hygcn8GMvH+Ko2xxneHJ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq1jzoi7hrt.fsf@ca-mkp.ca.oracle.com>
+X-Received: by 2002:a05:6e02:219b:b0:35f:bea3:c041 with SMTP id
+ j27-20020a056e02219b00b0035fbea3c041mr83282ila.4.1704878182759; Wed, 10 Jan
+ 2024 01:16:22 -0800 (PST)
+Date: Wed, 10 Jan 2024 01:16:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000780734060e93e23b@google.com>
+Subject: [syzbot] Monthly btrfs report (Jan 2024)
+From: syzbot <syzbot+list87fc906bbb52a6f7d64f@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 09, 2024 at 08:55:52AM -0500, Martin K. Petersen wrote:
-> 
-> Pavel,
-> 
-> > This is bad idea. This changes return value, but without fixing
-> > callers; there will be subtle bugs somewhere.
-> 
-> I'm not sure why this particular change was backported since it was part
-> of a larger cleanup of explicitly distinguishing between block layer
-> sectors and device-specific LBAs. This was done to fix devices using PI
-> with 4 KB blocks which would otherwise end up getting programmed with
-> the wrong reference tag value.
-> 
-> > At minimum, we need this:
-> >
-> > 87662a472a9d8980b26ba5803447df2c4981d467 scsi: iser: Use scsi_get_sector() instead of scsi_get_lba()
-> 
-> I agree this would be appropriate. Otherwise we'll print the error being
-> at the wrong sector in case of an error on a PI device with 4 KB blocks.
-> However, the message is purely informative.
-> 
-> > That will fix iser, but there's also:
-> >
-> > drivers/s390/scsi/zfcp_fsf.c:           io->ref_tag_value = scsi_get_lba(scsi_cmnd) & 0xFFFFFFFF;
-> > drivers/scsi/isci/request.c:            tc->ref_tag_seed_gen = scsi_get_lba(scmd) & 0xffffffff;
-> > drivers/scsi/isci/request.c:            tc->ref_tag_seed_verify = scsi_get_lba(scmd) & 0xffffffff;
-> > drivers/scsi/lpfc/lpfc_scsi.c:  lba = scsi_get_lba(sc);
-> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > drivers/scsi/lpfc/lpfc_scsi.c:          start_ref_tag = (uint32_t)scsi_get_lba(cmd); /* Truncate LBA */
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:          failing_sector = scsi_get_lba(cmd);
-> > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                                   (unsigned long long)scsi_get_lba(cmnd),
-> > drivers/scsi/lpfc/lpfc_scsi.c:                                   (unsigned long long)scsi_get_lba(cmnd),
-> > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
-> > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
-> > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
-> > drivers/scsi/qla2xxx/qla_isr.c:     cmd->cmnd[0], (u64)scsi_get_lba(cmd), a_ref_tag, e_ref_tag,
-> > drivers/scsi/qla2xxx/qla_isr.c:         sector_t lba_s = scsi_get_lba(cmd);
-> 
-> Save for two cases in lpfc_queuecommand (which like the iser case will
-> print the wrong sector number on error) all these look OK to me. Note
-> that almost all callers of scsi_get_lba() actually intended to get the
-> protocol LBA as the name indicates and not the block layer sector
-> number.
+Hello btrfs maintainers/developers,
 
-Ick, this is going to get complex fast.  How about I revert the whole
-series, and then just add the one bugfix at the end, in a "fixed by
-hand" version like I have here below.  Would that be better overall?
+This is a 31-day syzbot report for the btrfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/btrfs
 
-Thanks,
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 42 issues are still open and 47 have been fixed so far.
 
-greg k-h
+Some of the still happening issues:
 
+Ref  Crashes Repro Title
+<1>  5777    Yes   kernel BUG in close_ctree
+                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
+<2>  2315    Yes   WARNING in btrfs_space_info_update_bytes_may_use
+                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
+<3>  373     Yes   WARNING in btrfs_block_rsv_release
+                   https://syzkaller.appspot.com/bug?extid=dde7e853812ed57835ea
+<4>  299     Yes   WARNING in lookup_inline_extent_backref
+                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
+<5>  241     Yes   WARNING in btrfs_chunk_alloc
+                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
+<6>  230     Yes   INFO: task hung in lock_extent
+                   https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
+<7>  223     Yes   WARNING in btrfs_remove_chunk
+                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
+<8>  117     Yes   kernel BUG in insert_state_fast
+                   https://syzkaller.appspot.com/bug?extid=9ce4a36127ca92b59677
+<9>  109     Yes   general protection fault in btrfs_orphan_cleanup
+                   https://syzkaller.appspot.com/bug?extid=2e15a1e4284bf8517741
+<10> 95      Yes   kernel BUG in btrfs_free_tree_block
+                   https://syzkaller.appspot.com/bug?extid=a306f914b4d01b3958fe
 
-diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-index 0c4bc42b55c2..3d3d139127ee 100644
---- a/drivers/scsi/scsi_error.c
-+++ b/drivers/scsi/scsi_error.c
-@@ -1069,6 +1069,7 @@ static int scsi_send_eh_cmnd(struct scsi_cmnd *scmd, unsigned char *cmnd,
- 
- 	scsi_log_send(scmd);
- 	scmd->scsi_done = scsi_eh_done;
-+	scmd->flags |= SCMD_LAST;
- 
- 	/*
- 	 * Lock sdev->state_mutex to avoid that scsi_device_quiesce() can
-@@ -2361,6 +2362,7 @@ scsi_ioctl_reset(struct scsi_device *dev, int __user *arg)
- 	scsi_init_command(dev, scmd);
- 	scmd->request = rq;
- 	scmd->cmnd = scsi_req(rq)->cmd;
-+	scmd->flags |= SCMD_LAST;
- 
- 	scmd->scsi_done		= scsi_reset_provider_done_command;
- 	memset(&scmd->sdb, 0, sizeof(scmd->sdb));
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
