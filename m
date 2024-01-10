@@ -1,108 +1,104 @@
-Return-Path: <linux-kernel+bounces-22857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4910382A408
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:37:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DECF82A410
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:41:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FBC71C222A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:37:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C61BF1F2525A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F234EB40;
-	Wed, 10 Jan 2024 22:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8224F8A9;
+	Wed, 10 Jan 2024 22:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UDAebcMD"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WIwmPBaN"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F894D13F;
-	Wed, 10 Jan 2024 22:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40AMav8t003608;
-	Wed, 10 Jan 2024 16:36:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704926217;
-	bh=JVXHGIOSU6hzsUeI0AuBXrAHp/rtmd5pOO9mdvCiweQ=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=UDAebcMDIziq/O9qOajvmsHPxbC4TS6NEsuR4Sv++8CIGu9W0CFw6U1eqfcgwTSHU
-	 BSs4p04FO1bkxD2NeCigieNO86aLvBaB7SsdZ1kL4j1w74DQazda79qMqO71IfQsO/
-	 jK/XFF4b3u1U6csKl1tOQyrSGiR04Kfp9xaPMsk4=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40AMav5h107905
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 10 Jan 2024 16:36:57 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
- Jan 2024 16:36:57 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 10 Jan 2024 16:36:57 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40AMavCr005709;
-	Wed, 10 Jan 2024 16:36:57 -0600
-Date: Wed, 10 Jan 2024 16:36:57 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Julien Panis <jpanis@baylibre.com>,
-        Pierre Gondois <pierre.gondois@arm.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 02/16] arm64: dts: ti: k3-am62a7: Add MIT license along
- with GPL-2.0
-Message-ID: <20240110223657.pkochl4c5skf3w3h@amendment>
-References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-3-nm@ti.com>
- <10e8c81f-0ebe-441e-b80b-9bf4df7ff782@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7E24F8BE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a28bf46ea11so824411166b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:41:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1704926494; x=1705531294; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=k35Q5QIp5MyCO5VamMpz/sosd3XUE8jfAcVkkJ5lw8w=;
+        b=WIwmPBaN+fnxhCnsUZpFRiiAwkdKy40erGNezc9/qpWeTaUS7a8SXq2I9uQw2PaFkk
+         PUSvzS3Dt/MzEr979OxwuibZwYo3C2xBhHl8sGIBIU92xyYtwjw8y3Ns6jqlAKzVnWEd
+         1JPkxG0oxotNg4uvCk+D5ek2s/VMyKE4emPh4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704926494; x=1705531294;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k35Q5QIp5MyCO5VamMpz/sosd3XUE8jfAcVkkJ5lw8w=;
+        b=ZtEU0IrlX93DvGIQkaE17yXb3ZhvZAxs5Cz2kgTRZvGg8GYdWPmxZ4ccC/+rrSEYcN
+         V+osPqO9BoqSnJ+EfQVyGDILE1DaGeVMrjFCFkLrtiivBx/Yky7hwpyfs4+AyfmFswbp
+         LI+/8PPiFLUUOyCwIESCxDR7Nzf2MH4qy3wxi7PEWjPaPJBqtc3t0lTaXPLhnl0YlB7T
+         wSyYxPGTzI7fEyQ1YwSMeooSueCrggg9FsgdcEWUKkV/Jr7R8nKHT126Zt2UsGTcT+7p
+         0rTKx8Yo7f96wnPekjCd0nqA1akOJ0MK7eHumYFv/XrLJD3vGChh1fS16iVqYV29J7eg
+         sYSw==
+X-Gm-Message-State: AOJu0YxQIUMRnJuCCLxAW1WcP0dBRyCCZEfBWy5bWsZzoayzyqAS7R1Q
+	kWdNwmIW79wUlWGOr2FsfinM6N9u+xHUM+dKE5qIQ6UMHv/w2vbq
+X-Google-Smtp-Source: AGHT+IG9VSi409USpyKYbUV0j0ICoFJvK87emHDKRmy7wNFQLKBCwJ0em+lf2BM1aZpfyr86R7z49w==
+X-Received: by 2002:a17:906:a142:b0:a27:d309:b6b8 with SMTP id bu2-20020a170906a14200b00a27d309b6b8mr171973ejb.35.1704926494517;
+        Wed, 10 Jan 2024 14:41:34 -0800 (PST)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
+        by smtp.gmail.com with ESMTPSA id le15-20020a170907170f00b00a2a0212cfe1sm2485362ejc.50.2024.01.10.14.41.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 14:41:34 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28da6285c1so841066166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:41:33 -0800 (PST)
+X-Received: by 2002:a17:906:b115:b0:a28:c04e:315b with SMTP id
+ u21-20020a170906b11500b00a28c04e315bmr174538ejy.13.1704926493632; Wed, 10 Jan
+ 2024 14:41:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <10e8c81f-0ebe-441e-b80b-9bf4df7ff782@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com> <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 10 Jan 2024 14:41:16 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+Message-ID: <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+To: Ingo Molnar <mingo@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Juri Lelli <juri.lelli@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 21:41-20240110, Krzysztof Kozlowski wrote:
-> On 10/01/2024 15:08, Nishanth Menon wrote:
-> > Modify license to include dual licensing as GPL-2.0-only OR MIT
-> > license for SoC and TI evm device tree files. This allows for Linux
-> > kernel device tree to be used in other Operating System ecosystems
-> > such as Zephyr or FreeBSD.
-> > 
-> > While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync with
-> > latest SPDX conventions (GPL-2.0 is deprecated).
-> > 
-> > While at this, update the TI copyright year to sync with current year to
-> > indicate license change (and add it at least for one file which was
-> > missing TI copyright).
-> > 
-> > Cc: Julien Panis <jpanis@baylibre.com>
-> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Cc: Pierre Gondois <pierre.gondois@arm.com>
-> 
-> I guess I am listed here due to some contributions, so copyrights. In
-> such case, I agree for relicensing to "GPL-2.0-only OR MIT".
-> 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Wed, 10 Jan 2024 at 14:19, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Just a note that I'm currently bisecting into this merge for a
+> horrendous performance regression.
+>
+> It makes my empty kernel build go from 22 seconds to 44 seconds, and
+> makes a full kernel build enormously slower too.
+>
+> I haven't finished the bisection, but it's now inside *just* this
+> pull, so I can already tell that I'm going to revert something in
+> here, because this has been making my merge window miserable.
 
-Thank you. And, yep, you are explicitly called out since you had one
-or more patch modifying or adding content in the affected file.
+It's one of these two:
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+  f12560779f9d sched/cpufreq: Rework iowait boost
+  9c0b4bb7f630 sched/cpufreq: Rework schedutil governor performance estimation
+
+one more boot to go, then I'll try to revert whichever causes my
+machine to perform horribly much worse.
+
+             Linus
 
