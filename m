@@ -1,124 +1,97 @@
-Return-Path: <linux-kernel+bounces-21937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54DD78296E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:04:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B838296E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:05:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08BAC1F27C18
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:04:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D46241F27D1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C813F8FF;
-	Wed, 10 Jan 2024 10:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC3B3F8FE;
+	Wed, 10 Jan 2024 10:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="SPReVNX5"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wSi1/29a"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5D3BE5E;
-	Wed, 10 Jan 2024 10:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CBA8240E01B2;
-	Wed, 10 Jan 2024 10:04:23 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 4K_7Q4QU78V6; Wed, 10 Jan 2024 10:04:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704881062; bh=oJLkoiziOduPtb/cNDhpBdqQ7Qw3Bv/OYk1DSPyjEys=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SPReVNX5mO4rjH8gAJR8lkxFlU5acWreAoHXYqShJBeGOIsQGLDhrQ8Ds4pr9eKsr
-	 lOgwXBr/Fn54So/pLG/3T6BmVBxgFyfb5Xgj+nS3WDzIEYJ79TUjVbwenTZKwqL30e
-	 /VQjFIg+gqRZ2R9vFVDkGBQprUU8J4EJxfkn5bBGLEDNipmQ+mgOm0GtMZKdLnHTzR
-	 0Vt67twZqO3HfmHHxbSO1HYFLM09gMHIA0kjS9ZNE19aSYYzJVBckVN29ZKbOfvcAD
-	 HbreznrZi+bJB2bhiolrNiWnDWNu725zmkGx3FaoUGqgntV8qIVtTe3AHbyCgMzhMs
-	 BEiWhR2Va1XvWXaUmib82+/UB/mbh3kL2KIANarumEWrEw6904J6wx6T8X/NuKlyYG
-	 /EMoNGLPk5uifTCyYdvvd7HoxVS+S6ppnSKahH9THaKf0loHG2tBALnRYRQNMpzKzT
-	 yEMrh4FM/wjTmUOvf6iu+1gCbyCsu42eWzVwJnzaTCUV5qwTt2YZ3Qm5t7b0MUXTHZ
-	 mE58e/yKnvboqMgpItDvOAYZ7EJaqbX6PcFJ716Iydztde4PPDPWek2K8Irsdoqdko
-	 HLJNXUpOm4ppsGHiEIIgweaAhXv1TFlr5goK0GHbMD2hBC8f1dd81HSZ+RVZdNQDeh
-	 EhMxTgipx0zkfBJ7H7D+mPUE=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BE5E940E01A9;
-	Wed, 10 Jan 2024 10:04:03 +0000 (UTC)
-Date: Wed, 10 Jan 2024 11:04:02 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Meng, Li (Jassmine)" <Li.Meng@amd.com>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	"Huang, Ray" <Ray.Huang@amd.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
-	"Sharma, Deepak" <Deepak.Sharma@amd.com>,
-	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
-	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
-	"Yuan, Perry" <Perry.Yuan@amd.com>,
-	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Oleksandr Natalenko <oleksandr@natalenko.name>
-Subject: Re: [PATCH V12 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for
- the expansion.
-Message-ID: <20240110100402.GAZZ5rklxQUZk_KFV4@fat_crate.local>
-References: <20231205063537.872834-1-li.meng@amd.com>
- <20231205063537.872834-2-li.meng@amd.com>
- <20240109104504.GAZZ0jsFrrncZ8Vx8y@fat_crate.local>
- <DM4PR12MB63515E818A5B4D5E512F5234F7692@DM4PR12MB6351.namprd12.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F257C3F8D9
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-557bbcaa4c0so5869a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 02:05:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704881120; x=1705485920; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QaZfM1Dg8uBm0qMs8eSMEvNSG8LVqsuI0hg4ZPiM02M=;
+        b=wSi1/29asj4RZjyPULcH4wNuBznNx2p5uuhlgpGSERVo8DQM4aswRUCzPrEfwl41pz
+         GoLEqDwllxvt3B9oltI26qxE1hpMEOUm3wOAwSPU8VTZVn4HiOQE6hE8N5gPcNfe0RVz
+         fWDcloh8ry9yB9j6UUjjLgFtKU0XYJi7BXlFvBtk19DUuSPX8lZ75o92A+pYrdOFDM2C
+         r1b2lh3REd37Njd+p0sdcWCztIUyUDYl3g1axyplNRRW08IGGMgBxmSY+JIYbQnsdWqd
+         FwFqFAwPwajdezG6r061laIzMXivK/yY2z86i95fp7GjnLL1wt0dYrl/Y5xW1G2wIo5j
+         G1Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704881120; x=1705485920;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QaZfM1Dg8uBm0qMs8eSMEvNSG8LVqsuI0hg4ZPiM02M=;
+        b=c5l0QquA+bu4WxwTO4OGSUasH+H43RhY+Ku0jEGFwvjl/JMJOR86BR3NoVwHzGA/aM
+         DjvoZeh6Vbzpvx8Vp77IS7TL8VeoCTGvoPbkWZxUKMu77bcXVX5vEuGYTILEk9MPjW/S
+         HTnXlGwdqHQVlKBO7cmNMSmHG7dtctqjPtglIoUaJFofjgwdMEzs5P66Gh1x9w70BN5V
+         76P3OPvtBSzcD4s3mAv4AqstVIN4LGe80OxcZ4wd6Owk5YZRo7m7M2bEgBy6UORmtbYS
+         truyApZ2qGbhBqipF8EqAM9a2X3R8Vc4NbEYkS98oSCOejf9r2AdZB/sMdMz0gv23xwM
+         JD1Q==
+X-Gm-Message-State: AOJu0Yy9r1EZZwomaOUMuV1ICZSYrjI8b5mg3FA6vhGUl9hGdX1M1hwd
+	7dv1TL4KQ3P8Fdli3yo+yiB5HnpAAHpflaFHVPFzEPhzpENx
+X-Google-Smtp-Source: AGHT+IFXS1mnv33K25U11r/UWu2bQc69J940L7PG9jFV/rM28HGzQs+0tNlTaGiVj4SycXMLq/fX8dtzG67FgjezkOg=
+X-Received: by 2002:a50:a40a:0:b0:554:53d0:23f1 with SMTP id
+ u10-20020a50a40a000000b0055453d023f1mr178409edb.0.1704881120025; Wed, 10 Jan
+ 2024 02:05:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM4PR12MB63515E818A5B4D5E512F5234F7692@DM4PR12MB6351.namprd12.prod.outlook.com>
+References: <20240110084703.2708053-1-zhongbin@bytedance.com>
+In-Reply-To: <20240110084703.2708053-1-zhongbin@bytedance.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 10 Jan 2024 11:05:06 +0100
+Message-ID: <CANn89iK+tOVB=9TDAP57+C5O6bo5=1Xfd5rgxp6oB86StgmT3g@mail.gmail.com>
+Subject: Re: [PATCH net] af_unix: Avoid a wakeup if data has been not arrived
+To: Bin Zhong <zhongbin@bytedance.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, kuniyu@amazon.com, 
+	alexander@mihalicyn.com, dhowells@redhat.com, john.fastabend@gmail.com, 
+	daan.j.demeyer@gmail.com, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, liubo.0617@bytedance.com, 
+	zhangjinshan.smile@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 06:59:25AM +0000, Meng, Li (Jassmine) wrote:
-> The reason why I added the selects is just to distinguish different
-> pstate drivers.  These two drivers cannot be supported simultaneously
-> in the same project.
+On Wed, Jan 10, 2024 at 9:47=E2=80=AFAM Bin Zhong <zhongbin@bytedance.com> =
+wrote:
+>
+> In the following scenarios, unnecessary wake-up may occur.
+> When a thread sends a piece of data and then immediately
+> calls recv to wait for the server's data, the server, upon
+> receiving this thread's data, calls back unix_write_space
+> to wake up this thread.
+>
+> Therefore, add the filtering conditions of EPOLLIN and
+> EPOLLERR in the callback function of the waiting queue in
+> the unix_stream_data_wait function to reduce unnecessary
+> wake-ups.
 
-No, that's not what I meant. Read here:
+This is net-next material, and net-next is currently closed.
 
-"- reverse dependencies: "select" <symbol> ["if" <expr>]
+Also, I would rather re-use receiver_wake_function(), no need to copy paste=
+ it.
 
-  While normal dependencies reduce the upper limit of a symbol (see
-  below), reverse dependencies can be used to force a lower limit of
-  another symbol. The value of the current menu symbol is used as the
-  minimal value <symbol> can be set to. If <symbol> is selected multiple
-  times, the limit is set to the largest selection.
-  Reverse dependencies can only be used with boolean or tristate
-  symbols.
-
-  Note:
-        select should be used with care. select will force
-        a symbol to a value without visiting the dependencies.
-        By abusing select you are able to select a symbol FOO even
-        if FOO depends on BAR that is not set.
-        In general use select only for non-visible symbols
-        (no prompts anywhere) and for symbols with no dependencies.
-        That will limit the usefulness but on the other hand avoid
-        the illegal configurations all over."
-
-From Documentation/kbuild/kconfig-language.rst
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks !
 
