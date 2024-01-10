@@ -1,104 +1,170 @@
-Return-Path: <linux-kernel+bounces-22577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97424829FED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:57:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21D28829FEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:57:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC6BA1C218CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:57:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C19F92883BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD524D121;
-	Wed, 10 Jan 2024 17:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444D44D592;
+	Wed, 10 Jan 2024 17:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JijqD3JM"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O4d8NFhA"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E3C4D111;
-	Wed, 10 Jan 2024 17:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dbf2737bd48so813298276.2;
-        Wed, 10 Jan 2024 09:56:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84554D587
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:56:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cd5c55d6b8so35752581fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:56:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704909396; x=1705514196; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PQeK+7VeBANXiUt3jJrnMLi7/kdv42W/bH2mDkBAuEE=;
-        b=JijqD3JM5lKW4irwaGQjTcYp2QbRl13nMsjIXhbxDr3TCMIDBp0WHCFzHjGQF/Lovf
-         pTXOdeLCHskSx5uOpWRKtPVCk/sS4I88KeDG3zp4deejC/grH7xVvXSE6M7QXeeItGtC
-         5XuGvwlxZkFBstj6k4QSgaDK0Tfp5YwRJX3lSQhIAflrgmXhRZArZBx5gMX/IEF7XAzG
-         jZ0W7PeDil3RHOSMtYFUR6pHH7Z2HaepLnVnlJMnxopQzHLbDqDciOVgb7xwMLprUtu2
-         hTpDWE3h2wQp3g07n0ShywUMEs0etbwTar0smVE0ruw4oMv/3Bs0G7th+QV9fAUuCDng
-         6+HQ==
+        d=linaro.org; s=google; t=1704909414; x=1705514214; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YPUG8wGHjUncLfJR9e1hMbIghHR8x5XwILqQc+Upn/A=;
+        b=O4d8NFhAWvFdco7lDdy84yi5s557ETyKeOojaijEXSRSt6geSkN8tMRkuCugnl0BCE
+         EXufD6OHOXkF60uPjjXUgQY64cKUc4m5x3PU3Sq1UooB4NWttp3D9SJw4YR4JXB12sDr
+         wBQdcB0sHidI0z9tVmzv3O14PJZtB6+ZuqN7w3Oo1UT5H8BQQQsnXg/hjxuwROaGazWz
+         4G8R+Kk8jNMCYGNKY8n5QC4iGxt7oLJDrwmnMsna20ETSBPsGYX/LpW+m2A9IcA2KfhV
+         w1jXBcoNKOhWRSBk7mL9ARRktmkcIiV2UyDm1xkk7rI6O1rV4IIcOMh2i1MgFE4rso62
+         J83w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704909396; x=1705514196;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PQeK+7VeBANXiUt3jJrnMLi7/kdv42W/bH2mDkBAuEE=;
-        b=XuubulZv3HoZtLeIAFdXDVU0CivRmNb9sHJL/kZ7j8YnPIp0R5Q/vkhawurjab2bvb
-         82KFsLTD6rha1I2OL7rz2JQwHkeIOo9B9IOe3GhCEG2DzH2fEOhun6qlN5MZKcuGXHwb
-         JfS4Cz5WoBgyTb09i04dgtqTWa/eu8ef5QDAVFAo7Xc/LUphEEQj1lftyQGzJi/mT/uv
-         UQWOLW7QjUNJ8mZSNKMJDsQHdaOyLHK//IfFYISSfVzgjpjHwrwNM5w15she4V6xarlU
-         iOqdv0ByXsK//8jt5mZzQaNyCGzLjASukf2JrJYNjlulkh3TohEzX6pJ9TO6jRPDw7PN
-         o2rg==
-X-Gm-Message-State: AOJu0YyrXh1APgW5VYWIZ7dDAmvTLBpIIn6E21iQD2hCBOvgpeeEXYw9
-	OSlJcUeJEnneuEOOF0egn7+jfgtUSqhNj5LHElg=
-X-Google-Smtp-Source: AGHT+IGZ547b/FyO6Vt/7849lDC7WdCxT8CR+oj1CCtE9zESaINxdCHXguIvsOwU+tvrVQwjchskpczEmr26mwH/vm8=
-X-Received: by 2002:a25:b907:0:b0:dbd:b751:7ce with SMTP id
- x7-20020a25b907000000b00dbdb75107cemr960897ybj.73.1704909396614; Wed, 10 Jan
- 2024 09:56:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704909414; x=1705514214;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YPUG8wGHjUncLfJR9e1hMbIghHR8x5XwILqQc+Upn/A=;
+        b=W4ybTHj50cHq4c4XFutRom6p17vmLvJBd7xq/h++kB0h+A6xTdspfMI2tejYWdkAjL
+         1P/vcYqQMz58tx1Wn40ZT90YQvQ1aTAPwCZKz/Zh1ArC4xbcoLtjJhHd5WC4qQ6md6MU
+         hTxkhsEVYAqQoMcuv/IaqCv6BhA1+DzRlCeeKilMUSpfbq1PZ1aqd0zb3wzP1eb73Qe5
+         1Q5zrB3/GujFQDjTSwVT0SkTgIIlRRo33/+hhPQVf8eG71C94eDiM10kCyAjj98ZLXXF
+         zskxYXcNLlHvkMn7hQvq0cB010j/UVK22XZTEyZgJX/YG8/tZ2AgM2FT+akuAM/usoFh
+         z8Cw==
+X-Gm-Message-State: AOJu0YxIep0xo8+LAqaFkg+H37F07lKKD4Z7MVR5iC7n/V/WIU78txPV
+	5Ab1adJUtO+SrgYDRyeIfK+N8W3o9wu7xw==
+X-Google-Smtp-Source: AGHT+IHvrOZ0aqeCr586qVWcuhFyKWtM901HK7CwO0DiO3YJfPrWwlIUBPh0GgYU2a0lKt1fMyeUlQ==
+X-Received: by 2002:a05:651c:b23:b0:2cd:7fe1:39c with SMTP id b35-20020a05651c0b2300b002cd7fe1039cmr334267ljr.72.1704909413963;
+        Wed, 10 Jan 2024 09:56:53 -0800 (PST)
+Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id v17-20020a2ea451000000b002cd1a3bdecbsm829614ljn.22.2024.01.10.09.56.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 09:56:53 -0800 (PST)
+Message-ID: <492aeca3-a4df-47a3-9c77-02ea4235d736@linaro.org>
+Date: Wed, 10 Jan 2024 18:56:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231223205813.32083-1-tintinm2017@gmail.com> <87o7eg607d.fsf@meer.lwn.net>
- <ZYpb6Woh45ZnEvCP@archie.me>
-In-Reply-To: <ZYpb6Woh45ZnEvCP@archie.me>
-From: Attreyee M <tintinm2017@gmail.com>
-Date: Wed, 10 Jan 2024 23:26:25 +0530
-Message-ID: <CAJjsb4oWN6Owg45SQomLx0G7ZkCnfepLiJJ=uZukHTYfvq2OfA@mail.gmail.com>
-Subject: Re: [PATCH] Documentation/livepatch: Update terminology in livepatch
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, jpoimboe@kernel.org, jikos@kernel.org, mbenes@suse.cz, 
-	pmladek@suse.com, joe.lawrence@redhat.com, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, live-patching@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+Content-Language: en-US
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>,
+ Pavan Kondeti <quic_pkondeti@quicinc.com>
+Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+ dmitry.baryshkov@linaro.org, jsnitsel@redhat.com, quic_bjorande@quicinc.com,
+ mani@kernel.org, quic_eberman@quicinc.com, robdclark@chromium.org,
+ u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com,
+ quic_molvera@quicinc.com, linux-arm-msm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, qipl.kernel.upstream@quicinc.com
+References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
+ <20240109114220.30243-4-quic_bibekkum@quicinc.com>
+ <2ad70157-27d1-41df-8866-c226af690cf6@quicinc.com>
+ <ec31fafa-b912-454a-8b64-e0593911aaf2@quicinc.com>
+ <4a595815-7fcc-47e2-b22c-dac349af6d79@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <4a595815-7fcc-47e2-b22c-dac349af6d79@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello maintainers,
-
-I wanted to ask if this patch of mine is accepted as of now.
-
-Thank you
-Attreyee Mukherjee
 
 
-On Tue, 26 Dec 2023 at 10:22, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->
-> On Sat, Dec 23, 2023 at 03:08:54PM -0700, Jonathan Corbet wrote:
-> > attreyee-muk <tintinm2017@gmail.com> writes:
-> >
-> > > Update the sentence in livepatch.rst to: "Functions are there for a reason. Take some input parameters, acquire or release locks, read, process, and write some data in a defined way."
-> > >
-> > > Signed-off-by: Attreyee Mukherjee <tintinm2017@gmail.com>
-> > > ---
-> > >  Documentation/livepatch/livepatch.rst | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > So this is a classic example of saying what you have done, but not why.
-> > What makes this a change that we want?
->
-> I think what he intended was "The word 'get' is not the correct antonym to
-> 'release' in the context of locking. Replace it with 'acquire'".
->
-> Thanks.
->
-> --
-> An old man doll... just what I always wanted! - Clara
+On 1/10/24 13:55, Bibek Kumar Patro wrote:
+> 
+> 
+> On 1/10/2024 4:46 PM, Bibek Kumar Patro wrote:
+>>
+>>
+>> On 1/10/2024 9:36 AM, Pavan Kondeti wrote:
+> 
+> [...]
+> 
+>>>> @@ -274,6 +321,21 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+>>>>   static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>>>           struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>>>>   {
+>>>> +    struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>>> +    struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+>>>> +    const struct actlr_variant *actlrvar;
+>>>> +    int cbndx = smmu_domain->cfg.cbndx;
+>>>> +
+>>>> +    if (qsmmu->data->actlrvar) {
+>>>> +        actlrvar = qsmmu->data->actlrvar;
+>>>> +        for (; actlrvar->io_start; actlrvar++) {
+>>>> +            if (actlrvar->io_start == smmu->ioaddr) {
+>>>> +                qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
+>>>> +                break;
+>>>> +            }
+>>>> +        }
+>>>> +    }
+>>>> +
+>>>
+>>> This block and the one in qcom_adreno_smmu_init_context() are exactly
+>>> the same. Possible to do some refactoring?
+>>>
+>>
+>> I will check if this repeated blocks can be accomodated this into qcom_smmu_set_actlr function if that would be fine.
+>>
+> 
+> Also adding to this, this might increase the number of indentation inside qcom_smmu_set_actlr as well, to around 5. So wouldn't this
+> be an issue?
+
+By the way, we can refactor this:
+
+if (qsmmu->data->actlrvar) {
+	actlrvar = qsmmu->data->actlrvar;
+	for (; actlrvar->io_start; actlrvar++) {
+		if (actlrvar->io_start == smmu->ioaddr) {
+			qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
+			break;
+		}
+	}
+}
+
+into
+
+// add const u8 num_actlrcfgs to struct actrl_variant to
+// save on sentinel space:
+//   sizeof(u8) < sizeof(ptr) + sizeof(resource_size_t)
+
+
+[declarations]
+const struct actlr_variant *actlrvar = qsmmu->data->actlrvar;
+int i;
+
+[rest of the functions]
+
+if (!actlrvar)
+	return 0;
+
+for (i = 0; i < actrlvar->num_actrlcfgs; i++) {
+	if (actlrvar[i].io_start == smmu->ioaddr) {
+		qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
+		break;
+	}
+}
+
+Saving both on .TEXT size and indentation levels :)
+
+Konrad
 
