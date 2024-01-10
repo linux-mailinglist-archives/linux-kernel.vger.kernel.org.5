@@ -1,185 +1,173 @@
-Return-Path: <linux-kernel+bounces-22862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB7A82A42E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:47:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D34D82A446
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBFC2B2306F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:47:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0EF61F238EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DED4F88F;
-	Wed, 10 Jan 2024 22:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10BB4F88B;
+	Wed, 10 Jan 2024 22:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiZMvBPT"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b="VbsyDy0u"
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2127.outbound.protection.outlook.com [40.107.14.127])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157474EB4A;
-	Wed, 10 Jan 2024 22:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7cdb24b3ac3so641946241.3;
-        Wed, 10 Jan 2024 14:47:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704926823; x=1705531623; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+qyeFnhiDNNURDIz+8zP28sEs2jFs16Y/vSKhjup2hM=;
-        b=HiZMvBPT+O7h/7xjqCAJmbVAz3rYVxFNu9tS2alTzhHPq/cnrJEpmCAlu9kkIFV7vm
-         FXRAIHvUHmW5DSyQY6vOVsZ/ybdacxB2KoC8yd+nb4gnthuVJA+J9PHFCZlh8dZA232u
-         sehqtQcCxt3D80PNkucUB5D7b5IDN5fZXAf2pJrEJFWi64de13Pysl92CWn5hxMJ13f1
-         XXahca8EyFICF8XYMR5EcvjcyfWjtoABV93ZyfvELrHsQ+IFKux/nOu3R/JEfA5p0aoh
-         DRxjfcZEhpHgn/II9t6JG8G0O4CcQb+jqNfUU8CSmlnpRT/jgHIncaLxkzrTkINwML5p
-         PNDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704926823; x=1705531623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+qyeFnhiDNNURDIz+8zP28sEs2jFs16Y/vSKhjup2hM=;
-        b=DF9+WPWmtia2yBUDvTRf+saPQIiEWi5g752EGxySfgRUEICMPmzYD/Ayo94qeLfI+s
-         o0NymgjYwfDR1oz0ovSPkrtRdafZsIN1ZHmMr4zEgFx9hvWkA1GYyi+1j5VdIJ9Elvbo
-         uLVMB2lBIS1OKouripFRpiwgCphe5HWkuSe93DjYdP2OWywa4ML4aSbySnZZLqJ3516K
-         hNxWRLhWtCX9vRYuk/0vVyRC0CfuXSLXuGZfVOtdrcY3RiTITmQJhKcQeg0v0NtDfhCn
-         SOSg6spkzzQlpvueM5q5/zXKWfEEnOiHcpIsBtz6ldB73NYd0v4h4DqoUq/S4ummyPol
-         f5IA==
-X-Gm-Message-State: AOJu0YyESO4QtOs0Q5I4N7MlnIzMpYqbVQaIKzONoPm0bZnXFfNWgxeI
-	Q8krLO+osDw/o3xTt9RhAsGW0O4p1RhIlG9WaUA=
-X-Google-Smtp-Source: AGHT+IErYXdaqVQL0eC34Yw6VgKXqvq53WTEBIuAKR40+eZMmSzOQBupbrlv0NjcJ14ujDZxQWZtxf9+1UAMOuQsKj4=
-X-Received: by 2002:a05:6122:c4:b0:4b6:b37c:5a42 with SMTP id
- h4-20020a05612200c400b004b6b37c5a42mr120455vkc.25.1704926822736; Wed, 10 Jan
- 2024 14:47:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365744EB55
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=prevas.dk
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FfSFCornNbozWo9JdTSYk3/zDy7dQWUtJMfZ0U5++Ae6qTBsbC2h6fi/jNgtNRRrEMXG32cdVHHyF0+7BErq8fW0fDuZw0jnPzkkvMx9l45uoP5272IGejL72XrKRvOBYICLZhXM/QcgX02hBNx7am+xudfyy06VT1DO9nmi87eOgzYruq/Mkfn38s1GtsgQmmPO4CK4/TP34vIjhv7mCIylvh9phQtC4o8/yxclnDeTBkd16PpoQmwy6fAqjjAMVKqvmLE1SbiJmhOZW4aCGVRtOVzaqiJ1oxhnZFjItp2e+awNTxmOVKnvvQ3CajOBgNKj1KshqdZqTbUbmfpXQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7cSqXJb2lbMqwBkYqN+FKElvfBCK9qJAIO2sWdxfuMA=;
+ b=jzQtpPD+2DBpNS4ga7dCOO0fLbuUIAaJmuNP+Fx1VjyLGJN00BLY9PLTx41OIgQK33xgtNPERMgwhDm9keJa+W710gz2hD9y+PzPNYzYNKcnX366GutFHeu+Jc5QhlriFWuZaKRi+taATRMNjfFHPBN1k8TrxjTVQV1RENi/XztOJXFaMXmuEbpnfqYbUe849IumF5xpPVEtaqUn9FqJrTok8YVrW8OV7uK6FWHFMnOCBWhLGhOGoE8ozfO+eyfdkMu0XRAFwRgrtrY3hNbkCLIetbc/s8d4PQK843Momp2aAfwwFi94oJypaEjoreKeOBWXcJBLR+rouHuXEw/nHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7cSqXJb2lbMqwBkYqN+FKElvfBCK9qJAIO2sWdxfuMA=;
+ b=VbsyDy0uW0E8C+cY6wghTZgrdKu+lGaQoiFemjxPYPIYxx6S6LJadTsd2rn+K62FR+nI6Zp5YcSVnfNsBfb9U6Htp9ICMJo5LJ4l90termBvJS0rwLH1Ei6qhUWtYlQ1rOZtSpRvwBUKfH+d0G6ZLBHUu2W5K084hl6xwqxPwrI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=prevas.dk;
+Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:45a::14)
+ by AS8PR10MB5853.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:525::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
+ 2024 22:52:41 +0000
+Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::f059:23ad:b039:15de]) by DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::f059:23ad:b039:15de%7]) with mapi id 15.20.7159.020; Wed, 10 Jan 2024
+ 22:52:41 +0000
+Message-ID: <ace8c8db-ff33-465f-9415-dfcb1c522f4f@prevas.dk>
+Date: Wed, 10 Jan 2024 23:52:38 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] workqueue.c: Increase workqueue name length
+Content-Language: en-US, da
+To: Rafael Aquini <aquini@redhat.com>
+Cc: Audra Mitchell <audra@redhat.com>, linux-kernel@vger.kernel.org,
+ tj@kernel.org, jiangshanlai@gmail.com, hirokazu.yamauchi.hk@hitachi.com,
+ ddouwsma@redhat.com, loberman@redhat.com, raquini@redhat.com
+References: <20231215193954.1785069-1-audra@redhat.com>
+ <20240110202959.249296-1-audra@redhat.com>
+ <2f0efed5-f9f3-4a5c-9fd4-a4837cada298@prevas.dk>
+ <ZZ8RtfKCmOQqj5KC@optiplex-fbsd>
+ <f5ded466-cbe1-4a46-b042-1c65839c9e02@prevas.dk>
+ <ZZ8a1RvwpDZvwfg9@optiplex-fbsd>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+In-Reply-To: <ZZ8a1RvwpDZvwfg9@optiplex-fbsd>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MM0P280CA0003.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:a::14) To DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:10:45a::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <202401101437.48C52CF6@keescook>
-In-Reply-To: <202401101437.48C52CF6@keescook>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Wed, 10 Jan 2024 22:46:02 +0000
-Message-ID: <CA+V-a8tdmD7PB1Rp5K9doXKGzSLwhbSAXD1=UisQebUrug507A@mail.gmail.com>
-Subject: Re: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
-To: Kees Cook <keescook@chromium.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Tudor Ambarus <tudor.ambarus@linaro.org>, dmaengine@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR10MB7100:EE_|AS8PR10MB5853:EE_
+X-MS-Office365-Filtering-Correlation-Id: 24d24539-0bdb-4d3c-1bf8-08dc122eda09
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	tY4tPCIc/sCTFyi+4x8JaU0DrNVizuwj44ZcYy1yB3SESSwaDJTtiaavqN8f9PeJP91//gdK7Vzw7VM7yvWGnF1TEXke7lJCYwwExqEHVY6+9xDTSIyC8MD+g7yGPo3oLYKY07vUJ/E5IN0nBdRORVJipeFjCcyGggjLxfhsNGtPr+WX2dr1cGYYXjJwuAx67t7CtsNPmogbFUH3i/5oHVNkPFkbMJaXjl5vt+BdO46Bo1/toYjo5Dl2k6FRKmFcKWFrjbveT7SZ8ZdGubt+Nd7C+ify4NGYkLdq99kSEC18w1RUr23tfyAc0g6teSYQl1Rx+TSjAxybGOKUxbia7kQtIdevRuYwMQSAKcDI14SazKvgRVaFKIcukU1e+utGgS66DB2Nm+geqdAcZ/0fuMsDdgGU106xml0lGm1L6P3pvpWJTeoDSxB/KIJTIoIQNEYZ/En7OCROxaJYokLrgoY8t/zAxq2AWn8kj+ACiePwjp49eFiqCO+tFWhiXVWWgLd0acm8Y3cGZZv+YWdWKQHDn3GaPchDmIvcLulOQUH6amWGcONX/RVFdP25KpqO6pfNuxFZruwLvpOlQS2VA4EFroztTjFdE0PSgNU9L4GrQs6B7dgAcBtZielCagCS/3uFFF/pw6RaBk4+WarnxA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(136003)(396003)(376002)(346002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(2906002)(5660300002)(41300700001)(26005)(83380400001)(478600001)(6486002)(44832011)(2616005)(38100700002)(31686004)(6512007)(6666004)(6506007)(31696002)(8936002)(8676002)(8976002)(4326008)(36756003)(86362001)(6916009)(66556008)(66946007)(66476007)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cUNHRXkwYlkxRGdrbTFRc3h6TFhhOHpVQzg4emhiQm04dHhBMWpMYTFHUWoy?=
+ =?utf-8?B?WnRUR1lmYmxCRDIvanBpcUpNVHZiN0tEVFNacnNDZDVZdXVkcGM4Z0ovZnpo?=
+ =?utf-8?B?anpJcFp0OS9uRzFiZEp4Q3NPdjUrcTcrVTZ0bm5YOUpZQ1F2WXpnZ2N1OVJo?=
+ =?utf-8?B?TlJ0L09CSXBwdzlhaVE0WDI0d0RpQTUwdjNIWDEvd2pEdHBnQmIrM294RVdW?=
+ =?utf-8?B?cC90Z3JSa1ZqaHBrYmhDYmg2UTJJT1dZQU5vZ0RuRGdQRmxsZC9acXd0d1pw?=
+ =?utf-8?B?UmFHcFlHREF5UHFremFIV05TRnBTSHVaaTVlTDVqbDRUZlpZdzJIdGpKNkhh?=
+ =?utf-8?B?Q0VvTU5Jd3V4MkkwR3ZVM2QyVFptM3dUd0dkdVZKNkdweUZsdzhSQlM5eXgw?=
+ =?utf-8?B?RjUzelE4SFZWalpnWFZLdEtEUVFVTjkzcjNHbXovMEZIRWZqRm1lRUo2VWY3?=
+ =?utf-8?B?YXVmNDkzcGRYSTFQZkNUQVNMRzJyMHNXVGdnVWVHZFlDQUI3blh3ZHBMUFlZ?=
+ =?utf-8?B?bkdiYjdtZXVCYk0yNnFucmZ1YVIxZndBTXYxRURlOGlBbFdOZEJkUytHWTBT?=
+ =?utf-8?B?eEw0KzdDTEExUFVSc1UySzlaU1RveGZ4cEdhM1BjRUJLQmJZdEVRMWluNzRB?=
+ =?utf-8?B?ak9hN1NyQlZxTGlxRDEwU0ZIZ3daVS9GNm5GK0NnR3BFdUFIMXQ4Rkl5Wm5z?=
+ =?utf-8?B?TFJONGVoRFBSRUVqUnpWa2VKVnUvcnlXMTFVaUNVWFdlVWpTRXFtMWlEZksr?=
+ =?utf-8?B?c0NVdEFidVVTcUtVbHlTd0FwNXBRb3V0V2ZLZ0ZRdWpjdTQ2WDBPTnBPRi9a?=
+ =?utf-8?B?VXNPcHN2OXVLQzQxTFFncTlKczZZMkJ0cHkzblErRXhuUW5WK0ozcnM2SkY4?=
+ =?utf-8?B?VlVCQmdMSTQ2cFpQTm44QmV4ZG1jNG1hRkdEMTR2ZkFQYWZlaEFmZXZZNFZu?=
+ =?utf-8?B?YitGUVpXTGd4b09aRmVTNGdxYTJKNWJ4bmhsUkVaaW91L21nMDFtc29qV0JR?=
+ =?utf-8?B?R2s1U0t0Uy9QOW1qYStEVEt3R2ZWdGptalV2MkNtdm9VaDRRa3N4b0hwbWZN?=
+ =?utf-8?B?RTgzMGIvOVBIZ2c3cjNMVlpDcTViNWdPZEd0b3pGQjNVcng5NDFDVlpyWG5H?=
+ =?utf-8?B?M0tJaXl4cUl5LytCRStGaWFPcVRqN2JGOEl1UUVzZmFaMU1Eci8xblJMQkRY?=
+ =?utf-8?B?Vkh6WXVQaHBtOTJTV3oxSnVsTXRKRUZmd1JUbEFVZHVhd2xpbmZ3d2M1VjVZ?=
+ =?utf-8?B?U1hnVTdSZUZoUWo1QXRWZ0JGVlRnK3F3Ym5yeUVrR0g4NHpMN3pudVdvTGpp?=
+ =?utf-8?B?RjdMdjlqMWhWQUpYUy9VamNtaUExSTBzTmpSMkFGSm5uZmJaOTNTUFlSLytx?=
+ =?utf-8?B?U2xueE9NZjFETG1zS05DNFMwNUhINzJMWVB3MDIrWGVUTGQ4YXZtUUduSjJL?=
+ =?utf-8?B?aXQ0YmJPbGo2QjdUeGdqMjQ5YmJDRnBnVml4S3V1OXlkbGptaXIreHFYS0hO?=
+ =?utf-8?B?S0hFTDl4Tm9nYm1hemVGeVRNVlN5cGViU0hxR0lQaVJSU3hVbFNSeXRZR1o0?=
+ =?utf-8?B?QWdXS0dMSUh4aWhuSGNDRk5jL0NFeFdFNHlhbWpyNE1xOW5rVyt0N0hJNDla?=
+ =?utf-8?B?Vk9XUTg0OXNwWXEreVZXYUF4bHlsVnpNVVhhUHBGWFNnQmxSRm56ZmV1OU5M?=
+ =?utf-8?B?eVIzK1hIZ1RDbDlndjFxb014SnZVVUE5UG05ZWxMN1VHdk5GQ2ZaRkpaK1ZP?=
+ =?utf-8?B?ZklMc2xTeFVJSUY1TUFFWFloN083OGNYdVpVWTJLcGhtZ0RtM3V0bVRHUGNv?=
+ =?utf-8?B?azJUT0l0NEVoZEh2cDRBR3plOGhCSHFkR0hsMzllRmw3L3pFYUlZNzBzSGx1?=
+ =?utf-8?B?NWMxaUE2Z0tLTTMzQjVrSWZLVnBCOEN6ZVNxeEV1d0R5Vkx5US9uZW0rakVT?=
+ =?utf-8?B?QzcwQ09XazZDTlJYSVlaM3MwRlByY1QwbFkrM1hLNXR5OWlOMW0rcS9SeEdJ?=
+ =?utf-8?B?UDZoc1dUTGxHSGc5KzR0QStjMENWSlIvcnFyWGJUUld5RHBZeFJsbDk2aFN6?=
+ =?utf-8?B?Q05hVTJJMEZ5NGtSVm5qYm5DU2RJS0NqMXZqenJGa0k4Z2JPa0F2R0FjRHlC?=
+ =?utf-8?B?NHBBVkxJSGRBd2F5V2JVTXFUUXlrUUZ5c050bmlzZmpib082MDRpYVNSdnVl?=
+ =?utf-8?B?Mnc9PQ==?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24d24539-0bdb-4d3c-1bf8-08dc122eda09
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 22:52:41.7030
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DkO7/v4uJNPnIR5xp9fwOw411004JmDEk4CvTEZG64X4o+yX5X+QM45j7a49A5eiJ5jg4t3z/UV5THsFX4CjTNSKwT+ttRuZ9VDakxaodGQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB5853
 
-Hi Kees,
+On 10/01/2024 23.31, Rafael Aquini wrote:
+> On Wed, Jan 10, 2024 at 11:06:22PM +0100, Rasmus Villemoes wrote:
+>> On 10/01/2024 22.52, Rafael Aquini wrote:
 
-Thank you for the review.
+>>> The extra vsnprintf call is required because the return of the existing 
+>>> vsnprintf() is going to be already capped by sizeof(wq->name).
+>>
+>> No, it is not. vsnprintf() returns the length of the would-be-created
+>> string if the buffer was big enough. That is independent of whether one
+>> does a dummy NULL,0 call or just calls it with a real, but possibly too
+>> small, buffer.
+>>
+>> This is true for userspace (as required by posix) as well as the kernel
+>> implementation of vsnprintf(). What makes you think otherwise?
+>>
+> 
+> this snippet from PRINTF(3) man page
+> 
+> RETURN VALUE
+>        Upon successful return, these functions return the number of characters 
+>        printed (excluding the null byte used to end output to strings).
+> 
 
-On Wed, Jan 10, 2024 at 10:41=E2=80=AFPM Kees Cook <keescook@chromium.org> =
-wrote:
->
-> On Wed, Jan 10, 2024 at 10:22:10PM +0000, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > gcc points out that the fix-byte buffer might be too small:
-> > drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
-> > drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing betwe=
-en 1 and 10 bytes into a region of size 3 [-Wformat-overflow=3D]
-> >   720 |         sprintf(pdev_irqname, "ch%u", index);
-> >       |                                  ^~
-> > In function 'usb_dmac_chan_probe',
-> >     inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
-> > drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range=
- [0, 4294967294]
-> >   720 |         sprintf(pdev_irqname, "ch%u", index);
-> >       |                               ^~~~~~
-> > drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 1=
-3 bytes into a destination of size 5
-> >   720 |         sprintf(pdev_irqname, "ch%u", index);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > Maximum number of channels for USB-DMAC as per the driver is 1-99 so us=
-e
-> > u8 instead of unsigned int/int for DMAC channel indexing and make the
-> > pdev_irqname string long enough to avoid the warning.
-> >
-> > While at it use scnprintf() instead of sprintf() to make the code more
-> > robust.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> This looks like good fixes; thanks! I see n_channels is sanity checked
-> during the probe in usb_dmac_chan_probe(), so this looks good.
->
-> (Is there a reason not to also change n_channels to a u8?)
->
-Good point, I oversighted it by just looking at the loop indices. I
-will send a v2 with that change.
+Assuming we have the same man pages installed, try reading the very next
+paragraph:
 
-Cheers,
-Prabhakar
+ The functions snprintf() and vsnprintf() do not write  more  than  size
+ bytes  (including the terminating null byte ('\0')).  If the output was
+ truncated due to this limit, then the return value  is  the  number  of
+ characters  (excluding the terminating null byte) which would have been
+ written to the final string if enough space had been available.   Thus,
+ a  return  value  of  size or more means that the output was truncated.
 
-> -Kees
->
-> > ---
-> >  drivers/dma/sh/usb-dmac.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
-> > index a9b4302f6050..f7cd0cad056c 100644
-> > --- a/drivers/dma/sh/usb-dmac.c
-> > +++ b/drivers/dma/sh/usb-dmac.c
-> > @@ -706,10 +706,10 @@ static const struct dev_pm_ops usb_dmac_pm =3D {
-> >
-> >  static int usb_dmac_chan_probe(struct usb_dmac *dmac,
-> >                              struct usb_dmac_chan *uchan,
-> > -                            unsigned int index)
-> > +                            u8 index)
-> >  {
-> >       struct platform_device *pdev =3D to_platform_device(dmac->dev);
-> > -     char pdev_irqname[5];
-> > +     char pdev_irqname[6];
-> >       char *irqname;
-> >       int ret;
-> >
-> > @@ -717,7 +717,7 @@ static int usb_dmac_chan_probe(struct usb_dmac *dma=
-c,
-> >       uchan->iomem =3D dmac->iomem + USB_DMAC_CHAN_OFFSET(index);
-> >
-> >       /* Request the channel interrupt. */
-> > -     sprintf(pdev_irqname, "ch%u", index);
-> > +     scnprintf(pdev_irqname, sizeof(pdev_irqname), "ch%u", index);
-> >       uchan->irq =3D platform_get_irq_byname(pdev, pdev_irqname);
-> >       if (uchan->irq < 0)
-> >               return -ENODEV;
-> > @@ -768,8 +768,8 @@ static int usb_dmac_probe(struct platform_device *p=
-dev)
-> >       const enum dma_slave_buswidth widths =3D USB_DMAC_SLAVE_BUSWIDTH;
-> >       struct dma_device *engine;
-> >       struct usb_dmac *dmac;
-> > -     unsigned int i;
-> >       int ret;
-> > +     u8 i;
-> >
-> >       dmac =3D devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
-> >       if (!dmac)
-> > @@ -869,7 +869,7 @@ static void usb_dmac_chan_remove(struct usb_dmac *d=
-mac,
-> >  static void usb_dmac_remove(struct platform_device *pdev)
-> >  {
-> >       struct usb_dmac *dmac =3D platform_get_drvdata(pdev);
-> > -     int i;
-> > +     u8 i;
-> >       for (i =3D 0; i < dmac->n_channels; ++i)
-> >               usb_dmac_chan_remove(dmac, &dmac->channels[i]);
-> > --
-> > 2.34.1
-> >
->
-> --
-> Kees Cook
+How else would you even expect the vsnprintf(NULL, 0, ...) thing to work?
 
