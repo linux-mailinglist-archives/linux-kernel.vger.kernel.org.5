@@ -1,278 +1,160 @@
-Return-Path: <linux-kernel+bounces-21901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 406EC82964E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:27:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62085829649
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:26:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C34F71F25A8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:27:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0689B1F257A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C566D3EA74;
-	Wed, 10 Jan 2024 09:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="juD6hpZR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D083E49A
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:27:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09FA2C433F1;
-	Wed, 10 Jan 2024 09:27:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704878837;
-	bh=nzNAaOqvaUL57D/V9epEYzVxZ7pYbWWXoeDDRRHs+/k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=juD6hpZRALBSBgsoKCWJmV0pVswWCkfgSB5gygZYm22wB6tFLF/GCnNhGjsnwkKdp
-	 pNVg/8oaNf172cQ4jZnmULRpAwB7yY7SpHQdeDgLRyfukjUp4YImdJiVITXeSb5RBj
-	 lv6R8hPinxo9nMfphpcDsx9UccrLhocX9H1bpJzIuJFkMlz6oFuIwq1yEtfkZR0kMa
-	 ksEy5xxZwq+mQg2B81zeC1VjRfTbPR0EMe2jyTC+HK4+ajT4zdWXPfZlkeH1+8y5Os
-	 lgYbczWKk3EemUbeDmQxeMvWKGlmxqP7evxQ16nsZ3xVSDEfzuzwu0sIVAtE6d5fTf
-	 T8fnq7PmuqINw==
-Date: Wed, 10 Jan 2024 10:27:14 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Andri Yngvason <andri@yngvason.is>
-Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>, 
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, 
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, Simon Ser <contact@emersion.fr>, 
-	Werner Sembach <wse@tuxedocomputers.com>, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 5/7] drm/uAPI: Add "preferred color format" drm property
- as setting for userspace
-Message-ID: <qdwv7sagqs5nmmsy5lko5hypldanfodafyzamrs3loj3n7jzlr@n5bacxkknkj4>
-References: <20240109181104.1670304-1-andri@yngvason.is>
- <20240109181104.1670304-6-andri@yngvason.is>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C936B3EA76;
+	Wed, 10 Jan 2024 09:26:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B8C320E;
+	Wed, 10 Jan 2024 09:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 730C62F4;
+	Wed, 10 Jan 2024 01:26:51 -0800 (PST)
+Received: from [10.57.87.179] (unknown [10.57.87.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F108D3F64C;
+	Wed, 10 Jan 2024 01:26:03 -0800 (PST)
+Message-ID: <821be71b-97e8-444a-900b-48fc5d88829f@arm.com>
+Date: Wed, 10 Jan 2024 09:27:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="f6j2j4rphibvcs2b"
-Content-Disposition: inline
-In-Reply-To: <20240109181104.1670304-6-andri@yngvason.is>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V6] thermal/core/power_allocator: avoid thermal cdev can
+ not be reset
+Content-Language: en-US
+To: Di Shen <di.shen@unisoc.com>
+Cc: linux-pm@vger.kernel.org, rui.zhang@intel.com, rafael@kernel.org,
+ daniel.lezcano@linaro.org, linux-kernel@vger.kernel.org, wvw@google.com,
+ tkjos@google.com, xuewen.yan@unisoc.com, zhanglyra@gmail.com,
+ orsonzhai@gmail.com
+References: <20240109112736.32566-1-di.shen@unisoc.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20240109112736.32566-1-di.shen@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Di,
 
---f6j2j4rphibvcs2b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 1/9/24 11:27, Di Shen wrote:
+> Commit 0952177f2a1f ("thermal/core/power_allocator: Update once
+> cooling devices when temp is low") adds an update flag to avoid
+> the thermal event is triggered when there is no need, and
+> thermal cdev would be updated once when temperature is low.
+> 
+> But when the trips are writable, and switch_on_temp is set
+> to be a higher value, the cooling device state may not be
+> reset to 0, because last_temperature is smaller than the
+> switch_on_temp.
+> 
+> For example:
+> First:
+> switch_on_temp=70 control_temp=85;
+> Then userspace change the trip_temp:
+> switch_on_temp=45 control_temp=55 cur_temp=54
+> 
+> Then userspace reset the trip_temp:
+> switch_on_temp=70 control_temp=85 cur_temp=57 last_temp=54
+> 
+> At this time, the cooling device state should be reset to 0.
+> However, because cur_temp(57) < switch_on_temp(70)
+> last_temp(54) < switch_on_temp(70)  ---->  update = false,
+> update is false, the cooling device state can not be reset.
+> 
+> Considering tz->passive can also be represented the temperature
+> status, this patch modifies the update flag with tz->passive.
+> 
+> When the first time the temperature drops below switch_on, the
+> states of cooling devices can be reset once(because tz->passive = 1),
+> and the tz->passive is updated to 0. In the next round, because
+> tz->passive is 0, the cdev->state would not be updated.
+> 
+> By using the tz->passive as the "update" flag, the issue above
+> can be solved, and the cooling devices can be update only once
+> when the temperature is low.
+> 
+> Fixes: <0952177f2a1f> (thermal/core/power_allocator: Update once cooling devices when temp is low)
 
-Hi,
+This should be:
+Fixes: 0952177f2a1f ("thermal/core/power_allocator: Update once cooling 
+devices when temp is low")
+Cc: <stable@vger.kernel.org> # v5.13+
 
-On Tue, Jan 09, 2024 at 06:11:02PM +0000, Andri Yngvason wrote:
-> From: Werner Sembach <wse@tuxedocomputers.com>
->=20
-> Add a new general drm property "preferred color format" which can be used
-> by userspace to tell the graphic drivers to which color format to use.
->=20
-> Possible options are:
->     - auto (default/current behaviour)
->     - rgb
->     - ycbcr444
->     - ycbcr422 (not supported by both amdgpu and i915)
->     - ycbcr420
->=20
-> In theory the auto option should choose the best available option for the
-> current setup, but because of bad internal conversion some monitors look
-> better with rgb and some with ycbcr444.
-
-I looked at the patch and I couldn't find what is supposed to happen if
-you set it to something else than auto, and the driver can't match that.
-Are we supposed to fallback to the "auto" behaviour, or are we suppose
-to reject the mode entirely?
-
-The combination with the active output format property suggests the
-former, but we should document it explicitly.
-
-> Also, because of bad shielded connectors and/or cables, it might be
-> preferable to use the less bandwidth heavy ycbcr422 and ycbcr420 formats
-> for a signal that is less deceptible to interference.
->=20
-> In the future, automatic color calibration for screens might also depend =
-on
-> this option being available.
->=20
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Andri Yngvason <andri@yngvason.is>
-> Tested-by: Andri Yngvason <andri@yngvason.is>
+> Signed-off-by: Di Shen <di.shen@unisoc.com>
+> 
 > ---
->  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
->  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
->  drivers/gpu/drm/drm_connector.c     | 50 ++++++++++++++++++++++++++++-
->  include/drm/drm_connector.h         | 17 ++++++++++
->  4 files changed, 74 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_at=
-omic_helper.c
-> index 68ffcc0b00dca..745a43d9c5da3 100644
-> --- a/drivers/gpu/drm/drm_atomic_helper.c
-> +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> @@ -707,6 +707,10 @@ drm_atomic_helper_check_modeset(struct drm_device *d=
-ev,
->  			if (old_connector_state->max_requested_bpc !=3D
->  			    new_connector_state->max_requested_bpc)
->  				new_crtc_state->connectors_changed =3D true;
-> +
-> +			if (old_connector_state->preferred_color_format !=3D
-> +			    new_connector_state->preferred_color_format)
-> +				new_crtc_state->connectors_changed =3D true;
->  		}
-> =20
->  		if (funcs->atomic_check)
-> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
-ic_uapi.c
-> index 98d3b10c08ae1..eba5dea1249e5 100644
-> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> @@ -798,6 +798,8 @@ static int drm_atomic_connector_set_property(struct d=
-rm_connector *connector,
->  		state->max_requested_bpc =3D val;
->  	} else if (property =3D=3D connector->privacy_screen_sw_state_property)=
- {
->  		state->privacy_screen_sw_state =3D val;
-> +	} else if (property =3D=3D connector->preferred_color_format_property) {
-> +		state->preferred_color_format =3D val;
->  	} else if (connector->funcs->atomic_set_property) {
->  		return connector->funcs->atomic_set_property(connector,
->  				state, property, val);
-> @@ -881,6 +883,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
-r *connector,
->  		*val =3D state->max_requested_bpc;
->  	} else if (property =3D=3D connector->privacy_screen_sw_state_property)=
- {
->  		*val =3D state->privacy_screen_sw_state;
-> +	} else if (property =3D=3D connector->preferred_color_format_property) {
-> +		*val =3D state->preferred_color_format;
->  	} else if (connector->funcs->atomic_get_property) {
->  		return connector->funcs->atomic_get_property(connector,
->  				state, property, val);
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
-tor.c
-> index 30d62e505d188..4de48a38792cf 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -1061,6 +1061,14 @@ static const struct drm_prop_enum_list drm_dp_subc=
-onnector_enum_list[] =3D {
->  	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
->  };
-> =20
-> +static const struct drm_prop_enum_list drm_preferred_color_format_enum_l=
-ist[] =3D {
-> +	{ 0, "auto" },
-> +	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
-> +	{ DRM_COLOR_FORMAT_YCBCR444, "ycbcr444" },
-> +	{ DRM_COLOR_FORMAT_YCBCR422, "ycbcr422" },
-> +	{ DRM_COLOR_FORMAT_YCBCR420, "ycbcr420" },
-> +};
-> +
->  static const struct drm_prop_enum_list drm_active_color_format_enum_list=
-[] =3D {
->  	{ 0, "not applicable" },
->  	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
-> @@ -1398,11 +1406,20 @@ static const u32 dp_colorspaces =3D
->   *	drm_connector_attach_max_bpc_property() to create and attach the
->   *	property to the connector during initialization.
->   *
-> + * preferred color format:
-> + *	This property is used by userspace to change the used color format. W=
-hen
-> + *	used the driver will use the selected format if valid for the hardwar=
-e,
-> + *	sink, and current resolution and refresh rate combination. Drivers to
-> + *	use the function drm_connector_attach_preferred_color_format_property=
-()
-> + *	to create and attach the property to the connector during
-> + *	initialization. Possible values are "auto", "rgb", "ycbcr444",
-> + *	"ycbcr422", and "ycbcr420".
-> + *
->   * active color format:
->   *	This read-only property tells userspace the color format actually used
->   *	by the hardware display engine "on the cable" on a connector. The cho=
-sen
->   *	value depends on hardware capabilities, both display engine and
-> - *	connected monitor. Drivers shall use
-> + *	connected monitor, and the "preferred color format". Drivers shall use
->   *	drm_connector_attach_active_color_format_property() to install this
->   *	property. Possible values are "not applicable", "rgb", "ycbcr444",
->   *	"ycbcr422", and "ycbcr420".
-> @@ -2468,6 +2485,37 @@ int drm_connector_attach_max_bpc_property(struct d=
-rm_connector *connector,
->  }
->  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
-> =20
-> +/**
-> + * drm_connector_attach_preferred_color_format_property - attach "prefer=
-red color format" property
-> + * @connector: connector to attach preferred color format property on.
-> + *
-> + * This is used to add support for selecting a color format on a connect=
-or.
-> + *
-> + * Returns:
-> + * Zero on success, negative errno on failure.
-> + */
-> +int drm_connector_attach_preferred_color_format_property(struct drm_conn=
-ector *connector)
-> +{
-> +	struct drm_device *dev =3D connector->dev;
-> +	struct drm_property *prop;
-> +
-> +	if (!connector->preferred_color_format_property) {
-> +		prop =3D drm_property_create_enum(dev, 0, "preferred color format",
-> +						drm_preferred_color_format_enum_list,
-> +						ARRAY_SIZE(drm_preferred_color_format_enum_list));
-> +		if (!prop)
-> +			return -ENOMEM;
-> +
-> +		connector->preferred_color_format_property =3D prop;
-> +	}
-> +
-> +	drm_object_attach_property(&connector->base, prop, 0);
-> +	connector->state->preferred_color_format =3D 0;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_connector_attach_preferred_color_format_property);
-> +
->  /**
->   * drm_connector_attach_active_color_format_property - attach "active co=
-lor format" property
->   * @connector: connector to attach active color format property on.
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index 9ae73cfdceeb1..d7bc54c8b42cb 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -1026,6 +1026,16 @@ struct drm_connector_state {
->  	 */
->  	enum drm_privacy_screen_status privacy_screen_sw_state;
-> =20
-> +	/**
-> +	 * preferred_color_format: Property set by userspace to tell the GPU
+> V6:
+> Compared to the previous version:
+> - Not change the thermal core.
+> - Not add new variables and function.
+> - Use tz->passive as "update" flag to indicates whether the cooling
+>    device should be reset.
+> 
+> V5: [5]
+> - Simplify the reset ops, make it no return value and no specific
+>    trip ID as argument.
+> - Extend the commit message.
+> 
+> V4: [4]
+> - Compared to V3, handle it in thermal core instead of in governor.
+> - Add an ops to the governor structure, and call it when a trip
+>    point is changed.
+> - Define reset ops for power allocator.
+> 
+> V3: [3]
+> - Add fix tag.
+> 
+> V2: [2]
+> - Compared to v1, do not revert.
+> - Add a variable(last_switch_on_temp) in power_allocator_params
+>    to record the last switch_on_temp value.
+> - Adds a function to renew the update flag and update the
+>    last_switch_on_temp when thermal trips are writable.
+> 
+> V1: [1]
+> - Revert commit 0952177f2a1f.
+> 
+> [1] https://lore.kernel.org/all/20230309135515.1232-1-di.shen@unisoc.com/
+> [2] https://lore.kernel.org/all/20230315093008.17489-1-di.shen@unisoc.com/
+> [3] https://lore.kernel.org/all/20230320095620.7480-1-di.shen@unisoc.com/
+> [4] https://lore.kernel.org/all/20230619063534.12831-1-di.shen@unisoc.com/
+> [5] https://lore.kernel.org/all/20230710033234.28641-1-di.shen@unisoc.com/
+> ---
+> ---
+>   drivers/thermal/gov_power_allocator.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+> index 83d4f451b1a9..931cd88425e4 100644
+> --- a/drivers/thermal/gov_power_allocator.c
+> +++ b/drivers/thermal/gov_power_allocator.c
+> @@ -693,7 +693,7 @@ static int power_allocator_throttle(struct thermal_zone_device *tz,
+>   
+>   	trip = params->trip_switch_on;
+>   	if (trip && tz->temperature < trip->temperature) {
+> -		update = tz->last_temperature >= trip->temperature;
+> +		update = tz->passive;
+>   		tz->passive = 0;
+>   		reset_pid_controller(params);
+>   		allow_maximum_power(tz, update);
 
-That's not the proper doc format, you're missing a @
+That small change LGTM.
 
-Maxime
+Please send v7 and add Wei as 'Suggested-by:' for this compact solution
+suggestion.
 
---f6j2j4rphibvcs2b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZZ5i8QAKCRDj7w1vZxhR
-xUKrAQC6+1rVAO7umPgfBq9P7nimTGhAG69n4i9MYMS1adFqoAD/T5SQ1Tsm9Ybw
-vTELQXqv0M32Kqp1PKhW+w+WiQTzAQw=
-=CrvP
------END PGP SIGNATURE-----
-
---f6j2j4rphibvcs2b--
+Regards,
+Lukasz
 
