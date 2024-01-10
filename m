@@ -1,378 +1,157 @@
-Return-Path: <linux-kernel+bounces-22157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED229829A36
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:10:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3035C829A45
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774FE1F28AEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:10:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC9B828B939
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B300481DD;
-	Wed, 10 Jan 2024 12:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46564482C9;
+	Wed, 10 Jan 2024 12:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="wvc0Ko2P"
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F859481AF
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe1e67.dip0.t-ipconnect.de [79.254.30.103])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JeWMA7V/"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id B271E1C2401;
-	Wed, 10 Jan 2024 13:10:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1704888632;
-	bh=eiIMRO6s3nuoZfWxzArwHzBSXPm/tcbpKWjkUndEsx4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=wvc0Ko2PT5JdmQlnb/42gBpilLyKA7TCOEcVWD4B8UoA/bcaiGqDcf0ODCcZRBQwt
-	 H1APnvEzr8R/AKjM8LwBvwwcPC+5qK2EUlDv9eDe0PXS6eTrwh3lKdpLcAULgxO6Ba
-	 NPHcB0MyrS1/OXMeRynSvHkp222MTUMAICIDrSk/q/DFDRtx/JQQEwaIgRop6aoQgF
-	 6vGp+5ybWxxBiYCuTGd+TmDxJNjpLKEXacWfK1H+8Wi9NqoqXuLdV1WA0kZmZL7Qjk
-	 C++C2UVQt3JiYOPQ7AuFlvHyD3+BH1maYVZlwRyWHQFREpS9Lp6b0Et53tDA0thPTD
-	 74K9K6ytFAf6w==
-Date: Wed, 10 Jan 2024 13:10:31 +0100
-From: Joerg Roedel <joro@8bytes.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev
-Subject: [git pull] IOMMU Updates for Linux v6.8
-Message-ID: <ZZ6JNzDHy8-i0-VU@8bytes.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA3947F7B
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40b5155e154so52894165e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 04:14:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704888841; x=1705493641; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SsQ3rn/rM2YAAgrA+elPEtB83uaUKdkc1ov3OY/ym/Q=;
+        b=JeWMA7V/YDK8VUFijfgeaLZ23eaqWQl3EHMGeaGsO79lTm4hUMv353ARNL3xfuPzB/
+         71xJqE7fqSDZGc0sCHwHKrtvBj/NOiFW67SC/EPnaM8TV1XZTpy4nqIxr3o+UQu+0p25
+         EYiCnbjfh44B4y4JM6UitbPmPl/ysFzxXs9YeaEKvHzr70wNi2BqwsCOwd+4u6Qtp3g7
+         x3n0przOPQ5XSbnsWNejTOdPIMLWvZnfHo70AbYx1sG3uCXKcirAOJTL8ISDoL9a8PE4
+         NF8viVPahzhFWVuCdMqmezlOWAuuH6xzqwOKgzD8fEpqGkEP3mbkMXtj4BWzUntdnM5M
+         Xo6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704888841; x=1705493641;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SsQ3rn/rM2YAAgrA+elPEtB83uaUKdkc1ov3OY/ym/Q=;
+        b=CLWO8bfi/0VP6hEvTVSjlHSJtQsdCGNgVzWS+EwrifRC6Py88bmXIgz/BBsN0KnIx9
+         SDj/7jHTa2G7qBdT0ksJsMZfrxCpSIIlpRC930YzZfvqvVNIQ/4ZCBVTYgmtCFvJOHKE
+         cJPJOi3jwfj1rT0FVKjNu0gmfiNnoRdusYUxMQzX5jB5qNK1sIaroy8WTow9RQmX6UA1
+         evURLsfe5bAXQmNDXRBhBtbcM48XW/Zs9rcVcQ2gIUFgHoJarCSuWQKwNCgbXjVPi4Au
+         5PDUF0drZnlKvvMeLtOdlNR806x8S147D/zc3sCB0G4DmwvLzyE45/QeTaaF8jSpq5Eb
+         ZnWg==
+X-Gm-Message-State: AOJu0Yz8UBD48KmG1K1JCIkmD+vgDoSPAKMuZS0GYfHc4hb/YDCBOz2Y
+	g/VLp2T8XM6jqZcayi+usz8EkDuDa0Q5Vw==
+X-Google-Smtp-Source: AGHT+IHXB8FIoN/BqHOSM4SXlaedpMXDdRqNcLWkGEQB6dkpB+xS+piLFG/BsL3LiczGaLcDvMqc9Q==
+X-Received: by 2002:a05:600c:1c85:b0:40e:5972:4970 with SMTP id k5-20020a05600c1c8500b0040e59724970mr157656wms.109.1704888841400;
+        Wed, 10 Jan 2024 04:14:01 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id je3-20020a05600c1f8300b0040d87100733sm2000936wmb.39.2024.01.10.04.13.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 04:14:00 -0800 (PST)
+Message-ID: <458ded82-b200-4946-9b22-31cda68f1c8c@linaro.org>
+Date: Wed, 10 Jan 2024 13:13:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="31rTxEYU3rb+agmb"
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] Add PPE device tree node for Qualcomm IPQ SoC
+Content-Language: en-US
+To: Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ quic_kkumarcs@quicinc.com, quic_suruchia@quicinc.com, quic_soni@quicinc.com,
+ quic_pavir@quicinc.com, quic_souravp@quicinc.com, quic_linchen@quicinc.com,
+ quic_leiwei@quicinc.com
+References: <20240110112059.2498-1-quic_luoj@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240110112059.2498-1-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 10/01/2024 12:20, Luo Jie wrote:
+> The PPE(packet process engine) hardware block is supported by Qualcomm
+> IPQ platforms, such as IPQ9574 and IPQ5332. The PPE includes the various
+> packet processing modules such as the routing and bridging flow engines,
+> L2 switch capability, VLAN and tunnels. Also included are integrated
+> ethernet MAC and PCS(uniphy), which is used to connect with the external
+> PHY devices by PCS.
+> 
+> This patch series enables support for the following DTSI functionality
+> for Qualcomm IPQ9574 and IPQ5332 chipsets. 
+> 
+> 1. Add PPE (Packet Processing Engine) HW support
+> 
+> 2. Add IPQ9574 RDP433 board support, where the PPE is connected
+>    with qca8075 PHY and AQ PHY.
+> 
+> 3. Add IPQ5332 RDP441 board support, where the PPE is connected
+>    with qca8386 and SFP
+> 
+> PPE DTS depends on the NSSCC clock driver below, which provides the
+> clocks for the PPE driver.
 
---31rTxEYU3rb+agmb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+DTS cannot depend on clock drivers. Maybe you meant that it depends on
+NSSCC clock controller DTS changes, which would be fine. However
+depending on drivers is neither necessary nor allowed.
 
-Hi Linus,
+Best regards,
+Krzysztof
 
-There is a small merge conflict with your tree, this time in
-arch/Kconfig. My resolution is attached. With that in mind, please
-consider:
-
-The following changes since commit 610a9b8f49fbcf1100716370d3b5f6f884a2835a:
-
-  Linux 6.7-rc8 (2023-12-31 12:51:25 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-u=
-pdates-v6.8
-
-for you to fetch changes up to 75f74f85a42eb294b657f847c33e1bb7921dbec9:
-
-  Merge branches 'apple/dart', 'arm/rockchip', 'arm/smmu', 'virtio', 'x86/v=
-t-d', 'x86/amd' and 'core' into next (2024-01-03 09:59:32 +0100)
-
-----------------------------------------------------------------
-IOMMU Updates for Linux v6.8
-
-Including:
-
-	- Core changes:
-	  - Fix race conditions in device probe path
-	  - Retire IOMMU bus_ops
-	  - Support for passing custom allocators to page table drivers
-	  - Clean up Kconfig around IOMMU_SVA
-	  - Support for sharing SVA domains with all devices bound to
-	    a mm
-	  - Firmware data parsing cleanup
-	  - Tracing improvements for iommu-dma code
-	  - Some smaller fixes and cleanups
-
-	- ARM-SMMU drivers:
-	  - Device-tree binding updates:
-	     - Add additional compatible strings for Qualcomm SoCs
-	     - Document Adreno clocks for Qualcomm's SM8350 SoC
-	  - SMMUv2:
-	    - Implement support for the ->domain_alloc_paging() callback
-	    - Ensure Secure context is restored following suspend of Qualcomm SMMU
-	      implementation
-	  - SMMUv3:
-	    - Disable stalling mode for the "quiet" context descriptor
-	    - Minor refactoring and driver cleanups
-
-	 - Intel VT-d driver:
-	   - Cleanup and refactoring
-
-	 - AMD IOMMU driver:
-	   - Improve IO TLB invalidation logic
-	   - Small cleanups and improvements
-
-	 - Rockchip IOMMU driver:
-	   - DT binding update to add Rockchip RK3588
-
-	 - Apple DART driver:
-	   - Apple M1 USB4/Thunderbolt DART support
-	   - Cleanups
-
-	 - Virtio IOMMU driver:
-	   - Add support for iotlb_sync_map
-	   - Enable deferred IO TLB flushes
-
-----------------------------------------------------------------
-Andy Yan (1):
-      dt-bindings: iommu: rockchip: Add Rockchip RK3588
-
-Ashish Mhetre (1):
-      iommu: Don't reserve 0-length IOVA region
-
-Boris Brezillon (2):
-      iommu: Allow passing custom allocators to pgtable drivers
-      iommu: Extend LPAE page table format to support custom allocators
-
-Colin Ian King (1):
-      iommu/apple-dart: Fix spelling mistake "grups" -> "groups"
-
-Harshit Mogalapalli (1):
-      iommu/sva: Fix memory leak in iommu_sva_bind_device()
-
-Isaac J. Manjarres (1):
-      iommu/dma: Trace bounce buffer usage when mapping buffers
-
-Jason Gunthorpe (16):
-      iommu: Change kconfig around IOMMU_SVA
-      iommu: Remove struct iommu_ops *iommu from arch_setup_dma_ops()
-      iommmu/of: Do not return struct iommu_ops from of_iommu_configure()
-      iommu/of: Use -ENODEV consistently in of_iommu_configure()
-      iommu: Mark dev_iommu_get() with lockdep
-      iommu: Mark dev_iommu_priv_set() with a lockdep
-      acpi: Do not return struct iommu_ops from acpi_iommu_configure_id()
-      iommu/tegra: Use tegra_dev_iommu_get_stream_id() in the remaining pla=
-ces
-      iommu/arm-smmu-v3: Add a type for the STE
-      iommu/arm-smmu-v3: Master cannot be NULL in arm_smmu_write_strtab_ent=
-()
-      iommu/arm-smmu-v3: Remove ARM_SMMU_DOMAIN_NESTED
-      iommu/arm-smmu: Reorganize arm_smmu_domain_add_master()
-      iommu/arm-smmu: Convert to a global static identity domain
-      iommu/arm-smmu: Implement IOMMU_DOMAIN_BLOCKED
-      iommu/arm-smmu: Pass arm_smmu_domain to internal functions
-      iommu/arm-smmu: Convert to domain_alloc_paging()
-
-Joerg Roedel (3):
-      Merge branch 'iommu/fixes' into core
-      Merge tag 'arm-smmu-updates' of git://git.kernel.org/pub/scm/linux/ke=
-rnel/git/will/linux into arm/smmu
-      Merge branches 'apple/dart', 'arm/rockchip', 'arm/smmu', 'virtio', 'x=
-86/vt-d', 'x86/amd' and 'core' into next
-
-Konrad Dybcio (2):
-      dt-bindings: arm-smmu: Document SM8[45]50 GPU SMMU
-      iommu/arm-smmu-qcom: Add QCM2290 MDSS compatible
-
-Krzysztof Kozlowski (1):
-      dt-bindings: iommu: arm,smmu: document clocks for the SM8350 GPU SMMU
-
-Kunwu Chan (1):
-      iommu/amd: Set variable amd_dirty_ops to static
-
-Laurentiu Tudor (1):
-      iommu: Map reserved memory as cacheable if device is coherent
-
-Lu Baolu (5):
-      iommu: Set owner token to SVA domain
-      iommu/vt-d: Refactor device_to_iommu() to retrieve iommu directly
-      iommu/vt-d: Remove unused parameter of intel_pasid_setup_pass_through=
-()
-      iommu/vt-d: Remove unused vcmd interfaces
-      iommu/vt-d: Move inline helpers to header files
-
-Neil Armstrong (1):
-      dt-bindings: iommu: arm,smmu: document the SM8650 System MMU
-
-Niklas Schnelle (2):
-      iommu/virtio: Make use of ops->iotlb_sync_map
-      iommu/virtio: Add ops->flush_iotlb_all and enable deferred flush
-
-Rajendra Nayak (1):
-      dt-bindings: arm-smmu: Add compatible for X1E80100 SoC
-
-Rob Clark (1):
-      iommu/arm-smmu-qcom: Add missing GMU entry to match table
-
-Robin Murphy (7):
-      iommu: Factor out some helpers
-      iommu: Decouple iommu_present() from bus ops
-      iommu: Validate that devices match domains
-      iommu: Decouple iommu_domain_alloc() from bus ops
-      iommu/arm-smmu: Don't register fwnode for legacy binding
-      iommu: Retire bus ops
-      iommu: Clean up open-coded ownership checks
-
-Suravee Suthikulpanit (1):
-      iommu/amd: Do not flush IRTE when only updating isRun and destination=
- fields
-
-Sven Peter (4):
-      dt-bindings: iommu: dart: Add t8103-usb4-dart compatible
-      iommu/apple-dart: Write to all DART_T8020_STREAM_SELECT
-      iommu/apple-dart: Add support for t8103 USB4 DART
-      iommu/apple-dart: Use readl instead of readl_relaxed for consistency
-
-Tina Zhang (5):
-      iommu/vt-d: Remove mm->pasid in intel_sva_bind_mm()
-      iommu: Add mm_get_enqcmd_pasid() helper function
-      mm: Add structure to keep sva information
-      iommu: Support mm PASID 1:n with sva domains
-      mm: Deprecate pasid field
-
-Vasant Hegde (9):
-      iommu/amd: Rename iommu_flush_all_caches() -> amd_iommu_flush_all_cac=
-hes()
-      iommu/amd: Remove redundant domain flush from attach_device()
-      iommu/amd: Remove redundant passing of PDE bit
-      iommu/amd: Add support to invalidate multiple guest pages
-      iommu/amd: Refactor IOMMU tlb invalidation code
-      iommu/amd: Refactor device iotlb invalidation code
-      iommu/amd: Consolidate amd_iommu_domain_flush_complete() call
-      iommu/amd: Make domain_flush_pages as global function
-      iommu/amd/pgtbl_v2: Invalidate updated page ranges only
-
-Vladimir Lypak (1):
-      iommu/qcom: restore IOMMU state if needed
-
-Wenkai Lin (1):
-      iommu/arm-smmu-v3: disable stall for quiet_cd
-
-Will Deacon (1):
-      Merge branch 'for-joerg/arm-smmu/bindings' into for-joerg/arm-smmu/up=
-dates
-
- .../devicetree/bindings/iommu/apple,dart.yaml      |   1 +
- .../devicetree/bindings/iommu/arm,smmu.yaml        |  77 +++++-
- .../devicetree/bindings/iommu/rockchip,iommu.yaml  |  11 +-
- arch/Kconfig                                       |   5 +
- arch/arc/mm/dma.c                                  |   2 +-
- arch/arm/mm/dma-mapping-nommu.c                    |   2 +-
- arch/arm/mm/dma-mapping.c                          |  10 +-
- arch/arm64/mm/dma-mapping.c                        |   4 +-
- arch/mips/mm/dma-noncoherent.c                     |   2 +-
- arch/riscv/mm/dma-noncoherent.c                    |   2 +-
- arch/x86/Kconfig                                   |   1 +
- arch/x86/kernel/traps.c                            |   4 +-
- drivers/acpi/scan.c                                |  32 +--
- drivers/dma/tegra186-gpc-dma.c                     |   8 +-
- drivers/gpu/drm/nouveau/nvkm/subdev/ltc/gp10b.c    |   9 +-
- drivers/hv/hv_common.c                             |   2 +-
- drivers/iommu/Kconfig                              |   1 +
- drivers/iommu/amd/amd_iommu.h                      |   8 +-
- drivers/iommu/amd/amd_iommu_types.h                |   6 -
- drivers/iommu/amd/init.c                           |   8 +-
- drivers/iommu/amd/io_pgtable.c                     |   5 +-
- drivers/iommu/amd/io_pgtable_v2.c                  |  10 +-
- drivers/iommu/amd/iommu.c                          | 189 +++++++-------
- drivers/iommu/apple-dart.c                         |  40 ++-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    |  23 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  79 +++---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |   8 +-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         |   2 +
- drivers/iommu/arm/arm-smmu/arm-smmu.c              | 166 ++++++++-----
- drivers/iommu/arm/arm-smmu/arm-smmu.h              |   1 -
- drivers/iommu/arm/arm-smmu/qcom_iommu.c            |  26 +-
- drivers/iommu/dma-iommu.c                          |   3 +
- drivers/iommu/intel/debugfs.c                      |   3 -
- drivers/iommu/intel/iommu.c                        | 241 ++----------------
- drivers/iommu/intel/iommu.h                        | 179 +++++++++++++-
- drivers/iommu/intel/pasid.c                        | 274 +----------------=
-----
- drivers/iommu/intel/pasid.h                        | 223 ++++++++++++++++-
- drivers/iommu/intel/svm.c                          |  34 +--
- drivers/iommu/io-pgtable-arm.c                     |  55 +++--
- drivers/iommu/io-pgtable.c                         |  23 ++
- drivers/iommu/iommu-sva.c                          |  97 +++++---
- drivers/iommu/iommu.c                              | 154 ++++++++----
- drivers/iommu/iommufd/hw_pagetable.c               |   2 +
- drivers/iommu/mtk_iommu.c                          |   7 +-
- drivers/iommu/mtk_iommu_v1.c                       |   3 -
- drivers/iommu/of_iommu.c                           |  73 +++---
- drivers/iommu/omap-iommu.c                         |   1 -
- drivers/iommu/sprd-iommu.c                         |   8 +-
- drivers/iommu/virtio-iommu.c                       |  36 ++-
- drivers/memory/tegra/tegra186.c                    |  14 +-
- drivers/of/device.c                                |  24 +-
- include/acpi/acpi_bus.h                            |   2 +
- include/linux/device.h                             |   1 -
- include/linux/device/bus.h                         |   5 -
- include/linux/dma-map-ops.h                        |   5 +-
- include/linux/io-pgtable.h                         |  34 +++
- include/linux/iommu.h                              |  47 +++-
- include/linux/mm_types.h                           |   5 +-
- include/linux/of_iommu.h                           |  13 +-
- include/linux/sched.h                              |   2 +-
- kernel/fork.c                                      |   2 +-
- mm/Kconfig                                         |   3 +
- mm/init-mm.c                                       |   3 -
- 63 files changed, 1278 insertions(+), 1042 deletions(-)
-
-Please pull.
-
-Thanks,
-
-	Joerg
-
-diff --cc arch/Kconfig
-index 5ca66aad0d08,3e49f862670e..c91917b50873
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@@ -301,8 -301,22 +301,13 @@@ config ARCH_HAS_DMA_CLEAR_UNCACHE
-  config ARCH_HAS_CPU_FINALIZE_INIT
-  	bool
- =20
-+ # The architecture has a per-task state that includes the mm's PASID
-+ config ARCH_HAS_CPU_PASID
-+ 	bool
-+ 	select IOMMU_MM_DATA
-+=20
- -# Select if arch init_task must go in the __init_task_data section
- -config ARCH_TASK_STRUCT_ON_STACK
- -	bool
- -
- -# Select if arch has its private alloc_task_struct() function
- -config ARCH_TASK_STRUCT_ALLOCATOR
- -	bool
- -
-  config HAVE_ARCH_THREAD_STRUCT_WHITELIST
-  	bool
- -	depends on !ARCH_TASK_STRUCT_ALLOCATOR
-  	help
-  	  An architecture should select this to provide hardened usercopy
-  	  knowledge about what region of the thread_struct should be
-
---31rTxEYU3rb+agmb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmWeiTIACgkQK/BELZcB
-GuNpiw/+KsHN78wp921ytBoo7bkPxuFpcDxN2T63LWjG/PjyTmHgMBpo5Vt6/33Q
-zDKYAuFheGhD1dOtTjQNAoRTG/HD1xUeCiUv/345Iu2doTe3lG4IixJ0e0d+3r08
-iRbZcSvhyj6OZM9LYcDIruKs9sLP23mf5w0Lxbcx//4qcAiQRgnvqiXYluwt3WcZ
-3daTd/hKh2RkYxIUytgwjzmLhXnet1W5ykqSQxVnOU7yqlwEiC0d7uqv2wHQldUJ
-OQwU5nl2afK0wawpbgWt/v24dQtFVAXUccMLo24KufObwTfCbFpMGhFjmHf5tYMb
-yMjrcSgebBv/2i3zmH+mCUw7h3LAvOS8g932QOTexfat0huHfNaLrDR1gVJnpctB
-roDT0Q0MIQA6+4vdPb1NDSv2tI6NtltGcdYVDNWUo8CnBxB82IzCsEmvIL0VVq93
-byyBqawEgxTfTQXv3QdFT5FCP23QY27JTaNv+hZnM3b61hucwOcyZ9sGY88Yr6xQ
-TgpJs8jSc2AyA1SgzM8JTF1gwmbYAwmqjyJMED5QNfGxDiCfRURvJPouJcl3+iGa
-8ln0IP5jYY29fvX9zZlAB66W2E6pvIU07UJ9AmgU53rF/dgF+KAnmMR2K1kmvQb+
-pWkqisSHi64wyAudQa8OOjxOxss5nRFtZScfoGBBvryQBsMAdUk=
-=KdJA
------END PGP SIGNATURE-----
-
---31rTxEYU3rb+agmb--
 
