@@ -1,201 +1,175 @@
-Return-Path: <linux-kernel+bounces-22062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092B98298A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:18:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3E168298AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:18:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F302B26878
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:18:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 571A81F29751
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1678147F65;
-	Wed, 10 Jan 2024 11:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894AC481D2;
+	Wed, 10 Jan 2024 11:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Lth6Jf8c"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BNf3TCty"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F195047F5B;
-	Wed, 10 Jan 2024 11:17:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573A847A6B;
+	Wed, 10 Jan 2024 11:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A9a4HY004758;
-	Wed, 10 Jan 2024 11:17:03 GMT
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40AA2K7U012984;
+	Wed, 10 Jan 2024 11:17:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=g9xuwmwnv77m6yLMd6UvlmhVtVKT1QYeO0gAErvBHgE=; b=Lt
-	h6Jf8cKFbWSHgYDouVDyTfFKZOJUsShEn4ZUpRZ5sAT5wtF4uI+TmwQ9WocGrEJz
-	wOL8zW+uzRvosXZ53soeRPYyfqVjjCRo+cQfE7ZKohEpmwd8VpdkOGphlVrA3I//
-	AZQ/GvWQg87genB1WIntjdL+cnrJqiXTH80sGmlWtHlu5C9il69Dd143BRO3pIue
-	ImiDECtTTHSgqwZ4A7IqGUejqjhAvDfkTiUMGwTLehkb3OM8EcSAdg8sFRja0hDl
-	iQbQ5Ex4Vg83uMNPIO6tt2eNqADxrcssKaxv8yHdnevkfP5QqPLFFJEzaQZT7QZJ
-	LjhinQgmk0ZrqfgM5aIA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhg8g1844-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=B+sgRFv5yp3Rlr3nFlR9pT+L2BHT0szx2DeDHoUL8MA=; b=BN
+	f3TCty6V9B75Exsf17BnaFZU3JIeGJPsu/xXB4AhjiLteXsxhfMxNyg+/DL3reLW
+	JnNyhqV0STGj/90gVthVRBk+E6j8B+B2HbBKznrr/LuTjWuyPvvCkeNVwjzu9hbR
+	yrvYnpUo+21FBdHbnernj8Ut5NbEq/IRLRzshgvfOm+CrWhauIRpiaFG1bC/Hv0C
+	wVPiLWkJBhHAZRLTG9JBItHS5r7Lqyq9crXd2OI1dYjUo325KsZ84vqX/1fCJI+Q
+	RTpmqQ9Wd2hWn5G+D2vv9MW+SxtdosVWjnAp5QI6udftIdmy5PptU8QGuex7g9ZV
+	X6pTzyJlK3j6HixfnahQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhs4mg5my-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:17:02 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ABH1IK009829
+	Wed, 10 Jan 2024 11:17:28 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ABHSY2015729
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:17:01 GMT
-Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 03:16:54 -0800
-Message-ID: <ec31fafa-b912-454a-8b64-e0593911aaf2@quicinc.com>
-Date: Wed, 10 Jan 2024 16:46:46 +0530
+	Wed, 10 Jan 2024 11:17:28 GMT
+Received: from hu-jsuraj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 10 Jan 2024 03:17:17 -0800
+From: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+To: <quic_jsuraj@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma
+	<bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S.
+ Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jakub
+ Kicinski" <kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "Jose
+ Abreu" <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Prasad Sodagudi
+	<psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
+	<robh@kernel.org>
+CC: <kernel@quicinc.com>
+Subject: [PATCH net-next v9 1/3] dt-bindings: net: qcom,ethqos: add binding doc for safety IRQ for sa8775p
+Date: Wed, 10 Jan 2024 16:46:47 +0530
+Message-ID: <20240110111649.2256450-2-quic_jsuraj@quicinc.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240110111649.2256450-1-quic_jsuraj@quicinc.com>
+References: <20240110111649.2256450-1-quic_jsuraj@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 3/5] iommu/arm-smmu: introduction of ACTLR for custom
- prefetcher settings
-To: Pavan Kondeti <quic_pkondeti@quicinc.com>
-CC: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <dmitry.baryshkov@linaro.org>, <konrad.dybcio@linaro.org>,
-        <jsnitsel@redhat.com>, <quic_bjorande@quicinc.com>, <mani@kernel.org>,
-        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
-        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
-        <vladimir.oltean@nxp.com>, <quic_molvera@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
-References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
- <20240109114220.30243-4-quic_bibekkum@quicinc.com>
- <2ad70157-27d1-41df-8866-c226af690cf6@quicinc.com>
-Content-Language: en-US
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-In-Reply-To: <2ad70157-27d1-41df-8866-c226af690cf6@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SAGdCQf8fpU7gVcpiSgWX-iDG8BOwoaB
-X-Proofpoint-GUID: SAGdCQf8fpU7gVcpiSgWX-iDG8BOwoaB
+X-Proofpoint-GUID: 5-ECSXcy5vbGxlAG-otvAbuQOHpQkiy7
+X-Proofpoint-ORIG-GUID: 5-ECSXcy5vbGxlAG-otvAbuQOHpQkiy7
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 bulkscore=0 suspectscore=0 phishscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ adultscore=0 impostorscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401100092
 
+Add binding doc for safety IRQ. The safety IRQ will be
+triggered for ECC(error correction code), DPP(data path
+parity), FSM(finite state machine) error.
 
+Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/net/qcom,ethqos.yaml | 9 ++++++---
+ Documentation/devicetree/bindings/net/snps,dwmac.yaml  | 6 ++++--
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-On 1/10/2024 9:36 AM, Pavan Kondeti wrote:
-> On Tue, Jan 09, 2024 at 05:12:18PM +0530, Bibek Kumar Patro wrote:
->>   static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->>   		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
->>   {
->> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
->> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
->> +	const struct actlr_variant *actlrvar;
->> +	int cbndx = smmu_domain->cfg.cbndx;
->>   	struct adreno_smmu_priv *priv;
->>
->>   	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
->> @@ -248,6 +285,16 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->>   	priv->set_stall = qcom_adreno_smmu_set_stall;
->>   	priv->resume_translation = qcom_adreno_smmu_resume_translation;
->>
->> +	if (qsmmu->data->actlrvar) {
->> +		actlrvar = qsmmu->data->actlrvar;
->> +		for (; actlrvar->io_start; actlrvar++) {
->> +			if (actlrvar->io_start == smmu->ioaddr) {
->> +				qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
->> +				break;
->> +			}
->> +		}
->> +	}
->> +
->>   	return 0;
->>   }
->>
->> @@ -274,6 +321,21 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
->>   static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->>   		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
->>   {
->> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
->> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
->> +	const struct actlr_variant *actlrvar;
->> +	int cbndx = smmu_domain->cfg.cbndx;
->> +
->> +	if (qsmmu->data->actlrvar) {
->> +		actlrvar = qsmmu->data->actlrvar;
->> +		for (; actlrvar->io_start; actlrvar++) {
->> +			if (actlrvar->io_start == smmu->ioaddr) {
->> +				qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
->> +				break;
->> +			}
->> +		}
->> +	}
->> +
-> 
-> This block and the one in qcom_adreno_smmu_init_context() are exactly
-> the same. Possible to do some refactoring?
-> 
+diff --git a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+index 7bdb412a0185..69a337c7e345 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+@@ -37,12 +37,14 @@ properties:
+     items:
+       - description: Combined signal for various interrupt events
+       - description: The interrupt that occurs when Rx exits the LPI state
++      - description: The interrupt that occurs when HW safety error triggered
+ 
+   interrupt-names:
+     minItems: 1
+     items:
+       - const: macirq
+-      - const: eth_lpi
++      - enum: [eth_lpi, sfty]
++      - const: sfty
+ 
+   clocks:
+     maxItems: 4
+@@ -89,8 +91,9 @@ examples:
+                <&gcc GCC_ETH_PTP_CLK>,
+                <&gcc GCC_ETH_RGMII_CLK>;
+       interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>,
+-                   <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
+-      interrupt-names = "macirq", "eth_lpi";
++                   <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SPI 782 IRQ_TYPE_LEVEL_HIGH>;
++      interrupt-names = "macirq", "eth_lpi", "sfty";
+ 
+       rx-fifo-depth = <4096>;
+       tx-fifo-depth = <4096>;
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index 5c2769dc689a..9b04e2ed7c18 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -107,13 +107,15 @@ properties:
+       - description: Combined signal for various interrupt events
+       - description: The interrupt to manage the remote wake-up packet detection
+       - description: The interrupt that occurs when Rx exits the LPI state
++      - description: The interrupt that occurs when HW safety error triggered
+ 
+   interrupt-names:
+     minItems: 1
+     items:
+       - const: macirq
+-      - enum: [eth_wake_irq, eth_lpi]
+-      - const: eth_lpi
++      - enum: [eth_wake_irq, eth_lpi, sfty]
++      - enum: [eth_wake_irq, eth_lpi, sfty]
++      - enum: [eth_wake_irq, eth_lpi, sfty]
+ 
+   clocks:
+     minItems: 1
+-- 
+2.25.1
 
-I will check if this repeated blocks can be accomodated this into 
-qcom_smmu_set_actlr function if that would be fine.
-
->>   	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
->>
->>   	return 0;
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
->> index f3b91963e234..29d26dfa2ed9 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
->> @@ -1,6 +1,6 @@
->>   /* SPDX-License-Identifier: GPL-2.0-only */
->>   /*
->> - * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
->> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
->>    */
->>
-> 
-> It should be 2022-2023 .
-> 
-
-Ack
-
->>   #ifndef _ARM_SMMU_QCOM_H
->> @@ -24,8 +24,17 @@ struct qcom_smmu_config {
->>   	const u32 *reg_offset;
->>   };
->>
->> +struct actlr_config;
->> +
->> +struct actlr_variant {
->> +	const struct actlr_config *actlrcfg;
->> +	const resource_size_t io_start;
->> +};
->> +
->>   struct qcom_smmu_match_data {
->> +	const struct actlr_variant *actlrvar;
->>   	const struct qcom_smmu_config *cfg;
->> +	const int num_smmu;
->>   	const struct arm_smmu_impl *impl;
->>   	const struct arm_smmu_impl *adreno_impl;
->>   };
-> 
-> qcom_smmu_match_data::num_smmu needs cleanup.
-> 
-
-Ack, thanks for pointing this out.
-
-Thanks & regards,
-Bibek
-
-> Thanks,
-> Pavan
 
