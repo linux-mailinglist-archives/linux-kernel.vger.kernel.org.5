@@ -1,115 +1,154 @@
-Return-Path: <linux-kernel+bounces-22520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8D9829EF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B0CD7829EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:21:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD7BCB22593
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:21:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54CB9B225D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A6E4CE18;
-	Wed, 10 Jan 2024 17:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31DA24D10E;
+	Wed, 10 Jan 2024 17:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pd59UjXX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fZJbBBT6"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03394B5BB
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704907273; x=1736443273;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=S5q6qQ/mVRtd8Lp2GoraYID8cvUn0ZdcxB0bf44ien8=;
-  b=Pd59UjXXgFqHw6LiSE1zAm6lzvZd3QisuK7bA/gW4az7/u4e9m7VkTJo
-   3Fd4ZSyBKoBWHILwX3PwJi6oTnWiF/cm5BVkVjwUQxgS/HDYVqg0hu0Tb
-   P1GbWiDnd9pxtBEO77AVLnjXdN58kHazoklLsHZKc/VxiramPJcrnzEAa
-   9rXLe71Q/VWFENvMCxj16XI9r6MRObNEBLpLvwzQxbze1ndtzLSDj9Yd8
-   BZ29VwSSlA4D9d+9J3fBiVCtJgQYJIzao/OOmSX0WWXFrXuR8e85jBzv6
-   r05uOiTH0at21Gf5LJ0yXkCnL4Puty2TQBpBGqw8DnFaK6TYyiPciSiXM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="397445481"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="397445481"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 09:21:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="24024173"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 10 Jan 2024 09:21:11 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNcGK-0007K4-2U;
-	Wed, 10 Jan 2024 17:21:08 +0000
-Date: Thu, 11 Jan 2024 01:20:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: include/trace/stages/init.h:2:23: warning:
- 'str__irq_vectors__trace_system_name' defined but not used
-Message-ID: <202401110124.FXHxWlN9-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FA947A48
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bbebe6191bso3968430b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:21:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704907275; x=1705512075; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ixiqCJ7toFC2ykhZEFAjNRDsHVRvZatAv23Lu2SKRPc=;
+        b=fZJbBBT6kteGFSnn65Zpbt8Iziq2EzCSy6X9Q+7U3rZ6ix83e8XGl249g4cyAQ4UB3
+         B6Aep2/+tpzyJ1NWJimeQpSbRn9tsd4vagQ+lkX38i2n3UC/9xg+1OJzBFH8bCYelRpU
+         e3l6YkWjkpxvJsvONZrwvF4NTSuDhWijXqg8pP5SvB3Oc3Vr1l/vltNtmxg2W+BpgsTg
+         mKU1wRqyBVpwRSgT9ArLJETTVV0bfY5fBVFwve8A1P/2a8SF4/1YbDSfmsCldW926FOC
+         SSXjq1qDS59ERHG+XYS29k6/oVsh3gYTAribKEUpxVOJdwGqlzu2AiD7AWVX0BwV1v2J
+         IyZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704907275; x=1705512075;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ixiqCJ7toFC2ykhZEFAjNRDsHVRvZatAv23Lu2SKRPc=;
+        b=LZFYMSyUYEcDV6God1mqAW80C1gZqkTvlUC65VKjLx/VJsgxGUg8WPxaut4iOV5YnF
+         ueBspHrBJPikH8lyc5FOxhv6jqS1CQH+N/rtfiGeWQYLVc0Y0Rf2elOJKdgNcAZYgc9b
+         XsHdjwVFm6MLjBdPEpJ5F3tSwBhE1I9E9T7tTkaRM3SGMT08hZXnIFAR49pb8LtPTDEj
+         ot1PILVQsewJqPdZEFALwnpYUl5FoSAqMaxpnYM+9C4x0MZRKuXS3TMn9mlaYSNaBCpS
+         TfjJc5vP9Nurg8U3NNFhQVMAi5v9x0oW0VRRwWiAAV1V1H9odvf+bXJAH6VR1iGiF5yl
+         jMvA==
+X-Gm-Message-State: AOJu0YxHjCxOLpDaYD6qLNIiSI85lz/ib32bqF4EE7VBYqb5K4IEj8sP
+	5eTJm0bJy2sSwidqJdAxuaUt69H1lZ4JRLUqoFQw0zfbayK/RQ==
+X-Google-Smtp-Source: AGHT+IFIQfvSC24ftaZP9nwJm+WZ1GHoxQsWlGy4sQ7nD9VzS7S3Bz6fQD7zkm1FIE2AXWgu0eLrSClVlwxCs3hr1CM=
+X-Received: by 2002:a05:6808:e82:b0:3bc:29c2:2b97 with SMTP id
+ k2-20020a0568080e8200b003bc29c22b97mr1504352oil.88.1704907274742; Wed, 10 Jan
+ 2024 09:21:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240110131707.437301-1-keisuke.nishimura@inria.fr>
+In-Reply-To: <20240110131707.437301-1-keisuke.nishimura@inria.fr>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 10 Jan 2024 18:21:02 +0100
+Message-ID: <CAKfTPtCgqkUUtWMknyHrNeb994V_L4T9bxV9A=bUXCQu-+S1SQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2 RESEND] sched/fair: take into account scheduling
+ domain in select_idle_smt()
+To: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Julia Lawall <julia.lawall@inria.fr>, 
+	Xunlei Pang <xlpang@linux.alibaba.com>, Abel Wu <wuyun.abel@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Steven,
+On Wed, 10 Jan 2024 at 14:19, Keisuke Nishimura
+<keisuke.nishimura@inria.fr> wrote:
+>
+> When picking out a CPU on a task wakeup, select_idle_smt() has to take
+> into account the scheduling domain of @target. This is because the
+> "isolcpus" kernel command line option can remove CPUs from the domain to
+> isolate them from other SMT siblings.
+>
+> This fix checks if the candidate CPU is in the target scheduling domain.
+>
+> The commit df3cb4ea1fb6 ("sched/fair: Fix wrong cpu selecting from isolated
+> domain") originally proposed this fix by adding the check of the scheduling
+> domain in the loop. However, the commit 3e6efe87cd5cc ("sched/fair: Remove
+> redundant check in select_idle_smt()") accidentally removed the check.
+> This commit brings the check back.
+>
+> Fixes: 3e6efe87cd5c ("sched/fair: Remove redundant check in select_idle_smt()")
+> Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> ---
+> v2: - Changed the log message to mention only isolcpus
+>     - Moved the check in the loop according to the original fix
+>
+>  kernel/sched/fair.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..66457d4b8965 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7311,13 +7311,19 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+>  /*
+>   * Scan the local SMT mask for idle CPUs.
+>   */
+> -static int select_idle_smt(struct task_struct *p, int target)
+> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+>  {
+>         int cpu;
+>
+>         for_each_cpu_and(cpu, cpu_smt_mask(target), p->cpus_ptr) {
+>                 if (cpu == target)
+>                         continue;
+> +               /*
+> +                * Check if the CPU is in the LLC scheduling domain of @target.
+> +                * Due to isolcpus, there is no guarantee that all the siblings are in the domain.
+> +                */
+> +               if (!cpumask_test_cpu(cpu, sched_domain_span(sd)))
 
-FYI, the error/warning still remains.
+commit df3cb4ea1fb6 ("sched/fair: Fix wrong cpu selecting from isolated domain")
+also checked if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-commit: af6b9668e85ffd1502aada8036ccbf4dbd481708 tracing: Move the defines to create TRACE_EVENTS into their own files
-date:   1 year, 10 months ago
-config: i386-buildonly-randconfig-003-20240106 (https://download.01.org/0day-ci/archive/20240111/202401110124.FXHxWlN9-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240111/202401110124.FXHxWlN9-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401110124.FXHxWlN9-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/trace/trace_events.h:27,
-                    from include/trace/define_trace.h:102,
-                    from arch/x86/include/asm/trace/irq_vectors.h:383,
-                    from arch/x86/kernel/irq.c:27:
->> include/trace/stages/init.h:2:23: warning: 'str__irq_vectors__trace_system_name' defined but not used [-Wunused-const-variable=]
-       2 | #define __app__(x, y) str__##x##y
-         |                       ^~~~~
-   include/trace/stages/init.h:3:21: note: in expansion of macro '__app__'
-       3 | #define __app(x, y) __app__(x, y)
-         |                     ^~~~~~~
-   include/trace/stages/init.h:5:29: note: in expansion of macro '__app'
-       5 | #define TRACE_SYSTEM_STRING __app(TRACE_SYSTEM_VAR,__trace_system_name)
-         |                             ^~~~~
-   include/trace/stages/init.h:8:20: note: in expansion of macro 'TRACE_SYSTEM_STRING'
-       8 |  static const char TRACE_SYSTEM_STRING[] = \
-         |                    ^~~~~~~~~~~~~~~~~~~
-   include/trace/stages/init.h:11:1: note: in expansion of macro 'TRACE_MAKE_SYSTEM_STR'
-      11 | TRACE_MAKE_SYSTEM_STR();
-         | ^~~~~~~~~~~~~~~~~~~~~
+Why didn't you also re-add this test ?
 
 
-vim +/str__irq_vectors__trace_system_name +2 include/trace/stages/init.h
-
-   > 2	#define __app__(x, y) str__##x##y
-     3	#define __app(x, y) __app__(x, y)
-     4	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +                       continue;
+>                 if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+>                         return cpu;
+>         }
+> @@ -7341,7 +7347,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+>         return __select_idle_cpu(core, p);
+>  }
+>
+> -static inline int select_idle_smt(struct task_struct *p, int target)
+> +static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+>  {
+>         return -1;
+>  }
+> @@ -7591,7 +7597,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>                 has_idle_core = test_idle_cores(target);
+>
+>                 if (!has_idle_core && cpus_share_cache(prev, target)) {
+> -                       i = select_idle_smt(p, prev);
+> +                       i = select_idle_smt(p, sd, prev);
+>                         if ((unsigned int)i < nr_cpumask_bits)
+>                                 return i;
+>                 }
+> --
+> 2.34.1
+>
 
