@@ -1,213 +1,86 @@
-Return-Path: <linux-kernel+bounces-22717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 665D482A213
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:19:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D892A82A215
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:19:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E54951F2B1D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:19:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76D981F2B20E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1DD54F201;
-	Wed, 10 Jan 2024 20:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFB14F5FC;
+	Wed, 10 Jan 2024 20:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="LQhgAxeN"
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZvkunF8I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF954EB5B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-467d87c90b7so896026137.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:18:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704917911; x=1705522711; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xCx5QwVa70fzd8rquMw4I6kP8SoNutWIPIfWbbVPnLc=;
-        b=LQhgAxeNKXARlYaz9p+WirSIlWc1OggKmi2zS4oGjM32ATv5aRdAV3V22iqAdbVIVw
-         Ynjx4nY3CdMQwe40l+d/r/39PuGOniZT8ZYYOX/gw1g/eqIaa6GajUBQGwpm6ux07C7T
-         vNqpGbMZpuP4NB6wq422gmdNErWaEPd9zFSQEipLqoHBHDn6KBOdtqJ+n/2FQKHGT0oc
-         tveRy38ZS3qGMxZtaPJ9fCnn1jqnTspJ/rR3k07pIl13N1F8SfuUXnYF2ghm58gi3s+j
-         qAjYjk9m5fPYJE5SCF2JmemjU1DHxha3QiFeDzN3OswGjvgGVbusdOj1JSMbPaVpvXZD
-         5jXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704917911; x=1705522711;
-        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xCx5QwVa70fzd8rquMw4I6kP8SoNutWIPIfWbbVPnLc=;
-        b=htGyEHl+lITRWVMyiH+TR2rN8hpw3VpR6EMxNJV28+HCr+/s6KKy3kmU5msRs56skP
-         CaZjMr+0FjWPqRK4vERGPfSPyxMdAvrJA5+D2N5SV1ezp/+Y0fJ50Bf3f9OXR3Ll218T
-         IxVE1CC2vnpHroLVy4ndHHf9bmCcF/lfwflUYyqtrmR5ZxxaG/ObPEvNcXNzjzvdIcre
-         SmtT5Am7kEKlKGImwruDTcHVgSSoiBRvu919zWbPKTb0RlWRGAn0eMgkshs6a4avaETh
-         fOkXP52mLuez2ZJfwWmp49DmJF8jgowxS/BFaReKEepvr7BFoMM0Bl3UNH1x9/8vBe+7
-         zb0A==
-X-Gm-Message-State: AOJu0YxQY7Cuj8cpOwl+1KXJ0mkoCu06XtWK/zOuzW9bsk7rh6tG6WY9
-	PVkEofFwFtkpHL3kZmCvbrFBI6w21+IEdrwGOLghkXCWd5rcBA==
-X-Google-Smtp-Source: AGHT+IE6zVAzl+4qyb1eQ51qm1s0EUGP2M/u9h85sqLJbME/ZYvgt4XDXmjce7aWTNg2Jl0ci+FP580NRa/9d4ocW0c=
-X-Received: by 2002:a05:6102:570b:b0:467:1ffb:d6a1 with SMTP id
- dg11-20020a056102570b00b004671ffbd6a1mr68609vsb.26.1704917911195; Wed, 10 Jan
- 2024 12:18:31 -0800 (PST)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 10 Jan 2024 14:18:30 -0600
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-In-Reply-To: <20240110164105.GA13451@wunner.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D909D4F5EF;
+	Wed, 10 Jan 2024 20:18:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01087C433F1;
+	Wed, 10 Jan 2024 20:18:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704917926;
+	bh=fgRgZuoAXQ+AEZV1jM9xn99Om5QJ8jDoPAfUebkzG1k=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=ZvkunF8I+PbytQ3aauQZUhtA04lAEOU1IIG/RzeLPK401UDcocZUiX7tCvNZkhUk4
+	 J8a7G8Iysz62mTv6dS7JxkxqOpnkVy0/tWgEyKHX0ldkP1s5h1dIXmuIQPkQhKovTm
+	 Cub4+DO8mPJAz+POJlzwqzGt+XtknBta4GkxUMyo0//jfrITtgslfxtCKBzyk9B0qx
+	 raZ45Hlaa0llbA+sg7uaPslIrVCLG2bYGGGl4PlWYiRlAyGoNI0zCZ+6ZGhY9M/AMT
+	 /ni0sJFRI03TITR1JWZJnCtipD43lilhybATuWTUCrc8Q7YIMfY2l/lWVu4GyNF9xT
+	 JNdHq6vFCh6cg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240104130123.37115-1-brgl@bgdev.pl> <20240104130123.37115-4-brgl@bgdev.pl>
- <20240109144327.GA10780@wunner.de> <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
- <20240110132853.GA6860@wunner.de> <CAMRc=MdBSAb_kEO2r7r-vwLuRAEv7pMODOMtZoCCRAd=zsQb_w@mail.gmail.com>
- <20240110164105.GA13451@wunner.de>
-Date: Wed, 10 Jan 2024 14:18:30 -0600
-Message-ID: <CAMRc=MdQKPN8UbagmswjFx7_JvmJuBeuq8+9=z-+GBNUmdpWEA@mail.gmail.com>
-Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
-	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 10 Jan 2024 22:18:37 +0200
+Message-Id: <CYBAYMHESW3Z.1EVW4Q0W0FHEC@suppilovahvero>
+Cc: <x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
+ <linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+ <jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
+ <ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
+ <vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
+ <dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
+ <peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
+ <rientjes@google.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
+ <kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
+ <sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
+ <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>, <pankaj.gupta@amd.com>,
+ <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>, "Brijesh Singh"
+ <brijesh.singh@amd.com>
+Subject: Re: [PATCH v1 07/26] x86/fault: Add helper for dumping RMP entries
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Borislav Petkov" <bp@alien8.de>, "Michael Roth" <michael.roth@amd.com>
+X-Mailer: aerc 0.15.2
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-8-michael.roth@amd.com>
+ <20240110095912.GAZZ5qcFXYgvPrCdRI@fat_crate.local>
+In-Reply-To: <20240110095912.GAZZ5qcFXYgvPrCdRI@fat_crate.local>
 
-On Wed, 10 Jan 2024 17:41:05 +0100, Lukas Wunner <lukas@wunner.de> said:
-> On Wed, Jan 10, 2024 at 05:26:52PM +0100, Bartosz Golaszewski wrote:
->> Seems like the following must be true but isn't in my case (from
->> pci_bus_add_device()):
->>
->>     if (pci_is_bridge(dev))
->>         of_pci_make_dev_node(dev);
->>
->> Shouldn't it evaluate to true for ports?
->
-> It should.
->
-> What does "lspci -vvvvxxxx -s BB:DD.F" say for the port in question?
->
+On Wed Jan 10, 2024 at 11:59 AM EET, Borislav Petkov wrote:
+> On Sat, Dec 30, 2023 at 10:19:35AM -0600, Michael Roth wrote:
+> > +void snp_dump_hva_rmpentry(unsigned long hva)
+> > +{
+> > +	unsigned int level;
+> > +	pgd_t *pgd;
+> > +	pte_t *pte;
+> > +
+> > +	pgd =3D __va(read_cr3_pa());
+> > +	pgd +=3D pgd_index(hva);
+> > +	pte =3D lookup_address_in_pgd(pgd, hva, &level);
+> > +
+> > +	if (!pte) {
+> > +		pr_info("Can't dump RMP entry for HVA %lx: no PTE/PFN found\n", hva)=
+;
+                ~~~~~~~
+		is this correct log level?
 
-I cut out the hexdump part, let me know if you really need it. Output follows.
-
-Bart
-
---
-
-# lspci -vvvvxxxx -s  0000:00:00.0
-0000:00:00.0 PCI bridge: Qualcomm Technologies, Inc Device 010b
-(prog-if 00 [Normal decode])
-	Device tree node: /sys/firmware/devicetree/base/soc@0/pcie@1c00000/pcie@0
-	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR+ FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 0
-	Interrupt: pin A routed to IRQ 176
-	IOMMU group: 8
-	Region 0: Memory at 60300000 (32-bit, non-prefetchable) [size=4K]
-	Bus: primary=00, secondary=01, subordinate=ff, sec-latency=0
-	I/O behind bridge: f000-0fff [disabled] [16-bit]
-	Memory behind bridge: 60400000-604fffff [size=1M] [32-bit]
-	Prefetchable memory behind bridge: 00000000fff00000-00000000000fffff
-[disabled] [64-bit]
-	Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- <SERR- <PERR-
-	BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-		PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-	Capabilities: [40] Power Management version 3
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [50] MSI: Enable+ Count=1/32 Maskable+ 64bit+
-		Address: 00000000a1c3f000  Data: 0000
-		Masking: fffffffe  Pending: 00000000
-	Capabilities: [70] Express (v2) Root Port (Slot+), MSI 00
-		DevCap:	MaxPayload 128 bytes, PhantFunc 0
-			ExtTag- RBE+
-		DevCtl:	CorrErr+ NonFatalErr+ FatalErr+ UnsupReq+
-			RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop+
-			MaxPayload 128 bytes, MaxReadReq 512 bytes
-		DevSta:	CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr+ TransPend-
-		LnkCap:	Port #0, Speed 8GT/s, Width x1, ASPM L0s L1, Exit Latency
-L0s <1us, L1 <64us
-			ClockPM- Surprise+ LLActRep+ BwNot+ ASPMOptComp+
-		LnkCtl:	ASPM Disabled; RCB 128 bytes, Disabled- CommClk+
-			ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-		LnkSta:	Speed 5GT/s, Width x1
-			TrErr- Train- SlotClk+ DLActive+ BWMgmt+ ABWMgmt+
-		SltCap:	AttnBtn+ PwrCtrl+ MRL+ AttnInd+ PwrInd+ HotPlug- Surprise+
-			Slot #0, PowerLimit 0W; Interlock+ NoCompl-
-		SltCtl:	Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt- HPIrq- LinkChg-
-			Control: AttnInd Off, PwrInd Off, Power- Interlock-
-		SltSta:	Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet- Interlock-
-			Changed: MRL- PresDet- LinkState-
-		RootCap: CRSVisible+
-		RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna+ CRSVisible+
-		RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-		DevCap2: Completion Timeout: Range ABCD, TimeoutDis+ NROPrPrP+ LTR+
-			 10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-			 EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-			 FRS- LN System CLS Not Supported, TPHComp+ ExtTPHComp- ARIFwd-
-			 AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
-		DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR+
-10BitTagReq- OBFF Disabled, ARIFwd-
-			 AtomicOpsCtl: ReqEn- EgressBlck-
-		LnkCap2: Supported Link Speeds: 2.5-8GT/s, Crosslink- Retimer- 2Retimers- DRS-
-		LnkCtl2: Target Link Speed: 8GT/s, EnterCompliance- SpeedDis-
-			 Transmit Margin: Normal Operating Range, EnterModifiedCompliance-
-ComplianceSOS-
-			 Compliance Preset/De-emphasis: -6dB de-emphasis, 0dB preshoot
-		LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete-
-EqualizationPhase1-
-			 EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-			 Retimer- 2Retimers- CrosslinkRes: unsupported
-	Capabilities: [100 v2] Advanced Error Reporting
-		UESta:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF-
-MalfTLP- ECRC- UnsupReq- ACSViol-
-		UEMsk:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF-
-MalfTLP- ECRC- UnsupReq- ACSViol-
-		UESvrt:	DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+
-MalfTLP+ ECRC- UnsupReq- ACSViol-
-		CESta:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
-		CEMsk:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
-		AERCap:	First Error Pointer: 00, ECRCGenCap+ ECRCGenEn- ECRCChkCap+ ECRCChkEn-
-			MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
-		HeaderLog: 00000000 00000000 00000000 00000000
-		RootCmd: CERptEn+ NFERptEn+ FERptEn+
-		RootSta: CERcvd- MultCERcvd- UERcvd- MultUERcvd-
-			 FirstFatal- NonFatalMsg- FatalMsg- IntMsg 0
-		ErrorSrc: ERR_COR: 0000 ERR_FATAL/NONFATAL: 0000
-	Capabilities: [148 v1] Secondary PCI Express
-		LnkCtl3: LnkEquIntrruptEn- PerformEqu-
-		LaneErrStat: 0
-	Capabilities: [168 v1] Transaction Processing Hints
-		No steering table available
-	Capabilities: [1fc v1] L1 PM Substates
-		L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
-			  PortCommonModeRestoreTime=70us PortTPowerOnTime=0us
-		L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2- ASPM_L1.1-
-			   T_CommonMode=70us LTR1.2_Threshold=76800ns
-		L1SubCtl2: T_PwrOn=0us
-	Kernel driver in use: pcieport
+BR, Jarkko
 
