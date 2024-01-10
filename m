@@ -1,127 +1,163 @@
-Return-Path: <linux-kernel+bounces-22072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 442AC8298C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5C982985A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:10:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67161F29D8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:21:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89A31F20F5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693C24778F;
-	Wed, 10 Jan 2024 11:20:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B89346BA6;
+	Wed, 10 Jan 2024 11:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="owOMXJMe"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="D/6yxlr8"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1702B47F61
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40b5155e154so52315205e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:20:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704885632; x=1705490432; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=vlqGHcDi/Sy4uBIl5Jnr3cngTZ3e/jHWYQNYtZZtTZE=;
-        b=owOMXJMeofa3oGLWuav2HeouMg7Kk20O8ydAAjBLgIwIHRLxsyOqgrY4eHB7GKGzIX
-         rQVLHRUnfg0DIPb5rH4VJn5wN++fX73XucgaZkA1bFYFuAeVVYF5jnGYZC+JUnCdPKFV
-         zrdJ+tNvYZ8xDqfcaJwY3zpayAXwPKTW7vdWvk3Lp7TAnx5hoK4a9PiWXaspTo8vba7+
-         F7XWJ4EpkA+o7NPAD3HrKuV0cxXDRYobTSnzIHDFhMQVMQrRG042F4t5hkOcSS539m1t
-         Fm3rcLi1AHCq0OS/3D0zn4IQAw8LabfUN9At4RKrDwpsnIpqzRsKB/nESQzI1kWweHP7
-         skaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704885632; x=1705490432;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vlqGHcDi/Sy4uBIl5Jnr3cngTZ3e/jHWYQNYtZZtTZE=;
-        b=CI3BT5CUOlOWLoC8ejCEj7UeFKRmoW9q1FCRsmfWEn76VahiYy5MDKfSUZWxXv5LZR
-         TDh5Df4osh0Y7L3hb3hQ8NY8df50Z7jpvw68hXSYsJMwFnFFwgWXh8wnxIXM3/1ta6Cl
-         iKGrZOvNIIVSDiheLBnDRf4S/V1r9nL5H7b6YOclWDZCNHshV6CIqwR4LHzcyQ/sSzDF
-         Ybe17gjAWSal1jzCrQyO4DJA+1NL1T1bsGH2IPEmaeCsXNplzHa51FhkVbqlK/+swSPI
-         KRZ2QL397YfWwjKHerOEV0dfhF6FvQ+vf9PQopM26tuKIcm9d4kjeyxAkHlMVzm010OW
-         MUIg==
-X-Gm-Message-State: AOJu0YyoPBUugr5teX6JRbWkfBSkxodDp7DQKViQIICgZKT6tsN3zgQU
-	xghAjDQapasgp7/dNPAnvLU40wf/im7vRQ==
-X-Google-Smtp-Source: AGHT+IHbFpGfeZfC9AI5PuT+WFKOB6Wfi932nxWEAg0oL5APRSxrD72gbhMFpBecRdk6idA3QUls+A==
-X-Received: by 2002:a05:600c:198a:b0:40e:3b3a:aeb0 with SMTP id t10-20020a05600c198a00b0040e3b3aaeb0mr455216wmq.156.1704885632252;
-        Wed, 10 Jan 2024 03:20:32 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:9eb:66c9:5f1b:87ab])
-        by smtp.gmail.com with ESMTPSA id n15-20020a05600c3b8f00b0040d5a5c523csm1858810wms.1.2024.01.10.03.20.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 03:20:31 -0800 (PST)
-References: <20240109213812.558492-1-krzysztof.kozlowski@linaro.org>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Mark Brown
- <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: dt-bindings: dai-common: Narrow possible
- sound-dai-cells
-Date: Wed, 10 Jan 2024 12:07:30 +0100
-In-reply-to: <20240109213812.558492-1-krzysztof.kozlowski@linaro.org>
-Message-ID: <1ja5pdzb7k.fsf@starbuckisacylon.baylibre.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B3C47762;
+	Wed, 10 Jan 2024 11:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704885005;
+	bh=opfjRhVHCA5uWTnxeh45vbr3mHfSSMHaqalR6SccCOI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=D/6yxlr8V5vU3xvkd9oO0PJqihGbovndB0pXsrcsxWe5fhIBvnSnP+ktzFPVlUeWE
+	 RDnmBNBCDYlq2MKxs++cBLGHfptUKdCLbwP5rabk2dDDmOx77m/2kUF+2t0dglKpP2
+	 BI8Lb6IKkBeO6U+TwjbEnTqjSC3T0bGu4R5L5GILqJaier/HyaRUfv/ZhtIKSPQsY4
+	 Z4zr6ZD2ijVcJN6HJRHzy0CYN6ecNiFZScA6ajXxzRxNutgl6HiB2HEZTdaizxnnfT
+	 EW2znBdh5ogyKNLt/mnWI9jezRRurlUFdrez1Yk1DIccZuArMslJNRmY3cgrfyxfxq
+	 ChSxIxyqPy/tw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 40B6A3780C21;
+	Wed, 10 Jan 2024 11:10:05 +0000 (UTC)
+Message-ID: <679f35f9-3265-4b2f-8de5-df9460881de6@collabora.com>
+Date: Wed, 10 Jan 2024 12:10:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] arm64: dts: mediatek: mt8186: Increase CCI
+ frequency
+To: =?UTF-8?B?Q2h1bi1KZW4gVHNlbmcgKOabvuS/iuS7gSk=?=
+ <Chun-Jen.Tseng@mediatek.com>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "wenst@chromium.org" <wenst@chromium.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Project_Global_Chrome_Upstream_Group
+ <Project_Global_Chrome_Upstream_Group@mediatek.com>
+References: <20230914121035.17320-1-chun-jen.tseng@mediatek.com>
+ <20230914121035.17320-2-chun-jen.tseng@mediatek.com>
+ <c9881e63-a52a-4d14-895e-9a14d31004e3@collabora.com>
+ <894594bd2adb156fa8f290f4e603edbccdbbcdab.camel@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <894594bd2adb156fa8f290f4e603edbccdbbcdab.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+Il 10/01/24 06:44, Chun-Jen Tseng (曾俊仁) ha scritto:
+> On Wed, 2023-11-29 at 14:22 +0100, AngeloGioacchino Del Regno wrote:
+>> Il 14/09/23 14:10, Mark Tseng ha scritto:
+>>> The original CCI OPP table's lowest frequency 500 MHz is too low
+>>> and causes
+>>> system stalls. Increase the frequency range to 1.05 GHz ~ 1.4 GHz
+>>> and adjust
+>>> the OPPs accordingly.
+>>>
+>>> Fixes: 32dfbc03fc26 ("arm64: dts: mediatek: mt8186: Add CCI node
+>>> and CCI OPP table")
+>>>
+>>> Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
+>>
+>> You ignored my comment [1] on the v1 of this patch.
+>>
+>> Besides, I think that you should at least keep the 500MHz frequency
+>> for a
+>> sleep-only/idle OPP to save power.
+>>
+>> It would also be helpful to understand why you chose this new
+>> frequency range,
+>> so if you can, please put some numbers in the commit description,
+>> showing the
+>> stall in terms of requested BW vs actual BW (as I'd imagine that a 2x
+>> increase
+>> in CCI frequency means that we need *twice* the bandwidth compared to
+>> what we
+>> have for the workloads that are stalling the system).
+>>
+> Hi AngeloGioacchino Del Regno,
+> 
+> Thanks your reminder this issue. After ajdustment CCI OPP, we also do
+> power test benchmark and the result is PASS.
+> 
 
-On Tue 09 Jan 2024 at 22:38, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+Sorry but `PASS` is not a number; I actually wanted a before and after power
+consumption measurement in microwatts.
 
-> Instead of accepting any value for sound-dai-cells, the common DAI
-> properties schema should narrow them to sane choice.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
+> The original CCI table has stall issue.  When the Big CPU frequency set
+> on 2.05G and CCI frequency keep on 500MHz then run CTS MediaTest will
+> system stall then trigger watchdog reset SoC.
+> 
+> The CPU and CCI frequency setting are not in the same driver. So it
+> will have timing issue cause CPU stall side effect.
+> 
 
-Adding a constraint solely based on current usage feels wrong.
+Are you trying to fix a frequency setting delay/desync with raising the
+frequency of the CCI?
+That's not the right way of doing it.
 
-A DAI provider in its generic form must have the sound-dai-cells to
-provide one. It says nothing about how many parameters an actual device
-might need. That is the idea behind this binding.
+Asserting that we have a timing issue because the two frequency settings
+are not done by the same driver is borderline wrong - but anyway - if there
+is a frequency setting timing issue because of the interaction between the
+two drivers (cpufreq/ccifreq), the right way of eliminating the stall is to
+actually solve the root cause of that.
 
-It is up to the device specific bindings to define that value.
+I'm insisting on this because if there's a "timing issue" this means that
+even though the "base" CCI frequency is higher, during a scaling up operation
+depending on how much the CCI gets flooded, you might *either*:
+  - Have this same stall issue again, and/or
+  - Have performance issues/drops while waiting for the CCI to scale up.
 
-If restricting things here is really important, defaulting to 0 (with a
-comment explaining it) and letting actual devices then override the
-value would feel less 'made up'
+Even though you may not (or may...) get a stall issue again with this change,
+you will surely get (very short) temporary performance drops during scaling up.
 
-> ---
->
-> Mostly sound-dai-cells are 0 or 1, but
-> Documentation/devicetree/bindings/sound/amlogic,aiu.yaml has value of 2.
-> ---
->  Documentation/devicetree/bindings/sound/dai-common.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/dai-common.yaml b/Documentation/devicetree/bindings/sound/dai-common.yaml
-> index 1aed2f0f1775..6db35887cbe6 100644
-> --- a/Documentation/devicetree/bindings/sound/dai-common.yaml
-> +++ b/Documentation/devicetree/bindings/sound/dai-common.yaml
-> @@ -13,6 +13,7 @@ allOf:
->    - $ref: component-common.yaml#
->  
->  properties:
-> -  '#sound-dai-cells': true
-> +  '#sound-dai-cells':
-> +    enum: [0, 1, 2]
->  
->  additionalProperties: true
+...and this is why your CCI frequency increase solution does *not* resolve
+this issue, but only partially mitigates it.
 
+That should get solved, not partially mitigated.
 
--- 
-Jerome
+Besides that, can you please tell me how to replicate the stall issue, making
+me able to better understand what's going on here?
+
+Regards,
+Angelo
+
+> BRs,
+> 
+> Mark Tseng
+> 
+>> [1]:
+>> https://lore.kernel.org/all/799325f5-29b5-f0c0-16ea-d47c06830ed3@collabora.com/
+>>
+>> Regards,
+>> Angelo
+
 
