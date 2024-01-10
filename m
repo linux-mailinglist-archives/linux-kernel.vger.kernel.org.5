@@ -1,106 +1,126 @@
-Return-Path: <linux-kernel+bounces-22802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C31482A313
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:08:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06E9882A318
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:10:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E9C0B22E3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:08:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08C171C226C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:10:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1BF4F89A;
-	Wed, 10 Jan 2024 21:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34FE4F5F2;
+	Wed, 10 Jan 2024 21:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RS0ZlHjD"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rRDNLOzI"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7DA4F890;
-	Wed, 10 Jan 2024 21:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e5bfa260bso2105205e9.3;
-        Wed, 10 Jan 2024 13:08:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EF84F5EB
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 21:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e4afe9ea7so1345e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:10:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704920898; x=1705525698; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=sdBkJKGeqx2Ib1rMQ4cwKys6z0bi0e5Co8yXswFscM4=;
-        b=RS0ZlHjDmeI80QME631SJYtxj3ugLmwodMaExE2j6P1lWWywJmdWQ/kaGTUd4XCWt1
-         BR6/c6JO+22xGx221PqdXglMj1ZWSVBPDZf7hRnH23agHb7Mdxmk5tWrxKbmVIi7NWp3
-         vX07jTAvu1PBYr9h60oqbDUWCn86Y97L15T0JcNiXkynUbQNvNPVMDhwWkCTzFyDDDNA
-         gBK3NteEtrK2icBWv0+BAB7DqvruOfezNHoM996/lgVh96IK1lUZ5hMxhRNgGGmfg2cq
-         pN7EKfp0jz8sO7z82v4Ff3CVzW2PHV2AxJ0312Ud3uGbav8hxjGz/GuMabA5CxQlEIjF
-         ThkA==
+        d=google.com; s=20230601; t=1704921007; x=1705525807; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0dBlfe0ai2/9qnOVJT7Cr9v3swK0leKtoIMht6HfIU8=;
+        b=rRDNLOzIiXSOzioXfKQkfA5eOus1qZsfOzk1snEsyTecSdZXKLKrs8N7OWu+agHFUW
+         F/VZ0HVe6SpI31YoKeZwjvy24qCcznW5REcWmhH+1LbPwWzwsoyrQUM1NT5JWhkt0SEh
+         qOU9jRd/nIfYeKYuex3CB0S0u1Kbba6Ei7Q4LeKNYMD8I34CRUk5p+jdA1ROB7JQ3ojz
+         4gMNmmEtuGk9X7oC4m3tEnKxK7b6B5u4spsz2UWTpye/BK0wng69jHCS/RJR2YGRZf6F
+         /ctBK0Qrv5m3LJeJbHB7ZIutMbGePeb41dRAeaO9fvJIxnDJw63SHHCRtKtIRPYRO5Ip
+         smQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704920898; x=1705525698;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sdBkJKGeqx2Ib1rMQ4cwKys6z0bi0e5Co8yXswFscM4=;
-        b=ttDmxUJivrtmUoXbwcyV0lpIRBdySvDoB1ZIKdfQ+afEoNpRIur/HvX7pJbBteNLp5
-         JZ5AvWQiFo19ql2FaS8WywcCpuG/AKU2RqT1mbUP+M5BoyU2nsrF49oCU2MgFR1DHBXU
-         9IIwWfkNp6gFM1tiVrrEiIPKnWjmurOdZmaVamr0xFMw6O1IKQyq0b1CaRdXBxb8D5bG
-         SGCmv50PUOqeVW61eDmqarIt4Z/cKIGJm1AibSHg87UF7N49cDRkmIiyYWoRNWhfGSmX
-         QWgegERqYpDGHKKewclPcb6vsNlrk6OHS+uygp2XOGcKPAGjrRHXMjUbfkKNFmmHC4Hn
-         VRJA==
-X-Gm-Message-State: AOJu0YwC/hcwqPR42ZpBOSmChpKN92IJSUoVszA6geT7J1NsBW7fqE6d
-	zQKl1TYptpOv0cwmS/EIjJM=
-X-Google-Smtp-Source: AGHT+IEnV73X93ipcA+KqaG2Dc/CRaCkLE83o8sdCdrKdhcEffrQDt94qGVTchMbAPVOs4q40slv7g==
-X-Received: by 2002:a05:600c:2246:b0:40e:455f:fdbb with SMTP id a6-20020a05600c224600b0040e455ffdbbmr9115wmm.280.1704920897638;
-        Wed, 10 Jan 2024 13:08:17 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:4a02:2aff:fe07:1efc])
-        by smtp.googlemail.com with ESMTPSA id w10-20020a5d680a000000b003376af392e5sm5670428wru.38.2024.01.10.13.08.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 13:08:17 -0800 (PST)
-Date: Wed, 10 Jan 2024 22:08:15 +0100
-From: Corentin Labbe <clabbe.montjoie@gmail.com>
-To: Alexey Romanov <avromanov@salutedevices.com>
-Cc: narmstrong@baylibre.com, neil.armstrong@linaro.org, clabbe@baylibre.com,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
-	artin.blumenstingl@googlemail.com, linux-crypto@vger.kernel.org,
-	linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	kernel@salutedevices.com
-Subject: Re: [PATCH v1 00/24] Support more Amlogic SoC families in crypto
- driver
-Message-ID: <ZZ8HP7dJgVaZLMw5@Red>
-References: <20240110201216.18016-1-avromanov@salutedevices.com>
+        d=1e100.net; s=20230601; t=1704921007; x=1705525807;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0dBlfe0ai2/9qnOVJT7Cr9v3swK0leKtoIMht6HfIU8=;
+        b=n2vkLgARs6qTG7V77iTKqhh5vCf0YVL+9f6fSCCOVQuIatD/3coFzOC39xxUIGLDr4
+         fbt3m4ijtSQxl9PPvJsAR67HK7KYOAuf9yh5zfitDGbdmwqIIgaLHQfKfC8Tly4zsgnj
+         qIX4Rfoc3JRYS/BkuhlR+QfeW/zJBTl7RoOvml3AFrBHomlhYUG06z4qRyKFjV4rvB03
+         sQQMUqdy2B522FdKHL3Zbd4pOJOUI7fOyyLAFyvMFlMFjFO7cVx7qXqN5AY8i5TlBTv4
+         Pthe7gxvzErXYNjOnHyUMHmGaLdts7//Bbz3nhXfbSUY6XMEZtbiVEg+93DBhq9yZusy
+         2TUw==
+X-Gm-Message-State: AOJu0Yy+rlvINaGqPhiNM7hfgGc88XjZBp7B56wXxbxUa2Rz+n0hSYF3
+	JC10J2S4sIDsVxKLQ8a86c/tOh5OHVw2PyoYWDLGk5bOORoyT0+Vg1Px6Zb4LP646XCbEDS+z2D
+	B4rMUPe3jK5/o/zOTtIbCWsuXM3yv9muX6PIh
+X-Google-Smtp-Source: AGHT+IHsAggDnwF7TsHK2T7smnyeA48DXI2a46o7MmsiupRvXAiMBgCqaHhlnBsI7Z9bP9EmbmAIt/9dbXM0bef0tPs=
+X-Received: by 2002:a05:600c:3b09:b0:40e:490c:48a9 with SMTP id
+ m9-20020a05600c3b0900b0040e490c48a9mr7775wms.3.1704921006606; Wed, 10 Jan
+ 2024 13:10:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240110201216.18016-1-avromanov@salutedevices.com>
+References: <dd938a86-38d9-4d62-abd0-1df80395fbbd@moroto.mountain>
+In-Reply-To: <dd938a86-38d9-4d62-abd0-1df80395fbbd@moroto.mountain>
+From: Rae Moar <rmoar@google.com>
+Date: Wed, 10 Jan 2024 16:09:55 -0500
+Message-ID: <CA+GJov7P_ypZ58TrWoMSSQyt6fdoGyYTqbfEuU7v_ZHFSOczKA@mail.gmail.com>
+Subject: Re: [PATCH] kunit: device: Fix a NULL vs IS_ERR() check in init()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: "davidgow@google.com" <davidgow@google.com>, Brendan Higgins <brendan.higgins@linux.dev>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Matti Vaittinen <mazziesaccount@gmail.com>, 
+	Maxime Ripard <mripard@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le Wed, Jan 10, 2024 at 11:11:16PM +0300, Alexey Romanov a écrit :
-> Hello!
-> 
-> This patchset expand the funcionality of the Amlogic
-> crypto driver by adding support for more SoC families: 
-> AXG, G12A, G12B, SM1, A1, S4.
-> 
-> Also specify and enable crypto node in device tree
-> for reference Amlogic devices.
-> 
-> Tested on AXG, G12A/B, SM1, A1 and S4 devices via
-> custom tests and trcypt module.
+On Wed, Jan 10, 2024 at 1:55=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
+org> wrote:
+>
+> The root_device_register() function does not return NULL, it returns
+> error pointers.  Fix the check to match.
+>
+> Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Hello
+This change looks good to me! We could check for IS_ERR_OR_NULL
+instead but this change is more correct and is also how others check
+root_device_register().
 
-Thanks for your patch series.
-Unfortunatly, I fail to apply it for testing on top of linux-next.
-On top of which tree did you have tested ?
-According to patch 01, you used a tree based before "crypto: amlogic - Use new crypto_engine_op interface" so too old.
+Reviewed-by: Rae Moar <rmoar@google.com>
 
-Regards
+Thanks!
+Rae
+
+
+> ---
+>  lib/kunit/device.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/kunit/device.c b/lib/kunit/device.c
+> index f5371287b375..074c6dd2e36a 100644
+> --- a/lib/kunit/device.c
+> +++ b/lib/kunit/device.c
+> @@ -45,8 +45,8 @@ int kunit_bus_init(void)
+>         int error;
+>
+>         kunit_bus_device =3D root_device_register("kunit");
+> -       if (!kunit_bus_device)
+> -               return -ENOMEM;
+> +       if (IS_ERR(kunit_bus_device))
+> +               return PTR_ERR(kunit_bus_device);
+>
+>         error =3D bus_register(&kunit_bus_type);
+>         if (error)
+> --
+> 2.43.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/kunit-dev/dd938a86-38d9-4d62-abd0-1df80395fbbd%40moroto.mountain.
 
