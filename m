@@ -1,135 +1,246 @@
-Return-Path: <linux-kernel+bounces-22371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49CB5829CC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:46:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC94829CCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6501C2190E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:46:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9A80281246
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA6F4B5D4;
-	Wed, 10 Jan 2024 14:46:42 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39538EC2;
-	Wed, 10 Jan 2024 14:46:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0237C433F1;
-	Wed, 10 Jan 2024 14:46:37 +0000 (UTC)
-Message-ID: <aef3568c-7894-49c9-a7aa-b3c58b822b91@linux-m68k.org>
-Date: Thu, 11 Jan 2024 00:46:35 +1000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B8A4B5D7;
+	Wed, 10 Jan 2024 14:49:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D563DBB3
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F7202F4;
+	Wed, 10 Jan 2024 06:50:32 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.87.82])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D5E03F64C;
+	Wed, 10 Jan 2024 06:49:45 -0800 (PST)
+Date: Wed, 10 Jan 2024 14:49:39 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Mingwei Zhang <mizhang@google.com>, Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [PATCH RESEND 1/2] perf/core: Update
+ perf_adjust_freq_unthr_context()
+Message-ID: <ZZ6ug3IOeQlmQnsM@FVFF77S0Q05N>
+References: <20240109213623.449371-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
- UCLINUX from LTP]
-Content-Language: en-US
-To: Rob Landley <rob@landley.net>, Petr Vorel <pvorel@suse.cz>
-Cc: Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven
- <geert@linux-m68k.org>, ltp@lists.linux.it, Li Wang <liwang@redhat.com>,
- Andrea Cervesato <andrea.cervesato@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
- Niklas Cassel <niklas.cassel@wdc.com>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik>
- <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
- <461a6556-8f24-48f5-811a-498cb44f2d64@linux-m68k.org>
- <b3a8b9db-86ee-47c6-96e2-baa2cba61404@landley.net>
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <b3a8b9db-86ee-47c6-96e2-baa2cba61404@landley.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109213623.449371-1-namhyung@kernel.org>
 
-
-On 10/1/24 15:47, Rob Landley wrote:
-> On 1/9/24 17:17, Greg Ungerer wrote:
->> On 10/1/24 06:24, Rob Landley wrote:
->>> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
->>> of people have been happy to consume my work, but getting any of them to post
->>> directly to linux-kernel is like pulling teeth.
->>
->> I regularly test nommu configurations (as in every kernel rc and release) on m68k
->> and at least every release on other architectures like arm(*) and recently on
->> riscv as well.
+On Tue, Jan 09, 2024 at 01:36:22PM -0800, Namhyung Kim wrote:
+> It was unnecessarily disabling and enabling PMUs for each event.  It
+> should be done at PMU level.  Add pmu_ctx->nr_freq counter to check it
+> at each PMU.  As pmu context has separate active lists for pinned group
+> and flexible group, factor out a new function to do the job.
 > 
-> Sigh, I should start caring about riscv. I added or1k support, I should do
-> riscv. (Except I did or1k because I found it in actual hardware, the Orange Pi
-> 3b's power controller is an or1k asic so I needed an or1k toolchain to build
-> some of u-boot's firmware or else the board couldn't reboot, and there was a
-> qemu-system-or1k already, which turned into adding it to mkroot via a long
-> https://lore.kernel.org/openrisc/ZX1xbs_AGdgLgcx7@antec/ thread with its
-> developers. Alas I still can't get qemu to exit (I.E. virtually reboot or power
-> off), apparently I need to reinstall my laptop to have a new enough version of
-> python 3 to build a newer qemu with. It's on the todo list...)
+> Another minor optimization is that it can skip PMUs w/ CAP_NO_INTERRUPT
+> even if it needs to unthrottle sampling events.
 > 
-> I still have a hard time considering riscv anything other than open source's
-> version of Itanium. Promises of ubiquity, but even a 28 nanometer mask is still
-> 6 figures before you run any wafers and your mask build process is sucking in
-> all the black box libraries the fab can sell you, so what does "open" really get
-> you here? Cortex-m got cheap when the superh patents expired so Arm didn't have
-> to pay royalties to hitachi (renesas?) for the thumb instruction set anymore,
-> and they belt those suckers en masse amortizing the up-front costs over ENORMOUS
-> volume.
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> Tested-by: Mingwei Zhang <mizhang@google.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+
+Hi,
+
+I've taken a quick look and I don't think this is quite right for
+hybrid/big.LITTLE, but I think that should be relatively simple to fix (more on
+that below).
+
+This seems to be a bunch of optimizations; was that based on inspection alone,
+or have you found a workload where this has a measureable impact?
+
+> ---
+>  include/linux/perf_event.h |  1 +
+>  kernel/events/core.c       | 68 +++++++++++++++++++++++---------------
+>  2 files changed, 43 insertions(+), 26 deletions(-)
 > 
-> And yes, j-core was trying to fix the closed source library and toolchain issues
-> back when I was still working with them. Among other things fishing
-> Google/skywater's openlane toolchain build out of their magic docker and
-> reproducing it under a vanilla debootstrap, ala
-> https://github.com/j-core/openlane-vhdl-build (As with most corporate
-> clusterfscks, once you dig far enough it turns out you can throw over 90% of it
-> out...)
-> 
-> But these days I'm trying to get toybox to 1.0...
-> 
->> (*) somewhat annoyingly needing a minor patch to run the versatile qemu platform
->>       I like to test with. But hey, that is on me :-)
-> 
-> I would very much like to add more nommu targets to mkroot, can I get your
-> build/config info offline? (I tried fishing configs out of buildroot a couple
-> years ago, but after the THIRD one where the secret was "use very old versions
-> of packages, the current stuff is broken"... And the problems were things like
-> "the conversion to device tree deleted a huge chunk of this infrastructure", not
-> simple fixes.)
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index d2a15c0c6f8a..b2ff60fa487e 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -883,6 +883,7 @@ struct perf_event_pmu_context {
+>  
+>  	unsigned int			nr_events;
+>  	unsigned int			nr_cgroups;
+> +	unsigned int			nr_freq;
+>  
+>  	atomic_t			refcount; /* event <-> epc */
+>  	struct rcu_head			rcu_head;
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 59b332cce9e7..ce9db9dbfd4c 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -2277,8 +2277,10 @@ event_sched_out(struct perf_event *event, struct perf_event_context *ctx)
+>  
+>  	if (!is_software_event(event))
+>  		cpc->active_oncpu--;
+> -	if (event->attr.freq && event->attr.sample_freq)
+> +	if (event->attr.freq && event->attr.sample_freq) {
+>  		ctx->nr_freq--;
+> +		epc->nr_freq--;
+> +	}
+>  	if (event->attr.exclusive || !cpc->active_oncpu)
+>  		cpc->exclusive = 0;
+>  
+> @@ -2533,9 +2535,10 @@ event_sched_in(struct perf_event *event, struct perf_event_context *ctx)
+>  
+>  	if (!is_software_event(event))
+>  		cpc->active_oncpu++;
+> -	if (event->attr.freq && event->attr.sample_freq)
+> +	if (event->attr.freq && event->attr.sample_freq) {
+>  		ctx->nr_freq++;
+> -
+> +		epc->nr_freq++;
+> +	}
+>  	if (event->attr.exclusive)
+>  		cpc->exclusive = 1;
+>  
+> @@ -4098,30 +4101,14 @@ static void perf_adjust_period(struct perf_event *event, u64 nsec, u64 count, bo
+>  	}
+>  }
+>  
+> -/*
+> - * combine freq adjustment with unthrottling to avoid two passes over the
+> - * events. At the same time, make sure, having freq events does not change
+> - * the rate of unthrottling as that would introduce bias.
+> - */
+> -static void
+> -perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
+> +static void perf_adjust_freq_unthr_events(struct list_head *event_list)
+>  {
+>  	struct perf_event *event;
+>  	struct hw_perf_event *hwc;
+>  	u64 now, period = TICK_NSEC;
+>  	s64 delta;
+>  
+> -	/*
+> -	 * only need to iterate over all events iff:
+> -	 * - context have events in frequency mode (needs freq adjust)
+> -	 * - there are events to unthrottle on this cpu
+> -	 */
+> -	if (!(ctx->nr_freq || unthrottle))
+> -		return;
+> -
+> -	raw_spin_lock(&ctx->lock);
+> -
+> -	list_for_each_entry_rcu(event, &ctx->event_list, event_entry) {
+> +	list_for_each_entry(event, event_list, active_list) {
+>  		if (event->state != PERF_EVENT_STATE_ACTIVE)
+>  			continue;
+>  
+> @@ -4129,8 +4116,6 @@ perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
+>  		if (!event_filter_match(event))
+>  			continue;
+>  
+> -		perf_pmu_disable(event->pmu);
+> -
+>  		hwc = &event->hw;
+>  
+>  		if (hwc->interrupts == MAX_INTERRUPTS) {
+> @@ -4140,7 +4125,7 @@ perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
+>  		}
+>  
+>  		if (!event->attr.freq || !event->attr.sample_freq)
+> -			goto next;
+> +			continue;
+>  
+>  		/*
+>  		 * stop the event and update event->count
+> @@ -4162,8 +4147,39 @@ perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
+>  			perf_adjust_period(event, period, delta, false);
+>  
+>  		event->pmu->start(event, delta > 0 ? PERF_EF_RELOAD : 0);
+> -	next:
+> -		perf_pmu_enable(event->pmu);
+> +	}
+> +}
+> +
+> +/*
+> + * combine freq adjustment with unthrottling to avoid two passes over the
+> + * events. At the same time, make sure, having freq events does not change
+> + * the rate of unthrottling as that would introduce bias.
+> + */
+> +static void
+> +perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
+> +{
+> +	struct perf_event_pmu_context *pmu_ctx;
+> +
+> +	/*
+> +	 * only need to iterate over all events iff:
+> +	 * - context have events in frequency mode (needs freq adjust)
+> +	 * - there are events to unthrottle on this cpu
+> +	 */
+> +	if (!(ctx->nr_freq || unthrottle))
+> +		return;
+> +
+> +	raw_spin_lock(&ctx->lock);
+> +
+> +	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
+> +		if (!(pmu_ctx->nr_freq || unthrottle))
+> +			continue;
+> +		if (pmu_ctx->pmu->capabilities & PERF_PMU_CAP_NO_INTERRUPT)
+> +			continue;
+> +
+> +		perf_pmu_disable(pmu_ctx->pmu);
+> +		perf_adjust_freq_unthr_events(&pmu_ctx->pinned_active);
+> +		perf_adjust_freq_unthr_events(&pmu_ctx->flexible_active);
+> +		perf_pmu_enable(pmu_ctx->pmu);
+>  	}
 
-Maybe getting a little off-topic here, but I'll just send links here.
-Who knows it might be useful to others.
+I don't think this is correct for big.LITTLE/hybrid systems.
 
-Recently I have been experimenting with minimal builds, this is a bunch of
-scripts, configs and a couple of patches I currently have:
+Imagine a system where CPUs 0-1 have pmu_a, CPUs 2-3 have pmu_b, and a task has
+events for both pmu_a and pmu_b. The perf_event_context for that task will have
+a perf_event_pmu_context for each PMU in its pmu_ctx_list.
 
-     https://github.com/gregungerer/simple-linux
+Say that task is run on CPU0, and perf_event_task_tick() is called. That will
+call perf_adjust_freq_unthr_context(), and it will iterate over the
+pmu_ctx_list. Note that regardless of pmu_ctx->nr_freq, if 'unthottle' is true,
+we'll go ahead and call the following for all of the pmu contexts in the
+pmu_ctx_list:
 
-Mostly the kernel builds use the architecture defconfigs, but for armnommu
-versatile it was easier to use a dedicated config and patch:
+	perf_pmu_disable(pmu_ctx->pmu);
+	perf_adjust_freq_unthr_events(&pmu_ctx->pinned_active);
+	perf_adjust_freq_unthr_events(&pmu_ctx->flexible_active);
+	perf_pmu_enable(pmu_ctx->pmu);
 
-     https://github.com/gregungerer/simple-linux/blob/master/configs/linux-6.6-armnommu-versatile.config
-     https://github.com/gregungerer/simple-linux/blob/master/patches/linux-6.6-armnommu-versatile.patch
+.. and that means we might call that for pmu_b, even though it's not
+associated with CPU0. That could be fatal depending on what those callbacks do.
 
-Anyway the scripting uses the newest package versions of everything
-(binutils, gcc, linux, uClibc, busybox).
+The old logic avoided that possibility implicitly, since the events for pmu_b
+couldn't be active, and so the check at the start of the look would skip all of
+pmu_b's events:
 
-Regards
-Greg
+	if (event->state != PERF_EVENT_STATE_ACTIVE)
+		continue;
 
+We could do similar by keeping track of how many active events each
+perf_event_pmu_context has, which'd allow us to do something like:
 
+	if (pmu_ctx->nr_active == 0)
+		continue;
+	
+How does that sound to you?
+
+Mark.
 
