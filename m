@@ -1,137 +1,91 @@
-Return-Path: <linux-kernel+bounces-21768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 405C782940D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:12:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0541829411
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:13:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FC20B218AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:12:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1EAF1C25798
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B121738FA6;
-	Wed, 10 Jan 2024 07:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DD238DE0;
+	Wed, 10 Jan 2024 07:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RR/bSlbn"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cXPjv9Lh"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8AC37157;
-	Wed, 10 Jan 2024 07:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A78hQH004452;
-	Wed, 10 Jan 2024 07:12:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=JkC93Duz+dQLaLxeZV30vVIGEX7V8zJCsoU1MJ9U23A=; b=RR
-	/bSlbnCNc+BO8UEEjACClki5uhQcGDDtA1RJivmXfCGkpkzXMJS9+IHiZZ/MGUIQ
-	fCPGQ1a5iS5Mbv0uXeQh99fIv0BCIVg5bT4p06573UMZCqTyCgnnQQ4HZAuDfn0+
-	hcnVknE29bxHPAHVrXq0DYN9LgoZIEWcqw4WiKc/5/jZpIgAofonu+cu3LT/9Vsy
-	rqSbmsfYOcHYTgUjQyQjGG7kDG5qhhYdkVSpB7HC3Qt3wDkhFXPFiUk8aBC+JyJM
-	AmbLMq8+uGnz2Vx519No8hFXcWsYq9htE5untnXtLMeUc5S+vXY1hYOVlLUvvmaO
-	BA/DJFdWt5yZQNZNJdZw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhjh2rfum-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 07:12:28 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40A7CRDU012537
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 07:12:27 GMT
-Received: from [10.216.48.153] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
- 2024 23:12:19 -0800
-Message-ID: <376b3716-46ff-2324-73fc-f3afa3f7af1c@quicinc.com>
-Date: Wed, 10 Jan 2024 12:42:16 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696F536AFE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:13:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-553ba2f0c8fso4311192a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:13:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704870789; x=1705475589; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=85ywecMwMu1AdtOzRqPMq0CMfn7XBj3f6oyEvV9h868=;
+        b=cXPjv9LhGjNqdF4l18e0fT3sfTUr9s3DSRKJIWocWyS7gHfv2N5j8bLXGkzcYOIB1a
+         X1dErwyilpwHRUddF5Fog0dBBnlfYi61ksvZGfW+wAKnrmpncPMbU04YjVIm6bMVAvpW
+         pSkRh5qNrUlwgv2o1NMTFyU+Mhay2oqqgn8UH+74hS596QWbZdGWMT8bGbxwsStONd41
+         9yjnVs3wtJ8JmOIt02yM8W7evz0w9tim+5oVjy2uTQpC1XV1Uk+HGxk7g9CawwghOzZG
+         +hADDNWUwrKZK5Uwdab7B9fiQA4vJLP/gtu3qlseFz3nuhi5EYGmjmfdDp9fVinEM5ud
+         aKNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704870789; x=1705475589;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=85ywecMwMu1AdtOzRqPMq0CMfn7XBj3f6oyEvV9h868=;
+        b=AnQEc/LYAVhxUHtl1Xh6NM8uT9MVmGz9w4ZKT3ly0pGzQUvEmKfJcDveDdVdZaJKsc
+         Hn8Xf108hQN6XzAVDe0H0qOc9LpPGMqVp+qnzu9lQ9mo4TPQTosZfLoR4R7plcxZBW7t
+         Wmq7qWp0YFzvFzXlsDHSmqYQiF9E6QWOXNJ9SBczhYzXE+gBCLL1hEBkFRvDCfvXqNDR
+         xruKjtep/AHZppAtv9YgwFGZyyTk0oMhHGNd7kZ0haT8cLzSxOXcpVkCUvQrSqLHLTtB
+         8bAc56F9/a1vFalatQQPMOFHaPeDx8vAEb/GuVluQRW/EAUH1vgEBtLGx+IfYOOeDPL2
+         VPuA==
+X-Gm-Message-State: AOJu0YyKQ4IZeNSdwirps4RgvAMjOXh0Ts9WR4uUBJCNtlf1gnsdmU8o
+	yg/PqMSpLcZrNlvh3AmEZA==
+X-Google-Smtp-Source: AGHT+IF4YJHlFjRRGVxF2qE37e0ua2Nd2i8n12Gp5w1Kot/zNKM4puzluWiLzGWuX/5y6awnkl66KA==
+X-Received: by 2002:a50:bb6d:0:b0:554:51a4:a00 with SMTP id y100-20020a50bb6d000000b0055451a40a00mr94414ede.66.1704870789480;
+        Tue, 09 Jan 2024 23:13:09 -0800 (PST)
+Received: from p183 ([46.53.248.125])
+        by smtp.gmail.com with ESMTPSA id es13-20020a056402380d00b00557535489adsm1734767edb.37.2024.01.09.23.13.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 23:13:09 -0800 (PST)
+Date: Wed, 10 Jan 2024 10:13:07 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: David Howells <dhowells@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, pinskia@gmail.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+Message-ID: <aed64ce6-3765-4099-8211-032d4722f184@p183>
+References: <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
+ <152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk>
+ <1681813.1704843645@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v5 5/5] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Content-Language: en-US
-To: Viresh Kumar <viresh.kumar@linaro.org>
-CC: Bjorn Helgaas <helgaas@kernel.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <vireshk@kernel.org>, <nm@ti.com>, <sboyd@kernel.org>,
-        <mani@kernel.org>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <bhelgaas@google.com>, <rafael@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>
-References: <20231102053013.7yt7pxin5awlu7w7@vireshk-i7>
- <20231102120950.GA115288@bhelgaas>
- <20231103051247.u4cnckzstcvs4lf5@vireshk-i7>
- <15a98ec0-214b-218b-1e3c-c09f770fce2e@quicinc.com>
- <0ba9f2af-169e-a9a2-9ae4-4c6a70b0a94e@quicinc.com>
- <20240110065757.xde2nvpr3z7c4isu@vireshk-i7>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240110065757.xde2nvpr3z7c4isu@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: yYh0l1X4ohFRbY2psqlYJ0PXxn0-oiA3
-X-Proofpoint-GUID: yYh0l1X4ohFRbY2psqlYJ0PXxn0-oiA3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=867 clxscore=1015 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 priorityscore=1501 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100058
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1681813.1704843645@warthog.procyon.org.uk>
 
+On Tue, Jan 09, 2024 at 11:40:45PM +0000, David Howells wrote:
+> There was also a problem with leaving gaps in static array initialisation and
+> a problem with statically initialising fields out of order (with respect to
+> the order they're declared in the struct declaration).  Possibly these have
+> been fixed in g++.
 
-On 1/10/2024 12:27 PM, Viresh Kumar wrote:
-> On 08-01-24, 18:49, Krishna Chaitanya Chundru wrote:
->> We calculate ICC BW voting based up on PCIe speed and PCIe width.
->>
->> Right now we are adding the opp table based up on PCIe speed.
->>
->> Each PCIe controller can support multiple lane configurations like x1, x2,
->> x4, x8, x16 based up on controller capability.
->>
->> So for each GEN speed we need  up to 5 entries in OPP table. This will make
->> OPP table very long.
->>
->> It is best to calculate the ICC BW voting in the driver itself and apply
->> them through ICC driver.
-> I see. Are the lane configurations fixed for a platform ? I mean, do you change
-> those configurations at runtime or is that something that never changes, but the
-> driver can end up getting used on a hardware that supports any one of them ?
->
-> If they are fixed (second case), then you can use dev_pm_opp_set_prop_name() to
-> make that easier for you. With that you will only need 5 OPP entries, but each
-> of them will have five values of bw:
->
-> bw-x1, bw-x2, ....  and you can select one of them during initialization.
+They weren't :-(
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=113124
 
-Hi Viresh,
+Right now g++ hard errors some patterns of C99 inititialisation which
+clang++ allows (with warnings which can be turned off).
 
-At present we are not changing the link width after link is initialized, 
-but we have plans to
-
-add support change link width dynamically at runtime.
-
-So, I think it is better to have ICC BW voting in the driver itself.
-
-Thanks & Regards,
-
-Krishna Chaitanya.
-
+However, clang++ doesn't believe in pointer arithmetic on void*.
 
