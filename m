@@ -1,295 +1,111 @@
-Return-Path: <linux-kernel+bounces-22413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5817C829D58
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:19:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B098829D5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA08A283318
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:19:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80BBB1F22BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCD44BAAC;
-	Wed, 10 Jan 2024 15:19:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FD14C3A6;
-	Wed, 10 Jan 2024 15:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE32C2F4;
-	Wed, 10 Jan 2024 07:19:56 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F3933F64C;
-	Wed, 10 Jan 2024 07:19:09 -0800 (PST)
-Date: Wed, 10 Jan 2024 15:19:07 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: sudeep.holla@arm.com, mturquette@baylibre.com, sboyd@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ranjani.vaidyanathan@nxp.com,
-	glen.wienecke@nxp.com, nitin.garg_3@nxp.com, chuck.cannon@nxp.com,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2 1/2] firmware: arm_scmi: clock: implement get
- permissions
-Message-ID: <ZZ61a9IUZk4YMpQM@pluto>
-References: <20231207093345.581048-1-peng.fan@oss.nxp.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400794C3A5;
+	Wed, 10 Jan 2024 15:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nabijaczleweli.xyz header.i=@nabijaczleweli.xyz header.b="WlBcJDH1"
+Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A9B4BA9F;
+	Wed, 10 Jan 2024 15:19:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nabijaczleweli.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabijaczleweli.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
+	s=202305; t=1704899965;
+	bh=N3nJ0C540bT8WS6Z8HcIxixzWR9wSwd0zry2yrndudg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WlBcJDH1lCsMwgEDQmVenG7bwKkUoeVq9ziwcPEUO1dQ4Dk9PFxWKxbZ5DfMf8boQ
+	 IjPj7vYwHwrj5s54nji76vncIMvpcWqhK5M97QoNYCpjiERoQwBfAJipT981yRTzT/
+	 bt6SnphWZxSiqcbhLD+snre1MX7yQ4v4VZ+d+tZeYGlFuadZyubtHDtgfI/5vBDaoN
+	 4jPj3esZVFedLw8BSHLZ9Mim51LQZO0O8rY9l3WpZiP9g4+sEf17pmOugqORiTbdC/
+	 Lvvb8f4Z3MvR507czyVNUsDwGVsSR1LqYOFmy7bJ8342LsPryS+Rihoy6bgLEdyx4+
+	 4bCYOY+WbDSLw==
+Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
+	by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 111A614CD4;
+	Wed, 10 Jan 2024 16:19:25 +0100 (CET)
+Date: Wed, 10 Jan 2024 16:19:24 +0100
+From: 
+	Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Jens Axboe <axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org, virtualization@lists.linux.dev
+Subject: Re: [PATCH v2 09/11] fuse: file: limit splice_read to virtiofs
+Message-ID: <2wob4ovppjywxmpl5rvuzpktltdlyto5czpglb5il5cehkel6m@tarta.nabijaczleweli.xyz>
+References: <cover.1703126594.git.nabijaczleweli@nabijaczleweli.xyz>
+ <9b5cd13bc9e9c570978ec25b25ba5e4081b3d56b.1703126594.git.nabijaczleweli@nabijaczleweli.xyz>
+ <CAJfpegugS1y4Lwznju+qD2K-kBEctxU5ABCnaE2eOGhtFFZUYg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="isq32hemhww3wwiu"
 Content-Disposition: inline
-In-Reply-To: <20231207093345.581048-1-peng.fan@oss.nxp.com>
-
-On Thu, Dec 07, 2023 at 05:33:44PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-
-Hi Peng,
-
-a few remarks down below, but generally LGTM.
-
->> Subject: Re: [PATCH V2 1/2] firmware: arm_scmi: clock: implement get permissions
-
-till now we never added a <proto>: tag just "firmware: arm_scmi:",
-capitalizing the first word. (not saying that using "clock:" is bad but
-since we never used till now...), as an example
-
-	firmware: arm_scmi: Implement Clock get permissions
+In-Reply-To: <CAJfpegugS1y4Lwznju+qD2K-kBEctxU5ABCnaE2eOGhtFFZUYg@mail.gmail.com>
+User-Agent: NeoMutt/20231221-2-4202cf-dirty
 
 
-> ARM SCMI Spec 3.2 introduces Clock Get Permission command. This patch
-> is to add the support. Add three bool entries to scmi_clock_info to
-> indicate the operation is forbidden or not. If the CLOCK_GET_PERMISSIONS
-> command is not supported, the three bool variables will default
-> set to false, otherwise they will be set according to the return result
-> of CLOCK_GET_PERMISSIONS.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
-> 
-> V2:
->  Take Cristian's suggestion, https://lore.kernel.org/all/ZWiqqfQ73tezFmSk@pluto/
-> 
->  drivers/firmware/arm_scmi/clock.c | 53 +++++++++++++++++++++++++++++++
->  include/linux/scmi_protocol.h     |  4 +++
->  2 files changed, 57 insertions(+)
-> 
-> diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-> index 98511a3aa367..0e048530bea2 100644
-> --- a/drivers/firmware/arm_scmi/clock.c
-> +++ b/drivers/firmware/arm_scmi/clock.c
-> @@ -25,8 +25,13 @@ enum scmi_clock_protocol_cmd {
->  	CLOCK_POSSIBLE_PARENTS_GET = 0xC,
->  	CLOCK_PARENT_SET = 0xD,
->  	CLOCK_PARENT_GET = 0xE,
-> +	CLOCK_GET_PERMISSIONS = 0xF,
->  };
->  
-> +#define CLOCK_STATE_CONTROL_ALLOWED	BIT(31)
-> +#define CLOCK_PARENT_CONTROL_ALLOWED	BIT(30)
-> +#define CLOCK_RATE_CONTROL_ALLOWED	BIT(29)
-> +
->  enum clk_state {
->  	CLK_STATE_DISABLE,
->  	CLK_STATE_ENABLE,
-> @@ -46,6 +51,7 @@ struct scmi_msg_resp_clock_attributes {
->  #define SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(x)	((x) & BIT(30))
->  #define SUPPORTS_EXTENDED_NAMES(x)		((x) & BIT(29))
->  #define SUPPORTS_PARENT_CLOCK(x)		((x) & BIT(28))
-> +#define SUPPORTS_GET_PERMISSIONS(x)		((x) & BIT(1))
->  	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
->  	__le32 clock_enable_latency;
->  };
-> @@ -281,6 +287,35 @@ static int scmi_clock_possible_parents(const struct scmi_protocol_handle *ph, u3
->  	return ret;
->  }
->  
-> +static int
-> +scmi_clock_get_permissions(const struct scmi_protocol_handle *ph, u32 clk_id,
-> +			   struct scmi_clock_info *clk)
-> +{
-> +	struct scmi_xfer *t;
-> +	u32 perm;
-> +	int ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, CLOCK_GET_PERMISSIONS,
-> +				      sizeof(clk_id), sizeof(perm), &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	put_unaligned_le32(clk_id, t->tx.buf);
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret) {
-> +		perm = get_unaligned_le32(t->rx.buf);
-> +
-> +		clk->state_ctrl_forbidden = !(perm & CLOCK_STATE_CONTROL_ALLOWED);
-> +		clk->rate_ctrl_forbidden = !(perm & CLOCK_RATE_CONTROL_ALLOWED);
-> +		clk->parent_ctrl_forbidden = !(perm & CLOCK_PARENT_CONTROL_ALLOWED);
-> +	}
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	return ret;
-> +}
-> +
->  static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
->  				     u32 clk_id, struct scmi_clock_info *clk,
->  				     u32 version)
-> @@ -307,6 +342,7 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
->  		if (PROTOCOL_REV_MAJOR(version) >= 0x2)
->  			latency = le32_to_cpu(attr->clock_enable_latency);
->  		clk->enable_latency = latency ? : U32_MAX;
-> +		clk->attributes = attributes;
+--isq32hemhww3wwiu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Exposing the full attributes is NOT needed anymore now you have the bools right ?
+On Wed, Jan 10, 2024 at 02:43:04PM +0100, Miklos Szeredi wrote:
+> On Thu, 21 Dec 2023 at 04:09, Ahelenia Ziemia=C5=84ska
+> <nabijaczleweli@nabijaczleweli.xyz> wrote:
+> > Potentially-blocking splice_reads are allowed for normal filesystems
+> > like NFS because they're blessed by root.
+> >
+> > FUSE is commonly used suid-root, and allows anyone to trivially create
+> > a file that, when spliced from, will just sleep forever with the pipe
+> > lock held.
+> >
+> > The only way IPC to the fusing process could be avoided is if
+> > !(ff->open_flags & FOPEN_DIRECT_IO) and the range was already cached
+> > and we weren't past the end. Just refuse it.
+> How is this not going to cause regressions out there?
+In "[PATCH v2 14/11] fuse: allow splicing to trusted mounts only"
+splicing is re-enabled for mounts made by the real root.
 
->  	}
->  
->  	ph->xops->xfer_put(ph, t);
-> @@ -327,6 +363,8 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
->  			clk->rate_change_requested_notifications = true;
->  		if (SUPPORTS_PARENT_CLOCK(attributes))
->  			scmi_clock_possible_parents(ph, clk_id, clk);
-> +		if (SUPPORTS_GET_PERMISSIONS(attributes))
-> +			scmi_clock_get_permissions(ph, clk_id, clk);
->  	}
->  
->  	return ret;
-> @@ -499,6 +537,10 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
->  	struct scmi_xfer *t;
->  	struct scmi_clock_set_rate *cfg;
->  	struct clock_info *ci = ph->get_priv(ph);
-> +	struct scmi_clock_info *clk = ci->clk + clk_id;
-> +
+> We need to find an alternative to refusing splice, since this is not
+> going to fly, IMO.
+The alternative is to not hold the lock. See the references in the
+cover letter for why this wasn't done. IMO a potential slight perf
+hit flies more than a total exclusion on the pipe.
 
-This lacks a check on the provided clk_id bounds (just in case the
-calling SCMI driver misbehaves)....in other protocols we have some
-common internal helper to lookup a domain by id safely, it was still just
-not added till today in Clock since not so much needed.
+--isq32hemhww3wwiu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This seems not to be the case anymore, so today I posted this trivial:
+-----BEGIN PGP SIGNATURE-----
 
-https://lore.kernel.org/linux-arm-kernel/20240110120916.2482603-1-cristian.marussi@arm.com/
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmWetXwACgkQvP0LAY0m
+WPHIwQ//fiIyHHVfimlyIEoId+cH17Lz5J3ZKEGBCJPUG9SG6u8qdgPid/iNV3fm
+DP+x8A/oMbyeqLKh6GB3NwvrL8VOReuutMyNfxj9VmjaaV8rKq+g0CstpBTgOYuj
+lA1KQ6k99btF1+zGXynutHQXTjf1krcTqnZ9+HFn0ejWIMa49ECFFxwoQLZ8DUH6
+8kOgxMwE0Ar3hcq+zLsAXrUe5OUEUAGXqmMwpdomnaAi132G3MzT3cTL0JbuRtO8
+kWdCgHFYCjMxKc00COyq9fcEoOmCpOctN0Uae+lsO74Ukb8o4VPr5w6mYPKEDnH9
+ZPiqKoIJ1ek36CBPLGt9Mtr8LZO3REnRqDIp1g62O5eqN6kqYgK4qE8tf0ifkOWg
+U/LoA/00MUOf4zyx5JoGHCVUCYrY9AnXYS5+nK1vDrR0F3m5iNkBy3OsKcvIEXqG
+KTLOa+Jvn+W4L7539uyEkqKOpZAJfd5IT0IRnsxH38zvx9Rv7sGykn8vsT/Md8uk
+wP6kJH448KE3TVePPc6QOAaK9qpcC4bu2Y5MvJX1CJM6Co27miyrId6WIbkz7umg
+nmE7h3E6IlfKBCCgFT5CNBEx6z7mvDmQf4q7SayFz/f9kLNbRuQb4D4caYWJ6QPK
+luPGvzp/UtbfHs7IXFKwtCDH5+4POrlVprj31R6YPJfOC+gnBmk=
+=lQIA
+-----END PGP SIGNATURE-----
 
-Please rebase on this and just use it also on this patch like::
-
---->8---
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 51b21ce97cd5..01b372ac205f 100644
---- a/drivers/firmware/arm_scmi/clock.c
-+++ b/drivers/firmware/arm_scmi/clock.c
-@@ -549,7 +549,11 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
- 	struct scmi_xfer *t;
- 	struct scmi_clock_set_rate *cfg;
- 	struct clock_info *ci = ph->get_priv(ph);
--	struct scmi_clock_info *clk = ci->clk + clk_id;
-+	struct scmi_clock_info *clk;
-+
-+	clk = scmi_clock_domain_lookup(ci, clk_id);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
- 
- 	if (clk->rate_ctrl_forbidden)
- 		return -EACCES;
-@@ -724,7 +728,11 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id,
- 			     bool atomic)
- {
- 	struct clock_info *ci = ph->get_priv(ph);
--	struct scmi_clock_info *clk = ci->clk + clk_id;
-+	struct scmi_clock_info *clk;
-+
-+	clk = scmi_clock_domain_lookup(ci, clk_id);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
- 
- 	if (clk->state_ctrl_forbidden)
- 		return -EACCES;
-@@ -737,7 +745,11 @@ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id,
- 			      bool atomic)
- {
- 	struct clock_info *ci = ph->get_priv(ph);
--	struct scmi_clock_info *clk = ci->clk + clk_id;
-+	struct scmi_clock_info *clk;
-+
-+	clk = scmi_clock_domain_lookup(ci, clk_id);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
- 
- 	if (clk->state_ctrl_forbidden)
- 		return -EACCES;
----8<-------
-
-
-> +	if (clk->rate_ctrl_forbidden)
-> +		return -EACCES;
->  
->  	ret = ph->xops->xfer_get_init(ph, CLOCK_RATE_SET, sizeof(*cfg), 0, &t);
->  	if (ret)
-> @@ -585,6 +627,9 @@ scmi_clock_set_parent(const struct scmi_protocol_handle *ph, u32 clk_id,
->  	if (parent_id >= clk->num_parents)
->  		return -EINVAL;
->  
-> +	if (clk->parent_ctrl_forbidden)
-> +		return -EACCES;
-> +
->  	ret = ph->xops->xfer_get_init(ph, CLOCK_PARENT_SET,
->  				      sizeof(*cfg), 0, &t);
->  	if (ret)
-> @@ -668,6 +713,10 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id,
->  			     bool atomic)
->  {
->  	struct clock_info *ci = ph->get_priv(ph);
-> +	struct scmi_clock_info *clk = ci->clk + clk_id;
-
-Ditto.
-
-> +
-> +	if (clk->state_ctrl_forbidden)
-> +		return -EACCES;
->  
->  	return ci->clock_config_set(ph, clk_id, CLK_STATE_ENABLE,
->  				    NULL_OEM_TYPE, 0, atomic);
-> @@ -677,6 +726,10 @@ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id,
->  			      bool atomic)
->  {
->  	struct clock_info *ci = ph->get_priv(ph);
-> +	struct scmi_clock_info *clk = ci->clk + clk_id;
-Ditto.
-> +
-> +	if (clk->state_ctrl_forbidden)
-> +		return -EACCES;
->  
->  	return ci->clock_config_set(ph, clk_id, CLK_STATE_DISABLE,
->  				    NULL_OEM_TYPE, 0, atomic);
-> diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-> index f2f05fb42d28..ad75784b567b 100644
-> --- a/include/linux/scmi_protocol.h
-> +++ b/include/linux/scmi_protocol.h
-> @@ -47,6 +47,9 @@ struct scmi_clock_info {
->  	bool rate_discrete;
->  	bool rate_changed_notifications;
->  	bool rate_change_requested_notifications;
-> +	bool state_ctrl_forbidden;
-> +	bool rate_ctrl_forbidden;
-> +	bool parent_ctrl_forbidden;
->  	union {
->  		struct {
->  			int num_rates;
-> @@ -60,6 +63,7 @@ struct scmi_clock_info {
->  	};
->  	int num_parents;
->  	u32 *parents;
-> +	u32 attributes;
-
-Ditto. Drop this.
-
-Thanks,
-Cristian
-
+--isq32hemhww3wwiu--
 
