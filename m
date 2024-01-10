@@ -1,96 +1,214 @@
-Return-Path: <linux-kernel+bounces-21850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2378829534
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:31:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E104829537
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:34:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D42D289F35
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:31:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318281C25D64
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6CC3FB2C;
-	Wed, 10 Jan 2024 08:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FF533CFD;
+	Wed, 10 Jan 2024 08:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f78MSN4O"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jeJNV/GF"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49CA53FB1F;
-	Wed, 10 Jan 2024 08:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28c7c9b19f1so2170414a91.1;
-        Wed, 10 Jan 2024 00:29:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704875375; x=1705480175; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LYyKNmJzAuYDth/rUVZfoc/l/f34a5W01pQ2NRIEnqc=;
-        b=f78MSN4Ol2qyw9OcVztqbccA6ee5ILz8Cmn9IftJap+Pecp8nV51tAAYV+nSFa8yh7
-         Yd89b0UFmkXSeAYDEQ01PCn4U4ORCgq1/duxbr0FSv4BSG8DmxNZbe6JvN4h0KNXcVfu
-         vRgH7+T19B//Xvh1ax02K/VMx5Cps3FOAaZgxy4UTUhXiV5IxEn7J7nkDY3MTTJvEtni
-         DS+Gc8CHLV+rtK7Rh3tdGzrIpxDVS4LynfHN3XGbXM/p8OC4/mxuY4RxPkY2kmh1VNUz
-         N2IHSpDMACRH0YB/eOEXqilbyxDqeLx2YTmHNQQwoOiyDHp+pDTDPEJHHXh4aOdmGMLx
-         LoSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704875375; x=1705480175;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LYyKNmJzAuYDth/rUVZfoc/l/f34a5W01pQ2NRIEnqc=;
-        b=uz5EwPNqgHnAEZXhVpepXiRebqv8owa2GmcPiTmastRY9H8wzhPQQLTgyYAQ4ElesE
-         9mHRJDT7m1qvFH1rziSqh75BKtNaL0NV9a8WYhYrB+DMgVL4AkYw6AZDpyJEJdIfi3RD
-         fYC6sxGWF5H9fHAdyagibP4iJ6n+buYaKW0bkVYKpk20D433J3Ik4vxC+aIKQNxGpOYQ
-         y04FMhNSoek3Vj21FavXk7W8kCoTwryoy0UfVykdXzOfHKsgS6Kt1yJW0PluqthyUnZp
-         d7rJJmgLqp5Xg537d9tb9jgLbNXgkzG42Eqzjtxfz4muLZQmrjIlq2GhpfcczbShm9Le
-         WWNw==
-X-Gm-Message-State: AOJu0YwNrhWodhn65eTn1iru0pKUQu6aPLlOxL2FiSeLZxCca5gomxKy
-	d3m4Zp6eaAcDztSbBjr78enYkJfMMU4Gx7/bapk=
-X-Google-Smtp-Source: AGHT+IFgzWc6u+euiW/Lv0XdJuj/p/9gVdrh8o1MqeSQFfBG6OdavIrbN8P7sGbPTho8oKx7hKIYrsOT7ClHTabc3cY=
-X-Received: by 2002:a17:90a:df97:b0:28c:3d74:5b28 with SMTP id
- p23-20020a17090adf9700b0028c3d745b28mr313568pjv.86.1704875375439; Wed, 10 Jan
- 2024 00:29:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73015EDF;
+	Wed, 10 Jan 2024 08:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40A8WjVa005535;
+	Wed, 10 Jan 2024 08:33:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=GQLmdzTFvokN1N5EM1lR19Xz2d+PKMEyH5r0sANs38s=;
+ b=jeJNV/GFGOMjMkhcI6J8PGwyQZgbFboUFjUx7WBkX7YPgfaAk9yFNSZYgsI9ljRF253w
+ jS67iErR0xXwmy2ManTYBrEH3pfpzsRWcT5JCRIYOWRYcslZWnBEJZRq7ZZc9HoRm5pt
+ b5CzTlC82JYwrExgszisyjiFr/iRBHEwGGX/KjFIp0U+wjQdRUez+sGrrr82N60ZNZNB
+ UvtnmnogN6wJgDNVT3nAzCOJICsgMm1yf6gaUVHySdOhZQfJK1uk/sOfdEnJQXBF66tV
+ lDU9A7xRNt/9/nHrfD6ahNWy0BARJcI2WxFjp49yPhZ1yjKtIHQmqXwhnpSzoTp2Om5I Vg== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhqtng0xf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 08:33:41 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40A7a5Ob028052;
+	Wed, 10 Jan 2024 08:33:40 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vgwfsr3xw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 08:33:40 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40A8Xb4W14680706
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jan 2024 08:33:37 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B8B292004B;
+	Wed, 10 Jan 2024 08:33:37 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D80FE20040;
+	Wed, 10 Jan 2024 08:33:35 +0000 (GMT)
+Received: from li-06431bcc-2712-11b2-a85c-a6fe68df28f9.in.ibm.com (unknown [9.109.245.191])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 10 Jan 2024 08:33:35 +0000 (GMT)
+From: Donet Tom <donettom@linux.vnet.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>, linux-kselftest@vger.kernel.org
+Cc: Aneesh Kumar <aneesh.kumar@linux.ibm.com>, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Geetika Moolchandani <geetika@linux.ibm.com>
+Subject: [PATCH 1/1] selftests: mm: hugepage-vmemmap fails on 64K page size systems.
+Date: Wed, 10 Jan 2024 14:03:35 +0530
+Message-ID: <3b3a3ae37ba21218481c482a872bbf7526031600.1704865754.git.donettom@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ddc610d5-5047-4921-869b-47bdafb38d9a@gmail.com> <20240110023019.10096-1-amadeus@jmu.edu.cn>
-In-Reply-To: <20240110023019.10096-1-amadeus@jmu.edu.cn>
-From: Robert Marko <robimarko@gmail.com>
-Date: Wed, 10 Jan 2024 09:29:24 +0100
-Message-ID: <CAOX2RU4d5FbtTuNW6OWXaoB7M-YH7xtTbkot9_mLy29qrG=QKg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] arm64: dts: qcom: ipq6018: enable sdhci node
-To: Chukun Pan <amadeus@jmu.edu.cn>
-Cc: andersson@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org, 
-	konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ZSKpAOiSoWt1ETnpvKHBG_uRZdBm_ixf
+X-Proofpoint-ORIG-GUID: ZSKpAOiSoWt1ETnpvKHBG_uRZdBm_ixf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-10_02,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ impostorscore=0 malwarescore=0 bulkscore=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401100069
 
-On Wed, 10 Jan 2024 at 03:31, Chukun Pan <amadeus@jmu.edu.cn> wrote:
->
-> Hi, Robert
-> > L2 LDO should be used as VQMMC supply, otherwise you cannot change
-> > between 3 and 1.8V.
->
-> Some ipq6000 devices do not have pmic chips, resulting in l2 being
-> unavailable. So vqmmc-supply should be configured in the dts of the
-> device.
+The kernel sefltest mm/hugepage-vmemmap fails on architectures
+which has different page size other than 4K. In hugepage-vmemmap
+page size used is 4k so the pfn calculation will go wrong on systems
+which has different page size .The length of MAP_HUGETLB memory must
+be hugepage aligned but in hugepage-vmemmap map length is 2M so this
+will not get aligned if the system has differnet hugepage size.
 
-Yes, but you need to at least register it in the RPM regulator node so
-that they can easily reference it in the device DTS.
+Added  psize() to get the page size and default_huge_page_size() to
+get the default hugepage size at run time, hugepage-vmemmap test pass
+on powerpc with 64K page size and x86 with 4K page size.
 
-Regards,
-Robert
->
-> Thanks,
-> Chukun
->
-> --
-> 2.25.1
->
+Result on powerpc without patch (page size 64K)
+*# ./hugepage-vmemmap
+Returned address is 0x7effff000000 whose pfn is 0
+Head page flags (100000000) is invalid
+check_page_flags: Invalid argument
+*#
+
+Result on powerpc with patch (page size 64K)
+*# ./hugepage-vmemmap
+Returned address is 0x7effff000000 whose pfn is 600
+*#
+
+Result on x86 with patch (page size 4K)
+*# ./hugepage-vmemmap
+Returned address is 0x7fc7c2c00000 whose pfn is 1dac00
+*#
+
+Signed-off-by: Donet Tom <donettom@linux.vnet.ibm.com>
+Reported-by : Geetika Moolchandani (geetika@linux.ibm.com)
+Tested-by : Geetika Moolchandani (geetika@linux.ibm.com)
+---
+ tools/testing/selftests/mm/hugepage-vmemmap.c | 29 ++++++++++++-------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
+
+diff --git a/tools/testing/selftests/mm/hugepage-vmemmap.c b/tools/testing/selftests/mm/hugepage-vmemmap.c
+index 5b354c209e93..894d28c3dd47 100644
+--- a/tools/testing/selftests/mm/hugepage-vmemmap.c
++++ b/tools/testing/selftests/mm/hugepage-vmemmap.c
+@@ -10,10 +10,7 @@
+ #include <unistd.h>
+ #include <sys/mman.h>
+ #include <fcntl.h>
+-
+-#define MAP_LENGTH		(2UL * 1024 * 1024)
+-
+-#define PAGE_SIZE		4096
++#include "vm_util.h"
+ 
+ #define PAGE_COMPOUND_HEAD	(1UL << 15)
+ #define PAGE_COMPOUND_TAIL	(1UL << 16)
+@@ -39,6 +36,9 @@
+ #define MAP_FLAGS		(MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB)
+ #endif
+ 
++static size_t pagesize;
++static size_t maplength;
++
+ static void write_bytes(char *addr, size_t length)
+ {
+ 	unsigned long i;
+@@ -56,7 +56,7 @@ static unsigned long virt_to_pfn(void *addr)
+ 	if (fd < 0)
+ 		return -1UL;
+ 
+-	lseek(fd, (unsigned long)addr / PAGE_SIZE * sizeof(pagemap), SEEK_SET);
++	lseek(fd, (unsigned long)addr / pagesize * sizeof(pagemap), SEEK_SET);
+ 	read(fd, &pagemap, sizeof(pagemap));
+ 	close(fd);
+ 
+@@ -86,7 +86,7 @@ static int check_page_flags(unsigned long pfn)
+ 	 * this also verifies kernel has correctly set the fake page_head to tail
+ 	 * while hugetlb_free_vmemmap is enabled.
+ 	 */
+-	for (i = 1; i < MAP_LENGTH / PAGE_SIZE; i++) {
++	for (i = 1; i < maplength / pagesize; i++) {
+ 		read(fd, &pageflags, sizeof(pageflags));
+ 		if ((pageflags & TAIL_PAGE_FLAGS) != TAIL_PAGE_FLAGS ||
+ 		    (pageflags & HEAD_PAGE_FLAGS) == HEAD_PAGE_FLAGS) {
+@@ -106,18 +106,25 @@ int main(int argc, char **argv)
+ 	void *addr;
+ 	unsigned long pfn;
+ 
+-	addr = mmap(MAP_ADDR, MAP_LENGTH, PROT_READ | PROT_WRITE, MAP_FLAGS, -1, 0);
++	pagesize  = psize();
++	maplength = default_huge_page_size();
++	if (!maplength) {
++		printf("Unable to determine huge page size\n");
++		exit(1);
++	}
++
++	addr = mmap(MAP_ADDR, maplength, PROT_READ | PROT_WRITE, MAP_FLAGS, -1, 0);
+ 	if (addr == MAP_FAILED) {
+ 		perror("mmap");
+ 		exit(1);
+ 	}
+ 
+ 	/* Trigger allocation of HugeTLB page. */
+-	write_bytes(addr, MAP_LENGTH);
++	write_bytes(addr, maplength);
+ 
+ 	pfn = virt_to_pfn(addr);
+ 	if (pfn == -1UL) {
+-		munmap(addr, MAP_LENGTH);
++		munmap(addr, maplength);
+ 		perror("virt_to_pfn");
+ 		exit(1);
+ 	}
+@@ -125,13 +132,13 @@ int main(int argc, char **argv)
+ 	printf("Returned address is %p whose pfn is %lx\n", addr, pfn);
+ 
+ 	if (check_page_flags(pfn) < 0) {
+-		munmap(addr, MAP_LENGTH);
++		munmap(addr, maplength);
+ 		perror("check_page_flags");
+ 		exit(1);
+ 	}
+ 
+ 	/* munmap() length of MAP_HUGETLB memory must be hugepage aligned */
+-	if (munmap(addr, MAP_LENGTH)) {
++	if (munmap(addr, maplength)) {
+ 		perror("munmap");
+ 		exit(1);
+ 	}
+-- 
+2.43.0
+
 
