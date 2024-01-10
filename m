@@ -1,171 +1,316 @@
-Return-Path: <linux-kernel+bounces-21766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0ED7829400
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:09:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0298C829403
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 655BA1F26CC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:09:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02D9F1C256AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C06381C0;
-	Wed, 10 Jan 2024 07:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PazuDthP"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71515381C7;
+	Wed, 10 Jan 2024 07:09:56 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4E223DB;
-	Wed, 10 Jan 2024 07:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2adc52f213so294877166b.0;
-        Tue, 09 Jan 2024 23:09:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704870558; x=1705475358; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=5YGKKrM/fgzpllGiP78EuMf57uYp4vSolBmrtK7OxcE=;
-        b=PazuDthPDvJzinUf4kYlhPAxJBSugoO07tN9krhPrQxui1T3d3oGRSdTL6LvgyA/8p
-         746LSpBKpLrJMow4qISHNgW9w9JHXuKBvz67/N/PWHUbWG3+/tiegOjnMFwhHRXejzI4
-         Dp2pEFiyZe47N7y5FVfc/bJktS3z2GSy34dhwfiRkcylbVQGlNUlagpkP8fWUJPNnGsH
-         ynh4y0ht+AZIl7OWagwI65MRdn5ki7a5KMMVqIhYDWbHln/MR7RWYM85Khbf7jrvjD/s
-         7FTz382hu4okf6OJsvbph7vvVUPzqqbQnaj+llgr/VFeiJo/yM8EZlsZCksp6xZcD04i
-         HNJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704870558; x=1705475358;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5YGKKrM/fgzpllGiP78EuMf57uYp4vSolBmrtK7OxcE=;
-        b=Uz+9yQTleyhXlV4amFgmOc83S33E3MXQeuPeYal0lCXXF3qKPYgWn17C9as9+QGFds
-         DnBICVYc8hMA6l5wPs6oprJpYl7GiGfkeQGTzGjZX0N6gi3HpcqayYKH6zewKFG4t4rI
-         Fzk84QClRm+A1N7f2DaY6JhT5OB1XtXiJMjwhxEQV5iTjzltWsM91+fn0skSOsjw8S3I
-         K3BnOPLKwi67IDICG5Xk6Hvxuihjwsm4tjiJgu7f2rb/8TffX72h3RHKJ7vlhSd0sOoB
-         5wzdQWE+GTjkSQqj4u7ufO6e9/sfMXLaAiX5NKQxbQzYys2q6IsGQ9eGGfmBqVrUXqJ4
-         v3qg==
-X-Gm-Message-State: AOJu0YyH18LJUtpY/KjMEuEVK2T4QIUIjanhnG5/plMBE27pEiVZzbKd
-	+78d4ey756qGW16IjDR6cEM=
-X-Google-Smtp-Source: AGHT+IFRqDmZHkIIK0VRSR1GjFhLQsXe/YleQq62KfPiyfKWLE96xLc/j//UE3p61tGPnluuAOfa8Q==
-X-Received: by 2002:a17:906:fb15:b0:a28:a8a7:de11 with SMTP id lz21-20020a170906fb1500b00a28a8a7de11mr307478ejb.80.1704870557897;
-        Tue, 09 Jan 2024 23:09:17 -0800 (PST)
-Received: from ?IPV6:2a01:c23:bd4e:3500:d880:5055:4cea:107c? (dynamic-2a01-0c23-bd4e-3500-d880-5055-4cea-107c.c23.pool.telefonica.de. [2a01:c23:bd4e:3500:d880:5055:4cea:107c])
-        by smtp.googlemail.com with ESMTPSA id d11-20020a170906344b00b00a26a061ae1esm1799319ejb.97.2024.01.09.23.09.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 23:09:17 -0800 (PST)
-Message-ID: <18249a21-7aec-4a66-bc5a-3aa077c2b190@gmail.com>
-Date: Wed, 10 Jan 2024 08:09:18 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A713736AFE;
+	Wed, 10 Jan 2024 07:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4T8zSY5TDZz1vry7;
+	Wed, 10 Jan 2024 15:09:33 +0800 (CST)
+Received: from kwepemm600004.china.huawei.com (unknown [7.193.23.242])
+	by mail.maildlp.com (Postfix) with ESMTPS id B4DAA140381;
+	Wed, 10 Jan 2024 15:09:49 +0800 (CST)
+Received: from [10.67.121.59] (10.67.121.59) by kwepemm600004.china.huawei.com
+ (7.193.23.242) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 10 Jan
+ 2024 15:09:49 +0800
+Message-ID: <6505bdcb-5a5f-cba6-483b-75c51414a9c6@huawei.com>
+Date: Wed, 10 Jan 2024 15:09:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tg3: add new module param to force device power down on
- reboot
-To: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Cc: Andrea Fois <andrea.fois@eventsense.it>, Michael Chan
- <mchan@broadcom.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, George Shuklin <george.shuklin@gmail.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240109194551.17666-1-andrea.fois@eventsense.it>
- <d8ed4af1-5c83-4895-9fc3-9aea25724fd9@gmail.com>
- <CALs4sv2_JZd5K-ZgBkjL=QpXVEXnoJrjuqwwKg0+jo2-4taHJw@mail.gmail.com>
-Content-Language: en-US
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <CALs4sv2_JZd5K-ZgBkjL=QpXVEXnoJrjuqwwKg0+jo2-4taHJw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
+ from cpuinfo_cur_freq
+To: Ionela Voinescu <ionela.voinescu@arm.com>
+CC: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <rafael@kernel.org>,
+	<beata.michalska@arm.com>, <sumitg@nvidia.com>, <zengheng4@huawei.com>,
+	<yang@os.amperecomputing.com>, <will@kernel.org>, <sudeep.holla@arm.com>,
+	<liuyonglong@huawei.com>, <zhanjie9@hisilicon.com>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	<lihuisong@huawei.com>
+References: <20231212072617.14756-1-lihuisong@huawei.com>
+ <ZZWfJOsDlEXWYHA5@arm.com> <9428a1ed-ba4d-1fe6-63e8-11e152bf1f09@huawei.com>
+ <lnocwcitdbmgcyhd2dlczgdlhtfw4pfot2br2i3hqscnvr3xgq@nuxlauxum3nr>
+ <d0f47e9d-6a58-8b46-89be-b3182abb69f0@huawei.com> <ZZwAmqp6hcmMF8aN@arm.com>
+From: "lihuisong (C)" <lihuisong@huawei.com>
+In-Reply-To: <ZZwAmqp6hcmMF8aN@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
 
-On 10.01.2024 05:12, Pavan Chebbi wrote:
-> On Wed, Jan 10, 2024 at 2:01 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+Hi Ionela,
+
+在 2024/1/8 22:03, Ionela Voinescu 写道:
+> Hi,
+>
+> On Friday 05 Jan 2024 at 15:04:47 (+0800), lihuisong (C) wrote:
+>> Hi Vanshi,
 >>
->> On 09.01.2024 20:45, Andrea Fois wrote:
->>> The bug #1917471 was fixed in commit 2ca1c94ce0b6 ("tg3: Disable tg3
->>> device on system reboot to avoid triggering AER") but was reintroduced
->>> by commit 9fc3bc764334 ("tg3: power down device only on
->>> SYSTEM_POWER_OFF").
+>> 在 2024/1/5 8:48, Vanshidhar Konda 写道:
+>>> On Thu, Jan 04, 2024 at 05:36:51PM +0800, lihuisong (C) wrote:
+>>>> 在 2024/1/4 1:53, Ionela Voinescu 写道:
+>>>>> Hi,
+>>>>>
+>>>>> On Tuesday 12 Dec 2023 at 15:26:17 (+0800), Huisong Li wrote:
+>>>>>> Many developers found that the cpu current frequency is greater than
+>>>>>> the maximum frequency of the platform, please see [1], [2] and [3].
+>>>>>>
+>>>>>> In the scenarios with high memory access pressure, the patch [1] has
+>>>>>> proved the significant latency of cpc_read() which is used to obtain
+>>>>>> delivered and reference performance counter cause an absurd frequency.
+>>>>>> The sampling interval for this counters is very critical and
+>>>>>> is expected
+>>>>>> to be equal. However, the different latency of cpc_read() has a direct
+>>>>>> impact on their sampling interval.
+>>>>>>
+>>>>> Would this [1] alternative solution work for you?
+>>>> It would work for me AFAICS.
+>>>> Because the "arch_freq_scale" is also from AMU core and constant
+>>>> counter, and read together.
+>>>> But, from their discuss line, it seems that there are some tricky
+>>>> points to clarify or consider.
+>>> I think the changes in [1] would work better when CPUs may be idle. With
+>>> this
+>>> patch we would have to wake any core that is in idle state to read the
+>>> AMU
+>>> counters. Worst case, if core 0 is trying to read the CPU frequency of
+>>> all
+>>> cores, it may need to wake up all the other cores to read the AMU
+>>> counters.
+>>  From the approach in [1], if all CPUs (one or more cores) under one policy
+>> are idle, they still cannot be obtained the CPU frequency, right?
+>> In this case, the [1] API will return 0 and have to back to call
+>> cpufreq_driver->get() for cpuinfo_cur_freq.
+>> Then we still need to face the issue this patch mentioned.
+> With the implementation at [1], arch_freq_get_on_cpu() will not return 0
+> for idle CPUs and the get() callback will not be called to wake up the
+> CPUs.
+Right, arch_freq_get_on_cpu() will not return 0 for idle CPUs.
+However, for no-housekeeping CPUs, it will return 0 and have to call 
+get() callback, right?
+>
+> Worst case, arch_freq_get_on_cpu() will return a frequency based on the
+> AMU counter values obtained on the last tick on that CPU. But if that CPU
+> is not a housekeeping CPU, a housekeeping CPU in the same policy will be
+> selected, as it would have had a more recent tick, and therefore a more
+> recent frequency value for the domain.
+But this frequency is from the last tick,
+this last tick is probably a long time ago and it doesn't update 
+'arch_freq_scale' for some reasons like CPU dile.
+In addition, I'm not sure if there is possible that 
+amu_scale_freq_tick() is executed delayed under high stress case.
+It also have an impact on the accuracy of the cpu frequency we query.
+>
+> I understand that the frequency returned here will not be up to date,
+> but there's no proper frequency feedback for an idle CPU. If one only
+> wakes up a CPU to sample counters, before the CPU goes back to sleep,
+> the obtained frequency feedback is meaningless.
+>
+>>> For systems with 128 cores or more, this could be very expensive and
+>>> happen
+>>> very frequently.
 >>>
->>> The problem described in #1917471 is still consistently replicable on
->>> reboots on Dell Servers (i.e. R750xs with BCM5720 LOM), causing NMIs
->>> (i.e. NMI received for unknown reason 38 on cpu 0) after 9fc3bc764334
->>> was committed.
->>>
->>> The problem is detected also by the Lifecycle controller and logged as
->>> a PCI Bus Error for the device.
->>>
->>> As the problems addressed by 2ca1c94ce0b6 and by 9fc3bc764334 requires
->>> opposite strategies, a new module param "force_pwr_down_on_reboot"
->>> <bool> is introduced to fix both scenarios:
->>>
->> Adding module parameters is discouraged. What I see could try:
-> Ack.
+>>> AFAICS, the approach in [1] would avoid this cost.
+>> But the CPU frequency is just an average value for the last tick period
+>> instead of the current one the CPU actually runs at.
+>> In addition, there are some conditions to use 'arch_freq_scale' in this
+>> approach.
+> What are the conditions you are referring to?
+It depends on the housekeeping CPUs.
+>
+>> So I'm not sure if this approach can entirely cover the frequency
+>> discrepancy issue.
+> Unfortunately there is no perfect frequency feedback. By the time you
+> observe/use the value of scaling_cur_freq/cpuinfo_cur_freq, the frequency
+> of the CPU might have already changed. Therefore, an average value might
+> be a better indication of the recent performance level of a CPU.
+An average value for CPU frequency is ok. It may be better if it has not 
+any delaying.
+
+The original implementation for cpuinfo_cur_freq can more reflect their
+meaning in the user-guide [1]. The user-guide said:
+"cpuinfo_cur_freq : Current frequency of the CPU as obtained from the 
+hardware, in KHz.
+This is the frequency the CPU actually runs at."
+
+
+[1]https://www.kernel.org/doc/Documentation/cpu-freq/user-guide.txt
+
+>
+> Would you be able to test [1] on your platform and usecase?
+I has tested it on my platform (CPU number: 64, SMT: off and CPU base 
+frequency: 2.7GHz).
+Accoding to the testing result,
+1> I found that patch [1] and [2] cannot cover the no housekeeping CPUs. 
+They still have to face the large frequency discrepancy issue my patch 
+mentioned.
+2> Additionally, the frequency value of all CPUs are almost the same by 
+using the 'arch_freq_scale' factor way. I'm not sure if it is ok.
+
+The patch [1] has been modified silightly as below:
+-->
+@@ -1756,7 +1756,10 @@ static unsigned int 
+cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
+  {
+         unsigned int new_freq;
+
+-       new_freq = cpufreq_driver->get(policy->cpu);
++       new_freq = arch_freq_get_on_cpu(policy->cpu);
++       if (!new_freq)
++               new_freq = cpufreq_driver->get(policy->cpu);
++
+         if (!new_freq)
+                 return 0;
+
+And the result is as follows:
+*case 1:**No setting the nohz_full and cpufreq use performance governor*
+*--> Step1: *read 'cpuinfo_cur_freq' in no pressure
+   0: 2699264     2: 2699264     4: 2699264     6: 2699264
+   8: 2696628    10: 2696628    12: 2696628    14: 2699264
+  16: 2699264    18: 2696628    20: 2699264    22: 2696628
+  24: 2699264    26: 2696628    28: 2699264    30: 2696628
+  32: 2696628    34: 2696628    36: 2696628    38: 2696628
+  40: 2699264    42: 2699264    44: 2696628    46: 2696628
+  48: 2696628    50: 2699264    52: 2699264    54: 2696628
+  56: 2696628    58: 2696628    60: 2696628    62: 2696628
+  64: 2696628    66: 2699264    68: 2696628    70: 2696628
+  72: 2699264    74: 2696628    76: 2696628    78: 2699264
+  80: 2696628    82: 2696628    84: 2699264    86: 2696628
+  88: 2696628    90: 2696628    92: 2696628    94: 2699264
+  96: 2696628    98: 2699264   100: 2699264   102: 2696628
+104: 2699264   106: 2699264   108: 2699264   110: 2696628
+112: 2699264   114: 2699264   116: 2699264   118: 2699264
+120: 2696628   122: 2699264   124: 2696628   126: 2699264
+Note: the frequency of all CPUs are almost the same.
+
+*--> Step 2: *read 'cpuinfo_cur_freq' in the high memory access pressure.
+   0: 2696628     2: 2696628     4: 2696628     6: 2696628
+   8: 2696628    10: 2696628    12: 2696628    14: 2696628
+  16: 2696628    18: 2696628    20: 2696628    22: 2696628
+  24: 2696628    26: 2696628    28: 2696628    30: 2696628
+  32: 2696628    34: 2696628    36: 2696628    38: 2696628
+  40: 2696628    42: 2696628    44: 2696628    46: 2696628
+  48: 2696628    50: 2696628    52: 2696628    54: 2696628
+  56: 2696628    58: 2696628    60: 2696628    62: 2696628
+  64: 2696628    66: 2696628    68: 2696628    70: 2696628
+  72: 2696628    74: 2696628    76: 2696628    78: 2696628
+  80: 2696628    82: 2696628    84: 2696628    86: 2696628
+  88: 2696628    90: 2696628    92: 2696628    94: 2696628
+  96: 2696628    98: 2696628   100: 2696628   102: 2696628
+104: 2696628   106: 2696628   108: 2696628   110: 2696628
+112: 2696628   114: 2696628   116: 2696628   118: 2696628
+120: 2696628   122: 2696628   124: 2696628   126: 2696628
+
+*Case 2: setting nohz_full and cpufreq use ondemand governor*
+There is "isolcpus=1-10,41-50 nohz_full=1-10,41-50 rcu_nocbs=1-10,41-50" 
+in /proc/cmdline.
+*--> Step 1: *setting ondemand governor to all policy and query 
+'cpuinfo_cur_freq' in no pressure case.
+And the frequency of CPUs all are about 400MHz.
+*--> Step 2:* read 'cpuinfo_cur_freq' in the high memory access pressure.
+The high memory access pressure is from the command: "stress-ng -c 64 
+--cpu-load 100% --taskset 0-63"
+The result:
+  0: 2696628     1:  400000     2:  400000     3:  400909
+  4:  400000     5:  400000     6:  400000     7:  400000
+  8:  400000     9:  400000    10:  400600    11: 2696628
+12: 2696628    13: 2696628    14: 2696628    15: 2696628
+16: 2696628    17: 2696628    18: 2696628    19: 2696628
+20: 2696628    21: 2696628    22: 2696628    23: 2696628
+24: 2696628    25: 2696628    26: 2696628    27: 2696628
+28: 2696628    29: 2696628    30: 2696628    31: 2696628
+32: 2696628    33: 2696628    34: 2696628    35: 2696628
+36: 2696628    37: 2696628    38: 2696628    39: 2696628
+40: 2696628    41:  400000    42:  400000    43:  400000
+44:  400000    45:  398847    46:  400000    47:  400000
+48:  400000    49:  400000    50:  400000    51: 2696628
+52: 2696628    53: 2696628    54: 2696628    55: 2696628
+56: 2696628    57: 2696628    58: 2696628    59: 2696628
+60: 2696628    61: 2696628    62: 2696628    63: 2699264
+
+Note:
+(1) The frequency of 1-10 and 41-50 CPUs work on the lowest frequency.
+      It turned out that nohz full was already work.
+      I guess that stress-ng cannot use the CPU in the range of nohz full.
+      Because the CPU frequency will be increased to 2.7G by binding CPU 
+to other application.
+(2) The frequency of the nohz full core is calculated by get() callback 
+according to ftrace.
+
+[1] https://lore.kernel.org/lkml/20230418113459.12860-7-sumitg@nvidia.com/
+[2] 
+https://lore.kernel.org/lkml/20231127160838.1403404-3-beata.michalska@arm.com/
+>
+> Many thanks,
+> Ionela.
+>
+>> /Huisong
 >>
->> - limit 9fc3bc764334 to the specific machine type mentioned in the
->>   commit message (based DMI info)
->> - 2ca1c94ce0b6 performs two actions: power down tg3 and disable device
->>   Based on the commit description disabling the device might be sufficient.
-> 
-> I think the second suggestion could be a better solution. Helps to
-> solve the issue 9fc3bc764334 is trying to fix.
-> But I am not sure how easy it is to test. As I recall, Goerge was
-> unable to reach out to the author of 2ca1c94ce0b6 when he wanted to
-> test his patch for regression.
-> We did discuss the risk of this regression.
-> https://patchwork.kernel.org/project/netdevbpf/patch/20231101130418.44164-1-george.shuklin@gmail.com/
-> Unfortunately, looks like it has come true :(
-
-If the culprit is an unexpected MSI interrupt, then you may also address
-this directly by disabling interrupts in the device. tg3_stop() may be
-a candidate here.
-
+>>>>> [1] https://lore.kernel.org/lkml/20231127160838.1403404-1-beata.michalska@arm.com/
+>>>>>
+>>>>> Thanks,
+>>>>> Ionela.
+>>>>>
+>>>>>> This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
+>>>>>> delivered and reference performance counter together. According to my
+>>>>>> test[4], the discrepancy of cpu current frequency in the
+>>>>>> scenarios with
+>>>>>> high memory access pressure is lower than 0.2% by stress-ng
+>>>>>> application.
+>>>>>>
+>>>>>> [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
+>>>>>> [2] https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecomputing.com/
+>>>>>> [3]
+>>>>>> https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
+>>>>>>
+>>>>>> [4] My local test:
+>>>>>> The testing platform enable SMT and include 128 logical CPU in total,
+>>>>>> and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
+>>>>>> physical core on platform during the high memory access pressure from
+>>>>>> stress-ng, and the output is as follows:
+>>>>>>    0: 2699133     2: 2699942     4: 2698189     6: 2704347
+>>>>>>    8: 2704009    10: 2696277    12: 2702016    14: 2701388
+>>>>>>   16: 2700358    18: 2696741    20: 2700091    22: 2700122
+>>>>>>   24: 2701713    26: 2702025    28: 2699816    30: 2700121
+>>>>>>   32: 2700000    34: 2699788    36: 2698884    38: 2699109
+>>>>>>   40: 2704494    42: 2698350    44: 2699997    46: 2701023
+>>>>>>   48: 2703448    50: 2699501    52: 2700000    54: 2699999
+>>>>>>   56: 2702645    58: 2696923    60: 2697718    62: 2700547
+>>>>>>   64: 2700313    66: 2700000    68: 2699904    70: 2699259
+>>>>>>   72: 2699511    74: 2700644    76: 2702201    78: 2700000
+>>>>>>   80: 2700776    82: 2700364    84: 2702674    86: 2700255
+>>>>>>   88: 2699886    90: 2700359    92: 2699662    94: 2696188
+>>>>>>   96: 2705454    98: 2699260   100: 2701097   102: 2699630
+>>>>>> 104: 2700463   106: 2698408   108: 2697766   110: 2701181
+>>>>>> 112: 2699166   114: 2701804   116: 2701907   118: 2701973
+>>>>>> 120: 2699584   122: 2700474   124: 2700768   126: 2701963
+>>>>>>
+>>>>>> Signed-off-by: Huisong Li <lihuisong@huawei.com>
+>>>>>> ---
+>>>>>>   
+[snip]
+> .
 
