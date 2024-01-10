@@ -1,88 +1,112 @@
-Return-Path: <linux-kernel+bounces-22625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C16E482A095
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:58:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ADAD82A09C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D12401C22937
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:58:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF15CB26291
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C9D4D59B;
-	Wed, 10 Jan 2024 18:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6D74D5AA;
+	Wed, 10 Jan 2024 19:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="K92IikLC"
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g7nruqNC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625C84D586
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from pop-os.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id NdmQrcFTLELO0NdmQru0ee; Wed, 10 Jan 2024 19:58:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1704913105;
-	bh=UZLX/89kS0mvMTTrsbJHGX+f4iKL5In/qByEVAfVrQU=;
-	h=From:To:Cc:Subject:Date;
-	b=K92IikLCz67DBvdTjNs3xcuUHpAYoUOA2V5gYXplrbCmcPqTHnMYDSmJ5g4Gw86vW
-	 LGS/AJqgFbbs+iC9pJmhgL/by6HUDNgfwlDBb/ZpKyf+fokA27n7VyQiWrmIJeXsds
-	 oqEsurz1Yt0bB30kgi45mGHcfbuwqvtaUuhihN7QrqvlpTs4yE5ql4tn41+u2Re5Lv
-	 ymH8zLrV8WL23sUI2GvJYleIpilN3c95kKipmLoFDCL/15CdQGZaRlOCiIcH1EgQl+
-	 3mTnGKNgVsTBXdwmkctWPc7rA6dusBc8FeIxkHbMoDNPtzIhQJ9le6wIwKdSYYxil+
-	 m5IxxQfB6TmmA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 10 Jan 2024 19:58:25 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Jiancheng Xue <xuejiancheng@hisilicon.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Stephen Boyd <sboyd@codeaurora.org>,
-	linux-clk@vger.kernel.org
-Subject: [PATCH] clk: hisilicon: hi3519: Release the correct number of gates in hi3519_clk_unregister()
-Date: Wed, 10 Jan 2024 19:58:21 +0100
-Message-Id: <c3f1877c9a0886fa35c949c8f0ef25547f284f18.1704912510.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE0541A86;
+	Wed, 10 Jan 2024 19:00:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00D23C433C7;
+	Wed, 10 Jan 2024 19:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704913223;
+	bh=anQjN0x5VGSmfBB0IWVmK180LXiah3BHUEKoVRwvMfU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=g7nruqNCyn9ZKeYSfPvatg0/J1OWuB4JotRQaKHaT10ErQ7jrPOI49GWFBGSsbQ64
+	 BeS4c3+jbHThShUvF9lgxUHUeALGsva7PreghaB+sm8XNtEooft9RkftmJ87mHQmJU
+	 9GSpum7hONtjDF0m76Y7Dq0scplmp2YQfeSeaoUtRwv1P5dR4XW+CsKxngXbkUupQt
+	 ek4NsbVmanVKVH0848odvsmlRcNuppnYotEatmdrBHQfev9eDLPWgru3WleTTV/LkZ
+	 /SEaL2+Q2AfyJJDioF5DfZoB5Nrm+7HsjyQdoFTQaoQn98u80LYUNWnPuFZM8Rllwo
+	 3J3gf5+U77b1Q==
+Date: Wed, 10 Jan 2024 13:00:21 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Alex Williamson <alex.williamson@redhat.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Sanath S <Sanath.S@amd.com>, shyam-sundar.s-k@amd.com,
+	Andreas Noever <andreas.noever@gmail.com>,
+	Michael Jamet <michael.jamet@intel.com>,
+	Yehezkel Bernat <YehezkelShB@gmail.com>, linux-usb@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [bugzilla-daemon@kernel.org: =?utf-8?Q?=5B?=
+ =?utf-8?Q?Bug_218360=5D_New=3A_Disk_drive_of_TBT3=2FUSB4_storage_device_c?=
+ =?utf-8?Q?an=E2=80=99t_show_up_i?= =?utf-8?Q?f?= connecting behind TBT3 dock
+ or some USB4 docks DFP TBT port]
+Message-ID: <20240110190021.GA2113949@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-The gates are stored in 'hi3519_gate_clks', not 'hi3519_mux_clks'.
-This is also in line with how hisi_clk_register_gate() is called in the
-probe.
+#regzbot introduced: d3fcd7360338 ("PCI: Fix runtime PM race with PME polling")
 
-Fixes: 224b3b262c52 ("clk: hisilicon: hi3519: add driver remove path and fix some issues")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/clk/hisilicon/clk-hi3519.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sanath, thank you very much for this report and the bisection!
 
-diff --git a/drivers/clk/hisilicon/clk-hi3519.c b/drivers/clk/hisilicon/clk-hi3519.c
-index b871872d9960..141b727ff60d 100644
---- a/drivers/clk/hisilicon/clk-hi3519.c
-+++ b/drivers/clk/hisilicon/clk-hi3519.c
-@@ -130,7 +130,7 @@ static void hi3519_clk_unregister(struct platform_device *pdev)
- 	of_clk_del_provider(pdev->dev.of_node);
- 
- 	hisi_clk_unregister_gate(hi3519_gate_clks,
--				ARRAY_SIZE(hi3519_mux_clks),
-+				ARRAY_SIZE(hi3519_gate_clks),
- 				crg->clk_data);
- 	hisi_clk_unregister_mux(hi3519_mux_clks,
- 				ARRAY_SIZE(hi3519_mux_clks),
--- 
-2.34.1
+I assume this happens on hot-adds, i.e., you boot the kernel, then
+connect a USB4 dock, then connect the TBT3/USB4 storage device to the
+dock?
 
+Would you be able to attach the complete dmesgs log from working and
+failing kernels?  The ideal would be from d3fcd7360338 ("PCI: Fix
+runtime PM race with PME polling"), which fails, and 5cd903bce9dd
+("PCI/VPD: Add runtime power management to sysfs interface"), which
+presumably works.  But v6.7 and v6.5 is OK too.
+
+Also the output of "sudo lspci -vv", which I assume doesn't depend on
+which kernel you're running.
+
+Bjorn
+
+----- Forwarded message from bugzilla-daemon@kernel.org -----
+
+Date: Wed, 10 Jan 2024 10:52:40 +0000
+From: bugzilla-daemon@kernel.org
+To: bjorn@helgaas.com
+Subject: [Bug 218360] New: Disk drive of TBT3/USB4 storage device can’t show up if connecting behind TBT3 dock
+	or some USB4 docks DFP TBT port
+Message-ID: <bug-218360-41252@https.bugzilla.kernel.org/>
+
+https://bugzilla.kernel.org/show_bug.cgi?id=218360
+
+            Bug ID: 218360
+           Summary: Disk drive of TBT3/USB4 storage device can’t show up
+                    if connecting behind TBT3 dock or some USB4 docks DFP
+                    TBT port
+          Reporter: Sanath.S@amd.com
+
+The disk drive of the TBT3/USB4 storage device can’t show up behind TBT3 dock
+and some USB4 docks have a DFP TBT port.
+
+TBT3/USB4 storage device can be authorized, the disk drive doesn’t show up.
+
+Issue reproduce sequence: Connect USB4 dock to host → Connect TBT3/USB4 storage
+device to dock DFP TBT3 port → TBT3/USB4 storage device disk driver can’t show
+up.
+
+The issue was observed in the latest mainline kernel 6.7.
+
+
+Failing on all the below combination
+
+HP Thunderbolt Dock 120W G2 HSN-IX01    
+HP Hook 2.0 USB4/TBT4 Dock (PV Phase)   
+CalDigit TS3Plus+ Thunderbolt Station 3 Plus    
+Dell Thunderbolt Dock – WD19TB
 
