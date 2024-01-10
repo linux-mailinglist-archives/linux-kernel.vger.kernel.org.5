@@ -1,563 +1,548 @@
-Return-Path: <linux-kernel+bounces-22053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E75A282987C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:13:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0761829869
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2D821C24767
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:13:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37A10B263C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488574778E;
-	Wed, 10 Jan 2024 11:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6678E46BA6;
+	Wed, 10 Jan 2024 11:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="x/W0YWJm"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2043.outbound.protection.outlook.com [40.107.100.43])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="u1B7C+NU"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2053.outbound.protection.outlook.com [40.107.94.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07377481D8;
-	Wed, 10 Jan 2024 11:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEEF84779D;
+	Wed, 10 Jan 2024 11:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oFgA1JzCxeL4z7IXP3njwFnGcw5OnDDpN3/qxK4dilvJN9rh8/cshnY/TWz9q0ViX22adB+dCULcPnuplX9ApxPLvRTh7NP8e9GRdJGkQdhSRauNByP4CfQFcER/6bR+eaiStfGjYdt10Uai/bNxiBjrtt48KrUIKMwkxglvUoJKCTUD1OHxgVaE7CfPsNqiyfBVHcvFkkBKfBssZR1VfKG54gVlGlp9rXoj9RwMMWE33TRh4JMlHQW3Inawu9k28lEpNhnbSXj8Av0M4gZkVS9RmAqsKNZOsJ8fCltyW+9/pJ3kwhlILqIeOoS6vzBAXDA3ZRmp4frES2y1tr+SVg==
+ b=N1yQz8C5o70ngS533PKxBMim7nYWY3qJHDwDubzAS0yirbGJ9iUQChJdHEMDSAnBjkcp4qVi4GkSVxdYOMHvuUd5xrGCelUgwXesw77lOLtQOnuRXDQ9DmLpQ400rWm5htLll9dF31j/X5XEnt3KYarw5N2TOhWNPkmVdx7rc8s7qlFeoEQnV45e2PMrajItiUlk7OBIQGK+uIUh3alzqIk4ukE4NM40+l/ubwUeBoRwgUpGGy/Ngpi0PNwOj1zRkSSc97PR5/A7mZNdeJ+/WCU8B061oTGWpRPRTd3xDWMBggvXAq40LXU8I8wgiOJAApi201DI6JSzogr45Ho7/A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IGuopZAN+nviV6zohQFz7G1AMxus+RySCPj1jrLficU=;
- b=Qg6Gzeb6iFeAAdJlNgM+NXv6X9NWFmrOVOzgPNGB4tbEaPUvXMikYM6tGIcUtnMU1hUmofzcMvrM/QHO4cOBTClf6GbwEXHv+ML+ZpuE2JIdUKD/ble2rKSjcN9csnFC8TiQo8XYukTJBKgsRxIE7wK48qa376N1qH5dqPKNAkcj1uqfBmEku223EziWdm4NSXIGWm3f6xCcp6v7hKudfdNk3+XL2Q0eq4PQC2YKRWGsKlYjKDZ1zw7937fgvL75E1kyQYdFhNWhvON/xQ9Dz2D3kLeUhTJlNuFM5eSr+8ETaT40N6ttkQKZmryMgCDfuLpmuJhalR1hP9Lcazvwhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
+ bh=nnHbpm8zMw5OXqK2gaBWogCXjikCwWL0RuBOsVuOaNQ=;
+ b=l4GU1I/aZsPt0dXmVSqEXLXFgulid+TyidyeRdj02xeoO9MkuDp26PsBHMuySJ5weF6MfPHWZT4jr8JUZv+QUM50y2V1g9I4gPikD87bs8vF+FalEv1NeK5YsZI3yfWaZ0yIBTF+NGjSsnAp+B0uQpm9RFaDy2X9HeFMESxTwF97KOJjzJwZ+YV3t7TRa75XPwUN41Yhm+rTuDo9dQVavyt1+PuY7L81cAzDRC/Djy16uMT5hwFMrO7/BmXNiEBHR8uZTNsIqJZkwRJdq1X8zAsM8g6Ozz9wNLA/Wn0hADu1sjErUVGsCJuEFYLOjjlDP9kAsd2AGv6lkE9xN9PHkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IGuopZAN+nviV6zohQFz7G1AMxus+RySCPj1jrLficU=;
- b=x/W0YWJmZ/+0pm8kmtGsbPzUcmPpsoeczqZy7UBOigUC2m+rmveG8/TAWcN6RhKnl9J02x+f/K7Xszw/ayo7aG1Nch+CVwVBYAzimZ6PD2WfdqdLXXJZ/CpeK6pCwqZVuGDep85yDpDvkCzS3xjwniXKfpC/YTu+LpRtKk3Tb5M=
-Received: from DM6PR03CA0036.namprd03.prod.outlook.com (2603:10b6:5:40::49) by
- DS7PR12MB5789.namprd12.prod.outlook.com (2603:10b6:8:74::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7181.17; Wed, 10 Jan 2024 11:12:04 +0000
-Received: from CY4PEPF0000FCBE.namprd03.prod.outlook.com
- (2603:10b6:5:40:cafe::47) by DM6PR03CA0036.outlook.office365.com
- (2603:10b6:5:40::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17 via Frontend
- Transport; Wed, 10 Jan 2024 11:12:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000FCBE.mail.protection.outlook.com (10.167.242.100) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 11:12:03 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 10 Jan
- 2024 05:12:03 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Wed, 10 Jan
- 2024 03:12:01 -0800
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Wed, 10 Jan 2024 05:11:58 -0600
-From: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-To: <git@amd.com>, <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <linux-serial@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<jirislaby@kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC: <radhey.shyam.pandey@amd.com>, <srinivas.goud@amd.com>,
-	<shubhrajyoti.datta@amd.com>, <manion05gk@gmail.com>, Manikanta Guntupalli
-	<manikanta.guntupalli@amd.com>
-Subject: [PATCH V8 3/3] tty: serial: uartps: Add rs485 support to uartps driver
-Date: Wed, 10 Jan 2024 16:41:07 +0530
-Message-ID: <20240110111107.3645284-4-manikanta.guntupalli@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240110111107.3645284-1-manikanta.guntupalli@amd.com>
-References: <20240110111107.3645284-1-manikanta.guntupalli@amd.com>
+ bh=nnHbpm8zMw5OXqK2gaBWogCXjikCwWL0RuBOsVuOaNQ=;
+ b=u1B7C+NUehyjfxTG6h8rYR+19blxvYkoTIjRdaWSzltcYlJEmbhTP4WzMC56jeV7Gt2/jmAKCxRWsYZLyrVyWGPtItNjmXY8x/WYdjgUT9c+VL4o+RzgvSBK0JhbwSoeOoZkVOFh7wqEx6Cn7wxQHibmruYuyEmaPJ5k718aVIg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
+ MN2PR12MB4286.namprd12.prod.outlook.com (2603:10b6:208:199::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Wed, 10 Jan
+ 2024 11:11:29 +0000
+Received: from DS0PR12MB6608.namprd12.prod.outlook.com
+ ([fe80::6205:5d13:e769:5b0d]) by DS0PR12MB6608.namprd12.prod.outlook.com
+ ([fe80::6205:5d13:e769:5b0d%7]) with mapi id 15.20.7159.020; Wed, 10 Jan 2024
+ 11:11:29 +0000
+Message-ID: <f184a2d6-7892-4e43-a0cd-cab638c3d5c2@amd.com>
+Date: Wed, 10 Jan 2024 16:41:18 +0530
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: john.johansen@canonical.com, paul@paul-moore.com, jmorris@namei.org,
+ serge@hallyn.com
+Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+ "Shukla, Santosh" <Santosh.Shukla@amd.com>,
+ "Narayan, Ananth" <Ananth.Narayan@amd.com>,
+ raghavendra.kodsarathimmappa@amd.com, koverstreet@google.com,
+ paulmck@kernel.org, boqun.feng@gmail.com, vinicius.gomes@intel.com,
+ mjguzik@gmail.com
+From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: [RFC 0/9] Nginx refcount scalability issue with Apparmor enabled and
+ potential solutions
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0072.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:23::17) To DS0PR12MB6608.namprd12.prod.outlook.com
+ (2603:10b6:8:d0::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCBE:EE_|DS7PR12MB5789:EE_
-X-MS-Office365-Filtering-Correlation-Id: 388df47e-3ecc-4d51-1228-08dc11ccf995
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|MN2PR12MB4286:EE_
+X-MS-Office365-Filtering-Correlation-Id: 59b65378-c3ba-4b51-d919-08dc11cce4cd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	FWakF7xyGGQZpvt41vH6XzjAnGCYWl27PYAXNM18mQ5ynxlwwUMNbHFhk3oLI2z9qhFbqdAkH97PtNek1hB+S8sxwHF4nMR/EUGb176b2MPSqjhGLanx3y058EGO01g1kezRWf0kb4u/FsRKaEdVvPBCoULU2GwhPIQHlXtXmiiBu+RUHfAcbbKGxG//PYGbmF54jHTYB/VSPiq11l8b8B8wVfGRhcY3uOkjXUUo5eA3328tBLHSPkPKzraUgv0B1+LiTJBRmAXiwyAuZ9lDsAseZZ6fyiRTHNDvnX6hlfHfwVUx7wun2wxUmgaYODn1ng2bEYvolqfhT8pgjycx6BYHRxGHU3wErEf/k0D8CTKKTsTZ5VjIl+kEg+I08S1/XgFb5JVPjnITptcjtf05LWYBfK6nr0SEZLyNgF47mnYSYiWFh1S9K+jz8q6jFnMuLwZ+dG21teiEYTSdP3yXR9qUfg/Ni3qIjxyWVHV20g+b98Cmx15OJY16LcnRjkY7UfZ6fdh/uE9eTxWUbGM3xA5J5aVYIEw4y2U9IACVdC6V+fEfn5i3JrOEry1gOlxtbFb49uP9ITr8iJLApVRHzcBQtPxmHop/EQMmU3kMi8W6aU9M/f1hM91rKAi86Q3pZ6FETpDuFiOzRjNUj1qcoNqWfdUr5a041IwXD1H1Sd+1m5Bd8Q1UOrfIVxvZEvfWJCTEik3UpPg1sY1UVYc7HiNljosTC5OnTTJM4ErqdNzy4WFqlnPJjgor3pQxpeni538u+yr9HfEIAng/VfAEaZd8Z/tZ8AV+1I+7Hmpkvz8=
+	6VyberkCST42xBVcptfNwNFpRtOfhRSeJNMnUotUOOb54dd9gm9O75U/4hhMulr72VDDNX/LHnHLYX+mSXMwN6peLeZl7pT/nQ5nTvbHeT+dSGxGQKctVPuGFKWbMHju60HVzTTScBvQ4KiF4JatkDBQiwwxGxYwCR5ls2ZIe+vn/fD/2DTXCfj63HtGH3C827y329Gwwkcbrvu0p/wMiYUkUvz4RuOleZuZMZaDNsVzQIdmdUVUl3XWpjbIHDhYGfybdvSkHU89T1/CZZUJvDSZFzq6/AwyToCld1h2C10RvcDZcesVIf1S7U993L9041laWQc+HmsExT2/l5G48cvOZBWdZLCVuPJXb0pV2pbNyngQdCnzzRRoF2FYxhzevR1947HeVCXSlocbeQk0rLLL2xJ9Krim8u+UqP2L9f8yTB/PecUcMzQH+rBtVO6juwDEkQWrp/tTl/dljHkQyNgPJRLe/avw0xNC4cgDM1t6A36w4R6Mibyuwel/VKBc1APXinTe0dU30z2/vwZlUWf9Ra3AJeiKHBgqoHcq5HF+Nty+JL8G+9e1Ouw5JQfJUKbKkh/BZ919/fefrwN61GKvyPxzM4bf1Xwd7j73kedjA3di5dxz5LG7J5rAe0Ix3unFMyDEC/Vn/6UFywnRDw==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(396003)(39860400002)(376002)(230922051799003)(1800799012)(64100799003)(451199024)(82310400011)(186009)(36840700001)(40470700004)(46966006)(478600001)(30864003)(7416002)(83380400001)(2906002)(5660300002)(316002)(2616005)(1076003)(26005)(4326008)(44832011)(426003)(336012)(47076005)(40480700001)(36860700001)(8676002)(8936002)(86362001)(41300700001)(82740400003)(356005)(40460700003)(6666004)(110136005)(54906003)(70586007)(70206006)(81166007)(921011)(36756003)(36900700001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(39860400002)(136003)(346002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(478600001)(38100700002)(6506007)(316002)(54906003)(66476007)(6486002)(31686004)(31696002)(86362001)(2616005)(6666004)(26005)(83380400001)(66556008)(66946007)(6512007)(8936002)(8676002)(5660300002)(7416002)(30864003)(36756003)(4326008)(41300700001)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OFNxNVRFN3NKQTJLRHNpUFN3S3hRamhNSkplTEJzcHFZYzFNZ1NTU3M4aEtF?=
+ =?utf-8?B?WXY5STRIQ0xVdnFyOFBRVGVUbStWd0VidTJpcHBOMWJjNURpYzFuYWZMSXpp?=
+ =?utf-8?B?dFh1WnA4eTlZUEJ6blVhZHZVQWNoUVVXZDZORkxyRzVmZ1RtZjdvZjJzYmVI?=
+ =?utf-8?B?SytVb0phbjlPQzF1eTB5YU5JcEpieEErbUNzRkJCY0pLTkFtQmdYaktrZEJw?=
+ =?utf-8?B?VHM4Z05oWGx1UDVxUUtESGVKc01SQStJN0cyS0x0L2hENTdlYkNZbzBrSW9u?=
+ =?utf-8?B?SW0xMStWc3dxRm9ZT1paN3JDTTd0ODUyUjJFZ0o2TXpFdWhvV3Y0aEMxNjc4?=
+ =?utf-8?B?N295NHl4RzN6Mk5obGNJQm1OY2lQZW5pNG1rN2Mvcm42WnhoM3BNVXIwY3BJ?=
+ =?utf-8?B?T203eDcva1JWMmVOalZoSDY3YXdoN0lrK3dMYlcxbGY1VjJlVEsrRUtVN2VJ?=
+ =?utf-8?B?WmhTdVhCb1l4eHdvYU0rWU43OUtLYlA5cEpDVkMzbVpxWkcvTDh2SVRXNmJJ?=
+ =?utf-8?B?Tlp5YnB6OWcxNGhwTlQ0VnJnVUlHcnFNSDV5bjVQakp0NTI0bWtrKzBPN1Yr?=
+ =?utf-8?B?aFNtYU9WN2JYbkdMTEZKYU4rTDRVTXJmYTBZM09ieUJXU0tRbERiejF6RzhE?=
+ =?utf-8?B?c1BaNTZmakQ4cmp1ZmI0UjJjODhla1I0TkEzeXN0VnZDb20rNk5IcXF5YjBC?=
+ =?utf-8?B?OFliczE2K0RpN0M0Z0N3SUQxaGJ1R2duOTBTVC90MnQ5VGN0aEZZWWUzRVUr?=
+ =?utf-8?B?L3RRWGlNNjArTlVaYnk1bXNZSDJ5bC9oREJtN25oVlVqUVdnZW9WYW0ySGd2?=
+ =?utf-8?B?ZVVDVVZkRlUxWkpEc2FaRHRKQndRTW9yS2RPd0FhQVBSVTl4dWdVOFpEKzVk?=
+ =?utf-8?B?NHoxZGJFRmx1V3YxNkExS3RXOWlBRnZpVlE2L211K1dHMHBnaTVsc3lyZkdV?=
+ =?utf-8?B?K3BhbTFiQTloemVsQkZYWm12WVBPTWovKzJJRFRrOWJiclp2QzEvWVpBRVUr?=
+ =?utf-8?B?THNtMFRXOXlYaVNEOTFpT0RtbUorUGlPelQ2aXp5dGhyZUVGc01XSTN6SzVv?=
+ =?utf-8?B?Qllwbk1EOGdYREVqSmlJKys4QXNXK3NIakl4Y09Hb1FCVGEwa05ETXh0c1pz?=
+ =?utf-8?B?b01yU3Fnak9KeEFNaEhHVExHQU0wd2F3VkJ0VTBBOHJvb1RHUDR3c3R0Q2dK?=
+ =?utf-8?B?M2JHNXJZd1N3WVYrcXN5RFJjdDJyYXNTNjMwMld3cmVZOHBSN005VXpWMVFl?=
+ =?utf-8?B?ZDBoNFJVKzVRLzZjdnY2bk1WbEtmWGJMeEptTVJlSEJGKzBKYksyaFhhQTVF?=
+ =?utf-8?B?ektEKytDcks4aUtRTk9wN3ZxSXNHUzN1TlVTSHN2NUJoVjlmR2R1WlI0Nm9x?=
+ =?utf-8?B?SEg5dm5Jby9KWWtjZTZsb3dmcS9ZRG8rY24zNUFIU05nRktGYWVEUDZnUXVo?=
+ =?utf-8?B?UjU4elBTWko4UzVHK1BDWVlkSGF2b1BRbk5vN0xPVkQxbTFQTGl4N0RCLzQ1?=
+ =?utf-8?B?QlliT0c4S0o2YWc3STB2RlFRMHZMVHZ3dUJhUkpoZ3Z5bHZoTkZCMmZhc3Vk?=
+ =?utf-8?B?U0pVZE00ekl1MmpYZWlsZmRzcHg5Q0VZR1VwMHBSVnFOTmxLdVd4cWpzRDdG?=
+ =?utf-8?B?WHk4d0ZQNmFCT09mUDVQeVd1ZGlvTjlQYktwMnkvN1dzWDRXbUc0SXM3bllp?=
+ =?utf-8?B?UVRDcHRLbkZWamt2UEZ0TDZtMGhuNzJ1THl6MFVFdE5vYklmeG1Qdmt1bE9m?=
+ =?utf-8?B?dWpiM0FiemNnQ0QwbVNqS1ZlUDc5dWxKV0d5OXdZczIza3h6R1MyaWljUnBT?=
+ =?utf-8?B?SExCY2VMRWsxYlZIZ3QwNDY2TzdudzM3TXIvbWd1T0V0a3llaWY3YWNzcWh3?=
+ =?utf-8?B?SmRDWHRLM2FCa0xpUC9CTEt2ZkU0YitFSjNJZld3WGUyUmhFbm9qcDBSNDli?=
+ =?utf-8?B?YmhPUC80WldWRFk1ZEtNTHVWYUpXajRJMm1iSzNzMU11TW5MNlBjQzM2akFn?=
+ =?utf-8?B?VkR0RzFLMUkwUlk3czBIODI4VmVBWUJudCsrNXdBaFFjUHF4Ulg5WlJ2WXk1?=
+ =?utf-8?B?OFBvbHhSYmtkV2ZCS1NaNFRIWXZTNHRickVkdS9kZ1lGSVpHK3pDa3dqbE9V?=
+ =?utf-8?Q?i5D4EH4MvWDVKCZ7fJBSZVxLz?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 11:12:03.6970
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59b65378-c3ba-4b51-d919-08dc11cce4cd
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 11:11:29.0895
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 388df47e-3ecc-4d51-1228-08dc11ccf995
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000FCBE.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5789
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NK3eyHUU0UoP2lMqrywow7iBwRRIwJQ1R0LQOrIoIQCvfoAlSuWOIEy/G/gA2+rbhDq0+gjgtpdO4vJlTpl0ug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4286
 
-Add rs485 support to uartps driver. Use either rts-gpios or RTS
-to control RS485 phy as driver or a receiver.
+Problem Statement
+=================
 
-Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
----
-Changes for V2:
-Modify optional gpio name to xlnx,phy-ctrl-gpios.
-Update commit description.
-Add support for RTS, delay_rts_before_send and delay_rts_after_send in RS485 mode.
+Nginx performance testing with Apparmor enabled (with nginx
+running in unconfined profile), on kernel versions 6.1 and 6.5
+show significant drop in throughput scalability, when Nginx
+workers are scaled to higher number of CPUs across various
+L3 cache domains.
 
-Changes for V3:
-Modify optional gpio name to rts-gpios.
-Update commit description.
-Move cdns_uart_tx_empty function to avoid prototype statement.
-Remove assignment of struct serial_rs485 to port->rs485 as
-serial core performs that.
-Switch to native RTS in non GPIO case.
-Handle rs485 during stop tx.
-Remove explicit calls to configure gpio direction and value,
-as devm_gpiod_get_optional performs that by using GPIOD_OUT_LOW argument.
-Update implementation to support configuration of GPIO/RTS value
-based on user configuration of SER_RS485_RTS_ON_SEND and
-SER_RS485_RTS_AFTER_SEND. Move implementation to start_tx from handle_tx.
+Below is one sample data on the throughput scalability loss,
+based on results on AMD Zen4 system with 96 CPUs with SMT
+core count 2; so, overall, 192 CPUs:
 
-Changes for V4:
-Create separate patch for cdns_uart_tx_empty relocation.
-Call cdns_rs485_rx_setup() before uart_add_one_port() in probe.
-Update gpio descriptor name to gpiod_rts.
-Instead of cdns_rs485_config_gpio_rts_high() and
-cdns_rs485_config_gpio_rts_low() functions for RTS/GPIO value
-configuration implement cdns_rts_gpio_enable().
-Disable auto rts and call cdns_uart_stop_tx() from cdns_rs485_config.
-Use timer instead of mdelay for delay_rts_before_send and delay_rts_after_send.
-Update cdns_uart_set_mctrl to support GPIO/RTS.
+Config      Cache Domains     apparmor=off        apparmor=on
+                             scaling eff (%)      scaling eff (%)
+8C16T          1                  100%             100%
+16C32T         2                   95%              94%
+24C48T         3                   94%              93%
+48C96T         6                   92%              88%
+96C192T        12                  85%              68%
 
-Changes for V5:
-None.
+If we look at above data, there is a significant drop in
+scaling efficiency, when we move to 96 CPUs/192 SMT threads.
 
-Changes for V6:
-Disable the TX and RX in cdns_rs485_config() when rs485 disabled.
-Hold lock for cdns_uart_handle_tx() in cdns_rs485_tx_callback().
+Perf tool shows most of the contention coming from below
+6.56%     nginx  [kernel.vmlinux]      [k] apparmor_current_getsecid_subj 
+6.22%     nginx  [kernel.vmlinux]      [k] apparmor_file_open
 
-Changes for V7:
-None.
+The majority of the CPU cycles is found to be due to memory contention
+in atomic_fetch_add and atomic_fetch_sub operations from kref_get() and
+kref_put() operations on label.
 
-Changes for V8:
-Use hrtimer instead of timer list.
-Simplify cdns_rs485_tx_setup() and cdns_rs485_rx_setup().
-Update argument of cdns_rts_gpio_enable() in cdns_uart_set_mctrl().
-Add cdns_calc_after_tx_delay() to calculate required delay after tx.
-Add hrtimer setup in cdns_rs485_config().
-Move enable TX Empty interrupt and rs485 rx callback scheduling part to
-cdns_uart_handle_tx().
----
- drivers/tty/serial/xilinx_uartps.c | 241 ++++++++++++++++++++++++++++-
- 1 file changed, 233 insertions(+), 8 deletions(-)
+Commit 2516fde1fa00 ("apparmor: Optimize retrieving current task secid"),
+from 6.7 alleviates the issue to an extent, but not completely:
 
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index aafcc2179e0e..3247fd3e91fd 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -22,7 +22,9 @@
- #include <linux/of.h>
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
--#include <linux/iopoll.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/delay.h>
- 
- #define CDNS_UART_TTY_NAME	"ttyPS"
- #define CDNS_UART_NAME		"xuartps"
-@@ -193,6 +195,10 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
-  * @clk_rate_change_nb:	Notifier block for clock changes
-  * @quirks:		Flags for RXBS support.
-  * @cts_override:	Modem control state override
-+ * @gpiod_rts:		Pointer to the gpio descriptor
-+ * @rs485_tx_started:	RS485 tx state
-+ * @tx_timer:		Timer for tx
-+ * @stop_tx_timer:	Timer for stop tx
-  */
- struct cdns_uart {
- 	struct uart_port	*port;
-@@ -203,10 +209,22 @@ struct cdns_uart {
- 	struct notifier_block	clk_rate_change_nb;
- 	u32			quirks;
- 	bool cts_override;
-+	struct gpio_desc	*gpiod_rts;
-+	bool			rs485_tx_started;
-+	struct hrtimer		tx_timer;
-+	struct hrtimer		stop_tx_timer;
- };
- struct cdns_platform_data {
- 	u32 quirks;
- };
-+
-+struct serial_rs485 cdns_rs485_supported = {
-+	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
-+		 SER_RS485_RTS_AFTER_SEND,
-+	.delay_rts_before_send = 1,
-+	.delay_rts_after_send = 1,
-+};
-+
- #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
- 		clk_rate_change_nb)
- 
-@@ -305,6 +323,55 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
- 	tty_flip_buffer_push(&port->state->port);
- }
- 
-+/**
-+ * cdns_rts_gpio_enable - Configure RTS/GPIO to high/low
-+ * @cdns_uart: Handle to the cdns_uart
-+ * @enable: Value to be set to RTS/GPIO
-+ */
-+static void cdns_rts_gpio_enable(struct cdns_uart *cdns_uart, bool enable)
-+{
-+	u32 val;
-+
-+	if (cdns_uart->gpiod_rts) {
-+		gpiod_set_value(cdns_uart->gpiod_rts, enable);
-+	} else {
-+		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
-+		if (enable)
-+			val &= ~CDNS_UART_MODEMCR_RTS;
-+		else
-+			val |= CDNS_UART_MODEMCR_RTS;
-+		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
-+	}
-+}
-+
-+/**
-+ * cdns_rs485_tx_setup - Tx setup specific to rs485
-+ * @cdns_uart: Handle to the cdns_uart
-+ */
-+static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
-+{
-+	bool enable;
-+
-+	enable = cdns_uart->port->rs485.flags & SER_RS485_RTS_ON_SEND;
-+	cdns_rts_gpio_enable(cdns_uart, enable);
-+
-+	cdns_uart->rs485_tx_started = true;
-+}
-+
-+/**
-+ * cdns_rs485_rx_setup - Rx setup specific to rs485
-+ * @cdns_uart: Handle to the cdns_uart
-+ */
-+static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
-+{
-+	bool enable;
-+
-+	enable = cdns_uart->port->rs485.flags & SER_RS485_RTS_AFTER_SEND;
-+	cdns_rts_gpio_enable(cdns_uart, enable);
-+
-+	cdns_uart->rs485_tx_started = false;
-+}
-+
- /**
-  * cdns_uart_tx_empty -  Check whether TX is empty
-  * @port: Handle to the uart port structure
-@@ -320,6 +387,37 @@ static unsigned int cdns_uart_tx_empty(struct uart_port *port)
- 	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
- }
- 
-+/**
-+ * cdns_rs485_rx_callback - Timer rx callback handler for rs485.
-+ * @t: Handle to the hrtimer structure
-+ */
-+static enum hrtimer_restart cdns_rs485_rx_callback(struct hrtimer *t)
-+{
-+	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart, tx_timer);
-+
-+	/*
-+	 * Default Rx should be setup, because Rx signaling path
-+	 * need to enable to receive data.
-+	 */
-+	cdns_rs485_rx_setup(cdns_uart);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
-+/**
-+ * cdns_calc_after_tx_delay - calculate delay required for after tx.
-+ * @cdns_uart: Handle to the cdns_uart
-+ */
-+static u64 cdns_calc_after_tx_delay(struct cdns_uart *cdns_uart)
-+{
-+	/*
-+	 * Frame time + stop bit time + rs485.delay_rts_after_send
-+	 */
-+	return cdns_uart->port->frame_time
-+	       + DIV_ROUND_UP(cdns_uart->port->frame_time, 7)
-+	       + (u64)cdns_uart->port->rs485.delay_rts_after_send * NSEC_PER_MSEC;
-+}
-+
- /**
-  * cdns_uart_handle_tx - Handle the bytes to be Txed.
-  * @dev_id: Id of the UART port
-@@ -328,6 +426,7 @@ static unsigned int cdns_uart_tx_empty(struct uart_port *port)
- static void cdns_uart_handle_tx(void *dev_id)
- {
- 	struct uart_port *port = (struct uart_port *)dev_id;
-+	struct cdns_uart *cdns_uart = port->private_data;
- 	struct circ_buf *xmit = &port->state->xmit;
- 	unsigned int numbytes;
- 
-@@ -347,6 +446,16 @@ static void cdns_uart_handle_tx(void *dev_id)
- 
- 	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
- 		uart_write_wakeup(port);
-+
-+	/* Enable the TX Empty interrupt */
-+	writel(CDNS_UART_IXR_TXEMPTY, cdns_uart->port->membase + CDNS_UART_IER);
-+
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED &&
-+	    (uart_circ_empty(xmit) || uart_tx_stopped(port))) {
-+		cdns_uart->tx_timer.function = &cdns_rs485_rx_callback;
-+		hrtimer_start(&cdns_uart->tx_timer,
-+			      ns_to_ktime(cdns_calc_after_tx_delay(cdns_uart)), HRTIMER_MODE_REL);
-+	}
- }
- 
- /**
-@@ -579,6 +688,21 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
- }
- #endif
- 
-+/**
-+ * cdns_rs485_tx_callback - Timer tx callback handler for rs485.
-+ * @t: Handle to the hrtimer structure
-+ */
-+static enum hrtimer_restart cdns_rs485_tx_callback(struct hrtimer *t)
-+{
-+	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart, tx_timer);
-+
-+	uart_port_lock(cdns_uart->port);
-+	cdns_uart_handle_tx(cdns_uart->port);
-+	uart_port_unlock(cdns_uart->port);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
- /**
-  * cdns_uart_start_tx -  Start transmitting bytes
-  * @port: Handle to the uart port structure
-@@ -586,6 +710,7 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
- static void cdns_uart_start_tx(struct uart_port *port)
- {
- 	unsigned int status;
-+	struct cdns_uart *cdns_uart = port->private_data;
- 
- 	if (uart_tx_stopped(port))
- 		return;
-@@ -604,10 +729,38 @@ static void cdns_uart_start_tx(struct uart_port *port)
- 
- 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
- 
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-+		if (!cdns_uart->rs485_tx_started) {
-+			cdns_uart->tx_timer.function = &cdns_rs485_tx_callback;
-+			cdns_rs485_tx_setup(cdns_uart);
-+			return hrtimer_start(&cdns_uart->tx_timer,
-+					     ms_to_ktime(port->rs485.delay_rts_before_send),
-+					     HRTIMER_MODE_REL);
-+		} else {
-+			if (hrtimer_get_remaining(&cdns_uart->tx_timer))
-+				hrtimer_cancel(&cdns_uart->tx_timer);
-+		}
-+	}
- 	cdns_uart_handle_tx(port);
-+}
- 
--	/* Enable the TX Empty interrupt */
--	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
-+/**
-+ * cdns_rs485_stop_tx_callback - Timer stop tx callback handler for rs485.
-+ * @t: Handle to the timer list structure
-+ */
-+static enum hrtimer_restart cdns_rs485_stop_tx_callback(struct hrtimer *t)
-+{
-+	unsigned int regval;
-+	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart, stop_tx_timer);
-+
-+	cdns_rs485_rx_setup(cdns_uart);
-+
-+	regval = readl(cdns_uart->port->membase + CDNS_UART_CR);
-+	regval |= CDNS_UART_CR_TX_DIS;
-+	/* Disable the transmitter */
-+	writel(regval, cdns_uart->port->membase + CDNS_UART_CR);
-+
-+	return HRTIMER_NORESTART;
- }
- 
- /**
-@@ -617,11 +770,21 @@ static void cdns_uart_start_tx(struct uart_port *port)
- static void cdns_uart_stop_tx(struct uart_port *port)
- {
- 	unsigned int regval;
-+	struct cdns_uart *cdns_uart = port->private_data;
- 
--	regval = readl(port->membase + CDNS_UART_CR);
--	regval |= CDNS_UART_CR_TX_DIS;
--	/* Disable the transmitter */
--	writel(regval, port->membase + CDNS_UART_CR);
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-+		if (cdns_uart->rs485_tx_started)
-+			hrtimer_start(&cdns_uart->stop_tx_timer,
-+				      ns_to_ktime(cdns_calc_after_tx_delay(cdns_uart)),
-+				      HRTIMER_MODE_REL);
-+		else
-+			cdns_rs485_stop_tx_callback(&cdns_uart->stop_tx_timer);
-+	} else {
-+		regval = readl(port->membase + CDNS_UART_CR);
-+		regval |= CDNS_UART_CR_TX_DIS;
-+		/* Disable the transmitter */
-+		writel(regval, port->membase + CDNS_UART_CR);
-+	}
- }
- 
- /**
-@@ -829,6 +992,9 @@ static int cdns_uart_startup(struct uart_port *port)
- 		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
- 		cpu_relax();
- 
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
-+		cdns_rs485_rx_setup(cdns_uart);
-+
- 	/*
- 	 * Clear the RX disable bit and then set the RX enable bit to enable
- 	 * the receiver.
-@@ -888,6 +1054,7 @@ static void cdns_uart_shutdown(struct uart_port *port)
- {
- 	int status;
- 	unsigned long flags;
-+	struct cdns_uart *cdns_uart = port->private_data;
- 
- 	uart_port_lock_irqsave(port, &flags);
- 
-@@ -903,6 +1070,11 @@ static void cdns_uart_shutdown(struct uart_port *port)
- 	uart_port_unlock_irqrestore(port, flags);
- 
- 	free_irq(port->irq, port);
-+
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-+		hrtimer_cancel(&cdns_uart->tx_timer);
-+		hrtimer_cancel(&cdns_uart->stop_tx_timer);
-+	}
- }
- 
- /**
-@@ -1032,7 +1204,7 @@ static void cdns_uart_set_mctrl(struct uart_port *port, unsigned int mctrl)
- 	mode_reg &= ~CDNS_UART_MR_CHMODE_MASK;
- 
- 	if (mctrl & TIOCM_RTS)
--		val |= CDNS_UART_MODEMCR_RTS;
-+		cdns_rts_gpio_enable(cdns_uart_data, mctrl & TIOCM_RTS);
- 	if (mctrl & TIOCM_DTR)
- 		val |= CDNS_UART_MODEMCR_DTR;
- 	if (mctrl & TIOCM_LOOP)
-@@ -1455,6 +1627,42 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
- /* Temporary variable for storing number of instances */
- static int instances;
- 
-+/**
-+ * cdns_rs485_config - Called when an application calls TIOCSRS485 ioctl.
-+ * @port: Pointer to the uart_port structure
-+ * @termios: Pointer to the ktermios structure
-+ * @rs485: Pointer to the serial_rs485 structure
-+ *
-+ * Return: 0
-+ */
-+static int cdns_rs485_config(struct uart_port *port, struct ktermios *termios,
-+			     struct serial_rs485 *rs485)
-+{
-+	u32 val;
-+	struct cdns_uart *cdns_uart = port->private_data;
-+
-+	if (rs485->flags & SER_RS485_ENABLED) {
-+		dev_dbg(port->dev, "Setting UART to RS485\n");
-+		/* Make sure auto RTS is disabled */
-+		val = readl(port->membase + CDNS_UART_MODEMCR);
-+		val &= ~CDNS_UART_MODEMCR_FCM;
-+		writel(val, port->membase + CDNS_UART_MODEMCR);
-+
-+		/* Timer setup */
-+		hrtimer_init(&cdns_uart->tx_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		hrtimer_init(&cdns_uart->stop_tx_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		cdns_uart->tx_timer.function = &cdns_rs485_tx_callback;
-+		cdns_uart->stop_tx_timer.function = &cdns_rs485_stop_tx_callback;
-+
-+		/* Disable transmitter and make Rx setup*/
-+		cdns_uart_stop_tx(port);
-+	} else {
-+		hrtimer_cancel(&cdns_uart->tx_timer);
-+		hrtimer_cancel(&cdns_uart->stop_tx_timer);
-+	}
-+	return 0;
-+}
-+
- /**
-  * cdns_uart_probe - Platform driver probe
-  * @pdev: Pointer to the platform device structure
-@@ -1597,9 +1805,23 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	port->private_data = cdns_uart_data;
- 	port->read_status_mask = CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRIG |
- 			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
-+	port->rs485_config = cdns_rs485_config;
-+	port->rs485_supported = cdns_rs485_supported;
- 	cdns_uart_data->port = port;
- 	platform_set_drvdata(pdev, port);
- 
-+	rc = uart_get_rs485_mode(port);
-+	if (rc)
-+		goto err_out_clk_notifier;
-+
-+	cdns_uart_data->gpiod_rts = devm_gpiod_get_optional(&pdev->dev, "rts",
-+							    GPIOD_OUT_LOW);
-+	if (IS_ERR(cdns_uart_data->gpiod_rts)) {
-+		rc = PTR_ERR(cdns_uart_data->gpiod_rts);
-+		dev_err(port->dev, "xuartps: devm_gpiod_get_optional failed\n");
-+		goto err_out_clk_notifier;
-+	}
-+
- 	pm_runtime_use_autosuspend(&pdev->dev);
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, UART_AUTOSUSPEND_TIMEOUT);
- 	pm_runtime_set_active(&pdev->dev);
-@@ -1618,6 +1840,8 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 		console_port = port;
- 	}
- #endif
-+	if (cdns_uart_data->port->rs485.flags & SER_RS485_ENABLED)
-+		cdns_rs485_rx_setup(cdns_uart_data);
- 
- 	rc = uart_add_one_port(&cdns_uart_uart_driver, port);
- 	if (rc) {
-@@ -1646,6 +1870,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- 	pm_runtime_set_suspended(&pdev->dev);
- 	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+err_out_clk_notifier:
- #ifdef CONFIG_COMMON_CLK
- 	clk_notifier_unregister(cdns_uart_data->uartclk,
- 			&cdns_uart_data->clk_rate_change_nb);
--- 
-2.25.1
+Config      Cache Domains     apparmor=on        apparmor=on (patched)
+                             scaling eff (%)      scaling eff (%)
+8C16T          1                  100%             100%
+16C32T         2                   97%              93%
+24C48T         3                   94%              92%
+48C96T         6                   88%              88%
+96C192T        12                  65%              79%
 
+This adverse impact gets more pronounced when we move to >192 CPUs.
+The memory contention and impact increases with high frequency label
+update operations and labels are marked stale more frequently.
+
+
+Label Refcount Management
+=========================
+
+Apparmor uses label objects (struct aa_label) to manage refcounts for
+below set of objects:
+
+- Applicable profiles
+- Namespaces (unconfined profile)
+- Other non-profile references
+
+These label references are acquired on various apparmor lsm hooks,
+on operations such as file open, task kill operations, socket bind,
+and other file, socket, misc operations which use current task's cred,
+when the label for the current cred, has been marked stale. This is
+done to check these operations against the set of allowed operations
+for the task performing them.
+
+Use Percpu refcount for ref management?
+=======================================
+
+The ref put operations (percpu_ref_put()) in percpu refcount,
+in active mode, do not check whether ref count has dropped to
+0. The users of the percpu_ref need to explicitly invoke
+a percpu_ref_kill() operation, to drop the initial reference,
+at shutdown paths. After the percpu_ref_kill() operation, ref
+switches to atomic mode and any new percpu_ref_put() operation
+checks for the drop to 0 case and invokes the release operation
+on that label.
+
+Labels are marked stale is situations like profile removal,
+profile updates. For a namespace, the unconfined label reference
+is dropped when the namespace is destroyed. These points
+are potential shutdown points for labels. However, killing
+the percpu ref from these points has few issues:
+
+- The label could still be referenced by tasks, which are
+  still holding the reference to the now stale label.
+  Killing the label ref while these operations are in progress
+  will make all subsequent ref-put operations on the stale label
+  to be atomic, which would still result in memory contention.
+  Also, any new reference to the stale label, which is acquired
+  with the elevated refcount will have atomic op contention.
+
+- The label is marked stale using a non-atomic write operation.
+  It is possible that new operations do not observe this flag
+  and still reference it for quite some time.
+
+- Explicitly tracking the shutdown points might not be maintainable
+  at a per label granularity, as there can be various paths where
+  label reference could get dropped, such as, before the label has
+  gone live - object initialization error paths. Also, tracking
+  the shutdown points for labels which reference other labels -
+  subprofiles, merged labels requires careful analysis, and adds
+  heavy burden on ensuring the memory contention is not introduced
+  by these ref kill points.
+
+
+Proposed Solution
+=================
+
+One potential solution to the refcount scalability problem is to
+convert the label refcount to a percpu refcount, and manage
+the initial reference from kworker context. The kworker
+keeps an extra reference to the label and periodically scans
+labels and release them if their refcount drops to 0.
+
+Below is the sequence of operations, which shows the refcount
+management with this approach:
+
+1. During label initialization, the percpu ref is initialized in
+   atomic mode. This is done to ensure that, for cases where the
+   label hasn't gone live (->ns isn't assigned), mostly during
+   initialization error paths.
+
+2. Labels are switched to percpu mode at various points -
+   when a label is added to labelset tree, when a unconfined profile
+   has been assigned a namespace.
+
+3. As part of the initial prototype, only the in tree labels
+   are managed by the kworker. These labels are added to a lockless
+   list. The unconfined labels invoke a percpu_ref_kill() operation
+   when the namespace is destroyed.
+
+4. The kworker does a periodic scan of all the labels in the
+   llist. It does below sequence of operations:
+
+   a. Enqueue a dummy node to mark the start of scan. This dummy
+      node is used as start point of scan and ensures that we
+      there is no additional synchronization required with new
+      label node additions to the llist. Any new labels will
+      be processed in next run of the kworker.
+
+                      SCAN START PTR
+                          |
+                          v
+      +----------+     +------+    +------+    +------+
+      |          |     |      |    |      |    |      |
+      |   head   ------> dummy|--->|label |--->| label|--->NULL
+      |          |     | node |    |      |    |      |
+      +----------+     +------+    +------+    +------+
+
+
+      New label addition:
+
+                            SCAN START PTR
+                                 |
+                                 v
+      +----------+  +------+  +------+    +------+    +------+
+      |          |  |      |  |      |    |      |    |      |
+      |   head   |--> label|--> dummy|--->|label |--->| label|--->NULL
+      |          |  |      |  | node |    |      |    |      |
+      +----------+  +------+  +------+    +------+    +------+
+
+    b. Traverse through the llist, starting from dummy->next.
+       If the node is a dummy node, mark it free.
+       If the node is a label node, do,
+
+       i) Switch the label ref to atomic mode. The ref switch wait
+          for the existing percpu_ref_get() and percpu_ref_put()
+          operations to complete, by waiting for a RCU grace period.
+
+          Once the switch is complete, from this point onwards, any
+          percpu_ref_get(), percpu_ref_put() operations use
+          atomic operations.
+
+      ii) Drop the initial reference, which was taken while adding
+          the label node to the llist.
+
+     iii) Use a percpu_ref_tryget() increment operation on the
+          ref, to see if we dropped the last ref count. if we
+          dropped the last count, we remove the node from the llist.
+
+          All of these operations are done inside a RCU critical
+          section, to avoid race with the release operations,
+          which can potentially trigger, as soon as we drop
+          the initial ref count.
+
+      iv) If we didn't drop the last ref, switch back the counter
+          to percpu mode.
+
+Using this approach, to move the atomic refcount manipulation out of the
+contended paths, there is a significant scalability improvement seen on
+nginx test, and scalability efficiency is close to apparmor-off case.
+
+Config      Cache Domains     apparmor=on (percpuref)
+                               scaling eff (%)
+8C16T          1                  100%
+16C32T         2                   96%
+24C48T         3                   94%
+48C96T         6                   93%
+96C192T        12                  90%
+
+Limitations
+===========
+
+1. Switching to percpu refcount increases memory size overhead, as
+   percpu memory is allocated for all labels.
+
+2. Deferring labels reclaim could potentially result in memory
+   pressure, when there are high frequency of label update operations.
+
+3. Percpu refcount uses call_rcu_hurry() to complete switch operations.
+   These can impact energy efficiency, due to back to back hurry
+   callbacks. Using deferrable workqueue partly mitigates this.
+   However, deferring kworker can delay reclaims.
+
+4. Back to back label switches can delay other percpu users, as
+   there is a single global switch spinlock used by percpu refcount
+   lib.
+
+5. Long running kworker can delay other use cases like system suspend.
+   This is mitigated using freezable workqueue and litming node
+   scans to a max count.
+
+6. There is a window where label operates is atomic mode, when its
+   counter is being checked for zero. This can potentially result
+   in high memory contention, during this window which spans RCU
+   grace period (plus callback execution). For example, when
+   scanning label corresponding to unconfined profile, all
+   applications which use unconfined profile would be using
+   atomic ref increment and decrement operations.
+
+   There are a few apparoaches which were tried to mitigate this issue:
+
+   a. At a lower time interval, check if scanned label's counter
+      has changed since the start of label scan. If there is a change
+      in count, terminate the switch to atomic mode. Below shows the
+      apparoch using rcuwait.
+
+      static void aa_label_switch_atomic_confirm(struct percpu_ref *label_ref)
+      {
+         WRITE_ONCE(aa_atomic_switch_complete, true);
+         rcuwait_wake_up(&aa_reclaim_rcuwait);
+      }
+
+      rcuwait_init(&aa_reclaim_rcuwait);
+      percpu_ref_switch_to_atomic(&label->count, aa_label_switch_atomic_confirm);
+
+      atomic_count = percpu_ref_count_read(&label->count);
+      do {
+        rcuwait_wait_event_timeout(&aa_reclaim_rcuwait,
+                           (switch_complete = READ_ONCE(aa_atomic_switch_complete)),
+                           TASK_IDLE,
+                           msecs_to_jiffies(5));
+        if (percpu_ref_count_read(&label->count) != atomic_count)
+                break;
+       } while (!READ_ONCE(switch_complete));
+
+       However, this approach does not work, as percpu refcount lib does not
+       allow termination of an ongoing switch operation. Also, the counter
+       can return to the original value with set of get() and put() operations
+       before we check the current value.
+
+   b. Approaches to notify the reclaim kworker from ref get and put operations
+      can potentially disturb cache line state between the various CPU
+      contexts, which are referncing the label, and can potentially impact
+      scalability again.
+
+   c. Swith the label to an immortal percpu ref, while the scan operates
+      on the current counter. 
+
+      Below is the sequence of operations to do this:
+
+      1. Ensure that both immortal ref and label ref are in percpu mode.
+         Reinit the immortal ref in percpu mode.
+
+         Swap percpu and atomic counters of label refcount and immortal ref
+	                          percpu-ref
+      	                  +-------------------+                
+      +-------+           |  percpu-ctr-addr1 |                
+      | label | --------->|-------------------|    +----------------+ 
+      +-------+           |   data            |--->| Atomic counter1| 
+                          +-------------------+    +----------------+ 
+      +-------+           +-------------------+                
+      |ImmLbl |---------->|  percpu-ctr-addr2 |    +----------------+
+      +-------+           |-------------------|--->| Atomic counter2|
+                          |    data           |    +----------------+
+                          +-------------------+                
+
+          label ->percpu-ctr-addr  = percpu-ctr-addr2
+          ImmLbl ->percpu-ctr-addr = percpu-ctr-addr1
+          label ->data->count      = Atomic counter2
+          ImmLbl ->data->count     = Atomic counter1
+  
+  
+      2. Check the counters collected in immortal label, by switch it
+         to atomic mode.
+
+      3. If the count is 0, do,
+         a. Switch immortal counter to percpu again, giving it an
+            initial count of 1.
+         b. Swap the label and immortal counters again. The immortal
+            ref now has the counter values from new percpu ref get
+            and get operations on the label ref, from the point
+            when we did the initial swap operation.
+         c. Transfer the percpu counts in immortal ref to atomic
+            counter of label percpu refcount.
+         d. Kill immortal ref, for reinit on next iteration.
+         e. Switch label percpu ref to atomic mode.
+         f. If the counter is 1, drop the initial ref.
+
+       4. If the count is not 0, re-swap the counters.
+          a. Switch immortal counter to percpu again, giving it an
+             initial count of 1.
+          b. Swap the label and immortal counters again. The immortal
+             ref now has the counter values from new percpu ref get
+             and get operations on the label ref, from the point
+             when we did the initial swap operation.
+          c. Transfer the percpu counts in immortal ref to atomic
+             counter of label percpu refcount.
+          d. Kill immortal ref, for reinit on next iteration.
+
+
+          Using this approach, we ensure that, label ref users do not switch
+          to atomic mode, while there are active references on the label.
+          However, this approach requires multiple percpu ref mode switches
+          and adds high overhead and complexity to the scanning code.
+
+Extended/Future Work
+====================
+
+1. Look for ways to fix the limitations, as described in the "Limitations"
+   section.
+
+2. Generalize the approach to percpu rcuref, which is used for contexts
+   where release path uses RCU grace period for release operations. Patch
+   7 creates an initial prototype for this.
+
+3. Explore hazard pointers for scalable refcounting of labels.
+
+Highly appreciate any feedback/suggestions on the design approach.
+
+The patches of this patchset introduce following changes:
+
+1.      Documentation of Apparmor Refcount management.
+
+2.      Switch labels to percpu refcount in atomic mode.
+
+        Use percpu refcount for apparmor labels. Initial patch to init
+        the percpu ref in atomic mode, to evaluate the potential
+        impact of percpuref on top of kref based implementation.
+
+3.      Switch unconfined namespaces refcount to percpu mode.
+
+        Switch unconfined ns labels to percpu mode, and kill the
+        initial refcount from namespace destroy path.
+
+4.      Add infrastructure to reclaim percpu labels.
+
+        Add a label reclaim infrastructure for labels which are
+        in percpu mode, for managing their inital refcount.
+
+5.      Switch intree labels to percpu mode.
+
+        Use label reclaim infrastruture to manage intree labels.
+
+6.      Initial prototype for optimizing ref switch.
+
+        Prototype for reducing the time window when a label
+        scan switches the label ref to atomic mode.
+
+7.      percpu-rcuref: Add basic infrastructure.
+
+        Prototype for Percpu refcounts for objects, which protect
+        their object reclaims using RCU grace period.
+
+8.      Switch labels to percpu rcurefcount in unmanaged mode.
+
+        Use percpu rcuref for labels. Start with unmanaged/atomic
+        mode.
+
+9.      Switch unconfined and in tree labels to managed ref mode.
+
+        Use percpu mode with manager worker for unconfined and intree
+        labels.
+
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/LSM/ApparmorRefcount.rst |  351 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ b/Documentation/admin-guide/LSM/index.rst            |    1
+ b/Documentation/admin-guide/kernel-parameters.txt    |    8 +
+ b/include/linux/percpu-rcurefcount.h                 |  115 ++++++++++++++++
+ b/include/linux/percpu-refcount.h                    |    2
+ b/lib/Makefile                                       |    2
+ b/lib/percpu-rcurefcount.c                           |  336 +++++++++++++++++++++++++++++++++++++++++++++++
+ b/lib/percpu-refcount.c                              |   93 +++++++++++++
+ b/security/apparmor/include/label.h                  |   16 +-
+ b/security/apparmor/include/policy.h                 |    8 -
+ b/security/apparmor/include/policy_ns.h              |   24 +++
+ b/security/apparmor/label.c                          |   11 +
+ b/security/apparmor/lsm.c                            |  145 ++++++++++++++++++++
+ b/security/apparmor/policy_ns.c                      |    6
+ include/linux/percpu-refcount.h                      |    2
+ lib/percpu-refcount.c                                |   93 -------------
+ security/apparmor/include/label.h                    |   17 +-
+ security/apparmor/include/policy.h                   |   56 +++----
+ security/apparmor/include/policy_ns.h                |   24 ---
+ security/apparmor/label.c                            |   11 -
+ security/apparmor/lsm.c                              |  325 ++++++++++++----------------------------------
+ security/apparmor/policy_ns.c                        |    8 -
+ 22 files changed, 1237 insertions(+), 417 deletions(-)
+
+base-commit: ab27740f7665
 
