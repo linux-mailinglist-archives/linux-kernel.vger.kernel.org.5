@@ -1,155 +1,116 @@
-Return-Path: <linux-kernel+bounces-22162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A96F829A4E
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8FB2829A4F
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49502B2335B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:20:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B0B81C2212A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC828482C5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D6F482D4;
 	Wed, 10 Jan 2024 12:20:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DC53FB07;
-	Wed, 10 Jan 2024 12:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FEA22F4;
-	Wed, 10 Jan 2024 04:21:16 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.87.82])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87AAE3F5A1;
-	Wed, 10 Jan 2024 04:20:28 -0800 (PST)
-Date: Wed, 10 Jan 2024 12:20:21 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
-	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH] ftrace: Fix DIRECT_CALLS to use SAVE_REGS by default
-Message-ID: <ZZ6LheR_rC2KrgFu@FVFF77S0Q05N>
-References: <170484558617.178953.1590516949390270842.stgit@devnote2>
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmIwlg4J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4908947774;
+	Wed, 10 Jan 2024 12:20:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3D3C43394;
+	Wed, 10 Jan 2024 12:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704889233;
+	bh=5t7pM8zZp6AKeeGGHlgcvmEhkhNLjDXqWLj2E37NZaQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JmIwlg4J8TzENN9/bveFVYUMVYadO/6DfyGrnoQyW40XH+Yz+io37DRGWFqY3qSXV
+	 vGbUXDRtbz7gJW1foTqagTXeNi1VNF3aaeRRPY6/d55/tLKPV2PTab380YP6bbTNRm
+	 Nzg2Ax8uy4EjB5CJgqkcrojBFEgBefLGJKdlVumvZqUH9qGADFBv/6cXbgOOtsoCoY
+	 4JxY8VvYs1gfYdviqAMk/MIY1xOWDshdOO5MjB6iSo3dZvBgKDQKfAeBa1+8vl57qo
+	 DOTAMP8D7hHXMRcTPtXcGQ17JecozVTkRkndve5ExnvlhZEqGMcBppIpw0ex3gHh6V
+	 SqUhmTZl/Kwug==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rNXZP-00AVKC-91;
+	Wed, 10 Jan 2024 12:20:31 +0000
+Date: Wed, 10 Jan 2024 12:20:30 +0000
+Message-ID: <867ckh9y7l.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Ruidong Tian <tianruidong@linux.alibaba.com>
+Cc: kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	oliver.upton@linux.dev,
+	james.morse@arm.com,
+	suzuki.poulose@arm.com,
+	yuzenghui@huawei.com,
+	catalin.marinas@arm.com,
+	will@kernel.org
+Subject: Re: [PATCH] KVM: arm64: Add missing ERX*_EL1 registers
+In-Reply-To: <20240110075739.8291-1-tianruidong@linux.alibaba.com>
+References: <20240110075739.8291-1-tianruidong@linux.alibaba.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170484558617.178953.1590516949390270842.stgit@devnote2>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tianruidong@linux.alibaba.com, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Wed, Jan 10, 2024 at 09:13:06AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Wed, 10 Jan 2024 07:57:39 +0000,
+Ruidong Tian <tianruidong@linux.alibaba.com> wrote:
 > 
-> The commit 60c8971899f3 ("ftrace: Make DIRECT_CALLS work WITH_ARGS
-> and !WITH_REGS") changed DIRECT_CALLS to use SAVE_ARGS when there
-> are multiple ftrace_ops at the same function, but since the x86 only
-> support to jump to direct_call from ftrace_regs_caller, when we set
-> the function tracer on the same target function on x86, ftrace-direct
-> does not work as below (this actually works on arm64.)
-> 
-> At first, insmod ftrace-direct.ko to put a direct_call on
-> 'wake_up_process()'.
-> 
->  # insmod kernel/samples/ftrace/ftrace-direct.ko
->  # less trace
-> ...
->           <idle>-0       [006] ..s1.   564.686958: my_direct_func: waking up rcu_preempt-17
->           <idle>-0       [007] ..s1.   564.687836: my_direct_func: waking up kcompactd0-63
->           <idle>-0       [006] ..s1.   564.690926: my_direct_func: waking up rcu_preempt-17
->           <idle>-0       [006] ..s1.   564.696872: my_direct_func: waking up rcu_preempt-17
->           <idle>-0       [007] ..s1.   565.191982: my_direct_func: waking up kcompactd0-63
-> 
-> Setup a function filter to the 'wake_up_process' too, and enable it.
-> 
->  # cd /sys/kernel/tracing/
->  # echo wake_up_process > set_ftrace_filter
->  # echo function > current_tracer
->  # less trace
-> ...
->           <idle>-0       [006] ..s3.   686.180972: wake_up_process <-call_timer_fn
->           <idle>-0       [006] ..s3.   686.186919: wake_up_process <-call_timer_fn
->           <idle>-0       [002] ..s3.   686.264049: wake_up_process <-call_timer_fn
->           <idle>-0       [002] d.h6.   686.515216: wake_up_process <-kick_pool
->           <idle>-0       [002] d.h6.   686.691386: wake_up_process <-kick_pool
-> 
-> Then, only function tracer is shown on x86.
-> But if you enable 'kprobe on ftrace' event (which uses SAVE_REGS flag)
-> on the same function, it is shown again.
-> 
->  # echo 'p wake_up_process' >> dynamic_events
->  # echo 1 > events/kprobes/p_wake_up_process_0/enable
->  # echo > trace
->  # less trace
-> ...
->           <idle>-0       [006] ..s2.  2710.345919: p_wake_up_process_0: (wake_up_process+0x4/0x20)
->           <idle>-0       [006] ..s3.  2710.345923: wake_up_process <-call_timer_fn
->           <idle>-0       [006] ..s1.  2710.345928: my_direct_func: waking up rcu_preempt-17
->           <idle>-0       [006] ..s2.  2710.349931: p_wake_up_process_0: (wake_up_process+0x4/0x20)
->           <idle>-0       [006] ..s3.  2710.349934: wake_up_process <-call_timer_fn
->           <idle>-0       [006] ..s1.  2710.349937: my_direct_func: waking up rcu_preempt-17
-> 
-> To fix this issue, use SAVE_REGS flag for multiple ftrace_ops flag of
-> direct_call by default.
-> 
-> Fixes: 60c8971899f3 ("ftrace: Make DIRECT_CALLS work WITH_ARGS and !WITH_REGS")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Commit 464f2164da7e ("arm64: Add missing ERX*_EL1 encodings") add some
+> new RAS registers. Trap them to kvm.
 
-Sorry about this; I hadn't realised that x86 only supported direct calls when
-SAVE_REGS was requested.
+Well, they *are* already trapped by virtue of HCR_EL2.FIEN being
+0. They are lacking a trap handler though.
 
-The patch looks good to me. I applied it atop v6.7 and double-checked that this
-still works on arm64 as per your examples above, and everything looks good:
+> 
+> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+> ---
+>  arch/arm64/kvm/sys_regs.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index 30253bd19917..76a9ba155d58 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -2389,8 +2389,13 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_ERXCTLR_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXSTATUS_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXADDR_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXPFGF_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXPFGCTL_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXPFGCDN_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXMISC2_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXMISC3_EL1), trap_raz_wi },
+>  
+>  	MTE_REG(TFSR_EL1),
+>  	MTE_REG(TFSRE0_EL1),
 
-# mount -t tracefs none /sys/kernel/tracing/
-# insmod ftrace-direct.ko 
-# echo wake_up_process > /sys/kernel/tracing/set_ftrace_filter 
-# echo function > /sys/kernel/tracing/current_tracer 
-# less /sys/kernel/tracing/trace
-..	
-          <idle>-0       [007] ..s3.   172.932840: wake_up_process <-process_timeout
-          <idle>-0       [007] ..s1.   172.932842: my_direct_func: waking up kcompactd0-62
-          <idle>-0       [007] ..s3.   173.444836: wake_up_process <-process_timeout
-          <idle>-0       [007] ..s1.   173.444838: my_direct_func: waking up kcompactd0-62
-          <idle>-0       [001] d.h5.   173.471116: wake_up_process <-kick_pool
-          <idle>-0       [001] d.h3.   173.471118: my_direct_func: waking up kworker/1:1-58
-
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-Tested-by: Mark Rutland <mark.rutland@arm.com> [arm64]
+If my reading of the ARM ARM is correct, these registers only exist if
+FEAT_RASv1p1 is implemented. Which means that we shouldn't handle
+those as RAZ/WI unconditionally, but instead check for what we
+advertise to the guest and handle it accordingly.
 
 Thanks,
-Mark.
 
-> ---
->  kernel/trace/ftrace.c |   10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index b01ae7d36021..c060d5b47910 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5325,7 +5325,17 @@ static LIST_HEAD(ftrace_direct_funcs);
->  
->  static int register_ftrace_function_nolock(struct ftrace_ops *ops);
->  
-> +/*
-> + * If there are multiple ftrace_ops, use SAVE_REGS by default, so that direct
-> + * call will be jumped from ftrace_regs_caller. Only if the architecture does
-> + * not support ftrace_regs_caller but direct_call, use SAVE_ARGS so that it
-> + * jumps from ftrace_caller for multiple ftrace_ops.
-> + */
-> +#ifndef HAVE_DYNAMIC_FTRACE_WITH_REGS
->  #define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_ARGS)
-> +#else
-> +#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
-> +#endif
->  
->  static int check_direct_multi(struct ftrace_ops *ops)
->  {
-> 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
