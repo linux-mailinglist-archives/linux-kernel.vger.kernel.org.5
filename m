@@ -1,151 +1,114 @@
-Return-Path: <linux-kernel+bounces-21601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B9E8291B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F2C8291B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 02:05:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B73481F26A28
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:02:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16B511F26A1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 01:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FEC1370;
-	Wed, 10 Jan 2024 01:02:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD26E1C15;
+	Wed, 10 Jan 2024 01:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OPz5YvOd"
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G8pUQUww"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B991113
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bc09844f29so3171421b6e.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 17:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704848538; x=1705453338; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y1fzYemH9fFciZRIvh4hleplwmDRBtVTD60UfU5JDgM=;
-        b=OPz5YvOdpy9JmjYAzRj7g9Y+6L93pPSkjkcRmQnySFncKR7I1P1EOxJGz3kEze/kH1
-         3gY/8tze06RCJun3qrwZkSrXqqdMIfQNWzFOKXXQjz6p9B2GmjQKYEQqxm6KAVNB8+BB
-         3w3ie3bFCBwbkXvOPxqZDuqSktWS4+UXlscQ87b2F0HREUvEww9kWUwiPBK51RYXri2u
-         WVAfnJZ0Ym0BZKR87QKi+I8xUYK67K6lCSPJKiPJ1tLFp4/9o3HervsjeDDpu+hxYbFz
-         Ii1tffbXj/gTKOgq648X4hT7qLocISzju54IPTjBVPM/8yfWFGzgfOpJAQtUihDd3R2K
-         N6Mw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E21E645
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704848702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XDAJkCct0QqlJ2J1QN5K4XkP3EqrDChHOlqcjsZZ3Ok=;
+	b=G8pUQUwwlaZYOUQEtI0WYclxDEP1aM9ELZqvS4vdlIET8fYI/8/WJnM5Fa5Cc6yH1AYKxl
+	PqYE5oKUOlcLgnlO7l430RiiB9LJwhGmuCTtqg4LzT+TUjikknHScSxo+TAR+R+FKW2su4
+	K4aNVBmjS24kvwoOVvxrenJnUCgk3GQ=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-34-uK7ew5PIMqCiUzOKsE878w-1; Tue, 09 Jan 2024 20:05:00 -0500
+X-MC-Unique: uK7ew5PIMqCiUzOKsE878w-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2ccc360edc4so30015881fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 17:05:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704848538; x=1705453338;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y1fzYemH9fFciZRIvh4hleplwmDRBtVTD60UfU5JDgM=;
-        b=X6522Mx4SWTkAQsGj2SAm4g5zysQst9E9aJUHH8drhg0gkIPoJgJ6vU7Azm0qlBPsu
-         FdNKthsfN/oJ0BqtVZJY9LgiGrBVM+aA6a6v2LAEELGrTT4zxQuie27BB8Rbv/1RtBsj
-         APKoddk7icbPfe28E018a3A57/ObnHPhAoArpyTSa4Z7Q390FX9s5N7ZqGw9fT1LxoN3
-         K8uI3Ev6rpZT2APoHOpAvfvLm6lsHycWZSGO/iarL3WdiStFyRf4RyOsT4KNVPNQaU+J
-         BqJFPXowHZah6VQXPQHu3OLgs+sjM8/L4r+uw4Hw3yVmdh9Y9wrVv4rjUx0aM4oJ6eYc
-         3tbg==
-X-Gm-Message-State: AOJu0YzgyHbr8wOIah4YxgTeJ3RXs3ZDIDtk0BcKj3/Rewm1pePLcc/A
-	LijcdQNnYMWb//62N3ePjkLHMV316/aC
-X-Google-Smtp-Source: AGHT+IFdj4lMnQfLOflL7KI8L/s5vapJrYGJD1GResrjGMHSg+OsMCYr4z4A/VwDd+zNa3SKCFjf1g==
-X-Received: by 2002:a05:6808:1815:b0:3bd:4640:37aa with SMTP id bh21-20020a056808181500b003bd464037aamr341794oib.91.1704848538233;
-        Tue, 09 Jan 2024 17:02:18 -0800 (PST)
-Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
-        by smtp.gmail.com with ESMTPSA id b10-20020a0ce88a000000b00680aed3b8ddsm1315542qvo.107.2024.01.09.17.02.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 17:02:17 -0800 (PST)
-Message-ID: <781a86b1-c02b-4bb8-bc79-bfbd4f2ff146@google.com>
-Date: Tue, 9 Jan 2024 20:02:16 -0500
+        d=1e100.net; s=20230601; t=1704848699; x=1705453499;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XDAJkCct0QqlJ2J1QN5K4XkP3EqrDChHOlqcjsZZ3Ok=;
+        b=bD0IuB0MKDoMcvlFoMf3522I8Vmj0Nvdgvqd6ZL8e46+bRhT/kaNldm/meMXlcteyP
+         YR025eQn1EVCpO3detG1b354U0XFiE+Die5V0EuroH36bKayBn3632PfnaCL70/5DBld
+         7+BilH7Uu9915+vnyyjvf4sRW/hSELoKP1FvqkLUrSwzKxZEioAwmlt/ENxdLqXWVyow
+         bEaiBJSYTdhWVKIU+ITdW5ye1GLlkgK3/fuGwC5uRScpkBf5YgpMKLbJQyh7FN1K+W+o
+         L+PThab3GScthWbFJfkVFPNFetPdOiVJ0ffBZrEQ9csMRZPEP66Bw9cUidqOf5uXFHRL
+         AOiw==
+X-Gm-Message-State: AOJu0YwO5AB+1qapMglqmTFShL7UH+icdrW2Z0bxvtaHU2dO5kpbT1+y
+	Bn70wX1yDF1gIpkXGDpwDVYSqSw92f7ZelLoy4GbUklGzbE5rV8lrLS3HEQZYiIz8bAoedsuV40
+	U7mbIrZXyMGi7YLluHfv9sWT0tA/dCucjXqFp/tmsabhSN3hQ
+X-Received: by 2002:a05:651c:1047:b0:2cd:3487:9a05 with SMTP id x7-20020a05651c104700b002cd34879a05mr98286ljm.88.1704848699515;
+        Tue, 09 Jan 2024 17:04:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGKqSK/YybrS4hqOkpNnDVEZbPGMecxKjNnfERUMKoTvZqBP1EhGdJBrkbTbH5Ki7NxC6cHcaGGQZdKcc7uVcA=
+X-Received: by 2002:a05:651c:1047:b0:2cd:3487:9a05 with SMTP id
+ x7-20020a05651c104700b002cd34879a05mr98276ljm.88.1704848699158; Tue, 09 Jan
+ 2024 17:04:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
- helpers to access array elements
-Content-Language: en-US
-From: Barret Rhoden <brho@google.com>
-To: Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Song Liu <song@kernel.org>, mattbobrowski@google.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240103185403.610641-1-brho@google.com>
- <20240103185403.610641-3-brho@google.com> <ZZa1668ft4Npd1DA@krava>
- <f3dd9d80-3fab-4676-b589-1d4667431287@linux.dev>
- <e5e52e0a-7494-47bb-8a6a-9819b0c93bd8@google.com>
-In-Reply-To: <e5e52e0a-7494-47bb-8a6a-9819b0c93bd8@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240108181610.2697017-1-leitao@debian.org> <20240108181610.2697017-8-leitao@debian.org>
+In-Reply-To: <20240108181610.2697017-8-leitao@debian.org>
+From: Alexander Aring <aahringo@redhat.com>
+Date: Tue, 9 Jan 2024 20:04:47 -0500
+Message-ID: <CAK-6q+jy-0+bZRUKhRsB2RMtpJ=Sw1A5qHk+rpnYaOzV8WFD5A@mail.gmail.com>
+Subject: Re: [PATCH net-next 07/10] net: fill in MODULE_DESCRIPTION()s for 6LoWPAN
+To: Breno Leitao <leitao@debian.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, Alexander Aring <alex.aring@gmail.com>, netdev@vger.kernel.org, 
+	"open list:6LOWPAN GENERIC (BTLE/IEEE 802.15.4)" <linux-bluetooth@vger.kernel.org>, 
+	"open list:6LOWPAN GENERIC (BTLE/IEEE 802.15.4)" <linux-wpan@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/4/24 16:30, Barret Rhoden wrote:
-[snip]
->>
->> The LLVM bpf backend has made some improvement to handle the case like
->>    r1 = ...
->>    r2 = r1 + 1
->>    if (r2 < num) ...
->>    using r1
->> by preventing generating the above code pattern.
->>
->> The implementation is a pattern matching style so surely it won't be
->> able to cover all cases.
->>
->> Do you have specific examples which has verification failure due to
->> false array out of bound access?
-> 
-[ snip ]
+Hi,
 
-> 
-> I'll play around and see if I can come up with a selftest that can run 
-> into any of these "you did the check, but threw the check away" scenarios.
+On Mon, Jan 8, 2024 at 1:21=E2=80=AFPM Breno Leitao <leitao@debian.org> wro=
+te:
+>
+> W=3D1 builds now warn if module is built without a MODULE_DESCRIPTION().
+> Add descriptions to IPv6 over Low power Wireless Personal Area Network.
+>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  net/6lowpan/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/6lowpan/core.c b/net/6lowpan/core.c
+> index 7b3341cef926..80d83151ef29 100644
+> --- a/net/6lowpan/core.c
+> +++ b/net/6lowpan/core.c
+> @@ -178,5 +178,5 @@ static void __exit lowpan_module_exit(void)
+>
+>  module_init(lowpan_module_init);
+>  module_exit(lowpan_module_exit);
+> -
+> +MODULE_DESCRIPTION("IPv6 over Low power Wireless Personal Area Network m=
+odule");
 
-I got an example for this, and will include it in my next patch version, 
-which I'll CC you on.
+Here is a nitpick as well. The correct acronym [0] is "IPv6 over
+Low-Power Wireless Personal Area Network", otherwise it is okay.
 
-If we can get the compiler to spill the register r1 to the stack (L11 in 
-the asm below), it might spill it before doing the bounds check.  Then 
-it checks the register (L12), but the verifier doesn't know that applies 
-to the stack variable too.  Later, we refill r1 from the stack (L21).
+Acked-by: Alexander Aring <aahringo@redhat.com>
 
-The reason for the spill was that I made another bpf_map_lookup_elem() 
-call (L19), which needed r1 as an argument.
-
-11: (63) *(u32 *)(r10 -8) = r1        ; 
-R1=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R10=fp0 
-fp-8=????scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-
-12: (35) if r1 >= 0x64 goto pc+13     ; 
-R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=99,var_off=(0x0; 0x7f))
-
-13: (b4) w1 = 0                       ; R1_w=0
-
-14: (63) *(u32 *)(r10 -4) = r1        ; R1_w=0 R10=fp0 fp-8=0000mmmm
-
-15: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
-
-16: (07) r2 += -4                     ; R2_w=fp-4
-
-17: (18) r1 = 0xffffc9000011edf0      ; 
-R1_w=map_ptr(map=arraymap,ks=4,vs=400)
-
-19: (85) call bpf_map_lookup_elem#1   ; 
-R0_w=map_value_or_null(id=2,map=arraymap,ks=4,vs=400)
-
-20: (15) if r0 == 0x0 goto pc+5       ; 
-R0_w=map_value(map=arraymap,ks=4,vs=400)
-
-21: (61) r1 = *(u32 *)(r10 -8)        ; 
-R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) 
-R10=fp0 fp-8=mmmmmmmm
-
-
-Thanks,
-Barret
-
+- Alex
 
 
