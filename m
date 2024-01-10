@@ -1,138 +1,125 @@
-Return-Path: <linux-kernel+bounces-22488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13E8829E73
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:23:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4CF7829E7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37BF5B23A54
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:23:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F3032855A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB054CB52;
-	Wed, 10 Jan 2024 16:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BA44CDE9;
+	Wed, 10 Jan 2024 16:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNFc6vbv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mm5fn8Zz"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A38487AC;
-	Wed, 10 Jan 2024 16:23:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20634C433C7;
-	Wed, 10 Jan 2024 16:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704903813;
-	bh=eNBsfotIxA6oJoW5N6NgGDl5v3asXMtOGMdtipXCqO0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eNFc6vbvq9MCcj7qHc7w5/8P2zz5HWo6hBJ2ySTcS2Cnfo91MFIcJIzZHGOPCC4LB
-	 fVIIeoPbAouT31AT9BTQa65yUCSr+A49sqJYd7d69pFQqZDA8rIg/MRvtOzG52a3fd
-	 stIVEXAA37eEfMFj1zm1ADvJu7nviGuC7RPXJpjjE1Pf2sdGa5dQU1BP8DTGcu0oXy
-	 ZF+FO7OxEzaZM6oS/z8QyxvVDKN7vKPOfNsQB1U5XXNRyuKPPCcPRkKRsdMnBCm3hK
-	 pq6PWAY1djk3nAkAcNcAo4RWC5A+i6N5xVrKmGLYKXEyRxZwjn/kzcN8zMoZci+8Vj
-	 nTTk7o9MoupuQ==
-Date: Wed, 10 Jan 2024 16:23:25 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Ninad Palsule <ninad@linux.ibm.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Guenter Roeck <linux@roeck-us.net>, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
-	jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
-	tony.luck@intel.com, gpiccoli@igalia.com,
-	johannes.holland@infineon.com, broonie@kernel.org,
-	patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-	peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-	bhelgaas@google.com, naresh.solanki@9elements.com,
-	alexander.stein@ew.tq-group.com, festevam@denx.de,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-	geissonator@yahoo.com
-Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
-Message-ID: <20240110-straggler-around-a53bc0a669fb@spud>
-References: <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
- <20231212-mouth-choice-40a83caa34ec@spud>
- <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
- <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
- <20240109-pep-coerce-2a86ae88753d@spud>
- <01974929-dfbf-4989-ba39-369e521827d0@linux.ibm.com>
- <3d194e84-bf1a-48e4-a376-e5c327c6508d@linaro.org>
- <2dd37d2b-28da-4e73-9047-61ec5d64bdb5@linux.ibm.com>
- <edbefdfd-eb59-4d86-ad07-feb066a21082@linaro.org>
- <385b06e9-1daa-408a-a0ed-7b09d7d539df@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8103A264
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e549adb7dso14826235e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:24:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704903878; x=1705508678; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R6/BfkOB3X/a4RKJT/vAJvs9aWAmPw+IY2BZPxEX1WY=;
+        b=Mm5fn8Zz4YkbMXw+LMzSJEf1gQlHgDFH5AE23R3ml7b13HqyhQNM3laVHHXlXJ1vZN
+         MYv0Xq3YNIvz6BhknECt4sn/+Qa63Q3BpTM9pD23neqEbp8VKYf70rVXTPuwBBDFW3zQ
+         Snkk1dyQZv/fJXWy7ntqq3ekE5maXDxQEgr/C/wwaZ7t8WR75i30Le5Frf0E2oH2aQVT
+         XGMQxbhBdDzc4vlvIEIgnPUqx+uTgJ1XpCFeTQcpKO4RIPtQ2PmTj02HINotAuM0Fz0D
+         nbdIyE7zj70tYJ/LqBti0M5FI1ArXQbU3VyJt07LrIt2mekleVQdl4Au6yTFTfMCoBMH
+         Y+/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704903878; x=1705508678;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R6/BfkOB3X/a4RKJT/vAJvs9aWAmPw+IY2BZPxEX1WY=;
+        b=Qs/EBv/Sh7nsdiVg7OmViyn/Na3u21UHAgCo8mGOXdupE5k+FEUV4xNtsgPNGrInu6
+         tAvREKoysp4OWcgjVepaOPduNDW0ounKHjrknS+IUJgZlqmV6n7RwG6xcUIAWXMo5r/l
+         dS7YpuSymRVWdi33anjJiIulBfNqz62TPt+9XL0eR4s0hiIMoJNnMSvlK4C9SOk78YDE
+         VzOIrVjUge9P+8zoNjLl+B09/q1DEbTnSWdh77K1r0PJ9fek/loEQ0qStFvxni7zB2Bi
+         QLdz3jJK6bvlXvwRZ5OReyKCVQbDxNkg4G3+E0vSJPhnyd6J3ff6HCnY+3/aSd7HvwHV
+         IInw==
+X-Gm-Message-State: AOJu0YzYhHtwlNMy6OmAo5TE94+to0+GyX4sXtZNK9wpiHb8CzHMTHvx
+	/bQGsSs5a2+Pm0k0GrdhNJ7p8ZEsstznfA==
+X-Google-Smtp-Source: AGHT+IFGJW2y/e3roICrA8K9wFuh4EUFJkXNrLyEpHPqRYRlYSswh+UYKkdhr0qfFvxHn8GQE/wsvg==
+X-Received: by 2002:a05:600c:5208:b0:40e:3654:29f4 with SMTP id fb8-20020a05600c520800b0040e365429f4mr665511wmb.32.1704903877854;
+        Wed, 10 Jan 2024 08:24:37 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id g21-20020a05600c311500b0040d30af488asm2686451wmo.40.2024.01.10.08.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 08:24:37 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+To: Tomeu Vizoso <tomeu@tomeuvizoso.net>
+Cc: Christian Gmeiner <cgmeiner@igalia.com>, 
+ Lucas Stach <l.stach@pengutronix.de>, 
+ Russell King <linux+etnaviv@armlinux.org.uk>, 
+ Christian Gmeiner <christian.gmeiner@gmail.com>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240110153704.1364073-1-tomeu@tomeuvizoso.net>
+References: <20240110153704.1364073-1-tomeu@tomeuvizoso.net>
+Subject: Re: [PATCH 1/2] drm/etnaviv: Expose a few more chipspecs to
+ userspace
+Message-Id: <170490387684.1887297.10058632363349793019.b4-ty@linaro.org>
+Date: Wed, 10 Jan 2024 17:24:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Nfn0kt/7dCO7kpcR"
-Content-Disposition: inline
-In-Reply-To: <385b06e9-1daa-408a-a0ed-7b09d7d539df@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
+Hi,
 
---Nfn0kt/7dCO7kpcR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 10 Jan 2024 16:37:00 +0100, Tomeu Vizoso wrote:
+> These ones will be needed to make use fo the NN and TP units in the NPUs
+> based on Vivante IP.
+> 
+> 
 
-On Wed, Jan 10, 2024 at 09:54:19AM -0600, Ninad Palsule wrote:
-> Hello Krzysztof,
->=20
->=20
-> On 1/10/24 09:37, Krzysztof Kozlowski wrote:
-> > On 10/01/2024 15:31, Ninad Palsule wrote:
-> > > Hello Krzysztof,
-> > >=20
-> > >=20
-> > >=20
-> > > > > > > I have send it as a separate commit. https://lore.kernel.org/=
-linux-kernel/20231214144954.3833998-1-ninad@linux.ibm.com/
-> > > > > > Why did you do that? It now just adds undocumented compatibles =
-to the
-> > > > > > driver. Please, as Rob requested, work with Lukas on his series=
- to make
-> > > > > > sure that these devices are documented.
-> > > > > I think krzysztof kozlowski suggested to send these patches separ=
-ately:
-> > > > > https://lore.kernel.org/linux-kernel/1c5ace65-2fd8-4503-b22f-e0f5=
-64d1c83f@linaro.org/
-> > > > >=20
-> > > > > Did I misunderstood it? Do you guys want me to include that commi=
-t again?
-> > > > My comment was in DTS thread under specific DTS patch. How did you
-> > > > figure out it applies to driver and bindings? This does not make se=
-nse.
-> > > Sorry for the misunderstanding. Where do you want me to add driver
-> > > patch? Before all DTS patches or after all DTS patches?
-> > Does not matter, why do you insist on combining them with DTS? Drivers
-> > and bindings are going together. DTS better separate, although depending
-> > on the case can be together.
-> >=20
-> I have combined DTS and Driver because DTS was using compatibility string
-> which is not upstream yet hence I thought it is logical to send it under
-> same patchset.
->=20
-> Conor and Rob, Do you have preference?
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.9/arm64-dt)
 
-I'm not sure what you want from me that Krzysztof hasn't already
-provided. dt-bindings and drivers usually go together, and the dts
-patches are often in the same series. If you send dts separately, note
-under the --- line the patches adding the binding so that the platform
-maintainer knows that the compatible has not yet been documented.
+[1/2] drm/etnaviv: Expose a few more chipspecs to userspace
+      (no commit info)
+[2/2] arm64: dts: amlogic: meson-g12-common: Set the rates of the clocks for the NPU
+      https://git.kernel.org/amlogic/c/507b3e756ffcb174d383dd05df5084aed9bb6d14
 
---Nfn0kt/7dCO7kpcR
-Content-Type: application/pgp-signature; name="signature.asc"
+These changes has been applied on the intermediate git tree [1].
 
------BEGIN PGP SIGNATURE-----
+The v6.9/arm64-dt branch will then be sent via a formal Pull Request to the Linux SoC maintainers
+for inclusion in their intermediate git branches in order to be sent to Linus during
+the next merge window, or sooner if it's a set of fixes.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ7EfQAKCRB4tDGHoIJi
-0uh3AQC7n1zpvCOgwRmJ2TWpkVaHRV4kl7Lf3HTTUFgMuyKlOAD+OIT57H0iSn/M
-DmPl0DJh1FNbUbHYufAGfUrXlkzyMQU=
-=NtVA
------END PGP SIGNATURE-----
+In the cases of fixes, those will be merged in the current release candidate
+kernel and as soon they appear on the Linux master branch they will be
+backported to the previous Stable and Long-Stable kernels [2].
 
---Nfn0kt/7dCO7kpcR--
+The intermediate git branches are merged daily in the linux-next tree [3],
+people are encouraged testing these pre-release kernels and report issues on the
+relevant mailing-lists.
+
+If problems are discovered on those changes, please submit a signed-off-by revert
+patch followed by a corrective changeset.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+
+-- 
+Neil
+
 
