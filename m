@@ -1,55 +1,40 @@
-Return-Path: <linux-kernel+bounces-22247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D15829B68
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:35:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C37D0829B6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AC4C1C221B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:35:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65EE4B2317C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 567F64C60F;
-	Wed, 10 Jan 2024 13:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rRuYHojv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665644A993;
+	Wed, 10 Jan 2024 13:33:47 +0000 (UTC)
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 964734C3D7;
-	Wed, 10 Jan 2024 13:33:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86F2C43390;
-	Wed, 10 Jan 2024 13:33:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704893599;
-	bh=80gsdR23OIMDUmaGo86P6z0jlYyc+cs3tLIj2ceqAEY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rRuYHojvCugPDSpoU3P//lFkFdXY7opAArZFaL3Zr9788k4aYSZsFPf2j58BZ6NVB
-	 8kfOX5BlyQhSGyb0Ex3PCsjO7JNNPISfURp+Q/m90qMQLtREQsOJ4zFs9NU9vN9RXm
-	 Ps5dHXUm6XVlmQPKIfHqKlV1UCO2BN1sJQ7za+TZ0CD44Gyl+naHv5UNjowsr+m24Q
-	 t3ElTGyl2alBm0DQrO9a6o5YuUIonf+a7ZUCikcqj8tp1tf7bJZDDY4QixVJ8JLUsh
-	 2MHHbAiZC5kU4HiGyvKKxjVeRk99e/rooBTJ07I9SHRLvyjjYP03++6fIyDJuZPsDz
-	 trHs22lyGlWDw==
-Date: Wed, 10 Jan 2024 13:33:13 +0000
-From: Simon Horman <horms@kernel.org>
-To: Sneh Shah <quic_snehshah@quicinc.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9FE4CB5B;
+	Wed, 10 Jan 2024 13:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1rNYi5-0000Y9-0c; Wed, 10 Jan 2024 14:33:33 +0100
+Date: Wed, 10 Jan 2024 14:33:33 +0100
+From: Florian Westphal <fw@strlen.de>
+To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel@quicinc.com, Andrew Halaney <ahalaney@redhat.com>
-Subject: Re: [PATCH net v3] net: stmmac: Fix ethool link settings ops for
- integrated PCS
-Message-ID: <20240110133313.GA9296@kernel.org>
-References: <20240109144729.26102-1-quic_snehshah@quicinc.com>
+	Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH 1/4] netfilter: nfnetlink_log: use proper helper for
+ fetching physinif
+Message-ID: <20240110133333.GA24888@breakpoint.cc>
+References: <20240110110451.5473-1-ptikhomirov@virtuozzo.com>
+ <20240110110451.5473-2-ptikhomirov@virtuozzo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,17 +43,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240109144729.26102-1-quic_snehshah@quicinc.com>
+In-Reply-To: <20240110110451.5473-2-ptikhomirov@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Tue, Jan 09, 2024 at 08:17:29PM +0530, Sneh Shah wrote:
-> Currently get/set_link_ksettings ethtool ops are dependent on PCS.
-> When PCS is integrated, it will not have separate link config.
-> Bypass configuring and checking PCS for integrated PCS.
+Pavel Tikhomirov <ptikhomirov@virtuozzo.com> wrote:
+> We don't use physindev in __build_packet_message except for getting
+> physinif from it. So let's switch to nf_bridge_get_physinif to get what
+> we want directly.
 > 
-> Fixes: aa571b6275fb ("net: stmmac: add new switch to struct plat_stmmacenet_data")
-> Tested-by: Andrew Halaney <ahalaney@redhat.com> # sa8775p-ride
-> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> ---
+>  net/netfilter/nfnetlink_log.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+> index f03f4d4d7d889..134e05d31061e 100644
+> --- a/net/netfilter/nfnetlink_log.c
+> +++ b/net/netfilter/nfnetlink_log.c
+> @@ -508,7 +508,7 @@ __build_packet_message(struct nfnl_log_net *log,
+>  					 htonl(br_port_get_rcu(indev)->br->dev->ifindex)))
+>  				goto nla_put_failure;
+>  		} else {
+> -			struct net_device *physindev;
+> +			int physinif;
+>  
+>  			/* Case 2: indev is bridge group, we need to look for
+>  			 * physical device (when called from ipv4) */
+> @@ -516,10 +516,10 @@ __build_packet_message(struct nfnl_log_net *log,
+>  					 htonl(indev->ifindex)))
+>  				goto nla_put_failure;
+>  
+> -			physindev = nf_bridge_get_physindev(skb);
+> -			if (physindev &&
+> +			physinif = nf_bridge_get_physinif(skb);
+> +			if (physinif &&
+>  			    nla_put_be32(inst->skb, NFULA_IFINDEX_PHYSINDEV,
+> -					 htonl(physindev->ifindex)))
+> +					 htonl(physinif)))
 
-Reviewed-by: Simon Horman <horms@kernel.org>
-
+I think you can drop this patch and make the last patch pass
+nf_bridge_info->physinif directly.
 
