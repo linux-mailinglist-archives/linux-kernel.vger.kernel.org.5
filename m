@@ -1,185 +1,137 @@
-Return-Path: <linux-kernel+bounces-22343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67713829C66
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:20:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4725F829C67
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0761C26275
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:20:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 569A41C25492
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F30F4A9AD;
-	Wed, 10 Jan 2024 14:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB484A9BE;
+	Wed, 10 Jan 2024 14:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yasro/ST"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eaIAFrcw";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0iTrUNQ6"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D993495C5
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704896369; x=1736432369;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=/v4Pe2wYyZ8N0uUbVO5jFeTCzK60fuWt0/MXhWCIN4M=;
-  b=Yasro/ST9/Gn975zGOLqa5m0FkBgJkj2aZqup3PgHFT6hMkncaz068Zg
-   +cJ9yxjt+TA78uWoimGN/XtZvPLUGEicoppbCuGXna9EvEiNgcFNnmpXS
-   uFeFXKDGeh3RIcIkjtK6bZapyKZs3WK2UXCIWnxUfcevI1a/KTE+BsU8D
-   ZlsrvY4dgA6Mp2vawfU1QVgkEFUACzOD+KkSulseV3jSVNHHtdd6cJLOx
-   5VmF9V6usPCWeergRDDi+HmHFBA8VEcAe1ceN4m7iP3gNBPxXwyorjkWI
-   xgc1KiXydLSJD6PD0iY1Ee7LwlZZUGeksLpA1akW8LxqwTf4J6YKAY6vR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="17122343"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="17122343"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 06:19:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="782194725"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="782194725"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jan 2024 06:19:27 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 10 Jan 2024 06:19:27 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 10 Jan 2024 06:19:27 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 10 Jan 2024 06:19:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nXO198xarOt6AQWa22xlr5oDIMI4qHkbGb+TJ8+R1z1ezqPLEVQjtv0r/Wb7+C/OxbjwGdt/WqxoU2lTKcmrB9EbboieAZl0wr2QSFSLTdtuLTVBp1RDhZg4gPmuw99cUuVOn9Dq82Cugz9lOX81UoD6OECLw3s0UWlCkXYaA8bSH3NeKL6Ui+3op19bnYXSshrpKddXI6ncFWvBaXYkD4VQpBCdup9kY1qR/2spWjJqBTZMjYAvIDWOxvLNjsm1cbvTUYvpBwIg7qSh9e82c4xZZ5QTgHYS1XL1dPg6oOq1TXrgHVz44oJg20VCaiu0v7G+SIm9t/HQ86AYntozvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/v4Pe2wYyZ8N0uUbVO5jFeTCzK60fuWt0/MXhWCIN4M=;
- b=oOMoHF0AThHxkFeZ05x+zjTseGpiMNpEK5Tbtv4pnRnsPy0ok0jfLl4W++tnh5UfzVaQ+yzfKoPDYBdIM+S1WAymfYK/Pwss+3g3tUP40EnCJq8NR0f+l+iLVizsYssNyhkL0pfthUH8fHQJYb6xChgtoOEarSBIpAJczDiBfGXVjMGBVUqR7GPDsAl23qa+v/0xUPDQeyW6Lax9nbp4xKMfOnBWpd5MhJzLjAwhH7MKVF70xzDKExpOlyHxGRsMWoyUFGI8BUxAYrQzKWKwaoXldtVR1uv7bdWY3KUr5Z2TsJAg0SGfxJ1LyEHhMJ7OYZ4cG0IA/iOKJH7x7SPPcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CH0PR11MB5330.namprd11.prod.outlook.com (2603:10b6:610:bd::7)
- by BN9PR11MB5403.namprd11.prod.outlook.com (2603:10b6:408:11c::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18; Wed, 10 Jan
- 2024 14:19:24 +0000
-Received: from CH0PR11MB5330.namprd11.prod.outlook.com
- ([fe80::f01d:1c6a:3c11:80af]) by CH0PR11MB5330.namprd11.prod.outlook.com
- ([fe80::f01d:1c6a:3c11:80af%7]) with mapi id 15.20.7181.015; Wed, 10 Jan 2024
- 14:19:24 +0000
-From: "Winiarska, Iwona" <iwona.winiarska@intel.com>
-To: "rdunlap@infradead.org" <rdunlap@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
-Subject: Re: [PATCH] peci: linux/peci.h: fix Excess kernel-doc description
- warning
-Thread-Topic: [PATCH] peci: linux/peci.h: fix Excess kernel-doc description
- warning
-Thread-Index: AQHaNV3Lws/7mluG4kOf3i4WHyUkf7DTNUaA
-Date: Wed, 10 Jan 2024 14:19:24 +0000
-Message-ID: <a3ea93b54911f553a6ca37d33181be0cf9f89b07.camel@intel.com>
-References: <20231223050605.13961-1-rdunlap@infradead.org>
-In-Reply-To: <20231223050605.13961-1-rdunlap@infradead.org>
-Accept-Language: en-US, pl-PL
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.50.2 (3.50.2-1.fc39) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH0PR11MB5330:EE_|BN9PR11MB5403:EE_
-x-ms-office365-filtering-correlation-id: a74a5ffd-ec97-4175-5a6c-08dc11e72557
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gssgwVgGD/2eIB1eFPf29ZQveQOIXe7BgyXPdqQVfIh562YODlVzDlWOy2akbm6cjMij4wNIarl1oOKfMarUdU5C/VtUA8q1Ce2kVvgOipCwF2y+r8rUi32zpHwq8d4I6ElDFgt/y8q3hJUTjC7egklLUSofLrG/aNchOKM76fSThD04RXnVRFm6sA8pXv5+UVFQH6Jv5dKaEr6iZtlmyiibWAvnjh8wVJMhznkENy4rLZwK1r0Bj2Kh3N5IJwGktDHz/2+I+St7hLQ05hPfJf4gy1sWwaqQQGDn6fScflZ2voSz9Cf/UWG3C/p3i4QArg7yTI87e+63jLsqnQLUMKNqgavwjLhJZid6jXmqxq+6PB146JFCoIL+cKk7NhKOLcxSHgsIcDouZ0nXKqYGKnSfutD0L6Z806PqjyHAb7129ZEdVlSGZw6rf02EXpWWHUs7oxgwsq9MhcaVouKLsgodJE9dgYeVHHhAkNS7yKoSlZojjj6NkH/lm8lh37vKQnUVibZKaPEyzWBmZlG15KUy0ONOQxzSffXOj0idQStjqSRbXpt3oIv/qhMUcRa47wRZArnRm+r36GVYUVknTSqzbk+iM/3pLYtb7XI2BoXw7wW6uBMdrp2bhWqMcjbQcSnNuzyDYHUQ17DI2ufWqZfreR5fY+pw64NavSCBNFc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5330.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(136003)(39860400002)(366004)(230922051799003)(230173577357003)(230273577357003)(64100799003)(451199024)(186009)(1800799012)(83380400001)(71200400001)(26005)(2616005)(122000001)(38100700002)(8676002)(4326008)(8936002)(5660300002)(2906002)(41300700001)(4744005)(4001150100001)(6486002)(6512007)(6506007)(66446008)(64756008)(66476007)(66556008)(316002)(478600001)(66946007)(76116006)(91956017)(110136005)(86362001)(82960400001)(36756003)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bjJpVkRmeEtlYlpLeWpkSS9hOUtoeTljRkExSVVtdW5uR240NFBoTkJ2V1Z3?=
- =?utf-8?B?UUhTOTlLd1A2aUFUejJoTklRaTM2Tjc2dmtVZE1hd1JYWVRyT1dEUWtrbzJ1?=
- =?utf-8?B?VXlXY0NTM0JHTmxlTnBrMjhIVElsR2dCNnBJKy9IdFNwYzBNR3lxL0NGY2p1?=
- =?utf-8?B?V00zN1BPUHB1WENWK3hUK2RXM0pNa0F5bjZKU001UlU3Z3lNQ09wMi9jQk5w?=
- =?utf-8?B?SGFnVS9xTUJIS2VWditXTjNJTWRKVHhoY0dxSTFvdWdoenkreTQyTll2enl2?=
- =?utf-8?B?VHBsR0ZyaVZRZDJhNldTQi9rZFg0REgwNWpwbGdkN3NGaHdFRlUrRnJwbnZj?=
- =?utf-8?B?UzhOcGdrK2JBY1FCdUQzaEMvNWRmSFVsWGJzaHVIKzVubDZXcGV4YVczckg2?=
- =?utf-8?B?WExiMHd6dkxNWmNSTnk5Qzh4a01WNW0vMVFQOWwybTgrTnByclBrR2VDanAr?=
- =?utf-8?B?K3dMMlNPdGxvWlNPLzFBc3YvUXIvT1NmN1VVRXc4Y09GZUIvK0tXaS9Fc1F2?=
- =?utf-8?B?UmN0NzZpcTg2RUpBcnZTRG5xOUcvT2lTUS94OWtTbW9MWnVnRU8wYis3VkJ5?=
- =?utf-8?B?eUdnYmdWRVIvYWI0d3drUDkvQ1plUUFGc1NOYlhub3g2R0IvbkE3WkVxL2ts?=
- =?utf-8?B?cG83bThrcUR1T1VUK05vMldUVkEzbHlUc0xyeTJudTJkclI1NFJoSWsrRHBY?=
- =?utf-8?B?TFJ5OHk1MytpWVlxMzdhSU51b0pCODBEUldGNk5xRkhTQUVsVjVUMno2eXo5?=
- =?utf-8?B?OU5qcnVURnBReldxdHp5QUtLcnZGdkhTd1M4N09scGVpMmRLeG5icUdxbWVw?=
- =?utf-8?B?M1JnUUQwVWVETHNqNHpLQWJzb3BaYVMxaWd4T1hRY1F3M3NrczR6L1BjVytU?=
- =?utf-8?B?UEtCL1ZPMWxIYnYzWUxHaUxTMW5zd1kramlTc0xFSW5aUnZabVBCR3BYN1Zh?=
- =?utf-8?B?UjhXeHJQZXV1SW5OZnNuNElqQjZ5TWpoSlBnVW1odnIyT2dVcGxXZmE1N3Ry?=
- =?utf-8?B?VUZvbGdHaHdkYTQvN1gxcWsrQkFqS1B4d0xtcUkyR2Q3Tk5UaXc2K0RsN2pT?=
- =?utf-8?B?anhWalJTQWVGVGM5L09udlBoekdJeW9rNGMrRHRHQy9oTlVveGUvemVKYmhB?=
- =?utf-8?B?WW1pdXc2U3lHYjlPNE5ITVl2UWllMWU1SStHZGNpM1YrV1pMcWdQWU5HQTdJ?=
- =?utf-8?B?c1lFVHVwVmRtRUpIb0NkcVdxTllPMWRTeWoyMUZGSklSRm9DV2VtRXkxQ09s?=
- =?utf-8?B?VlJTaGlwY1NuUFJzTFl4NFBLR20wdThUTFU5RWhiL2RJd3hwc2NSZm5mZEpR?=
- =?utf-8?B?VXdCUnR4bFVNTW5sL1dXcnN0SmhBYzZPcGUxNVdRSmtiVytKNXhpcmR4NGdi?=
- =?utf-8?B?ZjNrdUVnc2JpT3dHM3dwQjB5RTV0Y1hTb3h3R3dlQUhEMXl1cmxOdkEwSFI4?=
- =?utf-8?B?Qmt6emtvS2lwV0tBNHl4WWdGRDRXYmtnaUhQQjY5MzkrWS9jczQyaEFxLytM?=
- =?utf-8?B?OWErS09DS0FoZG1uR3MwemVlSUY4RkExMWQ4RE9JSXpHNWJ5R3BydDRsdUxm?=
- =?utf-8?B?NHd3Y0RzbHN5Vk5jdzVzd1dUTG5xVWtrQ3RNVm9VZk9TMC84TENnVy9HMHlN?=
- =?utf-8?B?NW9xa2FnN01aUGxNd3JpVWtmVVdiWUtsaWVrSlB6dEkvc2I5Q2tXRlgzWm1L?=
- =?utf-8?B?bHp4L1MxRVV5TW5ZUG1tRVp2Szc0TFVQTXdHQlJ6bXRGS2ZseENDWG5xZVdm?=
- =?utf-8?B?c2o0bUhHU2wwZEdOOEVMdTVnMGluQzFTdGxKYWE4QUxUWEhvMVZ3MmRLK25n?=
- =?utf-8?B?WE5HeTN3VGxrZFI2MEZ3WjY1OXVsWm1aK0lOS0FHdVVSM2hpQW9ZV1ZxR05h?=
- =?utf-8?B?VkEycDB4RndubUhFMm1FSDZsZ3ptS01tMDN5MkEyRWR1U0EyVExPcS9ScGRp?=
- =?utf-8?B?T0Exek5jbEhsVldOVDhhd29CK3NzQXJ0MlhIdjZUZDgrZklOazF5clZtZyth?=
- =?utf-8?B?R3VRT1VPd2Z6R244cWozWUF2STErY0ZrdW1SbXRMOHZsWE95cVNzbFN1WTkr?=
- =?utf-8?B?WjJwTFRHcnNKYXBwVnpkOU4ycW9ZYXhQZHpPQUlYdms1anEzZkUwMGpKaGdK?=
- =?utf-8?B?ZldyTnl1SEJmZzhlNFoybE1LUURjK2EweVNrbUkyd0s4MjBNSndjbmttalFu?=
- =?utf-8?B?U1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4717A7178DAEB648AF0ED5FE9E1648E9@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB2A495DA
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1704896399;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gIIsLuC5UCWneXX0tQDeQvYudGCnylpj0YRWl2ecGtY=;
+	b=eaIAFrcwce/4g8eKcKKjA4Uz64jhBUVS2XZiCIRjiOdFSPxrv7/6tRHj5bLVzG6XQRAl7W
+	oeq2VAhrbfZ+1WgVgVfjlwGbmhZBU5CYFNY0i/q4ShBITGazDQR8UA1nPqgAMZ4VokVrCD
+	rGXRmqRZcj4qLsQFsgYreNGzF1uqb8u0L6xgRZy6UVDhkaoWybiMCtnyyZym31tELyQSYl
+	qEj+2KCq/NXn684dIIG4nAqKttMqUvq986RB79A3coSQYyWWCtZR7Gc/QVaIsAeabV2RDM
+	vsAYak46xCvulkdjZrmN09w/1aMasVGtbjEI6FUc997FA2xsdxaOZrxTXaP4vg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1704896399;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gIIsLuC5UCWneXX0tQDeQvYudGCnylpj0YRWl2ecGtY=;
+	b=0iTrUNQ6l4NIP8XjvYvraasjplrChq/8Z4KSKHWY4LE2uYt3WBWoGwvSN8dG1ALxqzPERA
+	hJ2gRIxaPt/Pr4AQ==
+To: "Zhang, Rui" <rui.zhang@intel.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Cc: "jgross@suse.com" <jgross@suse.com>, "x86@kernel.org" <x86@kernel.org>,
+ "arjan@linux.intel.com" <arjan@linux.intel.com>, "kprateek.nayak@amd.com"
+ <kprateek.nayak@amd.com>, "Tang, Feng" <feng.tang@intel.com>,
+ "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
+ "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>, "ray.huang@amd.com"
+ <ray.huang@amd.com>, "andrew.cooper3@citrix.com"
+ <andrew.cooper3@citrix.com>, "Sivanich, Dimitri"
+ <dimitri.sivanich@hpe.com>, "paulmck@kernel.org" <paulmck@kernel.org>,
+ "Mehta, Sohil" <sohil.mehta@intel.com>, "andy@infradead.org"
+ <andy@infradead.org>
+Subject: Re: [patch 37/53] x86/cpu: Detect real BSP on crash kernels
+In-Reply-To: <ff58623cdf63dc75fc245fd18ee776465f4bb3b8.camel@intel.com>
+References: <20230807130108.853357011@linutronix.de>
+ <20230807135028.381851690@linutronix.de>
+ <7443f3200ef0be756566059e8c9b0657f3cefcff.camel@intel.com>
+ <871qarlvub.ffs@tglx> <87y1czkdlg.ffs@tglx>
+ <ff58623cdf63dc75fc245fd18ee776465f4bb3b8.camel@intel.com>
+Date: Wed, 10 Jan 2024 15:19:58 +0100
+Message-ID: <87frz5jmnl.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5330.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a74a5ffd-ec97-4175-5a6c-08dc11e72557
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 14:19:24.0776
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: peNOkYgIyuI6C0eVnCOjuAWSGL41TKaHKJyo5Wmzb0Ft0UWryre2GJxhHJT/yLU4PwV5vIAK0M1BikxBh0yw73+0vpMD8r6jD4BDMMDwMDI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5403
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
 
-T24gRnJpLCAyMDIzLTEyLTIyIGF0IDIxOjA2IC0wODAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+
-IFJlbW92ZSB0aGUgQGNvbnRyb2xsZXI6IGxpbmUgdG8gcHJldmVudCB0aGUga2VybmVsLWRvYyB3
-YXJuaW5nOg0KPiANCj4gaW5jbHVkZS9saW51eC9wZWNpLmg6ODQ6IHdhcm5pbmc6IEV4Y2VzcyBz
-dHJ1Y3QgbWVtYmVyICdjb250cm9sbGVyJw0KPiBkZXNjcmlwdGlvbiBpbiAncGVjaV9kZXZpY2Un
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9y
-Zz4NCj4gQ2M6IEl3b25hIFdpbmlhcnNrYSA8aXdvbmEud2luaWFyc2thQGludGVsLmNvbT4NCj4g
-Q2M6IG9wZW5ibWNAbGlzdHMub3psYWJzLm9yZw0KDQpSZXZpZXdlZC1ieTogSXdvbmEgV2luaWFy
-c2thIDxpd29uYS53aW5pYXJza2FAaW50ZWwuY29tPg0KDQpUaGFua3MNCi1Jd29uYQ0KDQo+IC0t
-LQ0KPiDCoGluY2x1ZGUvbGludXgvcGVjaS5oIHzCoMKgwqAgMSAtDQo+IMKgMSBmaWxlIGNoYW5n
-ZWQsIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS0gYS9pbmNsdWRlL2xpbnV4L3BlY2kuaCBi
-L2luY2x1ZGUvbGludXgvcGVjaS5oDQo+IC0tLSBhL2luY2x1ZGUvbGludXgvcGVjaS5oDQo+ICsr
-KyBiL2luY2x1ZGUvbGludXgvcGVjaS5oDQo+IEBAIC01OCw3ICs1OCw2IEBAIHN0YXRpYyBpbmxp
-bmUgc3RydWN0IHBlY2lfY29udHJvbGxlciAqdG8NCj4gwqAvKioNCj4gwqAgKiBzdHJ1Y3QgcGVj
-aV9kZXZpY2UgLSBQRUNJIGRldmljZQ0KPiDCoCAqIEBkZXY6IGRldmljZSBvYmplY3QgdG8gcmVn
-aXN0ZXIgUEVDSSBkZXZpY2UgdG8gdGhlIGRldmljZSBtb2RlbA0KPiAtICogQGNvbnRyb2xsZXI6
-IG1hbmFnZXMgdGhlIGJ1cyBzZWdtZW50IGhvc3RpbmcgdGhpcyBQRUNJIGRldmljZQ0KPiDCoCAq
-IEBpbmZvOiBQRUNJIGRldmljZSBjaGFyYWN0ZXJpc3RpY3MNCj4gwqAgKiBAaW5mby5mYW1pbHk6
-IGRldmljZSBmYW1pbHkNCj4gwqAgKiBAaW5mby5tb2RlbDogZGV2aWNlIG1vZGVsDQoNCg==
+On Tue, Jan 09 2024 at 01:54, Zhang, Rui wrote:
+> On Mon, 2024-01-08 at 17:13 +0100, Thomas Gleixner wrote:
+>> > > Unfortunately this causes a regression on Intel Meteorlake
+>> > > platform,
+>> > > where the BSP APIC ID is NOT the lowest numbered APIC ID
+>> > > (instead,
+>> > > CPU12, the first Ecore CPU, has APIC ID 0).
+>> > 
+>> > Bah. Let me think about that.
+>> 
+>> In which order are the APICs/CPUs enumerated by ACPI?
+>
+>
+> This is the order in MADT,
+> $ cat apic.dsl  | grep x2Apic
+> [030h 0048   4]          Processor x2Apic ID : 00000010
+> [040h 0064   4]          Processor x2Apic ID : 00000011
+> [050h 0080   4]          Processor x2Apic ID : 00000018
+> [060h 0096   4]          Processor x2Apic ID : 00000019
+> [070h 0112   4]          Processor x2Apic ID : 00000020
+> [080h 0128   4]          Processor x2Apic ID : 00000021
+> [090h 0144   4]          Processor x2Apic ID : 00000028
+> [0A0h 0160   4]          Processor x2Apic ID : 00000029
+> [0B0h 0176   4]          Processor x2Apic ID : 00000030
+> [0C0h 0192   4]          Processor x2Apic ID : 00000031
+> [0D0h 0208   4]          Processor x2Apic ID : 00000038
+> [0E0h 0224   4]          Processor x2Apic ID : 00000039
+> [0F0h 0240   4]          Processor x2Apic ID : 00000000
+> [100h 0256   4]          Processor x2Apic ID : 00000002
+> [110h 0272   4]          Processor x2Apic ID : 00000004
+> [120h 0288   4]          Processor x2Apic ID : 00000006
+> [130h 0304   4]          Processor x2Apic ID : 00000008
+> [140h 0320   4]          Processor x2Apic ID : 0000000A
+> [150h 0336   4]          Processor x2Apic ID : 0000000C
+> [160h 0352   4]          Processor x2Apic ID : 0000000E
+> [170h 0368   4]          Processor x2Apic ID : 00000040
+> [180h 0384   4]          Processor x2Apic ID : 00000042
+>
+> and this is the order in Linux (from CPU0 to CPUN)
+>       x2APIC ID of logical processor = 0x20 (32)
+>       x2APIC ID of logical processor = 0x10 (16)
+>       x2APIC ID of logical processor = 0x11 (17)
+>       x2APIC ID of logical processor = 0x18 (24)
+>       x2APIC ID of logical processor = 0x19 (25)
+>       x2APIC ID of logical processor = 0x21 (33)
+>       x2APIC ID of logical processor = 0x28 (40)
+>       x2APIC ID of logical processor = 0x29 (41)
+>       x2APIC ID of logical processor = 0x30 (48)
+>       x2APIC ID of logical processor = 0x31 (49)
+>       x2APIC ID of logical processor = 0x38 (56)
+>       x2APIC ID of logical processor = 0x39 (57)
+>       x2APIC ID of logical processor = 0x0 (0)
+>       x2APIC ID of logical processor = 0x2 (2)
+>       x2APIC ID of logical processor = 0x4 (4)
+>       x2APIC ID of logical processor = 0x6 (6)
+>       x2APIC ID of logical processor = 0x8 (8)
+>       x2APIC ID of logical processor = 0xa (10)
+>       x2APIC ID of logical processor = 0xc (12)
+>       x2APIC ID of logical processor = 0xe (14)
+>       x2APIC ID of logical processor = 0x40 (64)
+>       x2APIC ID of logical processor = 0x42 (66)
+
+What a mess...
 
