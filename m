@@ -1,126 +1,159 @@
-Return-Path: <linux-kernel+bounces-21858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DFCC829553
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:44:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69897829557
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE9EF1F27947
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:44:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F17B1C219CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9DC539859;
-	Wed, 10 Jan 2024 08:43:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A463A1D5;
+	Wed, 10 Jan 2024 08:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CeRlS2K7"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QATBXoTT"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCB833CFD;
-	Wed, 10 Jan 2024 08:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5542a7f1f3cso4470780a12.2;
-        Wed, 10 Jan 2024 00:43:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704876230; x=1705481030; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xBqz+NKkAhcga/7KbDtJF7MTdjSbEbQnaZUr3GeRp3U=;
-        b=CeRlS2K73BZ0jiyfJrcSerCsePBTyIHLp0H4SIPv3t0uJxqKsGuZ9vvx8nq0oXovs6
-         HMK7XGcZKns/hTbuP7YxldMSggFbtirGJ5O/jApBW2XjVMDtJvbilGsgPsscdyHf224O
-         WLYTlQmq8cHFppBRoH+Y0WDB+6bE96qtS3Q29bt+51CFlAfQCov2RC+jdsRrr2Y3L+4O
-         ep2+C1/2P58Gd5kvZjtvU0irueC2FGJesEYjwRWnm4JCSMH8zx26q5XZxKy/cvne+AO2
-         KvtsxlpliQsHB+MzXDT92hRYzgxmb/3/K8EdeGYOHuJRQoIJHPpYWzSEvT8bR4oPCbu1
-         kktQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704876230; x=1705481030;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xBqz+NKkAhcga/7KbDtJF7MTdjSbEbQnaZUr3GeRp3U=;
-        b=X1AT9lvB6QH5BaZ/KSQIyoJdFunQfGm8W58tPHUrs/CU8AbBo4r/elET1MfDXCbms3
-         UZl4j7V1b3dERAW9atQfZRNrl78Yp2KwltFX9Q0/swxoWwEKq4uSzr5tlvEuIFZL8OSe
-         rPk2jVmZmsIfOr4jXMhkd6755jCt7O7zC6L2kiI5EZVEHEtvUtf62dRjkB7rpX+XjuOD
-         c6GL+kazhGYEpLJR8TyY96DI8sYb6r2QUgogXSHqAsTMiHkVlJie/ZJ597xcP9NW3mY7
-         6JhWeBLeQvWT/XlXh8ANr8WwRZx52mjugzCtiBYHyvPZ5gBzfFT8QBD/FF0gBxqM+kcD
-         FPpw==
-X-Gm-Message-State: AOJu0YymHhJQtpWp+1cmmnVyamF8WV4MYd1seyxxdkcliQtGMujzLIPD
-	C9xEVvqoxdF+dpBF1FxN67+axy3T7R+h56X+eQxLUydIL08=
-X-Google-Smtp-Source: AGHT+IHa/PFtRzn+HpK1gr7bBYK+GoY2so+241U3ZxtOU8InhDxiYMj+taDmyfj/73a7cxq+54y7jqF4GNUm8x5fFJs=
-X-Received: by 2002:a17:906:3e08:b0:a2a:2498:93c5 with SMTP id
- k8-20020a1709063e0800b00a2a249893c5mr424762eji.73.1704876229573; Wed, 10 Jan
- 2024 00:43:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9702039859
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704876396;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HORRhNn8cQhlCzoO7/tuR5hnshhn8S+KOZbQ0BIusdU=;
+	b=QATBXoTTJxGOORB8isMLBsltDJ0gIKHF/Qn2rl6uVul7pIKSixCFQYSo0rcgNV0arMm2Vv
+	p4nfI6Y7vOFIZJGhBsDy6t3uFuZ+bWNOpM+3+LaP1C4Fm+5MvlL+lSeHvvTAmrXRp1JwO9
+	E8Fw4yUlgMQZfmTD38KQfXtwXh6URNc=
+From: Yajun Deng <yajun.deng@linux.dev>
+To: akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] mm/mmap: simplify vma link and unlink
+Date: Wed, 10 Jan 2024 16:46:22 +0800
+Message-Id: <20240110084622.2425927-1-yajun.deng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109145121.8850-1-rand.sec96@gmail.com>
-In-Reply-To: <20240109145121.8850-1-rand.sec96@gmail.com>
-From: Tali Perry <tali.perry1@gmail.com>
-Date: Wed, 10 Jan 2024 10:43:38 +0200
-Message-ID: <CAHb3i=ttHrFw7NuL3qw1xdXDkGu9tOQdH+WuCMWgukmU6QrTKA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: Fix NULL pointer dereference in npcm_i2c_reg_slave
-To: Rand Deeb <rand.sec96@gmail.com>
-Cc: Avi Fishman <avifishman70@gmail.com>, Tomer Maimon <tmaimon77@gmail.com>, 
-	Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>, 
-	Benjamin Fair <benjaminfair@google.com>, openbmc@lists.ozlabs.org, 
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	deeb.rand@confident.ru, lvc-project@linuxtesting.org, 
-	voskresenski.stanislav@confident.ru
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 9, 2024 at 4:52=E2=80=AFPM Rand Deeb <rand.sec96@gmail.com> wro=
-te:
->
-> In the npcm_i2c_reg_slave function, a potential NULL pointer dereference
-> issue occurs when 'client' is NULL. This patch adds a proper NULL check f=
-or
-> 'client' at the beginning of the function to prevent undefined behavior.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-npcm7xx.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-np=
-cm7xx.c
-> index c1b679737240..cfabfb50211d 100644
-> --- a/drivers/i2c/busses/i2c-npcm7xx.c
-> +++ b/drivers/i2c/busses/i2c-npcm7xx.c
-> @@ -1243,13 +1243,14 @@ static irqreturn_t npcm_i2c_int_slave_handler(str=
-uct npcm_i2c *bus)
->  static int npcm_i2c_reg_slave(struct i2c_client *client)
->  {
->         unsigned long lock_flags;
-> -       struct npcm_i2c *bus =3D i2c_get_adapdata(client->adapter);
-> -
-> -       bus->slave =3D client;
-> +       struct npcm_i2c *bus;
->
-> -       if (!bus->slave)
-> +       if (!client)
->                 return -EINVAL;
->
-> +       bus =3D i2c_get_adapdata(client->adapter);
-> +       bus->slave =3D client;
-> +
->         if (client->flags & I2C_CLIENT_TEN)
->                 return -EAFNOSUPPORT;
->
-> --
-> 2.34.1
->
+The file parameter in the __remove_shared_vm_struct is no longer used,
+remove it.
 
+These functions vma_link() and mmap_region() have some of the same code,
+introduce vma_link_file() helper function to simplify the code.
 
-Thanks for the patch!
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ mm/mmap.c | 44 +++++++++++++++++++-------------------------
+ 1 file changed, 19 insertions(+), 25 deletions(-)
 
-Reviewed-by:tali.perry1@gmail.com
+diff --git a/mm/mmap.c b/mm/mmap.c
+index b78e83d351d2..06f1f3e88598 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -105,7 +105,7 @@ void vma_set_page_prot(struct vm_area_struct *vma)
+  * Requires inode->i_mapping->i_mmap_rwsem
+  */
+ static void __remove_shared_vm_struct(struct vm_area_struct *vma,
+-		struct file *file, struct address_space *mapping)
++				      struct address_space *mapping)
+ {
+ 	if (vma_is_shared_maywrite(vma))
+ 		mapping_unmap_writable(mapping);
+@@ -126,7 +126,7 @@ void unlink_file_vma(struct vm_area_struct *vma)
+ 	if (file) {
+ 		struct address_space *mapping = file->f_mapping;
+ 		i_mmap_lock_write(mapping);
+-		__remove_shared_vm_struct(vma, file, mapping);
++		__remove_shared_vm_struct(vma, mapping);
+ 		i_mmap_unlock_write(mapping);
+ 	}
+ }
+@@ -392,26 +392,30 @@ static void __vma_link_file(struct vm_area_struct *vma,
+ 	flush_dcache_mmap_unlock(mapping);
+ }
+ 
++static void vma_link_file(struct vm_area_struct *vma)
++{
++	struct file *file = vma->vm_file;
++	struct address_space *mapping;
++
++	if (file) {
++		mapping = file->f_mapping;
++		i_mmap_lock_write(mapping);
++		__vma_link_file(vma, mapping);
++		i_mmap_unlock_write(mapping);
++	}
++}
++
+ static int vma_link(struct mm_struct *mm, struct vm_area_struct *vma)
+ {
+ 	VMA_ITERATOR(vmi, mm, 0);
+-	struct address_space *mapping = NULL;
+ 
+ 	vma_iter_config(&vmi, vma->vm_start, vma->vm_end);
+ 	if (vma_iter_prealloc(&vmi, vma))
+ 		return -ENOMEM;
+ 
+ 	vma_start_write(vma);
+-
+ 	vma_iter_store(&vmi, vma);
+-
+-	if (vma->vm_file) {
+-		mapping = vma->vm_file->f_mapping;
+-		i_mmap_lock_write(mapping);
+-		__vma_link_file(vma, mapping);
+-		i_mmap_unlock_write(mapping);
+-	}
+-
++	vma_link_file(vma);
+ 	mm->map_count++;
+ 	validate_mm(mm);
+ 	return 0;
+@@ -519,10 +523,9 @@ static inline void vma_complete(struct vma_prepare *vp,
+ 	}
+ 
+ 	if (vp->remove && vp->file) {
+-		__remove_shared_vm_struct(vp->remove, vp->file, vp->mapping);
++		__remove_shared_vm_struct(vp->remove, vp->mapping);
+ 		if (vp->remove2)
+-			__remove_shared_vm_struct(vp->remove2, vp->file,
+-						  vp->mapping);
++			__remove_shared_vm_struct(vp->remove2, vp->mapping);
+ 	} else if (vp->insert) {
+ 		/*
+ 		 * split_vma has split insert from vma, and needs
+@@ -2889,16 +2892,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 	vma_start_write(vma);
+ 	vma_iter_store(&vmi, vma);
+ 	mm->map_count++;
+-	if (vma->vm_file) {
+-		i_mmap_lock_write(vma->vm_file->f_mapping);
+-		if (vma_is_shared_maywrite(vma))
+-			mapping_allow_writable(vma->vm_file->f_mapping);
+-
+-		flush_dcache_mmap_lock(vma->vm_file->f_mapping);
+-		vma_interval_tree_insert(vma, &vma->vm_file->f_mapping->i_mmap);
+-		flush_dcache_mmap_unlock(vma->vm_file->f_mapping);
+-		i_mmap_unlock_write(vma->vm_file->f_mapping);
+-	}
++	vma_link_file(vma);
+ 
+ 	/*
+ 	 * vma_merge() calls khugepaged_enter_vma() either, the below
+-- 
+2.25.1
+
 
