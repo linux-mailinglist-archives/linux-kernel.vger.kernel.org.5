@@ -1,79 +1,80 @@
-Return-Path: <linux-kernel+bounces-22841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 112A482A3DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:23:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74B5882A3E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:24:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEFD11C26808
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:23:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2272B28A880
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7ACD4F8A5;
-	Wed, 10 Jan 2024 22:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1FA5024A;
+	Wed, 10 Jan 2024 22:24:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNtPaD4k"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jEvgD3ZH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB344F882;
-	Wed, 10 Jan 2024 22:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d4ca2fd2fbso24861035ad.2;
-        Wed, 10 Jan 2024 14:23:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704925409; x=1705530209; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YxsxElpc+jT4mmfFhZPh3DZtom6DY7JYexQS1ckDeao=;
-        b=HNtPaD4kJRUspPNKpAUr2dxoiG8LyYKKlLz247S4HTflSjv54I01jFxnLeaxPplTKq
-         JL5L2ui0g8zSJfFie9jlZ8/n/LODPmODsrKOkWvBPWOTBlJlvcRBKIoYnSSJIDS5XbKz
-         e0MufS6DsxAexT8E7O6UgDpuHBoiarsdaTQjZp9YTyEQKIrpMTCZWPYIv3Ns4oKJ606I
-         XQ7eP7eLQAJCHSjByllqx8D0qj1bUXy61yxVO/Zhiaxxaud42LX0RW/iECrAioeLad1F
-         quq2NYU30qnuhN5yCjl3avY/1G0fY5iPsnemHGKzeRB+O+YrYu4+UakLYFS38GVxS5ri
-         FtuA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5113350241
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704925449;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fBOWuD+AHY9IJNnA7VqxZgcnrcyqcpD70bfuMsWeGQY=;
+	b=jEvgD3ZHuS3Hmu7ciiWvF/yoeTwYdMJ6pwZxOugz4QttpVQzJrQz5rbI4Pd/VrcZGu1eBJ
+	yqkq7O/WA5mUua+g48xxGg7XqOCwzVVdpZyQzuMt01qDbDGWS9sffSOmQYxqSQ7TQp7ONc
+	dKL5rCmd6eQOkyqoB5wPtNQOq2XqSEE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-pzmDWmo2NZ-zgHUhhjjPXw-1; Wed, 10 Jan 2024 17:24:08 -0500
+X-MC-Unique: pzmDWmo2NZ-zgHUhhjjPXw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40e566259e3so8895875e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:24:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704925409; x=1705530209;
+        d=1e100.net; s=20230601; t=1704925446; x=1705530246;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YxsxElpc+jT4mmfFhZPh3DZtom6DY7JYexQS1ckDeao=;
-        b=TkKzWy2hqWN7eP/jxQGEk5nnugI9YSV+Kd00lBRS6rjSNDyevCALOHNanZvgyGjcxt
-         a8PV9XWKzlQUqtKOI0KkokdghfHxuciCbSemIMz4wC4GCH/2f66eo6PuwY7ThNcBjUO2
-         /GDmNVMINCT754PRR1ASd4h4SeXIHTZF29SX0F1C685oqh+Ud9kIKMjcy28Mto7OPWYf
-         DAan5cbS9dRlN9KxTBTVvClPgdQOS2YbycFYwSQ5l5lvbOg/z9EmEAomVLkRPWPNcCtp
-         PVHw+9gRvkNbyJLOuqfWjtaoowJeAy9lfdf9btU1nBaEnauKpUOvb9ybFMxCjuiNZu5w
-         6C6Q==
-X-Gm-Message-State: AOJu0YwaLBJU6uW1TOsuH0ppW4GAYtz6cgcOK5Zp0rJy55diBcV9Ls0U
-	IfpZp2dRLaGPv1tlOwFLdt4=
-X-Google-Smtp-Source: AGHT+IGeLGDDAGN9Ml97cgT8MOww4VOvyzegLjaWhxhlroPbTTKHlKjmxi9wcV5Ku03hRVlwCCLv3w==
-X-Received: by 2002:a17:90b:4d91:b0:28b:d90c:c724 with SMTP id oj17-20020a17090b4d9100b0028bd90cc724mr180672pjb.54.1704925408886;
-        Wed, 10 Jan 2024 14:23:28 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id gk9-20020a17090b118900b0028d19ddb1afsm2095854pjb.33.2024.01.10.14.23.27
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fBOWuD+AHY9IJNnA7VqxZgcnrcyqcpD70bfuMsWeGQY=;
+        b=ke5HvYORxKlKUDrapCAdoceegvQr5OcGQNw5cOCErqlBRydT0drJ4PKaBm+7j4JDEL
+         wZ46cmQKkgonPedADkHmhXVcUdsr+EMVaBHYGLUB4aoeLc8HKgQuBKSF8p8Ek7x64Ew4
+         qaXvO+qbr8+qddWItGbj5Tnm4VJbLApIiqtaM1IxFxUm+XFBhl3//xCZOTdA0ZJX0iQl
+         k5Den5DTXhplkz14CbGRByxz7CAZCI9bA8dbNRdJDO1G94lrVmipv0aCGMtbOkOT1XvB
+         rQj4CS57mRAip811jaofLG+4V9+kghX8EZwMwdvQPNdePQtfrXMA3VvMgLMjUv5ebH0C
+         sbbQ==
+X-Gm-Message-State: AOJu0YyMlt6koeWDHSsyTrDfWfd8u+vPq0qoMvn1qvA+1V1ny9zV761a
+	trWVc9zOpb5x/wGbqfqnpct4itrfpvCmMA0uLFBN98896MniU4lpUSGbZ3s4b6edeR78QtRGCE7
+	EMcmiib/9wUntx+9yKrHek4OXbr4z8P459gCIdfKv
+X-Received: by 2002:a05:600c:4513:b0:40d:72b9:4403 with SMTP id t19-20020a05600c451300b0040d72b94403mr53599wmo.179.1704925446472;
+        Wed, 10 Jan 2024 14:24:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHiLiNT7yBh6m9iddoQfphuCX3lPnIYZ1lLGnv3FnzjuC2FJxsefP3JW1UmZHgl2mqZVRb2ZQ==
+X-Received: by 2002:a05:600c:4513:b0:40d:72b9:4403 with SMTP id t19-20020a05600c451300b0040d72b94403mr53592wmo.179.1704925445992;
+        Wed, 10 Jan 2024 14:24:05 -0800 (PST)
+Received: from redhat.com ([2a06:c701:73ef:4100:2cf6:9475:f85:181e])
+        by smtp.gmail.com with ESMTPSA id s8-20020a05600c45c800b0040e527602c8sm3593896wmo.9.2024.01.10.14.24.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 14:23:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 10 Jan 2024 14:23:26 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Miklos Szeredi <mszeredi@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-	linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-	Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <christian@brauner.io>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Matthew House <mattlloydhouse@gmail.com>,
-	Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
-Message-ID: <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-6-mszeredi@redhat.com>
+        Wed, 10 Jan 2024 14:24:05 -0800 (PST)
+Date: Wed, 10 Jan 2024 17:24:02 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Steve Sistare <steven.sistare@oracle.com>
+Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	Jason Wang <jasowang@redhat.com>,
+	Si-Wei Liu <si-wei.liu@oracle.com>,
+	Eugenio Perez Martin <eperezma@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>, Eli Cohen <elic@nvidia.com>,
+	Xie Yongji <xieyongji@bytedance.com>
+Subject: Re: [RFC V1 01/13] vhost-vdpa: count pinned memory
+Message-ID: <20240110172306-mutt-send-email-mst@kernel.org>
+References: <1704919215-91319-1-git-send-email-steven.sistare@oracle.com>
+ <1704919215-91319-2-git-send-email-steven.sistare@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,41 +83,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231025140205.3586473-6-mszeredi@redhat.com>
+In-Reply-To: <1704919215-91319-2-git-send-email-steven.sistare@oracle.com>
 
-Hi,
+On Wed, Jan 10, 2024 at 12:40:03PM -0800, Steve Sistare wrote:
+> Remember the count of pinned memory for the device.
+> 
+> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
 
-On Wed, Oct 25, 2023 at 04:02:03PM +0200, Miklos Szeredi wrote:
-> Add way to query the children of a particular mount.  This is a more
-> flexible way to iterate the mount tree than having to parse the complete
-> /proc/self/mountinfo.
-> 
-> Allow listing either
-> 
->  - immediate child mounts only, or
-> 
->  - recursively all descendant mounts (depth first).
-> 
-> Lookup the mount by the new 64bit mount ID.  If a mount needs to be queried
-> based on path, then statx(2) can be used to first query the mount ID
-> belonging to the path.
-> 
-> Return an array of new (64bit) mount ID's.  Without privileges only mounts
-> are listed which are reachable from the task's root.
-> 
-> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Can we have iommufd support in vdpa so we do not keep extending these hacks?
 
-with this patch in the tree, all sh4 builds fail with ICE.
 
-during RTL pass: final
-In file included from fs/namespace.c:11:
-fs/namespace.c: In function '__se_sys_listmount':
-include/linux/syscalls.h:258:9: internal compiler error: in change_address_1, at emit-rtl.c:2275
+> ---
+>  drivers/vhost/vdpa.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index da7ec77cdaff..10fb95bcca1a 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -59,6 +59,7 @@ struct vhost_vdpa {
+>  	int in_batch;
+>  	struct vdpa_iova_range range;
+>  	u32 batch_asid;
+> +	long pinned_vm;
+>  };
+>  
+>  static DEFINE_IDA(vhost_vdpa_ida);
+> @@ -893,6 +894,7 @@ static void vhost_vdpa_pa_unmap(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
+>  			unpin_user_page(page);
+>  		}
+>  		atomic64_sub(PFN_DOWN(map->size), &dev->mm->pinned_vm);
+> +		v->pinned_vm -= PFN_DOWN(map->size);
+>  		vhost_vdpa_general_unmap(v, map, asid);
+>  		vhost_iotlb_map_free(iotlb, map);
+>  	}
+> @@ -975,9 +977,10 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
+>  		return r;
+>  	}
+>  
+> -	if (!vdpa->use_va)
+> +	if (!vdpa->use_va) {
+>  		atomic64_add(PFN_DOWN(size), &dev->mm->pinned_vm);
+> -
+> +		v->pinned_vm += PFN_DOWN(size);
+> +	}
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.39.3
 
-I tested with gcc 8.2, 11.3, 11.4, and 12.3. The compiler version
-does not make a difference. Has anyone else seen the same problem ?
-If so, any idea what to do about it ?
-
-Thanks,
-Guenter
 
