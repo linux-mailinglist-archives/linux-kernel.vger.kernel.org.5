@@ -1,208 +1,220 @@
-Return-Path: <linux-kernel+bounces-22886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8559382A4DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:18:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFED582A4E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:18:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D598528AA03
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:18:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11DD31C226A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5EAF56B75;
-	Wed, 10 Jan 2024 23:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCD24F8B2;
+	Wed, 10 Jan 2024 23:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="vI4rjziU"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RtQg7j3p"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43A256753
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 23:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7bed9f0ea20so79869739f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:14:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704928493; x=1705533293; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+8eq1Ys0e5NviyjpdbbjANOonZWXJ28I2i4yrtMskh0=;
-        b=vI4rjziUsO94iwrs8LXUthW7VJ/8qfTIfo+u/DtxgNg19YbXfaK/k4/hunsoGSYvE2
-         wVsZJvbRblltnQcnniAmDaari42C/jUYCXiaqtj+kkBDgEPTwUYkjs3w5IMovCQ74LNy
-         JdP0HvdQwRGtPZhChczy4oHxJ9lRUG1P0g1TPztXwROtroGR/h0FI1djNwRHk6GiWWS5
-         qKxBy5TCKUE/Cc/pXPi9kFCOgf+AJ1/xjya7vN6gmAl9c8SxN739yPpjqYwc/CVy6HPG
-         Qlm1VatVNQPa/4TQobz550KdjL/KGxLJ2D/ySW1UTajFZ75NiJqqcG63ECOM7sdy6/bx
-         D2kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704928493; x=1705533293;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+8eq1Ys0e5NviyjpdbbjANOonZWXJ28I2i4yrtMskh0=;
-        b=IIeJTy6F7hj/LGsV013zpxuN4s8J9xcxjbahzKA9fB5nsJ3BMvV/IxsGMODaT38OC8
-         6wDmigH+9Hy8ODtNRUDgw3Si0BpMywiM/GlRjQz4UPJHMqwMKKe56Paq2+45UpQSznkX
-         7Cku4A8HzTaDYHW0kIKu/TYoYyFIxGWPFSAjWl1NaaxUgXidCIRn8TAEnS+FjD1hruN5
-         RmRW8DX366LBotU4qhrL5XNRu1aEW79hl61q4lKLIhnP8WvMxy5EGU7TY99e91FkZ5n5
-         Zw9E1vJtChVZIrC5ePbayoCZ4r7jjV6it47jmsB53sRmskNPxdguxiV6/bCOt1scbqNl
-         +sDg==
-X-Gm-Message-State: AOJu0Yy9tCQ23RoDrDY+XUoAwvq3GLSs6a1+zEWtrxOFE/nttCE68lkD
-	lZ+sXv8xWbJhAXfcbfcVgOG3kZu8aXM5nU1TbIZBJ01oZnU=
-X-Google-Smtp-Source: AGHT+IE/I4mp9gKGXQVF4buLvs7fObnRnWv0jCa0fj5/bcDDswwtsk/Th12J1Chb2GQBfGKkmS6ZdA==
-X-Received: by 2002:a05:6602:2c8b:b0:7bf:c4:1ffb with SMTP id i11-20020a0566022c8b00b007bf00c41ffbmr507836iow.17.1704928493059;
-        Wed, 10 Jan 2024 15:14:53 -0800 (PST)
-Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id co13-20020a0566383e0d00b0046e3b925818sm1185503jab.37.2024.01.10.15.14.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 15:14:52 -0800 (PST)
-From: Atish Patra <atishp@rivosinc.com>
-To: linux-kernel@vger.kernel.org
-Cc: Atish Patra <atishp@rivosinc.com>,
-	Anup Patel <anup@brainfault.org>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Atish Patra <atishp@atishpatra.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Guo Ren <guoren@kernel.org>,
-	Icenowy Zheng <uwu@icenowy.me>,
-	kvm-riscv@lists.infradead.org,
-	kvm@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Will Deacon <will@kernel.org>,
-	Vladimir Isaev <vladimir.isaev@syntacore.com>
-Subject: [v3 10/10] RISC-V: KVM: Support 64 bit firmware counters on RV32
-Date: Wed, 10 Jan 2024 15:13:59 -0800
-Message-Id: <20240110231359.1239367-11-atishp@rivosinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240110231359.1239367-1-atishp@rivosinc.com>
-References: <20240110231359.1239367-1-atishp@rivosinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084D057313;
+	Wed, 10 Jan 2024 23:14:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA1EBC433C7;
+	Wed, 10 Jan 2024 23:14:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704928499;
+	bh=fW8f1kPNQnVkNZGs8Z1MR+JZ9aRPSsMtuYxNiBUsgdQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RtQg7j3pFlz65bHoDwiRmQL1CVaCVpugasl6HJIxrq7rS3umMsaR6VnT1f5pA033f
+	 iDg6fCu8pJuZwF/aDYxLKdx99YdJnk3pugsMPK48efhkovNv8t298I5OMNFEmJHg1T
+	 3JYQb+FyLJgJI/U7sOeNlnDElDvvxnHKOFkvJLyUW0TjHaoVap1u5kswi2RU5sl20o
+	 nLuESbnjLptBVIIeWdCrCSYtm/lH/LEFnqnvAjfC1NBlQqlENeDT60SfA6NxPDhzaU
+	 Bxm311DHHd4K/+kHPQ6iBUQ+zKsFi4pMQCTS+VE8+xTc/xvK4AxseVg3ezNbGkvLnR
+	 riBrTl//mUXXQ==
+Received: (nullmailer pid 2980300 invoked by uid 1000);
+	Wed, 10 Jan 2024 23:14:56 -0000
+Date: Wed, 10 Jan 2024 17:14:56 -0600
+From: Rob Herring <robh@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>, Jonathan Cameron <jic23@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>, Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>, Frank Rowand <frowand.list@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>, linux-spi@vger.kernel.org, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/13] spi: dt-bindings: adi,axi-spi-engine: add offload
+ bindings
+Message-ID: <20240110231456.GB2854345-robh@kernel.org>
+References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+ <20240109-axi-spi-engine-series-3-v1-4-e42c6a986580@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240109-axi-spi-engine-series-3-v1-4-e42c6a986580@baylibre.com>
 
-The SBI v2.0 introduced a fw_read_hi function to read 64 bit firmware
-counters for RV32 based systems.
+On Wed, Jan 10, 2024 at 01:49:45PM -0600, David Lechner wrote:
+> The ADI AXI SPI Engine driver supports offloading SPI transfers to
+> hardware. This is essentially a feature that allows recording an
+> arbitrary sequence of SPI transfers and then playing them back with
+> no CPU intervention via a hardware trigger.
+> 
+> This adds the bindings for this feature. Each SPI Engine instance
+> can have from 0 to 32 offload instances. Each offload instance has a
+> trigger input and a data stream output. As an example, this could be
+> used with an ADC SPI peripheral. In this case the trigger is connected
+> to a PWM/clock to determine the sampling rate for the ADC and the output
+> stream is connected to a DMA channel to pipe the sample data to memory.
+> 
+> SPI peripherals act as consumers of the offload instances. Typically,
+> one SPI peripheral will be connected to one offload instance. But to
+> make the bindings future-proof, the property is an array.
 
-Add infrastructure to support that.
+Is there some sort of arbitration between multiple offload engines on 
+the same chip select? If not, I don't see how it would work.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Signed-off-by: Atish Patra <atishp@rivosinc.com>
----
- arch/riscv/include/asm/kvm_vcpu_pmu.h |  4 ++-
- arch/riscv/kvm/vcpu_pmu.c             | 37 ++++++++++++++++++++++++++-
- arch/riscv/kvm/vcpu_sbi_pmu.c         |  6 +++++
- 3 files changed, 45 insertions(+), 2 deletions(-)
+I think this whole thing could be simplified down to just 3 
+SPI controller properties: pwms, dmas, and adi,offload-cs-map. Each 
+property is has entries equal the number of offload engines. The last 
+one maps an offload engine to a SPI chip-select.
 
-diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-index 8cb21a4f862c..e0ad27dea46c 100644
---- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
-+++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-@@ -20,7 +20,7 @@ static_assert(RISCV_KVM_MAX_COUNTERS <= 64);
- 
- struct kvm_fw_event {
- 	/* Current value of the event */
--	unsigned long value;
-+	u64 value;
- 
- 	/* Event monitoring status */
- 	bool started;
-@@ -91,6 +91,8 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
- 				     struct kvm_vcpu_sbi_return *retdata);
- int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
- 				struct kvm_vcpu_sbi_return *retdata);
-+int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
-+				      struct kvm_vcpu_sbi_return *retdata);
- void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu);
- int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned long saddr_low,
- 				      unsigned long saddr_high, unsigned long flags,
-diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-index 063e11685340..31016934cd67 100644
---- a/arch/riscv/kvm/vcpu_pmu.c
-+++ b/arch/riscv/kvm/vcpu_pmu.c
-@@ -196,6 +196,29 @@ static int pmu_get_pmc_index(struct kvm_pmu *pmu, unsigned long eidx,
- 	return kvm_pmu_get_programmable_pmc_index(pmu, eidx, cbase, cmask);
- }
- 
-+static int pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
-+			      unsigned long *out_val)
-+{
-+	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
-+	struct kvm_pmc *pmc;
-+	int fevent_code;
-+
-+	if (!IS_ENABLED(CONFIG_32BIT))
-+		return -EINVAL;
-+
-+	pmc = &kvpmu->pmc[cidx];
-+
-+	if (pmc->cinfo.type != SBI_PMU_CTR_TYPE_FW)
-+		return -EINVAL;
-+
-+	fevent_code = get_event_code(pmc->event_idx);
-+	pmc->counter_val = kvpmu->fw_event[fevent_code].value;
-+
-+	*out_val = pmc->counter_val >> 32;
-+
-+	return 0;
-+}
-+
- static int pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
- 			unsigned long *out_val)
- {
-@@ -701,6 +724,18 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
- 	return 0;
- }
- 
-+int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
-+				      struct kvm_vcpu_sbi_return *retdata)
-+{
-+	int ret;
-+
-+	ret = pmu_fw_ctr_read_hi(vcpu, cidx, &retdata->out_val);
-+	if (ret == -EINVAL)
-+		retdata->err_val = SBI_ERR_INVALID_PARAM;
-+
-+	return 0;
-+}
-+
- int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
- 				struct kvm_vcpu_sbi_return *retdata)
- {
-@@ -774,7 +809,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
- 			pmc->cinfo.csr = CSR_CYCLE + i;
- 		} else {
- 			pmc->cinfo.type = SBI_PMU_CTR_TYPE_FW;
--			pmc->cinfo.width = BITS_PER_LONG - 1;
-+			pmc->cinfo.width = 63;
- 		}
- 	}
- 
-diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pmu.c
-index 9f61136e4bb1..58a0e5587e2a 100644
---- a/arch/riscv/kvm/vcpu_sbi_pmu.c
-+++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
-@@ -64,6 +64,12 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
- 	case SBI_EXT_PMU_COUNTER_FW_READ:
- 		ret = kvm_riscv_vcpu_pmu_ctr_read(vcpu, cp->a0, retdata);
- 		break;
-+	case SBI_EXT_PMU_COUNTER_FW_READ_HI:
-+		if (IS_ENABLED(CONFIG_32BIT))
-+			ret = kvm_riscv_vcpu_pmu_fw_ctr_read_hi(vcpu, cp->a0, retdata);
-+		else
-+			retdata->out_val = 0;
-+		break;
- 	case SBI_EXT_PMU_SNAPSHOT_SET_SHMEM:
- 		ret = kvm_riscv_vcpu_pmu_setup_snapshot(vcpu, cp->a0, cp->a1, cp->a2, retdata);
- 		break;
--- 
-2.34.1
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
+>  .../spi/adi,axi-spi-engine-peripheral-props.yaml   | 24 +++++++++++
+>  .../bindings/spi/adi,axi-spi-engine.yaml           | 49 +++++++++++++++++++++-
+>  .../bindings/spi/spi-peripheral-props.yaml         |  1 +
+>  3 files changed, 73 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/adi,axi-spi-engine-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/adi,axi-spi-engine-peripheral-props.yaml
+> new file mode 100644
+> index 000000000000..19b685fc3b39
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/adi,axi-spi-engine-peripheral-props.yaml
+> @@ -0,0 +1,24 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/adi,axi-spi-engine-peripheral-props.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Peripheral properties for Analog Devices AXI SPI Engine Controller
+> +
+> +maintainers:
+> +  - Michael Hennerich <Michael.Hennerich@analog.com>
+> +  - Nuno Sá <nuno.sa@analog.com>
+> +
+> +properties:
+> +  adi,offloads:
+> +    description:
+> +      List of AXI SPI Engine offload instances assigned to this peripheral.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    maxItems: 32
+> +    items:
+> +      items:
+> +        - minimum: 0
+> +          maximum: 31
 
+This defines a matrix. You want:
+
+minItems: 1
+maxItems: 32
+items:
+  maximum: 31
+
+(0 is already the min).
+
+> +
+> +additionalProperties: true
+> diff --git a/Documentation/devicetree/bindings/spi/adi,axi-spi-engine.yaml b/Documentation/devicetree/bindings/spi/adi,axi-spi-engine.yaml
+> index d48faa42d025..69f3261bab47 100644
+> --- a/Documentation/devicetree/bindings/spi/adi,axi-spi-engine.yaml
+> +++ b/Documentation/devicetree/bindings/spi/adi,axi-spi-engine.yaml
+> @@ -21,6 +21,23 @@ maintainers:
+>  allOf:
+>    - $ref: /schemas/spi/spi-controller.yaml#
+>  
+> +$defs:
+> +  offload:
+> +    description:
+> +      Describes the connections of the trigger input and the data output stream
+> +      of one or more offload instances.
+> +
+> +    properties:
+> +      reg:
+> +        description:
+> +          Index of the offload instance.
+> +        items:
+> +          - minimum: 0
+> +            maximum: 31
+> +
+> +    required:
+> +      - reg
+> +
+>  properties:
+>    compatible:
+>      const: adi,axi-spi-engine-1.00.a
+> @@ -41,6 +58,22 @@ properties:
+>        - const: s_axi_aclk
+>        - const: spi_clk
+>  
+> +  offloads:
+> +    type: object
+> +    description: Zero or more offloads supported by the controller.
+> +
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +    patternProperties:
+> +      "^offload@[0-8a-f]+$":
+> +        type: object
+> +        $ref: '#/$defs/offload'
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -62,5 +95,19 @@ examples:
+>          #address-cells = <1>;
+>          #size-cells = <0>;
+>  
+> -        /* SPI devices */
+> +        offloads {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            offload@0 {
+> +                compatible = "adi,example-offload";
+
+No fake examples please. This should give you a warning.
+
+> +                reg = <0>;
+> +            };
+> +        };
+> +
+> +        adc@0 {
+> +            compatible = "adi,example-adc";
+> +            reg = <0>;
+> +            adi,offloads = <0>;
+> +        };
+>      };
+> diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+> index 1c8e71c18234..7beb5a3798a5 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+> @@ -132,6 +132,7 @@ properties:
+>  
+>  # The controller specific properties go here.
+>  allOf:
+> +  - $ref: adi,axi-spi-engine-peripheral-props.yaml#
+>    - $ref: arm,pl022-peripheral-props.yaml#
+>    - $ref: cdns,qspi-nor-peripheral-props.yaml#
+>    - $ref: samsung,spi-peripheral-props.yaml#
+> 
+> -- 
+> 2.43.0
+> 
 
