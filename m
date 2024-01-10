@@ -1,148 +1,82 @@
-Return-Path: <linux-kernel+bounces-21710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4F4829319
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:50:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE7882931C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:52:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68ADB1C25440
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:50:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C9AF28929C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B89CA4E;
-	Wed, 10 Jan 2024 04:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="h01b65df"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3624AD51A;
+	Wed, 10 Jan 2024 04:52:06 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FDA04C85;
-	Wed, 10 Jan 2024 04:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704862202;
-	bh=bY8Nz66h++CtVSG8p+P0BbueoIEyl9gmHpFlPmNUyI8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=h01b65dfAfwZoQuDd1XcBiTMb4ed03c4tfJC8ZuEu+txAmw/cBS/WtwBqCm3b0/v1
-	 kSzZvUW3D9pSEGUXk9/yo0J8OJ585K9CjA5Za3wnGzcDUOzPVq1JQTorGFmDvuOipl
-	 /mRIOdDNU+babcW+Laui0Eyp92/6v1fO/qQdy3aUtXfLFPpYl+oIvlWKRW77UCGZfv
-	 mIgNHbfuNYp/3jUyqBfQlipgpnMdo07rNmrsdMywxlTCGztrtnni9iR7DIwf2GCx2X
-	 QPGE1RJqWp5DygRUgdh+MdfJJl9GCEZzBsFvaVMMNBijUOB16lOvmoJJpoNJddlBhZ
-	 S7yFonZ/i6UmA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T8wMX5cyyz4wbv;
-	Wed, 10 Jan 2024 15:50:00 +1100 (AEDT)
-Date: Wed, 10 Jan 2024 15:49:59 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Paul Moore <paul@paul-moore.com>, Casey Schaufler
- <casey@schaufler-ca.com>, Kees Cook <keescook@chromium.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: linux-next: manual merge of the security tree with the block
- tree
-Message-ID: <20240110154959.77a213e3@canb.auug.org.au>
-In-Reply-To: <20231204120314.5718b5f6@canb.auug.org.au>
-References: <20231204120314.5718b5f6@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB016FB8
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 04:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7baae0a27efso213328439f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 20:52:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704862324; x=1705467124;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x936MVynPSqzvoZrst1AzDJ72ez9E+22/8OyqN1nYYA=;
+        b=rtKU3R6+JmujXSxpj6bEYTf72v9b3Embie+TF76ywITYg9ojKZwa487/z480IOskFm
+         S/kTnXx3HYqmv7GKHll56NiMFQXi5aVy4PRmoIzwrggJNZDDFrP3Gun2kf2I55tMHrvv
+         VBqNuWwTOgsnkSTcZYZCfSFDnT0AenDFwJgSvrsj0UzJiUvteM3bXphYIA7Fek2sUdpK
+         /vKWkhptexJRR2LXlT9VXCRhY+NzyVnqrofQfWkSKJbrZ6dI/hp5SaEwSs2B0PPDgQPh
+         +Nd5KZQymdVsa7342UTDfmaiWFtCCExV1NOTXWGMLXQwnLBAe8/CM1xLpmIvMkRgc7yk
+         WS0w==
+X-Gm-Message-State: AOJu0Yw3pmkQh6+Yd14V6wPCQvE7E2b122Ca68P55KC60V3Ii2IGH7mC
+	Ikq8LIBe3WTPC8yMDNAJd6XBL5OQhc4ldZNU4crAiFjd1Iod
+X-Google-Smtp-Source: AGHT+IHYbFb/OECz75DeG4E5fovu1SDI9wSD2or30Ds/3l2B+ns/ARh+06LhIoCTpkxZIZK4NuTofbUw5IWphq42AEDONOTC8Pbm
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MrBfATJrWuRNk8vHIsgNGWb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6638:1926:b0:46e:4815:3ed3 with SMTP id
+ p38-20020a056638192600b0046e48153ed3mr3888jal.2.1704862323550; Tue, 09 Jan
+ 2024 20:52:03 -0800 (PST)
+Date: Tue, 09 Jan 2024 20:52:03 -0800
+In-Reply-To: <0000000000008023b805ff38a0af@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002fb443060e903163@google.com>
+Subject: Re: [syzbot] [reiserfs?] general protection fault in
+ __hrtimer_run_queues (3)
+From: syzbot <syzbot+f13a9546e229c1a6e378@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
---Sig_/MrBfATJrWuRNk8vHIsgNGWb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+syzbot suspects this issue was fixed by commit:
 
-Hi all,
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-On Mon, 4 Dec 2023 12:03:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->=20
-> Today's linux-next merge of the security tree got conflicts in:
->=20
->   security/selinux/hooks.c
->   security/smack/smack_lsm.c
->=20
-> between commit:
->=20
->   bf18dde00aa9 ("io_uring: split out cmd api into a separate header")
->=20
-> from the block tree and commit:
->=20
->   f3b8788cde61 ("LSM: Identify modules by more than name")
->=20
-> from the security tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc security/selinux/hooks.c
-> index 17ec5e109aec,b340425ccfae..000000000000
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@@ -91,7 -91,8 +91,8 @@@
->   #include <uapi/linux/mount.h>
->   #include <linux/fsnotify.h>
->   #include <linux/fanotify.h>
->  -#include <linux/io_uring.h>
->  +#include <linux/io_uring/cmd.h>
-> + #include <uapi/linux/lsm.h>
->  =20
->   #include "avc.h"
->   #include "objsec.h"
-> diff --cc security/smack/smack_lsm.c
-> index 2cdaa46088a0,53336d7daa93..000000000000
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@@ -42,7 -42,8 +42,8 @@@
->   #include <linux/fs_context.h>
->   #include <linux/fs_parser.h>
->   #include <linux/watch_queue.h>
->  -#include <linux/io_uring.h>
->  +#include <linux/io_uring/cmd.h>
-> + #include <uapi/linux/lsm.h>
->   #include "smack.h"
->  =20
->   #define TRANS_TRUE	"TRUE"
+    fs: Block writes to mounted block devices
 
-This is now a conflict between the block tree and Linus' tree.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1730f285e80000
+start commit:   e8f75c0270d9 Merge tag 'x86_sgx_for_v6.5' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a98ec7f738e43bd4
+dashboard link: https://syzkaller.appspot.com/bug?extid=f13a9546e229c1a6e378
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1227af7b280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13803daf280000
 
---=20
-Cheers,
-Stephen Rothwell
+If the result looks correct, please mark the issue as fixed by replying with:
 
---Sig_/MrBfATJrWuRNk8vHIsgNGWb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+#syz fix: fs: Block writes to mounted block devices
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWeIfcACgkQAVBC80lX
-0GwTugf+JwgcOvZOQ4Yek+gvDwBKgVjbg5YIHMDW0CoVvu3yMJT1Bb+7p/9Yx5cA
-I31lfoHPNF9QWZ4anEgndTZv8HbH4RUiI5Ym4rXIy8K1xrstjmshJJIoxLM37XK6
-eWUaU3jt4CHpglr0FzkBAb9y+qx8axtEwmmnIZYEaiz+I/Q49JIIen5dtneaqxjM
-GjPcWZGPk6heoIDXf+2vXHaCPLWJ/X3qg6EVaC9kD80wRTbGWZAkXfv28LL3S9tm
-vCrQ4GT/XRhtUKAUYSmAWVv0HFxfFI91cf1qDooRBP11vr9oI6KkBMB3fq7YV/7d
-OSvXGCdzglqY//zap+GHAdgcNPHK3A==
-=p9vR
------END PGP SIGNATURE-----
-
---Sig_/MrBfATJrWuRNk8vHIsgNGWb--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
