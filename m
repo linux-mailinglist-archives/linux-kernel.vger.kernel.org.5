@@ -1,165 +1,120 @@
-Return-Path: <linux-kernel+bounces-22858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32E6182A40C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:41:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD9682A40F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:41:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C11F128772B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:41:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E08B22875F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E264EB5C;
-	Wed, 10 Jan 2024 22:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648E24F88F;
+	Wed, 10 Jan 2024 22:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UlNCwhmr"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="Oy0kMQ1S"
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DC94D13F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5cdfbd4e8caso3472258a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 14:41:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704926479; x=1705531279; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vdU8XQ8hAn2X9CvWueVcEm806lEJ5ho/XsvrIs44ZKs=;
-        b=UlNCwhmrwZb1gcpWKFkUQexXpz9lwM27XJMS3GUMYQ8erbXkktwQIvmHAm1MWkWcBa
-         5+pa8vuu/SHk77aE98Fw7yJj1UJ8MjsUXunWfRUw7XlBdjU+lrBvmMOnFgAcNMy5CK6C
-         qDuM5TeK3jgDXBL8r9dKVM4z76e/yAoXsUSCE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704926479; x=1705531279;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vdU8XQ8hAn2X9CvWueVcEm806lEJ5ho/XsvrIs44ZKs=;
-        b=qPjFDQpK4wFvFHqo6re6JiK445FU2KFgEGp4LJFITJ2sJhYDX8aQM3Dr8P8X2DFHmb
-         3vfhqD9AbkKLoKMH38YSxOZ0Nz7nbDxrHML22QvJLp9yGXlAd82oDsHisSgTJ3lvhc7c
-         qTLbyneMzlbjT51SFAAaLPg6BIha5n/oq8zgHLF277stM3WIGTC2flzsPtAYg4mhb9r9
-         Fwt8wpwjxjkXP1/2Uu5r7LtGgq4LUFV+Wl1bbFnfbSbhf1cwJrgd7Yrb5c37Xt5fwTKU
-         7dpyFFrx4rXH2ZCd5DAMGXISAwslbEEdYtD2MGUPDKKubLP8Y+CpvtPYWuKWe4PeqTlB
-         yntg==
-X-Gm-Message-State: AOJu0YygbnyLdVkaYzshRwS21Ixbz+RhIEUrK1tVSg+cJ2lhFBGtmoLR
-	lUVGv0dkhWK/Q40nBtzIWvV2duqzgsek
-X-Google-Smtp-Source: AGHT+IHp847lM7oeKuciJE8ldA5qlj6UWszN7QW4GPZK7rdK1qWeVVXe7fVH+4XSitoofTTZv6Ep0g==
-X-Received: by 2002:a05:6a20:429b:b0:199:40a9:6716 with SMTP id o27-20020a056a20429b00b0019940a96716mr152336pzj.27.1704926479657;
-        Wed, 10 Jan 2024 14:41:19 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ff26-20020a056a002f5a00b006da73b90fe4sm4123314pfb.14.2024.01.10.14.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 14:41:19 -0800 (PST)
-Date: Wed, 10 Jan 2024 14:41:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
-Message-ID: <202401101437.48C52CF6@keescook>
-References: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5AC4F8AB;
+	Wed, 10 Jan 2024 22:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=jQkbXT4Xowi1pUvDT3eJyshgYO6r+Y/l3CsarSMIz3E=; b=Oy0kMQ1SLcT7pvbxS7wqM7uk5p
+	Qq7t8743wKI5BIdoPu/TLDlXenb/DniQt7AMa+5LjVUDE2XvXHgrPUx+5o/N4enh4YE8Lq9C8x0L+
+	m81XcR/ifiaSAWAq1fq+QtYn7ZFbMHmnR2L54W1hfvBb5e7B1GLRLe94uW2I5sMIIk6w=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:39930 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rNhGI-0001iS-NK; Wed, 10 Jan 2024 17:41:27 -0500
+Date: Wed, 10 Jan 2024 17:41:26 -0500
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Rengarajan S <rengarajan.s@microchip.com>, Kumaravel Thiagarajan
+ <kumaravel.thiagarajan@microchip.com>, Tharun Kumar P
+ <tharunkumar.pasumarthi@microchip.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>,
+ linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Message-Id: <20240110174126.a8beefee0e871d61de363018@hugovil.com>
+In-Reply-To: <05465217-174e-4888-a6ab-6251f4a9920b@moroto.mountain>
+References: <ZZ7vIfj7Jgh-pJn8@moroto>
+	<20240110144605.2a8813d4bfaff1a55edb9938@hugovil.com>
+	<05465217-174e-4888-a6ab-6251f4a9920b@moroto.mountain>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	* -3.1 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH v2] serial: 8250_pci1xxxx: fix off by one in
+ pci1xxxx_process_read_data()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On Wed, Jan 10, 2024 at 10:22:10PM +0000, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> 
-> gcc points out that the fix-byte buffer might be too small:
-> drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
-> drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing between 1 and 10 bytes into a region of size 3 [-Wformat-overflow=]
->   720 |         sprintf(pdev_irqname, "ch%u", index);
->       |                                  ^~
-> In function 'usb_dmac_chan_probe',
->     inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
-> drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range [0, 4294967294]
->   720 |         sprintf(pdev_irqname, "ch%u", index);
->       |                               ^~~~~~
-> drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 13 bytes into a destination of size 5
->   720 |         sprintf(pdev_irqname, "ch%u", index);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Maximum number of channels for USB-DMAC as per the driver is 1-99 so use
-> u8 instead of unsigned int/int for DMAC channel indexing and make the
-> pdev_irqname string long enough to avoid the warning.
-> 
-> While at it use scnprintf() instead of sprintf() to make the code more
-> robust.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Wed, 10 Jan 2024 23:19:28 +0300
+Dan Carpenter <dan.carpenter@linaro.org> wrote:
 
-This looks like good fixes; thanks! I see n_channels is sanity checked
-during the probe in usb_dmac_chan_probe(), so this looks good.
-
-(Is there a reason not to also change n_channels to a u8?)
-
--Kees
-
-> ---
->  drivers/dma/sh/usb-dmac.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> On Wed, Jan 10, 2024 at 02:46:05PM -0500, Hugo Villeneuve wrote:
+> > Hi,
+> > it is not simply a matter of adding "fix" to the title.
+> > 
+> > You must explain what and why vs. how.
+> > 
+> > Please see:
+> >   https://cbea.ms/git-commit/#why-not-how
+> > 
+> > for some guidelines on writing a good commit message.
+> > 
 > 
-> diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
-> index a9b4302f6050..f7cd0cad056c 100644
-> --- a/drivers/dma/sh/usb-dmac.c
-> +++ b/drivers/dma/sh/usb-dmac.c
-> @@ -706,10 +706,10 @@ static const struct dev_pm_ops usb_dmac_pm = {
->  
->  static int usb_dmac_chan_probe(struct usb_dmac *dmac,
->  			       struct usb_dmac_chan *uchan,
-> -			       unsigned int index)
-> +			       u8 index)
->  {
->  	struct platform_device *pdev = to_platform_device(dmac->dev);
-> -	char pdev_irqname[5];
-> +	char pdev_irqname[6];
->  	char *irqname;
->  	int ret;
->  
-> @@ -717,7 +717,7 @@ static int usb_dmac_chan_probe(struct usb_dmac *dmac,
->  	uchan->iomem = dmac->iomem + USB_DMAC_CHAN_OFFSET(index);
->  
->  	/* Request the channel interrupt. */
-> -	sprintf(pdev_irqname, "ch%u", index);
-> +	scnprintf(pdev_irqname, sizeof(pdev_irqname), "ch%u", index);
->  	uchan->irq = platform_get_irq_byname(pdev, pdev_irqname);
->  	if (uchan->irq < 0)
->  		return -ENODEV;
-> @@ -768,8 +768,8 @@ static int usb_dmac_probe(struct platform_device *pdev)
->  	const enum dma_slave_buswidth widths = USB_DMAC_SLAVE_BUSWIDTH;
->  	struct dma_device *engine;
->  	struct usb_dmac *dmac;
-> -	unsigned int i;
->  	int ret;
-> +	u8 i;
->  
->  	dmac = devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
->  	if (!dmac)
-> @@ -869,7 +869,7 @@ static void usb_dmac_chan_remove(struct usb_dmac *dmac,
->  static void usb_dmac_remove(struct platform_device *pdev)
->  {
->  	struct usb_dmac *dmac = platform_get_drvdata(pdev);
-> -	int i;
-> +	u8 i;
->  	for (i = 0; i < dmac->n_channels; ++i)
->  		usb_dmac_chan_remove(dmac, &dmac->channels[i]);
-> -- 
-> 2.34.1
-> 
+> If you can't understand why a buffer overflow is bad then I honestly
+> don't know what to say...
 
--- 
-Kees Cook
+Hi Dan,
+I am also an old quirky guy, and pretty much know why a buffer overflow
+is bad :)
+
+My whole point was only related to the title of the commit
+message, not the body of the commit message, which explained well
+enough the problem and the solution, or the code fix itself.
+
+Regards,
+Hugo Villeneuve
+
+
+> When I was a newbie, I encountered a driver which was written in
+> terrible style.  And I thought why do people allow it???  This is
+> garbage and it's messing up the Linux kernel with its bad style.
+> 
+> But after I got older, I realized that he was the only person with that
+> hardware and the only person who cared about it.   If I started fighting
+> with him about style then he would leave.  He was a quirky guy with bad
+> taste but he was still making useful contributions so it was better to
+> tolerate him.
+> 
+> These days I'm the old quirky guy.  If you want to fight with me about
+> commit messages, that's fine.  I can easily just add you to my list of
+> subsystems which only receive bug reports instead of patches.  (I think
+> only BPF is on the list currently because it's annoying to track the
+> bpf vs bpf-next tree).
+> 
+> Feel free to re-write this patch however you want and give me
+> Reported-by credit.
+> 
+> regards,
+> dan carpenter
 
