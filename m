@@ -1,63 +1,83 @@
-Return-Path: <linux-kernel+bounces-22391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3379829D13
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:02:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00225829D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:03:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735671F22F06
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:02:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A04B2286200
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228464BA9A;
-	Wed, 10 Jan 2024 15:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905CC4BA98;
+	Wed, 10 Jan 2024 15:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sp/PzVKB"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UFKUtmEe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Xq53b1xx";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UFKUtmEe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Xq53b1xx"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72244BA85
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5585fe04266so705020a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:01:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704898914; x=1705503714; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=xNnfYtoez95mBj0mKwxYIuhxLbBJzB+pETwkHdCL4j0=;
-        b=Sp/PzVKBlZlBWjeOzrPAWhllyKo15qGbNHbif3D9IZxyo1NLgUbQqwYeabROxoOm7r
-         xqds0B+4dmUWld5TjClPfYa52aiSclpZoCBfY1Nq27yds4qfXgUX1ZQR1uNaeunHYdh8
-         vKbV8oqi4mt3lLb9TOjzl6Ud/oSB9uEB1kq+JppFDMpqasth6VtzqwWiXGSEiaYR0b5t
-         3hNBMAeHuHcFWjNcVzTgTxDfw4pKlmgOV6UrLpRUyVUsoWPoV5KWXF2Jfc2BOEIRIFQS
-         uVBWGpEnwhWd15MrgOKIQQ+Ck+mwiFP4gPnxXIuigZ7mpbK/eqiE0SlVcSIYjUVdcGTt
-         X4EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704898914; x=1705503714;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xNnfYtoez95mBj0mKwxYIuhxLbBJzB+pETwkHdCL4j0=;
-        b=o4aRbHs8vc7T6rmyYhsmyyIfd/gX6g+Bmf4xXRHcsC+joc+VotZ2cPMMSg83DWxSSO
-         9Y78Vbdcua2eX9cwirdXATetPD56wPG+S9vbrLcmg2hXES4MDVTUdVnvWBjzT+DgZdw5
-         pLxgoiwYKWoNGoJq3dhriPg+KYIZqCqPFo4orbo4wiODru18TknfSucBWtP3l6OPdYkc
-         YLriuzyvnn869YErmkqcUMg2S+mlh+XL3oZEDCBjODMZI2jZLx0SAX1EsPU0osKL2vVX
-         u3VzypuODlip+CXIhJ0ZJuqoeEuI+IeLChxjQjwDh7XAh4Bl8k5W7IGcGjmpVSgcJt/A
-         pr4Q==
-X-Gm-Message-State: AOJu0Yw1eAFBK2WBr/IJAkZ4XTm08lIYo3IcqUXmPpaAMaOf/TXthmLm
-	oWRmDg8/kyYyCSD11FpX5d0=
-X-Google-Smtp-Source: AGHT+IF4BcEkZvJNZq1ZIiLpL3FtlWFqiybdHK9d6DXNdDYwYnt5dAvPS+AJL305aP2NwwKCpOzI5g==
-X-Received: by 2002:a50:d49e:0:b0:557:c91b:1ac8 with SMTP id s30-20020a50d49e000000b00557c91b1ac8mr573948edi.73.1704898913561;
-        Wed, 10 Jan 2024 07:01:53 -0800 (PST)
-Received: from [192.168.2.25] (129-188-177-143.ftth.glasoperator.nl. [143.177.188.129])
-        by smtp.gmail.com with ESMTPSA id x17-20020aa7d391000000b00556cf695da0sm2049922edq.78.2024.01.10.07.01.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 07:01:53 -0800 (PST)
-Message-ID: <b931d02e-a414-4f5c-acc8-160d7b5e016a@gmail.com>
-Date: Wed, 10 Jan 2024 16:01:52 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849C14B5CA;
+	Wed, 10 Jan 2024 15:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 91A661F8B4;
+	Wed, 10 Jan 2024 15:03:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704899005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ml63POBLvJX+b4mv8tB916BNz9hw8t0vfu68ICso2Ic=;
+	b=UFKUtmEeHzXmdGo86Fy0Zn85sNNO7ipDADUI7RLFEmNWvYLy1/7cEC/Ohx3wbKwjPgNmTl
+	rbcrf9NtAE/NeFutMKfQh5nf2CTtHkwVdJuydJvGabkwg1EQkpTFafj0bmjk344BA4n+6o
+	2SCVmrsqaThyIm4wKMPISsz7gTMSllk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704899005;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ml63POBLvJX+b4mv8tB916BNz9hw8t0vfu68ICso2Ic=;
+	b=Xq53b1xxLn/ZNuUgNwMyq4j5dEcy2aczP5+OrB7X1xfbW/lqo6UclSKllvmggKaYIPU6Ba
+	KONrxnfI4PlZzXCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704899005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ml63POBLvJX+b4mv8tB916BNz9hw8t0vfu68ICso2Ic=;
+	b=UFKUtmEeHzXmdGo86Fy0Zn85sNNO7ipDADUI7RLFEmNWvYLy1/7cEC/Ohx3wbKwjPgNmTl
+	rbcrf9NtAE/NeFutMKfQh5nf2CTtHkwVdJuydJvGabkwg1EQkpTFafj0bmjk344BA4n+6o
+	2SCVmrsqaThyIm4wKMPISsz7gTMSllk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704899005;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ml63POBLvJX+b4mv8tB916BNz9hw8t0vfu68ICso2Ic=;
+	b=Xq53b1xxLn/ZNuUgNwMyq4j5dEcy2aczP5+OrB7X1xfbW/lqo6UclSKllvmggKaYIPU6Ba
+	KONrxnfI4PlZzXCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A12213786;
+	Wed, 10 Jan 2024 15:03:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4FCmFb2xnmW1QwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 10 Jan 2024 15:03:25 +0000
+Message-ID: <639c0b0a-dfbc-4612-aeaf-460a68c9e6a0@suse.cz>
+Date: Wed, 10 Jan 2024 16:03:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,62 +85,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
-To: "H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>,
- linux-kernel@vger.kernel.org, pinskia@gmail.com
-References: <152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk>
- <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
+Subject: Re: [PATCH v4 2/4] mm/slub: unify all sl[au]b parameters with
+ "slab_$param"
 Content-Language: en-US
-From: Michael de Lang <kingoipo@gmail.com>
-In-Reply-To: <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: sxwjean@me.com, 42.hyeyoo@gmail.com, cl@linux.com, linux-mm@kvack.org
+Cc: penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+ roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
+ arnd@arndb.de, akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+ quic_jjohnson@quicinc.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Xiongwei Song <xiongwei.song@windriver.com>
+References: <20231215034150.108783-1-sxwjean@me.com>
+ <20231215034150.108783-3-sxwjean@me.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231215034150.108783-3-sxwjean@me.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UFKUtmEe;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Xq53b1xx
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.44 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	 SUBJECT_HAS_CURRENCY(1.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RL9sdddhhbu1oo5wyhn6sr3k5b)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[me.com,gmail.com,linux.com,kvack.org];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-1.44)[91.23%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[17];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -0.44
+X-Rspamd-Queue-Id: 91A661F8B4
+X-Spam-Flag: NO
 
-Hey,
+On 12/15/23 04:41, sxwjean@me.com wrote:
+> From: Xiongwei Song <xiongwei.song@windriver.com>
+> 
+> Since the SLAB allocator has been removed, so we can clean up the
+> sl[au]b_$params. With only one slab allocator left, it's better to use the
+> generic "slab" term instead of "slub" which is an implementation detail,
+> which is pointed out by Vlastimil Babka. For more information please see
+> [1]. Hence, we are going to use "slab_$param" as the primary prefix.
+> 
+> This patch is changing the following slab parameters
+> - slub_max_order
+> - slub_min_order
+> - slub_min_objects
+> - slub_debug
+> to
+> - slab_max_order
+> - slab_min_order
+> - slab_min_objects
+> - slab_debug
+> as the primary slab parameters for all references of them in docs and
+> comments. But this patch won't change variables and functions inside
+> slub as we will have wider slub/slab change.
+> 
+> Meanwhile, "slub_$params" can also be passed by command line, which is
+> to keep backward compatibility. Also mark all "slub_$params" as legacy.
+> 
+> Remove the separate descriptions for slub_[no]merge, append legacy tip
+> for them at the end of descriptions of slab_[no]merge.
+> 
+> [1] https://lore.kernel.org/linux-mm/7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz/
+> 
+> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
 
-While I have done no work on the linux kernel, I hope to add to this 
-discussion anyway. Forgive me if I'm intruding.
-
-The arguments in favour of C++ so far focus on the technical and current 
-kernel developers aspects. An extra argument in favour of C++ is the 
-same one that Linus Torvalds recently mentioned in the keynote "Linus 
-Torvalds in Conversation With Dirk Hohndel" w.r.t. Rust's impact on the 
-Linux Kernel. Namely, to prevent stagnation for the Kernel as well as 
-continue to be interesting to new developers.
-
-One of the things holding me back from developping things in the Kernel 
-is that C is, to put it bluntly, old and not interesting for my resume. 
-Now there is certainly an argument to be made for "don't fix what ain't 
-broken", as evidenced by the Kernel being in widespread use. But most of 
-the interesting programming language progress has happened in C++ and 
-other languages, unlike C. The aforementioned metaprogramming is one 
-such example, but things like RAII, smart pointers and things like 
-gsl::not_null would reduce the changes on kernel bugs, especially memory 
-safety related bugs that are known to be vulnerable to security issues.
-
-On the other hand, the benefits I mention can also turn into downsides: 
-if constructs like gsl::not_null are desired, does that mean that there 
-will be a kernel-specific template library? A KTL instead of STL? That 
-might be yet another thing that increases the steepness of the kernel 
-development learning curve.
-
-I also have a note on the following:
-
-> However, Linux also does conversion of polymorphic objects from one 
-> type to another -- that is for example how device nodes are 
-> implemented. Using this with C++ polymorphism without RTTI does 
-> require some compiler-specific hacks, unfortunately. 
-
-Although compiler-specific, C++20 has enabled implementing RTTI without 
-RTTI as well as (partial) reflection. Examples include the JSON library 
-Glaze as well as my own Dependency Injection framework Ichor. See 
-https://godbolt.org/z/vaWszr9WG. On top of increasing the binary size, 
-this then becomes a discussion on what requirements the kernel puts on 
-compilers, as I'm sure that the kernel needs to be compiled for 
-architectures which have a less than stellar conformance to the C++ 
-specification. Regardless, this is IMO good food for thought.
-
-Cheers,
-Michael de Lang
-
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Thanks.
 
