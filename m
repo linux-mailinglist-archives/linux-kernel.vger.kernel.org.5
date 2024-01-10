@@ -1,216 +1,147 @@
-Return-Path: <linux-kernel+bounces-22467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5057829E18
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:00:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 100AE829E1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 17:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8A51C22AF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:00:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B26D1F21D8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38EAD4C615;
-	Wed, 10 Jan 2024 16:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472BA4C614;
+	Wed, 10 Jan 2024 16:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WMrsvWd1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VaUc4q9K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A354C3BD
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704902397;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=XQnGeG1QGEu/QBtp4/TBUL4MRasK2rgYQhSF+ZicemU=;
-	b=WMrsvWd17oLCmT/9W6JkzBX+p+Dwzb92qj4j0s9uP0n4VX1sypNbxsfYP8DxSPwXQAFEae
-	bWJRlV7xpx51URsfSw9KX7i/TRIMQymeXTlobh+GH5Dhrm3K3Kw2bL08krkh9TP4tNpkUd
-	6NhQlHlUaYKwcnXiNK/1FMYx3q8ttHc=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-246-RA40ty5YMICD3bgqUv1APQ-1; Wed, 10 Jan 2024 10:59:56 -0500
-X-MC-Unique: RA40ty5YMICD3bgqUv1APQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7831be985c0so517707985a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:59:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704902395; x=1705507195;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XQnGeG1QGEu/QBtp4/TBUL4MRasK2rgYQhSF+ZicemU=;
-        b=rs68l/Gpp+9CTjJc5fHODR6OWWEI6dVj6fr+Osoz4oaXOtISKBN38umrEBdve24Zu2
-         lhZ40lt4AWcmMvu2kw1HQ8ole9lp6dzrZYIHFPKvnYNmKd52dhqhd4KZCuFOh0OxHGjC
-         fuyK/ixyzxYgOBdaZf8LAtOZ9cfSOVqW42xMV6x6lcH/olt+V2KDkUs36Z+oKOb+DX/I
-         W49miRCcw/t4I0MGOQrAkd8IlwriCXbq5yYtRB4y4RoVROQeWA1VK0dUciMqIxjH43JQ
-         DPUpqzMwyJi6WvlzpePtN3wdHH09QyDRDKQjmhPEwf/W2c6sBRgCegDBaRoPRFF5Z9Pz
-         COhg==
-X-Gm-Message-State: AOJu0YwZwBk52JJPH2BKKVdN7RoCoXS1yfCAafIaAgQxYZenQrwtcjLE
-	en6h00kABCTKVoENh2/djftOFKNnxFzusmHKQF8uwqyyPqiDkFCjBediCngXn3oX4itS3EUlKVL
-	VOwJSP/AoMG0St7YRTXRXznt6pzJC1pM=
-X-Received: by 2002:a05:620a:5604:b0:781:a2bc:3211 with SMTP id vu4-20020a05620a560400b00781a2bc3211mr1186465qkn.128.1704902395537;
-        Wed, 10 Jan 2024 07:59:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH/bzCATczOMB0vRgD1epB1FaXF/PgxKumauea4s3H5r12+zW5Kxf78GIo1oE4XXqbp03PmNA==
-X-Received: by 2002:a05:620a:5604:b0:781:a2bc:3211 with SMTP id vu4-20020a05620a560400b00781a2bc3211mr1186454qkn.128.1704902395222;
-        Wed, 10 Jan 2024 07:59:55 -0800 (PST)
-Received: from klayman.redhat.com (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
-        by smtp.gmail.com with ESMTPSA id z11-20020a05620a08cb00b00783206b9fedsm1691930qkz.86.2024.01.10.07.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 07:59:54 -0800 (PST)
-From: Marco Pagani <marpagan@redhat.com>
-To: Brendan Higgins <brendan.higgins@linux.dev>,
-	David Gow <davidgow@google.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: Marco Pagani <marpagan@redhat.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] kunit: run test suites only after module initialization completes
-Date: Wed, 10 Jan 2024 16:59:47 +0100
-Message-ID: <20240110155948.90964-1-marpagan@redhat.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CB44C3BD
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:00:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E83C433C7;
+	Wed, 10 Jan 2024 16:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704902423;
+	bh=G4+lE+BH/CV70HZvdV/l6Cjg+ti6z2Et7y6eWdc6Sp4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=VaUc4q9KmQ4Fj16puvilnJ6EZau5dVe0KkxQkM7aFvVgZCewCYYdtOiNk5fQQTDVh
+	 4GkuxuLnOFxINDIinAVwzaKxQJEctI7R3B6R4+D8nnv+fU8/jvNfpcf0KiHYlZlghn
+	 e3aE7FP/X6BWvXK98UUp6E9nwMj5k+4u47zYwxXk3ReNrxumd4i/byGXcSR5CDR8FQ
+	 xOK2nvee1b0PWCpeJEQCNN5RM2TINk1RaRk/kTlakny8GsH05JIgh0lQCvMBJca576
+	 5cPqHruiw8aixCv62BBsVYalrTWUBOI/xhhZ3pFAYXS2SLzAd7AncbppUhjLzLHMBK
+	 U+tpDerlVpfDg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id A443CCE19C3; Wed, 10 Jan 2024 08:00:22 -0800 (PST)
+Date: Wed, 10 Jan 2024 08:00:22 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org,
+	Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [BUG] allmodconfig build error in next-20240108
+Message-ID: <a391e9dd-bfa2-4b4c-93ca-52f2eebee72e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240109095757.1313b2d9@canb.auug.org.au>
+ <341a4955-0cdd-48d0-bfbd-cc6f6f09df37@paulmck-laptop>
+ <atbx7mspjbymkzgstk4l64qz3uky3wpmx4isrfg3ixgtvebdd2@cktpe4ejfk7k>
+ <20240110081155.48bb0cbd@oak>
+ <d61dfe52-9567-4f62-98f5-5c1e00cb4708@paulmck-laptop>
+ <20240110095822.3ba3d979@canb.auug.org.au>
+ <3d14049c-d44c-4b33-9933-0f96055b8a70@paulmck-laptop>
+ <20240110160335.2bad7d54@oak>
+ <3a10ef2b-acbe-4d80-805a-e947e15e5db3@paulmck-laptop>
+ <6r2zjqbs2g3hkt3uhnglwpboalwck5ye34b6gxzmhe4gae77g7@3bzqt4s7i2qb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <6r2zjqbs2g3hkt3uhnglwpboalwck5ye34b6gxzmhe4gae77g7@3bzqt4s7i2qb>
 
-Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-kunit_free_suite_set()") fixed a wild-memory-access bug that could have
-happened during the loading phase of test suites built and executed as
-loadable modules. However, it also introduced a problematic side effect
-that causes test suites modules to crash when they attempt to register
-fake devices.
+On Wed, Jan 10, 2024 at 09:00:06AM -0600, Lucas De Marchi wrote:
+> On Wed, Jan 10, 2024 at 02:26:54AM -0800, Paul E. McKenney wrote:
+> > On Wed, Jan 10, 2024 at 04:03:51PM +1100, Stephen Rothwell wrote:
+> > > Hi Paul,
+> > > 
+> > > On Tue, 9 Jan 2024 19:46:27 -0800 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > >
+> > > > On Wed, Jan 10, 2024 at 09:58:22AM +1100, Stephen Rothwell wrote:
+> > > > >
+> > > > > Maybe that line "subdir-ccflags-y += $(call cc-option, -Wstringop-overflow)"
+> > > > > should just be removed as the setting of that option has been moved to the
+> > > > > normal C flags in the top level Makefile (out of Makefile.extrawarn).
+> > > >
+> > > > If you meant like this, no joy.  :-(
+> > > 
+> > > Actually I meant the one in drivers/gpu/drm/xe/Makefile
+> > 
+> > Like this?  That does work as shown below, thank you!
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > drm/xe: Fix build bug for GCC 11
+> > 
+> > Building drivers/gpu/drm/xe/xe_gt_pagefault.c with GCC 11 results
+> > in the following build errors:
+> > 
+> > ./include/linux/fortify-string.h:57:33: error: writing 16 bytes into a region of size 0 [-Werror=stringop-overflow=]
+> >   57 | #define __underlying_memcpy     __builtin_memcpy
+> >      |                                 ^
+> > ./include/linux/fortify-string.h:644:9: note: in expansion of macro ‘__underlying_memcpy’
+> >  644 |         __underlying_##op(p, q, __fortify_size);                        \
+> >      |         ^~~~~~~~~~~~~
+> > ./include/linux/fortify-string.h:689:26: note: in expansion of macro ‘__fortify_memcpy_chk’
+> >  689 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+> >      |                          ^~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/xe/xe_gt_pagefault.c:340:17: note: in expansion of macro ‘memcpy’
+> >  340 |                 memcpy(pf_queue->data + pf_queue->tail, msg, len * sizeof(u32));
+> >      |                 ^~~~~~
+> > In file included from drivers/gpu/drm/xe/xe_device_types.h:17,
+> >                 from drivers/gpu/drm/xe/xe_vm_types.h:16,
+> >                 from drivers/gpu/drm/xe/xe_bo.h:13,
+> >                 from drivers/gpu/drm/xe/xe_gt_pagefault.c:16:
+> > drivers/gpu/drm/xe/xe_gt_types.h:102:25: note: at offset [1144, 265324] into destination object ‘tile’ of size 8
+> >  102 |         struct xe_tile *tile;
+> >      |                         ^~~~
+> > 
+> > Fix these by removing -Wstringop-overflow from drm/xe builds.
+> > 
+> > Suggested-by: Stephen Rothwell <sfr@rothwell.id.au>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> [ This particular warning is broken on GCC11. In future changes it will
+>   be moved to the normal C flags in the top level Makefile (out of
+>   Makefile.extrawarn), but accounting for the compiler support. Just
+>   remove it out of xe's forced extra warnings for now ]
+> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+> 
+> would you mind if I extend it to drivers/gpu/drm/i915/Makefile
+> in the same commit or would you prefer a separate one?
 
-When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
-MODULE_STATE_COMING states before reaching the normal operating state
-MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
-MODULE_STATE_GOING before being released. However, if the loading
-function load_module() fails between complete_formation() and
-do_init_module(), the module goes directly from MODULE_STATE_COMING to
-MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
+Whatever works best for you works for me!
 
-This behavior was causing kunit_module_exit() to be called without
-having first executed kunit_module_init(). Since kunit_module_exit() is
-responsible for freeing the memory allocated by kunit_module_init()
-through kunit_filter_suites(), this behavior was resulting in a
-wild-memory-access bug.
+							Thanx, Paul
 
-Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-kunit_free_suite_set()") fixed this issue by running the tests when the
-module is still in MODULE_STATE_COMING. However, modules in that state
-are not fully initialized, lacking sysfs kobjects. Therefore, if a test
-module attempts to register a fake device, it will inevitably crash.
-
-This patch proposes a different approach to fix the original
-wild-memory-access bug while restoring the normal module execution flow
-by making kunit_module_exit() able to detect if kunit_module_init() has
-previously initialized the tests suite set. In this way, test modules
-can once again register fake devices without crashing.
-
-This behavior is achieved by checking whether mod->kunit_suites is a
-virtual or direct mapping address. If it is a virtual address, then
-kunit_module_init() has allocated the suite_set in kunit_filter_suites()
-using kmalloc_array(). On the contrary, if mod->kunit_suites is still
-pointing to the original address that was set when looking up the
-kunit_test_suites section of the module, then the loading phase has
-failed and there's no memory to be freed.
-
-v4:
-- rebased on 6.8
-- noted that kunit_filter_suites() must return a virtual address
-v3:
-- add a comment to clarify why the start address is checked
-v2:
-- add include <linux/mm.h>
-
-Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
-Reviewed-by: David Gow <davidgow@google.com>
-Tested-by: Rae Moar <rmoar@google.com>
-Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
----
- lib/kunit/executor.c |  4 ++++
- lib/kunit/test.c     | 14 +++++++++++---
- 2 files changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 717b9599036b..689fff2b2b10 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -146,6 +146,10 @@ void kunit_free_suite_set(struct kunit_suite_set suite_set)
- 	kfree(suite_set.start);
- }
- 
-+/*
-+ * Filter and reallocate test suites. Must return the filtered test suites set
-+ * allocated at a valid virtual address or NULL in case of error.
-+ */
- struct kunit_suite_set
- kunit_filter_suites(const struct kunit_suite_set *suite_set,
- 		    const char *filter_glob,
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index f95d2093a0aa..31a5a992e646 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -17,6 +17,7 @@
- #include <linux/panic.h>
- #include <linux/sched/debug.h>
- #include <linux/sched.h>
-+#include <linux/mm.h>
- 
- #include "debugfs.h"
- #include "device-impl.h"
-@@ -801,12 +802,19 @@ static void kunit_module_exit(struct module *mod)
- 	};
- 	const char *action = kunit_action();
- 
-+	/*
-+	 * Check if the start address is a valid virtual address to detect
-+	 * if the module load sequence has failed and the suite set has not
-+	 * been initialized and filtered.
-+	 */
-+	if (!suite_set.start || !virt_addr_valid(suite_set.start))
-+		return;
-+
- 	if (!action)
- 		__kunit_test_suites_exit(mod->kunit_suites,
- 					 mod->num_kunit_suites);
- 
--	if (suite_set.start)
--		kunit_free_suite_set(suite_set);
-+	kunit_free_suite_set(suite_set);
- }
- 
- static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
-@@ -816,12 +824,12 @@ static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
- 
- 	switch (val) {
- 	case MODULE_STATE_LIVE:
-+		kunit_module_init(mod);
- 		break;
- 	case MODULE_STATE_GOING:
- 		kunit_module_exit(mod);
- 		break;
- 	case MODULE_STATE_COMING:
--		kunit_module_init(mod);
- 		break;
- 	case MODULE_STATE_UNFORMED:
- 		break;
-
-base-commit: 539e582a375dedee95a4fa9ca3f37cdb25c441ec
--- 
-2.43.0
-
+> Lucas De Marchi
+> 
+> > 
+> > diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
+> > index 53bd2a8ba1ae..efcf0ab7a1a6 100644
+> > --- a/drivers/gpu/drm/xe/Makefile
+> > +++ b/drivers/gpu/drm/xe/Makefile
+> > @@ -17,7 +17,6 @@ subdir-ccflags-y += $(call cc-option, -Wunused-const-variable)
+> > subdir-ccflags-y += $(call cc-option, -Wpacked-not-aligned)
+> > subdir-ccflags-y += $(call cc-option, -Wformat-overflow)
+> > subdir-ccflags-y += $(call cc-option, -Wformat-truncation)
+> > -subdir-ccflags-y += $(call cc-option, -Wstringop-overflow)
+> > subdir-ccflags-y += $(call cc-option, -Wstringop-truncation)
+> > # The following turn off the warnings enabled by -Wextra
+> > ifeq ($(findstring 2, $(KBUILD_EXTRA_WARN)),)
 
