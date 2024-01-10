@@ -1,80 +1,130 @@
-Return-Path: <linux-kernel+bounces-22301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A97F829BFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:05:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 890B7829BFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1DEB1F20F71
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:05:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34100287329
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D344B5A4;
-	Wed, 10 Jan 2024 14:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J5IfoyvQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB9848797;
-	Wed, 10 Jan 2024 14:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704895508; x=1736431508;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SWsVBP9cH1tPvG/nm5K35e0TZLa1y3pyiKzTVosVQgs=;
-  b=J5IfoyvQj8rfI1q3F64ikezYOc9WmxMkjRU8pBJ7l/+VubWzKpTJDE18
-   XkdIvEcwt5Cy4GB4K1uiSSdgwZY0MZwkTXk9qdYv3vQmzosvmubEFJY8J
-   xt950ebP5QpwaXpWSlNYkuPxi/FeNNtCncOflfsxvr7oRzPPFBUm5M6+9
-   xbDZwKC+ZreqKffG2VXFctwhTuDOwBFJn3hXLyn34xPiyJaBr0/QOmLgl
-   3H/fEtmyABxzhuADGI1I6MNVGCY1Kvdh4ITXdT7XfgPSabgwnMJGNUu5I
-   w2mfrHtNfLmR0LPf1XRce2blvZ0f2aHkIvzQ7g+lNF7yf+bJGIkWXrShD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="397382779"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="397382779"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 06:05:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="905546712"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="905546712"
-Received: from kpurta-mobl.ger.corp.intel.com (HELO localhost) ([10.252.37.105])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 06:05:05 -0800
-Date: Wed, 10 Jan 2024 15:05:01 +0100
-From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Linux PM <linux-pm@vger.kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume
- optimization
-Message-ID: <ZZ6kDVD3p4KdR9Cs@linux.intel.com>
-References: <10423008.nUPlyArG6x@kreacher>
- <ZZ5zcBBEv7qupIdE@linux.intel.com>
- <CAJZ5v0gp6uETgLNHxDnSd4h_0ois7J2AC7soJJVv18B99GmxcQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F584A998;
+	Wed, 10 Jan 2024 14:05:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1F7495E0;
+	Wed, 10 Jan 2024 14:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C12152F4;
+	Wed, 10 Jan 2024 06:05:51 -0800 (PST)
+Received: from [10.57.87.179] (unknown [10.57.87.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B85F43F5A1;
+	Wed, 10 Jan 2024 06:05:03 -0800 (PST)
+Message-ID: <429fbf32-f347-4d6a-88dc-362c898c3dfd@arm.com>
+Date: Wed, 10 Jan 2024 14:06:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gp6uETgLNHxDnSd4h_0ois7J2AC7soJJVv18B99GmxcQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 12/23] PM: EM: Add helpers to read under RCU lock the
+ EM table
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ dietmar.eggemann@arm.com, rui.zhang@intel.com, amit.kucheria@verdurent.com,
+ amit.kachhap@gmail.com, daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+ len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io,
+ wvw@google.com
+References: <20240104171553.2080674-1-lukasz.luba@arm.com>
+ <20240104171553.2080674-13-lukasz.luba@arm.com>
+ <CAJZ5v0g9nEis2Bcvygn70vAT=iifHisZ_7_T4PcmQSU_=_Ymgg@mail.gmail.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0g9nEis2Bcvygn70vAT=iifHisZ_7_T4PcmQSU_=_Ymgg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 10, 2024 at 01:33:07PM +0100, Rafael J. Wysocki wrote:
-> > I would consider different naming just to make clear this
-> > is regarding async call, in_progress looks too generic for me.
+
+
+On 1/4/24 19:55, Rafael J. Wysocki wrote:
+> On Thu, Jan 4, 2024 at 6:15 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> To use the runtime modifiable EM table there is a need to use RCU
+>> read locking properly. Add helper functions for the device drivers and
+>> frameworks to make sure it's done properly.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   include/linux/energy_model.h | 19 +++++++++++++++++++
+>>   1 file changed, 19 insertions(+)
+>>
+>> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+>> index f33257ed83fd..cfaf5d8b1aad 100644
+>> --- a/include/linux/energy_model.h
+>> +++ b/include/linux/energy_model.h
+>> @@ -338,6 +338,20 @@ static inline int em_pd_nr_perf_states(struct em_perf_domain *pd)
+>>          return pd->nr_perf_states;
+>>   }
+>>
+>> +static inline struct em_perf_state *em_get_table(struct em_perf_domain *pd)
+>> +{
+>> +       struct em_perf_table __rcu *table;
+>> +
+>> +       rcu_read_lock();
+>> +       table = rcu_dereference(pd->em_table);
+>> +       return table->state;
+>> +}
+>> +
+>> +static inline void em_put_table(void)
+>> +{
+>> +       rcu_read_unlock();
+>> +}
 > 
-> OK, what about async_in_progress?
-Sure, that better.
+> The lack of symmetry between em_get_table() and em_put_table() is kind
+> of confusing.
+> 
+> I don't really like these wrappers.
+> 
+> IMO it would be better to use rcu_read_lock()/rcu_read_unlock()
+> directly everywhere they are needed and there can be a wrapper around
+> rcu_dereference(pd->em_table), something like
+> 
+> static inline struct em_perf_state *em_perf_state_from_pd(struct
+> em_perf_domain *pd)
+> {
+>          return rcu_dereference(pd->em_table)->state;
+> }
 
-Regards
-Stanislaw
+Fair enough, I will change this and use explicit rcu_read_lock/unlock()
+in the thermal/DTPM code together with this above function.
+I will add comment to it that it needs to be called under the RCU read
+section locked.
+
+Then also it would be easier to handle the function names in patch 10/23
+that you have also commented.
+
+> 
+>> +
+>>   #else
+>>   struct em_data_callback {};
+>>   #define EM_ADV_DATA_CB(_active_power_cb, _cost_cb) { }
+>> @@ -384,6 +398,11 @@ int em_dev_update_perf_domain(struct device *dev,
+>>   {
+>>          return -EINVAL;
+>>   }
+>> +static inline struct em_perf_state *em_get_table(struct em_perf_domain *pd)
+>> +{
+>> +       return NULL;
+>> +}
+>> +static inline void em_put_table(void) {}
+>>   #endif
+>>
+>>   #endif
+>> --
+> 
 
