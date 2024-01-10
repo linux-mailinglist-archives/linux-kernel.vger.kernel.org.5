@@ -1,178 +1,106 @@
-Return-Path: <linux-kernel+bounces-22019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D82E829803
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:51:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55066829800
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 643521C21CEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:51:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09DEC1F26799
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53FB547F52;
-	Wed, 10 Jan 2024 10:49:53 +0000 (UTC)
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F272347780;
+	Wed, 10 Jan 2024 10:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iHMKf8Ik"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3084047A6F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tinylab.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tinylab.org
-X-QQ-mid: bizesmtp72t1704883746tldabub3
-Received: from ubuntu1.. ( [221.226.144.218])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 10 Jan 2024 18:49:04 +0800 (CST)
-X-QQ-SSF: 01200000000000B0B000000A0000000
-X-QQ-FEAT: U4uNK7LTfdqXYB2ToMtJLJ8+FJ8X+0ubq/JvtvJPoyrv7YmBWN6qqiKxSdBXd
-	IT2aGPQ5BL4kdR8KXdvkjNASv50uYGfhnhM/7oqOondEo7XPMWdwg2Arx3WCFheQWfv+RUA
-	y+mFM28hPPNoDB/Y4OB8TpJ8Es6huXwhlG+IxT0TSgfzYDx9fzfX5j3JI3Kq61XeAKkfKDb
-	ND4xTPAfCuZWEjwYSJmUdz8v8pszn2pq9u96/8z+qIk47qwZ2nhcOPMpDgfnFA8ebQCQO0E
-	AUIYbkNQNeYgslkv7qTDVR7DSAb+G+9ct9w4lUAdASph8Y+tYisM2O0LwONCX3MHaItcRmT
-	wuCyFd5h26gwQADdgjob610BDTWBjQzTh6PNbEM
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 13203849688828320885
-From: Song Shuai <songshuaishuai@tinylab.org>
-To: peterz@infradead.org,
-	jpoimboe@kernel.org,
-	jbaron@akamai.com,
-	rostedt@goodmis.org,
-	ardb@kernel.org,
-	songshuaishuai@tinylab.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] static_call: make selftest available for out-of-line SC
-Date: Wed, 10 Jan 2024 18:48:54 +0800
-Message-Id: <20240110104854.292752-1-songshuaishuai@tinylab.org>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6A741779
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e7c6e3c63so4113417e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 02:49:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704883772; x=1705488572; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4HAwidvb0e6ayLYLy7I8ixYSx1g7DRV+B9kcqw/hieg=;
+        b=iHMKf8IkXh7fOSlSG15azryW47XKx238o+gr8RPX3CubNzw9MSfg9cLZ9P0dZTLjZt
+         qmeG20Ey4S7kC8mKbEijqtUBLXkwRzN+ybH5XU/K0+t9Ru7Megl2TY1MaPD+SCdJAQKS
+         IGd3JQrN99lewOzjhWMSjncpSBz4CgqIErtFFRypnzwtsHn31v/IQAWvdVRgzAxBT5ka
+         vrBmYaTeibRwxfpsEwYyHJZoxw+GshaLKKOzXmuOxcfVKLFU1rutA56G9j9LMRPoiCmA
+         mmBFu45NjfAvuyEODbI5zwIIIiblz6CTrxJHRVcT+ChkSOwrv4K/cLj7oZWwHbEaDyHU
+         YTvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704883772; x=1705488572;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4HAwidvb0e6ayLYLy7I8ixYSx1g7DRV+B9kcqw/hieg=;
+        b=lC1cxs5SJGzsnIWsJQY9y0AgXGv/FDhMQ83HzSXgErcSXZS7HNaqI2EuTyCeowuH1y
+         9bFy+ODSRQS/kXOwFFnNtFWtPnbz5bsCKyYJ+jmVpxv5oajpRKVum2eWpzqA6NNMCQyu
+         N1UtrGL8fB7lIw5X90uPCZUgJkm8Qo8wRrCGbQymVfket30iDSd6CqndMfnOVHNzJG4y
+         ZVJCczakx0HYwpW27eyoHeaFoZq7pIt3uPhDvV41QBhSLCxcilB4yjnebD+pnhF9Iq4o
+         k2IobCSuMJCyRMWWF6DWNYDkiynfbXvoZcqMIIYsd6SZajno9zW7CIBzAqNqAOAh4SQI
+         PCPQ==
+X-Gm-Message-State: AOJu0Yw7G5HgxitlmnA9eQPwBw0kOKCchQCdQFX0Ahdh8YebVXb0ESSo
+	N8LOv1df8TFf8tCRYlBvd8sNP08DjsAYlw==
+X-Google-Smtp-Source: AGHT+IGH4Qz7/5tf/bBFWTnAs92jT0yCKBWnsVfiMJH5KiWKl3BVTMjQvfanZ3xGGYxdJZu1ZO+YtQ==
+X-Received: by 2002:a19:5f50:0:b0:50e:700:bdbb with SMTP id a16-20020a195f50000000b0050e0700bdbbmr145927lfj.21.1704883771729;
+        Wed, 10 Jan 2024 02:49:31 -0800 (PST)
+Received: from [172.30.205.119] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id o5-20020ac24bc5000000b0050ecae41c51sm590120lfq.135.2024.01.10.02.49.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 02:49:31 -0800 (PST)
+Message-ID: <45314345-36ba-4d85-9d3b-298de26eb069@linaro.org>
+Date: Wed, 10 Jan 2024 11:49:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-2
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 4/5] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>, will@kernel.org,
+ robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
+ jsnitsel@redhat.com, quic_bjorande@quicinc.com, mani@kernel.org,
+ quic_eberman@quicinc.com, robdclark@chromium.org,
+ u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com,
+ quic_pkondeti@quicinc.com, quic_molvera@quicinc.com
+Cc: linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ qipl.kernel.upstream@quicinc.com
+References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
+ <20240109114220.30243-5-quic_bibekkum@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240109114220.30243-5-quic_bibekkum@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Static call selftest should be built once HAVE_STATIC_CALL is configured.
-but it's now bonded with HAVE_STATIC_CALL_INLINE.
 
-Move selftest to static_call.c making it available for out-of-line SC.
 
-Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
----
- kernel/static_call.c        | 44 +++++++++++++++++++++++++++++++++++++
- kernel/static_call_inline.c | 42 -----------------------------------
- 2 files changed, 44 insertions(+), 42 deletions(-)
+On 1/9/24 12:42, Bibek Kumar Patro wrote:
+> Add ACTLR data table for SM8550 along with support for
+> same including SM8550 specific implementation operations.
+> 
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> ---
+[...]
 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index e9c3e69f3837..b1e1b4573201 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -1,8 +1,52 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/static_call.h>
-+#include <linux/init.h>
- 
- long __static_call_return0(void)
- {
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(__static_call_return0);
-+
-+#ifdef CONFIG_STATIC_CALL_SELFTEST
-+
-+static int func_a(int x)
-+{
-+	return x+1;
-+}
-+
-+static int func_b(int x)
-+{
-+	return x+2;
-+}
-+
-+DEFINE_STATIC_CALL(sc_selftest, func_a);
-+
-+static struct static_call_data {
-+      int (*func)(int);
-+      int val;
-+      int expect;
-+} static_call_data [] __initdata = {
-+      { NULL,   2, 3 },
-+      { func_b, 2, 4 },
-+      { func_a, 2, 3 }
-+};
-+
-+static int __init test_static_call_init(void)
-+{
-+      int i;
-+
-+      for (i = 0; i < ARRAY_SIZE(static_call_data); i++ ) {
-+	      struct static_call_data *scd = &static_call_data[i];
-+
-+              if (scd->func)
-+                      static_call_update(sc_selftest, scd->func);
-+
-+              WARN_ON(static_call(sc_selftest)(scd->val) != scd->expect);
-+      }
-+
-+      return 0;
-+}
-+early_initcall(test_static_call_init);
-+
-+#endif /* CONFIG_STATIC_CALL_SELFTEST */
-diff --git a/kernel/static_call_inline.c b/kernel/static_call_inline.c
-index 639397b5491c..3e65bfafe559 100644
---- a/kernel/static_call_inline.c
-+++ b/kernel/static_call_inline.c
-@@ -512,45 +512,3 @@ int __init static_call_init(void)
- }
- early_initcall(static_call_init);
- 
--#ifdef CONFIG_STATIC_CALL_SELFTEST
--
--static int func_a(int x)
--{
--	return x+1;
--}
--
--static int func_b(int x)
--{
--	return x+2;
--}
--
--DEFINE_STATIC_CALL(sc_selftest, func_a);
--
--static struct static_call_data {
--      int (*func)(int);
--      int val;
--      int expect;
--} static_call_data [] __initdata = {
--      { NULL,   2, 3 },
--      { func_b, 2, 4 },
--      { func_a, 2, 3 }
--};
--
--static int __init test_static_call_init(void)
--{
--      int i;
--
--      for (i = 0; i < ARRAY_SIZE(static_call_data); i++ ) {
--	      struct static_call_data *scd = &static_call_data[i];
--
--              if (scd->func)
--                      static_call_update(sc_selftest, scd->func);
--
--              WARN_ON(static_call(sc_selftest)(scd->val) != scd->expect);
--      }
--
--      return 0;
--}
--early_initcall(test_static_call_init);
--
--#endif /* CONFIG_STATIC_CALL_SELFTEST */
--- 
-2.39.2
+> +static const struct actlr_variant sm8550_actlr[] = {
+> +	{ sm8550_apps_actlr_cfg, 0x15000000 },
+> +	{ sm8550_gfx_actlr_cfg, 0x03da0000 },
+> +	{},
+> +};
 
+Please use C99 designated initializers and put the address first.
+
+Konrad
 
