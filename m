@@ -1,154 +1,420 @@
-Return-Path: <linux-kernel+bounces-22423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B34B1829D7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:23:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D9AC829D7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:23:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5C161C2256E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65271C225DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23F54C3AC;
-	Wed, 10 Jan 2024 15:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25984C3A5;
+	Wed, 10 Jan 2024 15:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WG7zrkZ2"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="3MMuYrxP"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5A94BA9C
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5572a9b3420so8950548a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:22:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8FE4C3AA
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cd46e7ae8fso45852151fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:23:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704900173; x=1705504973; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ocW5g+MfpPGGH+YXBPFbzMDUsowtT7v9pCl5haEEOIY=;
-        b=WG7zrkZ2JrerGmsFJiDWr5TpGvd8pE97cTnAuj7OOlLu8tFgSgcwJn0VhFYocYpsQg
-         2bFqRkTDUd+QRw9gJDibm5nw/BdDgpDqmlHoiI/X8n9XYbP2X9YgLDGi50dwlR3QZNr/
-         IoFLSOeFfMyTF20UrnCX8Igm/QIiyldOpwz0bgEvUnHtwR2h1yBkofuK1Vumc0teKuMN
-         /m4FRACQ5pdmLeRQ3uOW/yG/4l7m4dXyYI0vKLTLtiB+QVg/Jn9a3cCEAt/MbgZ85o5W
-         PTJ6+j5rw4wpYJTMn16Czxa/Nq9GANhSAQFhmwXZFx6HMprIZCr5j4AceQQdCqq7Ycmy
-         J+7g==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704900192; x=1705504992; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=unio6xyPuyiljSFbUBdGK0l3Ekze7QbXWro+QzvNYxM=;
+        b=3MMuYrxPfNeEvtOnBzWl7NjgJvPGS9BXe6OumrtLEywOr5mmInziNgkMhcLPaWbUUw
+         z3rS8o3LT7jSW1dGCiEzODAkh+ljkGM/GoRw+fT6gfTOeDw6+THBq6Enk5MEESDRc/hv
+         wCRtU9zAIOnhm/xWJhO+9QkKla55X/BaYUOx4UQMCU8AenEW04FuVmwL4YH0BkVfHhB4
+         FbWGRuvfL5J5ZWx04Au0klxjwrl/rCijWzeIGyvk1gu3JzzQboviHxvbbhP++OsWTUH7
+         HgsSY0chFYNtb5LrAGC/kIik46ZO4a5osJzPm15mqf3Lz8Klrm7e9/77nJ1xN4Bxh37M
+         MwfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704900173; x=1705504973;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ocW5g+MfpPGGH+YXBPFbzMDUsowtT7v9pCl5haEEOIY=;
-        b=RtA4bmpNvqZ8hn5kp8mVzU6CKxj2Sjmn6zj6Wrj8BbTHejWmIR2O/ytr16dH50TGR6
-         hk3zi83zcEDKz9DiIAdbApsUUByfbizWW3j9qg4mciz6N+eKhW/WjboxIMcCda14T8F8
-         CdkP62pCcO4V/EYeUXMcMk3paudQHL0WXTsFZcSRE8emUlsdrsWnB/YQJApqZ7qCV+y4
-         fFUAqSYcl6kXg8hfh27q0wMuVB8eEB0PMbL9fkCJi5cmG+Q+xa4gCVpQZdtiFV8oTXuR
-         6EGFgfRpSE3cRY+UFxcAdyaIXGzVlKA/pCuyjrUwjPK9er0Adg4X/z5JJ1TtvmmAJ3Fz
-         OnxA==
-X-Gm-Message-State: AOJu0YwUCw7RFYk1sa1N8hZ4wOO+j0dL3TX2oy/CTRIfdq15kUWNrdsL
-	P3xCznyYakoGeJKQl2aWjy3MbUuDPrM3fc+AFnx4NwzTXfc=
-X-Google-Smtp-Source: AGHT+IExbouC+KC/ZAVx6mzwntrY7evugoqODglQrHojsF8Id7rsToGoRmMzsvGKdNOGTSo0//Ng2w==
-X-Received: by 2002:a17:906:fa85:b0:a2c:dfa:4f6 with SMTP id lt5-20020a170906fa8500b00a2c0dfa04f6mr246115ejb.16.1704900172981;
-        Wed, 10 Jan 2024 07:22:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id mb24-20020a170906eb1800b00a27b4e1b189sm2158782ejb.209.2024.01.10.07.22.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 07:22:52 -0800 (PST)
-Message-ID: <4f070678-63b6-4657-ad4f-c32256adbf1f@linaro.org>
-Date: Wed, 10 Jan 2024 16:22:50 +0100
+        d=1e100.net; s=20230601; t=1704900192; x=1705504992;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=unio6xyPuyiljSFbUBdGK0l3Ekze7QbXWro+QzvNYxM=;
+        b=TP7hW7QJAGp7DiyOVh7y0vJc7ADgmqB5ozjxwHHNNafO/0s//D+REj8ZLWcCcSkggM
+         tMKxhltmzsF6sGWnkv+gUOrPLYv7pQdRA2g8Zhw6j2B4Wcfo5RRnyeTIBzm1EpbqKaYk
+         np/bW5vPaUytxFWr/Sn3+SEcT4WgAcqfx5PKwKZiidk18bOKRlJpFipdGXaCMt9rxVzR
+         bq9bw92ab5MRlwjY3oZ+XrYyN375bn3O7BufDl9G+OkjjgkWuM6nqwDXllDGjRuyyql5
+         d6joAOYeuimgkhJMU36+J7VGYbNqg3fy6KE7F6MKCBQbaQrKTnyHdp4HMjweIydXm4C6
+         mMkA==
+X-Gm-Message-State: AOJu0Yw0AJ+kafl8Wi9p6IZ5DOlxyy2kFIQvQso3KkOlkQDDPt/LkBHN
+	Rr1c0ucPy/QSWJXYszlJsSZXK6QQuIyn+2bvMQpk6otiONb4MQ==
+X-Google-Smtp-Source: AGHT+IH3R4oUpmTauicdudMIc0FvqJSaAALdAxi7Uv8t1zsIJWNSH8DGcz8LDSOZeaehH1NGVqTzZ8dIE24+n74zaH0=
+X-Received: by 2002:a05:651c:82:b0:2cc:ec31:93f3 with SMTP id
+ 2-20020a05651c008200b002ccec3193f3mr290135ljq.197.1704900191881; Wed, 10 Jan
+ 2024 07:23:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: ipq6018: enable sdhci node
-Content-Language: en-US
-To: Chukun Pan <amadeus@jmu.edu.cn>, Bjorn Andersson <andersson@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240110151040.2155938-1-amadeus@jmu.edu.cn>
- <20240110151040.2155938-3-amadeus@jmu.edu.cn>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110151040.2155938-3-amadeus@jmu.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231229214950.4061381-1-atishp@rivosinc.com> <20231229214950.4061381-10-atishp@rivosinc.com>
+ <db38f118-3682-4b2f-b0a6-76b1c9fba557@syntacore.com>
+In-Reply-To: <db38f118-3682-4b2f-b0a6-76b1c9fba557@syntacore.com>
+From: Atish Kumar Patra <atishp@rivosinc.com>
+Date: Wed, 10 Jan 2024 07:23:00 -0800
+Message-ID: <CAHBxVyHk7zmhj_WfYaEyH_jFL02jZdobtwCTNAJFLNmg-OzvCg@mail.gmail.com>
+Subject: Re: [v2 09/10] RISC-V: KVM: Add perf sampling support for guests
+To: Vladimir Isaev <vladimir.isaev@syntacore.com>
+Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
+	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
+	Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/01/2024 16:10, Chukun Pan wrote:
-> Enable mmc device found on ipq6018 devices.
-> This node supports both eMMC and SD cards.
-> 
-> Tested with:
->   eMMC (HS200)
->   SD Card (SDR50/SDR104)
+On Wed, Jan 10, 2024 at 4:38=E2=80=AFAM Vladimir Isaev
+<vladimir.isaev@syntacore.com> wrote:
+>
+>
+> 30.12.2023 00:49, Atish Patra wrote:
+> >
+> > KVM enables perf for guest via counter virtualization. However, the
+> > sampling can not be supported as there is no mechanism to enabled
+> > trap/emulate scountovf in ISA yet. Rely on the SBI PMU snapshot
+> > to provide the counter overflow data via the shared memory.
+> >
+> > In case of sampling event, the host first guest the LCOFI interrupt
+> > and injects to the guest via irq filtering mechanism defined in AIA
+> > specification. Thus, ssaia must be enabled in the host in order to
+> > use perf sampling in the guest. No other AIA dpeendancy w.r.t kernel
+> > is required.
+> >
+> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/csr.h          |  3 +-
+> >  arch/riscv/include/asm/kvm_vcpu_pmu.h |  1 +
+> >  arch/riscv/include/uapi/asm/kvm.h     |  1 +
+> >  arch/riscv/kvm/main.c                 |  1 +
+> >  arch/riscv/kvm/vcpu.c                 |  8 +--
+> >  arch/riscv/kvm/vcpu_onereg.c          |  2 +
+> >  arch/riscv/kvm/vcpu_pmu.c             | 70 +++++++++++++++++++++++++--
+> >  7 files changed, 77 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.=
+h
+> > index 88cdc8a3e654..bec09b33e2f0 100644
+> > --- a/arch/riscv/include/asm/csr.h
+> > +++ b/arch/riscv/include/asm/csr.h
+> > @@ -168,7 +168,8 @@
+> >  #define VSIP_TO_HVIP_SHIFT     (IRQ_VS_SOFT - IRQ_S_SOFT)
+> >  #define VSIP_VALID_MASK                ((_AC(1, UL) << IRQ_S_SOFT) | \
+> >                                  (_AC(1, UL) << IRQ_S_TIMER) | \
+> > -                                (_AC(1, UL) << IRQ_S_EXT))
+> > +                                (_AC(1, UL) << IRQ_S_EXT) | \
+> > +                                (_AC(1, UL) << IRQ_PMU_OVF))
+> >
+> >  /* AIA CSR bits */
+> >  #define TOPI_IID_SHIFT         16
+> > diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include=
+/asm/kvm_vcpu_pmu.h
+> > index d56b901a61fc..af6d0ff5ce41 100644
+> > --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> > +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> > @@ -36,6 +36,7 @@ struct kvm_pmc {
+> >         bool started;
+> >         /* Monitoring event ID */
+> >         unsigned long event_idx;
+> > +       struct kvm_vcpu *vcpu;
+> >  };
+> >
+> >  /* PMU data structure per vcpu */
+> > diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uap=
+i/asm/kvm.h
+> > index d6b7a5b95874..d5aea43bc797 100644
+> > --- a/arch/riscv/include/uapi/asm/kvm.h
+> > +++ b/arch/riscv/include/uapi/asm/kvm.h
+> > @@ -139,6 +139,7 @@ enum KVM_RISCV_ISA_EXT_ID {
+> >         KVM_RISCV_ISA_EXT_ZIHPM,
+> >         KVM_RISCV_ISA_EXT_SMSTATEEN,
+> >         KVM_RISCV_ISA_EXT_ZICOND,
+> > +       KVM_RISCV_ISA_EXT_SSCOFPMF,
+> >         KVM_RISCV_ISA_EXT_MAX,
+> >  };
+> >
+> > diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
+> > index 225a435d9c9a..5a3a4cee0e3d 100644
+> > --- a/arch/riscv/kvm/main.c
+> > +++ b/arch/riscv/kvm/main.c
+> > @@ -43,6 +43,7 @@ int kvm_arch_hardware_enable(void)
+> >         csr_write(CSR_HCOUNTEREN, 0x02);
+> >
+> >         csr_write(CSR_HVIP, 0);
+> > +       csr_write(CSR_HVIEN, 1UL << IRQ_PMU_OVF);\
+>
+> Hi Atish,
+>
+> Maybe I missed something, but I thought you planned to move CSR_HVIEN to =
+kvm_riscv_aia_enable() and
+> add dependency for KVM sscofpmf and AIA since this register is part of AI=
+A spec.
+>
 
-How? It is disabled...
+I already did that in the previous patch.
+https://lore.kernel.org/all/20231229214950.4061381-9-atishp@rivosinc.com/
+I am not sure how this line got into this patch. My bad! Thanks for noticin=
+g it.
+I will send a fixed version right away.
 
-..
-
-> +
-> +			clocks = <&gcc GCC_SDCC1_AHB_CLK>,
-> +				 <&gcc GCC_SDCC1_APPS_CLK>,
-> +				 <&xo>;
-> +			clock-names = "iface", "core", "xo";
-> +			resets = <&gcc GCC_SDCC1_BCR>;
-> +			max-frequency = <192000000>;
-> +			mmc-ddr-1_8v;
-> +			mmc-hs200-1_8v;
-
-Aren't these three properties of the board?
-
-Best regards,
-Krzysztof
-
+> Thank you
+> Vladimir Isaev
+>
+> >
+> >         kvm_riscv_aia_enable();
+> >
+> > diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> > index b5ca9f2e98ac..f83f0226439f 100644
+> > --- a/arch/riscv/kvm/vcpu.c
+> > +++ b/arch/riscv/kvm/vcpu.c
+> > @@ -382,7 +382,8 @@ int kvm_riscv_vcpu_set_interrupt(struct kvm_vcpu *v=
+cpu, unsigned int irq)
+> >         if (irq < IRQ_LOCAL_MAX &&
+> >             irq !=3D IRQ_VS_SOFT &&
+> >             irq !=3D IRQ_VS_TIMER &&
+> > -           irq !=3D IRQ_VS_EXT)
+> > +           irq !=3D IRQ_VS_EXT &&
+> > +           irq !=3D IRQ_PMU_OVF)
+> >                 return -EINVAL;
+> >
+> >         set_bit(irq, vcpu->arch.irqs_pending);
+> > @@ -397,14 +398,15 @@ int kvm_riscv_vcpu_set_interrupt(struct kvm_vcpu =
+*vcpu, unsigned int irq)
+> >  int kvm_riscv_vcpu_unset_interrupt(struct kvm_vcpu *vcpu, unsigned int=
+ irq)
+> >  {
+> >         /*
+> > -        * We only allow VS-mode software, timer, and external
+> > +        * We only allow VS-mode software, timer, counter overflow and =
+external
+> >          * interrupts when irq is one of the local interrupts
+> >          * defined by RISC-V privilege specification.
+> >          */
+> >         if (irq < IRQ_LOCAL_MAX &&
+> >             irq !=3D IRQ_VS_SOFT &&
+> >             irq !=3D IRQ_VS_TIMER &&
+> > -           irq !=3D IRQ_VS_EXT)
+> > +           irq !=3D IRQ_VS_EXT &&
+> > +           irq !=3D IRQ_PMU_OVF)
+> >                 return -EINVAL;
+> >
+> >         clear_bit(irq, vcpu->arch.irqs_pending);
+> > diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.=
+c
+> > index 581568847910..1eaaa919aa61 100644
+> > --- a/arch/riscv/kvm/vcpu_onereg.c
+> > +++ b/arch/riscv/kvm/vcpu_onereg.c
+> > @@ -36,6 +36,7 @@ static const unsigned long kvm_isa_ext_arr[] =3D {
+> >         /* Multi letter extensions (alphabetically sorted) */
+> >         KVM_ISA_EXT_ARR(SMSTATEEN),
+> >         KVM_ISA_EXT_ARR(SSAIA),
+> > +       KVM_ISA_EXT_ARR(SSCOFPMF),
+> >         KVM_ISA_EXT_ARR(SSTC),
+> >         KVM_ISA_EXT_ARR(SVINVAL),
+> >         KVM_ISA_EXT_ARR(SVNAPOT),
+> > @@ -88,6 +89,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsign=
+ed long ext)
+> >         case KVM_RISCV_ISA_EXT_I:
+> >         case KVM_RISCV_ISA_EXT_M:
+> >         case KVM_RISCV_ISA_EXT_SSTC:
+> > +       case KVM_RISCV_ISA_EXT_SSCOFPMF:
+> >         case KVM_RISCV_ISA_EXT_SVINVAL:
+> >         case KVM_RISCV_ISA_EXT_SVNAPOT:
+> >         case KVM_RISCV_ISA_EXT_ZBA:
+> > diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
+> > index e980235b8436..f2bf5b5bdd61 100644
+> > --- a/arch/riscv/kvm/vcpu_pmu.c
+> > +++ b/arch/riscv/kvm/vcpu_pmu.c
+> > @@ -229,6 +229,47 @@ static int kvm_pmu_validate_counter_mask(struct kv=
+m_pmu *kvpmu, unsigned long ct
+> >         return 0;
+> >  }
+> >
+> > +static void kvm_riscv_pmu_overflow(struct perf_event *perf_event,
+> > +                                  struct perf_sample_data *data,
+> > +                                  struct pt_regs *regs)
+> > +{
+> > +       struct kvm_pmc *pmc =3D perf_event->overflow_handler_context;
+> > +       struct kvm_vcpu *vcpu =3D pmc->vcpu;
+> > +       struct kvm_pmu *kvpmu =3D vcpu_to_pmu(vcpu);
+> > +       struct riscv_pmu *rpmu =3D to_riscv_pmu(perf_event->pmu);
+> > +       u64 period;
+> > +
+> > +       /*
+> > +        * Stop the event counting by directly accessing the perf_event=
+.
+> > +        * Otherwise, this needs to deferred via a workqueue.
+> > +        * That will introduce skew in the counter value because the ac=
+tual
+> > +        * physical counter would start after returning from this funct=
+ion.
+> > +        * It will be stopped again once the workqueue is scheduled
+> > +        */
+> > +       rpmu->pmu.stop(perf_event, PERF_EF_UPDATE);
+> > +
+> > +       /*
+> > +        * The hw counter would start automatically when this function =
+returns.
+> > +        * Thus, the host may continue to interrupt and inject it to th=
+e guest
+> > +        * even without the guest configuring the next event. Depending=
+ on the hardware
+> > +        * the host may have some sluggishness only if privilege mode f=
+iltering is not
+> > +        * available. In an ideal world, where qemu is not the only cap=
+able hardware,
+> > +        * this can be removed.
+> > +        * FYI: ARM64 does this way while x86 doesn't do anything as su=
+ch.
+> > +        * TODO: Should we keep it for RISC-V ?
+> > +        */
+> > +       period =3D -(local64_read(&perf_event->count));
+> > +
+> > +       local64_set(&perf_event->hw.period_left, 0);
+> > +       perf_event->attr.sample_period =3D period;
+> > +       perf_event->hw.sample_period =3D period;
+> > +
+> > +       set_bit(pmc->idx, kvpmu->pmc_overflown);
+> > +       kvm_riscv_vcpu_set_interrupt(vcpu, IRQ_PMU_OVF);
+> > +
+> > +       rpmu->pmu.start(perf_event, PERF_EF_RELOAD);
+> > +}
+> > +
+> >  static long kvm_pmu_create_perf_event(struct kvm_pmc *pmc, struct perf=
+_event_attr *attr,
+> >                                       unsigned long flags, unsigned lon=
+g eidx,
+> >                                       unsigned long evtdata)
+> > @@ -248,7 +289,7 @@ static long kvm_pmu_create_perf_event(struct kvm_pm=
+c *pmc, struct perf_event_att
+> >          */
+> >         attr->sample_period =3D kvm_pmu_get_sample_period(pmc);
+> >
+> > -       event =3D perf_event_create_kernel_counter(attr, -1, current, N=
+ULL, pmc);
+> > +       event =3D perf_event_create_kernel_counter(attr, -1, current, k=
+vm_riscv_pmu_overflow, pmc);
+> >         if (IS_ERR(event)) {
+> >                 pr_err("kvm pmu event creation failed for eidx %lx: %ld=
+\n", eidx, PTR_ERR(event));
+> >                 return PTR_ERR(event);
+> > @@ -473,6 +514,12 @@ int kvm_riscv_vcpu_pmu_ctr_start(struct kvm_vcpu *=
+vcpu, unsigned long ctr_base,
+> >                 }
+> >         }
+> >
+> > +       /* The guest have serviced the interrupt and starting the count=
+er again */
+> > +       if (test_bit(IRQ_PMU_OVF, vcpu->arch.irqs_pending)) {
+> > +               clear_bit(pmc_index, kvpmu->pmc_overflown);
+> > +               kvm_riscv_vcpu_unset_interrupt(vcpu, IRQ_PMU_OVF);
+> > +       }
+> > +
+> >  out:
+> >         retdata->err_val =3D sbiret;
+> >
+> > @@ -539,7 +586,13 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *v=
+cpu, unsigned long ctr_base,
+> >                         else if (pmc->perf_event)
+> >                                 pmc->counter_val +=3D perf_event_read_v=
+alue(pmc->perf_event,
+> >                                                                        =
+   &enabled, &running);
+> > -                       /* TODO: Add counter overflow support when ssco=
+fpmf support is added */
+> > +                       /*
+> > +                        * The counter and overflow indicies in the sna=
+pshot region are w.r.to
+> > +                        * cbase. Modify the set bit in the counter mas=
+k instead of the pmc_index
+> > +                        * which indicates the absolute counter index.
+> > +                        */
+> > +                       if (test_bit(pmc_index, kvpmu->pmc_overflown))
+> > +                               kvpmu->sdata->ctr_overflow_mask |=3D (1=
+UL << i);
+> >                         kvpmu->sdata->ctr_values[i] =3D pmc->counter_va=
+l;
+> >                         kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr=
+, kvpmu->sdata,
+> >                                              sizeof(struct riscv_pmu_sn=
+apshot_data));
+> > @@ -548,15 +601,20 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *=
+vcpu, unsigned long ctr_base,
+> >                 if (flags & SBI_PMU_STOP_FLAG_RESET) {
+> >                         pmc->event_idx =3D SBI_PMU_EVENT_IDX_INVALID;
+> >                         clear_bit(pmc_index, kvpmu->pmc_in_use);
+> > +                       clear_bit(pmc_index, kvpmu->pmc_overflown);
+> >                         if (snap_flag_set) {
+> >                                 /* Clear the snapshot area for the upco=
+ming deletion event */
+> >                                 kvpmu->sdata->ctr_values[i] =3D 0;
+> > +                               /*
+> > +                                * Only clear the given counter as the =
+caller is responsible to
+> > +                                * validate both the overflow mask and =
+configured counters.
+> > +                                */
+> > +                               kvpmu->sdata->ctr_overflow_mask &=3D ~(=
+1UL << i);
+> >                                 kvm_vcpu_write_guest(vcpu, kvpmu->snaps=
+hot_addr, kvpmu->sdata,
+> >                                                      sizeof(struct risc=
+v_pmu_snapshot_data));
+> >                         }
+> >                 }
+> >         }
+> > -
+> >  out:
+> >         retdata->err_val =3D sbiret;
+> >
+> > @@ -699,6 +757,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
+> >                 pmc =3D &kvpmu->pmc[i];
+> >                 pmc->idx =3D i;
+> >                 pmc->event_idx =3D SBI_PMU_EVENT_IDX_INVALID;
+> > +               pmc->vcpu =3D vcpu;
+> >                 if (i < kvpmu->num_hw_ctrs) {
+> >                         pmc->cinfo.type =3D SBI_PMU_CTR_TYPE_HW;
+> >                         if (i < 3)
+> > @@ -731,13 +790,14 @@ void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *v=
+cpu)
+> >         if (!kvpmu)
+> >                 return;
+> >
+> > -       for_each_set_bit(i, kvpmu->pmc_in_use, RISCV_MAX_COUNTERS) {
+> > +       for_each_set_bit(i, kvpmu->pmc_in_use, RISCV_KVM_MAX_COUNTERS) =
+{
+> >                 pmc =3D &kvpmu->pmc[i];
+> >                 pmc->counter_val =3D 0;
+> >                 kvm_pmu_release_perf_event(pmc);
+> >                 pmc->event_idx =3D SBI_PMU_EVENT_IDX_INVALID;
+> >         }
+> > -       bitmap_zero(kvpmu->pmc_in_use, RISCV_MAX_COUNTERS);
+> > +       bitmap_zero(kvpmu->pmc_in_use, RISCV_KVM_MAX_COUNTERS);
+> > +       bitmap_zero(kvpmu->pmc_overflown, RISCV_KVM_MAX_COUNTERS);
+> >         memset(&kvpmu->fw_event, 0, SBI_PMU_FW_MAX * sizeof(struct kvm_=
+fw_event));
+> >         kvm_pmu_clear_snapshot_area(vcpu);
+> >  }
+> > --
+> > 2.34.1
+> >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
