@@ -1,95 +1,91 @@
-Return-Path: <linux-kernel+bounces-22813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B465382A339
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:24:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B90AB82A343
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 22:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 528AD1F2358D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:24:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 518682877AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B13B4F5F4;
-	Wed, 10 Jan 2024 21:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D3B4F8A7;
+	Wed, 10 Jan 2024 21:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Hm4X6wg0"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WV/+YMoO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ADF64F21E;
-	Wed, 10 Jan 2024 21:23:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704921834;
-	bh=nH3UDLEXR1ENTZXRgFi9gQ5VgD8ebMpEI9fewN4PaHM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Hm4X6wg0wmdXPNdz4lmtiaJO90IH+JJfRuXW1J91DlXCa/3uuy95pcUJRiMdlvQCQ
-	 mK5oNFMrToBMGU2kjH2hlPr5woyaWB/i+nZnmVdtbA2urdqSXGbZ36xHSjU2d4dLHz
-	 QgLP2bivvbT1+WYXZ5V3QDeLayTUI6g7xbJbGQxzKRbwdZjQlBdt7cM8gilaWDRaoy
-	 fM/YUrjcHkM1HKP/yqLBgN2PFyQFr25cQkGm/rMenAWRN55hv50Khenp+wE3oJj8NA
-	 diUOfDS5aySx1enNojjwsMqr89CErphIQlte19udyZUh70rbAe2Bs8Zv3ZNThT9l9x
-	 b3kYWIs4treSA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T9LQK0f6Xz4wc8;
-	Thu, 11 Jan 2024 08:23:52 +1100 (AEDT)
-Date: Thu, 11 Jan 2024 08:23:50 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the kspp-gustavo tree
-Message-ID: <20240111082350.5aca9bef@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0250D4F890;
+	Wed, 10 Jan 2024 21:25:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C01ECC43390;
+	Wed, 10 Jan 2024 21:25:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704921934;
+	bh=Ax58DmDjPNW74NGwRvhHHGsYqpwIGIZxv4FkZoGcxV4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=WV/+YMoOvCEyWpaRpYZfa87kc6mbQ0JnVBbDnIG5yf/huJPTEyQwx8cXxan8KxinN
+	 6sNBXfQFoVBxzqwDGumSVysnHcLmYq9nvcNjV5hKJ7VVI/muQ0GlHvgx+x3+niVmq9
+	 RuxS7Zd6MOXiXUhr0aTG2YCs+G4j0caWW01HTd+aL1Hy5Lw/lJ9cj/lZOsySBKvQWB
+	 er+OO8VqSbL3cviSAhyf8p2dZWVLVPhS4OLTE6iChmLPRf4MhEPa0XRlj+JhQFQ55u
+	 m/xZtqRUdeC3VwXCXxl9xZQ9TjdHsXZYksEUz4gTQpIoWVCmyU/4A+oymlcDeOrDbP
+	 DQq9jAA3AdwNQ==
+Received: (nullmailer pid 2648568 invoked by uid 1000);
+	Wed, 10 Jan 2024 21:25:28 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/N2hljuN5wcFoyfRt11JFnry";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From: Rob Herring <robh@kernel.org>
+To: Alexey Romanov <avromanov@salutedevices.com>
+Cc: kernel@salutedevices.com, herbert@gondor.apana.org.au, davem@davemloft.net, neil.armstrong@linaro.org, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, khilman@baylibre.com, robh+dt@kernel.org, linux-amlogic@lists.infradead.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, narmstrong@baylibre.com, clabbe@baylibre.com, jbrunet@baylibre.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, artin.blumenstingl@googlemail.com
+In-Reply-To: <20240110201216.18016-17-avromanov@salutedevices.com>
+References: <20240110201216.18016-1-avromanov@salutedevices.com>
+ <20240110201216.18016-17-avromanov@salutedevices.com>
+Message-Id: <170492192887.2648505.6187306596898979418.robh@kernel.org>
+Subject: Re: [PATCH v1 16/24] dt-bindings: crypto: meson: add new
+ compatibles
+Date: Wed, 10 Jan 2024 15:25:28 -0600
 
---Sig_/N2hljuN5wcFoyfRt11JFnry
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Wed, 10 Jan 2024 23:11:32 +0300, Alexey Romanov wrote:
+> Now we can use crypto driver at G12A/G12B/S4/A1/SM1/AXG.
+> 
+> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> ---
+>  .../devicetree/bindings/crypto/amlogic,gxl-crypto.yaml          | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-  e5c35432f91c ("powerpc/crypto: Avoid -Wstringop-overflow warnings")
+yamllint warnings/errors:
 
-This is commit
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.example.dtb: crypto-engine@c883e000: compatible: ['amlogic,gxl-crypto'] is too short
+	from schema $id: http://devicetree.org/schemas/crypto/amlogic,gxl-crypto.yaml#
 
-  aaa03fdb56c7 ("crypto: p10-aes-gcm - Avoid -Wstringop-overflow warnings")
+doc reference errors (make refcheckdocs):
 
-in Linus' tree.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240110201216.18016-17-avromanov@salutedevices.com
 
---=20
-Cheers,
-Stephen Rothwell
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
---Sig_/N2hljuN5wcFoyfRt11JFnry
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
------BEGIN PGP SIGNATURE-----
+pip3 install dtschema --upgrade
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWfCuYACgkQAVBC80lX
-0GxRuwf/UMCjQcmDeMSfonGNBfuGEaTMTE7mjy7VsWbmXuuipatRzo68bxjPnmW3
-XobeE0tOsmTBCeFDww+msz8+O4e6lsPPVEjjqa1LQ3e5He4HW5kKU//aXtrhIiWG
-eo8WybKyZyHoXSgQceIZu62TGjgsfxiw6FrTsl+N/W5ea8Ov1/QAQCIUABoAsa1F
-lr/uXG7J2QMckjsG85Tks5nFUfKGs5QXfT+LQeBEViPcmfngFJ8THjFGqnWFXkwl
-aDNjCeszMNv5ZpPWWrC+VnnKeAEuV1k5Uuhu3ajRfP40ES6JCjC1Z1nnLqjSxSKD
-KxaHv2E/wKhEcm3ZaJ4XfaOVkSo3mQ==
-=HcBj
------END PGP SIGNATURE-----
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
---Sig_/N2hljuN5wcFoyfRt11JFnry--
 
