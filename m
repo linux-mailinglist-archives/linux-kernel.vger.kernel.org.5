@@ -1,138 +1,148 @@
-Return-Path: <linux-kernel+bounces-22231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311D3829B36
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:29:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBDCC829B38
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 878BEB215F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:29:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8311A1F252F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8C148CDE;
-	Wed, 10 Jan 2024 13:29:00 +0000 (UTC)
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D44348CCD;
+	Wed, 10 Jan 2024 13:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fwxV2bot"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD43487A9;
-	Wed, 10 Jan 2024 13:28:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 95DEA100DE9D6;
-	Wed, 10 Jan 2024 14:28:53 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 631EE2CD58F; Wed, 10 Jan 2024 14:28:53 +0100 (CET)
-Date: Wed, 10 Jan 2024 14:28:53 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-pci@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
-Message-ID: <20240110132853.GA6860@wunner.de>
-References: <20240104130123.37115-1-brgl@bgdev.pl>
- <20240104130123.37115-4-brgl@bgdev.pl>
- <20240109144327.GA10780@wunner.de>
- <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39CBE4879C;
+	Wed, 10 Jan 2024 13:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbed85ec5b5so2757832276.3;
+        Wed, 10 Jan 2024 05:30:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704893420; x=1705498220; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZPfofe3u+lD4YDt2+isSaKDrOXF8CqH8aujHfVtRZ9M=;
+        b=fwxV2botUZ18RlcFJCaaXwhWmI0z4VNrN++395buH3CRiUGJSaO64QNZmIwtYEDnYF
+         yEu7cCpDCe1rDW5AJFuPet8PjUbSNf/VnmXc/oNJysfSTcI66+IsBLszaeHdvlHAdx9w
+         uxkyoPULgVeuFAnj9MUWCrobo5CF+Ck8vH8dRCJRe0qSChZ6DdqiMR3NQOufBVN1Oc/8
+         fc40+EdWkxGQifH7vQIMpOCPviepwjCtv6tV9FTaOcfJUr6HilSWJTjFgJK2sEdosDZt
+         K4/qciiNAyRtd68n3F0R7JyMrtJa/lTDbEkEYNT54DIsaa+YRfoVZNND/mSW0RuZwyxc
+         2pNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704893420; x=1705498220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZPfofe3u+lD4YDt2+isSaKDrOXF8CqH8aujHfVtRZ9M=;
+        b=agv/ot29N5/k1MfB9wuV1e8LHG76kDBLJosaEzOdFU+paRx3K0iQVuOWUCHIFsHOW1
+         QSTqKH8Xkibv+4apWrCPIReCtvnDZFKbxWJg6mYeGLqpX2G+pTGXUVqcn9DskCd11zI3
+         7/rX59JZ2RYeQboDjRjesLRL24AbK78H4h2AsBeDrQ+/Giv0tz2W0w6cC9h94881B5LW
+         IJ3ohYnesJguqOqrh2HOf9wKYV6LaOl9XOwagscFfPcGKx29MY+/Dme8z6kYANQxqD9M
+         jL0C2lwsgAynIKiGReZN8TZSM/Dstlnex7ZFlEBujg4Pr2hkCPkGOuNL2UaYM98n1/fZ
+         MwIg==
+X-Gm-Message-State: AOJu0YxvieAUiW1iZ4X5M7w9UC0ogXevjT+pVOGo+f0Ye9ntYl8Ofqly
+	2GZlwqOcLWUx6MgqvyES5UbEBE3VQQt23ytMigpEglqDdg==
+X-Google-Smtp-Source: AGHT+IHldQ5FbsYwsl7/kMG4XMWHRmUUUzRMVW9HLAaONINbCy9xupCgO+u0BED+KojM+wDvQ+6UhexddYWEBgHhsbU=
+X-Received: by 2002:a25:d697:0:b0:dbd:1254:414f with SMTP id
+ n145-20020a25d697000000b00dbd1254414fmr474612ybg.42.1704893419920; Wed, 10
+ Jan 2024 05:30:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20240110125317.13742-1-sunhao.th@gmail.com> <20240110125317.13742-2-sunhao.th@gmail.com>
+In-Reply-To: <20240110125317.13742-2-sunhao.th@gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Wed, 10 Jan 2024 14:30:08 +0100
+Message-ID: <CACkBjsaWfo9h7H0O4wUWJ2qrAsw0XkJSUiKOC9H_FkOivvq=5A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] selftests/bpf: Add tests for alu on PTR_TO_FLOW_KEYS
+To: bpf@vger.kernel.org
+Cc: willemb@google.com, ast@kernel.org, linux-kernel@vger.kernel.org, 
+	Eduard Zingerman <eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 01:55:18PM +0100, Bartosz Golaszewski wrote:
-> On Tue, Jan 9, 2024 at 3:43???PM Lukas Wunner <lukas@wunner.de> wrote:
-> > On Thu, Jan 04, 2024 at 02:01:17PM +0100, Bartosz Golaszewski wrote:
-> > > In order to introduce PCIe power-sequencing, we need to create platform
-> > > devices for child nodes of the port driver node. They will get matched
-> > > against the pwrseq drivers (if one exists) and then the actuak PCIe
-> > > device will reuse the node once it's detected on the bus.
-> > [...]
-> > > --- a/drivers/pci/pcie/portdrv.c
-> > > +++ b/drivers/pci/pcie/portdrv.c
-> > > @@ -715,7 +716,7 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
-> > >               pm_runtime_allow(&dev->dev);
-> > >       }
-> > >
-> > > -     return 0;
-> > > +     return devm_of_platform_populate(&dev->dev);
-> > >  }
-> >
-> > I think this belongs in of_pci_make_dev_node(), portdrv seems totally
-> > the wrong place.  Note that you're currently calling this for RCECs
-> > (Root Complex Event Collectors) as well, which is likely not what
-> > you want.
-> >
-> 
-> of_pci_make_dev_node() is only called when the relevant PCI device is
-> instantiated which doesn't happen until it's powered-up and scanned -
-> precisely the problem I'm trying to address.
+On Wed, Jan 10, 2024 at 1:53=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wrote=
+:
+>
+> Add two cases for PTR_TO_FLOW_KEYS alu. One for rejecting alu with
+> variable offset, another for fixed offset.
+>
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> ---
+>  .../bpf/progs/verifier_value_illegal_alu.c    | 37 +++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu=
+c b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
+> index 71814a753216..49089361c98a 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
+> @@ -146,4 +146,41 @@ l0_%=3D:     exit;                                  =
+         \
+>         : __clobber_all);
+>  }
+>
+> +SEC("flow_dissector")
+> +__description("flow_keys illegal alu op with variable offset")
+> +__failure
+> +__msg("R7 pointer arithmetic on flow_keys prohibited")
+> +__naked void flow_keys_illegal_variable_offset_alu(void)
+> +{
+> +       asm volatile("                                                  \
+> +       r6 =3D r1;                                                       =
+         \
+> +       r7 =3D *(u64*)(r6 + %[flow_keys_off]);    \
+> +       r8 =3D 8;                                                        =
+         \
+> +       r8 /=3D 1;                                                       =
+         \
+> +       r8 &=3D 8;                                                       =
+         \
+> +       r7 +=3D r8;                                                      =
+         \
+> +       r0 =3D *(u64*)(r7 + 0);                                   \
+> +       exit;                                                            =
+       \
+> +"      :
+> +       : __imm_const(flow_keys_off, offsetof(struct __sk_buff, flow_keys=
+))
+> +       : __clobber_all);
+> +}
+> +
+> +SEC("flow_dissector")
+> +__description("flow_keys valid alu op with fixed offset")
+> +__success
+> +__naked void flow_keys_legal_fixed_offset_alu(void)
+> +{
+> +       asm volatile("                                                  \
+> +       r6 =3D r1;                                                       =
+         \
+> +       r7 =3D *(u64*)(r6 + %[flow_keys_off]);    \
+> +       r8 =3D 8;                                                        =
+         \
+> +       r7 +=3D r8;                                                      =
+         \
+> +       r0 =3D *(u64*)(r7 + 0);                                   \
+> +       exit;                                                            =
+       \
+> +"      :
+> +       : __imm_const(flow_keys_off, offsetof(struct __sk_buff, flow_keys=
+))
+> +       : __clobber_all);
+> +}
+> +
 
-No, of_pci_make_dev_node() is called *before* device_attach(),
-i.e. before portdrv has even probed.  So it seems this should
-work perfectly well for your use case.
-
-
-> > devm functions can't be used in the PCI core, so symmetrically call
-> > of_platform_unpopulate() from of_pci_remove_node().
-> 
-> I don't doubt what you're saying is true (I've seen worse things) but
-> this is the probe() callback of a driver using the driver model. Why
-> wouldn't devres work?
-
-The long term plan is to move the functionality in portdrv to
-the PCI core.  Because devm functions can't be used in the PCI
-core, adding new ones to portdrv will *add* a new roadblock to
-migrating portdrv to the PCI core.  In other words, it makes
-future maintenance more difficult.
-
-Generally, only PCIe port services which share the same interrupt
-(hotplug, PME, bandwith notification, flit error counter, ...)
-need to live in portdrv.  Arbitrary other stuff should not be
-shoehorned into portdrv.
-
-Thanks,
-
-Lukas
+The format here is strange and should be fixed later.
+I'm also curious, why only fixed-off is used in check_flow_keys_access()
+for validation?
 
