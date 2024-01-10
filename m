@@ -1,63 +1,43 @@
-Return-Path: <linux-kernel+bounces-22780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A230E82A2BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:49:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6207082A2CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:50:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8C911C2545A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:49:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 673981C2677F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4FC4F20D;
-	Wed, 10 Jan 2024 20:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE0D4F8B4;
+	Wed, 10 Jan 2024 20:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ITZ49Vws"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Ev9PNgg7"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766344F1E7
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3373bc6d625so4113292f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:44:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704919439; x=1705524239; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gMeSaWB3mBAvtjNkA6eGhsBguuVj7QZcpMfuJTXudxI=;
-        b=ITZ49VwsmussKe+8nSouGlf7cH+/hTHh3COaMozwFHNR5AocbA+lfLHwSpbnu+dlf2
-         PIL5f6vEeFfDC6bR6VWFSExJKu5tfaqEHdJnwl3RlBB1eVWJEK6oRih9eg8rlLIp3eci
-         dAJo5mVOPM8vUIZxn3yRGOansEGFAvDIc2muk2c8aWEKzrysRWN8mPvkqzGvBlzNQ+L9
-         vlPxz4QXih0l/5nFFNYucgfDWjZ5ekKEhlqYj7p9qzTxZzq2CdbI/C8NOKJEaQSOOnib
-         ZMJddQp1WgA2bZGbQpz2ydUl3eT2J4ZtNiaNfNIvyvdsjI4dtNkgZUv1Am6BYhOA4qsp
-         pgwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704919439; x=1705524239;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMeSaWB3mBAvtjNkA6eGhsBguuVj7QZcpMfuJTXudxI=;
-        b=qellQmen2aGbnbDh09VQtG63EPMWfawGyiNwdpMCVkbqW56AqscTbETjVu3cSP9FyY
-         mT9o606QkyCOKVJNb+zsKTeAxLqphUWsjk17yyuSrfY9hlYXs57dkTMP8XcGR0rjLRdP
-         4No9XEeoIZitJooUh98OY9JDTJnlQazFWDXEYphGQt4d0Y5ZvYSMznrq+9xIUs5k15mq
-         KlDvcC83FQ/thWsuLcGQ09JAqaaGgVDfh8BTKDcfkfOoIRYGtw+aCpWcTtqSl/QAqoDh
-         FZwV2InHpmF9UEHqVBVmDL9hJN4pJFNtS3mhkGKM9S/ZfdKrgwGMwvdGsgD2e/7NU4RG
-         471Q==
-X-Gm-Message-State: AOJu0YxztDTvihykVn9cf8FHC1rWnxRYIYuU7URX1KWTzRHpgPG/gjqK
-	19GgGMANTd7L8oxRGqm2UdWsV8wkyiZC2w==
-X-Google-Smtp-Source: AGHT+IFwa5sPlTNLRtgIzXRgzmENBDJvDYcW59BfLsiLOVACZSzNbAu47yMbVTATfbooPy3hVeDNtg==
-X-Received: by 2002:a5d:4a92:0:b0:337:33a:c880 with SMTP id o18-20020a5d4a92000000b00337033ac880mr42365wrq.26.1704919438773;
-        Wed, 10 Jan 2024 12:43:58 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id i25-20020aa7c719000000b005571c7e4934sm2321714edq.93.2024.01.10.12.43.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 12:43:57 -0800 (PST)
-Message-ID: <0f976e76-9f6b-4ec2-a39f-96ccb90f1a55@linaro.org>
-Date: Wed, 10 Jan 2024 21:43:56 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA5B4A9B7;
+	Wed, 10 Jan 2024 20:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704919546; x=1705524346; i=markus.elfring@web.de;
+	bh=67WEwzv+/9tUhnVAYMobcuh+1b1uiqYL9AGknTMPv1A=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:Cc:From:
+	 In-Reply-To;
+	b=Ev9PNgg7hVDL0F9Oa3DaRBUPbf5jji5UsoqQsmCIxDAoWLKV+buo10XZENviw+Rz
+	 2Z1mHQ82fDVhW5JzkkRmIV/XC+O9oaCzPEY2yblfNVUaC87XRmSDEMd4qLsTgNy/l
+	 OtfwwLY9tVOtdwBp+xe/8ZR/zkZWzutJbGQRP61y9EUhsJSMzcCb1QWfheX1JzwQ4
+	 apSbxelcr+VH+bitCSYncBOXxn7HLyC0InD63/cI52UdUaxhg3I7ymdP9Gaj+vMjB
+	 HK5W02EMgHPbRfIRHfUHk5oSBFML6oKhh+n3s48a6ShjcWXmgLsyu3bXU+Jb/18zy
+	 ymRJ4kyBuLL4eZt+KA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mv3Yg-1r6H3y0ULo-00quwH; Wed, 10
+ Jan 2024 21:45:46 +0100
+Message-ID: <b9c9ba9f-459e-40b5-ae4b-703dcc03871d@web.de>
+Date: Wed, 10 Jan 2024 21:45:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,73 +45,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
- add spi props
-Content-Language: en-US
-To: Petre Rodan <petre.rodan@subdimension.ro>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
- <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
- <20240110172306.31273-2-petre.rodan@subdimension.ro>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110172306.31273-2-petre.rodan@subdimension.ro>
+Subject: [PATCH v2 0/2] io_uring: Adjustments for io_ring_ctx_alloc()
+Content-Language: en-GB
+To: io-uring@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Gabriel Krisman Bertazi <krisman@suse.de>, Jens Axboe <axboe@kernel.dk>,
+ Pavel Begunkov <asml.silence@gmail.com>
+References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
+ <aa867594-e79d-6d08-a08e-8c9e952b4724@web.de>
+ <878r4xnn52.fsf@mailhost.krisman.be>
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <878r4xnn52.fsf@mailhost.krisman.be>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:w8zbiVzV4QX6nYncQcpShWT/W2voPMe5P7Wq/18FEP1aLfUlsa5
+ 1W+heqqaOSv74iqsgtIBdLhT/DdXeZAxqKoOD0X3a2c5E497HBDVFPW0RVFrBuuzf/ZsnD0
+ 8Fs9cY/Mj3+3u+5tqUHp+VCvEJNavPjNeH0V9KlXDBm/uH8wBkgVLQHUdCCnLnDE7CL8Irn
+ wkImzt5GMc7bRj95dOH7A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:nV+jhf8rftA=;6GXpVx/Fu86nZGOIj5tOyFTGS4O
+ 6u0lKWKNN/hmEpEIjnQig+hiRmFkUTCqLY79NJlOHWMfLbo8ZnOoZ8TWH8l+13tjwbCTzw+fI
+ BKYwWbpjmDYrf/DjA33PfSJn4Ig1T/kCLuDNncgK6L06Enc4jQOw+yNhOEAU35V7x04AYYvZ1
+ ui13KNAId8kHEwDXYVxIqMcIXwC6WUMQPadKx61koFyFhndx7mFKk6931MrtSW8vg4kEjY43Q
+ J6INj7BwMYt5E8ZNqN5qDid/Lz0LkPqgLdNEhT1DB8UBM10XrvWXwAu0FW3SebAT0vZk4Lz94
+ ThuYLg//OKYTCspUGlbIgDN/OVIGgm8FD+bi6YLvIcD8iB6vcWjK/ToWSLcBRaOK26CrdnKaa
+ p2kHjtXtmofvvUqMFPS/q1RQlTobH/UD6aKOLoqdAU4JTEkJxHagzBu7eyJV3d6RUkcK0hohO
+ hL7fzO3yXIkX44uURC5aOMOJgQb7/T4DSc1T8yaqTgGyNw1nC/8c90Yp1g/HsPfjJ0zEmfR4x
+ kiEjppZ1POBDGx231TI9ta4id5RXrCeWDZT3u4Iyj1TxxmuX8us1tUMoRZ+aVAhHMp0YF9T45
+ 33NtrjCh+/702vsJQjlG03iL+mAftr4N3q8oudAEMMYQ0XcAghHJSoPOz9iQzI1q9D1SqGu6r
+ J4MxxV8BLNRMKm3Wxelbr96X2zmLLlYGr/WknS40Ll6blupo8rU9IqWimSe4A8ufudbiSdWfd
+ ZmHhOxV/OlU077ewx6RwgT0f8z/0+ahHTyZ7qscUvEX2OxcsdzuFArcRu0woXRoBIsGGJFWnj
+ brGKGOmVk4iRD0QMu9muE9IvZEV9iSwEEa7kvE5GhAW/mU5aEbqi169Za703zn7aCIs0OihNy
+ zftqUsulIBu2L8xGqSaf2Zld/mJSMlwewGqiHG1r7kY5MYkQ5lLHoxjSc2tluVSDW2J8xcXip
+ bdgxbrk5oLPd157aUxmWo5M93es=
 
-On 10/01/2024 18:22, Petre Rodan wrote:
-> Add spi-peripheral-props.yaml requirement
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 10 Jan 2024 21:38:12 +0100
 
-This we see. What we do not see is: why? Please fix commit msg.
+A few update suggestions were taken into account
+from static source code analysis.
 
+Markus Elfring (2):
+  Delete a redundant kfree() call
+  Improve exception handling
 
-Best regards,
-Krzysztof
+ io_uring/io_uring.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+=2D-
+2.43.0
 
 
