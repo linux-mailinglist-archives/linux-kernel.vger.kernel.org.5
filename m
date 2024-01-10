@@ -1,231 +1,122 @@
-Return-Path: <linux-kernel+bounces-22045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 148BE82985F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:11:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B76C829865
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:11:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 618A6B25722
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:11:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0E741F21EE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2634547A45;
-	Wed, 10 Jan 2024 11:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4020B46450;
+	Wed, 10 Jan 2024 11:11:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="Zic2V0Wi"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qra71X0N"
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAF247795
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a28cfca3c45so101984466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:10:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B694655D;
+	Wed, 10 Jan 2024 11:11:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bb9d54575cso3395518b6e.2;
+        Wed, 10 Jan 2024 03:11:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1704885049; x=1705489849; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3QlF0rRTBRD1E5jWA0kISaH2vZgtmpP2AfnIty3q4TQ=;
-        b=Zic2V0Wiuaq4gTl+N44n1XUP4UA1b65X7cROPZrdK7Gqx47g5fLdSzeGowGK2w0ltl
-         uTESACfTbt+JNpPh9ddtNWuMI73YHi5io0MAfsmKunlxPRRwTNRSp2bYVyDrMF7fMGpL
-         RoqKUlYthJIDIg9/RPtT8+1Qn54W2C18gvfU0=
+        d=gmail.com; s=20230601; t=1704885087; x=1705489887; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=omsWh5uQriFHqDpOaip7ABA2fSXEYznPIN/MC/otOtM=;
+        b=Qra71X0NqjL0tomyMOjyq/OY7i5fyT6gyjAcoO0RTZjmJBzPlntswtXwOgGZefMA3c
+         IcAGlAvrNCzCXj86YOFrPoYk+xqN4Eu15ot+fRa4f2DNcM2faHYrgj4Ahi4WBYPWrApe
+         PiF3RBfWw3E3bn8xlmSJi2qT4gjijdsgI03CJ23uOGrJVLm1Fl9moPXAmw/j8wUGvVgv
+         ONYwXAgIdhyZzcxYNOciyCwpgOOPfrHwY1yC9loKNGK0us7gYYzpSOJ3rD0epD/reO9M
+         dl6YSfpmNgx+vmi4V0l/F6sPAnTEfwBlXa6GCpVgY0T6xyoKhhPj6f52Ac8neAYbY90g
+         DpCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704885049; x=1705489849;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3QlF0rRTBRD1E5jWA0kISaH2vZgtmpP2AfnIty3q4TQ=;
-        b=CtNNoOA4iUSuyP8wqVyQ8jcMUK+RsR0zRn3D5AmkJMjnNtt8oW7KPelJF3Sb+6hfxQ
-         Abj2Gf7S3m7kf5nB4lSvUh6z+knHvDjw+YiLG/JRSXGbmVJ6u3qd6NAMllZ9zfwk/nEx
-         l1DkGDJi6Oy8r/Q3eIzD20qmR0m7tN9r9FbERXU5bGSepFAk+NpCOv/Vr6NyNMqy3wD8
-         L7D4FR5FXKiFQr7WETSx2+QJ2c7vwrzgOMRNPX7pr2FPmK2zfMChV32Ot5fWR7jMKWjI
-         BD0jK58KRTcN0pqFjIUBZcGgkN9m1aQQeUZeYMAQbKASr8vcKV/e3sFjWDeYj/WGO90g
-         2a2w==
-X-Gm-Message-State: AOJu0YyBtrwxyPQUgoqiqlAUdHspZ+KA3aI6zORrbvZK91ANpTMtHqgU
-	gu6VoFMQPnJNUAPkfNpeEynJBxQzKc9T0Q==
-X-Google-Smtp-Source: AGHT+IH17mNNLFHB3A8wZSZTcWuwmMBTnERZR6Mu2RaoActQZZYYvzEUdcGN2VlFuia3B3Yo7xfaKw==
-X-Received: by 2002:a17:907:9445:b0:a27:7701:f16 with SMTP id dl5-20020a170907944500b00a2777010f16mr1131131ejc.7.1704885048816;
-        Wed, 10 Jan 2024 03:10:48 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m27-20020a1709062adb00b00a269f8e8869sm1976817eje.128.2024.01.10.03.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 03:10:48 -0800 (PST)
-Date: Wed, 10 Jan 2024 12:10:46 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Andri Yngvason <andri@yngvason.is>
-Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-	Simon Ser <contact@emersion.fr>,
-	Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH 3/7] drm/amd/display: Add handling for new "active color
- format" property
-Message-ID: <ZZ57Nl3CnRMPcfbj@phenom.ffwll.local>
-Mail-Followup-To: Andri Yngvason <andri@yngvason.is>,
-	Harry Wentland <harry.wentland@amd.com>,
-	Leo Li <sunpeng.li@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-	Simon Ser <contact@emersion.fr>,
-	Werner Sembach <wse@tuxedocomputers.com>
-References: <20240109181104.1670304-1-andri@yngvason.is>
- <20240109181104.1670304-4-andri@yngvason.is>
+        d=1e100.net; s=20230601; t=1704885087; x=1705489887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=omsWh5uQriFHqDpOaip7ABA2fSXEYznPIN/MC/otOtM=;
+        b=EGAbtQMDXsp3Oa50BjuK7Qj0a5xfjGk0NCT1BD1YfgvEOPDB34NsIjGFmRmUng0VB0
+         JlIjMI8nJTVcfUaAFJnElfn7CCutTCm4EOLVzlJoHRQ+5juV+ckkhvkxkjgOrhtIZeNn
+         JcasNenif12yJeeKpL7ELpxUqSeCzm0n3CI4Q7qdvsQEQ6JAv4ESpNJFQWZaFtjHbP3e
+         b+R1iuHfYfttjApoqRnUcZjCVa/KAAOl1Chy2jo2sM7/ANX+VKJYtpv0xDasLDSOOSb2
+         0Y9cO0b945tnPBEfPudTcEvWj60Nd0nHkV8k1oFjyV6tKqTPzWFmbdiq6sapsyt6W/Ne
+         6NHg==
+X-Gm-Message-State: AOJu0Yzss5KKs0rtq/RU1LD0MO6B+XVEBNi3dN+TTwmRWTV8cfa1ZztL
+	fTjPqHHEcogL+bKfeegQqq3dsUYa8yOGmCVHWco=
+X-Google-Smtp-Source: AGHT+IGvKV2nwCLqCBAalddYmFFIryTSRVfx6vhcnyr1cLuJVJ8AxgBHTnqa8yFEd9OVlV5VyRZ92ZZ97Yiq3wdxsug=
+X-Received: by 2002:a05:6808:1b20:b0:3bd:4bb7:4213 with SMTP id
+ bx32-20020a0568081b2000b003bd4bb74213mr435165oib.7.1704885087209; Wed, 10 Jan
+ 2024 03:11:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109181104.1670304-4-andri@yngvason.is>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+References: <20240109135952.77458-1-warthog618@gmail.com> <CAHp75Ve05bAK-ehZZ7XSci5VqR18cCb=hgnbFKXwy2QPkxo=pw@mail.gmail.com>
+ <20240109234518.GA7839@rigel> <9e33f7dc-deee-4165-bc10-ad77f38b270a@oracle.com>
+In-Reply-To: <9e33f7dc-deee-4165-bc10-ad77f38b270a@oracle.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 10 Jan 2024 13:10:51 +0200
+Message-ID: <CAHp75Vc8UN2kyxGtV0tCF+xcRLAxg0qijTvHWXXtdTA9nY-h3w@mail.gmail.com>
+Subject: Re: [PATCH 0/7] Documentation: gpio: add character device userspace
+ API documentation
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org, brgl@bgdev.pl, 
+	linus.walleij@linaro.org, andy@kernel.org, corbet@lwn.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 09, 2024 at 06:11:00PM +0000, Andri Yngvason wrote:
-> From: Werner Sembach <wse@tuxedocomputers.com>
-> 
-> This commit implements the "active color format" drm property for the AMD
-> GPU driver.
-> 
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Signed-off-by: Andri Yngvason <andri@yngvason.is>
-> Tested-by: Andri Yngvason <andri@yngvason.is>
-> ---
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 42 ++++++++++++++++++-
->  .../display/amdgpu_dm/amdgpu_dm_mst_types.c   |  4 ++
->  2 files changed, 45 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 10e041a3b2545..b44d06c3b1706 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -6882,6 +6882,24 @@ int convert_dc_color_depth_into_bpc(enum dc_color_depth display_color_depth)
->  	return 0;
->  }
->  
-> +static int convert_dc_pixel_encoding_into_drm_color_format(
-> +	enum dc_pixel_encoding display_pixel_encoding)
-> +{
-> +	switch (display_pixel_encoding) {
-> +	case PIXEL_ENCODING_RGB:
-> +		return DRM_COLOR_FORMAT_RGB444;
-> +	case PIXEL_ENCODING_YCBCR422:
-> +		return DRM_COLOR_FORMAT_YCBCR422;
-> +	case PIXEL_ENCODING_YCBCR444:
-> +		return DRM_COLOR_FORMAT_YCBCR444;
-> +	case PIXEL_ENCODING_YCBCR420:
-> +		return DRM_COLOR_FORMAT_YCBCR420;
-> +	default:
-> +		break;
-> +	}
-> +	return 0;
-> +}
-> +
->  static int dm_encoder_helper_atomic_check(struct drm_encoder *encoder,
->  					  struct drm_crtc_state *crtc_state,
->  					  struct drm_connector_state *conn_state)
-> @@ -7436,8 +7454,10 @@ void amdgpu_dm_connector_init_helper(struct amdgpu_display_manager *dm,
->  				adev->mode_info.underscan_vborder_property,
->  				0);
->  
-> -	if (!aconnector->mst_root)
-> +	if (!aconnector->mst_root) {
->  		drm_connector_attach_max_bpc_property(&aconnector->base, 8, 16);
-> +		drm_connector_attach_active_color_format_property(&aconnector->base);
-> +	}
->  
->  	aconnector->base.state->max_bpc = 16;
->  	aconnector->base.state->max_requested_bpc = aconnector->base.state->max_bpc;
-> @@ -8969,6 +8989,26 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
->  		kfree(dummy_updates);
->  	}
->  
-> +	/* Extract information from crtc to communicate it to userspace as connector properties */
-> +	for_each_new_connector_in_state(state, connector, new_con_state, i) {
-> +		struct drm_crtc *crtc = new_con_state->crtc;
-> +		struct dc_stream_state *stream;
-> +
-> +		if (crtc) {
-> +			new_crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
-> +			dm_new_crtc_state = to_dm_crtc_state(new_crtc_state);
-> +			stream = dm_new_crtc_state->stream;
-> +
-> +			if (stream) {
-> +				drm_connector_set_active_color_format_property(connector,
-> +					convert_dc_pixel_encoding_into_drm_color_format(
-> +						dm_new_crtc_state->stream->timing.pixel_encoding));
-> +			}
-> +		} else {
-> +			drm_connector_set_active_color_format_property(connector, 0);
+On Wed, Jan 10, 2024 at 10:16=E2=80=AFAM Vegard Nossum <vegard.nossum@oracl=
+e.com> wrote:
+> On 10/01/2024 00:45, Kent Gibson wrote:
+> > On Tue, Jan 09, 2024 at 10:00:26PM +0200, Andy Shevchenko wrote:
+> >> On Tue, Jan 9, 2024 at 4:00=E2=80=AFPM Kent Gibson <warthog618@gmail.c=
+om> wrote:
+> >>
+> >> May we actually state in the documentation that sysfs is subject to
+> >> remove at some point?
+> >
+> > So formally define what "deprecated" means?
+> > Is that covered in the higher level documentation somewhere?
+> > If so I'm more than happy to provide a reference.
+>
+> We have a few files that may be relevant here, that I'm aware of:
+>
+> 1) https://docs.kernel.org/admin-guide/sysfs-rules.html
+>
+> documents some general assumptions that userspace can make about the
+> stability of sysfs and its files
+>
+> 2) https://docs.kernel.org/admin-guide/abi.html
+>
+> This is the public-facing, somewhat machine-readable repository of what
+> is supposed to be the kernel's ABI/API, including "obsolete" and
+> "removed" interfaces.
+>
+> 3) Documentation/ABI/README
+>
+> describes the process of deprecating an interface
 
-Just realized an even bigger reason why your current design doesn't work:
-You don't have locking here.
+Yes and GPIO currently is under obsolete section with also this:
 
-And you cannot grab the required lock, which is
-drm_dev->mode_config.mutex, because that would result in deadlocks. So
-this really needs to use the atomic state based design I've described.
+"This ABI is deprecated and will be removed after 2020. It is replaced
+with the GPIO character device."
 
-A bit a tanget, but it would be really good to add a lockdep assert into
-drm_object_property_set_value, that at least for atomic drivers and
-connectors the above lock must be held for changing property values. But
-it will be quite a bit of audit to make sure all current users obey that
-rule.
+https://docs.kernel.org/admin-guide/abi-obsolete.html#symbols-under-sys-cla=
+ss
 
-Cheers, Sima
-> +		}
-> +	}
-> +
->  	/**
->  	 * Enable interrupts for CRTCs that are newly enabled or went through
->  	 * a modeset. It was intentionally deferred until after the front end
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-> index 11da0eebee6c4..a4d1b3ea8f81c 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-> @@ -600,6 +600,10 @@ dm_dp_add_mst_connector(struct drm_dp_mst_topology_mgr *mgr,
->  	if (connector->max_bpc_property)
->  		drm_connector_attach_max_bpc_property(connector, 8, 16);
->  
-> +	connector->active_color_format_property = master->base.active_color_format_property;
-> +	if (connector->active_color_format_property)
-> +		drm_connector_attach_active_color_format_property(&aconnector->base);
-> +
->  	connector->vrr_capable_property = master->base.vrr_capable_property;
->  	if (connector->vrr_capable_property)
->  		drm_connector_attach_vrr_capable_property(connector);
-> -- 
-> 2.43.0
-> 
+So, proposed cleanup series should probably rely on this documentation
+among other existing descriptions of sysfs GPIO.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+--=20
+With Best Regards,
+Andy Shevchenko
 
