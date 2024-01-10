@@ -1,114 +1,185 @@
-Return-Path: <linux-kernel+bounces-21785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D498E82943F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:25:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AEAA829445
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8225B1F26FE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:25:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 830FF1F25CEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3470A39AF6;
-	Wed, 10 Jan 2024 07:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7D139AE0;
+	Wed, 10 Jan 2024 07:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="USndf0YW"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OAas/FW3"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB96039851
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B15839851
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d60c49ee7so43638335e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:25:35 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3376f71fcbbso2179563f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 23:26:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704871534; x=1705476334; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fWHgi0F8aOvhuEosvb59tpcR7vgfsaa1QjiQKlh8T8c=;
-        b=USndf0YWNXB1/So0G5UmJaVBPvTXqb8foRjCyeQF1ACooHBJtx9TvB2M4eo7Um+xjU
-         QeG7rtxrFR805laRRLanii1YkQpVkp/wDHO9HYJ5uTU4aPmj/tSreUCNLuLKwHQk+Ydy
-         3u5jdIIVXIkxPzNfbsQbUOQpbp0M9fmMzS3psiNn20DL67errExJ+K0duoWE9VLb1TQG
-         ejRNkqKX346wUdXYsNKOJsiEWBnCJuJVhHrhD0WwPeXV+ptbQLUjtfpVE7/x2IkInBUa
-         z2KlSu970qLuNMBOgPpN9eaCipg4Dyd2C11tWjJQksYu4Z0m6IAtiJT9nfM6YNjSk8T5
-         DjKw==
+        d=linaro.org; s=google; t=1704871559; x=1705476359; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3OiOLhRr/v/UoX6M5hASdWKUoK8n0S9t0J6jvZFucNA=;
+        b=OAas/FW3fsdbePoaO8FMoctN5Z/GFK/mmquIdXpthWjUb9jDyC4Vz16kjhhm6CEvEs
+         zwS4EHfc3zMsf8Lil256/5eHixzvJwiZoMx7LZ/Ijau9m1yqe+gQNhlxssQ7qSRf0h35
+         LWJ3o8WQ2+KGRDuylDJ9BdJJHuS+lPmS71r37J3cggczHFwvvZl9ikw6KnejlUINtaOr
+         vWtM952hwAxXzHAIQOFmR28TYyWYVNAiKsfjRE3Wm+5jJUKAVTqKbopgdH9ec0Lz2w6s
+         8KYIS95MqJxkEvsmAn0Yk1thscAOeiGoTzqbmKhC71w8haKXGYy1Fma8+J9DJUAxaGFl
+         OPQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704871534; x=1705476334;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fWHgi0F8aOvhuEosvb59tpcR7vgfsaa1QjiQKlh8T8c=;
-        b=QLvTDZvMPwa04EmUM2ooaJCp577X8KXFticy4A2NXomvliypFVpUKB4fPViTRNIV/H
-         AiMZEaA3hiMnAmTZ7tnJf0xiO7qG/K+inPTXiW2nJs1vJwHdrCJQs7UYwP+3nrVJwNBe
-         BTFgK3w3EcnSv6iZSA1KKltWwUN8Y68Sq1qsMuCjnYYvOwWBen2kcwqvUBE8P+Ua4gAM
-         1ZFHyDCuFs8tu/W892NoErAG3L57aYb6uF8F8+dyoKvDgJUWnczGDfmlHK2K01IAAZOw
-         GccL0Oz6TatSRugUYiQ8vD/qcE9y+9BniFGFcIt5+Hr8j3yNEfqoZijYi39nhEGqosfi
-         Z2og==
-X-Gm-Message-State: AOJu0YwROb8LLrW26y5XQWMVhADZHun3NXI8kP5TQayHdOkSgiN7/tkV
-	OvUjedRZjqPTywCxGVPDnn1v53TzPRvuCg==
-X-Google-Smtp-Source: AGHT+IHANMSbivIIgcWx2RXwxuFOolpQOL/cdhqJYkwRqfeLQYHfc9Fl/CSMTqne1Q8Lc1/X8WznlA==
-X-Received: by 2002:a7b:ca55:0:b0:40e:4d1b:27e0 with SMTP id m21-20020a7bca55000000b0040e4d1b27e0mr296350wml.20.1704871534018;
-        Tue, 09 Jan 2024 23:25:34 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id p23-20020a05600c205700b0040e526bd5fdsm378493wmg.1.2024.01.09.23.25.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 23:25:33 -0800 (PST)
-Date: Wed, 10 Jan 2024 10:25:30 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ariel Silver <arielsilver77@gmail.com>
-Cc: forest@alittletooquiet.net, gregkh@linuxfoundation.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: vt6655: Fix sparse warning. Restricted cast.
-Message-ID: <b62deb16-daa0-412e-8e11-bf45b88d3107@moroto.mountain>
-References: <20240109072704.44582-1-arielsilver77@gmail.com>
- <d6489a61-3985-4fc2-9eda-333ea8fa02ae@moroto.mountain>
- <CACKMdf=Kppts=NzTVsNNuFcYge2HU+vG83b2C2QNyPEsiFHnkw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1704871559; x=1705476359;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3OiOLhRr/v/UoX6M5hASdWKUoK8n0S9t0J6jvZFucNA=;
+        b=R7HYSdxiV3rSDYVWwdZYSpn3yfVOQ1pdqEhhH0yKBiSC5cioIXZ3yzyoVyCXcI1Ton
+         N3jo3du9s1O7wV3/zTxX8fbjVhK6lLi01s4ImrMFeR2D95otg2DaVseaVgtZ0EVqzzvh
+         HGVTZNKlsxAnITL+v8JZAFKj9i/iembEWRIWmM2gzkMg1ttri6EzRgyNqlmyowNBfgA1
+         LGMYQNkqHDcffB1f7BKjtCbKz/1Ab/zS2UOdY2fuDcRSGWOQyafXRJdFUkOydwsrF/aB
+         UQTVIwncp7gMSwAOFeGsN2MvfxV/nvF5mesGSFLFFf6lw9xKKtAmmL5vhvIBNt7zK2To
+         2K7Q==
+X-Gm-Message-State: AOJu0Yz/IeC1UAbARFt0uBxk89t8YfXmDVBNPrI8YTpogsOplQjT9IoN
+	qg79Ey2BG37UafhrLWRbNh1vMMOcPIsqrA==
+X-Google-Smtp-Source: AGHT+IE1O/Q18uyQ9bgM0s5oBgheZhm9Raon+NZw5D/zhrfsAJdZYSoWCcIqwTEWmKfgCMrEQYnWfw==
+X-Received: by 2002:adf:f107:0:b0:336:ca90:3a1a with SMTP id r7-20020adff107000000b00336ca903a1amr195607wro.114.1704871558869;
+        Tue, 09 Jan 2024 23:25:58 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id z16-20020a5d4d10000000b0033686e8f02dsm4125387wrt.45.2024.01.09.23.25.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 23:25:58 -0800 (PST)
+Message-ID: <e35ebe97-1349-4c37-afa5-54c131a9dcbb@linaro.org>
+Date: Wed, 10 Jan 2024 07:25:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACKMdf=Kppts=NzTVsNNuFcYge2HU+vG83b2C2QNyPEsiFHnkw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/12] dt-bindings: clock: google,gs101-clock: add
+ PERIC0 clock management unit
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh@kernel.org>
+Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+ mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
+ andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+ jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org,
+ andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org, kernel-team@android.com
+References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
+ <20231228125805.661725-2-tudor.ambarus@linaro.org>
+ <20240109040315.GA2619804-robh@kernel.org>
+ <f695f2c0-2d4e-484c-9faa-7d8b28362541@linaro.org>
+ <8a55e1d9-c102-4cdf-8f23-edc40889cf6d@linaro.org>
+ <ea02d7ca-62e2-4d46-8495-ed6e515625a1@linaro.org>
+ <38523622-4963-44a5-a5d6-64896ae47e09@linaro.org>
+ <ddd31326-8901-476f-949f-2d1291ba07a0@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <ddd31326-8901-476f-949f-2d1291ba07a0@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hm...  This stuff is more broken than I realized when I first looked at
-it.  And the truth is that I don't know the hardware so I can't say
-exactly what the fix is.  Probably best to just leave it alone for now...
 
-On Wed, Jan 10, 2024 at 08:25:33AM +0200, Ariel Silver wrote:
-> >> Hello Dan and thank you for the quick response. Much appreciated!
-> >> 1) I am probably wrong, but as I see it, the current code assumes that
-> >> 'CARDqGetTSFOffset' returns a little endian value.
-> >> So it calls 'qwTSFOffset =  le64_to_cpu(qwTSFOffset)'. However digging in
-> >> the code of 'CARDqGetTSFOffset' I don't see a reason to assume that.
-> >> Which in my opinion can cuase a bad endianness cast on big endianness
-> >> systems.
 
-You're actually correct.
+On 1/9/24 18:38, Krzysztof Kozlowski wrote:
+> On 09/01/2024 17:12, Tudor Ambarus wrote:
+>>
+>>
+>> On 1/9/24 15:01, Krzysztof Kozlowski wrote:
+>>> On 09/01/2024 12:58, Tudor Ambarus wrote:
+>>>>
+>>>>
+>>>> On 1/9/24 11:09, Krzysztof Kozlowski wrote:
+>>>>> On 09/01/2024 05:03, Rob Herring wrote:
+>>>>>> On Thu, Dec 28, 2023 at 12:57:54PM +0000, Tudor Ambarus wrote:
+>>>>>>> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
+>>>>>>> clock management unit.
+>>>>>>>
+>>>>>>> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>>>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>>>>>>> ---
+>>>>>>> v2:
+>>>>>>> - fix comments as per Sam's suggestion and collect his R-b tag
+>>>>>>> - Rob's suggestion of renaming the clock-names to just "bus" and "ip"
+>>>>>>>   was not implemented as I felt it affects readability in the driver
+>>>>>>>   and consistency with other exynos clock drivers. I will happily update
+>>>>>>>   the names in the -rc phase if someone else has a stronger opinion than
+>>>>>>>   mine. 
+>>>>>>
+>>>>>> I'll defer to Krzysztof.
+>>>>>
+>>>>> I miss the point why clock-names cannot be fixed now. This is the name
+>>>>> of property, not the input clock name.
+>>>>
+>>>> They can be fixed now. I've just aired the fixes at:
+>>>> https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
+>>>>
+>>>> Preparing v3 for this patch set to include the updated names here too.
+>>>
+>>> I think I was not that clear enough. I did not get your current patchset
+>>> - so PERIC0 clock controller - cannot use new naming.
+>>>
+>>
+>> Ok, I understand that the fixes from
+>> https://lore.kernel.org/linux-arm-kernel/20240109114908.3623645-1-tudor.ambarus@linaro.org/
+>>
+>> are NACK-ed and I shall use the full clock-names in this patch set as
+>> well, thus "dout_cmu_peric0_bus", and "dout_cmu_peric0_ip". I don't mind
+>> changing them back, will send a v4 using the full clock names.
+> 
+> They are not rejected, it is just independent thing. At least looks like
+> independent.
 
-But the thing is that le64_to_cpu() and cpu_to_le64() do the exactly the
-same thing.  If the hardware is little endian they do nothing, but if
-the hardware is big endian they call bswap_64().  The only difference is
-how a human reader understands it and for git annotations.
+The datasheet is not so verbose, but as I understand, CMU_MISC and
+CMU_PERIC0 are clock domains of the same clock controller, thus I think
+they should be treated the same. We should either get rid of the name of
+the block in the clock names or keep it, but be consistent across all
+the clock domains.
+> 
+>> Out of curiosity, why can't we change the names? All gs101 patches are
+>> for v6.8, thus they haven't made a release yet. We still have the -rc
+>> phase where we can fix things.
+> 
+> We can change. I would not bother that much with doing that, because I
+> sent already them to arm-soc. That means I need to consider this as
+> fixes and I just did not want to deal with it.
+> 
+> The question is quite different for a new clock controller - peric0.
+> What parts of driver readability is affected by using "bus" name?
+> 
 
-What I suspect is that we should be passing little endian data to
-iowrite32().  In other words we should change the le64_to_cpu() to
-cpu_to_le64().  This wouldn't change how the code works, it would just
-change how it is annotated.  However, on the other hand, I see plenty of
-examples where it's passing CPU endian data to iowrite32() so maybe we
-should get rid of the conversion instead.  Who knows?
+As Peter pointed out, if keeping the shorter names, one would have to
+cross reference with the device tree in order to determine which clock
+is used, its type, whether it's a gate or a divider. Whereas if we keep
+the full name, one can see what's the clock about with a glance. The
+full name coincides with the clock names that are defined in the clock
+driver, thus one can grep for the full name from the device tree and hit
+the clock definition from the clock driver.
 
-I suspect is that this driver has never worked on big endian CPUs...
+The cons of keeping the full name is that keeping the name of the block
+in the DT's clock name is just redundant. Rob was clear and said that
+including the block name in the -names is a pattern we don't want.
 
-I would say let's not change this until we're more sure what's going on.
-And probably if we make changes that affect runtime as opposed to just
-modifying endian annotations, then that needs to be tested.
+In what concerns my personal preference, I like the full name. At the
+same time, I see Rob's point, and if that turns out to be a rule, let's
+respect it. So I'm fine with both, but let's be consistent across the
+driver and have the same clock name scheme for all the clock domains,
+otherwise it will just look weird.
 
-regards,
-dan carpenter
-
+Thanks,
+ta
 
