@@ -1,123 +1,119 @@
-Return-Path: <linux-kernel+bounces-21866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D26829572
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:57:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9F1829576
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9521F26AD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:57:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AFB7289857
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9233A8F4;
-	Wed, 10 Jan 2024 08:57:02 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B18DA3AC30;
+	Wed, 10 Jan 2024 08:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T/V2nNTz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551A53A1D5
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rNUNx-0004Iz-T7; Wed, 10 Jan 2024 09:56:29 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rNUNu-001f8W-QB; Wed, 10 Jan 2024 09:56:26 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rNUNu-006Ntr-2E;
-	Wed, 10 Jan 2024 09:56:26 +0100
-Date: Wed, 10 Jan 2024 09:56:26 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Raag Jadav <raag.jadav@intel.com>, 
-	Yicong Yang <yangyicong@hisilicon.com>, Ilkka Koskinen <ilkka@os.amperecomputing.com>, 
-	Fabio Estevam <festevam@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>, 
-	Khuong Dinh <khuong@os.amperecomputing.com>, Kevin Hilman <khilman@baylibre.com>, 
-	Andy Gross <agross@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, 
-	linux-arm-msm@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Frank Li <Frank.li@nxp.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Besar Wicaksono <bwicaksono@nvidia.com>, 
-	Jonathan Cameron <jonathan.cameron@huawei.com>, linux-amlogic@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jiucheng Xu <jiucheng.xu@amlogic.com>, Robin Murphy <robin.murphy@arm.com>, 
-	Bjorn Andersson <andersson@kernel.org>, linux-kernel@vger.kernel.org, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Shuai Xue <xueshuai@linux.alibaba.com>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 00/18] perf: Convert to platform remove callback
- returning void
-Message-ID: <vlnl6og3bts5hcdjw5h7c4km7zolzuf6h7cwyfymjzan3uqjwy@rsra3lqdhou7>
-References: <cover.1702648124.git.u.kleine-koenig@pengutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4A239859
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704877067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XsFJ64qhgo8dpCR3ZN8nHJuU62Q+ROyJhHepqFzOWSQ=;
+	b=T/V2nNTz1KkBmRf3HTfs/xzoALTkTkobeeYFxldshDdPfmGrMn2TUjEy28StCeYakuI/kF
+	P2LYe5c0xNamY+MMBDR5mUmmsoBr5ltgaAdObtf71KsbHO2F1HkUroqdU767yzRSg27pqZ
+	QC/rxTaFdraRsBzKQ2QS1Lt8xreT2Ng=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-515-Rwth6r8GNb-AXO8Dgvsk6A-1; Wed,
+ 10 Jan 2024 03:57:42 -0500
+X-MC-Unique: Rwth6r8GNb-AXO8Dgvsk6A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 185543C0F185;
+	Wed, 10 Jan 2024 08:57:42 +0000 (UTC)
+Received: from alecto.usersys.redhat.com (unknown [10.45.226.29])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0A26BC15E6A;
+	Wed, 10 Jan 2024 08:57:39 +0000 (UTC)
+From: Artem Savkov <asavkov@redhat.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	jolsa@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Artem Savkov <asavkov@redhat.com>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2] selftests/bpf: fix potential premature unload in bpf_testmod
+Date: Wed, 10 Jan 2024 09:57:37 +0100
+Message-ID: <20240110085737.8895-1-asavkov@redhat.com>
+In-Reply-To: <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
+References: <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="no4oat75dmv7km36"
-Content-Disposition: inline
-In-Reply-To: <cover.1702648124.git.u.kleine-koenig@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
+It is possible for bpf_kfunc_call_test_release() to be called from
+bpf_map_free_deferred() when bpf_testmod is already unloaded and
+perf_test_stuct.cnt which it tries to decrease is no longer in memory.
+This patch tries to fix the issue by waiting for all references to be
+dropped in bpf_testmod_exit().
 
---no4oat75dmv7km36
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
+but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
+synchronous grace periods urgently").
 
-Hello,
+Fixes: 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-On Fri, Dec 15, 2023 at 02:59:00PM +0100, Uwe Kleine-K=F6nig wrote:
-> this series converts all drivers below drivers/perf to use
-> .remove_new(). See commit 5c5a7680e67b ("platform: Provide a remove
-> callback that returns no value") for an extended explanation and the
-> eventual goal. The TL;DR; is to make it harder for driver authors to
-> leak resources without noticing.
->=20
-> I based the patches on today's next, I had to revert commits=20
-> 3115ee021bfb ("arm64: perf: Include threshold control fields in
-> PMEVTYPER mask") and 816c26754447 ("arm64: perf: Add support for event
-> counting threshold") to compile test on ARCH=3Darm (this is a problem in
-> next, not in my patch series).
->=20
-> This is merge window material. All patches are pairwise independent of
-> each other so they can be applied individually. Still it would be great
-> to let them go in all together.
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 91907b321f913..e7c9e1c7fde04 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -2,6 +2,7 @@
+ /* Copyright (c) 2020 Facebook */
+ #include <linux/btf.h>
+ #include <linux/btf_ids.h>
++#include <linux/delay.h>
+ #include <linux/error-injection.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -544,6 +545,14 @@ static int bpf_testmod_init(void)
+ 
+ static void bpf_testmod_exit(void)
+ {
++        /* Need to wait for all references to be dropped because
++         * bpf_kfunc_call_test_release() which currently resides in kernel can
++         * be called after bpf_testmod is unloaded. Once release function is
++         * moved into the module this wait can be removed.
++         */
++	while (refcount_read(&prog_test_struct.cnt) > 1)
++		msleep(20);
++
+ 	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
+ }
+ 
+-- 
+2.43.0
 
-I wonder if this series is still on someone's radar. It didn't appear in
-next up to now, so I guess it's too late for 6.8-rc1?!
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---no4oat75dmv7km36
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWeW7kACgkQj4D7WH0S
-/k5rIwgAqr3/DiavBC9snrdYbr7SgHIPe7cKime6131NsWiElWfvc2pWiDnQyj1t
-qo6sBLxFi+qRa61dSSRy7b7NT3XZ4orkpEgASsGYtgyc/b0f0XlAkn2RRcRaPeQW
-XKbHFW4fjGZfXhyUdOBp9vvhuraDQx1GZezpISG0YWvT4UFQIlFSfX6GaoiIGe4d
-LidSuc3leV3Ke2RsFLw0GhIHrv7ctd96TqJsXP7zmDh/sFF4ysQEfbpeSkFDEjX0
-fnGnHlj4cefY5TkgFtHZW7avEDUda7WdADNApxyYijPvMaoVg/5gRLjuoTABLO1h
-abXTI2fsT0fot+C8JuPHCxKOwfIprA==
-=53Rz
------END PGP SIGNATURE-----
-
---no4oat75dmv7km36--
 
