@@ -1,156 +1,220 @@
-Return-Path: <linux-kernel+bounces-22461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4102829E05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:55:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A95A7829530
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E0D1F29434
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:55:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 069ADB25CB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E524C601;
-	Wed, 10 Jan 2024 15:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2AF3EA71;
+	Wed, 10 Jan 2024 08:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ADB3nMVw"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=Sony.onmicrosoft.com header.i=@Sony.onmicrosoft.com header.b="CTj0PJjP"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2116.outbound.protection.outlook.com [40.107.220.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00CD34BAB0;
-	Wed, 10 Jan 2024 15:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40AEnpx2010921;
-	Wed, 10 Jan 2024 15:54:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=M1x94nggq8LdhSeujsxvuxzsQ7Q9QHrmlhYOHEI3Q5I=;
- b=ADB3nMVw2jnagow3OGDsz5wj4T8CHn+QOEO+qJiiUJPww7ssOJaPcDb4exn0TnIisWlK
- zK/GBbmPDX22TjEy2KJNWhy/ny4CwFCZMx+cNDJjEJQoSxsTZfGE4aFdJvg2uMm5AAPr
- 0zMlF0z631CfdGGlJSo3vc6m/4ceZwbH04NBhoFRBf1/SDk0o2Rfl3i5xI3WBMLM019Q
- r/PQmBqKJW0yKIHXkEuBsST+WVUA6gp/ObZk4fmMDfoAb4AajLPP25qkJ4oRdpWsu9ci
- xhS/8TgcCjtlueqdowPm+3c5h8JNvhKz56phj9in4ly0APo9Py0wBfparzAmyiQav9SE Cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhtygp6nw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 15:54:23 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40AFToc5012080;
-	Wed, 10 Jan 2024 15:54:22 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vhtygp6n6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 15:54:22 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40AFPEGN023399;
-	Wed, 10 Jan 2024 15:54:21 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfj6np45c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 15:54:21 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40AFsK8U34734678
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Jan 2024 15:54:20 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6D5F958060;
-	Wed, 10 Jan 2024 15:54:20 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D1B745803F;
-	Wed, 10 Jan 2024 15:54:19 +0000 (GMT)
-Received: from [9.24.12.86] (unknown [9.24.12.86])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 10 Jan 2024 15:54:19 +0000 (GMT)
-Message-ID: <385b06e9-1daa-408a-a0ed-7b09d7d539df@linux.ibm.com>
-Date: Wed, 10 Jan 2024 09:54:19 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au, peterhuewe@gmx.de, jarkko@kernel.org,
-        jgg@ziepe.ca, keescook@chromium.org, tony.luck@intel.com,
-        gpiccoli@igalia.com, johannes.holland@infineon.com, broonie@kernel.org,
-        patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
-        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
-        festevam@denx.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-hardening@vger.kernel.org, geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-8-ninad@linux.ibm.com>
- <20231212-avid-grill-dbead068fac8@spud>
- <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
- <20231212-mouth-choice-40a83caa34ec@spud>
- <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
- <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
- <20240109-pep-coerce-2a86ae88753d@spud>
- <01974929-dfbf-4989-ba39-369e521827d0@linux.ibm.com>
- <3d194e84-bf1a-48e4-a376-e5c327c6508d@linaro.org>
- <2dd37d2b-28da-4e73-9047-61ec5d64bdb5@linux.ibm.com>
- <edbefdfd-eb59-4d86-ad07-feb066a21082@linaro.org>
-From: Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <edbefdfd-eb59-4d86-ad07-feb066a21082@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ClzU1lg6nO0jo1U0wZR4R1Ct_tngOkk0
-X-Proofpoint-ORIG-GUID: yRfIySWjXJbIE0eYhTmuHQKN9CUs3ttz
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299C63EA6D;
+	Wed, 10 Jan 2024 08:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Sony.onmicrosoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JLC4to3/H2qYN0PhmHBAKvlKiEpZtwvIU6q0E97IUhy6qxd53U1f2m8kzdYSZmCybeZISvpzkgneywGCPawSbxxUriA1EVNfWxxkZuix89NHPEjdVb7WDegKxnQ6kJaqyk0F0hMgcjIc+a/7voM33EugaAMs7qWSZpnN1FAmCCO1XnhZZ5E6n0iisvTE3qtT+zdDvpJAB9rwl2RvBfrNWKa7i2I1tan57nMV3m36JrI/mBbxU85ucFKI24llP3FT3pj+1zWSLxY0vthngorgY1Ok2YiVheuJVXcIrtmAWKe6u4WHumrFKOh6X+JaTvnR4JP+Iw5FbqLZkTaFzCHldw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Wp26z+uLeN7ydlt7DezirCNE6FU2m7ozzoIjD51MmlM=;
+ b=F2mu63dok8ENRcbWY8X+D8KhwkyuSMl/fMHLYDONuohDL97izGFrP2Hpq4dJs7lKTq9EQmyw4eU3XfrKvi9I+ODvBn1PRrzhPtQS8nEaYEtJjotJNAe6C6OMnplJevYTi+LIkgtRmmO0PkhzHV7o6JYVHDI4YkvNSng+m2I/wRa3cFm6ngpbX8DDfaHts87TFiN6sxtnL/aA0uK884DHRTL1ueagWsJ0Vo7WNlT9+qiaDFjJ9NBjQG85c19jk/23xD/Xrro9L4ZmwIVhEAaMaK8ttdBjeIg58IafQ1r/8cs2kzHKfyOn12jbf5uHEmd1O6pDDQZqAJzBujp0xGJWQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 121.100.38.198) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=mail.sony.com; dmarc=fail (p=none sp=none pct=100) action=none
+ header.from=sony.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Sony.onmicrosoft.com;
+ s=selector2-Sony-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wp26z+uLeN7ydlt7DezirCNE6FU2m7ozzoIjD51MmlM=;
+ b=CTj0PJjPR4TGRlB7I0ZfB3Db5sPgvKku5LfNcRlbk+5+rrtsRP3FpWhxJKmZThWUuK2Gl/E/3yyJ2RR13pxJdcJZJI0bMpiGvw/I9Py9Y86fEVbbd2EMDWQ8A/det63vzD8EOqMs1cSLmuYqW+c4/60f8xqPvYKT57dNgBKqw/I=
+Received: from SA9PR11CA0024.namprd11.prod.outlook.com (2603:10b6:806:6e::29)
+ by SA1PR13MB4784.namprd13.prod.outlook.com (2603:10b6:806:18b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
+ 2024 08:29:13 +0000
+Received: from SA2PEPF00001509.namprd04.prod.outlook.com
+ (2603:10b6:806:6e:cafe::cb) by SA9PR11CA0024.outlook.office365.com
+ (2603:10b6:806:6e::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.24 via Frontend
+ Transport; Wed, 10 Jan 2024 08:29:13 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 121.100.38.198)
+ smtp.mailfrom=mail.sony.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=sony.com;
+Received-SPF: Fail (protection.outlook.com: domain of mail.sony.com does not
+ designate 121.100.38.198 as permitted sender)
+ receiver=protection.outlook.com; client-ip=121.100.38.198;
+ helo=gepdcl09.sg.gdce.sony.com.sg;
+Received: from gepdcl09.sg.gdce.sony.com.sg (121.100.38.198) by
+ SA2PEPF00001509.mail.protection.outlook.com (10.167.242.41) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 08:29:12 +0000
+Received: from gepdcl04.s.gdce.sony.com.sg (SGGDCSE1NS08.sony.com.sg [146.215.123.198])
+	by gepdcl09.sg.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 40A8RWjB022818;
+	Wed, 10 Jan 2024 16:28:47 +0800
+Received: from mail.sony.com ([43.88.80.246])
+	by gepdcl04.s.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 40A8QLi9030704;
+	Wed, 10 Jan 2024 16:26:21 +0800
+Received: by mail.sony.com (Postfix, from userid 1000)
+	id 38B5220C1B94; Wed, 10 Jan 2024 21:27:18 +0530 (IST)
+From: Sreenath Vijayan <sreenath.vijayan@sony.com>
+To: sreenath.vijayan@sony.com, rdunlap@infradead.org
+Cc: anandakumar.balasubramaniam@sony.com, taichi.shimoyashiki@sony.com,
+        john.ogness@linutronix.de, pmladek@suse.com, corbet@lwn.net,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH v2] tty/sysrq: Dump printk ring buffer messages via sysrq
+Date: Wed, 10 Jan 2024 21:24:38 +0530
+Message-ID: <20240110155634.1685656-1-sreenath.vijayan@sony.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
+References: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-10_07,2024-01-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- bulkscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0 phishscore=0
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2401100128
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001509:EE_|SA1PR13MB4784:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 0ec94b56-db9a-443b-d13a-08dc11b639c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	aKvrGjHr3aHP09QGUEt0/DMDcLwCwIp+j8kHyt7Kx6LO9r8vgj8nwJJhdyRU1TYc3gCw4hXaAF2a51kEX28nLwESnfxvY8ptAjEUZbTzyoGOFXsOItYf3G/XNK0pRTidM7zHHy5mRCdDb0PJEHJkuvFLnbvbAjHG01oMUpJ1zJTN1bUfJvrHRsbsQqKMqJhCpaRn0WadELAwooCUdlVOw+7jzv+yju6nzYbkUFajAzVdaSKjnK9/ZGgrTZ3qbv0/4ywE5dnmIWXT7sd0dqKVIrBWNvhOuMTAgxKc2wnsDil3roOcmYjqWRy+XIYBNNg/GIGH81LTn6GNgELADa1Av2yK96Xh3EKamViMhKlwW6UuKAS+Qb1XLB6t3/aBrx9vSndzriwaV7iwh/Ms6bVicwNpbCCLmGAYnVZ6Ww9sZjDNgQx8TpXBPBYLgFjPDwydR1xQi7pRvfQXYe1M8Tvgo7BRNjdNYSMKUSyT2dE5FmGR0YQKPFOn1FufJR1A+Tt0jTpspOn/J1yl5q1IyGtY92VCoF1SFijp/lGZX0T3a/q0IC3sBC+kusMQv6wpiNvu8axnnF4hiI1CQlEHUeityBDJFRCP7EPheIV6VAuGOWYkdj5EwP/mXv0XopRnMngP6SBP7/OXTv4I2Trm8DzlC/hqVVoVgmUpcxY5MpFlLK5xtW+WtSfqC2PwWnGRs2TNRaluQpfuhV2Aiw370Ig2D2QmZv+EkDcROD1U6cWyT0KUi1aNht1GEaC6NbG6tNmaeXVzCRdrJnSULRGAinCviZczZFmzjWGvzXSXdQnWsKOQRYNzww3hQK9Sx550dAFRpMq2m1PPm0UfGku1haxKvg==
+X-Forefront-Antispam-Report:
+	CIP:121.100.38.198;CTRY:SG;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:gepdcl09.sg.gdce.sony.com.sg;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(136003)(39860400002)(230922051799003)(230173577357003)(230273577357003)(82310400011)(64100799003)(451199024)(1800799012)(46966006)(40470700004)(40480700001)(40460700003)(83380400001)(70206006)(41300700001)(70586007)(36756003)(82960400001)(81166007)(356005)(83170400001)(82740400003)(47076005)(35950700001)(426003)(26005)(336012)(2616005)(1076003)(450100002)(2906002)(15650500001)(6666004)(42186006)(316002)(498600001)(8676002)(8936002)(6266002)(4326008)(44832011)(5660300002);DIR:OUT;SFP:1102;
+X-OriginatorOrg: sony.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 08:29:12.3631
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ec94b56-db9a-443b-d13a-08dc11b639c6
+X-MS-Exchange-CrossTenant-Id: 66c65d8a-9158-4521-a2d8-664963db48e4
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=66c65d8a-9158-4521-a2d8-664963db48e4;Ip=[121.100.38.198];Helo=[gepdcl09.sg.gdce.sony.com.sg]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF00001509.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR13MB4784
 
-Hello Krzysztof,
+When terminal is unresponsive, one cannot use dmesg to view printk
+ring buffer messages. Also, syslog services may be disabled,
+to check them after a reboot, especially on embedded systems.
+In this scenario, dump the printk ring buffer messages via sysrq
+by pressing sysrq+D.
 
+Signed-off-by: Sreenath Vijayan <sreenath.vijayan@sony.com>
+Signed-off-by: Shimoyashiki Taichi <taichi.shimoyashiki@sony.com>
+---
+V2: - modified kernel ring buffer to printk ring buffer
+    - allocated buf dynamically to prevent stack frame size warnings
+    - used buf of size 2048 to match PRINTK_MESSAGE_MAX and added comment
 
-On 1/10/24 09:37, Krzysztof Kozlowski wrote:
-> On 10/01/2024 15:31, Ninad Palsule wrote:
->> Hello Krzysztof,
->>
->>
->>
->>>>>> I have send it as a separate commit. https://lore.kernel.org/linux-kernel/20231214144954.3833998-1-ninad@linux.ibm.com/
->>>>> Why did you do that? It now just adds undocumented compatibles to the
->>>>> driver. Please, as Rob requested, work with Lukas on his series to make
->>>>> sure that these devices are documented.
->>>> I think krzysztof kozlowski suggested to send these patches separately:
->>>> https://lore.kernel.org/linux-kernel/1c5ace65-2fd8-4503-b22f-e0f564d1c83f@linaro.org/
->>>>
->>>> Did I misunderstood it? Do you guys want me to include that commit again?
->>> My comment was in DTS thread under specific DTS patch. How did you
->>> figure out it applies to driver and bindings? This does not make sense.
->> Sorry for the misunderstanding. Where do you want me to add driver
->> patch? Before all DTS patches or after all DTS patches?
-> Does not matter, why do you insist on combining them with DTS? Drivers
-> and bindings are going together. DTS better separate, although depending
-> on the case can be together.
->
-I have combined DTS and Driver because DTS was using compatibility 
-string which is not upstream yet hence I thought it is logical to send 
-it under same patchset.
+ Documentation/admin-guide/sysrq.rst |  2 ++
+ drivers/tty/sysrq.c                 | 49 ++++++++++++++++++++++++++++-
+ 2 files changed, 50 insertions(+), 1 deletion(-)
 
-Conor and Rob, Do you have preference?
-
-Thanks & Regards,
-
-Ninad Palsule
+diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
+index 2f2e5bd440f9..c634e8b4cea2 100644
+--- a/Documentation/admin-guide/sysrq.rst
++++ b/Documentation/admin-guide/sysrq.rst
+@@ -161,6 +161,8 @@ Command	    Function
+             will be printed to your console. (``0``, for example would make
+             it so that only emergency messages like PANICs or OOPSes would
+             make it to your console.)
++
++``D``	    Dump the printk ring buffer
+ =========== ===================================================================
+ 
+ Okay, so what can I use them for?
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 02217e3c916b..62b3911f03b5 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -51,6 +51,8 @@
+ #include <linux/syscalls.h>
+ #include <linux/of.h>
+ #include <linux/rcupdate.h>
++#include <linux/kmsg_dump.h>
++#include <linux/console.h>
+ 
+ #include <asm/ptrace.h>
+ #include <asm/irq_regs.h>
+@@ -450,6 +452,51 @@ static const struct sysrq_key_op sysrq_unrt_op = {
+ 	.enable_mask	= SYSRQ_ENABLE_RTNICE,
+ };
+ 
++static void dmesg_dump_callback(struct work_struct *work)
++{
++	struct kmsg_dump_iter iter;
++	size_t len;
++	char *buf;
++	struct console *con;
++	int cookie;
++
++	/* Size to be updated if PRINTK_MESSAGE_MAX changes */
++	buf = kzalloc(2048, GFP_KERNEL);
++	if (!buf)
++		return;
++
++	kmsg_dump_rewind(&iter);
++	while (kmsg_dump_get_line(&iter, 1, buf, 2048, &len)) {
++		/*
++		 * Since using printk() or pr_*() will append the message to the
++		 * printk ring buffer, they cannot be used to display the retrieved
++		 * message. Hence console_write() of serial drivers is used.
++		 */
++		console_lock();
++		cookie = console_srcu_read_lock();
++		for_each_console_srcu(con) {
++			if ((console_srcu_read_flags(con) & CON_ENABLED) && con->write)
++				con->write(con, buf, len);
++		}
++		console_srcu_read_unlock(cookie);
++		console_unlock();
++	}
++	kfree(buf);
++}
++
++static DECLARE_WORK(sysrq_dmesg_work, dmesg_dump_callback);
++
++static void sysrq_handle_dmesg_dump(u8 key)
++{
++	queue_work(system_unbound_wq, &sysrq_dmesg_work);
++}
++static struct sysrq_key_op sysrq_dmesg_dump_op = {
++	.handler        = sysrq_handle_dmesg_dump,
++	.help_msg       = "dump-dmesg(D)",
++	.action_msg     = "Dump dmesg",
++	.enable_mask    = SYSRQ_ENABLE_DUMP,
++};
++
+ /* Key Operations table and lock */
+ static DEFINE_SPINLOCK(sysrq_key_table_lock);
+ 
+@@ -505,7 +552,7 @@ static const struct sysrq_key_op *sysrq_key_table[62] = {
+ 	NULL,				/* A */
+ 	NULL,				/* B */
+ 	NULL,				/* C */
+-	NULL,				/* D */
++	&sysrq_dmesg_dump_op,		/* D */
+ 	NULL,				/* E */
+ 	NULL,				/* F */
+ 	NULL,				/* G */
+-- 
+2.43.0
 
 
