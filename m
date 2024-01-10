@@ -1,60 +1,40 @@
-Return-Path: <linux-kernel+bounces-22417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55ADD829D62
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:20:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5817C829D58
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 16:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0525F289073
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:20:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA08A283318
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3D84BAB7;
-	Wed, 10 Jan 2024 15:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ipz+C5jv"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245534BAA3
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704900027; x=1736436027;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=lQ/ZO05JKhqEc5vjnrLQer1AElQsxEs7z3SXJDvKIso=;
-  b=ipz+C5jvsx3Wp1+/7uEdMyG1DpdvsixqsJoiqkEbVMW22nRNp2GbRLrZ
-   672dLmkcYEXOCNB2OemyPwJDQ/obPVpbjwUJ0AjYdqPzc9mOe74SYp31h
-   sX2qn4iIia5NTJS6kRK2vjF1Iokif8+FoG9sV6Kyc57xOqGU1ZZLXR/jY
-   TejKxD5nb58xKh3b70SUspLj22/02tCDgCoHt6/NaXLhi6hVfNT/xGkJ+
-   ZyqURQTCRJIuoX7WljXQT8/rps7XUaM5YURLhNSqWjyyLTXnzd0ai3AUg
-   oBBZkGFPpPukm0a1JUbT1vE0Uar5zGzLCPL7N9lVD/mVmDTl7QiFMs4YG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="388988352"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="388988352"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 07:20:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="816384211"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="816384211"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 10 Jan 2024 07:20:06 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNaNA-0007Bg-04;
-	Wed, 10 Jan 2024 15:20:04 +0000
-Date: Wed, 10 Jan 2024 23:19:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in
- initializer (different address spaces)
-Message-ID: <202401102323.bG3shpgi-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCD44BAAC;
+	Wed, 10 Jan 2024 15:19:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FD14C3A6;
+	Wed, 10 Jan 2024 15:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE32C2F4;
+	Wed, 10 Jan 2024 07:19:56 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F3933F64C;
+	Wed, 10 Jan 2024 07:19:09 -0800 (PST)
+Date: Wed, 10 Jan 2024 15:19:07 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: sudeep.holla@arm.com, mturquette@baylibre.com, sboyd@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ranjani.vaidyanathan@nxp.com,
+	glen.wienecke@nxp.com, nitin.garg_3@nxp.com, chuck.cannon@nxp.com,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V2 1/2] firmware: arm_scmi: clock: implement get
+ permissions
+Message-ID: <ZZ61a9IUZk4YMpQM@pluto>
+References: <20231207093345.581048-1-peng.fan@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,84 +43,253 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231207093345.581048-1-peng.fan@oss.nxp.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-commit: 481461f5109919babbb393d6f68002936b8e2493 linux/export.h: make <linux/export.h> independent of CONFIG_MODULES
-date:   6 months ago
-config: nios2-randconfig-r021-20230504 (https://download.01.org/0day-ci/archive/20240110/202401102323.bG3shpgi-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20240110/202401102323.bG3shpgi-lkp@intel.com/reproduce)
+On Thu, Dec 07, 2023 at 05:33:44PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401102323.bG3shpgi-lkp@intel.com/
+Hi Peng,
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:126:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:126:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:165:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:165:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:165:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:206:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:206:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:206:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:261:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:261:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:261:39: sparse:     got struct context_tracking *
+a few remarks down below, but generally LGTM.
 
-vim +126 kernel/context_tracking.c
+>> Subject: Re: [PATCH V2 1/2] firmware: arm_scmi: clock: implement get permissions
 
-172114552701b8 Frederic Weisbecker 2022-06-08  115  
-172114552701b8 Frederic Weisbecker 2022-06-08  116  /*
-172114552701b8 Frederic Weisbecker 2022-06-08  117   * Enter an RCU extended quiescent state, which can be either the
-172114552701b8 Frederic Weisbecker 2022-06-08  118   * idle loop or adaptive-tickless usermode execution.
-172114552701b8 Frederic Weisbecker 2022-06-08  119   *
-172114552701b8 Frederic Weisbecker 2022-06-08  120   * We crowbar the ->dynticks_nmi_nesting field to zero to allow for
-172114552701b8 Frederic Weisbecker 2022-06-08  121   * the possibility of usermode upcalls having messed up our count
-172114552701b8 Frederic Weisbecker 2022-06-08  122   * of interrupt nesting level during the prior busy period.
-172114552701b8 Frederic Weisbecker 2022-06-08  123   */
-171476775d32a4 Frederic Weisbecker 2022-06-08  124  static void noinstr ct_kernel_exit(bool user, int offset)
-172114552701b8 Frederic Weisbecker 2022-06-08  125  {
-172114552701b8 Frederic Weisbecker 2022-06-08 @126  	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-172114552701b8 Frederic Weisbecker 2022-06-08  127  
-172114552701b8 Frederic Weisbecker 2022-06-08  128  	WARN_ON_ONCE(ct_dynticks_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
-172114552701b8 Frederic Weisbecker 2022-06-08  129  	WRITE_ONCE(ct->dynticks_nmi_nesting, 0);
-172114552701b8 Frederic Weisbecker 2022-06-08  130  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
-172114552701b8 Frederic Weisbecker 2022-06-08  131  		     ct_dynticks_nesting() == 0);
-172114552701b8 Frederic Weisbecker 2022-06-08  132  	if (ct_dynticks_nesting() != 1) {
-172114552701b8 Frederic Weisbecker 2022-06-08  133  		// RCU will still be watching, so just do accounting and leave.
-172114552701b8 Frederic Weisbecker 2022-06-08  134  		ct->dynticks_nesting--;
-172114552701b8 Frederic Weisbecker 2022-06-08  135  		return;
-172114552701b8 Frederic Weisbecker 2022-06-08  136  	}
-172114552701b8 Frederic Weisbecker 2022-06-08  137  
-172114552701b8 Frederic Weisbecker 2022-06-08  138  	instrumentation_begin();
-172114552701b8 Frederic Weisbecker 2022-06-08  139  	lockdep_assert_irqs_disabled();
-172114552701b8 Frederic Weisbecker 2022-06-08  140  	trace_rcu_dyntick(TPS("Start"), ct_dynticks_nesting(), 0, ct_dynticks());
-172114552701b8 Frederic Weisbecker 2022-06-08  141  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-172114552701b8 Frederic Weisbecker 2022-06-08  142  	rcu_preempt_deferred_qs(current);
-172114552701b8 Frederic Weisbecker 2022-06-08  143  
-171476775d32a4 Frederic Weisbecker 2022-06-08  144  	// instrumentation for the noinstr ct_kernel_exit_state()
-171476775d32a4 Frederic Weisbecker 2022-06-08  145  	instrument_atomic_write(&ct->state, sizeof(ct->state));
-172114552701b8 Frederic Weisbecker 2022-06-08  146  
-172114552701b8 Frederic Weisbecker 2022-06-08  147  	instrumentation_end();
-172114552701b8 Frederic Weisbecker 2022-06-08  148  	WRITE_ONCE(ct->dynticks_nesting, 0); /* Avoid irq-access tearing. */
-172114552701b8 Frederic Weisbecker 2022-06-08  149  	// RCU is watching here ...
-171476775d32a4 Frederic Weisbecker 2022-06-08  150  	ct_kernel_exit_state(offset);
-172114552701b8 Frederic Weisbecker 2022-06-08  151  	// ... but is no longer watching here.
-172114552701b8 Frederic Weisbecker 2022-06-08  152  	rcu_dynticks_task_enter();
-172114552701b8 Frederic Weisbecker 2022-06-08  153  }
-172114552701b8 Frederic Weisbecker 2022-06-08  154  
+till now we never added a <proto>: tag just "firmware: arm_scmi:",
+capitalizing the first word. (not saying that using "clock:" is bad but
+since we never used till now...), as an example
 
-:::::: The code at line 126 was first introduced by commit
-:::::: 172114552701b85d5c3b1a089a73ee85d0d7786b rcu/context-tracking: Move RCU-dynticks internal functions to context_tracking
+	firmware: arm_scmi: Implement Clock get permissions
 
-:::::: TO: Frederic Weisbecker <frederic@kernel.org>
-:::::: CC: Paul E. McKenney <paulmck@kernel.org>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ARM SCMI Spec 3.2 introduces Clock Get Permission command. This patch
+> is to add the support. Add three bool entries to scmi_clock_info to
+> indicate the operation is forbidden or not. If the CLOCK_GET_PERMISSIONS
+> command is not supported, the three bool variables will default
+> set to false, otherwise they will be set according to the return result
+> of CLOCK_GET_PERMISSIONS.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+> 
+> V2:
+>  Take Cristian's suggestion, https://lore.kernel.org/all/ZWiqqfQ73tezFmSk@pluto/
+> 
+>  drivers/firmware/arm_scmi/clock.c | 53 +++++++++++++++++++++++++++++++
+>  include/linux/scmi_protocol.h     |  4 +++
+>  2 files changed, 57 insertions(+)
+> 
+> diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+> index 98511a3aa367..0e048530bea2 100644
+> --- a/drivers/firmware/arm_scmi/clock.c
+> +++ b/drivers/firmware/arm_scmi/clock.c
+> @@ -25,8 +25,13 @@ enum scmi_clock_protocol_cmd {
+>  	CLOCK_POSSIBLE_PARENTS_GET = 0xC,
+>  	CLOCK_PARENT_SET = 0xD,
+>  	CLOCK_PARENT_GET = 0xE,
+> +	CLOCK_GET_PERMISSIONS = 0xF,
+>  };
+>  
+> +#define CLOCK_STATE_CONTROL_ALLOWED	BIT(31)
+> +#define CLOCK_PARENT_CONTROL_ALLOWED	BIT(30)
+> +#define CLOCK_RATE_CONTROL_ALLOWED	BIT(29)
+> +
+>  enum clk_state {
+>  	CLK_STATE_DISABLE,
+>  	CLK_STATE_ENABLE,
+> @@ -46,6 +51,7 @@ struct scmi_msg_resp_clock_attributes {
+>  #define SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(x)	((x) & BIT(30))
+>  #define SUPPORTS_EXTENDED_NAMES(x)		((x) & BIT(29))
+>  #define SUPPORTS_PARENT_CLOCK(x)		((x) & BIT(28))
+> +#define SUPPORTS_GET_PERMISSIONS(x)		((x) & BIT(1))
+>  	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
+>  	__le32 clock_enable_latency;
+>  };
+> @@ -281,6 +287,35 @@ static int scmi_clock_possible_parents(const struct scmi_protocol_handle *ph, u3
+>  	return ret;
+>  }
+>  
+> +static int
+> +scmi_clock_get_permissions(const struct scmi_protocol_handle *ph, u32 clk_id,
+> +			   struct scmi_clock_info *clk)
+> +{
+> +	struct scmi_xfer *t;
+> +	u32 perm;
+> +	int ret;
+> +
+> +	ret = ph->xops->xfer_get_init(ph, CLOCK_GET_PERMISSIONS,
+> +				      sizeof(clk_id), sizeof(perm), &t);
+> +	if (ret)
+> +		return ret;
+> +
+> +	put_unaligned_le32(clk_id, t->tx.buf);
+> +
+> +	ret = ph->xops->do_xfer(ph, t);
+> +	if (!ret) {
+> +		perm = get_unaligned_le32(t->rx.buf);
+> +
+> +		clk->state_ctrl_forbidden = !(perm & CLOCK_STATE_CONTROL_ALLOWED);
+> +		clk->rate_ctrl_forbidden = !(perm & CLOCK_RATE_CONTROL_ALLOWED);
+> +		clk->parent_ctrl_forbidden = !(perm & CLOCK_PARENT_CONTROL_ALLOWED);
+> +	}
+> +
+> +	ph->xops->xfer_put(ph, t);
+> +
+> +	return ret;
+> +}
+> +
+>  static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
+>  				     u32 clk_id, struct scmi_clock_info *clk,
+>  				     u32 version)
+> @@ -307,6 +342,7 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
+>  		if (PROTOCOL_REV_MAJOR(version) >= 0x2)
+>  			latency = le32_to_cpu(attr->clock_enable_latency);
+>  		clk->enable_latency = latency ? : U32_MAX;
+> +		clk->attributes = attributes;
+
+Exposing the full attributes is NOT needed anymore now you have the bools right ?
+
+>  	}
+>  
+>  	ph->xops->xfer_put(ph, t);
+> @@ -327,6 +363,8 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
+>  			clk->rate_change_requested_notifications = true;
+>  		if (SUPPORTS_PARENT_CLOCK(attributes))
+>  			scmi_clock_possible_parents(ph, clk_id, clk);
+> +		if (SUPPORTS_GET_PERMISSIONS(attributes))
+> +			scmi_clock_get_permissions(ph, clk_id, clk);
+>  	}
+>  
+>  	return ret;
+> @@ -499,6 +537,10 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
+>  	struct scmi_xfer *t;
+>  	struct scmi_clock_set_rate *cfg;
+>  	struct clock_info *ci = ph->get_priv(ph);
+> +	struct scmi_clock_info *clk = ci->clk + clk_id;
+> +
+
+This lacks a check on the provided clk_id bounds (just in case the
+calling SCMI driver misbehaves)....in other protocols we have some
+common internal helper to lookup a domain by id safely, it was still just
+not added till today in Clock since not so much needed.
+
+This seems not to be the case anymore, so today I posted this trivial:
+
+https://lore.kernel.org/linux-arm-kernel/20240110120916.2482603-1-cristian.marussi@arm.com/
+
+Please rebase on this and just use it also on this patch like::
+
+--->8---
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index 51b21ce97cd5..01b372ac205f 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -549,7 +549,11 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
+ 	struct scmi_xfer *t;
+ 	struct scmi_clock_set_rate *cfg;
+ 	struct clock_info *ci = ph->get_priv(ph);
+-	struct scmi_clock_info *clk = ci->clk + clk_id;
++	struct scmi_clock_info *clk;
++
++	clk = scmi_clock_domain_lookup(ci, clk_id);
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
+ 
+ 	if (clk->rate_ctrl_forbidden)
+ 		return -EACCES;
+@@ -724,7 +728,11 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 			     bool atomic)
+ {
+ 	struct clock_info *ci = ph->get_priv(ph);
+-	struct scmi_clock_info *clk = ci->clk + clk_id;
++	struct scmi_clock_info *clk;
++
++	clk = scmi_clock_domain_lookup(ci, clk_id);
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
+ 
+ 	if (clk->state_ctrl_forbidden)
+ 		return -EACCES;
+@@ -737,7 +745,11 @@ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 			      bool atomic)
+ {
+ 	struct clock_info *ci = ph->get_priv(ph);
+-	struct scmi_clock_info *clk = ci->clk + clk_id;
++	struct scmi_clock_info *clk;
++
++	clk = scmi_clock_domain_lookup(ci, clk_id);
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
+ 
+ 	if (clk->state_ctrl_forbidden)
+ 		return -EACCES;
+---8<-------
+
+
+> +	if (clk->rate_ctrl_forbidden)
+> +		return -EACCES;
+>  
+>  	ret = ph->xops->xfer_get_init(ph, CLOCK_RATE_SET, sizeof(*cfg), 0, &t);
+>  	if (ret)
+> @@ -585,6 +627,9 @@ scmi_clock_set_parent(const struct scmi_protocol_handle *ph, u32 clk_id,
+>  	if (parent_id >= clk->num_parents)
+>  		return -EINVAL;
+>  
+> +	if (clk->parent_ctrl_forbidden)
+> +		return -EACCES;
+> +
+>  	ret = ph->xops->xfer_get_init(ph, CLOCK_PARENT_SET,
+>  				      sizeof(*cfg), 0, &t);
+>  	if (ret)
+> @@ -668,6 +713,10 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id,
+>  			     bool atomic)
+>  {
+>  	struct clock_info *ci = ph->get_priv(ph);
+> +	struct scmi_clock_info *clk = ci->clk + clk_id;
+
+Ditto.
+
+> +
+> +	if (clk->state_ctrl_forbidden)
+> +		return -EACCES;
+>  
+>  	return ci->clock_config_set(ph, clk_id, CLK_STATE_ENABLE,
+>  				    NULL_OEM_TYPE, 0, atomic);
+> @@ -677,6 +726,10 @@ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id,
+>  			      bool atomic)
+>  {
+>  	struct clock_info *ci = ph->get_priv(ph);
+> +	struct scmi_clock_info *clk = ci->clk + clk_id;
+Ditto.
+> +
+> +	if (clk->state_ctrl_forbidden)
+> +		return -EACCES;
+>  
+>  	return ci->clock_config_set(ph, clk_id, CLK_STATE_DISABLE,
+>  				    NULL_OEM_TYPE, 0, atomic);
+> diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+> index f2f05fb42d28..ad75784b567b 100644
+> --- a/include/linux/scmi_protocol.h
+> +++ b/include/linux/scmi_protocol.h
+> @@ -47,6 +47,9 @@ struct scmi_clock_info {
+>  	bool rate_discrete;
+>  	bool rate_changed_notifications;
+>  	bool rate_change_requested_notifications;
+> +	bool state_ctrl_forbidden;
+> +	bool rate_ctrl_forbidden;
+> +	bool parent_ctrl_forbidden;
+>  	union {
+>  		struct {
+>  			int num_rates;
+> @@ -60,6 +63,7 @@ struct scmi_clock_info {
+>  	};
+>  	int num_parents;
+>  	u32 *parents;
+> +	u32 attributes;
+
+Ditto. Drop this.
+
+Thanks,
+Cristian
+
 
