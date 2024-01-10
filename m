@@ -1,85 +1,97 @@
-Return-Path: <linux-kernel+bounces-21752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031528293C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:39:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B043C8293CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 784B92898DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:39:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3665FB25C86
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAD5364A9;
-	Wed, 10 Jan 2024 06:39:05 +0000 (UTC)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5CE364B4;
+	Wed, 10 Jan 2024 06:45:41 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11426ECE;
-	Wed, 10 Jan 2024 06:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F13091C0004;
-	Wed, 10 Jan 2024 06:38:48 +0000 (UTC)
-Message-ID: <4e0da12a-62ed-47fa-9f75-a7de10bd8dc0@ghiti.fr>
-Date: Wed, 10 Jan 2024 07:38:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6E023C1;
+	Wed, 10 Jan 2024 06:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 40A6hTvK005132;
+	Wed, 10 Jan 2024 14:43:34 +0800 (GMT-8)
+	(envelope-from hu.yadi@h3c.com)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
+	by mail.maildlp.com (Postfix) with ESMTP id B77D22005AD1;
+	Wed, 10 Jan 2024 14:47:53 +0800 (CST)
+Received: from localhost.localdomain (10.99.206.12) by
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Wed, 10 Jan 2024 14:43:34 +0800
+From: Hu Yadi <hu.yadi@h3c.com>
+To: <jmorris@namei.org>, <serge@hallyn.com>, <shuah@kernel.org>,
+        <mathieu.desnoyers@efficios.com>
+CC: <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <514118380@qq.com>,
+        "Hu.Yadi" <hu.yadi@h3c.com>
+Subject: [PATCH] selftests/move_mount_set_group:Make tests build with old libc
+Date: Wed, 10 Jan 2024 14:40:40 +0800
+Message-ID: <20240110064040.16043-1-hu.yadi@h3c.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Fix an off-by-one in get_early_cmdline()
-Content-Language: en-US
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org
-References: <9f66d2b58c8052d4055e90b8477ee55d9a0914f9.1698564026.git.christophe.jaillet@wanadoo.fr>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <9f66d2b58c8052d4055e90b8477ee55d9a0914f9.1698564026.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 40A6hTvK005132
 
-Hi Christophe,
+From: "Hu.Yadi" <hu.yadi@h3c.com>
 
-On 29/10/2023 08:20, Christophe JAILLET wrote:
-> The ending NULL is not taken into account by strncat(), so switch to
-> strlcat() to correctly compute the size of the available memory when
-> appending CONFIG_CMDLINE to 'early_cmdline'.
->
-> Fixes: 26e7aacb83df ("riscv: Allow to downgrade paging mode from the command line")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->   arch/riscv/kernel/pi/cmdline_early.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/kernel/pi/cmdline_early.c b/arch/riscv/kernel/pi/cmdline_early.c
-> index 68e786c84c94..f6d4dedffb84 100644
-> --- a/arch/riscv/kernel/pi/cmdline_early.c
-> +++ b/arch/riscv/kernel/pi/cmdline_early.c
-> @@ -38,8 +38,7 @@ static char *get_early_cmdline(uintptr_t dtb_pa)
->   	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
->   	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
->   	    fdt_cmdline_size == 0 /* CONFIG_CMDLINE_FALLBACK */) {
-> -		strncat(early_cmdline, CONFIG_CMDLINE,
-> -			COMMAND_LINE_SIZE - fdt_cmdline_size);
-> +		strlcat(early_cmdline, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
->   	}
->   
->   	return early_cmdline;
+Replace SYS_<syscall> with __NR_<syscall>.  Using the __NR_<syscall>
+notation, provided by UAPI, is useful to build tests on systems without
+the SYS_<syscall> definitions.
 
-This looks good to me, you can add:
+Replace SYS_move_mount with __NR_move_mount
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Signed-off-by: Hu.Yadi <hu.yadi@h3c.com>
+Suggested-by:jiaoxupo@h3c.com
+Reviewed-by:berlin@h3c.com
+---
+ .../move_mount_set_group/move_mount_set_group_test.c          | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-
-Alex
+diff --git a/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c b/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
+index 50ed5d475dd1..bcf51d785a37 100644
+--- a/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
++++ b/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
+@@ -218,7 +218,7 @@ static bool move_mount_set_group_supported(void)
+ 	if (mount(NULL, SET_GROUP_FROM, NULL, MS_SHARED, 0))
+ 		return -1;
+ 
+-	ret = syscall(SYS_move_mount, AT_FDCWD, SET_GROUP_FROM,
++	ret = syscall(__NR_move_mount, AT_FDCWD, SET_GROUP_FROM,
+ 		      AT_FDCWD, SET_GROUP_TO, MOVE_MOUNT_SET_GROUP);
+ 	umount2("/tmp", MNT_DETACH);
+ 
+@@ -363,7 +363,7 @@ TEST_F(move_mount_set_group, complex_sharing_copying)
+ 		       CLONE_VM | CLONE_FILES); ASSERT_GT(pid, 0);
+ 	ASSERT_EQ(wait_for_pid(pid), 0);
+ 
+-	ASSERT_EQ(syscall(SYS_move_mount, ca_from.mntfd, "",
++	ASSERT_EQ(syscall(__NR_move_mount, ca_from.mntfd, "",
+ 			  ca_to.mntfd, "", MOVE_MOUNT_SET_GROUP
+ 			  | MOVE_MOUNT_F_EMPTY_PATH | MOVE_MOUNT_T_EMPTY_PATH),
+ 		  0);
+-- 
+2.23.0
 
 
