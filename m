@@ -1,199 +1,156 @@
-Return-Path: <linux-kernel+bounces-21762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EAAE8293EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:59:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C70DD8293EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2B4C288518
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:59:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF7FC1C25764
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE619374C5;
-	Wed, 10 Jan 2024 06:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BD739AFB;
+	Wed, 10 Jan 2024 06:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ST/sDs+O"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2072.outbound.protection.outlook.com [40.107.100.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04136364A9;
-	Wed, 10 Jan 2024 06:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GeQcnNVHi/PFlc8rxz823p5fPqRQnyeamRvCAavUeh2aBbqW2TkKlUpsSsG+tXgJvKYnsNid1dwnWJ04vZC1j0u8KsRofguH60av3Q7Hwu3yRUmVp7xL+c7pL/9XNtaGryMC8M2XedTBwb1PaZBPfWzJ71VU6OekJGjnHlB7XBOfo5IU2+/q0H2R5RC7dg2FBJ3SlBTPF9WVTFY7jKEBB9UQUs4iiSIwIdfGYawHrsUMWty0Kuo/M5/JsTXT637PJl1QotcNpd1hb9Xo+eZM21xCHjZlSbvX4xG4t8U7WM2n8lnWm4gzyncIHSpFAxKxeRJ+gug1aICJC42K5RZqxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=beyR14eBQHKGqlHewu6MCH+BRA1BLWMX/bDMrNvTDF0=;
- b=mn1bY0Mrt1NPYgtpYOjUjX6yHqrtkyNs2ANLiF0mxkSFmWlYgG8bsdjzPOYs9xCQ9k0AHACsCIlytGzVRjRmSaJYpMtxLoYEi+gQ7Xkx0zseNp3Bs4cqikc31YQOIATDr1etMzfnaEdGrua7AYpN9g9zYwyW5n47sjUTCZMeufKVQoMVOy3W3kodA0QKO0SZb3IMSa4RCqlgTnjS/Oj1xkCq6tcgV/Td/Hz3hC7h0JWW2iY60J5SHENyIq3DLywPvxYfIbiWMdp8Z8foEyzBpmjcecRMyiKRcHDA9+S69s8I48I747ghF1/eI93j1wYz+vlTHrsD9YQ6WhzCNXvhLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=beyR14eBQHKGqlHewu6MCH+BRA1BLWMX/bDMrNvTDF0=;
- b=ST/sDs+O9UvjqJXc6NbEBbcTl2PfBjcqr7k2UtTJIroXjbqUr2QX+8SKMYfyj9/VeTboS+XUTerzOI28K9gcBolB9b7ab8OvSE+PPpynQZqHFwcx6LbOG72wWGQwO5bqBmLnvs+TdP5w30v/e1xxmDZrntshDLacWAfc7YsMyU0=
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com (2603:10b6:8:a2::6) by
- DM4PR12MB5793.namprd12.prod.outlook.com (2603:10b6:8:60::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7159.23; Wed, 10 Jan 2024 06:59:25 +0000
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::8650:7935:179:f18c]) by DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::8650:7935:179:f18c%5]) with mapi id 15.20.7159.020; Wed, 10 Jan 2024
- 06:59:25 +0000
-From: "Meng, Li (Jassmine)" <Li.Meng@amd.com>
-To: Borislav Petkov <bp@alien8.de>
-CC: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, "Huang, Ray"
-	<Ray.Huang@amd.com>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>, "linux-acpi@vger.kernel.org"
-	<linux-acpi@vger.kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"Fontenot, Nathan" <Nathan.Fontenot@amd.com>, "Sharma, Deepak"
-	<Deepak.Sharma@amd.com>, "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>, "Huang, Shimmer"
-	<Shimmer.Huang@amd.com>, "Yuan, Perry" <Perry.Yuan@amd.com>, "Du, Xiaojian"
-	<Xiaojian.Du@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>, Oleksandr
- Natalenko <oleksandr@natalenko.name>
-Subject: RE: [PATCH V12 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for
- the expansion.
-Thread-Topic: [PATCH V12 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for
- the expansion.
-Thread-Index: AQHaJ0WXc70+j+UhMEyCzlQ5Z3CFtLDRg0wAgAFSCWA=
-Date: Wed, 10 Jan 2024 06:59:25 +0000
-Message-ID:
- <DM4PR12MB63515E818A5B4D5E512F5234F7692@DM4PR12MB6351.namprd12.prod.outlook.com>
-References: <20231205063537.872834-1-li.meng@amd.com>
- <20231205063537.872834-2-li.meng@amd.com>
- <20240109104504.GAZZ0jsFrrncZ8Vx8y@fat_crate.local>
-In-Reply-To: <20240109104504.GAZZ0jsFrrncZ8Vx8y@fat_crate.local>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=9c987c83-9179-4efc-b879-a5b0d2216805;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-01-10T06:55:04Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB6351:EE_|DM4PR12MB5793:EE_
-x-ms-office365-filtering-correlation-id: c16f000d-565d-43ce-55db-08dc11a9ae5b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- +mUJV5mG6Cm2EjnOeiGvah+TcJIxjRH4iC+o++ze6QHhW9Ur2wL8GnHwwGb8wJC+BxFhgnm+Z1w4rBkKnjLnFqrWvAEcFPeJbhBNmRsrO+6d+W2Php4gl48s15eK8PX5Ptxfjf31RlzmvNmwVW1esBiu8Gt4nV+KW9gsf75A97xepufTLerIOwIpKKwGqXMuGau12QLGGoBk99Yx15DvrIekEBUXiVtoGHBcAcMsEks8VJ3efSFhk4PLL4VzsG07SxLDnCYcFvtYGh0xmagQ+7cHSaW6MLzsPNA7ldW1zIKmmjobB4hJmv5FukRb2/PIjQGnusANeEc1L0QMJ/x2FRdsQeAFv6DIcE3eCiDXaNJIh1lHhBAH4Bg0NYMhPaO/iCzjN3Ziv2TGjYn7Ms4DrN9bDLSeqMcR8k+8NChMYkkyS0WY4Sm5lbT603fYzl0qpYA/marh85COZo2OovHKP4fK85n9nHksttrlGVb7N+LhuobLxUuDDuLoskKiDVV7tKnokXxwv/xrRsjc4io8snOCQwBQgk8yC5e4mCO7vYez98Q2aR8RQc4so0M53HN3D8iyS3GmxabZACBdEkcH8zMV1eGpV4b1FC7sobA8BEbEpVruZERai47ock6s3Z+bJ+C9oJHUkqw/xul1fzbDAg==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6351.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(376002)(346002)(136003)(230273577357003)(230922051799003)(230173577357003)(1800799012)(64100799003)(451199024)(186009)(2906002)(7416002)(5660300002)(38070700009)(41300700001)(478600001)(38100700002)(966005)(122000001)(52536014)(83380400001)(71200400001)(55016003)(9686003)(26005)(53546011)(33656002)(6506007)(7696005)(86362001)(66556008)(4326008)(8936002)(8676002)(66476007)(66446008)(66946007)(64756008)(54906003)(316002)(76116006)(6916009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MmM4Yk5HVEdmQ1A5Zm1McXI2MmQ5Q1NDSVl6MFo5VGFSaG5uRWRXUkhoYSs3?=
- =?utf-8?B?OUpNSGNPc1p5ekNtZUJMeDdNTWdEOUtjYW5YN1Jjai9wdFZ0M3BEQkpaa2tI?=
- =?utf-8?B?N0FFNFByQnNlUzMzZzlSV0hVMGJ0Y2ZVYUhnT3A1d3IzMit4amVOTFRZNm56?=
- =?utf-8?B?SmNMS2NQTVdrSGp6NTNCNlYwNDBGdFR4a1VzZkpTYUNpUURCUy9YRUIwb3Qz?=
- =?utf-8?B?S1JKL1l2YUs3SEtZb1RwZVZQUzd6ZjBCWWl4U3NTcUZtVnh2QmluRENyMmIx?=
- =?utf-8?B?K1BSbS94MjlyVUc3cWdsM1Y1S2tLYWJIQWlkVVhLMFZYbVZFL2oyVSsvZmxo?=
- =?utf-8?B?TEFWTXVTalMxMnZkVnNsWWpDYUUwZFFWNk9pcnV3RVdTalVqQ1JUWFhFTjZZ?=
- =?utf-8?B?ODhKSHZuVFUxKzNmNXdJUmlhMStjUmRPVGZQbkhoWWVpQ3ZkeSt2a2ZPY05y?=
- =?utf-8?B?NlpKdG5MV0k1cEJTUmx1b1FubEZ2bVNFQjZ2TjVCQ25xd21FeWlLaTFpYWpv?=
- =?utf-8?B?NmkvNGVGWXRNdTNQdS8reE5IMGNab25xbmp6UEdrYTNkdEhiemhWNFY4c1dS?=
- =?utf-8?B?cW5rT2M0ZmVaMHVMVlZjT3B1YWlmVTRTaHBpTHRoVjNSY1FrL2tpQThVUm8y?=
- =?utf-8?B?MjY0KzdZYk5EV1N4U1N5NjM3NUlWbzZmODRvSlhwV0xYMzdZa0RPdDNqZmhN?=
- =?utf-8?B?NkVyMjhhQXd5eXVpcm5LU1I1V0xBK2JZbXB6ckFwR1ZHQjMzeW0zbG5wT2RS?=
- =?utf-8?B?ZDVhcGxCL2tZOW9OMUNHRmlycDY1Y2dPanpqRnZ0Mzl3SVp0UWRlSldoU3Bw?=
- =?utf-8?B?Qk5IUTlPYXF6MVNBTjY3MUVkMXdaclc5VVZVYjFEZDgwMXhqNWxJM3JIaVNx?=
- =?utf-8?B?QllwSFpSTy9wRkVsVG9KQys4YnFDUmZVeTllOG54bjNyanM1eHpTeFM4NjV3?=
- =?utf-8?B?VTNoZk83OWtFbDUxK1prTzRVMjlOaUNNSnNtb2FmWG9SY2wyWE5nZVAwcmhH?=
- =?utf-8?B?VmRyNmdicDdyVU1kUWJ4ejhJR1Jhd0g2KytvV0tVNEFkOC91YU1aNk5ZVlhn?=
- =?utf-8?B?WEtUc2FoZzlnYzJKdzVZblNNTDRUQkw2QnA4SGVoMnI2bHdZWlNSYmVXcDho?=
- =?utf-8?B?ZSsxRE9IOWhBZGQxRWtVcG42R25wS1VVUWVyY3RtZForYlNCeG5OYzdiVzJh?=
- =?utf-8?B?cSs0U0NhUHNiVnMwLzA4Ymt1SXN2NG1mYnJXdGxQT2pFbC83Q1dEYWlRV3Jh?=
- =?utf-8?B?bEltcGFPT09CUXc3SVo1N0IrSGRMbTUrbEg3VzFiKzFGYWU4VjY1Mmd2WE9U?=
- =?utf-8?B?UVRMaTRIU2RjaDBRSXhDZmxDbjVrQjFROXk0ZDBpOXRsQUdYT3JJVHdzblVt?=
- =?utf-8?B?eG50bFowOVV4NVdzYTdvL3Q5M3hVMEYzWEdZanprZ3lzTjl6WjVVNm5lcXh3?=
- =?utf-8?B?My92N0FzNGN6U21FdUdUWVU5WWtObTBvY1k4YTd5eTJ1V0NXUlZoYkttMmFC?=
- =?utf-8?B?Ym5lTGJhbU4zbzlSL0FPZHlvSkJKWjFpK1lIYUZmd3BTeGxjTUQ1MmRPT09U?=
- =?utf-8?B?bkV2RldyVTFxOGVCRU1iWUFRN3lpYVFkTmxHYWJpMDR0WjhsVHB2YUp6VFFV?=
- =?utf-8?B?L2RVa2VBMjdoWWpBM0VnS3loVGFPcjlwN0s5bmVjTURqTkQvVngvL0xZOHFz?=
- =?utf-8?B?czZDMkk0d3FRbWd6S3J2dE45V2EyMVFITVR3VTNNY2hFbVJkM1R1YTZGUEh2?=
- =?utf-8?B?bHo4ekxpV3cvbHY1Y1lhNnBTUXNCemRtM0Ezd0RPM2c1WUVvb3MrUGlzclhs?=
- =?utf-8?B?QXY2cm4ySXBRL2VFelB6VHJpSjFoQWttVTY3NUdzU04rSG9BS0RSaC9JYklK?=
- =?utf-8?B?WkE2ZG1UQVA3SzZGNkR1cVdCL1FyWnpCM2cyNGxRMTJSaFhXRk1SWVFDWHhm?=
- =?utf-8?B?cDd3dURyM1UwNExBYnVtSmFUUmppTXh3Z3M2aDQ1T2tuS2ZXQ0w2eG9xZ3p5?=
- =?utf-8?B?TUF6bEFoemJwQXM1dkhPbEV0TGJVVnFpelJ2cmo4cVB5Z2dIWXFhR3lpdDk5?=
- =?utf-8?B?N281SW5pMlBML2k4dlFEUm9sUWFGb2c2SlAwTW5RM1ozTERxTVZLMEZQU0VU?=
- =?utf-8?Q?7Zm4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="YVjRxXjv"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A7439877
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 06:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id AC69520B3CC1; Tue,  9 Jan 2024 22:59:48 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AC69520B3CC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1704869988;
+	bh=aSDaeYjlcAuqkweWKfVXRpWKYvk+kuU//1dO5BnaLzk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YVjRxXjvhNyTqxUjLF3AlKBYJ+mrcJV4F5+PzBcIMI5BXOV+SsLDuLLdMJ8LVuEHS
+	 5b4ohngqyrafjKkPVfBfZQzfcHTpIKAMPmkpgYkJpXDYVGMKjkVDDsXQkMdWBnVqhr
+	 62br6ix0Z1b4Kpu5tUSXBJKn1rYiGdyy7uxcrkYA=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.dev>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH v2] drm: Check output polling initialized before disabling
+Date: Tue,  9 Jan 2024 22:59:47 -0800
+Message-Id: <1704869987-7546-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6351.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c16f000d-565d-43ce-55db-08dc11a9ae5b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2024 06:59:25.1551
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EBWRKZZmrSPagrh6Dq/fRzxZVLjSUaPz9o2U4bz97nL1wN6pxyx4uJ10FkzZtlSDBxGlCn9QECEuldXJ+ooZlA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5793
 
-W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCkhpIFBldGtvdjoNCg0KPiAtLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCb3Jpc2xhdiBQZXRrb3YgPGJwQGFsaWVu
-OC5kZT4NCj4gU2VudDogVHVlc2RheSwgSmFudWFyeSA5LCAyMDI0IDY6NDUgUE0NCj4gVG86IE1l
-bmcsIExpIChKYXNzbWluZSkgPExpLk1lbmdAYW1kLmNvbT4NCj4gQ2M6IFJhZmFlbCBKIC4gV3lz
-b2NraSA8cmFmYWVsLmoud3lzb2NraUBpbnRlbC5jb20+OyBIdWFuZywgUmF5DQo+IDxSYXkuSHVh
-bmdAYW1kLmNvbT47IGxpbnV4LXBtQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+IGtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmc7IHg4NkBrZXJuZWwub3JnOyBsaW51eC1hY3BpQHZnZXIua2VybmVsLm9y
-ZzsgU2h1YWgNCj4gS2hhbiA8c2toYW5AbGludXhmb3VuZGF0aW9uLm9yZz47IGxpbnV4LWtzZWxm
-dGVzdEB2Z2VyLmtlcm5lbC5vcmc7DQo+IEZvbnRlbm90LCBOYXRoYW4gPE5hdGhhbi5Gb250ZW5v
-dEBhbWQuY29tPjsgU2hhcm1hLCBEZWVwYWsNCj4gPERlZXBhay5TaGFybWFAYW1kLmNvbT47IERl
-dWNoZXIsIEFsZXhhbmRlcg0KPiA8QWxleGFuZGVyLkRldWNoZXJAYW1kLmNvbT47IExpbW9uY2ll
-bGxvLCBNYXJpbw0KPiA8TWFyaW8uTGltb25jaWVsbG9AYW1kLmNvbT47IEh1YW5nLCBTaGltbWVy
-DQo+IDxTaGltbWVyLkh1YW5nQGFtZC5jb20+OyBZdWFuLCBQZXJyeSA8UGVycnkuWXVhbkBhbWQu
-Y29tPjsgRHUsDQo+IFhpYW9qaWFuIDxYaWFvamlhbi5EdUBhbWQuY29tPjsgVmlyZXNoIEt1bWFy
-IDx2aXJlc2gua3VtYXJAbGluYXJvLm9yZz47DQo+IE9sZWtzYW5kciBOYXRhbGVua28gPG9sZWtz
-YW5kckBuYXRhbGVua28ubmFtZT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCBWMTIgMS83XSB4ODY6
-IERyb3AgQ1BVX1NVUF9JTlRFTCBmcm9tDQo+IFNDSEVEX01DX1BSSU8gZm9yIHRoZSBleHBhbnNp
-b24uDQo+DQo+IENhdXRpb246IFRoaXMgbWVzc2FnZSBvcmlnaW5hdGVkIGZyb20gYW4gRXh0ZXJu
-YWwgU291cmNlLiBVc2UgcHJvcGVyDQo+IGNhdXRpb24gd2hlbiBvcGVuaW5nIGF0dGFjaG1lbnRz
-LCBjbGlja2luZyBsaW5rcywgb3IgcmVzcG9uZGluZy4NCj4NCj4NCj4gT24gVHVlLCBEZWMgMDUs
-IDIwMjMgYXQgMDI6MzU6MzFQTSArMDgwMCwgTWVuZyBMaSB3cm90ZToNCj4gPiBhbWQtcHN0YXRl
-IGRyaXZlciBhbHNvIHVzZXMgU0NIRURfTUNfUFJJTywgc28gZGVjb3VwbGUgdGhlDQo+IHJlcXVp
-cmVtZW50DQo+ID4gb2YgQ1BVX1NVUF9JTlRFTCBmcm9tIHRoZSBkZXBlbmRlbmNpZXMgdG8gYWxs
-b3cgY29tcGlsYXRpb24gaW4ga2VybmVscw0KPiA+IHdpdGhvdXQgSW50ZWwgQ1BVIHN1cHBvcnQu
-DQo+ID4NCj4gPiBUZXN0ZWQtYnk6IE9sZWtzYW5kciBOYXRhbGVua28gPG9sZWtzYW5kckBuYXRh
-bGVua28ubmFtZT4NCj4gPiBSZXZpZXdlZC1ieTogTWFyaW8gTGltb25jaWVsbG8gPG1hcmlvLmxp
-bW9uY2llbGxvQGFtZC5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IEh1YW5nIFJ1aSA8cmF5Lmh1YW5n
-QGFtZC5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IFBlcnJ5IFl1YW4gPHBlcnJ5Lnl1YW5AYW1kLmNv
-bT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBNZW5nIExpIDxsaS5tZW5nQGFtZC5jb20+DQo+ID4gLS0t
-DQo+ID4gIGFyY2gveDg2L0tjb25maWcgfCA1ICsrKy0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAz
-IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvYXJj
-aC94ODYvS2NvbmZpZyBiL2FyY2gveDg2L0tjb25maWcgaW5kZXgNCj4gPiAzNzYyZjQxYmIwOTIu
-LjNlNTc3NzNmOTQ2YSAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL3g4Ni9LY29uZmlnDQo+ID4gKysr
-IGIvYXJjaC94ODYvS2NvbmZpZw0KPiA+IEBAIC0xMDU0LDggKzEwNTQsOSBAQCBjb25maWcgU0NI
-RURfTUMNCj4gPg0KPiA+ICBjb25maWcgU0NIRURfTUNfUFJJTw0KPiA+ICAgICAgIGJvb2wgIkNQ
-VSBjb3JlIHByaW9yaXRpZXMgc2NoZWR1bGVyIHN1cHBvcnQiDQo+ID4gLSAgICAgZGVwZW5kcyBv
-biBTQ0hFRF9NQyAmJiBDUFVfU1VQX0lOVEVMDQo+ID4gLSAgICAgc2VsZWN0IFg4Nl9JTlRFTF9Q
-U1RBVEUNCj4gPiArICAgICBkZXBlbmRzIG9uIFNDSEVEX01DDQo+ID4gKyAgICAgc2VsZWN0IFg4
-Nl9JTlRFTF9QU1RBVEUgaWYgQ1BVX1NVUF9JTlRFTA0KPiA+ICsgICAgIHNlbGVjdCBYODZfQU1E
-X1BTVEFURSBpZiBDUFVfU1VQX0FNRCAmJiBBQ1BJDQo+ID4gICAgICAgc2VsZWN0IENQVV9GUkVR
-DQo+ID4gICAgICAgZGVmYXVsdCB5DQo+ID4gICAgICAgaGVscA0KPiA+IC0tDQo+DQo+IEkgd2Fz
-IGdvbm5hIGFzayB3aHkgdGhlIHNlbGVjdHMgYnV0IGFwcGFyZW50bHkgbWluZ28gd2FudHMNCj4g
-U0NIRURfTUNfUFJJTyB0byBiZSBzZWxlY3RhYmxlIGVhc2llcjoNCj4NCj4gMGEyMWZjMTIxNGEy
-ICgic2NoZWQveDg2OiBNYWtlIENPTkZJR19TQ0hFRF9NQ19QUklPPXkgZWFzaWVyIHRvDQo+IGVu
-YWJsZSIpDQo+DQpbTWVuZywgTGkgKEphc3NtaW5lKV0gVGhhbmsgeW91IGZvciB5b3VyIGZlZWRi
-YWNrLg0KVGhlIHJlYXNvbiB3aHkgSSBhZGRlZCB0aGUgc2VsZWN0cyBpcyBqdXN0IHRvIGRpc3Rp
-bmd1aXNoIGRpZmZlcmVudCBwc3RhdGUgZHJpdmVycy4NClRoZXNlIHR3byBkcml2ZXJzIGNhbm5v
-dCBiZSBzdXBwb3J0ZWQgc2ltdWx0YW5lb3VzbHkgaW4gdGhlIHNhbWUgcHJvamVjdC4NCj4gU28s
-DQo+DQo+IEFja2VkLWJ5OiBCb3Jpc2xhdiBQZXRrb3YgKEFNRCkgPGJwQGFsaWVuOC5kZT4NCj4N
-Cj4gVGh4Lg0KPg0KPiAtLQ0KPiBSZWdhcmRzL0dydXNzLA0KPiAgICAgQm9yaXMuDQo+DQo+IGh0
-dHBzOi8vcGVvcGxlLmtlcm5lbC5vcmcvdGdseC9ub3Rlcy1hYm91dC1uZXRpcXVldHRlDQo=
+In drm_kms_helper_poll_disable() check if output polling
+support is initialized before disabling polling.
+For drivers like hyperv-drm, that do not initialize connector
+polling, if suspend is called without this check, it leads to
+suspend failure with following stack
+[  770.719392] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[  770.720592] printk: Suspending console(s) (use no_console_suspend to debug)
+[  770.948823] ------------[ cut here ]------------
+[  770.948824] WARNING: CPU: 1 PID: 17197 at kernel/workqueue.c:3162 __flush_work.isra.0+0x212/0x230
+[  770.948831] Modules linked in: rfkill nft_counter xt_conntrack xt_owner udf nft_compat crc_itu_t nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink vfat fat mlx5_ib ib_uverbs ib_core mlx5_core intel_rapl_msr intel_rapl_common kvm_amd ccp mlxfw kvm psample hyperv_drm tls drm_shmem_helper drm_kms_helper irqbypass pcspkr syscopyarea sysfillrect sysimgblt hv_balloon hv_utils joydev drm fuse xfs libcrc32c pci_hyperv pci_hyperv_intf sr_mod sd_mod cdrom t10_pi sg hv_storvsc scsi_transport_fc hv_netvsc serio_raw hyperv_keyboard hid_hyperv crct10dif_pclmul crc32_pclmul crc32c_intel hv_vmbus ghash_clmulni_intel dm_mirror dm_region_hash dm_log dm_mod
+[  770.948863] CPU: 1 PID: 17197 Comm: systemd-sleep Not tainted 5.14.0-362.2.1.el9_3.x86_64 #1
+[  770.948865] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 05/09/2022
+[  770.948866] RIP: 0010:__flush_work.isra.0+0x212/0x230
+[  770.948869] Code: 8b 4d 00 4c 8b 45 08 89 ca 48 c1 e9 04 83 e2 08 83 e1 0f 83 ca 02 89 c8 48 0f ba 6d 00 03 e9 25 ff ff ff 0f 0b e9 4e ff ff ff <0f> 0b 45 31 ed e9 44 ff ff ff e8 8f 89 b2 00 66 66 2e 0f 1f 84 00
+[  770.948870] RSP: 0018:ffffaf4ac213fb10 EFLAGS: 00010246
+[  770.948871] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8c992857
+[  770.948872] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9aad82b00330
+[  770.948873] RBP: ffff9aad82b00330 R08: 0000000000000000 R09: ffff9aad87ee3d10
+[  770.948874] R10: 0000000000000200 R11: 0000000000000000 R12: ffff9aad82b00330
+[  770.948874] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+[  770.948875] FS:  00007ff1b2f6bb40(0000) GS:ffff9aaf37d00000(0000) knlGS:0000000000000000
+[  770.948878] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  770.948878] CR2: 0000555f345cb666 CR3: 00000001462dc005 CR4: 0000000000370ee0
+[  770.948879] Call Trace:
+[  770.948880]  <TASK>
+[  770.948881]  ? show_trace_log_lvl+0x1c4/0x2df
+[  770.948884]  ? show_trace_log_lvl+0x1c4/0x2df
+[  770.948886]  ? __cancel_work_timer+0x103/0x190
+[  770.948887]  ? __flush_work.isra.0+0x212/0x230
+[  770.948889]  ? __warn+0x81/0x110
+[  770.948891]  ? __flush_work.isra.0+0x212/0x230
+[  770.948892]  ? report_bug+0x10a/0x140
+[  770.948895]  ? handle_bug+0x3c/0x70
+[  770.948898]  ? exc_invalid_op+0x14/0x70
+[  770.948899]  ? asm_exc_invalid_op+0x16/0x20
+[  770.948903]  ? __flush_work.isra.0+0x212/0x230
+[  770.948905]  __cancel_work_timer+0x103/0x190
+[  770.948907]  ? _raw_spin_unlock_irqrestore+0xa/0x30
+[  770.948910]  drm_kms_helper_poll_disable+0x1e/0x40 [drm_kms_helper]
+[  770.948923]  drm_mode_config_helper_suspend+0x1c/0x80 [drm_kms_helper]
+[  770.948933]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+[  770.948942]  hyperv_vmbus_suspend+0x17/0x40 [hyperv_drm]
+[  770.948944]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+[  770.948951]  dpm_run_callback+0x4c/0x140
+[  770.948954]  __device_suspend_noirq+0x74/0x220
+[  770.948956]  dpm_noirq_suspend_devices+0x148/0x2a0
+[  770.948958]  dpm_suspend_end+0x54/0xe0
+[  770.948960]  create_image+0x14/0x290
+[  770.948963]  hibernation_snapshot+0xd6/0x200
+[  770.948964]  hibernate.cold+0x8b/0x1fb
+[  770.948967]  state_store+0xcd/0xd0
+[  770.948969]  kernfs_fop_write_iter+0x124/0x1b0
+[  770.948973]  new_sync_write+0xff/0x190
+[  770.948976]  vfs_write+0x1ef/0x280
+[  770.948978]  ksys_write+0x5f/0xe0
+[  770.948979]  do_syscall_64+0x5c/0x90
+[  770.948981]  ? syscall_exit_work+0x103/0x130
+[  770.948983]  ? syscall_exit_to_user_mode+0x12/0x30
+[  770.948985]  ? do_syscall_64+0x69/0x90
+[  770.948986]  ? do_syscall_64+0x69/0x90
+[  770.948987]  ? do_user_addr_fault+0x1d6/0x6a0
+[  770.948989]  ? do_syscall_64+0x69/0x90
+[  770.948990]  ? exc_page_fault+0x62/0x150
+[  770.948992]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[  770.948995] RIP: 0033:0x7ff1b293eba7
+[  770.949010] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+[  770.949011] RSP: 002b:00007ffde3912128 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[  770.949012] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007ff1b293eba7
+[  770.949013] RDX: 0000000000000005 RSI: 00007ffde3912210 RDI: 0000000000000004
+[  770.949014] RBP: 00007ffde3912210 R08: 000055d7dd4c9510 R09: 00007ff1b29b14e0
+[  770.949014] R10: 00007ff1b29b13e0 R11: 0000000000000246 R12: 0000000000000005
+[  770.949015] R13: 000055d7dd4c53e0 R14: 0000000000000005 R15: 00007ff1b29f69e0
+[  770.949016]  </TASK>
+[  770.949017] ---[ end trace e6fa0618bfa2f31d ]---
+
+Built-on: Rhel9, Ubuntu22
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+Changes in v2
+ * Moved the poll_enabled check in drm_kms_helper_poll_disable()
+ * Reworded the patch description based on new changes
+---
+---
+ drivers/gpu/drm/drm_probe_helper.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
+index 3f479483d7d8..b9f07d5f999f 100644
+--- a/drivers/gpu/drm/drm_probe_helper.c
++++ b/drivers/gpu/drm/drm_probe_helper.c
+@@ -877,6 +877,9 @@ EXPORT_SYMBOL(drm_kms_helper_is_poll_worker);
+  */
+ void drm_kms_helper_poll_disable(struct drm_device *dev)
+ {
++	if (!dev->mode_config.poll_enabled)
++		return;
++
+ 	if (dev->mode_config.poll_running)
+ 		drm_kms_helper_disable_hpd(dev);
+ 
+-- 
+2.34.1
+
 
