@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-22776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B59382A2B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:48:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4BCD82A2B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A46CF1F26D4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:48:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE2CC1C2511E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7380958213;
-	Wed, 10 Jan 2024 20:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427C35647B;
+	Wed, 10 Jan 2024 20:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WiMH27Hm"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SYGe0u2+"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDA45813E
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343C256469
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e5451c13aso16476335e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:41:51 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a28bd9ca247so512489666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:42:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704919309; x=1705524109; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704919321; x=1705524121; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=I8DgEOBbfexc9IVbY/2WbMSZ+sseky031oAV8wgmGXo=;
-        b=WiMH27Hmcyh7HQrmOFmkZCBp6aSS3ZaAtEjLAFtJWn9ehw69suHEOki8jD/w6+vA3/
-         yYgb3qpTk98qFp4lkRaYltO2ChTDpuTBNin7kchsxHxQn3W2YlVWKlr/EU1ENl+2SHgg
-         KM9kkxW8N31SXfBmid4G6uRWbhYJ3xvmZSCasXjD0VpnORZVrMakOxsB2908SGJLMsTk
-         +aYCx9LyGuMXEo73oB/IOGeEMy0ZGQ6kkUvvUqZsXXTJp4LSk0zz09VOYE8qgpjBzxQR
-         rIdmOVEFNZ6TdtZ7j+2IHC5d1qKApXx4Sp5dXpVYVxXN02IwPSJF9ok6beVoakle2GEb
-         y/bw==
+        bh=QKrfRM/fin9OLRk/4HhJ8FZzfM1xmk3czhXvjxHdvMM=;
+        b=SYGe0u2+oXfazFUy81Vtz2RCQXlAKCty51q7pvF97dVLPeItv7V1De1Sob8O0v3ae4
+         sYxKI5ellE/+jvmeuIxIBnPwm7RKGyhUF479KHs5aeNX55ohj/9JuoSxiB6b4eks430A
+         OeHb+f5XyUXC1Ee+KldaVl8pinhyGeZ+XpZ17qSj9KOn4CJrUw/o/4uODi+UNyxkUDfK
+         ZPDvS4QzcEG7NSQBkGvhXhLU/nVPnefj2xKigE5RZd6vEHmlyIXIBy786AJCYI2kO8VY
+         qatBXB5eaoKysFcqsi1xgL4awyrGiZMEMA8qs7G4RzoLIX/roxnK9Z73zk2hU9uo3H3W
+         2Tew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704919309; x=1705524109;
+        d=1e100.net; s=20230601; t=1704919321; x=1705524121;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I8DgEOBbfexc9IVbY/2WbMSZ+sseky031oAV8wgmGXo=;
-        b=JioeQhl4xUUpzV6xNaxyIyEy0xDtVwReBp1RNRl8dEtN3mTn655/SdRg+XuWA1n+Yu
-         JoIM5/SJN9Vd3VM26k2OxJjgFvSbbwJ1g+H0YGlIiZ09jx9OSF/w2Ur1wGatVKeeDr9q
-         xhzNowi6fJjaFBSyqv/SHusz7B3DLJewkP5VvS5QPAFa/m9nvQ/wkrhZ2ZPMaLsp3lK0
-         YkLDaY4vJKfGRwYU/Zd38ciBToXfV+cD20kwsSlTbdaly+odXcQg3B/Fi4dpWP9wUvoo
-         eeMXSueEqjEIyzFCyMSoXBOzcezkota/taTKtN0RHtdRVrJtuYZXYWi4DItRY+a+8Mo/
-         HLAg==
-X-Gm-Message-State: AOJu0Yzzh2sAOJiq3mdOgP/nnT+Jxufs9WME6hrFZsOc+W9dzJ++euj5
-	1aCHO6onE6WNkO7Bo3HQyAKqLjoHZ4/Q8A==
-X-Google-Smtp-Source: AGHT+IEKyXPfiJzO7C/UYPU0EQpt81vwczGGVT3CUMqU2tzGb77XaPl27VNh0u6T5HCD2/3dQYJoUA==
-X-Received: by 2002:a05:600c:4384:b0:40d:8f61:d5ae with SMTP id e4-20020a05600c438400b0040d8f61d5aemr2472wmn.276.1704919309602;
-        Wed, 10 Jan 2024 12:41:49 -0800 (PST)
+        bh=QKrfRM/fin9OLRk/4HhJ8FZzfM1xmk3czhXvjxHdvMM=;
+        b=no7+E+1M+PC5ciAMiOyujZK/hrQ7vRe5hAUz5WUR+A7GGMC1qYh46OrvC+9b78RrLe
+         d+JeCzqnGbwKzziDX1yznRkJRAJdM0AwyZxlmyHCggCsm4qRF+FwqkM4pIkJuv9oP1Oo
+         QNVqAsLacb85gDvVK2YexRu7ndFlsTRCuI2ZVaO/rUwshTNEH+1Zqij9i0g0uSpA/vNs
+         19ojcicHJzT424ebEp+6+BnwhynqnW1WpcqVzYBBb6Wm/ab9CLAE1hWR9bSgn+PlY1JS
+         ChrgeIKHcicxdyKn3jdIpz7wvIxmA3PlRd9FfptB3oJoccDgVras0ypc79r/k2q0Y2Do
+         9yXQ==
+X-Gm-Message-State: AOJu0Yy9BWoOYwoTk01cFZopymYtRV1Dm0Izbmt9vQagDqfRwflvG6I1
+	AHpYyHy5JIMYicItwxxOkuVjwlcAiDonqA==
+X-Google-Smtp-Source: AGHT+IERv/sPxLUXgMDuar9Lz+2zu4MZ6flR044j9jkH2NxAEQYqXP8otvA2p7aVtU4basXuhn5/cQ==
+X-Received: by 2002:a17:906:79c6:b0:a24:71bc:1aad with SMTP id m6-20020a17090679c600b00a2471bc1aadmr42051ejo.36.1704919321740;
+        Wed, 10 Jan 2024 12:42:01 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id bw8-20020a170906c1c800b00a269b4692a9sm2422964ejb.84.2024.01.10.12.41.47
+        by smtp.gmail.com with ESMTPSA id bw8-20020a170906c1c800b00a269b4692a9sm2422964ejb.84.2024.01.10.12.41.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 12:41:48 -0800 (PST)
-Message-ID: <3155b2ce-4965-4775-8760-fd61aff847d9@linaro.org>
-Date: Wed, 10 Jan 2024 21:41:47 +0100
+        Wed, 10 Jan 2024 12:42:00 -0800 (PST)
+Message-ID: <bd96593b-de5c-4d9a-bc42-5f1e9db6933a@linaro.org>
+Date: Wed, 10 Jan 2024 21:41:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/16] arm64: dts: ti: k3-j721s2: Add MIT license along
+Subject: Re: [PATCH 08/16] arm64: dts: ti: k3-j721e: Add MIT license along
  with GPL-2.0
 Content-Language: en-US
 To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -73,10 +73,12 @@ To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Rob Herring <robh+dt@kernel.org>
 Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Esteban Blanc <eblanc@baylibre.com>,
+ linux-arm-kernel@lists.infradead.org,
+ "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+ Jerome Neanne <jneanne@baylibre.com>, Peng Fan <peng.fan@nxp.com>,
  Pierre Gondois <pierre.gondois@arm.com>, Tony Lindgren <tony@atomide.com>
 References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-10-nm@ti.com>
+ <20240110140903.4090946-9-nm@ti.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -122,7 +124,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110140903.4090946-10-nm@ti.com>
+In-Reply-To: <20240110140903.4090946-9-nm@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
@@ -139,13 +141,12 @@ On 10/01/2024 15:08, Nishanth Menon wrote:
 > to indicate license change (and add it at least for one file which was
 > missing TI copyright).
 > 
-> Cc: Esteban Blanc <eblanc@baylibre.com>
+> Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+> Cc: Jerome Neanne <jneanne@baylibre.com>
 > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Cc: Peng Fan <peng.fan@nxp.com>
 > Cc: Pierre Gondois <pierre.gondois@arm.com>
 > Cc: Tony Lindgren <tony@atomide.com>
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
 
 
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
