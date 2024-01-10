@@ -1,128 +1,151 @@
-Return-Path: <linux-kernel+bounces-22192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837B4829AAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:53:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABA07829AAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:53:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95D751C25B2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:53:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF2D28197A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C6B48787;
-	Wed, 10 Jan 2024 12:53:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F2048782;
+	Wed, 10 Jan 2024 12:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yngvason.is header.i=@yngvason.is header.b="IqRXXl4p"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QRCt8dBu"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1802048780
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yngvason.is
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yngvason.is
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbe39a45e8eso2940409276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 04:53:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B0547A55;
+	Wed, 10 Jan 2024 12:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3376f71fcbbso2434324f8f.1;
+        Wed, 10 Jan 2024 04:53:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=yngvason.is; s=google; t=1704891202; x=1705496002; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tumM7ZgHm0hfd7iZgxyi6dhv3yMhPnlkKGS30wXR09c=;
-        b=IqRXXl4pv94gOS74wEI3cDtxP/gAa4J0U542ZQJOWIpJr34b6w7r/EZrhgJB252a+d
-         GNw9F7iMji8KXGJXBKBnRGkN07eXjF5SXtwTFtsJlFejJ9DYTB++aWd//RcFhmky7veN
-         8DLAO2x/1RpBx5kTcSTS34BMcvc3xnXLNlmzU=
+        d=gmail.com; s=20230601; t=1704891212; x=1705496012; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
+        b=QRCt8dBuUo61U80x+UbI9iYm4wNqiKpKo/ZCFSlWEKoYZ3vVakTuJsl4TI238dfTLV
+         Jl+VNIWdAdgYJP1D2srrJPsZ0B0jTB2rePpPzmjX2d856iopsGt0xe+LHlw0T7RCJTWs
+         MLELwvE/mYGu4g9qtrwlBvuOsbjJ1/K0ThBbkZdNcSc6BGf1sXdKT5KAeUWD4Y+EGH0/
+         PWzQMPzVpaZOew6qsW5V3nn/hcPlFSN/4L+sSefSXFn6u22MdKIw62BwWKqRBhYDrvBs
+         ohAt/f71gVGRQP7+LYdLMUc8LZZUH9lIh0CZs7lC/3QcuVQEuU+Rl4BiVxlMDVC/3O/z
+         8PYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704891202; x=1705496002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tumM7ZgHm0hfd7iZgxyi6dhv3yMhPnlkKGS30wXR09c=;
-        b=lO6cF6A2mQhVYlRHVB/Ql3CxoX2LcJZ6apaRbkktopYXP/nOqrJzm0YeYfBj6ch8Oz
-         Nj0ucwD5FJiqgq3KjZzImfA8hLgf7OO+RYc5tc9kLGCfRG5RJJXBtO+aoG/mPNzBeC99
-         2kdChNk+7W1/49Ocvq3KdlhdBLEbLdwSUKgOdp0fKQeKFcQOiTCW5aa+Jx5ncsh29ASW
-         QsLX+YbubfMQi9wXLgQV6Oew5EQJU7UnYggZQvCPXCUpKqEsYe9qP0JQJBVSa6iSVKMZ
-         qACir5B5Z7LHVlRZEoJRvsdIbpcVWkyBkDtzbURuvQppGUDAclKx48CLVho839c9hnD2
-         F0CQ==
-X-Gm-Message-State: AOJu0YxOkhHbuo94ocXnpapJStnQX5zQ0lvxDkSZqjO1UsgDRDWxlxCv
-	OqADZLbgz3ot9mnXc4xjtOlybaZV5PKCl4uFJlJVFMLOb5KY7Q==
-X-Google-Smtp-Source: AGHT+IEdEju6g56OensZJBuTZt9it0HPqzyt0o4DWwDRHwkW6tKsf3VmrtAhshl6Dqs1AQIYgIHNU9Hnp9bHW2jrsSo=
-X-Received: by 2002:a5b:d51:0:b0:dbd:ab70:4e8f with SMTP id
- f17-20020a5b0d51000000b00dbdab704e8fmr625799ybr.4.1704891201874; Wed, 10 Jan
- 2024 04:53:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704891212; x=1705496012;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
+        b=cywA7dD0ucZkBZywTH9QVp7quEVksLWdHjNJaTP7G1slr1IVzMUpD8kocS7U3cTTmg
+         zxEWwHdFfb/OiHgvv79ECE1uXZnpkbekBuGCaKGYzNDRa5KXnWU62x09gFmt1UIpphZU
+         /A0ODZDsYuFtu5aa/GfEQ+Wu6KOBtP2HmtQAAgSOg2qRMtHMiurfqWCcGfbZqGUgzmTS
+         FvNCcgrbxm3ihlWxei62b325bodlVOh93/tBjEuDqa8a61fA4aN/VyVFbIShTk0JXbs/
+         E5NWO7o5mvpaAivcdmbc5oom5kImDik5fTG9qjU+l0AVGdU2D4xJaDxkPeZVd8NkgwTE
+         5Rfw==
+X-Gm-Message-State: AOJu0YzoDx+Mib1jEI1CnPROOj9O+D7Dj0VmhtpmHnUQd/xvdtzJS1Wq
+	+zZnyf8uVMQpWFDzqTDBiKPT1MGRmg==
+X-Google-Smtp-Source: AGHT+IGIAb7J0lg1izF1tG7pKhpkLK3OW1M2akqGAPGYCtE+kNQFKuA/o+fJ7slq0pY6valFev7ekw==
+X-Received: by 2002:a5d:5449:0:b0:336:905a:bf87 with SMTP id w9-20020a5d5449000000b00336905abf87mr357212wrv.69.1704891211635;
+        Wed, 10 Jan 2024 04:53:31 -0800 (PST)
+Received: from localhost.localdomain (46-253-188-135.dynamic.monzoon.net. [46.253.188.135])
+        by smtp.gmail.com with ESMTPSA id k10-20020a5d524a000000b00336898daceasm4833238wrc.96.2024.01.10.04.53.30
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 10 Jan 2024 04:53:31 -0800 (PST)
+From: Hao Sun <sunhao.th@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ppenkov@google.com,
+	willemb@google.com,
+	ast@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH v2 1/2] bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
+Date: Wed, 10 Jan 2024 13:53:16 +0100
+Message-ID: <20240110125317.13742-1-sunhao.th@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109181104.1670304-1-andri@yngvason.is> <20240109181104.1670304-4-andri@yngvason.is>
- <ZZ57Nl3CnRMPcfbj@phenom.ffwll.local>
-In-Reply-To: <ZZ57Nl3CnRMPcfbj@phenom.ffwll.local>
-From: Andri Yngvason <andri@yngvason.is>
-Date: Wed, 10 Jan 2024 12:52:46 +0000
-Message-ID: <CAFNQBQzo17cK4M-S=Mje8Lxub9Y74xFGj7iEq57vKJr47oiz5Q@mail.gmail.com>
-Subject: Re: [PATCH 3/7] drm/amd/display: Add handling for new "active color
- format" property
-To: Andri Yngvason <andri@yngvason.is>, Harry Wentland <harry.wentland@amd.com>, 
-	Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, 
-	Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, Simon Ser <contact@emersion.fr>, 
-	Werner Sembach <wse@tuxedocomputers.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-mi=C3=B0., 10. jan. 2024 kl. 11:10 skrifa=C3=B0i Daniel Vetter <daniel@ffwl=
-l.ch>:
->
-> On Tue, Jan 09, 2024 at 06:11:00PM +0000, Andri Yngvason wrote:
-> > +     /* Extract information from crtc to communicate it to userspace a=
-s connector properties */
-> > +     for_each_new_connector_in_state(state, connector, new_con_state, =
-i) {
-> > +             struct drm_crtc *crtc =3D new_con_state->crtc;
-> > +             struct dc_stream_state *stream;
-> > +
-> > +             if (crtc) {
-> > +                     new_crtc_state =3D drm_atomic_get_new_crtc_state(=
-state, crtc);
-> > +                     dm_new_crtc_state =3D to_dm_crtc_state(new_crtc_s=
-tate);
-> > +                     stream =3D dm_new_crtc_state->stream;
-> > +
-> > +                     if (stream) {
-> > +                             drm_connector_set_active_color_format_pro=
-perty(connector,
-> > +                                     convert_dc_pixel_encoding_into_dr=
-m_color_format(
-> > +                                             dm_new_crtc_state->stream=
-->timing.pixel_encoding));
-> > +                     }
-> > +             } else {
-> > +                     drm_connector_set_active_color_format_property(co=
-nnector, 0);
->
-> Just realized an even bigger reason why your current design doesn't work:
-> You don't have locking here.
->
-> And you cannot grab the required lock, which is
-> drm_dev->mode_config.mutex, because that would result in deadlocks. So
-> this really needs to use the atomic state based design I've described.
->
+For PTR_TO_FLOW_KEYS, check_flow_keys_access() only uses fixed off
+for validation. However, variable offset ptr alu is not prohibited
+for this ptr kind. So the variable offset is not checked.
 
-Maybe we should just drop "actual color format" and instead fail the
-modeset if the "preferred color format" property cannot be satisfied?
-It seems like the simplest thing to do here, though it is perhaps less
-convenient for userspace. In that case, the "preferred color format"
-property should just be called "color format".
+The following prog is accepted:
+func#0 @0
+0: R1=ctx() R10=fp0
+0: (bf) r6 = r1                       ; R1=ctx() R6_w=ctx()
+1: (79) r7 = *(u64 *)(r6 +144)        ; R6_w=ctx() R7_w=flow_keys()
+2: (b7) r8 = 1024                     ; R8_w=1024
+3: (37) r8 /= 1                       ; R8_w=scalar()
+4: (57) r8 &= 1024                    ; R8_w=scalar(smin=smin32=0,
+smax=umax=smax32=umax32=1024,var_off=(0x0; 0x400))
+5: (0f) r7 += r8
+mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1
+mark_precise: frame0: regs=r8 stack= before 4: (57) r8 &= 1024
+mark_precise: frame0: regs=r8 stack= before 3: (37) r8 /= 1
+mark_precise: frame0: regs=r8 stack= before 2: (b7) r8 = 1024
+6: R7_w=flow_keys(smin=smin32=0,smax=umax=smax32=umax32=1024,var_off
+=(0x0; 0x400)) R8_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1024,
+var_off=(0x0; 0x400))
+6: (79) r0 = *(u64 *)(r7 +0)          ; R0_w=scalar()
+7: (95) exit
 
-Thanks,
-Andri
+This prog loads flow_keys to r7, and adds the variable offset r8
+to r7, and finally causes out-of-bounds access:
+
+BUG: unable to handle page fault for address: ffffc90014c80038
+..
+Call Trace:
+ <TASK>
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
+ bpf_flow_dissect+0x15f/0x350 net/core/flow_dissector.c:991
+ bpf_prog_test_run_flow_dissector+0x39d/0x620 net/bpf/test_run.c:1359
+ bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
+ __sys_bpf+0xf8f/0x4560 kernel/bpf/syscall.c:5475
+ __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5559
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Fix this by rejecting ptr alu with variable offset on flow_keys.
+Applying the patch makes the program rejected with "R7 pointer
+arithmetic on flow_keys prohibited"
+
+Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index adbf330d364b..65f598694d55 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12826,6 +12826,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 	}
+ 
+ 	switch (base_type(ptr_reg->type)) {
++	case PTR_TO_FLOW_KEYS:
++		if (known)
++			break;
++		fallthrough;
+ 	case CONST_PTR_TO_MAP:
+ 		/* smin_val represents the known value */
+ 		if (known && smin_val == 0 && opcode == BPF_ADD)
+-- 
+2.34.1
+
 
