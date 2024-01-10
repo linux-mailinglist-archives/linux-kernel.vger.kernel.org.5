@@ -1,229 +1,536 @@
-Return-Path: <linux-kernel+bounces-22259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CCF829B85
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:39:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79EBF829C2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA83C1F21825
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:39:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0F1BB270D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B354048CD4;
-	Wed, 10 Jan 2024 13:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="gVo2F6g+"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64D04C3A5;
+	Wed, 10 Jan 2024 14:10:30 +0000 (UTC)
+Received: from connect.vanmierlo.com (fieber.vanmierlo.com [84.243.197.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53643487BE
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id B9B3D2FC0057;
-	Wed, 10 Jan 2024 14:39:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1704893977;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NBr8Ca6T6pj462sAdOhvmla4yehDm43kFrOCFOhWR1Y=;
-	b=gVo2F6g+ftVSYC2ja0jm3fxua0sVpmkTiKLfrSHyAOrY+XXctIu7qXUbkFlFlWXjqK/Fc1
-	uYJro0xKbuZckVlyENB1J8JodhKUWjW/2AtMfinRHk3eeTLCMWYQjowChFgzx4Fn/cXsD7
-	TYwdrGPxRaL43cqyTrME63S25KScnyE=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <adb11c46-aa5e-4389-8757-5bbc627eff69@tuxedocomputers.com>
-Date: Wed, 10 Jan 2024 14:39:36 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9F64E1D5;
+	Wed, 10 Jan 2024 14:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vanmierlo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vanmierlo.com
+X-Footer: dmFubWllcmxvLmNvbQ==
+Received: from roundcube.vanmierlo.com ([192.168.37.37])
+	(authenticated user m.brock@vanmierlo.com)
+	by connect.vanmierlo.com (Kerio Connect 10.0.3 patch 1) with ESMTPA;
+	Wed, 10 Jan 2024 14:39:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] drm/uAPI: Add "active color format" drm property as
- feedback for userspace
-Content-Language: en-US
-To: Andri Yngvason <andri@yngvason.is>,
- Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc: amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20240109181104.1670304-1-andri@yngvason.is>
- <20240109181104.1670304-3-andri@yngvason.is>
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <20240109181104.1670304-3-andri@yngvason.is>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date: Wed, 10 Jan 2024 14:39:46 +0100
+From: Maarten Brock <m.brock@vanmierlo.com>
+To: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+Cc: git@amd.com, michal.simek@amd.com, gregkh@linuxfoundation.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, jirislaby@kernel.org,
+ linux-arm-kernel@lists.infradead.org, radhey.shyam.pandey@amd.com,
+ srinivas.goud@amd.com, shubhrajyoti.datta@amd.com, manion05gk@gmail.com
+Subject: Re: [PATCH V8 3/3] tty: serial: uartps: Add rs485 support to uartps
+ driver
+In-Reply-To: <20240110111107.3645284-4-manikanta.guntupalli@amd.com>
+References: <20240110111107.3645284-1-manikanta.guntupalli@amd.com>
+ <20240110111107.3645284-4-manikanta.guntupalli@amd.com>
+Message-ID: <6302479f8f991c98d55b2f887c0f356f@vanmierlo.com>
+X-Sender: m.brock@vanmierlo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi,
-
-Am 09.01.24 um 19:10 schrieb Andri Yngvason:
-> From: Werner Sembach <wse@tuxedocomputers.com>
->
-> Add a new general drm property "active color format" which can be used by
-> graphic drivers to report the used color format back to userspace.
->
-> There was no way to check which color format got actually used on a given
-> monitor. To surely predict this, one must know the exact capabilities of
-> the monitor, the GPU, and the connection used and what the default
-> behaviour of the used driver is (e.g. amdgpu prefers YCbCr 4:4:4 while i915
-> prefers RGB). This property helps eliminating the guessing on this point.
->
-> In the future, automatic color calibration for screens might also depend on
-> this information being available.
->
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Signed-off-by: Andri Yngvason <andri@yngvason.is>
-> Tested-by: Andri Yngvason <andri@yngvason.is>
-
-One suggestion from back then was, instead picking out singular properties like 
-"active color format", to just expose whatever the last HDMI or DP metadata 
-block(s)/frame(s) that was sent over the display wire was to userspace and 
-accompanying it with a parsing script.
-
-Question: Does the driver really actually know what the GPU is ultimatively 
-sending out the wire, or is that decided by a final firmware blob we have no 
-info about?
-
-Greetings
-
-Werner
-
+Manikanta Guntupalli wrote on 2024-01-10 12:11:
+> Changes for V8:
+> Use hrtimer instead of timer list.
+> Simplify cdns_rs485_tx_setup() and cdns_rs485_rx_setup().
+> Update argument of cdns_rts_gpio_enable() in cdns_uart_set_mctrl().
+> Add cdns_calc_after_tx_delay() to calculate required delay after tx.
+> Add hrtimer setup in cdns_rs485_config().
+> Move enable TX Empty interrupt and rs485 rx callback scheduling part to
+> cdns_uart_handle_tx().
 > ---
->   drivers/gpu/drm/drm_connector.c | 63 +++++++++++++++++++++++++++++++++
->   include/drm/drm_connector.h     | 10 ++++++
->   2 files changed, 73 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index c3725086f4132..30d62e505d188 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -1061,6 +1061,14 @@ static const struct drm_prop_enum_list drm_dp_subconnector_enum_list[] = {
->   	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
->   };
->   
-> +static const struct drm_prop_enum_list drm_active_color_format_enum_list[] = {
-> +	{ 0, "not applicable" },
-> +	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
-> +	{ DRM_COLOR_FORMAT_YCBCR444, "ycbcr444" },
-> +	{ DRM_COLOR_FORMAT_YCBCR422, "ycbcr422" },
-> +	{ DRM_COLOR_FORMAT_YCBCR420, "ycbcr420" },
+>  drivers/tty/serial/xilinx_uartps.c | 241 ++++++++++++++++++++++++++++-
+>  1 file changed, 233 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/xilinx_uartps.c
+> b/drivers/tty/serial/xilinx_uartps.c
+> index aafcc2179e0e..3247fd3e91fd 100644
+> --- a/drivers/tty/serial/xilinx_uartps.c
+> +++ b/drivers/tty/serial/xilinx_uartps.c
+> @@ -193,6 +195,10 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
+>   * @clk_rate_change_nb:	Notifier block for clock changes
+>   * @quirks:		Flags for RXBS support.
+>   * @cts_override:	Modem control state override
+> + * @gpiod_rts:		Pointer to the gpio descriptor
+> + * @rs485_tx_started:	RS485 tx state
+> + * @tx_timer:		Timer for tx
+
+start_tx_timer ?
+
+> + * @stop_tx_timer:	Timer for stop tx
+>   */
+>  struct cdns_uart {
+>  	struct uart_port	*port;
+> @@ -203,10 +209,22 @@ struct cdns_uart {
+>  	struct notifier_block	clk_rate_change_nb;
+>  	u32			quirks;
+>  	bool cts_override;
+> +	struct gpio_desc	*gpiod_rts;
+> +	bool			rs485_tx_started;
+> +	struct hrtimer		tx_timer;
+> +	struct hrtimer		stop_tx_timer;
+>  };
+>  struct cdns_platform_data {
+>  	u32 quirks;
+>  };
+> +
+> +struct serial_rs485 cdns_rs485_supported = {
+> +	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
+> +		 SER_RS485_RTS_AFTER_SEND,
+> +	.delay_rts_before_send = 1,
+> +	.delay_rts_after_send = 1,
 > +};
 > +
->   DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
->   		 drm_dp_subconnector_enum_list)
->   
-> @@ -1390,6 +1398,15 @@ static const u32 dp_colorspaces =
->    *	drm_connector_attach_max_bpc_property() to create and attach the
->    *	property to the connector during initialization.
->    *
-> + * active color format:
-> + *	This read-only property tells userspace the color format actually used
-> + *	by the hardware display engine "on the cable" on a connector. The chosen
-> + *	value depends on hardware capabilities, both display engine and
-> + *	connected monitor. Drivers shall use
-> + *	drm_connector_attach_active_color_format_property() to install this
-> + *	property. Possible values are "not applicable", "rgb", "ycbcr444",
-> + *	"ycbcr422", and "ycbcr420".
-> + *
->    * Connectors also have one standardized atomic property:
->    *
->    * CRTC_ID:
-> @@ -2451,6 +2468,52 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
->   }
->   EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
->   
+>  #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
+>  		clk_rate_change_nb)
+> 
+> @@ -305,6 +323,55 @@ static void cdns_uart_handle_rx(void *dev_id,
+> unsigned int isrstatus)
+>  	tty_flip_buffer_push(&port->state->port);
+>  }
+> 
 > +/**
-> + * drm_connector_attach_active_color_format_property - attach "active color format" property
-> + * @connector: connector to attach active color format property on.
-> + *
-> + * This is used to check the applied color format on a connector.
-> + *
-> + * Returns:
-> + * Zero on success, negative errno on failure.
+> + * cdns_rts_gpio_enable - Configure RTS/GPIO to high/low
+> + * @cdns_uart: Handle to the cdns_uart
+> + * @enable: Value to be set to RTS/GPIO
 > + */
-> +int drm_connector_attach_active_color_format_property(struct drm_connector *connector)
+> +static void cdns_rts_gpio_enable(struct cdns_uart *cdns_uart, bool 
+> enable)
 > +{
-> +	struct drm_device *dev = connector->dev;
-> +	struct drm_property *prop;
+> +	u32 val;
 > +
-> +	if (!connector->active_color_format_property) {
-> +		prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE, "active color format",
-> +						drm_active_color_format_enum_list,
-> +						ARRAY_SIZE(drm_active_color_format_enum_list));
-> +		if (!prop)
-> +			return -ENOMEM;
-> +
-> +		connector->active_color_format_property = prop;
+> +	if (cdns_uart->gpiod_rts) {
+> +		gpiod_set_value(cdns_uart->gpiod_rts, enable);
+> +	} else {
+> +		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
+> +		if (enable)
+> +			val &= ~CDNS_UART_MODEMCR_RTS;
+> +		else
+> +			val |= CDNS_UART_MODEMCR_RTS;
+> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
 > +	}
+> +}
 > +
-> +	drm_object_attach_property(&connector->base, prop, 0);
+> +/**
+> + * cdns_rs485_tx_setup - Tx setup specific to rs485
+> + * @cdns_uart: Handle to the cdns_uart
+> + */
+> +static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
+> +{
+> +	bool enable;
 > +
+> +	enable = cdns_uart->port->rs485.flags & SER_RS485_RTS_ON_SEND;
+> +	cdns_rts_gpio_enable(cdns_uart, enable);
+> +
+> +	cdns_uart->rs485_tx_started = true;
+> +}
+> +
+> +/**
+> + * cdns_rs485_rx_setup - Rx setup specific to rs485
+> + * @cdns_uart: Handle to the cdns_uart
+> + */
+> +static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
+> +{
+> +	bool enable;
+> +
+> +	enable = cdns_uart->port->rs485.flags & SER_RS485_RTS_AFTER_SEND;
+> +	cdns_rts_gpio_enable(cdns_uart, enable);
+> +
+> +	cdns_uart->rs485_tx_started = false;
+> +}
+> +
+>  /**
+>   * cdns_uart_tx_empty -  Check whether TX is empty
+>   * @port: Handle to the uart port structure
+> @@ -320,6 +387,37 @@ static unsigned int cdns_uart_tx_empty(struct
+> uart_port *port)
+>  	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
+>  }
+> 
+> +/**
+> + * cdns_rs485_rx_callback - Timer rx callback handler for rs485.
+> + * @t: Handle to the hrtimer structure
+> + */
+> +static enum hrtimer_restart cdns_rs485_rx_callback(struct hrtimer *t)
+> +{
+> +	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart, 
+> tx_timer);
+> +
+> +	/*
+> +	 * Default Rx should be setup, because Rx signaling path
+> +	 * need to enable to receive data.
+> +	 */
+> +	cdns_rs485_rx_setup(cdns_uart);
+> +
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+> +/**
+> + * cdns_calc_after_tx_delay - calculate delay required for after tx.
+> + * @cdns_uart: Handle to the cdns_uart
+> + */
+> +static u64 cdns_calc_after_tx_delay(struct cdns_uart *cdns_uart)
+> +{
+> +	/*
+> +	 * Frame time + stop bit time + rs485.delay_rts_after_send
+> +	 */
+> +	return cdns_uart->port->frame_time
+> +	       + DIV_ROUND_UP(cdns_uart->port->frame_time, 7)
+> +	       + (u64)cdns_uart->port->rs485.delay_rts_after_send * 
+> NSEC_PER_MSEC;
+> +}
+> +
+>  /**
+>   * cdns_uart_handle_tx - Handle the bytes to be Txed.
+
+s/Txed/transmitted
+
+>   * @dev_id: Id of the UART port
+> @@ -328,6 +426,7 @@ static unsigned int cdns_uart_tx_empty(struct
+> uart_port *port)
+>  static void cdns_uart_handle_tx(void *dev_id)
+>  {
+>  	struct uart_port *port = (struct uart_port *)dev_id;
+> +	struct cdns_uart *cdns_uart = port->private_data;
+>  	struct circ_buf *xmit = &port->state->xmit;
+>  	unsigned int numbytes;
+
+I recommend to also check uart_tx_stopped() for disabling the TXEMPTY 
+interrupt.
+
+-	if (uart_circ_empty(xmit)) {
++	if (uart_circ_empty(xmit) || uart_tx_stopped(port)) {
++		/* Disable the TX Empty interrupt */
+		writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IDR);
+		return;
+	}
+
+> @@ -347,6 +446,16 @@ static void cdns_uart_handle_tx(void *dev_id)
+> 
+>  	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+>  		uart_write_wakeup(port);
+> +
+> +	/* Enable the TX Empty interrupt */
+> +	writel(CDNS_UART_IXR_TXEMPTY, cdns_uart->port->membase + 
+> CDNS_UART_IER);
+> +
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED &&
+> +	    (uart_circ_empty(xmit) || uart_tx_stopped(port))) {
+> +		cdns_uart->tx_timer.function = &cdns_rs485_rx_callback;
+> +		hrtimer_start(&cdns_uart->tx_timer,
+> +			      ns_to_ktime(cdns_calc_after_tx_delay(cdns_uart)), 
+> HRTIMER_MODE_REL);
+> +	}
+>  }
+> 
+>  /**
+> @@ -579,6 +688,21 @@ static int cdns_uart_clk_notifier_cb(struct
+> notifier_block *nb,
+>  }
+>  #endif
+> 
+> +/**
+> + * cdns_rs485_tx_callback - Timer tx callback handler for rs485.
+> + * @t: Handle to the hrtimer structure
+> + */
+> +static enum hrtimer_restart cdns_rs485_tx_callback(struct hrtimer *t)
+> +{
+> +	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart, 
+> tx_timer);
+> +
+> +	uart_port_lock(cdns_uart->port);
+> +	cdns_uart_handle_tx(cdns_uart->port);
+> +	uart_port_unlock(cdns_uart->port);
+> +
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+>  /**
+>   * cdns_uart_start_tx -  Start transmitting bytes
+>   * @port: Handle to the uart port structure
+> @@ -586,6 +710,7 @@ static int cdns_uart_clk_notifier_cb(struct
+> notifier_block *nb,
+>  static void cdns_uart_start_tx(struct uart_port *port)
+>  {
+>  	unsigned int status;
+> +	struct cdns_uart *cdns_uart = port->private_data;
+> 
+>  	if (uart_tx_stopped(port))
+>  		return;
+> @@ -604,10 +729,38 @@ static void cdns_uart_start_tx(struct uart_port 
+> *port)
+> 
+
+Maybe add comment here that the following clears the interrupt flag.
+
+>  	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
+> 
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
+> +		if (!cdns_uart->rs485_tx_started) {
+> +			cdns_uart->tx_timer.function = &cdns_rs485_tx_callback;
+> +			cdns_rs485_tx_setup(cdns_uart);
+
+Move cdns_rs485_tx_setup() out of this if clause to make sure DE is 
+always active.
+
+> +			return hrtimer_start(&cdns_uart->tx_timer,
+> +					     ms_to_ktime(port->rs485.delay_rts_before_send),
+> +					     HRTIMER_MODE_REL);
+> +		} else {
+> +			if (hrtimer_get_remaining(&cdns_uart->tx_timer))
+> +				hrtimer_cancel(&cdns_uart->tx_timer);
+
+You intend to stop the timer for cdns_rs485_rx_callback() here, but...
+What if the tx_timer is started for cdns_rs485_tx_callback()?
+
+> +		}
+> +	}
+>  	cdns_uart_handle_tx(port);
+> +}
+> 
+> -	/* Enable the TX Empty interrupt */
+> -	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
+> +/**
+> + * cdns_rs485_stop_tx_callback - Timer stop tx callback handler for 
+> rs485.
+> + * @t: Handle to the timer list structure
+> + */
+> +static enum hrtimer_restart cdns_rs485_stop_tx_callback(struct hrtimer 
+> *t)
+> +{
+> +	unsigned int regval;
+> +	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart,
+> stop_tx_timer);
+> +
+> +	cdns_rs485_rx_setup(cdns_uart);
+> +
+> +	regval = readl(cdns_uart->port->membase + CDNS_UART_CR);
+> +	regval |= CDNS_UART_CR_TX_DIS;
+> +	/* Disable the transmitter */
+> +	writel(regval, cdns_uart->port->membase + CDNS_UART_CR);
+> +
+> +	return HRTIMER_NORESTART;
+>  }
+> 
+>  /**
+> @@ -617,11 +770,21 @@ static void cdns_uart_start_tx(struct uart_port 
+> *port)
+>  static void cdns_uart_stop_tx(struct uart_port *port)
+>  {
+>  	unsigned int regval;
+> +	struct cdns_uart *cdns_uart = port->private_data;
+> 
+> -	regval = readl(port->membase + CDNS_UART_CR);
+> -	regval |= CDNS_UART_CR_TX_DIS;
+> -	/* Disable the transmitter */
+> -	writel(regval, port->membase + CDNS_UART_CR);
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
+> +		if (cdns_uart->rs485_tx_started)
+> +			hrtimer_start(&cdns_uart->stop_tx_timer,
+> +				      ns_to_ktime(cdns_calc_after_tx_delay(cdns_uart)),
+> +				      HRTIMER_MODE_REL);
+
+Why do you want to wait here? Should disabling the transmitter not be 
+enough?
+My guess and hope is that it will result in the current transmission 
+running to
+completion and then fire the TXEMPTY interrupt which will then start the 
+timer for
+cdns_rs485_rx_callback(). I see no need for a separate timer here.
+
+> +		else
+> +			cdns_rs485_stop_tx_callback(&cdns_uart->stop_tx_timer);
+> +	} else {
+> +		regval = readl(port->membase + CDNS_UART_CR);
+> +		regval |= CDNS_UART_CR_TX_DIS;
+> +		/* Disable the transmitter */
+> +		writel(regval, port->membase + CDNS_UART_CR);
+> +	}
+>  }
+> 
+>  /**
+> @@ -829,6 +992,9 @@ static int cdns_uart_startup(struct uart_port 
+> *port)
+>  		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
+>  		cpu_relax();
+> 
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
+> +		cdns_rs485_rx_setup(cdns_uart);
+> +
+>  	/*
+>  	 * Clear the RX disable bit and then set the RX enable bit to enable
+>  	 * the receiver.
+> @@ -888,6 +1054,7 @@ static void cdns_uart_shutdown(struct uart_port 
+> *port)
+>  {
+>  	int status;
+>  	unsigned long flags;
+> +	struct cdns_uart *cdns_uart = port->private_data;
+> 
+>  	uart_port_lock_irqsave(port, &flags);
+> 
+> @@ -903,6 +1070,11 @@ static void cdns_uart_shutdown(struct uart_port 
+> *port)
+>  	uart_port_unlock_irqrestore(port, flags);
+> 
+>  	free_irq(port->irq, port);
+> +
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
+> +		hrtimer_cancel(&cdns_uart->tx_timer);
+> +		hrtimer_cancel(&cdns_uart->stop_tx_timer);
+> +	}
+
+Should you not do this much earlier in this function?
+
+>  }
+> 
+>  /**
+> @@ -1032,7 +1204,7 @@ static void cdns_uart_set_mctrl(struct uart_port
+> *port, unsigned int mctrl)
+>  	mode_reg &= ~CDNS_UART_MR_CHMODE_MASK;
+> 
+>  	if (mctrl & TIOCM_RTS)
+> -		val |= CDNS_UART_MODEMCR_RTS;
+> +		cdns_rts_gpio_enable(cdns_uart_data, mctrl & TIOCM_RTS);
+
+Move this out of the if clause so the gpio can also get cleared.
+On top of that it should be inverted.
+But if there is no gpio defined this call will create a glitch on the 
+RTS pin.
+cdns_rts_gpio_enable() can set CDNS_UART_MODEMCR_RTS to lower the RTS 
+pin and
+then val will clear CDNS_UART_MODEMCR_RTS again leaving the RTS pin 
+high.
+I suggest to use this instead:
+	if (mctrl & TIOCM_RTS)
+		val |= CDNS_UART_MODEMCR_RTS;
++	if (cdns_uart->gpiod_rts) {
++		gpiod_set_value(cdns_uart->gpiod_rts, !(mctrl & TIOCM_RTS));
+
+>  	if (mctrl & TIOCM_DTR)
+>  		val |= CDNS_UART_MODEMCR_DTR;
+>  	if (mctrl & TIOCM_LOOP)
+> @@ -1455,6 +1627,42 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
+>  /* Temporary variable for storing number of instances */
+>  static int instances;
+> 
+> +/**
+> + * cdns_rs485_config - Called when an application calls TIOCSRS485 
+> ioctl.
+> + * @port: Pointer to the uart_port structure
+> + * @termios: Pointer to the ktermios structure
+> + * @rs485: Pointer to the serial_rs485 structure
+> + *
+> + * Return: 0
+> + */
+> +static int cdns_rs485_config(struct uart_port *port, struct ktermios 
+> *termios,
+> +			     struct serial_rs485 *rs485)
+> +{
+> +	u32 val;
+> +	struct cdns_uart *cdns_uart = port->private_data;
+> +
+> +	if (rs485->flags & SER_RS485_ENABLED) {
+> +		dev_dbg(port->dev, "Setting UART to RS485\n");
+> +		/* Make sure auto RTS is disabled */
+> +		val = readl(port->membase + CDNS_UART_MODEMCR);
+> +		val &= ~CDNS_UART_MODEMCR_FCM;
+> +		writel(val, port->membase + CDNS_UART_MODEMCR);
+> +
+> +		/* Timer setup */
+> +		hrtimer_init(&cdns_uart->tx_timer, CLOCK_MONOTONIC, 
+> HRTIMER_MODE_REL);
+> +		hrtimer_init(&cdns_uart->stop_tx_timer, CLOCK_MONOTONIC, 
+> HRTIMER_MODE_REL);
+> +		cdns_uart->tx_timer.function = &cdns_rs485_tx_callback;
+> +		cdns_uart->stop_tx_timer.function = &cdns_rs485_stop_tx_callback;
+> +
+> +		/* Disable transmitter and make Rx setup*/
+> +		cdns_uart_stop_tx(port);
+> +	} else {
+> +		hrtimer_cancel(&cdns_uart->tx_timer);
+> +		hrtimer_cancel(&cdns_uart->stop_tx_timer);
+> +	}
 > +	return 0;
 > +}
-> +EXPORT_SYMBOL(drm_connector_attach_active_color_format_property);
 > +
-> +/**
-> + * drm_connector_set_active_color_format_property - sets the active color format property for a
-> + * connector
-> + * @connector: drm connector
-> + * @active_color_format: color format for the connector currently active "on the cable"
-> + *
-> + * Should be used by atomic drivers to update the active color format over a connector.
-> + */
-> +void drm_connector_set_active_color_format_property(struct drm_connector *connector,
-> +						    u32 active_color_format)
-> +{
-> +	drm_object_property_set_value(&connector->base, connector->active_color_format_property,
-> +				      active_color_format);
-> +}
-> +EXPORT_SYMBOL(drm_connector_set_active_color_format_property);
+>  /**
+>   * cdns_uart_probe - Platform driver probe
+>   * @pdev: Pointer to the platform device structure
+> @@ -1597,9 +1805,23 @@ static int cdns_uart_probe(struct 
+> platform_device *pdev)
+>  	port->private_data = cdns_uart_data;
+>  	port->read_status_mask = CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRIG 
+> |
+>  			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
+> +	port->rs485_config = cdns_rs485_config;
+> +	port->rs485_supported = cdns_rs485_supported;
+>  	cdns_uart_data->port = port;
+>  	platform_set_drvdata(pdev, port);
+> 
+> +	rc = uart_get_rs485_mode(port);
+> +	if (rc)
+> +		goto err_out_clk_notifier;
 > +
->   /**
->    * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
->    * @connector: connector to attach the property on.
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index fe88d7fc6b8f4..9ae73cfdceeb1 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -1699,6 +1699,12 @@ struct drm_connector {
->   	 */
->   	struct drm_property *privacy_screen_hw_state_property;
->   
-> +	/**
-> +	 * @active_color_format_property: Default connector property for the
-> +	 * active color format to be driven out of the connector.
-> +	 */
-> +	struct drm_property *active_color_format_property;
+> +	cdns_uart_data->gpiod_rts = devm_gpiod_get_optional(&pdev->dev, 
+> "rts",
+> +							    GPIOD_OUT_LOW);
+> +	if (IS_ERR(cdns_uart_data->gpiod_rts)) {
+> +		rc = PTR_ERR(cdns_uart_data->gpiod_rts);
+> +		dev_err(port->dev, "xuartps: devm_gpiod_get_optional failed\n");
+> +		goto err_out_clk_notifier;
+> +	}
 > +
->   #define DRM_CONNECTOR_POLL_HPD (1 << 0)
->   #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
->   #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
-> @@ -2053,6 +2059,10 @@ void drm_connector_attach_privacy_screen_provider(
->   	struct drm_connector *connector, struct drm_privacy_screen *priv);
->   void drm_connector_update_privacy_screen(const struct drm_connector_state *connector_state);
->   
-> +int drm_connector_attach_active_color_format_property(struct drm_connector *connector);
-> +void drm_connector_set_active_color_format_property(struct drm_connector *connector,
-> +						    u32 active_color_format);
-> +
->   /**
->    * struct drm_tile_group - Tile group metadata
->    * @refcount: reference count
+>  	pm_runtime_use_autosuspend(&pdev->dev);
+>  	pm_runtime_set_autosuspend_delay(&pdev->dev, 
+> UART_AUTOSUSPEND_TIMEOUT);
+>  	pm_runtime_set_active(&pdev->dev);
+> @@ -1618,6 +1840,8 @@ static int cdns_uart_probe(struct platform_device 
+> *pdev)
+>  		console_port = port;
+>  	}
+>  #endif
+> +	if (cdns_uart_data->port->rs485.flags & SER_RS485_ENABLED)
+> +		cdns_rs485_rx_setup(cdns_uart_data);
+> 
+>  	rc = uart_add_one_port(&cdns_uart_uart_driver, port);
+>  	if (rc) {
+> @@ -1646,6 +1870,7 @@ static int cdns_uart_probe(struct platform_device 
+> *pdev)
+>  	pm_runtime_disable(&pdev->dev);
+>  	pm_runtime_set_suspended(&pdev->dev);
+>  	pm_runtime_dont_use_autosuspend(&pdev->dev);
+> +err_out_clk_notifier:
+>  #ifdef CONFIG_COMMON_CLK
+>  	clk_notifier_unregister(cdns_uart_data->uartclk,
+>  			&cdns_uart_data->clk_rate_change_nb);
+
+This is getting big and some modifications are not rs485 related.
+I suggest to split them and get those applied first.
+My first modification would be to add support for the rts gpio.
+
+Kind regards,
+Maarten Brock
+
 
