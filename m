@@ -1,203 +1,147 @@
-Return-Path: <linux-kernel+bounces-21810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25F9082949E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:02:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D8878294A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:03:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C65E1C2593F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:02:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 156C628ADD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D8CE3C097;
-	Wed, 10 Jan 2024 08:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58F03D0C3;
+	Wed, 10 Jan 2024 08:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="evdm9QVv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T8Sa6Bgx"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260F83A27E
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704873715;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vhS5A7tl/uywNAVxzqgUdgpEvRWCxnpPFs8rrAowgR0=;
-	b=evdm9QVvUFETJ+7pf0DU1Y2IYWhkM0nRyfyK4HmbYEwlAylzZW8h+UONsSu4ua05lbfELh
-	SsGCcSnL1a2y6m3VeTstFAsUUr3B5QYsX9rKcmyuFBc67X/W2TDLnR8NjUgiloYoeKBn89
-	Hu/j0rOcjrCjOowte6a+yBKVmQTKsHI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-368-hkyV6nAVPDWvQcPuzTryTg-1; Wed, 10 Jan 2024 03:01:53 -0500
-X-MC-Unique: hkyV6nAVPDWvQcPuzTryTg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40e530b7596so7624675e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:01:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A126E3E46E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40d4f5d902dso40806785e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704873773; x=1705478573; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xYiCKzMbCiV7Iv5PpjCp1Kz+vWWccsrpd8/ewS0uAuE=;
+        b=T8Sa6BgxoVMc82tlMHtd7YcbEtgo0OO4gnK0iSAyuMPC37WWDkSxYiU/br1fKJYiNp
+         kTw5oDZRajOR/h03weOf3twtX0J+h1NdW3fWSOSOh914XogGYy/fnXBxp+eMqjeVYxsS
+         umcBfhA2aJiAK4ibdyxBLENzbkLS3wZwN4pv+zGe5PZniEvvTfv1ZSRXAIcQ1hAl8Dii
+         svPMcTdgiDSvKq8jX7gIKRdLCgdrEuH+f2sz8iF3QAZJZm3N4eRmBBLTGmmljUbnxIop
+         7ymhtT/CV2XsL6RVp2vsMye74syF8kGzIxPh3wAgH/08DUKiS0i/3/Iby8h2iTtKl24W
+         xanw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704873712; x=1705478512;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vhS5A7tl/uywNAVxzqgUdgpEvRWCxnpPFs8rrAowgR0=;
-        b=fwQRL3Gblgixw+UaCGwFv89t/ofKDndolDXCOQfeIIiiZ3bTY1KTftRMaP4etMA9uV
-         H/THdr4I2EgyKUjtvyAUs4JbPoK/a+NM7svImeKutt0WWljP6eJ45TpTep47zipNYPiz
-         LZCES5n0RJvT7BHeJPjF7jaQsmHyPTfimx+wsKk2PP/c1KbYfnC9quac8oELRJ9aQA/A
-         FDsn7brzcAGHfF70eQ+dDoibZ5u51evbGZPD4LayRTcbYkrH91twE7mxJKSQiNwZqkpm
-         /HMV6a0AMBVei4uJOQej1iF3jD7JqrYYWyEymRYmrTm7eW9DysGLvaLRxCNOqi+bZxJ3
-         2DCQ==
-X-Gm-Message-State: AOJu0YydcQjsPcdQMYtqpFcQPETW/IIIsY3oGvdA971IvHzz03cxwnRu
-	BxEjtsf795BhB+DxZrGoqwQ/X4gFT22X5P9DSXDgQVmH+IO7mH951IKsmnB2AkSnb+X1oYdlhQh
-	1Cmf91LHhBUZtfWOb0ki83B++avazbNgd
-X-Received: by 2002:a7b:ca45:0:b0:40e:4df9:8996 with SMTP id m5-20020a7bca45000000b0040e4df98996mr345317wml.23.1704873712314;
-        Wed, 10 Jan 2024 00:01:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEkekCxMK/uJAHDEhg7TzPrNHweUGTbl7o5uzeSclp37gm5JnIkTH1E+AKAqyk8FrSpNN6axg==
-X-Received: by 2002:a7b:ca45:0:b0:40e:4df9:8996 with SMTP id m5-20020a7bca45000000b0040e4df98996mr345304wml.23.1704873711915;
-        Wed, 10 Jan 2024 00:01:51 -0800 (PST)
-Received: from redhat.com ([2.52.133.193])
-        by smtp.gmail.com with ESMTPSA id s7-20020a05600c45c700b0040d8ff79fd8sm1229542wmo.7.2024.01.10.00.01.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 00:01:51 -0800 (PST)
-Date: Wed, 10 Jan 2024 03:01:48 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Zheyun Shen <szy0127@sjtu.edu.cn>
-Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-	david <david@redhat.com>, jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com
-Subject: Re: [PATCH] driver/virtio: Add Memory Balloon Support for SEV/SEV-ES
-Message-ID: <20240110025544-mutt-send-email-mst@kernel.org>
-References: <2035137075.1083380.1704867762955.JavaMail.zimbra@sjtu.edu.cn>
+        d=1e100.net; s=20230601; t=1704873773; x=1705478573;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xYiCKzMbCiV7Iv5PpjCp1Kz+vWWccsrpd8/ewS0uAuE=;
+        b=ccXIqr/JYQYnGKiBQiqkvsYEg8r/tnbk3KR2F3LUtk5K/wPsQhqXReeXVQa1yHMTgN
+         icscHa1+Hf3jw/JXp2LMQNsnv7cyhJiQ1rHZi1+nJXP/k8cEKxf4jCWhVrTctoJ4beya
+         +wFAYp8H7v+pf9Mf2VTn4xiqniMDuBI3JMjqc/O41uMlsxSZnoY1inmjJsdPdZQtSH3T
+         5l7iW0cxl2ECSKU498vtrUXmNy792fptJvEtrk8CaWy+3w8T94RN45Tc4jkXqJ0cyoug
+         HSRdyomDG03pQIqrWpYgpReLI+Ny+ik5n/cHbBl7mCi3ziBlYueBBUb2toBIebXrtNWm
+         +jWw==
+X-Gm-Message-State: AOJu0Yzg3qV2yEHJ/EhUClCRIzHRdjLh4FUqOZmofqUCD50tvt/w2VNE
+	qqOjwppFqkgiJn7fW5p21o3iHntiz9EHmA==
+X-Google-Smtp-Source: AGHT+IERlAq8OlCchW637hYzbIGUGCyjH6rE8EdhNN3zfMhyWWfUXULX2FzBQR6BG45bD7ayH7u0VQ==
+X-Received: by 2002:a05:600c:4e54:b0:40e:5702:f8fd with SMTP id e20-20020a05600c4e5400b0040e5702f8fdmr212800wmq.137.1704873772899;
+        Wed, 10 Jan 2024 00:02:52 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id p16-20020a05600c469000b0040e39cbf2a4sm1223887wmo.42.2024.01.10.00.02.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 00:02:52 -0800 (PST)
+Message-ID: <00f8af6a-3221-4e81-b0fa-e42ba384541b@linaro.org>
+Date: Wed, 10 Jan 2024 09:02:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2035137075.1083380.1704867762955.JavaMail.zimbra@sjtu.edu.cn>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 02/12] dt-bindings: i2c: exynos5: add
+ google,gs101-hsi2c compatible
+Content-Language: en-US
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
+ krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+ conor+dt@kernel.org, andi.shyti@kernel.org, alim.akhtar@samsung.com,
+ jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
+ andre.draszik@linaro.org, kernel-team@android.com, willmcvicker@google.com,
+ Wolfram Sang <wsa@kernel.org>, Rob Herring <robh@kernel.org>,
+ Sam Protsenko <semen.protsenko@linaro.org>
+References: <20240109125814.3691033-1-tudor.ambarus@linaro.org>
+ <20240109125814.3691033-3-tudor.ambarus@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240109125814.3691033-3-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 02:22:42PM +0800, Zheyun Shen wrote:
-> For now, SEV pins guest's memory to avoid swapping or
-> moving ciphertext, but leading to the inhibition of
-> Memory Ballooning.
+On 09/01/2024 13:58, Tudor Ambarus wrote:
+> Add google,gs101-hsi2c dedicated compatible for representing
+> I2C of Google GS101 SoC.
 > 
-> In Memory Ballooning, only guest's free pages will be relocated
-> in balloon inflation and deflation, so the difference of plaintext
-> doesn't matter to guest.
-> 
-> Memory Ballooning is a nice memory overcommitment technology can
-> be used in CVM based on SEV and SEV-ES, so userspace tools can
-> provide an option to allow SEV not to pin memory and enable 
-> Memory Ballooning. Guest kernel may not inhibit Balloon and 
-> should set shared memory for Balloon decrypted.
-> 
-> Signed-off-by: Zheyun Shen <szy0127@sjtu.edu.cn>
+> Acked-by: Wolfram Sang <wsa@kernel.org>
 
-Sorry I don't get what you are saying at all.
-Please format the commit log along the following lines:
+OK, I will take it but in general this should not go via SoC tree, but
+I2C. GS101 was already merged, so please send all your future
+submissions regular way.
 
-Currently .....
-This is bad because ...
-To fix ...
-As a result ...
-
-
-> ---
->  drivers/virtio/virtio_balloon.c | 18 ++++++++++++++++++
->  drivers/virtio/virtio_ring.c    |  7 +++++++
->  2 files changed, 25 insertions(+)
-> 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 1fe93e93f..aca4c8a58 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -18,6 +18,9 @@
->  #include <linux/wait.h>
->  #include <linux/mm.h>
->  #include <linux/page_reporting.h>
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +#include <linux/set_memory.h>
-> +#endif
->  
->  /*
->   * Balloon device works in 4K page units.  So each page is pointed to by
-> @@ -870,6 +873,9 @@ static int virtio_balloon_register_shrinker(struct virtio_balloon *vb)
->  static int virtballoon_probe(struct virtio_device *vdev)
->  {
->          struct virtio_balloon *vb;
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +        size_t vb_size = PAGE_ALIGN(sizeof(*vb));
-> +#endif
->          int err;
->  
->          if (!vdev->config->get) {
-> @@ -878,11 +884,19 @@ static int virtballoon_probe(struct virtio_device *vdev)
->                  return -EINVAL;
->          }
->  
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +        vdev->priv = vb = kzalloc(vb_size, GFP_KERNEL);
-> +#else
->          vdev->priv = vb = kzalloc(sizeof(*vb), GFP_KERNEL);
-> +#endif
->          if (!vb) {
->                  err = -ENOMEM;
->                  goto out;
->          }
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +        set_memory_decrypted((unsigned long)vb, vb_size / PAGE_SIZE);
-> +        memset(vb, 0, vb_size);
-> +#endif
->  
->          INIT_WORK(&vb->update_balloon_stats_work, update_balloon_stats_func);
->          INIT_WORK(&vb->update_balloon_size_work, update_balloon_size_func);
-> @@ -1101,7 +1115,11 @@ static int virtballoon_validate(struct virtio_device *vdev)
->          else if (!virtio_has_feature(vdev, VIRTIO_BALLOON_F_PAGE_POISON))
->                  __virtio_clear_bit(vdev, VIRTIO_BALLOON_F_REPORTING);
->  
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +        __virtio_set_bit(vdev, VIRTIO_F_ACCESS_PLATFORM);
-> +#else
->          __virtio_clear_bit(vdev, VIRTIO_F_ACCESS_PLATFORM);
-> +#endif
->          return 0;
->  }
->  
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 49299b1f9..875612a2e 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -14,6 +14,9 @@
->  #include <linux/kmsan.h>
->  #include <linux/spinlock.h>
->  #include <xen/xen.h>
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +#include <linux/set_memory.h>
-> +#endif
->  
->  #ifdef DEBUG
->  /* For development, we want to crash whenever the ring is screwed. */
-> @@ -321,6 +324,10 @@ static void *vring_alloc_queue(struct virtio_device *vdev, size_t size,
->                  if (queue) {
->                          phys_addr_t phys_addr = virt_to_phys(queue);
->                          *dma_handle = (dma_addr_t)phys_addr;
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +                        set_memory_decrypted((unsigned long)queue, PAGE_ALIGN(size) / PAGE_SIZE);
-> +                        memset(queue, 0, PAGE_ALIGN(size));
-> +#endif
->  
->                          /*
->                           * Sanity check: make sure we dind't truncate
-
-No way I am going to spead CONFIG_AMD_MEM_ENCRYPT all over the place
-like this.
-
-
-> --
-> 2.34.1
+Best regards,
+Krzysztof
 
 
