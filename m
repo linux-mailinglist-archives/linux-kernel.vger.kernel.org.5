@@ -1,139 +1,105 @@
-Return-Path: <linux-kernel+bounces-22255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8454829B7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:38:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E77829B7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891481F211D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:38:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91C7E1C2224C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B665948CEB;
-	Wed, 10 Jan 2024 13:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292D64A994;
+	Wed, 10 Jan 2024 13:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TPhnoxYf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="WF1+wJ1D"
+Received: from mail.avm.de (mail.avm.de [212.42.244.120])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753534A994
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704893827; x=1736429827;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3KjM4afpgsVkg16ec8qhOMcIMU+MFDkAz+XeEDCLYjk=;
-  b=TPhnoxYfGeNSdELeoOn5XtcSkU7D6IW/Bg2Nj3hnlwke+dhZ4MzVXc/E
-   FQKTo3G0bjFiAFl/JXkyUk2ERiOSPFO8TPvVGFa7E65BaAyg7JvKL6vCF
-   NXn+gSkWb6vN6iv3eMBMWLdM3ThQKFEmyXY6eXbO5+4s8ReQPGbssFTOA
-   DY0B/UjXfwq6oF3tkysPjegrDl35URIwHUundxkn+ZuJ1qTExezOE2rYt
-   nv3FeZBF7/Nipz3B0F1Rpw9AnnapjlqVr8+xnLrn2xbj4ddX9n7Oo6Q5p
-   wq5fHQXbyMiEsn+emZFj1TEY8rS04n1COJ4n4s8v/b7RO8D20CkglNG65
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10948"; a="5291538"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="5291538"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 05:37:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="24271084"
-Received: from jganji-mobl1.gar.corp.intel.com (HELO box.shutemov.name) ([10.249.37.201])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 05:37:00 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id 4DBCC109589; Wed, 10 Jan 2024 16:36:57 +0300 (+03)
-Date: Wed, 10 Jan 2024 16:36:57 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Kevin Loughlin <kevinloughlin@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1863348CC7;
+	Wed, 10 Jan 2024 13:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Wed, 10 Jan 2024 14:37:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1704893836; bh=LCuaVe73rplzywlFwA0UbIaUH/rZvyTsPAJWHyMOIqw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WF1+wJ1DyBUf0s9manoHhCKw6x54DY1H92W7WuZRRZs0bBODb12Nhln7ZT8zZ1pIA
+	 Rdf5uKFe5DgtlaY9zFeKzq8+GGsNjQpdRyY2N/fwl7DfljsjNlioJBsqS22+nm33C6
+	 pf/GMRT5TqZPlxTJArZ2Ddg8B4OiOwlRjnVUK7y8=
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id 7B3DD803AB;
+	Wed, 10 Jan 2024 14:37:17 +0100 (CET)
+Received: by buildd.core.avm.de (Postfix, from userid 1000)
+	id 6E2B81812A6; Wed, 10 Jan 2024 14:37:17 +0100 (CET)
+Date: Wed, 10 Jan 2024 14:37:17 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	Ze Gao <zegao2021@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pengfei Xu <pengfei.xu@intel.com>,
-	Brijesh Singh <brijesh.singh@amd.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, linux-coco@lists.linux.dev,
-	Adam Dunlap <acdunlap@google.com>, Peter Gonda <pgonda@google.com>,
-	Jacob Xu <jacobhxu@google.com>,
-	Sidharth Telang <sidtelang@google.com>
-Subject: Re: [RFC PATCH] x86/sev: x86/sev: enforce PC-relative addressing in
- clang
-Message-ID: <20240110133657.vbpzplchgaim3bya@box>
-References: <20240110012640.1335694-1-kevinloughlin@google.com>
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] kbuild: deb-pkg: make debian/rules quiet by default
+Message-ID: <ZZ6djUvyyJPiduL4@buildd.core.avm.de>
+Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kernel@vger.kernel.org
+References: <20231230135200.1058873-1-masahiroy@kernel.org>
+ <20231230135200.1058873-2-masahiroy@kernel.org>
+ <ZZ1UxkCgKQ9J6Iut@reykjavik.ads.avm.de>
+ <CAK7LNATdFdLfw4Xg9C29_X1iEun4kmgccFbW=Nvqkk2LFzewsA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240110012640.1335694-1-kevinloughlin@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNATdFdLfw4Xg9C29_X1iEun4kmgccFbW=Nvqkk2LFzewsA@mail.gmail.com>
+Organization: AVM GmbH
+X-purgate-ID: 149429::1704893836-A0FDFDFE-E8347147/0/0
+X-purgate-type: clean
+X-purgate-size: 1060
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 
-On Wed, Jan 10, 2024 at 01:26:39AM +0000, Kevin Loughlin wrote:
-> SEV/SME code can execute prior to page table fixups for kernel
-> relocation. However, as with global variables accessed in
-> __startup_64(), clang does not currently generate PC-relative accesses
-> for SEV/SME global variables, causing certain flavors of SEV hosts and
-> guests to crash.
+On Tue, Jan 09, 2024 at 11:46:49PM +0900, Masahiro Yamada wrote:
+> On Tue, Jan 9, 2024 at 11:14 PM Nicolas Schier <nicolas@fjasle.eu> wrote:
+> >
+> > On Sat, Dec 30, 2023 at 10:51:57PM +0900, Masahiro Yamada wrote:
+> > > Add $(Q) to commands in debian/rules to make them quiet when the package
+> > > built is initiated by 'make deb-pkg'.
+> > >
+> > > While the commands in debian/rules are not hidden when you directly work
+> > > with the debianized tree, you can set 'terse' to DEB_BUILD_OPTIONS to
+> > > silence them.
+> >
+> > Reading Debian Policy §4.9 [1] I'd expected some fiddling with V=1 or
+> > 'make -s', but I am ok with the simple '@' silencing (which matches my
+> > personal preference).
 > 
-> While an attempt was made to force PC-relative addressing for certain
-> global SEV/SME variables via inline assembly (see snp_cpuid_get_table()
-> for example), PC-relative addressing must be pervasively-enforced for
-> SEV/SME global variables that can be accessed prior to page table
-> fixups.
 > 
-> To avoid the error-prone approach of manually referencing each SEV/SME
-> global variable via a general form of snp_cpuid_get_table(), it is
-> preferable to use compiler flags for position-independent code (ex:
-> `-fPIE`) that result in PC-relative accesses. While architecture-
-> specific code for Linux can be pervasively compiled as position-
-> independent on select architectures (ex: RISC-V), this is not currently
-> the case for x86-64 and would require extensive changes (see "[PATCH
-> RFC 00/43] x86/pie: Make kernel image's virtual address flexible" for
-> example).
+> Hmm, you are right.
 > 
-> Fortunately, the relevant files for SEV/SME code do indeed support
-> position-independent clang compilation, so we can use this technique to
-> ensure all global variables in these files are accessed via PC-relative
-> addressing.
 > 
-> Unlike clang, gcc does not currently allow `-fPIE` in conjunction with
-> `mcmodel=kernel`. Thus, to preserve existing gcc behavior, this patch
-> does not remove the (otherwise unnecessary) inline assembly that
-> already enforces PC-relative addressing for select SEV/SME globals
-> (mentioned above). If gcc supports these joint options in the future,
-> we can remove such inline assembly and also apply this patch to gcc
-> builds.
+> Maybe, we should follow what the Debian kernel does.
 > 
-> Tested by successful boot of SEV-SNP guest built with clang, alongside
-> Adam Dunlap's necessary "[PATCH v2] x86/asm: Force native_apic_mem_read
-> to use mov".
+> Debian kernel sets KBUILD_VERBOSE=1 unless
+> 'terse' is given.
 > 
+> 
+> https://salsa.debian.org/kernel-team/linux/-/blob/debian/6.7-1_exp1/debian/rules.real#L36
 
-Similar issues was fixed before with fixup_pointer() tricks. Have you
-tried looking this direction.
+yes, I think it makes sense to do the Debian way.
 
-Relevant thread starting with:
-
-https://lore.kernel.org/all/20210920192341.maue7db4lcbdn46x@box.shutemov.name
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Kind regards,
+Nicolas
 
