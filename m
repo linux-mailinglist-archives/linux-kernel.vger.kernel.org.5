@@ -1,122 +1,168 @@
-Return-Path: <linux-kernel+bounces-21955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 994DE829715
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:14:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4841E82971A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:15:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47861281CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:14:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EE2F1C21EA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:15:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98B83FB2F;
-	Wed, 10 Jan 2024 10:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C843FB07;
+	Wed, 10 Jan 2024 10:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QW9/ez6b"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hS4mD/5b"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB593FB06
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704881677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N8fyAvLcym3lieO4wYcel0i1AGhFIX/f3clpYmcSXdA=;
-	b=QW9/ez6bQXNcSy+gf/e8e+US/t6/PNd1zmtCi1p4RbTDmb3t775+dT8RK0YiOv6rZnaevy
-	h7OP6XIsWb4UoPCvcDokA5Se4CwaXZ+IHmmxd+fbmWdswPKZv8HNlLiYvl8wkZsnX0qM6T
-	7q3GF6gkpivM0HajI/RrTZjaxljWh+E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-546-OvzGbcwzPAGBkz83m5jLww-1; Wed, 10 Jan 2024 05:14:33 -0500
-X-MC-Unique: OvzGbcwzPAGBkz83m5jLww-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59F23F8EE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704881732;
+	bh=0bJLXu0DBAoJ0i9wVZaWcD3g7PAFELQ/me31lacb4uI=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=hS4mD/5bm9fU1BHvnNtYHMtTM3M6ohBF5sPP3i+5OvaaXJJ+IAQoAaR2/k6JmRWWO
+	 vQrRRcj2zGFDQA7DGTKaiYaq4YE55VKiDtK8JdO7sqzQC22VMN1cTP+Mw7DdsyEtdX
+	 fcHOr/2ujarZYPZ/qCcuj61M4pIPhnLUlMQCZa4QE8+JZUcOJpUXP5BYhBej2lRzSd
+	 BqHJbXkzJU4R4uFRhyZ34ZRGKrBBaAZGwvQr8BtWFcywN1VrR1vrR3SdKHicawFi3j
+	 drhzEdoRglrwXdZlgT9pfM8ua3G7jDCSToPiMqI1l5byUcrCmTO4NdWINUmhbPmTvP
+	 xZRx4sb58YnoQ==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 63AC78945A7;
-	Wed, 10 Jan 2024 10:14:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 3D79E2026D6F;
-	Wed, 10 Jan 2024 10:14:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com>
-References: <ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com> <CAHk-=wgJz36ZE66_8gXjP_TofkkugXBZEpTr_Dtc_JANsH1SEw@mail.gmail.com> <1843374.1703172614@warthog.procyon.org.uk> <20231223172858.GI201037@kernel.org> <2592945.1703376169@warthog.procyon.org.uk>
-To: Pengfei Xu <pengfei.xu@intel.com>
-Cc: dhowells@redhat.com, eadavis@qq.com,
-    Linus Torvalds <torvalds@linux-foundation.org>,
-    Simon Horman <horms@kernel.org>,
-    Markus Suvanto <markus.suvanto@gmail.com>,
-    Jeffrey E Altman <jaltman@auristor.com>,
-    "Marc
- Dionne" <marc.dionne@auristor.com>,
-    Wang Lei <wang840925@gmail.com>, "Jeff
- Layton" <jlayton@redhat.com>,
-    Steve French <smfrench@gmail.com>,
-    "Jarkko
- Sakkinen" <jarkko@kernel.org>,
-    "David S. Miller" <davem@davemloft.net>,
-    "Eric
- Dumazet" <edumazet@google.com>,
-    Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-    linux-afs@lists.infradead.org, keyrings@vger.kernel.org,
-    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-    ceph-devel@vger.kernel.org, netdev@vger.kernel.org,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-    heng.su@intel.com
-Subject: Re: [PATCH] keys, dns: Fix missing size check of V1 server-list header
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2B44A37813B9;
+	Wed, 10 Jan 2024 10:15:27 +0000 (UTC)
+Message-ID: <079335ab-190f-41f7-b832-6ffe7528fd8b@collabora.com>
+Date: Wed, 10 Jan 2024 15:15:34 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1694630.1704881668.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 10 Jan 2024 10:14:28 +0000
-Message-ID: <1694631.1704881668@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, linmiaohe@huawei.com,
+ mike.kravetz@oracle.com, naoya.horiguchi@nec.com, akpm@linux-foundation.org,
+ songmuchun@bytedance.com, shy828301@gmail.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, jthoughton@google.com,
+ "kernel@collabora.com" <kernel@collabora.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Mike Kravetz <mike.kravetz@oracle.com>,
+ Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v4 4/4] selftests/mm: add tests for HWPOISON hugetlbfs
+ read
+Content-Language: en-US
+To: Jiaqi Yan <jiaqiyan@google.com>,
+ Sidhartha Kumar <sidhartha.kumar@oracle.com>
+References: <20230713001833.3778937-1-jiaqiyan@google.com>
+ <20230713001833.3778937-5-jiaqiyan@google.com>
+ <be3976b5-0a9c-41c6-8160-88e6c1e5d63e@collabora.com>
+ <CACw3F51WvZDVCpVg9j4j8WmnmAFOsnK+FZDDoVqhgLqVwhPTCA@mail.gmail.com>
+ <e68488e4-764e-4b25-8a47-05bf8976bd19@collabora.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <e68488e4-764e-4b25-8a47-05bf8976bd19@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Pengfei Xu <pengfei.xu@intel.com> wrote:
+On 1/10/24 11:49 AM, Muhammad Usama Anjum wrote:
+> On 1/6/24 2:13 AM, Jiaqi Yan wrote:
+>> On Thu, Jan 4, 2024 at 10:27 PM Muhammad Usama Anjum
+>> <usama.anjum@collabora.com> wrote:
+>>>
+>>> Hi,
+>>>
+>>> I'm trying to convert this test to TAP as I think the failures sometimes go
+>>> unnoticed on CI systems if we only depend on the return value of the
+>>> application. I've enabled the following configurations which aren't already
+>>> present in tools/testing/selftests/mm/config:
+>>> CONFIG_MEMORY_FAILURE=y
+>>> CONFIG_HWPOISON_INJECT=m
+>>>
+>>> I'll send a patch to add these configs later. Right now I'm trying to
+>>> investigate the failure when we are trying to inject the poison page by
+>>> madvise(MADV_HWPOISON). I'm getting device busy every single time. The test
+>>> fails as it doesn't expect any business for the hugetlb memory. I'm not
+>>> sure if the poison handling code has issues or test isn't robust enough.
+>>>
+>>> ./hugetlb-read-hwpoison
+>>> Write/read chunk size=0x800
+>>>  ... HugeTLB read regression test...
+>>>  ...  ... expect to read 0x200000 bytes of data in total
+>>>  ...  ... actually read 0x200000 bytes of data in total
+>>>  ... HugeTLB read regression test...TEST_PASSED
+>>>  ... HugeTLB read HWPOISON test...
+>>> [    9.280854] Injecting memory failure for pfn 0x102f01 at process virtual
+>>> address 0x7f28ec101000
+>>> [    9.282029] Memory failure: 0x102f01: huge page still referenced by 511
+>>> users
+>>> [    9.282987] Memory failure: 0x102f01: recovery action for huge page: Failed
+>>>  ...  !!! MADV_HWPOISON failed: Device or resource busy
+>>>  ... HugeTLB read HWPOISON test...TEST_FAILED
+>>>
+>>> I'm testing on v6.7-rc8. Not sure if this was working previously or not.
+>>
+>> Thanks for reporting this, Usama!
+>>
+>> I am also able to repro MADV_HWPOISON failure at "501a06fe8e4c
+>> (akpm/mm-stable, mm-stable) zswap: memcontrol: implement zswap
+>> writeback disabling."
+>>
+>> Then I checked out the earliest commit "ba91e7e5d15a (HEAD -> Base)
+>> selftests/mm: add tests for HWPOISON hugetlbfs read". The
+>> MADV_HWPOISON injection works and and the test passes:
+>>
+>>  ... HugeTLB read HWPOISON test...
+>>  ...  ... expect to read 0x101000 bytes of data in total
+>>  ...  !!! read failed: Input/output error
+>>  ...  ... actually read 0x101000 bytes of data in total
+>>  ... HugeTLB read HWPOISON test...TEST_PASSED
+>>  ... HugeTLB seek then read HWPOISON test...
+>>  ...  ... init val=4 with offset=0x102000
+>>  ...  ... expect to read 0xfe000 bytes of data in total
+>>  ...  ... actually read 0xfe000 bytes of data in total
+>>  ... HugeTLB seek then read HWPOISON test...TEST_PASSED
+>>  ...
+>>
+>> [ 2109.209225] Injecting memory failure for pfn 0x3190d01 at process
+>> virtual address 0x7f75e3101000
+>> [ 2109.209438] Memory failure: 0x3190d01: recovery action for huge
+>> page: Recovered
+>> ...
+>>
+>> I think something in between broken MADV_HWPOISON on hugetlbfs, and we
+>> should be able to figure it out via bisection (and of course by
+>> reading delta commits between them, probably related to page
+>> refcount).
+> Thank you for this information.
+> 
+>>
+>> That being said, I will be on vacation from tomorrow until the end of
+>> next week. So I will get back to this after next weekend. Meanwhile if
+>> you want to go ahead and bisect the problematic commit, that will be
+>> very much appreciated.
+> I'll try to bisect and post here if I find something.
+Found the culprit commit by bisection:
 
->   Bisected info between v6.7-rc7(keyctl05 passed) and v6.7-rc8(keyctl05 =
-failed)
-> is in attached.
-> =
+a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
+mm/filemap: remove hugetlb special casing in filemap.c
 
-> keyctl05 failed in add_key with type "dns_resolver" syscall step tracked
-> by strace:
-> "
-> [pid 863107] add_key("dns_resolver", "desc", "\0\0\1\377\0", 5, KEY_SPEC=
-_SESSION_KEYRING <unfinished ...>
-> [pid 863106] <... alarm resumed>)       =3D 30
-> [pid 863107] <... add_key resumed>)     =3D -1 EINVAL (Invalid argument)
-> "
+hugetlb-read-hwpoison started failing from this patch. I've added the
+author of this patch to this bug report.
 
-It should fail as the payload is actually invalid.  The payload specifies =
-a
-version 1 format - and that requires a 6-byte header.  The bug the patched
-fixes is that whilst there is a length check for the basic 3-byte header,
-there was no length check for the extended v1 header.
-
-> After increased the dns_res_payload to 7 bytes(6 bytes was still failed)=
-,
-
-The following doesn't work for you?
-
-	echo -n -e '\0\0\01\xff\0\0' | keyctl padd dns_resolver desc @p
-
-David
-
+> 
+>>
+>> Thanks,
+>> Jiaqi
+>>
+>>
+>>>
+>>> Regards,
+>>> Usama
+>>>
 
