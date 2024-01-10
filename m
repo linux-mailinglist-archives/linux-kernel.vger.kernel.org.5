@@ -1,331 +1,313 @@
-Return-Path: <linux-kernel+bounces-22002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F1F28297B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:40:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FEB38297F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:49:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19E221F24820
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:40:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F18A11F25939
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA9840C0E;
-	Wed, 10 Jan 2024 10:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JE9ESgpx"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07BB481D9;
+	Wed, 10 Jan 2024 10:47:58 +0000 (UTC)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE873FB36
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3368ae75082so2804421f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 02:39:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704883196; x=1705487996; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p/CFezntBDwJgvbMFFPYTvlY4ZLvj7+eyQcOr19vwEo=;
-        b=JE9ESgpxZLJn4qT+SuuKa52V2MTaWHlSmVxgqTkYYFL2tmyKYsekIcpy57UrTjqxCB
-         m7m+bLmNSnrZXiD3zhlPaWBVGSbRQfJuUqYJK8hhasUnueluOwZGGbQ0YiEp0YAMDGnY
-         flhoueLpLdCLRIhP4wiZ6v6kvpCQJ/3mBLWaB8yzmrghRhT9wWjUcL1MoK7l9wsayGbV
-         YXxP4GQXn5nLgLixBJhzG190qky4LRKnYSsD+MgX3hGvcp9CCzL3hhQod029Xvetuivy
-         eeX2s8kdb1q3MzY2qnDYLUzbCW30P77rCiefsdrm5UxWpJxvz/29/GEa6HOCR0DRUT3Y
-         T7cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704883196; x=1705487996;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p/CFezntBDwJgvbMFFPYTvlY4ZLvj7+eyQcOr19vwEo=;
-        b=hPhwY9EJIRow+yLZmIIjqO+IcB2Qgq3dcyq8B4iX1TTbvPOyOIOYFrQD+zz1hPBVus
-         604WzDo0ABWB5BNtAKCGiaTiX/j1/CnGkWfp7BAIKdRRTARFJ9kiBHe3yp9VCVOhYhRh
-         I/c7KRsd0xvt4ANHiT4fMRLQbYFXVMV50YL66ir02ji08QixKZl31UYZ/Iz1T3D/gf6U
-         PzTrF58vYFrSXpMlBlloHvI0HLpI3EWjZUWJCwrER7dDjXscAd8uFqZn0t6tbhzeVtwd
-         TqfDzRWojfF9Po+BsnHYoEADTlAgQxcJA92D3YjuJfqdeuBYbAwtFDHb7jp33auATklg
-         fluw==
-X-Gm-Message-State: AOJu0YxethGmQxMaa+YmOM0Sw5j+jFTHaFiT28vMaRj4s1h6uHilWjTn
-	JB8XAwNrWeX6T+gbWNrX/O6vBapym11omg==
-X-Google-Smtp-Source: AGHT+IH0Wzhg7u2tUzT4i2vx4fKztU5ylnTcAD7npyuXoDvijwmVpNciQ74UR/q3fQKCC4R1dNNpSg==
-X-Received: by 2002:adf:f989:0:b0:336:7db7:aaae with SMTP id f9-20020adff989000000b003367db7aaaemr1044442wrr.8.1704883195934;
-        Wed, 10 Jan 2024 02:39:55 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id c2-20020adfe742000000b003366a9cb0d1sm4549056wrn.92.2024.01.10.02.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 02:39:55 -0800 (PST)
-Message-ID: <7110b0a8-5b0c-4817-9432-26528bbbb5a9@linaro.org>
-Date: Wed, 10 Jan 2024 11:39:53 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D121481D1
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: by air.basealt.ru (Postfix, from userid 490)
+	id 64BAD2F2027C; Wed, 10 Jan 2024 10:41:42 +0000 (UTC)
+X-Spam-Level: 
+Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
+	by air.basealt.ru (Postfix) with ESMTPSA id 2AE302F20285;
+	Wed, 10 Jan 2024 10:41:28 +0000 (UTC)
+From: kovalev@altlinux.org
+To: bryantan@vmware.com,
+	vdasa@vmware.com,
+	pv-drivers@vmware.com,
+	arnd@arndb.de,
+	gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org
+Cc: kovalev@altlinux.org,
+	nickel@altlinux.org,
+	oficerovas@altlinux.org,
+	dutyrok@altlinux.org
+Subject: [PATCH 0/1] misc/vmw_vmci: fix filling of the msg and msg_payload in dg_info struct
+Date: Wed, 10 Jan 2024 13:40:41 +0300
+Message-Id: <20240110104042.31865-1-kovalev@altlinux.org>
+X-Mailer: git-send-email 2.33.8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: display: convert Atmel's HLCDC to DT
- schema
-Content-Language: en-US
-To: Dharma Balasubiramani <dharma.b@microchip.com>, sam@ravnborg.org,
- bbrezillon@kernel.org, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, lee@kernel.org, thierry.reding@gmail.com,
- u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
-References: <20240110102535.246177-1-dharma.b@microchip.com>
- <20240110102535.246177-2-dharma.b@microchip.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110102535.246177-2-dharma.b@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On 10/01/2024 11:25, Dharma Balasubiramani wrote:
-> Convert the existing DT binding to DT schema of the Atmel's HLCDC display
-> controller.
-> 
-> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-> ---
->  .../display/atmel/atmel,hlcdc-dc.yaml         | 133 ++++++++++++++++++
->  .../bindings/display/atmel/hlcdc-dc.txt       |  75 ----------
->  2 files changed, 133 insertions(+), 75 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-dc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/atmel/hlcdc-dc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-dc.yaml b/Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-dc.yaml
-> new file mode 100644
-> index 000000000000..49ef28646c48
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-dc.yaml
-> @@ -0,0 +1,133 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (C) 2024 Microchip Technology, Inc. and its subsidiaries
+Warning detected by tracking mechanisms __fortify_memcpy_chk, added 2021-04=
+-20.
+The proposed patch (PATCH 1/1) introduces changes to meet the new requireme=
+nts.
 
-What about original copyrights from TXT file? Although conversion is
-quite independent, I could imagine some lawyer would call it a
-derivative work of original TXT.
+The reproducer (repro.c) was generated using the syzkaller program and mini=
+mized
+(Thanks Alexander Ofitserov <oficerovas@altlinux.org>):
 
-If you decide to add explicit copyrights (which anyway I do not
-understand why), then please make it signed off by some of your lawyers
-to be sure that you really claim that, in respect of other people
-copyrights.
+#define _GNU_SOURCE
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/atmel/atmel,hlcdc-dc.yaml#
+#include <endian.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-Filename like compatible.
+uint64_t r[1] =3D {0xffffffffffffffff};
 
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel's HLCDC (High LCD Controller) DRM driver
+int main(void)
+{
+        syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
+        memset((void *)0x20000000ul, 0x0, 0x1000000ul);
 
-Driver as Linux driver? Not suitable for bindings, so please drop.
+        intptr_t res =3D 0;
+        res =3D syscall(__NR_socket, 0x28ul, 2ul, 0);
+        if (res !=3D -1)
+                r[0] =3D res;
+        *(uint16_t*)0x20000000 =3D 0x28;
+        *(uint16_t*)0x20000002 =3D 0;
+        *(uint32_t*)0x20000004 =3D 1;
+        *(uint32_t*)0x20000008 =3D 2;
+        *(uint32_t*)0x2000000c =3D 0;
+        syscall(__NR_connect, r[0], 0x20000000ul, 0x10ul);
 
-> +
-> +maintainers:
-> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> +  - Claudiu Beznea <claudiu.beznea@tuxon.dev>
-> +
-> +description: |
-> +  Device-Tree bindings for Atmel's HLCDC DRM driver. The Atmel HLCDC Display
+        // struct msghdr*
+        // 0x20000440ul - 0x20000447ul - msg_name
+        // 0x20000448ul - 0x20000449ul - msg_len
+        // 0x20000450ul - ptr to msg_iov
+        // 0x20000458ul - msg_iovlen
+        *(uint64_t*)0x20000450 =3D 0x20000400;
+        *(uint8_t*)0x20000448 =3D 0xFF;
+        *(uint64_t*)0x20000458 =3D 1;
+        *(uint64_t*)0x20000460 =3D 0x20010000;
+        *(uint64_t*)0x20000468 =3D 0;
 
-Drop entire first sentence and instead describe hardware.
+        // 0x20000400 - ptr to iov_base
+        // 0x20000408 - iov_len
+        *(uint64_t*)0x20000400 =3D 0x20000900;
+        strcpy((char *)0x20000900, "AAAAAA");
+        *(uint64_t*)0x20000408 =3D 0x10000;
 
-> +  Controller is a subdevice of the HLCDC MFD device.
-> +  # See ../../mfd/atmel,hlcdc.yaml for more details.
+        syscall(__NR_sendmsg, r[0], 0x20000440ul, 0ul);
+        return 0;
+}
 
-Full paths please.
+$ gcc repro.c -o repro
+$ ./repro
 
-> +
-> +properties:
-> +  compatible:
-> +    const: atmel,hlcdc-display-controller
-> +
-> +  pinctrl-names:
-> +    const: default
-> +
-> +  pinctrl-0: true
+# dmesg (linux kernel 6.6.6):
+-----
+[   38.036309] Guest personality initialized and is inactive
+[   38.036380] VMCI host device registered (name=3Dvmci, major=3D10, minor=
+=3D122)
+[   38.036381] Initialized host personality
+[   38.037987] NET: Registered PF_VSOCK protocol family
+[   38.073027] ------------[ cut here ]------------
+[   38.073034] memcpy: detected field-spanning write (size 65560) of single=
+ field "&dg_info->msg" at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 2=
+4)
+[   38.073103] WARNING: CPU: 9 PID: 3976 at drivers/misc/vmw_vmci/vmci_data=
+gram.c:237 vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
+[   38.073135] Modules linked in: vsock_loopback vmw_vsock_virtio_transport=
+_common vmw_vsock_vmci_transport vsock vmw_vmci ccm rfcomm cmac algif_hash =
+algif_skcipher af_alg af_packet qrtr bnep uvcvideo btusb uvc btrtl videobuf=
+2_vmalloc videobuf2_memops btintel videobuf2_v4l2 btbcm btmtk usbhid videod=
+ev bluetooth videobuf2_common mc ecdh_generic joydev snd_sof_pci_intel_tgl =
+snd_sof_intel_hda_common soundwire_intel soundwire_generic_allocation coret=
+emp snd_sof_intel_hda_mlink intel_uncore_frequency soundwire_cadence intel_=
+uncore_frequency_common intel_tcc_cooling snd_sof_intel_hda snd_sof_pci x86=
+_pkg_temp_thermal snd_sof_xtensa_dsp intel_powerclamp snd_sof snd_sof_utils=
+ snd_soc_hdac_hda kvm_intel snd_hda_ext_core snd_soc_acpi_intel_match snd_s=
+oc_acpi snd_hda_codec_hdmi soundwire_bus snd_soc_core kvm hid_multitouch nl=
+s_utf8 snd_hda_codec_realtek hid_generic snd_compress nls_cp866 ac97_bus iw=
+lmvm spi_pxa2xx_platform 8250_dw iTCO_wdt snd_pcm_dmaengine irqbypass dw_dm=
+ac snd_hda_codec_generic vfat rtsx_pci_sdmmc intel_pmc_bxt
+[   38.073247]  crct10dif_pclmul fat ledtrig_audio snd_hda_intel crc32_pclm=
+ul mei_hdcp iTCO_vendor_support mmc_core intel_rapl_msr crc32c_intel snd_in=
+tel_dspcfg mac80211 ghash_clmulni_intel snd_intel_sdw_acpi sha512_ssse3 sha=
+256_ssse3 snd_hda_codec sha1_ssse3 aesni_intel processor_thermal_device_pci=
+ processor_thermal_device snd_hda_core crypto_simd processor_thermal_rfim i=
+ntel_lpss_pci i2c_hid_acpi ucsi_acpi cryptd libarc4 iwlwifi pcspkr xhci_pci=
+ processor_thermal_mbox intel_lpss ideapad_laptop i2c_hid xhci_pci_renesas =
+i2c_i801 mei_me typec_ucsi snd_hwdep idma64 processor_thermal_rapl typec sp=
+arse_keymap wmi_bmof tiny_power_button cfg80211 snd_pcm i2c_smbus platform_=
+profile rtsx_pci xhci_hcd mei virt_dma intel_rapl_common thermal hid roles =
+fan button int3403_thermal battery rfkill int340x_thermal_zone int3400_ther=
+mal acpi_thermal_rel intel_pmc_core pinctrl_tigerlake acpi_pad ac sch_fq_co=
+del vboxvideo drm_vram_helper drm_ttm_helper vboxsf vboxguest snd_seq_midi =
+snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device
+[   38.073342]  snd_timer snd soundcore msr fuse dm_mod efi_pstore efivarfs=
+ ip_tables x_tables autofs4 i915 hwmon i2c_algo_bit drm_buddy ttm evdev drm=
+_display_helper input_leds serio_raw cec rc_core intel_gtt video wmi
+[   38.073375] CPU: 9 PID: 3976 Comm: eee.out Not tainted 6.6.6-un-def-alt1=
+ #1
+[   38.073381] Hardware name: LENOVO 82X8/LNVNB161216, BIOS LTCN30WW 11/08/=
+2023
+[   38.073384] RIP: 0010:vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
+[   38.073405] Code: 38 fd ff ff 80 3d 5c 96 00 00 00 75 87 48 c7 c2 58 0b =
+6b c1 4c 89 ee 48 c7 c7 a0 0b 6b c1 c6 05 42 96 00 00 01 e8 18 c0 a1 c5 <0f=
+> 0b e9 63 ff ff ff e8 1c 5e 65 c6 83 cd ff e9 fe fc ff ff f0 ff
+[   38.073410] RSP: 0018:ffffc9000279fb58 EFLAGS: 00010246
+[   38.073415] RAX: 0000000000000000 RBX: ffff88811a9c0000 RCX: 00000000000=
+00000
+[   38.073418] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000=
+00000
+[   38.073421] RBP: ffff888165540000 R08: 0000000000000000 R09: 00000000000=
+00000
+[   38.073423] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8881655=
+40030
+[   38.073425] R13: 0000000000010018 R14: ffff8881090a2a00 R15: ffff88811a9=
+c0018
+[   38.073428] FS:  00007f3a36bec580(0000) GS:ffff8882a7a40000(0000) knlGS:=
+0000000000000000
+[   38.073432] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   38.073435] CR2: 000055b6120cf008 CR3: 000000010db62000 CR4: 00000000007=
+50ee0
+[   38.073438] PKRU: 55555554
+[   38.073440] Call Trace:
+[   38.073446]  <TASK>
+[   38.073448]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
+[   38.073467]  ? __warn+0x7d/0x130
+[   38.073482]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
+[   38.073503]  ? report_bug+0x17e/0x1b0
+[   38.073514]  ? handle_bug+0x60/0xb0
+[   38.073523]  ? exc_invalid_op+0x13/0x70
+[   38.073531]  ? asm_exc_invalid_op+0x16/0x20
+[   38.073540]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
+[   38.073559]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
+[   38.073577]  vmci_transport_dgram_enqueue+0xb5/0x150 [vmw_vsock_vmci_tra=
+nsport]
+[   38.073596]  vsock_dgram_sendmsg+0xcf/0x180 [vsock]
+[   38.073618]  ____sys_sendmsg+0x376/0x3b0
+[   38.073629]  ? copy_msghdr_from_user+0x6d/0xb0
+[   38.073635]  ___sys_sendmsg+0x86/0xe0
+[   38.073642]  ? filemap_map_pages+0x423/0x570
+[   38.073653]  ? vmci_resource_add+0xde/0x170 [vmw_vmci]
+[   38.073674]  ? __pfx_vmci_transport_recv_dgram_cb+0x10/0x10 [vmw_vsock_v=
+mci_transport]
+[   38.073689]  ? do_fault+0x296/0x470
+[   38.073697]  __sys_sendmsg+0x57/0xb0
+[   38.073704]  do_syscall_64+0x59/0x90
+[   38.073711]  ? count_memcg_events.constprop.0+0x3a/0x70
+[   38.073717]  ? handle_mm_fault+0x9e/0x300
+[   38.073724]  ? do_user_addr_fault+0x33d/0x680
+[   38.073733]  ? sched_clock+0xc/0x30
+[   38.073740]  ? get_vtime_delta+0xf/0xc0
+[   38.073750]  ? ct_kernel_exit.isra.0+0x71/0x90
+[   38.073759]  ? __ct_user_enter+0x5a/0xd0
+[   38.073765]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[   38.073771] RIP: 0033:0x7f3a36b0cd49
+[   38.073776] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 =
+89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48=
+> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
+[   38.073780] RSP: 002b:00007ffea38c4a08 EFLAGS: 00000217 ORIG_RAX: 000000=
+000000002e
+[   38.073784] RAX: ffffffffffffffda RBX: 000055b6120ce2d0 RCX: 00007f3a36b=
+0cd49
+[   38.073787] RDX: 0000000000000000 RSI: 0000000020000440 RDI: 00000000000=
+00003
+[   38.073790] RBP: 00007ffea38c4a20 R08: 00007ffea38c4b10 R09: 00007ffea38=
+c4b10
+[   38.073792] R10: 00007ffea38c4b10 R11: 0000000000000217 R12: 000055b6120=
+ce060
+[   38.073795] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000000=
+00000
+[   38.073799]  </TASK>
+[   38.073801] ---[ end trace 0000000000000000 ]---
+-----
 
-Why do you need these two? Are they really required?
+To assess the performance losses when using a new patch, the kernel was bui=
+lded with the
+patch below and the reproducer was launched several times:
 
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  port@0:
-> +    $ref: /schemas/graph.yaml#/$defs/port-base
-> +    unevaluatedProperties: false
-> +    description:
-> +      Output endpoint of the controller, connecting the LCD panel signals.
-> +
-> +    properties:
-> +      '#address-cells':
-> +        const: 1
-> +
-> +      '#size-cells':
-> +        const: 0
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      endpoint:
-> +        $ref: /schemas/graph.yaml#/$defs/endpoint-base
+diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/=
+vmci_datagram.c
+index 6d42f3b99c6f46..b078364d5c9b23 100644
+--- a/drivers/misc/vmw_vmci/vmci_datagram.c
++++ b/drivers/misc/vmw_vmci/vmci_datagram.c
+@@ -234,6 +234,17 @@ static int dg_dispatch_as_host(u32 context_id, struct =
+vmci_datagram *dg)
+=20
+                        dg_info->in_dg_host_queue =3D true;
+                        dg_info->entry =3D dst_entry;
++                       u32 i;
++                       printk("memcpy: init i=3D%d\n",i);
++                       for(i=3D0; i<1000000000;i++){
++                               memcpy(&dg_info->msg, dg, 24);
++                       }
++                       printk("memcpy: old i=3D%d\n",i);
++                       for(i=3D0; i<1000000000;i++){
++                               memcpy(&dg_info->msg, dg, 12);
++                               memcpy(dg_info->msg_payload, VMCI_DG_PAYLOA=
+D(dg), 12);
++                       }
++                       printk("memcpy: new i=3D%d\n",i);
+                        memcpy(&dg_info->msg, dg, VMCI_DG_HEADERSIZE);
+                        if (dg->payload_size) {
+                                memcpy(dg_info->msg_payload, VMCI_DG_PAYLOA=
+D(dg), dg->payload_size);
 
-Hm, why do you reference endpoint-base? This looks oddly different than
-all other bindings for such devices, so please explain why.
+=3D=3D=3D=3D=3D=3D=3D
+Reproducing
+=3D=3D=3D=3D=3D=3D=3D
+# dmesg -w
+----
+[  181.415379] Guest personality initialized and is inactive
+[  181.415659] VMCI host device registered (name=3Dvmci, major=3D10, minor=
+=3D122)
+[  181.415665] Initialized host personality
+[  181.422766] NET: Registered PF_VSOCK protocol family
+[  181.468022] memcpy: init i=3D0
+[  183.020694] memcpy: old i=3D1000000000
+[  184.572458] memcpy: new i=3D1000000000
+[  196.009873] memcpy: init i=3D0
+[  197.562651] memcpy: old i=3D1000000000
+[  199.118132] memcpy: new i=3D1000000000
+[  206.543691] memcpy: init i=3D0
+[  208.781697] memcpy: old i=3D1000000000
+[  211.020229] memcpy: new i=3D1000000000
+----
 
-> +        unevaluatedProperties: false
-> +        description:
-> +          Endpoint connecting the LCD panel signals.
-> +
-> +        properties:
-> +          bus-width:
-> +            description: |
-> +              Any endpoint grandchild node may specify a desired video interface according to
-> +              ../../media/video-interfaces.yaml, specifically "bus-width" whose recognized
+$ node=20
+Welcome to Node.js v16.19.1.
+Type ".help" for more information.
+> 183.020694 - 181.468022 //old
+1.5526720000000012
+> 184.572458 - 183.020694 // new
+1.55176400000002
+>
+> 197.562651 - 196.009873 // old
+1.5527779999999893
+> 199.118132 - 197.562651 // new
+1.5554810000000145
+>
+> 208.781697 - 206.543691 // old
+2.238006000000013=20
+> 211.020229 - 208.781697 // new
+2.238531999999992
+>
 
-Drop redundant information. Don't you miss some $ref?
+Based on a rather primitive performance assessment, the results do not diff=
+er
+much, and given the loss of warning output in a one-time function call, the
+difference will be significant.
 
-
-> +              values are <12>, <16>, <18> and <24>, and override any output mode selection
-> +              heuristic, forcing "rgb444","rgb565", "rgb666" and "rgb888" respectively.
-> +            enum: [ 12, 16, 18, 24 ]
-> +
-> +additionalProperties: false
-
-This goes after required:
-
-> +
-> +required:
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - compatible
-> +  - pinctrl-names
-> +  - pinctrl-0
-> +  - port@0
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/at91.h>
-> +    #include <dt-bindings/dma/at91.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    //Example 1
-
-Drop
-
-> +    hlcdc: hlcdc@f0030000 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +      compatible = "atmel,sama5d3-hlcdc";
-> +      reg = <0xf0030000 0x2000>;
-> +      interrupts = <36 IRQ_TYPE_LEVEL_HIGH 0>;
-> +      clocks = <&lcdc_clk>, <&lcdck>, <&clk32k>;
-> +      clock-names = "periph_clk","sys_clk", "slow_clk";
-
-This part does not look related... If this is part of other device,
-usually it is enough to have just one complete example.
-
-Also, fix coding style - space after ,
-
-> +
-> +      hlcdc-display-controller {
-> +        compatible = "atmel,hlcdc-display-controller";
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        port@0 {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +          reg = <0>;
-> +
-> +          hlcdc_panel_output: endpoint@0 {
-> +            reg = <0>;
-> +            remote-endpoint = <&panel_input>;
-> +          };
-> +        };
-> +      };
-> +
-> +      hlcdc_pwm: hlcdc-pwm {
-> +        compatible = "atmel,hlcdc-pwm";
-
-How is this related?
-
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&pinctrl_lcd_pwm>;
-> +        #pwm-cells = <3>;
-> +      };
-> +    };
-> +  - |
-> +    //Example 2 With a video interface override to force rgb565
-> +    hlcdc-display-controller {
-> +      pinctrl-names = "default";
-> +      pinctrl-0 = <&pinctrl_lcd_base &pinctrl_lcd_rgb565>;
-
-And how is this? Where is the compatible? Maybe just drop second
-example, what are the differences?
-
-Are you sure your Microchip folks reviewed it before?
-
-Best regards,
-Krzysztof
+[PATCH 1/1] misc/vmw_vmci: fix filling of the msg and msg_payload in dg_inf=
+o struct
 
 
