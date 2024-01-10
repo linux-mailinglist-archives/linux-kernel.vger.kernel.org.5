@@ -1,135 +1,107 @@
-Return-Path: <linux-kernel+bounces-22277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E59D829BC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:51:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE3F829BC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:51:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B0EFB23F24
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:51:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CDE11F226F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3671E4A994;
-	Wed, 10 Jan 2024 13:49:00 +0000 (UTC)
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3926495E9;
+	Wed, 10 Jan 2024 13:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="r8yTPC0A"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911F04CB21;
-	Wed, 10 Jan 2024 13:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W-MODhG_1704894525;
-Received: from 30.212.171.107(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W-MODhG_1704894525)
-          by smtp.aliyun-inc.com;
-          Wed, 10 Jan 2024 21:48:47 +0800
-Message-ID: <cf0259fc-4a44-4507-97be-e7b38d693604@linux.alibaba.com>
-Date: Wed, 10 Jan 2024 21:48:44 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6465D48CCC;
+	Wed, 10 Jan 2024 13:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GX5bG0xRiBvxCnOZ5F88dbP2mNg6pTI/ZRvFLly5pvQ=; b=r8yTPC0A90DSc89HoQvul1RYFX
+	Qy+qlIYTv+35x/SIpf5fa+UjJI34h41d9f/hnGFBuo1/GJJghpkcxdj/drTH/WKuI3/ZabKKBfSbq
+	Wy3HD6CpcznTipMn+k62r8UdwNrFJhG0bB0ZnOBjnfDK+TMuFBNSp1vGIE6xu1SgrDzaZjyU2GrV/
+	ZP5h+8tD6yjpFmAKXkvrtc+WnNyB15e0FUsPmX9P1Go+unuZteyt9QIS9s0BoB9yRd1svxZyCWp/P
+	hwV0KqN7pMdj5H4nLOOpauQ+7XUeDRnz3maAv/a+fdGpyNEjVpGqZ5tKqcNz1umvIsVQhxhv0tyk7
+	Lh5nGCIg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47362)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rNYyW-0005Th-2k;
+	Wed, 10 Jan 2024 13:50:32 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rNYyZ-0005Mc-J9; Wed, 10 Jan 2024 13:50:35 +0000
+Date: Wed, 10 Jan 2024 13:50:35 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+Subject: Re: [0/2] ARM: Adjustments for init_atags_procfs()
+Message-ID: <ZZ6gq5sOFf33GhM7@shell.armlinux.org.uk>
+References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
+ <562a6f99-3f8e-9a77-e519-b668e24dced2@web.de>
+ <b3c42397-c879-4381-aa96-c7887e81c068@web.de>
+ <7dd19987-6590-4756-a929-1ff01503ad1c@web.de>
+ <ZZ6MZl14bcIaCaQn@shell.armlinux.org.uk>
+ <1c38e495-5c9c-4ff8-b453-93b882dd2c4c@web.de>
+ <ZZ6R6KSQo9ph3ARZ@shell.armlinux.org.uk>
+ <09c4cb2e-967b-4d0e-b5c6-f959e80290d9@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] perf scripts python: arm-cs-trace-disasm.py: add
- option to print virtual address
-To: Leo Yan <leo.yan@linaro.org>
-Cc: linux-kernel@vger.kernel.org, james.clark@arm.com,
- coresight@lists.linaro.org, suzuki.poulose@arm.com, mike.leach@linaro.org,
- alexander.shishkin@linux.intel.com, linux-arm-kernel@lists.infradead.org,
- adrian.hunter@intel.com, linux-perf-users@vger.kernel.org, al.grant@arm.com,
- mathieu.poirier@linaro.org, tor@ti.com, acme@redhat.com
-References: <20231214123304.34087-1-tianruidong@linux.alibaba.com>
- <20240110025617.66646-1-tianruidong@linux.alibaba.com>
- <20240110025617.66646-2-tianruidong@linux.alibaba.com>
- <20240110125544.GG44@debian-dev>
-Content-Language: en-US
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-In-Reply-To: <20240110125544.GG44@debian-dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09c4cb2e-967b-4d0e-b5c6-f959e80290d9@web.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hi Leo:
+On Wed, Jan 10, 2024 at 01:52:34PM +0100, Markus Elfring wrote:
+> >>>>> Is this patch series still in review queues?
+> >>>>
+> >>>> See also:
+> >>>> https://lore.kernel.org/cocci/562a6f99-3f8e-9a77-e519-b668e24dced2@web.de/
+> >>>> https://sympa.inria.fr/sympa/arc/cocci/2023-03/msg00098.html
+> >>>
+> >>> I suspect no one looked at it, sorry.
+> >>
+> >> Special mailing list settings probably influenced this situation.
+> 
+> Did any communication filters hinder the clarification of further development ideas?
 
-Thank you very much for your advice. I will remove your SoB
-and add 02 and 03 patch in V3.
+How about doing the research yourself? Using lore, it's possible to
+work it out. Find the message id. Then visit
 
+https://lore.kernel.org/r/<message-id>
 
-在 2024/1/10 20:55, Leo Yan 写道:
-> Hi Ruidong,
->
-> On Wed, Jan 10, 2024 at 10:56:17AM +0800, Ruidong Tian wrote:
->> arm-cs-trace-disasm just print offset for library dso now:
->>
->>      0000000000002200 <memcpy>:
->>          2200: d503201f      nop
->>          2204: 8b020024      add     x4, x1, x2
->>          2208: 8b020005      add     x5, x0, x2
->>
->> Add a option `-a` to print virtual offset other than offset:
->>
->>      # perf script -s scripts/python/arm-cs-trace-disasm.py -- -d llvm-objdump -a
->>      ...
->>      ffffb4c23200 <memcpy>:
->>          ffffb4c23200: d503201f      nop
->>          ffffb4c23204: 8b020024      add     x4, x1, x2
->>          ffffb4c23208: 8b020005      add     x5, x0, x2
->>      ...
->>
->> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
->> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> I only gave suggestion, it's no need to add my SoB and this might break
-> the SoB chain and rejected by maintainers.
->
-> So with removing my SoB, the patch is fine for me:
->
-> Reviewed-by: Leo Yan <leo.yan@linaro.org>
->
-> I would like to suggest you to resend patch set v2 with all patches
-> - though patches 02 and 03 have no any change, but it would be easier
-> for maintainers to pick up the whole patches (especially this can save
-> time with b4 tool).
->
-> Thanks,
-> Leo
->
->> ---
->>   tools/perf/scripts/python/arm-cs-trace-disasm.py | 13 ++++++++++++-
->>   1 file changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py b/tools/perf/scripts/python/arm-cs-trace-disasm.py
->> index d973c2baed1c..78419498237e 100755
->> --- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
->> +++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
->> @@ -36,7 +36,10 @@ option_list = [
->>   		    help="Set path to objdump executable file"),
->>   	make_option("-v", "--verbose", dest="verbose",
->>   		    action="store_true", default=False,
->> -		    help="Enable debugging log")
->> +		    help="Enable debugging log"),
->> +	make_option("-a", "--vaddr", dest="vaddr",
->> +			action="store_true", default=False,
->> +			help="Enable virtual address")
->>   ]
->>   
->>   parser = OptionParser(option_list=option_list)
->> @@ -108,6 +111,14 @@ def print_disam(dso_fname, dso_start, start_addr, stop_addr):
->>   			m = disasm_re.search(line)
->>   			if m is None:
->>   				continue
->> +
->> +		# Replace offset with virtual address
->> +		if (options.vaddr == True):
->> +			offset = re.search(r"^\s*([0-9a-fA-F]+)", line).group()
->> +			if offset:
->> +				virt_addr = dso_start + int(offset, 16)
->> +				line = line.replace(offset.lstrip(), "%x" % virt_addr)
->> +
->>   		print("\t" + line)
->>   
->>   def print_sample(sample):
->> -- 
->> 2.33.1
->>
+and study the result. It will give you the answer you want.
+
+> >>>                                       I don't catch everything that is
+> >>> on the mailing list. Looks fine to me but it needs to end up in the
+> >>> patch system to be applied.
+> >>
+> >> Can you collaborate also with mentioned mailing list archive interfaces?
+> >
+> > Err what? Sorry, I don't understand your comment.
+> 
+> Are you going to pick any patches up from linked information sources?
+
+No. Did you read my first reply which told you how patches get applied
+to arch/arm? If you didn't, your patch won't get applied.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
