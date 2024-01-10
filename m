@@ -1,115 +1,141 @@
-Return-Path: <linux-kernel+bounces-22281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA918829BCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:52:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D611E829BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:53:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A419B27A2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:52:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60163B21B06
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44824495C8;
-	Wed, 10 Jan 2024 13:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FDF495CC;
+	Wed, 10 Jan 2024 13:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="rgs21n+s"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p1LOsVQs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37AC48CEE;
-	Wed, 10 Jan 2024 13:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 9B8652FC0057;
-	Wed, 10 Jan 2024 14:51:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1704894704;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=45PF4SKouCDbeha7fnHOqQp65vlx3cmuT9w/Tvpf/YY=;
-	b=rgs21n+sRKB7C+ayhXpDXTrqzvo0Luly1w7G34zfcM9HUxfrG5fXNFLB0V7bELGpLMvHn8
-	SRfNuSzXKJ6QQ2xqJMmqzgEUyOZsfRxiz7RvB7jbAA2oxqymxScVTk13AzKeZTeAobWXas
-	VYgRhZjeEs/EcO6t3Suw5bghQuiACe8=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <dd140606-6786-4c4f-9e39-448a4df72bb5@tuxedocomputers.com>
-Date: Wed, 10 Jan 2024 14:51:44 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D2F48CEC;
+	Wed, 10 Jan 2024 13:53:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41C05C433C7;
+	Wed, 10 Jan 2024 13:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704894796;
+	bh=jlMp/lpi2wGBwS24WgYMjKdamYROtFScTQ27uHssC90=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p1LOsVQsdC6C0Ev+AVzJ6qcas/m9YtdmXZwSJirqRWZMAASZHZJSzm7BmlZbb3LdO
+	 A/+bAeG0/3+OvM5+cG3kismKx4ZWGKn9JGzIXmqx/+uWOLXL5stNY1cFlhmF+/XbPm
+	 G46Ip3Z39F6OLqeeTO3FPoUDZZ1nTvXcuaAIw0oinmOzZnKy7lr6UCFQbldsJR1fiy
+	 43crXl/NLmVHV8fhegmrW9mp4Do+WkH8a8emgIkguxqtP88veZRVVeRBN7psiKffOz
+	 DPaDY6BBtVBeUr3JrbJvvBYkIt6SH2Sh6V9ecRAT38GHi1JHQJ5At/sogKFLzig3So
+	 PapKmX/sgVHoQ==
+Date: Wed, 10 Jan 2024 13:53:11 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] riscv: dts: starfive: add Milkv Mars board device
+ tree
+Message-ID: <20240110-eternal-proofing-8a33201ff727@spud>
+References: <20231202153353.635-1-jszhang@kernel.org>
+ <CAJM55Z-9Y=QitvAX+z=XTTMM0CGRzGMD5z0H_Bzv=Q85b49rpQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] i8042: Add forcenorestore quirk to leave
- controller untouched even on s3
-Content-Language: en-US
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: hdegoede@redhat.com, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240104183118.779778-1-wse@tuxedocomputers.com>
- <20240104183118.779778-2-wse@tuxedocomputers.com>
- <ZZ2_KMGdokHNWcNL@google.com>
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <ZZ2_KMGdokHNWcNL@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ggN6li4P/Qv8olF8"
+Content-Disposition: inline
+In-Reply-To: <CAJM55Z-9Y=QitvAX+z=XTTMM0CGRzGMD5z0H_Bzv=Q85b49rpQ@mail.gmail.com>
 
 
-Am 09.01.24 um 22:48 schrieb Dmitry Torokhov:
-> Hi Werner,
->
-> On Thu, Jan 04, 2024 at 07:31:17PM +0100, Werner Sembach wrote:
->> On s3 resume the i8042 driver tries to restore the controller to a known
->> state by reinitializing things, however this can confuse the controller
->> with different effects. Mostly occasionally unresponsive keyboards after
->> resume.
->>
->> These issues do not rise on s0ix resume as here the controller is assumed
->> to preserved its state from before suspend.
->>
->> This patch adds a quirk for devices where the reinitialization on s3 resume
->> is not needed and might be harmful as described above. It does this by
->> using the s0ix resume code path at selected locations.
->>
->> This new quirk goes beyond what the preexisting reset=never quirk does,
->> which only skips some reinitialization steps.
-> I think the original change mentioned not only issues on resume, but
-> also after boot, which this one does not address, at least directly, so
-> I am not sure if this patch is the proper replacement.
+--ggN6li4P/Qv8olF8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The original change introduced issues after boot and fixed issues after resume.
+On Sat, Dec 02, 2023 at 02:07:50PM -0800, Emil Renner Berthing wrote:
+> Jisheng Zhang wrote:
+> > The Milkv Mars is a development board based on the Starfive JH7110 SoC.
+> > The board features:
+> >
+> > - JH7110 SoC
+> > - 1/2/4/8 GiB LPDDR4 DRAM
+> > - AXP15060 PMIC
+> > - 40 pin GPIO header
+> > - 3x USB 3.0 host port
+> > - 1x USB 2.0 host port
+> > - 1x M.2 E-Key
+> > - 1x eMMC slot
+> > - 1x MicroSD slot
+> > - 1x QSPI Flash
+> > - 1x 1Gbps Ethernet port
+> > - 1x HDMI port
+> > - 1x 2-lane DSI and 1x 4-lane DSI
+> > - 1x 2-lane CSI
+> >
+> > patch1 adds 'cpus' label
+> > patch2 adds "milkv,mars" board dt-binding
+> > patch3 adds the devicetree file describing the currently supported
+> > features:
+> > Namely PMIC, UART, I2C, GPIO, SD card, QSPI Flash, eMMC and Ethernet.
+> >
+> > Since v1:
+> >  - add two new patches which add "cpus" label and board dt-binding
+> >  - adopt Krzysztof's suggestions, thanks
+> >
+> > Hi Conor,
+> >
+> > I see you have sent a patch which moves the timebase-frequency property
+> > to soc dtsi, but this series doesn't rebase on that. I can update it
+> > once your patch is merged.
+>=20
+> Hi Jisheng,
+>=20
+> Thanks for working on this! On the JH7110 the mtime derives almost direct=
+ly
+> from the external oscillator like this:
+>=20
+> osc (24MHz) -> rtc_toggle (div 6) -> mtime (4MHz)
+>=20
+> So to me it makes sense to define the timebase-frequency in the same file=
+ as
+> the frequency of the external oscillator.
+>=20
+> In general it looks good, but if you do
+>=20
+>   diff -Naur jh7110-{starfive-visionfive-2.dtsi,milkv-mars.dts}
+>=20
+> you'll see that those two files are almost identical. Even external clock
+> speeds and all the pin configuration are the same. I'd strongly prefer to=
+ have
+> all that factored out in a common .dtsi so fixes don't get out of sync.
 
-The new quirk fixes the issues after resume without introducing issues after boot.
+I'm gonna mark this as changes requested on patchwork because of this
+comment. LMK if you don't think this is worth another version Emil.
 
-The issues after boot where only affecting the NHxxRZQ and the N1xxCU iirc.
+Cheers,
+Conor.
 
->
-> I would also like to understand better what exact step is troublesome,
-> as I would be surprised if any interaction with the keyboard
-> controller while suspending causes the issue to manifest. Is it enough,
-> by chance, to skip restoring MUX mode and reset?
+--ggN6li4P/Qv8olF8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-SERIO_QUIRK_NOMUX and SERIO_QUIRK_RESET_ALWAYS are required in the old fix for 
-the resume issues to go away (I don't know if SERIO_QUIRK_NOLOOP and 
-SERIO_QUIRK_NOPNP are required, I threw them in just in case because we were 
-running them already on the device, so they where somewhat "field proven" to not 
-break things).
+-----BEGIN PGP SIGNATURE-----
 
-However while SERIO_QUIRK_NOMUX and SERIO_QUIRK_RESET_ALWAYS for themself did 
-not individually introduce the boot problem, in combination they did.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ6hRwAKCRB4tDGHoIJi
+0ogBAP4x6iIaTIAS0a/hkKmtjptbBiq1ANLlQfOZxqAPiMlsUwEA5dWpLAZgdPrE
+K8VcCEsLp5nb905zt+fOFYC1bPFoEQY=
+=aqtW
+-----END PGP SIGNATURE-----
 
-That was all I was able to find out back when I tested the old quirks.
-
->
-> Also, shoudl this system use s2idle by chance?
-N1xxCU is s3 only (intel 10th gen clevo)
->
-> Thanks.
->
+--ggN6li4P/Qv8olF8--
 
