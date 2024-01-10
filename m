@@ -1,130 +1,176 @@
-Return-Path: <linux-kernel+bounces-21877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DE368295CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:08:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C4B8295C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8F6E285B06
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A64C51F26EAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE583E47B;
-	Wed, 10 Jan 2024 09:08:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3E43C467;
+	Wed, 10 Jan 2024 09:08:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Suk6RJz1"
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900763C470
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 09:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbce1202ebso3712389b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 01:08:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704877704; x=1705482504; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ym61WoMwdcoWNDlZgG+Gv8v0SjajwyUWgyswEpOFxwo=;
-        b=Suk6RJz1YSIw2pNzjCac5sVt7VIlY1cY8daq+GM6rNT0iCoIEFIDDkSsPasOlt8u7l
-         GvbjtmBxPL0BRtXTtFtgWzR/uYke53dOCOzLka+qiiLaHz1KEx4LMw/uw2CRiCOugl9/
-         0243PVv1WDM2/3lui46qsIsFKv43CM6tZ50X2cir0jpYOTFqD7/GLsWd0ehSB/r4nXXF
-         NHUB82gAHFuZqXRrzKP7+m/G3D62fsCO9sKKez/jU3GjK4jayVI+ihZW4Vgt2OA1kC7a
-         DAijnSLiQ9JfiOyPIPGSKY/SwQ84MXQXNsiB+GPa1DxcuFdhIw5EDCF0inheMtQA/fRB
-         oUAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704877704; x=1705482504;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ym61WoMwdcoWNDlZgG+Gv8v0SjajwyUWgyswEpOFxwo=;
-        b=LeqicF/shjjhBIGWSCDsv3owOm02JNq/fFnGrO1hb4+as5638a9B1CAg3QwXCJTbic
-         HQHm07ID+cki5o6/JvjE4nGMma9u9N0FLL9FJlQeL7t3ZviM1Eo2BzZxpPxYeaRmuEUo
-         4zCqCf4pLcFAIzL5UW6ErW7g27gg+bcxPFYiK5HJmJXqpyO23Ehqb8Rb4Rw2GtTI4ism
-         W6zpv0o66q/0Zn5shx9CD5dumnh0lakX5rPSxi1ZF8Q9TZK5qJa7inPSdejh9Kg4QXTd
-         kXlY/krVWEdr7ppfwL8kqQFQ8DOzj+1W69TR2a8nD6UcyUA3QHGEPwIiDHYLOJQiTsfi
-         q8pg==
-X-Gm-Message-State: AOJu0YyalGNTneM0HCJbzJD97y92popMCLiESPFB8t++BQK1p0ubYYq6
-	H0E1E6hSuJWqeWpAbGPQFyQ+TedIMN4nI01cBso=
-X-Google-Smtp-Source: AGHT+IGTpLlK8CnR71lDZ67+JW2ozXwa96qeIzqjWJscWmyiIqNmVmT2z+Hi8sqFJQkcGrYGXm52JjfyK8qdhG3aGCc=
-X-Received: by 2002:a05:6808:1295:b0:3bd:1ff9:b430 with SMTP id
- a21-20020a056808129500b003bd1ff9b430mr859343oiw.61.1704877703750; Wed, 10 Jan
- 2024 01:08:23 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="BuAxzrXT"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B863B199;
+	Wed, 10 Jan 2024 09:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+	id D83FA20B3CC1; Wed, 10 Jan 2024 01:08:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D83FA20B3CC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1704877699;
+	bh=VGPAJ+VlAmIxbqE8tAHckUZUwj1fM6R7OZbw7bjWzS8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BuAxzrXTnPC0ZeAKe/PvtdnWrbkAIpLsexS72rloAJrewEhopaweCME4r5BwZRptA
+	 gYFE9eMieWSfoUvTFmvUM29QV5ovH8/8qZGpPWGr9JqI6kWok81hDPXl5piWT+99zO
+	 XA9NZ17spy7tGGiVBmZRsQXbWwICS7wJJeqHeDiw=
+Date: Wed, 10 Jan 2024 01:08:19 -0800
+From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Michael Kelley <mhklinux@outlook.com>,
+	KY Srinivasan <kys@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>,
+	"yury.norov@gmail.com" <yury.norov@gmail.com>,
+	"leon@kernel.org" <leon@kernel.org>,
+	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Souradeep Chakrabarti <schakrabarti@microsoft.com>,
+	Paul Rosswurm <paulros@microsoft.com>
+Subject: Re: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs
+ per CPUs
+Message-ID: <20240110090819.GA5436@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1704797478-32377-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
+ <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <MW1PEPF0000E6910254736DF77F99E04DD4CA6A2@MW1PEPF0000E691.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <9bed61e4-7c08-4c61-a7e4-bdd39335cec1@redhat.com> <20240110032724.3339-1-xuewen.yan@unisoc.com>
-In-Reply-To: <20240110032724.3339-1-xuewen.yan@unisoc.com>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Wed, 10 Jan 2024 17:08:12 +0800
-Message-ID: <CAJhGHyCPCLhQ_70g+JFRc=r6MdYZb-qMkJF9NhZgi88ygo2R1w@mail.gmail.com>
-Subject: Re: [PATCH v2] workqueue: Add rcu lock check after work execute end
-To: Xuewen Yan <xuewen.yan@unisoc.com>
-Cc: tj@kernel.org, longman@redhat.com, ke.wang@unisoc.com, 
-	xuewen.yan94@gmail.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW1PEPF0000E6910254736DF77F99E04DD4CA6A2@MW1PEPF0000E691.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, Jan 10, 2024 at 11:27=E2=80=AFAM Xuewen Yan <xuewen.yan@unisoc.com>=
- wrote:
->
-> Now the workqueue just check the atomic and lock after
-> work execute end. However, sometimes, drivers's work
-> may don't unlock rcu after call rcu_read_lock().
-> And as a result, it would cause rcu stall, but the rcu stall warning
-> can not dump the work func, because the work has finished.
->
-> In order to quickly discover those works that do not call
-> rcu_read_unlock after rcu_read_lock(). Add the rcu lock check.
->
-> Use rcu_preempt_depth() to check the work's rcu status,
-> Normally, this value is 0. If this value is bigger than 0,
-> it means the work are still holding rcu lock.
-> At this time, we print err info and print the work func.
->
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> ---
-> V2:
-> - move check to unlikely() helper (Longman)
-> ---
->  kernel/workqueue.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 2989b57e154a..c2a73364f5ad 100644
-
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -2634,11 +2634,12 @@ __acquires(&pool->lock)
->         lock_map_release(&lockdep_map);
->         lock_map_release(&pwq->wq->lockdep_map);
->
-> -       if (unlikely(in_atomic() || lockdep_depth(current) > 0)) {
-> -               pr_err("BUG: workqueue leaked lock or atomic: %s/0x%08x/%=
-d\n"
-> +       if (unlikely(in_atomic() || lockdep_depth(current) > 0 ||
-> +               rcu_preempt_depth() > 0)) {
-> +               pr_err("BUG: workqueue leaked lock or atomic: %s/0x%08x/%=
-d/%d\n"
->                        "     last function: %ps\n",
-> -                      current->comm, preempt_count(), task_pid_nr(curren=
-t),
-> -                      worker->current_func);
-> +                      current->comm, preempt_count(), rcu_preempt_depth(=
-),
-> +                      task_pid_nr(current), worker->current_func);
->                 debug_show_held_locks(current);
->                 dump_stack();
->         }
-> --
-> 2.25.1
->
+On Tue, Jan 09, 2024 at 08:20:31PM +0000, Haiyang Zhang wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Michael Kelley <mhklinux@outlook.com>
+> > Sent: Tuesday, January 9, 2024 2:23 PM
+> > To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>; KY Srinivasan
+> > <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
+> > wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
+> > davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+> > pabeni@redhat.com; Long Li <longli@microsoft.com>; yury.norov@gmail.com;
+> > leon@kernel.org; cai.huoqing@linux.dev; ssengar@linux.microsoft.com;
+> > vkuznets@redhat.com; tglx@linutronix.de; linux-hyperv@vger.kernel.org;
+> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
+> > rdma@vger.kernel.org
+> > Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
+> > <paulros@microsoft.com>
+> > Subject: RE: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs per
+> > CPUs
+> > 
+> > [Some people who received this message don't often get email from
+> > mhklinux@outlook.com. Learn why this is important at
+> > https://aka.ms/LearnAboutSenderIdentification ]
+> > 
+> > From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent:
+> > Tuesday, January 9, 2024 2:51 AM
+> > >
+> > > From: Yury Norov <yury.norov@gmail.com>
+> > >
+> > > Souradeep investigated that the driver performs faster if IRQs are
+> > > spread on CPUs with the following heuristics:
+> > >
+> > > 1. No more than one IRQ per CPU, if possible;
+> > > 2. NUMA locality is the second priority;
+> > > 3. Sibling dislocality is the last priority.
+> > >
+> > > Let's consider this topology:
+> > >
+> > > Node            0               1
+> > > Core        0       1       2       3
+> > > CPU       0   1   2   3   4   5   6   7
+> > >
+> > > The most performant IRQ distribution based on the above topology
+> > > and heuristics may look like this:
+> > >
+> > > IRQ     Nodes   Cores   CPUs
+> > > 0       1       0       0-1
+> > > 1       1       1       2-3
+> > > 2       1       0       0-1
+> > > 3       1       1       2-3
+> > > 4       2       2       4-5
+> > > 5       2       3       6-7
+> > > 6       2       2       4-5
+> > > 7       2       3       6-7
+> > 
+> > I didn't pay attention to the detailed discussion of this issue
+> > over the past 2 to 3 weeks during the holidays in the U.S., but
+> > the above doesn't align with the original problem as I understood
+> > it.  I thought the original problem was to avoid putting IRQs on
+> > both hyper-threads in the same core, and that the perf
+> > improvements are based on that configuration.  At least that's
+> > what the commit message for Patch 4/4 in this series says.
+> > 
+> > The above chart results in 8 IRQs being assigned to the 8 CPUs,
+> > probably with 1 IRQ per CPU.   At least on x86, if the affinity
+> > mask for an IRQ contains multiple CPUs, matrix_find_best_cpu()
+> > should balance the IRQ assignments between the CPUs in the mask.
+> > So the original problem is still present because both hyper-threads
+> > in a core are likely to have an IRQ assigned.
+> > 
+> > Of course, this example has 8 IRQs and 8 CPUs, so assigning an
+> > IRQ to every hyper-thread may be the only choice.  If that's the
+> > case, maybe this just isn't a good example to illustrate the
+> > original problem and solution.  But even with a better example
+> > where the # of IRQs is <= half the # of CPUs in a NUMA node,
+> > I don't think the code below accomplishes the original intent.
+> > 
+> > Maybe I've missed something along the way in getting to this
+> > version of the patch.  Please feel free to set me straight. :-)
+> > 
+> > Michael
+> 
+> I have the same question as Michael. Also, I'm asking Souradeep
+> in another channel: So, the algorithm still uses up all current 
+> NUMA node before moving on to the next NUMA node, right?
+> 
+> Except each IRQ is affinitized to 2 CPUs. 
+> For example, a system with 2 IRQs:
+> IRQ     Nodes   Cores  CPUs
+> 0       1       0      0-1
+> 1       1       1      2-3
+>  
+> Is this performing better than the algorithm in earlier patches? like below:
+> IRQ     Nodes   Cores  CPUs
+> 0       1       0      0
+> 1       1       1      2
+> 
+The details for this approach has been shared by Yury later in this thread.
+The main intention with this approach is kernel may pick any
+sibling for the IRQ.
+> Thanks,
+> - Haiyang
 
