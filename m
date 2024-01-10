@@ -1,164 +1,111 @@
-Return-Path: <linux-kernel+bounces-21853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C521829542
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:37:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C9E382954E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:40:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 335331C25D54
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:37:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C51C8B26252
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DE437149;
-	Wed, 10 Jan 2024 08:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACAB3A8CA;
+	Wed, 10 Jan 2024 08:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fduJHU+K"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="lI0HjohH"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE843B787;
-	Wed, 10 Jan 2024 08:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704875854; x=1736411854;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=igXRfI/xmOZZa1DyRvNFbCLbM5XdAG1FTZabbL8E8bE=;
-  b=fduJHU+KnD1VsTs5G0iBd/H5KpQ3DdQTixAdhy1CueNccSc4+4re+ecx
-   QxbSt9zzSH6iRs5SF9oGH05MlLUQKeGZXDT4yWhQhepOJNCaXSszxCLCT
-   xDnMp9kc0tmzeOHfdreQc0U23drUgLMO2CeQc4PY8wlPZ9xAE+belho1P
-   D+ebt4b864OsbOltjCBxCEd7Wih1S5VhiVVeB+rbKKx2iXxESXOq2U+wy
-   7+hc0wFBeo0Xg9SRZIuentdwV919Rh4rk7P7vI5hWbszyoRBYkB3n3oAz
-   3G5KiWTQ85gCqwb+v5T+AQZtqg0qXhK90QRr4X0sg8g4igbnZCba6oNzx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="462738281"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="462738281"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 00:37:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="925557982"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="925557982"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.11.157]) ([10.93.11.157])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 00:37:30 -0800
-Message-ID: <b077a691-5790-40a0-8539-0f5294d0fc28@linux.intel.com>
-Date: Wed, 10 Jan 2024 16:37:26 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99370360AD;
+	Wed, 10 Jan 2024 08:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 081BB6050F;
+	Wed, 10 Jan 2024 08:38:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1704875996;
+	bh=wG6D9r+AI35mwEbnFd6ymRyQAT79Vq6rM5ctoGLtHBU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lI0HjohHY5ZqItxAs8wT161JVYpJtAgnjXEDs+XAyJc9k4uwAIKZILCoxniGxeHM7
+	 NMpL2XdZBWs7+S3w/NZWsNimkeJR16R95GGWUpKizv2Adtqb7FXYWlzxwi2V8+nFoP
+	 RTiflB6mFHXKPGPj2+TZa7Ttqzte47OVO5wCtpk/a3jM3EtOWoczIwawN0tSH8TgEZ
+	 p+8904d/1MpIM6uukmZIHlwKjUrgcv3Hn6jYHHrOMm5heZJAuYWXVcNuvp1ITYC3H5
+	 5YZX2Q1DTS1LnZJLB3LqYmb7VI5cGaZX5FqpnZ+7cjS6IsYI7KpDEbaMmJIcktwVcV
+	 lgNioh8C/jw9w==
+Date: Wed, 10 Jan 2024 10:38:57 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
+	Matt Coster <matt.coster@imgtec.com>,
+	"H . Nikolaus Schaller" <hns@goldelico.com>,
+	Adam Ford <aford173@gmail.com>,
+	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+	Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: Re: [PATCH 02/11] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+Message-ID: <20240110083857.GB5185@atomide.com>
+References: <20240109171950.31010-1-afd@ti.com>
+ <20240109171950.31010-3-afd@ti.com>
+ <e2fce141-4966-4e70-9a5c-865a2737174c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v10 4/5] iommu/vt-d: don't issue ATS Invalidation
- request when device is disconnected
-To: Baolu Lu <baolu.lu@linux.intel.com>, kevin.tian@intel.com,
- bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
- robin.murphy@arm.com, lukas@wunner.de
-Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20231228170504.720794-1-haifeng.zhao@linux.intel.com>
- <20231228170504.720794-2-haifeng.zhao@linux.intel.com>
- <8e16ff9b-4dcd-4bec-a78b-61d90205841f@linux.intel.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <8e16ff9b-4dcd-4bec-a78b-61d90205841f@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e2fce141-4966-4e70-9a5c-865a2737174c@linaro.org>
 
+* Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> [240109 19:53]:
+> On 09/01/2024 18:19, Andrew Davis wrote:
+> > The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs from
+> > multiple vendors. Describe how the SGX GPU is integrated in these SoC,
+> > including register space and interrupts. Clocks, reset, and power domain
+> > information is SoC specific.
+> > 
+> > Signed-off-by: Andrew Davis <afd@ti.com>
+> > Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> 
+> 
+> > +  clock-names:
+> > +    minItems: 1
+> > +    items:
+> > +      - const: core
+> > +      - const: mem
+> > +      - const: sys
+> 
+> There are no devices currently using third clock, but I assume it is
+> expected or possible.
 
-On 1/10/2024 1:24 PM, Baolu Lu wrote:
-> On 12/29/23 1:05 AM, Ethan Zhao wrote:
->> Except those aggressive hotplug cases - surprise remove a hotplug device
->> while its safe removal is requested and handled in process by:
->>
->> 1. pull it out directly.
->> 2. turn off its power.
->> 3. bring the link down.
->> 4. just died there that moment.
->>
->> etc, in a word, 'gone' or 'disconnected'.
->>
->> Mostly are regular normal safe removal and surprise removal unplug.
->> these hot unplug handling process could be optimized for fix the ATS
->> Invalidation hang issue by calling pci_dev_is_disconnected() in function
->> devtlb_invalidation_with_pasid() to check target device state to avoid
->> sending meaningless ATS Invalidation request to iommu when device is 
->> gone.
->> (see IMPLEMENTATION NOTE in PCIe spec r6.1 section 10.3.1)
->>
->> For safe removal, device wouldn't be removed untill the whole software
->> handling process is done, it wouldn't trigger the hard lock up issue
->> caused by too long ATS Invalidation timeout wait. In safe removal path,
->> device state isn't set to pci_channel_io_perm_failure in
->> pciehp_unconfigure_device() by checking 'presence' parameter, calling
->> pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will 
->> return
->> false there, wouldn't break the function.
->>
->> For surprise removal, device state is set to 
->> pci_channel_io_perm_failure in
->> pciehp_unconfigure_device(), means device is already gone (disconnected)
->> call pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will
->> return true to break the function not to send ATS Invalidation 
->> request to
->> the disconnected device blindly, thus avoid the further long time 
->> waiting
->> triggers the hard lockup.
->>
->> safe removal & surprise removal
->>
->> pciehp_ist()
->>     pciehp_handle_presence_or_link_change()
->>       pciehp_disable_slot()
->>         remove_board()
->>           pciehp_unconfigure_device(presence)
->>
->> Tested-by: Haorong Ye <yehaorong@bytedance.com>
->> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> ---
->>   drivers/iommu/intel/pasid.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
->> index 715943531091..3d5ed27f39ef 100644
->> --- a/drivers/iommu/intel/pasid.c
->> +++ b/drivers/iommu/intel/pasid.c
->> @@ -480,6 +480,8 @@ devtlb_invalidation_with_pasid(struct intel_iommu 
->> *iommu,
->>       if (!info || !info->ats_enabled)
->>           return;
->>   +    if (pci_dev_is_disconnected(to_pci_dev(dev)))
->> +        return;
->
-> Why do you need the above after changes in PATCH 2/5? It's unnecessary
-> and not complete. We have other places where device TLB invalidation is
-> issued, right?
+I think the third clock is typically merged with one of the two clocks but
+yeah possibly it's a separate clocke in some cases.
 
-This one could be regarded as optimization, no need to trapped into rabbit
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-hole if we could predict the result. because the bad thing is we don't know
+Looks good to me too.
 
-what response to us in the rabbit hole from third party switch (bridges will
+So for merging these, as many of the changes touch the omap variants, I
+could set up an immutable branch with all the changes after -rc1. Or I can
+ack the patches too if somebody has better ideas.
 
-feedback timeout to requester as PCIe spec mentioned if the endpoint is
+Regards,
 
-gone).
-
-
-Thanks,
-
-Ethan
-
->
->>       /*
->>        * When PASID 0 is used, it indicates RID2PASID(DMA request w/o 
->> PASID),
->>        * devTLB flush w/o PASID should be used. For non-zero PASID under
->
-> Best regards,
-> baolu
+Tony
 
