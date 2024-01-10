@@ -1,98 +1,121 @@
-Return-Path: <linux-kernel+bounces-22782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6207082A2CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:50:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A0882A2CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:50:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 673981C2677F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:50:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D23728402E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE0D4F8B4;
-	Wed, 10 Jan 2024 20:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34E34F89F;
+	Wed, 10 Jan 2024 20:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Ev9PNgg7"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Kd1d86jR"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA5B4A9B7;
-	Wed, 10 Jan 2024 20:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704919546; x=1705524346; i=markus.elfring@web.de;
-	bh=67WEwzv+/9tUhnVAYMobcuh+1b1uiqYL9AGknTMPv1A=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:Cc:From:
-	 In-Reply-To;
-	b=Ev9PNgg7hVDL0F9Oa3DaRBUPbf5jji5UsoqQsmCIxDAoWLKV+buo10XZENviw+Rz
-	 2Z1mHQ82fDVhW5JzkkRmIV/XC+O9oaCzPEY2yblfNVUaC87XRmSDEMd4qLsTgNy/l
-	 OtfwwLY9tVOtdwBp+xe/8ZR/zkZWzutJbGQRP61y9EUhsJSMzcCb1QWfheX1JzwQ4
-	 apSbxelcr+VH+bitCSYncBOXxn7HLyC0InD63/cI52UdUaxhg3I7ymdP9Gaj+vMjB
-	 HK5W02EMgHPbRfIRHfUHk5oSBFML6oKhh+n3s48a6ShjcWXmgLsyu3bXU+Jb/18zy
-	 ymRJ4kyBuLL4eZt+KA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mv3Yg-1r6H3y0ULo-00quwH; Wed, 10
- Jan 2024 21:45:46 +0100
-Message-ID: <b9c9ba9f-459e-40b5-ae4b-703dcc03871d@web.de>
-Date: Wed, 10 Jan 2024 21:45:43 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3164F5E8
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-557bbcaa4c0so2707a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:47:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704919666; x=1705524466; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xvBmw5llKRqXLv2AVOUBOB+EBAoZUU0XXok8fk9QCec=;
+        b=Kd1d86jR/r8ZBfg1k3LtqHAvoignRipYYPSn6/Q9vnC45YhQd7+soq+Gu5JWbFaFCO
+         /n/lw+VgNwocPO3CeSMJg5Cu2q0O+MYqOSRSWtoNXgPGRRSa3C4lefkvL7qdNXflVa/o
+         UZWwAdu69Nm6plHafOPnJRF8pFv2ZCUEd2xClYOIj+d5a39TDRljKQwLT+HdiDTLxwip
+         +yv8n3kPQ56rkShpcuwB7vLm8x3eTgYPuq7o2P3tkdCOYCBtN6v/1YdfVj8l5qHcQDWe
+         E/jpMuxwjD/4iBx6KQyAzXNE5yn2Y9vkQQ2weYmuUEbb7U+jUKki2tL8kIw93e2wvB8c
+         gpZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704919666; x=1705524466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xvBmw5llKRqXLv2AVOUBOB+EBAoZUU0XXok8fk9QCec=;
+        b=qFQx1Pf9tIbf46cd+swUQv9LQVW73hV6A3AnsRRDxFxmsBSqd+d4lm50GtMzxEH9Iu
+         2OU9Vove3D9Z1J4pirHyzf887YLS9Luy0t9M+tbHRQwyPaD59YMH+yieZJwcMA0RNsms
+         yalyXyFuNYoUfGnOwiieFW9P0PHpeHwp1b8NFC8WT7uB30t4sy9X8ZzfEO2SWlCU/Sjy
+         E0nOBOPMSbA+k5EYhv3IDNZUPHG29uWqS8tG81iwXaOEQIbddv1ZnyDdKZAu/IJLCsYE
+         J7YBRR4FdZ7chK5TSVYN15VQSgjcz2zVRl4xi16H3w+y2thRFtEqlEuiSU346149q3xZ
+         F3yQ==
+X-Gm-Message-State: AOJu0Yyl7vaA1gcr6Ky0KwPjazIoJQsDS1DeiK989xNOn6i8Q1wEdTzk
+	MqXzTfXLpfYIoBNaLbUN1OJriApM4KmNwMzSDvQca8uN4DlO11dgScueNwqP1RtPc6q0pjJYTtT
+	Pu4b8NvVbJ5gBZsJ3c0jBabrz+8RlvBAe8tXL
+X-Google-Smtp-Source: AGHT+IGtYzXbQuQsCnI/M6Q+esb1oyG+cSLNvXEfHcMNZQwzYizAo0y4rLdBTsGPj6jtJN2l+a5JBfS1TuhLD2s4xM8=
+X-Received: by 2002:a05:6402:683:b0:557:8cb9:90a1 with SMTP id
+ f3-20020a056402068300b005578cb990a1mr46842edy.6.1704919665842; Wed, 10 Jan
+ 2024 12:47:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2 0/2] io_uring: Adjustments for io_ring_ctx_alloc()
-Content-Language: en-GB
-To: io-uring@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Gabriel Krisman Bertazi <krisman@suse.de>, Jens Axboe <axboe@kernel.dk>,
- Pavel Begunkov <asml.silence@gmail.com>
-References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
- <aa867594-e79d-6d08-a08e-8c9e952b4724@web.de>
- <878r4xnn52.fsf@mailhost.krisman.be>
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <878r4xnn52.fsf@mailhost.krisman.be>
-Content-Type: text/plain; charset=UTF-8
+References: <39b4278f-35d2-4071-a3aa-ec49705272af@moroto.mountain>
+In-Reply-To: <39b4278f-35d2-4071-a3aa-ec49705272af@moroto.mountain>
+From: Rae Moar <rmoar@google.com>
+Date: Wed, 10 Jan 2024 15:47:34 -0500
+Message-ID: <CA+GJov5jz+qSA=eGW_E7VoMpHm=eBfAkxwv4r8EsFpRYBBq0Zg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Fix a NULL vs IS_ERR() bug
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, David Gow <davidgow@google.com>, 
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:w8zbiVzV4QX6nYncQcpShWT/W2voPMe5P7Wq/18FEP1aLfUlsa5
- 1W+heqqaOSv74iqsgtIBdLhT/DdXeZAxqKoOD0X3a2c5E497HBDVFPW0RVFrBuuzf/ZsnD0
- 8Fs9cY/Mj3+3u+5tqUHp+VCvEJNavPjNeH0V9KlXDBm/uH8wBkgVLQHUdCCnLnDE7CL8Irn
- wkImzt5GMc7bRj95dOH7A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:nV+jhf8rftA=;6GXpVx/Fu86nZGOIj5tOyFTGS4O
- 6u0lKWKNN/hmEpEIjnQig+hiRmFkUTCqLY79NJlOHWMfLbo8ZnOoZ8TWH8l+13tjwbCTzw+fI
- BKYwWbpjmDYrf/DjA33PfSJn4Ig1T/kCLuDNncgK6L06Enc4jQOw+yNhOEAU35V7x04AYYvZ1
- ui13KNAId8kHEwDXYVxIqMcIXwC6WUMQPadKx61koFyFhndx7mFKk6931MrtSW8vg4kEjY43Q
- J6INj7BwMYt5E8ZNqN5qDid/Lz0LkPqgLdNEhT1DB8UBM10XrvWXwAu0FW3SebAT0vZk4Lz94
- ThuYLg//OKYTCspUGlbIgDN/OVIGgm8FD+bi6YLvIcD8iB6vcWjK/ToWSLcBRaOK26CrdnKaa
- p2kHjtXtmofvvUqMFPS/q1RQlTobH/UD6aKOLoqdAU4JTEkJxHagzBu7eyJV3d6RUkcK0hohO
- hL7fzO3yXIkX44uURC5aOMOJgQb7/T4DSc1T8yaqTgGyNw1nC/8c90Yp1g/HsPfjJ0zEmfR4x
- kiEjppZ1POBDGx231TI9ta4id5RXrCeWDZT3u4Iyj1TxxmuX8us1tUMoRZ+aVAhHMp0YF9T45
- 33NtrjCh+/702vsJQjlG03iL+mAftr4N3q8oudAEMMYQ0XcAghHJSoPOz9iQzI1q9D1SqGu6r
- J4MxxV8BLNRMKm3Wxelbr96X2zmLLlYGr/WknS40Ll6blupo8rU9IqWimSe4A8ufudbiSdWfd
- ZmHhOxV/OlU077ewx6RwgT0f8z/0+ahHTyZ7qscUvEX2OxcsdzuFArcRu0woXRoBIsGGJFWnj
- brGKGOmVk4iRD0QMu9muE9IvZEV9iSwEEa7kvE5GhAW/mU5aEbqi169Za703zn7aCIs0OihNy
- zftqUsulIBu2L8xGqSaf2Zld/mJSMlwewGqiHG1r7kY5MYkQ5lLHoxjSc2tluVSDW2J8xcXip
- bdgxbrk5oLPd157aUxmWo5M93es=
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 10 Jan 2024 21:38:12 +0100
+On Wed, Jan 10, 2024 at 1:55=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
+org> wrote:
+>
+> The kunit_device_register() function doesn't return NULL, it returns
+> error pointers.  Change the KUNIT_ASSERT_NOT_NULL() to check for
+> ERR_OR_NULL().
+>
+> Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-A few update suggestions were taken into account
-from static source code analysis.
+This change looks good to me! Thanks!
+-Rae
 
-Markus Elfring (2):
-  Delete a redundant kfree() call
-  Improve exception handling
+Reviewed-by: Rae Moar <rmoar@google.com>
 
- io_uring/io_uring.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-=2D-
-2.43.0
-
+> ---
+> It's a pity that there isn't a KUNIT_ASSERT_NOT_ERR_PTR() macro...
+>
+>  lib/kunit/kunit-test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+> index c4259d910356..f7980ef236a3 100644
+> --- a/lib/kunit/kunit-test.c
+> +++ b/lib/kunit/kunit-test.c
+> @@ -720,7 +720,7 @@ static void kunit_device_cleanup_test(struct kunit *t=
+est)
+>         long action_was_run =3D 0;
+>
+>         test_device =3D kunit_device_register(test, "my_device");
+> -       KUNIT_ASSERT_NOT_NULL(test, test_device);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, test_device);
+>
+>         /* Add an action to verify cleanup. */
+>         devm_add_action(test_device, test_dev_action, &action_was_run);
+> --
+> 2.43.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/kunit-dev/39b4278f-35d2-4071-a3aa-ec49705272af%40moroto.mountain.
 
