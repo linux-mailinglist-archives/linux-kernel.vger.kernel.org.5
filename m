@@ -1,94 +1,100 @@
-Return-Path: <linux-kernel+bounces-22646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784CB82A0E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:15:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3927682A0E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26D2A286550
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:15:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ABA01C229E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069F74E1C6;
-	Wed, 10 Jan 2024 19:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436244E1C1;
+	Wed, 10 Jan 2024 19:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f1oRklxr"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="cmX0CTeX"
+Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC75A4D5AF;
-	Wed, 10 Jan 2024 19:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-555f581aed9so5297990a12.3;
-        Wed, 10 Jan 2024 11:15:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704914130; x=1705518930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=41lpfdueieQfrzn2GM7CXNzHqpSPhXGHpp4P6ZTjuX8=;
-        b=f1oRklxrbPhQbQvcDxp8DzY81YJIrzf2Ym3OzsXbUL5OqkeVRvK3q7QpppiDkdqyA/
-         +RHXXBvT4WCDRn/zSUULRYEDthNv6/+owOC8LFKCtI9q9Fs2TGatJeYfpz6hCho3Oq8q
-         NZI27o0ItbVXIu4EBlJ69O2StITBpTn6nCikcuriQUJpLbJsgsPkWqPqeOg/PggW1J9J
-         dZfGd2T1a2Xm9WQt6/N9OZFgfXgcLV0Ch2x8zADfFbBwxvptuhNNH7BiuP3lNQgZxmQ7
-         vODH41K5nBdCQS5RbatpZTaGODshz0JkZP2sHQ0J5wThgXr5F9aOF2VoPRWvRr5xWwo4
-         XQ+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704914130; x=1705518930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=41lpfdueieQfrzn2GM7CXNzHqpSPhXGHpp4P6ZTjuX8=;
-        b=qU7MHx8Wyfy0pGB5PqvQLmNucW8mZf81JjJmQHc+7qypWOkMbYJSCorXyZUj7QZSEs
-         g+LeCjOjfGKyV3ZiAOAezPRnzH37vj+kqiJ+TEU9zwmySBzk6RPXY2yTpM07wYvwoo6o
-         PnsScc5cbDaq8cZQbWYHW3nFkcAkJN2CqFZBoaxK7mdNSCzE1p5fWyzkTeeL4blO6om5
-         tdXDkDUobn8Za1/eHWDoAvHlv5HPThkdl+0pa7dPofIAbG+2LSytSwBIiqoi6nEX9VrO
-         BoPMUQwieGF/89DhuLVnUGUrcdqwrXh09bwh5LYdyKdN9pKo4k94406oLQtxhSAWfFN7
-         cqAA==
-X-Gm-Message-State: AOJu0Yxz4Un9hDjs48tOaBw3OuZccwFpw26RmWP0tFZgMpZqmxC0zmM+
-	jqu2uHmeTz0sTx0KodqxA9J2coeyEpHw8NSOZfu6yFJS
-X-Google-Smtp-Source: AGHT+IF8vkAzBkZAIeJbSxx3hkH1JlBWY4JjumpzHswcjiU5wNRgaci7YEyu7xhqgmIH135JpP+ZoNjnwAvi3TXI5oA=
-X-Received: by 2002:a50:c008:0:b0:558:5fe0:213c with SMTP id
- r8-20020a50c008000000b005585fe0213cmr753042edb.28.1704914130053; Wed, 10 Jan
- 2024 11:15:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3EC64E1BF;
+	Wed, 10 Jan 2024 19:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id Ne3HrzATcfp3nNe3Hr24kC; Wed, 10 Jan 2024 20:15:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1704914148;
+	bh=g7+iuuMcNhBZIQyGCPwUwqPwuUSKEMctp/ieQIw+e7U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=cmX0CTeXCCRTdtzv+RKWgeYEugEN2wV4ltK8UvEFX2/D3Jtq0K+opz+P6jD+eJzx4
+	 VRiCT44gsJxbEdMCvhuibMaKeg5HCQ39/qRw/tK8OqqacAkIqBXhcM0w5jviHJDEt5
+	 vPcMOXNSB9BAUgvctpp/C+eLD4hFxCw4JWx186OGICsLAS9uumct2PZ8dHH01TAJ+P
+	 rJMUMrpbYBTxCAkPTn/KPcQH9bxfjtqD0YKzFO0EbsJo28WG7BzewKJnntmR9ErLVO
+	 cP3HkdhnGeOluzXf2fPbNLsdyvxpVw3kWr2V0bYl9ZBexoE+oqiVWOeXWIDUkxIpG2
+	 gdOwbk0VytOUw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 10 Jan 2024 20:15:48 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <6a9e7d6d-2054-45da-943f-e95bc6261c42@wanadoo.fr>
+Date: Wed, 10 Jan 2024 20:15:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzYMx_TbBY4yeK_iJqq65XHY5V3yQQ1PzfOh6OMQwyz5cA@mail.gmail.com>
- <20240110091509.1155824-1-nogikh@google.com>
-In-Reply-To: <20240110091509.1155824-1-nogikh@google.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 10 Jan 2024 11:15:18 -0800
-Message-ID: <CAEf4BzaZOJumas-UYgoU96PS8kfJ0xsgYFfyhEmWBcpSsP7zdQ@mail.gmail.com>
-Subject: Re: Re: [syzbot] [bpf?] WARNING in __mark_chain_precision (3)
-To: Aleksandr Nogikh <nogikh@google.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: em28xx: return error on media_device_register()
+ failure
+To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240110173958.4544-1-n.zhandarovich@fintech.ru>
+Content-Language: fr
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240110173958.4544-1-n.zhandarovich@fintech.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 10, 2024 at 1:15=E2=80=AFAM Aleksandr Nogikh <nogikh@google.com=
-> wrote:
->
->
-> > #syz fix: 482d548d bpf: handle fake register spill to stack with
-> > BPF_ST_MEM instruction
->
-> It needs to stay on one line, otherwise only part of the title
-> is considered.
+Le 10/01/2024 à 18:39, Nikita Zhandarovich a écrit :
+> In an unlikely case of failure in media_device_register(), release
+> resources and return the erroneous value. Otherwise, possible issues
+> with registering the device will continue to be ignored.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with static
+> analysis tool SVACE.
+> 
+> Fixes: 37ecc7b1278f ("[media] em28xx: add media controller support")
+> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+> ---
+>   drivers/media/usb/em28xx/em28xx-cards.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+> index 4d037c92af7c..dae731dfc569 100644
+> --- a/drivers/media/usb/em28xx/em28xx-cards.c
+> +++ b/drivers/media/usb/em28xx/em28xx-cards.c
+> @@ -4095,6 +4095,8 @@ static int em28xx_usb_probe(struct usb_interface *intf,
+>   	 */
+>   #ifdef CONFIG_MEDIA_CONTROLLER
+>   	retval = media_device_register(dev->media_dev);
+> +	if (retval)
+> +		goto err_free;
+>   #endif
+>   
+>   	return 0;
+> 
+> 
+Hi,
 
-Gmail is not very cooperative here, unfortunately. Thanks!
+I think that some resources allocated in em28xx_init_dev() should also 
+be freed if media_device_register() fails. (see the error handling path 
+at the end of em28xx_init_dev())
 
->
-> #syz fix: bpf: handle fake register spill to stack with BPF_ST_MEM instru=
-ction
+Just my 2c.
+
+CJ
 
