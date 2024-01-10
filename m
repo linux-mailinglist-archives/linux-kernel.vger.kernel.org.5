@@ -1,71 +1,49 @@
-Return-Path: <linux-kernel+bounces-21669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 822F182929A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:02:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E55D482929B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26104B258BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:02:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7047B2894C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A2D613D;
-	Wed, 10 Jan 2024 03:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1805B1870;
+	Wed, 10 Jan 2024 03:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DHSnZh3t"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NocbWuyD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1486F6107
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bc09844f29so3238828b6e.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 19:02:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704855729; x=1705460529; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zFPPL62mMn6CtToI83E7n0O2MKG6z8XFWD/fwB1/NlU=;
-        b=DHSnZh3tGvlnBeb03baGyYE2KF0nK9sxE706qvS9tVzeza9FwtmhZie6vJzhexDRRK
-         nXHIwDp622mYdBdCozr+mfxrq6/AdcXC/ttC6OlQEJYAsEpva6SmClF52QEZ57LnIZbN
-         59xRxIL9BIe0gMKD/qVT81X51IDG8YJw1Rez0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704855729; x=1705460529;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zFPPL62mMn6CtToI83E7n0O2MKG6z8XFWD/fwB1/NlU=;
-        b=cXIULHX7l2kCbdgweWpT6wO76CxZ3fog0O+ftbbX8SGv7Nxis2qBMza0Vr8K061IzZ
-         LoHGfUygICxHb32R7cPkzTqV8Ja7UjfLss9jFh4cdvUoci20HPOtSXrvSfq3bYnmUemN
-         zWvc5dUJZAjOpGRQgXO1gt9YUdg+b9gSuYcCW0KS/TpckCWQtxIma9dNQDPf9QFwUg30
-         cJMXb2np5GCxcUJu+jp4YWXJ4+ywJKpWP1LBe+KknWZpdmgPf6cFkPEcpsk6NrKooiDH
-         6HDRMxOJiyUUAKspy9hsw8c2ZGiUqXcW3Ef0zmrH9NDL0nNPPxQWfpR2Eflh1+imylJV
-         CYFg==
-X-Gm-Message-State: AOJu0YxljzWp0y4AKL1y/YfMkgMEOfagUk4mNPyfHjFvJf66Jd5DEx//
-	kBPlIpmYx/vQwBfwNKvqOcu9Vayq9HEW
-X-Google-Smtp-Source: AGHT+IFBMS98ev18K5CCqSy+R0w7E8zpE02hjacSLoes1p0CoPx0LYl4OIw0a8QDivY2BnRe7IVZHg==
-X-Received: by 2002:a05:6808:11ce:b0:3b8:94c0:87fb with SMTP id p14-20020a05680811ce00b003b894c087fbmr440439oiv.9.1704855729132;
-        Tue, 09 Jan 2024 19:02:09 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:b1d0:e755:54c2:4518])
-        by smtp.gmail.com with ESMTPSA id s7-20020a056a00178700b006d9b93ca5e2sm2442043pfg.146.2024.01.09.19.02.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 19:02:08 -0800 (PST)
-Date: Wed, 10 Jan 2024 12:02:02 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Miguel Ojeda <ojeda@kernel.org>, Kees Cook <keescook@chromium.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640578F5B;
+	Wed, 10 Jan 2024 03:03:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 611E5C433C7;
+	Wed, 10 Jan 2024 03:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704855780;
+	bh=A5rzmYISI/sWahGLTcGrNcQxysD0BlcReNeKoH0MPXo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NocbWuyDY9gq4Hef6VcDkN1IFNvBwkuLU4trf2y04Xa3f9wAa/9DkNDcS3gJuiClt
+	 sJwL+iXAgyA31ZoUnqjPAgN+Xv+fBp/uYvi0og43aKRe6U9msJDKArgQmAAbQx7dfr
+	 KmXJ59PPMXlG3HzoFymkmeTFx99VxnZpSQIKehkLPJzCHzLWAZ+eV7LZ/WS5Kk6IG2
+	 rReFKY1od7ZQBfXWMi0t7BgsSi1gdtJkiPJpjxz5XTTU51uYxI4TvRjGA3W0JmIiGF
+	 5nrrDDhs3KID/UUocbhsRbVw7dyGVnFvBBNVJET9sdxv666sVPWa3aGNLZZN7CtZMU
+	 7/pVvTGnfmPPw==
+Date: Tue, 9 Jan 2024 20:02:58 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Kees Cook <keescook@chromium.org>,
 	"Gustavo A . R . Silva" <gustavo@embeddedor.com>,
 	Nick Desaulniers <ndesaulniers@google.com>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: Re: [PATCH] Compiler Attributes: counted_by: bump compiler versions
-Message-ID: <20240110030202.GB1282549@google.com>
-References: <20240109133633.1103876-1-senozhatsky@chromium.org>
- <20240109153249.GA205400@dev-arch.thelio-3990X>
+Subject: Re: [PATCHv2 2/2] Compiler Attributes: counted_by: fixup clang URL
+Message-ID: <20240110030258.GB3624259@dev-arch.thelio-3990X>
+References: <e1c27b64ae7abe2ebe647be11b71cf1bca84f677.1704855495.git.senozhatsky@chromium.org>
+ <b7babeb9c5b14af9189f0d6225673e6e9a8f4ad3.1704855496.git.senozhatsky@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,18 +52,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240109153249.GA205400@dev-arch.thelio-3990X>
+In-Reply-To: <b7babeb9c5b14af9189f0d6225673e6e9a8f4ad3.1704855496.git.senozhatsky@chromium.org>
 
-On (24/01/09 08:32), Nathan Chancellor wrote:
+On Wed, Jan 10, 2024 at 11:58:18AM +0900, Sergey Senozhatsky wrote:
+> The URL in question 404 now, fix it up (and switch to github).
 > 
-> I should probably go through and try to update all the other
-> review.llvm.org links to GitHub as well...
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-It might be something wrong only with the counted_by() link
-(https://reviews.llvm.org/D148381) as other reviews.llvm.org
-links seem to be working fine.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-I randomly tested https://reviews.llvm.org/D75044 and
-https://reviews.llvm.org/D123515 and they don't 404, unlike
-counted_by() link.
+I sent a patch series today for the rest of the tree, which includes a
+link to what happened here:
+
+https://lore.kernel.org/20240109-update-llvm-links-v1-1-eb09b59db071@kernel.org/
+https://lore.kernel.org/20240109-update-llvm-links-v1-2-eb09b59db071@kernel.org/
+
+> ---
+>  include/linux/compiler_attributes.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index 215882a1341a..289810685fc5 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -99,7 +99,7 @@
+>   * Optional: only supported since clang >= 18
+>   *
+>   *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> - * clang: https://reviews.llvm.org/D148381
+> + * clang: https://github.com/llvm/llvm-project/pull/76348
+>   */
+>  #if __has_attribute(__counted_by__)
+>  # define __counted_by(member)		__attribute__((__counted_by__(member)))
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
 
