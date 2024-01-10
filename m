@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-22793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD4A82A2EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:59:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 675F382A2F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F086D1F297B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:59:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FDFB1C24886
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6264F208;
-	Wed, 10 Jan 2024 20:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33ABE4F209;
+	Wed, 10 Jan 2024 20:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xh8Y8aM9"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XrhjldG5"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95064F1E0
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41954F1E5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3376555b756so2708092f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:59:08 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e5535b8cfso14843005e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 12:59:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704920347; x=1705525147; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704920380; x=1705525180; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zAK4lUrvjOcxQfIkMXO9fleipqDkyWnsJuySNjvXBAA=;
-        b=Xh8Y8aM9WK4UdTuwU5lGUWM+/E3iH2YKFu0bWiPCTkV1nd0viF/jiZsUMg/UXl6VrS
-         y+4R7iru7k2DW9bzf3gEiwZQTe+LjwEash3WoDvRBG4tz/hzh7UxlGKLF9z9Anx5AZDp
-         FaysPPsnsqIh0cqVCwcCAhA/J1aF/pSYycvO+UQDrSnvRMMGVJj5oC+2vPHLq1c0COXn
-         Y3cutNzje99mAQxJxwAk+UaeSxovYW8odq1yMNeanEoCN9fC367zHfRTF1Y0fBo3QR2/
-         6TtFHFIKpJBzB6O3hDD9Oe0nXrjUlLV9L7S8rwCOlVS9GxuuVbuJxEyIHiKqx5cm5Y7U
-         Nn8A==
+        bh=8utmd43eIyJeOqvlyF2K0QyjFCG6Z2nBsu3GqoNhYh0=;
+        b=XrhjldG5ubCvsjE+PQmFtm4bkFA9VmSzfUYbE/Rhkw1oGqwiRaByBn/Zw9eqLgrK+H
+         DybuGJZpd4u4v/cb4cGGGPEXjRShFR+dIFiGbJEYDXICKKJ6GvtRFzOgE1LkfiQfFKLs
+         kBbhCJ6LpFBP+UdYOKolsoCbpdvVK48hulqSL5nJ+59PRV085gnSGJcv5eIeG91A/+qh
+         8fzpeS8twpZu/IgwKhRYKcB5R0did3fLrYJauOvRyzsoukXVU59ItSPEC3Ud+En4iYCi
+         EGPiCHu3MIKYVQYx2CpNhZdC9rbkMIrGX4Mt2W1hvWDoTy21desziG7h1E1TEZI2lHGi
+         g+YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704920347; x=1705525147;
+        d=1e100.net; s=20230601; t=1704920380; x=1705525180;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zAK4lUrvjOcxQfIkMXO9fleipqDkyWnsJuySNjvXBAA=;
-        b=Trta8QCs/ipwW75ans8Yj9BFzCUufmRNUHgVS8YeX1sJ/xhigtk0HrOXvQjSi4aWfX
-         2D2KD4a3qNE3+lH40227V9sRMB8+Q65DIpbgFPhG68+0TrbDvAHwMPpPDdSJhj5PxlBZ
-         ur2J/VBuNg+DLq3rM2VIS0x/O8oF6LI3Y/bWq/ZnCTMhnmREtpDLSzpfIHBXIL7hYcng
-         CutYKqpLAUYb1AhCP5clem4Nn1QSw0WjaFxyAcr4KeXNBCMmYctLysbw/f/zrYhh19yL
-         cXW/n2Poo/69DSWagB59g4oOFLrRIwxZeZ0fHEl4g+aK8Smiti1Erhn3S8D8v4Iufh1J
-         Dw5Q==
-X-Gm-Message-State: AOJu0YznIjP4ysRgl+fGaHlZponS1dxgXC8GgrsMXAJ/pZNmsMkdbggl
-	p3zSNxSGVChnSZbd9+9oBTnos44R9HjhDA==
-X-Google-Smtp-Source: AGHT+IEoGPgbL9FeeyJiBVnhM8y7KzwmWXMqqA2vgWlzPc3KOSDY3LoSbQHqpZmO7UPhSKbD9sfcMw==
-X-Received: by 2002:adf:fd0e:0:b0:337:6528:9c08 with SMTP id e14-20020adffd0e000000b0033765289c08mr28156wrr.64.1704920347165;
-        Wed, 10 Jan 2024 12:59:07 -0800 (PST)
+        bh=8utmd43eIyJeOqvlyF2K0QyjFCG6Z2nBsu3GqoNhYh0=;
+        b=kYdJyfMe4SUTM8+BxIuUypgW/BukP8OT6fn8tk+csVMeZlsXmiGZQ0W3lDDQf0YomV
+         3p7JETRgHXMaEvoCma/2Qntl35gtF5Ak7OdQ2VK9hs+c4yBOnLCOiQGG6qz8j9FvCwM0
+         i3ktFPCqKL01e8JuSqDy87SXzdI8kG42zNqxOUpvQTUYVoG8cPuuMfZqk7184nGyUtmg
+         PAjrirOwGmEnY9i4N8Pdtj8mtCZsZ1bkK9ecVJLnWAXNyRTT20xFVTXg8g6IgiPvKxhX
+         PZOwTrUcfovp5K22Oke7VkZzdNxz+um7G7YYP8EvMnmQjGyu2CC0mm2Dn8LWem5mKDOm
+         gi4A==
+X-Gm-Message-State: AOJu0Yz0/E9nBNm/BWcw0LhH8xb3+Li85dqqFGRXZ+6x9KTyS3MZ+fU3
+	+l4qog1tBuSTKQpoI348U6HHFeg5XSLLUA==
+X-Google-Smtp-Source: AGHT+IHroDMzjrMbi1GTwdHWvJg1qsT8eOnPb1Srxqst0AguGEAi8pwFoty/gcHle7Kbsq9bwwpAUA==
+X-Received: by 2002:adf:ec0b:0:b0:337:10cc:77f2 with SMTP id x11-20020adfec0b000000b0033710cc77f2mr34265wrn.105.1704920380212;
+        Wed, 10 Jan 2024 12:59:40 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id k12-20020a5d6e8c000000b00336f43fa654sm5686931wrz.22.2024.01.10.12.59.05
+        by smtp.gmail.com with ESMTPSA id k12-20020a5d6e8c000000b00336f43fa654sm5686931wrz.22.2024.01.10.12.59.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 12:59:06 -0800 (PST)
-Message-ID: <98eaac00-1e3d-4c27-89f5-0b6ec0fcb710@linaro.org>
-Date: Wed, 10 Jan 2024 21:59:04 +0100
+        Wed, 10 Jan 2024 12:59:38 -0800 (PST)
+Message-ID: <171300da-3d49-4e1f-8969-9a454ecdd698@linaro.org>
+Date: Wed, 10 Jan 2024 21:59:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,8 +65,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v22 4/8] dt-bindings: soc: nuvoton: add binding for clock
- and reset registers
+Subject: Re: [PATCH v22 6/8] dt-bindings: clock: npcm845: replace reg with
+ syscon property
 Content-Language: en-US
 To: Tomer Maimon <tmaimon77@gmail.com>, mturquette@baylibre.com,
  sboyd@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -75,7 +75,7 @@ To: Tomer Maimon <tmaimon77@gmail.com>, mturquette@baylibre.com,
 Cc: openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 References: <20240108135421.684263-1-tmaimon77@gmail.com>
- <20240108135421.684263-5-tmaimon77@gmail.com>
+ <20240108135421.684263-7-tmaimon77@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,121 +121,34 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240108135421.684263-5-tmaimon77@gmail.com>
+In-Reply-To: <20240108135421.684263-7-tmaimon77@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 08/01/2024 14:54, Tomer Maimon wrote:
-> A nuvoton,*-clk-rst node is present in nuvoton-common-npcm7xx.dtsi and
-> will be added to nuvoton-common-npcm8xx.dtsi. It is necessary for the
-> NPCM7xx and NPCM8xx clock and reset drivers, and may later be used to
-> retrieve SoC model and version information.
-> 
-
-A nit, subject: drop second/last, redundant "bindings". The
-"dt-bindings" prefix is already stating that these are bindings.
-See also:
-https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
-
-> This patch adds a binding to describe this node.
-
-Please do not use "This commit/patch/change", but imperative mood. See
-longer explanation here:
-https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
-
+> Replace reg with syscon property since the clock registers handle the
+> reset registers as well.
 > 
 > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
 > ---
-
-How possibly could it be v22 if there is:
-1. No changelog
-2. No previous submissions
-?
-
-NAK, it's something completely new without any explanation.
-
-Limited review follows.
-
-
->  .../soc/nuvoton/nuvoton,npcm-clk-rst.yaml     | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml
+>  .../bindings/clock/nuvoton,npcm845-clk.yaml   | 22 +++++++++----------
+>  1 file changed, 10 insertions(+), 12 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml
-> new file mode 100644
-> index 000000000000..dfec64a8eb26
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml
-> @@ -0,0 +1,40 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/nuvoton/nuvoton,npcm-clk-rst.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Clock and reset registers block in Nuvoton SoCs
+> diff --git a/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml b/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml
+> index 0b642bfce292..c6bf05c163b4 100644
+> --- a/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml
+> +++ b/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml
+> @@ -18,8 +18,9 @@ properties:
+>      enum:
+>        - nuvoton,npcm845-clk
+>  
+> -  reg:
+> -    maxItems: 1
+> +  nuvoton,sysclk:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: phandle to access clock registers.
 
-This is vague. Any block? All blocks? Your SoC has only one block? I
-doubt, although possible.
-
-Anyway, clocks go to clock directory, not to soc! We've been here and
-you already received that feedback.
-
-
-> +
-> +maintainers:
-> +  - Tomer Maimon <tmaimon77@gmail.com>
-> +
-> +description:
-> +  The clock and reset registers are a registers block in Nuvoton SoCs that 
-> +  handle both reset and clock functionality.
-
-That's still vague. Say something useful.
-
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - nuvoton,npcm750-clk-rst
-> +          - nuvoton,npcm845-clk-rst
-> +      - const: syscon
-> +      - const: simple-mfd
-
-No, it's not a syscon and not a simple-mfd. You just said it is clock
-provider and reset controller. Thus missing clock cells and reset cells.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties:
-> +  type: object
-
-No, instead:
-additionalProperties: false
-
-> +
-> +examples:
-> +  - |
-> +    clk_rst: syscon@801000 {
-
-Suddenly a syscon?
-
-Drop unused label.
-
-> +      compatible = "nuvoton,npcm750-clk-rst", "syscon", "simple-mfd";
-> +      reg = <0x801000 0x6C>;
-
-Only lowercase hex.
-
-You just sent some v22 of something new, making all the mistakes from
-the past submissions for which you received feedback.
-> +    };
+NAK. Not explained, not justified, not reasonable, breaking ABI.
 
 Best regards,
 Krzysztof
