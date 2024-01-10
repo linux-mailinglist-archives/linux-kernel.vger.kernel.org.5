@@ -1,137 +1,189 @@
-Return-Path: <linux-kernel+bounces-22203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B1E5829ACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:58:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE889829AF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:11:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1106B264CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:58:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED7A1C20D79
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACC1487AF;
-	Wed, 10 Jan 2024 12:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF5C487A4;
+	Wed, 10 Jan 2024 13:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HcyNoWgJ"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iUpM9xzc";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iUpM9xzc"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CE348781;
-	Wed, 10 Jan 2024 12:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40AA2mwO013795;
-	Wed, 10 Jan 2024 12:58:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=/vClWtu3HlYBCHjhqdD40ETyVbpVB8kO2AGNHZOK/lQ=; b=Hc
-	yNoWgJbTUxXloJBbWm+gL+LkCAxj2pPEA398P9hwkFjniMuW/J6q/XwJc1RcCwhG
-	uM6UBj38CiJd4a+tqSri87/pPsz4omqUHPoj89csGSTiZtBsqtPvQ7Ky6r028PY+
-	zNL0SEtmBGb6sK+bfPTZf0plly1hSV9UVbn/KMaF/ssJTHYf5bfMGjhrdxeLLiPf
-	pwgrP8r9q9W3mYTrvFNR1bCeDf1KOB+HxCiAQkH/2PbHt2FyHNdlYQT4XHjnw7Xw
-	DTz9s3YY9EjMcd/OUzXQcFBCVn3v0/kO3aI81UaB1IowSbbFxabzpFtljuzG9tul
-	VX8fWzONYFffncqiGR+Q==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhs4mgf10-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 12:58:31 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ACwUlG002890
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 12:58:30 GMT
-Received: from [10.216.48.153] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 04:58:22 -0800
-Message-ID: <ba732b1c-223c-ee70-d25b-4c78b312402c@quicinc.com>
-Date: Wed, 10 Jan 2024 18:28:19 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDF448794;
+	Wed, 10 Jan 2024 13:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BA0981F8AB;
+	Wed, 10 Jan 2024 13:11:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704892280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=+Z6GZnazkXvmT3ykqKVkZG08FG2RukNYcIfqOb3XcwI=;
+	b=iUpM9xzct678dCYvhoRdWNBfjO7m2Bzrp9+ZOD36Q1MUfFwUDVkxxFWMKWm0wlcOJpODuE
+	4+wwDdJgUKkiUHR+e7xwCpZtjgKr6XDLk+x7ONRW8hjQIST9T3VOsDNDhIhaAC98EI83GN
+	Q0aXN/ZdgzJqMfLLx7WaqjAAzahQ/6k=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704892280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=+Z6GZnazkXvmT3ykqKVkZG08FG2RukNYcIfqOb3XcwI=;
+	b=iUpM9xzct678dCYvhoRdWNBfjO7m2Bzrp9+ZOD36Q1MUfFwUDVkxxFWMKWm0wlcOJpODuE
+	4+wwDdJgUKkiUHR+e7xwCpZtjgKr6XDLk+x7ONRW8hjQIST9T3VOsDNDhIhaAC98EI83GN
+	Q0aXN/ZdgzJqMfLLx7WaqjAAzahQ/6k=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4427713786;
+	Wed, 10 Jan 2024 13:01:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5dbcDTaVnmVhcwAAD6G6ig
+	(envelope-from <nik.borisov@suse.com>); Wed, 10 Jan 2024 13:01:42 +0000
+From: Nikolay Borisov <nik.borisov@suse.com>
+To: linux-kernel@vger.kernel.org,
+	x86@kernel.org
+Cc: arnd@arndb.de,
+	linux-api@vger.kernel.org,
+	Richard Palethorpe <rpalethorpe@suse.com>,
+	Nikolay Borisov <nik.borisov@suse.com>
+Subject: [PATCH RESEND] x86/entry/ia32: Ensure s32 is sign extended to s64
+Date: Wed, 10 Jan 2024 15:01:22 +0200
+Message-Id: <20240110130122.3836513-1-nik.borisov@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v5 5/5] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Content-Language: en-US
-To: Viresh Kumar <viresh.kumar@linaro.org>
-CC: Bjorn Helgaas <helgaas@kernel.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <vireshk@kernel.org>, <nm@ti.com>, <sboyd@kernel.org>,
-        <mani@kernel.org>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <bhelgaas@google.com>, <rafael@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>
-References: <20231102053013.7yt7pxin5awlu7w7@vireshk-i7>
- <20231102120950.GA115288@bhelgaas>
- <20231103051247.u4cnckzstcvs4lf5@vireshk-i7>
- <15a98ec0-214b-218b-1e3c-c09f770fce2e@quicinc.com>
- <0ba9f2af-169e-a9a2-9ae4-4c6a70b0a94e@quicinc.com>
- <20240110065757.xde2nvpr3z7c4isu@vireshk-i7>
- <376b3716-46ff-2324-73fc-f3afa3f7af1c@quicinc.com>
- <20240110073807.sqwmsyr6nmigg6zc@vireshk-i7>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240110073807.sqwmsyr6nmigg6zc@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ldLzFosc01dSUdg3R4AmVw9dR3hFeRMF
-X-Proofpoint-ORIG-GUID: ldLzFosc01dSUdg3R4AmVw9dR3hFeRMF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
- adultscore=0 impostorscore=0 spamscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100106
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [4.68 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.02)[54.51%]
+X-Spam-Score: 4.68
+X-Spam-Level: ****
+Authentication-Results: smtp-out2.suse.de;
+	none
+
+From: Richard Palethorpe <rpalethorpe@suse.com>
+
+Presently ia32 registers stored in ptregs are unconditionally cast to
+unsigned int by the ia32 stub. They are then cast to long when passed
+to __se_sys*, but will not be sign extended.
+
+This takes the sign of the syscall argument into account in the ia32
+stub. It still casts to unsigned int to avoid implementation specific
+behavior. However then casts to int or unsigned int as necessary. So
+that the following cast to long sign extends the value.
+
+This fixes the io_pgetevents02 LTP test when compiled with
+-m32. Presently the systemcall io_pgetevents_time64 unexpectedly
+accepts -1 for the maximum number of events. It doesn't appear other
+systemcalls with signed arguments are effected because they all have
+compat variants defined and wired up. A less general solution is to
+wire up the systemcall:
+https://lore.kernel.org/ltp/20210921130127.24131-1-rpalethorpe@suse.com/
+
+Fixes: ebeb8c82ffaf ("syscalls/x86: Use 'struct pt_regs' based syscall calling for IA32_EMULATION and x32")
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
+---
+
+This patch has been sent previously by Richard back in 2021 [0]. However it
+seems to have been dropped at some point and never merged. So I'm resending again
+to consider it for merging given that io_pgetevents_time64 LTP test still fails.
 
 
-On 1/10/2024 1:08 PM, Viresh Kumar wrote:
-> On 10-01-24, 12:42, Krishna Chaitanya Chundru wrote:
->> At present we are not changing the link width after link is initialized, but
->> we have plans to
->>
->> add support change link width dynamically at runtime.
-> Hmm okay.
->
->> So, I think it is better to have ICC BW voting in the driver itself.
-> I guess it is better to have more entries in the OPP table then.. 15-20 OPPs
-> isn't too many to be honest.
->
-> Replicating code is the last thing I would like to do.
->
-> Maybe you can show the different layouts of the OPP table if you are concerned.
-> We can then see if it is getting too much or not.
+[0] https://lore.kernel.org/all/20210927161955.28494-1-rpalethorpe@suse.com/
 
-Viresh,
+ arch/x86/include/asm/syscall_wrapper.h | 25 +++++++++++++++++++++----
+ include/linux/syscalls.h               |  1 +
+ 2 files changed, 22 insertions(+), 4 deletions(-)
 
-it might be less only for now may be around 20 opp entries, but PCIe 
-spec is being updated every few years and a new gen
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index 21f9407be5d3..7e88705e907f 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -58,12 +58,29 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ 		,,regs->di,,regs->si,,regs->dx				\
+ 		,,regs->r10,,regs->r8,,regs->r9)			\
 
-gen speed will release, right now PCIe GEN6 is released but I don't we 
-had any device in the market now and GEN7 is in process.
++
++/* SYSCALL_PT_ARGS is Adapted from s390x */
++#define SYSCALL_PT_ARG6(m, t1, t2, t3, t4, t5, t6)			\
++	SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5), m(t6, (regs->bp))
++#define SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5)				\
++	SYSCALL_PT_ARG4(m, t1, t2, t3, t4),  m(t5, (regs->di))
++#define SYSCALL_PT_ARG4(m, t1, t2, t3, t4)				\
++	SYSCALL_PT_ARG3(m, t1, t2, t3),  m(t4, (regs->si))
++#define SYSCALL_PT_ARG3(m, t1, t2, t3)					\
++	SYSCALL_PT_ARG2(m, t1, t2), m(t3, (regs->dx))
++#define SYSCALL_PT_ARG2(m, t1, t2)					\
++	SYSCALL_PT_ARG1(m, t1), m(t2, (regs->cx))
++#define SYSCALL_PT_ARG1(m, t1) m(t1, (regs->bx))
++#define SYSCALL_PT_ARGS(x, ...) SYSCALL_PT_ARG##x(__VA_ARGS__)
++
++#define __SC_COMPAT_CAST(t, a)						\
++	(__typeof(__builtin_choose_expr(__TYPE_IS_L(t), 0, 0U)))	\
++	(unsigned int)a
++
+ /* Mapping of registers to parameters for syscalls on i386 */
+ #define SC_IA32_REGS_TO_ARGS(x, ...)					\
+-	__MAP(x,__SC_ARGS						\
+-	      ,,(unsigned int)regs->bx,,(unsigned int)regs->cx		\
+-	      ,,(unsigned int)regs->dx,,(unsigned int)regs->si		\
+-	      ,,(unsigned int)regs->di,,(unsigned int)regs->bp)
++	SYSCALL_PT_ARGS(x, __SC_COMPAT_CAST,				\
++			__MAP(x, __SC_TYPE, __VA_ARGS__))		\
 
-So in future it might become very big table. Either we need to come up 
-with a framework in the OPP to select the BW based up on lane width
+ #define __SYS_STUB0(abi, name)						\
+ 	long __##abi##_##name(const struct pt_regs *regs);		\
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 5c0dbef55792..80a059cab260 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -128,6 +128,7 @@ struct mnt_id_req;
+ #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
+ #define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
+ #define __SC_CAST(t, a)	(__force t) a
++#define __SC_TYPE(t, a)	t
+ #define __SC_ARGS(t, a)	a
+ #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
 
-for particular speed or use the driver way.
-
-
-Thanks & Regards,
-
-Krishna Chaitanya.
+--
+2.34.1
 
 
