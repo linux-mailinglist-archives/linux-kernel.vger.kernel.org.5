@@ -1,97 +1,157 @@
-Return-Path: <linux-kernel+bounces-22209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B093829AE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC13829ADF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9434F281072
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:05:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D70B2891B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B1E48799;
-	Wed, 10 Jan 2024 13:05:47 +0000 (UTC)
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15E647F6F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4299d95547eso12318911cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:05:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704891944; x=1705496744;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h0CYESXWRwPl8oqvteNiSuteSyQk0Ky/r564akScXfg=;
-        b=q6GKmPRI3UinucRWzsgygtv+4Hw2YL8eRdYsJGfuGgl/YQMdLCY/y9HhfT0G/eIxdt
-         fB73bE8SYQ+/sSvQxWPhodLBxsyN10gbEOaWY+POxm5efRR7HfpB5qb75ZcYNAOQkPq7
-         C2/dCUSkwq7pAjWKD3Taq4Vk/iIdRhCmFY+EHBs8lHRxNoVvVSFuo1QS/drBOA5hNu4B
-         mHn3cLrC4hpTwp5fSTKNLx70U15n3hmRz80ZTO2jX5GWVHO+eP/6xM4sZlFftHRltw7Q
-         VzTZlH1gKHd4B6pPq8+cJN5/7LVUKIE6eJQdD/9WxrDeASwgcZokfh7eY34xJJM+yPCQ
-         YOkA==
-X-Gm-Message-State: AOJu0YwYTUBCQw5dsnFfAQv8aGLNJB8XBnNiAMItAvpRwH/pbzUp3V7J
-	X1z2RKuhxa3m7UdaccCO6Cg=
-X-Google-Smtp-Source: AGHT+IHe1RvNMYGKzjKIDeQa10bovKXWOKkurYaCsJ4WPcjbUKsAuCGpiIgF0NtedlK05DRgEHQERA==
-X-Received: by 2002:ac8:5d89:0:b0:429:85d9:d5f1 with SMTP id d9-20020ac85d89000000b0042985d9d5f1mr909495qtx.93.1704891944386;
-        Wed, 10 Jan 2024 05:05:44 -0800 (PST)
-Received: from Belldandy-Slimbook.tail03774.ts.net ([32.221.209.96])
-        by smtp.gmail.com with ESMTPSA id i3-20020a05622a08c300b00427e2ec0bd0sm1774371qte.73.2024.01.10.05.05.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 05:05:43 -0800 (PST)
-From: Neal Gompa <neal@gompa.dev>
-To: jirislaby@kernel.org
-Cc: dhowells@redhat.com,
-	hpa@zytor.com,
-	linux-kernel@vger.kernel.org,
-	pinskia@gmail.com,
-	kent.overstreet@linux.dev,
-	Neal Gompa <neal@gompa.dev>
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
-Date: Wed, 10 Jan 2024 08:04:53 -0500
-Message-ID: <20240110130456.142763-1-neal@gompa.dev>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <938ebce3-74c5-4fcf-9de3-849271d3581d@kernel.org>
-References: <938ebce3-74c5-4fcf-9de3-849271d3581d@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2174B4879E;
+	Wed, 10 Jan 2024 13:03:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F634176B;
+	Wed, 10 Jan 2024 13:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A8522F4;
+	Wed, 10 Jan 2024 05:04:19 -0800 (PST)
+Received: from [10.57.87.179] (unknown [10.57.87.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C61F3F64C;
+	Wed, 10 Jan 2024 05:03:31 -0800 (PST)
+Message-ID: <0cbc1708-bc50-459c-ad57-0cf283921f2e@arm.com>
+Date: Wed, 10 Jan 2024 13:04:53 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Hey all,
-
-I would like to speak in support of this too. It is not uncommon
-to see operating systems code written in C++ (notable examples are
-Haiku OS, Serenity OS, and Zircon/Fuschia) and I do feel that there
-are benefits to C++ for Linux code. Modern C++ (such as C++14 and
-newer), offers a lot of nice base language features that can make
-some of the kind of stuff that Linux does easier (as H. Peter Anvin
-has detailed in his post[1]).
-
-While I personally have some experience in a variety of programming
-languages, C++ and Python are my preferred tools, and I would
-personally be much more interested in contributing in C++ than in C.
-I imagine there are a lot of other folks out there who feel the same,
-but just don't feel like they can say it. I'll stick my neck out for
-those who won't. ;)
-
-Even though this started out as a "joke"[2], I really would like to
-see C++ code permitted in Linux.
-
-Thanks in advance and best regards,
-Neal
-
-[1]: https://lore.kernel.org/lkml/3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com/
-[2]: https://lore.kernel.org/lkml/152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V7] thermal/core/power_allocator: avoid thermal cdev can
+ not be reset
+Content-Language: en-US
+To: Di Shen <di.shen@unisoc.com>
+Cc: linux-pm@vger.kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
+ rafael@kernel.org, linux-kernel@vger.kernel.org, wvw@google.com,
+ tkjos@google.com, xuewen.yan@unisoc.com, zhanglyra@gmail.com,
+ orsonzhai@gmail.com, cindygm567@gmail.com
+References: <20240110115526.30776-1-di.shen@unisoc.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20240110115526.30776-1-di.shen@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
--- 
-真実はいつも一つ！/ Always, there's only one truth!
+
+On 1/10/24 11:55, Di Shen wrote:
+> Commit 0952177f2a1f ("thermal/core/power_allocator: Update once
+> cooling devices when temp is low") adds an update flag to avoid
+> the thermal event is triggered when there is no need, and
+> thermal cdev would be updated once when temperature is low.
+> 
+> But when the trips are writable, and switch_on_temp is set
+> to be a higher value, the cooling device state may not be
+> reset to 0, because last_temperature is smaller than the
+> switch_on_temp.
+> 
+> For example:
+> First:
+> switch_on_temp=70 control_temp=85;
+> Then userspace change the trip_temp:
+> switch_on_temp=45 control_temp=55 cur_temp=54
+> 
+> Then userspace reset the trip_temp:
+> switch_on_temp=70 control_temp=85 cur_temp=57 last_temp=54
+> 
+> At this time, the cooling device state should be reset to 0.
+> However, because cur_temp(57) < switch_on_temp(70)
+> last_temp(54) < switch_on_temp(70)  ---->  update = false,
+> update is false, the cooling device state can not be reset.
+> 
+> Considering tz->passive can also be represented the temperature
+> status, this patch modifies the update flag with tz->passive.
+> 
+> When the first time the temperature drops below switch_on, the
+> states of cooling devices can be reset once, and the tz->passive
+> is updated to 0. In the next round, because tz->passive is 0,
+> the cdev->state would not be updated.
+> 
+> By using the tz->passive as the "update" flag, the issue above
+> can be solved, and the cooling devices can be update only once
+> when the temperature is low.
+> 
+> Fixes: 0952177f2a1f ("thermal/core/power_allocator: Update once cooling devices when temp is low")
+> Cc: <stable@vger.kernel.org> # v5.13+
+> Suggested-by: Wei Wang <wvw@google.com>
+> Signed-off-by: Di Shen <di.shen@unisoc.com>
+> 
+> ---
+> V7:
+> - Some formatting changes.
+> - Add Suggested-by tag.
+> 
+> V6: [6]
+> Compared to the previous version:
+> - Not change the thermal core.
+> - Not add new variables and function.
+> - Use tz->passive as "update" flag to indicate whether the cooling
+>    devices should be reset.
+> 
+> V5: [5]
+> - Simplify the reset ops, make it no return value and no specific
+>    trip ID as argument.
+> - Extend the commit message.
+> 
+> V4: [4]
+> - Compared to V3, handle it in thermal core instead of in governor.
+> - Add an ops to the governor structure, and call it when a trip
+>    point is changed.
+> - Define reset ops for power allocator.
+> 
+> V3: [3]
+> - Add fix tag.
+> 
+> V2: [2]
+> - Compared to v1, do not revert.
+> - Add a variable(last_switch_on_temp) in power_allocator_params
+>    to record the last switch_on_temp value.
+> - Adds a function to renew the update flag and update the
+>    last_switch_on_temp when thermal trips are writable.
+> 
+> V1: [1]
+> - Revert commit 0952177f2a1f.
+> 
+> [1] https://lore.kernel.org/all/20230309135515.1232-1-di.shen@unisoc.com/
+> [2] https://lore.kernel.org/all/20230315093008.17489-1-di.shen@unisoc.com/
+> [3] https://lore.kernel.org/all/20230320095620.7480-1-di.shen@unisoc.com/
+> [4] https://lore.kernel.org/all/20230619063534.12831-1-di.shen@unisoc.com/
+> [5] https://lore.kernel.org/all/20230710033234.28641-1-di.shen@unisoc.com/
+> [6] https://lore.kernel.org/all/20240109112736.32566-1-di.shen@unisoc.com/
+> ---
+> ---
+>   drivers/thermal/gov_power_allocator.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+> index 7b6aa265ff6a..81e061f183ad 100644
+> --- a/drivers/thermal/gov_power_allocator.c
+> +++ b/drivers/thermal/gov_power_allocator.c
+> @@ -762,7 +762,7 @@ static int power_allocator_throttle(struct thermal_zone_device *tz,
+>   
+>   	trip = params->trip_switch_on;
+>   	if (trip && tz->temperature < trip->temperature) {
+> -		update = tz->last_temperature >= trip->temperature;
+> +		update = tz->passive;
+>   		tz->passive = 0;
+>   		reset_pid_controller(params);
+>   		allow_maximum_power(tz, update);
+
+Thanks for the patch, LGTM.
+
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
