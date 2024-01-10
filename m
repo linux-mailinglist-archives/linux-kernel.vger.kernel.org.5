@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-22085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 287F58298F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:25:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E81DC8298F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF56B285D0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:25:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51563B2536C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D66482CD;
-	Wed, 10 Jan 2024 11:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156A947F61;
+	Wed, 10 Jan 2024 11:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vqrEIsEY"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2045.outbound.protection.outlook.com [40.107.92.45])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5azIPoKK"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F513AC1B;
-	Wed, 10 Jan 2024 11:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816BC47F73;
+	Wed, 10 Jan 2024 11:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yhy+gsqAtwdW+Tx8GKcIp6Rrs8PW+m3jn97oaAYsS7676tbqrvsc80JFdiYzU6LJcDdI7lst+9UG82zoWXoeS6CY1E/zwBTO6SRVsyJu2gpuoPOkPixPHFQewwzusmfvBzoyvXewHQp5VE5CUleoBxqkMK1TrlRQQs2StoWtnGbdqYmCumnOYLPisY0Mc30STo9xU4bkvj1nfCR2gFEoZkwP/TYwlV1Qst0okfFQ0AzmbXdli5XjPv6m2qF8EruzdIgixIiRV2BDXKphx7DP88LAQVjyC6WnXj1pJz0m/SozJ3dCzb4O6jN9ad7e5KdKH5DgZvP+mb3d/lBQAwQ38A==
+ b=amWZMkyVANAxQpBUYnispvfWqX//xVpVgX6kAHPI/fyGR44G3TWSUxWXHDDJRJ+EeEJDXXQChtOnpljdSzfmcUqza2i9Wjpj/hZTbUhdpfPjStLtSCk1C52avIzZhxf797eeq3XBD+6yoDigYcnDH1ci7xuxpC4oiw91jIt5ANf/HD2F0aTNSDC7xSlhf99noirCII1UgqZkvtDHVNotNVQt/yYri+imOM9pR3drzjiEMjhXjSF4L6X2bmzLBg9OsK6MTFaj14lipK15eIh2gWKXBEtVfwwgKtlxJ1LfAi22n35a/pko99EoxGs+tqUHF2VDA1f/WIVPOqvWZIKQzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GKOfcYzr6aIMXZfzvl1jxcNmRnh0a8Ahz66pFK708H0=;
- b=lryO3bryTCpOQJUBC17QF4T3t7C9YnN2nLUkXDxxUphO+BeASsXLEggNUk+C4p3V02xIGY6uG2S0qWNlKvueo5oNyCfBBtMvcC2yzOE/CrvHA5D0weDM2JaaC/JIMcVKxf2FhrAxLjkjZ3GkhVQ4nbJPIKKJOFpIWRFFtA298pibtpduQ/SA0XqRXENl4I6aQCTg4kUL0hE4F8Ci6eloZQgnMNviXLQaExG7ImBrTaZ0YwNZ6J6BzryMVERSJXKgrBeiap8Wqti/SOZyNNIKhWEV14SFLUKKpQe3UfPRgDKZV9/DRt0NdNFAvdNmL5iFa7EBocLFWpzl4334guudIw==
+ bh=UltRSwdK6JIZBcVF/T6VTIZcForwpIUmoqVOL1VNIKk=;
+ b=AaQqY8Uphv2qGtXnYOmgdbbqvj4ckljHKk+ZBY+OWT6C8ZigJvtA1eBr7oJjPxYBgjW4Pbr6flAKlj5F3CYguty6vyzzOkoRzMBW5eNdQXZN8jeSRkD0k48XFQmN4sUZ6bvB6pQZMYGqKm/scLG9tpDzLV9j8om37OT7uW8ZfjUQW4Z2zBsDPvs0j3u0Ig4hDwgGxgjqgdbWqa783Iz7RrK2yG/gerdQ+yNKfUi9uYGIhVbh1ZLVdcsi8UcJUHXNi0xuIs9jLJLdEC7ThmVw88d4MkYwHwUBhmfruiKouCC2qF9gy0bRDYZ2TFoH4tKgkaEocG3z6bUkI37bZmszZA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=canonical.com smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GKOfcYzr6aIMXZfzvl1jxcNmRnh0a8Ahz66pFK708H0=;
- b=vqrEIsEYvDdOG+Yf+mK+7jUZU+2lMAdry0NDyF1hc0Kw8jelYGbsTEU+Rr1i4o464CMOHq6Erpf82YKx5PRWoMlFa3A+5a65Px/gJT2wAA4FRMtVjuA5DGjfwuLNl7iDwCPreDuDXaDQaKQM78Ko6a88nbm0qCXljVbOu4VogyA=
-Received: from CY5PR15CA0119.namprd15.prod.outlook.com (2603:10b6:930:68::27)
- by SA1PR12MB8841.namprd12.prod.outlook.com (2603:10b6:806:376::5) with
+ bh=UltRSwdK6JIZBcVF/T6VTIZcForwpIUmoqVOL1VNIKk=;
+ b=5azIPoKKAGdi+r+XXylfE/SohCcw9HK3uaAZLgtmLKfbp3wbCPRq+kkFRtdo4SHM2MrT28PJH323k4snygiykyyxQNloK/BKKGD9zsi9cXvAhbgbS0/xT+eTI0JftB5Dd0Cxti2MJsELDJbabIrIx9OrDzeRKgpqhWkH4teSTEo=
+Received: from CYZPR11CA0001.namprd11.prod.outlook.com (2603:10b6:930:8d::28)
+ by PH7PR12MB9068.namprd12.prod.outlook.com (2603:10b6:510:1f4::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
- 2024 11:23:51 +0000
-Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
- (2603:10b6:930:68:cafe::91) by CY5PR15CA0119.outlook.office365.com
- (2603:10b6:930:68::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17 via Frontend
- Transport; Wed, 10 Jan 2024 11:23:51 +0000
+ 2024 11:24:20 +0000
+Received: from CY4PEPF0000EE31.namprd05.prod.outlook.com
+ (2603:10b6:930:8d:cafe::5e) by CYZPR11CA0001.outlook.office365.com
+ (2603:10b6:930:8d::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18 via Frontend
+ Transport; Wed, 10 Jan 2024 11:24:20 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -53,13 +53,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ CY4PEPF0000EE31.mail.protection.outlook.com (10.167.242.37) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 11:23:51 +0000
+ 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 11:24:20 +0000
 Received: from BLR-L-NUPADHYA.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 10 Jan
- 2024 05:23:45 -0600
+ 2024 05:24:14 -0600
 From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 To: <john.johansen@canonical.com>, <paul@paul-moore.com>, <jmorris@namei.org>,
 	<serge@hallyn.com>
@@ -69,9 +69,9 @@ CC: <linux-security-module@vger.kernel.org>, <apparmor@lists.ubuntu.com>,
 	<raghavendra.kodsarathimmappa@amd.com>, <paulmck@kernel.org>,
 	<boqun.feng@gmail.com>, <vinicius.gomes@intel.com>, <mjguzik@gmail.com>,
 	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: [RFC 7/9] percpu-rcuref: Add basic infrastructure
-Date: Wed, 10 Jan 2024 16:48:54 +0530
-Message-ID: <20240110111856.87370-7-Neeraj.Upadhyay@amd.com>
+Subject: [RFC 8/9] apparmor: Switch labels to percpu rcurefcount in unmanaged mode
+Date: Wed, 10 Jan 2024 16:48:55 +0530
+Message-ID: <20240110111856.87370-8-Neeraj.Upadhyay@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <f184a2d6-7892-4e43-a0cd-cab638c3d5c2@amd.com>
 References: <f184a2d6-7892-4e43-a0cd-cab638c3d5c2@amd.com>
@@ -87,568 +87,653 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|SA1PR12MB8841:EE_
-X-MS-Office365-Filtering-Correlation-Id: 51909158-1f67-4bf5-791a-08dc11ce9f85
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE31:EE_|PH7PR12MB9068:EE_
+X-MS-Office365-Filtering-Correlation-Id: a32288dd-8937-4f4c-9923-08dc11ceb089
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	2MaRpC1axWmVwgDQfK1AlMDYkNBjk4tAsF7Q4ce5F7GglhpDkJ7zWtACQeypxwUBIYdNwL+SgLJ0t+4XDu7xKddWw4cQWi0mpxPuupX7xB54rF4iH/ntBRKpHl0xdaguhOUS7zWAjQK/zOHwrI7OjkNw64DTJNGcNMeV7VCBtjQw0Ld6Q+9ErlY8TgChOzvmGisV6TQq182whuo3sGpdHATfq7t0su7mvC1vlDG6SdCgZkaMsTEzWpQ1ilt3EAzfGaTm3ADpWBHXKuXMRNLePn/6bahTxcITX09dpreyUi6gPsULFkiRo89nYimlp3VuO/MO7r/z40BdWNpkWuT2xXjS38uvfQYd3NjqaSO9Bx81CkzMJvY8TaV1u6TfcLRxAm6HHNV1/QzGGiOh7OpR+Hr0HJMzjiuxekgvPAM6amYuxJcn63Os8aH8nNlIT+8zcNS7yaDauh2G9BufTN0dLixbbtShXWjyyH6LXnpXI2qR4oIEKXxZsaZcKZFQaXyqOlrZeUC7C6IR8JCcL0EOuk6PKW06KjFIkzDF92Xl7Sw9V5dC1vvZEpzBBedGe5B/lJjjfFaIt82IgiX9fXAgVksp6fHBCHT9eTH/RJbHrCQuG+DqY1uqOWW2I1lZon/VINlRYm4QmbFWfGWmpXmSVMLlLtsWWKxp7qEH7Nyev96GZ/x6QRuIYdNk0fND1ZkQTSrJCXWU5vFNA1+KsTdF/zZGOqsaTd/JZx76UytCFa/wfbo0zeTzA5DJ4fXaIDcMth+PIX2gWSHzcaQWjhMtig==
+	OEJGFVpxwvOm8kfJFGTxC7iMq5MuzkpehckbSQHPq38OZK1w8PRsbN8kQVEDqqMURpZXZQpWSe6N0o9IJxQTzVPs6OG+FItr1zrtTd+5eMzdee6C6hqNRngQiLksKVCmlwAFWAZYGqvuYcCKOvGGBMt80He2dAXimT2FqKhs6nJVnxUov4WZtuxIZXvfMN58wMGwAzZhaa6mNTppxKtrqmMdL9ClOCmWLki+2UclAYNDXAHx78iFm94RNLd1izshAPVH9mOr6KVuverb/yS24uxjJX140I2s2fFasRAiCppxM5gVefEifuS/VPFKTbGmPOruRradRZCG7nWaEKOaOt3hQlNOUsar0KbV4pRGF9C8RrLHlT2qQxxXEVoUqQBCIDy4EZ+POjRkrQSsriMjI3L62oHDmhyLgFThKjKTBzagx/QSQbXOh1e9rLglqd5MOZJPq60BY0hpcHpgKTpxchUBnQYq07bFdopes/MN+ofVOPS2XMj2RObwvQ+g/4p9vLhCsxf06WE10ZMMfvDIIIiY+gc7smEPq6P1MHeDngVH6GQECfwnUkzC4/PCCD4PzYlNclfGXOTfCt+ZueGhj0molf8aVvuoBlE+WHn4uuCkJsEqNcYsz9TUtm5HPZRIncgZ6528NH41NYVjevd9hFosKnL5LmGrJ/IDaYgS+vxglWOBsneyHg1j7R+5qLdeQYxweUo5y2oVMIeYmD4/ii+e4ryAHi58sAim887FLfMUvhYzwgkznU3WW5PltBTVaLy4jNPVAk3Puwxcb4nC8w==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(376002)(136003)(230922051799003)(64100799003)(82310400011)(451199024)(1800799012)(186009)(36840700001)(40470700004)(46966006)(40460700003)(40480700001)(1076003)(426003)(336012)(2616005)(478600001)(7696005)(6666004)(26005)(82740400003)(356005)(86362001)(36756003)(81166007)(2906002)(41300700001)(30864003)(47076005)(5660300002)(83380400001)(7416002)(54906003)(36860700001)(4326008)(110136005)(8936002)(316002)(70206006)(16526019)(8676002)(70586007)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(39860400002)(396003)(230922051799003)(186009)(451199024)(82310400011)(64100799003)(1800799012)(36840700001)(46966006)(40470700004)(83380400001)(316002)(426003)(1076003)(2616005)(336012)(26005)(16526019)(82740400003)(36860700001)(47076005)(8936002)(8676002)(5660300002)(30864003)(7416002)(2906002)(54906003)(478600001)(7696005)(4326008)(6666004)(110136005)(70206006)(70586007)(41300700001)(356005)(36756003)(81166007)(86362001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 11:23:51.5933
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 11:24:20.0791
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51909158-1f67-4bf5-791a-08dc11ce9f85
+X-MS-Exchange-CrossTenant-Network-Message-Id: a32288dd-8937-4f4c-9923-08dc11ceb089
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE37.namprd05.prod.outlook.com
+	CY4PEPF0000EE31.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8841
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9068
 
-Add infrastructure for managing reclaims of percpu refs,
-which use RCU grace period before reclaiming the referenced
-objects.
-
-The refcount management of percpu rcuref is same as
-normal percpu refcount, with the only difference that,
-instead of a explicit shutdown percpu_ref_kill() operation
-by the user, the initial ref is managed by a kworker.
-
-The ref can be initialized to start either in managed or
-unmanaged mode. In managed mode, the ref is a set of percpu
-counters. There is an extra reference acquired for the llist
-node and provides the notion of initial ref in percpu refcount.
-
-During normal operation, users ref get() and put() operations
-increment/decrement the percpu counters. There is no check
-for drop-to-zero while in percpu mode.
-
-Periodically, the manager kworker thread scans all percpu
-rcurefs. It switches ref to centralized atomic counter mode
-and checks whether the object has no references left. The ref is
-dropped if there are no references. Otherwise, the ref is switched
-back to percpu mode again. During this ref scan, there is a
-window where ref operates in atomic mode. This window spans
-one RCU grace period.
-
-There is a provision to start a percpu rcuref in unmanaged mode.
-This is provided for cases, where there is a need to avoid
-dependency on kworker and RCU grace period. In addition,
-unmanaged mode can be used for a ref, for which the release
-function initially does not wait for RCU grace period, for
-example when the enclosing object initialization fails, and
-there is a rollback operation in error paths. Later, when
-object initialization is complete, ref can be switched to
-percpu managed mode.
+Replaces label kref with percpu rcurefcount.
+The percpu rcuref is initialized in unmanaged/atomic mode,
+as labels do not use RCU grace period based release
+for labels which do not have a namespace associated
+with them yet. Subsequent patch moves the managed/percpu
+mode, at points where rcu grace period based cleanup
+is guaranteed.
 
 Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 ---
- .../admin-guide/kernel-parameters.txt         |   8 +
- include/linux/percpu-rcurefcount.h            | 115 ++++++
- lib/Makefile                                  |   2 +-
- lib/percpu-rcurefcount.c                      | 336 ++++++++++++++++++
- 4 files changed, 460 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/percpu-rcurefcount.h
- create mode 100644 lib/percpu-rcurefcount.c
+ include/linux/percpu-refcount.h       |   2 -
+ lib/percpu-refcount.c                 |  93 -----------
+ security/apparmor/include/label.h     |  14 +-
+ security/apparmor/include/policy.h    |  32 +---
+ security/apparmor/include/policy_ns.h |  24 ---
+ security/apparmor/label.c             |   8 +-
+ security/apparmor/lsm.c               | 224 --------------------------
+ security/apparmor/policy_ns.c         |   6 +-
+ 8 files changed, 15 insertions(+), 388 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index e0891ac76ab3..b2536c4223c1 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4576,6 +4576,14 @@
- 			allocator.  This parameter is primarily	for debugging
- 			and performance comparison.
+diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
+index 9e30c458cc00..d73a1c08c3e3 100644
+--- a/include/linux/percpu-refcount.h
++++ b/include/linux/percpu-refcount.h
+@@ -131,8 +131,6 @@ void percpu_ref_kill_and_confirm(struct percpu_ref *ref,
+ void percpu_ref_resurrect(struct percpu_ref *ref);
+ void percpu_ref_reinit(struct percpu_ref *ref);
+ bool percpu_ref_is_zero(struct percpu_ref *ref);
+-void percpu_ref_swap_percpu_sync(struct percpu_ref *ref1, struct percpu_ref *ref2);
+-void percpu_ref_transfer_percpu_count(struct percpu_ref *ref1, struct percpu_ref *ref2);
  
-+	percpu-rcurefcount.ref_scan_interval= [KNL]
-+			Interval (in ms) between 2 scans of percpu rcu ref
-+			managed refs.
-+
-+	percpu-rcurefcount.max_ref_scan_count= [KNL]
-+			Count of the maximum number of pcpu refs scanned during
-+			one scan of managed refs.
-+
- 	pirq=		[SMP,APIC] Manual mp-table setup
- 			See Documentation/arch/x86/i386/IO-APIC.rst.
- 
-diff --git a/include/linux/percpu-rcurefcount.h b/include/linux/percpu-rcurefcount.h
-new file mode 100644
-index 000000000000..6022aee1f76e
---- /dev/null
-+++ b/include/linux/percpu-rcurefcount.h
-@@ -0,0 +1,115 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Percpu refcounts with RCU protected release operation.
-+ *
-+ * Percpu rcuref is similar to percpu refs. However, they are specialized for
-+ * use cases, where the release of  the object is protected by a RCU grace
-+ * period.
-+ *
-+ * The initial ref is managed by the reclaim logic; so, users do not need to
-+ * keep track of their initial ref. This is particularly useful, when object's
-+ * has references active, beyond the release of the initial reference.
-+ *
-+ * The current implementation is just a wrapper around the percpu refcount
-+ * implementation, to reuse the existing percpu and atomic ref switch
-+ * management. Switching to a standalone implementation might be required
-+ * if percpuref implementation switches to a non-rcu managed read sections.
-+ */
-+
-+#ifndef _LINUX_PERCPU_RCUREFCOUNT_H
-+#define _LINUX_PERCPU_RCUREFCOUNT_H
-+
-+#include <linux/percpu-refcount.h>
-+
-+struct percpu_rcuref;
-+
-+struct percpu_rcuref {
-+	struct percpu_ref pcpu_ref;
-+	struct llist_node node;
-+};
-+
-+int __must_check percpu_rcuref_init(struct percpu_rcuref *rcuref,
-+				 percpu_ref_func_t *release, gfp_t gfp);
-+int __must_check percpu_rcuref_init_unmanaged(struct percpu_rcuref *rcuref,
-+				 percpu_ref_func_t *release, gfp_t gfp);
-+int percpu_rcuref_manage(struct percpu_rcuref *rcuref);
-+bool percpu_rcuref_is_zero(struct percpu_rcuref *rcuref);
-+void percpu_rcuref_exit(struct percpu_rcuref *rcuref);
-+
-+/**
-+ * percpu_rcuref_get_many - increment a percpu rcuref count
-+ * @rcuref: percpu_rcuref to get
-+ * @nr: number of references to get
-+ *
-+ * Analogous to percpu_ref_get_many().
-+ */
-+static inline void percpu_rcuref_get_many(struct percpu_rcuref *rcuref, unsigned long nr)
-+{
-+	percpu_ref_get_many(&rcuref->pcpu_ref, nr);
-+}
-+
-+/**
-+ * percpu_rcuref_get - increment a percpu rcuref count
-+ * @rcuref: percpu_rcuref to get
-+ *
-+ * Analogous to percpu_ref_get().
-+ *
-+ */
-+static inline void percpu_rcuref_get(struct percpu_rcuref *rcuref)
-+{
-+	percpu_rcuref_get_many(rcuref, 1);
-+}
-+
-+/**
-+ * percpu_rcuref_tryget_many - try to increment a percpu rcuref count
-+ * @rcuref: percpu_rcuref to try-get
-+ * @nr: number of references to get
-+ *
-+ * Increment a percpu rcuref count  by @nr unless its count already reached zero.
-+ * Returns %true on success; %false on failure.
-+ *
-+ */
-+static inline bool percpu_rcuref_tryget_many(struct percpu_rcuref *rcuref,
-+					  unsigned long nr)
-+{
-+	return percpu_ref_tryget_many(&rcuref->pcpu_ref, nr);
-+}
-+
-+/**
-+ * percpu_rcuref_tryget - try to increment a percpu rcuref count
-+ * @rcuref: percpu_rcuref to try-get
-+ *
-+ * Increment a percpu rcurefcount unless its count already reached zero.
-+ * Returns %true on success; %false on failure.
-+ *
-+ */
-+static inline bool percpu_rcuref_tryget(struct percpu_rcuref *rcuref)
-+{
-+	return percpu_rcuref_tryget_many(rcuref, 1);
-+}
-+
-+/**
-+ * percpu_rcuref_put_many - decrement a percpu rcuref count
-+ * @rcuref: percpu_rcuref to put
-+ * @nr: number of references to put
-+ *
-+ * Decrement the refcount, and if 0, call the release function (which was passed
-+ * to percpu_rcuref_init())
-+ */
-+static inline void percpu_rcuref_put_many(struct percpu_rcuref *rcuref, unsigned long nr)
-+{
-+	percpu_ref_put_many(&rcuref->pcpu_ref, nr);
-+}
-+
-+/**
-+ * percpu_rcuref_put - decrement a percpu rcuref count
-+ * @rcuref: percpu_rcuref to put
-+ *
-+ * Decrement the refcount, and if 0, call the release function (which was passed
-+ * to percpu_ref_init())
-+ */
-+static inline void percpu_rcuref_put(struct percpu_rcuref *rcuref)
-+{
-+	percpu_rcuref_put_many(rcuref, 1);
-+}
-+#endif
-diff --git a/lib/Makefile b/lib/Makefile
-index 6b09731d8e61..11da2c586591 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -46,7 +46,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
- 	 bust_spinlocks.o kasprintf.o bitmap.o scatterlist.o \
- 	 list_sort.o uuid.o iov_iter.o clz_ctz.o \
- 	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
--	 percpu-refcount.o rhashtable.o base64.o \
-+	 percpu-refcount.o  percpu-rcurefcount.o rhashtable.o base64.o \
- 	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
- 	 generic-radix-tree.o bitmap-str.o
- obj-$(CONFIG_STRING_SELFTEST) += test_string.o
-diff --git a/lib/percpu-rcurefcount.c b/lib/percpu-rcurefcount.c
-new file mode 100644
-index 000000000000..d0f2d5e88f98
---- /dev/null
-+++ b/lib/percpu-rcurefcount.c
-@@ -0,0 +1,336 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/moduleparam.h>
+ /**
+  * percpu_ref_kill - drop the initial ref
+diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
+index 36814446db34..668f6aa6a75d 100644
+--- a/lib/percpu-refcount.c
++++ b/lib/percpu-refcount.c
+@@ -477,96 +477,3 @@ void percpu_ref_resurrect(struct percpu_ref *ref)
+ 	spin_unlock_irqrestore(&percpu_ref_switch_lock, flags);
+ }
+ EXPORT_SYMBOL_GPL(percpu_ref_resurrect);
+-
+-static void percpu_ref_swap_percpu_rcu(struct rcu_head *rcu)
+-{
+-	struct percpu_ref_data *data = container_of(rcu,
+-			struct percpu_ref_data, rcu);
+-	struct percpu_ref *ref = data->ref;
+-
+-	data->confirm_switch(ref);
+-	data->confirm_switch = NULL;
+-	wake_up_all(&percpu_ref_switch_waitq);
+-
+-}
+-
+-static void __percpu_ref_swap_percpu(struct percpu_ref *ref, percpu_ref_func_t *confirm_switch)
+-{
+-	ref->data->confirm_switch = confirm_switch ?:
+-		percpu_ref_noop_confirm_switch;
+-	call_rcu_hurry(&ref->data->rcu,
+-		       percpu_ref_swap_percpu_rcu);
+-}
+-
+-/**
+- * percpuref_swap_percpu_sync - Swap percpu counter of one ref with other
+- * @ref1: First perpcu_ref to swap the counter
+- * @ref2: Second percpu_ref for counter swap
+- */
+-void percpu_ref_swap_percpu_sync(struct percpu_ref *ref1, struct percpu_ref *ref2)
+-{
+-	unsigned long __percpu *percpu_count;
+-	unsigned long flags;
+-	struct percpu_ref_data *data1 = ref1->data;
+-	struct percpu_ref_data *data2 = ref2->data;
+-	unsigned long percpu_cnt_ptr1 = ref1->percpu_count_ptr;
+-	unsigned long percpu_cnt_ptr2 = ref2->percpu_count_ptr;
+-	atomic_long_t count1 = ref1->data->count;
+-	atomic_long_t count2 = ref2->data->count;
+-
+-	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
+-	wait_event_lock_irq(percpu_ref_switch_waitq,
+-			    !data1->confirm_switch && !data2->confirm_switch,
+-			    percpu_ref_switch_lock);
+-	if (!__ref_is_percpu(ref1, &percpu_count) ||
+-	    !__ref_is_percpu(ref2, &percpu_count)) {
+-		spin_unlock_irqrestore(&percpu_ref_switch_lock, flags);
+-		return;
+-	}
+-	WRITE_ONCE(ref1->percpu_count_ptr, percpu_cnt_ptr2);
+-	WRITE_ONCE(ref2->percpu_count_ptr, percpu_cnt_ptr1);
+-
+-	__percpu_ref_swap_percpu(ref1, NULL);
+-	__percpu_ref_swap_percpu(ref2, NULL);
+-	ref1->data->count = count2;
+-	ref2->data->count = count1;
+-	spin_unlock_irqrestore(&percpu_ref_switch_lock, flags);
+-	wait_event(percpu_ref_switch_waitq, !ref1->data->confirm_switch &&
+-					    !ref2->data->confirm_switch);
+-}
+-
+-/**
+- * percpu_ref_transfer_percpu_count - Transfer percpu counts of one ref to other
+- * @ref1: perpcu_ref to transfer the counters to
+- * @ref2: percpu_ref to transfer the counters from
+- *
+- * The per cpu counts of ref2 are transferred to the atomic counter of ref1.
+- * The ref2 is expected to be inactive.
+- */
+-void percpu_ref_transfer_percpu_count(struct percpu_ref *ref1, struct percpu_ref *ref2)
+-{
+-	unsigned long __percpu *percpu_count = percpu_count_ptr(ref2);
+-	struct percpu_ref_data *data1 = ref1->data;
+-	struct percpu_ref_data *data2 = ref2->data;
+-	unsigned long count = 0;
+-	unsigned long flags;
+-	int cpu;
+-
+-	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
+-	wait_event_lock_irq(percpu_ref_switch_waitq,
+-			    !data1->confirm_switch && !data2->confirm_switch,
+-			    percpu_ref_switch_lock);
+-
+-	if (!__ref_is_percpu(ref1, &percpu_count) ||
+-	    !__ref_is_percpu(ref2, &percpu_count)) {
+-		spin_unlock_irqrestore(&percpu_ref_switch_lock, flags);
+-		return;
+-	}
+-
+-	for_each_possible_cpu(cpu) {
+-		count += *per_cpu_ptr(percpu_count, cpu);
+-		*per_cpu_ptr(percpu_count, cpu) = 0;
+-	}
+-	atomic_long_add((long)count, &ref1->data->count);
+-	spin_unlock_irqrestore(&percpu_ref_switch_lock, flags);
+-}
+diff --git a/security/apparmor/include/label.h b/security/apparmor/include/label.h
+index 0fc4879930dd..3feb3a65a00c 100644
+--- a/security/apparmor/include/label.h
++++ b/security/apparmor/include/label.h
+@@ -14,6 +14,7 @@
+ #include <linux/audit.h>
+ #include <linux/rbtree.h>
+ #include <linux/rcupdate.h>
 +#include <linux/percpu-rcurefcount.h>
-+
-+static LLIST_HEAD(pcpu_rcuref_head);
-+
-+/*
-+ * The refcount management of percpu rcuref is same as
-+ * normal percpu refcount, with the only difference that,
-+ * instead of a explicit shutdown percpu_ref_kill() operation
-+ * by the user, the initial ref is managed by a kworker.
-+ *
-+ * The ref can be initialized to start either in managed or
-+ * unmanaged mode. In managed mode, the ref is a set of percpu
-+ * counters. There is an extra reference acquired for the llist
-+ * node and provides the notion of initial ref in percpu refcount.
-+ *
-+ * During normal operation, users ref get() and put() operations
-+ * increment/decrement the percpu counters. There is no check
-+ * for drop-to-zero while in percpu mode.
-+ *
-+ * Periodically, the manager kworker thread scans all percpu
-+ * rcurefs. It switches ref to centralized atomic counter mode
-+ * and checks whether the object has no references left. The ref is
-+ * dropped if there are no references. Otherwise, the ref is switched
-+ * back to percpu mode again. During this ref scan, there is a
-+ * window where ref operates in atomic mode. This window spans
-+ * one RCU grace period.
-+ *
-+ * There is a provision to start a percpu rcuref in unmanaged mode.
-+ * This is provided for cases, where there is a need to avoid
-+ * dependency on kworker and RCU grace period. In addition,
-+ * unmanaged mode can be used for a ref, for which the release
-+ * function initially does not wait for RCU grace period, for
-+ * example when the enclosing object initialization fails, and
-+ * there is a rollback operation in error paths. Later, when
-+ * object initialization is complete, ref can be switched to
-+ * percpu managed mode.
-+ */
-+/**
-+ * percpu_rcuref_init - initialize a percpu rcuref count
-+ * @rcuref: percpu_rcuref to initialize
-+ * @release: function which will be called when refcount hits 0
-+ * @gfp: allocation mask to use
-+ *
-+ * Initializes @rcuref.  @rcuref starts out in percpu mode with a refcount of 2.
-+ * The initial ref is managed by the pcpu rcuref release worker kthread.
-+ * The second reference is for the user.
-+ *
-+ * Note that @release must not sleep - it can block release of other
-+ * pcpu rcurefs.
-+ */
-+int percpu_rcuref_init(struct percpu_rcuref *rcuref, percpu_ref_func_t *release, gfp_t gfp)
-+{
-+	int ret;
-+
-+	ret = percpu_ref_init(&rcuref->pcpu_ref, release,
-+			      PERCPU_REF_ALLOW_REINIT, gfp);
-+	if (ret)
-+		return ret;
-+	percpu_ref_get(&rcuref->pcpu_ref);
-+	llist_add(&rcuref->node, &pcpu_rcuref_head);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(percpu_rcuref_init);
-+
-+/**
-+ * percpu_rcuref_init_unmanaged - initialize a percpu rcuref count in
-+ *                                unmanaged (atomic) mode.
-+ * @rcuref: percpu_rcuref to initialize
-+ * @release: function which will be called when refcount hits 0
-+ * @gfp: allocation mask to use
-+ *
-+ * Initializes @rcuref.  @rcuref starts out in unmanaged/atomic mode
-+ * with a refcount of 1.
-+ * The initial ref is passed to the user and ref management is
-+ * auto, the last put operation releases the ref.
-+ * The ref may be initialized in this mode, to avoid dependency
-+ * on workqueue and RCU, for early boot code; and for cases where
-+ * a ref starts as non-RCU release and switches to RCU grace period
-+ * based release of the reference. The percpu_rcuref_manage() call
-+ * can be used to switch this ref to managed mode, while the ref
-+ * is active. This operation is non-reversible, and the ref remains
-+ * in managed mode, for its lifeline, until it is released by the
-+ * pcpu release kworker.
-+ *
-+ * Note that @release must not sleep - if the ref is switched to
-+ * managed mode, it can block release of other pcpu rcurefs.
-+ */
-+int percpu_rcuref_init_unmanaged(struct percpu_rcuref *rcuref,
-+				 percpu_ref_func_t *release, gfp_t gfp)
-+{
-+	int ret;
-+
-+	ret = percpu_ref_init(&rcuref->pcpu_ref, release, PERCPU_REF_INIT_ATOMIC, gfp);
-+	if (!ret)
-+		init_llist_node(&rcuref->node);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(percpu_rcuref_init_unmanaged);
-+
-+/**
-+ * percpu_rcuref_manage - Switch an unmanaged ref to percpu mode.
-+ *
-+ * @rcuref: percpu_rcuref to initialize
-+ * @release: function which will be called when refcount hits 0
-+ * @gfp: allocation mask to use
-+ *
-+ */
-+int percpu_rcuref_manage(struct percpu_rcuref *rcuref)
-+{
-+	if (WARN_ONCE(!percpu_rcuref_tryget(rcuref), "Percpu rcuref is not active\n"))
-+		return -1;
-+	if (WARN_ONCE(llist_on_list(&rcuref->node), "Percpu rcuref already managed\n")) {
-+		percpu_rcuref_put(rcuref);
-+		return -2;
-+	}
-+	percpu_ref_switch_to_percpu(&rcuref->pcpu_ref);
-+	/* Ensure ordering of percpu mode switch and node scan */
-+	smp_mb();
-+	llist_add(&rcuref->node, &pcpu_rcuref_head);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(percpu_rcuref_manage);
-+
-+/**
-+ * percpu_rcuref_is_zero - test whether a percpu rcuref count reached zero
-+ * @rcuref: percpu_rcuref to test
-+ *
-+ * Returns %true if @ref reached zero.
-+ */
-+bool percpu_rcuref_is_zero(struct percpu_rcuref *rcuref)
-+{
-+	return percpu_ref_is_zero(&rcuref->pcpu_ref);
-+}
-+EXPORT_SYMBOL_GPL(percpu_rcuref_is_zero);
-+
-+/**
-+ * percpu_rcuref_exit - undo percpu_rcuref_init()
-+ * @rcuref: percpu_rcuref to exit
-+ *
-+ * This function exits @rcuref.  The caller is responsible for ensuring that
-+ * @rcuref is no longer in active use.  The usual places to invoke this
-+ * function from are the @rcuref->release() callback or in init failure path
-+ * where percpu_rcuref_init() succeeded but other parts of the initialization
-+ * of the embedding object failed.
-+ */
-+void percpu_rcuref_exit(struct percpu_rcuref *rcuref)
-+{
-+	percpu_ref_exit(&rcuref->pcpu_ref);
-+	init_llist_node(&rcuref->node);
-+}
-+
-+#define DEFAULT_PCPU_RCUREF_SCAN_INTERVAL_MS    5000
-+/* Interval duration between two ref scans. */
-+static ulong ref_scan_interval = DEFAULT_PCPU_RCUREF_SCAN_INTERVAL_MS;
-+module_param(ref_scan_interval, ulong, 0444);
-+
-+#define DEFAULT_PCPU_RCUREF_MAX_SCAN_COUNT      100
-+/* Number of pcpu refs scanned in one iteration of worker execution. */
-+static int max_ref_scan_count = DEFAULT_PCPU_RCUREF_MAX_SCAN_COUNT;
-+module_param(max_ref_scan_count, int, 0444);
-+
-+static void percpu_rcuref_release_work_fn(struct work_struct *work);
-+
-+/*
-+ * Sentinel llist nodes, for lockless list traveral and deletions by
-+ * the pcpu rcuref release worker, while nodes are added from normal
-+ * from percpu_rcuref_init() and percpu_rcuref_manage().
-+ *
-+ * Sentinel node marks the head of list traversal for the current
-+ * iteration of kworker execution.
-+ */
-+struct pcpu_rcuref_sen_node {
-+	bool inuse;
-+	struct llist_node node;
-+};
-+
-+/*
-+ * We need two sentinel nodes for lockless list manipulations from release
-+ * worker - first node will be used in current reclaim iteration.The second
-+ * node will be used in next iteration. Next iteration marks the first node
-+ * as free, for use in following iteration.
-+ */
-+#define PCPU_RCUREF_SEN_NODES_COUNT     2
-+
-+/* Track last processed percpu rcuref node */
-+static struct llist_node *last_pcu_rcuref_node;
-+
-+static struct pcpu_rcuref_sen_node
-+	pcpu_rcuref_sen_nodes[PCPU_RCUREF_SEN_NODES_COUNT];
-+
-+static DECLARE_DELAYED_WORK(percpu_rcuref_release_work,
-+			    percpu_rcuref_release_work_fn);
-+
-+static bool percpu_rcuref_is_sen_node(struct llist_node *node)
-+{
-+	return &pcpu_rcuref_sen_nodes[0].node <= node &&
-+		node <= &pcpu_rcuref_sen_nodes[PCPU_RCUREF_SEN_NODES_COUNT - 1].node;
-+}
-+
-+static struct llist_node *percpu_rcuref_get_sen_node(void)
-+{
-+	int i;
-+	struct pcpu_rcuref_sen_node *sn;
-+
-+	for (i = 0; i < PCPU_RCUREF_SEN_NODES_COUNT; i++) {
-+		sn = &pcpu_rcuref_sen_nodes[i];
-+		if (!sn->inuse) {
-+			sn->inuse = true;
-+			return &sn->node;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static void percpu_rcuref_put_sen_node(struct llist_node *node)
-+{
-+	struct pcpu_rcuref_sen_node *sn = container_of(node, struct pcpu_rcuref_sen_node, node);
-+
-+	sn->inuse = false;
-+}
-+
-+static void percpu_rcuref_put_all_sen_nodes_except(struct llist_node *node)
-+{
-+	int i;
-+
-+	for (i = 0; i < PCPU_RCUREF_SEN_NODES_COUNT; i++) {
-+		if (&pcpu_rcuref_sen_nodes[i].node == node)
-+			continue;
-+		pcpu_rcuref_sen_nodes[i].inuse = false;
-+		init_llist_node(&pcpu_rcuref_sen_nodes[i].node);
-+	}
-+}
-+
-+static struct workqueue_struct *percpu_rcuref_wq;
-+
-+static void percpu_rcuref_release_work_fn(struct work_struct *work)
-+{
-+	struct llist_node *pos, *first, *head, *prev, *next;
-+	struct percpu_rcuref *rcuref;
-+	struct llist_node *sen_node;
-+	int count = 0;
-+	bool held;
-+
-+	first = READ_ONCE(pcpu_rcuref_head.first);
-+	if (!first)
-+		goto queue_release_work;
-+
-+	if (last_pcu_rcuref_node == NULL || last_pcu_rcuref_node->next == NULL) {
-+retry_sentinel_get:
-+		sen_node = percpu_rcuref_get_sen_node();
-+		/*
-+		 * All sentinel nodes are in use? This should not happen, as we
-+		 * require only one sentinel for the start of list traversal and
-+		 * other sentinel node is freed during the traversal.
-+		 */
-+		if (WARN_ONCE(!sen_node, "Percpu RCU ref sentinel nodes exhausted\n")) {
-+			/* Use first node as the sentinel node */
-+			head = first->next;
-+			if (!head) {
-+				struct llist_node *ign_node = NULL;
-+				/*
-+				 * We exhausted sentinel nodes. However, there aren't
-+				 * enough nodes in the llist. So, we have leaked
-+				 * sentinel nodes. Reclaim sentinels and retry.
-+				 */
-+				if (percpu_rcuref_is_sen_node(first))
-+					ign_node = first;
-+				percpu_rcuref_put_all_sen_nodes_except(ign_node);
-+				goto retry_sentinel_get;
-+			}
-+			prev = first;
-+		} else {
-+			llist_add(sen_node, &pcpu_rcuref_head);
-+			prev = sen_node;
-+			head = prev->next;
-+		}
-+	} else {
-+		prev = last_pcu_rcuref_node;
-+		head = prev->next;
-+	}
-+
-+	last_pcu_rcuref_node = NULL;
-+	llist_for_each_safe(pos, next, head) {
-+		/* Free sentinel node which is present in the list */
-+		if (percpu_rcuref_is_sen_node(pos)) {
-+			prev->next = pos->next;
-+			percpu_rcuref_put_sen_node(pos);
-+			continue;
-+		}
-+
-+		rcuref = container_of(pos, struct percpu_rcuref, node);
-+		percpu_ref_switch_to_atomic_sync(&rcuref->pcpu_ref);
-+		/*
-+		 * Drop the ref while in RCU read critical section, to
-+		 * prevent obj free while we manipulating node.
-+		 */
-+		rcu_read_lock();
-+		percpu_ref_put(&rcuref->pcpu_ref);
-+		held = percpu_ref_tryget(&rcuref->pcpu_ref);
-+		if (!held) {
-+			prev->next = pos->next;
-+			init_llist_node(pos);
-+		}
-+		rcu_read_unlock();
-+		if (!held)
-+			continue;
-+		percpu_ref_switch_to_percpu(&rcuref->pcpu_ref);
-+		count++;
-+		if (count == max_ref_scan_count) {
-+			last_pcu_rcuref_node = pos;
-+			break;
-+		}
-+		prev = pos;
-+	}
-+
-+queue_release_work:
-+	queue_delayed_work(percpu_rcuref_wq, &percpu_rcuref_release_work,
-+			   ref_scan_interval);
-+}
-+
-+static __init int percpu_rcuref_setup(void)
-+{
-+	percpu_rcuref_wq = alloc_workqueue("percpu_rcuref",
-+				WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_FREEZABLE, 0);
-+	if (!percpu_rcuref_wq)
-+		return -ENOMEM;
-+
-+	queue_delayed_work(percpu_rcuref_wq, &percpu_rcuref_release_work,
-+			   ref_scan_interval);
-+	return 0;
-+}
-+early_initcall(percpu_rcuref_setup);
+ 
+ #include "apparmor.h"
+ #include "lib.h"
+@@ -121,11 +122,10 @@ struct label_it {
+  * @ent: set of profiles for label, actual size determined by @size
+  */
+ struct aa_label {
+-	struct percpu_ref count;
++	struct percpu_rcuref count;
+ 	long flags;
+ 	struct aa_proxy *proxy;
+ 	struct rb_node node;
+-	struct llist_node reclaim_node;
+ 	struct rcu_head rcu;
+ 	__counted char *hname;
+ 	u32 secid;
+@@ -374,7 +374,7 @@ int aa_label_match(struct aa_profile *profile, struct aa_ruleset *rules,
+  */
+ static inline struct aa_label *__aa_get_label(struct aa_label *l)
+ {
+-	if (l && percpu_ref_tryget(&l->count))
++	if (l && percpu_rcuref_tryget(&l->count))
+ 		return l;
+ 
+ 	return NULL;
+@@ -383,7 +383,7 @@ static inline struct aa_label *__aa_get_label(struct aa_label *l)
+ static inline struct aa_label *aa_get_label(struct aa_label *l)
+ {
+ 	if (l)
+-		percpu_ref_get(&(l->count));
++		percpu_rcuref_get(&(l->count));
+ 
+ 	return l;
+ }
+@@ -403,7 +403,7 @@ static inline struct aa_label *aa_get_label_rcu(struct aa_label __rcu **l)
+ 	rcu_read_lock();
+ 	do {
+ 		c = rcu_dereference(*l);
+-	} while (c && !percpu_ref_tryget(&c->count));
++	} while (c && !percpu_rcuref_tryget(&c->count));
+ 	rcu_read_unlock();
+ 
+ 	return c;
+@@ -443,7 +443,7 @@ static inline struct aa_label *aa_get_newest_label(struct aa_label *l)
+ static inline void aa_put_label(struct aa_label *l)
+ {
+ 	if (l)
+-		percpu_ref_put(&l->count);
++		percpu_rcuref_put(&l->count);
+ }
+ 
+ 
+@@ -466,6 +466,4 @@ static inline void aa_put_proxy(struct aa_proxy *proxy)
+ 
+ void __aa_proxy_redirect(struct aa_label *orig, struct aa_label *new);
+ 
+-void aa_label_reclaim_add_label(struct aa_label *label);
+-
+ #endif /* __AA_LABEL_H */
+diff --git a/security/apparmor/include/policy.h b/security/apparmor/include/policy.h
+index 1e3b29ba6c03..5b2473a09103 100644
+--- a/security/apparmor/include/policy.h
++++ b/security/apparmor/include/policy.h
+@@ -329,7 +329,7 @@ static inline aa_state_t ANY_RULE_MEDIATES(struct list_head *head,
+ static inline struct aa_profile *aa_get_profile(struct aa_profile *p)
+ {
+ 	if (p)
+-		percpu_ref_get(&(p->label.count));
++		percpu_rcuref_get(&(p->label.count));
+ 
+ 	return p;
+ }
+@@ -343,7 +343,7 @@ static inline struct aa_profile *aa_get_profile(struct aa_profile *p)
+  */
+ static inline struct aa_profile *aa_get_profile_not0(struct aa_profile *p)
+ {
+-	if (p && percpu_ref_tryget(&p->label.count))
++	if (p && percpu_rcuref_tryget(&p->label.count))
+ 		return p;
+ 
+ 	return NULL;
+@@ -363,7 +363,7 @@ static inline struct aa_profile *aa_get_profile_rcu(struct aa_profile __rcu **p)
+ 	rcu_read_lock();
+ 	do {
+ 		c = rcu_dereference(*p);
+-	} while (c && !percpu_ref_tryget(&c->label.count));
++	} while (c && !percpu_rcuref_tryget(&c->label.count));
+ 	rcu_read_unlock();
+ 
+ 	return c;
+@@ -376,31 +376,7 @@ static inline struct aa_profile *aa_get_profile_rcu(struct aa_profile __rcu **p)
+ static inline void aa_put_profile(struct aa_profile *p)
+ {
+ 	if (p)
+-		percpu_ref_put(&p->label.count);
+-}
+-
+-/**
+- * aa_switch_ref_profile - switch percpu-ref mode for profile @p
+- * @p: profile  (MAYBE NULL)
+- */
+-static inline void aa_switch_ref_profile(struct aa_profile *p, bool percpu)
+-{
+-	if (p) {
+-		if (percpu)
+-			percpu_ref_switch_to_percpu(&p->label.count);
+-		else
+-			percpu_ref_switch_to_atomic_sync(&p->label.count);
+-	}
+-}
+-
+-/**
+- * aa_kill_ref_profile - percpu-ref kill for profile @p
+- * @p: profile  (MAYBE NULL)
+- */
+-static inline void aa_kill_ref_profile(struct aa_profile *p)
+-{
+-	if (p)
+-		percpu_ref_kill(&p->label.count);
++		percpu_rcuref_put(&p->label.count);
+ }
+ 
+ static inline int AUDIT_MODE(struct aa_profile *profile)
+diff --git a/security/apparmor/include/policy_ns.h b/security/apparmor/include/policy_ns.h
+index f3db01c5e193..d646070fd966 100644
+--- a/security/apparmor/include/policy_ns.h
++++ b/security/apparmor/include/policy_ns.h
+@@ -127,30 +127,6 @@ static inline void aa_put_ns(struct aa_ns *ns)
+ 		aa_put_profile(ns->unconfined);
+ }
+ 
+-/**
+- * aa_switch_ref_ns - switch percpu-ref mode for @ns
+- * @ns: namespace to switch percpu-ref mode of
+- *
+- * Switch percpu-ref mode of @ns between percpu and atomic
+- */
+-static inline void aa_switch_ref_ns(struct aa_ns *ns, bool percpu)
+-{
+-	if (ns)
+-		aa_switch_ref_profile(ns->unconfined, percpu);
+-}
+-
+-/**
+- * aa_kill_ref_ns - do percpu-ref kill for @ns
+- * @ns: namespace to perform percpu-ref kill for
+- *
+- * Do percpu-ref kill of @ns refcount
+- */
+-static inline void aa_kill_ref_ns(struct aa_ns *ns)
+-{
+-	if (ns)
+-		aa_kill_ref_profile(ns->unconfined);
+-}
+-
+ /**
+  * __aa_findn_ns - find a namespace on a list by @name
+  * @head: list to search for namespace on  (NOT NULL)
+diff --git a/security/apparmor/label.c b/security/apparmor/label.c
+index 1299262f54e1..f28dec1c3e70 100644
+--- a/security/apparmor/label.c
++++ b/security/apparmor/label.c
+@@ -336,7 +336,7 @@ void aa_label_destroy(struct aa_label *label)
+ 			rcu_assign_pointer(label->proxy->label, NULL);
+ 		aa_put_proxy(label->proxy);
+ 	}
+-	percpu_ref_exit(&label->count);
++	percpu_rcuref_exit(&label->count);
+ 	aa_free_secid(label->secid);
+ 
+ 	label->proxy = (struct aa_proxy *) PROXY_POISON + 1;
+@@ -372,7 +372,7 @@ static void label_free_rcu(struct rcu_head *head)
+ 
+ void aa_label_percpu_ref(struct percpu_ref *ref)
+ {
+-	struct aa_label *label = container_of(ref, struct aa_label, count);
++	struct aa_label *label = container_of(ref, struct aa_label, count.pcpu_ref);
+ 	struct aa_ns *ns = labels_ns(label);
+ 
+ 	if (!ns) {
+@@ -409,7 +409,7 @@ bool aa_label_init(struct aa_label *label, int size, gfp_t gfp)
+ 
+ 	label->size = size;			/* doesn't include null */
+ 	label->vec[size] = NULL;		/* null terminate */
+-	if (percpu_ref_init(&label->count, aa_label_percpu_ref, PERCPU_REF_INIT_ATOMIC, gfp)) {
++	if (percpu_rcuref_init_unmanaged(&label->count, aa_label_percpu_ref, gfp)) {
+ 		aa_free_secid(label->secid);
+ 		return false;
+ 	}
+@@ -710,8 +710,6 @@ static struct aa_label *__label_insert(struct aa_labelset *ls,
+ 	rb_link_node(&label->node, parent, new);
+ 	rb_insert_color(&label->node, &ls->root);
+ 	label->flags |= FLAG_IN_TREE;
+-	percpu_ref_switch_to_percpu(&label->count);
+-	aa_label_reclaim_add_label(label);
+ 
+ 	return aa_get_label(label);
+ }
+diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+index d0d4ebad1e26..e490a7000408 100644
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@ -64,204 +64,6 @@ static LIST_HEAD(aa_global_buffers);
+ static DEFINE_SPINLOCK(aa_buffers_lock);
+ static DEFINE_PER_CPU(struct aa_local_cache, aa_local_buffers);
+ 
+-static struct workqueue_struct *aa_label_reclaim_wq;
+-static void aa_label_reclaim_work_fn(struct work_struct *work);
+-
+-/*
+- * Dummy llist nodes, for lockless list traveral and deletions by
+- * the reclaim worker, while nodes are added from normal label
+- * insertion paths.
+- */
+-struct aa_label_reclaim_node {
+-	bool inuse;
+-	struct llist_node node;
+-};
+-
+-/*
+- * We need two dummy head nodes for lockless list manipulations from reclaim
+- * worker - first dummy node will be used in current reclaim iteration;
+- * the second one will be used in next iteration. Next iteration marks
+- * the first dummy node as free, for use in following iteration.
+- */
+-#define AA_LABEL_RECLAIM_NODE_MAX     2
+-
+-#define AA_MAX_LABEL_RECLAIMS	100
+-#define AA_LABEL_RECLAIM_INTERVAL_MS	5000
+-
+-static LLIST_HEAD(aa_label_reclaim_head);
+-static struct llist_node *last_reclaim_label;
+-static struct aa_label_reclaim_node aa_label_reclaim_nodes[AA_LABEL_RECLAIM_NODE_MAX];
+-static DECLARE_DELAYED_WORK(aa_label_reclaim_work, aa_label_reclaim_work_fn);
+-static struct percpu_ref aa_label_reclaim_ref;
+-
+-void aa_label_reclaim_add_label(struct aa_label *label)
+-{
+-	percpu_ref_get(&label->count);
+-	llist_add(&label->reclaim_node, &aa_label_reclaim_head);
+-}
+-
+-static bool aa_label_is_reclaim_node(struct llist_node *node)
+-{
+-	return &aa_label_reclaim_nodes[0].node <= node &&
+-		node <= &aa_label_reclaim_nodes[AA_LABEL_RECLAIM_NODE_MAX - 1].node;
+-}
+-
+-static struct llist_node *aa_label_get_reclaim_node(void)
+-{
+-	int i;
+-	struct aa_label_reclaim_node *rn;
+-
+-	for (i = 0; i < AA_LABEL_RECLAIM_NODE_MAX; i++) {
+-		rn = &aa_label_reclaim_nodes[i];
+-		if (!rn->inuse) {
+-			rn->inuse = true;
+-			return &rn->node;
+-		}
+-	}
+-
+-	return NULL;
+-}
+-
+-static void aa_label_put_reclaim_node(struct llist_node *node)
+-{
+-	struct aa_label_reclaim_node *rn = container_of(node, struct aa_label_reclaim_node, node);
+-
+-	rn->inuse = false;
+-}
+-
+-static void aa_put_all_reclaim_nodes(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < AA_LABEL_RECLAIM_NODE_MAX; i++)
+-		aa_label_reclaim_nodes[i].inuse = false;
+-}
+-static void aa_release_reclaim_ref_noop(struct percpu_ref *ref)
+-{
+-}
+-
+-static void aa_label_reclaim_work_fn(struct work_struct *work)
+-{
+-	struct llist_node *pos, *first, *head, *prev, *next;
+-	static bool reclaim_ref_dead_once;
+-	struct llist_node *reclaim_node;
+-	struct aa_label *label;
+-	int cnt = 0;
+-	bool held, ref_is_zero;
+-
+-	first = aa_label_reclaim_head.first;
+-	if (!first)
+-		goto queue_reclaim_work;
+-
+-	if (last_reclaim_label == NULL || last_reclaim_label->next == NULL) {
+-		reclaim_node = aa_label_get_reclaim_node();
+-		WARN_ONCE(!reclaim_node, "Reclaim heads exhausted\n");
+-		if (unlikely(!reclaim_node)) {
+-			head = first->next;
+-			if (!head) {
+-				aa_put_all_reclaim_nodes();
+-				goto queue_reclaim_work;
+-			}
+-			prev = first;
+-		} else {
+-			llist_add(reclaim_node, &aa_label_reclaim_head);
+-			prev = reclaim_node;
+-			head = prev->next;
+-		}
+-	} else {
+-		prev = last_reclaim_label;
+-		head = prev->next;
+-	}
+-
+-	last_reclaim_label = NULL;
+-	llist_for_each_safe(pos, next, head) {
+-		/* Free reclaim node, which is present in the list */
+-		if (aa_label_is_reclaim_node(pos)) {
+-			prev->next = pos->next;
+-			aa_label_put_reclaim_node(pos);
+-			continue;
+-		}
+-
+-		label = container_of(pos, struct aa_label, reclaim_node);
+-		if (reclaim_ref_dead_once)
+-			percpu_ref_reinit(&aa_label_reclaim_ref);
+-
+-		/*
+-		 * Switch counters of label ref and reclaim ref.
+-		 * Label's refcount becomes 1
+-		 * Percpu refcount has the current refcount value
+-		 * of the label percpu_ref.
+-		 */
+-		percpu_ref_swap_percpu_sync(&label->count, &aa_label_reclaim_ref);
+-
+-		/* Switch reclaim ref to percpu, to check for 0 */
+-		percpu_ref_switch_to_atomic_sync(&aa_label_reclaim_ref);
+-
+-		/*
+-		 * Release a count (original label percpu ref had an extra count,
+-		 * from the llist addition).
+-		 * When all percpu references have been released, this should
+-		 * be the initial count, which gets dropped.
+-		 */
+-		percpu_ref_put(&aa_label_reclaim_ref);
+-		/*
+-		 * Release function of reclaim ref is noop; we store the result
+-		 * for later processing after common code.
+-		 */
+-		if (percpu_ref_is_zero(&aa_label_reclaim_ref))
+-			ref_is_zero = true;
+-
+-		/*
+-		 * Restore back initial count. Switch reclaim ref to
+-		 * percpu, for switching back the label percpu and
+-		 * atomic counters.
+-		 */
+-		percpu_ref_get(&aa_label_reclaim_ref);
+-		percpu_ref_switch_to_percpu(&aa_label_reclaim_ref);
+-		/*
+-		 * Swap the refs again. Label gets all old counts
+-		 * in its atomic counter after this operation.
+-		 */
+-		percpu_ref_swap_percpu_sync(&label->count, &aa_label_reclaim_ref);
+-
+-		/*
+-		 * Transfer the percpu counts, which got added, while this
+-		 * switch was going on. The counters are accumulated into
+-		 * the label ref's atomic counter.
+-		 */
+-		percpu_ref_transfer_percpu_count(&label->count, &aa_label_reclaim_ref);
+-
+-		/* Kill reclaim ref for reinitialization, for next iteration */
+-		percpu_ref_kill(&aa_label_reclaim_ref);
+-		reclaim_ref_dead_once = true;
+-
+-		/* If refcount of label ref was found to be 0, reclaim it now! */
+-		if (ref_is_zero) {
+-			percpu_ref_switch_to_atomic_sync(&label->count);
+-			rcu_read_lock();
+-			percpu_ref_put(&label->count);
+-			held = percpu_ref_tryget(&label->count);
+-			if (!held)
+-				prev->next = pos->next;
+-			rcu_read_unlock();
+-			if (!held)
+-				continue;
+-			percpu_ref_switch_to_percpu(&label->count);
+-		}
+-
+-		cnt++;
+-		if (cnt == AA_MAX_LABEL_RECLAIMS) {
+-			last_reclaim_label = pos;
+-			break;
+-		}
+-		prev = pos;
+-	}
+-
+-queue_reclaim_work:
+-	queue_delayed_work(aa_label_reclaim_wq, &aa_label_reclaim_work,
+-			msecs_to_jiffies(AA_LABEL_RECLAIM_INTERVAL_MS));
+-}
+-
+ /*
+  * LSM hook functions
+  */
+@@ -2197,16 +1999,6 @@ static int __init set_init_ctx(void)
+ 	return 0;
+ }
+ 
+-static int __init clear_init_ctx(void)
+-{
+-	struct cred *cred = (__force struct cred *)current->real_cred;
+-
+-	set_cred_label(cred, NULL);
+-	aa_put_label(ns_unconfined(root_ns));
+-
+-	return 0;
+-}
+-
+ static void destroy_buffers(void)
+ {
+ 	union aa_buffer *aa_buf;
+@@ -2485,22 +2277,6 @@ static int __init apparmor_init(void)
+ 		aa_free_root_ns();
+ 		goto buffers_out;
+ 	}
+-
+-	aa_label_reclaim_wq = alloc_workqueue("aa_label_reclaim",
+-				WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_FREEZABLE, 0);
+-	WARN_ON(!aa_label_reclaim_wq);
+-	if (aa_label_reclaim_wq)
+-		queue_delayed_work(aa_label_reclaim_wq, &aa_label_reclaim_work,
+-				   AA_LABEL_RECLAIM_INTERVAL_MS);
+-
+-	if (!percpu_ref_init(&aa_label_reclaim_ref, aa_release_reclaim_ref_noop,
+-			     PERCPU_REF_ALLOW_REINIT, GFP_KERNEL)) {
+-		AA_ERROR("Failed to allocate label reclaim percpu ref\n");
+-		aa_free_root_ns();
+-		clear_init_ctx();
+-		goto buffers_out;
+-	}
+-
+ 	security_add_hooks(apparmor_hooks, ARRAY_SIZE(apparmor_hooks),
+ 				&apparmor_lsmid);
+ 
+diff --git a/security/apparmor/policy_ns.c b/security/apparmor/policy_ns.c
+index ca633cfbd936..1f02cfe1d974 100644
+--- a/security/apparmor/policy_ns.c
++++ b/security/apparmor/policy_ns.c
+@@ -124,7 +124,6 @@ static struct aa_ns *alloc_ns(const char *prefix, const char *name)
+ 		goto fail_unconfined;
+ 	/* ns and ns->unconfined share ns->unconfined refcount */
+ 	ns->unconfined->ns = ns;
+-	aa_switch_ref_ns(ns, true);
+ 
+ 	atomic_set(&ns->uniq_null, 0);
+ 
+@@ -337,7 +336,7 @@ void __aa_remove_ns(struct aa_ns *ns)
+ 	/* remove ns from namespace list */
+ 	list_del_rcu(&ns->base.list);
+ 	destroy_ns(ns);
+-	aa_kill_ref_ns(ns);
++	aa_put_ns(ns);
+ }
+ 
+ /**
+@@ -378,7 +377,6 @@ int __init aa_alloc_root_ns(void)
+ 	}
+ 	kernel_t = &kernel_p->label;
+ 	root_ns->unconfined->ns = aa_get_ns(root_ns);
+-	aa_switch_ref_ns(root_ns, true);
+ 
+ 	return 0;
+ }
+@@ -394,5 +392,5 @@ void __init aa_free_root_ns(void)
+ 
+ 	 aa_label_free(kernel_t);
+ 	 destroy_ns(ns);
+-	 aa_kill_ref_ns(ns);
++	 aa_put_ns(ns);
+ }
 -- 
 2.34.1
 
