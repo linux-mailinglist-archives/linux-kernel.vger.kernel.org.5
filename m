@@ -1,49 +1,83 @@
-Return-Path: <linux-kernel+bounces-21868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CE87829577
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:59:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE917829585
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 932AD1C237A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:59:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2091B221E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 09:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718B23A1D5;
-	Wed, 10 Jan 2024 08:58:59 +0000 (UTC)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4043AC30;
+	Wed, 10 Jan 2024 08:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qjBrksVJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RY4cswgs";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qjBrksVJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RY4cswgs"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE7136B0D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 08:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a27733ae1dfso437219166b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 00:58:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704877135; x=1705481935;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rPR3oGkejeU/7jN23VCpqoaM71KDTdyDcxfepsqVcXM=;
-        b=ZzMiOXkXlNJ3w+9FLE3QCmmDj6goui30Yjm041jMPwhLFYFD1k6Z6TEZY4F6q6TfdQ
-         MLo9K4IMQ9eYWjUrbKKhk2RwcICvSxGsHu3M9nM/nLx3gcyVpGIf+Fu4D+pmo3qK9FTJ
-         ZpykYTICbMR9FyFs0+COtMIBN3k7PRxIMSv0XF7GB6pta/RfdnPEZd080s/hK58CVFux
-         5WuuE1bE/H3XArH+aICtFn/5pLILlNszrnp3NDkpxAex+TM/JW5UeQsQB37iXzIZVXvM
-         JmONzUj6rj2Tf2XyymLflHVYS5tDvos5uvjEL6SbiFfqFHSJnj6RETfhM5lVztfEAkVO
-         d5bA==
-X-Gm-Message-State: AOJu0YwMGgNUQit0UhHNjwmxz5pMhPZQ3ZqYyTmmI0ETctGhMEA6xDuK
-	1eb4jlyxU8eswMTLLSw85ZoG6qmVq6Wl1A==
-X-Google-Smtp-Source: AGHT+IHNrVJFgjj57nI5tA/Ew5A6Ear54rwgr82HMkPm2oRgAeFGW5Y83XjjigCeuLRbdWbo99/Y+w==
-X-Received: by 2002:a17:906:3750:b0:a2b:1a80:7b8f with SMTP id e16-20020a170906375000b00a2b1a807b8fmr209662ejc.99.1704877135539;
-        Wed, 10 Jan 2024 00:58:55 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id bm3-20020a170906c04300b00a2a4efe7d3dsm1872834ejb.79.2024.01.10.00.58.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 00:58:55 -0800 (PST)
-Message-ID: <938ebce3-74c5-4fcf-9de3-849271d3581d@kernel.org>
-Date: Wed, 10 Jan 2024 09:58:54 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E243A8C6;
+	Wed, 10 Jan 2024 08:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1F65B21E17;
+	Wed, 10 Jan 2024 08:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704877184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0GtM+U/m1/8CwPcl+4EBtNE2sj1pzKEolTyiwmoL/Us=;
+	b=qjBrksVJ7ayqtT+hHMQ3E32pBal7nh9Y3++2UcNMq4F1aQ3R606xDvDXyS+8yjW8lBsHyI
+	zAW5/0Mpb1ig+YsUu+Cz467VrCMZ8P/EL0QCo9fUb6+aYrPjF4yCSvFvSD3XKPexpTJLzA
+	+575X+EQKkKnU9eakb6GIjaE4bFTFB4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704877184;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0GtM+U/m1/8CwPcl+4EBtNE2sj1pzKEolTyiwmoL/Us=;
+	b=RY4cswgsDRFXGOkmPW9cy8ROFg9IKH3nV+B1DI5nTja1CXyN+Fuu1V6t+BKZ6incmHbQow
+	/wczs5i4KHO89nBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704877184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0GtM+U/m1/8CwPcl+4EBtNE2sj1pzKEolTyiwmoL/Us=;
+	b=qjBrksVJ7ayqtT+hHMQ3E32pBal7nh9Y3++2UcNMq4F1aQ3R606xDvDXyS+8yjW8lBsHyI
+	zAW5/0Mpb1ig+YsUu+Cz467VrCMZ8P/EL0QCo9fUb6+aYrPjF4yCSvFvSD3XKPexpTJLzA
+	+575X+EQKkKnU9eakb6GIjaE4bFTFB4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704877184;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0GtM+U/m1/8CwPcl+4EBtNE2sj1pzKEolTyiwmoL/Us=;
+	b=RY4cswgsDRFXGOkmPW9cy8ROFg9IKH3nV+B1DI5nTja1CXyN+Fuu1V6t+BKZ6incmHbQow
+	/wczs5i4KHO89nBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CCB0E13786;
+	Wed, 10 Jan 2024 08:59:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MHKKMX9cnmVXewAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 10 Jan 2024 08:59:43 +0000
+Message-ID: <7234513d-45c9-4bda-a537-4278387cedc4@suse.cz>
+Date: Wed, 10 Jan 2024 09:59:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,79 +85,157 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+Subject: Re: [PATCH v1 15/26] x86/sev: Introduce snp leaked pages list
+To: "Kalra, Ashish" <ashish.kalra@amd.com>,
+ Michael Roth <michael.roth@amd.com>, x86@kernel.org
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+ thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
+ pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+ jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+ slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+ srinivas.pandruvada@linux.intel.com, rientjes@google.com, tobin@ibm.com,
+ bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+ jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+ liam.merwick@oracle.com, zhi.a.wang@intel.com
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-16-michael.roth@amd.com>
+ <f221ad9d-6fc3-466b-bacf-23986b8655f5@suse.cz>
+ <5cdd2093-b007-404d-96a8-89b3aa6e6e4b@amd.com>
 Content-Language: en-US
-To: "H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>,
- linux-kernel@vger.kernel.org, pinskia@gmail.com
-References: <152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk>
- <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <5cdd2093-b007-404d-96a8-89b3aa6e6e4b@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 1F65B21E17
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qjBrksVJ;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RY4cswgs
+X-Spam-Score: -4.50
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 R_RATELIMIT(0.00)[to_ip_from(RLisu716frudqkg98kczdd9eac)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[37];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
 
-Hi,
-
-On 09. 01. 24, 20:57, H. Peter Anvin wrote:
-> What really makes me say that is that a lot of things we have recently 
-> asked for gcc-specific extensions are in fact relatively easy to 
-> implement in standard C++ and, in many cases, allows for infrastructure 
-> improvement *without* global code changes (see below.)
+On 1/9/24 23:19, Kalra, Ashish wrote:
+> Hello Vlastimil,
 > 
-> C++14 is in my option the "minimum" version that has reasonable 
-> metaprogramming support has most of it without the type hell of earlier 
-> versions (C++11 had most of it, but C++14 fills in some key missing 
-> pieces).
+> On 1/8/2024 4:45 AM, Vlastimil Babka wrote:
+>> On 12/30/23 17:19, Michael Roth wrote:
+>>> From: Ashish Kalra <ashish.kalra@amd.com>
+>>>
+>>> Pages are unsafe to be released back to the page-allocator, if they
+>>> have been transitioned to firmware/guest state and can't be reclaimed
+>>> or transitioned back to hypervisor/shared state. In this case add
+>>> them to an internal leaked pages list to ensure that they are not freed
+>>> or touched/accessed to cause fatal page faults.
+>>>
+>>> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+>>> [mdr: relocate to arch/x86/virt/svm/sev.c]
+>>> Signed-off-by: Michael Roth <michael.roth@amd.com>
+>> Hi, sorry I didn't respond in time to the last mail discussing previous
+>> version in
+>> https://lore.kernel.org/all/8c1fd8da-912a-a9ce-9547-107ba8a450fc@amd.com/
+>> due to upcoming holidays.
+>>
+>> I would rather avoid the approach of allocating container objects:
+>> - it's allocating memory when effectively losing memory, a dangerous thing
+>> - are all the callers and their context ok with GFP_KERNEL?
+>> - GFP_KERNEL_ACCOUNT seems wrong, why would we be charging this to the
+>> current process, it's probably not its fault the pages are leaked? Also the
+>> charging can fail?
+>> - given the benefit of having leaked pages on a list is basically just
+>> debugging (i.e. crash dump or drgn inspection) this seems too heavy
+>>
+>> I think it would be better and sufficient to use page->lru for order-0 and
+>> head pages, and simply skip tail pages (possibly with adjusted warning
+>> message for that case).
+>>
+>> Vlastimil
+>>
+>> <snip
+> 
+> Considering the above thoughts, this is updated version of 
+> snp_leak_pages(), looking forward to any review comments/feedback you 
+> have on the same:
+> 
+> void snp_leak_pages(u64 pfn, unsigned int npages)
+> {
+>          struct page *page = pfn_to_page(pfn);
+> 
+>          pr_debug("%s: leaking PFN range 0x%llx-0x%llx\n", __func__, 
+> pfn, pfn + npages);
+> 
+>          spin_lock(&snp_leaked_pages_list_lock);
+>          while (npages--) {
+>                  /*
+>                   * Reuse the page's buddy list for chaining into the leaked
+>                   * pages list. This page should not be on a free list 
+> currently
+>                   * and is also unsafe to be added to a free list.
+>                   */
+>                  if ((likely(!PageCompound(page))) || (PageCompound(page) &&
+>                      !PageTail(page) && compound_head(page) == page))
 
-If you mean it, I do too. So I can only express my +1: yes, please.
+This is unnecessarily paranoid wrt that compound_head(page) test, but OTOH
+doesn't handle the weird case when we're leaking less than whole compound
+page (if that can even happen). So I'd suggest:
 
-I don't have much to add as you summarized most of it.
+while (npages) {
 
-thanks,
--- 
-js
-suse labs
+  if ((likely(!PageCompound(page))) || (PageHead(page) && compound_nr(page)
+<= npages))
+	list_add_tail(&page->buddy_list, ...)
+  }
+
+  ... (no change from yours)
+
+  npages--;
+}
+
+(or an equivalent for()) perhaps
+
+>                          /*
+>                           * Skip inserting tail pages of compound page as
+>                           * page->buddy_list of tail pages is not usable.
+>                           */
+>                          list_add_tail(&page->buddy_list, 
+> &snp_leaked_pages_list);
+>                  sev_dump_rmpentry(pfn);
+>                  snp_nr_leaked_pages++;
+>                  pfn++;
+>                  page++;
+>          }
+>          spin_unlock(&snp_leaked_pages_list_lock);
+> }
+> 
+> Thanks, Ashish
+> 
 
 
