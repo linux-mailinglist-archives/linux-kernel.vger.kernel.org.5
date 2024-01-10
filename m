@@ -1,168 +1,154 @@
-Return-Path: <linux-kernel+bounces-21956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4841E82971A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E588A82971C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:16:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EE2F1C21EA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:15:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 001831C209DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C843FB07;
-	Wed, 10 Jan 2024 10:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hS4mD/5b"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A63593FB13;
+	Wed, 10 Jan 2024 10:16:29 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59F23F8EE
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704881732;
-	bh=0bJLXu0DBAoJ0i9wVZaWcD3g7PAFELQ/me31lacb4uI=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=hS4mD/5bm9fU1BHvnNtYHMtTM3M6ohBF5sPP3i+5OvaaXJJ+IAQoAaR2/k6JmRWWO
-	 vQrRRcj2zGFDQA7DGTKaiYaq4YE55VKiDtK8JdO7sqzQC22VMN1cTP+Mw7DdsyEtdX
-	 fcHOr/2ujarZYPZ/qCcuj61M4pIPhnLUlMQCZa4QE8+JZUcOJpUXP5BYhBej2lRzSd
-	 BqHJbXkzJU4R4uFRhyZ34ZRGKrBBaAZGwvQr8BtWFcywN1VrR1vrR3SdKHicawFi3j
-	 drhzEdoRglrwXdZlgT9pfM8ua3G7jDCSToPiMqI1l5byUcrCmTO4NdWINUmhbPmTvP
-	 xZRx4sb58YnoQ==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2B44A37813B9;
-	Wed, 10 Jan 2024 10:15:27 +0000 (UTC)
-Message-ID: <079335ab-190f-41f7-b832-6ffe7528fd8b@collabora.com>
-Date: Wed, 10 Jan 2024 15:15:34 +0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BDC3EA71
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-360a416bb22so8871415ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 02:16:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704881787; x=1705486587;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A5/j67+kQ+bcaF7cSN8tiUBI+F9SoIb7yqu3oMXsr0w=;
+        b=tE6UjnM4ls5EaCCsqfUc1k8ttBNh2/lffIMLl5djqnak/eVb1Eh0UDeRXDdZ/wqsDc
+         H9wNDEsVK7xrTa4LvH4+R9IUesEt0qdxI3IXtT1ERXUp0Y/IO8uXdITfY0hK/x5r6Jzl
+         Qvgp9S6n6yeDqn0ncUGvZmlzGvhP8tLtDkRPKVCvFQdOfaLRZe7fGCA+FYmWtbYEGnyl
+         zkyLK0eG6RyLS90mrAJxVUax09AbNxnUHjawFjhVdo9mKT6vuEfpfTrJ98irgq5WICRT
+         4NzxOcb0Z49MdGKLHR54U2ILyxbomovcG/wZhM8fwgpRekbg9StJB6cQVutBvNZ3gI8E
+         jSfg==
+X-Gm-Message-State: AOJu0YzmkS8/VhurenuY1bwIn/rIKREDymvsDeS5ss3Pxg7VVMSKvB+R
+	44skq2TmmpI+kpFfYfCVvOjhc5skEbOG97bMtil0B3Q9Buay
+X-Google-Smtp-Source: AGHT+IGCvQ7iqheeM7f7Faw4ZM+k5vT6V5iFA3XWpPnmJWUubvlHq0zLFb96i+Ys9hoX/fgPq1i48ix+g77Nv7QDUhNZWRDwmm8c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, linmiaohe@huawei.com,
- mike.kravetz@oracle.com, naoya.horiguchi@nec.com, akpm@linux-foundation.org,
- songmuchun@bytedance.com, shy828301@gmail.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, jthoughton@google.com,
- "kernel@collabora.com" <kernel@collabora.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Mike Kravetz <mike.kravetz@oracle.com>,
- Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH v4 4/4] selftests/mm: add tests for HWPOISON hugetlbfs
- read
-Content-Language: en-US
-To: Jiaqi Yan <jiaqiyan@google.com>,
- Sidhartha Kumar <sidhartha.kumar@oracle.com>
-References: <20230713001833.3778937-1-jiaqiyan@google.com>
- <20230713001833.3778937-5-jiaqiyan@google.com>
- <be3976b5-0a9c-41c6-8160-88e6c1e5d63e@collabora.com>
- <CACw3F51WvZDVCpVg9j4j8WmnmAFOsnK+FZDDoVqhgLqVwhPTCA@mail.gmail.com>
- <e68488e4-764e-4b25-8a47-05bf8976bd19@collabora.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <e68488e4-764e-4b25-8a47-05bf8976bd19@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:216b:b0:360:795e:a6b3 with SMTP id
+ s11-20020a056e02216b00b00360795ea6b3mr69756ilv.4.1704881787065; Wed, 10 Jan
+ 2024 02:16:27 -0800 (PST)
+Date: Wed, 10 Jan 2024 02:16:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004d5e29060e94b998@google.com>
+Subject: [syzbot] [hfs?] KMSAN: uninit-value in hfs_cat_keycmp (2)
+From: syzbot <syzbot+04486d87f6240a004c85@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/10/24 11:49 AM, Muhammad Usama Anjum wrote:
-> On 1/6/24 2:13 AM, Jiaqi Yan wrote:
->> On Thu, Jan 4, 2024 at 10:27 PM Muhammad Usama Anjum
->> <usama.anjum@collabora.com> wrote:
->>>
->>> Hi,
->>>
->>> I'm trying to convert this test to TAP as I think the failures sometimes go
->>> unnoticed on CI systems if we only depend on the return value of the
->>> application. I've enabled the following configurations which aren't already
->>> present in tools/testing/selftests/mm/config:
->>> CONFIG_MEMORY_FAILURE=y
->>> CONFIG_HWPOISON_INJECT=m
->>>
->>> I'll send a patch to add these configs later. Right now I'm trying to
->>> investigate the failure when we are trying to inject the poison page by
->>> madvise(MADV_HWPOISON). I'm getting device busy every single time. The test
->>> fails as it doesn't expect any business for the hugetlb memory. I'm not
->>> sure if the poison handling code has issues or test isn't robust enough.
->>>
->>> ./hugetlb-read-hwpoison
->>> Write/read chunk size=0x800
->>>  ... HugeTLB read regression test...
->>>  ...  ... expect to read 0x200000 bytes of data in total
->>>  ...  ... actually read 0x200000 bytes of data in total
->>>  ... HugeTLB read regression test...TEST_PASSED
->>>  ... HugeTLB read HWPOISON test...
->>> [    9.280854] Injecting memory failure for pfn 0x102f01 at process virtual
->>> address 0x7f28ec101000
->>> [    9.282029] Memory failure: 0x102f01: huge page still referenced by 511
->>> users
->>> [    9.282987] Memory failure: 0x102f01: recovery action for huge page: Failed
->>>  ...  !!! MADV_HWPOISON failed: Device or resource busy
->>>  ... HugeTLB read HWPOISON test...TEST_FAILED
->>>
->>> I'm testing on v6.7-rc8. Not sure if this was working previously or not.
->>
->> Thanks for reporting this, Usama!
->>
->> I am also able to repro MADV_HWPOISON failure at "501a06fe8e4c
->> (akpm/mm-stable, mm-stable) zswap: memcontrol: implement zswap
->> writeback disabling."
->>
->> Then I checked out the earliest commit "ba91e7e5d15a (HEAD -> Base)
->> selftests/mm: add tests for HWPOISON hugetlbfs read". The
->> MADV_HWPOISON injection works and and the test passes:
->>
->>  ... HugeTLB read HWPOISON test...
->>  ...  ... expect to read 0x101000 bytes of data in total
->>  ...  !!! read failed: Input/output error
->>  ...  ... actually read 0x101000 bytes of data in total
->>  ... HugeTLB read HWPOISON test...TEST_PASSED
->>  ... HugeTLB seek then read HWPOISON test...
->>  ...  ... init val=4 with offset=0x102000
->>  ...  ... expect to read 0xfe000 bytes of data in total
->>  ...  ... actually read 0xfe000 bytes of data in total
->>  ... HugeTLB seek then read HWPOISON test...TEST_PASSED
->>  ...
->>
->> [ 2109.209225] Injecting memory failure for pfn 0x3190d01 at process
->> virtual address 0x7f75e3101000
->> [ 2109.209438] Memory failure: 0x3190d01: recovery action for huge
->> page: Recovered
->> ...
->>
->> I think something in between broken MADV_HWPOISON on hugetlbfs, and we
->> should be able to figure it out via bisection (and of course by
->> reading delta commits between them, probably related to page
->> refcount).
-> Thank you for this information.
-> 
->>
->> That being said, I will be on vacation from tomorrow until the end of
->> next week. So I will get back to this after next weekend. Meanwhile if
->> you want to go ahead and bisect the problematic commit, that will be
->> very much appreciated.
-> I'll try to bisect and post here if I find something.
-Found the culprit commit by bisection:
+Hello,
 
-a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
-mm/filemap: remove hugetlb special casing in filemap.c
+syzbot found the following issue on:
 
-hugetlb-read-hwpoison started failing from this patch. I've added the
-author of this patch to this bug report.
+HEAD commit:    610a9b8f49fb Linux 6.7-rc8
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=163c9fb5e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e51fe20c3e51ba7f
+dashboard link: https://syzkaller.appspot.com/bug?extid=04486d87f6240a004c85
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-> 
->>
->> Thanks,
->> Jiaqi
->>
->>
->>>
->>> Regards,
->>> Usama
->>>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/daced691c987/disk-610a9b8f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5e37367a7d1e/vmlinux-610a9b8f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/013b65c960ab/bzImage-610a9b8f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+04486d87f6240a004c85@syzkaller.appspotmail.com
+
+hfs: filesystem is marked locked, mounting read-only.
+=====================================================
+BUG: KMSAN: uninit-value in hfs_cat_keycmp+0x154/0x210 fs/hfs/catalog.c:178
+ hfs_cat_keycmp+0x154/0x210 fs/hfs/catalog.c:178
+ __hfs_brec_find+0x250/0x820 fs/hfs/bfind.c:75
+ hfs_brec_find+0x436/0x970 fs/hfs/bfind.c:138
+ hfs_brec_read+0x3f/0x1a0 fs/hfs/bfind.c:165
+ hfs_cat_find_brec+0xe6/0x400 fs/hfs/catalog.c:194
+ hfs_fill_super+0x1f27/0x23c0 fs/hfs/super.c:419
+ mount_bdev+0x3d7/0x560 fs/super.c:1650
+ hfs_mount+0x4d/0x60 fs/hfs/super.c:456
+ legacy_get_tree+0x110/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa5/0x520 fs/super.c:1771
+ do_new_mount+0x68d/0x1550 fs/namespace.c:3337
+ path_mount+0x73d/0x1f20 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3863
+ __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3863
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:346
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
+ entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ hfs_find_init+0x91/0x250 fs/hfs/bfind.c:21
+ hfs_fill_super+0x1eb9/0x23c0 fs/hfs/super.c:416
+ mount_bdev+0x3d7/0x560 fs/super.c:1650
+ hfs_mount+0x4d/0x60 fs/hfs/super.c:456
+ legacy_get_tree+0x110/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa5/0x520 fs/super.c:1771
+ do_new_mount+0x68d/0x1550 fs/namespace.c:3337
+ path_mount+0x73d/0x1f20 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3863
+ __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3863
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:346
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
+ entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+
+CPU: 1 PID: 7246 Comm: syz-executor.0 Not tainted 6.7.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
