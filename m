@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-22127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 789848299BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 271D88299C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:51:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD3D6B2462A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:50:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67A30B25654
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23684CE11;
-	Wed, 10 Jan 2024 11:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6DA48CEC;
+	Wed, 10 Jan 2024 11:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mcDjQXmM"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZoswQW+W"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB24481DE;
-	Wed, 10 Jan 2024 11:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4F0481DE;
+	Wed, 10 Jan 2024 11:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A8doh8031233;
-	Wed, 10 Jan 2024 11:44:08 GMT
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40ABSTw1003609;
+	Wed, 10 Jan 2024 11:44:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=da/DI8o+6ToMwY70Otmo0GbDm02pZQ6m/g1KRkyU7nQ=; b=mc
-	DjQXmM3m5+xIh5buRZabp1YP8caZujDIxzqmcPGuhmluEYcH6QF/bofcGoPtkyHM
-	mpG8IFFhQphz/ChiXOg3IvKQr/OfZ8GVfPGJ/35rRyqlUQsbPNFihZxIOlCBnKBF
-	2ErQSh2Jn8lER0Oze/UW7kf+gywvt3K94YWQtZh6eqaZz8/kMGfr+OfXWfjE6o7R
-	/bPvbsRTGijhKKeuDlEY2MGNyVOdOj1MVKNcxy+MF+bypc+WacE1vwqD2FPLYcD/
-	mBxhB9xrg3dMDC9wvdN4Uv9bp4Srmi+ogUxBTT3cKbhcHAggSp7Lcmz02OQkhApe
-	Lt0n5ZN4JBqypddqvxRQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhq2h0g24-1
+	qcppdkim1; bh=VoEP7zXSTHcfqOzpJJQQyV8U8txZQY38+CGYrXU01Nw=; b=Zo
+	swQW+Wcwi1tlpw7z5sYMhEIPjUoToqt29Jg0uNF3KlBs/Pcfj9ZycOYj6aDy3F+K
+	4obUJdrf9j0NK9vXQYYCFnDewk0xh+Fdj1Oe4b6BlFRhIU9etxQZROF3RnDa/ArA
+	D7OyTshcl+dxxqHd8S+qSDH5ZarQEp/CFDQ0yxxqA8t/ybI6kP0yPnJNVnL+7Icz
+	8bagyjQpRYdN5PXHBmA1Fc4aD2AfqaSnGwxtSc3NCoYaWbn+n0p4uzffAfwm2Ian
+	OxVqgNGuQ46R2d/1UM2DGIDkjeVXxQrj/35NGDfatvgD9r0/+xukCZk6WfAFa278
+	9COBmgeUssuAkgCuhMtQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9evt90m-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:44:07 +0000 (GMT)
+	Wed, 10 Jan 2024 11:44:17 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ABi6Hu009108
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ABiGVr015523
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 11:44:06 GMT
+	Wed, 10 Jan 2024 11:44:16 GMT
 Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 10 Jan 2024 03:43:56 -0800
+ 15.2.1118.40; Wed, 10 Jan 2024 03:44:06 -0800
 From: Luo Jie <quic_luoj@quicinc.com>
 To: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
         <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -68,9 +68,9 @@ CC: <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <quic_soni@quicinc.com>, <quic_pavir@quicinc.com>,
         <quic_souravp@quicinc.com>, <quic_linchen@quicinc.com>,
         <quic_leiwei@quicinc.com>
-Subject: [PATCH net-next 18/20] net: ethernet: qualcomm: Add PPE MAC support for phylink
-Date: Wed, 10 Jan 2024 19:40:30 +0800
-Message-ID: <20240110114033.32575-19-quic_luoj@quicinc.com>
+Subject: [PATCH net-next 19/20] net: ethernet: qualcomm: Add PPE MAC functions
+Date: Wed, 10 Jan 2024 19:40:31 +0800
+Message-ID: <20240110114033.32575-20-quic_luoj@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240110114033.32575-1-quic_luoj@quicinc.com>
 References: <20240110114033.32575-1-quic_luoj@quicinc.com>
@@ -86,1251 +86,1159 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: DMeM8tfRKtKaHPLHeJRcTZKeHduT7KHU
-X-Proofpoint-ORIG-GUID: DMeM8tfRKtKaHPLHeJRcTZKeHduT7KHU
+X-Proofpoint-GUID: o3I8_Ph6Bi_JmZWCA8wVzBLW-FXXtTT1
+X-Proofpoint-ORIG-GUID: o3I8_Ph6Bi_JmZWCA8wVzBLW-FXXtTT1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- spamscore=0 bulkscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ adultscore=0 suspectscore=0 clxscore=1015 spamscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401100096
 
 From: Lei Wei <quic_leiwei@quicinc.com>
 
-This driver adds support for PPE MAC initialization and MAC
-operations which used by phylink.
+Add PPE MAC functions including MAC MIB statistics, MAC eee and MAC
+address setting related operations which used by ethtool and netdev ops.
 
 Signed-off-by: Lei Wei <quic_leiwei@quicinc.com>
 Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 ---
- drivers/net/ethernet/qualcomm/Kconfig        |   3 +
- drivers/net/ethernet/qualcomm/ppe/ppe.c      | 904 +++++++++++++++++++
- drivers/net/ethernet/qualcomm/ppe/ppe.h      |  33 +
- drivers/net/ethernet/qualcomm/ppe/ppe_regs.h | 112 +++
- include/linux/soc/qcom/ppe.h                 |  33 +
- 5 files changed, 1085 insertions(+)
+ drivers/net/ethernet/qualcomm/ppe/ppe.c      | 698 +++++++++++++++++++
+ drivers/net/ethernet/qualcomm/ppe/ppe.h      |  98 +++
+ drivers/net/ethernet/qualcomm/ppe/ppe_regs.h | 172 +++++
+ include/linux/soc/qcom/ppe.h                 |  30 +
+ 4 files changed, 998 insertions(+)
 
-diff --git a/drivers/net/ethernet/qualcomm/Kconfig b/drivers/net/ethernet/qualcomm/Kconfig
-index fe826c508f64..261f6b8c0d2e 100644
---- a/drivers/net/ethernet/qualcomm/Kconfig
-+++ b/drivers/net/ethernet/qualcomm/Kconfig
-@@ -65,6 +65,9 @@ config QCOM_PPE
- 	tristate "Qualcomm Technologies, Inc. PPE Ethernet support"
- 	depends on HAS_IOMEM && OF
- 	depends on COMMON_CLK
-+	select PHYLINK
-+	select HWMON
-+	select SFP
- 	help
- 	  This driver supports the Qualcomm Technologies, Inc. packet
- 	  process engine(PPE) available with IPQ SoC. The PPE houses
 diff --git a/drivers/net/ethernet/qualcomm/ppe/ppe.c b/drivers/net/ethernet/qualcomm/ppe/ppe.c
-index 21040efe71fc..d241ff3eab84 100644
+index d241ff3eab84..680d228a5307 100644
 --- a/drivers/net/ethernet/qualcomm/ppe/ppe.c
 +++ b/drivers/net/ethernet/qualcomm/ppe/ppe.c
-@@ -13,6 +13,8 @@
- #include <linux/regmap.h>
- #include <linux/platform_device.h>
- #include <linux/if_ether.h>
-+#include <linux/of_net.h>
-+#include <linux/rtnetlink.h>
- #include <linux/soc/qcom/ppe.h>
- #include "ppe.h"
- #include "ppe_regs.h"
-@@ -197,6 +199,19 @@ struct reset_control **ppe_reset_get(struct ppe_device *ppe_dev)
- 	return ppe_dev_priv->rst;
- }
+@@ -28,6 +28,115 @@
+ #define PPE_SCHEDULER_L1_NUM		64
+ #define PPE_SP_PRIORITY_NUM		8
  
-+static struct ppe_port *ppe_port_get(struct ppe_device *ppe_dev, int port)
-+{
-+	struct ppe_ports *ppe_ports = (struct ppe_ports *)ppe_dev->ports;
-+	int i = 0;
++#define PPE_ETHTOOL_XGMIB_STAT(x) { #x, \
++				    offsetof(struct ppe_xgmib_hw_stats, x) / sizeof(u64) }
++#define PPE_ETHTOOL_GMIB_STAT(x) { #x, \
++				   offsetof(struct ppe_gmib_hw_stats, x) / sizeof(u64) }
 +
-+	for (i = 0; i < ppe_ports->num; i++) {
-+		if (ppe_ports->port[i].port_id == port)
-+			return &ppe_ports->port[i];
-+	}
++/* Poll interval time to poll GMAC MIBs for overflow protection */
++#define PPE_GMIB_STATS_POLL_INTERVAL	120000
 +
-+	return NULL;
-+}
++/* XGMAC strings used by ethtool */
++static const struct ppe_ethtool_gstrings_xgmib_stats {
++	char name[ETH_GSTRING_LEN];
++	u32 offset;
++} ppe_ethtool_gstrings_xgmib_stats[] = {
++	PPE_ETHTOOL_XGMIB_STAT(rx_frames),
++	PPE_ETHTOOL_XGMIB_STAT(rx_bytes),
++	PPE_ETHTOOL_XGMIB_STAT(rx_bytes_g),
++	PPE_ETHTOOL_XGMIB_STAT(rx_broadcast_g),
++	PPE_ETHTOOL_XGMIB_STAT(rx_multicast_g),
++	PPE_ETHTOOL_XGMIB_STAT(rx_unicast_g),
++	PPE_ETHTOOL_XGMIB_STAT(rx_crc_err),
++	PPE_ETHTOOL_XGMIB_STAT(rx_runt_err),
++	PPE_ETHTOOL_XGMIB_STAT(rx_jabber_err),
++	PPE_ETHTOOL_XGMIB_STAT(rx_undersize_g),
++	PPE_ETHTOOL_XGMIB_STAT(rx_oversize_g),
++	PPE_ETHTOOL_XGMIB_STAT(rx_pkt64),
++	PPE_ETHTOOL_XGMIB_STAT(rx_pkt65to127),
++	PPE_ETHTOOL_XGMIB_STAT(rx_pkt128to255),
++	PPE_ETHTOOL_XGMIB_STAT(rx_pkt256to511),
++	PPE_ETHTOOL_XGMIB_STAT(rx_pkt512to1023),
++	PPE_ETHTOOL_XGMIB_STAT(rx_pkt1024tomax),
++	PPE_ETHTOOL_XGMIB_STAT(rx_len_err),
++	PPE_ETHTOOL_XGMIB_STAT(rx_outofrange_err),
++	PPE_ETHTOOL_XGMIB_STAT(rx_pause),
++	PPE_ETHTOOL_XGMIB_STAT(rx_fifo_overflow),
++	PPE_ETHTOOL_XGMIB_STAT(rx_vlan),
++	PPE_ETHTOOL_XGMIB_STAT(rx_wdog_err),
++	PPE_ETHTOOL_XGMIB_STAT(rx_lpi_usec),
++	PPE_ETHTOOL_XGMIB_STAT(rx_lpi_tran),
++	PPE_ETHTOOL_XGMIB_STAT(rx_drop_frames),
++	PPE_ETHTOOL_XGMIB_STAT(rx_drop_bytes),
++	PPE_ETHTOOL_XGMIB_STAT(tx_bytes),
++	PPE_ETHTOOL_XGMIB_STAT(tx_bytes_g),
++	PPE_ETHTOOL_XGMIB_STAT(tx_frames),
++	PPE_ETHTOOL_XGMIB_STAT(tx_frame_g),
++	PPE_ETHTOOL_XGMIB_STAT(tx_broadcast),
++	PPE_ETHTOOL_XGMIB_STAT(tx_broadcast_g),
++	PPE_ETHTOOL_XGMIB_STAT(tx_multicast),
++	PPE_ETHTOOL_XGMIB_STAT(tx_multicast_g),
++	PPE_ETHTOOL_XGMIB_STAT(tx_unicast),
++	PPE_ETHTOOL_XGMIB_STAT(tx_pkt64),
++	PPE_ETHTOOL_XGMIB_STAT(tx_pkt65to127),
++	PPE_ETHTOOL_XGMIB_STAT(tx_pkt128to255),
++	PPE_ETHTOOL_XGMIB_STAT(tx_pkt256to511),
++	PPE_ETHTOOL_XGMIB_STAT(tx_pkt512to1023),
++	PPE_ETHTOOL_XGMIB_STAT(tx_pkt1024tomax),
++	PPE_ETHTOOL_XGMIB_STAT(tx_underflow_err),
++	PPE_ETHTOOL_XGMIB_STAT(tx_pause),
++	PPE_ETHTOOL_XGMIB_STAT(tx_vlan_g),
++	PPE_ETHTOOL_XGMIB_STAT(tx_lpi_usec),
++	PPE_ETHTOOL_XGMIB_STAT(tx_lpi_tran),
++};
 +
- static int ppe_clock_set_enable(struct ppe_device *ppe_dev,
- 				enum ppe_clk_id clk_id, unsigned long rate)
- {
-@@ -302,6 +317,869 @@ static int ppe_clock_config(struct platform_device *pdev)
++/* GMAC strings used by ethtool */
++static const struct ppe_ethtool_gstrings_gmib_stats {
++	char name[ETH_GSTRING_LEN];
++	u32 offset;
++} ppe_ethtool_gstrings_gmib_stats[] = {
++	PPE_ETHTOOL_GMIB_STAT(rx_broadcast),
++	PPE_ETHTOOL_GMIB_STAT(rx_pause),
++	PPE_ETHTOOL_GMIB_STAT(rx_unicast),
++	PPE_ETHTOOL_GMIB_STAT(rx_multicast),
++	PPE_ETHTOOL_GMIB_STAT(rx_fcserr),
++	PPE_ETHTOOL_GMIB_STAT(rx_alignerr),
++	PPE_ETHTOOL_GMIB_STAT(rx_runt),
++	PPE_ETHTOOL_GMIB_STAT(rx_frag),
++	PPE_ETHTOOL_GMIB_STAT(rx_jmbfcserr),
++	PPE_ETHTOOL_GMIB_STAT(rx_jmbalignerr),
++	PPE_ETHTOOL_GMIB_STAT(rx_pkt64),
++	PPE_ETHTOOL_GMIB_STAT(rx_pkt65to127),
++	PPE_ETHTOOL_GMIB_STAT(rx_pkt128to255),
++	PPE_ETHTOOL_GMIB_STAT(rx_pkt256to511),
++	PPE_ETHTOOL_GMIB_STAT(rx_pkt512to1023),
++	PPE_ETHTOOL_GMIB_STAT(rx_pkt1024to1518),
++	PPE_ETHTOOL_GMIB_STAT(rx_pkt1519tomax),
++	PPE_ETHTOOL_GMIB_STAT(rx_toolong),
++	PPE_ETHTOOL_GMIB_STAT(rx_pktgoodbyte),
++	PPE_ETHTOOL_GMIB_STAT(rx_pktbadbyte),
++	PPE_ETHTOOL_GMIB_STAT(tx_broadcast),
++	PPE_ETHTOOL_GMIB_STAT(tx_pause),
++	PPE_ETHTOOL_GMIB_STAT(tx_multicast),
++	PPE_ETHTOOL_GMIB_STAT(tx_underrun),
++	PPE_ETHTOOL_GMIB_STAT(tx_pkt64),
++	PPE_ETHTOOL_GMIB_STAT(tx_pkt65to127),
++	PPE_ETHTOOL_GMIB_STAT(tx_pkt128to255),
++	PPE_ETHTOOL_GMIB_STAT(tx_pkt256to511),
++	PPE_ETHTOOL_GMIB_STAT(tx_pkt512to1023),
++	PPE_ETHTOOL_GMIB_STAT(tx_pkt1024to1518),
++	PPE_ETHTOOL_GMIB_STAT(tx_pkt1519tomax),
++	PPE_ETHTOOL_GMIB_STAT(tx_pktbyte),
++	PPE_ETHTOOL_GMIB_STAT(tx_collisions),
++	PPE_ETHTOOL_GMIB_STAT(tx_abortcol),
++	PPE_ETHTOOL_GMIB_STAT(tx_multicol),
++	PPE_ETHTOOL_GMIB_STAT(tx_singlecol),
++	PPE_ETHTOOL_GMIB_STAT(tx_exesdeffer),
++	PPE_ETHTOOL_GMIB_STAT(tx_deffer),
++	PPE_ETHTOOL_GMIB_STAT(tx_latecol),
++	PPE_ETHTOOL_GMIB_STAT(tx_unicast),
++};
++
+ static const char * const ppe_clock_name[PPE_CLK_MAX] = {
+ 	"cmn_ahb",
+ 	"cmn_sys",
+@@ -694,6 +803,362 @@ static int ppe_port_bridge_txmac_en_set(struct ppe_device *ppe_dev, int port, bo
  	return 0;
  }
  
-+static int ppe_port_mac_reset(struct ppe_device *ppe_dev, int port)
++/* Get GMAC MIBs from GMAC registers and update to PPE port gmib stats */
++static void ppe_gmib_stats_update(struct ppe_port *ppe_port)
 +{
-+	struct ppe_data *ppe_dev_priv = ppe_dev->ppe_priv;
++	u32 val, hi;
++	struct ppe_device *ppe_dev = ppe_port->ppe_dev;
++	int port = ppe_port->port_id;
 +
-+	reset_control_assert(ppe_dev_priv->rst[PPE_NSS_PORT1_MAC_RST + port - 1]);
-+	if (ppe_dev_priv->ppe_type == PPE_TYPE_APPE) {
-+		reset_control_assert(ppe_dev_priv->rst[PPE_NSS_PORT1_RST + port]);
-+	} else if (ppe_dev_priv->ppe_type == PPE_TYPE_MPPE) {
-+		reset_control_assert(ppe_dev_priv->rst[PPE_NSS_PORT1_RX_RST + ((port - 1) << 1)]);
-+		reset_control_assert(ppe_dev_priv->rst[PPE_NSS_PORT1_TX_RST + ((port - 1) << 1)]);
-+	}
-+	fsleep(150000);
++	spin_lock(&ppe_port->stats_lock);
 +
-+	reset_control_deassert(ppe_dev_priv->rst[PPE_NSS_PORT1_MAC_RST + port - 1]);
-+	if (ppe_dev_priv->ppe_type == PPE_TYPE_APPE) {
-+		reset_control_deassert(ppe_dev_priv->rst[PPE_NSS_PORT1_RST + port]);
-+	} else if (ppe_dev_priv->ppe_type == PPE_TYPE_MPPE) {
-+		reset_control_deassert(ppe_dev_priv->rst[PPE_NSS_PORT1_RX_RST + ((port - 1) << 1)]);
-+		reset_control_deassert(ppe_dev_priv->rst[PPE_NSS_PORT1_TX_RST + ((port - 1) << 1)]);
-+	}
-+	fsleep(150000);
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXBROAD, &val);
++	ppe_port->gmib_stats->rx_broadcast += (u64)val;
 +
-+	return 0;
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPAUSE, &val);
++	ppe_port->gmib_stats->rx_pause += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXMULTI, &val);
++	ppe_port->gmib_stats->rx_multicast += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXFCSERR, &val);
++	ppe_port->gmib_stats->rx_fcserr += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXALIGNERR, &val);
++	ppe_port->gmib_stats->rx_alignerr += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXRUNT, &val);
++	ppe_port->gmib_stats->rx_runt += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXFRAG, &val);
++	ppe_port->gmib_stats->rx_frag += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXJUMBOFCSERR, &val);
++	ppe_port->gmib_stats->rx_jmbfcserr += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXJUMBOALIGNERR, &val);
++	ppe_port->gmib_stats->rx_jmbalignerr += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPKT64, &val);
++	ppe_port->gmib_stats->rx_pkt64 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPKT65TO127, &val);
++	ppe_port->gmib_stats->rx_pkt65to127 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPKT128TO255, &val);
++	ppe_port->gmib_stats->rx_pkt128to255 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPKT256TO511, &val);
++	ppe_port->gmib_stats->rx_pkt256to511 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPKT512TO1023, &val);
++	ppe_port->gmib_stats->rx_pkt512to1023 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPKT1024TO1518, &val);
++	ppe_port->gmib_stats->rx_pkt1024to1518 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXPKT1519TOX, &val);
++	ppe_port->gmib_stats->rx_pkt1519tomax += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXTOOLONG, &val);
++	ppe_port->gmib_stats->rx_toolong += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXGOODBYTE_L, &val);
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXGOODBYTE_H, &hi);
++	ppe_port->gmib_stats->rx_pktgoodbyte += (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXBADBYTE_L, &val);
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXBADBYTE_H, &hi);
++	ppe_port->gmib_stats->rx_pktbadbyte += (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_RXUNI, &val);
++	ppe_port->gmib_stats->rx_unicast += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXBROAD, &val);
++	ppe_port->gmib_stats->tx_broadcast += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPAUSE, &val);
++	ppe_port->gmib_stats->tx_pause += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXMULTI, &val);
++	ppe_port->gmib_stats->tx_multicast += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXUNDERRUN, &val);
++	ppe_port->gmib_stats->tx_underrun += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPKT64, &val);
++	ppe_port->gmib_stats->tx_pkt64 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPKT65TO127, &val);
++	ppe_port->gmib_stats->tx_pkt65to127 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPKT128TO255, &val);
++	ppe_port->gmib_stats->tx_pkt128to255 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPKT256TO511, &val);
++	ppe_port->gmib_stats->tx_pkt256to511 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPKT512TO1023, &val);
++	ppe_port->gmib_stats->tx_pkt512to1023 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPKT1024TO1518, &val);
++	ppe_port->gmib_stats->tx_pkt1024to1518 += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXPKT1519TOX, &val);
++	ppe_port->gmib_stats->tx_pkt1519tomax += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXBYTE_L, &val);
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXBYTE_H, &hi);
++	ppe_port->gmib_stats->tx_pktbyte += (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXCOLLISIONS, &val);
++	ppe_port->gmib_stats->tx_collisions += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXABORTCOL, &val);
++	ppe_port->gmib_stats->tx_abortcol += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXMULTICOL, &val);
++	ppe_port->gmib_stats->tx_multicol += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXSINGLECOL, &val);
++	ppe_port->gmib_stats->tx_singlecol += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXEXCESSIVEDEFER, &val);
++	ppe_port->gmib_stats->tx_exesdeffer += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXDEFER, &val);
++	ppe_port->gmib_stats->tx_deffer += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXLATECOL, &val);
++	ppe_port->gmib_stats->tx_latecol += (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_TXUNI, &val);
++	ppe_port->gmib_stats->tx_unicast += (u64)val;
++
++	spin_unlock(&ppe_port->stats_lock);
 +}
 +
-+static int ppe_gcc_port_speed_clk_set(struct ppe_device *ppe_dev,
-+				      int port, int speed, phy_interface_t interface)
++/* Get XGMAC MIBs from XGMAC registers */
++static void ppe_xgmib_stats_update(struct ppe_device *ppe_dev, int port,
++				   struct ppe_xgmib_hw_stats *xgmib_hw_stats)
 +{
-+	struct ppe_data *ppe_dev_priv = ppe_dev->ppe_priv;
-+	enum ppe_clk_id rx_id, tx_id;
-+	unsigned long rate = 0;
-+	int err = 0;
++	u32 val, hi;
 +
-+	rx_id = PPE_NSS_PORT1_RX_CLK + ((port - 1) << 1);
-+	tx_id = PPE_NSS_PORT1_TX_CLK + ((port - 1) << 1);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_OCTET_COUNT_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_OCTET_COUNT_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_bytes = (u64)val | (u64)hi << 32;
 +
-+	switch (interface) {
-+	case PHY_INTERFACE_MODE_USXGMII:
-+	case PHY_INTERFACE_MODE_10GKR:
-+	case PHY_INTERFACE_MODE_QUSGMII:
-+	case PHY_INTERFACE_MODE_10GBASER:
-+		if (speed == SPEED_10)
-+			rate = 1250000;
-+		else if (speed == SPEED_100)
-+			rate = 12500000;
-+		else if (speed == SPEED_1000)
-+			rate = 125000000;
-+		else if (speed == SPEED_2500)
-+			rate = 78125000;
-+		else if (speed == SPEED_5000)
-+			rate = 156250000;
-+		else if (speed == SPEED_10000)
-+			rate = 312500000;
-+		break;
-+	case PHY_INTERFACE_MODE_2500BASEX:
-+		if (speed == SPEED_2500)
-+			rate = 312500000;
-+		break;
-+	case PHY_INTERFACE_MODE_QSGMII:
-+	case PHY_INTERFACE_MODE_1000BASEX:
-+	case PHY_INTERFACE_MODE_SGMII:
-+		if (speed == SPEED_10)
-+			rate = 2500000;
-+		else if (speed == SPEED_100)
-+			rate = 25000000;
-+		else if (speed == SPEED_1000)
-+			rate = 125000000;
-+		break;
-+	default:
-+		break;
-+	}
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_FRAME_COUNT_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_FRAME_COUNT_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_frames = (u64)val | (u64)hi << 32;
 +
-+	if (!IS_ERR(ppe_dev_priv->clk[rx_id])) {
-+		err = clk_set_rate(ppe_dev_priv->clk[rx_id], rate);
-+		if (err) {
-+			dev_err(ppe_dev->dev,
-+				"Failed to set ppe port %d speed rx clk(%d)\n",
-+				port, rx_id);
-+			return err;
-+		}
-+	}
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_BROADCAST_FRAMES_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_BROADCAST_FRAMES_GOOD_HIGH, &hi);
++	xgmib_hw_stats->tx_broadcast_g = (u64)val | (u64)hi << 32;
 +
-+	if (!IS_ERR(ppe_dev_priv->clk[tx_id])) {
-+		err = clk_set_rate(ppe_dev_priv->clk[tx_id], rate);
-+		if (err) {
-+			dev_err(ppe_dev->dev,
-+				"Failed to set ppe port %d speed rx clk(%d)\n",
-+				port, rx_id);
-+			return err;
-+		}
-+	}
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_MULTICAST_FRAMES_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_MULTICAST_FRAMES_GOOD_HIGH, &hi);
++	xgmib_hw_stats->tx_multicast_g = (u64)val | (u64)hi << 32;
 +
-+	return 0;
-+}
-+
-+static int ppe_mac_speed_set(struct ppe_device *ppe_dev,
-+			     int port, int speed, phy_interface_t interface)
-+{
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	u32 val;
-+
-+	if (!ppe_port) {
-+		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return -ENOENT;
-+	}
-+
-+	if (ppe_port->mac_type == PPE_MAC_TYPE_GMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_SPEED,
-+			 &val);
-+		val &= ~GMAC_SPEED_MASK;
-+		switch (speed) {
-+		case SPEED_10:
-+			val |= GMAC_SPEED_10;
-+			break;
-+		case SPEED_100:
-+			val |= GMAC_SPEED_100;
-+			break;
-+		case SPEED_1000:
-+			val |= GMAC_SPEED_1000;
-+			break;
-+		default:
-+			break;
-+		}
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_GMAC_ADDR(port) + GMAC_SPEED,
-+			  val);
-+	} else if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_CONFIGURATION,
-+			 &val);
-+		val &= ~XGMAC_SPEED_MASK;
-+		switch (speed) {
-+		case SPEED_10000:
-+			if (interface == PHY_INTERFACE_MODE_USXGMII ||
-+			    interface == PHY_INTERFACE_MODE_QUSGMII)
-+				val |= XGMAC_SPEED_10000_USXGMII;
-+			else
-+				val |= XGMAC_SPEED_10000;
-+			break;
-+		case SPEED_5000:
-+			val |= XGMAC_SPEED_5000;
-+			break;
-+		case SPEED_2500:
-+			if (interface == PHY_INTERFACE_MODE_USXGMII ||
-+			    interface == PHY_INTERFACE_MODE_QUSGMII)
-+				val |= XGMAC_SPEED_2500_USXGMII;
-+			else
-+				val |= XGMAC_SPEED_2500;
-+			break;
-+		case SPEED_1000:
-+			val |= XGMAC_SPEED_1000;
-+			break;
-+		case SPEED_100:
-+			val |= XGMAC_SPEED_100;
-+			break;
-+		case SPEED_10:
-+			val |= XGMAC_SPEED_10;
-+			break;
-+		default:
-+			break;
-+		}
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_CONFIGURATION,
-+			  val);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ppe_mac_duplex_set(struct ppe_device *ppe_dev, int port, int duplex)
-+{
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	u32 val;
-+
-+	if (!ppe_port) {
-+		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return -ENOENT;
-+	}
-+
-+	if (ppe_port->mac_type == PPE_MAC_TYPE_GMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			 &val);
-+		if (duplex == DUPLEX_FULL)
-+			val |= GMAC_DUPLEX_FULL;
-+		else
-+			val &= ~GMAC_DUPLEX_FULL;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			  val);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ppe_mac_txfc_status_set(struct ppe_device *ppe_dev, int port, bool enable)
-+{
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	u32 val;
-+
-+	if (!ppe_port) {
-+		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return -ENOENT;
-+	}
-+
-+	if (ppe_port->mac_type == PPE_MAC_TYPE_GMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			 &val);
-+		if (enable)
-+			val |= GMAC_TX_FLOW_EN;
-+		else
-+			val &= ~GMAC_TX_FLOW_EN;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			  val);
-+	} else if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_Q0_TX_FLOW_CTRL,
-+			 &val);
-+		if (enable) {
-+			val &= ~XGMAC_PT_MASK;
-+			val |= (XGMAC_PAUSE_TIME | XGMAC_TFE);
-+		} else {
-+			val &= ~XGMAC_TFE;
-+		}
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_XGMAC_ADDR(port) + XGMAC_Q0_TX_FLOW_CTRL,
-+			  val);
-+	}
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_64OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_64OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_pkt64 = (u64)val | (u64)hi << 32;
 +
 +	ppe_read(ppe_dev,
-+		 PPE_BM_PORT_FC_MODE + PPE_BM_PORT_FC_MODE_INC * (port + 7),
-+		 &val);
-+	if (enable)
-+		val |= PPE_BM_PORT_FC_MODE_EN;
-+	else
-+		val &= ~PPE_BM_PORT_FC_MODE_EN;
-+	ppe_write(ppe_dev,
-+		  PPE_BM_PORT_FC_MODE + PPE_BM_PORT_FC_MODE_INC * (port + 7),
-+		  val);
-+
-+	return 0;
-+}
-+
-+static int ppe_mac_rxfc_status_set(struct ppe_device *ppe_dev, int port, bool enable)
-+{
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	u32 val;
-+
-+	if (!ppe_port) {
-+		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return -ENOENT;
-+	}
-+
-+	if (ppe_port->mac_type == PPE_MAC_TYPE_GMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			 &val);
-+		if (enable)
-+			val |= GMAC_RX_FLOW_EN;
-+		else
-+			val &= ~GMAC_RX_FLOW_EN;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			  val);
-+	} else if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_FLOW_CTRL,
-+			 &val);
-+		if (enable)
-+			val |= XGMAC_RFE;
-+		else
-+			val &= ~XGMAC_RFE;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_FLOW_CTRL,
-+			  val);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ppe_mac_txmac_en_set(struct ppe_device *ppe_dev, int port, bool enable)
-+{
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	u32 val;
-+
-+	if (!ppe_port) {
-+		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return -ENOENT;
-+	}
-+
-+	if (ppe_port->mac_type == PPE_MAC_TYPE_GMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			 &val);
-+		if (enable)
-+			val |= GMAC_TXMAC_EN;
-+		else
-+			val &= ~GMAC_TXMAC_EN;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			  val);
-+	} else if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_CONFIGURATION,
-+			 &val);
-+		if (enable)
-+			val |= XGMAC_TE;
-+		else
-+			val &= ~XGMAC_TE;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_CONFIGURATION,
-+			  val);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ppe_mac_rxmac_en_set(struct ppe_device *ppe_dev, int port, bool enable)
-+{
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	u32 val;
-+
-+	if (!ppe_port) {
-+		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return -ENOENT;
-+	}
-+
-+	if (ppe_port->mac_type == PPE_MAC_TYPE_GMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			 &val);
-+		if (enable)
-+			val |= GMAC_RXMAC_EN;
-+		else
-+			val &= ~GMAC_RXMAC_EN;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			  val);
-+	} else if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
-+		ppe_read(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_CONFIGURATION,
-+			 &val);
-+		if (enable)
-+			val |= XGMAC_RE;
-+		else
-+			val &= ~XGMAC_RE;
-+		ppe_write(ppe_dev,
-+			  PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_CONFIGURATION,
-+			  val);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ppe_port_bridge_txmac_en_set(struct ppe_device *ppe_dev, int port, bool enable)
-+{
-+	u32 val;
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_65TO127OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_65TO127OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_pkt65to127 = (u64)val | (u64)hi << 32;
 +
 +	ppe_read(ppe_dev,
-+		 PPE_PORT_BRIDGE_CTRL + PPE_PORT_BRIDGE_CTRL_INC * port,
-+		 &val);
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_128TO255OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_128TO255OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_pkt128to255 = (u64)val | (u64)hi << 32;
 +
-+	if (enable)
-+		val |= PPE_PORT_BRIDGE_CTRL_TXMAC_EN;
-+	else
-+		val &= ~PPE_PORT_BRIDGE_CTRL_TXMAC_EN;
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_256TO511OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_256TO511OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_pkt256to511 = (u64)val | (u64)hi << 32;
 +
-+	ppe_write(ppe_dev,
-+		  PPE_PORT_BRIDGE_CTRL + PPE_PORT_BRIDGE_CTRL_INC * port,
-+		  val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_512TO1023OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_512TO1023OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_pkt512to1023 = (u64)val | (u64)hi << 32;
 +
-+	return 0;
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_pkt1024tomax = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_UNICAST_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_UNICAST_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_unicast = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_MULTICAST_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_MULTICAST_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_multicast = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_BROADCAST_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_BROADCAST_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->tx_broadcast = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_UNDERFLOW_ERROR_FRAMES_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_UNDERFLOW_ERROR_FRAMES_HIGH, &hi);
++	xgmib_hw_stats->tx_underflow_err = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_OCTET_COUNT_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_OCTET_COUNT_GOOD_HIGH, &hi);
++	xgmib_hw_stats->tx_bytes_g = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_FRAME_COUNT_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_FRAME_COUNT_GOOD_HIGH, &hi);
++	xgmib_hw_stats->tx_frame_g = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_PAUSE_FRAMES_LOW, &val);
++	xgmib_hw_stats->tx_pause = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_VLAN_FRAMES_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_VLAN_FRAMES_GOOD_HIGH, &hi);
++	xgmib_hw_stats->tx_vlan_g = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_LPI_USEC_CNTR, &val);
++	xgmib_hw_stats->tx_lpi_usec = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_LPI_TRAN_CNTR, &val);
++	xgmib_hw_stats->tx_lpi_tran = (u64)val;
++
++	/* rx mib stats */
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_FRAME_COUNT_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_FRAME_COUNT_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_frames = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_OCTET_COUNT_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_OCTET_COUNT_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_bytes = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_OCTET_COUNT_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_OCTET_COUNT_GOOD_HIGH, &hi);
++	xgmib_hw_stats->rx_bytes_g = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_BROADCAST_FRAMES_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_BROADCAST_FRAMES_GOOD_HIGH, &hi);
++	xgmib_hw_stats->rx_broadcast_g = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_MULTICAST_FRAMES_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_MULTICAST_FRAMES_GOOD_HIGH, &hi);
++	xgmib_hw_stats->rx_multicast_g = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_CRC_ERROR_FRAMES_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_CRC_ERROR_FRAMES_HIGH, &hi);
++	xgmib_hw_stats->rx_crc_err = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_FRAG_ERROR_FRAMES, &val);
++	xgmib_hw_stats->rx_runt_err = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_JABBER_ERROR_FRAMES, &val);
++	xgmib_hw_stats->rx_jabber_err = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_UNDERSIZE_FRAMES_GOOD, &val);
++	xgmib_hw_stats->rx_undersize_g = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_OVERSIZE_FRAMES_GOOD, &val);
++	xgmib_hw_stats->rx_oversize_g = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_64OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_64OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_pkt64 = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_65TO127OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_65TO127OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_pkt65to127 = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_128TO255OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_128TO255OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_pkt128to255 = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_256TO511OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_256TO511OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_pkt256to511 = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_512TO1023OCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_512TO1023OCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_pkt512to1023 = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_pkt1024tomax = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_UNICAST_FRAMES_GOOD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_UNICAST_FRAMES_GOOD_HIGH, &hi);
++	xgmib_hw_stats->rx_unicast_g = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_LENGTH_ERROR_FRAMES_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_LENGTH_ERROR_FRAMES_HIGH, &hi);
++	xgmib_hw_stats->rx_len_err = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_OUTOFRANGE_FRAMES_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_OUTOFRANGE_FRAMES_HIGH, &hi);
++	xgmib_hw_stats->rx_outofrange_err = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_PAUSE_FRAMES_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_PAUSE_FRAMES_HIGH, &hi);
++	xgmib_hw_stats->rx_pause = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_FIFOOVERFLOW_FRAMES_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_FIFOOVERFLOW_FRAMES_HIGH, &hi);
++	xgmib_hw_stats->rx_fifo_overflow = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_VLAN_FRAMES_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_VLAN_FRAMES_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_vlan = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_WATCHDOG_ERROR_FRAMES, &val);
++	xgmib_hw_stats->rx_wdog_err = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_LPI_USEC_CNTR, &val);
++	xgmib_hw_stats->rx_lpi_usec = (u64)val;
++
++	ppe_read(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_LPI_TRAN_CNTR, &val);
++	xgmib_hw_stats->rx_lpi_tran = (u64)val;
++
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_DISCARD_FRAME_COUNT_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_DISCARD_FRAME_COUNT_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_drop_frames = (u64)val | (u64)hi << 32;
++
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_DISCARD_OCTET_COUNT_GOOD_BAD_LOW, &val);
++	ppe_read(ppe_dev,
++		 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_DISCARD_OCTET_COUNT_GOOD_BAD_HIGH, &hi);
++	xgmib_hw_stats->rx_drop_bytes = (u64)val | (u64)hi << 32;
 +}
 +
-+static void ppe_phylink_mac_config(struct ppe_device *ppe_dev, int port,
-+				   unsigned int mode, const struct phylink_link_state *state)
++static void ppe_gmib_stats_poll(struct work_struct *work)
++{
++	struct ppe_port *ppe_port = container_of(work, struct ppe_port,
++						 gmib_read.work);
++
++	ppe_gmib_stats_update(ppe_port);
++
++	schedule_delayed_work(&ppe_port->gmib_read,
++			      msecs_to_jiffies(PPE_GMIB_STATS_POLL_INTERVAL));
++}
++
+ static void ppe_phylink_mac_config(struct ppe_device *ppe_dev, int port,
+ 				   unsigned int mode, const struct phylink_link_state *state)
+ {
+@@ -862,6 +1327,9 @@ static void ppe_phylink_mac_link_up(struct ppe_device *ppe_dev, int port,
+ 	/* Enable ppe bridge port tx mac */
+ 	ppe_port_bridge_txmac_en_set(ppe_dev, port, true);
+ 
++	/* Start gmib statistics polling */
++	schedule_delayed_work(&ppe_port->gmib_read, 0);
++
+ 	dev_info(ppe_dev->dev,
+ 		 "PPE port %d interface %s link up - %s%s - pause tx %d rx %d\n",
+ 		 port, phy_modes(interface), phy_speed_to_str(speed),
+@@ -886,6 +1354,9 @@ static void ppe_phylink_mac_link_down(struct ppe_device *ppe_dev, int port,
+ 	/* Disable ppe mac tx */
+ 	ppe_mac_txmac_en_set(ppe_dev, port, false);
+ 
++	/* Stop gmib statistics polling */
++	cancel_delayed_work_sync(&ppe_port->gmib_read);
++
+ 	dev_info(ppe_dev->dev, "PPE port %d interface %s link down\n",
+ 		 port, phy_modes(interface));
+ }
+@@ -938,6 +1409,11 @@ static int ppe_mac_init(struct platform_device *pdev)
+ 		ppe_ports->port[i].speed = SPEED_UNKNOWN;
+ 		ppe_ports->port[i].duplex = DUPLEX_UNKNOWN;
+ 		ppe_ports->port[i].pause = MLO_PAUSE_NONE;
++		ppe_ports->port[i].gmib_stats = devm_kzalloc(&pdev->dev,
++							     sizeof(*ppe_ports->port[i].gmib_stats),
++							     GFP_KERNEL);
++		spin_lock_init(&ppe_ports->port[i].stats_lock);
++		INIT_DELAYED_WORK(&ppe_ports->port[i].gmib_read, ppe_gmib_stats_poll);
+ 		i++;
+ 
+ 		/* Port gmac HW initialization */
+@@ -1180,6 +1656,218 @@ static void ppe_phylink_destroy(struct ppe_device *ppe_dev, int port)
+ 	}
+ }
+ 
++static int ppe_get_sset_count(struct ppe_device *ppe_dev, int port, int sset)
 +{
 +	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	int mac_type;
-+	u32 val;
 +
 +	if (!ppe_port) {
 +		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return;
-+	}
-+
-+	switch (state->interface) {
-+	case PHY_INTERFACE_MODE_USXGMII:
-+	case PHY_INTERFACE_MODE_2500BASEX:
-+	case PHY_INTERFACE_MODE_10GBASER:
-+	case PHY_INTERFACE_MODE_QUSGMII:
-+		mac_type = PPE_MAC_TYPE_XGMAC;
-+		break;
-+	default:
-+		mac_type = PPE_MAC_TYPE_GMAC;
-+		break;
-+	}
-+
-+	if (ppe_port->mac_type != mac_type) {
-+		/* Reset port mac for gmac */
-+		if (mac_type == PPE_MAC_TYPE_GMAC)
-+			ppe_port_mac_reset(ppe_dev, port);
-+
-+		/* Port mux to select gmac or xgmac */
-+		mutex_lock(&ppe_dev->reg_mutex);
-+		ppe_read(ppe_dev, PPE_PORT_MUX_CTRL, &val);
-+		if (mac_type == PPE_MAC_TYPE_GMAC)
-+			val &= ~PPE_PORT_MAC_SEL(port);
-+		else
-+			val |= PPE_PORT_MAC_SEL(port);
-+		if (port == PPE_PORT5)
-+			val |= PPE_PORT5_PCS_SEL;
-+
-+		ppe_write(ppe_dev, PPE_PORT_MUX_CTRL, val);
-+		mutex_unlock(&ppe_dev->reg_mutex);
-+		ppe_port->mac_type = mac_type;
-+	}
-+
-+	/* Reset ppe port link status when interface changes,
-+	 * this allows PPE MAC and UNIPHY to be configured
-+	 * according to the port link up status in ppe phylink
-+	 * mac link up.
-+	 */
-+	if (state->interface != ppe_port->interface) {
-+		ppe_port->speed = SPEED_UNKNOWN;
-+		ppe_port->duplex = DUPLEX_UNKNOWN;
-+		ppe_port->pause = MLO_PAUSE_NONE;
-+		ppe_port->interface = state->interface;
-+	}
-+
-+	dev_info(ppe_dev->dev, "PPE port %d mac config: interface %s, mac_type %d\n",
-+		 port, phy_modes(state->interface), mac_type);
-+}
-+
-+static struct phylink_pcs *ppe_phylink_mac_select_pcs(struct ppe_device *ppe_dev,
-+						      int port, phy_interface_t interface)
-+{
-+	struct ppe_uniphy *uniphy = (struct ppe_uniphy *)ppe_dev->uniphy;
-+	int ppe_type = ppe_type_get(ppe_dev);
-+	int index;
-+
-+	switch (port) {
-+	case PPE_PORT6:
-+		index = 2;
-+		break;
-+	case PPE_PORT5:
-+		index = 1;
-+		break;
-+	case PPE_PORT4:
-+	case PPE_PORT3:
-+		index = 0;
-+		break;
-+	case PPE_PORT2:
-+		if (ppe_type == PPE_TYPE_MPPE)
-+			index = 1;
-+		else if (ppe_type == PPE_TYPE_APPE)
-+			index = 0;
-+		break;
-+	case PPE_PORT1:
-+		index = 0;
-+		break;
-+	default:
-+		index = -1;
-+		break;
-+	}
-+
-+	if (index >= 0)
-+		return &uniphy[index].pcs;
-+	else
-+		return NULL;
-+}
-+
-+static void ppe_phylink_mac_link_up(struct ppe_device *ppe_dev, int port,
-+				    struct phy_device *phy,
-+				    unsigned int mode, phy_interface_t interface,
-+				    int speed, int duplex, bool tx_pause, bool rx_pause)
-+{
-+	struct phylink_pcs *pcs = ppe_phylink_mac_select_pcs(ppe_dev, port, interface);
-+	struct ppe_uniphy *uniphy = pcs_to_ppe_uniphy(pcs);
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+
-+	/* Wait uniphy auto-negotiation completion */
-+	ppe_uniphy_autoneg_complete_check(uniphy, port);
-+
-+	if (speed != ppe_port->speed ||
-+	    duplex != ppe_port->duplex ||
-+		tx_pause != !!(ppe_port->pause & MLO_PAUSE_TX) ||
-+		rx_pause != !!(ppe_port->pause & MLO_PAUSE_RX)) {
-+		/* Disable gcc uniphy port clk */
-+		ppe_uniphy_port_gcc_clock_en_set(uniphy, port, false);
-+
-+		if (speed != ppe_port->speed) {
-+			/* Set gcc port speed clock */
-+			ppe_gcc_port_speed_clk_set(ppe_dev, port, speed, interface);
-+			fsleep(10000);
-+			/* Set uniphy channel speed */
-+			ppe_uniphy_speed_set(uniphy, port, speed);
-+			/* Set mac speed */
-+			ppe_mac_speed_set(ppe_dev, port, speed, interface);
-+			ppe_port->speed = speed;
-+		}
-+
-+		if (duplex != ppe_port->duplex) {
-+			/* Set uniphy channel duplex */
-+			ppe_uniphy_duplex_set(uniphy, port, duplex);
-+			/* Set mac duplex */
-+			ppe_mac_duplex_set(ppe_dev, port, duplex);
-+			ppe_port->duplex = duplex;
-+		}
-+
-+		if (tx_pause != !!(ppe_port->pause & MLO_PAUSE_TX)) {
-+			/* Set mac tx flow ctrl */
-+			ppe_mac_txfc_status_set(ppe_dev, port, tx_pause);
-+			if (tx_pause)
-+				ppe_port->pause |= MLO_PAUSE_TX;
-+			else
-+				ppe_port->pause &= ~MLO_PAUSE_TX;
-+		}
-+
-+		if (rx_pause != !!(ppe_port->pause & MLO_PAUSE_RX)) {
-+			/* Set mac rx flow ctrl */
-+			ppe_mac_rxfc_status_set(ppe_dev, port, rx_pause);
-+			if (rx_pause)
-+				ppe_port->pause |= MLO_PAUSE_RX;
-+			else
-+				ppe_port->pause &= ~MLO_PAUSE_RX;
-+		}
-+
-+		/* Enable gcc uniphy port clk */
-+		ppe_uniphy_port_gcc_clock_en_set(uniphy, port, true);
-+
-+		/* Reset uniphy channel adapter */
-+		ppe_uniphy_adapter_reset(uniphy, port);
-+	}
-+
-+	/* Enable ppe mac tx and rx */
-+	ppe_mac_txmac_en_set(ppe_dev, port, true);
-+	ppe_mac_rxmac_en_set(ppe_dev, port, true);
-+
-+	/* Enable ppe bridge port tx mac */
-+	ppe_port_bridge_txmac_en_set(ppe_dev, port, true);
-+
-+	dev_info(ppe_dev->dev,
-+		 "PPE port %d interface %s link up - %s%s - pause tx %d rx %d\n",
-+		 port, phy_modes(interface), phy_speed_to_str(speed),
-+		 phy_duplex_to_str(duplex), tx_pause, rx_pause);
-+}
-+
-+static void ppe_phylink_mac_link_down(struct ppe_device *ppe_dev, int port,
-+				      unsigned int mode, phy_interface_t interface)
-+{
-+	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+
-+	if (!ppe_port)
-+		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+
-+	/* Disable ppe port bridge tx mac */
-+	ppe_port_bridge_txmac_en_set(ppe_dev, port, false);
-+
-+	/* Disable ppe mac rx */
-+	ppe_mac_rxmac_en_set(ppe_dev, port, false);
-+	fsleep(10000);
-+
-+	/* Disable ppe mac tx */
-+	ppe_mac_txmac_en_set(ppe_dev, port, false);
-+
-+	dev_info(ppe_dev->dev, "PPE port %d interface %s link down\n",
-+		 port, phy_modes(interface));
-+}
-+
-+static int ppe_mac_init(struct platform_device *pdev)
-+{
-+	struct device_node *ports_node, *port_node;
-+	struct ppe_device *ppe_dev = platform_get_drvdata(pdev);
-+	struct ppe_ports *ppe_ports = NULL;
-+	phy_interface_t phy_mode = PHY_INTERFACE_MODE_NA;
-+	int i = 0, port = 0, err = 0, port_num = 0;
-+
-+	ports_node = of_get_child_by_name(pdev->dev.of_node, "qcom,port_phyinfo");
-+	if (!ports_node) {
-+		dev_err(&pdev->dev, "Failed to get qcom port phy info node\n");
 +		return -ENODEV;
 +	}
 +
-+	port_num = of_get_child_count(ports_node);
++	if (sset != ETH_SS_STATS)
++		return 0;
 +
-+	ppe_ports = devm_kzalloc(&pdev->dev,
-+				 struct_size(ppe_ports, port, port_num),
-+				 GFP_KERNEL);
-+	if (!ppe_ports) {
-+		err = -ENOMEM;
-+		goto err_ports_node_put;
++	if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC)
++		return ARRAY_SIZE(ppe_ethtool_gstrings_xgmib_stats);
++	else
++		return ARRAY_SIZE(ppe_ethtool_gstrings_gmib_stats);
++}
++
++static void ppe_get_strings(struct ppe_device *ppe_dev, int port, u32 stringset, u8 *data)
++{
++	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
++	int i;
++
++	if (!ppe_port)
++		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
++
++	if (stringset != ETH_SS_STATS)
++		return;
++
++	if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
++		for (i = 0; i < ARRAY_SIZE(ppe_ethtool_gstrings_xgmib_stats); i++)
++			memcpy(data + i * ETH_GSTRING_LEN,
++			       ppe_ethtool_gstrings_xgmib_stats[i].name, ETH_GSTRING_LEN);
++	} else {
++		for (i = 0; i < ARRAY_SIZE(ppe_ethtool_gstrings_gmib_stats); i++)
++			memcpy(data + i * ETH_GSTRING_LEN,
++			       ppe_ethtool_gstrings_gmib_stats[i].name, ETH_GSTRING_LEN);
++	}
++}
++
++static void ppe_get_ethtool_stats(struct ppe_device *ppe_dev, int port, u64 *data)
++{
++	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
++	u64 *data_src;
++	int i;
++
++	if (!ppe_port)
++		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
++
++	if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
++		struct ppe_xgmib_hw_stats xgmib_hw_stats;
++
++		ppe_xgmib_stats_update(ppe_dev, port, &xgmib_hw_stats);
++		data_src = (u64 *)(&xgmib_hw_stats);
++		for (i = 0; i < ARRAY_SIZE(ppe_ethtool_gstrings_xgmib_stats); i++)
++			data[i] = *(data_src + ppe_ethtool_gstrings_xgmib_stats[i].offset);
++	} else {
++		ppe_gmib_stats_update(ppe_port);
++		data_src = (u64 *)(ppe_port->gmib_stats);
++		for (i = 0; i < ARRAY_SIZE(ppe_ethtool_gstrings_gmib_stats); i++)
++			data[i] = *(data_src + ppe_ethtool_gstrings_gmib_stats[i].offset);
++	}
++}
++
++static void ppe_get_stats64(struct ppe_device *ppe_dev, int port, struct rtnl_link_stats64 *s)
++{
++	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
++
++	if (!ppe_port)
++		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
++
++	if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
++		struct ppe_xgmib_hw_stats xgmib_hw_stats;
++
++		ppe_xgmib_stats_update(ppe_dev, port, &xgmib_hw_stats);
++		s->rx_packets = xgmib_hw_stats.rx_unicast_g +
++			xgmib_hw_stats.rx_broadcast_g + xgmib_hw_stats.rx_multicast_g;
++		s->tx_packets = xgmib_hw_stats.tx_unicast +
++			xgmib_hw_stats.tx_broadcast_g + xgmib_hw_stats.tx_multicast_g;
++		s->rx_bytes = xgmib_hw_stats.rx_bytes;
++		s->tx_bytes = xgmib_hw_stats.tx_bytes;
++		s->multicast = xgmib_hw_stats.rx_multicast_g;
++
++		s->rx_crc_errors = xgmib_hw_stats.rx_crc_err;
++		s->rx_frame_errors = xgmib_hw_stats.rx_runt_err;
++		s->rx_fifo_errors = xgmib_hw_stats.rx_fifo_overflow;
++		s->rx_length_errors = xgmib_hw_stats.rx_len_err;
++		s->rx_errors = s->rx_crc_errors + s->rx_frame_errors +
++			s->rx_fifo_errors + s->rx_length_errors;
++		s->rx_dropped = xgmib_hw_stats.rx_drop_frames + s->rx_errors;
++
++		s->tx_fifo_errors = xgmib_hw_stats.tx_underflow_err;
++		s->tx_errors = s->tx_fifo_errors;
++	} else {
++		ppe_gmib_stats_update(ppe_port);
++		s->rx_packets = ppe_port->gmib_stats->rx_unicast +
++			ppe_port->gmib_stats->rx_broadcast + ppe_port->gmib_stats->rx_multicast;
++		s->tx_packets = ppe_port->gmib_stats->tx_unicast +
++			ppe_port->gmib_stats->tx_broadcast + ppe_port->gmib_stats->tx_multicast;
++		s->rx_bytes = ppe_port->gmib_stats->rx_pktgoodbyte;
++		s->tx_bytes = ppe_port->gmib_stats->tx_pktbyte;
++
++		s->rx_crc_errors = ppe_port->gmib_stats->rx_fcserr +
++			ppe_port->gmib_stats->rx_jmbfcserr;
++		s->rx_frame_errors = ppe_port->gmib_stats->rx_alignerr +
++			ppe_port->gmib_stats->rx_jmbalignerr;
++		s->rx_fifo_errors = ppe_port->gmib_stats->rx_runt;
++		s->rx_errors = s->rx_crc_errors + s->rx_frame_errors + s->rx_fifo_errors;
++		s->rx_dropped = ppe_port->gmib_stats->rx_toolong + s->rx_errors;
++
++		s->tx_fifo_errors = ppe_port->gmib_stats->tx_underrun;
++		s->tx_aborted_errors = ppe_port->gmib_stats->tx_abortcol;
++		s->tx_errors = s->tx_fifo_errors + s->tx_aborted_errors;
++		s->collisions = ppe_port->gmib_stats->tx_collisions;
++		s->multicast = ppe_port->gmib_stats->rx_multicast;
++	}
++}
++
++static int ppe_set_mac_address(struct ppe_device *ppe_dev, int port, u8 *macaddr)
++{
++	u32 reg_val;
++	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
++
++	if (!ppe_port) {
++		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
++		return -ENODEV;
 +	}
 +
-+	ppe_dev->ports = ppe_ports;
-+	ppe_ports->num = port_num;
-+
-+	for_each_available_child_of_node(ports_node, port_node) {
-+		err = of_property_read_u32(port_node, "port_id", &port);
-+		if (err) {
-+			dev_err(&pdev->dev, "Failed to get port id\n");
-+			goto err_port_node_put;
-+		}
-+
-+		err = of_get_phy_mode(port_node, &phy_mode);
-+		if (err) {
-+			dev_err(&pdev->dev, "Failed to get phy mode\n");
-+			goto err_port_node_put;
-+		}
-+
-+		ppe_ports->port[i].ppe_dev = ppe_dev;
-+		ppe_ports->port[i].port_id = port;
-+		ppe_ports->port[i].np = port_node;
-+		ppe_ports->port[i].interface = phy_mode;
-+		ppe_ports->port[i].mac_type = PPE_MAC_TYPE_NA;
-+		ppe_ports->port[i].speed = SPEED_UNKNOWN;
-+		ppe_ports->port[i].duplex = DUPLEX_UNKNOWN;
-+		ppe_ports->port[i].pause = MLO_PAUSE_NONE;
-+		i++;
-+
-+		/* Port gmac HW initialization */
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_ENABLE,
-+			 GMAC_MAC_EN, 0);
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_MAC_JUMBO_SIZE,
-+			 GMAC_JUMBO_SIZE_MASK,
-+			 FIELD_PREP(GMAC_JUMBO_SIZE_MASK, MAC_MAX_FRAME_SIZE));
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_MAC_CTRL2,
-+			 GMAC_INIT_CTRL2_FIELD, GMAC_INIT_CTRL2);
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_MAC_DBG_CTRL,
-+			 GMAC_HIGH_IPG_MASK,
-+			 FIELD_PREP(GMAC_HIGH_IPG_MASK, GMAC_IPG_CHECK));
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_MAC_MIB_CTRL,
-+			 MAC_MIB_EN | MAC_MIB_RD_CLR | MAC_MIB_RESET,
-+			 MAC_MIB_EN | MAC_MIB_RD_CLR | MAC_MIB_RESET);
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_GMAC_ADDR(port) + GMAC_MAC_MIB_CTRL,
-+			 MAC_MIB_RESET, 0);
-+
-+		/* Port xgmac HW initialization */
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_TX_CONFIGURATION,
-+			 XGMAC_INIT_TX_CONFIG_FIELD, XGMAC_INIT_TX_CONFIG);
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_RX_CONFIGURATION,
-+			 XGMAC_INIT_RX_CONFIG_FIELD, XGMAC_INIT_RX_CONFIG);
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_WATCHDOG_TIMEOUT,
-+			 XGMAC_INIT_WATCHDOG_FIELD, XGMAC_INIT_WATCHDOG);
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_PACKET_FILTER,
-+			 XGMAC_INIT_FILTER_FIELD, XGMAC_INIT_FILTER);
-+
-+		ppe_mask(ppe_dev,
-+			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_MMC_CONTROL,
-+			 XGMAC_MCF | XGMAC_CNTRST, XGMAC_CNTRST);
++	if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
++		reg_val = (macaddr[5] << 8) | macaddr[4] | XGMAC_ADDR_EN;
++		ppe_write(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_MAC_ADDR0_HIGH, reg_val);
++		reg_val = (macaddr[3] << 24) | (macaddr[2] << 16) | (macaddr[1] << 8) | macaddr[0];
++		ppe_write(ppe_dev, PPE_PORT_XGMAC_ADDR(port) + XGMAC_MAC_ADDR0_LOW, reg_val);
++	} else {
++		reg_val = (macaddr[5] << 8) | macaddr[4];
++		ppe_write(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_GOL_MAC_ADDR0, reg_val);
++		reg_val = (macaddr[0] << 24) | (macaddr[1] << 16) | (macaddr[2] << 8) | macaddr[3];
++		ppe_write(ppe_dev, PPE_PORT_GMAC_ADDR(port) + GMAC_GOL_MAC_ADDR1, reg_val);
 +	}
 +
-+	of_node_put(ports_node);
-+	dev_info(ppe_dev->dev, "QCOM PPE MAC init success\n");
 +	return 0;
-+
-+err_port_node_put:
-+	of_node_put(port_node);
-+err_ports_node_put:
-+	of_node_put(ports_node);
-+	return err;
 +}
 +
-+static void ppe_mac_config(struct phylink_config *config, unsigned int mode,
-+			   const struct phylink_link_state *state)
-+{
-+	struct ppe_device *ppe_dev = NULL;
-+	struct ppe_port *ppe_port = container_of(config,
-+						 struct ppe_port,
-+						 phylink_config);
-+
-+	if (!ppe_port)
-+		dev_err(ppe_dev->dev, "Failed to find ppe port\n");
-+
-+	ppe_dev = ppe_port->ppe_dev;
-+
-+	if (ppe_dev && ppe_dev->ppe_ops &&
-+	    ppe_dev->ppe_ops->phylink_mac_config) {
-+		ppe_dev->ppe_ops->phylink_mac_config(ppe_dev,
-+						     ppe_port->port_id,
-+						     mode, state);
-+	} else {
-+		dev_err(ppe_dev->dev,
-+			"Failed to find ppe device mac config operation\n");
-+	}
-+}
-+
-+static void ppe_mac_link_down(struct phylink_config *config, unsigned int mode,
-+			      phy_interface_t interface)
-+{
-+	struct ppe_device *ppe_dev = NULL;
-+	struct ppe_port *ppe_port = container_of(config,
-+						 struct ppe_port,
-+						 phylink_config);
-+
-+	if (!ppe_port)
-+		dev_err(ppe_dev->dev, "Failed to find ppe port\n");
-+
-+	ppe_dev = ppe_port->ppe_dev;
-+
-+	if (ppe_dev && ppe_dev->ppe_ops &&
-+	    ppe_dev->ppe_ops->phylink_mac_link_down) {
-+		ppe_dev->ppe_ops->phylink_mac_link_down(ppe_dev,
-+							ppe_port->port_id,
-+							mode, interface);
-+	} else {
-+		dev_err(ppe_dev->dev,
-+			"Failed to find ppe device link down operation\n");
-+	}
-+}
-+
-+static void ppe_mac_link_up(struct phylink_config *config,
-+			    struct phy_device *phy,
-+			    unsigned int mode, phy_interface_t interface,
-+			    int speed, int duplex, bool tx_pause, bool rx_pause)
-+{
-+	struct ppe_device *ppe_dev = NULL;
-+	struct ppe_port *ppe_port = container_of(config,
-+						 struct ppe_port,
-+						 phylink_config);
-+
-+	if (!ppe_port)
-+		dev_err(ppe_dev->dev, "Failed to find ppe port\n");
-+
-+	ppe_dev = ppe_port->ppe_dev;
-+
-+	if (ppe_dev && ppe_dev->ppe_ops &&
-+	    ppe_dev->ppe_ops->phylink_mac_link_up) {
-+		ppe_dev->ppe_ops->phylink_mac_link_up(ppe_dev,
-+						      ppe_port->port_id,
-+						      phy, mode, interface,
-+						      speed, duplex,
-+						      tx_pause, rx_pause);
-+	} else {
-+		dev_err(ppe_dev->dev,
-+			"Failed to find ppe device link up operation\n");
-+	}
-+}
-+
-+static struct phylink_pcs *ppe_mac_select_pcs(struct phylink_config *config,
-+					      phy_interface_t interface)
-+{
-+	struct ppe_device *ppe_dev = NULL;
-+	struct ppe_port *ppe_port = container_of(config,
-+						 struct ppe_port,
-+						 phylink_config);
-+
-+	if (!ppe_port) {
-+		dev_err(ppe_dev->dev, "Failed to find ppe port");
-+		return NULL;
-+	}
-+
-+	ppe_dev = ppe_port->ppe_dev;
-+
-+	if (ppe_dev && ppe_dev->ppe_ops &&
-+	    ppe_dev->ppe_ops->phylink_mac_select_pcs) {
-+		return ppe_dev->ppe_ops->phylink_mac_select_pcs(ppe_dev,
-+								ppe_port->port_id,
-+								interface);
-+	} else {
-+		dev_err(ppe_dev->dev,
-+			"Failed to find ppe device pcs select operation\n");
-+		return NULL;
-+	}
-+}
-+
-+static const struct phylink_mac_ops ppe_phylink_ops = {
-+	.mac_config = ppe_mac_config,
-+	.mac_link_down = ppe_mac_link_down,
-+	.mac_link_up = ppe_mac_link_up,
-+	.mac_select_pcs = ppe_mac_select_pcs,
-+};
-+
-+static struct phylink *ppe_phylink_setup(struct ppe_device *ppe_dev,
-+					 struct net_device *netdev,
-+					 int port)
++static int ppe_set_mac_eee(struct ppe_device *ppe_dev, int port, struct ethtool_eee *eee)
 +{
 +	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
-+	int err;
++	u32 reg_val;
 +
 +	if (!ppe_port) {
 +		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+		return NULL;
++		return -ENODEV;
 +	}
 +
-+	/* per port phylink capability */
-+	ppe_port->phylink_config.dev = &netdev->dev;
-+	ppe_port->phylink_config.type = PHYLINK_NETDEV;
-+	ppe_port->phylink_config.mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
-+		MAC_10 | MAC_100 | MAC_1000 | MAC_2500FD | MAC_5000FD | MAC_10000FD;
-+	__set_bit(PHY_INTERFACE_MODE_SGMII,
-+		  ppe_port->phylink_config.supported_interfaces);
-+	__set_bit(PHY_INTERFACE_MODE_1000BASEX,
-+		  ppe_port->phylink_config.supported_interfaces);
-+	__set_bit(PHY_INTERFACE_MODE_2500BASEX,
-+		  ppe_port->phylink_config.supported_interfaces);
-+	__set_bit(PHY_INTERFACE_MODE_USXGMII,
-+		  ppe_port->phylink_config.supported_interfaces);
-+	__set_bit(PHY_INTERFACE_MODE_10GBASER,
-+		  ppe_port->phylink_config.supported_interfaces);
-+	__set_bit(PHY_INTERFACE_MODE_QSGMII,
-+		  ppe_port->phylink_config.supported_interfaces);
-+	__set_bit(PHY_INTERFACE_MODE_QUSGMII,
-+		  ppe_port->phylink_config.supported_interfaces);
-+
-+	/* create phylink */
-+	ppe_port->phylink = phylink_create(&ppe_port->phylink_config,
-+					   of_fwnode_handle(ppe_port->np),
-+					   ppe_port->interface, &ppe_phylink_ops);
-+	if (IS_ERR(ppe_port->phylink)) {
-+		dev_err(ppe_dev->dev, "Failed to create phylink for port %d\n", port);
-+		return NULL;
++	if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
++		ppe_read(ppe_dev,
++			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_LPI_CONTROL_STATUS,
++			 &reg_val);
++		reg_val |= (XGMAC_LPI_PLS | XGMAC_LPI_TXA | XGMAC_LPI_TE);
++		if (eee->tx_lpi_enabled)
++			reg_val |= XGMAC_LPI_TXEN;
++		else
++			reg_val &= ~XGMAC_LPI_TXEN;
++		ppe_write(ppe_dev,
++			  PPE_PORT_XGMAC_ADDR(port) + XGMAC_LPI_CONTROL_STATUS,
++			  reg_val);
++		ppe_mask(ppe_dev,
++			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_1US_TIC_COUNTER,
++			 XGMAC_1US_TIC_CNTR, FIELD_PREP(XGMAC_1US_TIC_CNTR, 0x15f));
++		ppe_mask(ppe_dev,
++			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_LPI_AUTO_ENTRY_TIMER,
++			 XGMAC_LPI_ET, FIELD_PREP(XGMAC_LPI_ET, 0x2c));
++	} else {
++		ppe_read(ppe_dev, PPE_LPI_LPI_EN, &reg_val);
++		if (eee->tx_lpi_enabled)
++			reg_val |= PPE_LPI_PORT_EN(port);
++		else
++			reg_val &= ~PPE_LPI_PORT_EN(port);
++		ppe_write(ppe_dev, PPE_LPI_LPI_EN, reg_val);
 +	}
 +
-+	/* connect phylink */
-+	err = phylink_of_phy_connect(ppe_port->phylink, ppe_port->np, 0);
-+	if (err) {
-+		dev_err(ppe_dev->dev, "Failed to connect phylink for port %d\n", port);
-+		phylink_destroy(ppe_port->phylink);
-+		ppe_port->phylink = NULL;
-+		return NULL;
-+	}
-+
-+	return ppe_port->phylink;
++	return 0;
 +}
 +
-+static void ppe_phylink_destroy(struct ppe_device *ppe_dev, int port)
++static int ppe_get_mac_eee(struct ppe_device *ppe_dev, int port, struct ethtool_eee *eee)
 +{
 +	struct ppe_port *ppe_port = ppe_port_get(ppe_dev, port);
++	u32 reg_val;
 +
-+	if (!ppe_port)
++	if (!ppe_port) {
 +		dev_err(ppe_dev->dev, "Failed to find ppe port %d\n", port);
-+
-+	if (ppe_port->phylink) {
-+		rtnl_lock();
-+		phylink_disconnect_phy(ppe_port->phylink);
-+		rtnl_unlock();
-+		phylink_destroy(ppe_port->phylink);
-+		ppe_port->phylink = NULL;
++		return -ENODEV;
 +	}
++
++	if (ppe_port->mac_type == PPE_MAC_TYPE_XGMAC) {
++		ppe_read(ppe_dev,
++			 PPE_PORT_XGMAC_ADDR(port) + XGMAC_LPI_CONTROL_STATUS,
++			 &reg_val);
++		if (reg_val & XGMAC_LPI_TXEN)
++			eee->tx_lpi_enabled = 1;
++		else
++			eee->tx_lpi_enabled = 0;
++	} else {
++		ppe_read(ppe_dev, PPE_LPI_LPI_EN, &reg_val);
++		if (reg_val & PPE_LPI_PORT_EN(port))
++			eee->tx_lpi_enabled = 1;
++		else
++			eee->tx_lpi_enabled = 0;
++	}
++
++	return 0;
 +}
 +
  bool ppe_is_probed(struct platform_device *pdev)
  {
  	struct ppe_device *ppe_dev = platform_get_drvdata(pdev);
-@@ -352,6 +1230,12 @@ static int ppe_port_maxframe_set(struct ppe_device *ppe_dev,
- }
- 
- static struct ppe_device_ops qcom_ppe_ops = {
-+	.phylink_setup = ppe_phylink_setup,
-+	.phylink_destroy = ppe_phylink_destroy,
-+	.phylink_mac_config = ppe_phylink_mac_config,
-+	.phylink_mac_link_up = ppe_phylink_mac_link_up,
-+	.phylink_mac_link_down = ppe_phylink_mac_link_down,
-+	.phylink_mac_select_pcs = ppe_phylink_mac_select_pcs,
+@@ -1236,6 +1924,13 @@ static struct ppe_device_ops qcom_ppe_ops = {
+ 	.phylink_mac_link_up = ppe_phylink_mac_link_up,
+ 	.phylink_mac_link_down = ppe_phylink_mac_link_down,
+ 	.phylink_mac_select_pcs = ppe_phylink_mac_select_pcs,
++	.get_sset_count = ppe_get_sset_count,
++	.get_strings = ppe_get_strings,
++	.get_ethtool_stats = ppe_get_ethtool_stats,
++	.get_stats64 = ppe_get_stats64,
++	.set_mac_address = ppe_set_mac_address,
++	.set_mac_eee = ppe_set_mac_eee,
++	.get_mac_eee = ppe_get_mac_eee,
  	.set_maxframe = ppe_port_maxframe_set,
  };
  
-@@ -1407,6 +2291,7 @@ static int qcom_ppe_probe(struct platform_device *pdev)
- 				     PTR_ERR(ppe_dev->ppe_priv),
- 				     "Fail to init ppe data\n");
- 
-+	mutex_init(&ppe_dev->reg_mutex);
- 	platform_set_drvdata(pdev, ppe_dev);
- 	ret = ppe_clock_config(pdev);
- 	if (ret)
-@@ -1426,6 +2311,10 @@ static int qcom_ppe_probe(struct platform_device *pdev)
- 				     ret,
- 				     "ppe device hw init failed\n");
- 
-+	ret = ppe_mac_init(pdev);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret, "ppe mac initialization failed\n");
-+
- 	ppe_dev->uniphy = ppe_uniphy_setup(pdev);
- 	if (IS_ERR(ppe_dev->uniphy))
- 		return dev_err_probe(&pdev->dev, ret, "ppe uniphy initialization failed\n");
-@@ -1440,10 +2329,25 @@ static int qcom_ppe_probe(struct platform_device *pdev)
- static int qcom_ppe_remove(struct platform_device *pdev)
- {
- 	struct ppe_device *ppe_dev;
-+	struct ppe_ports *ppe_ports;
-+	struct ppe_data *ppe_dev_priv;
-+	int i, port;
- 
- 	ppe_dev = platform_get_drvdata(pdev);
-+	ppe_dev_priv = ppe_dev->ppe_priv;
-+	ppe_ports = (struct ppe_ports *)ppe_dev->ports;
-+
+@@ -2340,6 +3035,9 @@ static int qcom_ppe_remove(struct platform_device *pdev)
  	ppe_debugfs_teardown(ppe_dev);
  
-+	for (i = 0; i < ppe_ports->num; i++) {
-+		/* Reset ppe port parent clock to XO clock */
-+		port = ppe_ports->port[i].port_id;
-+		clk_set_rate(ppe_dev_priv->clk[PPE_NSS_PORT1_RX_CLK + ((port - 1) << 1)],
-+			     P_XO_CLOCK_RATE);
-+		clk_set_rate(ppe_dev_priv->clk[PPE_NSS_PORT1_TX_CLK + ((port - 1) << 1)],
-+			     P_XO_CLOCK_RATE);
-+	}
+ 	for (i = 0; i < ppe_ports->num; i++) {
++		/* Stop gmib statistics polling */
++		cancel_delayed_work_sync(&ppe_ports->port[i].gmib_read);
 +
- 	return 0;
- }
- 
+ 		/* Reset ppe port parent clock to XO clock */
+ 		port = ppe_ports->port[i].port_id;
+ 		clk_set_rate(ppe_dev_priv->clk[PPE_NSS_PORT1_RX_CLK + ((port - 1) << 1)],
 diff --git a/drivers/net/ethernet/qualcomm/ppe/ppe.h b/drivers/net/ethernet/qualcomm/ppe/ppe.h
-index 45b70f47cd21..532d53c05bf9 100644
+index 532d53c05bf9..5c43d7c19d98 100644
 --- a/drivers/net/ethernet/qualcomm/ppe/ppe.h
 +++ b/drivers/net/ethernet/qualcomm/ppe/ppe.h
-@@ -21,6 +21,9 @@
- #define PPE_PORT6		6
- #define PPE_PORT7		7
- 
-+/* PPE Port XO Clock Rate */
-+#define P_XO_CLOCK_RATE		24000000
-+
- enum ppe_clk_id {
- 	/* clocks for CMN PLL */
- 	PPE_CMN_AHB_CLK,
-@@ -152,6 +155,14 @@ enum {
- 	PPE_ACTION_REDIRECTED_TO_CPU
- };
- 
-+/* PPE MAC Type */
-+enum {
-+	PPE_MAC_TYPE_NA,
-+	PPE_MAC_TYPE_GMAC,
-+	PPE_MAC_TYPE_XGMAC,
-+	PPE_MAC_TYPE_MAX
-+};
-+
- /* PPE private data of different PPE type device */
- struct ppe_data {
- 	int ppe_type;
-@@ -172,6 +183,28 @@ struct ppe_scheduler_port_resource {
+@@ -183,6 +183,101 @@ struct ppe_scheduler_port_resource {
  	int l1edrr[2];
  };
  
-+/* PPE per port data type to record port settings such as phylink
-+ * setting, mac type, interface mode and link speed.
-+ */
-+struct ppe_port {
-+	struct phylink *phylink;
-+	struct phylink_config phylink_config;
-+	struct device_node *np;
-+	struct ppe_device *ppe_dev;
-+	phy_interface_t interface;
-+	int mac_type;
-+	int port_id;
-+	int speed;
-+	int duplex;
-+	int pause;
++/* PPE GMAC statistics */
++struct ppe_gmib_hw_stats {
++	u64 rx_broadcast;
++	u64 rx_pause;
++	u64 rx_multicast;
++	u64 rx_fcserr;
++	u64 rx_alignerr;
++	u64 rx_runt;
++	u64 rx_frag;
++	u64 rx_jmbfcserr;
++	u64 rx_jmbalignerr;
++	u64 rx_pkt64;
++	u64 rx_pkt65to127;
++	u64 rx_pkt128to255;
++	u64 rx_pkt256to511;
++	u64 rx_pkt512to1023;
++	u64 rx_pkt1024to1518;
++	u64 rx_pkt1519tomax;
++	u64 rx_toolong;
++	u64 rx_pktgoodbyte;
++	u64 rx_pktbadbyte;
++	u64 rx_unicast;
++	u64 tx_broadcast;
++	u64 tx_pause;
++	u64 tx_multicast;
++	u64 tx_underrun;
++	u64 tx_pkt64;
++	u64 tx_pkt65to127;
++	u64 tx_pkt128to255;
++	u64 tx_pkt256to511;
++	u64 tx_pkt512to1023;
++	u64 tx_pkt1024to1518;
++	u64 tx_pkt1519tomax;
++	u64 tx_pktbyte;
++	u64 tx_collisions;
++	u64 tx_abortcol;
++	u64 tx_multicol;
++	u64 tx_singlecol;
++	u64 tx_exesdeffer;
++	u64 tx_deffer;
++	u64 tx_latecol;
++	u64 tx_unicast;
 +};
 +
-+/* PPE ports data type */
-+struct ppe_ports {
-+	unsigned int num;
-+	struct ppe_port port[];
++/* PPE XGMAC statistics */
++struct ppe_xgmib_hw_stats {
++	u64 tx_bytes;
++	u64 tx_frames;
++	u64 tx_broadcast_g;
++	u64 tx_multicast_g;
++	u64 tx_pkt64;
++	u64 tx_pkt65to127;
++	u64 tx_pkt128to255;
++	u64 tx_pkt256to511;
++	u64 tx_pkt512to1023;
++	u64 tx_pkt1024tomax;
++	u64 tx_unicast;
++	u64 tx_multicast;
++	u64 tx_broadcast;
++	u64 tx_underflow_err;
++	u64 tx_bytes_g;
++	u64 tx_frame_g;
++	u64 tx_pause;
++	u64 tx_vlan_g;
++	u64 tx_lpi_usec;
++	u64 tx_lpi_tran;
++	u64 rx_frames;
++	u64 rx_bytes;
++	u64 rx_bytes_g;
++	u64 rx_broadcast_g;
++	u64 rx_multicast_g;
++	u64 rx_crc_err;
++	u64 rx_runt_err;
++	u64 rx_jabber_err;
++	u64 rx_undersize_g;
++	u64 rx_oversize_g;
++	u64 rx_pkt64;
++	u64 rx_pkt65to127;
++	u64 rx_pkt128to255;
++	u64 rx_pkt256to511;
++	u64 rx_pkt512to1023;
++	u64 rx_pkt1024tomax;
++	u64 rx_unicast_g;
++	u64 rx_len_err;
++	u64 rx_outofrange_err;
++	u64 rx_pause;
++	u64 rx_fifo_overflow;
++	u64 rx_vlan;
++	u64 rx_wdog_err;
++	u64 rx_lpi_usec;
++	u64 rx_lpi_tran;
++	u64 rx_drop_frames;
++	u64 rx_drop_bytes;
 +};
 +
- int ppe_type_get(struct ppe_device *ppe_dev);
- struct clk **ppe_clock_get(struct ppe_device *ppe_dev);
- struct reset_control **ppe_reset_get(struct ppe_device *ppe_dev);
+ /* PPE per port data type to record port settings such as phylink
+  * setting, mac type, interface mode and link speed.
+  */
+@@ -197,6 +292,9 @@ struct ppe_port {
+ 	int speed;
+ 	int duplex;
+ 	int pause;
++	struct delayed_work gmib_read;
++	struct ppe_gmib_hw_stats *gmib_stats;
++	spinlock_t stats_lock; /* Protects gmib stats */
+ };
+ 
+ /* PPE ports data type */
 diff --git a/drivers/net/ethernet/qualcomm/ppe/ppe_regs.h b/drivers/net/ethernet/qualcomm/ppe/ppe_regs.h
-index 13115405bad9..43cd067c8c73 100644
+index 43cd067c8c73..242ed494bcfc 100644
 --- a/drivers/net/ethernet/qualcomm/ppe/ppe_regs.h
 +++ b/drivers/net/ethernet/qualcomm/ppe/ppe_regs.h
-@@ -7,6 +7,16 @@
- #ifndef __PPE_REGS_H__
- #define __PPE_REGS_H__
+@@ -17,6 +17,15 @@
+ #define PPE_PORT5_PCS_SEL					BIT(4)
+ #define PPE_PORT_MAC_SEL(x)					(PPE_PORT1_MAC_SEL << ((x) - 1))
  
-+#define PPE_PORT_MUX_CTRL					0x10
-+#define PPE_PORT6_MAC_SEL					BIT(13)
-+#define PPE_PORT5_MAC_SEL					BIT(12)
-+#define PPE_PORT4_MAC_SEL					BIT(11)
-+#define PPE_PORT3_MAC_SEL					BIT(10)
-+#define PPE_PORT2_MAC_SEL					BIT(9)
-+#define PPE_PORT1_MAC_SEL					BIT(8)
-+#define PPE_PORT5_PCS_SEL					BIT(4)
-+#define PPE_PORT_MAC_SEL(x)					(PPE_PORT1_MAC_SEL << ((x) - 1))
++#define PPE_LPI_LPI_EN						0x400
++#define PPE_LPI_PORT1_EN					BIT(0)
++#define PPE_LPI_PORT2_EN					BIT(1)
++#define PPE_LPI_PORT3_EN					BIT(2)
++#define PPE_LPI_PORT4_EN					BIT(3)
++#define PPE_LPI_PORT5_EN					BIT(4)
++#define PPE_LPI_PORT6_EN					BIT(5)
++#define PPE_LPI_PORT_EN(x)					(PPE_LPI_PORT1_EN << ((x) - 1))
 +
  #define PPE_BM_TDM_CTRL						0xb000
  #define PPE_BM_TDM_CTRL_NUM					1
  #define PPE_BM_TDM_CTRL_INC					4
-@@ -819,4 +829,106 @@ union ppe_ac_grp_cfg_u {
- #define PPE_ENQ_OPR_TBL_INC					0x10
- #define PPE_ENQ_OPR_TBL_ENQ_DISABLE				BIT(0)
+@@ -848,6 +857,16 @@ union ppe_ac_grp_cfg_u {
+ #define GMAC_SPEED_100						1
+ #define GMAC_SPEED_1000						2
  
-+/* PPE MAC Address */
-+#define PPE_PORT_GMAC_ADDR(x)					(0x001000 + ((x) - 1) * 0x200)
-+#define PPE_PORT_XGMAC_ADDR(x)					(0x500000 + ((x) - 1) * 0x4000)
++#define GMAC_GOL_MAC_ADDR0					0x8
++#define MAC_ADDR_BYTE5						GENMASK(15, 8)
++#define MAC_ADDR_BYTE4						GENMASK(7, 0)
 +
-+/* GMAC Registers */
-+#define GMAC_ENABLE						0x0
-+#define GMAC_TX_FLOW_EN						BIT(6)
-+#define GMAC_RX_FLOW_EN						BIT(5)
-+#define GMAC_DUPLEX_FULL					BIT(4)
-+#define GMAC_TXMAC_EN						BIT(1)
-+#define GMAC_RXMAC_EN						BIT(0)
-+#define GMAC_MAC_EN						(GMAC_RXMAC_EN | GMAC_TXMAC_EN)
++#define GMAC_GOL_MAC_ADDR1					0xC
++#define MAC_ADDR_BYTE0						GENMASK(31, 24)
++#define MAC_ADDR_BYTE1						GENMASK(23, 16)
++#define MAC_ADDR_BYTE2						GENMASK(15, 8)
++#define MAC_ADDR_BYTE3						GENMASK(7, 0)
 +
-+#define GMAC_SPEED						0x4
-+#define GMAC_SPEED_MASK						GENMASK(1, 0)
-+#define GMAC_SPEED_10						0
-+#define GMAC_SPEED_100						1
-+#define GMAC_SPEED_1000						2
+ #define GMAC_MAC_CTRL2						0x18
+ #define GMAC_TX_THD_MASK					GENMASK(27, 24)
+ #define GMAC_MAXFR_MASK						GENMASK(21, 8)
+@@ -871,6 +890,50 @@ union ppe_ac_grp_cfg_u {
+ #define MAC_MIB_RESET						BIT(1)
+ #define MAC_MIB_EN						BIT(0)
+ 
++#define GMAC_RXBROAD						0x40
++#define GMAC_RXPAUSE						0x44
++#define GMAC_RXMULTI						0x48
++#define GMAC_RXFCSERR						0x4C
++#define GMAC_RXALIGNERR						0x50
++#define GMAC_RXRUNT						0x54
++#define GMAC_RXFRAG						0x58
++#define GMAC_RXJUMBOFCSERR					0x5C
++#define GMAC_RXJUMBOALIGNERR					0x60
++#define GMAC_RXPKT64						0x64
++#define GMAC_RXPKT65TO127					0x68
++#define GMAC_RXPKT128TO255					0x6C
++#define GMAC_RXPKT256TO511					0x70
++#define GMAC_RXPKT512TO1023					0x74
++#define GMAC_RXPKT1024TO1518					0x78
++#define GMAC_RXPKT1519TOX					0x7C
++#define GMAC_RXTOOLONG						0x80
++#define GMAC_RXGOODBYTE_L					0x84
++#define GMAC_RXGOODBYTE_H					0x88
++#define GMAC_RXBADBYTE_L					0x8C
++#define GMAC_RXBADBYTE_H					0x90
++#define GMAC_RXUNI						0x94
++#define GMAC_TXBROAD						0xA0
++#define GMAC_TXPAUSE						0xA4
++#define GMAC_TXMULTI						0xA8
++#define GMAC_TXUNDERRUN						0xAC
++#define GMAC_TXPKT64						0xB0
++#define GMAC_TXPKT65TO127					0xB4
++#define GMAC_TXPKT128TO255					0xB8
++#define GMAC_TXPKT256TO511					0xBC
++#define GMAC_TXPKT512TO1023					0xC0
++#define GMAC_TXPKT1024TO1518					0xC4
++#define GMAC_TXPKT1519TOX					0xC8
++#define GMAC_TXBYTE_L						0xCC
++#define GMAC_TXBYTE_H						0xD0
++#define GMAC_TXCOLLISIONS					0xD4
++#define GMAC_TXABORTCOL						0xD8
++#define GMAC_TXMULTICOL						0xDC
++#define GMAC_TXSINGLECOL					0xE0
++#define GMAC_TXEXCESSIVEDEFER					0xE4
++#define GMAC_TXDEFER						0xE8
++#define GMAC_TXLATECOL						0xEC
++#define GMAC_TXUNI						0xF0
 +
-+#define GMAC_MAC_CTRL2						0x18
-+#define GMAC_TX_THD_MASK					GENMASK(27, 24)
-+#define GMAC_MAXFR_MASK						GENMASK(21, 8)
-+#define GMAC_CRS_SEL						BIT(6)
-+#define GMAC_TX_THD						0x1
-+#define GMAC_INIT_CTRL2_FIELD					(GMAC_MAXFR_MASK | \
-+								GMAC_CRS_SEL | GMAC_TX_THD_MASK)
-+#define GMAC_INIT_CTRL2						(FIELD_PREP(GMAC_MAXFR_MASK, \
-+				MAC_MAX_FRAME_SIZE) | FIELD_PREP(GMAC_TX_THD_MASK, GMAC_TX_THD))
+ /* XGMAC Registers */
+ #define XGMAC_TX_CONFIGURATION					0x0
+ #define XGMAC_SPEED_MASK					GENMASK(31, 29)
+@@ -927,8 +990,117 @@ union ppe_ac_grp_cfg_u {
+ #define XGMAC_RX_FLOW_CTRL					0x90
+ #define XGMAC_RFE						BIT(0)
+ 
++#define XGMAC_LPI_CONTROL_STATUS				0xd0
++#define XGMAC_LPI_TXEN						BIT(16)
++#define XGMAC_LPI_PLS						BIT(17)
++#define XGMAC_LPI_TXA						BIT(19)
++#define XGMAC_LPI_TE						BIT(20)
 +
-+#define GMAC_MAC_DBG_CTRL					0x1c
-+#define GMAC_HIGH_IPG_MASK					GENMASK(15, 8)
-+#define GMAC_IPG_CHECK						0xc
++#define XGMAC_LPI_TIMERS_CONTROL				0xd4
++#define XGMAC_LPI_TWT						GENMASK(15, 0)
++#define XGMAC_LPI_LST						GENMASK(25, 16)
 +
-+#define GMAC_MAC_JUMBO_SIZE					0x30
-+#define GMAC_JUMBO_SIZE_MASK					GENMASK(13, 0)
-+#define MAC_MAX_FRAME_SIZE					0x3000
++#define XGMAC_LPI_AUTO_ENTRY_TIMER				0xd8
++#define XGMAC_LPI_ET						GENMASK(19, 3)
 +
-+#define GMAC_MAC_MIB_CTRL					0x34
-+#define MAC_MIB_RD_CLR						BIT(2)
-+#define MAC_MIB_RESET						BIT(1)
-+#define MAC_MIB_EN						BIT(0)
++#define XGMAC_1US_TIC_COUNTER					0xdc
++#define XGMAC_1US_TIC_CNTR					GENMASK(11, 0)
 +
-+/* XGMAC Registers */
-+#define XGMAC_TX_CONFIGURATION					0x0
-+#define XGMAC_SPEED_MASK					GENMASK(31, 29)
-+#define XGMAC_SPEED_10000_USXGMII				FIELD_PREP(XGMAC_SPEED_MASK, 4)
-+#define XGMAC_SPEED_10000					FIELD_PREP(XGMAC_SPEED_MASK, 0)
-+#define XGMAC_SPEED_5000					FIELD_PREP(XGMAC_SPEED_MASK, 5)
-+#define XGMAC_SPEED_2500_USXGMII				FIELD_PREP(XGMAC_SPEED_MASK, 6)
-+#define XGMAC_SPEED_2500					FIELD_PREP(XGMAC_SPEED_MASK, 2)
-+#define XGMAC_SPEED_1000					FIELD_PREP(XGMAC_SPEED_MASK, 3)
-+#define XGMAC_SPEED_100						XGMAC_SPEED_1000
-+#define XGMAC_SPEED_10						XGMAC_SPEED_1000
++#define XGMAC_MAC_ADDR0_HIGH					0x300
++#define XGMAC_ADDR_EN						BIT(31)
++#define XGMAC_ADDRHI						GENMASK(15, 0)
 +
-+#define XGMAC_JD						BIT(16)
-+#define XGMAC_TE						BIT(0)
-+#define XGMAC_INIT_TX_CONFIG_FIELD				(XGMAC_JD | XGMAC_TE)
-+#define XGMAC_INIT_TX_CONFIG					XGMAC_JD
++#define XGMAC_MAC_ADDR0_LOW					0x304
++#define XGMAC_ADDRLO						GENMASK(31, 0)
 +
-+#define XGMAC_RX_CONFIGURATION					0x4
-+#define XGMAC_GPSL_MASK						GENMASK(29, 16)
-+#define XGMAC_WD						BIT(7)
-+#define XGMAC_GPSLCE						BIT(6)
-+#define XGMAC_CST						BIT(2)
-+#define XGMAC_ACS						BIT(1)
-+#define XGMAC_RE						BIT(0)
-+#define XGMAC_INIT_RX_CONFIG_FIELD				(XGMAC_RE | XGMAC_ACS | \
-+					XGMAC_CST | XGMAC_WD | XGMAC_GPSLCE | XGMAC_GPSL_MASK)
-+#define XGMAC_INIT_RX_CONFIG					(XGMAC_ACS | XGMAC_CST | \
-+				XGMAC_GPSLCE | FIELD_PREP(XGMAC_GPSL_MASK, MAC_MAX_FRAME_SIZE))
-+
-+#define XGMAC_PACKET_FILTER					0x8
-+#define XGMAC_RA						BIT(31)
-+#define XGMAC_PCF_MASK						GENMASK(7, 6)
-+#define XGMAC_PR						BIT(0)
-+#define XGMAC_PASS_CONTROL_PACKET				0x2
-+#define XGMAC_INIT_FILTER_FIELD					(XGMAC_RA | XGMAC_PR | \
-+									XGMAC_PCF_MASK)
-+#define XGMAC_INIT_FILTER					(XGMAC_RA | XGMAC_PR | \
-+								FIELD_PREP(XGMAC_PCF_MASK, \
-+									XGMAC_PASS_CONTROL_PACKET))
-+
-+#define XGMAC_WATCHDOG_TIMEOUT					0xc
-+#define XGMAC_PWE						BIT(8)
-+#define XGMAC_WTO_MASK						GENMASK(3, 0)
-+#define XGMAC_WTO_LIMIT_13K					0xb
-+#define XGMAC_INIT_WATCHDOG_FIELD				(XGMAC_PWE | XGMAC_WTO_MASK)
-+#define XGMAC_INIT_WATCHDOG					(XGMAC_PWE | \
-+						FIELD_PREP(XGMAC_WTO_MASK, XGMAC_WTO_LIMIT_13K))
-+
-+#define XGMAC_Q0_TX_FLOW_CTRL					0x70
-+#define XGMAC_PT_MASK						GENMASK(31, 16)
-+#define XGMAC_PAUSE_TIME					FIELD_PREP(XGMAC_PT_MASK, 0xffff)
-+#define XGMAC_TFE						BIT(1)
-+
-+#define XGMAC_RX_FLOW_CTRL					0x90
-+#define XGMAC_RFE						BIT(0)
-+
-+#define XGMAC_MMC_CONTROL					0x800
-+#define XGMAC_MCF						BIT(3)
-+#define XGMAC_CNTRST						BIT(0)
+ #define XGMAC_MMC_CONTROL					0x800
+ #define XGMAC_MCF						BIT(3)
+ #define XGMAC_CNTRST						BIT(0)
+ 
++#define XGMAC_TX_OCTET_COUNT_GOOD_BAD_LOW			0x814
++#define XGMAC_TX_OCTET_COUNT_GOOD_BAD_HIGH			0x818
++#define XGMAC_TX_FRAME_COUNT_GOOD_BAD_LOW			0x81C
++#define XGMAC_TX_FRAME_COUNT_GOOD_BAD_HIGH			0x820
++#define XGMAC_TX_BROADCAST_FRAMES_GOOD_LOW			0x824
++#define XGMAC_TX_BROADCAST_FRAMES_GOOD_HIGH			0x828
++#define XGMAC_TX_MULTICAST_FRAMES_GOOD_LOW			0x82C
++#define XGMAC_TX_MULTICAST_FRAMES_GOOD_HIGH			0x830
++#define XGMAC_TX_64OCTETS_FRAMES_GOOD_BAD_LOW			0x834
++#define XGMAC_TX_64OCTETS_FRAMES_GOOD_BAD_HIGH			0x838
++#define XGMAC_TX_65TO127OCTETS_FRAMES_GOOD_BAD_LOW		0x83C
++#define XGMAC_TX_65TO127OCTETS_FRAMES_GOOD_BAD_HIGH		0x840
++#define XGMAC_TX_128TO255OCTETS_FRAMES_GOOD_BAD_LOW		0x844
++#define XGMAC_TX_128TO255OCTETS_FRAMES_GOOD_BAD_HIGH		0x848
++#define XGMAC_TX_256TO511OCTETS_FRAMES_GOOD_BAD_LOW		0x84C
++#define XGMAC_TX_256TO511OCTETS_FRAMES_GOOD_BAD_HIGH		0x850
++#define XGMAC_TX_512TO1023OCTETS_FRAMES_GOOD_BAD_LOW		0x854
++#define XGMAC_TX_512TO1023OCTETS_FRAMES_GOOD_BAD_HIGH		0x858
++#define XGMAC_TX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_LOW		0x85C
++#define XGMAC_TX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_HIGH		0x860
++#define XGMAC_TX_UNICAST_FRAMES_GOOD_BAD_LOW			0x864
++#define XGMAC_TX_UNICAST_FRAMES_GOOD_BAD_HIGH			0x868
++#define XGMAC_TX_MULTICAST_FRAMES_GOOD_BAD_LOW			0x86C
++#define XGMAC_TX_MULTICAST_FRAMES_GOOD_BAD_HIGH			0x870
++#define XGMAC_TX_BROADCAST_FRAMES_GOOD_BAD_LOW			0x874
++#define XGMAC_TX_BROADCAST_FRAMES_GOOD_BAD_HIGH			0x878
++#define XGMAC_TX_UNDERFLOW_ERROR_FRAMES_LOW			0x87C
++#define XGMAC_TX_UNDERFLOW_ERROR_FRAMES_HIGH			0x880
++#define XGMAC_TX_OCTET_COUNT_GOOD_LOW				0x884
++#define XGMAC_TX_OCTET_COUNT_GOOD_HIGH				0x888
++#define XGMAC_TX_FRAME_COUNT_GOOD_LOW				0x88C
++#define XGMAC_TX_FRAME_COUNT_GOOD_HIGH				0x890
++#define XGMAC_TX_PAUSE_FRAMES_LOW				0x894
++#define XGMAC_TX_PAUSE_FRAMES_HIGH				0x898
++#define XGMAC_TX_VLAN_FRAMES_GOOD_LOW				0x89C
++#define XGMAC_TX_VLAN_FRAMES_GOOD_HIGH				0x8A0
++#define XGMAC_TX_LPI_USEC_CNTR					0x8A4
++#define XGMAC_TX_LPI_TRAN_CNTR					0x8A8
++#define XGMAC_RX_FRAME_COUNT_GOOD_BAD_LOW			0x900
++#define XGMAC_RX_FRAME_COUNT_GOOD_BAD_HIGH			0x904
++#define XGMAC_RX_OCTET_COUNT_GOOD_BAD_LOW			0x908
++#define XGMAC_RX_OCTET_COUNT_GOOD_BAD_HIGH			0x90C
++#define XGMAC_RX_OCTET_COUNT_GOOD_LOW				0x910
++#define XGMAC_RX_OCTET_COUNT_GOOD_HIGH				0x914
++#define XGMAC_RX_BROADCAST_FRAMES_GOOD_LOW			0x918
++#define XGMAC_RX_BROADCAST_FRAMES_GOOD_HIGH			0x91C
++#define XGMAC_RX_MULTICAST_FRAMES_GOOD_LOW			0x920
++#define XGMAC_RX_MULTICAST_FRAMES_GOOD_HIGH			0x924
++#define XGMAC_RX_CRC_ERROR_FRAMES_LOW				0x928
++#define XGMAC_RX_CRC_ERROR_FRAMES_HIGH				0x92C
++#define XGMAC_RX_FRAG_ERROR_FRAMES				0x930
++#define XGMAC_RX_JABBER_ERROR_FRAMES				0x934
++#define XGMAC_RX_UNDERSIZE_FRAMES_GOOD				0x938
++#define XGMAC_RX_OVERSIZE_FRAMES_GOOD				0x93C
++#define XGMAC_RX_64OCTETS_FRAMES_GOOD_BAD_LOW			0x940
++#define XGMAC_RX_64OCTETS_FRAMES_GOOD_BAD_HIGH			0x944
++#define XGMAC_RX_65TO127OCTETS_FRAMES_GOOD_BAD_LOW		0x948
++#define XGMAC_RX_65TO127OCTETS_FRAMES_GOOD_BAD_HIGH		0x94C
++#define XGMAC_RX_128TO255OCTETS_FRAMES_GOOD_BAD_LOW		0x950
++#define XGMAC_RX_128TO255OCTETS_FRAMES_GOOD_BAD_HIGH		0x954
++#define XGMAC_RX_256TO511OCTETS_FRAMES_GOOD_BAD_LOW		0x958
++#define XGMAC_RX_256TO511OCTETS_FRAMES_GOOD_BAD_HIGH		0x95C
++#define XGMAC_RX_512TO1023OCTETS_FRAMES_GOOD_BAD_LOW		0x960
++#define XGMAC_RX_512TO1023OCTETS_FRAMES_GOOD_BAD_HIGH		0x964
++#define XGMAC_RX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_LOW		0x968
++#define XGMAC_RX_1024TOMAXOCTETS_FRAMES_GOOD_BAD_HIGH		0x96C
++#define XGMAC_RX_UNICAST_FRAMES_GOOD_LOW			0x970
++#define XGMAC_RX_UNICAST_FRAMES_GOOD_HIGH			0x974
++#define XGMAC_RX_LENGTH_ERROR_FRAMES_LOW			0x978
++#define XGMAC_RX_LENGTH_ERROR_FRAMES_HIGH			0x97C
++#define XGMAC_RX_OUTOFRANGE_FRAMES_LOW				0x980
++#define XGMAC_RX_OUTOFRANGE_FRAMES_HIGH				0x984
++#define XGMAC_RX_PAUSE_FRAMES_LOW				0x988
++#define XGMAC_RX_PAUSE_FRAMES_HIGH				0x98C
++#define XGMAC_RX_FIFOOVERFLOW_FRAMES_LOW			0x990
++#define XGMAC_RX_FIFOOVERFLOW_FRAMES_HIGH			0x994
++#define XGMAC_RX_VLAN_FRAMES_GOOD_BAD_LOW			0x998
++#define XGMAC_RX_VLAN_FRAMES_GOOD_BAD_HIGH			0x99C
++#define XGMAC_RX_WATCHDOG_ERROR_FRAMES				0x9A0
++#define XGMAC_RX_LPI_USEC_CNTR					0x9A4
++#define XGMAC_RX_LPI_TRAN_CNTR					0x9A8
++#define XGMAC_RX_DISCARD_FRAME_COUNT_GOOD_BAD_LOW		0x9AC
++#define XGMAC_RX_DISCARD_FRAME_COUNT_GOOD_BAD_HIGH		0x9B0
++#define XGMAC_RX_DISCARD_OCTET_COUNT_GOOD_BAD_LOW		0x9B4
++#define XGMAC_RX_DISCARD_OCTET_COUNT_GOOD_BAD_HIGH		0x9B8
 +
  #endif
 diff --git a/include/linux/soc/qcom/ppe.h b/include/linux/soc/qcom/ppe.h
-index d3cb18df33fa..40e69a262650 100644
+index 40e69a262650..8f3652675ce3 100644
 --- a/include/linux/soc/qcom/ppe.h
 +++ b/include/linux/soc/qcom/ppe.h
-@@ -9,6 +9,7 @@
- #define __QCOM_PPE_H__
+@@ -10,6 +10,7 @@
  
  #include <linux/platform_device.h>
-+#include <linux/phylink.h>
+ #include <linux/phylink.h>
++#include <linux/if_link.h>
  
  /* PPE platform private data, which is used by external driver like
   * Ethernet DMA driver.
-@@ -20,6 +21,8 @@ struct ppe_device {
- 	struct dentry *debugfs_root;
- 	bool is_ppe_probed;
- 	void *ppe_priv;
-+	struct mutex reg_mutex; /* Protects ppe reg operation */
-+	void *ports;
- 	void *uniphy;
- };
- 
-@@ -27,6 +30,36 @@ struct ppe_device {
-  * DMA driver to configure PPE.
-  */
- struct ppe_device_ops {
+@@ -57,6 +58,35 @@ struct ppe_device_ops {
+ 	struct phylink_pcs *(*phylink_mac_select_pcs)(struct ppe_device *ppe_dev,
+ 						      int port,
+ 						      phy_interface_t interface);
 +	/*
-+	 * PHYLINK integration
++	 * Port statistics counters
 +	 */
-+	struct phylink *(*phylink_setup)(struct ppe_device *ppe_dev,
-+					 struct net_device *netdev, int port);
-+	void	(*phylink_destroy)(struct ppe_device *ppe_dev,
-+				   int port);
-+	void	(*phylink_mac_config)(struct ppe_device *ppe_dev,
-+				      int port,
-+				      unsigned int mode,
-+				      const struct phylink_link_state *state);
-+	void	(*phylink_mac_link_up)(struct ppe_device *ppe_dev,
-+				       int port,
-+				       struct phy_device *phy,
-+				       unsigned int mode,
-+				       phy_interface_t interface,
-+				       int speed,
-+				       int duplex,
-+				       bool tx_pause,
-+				       bool rx_pause);
-+	void	(*phylink_mac_link_down)(struct ppe_device *ppe_dev,
-+					 int port,
-+					 unsigned int mode,
-+					 phy_interface_t interface);
-+	struct phylink_pcs *(*phylink_mac_select_pcs)(struct ppe_device *ppe_dev,
-+						      int port,
-+						      phy_interface_t interface);
++	void	(*get_stats64)(struct ppe_device *ppe_dev,
++			       int port,
++			       struct rtnl_link_stats64 *s);
++	void	(*get_strings)(struct ppe_device *ppe_dev,
++			       int port,
++			       u32 stringset,
++			       u8 *data);
++	int	(*get_sset_count)(struct ppe_device *ppe_dev,
++				  int port,
++				  int sset);
++	void	(*get_ethtool_stats)(struct ppe_device *ppe_dev,
++				     int port,
++				     u64 *data);
 +	/*
-+	 * Port maximum frame size setting
++	 * Port MAC address setting
 +	 */
- 	int	(*set_maxframe)(struct ppe_device *ppe_dev, int port,
- 				int maxframe_size);
- };
++	int	(*set_mac_address)(struct ppe_device *ppe_dev,
++				   int port,
++				   u8 *macaddr);
++	/*
++	 * Port MAC EEE settings
++	 */
++	int	(*set_mac_eee)(struct ppe_device *ppe_dev, int port,
++			       struct ethtool_eee *eee);
++	int	(*get_mac_eee)(struct ppe_device *ppe_dev, int port,
++			       struct ethtool_eee *eee);
+ 	/*
+ 	 * Port maximum frame size setting
+ 	 */
 -- 
 2.42.0
 
