@@ -1,233 +1,260 @@
-Return-Path: <linux-kernel+bounces-21719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57E2282933D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA998829345
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 06:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FA841C2501C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:22:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF47F1C25599
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 05:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F954DDA5;
-	Wed, 10 Jan 2024 05:22:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320E3DF66;
+	Wed, 10 Jan 2024 05:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ARn7qWhp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="itkeBpRy"
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D0AD52E;
-	Wed, 10 Jan 2024 05:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704864153; x=1736400153;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UV5g3+7ZTX54v02h71Q45PN86B2ugHWyHpfziqwM3Do=;
-  b=ARn7qWhp1FS2HQUvqBZS1BiJWhqVtJJqBDQg1f26nn3FSzjjl5G4jV7D
-   5Ex+mhqe2ZTwkE/oVlYCkgFihA360BVpyxKOgnmjV8GneVaD9mx12bWS8
-   gdnYzI4Iz0Z72gfvAKv/OY9ynNF58M71Zx33AFMOTdfZsOVkRWPJcYNWT
-   N0Rl0Fss8y1+UmoY7R0+VUM7fcqGO8Q//6JuGSjdZl49oVAGx+COUn2B2
-   ZqS4qhaRIGOaLiyeA1Jmjz4fSeRnaueV5g1yhF9BY0aTRLkCiA/lUZVOM
-   mK0mBSvEwhHxlVwJOSi0w4oYWOhrAtYFmNaoRIb2N4AnmboF7HK2iSJ8y
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5779845"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="5779845"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 21:22:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="758251239"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="758251239"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga006.jf.intel.com with ESMTP; 09 Jan 2024 21:22:28 -0800
-Message-ID: <d0446efb-936c-4abc-839b-8e6c3f28ee07@linux.intel.com>
-Date: Wed, 10 Jan 2024 13:17:13 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3485D52E;
+	Wed, 10 Jan 2024 05:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1704863994; bh=ZFqJsHdUI55hZBkYEEzJTLuXuujls9l7aLJuiNvXYvw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=itkeBpRyBldc5BwBIwvwq3eHCZsDPB1XNpj2nMDZzsGZiKmvwyebmXcrGZbA0dAuQ
+	 bKBAniHgUHxw8+U9cntFFo2N4ySJFCbG4LO1UPQUkC8KngHgFjkiaSHs1JTsGoNBcI
+	 hKV/HA9p0nC6+FyAy+bFpk5NJAKslLKWaXIjgtgk=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 4F126403; Wed, 10 Jan 2024 13:19:49 +0800
+X-QQ-mid: xmsmtpt1704863989t1hb59c8w
+Message-ID: <tencent_CF4FEF0D9B25A08DD7920E5D93DDBC194E07@qq.com>
+X-QQ-XMAILINFO: MZ7OTbK+3aE5TCbKEFvzpcN4VOjdtmedTp3tsflDm/vs4acK0ZgGHjxaNrtBmh
+	 uJ7JI8So0335T3YKjrBw6EHdb2wCnhu+TgFoHzeErnf+CHF3+eICZ6KkQ1MNwJZGHkGs8+yL+xaC
+	 t8sFv+5Kf3o5RvvG05JMLp5UG8ZWS2XEg4yo1AxW4tB0KTAd/8/kygTi1PZJOj3SDQVxLJsG0J1X
+	 UGB1S47pWyzAX10DnpQeeSiyNYyR5UjjEaNfV2WLYr7Wm+DkfCH/kmtkx95UstQWfebnAblJc3c5
+	 ISZSJWTVkbpY1JMJOzHw35rMsJGRNTc3KfIF8XvlWsim9Vmm7tt8PTYHWZFZO9KnYvW50W6jfBK0
+	 hoWPIWKTpVBDlaBKaSR6VmuGPk6cFfijsMZ2jUg538TS29wrgDIxjuBM1Qz8gAw+ondU4XpYah5X
+	 cOgn7kQ7Oy4VLSUP+bW3W/Ihh3BI6vdbZet4OfdvvSKmtSsGE3lEs4a5adCZTj60sFfJDDWoukCM
+	 516qnGZc2gVjeFFhDhlOTJ3pawF1WjOxV6uxJjGywDj6s5GEw7XljqNC/OiOQe6/UsMLInRHuKqr
+	 hZRfsCLeXKgpUHGk0AHUNHPeFK4FqSmWJhNk8GwYpFDBWFyEwkWCerNl/dAN50MpmJKtjE5Hs7J2
+	 g33bbVr9HUzUEhLNhOPFqUTdVQJxmEhe0q0XiUqEMU2pV5nwZgCQA7jpkTGeJGwy9Z6y3sQvogVi
+	 phLyQ5acuP0nnAC043zaJ9BrCbs2SFgbVTSeWgqJiBcAmNdLO3j8Pi4qPhnxByr+YN9C8CqqPr3B
+	 /OiOP3tss+bTQYGXgBJYR1UTRPgDHwLoPKb7NzgA/hBXPLNHi3qCkclgnH3NNhXz7IPAnhNB2KN0
+	 jE8cMy0UhlJe19uwzd/2MCZM6pMtnMQc1rYbW+QTG9W6imwALv63rAJZT1VrhTq9gnTav+VWUOEK
+	 U8N6VdiSzV1xmldGTsaw==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: pengfei.xu@intel.com
+Cc: ceph-devel@vger.kernel.org,
+	davem@davemloft.net,
+	dhowells@redhat.com,
+	eadavis@qq.com,
+	edumazet@google.com,
+	heng.su@intel.com,
+	horms@kernel.org,
+	jaltman@auristor.com,
+	jarkko@kernel.org,
+	jlayton@redhat.com,
+	keyrings@vger.kernel.org,
+	kuba@kernel.org,
+	linux-afs@lists.infradead.org,
+	linux-cifs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	marc.dionne@auristor.com,
+	markus.suvanto@gmail.com,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	smfrench@gmail.com,
+	torvalds@linux-foundation.org,
+	wang840925@gmail.com
+Subject: Re: [PATCH] keys, dns: Fix missing size check of V1 server-list header
+Date: Wed, 10 Jan 2024 13:19:49 +0800
+X-OQ-MSGID: <20240110051948.1546934-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com>
+References: <ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v10 2/5] iommu/vt-d: break out ATS Invalidation if
- target device is gone
-Content-Language: en-US
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, kevin.tian@intel.com,
- bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
- robin.murphy@arm.com, lukas@wunner.de
-References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
- <20231228170206.720675-3-haifeng.zhao@linux.intel.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231228170206.720675-3-haifeng.zhao@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 12/29/23 1:02 AM, Ethan Zhao wrote:
-> For those endpoint devices connect to system via hotplug capable ports,
-> users could request a warm reset to the device by flapping device's link
-> through setting the slot's link control register, as pciehp_ist() DLLSC
-> interrupt sequence response, pciehp will unload the device driver and
-> then power it off. thus cause an IOMMU device-TLB invalidation (Intel
-> VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for device to
-> be sent and a long time completion/timeout waiting in interrupt context.
+On Wed, 10 Jan 2024 12:40:41 +0800, Pengfei Xu wrote:
+> > Hi Linus, Edward,
+> >
+> > Here's Linus's patch dressed up with a commit message.  I would marginally
+> > prefer just to insert the missing size check, but I'm also fine with Linus's
+> > approach for now until we have different content types or newer versions.
+> >
+> > Note that I'm not sure whether I should require Linus's S-o-b since he made
+> > modifications or whether I should use a Codeveloped-by line for him.
+> >
+> > David
+> > ---
+> > From: Edward Adam Davis <eadavis@qq.com>
+> >
+> > keys, dns: Fix missing size check of V1 server-list header
+> >
+> > The dns_resolver_preparse() function has a check on the size of the payload
+> > for the basic header of the binary-style payload, but is missing a check
+> > for the size of the V1 server-list payload header after determining that's
+> > what we've been given.
+> >
+> > Fix this by getting rid of the the pointer to the basic header and just
+> > assuming that we have a V1 server-list payload and moving the V1 server
+> > list pointer inside the if-statement.  Dealing with other types and
+> > versions can be left for when such have been defined.
+> >
+> > This can be tested by doing the following with KASAN enabled:
+> >
+> >         echo -n -e '\x0\x0\x1\x2' | keyctl padd dns_resolver foo @p
+> >
+> > and produces an oops like the following:
+> >
+> >         BUG: KASAN: slab-out-of-bounds in dns_resolver_preparse+0xc9f/0xd60 net/dns_resolver/dns_key.c:127
+> >         Read of size 1 at addr ffff888028894084 by task syz-executor265/5069
+> >         ...
+> >         Call Trace:
+> >          <TASK>
+> >          __dump_stack lib/dump_stack.c:88 [inline]
+> >          dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+> >          print_address_description mm/kasan/report.c:377 [inline]
+> >          print_report+0xc3/0x620 mm/kasan/report.c:488
+> >          kasan_report+0xd9/0x110 mm/kasan/report.c:601
+> >          dns_resolver_preparse+0xc9f/0xd60 net/dns_resolver/dns_key.c:127
+> >          __key_create_or_update+0x453/0xdf0 security/keys/key.c:842
+> >          key_create_or_update+0x42/0x50 security/keys/key.c:1007
+> >          __do_sys_add_key+0x29c/0x450 security/keys/keyctl.c:134
+> >          do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >          do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+> >          entry_SYSCALL_64_after_hwframe+0x62/0x6a
+> >
+> > This patch was originally by Edward Adam Davis, but was modified by Linus.
+> >
+> > Fixes: b946001d3bb1 ("keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expiry")
+> > Reported-and-tested-by: syzbot+94bbb75204a05da3d89f@syzkaller.appspotmail.com
+> > Link: https://lore.kernel.org/r/0000000000009b39bc060c73e209@google.com/
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > Signed-off-by: David Howells <dhowells@redhat.com>
+> > Tested-by: David Howells <dhowells@redhat.com>
+> > cc: Edward Adam Davis <eadavis@qq.com>
+> > cc: Simon Horman <horms@kernel.org>
+> > cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > cc: Jarkko Sakkinen <jarkko@kernel.org>
+> > cc: Jeffrey E Altman <jaltman@auristor.com>
+> > cc: Wang Lei <wang840925@gmail.com>
+> > cc: Jeff Layton <jlayton@redhat.com>
+> > cc: Steve French <sfrench@us.ibm.com>
+> > cc: Marc Dionne <marc.dionne@auristor.com>
+> > cc: "David S. Miller" <davem@davemloft.net>
+> > cc: Eric Dumazet <edumazet@google.com>
+> > cc: Jakub Kicinski <kuba@kernel.org>
+> > cc: Paolo Abeni <pabeni@redhat.com>
+> > cc: linux-afs@lists.infradead.org
+> > cc: linux-cifs@vger.kernel.org
+> > cc: linux-nfs@vger.kernel.org
+> > cc: ceph-devel@vger.kernel.org
+> > cc: keyrings@vger.kernel.org
+> > cc: netdev@vger.kernel.org
+> > ---
+> >  net/dns_resolver/dns_key.c |   19 +++++++++----------
+> >  1 file changed, 9 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
+> > index 2a6d363763a2..f18ca02aa95a 100644
+> > --- a/net/dns_resolver/dns_key.c
+> > +++ b/net/dns_resolver/dns_key.c
+> > @@ -91,8 +91,6 @@ const struct cred *dns_resolver_cache;
+> >  static int
+> >  dns_resolver_preparse(struct key_preparsed_payload *prep)
+> >  {
+> > -	const struct dns_server_list_v1_header *v1;
+> > -	const struct dns_payload_header *bin;
+> >  	struct user_key_payload *upayload;
+> >  	unsigned long derrno;
+> >  	int ret;
+> > @@ -103,27 +101,28 @@ dns_resolver_preparse(struct key_preparsed_payload *prep)
+> >  		return -EINVAL;
+> >
+> >  	if (data[0] == 0) {
+> > +		const struct dns_server_list_v1_header *v1;
+> > +
+> >  		/* It may be a server list. */
+> > -		if (datalen <= sizeof(*bin))
+> > +		if (datalen <= sizeof(*v1))
+> >  			return -EINVAL;
+> >
+> > -		bin = (const struct dns_payload_header *)data;
+> > -		kenter("[%u,%u],%u", bin->content, bin->version, datalen);
+> > -		if (bin->content != DNS_PAYLOAD_IS_SERVER_LIST) {
+> > +		v1 = (const struct dns_server_list_v1_header *)data;
+> > +		kenter("[%u,%u],%u", v1->hdr.content, v1->hdr.version, datalen);
+> > +		if (v1->hdr.content != DNS_PAYLOAD_IS_SERVER_LIST) {
+> >  			pr_warn_ratelimited(
+> >  				"dns_resolver: Unsupported content type (%u)\n",
+> > -				bin->content);
+> > +				v1->hdr.content);
+> >  			return -EINVAL;
+> >  		}
+> >
+> > -		if (bin->version != 1) {
+> > +		if (v1->hdr.version != 1) {
+> >  			pr_warn_ratelimited(
+> >  				"dns_resolver: Unsupported server list version (%u)\n",
+> > -				bin->version);
+> > +				v1->hdr.version);
+> >  			return -EINVAL;
+> >  		}
+> >
+> > -		v1 = (const struct dns_server_list_v1_header *)bin;
+> >  		if ((v1->status != DNS_LOOKUP_GOOD &&
+> >  		     v1->status != DNS_LOOKUP_GOOD_WITH_BAD)) {
+> >  			if (prep->expiry == TIME64_MAX)
+> >
 > 
-> That would cause following continuous hard lockup warning and system hang
+> Hi Edward and kernel experts,
 > 
-> [ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
-> [ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
-> [ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
-> [ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
->           OE    kernel version xxxx
-> [ 4223.822623] Hardware name: vendorname xxxx 666-106,
-> BIOS 01.01.02.03.01 05/15/2023
-> [ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
-> [ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
->   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
-> 0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-> [ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-> [ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-> [ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-> [ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-> [ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-> [ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-> [ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
-> knlGS:0000000000000000
-> [ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
-> [ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-> [ 4223.822628] PKRU: 55555554
-> [ 4223.822628] Call Trace:
-> [ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
-> [ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
-> [ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
-> [ 4223.822629]  intel_iommu_release_device+0x1f/0x30
-> [ 4223.822629]  iommu_release_device+0x33/0x60
-> [ 4223.822629]  iommu_bus_notifier+0x7f/0x90
-> [ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
-> [ 4223.822630]  device_del+0x2e5/0x420
-> [ 4223.822630]  pci_remove_bus_device+0x70/0x110
-> [ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
-> [ 4223.822631]  pciehp_disable_slot+0x6b/0x100
-> [ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
-> [ 4223.822631]  pciehp_ist+0x176/0x180
-> [ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
-> [ 4223.822632]  irq_thread_fn+0x19/0x50
-> [ 4223.822632]  irq_thread+0x104/0x190
-> [ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
-> [ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
-> [ 4223.822633]  kthread+0x114/0x130
-> [ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
-> [ 4223.822633]  ret_from_fork+0x1f/0x30
-> [ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
-> [ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
->           OE     kernel version xxxx
-> [ 4223.822634] Hardware name: vendorname xxxx 666-106,
-> BIOS 01.01.02.03.01 05/15/2023
-> [ 4223.822634] Call Trace:
-> [ 4223.822634]  <NMI>
-> [ 4223.822635]  dump_stack+0x6d/0x88
-> [ 4223.822635]  panic+0x101/0x2d0
-> [ 4223.822635]  ? ret_from_fork+0x11/0x30
-> [ 4223.822635]  nmi_panic.cold.14+0xc/0xc
-> [ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
-> [ 4223.822636]  __perf_event_overflow+0x4f/0xf0
-> [ 4223.822636]  handle_pmi_common+0x1ef/0x290
-> [ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
-> [ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
-> [ 4223.822637]  ? __native_set_fixmap+0x24/0x30
-> [ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
-> [ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
-> [ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
-> [ 4223.822638]  perf_event_nmi_handler+0x24/0x40
-> [ 4223.822638]  nmi_handle+0x4d/0xf0
-> [ 4223.822638]  default_do_nmi+0x49/0x100
-> [ 4223.822638]  exc_nmi+0x134/0x180
-> [ 4223.822639]  end_repeat_nmi+0x16/0x67
-> [ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
-> [ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
->   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
->   74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-> [ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-> [ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-> [ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-> [ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-> [ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-> [ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-> [ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
-> [ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
-> [ 4223.822642]  </NMI>
-> [ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
-> [ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
-> [ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
-> [ 4223.822643]  intel_iommu_release_device+0x1f/0x30
-> [ 4223.822643]  iommu_release_device+0x33/0x60
-> [ 4223.822643]  iommu_bus_notifier+0x7f/0x90
-> [ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
-> [ 4223.822644]  device_del+0x2e5/0x420
-> [ 4223.822644]  pci_remove_bus_device+0x70/0x110
-> [ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
-> [ 4223.822644]  pciehp_disable_slot+0x6b/0x100
-> [ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
-> [ 4223.822645]  pciehp_ist+0x176/0x180
-> [ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
-> [ 4223.822645]  irq_thread_fn+0x19/0x50
-> [ 4223.822646]  irq_thread+0x104/0x190
-> [ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
-> [ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
-> [ 4223.822646]  kthread+0x114/0x130
-> [ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
-> [ 4223.822647]  ret_from_fork+0x1f/0x30
-> [ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
-> range: 0xffffffff80000000-0xffffffffbfffffff)
+>   Above patch(upstream commit: 1997b3cb4217b09) seems causing a keyctl05 case
+> to fail in LTP:
+> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/keyctl/keyctl05.c
 > 
-> Furthermore even an in-process safe removal unplugged device could be
-> surprise removed anytime, thus need to check the ATS Invalidation target
-> device state to see if it is gone, and don't wait for the completion/
-> timeout blindly, thus avoid the up to 1min+50% (see Implementation Note
-> in PCIe spec r6.1 sec 10.3.1) waiting and cause hard lockup or system
-> hang.
+> It could be reproduced on a bare metal platform.
+> Kconfig: https://raw.githubusercontent.com/xupengfe/kconfig_diff/main/config_v6.7-rc8
+> Seems general kconfig could reproduce this issue.
 > 
-> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
-> ---
->   drivers/iommu/intel/dmar.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
+>   Bisected info between v6.7-rc7(keyctl05 passed) and v6.7-rc8(keyctl05 failed)
+> is in attached.
 > 
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index 3d661f2b7946..0a8d628a42ee 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -1423,6 +1423,14 @@ int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
->   	writel(qi->free_head << shift, iommu->reg + DMAR_IQT_REG);
->   
->   	while (qi->desc_status[wait_index] != QI_DONE) {
-> +		/*
-> +		 * if the device-TLB invalidation target device is gone, don't
-> +		 * wait anymore, it might take up to 1min+50%, causes system
-> +		 * hang. (see Implementation Note in PCIe spec r6.1 sec 10.3.1)
-> +		 */
-> +		if ((type == QI_DIOTLB_TYPE || type == QI_DEIOTLB_TYPE) && pdev)
-> +			if (!pci_device_is_present(pdev))
-> +					break;
->   		/*
->   		 * We will leave the interrupts disabled, to prevent interrupt
->   		 * context to queue another cmd while a cmd is already submitted
+> keyctl05 failed in add_key with type "dns_resolver" syscall step tracked
+> by strace:
+> "
+> [pid 863107] add_key("dns_resolver", "desc", "\0\0\1\377\0", 5, KEY_SPEC_SESSION_KEYRING <unfinished ...>
+> [pid 863106] <... alarm resumed>)       = 30
+> [pid 863107] <... add_key resumed>)     = -1 EINVAL (Invalid argument)
+The reason for the failure of add_key() is that the length of the incoming data
+is 5, which is less than sizeof(*v1), so keyctl05.c failed.
+Suggest modifying keyctl05.c to increase the length of the incoming data to 6 
+bytes or more.
+> "
+> 
+> Passed behavior in v6.7-rc7 kernel:
+> "
+> [pid  6726] add_key("dns_resolver", "desc", "\0\0\1\377\0", 5, KEY_SPEC_SESSION_KEYRING <unfinished ...>
+> [pid  6725] rt_sigreturn({mask=[]})     = 61
+> [pid  6726] <... add_key resumed>)      = 1029222644
+> "
+> 
+> Do you mind to take a look for above issue?
+Edward,
+BR
 
-How about handing this in qi_check_fault() when it detects an ITE error?
-
-qi_check_fault() should returns -ETIMEDOUT instead of -EAGAIN, if
-
-- qi_submit_sync() is called for a device TLB invalidation request
-   (indicated by pdev is valid);
-- device is not present.
-
-Best regards,
-baolu
 
