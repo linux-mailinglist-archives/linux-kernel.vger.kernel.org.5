@@ -1,101 +1,97 @@
-Return-Path: <linux-kernel+bounces-22208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB822829AE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:04:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B093829AE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85F911F25C05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:04:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9434F281072
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA72548799;
-	Wed, 10 Jan 2024 13:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I4y+FwLa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B1E48799;
+	Wed, 10 Jan 2024 13:05:47 +0000 (UTC)
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453E6482F6
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:04:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99182C43390;
-	Wed, 10 Jan 2024 13:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704891883;
-	bh=+SjzS/Drd8ufsTQioscucOOdIE6ClI3c5SSNDiQg2Qw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I4y+FwLaySYAvGCv2cfZ0QV7RNEc6s74AAqupFSX+tdKcv5nAN7BofaBND7FRcDKL
-	 Z0q3TIHyhrFPZZ/hbZxD/7fL3PUlVJohrb6oHtJzK3zhum4+RBe5UySPkn/7z32NCL
-	 FjUYxspEEl5QWtQIl1JqH6Yu13eVtvEQBN1vjnMX3C39WSnx/H0k7YfWpsEYYe2A2C
-	 LIPofFqH1ZQQ+ZTw40VdO7RuOoO71B/eMixT92wW0hbFelwd7U6jLrUlk4vldkqmK4
-	 PNzl7aYphuYvW3ug+FT/23oKori/mVypaaDIvUMOh1ANeY8AMUQr28UU0JXdFT1LnR
-	 3hf/mbQXBig3Q==
-Date: Wed, 10 Jan 2024 13:04:39 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] regmap: debugfs: runtime resume a device when
- reading registers
-Message-ID: <6c4d37c1-9376-46b7-bd75-e68b84adbbd5@sirena.org.uk>
-References: <20240110095358.473663-1-alexander.stein@ew.tq-group.com>
- <3bc9c762-3573-4d8b-bfcf-6c8e91938dcd@sirena.org.uk>
- <7625183.EvYhyI6sBW@steina-w>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15E647F6F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4299d95547eso12318911cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:05:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704891944; x=1705496744;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h0CYESXWRwPl8oqvteNiSuteSyQk0Ky/r564akScXfg=;
+        b=q6GKmPRI3UinucRWzsgygtv+4Hw2YL8eRdYsJGfuGgl/YQMdLCY/y9HhfT0G/eIxdt
+         fB73bE8SYQ+/sSvQxWPhodLBxsyN10gbEOaWY+POxm5efRR7HfpB5qb75ZcYNAOQkPq7
+         C2/dCUSkwq7pAjWKD3Taq4Vk/iIdRhCmFY+EHBs8lHRxNoVvVSFuo1QS/drBOA5hNu4B
+         mHn3cLrC4hpTwp5fSTKNLx70U15n3hmRz80ZTO2jX5GWVHO+eP/6xM4sZlFftHRltw7Q
+         VzTZlH1gKHd4B6pPq8+cJN5/7LVUKIE6eJQdD/9WxrDeASwgcZokfh7eY34xJJM+yPCQ
+         YOkA==
+X-Gm-Message-State: AOJu0YwYTUBCQw5dsnFfAQv8aGLNJB8XBnNiAMItAvpRwH/pbzUp3V7J
+	X1z2RKuhxa3m7UdaccCO6Cg=
+X-Google-Smtp-Source: AGHT+IHe1RvNMYGKzjKIDeQa10bovKXWOKkurYaCsJ4WPcjbUKsAuCGpiIgF0NtedlK05DRgEHQERA==
+X-Received: by 2002:ac8:5d89:0:b0:429:85d9:d5f1 with SMTP id d9-20020ac85d89000000b0042985d9d5f1mr909495qtx.93.1704891944386;
+        Wed, 10 Jan 2024 05:05:44 -0800 (PST)
+Received: from Belldandy-Slimbook.tail03774.ts.net ([32.221.209.96])
+        by smtp.gmail.com with ESMTPSA id i3-20020a05622a08c300b00427e2ec0bd0sm1774371qte.73.2024.01.10.05.05.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 05:05:43 -0800 (PST)
+From: Neal Gompa <neal@gompa.dev>
+To: jirislaby@kernel.org
+Cc: dhowells@redhat.com,
+	hpa@zytor.com,
+	linux-kernel@vger.kernel.org,
+	pinskia@gmail.com,
+	kent.overstreet@linux.dev,
+	Neal Gompa <neal@gompa.dev>
+Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+Date: Wed, 10 Jan 2024 08:04:53 -0500
+Message-ID: <20240110130456.142763-1-neal@gompa.dev>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <938ebce3-74c5-4fcf-9de3-849271d3581d@kernel.org>
+References: <938ebce3-74c5-4fcf-9de3-849271d3581d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CzwprgKoqbZ35KaK"
-Content-Disposition: inline
-In-Reply-To: <7625183.EvYhyI6sBW@steina-w>
-X-Cookie: Do you have lysdexia?
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Hey all,
+
+I would like to speak in support of this too. It is not uncommon
+to see operating systems code written in C++ (notable examples are
+Haiku OS, Serenity OS, and Zircon/Fuschia) and I do feel that there
+are benefits to C++ for Linux code. Modern C++ (such as C++14 and
+newer), offers a lot of nice base language features that can make
+some of the kind of stuff that Linux does easier (as H. Peter Anvin
+has detailed in his post[1]).
+
+While I personally have some experience in a variety of programming
+languages, C++ and Python are my preferred tools, and I would
+personally be much more interested in contributing in C++ than in C.
+I imagine there are a lot of other folks out there who feel the same,
+but just don't feel like they can say it. I'll stick my neck out for
+those who won't. ;)
+
+Even though this started out as a "joke"[2], I really would like to
+see C++ code permitted in Linux.
+
+Thanks in advance and best regards,
+Neal
+
+[1]: https://lore.kernel.org/lkml/3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com/
+[2]: https://lore.kernel.org/lkml/152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk/
 
 
---CzwprgKoqbZ35KaK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jan 10, 2024 at 01:46:31PM +0100, Alexander Stein wrote:
-> Am Mittwoch, 10. Januar 2024, 13:23:17 CET schrieb Mark Brown:
-
-> > The idea is that the debugfs interface isn't supposed to be disruptive
-> > to the thing being debugged.  It would be better to detect if there will
-> > be problems and report the status as busy.
-
-> In my case the device is actually unused, runtime suspended, thus disable=
-d=20
-> power domain. That's totally different to busy. In this case dumping the=
-=20
-> registers is non-disruptive, unless you account enabling/disabling the po=
-wer=20
-> domain as well. Any attached clock is already enabled/disabled, but power=
-=20
-> domains are not.
-
-At a regmap level we map that onto -EBUSY for devices with a cache
-(using a cache for your specific device ought to DTRT, it's not a
-general solution though).
-
---CzwprgKoqbZ35KaK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWeleYACgkQJNaLcl1U
-h9BDbAf8CTNBr7P+ghxeJa+lDyvoyKaksrfMZlia3RIFv+ssY9mQrDc158pE28fK
-uqYnXdUqzMLKhz8s7v1McdNPus70sagD4foI73hKEMgvdld6cAF6mVr+hvRzd5f/
-5ZL455C8t1TUXf1NCHtMLBRiswiLgx+8Lhd1opyUsFmCIPhgX79K5JK11n5bviOx
-XFKs+vXSuj/f6yCj5CrI/wT0Wb4k611at9/PthCjiYXBhPmHq0/3/YtuYEnwNzwx
-XyKh1KXefBCWPC+UI2YL0T4/4WWpul4B/o/7pZS8HzzKfhhY+yFXTPERRM0CWAGW
-FpDumuQ3YEMA1NHJEEmeG9a2H8URyw==
-=yNCF
------END PGP SIGNATURE-----
-
---CzwprgKoqbZ35KaK--
+-- 
+真実はいつも一つ！/ Always, there's only one truth!
 
