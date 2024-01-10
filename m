@@ -1,362 +1,355 @@
-Return-Path: <linux-kernel+bounces-22665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AB2B82A118
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A7C082A126
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739631C21AAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:37:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EDC21C22340
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC04D4C63B;
-	Wed, 10 Jan 2024 19:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303234E1D3;
+	Wed, 10 Jan 2024 19:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ti29hYTM"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b="htwNfUtb"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2067.outbound.protection.outlook.com [40.107.20.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576EF4EB22
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 19:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2ccb4adbffbso53802151fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:37:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704915459; x=1705520259; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mJU7Pk/Pll8nD+i6L8RmNZ0LVcNUXVn/4QrLY2OcnYI=;
-        b=Ti29hYTM9dgDcZENDgn2QdZI1mhycPNSLiMYGQJ7tToSThn8kmQVzexQJ3Od816XcT
-         1qxMZA3as1V+wI5jlQhUxqjyLUUEKLTdHt69f7kKI7oXWEVe4O8eVrfU5j8PEDjdx9+T
-         Q0YoMw6Frdl8fawjcK2FYpXCvGEVUoQoz2jC4MC78LlPVTLAUX1A3oDZc42v3eFR3KPQ
-         zQfQFzILFnuGS1tWEhQiSk+0XohGdTwvE+wGVhpT85e6SH7so9p92Vctjt+41QqAUvzP
-         /ZaWv24jcvvXcgro8bAXAlx6DeKhtnt+uki6CxCT94U/CNtY+enqG6pnqXyTZLB3cDwv
-         3vSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704915459; x=1705520259;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mJU7Pk/Pll8nD+i6L8RmNZ0LVcNUXVn/4QrLY2OcnYI=;
-        b=aJ5Fa9STuCd3nUBlr+ZBLmucsdfFxqrwIuAsVQL3a/pU48G14ekewEVzYHnYW76K1Y
-         cF4Wta6Oclg6XC4Vt2nyCVDlEPkZqIiIzxiDH5NgOEWmWS1eeIl5J9x3UzqY7rRvOls2
-         eJBxo7CPs9y/R45dgTPNPideWxxjydukms0i/dLUAkppj/6qH0A0fHwDrKFEfQKT8LOi
-         2gjPk6+Fdm+NSzwwRV68cCDBgB5fsrADNUe4JTSxhwcelH26qoR38GZuqWniGe2bLeRJ
-         o4I4MvSbXUnN0pFtU8dYHRie0QnyYpA26aqmXkL9UioFxjg6/Ds4/88qkKeVQo0O4t3F
-         zpkA==
-X-Gm-Message-State: AOJu0YwwdDmm8inpA3Tmp9+GdtDLWl7Sf2lW6BgzqRbRbhoFk/ktkpWd
-	barWATDLlDAvyQiAg5L7Zrot4KDmdn4IzA==
-X-Google-Smtp-Source: AGHT+IHATC4b6aZQTpT9ZdtpdvRGMH/BG4ohXqdp9Phq+vK7L0N5ppRDgeZeOPt5wLdXIyYX6rmmzA==
-X-Received: by 2002:a2e:9303:0:b0:2cc:ea64:73e3 with SMTP id e3-20020a2e9303000000b002ccea6473e3mr28491ljh.41.1704915459383;
-        Wed, 10 Jan 2024 11:37:39 -0800 (PST)
-Received: from ?IPv6:2804:30c:1668:b300:8fcd:588d:fb77:ed04? ([2804:30c:1668:b300:8fcd:588d:fb77:ed04])
-        by smtp.gmail.com with ESMTPSA id o7-20020a1709026b0700b001d0c151d325sm4001666plk.209.2024.01.10.11.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 11:37:38 -0800 (PST)
-Message-ID: <456e5e031d7bad9a21e2f24151341c7c45615a3a.camel@suse.com>
-Subject: Re: [PATCH v1 3/5] kbuild/modpost: integrate klp-convert
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Lukas Hruska <lhruska@suse.cz>, Petr Mladek <pmladek@suse.com>, Miroslav
-	Benes <mbenes@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Joe Lawrence <joe.lawrence@redhat.com>, live-patching@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, Josh Poimboeuf
-	 <jpoimboe@redhat.com>
-Date: Wed, 10 Jan 2024 16:37:34 -0300
-In-Reply-To: <20231106162513.17556-4-lhruska@suse.cz>
-References: <20231106162513.17556-1-lhruska@suse.cz>
-	 <20231106162513.17556-4-lhruska@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB5E4D58E;
+	Wed, 10 Jan 2024 19:44:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kCI0OTaBBd4GfJtw6+aJa/xxGsc2UzfB6kg07XfHrD4OV+jIChHe38xbQAHB++c7kwm78tc3O9VrW58A6lKqgTLKHzNYCraAeGaJ9DXvoSufM+CRGa0npNJGzM6k+KTSUhV9baVaL1/CHGwTQTYbyWVM+OfHrF04mb8u5qJBEnEYVhotXuB1A9Phiar3MnrcRIwrV43RvvE8MVa+tB83RvxdZM/DxEu0PeWRPL85+FYa8otRDzYQLo1hory8MnceEfCASLB6bGgfEicyjYc3vphov98adn0FDKanr6+OYsklJqjAgAp/ugDeYNkZ78ZxEDUReZYdIazr2JPCuNPBgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ngShzAj9XO1Lg6NZ5LNluQQpr+cc6on2DRYKfcZVIPU=;
+ b=ApZgtT+wO06EaYgkxp2MkpARoaJhZOXz2HPpvn2qL20l9E193Vl+e55QgPtwZbWA/7CNVxQiR4Ju9UHStvwY9EB3QFnnBnUACUymlMM0BKqd2TYtndnRPJDsHcnyQcfpRF9gsVpsqpvLaeGwcluhnPZZ2DY8U7YJXw0sXRduYkuZqBhVIKVvdFRiIzY7jfBwBn3gAXygar55fAGdRx4cU3hIez0CfTMOASQCHzNZkMUh+ytvFKBfa/uDcuB2KBikGyf4pj/mdLcChxVBKW6+sDEZvkHuPLAy2ysrxul6jsgBdFfnQeIngKjzYOzCSmxdSG97NHOH7cyGo3yZP8DNoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ngShzAj9XO1Lg6NZ5LNluQQpr+cc6on2DRYKfcZVIPU=;
+ b=htwNfUtbHCrFORunM6VCdjeG4of4lyQQi8fS9OSwPKTUds0XASY9aVaUXJy3/M965m7mqaN5JkEVA0jAGnuVfAuP8bJ16oNeX7tNPWK0UyO+rqBxWefqIBANPjgkFmjalMOoaOyIc4tNlLSx8Vl53jcBj52xEYOuZKS/+SIhj9KTT1Hi+8pOV/lPFQENGZ1pdgSCiEblsRMq/WjEzQA3qFZDkqD9jG5M19JJEbtclG1HIP7+C4ZRAuJswixukVJJQvnHo3KJY1iAsyVZfx/EYFPaoNgolml4PDiseq3lvwttiI84syCSuKhluVW5zD9kFLxieEoBU5FPZe5ntedsrQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
+ by DBAPR10MB4106.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:1ca::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
+ 2024 19:44:54 +0000
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8d16:7fbb:4964:94fe]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8d16:7fbb:4964:94fe%3]) with mapi id 15.20.7181.018; Wed, 10 Jan 2024
+ 19:44:53 +0000
+Message-ID: <e423cf1d-42c0-44ce-b6b6-4a88ce46d7ab@siemens.com>
+Date: Wed, 10 Jan 2024 20:44:51 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 06/16] arm64: dts: ti: k3-am65: Add MIT license along with
+ GPL-2.0
+Content-Language: en-US
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tero Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Pierre Gondois <pierre.gondois@arm.com>, Rob Herring <robh@kernel.org>,
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+ Tony Lindgren <tony@atomide.com>
+References: <20240110140903.4090946-1-nm@ti.com>
+ <20240110140903.4090946-7-nm@ti.com>
+From: Jan Kiszka <jan.kiszka@siemens.com>
+In-Reply-To: <20240110140903.4090946-7-nm@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0074.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1e::20) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:588::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|DBAPR10MB4106:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2f0503f5-9694-4d6e-6a68-08dc12149ded
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	TXQCj7Qg1CEZCyeMDH/RoAx00Z3qWfXFU8lmvPhLZjoDS3/y5IkA2U4vQaY6meuzGhKW5GsSu2gDx/Tg5FxhPSt9OvgMBRO+LqKE/9gATVX7zgQf/0DMDK7ysmMP19C6MWTglxvfH+wiqBW2/EWQ8OWylwp6/Br44XG/IrGDLmCePxWdI7jRZObheQhrM2OwR9SSu+NOtE4NTpBAoWIASserm21BIh3d1gf0trUypox7EIHAFP4T/PhvxfKsjjDwNkptjI/3Xv+Sd7MVDrX14frishPyt7CnNWRWyRXMbEZ2znBeszRamE5xUbQL3DiSUPbr6Rq6v7Li0o4MAD3eEZX/vn1rlsam9ewpDpgNjZa0TkjLhSHUDvXku/8nlojIV6SQnORvU4+YhSvSx9aLA8FGkBh9dJpSq6xWT6r6Aat+4IRBBVZlJM62hSxy1wfmdpbK0jrnFOskjtm3ftJdkEiSoZUMhp5K0N2tRzO4myhy2suupkZyDI+J8/VfxeyUnJhfyEqNwls+JZumFmrHYWZRYXe1n6C/4eC/of5evjwZVn1g5mHHjDJnrfzIM8vrcInV7llJNqh9eYwRpVyAlEqr0GJNgl8Wrm0rHXn7ntqHZk8AAbymzf06gCmhU9MoLSOobpxJSChw+saVcKRjLQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(396003)(376002)(136003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(36756003)(31686004)(6486002)(66476007)(478600001)(53546011)(86362001)(31696002)(66556008)(66946007)(2616005)(82960400001)(26005)(2906002)(8676002)(7416002)(6506007)(44832011)(6512007)(966005)(83380400001)(38100700002)(8936002)(41300700001)(316002)(54906003)(4326008)(5660300002)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Qk8vdS9KY2FCT2lqNm5QL3d1WlliOWhyTUc1M3E3VUlXeldRdWg1QWtqcjhx?=
+ =?utf-8?B?WURMc3Y4UVV1YVVZQU1LdnpGYjQ0WE54bUNaTUk3b3N2SmJKbHN1RHBudG1C?=
+ =?utf-8?B?T20vbldsOWRLT3dWMDdhb205cjJXMHl5M2NnTTNBeTU2amdmNnhMRGpqd0Zr?=
+ =?utf-8?B?dGpyWXBUQ2htSmxzY0oxRElQak1PY1lwcEYzMmJyMm56K3l2VmEwL1J1QU9a?=
+ =?utf-8?B?WkJGcEMrWTVSNFNlTDhicmdXbGM5RTRXWG1JU1N3TVY2SHZvbkNoMWNRUHBi?=
+ =?utf-8?B?dHJpM3lsVkJqYmo4ZVE5aDU0eTNIUGFoZHRnZ2lTVlZvOHUralkzUjI0cS9I?=
+ =?utf-8?B?b1FUdFRmaTZ6VE5xSDZjaXl2ZXFLazg5Zm1xS2xhNzJqUWd6clZDK293KzVZ?=
+ =?utf-8?B?NGE1S3RNbDB3K3IvdlFUM2NWa2FBOTIrcTdOa3ROZGJlQUY3S1FmVEw3Z0pZ?=
+ =?utf-8?B?SHU2K0VRbnRTcEhNSDJSV2MyQUZqUW1QS0NzKzY0bXdBa0tIakI0dndCUnFl?=
+ =?utf-8?B?KzFSV2czU0ptVEluTXNEUXMvc1IrSDNRbWNXQVdLbHdCT2lhVDRCQ0VzYnZU?=
+ =?utf-8?B?eC9rN0NrVnlqSlYrSFFITnJFbTdaNTFSVXluM2p6Y1VjRjh5UzMrNWx4bmpF?=
+ =?utf-8?B?N05qdXBlU2RLekNCNlBKUGp6NDJjd2grMFFtdVNrODV4eDhOSnU0a2pVMkRU?=
+ =?utf-8?B?NDlBdDI4YnR6d3E3NUZ3a05mS2hYK0dkNEJ2dStXQU5MdE0rSTdFQmtEQlFX?=
+ =?utf-8?B?MlRuUVdraGFRdEthQTZhRWtkWUN4eGdTV2lGQUdldzFkczYzZGttVWR3ckho?=
+ =?utf-8?B?dGZyT2JaU0xlU1dvWnpIRm5WOWJQdStlOENyZVhmYll5NGE0eEw3MGlNTWFZ?=
+ =?utf-8?B?SElaeVpJdWZHVDkyWGVJZ050ZGJ0SklOa0lEeDZIVE5VbW5aaWlpQUEwUVNm?=
+ =?utf-8?B?Q2c0TUVxQlVVVzBmb1ordzM5YVFZMEZOMC9Rb3lPcGxENXQwV2QyTWR4b0Z1?=
+ =?utf-8?B?VHVnZHVaUW9BWTFRWDdqYWJ2UmlOU1ZuUGhwTTVQckJCQWwyNVhQc1NrU3Mv?=
+ =?utf-8?B?YVJ1dllCRDdLNTNGTGZzRGxTalpRT3VsSUJ0eGZUTW5JMVZIeWVsdG1OZUdw?=
+ =?utf-8?B?b2w3M0ZSY1NiYTBLdnBjS0RaZ0hTODlXbldZVjJPTmUrZmI0NnN4dmR2a0FK?=
+ =?utf-8?B?NnN1am5HRlFqVTN3M013dHJiYlgzbXM5dXMvckVIREZ4SUcvYkh1VXEwYXpw?=
+ =?utf-8?B?bFpiZTRuV0EzcWhNMGd0N1VBUFJzckJhbEVnUXhtUlQzWUk2UTlocmhnc0xY?=
+ =?utf-8?B?Y0lJd1BOcVhwT29lcjlleTdjTWJxeEkzYW13aUlqd0xHQVp5ZFQyaDIxYnY5?=
+ =?utf-8?B?bkFlOTlqbzlpNE45RjZaci9lQjYrQUE5QkQ3SXdRR3p0TXU2d3M2T3JYVHMv?=
+ =?utf-8?B?cnd0b09SbVN2VFdkZWRMTDdEUE9pYWdvUHhyTGNyZ1BneDdrZVoxVnU5d1Ay?=
+ =?utf-8?B?bkJFbFJPdUcrZXQ5OHg2cmxycFBSOGN1cFdoSDA4aTA3Y2ZNWDFZUDFseEp4?=
+ =?utf-8?B?UzN1b25QR3AreFZhYXdWcnNFSDVQVnhlNjhJME10ejl1RG81SmZMSTJJODZl?=
+ =?utf-8?B?VHF6eXJwUDM4RU43eW1UNzczNldyWldmbkJmWFFEWFdodVpuUkJRRDhQb2c2?=
+ =?utf-8?B?OUh1NkhuVVlIbGUyWmFPd1JVMDRsN0J4NWFoeFd1YkZTcUU1V1haa0VlaEIx?=
+ =?utf-8?B?eTlvOVc5MXM5eFBHcklhMTJUM2svcmhxcGM1dGVnWUY5VzZVRGR1VHMrdi9w?=
+ =?utf-8?B?TTBOdEZqR1JPOUpaTjZzanNlbGNwT21CSlNYUVNicWZvMHRXakpwWmFWM1E2?=
+ =?utf-8?B?Yjd1Y3JBWDlqQ3pvR2dmcjE3MDJlZ0dqaGNoeTUxbUVnbkhiSy9rU2tKL01s?=
+ =?utf-8?B?MzdHUmdIdmlpUVhKNTNNbVQ0aXNZcUFKb09zTTZXZzZkZ1VLdmRvejB4Uitq?=
+ =?utf-8?B?R2hpcnU0UisrMzRxczRKR0oraHpsenhMSHFyNktTcW1EZ0l6c0ZzMThKZ3No?=
+ =?utf-8?B?SHRjZ25qdVJMU0kxVlNZYnczNVJUWkV0NjVieXJCUGpraHpzQkFJWHZvd0xR?=
+ =?utf-8?B?MzB1Vm1peFBkKzQ3V1REazYvU1BJMDZad0FTMWFPbVYrMWhBRmtzNXdUOFRZ?=
+ =?utf-8?B?QWc9PQ==?=
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f0503f5-9694-4d6e-6a68-08dc12149ded
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 19:44:53.9121
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NdJtMj2dSA/hrz4P94o8IYm4/kGSTuBNjSl+GNqVhre62EqLmXLoVfo+b4a0uKvY8vI9N9N+6rDLeBGXWRxBrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR10MB4106
 
-On Mon, 2023-11-06 at 17:25 +0100, Lukas Hruska wrote:
-> From: Josh Poimboeuf <jpoimboe@redhat.com>
->=20
-> Update the modpost program so that it does not warn about unresolved
-> symbols matching the expected format which will be then resolved by
-> klp-convert.
->=20
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Lukas Hruska <lhruska@suse.cz>
-
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-(The patch currently conflicts with Linus tree on Makefile and
-modpost.c, but nothing to worry, AFAICS)
-
+On 10.01.24 15:08, Nishanth Menon wrote:
+> Modify license to include dual licensing as GPL-2.0-only OR MIT
+> license for SoC and TI evm device tree files. This allows for Linux
+> kernel device tree to be used in other Operating System ecosystems
+> such as Zephyr or FreeBSD.
+> 
+> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
+> with latest SPDX conventions (GPL-2.0 is deprecated).
+> 
+> While at this, update the TI copyright year to sync with current year
+> to indicate license change (and add it at least for one file which was
+> missing TI copyright).
+> 
+> Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+> Cc: Jan Kiszka <jan.kiszka@siemens.com>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> Cc: Pierre Gondois <pierre.gondois@arm.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 > ---
-> =C2=A0.gitignore=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
-> =C2=A0Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 10 ++++++----
-> =C2=A0scripts/Makefile.modfinal | 15 +++++++++++++++
-> =C2=A0scripts/Makefile.modpost=C2=A0 |=C2=A0 5 +++++
-> =C2=A0scripts/mod/modpost.c=C2=A0=C2=A0=C2=A0=C2=A0 | 36 ++++++++++++++++=
-++++++++++++++++++--
-> =C2=A0scripts/mod/modpost.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 +++
-> =C2=A06 files changed, 64 insertions(+), 6 deletions(-)
->=20
-> diff --git a/.gitignore b/.gitignore
-> index 9fd4c9533b3d..628caf76b617 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -69,6 +69,7 @@ modules.order
-> =C2=A0/Module.markers
-> =C2=A0/modules.builtin
-> =C2=A0/modules.builtin.modinfo
-> +/modules.livepatch
-> =C2=A0/modules.nsdeps
-> =C2=A0
-> =C2=A0#
-> diff --git a/Makefile b/Makefile
-> index 2fdd8b40b7e0..459b9c9fe0a8 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1185,6 +1185,7 @@ PHONY +=3D prepare0
-> =C2=A0export extmod_prefix =3D $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
-> =C2=A0export MODORDER :=3D $(extmod_prefix)modules.order
-> =C2=A0export MODULES_NSDEPS :=3D $(extmod_prefix)modules.nsdeps
-> +export MODULES_LIVEPATCH :=3D $(extmod-prefix)modules.livepatch
-> =C2=A0
-> =C2=A0ifeq ($(KBUILD_EXTMOD),)
-> =C2=A0
-> @@ -1535,8 +1536,8 @@ endif
-> =C2=A0#
-> =C2=A0
-> =C2=A0# *.ko are usually independent of vmlinux, but
-> CONFIG_DEBUG_INFO_BTF_MODULES
-> -# is an exception.
-> -ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> +# and CONFIG_LIVEPATCH are exceptions.
-> +ifneq ($(or $(CONFIG_DEBUG_INFO_BTF_MODULES),$(CONFIG_LIVEPATCH)),)
-> =C2=A0KBUILD_BUILTIN :=3D 1
-> =C2=A0modules: vmlinux
-> =C2=A0endif
-> @@ -1595,8 +1596,9 @@ endif
-> =C2=A0# Directories & files removed with 'make clean'
-> =C2=A0CLEAN_FILES +=3D include/ksym vmlinux.symvers modules-only.symvers =
-\
-> =C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 modules.builtin modules.built=
-in.modinfo
-> modules.nsdeps \
-> -	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compile_commands.json .thinlto-cac=
-he rust/test
-> rust/doc \
-> -	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rust-project.json .vmlinux.objs .v=
-mlinux.export.c
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 modules.livepatch compile_commands=
-json .thinlto-
-> cache \
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rust/test rust/doc rust-project.js=
-on .vmlinux.objs \
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .vmlinux.export.c
-> =C2=A0
-> =C2=A0# Directories & files removed with 'make mrproper'
-> =C2=A0MRPROPER_FILES +=3D include/config include/generated=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
-> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> index fc19f67039bd..155d07476a2c 100644
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@ -14,6 +14,7 @@ include $(srctree)/scripts/Makefile.lib
-> =C2=A0
-> =C2=A0# find all modules listed in modules.order
-> =C2=A0modules :=3D $(call read-file, $(MODORDER))
-> +modules-klp :=3D $(call read-file, $(MODULES_LIVEPATCH))
-> =C2=A0
-> =C2=A0__modfinal: $(modules:%.o=3D%.ko)
-> =C2=A0	@:
-> @@ -65,6 +66,20 @@ endif
-> =C2=A0
-> =C2=A0targets +=3D $(modules:%.o=3D%.ko) $(modules:%.o=3D%.mod.o)
-> =C2=A0
-> +# Livepatch
-> +# ------------------------------------------------------------------
-> ---------
-> +
-> +%.tmp.ko: %.o %.mod.o FORCE
-> +	+$(call if_changed,ld_ko_o)
-> +
-> +quiet_cmd_klp_convert =3D KLP=C2=A0=C2=A0=C2=A0=C2=A0 $@
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cmd_klp_convert =3D scripts/livepatch/klp=
--convert $< $@
-> +
-> +$(modules-klp:%.o=3D%.ko): %.ko: %.tmp.ko FORCE
-> +	$(call if_changed,klp_convert)
-> +
-> +targets +=3D $(modules-klp:.ko=3D.tmp.ko)
-> +
-> =C2=A0# Add FORCE to the prequisites of a target to force it to be always
-> rebuilt.
-> =C2=A0# -----------------------------------------------------------------=
--
-> ---------
-> =C2=A0
-> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-> index 39472e834b63..c757f5eddc3e 100644
-> --- a/scripts/Makefile.modpost
-> +++ b/scripts/Makefile.modpost
-> @@ -47,6 +47,7 @@ modpost-args
-> =3D										\
-> =C2=A0	$(if $(KBUILD_MODPOST_WARN),-
-> w)							\
-> =C2=A0	$(if $(KBUILD_NSDEPS),-d
-> $(MODULES_NSDEPS))					\
-> =C2=A0	$(if
-> $(CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS)$(KBUILD_NSDEPS),-
-> N)	\
-> +	$(if $(CONFIG_LIVEPATCH),-l
-> $(MODULES_LIVEPATCH))				\
-> =C2=A0	$(if $(findstring 1, $(KBUILD_EXTRA_WARN)),-
-> W)					\
-> =C2=A0	-o $@
-> =C2=A0
-> @@ -144,6 +145,10 @@ $(output-symdump): $(modpost-deps) FORCE
-> =C2=A0	$(call if_changed,modpost)
-> =C2=A0
-> =C2=A0__modpost: $(output-symdump)
-> +ifndef CONFIG_LIVEPATCH
-> +	$(Q)rm -f $(MODULES_LIVEPATCH)
-> +	$(Q)touch $(MODULES_LIVEPATCH)
-> +endif
-> =C2=A0PHONY +=3D FORCE
-> =C2=A0FORCE:
-> =C2=A0
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index b29b29707f10..f6afa2e10601 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -1733,6 +1733,10 @@ static void read_symbols(const char *modname)
-> =C2=A0		}
-> =C2=A0	}
-> =C2=A0
-> +	/* Livepatch modules have unresolved symbols resolved by
-> klp-convert */
-> +	if (get_modinfo(&info, "livepatch"))
-> +		mod->is_livepatch =3D true;
-> +
-> =C2=A0	if (extra_warn && !get_modinfo(&info, "description"))
-> =C2=A0		warn("missing MODULE_DESCRIPTION() in %s\n",
-> modname);
-> =C2=A0	for (sym =3D info.symtab_start; sym < info.symtab_stop; sym++)
-> {
-> @@ -1821,10 +1825,18 @@ static void check_exports(struct module *mod)
-> =C2=A0		const char *basename;
-> =C2=A0		exp =3D find_symbol(s->name);
-> =C2=A0		if (!exp) {
-> -			if (!s->weak && nr_unresolved++ <
-> MAX_UNRESOLVED_REPORTS)
-> +			if (!s->weak && nr_unresolved++ <
-> MAX_UNRESOLVED_REPORTS) {
-> +				/*
-> +				 * In case of livepatch module we
-> allow
-> +				 * unresolved symbol with a specific
-> format
-> +				 */
-> +				if (mod->is_livepatch &&
-> +				=C2=A0=C2=A0=C2=A0 strncmp(s->name, KLP_SYM_RELA,
-> strlen(KLP_SYM_RELA)) =3D=3D 0)
-> +					break;
-> =C2=A0				modpost_log(warn_unresolved ?
-> LOG_WARN : LOG_ERROR,
-> =C2=A0					=C2=A0=C2=A0=C2=A0 "\"%s\" [%s.ko]
-> undefined!\n",
-> =C2=A0					=C2=A0=C2=A0=C2=A0 s->name, mod->name);
-> +			}
-> =C2=A0			continue;
-> =C2=A0		}
-> =C2=A0		if (exp->module =3D=3D mod) {
-> @@ -2257,6 +2269,20 @@ static void write_namespace_deps_files(const
-> char *fname)
-> =C2=A0	free(ns_deps_buf.p);
-> =C2=A0}
-> =C2=A0
-> +static void write_livepatch_modules(const char *fname)
-> +{
-> +	struct buffer buf =3D { };
-> +	struct module *mod;
-> +
-> +	list_for_each_entry(mod, &modules, list) {
-> +		if (mod->is_livepatch)
-> +			buf_printf(&buf, "%s.o\n", mod->name);
-> +	}
-> +
-> +	write_if_changed(&buf, fname);
-> +	free(buf.p);
-> +}
-> +
-> =C2=A0struct dump_list {
-> =C2=A0	struct list_head list;
-> =C2=A0	const char *file;
-> @@ -2268,11 +2294,12 @@ int main(int argc, char **argv)
-> =C2=A0	char *missing_namespace_deps =3D NULL;
-> =C2=A0	char *unused_exports_white_list =3D NULL;
-> =C2=A0	char *dump_write =3D NULL, *files_source =3D NULL;
-> +	char *livepatch_modules =3D NULL;
-> =C2=A0	int opt;
-> =C2=A0	LIST_HEAD(dump_lists);
-> =C2=A0	struct dump_list *dl, *dl2;
-> =C2=A0
-> -	while ((opt =3D getopt(argc, argv, "ei:mnT:to:au:WwENd:")) !=3D
-> -1) {
-> +	while ((opt =3D getopt(argc, argv, "ei:l:mnT:to:au:WwENd:"))
-> !=3D -1) {
-> =C2=A0		switch (opt) {
-> =C2=A0		case 'e':
-> =C2=A0			external_module =3D true;
-> @@ -2282,6 +2309,9 @@ int main(int argc, char **argv)
-> =C2=A0			dl->file =3D optarg;
-> =C2=A0			list_add_tail(&dl->list, &dump_lists);
-> =C2=A0			break;
-> +		case 'l':
-> +			livepatch_modules =3D optarg;
-> +			break;
-> =C2=A0		case 'm':
-> =C2=A0			modversions =3D true;
-> =C2=A0			break;
-> @@ -2361,6 +2391,8 @@ int main(int argc, char **argv)
-> =C2=A0
-> =C2=A0	if (dump_write)
-> =C2=A0		write_dump(dump_write);
-> +	if (livepatch_modules)
-> +		write_livepatch_modules(livepatch_modules);
-> =C2=A0	if (sec_mismatch_count && !sec_mismatch_warn_only)
-> =C2=A0		error("Section mismatches detected.\n"
-> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Set CONFIG_SECTION_MISMATCH_WARN_=
-ONLY=3Dy to
-> allow them.\n");
-> diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-> index dfdb9484e325..7cb8d604d739 100644
-> --- a/scripts/mod/modpost.h
-> +++ b/scripts/mod/modpost.h
-> @@ -98,6 +98,8 @@ static inline void __endian(const void *src, void
-> *dest, unsigned int size)
-> =C2=A0
-> =C2=A0#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-> =C2=A0
-> +#define KLP_SYM_RELA ".klp.sym.rela."
-> +
-> =C2=A0void *do_nofail(void *ptr, const char *expr);
-> =C2=A0
-> =C2=A0struct buffer {
-> @@ -119,6 +121,7 @@ struct module {
-> =C2=A0	bool is_gpl_compatible;
-> =C2=A0	bool from_dump;		/* true if module was loaded
-> from *.symvers */
-> =C2=A0	bool is_vmlinux;
-> +	bool is_livepatch;
-> =C2=A0	bool seen;
-> =C2=A0	bool has_init;
-> =C2=A0	bool has_cleanup;
+>  arch/arm64/boot/dts/ti/k3-am65-main.dtsi                     | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi                      | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi                   | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am65.dtsi                          | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am652.dtsi                         | 4 ++--
+>  .../dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso     | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am654-base-board.dts               | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso                  | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am654-idk.dtso                     | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi      | 5 ++++-
+>  arch/arm64/boot/dts/ti/k3-am654.dtsi                         | 4 ++--
+>  11 files changed, 24 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> index fcea54465636..e55a8c891bc9 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /*
+>   * Device Tree Source for AM6 SoC Family Main Domain peripherals
+>   *
+> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  #include <dt-bindings/phy/phy-am654-serdes.h>
+>  
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> index ecd7356f3315..6ff3ccc39fb4 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /*
+>   * Device Tree Source for AM6 SoC Family MCU Domain peripherals
+>   *
+> - * Copyright (C) 2016-2020 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  &cbass_mcu {
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+> index f037b36243ce..37527890ddea 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /*
+>   * Device Tree Source for AM6 SoC Family Wakeup Domain peripherals
+>   *
+> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  &cbass_wakeup {
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+> index 4d7b6155a76b..c59baebc5a25 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /*
+>   * Device Tree Source for AM6 SoC Family
+>   *
+> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+> diff --git a/arch/arm64/boot/dts/ti/k3-am652.dtsi b/arch/arm64/boot/dts/ti/k3-am652.dtsi
+> index 0f22e00faa90..cbb3caaf82c3 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am652.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am652.dtsi
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /*
+>   * Device Tree Source for AM65 SoC family in Dual core configuration
+>   *
+> - * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  #include "k3-am65.dtsi"
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso b/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
+> index 4209d991eb6b..364c57b3b3a0 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
+> @@ -1,10 +1,10 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /**
+>   * OLDI-LCD1EVM Rocktech integrated panel and touch DT overlay for AM654-EVM.
+>   * Panel Link: https://www.digimax.it/en/tft-lcd/20881-RK101II01D-CT
+>   * AM654 LCD EVM: https://www.ti.com/tool/TMDSLCD1EVM
+>   *
+> - * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  /dts-v1/;
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> index 822c288d2797..5109e1bf68d0 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> @@ -1,6 +1,6 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /*
+> - * Copyright (C) 2016-2020 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  /dts-v1/;
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> index ec8cf20ca3ac..0a6e75265ba9 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /**
+>   * DT overlay for IDK application board on AM654 EVM
+>   *
+> - * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2018-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  /dts-v1/;
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+> index 150428dfce6f..8bdb87fcbde0 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /**
+>   * DT overlay for IDK application board on AM654 EVM
+>   *
+> - * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2018-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  /dts-v1/;
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi b/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
+> index 9021c738056b..de5a2ed907a7 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
+> @@ -1,4 +1,7 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+> +/*
+> + * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+>  
+>  #include <dt-bindings/thermal/thermal.h>
+>  
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654.dtsi b/arch/arm64/boot/dts/ti/k3-am654.dtsi
+> index 888567b921f0..bb77c8454734 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am654.dtsi
+> @@ -1,8 +1,8 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>  /*
+>   * Device Tree Source for AM6 SoC family in Quad core configuration
+>   *
+> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
+> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  #include "k3-am65.dtsi"
+
+For the bits contributed by us:
+
+Acked-by: Jan Kiszka <jan.kiszka@siemens.com>
+
+Jan
+
+-- 
+Siemens AG, Technology
+Linux Expert Center
 
 
