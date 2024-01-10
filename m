@@ -1,150 +1,130 @@
-Return-Path: <linux-kernel+bounces-22251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE8E829B70
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:37:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66B7A829BAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:48:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1AFC1C2129D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:37:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08C23B26E54
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC12C4A9BA;
-	Wed, 10 Jan 2024 13:34:38 +0000 (UTC)
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A55E4A9A1;
+	Wed, 10 Jan 2024 13:47:58 +0000 (UTC)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C6048CD0
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dev.tdt.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dev.tdt.de
-Received: from [127.0.0.1] (helo=localhost)
-	by relay.expurgate.net with smtp (Exim 4.92)
-	(envelope-from <prvs=27534d3e5e=fe@dev.tdt.de>)
-	id 1rNYio-00FmwR-67; Wed, 10 Jan 2024 14:34:18 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-	by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <fe@dev.tdt.de>)
-	id 1rNYim-00BCNT-Ie; Wed, 10 Jan 2024 14:34:16 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-	by securemail.tdt.de (Postfix) with ESMTP id 2F006240049;
-	Wed, 10 Jan 2024 14:34:16 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-	by securemail.tdt.de (Postfix) with ESMTP id AB0BC240040;
-	Wed, 10 Jan 2024 14:34:15 +0100 (CET)
-Received: from localhost.localdomain (unknown [10.2.3.40])
-	by mail.dev.tdt.de (Postfix) with ESMTPSA id B211B3346A;
-	Wed, 10 Jan 2024 14:34:14 +0100 (CET)
-From: Florian Eckert <fe@dev.tdt.de>
-To: Eckert.Florian@googlemail.com,
-	lee@kernel.org
-Cc: sfr@canb.auug.org.au,
-	gregkh@linuxfoundation.org,
-	m.brock@vanmierlo.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] leds: update led-trigger-tty ABI documentation
-Date: Wed, 10 Jan 2024 14:34:10 +0100
-Message-ID: <20240110133410.81645-1-fe@dev.tdt.de>
-X-Mailer: git-send-email 2.30.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599C04A987;
+	Wed, 10 Jan 2024 13:47:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
+Received: from localhost ([80.140.206.200]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1Mr8SG-1qqzKS0cH0-00oBtt; Wed, 10 Jan 2024 14:34:22 +0100
+Date: Wed, 10 Jan 2024 14:34:19 +0100
+From: Christian Heusel <christian@heusel.eu>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Markus Elfring <Markus.Elfring@web.de>, 
+	linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+Subject: Re: Re: [0/2] ARM: Adjustments for init_atags_procfs()
+Message-ID: <vltzbtbcuzrfgjoeg5oovdyoe34fnhte25uhb3gln56pzvmqzb@5u7u7cwgzzen>
+References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
+ <562a6f99-3f8e-9a77-e519-b668e24dced2@web.de>
+ <b3c42397-c879-4381-aa96-c7887e81c068@web.de>
+ <7dd19987-6590-4756-a929-1ff01503ad1c@web.de>
+ <ZZ6MZl14bcIaCaQn@shell.armlinux.org.uk>
+ <1c38e495-5c9c-4ff8-b453-93b882dd2c4c@web.de>
+ <ZZ6R6KSQo9ph3ARZ@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5omxkbyuztlvommc"
+Content-Disposition: inline
+In-Reply-To: <ZZ6R6KSQo9ph3ARZ@shell.armlinux.org.uk>
+X-Provags-ID: V03:K1:742zGJqrsTcPdmXqkg5IqwvNg66u0oPuuKZ7EwzpxdRtA0kmo/O
+ xV4QlMlgrEVflGmBPdhFlHJ1h90Uhm8SV3lXRYxkcFkrN1M+KYfSlJm6J6VW3gTbbIko/9p
+ /zuscFVts6U8n4rkKOe6yA4jZGbZ8/2LCjVEUsC6QTanRqfjmuOOEcVbj4pqLbXYCWSQGvl
+ RvpgSS1x28Ttf6e5kcvPA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:c0YYenV97Ok=;Po7rqHU4Q9YlYXi+PgjTKPwGXj2
+ DX+It2d+/TnXFrXHCytyr+K6YNwrVTXpwZNClK9HkH7JFqL5dA1IBDsGMPlPC2UoghDiZPhpL
+ t2QMYnuoV/F0Jet2HAlN6R+PO7fsrr0KlZ7xl2mfsladOT+drtZwMgGA5y5a6oAU5tYx69rj4
+ ioiY1vZLgmk67MafWHNJp20Hx+rp13IQNnZd1Nko+MSLDclaPpsWVaSEkSMLMovrtyj51Oe6D
+ tCENXRBe7198T0yh1AWj8kV7g8lBElfaynGOgbTuHB/T/fG0LMQq9s6K9jTge7ZZPsO4q0vMZ
+ yV22R2DNYC7FlKkfCwyfftmDY/gYgaaotkhPVFCUJ7AwjfMfT/PPgM9wDCJqOP+vV5XTEeWYy
+ xyBcqPj8HmBGgN/KXrMjK1smJFsIcZGADYg2E5pymc5o+QN7RmUAbY5SyWzHC3ezY8k7Bfhfg
+ X0FLpI8Bk8hTlyfFNvg2WoiVRYCfAqtQk5imBbNp/tbPCA9eROSpGZWwCuBIH6PW3XAHBzyIN
+ nXNWgXHOtq+Pp6b+Tw2aLTHCxJK5Wh4IAjgmm+Shw+9gDd7TA9EqGpTJfGIcHSxBUhfDt2s1W
+ y6uVfVGC2o+ip+Z3NsjbxRkat6tc6u/IsGHwRn6E52Lqq4ZkVuyDlA5r3iKq5NDFpo0cR7hd0
+ Q/B82tmvSe+lhJHhM9Fh681/K+MB5fHogTje9SNs3xvzT5FghZtiDapWf3c/gL10ha7EA50Cp
+ dqj1usnUGu9FuodDqN74lqlGnqB1z7dB4mjmHoLxpEzrYOyPhoZf3JoqMy+7HQLZBylyWo6Mi
+ tt5Akf9sZot70CNI9t7vOY8OY+Uu2nVir9VP1YrcBv3sm7sQ4d3awOi321FivkjRuxt4uHiXV
+ 1xnUBOFkQloi/9w==
+
+
+--5omxkbyuztlvommc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-purgate-ID: 151534::1704893657-A678E464-7890D8E2/0/0
-X-purgate-type: clean
-X-purgate: clean
 
-The 'led-trigger-tty' uses the same naming in the ABI documentation as
-the 'led-trigger-netdev'. Which leads to the following warning when
-building the documentation.
+On 24/01/10 12:47PM, Russell King (Oracle) wrote:
+> On Wed, Jan 10, 2024 at 01:44:01PM +0100, Markus Elfring wrote:
+> > >>> Is this patch series still in review queues?
+> > >>
+> > >> See also:
+> > >> https://lore.kernel.org/cocci/562a6f99-3f8e-9a77-e519-b668e24dced2@w=
+eb.de/
+> > >> https://sympa.inria.fr/sympa/arc/cocci/2023-03/msg00098.html
+> > >
+> > > I suspect no one looked at it, sorry.
+> >=20
+> > Special mailing list settings probably influenced this situation.
+> >=20
+> > >                                       I don't catch everything that is
+> > > on the mailing list. Looks fine to me but it needs to end up in the
+> > > patch system to be applied.
+> >=20
+> > Can you collaborate also with mentioned mailing list archive interfaces?
+>=20
+> Err what? Sorry, I don't understand your comment.
 
-Warning: /sys/class/leds/<led>/rx is defined 2 times:
-Documentation/ABI/testing/sysfs-class-led-trigger-tty:7
-Documentation/ABI/testing/sysfs-class-led-trigger-netdev:49
-Warning: /sys/class/leds/<led>/tx is defined 2 times:
-Documentation/ABI/testing/sysfs-class-led-trigger-tty:15
-Documentation/ABI/testing/sysfs-class-led-trigger-netdev:34
+I am just generally following along here, but to give some context it
+seems like Markus is banned from posting to various kernel mailing
+lists[0][1][2].
 
-Renaming the 'What' path by prefixing it with 'tty_' solves this problem.
+Cheers,
+Chris
 
-Fixes: 6dec659896b4 ("leds: ledtrig-tty: Add additional line state evalua=
-tion")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Florian Eckert <fe@dev.tdt.de>
----
- .../ABI/testing/sysfs-class-led-trigger-tty        | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+[0]: https://lkml.org/lkml/2023/6/19/38
+[1]: https://lore.kernel.org/lkml/CAHC9VhREfdgiCji=3DuEeCrc4w1kPGfnWGKnJuUY=
+KXwTApdneSjQ@mail.gmail.com/T/#m1a55ecc3205045fe63ab0f12451705df911d31a0
+[2]: https://lore.kernel.org/all/20200629081039.GA1221843@kroah.com/
 
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty b/Docu=
-mentation/ABI/testing/sysfs-class-led-trigger-tty
-index 30cef9ac0f49..308fbc3627cd 100644
---- a/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-@@ -1,11 +1,11 @@
--What:		/sys/class/leds/<led>/ttyname
-+What:		/sys/class/leds/<tty_led>/ttyname
- Date:		Dec 2020
- KernelVersion:	5.10
- Contact:	linux-leds@vger.kernel.org
- Description:
- 		Specifies the tty device name of the triggering tty
-=20
--What:		/sys/class/leds/<led>/rx
-+What:		/sys/class/leds/<tty_led>/rx
- Date:		February 2024
- KernelVersion:	6.8
- Description:
-@@ -13,7 +13,7 @@ Description:
- 		If set to 0, the LED will not blink on reception.
- 		If set to 1 (default), the LED will blink on reception.
-=20
--What:		/sys/class/leds/<led>/tx
-+What:		/sys/class/leds/<tty_led>/tx
- Date:		February 2024
- KernelVersion:	6.8
- Description:
-@@ -21,7 +21,7 @@ Description:
- 		If set to 0, the LED will not blink on transmission.
- 		If set to 1 (default), the LED will blink on transmission.
-=20
--What:		/sys/class/leds/<led>/cts
-+What:		/sys/class/leds/<tty_led>/cts
- Date:		February 2024
- KernelVersion:	6.8
- Description:
-@@ -31,7 +31,7 @@ Description:
- 		If set to 0 (default), the LED will not evaluate CTS.
- 		If set to 1, the LED will evaluate CTS.
-=20
--What:		/sys/class/leds/<led>/dsr
-+What:		/sys/class/leds/<tty_led>/dsr
- Date:		February 2024
- KernelVersion:	6.8
- Description:
-@@ -41,7 +41,7 @@ Description:
- 		If set to 0 (default), the LED will not evaluate DSR.
- 		If set to 1, the LED will evaluate DSR.
-=20
--What:		/sys/class/leds/<led>/dcd
-+What:		/sys/class/leds/<tty_led>/dcd
- Date:		February 2024
- KernelVersion:	6.8
- Description:
-@@ -51,7 +51,7 @@ Description:
- 		If set to 0 (default), the LED will not evaluate CAR (DCD).
- 		If set to 1, the LED will evaluate CAR (DCD).
-=20
--What:		/sys/class/leds/<led>/rng
-+What:		/sys/class/leds/<tty_led>/rng
- Date:		February 2024
- KernelVersion:	6.8
- Description:
---=20
-2.30.2
+--5omxkbyuztlvommc
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEb3ea3iR6a4oPcswTwEfU8yi1JYUFAmWenNsACgkQwEfU8yi1
+JYV+IRAAqZtbPL/0aDr8ZwGVzBNCdqRCpqhLKHVKyD/NWSlxf+qKZrcY2KsFpU2M
+Ino+YfJaDWdztG9kAgrR3Vp+XZ5W2739lQE6x+aXcqbbi/aY9f780Yg0Ne5HOWMI
+dXFxS08wOkqjBYVJjwgyF7QKO7Wv0REDd/Zo8Wm+YblnOaI0AX/HgrrAZUPuUCjV
+XGPfHOt5KH3gDVo499SomDlke1gFdL65P2zFjxUNjAvOtHxJT3OBGRSV5lCwEqK7
+akFzh02n2zZM14v4H7WOqShsnTPTr1eUa0z2LV7P43xlMzWkB2MvfwFCbOQm0UGI
+DmG9Lpc3jdrgBt/rUgvATwbI2iTV4BgT+JxPhYtnXlps0tOs4S+iPMLYQi1xtZxY
+m6ZGbQbWl+cNtpOPgUYiF3gCt0e4Fz6eMEWwUtcFWTVjL98vvH3HWXZVtcMj0Dff
+KY2d6FTqe5eLCDNH7XmAtGUXJjH08QTrcbHZjqNTqp5t7pnpal9bxHG0dOl7ohTm
+r73AgAIr3noT0QYujzHT3ddv+1d7wl5zDtXsO0fi+v8iQ3N8CewtK5fCblcppkoi
+Aauh5otlMsgmWSPhFHkML3ZedsE4UlYVE0D5ZMMFKaZc0gyWnotEdeOXGU2KbwLm
+1oDS0k6LzcxZB7414DzhAoz6uHVX6VfJwPVlgZkV4rxbtz6azus=
+=Xpvc
+-----END PGP SIGNATURE-----
+
+--5omxkbyuztlvommc--
 
