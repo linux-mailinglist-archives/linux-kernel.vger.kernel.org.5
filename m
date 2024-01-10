@@ -1,163 +1,155 @@
-Return-Path: <linux-kernel+bounces-22228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2C0E829B2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:24:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 701F4829B2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 671611C2191C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:24:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17E172893DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDF148CC8;
-	Wed, 10 Jan 2024 13:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37B3487BF;
+	Wed, 10 Jan 2024 13:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GlibfMCg"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=fooishbar-org.20230601.gappssmtp.com header.i=@fooishbar-org.20230601.gappssmtp.com header.b="ex5xt/dz"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92703FB3A
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-555144cd330so5179941a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:24:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295ED3FB3A
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:26:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fooishbar.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fooishbar.org
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-67f9f6caabcso29621756d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:26:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704893069; x=1705497869; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KvHaK1RgalUg8ozCmF576A/qDpgZcPnqAvpVNUNT6sA=;
-        b=GlibfMCg0ba+sOvFuTdb09zn4e+nODYnbJggcjwVtVcaLPDZS9mldog2DoUgodGyRy
-         P6qSrywpHmHjsj5XGdNF/2eMIzZdxCRSi+znQj+Cpqk7RHupkejDynbOzfOUFh3AAlGe
-         lFEvLtD4fPBYOYuMAMfc7cDY2PPXefz5Qdc+0JP4hW9Vu01YrCmL4jnOxOEYJ2GT3M3I
-         EB0FcInGdORjulHJE3kC9j9f466Z/QdN4dN1wY0iII2lZYAqj0FYO8lZZhWpQH9FzTXy
-         lpTWfFOsrmVHoPBC428PP1X9oHD8NF5eysdJw+Z3Ots9s/GR6IDKamxEhpryUQcRCe1N
-         qxAg==
+        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1704893219; x=1705498019; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wuoo03iviwWHkadCNQ9VBPxTicDGZj9k5/ZvAak2Qbc=;
+        b=ex5xt/dz232KyKLRhd4TxvgnZLLpEsAXxuj/8d476ESLx4CCGBCf+9c//2/0d2af4K
+         hqx0UBlzfCF+3JOiQfZpVN0SgIoiB47Z/pemFRpc7d+6cIFxgSWX0q4eV+Nnf5EVHFcl
+         FtbLiZBo91yGILxOX5/e3FzeX4GYDNQaGR+lc3j937xcHJLjv7MqpG+A9GlxWYza6wvV
+         dRxm3Oi5KJ5zLQ/iAmZZWzB8IeTh0uwbGAfTS32ifTE3eriF5urYkdehLLM2iOGW9+n0
+         JwjMuy8MiIoTpBttS8ygte0f10nvpZK6wMp/Q0CoVKnV7lLRuRd4lPlq217HBQyQQUFi
+         QgWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704893069; x=1705497869;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KvHaK1RgalUg8ozCmF576A/qDpgZcPnqAvpVNUNT6sA=;
-        b=aVE+Zf0m4ze1QS0K/WKF/ygRupHDHO5NU1ZhFHZQ1gUDOvI/aHX/WyxBLO49RJ6jMA
-         nNpqTPZt5STxupZ43D9qeH5NUujHOOpZ1fKzJ76M0Id7bU3+Gyc2DMmwd8wdORErzRea
-         y4wyolV3CgW/I/UWz4FiC7WxSL3Lwhx+alpMyQyAxEksohTuW857JLYH6oJ07gd0pRA/
-         kOpb1CcsKLOvUXeSlYQgndwj0wCR6/VibEaDsl43MqYYhKXVyq/8+s34vzulko7yc+EW
-         ymUkLDdfEkMtTS6SeVfKyTGds2hgirXkWPhUe3ki5q8UkaCYPMZYK/Jan9x5WsmhyWNe
-         5Amg==
-X-Gm-Message-State: AOJu0YzacAYt4fD4j9Uv+ilA40YBBkDMFsBX12B/OmApLbwTAnnXoN0u
-	3JCXPCVTXWX8C2iQXXN0IrS1N3B93JSsPg==
-X-Google-Smtp-Source: AGHT+IHa+zH5OhZRd/yBx9txTf6yHZf8rdV0FDqWpqtvfPG2A3P72VGDePiXto43shC8jaREtpMtxA==
-X-Received: by 2002:a17:906:1686:b0:a23:4faa:d4e9 with SMTP id s6-20020a170906168600b00a234faad4e9mr640831ejd.21.1704893068967;
-        Wed, 10 Jan 2024 05:24:28 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id i25-20020a170906265900b00a27c463fbdesm2091211ejc.211.2024.01.10.05.24.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 05:24:28 -0800 (PST)
-Message-ID: <445daac6-841a-4335-9b53-689e5bd2530c@linaro.org>
-Date: Wed, 10 Jan 2024 14:24:26 +0100
+        d=1e100.net; s=20230601; t=1704893219; x=1705498019;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wuoo03iviwWHkadCNQ9VBPxTicDGZj9k5/ZvAak2Qbc=;
+        b=Em8hbeaJ+xCvU/Z8D1kz1SPQFUoptwb6IwAM0rnGgBMSZbj/1ncHrpDDz8e3rDPV49
+         G1BMqp9rdFC7sYZ/PGvc3RjWkwqW9AxTtw4VRFNwkiitZUKdx3PvWOKTdXIx9+Fvq9CB
+         8Mh0fNJ/o6j9lzE5bP+ekWPb/dTALYUCN/AtGIVkdcY7+FlddEb5ZFCROl+yB7q8wfii
+         l0z32iR9js+adhOipHEU3Rnk5BvK29g6S8aCf4KlD2Npvh5gSQNxXCdr4jBCDEa9MN//
+         T384j9xLseOkMR0qzUZWu3BW7uvZlKsUQZpWM5icYZbpn3oJWrV3umWEjWd5f3RDiCQc
+         x88g==
+X-Gm-Message-State: AOJu0YxeHJdZAYpRAPHeNPXp9txeRCGJAxYa74y4mDK/BCzhp16V/OG2
+	7DlzCf8/u/MYC63yz0pLqm/75kByL2x7Xum1uA1/Lv4CZaWj0g==
+X-Google-Smtp-Source: AGHT+IGdIXuMwkWII7EUXBHcbytK3jAqcLwzlJCM9W48o+05Ly6ZHA8R+Kz3tpJUp7CvP/x73Q5f0ChjbDvYlVh7+7A=
+X-Received: by 2002:a05:6214:1630:b0:680:f8b7:44fe with SMTP id
+ e16-20020a056214163000b00680f8b744femr985896qvw.13.1704893218734; Wed, 10 Jan
+ 2024 05:26:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: dt-bindings: dai-common: Narrow possible
- sound-dai-cells
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240109213812.558492-1-krzysztof.kozlowski@linaro.org>
- <1ja5pdzb7k.fsf@starbuckisacylon.baylibre.com>
- <7e312b05-857f-40a6-a1a1-a954dfea7044@sirena.org.uk>
- <f9f5df54-dbeb-4246-b30f-52f3db7d94b3@linaro.org>
- <3b1b956b-985c-45f2-bda3-018aaf897295@sirena.org.uk>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <3b1b956b-985c-45f2-bda3-018aaf897295@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240109181104.1670304-1-andri@yngvason.is> <20240109181104.1670304-3-andri@yngvason.is>
+ <CAPj87rNan8B5urDFkmD_Vti4to6p3NmvXYsTFQTNg-Ue2ieDug@mail.gmail.com>
+ <CAFNQBQwiqqSRqzXAnC035UWCGF3=GGFR5SpDd=biPTOEA+cWbQ@mail.gmail.com> <ZZ509L_kmVC4IUBW@phenom.ffwll.local>
+In-Reply-To: <ZZ509L_kmVC4IUBW@phenom.ffwll.local>
+From: Daniel Stone <daniel@fooishbar.org>
+Date: Wed, 10 Jan 2024 13:26:46 +0000
+Message-ID: <CAPj87rOiS8F=oDW3iE=bgFyfeJnYhy8kPF2v-uYOq3xgYtVPAg@mail.gmail.com>
+Subject: Re: [PATCH 2/7] drm/uAPI: Add "active color format" drm property as
+ feedback for userspace
+To: Andri Yngvason <andri@yngvason.is>, Harry Wentland <harry.wentland@amd.com>, 
+	Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, 
+	Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	intel-gfx@lists.freedesktop.org, Simon Ser <contact@emersion.fr>, 
+	Werner Sembach <wse@tuxedocomputers.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/01/2024 13:57, Mark Brown wrote:
-> On Wed, Jan 10, 2024 at 01:51:03PM +0100, Krzysztof Kozlowski wrote:
->> On 10/01/2024 12:37, Mark Brown wrote:
->>> On Wed, Jan 10, 2024 at 12:07:30PM +0100, Jerome Brunet wrote:
-> 
->>>> If restricting things here is really important, defaulting to 0 (with a
->>>> comment explaining it) and letting actual devices then override the
->>>> value would feel less 'made up'
-> 
->> Wait, what do you mean by "letting actual devices then override"? It's
->> already like this. Nothing changed. What do you refer to?
-> 
-> The suggestion is that instead of limiting to 1 and having one device
+Hi,
 
-Nothing limits here to 0. I limit from all technically possible values
-to reasonable subset.
+On Wed, 10 Jan 2024 at 10:44, Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Tue, Jan 09, 2024 at 11:12:11PM +0000, Andri Yngvason wrote:
+> > =C5=A3ri., 9. jan. 2024 kl. 22:32 skrifa=C4=91i Daniel Stone <daniel@fo=
+oishbar.org>:
+> > > How does userspace determine what's happened without polling? Will it
+> > > only change after an `ALLOW_MODESET` commit, and be guaranteed to be
+> > > updated after the commit has completed and the event being sent?
+> > > Should it send a HOTPLUG event? Other?
+> > >
+> >
+> > Userspace does not determine what's happened without polling. The purpo=
+se
+> > of this property is not for programmatic verification that the preferre=
+d
+> > property was applied. It is my understanding that it's mostly intended =
+for
+> > debugging purposes. It should only change as a consequence of modesetti=
+ng,
+> > although I didn't actually look into what happens if you set the "prefe=
+rred
+> > color format" outside of a modeset.
+>
+> This feels a bit irky to me, since we don't have any synchronization and
+> it kinda breaks how userspace gets to know about stuff.
+>
+> For context the current immutable properties are all stuff that's derived
+> from the sink (like edid, or things like that). Userspace is guaranteed t=
+o
+> get a hotplug event (minus driver bugs as usual) if any of these change,
+> and we've added infrastructure so that the hotplug event even contains th=
+e
+> specific property so that userspace can avoid re-read (which can cause
+> some costly re-probing) them all.
 
-> override limit to 0 and have all the devices that need 1 override as
-> well.
+Right.
 
-I don't think that actual default value for this should be provided.
-This should be conscious choice when writing bindings and driver.
-Similarly we do already for some other #cells:
-#io-channel-cells, address/size-cells (dtschema), #mux-control-cells and
-others.
+> [...]
+>
+> This thing here works entirely differently, and I think we need somewhat
+> new semantics for this:
+>
+> - I agree it should be read-only for userspace, so immutable sounds right=
+.
+>
+> - But I also agree with Daniel Stone that this should be tied more
+>   directly to the modeset state.
+>
+> So I think the better approach would be to put the output type into
+> drm_connector_state, require that drivers compute it in their
+> ->atomic_check code (which in the future would allow us to report it out
+> for TEST_ONLY commits too), and so guarantee that the value is updated
+> right after the kms ioctl returns (and not somewhen later for non-blockin=
+g
+> commits).
 
-I agree we do not restrict all of them, though. However I do not see
-single reason to allow developers use 3 as #sound-dai-cells.
+That's exactly the point. Whether userspace gets an explicit
+notification or it has to 'know' when to read isn't much of an issue -
+just as long as it's well defined. I think the suggestion of 'do it in
+atomic_check and then it's guaranteed to be readable when the commit
+completes' is a good one.
 
-Best regards,
-Krzysztof
+I do still have some reservations - for instance, why do we have the
+fallback to auto when userspace has explicitly requested a certain
+type? - but they may have been covered previously.
 
+Cheers,
+Daniel
 
