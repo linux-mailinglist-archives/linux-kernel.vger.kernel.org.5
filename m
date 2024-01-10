@@ -1,112 +1,97 @@
-Return-Path: <linux-kernel+bounces-22348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBE46829C72
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:22:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65753829C7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 15:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88EF7281374
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:22:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C3591C20F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564284A9AA;
-	Wed, 10 Jan 2024 14:22:15 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5DC4B5A1;
+	Wed, 10 Jan 2024 14:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="D5B/bia0"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC824B5A1;
-	Wed, 10 Jan 2024 14:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T990f3nsfz6K977;
-	Wed, 10 Jan 2024 22:19:30 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 78450140B38;
-	Wed, 10 Jan 2024 22:22:06 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 10 Jan
- 2024 14:22:05 +0000
-Date: Wed, 10 Jan 2024 14:22:05 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Dan Williams <dan.j.williams@intel.com>
-CC: Ira Weiny <ira.weiny@intel.com>, Smita Koralahalli
-	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr Bueso" <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>, "Alison Schofield"
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Ard
- Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
-Subject: Re: [PATCH v5 4/9] cxl/events: Remove passing a UUID to known event
- traces
-Message-ID: <20240110142205.0000164e@Huawei.com>
-In-Reply-To: <659dd8f467dbe_5cee29456@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
-	<20231220-cxl-cper-v5-4-1bb8a4ca2c7a@intel.com>
-	<20240108132325.00000e9c@Huawei.com>
-	<659dd8f467dbe_5cee29456@dwillia2-xfh.jf.intel.com.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F3E4A99C;
+	Wed, 10 Jan 2024 14:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704896714;
+	bh=vwOsYK81Kz7ekPSjYz//FcETzOWODCjxJchEEfAb39s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=D5B/bia0HVVwkZiV0SO4gzRNmHqonfK01qPchiAJpbfX5nI7JJQ2tgcRNDUrM/Pu1
+	 wI2R0GxMa3nTsiPNsLq5dej97eMn+I9kcFXWTLHm76Rdmftx5E3BGVm74V5aha/+50
+	 AvmIL7SjElDBUEitXy4RYk3t4Bn0W1y5T5I2gdUFnQZkvCYNtoDA9fAnQnHwGRmO8m
+	 lRl3FSYNYRzHpVcofQRSgoYrYpJmP/pvlAToPIDaEeUZG80EgFeHX+lqVGoN4TlsiE
+	 ZceLgY4fZxZCdA166gNLRIKjECmYdTiEh9H3R3kHnAIiaWPebjTu8xYV7zkeNESp6d
+	 kenMdZhU4HUug==
+Received: from localhost.localdomain (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D94AE378045F;
+	Wed, 10 Jan 2024 14:25:08 +0000 (UTC)
+From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>
+To: Viresh Kumar <viresh.kumar@linaro.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>
+Cc: kernel@collabora.com,
+	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"Hector.Yuan" <hector.yuan@mediatek.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	linux-pm@vger.kernel.org
+Subject: [PATCH v2 0/2] Fixes for hang on MT8195-Tomato during mediatek-cpufreq-hw init
+Date: Wed, 10 Jan 2024 11:23:00 -0300
+Message-ID: <20240110142305.755367-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 9 Jan 2024 15:38:28 -0800
-Dan Williams <dan.j.williams@intel.com> wrote:
 
-> Jonathan Cameron wrote:
-> > On Wed, 20 Dec 2023 16:17:31 -0800
-> > Ira Weiny <ira.weiny@intel.com> wrote:
-> >   
-> > > The UUID data is redundant in the known event trace types.  The addition
-> > > of static defines allows the trace macros to create the UUID data inside
-> > > the trace thus removing unnecessary code.
-> > > 
-> > > Have well known trace events use static data to set the uuid field based
-> > > on the event type.
-> > > 
-> > > Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > >   
-> >   
-> > >  	TP_STRUCT__entry(
-> > >  		CXL_EVT_TP_entry
-> > > @@ -422,7 +424,8 @@ TRACE_EVENT(cxl_dram,
-> > >  	),
-> > >  
-> > >  	TP_fast_assign(
-> > > -		CXL_EVT_TP_fast_assign(cxlmd, log, uuid, rec->hdr);
-> > > +		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
-> > > +		memcpy(&__entry->hdr_uuid, &CXL_EVENT_DRAM_UUID, sizeof(uuid_t));  
-> > 
-> > Hmm. Why not
-> > 
-> > 		__entry->hdr_uuid = CXL_EVENT_DRAM_UUID;
-> > ?
-> > 
-> > Compiler should be able to squish the stuff in the define down to data as as the
-> > UUID generation logic is pretty simple.
-> > 
-> > I've not emulated the cper records for these yet, so not tested that works beyond
-> > compiling.  
-> 
-> We can follow on with this conversion later as I see other usage of uuid
-> copying in trace events (bcache for instance). Although I probably would
-> not replace it with straight assignment and instead use the uuid_copy()
-> helper. Otherwise, why do {uuid,guid}_copy() helpers exist?
+These two patches fix an issue observed on MT8195-Tomato where if the
+mediatek-cpufreq-hw driver enabled the hardware (by writing to
+REG_FREQ_ENABLE) before the SPMI controller driver (spmi-mtk-pmif),
+behind which lies the big CPU supply, probed the platform would hang
+shortly after with "rcu: INFO: rcu_preempt detected stalls on
+CPUs/tasks" being printed in the log.
 
-To copy unknown uuids and guids where the compiler can't optimize things
-nearly as well because it can't see the values. 
+Changes in v2:
+- Moved supply phandles to CPU nodes in DT
+- Added fixes tags
+- Added patch to verify CPU supplies are available before proceeding in
+  the mediatek-cpufreq-hw driver
 
-Jonathan
+Nícolas F. R. A. Prado (2):
+  arm64: dts: mediatek: cherry: Describe CPU supplies
+  cpufreq: mediatek-hw: Wait for CPU supplies before probing
+
+ .../boot/dts/mediatek/mt8195-cherry.dtsi      | 32 +++++++++++++++++++
+ drivers/cpufreq/mediatek-cpufreq-hw.c         | 19 ++++++++++-
+ 2 files changed, 50 insertions(+), 1 deletion(-)
+
+-- 
+2.43.0
 
 
