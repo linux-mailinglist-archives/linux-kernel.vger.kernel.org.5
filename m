@@ -1,151 +1,217 @@
-Return-Path: <linux-kernel+bounces-21998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B55398297AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:31:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A7AE8297AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:33:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36DF328CDEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:31:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C13CFB263AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131FF3FE56;
-	Wed, 10 Jan 2024 10:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4BA3FE42;
+	Wed, 10 Jan 2024 10:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Y1nyBdKO"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ckOO/5A0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ckOO/5A0"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208183C49D;
-	Wed, 10 Jan 2024 10:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40A8d37s021096;
-	Wed, 10 Jan 2024 10:31:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=BOuDR4vqdlLrDwTrZywpOXtBP0nMFyGMe6C1dwrW9lM=; b=Y1
-	nyBdKOB708B5KRgO4tJwiZ46XiN0fs/Rm/lqKQIkFuQGYC2jqlq5OaZAmb7is325
-	NJuNBUHx3pa1lgmmBfDwIVMt+Eql7OeEk+euXXDW8IiLxkOoqBdg4LoLRi0AUWUN
-	m7s/7aXoLM6CsfzmcSEcL4CQIhWZM7JoDBpQ7e1orczGCs3L2U5iqzIj8F0kVmK7
-	lltJ8dPb71pZBK6JXlBS5A2RSo6BBnEcqpapUU2NhjmtYqSytszL+ZmXtHfqoxVs
-	IlVLtrNzvEwDHwX2K9y/avNL4iIFQCYzMSwzcFu4xtZac/lHu+4cYrp9iPyokgpj
-	oTyZdE9h8cbq8tyYz2tQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhjh2rusg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 10:31:18 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40AAVHv4020107
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 10:31:17 GMT
-Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 02:31:10 -0800
-Message-ID: <a242202d-c576-05e8-8726-91dfdbe10e7b@quicinc.com>
-Date: Wed, 10 Jan 2024 16:01:06 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB5341205;
+	Wed, 10 Jan 2024 10:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AC8292206D;
+	Wed, 10 Jan 2024 10:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704882779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BXR7PBJo/0k7RMlA2liuV9sILDH8IFvToNJCRDJt55E=;
+	b=ckOO/5A0SO7+ciUHsiXzgEYJhcMrLorPd+ohuWjdgh6e5IE3uzah0+OYHvQkFui0OujWpM
+	R0pDPwN/bAwf06163wv+Wa9IkgzoOddCg0ZwgoP0PMVo0r1+1ULorGEhKCqZmbXZNHsN6j
+	7nq1V338IJfg07YIrCOh5FbK+7/omjc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704882779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BXR7PBJo/0k7RMlA2liuV9sILDH8IFvToNJCRDJt55E=;
+	b=ckOO/5A0SO7+ciUHsiXzgEYJhcMrLorPd+ohuWjdgh6e5IE3uzah0+OYHvQkFui0OujWpM
+	R0pDPwN/bAwf06163wv+Wa9IkgzoOddCg0ZwgoP0PMVo0r1+1ULorGEhKCqZmbXZNHsN6j
+	7nq1V338IJfg07YIrCOh5FbK+7/omjc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7FEB113CB3;
+	Wed, 10 Jan 2024 10:32:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TxhKHFtynmUkewAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 10 Jan 2024 10:32:59 +0000
+Date: Wed, 10 Jan 2024 11:32:58 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Yu Zhao <yuzhao@google.com>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>,
+	David Rientjes <rientjes@google.com>, Chris Li <chrisl@kernel.org>,
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZZ5yWriL-T59Bcu_@tiehlicka>
+References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+ <20240103164841.2800183-3-schatzberg.dan@gmail.com>
+ <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
+ <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN>
+ <ZZYE36e0BFFzi0X3@google.com>
+ <ZZZw5NSEFNYwbjZM@tiehlicka>
+ <CAOUHufbEuAWwz-51tq6OB7SPJ8W3UJ9Roq2-yXesWAbmzstdKw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 1/3] clk: qcom: gcc-sm8150: Register QUPv3 RCGs for DFS on
- SM8150
-Content-Language: en-US
-To: Stephen Boyd <sboyd@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Deepak Katragadda
-	<dkatraga@codeaurora.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Michael Turquette
-	<mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, Taniya Das
-	<quic_tdas@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Ajit Pandey
-	<quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>
-References: <20240104-sm8150-dfs-support-v1-0-a5eebfdc1b12@quicinc.com>
- <20240104-sm8150-dfs-support-v1-1-a5eebfdc1b12@quicinc.com>
- <988ae72846dc680382f98b63b61a8c32.sboyd@kernel.org>
-From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <988ae72846dc680382f98b63b61a8c32.sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: mYmE384YEGN7sGTWGTAr9sk-pnczqoW2
-X-Proofpoint-GUID: mYmE384YEGN7sGTWGTAr9sk-pnczqoW2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 priorityscore=1501 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100085
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOUHufbEuAWwz-51tq6OB7SPJ8W3UJ9Roq2-yXesWAbmzstdKw@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: **********
+X-Spam-Score: 10.30
+X-Spamd-Result: default: False [10.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 RCPT_COUNT_TWELVE(0.00)[21];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,vger.kernel.org,kvack.org,google.com,kernel.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,redhat.com,infradead.org,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
+On Tue 09-01-24 16:54:15, Yu Zhao wrote:
+> On Thu, Jan 4, 2024 at 1:48 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 03-01-24 18:07:43, Yu Zhao wrote:
+> > > On Wed, Jan 03, 2024 at 01:19:59PM -0500, Dan Schatzberg wrote:
+> > > > On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
+> > > > [...]
+> > > > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > > > > index d91963e2d47f..394e0dd46b2e 100644
+> > > > > > --- a/mm/vmscan.c
+> > > > > > +++ b/mm/vmscan.c
+> > > > > > @@ -92,6 +92,11 @@ struct scan_control {
+> > > > > >         unsigned long   anon_cost;
+> > > > > >         unsigned long   file_cost;
+> > > > > >
+> > > > > > +#ifdef CONFIG_MEMCG
+> > > > > > +       /* Swappiness value for proactive reclaim. Always use sc_swappiness()! */
+> > > > > > +       int *proactive_swappiness;
+> > > > > > +#endif
+> > > > >
+> > > > > Why is proactive_swappiness still a pointer? The whole point of the
+> > > > > previous conversation is that sc->proactive can tell whether
+> > > > > sc->swappiness is valid or not, and that's less awkward than using a
+> > > > > pointer.
+> > > >
+> > > > It's the same reason as before - zero initialization ensures that the
+> > > > pointer is NULL which tells us if it's valid or not. Proactive reclaim
+> > > > might not set swappiness and you need to distinguish swappiness of 0
+> > > > and not-set. See this discussion with Michal:
+> > > >
+> > > > https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
+> > >
+> > >  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> > >                               size_t nbytes, loff_t off)
+> > >  {
+> > >         struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+> > >         unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+> > >         unsigned long nr_to_reclaim, nr_reclaimed = 0;
+> > > +       int swappiness = -1;
+> > > ...
+> > >                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> > >                                         min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> > > -                                       GFP_KERNEL, reclaim_options);
+> > > +                                       GFP_KERNEL, reclaim_options,
+> > > +                                       swappiness);
+> > >
+> > > ...
+> > >
+> > > +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
+> > > +{
+> > > +       return sc->proactive && sc->proactive_swappiness > -1 ?
+> > > +              sc->proactive_swappiness : mem_cgroup_swappiness(memcg);
+> > > +}
+> >
+> > Tpo be completely honest I really fail to see why this is such a hot
+> > discussion point. To be completely clear both approaches are feasible.
+> 
+> Feasible but not equal.
+> 
+> > The main argument for NULL check based approach is that it is less error
+> > prone from an incorrect ussage because any bug becomes obvious.
+> 
+> Any bug becomes *fatal*, and fatal isn't only obvious but also hurts
+> in production systems.
+> 
+> This was the reason for going through the trouble switching from
+> VM_BUG_ON() to VM_WARN_ON() and documenting it in
+> Documentation/process/coding-style.rst:
+> 
+> 22) Do not crash the kernel
+> ---------------------------
+> 
+> In general, the decision to crash the kernel belongs to the user, rather
+> than to the kernel developer.
+> 
+> Isn't?
 
-On 1/5/2024 3:06 AM, Stephen Boyd wrote:
-> Quoting Satya Priya Kakitapalli (2024-01-04 06:23:04)
->> diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
->> index 05d115c52dfe..6d76fd344ddf 100644
->> --- a/drivers/clk/qcom/gcc-sm8150.c
->> +++ b/drivers/clk/qcom/gcc-sm8150.c
->> @@ -453,19 +453,29 @@ static const struct freq_tbl ftbl_gcc_qupv3_wrap0_s0_clk_src[] = {
->>          { }
->>   };
->>   
->> +static struct clk_init_data gcc_qupv3_wrap0_s0_clk_src_init = {
-> Can these be const?
+I do agree with this general statement but I do not think it is
+applicable in this context.
 
-
-We update the ops inside the qcom_cc_register_rcg_dfs. Hence cannot make 
-this as const.
-
-
->> +       .name = "gcc_qupv3_wrap0_s0_clk_src",
->> +       .parent_data = gcc_parents_0,
->> +       .num_parents = ARRAY_SIZE(gcc_parents_0),
->> +       .flags = CLK_SET_RATE_PARENT,
->> +       .ops = &clk_rcg2_ops,
->> +};
->> +
->>   static struct clk_rcg2 gcc_qupv3_wrap0_s0_clk_src = {
->>          .cmd_rcgr = 0x17148,
->>          .mnd_width = 16,
->>          .hid_width = 5,
->>          .parent_map = gcc_parent_map_0,
->>          .freq_tbl = ftbl_gcc_qupv3_wrap0_s0_clk_src,
->> -       .clkr.hw.init = &(struct clk_init_data){
->> -               .name = "gcc_qupv3_wrap0_s0_clk_src",
-> [...]
->> @@ -3786,6 +3850,13 @@ static int gcc_sm8150_probe(struct platform_device *pdev)
->>          regmap_update_bits(regmap, 0x4d110, 0x3, 0x3);
->>          regmap_update_bits(regmap, 0x71028, 0x3, 0x3);
->>   
->> +       ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
->> +                                      ARRAY_SIZE(gcc_dfs_clocks));
->> +       if (ret) {
->> +               dev_err(&pdev->dev, "Failed to register with DFS!\n");
-> Use
->
-> 		return dev_err_probe(...);
-
-
-Okay.
-
+This is not an explicit BUG() when kernel explicitly sets to panic the
+system. We are talking about subtle misbehavior which might be
+non-trivial to debug (there are other reasons to not swap at all) vs. a
+potential NULL ptr which will kill the userspace in a very obvious way.
+Sure there are risks with that but checks for potential NULL ptr
+dereferncing is easier than forgot explicit initialization. There are
+clear pros and cons for both approaches. NULL default initialized
+structures members which allow for behavior override are a general
+kernel pattern so I do not really see this going way off the rails.
+-- 
+Michal Hocko
+SUSE Labs
 
