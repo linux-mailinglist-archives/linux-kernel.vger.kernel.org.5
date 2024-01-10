@@ -1,130 +1,231 @@
-Return-Path: <linux-kernel+bounces-22044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C633582985B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:10:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 148BE82985F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:11:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E9581F217EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:10:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 618A6B25722
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB0A46B81;
-	Wed, 10 Jan 2024 11:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2634547A45;
+	Wed, 10 Jan 2024 11:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="090pK9T9"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2040.outbound.protection.outlook.com [40.107.237.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="Zic2V0Wi"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1099240C07
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jfZtOEdKPRujDZBpKQoggK+bw234MX7gO6MXKHDGpIZVeVx+09bjnVvhamDg9IL66pNf9cBiJRNLmaDJETWq/RxISQoDUNdxt0KBLOLsAlFWLraVYHnjMNoN5DOdqdR9S/9MsHXfzzouYur0nBKY4CYgGUf00B8vNO+jvohKX1+0j+5QULK6eTF5uJCV9XG1jGlc009+J3nUgA3I0+LOBpfBLiY9ktlJDmeeNL+G1D1exlWoFalANNU2tcYXGXNE8xFeVRAK3XcgCJVSoeRVUSpHIVDqp2IDImybgJN4h+W1OhDiAXRYRDPsJk6G/Nz6eYuURgigiD2etMMRYIOpVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/cOE6gEG4Rh5N57xCK2a+LraEjxxwobm9S1nK1Uz+HI=;
- b=jIvNSZL3W9hSjrvum5gUcu/MCWSHMmqqmznGQ5AUhhCUet8G7yz66gIXnWBcUevafhedIPXlq9PqAgHMKpzGXxw8eJ+gFFMr1jY8y2Vb+S5eCqIf8XhywV0XMLJAvromvIS00qgzJQqUW93HqaR5bf+iDTjAzPl8PX2zcfjvJ0YCnRH+CM1Ka76HJQWqcx9LcT6DMxxiqb57EoFXKbdFX9KSWPqYXv8ivu+eFxeEm9EssW8cM3pFhkYe/ndrI3AIPoTe881aEahaGR+DR6XJs+bwcQ7mIfF4Geh/1eYzpbUE15BXtsMslDjXKDvKPX/6Dq743GmBex9j+qb7jGtgbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/cOE6gEG4Rh5N57xCK2a+LraEjxxwobm9S1nK1Uz+HI=;
- b=090pK9T94Uc4PvkKW79ysmuRyTe+MPw0MLHzMQYsd4jJr9Lf8GA/8a76Q7YitM3fqWZPBwAnVxA0MpCMPoWzK8M78iq4sw6nDeurCprapr9nKf1WldU+cHUWfR0RjQEQNgjtS3R6IsA+Xs6TzKqq7kxEkx3G59hjHq2d88t5wos=
-Received: from CY5PR20CA0016.namprd20.prod.outlook.com (2603:10b6:930:3::19)
- by DM4PR12MB7696.namprd12.prod.outlook.com (2603:10b6:8:100::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
- 2024 11:10:40 +0000
-Received: from CY4PEPF0000E9D4.namprd03.prod.outlook.com
- (2603:10b6:930:3:cafe::6a) by CY5PR20CA0016.outlook.office365.com
- (2603:10b6:930:3::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18 via Frontend
- Transport; Wed, 10 Jan 2024 11:10:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D4.mail.protection.outlook.com (10.167.241.147) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 11:10:40 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 10 Jan
- 2024 05:10:38 -0600
-From: Michal Simek <michal.simek@amd.com>
-To: <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
-	<michal.simek@xilinx.com>, <git@xilinx.com>
-CC: Russell King <linux@armlinux.org.uk>, "moderated list:ARM
- SUB-ARCHITECTURES" <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH] ARM: zynq: Remove clk/zynq.h header
-Date: Wed, 10 Jan 2024 12:10:35 +0100
-Message-ID: <d7b129c8e3f867c2fda5fb0adbb1983103c5be5e.1704885029.git.michal.simek@amd.com>
-X-Mailer: git-send-email 2.36.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAF247795
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 11:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a28cfca3c45so101984466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:10:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1704885049; x=1705489849; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3QlF0rRTBRD1E5jWA0kISaH2vZgtmpP2AfnIty3q4TQ=;
+        b=Zic2V0Wiuaq4gTl+N44n1XUP4UA1b65X7cROPZrdK7Gqx47g5fLdSzeGowGK2w0ltl
+         uTESACfTbt+JNpPh9ddtNWuMI73YHi5io0MAfsmKunlxPRRwTNRSp2bYVyDrMF7fMGpL
+         RoqKUlYthJIDIg9/RPtT8+1Qn54W2C18gvfU0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704885049; x=1705489849;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3QlF0rRTBRD1E5jWA0kISaH2vZgtmpP2AfnIty3q4TQ=;
+        b=CtNNoOA4iUSuyP8wqVyQ8jcMUK+RsR0zRn3D5AmkJMjnNtt8oW7KPelJF3Sb+6hfxQ
+         Abj2Gf7S3m7kf5nB4lSvUh6z+knHvDjw+YiLG/JRSXGbmVJ6u3qd6NAMllZ9zfwk/nEx
+         l1DkGDJi6Oy8r/Q3eIzD20qmR0m7tN9r9FbERXU5bGSepFAk+NpCOv/Vr6NyNMqy3wD8
+         L7D4FR5FXKiFQr7WETSx2+QJ2c7vwrzgOMRNPX7pr2FPmK2zfMChV32Ot5fWR7jMKWjI
+         BD0jK58KRTcN0pqFjIUBZcGgkN9m1aQQeUZeYMAQbKASr8vcKV/e3sFjWDeYj/WGO90g
+         2a2w==
+X-Gm-Message-State: AOJu0YyBtrwxyPQUgoqiqlAUdHspZ+KA3aI6zORrbvZK91ANpTMtHqgU
+	gu6VoFMQPnJNUAPkfNpeEynJBxQzKc9T0Q==
+X-Google-Smtp-Source: AGHT+IH17mNNLFHB3A8wZSZTcWuwmMBTnERZR6Mu2RaoActQZZYYvzEUdcGN2VlFuia3B3Yo7xfaKw==
+X-Received: by 2002:a17:907:9445:b0:a27:7701:f16 with SMTP id dl5-20020a170907944500b00a2777010f16mr1131131ejc.7.1704885048816;
+        Wed, 10 Jan 2024 03:10:48 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m27-20020a1709062adb00b00a269f8e8869sm1976817eje.128.2024.01.10.03.10.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 03:10:48 -0800 (PST)
+Date: Wed, 10 Jan 2024 12:10:46 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Andri Yngvason <andri@yngvason.is>
+Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+	Simon Ser <contact@emersion.fr>,
+	Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH 3/7] drm/amd/display: Add handling for new "active color
+ format" property
+Message-ID: <ZZ57Nl3CnRMPcfbj@phenom.ffwll.local>
+Mail-Followup-To: Andri Yngvason <andri@yngvason.is>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+	Simon Ser <contact@emersion.fr>,
+	Werner Sembach <wse@tuxedocomputers.com>
+References: <20240109181104.1670304-1-andri@yngvason.is>
+ <20240109181104.1670304-4-andri@yngvason.is>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=575; i=michal.simek@amd.com; h=from:subject:message-id; bh=RAcTP7dic5cJVbZTHa2C8q+324FvduJzQXkoZiYqddY=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtR51WrlD943TIj99VTmm7pYRPLk7l/mTxdJ9vQdn3lG/ 7LChBUOHbEsDIJMDLJiiizSNlfO7K2cMUX44mE5mDmsTCBDGLg4BWAiXyQZ5kr21VQ0X5m67qZs 8YEvTxalr/om/IBhfm6Et903JpHeGYkzd/3l7+vPW8J7CAA=
-X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D4:EE_|DM4PR12MB7696:EE_
-X-MS-Office365-Filtering-Correlation-Id: c56304ff-b62d-4a25-2da5-08dc11ccc7f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0zbrt1MFFF7KCYuD4iNOVnhJTdtJg2JM21/SF1cgEKbkV9tVkjODoMnRtvXJU22ECj0KHAsVi9ueMFX5iZXbZ9nyvzanRyurgUvTs1wQAryWwajUIcBsed33+BzG99E7HCxBsPh633TbW9x71teM/ptk01RT0UF4iX1LtOrJChORth1E/I0VI0mGsowPjITnjTBrzESFl4piYqwB+oY9i4+Hv7vGqwfKQMX+pP+QIntfWIs5DUfezDE4sviW+zzW9p2vAOblxjUO/nPYmJJz5eowgmO07QW/V0IsEu/GgDfuNP0c52ntERza+Z4oeg82eSRH60jhp70kyGJQoPvFpc9NhqjwJd+1G2dyXY6pcmr7SJhB7J6H74RFSO0Q/IOaqga7MNISLkc+aRcc5m9u8OXea/T1XH5q/7P3ONHcmLTL99i6cUPnHoi+y77beXKrKJf/95ztsv1uff045SZR30iHI3vQKwW64hjSF5fAAZZf7bQaQq//mfcrgkTobS6hdKJbwpIdRGETNolA2pE1S4Oa1HZD+Oz0OTUihGVePl/b610zOGZS+QVkwWogC5zBFWIwFo8cQif7NQ78PPDk582/qwg+nZxVKl+f+pG6YaRnT99Qzy8YFQP8h0C8Y6I/gWqEnXX5Q+yVM8CAfc4kbZyuDz1l0wkHnjyQnv1pfFlVOO88eXatjzOrbN43Y7Hw4l+YB8f5Hj5UMQb346zXTGhCop+B4TBx1NHiutMiZG6NkyqP6+JnblnIKTSYK9qJWBl/NrZ309qDP6t1IsDHU69AYWlywNHHB2yKdZVr84I=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(396003)(39860400002)(230922051799003)(1800799012)(82310400011)(186009)(64100799003)(451199024)(46966006)(40470700004)(36840700001)(40480700001)(40460700003)(83380400001)(70206006)(41300700001)(70586007)(356005)(36756003)(86362001)(81166007)(36860700001)(82740400003)(47076005)(16526019)(426003)(26005)(2616005)(336012)(110136005)(2906002)(478600001)(316002)(6666004)(44832011)(8676002)(8936002)(4326008)(4744005)(5660300002)(54906003)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 11:10:40.4277
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c56304ff-b62d-4a25-2da5-08dc11ccc7f3
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D4.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7696
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109181104.1670304-4-andri@yngvason.is>
+X-Operating-System: Linux phenom 6.5.0-4-amd64 
 
-slcr.c is not having any reference to clock that's why remove it.
+On Tue, Jan 09, 2024 at 06:11:00PM +0000, Andri Yngvason wrote:
+> From: Werner Sembach <wse@tuxedocomputers.com>
+> 
+> This commit implements the "active color format" drm property for the AMD
+> GPU driver.
+> 
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Signed-off-by: Andri Yngvason <andri@yngvason.is>
+> Tested-by: Andri Yngvason <andri@yngvason.is>
+> ---
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 42 ++++++++++++++++++-
+>  .../display/amdgpu_dm/amdgpu_dm_mst_types.c   |  4 ++
+>  2 files changed, 45 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 10e041a3b2545..b44d06c3b1706 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6882,6 +6882,24 @@ int convert_dc_color_depth_into_bpc(enum dc_color_depth display_color_depth)
+>  	return 0;
+>  }
+>  
+> +static int convert_dc_pixel_encoding_into_drm_color_format(
+> +	enum dc_pixel_encoding display_pixel_encoding)
+> +{
+> +	switch (display_pixel_encoding) {
+> +	case PIXEL_ENCODING_RGB:
+> +		return DRM_COLOR_FORMAT_RGB444;
+> +	case PIXEL_ENCODING_YCBCR422:
+> +		return DRM_COLOR_FORMAT_YCBCR422;
+> +	case PIXEL_ENCODING_YCBCR444:
+> +		return DRM_COLOR_FORMAT_YCBCR444;
+> +	case PIXEL_ENCODING_YCBCR420:
+> +		return DRM_COLOR_FORMAT_YCBCR420;
+> +	default:
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int dm_encoder_helper_atomic_check(struct drm_encoder *encoder,
+>  					  struct drm_crtc_state *crtc_state,
+>  					  struct drm_connector_state *conn_state)
+> @@ -7436,8 +7454,10 @@ void amdgpu_dm_connector_init_helper(struct amdgpu_display_manager *dm,
+>  				adev->mode_info.underscan_vborder_property,
+>  				0);
+>  
+> -	if (!aconnector->mst_root)
+> +	if (!aconnector->mst_root) {
+>  		drm_connector_attach_max_bpc_property(&aconnector->base, 8, 16);
+> +		drm_connector_attach_active_color_format_property(&aconnector->base);
+> +	}
+>  
+>  	aconnector->base.state->max_bpc = 16;
+>  	aconnector->base.state->max_requested_bpc = aconnector->base.state->max_bpc;
+> @@ -8969,6 +8989,26 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+>  		kfree(dummy_updates);
+>  	}
+>  
+> +	/* Extract information from crtc to communicate it to userspace as connector properties */
+> +	for_each_new_connector_in_state(state, connector, new_con_state, i) {
+> +		struct drm_crtc *crtc = new_con_state->crtc;
+> +		struct dc_stream_state *stream;
+> +
+> +		if (crtc) {
+> +			new_crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
+> +			dm_new_crtc_state = to_dm_crtc_state(new_crtc_state);
+> +			stream = dm_new_crtc_state->stream;
+> +
+> +			if (stream) {
+> +				drm_connector_set_active_color_format_property(connector,
+> +					convert_dc_pixel_encoding_into_drm_color_format(
+> +						dm_new_crtc_state->stream->timing.pixel_encoding));
+> +			}
+> +		} else {
+> +			drm_connector_set_active_color_format_property(connector, 0);
 
-Signed-off-by: Michal Simek <michal.simek@amd.com>
----
+Just realized an even bigger reason why your current design doesn't work:
+You don't have locking here.
 
- arch/arm/mach-zynq/slcr.c | 1 -
- 1 file changed, 1 deletion(-)
+And you cannot grab the required lock, which is
+drm_dev->mode_config.mutex, because that would result in deadlocks. So
+this really needs to use the atomic state based design I've described.
 
-diff --git a/arch/arm/mach-zynq/slcr.c b/arch/arm/mach-zynq/slcr.c
-index 9765b3f4c2fc..c517cd4a7737 100644
---- a/arch/arm/mach-zynq/slcr.c
-+++ b/arch/arm/mach-zynq/slcr.c
-@@ -10,7 +10,6 @@
- #include <linux/mfd/syscon.h>
- #include <linux/of_address.h>
- #include <linux/regmap.h>
--#include <linux/clk/zynq.h>
- #include "common.h"
- 
- /* register offsets */
+A bit a tanget, but it would be really good to add a lockdep assert into
+drm_object_property_set_value, that at least for atomic drivers and
+connectors the above lock must be held for changing property values. But
+it will be quite a bit of audit to make sure all current users obey that
+rule.
+
+Cheers, Sima
+> +		}
+> +	}
+> +
+>  	/**
+>  	 * Enable interrupts for CRTCs that are newly enabled or went through
+>  	 * a modeset. It was intentionally deferred until after the front end
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> index 11da0eebee6c4..a4d1b3ea8f81c 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> @@ -600,6 +600,10 @@ dm_dp_add_mst_connector(struct drm_dp_mst_topology_mgr *mgr,
+>  	if (connector->max_bpc_property)
+>  		drm_connector_attach_max_bpc_property(connector, 8, 16);
+>  
+> +	connector->active_color_format_property = master->base.active_color_format_property;
+> +	if (connector->active_color_format_property)
+> +		drm_connector_attach_active_color_format_property(&aconnector->base);
+> +
+>  	connector->vrr_capable_property = master->base.vrr_capable_property;
+>  	if (connector->vrr_capable_property)
+>  		drm_connector_attach_vrr_capable_property(connector);
+> -- 
+> 2.43.0
+> 
+
 -- 
-2.36.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
