@@ -1,192 +1,134 @@
-Return-Path: <linux-kernel+bounces-22593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 706DA82A027
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:16:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E19082A035
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 19:24:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 880D71C22125
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:16:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAA6C287768
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 18:24:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15854D581;
-	Wed, 10 Jan 2024 18:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6174D587;
+	Wed, 10 Jan 2024 18:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="Xy8sjHRK"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bWpzSQJ0"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4827C4D125
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7bef44df5c6so30103139f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:16:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9CC4D114;
+	Wed, 10 Jan 2024 18:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33694bf8835so3760664f8f.3;
+        Wed, 10 Jan 2024 10:24:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704910601; x=1705515401; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lo1VQ4EJOV7cREJOABitf1hSk8b65EfBHPgIFVrB/OQ=;
-        b=Xy8sjHRKS5oV3l6+1MSvL0Q/xnsezaFObS9tI/uGbjpWCEnbIBvjOv8k6msf/RQ8ty
-         aFtj+sdvLE4GlNqD5Q23nO5c0Q0ihMMT2RTx9uEseWcBQskVRx4LNAldFfFeMaY5AbyO
-         wVtdhz2ahB/rqhni56amjFK9CTZ+eEubOVFYmot/jyXah4MCALeXQDPkH9azFB0FsyVJ
-         i5gZDvOdSBgbP5QGkDmiYs/PJI/CBTxgqf8yyaAC8z1Oe/tzgs52ffPYpsopJb5I048P
-         7JEQRRH8hE4N6tS7/0pAJqm9ARmiRH8gMoQMjHlh0y13c/WeZ67yj9kswVQ78io1u4rp
-         tbRw==
+        d=gmail.com; s=20230601; t=1704911041; x=1705515841; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=81LggYl8Ad3OaI7g/+M//8UHKQbJy2MjL1R0gwI6OsE=;
+        b=bWpzSQJ0oiyB7KT4uSqfOwYQIAatlLnCzGwY1XgVTBcXnsyUpxnQ2+AeDZFVb1o197
+         bei2+k6cplQr3Av/qit7eej7NzASwePZ//+E2gSogdZJNkrKWastFzhKgcRknIxrGvCt
+         fbn9GE2Ac74eg/2NMUFOc+kCjTwIdBBkXNRgUzaYLV+bbxcl3tPkhPt1f17XrWhuiAfu
+         9DJjb99J6dFbwZlfAcEPpueeHgGSXP7sp9cvFbNX5RlON9sgBBka9C5Zx9H70clX0z1d
+         Rs3uByz5WTyvrNbvg7E5aCMReHEOa1qw5/ComUCcweUy0wG0f3A0f25ZHp9RnaLPq/X7
+         Ki6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704910601; x=1705515401;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1704911041; x=1705515841;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lo1VQ4EJOV7cREJOABitf1hSk8b65EfBHPgIFVrB/OQ=;
-        b=Hw41eJPtVkdiROO4whJu8yOwQLy/nUESHAJ2vKhIdCeeM0mbyXaGmjQr0iZOpyn0A0
-         lXVfrQuH/mZZb5LDbc8stQVJw8j9pt7l4gSYCkk0Cno8lHxAl1epviDdmP6w8tFKETQ0
-         mkubtnzERP8tUiKVO/d5DwJUkbENkFffXInD4IGXP/+CJaus+Bu3CE2LIBvZ3nhjoY5y
-         bJrO2eNexYFWUZhdzGT4JXv6svPOh/ipi0cMLQPzhHgnxjpIwH6cJMBKm+sx4L+USIdh
-         c144i+U9F63gncXVh4K2yQrVr3SWcWtxZl8gqAkb9m5TJxwQ21g2B9wz7BUGrKJxFg2e
-         totQ==
-X-Gm-Message-State: AOJu0YyV8d/AEwnEShx62XYGbSPOBWnwKykth+Ke4ByQwY4lHmXwuX2d
-	3lmTmxr9wdrNTg/u3CmTzFtqpbAuZeCFMg==
-X-Google-Smtp-Source: AGHT+IE4EzhYPa/LzL9jotCAfZZS/ofuHIbVxibF33Hm19VsMiO5K5RqGzW8lAvCC04sDZHn23tGgw==
-X-Received: by 2002:a05:6e02:1c0e:b0:35d:4463:5dd2 with SMTP id l14-20020a056e021c0e00b0035d44635dd2mr375930ilh.16.1704910601268;
-        Wed, 10 Jan 2024 10:16:41 -0800 (PST)
-Received: from [172.16.32.83] ([198.232.126.202])
-        by smtp.gmail.com with ESMTPSA id c21-20020a02c9d5000000b0046b4a8df4f1sm1423121jap.75.2024.01.10.10.16.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 10:16:40 -0800 (PST)
-Message-ID: <c065bbb0-e5cb-04ae-cedc-258264162405@landley.net>
-Date: Wed, 10 Jan 2024 12:23:19 -0600
+        bh=81LggYl8Ad3OaI7g/+M//8UHKQbJy2MjL1R0gwI6OsE=;
+        b=aaRWguPSP/lPbDShlcl9tJ8YBOA9YiKC3eAjJNCyGp+5L06IJHMVUQQ1cyUHCwLRuP
+         YHTDRNQTVUUtGzFQ/XKKn4K33B8UMhn6IjeFUHPsoM/zmvHahPT+8cy8rQIppN9EaYy2
+         P16q6n2HeEXhpERdve7I/fgKXsZfd4b0qjt/ctUQIZ9qIhU3oIikCPmFsbnJevBXnk2M
+         mM3h6fbbzg3cToGAuaX7oqaK9HJlf6kVKHLxEtIjDRFPyS9ZiCMj7puqT1t8aKQB9VJx
+         mJ/QuGsl47k5zEvnZvB8lGOSjUyuJ0xYNGA5oXu3QuCdh1oXnbZ0s1k0k1smSjijT6HF
+         VCTA==
+X-Gm-Message-State: AOJu0Yw5sxYuNz98XLlbCbozds8lQKBBnkRTJvF7uFMZRIeRgy2XcPsb
+	NlSUgEAnp9RDekakiM7Jne4=
+X-Google-Smtp-Source: AGHT+IHLwo386qOHgtlGpo5mH/d/XbKdDKeCID+7bVxNsNhEiOdF/O31xP8hq13jV9oOdwkmS7u7Rw==
+X-Received: by 2002:a05:6000:1e85:b0:336:ca46:2ce1 with SMTP id dd5-20020a0560001e8500b00336ca462ce1mr624602wrb.122.1704911041215;
+        Wed, 10 Jan 2024 10:24:01 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id r4-20020adff104000000b00336a0c083easm5469692wro.53.2024.01.10.10.23.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 10:24:00 -0800 (PST)
+Date: Wed, 10 Jan 2024 20:23:58 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	Simon Horman <horms@kernel.org>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Frank Wunderlich <frank-w@public-files.de>,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com
+Subject: Re: [PATCH net-next 07/15] net: dsa: mt7530: do not run
+ mt7530_setup_port5() if port 5 is disabled
+Message-ID: <20240110182358.ci7pg7ipcbsjxqjf@skbuf>
+References: <a2826485-70a6-4ba7-89e1-59e68e622901@arinc9.com>
+ <90fde560-054e-4188-b15c-df2e082d3e33@moroto.mountain>
+ <20231207184015.u7uoyfhdxiyuw6hh@skbuf>
+ <9b729dab-aebc-4c0c-a5e1-164845cd0948@suswa.mountain>
+ <20231208184652.k2max4kf7r3fgksg@skbuf>
+ <c3a0fc6a-825c-4de3-b5cf-b454a6d4d3cf@arinc9.com>
+ <48b664fb-edf9-4170-abde-2eb99e04f0e5@suswa.mountain>
+ <2ad136ed-be3a-407f-bf3c-5faf664b927c@arinc9.com>
+ <20240109145740.3vbtkuowiwedz5hx@skbuf>
+ <0a086b5f-b319-4f08-9513-a38c214e1da7@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
- UCLINUX from LTP]
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>
-Cc: Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven
- <geert@linux-m68k.org>, ltp@lists.linux.it, Li Wang <liwang@redhat.com>,
- Andrea Cervesato <andrea.cervesato@suse.com>,
- Greg Ungerer <gerg@linux-m68k.org>, Jonathan Corbet <corbet@lwn.net>,
- Randy Dunlap <rdunlap@infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
- Niklas Cassel <niklas.cassel@wdc.com>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik>
- <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
- <20240110133358.GB1698252@pevik>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <20240110133358.GB1698252@pevik>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0a086b5f-b319-4f08-9513-a38c214e1da7@arinc9.com>
 
-On 1/10/24 07:33, Petr Vorel wrote:
->> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
->> of people have been happy to consume my work, but getting any of them to post
->> directly to linux-kernel is like pulling teeth.
+On Wed, Jan 10, 2024 at 10:26:54AM +0300, Arınç ÜNAL wrote:
+> > Are there existing systems that use PHY muxing? The possible problem I
+> > see is breaking those boards which have a phy-handle on gmac5, if the
+> > mt7530 driver is no longer going to modify its HWTRAP register.
 > 
-> Interesting, thanks for sharing this. BTW I'm not saying anybody is using nommu,
-> but I wonder if anybody really test it with LTP. And if yes, I wonder why we
-> don't have reports about tests broken in new API.
+> Ah see, for PHY muxing, the driver actually wants the phy-handle to be put
+> on the SoC MAC, and the PHY to be defined on the SoC ethernet's MDIO bus.
+> We don't even define gmac5 as a port on the switch dt-bindings.
 
-I don't expect a lot of nommu users are aware you ever _could_ run LTP on nommu.
+I noticed that from the code already. Maybe I shouldn't have said
+"gmac5" when I meant "the GMAC attached to switch port 5, aka GMAC0".
+I was under the impression that you were also using this slightly
+incorrect terminology, to keep a numerical association between the CPU
+port number and its directly attached GMAC.
 
-But I'd like to get nommu more regularly supported. You _should_ be able to
-build a musl-linux userspace with busybox or toybox and be able to build a
-recognizable system (even an alpine-alike) which could then get the basic
-plumbing regression tested on qemu even without access to nommu hardware.
+> While none of the DTs on the Linux repository utilise this, some of the
+> mt7621 DTs on OpenWrt do. The change in behaviour will only be that phy0/4
+> will be inaccessible from the SoC MAC's network interface. I de-facto
+> maintain the mt7621 device tree source files there. I intend to revert it
+> along with adding port 5 as a CPU port so that the conduit changing feature
+> becomes available.
 
->> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
->> > support him in my free time (review patches, give advices). And if nobody
->> > stands, this patchset which removes the support in the old API will be merged
->> > after next LTP release (in the end of January).
-> 
->> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
->> something?
-> 
-> New C API is documented at our wiki: the API for using in the tests [1]
-> and the library itself [2]. (We also have shell API, but we can ignore it for
-> nommu.)
+If OpenWrt kernels are always shipped in tandem with updated device
+trees (i.e. no Arm SystemReady IR platforms, where the DT is provided by
+U-Boot), I won't oppose to retracting features described via DT if their
+platform maintainers agree in a wide enough circle that the breakage is
+manageable.
 
-I'm writing a bash-compatible shell, which (thanks to Elliott forwarding
-questions) has involved surprisingly long threads with the bash maintainer about
-weird corner cases neither the man page nor my testing made clear:
-
-http://lists.landley.net/pipermail/toybox-landley.net/2023-July/029631.html
-
-(Alas I try NOT to involve him because when I bring stuff up he keeps FIXING
-BASH which from my point of view just makes it a moving target...)
-
-Anyway, running the shell API on nommu doesn't seem out of the question, but
-probably not any time soon. (The fact the shell isn't finished yet is one of the
-big REASONS I haven't got enough time to take on LTP. That and I haven't started
-writing "awk" and "make" yet". And I need to cycle back to
-https://landley.net/notes-2023.html#12-10-2023 . And after that debian, ala
-https://peertube.debian.social/w/chzkKrMvEczG7qQyjbMKPr and
-https://peertube.debian.social/w/45XroN9CnbYLNLKQH3GD9F . And follow up on
-https://lists.gnu.org/archive/html/coreutils/2023-08/msg00009.html . And...)
-
-> All files in lib/ directory which include tst_test.h are part of new C API. Main
-> file is lib/tst_test.c.
-
-safe_fork(), safe_clone(), fork_testrun()...
-
-> LTP tests, which has been rewritten to new API include
-> tst_test.h, they are in testcases/ directory. Library has it's own tests (for
-> testing regression in in lib/newlib_tests/*.c.
-
-Library meaning... libc? Or does LTP have a library?
-
-> The reason why Cyril wrote in 2016 new C API was that the old API was buggy
-> (tests randomly fails). Tests which are still using the old API (there is
-> ongoing rewrite) include test.h. The old API is not much documented.
-> 
-> Feel free to ask any more question.
-
-My standard questions are "what does success look like" and "how do I reproduce
-the problem".
-
-For the first: if there previously was nommu support in LTP, what's the last
-version that's known to work? Is there an existing build/test setup that can be
-reproduced?
-
-For the second... If I try to run LTP on sh2eb (my current nommu test board)
-with the current LTP... do I get a build break? Additional test failures at
-runtime? You talk about "removing nommu support", but... what's the current
-status? (A subset of tests still use the old api...?)
-
-Yes I need to read https://github.com/linux-test-project/ltp/wiki/C-Test-API but
-I also need to know how to build LTP from source. I'm looking at the README's
-list of "autoconf, automake, m4, pkgconf / pkg-config" and wincing
-significantly. (What does gnu/autoconf DO here? Disable tests? I never
-understand why anybody uses that giant hairball of complexity. Half of cross
-compiling is figuring out how to lie to autoconf, and my normal workaround for
-that is to bootstrap a target system and build natively, but while I've gotten
-gcc to run natively on nommu systems, I never _tried_ gnu/autoconf.
-Bootstrapping some subset of LFS on a nommu system so it has the dependencies
-LFS needs to natively build seems like the long way 'round...
-
-(I am not the right guy for "make it work the easy way". I am the guy who will
-step on every land mine between here and there. I code by debugging an empty
-screen. If I don't start from "known working" setup... it would take a while.)
-
-Rob
+BTW, besides OpenWrt, what other software is deployed on these SoCs
+typically?
 
