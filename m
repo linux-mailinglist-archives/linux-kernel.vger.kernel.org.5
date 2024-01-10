@@ -1,104 +1,127 @@
-Return-Path: <linux-kernel+bounces-21771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59926829413
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:14:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F060829410
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 08:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11B13287F6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:13:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B09DB1C254DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 07:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F72C39FE4;
-	Wed, 10 Jan 2024 07:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dLAYZxRC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDFD38DE0;
+	Wed, 10 Jan 2024 07:12:51 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB3C39FC7
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 07:13:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704870828; x=1736406828;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=NsN9wWwDQykPsPTX7UdOiEMGNy+84IBEJgsSgPx+YLI=;
-  b=dLAYZxRCDRiSzOQegugAp9EHUOny+Mal2YKtqMQ8u9yqikjdMk3zRGo1
-   YvmfRhEf/0xV1kKUK1zrUqx+JRya2ZbK+J0MNJXnZoEepj/et1Rvc75/7
-   G5KbJ+9Pu3g/mmMpf6VQYbnGmqobc4piV2QDNhN59HlVHvApayrfqzaue
-   isdWRVuxgymFiwzfr+K/IhEQoUNT/S058I5wz6HIgBWviUBbRxwVQC+XM
-   y71LFS2unSnj9a4f84C4ePVIoAZdGf5Xt2Pz9vAL1Ce7snSxO06edrGmC
-   w/hA6XEzKfyeCD6X3dPhO4ZY8Y5IsXn3eeLpoA4ivySbUABSqTesujD1j
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5791555"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="5791555"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 23:13:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="758272377"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="758272377"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 09 Jan 2024 23:13:46 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNSmW-0006iz-0k;
-	Wed, 10 Jan 2024 07:13:44 +0000
-Date: Wed, 10 Jan 2024 15:06:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/sb-members.c:422:30: sparse: sparse: incorrect type in
- assignment (different base types)
-Message-ID: <202401101519.MjA7RH59-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE53639FEF;
+	Wed, 10 Jan 2024 07:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 40A7BA94013595;
+	Wed, 10 Jan 2024 15:11:10 +0800 (GMT-8)
+	(envelope-from hu.yadi@h3c.com)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
+	by mail.maildlp.com (Postfix) with ESMTP id DD8812004BA6;
+	Wed, 10 Jan 2024 15:15:29 +0800 (CST)
+Received: from localhost.localdomain (10.99.206.12) by
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Wed, 10 Jan 2024 15:11:11 +0800
+From: Hu Yadi <hu.yadi@h3c.com>
+To: <jmorris@namei.org>, <serge@hallyn.com>, <shuah@kernel.org>,
+        <mathieu.desnoyers@efficios.com>, <mic@digikod.net>
+CC: <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <514118380@qq.com>,
+        <berlin@h3c.com>, "Hu.Yadi" <hu.yadi@h3c.com>
+Subject: [PATCH] selftests/landlock:Fix two build issues
+Date: Wed, 10 Jan 2024 15:08:54 +0800
+Message-ID: <20240110070854.7077-1-hu.yadi@h3c.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 40A7BA94013595
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-commit: 94119eeb02d114aa1f78dcfaabdca50b9b626790 bcachefs: Add IO error counts to bch_member
-date:   10 weeks ago
-config: i386-randconfig-061-20240106 (https://download.01.org/0day-ci/archive/20240110/202401101519.MjA7RH59-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401101519.MjA7RH59-lkp@intel.com/reproduce)
+From: "Hu.Yadi" <hu.yadi@h3c.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401101519.MjA7RH59-lkp@intel.com/
+Two issues comes up  while building selftest/landlock:
 
-sparse warnings: (new ones prefixed by >>)
-   fs/bcachefs/sb-members.c: note: in included file:
-   fs/bcachefs/bcachefs.h:958:9: sparse: sparse: array of flexible structures
->> fs/bcachefs/sb-members.c:422:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le64 [usertype] errors_reset_time @@     got signed long long @@
-   fs/bcachefs/sb-members.c:422:30: sparse:     expected restricted __le64 [usertype] errors_reset_time
-   fs/bcachefs/sb-members.c:422:30: sparse:     got signed long long
+the first one is as to gettid
 
-vim +422 fs/bcachefs/sb-members.c
+net_test.c: In function ‘set_service’:
+net_test.c:91:45: warning: implicit declaration of function ‘gettid’; did you mean ‘getgid’? [-Wimplicit-function-declaration]
+    "_selftests-landlock-net-tid%d-index%d", gettid(),
+                                             ^~~~~~
+                                             getgid
+net_test.c:(.text+0x4e0): undefined reference to `gettid'
 
-   412	
-   413	void bch2_dev_errors_reset(struct bch_dev *ca)
-   414	{
-   415		struct bch_fs *c = ca->fs;
-   416		struct bch_member *m;
-   417	
-   418		mutex_lock(&c->sb_lock);
-   419		m = bch2_members_v2_get_mut(c->disk_sb.sb, ca->dev_idx);
-   420		for (unsigned i = 0; i < ARRAY_SIZE(m->errors_at_reset); i++)
-   421			m->errors_at_reset[i] = cpu_to_le64(atomic64_read(&ca->errors[i]));
- > 422		m->errors_reset_time = ktime_get_real_seconds();
+the second is compiler error
+gcc -Wall -O2 -isystem   fs_test.c -lcap -o /home/linux/tools/testing/selftests/landlock/fs_test
+fs_test.c:4575:9: error: initializer element is not constant
+  .mnt = mnt_tmp,
+         ^~~~~~~
 
+this patch is to fix them
+
+Signed-off-by: Hu.Yadi <hu.yadi@h3c.com>
+Suggested-by: Jiao <jiaoxupo@h3c.com>
+Reviewed-by:Berlin <berlin@h3c.com>
+---
+ tools/testing/selftests/landlock/fs_test.c  | 5 ++++-
+ tools/testing/selftests/landlock/net_test.c | 3 +--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
+index 18e1f86a6234..93eb40a09073 100644
+--- a/tools/testing/selftests/landlock/fs_test.c
++++ b/tools/testing/selftests/landlock/fs_test.c
+@@ -4572,7 +4572,10 @@ FIXTURE_VARIANT(layout3_fs)
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(layout3_fs, tmpfs) {
+ 	/* clang-format on */
+-	.mnt = mnt_tmp,
++	.mnt = {
++		.type = "tmpfs",
++        	.data = "size=4m,mode=700",
++	},
+ 	.file_path = file1_s1d1,
+ };
+ 
+diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
+index 929e21c4db05..8fb357de8c55 100644
+--- a/tools/testing/selftests/landlock/net_test.c
++++ b/tools/testing/selftests/landlock/net_test.c
+@@ -18,7 +18,6 @@
+ #include <sys/prctl.h>
+ #include <sys/socket.h>
+ #include <sys/un.h>
+-
+ #include "common.h"
+ 
+ const short sock_port_start = (1 << 10);
+@@ -88,7 +87,7 @@ static int set_service(struct service_fixture *const srv,
+ 	case AF_UNIX:
+ 		srv->unix_addr.sun_family = prot.domain;
+ 		sprintf(srv->unix_addr.sun_path,
+-			"_selftests-landlock-net-tid%d-index%d", gettid(),
++			"_selftests-landlock-net-tid%ld-index%d", syscall(SYS_gettid),
+ 			index);
+ 		srv->unix_addr_len = SUN_LEN(&srv->unix_addr);
+ 		srv->unix_addr.sun_path[0] = '\0';
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.23.0
+
 
