@@ -1,166 +1,187 @@
-Return-Path: <linux-kernel+bounces-21672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB1688292A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33C7982929F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 04:05:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB082289483
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:06:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55C062894A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 03:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C833234;
-	Wed, 10 Jan 2024 03:06:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B59428E8;
+	Wed, 10 Jan 2024 03:05:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XV6ANEau"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ko93EGdJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCE6210B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 03:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B727A1871;
+	Wed, 10 Jan 2024 03:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704855982; x=1736391982;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ZewTevJw56ig0XC0uD4jZoysKT9xWByRTaoA4LMz9rg=;
-  b=XV6ANEauco2YgQqr8zfOx1jHeM/5aOyxpybhu79Roo4a/aTm17UVJ1Au
-   5M7ubTxQEGwkmHftCPNtTcPQTp/fKAPfVG9yD3aJ1VJTcrNKuRNzWfKqN
-   JvOSqKc9NKNBhJbnDvOn0b78/UfuooysYutJm3MViwi4gU35RrqEUj1BH
-   R4saLu4+tPeW5fqb7pINYQQmLliGogb9MjCL4AdW9j5LNrTySQOeu0/rX
-   F6ertpUTa7Gxk3RMQ6sATum6AmpYUfLIwjc/Ea4QkXbfhuD+muzibHcRz
-   vXF34w2N3pbrFaKQbgljOLMTGpT0+14MrwJibQ8uwhHGe/DBUZe+cORWt
+  t=1704855930; x=1736391930;
+  h=from:to:cc:subject:date:message-id;
+  bh=pHu+JjwxmcBrvbDLReMh07daUmBXGKOvaUBLbr2Vdns=;
+  b=ko93EGdJE30AdGTe4KRDlnSCg0qfxOc/skxgkFlPUReIVbkrx7JkPGNF
+   KB1nFsGPLpLutYryBBNTnOHOon997mzwqTpZlDUJEhMPd9n+2t95dtWn2
+   lNnF2cIn3JAbbVCA3LWQEe+5OvSPG4bHy9lVPzVbhMQ6JxvFl7sVmWn2V
+   XlBJuFFNxfrrxyvTSeOXJMqlWzw1vAfBBU3SNo9qHESum9UxmKHl4JXgp
+   dv3iy0iWTVRBue95KYaAJ5j2qKZgUH1dY33zLydxC22L09Ze3SAX5CMcd
+   eA3r0vjsoIaaeTWwD5T88b4yrPMEumceaECtkDJc0zILRAA+eOuph6kC1
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="429579934"
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="397244704"
 X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="429579934"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 19:06:21 -0800
+   d="scan'208";a="397244704"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 19:05:29 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="816196509"
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="1029002690"
 X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="816196509"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 09 Jan 2024 19:06:18 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNOv2-0006WU-1J;
-	Wed, 10 Jan 2024 03:06:16 +0000
-Date: Wed, 10 Jan 2024 11:06:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Brian King <brking@linux.vnet.ibm.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	John Garry <john.g.garry@oracle.com>
-Subject: drivers/scsi/ipr.c:5430:6: warning: variable 'ioasc' set but not used
-Message-ID: <202401101004.fcxlPdWI-lkp@intel.com>
+   d="scan'208";a="1029002690"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Jan 2024 19:05:29 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Chen Yu <yu.c.chen@intel.com>,
+	Len Brown <len.brown@intel.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Zhao Liu <zhao1.liu@intel.com>,
+	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] thermal: intel: hfi: Add syscore callbacks
+Date: Tue,  9 Jan 2024 19:07:04 -0800
+Message-Id: <20240110030704.11305-1-ricardo.neri-calderon@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-Hi Brian,
+The kernel allocates a memory buffer and provides its location to the
+hardware, which uses it to update the HFI table. This allocation occurs
+during boot and remains constant throughout runtime.
 
-FYI, the error/warning still remains.
+When resuming from hibernation, the restore kernel allocates a second
+memory buffer and reprograms the HFI hardware with the new location as part
+of a normal boot. The location of the second memory buffer may differ from
+the one allocated by the image kernel. When the restore kernel transfers
+control to the image kernel, the second buffer becomes invalid, potentially
+leading to memory corruption if the hardware writes to it (the hardware
+continues using the buffer from the restore kernel).
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-commit: 65a15d6560dff065339f6cac91de4beded60fe3f scsi: ipr: Remove SATA support
-date:   9 months ago
-config: i386-buildonly-randconfig-002-20240107 (https://download.01.org/0day-ci/archive/20240110/202401101004.fcxlPdWI-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401101004.fcxlPdWI-lkp@intel.com/reproduce)
+It is also possible that the hardware forgets the address of the memory
+buffer when resuming from "deep" suspend. Memory corruption may also occur
+in such a scenario.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401101004.fcxlPdWI-lkp@intel.com/
+To prevent the described memory corruption, disable HFI when preparing to
+suspend or hibernate. Enable it when resuming.
 
-All warnings (new ones prefixed by >>):
+Add syscore callbacks to handle the package of the boot CPU (packages of
+non-boot CPUs are handled via CPU offline). Syscore ops always run on the
+boot CPU. Additionally, HFI only needs to be disabled during "deep" suspend
+and hibernation. Syscore ops only run in these cases.
 
-   drivers/scsi/ipr.c:1104:15: warning: variable 'proto' set but not used [-Wunused-but-set-variable]
-    1104 |         unsigned int proto;
-         |                      ^
-   drivers/scsi/ipr.c:1261:15: warning: variable 'proto' set but not used [-Wunused-but-set-variable]
-    1261 |         unsigned int proto;
-         |                      ^
-   drivers/scsi/ipr.c:4417:29: warning: variable 'res' set but not used [-Wunused-but-set-variable]
-    4417 |         struct ipr_resource_entry *res;
-         |                                    ^
->> drivers/scsi/ipr.c:5430:6: warning: variable 'ioasc' set but not used [-Wunused-but-set-variable]
-    5430 |         u32 ioasc;
-         |             ^
-   4 warnings generated.
+Cc: Chen Yu <yu.c.chen@intel.com>
+Cc: Len Brown <len.brown@intel.com>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: Zhao Liu <zhao1.liu@linux.intel.com>
+Cc: linux-pm@vger.kernel.org
+Cc: stable@vger.kernel.org    # 6.1
+Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+---
+This is v3 of the patch [4/4] of [1]. Rafael has already accepted the
+first three patches. Thanks!
 
+I tested this patch on the testing branch of Rafael on Jan 9th. 2024. I
+tested it on a Meteor Lake system. It completed 1000 hibernation-resume
+cycles.
 
-vim +/ioasc +5430 drivers/scsi/ipr.c
+[1]. https://lore.kernel.org/all/20240103041459.11113-1-ricardo.neri-calderon@linux.intel.com/
 
-3feeb89d40cc0ab Wayne Boyer                 2009-10-20  5426  
-b53d124a154d002 wenxiong@linux.vnet.ibm.com 2013-01-11  5427  static int ipr_process_hrrq(struct ipr_hrr_queue *hrr_queue, int budget,
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5428  						struct list_head *doneq)
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5429  {
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11 @5430  	u32 ioasc;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5431  	u16 cmd_index;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5432  	struct ipr_cmnd *ipr_cmd;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5433  	struct ipr_ioa_cfg *ioa_cfg = hrr_queue->ioa_cfg;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5434  	int num_hrrq = 0;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5435  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5436  	/* If interrupts are disabled, ignore the interrupt */
-56d6aa33d3f6847 wenxiong@linux.vnet.ibm.com 2013-01-11  5437  	if (!hrr_queue->allow_interrupts)
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5438  		return 0;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5439  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5440  	while ((be32_to_cpu(*hrr_queue->hrrq_curr) & IPR_HRRQ_TOGGLE_BIT) ==
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5441  	       hrr_queue->toggle_bit) {
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5442  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5443  		cmd_index = (be32_to_cpu(*hrr_queue->hrrq_curr) &
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5444  			     IPR_HRRQ_REQ_RESP_HANDLE_MASK) >>
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5445  			     IPR_HRRQ_REQ_RESP_HANDLE_SHIFT;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5446  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5447  		if (unlikely(cmd_index > hrr_queue->max_cmd_id ||
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5448  			     cmd_index < hrr_queue->min_cmd_id)) {
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5449  			ipr_isr_eh(ioa_cfg,
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5450  				"Invalid response handle from IOA: ",
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5451  				cmd_index);
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5452  			break;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5453  		}
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5454  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5455  		ipr_cmd = ioa_cfg->ipr_cmnd_list[cmd_index];
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5456  		ioasc = be32_to_cpu(ipr_cmd->s.ioasa.hdr.ioasc);
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5457  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5458  		ipr_trc_hook(ipr_cmd, IPR_TRACE_FINISH, ioasc);
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5459  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5460  		list_move_tail(&ipr_cmd->queue, doneq);
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5461  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5462  		if (hrr_queue->hrrq_curr < hrr_queue->hrrq_end) {
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5463  			hrr_queue->hrrq_curr++;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5464  		} else {
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5465  			hrr_queue->hrrq_curr = hrr_queue->hrrq_start;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5466  			hrr_queue->toggle_bit ^= 1u;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5467  		}
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5468  		num_hrrq++;
-b53d124a154d002 wenxiong@linux.vnet.ibm.com 2013-01-11  5469  		if (budget > 0 && num_hrrq >= budget)
-b53d124a154d002 wenxiong@linux.vnet.ibm.com 2013-01-11  5470  			break;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5471  	}
-b53d124a154d002 wenxiong@linux.vnet.ibm.com 2013-01-11  5472  
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5473  	return num_hrrq;
-05a6538a9a20499 wenxiong@linux.vnet.ibm.com 2013-01-11  5474  }
-b53d124a154d002 wenxiong@linux.vnet.ibm.com 2013-01-11  5475  
+---
+Changes since v2:
+ * Switched to syscore ops instead of a suspend notifier as it is a better
+   fit: we only need to handle the boot CPU, disabling HFI is only needed
+   for "deep" suspend and hibernation. (Rafael)
+ * Removed incorrect statement about the suspend flow in the commit
+   message. (Rafael)
 
-:::::: The code at line 5430 was first introduced by commit
-:::::: 05a6538a9a204999e0c0f7faee00b81b334f4fc7 [SCSI] ipr: Add support for MSI-X and distributed completion
+Changes since v1:
+ * Moved registration of the suspend notifier towards the end of
+   intel_hfi_init(). (Stan)
+ * Renamed hfi_do_pm_[enable|disable]() to hfi_do_[enable|disable](). Stan
+   will use these functions outside the suspend notifier. (Stan)
+ * Added locking to calls to hfi_[enable|disable]() from the suspend
+   notifier. (Rafael)
+---
+ drivers/thermal/intel/intel_hfi.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-:::::: TO: wenxiong@linux.vnet.ibm.com <wenxiong@linux.vnet.ibm.com>
-:::::: CC: James Bottomley <JBottomley@Parallels.com>
-
+diff --git a/drivers/thermal/intel/intel_hfi.c b/drivers/thermal/intel/intel_hfi.c
+index 22445403b520..768cd5f9eb32 100644
+--- a/drivers/thermal/intel/intel_hfi.c
++++ b/drivers/thermal/intel/intel_hfi.c
+@@ -35,7 +35,9 @@
+ #include <linux/processor.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++#include <linux/suspend.h>
+ #include <linux/string.h>
++#include <linux/syscore_ops.h>
+ #include <linux/topology.h>
+ #include <linux/workqueue.h>
+ 
+@@ -571,6 +573,30 @@ static __init int hfi_parse_features(void)
+ 	return 0;
+ }
+ 
++static void hfi_do_enable(void)
++{
++	/* If we are here, we are on the boot CPU */
++	struct hfi_cpu_info *info = &per_cpu(hfi_cpu_info, 0);
++	struct hfi_instance *hfi_instance = info->hfi_instance;
++
++	/* No locking needed. There is no concurrency with CPU online. */
++	hfi_set_hw_table(hfi_instance);
++	hfi_enable();
++}
++
++static int hfi_do_disable(void)
++{
++	/* No locking needed. There is no concurrency with CPU offline. */
++	hfi_disable();
++
++	return 0;
++}
++
++static struct syscore_ops hfi_pm_ops = {
++	.resume = hfi_do_enable,
++	.suspend = hfi_do_disable,
++};
++
+ void __init intel_hfi_init(void)
+ {
+ 	struct hfi_instance *hfi_instance;
+@@ -602,6 +628,8 @@ void __init intel_hfi_init(void)
+ 	if (!hfi_updates_wq)
+ 		goto err_nomem;
+ 
++	register_syscore_ops(&hfi_pm_ops);
++
+ 	return;
+ 
+ err_nomem:
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
 
