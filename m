@@ -1,152 +1,120 @@
-Return-Path: <linux-kernel+bounces-22788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD46982A2DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EA0D82A2DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 21:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10F631C264F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:52:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 712BA1C26523
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 20:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDB024F208;
-	Wed, 10 Jan 2024 20:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54B84F219;
+	Wed, 10 Jan 2024 20:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="bzsIFTLJ"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g7W6pNwj"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ECD4EB42;
-	Wed, 10 Jan 2024 20:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704919816; x=1705524616; i=markus.elfring@web.de;
-	bh=pGmRLZXbzB1/VCJ6cMwk/E3wY5qGaj+l7gvleCOR1ao=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=bzsIFTLJg3a4gPX16xErwtOIO2wv9E5rTnHinVBCPW10NGqDIeyMhb4AaLYOzMxG
-	 8ofIMFBWa35ALiVVFDtxPWxK0FNYjn8/VoIfE1ZzZHnqpUHf14Z9Ucmj+lJsGpz7p
-	 WjQqXURD28cthjszehEHFIo3+GvpJWIRjNldYTnEgDK0vBZh7mslJmHLP/KlCy+vs
-	 bH1qh1ciSeVIqcmQlhuiuu/FhyrPUgAUW5YRANfmiZM8W/h7K0m7c8ado1FwuWeSS
-	 AU5XioEAUIeexZHBRswVpZaucf4ATqQzv/hnF+TSG47OUG1CG9HzDzWN+mR2wFpyU
-	 rqJVpWAYfmWSpSwX9w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MBjIE-1rTDRU0WZo-00CbGQ; Wed, 10
- Jan 2024 21:50:16 +0100
-Message-ID: <49ecda98-770d-455e-acd7-12d810280fdd@web.de>
-Date: Wed, 10 Jan 2024 21:50:15 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF0A4EB5B
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 20:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704919888; x=1736455888;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QHnyFo9ejNaykr4G0UljJ5k6cMGEXXchv5ezu/u559Y=;
+  b=g7W6pNwjtj3c6XZJemugNfafgY+IYhqoA7/uuPIpAFdY1rCbp8kjHXJ1
+   HHXBMp5g2L735PEvRQYD4HHrzLwAE04Mb7xldTE0ktGzFfQrIEB40IFSg
+   NAkR6UvrGNzUbhF2lTAcAWCTR+YxYBRAHmGB6+C5iooI8jYr6cWIAGmog
+   AtbBVRMKouGq7GRfKC+0Za1D9Q+6vDBsJ9kwXPGOO63t3FGH11+jiYRzs
+   Aoen4vA90n2k4sUi2c+y6RD24QqstWlC1T2K7HjVAF9g0c1Y+pbFXU31Z
+   6evswRDUTcaQW44txAH2CeFmeBXC6n1S0rmm5nBaWAp1asUGuRdu+3Gx9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5729010"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="5729010"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 12:51:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="785735678"
+X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
+   d="scan'208";a="785735678"
+Received: from viggo.jf.intel.com (HELO ray2.sr71.net) ([10.54.77.144])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Jan 2024 12:51:26 -0800
+From: Dave Hansen <dave.hansen@linux.intel.com>
+To: torvalds@linux-foundation.org
+Cc: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [GIT PULL] x86/sgx for 6.8
+Date: Wed, 10 Jan 2024 12:51:24 -0800
+Message-Id: <20240110205124.3007385-1-dave.hansen@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2 2/2] io_uring: Improve exception handling in
- io_ring_ctx_alloc()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: io-uring@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Gabriel Krisman Bertazi <krisman@suse.de>, Jens Axboe <axboe@kernel.dk>,
- Pavel Begunkov <asml.silence@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
- <aa867594-e79d-6d08-a08e-8c9e952b4724@web.de>
- <878r4xnn52.fsf@mailhost.krisman.be>
- <b9c9ba9f-459e-40b5-ae4b-703dcc03871d@web.de>
-In-Reply-To: <b9c9ba9f-459e-40b5-ae4b-703dcc03871d@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TuPuGGpNWoSodpshiNclXlqKXV6zUP8351xLMItjhIv/nGqTHrD
- gJLyrjtqjfNe6FhIycKYw2lTUQjDQbajnnpQA152WfhBLBFDivvSJboDK2igQCFEJqmPc3w
- a+GdrUqNpYcTolhQe9VtvrwnLJkDu/vXYDw5wMyAOLCdmelvphDukq9ugWp+CTJvqhwHniT
- F4KEjoOz5PnFpCHQI1CpQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XoI6qzTL9rY=;ywGCQc0fYI+KyH/7lb2JrqTcCZu
- bP9yWcAZkVxDHna/Oac2IV8zPfamLc4ZgA5f8kBa8HeNXRz913onQRuJjHTttKXC+Gkg5qphR
- RHCEr4n7IFP/FyKLGQC2EVGSSMwdu53hIb7NUxDqv9qUBTwrLdRK4naoymyWs2LOjoNlce73q
- m1Xy8mf+ugKgfqypu2vzqX7trcO7JlE5TDkvf8PpnzClOYWKu+CuAFO6vRTTTf68jhQLmAzKr
- 53WyidRYULEpuc3dyk58JqsztdPj6cXF0GZgBgrgiPWfGkE/WiKD/hC/uMjZaOa5ZzpcaQ2dT
- ++tGmyO4LYn6my1wKgx0iVSoZfuz2yDCPgP+sVkxohkhlUWdIzRTNtahQYD174rc/glTEyj+k
- S3xER/IfArmhRfvEr99UX5A9gHEd+dZvqTha+NFj5pGFQbWfcN2G9NZuBGYPTQp9jmMn5ljIJ
- WSTxZ5soPj3pXp0hLCW8DZvinDCHZTYqJLJEwtfXat3tnyRW6rjEpy7OIYDYHuG8lskYH94hy
- FxuInmAQbnvaGgtl8RLK5s9OODi5dDfXg3DbYnSXqLUyDSaVf1OcWmKLi0Q3bq9Mp00BPPBGR
- zlyFEmYO288RW4L4r4e/oDwMFc5O4GlVyqJByv9m88QGk3/ULP6Hcloroo2KLYHv/8De/iRW3
- dijTeCay+P2f3CzuIcSi0tc+hYfR86jr/wBmrZKjk3W3omxDLaXqgCJ/tB57cS+NNaGfPYnw5
- V/RPTvAOwdTvNUhIdS+hquLeTYPExVxS5gbsFPSyMxmzFfvqP4TrTO6Tm4eCEerHySCO+5T+8
- XxNYHEdVRocvMz213BbpXzR8PKySLLwUfUB4Pe4BOkqFHiOun24DMtxSIbbPaDvoH3MYy0gep
- MZAedsHonBD3rD5CVB7Ya1VwxbKppxWaXSdR+ayBNK2JBpejVZHsxp4L4tctm3ZNRiSWjH9ku
- 80pcJg==
+Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 10 Jan 2024 21:15:48 +0100
+Hi Linus,
 
-The label =E2=80=9Cerr=E2=80=9D was used to jump to a kfree() call despite=
- of
-the detail in the implementation of the function =E2=80=9Cio_ring_ctx_allo=
-c=E2=80=9D
-that it was determined already that a corresponding variable contained
-a null pointer because of a failed memory allocation.
+Please pull some x86/sgx changes for 6.8.  This time, these are
+entirely confined to SGX selftests fixes.
 
-1. Thus use more appropriate labels instead.
+The mini SGX enclave built by the selftests has garnered some
+attention because it stands alone and does not need the sizable
+infrastructure of the official SGX SDK. I think that's why folks
+are suddently interested in cleaning it up.
 
-2. Reorder jump targets at the end.
+--
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
+The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
 
-See also:
-https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+go=
-to+chain+when+leaving+a+function+on+error+when+using+and+releasing+resourc=
-es
+  Linux 6.7-rc4 (2023-12-03 18:52:56 +0900)
 
+are available in the Git repository at:
 
- io_uring/io_uring.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+  https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sgx_for_6.8
 
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index c9a63c39cdd0..7727cdd505ae 100644
-=2D-- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -295,12 +295,14 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(=
-struct io_uring_params *p)
- 	hash_bits =3D ilog2(p->cq_entries) - 5;
- 	hash_bits =3D clamp(hash_bits, 1, 8);
- 	if (io_alloc_hash_table(&ctx->cancel_table, hash_bits))
--		goto err;
-+		goto destroy_io_bl_xa;
-+
- 	if (io_alloc_hash_table(&ctx->cancel_table_locked, hash_bits))
--		goto err;
-+		goto free_cancel_table_hbs;
-+
- 	if (percpu_ref_init(&ctx->refs, io_ring_ctx_ref_free,
- 			    0, GFP_KERNEL))
--		goto err;
-+		goto free_cancel_table_locked_hbs;
+for you to fetch changes up to 981cf568a8644161c2f15c02278ebc2834b51ba6:
 
- 	ctx->flags =3D p->flags;
- 	init_waitqueue_head(&ctx->sqo_sq_wait);
-@@ -341,9 +343,12 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(s=
-truct io_uring_params *p)
- 	INIT_WQ_LIST(&ctx->submit_state.compl_reqs);
- 	INIT_HLIST_HEAD(&ctx->cancelable_uring_cmd);
- 	return ctx;
--err:
--	kfree(ctx->cancel_table.hbs);
-+
-+free_cancel_table_locked_hbs:
- 	kfree(ctx->cancel_table_locked.hbs);
-+free_cancel_table_hbs:
-+	kfree(ctx->cancel_table.hbs);
-+destroy_io_bl_xa:
- 	xa_destroy(&ctx->io_bl_xa);
- 	kfree(ctx);
- 	return NULL;
-=2D-
-2.43.0
+  selftests/sgx: Skip non X86_64 platform (2023-12-08 10:08:17 -0800)
 
+----------------------------------------------------------------
+ - Clean up selftest compilation issues, mostly from non-gcc compilers
+ - Avoid building selftests when not on x86
+
+----------------------------------------------------------------
+Jo Van Bulck (13):
+      selftests/sgx: Fix uninitialized pointer dereference in error path
+      selftests/sgx: Fix uninitialized pointer dereferences in encl_get_entry
+      selftests/sgx: Include memory clobber for inline asm in test enclave
+      selftests/sgx: Separate linker options
+      selftests/sgx: Specify freestanding environment for enclave compilation
+      selftests/sgx: Remove redundant enclave base address save/restore
+      selftests/sgx: Produce static-pie executable for test enclave
+      selftests/sgx: Handle relocations in test enclave
+      selftests/sgx: Fix linker script asserts
+      selftests/sgx: Ensure test enclave buffer is entirely preserved
+      selftests/sgx: Ensure expected location of test enclave buffer
+      selftests/sgx: Discard unsupported ELF sections
+      selftests/sgx: Remove incomplete ABI sanitization code in test enclave
+
+Zhao Mengmeng (1):
+      selftests/sgx: Skip non X86_64 platform
+
+ tools/testing/selftests/sgx/Makefile              | 14 +++--
+ tools/testing/selftests/sgx/defines.h             |  2 +
+ tools/testing/selftests/sgx/load.c                |  9 ++-
+ tools/testing/selftests/sgx/sigstruct.c           |  5 +-
+ tools/testing/selftests/sgx/test_encl.c           | 67 +++++++++++++++--------
+ tools/testing/selftests/sgx/test_encl.lds         | 10 ++--
+ tools/testing/selftests/sgx/test_encl_bootstrap.S | 28 +++-------
+ 7 files changed, 78 insertions(+), 57 deletions(-)
 
