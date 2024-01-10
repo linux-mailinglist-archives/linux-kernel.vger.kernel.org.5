@@ -1,117 +1,109 @@
-Return-Path: <linux-kernel+bounces-22184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A9D829A98
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:49:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2F27829A9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B37A1C25912
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:49:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E512A1C24640
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 12:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329CF482FA;
-	Wed, 10 Jan 2024 12:49:02 +0000 (UTC)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C282F482FE;
+	Wed, 10 Jan 2024 12:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UeUMpNzS"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76760481BB;
-	Wed, 10 Jan 2024 12:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EE748CC8;
+	Wed, 10 Jan 2024 12:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ddf73f0799so114026a34.1;
-        Wed, 10 Jan 2024 04:49:00 -0800 (PST)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bbebe6191bso3732058b6e.3;
+        Wed, 10 Jan 2024 04:49:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704890953; x=1705495753; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=REhGpdroa6cBxeVt6/ySf42exMJ/bES9CjOdzQq6zdU=;
+        b=UeUMpNzSCgb0R+9pBXfgAjxfQHSpKDdXbGSYzWtUZyBZF6ykGUbETzQaMz+wIIJ1F3
+         1QVM2cpppQEwoQjC75Iz6PM7gRTUk61AlKfBq2vB0QBoYkUT7e08+W02f8kaAi8BRcv3
+         +WWzPeIUM8hg0oYkmzbFto3f8WGhSE6UyDdh93hx1mjmK9fEUAgEB4JADf4XxoTWL4T+
+         OhOGRCRySuYtGWqoyDXyBfVllKnkaAHjmaDusbk77pmuQp6iIFYFEVbnbOl23+65h3C1
+         utErjhYpwDg/CWFn1WTirUykpTG8F2WcJXEasqX5/9EWE1k7lfjyVF5elUWTqya3C/Xv
+         yMwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704890939; x=1705495739;
+        d=1e100.net; s=20230601; t=1704890953; x=1705495753;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O7wdR/Eyk4uZr26rU209ZZ1Q0iKlXSFwBwzNCr/1V7s=;
-        b=YnxaX9gnXkVxz7pPvXCzGjhIFfnyNEaGErYNbDhUa9d7/uTucN/nleC9GU5NPt+9jv
-         cUtkDYkDH+EbBdibXNxAq6LOgs2ulQqb71ne6ovYbjoV8RytgmojiZecBY31hl/Qibyu
-         FPQD+rhxEiZnmDqxQaIk45jRmhQiL0kH2GzG0LK1rs4UK7EFcLhpl+8BBssHLxISF1rZ
-         lIytbR2L1zMDshEQI4VhZwDizur7zmrqEn3J/OSIocz/hlU3+hF2E3qa/KwLjDp48ZF8
-         0Z3Ql+5xeyZHKKomHR8N1SQhYQU2l4KLpdV9E9xrm+JSJ5fH51YVzi3Y+PJddcHVcndp
-         MN+A==
-X-Gm-Message-State: AOJu0YzL6P7o0JPxibg8Fi5H3sRhPTHW9glWDBI6KuC6f0Tb2QI4iZCk
-	Ks0vO5WuzWTsvVHT20HumvBr/Ym2Q3rIMCIQ5u0=
-X-Google-Smtp-Source: AGHT+IF0IOWk05Q5ngkC2ZGOhj+GKS4NW7UmshCWEOYCffNKsK5wjkmkscmprDJBqxda1cmk5+zf1oPzBh2QV59oiT0=
-X-Received: by 2002:a4a:e1b5:0:b0:598:76c6:7085 with SMTP id
- 21-20020a4ae1b5000000b0059876c67085mr1827065ooy.1.1704890939515; Wed, 10 Jan
- 2024 04:48:59 -0800 (PST)
+        bh=REhGpdroa6cBxeVt6/ySf42exMJ/bES9CjOdzQq6zdU=;
+        b=n9FTWF7JJgZVL4vVphhbVk3F0RSdyGuohH5awL0vxIDd1ru5mTO/uCfKTJkVJ4KA/D
+         vV57eTQX4ze851Z70q7xopnLhs87/Fl2sE+z0+85+ERxPfYEMhIz1HybQUzzagSf5gzf
+         9h3rznVNLmI8oS74avt7fB53F4ygj8j2hwsDrfwUWIIdoG6lWFX3UBOiZqdmXOQ3yngx
+         0Iih8L20sOweKcwnVCTeX3H8oNQo95cTAsrJPSpFz4oiOtWuZIpmc7Hc3ErJOPvu9/MF
+         ME/nnYumiuvNwDZcOyY1aMSjyWNRZ+fzqD7OKtWZtGmpYrxEk+1R2YjL5AemC8/YNhQE
+         goPQ==
+X-Gm-Message-State: AOJu0Yy/Luk5Tky3wj5NrRWkFu72z2/an/ZPo7NyzOpH1HUJoCBKJKOI
+	rkUvT8B3jUVaejRuZsdllPRI1gj3Sob812z9WIU=
+X-Google-Smtp-Source: AGHT+IHvA530Y3zhfFAw3i/+1nMbsoG6/W9iThS7KUwM8hcmn1LZ4rYFri6JhNWTA+KPK13EjF1bQC0cpqciA99E/tE=
+X-Received: by 2002:a05:6808:f91:b0:3bd:38b9:64c3 with SMTP id
+ o17-20020a0568080f9100b003bd38b964c3mr1266243oiw.61.1704890953655; Wed, 10
+ Jan 2024 04:49:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240106191502.29126-1-quic_manafm@quicinc.com>
- <CAJZ5v0gE6eEpALrfxHvCd5TRqjB+v8pffG4CKLTVXiSvuiWhHg@mail.gmail.com> <d7b82fc8-0ed8-80b8-9eb8-c77f9277178f@quicinc.com>
-In-Reply-To: <d7b82fc8-0ed8-80b8-9eb8-c77f9277178f@quicinc.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 10 Jan 2024 13:48:47 +0100
-Message-ID: <CAJZ5v0g4hnRqRCseRnTjfEF+-2=ZT8U9=2m9FODqh3G8eDd=Sw@mail.gmail.com>
-Subject: Re: [PATCH] thermal/sysfs: Always enable hysteresis write support
-To: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de> <87b65f8e-abde-2aff-4da8-df6e0b464677@web.de>
+ <05d334af-1a0f-4498-b57d-36a783288f07@web.de>
+In-Reply-To: <05d334af-1a0f-4498-b57d-36a783288f07@web.de>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 10 Jan 2024 14:49:02 +0200
+Message-ID: <CAOQ4uxiRaTQyT1nxeRD7B89=VuA+KKEqi01LL1kqfJ17-qKKpw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] overlayfs: Adjustments for ovl_fill_super()
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: kernel-janitors@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	Miklos Szeredi <miklos@szeredi.hu>, cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>, 
+	Christian Brauner <brauner@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Manaf,
+On Wed, Jan 10, 2024 at 2:25=E2=80=AFPM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> > Date: Thu, 30 Mar 2023 10:38:23 +0200
+> >
+> > Some update suggestions were taken into account
+> > from static source code analysis.
+> >
+> > Markus Elfring (4):
+> >   Return directly for two checks
+> >   Improve two size determinations
+> >   Improve exception handling
+> >   Move some assignments for the variable =E2=80=9Cerr=E2=80=9D
+> >
+> >  fs/overlayfs/super.c | 72 ++++++++++++++++++++++++--------------------
+> >  1 file changed, 39 insertions(+), 33 deletions(-)
+>
+> Is this patch series still in review queues?
+>
 
-On Wed, Jan 10, 2024 at 9:17=E2=80=AFAM Manaf Meethalavalappu Pallikunhi
-<quic_manafm@quicinc.com> wrote:
->
-> Hi Rafael,
->
-> On 1/9/2024 7:12 PM, Rafael J. Wysocki wrote:
->
-> On Sat, Jan 6, 2024 at 8:16=E2=80=AFPM Manaf Meethalavalappu Pallikunhi
-> <quic_manafm@quicinc.com> wrote:
->
-> The commit 2e38a2a981b2("thermal/core: Add a generic
-> thermal_zone_set_trip() function") adds the support to update
-> trip hysteresis even if set_trip_hyst() operation is not defined.
-> But during hysteresis attribute creation, if this operation is
-> defined then only it enables hysteresis write access. It leads
-> to a case where hysteresis sysfs will be read only for a thermal
-> zone when its set_trip_hyst() operation is not defined.
->
-> Which is by design.
->
-> I think it is regression after recent re-work. If a sensor is registered =
-with thermal framework via thermal_of,
->
-> sensor driver doesn't need to know the trip configuration and nothing to =
-do with set_trip_hyst() in driver.
->
-> Without this change, if a sensor needs to be monitored from userspace(tri=
-p/hysteresis),
+Sorry, this series was not on my radar.
 
-What exactly do you mean by "monitored" here?
-
-> it is enforcing sensor driver to add  dummy set_trip_hyst() operation. Co=
-rrect me otherwise
-
-With the current design, whether or not trip properties can be updated
-by user space is a thermal zone property expressed by the presence of
-the set_trip_* operations, so yes, whoever registers the thermal zone
-needs to provide those so that user space can update the trip
-properties.
-
-> For some thermal zone types (eg. acpi), updating trip hysteresis via
-> sysfs might lead to incorrect behavior.
+> See also:
+> https://lore.kernel.org/cocci/87b65f8e-abde-2aff-4da8-df6e0b464677@web.de=
+/
+> https://sympa.inria.fr/sympa/arc/cocci/2023-03/msg00115.html
 >
-> To address this issue, is it okay to  guard  hysteresis write permission =
-under CONFIG_THERMAL_WRITABLE_TRIPS defconfig ?
 
-Not really, because it would affect all of the thermal zones then.
+I will queue cleanup patches 1-2, but I do not like patches 3/4 and 4/4.
+I do not think that they make the code better to read or maintain.
 
-TBH, the exact scenario in which user space needs to update trip
-hysteresis is not particularly clear to me, so can you provide some
-more details, please?
-
-Thanks!
+Thanks,
+Amir.
 
