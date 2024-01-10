@@ -1,138 +1,119 @@
-Return-Path: <linux-kernel+bounces-22220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33C5829B11
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:17:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E56B829B18
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BCDE287667
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:17:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDB64286BD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838C5487BB;
-	Wed, 10 Jan 2024 13:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49153487B7;
+	Wed, 10 Jan 2024 13:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="mhD0fveQ"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mz+pWCaQ"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE9148CC1
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-336c5b5c163so2509927f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:17:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485004878D;
+	Wed, 10 Jan 2024 13:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-429b7910697so2824201cf.1;
+        Wed, 10 Jan 2024 05:19:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1704892659; x=1705497459; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vszx2G9uELuU9hK0zj2S4/o3kowknqBc1/GUoklXrQI=;
-        b=mhD0fveQa7CF90Ky9sh1YCxbb3rlxicaqTGfktrGiPCkLetzcuZ2kkJjWINHjNedZi
-         /eTXv5QcR1H47zBlFYItCeuJBTWHnORKSaiCCf+AWv6wTMj0KQpvF+q2aRElBf9TPIfa
-         nPH6QwJfdC7hb9FmhtgG7aR891OF4R7zvwgTcBFewmaOnw9Mlu6ONQ9CSBrX9IRleyj7
-         cFeBBIPgAIVG9WOpPxmMKHmnHQx5y1cyFybyO/hRBXsoIOw5KWJIBrnuGT5xT6m7dCG4
-         dLgkYZjY3Rw4FJ67pQEcHK5Xxf2+eJgAYWVh/++CuzZ3yplVokvyfRuignYc2bLvh3ss
-         xJgg==
+        d=gmail.com; s=20230601; t=1704892759; x=1705497559; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=liSzDRZehByCujutdLomxYVsOIIXj62EeJs6zgUIbJ8=;
+        b=Mz+pWCaQc/2MCe71Ji4K1RPrdSGnL350uFqBcCKfWHicrQJvpCaqhVvWzn86eRMoeA
+         ejAqeKvbvh0w1nU6BayMuq9k2P+BHiUQl87cHjhlmE+pyslPkxlebwCWKUaX6ftQEWV+
+         r/WN4Ff7fhySvTD7aT8mIOB1xb6DBHc6Ld2fwota6ZfHVviFYXv8pZ/RaP7Zhp3UXEmb
+         fURKIdI9fdp2e9ZQozI/Oopnf2dwiGcUBUWOsPbZvBG2ynvh2+/QxZfH2kM+0B865TD1
+         qDiE54hXpa1FeMnGP0NsEnoIBBWmDb0rguaO15QeNIzWc839Lq8dSdZLxwXbwCS9o/Oz
+         3XIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704892659; x=1705497459;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vszx2G9uELuU9hK0zj2S4/o3kowknqBc1/GUoklXrQI=;
-        b=Q0G4O/WGAuUtnzOQED8gGuusxW6eHLrC/K0qV1sTx2ZfOBUHYJni15tK3Km9GRusv8
-         Q79XY9hN3uqYEtw+QNZSz3IWtJOLmjcH+7Nwua7668hMyZgVNwOaTTOSoUddsEzuzemy
-         kcPxyZLfxIK97K2T1znJ2n/HHuSls1iLRgxSbrrHE2VrHbt92fs75rJBSdUZg5cnOS2s
-         UiJ1y/+L9NDT1PKg5ifBfzM0OQse/7LgyYIMzmcvVac60uNlippWK/EQY8Ny9inKYN8z
-         itwyGe8HK8KLWoU/vCzl18eY9jkgXmMaSUMBDoBlbm89Dy+4j9zLUh2+gU3K1LYJPv+7
-         LKVA==
-X-Gm-Message-State: AOJu0YwBEe6PW9Cs1JwWqcdcmSBsAT+0rkm5JF2fRcAn0aDxLpFesCiB
-	qX8HSPlP6Ju8KQuQ/MjMEYPtlZxR84Wj1g==
-X-Google-Smtp-Source: AGHT+IG0xqvK/uM4BvzNCZURD1QaAj22eknZfkbaekHf4jMRg2ppp46KcuhVFANDknFKAjAN6yVkKg==
-X-Received: by 2002:adf:b182:0:b0:336:5b1e:ee66 with SMTP id q2-20020adfb182000000b003365b1eee66mr20524wra.31.1704892658708;
-        Wed, 10 Jan 2024 05:17:38 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.5])
-        by smtp.gmail.com with ESMTPSA id z15-20020adff74f000000b0033740e109adsm4920854wrp.75.2024.01.10.05.17.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 05:17:38 -0800 (PST)
-Message-ID: <aed6534b-ad5e-4f5c-9861-9a784968adcc@tuxon.dev>
-Date: Wed, 10 Jan 2024 15:17:36 +0200
+        d=1e100.net; s=20230601; t=1704892759; x=1705497559;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=liSzDRZehByCujutdLomxYVsOIIXj62EeJs6zgUIbJ8=;
+        b=Hceex1st0Ojyu7WtA/spyz1e7Gm8sZ35H3kD3DS+Za574F/qxIzZKX91dq06ZufNgB
+         mFdKf2hNPWUw3k6K5BGfJPSq4Qe6Cq5uToZlBwe2H/2+7vcYp9fRMlNi6H9Uq2VFWFML
+         oS1CRO1a8H47PaAtgPHZtH3yhx7wHLlwVp+LadRKXhmjlK6rPYgcOOiNFNFIuVBoKo6I
+         xwyqcBdV2qc3/ZYW2j7S+BUm9ljeWcfjuPYJsRKNWWquqglAqtV8bk3VczCu2/7R3Gi0
+         Rm/uIuPJCRBvi+2V9fxFHOLW0M+fVo1ovPNamhkWuucJQn2gk+uQQDsEeRyXeXg77Ald
+         DM0Q==
+X-Gm-Message-State: AOJu0Yz+5NDfERzf2sr6Noc/EMD2upz9uG4Q925+9QrQBNv/dNo2Ychv
+	PaumJ1+kukvFZUhhfga9to5H0tTBtD9069slQyQ=
+X-Google-Smtp-Source: AGHT+IGcrrq+I8hwbxPBmCgLqJ5ycxNtTDl/NpLbNNik/6JjZSHy04GALI6d2ZjfKUVwNJdXG6BXLL4eANYYYtYNHCc=
+X-Received: by 2002:a05:6214:ac9:b0:67f:59a8:5d7f with SMTP id
+ g9-20020a0562140ac900b0067f59a85d7fmr75196qvi.44.1704892759178; Wed, 10 Jan
+ 2024 05:19:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 17/19] net: ravb: Return cached statistics if
- the interface is down
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, p.zabel@pengutronix.de,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, geert+renesas@glider.be,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-18-claudiu.beznea.uj@bp.renesas.com>
- <af5ab82e-5904-c33b-983e-b37844dab3f5@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <af5ab82e-5904-c33b-983e-b37844dab3f5@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de> <87b65f8e-abde-2aff-4da8-df6e0b464677@web.de>
+ <05d334af-1a0f-4498-b57d-36a783288f07@web.de> <CAOQ4uxiRaTQyT1nxeRD7B89=VuA+KKEqi01LL1kqfJ17-qKKpw@mail.gmail.com>
+ <d912872a-e70a-4e5d-aabe-26f289507f44@web.de>
+In-Reply-To: <d912872a-e70a-4e5d-aabe-26f289507f44@web.de>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 10 Jan 2024 15:19:07 +0200
+Message-ID: <CAOQ4uxjsuYy8BzgaHXaNa-S0+HZ_P-Fb1UEgOkbrdxQPz0Y6rQ@mail.gmail.com>
+Subject: Re: [0/4] overlayfs: Adjustments for ovl_fill_super()
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-unionfs@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	Miklos Szeredi <miklos@szeredi.hu>, cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 10, 2024 at 3:01=E2=80=AFPM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> >> See also:
+> >> https://lore.kernel.org/cocci/87b65f8e-abde-2aff-4da8-df6e0b464677@web=
+de/
+> >> https://sympa.inria.fr/sympa/arc/cocci/2023-03/msg00115.html
+> >
+> > I will queue cleanup patches 1-2,
+>
+> Thanks for this positive feedback.
 
+Sorry, these patches do not apply to master branch and patch 1
+is no longer correct in master branch and the new mount api changes.
 
-On 08.01.2024 22:22, Sergey Shtylyov wrote:
-> On 1/5/24 11:23 AM, Claudiu wrote:
-> 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Return the cached statistics in case the interface is down. There should be
->> no drawback to this, as cached statistics are updated in ravb_close().
->>
->> The commit prepares the code for the addition of runtime PM support.
->>
->> Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> [...]
-> 
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index 76035afd4054..168b6208db37 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -2117,6 +2117,9 @@ static struct net_device_stats *ravb_get_stats(struct net_device *ndev)
->>  	const struct ravb_hw_info *info = priv->info;
->>  	struct net_device_stats *nstats, *stats0, *stats1;
->>  
->> +	if (!(ndev->flags & IFF_UP))
-> 
->    Well, I guess it's OK to read the counters in the reset mode... BUT
-> won't this race with pm_runtime_put_autosuspend() when its call gets added
-> to ravb_close()?
+>
+>
+> >                                   but I do not like patches 3/4 and 4/4=
+.
+> > I do not think that they make the code better to read or maintain.
+>
+> I would appreciate if the details for such change reluctance can be clari=
+fied better.
 
-I re-checked it and, yes, this is true. A sync runtime suspend would be
-better here. But, as of my current investigation, even with this
-ravb_get_stats() can still race with ravb_open()/ravb_close() as they are
-called though different locking scheme (ravb_open()/ravb_close() is called
-with rtnl locked while ravb_get_stats() can be called only with
-dev_base_lock rwlock locked for reading).
+patch 3:
+I much rather a single error handling label that takes care of
+all the cleanups - it is harder to make mistakes and jump to
+the wrong label when adding new error conditions.
 
-A mutex in the driver should to help with this.
+patch 4:
+Overlayfs uses this coding style all over the place
 
-Thank you,
-Claudiu Beznea
+  err =3D -ENOMEM;
+  ofs->creator_cred =3D cred =3D prepare_creds();
+  if (!cred)
+      goto out_free_ofs;
 
-> 
->> +		return &ndev->stats;
->> +
->>  	nstats = &ndev->stats;
->>  	stats0 = &priv->stats[RAVB_BE];
->>  
-> [...]
-> 
-> MBR, Sergey
-> 
+I don't see the benefit in making err =3D -ENOMEM conditional.
+I don't see the style after your patch as clearly better than before.
+
+Thanks,
+Amir.
 
