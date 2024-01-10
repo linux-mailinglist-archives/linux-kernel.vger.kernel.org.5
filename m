@@ -1,173 +1,229 @@
-Return-Path: <linux-kernel+bounces-22258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9FFD829B81
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:39:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67CCF829B85
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 14:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C4BDB212FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:39:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA83C1F21825
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 13:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B937748CD0;
-	Wed, 10 Jan 2024 13:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B354048CD4;
+	Wed, 10 Jan 2024 13:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CFR5szVv"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="gVo2F6g+"
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323CB495C9
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cd703e9014so16889831fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 05:39:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704893948; x=1705498748; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yYuHDlpeSQP0DPaCl1fybFBgm95cBWd/VxGoejBh4E8=;
-        b=CFR5szVvT4GLTgQKc+/5ugj56aQnmduy7ReUJE+MNeTENyCPIlcu+yPfgmsab52axM
-         5pn6F44RVAVVCNhyhEisGx/NLaRoHW2e0HS8lJwb3I++gitQNYLTmDXClQBDpBRYOw2o
-         NbRJyHODRkD+7OFRerhmdgfQHsXy/tVl9c2PeHQ1d9TvWTCM1go2AhOamo05BO1mawTs
-         tFDfwJrR0+6oYhWc4FgEw7wOKx9ObPaqFvVZoxqQU0K/2f9wX7lWXE57VYDLqUhlqaXC
-         wbrQq7bYcFQLbMdV6tLW7PEnhPiWxqGJI6affHeGy3ql3JS6LNtebF12PleIug7P9CRm
-         q0dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704893948; x=1705498748;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yYuHDlpeSQP0DPaCl1fybFBgm95cBWd/VxGoejBh4E8=;
-        b=KPomPCnKLY9UVcfeiq+GaT63qo/X4KmUUtoHarXwqTTDJbOx1H3yuZhONfomNEOFCG
-         kkUboI+zbqVS+SeValmWV9TAD5lbula496pB1rF58zueCqVopZRO/PiRkbs4srZyDHq8
-         W7SX5H5dkcujlCPfCkkyeUQPcaffVJDuqx1+CgI0Hon7MwBWviNAEjdRAfiwuZG3LV/Q
-         vcSSWfmv3gW0dp+ER8dLOanflwBGqTfwMU/znhlUHW4/b7qBp5BlWffaeLfL+pCT5z80
-         Bpb26gvkfQj6pSUbXP3cSv9v1Zjf4sJ19NQLFf2MkEXNwgaTNJpImiHxcEvo7xiNPvTU
-         OewA==
-X-Gm-Message-State: AOJu0YyofIiWL4ZbIlbyJDjB1l50q6Mxqxs5i90o+hv7hHndSSoXK3OI
-	TIDXt2o77qmSPLjrKQT0ytF7Zhsp4vSORA==
-X-Google-Smtp-Source: AGHT+IFTc9I0KvBn1sBygc4Ur7jlswZ9AI9dvNPDhS34Y1In36k05J11/J0dpgN302dDT6zTczVmtA==
-X-Received: by 2002:a05:651c:2059:b0:2cd:1cb7:71d5 with SMTP id t25-20020a05651c205900b002cd1cb771d5mr619348ljo.48.1704893948266;
-        Wed, 10 Jan 2024 05:39:08 -0800 (PST)
-Received: from ?IPv6:2804:30c:1668:b300:8fcd:588d:fb77:ed04? ([2804:30c:1668:b300:8fcd:588d:fb77:ed04])
-        by smtp.gmail.com with ESMTPSA id az5-20020a170902a58500b001ca86a9caccsm3613547plb.228.2024.01.10.05.39.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 05:39:07 -0800 (PST)
-Message-ID: <96578fb7568a8c2a318c850e6979bbf8f58cc249.camel@suse.com>
-Subject: Re: [PATCH v1 1/5] livepatch: Create and include UAPI headers
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Lukas Hruska <lhruska@suse.cz>, Petr Mladek <pmladek@suse.com>, Miroslav
-	Benes <mbenes@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Joe Lawrence <joe.lawrence@redhat.com>, live-patching@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, Josh Poimboeuf
-	 <jpoimboe@redhat.com>
-Date: Wed, 10 Jan 2024 10:38:52 -0300
-In-Reply-To: <20231106162513.17556-2-lhruska@suse.cz>
-References: <20231106162513.17556-1-lhruska@suse.cz>
-	 <20231106162513.17556-2-lhruska@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53643487BE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 13:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id B9B3D2FC0057;
+	Wed, 10 Jan 2024 14:39:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1704893977;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NBr8Ca6T6pj462sAdOhvmla4yehDm43kFrOCFOhWR1Y=;
+	b=gVo2F6g+ftVSYC2ja0jm3fxua0sVpmkTiKLfrSHyAOrY+XXctIu7qXUbkFlFlWXjqK/Fc1
+	uYJro0xKbuZckVlyENB1J8JodhKUWjW/2AtMfinRHk3eeTLCMWYQjowChFgzx4Fn/cXsD7
+	TYwdrGPxRaL43cqyTrME63S25KScnyE=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <adb11c46-aa5e-4389-8757-5bbc627eff69@tuxedocomputers.com>
+Date: Wed, 10 Jan 2024 14:39:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] drm/uAPI: Add "active color format" drm property as
+ feedback for userspace
+Content-Language: en-US
+To: Andri Yngvason <andri@yngvason.is>,
+ Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc: amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20240109181104.1670304-1-andri@yngvason.is>
+ <20240109181104.1670304-3-andri@yngvason.is>
+From: Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <20240109181104.1670304-3-andri@yngvason.is>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2023-11-06 at 17:25 +0100, Lukas Hruska wrote:
-> From: Josh Poimboeuf <jpoimboe@redhat.com>
->=20
-> Define klp prefixes in include/uapi/linux/livepatch.h, and use them
-> for
-> replacing hard-coded values in kernel/livepatch/core.c.
->=20
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Lukas Hruska <lhruska@suse.cz>
+Hi,
 
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Am 09.01.24 um 19:10 schrieb Andri Yngvason:
+> From: Werner Sembach <wse@tuxedocomputers.com>
+>
+> Add a new general drm property "active color format" which can be used by
+> graphic drivers to report the used color format back to userspace.
+>
+> There was no way to check which color format got actually used on a given
+> monitor. To surely predict this, one must know the exact capabilities of
+> the monitor, the GPU, and the connection used and what the default
+> behaviour of the used driver is (e.g. amdgpu prefers YCbCr 4:4:4 while i915
+> prefers RGB). This property helps eliminating the guessing on this point.
+>
+> In the future, automatic color calibration for screens might also depend on
+> this information being available.
+>
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Signed-off-by: Andri Yngvason <andri@yngvason.is>
+> Tested-by: Andri Yngvason <andri@yngvason.is>
+
+One suggestion from back then was, instead picking out singular properties like 
+"active color format", to just expose whatever the last HDMI or DP metadata 
+block(s)/frame(s) that was sent over the display wire was to userspace and 
+accompanying it with a parsing script.
+
+Question: Does the driver really actually know what the GPU is ultimatively 
+sending out the wire, or is that decided by a final firmware blob we have no 
+info about?
+
+Greetings
+
+Werner
 
 > ---
-> =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
-> =C2=A0include/uapi/linux/livepatch.h | 15 +++++++++++++++
-> =C2=A0kernel/livepatch/core.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
-=C2=A0 5 +++--
-> =C2=A03 files changed, 19 insertions(+), 2 deletions(-)
-> =C2=A0create mode 100644 include/uapi/linux/livepatch.h
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4cc6bf79fdd8..11a2d84c1277 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12130,6 +12130,7 @@ F:	Documentation/ABI/testing/sysfs-
-> kernel-livepatch
-> =C2=A0F:	Documentation/livepatch/
-> =C2=A0F:	arch/powerpc/include/asm/livepatch.h
-> =C2=A0F:	include/linux/livepatch.h
-> +F:	include/uapi/linux/livepatch.h
-> =C2=A0F:	kernel/livepatch/
-> =C2=A0F:	kernel/module/livepatch.c
-> =C2=A0F:	lib/livepatch/
-> diff --git a/include/uapi/linux/livepatch.h
-> b/include/uapi/linux/livepatch.h
-> new file mode 100644
-> index 000000000000..e19430918a07
-> --- /dev/null
-> +++ b/include/uapi/linux/livepatch.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>   drivers/gpu/drm/drm_connector.c | 63 +++++++++++++++++++++++++++++++++
+>   include/drm/drm_connector.h     | 10 ++++++
+>   2 files changed, 73 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index c3725086f4132..30d62e505d188 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1061,6 +1061,14 @@ static const struct drm_prop_enum_list drm_dp_subconnector_enum_list[] = {
+>   	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
+>   };
+>   
+> +static const struct drm_prop_enum_list drm_active_color_format_enum_list[] = {
+> +	{ 0, "not applicable" },
+> +	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
+> +	{ DRM_COLOR_FORMAT_YCBCR444, "ycbcr444" },
+> +	{ DRM_COLOR_FORMAT_YCBCR422, "ycbcr422" },
+> +	{ DRM_COLOR_FORMAT_YCBCR420, "ycbcr420" },
+> +};
 > +
-> +/*
-> + * livepatch.h - Kernel Live Patching Core
+>   DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
+>   		 drm_dp_subconnector_enum_list)
+>   
+> @@ -1390,6 +1398,15 @@ static const u32 dp_colorspaces =
+>    *	drm_connector_attach_max_bpc_property() to create and attach the
+>    *	property to the connector during initialization.
+>    *
+> + * active color format:
+> + *	This read-only property tells userspace the color format actually used
+> + *	by the hardware display engine "on the cable" on a connector. The chosen
+> + *	value depends on hardware capabilities, both display engine and
+> + *	connected monitor. Drivers shall use
+> + *	drm_connector_attach_active_color_format_property() to install this
+> + *	property. Possible values are "not applicable", "rgb", "ycbcr444",
+> + *	"ycbcr422", and "ycbcr420".
 > + *
-> + * Copyright (C) 2016 Josh Poimboeuf <jpoimboe@redhat.com>
+>    * Connectors also have one standardized atomic property:
+>    *
+>    * CRTC_ID:
+> @@ -2451,6 +2468,52 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>   }
+>   EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+>   
+> +/**
+> + * drm_connector_attach_active_color_format_property - attach "active color format" property
+> + * @connector: connector to attach active color format property on.
+> + *
+> + * This is used to check the applied color format on a connector.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
 > + */
+> +int drm_connector_attach_active_color_format_property(struct drm_connector *connector)
+> +{
+> +	struct drm_device *dev = connector->dev;
+> +	struct drm_property *prop;
 > +
-> +#ifndef _UAPI_LIVEPATCH_H
-> +#define _UAPI_LIVEPATCH_H
+> +	if (!connector->active_color_format_property) {
+> +		prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE, "active color format",
+> +						drm_active_color_format_enum_list,
+> +						ARRAY_SIZE(drm_active_color_format_enum_list));
+> +		if (!prop)
+> +			return -ENOMEM;
 > +
-> +#define KLP_RELA_PREFIX		".klp.rela."
-> +#define KLP_SYM_PREFIX		".klp.sym."
+> +		connector->active_color_format_property = prop;
+> +	}
 > +
-> +#endif /* _UAPI_LIVEPATCH_H */
-> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> index 61328328c474..622f1916a5c8 100644
-> --- a/kernel/livepatch/core.c
-> +++ b/kernel/livepatch/core.c
-> @@ -20,6 +20,7 @@
-> =C2=A0#include <linux/completion.h>
-> =C2=A0#include <linux/memory.h>
-> =C2=A0#include <linux/rcupdate.h>
-> +#include <uapi/linux/livepatch.h>
-> =C2=A0#include <asm/cacheflush.h>
-> =C2=A0#include "core.h"
-> =C2=A0#include "patch.h"
-> @@ -226,7 +227,7 @@ static int klp_resolve_symbols(Elf_Shdr *sechdrs,
-> const char *strtab,
-> =C2=A0
-> =C2=A0		/* Format: .klp.sym.sym_objname.sym_name,sympos */
-> =C2=A0		cnt =3D sscanf(strtab + sym->st_name,
-> -			=C2=A0=C2=A0=C2=A0=C2=A0 ".klp.sym.%55[^.].%511[^,],%lu",
-> +			=C2=A0=C2=A0=C2=A0=C2=A0 KLP_SYM_PREFIX "%55[^.].%511[^,],%lu",
-> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0 sym_objname, sym_name, &sympos);
-> =C2=A0		if (cnt !=3D 3) {
-> =C2=A0			pr_err("symbol %s has an incorrectly
-> formatted name\n",
-> @@ -305,7 +306,7 @@ static int klp_write_section_relocs(struct module
-> *pmod, Elf_Shdr *sechdrs,
-> =C2=A0	 * See comment in klp_resolve_symbols() for an explanation
-> =C2=A0	 * of the selected field width value.
-> =C2=A0	 */
-> -	cnt =3D sscanf(shstrtab + sec->sh_name, ".klp.rela.%55[^.]",
-> +	cnt =3D sscanf(shstrtab + sec->sh_name, KLP_RELA_PREFIX
-> "%55[^.]",
-> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0 sec_objname);
-> =C2=A0	if (cnt !=3D 1) {
-> =C2=A0		pr_err("section %s has an incorrectly formatted
-> name\n",
-
+> +	drm_object_attach_property(&connector->base, prop, 0);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_active_color_format_property);
+> +
+> +/**
+> + * drm_connector_set_active_color_format_property - sets the active color format property for a
+> + * connector
+> + * @connector: drm connector
+> + * @active_color_format: color format for the connector currently active "on the cable"
+> + *
+> + * Should be used by atomic drivers to update the active color format over a connector.
+> + */
+> +void drm_connector_set_active_color_format_property(struct drm_connector *connector,
+> +						    u32 active_color_format)
+> +{
+> +	drm_object_property_set_value(&connector->base, connector->active_color_format_property,
+> +				      active_color_format);
+> +}
+> +EXPORT_SYMBOL(drm_connector_set_active_color_format_property);
+> +
+>   /**
+>    * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
+>    * @connector: connector to attach the property on.
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index fe88d7fc6b8f4..9ae73cfdceeb1 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1699,6 +1699,12 @@ struct drm_connector {
+>   	 */
+>   	struct drm_property *privacy_screen_hw_state_property;
+>   
+> +	/**
+> +	 * @active_color_format_property: Default connector property for the
+> +	 * active color format to be driven out of the connector.
+> +	 */
+> +	struct drm_property *active_color_format_property;
+> +
+>   #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>   #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>   #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+> @@ -2053,6 +2059,10 @@ void drm_connector_attach_privacy_screen_provider(
+>   	struct drm_connector *connector, struct drm_privacy_screen *priv);
+>   void drm_connector_update_privacy_screen(const struct drm_connector_state *connector_state);
+>   
+> +int drm_connector_attach_active_color_format_property(struct drm_connector *connector);
+> +void drm_connector_set_active_color_format_property(struct drm_connector *connector,
+> +						    u32 active_color_format);
+> +
+>   /**
+>    * struct drm_tile_group - Tile group metadata
+>    * @refcount: reference count
 
