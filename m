@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-22014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FEB38297F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:49:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1256E8297C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 11:42:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F18A11F25939
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:49:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 806E5289E43
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 10:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07BB481D9;
-	Wed, 10 Jan 2024 10:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510A140C0F;
+	Wed, 10 Jan 2024 10:42:00 +0000 (UTC)
 Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D121481D1
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E52F40C0E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 10:41:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
 Received: by air.basealt.ru (Postfix, from userid 490)
-	id 64BAD2F2027C; Wed, 10 Jan 2024 10:41:42 +0000 (UTC)
+	id D6F4F2F2027D; Wed, 10 Jan 2024 10:41:53 +0000 (UTC)
 X-Spam-Level: 
 Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id 2AE302F20285;
-	Wed, 10 Jan 2024 10:41:28 +0000 (UTC)
+	by air.basealt.ru (Postfix) with ESMTPSA id E1B262F20249;
+	Wed, 10 Jan 2024 10:41:31 +0000 (UTC)
 From: kovalev@altlinux.org
 To: bryantan@vmware.com,
 	vdasa@vmware.com,
@@ -36,278 +36,61 @@ Cc: kovalev@altlinux.org,
 	nickel@altlinux.org,
 	oficerovas@altlinux.org,
 	dutyrok@altlinux.org
-Subject: [PATCH 0/1] misc/vmw_vmci: fix filling of the msg and msg_payload in dg_info struct
-Date: Wed, 10 Jan 2024 13:40:41 +0300
-Message-Id: <20240110104042.31865-1-kovalev@altlinux.org>
+Subject: [PATCH 1/1] misc/vmw_vmci: fix filling of the msg and msg_payload in dg_info struct
+Date: Wed, 10 Jan 2024 13:40:42 +0300
+Message-Id: <20240110104042.31865-2-kovalev@altlinux.org>
 X-Mailer: git-send-email 2.33.8
+In-Reply-To: <20240110104042.31865-1-kovalev@altlinux.org>
+References: <20240110104042.31865-1-kovalev@altlinux.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Warning detected by tracking mechanisms __fortify_memcpy_chk, added 2021-04=
--20.
-The proposed patch (PATCH 1/1) introduces changes to meet the new requireme=
-nts.
+From: Vasiliy Kovalev <kovalev@altlinux.org>
 
-The reproducer (repro.c) was generated using the syzkaller program and mini=
-mized
-(Thanks Alexander Ofitserov <oficerovas@altlinux.org>):
+Fix "detected field-spanning write" of memcpy warning that is issued by
+the tracking mechanism __fortify_memcpy_chk, added 2021-04-20
+(f68f2ff91512c199ec24883001245912afc17873 fortify: Detect struct member overflows in memcpy() at compile-time)
 
-#define _GNU_SOURCE
+Fixes: a110b7ebb9c674 ("VMCI: datagram implementation.")
+Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+---
+ drivers/misc/vmw_vmci/vmci_datagram.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-#include <endian.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-uint64_t r[1] =3D {0xffffffffffffffff};
-
-int main(void)
-{
-        syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
-        memset((void *)0x20000000ul, 0x0, 0x1000000ul);
-
-        intptr_t res =3D 0;
-        res =3D syscall(__NR_socket, 0x28ul, 2ul, 0);
-        if (res !=3D -1)
-                r[0] =3D res;
-        *(uint16_t*)0x20000000 =3D 0x28;
-        *(uint16_t*)0x20000002 =3D 0;
-        *(uint32_t*)0x20000004 =3D 1;
-        *(uint32_t*)0x20000008 =3D 2;
-        *(uint32_t*)0x2000000c =3D 0;
-        syscall(__NR_connect, r[0], 0x20000000ul, 0x10ul);
-
-        // struct msghdr*
-        // 0x20000440ul - 0x20000447ul - msg_name
-        // 0x20000448ul - 0x20000449ul - msg_len
-        // 0x20000450ul - ptr to msg_iov
-        // 0x20000458ul - msg_iovlen
-        *(uint64_t*)0x20000450 =3D 0x20000400;
-        *(uint8_t*)0x20000448 =3D 0xFF;
-        *(uint64_t*)0x20000458 =3D 1;
-        *(uint64_t*)0x20000460 =3D 0x20010000;
-        *(uint64_t*)0x20000468 =3D 0;
-
-        // 0x20000400 - ptr to iov_base
-        // 0x20000408 - iov_len
-        *(uint64_t*)0x20000400 =3D 0x20000900;
-        strcpy((char *)0x20000900, "AAAAAA");
-        *(uint64_t*)0x20000408 =3D 0x10000;
-
-        syscall(__NR_sendmsg, r[0], 0x20000440ul, 0ul);
-        return 0;
-}
-
-$ gcc repro.c -o repro
-$ ./repro
-
-# dmesg (linux kernel 6.6.6):
------
-[   38.036309] Guest personality initialized and is inactive
-[   38.036380] VMCI host device registered (name=3Dvmci, major=3D10, minor=
-=3D122)
-[   38.036381] Initialized host personality
-[   38.037987] NET: Registered PF_VSOCK protocol family
-[   38.073027] ------------[ cut here ]------------
-[   38.073034] memcpy: detected field-spanning write (size 65560) of single=
- field "&dg_info->msg" at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 2=
-4)
-[   38.073103] WARNING: CPU: 9 PID: 3976 at drivers/misc/vmw_vmci/vmci_data=
-gram.c:237 vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
-[   38.073135] Modules linked in: vsock_loopback vmw_vsock_virtio_transport=
-_common vmw_vsock_vmci_transport vsock vmw_vmci ccm rfcomm cmac algif_hash =
-algif_skcipher af_alg af_packet qrtr bnep uvcvideo btusb uvc btrtl videobuf=
-2_vmalloc videobuf2_memops btintel videobuf2_v4l2 btbcm btmtk usbhid videod=
-ev bluetooth videobuf2_common mc ecdh_generic joydev snd_sof_pci_intel_tgl =
-snd_sof_intel_hda_common soundwire_intel soundwire_generic_allocation coret=
-emp snd_sof_intel_hda_mlink intel_uncore_frequency soundwire_cadence intel_=
-uncore_frequency_common intel_tcc_cooling snd_sof_intel_hda snd_sof_pci x86=
-_pkg_temp_thermal snd_sof_xtensa_dsp intel_powerclamp snd_sof snd_sof_utils=
- snd_soc_hdac_hda kvm_intel snd_hda_ext_core snd_soc_acpi_intel_match snd_s=
-oc_acpi snd_hda_codec_hdmi soundwire_bus snd_soc_core kvm hid_multitouch nl=
-s_utf8 snd_hda_codec_realtek hid_generic snd_compress nls_cp866 ac97_bus iw=
-lmvm spi_pxa2xx_platform 8250_dw iTCO_wdt snd_pcm_dmaengine irqbypass dw_dm=
-ac snd_hda_codec_generic vfat rtsx_pci_sdmmc intel_pmc_bxt
-[   38.073247]  crct10dif_pclmul fat ledtrig_audio snd_hda_intel crc32_pclm=
-ul mei_hdcp iTCO_vendor_support mmc_core intel_rapl_msr crc32c_intel snd_in=
-tel_dspcfg mac80211 ghash_clmulni_intel snd_intel_sdw_acpi sha512_ssse3 sha=
-256_ssse3 snd_hda_codec sha1_ssse3 aesni_intel processor_thermal_device_pci=
- processor_thermal_device snd_hda_core crypto_simd processor_thermal_rfim i=
-ntel_lpss_pci i2c_hid_acpi ucsi_acpi cryptd libarc4 iwlwifi pcspkr xhci_pci=
- processor_thermal_mbox intel_lpss ideapad_laptop i2c_hid xhci_pci_renesas =
-i2c_i801 mei_me typec_ucsi snd_hwdep idma64 processor_thermal_rapl typec sp=
-arse_keymap wmi_bmof tiny_power_button cfg80211 snd_pcm i2c_smbus platform_=
-profile rtsx_pci xhci_hcd mei virt_dma intel_rapl_common thermal hid roles =
-fan button int3403_thermal battery rfkill int340x_thermal_zone int3400_ther=
-mal acpi_thermal_rel intel_pmc_core pinctrl_tigerlake acpi_pad ac sch_fq_co=
-del vboxvideo drm_vram_helper drm_ttm_helper vboxsf vboxguest snd_seq_midi =
-snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device
-[   38.073342]  snd_timer snd soundcore msr fuse dm_mod efi_pstore efivarfs=
- ip_tables x_tables autofs4 i915 hwmon i2c_algo_bit drm_buddy ttm evdev drm=
-_display_helper input_leds serio_raw cec rc_core intel_gtt video wmi
-[   38.073375] CPU: 9 PID: 3976 Comm: eee.out Not tainted 6.6.6-un-def-alt1=
- #1
-[   38.073381] Hardware name: LENOVO 82X8/LNVNB161216, BIOS LTCN30WW 11/08/=
-2023
-[   38.073384] RIP: 0010:vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
-[   38.073405] Code: 38 fd ff ff 80 3d 5c 96 00 00 00 75 87 48 c7 c2 58 0b =
-6b c1 4c 89 ee 48 c7 c7 a0 0b 6b c1 c6 05 42 96 00 00 01 e8 18 c0 a1 c5 <0f=
-> 0b e9 63 ff ff ff e8 1c 5e 65 c6 83 cd ff e9 fe fc ff ff f0 ff
-[   38.073410] RSP: 0018:ffffc9000279fb58 EFLAGS: 00010246
-[   38.073415] RAX: 0000000000000000 RBX: ffff88811a9c0000 RCX: 00000000000=
-00000
-[   38.073418] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000=
-00000
-[   38.073421] RBP: ffff888165540000 R08: 0000000000000000 R09: 00000000000=
-00000
-[   38.073423] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8881655=
-40030
-[   38.073425] R13: 0000000000010018 R14: ffff8881090a2a00 R15: ffff88811a9=
-c0018
-[   38.073428] FS:  00007f3a36bec580(0000) GS:ffff8882a7a40000(0000) knlGS:=
-0000000000000000
-[   38.073432] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   38.073435] CR2: 000055b6120cf008 CR3: 000000010db62000 CR4: 00000000007=
-50ee0
-[   38.073438] PKRU: 55555554
-[   38.073440] Call Trace:
-[   38.073446]  <TASK>
-[   38.073448]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
-[   38.073467]  ? __warn+0x7d/0x130
-[   38.073482]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
-[   38.073503]  ? report_bug+0x17e/0x1b0
-[   38.073514]  ? handle_bug+0x60/0xb0
-[   38.073523]  ? exc_invalid_op+0x13/0x70
-[   38.073531]  ? asm_exc_invalid_op+0x16/0x20
-[   38.073540]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
-[   38.073559]  ? vmci_datagram_dispatch+0x378/0x3c0 [vmw_vmci]
-[   38.073577]  vmci_transport_dgram_enqueue+0xb5/0x150 [vmw_vsock_vmci_tra=
-nsport]
-[   38.073596]  vsock_dgram_sendmsg+0xcf/0x180 [vsock]
-[   38.073618]  ____sys_sendmsg+0x376/0x3b0
-[   38.073629]  ? copy_msghdr_from_user+0x6d/0xb0
-[   38.073635]  ___sys_sendmsg+0x86/0xe0
-[   38.073642]  ? filemap_map_pages+0x423/0x570
-[   38.073653]  ? vmci_resource_add+0xde/0x170 [vmw_vmci]
-[   38.073674]  ? __pfx_vmci_transport_recv_dgram_cb+0x10/0x10 [vmw_vsock_v=
-mci_transport]
-[   38.073689]  ? do_fault+0x296/0x470
-[   38.073697]  __sys_sendmsg+0x57/0xb0
-[   38.073704]  do_syscall_64+0x59/0x90
-[   38.073711]  ? count_memcg_events.constprop.0+0x3a/0x70
-[   38.073717]  ? handle_mm_fault+0x9e/0x300
-[   38.073724]  ? do_user_addr_fault+0x33d/0x680
-[   38.073733]  ? sched_clock+0xc/0x30
-[   38.073740]  ? get_vtime_delta+0xf/0xc0
-[   38.073750]  ? ct_kernel_exit.isra.0+0x71/0x90
-[   38.073759]  ? __ct_user_enter+0x5a/0xd0
-[   38.073765]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[   38.073771] RIP: 0033:0x7f3a36b0cd49
-[   38.073776] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 =
-89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48=
-> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
-[   38.073780] RSP: 002b:00007ffea38c4a08 EFLAGS: 00000217 ORIG_RAX: 000000=
-000000002e
-[   38.073784] RAX: ffffffffffffffda RBX: 000055b6120ce2d0 RCX: 00007f3a36b=
-0cd49
-[   38.073787] RDX: 0000000000000000 RSI: 0000000020000440 RDI: 00000000000=
-00003
-[   38.073790] RBP: 00007ffea38c4a20 R08: 00007ffea38c4b10 R09: 00007ffea38=
-c4b10
-[   38.073792] R10: 00007ffea38c4b10 R11: 0000000000000217 R12: 000055b6120=
-ce060
-[   38.073795] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000000=
-00000
-[   38.073799]  </TASK>
-[   38.073801] ---[ end trace 0000000000000000 ]---
------
-
-To assess the performance losses when using a new patch, the kernel was bui=
-lded with the
-patch below and the reproducer was launched several times:
-
-diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/=
-vmci_datagram.c
-index 6d42f3b99c6f46..b078364d5c9b23 100644
+diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/vmci_datagram.c
+index f50d22882476f9..27853b31e288b1 100644
 --- a/drivers/misc/vmw_vmci/vmci_datagram.c
 +++ b/drivers/misc/vmw_vmci/vmci_datagram.c
-@@ -234,6 +234,17 @@ static int dg_dispatch_as_host(u32 context_id, struct =
-vmci_datagram *dg)
-=20
-                        dg_info->in_dg_host_queue =3D true;
-                        dg_info->entry =3D dst_entry;
-+                       u32 i;
-+                       printk("memcpy: init i=3D%d\n",i);
-+                       for(i=3D0; i<1000000000;i++){
-+                               memcpy(&dg_info->msg, dg, 24);
-+                       }
-+                       printk("memcpy: old i=3D%d\n",i);
-+                       for(i=3D0; i<1000000000;i++){
-+                               memcpy(&dg_info->msg, dg, 12);
-+                               memcpy(dg_info->msg_payload, VMCI_DG_PAYLOA=
-D(dg), 12);
-+                       }
-+                       printk("memcpy: new i=3D%d\n",i);
-                        memcpy(&dg_info->msg, dg, VMCI_DG_HEADERSIZE);
-                        if (dg->payload_size) {
-                                memcpy(dg_info->msg_payload, VMCI_DG_PAYLOA=
-D(dg), dg->payload_size);
-
-=3D=3D=3D=3D=3D=3D=3D
-Reproducing
-=3D=3D=3D=3D=3D=3D=3D
-# dmesg -w
-----
-[  181.415379] Guest personality initialized and is inactive
-[  181.415659] VMCI host device registered (name=3Dvmci, major=3D10, minor=
-=3D122)
-[  181.415665] Initialized host personality
-[  181.422766] NET: Registered PF_VSOCK protocol family
-[  181.468022] memcpy: init i=3D0
-[  183.020694] memcpy: old i=3D1000000000
-[  184.572458] memcpy: new i=3D1000000000
-[  196.009873] memcpy: init i=3D0
-[  197.562651] memcpy: old i=3D1000000000
-[  199.118132] memcpy: new i=3D1000000000
-[  206.543691] memcpy: init i=3D0
-[  208.781697] memcpy: old i=3D1000000000
-[  211.020229] memcpy: new i=3D1000000000
-----
-
-$ node=20
-Welcome to Node.js v16.19.1.
-Type ".help" for more information.
-> 183.020694 - 181.468022 //old
-1.5526720000000012
-> 184.572458 - 183.020694 // new
-1.55176400000002
->
-> 197.562651 - 196.009873 // old
-1.5527779999999893
-> 199.118132 - 197.562651 // new
-1.5554810000000145
->
-> 208.781697 - 206.543691 // old
-2.238006000000013=20
-> 211.020229 - 208.781697 // new
-2.238531999999992
->
-
-Based on a rather primitive performance assessment, the results do not diff=
-er
-much, and given the loss of warning output in a one-time function call, the
-difference will be significant.
-
-[PATCH 1/1] misc/vmw_vmci: fix filling of the msg and msg_payload in dg_inf=
-o struct
+@@ -234,7 +234,10 @@ static int dg_dispatch_as_host(u32 context_id, struct vmci_datagram *dg)
+ 
+ 			dg_info->in_dg_host_queue = true;
+ 			dg_info->entry = dst_entry;
+-			memcpy(&dg_info->msg, dg, dg_size);
++			memcpy(&dg_info->msg, dg, VMCI_DG_HEADERSIZE);
++			if (dg->payload_size) {
++				memcpy(dg_info->msg_payload, VMCI_DG_PAYLOAD(dg), dg->payload_size);
++			}
+ 
+ 			INIT_WORK(&dg_info->work, dg_delayed_dispatch);
+ 			schedule_work(&dg_info->work);
+@@ -377,7 +380,10 @@ int vmci_datagram_invoke_guest_handler(struct vmci_datagram *dg)
+ 
+ 		dg_info->in_dg_host_queue = false;
+ 		dg_info->entry = dst_entry;
+-		memcpy(&dg_info->msg, dg, VMCI_DG_SIZE(dg));
++		memcpy(&dg_info->msg, dg, VMCI_DG_HEADERSIZE);
++		if (dg->payload_size) {
++			memcpy(dg_info->msg_payload, VMCI_DG_PAYLOAD(dg), dg->payload_size);
++		}
+ 
+ 		INIT_WORK(&dg_info->work, dg_delayed_dispatch);
+ 		schedule_work(&dg_info->work);
+-- 
+2.33.8
 
 
