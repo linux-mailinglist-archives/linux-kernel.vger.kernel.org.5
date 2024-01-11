@@ -1,141 +1,89 @@
-Return-Path: <linux-kernel+bounces-23022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8CC082A66F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:22:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0189982A671
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:23:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87509284000
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:22:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96EDDB21741
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4841C16;
-	Thu, 11 Jan 2024 03:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247FA53AF;
+	Thu, 11 Jan 2024 03:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MWF2Dpq7"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C74415A1;
-	Thu, 11 Jan 2024 03:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=k1Ho/05+osX5yBSt3dsuOnnijSKuAo5CebqXC420Q7U=; b=MWF2Dpq7Y6wltSXPDDINajcI5z
-	GhKGOIHtn/iLM+LJ31ocb50G/zGRv9WgoBOdPN1TOs8JykLCj8Gl9i6djrIYjtQqas8MjVYXPV0Aq
-	GV3HqHmZZEknI5KXH+mzG2SSyiJ8KsqyI7C03URgKjcGhZ9XT7UpQkKhJKP00wIP9cqBM4sbORtNc
-	xpXLLhh7oo2SJfj8gMZuYuCq47n0a8Hbj7Dcsg1AkLcRT4fFe9YZYapYiTpSWeIhmSs226DK/EE4K
-	DThCQgo5w0AKIpDk9oU4dL36zaeM2RIC3A+ZmqRgriedyiHl+T7jCwTkruDtW9jHj1Oif59TTPvUp
-	9u/kWvSQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNleL-00FbcJ-1o;
-	Thu, 11 Jan 2024 03:22:33 +0000
-Message-ID: <55680bae-966a-4a31-85f9-9ca516b80145@infradead.org>
-Date: Wed, 10 Jan 2024 19:22:33 -0800
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="lhO/sXbp"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D815382
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=dshx51HI40zA1xqVFX
+	zADg2VlgDAFrz0WnOsTKSvvUw=; b=lhO/sXbpD8kmL5Zy69zMbiyZgZP82WkN2I
+	xhZb4hC4o2O9faM+D8P/ckSD8YzOBHCUx1KeyYUY584dTO3iTDMFh7kkT9plwwg1
+	XJ3VJVpL8uwd07wtJVmruQW4ZGxhzK7iF9iqF5sGG7+TFD3nXlrJzvL6Rbf9A0pk
+	eBN63YPl4=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-1 (Coremail) with SMTP id _____wD3X4UwX59lAvWdAA--.60309S2;
+	Thu, 11 Jan 2024 11:23:28 +0800 (CST)
+From: chenxuebing <chenxb_99091@126.com>
+To: daniel@ffwll.ch,
+	airlied@gmail.com,
+	alexander.deucher@amd.com,
+	Xinhui.Pan@amd.com,
+	christian.koenig@amd.com
+Cc: linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	chenxuebing <chenxb_99091@126.com>
+Subject: [PATCH] drm/amdgpu: Clean up errors in dimgrey_cavefish_ip_offset.h
+Date: Thu, 11 Jan 2024 03:23:27 +0000
+Message-Id: <20240111032327.7402-1-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD3X4UwX59lAvWdAA--.60309S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtF1DCF48KF4ftF17Kr45ZFb_yoWfAFX_Ca
+	43Xr1fW347ZFnrtF17Zanru3yj9w1kuFs7Xw15tr15trZrCr18W3y5Gr47ZrWruFZxKFnr
+	C3WkXFZ8XrnI9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRK9atUUUUU==
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiGAdixWVLZWQS9AABsw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/8] buffer: Add kernel-doc for try_to_free_buffers()
-Content-Language: en-US
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240109143357.2375046-1-willy@infradead.org>
- <20240109143357.2375046-4-willy@infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240109143357.2375046-4-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Hi,
+Fix the following errors reported by checkpatch:
 
-On 1/9/24 06:33, Matthew Wilcox (Oracle) wrote:
-> The documentation for this function has become separated from it over
-> time; move it to the right place and turn it into kernel-doc.  Mild
-> editing of the content to make it more about what the function does, and
-> less about how it does it.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/buffer.c | 44 ++++++++++++++++++++++++--------------------
->  1 file changed, 24 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 071f01b28c90..25861241657f 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -2864,26 +2864,6 @@ int sync_dirty_buffer(struct buffer_head *bh)
->  }
->  EXPORT_SYMBOL(sync_dirty_buffer);
->  
-> -/*
-> - * try_to_free_buffers() checks if all the buffers on this particular folio
-> - * are unused, and releases them if so.
-> - *
-> - * Exclusion against try_to_free_buffers may be obtained by either
-> - * locking the folio or by holding its mapping's i_private_lock.
-> - *
-> - * If the folio is dirty but all the buffers are clean then we need to
-> - * be sure to mark the folio clean as well.  This is because the folio
-> - * may be against a block device, and a later reattachment of buffers
-> - * to a dirty folio will set *all* buffers dirty.  Which would corrupt
-> - * filesystem data on the same device.
-> - *
-> - * The same applies to regular filesystem folios: if all the buffers are
-> - * clean then we set the folio clean and proceed.  To do that, we require
-> - * total exclusion from block_dirty_folio().  That is obtained with
-> - * i_private_lock.
-> - *
-> - * try_to_free_buffers() is non-blocking.
-> - */
->  static inline int buffer_busy(struct buffer_head *bh)
->  {
->  	return atomic_read(&bh->b_count) |
-> @@ -2917,6 +2897,30 @@ drop_buffers(struct folio *folio, struct buffer_head **buffers_to_free)
->  	return false;
->  }
->  
-> +/**
-> + * try_to_free_buffers: Release buffers attached to this folio.
+ERROR: open brace '{' following struct go on the same line
 
-preferably s/_buffers: /_buffers - /
+Signed-off-by: chenxuebing <chenxb_99091@126.com>
+---
+ drivers/gpu/drm/amd/include/dimgrey_cavefish_ip_offset.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> + * @folio: The folio.
-> + *
-> + * If any buffers are in use (dirty, under writeback, elevated refcount),
-> + * no buffers will be freed.
-> + *
-> + * If the folio is dirty but all the buffers are clean then we need to
-> + * be sure to mark the folio clean as well.  This is because the folio
-> + * may be against a block device, and a later reattachment of buffers
-> + * to a dirty folio will set *all* buffers dirty.  Which would corrupt
-> + * filesystem data on the same device.
-> + *
-> + * The same applies to regular filesystem folios: if all the buffers are
-> + * clean then we set the folio clean and proceed.  To do that, we require
-> + * total exclusion from block_dirty_folio().  That is obtained with
-> + * i_private_lock.
-> + *
-> + * Exclusion against try_to_free_buffers may be obtained by either
-> + * locking the folio or by holding its mapping's i_private_lock.
-> + *
-> + * Context: Process context.  @folio must be locked.  Will not sleep.
-> + * Return: true if all buffers attached to this folio were freed.
-> + */
->  bool try_to_free_buffers(struct folio *folio)
->  {
->  	struct address_space * const mapping = folio->mapping;
-
+diff --git a/drivers/gpu/drm/amd/include/dimgrey_cavefish_ip_offset.h b/drivers/gpu/drm/amd/include/dimgrey_cavefish_ip_offset.h
+index f84996a73de9..53cb4296df88 100644
+--- a/drivers/gpu/drm/amd/include/dimgrey_cavefish_ip_offset.h
++++ b/drivers/gpu/drm/amd/include/dimgrey_cavefish_ip_offset.h
+@@ -25,13 +25,11 @@
+ #define MAX_SEGMENT                                         6
+ 
+ 
+-struct IP_BASE_INSTANCE
+-{
++struct IP_BASE_INSTANCE {
+     unsigned int segment[MAX_SEGMENT];
+ };
+ 
+-struct IP_BASE
+-{
++struct IP_BASE {
+     struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+ } __maybe_unused;
+ 
 -- 
-#Randy
+2.17.1
+
 
