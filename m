@@ -1,147 +1,122 @@
-Return-Path: <linux-kernel+bounces-24111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0636482B733
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:41:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB33682B740
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47546B24DF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:41:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A43E1F250AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A11513FFE;
-	Thu, 11 Jan 2024 22:41:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E427712E4B;
+	Thu, 11 Jan 2024 22:47:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OfvTIE3Y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="Yl/h6qon";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="ksNAdE+0"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70880FBF8;
-	Thu, 11 Jan 2024 22:41:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E2ECC433F1;
-	Thu, 11 Jan 2024 22:41:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705012870;
-	bh=+WwJWrlRns8EY2E9CLCbBROU9LT8j8Mr6e6ahvyEWOU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OfvTIE3YPZ6MdksK4thbEF0gX4EYWItfgro+p6au+ae/0L1Rn5KPQUey1MO2mF7sb
-	 912wFQwxWJt6Eqz5rquvRdwVK23gOw+mZN3QMJzBuw9omsgfklBLL4ldqAI5eFHiMf
-	 UwH3kwKHmW649e28JAQ6P8MeeoY5YOS78K9x583/YWF7UJuVj+KZu6omk0vxfKcOhP
-	 NdiX663P8dwv8VefWE36YU8/vmf1Hpt79kYUnhnu0IyL1nEAxmLnqQ0zgq6NMjjG59
-	 7vahCIA30Sn0UeqmjWeNnB4C048bpJkLlXFQL2KrAO5l8ShyZvKdAqNwDxW80aGjE4
-	 KMyE7A/fIix6w==
-Date: Thu, 11 Jan 2024 15:41:08 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: kernel test robot <lkp@intel.com>, ardb@kernel.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, bhelgaas@google.com, arnd@arndb.de,
-	zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, paul@paul-moore.com,
-	jmorris@namei.org, serge@hallyn.com, javierm@redhat.com,
-	llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] arch/x86: Move internal setup_data structures
- into setup_data.h
-Message-ID: <20240111224108.GA227186@dev-arch.thelio-3990X>
-References: <20240108095903.8427-3-tzimmermann@suse.de>
- <202401090800.UOBEKB3W-lkp@intel.com>
- <20240109175814.GA5981@dev-arch.thelio-3990X>
- <1fd1a3ca-edeb-4bf6-a12d-a8087a180d36@suse.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A484FBF3;
+	Thu, 11 Jan 2024 22:47:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1705013226;
+	bh=9WAr7c4kgfmq52d/ewPgk5MVWR5LQuNK5v1qLLaXob4=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=Yl/h6qonNxWgmWAcdpn/zbVaC1/+H2lgsBqymddTbTkm/zWMWkwpjMIHS8yix2Abu
+	 bwWE47MOQlkkO9lrw+Fyf4KAQVrUzzQZK7IkfKVV6fRif7RUZf/N6x9w+y+IRzJASf
+	 AFC6QopQSqVApdGfiSeWkU8ZLV3TSgTJtmXc21is=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2BA7112808E8;
+	Thu, 11 Jan 2024 17:47:06 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id r0fszx2ltciG; Thu, 11 Jan 2024 17:47:06 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1705013225;
+	bh=9WAr7c4kgfmq52d/ewPgk5MVWR5LQuNK5v1qLLaXob4=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=ksNAdE+0z5qrNA6I/vFeNBDkwLd/9wqI8QphWcv6n6B2Tf1wBQc8SjrkTtV7unRdd
+	 8WSCtr0oGY3aG/8hzi6qFcMBcEgZ3HuoqssnmtyzjUbpk9tiG/wg/Tz5fXuk5hKIQz
+	 Fl6xNTh4Sxbl3Al2bNXaf3megb3pD4E7395jJfIg=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6049112806BE;
+	Thu, 11 Jan 2024 17:47:05 -0500 (EST)
+Message-ID: <3b5b650fa3c6ed6dc7f296eb7258c722a699147d.camel@HansenPartnership.com>
+Subject: Re: [GIT PULL] first round of SCSI updates for the 6.7+ merge window
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-scsi
+	 <linux-scsi@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Date: Thu, 11 Jan 2024 17:47:02 -0500
+In-Reply-To: <CAHk-=whKVgb27o3+jhSRzuZdpjWJiAvxeO8faMjHpb-asONE1g@mail.gmail.com>
+References: 
+	<c5ac3166f35bac3a618b126dabadaddc11c8512d.camel@HansenPartnership.com>
+	 <CAHk-=whKVgb27o3+jhSRzuZdpjWJiAvxeO8faMjHpb-asONE1g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1fd1a3ca-edeb-4bf6-a12d-a8087a180d36@suse.de>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 11, 2024 at 10:50:43AM +0100, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 09.01.24 um 18:58 schrieb Nathan Chancellor:
-> > On Tue, Jan 09, 2024 at 08:28:59AM +0800, kernel test robot wrote:
-> > > Hi Thomas,
-> > > 
-> > > kernel test robot noticed the following build warnings:
-> > > 
-> > > [auto build test WARNING on tip/x86/core]
-> > > [also build test WARNING on efi/next tip/master tip/auto-latest linus/master v6.7 next-20240108]
-> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > And when submitting patch, we suggest to use '--base' as documented in
-> > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > > 
-> > > url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-x86-Move-UAPI-setup-structures-into-setup_data-h/20240108-180158
-> > > base:   tip/x86/core
-> > > patch link:    https://lore.kernel.org/r/20240108095903.8427-3-tzimmermann%40suse.de
-> > > patch subject: [PATCH v4 2/4] arch/x86: Move internal setup_data structures into setup_data.h
-> > > config: x86_64-rhel-8.3-bpf (https://download.01.org/0day-ci/archive/20240109/202401090800.UOBEKB3W-lkp@intel.com/config)
-> > > compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-> > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240109/202401090800.UOBEKB3W-lkp@intel.com/reproduce)
-> > > 
-> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > > the same patch/commit), kindly add following tags
-> > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202401090800.UOBEKB3W-lkp@intel.com/
-> > > 
-> > > All warnings (new ones prefixed by >>):
-> > > 
-> > >     In file included from arch/x86/realmode/rm/wakemain.c:3:
-> > >     In file included from arch/x86/boot/boot.h:24:
-> > >     In file included from arch/x86/include/asm/setup.h:10:
-> > >     In file included from arch/x86/include/asm/page_types.h:7:
-> > >     In file included from include/linux/mem_encrypt.h:17:
-> > >     In file included from arch/x86/include/asm/mem_encrypt.h:18:
-> > >     In file included from arch/x86/include/uapi/asm/bootparam.h:5:
-> > > > > arch/x86/include/asm/setup_data.h:10:20: warning: field 'data' with variable sized type 'struct setup_data' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
-> > >        10 |         struct setup_data data;
-> > >           |                           ^
-> > >     1 warning generated.
+On Thu, 2024-01-11 at 14:36 -0800, Linus Torvalds wrote:
+> On Wed, 10 Jan 2024 at 12:48, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
 > > 
-> > I think this warning is expected. This structure is now included in the
-> > realmode part of arch/x86, which has its own set of build flags,
-> > including -Wall, which includes -Wgnu on clang. The kernel obviously
-> > uses GNU extensions and states this clearly with '-std=gnu11', so
-> > -Wno-gnu is unconditionally added to KBUILD_CFLAGS for clang. It seems
-> > that same treatment is needed for REALMODE_CFLAGS, which also matches
-> > arch/x86/boot/compressed/Makefile, see commit 6c3b56b19730 ("x86/boot:
-> > Disable Clang warnings about GNU extensions"):
-> > 
-> > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> > index 1a068de12a56..24076db59783 100644
-> > --- a/arch/x86/Makefile
-> > +++ b/arch/x86/Makefile
-> > @@ -53,6 +53,9 @@ REALMODE_CFLAGS += -fno-stack-protector
-> >   REALMODE_CFLAGS += -Wno-address-of-packed-member
-> >   REALMODE_CFLAGS += $(cc_stack_align4)
-> >   REALMODE_CFLAGS += $(CLANG_FLAGS)
-> > +ifdef CONFIG_CC_IS_CLANG
-> > +REALMODE_CFLAGS += -Wno-gnu
-> > +endif
+> > git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-
+> > misc
 > 
-> Thanks. Shall I include this change in the patchset?
-
-Yes, I think so to keep the build clean.
-
-> Best regards
-> Thomas
+> Ok, I note that this has been signed with ECDSA key
+> E76040DB76CA3D176708F9AAE742C94CEE98AC85, and while it is currently
+> available and up-to-date at kernel.org, it shows as
 > 
-> >   export REALMODE_CFLAGS
-> >   # BITS is used as extension for files which are available in a 32 bit
+>   sub   nistp256 2018-01-23 [S] [expires: 2024-01-16]
+>         E76040DB76CA3D176708F9AAE742C94CEE98AC85
 > 
-> -- 
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Frankenstrasse 146, 90461 Nuernberg, Germany
-> GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-> HRB 36809 (AG Nuernberg)
+> note that expiration date: it's three days in the future.
+> 
+> Can I please ask you for the umpteenth time to STOP DICKING AROUND
+> WITH SHORT EXPIRATION DATES!
+> 
+> The pgp keyservers work *so* badly these days that refreshing keys is
+> a joke. The whole expiration date thing has always been a bad joke,
+> and only makes pgp an even worse UX than it already is (and damn,
+> that's saying a lot - pgp is some nasty stuff).
 
+Well, I did already tell you that I bypass the pgp keyservers because I
+use a DNSSEC based DANE entry instead:
 
+https://lore.kernel.org/all/1564171685.9950.14.camel@HansenPartnership.com/
+
+And I'm sure there was an earlier one where you confirmed this worked,
+but lore seems to be missing it.
+
+> When you make a new key, or when you extend the expiration date, do
+> it properly. Give ita lifetime that is a big fraction of a decade. Or
+> two.
+> 
+> Because your keys constantly end up being expired, and they are
+> making the experience of pulling from you a pain - because I actually
+> *check* the keys.
+> 
+> Stop making a bad pgp experience even worse - for no reason and
+> absolutely zero upside.
+
+I can concede that if I'm the only person with a DANE updateable key
+then it is a pain to remember because gpg doesn't automatically do it
+(although it can be configured to), so I can certainly set a longer
+expiry date.
+
+James
 
 
