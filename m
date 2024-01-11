@@ -1,94 +1,79 @@
-Return-Path: <linux-kernel+bounces-23817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03D9582B223
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B4382B232
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 242611C20F7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:51:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15211C23633
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278194F61E;
-	Thu, 11 Jan 2024 15:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B18B4EB5C;
+	Thu, 11 Jan 2024 15:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NSkMrgsD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IHZZ3Adc";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NSkMrgsD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IHZZ3Adc"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y3obFj26"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E574EB45;
-	Thu, 11 Jan 2024 15:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1F6551FBAD;
-	Thu, 11 Jan 2024 15:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704988272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vSehzTtKQsvkbUUPD8zzvmB+qLGM6QNeLjYsgnJ08M=;
-	b=NSkMrgsDX7EFKr/+gIAf2t9qOk+4ZUhng52yeaAX718zL2LQLlDxVBH6w54QAD17KVWld5
-	vntTVSXxWB+HS7W1ORztIiuYM03STgLc0+zF8ATIe+ZDMb2RFx4uaHKMDynYR1ANyKKTTZ
-	FZTlpKzdMwqmjqIIkw8jdnEoXZDYIj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704988272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vSehzTtKQsvkbUUPD8zzvmB+qLGM6QNeLjYsgnJ08M=;
-	b=IHZZ3AdcRHNQNoPDCZmlSTmGoul7uWFhhD8Sj1lLJmEwHs/fQeDk83h5xSVvNVgZj+xFgX
-	E7At9SGs+IK8meAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704988272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vSehzTtKQsvkbUUPD8zzvmB+qLGM6QNeLjYsgnJ08M=;
-	b=NSkMrgsDX7EFKr/+gIAf2t9qOk+4ZUhng52yeaAX718zL2LQLlDxVBH6w54QAD17KVWld5
-	vntTVSXxWB+HS7W1ORztIiuYM03STgLc0+zF8ATIe+ZDMb2RFx4uaHKMDynYR1ANyKKTTZ
-	FZTlpKzdMwqmjqIIkw8jdnEoXZDYIj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704988272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vSehzTtKQsvkbUUPD8zzvmB+qLGM6QNeLjYsgnJ08M=;
-	b=IHZZ3AdcRHNQNoPDCZmlSTmGoul7uWFhhD8Sj1lLJmEwHs/fQeDk83h5xSVvNVgZj+xFgX
-	E7At9SGs+IK8meAw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DB9F5138E5;
-	Thu, 11 Jan 2024 15:51:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 7f2qNG8OoGXZeQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 11 Jan 2024 15:51:11 +0000
-Date: Thu, 11 Jan 2024 16:50:56 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Thorsten Leemhuis <regressions@leemhuis.info>
-Cc: Anand Jain <anand.jain@oracle.com>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	Linux kernel regressions list <regressions@lists.linux.dev>,
-	linux-kernel@vger.kernel.org, Alex Romosan <aromosan@gmail.com>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [btrfs] commit bc27d6f0aa0e4de184b617aceeaf25818cc646de breaks
- update-grub
-Message-ID: <20240111155056.GG31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com>
- <39e3a4fe-d456-4de4-b481-51aabfa02b8d@leemhuis.info>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6945C4CE0A
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e72e3d435so5383922e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:54:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704988491; x=1705593291; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9D6hjaSglgdfQvddjjobt6j5XcOqKqKM6+zvWQwcr/U=;
+        b=Y3obFj26xGikUK/pKs/NnnJHXTUiLawFrm2Giei+t8h/ot4UgyxGam4RN1ZPp2sheR
+         qrNjlnkgAkQtScHtzxTN8eju/Mm8iUew8GhkR8zBK77abHrqlVYq7WwL71kcSyJC70Y0
+         HdSde8kfNBUKwFbg3HBAmZlrueMJAB641qwC/PNxEn6BZUy4TnAgFu0KESE7ITgOH/9C
+         Iy5ERAfJbafLlYVrQ3MW9eUM96WhZXTy2ZUUHQgbEqOwjeiswdQ3z5rwCt4tlZrcry4a
+         mhVuB9wHI0FFL9n4HK8BFSps65h/nEPE3akz1D9J4AQAnhzH418p02pamV9RnwZokGMN
+         t9Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704988491; x=1705593291;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9D6hjaSglgdfQvddjjobt6j5XcOqKqKM6+zvWQwcr/U=;
+        b=SxBz1WaC8KBCHwNX8PHCr8QwEMSui1uJDbm5NjHHq3PcdcVqadrZ9/5fW3ZZSOistb
+         J/Xzlypw7aIdm3v8//lwNxQlbFPUmPabJGI8FBfn6nZ8Ldh4eO/CwHJ89qbQACLOobje
+         i48uV1RDv/8sv7BYG7j3WS2PCNx4k7C5nqB6lbPMYkJ89edpSXzQF5ucVWN8wUxOEy0/
+         roHTqrZYG5RBdrrte/tNiTPmIoHfSlS2FOKRheT5MzlVhqXq5z5DqXXurtu9BbfoixTt
+         HKRwB0zec2OiE/wspfForddTjFzGq5++iZLkK+e6Kofl8FgeIu+7fAFfF1efWypWlpFO
+         otdw==
+X-Gm-Message-State: AOJu0Yys4yT1M89DzTWdDxupVA5hK8JfxEi0ZFd537aoSOn9hQdYFpB2
+	HmT5ke3qDCPrrwznVNW+JKg=
+X-Google-Smtp-Source: AGHT+IHWww78MAc9JmlyFjErWKyyUMNZFBcpBvlXspy60BDMWCT/6SDFn/2Pg6iG6jtsOZpHcyBc9Q==
+X-Received: by 2002:a19:7617:0:b0:50e:a93a:fb7a with SMTP id c23-20020a197617000000b0050ea93afb7amr484815lff.184.1704988491077;
+        Thu, 11 Jan 2024 07:54:51 -0800 (PST)
+Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
+        by smtp.gmail.com with ESMTPSA id f5-20020ac251a5000000b0050e8cd014d7sm234026lfk.16.2024.01.11.07.54.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 07:54:50 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date: Thu, 11 Jan 2024 16:54:48 +0100
+To: Dave Chinner <david@fromorbit.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
+Message-ID: <ZaAPSJHGsmG_oHAU@pc638.lan>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240102184633.748113-8-urezki@gmail.com>
+ <ZZ+umGZ2NFQN/KuW@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,74 +82,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <39e3a4fe-d456-4de4-b481-51aabfa02b8d@leemhuis.info>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.00
-X-Spamd-Result: default: False [-1.00 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[42.10%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[oracle.com,vger.kernel.org,lists.linux.dev,gmail.com,fb.com,toxicpanda.com,suse.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+In-Reply-To: <ZZ+umGZ2NFQN/KuW@dread.disaster.area>
 
-On Thu, Jan 11, 2024 at 12:45:50PM +0100, Thorsten Leemhuis wrote:
-> [Adding Anand Jain, the author of the culprit to the list of recipients;
-> furthermore CCing the the Btrfs maintainers and the btrfs list; also
-> CCing regression list, as it should be in the loop for regressions:
-> https://docs.kernel.org/admin-guide/reporting-regressions.html]
+On Thu, Jan 11, 2024 at 08:02:16PM +1100, Dave Chinner wrote:
+> On Tue, Jan 02, 2024 at 07:46:29PM +0100, Uladzislau Rezki (Sony) wrote:
+> > Concurrent access to a global vmap space is a bottle-neck.
+> > We can simulate a high contention by running a vmalloc test
+> > suite.
+> > 
+> > To address it, introduce an effective vmap node logic. Each
+> > node behaves as independent entity. When a node is accessed
+> > it serves a request directly(if possible) from its pool.
+> > 
+> > This model has a size based pool for requests, i.e. pools are
+> > serialized and populated based on object size and real demand.
+> > A maximum object size that pool can handle is set to 256 pages.
+> > 
+> > This technique reduces a pressure on the global vmap lock.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > 
-> On 08.01.24 15:11, Alex Romosan wrote:
-> > Please Cc me as I am not subscribed to the list.
-> > 
-> > Running my own compiled kernel without initramfs on a lenovo thinkpad
-> > x1 carbon gen 7.
-> > 
-> > Since version 6.7-rc1 i haven't been able to to a grub-update,
-> >
-> > instead i get this error:
-> > 
-> > grub-probe: error: cannot find a device for / (is /dev mounted?) solid
-> > state drive
-> > 
-> > 6.6 was the last version that worked.
-> > 
-> > Today I did a git-bisect between these two versions which identified
-> > commit bc27d6f0aa0e4de184b617aceeaf25818cc646de btrfs: scan but don't
-> > register device on single device filesystem as the culprit. reverting
-> > this commit from 6.7 final allowed me to run update-grub again.
-> > 
-> > not sure if this is the intended behavior or if i'm missing some other
-> > kernel options. any help/fixes would be appreciated.
-> > 
-> > thank you.
+> Why not use a llist for this? That gets rid of the need for a
+> new pool_lock altogether...
 > 
-> Thanks for the report. To be sure the issue doesn't fall through the
-> cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-> tracking bot:
-> 
-> #regzbot ^introduced bc27d6f0aa0e4de184b617aceeaf25818cc646de
-> #regzbot title btrfs: update-grub broken (cannot find a device for / (is
-> /dev mounted?))
-> #regzbot ignore-activity
+Initially i used the llist. I have changed it because i keep track
+of objects per a pool to decay it later. I do not find these locks
+as contented one therefore i did not think much.
 
-The bug is also tracked at https://bugzilla.kernel.org/show_bug.cgi?id=218353 .
+Anyway, i will have a look at this to see if llist is easy to go with
+or not. If so i will send out a separate patch.
+
+Thanks!
+
+--
+Uladzislau Rezki
 
