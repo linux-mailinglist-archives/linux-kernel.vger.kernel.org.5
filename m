@@ -1,78 +1,116 @@
-Return-Path: <linux-kernel+bounces-23857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61A2B82B2D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:23:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB7F082B2DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:24:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86DA31C24D4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:23:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBE591C23819
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE22524A3;
-	Thu, 11 Jan 2024 16:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBC24F8A0;
+	Thu, 11 Jan 2024 16:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sd4NHbiu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="qvhRAfH+";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fN1XZxTU"
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE4851C27;
-	Thu, 11 Jan 2024 16:21:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE39BC433F1;
-	Thu, 11 Jan 2024 16:21:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704990081;
-	bh=cLMSls0CclaGc98AAZVASmR+hPSsayxTFbvOAqBnEQQ=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=Sd4NHbiuDtAmFeJViN6EkVGtGanE/TQTIzyeIoRQ1TBpYJFA4se4MwkT0lhmmdoP2
-	 UwOH/0tWuDwDFGs0+VktMMWC06uQDmrTkMMR1jEDikRZTPsfngeGWbHF+Ie1PaUNMu
-	 oOoCzWEw6IUC79iks94p6YnoftyVkzWvKT1t915YKJgt97ySr9ScjRLSV0xjdad6xS
-	 MAG+G21MdgH0t6wZD0HMrQ/uUublvOQXgU4o/IxuHuvI1X5ebtZfEbhmSQQCaJlvrG
-	 7QnTkR5GUrTywjZkEwjh9MaLeCJkeh2NSJc063rn6cGT2UH75tutXnjeT7G7/al5hX
-	 Ln7c0PocxePzQ==
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DCE94F60B;
+	Thu, 11 Jan 2024 16:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 6482932000EB;
+	Thu, 11 Jan 2024 11:23:28 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 11 Jan 2024 11:23:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1704990207; x=1705076607; bh=YcU2xy056h
+	+QlQA91Rv67d7NflwBIz2XJhgM8errMgU=; b=qvhRAfH+WKlJIPmFQW2BXLXt2m
+	p3gocv9L0EUUKcNqovdo+eHXD4sdf2/LXLx2hXGVKpn1G5/gccGo3od77PpwCqla
+	L5aQxOHihGO6kp5F5Zn2cX/qkq744bQFG5PfKxj0o2m2kKw8GOJ2HA5+cvRKQ0rX
+	8Oi/vJmkRQPXD43k3QhNK7VS/+o/TCe3NP6WZSc1d6OSvlEb0D1XgHntv9tVbAdD
+	o2Jsoqh2cvwEKbTzMlfd5o9YyCubwEqF3m9ZyZW5yXt4pTDNVI4rMd8IJNeiUvwq
+	KCf/mBqCfgrpVBGBMpR754uVlr20QymxYw6qj4xRkfuyS9ZY/FT4NK65MjDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704990207; x=1705076607; bh=YcU2xy056h+QlQA91Rv67d7NflwB
+	Iz2XJhgM8errMgU=; b=fN1XZxTUmjGGykTpRVNFeDAgMvxSZMU/qOCm0hpcOFxp
+	2XYmOJ7Bx9n3sMmq8j8qgtBsx9i72/9BTBO+bWZsWL2W39QRqpZ08IEYqZktPE9l
+	iTXhRkEpzapiGaGp64Mru0JJcV8u5Sjpf8u418sotDEeFTke4XWBePDlNqG+dcJL
+	x66uFjrQ3TMuhTN9Mqsp9S+48hzLjtpDGxlyU1acB7MAzLco8d/hzyxp7kd4S/A4
+	3cSQ/Zxo+ri+AU5K6UMkevYhZT+tj1B2tbC07T57P23/qbZVKPa2mDdLG85gOaJd
+	lKtuF4i/5ONQ0gJI+Wv88KO6/rZAM5OTqt36BGN1KA==
+X-ME-Sender: <xms:_xWgZZj_jmxo__tks2Y8CGjzYvzRnQDF--U201waDlEzDooIt8owAQ>
+    <xme:_xWgZeB_m2qcZCMSCrb9TDTwY4J49Jfzh7QcvOpZHlFBwVIVI2uf3XFI42pJQeiCh
+    r9sdkiH19UmJ640Ras>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeifedgkeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:_xWgZZEK-TI0VCzhzGjtzRQJ_76Berqs_bQ__u7RyBNxN9Vnt7gbDg>
+    <xmx:_xWgZeQxFzSA15yRfWrDGcm2WSVzAo1TCeF7rENp2NU81NgGm6ZEGQ>
+    <xmx:_xWgZWzaJvdG8wLar4xxAWWmzbw1I4TrvQkQnV1pGxQ6FiNpiBrnFA>
+    <xmx:_xWgZdo9cZRHyFCnZvQZCFOaXYFya1M7zqS3N3cZAGz2fw0UaU3cRQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 68FF6B6008F; Thu, 11 Jan 2024 11:23:27 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/3] wifi: ath12k: Remove unnecessary struct qmi_txn
- initializers
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240109-qmi-cleanup-v1-1-607b10858566@quicinc.com>
-References: <20240109-qmi-cleanup-v1-1-607b10858566@quicinc.com>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, <ath12k@lists.infradead.org>,
- <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170499007813.916301.2323327164409855961.kvalo@kernel.org>
-Date: Thu, 11 Jan 2024 16:21:19 +0000 (UTC)
+Message-Id: <5d2d8e57-0041-40af-b237-05f3275008bd@app.fastmail.com>
+In-Reply-To: <ZaASsqnq5ZYdcjm6@lizhi-Precision-Tower-5810>
+References: <20240110232255.1099757-1-arnd@kernel.org>
+ <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
+ <343cedc4-a078-4cf8-ba3b-a1a8df74185b@app.fastmail.com>
+ <ZaASsqnq5ZYdcjm6@lizhi-Precision-Tower-5810>
+Date: Thu, 11 Jan 2024 17:23:03 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Frank Li" <Frank.li@nxp.com>
+Cc: "Arnd Bergmann" <arnd@kernel.org>, "Vinod Koul" <vkoul@kernel.org>,
+ "Peng Fan" <peng.fan@nxp.com>, "Fabio Estevam" <festevam@denx.de>,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
+Content-Type: text/plain
 
-Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+On Thu, Jan 11, 2024, at 17:09, Frank Li wrote:
+> On Thu, Jan 11, 2024 at 07:23:34AM +0100, Arnd Bergmann wrote:
+>> On Thu, Jan 11, 2024, at 01:02, Frank Li wrote:
+>
+> It should be better link into same module because some debugfs and trace
+> improvement are on my TODO list. Export symbols will make more unnessary
+> complex.
 
-> Currently most of the ath12k QMI messaging functions define their
-> struct qmi_txn variables with a {} initializer. However, all of these
-> functions subsequently call qmi_txn_init(), and the very first thing
-> that function does is zero the struct. Hence, the initializers are
-> unnecessary. Since these consume code space and cpu cycles, remove
-> them.
-> 
-> No functional changes, compile tested only.
+Ok, I'll see what I can come up with
 
-s-o-b missing on all 3 patches.
+> Or simple exclude MCF_EDMA by change Kconfig
+>
+> config MCF_EDMA                                                            
+>         tristate "Freescale eDMA engine support, ColdFire mcf5441x SoCs"   
+>         depends on !FSL_EDMA
+> 		   ^^^^^
+> 	depends on M5441x || COMPILE_TEST 
 
-3 patches set to Changes Requested.
+This does not actually prevent building both as modules, it
+only enforces that you can't have them both enabled if one
+of them is built-in.
 
-13515170 [1/3] wifi: ath12k: Remove unnecessary struct qmi_txn initializers
-13515167 [2/3] wifi: ath12k: Add missing qmi_txn_cancel() calls
-13515168 [3/3] wifi: ath12k: Use initializers for QMI message buffers
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240109-qmi-cleanup-v1-1-607b10858566@quicinc.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+     Arnd
 
