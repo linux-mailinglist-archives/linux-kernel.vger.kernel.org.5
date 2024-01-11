@@ -1,91 +1,100 @@
-Return-Path: <linux-kernel+bounces-22962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 264D682A5DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C7582A5DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9AB02865DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:16:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9C11286903
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B872105;
-	Thu, 11 Jan 2024 02:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3983CA48;
+	Thu, 11 Jan 2024 02:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="nbG+wwG9"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7857020E0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=IXEHNXRuUcKt6IyGJd
-	ZD0CF1X7wE5BQBAI9i8Netnf8=; b=nbG+wwG9elFeqSBa8+vCi5EROJYYOh5gfc
-	+5DRlJSzTNnyM7xEei0IzN2FIGYeaVw09mGO5KKfrmNsfIDqjkT966u9yWf9U6Id
-	TQro4ck9N++4njxitGozKN3DtBPAuicSoMsEKXfVHa6gHtGiuDYFhTqfQf8HTcTF
-	NAF+p21fE=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-1 (Coremail) with SMTP id _____wD3v4WAT59lAXGcAA--.59409S2;
-	Thu, 11 Jan 2024 10:16:33 +0800 (CST)
-From: chenxuebing <chenxb_99091@126.com>
-To: christian.koenig@amd.com,
-	alexander.deucher@amd.com,
-	Xinhui.Pan@amd.com,
-	daniel@ffwll.ch,
-	airlied@gmail.com
-Cc: dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org,
-	chenxuebing <chenxb_99091@126.com>
-Subject: [PATCH] drm/amdgpu: Clean up errors in amdgpu_drv.c
-Date: Thu, 11 Jan 2024 02:16:31 +0000
-Message-Id: <20240111021631.5974-1-chenxb_99091@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wD3v4WAT59lAXGcAA--.59409S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ury8Gw48Zw1rKr4DtF4DXFb_yoW8Jw1fpa
-	1rWrn3tryUZF1UtrWDZas7WF90qa48XFyxGw1DZ347Xan8JF95Wa4rt3Z5WF9rWF4fCayx
-	tF97J3y3u3Wa9FJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UjtC7UUUUU=
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiHAJixWV2zz5jswAAsL
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="h0RGAH13"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA147ED;
+	Thu, 11 Jan 2024 02:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704939532;
+	bh=qLu/Bj3EMcSiSCEM6xFdcWbhdysUejR+x/tfsjeNTuQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=h0RGAH13th6YHTn0ZFQ8/P0LRSbxAZ8ALzXs3JELgmpPI706hUquoOlb9TBah0IBp
+	 GDntDG56riHxjFVAOwyteP4pMb/cFKWx42MjmywAZ8nUNZj6V1gv8VaYwXY6WLUcc7
+	 2qIAifWDt+saoz8CA/yJLFmBLBbwvJ6YVrrZm/88S6q6SQbU3+G5isjqIgoB/Z1uIE
+	 GGGdXC+lbXgmjkSyT1O32JYJGWBHnzwi/9cLyGvOXkyg5LSzqQU91qYhTT8gYvP/hp
+	 MPcRgkqKBPHh1Jh71ZkUX5eqzDiKJ5mdO0dRLMhSawFsteg2mSV2Tb3MeptTN2UXaI
+	 8AvLfD3NXXvbw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T9Syg3K3hz4wy9;
+	Thu, 11 Jan 2024 13:18:51 +1100 (AEDT)
+Date: Thu, 11 Jan 2024 13:18:49 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Rob Herring <robh@kernel.org>
+Cc: "Christian A. Ehrhardt" <lk@c--e.de>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the devicetree tree
+Message-ID: <20240111131849.7f7c851f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/C1YpWEnyB/nw.a/d.fGQ_M7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Fix the following errors reported by checkpatch:
+--Sig_/C1YpWEnyB/nw.a/d.fGQ_M7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-ERROR: do not initialise globals to 0
+Hi all,
 
-Signed-off-by: chenxuebing <chenxb_99091@126.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+In commit
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index 880137774b4e..86d829055418 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -592,7 +592,7 @@ module_param_named(timeout_period, amdgpu_watchdog_timer.period, uint, 0644);
- #ifdef CONFIG_DRM_AMDGPU_SI
- 
- #if IS_ENABLED(CONFIG_DRM_RADEON) || IS_ENABLED(CONFIG_DRM_RADEON_MODULE)
--int amdgpu_si_support = 0;
-+int amdgpu_si_support;
- MODULE_PARM_DESC(si_support, "SI support (1 = enabled, 0 = disabled (default))");
- #else
- int amdgpu_si_support = 1;
-@@ -611,7 +611,7 @@ module_param_named(si_support, amdgpu_si_support, int, 0444);
- #ifdef CONFIG_DRM_AMDGPU_CIK
- 
- #if IS_ENABLED(CONFIG_DRM_RADEON) || IS_ENABLED(CONFIG_DRM_RADEON_MODULE)
--int amdgpu_cik_support = 0;
-+int amdgpu_cik_support;
- MODULE_PARM_DESC(cik_support, "CIK support (1 = enabled, 0 = disabled (default))");
- #else
- int amdgpu_cik_support = 1;
--- 
-2.17.1
+  4dde83569832 ("of: Fix double free in of_parse_phandle_with_args_map")
 
+Fixes tag
+
+  Fixes: bd6f2fd5a1 ("of: Support parsing phandle argument lists through a =
+nexus node")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    This can be fixed for the future by setting core.abbrev to 12 (or
+    more) or (for git v2.11 or later) just making sure it is not set
+    (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/C1YpWEnyB/nw.a/d.fGQ_M7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWfUAkACgkQAVBC80lX
+0GzSKgf/fCNqvAiOi0IYQel1rvdirZBjRL5S1bfahyUDlLuPWN31UYJnVPfgIpAI
+U/AzGPHoWZ5TA9EfN/HbeTrHrCLNPpmeG5xx3ZF14VxIH3Mg6GIKXdQYiGuJiQH0
+YuntAi21buJ4RC+lImpQvI1sX3yg4u+iTq4EH5f04pi/EwOLyEzEmrgHmSMjd7tw
+ud12UxostuKXetAfbYlZpL0MLqaGI9FwJJNtMvgdvfVPoD6Rp2YDm0ZOZ319Hq6R
+hmA115uhXh4B0Fi0D59AcGHeCI88PWf09VPWtQoRlOcH+Nu5l2qXxVv70XUsQ9Hn
+wCUEBAaUyvjzABJwIY1FqhlOP/Uwqw==
+=jjTh
+-----END PGP SIGNATURE-----
+
+--Sig_/C1YpWEnyB/nw.a/d.fGQ_M7--
 
