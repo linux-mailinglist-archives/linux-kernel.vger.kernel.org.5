@@ -1,168 +1,222 @@
-Return-Path: <linux-kernel+bounces-23494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B1A82AD8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:33:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FBE82AD8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A92501C2240F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:33:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BF6CB27B06
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F9D15E9F;
-	Thu, 11 Jan 2024 11:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E8E154AE;
+	Thu, 11 Jan 2024 11:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="mrUQgv6B"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="m4l9wBed"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CBC15ADC
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2bdc3a3c84so174515166b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:31:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030F516401
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d9b51093a0so4420659b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:32:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704972716; x=1705577516; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zvVluqQ8n3x0cWnOxUoJf6RrQeS6AmoXEcCmoWMSVKA=;
-        b=mrUQgv6BUSw5L1/TXHBvUcfSMiXjjm1SCtksj3ej6+TVyatup3VAGNCQwMCXfkWPFC
-         RO/K2OTPK1UQCdWHk23BEWIjRF4ejvGjJ2YTwL2c2NPiyhmlxllzz+g0ZYGPiS9SkRvd
-         McLc/Vrsd/7/nNuom4inunYVBppxWlzhwRSAE=
+        d=ventanamicro.com; s=google; t=1704972727; x=1705577527; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JNl3tpkyK5Mul56pIgZxAMIH2IfRCEnxfyE9fY+1LDU=;
+        b=m4l9wBedswJIQVDZ9iGWGdJl9Zx/EVnZmK8UjrW3iuPogILnCXvAJ5f1DVnoOFFPr9
+         dNjJr40uwVe1jyOxPyyMIjVBHG9GKDQbxNUCgQDxMh+7ILiAaRt4exHzghki0ZceTZMF
+         3Dbv1wxPgpfe6UjtYap9e4S8wc+yTMP0/eZdYto48cZn9iVRxAi3usJchmpf1Y487iu9
+         QWZanqvBtoXd1mlGy8n/UNrxV0qZQnnJjHidpG3f4YZPfkINJtesjsPSueY3hMjzosBs
+         h/9j2Aeq0zw7BbfopuQadD6QMveY7L9dlciwRqhZlDo3pOhR7ulaooZ75t570elby4ih
+         aF5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704972716; x=1705577516;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zvVluqQ8n3x0cWnOxUoJf6RrQeS6AmoXEcCmoWMSVKA=;
-        b=pYc4nBvizKczIgiIBTxXPYd7LTS0vb0f7GhHpXLh1OD/AcuvpkdfFRAZB02xQJrQtv
-         mXoxtZem5Mg02V0YVIuf9UKvKu7Fg7gYfqZV5X7uJrBJw+7M7d/+0wOPZI//FZ2iXlas
-         d8qZyBHO3Q011uj3pYmyE6hs3MLl8VxggCXk62w+DaXrGdJnDvmC/xOC2U7w2wQME5LX
-         nfc4lzjuCb7kp+GTlhgQ45S3clQmQqfLpsEq6mzO6hRUNM35cRKLysKjrD/izH1kV7Ud
-         qKCG/0MQsWin3w5jyyhV4d/jD+twy0Qf/4LD919B+V+uCI7fMIrfBOqKOy8sCO7U0cvp
-         +u4Q==
-X-Gm-Message-State: AOJu0Yy7XewqW6S68uW83J2aF0nxVbtzl/wsuzgXmdcXqQKWgmmD41rT
-	ULuMwdS6wwMaL+pIJeeAIGCD6Q+ALT/2mA7Mw9mxe2mnsVs=
-X-Google-Smtp-Source: AGHT+IEGQa8IHSFWl6jx6+6OQPP7M4+s+7Hu52W0ZBGX7wOvBFTqz3SLkoCt8BwbHSgJJXyviU7bEw==
-X-Received: by 2002:a17:906:b56:b0:9e3:fbab:e091 with SMTP id v22-20020a1709060b5600b009e3fbabe091mr659241ejg.15.1704972715775;
-        Thu, 11 Jan 2024 03:31:55 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it ([95.236.91.90])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170906688300b00a26aa734349sm461565ejr.39.2024.01.11.03.31.54
+        d=1e100.net; s=20230601; t=1704972727; x=1705577527;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JNl3tpkyK5Mul56pIgZxAMIH2IfRCEnxfyE9fY+1LDU=;
+        b=X7U/jr+L/OAWsI0X4x7Wvz+nbBfRrDn/kFsH4w3H+tg7qar1CHPLo5acYozEX6/aYO
+         LSDM/h7WoArlqVgDxAtVfuZiKFG+Jez/vbVMIlOpMH6bo7SZepL8JPKdw5tYK9Q82EkU
+         Slbbib/9sMr07SXGnCcCNZIiUBVpaaVXQaK4t1P739YvRHLxhPIlzINX0hB60QiGZ5Jx
+         YnD4gBVV4Z5ZTjDOxEA8ALS4YWrJfEkX0QrqZ7C37KxWB4WJiJKYzBRBB1tYxetOoK4A
+         giQavFLP9xfnJ1Yxp5Atgs9FCz/nEqrIe3CKu2pgYbcI/ehH18/mdYyLHRK78SupTy+F
+         1z9g==
+X-Gm-Message-State: AOJu0Yz/CUkoMYDAI5aYD2F+1gg9X/kVMMfAvXe+VHap2CXD+DBw0Jkt
+	NwO5hkao+NGYarUGHUKBasSVR4gMHSwGfQ==
+X-Google-Smtp-Source: AGHT+IFNT0pZlCC90UfGIUe+0iysvNpEOqgrUfAsJP18C9CfIaYaEO8KkvhcxXutmMYmMdMAFoeQNg==
+X-Received: by 2002:a05:6a20:89a9:b0:199:dd9a:df27 with SMTP id h41-20020a056a2089a900b00199dd9adf27mr782621pzg.124.1704972727324;
+        Thu, 11 Jan 2024 03:32:07 -0800 (PST)
+Received: from sunil-laptop ([106.51.188.200])
+        by smtp.gmail.com with ESMTPSA id mm4-20020a1709030a0400b001d4b46d8c10sm972947plb.66.2024.01.11.03.32.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 03:31:55 -0800 (PST)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-amarula@amarulasolutions.com,
-	Lee Jones <lee@kernel.org>,
-	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sean Nyekjaer <sean@geanix.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v7 5/5] ARM: dts: add stm32f769-disco-mb1225-revb03-mb1166-reva09
-Date: Thu, 11 Jan 2024 12:31:42 +0100
-Message-ID: <20240111113146.16011-6-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240111113146.16011-1-dario.binacchi@amarulasolutions.com>
-References: <20240111113146.16011-1-dario.binacchi@amarulasolutions.com>
+        Thu, 11 Jan 2024 03:32:06 -0800 (PST)
+Date: Thu, 11 Jan 2024 17:01:59 +0530
+From: Sunil V L <sunilvl@ventanamicro.com>
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Anup Patel <anup@brainfault.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH -next 2/2] cpuidle: RISC-V: Add ACPI LPI support
+Message-ID: <ZZ/Rr7AXVAN4Ecmu@sunil-laptop>
+References: <20240111093058.121838-1-sunilvl@ventanamicro.com>
+ <20240111093058.121838-3-sunilvl@ventanamicro.com>
+ <20240111-d37d338a6b1aa71e944ebe05@orel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111-d37d338a6b1aa71e944ebe05@orel>
 
-As reported in the section 8.3 (i. e. Board revision history) of document
-UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
-related to the board revisions addressed by the patch:
-- Board MB1225 revision B-03:
-  - Memory MICRON MT48LC4M32B2B5-6A replaced by ISSI IS42S32400F-6BL
-- Board MB1166 revision A-09:
-  - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
+On Thu, Jan 11, 2024 at 11:19:49AM +0100, Andrew Jones wrote:
+> On Thu, Jan 11, 2024 at 03:00:58PM +0530, Sunil V L wrote:
+> > Add required callbacks to support Low Power Idle (LPI) on ACPI based
+> > RISC-V platforms.
+> > 
+> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> > ---
+> >  drivers/cpuidle/cpuidle-riscv-sbi.c | 78 +++++++++++++++++++++++++++++
+> >  1 file changed, 78 insertions(+)
+> > 
+> > diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> > index e8094fc92491..cea67a54ab39 100644
+> > --- a/drivers/cpuidle/cpuidle-riscv-sbi.c
+> > +++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> > @@ -632,3 +632,81 @@ static int __init sbi_cpuidle_init(void)
+> >  	return 0;
+> >  }
+> >  device_initcall(sbi_cpuidle_init);
+> > +
+> > +#ifdef CONFIG_ACPI_PROCESSOR_IDLE
+> > +
+> > +#include <linux/acpi.h>
+> > +#include <acpi/processor.h>
+> > +
+> > +#define RISCV_FFH_LPI_TYPE_MASK		0x1000000000000000ULL
+> > +#define RISCV_FFH_LPI_RSVD_MASK		0x0FFFFFFF00000000ULL
+> 
+> GENMASK might look nicer and the type mask is 0xF000000000000000ULL,
+> where 0x1000000000000000ULL means that the type is an SBI identifier.
+> We need both defined
+> 
+> #define RISCV_FFH_LPI_TYPE_MASK              0xF000000000000000ULL
+> #define RISCV_FFH_LPI_TYPE_SBI               0x1000000000000000ULL
+> 
+Sure. Let me use GENMASK and define both MASK and SBI type.
 
-The patch only adds the DTS support for the new display which belongs to
-to the Novatek NT35510-based panel family.
+> as I point out below.
+> 
+> > +
+> > +static int acpi_cpu_init_idle(unsigned int cpu)
+> > +{
+> > +	int i;
+> > +	struct acpi_lpi_state *lpi;
+> > +	struct acpi_processor *pr = per_cpu(processors, cpu);
+> > +
+> > +	if (unlikely(!pr || !pr->flags.has_lpi))
+> > +		return -EINVAL;
+> > +
+> > +	/*
+> > +	 * The SBI HSM suspend function is only available when:
+> > +	 * 1) SBI version is 0.3 or higher
+> > +	 * 2) SBI HSM extension is available
+> > +	 */
+> > +	if (sbi_spec_version < sbi_mk_version(0, 3) ||
+> > +	    !sbi_probe_extension(SBI_EXT_HSM)) {
+> > +		pr_warn("HSM suspend not available\n");
+> 
+> The comment and these lines match what's done in sbi_cpuidle_init().
+> How about a static helper function to avoid duplication?
+> 
+Sure.
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (pr->power.count <= 1)
+> > +		return -ENODEV;
+> > +
+> > +	for (i = 1; i < pr->power.count; i++) {
+> > +		u32 state;
+> > +
+> > +		lpi = &pr->power.lpi_states[i];
+> > +
+> > +		/* Validate Entry Method as per FFH spec.
+> > +		 * bits[63:60] should be 0x1
+> > +		 * bits[59:32] should be 0x0
+> > +		 * bits[31:0] represent a SBI power_state
+>                                         ^ an
+> 
+> > +		 */
+> 
+> Comment block needs opening wing (/*)
+> 
+Okay.
 
----
+> > +		if (!(lpi->address & RISCV_FFH_LPI_TYPE_MASK) ||
+> 
+> This should be (lpi->address & RISCV_FFH_LPI_TYPE_MASK) != RISCV_FFH_LPI_TYPE_SBI
+> 
+Sure.
 
-Changes in v7:
-- Replace .dts with .dtb in the Makefile
+Let me send v2 in couple of days with these changes.
 
-Changes in v6:
-- Drop patches
-  - [5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
-  - [7/8] drm/panel: nt35510: move hardwired parameters to configuration
-  - [8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-  because applied by the maintainer Linus Walleij
+Thanks!
+Sunil
 
-Changes in v5:
-- Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_optional().
-
-Changes in v2:
-- Change the status of panel_backlight node to "disabled"
-- Delete backlight property from panel0 node.
-- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
-  in the same style as the original driver.
-
- arch/arm/boot/dts/st/Makefile                  |  1 +
- ...2f769-disco-mb1225-revb03-mb1166-reva09.dts | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
- create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-
-diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
-index 7892ad69b441..aa5b50d7ac61 100644
---- a/arch/arm/boot/dts/st/Makefile
-+++ b/arch/arm/boot/dts/st/Makefile
-@@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
- 	stm32f469-disco.dtb \
- 	stm32f746-disco.dtb \
- 	stm32f769-disco.dtb \
-+	stm32f769-disco-mb1225-revb03-mb1166-reva09.dtb \
- 	stm32429i-eval.dtb \
- 	stm32746g-eval.dtb \
- 	stm32h743i-eval.dtb \
-diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-new file mode 100644
-index 000000000000..014cac192375
---- /dev/null
-+++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
-+ */
-+
-+#include "stm32f769-disco.dts"
-+
-+&panel_backlight {
-+	status = "disabled";
-+};
-+
-+&panel0 {
-+	compatible = "frida,frd400b25025", "novatek,nt35510";
-+	vddi-supply = <&vcc_3v3>;
-+	vdd-supply = <&vcc_3v3>;
-+	/delete-property/backlight;
-+	/delete-property/power-supply;
-+};
--- 
-2.43.0
-
+> > +		    (lpi->address & RISCV_FFH_LPI_RSVD_MASK)) {
+> > +			pr_warn("Invalid LPI entry method %#llx\n", lpi->address);
+> > +			return -EINVAL;
+> > +		}
+> > +
+> > +		state = lpi->address;
+> > +		if (!sbi_suspend_state_is_valid(state)) {
+> > +			pr_warn("Invalid SBI power state %#x\n", state);
+> > +			return -EINVAL;
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +int acpi_processor_ffh_lpi_probe(unsigned int cpu)
+> > +{
+> > +	return acpi_cpu_init_idle(cpu);
+> > +}
+> > +
+> > +int acpi_processor_ffh_lpi_enter(struct acpi_lpi_state *lpi)
+> > +{
+> > +	u32 state = lpi->address;
+> > +
+> > +	if (state & SBI_HSM_SUSP_NON_RET_BIT)
+> > +		return CPU_PM_CPU_IDLE_ENTER_PARAM(sbi_suspend,
+> > +						   lpi->index,
+> > +						   state);
+> > +	else
+> > +		return CPU_PM_CPU_IDLE_ENTER_RETENTION_PARAM(sbi_suspend,
+> > +							     lpi->index,
+> > +							     state);
+> > +}
+> > +
+> > +#endif
+> > -- 
+> > 2.34.1
+> >
+> 
+> Thanks,
+> drew
 
