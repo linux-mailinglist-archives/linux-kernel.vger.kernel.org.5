@@ -1,53 +1,52 @@
-Return-Path: <linux-kernel+bounces-23080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F76082A76D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:08:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2448582A76F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 784D41F22795
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:08:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BFB5B227D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CDB23CD;
-	Thu, 11 Jan 2024 06:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6CD2578;
+	Thu, 11 Jan 2024 06:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LVobSU4f"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="chwlfIhv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE54E2105;
-	Thu, 11 Jan 2024 06:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40B5e1kf022118;
-	Thu, 11 Jan 2024 06:08:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=/6QUE+JTKVJzsM5DjhsgngB9QhhyX2fGpNdXNdgcBSc=; b=LV
-	obSU4fQxCfixukwig4w/EowuyZfFWyhvGAbfNEOEY0mfcbu2+7Xesp98l4fdCWaq
-	Mcj3HDPadDMISsFnlEZZvd4d5tRsfdA5ciZfwpfa+DtKcDBUYMBWxHHuN5u5M95m
-	zdnpCNV5GvKPDJATdBtyzIBG1MLrKP4IJ7SoCLsO6gU995zpnpm/uJilWdxOzKXa
-	PhfUyMUtFrupTeBZ5WPQx0Zcip51hN3OdBrw6Nd55QDP5VrRZzpQGoUxmY/TUDyZ
-	Zr8C6rV48lF/y5KSO41QVPtVGqEo51hIqEPp/s9camoOlqpqJU9dg39DNI4jCt/l
-	/D6WeLqNmpcSGhizyRsA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhuak23g8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 06:08:26 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40B68PaD016302
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 06:08:25 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 22:08:22 -0800
-Message-ID: <1ae3c5a4-97d9-415e-8dd5-520e00c5e94f@quicinc.com>
-Date: Thu, 11 Jan 2024 14:08:19 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9BE62106;
+	Thu, 11 Jan 2024 06:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704953384; x=1736489384;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=KGtYZsJC4TBgZKJwilqWl0QJw+fI3o8R6G423oC0iYY=;
+  b=chwlfIhv4T6iMk26aqu6HVuamhLPJFVm2g/fN4frPbS8+4wDwfPFVPLT
+   7hv18spcn7BOEv5/Z8j2ebkt64r7vogrmQaOy9hHwMHobr8GqqcefbNbx
+   +1NZxUD19lCYJ1+Bj76/3Iq3L2ISFtiIFUUtN3ZksTe2tTjVl6ZyoZ5Ln
+   jl3suZQEamsuiASwyPT5Dlwslt6l7mq3MxVe2dNoBjGbsQaJkJ8eXJ3kq
+   WFHlqdSRHa3WR9Y2ZmQHFihwiSAy+VTeGX1G7ddKdVlBzBGVkC0nSQQ64
+   srd63/D//lLrOfkjkPSHjdhNCj1+DnAiINR/ojlcr6OGSOOU5gvti7XjA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="429936063"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="429936063"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 22:09:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="782504102"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="782504102"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.8.238]) ([10.93.8.238])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 22:09:40 -0800
+Message-ID: <c0157830-ef4d-4b76-853e-482f9bf16ced@linux.intel.com>
+Date: Thu, 11 Jan 2024 14:09:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,139 +54,181 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] coresight: Add coresight name support
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Mike Leach <mike.leach@linaro.org>
-CC: James Clark <james.clark@arm.com>,
-        Suzuki K Poulose
-	<suzuki.poulose@arm.com>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang
-	<quic_taozha@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>
-References: <20231228093321.5522-1-quic_jinlmao@quicinc.com>
- <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
- <CAJ9a7Vgi=ELOhXNF97KrBtV5ef8khwWqzWKevrYW2RtBBtsppw@mail.gmail.com>
- <CAL_JsqKYuqKxokDzs3xVWqYZoFfyMwMrLd17DpfCO_x7CXvRZw@mail.gmail.com>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <CAL_JsqKYuqKxokDzs3xVWqYZoFfyMwMrLd17DpfCO_x7CXvRZw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [RFC PATCH v10 5/5] iommu/vt-d: don't loop for timeout ATS
+ Invalidation request forever
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: Baolu Lu <baolu.lu@linux.intel.com>, kevin.tian@intel.com,
+ bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
+ robin.murphy@arm.com, lukas@wunner.de
+Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20231228170504.720794-1-haifeng.zhao@linux.intel.com>
+ <20231228170504.720794-3-haifeng.zhao@linux.intel.com>
+ <aba65111-47c1-4003-b9a9-19c908507c01@linux.intel.com>
+ <53c563ad-b47b-4962-abc7-f0da3a7181d6@linux.intel.com>
+ <65312590-01e1-4f53-a0dc-fc22f75379cd@linux.intel.com>
+ <b13e1463-75d9-4cf6-af25-b1c76db0c924@linux.intel.com>
+In-Reply-To: <b13e1463-75d9-4cf6-af25-b1c76db0c924@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: aDXdIDVa0rJXl0VcJ7YVHUHWWCD7Xl8w
-X-Proofpoint-ORIG-GUID: aDXdIDVa0rJXl0VcJ7YVHUHWWCD7Xl8w
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=676
- impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401110047
 
 
+On 1/11/2024 11:44 AM, Ethan Zhao wrote:
+>
+> On 1/11/2024 10:31 AM, Baolu Lu wrote:
+>> On 1/10/24 4:40 PM, Ethan Zhao wrote:
+>>>
+>>> On 1/10/2024 1:28 PM, Baolu Lu wrote:
+>>>> On 12/29/23 1:05 AM, Ethan Zhao wrote:
+>>>>> When the ATS Invalidation request timeout happens, the 
+>>>>> qi_submit_sync()
+>>>>> will restart and loop for the invalidation request forever till it is
+>>>>> done, it will block another Invalidation thread such as the fq_timer
+>>>>> to issue invalidation request, cause the system lockup as following
+>>>>>
+>>>>> [exception RIP: native_queued_spin_lock_slowpath+92]
+>>>>>
+>>>>> RIP: ffffffffa9d1025c RSP: ffffb202f268cdc8 RFLAGS: 00000002
+>>>>>
+>>>>> RAX: 0000000000000101 RBX: ffffffffab36c2a0 RCX: 0000000000000000
+>>>>>
+>>>>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffab36c2a0
+>>>>>
+>>>>> RBP: ffffffffab36c2a0 R8: 0000000000000001 R9: 0000000000000000
+>>>>>
+>>>>> R10: 0000000000000010 R11: 0000000000000018 R12: 0000000000000000
+>>>>>
+>>>>> R13: 0000000000000004 R14: ffff9e10d71b1c88 R15: ffff9e10d71b1980
+>>>>>
+>>>>> ORIG_RAX: ffffffffffffffff CS: 0010 SS: 0018
+>>>>>
+>>>>> (the left part of exception see the hotplug case of ATS capable 
+>>>>> device)
+>>>>>
+>>>>> If one endpoint device just no response to the ATS Invalidation 
+>>>>> request,
+>>>>> but is not gone, it will bring down the whole system, to avoid such
+>>>>> case, don't try the timeout ATS Invalidation request forever.
+>>>>>
+>>>>> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>>>>> ---
+>>>>>   drivers/iommu/intel/dmar.c | 2 +-
+>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>>>>> index 0a8d628a42ee..9edb4b44afca 100644
+>>>>> --- a/drivers/iommu/intel/dmar.c
+>>>>> +++ b/drivers/iommu/intel/dmar.c
+>>>>> @@ -1453,7 +1453,7 @@ int qi_submit_sync(struct intel_iommu 
+>>>>> *iommu, struct qi_desc *desc,
+>>>>>       reclaim_free_desc(qi);
+>>>>>       raw_spin_unlock_irqrestore(&qi->q_lock, flags);
+>>>>>   -    if (rc == -EAGAIN)
+>>>>> +    if (rc == -EAGAIN && type !=QI_DIOTLB_TYPE && type != 
+>>>>> QI_DEIOTLB_TYPE)
+>>>>>           goto restart;
+>>>>>         if (iotlb_start_ktime)
+>>>>
+>>>> Above is also unnecessary if qi_check_fault() returns -ETIMEDOUT,
+>>>> instead of -EAGAIN. Or did I miss anything?
+>>>
+>>> It is pro if we fold it into qi_check_fault(), the con is we have to 
+>>> add
+>>>
+>>> more parameter to qi_check_fault(), no need check invalidation type
+>>>
+>>> of QI_DIOTLB_TYPE&QI_DEIOTLB_TYPE in qi_check_fault() ?
+>>
+>> No need to check the request type as multiple requests might be batched
+>> together in a single call. This is also the reason why I asked you to
+>> add a flag bit to this helper and make the intention explicit, say,
+>>
+>> "This includes requests to interact with a PCI endpoint. The device may
+>>  become unavailable at any time, so do not attempt to retry if ITE is
+>>  detected and the device has gone away."
+>
+> That is to say, the usage of this function finally becomes that way,
+>
+> the user space interface could submit request with mixed iotlb & devtlb
+>
+> invalidation together in the queue or seperated iotlb/devtlb 
+> invalidation.
+>
+> we depend on caller to pass the QI_OPT_CHECK_ENDPOINT as option
+>
+> bit to bail out even there is other iotlb invalidation in the same 
+> batch ?
+>
+> then is user's call to choose retry the iotbl /devtlb invalidation or 
+> not.
+>
+> if the caller hits the case the endpoint dead, the caller will get 
+> -ETIMEDOUT/
+>
+> -ENOTCONN as returned value, but no real ITE in its interested list, to
+>
+> tell userland user what happened, we fake a DMA_FSTS_ITE for user ?
+>
+> given we wouldn't read a ITE from DMA_FSTS_REG that moment.
+>
+>
+> 1. checking the first request for devTLB invalidation will miss chance to
+>
+>    check endpoint state if the iotlb & devtlb invalidation were mixed.
+>
+>    here explict option bit would be better.  while valid pdev does the
+>
+>    same thing.  so if pdev passed, no need to check for QI_DIOTLB_TYPE
+>
+>    || QI_EIOTLB_TYPE in qi_submit_sync() & qi_check_fault().
+>
+>
+> 2. seems not perfect to drop or retry whole batch of request if there is
+>
+>   devtlb invalidation within the batch, let caller to choose the later 
+> action
+>
+>   is simpler than making the qi_submit_sync() too complex.
+>
+>
+> 3. fake a DMA_FSTS_ITE for user's interested list on behalf of hardware
+>
+>   is better than no error/ fault feedback to user even it is predicted 
+> not
+>
+>   happened yet.
+>
+>
+See Intel VT-d spec r4.1, section 4.3 & section 6.5.2.10
 
-On 1/3/2024 11:32 PM, Rob Herring wrote:
-> On Tue, Jan 2, 2024 at 5:05 AM Mike Leach <mike.leach@linaro.org> wrote:
->>
->> As James mentions this is clearly a V2 of a previous patch - please
->> mark as such in future.
->>
->> Adding to what James has already said:-
->>
->> 1) Mapping between the canonical names used in the drivers and the
->> information as to the precise device is as easy as running 'ls' on
->> /sys/bus/coresight/devices:-
->>
->> root@linaro-developer:/home/linaro/cs-mods# ls -al /sys/bus/coresight/devices/
->> total 0
->> drwxr-xr-x 2 root root 0 Jan  2 11:27 .
->> drwxr-xr-x 4 root root 0 Jan  2 11:27 ..
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu0 ->
->> ../../../devices/platform/soc@0/858000.cti/cti_cpu0
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu1 ->
->> ../../../devices/platform/soc@0/859000.cti/cti_cpu1
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu2 ->
->> ../../../devices/platform/soc@0/85a000.cti/cti_cpu2
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu3 ->
->> ../../../devices/platform/soc@0/85b000.cti/cti_cpu3
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys0 ->
->> ../../../devices/platform/soc@0/810000.cti/cti_sys0
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys1 ->
->> ../../../devices/platform/soc@0/811000.cti/cti_sys1
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm0 ->
->> ../../../devices/platform/soc@0/85c000.etm/etm0
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm1 ->
->> ../../../devices/platform/soc@0/85d000.etm/etm1
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm2 ->
->> ../../../devices/platform/soc@0/85e000.etm/etm2
->> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm3 ->
->> ../../../devices/platform/soc@0/85f000.etm/etm3
->> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel0 ->
->> ../../../devices/platform/soc@0/821000.funnel/funnel0
->> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel1 ->
->> ../../../devices/platform/soc@0/841000.funnel/funnel1
->> lrwxrwxrwx 1 root root 0 Jan  2 11:42 replicator0 ->
->> ../../../devices/platform/soc@0/824000.replicator/replicator0
->> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etf0 ->
->> ../../../devices/platform/soc@0/825000.etf/tmc_etf0
->> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etr0 ->
->> ../../../devices/platform/soc@0/826000.etr/tmc_etr0
->>
->>
->> 2) The patch set must contain the usage and specification in the .yaml
->>   file(s) of the property used.
-> 
-> For the record, I don't like "coresight-name". I don't have another
-> suggestion because "easy" is not sufficient reasoning for why this is
-> needed.
+We should keep the original retry logic intact, in order to not break
 
-For example, if we want to configure the trigger and HW events for 
-modem, we can't know which cti or TPDM is for modem from current names.
+the fault handling flow. only breaks the loop when endpoint device
 
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 cti_sys0 -> 
-./../../devices/platform/soc@0/138f0000.cti/cti_sys0
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 cti_sys1 -> 
-./../../devices/platform/soc@0/13900000.cti/cti_sys1
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm0 -> 
-./../../devices/platform/soc@0/10b0d000.tpdm/tpdm0
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm1 -> 
-./../../devices/platform/soc@0/10c28000.tpdm/tpdm1
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm2 -> 
-./../../devices/platform/soc@0/10c29000.tpdm/tpdm2
+is gone with returned error code to reflect the reality.  not -ETIMEOUT,
 
-Thanks
-Jinlong Mao
-> 
->> However, there was a standard property called 'name' which is
->> deprecated - see
->> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html
->> section 2.3.11. I do not believe that adding another 'name' property
->> would be accepted by the DT maintainers.
-> 
-> "name" is just the node name for anything in the last 15 years. They
-> used to be separate, but would still mostly be the same. The only case
-> I found with them different was old PowerPC Macs.
-> 
->> 3) the 'device_node' structure has a 'name' field that contains the
->> node name in the DT approved "node-name@unit-address" format.
-> 
-> Actually, it is without the unit-address. full_name is with the unit-address.
-> 
->> This
->> contains whatever node names you used in the dt.  Why not use this if
->> a change has to be made and find some conditional to activate it.
-> 
-> Don't go accessing "name" or "full_name" directly. I intend to get rid
-> of "name" and generate it from full_name. So use the accessors and
-> printk specifiers if you need node names.
-> 
-> Rob
+that is not triggered yet, but will hit ITE later about previous request,
+
+and software should handle it smoothly to let the other subsequent
+
+requests could be done in next try.
+
+
+Thanks,
+
+Ethan
+
+> my cents.
+>
+>
+> Thanks,
+>
+> Ethan
+>
+>
+>
+>>
+>> Best regards,
+>> baolu
+>
 
