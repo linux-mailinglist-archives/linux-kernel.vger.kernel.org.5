@@ -1,116 +1,158 @@
-Return-Path: <linux-kernel+bounces-23858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB7F082B2DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:24:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C288082B2DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:24:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBE591C23819
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:24:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F1A6289373
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBC24F8A0;
-	Thu, 11 Jan 2024 16:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970A050255;
+	Thu, 11 Jan 2024 16:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="qvhRAfH+";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fN1XZxTU"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ppfd7wav"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DCE94F60B;
-	Thu, 11 Jan 2024 16:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 6482932000EB;
-	Thu, 11 Jan 2024 11:23:28 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 11 Jan 2024 11:23:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704990207; x=1705076607; bh=YcU2xy056h
-	+QlQA91Rv67d7NflwBIz2XJhgM8errMgU=; b=qvhRAfH+WKlJIPmFQW2BXLXt2m
-	p3gocv9L0EUUKcNqovdo+eHXD4sdf2/LXLx2hXGVKpn1G5/gccGo3od77PpwCqla
-	L5aQxOHihGO6kp5F5Zn2cX/qkq744bQFG5PfKxj0o2m2kKw8GOJ2HA5+cvRKQ0rX
-	8Oi/vJmkRQPXD43k3QhNK7VS/+o/TCe3NP6WZSc1d6OSvlEb0D1XgHntv9tVbAdD
-	o2Jsoqh2cvwEKbTzMlfd5o9YyCubwEqF3m9ZyZW5yXt4pTDNVI4rMd8IJNeiUvwq
-	KCf/mBqCfgrpVBGBMpR754uVlr20QymxYw6qj4xRkfuyS9ZY/FT4NK65MjDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704990207; x=1705076607; bh=YcU2xy056h+QlQA91Rv67d7NflwB
-	Iz2XJhgM8errMgU=; b=fN1XZxTUmjGGykTpRVNFeDAgMvxSZMU/qOCm0hpcOFxp
-	2XYmOJ7Bx9n3sMmq8j8qgtBsx9i72/9BTBO+bWZsWL2W39QRqpZ08IEYqZktPE9l
-	iTXhRkEpzapiGaGp64Mru0JJcV8u5Sjpf8u418sotDEeFTke4XWBePDlNqG+dcJL
-	x66uFjrQ3TMuhTN9Mqsp9S+48hzLjtpDGxlyU1acB7MAzLco8d/hzyxp7kd4S/A4
-	3cSQ/Zxo+ri+AU5K6UMkevYhZT+tj1B2tbC07T57P23/qbZVKPa2mDdLG85gOaJd
-	lKtuF4i/5ONQ0gJI+Wv88KO6/rZAM5OTqt36BGN1KA==
-X-ME-Sender: <xms:_xWgZZj_jmxo__tks2Y8CGjzYvzRnQDF--U201waDlEzDooIt8owAQ>
-    <xme:_xWgZeB_m2qcZCMSCrb9TDTwY4J49Jfzh7QcvOpZHlFBwVIVI2uf3XFI42pJQeiCh
-    r9sdkiH19UmJ640Ras>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeifedgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:_xWgZZEK-TI0VCzhzGjtzRQJ_76Berqs_bQ__u7RyBNxN9Vnt7gbDg>
-    <xmx:_xWgZeQxFzSA15yRfWrDGcm2WSVzAo1TCeF7rENp2NU81NgGm6ZEGQ>
-    <xmx:_xWgZWzaJvdG8wLar4xxAWWmzbw1I4TrvQkQnV1pGxQ6FiNpiBrnFA>
-    <xmx:_xWgZdo9cZRHyFCnZvQZCFOaXYFya1M7zqS3N3cZAGz2fw0UaU3cRQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 68FF6B6008F; Thu, 11 Jan 2024 11:23:27 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4220C50245
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:23:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BEsRr0030404;
+	Thu, 11 Jan 2024 16:23:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=yvEoKVrxCx84Qso2ZKN68nnOcsKKBjWqodWTF4MPK2Y=;
+ b=Ppfd7wav0FWB0+C05oE/+mZBq6q/VsxjP8wCJOGitOhvDYAAtJZSBZZEzj5sQfZMcuPJ
+ zPyc0td38+BO9hcWGT7hJ7VIp7NerKEbo/i2oiaAxp3DwvRgCf7kwLVBIZq53F6BXOnB
+ aRW0+JKpsgAodCSroB+tiX90OiBw6ReTwgbYbt5d1mEXBQWyO/cjN/qG8ftyicNKShwE
+ PIQQ7NOuolKYJDawchgEQDuIZ1I4t9HynPGVnTi8mz8Kcw205QuMoofOgHyiilyl0RU8
+ 8qS9MZFdWmF/WdOe15IGsMjBXP70/R3Jor5BqhKiN5hLWlmvx13/js2Ff60CIvs9voGi 0w== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjjghap60-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 16:23:32 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40BDjbfp026992;
+	Thu, 11 Jan 2024 16:23:31 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkw2c1x8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 16:23:31 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40BGNU1a17564308
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Jan 2024 16:23:31 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9FD5158068;
+	Thu, 11 Jan 2024 16:23:30 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 36C6458062;
+	Thu, 11 Jan 2024 16:23:30 +0000 (GMT)
+Received: from [9.24.12.86] (unknown [9.24.12.86])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 11 Jan 2024 16:23:30 +0000 (GMT)
+Message-ID: <c5a4cde9-cc30-48f7-8da0-7c0e71d7d2aa@linux.ibm.com>
+Date: Thu, 11 Jan 2024 10:23:29 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5d2d8e57-0041-40af-b237-05f3275008bd@app.fastmail.com>
-In-Reply-To: <ZaASsqnq5ZYdcjm6@lizhi-Precision-Tower-5810>
-References: <20240110232255.1099757-1-arnd@kernel.org>
- <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
- <343cedc4-a078-4cf8-ba3b-a1a8df74185b@app.fastmail.com>
- <ZaASsqnq5ZYdcjm6@lizhi-Precision-Tower-5810>
-Date: Thu, 11 Jan 2024 17:23:03 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Frank Li" <Frank.li@nxp.com>
-Cc: "Arnd Bergmann" <arnd@kernel.org>, "Vinod Koul" <vkoul@kernel.org>,
- "Peng Fan" <peng.fan@nxp.com>, "Fabio Estevam" <festevam@denx.de>,
- dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, imx@lists.linux.dev
-Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] soc/aspeed: Add host side BMC device driver
+Content-Language: en-US
+To: Ninad Palsule <ninad@linux.vnet.ibm.com>, Andrew Lunn <andrew@lunn.ch>
+Cc: joel@jms.id.au, andrew@aj.id.au, eajames@linux.ibm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org
+References: <20230821183525.3427144-1-ninad@linux.ibm.com>
+ <20230821183525.3427144-2-ninad@linux.ibm.com>
+ <5159abb8-1b4c-4576-b370-4dd9db142beb@lunn.ch>
+ <6cea8ee7-f845-6ef3-631f-3f252ff5e949@linux.vnet.ibm.com>
+ <5c918888-6933-7661-45f0-32ae4521aa2c@linux.vnet.ibm.com>
+From: Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <5c918888-6933-7661-45f0-32ae4521aa2c@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AVbA9MnxxCVVkGqCoodM0HqcSyFelbg7
+X-Proofpoint-ORIG-GUID: AVbA9MnxxCVVkGqCoodM0HqcSyFelbg7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-11_09,2024-01-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 adultscore=0 impostorscore=0
+ phishscore=0 clxscore=1011 mlxlogscore=999 priorityscore=1501 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401110128
 
-On Thu, Jan 11, 2024, at 17:09, Frank Li wrote:
-> On Thu, Jan 11, 2024 at 07:23:34AM +0100, Arnd Bergmann wrote:
->> On Thu, Jan 11, 2024, at 01:02, Frank Li wrote:
+Hello Andrew,
+
+On 8/23/23 12:32, Ninad Palsule wrote:
+> Hello Andrew,
 >
-> It should be better link into same module because some debugfs and trace
-> improvement are on my TODO list. Export symbols will make more unnessary
-> complex.
-
-Ok, I'll see what I can come up with
-
-> Or simple exclude MCF_EDMA by change Kconfig
+> On 8/22/23 11:14 AM, Ninad Palsule wrote:
+>> Hello Andrew,
+>>
+>> Thanks for the review.
+>>
+>> On 8/21/23 2:29 PM, Andrew Lunn wrote:
+>>>> Testing:
+>>>>    - This is tested on IBM rainier system with BMC. It requires BMC 
+>>>> side
+>>>>      BMC device driver which is available in the ASPEED's 5.15 SDK
+>>>>      kernel.
+>>> How relevant is that? To the host side, it just appears to be an
+>>> 16550A. Is the SDK emulating an 16550A? If you where to use a
+>>> different kernel, is it still guaranteed to be an 16550A? I also
+>>> notice there is a mainline
+>>> drivers/tty/serial/8250/8250_aspeed_vuart.c. Could that be used on the
+>>> BMC? That would be a better testing target than the vendor kernel.
+>>
+>> This is just to indicate how I tested my code.
+>>
+>> Yes, aspeed chip (in this case ast2600) is compatible with 16550 UART.
+>>
+>> I am guessing it should work with different kernel too as 16550 
+>> standard is used.
+>>
+>> The 8250_aspeed_vuart.c is a BMC side driver for accessing VUART over 
+>> LPC bus and
+>>
+>> this is a host side driver to access VUART over PCIe bus.
+>>
+>>>> +config ASPEED_HOST_BMC_DEV
+>>>> +    bool "ASPEED SoC Host BMC device driver"
+>>>> +    default ARCH_ASPEED
+>>>> +    select SOC_BUS
+>>>> +    default ARCH_ASPEED
+>>> same default twice?
+>> Removed.
+>>
+>>>> +late_initcall(aspeed_host_bmc_device_init);
+>>>> +module_exit(aspeed_host_bmc_device_exit);
+>>> It looks like you can use module_pci_driver() ?
+>> yes, It should work unless the late initcall is important. I will 
+>> test it and see.
 >
-> config MCF_EDMA                                                            
->         tristate "Freescale eDMA engine support, ColdFire mcf5441x SoCs"   
->         depends on !FSL_EDMA
-> 		   ^^^^^
-> 	depends on M5441x || COMPILE_TEST 
+> I will not be able to use module_pci_driver() as it doesn't support 
+> late initcall which is required otherwise
+>
+> 8250 registration fails. So I am not making this change.
 
-This does not actually prevent building both as modules, it
-only enforces that you can't have them both enabled if one
-of them is built-in.
+Please let me know if you are fine with this.
 
-     Arnd
+Thanks for the review.
+
+Regards,
+
+Ninad
+
 
