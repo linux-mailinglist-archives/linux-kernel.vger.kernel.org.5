@@ -1,235 +1,181 @@
-Return-Path: <linux-kernel+bounces-23705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2985582B07E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:19:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 866D382B07F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:20:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BE261F2438E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:19:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D97EB220E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039E23D0C1;
-	Thu, 11 Jan 2024 14:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84763C497;
+	Thu, 11 Jan 2024 14:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="PBCkNEvl"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HDAZs6aJ"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86943C097
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 14:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2b9e2c9858so61371066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 06:19:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1704982751; x=1705587551; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xSSxh+RPIUMZKMpTsr13zKkvmGosyi4C4sKFagTsfmM=;
-        b=PBCkNEvlaoggykFyzmmiFHVFhWFA1u5d7W66bzdVAY1r8vxSruFM1TKGmFY3wlCxMD
-         /+mQbPUBpMtla6UIHzdqPWUfnJTNYfC5kOrsZXGga8U7bLK1m0Iu/XFpj/gezGLyG1gz
-         o0b7NN5h+ttpKpx5D9tGKPUm8/+G1D9S6+TvM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704982751; x=1705587551;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xSSxh+RPIUMZKMpTsr13zKkvmGosyi4C4sKFagTsfmM=;
-        b=ozanygOgO8cVjkadrSBnl4Fk1Gevy0IG/Af5aQl5TdNcja8ri5SMYdHYjrOkc6Drrb
-         qhf2vf39GAA71RSZDR4t9ou0fpdwQ87ghRKjagJCoY9XYFgmn74pOD8owZ2v8PvnnzEr
-         hoeZJmFkoGLXEH8HGfumAuidu4she9NJXROrCcDNoJ722omatFzyRC4Vly9BUulSr3am
-         w6kxiucDzH2OWAeCYLLTGoz3eA34cl1sV+3uXsRQ70xO9Vn5Ff8jT3xrSt2p79bvCyz3
-         UctSLYHOT0wazzvxDIKblLGjF19F5k45cp28IFzKZnFQTpmHNPGbEgM64jA7VgsRbf6g
-         Q2Wg==
-X-Gm-Message-State: AOJu0YzXjOEsxJxfM/EVhzmNjx6ohzO+UDTed2cia4CT+yQu/fsgQRAa
-	I/KBWve9pr5s2/Fgf42Rs7FE5ro62R6yvw==
-X-Google-Smtp-Source: AGHT+IGQ8fkDdCLHmesvwOHSP1dlFaJi+Z27VHbTiwHplTSFM3BRzT5PNoP5kBL6v+Aokke4yw99vQ==
-X-Received: by 2002:a17:907:96a1:b0:a26:d233:80b0 with SMTP id hd33-20020a17090796a100b00a26d23380b0mr1600615ejc.0.1704982750749;
-        Thu, 11 Jan 2024 06:19:10 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id mb3-20020a170906eb0300b00a28956cf75esm629228ejb.130.2024.01.11.06.19.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 06:19:10 -0800 (PST)
-Date: Thu, 11 Jan 2024 15:19:08 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Rob Clark <robdclark@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH] Revert "drm/msm/gpu: Push gpu lock down past runpm"
-Message-ID: <ZZ_43N6OtvgClc8Y@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>,
-	open list <linux-kernel@vger.kernel.org>
-References: <20240109182218.193804-1-robdclark@gmail.com>
- <ZZ52YNc-TkeG7PZO@phenom.ffwll.local>
- <CAF6AEGusfKGou-=4y4CDd99x6TgJ1ZhAmnKwQJs1k6s8Bu07SQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA243D542
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 14:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704982787; x=1736518787;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=m9r/zSGvLdOLi0BGLqhWMQAD8e0dWyA3OSr/FvhjBSg=;
+  b=HDAZs6aJxlNtnhtFqsBrZlEuw43GzA/82ADkhfLTo4kER5OBqiZ5+pLc
+   uNp23YdV6SaBTfMX77jq8R/Y822nTO5yj8KQ64mwJqn29XpkqCAMNttsp
+   JLxAOvrpRVK7LLh2eZlDLX2Y7sgWnspq0VD8wmWJtwCLqLDfqLtQyeYeC
+   FLaz3MtNjEDCR5FZVD8A9BiYx22Hza84SO2pvo8XiYMsQHEB1zmpSsGak
+   Ikie8n5fDS+xDqHatoYwGwJJgp/KE9m1OUgIdiWDtk8H+0lvza/KgGRZS
+   9lmxlKsdlZPi/28W0lE0ZrPDkmNWLbRRwF6r5M4NTLb+vruUE/Cap4qS9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="402632012"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="402632012"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 06:19:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="17055629"
+Received: from unknown (HELO [10.125.177.125]) ([10.125.177.125])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 06:19:46 -0800
+Message-ID: <1a3661d5-3539-4443-88da-003dea920188@linux.intel.com>
+Date: Thu, 11 Jan 2024 06:19:46 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF6AEGusfKGou-=4y4CDd99x6TgJ1ZhAmnKwQJs1k6s8Bu07SQ@mail.gmail.com>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2] x86/mm: Fix memory encryption features advertisement
+Content-Language: en-US
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, linux-coco@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+ Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+References: <20240111111224.25289-1-kirill.shutemov@linux.intel.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240111111224.25289-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 06:54:53AM -0800, Rob Clark wrote:
-> On Wed, Jan 10, 2024 at 2:50 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Tue, Jan 09, 2024 at 10:22:17AM -0800, Rob Clark wrote:
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > This reverts commit abe2023b4cea192ab266b351fd38dc9dbd846df0.
-> > >
-> > > Changing the locking order means that scheduler/msm_job_run() can race
-> > > with the recovery kthread worker, with the result that the GPU gets an
-> > > extra runpm get when we are trying to power it off.  Leaving the GPU in
-> > > an unrecovered state.
-> >
-> > The recovery kthread is supposed to stop all the relevant schedulers,
-> > which should remove any possible race conditions. So unless there's more
-> > going on, or you have your own recovery kthread (don't, reuse the one from
-> > the scheduler with your own work items, that's why you can provide that)
-> > this looks like an incomplete/incorrect explanation ... ?
-> >
-> > Slightly confused
+
+
+On 1/11/2024 3:12 AM, Kirill A. Shutemov wrote:
+> When memory encryption is enabled, the kernel prints the encryption
+> flavor that the system supports.
 > 
-> msm still uses it's own recovery, which pre-dates the scheduler
-> conversion.  At one point (a yr or two back?) I started looking at
-> integrating recovery w/ scheduler.. at the time I think you talked me
-> out of it, but I don't remember the reason
+> The check assumes that everything is AMD SME/SEV if it doesn't have
+> the TDX CPU feature set.
+> 
+> Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
+> on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
+> encryption enabled for I/O without the rest of CoCo enabling.
+> 
+> To avoid confusion, check the cc_vendor directly.
+> 
+> Possible alternative is to completely removing the print statement.
+> For a regular TDX guest, the kernel already prints a message indicating
+> that it is booting on TDX. Similarly, AMD and Hyper-V can also display
+> a message during their enumeration process.
 
-hm ... most scheduler discussions I remember was around the "allocate your
-own workqueue and hand that to scheduler to avoid races/deadlocks". Which
-iirc Boris implemented a while ago. Once you have that workqueue you can
-then also process any other error condition on there with the exact same
-locking design (like hw error or page faults or whatever), not just
-drm/sched tdr.
+With this change, will it print "Intel TDX" for Hyper-V?
 
-I don't remember anything else that ever came up at least at a fundamental
-level ...
-
-So if that discussion was older than 78efe21b6f8e ("drm/sched: Allow using
-a dedicated workqueue for the timeout/fault tdr") you should be covered.
-Fingers crossed :-)
-
-Meanwhile if you do not use drm/sched tdr at all then doing the exact same
-design but just on your own workqueue should also work. The critical thing
-is really only:
-- have one single-thread workqueue for all gpu recover
-- bracket each handler in there with drm_sched_stop/start for all affected
-  engines
-
-No more races!
-
-Cheers, Sima
+IMO, since there is already a debug message for type identification, we
+can remove this part. 
 
 > 
-> BR,
-> -R
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+> ---
+>  arch/x86/mm/mem_encrypt.c | 56 +++++++++++++++++++++------------------
+>  1 file changed, 30 insertions(+), 26 deletions(-)
 > 
-> > -Sima
-> >
-> > >
-> > > I'll need to come up with a different scheme for appeasing lockdep.
-> > >
-> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > ---
-> > >  drivers/gpu/drm/msm/msm_gpu.c        | 11 +++++------
-> > >  drivers/gpu/drm/msm/msm_ringbuffer.c |  7 +++++--
-> > >  2 files changed, 10 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> > > index 095390774f22..655002b21b0d 100644
-> > > --- a/drivers/gpu/drm/msm/msm_gpu.c
-> > > +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> > > @@ -751,12 +751,14 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
-> > >       struct msm_ringbuffer *ring = submit->ring;
-> > >       unsigned long flags;
-> > >
-> > > -     pm_runtime_get_sync(&gpu->pdev->dev);
-> > > +     WARN_ON(!mutex_is_locked(&gpu->lock));
-> > >
-> > > -     mutex_lock(&gpu->lock);
-> > > +     pm_runtime_get_sync(&gpu->pdev->dev);
-> > >
-> > >       msm_gpu_hw_init(gpu);
-> > >
-> > > +     submit->seqno = submit->hw_fence->seqno;
-> > > +
-> > >       update_sw_cntrs(gpu);
-> > >
-> > >       /*
-> > > @@ -781,11 +783,8 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
-> > >       gpu->funcs->submit(gpu, submit);
-> > >       gpu->cur_ctx_seqno = submit->queue->ctx->seqno;
-> > >
-> > > -     hangcheck_timer_reset(gpu);
-> > > -
-> > > -     mutex_unlock(&gpu->lock);
-> > > -
-> > >       pm_runtime_put(&gpu->pdev->dev);
-> > > +     hangcheck_timer_reset(gpu);
-> > >  }
-> > >
-> > >  /*
-> > > diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
-> > > index e0ed27739449..548f5266a7d3 100644
-> > > --- a/drivers/gpu/drm/msm/msm_ringbuffer.c
-> > > +++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
-> > > @@ -21,8 +21,6 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
-> > >
-> > >       msm_fence_init(submit->hw_fence, fctx);
-> > >
-> > > -     submit->seqno = submit->hw_fence->seqno;
-> > > -
-> > >       mutex_lock(&priv->lru.lock);
-> > >
-> > >       for (i = 0; i < submit->nr_bos; i++) {
-> > > @@ -35,8 +33,13 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
-> > >
-> > >       mutex_unlock(&priv->lru.lock);
-> > >
-> > > +     /* TODO move submit path over to using a per-ring lock.. */
-> > > +     mutex_lock(&gpu->lock);
-> > > +
-> > >       msm_gpu_submit(gpu, submit);
-> > >
-> > > +     mutex_unlock(&gpu->lock);
-> > > +
-> > >       return dma_fence_get(submit->hw_fence);
-> > >  }
-> > >
-> > > --
-> > > 2.43.0
-> > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index c290c55b632b..d035bce3a2b0 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -42,38 +42,42 @@ bool force_dma_unencrypted(struct device *dev)
+>  
+>  static void print_mem_encrypt_feature_info(void)
+>  {
+> -	pr_info("Memory Encryption Features active:");
+> +	pr_info("Memory Encryption Features active: ");
+>  
+> -	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
+> -		pr_cont(" Intel TDX\n");
+> -		return;
+> -	}
+> +	switch (cc_vendor) {
+> +	case CC_VENDOR_INTEL:
+> +		pr_cont("Intel TDX\n");
+> +		break;
+> +	case CC_VENDOR_AMD:
+> +		pr_cont("AMD");
+>  
+> -	pr_cont(" AMD");
+> -
+> -	/* Secure Memory Encryption */
+> -	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
+> +		/* Secure Memory Encryption */
+> +		if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
+>  		/*
+>  		 * SME is mutually exclusive with any of the SEV
+>  		 * features below.
+> -		 */
+> -		pr_cont(" SME\n");
+> -		return;
+> +		*/
+> +			pr_cont(" SME\n");
+> +			return;
+> +		}
+> +
+> +		/* Secure Encrypted Virtualization */
+> +		if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+> +			pr_cont(" SEV");
+> +
+> +		/* Encrypted Register State */
+> +		if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
+> +			pr_cont(" SEV-ES");
+> +
+> +		/* Secure Nested Paging */
+> +		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
+> +			pr_cont(" SEV-SNP");
+> +
+> +		pr_cont("\n");
+> +		break;
+> +	default:
+> +		pr_cont("Unknown\n");
+>  	}
+> -
+> -	/* Secure Encrypted Virtualization */
+> -	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+> -		pr_cont(" SEV");
+> -
+> -	/* Encrypted Register State */
+> -	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
+> -		pr_cont(" SEV-ES");
+> -
+> -	/* Secure Nested Paging */
+> -	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
+> -		pr_cont(" SEV-SNP");
+> -
+> -	pr_cont("\n");
+>  }
+>  
+>  /* Architecture __weak replacement functions */
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
