@@ -1,311 +1,158 @@
-Return-Path: <linux-kernel+bounces-22900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA95382A523
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A48BD82A524
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CFDD284DE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3F7528592B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE2415AC9;
-	Thu, 11 Jan 2024 00:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144CB15ACD;
+	Thu, 11 Jan 2024 00:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Tpzpmn73"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2049.outbound.protection.outlook.com [40.107.6.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Vc28TvXz"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33ADB15AC0;
-	Thu, 11 Jan 2024 00:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O11osMPGzuPB2xyFvn05tXLw7PN3WbDSMSnU/RRC+CW2L9hRNMFmmnsSVv9nxDXEAo768wl++9/4S5odNksIAe5IZ/Z/RBY48lOOVmSn5oIwmA5vJQnHjXEhpLbA2QG83jBL8lSPHzTj/rqsyzAfJ/WHDK+JSuTUrKE4OnlNXPjX++CplmZwKdEK/UZP1luXGpXy+5nsYSRLBQQq6vGW9n2XV/JTzz/S1Uh01vw1y/BZlaYxJR7hTNFWWk0Um//PLBu4/Ks2+YSHGFguIcqNKTgrIRtVT9YEImaytKGY94gFyIiLrz4wReI7XKIusYLMVnAvFzJzH5/mzR05Rj7lQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UndHGHMJJKk+cQrVKywzlHwQSUqQ98+wb9WLEAB+GvM=;
- b=B/eo3SwqFddmRK/tcYdSHAYredpqnjUhGKVD1LBGED7OYCC/k16478dToeX0DNXIJqlKJK2sFRN8LzM3WHO/OlFmpcThOokOsoy3+8hapa6XWeNJjmsomss54cuuaHlV8WAPIK1HGIfGMLOyoh2IE8lMTBwevoSOBbfTV4blu1xqhN6HGlb7fhAsHuk1FUYEp1L6/DXNTVge+Qnhjw+a+sJxBYSpY98hZQGIdVsSLSje6qGUCM9P3ldV3O4GzzsNJWcUqFGAqd6hXvBgKDB5cJs1qn8aDj9Fqcp1saFLPx7YW8CAXVZN4h6KXucW0+5Q8eMj1Jto+O+9tVfbHplSOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UndHGHMJJKk+cQrVKywzlHwQSUqQ98+wb9WLEAB+GvM=;
- b=Tpzpmn73vX/t9OnoB/XbdQDrvoX+mKTqCud+vpXI3mQz5s4U82Z8MKgi3m4v14D0NI/lSzwI62RFrj+s7Tpe50kQHCbxibeVtg2Uw7DwN+DKEinj+a9lgUt03SBRVDp3wnPa9dbSpmpWBnJuimQ7hfDqK7NHB0/Qq0OLv83uZjw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com (2603:10a6:20b:23f::5)
- by PAXPR04MB8895.eurprd04.prod.outlook.com (2603:10a6:102:20e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Thu, 11 Jan
- 2024 00:03:04 +0000
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469]) by AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469%4]) with mapi id 15.20.7159.020; Thu, 11 Jan 2024
- 00:03:04 +0000
-Date: Wed, 10 Jan 2024 19:02:57 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-	Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <festevam@denx.de>,
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev
-Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
-Message-ID: <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
-References: <20240110232255.1099757-1-arnd@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110232255.1099757-1-arnd@kernel.org>
-X-ClientProxiedBy: BYAPR05CA0103.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::44) To AS8PR04MB7511.eurprd04.prod.outlook.com
- (2603:10a6:20b:23f::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF8815AC6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d4ca2fd2fbso25324395ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:03:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704931410; x=1705536210; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ba4Wlhw2vCHiq+Wpp/loRi1cOOmQkbqPw4UUSpZg/xo=;
+        b=Vc28TvXz7MCg/0+a6kZy8X0I1doO37oxUP/5KPlYRlwt3Nk0WV3489ekJzhy0SkUTH
+         2Y5SZEnnrOKtFtxPeUpuXh5fkShioRbViQidC39wzsT5FIZ0Zs2gVNAos7Xzy6RB1yu0
+         YPiLi1mUjq8g9X1c1HvDy8OFb2KxuS2WxhJw4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704931410; x=1705536210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ba4Wlhw2vCHiq+Wpp/loRi1cOOmQkbqPw4UUSpZg/xo=;
+        b=t+48LSF95x5LdkTbo2t7b7DWuP03Ymui+fIdDBxVFyC/ImovQS7tSlyV7ENimNknHq
+         pysaKrH1O2XlCrPYsnr5iidJJexoYWnUuiqJV8Vc7JSd0Oyia7vdQiw6UC15dBdyHUIb
+         dg/q6SJyRumntmZfDadMpKabdoudOaPZGifyadZvH09uTayKsxvy9+PSiywkMRY5VODY
+         +Qo6t7RyQn1WMxr0GAMA+pQOvUrylsP7LCiW1mmljLb5ri7JfbqzgeLpnZQtrHcEi9Ny
+         9fnYV8OI62LEqiCLnBhkgYydnoE/Ee5TGJWHcvMusDL9xnNJj38RZWiViaPXy17fjK6t
+         I57Q==
+X-Gm-Message-State: AOJu0YwMN8Pfi7k3HlODag79wSzq2WzbIxhw7BTeGMiMsnB7kICn+NfV
+	XXdTzGP65Ryom9yG0TpGd9LcTgWzPGj9
+X-Google-Smtp-Source: AGHT+IH/q5mx8pcXScPlJfZ0Wh44Wk98MeulCYW2AroSeNwaysjkH6eufQcIXWUMDkxuUXHl3w9CbQ==
+X-Received: by 2002:a17:902:e843:b0:1d4:be2a:ae2c with SMTP id t3-20020a170902e84300b001d4be2aae2cmr301395plg.77.1704931409677;
+        Wed, 10 Jan 2024 16:03:29 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o7-20020a170902d4c700b001d362b6b0eesm4246119plg.168.2024.01.10.16.03.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 16:03:28 -0800 (PST)
+Date: Wed, 10 Jan 2024 16:03:28 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	linux-hardening@vger.kernel.org, error27@gmail.com,
+	gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
+	Vishnu Dasa <vdasa@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
+	darren.kenny@oracle.com, syzkaller <syzkaller@googlegroups.com>
+Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
+ dg_dispatch_as_host()
+Message-ID: <202401101601.30ED61A1A3@keescook>
+References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
+ <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
+ <202401081430.9DAB37B46@keescook>
+ <9c742547-0021-464b-b7a8-7af46b0a4afa@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB7511:EE_|PAXPR04MB8895:EE_
-X-MS-Office365-Filtering-Correlation-Id: ecbdd8cb-b65c-45ad-53f4-08dc1238aed8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Tby7Nr1IIPE43++pkzxVNAWy++00v4JsZC2MD5ibSGflY/7kFTx6LSOr0wrGLtuqVxPvW+r7yir7KAJg2iv+XaxKzi2LQIwUhFu9Jp9NaSJzSvETWbHR2TJ4h7b8AD48d4K4wUD3G2DBoXI8Cw9ljC2Baysz1AkJz8DeZHSVdp0wzgdrilQ3lYe7rYr4GlNW3jQiVf3N+Yx2L0usu2v40JTbvciM7SNznOGktI6Qt9DdZ3v6F1hXCy0Z0T+kzw/FB8dTenD8/8UijKn3J3Nl4klq8ILVp9LIvATFKw5afVHDRA0vmTlsblrliOtyfIo6jRF93go0ahNJpyjMtOzx9Ep1p5WsoPqO08zxroBydeW74CByiaJdEyDFb4XCh6+lcR+gKtRoP+IOuYRZSZRBbaDd9L5Pc6gIfVJ31favX4Or2AU/UFdu8/4Mc0+D/W4cX3jcvYx3jlAru5i3BkyMjxrmG0VE5doWJ8ZbYhakzl2XODBeYtM3krs6MW/rJQCDU/022h9xo5PlxMytotgqZufPoDg4GyOtBf7YyL8LNxuOdlus8aX/KIAczqHT+BtNPf6m/en/o9ItEsz3wZPqFKtds7ujLrv8JsC/GTHlDZAAoltQiHGAWfq1Pmqyaf0z
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB7511.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(396003)(136003)(366004)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(66476007)(66946007)(66556008)(316002)(8676002)(8936002)(26005)(66899024)(478600001)(83380400001)(2906002)(52116002)(4326008)(5660300002)(38350700005)(41300700001)(38100700002)(33716001)(86362001)(54906003)(6666004)(6506007)(6916009)(6512007)(9686003)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?r5QL8wNJEC54C2i6osmJW92fOLBYt5w7JPGl8+HrZFtE5Sp0XpuoMgZTKcIb?=
- =?us-ascii?Q?JZS7HdPG2MLcQ7jeZI1j36dEz5BLLh2N14lQuGDvIUL8DObFu6Z5o1qm3oAG?=
- =?us-ascii?Q?B+OZra0vo1UfmkwQ8GbCwWTR7lLNfF1uFGHPb0uOFblU4LTK8ZHkSf+tkE4G?=
- =?us-ascii?Q?yV5mmgQKcXbEfw67d6axVwZT6r84fHV9spHZoy+wAiOWPpc71CAY2FIU8w59?=
- =?us-ascii?Q?iHCD9JO4KMiwbIpoohV53UoBc1BrTRGcMYGTyYn3vET7Afd7q36qqbuFr0Ic?=
- =?us-ascii?Q?F5seOuQtYVYD/5bUMdMQxw7KR6itTE6B9xEJ/ZtP6N20jXJf+tG18jQLNlgo?=
- =?us-ascii?Q?LC520aAHspYvjvf2ouGwBYoIwi4plUHTozegxWlnyADKA78Gu9kCV0WgmtaU?=
- =?us-ascii?Q?YTqwoG9pCrS3Zbk/GBoQWDGkajhRsL4ksjd6L64jMEMP3Vru+isZoZ8Kllo1?=
- =?us-ascii?Q?FXuhLIKM0CJIG2utPoWeXe7kUIfy1rlm66zrzcapJWtLO91wCXjvYqtkOPzA?=
- =?us-ascii?Q?xFni1kjsomn7QsDZCi3c0yIamcE1EzNG/904PE2ZV7b3cQXflmhCnoKIH1V3?=
- =?us-ascii?Q?caRFjHFHBupWf/g0OgO4CVtFsb7g7i8L3jUS9tWdJOMvzHu4KaDrCDwWNAaa?=
- =?us-ascii?Q?9+IK+GG4/GEV6aZPa6EHWC/zDvI8TkmcJozD9wbe+gwvN4i/Jff4Mmb87YjX?=
- =?us-ascii?Q?j+L3IjOHoLHTEY1sM8Ao9LdOVOhXfE/K2/vZWC0Lnv6YCgH6xRGMBAVL1evu?=
- =?us-ascii?Q?gJ3X5u7yrbqz1XREO7d1FjUmnfobD0TPwN9zU1f6u5tfi93/xChhlKhlagyz?=
- =?us-ascii?Q?tHQPASPXu+K5lipuJvhwcqnzz8GOZXP/p/ZNHYw8yXvmdLzaXTMpZNNhtCJd?=
- =?us-ascii?Q?Nu7osGRbxYL8QDBvU5cLeZCXRH3yEBwNEcr++tkJAiyehTBkdJ0/vItvjele?=
- =?us-ascii?Q?ak/MmWkm3dUFa4iTP7n8L899hbFXbpHJ3jHceSQcjXPz/F7n90uJpVh6u0FM?=
- =?us-ascii?Q?/ZpbtFn4nUcZ1cAsNe/5IFbhSlE3JOeatnghwKXg7IQkNTq+RCEfe/Ms3tn1?=
- =?us-ascii?Q?kM3isHXmE4iPc75F++th+KFwtujk1KDWI4UCaO9whX/GLpCJzbBtgixfx3ne?=
- =?us-ascii?Q?BxDzvFsSo0bREMGHT+UXa0VUAvh03ku3OfG5xqM5GbbvPi6lZWODPeorp3bQ?=
- =?us-ascii?Q?BjWgzJzFdXUivwaeeWvjLwTZ3I33ufun+vWXvbfm8rjvzLf39RaaotRPlRV0?=
- =?us-ascii?Q?cGrezVuHyx411LLaP6hiyxwuIVMGFpfel9w47YRMpYlCbbMtqQgCEWMLcVKf?=
- =?us-ascii?Q?roB9xQzgrwcHjQWoShGTE5Nh6XLBdLF08En5Kfvo8xP095HFY8dOwBhQYtX6?=
- =?us-ascii?Q?ub5UxFS6fb524+efzWFaW5xyqnevs5EV4VcBZxBTQ1iE23HwU+UBl/6oAea3?=
- =?us-ascii?Q?FY77ob2/oncVAyynEv1k5DTLGlF2jZwbLEOL3WTN/LqP37DB57b+2rYhFWu4?=
- =?us-ascii?Q?zN6ibH9uIL4BuEEQTDIYrIgkOTKUN3T6/ZeGqwgEsZCvpVqvHN7AY5x4ASkV?=
- =?us-ascii?Q?Dj1tMhmQQZTegG/iaTM=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecbdd8cb-b65c-45ad-53f4-08dc1238aed8
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB7511.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 00:03:04.2408
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TBj8a0TP9Dm/wMw1BF5VXlPb6m2WkmzfMSAGHxomKx1H6vVxsMCa/7Xpm71B1/JZPIAgnEgDMBW73bB9CNTshg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8895
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c742547-0021-464b-b7a8-7af46b0a4afa@embeddedor.com>
 
-On Thu, Jan 11, 2024 at 12:03:42AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Jan 08, 2024 at 08:05:38PM -0600, Gustavo A. R. Silva wrote:
+> On 1/8/24 16:37, Kees Cook wrote:
+> > On Fri, Jan 05, 2024 at 08:40:00AM -0800, Harshit Mogalapalli wrote:
+> > > Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
+> > > 
+> > > memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
+> > > at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
+> > > 
+> > > WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
+> > > dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
+> > > 
+> > > Some code commentry, based on my understanding:
+> > > 
+> > > 544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
+> > > /// This is 24 + payload_size
+> > > 
+> > > memcpy(&dg_info->msg, dg, dg_size);
+> > > 	Destination = dg_info->msg ---> this is a 24 byte
+> > > 					structure(struct vmci_datagram)
+> > > 	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
+> > > 	Size = dg_size = 24 + payload_size
+> > > 
+> > > {payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
+> > > 
+> > >   35 struct delayed_datagram_info {
+> > >   36         struct datagram_entry *entry;
+> > >   37         struct work_struct work;
+> > >   38         bool in_dg_host_queue;
+> > >   39         /* msg and msg_payload must be together. */
+> > >   40         struct vmci_datagram msg;
+> > >   41         u8 msg_payload[];
+> > >   42 };
+> > > 
+> > > So those extra bytes of payload are copied into msg_payload[], a run time
+> > > warning is seen while fuzzing with Syzkaller.
+> > > 
+> > > One possible way to fix the warning is to split the memcpy() into
+> > > two parts -- one -- direct assignment of msg and second taking care of payload.
+> > > 
+> > > Gustavo quoted:
+> > > "Under FORTIFY_SOURCE we should not copy data across multiple members
+> > > in a structure."
+> > > 
+> > > Reported-by: syzkaller <syzkaller@googlegroups.com>
+> > > Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
+> > > Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > > Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> > 
+> > Thanks for getting this fixed!
+> > 
+> > Yeah, it's a "false positive" in the sense that the code was expecting
 > 
-> A change to remove some unnecessary exports ended up removing some
-> necessary ones as well, and caused a build regression by trying to
-> link a single source file into two separate modules:
+> It's a false positive _bug_, and a legitimate _warning_ coming from fortified
+> memcpy().
+> 
+> > to write into msg_payload. The warning is triggered because of the write
+> > across the flex array boundary, which trips a bug in GCC and Clang,
+> > which we're forced to work around.
+> 
+> The warning is triggered because of a write beyond the boundaries of
+> `dg_info->msg`. It's not directly related to the fact that there is a
+> flexible-array member following `dg_info->msg`.
+> 
+> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101832 (fixed in GCC 14+)
+> > 	 (not yet fixed in Clang)
+> 
+> This issue is not related to the compiler bugs mentioned above.
 
-You should fix Kconfig to provent fsl-edma and mcf-edma build at the same
-time.
+Oops, yes, thanks for fixing my confusion. Right, this is a direct write
+across members into the flex array, not a composite destination. Yay
+all the corner cases. :P
 
-EXPORT_SYMBOL_GPL is not necesary at all.
-
-mcf-edma is quit old. ideally, it should be merged into fsl-edma.
-
-Frank Li
-> 
-> scripts/Makefile.build:243: drivers/dma/Makefile: fsl-edma-common.o is added to multiple modules: fsl-edma mcf-edma
-> 
-> While the two drivers cannot be used on the same CPU architecture,
-> building both is still possible for compile testing.
-> 
-> Fixes: 66aac8ea0a6c ("dmaengine: fsl-edma: clean up EXPORT_SYMBOL_GPL in fsl-edma-common.c")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/dma/Makefile          |  8 ++++----
->  drivers/dma/fsl-edma-common.c | 17 +++++++++++++++++
->  2 files changed, 21 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-> index dfd40d14e408..302b7b0fbb8e 100644
-> --- a/drivers/dma/Makefile
-> +++ b/drivers/dma/Makefile
-> @@ -31,10 +31,10 @@ obj-$(CONFIG_DW_AXI_DMAC) += dw-axi-dmac/
->  obj-$(CONFIG_DW_DMAC_CORE) += dw/
->  obj-$(CONFIG_DW_EDMA) += dw-edma/
->  obj-$(CONFIG_EP93XX_DMA) += ep93xx_dma.o
-> -obj-$(CONFIG_FSL_DMA) += fsldma.o
-> -fsl-edma-objs := fsl-edma-main.o fsl-edma-common.o
-> -obj-$(CONFIG_FSL_EDMA) += fsl-edma.o
-> -mcf-edma-objs := mcf-edma-main.o fsl-edma-common.o
-> +obj-$(CONFIG_FSL_DMA) += fsldma.o fsl-edma-common.o
-> +fsl-edma-objs := fsl-edma-main.o
-> +obj-$(CONFIG_FSL_EDMA) += fsl-edma.o fsl-edma-common.o
-> +mcf-edma-objs := mcf-edma-main.o
->  obj-$(CONFIG_MCF_EDMA) += mcf-edma.o
->  obj-$(CONFIG_FSL_QDMA) += fsl-qdma.o
->  obj-$(CONFIG_FSL_RAID) += fsl_raid.o
-> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
-> index b53f46245c37..05b31985a93b 100644
-> --- a/drivers/dma/fsl-edma-common.c
-> +++ b/drivers/dma/fsl-edma-common.c
-> @@ -67,6 +67,7 @@ void fsl_edma_tx_chan_handler(struct fsl_edma_chan *fsl_chan)
->  
->  	spin_unlock(&fsl_chan->vchan.lock);
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_tx_chan_handler);
->  
->  static void fsl_edma3_enable_request(struct fsl_edma_chan *fsl_chan)
->  {
-> @@ -159,6 +160,7 @@ void fsl_edma_disable_request(struct fsl_edma_chan *fsl_chan)
->  		iowrite8(EDMA_CEEI_CEEI(ch), regs->ceei);
->  	}
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_disable_request);
->  
->  static void mux_configure8(struct fsl_edma_chan *fsl_chan, void __iomem *addr,
->  			   u32 off, u32 slot, bool enable)
-> @@ -212,6 +214,7 @@ void fsl_edma_chan_mux(struct fsl_edma_chan *fsl_chan,
->  	else
->  		mux_configure8(fsl_chan, muxaddr, ch_off, slot, enable);
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_chan_mux);
->  
->  static unsigned int fsl_edma_get_tcd_attr(enum dma_slave_buswidth addr_width)
->  {
-> @@ -235,6 +238,7 @@ void fsl_edma_free_desc(struct virt_dma_desc *vdesc)
->  			      fsl_desc->tcd[i].ptcd);
->  	kfree(fsl_desc);
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_free_desc);
->  
->  int fsl_edma_terminate_all(struct dma_chan *chan)
->  {
-> @@ -255,6 +259,7 @@ int fsl_edma_terminate_all(struct dma_chan *chan)
->  
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_terminate_all);
->  
->  int fsl_edma_pause(struct dma_chan *chan)
->  {
-> @@ -270,6 +275,7 @@ int fsl_edma_pause(struct dma_chan *chan)
->  	spin_unlock_irqrestore(&fsl_chan->vchan.lock, flags);
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_pause);
->  
->  int fsl_edma_resume(struct dma_chan *chan)
->  {
-> @@ -285,6 +291,7 @@ int fsl_edma_resume(struct dma_chan *chan)
->  	spin_unlock_irqrestore(&fsl_chan->vchan.lock, flags);
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_resume);
->  
->  static void fsl_edma_unprep_slave_dma(struct fsl_edma_chan *fsl_chan)
->  {
-> @@ -345,6 +352,7 @@ int fsl_edma_slave_config(struct dma_chan *chan,
->  
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_slave_config);
->  
->  static size_t fsl_edma_desc_residue(struct fsl_edma_chan *fsl_chan,
->  		struct virt_dma_desc *vdesc, bool in_progress)
-> @@ -425,6 +433,7 @@ enum dma_status fsl_edma_tx_status(struct dma_chan *chan,
->  
->  	return fsl_chan->status;
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_tx_status);
->  
->  static void fsl_edma_set_tcd_regs(struct fsl_edma_chan *fsl_chan,
->  				  struct fsl_edma_hw_tcd *tcd)
-> @@ -644,6 +653,7 @@ struct dma_async_tx_descriptor *fsl_edma_prep_dma_cyclic(
->  
->  	return vchan_tx_prep(&fsl_chan->vchan, &fsl_desc->vdesc, flags);
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_prep_dma_cyclic);
->  
->  struct dma_async_tx_descriptor *fsl_edma_prep_slave_sg(
->  		struct dma_chan *chan, struct scatterlist *sgl,
-> @@ -740,6 +750,7 @@ struct dma_async_tx_descriptor *fsl_edma_prep_slave_sg(
->  
->  	return vchan_tx_prep(&fsl_chan->vchan, &fsl_desc->vdesc, flags);
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_prep_slave_sg);
->  
->  struct dma_async_tx_descriptor *fsl_edma_prep_memcpy(struct dma_chan *chan,
->  						     dma_addr_t dma_dst, dma_addr_t dma_src,
-> @@ -762,6 +773,7 @@ struct dma_async_tx_descriptor *fsl_edma_prep_memcpy(struct dma_chan *chan,
->  
->  	return vchan_tx_prep(&fsl_chan->vchan, &fsl_desc->vdesc, flags);
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_prep_memcpy);
->  
->  void fsl_edma_xfer_desc(struct fsl_edma_chan *fsl_chan)
->  {
-> @@ -797,6 +809,7 @@ void fsl_edma_issue_pending(struct dma_chan *chan)
->  
->  	spin_unlock_irqrestore(&fsl_chan->vchan.lock, flags);
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_issue_pending);
->  
->  int fsl_edma_alloc_chan_resources(struct dma_chan *chan)
->  {
-> @@ -807,6 +820,7 @@ int fsl_edma_alloc_chan_resources(struct dma_chan *chan)
->  				32, 0);
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_alloc_chan_resources);
->  
->  void fsl_edma_free_chan_resources(struct dma_chan *chan)
->  {
-> @@ -830,6 +844,7 @@ void fsl_edma_free_chan_resources(struct dma_chan *chan)
->  	fsl_chan->is_sw = false;
->  	fsl_chan->srcid = 0;
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_free_chan_resources);
->  
->  void fsl_edma_cleanup_vchan(struct dma_device *dmadev)
->  {
-> @@ -841,6 +856,7 @@ void fsl_edma_cleanup_vchan(struct dma_device *dmadev)
->  		tasklet_kill(&chan->vchan.task);
->  	}
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_cleanup_vchan);
->  
->  /*
->   * On the 32 channels Vybrid/mpc577x edma version, register offsets are
-> @@ -877,5 +893,6 @@ void fsl_edma_setup_regs(struct fsl_edma_engine *edma)
->  		edma->regs.inth = edma->membase + EDMA64_INTH;
->  	}
->  }
-> +EXPORT_SYMBOL_GPL(fsl_edma_setup_regs);
->  
->  MODULE_LICENSE("GPL v2");
-> -- 
-> 2.39.2
-> 
+-- 
+Kees Cook
 
