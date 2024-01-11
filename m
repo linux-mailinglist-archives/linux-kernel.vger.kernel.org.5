@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-23257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50CB882A9D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:57:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C76982AA09
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54EAE1C2548A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E41691F214EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:01:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5147213FF4;
-	Thu, 11 Jan 2024 08:56:15 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2063.outbound.protection.partner.outlook.cn [139.219.146.63])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB17513ACC;
+	Thu, 11 Jan 2024 08:57:22 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2065.outbound.protection.partner.outlook.cn [139.219.17.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D57F12B86;
-	Thu, 11 Jan 2024 08:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DDA17727;
+	Thu, 11 Jan 2024 08:57:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QTbbRBbQyBQyds4ejwxMTEa9zXH9BEVqlhVV5/aOaOV0n87Ur6JVF4AImnMNCqQwH8XXV++grWTeLKbaVUHsJO2qbSYPR/UaURk87D9HyRIVD9xtniY1u3JjGwxVuft2mn6FtYDHaLLQyy9CSHR+CRG+fI+InKI5q9UAl2N1nr2CkA1N0nX1Db5avAkOUUm0KL2UJFKTK81fXr08N4N3PKq5s++lU1sjqcxuX9oJVsI61xi8OBE28QqR1di7fJMOXZKE0FD4VmfPmjeCRxNpBbqrohrEmpFtc0mpAdMigOgVaMCEGXcNCnhoVaEEk3VBIIVoN+1C70bMZyrMEgSwUA==
+ b=HiDYwprjCFr4cPa2XEGfFIn5Gak5giIxtSDGWV/hn3kRqgtUSZVXZD2+sU+InLyyUw+1ZdZ7qJ5Cc39Ocy5+lqq1riMHWofwslF0uv1YgPmI/tQOipoxYgnldw11+rWQVUXpRiJtz+tFQNdTVJYIX+eftmu9vcK26ENPy4xYwFnbmu7TgHxbxLpe4+6ch+exGba5fV1X+7k6aIQOHhzvhQSuH8uCoPt78fy+//xTqFp5I6EXlujCwIn5hjmcCzGYhu6GGpOuUb30O+DGW3X2ncVJZaGgJYo1C0OMlIyhEWWTlZk60RHzUyB6GZGd936RZe56g8KjGfzn8MVrF+aXCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tys5cIxMnn7dQx/nl7KwEcmxWT/25exDuxXWIufoanU=;
- b=h/GLpJAOwQw8xWanBZ2eiz3k0cvOHXlDlWtpR5On1kfJK6iH3awX84CbZqe32RZQwAAUc9ZIqjwfnML7XqQgdcSMRx7S4szXFb9XGu9TiJZM3kGuJ2mDRkhXrDJvQNvVjvom1dOgjXoyPxHc9DfLAjmdg6nSBPfsobZdTmQ4p+c91aJ0YYCjo4xA3AIRST8Dl4YOl/iZFrdsA//10SHDEkgowCLvc1HqYm7OovhKHIT3qyRiXCnejtARhxWgRVIU/6d+9h3XwZa0aKEJDwMcUJXHsxH6zHu1VU6jkAoMvjPhVQqjUpsrmhFI3zxN0bUUtgBBpqjpzd+EV7iUJW+E8g==
+ bh=myCz3x19pdBLyepP22aXlUVVrVPBvbaFTbiJbWyXl5U=;
+ b=YMaor2rZGXVerJq15TB+VDQsgvJiPRBH49ryYrU1zXAugbptPKh6DHwiKFpK/O+43W3rurL1H6eBBGo+avWTICeQwlKa2FcRtmeAN2hnamSe3z3Q35NnI0ywfV+W9dUdIQQwwMsZiOnXDEXAHOrUvk7jHaqRUGO2kKExoC/aQA8bRq8bSa5PEJrxMWulNZGPHpU9uE/SiuK21DRwgwoxyVFbnnrFcH2wO2E42EK5QB4wP4LZUhoSuescQBa5HV671lx5CuCDeCdj6LE8jgsXnkSgOPpvUo2LjwfzBpVPiOHkP8B1RnGrQe00kcYMBCcmKjsZDaUEZn5ZGjcx/mtMWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=starfivetech.com; dmarc=pass action=none
  header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
@@ -56,9 +56,9 @@ Cc: Jack Zhu <jack.zhu@starfivetech.com>,
 	linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-staging@lists.linux.dev
-Subject: [PATCH v2 03/13] media: videodev2.h, v4l2-ioctl: Add StarFive ISP meta buffer format
-Date: Thu, 11 Jan 2024 00:41:10 -0800
-Message-Id: <20240111084120.16685-4-changhuang.liang@starfivetech.com>
+Subject: [PATCH v2 04/13] staging: media: starfive: Add a params sink pad and a scd source pad for ISP
+Date: Thu, 11 Jan 2024 00:41:11 -0800
+Message-Id: <20240111084120.16685-5-changhuang.liang@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240111084120.16685-1-changhuang.liang@starfivetech.com>
 References: <20240111084120.16685-1-changhuang.liang@starfivetech.com>
@@ -75,91 +75,250 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SH0PR01MB0667:EE_|SH0PR01MB0747:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4753559a-f14a-4735-166d-08dc12811b7f
+X-MS-Office365-Filtering-Correlation-Id: ea2347cb-bce9-496a-d2f0-08dc12811bff
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	odQ0NRy7d/+5qSuGziey4e8xlz0V9qg6aL7oCZbwobU7HvNWMCd0eYz5g3XyTAEQQ7MNnokrRF4dOsKtLgv7wf58Dxa+sHFjYI8uLRDTb37cludffOu1mNsZhBQJCT52eo1Rmgnst/dOBRC06kQwJQHM2BvmgBPtW7bSutFtvXCDYPK5cIYvY4hN612Gv1yHS6k8P8tpnpGastsiNkunAZ2iUWURkEwYZ4+FKyv8dO2zeLc1WAB6i6iAC5/sZvZePiIRH8KLQYgxPDhfZpsnzjT58AcSHMK8KQcMvrRY8gkD96FDYXySgWZ6Qlx6CvHhWwya4HVABFqH+7jq+JEqaFIaF6BATn3v9SLOtBWvon7Ey7ZfbnCLntI9IEElbrMXNCIuV7LFbfb8yMUGU+dlW+77jSp6AmsdvbXRcKo4kSp15uKxMO7ukj+7suzVUqfoOmRlngmkyICCiYKu/IHGdtT2rW3NWr5EgGGkYKzXpA0keDUpyrbGmW+oh64Okk+j9oPExYarhxTzvf2vDaKRkKjjw8Lsy56r9EP/Pwy2tmo/ud9ltlVyiU5jctZur/z5uPcq0xDYaAj6xyCeXlcmVg==
+	JGIzBUIgsRWN/PT2iQoehm5WouSkXotqEe3jRzlIaPxmNKyOzcWjG7luLj0RsU42PtnIXtchxWs2L4rqnEBcVf/CZWwZ1luTE0/u/sj8hPlVo1HLU82LmGmAYhmWw+2p8avBpSMkeq/36iXr9IrKpa9yj4hBdIoPL7NPMHM7Db75GrpbUk+qslvhGKnVW1OHtjD9JK7xhHAmajjVI48X+RCHp/O4BVhx+Mz6ZlTQtH667mPw20zveEDEmF7L40La+syi5AB3TrbwwlK9EM1p8UUtsIib2VHB/dASgwHz8ITzYjY9o7kWWrxgv6LmrQWP13XCg/LdyV3zguWRa7trvcIqA8NB1U9oWLJVWzoSbKKyzKW4Jy5XS9A6JkeD+56oroT9oE+e1bMJLvnZeeyXTdWeGBWApDmIDms8kpPslWC6G5WRz7XbwVNekegaw3p/DTpVZ5K3cW3DYJp7jKLjKsEkiAfMWCXdexBHpSW7qkVA+Jc8jGhQRWuILNhQru4XDcxnC5GrhsSCDKzThyRLAHwXR0L5GuBdYqlPL321viaGkzR2NFSDeXK8E4ZvvmO10yIjBmDnmAusl1DLqktRsA==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0667.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(136003)(39830400003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(6666004)(52116002)(41300700001)(2616005)(508600001)(38100700002)(40160700002)(1076003)(26005)(86362001)(36756003)(921011)(38350700005)(110136005)(54906003)(66556008)(66946007)(66476007)(8676002)(8936002)(41320700001)(4326008)(44832011)(2906002)(40180700001)(5660300002)(7416002);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0667.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(136003)(39830400003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(6666004)(52116002)(41300700001)(2616005)(508600001)(38100700002)(40160700002)(1076003)(26005)(86362001)(36756003)(921011)(38350700005)(83380400001)(110136005)(54906003)(66556008)(66946007)(66476007)(8676002)(8936002)(41320700001)(4326008)(44832011)(2906002)(40180700001)(5660300002)(7416002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?CixQOzLsnF8soZDW9cM8f5pjr+1AI2+qPqt5KyUmhao7Mm+tahgJTraL6+NL?=
- =?us-ascii?Q?10JdgN7eokhboumNZtob2PD2YPKRPnCZ8lzjZw4UKBfng6yVbaHxi5STiMOP?=
- =?us-ascii?Q?TchiVwv0tyGq/sEn0cBXtDvHwJs/2ECBq82aDpe/6RvHKgjVoNmLTLN4pgS+?=
- =?us-ascii?Q?Pp+cDXpEe3Tltk5YST+FQfELyoS0D6uuevQmI+dI3dbuFlfL4NXXxThBu/UJ?=
- =?us-ascii?Q?DpOJ58CGSXUqoy3JXHa2CMvQHpAK2J9RcZ9+5FfvTFt46OEx/RPXhWLZWz2B?=
- =?us-ascii?Q?QSskaiYZ9tQWlstWEBRwLsDa8kPD0I1B3+o8GeSbJwYzE5qc6HP71Exs/I8L?=
- =?us-ascii?Q?qYNzaG43gEjwC5bz07TvQcgLrIezGmrw8dHCaiD8FMPwG6a0sEDRSaU0Iv7A?=
- =?us-ascii?Q?91KhuCDyVb/iTG1aUgT7oDAMLQ4RJb7fp8Cc6rVeOpl5CJQ2Ci5I8ufHfTKV?=
- =?us-ascii?Q?G/K1dHExGC2oIS0B2klZ9xys3U4KUNT2QYCR48q2r6BCdEKP5b9ucaQsrcOC?=
- =?us-ascii?Q?rkw07uq4goFjGImraIV4+aukc4QKkG8hhIDGbCUkMzBI9aSLf+e2GReVDDFW?=
- =?us-ascii?Q?66on+uoy7HK43VD28DyHAHjuJTj+EWNlP9B2LAT4tLia1Kj64ikWPN988wlp?=
- =?us-ascii?Q?buCfGeHFhFiZzmMkakklyURyBto9QNtQxNl0KaRRN4LpOXmCUe3J9Aq47M/1?=
- =?us-ascii?Q?ZHZDtcJXjeaejY8P5HNU+bc+VobCgOAwFFCA+AOqX5uwR0NRrLnPUVP0ttJt?=
- =?us-ascii?Q?GVhMTHSHzKQc7+MgxeX3Cd2NxFutstU0xebPpJz1Mqb1VouWOa8ygIC6CEEf?=
- =?us-ascii?Q?/pFpnGISky5dMx8eDNhYrnEuLma2QAUKu8JU/t/l0M/UhKsWsyFwPW+xdXyy?=
- =?us-ascii?Q?x5QeLphSZKYybVk92ZXkqOU1niAdQTtF0fmUpS2yAmtXBsEge6p8brWotdyY?=
- =?us-ascii?Q?3fbJMpoExYR3EOkgFmJCrGKKGHb/nT2mVrmhCyvvH8fCF0N2jDkA+8TQHDnV?=
- =?us-ascii?Q?Ff0GYJ6joFDelQueDkVcOa/mvP3eOjw/HCbQ7wQia+E5vutT0lJnzbAPJwa/?=
- =?us-ascii?Q?JNCyESDDAgW85RrHUl5M0ts/1MypiRi2eV1iBWrhzcOF0i/ey+E2vLE6fv5q?=
- =?us-ascii?Q?YXuWLEG9gcT99hjZs+6kcKwteoWQqqW7V3hUy3vsAQsCGnez6Ps9EzqzCwXN?=
- =?us-ascii?Q?UTrz6PQYjO4UyYTWcPjB7rozn98JUECbFxceciMkFPMOyxJRUWCPSJI6nEo2?=
- =?us-ascii?Q?O7j0yB7lXav8Mnqi2+dmRvRwnfKe/oEmY7WelxziZK8FDojtuCkA6aNs7qIx?=
- =?us-ascii?Q?SO8PKBZLetyuZTS3tdvNCtXRtFwiQUVnciT7hJqHu+8YZ/5mTD5Y+1Eor9jo?=
- =?us-ascii?Q?xQa5CWEB1zMLKubEe6a6dJLwvNlq20WRrymhmgsCP2pYUQWKcKnfrFf2TgWa?=
- =?us-ascii?Q?3cFtUq9dBaH43IsJMZZrF8Mi++WvplWCVWhDOOw1xFRNSLqnF3fYDqw3E24j?=
- =?us-ascii?Q?Jk5wXJfNvL8XzKKw4bL+wC3d2UfzfyvY7Q0hvrR//nccD306/HPfcN9bkg4K?=
- =?us-ascii?Q?236YV/a7ke7BQIK58Ud+HqrQeB9/YuFaWclPn68qUKukmRbLiuLV0IwqS+MA?=
- =?us-ascii?Q?s84UfL7sV/UTZs/SzNms8R0=3D?=
+	=?us-ascii?Q?TWuEsLbUZE7Zg+cKrDI9vE2jm4tReDCFiQD7DzHgGEJfnigWavHKVaCx1o9S?=
+ =?us-ascii?Q?w2Ri5Kjpp98f57Sdt01hXtBOAxEFT9q5myunByaSeGpOnOqNxZaf4WB11ecq?=
+ =?us-ascii?Q?wvhCuW2e6fq6s/qlUlFvoOx37iyPdm5HbRoSGTn+cqH0FOivcPCZmMKlAhCc?=
+ =?us-ascii?Q?hnarfK0i5SECb/h1BYxMvdmHdy/Dmm4jRtw7zrea2WwL+LEU2wSv6GLiLq31?=
+ =?us-ascii?Q?Q0Ll+FI+NzlmuJmIUOGWXPLvW5sWf/4e87Wnuo98m6vmyyj67upAWASvbkVk?=
+ =?us-ascii?Q?M6P+eciXf2GEGOvrc9j2nm8RkxMngoXXyWCr0k3aiNer5wfVSezW6om9fdjL?=
+ =?us-ascii?Q?EvTjl0bVK+FHP3iq7ox/sU4qxT6HyAm4ntyC69z5aogjSuvLssOABiiHmvze?=
+ =?us-ascii?Q?UYbhECzsjViC109WjcEZcBHnE27XC1Y54Du1xlCHCHL7dOZkymoiji/AZi8s?=
+ =?us-ascii?Q?6AzT1soOWWkD2f+PZ9qlLqnrM66kYmZzMXaEmHhGYiEmzjQckBPem8/A9v0S?=
+ =?us-ascii?Q?kTFM1ZUcV+S60UrBHv9xBUcTfM7M+T94mvAjkS3JoUG4r32+Ks+JMdfmx7/g?=
+ =?us-ascii?Q?Png9A2tmMlC57vY9nsvJtxpweKWINuWwjGzVfUbiUwqbZlfHaNM/uV+tlDLl?=
+ =?us-ascii?Q?tjn54Lol14bqFvHJT0I+/4hgbNI4WEES1V0IDcRghzZDDUjgciVyd9gk68Wp?=
+ =?us-ascii?Q?XQD4GC4NTb3HXw+2mmYYxDBJxZu2GHoHRnHZGSUyg1vYRqw4wy5cnD5zDVkf?=
+ =?us-ascii?Q?TCiQVkDC255aYblP+O606R5jUZFCnfgcYrGCVi2GAZdmbJWGUKgBnrKIYMGB?=
+ =?us-ascii?Q?rRiokV91aOOTL1lu8jzv0d2Qtutuu2J6PMo8eiLUbgRklvlcd7haZC1VeJ3m?=
+ =?us-ascii?Q?1azZ7FLO6yGmYra+ybldpzEqnwp9aYVDWvD+RYSlH3XBWs15h//GCZkDlONz?=
+ =?us-ascii?Q?2kJV3X1mV2BdgN9z6zgsZXefxvU4muizJ/QeyqqORjd7EwAjre798JS9gHXm?=
+ =?us-ascii?Q?W8qQScbS8W+BANyf3wBOOr8lTKf92hlCE5h2gKPHvWgZaVF96K7nuW8dWqnA?=
+ =?us-ascii?Q?f0g2zftsTM6uBnK5DZ+y5kwRhiVUpBLyGz4rnjenOw0ptP2rkvPUe0kC8f6M?=
+ =?us-ascii?Q?p3+BUqLm4EtbwKEcrx3t78DOd70eO3vRfAYGEI51j+2ACG0tmgar2X5V+Onf?=
+ =?us-ascii?Q?RciX2dOTax44/5eZpK66YkdppvFRlCLbe9FTyki/OrPcFo+Ved2tVvfRfQ2w?=
+ =?us-ascii?Q?N3+HM4tyyuIP57I0L/5W8rD2yNXJ1uCMEF3qLD9Z5/K8dw3CHtRIPrQM4eMG?=
+ =?us-ascii?Q?UsNqNbhdgrZeCFRZW/6nMv7SHI3LY7ImtQNytJ8SIhXEnsoRStUfQFf2plCW?=
+ =?us-ascii?Q?I9aAjmu/Lz+i5w37bYfpk8VKeWOIsY8Dg5gg5lvVzKcq9KkCJiJ+haTZdIu6?=
+ =?us-ascii?Q?9WCtCoQa78nkzvMs3YauwTG40dvhGfaJevhrs9agNB5Vy6eyXRyDa0pESOrJ?=
+ =?us-ascii?Q?WA42C/SQTKRIyK4+46jqYtIoJuLh8R29xkw4ceq73kztCQp1y58HpQZxgUBl?=
+ =?us-ascii?Q?2Q95hy9ARyFC3C+uAAM+W9AYHl6J6chDroudTvQ7oTgYRa9j/6fe4y+bhFT5?=
+ =?us-ascii?Q?H/GGe0/cXYA8zup3aA7WbvM=3D?=
 X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4753559a-f14a-4735-166d-08dc12811b7f
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea2347cb-bce9-496a-d2f0-08dc12811bff
 X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0667.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 08:41:30.2400
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 08:41:31.0961
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q1kt6PpbjHZBs8w/FEf/RU5Rbvx/2ypxUOkgGy97y1XGCAAZPY9W+QuC+pbUAaV8UfpE/OVz9P0o76t+tsf6MuJNEe5nU6CClsvtoBzgM/uLtwnMy19xxWOQ+za1Y9+Z
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ae51Hp2OPx1ZAbRGKW2iWyog6av1ZCpy991csWYEl455UFlwbPwUcF6JkOmbSiSrzifaDSyPW8DhJnWWny7TUhRGdi2LVkAfCaKj8C1rNbr1wp4qa4NXoD4EAmhaM2nA
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0747
 
-Add the StarFive ISP specific metadata format
-V4L2_META_FMT_STF_ISP_PARAMS & V4L2_META_FMT_STF_ISP_STAT_3A for 3A.
+StarFive ISP can use params sink pad to transmit ISP parameters and use
+scd source pad to capture statistics collection data.
 
 Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c | 2 ++
- include/uapi/linux/videodev2.h       | 4 ++++
- 2 files changed, 6 insertions(+)
+ .../staging/media/starfive/camss/stf-isp.c    | 87 +++++++++++++++----
+ .../staging/media/starfive/camss/stf-isp.h    |  2 +
+ 2 files changed, 73 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 33076af4dfdb..12c2104a3626 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -1445,6 +1445,8 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_META_FMT_VIVID:       descr = "Vivid Metadata"; break;
- 	case V4L2_META_FMT_RK_ISP1_PARAMS:	descr = "Rockchip ISP1 3A Parameters"; break;
- 	case V4L2_META_FMT_RK_ISP1_STAT_3A:	descr = "Rockchip ISP1 3A Statistics"; break;
-+	case V4L2_META_FMT_STF_ISP_PARAMS:	descr = "StarFive ISP 3A Parameters"; break;
-+	case V4L2_META_FMT_STF_ISP_STAT_3A:	descr = "StarFive ISP 3A Statistics"; break;
- 	case V4L2_PIX_FMT_NV12_8L128:	descr = "NV12 (8x128 Linear)"; break;
- 	case V4L2_PIX_FMT_NV12M_8L128:	descr = "NV12M (8x128 Linear)"; break;
- 	case V4L2_PIX_FMT_NV12_10BE_8L128:	descr = "10-bit NV12 (8x128 Linear, BE)"; break;
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 68e7ac178cc2..349bb8efe28a 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -839,6 +839,10 @@ struct v4l2_pix_format {
- #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
- #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
+diff --git a/drivers/staging/media/starfive/camss/stf-isp.c b/drivers/staging/media/starfive/camss/stf-isp.c
+index d50616ef351e..0ebffd09842a 100644
+--- a/drivers/staging/media/starfive/camss/stf-isp.c
++++ b/drivers/staging/media/starfive/camss/stf-isp.c
+@@ -10,9 +10,6 @@
  
-+/* Vendor specific - used for StarFive JH7110 ISP camera sub-system */
-+#define V4L2_META_FMT_STF_ISP_PARAMS	v4l2_fourcc('S', 'T', 'F', 'P') /* StarFive ISP 3A Parameters */
-+#define V4L2_META_FMT_STF_ISP_STAT_3A	v4l2_fourcc('S', 'T', 'F', 'S') /* StarFive ISP 3A Statistics */
+ #include "stf-camss.h"
+ 
+-#define SINK_FORMATS_INDEX	0
+-#define SOURCE_FORMATS_INDEX	1
+-
+ static int isp_set_selection(struct v4l2_subdev *sd,
+ 			     struct v4l2_subdev_state *state,
+ 			     struct v4l2_subdev_selection *sel);
+@@ -24,13 +21,23 @@ static const struct stf_isp_format isp_formats_sink[] = {
+ 	{ MEDIA_BUS_FMT_SBGGR10_1X10, 10 },
+ };
+ 
++static const struct stf_isp_format isp_formats_sink_params[] = {
++	{ MEDIA_BUS_FMT_METADATA_FIXED },
++};
 +
- /* priv field value to indicates that subsequent fields are valid. */
- #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
+ static const struct stf_isp_format isp_formats_source[] = {
+ 	{ MEDIA_BUS_FMT_YUYV8_1_5X8, 8 },
+ };
+ 
++static const struct stf_isp_format isp_formats_source_scd[] = {
++	{ MEDIA_BUS_FMT_METADATA_FIXED },
++};
++
+ static const struct stf_isp_format_table isp_formats_st7110[] = {
+ 	{ isp_formats_sink, ARRAY_SIZE(isp_formats_sink) },
++	{ isp_formats_sink_params, ARRAY_SIZE(isp_formats_sink_params) },
+ 	{ isp_formats_source, ARRAY_SIZE(isp_formats_source) },
++	{ isp_formats_source_scd, ARRAY_SIZE(isp_formats_source_scd) },
+ };
+ 
+ static const struct stf_isp_format *
+@@ -94,18 +101,21 @@ static void isp_try_format(struct stf_isp_dev *isp_dev,
+ 		return;
+ 	}
+ 
+-	if (pad == STF_ISP_PAD_SINK)
+-		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
+-	else if (pad == STF_ISP_PAD_SRC)
+-		formats = &isp_dev->formats[SOURCE_FORMATS_INDEX];
++	formats = &isp_dev->formats[pad];
++
++	if (pad != STF_ISP_PAD_SRC_SCD && pad != STF_ISP_PAD_SINK_PARAMS) {
++		fmt->width = clamp_t(u32, fmt->width, STFCAMSS_FRAME_MIN_WIDTH,
++				     STFCAMSS_FRAME_MAX_WIDTH);
++		fmt->height = clamp_t(u32, fmt->height, STFCAMSS_FRAME_MIN_HEIGHT,
++				      STFCAMSS_FRAME_MAX_HEIGHT);
++		fmt->height &= ~0x1;
++		fmt->colorspace = V4L2_COLORSPACE_SRGB;
++	} else {
++		fmt->width = 1;
++		fmt->height = 1;
++	}
+ 
+-	fmt->width = clamp_t(u32, fmt->width, STFCAMSS_FRAME_MIN_WIDTH,
+-			     STFCAMSS_FRAME_MAX_WIDTH);
+-	fmt->height = clamp_t(u32, fmt->height, STFCAMSS_FRAME_MIN_HEIGHT,
+-			      STFCAMSS_FRAME_MAX_HEIGHT);
+-	fmt->height &= ~0x1;
+ 	fmt->field = V4L2_FIELD_NONE;
+-	fmt->colorspace = V4L2_COLORSPACE_SRGB;
+ 	fmt->flags = 0;
+ 
+ 	if (!stf_g_fmt_by_mcode(formats, fmt->code))
+@@ -123,9 +133,9 @@ static int isp_enum_mbus_code(struct v4l2_subdev *sd,
+ 		if (code->index >= ARRAY_SIZE(isp_formats_sink))
+ 			return -EINVAL;
+ 
+-		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
++		formats = &isp_dev->formats[code->pad];
+ 		code->code = formats->fmts[code->index].code;
+-	} else {
++	} else if (code->pad == STF_ISP_PAD_SRC) {
+ 		struct v4l2_mbus_framefmt *sink_fmt;
+ 
+ 		if (code->index >= ARRAY_SIZE(isp_formats_source))
+@@ -137,6 +147,10 @@ static int isp_enum_mbus_code(struct v4l2_subdev *sd,
+ 		code->code = sink_fmt->code;
+ 		if (!code->code)
+ 			return -EINVAL;
++	} else {
++		if (code->index > 0)
++			return -EINVAL;
++		code->code = MEDIA_BUS_FMT_METADATA_FIXED;
+ 	}
+ 	code->flags = 0;
+ 
+@@ -157,6 +171,9 @@ static int isp_set_format(struct v4l2_subdev *sd,
+ 	isp_try_format(isp_dev, state, fmt->pad, &fmt->format);
+ 	*format = fmt->format;
+ 
++	if (fmt->pad == STF_ISP_PAD_SRC_SCD || fmt->pad == STF_ISP_PAD_SINK_PARAMS)
++		return 0;
++
+ 	isp_dev->current_fmt = stf_g_fmt_by_mcode(&isp_dev->formats[fmt->pad],
+ 						  fmt->format.code);
+ 
+@@ -208,6 +225,9 @@ static int isp_get_selection(struct v4l2_subdev *sd,
+ 	struct v4l2_subdev_format fmt = { 0 };
+ 	struct v4l2_rect *rect;
+ 
++	if (sel->pad == STF_ISP_PAD_SRC_SCD || sel->pad == STF_ISP_PAD_SINK_PARAMS)
++		return -EINVAL;
++
+ 	switch (sel->target) {
+ 	case V4L2_SEL_TGT_CROP_BOUNDS:
+ 		if (sel->pad == STF_ISP_PAD_SINK) {
+@@ -245,6 +265,9 @@ static int isp_set_selection(struct v4l2_subdev *sd,
+ 	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+ 	struct v4l2_rect *rect;
+ 
++	if (sel->pad == STF_ISP_PAD_SRC_SCD || sel->pad == STF_ISP_PAD_SINK_PARAMS)
++		return -EINVAL;
++
+ 	if (sel->target != V4L2_SEL_TGT_CROP)
+ 		return -EINVAL;
+ 
+@@ -302,8 +325,38 @@ static int isp_init_formats(struct v4l2_subdev *sd,
+ 			.height = 1080
+ 		}
+ 	};
++	struct v4l2_subdev_format format_params = {
++		.pad = STF_ISP_PAD_SINK_PARAMS,
++		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
++		.format = {
++			.code = MEDIA_BUS_FMT_METADATA_FIXED,
++			.width = 1,
++			.height = 1
++		}
++	};
++	struct v4l2_subdev_format format_scd = {
++		.pad = STF_ISP_PAD_SRC_SCD,
++		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
++		.format = {
++			.code = MEDIA_BUS_FMT_METADATA_FIXED,
++			.width = 1,
++			.height = 1
++		}
++	};
++	int ret;
++
++	/* Init for STF_ISP_PAD_SINK and STF_ISP_PAD_SRC pad */
++	ret = isp_set_format(sd, sd_state, &format);
++	if (ret < 0)
++		return ret;
++
++	/* Init for STF_ISP_PAD_SINK_PARAMS pad */
++	ret = isp_set_format(sd, sd_state, &format_params);
++	if (ret < 0)
++		return ret;
+ 
+-	return isp_set_format(sd, sd_state, &format);
++	/* Init for STF_ISP_PAD_SRC_SCD pad */
++	return isp_set_format(sd, sd_state, &format_scd);
+ }
+ 
+ static const struct v4l2_subdev_video_ops isp_video_ops = {
+@@ -344,7 +397,9 @@ int stf_isp_register(struct stf_isp_dev *isp_dev, struct v4l2_device *v4l2_dev)
+ 	v4l2_set_subdevdata(sd, isp_dev);
+ 
+ 	pads[STF_ISP_PAD_SINK].flags = MEDIA_PAD_FL_SINK;
++	pads[STF_ISP_PAD_SINK_PARAMS].flags = MEDIA_PAD_FL_SINK;
+ 	pads[STF_ISP_PAD_SRC].flags = MEDIA_PAD_FL_SOURCE;
++	pads[STF_ISP_PAD_SRC_SCD].flags = MEDIA_PAD_FL_SOURCE;
+ 
+ 	sd->entity.function = MEDIA_ENT_F_PROC_VIDEO_ISP;
+ 	sd->entity.ops = &isp_media_ops;
+diff --git a/drivers/staging/media/starfive/camss/stf-isp.h b/drivers/staging/media/starfive/camss/stf-isp.h
+index 955cbb048363..bc7e7b0736fa 100644
+--- a/drivers/staging/media/starfive/camss/stf-isp.h
++++ b/drivers/staging/media/starfive/camss/stf-isp.h
+@@ -392,7 +392,9 @@
+ /* pad id for media framework */
+ enum stf_isp_pad_id {
+ 	STF_ISP_PAD_SINK = 0,
++	STF_ISP_PAD_SINK_PARAMS,
+ 	STF_ISP_PAD_SRC,
++	STF_ISP_PAD_SRC_SCD,
+ 	STF_ISP_PAD_MAX
+ };
  
 -- 
 2.25.1
