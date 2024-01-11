@@ -1,130 +1,134 @@
-Return-Path: <linux-kernel+bounces-23943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51A782B43C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:39:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3626982B441
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:40:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A2DA1F23F16
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:39:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B377FB2629F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8957052F9F;
-	Thu, 11 Jan 2024 17:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3099524DA;
+	Thu, 11 Jan 2024 17:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HPgO+BgO"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H/g+FFK6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0062B51007;
-	Thu, 11 Jan 2024 17:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Jan 2024 12:38:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704994741;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xtqt+XCKB8URLfIsERdpgm7zJXhhxVtHiUsa5sbp2Qs=;
-	b=HPgO+BgOiUMMuo2RZ60QxQwyLWf4P3il3GGphNXgQBouaq1OB/mIzjNhVEP3afsyDA5DAJ
-	PWpweSxttYFFzKAo9AXVddFHL4SDloJ1/QrY/HRNZAcTmNoBH0ugS47JTlcp7c8Buf6tkg
-	MlTAdsKgmHq2vm3x1pL8iY8wb25jB0Q=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Mark Brown <broonie@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Nikolai Kondrashov <spbnick@gmail.com>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
-References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
- <202401101525.112E8234@keescook>
- <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
- <202401101625.3664EA5B@keescook>
- <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE7C3A1BE;
+	Thu, 11 Jan 2024 17:40:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3A20C433C7;
+	Thu, 11 Jan 2024 17:40:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704994839;
+	bh=YpwQWCnVnBBUqaWv4bCZdTrssGsplr32Ot76UMUI56k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=H/g+FFK6nTrDAxLRA+VBZOpXbMiBXYh+19KibTOdCTjWQbuON45UT/bze6yen1iVf
+	 bmBp7ToVw35MTC/kLxOiPIZ2sPXb1eF1kbe3CIHDZUUhpNlEeOKrMI8kexAny/B6ML
+	 jAg7by1QGy6GIDBr0wwu9/P831XSc643oHzfU/KcLSidmUWLt4ulseGO3NqwduuNYQ
+	 kc0iub6ufQd1TgzmSGnQCoOrAWGyvB4yNP7srNINsnJE/mUyMgzNAHPepDY/cInZqJ
+	 L8XEXFDlJpogAzsNPkf8L+wdtCxZu60LnO3yo3GDnwI/HoMzoJQFqgAWs/N+m9CCJ+
+	 Gw3oql/C8a4zw==
+Date: Thu, 11 Jan 2024 18:40:35 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Cc: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: em28xx: return error on media_device_register()
+ failure
+Message-ID: <20240111184035.18a6ad4b@coco.lan>
+In-Reply-To: <b7ca60c4-2392-448e-90e4-5078051d7af6@fintech.ru>
+References: <20240110173958.4544-1-n.zhandarovich@fintech.ru>
+	<20240111074905.67d61b00@coco.lan>
+	<b7ca60c4-2392-448e-90e4-5078051d7af6@fintech.ru>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 11, 2024 at 03:35:40PM +0000, Mark Brown wrote:
-> On Wed, Jan 10, 2024 at 07:58:20PM -0500, Kent Overstreet wrote:
-> > On Wed, Jan 10, 2024 at 04:39:22PM -0800, Kees Cook wrote:
+Em Thu, 11 Jan 2024 07:10:10 -0800
+Nikita Zhandarovich <n.zhandarovich@fintech.ru> escreveu:
+
+> On 1/10/24 22:49, Mauro Carvalho Chehab wrote:
+> > Em Wed, 10 Jan 2024 09:39:58 -0800
+> > Nikita Zhandarovich <n.zhandarovich@fintech.ru> escreveu:
+> >   
+> >> In an unlikely case of failure in media_device_register(), release
+> >> resources and return the erroneous value. Otherwise, possible issues
+> >> with registering the device will continue to be ignored.
+> >>
+> >> Found by Linux Verification Center (linuxtesting.org) with static
+> >> analysis tool SVACE.
+> >>
+> >> Fixes: 37ecc7b1278f ("[media] em28xx: add media controller support")
+> >> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+> >> ---
+> >>  drivers/media/usb/em28xx/em28xx-cards.c | 2 ++
+> >>  1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+> >> index 4d037c92af7c..dae731dfc569 100644
+> >> --- a/drivers/media/usb/em28xx/em28xx-cards.c
+> >> +++ b/drivers/media/usb/em28xx/em28xx-cards.c
+> >> @@ -4095,6 +4095,8 @@ static int em28xx_usb_probe(struct usb_interface *intf,
+> >>  	 */
+> >>  #ifdef CONFIG_MEDIA_CONTROLLER
+> >>  	retval = media_device_register(dev->media_dev);
+> >> +	if (retval)
+> >> +		goto err_free;  
+> > 
+> > Not freeing resources here is intentional. See, the media controller 
+> > API is optional on this driver. It will just provide a way to identify
+> > the device's topology, but the device is completely usable without
+> > it.
+> > 
+> > Perhaps we need, instead, a patch documenting it, and preventing
+> > static analysis tools to point it as an issue.
+> > 
+> > Thanks,
+> > Mauro  
 > 
-> > > With no central CI, the best we've got is everyone running the same
-> > > "minimum set" of checks. I'm most familiar with netdev's CI which has
-> > > such things (and checkpatch.pl is included). For example see:
-> > > https://patchwork.kernel.org/project/netdevbpf/patch/20240110110451.5473-3-ptikhomirov@virtuozzo.com/
+> Thank you for your feedback, however I had a few questions...
 > 
-> > Yeah, we badly need a central/common CI. I've been making noises that my
-> > own thing could be a good basis for that - e.g. it shouldn't be much
-> > work to use it for running our tests in tools/tesing/selftests. Sadly no
-> > time for that myself, but happy to talk about it if someone does start
-> > leading/coordinating that effort.
+> While I understand what you mean about optional nature of media
+> controller registration in this case, a quick glance into other calls to
+> media_device_register() across the source code shows that usually
+> failure with registering is handled as a proper error regardless of
+> whether the device is still usable. But if you think that we can make an
+> exception here, I'll happily oblige.
+
+It depends on how the actual device is controlled. "Normal"
+media devices are fully controlled via v4l2 API. On those, the
+media controller API is there just to let userspace to query
+about the internal settings, but the actual pipelines are
+created via V4L2 API. Almost all normal applications will
+just ignore the media controller API.
+
+Embedded hardware, however, require setting pipelines via media 
+controller for they to actually work. Almost all drivers
+implementing the media controller API fall on this category.
+
 > 
-> IME the actually running the tests bit isn't usually *so* much the
-> issue, someone making a new test runner and/or output format does mean a
-> bit of work integrating it into infrastructure but that's more usually
-> annoying than a blocker.
-
-No, the proliferation of test runners, test output formats, CI systems,
-etc. really is an issue; it means we can't have one common driver that
-anyone can run from the command line, and instead there's a bunch of
-disparate systems with patchwork integration and all the feedback is nag
-emails - after you've finished whan you were working on instead of
-moving on to the next thing - with no way to get immediate feedback.
-
-And it's because building something shiny and new is the fun part, no
-one wants to do the grungy integration work.
-
-> Issues tend to be more around arranging to
-> drive the relevant test systems, figuring out which tests to run where
-> (including things like figuring out capacity on test devices, or how
-> long you're prepared to wait in interactive usage) and getting the
-> environment on the target devices into a state where the tests can run.
-> Plus any stability issues with the tests themselves of course, and
-> there's a bunch of costs somewhere along the line.
+> Then if I am to continue on this path, would the following comment above
+> the call to media_device_register() suffice?
 > 
-> I suspect we're more likely to get traction with aggregating test
-> results and trying to do UI/reporting on top of that than with the
-> running things bit, that really would be very good to have.  I've copied
-> in Nikolai who's work on kcidb is the main thing I'm aware of there,
-> though at the minute operational issues mean it's a bit write only.
-> 
-> > example tests, example output:
-> > https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/single_device.ktest
-> > https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-testing
-> 
-> For example looking at the sample test there it looks like it needs
-> among other things mkfs.btrfs, bcachefs, stress-ng, xfs_io, fio, mdadm,
-> rsync
+>  #ifdef CONFIG_MEDIA_CONTROLLER
+> +	/*
+> +	 * No need to check the return value, the device will still be 	     +
+>  * usable without media controller API.
+> +	 */
+>  	retval = media_device_register(dev->media_dev);
 
-Getting all that set up by the end user is one command:
-  ktest/root_image create
-and running a test is one morecommand:
-build-test-kernel run ~/ktest/tests/bcachefs/single_device.ktest
+That works for me. It would still produce alerts at static
+analyzers, as they'll notice that we're storing retval there
+without actually using it.
 
-> and a reasonably performant disk with 40G of space available.
-> None of that is especially unreasonable for a filesystems test but it's
-> all things that we need to get onto the system where we want to run the
-> test and there's a lot of systems where the storage requirements would
-> be unsustainable for one reason or another.  It also appears to take
-> about 33000s to run on whatever system you use which is distinctly
-> non-trivial.
-
-Getting sufficient coverage in filesystem land does take some amount of
-resources, but it's not so bad - I'm leasing 80 core ARM64 machines from
-Hetzner for $250/month and running 10 test VMs per machine, so it's
-really not that expensive. Other subsystems would probably be fine with
-less resources.
+Thanks,
+Mauro
 
