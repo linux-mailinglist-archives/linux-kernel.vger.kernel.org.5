@@ -1,170 +1,191 @@
-Return-Path: <linux-kernel+bounces-23287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC88982AA7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:06:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F7BB82AA8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:10:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 732742835CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:06:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850B91F21DB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B21A14F61;
-	Thu, 11 Jan 2024 09:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC48F101DA;
+	Thu, 11 Jan 2024 09:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMzdJDz4"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KRG7sMkk"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24DC414A9C;
-	Thu, 11 Jan 2024 09:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47DFFC1D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:10:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55818b733f7so3075876a12.3;
-        Thu, 11 Jan 2024 01:04:28 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbf2b5556f9so1371924276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:10:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704963867; x=1705568667; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nKYfbtGZSuWol92QjWEdUhJKfrs3o8tz2BQxPjW/QIM=;
-        b=dMzdJDz4WB1CeTHby1ByA00cUGc90h7htVkqNdzl9x7FwsqDbxzVn5y3tNRf/5l4E1
-         JKakH6WAi4VNiQObUGEwH++8WVN9IwIx9cgyqqFJaRP6+ZbBB4rUaYMNkGwHstrWfgFR
-         9NbmOvsrzJF2lTyExHyy70sxsEq4iwfiIz9yIsm4D6R+97i0detMqV+PZva5bKVqP5Gm
-         4mHoF32FiInHksplJoTWtyLI/ZGpG6cwGhiANxSukdyEsJp04z6ogHdn46MCPlykD5QR
-         ThBRjflLfnB2qbunON8XAlRra8qwUq5RwtN7kBRXrL65WC7zprcIGMhgQx6yE7EJpRmq
-         hQtA==
+        d=gmail.com; s=20230601; t=1704964205; x=1705569005; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oXjcPmzG/A7mlaieQ9giQPRodlEupSyhDif0JeD6lQU=;
+        b=KRG7sMkkw9MO86lsNRzo0dsgMN1fgnO9f2MqL3qQ8ZHcdkCOLnBxL4NZ9eGnHayLh6
+         J/G7gHv9DNAc5AKJhXxWlK4fA6bEMvtM8gV5dQPajrN8ckob4TLbQzkqzz0PbO6xU4CL
+         I00Q0WqB0u9WWmBbI+u6iwwumQuUzGJZ4Zr2dy9pgN6eUzoA3RPTriM5ecgqXOLt4j9e
+         TyDmNwS0wdzNZLaCEpvjUA7yywcUH+77c6AtNNd7H5NUpgL7Uu6wRr+c9/joFARTYjbP
+         bQdr/pCtADJULYO9tZkd+qMTuutsWY7TsiNTTFVQan+HSKrLoFeq9TXJOjYSlHcPL+Cm
+         jLxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704963867; x=1705568667;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nKYfbtGZSuWol92QjWEdUhJKfrs3o8tz2BQxPjW/QIM=;
-        b=qKbF3RJNHvhgnYl7OH75Gie8pP4TFxFrPewBk4ucQKwuErw6CjNVAPUhO+pCiHqxxc
-         IbhAdmkceOL/+TZKJBYkT54Cr3JoRnufUA+HXoME9kLZCjW9kgq1uCCwEK/GDGXgPQHy
-         mDMytWd1XamKg2K7jnJLuf5FTN7yDbkqFIIhZsAkAKHlSyc6nl0U49vLEZ34eq9lhZWq
-         XkJ6slIJFaLBE+k2lLuSrYXRa3iEpgtAyljge4jmw4h6pjgRdvm6/OBFyrs88Sicqrk5
-         U2Vqabo9JumEsBNEg+vvYl1uQB6aEjtJid665OzOVklDbaLbw0DFyW2n3ZQuS9ohm/e7
-         w6Kw==
-X-Gm-Message-State: AOJu0YzH67KYhIV/qyJLfiBxNr45FaIh5tS+OzpWv2HS0CjhUsCOgRvq
-	aIv4YHR82sbVIwb33ETX2m8=
-X-Google-Smtp-Source: AGHT+IGNchkmZ4xR/1cEDGA6uaCwadY4fTil39N89Fv7dqdCC2nauGrYBDo4A90POu6tgiDlQ9c9uA==
-X-Received: by 2002:a17:906:4557:b0:a28:a409:aeeb with SMTP id s23-20020a170906455700b00a28a409aeebmr424289ejq.61.1704963867146;
-        Thu, 11 Jan 2024 01:04:27 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
-        by smtp.gmail.com with ESMTPSA id v7-20020a1709063bc700b00a29bd8f9edbsm326112ejf.72.2024.01.11.01.04.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 01:04:26 -0800 (PST)
-Message-ID: <501bb280c6bd7dcb49929e7dbd242807b828e7de.camel@gmail.com>
-Subject: Re: [PATCH 04/13] spi: dt-bindings: adi,axi-spi-engine: add offload
- bindings
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Rob Herring <robh@kernel.org>, David Lechner <dlechner@baylibre.com>
-Cc: Mark Brown <broonie@kernel.org>, Jonathan Cameron <jic23@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>,
- Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,  Frank Rowand
- <frowand.list@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, Uwe
- =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Jonathan
- Corbet <corbet@lwn.net>,  linux-spi@vger.kernel.org,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Date: Thu, 11 Jan 2024 10:07:38 +0100
-In-Reply-To: <20240110231456.GB2854345-robh@kernel.org>
-References: 
-	<20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
-	 <20240109-axi-spi-engine-series-3-v1-4-e42c6a986580@baylibre.com>
-	 <20240110231456.GB2854345-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1704964205; x=1705569005;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oXjcPmzG/A7mlaieQ9giQPRodlEupSyhDif0JeD6lQU=;
+        b=G0rK/F/jD2bWxbLJcalGODXIa1PSF853fMiEUQlaxxsH2Ijb2770wlQgvLsd1DPaH7
+         EcP7nqwBjet70gibsfGH/bhPojsErHS0WqtB7J2ZSEOyIjnvcyPdP97SK2FceGZblGmt
+         /vkxJWh421JABgCpXckGoteNIjVqYc95b7F28fFha2K26JG9KOPkXNI8YiycxYi7zKhw
+         c5BHdqUiU7g4qW75I9AyUakUX5ZedFagJob2qz5tUSRwgCUxI2w8fYKBrl2PK5UHa++q
+         3IQSRlrQWOi8QcUioq/l9ssDpY31U55l2oP1BE26TDf/F4UcKYOLK7xSJVaZhTRT6hNg
+         KHVA==
+X-Gm-Message-State: AOJu0YwORxw6TpoowlDaxOLbDvjb4WjBX3U/0sgvobFHC/vl2bTk8RTu
+	SFdO39Fdci5HV+1CYIbuooV50Yqsw8HFW3ykmHP7Zc4bgXA01fy9
+X-Google-Smtp-Source: AGHT+IE4mcy7QGOY4i1Yr3rQGg5S+FuyePKgtStKpiklcSlnUuoIo4BONjaCFhJ0DazKy1raPRL1X2pu+KuJC2vd4U0=
+X-Received: by 2002:a25:8005:0:b0:dbc:b48e:6426 with SMTP id
+ m5-20020a258005000000b00dbcb48e6426mr789726ybk.110.1704964205393; Thu, 11 Jan
+ 2024 01:10:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240111070652.71717-1-pranavsubbu@gmail.com> <2024011144-silica-viral-9e79@gregkh>
+ <CAP1Lp88vEZJtd69Njf9uZ5VXypwZ-5vLdBHf2xoLSpqmeyEQiA@mail.gmail.com>
+In-Reply-To: <CAP1Lp88vEZJtd69Njf9uZ5VXypwZ-5vLdBHf2xoLSpqmeyEQiA@mail.gmail.com>
+From: Pranav Athreya <pranavsubbu@gmail.com>
+Date: Thu, 11 Jan 2024 14:39:54 +0530
+Message-ID: <CAP1Lp8-CP-uELVam=18oADOEvL_13wXkTyDLHKbjQe1ZyxiG9g@mail.gmail.com>
+Subject: Re: [PATCH] staging: vt6655: Remove extra blank lines between code blocks
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Forest Bond <forest@alittletooquiet.net>, linux-staging@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-01-10 at 17:14 -0600, Rob Herring wrote:
-> On Wed, Jan 10, 2024 at 01:49:45PM -0600, David Lechner wrote:
-> > The ADI AXI SPI Engine driver supports offloading SPI transfers to
-> > hardware. This is essentially a feature that allows recording an
-> > arbitrary sequence of SPI transfers and then playing them back with
-> > no CPU intervention via a hardware trigger.
-> >=20
-> > This adds the bindings for this feature. Each SPI Engine instance
-> > can have from 0 to 32 offload instances. Each offload instance has a
-> > trigger input and a data stream output. As an example, this could be
-> > used with an ADC SPI peripheral. In this case the trigger is connected
-> > to a PWM/clock to determine the sampling rate for the ADC and the outpu=
-t
-> > stream is connected to a DMA channel to pipe the sample data to memory.
-> >=20
-> > SPI peripherals act as consumers of the offload instances. Typically,
-> > one SPI peripheral will be connected to one offload instance. But to
-> > make the bindings future-proof, the property is an array.
->=20
-> Is there some sort of arbitration between multiple offload engines on=20
-> the same chip select? If not, I don't see how it would work.
->=20
-> I think this whole thing could be simplified down to just 3=20
-> SPI controller properties: pwms, dmas, and adi,offload-cs-map. Each=20
-> property is has entries equal the number of offload engines. The last=20
-> one maps an offload engine to a SPI chip-select.
->=20
+My apologies, resending this as plain text.
 
-I think the whole reason why the offload is being treated as a node + platf=
-orm
-device is to have these properties (or other possible properties depending =
-on
-the trigger and data capture being used) in it and so respect the HW
-configuration.
+Greg,
 
-While that is conceptually correct I feel that this is bringing a lot of ex=
-tra
-complexity. The end consumer of the offload core (which is a property/featu=
-re of
-the spi cotroller) are obviously the peripheral devices that in our usecase=
-s are
-converters and hence IIO devices. So those are the ones consuming all the d=
-ata.
-I saw Mark already giving some pointers and speaking about having a way to
-support the triggers (being it pwm, clock, gpio, etc...) directly in the sp=
-i
-framework and I think that would be nice. For the dmas, I think it would be=
- more
-complicated. While we can setup the dma transfer directly in the spi contro=
-ller,
-we would need a mechanism to transfer each block of data (periodically) as =
-soon
-as we have it to the peripheral device. In case of IIO, that would then hav=
-e to
-connect to IIO DMA buffers so the data can be consumed in userspace and tha=
-t
-would be the tricky part I believe.
+Thank you for reviewing my patch! Shall I amend the commit and send a
+revision of the patch?
+If I understand you correctly, I should remove all mention of the
+mod.c file from the commit,
+which will leave the new text as such:
 
-What we have been doing out of tree is to control the trigger and dmas in t=
-he
-peripheral device even if that does not really directly respect the HW setu=
-p (as
-these are properties of the offload core). Hence, we can just allocate an I=
-IO
-DMA buffer, enable the offload message with the messages we want and data c=
-an be
-directly transferred to userspace (without any intervention of the peripher=
-al
-driver) using the IIO interfaces for it.
+Adhere to Linux kernel coding style.
 
-To sum it up, I think having the trigger being handled by the spi framework=
- or
-even have it as an IIO generic trigger would be simple. To have the dma
-transfers in the spi controller would be more complex but anything is possi=
-ble,
-I guess :).
+Reported by checkpatch:
 
-- Nuno S=C3=A1
->=20
->=20
+drivers/staging/vt6655/rxtx.h:22: CHECK: Please don't use multiple blank li=
+nes
+
+Signed-off-by: Pranav Athreya <pranavsubbu@gmail.com>
+---
+ drivers/staging/vt6655/rxtx.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/staging/vt6655/rxtx.h b/drivers/staging/vt6655/rxtx.h
+index a67757c9bb5c..be1e5180d57b 100644
+--- a/drivers/staging/vt6655/rxtx.h
++++ b/drivers/staging/vt6655/rxtx.h
+@@ -19,7 +19,6 @@
+ #define DEFAULT_MSDU_LIFETIME_RES_64us 8000 /* 64us */
+ #define DEFAULT_MGN_LIFETIME_RES_64us  125  /* 64us */
+
+-
+ /*---------------------  Export Definitions -------------------------*/
+
+ /*---------------------  Export Variables  --------------------------*/
+
+Yours Sincerely,
+
+Pranav.
+
+Yours Sincerely,
+
+Pranav.
+
+
+On Thu, Jan 11, 2024 at 2:33=E2=80=AFPM Pranav Athreya <pranavsubbu@gmail.c=
+om> wrote:
+>
+> Greg,
+>
+> Thank you for reviewing my patch! Shall I amend the commit and send a rev=
+ision of the patch?
+> If I understand you correctly, I should remove all mention of the .mod.c =
+file from the commit,
+> which will leave the new text as such:
+>
+> Adhere to Linux kernel coding style.
+>
+> Reported by checkpatch:
+>
+> drivers/staging/vt6655/rxtx.h:22: CHECK: Please don't use multiple blank =
+lines
+>
+> Signed-off-by: Pranav Athreya <pranavsubbu@gmail.com>
+> ---
+>  drivers/staging/vt6655/rxtx.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/staging/vt6655/rxtx.h b/drivers/staging/vt6655/rxtx.=
+h
+> index a67757c9bb5c..be1e5180d57b 100644
+> --- a/drivers/staging/vt6655/rxtx.h
+> +++ b/drivers/staging/vt6655/rxtx.h
+> @@ -19,7 +19,6 @@
+>  #define DEFAULT_MSDU_LIFETIME_RES_64us 8000 /* 64us */
+>  #define DEFAULT_MGN_LIFETIME_RES_64us  125  /* 64us */
+>
+> -
+>  /*---------------------  Export Definitions -------------------------*/
+>
+>  /*---------------------  Export Variables  --------------------------*/
+>
+>
+> Yours Sincerely,
+>
+> Pranav.
+>
+>
+> On Thu, Jan 11, 2024 at 12:52=E2=80=AFPM Greg Kroah-Hartman <gregkh@linux=
+foundation.org> wrote:
+>>
+>> On Thu, Jan 11, 2024 at 12:36:52PM +0530, Pranav Athreya wrote:
+>> > Adhere to Linux kernel coding style.
+>> >
+>> > Reported by checkpatch:
+>> >
+>> > drivers/staging/vt6655/rxtx.h:22: CHECK: Please don't use multiple bla=
+nk lines
+>> >
+>> > drivers/staging/vt6655/vt6655_stage.mod.c:38: CHECK: Please don't use =
+multiple blank lines
+>> > ^Ignore the blank lines in vt6655_stage.mod.c since *.mod.c files
+>> > are included in .gitignore.
+>>
+>> *.mod.c files are not something that you can change, and are not in your
+>> patch either:
+>>
+>> > Signed-off-by: Pranav Athreya <pranavsubbu@gmail.com>
+>> > ---
+>> >  drivers/staging/vt6655/rxtx.h | 1 -
+>> >  1 file changed, 1 deletion(-)
+>>
+>> So the text is not correct :(
+>>
+>> thanks,
+>>
+>> greg k-h
 
