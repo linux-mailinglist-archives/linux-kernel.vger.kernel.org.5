@@ -1,142 +1,103 @@
-Return-Path: <linux-kernel+bounces-23297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1277D82AAA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:19:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB27982AAAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:19:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2E8C285645
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:19:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0EE71C2684E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D75C125CC;
-	Thu, 11 Jan 2024 09:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB0C10A14;
+	Thu, 11 Jan 2024 09:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="GLTzNfYQ"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="W8Aih2z/"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B8A10979;
-	Thu, 11 Jan 2024 09:18:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 2B4FD100020;
-	Thu, 11 Jan 2024 12:18:47 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2B4FD100020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1704964727;
-	bh=UXndM8p/4aKoblfGXlaKMeR9wEisIhlgDyx4qfEBvak=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-	b=GLTzNfYQ9ryiP6Mh7Gm2l/CwRbEJ+cggSlPGF1EF9tbflb6MhChmbKv7Kmk5Y1PJ2
-	 y9+fG+xiBQpPWDayASYdF29elnqE6dZfwfyxdXg6hvg+tNRRhZPhYqTo6rYyMLPgLU
-	 5GWOavcYIJnaVmgKBsP5sLkTVkJrfzb0xLKFtho7kO4Y9BH8gpOkITfiHd/fCtT7Np
-	 lo0ad2Rhu2g95lO2bccLTdWQtxPhScGWnK/dXFTjLBGbArP/q9p5IZfaLp30cnDCXK
-	 SX6YBADZKWZStYqsYTKj7jtzOKO266NtdznPyVm6iVrhiigMwP4BEemS8IEX4sshEv
-	 xB/0cVt9TDpvw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE8A1078D;
+	Thu, 11 Jan 2024 09:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B174040E01B2;
+	Thu, 11 Jan 2024 09:19:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 75rQRR9rxJhI; Thu, 11 Jan 2024 09:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704964768; bh=TukuYSY8K4PgC2+/1f/CzkqHRiMiVTc5HcHBppG/p8M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W8Aih2z/501plmUS7atfC64dlRQjOShAvBVndfMrWqPeBQKwBnCEq53iFOffzOCj6
+	 ASz2LhAD1wuXwfVGG5ogOrzKmhgKo60wgF4/1r2KjBhQZeh/l6pFL6nQNw76kTt9O/
+	 dm+pN55ueeegyOIFo0LjiJaHFx5LBggJ55msozJblKm+F0qVc57Jezs77wUBITm38r
+	 tWH64cDU+oqGrIU2fNmHbzR9so/IH4mXRbmqmkOWauvEvwnw9Q6xzLjPCChjcXt2+i
+	 muF/rWyUlQOmNC4FZ0OvNHj7OQ9dynCkBL5SSjDeuMzCejsfNzaoIdmknN+Vp3GOTL
+	 i0BfxTbnmpU595EH1Ao4ICDVn5KOM2qawY7/YoOwKRCixytB5wu2MhhQmaAymfziKz
+	 bTCqwdLPHj5p7OFF9ZfFDuQxpACgfqF6zyHr7dHCpjccN62bzp3mDnM/AiI2vRtXje
+	 oLRbbwsaDoH2f9dOufnVLzA3H2FG6bETwWlgYs1iR8AINPYn7Ej40RFp3aC2Fjm1Ud
+	 KGHr1WOJ/T/x5JVqZg2h2REIidws6w4VUqV/OI1QKmssRg2BDJS8pkZ/9G4FncRv1Y
+	 rRthqLpawTvqyn1cnoSncVft689dDt5ZU+bAeZxQZy6NO8vdr0lBTAI5QE41F9xrmq
+	 IOQ34SEkJI/cOBXUxv2O0scU=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 11 Jan 2024 12:18:46 +0300 (MSK)
-Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 11 Jan 2024 12:18:45 +0300
-Received: from p-i-exch-sc-m01.sberdevices.ru ([fe80::e8ee:cc43:7c6f:7ce0]) by
- p-i-exch-sc-m01.sberdevices.ru ([fe80::e8ee:cc43:7c6f:7ce0%7]) with mapi id
- 15.02.1118.040; Thu, 11 Jan 2024 12:18:45 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: Corentin Labbe <clabbe.montjoie@gmail.com>
-CC: "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-	"clabbe@baylibre.com" <clabbe@baylibre.com>, "herbert@gondor.apana.org.au"
-	<herbert@gondor.apana.org.au>, "davem@davemloft.net" <davem@davemloft.net>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "khilman@baylibre.com"
-	<khilman@baylibre.com>, "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-	"artin.blumenstingl@googlemail.com" <artin.blumenstingl@googlemail.com>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3A5AE40E0196;
+	Thu, 11 Jan 2024 09:19:10 +0000 (UTC)
+Date: Thu, 11 Jan 2024 10:19:04 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Meng, Li (Jassmine)" <Li.Meng@amd.com>
+Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	"Huang, Ray" <Ray.Huang@amd.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
-Subject: Re: [PATCH v1 00/24] Support more Amlogic SoC families in crypto
- driver
-Thread-Topic: [PATCH v1 00/24] Support more Amlogic SoC families in crypto
- driver
-Thread-Index: AQHaRAFT58y12An6Uk+iikjI6uDH27DTV/OAgADMFAA=
-Date: Thu, 11 Jan 2024 09:18:45 +0000
-Message-ID: <20240111091840.7fe4lqx225rdlwly@cab-wsm-0029881>
-References: <20240110201216.18016-1-avromanov@salutedevices.com>
- <ZZ8HP7dJgVaZLMw5@Red>
-In-Reply-To: <ZZ8HP7dJgVaZLMw5@Red>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7A7CA03D58C39E4DBA767BD5D753EAA4@sberdevices.ru>
-Content-Transfer-Encoding: quoted-printable
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+	"Sharma, Deepak" <Deepak.Sharma@amd.com>,
+	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
+	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
+	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
+	"Yuan, Perry" <Perry.Yuan@amd.com>,
+	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Oleksandr Natalenko <oleksandr@natalenko.name>
+Subject: Re: [PATCH V12 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for
+ the expansion.
+Message-ID: <20240111091904.GAZZ-yiBNC8O6KN99S@fat_crate.local>
+References: <20231205063537.872834-1-li.meng@amd.com>
+ <20231205063537.872834-2-li.meng@amd.com>
+ <20240109104504.GAZZ0jsFrrncZ8Vx8y@fat_crate.local>
+ <DM4PR12MB63515E818A5B4D5E512F5234F7692@DM4PR12MB6351.namprd12.prod.outlook.com>
+ <20240110100402.GAZZ5rklxQUZk_KFV4@fat_crate.local>
+ <DM4PR12MB6351BAC3EDC9BD184D5D1FAFF7682@DM4PR12MB6351.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182549 [Jan 11 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/11 07:45:00 #23086920
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM4PR12MB6351BAC3EDC9BD184D5D1FAFF7682@DM4PR12MB6351.namprd12.prod.outlook.com>
 
-Hello!
+On Thu, Jan 11, 2024 at 08:10:48AM +0000, Meng, Li (Jassmine) wrote:
+> I will modify it soon.
 
-On Wed, Jan 10, 2024 at 10:08:15PM +0100, Corentin Labbe wrote:
-> Le Wed, Jan 10, 2024 at 11:11:16PM +0300, Alexey Romanov a 'ecrit :
-> > Hello!
-> >=20
-> > This patchset expand the funcionality of the Amlogic
-> > crypto driver by adding support for more SoC families:=20
-> > AXG, G12A, G12B, SM1, A1, S4.
-> >=20
-> > Also specify and enable crypto node in device tree
-> > for reference Amlogic devices.
-> >=20
-> > Tested on AXG, G12A/B, SM1, A1 and S4 devices via
-> > custom tests and trcypt module.
->=20
-> Hello
->=20
-> Thanks for your patch series.
-> Unfortunatly, I fail to apply it for testing on top of linux-next.
-> On top of which tree did you have tested ?
+No, don't modify it, don't do anything. Please read the whole thread
+again.
 
-We use 6.5-rc3.
+-- 
+Regards/Gruss,
+    Boris.
 
-> According to patch 01, you used a tree based before "crypto: amlogic - Us=
-e new crypto_engine_op interface" so too old.
-
-Will rebase over linux-next in v2.
-
->=20
-> Regards
-
---=20
-Thank you,
-Alexey=
+https://people.kernel.org/tglx/notes-about-netiquette
 
