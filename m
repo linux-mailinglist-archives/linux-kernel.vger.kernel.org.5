@@ -1,102 +1,110 @@
-Return-Path: <linux-kernel+bounces-23747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC67F82B116
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:55:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AED5E82B11B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:56:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07D7F1C217A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:55:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DE8FB26AFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651C94F889;
-	Thu, 11 Jan 2024 14:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234F24B5A7;
+	Thu, 11 Jan 2024 14:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ii9rTNIH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="bZj1tbTV"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C694F5EF;
-	Thu, 11 Jan 2024 14:53:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1354C433F1;
-	Thu, 11 Jan 2024 14:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704984820;
-	bh=+BqtsdmJgllie0f+TedmDOkSJxfwyuvJ7XtBHEWUI+w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ii9rTNIHuhCcC5SFO36i+uwShspbZKQIChMO1ToULIRBnM8aehcOxo7Fpwa8NjUph
-	 uLv6MGpH5QGiY9wytE3zVj+6SrNeL9P35PUpSgJqAgKY9Q/kmtV9cOzARg7s7LjCQz
-	 VmXu4CklM0NEtcGAtnYPq+MDPhqOuy6Tg4ascn0bkMa8VyAoAyk3ScssPWxPN00BjC
-	 Ed13owoFf0UZS3HP/dk+UG0HPgar2uFmL8BrDn+D5IkJpj5Og6wFLBJMnU87TysnG0
-	 Mj2shKLMrrPdjSUbF8fffW7hYKhTtMs22pDLQGJtqSBmcXdvGG/s4zeML3RPE7wY9L
-	 dZq3QqKloPQsQ==
-Date: Thu, 11 Jan 2024 08:53:38 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Philipp Stanner <pstanner@redhat.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Randy Dunlap <rdunlap@infradead.org>, NeilBrown <neilb@suse.de>,
-	John Sanpe <sanpeqf@gmail.com>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Uladzislau Koshchanka <koshchanka@gmail.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	David Gow <davidgow@google.com>, Kees Cook <keescook@chromium.org>,
-	Rae Moar <rmoar@google.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"wuqiang.matt" <wuqiang.matt@bytedance.com>,
-	Yury Norov <yury.norov@gmail.com>, Jason Baron <jbaron@akamai.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marco Elver <elver@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Dooks <ben.dooks@codethink.co.uk>, dakr@redhat.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arch@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v5 RESEND 0/5] Regather scattered PCI-Code
-Message-ID: <20240111145338.GA2173492@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A643C48D;
+	Thu, 11 Jan 2024 14:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40B9T6ox025702;
+	Thu, 11 Jan 2024 15:54:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=H7nacMDmYTQFWcEFfOVo7GeHgZ5bNpycP6h4lcPT5CA=; b=bZ
+	j1tbTVX8q6WE9bFSdKyl9FMmOqENIbFcTlRo+aLUlQKTqNXIe0d5NIh+xZioZcsF
+	6LGHsux10lwwDTn8X/kfThmXp/MdOI2OCYSzngx577Dtls9ZbSQimLLQL14dF6od
+	myYPVRDPLBASpweYKYFNpjh7nyRPL5IBiazO8+kqqqO2rUdgXbW5AyjLkyX4mXJf
+	8aUi2MlrtJSMS1AL9wp7fHrhm3O6ungt+COQlmNn4744uqQOuZi5QBHieAsYjtMe
+	G9Ae4rlT510F5Wp/v33HhIUK7KinCHUBsMZ05EzNYcaTOUFSgmmusetnNKL0xeXo
+	zvYkzqFRvi7l5Tv1PwoA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vfha4uw06-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 15:54:22 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 657FB10002A;
+	Thu, 11 Jan 2024 15:54:22 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5BFF12841E6;
+	Thu, 11 Jan 2024 15:54:22 +0100 (CET)
+Received: from [10.252.29.122] (10.252.29.122) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 11 Jan
+ 2024 15:54:19 +0100
+Message-ID: <f2933f17-bc28-4c9e-b1d9-b64fdce52a15@foss.st.com>
+Date: Thu, 11 Jan 2024 15:54:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111085540.7740-1-pstanner@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/5] ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on
+ stm32f769-disco
+Content-Language: en-US
+To: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        <linux-kernel@vger.kernel.org>
+CC: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-amarula@amarulasolutions.com>, Lee Jones <lee@kernel.org>,
+        Conor
+ Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20240111113146.16011-1-dario.binacchi@amarulasolutions.com>
+ <20240111113146.16011-4-dario.binacchi@amarulasolutions.com>
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+In-Reply-To: <20240111113146.16011-4-dario.binacchi@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
 
-On Thu, Jan 11, 2024 at 09:55:35AM +0100, Philipp Stanner wrote:
-> Second Resend. Would be cool if someone could tell me what I'll have to
-> do so we can get this merged. This is blocking the followup work I've
-> got in the pipe
 
-This seems PCI-focused, and I'll look at merging this after v6.8-rc1
-is tagged and the merge window closes (probably Jan 21).  Then I'll
-rebase it to v6.8-rc1, tidy the subject lines to look like the rest
-of drivers/pci/, etc.
+On 1/11/24 12:31, Dario Binacchi wrote:
+> In the schematics of document UM2033, the power supply for the micro SD
+> card is the same 3v3 voltage that is used to power other devices on the
+> board. By generalizing the name of the voltage regulator, it can be
+> referenced by other nodes in the device tree without creating
+> misunderstandings.
+>
+> This patch is preparatory for future developments.
+>
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-> Philipp Stanner (5):
->   lib/pci_iomap.c: fix cleanup bugs in pci_iounmap()
->   lib: move pci_iomap.c to drivers/pci/
->   lib: move pci-specific devres code to drivers/pci/
->   pci: move devres code from pci.c to devres.c
->   lib, pci: unify generic pci_iounmap()
-> 
->  MAINTAINERS                            |   1 -
->  drivers/pci/Kconfig                    |   5 +
->  drivers/pci/Makefile                   |   3 +-
->  drivers/pci/devres.c                   | 450 +++++++++++++++++++++++++
->  lib/pci_iomap.c => drivers/pci/iomap.c |  49 +--
->  drivers/pci/pci.c                      | 249 --------------
->  drivers/pci/pci.h                      |  24 ++
->  include/asm-generic/io.h               |  27 +-
->  include/asm-generic/iomap.h            |  21 ++
->  lib/Kconfig                            |   3 -
->  lib/Makefile                           |   1 -
->  lib/devres.c                           | 208 +-----------
->  lib/iomap.c                            |  28 +-
->  13 files changed, 566 insertions(+), 503 deletions(-)
->  create mode 100644 drivers/pci/devres.c
->  rename lib/pci_iomap.c => drivers/pci/iomap.c (75%)
+Hi Dario,
+
+
+Reviewed-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+
+
+Regards,
+
+Raphaël
+
 
