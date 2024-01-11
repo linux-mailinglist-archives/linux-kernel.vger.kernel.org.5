@@ -1,213 +1,226 @@
-Return-Path: <linux-kernel+bounces-23148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0597A82A84B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:27:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C9882A84F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF6661C2339C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:27:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C56F51C23437
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4904D28F;
-	Thu, 11 Jan 2024 07:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702E7D2E2;
+	Thu, 11 Jan 2024 07:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P+BFnxUO"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BfygzK7L"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58B21103
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704958011; x=1736494011;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=r5Xa3ng36iWB5ujeoBieUtAJmouK1ZUZd+BoeXJWoQo=;
-  b=P+BFnxUOPRffnrCov9YdZHr2jSa3U2EYkLSSoiR7TjjGn47W8Y7kTMZu
-   DUBlpccQKQB7nS2W6kAT0M1hhNp8rVuOnGlcTpH/8kkiNZipDqgpZPZh5
-   zgKt2T5rc3eiSRqv+TSMcUk+51HLJS020UAi7DLdX6JQZBSbs27YvG7Yf
-   tJCkH8cygrtpdzrF3bhJsBFHBgI7O3oZOITJHEd6SGiAppNWqJhzshc8R
-   RGbOpBqhD0xbHNLDm5X6KH11TFNoEmMPb5yIGlYgB8Bsuljb8sZtxoU2X
-   Jcj4V91k+oz5uMFl/cykjKIhqxsbfnNEbEtK+vRALNa8hrH3aFr03FX6v
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="389202702"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="389202702"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 23:26:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="816628886"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="816628886"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jan 2024 23:26:50 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 10 Jan 2024 23:26:44 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 10 Jan 2024 23:26:44 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 10 Jan 2024 23:26:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dphoHAMX5wM4wHVQz46t9ea13VcKPDEzSA0flGo6oiIV4VIDr4kAJSctPIA5D1aUewLxr91rCw2Q5IGBLYnMUmkpEc9FpJPPCRHMrGgYXGnCyW2M1n8rdnoAMkrWiNI6QHTK36+iiMgvfrqamZxaOnIMOfc9lhImvPxCUsvRs9+W9EvaUiIIPOMx8I/cMa+ALVdppC0KIZpNGOjoqm2H/RWHZ/jAbRI7Vwdu4CPLGS+K670Fn7XKwpASAcUPiF1i4WRpiibpNbVaDk1V8D1sSzxJXe3AJfInw7P45eUabsVNl5uwFq92LY0Yl0ogiKnh7FHvCvKafa3KcN3rIgGmcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oPy68ZaE7nONp9XN1X8gR6EIfMYxad9/bJt24rbeFzI=;
- b=TJ3RCFzRAM17pL9uTKjEicFKbofOtDmXPy00uX/6Z8PcAVjEJB0AgEQIo9FLupEaSjy58X/9eAVvNpyKsXoPc81lGgQO8Fy/ExJAHKIkPVLKB+fqWMfGI6Tb0qE7/RRp0uwlO1t8mND8hkacrDJR+NgGZi1kPqk8OHx4SWX+bIZFllkrgwxc7sLlfbthuvxbTjO1KfsWMQZO0xrx2N2Afsdi6ydW8BKGuFbnl0WhUyJJoVPjlunOp/rvJs6PZS08axPklpQmHWiaiNj+YluGljf+IyqqSyUk/TkUNwJb7uHGs32SDnAp98V9uHNGmk8gmxuN0eaBic+zfCbnDrggPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by DS0PR11MB7334.namprd11.prod.outlook.com (2603:10b6:8:11d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Thu, 11 Jan
- 2024 07:26:37 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7159.020; Thu, 11 Jan 2024
- 07:26:37 +0000
-Date: Wed, 10 Jan 2024 23:26:32 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-CC: Dan Williams <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, Ira Weiny
-	<ira.weiny@intel.com>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>
-Subject: [GIT PULL] NVDIMM/NFIT changes for 6.8
-Message-ID: <659f98289aefc_aeafc29498@iweiny-mobl.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SJ0PR03CA0033.namprd03.prod.outlook.com
- (2603:10b6:a03:33e::8) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D4BD26A;
+	Thu, 11 Jan 2024 07:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d54b86538aso24055495ad.0;
+        Wed, 10 Jan 2024 23:28:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704958090; x=1705562890; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=q7o2fp3va6PrIWcX8vUj5HYMxS4ZIp+2h3KD5TCjvz8=;
+        b=BfygzK7Ls24K3c3KFTCHSYb+UJLmcGwoBCMdxsEYkN8Dz48Pqw8nWdTbupZ6teu8QY
+         f+WGfnf/se3Qbk+XcobV7ibArXSGuyUKK4OYMzOdUNYS3QZD1qaOoXiAtF0CuS2HfeWq
+         hvxn9+pN3W9v2c+FpSw/edkoijGi04Nxn29IcNkQXlHVy8+1z+oRlRgR67i2dct4ya0t
+         7F2jh8OAoXi0+rVxwYtq6Klp5vBLAJki4GBOIYLYRkMvEDiU5jeoH0v/qHE4co9EEvLK
+         +WIXOz2HJeEW3oqbO0kwZoUMwiq6GqcUzfD6YEc1A+IKaGf6t8AfcNy03kt7cm4XMXJQ
+         QFzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704958090; x=1705562890;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q7o2fp3va6PrIWcX8vUj5HYMxS4ZIp+2h3KD5TCjvz8=;
+        b=p7hSNrcTHYEu/4otZgOkkW+i/Eu+MBnzOjEUQL9xAjyB3f5aaUgS6GMUKGzgao2gQf
+         4Fxk9KXenu8TYT4kXtISEZSjxo1pSIqamiks/AEr+QGLz5LygmEe8qxTk5RXjwDF39f1
+         avklebJH9sLVRUv+uAEI7+R3Mvlawx9F/nqUJoxvq6futnhv+OT9CyqDOsLTSAwNlVrt
+         hSEyrOBYrsrz4G9QqqQu7tewiWVWUagDZc67C9e4hvb6vXcM7w+0EUvWUlWBXLjAQDAt
+         B01dNcnk7CjVXwnC7qSCAe8uiOsSswhuSV4mZgs8zfOGOSTeBj23QewvN9CAncMGdTGu
+         vZlQ==
+X-Gm-Message-State: AOJu0Yw94L2sHb2K7yPKdRF5ECCDiP294YeJtzGCk+PqURBtk9NDJuLf
+	66EXZXFqX/HfK0hgBxIbl/Q=
+X-Google-Smtp-Source: AGHT+IGl35uLlQRJwX4rvJzLGZrtgZstO0G3rpfy7BBTIi9UZR4sWdYeEO5QUbzFqaZyYXxS2sm4Lw==
+X-Received: by 2002:a17:903:28f:b0:1d4:2066:6b7 with SMTP id j15-20020a170903028f00b001d4206606b7mr986820plr.69.1704958090495;
+        Wed, 10 Jan 2024 23:28:10 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:70e2:a0a5:5166:fbbf])
+        by smtp.gmail.com with ESMTPSA id mm3-20020a1709030a0300b001d4bb7cdc11sm491328plb.88.2024.01.10.23.28.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 23:28:10 -0800 (PST)
+Date: Wed, 10 Jan 2024 23:28:06 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: James Ogletree <James.Ogletree@cirrus.com>
+Cc: James Ogletree <jogletre@opensource.cirrus.com>,
+	Fred Treven <Fred.Treven@cirrus.com>,
+	Ben Bright <Ben.Bright@cirrus.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Simon Trimmer <simont@opensource.cirrus.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Lee Jones <lee@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	James Schulman <James.Schulman@cirrus.com>,
+	David Rhodes <David.Rhodes@cirrus.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Peng Fan <peng.fan@nxp.com>, Jeff LaBundy <jeff@labundy.com>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Jacky Bai <ping.bai@nxp.com>,
+	Weidong Wang <wangweidong.a@awinic.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Shuming Fan <shumingf@realtek.com>,
+	Shenghao Ding <13916275206@139.com>,
+	Ryan Lee <ryans.lee@analog.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"open list:CIRRUS LOGIC HAPTIC DRIVERS" <patches@opensource.cirrus.com>,
+	"open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)..." <linux-input@vger.kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>,
+	"moderated list:CIRRUS LOGIC AUDIO CODEC DRIVERS" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v5 4/5] Input: cs40l50 - Add support for the CS40L50
+ haptic driver
+Message-ID: <ZZ-YhtIulqrSFc3R@google.com>
+References: <20240104223643.876292-1-jogletre@opensource.cirrus.com>
+ <20240104223643.876292-5-jogletre@opensource.cirrus.com>
+ <ZZoFUwOEF6NByIp2@google.com>
+ <564A2601-4933-4BD7-B4E6-C973A585CA61@cirrus.com>
+ <ZZ3JNuLp-ZfGOQRF@google.com>
+ <42A07166-6569-4872-B5E0-6D71C6F3656D@cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DS0PR11MB7334:EE_
-X-MS-Office365-Filtering-Correlation-Id: f54237b7-7939-4307-f564-08dc1276a538
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vm5PN7Bl+XhblHoKznVm5xu0mTjIJGw1wLOcROV2VYFF8Z/Btmb4jQBnvpZ1wbuiycnxLXQWgFESD/MkfLrR2HsXRB2MB3cIL+3BBRxV547/rKjS1gqopkdRpRXg2HxJqsNSrkoAGDYw/PeOBljIBRce8uL0y+Nv942QnmvZCfkTTp+zfe0zmgTaSRMjdOwuSgpHBcvp2P94dLWcp1EmBNS9fXemaQv3rotCi9wATR2ue/dN0/2j7KruU4skoLBqtGIvg6s1z6s7qPANlW9DPiTiD+MvuZuXFypjjQnVmwVq5NHxWv+OUIhrRzESUUhDjkiMI+qfiD0DM7z7Lrigubw4jjC5DNk7HzZEMpmcV4VAPpeU+oN8apDozNGvAoap7VK423NHfD8wzzDrBHNKfZRuUYSiUq/OQ6/bGCbc1o/k0JeN6Xto04oeu6ON/wHaYa/DXpVVN7n6bziXXvhRASBwdcjAl0pRdpkpSnhS1AjMwYnC6aw+pJ9yaYGXQGAwd1Mh78jpdollZqz2wyzU/81bTiett2Tg3oC81FMkSd+c166vpC6rTaZaJhy5ilDU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39860400002)(136003)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(5660300002)(4001150100001)(2906002)(44832011)(26005)(9686003)(6512007)(86362001)(82960400001)(38100700002)(6486002)(6506007)(478600001)(83380400001)(6666004)(6916009)(316002)(8676002)(4326008)(8936002)(41300700001)(54906003)(66556008)(66476007)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NfTfisGXPv+6QuUeDoBSZd1vwMWE+fyJGZDQIisz0jK+B0b5bc5W+5m5j4n1?=
- =?us-ascii?Q?BwxuomQ/gZgnpk9/Cj/muDZ1g4KVBLWMqLQXF01aY+0VGO5U6YEbMqZDbvQH?=
- =?us-ascii?Q?fUOWZD33RbZ3ze1+bbSeEVhQt4gIfgOfz0d/H8JyXu5ZBzKw7/uY4VoAXODH?=
- =?us-ascii?Q?Hs51MSGTvAm346t3tMPt3cRyXGROoZ2S09H3zMupI+CuPdSBlhsR0cMtBP64?=
- =?us-ascii?Q?+74yDb4IN+eNyXu57ncRvgYfojd3s3/3lFhNDFcxu3UHOgski/umDJkuvSju?=
- =?us-ascii?Q?Q9oVP3IRJaU0TF9kEWa01T5kZ/DWqdSjtUYXCncUC0vOQmZby72ZDxQLkhE6?=
- =?us-ascii?Q?IVsK/pO65o6/+uO9piE6vdz2NmjdIUJwacQCS+ApQx+Xh7CpTbk2dDm3+QBz?=
- =?us-ascii?Q?blGO/64KNyzmx2v24Xmy/dopxyw61ciCxMTfVN/J6txxlixVEQdDNXT+kutf?=
- =?us-ascii?Q?2/IlMFKaKAptA/2ioN9nJf2xr2XPq7xIoSiLAif9ckqP6AcX4hDJKEImCT0d?=
- =?us-ascii?Q?5NZoNJ/RfDZhUTcXKSYURkrJPp5GFvT+xzGB/eZyGf4UQ0Pxo+dJ6huJUAZY?=
- =?us-ascii?Q?nSBpVkKQOMuSgDFbirrkHWrGBo71jmfMPdb4GYgh+NJLvSCrtGxvmQIc3jb0?=
- =?us-ascii?Q?DWWeKqt0IcDw4ZM9+BDc4DupgF+DIUXs0plZPGATJsWzpoTf3aAYf6zD21Oe?=
- =?us-ascii?Q?70sc7OR3JrbCsctBifWVp/Acaf7dn4sr4oOmuRAoU/JJ5InqstoMIg5SpesN?=
- =?us-ascii?Q?QLOvIm0+1G94jYkFb4B+vH/RvJiEVZXZAIi+2mC1Pxtm9ltQm3r5vU28jbA3?=
- =?us-ascii?Q?EZMx6VVDg27CREi4xm6zIC9+BcPUx6zyWBYgcWx3S5wQ5La2MphxeEwl92yq?=
- =?us-ascii?Q?2BVhudOJaUSvJHQ5FOnBVNU/NyqA5bbXtsSCr6n4lOokPmcVd4ymBfKps9nw?=
- =?us-ascii?Q?gKvx7HeSlXRAjptvw+HCLsZPdEcykTsdxKSCktDv526mURdNlYaG4tFeXo3H?=
- =?us-ascii?Q?NYmf97Kod5J7CRIpKo4SA5/hnSDbFDW207DGDdbbeXXEylBEZU9uZtGmPAUS?=
- =?us-ascii?Q?xdn2fKz9PkTrTKay5E7oewqGa3YNwuGqDD1TeJVMlFY7p6fsVeiCgad0YQoV?=
- =?us-ascii?Q?25xQO493eOIJJvP3OtXb472+SqQ9rHBD0PYLa9lfo3/D1lSg1jWCio1VZjw1?=
- =?us-ascii?Q?I3QGt9EH1mPHUlC4vF63O9Nxw3roAZ3mO0eW4z/4JhaWxP/S98LQN+xxGg7B?=
- =?us-ascii?Q?1fVzByosnzvK06Xx+DCMTHLjywvBvJ019LuekHzyeyzE6oWOIV9MGh4Y8v/0?=
- =?us-ascii?Q?1SZEOK67F6Mtu6Q15lFIKT0XouaCkR5XZVYKzUNwpblexVCMCmsShXAr/M09?=
- =?us-ascii?Q?Omn2r/ARTkhkuICWfm8u7BQ7TCYaonMRsbSeV0ve/LgPvNYg+5II3CVzScH8?=
- =?us-ascii?Q?ZTNLNsONZcxyFLzaiFo2OS7+nKd1b8g6fBzzZwu/3pfEsALhWpdKRCM3ycym?=
- =?us-ascii?Q?VkhwrGucgUyzyk+sjW2lf0yc6tKrzaJ9zyb7TYnUjWSSQqwCjRGl6V4650Rf?=
- =?us-ascii?Q?Kz/sDyzQqekzk07OH+4CtU2nNPRaxxopwRBcp0FG?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f54237b7-7939-4307-f564-08dc1276a538
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 07:26:36.9588
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W2g7jkVgPh9l4mr2xQdogvVpSUWVWavI4aCpw7GEjMb6HWr8H+idi+yGH2Y0RPIML3IBTbFDPnVLhkmjuathww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7334
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <42A07166-6569-4872-B5E0-6D71C6F3656D@cirrus.com>
 
-Hi Linus, please pull from:
+On Wed, Jan 10, 2024 at 02:36:55PM +0000, James Ogletree wrote:
+> 
+> > On Jan 9, 2024, at 4:31 PM, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> > 
+> > On Tue, Jan 09, 2024 at 10:03:02PM +0000, James Ogletree wrote:
+> >> Hi Dmitry,
+> >> 
+> >> Thank you for your excellent review. Just a few questions.
+> >> 
+> >>> On Jan 6, 2024, at 7:58 PM, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> >>> 
+> >>> On Thu, Jan 04, 2024 at 10:36:37PM +0000, James Ogletree wrote:
+> >>>> +
+> >>>> + info->add_effect.u.periodic.custom_data = kcalloc(len, sizeof(s16), GFP_KERNEL);
+> >>>> + if (!info->add_effect.u.periodic.custom_data)
+> >>>> + return -ENOMEM;
+> >>>> +
+> >>>> + if (copy_from_user(info->add_effect.u.periodic.custom_data,
+> >>>> +   effect->u.periodic.custom_data, sizeof(s16) * len)) {
+> >>>> + info->add_error = -EFAULT;
+> >>>> + goto out_free;
+> >>>> + }
+> >>>> +
+> >>>> + queue_work(info->vibe_wq, &info->add_work);
+> >>>> + flush_work(&info->add_work);
+> >>> 
+> >>> I do not understand the need of scheduling a work here. You are
+> >>> obviously in a sleeping context (otherwise you would not be able to
+> >>> execute flush_work()) so you should be able to upload the effect right
+> >>> here.
+> >> 
+> >> Scheduling work here is to ensure its ordering with “playback" worker
+> >> items, which themselves are called in atomic context and so need
+> >> deferred work. I think this explains why we need a workqueue as well,
+> >> but please correct me.
+> >> 
+> >>> 
+> >>>> +
+> >>>> +static int vibra_playback(struct input_dev *dev, int effect_id, int val)
+> >>>> +{
+> >>>> + struct vibra_info *info = input_get_drvdata(dev);
+> >>>> +
+> >>>> + if (val > 0) {
+> >>> 
+> >>> value is supposed to signal how many times an effect should be repeated.
+> >>> It looks like you are not handling this at all.
+> >> 
+> >> For playbacks, we mandate that the input_event value field is set to either 1
+> > 
+> > I am sorry, who is "we"?
+> 
+> Just a royal “I”. Apologies, no claim to authority intended here. :)
+> 
+> > 
+> >> or 0 to command either a start playback or stop playback respectively.
+> >> Values other than that should be rejected, so in the next version I will fix this
+> >> to explicitly check for 1 or 0.
+> > 
+> > No, please implement the API properly.
+> 
+> Ack.
+> 
+> > 
+> >> 
+> >>> 
+> >>>> + info->start_effect = &dev->ff->effects[effect_id];
+> >>>> + queue_work(info->vibe_wq, &info->vibe_start_work);
+> >>> 
+> >>> The API allows playback of several effects at once, the way you have it
+> >>> done here if multiple requests come at same time only one will be
+> >>> handled.
+> >> 
+> >> I think I may need some clarification on this point. Why would concurrent
+> >> start/stop playback commands get dropped? It seems they would all be
+> >> added to the workqueue and executed eventually.
+> > 
+> > You only have one instance of vibe_start_work, as well as only one
+> > "slot" to hold the effect you want to start. So if you issue 2 request
+> > back to back to play effect 1 and 2 you are likely to end with
+> > info->start_effect == 2 and that is what vibe_start_work handler will
+> > observe, effectively dropping request to play effect 1 on the floor.
+> 
+> Understood, ack.
+> 
+> > 
+> >> 
+> >>> 
+> >>>> + } else {
+> >>>> + queue_work(info->vibe_wq, &info->vibe_stop_work);
+> >>> 
+> >>> Which effect are you stopping? All of them? You need to stop a
+> >>> particular one.
+> >> 
+> >> Our implementation of “stop” stops all effects in flight which is intended.
+> >> That is probably unusual so I will add a comment here in the next
+> >> version.
+> > 
+> > Again, please implement the driver properly, not define your own
+> > carveouts for the expected behavior.
+> 
+> Ack, and a clarification question: the device is not actually able to
+> play multiple effects at once. In that case, does stopping a specific
+> effect entail just cancelling an effect in the queue?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-for-6.8
+In this case I believe the device should declare maximum number of
+effects as 1. Userspace is supposed to determine maximum number of
+simultaneously playable effects by issuing EVIOCGEFFECTS ioctl on the
+corresponding event device.
 
-.. to get updates to the nvdimm tree.  They are a mix of bug fixes and updates
-to interfaces used by nvdimm.
+Thanks.
 
-Updates to interfaces include:
-	Use the new scope based management
-	Remove deprecated ida interfaces
-	Update to sysfs_emit()
-
-Fixup kdoc comments
-
-They have all been in -next more than 6 days with no reported issues.
-
----
-
-The following changes since commit 610a9b8f49fbcf1100716370d3b5f6f884a2835a:
-
-  Linux 6.7-rc8 (2023-12-31 12:51:25 -0800)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-for-6.8
-
-for you to fetch changes up to a085a5eb6594a3ebe5c275e9c2c2d341f686c23c:
-
-  acpi/nfit: Use sysfs_emit() for all attributes (2024-01-03 12:21:37 -0800)
-
-----------------------------------------------------------------
-libnvdimm updates for v6.8
-
-- updates to deprecated and changed interfaces
-  	- use new cleanup.h features
-	- use new ida interface
-- kdoc fixes
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      nvdimm: Remove usage of the deprecated ida_simple_xx() API
-
-Dan Williams (1):
-      acpi/nfit: Use sysfs_emit() for all attributes
-
-Dinghao Liu (1):
-      nvdimm-btt: simplify code with the scope based resource management
-
-Michal Wilczynski (1):
-      ACPI: NFIT: Use cleanup.h helpers instead of devm_*()
-
-Randy Dunlap (3):
-      nvdimm/btt: fix btt_blk_cleanup() kernel-doc
-      nvdimm/dimm_devs: fix kernel-doc for function params
-      nvdimm/namespace: fix kernel-doc for function params
-
- drivers/acpi/nfit/core.c        | 65 +++++++++++++++++++----------------------
- drivers/nvdimm/btt.c            | 15 ++++------
- drivers/nvdimm/btt_devs.c       |  6 ++--
- drivers/nvdimm/bus.c            |  4 +--
- drivers/nvdimm/dax_devs.c       |  4 +--
- drivers/nvdimm/dimm_devs.c      | 17 ++++++++---
- drivers/nvdimm/namespace_devs.c | 19 ++++++++----
- drivers/nvdimm/pfn_devs.c       |  4 +--
- 8 files changed, 71 insertions(+), 63 deletions(-)
+-- 
+Dmitry
 
