@@ -1,497 +1,213 @@
-Return-Path: <linux-kernel+bounces-23147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F40E82A844
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:23:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0597A82A84B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:27:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D14E1F2323C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:23:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF6661C2339C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2686AD282;
-	Thu, 11 Jan 2024 07:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4904D28F;
+	Thu, 11 Jan 2024 07:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="W7p/7LNd"
-Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD9853A0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=9lukI8SBkQG9zpqO5L
-	6Qao513Fv/h55G2lHZZ61xhh4=; b=W7p/7LNdekAnk7oAL+0y7h9tYwHFc5veLz
-	IPl9BujWYYmwVYidH1Yi7+D6/ttxfIDhW1XBFqZzxDTtzErlIn9vgrgq3oLKihbr
-	ez/Ae14VHFG1MM6t0VXcJkeeuj8VaT2xk47o+XBl2ejE8bTc4DGXrs4sB/mAEPLM
-	Oj4BBg6Lg=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wDHT6hXl59lBIyRAA--.19755S2;
-	Thu, 11 Jan 2024 15:23:03 +0800 (CST)
-From: GuoHua Chen <chenguohua_716@163.com>
-To: alexander.deucher@amd.com,
-	Xinhui.Pan@amd.com,
-	daniel@ffwll.ch,
-	christian.koenig@amd.com,
-	airlied@gmail.com
-Cc: amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	GuoHua Chen <chenguohua_716@163.com>
-Subject: [PATCH] drm/radeon: Clean up errors in si_dpm.c
-Date: Thu, 11 Jan 2024 07:23:01 +0000
-Message-Id: <20240111072301.10229-1-chenguohua_716@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wDHT6hXl59lBIyRAA--.19755S2
-X-Coremail-Antispam: 1Uf129KBjvAXoWfGF45WrWUJw18CF4DZFy3XFb_yoW8Xr4xKo
-	WfJFy8Ja1rur1xZ34xXrnxJF4ava9Yy3Z5uwnrJws5u3W2qFWYkFy7Xws5A3W7W345Xw1a
-	y3W7Kay3XrWrAay3n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU1T5lUUUUU
-X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/1tbiqBxi1mVOBk8XmgAAsv
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P+BFnxUO"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58B21103
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704958011; x=1736494011;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=r5Xa3ng36iWB5ujeoBieUtAJmouK1ZUZd+BoeXJWoQo=;
+  b=P+BFnxUOPRffnrCov9YdZHr2jSa3U2EYkLSSoiR7TjjGn47W8Y7kTMZu
+   DUBlpccQKQB7nS2W6kAT0M1hhNp8rVuOnGlcTpH/8kkiNZipDqgpZPZh5
+   zgKt2T5rc3eiSRqv+TSMcUk+51HLJS020UAi7DLdX6JQZBSbs27YvG7Yf
+   tJCkH8cygrtpdzrF3bhJsBFHBgI7O3oZOITJHEd6SGiAppNWqJhzshc8R
+   RGbOpBqhD0xbHNLDm5X6KH11TFNoEmMPb5yIGlYgB8Bsuljb8sZtxoU2X
+   Jcj4V91k+oz5uMFl/cykjKIhqxsbfnNEbEtK+vRALNa8hrH3aFr03FX6v
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="389202702"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="389202702"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 23:26:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="816628886"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="816628886"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jan 2024 23:26:50 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 10 Jan 2024 23:26:44 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 10 Jan 2024 23:26:44 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Jan 2024 23:26:43 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dphoHAMX5wM4wHVQz46t9ea13VcKPDEzSA0flGo6oiIV4VIDr4kAJSctPIA5D1aUewLxr91rCw2Q5IGBLYnMUmkpEc9FpJPPCRHMrGgYXGnCyW2M1n8rdnoAMkrWiNI6QHTK36+iiMgvfrqamZxaOnIMOfc9lhImvPxCUsvRs9+W9EvaUiIIPOMx8I/cMa+ALVdppC0KIZpNGOjoqm2H/RWHZ/jAbRI7Vwdu4CPLGS+K670Fn7XKwpASAcUPiF1i4WRpiibpNbVaDk1V8D1sSzxJXe3AJfInw7P45eUabsVNl5uwFq92LY0Yl0ogiKnh7FHvCvKafa3KcN3rIgGmcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oPy68ZaE7nONp9XN1X8gR6EIfMYxad9/bJt24rbeFzI=;
+ b=TJ3RCFzRAM17pL9uTKjEicFKbofOtDmXPy00uX/6Z8PcAVjEJB0AgEQIo9FLupEaSjy58X/9eAVvNpyKsXoPc81lGgQO8Fy/ExJAHKIkPVLKB+fqWMfGI6Tb0qE7/RRp0uwlO1t8mND8hkacrDJR+NgGZi1kPqk8OHx4SWX+bIZFllkrgwxc7sLlfbthuvxbTjO1KfsWMQZO0xrx2N2Afsdi6ydW8BKGuFbnl0WhUyJJoVPjlunOp/rvJs6PZS08axPklpQmHWiaiNj+YluGljf+IyqqSyUk/TkUNwJb7uHGs32SDnAp98V9uHNGmk8gmxuN0eaBic+zfCbnDrggPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by DS0PR11MB7334.namprd11.prod.outlook.com (2603:10b6:8:11d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Thu, 11 Jan
+ 2024 07:26:37 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7159.020; Thu, 11 Jan 2024
+ 07:26:37 +0000
+Date: Wed, 10 Jan 2024 23:26:32 -0800
+From: Ira Weiny <ira.weiny@intel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Dan Williams <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, Ira Weiny
+	<ira.weiny@intel.com>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>
+Subject: [GIT PULL] NVDIMM/NFIT changes for 6.8
+Message-ID: <659f98289aefc_aeafc29498@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SJ0PR03CA0033.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::8) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DS0PR11MB7334:EE_
+X-MS-Office365-Filtering-Correlation-Id: f54237b7-7939-4307-f564-08dc1276a538
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vm5PN7Bl+XhblHoKznVm5xu0mTjIJGw1wLOcROV2VYFF8Z/Btmb4jQBnvpZ1wbuiycnxLXQWgFESD/MkfLrR2HsXRB2MB3cIL+3BBRxV547/rKjS1gqopkdRpRXg2HxJqsNSrkoAGDYw/PeOBljIBRce8uL0y+Nv942QnmvZCfkTTp+zfe0zmgTaSRMjdOwuSgpHBcvp2P94dLWcp1EmBNS9fXemaQv3rotCi9wATR2ue/dN0/2j7KruU4skoLBqtGIvg6s1z6s7qPANlW9DPiTiD+MvuZuXFypjjQnVmwVq5NHxWv+OUIhrRzESUUhDjkiMI+qfiD0DM7z7Lrigubw4jjC5DNk7HzZEMpmcV4VAPpeU+oN8apDozNGvAoap7VK423NHfD8wzzDrBHNKfZRuUYSiUq/OQ6/bGCbc1o/k0JeN6Xto04oeu6ON/wHaYa/DXpVVN7n6bziXXvhRASBwdcjAl0pRdpkpSnhS1AjMwYnC6aw+pJ9yaYGXQGAwd1Mh78jpdollZqz2wyzU/81bTiett2Tg3oC81FMkSd+c166vpC6rTaZaJhy5ilDU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39860400002)(136003)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(5660300002)(4001150100001)(2906002)(44832011)(26005)(9686003)(6512007)(86362001)(82960400001)(38100700002)(6486002)(6506007)(478600001)(83380400001)(6666004)(6916009)(316002)(8676002)(4326008)(8936002)(41300700001)(54906003)(66556008)(66476007)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NfTfisGXPv+6QuUeDoBSZd1vwMWE+fyJGZDQIisz0jK+B0b5bc5W+5m5j4n1?=
+ =?us-ascii?Q?BwxuomQ/gZgnpk9/Cj/muDZ1g4KVBLWMqLQXF01aY+0VGO5U6YEbMqZDbvQH?=
+ =?us-ascii?Q?fUOWZD33RbZ3ze1+bbSeEVhQt4gIfgOfz0d/H8JyXu5ZBzKw7/uY4VoAXODH?=
+ =?us-ascii?Q?Hs51MSGTvAm346t3tMPt3cRyXGROoZ2S09H3zMupI+CuPdSBlhsR0cMtBP64?=
+ =?us-ascii?Q?+74yDb4IN+eNyXu57ncRvgYfojd3s3/3lFhNDFcxu3UHOgski/umDJkuvSju?=
+ =?us-ascii?Q?Q9oVP3IRJaU0TF9kEWa01T5kZ/DWqdSjtUYXCncUC0vOQmZby72ZDxQLkhE6?=
+ =?us-ascii?Q?IVsK/pO65o6/+uO9piE6vdz2NmjdIUJwacQCS+ApQx+Xh7CpTbk2dDm3+QBz?=
+ =?us-ascii?Q?blGO/64KNyzmx2v24Xmy/dopxyw61ciCxMTfVN/J6txxlixVEQdDNXT+kutf?=
+ =?us-ascii?Q?2/IlMFKaKAptA/2ioN9nJf2xr2XPq7xIoSiLAif9ckqP6AcX4hDJKEImCT0d?=
+ =?us-ascii?Q?5NZoNJ/RfDZhUTcXKSYURkrJPp5GFvT+xzGB/eZyGf4UQ0Pxo+dJ6huJUAZY?=
+ =?us-ascii?Q?nSBpVkKQOMuSgDFbirrkHWrGBo71jmfMPdb4GYgh+NJLvSCrtGxvmQIc3jb0?=
+ =?us-ascii?Q?DWWeKqt0IcDw4ZM9+BDc4DupgF+DIUXs0plZPGATJsWzpoTf3aAYf6zD21Oe?=
+ =?us-ascii?Q?70sc7OR3JrbCsctBifWVp/Acaf7dn4sr4oOmuRAoU/JJ5InqstoMIg5SpesN?=
+ =?us-ascii?Q?QLOvIm0+1G94jYkFb4B+vH/RvJiEVZXZAIi+2mC1Pxtm9ltQm3r5vU28jbA3?=
+ =?us-ascii?Q?EZMx6VVDg27CREi4xm6zIC9+BcPUx6zyWBYgcWx3S5wQ5La2MphxeEwl92yq?=
+ =?us-ascii?Q?2BVhudOJaUSvJHQ5FOnBVNU/NyqA5bbXtsSCr6n4lOokPmcVd4ymBfKps9nw?=
+ =?us-ascii?Q?gKvx7HeSlXRAjptvw+HCLsZPdEcykTsdxKSCktDv526mURdNlYaG4tFeXo3H?=
+ =?us-ascii?Q?NYmf97Kod5J7CRIpKo4SA5/hnSDbFDW207DGDdbbeXXEylBEZU9uZtGmPAUS?=
+ =?us-ascii?Q?xdn2fKz9PkTrTKay5E7oewqGa3YNwuGqDD1TeJVMlFY7p6fsVeiCgad0YQoV?=
+ =?us-ascii?Q?25xQO493eOIJJvP3OtXb472+SqQ9rHBD0PYLa9lfo3/D1lSg1jWCio1VZjw1?=
+ =?us-ascii?Q?I3QGt9EH1mPHUlC4vF63O9Nxw3roAZ3mO0eW4z/4JhaWxP/S98LQN+xxGg7B?=
+ =?us-ascii?Q?1fVzByosnzvK06Xx+DCMTHLjywvBvJ019LuekHzyeyzE6oWOIV9MGh4Y8v/0?=
+ =?us-ascii?Q?1SZEOK67F6Mtu6Q15lFIKT0XouaCkR5XZVYKzUNwpblexVCMCmsShXAr/M09?=
+ =?us-ascii?Q?Omn2r/ARTkhkuICWfm8u7BQ7TCYaonMRsbSeV0ve/LgPvNYg+5II3CVzScH8?=
+ =?us-ascii?Q?ZTNLNsONZcxyFLzaiFo2OS7+nKd1b8g6fBzzZwu/3pfEsALhWpdKRCM3ycym?=
+ =?us-ascii?Q?VkhwrGucgUyzyk+sjW2lf0yc6tKrzaJ9zyb7TYnUjWSSQqwCjRGl6V4650Rf?=
+ =?us-ascii?Q?Kz/sDyzQqekzk07OH+4CtU2nNPRaxxopwRBcp0FG?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f54237b7-7939-4307-f564-08dc1276a538
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 07:26:36.9588
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W2g7jkVgPh9l4mr2xQdogvVpSUWVWavI4aCpw7GEjMb6HWr8H+idi+yGH2Y0RPIML3IBTbFDPnVLhkmjuathww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7334
+X-OriginatorOrg: intel.com
 
-Fix the following errors reported by checkpatch:
+Hi Linus, please pull from:
 
-ERROR: that open brace { should be on the previous line
+  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-for-6.8
 
-Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
+.. to get updates to the nvdimm tree.  They are a mix of bug fixes and updates
+to interfaces used by nvdimm.
+
+Updates to interfaces include:
+	Use the new scope based management
+	Remove deprecated ida interfaces
+	Update to sysfs_emit()
+
+Fixup kdoc comments
+
+They have all been in -next more than 6 days with no reported issues.
+
 ---
- drivers/gpu/drm/radeon/si_dpm.c | 132 +++++++++++---------------------
- 1 file changed, 44 insertions(+), 88 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
-index fbf968e3f6d7..9deb91970d4d 100644
---- a/drivers/gpu/drm/radeon/si_dpm.c
-+++ b/drivers/gpu/drm/radeon/si_dpm.c
-@@ -46,8 +46,7 @@
- 
- #define SCLK_MIN_DEEPSLEEP_FREQ     1350
- 
--static const struct si_cac_config_reg cac_weights_tahiti[] =
--{
-+static const struct si_cac_config_reg cac_weights_tahiti[] = {
- 	{ 0x0, 0x0000ffff, 0, 0xc, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x0, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x101, SISLANDS_CACCONFIG_CGIND },
-@@ -111,8 +110,7 @@ static const struct si_cac_config_reg cac_weights_tahiti[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg lcac_tahiti[] =
--{
-+static const struct si_cac_config_reg lcac_tahiti[] = {
- 	{ 0x143, 0x0001fffe, 1, 0x3, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x143, 0x00000001, 0, 0x1, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x146, 0x0001fffe, 1, 0x3, SISLANDS_CACCONFIG_CGIND },
-@@ -203,13 +201,11 @@ static const struct si_cac_config_reg lcac_tahiti[] =
- 
- };
- 
--static const struct si_cac_config_reg cac_override_tahiti[] =
--{
-+static const struct si_cac_config_reg cac_override_tahiti[] = {
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_powertune_data powertune_data_tahiti =
--{
-+static const struct si_powertune_data powertune_data_tahiti = {
- 	((1 << 16) | 27027),
- 	6,
- 	0,
-@@ -239,8 +235,7 @@ static const struct si_powertune_data powertune_data_tahiti =
- 	true
- };
- 
--static const struct si_dte_data dte_data_tahiti =
--{
-+static const struct si_dte_data dte_data_tahiti = {
- 	{ 1159409, 0, 0, 0, 0 },
- 	{ 777, 0, 0, 0, 0 },
- 	2,
-@@ -257,8 +252,7 @@ static const struct si_dte_data dte_data_tahiti =
- 	false
- };
- 
--static const struct si_dte_data dte_data_tahiti_pro =
--{
-+static const struct si_dte_data dte_data_tahiti_pro = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -275,8 +269,7 @@ static const struct si_dte_data dte_data_tahiti_pro =
- 	true
- };
- 
--static const struct si_dte_data dte_data_new_zealand =
--{
-+static const struct si_dte_data dte_data_new_zealand = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0 },
- 	{ 0x29B, 0x3E9, 0x537, 0x7D2, 0 },
- 	0x5,
-@@ -293,8 +286,7 @@ static const struct si_dte_data dte_data_new_zealand =
- 	true
- };
- 
--static const struct si_dte_data dte_data_aruba_pro =
--{
-+static const struct si_dte_data dte_data_aruba_pro = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -311,8 +303,7 @@ static const struct si_dte_data dte_data_aruba_pro =
- 	true
- };
- 
--static const struct si_dte_data dte_data_malta =
--{
-+static const struct si_dte_data dte_data_malta = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -329,8 +320,7 @@ static const struct si_dte_data dte_data_malta =
- 	true
- };
- 
--static struct si_cac_config_reg cac_weights_pitcairn[] =
--{
-+static struct si_cac_config_reg cac_weights_pitcairn[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x8a, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x0, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x0, SISLANDS_CACCONFIG_CGIND },
-@@ -394,8 +384,7 @@ static struct si_cac_config_reg cac_weights_pitcairn[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg lcac_pitcairn[] =
--{
-+static const struct si_cac_config_reg lcac_pitcairn[] = {
- 	{ 0x98, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x98, 0x00000001, 0, 0x1, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x104, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
-@@ -485,13 +474,11 @@ static const struct si_cac_config_reg lcac_pitcairn[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_override_pitcairn[] =
--{
-+static const struct si_cac_config_reg cac_override_pitcairn[] = {
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_powertune_data powertune_data_pitcairn =
--{
-+static const struct si_powertune_data powertune_data_pitcairn = {
- 	((1 << 16) | 27027),
- 	5,
- 	0,
-@@ -521,8 +508,7 @@ static const struct si_powertune_data powertune_data_pitcairn =
- 	true
- };
- 
--static const struct si_dte_data dte_data_pitcairn =
--{
-+static const struct si_dte_data dte_data_pitcairn = {
- 	{ 0, 0, 0, 0, 0 },
- 	{ 0, 0, 0, 0, 0 },
- 	0,
-@@ -539,8 +525,7 @@ static const struct si_dte_data dte_data_pitcairn =
- 	false
- };
- 
--static const struct si_dte_data dte_data_curacao_xt =
--{
-+static const struct si_dte_data dte_data_curacao_xt = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -557,8 +542,7 @@ static const struct si_dte_data dte_data_curacao_xt =
- 	true
- };
- 
--static const struct si_dte_data dte_data_curacao_pro =
--{
-+static const struct si_dte_data dte_data_curacao_pro = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -575,8 +559,7 @@ static const struct si_dte_data dte_data_curacao_pro =
- 	true
- };
- 
--static const struct si_dte_data dte_data_neptune_xt =
--{
-+static const struct si_dte_data dte_data_neptune_xt = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -593,8 +576,7 @@ static const struct si_dte_data dte_data_neptune_xt =
- 	true
- };
- 
--static const struct si_cac_config_reg cac_weights_chelsea_pro[] =
--{
-+static const struct si_cac_config_reg cac_weights_chelsea_pro[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x82, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x4F, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x153, SISLANDS_CACCONFIG_CGIND },
-@@ -658,8 +640,7 @@ static const struct si_cac_config_reg cac_weights_chelsea_pro[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_chelsea_xt[] =
--{
-+static const struct si_cac_config_reg cac_weights_chelsea_xt[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x82, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x4F, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x153, SISLANDS_CACCONFIG_CGIND },
-@@ -723,8 +704,7 @@ static const struct si_cac_config_reg cac_weights_chelsea_xt[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_heathrow[] =
--{
-+static const struct si_cac_config_reg cac_weights_heathrow[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x82, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x4F, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x153, SISLANDS_CACCONFIG_CGIND },
-@@ -788,8 +768,7 @@ static const struct si_cac_config_reg cac_weights_heathrow[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_cape_verde_pro[] =
--{
-+static const struct si_cac_config_reg cac_weights_cape_verde_pro[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x82, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x4F, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x153, SISLANDS_CACCONFIG_CGIND },
-@@ -853,8 +832,7 @@ static const struct si_cac_config_reg cac_weights_cape_verde_pro[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_cape_verde[] =
--{
-+static const struct si_cac_config_reg cac_weights_cape_verde[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x82, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x4F, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x153, SISLANDS_CACCONFIG_CGIND },
-@@ -918,8 +896,7 @@ static const struct si_cac_config_reg cac_weights_cape_verde[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg lcac_cape_verde[] =
--{
-+static const struct si_cac_config_reg lcac_cape_verde[] = {
- 	{ 0x98, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x98, 0x00000001, 0, 0x1, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x104, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
-@@ -977,13 +954,11 @@ static const struct si_cac_config_reg lcac_cape_verde[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_override_cape_verde[] =
--{
-+static const struct si_cac_config_reg cac_override_cape_verde[] = {
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_powertune_data powertune_data_cape_verde =
--{
-+static const struct si_powertune_data powertune_data_cape_verde = {
- 	((1 << 16) | 0x6993),
- 	5,
- 	0,
-@@ -1013,8 +988,7 @@ static const struct si_powertune_data powertune_data_cape_verde =
- 	true
- };
- 
--static const struct si_dte_data dte_data_cape_verde =
--{
-+static const struct si_dte_data dte_data_cape_verde = {
- 	{ 0, 0, 0, 0, 0 },
- 	{ 0, 0, 0, 0, 0 },
- 	0,
-@@ -1031,8 +1005,7 @@ static const struct si_dte_data dte_data_cape_verde =
- 	false
- };
- 
--static const struct si_dte_data dte_data_venus_xtx =
--{
-+static const struct si_dte_data dte_data_venus_xtx = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x71C, 0xAAB, 0xE39, 0x11C7, 0x0 },
- 	5,
-@@ -1049,8 +1022,7 @@ static const struct si_dte_data dte_data_venus_xtx =
- 	true
- };
- 
--static const struct si_dte_data dte_data_venus_xt =
--{
-+static const struct si_dte_data dte_data_venus_xt = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0xBDA, 0x11C7, 0x17B4, 0x1DA1, 0x0 },
- 	5,
-@@ -1067,8 +1039,7 @@ static const struct si_dte_data dte_data_venus_xt =
- 	true
- };
- 
--static const struct si_dte_data dte_data_venus_pro =
--{
-+static const struct si_dte_data dte_data_venus_pro = {
- 	{  0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x11C7, 0x1AAB, 0x238E, 0x2C72, 0x0 },
- 	5,
-@@ -1085,8 +1056,7 @@ static const struct si_dte_data dte_data_venus_pro =
- 	true
- };
- 
--static struct si_cac_config_reg cac_weights_oland[] =
--{
-+static struct si_cac_config_reg cac_weights_oland[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x82, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x4F, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x153, SISLANDS_CACCONFIG_CGIND },
-@@ -1150,8 +1120,7 @@ static struct si_cac_config_reg cac_weights_oland[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_mars_pro[] =
--{
-+static const struct si_cac_config_reg cac_weights_mars_pro[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x43, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x29, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0xAF, SISLANDS_CACCONFIG_CGIND },
-@@ -1215,8 +1184,7 @@ static const struct si_cac_config_reg cac_weights_mars_pro[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_mars_xt[] =
--{
-+static const struct si_cac_config_reg cac_weights_mars_xt[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x43, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x29, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0xAF, SISLANDS_CACCONFIG_CGIND },
-@@ -1280,8 +1248,7 @@ static const struct si_cac_config_reg cac_weights_mars_xt[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_oland_pro[] =
--{
-+static const struct si_cac_config_reg cac_weights_oland_pro[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x43, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x29, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0xAF, SISLANDS_CACCONFIG_CGIND },
-@@ -1345,8 +1312,7 @@ static const struct si_cac_config_reg cac_weights_oland_pro[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_weights_oland_xt[] =
--{
-+static const struct si_cac_config_reg cac_weights_oland_xt[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x43, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x29, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0xAF, SISLANDS_CACCONFIG_CGIND },
-@@ -1410,8 +1376,7 @@ static const struct si_cac_config_reg cac_weights_oland_xt[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg lcac_oland[] =
--{
-+static const struct si_cac_config_reg lcac_oland[] = {
- 	{ 0x98, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x98, 0x00000001, 0, 0x1, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x104, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
-@@ -1457,8 +1422,7 @@ static const struct si_cac_config_reg lcac_oland[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg lcac_mars_pro[] =
--{
-+static const struct si_cac_config_reg lcac_mars_pro[] = {
- 	{ 0x98, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x98, 0x00000001, 0, 0x1, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x104, 0x0001fffe, 1, 0x2, SISLANDS_CACCONFIG_CGIND },
-@@ -1504,13 +1468,11 @@ static const struct si_cac_config_reg lcac_mars_pro[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_cac_config_reg cac_override_oland[] =
--{
-+static const struct si_cac_config_reg cac_override_oland[] = {
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_powertune_data powertune_data_oland =
--{
-+static const struct si_powertune_data powertune_data_oland = {
- 	((1 << 16) | 0x6993),
- 	5,
- 	0,
-@@ -1540,8 +1502,7 @@ static const struct si_powertune_data powertune_data_oland =
- 	true
- };
- 
--static const struct si_powertune_data powertune_data_mars_pro =
--{
-+static const struct si_powertune_data powertune_data_mars_pro = {
- 	((1 << 16) | 0x6993),
- 	5,
- 	0,
-@@ -1571,8 +1532,7 @@ static const struct si_powertune_data powertune_data_mars_pro =
- 	true
- };
- 
--static const struct si_dte_data dte_data_oland =
--{
-+static const struct si_dte_data dte_data_oland = {
- 	{ 0, 0, 0, 0, 0 },
- 	{ 0, 0, 0, 0, 0 },
- 	0,
-@@ -1589,8 +1549,7 @@ static const struct si_dte_data dte_data_oland =
- 	false
- };
- 
--static const struct si_dte_data dte_data_mars_pro =
--{
-+static const struct si_dte_data dte_data_mars_pro = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -1607,8 +1566,7 @@ static const struct si_dte_data dte_data_mars_pro =
- 	true
- };
- 
--static const struct si_dte_data dte_data_sun_xt =
--{
-+static const struct si_dte_data dte_data_sun_xt = {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
- 	{ 0x0, 0x0, 0x0, 0x0, 0x0 },
- 	5,
-@@ -1626,8 +1584,7 @@ static const struct si_dte_data dte_data_sun_xt =
- };
- 
- 
--static const struct si_cac_config_reg cac_weights_hainan[] =
--{
-+static const struct si_cac_config_reg cac_weights_hainan[] = {
- 	{ 0x0, 0x0000ffff, 0, 0x2d9, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x0, 0xffff0000, 16, 0x22b, SISLANDS_CACCONFIG_CGIND },
- 	{ 0x1, 0x0000ffff, 0, 0x21c, SISLANDS_CACCONFIG_CGIND },
-@@ -1691,8 +1648,7 @@ static const struct si_cac_config_reg cac_weights_hainan[] =
- 	{ 0xFFFFFFFF }
- };
- 
--static const struct si_powertune_data powertune_data_hainan =
--{
-+static const struct si_powertune_data powertune_data_hainan = {
- 	((1 << 16) | 0x6993),
- 	5,
- 	0,
--- 
-2.17.1
+The following changes since commit 610a9b8f49fbcf1100716370d3b5f6f884a2835a:
 
+  Linux 6.7-rc8 (2023-12-31 12:51:25 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-for-6.8
+
+for you to fetch changes up to a085a5eb6594a3ebe5c275e9c2c2d341f686c23c:
+
+  acpi/nfit: Use sysfs_emit() for all attributes (2024-01-03 12:21:37 -0800)
+
+----------------------------------------------------------------
+libnvdimm updates for v6.8
+
+- updates to deprecated and changed interfaces
+  	- use new cleanup.h features
+	- use new ida interface
+- kdoc fixes
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      nvdimm: Remove usage of the deprecated ida_simple_xx() API
+
+Dan Williams (1):
+      acpi/nfit: Use sysfs_emit() for all attributes
+
+Dinghao Liu (1):
+      nvdimm-btt: simplify code with the scope based resource management
+
+Michal Wilczynski (1):
+      ACPI: NFIT: Use cleanup.h helpers instead of devm_*()
+
+Randy Dunlap (3):
+      nvdimm/btt: fix btt_blk_cleanup() kernel-doc
+      nvdimm/dimm_devs: fix kernel-doc for function params
+      nvdimm/namespace: fix kernel-doc for function params
+
+ drivers/acpi/nfit/core.c        | 65 +++++++++++++++++++----------------------
+ drivers/nvdimm/btt.c            | 15 ++++------
+ drivers/nvdimm/btt_devs.c       |  6 ++--
+ drivers/nvdimm/bus.c            |  4 +--
+ drivers/nvdimm/dax_devs.c       |  4 +--
+ drivers/nvdimm/dimm_devs.c      | 17 ++++++++---
+ drivers/nvdimm/namespace_devs.c | 19 ++++++++----
+ drivers/nvdimm/pfn_devs.c       |  4 +--
+ 8 files changed, 71 insertions(+), 63 deletions(-)
 
