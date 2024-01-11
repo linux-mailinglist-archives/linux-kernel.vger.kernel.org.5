@@ -1,198 +1,189 @@
-Return-Path: <linux-kernel+bounces-24150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E30282B84D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:54:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF4282B84E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84A621C23D34
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:54:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02F751F264EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0525A0E8;
-	Thu, 11 Jan 2024 23:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD4F59B7E;
+	Thu, 11 Jan 2024 23:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="U7gPxWWb"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RwbnNftG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9555A0E1
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id ED4E52FC004D;
-	Fri, 12 Jan 2024 00:54:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1705017262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y3IfLCse3UJcBLmJvnzPNY6fFxZA/lm8oP7csgqnKhM=;
-	b=U7gPxWWbUFgN6lR9PsCx7iFIS7VaYhSRtvW7k9kPEBaiN4r3yiJwU4qffqhS9RcYXp3ZN/
-	mHzpt5VeY5o7vPpbpXc+ErHgvQLLYXqpY0PuH9eMMmC/6gUpiGjAWAl7mItLea8tk/IXDj
-	hO7qEu4WW/MNPC5ofwyVgOofQIJu00Q=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <2a74b609-1f75-4179-8e63-7825a0d39166@tuxedocomputers.com>
-Date: Fri, 12 Jan 2024 00:54:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5765A0E1;
+	Thu, 11 Jan 2024 23:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705017311; x=1736553311;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=FJ0h8qSjJ0rmJwf8YXi/y9KVfGd3NhHnJ+YpFv5ny+Q=;
+  b=RwbnNftG0uMZkSbnSMdp/Rux334HhKaWVpGyiAdinfz/G9bl1jhvJdR6
+   WQd4Nrvlk7liKLqW2WuNAuCrQXMgdtrLWwkB1JcaceTOVLxRnOMKN1l4j
+   1Vj8RLKhbFGzgT17cSLvQ0HKoUrxsNZfqV5FuDhF5CDfT9KsuAAzK0ifh
+   9eyqUOByg9M6sMCVCIWlfGCQ3e2sImd9BWBxJq97BDiHEVEEvGRBdWYGh
+   PxMINCvFrsNf4BirPdwdkZDG1XoG97Bv8AG5PGMpr5DQayvoPQYyVcmJ9
+   9oTA3HGHL5zK+zfhdEx3oP87snqDvXXvNZ4RiR///RHI+yXMsOruo8e/S
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="12518308"
+X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
+   d="scan'208";a="12518308"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 15:54:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="853117576"
+X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
+   d="scan'208";a="853117576"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Jan 2024 15:54:57 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Jan 2024 15:54:57 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Jan 2024 15:54:56 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 11 Jan 2024 15:54:56 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 11 Jan 2024 15:54:56 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I2959k700yvuiYr+41Gm2iuMRiQ4X8m9wp0YZnvGBkofUnlMavx0Wjn2fLY6vuUFDMYIo84BPBeiVorSkWNlzbFHArQuaePxC/sv5POf/Swra+BfyOv0wU7fGd8Omi2bpSVNVeXjx9xMWd4eItIUdc4NCKWeEJBXv0foz6LN2c5fxcHLZC7HZdNmc5h981fZfsqMAyHVcGh55MXXeaQcd0q0bF9uFPHdgOgSeF/+GBdDm292VsYRLqXL5SMrFxWW4Np/T1MAcOYol4/HIn+gImPWLEL9PZoH45bWljMrlwQlemBBm0q78e9VI0+kXmL5PviCfri7zxNLRXU+ybA9Gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fikKo3TBA8qMda5zTzbLlVtKK5GARKjWT1N8QFWNMJk=;
+ b=YHs6pjlDC7aKWgIOhcATfHXRC3mDs1c5ylQjT7dWR0TAtAxUsLFlu87N1PpQX+bzGjA45ZSM9Thi7fx16OKFg3NrTtwSkc781uPpoALKQydinoVyfcDR2ytAbZI3oK+Gzpd9ZYs+8EbxTONcx121NRMJMj1R/jhrPs8XcsuyHLAj0nOcxl3RO3EOMKFJbJc20U51aBja02YK+iWsBhSaxx3hUwhs+shNoqVJyTogS1NIHkGhjbKYhR5FmSP/2odskFcPErMu/1gxXwFKunrsJnQBPC24fjXZ+ZS/axl4WYnBPLLz884BgXmcm8NpyzUWTWPY42hpBSHn2OanGU7GYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
+ by PH8PR11MB8285.namprd11.prod.outlook.com (2603:10b6:510:1c5::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Thu, 11 Jan
+ 2024 23:54:49 +0000
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
+ 23:54:49 +0000
+Message-ID: <3d74f069-b760-45ab-8d62-5d7d143e27e5@intel.com>
+Date: Thu, 11 Jan 2024 16:54:45 -0700
+User-Agent: Betterbird (Linux)
+Subject: Re: [PATCH -next] cxl: Remove duplicated include in cdat.c
+To: Yang Li <yang.lee@linux.alibaba.com>, <jonathan.cameron@huawei.com>,
+	<dave@stgolabs.net>
+CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240109004728.54703-1-yang.lee@linux.alibaba.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240109004728.54703-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0P220CA0002.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::10) To PH7PR11MB5984.namprd11.prod.outlook.com
+ (2603:10b6:510:1e3::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] drm/amd/display: Add handling for new "active color
- format" property
-To: Andri Yngvason <andri@yngvason.is>
-Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, intel-gfx@lists.freedesktop.org,
- Leo Li <sunpeng.li@amd.com>, David Airlie <airlied@gmail.com>,
- dri-devel@lists.freedesktop.org, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, linux-kernel@vger.kernel.org,
- Maxime Ripard <mripard@kernel.org>, Jani Nikula
- <jani.nikula@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Simon Ser <contact@emersion.fr>, amd-gfx@lists.freedesktop.org,
- Harry Wentland <harry.wentland@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-References: <20240109181104.1670304-1-andri@yngvason.is>
- <20240109181104.1670304-4-andri@yngvason.is>
- <ZZ57Nl3CnRMPcfbj@phenom.ffwll.local>
- <CAFNQBQzo17cK4M-S=Mje8Lxub9Y74xFGj7iEq57vKJr47oiz5Q@mail.gmail.com>
- <CAKMK7uGhMCwbztGdEmG4gFgpyhw6j-JFow-AaprFxcX710=qXA@mail.gmail.com>
- <67808818-ee34-4d04-ad90-cd5c6eb9bb26@tuxedocomputers.com>
- <CAFNQBQyg+yXSJRtZtyHXMfyBOYrQpU0R0XFUJLcof9rakrBYQA@mail.gmail.com>
-Content-Language: en-US
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <CAFNQBQyg+yXSJRtZtyHXMfyBOYrQpU0R0XFUJLcof9rakrBYQA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|PH8PR11MB8285:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63272b0f-2a65-4fcf-8a69-08dc1300b233
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U/Z40kDyPsVlh8C5dkkl/7x+aHcbV7Wov4q6TDCMckwqDQcFoUshVBKxS5tod3wX6G5W2EVU3ku46NKfXAPj2WOiDxIXqgnJoeUUm04l2ko2D2DowsUSZy1uTez0lADyFHwT3FfldSkxG01QTHF5omgsDmuxp6IOhhQhDJOglLRV8taZqQvS4cNcLTiBC43VbgvJY8xalhCwIan5c8C+nKHn2ngEVGnMD9WpV1mIut61AeXCRV14j4rC87nfMelNappUbMDAnOOym6uI7WoBRDIILeJkw1mjZcpwFrUBbAiYg87wAF+atXyN+RISozwXfCaHWyfgRPiEbIASuHUKTjyf9PVoYzZQZtC8UDlKKZUhJ5fchVZ9n5tuD2aL/FLiZV6VHUfmIUAbLHi7gQQMVKKFlC6AT95szUk+9VMgDhRg0WDMWP7f4FSaTXSox+O1TY3EaVlFEATUB7SN0iT5BBaA1AMjbFVouq+HNuDeVNHvpU4l3SrbpbEkARWdk8AYltAHWnjrm0PT+rg9qK8Q57WGh+0MW0tKwTprP27SJ6oynZcFXgYRPneSmkX6CVCPzwel66SBpQvk+HWLKp67yuRA8s1scsyH1AhKfjlNMI74MDZdScc1TQaSrbuV90iR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(396003)(376002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(83380400001)(66946007)(66556008)(82960400001)(316002)(31696002)(86362001)(36756003)(41300700001)(38100700002)(6512007)(2616005)(6506007)(26005)(8676002)(66476007)(6486002)(478600001)(6666004)(5660300002)(53546011)(2906002)(4326008)(8936002)(44832011)(4744005)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q3E5MzUyQjJRQi9aZnpmeDZHclBVcFdnRy9yREVMUXlOYkhrWExYdk96cXZR?=
+ =?utf-8?B?TjhyMkc1L1EzUmN5TVFOcVV4KzZmcjJKMytGWVcwMTRBMkVLM0w1bW5qTWd5?=
+ =?utf-8?B?NkQvMXdFYXIzd2lXbDlzN3JaaXFETVlXUVc0ZFFUL25abnlsTWNqTkVicFBJ?=
+ =?utf-8?B?L3h6UUFJNExVOW90UkpNSmRwOUVldm1MN0Qwemsvd0ZVTUthOE9sa1EvSUd0?=
+ =?utf-8?B?SENzaktucWpKbzZxWFcxT25URkJ0QVN5Nm9VSTJFVXVBTXNTRTd4NThKMWtE?=
+ =?utf-8?B?MVMzN1djY1IzMS9xTm82cWptSHU1YlIySzZxK0ZTa3BHWVkrTWxwSHlWRUFP?=
+ =?utf-8?B?UGFjM1FXK2l1Y0N6TlVFZzlyaWxpWWFpU3N1UXArWFJOVWNjTk9VUmJJQTZv?=
+ =?utf-8?B?dGZBdkFCZFphSUU2b2xmVS9XQW9qTE5DMitoWHVZcDhEc1hHWmVVcFROWGE0?=
+ =?utf-8?B?ZkIyY1RKYjNPc2FEUCtuMlkzczY5UkhsbGpVenNqblZDOGhCL3h1enBMNFpB?=
+ =?utf-8?B?eXlCeXFnZUdLT3NOK2t2RldtMjBwVW0rUzJKQWpQbGg4RFBZQ2ZiZGNtVFNh?=
+ =?utf-8?B?YjFZMUdQcTE0dnNuK2NLV0pSUTFNdVplMXMzVWFMOGxSSjdvOUI2THM4Vmdn?=
+ =?utf-8?B?ZWx1cHl0NUhYeGU4elRYcStheHhkaVRGWmtialdJMzJxSVhTT1FsZEpiemdF?=
+ =?utf-8?B?dldWdm5jY2REQkdFS2hWSEcvSUI0elJ6V3Rvd3hkYWErekptUHU1OTJUeFYr?=
+ =?utf-8?B?LzJVemdsWHVQd0tzWmJBb2txSTJvR2lMUk5EMXE5aUlLUEwvOHhIcnMrajVi?=
+ =?utf-8?B?UXZiK2piaW5LVGovRzN4bTRiQmR3WEhlVlQ0UE5qcHdZZHFqYjNLc3lnTWRG?=
+ =?utf-8?B?U1VlbDRlck1DRmZNblRJckRlUUh4Ykl5bjZvZTB2bTluZUk5dnh1emhyNUZH?=
+ =?utf-8?B?c1MwOFMzRFVJUDJ2czJ6eE5Sc3REUjVlWWpwTkQxRDQ2elRkWW9rQ1NteTBo?=
+ =?utf-8?B?T3RObnluVU42OGJvVWlGWjk2c3hqemhONWFXMnYrWlcwdHkzRW9pZzVnMnlk?=
+ =?utf-8?B?eTMralVJYTBEd0pNMC9BaDh3akdhTEZjL1BxdWNqRWxOU0M4bGRGajNnYnR6?=
+ =?utf-8?B?WkZLbWk2TWZVVGg5bkgzMWhTUUdXa3BHVFpJQ2xjN3I0Rzc2cEZNaFZSdGFk?=
+ =?utf-8?B?ZitoU3NvejdPbENaei9wcEl6aW4xeW95TlVDUWtwYnhhK0txa21IRWxLS2JU?=
+ =?utf-8?B?SkVpZFNGZ0M3blJOcE9DL3JpRWVTbitIdFphYWNybUEvbWtYdm15ZVpmTFR2?=
+ =?utf-8?B?RG1QQzdjT2Y4azU1SEdVdHlWa1NRQUhvV0JYZTBYL2pxNWlXd2tmVnJpdWE5?=
+ =?utf-8?B?czVKcFFYdXlnUWIxcU1rc0ZpZTNDZUxvUWV1bkhnVFc2eVllV0VGMUIxVVkz?=
+ =?utf-8?B?UklJR0gwSFh5T0QyVVNCcVpQc0NLb3lETWQzKzNwUExuT2J4b0h2a0FwTHE1?=
+ =?utf-8?B?bGNJeko4OURJMUMrYUJETEpCZnRpRmdtMlRsbXIyMW1UdUZpOXEvYWFaNXN6?=
+ =?utf-8?B?NGNQTDVnUWpjSnBBVzdMdGRvZ0VrR3BLTjc5ckRwUjVZTTNWUTVYcE5NZjhK?=
+ =?utf-8?B?cGFCbG9mbmV3RDN3VnpCNitIcHJjbXh6V2V1WVplSEd4WDNFL0kxYWNUY0M5?=
+ =?utf-8?B?U1daV1FsWVBVOHlTemlYVVIwY1J3ay83VDJwdDBoaGQyaHlIWFdrZU1XTzEr?=
+ =?utf-8?B?NzQzT2dkTnRlSmYyOFdlMGsvQW1OM0Q3ME83aktVME9UdGdEbjd5T3FxY1Iz?=
+ =?utf-8?B?OVJxTEQ1NTNIMTBvcGxxNlNwdDYyWndRT3lYdzFMd09ITWZtZmloTkxmblNV?=
+ =?utf-8?B?T041VE5kY2c1SXlMQzh5VzFCRkRQVUNobkpxamRBd201UjI5amlVT3plMHdx?=
+ =?utf-8?B?QUZLZmNwNUdPcEhzNkhJVVpVcGkyWW1TKzBtVHo1enRoMzVVLzhQS0wxZDVK?=
+ =?utf-8?B?Q3hKbTNsNFpqQ2JINUZWazh1MENVN0lJZXBjUFZDUE5vc3BKQ3NQcmllb0t2?=
+ =?utf-8?B?cmxxd29qalg2cmJTQ1ZaQ1Vqc0dMQmVRNlgwUGdGUHIvbzdCSWRJdjFvS1Zm?=
+ =?utf-8?Q?AK/4MjtLxDMWqSXJK5VNIOUIV?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63272b0f-2a65-4fcf-8a69-08dc1300b233
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 23:54:49.2603
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wF6otex6N0WLcwceZHbhFjZ/Z2SEob07MVAJQdT/R6MfkBA0olm0p4stUuSaW+l+4YaX/zg7nqzqmAzAghPklQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8285
+X-OriginatorOrg: intel.com
 
-Hi,
 
-Am 10.01.24 um 18:15 schrieb Andri Yngvason:
-> Hi Werner,
->
-> mið., 10. jan. 2024 kl. 13:14 skrifaði Werner Sembach <wse@tuxedocomputers.com>:
->> Hi,
->>
->> Am 10.01.24 um 14:09 schrieb Daniel Vetter:
->>> On Wed, 10 Jan 2024 at 13:53, Andri Yngvason <andri@yngvason.is> wrote:
->>>> mið., 10. jan. 2024 kl. 11:10 skrifaði Daniel Vetter <daniel@ffwll.ch>:
->>>>> On Tue, Jan 09, 2024 at 06:11:00PM +0000, Andri Yngvason wrote:
->>>>>> +     /* Extract information from crtc to communicate it to userspace as connector properties */
->>>>>> +     for_each_new_connector_in_state(state, connector, new_con_state, i) {
->>>>>> +             struct drm_crtc *crtc = new_con_state->crtc;
->>>>>> +             struct dc_stream_state *stream;
->>>>>> +
->>>>>> +             if (crtc) {
->>>>>> +                     new_crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
->>>>>> +                     dm_new_crtc_state = to_dm_crtc_state(new_crtc_state);
->>>>>> +                     stream = dm_new_crtc_state->stream;
->>>>>> +
->>>>>> +                     if (stream) {
->>>>>> +                             drm_connector_set_active_color_format_property(connector,
->>>>>> +                                     convert_dc_pixel_encoding_into_drm_color_format(
->>>>>> +                                             dm_new_crtc_state->stream->timing.pixel_encoding));
->>>>>> +                     }
->>>>>> +             } else {
->>>>>> +                     drm_connector_set_active_color_format_property(connector, 0);
->>>>> Just realized an even bigger reason why your current design doesn't work:
->>>>> You don't have locking here.
->>>>>
->>>>> And you cannot grab the required lock, which is
->>>>> drm_dev->mode_config.mutex, because that would result in deadlocks. So
->>>>> this really needs to use the atomic state based design I've described.
->>>>>
->>>> Maybe we should just drop "actual color format" and instead fail the
->>>> modeset if the "preferred color format" property cannot be satisfied?
->>>> It seems like the simplest thing to do here, though it is perhaps less
->>>> convenient for userspace. In that case, the "preferred color format"
->>>> property should just be called "color format".
->>> Yeah that's more in line with how other atomic properties work. This
->>> way userspace can figure out what works with a TEST_ONLY commit too.
->>> And for this to work you probably want to have an "automatic" setting
->>> too.
->>> -Sima
->> The problem with TEST_ONLY probing is that color format settings are
->> interdependent: https://gitlab.freedesktop.org/drm/amd/-/issues/476#note_966634
->>
->> So changing any other setting may require every color format to be TEST_ONLY
->> probed again.
->>
-> If we put a bit map containing the possible color formats into
-> drm_mode_mode_info (I'm thinking that it could go into flags), we'd be
-> able to eliminate a bunch of combinations early on. Do you think that
-> would make things more bearable?
 
-That would eliminate some, but note that for example YCBCR444 needs a faster 
-pixel clock then YCBCR420, so it's interdependent with everything else that 
-changes the required pixel clock like bpc, resolution and refresh rate.
+On 1/8/24 17:47, Yang Li wrote:
+> The header files core.h is included twice in cdat.c,
+> so one inclusion can be removed.
+> 
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-So the config space is n-dimensional with no "right angle box" clearly 
-separating working from non working combinations.
-
-But I just had the idea:
-
-Currently in KDE and Gnome UI you first select the resolution, to then wee what 
-refresh rates are available. So I guess this concept could be appended to color 
-properties -> Define a sequence for the different properties to be applied 
-across all drivers and as soon as you select one, the next property in the 
-sequence is TEST_ONLYed.
-
-e.g.:
-
-1. Select resolution -> Available refresh rates are updated
-
-2. Select refresh rate -> Available color formats are updated
-
-3. Select color format -> Available bpc are updated
-
-etc.
-
-So you can't select a bpc that doesn't fit your current color format. Changing 
-color format can change the available bpc. One maybe counter intuitive thing 
-here is that color format "auto" might not have all bpc settings available, as 
-auto will for example actually be RGB which has higher pixel clock requirements 
-then ycbcr420. And in this model, color format is always decided first. Or vice 
-versa if bpc is decided to be before color format in the sequence.
-
->
-> I'm thinking, something like this:
-> diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
-> index 128d09138ceb3..59980803cb89e 100644
-> --- a/include/uapi/drm/drm_mode.h
-> +++ b/include/uapi/drm/drm_mode.h
-> @@ -124,6 +124,13 @@ extern "C" {
->   #define  DRM_MODE_FLAG_PIC_AR_256_135 \
->                          (DRM_MODE_PICTURE_ASPECT_256_135<<19)
->
-> +/* Possible color formats (4 bits) */
-> +#define DRM_MODE_FLAG_COLOR_FORMAT_MASK (0x0f << 22)
-> +#define DRM_MODE_FLAG_COLOR_FORMAT_RGB (1 << 22)
-> +#define DRM_MODE_FLAG_COLOR_FORMAT_YCBCR444 (1 << 23)
-> +#define DRM_MODE_FLAG_COLOR_FORMAT_YCBCR422 (1 << 24)
-> +#define DRM_MODE_FLAG_COLOR_FORMAT_YCBCR420 (1 << 25)
-> +
->   #define  DRM_MODE_FLAG_ALL     (DRM_MODE_FLAG_PHSYNC |         \
->                                   DRM_MODE_FLAG_NHSYNC |         \
->                                   DRM_MODE_FLAG_PVSYNC |         \
-> @@ -136,7 +143,8 @@ extern "C" {
->                                   DRM_MODE_FLAG_HSKEW |          \
->                                   DRM_MODE_FLAG_DBLCLK |         \
->                                   DRM_MODE_FLAG_CLKDIV2 |        \
-> -                                DRM_MODE_FLAG_3D_MASK)
-> +                                DRM_MODE_FLAG_3D_MASK |        \
-> +                                DRM_MODE_FLAG_COLOR_FORMAT_MASK)
->
->   /* DPMS flags */
->   /* bit compatible with the xorg definitions. */
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+>  drivers/cxl/core/cdat.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/cxl/core/cdat.c b/drivers/cxl/core/cdat.c
+> index f5e649407b8b..6fe11546889f 100644
+> --- a/drivers/cxl/core/cdat.c
+> +++ b/drivers/cxl/core/cdat.c
+> @@ -9,7 +9,6 @@
+>  #include "cxlmem.h"
+>  #include "core.h"
+>  #include "cxl.h"
+> -#include "core.h"
+>  
+>  struct dsmas_entry {
+>  	struct range dpa_range;
 
