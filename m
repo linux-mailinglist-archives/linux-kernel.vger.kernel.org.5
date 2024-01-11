@@ -1,140 +1,100 @@
-Return-Path: <linux-kernel+bounces-23780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E1A282B18D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:18:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE68B82B196
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D28FD282A1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:18:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF8591C22D2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD6A4C60B;
-	Thu, 11 Jan 2024 15:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25F64C623;
+	Thu, 11 Jan 2024 15:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="C7DPFKF2"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jt9jpnLU"
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0614D127
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50ed808db11so2449397e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:17:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2EDB15E96;
+	Thu, 11 Jan 2024 15:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2045bedb806so4453017fac.3;
+        Thu, 11 Jan 2024 07:19:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704986272; x=1705591072; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=89hILc8fV7OBcQ3dgWJZyYhw//2b4isBBhmMXFJEhAw=;
-        b=C7DPFKF26TKMW6PIxoivqKUA5SrT38l7Ad2wSTuGTrdxOr4pvcn/XtJJnArSgAThBD
-         +AJVaKIL3zWu3Alt1XtESNfGve9xBaNfbNeaQHzD/AZcQDKPGRQO5X0RjluT8WvmO0tY
-         v60aOrPFce65cCrPyzmRBMfLDRSgAZ9AilBNYWnQGPLwxaH5Aqm+5LW9fYzpM/j/PWGH
-         ApuHTQxZav7V9/TiGCDLYaicK1ctgwfRMLScHU817hX3cOxx/THJyBvCsfF98ReIHiKs
-         O9lAUrz340sf20lrciVKgEE0YG/eTmAaGrMGZnMFpSDWCyllREaUHYu2bI15M6sKCR1A
-         86Og==
+        d=gmail.com; s=20230601; t=1704986389; x=1705591189; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=m0gUKXnvGBRGSWtHWq6wUDapG9aWepBE2/ZXYl3J8z0=;
+        b=jt9jpnLUSyvIpYBW/qqR6Ci5hI8enstBP9ofjH1+oI3e5PSxmHufrO4+oDtxBjcQ0E
+         jkPfJW4/hwoYlk4i0DdNxkvJJl94elqT7K4jE/bD/fNR8uRbu/txrzx/bbanWsAJuUHu
+         mULl9JOyM2i/U5gyFcIg5jfzxnFl3tLocAXSIYx2M5Hcp+kWQNBkkKD9cmvNBU9KBO1T
+         rT1J6wf9tVj7LeS8PSvg2ATmLURjv7WHkztz+r+YNAYWUulF6u5kTJ68Km4OE4SlbCvz
+         QN8b+Iez7bpX+3SzWTyJ0ZMYhIC+WuNaBxZeJvhlceseyqdDNNZL28HmW94RVYta4s+v
+         eydA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704986272; x=1705591072;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=89hILc8fV7OBcQ3dgWJZyYhw//2b4isBBhmMXFJEhAw=;
-        b=lMhxN9y3c7HluxAnyK8YZ1DxPHDi+Qr1VYx3uxRIDA8sweQMzx4BOfcbu7Y045Hlch
-         dAfWjmxIblFE6dv3XCVTLSVNFGui1mEMblQ4IGaX/sp9F3bQc6TTcFKOdfDoW2VbHpYS
-         hLe6VoEyT6mPTABPFuodMA586dk8lZibGsYt9oDZADlShXd47we7AaNVh46ZTyynQhIF
-         SZ6VMmQmtc8s/veR+6NmTi9a2amsMag4gaQRJKQMLWz5VT7J1fx8lL2JzB2S4yyEHvrW
-         2RvbOA+Xh19CQIE/h7SDiOto7uxMF+0ZyFBd3mr6mUIK23qBwXxT+iSUB1m0esR4CucZ
-         D4eQ==
-X-Gm-Message-State: AOJu0YzyWI0TQEhXb3V8dRPxGTcB309SjSsnv6NU4Go6gFuj0VhHuvmS
-	rMd8PYEE9acFu6errS1xHJ8vf/8aMZZISA==
-X-Google-Smtp-Source: AGHT+IGQxjTvuqUbZLYG67DMQyCKnaTyvAuZG8a1BLSP0ZFzDwIZ8/MUR8Cx7JtmDfDxDr9JNiEvUQ==
-X-Received: by 2002:a05:6512:e85:b0:50e:abd1:bfc3 with SMTP id bi5-20020a0565120e8500b0050eabd1bfc3mr778644lfb.88.1704986272241;
-        Thu, 11 Jan 2024 07:17:52 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id m23-20020a50ef17000000b0055751515a84sm709308eds.51.2024.01.11.07.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 07:17:52 -0800 (PST)
-Date: Thu, 11 Jan 2024 16:17:50 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Attreyee M <tintinm2017@gmail.com>,
-	Bagas Sanjaya <bagasdotme@gmail.com>, jpoimboe@kernel.org,
-	jikos@kernel.org, mbenes@suse.cz, joe.lawrence@redhat.com,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	live-patching@vger.kernel.org
-Subject: Re: [PATCH] Documentation/livepatch: Update terminology in livepatch
-Message-ID: <ZaAGnlmCMbl0dhij@alley>
-References: <20231223205813.32083-1-tintinm2017@gmail.com>
- <87o7eg607d.fsf@meer.lwn.net>
- <ZYpb6Woh45ZnEvCP@archie.me>
- <CAJjsb4reD_TVWRFonp90xXD4Ye2OOfOd894PzmfMKaP3qFkbYg@mail.gmail.com>
- <87jzohoy02.fsf@meer.lwn.net>
- <49cfdce3094fcc37ecf01bb358509c64ee8feed9.camel@suse.com>
+        d=1e100.net; s=20230601; t=1704986389; x=1705591189;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m0gUKXnvGBRGSWtHWq6wUDapG9aWepBE2/ZXYl3J8z0=;
+        b=Rfhk3ezNAljII+W7uNbP8PxCBU8GMM4C6/S1InTdGFgTi3OpMaTX0/gLml+QMxYZpa
+         2y9Yq2A6DfxLSud7NEBO4Yj4p0i4fRcHIKOIiU4GnLjYsFpNKy6xJ8Gc0h0xGELii4lZ
+         EVWagrt2ZhWVCeifmWllMRmCX4VAigO37m9hYjiOfi/uLC1/F1DCxNl3FItZ+L5OgIXk
+         rUsTVvkkVL7qcpdyVQqcSFvnaAM0qN9vIZAhVm00pwLaLuL89usTtPY08tH92Kee9+tr
+         tEyZK0nN5CZBOdpC4ZzRlVlml/LCim90eysY2/HYlHAXJ9UFAyln00GEu9E1yd912ZhM
+         DkSg==
+X-Gm-Message-State: AOJu0YxwKYsqb0zZ3RKcv1IGE1vZdLI7Kzn2SahfOV7cE8BAIdwI+2WF
+	XRfvPLVbie5SQxG2/cDtPiiVphJqpqbOYRUtM3k=
+X-Google-Smtp-Source: AGHT+IEM29mP17E+vpTQpYx9kvqaHi4J/A6cife0hh+3SKU1qs+gz2XKAFKflvxcSwo7KXlBd4c0jY8yfo1xngAydFQ=
+X-Received: by 2002:a05:6870:6e10:b0:203:fb78:bc20 with SMTP id
+ qt16-20020a0568706e1000b00203fb78bc20mr1595478oab.51.1704986389598; Thu, 11
+ Jan 2024 07:19:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <49cfdce3094fcc37ecf01bb358509c64ee8feed9.camel@suse.com>
+References: <20240110140903.4090946-1-nm@ti.com> <20240110140903.4090946-6-nm@ti.com>
+In-Reply-To: <20240110140903.4090946-6-nm@ti.com>
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
+Date: Thu, 11 Jan 2024 16:19:38 +0100
+Message-ID: <CAH9NwWftK_A5oP-WWpSsm8mDfB8uBK3bAz-e=mg5QuM2xMrM6A@mail.gmail.com>
+Subject: Re: [PATCH 05/16] arm64: dts: ti: k3-am64: Add MIT license along with GPL-2.0
+To: Nishanth Menon <nm@ti.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>, Pierre Gondois <pierre.gondois@arm.com>, 
+	Roger Quadros <rogerq@kernel.org>, Tony Lindgren <tony@atomide.com>, Wadim Egorov <w.egorov@phytec.de>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed 2024-01-10 15:51:40, Marcos Paulo de Souza wrote:
-> On Wed, 2024-01-10 at 11:15 -0700, Jonathan Corbet wrote:
-> > Attreyee M <tintinm2017@gmail.com> writes:
-> > 
-> > > Hello maintainers, 
-> > > 
-> > > I wanted to ask if this patch of mine is accepted as of now. 
-> > 
-> > You never responded to the question that is still quoted in your
-> > (unfortunately top-posted) email:
-> > 
-> > > So this is a classic example of saying what you have done, but not
-> > > why.
-> > > What makes this a change that we want?
-> > 
-> > So no, not accepted.  Even with a proper changelog, though, I'm not
-> > sure
-> > I see the value in that particular change.
-> 
-> >From time to time I see people complaining about the lack of new people
-> coming to kernel development,
+>
+> Modify license to include dual licensing as GPL-2.0-only OR MIT
+> license for SoC and TI evm device tree files. This allows for Linux
+> kernel device tree to be used in other Operating System ecosystems
+> such as Zephyr or FreeBSD.
+>
+> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
+> with latest SPDX conventions (GPL-2.0 is deprecated).
+>
+> While at this, update the TI copyright year to sync with current year
+> to indicate license change (and add it at least for one file which was
+> missing TI copyright).
+>
 
-IMHO, it is much worse on the maintainers' side. There is a lack
-of maintainers. And I believe that most of them have hard times
-to manage the load. They should provide hints. But we could
-not expect that they would do the work.
+Acked-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 
-> and that Documentation would be a good
-> start for some of them to learn how to send patches by email (which by
-> itself is difficult...).
+-- 
+greets
+--
+Christian Gmeiner, MSc
 
-Attreyee, please read Documentation/process/submitting-patches.rst
-before you send another version.
-
-Also please run scripts/checkpatch.pl before you send the patches.
-
-> As Documentation patches aren't backported, why not accept this patch?
-> 
-> Jon, I understand your reasoning, but I agree with Attreyee here. The
-> term "acquire" fits better when in conjunction with "released" than
-> "get".
-> 
-> Can you show an example of a good commit message to Attreyee so he can
-> adjust and resend? I'm sure the next time he'll consider remember the
-> suggestion given and the next patch will have a better commit message.
-
-I suggest that Attreyee makes another attempt himself.
-
-John explained what was the problem. Attreyee could get inspiration from
-the git history. Anyway, the commit message simply should explain why
-"acquire" is better than "get".
-
-Best Regards,
-Petr
+https://christian-gmeiner.info/privacypolicy
 
