@@ -1,139 +1,89 @@
-Return-Path: <linux-kernel+bounces-22996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D33D682A62E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:54:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB68782A633
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A01DD1C2287E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:54:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 778D61F2135A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B83EC0;
-	Thu, 11 Jan 2024 02:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23076184D;
+	Thu, 11 Jan 2024 02:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eb3wna++"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA171C16;
-	Thu, 11 Jan 2024 02:53:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 80DD2C433C7;
-	Thu, 11 Jan 2024 02:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704941638;
-	bh=UplJWH4Q/tqUK9lL0NeQ0i3KjWIEOgUf4v3sM9Fc79Q=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=eb3wna++o9nQcqx77zTqpfG0Z/wRpYlPwZs0rmcvTuNqEbn7k7TMFkhNJMdvyBpJh
-	 R1V2IJEjM6qiNvxMFkrbh5GS/n+Q3tHRx6lAzwIyVEoBxMOCSP5HmJmgI9AxG5AKki
-	 /1dSjcuJv7TXCzo9wDB8Idmykw3SJZ1sUEGKJJPKjCEU1E5yiUquWCsAbzIz97oGmV
-	 HnEFZpk2LbELB3rHWYPrX0s/yBtAHy5QtWKePD8y4z530RtTfB6uT066zEhXS8sU1x
-	 zoqUf+ZZBjrm5YP9yiCCGds2iMzheJyoi3H43E9+fouM6l0eiqbUjrbkQaJqqrJIRb
-	 r4Vsp/f+nWahQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D7F4C4707C;
-	Thu, 11 Jan 2024 02:53:58 +0000 (UTC)
-From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
-Date: Thu, 11 Jan 2024 10:52:58 +0800
-Subject: [PATCH RESEND v3] arm64: dts: qcom: qcs6490-idp: Add definition
- for three LEDs.
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="iBgjqxt4"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF8D15D0
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:55:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=6XnZjv2AWPiI5dqzax
+	Rd+P/BdNiXsS2TWUib8qNZYKo=; b=iBgjqxt4vjbfmHHDs60si/oISpoy7ig8nT
+	LTK3ltXA48wnW8Dfpbju1D9ZlHi6q3+y9JA7wVMbIHRZDJ9hVEfU1mH3MSmd1kOQ
+	t72tNk3nr6O7uRAIWUHmJ7tx21VrbISJjXZdpfV3GqZO85BDGMh+9t0VPDEVgoqk
+	D09sQzXRE=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wDnD9uXWJ9lwy+dAA--.10032S2;
+	Thu, 11 Jan 2024 10:55:19 +0800 (CST)
+From: chenxuebing <chenxb_99091@126.com>
+To: Xinhui.Pan@amd.com,
+	daniel@ffwll.ch,
+	alexander.deucher@amd.com,
+	christian.koenig@amd.com,
+	airlied@gmail.com
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	chenxuebing <chenxb_99091@126.com>
+Subject: [PATCH] drm/amd/include: Clean up errors in arct_ip_offset.h
+Date: Thu, 11 Jan 2024 02:55:17 +0000
+Message-Id: <20240111025517.6687-1-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wDnD9uXWJ9lwy+dAA--.10032S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtF1DCF48Kry8Zr1xWw4rKrg_yoWfJrc_Ca
+	4xJ395W3y7uFnFqF1akFn3u34j9a1ruFnYqw1fta4rtrZFkr4UW395Jr42qr4ruFs3CFsr
+	Z3WkXFW5ZrnIgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUj2NtUUUUU==
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiGA5ixWVLZWL-aQADsN
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240111-lpg-v3-1-811c9e82dae4@quicinc.com>
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704941637; l=1646;
- i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
- bh=jkgKPcTHB0LvObnOdM+JMFH2yGRqbzzTL1fwXf6UZho=;
- b=7pv7EDwJ2g9yQxFYnyhYX0JwYuAgStVMqFM5Z0qMfu0ILqrf5UFuKESXSC6pCrzbri/kt6bX7
- FmKxPZuaEx5AvdmlXsmr7nBM3vNCFvVJw3JDYNjt8GDx1QqzDTtxX8t
-X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
- pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
-X-Endpoint-Received:
- by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
-X-Original-From: Hui Liu <quic_huliu@quicinc.com>
-Reply-To: <quic_huliu@quicinc.com>
 
-From: Hui Liu <quic_huliu@quicinc.com>
+Fix the following errors reported by checkpatch:
 
-Add definition for three LEDs to make sure they can
-be enabled base on QCOM LPG LED driver.
+ERROR: open brace '{' following struct go on the same line
 
-Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+Signed-off-by: chenxuebing <chenxb_99091@126.com>
 ---
-Changes in v3:
-- Rephrased commit text and updated the nodes to qcm6490-idp board file.
-- Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
+ drivers/gpu/drm/amd/include/arct_ip_offset.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Changes in v2:
-- Rephrased commit text and updated the nodes to board file.
-- Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
----
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-index 37c91fdf3ab9..f801144a1556 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -5,6 +5,7 @@
+diff --git a/drivers/gpu/drm/amd/include/arct_ip_offset.h b/drivers/gpu/drm/amd/include/arct_ip_offset.h
+index af1c46991429..7dd876f7df74 100644
+--- a/drivers/gpu/drm/amd/include/arct_ip_offset.h
++++ b/drivers/gpu/drm/amd/include/arct_ip_offset.h
+@@ -25,13 +25,11 @@
+ #define MAX_SEGMENT                                         6
  
- /dts-v1/;
  
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sc7280.dtsi"
- #include "pm7325.dtsi"
-@@ -414,6 +415,30 @@ vreg_bob_3p296: bob {
- 	};
- };
+-struct IP_BASE_INSTANCE
+-{
++struct IP_BASE_INSTANCE {
+     unsigned int segment[MAX_SEGMENT];
+ } __maybe_unused;
  
-+&pm8350c_pwm {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	led@1 {
-+		reg = <1>;
-+		color = <LED_COLOR_ID_RED>;
-+		label = "red";
-+	};
-+
-+	led@2 {
-+		reg = <2>;
-+		color = <LED_COLOR_ID_GREEN>;
-+		label = "green";
-+	};
-+
-+	led@3 {
-+		reg = <3>;
-+		color = <LED_COLOR_ID_BLUE>;
-+		label = "blue";
-+	};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-
----
-base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
-change-id: 20231215-lpg-4aadd374811a
-
-Best regards,
+-struct IP_BASE
+-{
++struct IP_BASE {
+     struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+ } __maybe_unused;
+ 
 -- 
-Hui Liu <quic_huliu@quicinc.com>
+2.17.1
 
 
