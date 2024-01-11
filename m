@@ -1,53 +1,59 @@
-Return-Path: <linux-kernel+bounces-24098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78BDE82B6CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:47:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 474FA82B6D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:50:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 996C71C245E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:47:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 001C1283485
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86015820D;
-	Thu, 11 Jan 2024 21:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 918E858217;
+	Thu, 11 Jan 2024 21:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hheLtr7n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ihOjdbvF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AEF58136;
-	Thu, 11 Jan 2024 21:47:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B170CC433C7;
-	Thu, 11 Jan 2024 21:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD79F5813B;
+	Thu, 11 Jan 2024 21:49:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF441C433C7;
+	Thu, 11 Jan 2024 21:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705009651;
-	bh=Fu1ypAtEiesdzAwaXB0NR173q0atqGGzYX/w5m6UGjI=;
+	s=k20201202; t=1705009799;
+	bh=DGFrS6bvFnjiDlcfB5QO9jKNbVvkxS/dorFw9+1KB5o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hheLtr7nOCbCFXbzvVRgp2BcuSbaEVTJK6kby1LPvpB40jQK0L5cbYnXZ2GafJHvu
-	 6leGA8iC2zylszpSetyrvNylol9U/O0snc8H6leCMBhG3Zx/bziqgLhtG9uxZFnvw3
-	 6uNflX+84F9NI/Uh7HuW4x1jOBYWv0/PtG09pTZ/EUxXVPsho/ouEmu1ZWsIpp9BCP
-	 5Y9P5hXK2PZstVvU4V3n4TmDdgmAxuOA4gyzXgQL5+s17png1dNhzwfnLzJR1yNDcn
-	 hy3UT5maSUHtlVyTZINb2l2JGyKlWwmCAAljaw6/GU/L723ZmKRNdIntERTgY2hwoV
-	 Ubivlfzk2TDgg==
-Date: Thu, 11 Jan 2024 21:47:26 +0000
+	b=ihOjdbvFxaYompiHO6evbYh30jytfJWcaNzi7sK4kSZxwV1HSdDyB18lbgqDbQj2N
+	 sz1gCSF00KR05wHJPUE1runPQxd0u7sj2o57omzcrXFho2owGAGDiFUycnJQfCaxZU
+	 sSZKtDREB1BuVeTpoCeBxCMI5xFZn7+OMjJEpUdeDcf/+Dyr5RG+9Q2CdY15gGG+aN
+	 thY4rV40vt10/KVz9+4OPblLqiCett3hNvBiWKz1QNAqgAS6HjfFsYxHhbJt6TdRx0
+	 glVGCjhGmTMmBs61gUgTCz8rbIrqxLpeF3BooA/uS1ohxdSJgkJ3k0tD4qnnojhqPF
+	 VNyVvFeVOiR4w==
+Date: Thu, 11 Jan 2024 21:49:53 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Nikolai Kondrashov <spbnick@gmail.com>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
-References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
- <202401101525.112E8234@keescook>
- <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
- <202401101625.3664EA5B@keescook>
- <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
- <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Jonathan Corbet <corbet@lwn.net>, linux-spi@vger.kernel.org,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, David Jander <david@protonic.nl>
+Subject: Re: [PATCH 01/13] spi: add core support for controllers with offload
+ capabilities
+Message-ID: <829ac770-1955-45b7-9033-6ed60ffdf77e@sirena.org.uk>
+References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+ <20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+ <2c74aad9-3cb9-4222-8072-e72120c2658e@sirena.org.uk>
+ <CAMknhBGMRed9vDrDAuPJ5DnEe6MyHzd0VBebp5OaLX2Q+AyhMQ@mail.gmail.com>
+ <CAMknhBE-1Khe9J-n5WQnH=mFnN0ukiq7=F-SEOU6J-2_u-R0bw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,133 +61,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Oaeocmcu2u0GtUMN"
+	protocol="application/pgp-signature"; boundary="+/dLar/cOWA4B3DO"
 Content-Disposition: inline
-In-Reply-To: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+In-Reply-To: <CAMknhBE-1Khe9J-n5WQnH=mFnN0ukiq7=F-SEOU6J-2_u-R0bw@mail.gmail.com>
 X-Cookie: Does the name Pavlov ring a bell?
 
 
---Oaeocmcu2u0GtUMN
-Content-Type: text/plain; charset=us-ascii
+--+/dLar/cOWA4B3DO
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 12:38:57PM -0500, Kent Overstreet wrote:
-> On Thu, Jan 11, 2024 at 03:35:40PM +0000, Mark Brown wrote:
+On Thu, Jan 11, 2024 at 03:32:54PM -0600, David Lechner wrote:
+> On Thu, Jan 11, 2024 at 2:54=E2=80=AFPM David Lechner <dlechner@baylibre.=
+com> wrote:
 
-> > IME the actually running the tests bit isn't usually *so* much the
-> > issue, someone making a new test runner and/or output format does mean a
-> > bit of work integrating it into infrastructure but that's more usually
-> > annoying than a blocker.
+> > > (CCed) a while back when he was doing all the work he did on optimisi=
+ng
+> > > the core for uncontended uses, the thinking there was to have a
+> > > spi_prepare_message() (or similar) API that drivers could call and th=
+en
+> > > reuse the same transfer repeatedly, and even without any interface for
+> > > client drivers it's likely that we'd be able to take advantage of it =
+in
+> > > the core for multi-transfer messages.  I'd be surprised if there were=
+n't
+> > > wins when the message goes over the DMA copybreak size.  A much wider
+> > > range of hardware would be able to do this bit, for example David's c=
+ase
+> > > was a Raspberry Pi using the DMA controller to write into the SPI
 
-> No, the proliferation of test runners, test output formats, CI systems,
-> etc. really is an issue; it means we can't have one common driver that
-> anyone can run from the command line, and instead there's a bunch of
-> disparate systems with patchwork integration and all the feedback is nag
-> emails - after you've finished whan you were working on instead of
-> moving on to the next thing - with no way to get immediate feedback.
+> For those, following along, it looks like the RPi business was
+> actually a 2013 discussion with Martin Sperl [2]. Both this and [1]
+> discuss proposed spi_prepare_message() APIs.
 
-It's certainly an issue and it's much better if people do manage to fit
-their tests into some existing thing but I'm not convinced that's the
-big reason why you have a bunch of different systems running separately
-and doing different things.  For example the enterprise vendors will
-naturally tend to have a bunch of server systems in their labs and focus
-on their testing needs while I know the Intel audio CI setup has a bunch
-of laptops, laptop like dev boards and things in there with loopback
-audio cables and I think test equipment plugged in and focuses rather
-more on audio.  My own lab is built around on systems I can be in the
-same room as without getting too annoyed and does things I find useful,
-plus using spare bandwidth for KernelCI because they can take donated
-lab time.
+> [2]: https://lore.kernel.org/linux-spi/CACRpkdb4mn_Hxg=3D3tuBu89n6eyJ082E=
+ETkwtNbzZDFZYTHbVVg@mail.gmail.com/T/#u
 
-I think there's a few different issues you're pointing at here:
+Oh, yes - sorry, I'd misremembered which optimisation effort it was
+associated with.  Apologies.
 
- - Working out how to run relevant tests for whatever area of the kernel
-   you're working on on whatever hardware you have to hand.
- - Working out exactly what other testers will do.
- - Promptness and consistency of feedback from other testers.
- - UI for getting results from other testers.
-
-and while it really sounds like your main annoyances are the bits with
-other test systems it really seems like the test runner bit is mainly
-for the first issue, possibly also helping with working out what other
-testers are going to do.  These are all very real issues.
-
-> And it's because building something shiny and new is the fun part, no
-> one wants to do the grungy integration work.
-
-I think you may be overestimating people's enthusiasm for writing test
-stuff there!  There is NIH stuff going on for sure but lot of the time
-when you look at something where people have gone off and done their own
-thing it's either much older than you initially thought and predates
-anything they might've integrated with or there's some reason why none
-of the existing systems fit well.  Anecdotally it seems much more common
-to see people looking for things to reuse in order to save time than it
-is to see people going off and reinventing the world.
-
-> > > example tests, example output:
-> > > https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/single_device.ktest
-> > > https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-testing
-
-> > For example looking at the sample test there it looks like it needs
-> > among other things mkfs.btrfs, bcachefs, stress-ng, xfs_io, fio, mdadm,
-> > rsync
-
-> Getting all that set up by the end user is one command:
->   ktest/root_image create
-> and running a test is one morecommand:
-> build-test-kernel run ~/ktest/tests/bcachefs/single_device.ktest
-
-That does assume that you're building and running everything directly on
-the system under test and are happy to have the test in a VM which isn't
-an assumption that holds universally, and also that whoever's doing the
-testing doesn't want to do something like use their own distro or
-something - like I say none of it looks too unreasonable for
-filesystems.
-
-> > and a reasonably performant disk with 40G of space available.
-> > None of that is especially unreasonable for a filesystems test but it's
-> > all things that we need to get onto the system where we want to run the
-> > test and there's a lot of systems where the storage requirements would
-> > be unsustainable for one reason or another.  It also appears to take
-> > about 33000s to run on whatever system you use which is distinctly
-> > non-trivial.
-
-> Getting sufficient coverage in filesystem land does take some amount of
-> resources, but it's not so bad - I'm leasing 80 core ARM64 machines from
-> Hetzner for $250/month and running 10 test VMs per machine, so it's
-> really not that expensive. Other subsystems would probably be fine with
-> less resources.
-
-Some will be, some will have more demanding requirements especially when
-you want to test on actual hardware rather than in a VM.  For example
-with my own test setup which is more focused on hardware the operating
-costs aren't such a big deal but I've got boards that are for various
-reasons irreplaceable, often single instances of boards (which makes
-scheduling a thing) and for some of the tests I'd like to get around to
-setting up I need special physical setup.  Some of the hardware I'd like
-to cover is only available in machines which are in various respects
-annoying to automate, I've got a couple of unused systems waiting for me
-to have sufficient bandwidth to work out how to automate them.  Either
-way I don't think the costs are trival enough to be completely handwaved
-away.
-
-I'd also note that the 9 hour turnaround time for that test set you're
-pointing at isn't exactly what I'd associate with immediate feedback.
-
---Oaeocmcu2u0GtUMN
+--+/dLar/cOWA4B3DO
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWgYe0ACgkQJNaLcl1U
-h9AGUwf9EzzYc9GC3VLgQW2jSAvt8fpBW6u0etaKnnghvRUvtKxavMkeUvUqH/dl
-ozDTR8K91RDvuBe8TatVwk7OsW50oQVFVWQvSRz6SCY2NUPzBL8r7NDgzyCegTU9
-X2LkXX9xT6YUtRFW7xSBuuYXwXMes7nFG0s8CzPhOJAl9MmWbxL3A1PCKPk4rQu4
-hVkn7BbAELXanc8hBqXHbcak8xiNThnIYGRleEzRcQ9R6KBGCdJ8nr114rapXGE5
-17oGv909lvC3B2cXCFXZE1g83fiMXFKJtRVNAWf+uUihr2oH380cymHXUhCzTiPd
-mO0vBJFc9XKQ5OdPxplj6FSkqVGZaQ==
-=TLYT
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWgYoAACgkQJNaLcl1U
+h9AOzQf+OIe3/AsdFW0w+YunNfeaALpu3hLgC50E5E3+ODzf5gv04B9mvnMxAr0r
+gcMDasKHhWRiRf0fFfqQZ3SWJPIW+Ur9zT3b76mdkYTTnkeuqrGUcNPTLQJTEQl2
+BFc54rtF8m91uaKHpWVTvfM7IdRk0whb0HXFLpOWuIL/AotaL8ntT8RrrAdHZOKS
+8UeS9ugf5ZILPur698NHbu1BDlkTmX9bbcO4s443LYdtQm0l60TZKKvWleoLUAhc
+cXY1gqFPWjHxywiZqIAMPy/jF/a5rSXgeoCb2ZRCFo8h4v9TY2Xx0BQEnkMH7ql3
+VP9BMzxCBP3fGyqXE2wt8+26MIgASA==
+=gaa8
 -----END PGP SIGNATURE-----
 
---Oaeocmcu2u0GtUMN--
+--+/dLar/cOWA4B3DO--
 
