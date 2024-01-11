@@ -1,173 +1,123 @@
-Return-Path: <linux-kernel+bounces-24144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4606E82B82E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:44:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AB0E82B832
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15C721C23CFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:44:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BADC1C241E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9615A0E5;
-	Thu, 11 Jan 2024 23:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B3759B7B;
+	Thu, 11 Jan 2024 23:45:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gsWQKqCC"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LyXCygAr"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5349958132
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55818b7053eso2461a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:43:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705016590; x=1705621390; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2XFJA07BCp3ytMz0gRb4lN7d0a0AAlpBKZfpqAVcWeA=;
-        b=gsWQKqCC6//ynZVP4+w+XK5G3x76B2cepWMOQ9kLSMcmvE8gj9XUJf49OD2Sl1uSvp
-         ZhaWnUqp8QDtsUP5LFnLsLqUMYvm/w7Xc8GAVe7qZrW7GgKAJiQV0jvziECPlwQaJ0q6
-         zowd7yHPcYVw7z+WefmQsm+1DJWxqXtzEsHc0Nz6tBzwboFSZWwmDe+C/nMHThJkrLAv
-         fIbOdcyGE8xMVI+rje40qT2sA6N24f0DRWpmHbbQfFAwVrvBvTI5uQZb5fTN1suOjMAr
-         xMDP2izsPmcCD4QbCZIAD+iAHiRhrFX7Hd2Cfw60NNQc+I6ZN8HY/cNpbC4bdKPsRhsg
-         +WeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705016590; x=1705621390;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2XFJA07BCp3ytMz0gRb4lN7d0a0AAlpBKZfpqAVcWeA=;
-        b=KpgzKtPFeqgJ4pEbcRYaLDvwN+S6H1HSBACr7v0zGQp3eVRT//kWrvXG7LzPYioLD3
-         UEo3EgBUpjJergaNc7rxzweGoQAjjuDz3HieIplyqdCdE6uOf0XQ6cvoWbdT34Ff7x0v
-         UqaYp71rPbFU/H0zAfMSlSkZVyZUS3qqTe/2U13dTYRegEFX4TtBFsxfj9D/TdM1cMzf
-         PcXRJItTAeu5ws0qpreUSNvmeWYhsemk+Ksy4Y/SRzrWyOVFSzfJ0s58VJqp27HhjF+t
-         o7oCbvI2YyibDQYrvxuxHqAKqfnrf6mVZNU6BXFzhtQLTcPfl52Sn/7dwlvMrgDXGpuT
-         A9eQ==
-X-Gm-Message-State: AOJu0YydcM0qcjzyOfLZaMIFmu7F5O/38xsyKYX5OdBG3SqJ1AF9/eOO
-	pIUHfqSnM5a8dj6mHzaT27/5rCDCgPEb/gUuZNiRl2aKIZBY
-X-Google-Smtp-Source: AGHT+IG0DffF0sjcaQi+XltCUI5iqLP69O1/BALVrJLm1Pg7XSAn7FMXCgr2WOWZDFrqthsEGBRIAq9Tg6x34IBTcbk=
-X-Received: by 2002:a05:6402:34c9:b0:558:8016:b347 with SMTP id
- w9-20020a05640234c900b005588016b347mr226263edc.5.1705016590594; Thu, 11 Jan
- 2024 15:43:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CB457870;
+	Thu, 11 Jan 2024 23:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705016713; x=1736552713;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=v72etu5y7sZ+gduFKZmkV/OgzunlUF6teBcVsS2AH8k=;
+  b=LyXCygArFCnvrY7S3rSZ3De3sMiMNY/BsKqyrXdseNcietPeVhFnSiLz
+   kNo53MNparly6YHdq82BthEcpwQuIBFAFfVnX1yAIVtsZvV7c8B1T+YmK
+   hJpg2iMNg05t1Z6GSaGBxKmfgbT9xrsIK71scjaGYowuA1UpJad2fh6Fe
+   F0561ZKhjTFLpROu6fQf+OrN6GO4nWOR7i/UQ6I3rr3PzllEyjPrZo8Z4
+   fn6TZ1OEYSYvYZmk3fiqfc/H1II/d2LuaohSqKU7rtMXbzguXOmZpULMr
+   QDkUL1tdE9J2ph2HCBCq+U827ah/owF9VhdjmxE6dw8M+42mmiZpRATiD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="463314016"
+X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
+   d="scan'208";a="463314016"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 15:45:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="1114016155"
+X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
+   d="scan'208";a="1114016155"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Jan 2024 15:45:09 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rO4jT-0008rC-0I;
+	Thu, 11 Jan 2024 23:45:07 +0000
+Date: Fri, 12 Jan 2024 07:45:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Frank Li <Frank.Li@nxp.com>, Peng Fan <peng.fan@nxp.com>
+Cc: oe-kbuild-all@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
+	Fabio Estevam <festevam@denx.de>, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
+Message-ID: <202401120722.iFJbAOb8-lkp@intel.com>
+References: <20240110232255.1099757-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <dd938a86-38d9-4d62-abd0-1df80395fbbd@moroto.mountain>
-In-Reply-To: <dd938a86-38d9-4d62-abd0-1df80395fbbd@moroto.mountain>
-From: David Gow <davidgow@google.com>
-Date: Fri, 12 Jan 2024 07:42:59 +0800
-Message-ID: <CABVgOSmjr+8Pbz+25xN2btpd3qQOnqt8HvC9TD+QGBFPG8gS9w@mail.gmail.com>
-Subject: Re: [PATCH] kunit: device: Fix a NULL vs IS_ERR() check in init()
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Matti Vaittinen <mazziesaccount@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000003d158f060eb41c27"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110232255.1099757-1-arnd@kernel.org>
 
---0000000000003d158f060eb41c27
-Content-Type: text/plain; charset="UTF-8"
+Hi Arnd,
 
-On Thu, 11 Jan 2024 at 02:55, Dan Carpenter <dan.carpenter@linaro.org> wrote:
->
-> The root_device_register() function does not return NULL, it returns
-> error pointers.  Fix the check to match.
->
-> Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
+kernel test robot noticed the following build errors:
 
-Thanks for catching this.
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.7 next-20240111]
+[cannot apply to vkoul-dmaengine/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Reviewed-by: David Gow <davidgow@google.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/dmaengine-fsl-edma-fix-Makefile-logic/20240111-072410
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240110232255.1099757-1-arnd%40kernel.org
+patch subject: [PATCH] dmaengine: fsl-edma: fix Makefile logic
+config: m68k-stmark2_defconfig (https://download.01.org/0day-ci/archive/20240112/202401120722.iFJbAOb8-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401120722.iFJbAOb8-lkp@intel.com/reproduce)
 
-Cheers,
--- David
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401120722.iFJbAOb8-lkp@intel.com/
 
---0000000000003d158f060eb41c27
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+All errors (new ones prefixed by >>):
 
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIISRmOV8nf/m9OMm7feph3p3FgttQKQ8ZC3LWj6U47wHMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDExMTIzNDMxMFowaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC+DjNC
-3PjMzlg7EZxtE6g+bSIb+l5g4lwGbdQmemFgcxJZDRcMNSdzM88+Kwm+KflwEMT8YrWDYSProqMm
-+ZgqgCm4sg7fKjWI5JRKciEXyeAbG7rl5sOkE6BWBRjsqRCUQZN0cvJFJRGrngL/w2Fple2xwL71
-HxN8DITdoi+AslzVXWczA+7VdCAP37V45jVzdvBYv51/DLsqsxCdH19wOLKqTNwU1OTJMTz4vVgz
-MS6yHbgp063DVvOj7fTwHsY3gB/klpgsv1X+8AzXjkCvw0stPOf42ahIr4uXVnaeOuPjPmWoSpmJ
-ChmNvDJQsiu06JUBok5yPCqaarjN9bgu
---0000000000003d158f060eb41c27--
+   m68k-linux-ld: drivers/dma/mcf-edma-main.o: in function `mcf_edma_probe':
+>> mcf-edma-main.c:(.text+0x4de): undefined reference to `fsl_edma_alloc_chan_resources'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x4f8): undefined reference to `fsl_edma_slave_config'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x506): undefined reference to `fsl_edma_prep_slave_sg'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x516): undefined reference to `fsl_edma_pause'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x524): undefined reference to `fsl_edma_terminate_all'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x5d2): undefined reference to `fsl_edma_free_desc'
+   m68k-linux-ld: drivers/dma/mcf-edma-main.o: in function `mcf_edma_remove':
+>> mcf-edma-main.c:(.text+0xb4): undefined reference to `fsl_edma_cleanup_vchan'
+   m68k-linux-ld: drivers/dma/mcf-edma-main.o: in function `mcf_edma_err_handler':
+>> mcf-edma-main.c:(.text+0x12e): undefined reference to `fsl_edma_disable_request'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x17a): undefined reference to `fsl_edma_disable_request'
+   m68k-linux-ld: drivers/dma/mcf-edma-main.o: in function `mcf_edma_tx_handler':
+>> mcf-edma-main.c:(.text+0x20e): undefined reference to `fsl_edma_tx_chan_handler'
+   m68k-linux-ld: drivers/dma/mcf-edma-main.o: in function `mcf_edma_probe':
+>> mcf-edma-main.c:(.text+0x466): undefined reference to `fsl_edma_setup_regs'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x4d4): undefined reference to `fsl_edma_free_chan_resources'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x4e4): undefined reference to `fsl_edma_prep_dma_cyclic'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x4ee): undefined reference to `fsl_edma_tx_status'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x50c): undefined reference to `fsl_edma_resume'
+>> m68k-linux-ld: mcf-edma-main.c:(.text+0x52a): undefined reference to `fsl_edma_issue_pending'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
