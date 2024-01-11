@@ -1,92 +1,114 @@
-Return-Path: <linux-kernel+bounces-23656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5053B82AFB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:31:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFDB82AFB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53438B256E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A7DB1F21B87
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1402E17727;
-	Thu, 11 Jan 2024 13:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBFA1804A;
+	Thu, 11 Jan 2024 13:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tz9BXRNa"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vAKS2I68"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1F2171C2
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5efb0e180f0so54530827b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 05:31:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704979883; x=1705584683; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kR4iLNoZiwG/7QwKJJ9btHkikLkNjD3TWvfuaGmalOI=;
-        b=tz9BXRNa8qp2maBq94QSYH9wVNNzjuqtDneoqgLkPDSOE/Qv9XTuAWO39g7/d2NNLc
-         LDHqi9v+povp4CnkLyKcyJa0zPD7dKSYnu5DzbtgO3FzQHSbhuzQCBTIw3qkPR4mz47R
-         58tfL5++UOvpWalXIzEp1BKkUENxMJ4PP7sSfm1T7d8VnzEocJ15XAHPMWtj9XEm6Dsw
-         dnelVWikozVcx4hfSHtwvff5+havxZPYf4YhypBE1Xo4SFaxregjB6Xbaun4D682KxUr
-         xiyjID7zz8tUiG8WnaU+lvsyH3Km2c27QW9OS5MScx4IvR0oIjMJ4wkpCUcxYVDlJiv5
-         IsaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704979883; x=1705584683;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kR4iLNoZiwG/7QwKJJ9btHkikLkNjD3TWvfuaGmalOI=;
-        b=toyZuXdkVYNJEcoe3bxRP2zy+fATewEwBgCYb/hLzNJmGN3GiOrxpnuCp8uksnapNu
-         7XZyQq08W38T4eob6i48eFJBI0o/Z1ZD1aZWbi34rWpij5PuGRdIk37GdNgWhAEmvoAw
-         gbnpXrutpoz3kwYi/0RhyUxU/2rjF2qckpwZHK7rb2p9ybsXhedgIHdXb6KT+DHYBlKm
-         +Koi/m1Vs8jfggJXgkxNH1TlQ+9jc5qy/LT0N2T6uwvai7yc+eNWV/CY86RhFefty1GN
-         NtSOOyJehyBYSOnchrUN/4mCzZ28tymGy9Yp4cifpTdqJvKjnhgCjEtakAWJp5icNsXL
-         59jw==
-X-Gm-Message-State: AOJu0YyKGbgC82JPnOGJzVTN+4Rz0jfqp5VWB3nJ8QlHWgjB9cQ6KVOu
-	c9Ys8YUzdRn+x/Z96InAB0clRZa8PjEJ/tFLUlv1l6QR79hpQA==
-X-Google-Smtp-Source: AGHT+IHFXBgcqQL8Xcd10mab8p43dzDdPPpnSiAY63imAg2nnprwbdnPqjTZIjXowFSc3VUfHSYO0G9a7psNfKzPkB4=
-X-Received: by 2002:a0d:d74f:0:b0:5ee:6c5b:b1d with SMTP id
- z76-20020a0dd74f000000b005ee6c5b0b1dmr581799ywd.10.1704979882903; Thu, 11 Jan
- 2024 05:31:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BB01775B;
+	Thu, 11 Jan 2024 13:33:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAD1FC433F1;
+	Thu, 11 Jan 2024 13:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704979990;
+	bh=EmGMiLyuF8McNaUk0A0meCoizVF29JUoSFDudOh+384=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vAKS2I68D2Sywf9Up0nX2OS+frd2mQKF+NZhSTyYbSAkeUsHJgC1v2Z3O9LRnA5rP
+	 NywmcrehgOdG56cF6YvStXcz6b2UMebmcH9qy3Peq8QFtDdEAUgHTGZVlC4YjA+xnp
+	 y+X1Yo8GDpm946G9D2hWbAYqLHlE3EIn/QsnFuCnL0OLnGIUuer/ch2UG5eMpXwcbI
+	 ZwwEVQrO9/v13SyXP6iqgEQN6WqHDYxt1iwybwqHBnw3Dhi1Mlh33ZLTJozOzFNaJI
+	 jGFY0pG3k947J9c1Kma4Q30dc5DQ2/HAnmTp5fIGJEn4Vezd06/Z1TOlqFeujbpeMk
+	 XU2XiElvVSvtw==
+Date: Thu, 11 Jan 2024 13:33:03 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+Cc: David Lechner <dlechner@baylibre.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Jonathan Corbet <corbet@lwn.net>, linux-spi@vger.kernel.org,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/13] spi: add core support for controllers with offload
+ capabilities
+Message-ID: <aae36622-4e05-4f16-9460-d7614fd599aa@sirena.org.uk>
+References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+ <20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+ <0c0b1954825dc174cab48060e96ddadadc18aefd.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111-qrb2210-rb1-no-cluster-idle-v1-1-cec14ec15b02@linaro.org>
- <046a7bd3-3791-499d-a604-ef408d3d8aa2@linaro.org>
-In-Reply-To: <046a7bd3-3791-499d-a604-ef408d3d8aa2@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 11 Jan 2024 15:31:11 +0200
-Message-ID: <CAA8EJpoBmzqxuCzAK6APtCzbaU15Uehw8BTp0SjEDSFaMo30dw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: qrb2210-rb1: disable cluster power domains
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="F30ei0E0aX6bxcQF"
+Content-Disposition: inline
+In-Reply-To: <0c0b1954825dc174cab48060e96ddadadc18aefd.camel@gmail.com>
+X-Cookie: Does the name Pavlov ring a bell?
 
-On Thu, 11 Jan 2024 at 15:09, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> On 1/11/24 03:01, Dmitry Baryshkov wrote:
-> > If cluster domain idle state is enabled on the RB1, the board becomes
-> > significantly less responsive. Under certain circumstances (if some of
-> > the devices are disabled in kernel config) the board can even lock up.
->
-> I got that $sometime ago, but can't repro now.. which devices being
-> disabled would cause the hang?
 
-It was reproducible with 6.4. without this patch. With 6.6 I can not
-easily reproduce the hang, but the delays / responsiveness is easy to
-reproduce. Compare for example 'ps' output with and without this
-patch.
+--F30ei0E0aX6bxcQF
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-With best wishes
-Dmitry
+On Thu, Jan 11, 2024 at 09:49:08AM +0100, Nuno S=E1 wrote:
+> On Wed, 2024-01-10 at 13:49 -0600, David Lechner wrote:
+
+> > =A0=A0=A0 /* in probe() */
+> > =A0=A0=A0 offload =3D spi_offload_get(spi, 0);
+
+> On top of what Mark already stated, and as we already discussed offline, I
+> personally don't like this provider - consumer interface for the offload.=
+ The
+> first thing is that this is taking into account the possibility of having
+> multiple offload cores. While the FGPA core was designed with that in min=
+d, we
+> don't really have any design using multiple offloads in one spi engine (a=
+lways
+> one). Hence this is all pretty much untested.
+
+I tend to agree that we shouldn't be exposing this to SPI device drivers
+however we will want to keep track of if the unit is busy, and designing
+it to cope with multiple offloads does seem like sensible future
+proofing.  There's also the possibility that one engine might be able to
+cope with multiple scripts being active at once (eg, triggering a
+different action depending on the trigger).
+
+--F30ei0E0aX6bxcQF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWf7g4ACgkQJNaLcl1U
+h9CpZAf/Tlp3sl12nfPE/B+KPrvvSbOwgr6rp8IbKgLqDiflBuVfRC7hUNK8eeVk
+O8hS/4cYUSZzi/UKEIS1n36hrWz8pVFsmMGnaY1oceEISrS6pQNl7KKxhtHzbv6I
+xAWftKist6PFor7KiWJk8XRn7ClDn4OWOl9KRzsQuov9tWC1iEthAfXtzsF8vwjO
+LHfGOfe0d4RGXW/UJqZ89NYlLv4ndfhmXpVt6+KI6L99xNDfqu7+zmhRuxiCZDIA
+t9jbE9gQoPPQAZqr3rPyF3Lgry+a3M/yJksJCzMmbwg6RV7oTw2suHFy3euOjMKx
+4qZHFLGZYXHnsO6k3idEnYTN2EAEFA==
+=qyXJ
+-----END PGP SIGNATURE-----
+
+--F30ei0E0aX6bxcQF--
 
