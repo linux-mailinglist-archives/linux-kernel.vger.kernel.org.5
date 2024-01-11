@@ -1,101 +1,89 @@
-Return-Path: <linux-kernel+bounces-23475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E9BA82AD48
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:23:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2ADB82AD4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:24:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DF3228871E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:23:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B5AE1F23CCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA88214F9B;
-	Thu, 11 Jan 2024 11:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD8714F9B;
+	Thu, 11 Jan 2024 11:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IxEkt4DL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I6S3euTN"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA03314F90
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704972197; x=1736508197;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IhLVf1IN4DSrbYF9P13rk6JGQJ+d09K7DNovQma/Gpc=;
-  b=IxEkt4DL9N66BUh+U0i+FlV5R8mPwxZi7Up/qjwNz9Y/N5sJCORrIN3N
-   FQzj6BRb7b8d61Ic8/9S0DWU43E4n9D6CBv8KyJwH6LJ1NRFL+blPKr8U
-   TZ5uePheb032va/3aa2kMNpWYTbpOsO+LgDgw7Ihus5KjR1LARVC/Z/oI
-   x7nMDU6JyHP4EQtqahbTyxnrvD1b6xhVo83YGqO7Iy08dKCdCeOPjJ/r1
-   kPN2os/mEvw3qqXwsDy27x+mP/sBVIAwZBgAqhvWQhghrpzTFJjoCWRB3
-   5p2PK+NX30Hs7zn9X5pTafp1wQx70ggN7K17NwVzlsHyacpP9NM9EnmIS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5546859"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="5546859"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:23:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="852916313"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="852916313"
-Received: from gcrisanx-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.56])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:23:15 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id BD76F10A557; Thu, 11 Jan 2024 14:23:12 +0300 (+03)
-Date: Thu, 11 Jan 2024 14:23:12 +0300
-From: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Xiaoyao Li <xiaoyao.li@intel.com>, linux-kernel@vger.kernel.org,
-	linux-coco@lists.linux.dev
-Subject: Re: [PATCH v2] virt: tdx-guest: Handle GetQuote request error code
-Message-ID: <20240111112312.zdgkmfywscp2kvxw@box.shutemov.name>
-References: <20240111033245.2632484-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5637414F88
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-db3fa47c2f7so4392913276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:24:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704972273; x=1705577073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aojgwYUr2QZguAnX8qCVqtq4dlhf98Fk0ICKv6JZtAA=;
+        b=I6S3euTNp/+LZ7D4a64R/spzkuCFJrbmvJm4nvY2yTPulHPUla4wTXPx7xdbp+zxi1
+         E438AzFdcfByFcNPGc2O8+clYPFFZXqUMIBevBD/KbpnmkovZpP/BBqBHmGShlO/055K
+         jWazNttenZzfW3b7eYiu5rHdPIrwZpnczddbSNZWSF9HQ8C1nuoQZLxU3XdKd/YK/+yz
+         oYdbMIu/zGuAEUHH0gQaubZY4bkj8yS2Sy6iIvFoIB13QL1rplhG3hhrE9HxilT/YmoI
+         IcGqb+Y6m9kQsOwTvLvS1JQZLfvNZQ+fRDoU8mW125qMIHewM7Ls+pYHXun8XJ5ODa4r
+         ifpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704972273; x=1705577073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aojgwYUr2QZguAnX8qCVqtq4dlhf98Fk0ICKv6JZtAA=;
+        b=gfT0858AsxlqE8wCp4STjCAmPS3AnuycSxOVd/BRZaD9y4tu6SwBDcA3Bn3uzpPfOl
+         gqk4fax6NjgRYR9HrOB6HQmj9ghF3rKkOlFFr0hcXuDrykzaj/EratL7FBktq0NFfgrk
+         nuhvaPzRvt+OskEcD8f2OdQG7FEFUOWFSTycNulwNOq6BOQRgRp791W4A2LhEgtXk8Lm
+         l4IRYmC6gin1zdRFKogx+/Z+UGNTqRPxh0f2t9kfX0NGlZwmInGX5DyPv+OithL8aBp6
+         TrWLjhTfnCIPBUm0xTnPiRVJPbIujLqWOmCdmxD0dtgylV6Q+3vN6pbA6qlsEyz9m+XW
+         yTWQ==
+X-Gm-Message-State: AOJu0Yxx/gR/6CEiBt+lbB1sEEZpVJiZlgvwN+8Pie1f7oNyDJD7oyLH
+	n+pXhGuPmL1mJ6VKwQihMgBAe+ogAkmNDMlfRko=
+X-Google-Smtp-Source: AGHT+IFx/bMfT4kDTm4bgkWCoYa3rLRG+k7Kmh2mgpdeVBjV2rOa+hvE8gKeoOVOnexdTpKD/cM7RjMgcYULBo13E8A=
+X-Received: by 2002:a25:fc1c:0:b0:dbd:b46c:c1e2 with SMTP id
+ v28-20020a25fc1c000000b00dbdb46cc1e2mr837247ybd.110.1704972273260; Thu, 11
+ Jan 2024 03:24:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111033245.2632484-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20240111070652.71717-1-pranavsubbu@gmail.com> <2024011144-silica-viral-9e79@gregkh>
+ <CAP1Lp88vEZJtd69Njf9uZ5VXypwZ-5vLdBHf2xoLSpqmeyEQiA@mail.gmail.com>
+ <CAP1Lp8-CP-uELVam=18oADOEvL_13wXkTyDLHKbjQe1ZyxiG9g@mail.gmail.com>
+ <2024011144-sinister-baking-952d@gregkh> <CAP1Lp89zshQW_s0eLJjekr5tyc3XLaPnh2VGFrNDHTA7GT51ZQ@mail.gmail.com>
+ <8988f86a-f850-49a4-b7ac-ae363a7898d4@moroto.mountain>
+In-Reply-To: <8988f86a-f850-49a4-b7ac-ae363a7898d4@moroto.mountain>
+From: Pranav Athreya <pranavsubbu@gmail.com>
+Date: Thu, 11 Jan 2024 16:54:22 +0530
+Message-ID: <CAP1Lp8_6MRu8DJOqfvOEWVzA9wPhFB16iw=i2jOQX4RWELj=kA@mail.gmail.com>
+Subject: Re: [PATCH] staging: vt6655: Remove extra blank lines between code blocks
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Forest Bond <forest@alittletooquiet.net>, 
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 03:32:45AM +0000, Kuppuswamy Sathyanarayanan wrote:
-> During the TDX guest attestation process, TSM ConfigFS ABI is used by
-> the user attestation agent to get the signed VM measurement data (a.k.a
-> Quote), which can be used by a remote verifier to validate the
-> trustworthiness of the guest. When a user requests for the Quote data
-> via the ConfigFS ABI, the TDX Quote generation handler
-> (tdx_report_new()) forwards the request to VMM (or QE) via a hypercall,
-> and then shares the output with the user.
-> 
-> Currently, when handling the Quote generation request, tdx_report_new()
-> handler only checks whether the VMM successfully processed the request
-> and if it is true it returns success and shares the output to the user
-> without actually validating the output data. Since the VMM can return
-> error even after processing the Quote request, always returning success
-> for the processed requests is incorrect and will create confusion to
-> the user. Although for the failed request, output buffer length will
-> be zero and can also be used by the user to identify the failure case,
-> it will be more clear to return error for all failed cases.
-> 
-> Validate the Quote data output status and return error code for all
-> failed cases.
-> 
-> Fixes: f4738f56d1dc ("virt: tdx-guest: Add Quote generation support using TSM_REPORTS")
-> Reported-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Closes: https://lore.kernel.org/linux-coco/6bdf569c-684a-4459-af7c-4430691804eb@linux.intel.com/T/#u
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On Thu, Jan 11, 2024 at 4:38=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
+org> wrote:
+> I have a blog about how to send a v2 patch.  (v3 patch now I guess).
+>
+> https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
+Thanks Dan, I will take a look at this! Also, why do you say it is a
+v3 patch now?
 
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Yours Sincerely,
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Pranav.
 
