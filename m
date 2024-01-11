@@ -1,194 +1,134 @@
-Return-Path: <linux-kernel+bounces-23596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E8482AEDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:40:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EFFF82AEE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:43:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CD6AB22F68
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:40:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22F7E1F222A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A1D15E95;
-	Thu, 11 Jan 2024 12:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I7L9pOnj"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC3415AF1;
+	Thu, 11 Jan 2024 12:43:29 +0000 (UTC)
+Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BB815AD9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28bc7155755so2786007a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 04:40:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704976825; x=1705581625; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lUjrrZ3Jg1GUMAie5ebnK4hlRzI9jSk+yPsyIMgP7Cg=;
-        b=I7L9pOnj2gmHPXX3UUbnrWYfZH2x5047cV/fypzF3Y4ux3Y0oF/TgcPKblFJhFqyfN
-         uRt+i6HwRmtVLCXSAecx2Ihe27aeeuvT5TpzeIlMY+pOieEKi5vEYiIqh8Yh10B/i7CD
-         RswIwp5eHwjY6N1qjV8nIrBBXxP6J14XSk3vW2Bn7p6zOzOIE/PEiBwUrY0QGlV1B3uq
-         5jloVDT1ujj9h5SuzxJPTboxkF1HAHNqZEefAsPr+DxEp2kTY7JW+n/TN6Iti8VvdcC1
-         B9JbnzOo84Tyhq4z4XFf3s4P+tBtYNJme3NJUYiuB1DgqPvdhTHQvmnigGmTOd/jg4fy
-         8JSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704976825; x=1705581625;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUjrrZ3Jg1GUMAie5ebnK4hlRzI9jSk+yPsyIMgP7Cg=;
-        b=Ztstd/ObFfBtH7tSH6LLJEolxKA6iHTz/supf3UG0FJGO3beUOVkDL7EDR9g+K5Jj1
-         V8avpMyIBIFToWfFG6AsUCX4FMNU/uSHJumyaz4PIMxL4fxx2meiQjjPDkdj9Kzk4IwM
-         eUJm5bnnuBvK17NnOgSwbdWAvpuen+yZRJ6niuM4r50T/DiDSLYIMZVb+qRXSFaAF8Yj
-         VmlmpWFPuf2+rjuL9qkZmjPM+9ZdLAlRB2A/kXyF+qxZI6KS9m0+E29xLahPuaqor/Xk
-         yo74bOBLnHlOWUSIK44OCBnpemMhuaVXOeDgTRNhVEc7N+4fSRwArQeB0X/L6kHUTN0J
-         2h4g==
-X-Gm-Message-State: AOJu0Yx32jNR9iNELvIEHTUqHPwhBYrJsoCrfsvtVpgY+2sobmgDLHwD
-	CiAdEpLG74wqMwAb+Km4/r4kkqbfYedz
-X-Google-Smtp-Source: AGHT+IFlzCZDk+7khh2nGY76iLSM3Y0+E3O+l032jjoiVmXYGJDOGVhuEwa5Sr5OwMDDcz8NiN7tAg==
-X-Received: by 2002:a17:90a:4984:b0:28c:f1f3:4dcb with SMTP id d4-20020a17090a498400b0028cf1f34dcbmr914767pjh.69.1704976825101;
-        Thu, 11 Jan 2024 04:40:25 -0800 (PST)
-Received: from thinkpad ([202.131.159.18])
-        by smtp.gmail.com with ESMTPSA id mf15-20020a17090b184f00b0028cef2025ddsm1418530pjb.15.2024.01.11.04.40.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 04:40:24 -0800 (PST)
-Date: Thu, 11 Jan 2024 18:10:09 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Lukas Wunner <lukas@wunner.de>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Kalle Valo <kvalo@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-pci@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
-Message-ID: <20240111124009.GA3003@thinkpad>
-References: <20240104130123.37115-1-brgl@bgdev.pl>
- <20240104130123.37115-4-brgl@bgdev.pl>
- <20240109144327.GA10780@wunner.de>
- <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
- <20240110132853.GA6860@wunner.de>
- <659f00ed271b3_5cee2942@dwillia2-xfh.jf.intel.com.notmuch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4AE12E6E;
+	Thu, 11 Jan 2024 12:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 4A9F544E2E;
+	Thu, 11 Jan 2024 13:43:16 +0100 (CET)
+Message-ID: <2c73db3f-2465-49e1-9d57-ef8d978849b6@proxmox.com>
+Date: Thu, 11 Jan 2024 13:43:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <659f00ed271b3_5cee2942@dwillia2-xfh.jf.intel.com.notmuch>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Temporary KVM guest hangs connected to KSM and NUMA balancer
+Content-Language: en-US
+From: Friedrich Weber <f.weber@proxmox.com>
+To: kvm@vger.kernel.org
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <832697b9-3652-422d-a019-8c0574a188ac@proxmox.com>
+In-Reply-To: <832697b9-3652-422d-a019-8c0574a188ac@proxmox.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 12:41:17PM -0800, Dan Williams wrote:
-> [ add Terry ]
-> 
-> 
-> Lukas Wunner wrote:
-> > On Wed, Jan 10, 2024 at 01:55:18PM +0100, Bartosz Golaszewski wrote:
-> > > On Tue, Jan 9, 2024 at 3:43???PM Lukas Wunner <lukas@wunner.de> wrote:
-> > > > On Thu, Jan 04, 2024 at 02:01:17PM +0100, Bartosz Golaszewski wrote:
-> > > > > In order to introduce PCIe power-sequencing, we need to create platform
-> > > > > devices for child nodes of the port driver node. They will get matched
-> > > > > against the pwrseq drivers (if one exists) and then the actuak PCIe
-> > > > > device will reuse the node once it's detected on the bus.
-> > > > [...]
-> > > > > --- a/drivers/pci/pcie/portdrv.c
-> > > > > +++ b/drivers/pci/pcie/portdrv.c
-> > > > > @@ -715,7 +716,7 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
-> > > > >               pm_runtime_allow(&dev->dev);
-> > > > >       }
-> > > > >
-> > > > > -     return 0;
-> > > > > +     return devm_of_platform_populate(&dev->dev);
-> > > > >  }
-> > > >
-> > > > I think this belongs in of_pci_make_dev_node(), portdrv seems totally
-> > > > the wrong place.  Note that you're currently calling this for RCECs
-> > > > (Root Complex Event Collectors) as well, which is likely not what
-> > > > you want.
-> > > >
-> > > 
-> > > of_pci_make_dev_node() is only called when the relevant PCI device is
-> > > instantiated which doesn't happen until it's powered-up and scanned -
-> > > precisely the problem I'm trying to address.
-> > 
-> > No, of_pci_make_dev_node() is called *before* device_attach(),
-> > i.e. before portdrv has even probed.  So it seems this should
-> > work perfectly well for your use case.
-> > 
-> > 
-> > > > devm functions can't be used in the PCI core, so symmetrically call
-> > > > of_platform_unpopulate() from of_pci_remove_node().
-> > > 
-> > > I don't doubt what you're saying is true (I've seen worse things) but
-> > > this is the probe() callback of a driver using the driver model. Why
-> > > wouldn't devres work?
-> > 
-> > The long term plan is to move the functionality in portdrv to
-> > the PCI core.  Because devm functions can't be used in the PCI
-> > core, adding new ones to portdrv will *add* a new roadblock to
-> > migrating portdrv to the PCI core.  In other words, it makes
-> > future maintenance more difficult.
-> > 
-> > Generally, only PCIe port services which share the same interrupt
-> > (hotplug, PME, bandwith notification, flit error counter, ...)
-> > need to live in portdrv.  Arbitrary other stuff should not be
-> > shoehorned into portdrv.
-> 
-> I came here to say the same thing. It is already the case that portdrv
-> is not a good model to build new functionality upon [1], and PCI core
-> enlightenment should be considered first.
-> 
+Hi,
 
-The primary reason for plugging the power sequencing into portdrv is due to
-portdrv binding with all the bridge devices and acting as management driver for
-the bridges. This is where exactly the power sequencing part needs to be plugged
-in IMO. But if the idea of the portdrv is just to expose services based on
-interrupts, then please suggest a better place to plug this power sequencing
-part.
+On 04/01/2024 14:42, Friedrich Weber wrote:
+> f47e5bbb ("KVM: x86/mmu: Zap only TDP MMU leafs in zap range and
+> mmu_notifier unmap")
 
-- Mani
+As this commit mentions tdp_mmu_zap_leafs, I ran the reproducer again on
+610a9b8f (6.7-rc8) while tracing >500ms calls to that function (printing
+a stacktrace) and task_numa_work via a bpftrace script [1].
 
-> The portdrv model is impeding Terry's CXL Port error handling effort, so
-> I am on the lookout for portdrv growing new entanglements to unwind
-> later.
-> 
-> [1]: http://lore.kernel.org/r/20221025232535.GA579167@bhelgaas
-> 
+Again, there are several invocations of task_numa_work that take >500ms
+(the VM appears to be frozen during that time). For instance, one
+invocation that takes ~20 seconds:
 
--- 
-மணிவண்ணன் சதாசிவம்
+[1704971602] task_numa_work (tid=52035) took 19995 ms
+
+For this particular thread and in the 20 seconds before that, there were
+8 invocations of tdp_mmu_zap_leafs with >500ms:
+
+[1704971584] tdp_mmu_zap_leafs (tid=52035) took 2291 ms
+[1704971586] tdp_mmu_zap_leafs (tid=52035) took 2343 ms
+[1704971589] tdp_mmu_zap_leafs (tid=52035) took 2316 ms
+[1704971590] tdp_mmu_zap_leafs (tid=52035) took 1663 ms
+[1704971591] tdp_mmu_zap_leafs (tid=52035) took 682 ms
+[1704971594] tdp_mmu_zap_leafs (tid=52035) took 2706 ms
+[1704971597] tdp_mmu_zap_leafs (tid=52035) took 3132 ms
+[1704971602] tdp_mmu_zap_leafs (tid=52035) took 4846 ms
+
+They roughly sum up to 20s. The stacktrace is the same for all:
+
+bpf_prog_5ca52691cb9e9fbd_tdp_mmu_zap_lea+345
+bpf_prog_5ca52691cb9e9fbd_tdp_mmu_zap_lea+345
+bpf_trampoline_380104735946+208
+tdp_mmu_zap_leafs+5
+kvm_unmap_gfn_range+347
+kvm_mmu_notifier_invalidate_range_start+394
+__mmu_notifier_invalidate_range_start+156
+change_protection+3908
+change_prot_numa+105
+task_numa_work+1029
+bpf_trampoline_6442457341+117
+task_numa_work+9
+xfer_to_guest_mode_handle_work+261
+kvm_arch_vcpu_ioctl_run+1553
+kvm_vcpu_ioctl+667
+__x64_sys_ioctl+164
+do_syscall_64+96
+entry_SYSCALL_64_after_hwframe+110
+
+AFAICT this pattern repeats several times. I uploaded the last 150kb of
+the bpftrace output to [2]. I can provide the full output if needed.
+
+To me, not knowing much about the KVM/KSM/NUMA balancer interplay, this
+looks like task_numa_work triggers several invocations of
+tdp_mmu_zap_leafs, each of which takes an unusually long time. If anyone
+has a hunch why this might happen, or an idea where to look next, it
+would be much appreciated.
+
+Best,
+
+Friedrich
+
+[1]
+
+kfunc:tdp_mmu_zap_leafs { @start_zap[tid] = nsecs; }
+kretfunc:tdp_mmu_zap_leafs /@start_zap[tid]/ {
+	$diff = nsecs - @start_zap[tid];
+	if ($diff > 500000000) { // 500ms
+		time("[%s] ");
+		printf("tdp_mmu_zap_leafs (tid=%d) took %d ms\n", tid, $diff / 1000000);
+		print(kstack());
+	}
+	delete(@start_zap[tid]);
+}
+
+kfunc:task_numa_work { @start_numa[tid] = nsecs; }
+kretfunc:task_numa_work /@start_numa[tid]/ {
+	$diff = nsecs - @start_numa[tid];
+	if ($diff > 500000000) { // 500ms
+		time("[%s] ");
+		printf("task_numa_work (tid=%d) took %d ms\n", tid, $diff / 1000000);
+	}
+	delete(@start_numa[tid]);
+}
+
+[2] https://paste.debian.net/1303767/
+
 
