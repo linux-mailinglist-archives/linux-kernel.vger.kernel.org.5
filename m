@@ -1,131 +1,79 @@
-Return-Path: <linux-kernel+bounces-22898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BF382A51D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:58:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB62782A51F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2859D1F23724
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 23:58:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79338286283
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:00:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2484F8B2;
-	Wed, 10 Jan 2024 23:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YnPSb/DR"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A4A4C61;
+	Thu, 11 Jan 2024 00:00:19 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384C14EB41
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 23:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6daa822be30so2204963b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 15:58:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704931099; x=1705535899; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hRtOehh8h5mmIfnUBPPWvn4/oVyBLE/rm2Y8lVByjVU=;
-        b=YnPSb/DR6HN646/sa64ezlsYwMQ0cdu5aDq4ROCOySZUAOuyi074zA4dmrVypjJi8d
-         BN3VzRRqb1VIDii74DqVfdmTMpkQk5RMAsKB0SWfj2HCZ3F1qtW7Zvb42nP1ifpM5SPz
-         G/TNFgRNkm5J1SHLCW7OFpREGie+Qh3gpnbig=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704931099; x=1705535899;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hRtOehh8h5mmIfnUBPPWvn4/oVyBLE/rm2Y8lVByjVU=;
-        b=BwLNdAfhZmfM2bOmAyM0jtZ0ucrozoJP5RrhJqv8HuY/lNNnds2IzqQrtw+b6sQxgk
-         HqxL5OKnXU82rB7ezlkkpleW5zOjonNcVdKcVYyLTLVL1MUfI7VTmD1jbXXxllPxDE/1
-         8w1xGCkdIMJGHeICaxyQVxPJ76QBHXeDeRVwo4MvsPZNfe07BrwnJgF15Qno0uVXBRhz
-         inKdMvjlPsFfNznKO3247q8bPdqLn/2bYu5Tp1pzbODlDzaoem/ANqMEa9DVZkoWRrWe
-         p58HOq+JWzq8M35lf/2ePxRUtcIsthws/EWwGYCuDxZCI6CsyoEvHyzdbXJHAuBL0glL
-         k/Mg==
-X-Gm-Message-State: AOJu0YytMyEF1b7eb+FLq4IzsphUR2+VaAH/fGT1nHro6Br9JVmWjAwV
-	9hqNYLm7PR04dK8/lURKIUh/Glfapeu2
-X-Google-Smtp-Source: AGHT+IExuDQJz9CNiQXMhpiwSk9OMFiOklkcYaCJCUkMgtC7Uww1FJWERM8qFnA5HFH3jEDw2TES5g==
-X-Received: by 2002:a17:903:24f:b0:1d4:47d4:82b4 with SMTP id j15-20020a170903024f00b001d447d482b4mr323485plh.15.1704931099623;
-        Wed, 10 Jan 2024 15:58:19 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jw17-20020a170903279100b001d0ca40158dsm4211771plb.280.2024.01.10.15.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 15:58:19 -0800 (PST)
-Date: Wed, 10 Jan 2024 15:58:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
-Message-ID: <202401101557.87634A6A@keescook>
-References: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <202401101437.48C52CF6@keescook>
- <CA+V-a8tdmD7PB1Rp5K9doXKGzSLwhbSAXD1=UisQebUrug507A@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1A2190;
+	Thu, 11 Jan 2024 00:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 222B1C433C7;
+	Thu, 11 Jan 2024 00:00:13 +0000 (UTC)
+Message-ID: <7e348eb3-bd34-4c66-9ed6-b5108da80486@linux-m68k.org>
+Date: Thu, 11 Jan 2024 10:00:11 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+V-a8tdmD7PB1Rp5K9doXKGzSLwhbSAXD1=UisQebUrug507A@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Automated-testing] Call for nommu LTP maintainer [was: Re:
+ [PATCH 00/36] Remove UCLINUX from LTP]
+Content-Language: en-US
+To: Niklas Cassel <Niklas.Cassel@wdc.com>, Rob Landley <rob@landley.net>
+Cc: Petr Vorel <pvorel@suse.cz>, Tim Bird <tim.bird@sony.com>,
+ Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang <liwang@redhat.com>,
+ Andrea Cervesato <andrea.cervesato@suse.com>,
+ Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>,
+ "buildroot@buildroot.org" <buildroot@buildroot.org>
+References: <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
+ <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+ <20240110141455.GC1698252@pevik>
+ <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+ <ZZ8JbCPd3rq4u7iG@x1-carbon>
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <ZZ8JbCPd3rq4u7iG@x1-carbon>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 10:46:02PM +0000, Lad, Prabhakar wrote:
-> Hi Kees,
+
+On 11/1/24 07:17, Niklas Cassel wrote:
+> On Wed, Jan 10, 2024 at 01:23:51PM -0600, Rob Landley wrote:
+>> UCLINUX is a long-dead distro. Linaro died in the dot-com crash and its founder
+>> Jeff Dionne moved to Japan for his next gig and never came back. On the way out
+>> he handed uclinux off to someone else, who didn't do a lot of work maintaining
+>> it. Most of the actual support went "upstream" into various packages (linux and
+>> busybox and gcc and so on) before the handoff, so you didn't NEED uclinux anymore.
 > 
-> Thank you for the review.
-> 
-> On Wed, Jan 10, 2024 at 10:41 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Wed, Jan 10, 2024 at 10:22:10PM +0000, Prabhakar wrote:
-> > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > >
-> > > gcc points out that the fix-byte buffer might be too small:
-> > > drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
-> > > drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing between 1 and 10 bytes into a region of size 3 [-Wformat-overflow=]
-> > >   720 |         sprintf(pdev_irqname, "ch%u", index);
-> > >       |                                  ^~
-> > > In function 'usb_dmac_chan_probe',
-> > >     inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
-> > > drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range [0, 4294967294]
-> > >   720 |         sprintf(pdev_irqname, "ch%u", index);
-> > >       |                               ^~~~~~
-> > > drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 13 bytes into a destination of size 5
-> > >   720 |         sprintf(pdev_irqname, "ch%u", index);
-> > >       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >
-> > > Maximum number of channels for USB-DMAC as per the driver is 1-99 so use
-> > > u8 instead of unsigned int/int for DMAC channel indexing and make the
-> > > pdev_irqname string long enough to avoid the warning.
-> > >
-> > > While at it use scnprintf() instead of sprintf() to make the code more
-> > > robust.
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > This looks like good fixes; thanks! I see n_channels is sanity checked
-> > during the probe in usb_dmac_chan_probe(), so this looks good.
-> >
-> > (Is there a reason not to also change n_channels to a u8?)
-> >
-> Good point, I oversighted it by just looking at the loop indices. I
-> will send a v2 with that change.
+> s/Linaro/Lineo/
 
-I think you'll need a bounce variable in usb_dmac_chan_probe() since it
-looks like it's reading a 32-bit value from DT, but otherwise, it should
-be okay.
+Lineo was not founded by Jeff Dionne, see https://en.wikipedia.org/wiki/Lineo
+for its genisys. Maybe you are thinking of RT-Control.
 
--Kees
-
--- 
-Kees Cook
+Greg
 
