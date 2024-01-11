@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-23582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36BD82AEA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:25:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE6E82AEA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:25:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F9601C23126
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:25:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035D01F222EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA82B15AC5;
-	Thu, 11 Jan 2024 12:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34EA215ADF;
+	Thu, 11 Jan 2024 12:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="BiX/OEh5"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="SLW4lEfQ"
 Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2108.outbound.protection.outlook.com [40.107.117.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4326F156FA
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08B4156FF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EIFQSVdN24QoLOs30i+7AXa1KYzXFoTW0WmfJzkgB3KxC1H4+t/Uqzx0OkCE4Z+WTrneNBIjChQsj/m4TP1Bmbp5Kp9NG4ggNUtZuG8qFo3CREL6GZQIyYe51zhHlC1vbiDUPYnU6SMhUVHiHTVdyg33ALQnUhPDP7fTSQAIU7fxAZJhyR5uQ9EjtKx+1MDst8cnzTRtLSCbC2nnlLGn8BQYiGWHAKGY416UHvTxklCieNk5ysF8r6lnVuRCna/IynCWxx/9Ft2wTKOKrqPeZW0+Jj10cdG1t3hI5QdlfVTe+coCngjm9tGkkIdGjJbUbSwDch43fMpYnDLLHa8QNA==
+ b=dMB294uaVJbdMKiiHQCqTWFWzKjfhA3BeC9ukBiBcpFEBVgMlDnYG1OpZsA5YgOmZ0QhoG+2FTQgpyrBjqcL3TE3PkO5e6KBvNHyVcU22bMQ65mHImhMPURqK1I6QP7Azz8wZ60NJ4mB9zJmhgLyow12v9yPtDhs0EFEz0bgDVrcUkFA+NddfwyIIIT2QQ5nSK1WFQWtVulyVW5SWjcGexX9qn2xcW3MBjI2zePMsQ08T5JFqBNcxz5c8WfSebW+7cNGudIEu2XFMfcJO87AOqlN5Nv4NuwhvN1UKN8rNf3PhIkAuTqkzLZtonmNRyBrQ6TXAdUk0Pz0plCNI4ypEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/MONQ5ooIGOhwMlVd57AaZEmedXnwBUN1ErV6/GWWVE=;
- b=R/MP6u6F/+IfiS3o0jI1R/Pw+eSyghHez/mPxuLNXKFVpY41zbq5LMCz484SmxPVp3QQXqwF+hv9pxf6uLwGT++R2DvpJPC7eZ2qpSvJGNPVdIOgbbqeEZvCH6+ZXEoANu7smRMoB1x2ubWJYDTrVhbTyeeSsHH12sV7PCzAoX3gaHwfemnPS0s5RKrEZw47pJGgKuNV4fEOVAG2Q2si8v4g3B111GdXNdsvxv/04R09/3fY5uaDB0dQR4rhTjBAS21y+bIdgvbt01sjh+WmkK4O1tWLWwulM0DOnnK2xAE87IvRzUHBaNW4NwBllf10FFLcPXEwD9QYsC7Eqp4eZg==
+ bh=Y/XbDFDyTHaoGg8tcaFHppYRuh89zfg9Wa5guHsA9GU=;
+ b=ALNtkDSGeGFLEoi0KJ6KodENYTW0khla9pJrMRBckdacULrR4ShmmNerLdbsHjFZPIzqXVxgT9fkUDJP7s1jQiEZ8mDqD5EhbfylhcFENao8DBxfrC4bQD0uC0SOMiqdvA+YRkAhl5416Zw8Ue+Rpyaoq17rJuWZxIOezSBwFwYoXVEbWcc9JZ0yU6ZMqpXmSYSmLez7m089EjSTbvQnm9E+TZz+qUsfa7CG8zgWbkEVhGZ4cS9Pf1Zk906oAdN1dOPkJG7XhswIG7gEuv1Y9kUEEv7QGsoLyaUGwJ6AO5ppKmfWs3TCNwEG1m5imDuJp6Q9qZQd9Mz/zRodWf8Xdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/MONQ5ooIGOhwMlVd57AaZEmedXnwBUN1ErV6/GWWVE=;
- b=BiX/OEh5Q7FNYhbAesbwg7oYxl78Y5HAJEMzxfm7SjsObpqTTzHlpSrWaC8RSpTAqTMhOXHQlH36cd+vHWspXhZV8KekZMx3rCc7CVeQjGkPrF8xNo7iNhVyxHl+OydQh+qlZQB3kj1JjkiXreA8l/Ss349TExUM2LgNHlmwtIm5bQE77h6WatmuiuqmYz3BrNnn4O93WJwlZo3za2WpelkUIdj0ZJSkOX0O5IKy0Pe64EaIelW1uROrdaDxhZx3/sj2Ks60srauM3xDG4emK9sID1BPp2pkG+/LD/Na4mMOODNWsin9pW4Nucy3OvLfINYgrTDgLnlmNgaZfi7MKg==
+ bh=Y/XbDFDyTHaoGg8tcaFHppYRuh89zfg9Wa5guHsA9GU=;
+ b=SLW4lEfQ2AyWqoC8kYHyFvIuoq/4bpE1Nr6NPWUQDw3LEMlLnsjfJ93hfjHN7H9V0nfJWW19kaGwXtUjwHLuSdmMacm/Jv6VERhKl5LRmOZi7X1ApsVQZYRIQY8dz5DnM0jSxIX9Ct24aPI6VdEyRgBprRda0XdDbE81WEwIdyzO84KUpCdyoWmMytUaVt6AruW2gdW4WIoV7mtWtot06zWV8fdP0VtTYzMyzwtfDI0336rCgO9G4ImoKhffMVzgkwf/OpzuNKgzIPEPHebEEm4uoiUKI5J2UdFSI1pzXnOHqRqq3eUV0DzsLn+/AHsSSihx5aPZT9JWLJoISf7mbw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from SEZPR06MB6871.apcprd06.prod.outlook.com (2603:1096:101:197::10)
  by SEZPR06MB6958.apcprd06.prod.outlook.com (2603:1096:101:1ef::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18; Thu, 11 Jan
- 2024 12:25:03 +0000
+ 2024 12:25:06 +0000
 Received: from SEZPR06MB6871.apcprd06.prod.outlook.com
  ([fe80::e954:4698:8499:da81]) by SEZPR06MB6871.apcprd06.prod.outlook.com
  ([fe80::e954:4698:8499:da81%3]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
- 12:25:03 +0000
+ 12:25:06 +0000
 From: Zhiguo Jiang <justinjiang@vivo.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	David Hildenbrand <david@redhat.com>,
@@ -62,10 +62,12 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-mm@kvack.org
 Cc: opensource.kernel@vivo.com,
 	Zhiguo Jiang <justinjiang@vivo.com>
-Subject: [PATCH v1 0/2] *** SUBJECT HERE ***
-Date: Thu, 11 Jan 2024 20:24:49 +0800
-Message-ID: <20240111122451.682-1-justinjiang@vivo.com>
+Subject: [PATCH v1 1/2] mm:vmscan: fix workingset eviction memcg issue
+Date: Thu, 11 Jan 2024 20:24:50 +0800
+Message-ID: <20240111122451.682-2-justinjiang@vivo.com>
 X-Mailer: git-send-email 2.41.0.windows.3
+In-Reply-To: <20240111122451.682-1-justinjiang@vivo.com>
+References: <20240111122451.682-1-justinjiang@vivo.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SG2P153CA0053.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::22)
@@ -78,69 +80,166 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SEZPR06MB6871:EE_|SEZPR06MB6958:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7137849c-31d9-48df-d9e2-08dc12a0566b
+X-MS-Office365-Filtering-Correlation-Id: dbaeaa7e-a1f6-4b2c-a402-08dc12a05816
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	goKF228tjTNzjZuuui4ZaifjxvuzebVweLGYRRUkb+As1a8i6zFyPCo6+TlTPAqilZFkpez5NoJtTs9PybsxYGu9JPGjZdd8iFl2spljpV/mx6G+w01jjKL+/AjHOKsTQ+FxhSc8tGXluqydWgBivEyJhLRMNWX659kWqGZMh92MH1Djo4KJJusMPwHnNeYwALFmsBg323rfS07svlh0prFZpcoWROKY77pMwL7KrbjQkbHbwBQHoL3gdmlRLgepCrj/Mj1keVOHQSF6lAx1aPtkAYJdUCgNB2jDe7RMRivsL196H+6PpSQ24CDpC8m1E719pRbrn7nJylLWmEnBMSdNtruwlzMhLmU/Y9Vetf6e+yn6EI2TWE3BRHMajX6AcDLFgQXn4hoteZqHRE27E4XgS22/nZW2Q2us36V+VRwnQSq+fxKymUK7IsXTLpoVO75vDfJnnCPb5SJJl25R0W0ZRMmXMRzvZLxsRcQpR1BdvkN9qxAMPZj9sQAMxnt/T8/iUtS1HKueT7wsfyVkay3CXnPVk1WkqvO/R2pCDRco+YNjKkfzuEwJM2OvEattkf2KgJSKIi5vpCza5qiHbuCC+oVRtGTkQ/tBIx/cFK9T/KTQAe7AkbSyM5q86MogygezegPHkx7GhY2V6gLmOw==
+	C50FQXUEcP3QtxSFLpavBuzKLqKZXo/92HwmLjMeZOedRIutzB4voMSO8NpV9zll1LMg7c6RDaxpakrZsjxkhobCeicK6dHcosFPdZtJzk3NSMKXMlbuED4hJdmpLOe5mUyPTaXjWNymTCs9TVbKaF43L93oSNR8g4etyihv0asQdVqPYo3Bqdjjcrn/l811Q2KSacrHQ35EQ0bQ+1zFPDCv+ouiyb/0zDYlJSBNzTzzKNLKh5LuiZ+6W3LL++XGxMW7QbPpCEKeadK8VHq4oeOsGTeE0FHSBTmbXCGnL3WLh+InVTs6OKMHaPMpV27M5v0qRgtz+bPgMDBCUbSbnLGP2n1+MroeECUlJ1pmDQzn8JIcvf72G1d7OKuDRYqAYRqKeB5KgtmuQgs6pPMQpk9VyalaBNlDhAqSLxI2o5V9rcjBXf/P9eZgIlZNqfVA9UUDuN4gy42ElY+zl1IVOpUC72oJxO5LaZ05pUeLDao2JKKK4i6M943a97vkxkWRdeRH96W3mWaXdlczsdDu6qh5HNmuOh0cErqVHwZca098B1Qib9AjrSoGAwxPmfTAeFNFHOFLrL91yJw9YP6s/IEYE7O90pfb5amNVnRuGqM4wR/vfRCkiTseu/QqFd6eByV88oOq9Jqa0Fr6gKovU61Dff9U1Eo/sgQu18Y2TYI=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB6871.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(136003)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(316002)(110136005)(6506007)(52116002)(8676002)(8936002)(6486002)(26005)(1076003)(41300700001)(107886003)(83380400001)(66476007)(66556008)(66946007)(4744005)(4326008)(7416002)(478600001)(6512007)(2616005)(5660300002)(6666004)(2906002)(38100700002)(36756003)(86362001)(921011)(38350700005);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB6871.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(136003)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(316002)(110136005)(6506007)(52116002)(8676002)(8936002)(6486002)(26005)(1076003)(41300700001)(107886003)(83380400001)(66476007)(66556008)(66946007)(4326008)(7416002)(478600001)(6512007)(2616005)(5660300002)(6666004)(2906002)(38100700002)(36756003)(86362001)(921011)(38350700005)(21314003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?zVjG5SLB41HmNjaBVXLJY4dx4uYUJF+HelTMNSNjtauqpefRdHmr2agE5b+0?=
- =?us-ascii?Q?9Ve+pfktr8EPbjuHjoWLDtl11/VX+4j39oybwYhCoUziLvf2+vAS922CxMlw?=
- =?us-ascii?Q?zSV9sPOZnlYwfjK8qKCRrwtmQGd//LHB39SIbaIgODvizEJZeR3zEEv0lRn9?=
- =?us-ascii?Q?SdnDjbr3JanImYYWiKf1YRM2v4ZcJQEjxfGlsrPXYnBMKReIX9J3CL40F9oS?=
- =?us-ascii?Q?fQ8iDc8Dd2uTbDSXemmJ4kQ4Zw7AneNc8M2buwos1DEZIv1cpWpz8nnYfdJu?=
- =?us-ascii?Q?C4hQzZFD4Bv2WTqAONTLgDbYtBTtaSq8sdWRDwqxjlAAhkZadZWUinFmnWaG?=
- =?us-ascii?Q?sYjEywkX9BvKZYtAVmp0tPwVbwGwAZ+DYRTplh8ziGRapxYeyIce9N9abHEe?=
- =?us-ascii?Q?ki/9usrkY2w/e0SFIt13S6zxl+H/PQ9jIZSXimKNFgCc4tPzuOzPfoLJaR8M?=
- =?us-ascii?Q?bmBmDn/TQj/TUw7IIS/Pwz2vs3mZMgGDbjHVUCAe+StINhKQ7NTu/UJ+IS+9?=
- =?us-ascii?Q?IgnEC44kyQSoShqozlkYn+KN0gsvlwRig24X8i91wl+8foTcsbkzQEahsdB7?=
- =?us-ascii?Q?YJQmh+0dg5zJCor85yXKDTVnE56SQDiXU2GNO/GPsdo0YsG2to5lHyavnuz3?=
- =?us-ascii?Q?hVNdXGnhDZrtD5zOtn7KC4Yqv93FB6cHTfCS8/1rSQtE1bBb4WujPnlyKyNw?=
- =?us-ascii?Q?b0fWEKnDUJGos/5XH3E1ul0qRoatBeltjdKBEbRRNJlTdD2Hs2KUlNieC4VJ?=
- =?us-ascii?Q?PTwB43r8CuWcZjaaZuhhxEHywYc9ewT3kWmhPEV8pqedkZXgA1QOMglh8sNA?=
- =?us-ascii?Q?A4CPUPVNNY2Lvtq1dpHXFHPX69aOaWGrY3LMfq1TDaVs+86MoZOz3SRly/I5?=
- =?us-ascii?Q?h4mHVIvE62D1oHOFkpGwNTJWwjYP5YnjrpNIcNSEJct/jawxmH/RxM33aotX?=
- =?us-ascii?Q?SdUM+lbEnSKjnDgk8oMHv795RJSLseVoXxXKxRX56e/feuNhWCDFhGHznOs/?=
- =?us-ascii?Q?77VI2FOGL3cPJg9l1H4ijO++3xPbrzjufv/KLQ4Gfs+yj8ZbWu3qXFKIHB7+?=
- =?us-ascii?Q?GvefZypqc9sX2PS3mA9clUrsEcsh2mUOMJ1Eph4H2z9lnm0brTgsFmalRSBF?=
- =?us-ascii?Q?HC092tcAfxtFmWvto7iteY+paSMbPbaeGVkKyyZDwgxOfyDBEciHn7irwctC?=
- =?us-ascii?Q?ifzFImi2+G+WuxewB59rjaPslyEjdzQKWYl6A0CXck4b+q5y+QxUnopcyl+c?=
- =?us-ascii?Q?6oZNJqiNasH/l/re2ORcZsROkTzQY5gGWpm28oEg9YXweVQ/MqmYwNPCmMkU?=
- =?us-ascii?Q?ROwlyLRBt6aLCHYbbTZu9+Sw+tpRp52JNgAWulpoMURwtPuWncBIRSylH/Zx?=
- =?us-ascii?Q?61DDAO5buI84ImyW1THBsQGGBZwHeB6BtaietTfiPJ4NO7QQV4Gj9I585M2t?=
- =?us-ascii?Q?EcbHyW+rnEwW0bxYwkt+K2da2il2ObKxny1gKFVJe/3vkhWbR2X4s8PwSyGS?=
- =?us-ascii?Q?//yNWkVk9ebtmEkdyCEdvyidMXkYfmgqC3D8GxW3sD4IsPix+t2FTUl4k1ap?=
- =?us-ascii?Q?y+zPp0IimH9LxtZK6bTyqnmRRgkDE/LZpiDJwb7V?=
+	=?us-ascii?Q?pp+CnS6+Zz9SrCfXqE7i8T9L57iJe0jlJbM9yLfE6PfnGxKwxmshAXtUE9yr?=
+ =?us-ascii?Q?LjnJA7hDF0Q0KoT3shRReCE5ec2fV1FbgmjTouzp1oRK/PUY8MMkPcGhqF0D?=
+ =?us-ascii?Q?eM4Y7iYcAwWHHRR+Oy1Hc6K0/hkCDKMo4mYv9hfReOMH/xlhjbBd/HSE6h50?=
+ =?us-ascii?Q?aOzHoCYHI1WVClNMhg55KZAWbmU+w8pLPH7Tqic/+GMIYAehMk8lU5AkSe79?=
+ =?us-ascii?Q?lGRjrCdHI48Yp2+ym6xqfTL23rMphQWY7g/V0dlU5L8NAKqktIYpE/XTtq0z?=
+ =?us-ascii?Q?SqDHZIbuFJIwnPsK3ahTYox4T5mNaZ8fdkRoJoAFnuCorpdPJ21PHoIkjXzR?=
+ =?us-ascii?Q?2Noi95G0AmqqwmpYL/uCWz3dTzZtuCnt8/Dg9gok//4o0+Lz/ScTKiKH1DOY?=
+ =?us-ascii?Q?DdzLec3rEcH/rzAykJloPqj4IdX3XRq/jYHO0wkUtBzxpq/eQ+6AXa0xk+1g?=
+ =?us-ascii?Q?0bHv1AVDXbbr8tLbhQhJRKuUweZEOoVQTnIZ4enXTAG+na9KW8CS/kHW2K3n?=
+ =?us-ascii?Q?L7A/bq+pRyvduOEAcVpGxRK2LVs3n0I4967c34mR11tlpY75Kz4R+4Wu74UE?=
+ =?us-ascii?Q?Pb1FxUY6sy0xF0OONu55k9WwAMgksdRRsZ+4cf3Bb8drsl0HOTvvLLqoNEf6?=
+ =?us-ascii?Q?vPvGqpP+1FwnLM83VgDoB+OQy+BYg/klM7WrHUbq5Kcg86SnwhX6k62OLRuY?=
+ =?us-ascii?Q?hhwpxM2MnbeGAhwBAucXgFyYLEeg3DIGHvI77+L+lkoPFv54ss+/Z6cFKYFg?=
+ =?us-ascii?Q?ujedFpUMcnC0p9/crttAXo8QhIOUnS96vNVsXcj9VfAc2+ySyxvCoJuD5Ish?=
+ =?us-ascii?Q?EFDXuNdO88r1EiF2q3FtoOINiFCKoHSBOslgWlv29G20XMg1IAmXMHpXu9Ui?=
+ =?us-ascii?Q?F8drvZOav7HjEJ4kHEjZFCLlDJw1gA3ho/s4s6SEfYVeFmZZ3lCuJ8VHtG3D?=
+ =?us-ascii?Q?5CE51gt2yyRrZXMNAqV1BhLAIUnCLK+w6mQvcCUg8pDlvadrDi7y26p/eQ+W?=
+ =?us-ascii?Q?GxyVCw7XQMWJgkC3guvSe+/VDNdjhfpfjNcx9fYFU1mAoxl8GLxDljcK+eW0?=
+ =?us-ascii?Q?bXvpj+6SBiTRlAyKw2zPGdKJfErMWZpD3VkEb56VSZRdpt/CpXTCcw+eUpkq?=
+ =?us-ascii?Q?O/IZTIMgu5a2BuVjbzRFvmhGJPXM3GCo46Jc5KxGdsLqQ/eJfmurvzsNPOTj?=
+ =?us-ascii?Q?0d2w9lJR/acK/fRdwy1EdLod6FXAcr/eVqGTiS9GV/Lnzg2wgq6Joo9D/3Ic?=
+ =?us-ascii?Q?iSLs4ldGIF6q684u9CjXMx+BCJ2l1IaKuAbNXhknezua62OQGEYs8gUSxur8?=
+ =?us-ascii?Q?ehA2qGmD+yN7LbevVS3SYsHExsttfTxKUmEd6/pzXTEkG2/eAHr7BgZLB0Ot?=
+ =?us-ascii?Q?ariswYmv+oc+wjfat6OdKKutJgoj8lD1VnAiH8bWCva2mVvdKuF62//3zX/0?=
+ =?us-ascii?Q?ZVx9vMposS4CVbIb7PJBsk1pFjjvsOeo5uH7n8g62pn3SdtiC3ofc6vAbgxF?=
+ =?us-ascii?Q?yTW/8UrDIKd/vNGLEx5yp/bITUrR8Ptwwxp8OH2a2ZwJmXVJKYVdGcX1BJ9R?=
+ =?us-ascii?Q?vx3mrTgRwdgsM673qQW311LOD4t9EsonC1dXCVjv?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7137849c-31d9-48df-d9e2-08dc12a0566b
+X-MS-Exchange-CrossTenant-Network-Message-Id: dbaeaa7e-a1f6-4b2c-a402-08dc12a05816
 X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6871.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 12:25:03.6595
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 12:25:06.3820
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ljQysLh0AS1CXyGWatmVXURUflouTvL6avFCmvoIqR/63wXZf1V5rOzGX2Ri5vdOo94K0hwqBZHCeTTh/VMf/w==
+X-MS-Exchange-CrossTenant-UserPrincipalName: xFszcyK3Oyk52rIv0TWl2KOLetmwlyJXnnXY9f2w4SPTqS5fQa6TeakfhNDzMdv0Jmx49ZLdG2RZN4JH2ccWSA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6958
 
-*** BLURB HERE ***
+The parameter of target_memcg is NULL in workingset_eviction(), and
+the lruvec obtained by mem_cgroup_lruvec(target_memcg, pgdat) is always
+root_mem_cgroup->lruvec, rather than the lruvec of mem_cgroup where
+folio is actually located.
 
-Zhiguo Jiang (2):
-  mm:vmscan: fix workingset eviction memcg issue
-  mm:vmscan: fix shrink sc parameters issue
+Fix target_memcg to the memcg obtained by folio_memcg(folio).
 
+Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
+---
  include/linux/swap.h |  2 +-
- mm/vmscan.c          | 46 ++++++++++++++++++++++----------------------
+ mm/vmscan.c          | 11 +++++------
  mm/workingset.c      |  6 +++---
- 3 files changed, 27 insertions(+), 27 deletions(-)
+ 3 files changed, 9 insertions(+), 10 deletions(-)
  mode change 100644 => 100755 include/linux/swap.h
  mode change 100644 => 100755 mm/vmscan.c
  mode change 100644 => 100755 mm/workingset.c
 
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 41e4b484bc34..4de61f158903
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -346,7 +346,7 @@ static inline swp_entry_t page_swap_entry(struct page *page)
+ /* linux/mm/workingset.c */
+ bool workingset_test_recent(void *shadow, bool file, bool *workingset);
+ void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages);
+-void *workingset_eviction(struct folio *folio, struct mem_cgroup *target_memcg);
++void *workingset_eviction(struct folio *folio);
+ void workingset_refault(struct folio *folio, void *shadow);
+ void workingset_activation(struct folio *folio);
+ 
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 91e7d334a7ca..8a1fbdaca042
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -693,7 +693,7 @@ static pageout_t pageout(struct folio *folio, struct address_space *mapping,
+  * gets returned with a refcount of 0.
+  */
+ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
+-			    bool reclaimed, struct mem_cgroup *target_memcg)
++			    bool reclaimed)
+ {
+ 	int refcount;
+ 	void *shadow = NULL;
+@@ -742,7 +742,7 @@ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
+ 		swp_entry_t swap = folio->swap;
+ 
+ 		if (reclaimed && !mapping_exiting(mapping))
+-			shadow = workingset_eviction(folio, target_memcg);
++			shadow = workingset_eviction(folio);
+ 		__delete_from_swap_cache(folio, swap, shadow);
+ 		mem_cgroup_swapout(folio, swap);
+ 		xa_unlock_irq(&mapping->i_pages);
+@@ -769,7 +769,7 @@ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
+ 		 */
+ 		if (reclaimed && folio_is_file_lru(folio) &&
+ 		    !mapping_exiting(mapping) && !dax_mapping(mapping))
+-			shadow = workingset_eviction(folio, target_memcg);
++			shadow = workingset_eviction(folio);
+ 		__filemap_remove_folio(folio, shadow);
+ 		xa_unlock_irq(&mapping->i_pages);
+ 		if (mapping_shrinkable(mapping))
+@@ -803,7 +803,7 @@ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
+  */
+ long remove_mapping(struct address_space *mapping, struct folio *folio)
+ {
+-	if (__remove_mapping(mapping, folio, false, NULL)) {
++	if (__remove_mapping(mapping, folio, false)) {
+ 		/*
+ 		 * Unfreezing the refcount with 1 effectively
+ 		 * drops the pagecache ref for us without requiring another
+@@ -1417,8 +1417,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+ 			 */
+ 			count_vm_events(PGLAZYFREED, nr_pages);
+ 			count_memcg_folio_events(folio, PGLAZYFREED, nr_pages);
+-		} else if (!mapping || !__remove_mapping(mapping, folio, true,
+-							 sc->target_mem_cgroup))
++		} else if (!mapping || !__remove_mapping(mapping, folio, true))
+ 			goto keep_locked;
+ 
+ 		folio_unlock(folio);
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 226012974328..f29396d4bf75
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -372,15 +372,15 @@ void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages)
+ 
+ /**
+  * workingset_eviction - note the eviction of a folio from memory
+- * @target_memcg: the cgroup that is causing the reclaim
+  * @folio: the folio being evicted
+  *
+  * Return: a shadow entry to be stored in @folio->mapping->i_pages in place
+  * of the evicted @folio so that a later refault can be detected.
+  */
+-void *workingset_eviction(struct folio *folio, struct mem_cgroup *target_memcg)
++void *workingset_eviction(struct folio *folio)
+ {
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
++	struct mem_cgroup *memcg = folio_memcg(folio);
+ 	unsigned long eviction;
+ 	struct lruvec *lruvec;
+ 	int memcgid;
+@@ -393,7 +393,7 @@ void *workingset_eviction(struct folio *folio, struct mem_cgroup *target_memcg)
+ 	if (lru_gen_enabled())
+ 		return lru_gen_eviction(folio);
+ 
+-	lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
++	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 	/* XXX: target_memcg can be NULL, go through lruvec */
+ 	memcgid = mem_cgroup_id(lruvec_memcg(lruvec));
+ 	eviction = atomic_long_read(&lruvec->nonresident_age);
 -- 
 2.39.0
 
