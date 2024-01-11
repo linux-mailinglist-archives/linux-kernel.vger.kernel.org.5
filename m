@@ -1,276 +1,123 @@
-Return-Path: <linux-kernel+bounces-23954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1129C82B470
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:59:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD79082B472
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:59:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7080BB22247
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:59:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39EA0B24D3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504DB53812;
-	Thu, 11 Jan 2024 17:59:17 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B83853E2D;
+	Thu, 11 Jan 2024 17:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WrqiSA80"
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F05852F6A;
-	Thu, 11 Jan 2024 17:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T9snT06zPz6J6XT;
-	Fri, 12 Jan 2024 01:57:17 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 48896140595;
-	Fri, 12 Jan 2024 01:59:10 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 11 Jan
- 2024 17:59:09 +0000
-Date: Thu, 11 Jan 2024 17:59:08 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
-	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
-	<justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for
- processors described as container packages
-Message-ID: <20240111175908.00002f46@Huawei.com>
-In-Reply-To: <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
-	<CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D7953E23
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 17:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Jan 2024 09:59:11 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704995956;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LFlTmqKWu1L5WwW9zjp3A8ZgS4CejVZXVReh/bTmlHI=;
+	b=WrqiSA80IXtiFa7+jyPFcSmaNikWHHzREvNb09PiZp7Os1rT/qkUmCdDpiT8lud2QchAdD
+	AKoaznC9qnvG/OBr93VGvmoftGM4EtgudZ5o5N3CxLaNH0dgnzsvpFR04nWX+3S4yTod2k
+	p9I6asesQ+eEoQwn/E0cnVPZAunYf2o=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+	Dan Schatzberg <schatzberg.dan@gmail.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
+Message-ID: <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
+References: <20240111132902.389862-1-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111132902.389862-1-hannes@cmpxchg.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 18 Dec 2023 21:17:34 +0100
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
+On Thu, Jan 11, 2024 at 08:29:02AM -0500, Johannes Weiner wrote:
+> While investigating hosts with high cgroup memory pressures, Tejun
+> found culprit zombie tasks that had were holding on to a lot of
+> memory, had SIGKILL pending, but were stuck in memory.high reclaim.
+> 
+> In the past, we used to always force-charge allocations from tasks
+> that were exiting in order to accelerate them dying and freeing up
+> their rss. This changed for memory.max in a4ebf1b6ca1e ("memcg:
+> prohibit unconditional exceeding the limit of dying tasks"); it noted
+> that this can cause (userspace inducable) containment failures, so it
+> added a mandatory reclaim and OOM kill cycle before forcing charges.
+> At the time, memory.high enforcement was handled in the userspace
+> return path, which isn't reached by dying tasks, and so memory.high
+> was still never enforced by dying tasks.
+> 
+> When c9afe31ec443 ("memcg: synchronously enforce memory.high for large
+> overcharges") added synchronous reclaim for memory.high, it added
+> unconditional memory.high enforcement for dying tasks as well. The
+> callstack shows that this path is where the zombie is stuck in.
+> 
+> We need to accelerate dying tasks getting past memory.high, but we
+> cannot do it quite the same way as we do for memory.max: memory.max is
+> enforced strictly, and tasks aren't allowed to move past it without
+> FIRST reclaiming and OOM killing if necessary. This ensures very small
+> levels of excess. With memory.high, though, enforcement happens lazily
+> after the charge, and OOM killing is never triggered. A lot of
+> concurrent threads could have pushed, or could actively be pushing,
+> the cgroup into excess. The dying task will enter reclaim on every
+> allocation attempt, with little hope of restoring balance.
+> 
+> To fix this, skip synchronous memory.high enforcement on dying tasks
+> altogether again. Update memory.high path documentation while at it.
 
-> On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux=
-org.uk> wrote:
-> >
-> > From: James Morse <james.morse@arm.com>
+It makes total sense to me.
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Done some digging + machine faking.  This is mid stage results at best.
-
-Summary: I don't think this patch is necessary.  If anyone happens to be in
-the mood for testing on various platforms, can you drop this patch and
-see if everything still works.
-
-With this patch in place, and a processor container containing
-Processor() objects acpi_process_add is called twice - once via
-the path added here and once via acpi_bus_attach etc.
-
-Maybe it's a left over from earlier approaches to some of this?
-
-
-> >
-> > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
-> > 5.2.12:
-> >
-> > "Starting with ACPI Specification 6.3, the use of the Processor() object
-> > was deprecated. Only legacy systems should continue with this usage. On
-> > the Itanium architecture only, a _UID is provided for the Processor()
-> > that is a string object. This usage of _UID is also deprecated since it
-> > can preclude an OSPM from being able to match a processor to a
-> > non-enumerable device, such as those defined in the MADT. From ACPI
-> > Specification 6.3 onward, all processor objects for all architectures
-> > except Itanium must now use Device() objects with an _HID of ACPI0007,
-> > and use only integer _UID values."
-
-Well, we definitely don't care about Itanium any more so most of this is ir=
-relevant
-and can be scrubbed going forwards!
-
-Otherwise I think we only care about Device() and Processor() being two thi=
-ngs
-that might be seen to describe CPUs and they may or may not be in a
-Processor container.
-
-> >
-> > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and=
-_Control.html#declaring-processors
-> >
-> > Duplicate descriptions are not allowed, the ACPI processor driver alrea=
-dy
-> > parses the UID from both devices and containers. acpi_processor_get_inf=
-o()
-> > returns an error if the UID exists twice in the DSDT. =20
->=20
-> I'm not really sure how the above is related to the actual patch.
-
-This is nasty.  They key is that with this patch in place, we are actually
-adding them twice if they are are instantiated via Processor() in a process=
-or
-container.  So this reference is explaining why we don't get two lots regis=
-tered.
-
-This patch should call out explicitly why we want to do it twice
-(I'm assuming on a temporary baseis).
-
->=20
-> > The missing probe for CPUs described as packages =20
->=20
-> It is unclear what exactly is meant by "CPUs described as packages".
->=20
-> From the patch, it looks like those would be Processor() objects
-> defined under a processor container device.
-Agreed.
-
->=20
-> > creates a problem for
-> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> > described like this don't get registered, leading to errors from other
-> > subsystems when they try to add new sysfs entries to the CPU node.
-> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> >
-> > To fix this, parse the processor container and call acpi_processor_add()
-> > for each processor that is discovered like this. =20
->=20
-> Discovered like what?
-Doesn't add any info.
-
-"To fix this, parse the processor container and call acpi_processor_add() f=
-or
-each processor found."
-
->=20
-> > The processor container
-> > handler is added with acpi_scan_add_handler(), so no detach call will
-> > arrive. =20
->=20
-> The above requires clarification too.
->=20
-> > Qemu TCG describes CPUs using processor devices in a processor containe=
-r.
-
-Hmm. This isn't so clear cut.
-
-For ARM it does it nicely with ACPI0007 etc. For x86 it is still
-Processor() under some circumstances... (why exactly doesn't matter here
-- it's all legacy mess).
-
-To poke this I hacked the arm virt qemu platform to use Processor() in a
-container so I could like for like comparisons.
-
-The logic that injects a HID into Processor() objects means the existing
-handlers get fired without this patch.  I'm going to assume that might
-not be the case later in this patch set, but I've not found where it
-is broken yet :(
+However if tasks can stuck for a long time in the "high reclaim" state,
+shouldn't we also handle the case when tasks are being killed during the
+reclaim? E. g. something like this (completely untested):
 
 
-> > For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
-> > https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.=
-html#processor-container-device
-> >
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > ---
-> > Outstanding comments:
-> >  https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
-> >  https://lore.kernel.org/r/50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.=
-com
-> > ---
-> >  drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> >
-> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processo=
-r.c
-> > index 4fe2ef54088c..6a542e0ce396 100644
-> > --- a/drivers/acpi/acpi_processor.c
-> > +++ b/drivers/acpi/acpi_processor.c
-> > @@ -626,9 +626,31 @@ static struct acpi_scan_handler processor_handler =
-=3D {
-> >         },
-> >  };
-> >
-> > +static acpi_status acpi_processor_container_walk(acpi_handle handle,
-> > +                                                u32 lvl,
-> > +                                                void *context,
-> > +                                                void **rv)
-> > +{
-> > +       struct acpi_device *adev;
-> > +       acpi_status status;
-> > +
-> > +       adev =3D acpi_get_acpi_dev(handle);
-> > +       if (!adev)
-> > +               return AE_ERROR; =20
->=20
-> Why is the reference counting needed here?
->=20
-> Wouldn't acpi_fetch_acpi_dev() suffice?
-You are the expert here :)  I can't see why the reference is needed
-so would be fine with dropping it.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c4c422c81f93..9f971fc6aae8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2465,6 +2465,9 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+                    READ_ONCE(memcg->memory.high))
+                        continue;
 
->=20
-> Also, should the walk really be terminated on the first error?
++               if (task_is_dying())
++                       break;
++
+                memcg_memory_event(memcg, MEMCG_HIGH);
 
-If this patch makes sense things will probably blow up later but no
-worse than before so sure, keep going.
+                psi_memstall_enter(&pflags);
+@@ -2645,6 +2648,9 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+        current->memcg_nr_pages_over_high = 0;
 
->=20
-> > +
-> > +       status =3D acpi_processor_add(adev, &processor_device_ids[0]);
-> > +       acpi_put_acpi_dev(adev);
-> > +
-> > +       return status;
-> > +}
-> > +
-> >  static int acpi_processor_container_attach(struct acpi_device *dev,
-> >                                            const struct acpi_device_id =
-*id)
-> >  {
-> > +       acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
-> > +                           ACPI_UINT32_MAX, acpi_processor_container_w=
-alk,
-> > +                           NULL, NULL, NULL); =20
->=20
-> This covers processor objects only, so why is this not needed for
-> processor devices defined under a processor container object?
-
-Both cases are covered by the existing handling without this.
-
-I'm far from clear on why we need this patch.  Presumably
-it's the reference in the description on it breaking for
-Processor Package containing Processor() objects that matters
-after a move... I'm struggling to find that move though!
-
-
-
->=20
-> It is not obvious, so it would be nice to add a comment explaining the
-> difference.
->=20
-> > +
-> >         return 1;
-> >  }
-> >
-> > -- =20
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+ retry_reclaim:
++       if (task_is_dying())
++               return;
++
+        /*
+         * The allocating task should reclaim at least the batch size, but for
+         * subsequent retries we only want to do what's necessary to prevent oom
 
 
