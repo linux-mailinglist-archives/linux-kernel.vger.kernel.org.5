@@ -1,28 +1,28 @@
-Return-Path: <linux-kernel+bounces-23541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AF4682AE32
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:03:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6D5182AE2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:02:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1620FB229E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:03:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65B281F254EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACB1168B0;
-	Thu, 11 Jan 2024 12:01:26 +0000 (UTC)
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E4515EBC;
+	Thu, 11 Jan 2024 12:01:23 +0000 (UTC)
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E097F16414;
-	Thu, 11 Jan 2024 12:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6851415488;
+	Thu, 11 Jan 2024 12:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W-PewXf_1704974474;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W-PewXf_1704974474)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W-Pgn7c_1704974476;
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W-Pgn7c_1704974476)
           by smtp.aliyun-inc.com;
-          Thu, 11 Jan 2024 20:01:15 +0800
+          Thu, 11 Jan 2024 20:01:17 +0800
 From: Wen Gu <guwen@linux.alibaba.com>
 To: wintera@linux.ibm.com,
 	wenjia@linux.ibm.com,
@@ -42,9 +42,9 @@ Cc: borntraeger@linux.ibm.com,
 	linux-s390@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 04/15] net/smc: implement ID-related operations of loopback-ism
-Date: Thu, 11 Jan 2024 20:00:25 +0800
-Message-Id: <20240111120036.109903-5-guwen@linux.alibaba.com>
+Subject: [PATCH net-next 05/15] net/smc: implement some unsupported operations of loopback-ism
+Date: Thu, 11 Jan 2024 20:00:26 +0800
+Message-Id: <20240111120036.109903-6-guwen@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240111120036.109903-1-guwen@linux.alibaba.com>
 References: <20240111120036.109903-1-guwen@linux.alibaba.com>
@@ -56,126 +56,71 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This implements GID and CHID related operations of loopback-ism device.
-loopback-ism acts as an ISMv2. It's GID is generated randomly by UUIDv4
-algorithm and CHID is reserved 0xFFFF.
+vlan operations are not supported currently since the need for vlan in
+loopback situation does not seem to be strong.
+
+signal_event operation is not supported since no event now needs to be
+processed by loopback-ism device.
 
 Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 ---
- net/smc/smc_loopback.c | 62 ++++++++++++++++++++++++++++++++++++++----
- net/smc/smc_loopback.h |  3 ++
- 2 files changed, 60 insertions(+), 5 deletions(-)
+ net/smc/smc_loopback.c | 36 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 31 insertions(+), 5 deletions(-)
 
 diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-index cbb6625ccd0d..40dff28d837d 100644
+index 40dff28d837d..353d4a2d69a1 100644
 --- a/net/smc/smc_loopback.c
 +++ b/net/smc/smc_loopback.c
-@@ -19,12 +19,63 @@
- #include "smc_loopback.h"
+@@ -50,6 +50,32 @@ static int smc_lo_query_rgid(struct smcd_dev *smcd, struct smcd_gid *rgid,
+ 	return 0;
+ }
  
- #if IS_ENABLED(CONFIG_SMC_LO)
-+#define SMC_LO_V2_CAPABLE	0x1 /* loopback-ism acts as ISMv2 */
-+
- static const char smc_lo_dev_name[] = "loopback-ism";
- static struct smc_lo_dev *lo_dev;
- static struct class *smc_class;
- 
-+static void smc_lo_generate_id(struct smc_lo_dev *ldev)
++static int smc_lo_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
 +{
-+	struct smcd_gid *lgid = &ldev->local_gid;
-+	uuid_t uuid;
-+
-+	uuid_gen(&uuid);
-+	memcpy(&lgid->gid, &uuid, sizeof(lgid->gid));
-+	memcpy(&lgid->gid_ext, (u8 *)&uuid + sizeof(lgid->gid),
-+	       sizeof(lgid->gid_ext));
-+
-+	ldev->chid = SMC_LO_CHID;
++	return -EOPNOTSUPP;
 +}
 +
-+static int smc_lo_query_rgid(struct smcd_dev *smcd, struct smcd_gid *rgid,
-+			     u32 vid_valid, u32 vid)
++static int smc_lo_del_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
 +{
-+	struct smc_lo_dev *ldev = smcd->priv;
++	return -EOPNOTSUPP;
++}
 +
-+	/* rgid should equal to lgid in loopback situation */
-+	if (!ldev || rgid->gid != ldev->local_gid.gid ||
-+	    rgid->gid_ext != ldev->local_gid.gid_ext)
-+		return -ENETUNREACH;
++static int smc_lo_set_vlan_required(struct smcd_dev *smcd)
++{
++	return -EOPNOTSUPP;
++}
++
++static int smc_lo_reset_vlan_required(struct smcd_dev *smcd)
++{
++	return -EOPNOTSUPP;
++}
++
++static int smc_lo_signal_event(struct smcd_dev *dev, struct smcd_gid *rgid,
++			       u32 trigger_irq, u32 event_code, u64 info)
++{
 +	return 0;
 +}
 +
-+static int smc_lo_supports_v2(void)
-+{
-+	return SMC_LO_V2_CAPABLE;
-+}
-+
-+static void smc_lo_get_local_gid(struct smcd_dev *smcd,
-+				 struct smcd_gid *smcd_gid)
-+{
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	smcd_gid->gid = ldev->local_gid.gid;
-+	smcd_gid->gid_ext = ldev->local_gid.gid_ext;
-+}
-+
-+static u16 smc_lo_get_chid(struct smcd_dev *smcd)
-+{
-+	return ((struct smc_lo_dev *)smcd->priv)->chid;
-+}
-+
-+static struct device *smc_lo_get_dev(struct smcd_dev *smcd)
-+{
-+	return &((struct smc_lo_dev *)smcd->priv)->dev;
-+}
-+
- static const struct smcd_ops lo_ops = {
--	.query_remote_gid	= NULL,
-+	.query_remote_gid = smc_lo_query_rgid,
+ static int smc_lo_supports_v2(void)
+ {
+ 	return SMC_LO_V2_CAPABLE;
+@@ -78,11 +104,11 @@ static const struct smcd_ops lo_ops = {
+ 	.query_remote_gid = smc_lo_query_rgid,
  	.register_dmb		= NULL,
  	.unregister_dmb		= NULL,
- 	.add_vlan_id		= NULL,
-@@ -33,10 +84,10 @@ static const struct smcd_ops lo_ops = {
- 	.reset_vlan_required	= NULL,
- 	.signal_event		= NULL,
+-	.add_vlan_id		= NULL,
+-	.del_vlan_id		= NULL,
+-	.set_vlan_required	= NULL,
+-	.reset_vlan_required	= NULL,
+-	.signal_event		= NULL,
++	.add_vlan_id = smc_lo_add_vlan_id,
++	.del_vlan_id = smc_lo_del_vlan_id,
++	.set_vlan_required = smc_lo_set_vlan_required,
++	.reset_vlan_required = smc_lo_reset_vlan_required,
++	.signal_event = smc_lo_signal_event,
  	.move_data		= NULL,
--	.supports_v2		= NULL,
--	.get_local_gid		= NULL,
--	.get_chid		= NULL,
--	.get_dev		= NULL,
-+	.supports_v2 = smc_lo_supports_v2,
-+	.get_local_gid = smc_lo_get_local_gid,
-+	.get_chid = smc_lo_get_chid,
-+	.get_dev = smc_lo_get_dev,
- };
- 
- static struct smcd_dev *smcd_lo_alloc_dev(const struct smcd_ops *ops,
-@@ -96,6 +147,7 @@ static void smcd_lo_unregister_dev(struct smc_lo_dev *ldev)
- 
- static int smc_lo_dev_init(struct smc_lo_dev *ldev)
- {
-+	smc_lo_generate_id(ldev);
- 	return smcd_lo_register_dev(ldev);
- }
- 
-diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
-index 9dd44d4c0ca3..55b41133a97f 100644
---- a/net/smc/smc_loopback.h
-+++ b/net/smc/smc_loopback.h
-@@ -20,10 +20,13 @@
- 
- #if IS_ENABLED(CONFIG_SMC_LO)
- #define SMC_LO_MAX_DMBS		5000
-+#define SMC_LO_CHID		0xFFFF
- 
- struct smc_lo_dev {
- 	struct smcd_dev *smcd;
- 	struct device dev;
-+	u16 chid;
-+	struct smcd_gid local_gid;
- };
- #endif
- 
+ 	.supports_v2 = smc_lo_supports_v2,
+ 	.get_local_gid = smc_lo_get_local_gid,
 -- 
 2.32.0.3.g01195cf9f
 
