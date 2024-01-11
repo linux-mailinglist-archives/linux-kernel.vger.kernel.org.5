@@ -1,143 +1,132 @@
-Return-Path: <linux-kernel+bounces-23895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BAAB82B355
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:51:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF1C082B35A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 088331F289C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:51:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7302AB21545
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C8A5100C;
-	Thu, 11 Jan 2024 16:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC7B5101E;
+	Thu, 11 Jan 2024 16:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="GqoYB0PR"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2088.outbound.protection.outlook.com [40.107.220.88])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="cFrcMzmV"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EA55026B;
-	Thu, 11 Jan 2024 16:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tv5+9/2B8rXt/viSX/MawHWJnqgjz+/DIcwxFI2mYV2kkxI9O97luJkQCvNgZxfS4+I+JgQVjp/8czFcUnvqztwYTRuxAr2X9t5M7Wqi/kv6QpKruhLWu8aBQxaW7pviw5xo/mZbWvWSW3gIeTjajYLpx+2CvamwN9qcDfQMsuBSnpo8yWOdPjUS6+SgjpTH/Ut7ogKjeMOaB3LyWrjLGjp9Ot0GgyF7EyHUqs8fxlRqX31X/FzwNgTsJxJDLJVbigS/BKB7UK34RTIJCi0GEKCuOvgFGGi583b9mFfGwRbTbsk8XhoElhH56Jfp+Aelb6MyS+Sa8cayGFU8PlK7yA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=43LlNCtu65PZ0WtH5CDq3vnqa74slCEv4Qab7RgO2NM=;
- b=QhfNNEiZz+8n0Tgj3q2F3rTS9S9kMISFJCNPbQ16O1TwbBWztnyNzc5bBkD866RO8a9Ot1UIiJWmCjWy1M6vLmnDvk0M6r09WVw/FVd1Caw1umSONlb8mQoH2uiun1EzfA5+b8lpoVncutQ+n57UgSQzcBNRK7BPSKWf+l9wdjHY+Sraq47dXM8COV3iSoyHWwgt7QgnHbRyu6mb5H/QzsKRwP4Su5Mq829vjDvyawGKLnLfv8HtbIwD6f8TpezH7c9lTO5SESXNIfAhpYh5d8CnYDURqs48xu0IqL4JRagCW/Xk5nlCJz9/OBl3+IuulLmaGX3EXYksjdJh+r7jNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=43LlNCtu65PZ0WtH5CDq3vnqa74slCEv4Qab7RgO2NM=;
- b=GqoYB0PRrRk+QkJkzSYuVoHkngwAxlOtUCBSMxL7j89XLn/BUWrXD4QZkpgGsvz/aMFNKXT+y63EMjQZRrBAtTfWXmGiEaMXd8Vje5AGO80wpE5yhMOczJXcT4XyWXVUSbPCtV4S48lrEuU7Qpe1xzNHFElIT4yeGWp42oBtXKT5QbB0yt7csZyvZ+1TxXILssyHfzZ8TK2NgR9c/O5sAwoGaU8UVEy8zB6FYH2NR452exfVANRmJk42eYyBwzsIl6EC8NOGRL2YFVw7S4haz45OPyeVFsyWrupvWJKACOGc0iZdSWfSgFha4Q1mxosB66LBP3aUlXU3kjlZLNy+rw==
-Received: from DM5PR07CA0075.namprd07.prod.outlook.com (2603:10b6:4:ad::40) by
- DS0PR12MB8246.namprd12.prod.outlook.com (2603:10b6:8:de::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7181.17; Thu, 11 Jan 2024 16:50:54 +0000
-Received: from DS3PEPF000099D3.namprd04.prod.outlook.com
- (2603:10b6:4:ad:cafe::10) by DM5PR07CA0075.outlook.office365.com
- (2603:10b6:4:ad::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18 via Frontend
- Transport; Thu, 11 Jan 2024 16:50:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS3PEPF000099D3.mail.protection.outlook.com (10.167.17.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7181.14 via Frontend Transport; Thu, 11 Jan 2024 16:50:54 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 11 Jan
- 2024 08:50:47 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Thu, 11 Jan 2024 08:50:47 -0800
-Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.126.190.181)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Thu, 11 Jan 2024 08:50:46 -0800
-Date: Thu, 11 Jan 2024 08:50:45 -0800
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: Yi Liu <yi.l.liu@intel.com>
-CC: <joro@8bytes.org>, <alex.williamson@redhat.com>, <jgg@nvidia.com>,
-	<kevin.tian@intel.com>, <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-	<cohuck@redhat.com>, <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
-	<mjrosato@linux.ibm.com>, <chao.p.peng@linux.intel.com>,
-	<yi.y.sun@linux.intel.com>, <peterx@redhat.com>, <jasowang@redhat.com>,
-	<shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-	<suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
-	<xin.zeng@intel.com>, <yan.y.zhao@intel.com>, <j.granados@samsung.com>,
-	<binbin.wu@linux.intel.com>
-Subject: Re: [PATCH v11 6/8] iommufd/selftest: Add coverage for
- IOMMU_HWPT_INVALIDATE ioctl
-Message-ID: <ZaAcZXrhhQPhKTHq@Asurada-Nvidia>
-References: <20240111041015.47920-1-yi.l.liu@intel.com>
- <20240111041015.47920-7-yi.l.liu@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918985026B;
+	Thu, 11 Jan 2024 16:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=nNmbzZCswWwtgLBrD7rB/wFzIPdTH+54rK1gGsl9Ncg=; b=cFrcMzmVFAp+coo1nDD28eInxq
+	nMFcPA1xyhMPEqFpH+zsbA2gopiczhZz5FpCbxUh1DUYNYo5KUzg4In+TYehxwBWGUD0HoOAgXCv1
+	IC8SAMECz9+GSwbp3EZmnsLeAD+dhgT5Zr7GX/4QwzyjbPLq4Ne9Uz8un4zR37NrHpOl9CrsKkVw7
+	5DmHCy9iTuco0zeMacSYzI04hd5reNLpMV7k09WzKmTD3fpmuZ99A9kbAeDeZ7Xf7xgAVj1GbDVZJ
+	YN09g/5Eq3gbHpePnax1JaaA2uSOw6R1E9jfymmEN+ywMa6mHCDMCHM23Dm2Y7HWz2H60V9IsemJ2
+	FiZPvkTw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58298)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rNyHu-0006nN-2C;
+	Thu, 11 Jan 2024 16:52:14 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rNyHv-0006WK-Bc; Thu, 11 Jan 2024 16:52:15 +0000
+Date: Thu, 11 Jan 2024 16:52:15 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"afd@ti.com" <afd@ti.com>,
+	"hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>
+Subject: Re: [PATCH 1/3] dt-bindings: net: dp83826: add ti,cfg-dac-minus
+ binding
+Message-ID: <ZaAcvwWbNmSpw/xt@shell.armlinux.org.uk>
+References: <20240111161927.3689084-1-catalin.popescu@leica-geosystems.com>
+ <c795aa28-b6a2-4db8-b941-05b51b44f1fe@lunn.ch>
+ <a4af4a08-6eea-420b-b76f-47f4e836b476@leica-geosystems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240111041015.47920-7-yi.l.liu@intel.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D3:EE_|DS0PR12MB8246:EE_
-X-MS-Office365-Filtering-Correlation-Id: add25741-69e0-4c84-54d6-08dc12c579f8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	r1H9MrnJuAxe7xQinXwmTWAstQk9OXCVLjPEGuXQWuX5Plb6YCp3eIHIU8YgnaRmhICHsnjwT9/ZiKTrzrhSO1YrJpApU0aou/PS+E6sAuLPCh6IJTzPIZkKH0xWhzDbNjDU9VdPLqKfPpgShL+uepPVK1ylDr+If98+5mKZyDJNMy+8Wb2BE7AzHOX7SWqEOdVMM77XPsTdu5e+M3CLkctwmWh6OIzZ2QYHGwdVjMcyuu75h5BAfm1bLJj+JP1BSPhLCE27CUPeHX5NnPP2PtJoQeKZAeNPMLU0b7LytsOV9b2oGLf2ZDiBEJV8vVlFqAzhwdXaLQHTPZJdPcQyOdLp4hZKckdCZ/830gYxhBz6nCDEbh0DwweL1nCS+LOwrpZKsqcXNmVGZRDNNPbdjqnIeGoDwngCgfqwXn6ZRfoBHOpIetzioVD/h8StI7uesC7SrEyE+wod3KBCGSnJSeey9x5UuGp3Usd83kYx9ZgrfVN/Q207jbhFeJgWMdguQCbLED8arjRbjgRsVF624c88ohKrNlIK8vGdRee7rPC5U1aAoSSehrK4NQ79tbEeee1dX4EpPMfWNKx4btxjxRb6UbyC/s5iX3k8p5cc6dLSTB1lU7yx9ifUlFOHVcizAHYVIjbDMx0Y5Yv7qZe1dkh6osAu3N/HVEWkWM+tvMT2VcRrFqk1Dtl9gsZgLM2+fPfVcHO3uBm7oqV0F5gVjFZNqNoN9BC23w7esf+U7pWSCTzKdl+3c0OdMAe1cxat
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(39860400002)(396003)(230922051799003)(451199024)(186009)(82310400011)(64100799003)(1800799012)(46966006)(36840700001)(40470700004)(55016003)(40480700001)(40460700003)(83380400001)(9686003)(26005)(336012)(426003)(86362001)(7636003)(356005)(5660300002)(4326008)(47076005)(4744005)(7416002)(82740400003)(36860700001)(8936002)(6916009)(316002)(8676002)(70206006)(70586007)(41300700001)(33716001)(478600001)(54906003)(2906002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 16:50:54.2536
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: add25741-69e0-4c84-54d6-08dc12c579f8
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8246
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a4af4a08-6eea-420b-b76f-47f4e836b476@leica-geosystems.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Jan 10, 2024 at 08:10:13PM -0800, Yi Liu wrote:
-> +#define test_cmd_hwpt_invalidate(hwpt_id, reqs, data_type, lreq, nreqs)        \
-> +       ({                                                                    \
-> +               ASSERT_EQ(0,                                                  \
-> +                         _test_cmd_hwpt_invalidate(self->fd, hwpt_id, reqs,  \
-> +                                                   data_type,                 \
-> +                                                   lreq, nreqs));            \
-> +       })
-> +#define test_err_hwpt_invalidate(_errno, hwpt_id, reqs, data_type, lreq,    \
-> +                                nreqs)                                    \
-> +       ({                                                                 \
-> +               EXPECT_ERRNO(_errno,                                       \
-> +                            _test_cmd_hwpt_invalidate(self->fd, hwpt_id,  \
-> +                                                      reqs, data_type,     \
-> +                                                      lreq, nreqs));      \
-> +       })
+On Thu, Jan 11, 2024 at 04:45:26PM +0000, POPESCU Catalin wrote:
+> On 11.01.24 17:35, Andrew Lunn wrote:
+> > [You don't often get email from andrew@lunn.ch. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> >
+> > This email is not from Hexagon’s Office 365 instance. Please be careful while clicking links, opening attachments, or replying to this email.
+> >
+> >
+> > On Thu, Jan 11, 2024 at 05:19:25PM +0100, Catalin Popescu wrote:
+> >> Add property ti,cfg-dac-minus to allow for voltage tuning
+> >> of logical level -1 of the MLT-3 encoded data.
+> >>
+> >> Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+> >> ---
+> >>   Documentation/devicetree/bindings/net/ti,dp83822.yaml | 9 +++++++++
+> >>   1 file changed, 9 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/net/ti,dp83822.yaml b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
+> >> index db74474207ed..2f010333be49 100644
+> >> --- a/Documentation/devicetree/bindings/net/ti,dp83822.yaml
+> >> +++ b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
+> >> @@ -62,6 +62,15 @@ properties:
+> >>          for the PHY.  The internal delay for the PHY is fixed to 3.5ns relative
+> >>          to transmit data.
+> >>
+> >> +  ti,cfg-dac-minus:
+> >> +    description: |
+> >> +       DP83826 PHY only.
+> >> +       Sets the voltage ratio of the logical level -1 for the MLT-3 encoded data.
+> >> +       0 = 50%, 1 = 56.25%, 2 = 62.50%, 3 = 68.75%, 4 = 75%, 5 = 81.25%, 6 = 87.50%,
+> >> +       7 = 93.75%, 8 = 100%, 9 = 106.25%, 10 = 112.50%, 11 = 118.75%, 12 = 125%,
+> >> +       13 = 131.25%, 14 = 137.50%, 15 = 143.75%, 16 = 150%.
+> >> +    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+> > We try to avoid register values in DT. We use real units. This is a
+> > voltage you are configuring, so can you change the unit to millivolts?
+> > Have the driver do the conversion of volts to register value.
+> >
+> > Is it possible to configure any of the other logical levels?
+> 
+> Hi Andrew,
+> These are not raw register values and these are not voltage values but 
+> voltage ratios. I'm mapping the voltage ratios to enum values [0-16] 
+> which are converted to register raw values by the driver. I don't see a 
+> better way to do this.
 
-Nit: spaces at the end of the four lines above that have string
-"data_type" are all misaligned, probably because of the previous
-replacement of "req_type".
+	enum: [ 5000, 5625, 6250, 6875, 7500, 8125, 8750, 9375, 10000,
+		10625, 11250, 11875, 12500 13125, 13750, 14375, 15000 ]
+
+?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
