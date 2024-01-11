@@ -1,74 +1,175 @@
-Return-Path: <linux-kernel+bounces-23566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4CC582AE7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:11:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A4082AE7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82B4928272B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:11:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2CF81C22ED2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BF115ADC;
-	Thu, 11 Jan 2024 12:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689C315AE3;
+	Thu, 11 Jan 2024 12:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="oTHMTNT0"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="o81DRlNB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qlKv6ltC";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="sQsB0ZdR";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="amNtEnDw"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC8B156F1;
-	Thu, 11 Jan 2024 12:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704975069;
-	bh=JoNVGy3prTtj6KB8xH3XbN107wiiB9Z+sGXeVeLEWtg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oTHMTNT0Xdpc9FO1L4NFQrlq5l+F8LDpvvgjPO1Yx930x1m0v52PbMHWT80m8yAI5
-	 wNfnvRzOE5OeF47cH43rXVc3Vai32YTeJjbhEHdiMaAknl6Zd/ZDEO4D/IqDa5bzzN
-	 89nx748fV8VIXMc0+Z2DOdLcTUVmPsGmccZ/CNLyqYlQXx/9X96R2NLfvJRQKfkFVf
-	 7t2W4PSG63mKdLtn9HvmuggSnIG0OqIewhS4gXg06pVUnNX17g2ZCTYnxTDnBjMFGr
-	 iDT2N1vN50tq9JGgy+Tsmsh9//keZyGD9X548nxJ1mwDIDdE86FBKwcNwBXJIkQysc
-	 GPRsjxqHOAHGw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D0115AC1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 790CA3781FCD;
-	Thu, 11 Jan 2024 12:11:08 +0000 (UTC)
-Message-ID: <c5491483-8d34-498e-a82e-8f77b5c69a37@collabora.com>
-Date: Thu, 11 Jan 2024 13:11:07 +0100
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E227922176;
+	Thu, 11 Jan 2024 12:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704975114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kQ6EiKm9+zrf1MVWJnt/w6kWyLkf78kIw+Odu+lYT2E=;
+	b=o81DRlNBhyKgF449fCfHaSiTvUqz4GH5axcaaauVQ9LP7gd8UO+lz2uzIyLahln2/0n5iT
+	lM54iIpCwlPs8FglsYmDy1gspN/5lpeFljQ39GsJW1GORt962c9W6hy8Mwqnr857VZhWUo
+	CtCLU7Coq4FhzpBpXr2XMfRc7ySayiY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704975114;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kQ6EiKm9+zrf1MVWJnt/w6kWyLkf78kIw+Odu+lYT2E=;
+	b=qlKv6ltCsChaGIz2v/fTuMnhKeM7v8cDWpAhUC3Yau7+FK6/HcxwtLWQNxy7lJmBn+jKhC
+	qryvdVnTFxGfppBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704975111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kQ6EiKm9+zrf1MVWJnt/w6kWyLkf78kIw+Odu+lYT2E=;
+	b=sQsB0ZdRGtVfjASu6ct/7u6Lxw4XihBNofXPVG0AR0c8sLPvVHShfuT8uYox+WULhWDcUS
+	oK7lPbObYuWsH/cyKtRea09BUm1yrks9zaiiPBpOmh4hq1EmXxfp9R9VnpSnmyEUw1ikah
+	xX4iyB2t6lgjXVNzKhl1KXAJGPiTcVs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704975111;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kQ6EiKm9+zrf1MVWJnt/w6kWyLkf78kIw+Odu+lYT2E=;
+	b=amNtEnDwOc7rA/6MhLUL9Qq96Bc0F2XCBudpEEm68Innrln+gsZ25Gj+AHAVQcfZC0dOKj
+	oWFFqbHrIZcMKKAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 972A513635;
+	Thu, 11 Jan 2024 12:11:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id j4pkIwfbn2VfHwAAD6G6ig
+	(envelope-from <aherrmann@suse.de>); Thu, 11 Jan 2024 12:11:51 +0000
+Date: Thu, 11 Jan 2024 13:12:13 +0100
+From: Andreas Herrmann <aherrmann@suse.de>
+To: Neal Gompa <neal@gompa.dev>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>,
+	Jason Gunthorpe <jgg@nvidia.com>, jirislaby@kernel.org,
+	dhowells@redhat.com, linux-kernel@vger.kernel.org,
+	pinskia@gmail.com, kent.overstreet@linux.dev
+Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+Message-ID: <20240111121213.GC4609@alberich>
+References: <fa64c852-01c4-4e4c-8b89-14db5e0088d0@p183>
+ <CAEg-Je9ahyp+asVHCcMr7KXYqDRzxJnQmqYcz1V+LH3ZEfT+Ww@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] pstore/ram: Register to module device table
-Content-Language: en-US
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Kees Cook <keescook@chromium.org>
-Cc: kernel@collabora.com, "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- Tony Luck <tony.luck@intel.com>, linux-hardening@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240110210600.787703-1-nfraprado@collabora.com>
- <20240110210600.787703-2-nfraprado@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240110210600.787703-2-nfraprado@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEg-Je9ahyp+asVHCcMr7KXYqDRzxJnQmqYcz1V+LH3ZEfT+Ww@mail.gmail.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=sQsB0ZdR;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=amNtEnDw
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.18 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.17)[69.79%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[linuxfoundation.org:url,suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[gmail.com,zytor.com,nvidia.com,kernel.org,redhat.com,vger.kernel.org,linux.dev];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -1.18
+X-Rspamd-Queue-Id: E227922176
+X-Spam-Flag: NO
 
-Il 10/01/24 22:05, Nícolas F. R. A. Prado ha scritto:
-> Register the compatible for this module on the module device table so
-> it can be automatically loaded when a matching DT node is present,
-> allowing logging of panics and oopses without any intervention.
+On Thu, Jan 11, 2024 at 05:58:51AM -0500, Neal Gompa wrote:
+> On Thu, Jan 11, 2024 at 5:56 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> >
+> > > SFINAE giving inscrutable errors is why I'm saying C++20,
+> > > since "concept" means you can get usable error messages.
+> >
+> > I'd say concepts are irrelevant for the kernel where standard library is
+> > tightly controlled by the same people who write rest of the kernel and
+> > no external users.
+> >
+> > static_assert() is all you need.
 > 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> We have external users all the time, though. People who write external
+> modules or new modules would fall in that classification. Why should
+> it be harder for them?
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+I guess, I misunderstand something.
 
+But WRT to the term 'external module' I have some comment.
 
+My personal opinion is somewhat reflected in following article:
+
+https://www.linuxfoundation.org/blog/blog/the-people-who-support-linux-snowden-revelations-spur-engineers-open-source-donation
+(The People Who Support Linux: Snowden Revelations Spur Engineer's
+Open Source Donation) [The Linux Foundation | 18 December 2013]
+
+  „“The public needs fully open source OSes, where experts can review
+  the whole code, to minimize the risk of hidden backdoors,” said
+  Kies.“
+
+Thinking more about this.
+
+What exactly was the reason to allow Rust in the kernel?
+
+What exactly is the reason to allow C++ in the kernel?
+
+Besides, I think in general that complexity can be destructive -- even
+in a world without bad actors.
+
+> -- 
+> 真実はいつも一つ！/ Always, there's only one truth!
 
