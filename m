@@ -1,252 +1,142 @@
-Return-Path: <linux-kernel+bounces-23224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7BE782A92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:33:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE2E82A931
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:35:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8DBA284868
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:33:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E0C21F24660
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676A9F9F3;
-	Thu, 11 Jan 2024 08:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC44FBE9;
+	Thu, 11 Jan 2024 08:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KaF6d0Hg"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9DDE558;
-	Thu, 11 Jan 2024 08:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7509EC85;
-	Thu, 11 Jan 2024 09:31:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1704961903;
-	bh=ceQsDzx9kmf/zRBGPdmkZuFW/ytCU3PmUX8H/digl28=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KaF6d0HgOgcGH5ytchcHR12iaXtbe9jS/8O7JFfKq56ECJLgqHOMeT+x7+klEOV6w
-	 k2L2sKF6iMPG1hTMKE57TxRwoEjcl4NMzoLaLCdsgTHNsU97S6JhvB0fKVHW5HzMaE
-	 9L05waBXzHRRISrXXwIvUmqavUeChgPbWEMEXJNw=
-Date: Thu, 11 Jan 2024 10:32:55 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Julien Stephan <jstephan@baylibre.com>
-Cc: Andy Hsieh <andy.hsieh@mediatek.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	Florian Sylvestre <fsylvestre@baylibre.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-	Louis Kuo <louis.kuo@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Phi-bang Nguyen <pnguyen@baylibre.com>,
-	Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 5/5] arm64: dts: mediatek: mt8365: Add support for
- camera
-Message-ID: <20240111083255.GC30988@pendragon.ideasonboard.com>
-References: <20240110141443.364655-1-jstephan@baylibre.com>
- <20240110141443.364655-6-jstephan@baylibre.com>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Vr0Vujg/"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E76F9D6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=4/Jx3JBI1HjdTdG8JO
+	PlsexBLCUAbZM6wJbiVlJEdV0=; b=Vr0Vujg/9yithDZdETK1ydxLa6oOHOFsAs
+	r/X1Y6mLJw7xhhlzG9ky7b/Mi/dP++d+EodnBo/FXuxxAiYIRPNUWaXAME+SBC2w
+	7bGxcimoOBzsFBwVMr0YZxMwzeGm9LviXGV9gvWJlwguoGlUwcT7iR5puVU+HSIp
+	EfGpSWB7w=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-0 (Coremail) with SMTP id _____wD3X7AqqJ9lWq2UAA--.19387S2;
+	Thu, 11 Jan 2024 16:34:50 +0800 (CST)
+From: GuoHua Chen <chenguohua_716@163.com>
+To: daniel@ffwll.ch,
+	Xinhui.Pan@amd.com,
+	alexander.deucher@amd.com,
+	airlied@gmail.com,
+	christian.koenig@amd.com
+Cc: dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	GuoHua Chen <chenguohua_716@163.com>
+Subject: [PATCH] drm/radeon: Clean up errors in si_dpm.h
+Date: Thu, 11 Jan 2024 08:34:48 +0000
+Message-Id: <20240111083448.12238-1-chenguohua_716@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD3X7AqqJ9lWq2UAA--.19387S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tFWrKF1DWF1xKF1rXw4Utwb_yoW8uw4UpF
+	srC343CrWkJr43ua43JFWUCF9I93srJrWIka1DG3yFy3WUZ34kCFn0kr4fZryxGrWF9w12
+	yrn2gFy5Ww1a9rDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UFdgAUUUUU=
+X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/1tbiqAti1mVOBlDTuwAAsC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240110141443.364655-6-jstephan@baylibre.com>
 
-Hi Julien,
+Fix the following errors reported by checkpatch:
 
-Thank you for the patch.
+ERROR: open brace '{' following struct go on the same line
+ERROR: open brace '{' following enum go on the same line
 
-On Wed, Jan 10, 2024 at 03:14:42PM +0100, Julien Stephan wrote:
-> Add base support for cameras for mt8365 platforms. This requires nodes
-> for the sensor interface, camsv, and CSI receivers.
-> 
-> Signed-off-by: Julien Stephan <jstephan@baylibre.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8365.dtsi | 128 +++++++++++++++++++++++
->  1 file changed, 128 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8365.dtsi b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-> index 24581f7410aa..9059b2f83b83 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-> @@ -10,6 +10,7 @@
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/phy/phy.h>
->  #include <dt-bindings/power/mediatek,mt8365-power.h>
-> +#include <dt-bindings/memory/mediatek,mt8365-larb-port.h>
->  
->  / {
->  	compatible = "mediatek,mt8365";
-> @@ -703,6 +704,133 @@ ethernet: ethernet@112a0000 {
->  			status = "disabled";
->  		};
->  
-> +		camsv1: camsv@15050000 {
-> +			compatible = "mediatek,mt8365-camsv";
-> +			reg = <0 0x15050000 0 0x0040>,
-> +			      <0 0x15050208 0 0x0020>,
-> +			      <0 0x15050400 0 0x0100>;
-> +			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_LOW>;
-> +			clocks = <&camsys CLK_CAM>,
-> +				 <&camsys CLK_CAMTG>,
-> +				 <&camsys CLK_CAMSV0>;
-> +			clock-names = "cam", "camtg", "camsv";
-> +			iommus = <&iommu M4U_PORT_CAM_IMGO>;
-> +			mediatek,larb = <&larb2>;
-> +			power-domains = <&spm MT8365_POWER_DOMAIN_CAM>;
-> +			status = "disabled";
-> +
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				port@0 {
-> +					reg = <0>;
-> +					camsv1_endpoint: endpoint {
-> +						remote-endpoint =
-> +							<&seninf_camsv1_endpoint>;
+Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
+---
+ drivers/gpu/drm/radeon/si_dpm.h | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-I think you can keep this on a single line. Same below.
-
-> +					};
-> +				};
-> +			};
-> +		};
-> +
-> +		camsv2: camsv@15050800 {
-> +			compatible = "mediatek,mt8365-camsv";
-> +			reg = <0 0x15050800 0 0x0040>,
-> +			      <0 0x15050228 0 0x0020>,
-> +			      <0 0x15050C00 0 0x0100>;
-
-Lower-case hex constants.
-
-> +			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_LOW>;
-> +			clocks = <&camsys CLK_CAM>,
-> +				 <&camsys CLK_CAMTG>,
-> +				 <&camsys CLK_CAMSV1>;
-> +			clock-names = "cam", "camtg", "camsv";
-> +			iommus = <&iommu M4U_PORT_CAM_IMGO>;
-> +
-
-Nitpicking, camsv doesn't have a blank line here. I'm fine either way,
-but please do the same for both nodes.
-
-> +			mediatek,larb = <&larb2>;
-> +			power-domains = <&spm MT8365_POWER_DOMAIN_CAM>;
-> +			status = "disabled";
-> +
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				port@0 {
-> +					reg = <0>;
-> +					camsv2_endpoint: endpoint {
-> +						remote-endpoint =
-> +							<&seninf_camsv2_endpoint>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +
-> +		seninf: seninf@15040000 {
-
-This should go before the two camsv instances to keep nodes sorted by
-address. The camsv1, camsv2 and seninf nodes need to be moved further
-down for the same reason.
-
-> +			compatible = "mediatek,mt8365-seninf";
-> +			reg = <0 0x15040000 0 0x6000>;
-> +			interrupts = <GIC_SPI 210 IRQ_TYPE_LEVEL_LOW>;
-> +			clocks = <&camsys CLK_CAM_SENIF>,
-> +				 <&topckgen CLK_TOP_SENIF_SEL>;
-> +			clock-names = "camsys", "top_mux";
-> +
-> +			power-domains = <&spm MT8365_POWER_DOMAIN_CAM>;
-> +
-> +			phys = <&mipi_csi0 PHY_TYPE_DPHY>, <&mipi_csi1>;
-> +			phy-names = "csi0", "csi1";
-> +
-> +			status = "disabled";
-> +
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				port@0 {
-> +					reg = <0>;
-> +				};
-> +
-> +				port@1 {
-> +					reg = <1>;
-> +				};
-> +
-> +				port@2 {
-> +					reg = <2>;
-> +				};
-> +
-> +				port@3 {
-> +					reg = <3>;
-> +				};
-> +
-> +				port@4 {
-> +					reg = <4>;
-> +					seninf_camsv1_endpoint: endpoint {
-> +						remote-endpoint =
-> +							<&camsv1_endpoint>;
-> +					};
-> +				};
-> +
-> +				port@5 {
-> +					reg = <5>;
-> +					seninf_camsv2_endpoint: endpoint {
-> +						remote-endpoint =
-> +							<&camsv2_endpoint>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +
-> +		mipi_csi0: mipi-csi0@11c10000 {
-> +			compatible = "mediatek,mt8365-csi-rx";
-> +			reg = <0 0x11C10000 0 0x2000>;
-
-Lower-case hex constants.
-
-> +			status = "disabled";
-> +			num-lanes = <4>;
-> +			#phy-cells = <1>;
-> +		};
-> +
-> +		mipi_csi1: mipi-csi1@11c12000 {
-> +			compatible = "mediatek,mt8365-csi-rx";
-> +			reg = <0 0x11C12000 0 0x2000>;
-
-Lower-case hex constants.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +			phy-type = <PHY_TYPE_DPHY>;
-> +			status = "disabled";
-> +			num-lanes = <4>;
-> +			#phy-cells = <0>;
-> +		};
-> +
->  		u3phy: t-phy@11cc0000 {
->  			compatible = "mediatek,mt8365-tphy", "mediatek,generic-tphy-v2";
->  			#address-cells = <1>;
-
+diff --git a/drivers/gpu/drm/radeon/si_dpm.h b/drivers/gpu/drm/radeon/si_dpm.h
+index aa857906ef93..4887edebd348 100644
+--- a/drivers/gpu/drm/radeon/si_dpm.h
++++ b/drivers/gpu/drm/radeon/si_dpm.h
+@@ -26,15 +26,13 @@
+ #include "ni_dpm.h"
+ #include "sislands_smc.h"
+ 
+-enum si_cac_config_reg_type
+-{
++enum si_cac_config_reg_type {
+ 	SISLANDS_CACCONFIG_MMR = 0,
+ 	SISLANDS_CACCONFIG_CGIND,
+ 	SISLANDS_CACCONFIG_MAX
+ };
+ 
+-struct si_cac_config_reg
+-{
++struct si_cac_config_reg {
+ 	u32 offset;
+ 	u32 mask;
+ 	u32 shift;
+@@ -42,8 +40,7 @@ struct si_cac_config_reg
+ 	enum si_cac_config_reg_type type;
+ };
+ 
+-struct si_powertune_data
+-{
++struct si_powertune_data {
+ 	u32 cac_window;
+ 	u32 l2_lta_window_size_default;
+ 	u8 lts_truncate_default;
+@@ -56,8 +53,7 @@ struct si_powertune_data
+ 	bool enable_powertune_by_default;
+ };
+ 
+-struct si_dyn_powertune_data
+-{
++struct si_dyn_powertune_data {
+ 	u32 cac_leakage;
+ 	s32 leakage_minimum_temperature;
+ 	u32 wintime;
+@@ -68,8 +64,7 @@ struct si_dyn_powertune_data
+ 	bool disable_uvd_powertune;
+ };
+ 
+-struct si_dte_data
+-{
++struct si_dte_data {
+ 	u32 tau[SMC_SISLANDS_DTE_MAX_FILTER_STAGES];
+ 	u32 r[SMC_SISLANDS_DTE_MAX_FILTER_STAGES];
+ 	u32 k;
+@@ -122,8 +117,7 @@ struct si_mc_reg_table {
+ #define SISLANDS_MCREGISTERTABLE_ULV_SLOT                   2
+ #define SISLANDS_MCREGISTERTABLE_FIRST_DRIVERSTATE_SLOT     3
+ 
+-struct si_leakage_voltage_entry
+-{
++struct si_leakage_voltage_entry {
+ 	u16 voltage;
+ 	u16 leakage_index;
+ };
+@@ -131,8 +125,7 @@ struct si_leakage_voltage_entry
+ #define SISLANDS_LEAKAGE_INDEX0     0xff01
+ #define SISLANDS_MAX_LEAKAGE_COUNT  4
+ 
+-struct si_leakage_voltage
+-{
++struct si_leakage_voltage {
+ 	u16 count;
+ 	struct si_leakage_voltage_entry entries[SISLANDS_MAX_LEAKAGE_COUNT];
+ };
 -- 
-Regards,
+2.17.1
 
-Laurent Pinchart
 
