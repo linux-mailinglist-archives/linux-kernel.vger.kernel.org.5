@@ -1,310 +1,190 @@
-Return-Path: <linux-kernel+bounces-24091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1156782B6B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:35:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E3C82B6B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 290E91C23DF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:35:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31041F24C42
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1653D58202;
-	Thu, 11 Jan 2024 21:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB465813D;
+	Thu, 11 Jan 2024 21:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AWrg1wFM"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DJTHKdv/"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951FF3B198;
-	Thu, 11 Jan 2024 21:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40BLVRYY020187;
-	Thu, 11 Jan 2024 21:35:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=9skgMF499mKm9d9AVt+z+xIQxaH31o4zQYYS34pttdQ=; b=AW
-	rg1wFM51GGQkH89mh8sCCHiPuj1fzqjsqKRE4M68Pbbu1MUO27fBBO55mRV2F83x
-	nmwLtJ4t16QOlKckQ7TQ5YR5ThS3soYuAWNRi+/qfkp4YtCbUIC5tF4bCw/MhkZd
-	b8YgYKd0UBW8fYYmZXwDdccXcGYunmnkNJPa9VWQN5AJfERbWr8CFK38ni+57c0k
-	qMC7pdOrF2X9O3ll1QVnGwt4Ba0fTye3k5B2lMW/agof9ezk5ERP/jSjeXMuwgiZ
-	XPPpONtzUAdd7AJ5H1HJz2HZXSiXPZ+uQXE/APhXdyFIe96+dYoUMGDJcjcjO+U0
-	etkq8A9mwidJMCjtelzw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vj6c8jnmv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 21:35:34 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40BLZXou024192
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 21:35:33 GMT
-Received: from [10.110.91.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 11 Jan
- 2024 13:35:31 -0800
-Message-ID: <d2fc43b0-6a7b-9d50-238b-c95439695a0f@quicinc.com>
-Date: Thu, 11 Jan 2024 13:35:23 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010975812A;
+	Thu, 11 Jan 2024 21:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dcNHeXyWsCeuK8QU1ynNgYqRNJDELOULotpgcEtBnMfm64zn5qHwc+lR8By0jATnkHMkPkH4O4iWH46IkDY9ZMiM8kg57B0zN6A1hB89UuYnmI9IDfPEHaxRFGuIFS3J8I3Ai3h1KPBa59JTFKWeJPEkEAdGQU8vAgr6TPh/BBRKoM/LFy7UW15S5qRKz9NB57YHPrc5Oq0iZ/lgn4ZEH7MJSjMFzDvkGIRzcK0jAL5b3GB7kvD3rGlRMiit4TSEXjAcINM0LZyhSANOld+sIOLdlUtXM/CYgyfZo5Po9nZ20FcSJGrkn43PGPPKkmh7J+cOjStMWxJKnoanumolQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mUGBdvFRJoKNunvDpVhX3b2OSKK0vcwR0PcHsj2STP0=;
+ b=DTYGX+ok8UVi+tKholdq+BgjaxR/u3z8GDRe6rpXZH0fE1aEADdhV0QvATfpSefYJ1BsbWTZMoMs3AvzL8uzVzE+eatpM8REQ+pbjQJDBnngJ0csRM2gihMWpk+8npwqSxksGUw22TgpUbvXfX6BXZdPE1ygeA063cjzEdPM/VLOKfpr5wcPNkW1+fZElgNtpSoADBqRRfObHutsezsi/c8Jve5Xf3lzy8AR8VloagdaxUDZMF0jg2gk5IBiBpEzjzydxsjKVN+qJ/PEmI3ubGQ07Z2wj9Wi6FuCuYBFRhMgyl/JP88Ja0JMPEPJvUxBsCnQvETOuLlGclpk/TdPAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mUGBdvFRJoKNunvDpVhX3b2OSKK0vcwR0PcHsj2STP0=;
+ b=DJTHKdv/n9EJEwgGdSbtiGmQ6+vMaiEmlL9PPe0pof1RYj0mBxI5evor4yCUZTilc4ovHtr2uFjZ+b1IqRCSbinOpnn3SD3RMLB8D+a9V23ptGipuV73Xr3bfq3BB/nnympQwuaa5cwFfVZOXrwvS4+FN17H0/RaRlEBLvxxau0=
+Received: from SN7PR04CA0209.namprd04.prod.outlook.com (2603:10b6:806:126::34)
+ by DS7PR12MB6167.namprd12.prod.outlook.com (2603:10b6:8:98::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Thu, 11 Jan
+ 2024 21:36:51 +0000
+Received: from SA2PEPF000015CB.namprd03.prod.outlook.com
+ (2603:10b6:806:126:cafe::ba) by SN7PR04CA0209.outlook.office365.com
+ (2603:10b6:806:126::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21 via Frontend
+ Transport; Thu, 11 Jan 2024 21:36:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF000015CB.mail.protection.outlook.com (10.167.241.201) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7181.14 via Frontend Transport; Thu, 11 Jan 2024 21:36:50 +0000
+Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 11 Jan
+ 2024 15:36:49 -0600
+From: Babu Moger <babu.moger@amd.com>
+To: <corbet@lwn.net>, <fenghua.yu@intel.com>, <reinette.chatre@intel.com>,
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>
+CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
+	<seanjc@google.com>, <kim.phillips@amd.com>, <babu.moger@amd.com>,
+	<jmattson@google.com>, <ilpo.jarvinen@linux.intel.com>,
+	<jithu.joseph@intel.com>, <kan.liang@linux.intel.com>, <nikunj@amd.com>,
+	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
+	<rick.p.edgecombe@intel.com>, <rppt@kernel.org>,
+	<maciej.wieczor-retman@intel.com>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <eranian@google.com>,
+	<peternewman@google.com>, <dhagiani@amd.com>
+Subject: [PATCH v4 1/2] x86/resctrl: Remove hard-coded memory bandwidth limit
+Date: Thu, 11 Jan 2024 15:36:42 -0600
+Message-ID: <17c7637800df96101aace53b2013eea6d67c97b4.1705009003.git.babu.moger@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231201005720.235639-1-babu.moger@amd.com>
+References: <20231201005720.235639-1-babu.moger@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] drm/msm/dp: correct configure Colorimetry Indicator
- Field at MISC0
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1704917888-30039-1-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJprkotYgo8je2+N=aZGxEReHgLR_rooKQBOWqRn+dgKtSQ@mail.gmail.com>
-Content-Language: en-US
-From: Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJprkotYgo8je2+N=aZGxEReHgLR_rooKQBOWqRn+dgKtSQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4UGW-jkM4Od05Vr8fR_pNzvHGV1hb-lE
-X-Proofpoint-GUID: 4UGW-jkM4Od05Vr8fR_pNzvHGV1hb-lE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- clxscore=1015 mlxlogscore=999 adultscore=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2401110168
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CB:EE_|DS7PR12MB6167:EE_
+X-MS-Office365-Filtering-Correlation-Id: 050e7f43-421e-4550-47d6-08dc12ed6c22
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	O4TpIy3XpkH7G7AUSxiRiiCxL2jEVxrZKm+ViBvZWPXvVvrS0O6FtZNZlYxqDlKEd4sJFhCvMG+u3drHp6gA3TdQClCicsXxfc27aPCRatsOdcs6hDY0gIEsbz/JSmjI4mNr2BDLAzJ/KkvaOJZytvt1bcxwxbmqv/OV/S2huMbHRXa/XKlP6s4xpNDcK9hPa/CUnArwPN1SuZx/b6awySEJKCudGv12q/mmd44JXtpMmXi1C/+gS5T13Ws0KJVM3npaTsoZ7+yLQQ5+HFZCyP10YPGHU+j/LwmnDgWMZMzfLQ0MHpsFSGqehq43HI/jo/G6Pf2mn/AugyKONKeBmLL3lDG+D7bP1QFLFqYfdFP7L/pyZ9awiz8nfww7SPuhU10hcbEgfUBGk1qO6hJKx+18L+lzz4wg8MTU7v3VfXe+KRt/xaHP/E69s9FgWVwnYhW5Tc3ktJK6TRSykCLd6oV5BHKYfL4qgJ1ytZFrfoAb2A8oh73yIpy8sKKB4knY8eUYgGCwS0ck+aMZmD/LatMPcR6DZDYpDb4lG5T7R+GqDwGngOQFJtfoGMkpnB7BQ78bQwKKS25zZpTjuVsiupkWcsOZrw2He1hsXL8cF2lhQPB0udx4+39OtnSQ9XVFFQK02w1nr8Yvlw6vzQ1+bpKa1ZyoBzgp8vo0v6vCugE40sMr4eUxaXSQbD0SuG+3Azb9sPgV9/GAx9F6xNzcIeORBjzKxH8cdc+H67wRwGiKafXOYQTblbeQfcCt9AjqLder1+zMORLu39vJAU0B4QrDkR/M1jB5Aeuyxv1UmQE=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(39860400002)(396003)(136003)(230922051799003)(451199024)(82310400011)(1800799012)(186009)(64100799003)(36840700001)(46966006)(40470700004)(83380400001)(16526019)(336012)(426003)(26005)(2616005)(82740400003)(36860700001)(47076005)(4326008)(44832011)(8676002)(5660300002)(7416002)(7696005)(966005)(110136005)(2906002)(6666004)(8936002)(478600001)(54906003)(316002)(70206006)(41300700001)(356005)(36756003)(81166007)(70586007)(86362001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 21:36:50.9721
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 050e7f43-421e-4550-47d6-08dc12ed6c22
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF000015CB.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6167
 
+The QOS Memory Bandwidth Enforcement Limit is reported by
+CPUID_Fn80000020_EAX_x01 and CPUID_Fn80000020_EAX_x02.
+Bits Description
+31:0 BW_LEN: Size of the QOS Memory Bandwidth Enforcement Limit.
 
-On 1/10/2024 3:38 PM, Dmitry Baryshkov wrote:
-> On Wed, 10 Jan 2024 at 22:18, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->> MSA MISC0 bit 1 to 7 contains Colorimetry Indicator Field. At current
->> implementation, Colorimetry Indicator Field of MISC0 is not configured
->> correctly. This patch add support of RGB formats Colorimetry.
-> https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
->
-> Also the commit message doesn't provide any details or what was incorrect.
->
->> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
->> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/dp/dp_ctrl.c  |  5 ++--
->>   drivers/gpu/drm/msm/dp/dp_link.c  | 26 ++++++++++++++++-----
->>   drivers/gpu/drm/msm/dp/dp_panel.c | 48 +++++++++++++++++++++++++++++++++++++++
->>   drivers/gpu/drm/msm/dp/dp_panel.h |  2 ++
->>   4 files changed, 73 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index 77a8d93..2ef89fb 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -1,6 +1,7 @@
->>   // SPDX-License-Identifier: GPL-2.0-only
->>   /*
->> - * Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2012-2023, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved
->>    */
->>
->>   #define pr_fmt(fmt)    "[drm-dp] %s: " fmt, __func__
->> @@ -172,7 +173,7 @@ static void dp_ctrl_configure_source_params(struct dp_ctrl_private *ctrl)
->>
->>          tb = dp_link_get_test_bits_depth(ctrl->link,
->>                  ctrl->panel->dp_mode.bpp);
->> -       cc = dp_link_get_colorimetry_config(ctrl->link);
->> +       cc = dp_panel_get_misc_colorimetry_val(ctrl->panel);
->>          dp_catalog_ctrl_config_misc(ctrl->catalog, cc, tb);
->>          dp_panel_timing_cfg(ctrl->panel);
->>   }
->> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
->> index 98427d4..21fa1a2 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_link.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
->> @@ -1,6 +1,7 @@
->>   // SPDX-License-Identifier: GPL-2.0-only
->>   /*
->>    * Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved
->>    */
->>
->>   #define pr_fmt(fmt)    "[drm-dp] %s: " fmt, __func__
->> @@ -12,6 +13,11 @@
->>
->>   #define DP_TEST_REQUEST_MASK           0x7F
->>
->> +enum dynamic_range {
->> +       DP_DYNAMIC_RANGE_RGB_VESA,
->> +       DP_DYNAMIC_RANGE_RGB_CEA,
->> +};
->> +
->>   enum audio_sample_rate {
->>          AUDIO_SAMPLE_RATE_32_KHZ        = 0x00,
->>          AUDIO_SAMPLE_RATE_44_1_KHZ      = 0x01,
->> @@ -1083,6 +1089,7 @@ int dp_link_process_request(struct dp_link *dp_link)
->>   int dp_link_get_colorimetry_config(struct dp_link *dp_link)
->>   {
->>          u32 cc;
->> +       enum dynamic_range dr;
->>          struct dp_link_private *link;
->>
->>          if (!dp_link) {
->> @@ -1092,14 +1099,21 @@ int dp_link_get_colorimetry_config(struct dp_link *dp_link)
->>
->>          link = container_of(dp_link, struct dp_link_private, dp_link);
->>
->> -       /*
->> -        * Unless a video pattern CTS test is ongoing, use RGB_VESA
->> -        * Only RGB_VESA and RGB_CEA supported for now
->> -        */
->> +       /* unless a video pattern CTS test is ongoing, use CEA_VESA */
->>          if (dp_link_is_video_pattern_requested(link))
->> -               cc = link->dp_link.test_video.test_dyn_range;
->> +               dr = link->dp_link.test_video.test_dyn_range;
-> test_dyn_range has the value of (dpcd[DP_TEST_MISC0] &
-> DP_TEST_DYNAMIC_RANGE_CEA), so it can not be assigned to dr.
->
-> I don't feel like this has been tested.
+Newer processors can support higher bandwidth limit than the current
+hard-coded value. Remove the hard-coded value and detect using CPUID
+command. Also update the register variables eax and edx to match the
+AMD CPUID definition.
 
-yes, you are correct.
+The CPUID details are documented in the PPR listed below [1].
+[1] Processor Programming Reference (PPR) Vol 1.1 for AMD Family 19h Model
+11h B1 - 55901 Rev 0.25.
 
-This code derived from down stream code.
+Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+---
+v4: Minor text changes and re-order of commit tags.
+v3: No change. Just updated with Reviewed-by
 
-I will fix it.
+v2: Earlier Sent as a part of ABMC feature.
+    https://lore.kernel.org/lkml/20231201005720.235639-1-babu.moger@amd.com/
+    Sending it separate now. Addressed comments from Reinette about registers
+    being used from Intel definition. Also updated commit message.
+---
+ arch/x86/kernel/cpu/resctrl/core.c     | 10 ++++------
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 -
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
->>          else
->> -               cc = DP_TEST_DYNAMIC_RANGE_VESA;
->> +               dr = DP_DYNAMIC_RANGE_RGB_VESA;
->> +
->> +       /* Only RGB_VESA and RGB_CEA supported for now */
->> +       switch (dr) {
->> +       case DP_DYNAMIC_RANGE_RGB_CEA:
->> +               cc = BIT(2);
-> No undefined magic, please.
->
->> +               break;
->> +       case DP_DYNAMIC_RANGE_RGB_VESA:
->> +       default:
->> +               cc = 0;
->> +       }
->>
->>          return cc;
->>   }
->> diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
->> index 127f6af..785bb59 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_panel.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_panel.c
->> @@ -1,6 +1,7 @@
->>   // SPDX-License-Identifier: GPL-2.0-only
->>   /*
->>    * Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved
->>    */
->>
->>   #include "dp_panel.h"
->> @@ -386,6 +387,53 @@ int dp_panel_init_panel_info(struct dp_panel *dp_panel)
->>          return 0;
->>   }
->>
->> +/*
->> + * Mapper function which outputs colorimetry to be used for a
->> + * given colorspace value when misc field of MSA is used to
->> + * change the colorimetry. Currently only RGB formats have been
->> + * added. This API will be extended to YUV once it's supported on DP.
->> + */
->> +u8 dp_panel_get_misc_colorimetry_val(struct dp_panel *dp_panel)
->> +{
->> +       u8 colorimetry;
->> +       u32 colorspace;
->> +       u32 cc;
->> +       struct dp_panel_private *panel;
->> +
->> +       panel = container_of(dp_panel, struct dp_panel_private, dp_panel);
->> +
->> +       cc = dp_link_get_colorimetry_config(panel->link);
->> +       /*
->> +        * If there is a non-zero value then compliance test-case
->> +        * is going on, otherwise we can honor the colorspace setting
->> +        */
->> +       if (cc)
->> +               return cc;
->> +
->> +       colorspace = dp_panel->connector->state->colorspace;
-> The driver doesn't attach the colorspace property, so this part is
-> useless. Anyway, I think adding colorimetry support will require more
-> changes than just setting the register in the DisplayPort controller.
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 19e0681f0435..d04371e851b4 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -231,9 +231,7 @@ static bool __get_mem_config_intel(struct rdt_resource *r)
+ static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
+ {
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+-	union cpuid_0x10_3_eax eax;
+-	union cpuid_0x10_x_edx edx;
+-	u32 ebx, ecx, subleaf;
++	u32 eax, ebx, ecx, edx, subleaf;
+ 
+ 	/*
+ 	 * Query CPUID_Fn80000020_EDX_x01 for MBA and
+@@ -241,9 +239,9 @@ static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
+ 	 */
+ 	subleaf = (r->rid == RDT_RESOURCE_SMBA) ? 2 :  1;
+ 
+-	cpuid_count(0x80000020, subleaf, &eax.full, &ebx, &ecx, &edx.full);
+-	hw_res->num_closid = edx.split.cos_max + 1;
+-	r->default_ctrl = MAX_MBA_BW_AMD;
++	cpuid_count(0x80000020, subleaf, &eax, &ebx, &ecx, &edx);
++	hw_res->num_closid = edx + 1;
++	r->default_ctrl = 1 << eax;
+ 
+ 	/* AMD does not use delay */
+ 	r->membw.delay_linear = false;
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index a4f1aa15f0a2..d2979748fae4 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -18,7 +18,6 @@
+ #define MBM_OVERFLOW_INTERVAL		1000
+ #define MAX_MBA_BW			100u
+ #define MBA_IS_LINEAR			0x4
+-#define MAX_MBA_BW_AMD			0x800
+ #define MBM_CNTR_WIDTH_OFFSET_AMD	20
+ 
+ #define RMID_VAL_ERROR			BIT_ULL(63)
+-- 
+2.34.1
 
-agree,
-
-this is just provision here for the future.
-
-most likely, dp_panel->connector->state->colorspace will have value of 0 
-which will return colorimetry = 0 (legacy rgb mode) at end of this function.
-
->
->> +       drm_dbg_dp(panel->drm_dev, "colorspace=%d\n", colorspace);
->> +
->> +       switch (colorspace) {
->> +       case DRM_MODE_COLORIMETRY_DCI_P3_RGB_D65:
->> +       case DRM_MODE_COLORIMETRY_DCI_P3_RGB_THEATER:
->> +               colorimetry = 0x7;
->> +               break;
->> +       case DRM_MODE_COLORIMETRY_RGB_WIDE_FIXED:
->> +               colorimetry = 0x3;
->> +               break;
->> +       case DRM_MODE_COLORIMETRY_RGB_WIDE_FLOAT:
->> +               colorimetry = 0xb;
->> +               break;
->> +       case DRM_MODE_COLORIMETRY_OPRGB:
->> +               colorimetry = 0xc;
-> Please define these magic values.
->
->> +               break;
->> +       default:
->> +               colorimetry = 0;        /* legacy RGB mode */
->> +       }
->> +
->> +       return colorimetry;
->> +}
->> +
->>   struct dp_panel *dp_panel_get(struct dp_panel_in *in)
->>   {
->>          struct dp_panel_private *panel;
->> diff --git a/drivers/gpu/drm/msm/dp/dp_panel.h b/drivers/gpu/drm/msm/dp/dp_panel.h
->> index a0dfc57..c34a51d 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_panel.h
->> +++ b/drivers/gpu/drm/msm/dp/dp_panel.h
->> @@ -1,6 +1,7 @@
->>   /* SPDX-License-Identifier: GPL-2.0-only */
->>   /*
->>    * Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved
->>    */
->>
->>   #ifndef _DP_PANEL_H_
->> @@ -65,6 +66,7 @@ int dp_panel_get_modes(struct dp_panel *dp_panel,
->>                  struct drm_connector *connector);
->>   void dp_panel_handle_sink_request(struct dp_panel *dp_panel);
->>   void dp_panel_tpg_config(struct dp_panel *dp_panel, bool enable);
->> +u8 dp_panel_get_misc_colorimetry_val(struct dp_panel *dp_panel);
->>
->>   /**
->>    * is_link_rate_valid() - validates the link rate
->> --
->> 2.7.4
->>
->
 
