@@ -1,47 +1,51 @@
-Return-Path: <linux-kernel+bounces-23481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54CCE82AD56
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:26:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9612582AD58
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:26:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9A282893AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:26:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AF8B1F22B64
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36F114F9D;
-	Thu, 11 Jan 2024 11:26:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B72514F94
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 467342F4;
-	Thu, 11 Jan 2024 03:27:22 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.90.43])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 667C03F64C;
-	Thu, 11 Jan 2024 03:26:35 -0800 (PST)
-Date: Thu, 11 Jan 2024 11:26:32 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: richard clark <richard.xnu.clark@gmail.com>
-Cc: Segher Boessenkool <segher@kernel.crashing.org>,
-	Xi Ruoyao <xry111@xry111.site>, gcc-help@gcc.gnu.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: undefined reference to `__aarch64_cas4_sync' error on arm64
- native build
-Message-ID: <ZZ_QaIrlKlFNdDbG@FVFF77S0Q05N>
-References: <ZZvS8rigFJR8L56c@FVFF77S0Q05N>
- <fb6c8253fd90e66c036a85954c3299bc2c047473.camel@xry111.site>
- <CAJNi4rPj0Wc7ByqrS-GVLUUEnOFPZi8A5nLLCEEJErqAe16EZw@mail.gmail.com>
- <9aef98eed96ed32962ce90499291cb30ad5e3e14.camel@xry111.site>
- <20240109074843.GI19790@gate.crashing.org>
- <4ee8067e72028b070d92e10fa33ddde3a498cb48.camel@xry111.site>
- <20240109082647.GJ19790@gate.crashing.org>
- <CAJNi4rM_w5JKjug1PtV+tHyk11DUhRJ-K1pSDE6P1x8KSU2wrg@mail.gmail.com>
- <20240110141005.GL19790@gate.crashing.org>
- <CAJNi4rMw1rN64hGZbraoDwtOJOMOumVWL_8iLaCb=TYXAhD2Jg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF3A154BD;
+	Thu, 11 Jan 2024 11:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eBTO0rWF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0927E154AC;
+	Thu, 11 Jan 2024 11:26:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EBC1C433A6;
+	Thu, 11 Jan 2024 11:26:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704972403;
+	bh=ZIWRy+xjY6IT5ij6R/Vb7UhT0I45ahpnU35t0mqhwaU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eBTO0rWFAH6NH7qj5EdoUo93cBBFXywZeeO4eLzzKNdf/jJNY1ZmmdUY8aX02m4LL
+	 sHRootAdW7DbUjFVp8tEDblrymA4js3Zd1yZJRnEUOsDuCHeS10O19SGdwAWSMJGhN
+	 /K94pPoHXu/oIv75ME8Zug9Om0Ry2j03k9kXBZsvCu9pkpUu2BcArNBONDPzbtrsCo
+	 Fa9bCWPwMeCEJJkeDjAwKyQNjIeOWXtEKgh06VmaQfzWZc4HP9x7baM+LnxLl7R47o
+	 1fM5W6aXyE2gfB1EoMRK1Mw+nfm4CpMZ4piq7f9d/XYa1W3uJ4TCpldCsMjVxqFuNd
+	 SVpSd2DO0GBCw==
+Date: Thu, 11 Jan 2024 11:26:38 +0000
+From: Lee Jones <lee@kernel.org>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Pavel Machek <pavel@ucw.cz>,
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+	Daniel Golle <daniel@makrotopia.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-leds@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] docs: ABI: sysfs-class-led-trigger-netdev:
+ Document now hidable link_*
+Message-ID: <20240111112638.GG1678981@google.com>
+References: <20231221171125.1732-1-ansuelsmth@gmail.com>
+ <20231221171125.1732-2-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,37 +55,90 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJNi4rMw1rN64hGZbraoDwtOJOMOumVWL_8iLaCb=TYXAhD2Jg@mail.gmail.com>
+In-Reply-To: <20231221171125.1732-2-ansuelsmth@gmail.com>
 
-On Thu, Jan 11, 2024 at 09:42:40AM +0800, richard clark wrote:
-> On Wed, Jan 10, 2024 at 10:12 PM Segher Boessenkool
-> <segher@kernel.crashing.org> wrote:
-> >
-> > On Wed, Jan 10, 2024 at 01:59:53PM +0800, richard clark wrote:
-> > > A ported driver in linux kernel calls '__sync_val_compare_and_swap',
-> >
-> > That is a builtin function.  It does not necessarily expand to an actual
-> > function call.  aarch64 will typically expand it to inline code.
-> >
-> native gcc version:
-> gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
-> cross-compiler gcc version:
-> aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+On Thu, 21 Dec 2023, Christian Marangi wrote:
+
+> Document now hidable link speed modes for the LED netdev trigger.
 > 
-> Interesting, the same '__sync_val_compare_and_swap' in the .c file
-> will be 'U __aarch64_cas4_sync' in the .o file compiled by native,
-> will be 't __cmpxchg_case_mb_32' in the .o file compiled by
-> aarch64-linux-gnu-gcc... don't know what the reason is
+> Link speed modes are now showed only if the named network device
+> supports them and are hidden if not.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Reviewed-by: Marek Behún <kabel@kernel.org>
+> ---
+> Changes v6:
+> - Add Reviewed-by tag
+> Changes v2:
+> - Add this patch
+> 
+>  .../ABI/testing/sysfs-class-led-trigger-netdev       | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 
-The __cmpxchg_case_mb_32() function is kernel code from
-arch/arm64/include/asm/cmpxchg.h, so I do not believe that's being generated by
-the compiler from __sync_val_compare_and_swap().
+Reviewed-by: Lee Jones <lee@kernel.org>
 
-Are you certain that's being built from the exact same C file?
+> diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-netdev b/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
+> index a6c307c4befa..ed46b37ab8a2 100644
+> --- a/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
+> +++ b/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
+> @@ -88,6 +88,8 @@ Description:
+>  		speed of 10MBps of the named network device.
+>  		Setting this value also immediately changes the LED state.
+>  
+> +		Present only if the named network device supports 10Mbps link speed.
+> +
+>  What:		/sys/class/leds/<led>/link_100
+>  Date:		Jun 2023
+>  KernelVersion:	6.5
+> @@ -101,6 +103,8 @@ Description:
+>  		speed of 100Mbps of the named network device.
+>  		Setting this value also immediately changes the LED state.
+>  
+> +		Present only if the named network device supports 100Mbps link speed.
+> +
+>  What:		/sys/class/leds/<led>/link_1000
+>  Date:		Jun 2023
+>  KernelVersion:	6.5
+> @@ -114,6 +118,8 @@ Description:
+>  		speed of 1000Mbps of the named network device.
+>  		Setting this value also immediately changes the LED state.
+>  
+> +		Present only if the named network device supports 1000Mbps link speed.
+> +
+>  What:		/sys/class/leds/<led>/link_2500
+>  Date:		Nov 2023
+>  KernelVersion:	6.8
+> @@ -127,6 +133,8 @@ Description:
+>  		speed of 2500Mbps of the named network device.
+>  		Setting this value also immediately changes the LED state.
+>  
+> +		Present only if the named network device supports 2500Mbps link speed.
+> +
+>  What:		/sys/class/leds/<led>/link_5000
+>  Date:		Nov 2023
+>  KernelVersion:	6.8
+> @@ -140,6 +148,8 @@ Description:
+>  		speed of 5000Mbps of the named network device.
+>  		Setting this value also immediately changes the LED state.
+>  
+> +		Present only if the named network device supports 5000Mbps link speed.
+> +
+>  What:		/sys/class/leds/<led>/link_10000
+>  Date:		Nov 2023
+>  KernelVersion:	6.8
+> @@ -153,6 +163,8 @@ Description:
+>  		speed of 10000Mbps of the named network device.
+>  		Setting this value also immediately changes the LED state.
+>  
+> +		Present only if the named network device supports 10000Mbps link speed.
+> +
+>  What:		/sys/class/leds/<led>/half_duplex
+>  Date:		Jun 2023
+>  KernelVersion:	6.5
+> -- 
+> 2.40.1
+> 
 
-Are you able to share the code in question? Where has it come from in the first
-place?
-
-Thanks,
-Mark.
+-- 
+Lee Jones [李琼斯]
 
