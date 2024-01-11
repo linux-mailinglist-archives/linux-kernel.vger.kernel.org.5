@@ -1,28 +1,28 @@
-Return-Path: <linux-kernel+bounces-23545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10A0182AE3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2586082AE45
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 257351C23958
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:04:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3151C213B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF09817992;
-	Thu, 11 Jan 2024 12:01:37 +0000 (UTC)
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A7F28372;
+	Thu, 11 Jan 2024 12:01:40 +0000 (UTC)
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526B71802D;
-	Thu, 11 Jan 2024 12:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F5015AC3;
+	Thu, 11 Jan 2024 12:01:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W-Pewe3_1704974491;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W-Pewe3_1704974491)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W-Pewec_1704974493;
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W-Pewec_1704974493)
           by smtp.aliyun-inc.com;
-          Thu, 11 Jan 2024 20:01:33 +0800
+          Thu, 11 Jan 2024 20:01:35 +0800
 From: Wen Gu <guwen@linux.alibaba.com>
 To: wintera@linux.ibm.com,
 	wenjia@linux.ibm.com,
@@ -42,9 +42,9 @@ Cc: borntraeger@linux.ibm.com,
 	linux-s390@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 13/15] net/smc: introduce loopback-ism DMB type control
-Date: Thu, 11 Jan 2024 20:00:34 +0800
-Message-Id: <20240111120036.109903-14-guwen@linux.alibaba.com>
+Subject: [PATCH net-next 14/15] net/smc: introduce loopback-ism DMB data copy control
+Date: Thu, 11 Jan 2024 20:00:35 +0800
+Message-Id: <20240111120036.109903-15-guwen@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240111120036.109903-1-guwen@linux.alibaba.com>
 References: <20240111120036.109903-1-guwen@linux.alibaba.com>
@@ -56,202 +56,142 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This provides a way to {get|set} type of DMB offered by loopback-ism,
-whether it is physically or virtually contiguous memory.
+This provides a way to {get|set} whether loopback-ism device supports
+merging sndbuf with peer DMB to eliminate data copies between them.
 
-echo 0 > /sys/devices/virtual/smc/loopback-ism/dmb_type # physically
-echo 1 > /sys/devices/virtual/smc/loopback-ism/dmb_type # virtually
+echo 0 > /sys/devices/virtual/smc/loopback-ism/dmb_copy # support
+echo 1 > /sys/devices/virtual/smc/loopback-ism/dmb_copy # not support
 
 The settings take effect after re-activating loopback-ism by:
 
 echo 0 > /sys/devices/virtual/smc/loopback-ism/active
 echo 1 > /sys/devices/virtual/smc/loopback-ism/active
 
-After this, the link group and DMBs related to loopback-ism will be
-flushed and subsequent DMBs created will be of the desired type.
+After this, the link group related to loopback-ism will be flushed and
+the sndbufs of subsequent connections will be merged or not merged with
+peer DMB.
 
-The motivation of this control is that physically contiguous DMB has
-best performance but is usually expensive, while the virtually
-contiguous DMB is cheap and perform well in most scenarios, but if
-sndbuf and DMB are merged, virtual DMB will be accessed concurrently
-in Tx and Rx and there will be a bottleneck caused by lock contention
+The motivation of this control is that the bandwidth will be highly
+improved when sndbuf and DMB are merged, but when virtually contiguous
+DMB is provided and merged with sndbuf, it will be concurrently accessed
+on Tx and Rx, then there will be a bottleneck caused by lock contention
 of find_vmap_area when there are many CPUs and CONFIG_HARDENED_USERCOPY
 is set (see link below). So an option is provided.
 
 Link: https://lore.kernel.org/all/238e63cd-e0e8-4fbf-852f-bc4d5bc35d5a@linux.alibaba.com/
 Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 ---
- net/smc/smc_loopback.c | 80 +++++++++++++++++++++++++++++++++++-------
- net/smc/smc_loopback.h |  6 ++++
- 2 files changed, 74 insertions(+), 12 deletions(-)
+ net/smc/smc_loopback.c | 46 ++++++++++++++++++++++++++++++++++++++++++
+ net/smc/smc_loopback.h |  8 +++++++-
+ 2 files changed, 53 insertions(+), 1 deletion(-)
 
 diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-index a89dbf84aea5..2e734f8e08f5 100644
+index 2e734f8e08f5..bfbb346ef01a 100644
 --- a/net/smc/smc_loopback.c
 +++ b/net/smc/smc_loopback.c
-@@ -13,6 +13,7 @@
- 
- #include <linux/device.h>
- #include <linux/types.h>
-+#include <linux/vmalloc.h>
- #include <net/smc.h>
- 
- #include "smc_cdc.h"
-@@ -24,6 +25,7 @@
- #define SMC_DMA_ADDR_INVALID	(~(dma_addr_t)0)
+@@ -26,6 +26,7 @@
  
  static const char smc_lo_dev_name[] = "loopback-ism";
-+static unsigned int smc_lo_dmb_type = SMC_LO_DMB_PHYS;
+ static unsigned int smc_lo_dmb_type = SMC_LO_DMB_PHYS;
++static unsigned int smc_lo_dmb_copy = SMC_LO_DMB_NOCOPY;
  static struct smc_lo_dev *lo_dev;
  static struct class *smc_class;
  
-@@ -124,8 +126,50 @@ static ssize_t active_store(struct device *dev,
+@@ -167,9 +168,52 @@ static ssize_t dmb_type_store(struct device *dev,
  	return count;
  }
- static DEVICE_ATTR_RW(active);
+ static DEVICE_ATTR_RW(dmb_type);
 +
-+static ssize_t dmb_type_show(struct device *dev,
++static ssize_t dmb_copy_show(struct device *dev,
 +			     struct device_attribute *attr, char *buf)
 +{
 +	struct smc_lo_dev *ldev =
 +		container_of(dev, struct smc_lo_dev, dev);
-+	const char *type;
++	const char *copy;
 +
-+	switch (ldev->dmb_type) {
-+	case SMC_LO_DMB_PHYS:
-+		type = "Physically contiguous buffer";
++	switch (ldev->dmb_copy) {
++	case SMC_LO_DMB_NOCOPY:
++		copy = "sndbuf and DMB merged and no data copied";
 +		break;
-+	case SMC_LO_DMB_VIRT:
-+		type = "Virtually contiguous buffer";
++	case SMC_LO_DMB_COPY:
++		copy = "sndbuf and DMB separated and data copied";
 +		break;
 +	default:
-+		type = "Unknown type";
++		copy = "Unknown setting";
 +	}
 +
-+	return sysfs_emit(buf, "%d: %s\n", ldev->dmb_type, type);
++	return sysfs_emit(buf, "%d: %s\n", ldev->dmb_copy, copy);
 +}
 +
-+static ssize_t dmb_type_store(struct device *dev,
++static ssize_t dmb_copy_store(struct device *dev,
 +			      struct device_attribute *attr,
 +			      const char *buf, size_t count)
 +{
-+	unsigned int dmb_type;
++	unsigned int dmb_copy;
 +	int ret;
 +
-+	ret = kstrtouint(buf, 0, &dmb_type);
++	ret = kstrtouint(buf, 0, &dmb_copy);
 +	if (ret)
 +		return ret;
 +
-+	if (dmb_type != SMC_LO_DMB_PHYS &&
-+	    dmb_type != SMC_LO_DMB_VIRT)
++	if (dmb_copy != SMC_LO_DMB_NOCOPY &&
++	    dmb_copy != SMC_LO_DMB_COPY)
 +		return -EINVAL;
 +
-+	smc_lo_dmb_type = dmb_type; /* re-activate to take effect */
++	smc_lo_dmb_copy = dmb_copy; /* re-activate to take effect */
 +	return count;
 +}
-+static DEVICE_ATTR_RW(dmb_type);
++static DEVICE_ATTR_RW(dmb_copy);
++
  static struct attribute *smc_lo_attrs[] = {
  	&dev_attr_active.attr,
-+	&dev_attr_dmb_type.attr,
+ 	&dev_attr_dmb_type.attr,
++	&dev_attr_dmb_copy.attr,
  	&dev_attr_xfer_bytes.attr,
  	&dev_attr_dmbs_cnt.attr,
  	NULL,
-@@ -170,8 +214,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- {
- 	struct smc_lo_dmb_node *dmb_node, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
--	int sba_idx, order, rc;
--	struct page *pages;
-+	int sba_idx, rc;
- 
- 	/* check space for new dmb */
- 	for_each_clear_bit(sba_idx, ldev->sba_idx_mask, SMC_LO_MAX_DMBS) {
-@@ -188,16 +231,27 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 
- 	dmb_node->sba_idx = sba_idx;
--	order = get_order(dmb->dmb_len);
--	pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
--			    __GFP_NOMEMALLOC | __GFP_COMP |
--			    __GFP_NORETRY | __GFP_ZERO,
--			    order);
--	if (!pages) {
--		rc = -ENOMEM;
--		goto err_node;
-+	if (ldev->dmb_type == SMC_LO_DMB_PHYS) {
-+		struct page *pages;
-+		int order;
-+
-+		order = get_order(dmb->dmb_len);
-+		pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
-+				    __GFP_NOMEMALLOC | __GFP_COMP |
-+				    __GFP_NORETRY | __GFP_ZERO,
-+				    order);
-+		if (!pages) {
-+			rc = -ENOMEM;
-+			goto err_node;
-+		}
-+		dmb_node->cpu_addr = (void *)page_address(pages);
-+	} else {
-+		dmb_node->cpu_addr = vzalloc(dmb->dmb_len);
-+		if (!dmb_node->cpu_addr) {
-+			rc = -ENOMEM;
-+			goto err_node;
-+		}
- 	}
--	dmb_node->cpu_addr = (void *)page_address(pages);
- 	dmb_node->len = dmb->dmb_len;
- 	dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
- 
-@@ -251,7 +305,7 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 	write_unlock(&ldev->dmb_ht_lock);
- 
- 	clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
--	kfree(dmb_node->cpu_addr);
-+	kvfree(dmb_node->cpu_addr);
- 	kfree(dmb_node);
- 	SMC_LO_STAT_DMBS_DEC(ldev);
- 
-@@ -396,6 +450,7 @@ static int smcd_lo_register_dev(struct smc_lo_dev *ldev)
- 	ldev->smcd = smcd;
+@@ -451,6 +495,7 @@ static int smcd_lo_register_dev(struct smc_lo_dev *ldev)
  	smcd->priv = ldev;
  	smc_ism_set_v2_capable();
-+	ldev->dmb_type = smc_lo_dmb_type;
+ 	ldev->dmb_type = smc_lo_dmb_type;
++	ldev->dmb_copy = smc_lo_dmb_copy;
  	mutex_lock(&smcd_dev_list.mutex);
  	list_add(&smcd->list, &smcd_dev_list.list);
  	mutex_unlock(&smcd_dev_list.mutex);
-@@ -419,6 +474,7 @@ static void smcd_lo_unregister_dev(struct smc_lo_dev *ldev)
- 	mutex_unlock(&smcd_dev_list.mutex);
+@@ -475,6 +520,7 @@ static void smcd_lo_unregister_dev(struct smc_lo_dev *ldev)
  	kfree(smcd->conn);
  	kfree(smcd);
-+	ldev->dmb_type = smc_lo_dmb_type;
+ 	ldev->dmb_type = smc_lo_dmb_type;
++	ldev->dmb_copy = smc_lo_dmb_copy;
  	smc_lo_clear_stats(ldev);
  }
  
 diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
-index d4572ca42f08..8ee5c6805fc4 100644
+index 8ee5c6805fc4..7ecb4a35eb36 100644
 --- a/net/smc/smc_loopback.h
 +++ b/net/smc/smc_loopback.h
-@@ -23,6 +23,11 @@
- #define SMC_LO_DMBS_HASH_BITS	12
- #define SMC_LO_CHID		0xFFFF
+@@ -28,6 +28,11 @@ enum {
+ 	SMC_LO_DMB_VIRT,
+ };
  
 +enum {
-+	SMC_LO_DMB_PHYS,
-+	SMC_LO_DMB_VIRT,
++	SMC_LO_DMB_NOCOPY,
++	SMC_LO_DMB_COPY,
 +};
 +
  struct smc_lo_dmb_node {
  	struct hlist_node list;
  	u64 token;
-@@ -41,6 +46,7 @@ struct smc_lo_dev {
+@@ -45,7 +50,8 @@ struct smc_lo_dev_stats64 {
+ struct smc_lo_dev {
  	struct smcd_dev *smcd;
  	struct device dev;
- 	u8 active;
-+	u8 dmb_type;
+-	u8 active;
++	u8 active : 1;
++	u8 dmb_copy : 1;
+ 	u8 dmb_type;
  	u16 chid;
  	struct smcd_gid local_gid;
- 	struct smc_lo_dev_stats64 __percpu *stats;
 -- 
 2.32.0.3.g01195cf9f
 
