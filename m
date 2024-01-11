@@ -1,178 +1,180 @@
-Return-Path: <linux-kernel+bounces-23842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF5682B2AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:18:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9434982B2A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:18:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E5291F254BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:18:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 305D51F25472
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A5A50248;
-	Thu, 11 Jan 2024 16:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LAH2DDEN"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB1351C4C;
+	Thu, 11 Jan 2024 16:17:14 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FEAF524B5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf3d102221so1732359276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:17:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704989839; x=1705594639; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vkeyhCHOKb2kF/hYU6ZKeasacJR/H+VX92GhGBJ9brc=;
-        b=LAH2DDENZd6CsO//gJC/ykgkERKgeS2o9DRLTjT4ysZyQEUQVXZ4ltUbU+RBqWN7N4
-         OxPqGDGg3AXzGbKAB+GoRlk7hRBfICkLCBUVbskBgt5vjS93VHeBtIFFwqHcZ8f4Ns5B
-         xKx6wgmj6E+MVHZO/1pDAD+4RC36wUj2rurFpnBYFQR9KHmCbeNe81kJy/MXMh2R/Zer
-         bQy7H+n248iYy9YV0tL/FsYejTjWCYs6mNiEmD6CzsXIfmTNNr/O/LmBUAnqUlIt2gSH
-         UkIiCWNZhcTWWDa79Qdr7Kz2qYfnAoizg1gFXuILSxwGRXPUf7gmxphi5H26GR0w45Dw
-         sd0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704989839; x=1705594639;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vkeyhCHOKb2kF/hYU6ZKeasacJR/H+VX92GhGBJ9brc=;
-        b=JdtbLyQeXJfzR2yKHU0q8kEXWwtZcSf2TdavN1Pz5T84Gf/T/ljkbuA06pEALWAJdI
-         rvzUg16NQ5EczvrtNdHFyGOCpLtQzhhlYKf0VMMF60H5eVzKRE1weEJbu12OnP570QDT
-         kC8U1LAhTckmFrfaRxJhI31MDTcvF7bF2pAb0kHC5WyI0y1r6AgXHxsu16rl4AfGTW98
-         IUDlaabYM89younyTNaSyh8HXS/Sm07oxnJBUvvZwgdQB8U4vCV0H49HlEJsRz8yupYW
-         2wQwsIi2Qpt/Vxxyo2I0t+hvTyE1X8WQHemXNzqUzxJnZMY+efuiM83OpfirxN4JRzJt
-         NKjA==
-X-Gm-Message-State: AOJu0YyvO2DdAqLWMnaVug7ZjJTuu4ZWO3mjiMgmMnIPKANhkc78fp8A
-	t5xnWKqld0C65wQ5jRcIzskEIXiApS+3/txbwXhVA48=
-X-Google-Smtp-Source: AGHT+IF6GADHIQd7b8ubedlmXtU4tm+5G+Zqj/aR9OTD/hraMQefZ56g13h0dXrk7+oJHDrOZMsDe89zbXctKdoK
-X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
- (user=vdonnefort job=sendgmr) by 2002:a05:6902:2283:b0:dbe:a0c2:df20 with
- SMTP id dn3-20020a056902228300b00dbea0c2df20mr571717ybb.12.1704989839582;
- Thu, 11 Jan 2024 08:17:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C47751C48;
+	Thu, 11 Jan 2024 16:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T9qW95bKGz6D8jQ;
+	Fri, 12 Jan 2024 00:14:45 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id BAB0D1400CB;
+	Fri, 12 Jan 2024 00:17:08 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 11 Jan
+ 2024 16:17:08 +0000
 Date: Thu, 11 Jan 2024 16:17:07 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
+	<justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for
+ processors described as container packages
+Message-ID: <20240111161707.000059f6@Huawei.com>
+In-Reply-To: <ZZ1woQkpMMCWVnXc@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+	<CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+	<ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
+	<CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
+	<ZZ1woQkpMMCWVnXc@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
-Message-ID: <20240111161712.1480333-1-vdonnefort@google.com>
-Subject: [PATCH v11 0/5] Introducing trace buffer mapping by user-space
-From: Vincent Donnefort <vdonnefort@google.com>
-To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com, 
-	Vincent Donnefort <vdonnefort@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-The tracing ring-buffers can be stored on disk or sent to network
-without any copy via splice. However the later doesn't allow real time
-processing of the traces. A solution is to give userspace direct access
-to the ring-buffer pages via a mapping. An application can now become a
-consumer of the ring-buffer, in a similar fashion to what trace_pipe
-offers.
+On Tue, 9 Jan 2024 16:13:21 +0000
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-Support for this new feature can already be found in libtracefs from the
-version 1.8, when built with EXTRA_CFLAGS=-DFORCE_MMAP_ENABLE.
+> On Tue, Jan 09, 2024 at 05:05:15PM +0100, Rafael J. Wysocki wrote:
+> > On Tue, Jan 9, 2024 at 4:49=E2=80=AFPM Russell King (Oracle)
+> > <linux@armlinux.org.uk> wrote: =20
+> > >
+> > > On Mon, Dec 18, 2023 at 09:17:34PM +0100, Rafael J. Wysocki wrote: =20
+> > > > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@ar=
+mlinux.org.uk> wrote: =20
+> > > > >
+> > > > > From: James Morse <james.morse@arm.com>
+> > > > >
+> > > > > ACPI has two ways of describing processors in the DSDT. From ACPI=
+ v6.5,
+> > > > > 5.2.12:
+> > > > >
+> > > > > "Starting with ACPI Specification 6.3, the use of the Processor()=
+ object
+> > > > > was deprecated. Only legacy systems should continue with this usa=
+ge. On
+> > > > > the Itanium architecture only, a _UID is provided for the Process=
+or()
+> > > > > that is a string object. This usage of _UID is also deprecated si=
+nce it
+> > > > > can preclude an OSPM from being able to match a processor to a
+> > > > > non-enumerable device, such as those defined in the MADT. From AC=
+PI
+> > > > > Specification 6.3 onward, all processor objects for all architect=
+ures
+> > > > > except Itanium must now use Device() objects with an _HID of ACPI=
+0007,
+> > > > > and use only integer _UID values."
+> > > > >
+> > > > > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configurati=
+on_and_Control.html#declaring-processors
+> > > > >
+> > > > > Duplicate descriptions are not allowed, the ACPI processor driver=
+ already
+> > > > > parses the UID from both devices and containers. acpi_processor_g=
+et_info()
+> > > > > returns an error if the UID exists twice in the DSDT. =20
+> > > >
+> > > > I'm not really sure how the above is related to the actual patch.
+> > > > =20
+> > > > > The missing probe for CPUs described as packages =20
+> > > >
+> > > > It is unclear what exactly is meant by "CPUs described as packages".
+> > > >
+> > > > From the patch, it looks like those would be Processor() objects
+> > > > defined under a processor container device.
+> > > > =20
+> > > > > creates a problem for
+> > > > > moving the cpu_register() calls into the acpi_processor driver, a=
+s CPUs
+> > > > > described like this don't get registered, leading to errors from =
+other
+> > > > > subsystems when they try to add new sysfs entries to the CPU node.
+> > > > > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> > > > >
+> > > > > To fix this, parse the processor container and call acpi_processo=
+r_add()
+> > > > > for each processor that is discovered like this. =20
+> > > >
+> > > > Discovered like what?
+> > > > =20
+> > > > > The processor container
+> > > > > handler is added with acpi_scan_add_handler(), so no detach call =
+will
+> > > > > arrive. =20
+> > > >
+> > > > The above requires clarification too. =20
+> > >
+> > > The above comments... yea. As I didn't write the commit description, =
+but
+> > > James did, and James has basically vanished, I don't think these can =
+be
+> > > answered, short of rewriting the entire commit message, with me spend=
+ing
+> > > a lot of time with the ACPI specification trying to get the terminolo=
+gy
+> > > right - because at lot of the above on the face of it seems to be thi=
+ngs
+> > > to do with wrong terminology being used.
+> > >
+> > > I wasn't expecting this level of issues with this patch set, and I now
+> > > feel completely out of my depth with this series. I'm wondering wheth=
+er
+> > > I should even continue with it, since I don't have the ACPI knowledge
+> > > to address a lot of these comments. =20
+> >=20
+> > Well, sorry about this.
+> >=20
+> > I met James at the LPC last year, so he seems to be still around, in
+> > some way at least.. =20
+>=20
+> On the previous posting, I wanted James to comment on some of the
+> feedback from Jonathan, and despite explicitly asking, there has been
+> nothing but radio silence ever since James' last post of this series.
+>=20
+> So, I now deem this work to be completely dead in the water, and not
+> going to happen - not unless others can input on your comments.
+>=20
+I'll take another pass at this and see which comments I can resolve.
+Will need a few additional test setups so may take a few days.
 
-Vincent
+So far I've established that QEMU uses Processor for x86 and
+ACPI0007 for arm64.  Goody, at least that simplifies testing
+the various options.
 
-v10 -> v11:
-  * Add Documentation and code sample.
-  * Add a selftest.
-  * Move all the update to the meta-page into a single
-    rb_update_meta_page().
-  * rb_update_meta_page() is now called from
-    ring_buffer_map_get_reader() to fix NOBLOCK callers.
-  * kerneldoc for struct trace_meta_page.
-  * Add a patch to zero all the ring-buffer allocations.
-
-v9 -> v10:
-  * Refactor rb_update_meta_page()
-  * In-loop declaration for foreach_subbuf_page()
-  * Check for cpu_buffer->mapped overflow
-
-v8 -> v9:
-  * Fix the unlock path in ring_buffer_map()
-  * Fix cpu_buffer cast with rb_work_rq->is_cpu_buffer
-  * Rebase on linux-trace/for-next (3cb3091138ca0921c4569bcf7ffa062519639b6a)
-
-v7 -> v8:
-  * Drop the subbufs renaming into bpages
-  * Use subbuf as a name when relevant
-
-v6 -> v7:
-  * Rebase onto lore.kernel.org/lkml/20231215175502.106587604@goodmis.org/
-  * Support for subbufs
-  * Rename subbufs into bpages
-
-v5 -> v6:
-  * Rebase on next-20230802.
-  * (unsigned long) -> (void *) cast for virt_to_page().
-  * Add a wait for the GET_READER_PAGE ioctl.
-  * Move writer fields update (overrun/pages_lost/entries/pages_touched)
-    in the irq_work.
-  * Rearrange id in struct buffer_page.
-  * Rearrange the meta-page.
-  * ring_buffer_meta_page -> trace_buffer_meta_page.
-  * Add meta_struct_len into the meta-page.
-
-v4 -> v5:
-  * Trivial rebase onto 6.5-rc3 (previously 6.4-rc3)
-
-v3 -> v4:
-  * Add to the meta-page:
-       - pages_lost / pages_read (allow to compute how full is the
-	 ring-buffer)
-       - read (allow to compute how many entries can be read)
-       - A reader_page struct.
-  * Rename ring_buffer_meta_header -> ring_buffer_meta
-  * Rename ring_buffer_get_reader_page -> ring_buffer_map_get_reader_page
-  * Properly consume events on ring_buffer_map_get_reader_page() with
-    rb_advance_reader().
-
-v2 -> v3:
-  * Remove data page list (for non-consuming read)
-    ** Implies removing order > 0 meta-page
-  * Add a new meta page field ->read
-  * Rename ring_buffer_meta_page_header into ring_buffer_meta_header
-
-v1 -> v2:
-  * Hide data_pages from the userspace struct
-  * Fix META_PAGE_MAX_PAGES
-  * Support for order > 0 meta-page
-  * Add missing page->mapping.
-
-Vincent Donnefort (5):
-  ring-buffer: Zero ring-buffer sub-buffers
-  ring-buffer: Introducing ring-buffer mapping functions
-  tracing: Allow user-space mapping of the ring-buffer
-  Documentation: tracing: Add ring-buffer mapping
-  ring-buffer/selftest: Add ring-buffer mapping test
-
- Documentation/trace/index.rst                 |   1 +
- Documentation/trace/ring-buffer-map.rst       | 105 ++++++
- include/linux/ring_buffer.h                   |   7 +
- include/uapi/linux/trace_mmap.h               |  47 +++
- kernel/trace/ring_buffer.c                    | 339 +++++++++++++++++-
- kernel/trace/trace.c                          |  81 ++++-
- tools/testing/selftests/ring-buffer/Makefile  |   8 +
- tools/testing/selftests/ring-buffer/config    |   1 +
- .../testing/selftests/ring-buffer/map_test.c  | 188 ++++++++++
- 9 files changed, 769 insertions(+), 8 deletions(-)
- create mode 100644 Documentation/trace/ring-buffer-map.rst
- create mode 100644 include/uapi/linux/trace_mmap.h
- create mode 100644 tools/testing/selftests/ring-buffer/Makefile
- create mode 100644 tools/testing/selftests/ring-buffer/config
- create mode 100644 tools/testing/selftests/ring-buffer/map_test.c
-
-
-base-commit: 4f1991a92cfe89096b2d1f5583a2e093bdd55c37
--- 
-2.43.0.275.g3460e3d667-goog
+Jonathan
 
 
