@@ -1,283 +1,289 @@
-Return-Path: <linux-kernel+bounces-23017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5341982A663
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:16:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6251F82A666
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:17:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B00621F24002
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:16:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50A6D1C22D7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:17:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A159ED2;
-	Thu, 11 Jan 2024 03:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46898ECD;
+	Thu, 11 Jan 2024 03:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CJUMkKgF"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27570EBB;
-	Thu, 11 Jan 2024 03:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=+bgLMnAh3AxE4ybjtwDAdb2BasfGFtXoxAbLC+24rwE=; b=CJUMkKgFvD4rF5Swuljph5wfy+
-	EInSctdIFvLm10RLh1n/isb9Pccw1hhCs2p99KgHtpGLB59QgXw1RlZq+hmhdMILe+UfI8CtRXXqR
-	A7U3C6EUtyiezAm9BdJUBQBniawzaqE+HzAUFYsd8FCwitTz0AYPxW7hErzQ+zG76jU9mZHdeBwNj
-	LqPI2GPI7+3SQe9IvAXDy61b0Fi1M7YHoCGfbHx4vEQeDqKSqOcuB+InV0hpxj3EpdyRXuItZYgon
-	39Irm/omrsImOnOlP8+8XzRpqsp0Nr58daPvIHehBE5Q9O4MclE4O3UxjG65qwupGel7ls6BPkgMj
-	9z/Z+RSg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNlYY-00Fadl-3B;
-	Thu, 11 Jan 2024 03:16:35 +0000
-Message-ID: <e580030f-9d2e-485c-b62e-ada59f639ef7@infradead.org>
-Date: Wed, 10 Jan 2024 19:16:34 -0800
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="AUSH1xUX"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A19EBB
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:17:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=8J0w2ghUyXOdF5LTPu
+	3UvlD3m19T2E9D3BhoiJlLJBw=; b=AUSH1xUXtg8HZKUEz3/6Zvt+E+mX+PiQxv
+	48pOTbRidrVcRhtiX9ZSK22+Gy2ZCBUWGFnysY7XnirqWs4OGx2+CPyEigfpEf0q
+	nWDdnILpVAi3+bZA2PqTkFzG04CquZKxbNOAknKmgi84HnE2o7GVOkYTxHdNq0Ej
+	IAz89lobk=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wDnL7KyXZ9lOq6dAA--.28033S2;
+	Thu, 11 Jan 2024 11:17:06 +0800 (CST)
+From: chenxuebing <chenxb_99091@126.com>
+To: airlied@gmail.com,
+	Xinhui.Pan@amd.com,
+	alexander.deucher@amd.com,
+	christian.koenig@amd.com,
+	daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	chenxuebing <chenxb_99091@126.com>
+Subject: [PATCH] drm/amdgpu: Clean up errors in atombios.h
+Date: Thu, 11 Jan 2024 03:17:05 +0000
+Message-Id: <20240111031705.7225-1-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wDnL7KyXZ9lOq6dAA--.28033S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Cr48AryrZw43GFWxAFy7KFg_yoWDZFWDpF
+	4UAa47G3W8try5Gr1DXr4qvr97G3srJr18Xry8Xwn3Ww1UGw1Uta42yF1ktFWkJF13tw13
+	XF1qqw15Zr4jyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRRbyNUUUUU=
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiHBlixWV2zz+dwAAAsc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 4/4] mseal:add documentation
-Content-Language: en-US
-To: jeffxu@chromium.org, akpm@linux-foundation.org, keescook@chromium.org,
- jannh@google.com, sroettger@google.com, willy@infradead.org,
- gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
- usama.anjum@collabora.com
-Cc: jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
- linux-hardening@vger.kernel.org, deraadt@openbsd.org
-References: <20240109154547.1839886-1-jeffxu@chromium.org>
- <20240109154547.1839886-5-jeffxu@chromium.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240109154547.1839886-5-jeffxu@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
+Fix the following errors reported by checkpatch:
 
+ERROR: open brace '{' following struct go on the same line
+ERROR: space required after that close brace '}'
 
-On 1/9/24 07:45, jeffxu@chromium.org wrote:
-> From: Jeff Xu <jeffxu@chromium.org>
-> 
-> Add documentation for mseal().
-> 
-> Signed-off-by: Jeff Xu <jeffxu@chromium.org>
-> ---
->  Documentation/userspace-api/mseal.rst | 181 ++++++++++++++++++++++++++
->  1 file changed, 181 insertions(+)
->  create mode 100644 Documentation/userspace-api/mseal.rst
-> 
-> diff --git a/Documentation/userspace-api/mseal.rst b/Documentation/userspace-api/mseal.rst
-> new file mode 100644
-> index 000000000000..1700ce5af218
-> --- /dev/null
-> +++ b/Documentation/userspace-api/mseal.rst
-> @@ -0,0 +1,181 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=====================
-> +Introduction of mseal
-> +=====================
-> +
-> +:Author: Jeff Xu <jeffxu@chromium.org>
-> +
-> +Modern CPUs support memory permissions such as RW and NX bits. The memory
-> +permission feature improves security stance on memory corruption bugs, i.e.
-> +the attacker can’t just write to arbitrary memory and point the code to it,
-> +the memory has to be marked with X bit, or else an exception will happen.
-> +
-> +Memory sealing additionally protects the mapping itself against
-> +modifications. This is useful to mitigate memory corruption issues where a
-> +corrupted pointer is passed to a memory management system. For example,
-> +such an attacker primitive can break control-flow integrity guarantees
-> +since read-only memory that is supposed to be trusted can become writable
-> +or .text pages can get remapped. Memory sealing can automatically be
-> +applied by the runtime loader to seal .text and .rodata pages and
-> +applications can additionally seal security critical data at runtime.
-> +
-> +A similar feature already exists in the XNU kernel with the
-> +VM_FLAGS_PERMANENT flag [1] and on OpenBSD with the mimmutable syscall [2].
-> +
-> +User API
-> +========
-> +Two system calls are involved in virtual memory sealing, mseal() and mmap().
-> +
-> +mseal()
-> +-----------
-> +The mseal() syscall has following signature:
+Signed-off-by: chenxuebing <chenxb_99091@126.com>
+---
+ drivers/gpu/drm/amd/include/atombios.h | 74 +++++++++++---------------
+ 1 file changed, 30 insertions(+), 44 deletions(-)
 
-                       has the following signature:
-
-> +
-> +``int mseal(void addr, size_t len, unsigned long flags)``
-> +
-> +**addr/len**: virtual memory address range.
-> +
-> +The address range set by ``addr``/``len`` must meet:
-> +   - The start address must be in an allocated VMA.
-> +   - The start address must be page aligned.
-> +   - The end address (``addr`` + ``len``) must be in an allocated VMA.
-> +   - no gap (unallocated memory) between start and end address.
-> +
-> +The ``len`` will be paged aligned implicitly by the kernel.
-> +
-> +**flags**: reserved for future use.
-> +
-> +**return values**:
-> +
-> +- ``0``: Success.
-> +
-> +- ``-EINVAL``:
-> +    - Invalid input ``flags``.
-> +    - The start address (``addr``) is not page aligned.
-> +    - Address range (``addr`` + ``len``) overflow.
-> +
-> +- ``-ENOMEM``:
-> +    - The start address (``addr``) is not allocated.
-> +    - The end address (``addr`` + ``len``) is not allocated.
-> +    - A gap (unallocated memory) between start and end address.
-> +
-> +- ``-EACCES``:
-> +    - ``MAP_SEALABLE`` is not set during mmap().
-> +
-> +- ``-EPERM``:
-> +    - sealing is supported only on 64 bit CPUs, 32-bit is not supported.
-
-                                      64-bit
-
-> +
-> +- For above error cases, users can expect the given memory range is
-> +  unmodified, i.e. no partial update.
-> +
-> +- There might be other internal errors/cases not listed here, e.g.
-> +  error during merging/splitting VMAs, or the process reaching the max
-> +  number of supported VMAs. In those cases, partial updates to the given
-> +  memory range could happen. However, those cases shall be rare.
-
-s/shall/should/
-unless you are predicting the future.
-
-> +
-> +**Blocked operations after sealing**:
-> +    Unmapping, moving to another location, and shrinking the size,
-> +    via munmap() and mremap(), can leave an empty space, therefore
-> +    can be replaced with a VMA with a new set of attributes.
-> +
-> +    Moving or expanding a different VMA into the current location,
-> +    via mremap().
-> +
-> +    Modifying a VMA via mmap(MAP_FIXED).
-> +
-> +    Size expansion, via mremap(), does not appear to pose any
-> +    specific risks to sealed VMAs. It is included anyway because
-> +    the use case is unclear. In any case, users can rely on
-> +    merging to expand a sealed VMA.
-> +
-> +    mprotect() and pkey_mprotect().
-> +
-> +    Some destructive madvice() behaviors (e.g. MADV_DONTNEED)
-> +    for anonymous memory, when users don't have write permission to the
-> +    memory. Those behaviors can alter region contents by discarding pages,
-> +    effectively a memset(0) for anonymous memory.
-> +
-> +**Note**:
-> +
-> +- mseal() only works on 64-bit CPUs, not 32-bit CPU.
-> +
-> +- users can call mseal() multiple times, mseal() on an already sealed memory
-> +  is a no-action (not error).
-> +
-> +- munseal() is not supported.
-> +
-> +mmap()
-> +----------
-> +``void *mmap(void* addr, size_t length, int prot, int flags, int fd,
-> +off_t offset);``
-> +
-> +We add two changes in ``prot`` and ``flags`` of  mmap() related to
-> +memory sealing.
-> +
-> +**prot**
-> +
-> +The ``PROT_SEAL`` bit in ``prot`` field of mmap().
-> +
-> +When present, it marks the memory is sealed since creation.
-> +
-> +This is useful as optimization because it avoids having to make two
-> +system calls: one for mmap() and one for mseal().
-> +
-> +It's worth noting that even though the sealing is set via the
-> +``prot`` field in mmap(), it can't be set in the ``prot``
-> +field in later mprotect(). This is unlike the ``PROT_READ``,
-> +``PROT_WRITE``, ``PROT_EXEC`` bits, e.g. if ``PROT_WRITE`` is not set in
-> +mprotect(), it means that the region is not writable.
-> +
-> +Setting ``PROT_SEAL`` implies setting ``MAP_SEALABLE`` below.
-> +
-> +**flags**
-> +
-> +The ``MAP_SEALABLE`` bit in the ``flags`` field of mmap().
-> +
-> +When present, it marks the map as sealable. A map created
-> +without ``MAP_SEALABLE`` will not support sealing; In other words,
-
-                                             sealing. In
-
-> +mseal() will fail for such a map.
-> +
-> +
-> +Applications that don't care about sealing will expect their
-> +behavior unchanged. For those that need sealing support, opt-in
-
-                                                            opt in
-
-> +by adding ``MAP_SEALABLE`` in mmap().
-> +
-> +Note: for a map created without ``MAP_SEALABLE`` or a map created
-> +with ``MAP_SEALABLE`` but not sealed yet, mmap(MAP_FIXED) can
-> +change the sealable or sealing bit.
-> +
-> +Use Case:
-> +=========
-> +- glibc:
-> +  The dynamic linker, during loading ELF executables, can apply sealing to
-> +  non-writable memory segments.
-> +
-> +- Chrome browser: protect some security sensitive data-structures.
-> +
-> +Additional notes:
-> +=================
-> +As Jann Horn pointed out in [3], there are still a few ways to write
-> +to RO memory, which is, in a way, by design. Those cases are not covered
-> +by mseal(). If applications want to block such cases, sandbox tools (such as
-> +seccomp, LSM, etc) might be considered.
-> +
-> +Those cases are:
-> +
-> +- Write to read-only memory through /proc/self/mem interface.
-> +- Write to read-only memory through ptrace (such as PTRACE_POKETEXT).
-> +- userfaultfd.
-> +
-> +The idea that inspired this patch comes from Stephen Röttger’s work in V8
-> +CFI [4]. Chrome browser in ChromeOS will be the first user of this API.
-> +
-> +Reference:
-> +==========
-> +[1] https://github.com/apple-oss-distributions/xnu/blob/1031c584a5e37aff177559b9f69dbd3c8c3fd30a/osfmk/mach/vm_statistics.h#L274
-> +
-> +[2] https://man.openbsd.org/mimmutable.2
-> +
-> +[3] https://lore.kernel.org/lkml/CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gmail.com
-> +
-> +[4] https://docs.google.com/document/d/1O2jwK4dxI3nRcOJuPYkonhTkNQfbmwdvxQMyXgeaRHo/edit#heading=h.bvaojj9fu6hc
-
+diff --git a/drivers/gpu/drm/amd/include/atombios.h b/drivers/gpu/drm/amd/include/atombios.h
+index b78360a71bc9..f01a2bdad699 100644
+--- a/drivers/gpu/drm/amd/include/atombios.h
++++ b/drivers/gpu/drm/amd/include/atombios.h
+@@ -205,19 +205,17 @@
+ // And the pointer actually points to this header.
+ /****************************************************************************/
+ 
+-typedef struct _ATOM_COMMON_TABLE_HEADER
+-{
++typedef struct _ATOM_COMMON_TABLE_HEADER {
+   USHORT usStructureSize;
+   UCHAR  ucTableFormatRevision;   //Change it when the Parser is not backward compatible
+   UCHAR  ucTableContentRevision;  //Change it only when the table needs to change but the firmware
+                                   //Image can't be updated, while Driver needs to carry the new table!
+-}ATOM_COMMON_TABLE_HEADER;
++} ATOM_COMMON_TABLE_HEADER;
+ 
+ /****************************************************************************/
+ // Structure stores the ROM header.
+ /****************************************************************************/
+-typedef struct _ATOM_ROM_HEADER
+-{
++typedef struct _ATOM_ROM_HEADER {
+   ATOM_COMMON_TABLE_HEADER      sHeader;
+   UCHAR  uaFirmWareSignature[4];    //Signature to distinguish between Atombios and non-atombios,
+                                     //atombios should init it as "ATOM", don't change the position
+@@ -236,11 +234,10 @@ typedef struct _ATOM_ROM_HEADER
+   USHORT usMasterDataTableOffset;   //Offest for SW to get all data table offsets, Don't change the position
+   UCHAR  ucExtendedFunctionCode;
+   UCHAR  ucReserved;
+-}ATOM_ROM_HEADER;
++} ATOM_ROM_HEADER;
+ 
+ 
+-typedef struct _ATOM_ROM_HEADER_V2_1
+-{
++typedef struct _ATOM_ROM_HEADER_V2_1 {
+   ATOM_COMMON_TABLE_HEADER      sHeader;
+   UCHAR  uaFirmWareSignature[4];    //Signature to distinguish between Atombios and non-atombios,
+                                     //atombios should init it as "ATOM", don't change the position
+@@ -260,7 +257,7 @@ typedef struct _ATOM_ROM_HEADER_V2_1
+   UCHAR  ucExtendedFunctionCode;
+   UCHAR  ucReserved;
+   ULONG  ulPSPDirTableOffset;
+-}ATOM_ROM_HEADER_V2_1;
++} ATOM_ROM_HEADER_V2_1;
+ 
+ 
+ //==============================Command Table Portion====================================
+@@ -269,7 +266,7 @@ typedef struct _ATOM_ROM_HEADER_V2_1
+ /****************************************************************************/
+ // Structures used in Command.mtb
+ /****************************************************************************/
+-typedef struct _ATOM_MASTER_LIST_OF_COMMAND_TABLES{
++typedef struct _ATOM_MASTER_LIST_OF_COMMAND_TABLES {
+   USHORT ASIC_Init;                              //Function Table, used by various SW components,latest version 1.1
+   USHORT GetDisplaySurfaceSize;                  //Atomic Table,  Used by Bios when enabling HW ICON
+   USHORT ASIC_RegistersInit;                     //Atomic Table,  indirectly used by various SW components,called from ASIC_Init
+@@ -351,7 +348,7 @@ typedef struct _ATOM_MASTER_LIST_OF_COMMAND_TABLES{
+   USHORT ProcessAuxChannelTransaction;           //Function Table,only used by Bios
+   USHORT DPEncoderService;                       //Function Table,only used by Bios
+   USHORT GetVoltageInfo;                         //Function Table,only used by Bios since SI
+-}ATOM_MASTER_LIST_OF_COMMAND_TABLES;
++} ATOM_MASTER_LIST_OF_COMMAND_TABLES;
+ 
+ // For backward compatible
+ #define ReadEDIDFromHWAssistedI2C                ProcessI2cChannelTransaction
+@@ -377,17 +374,15 @@ typedef struct _ATOM_MASTER_LIST_OF_COMMAND_TABLES{
+ 
+ #define MemoryRefreshConversion                  Gfx_Init
+ 
+-typedef struct _ATOM_MASTER_COMMAND_TABLE
+-{
++typedef struct _ATOM_MASTER_COMMAND_TABLE {
+   ATOM_COMMON_TABLE_HEADER           sHeader;
+   ATOM_MASTER_LIST_OF_COMMAND_TABLES ListOfCommandTables;
+-}ATOM_MASTER_COMMAND_TABLE;
++} ATOM_MASTER_COMMAND_TABLE;
+ 
+ /****************************************************************************/
+ // Structures used in every command table
+ /****************************************************************************/
+-typedef struct _ATOM_TABLE_ATTRIBUTE
+-{
++typedef struct _ATOM_TABLE_ATTRIBUTE {
+ #if ATOM_BIG_ENDIAN
+   USHORT  UpdatedByUtility:1;         //[15]=Table updated by utility flag
+   USHORT  PS_SizeInBytes:7;           //[14:8]=Size of parameter space in Bytes (multiple of a dword),
+@@ -397,18 +392,17 @@ typedef struct _ATOM_TABLE_ATTRIBUTE
+   USHORT  PS_SizeInBytes:7;           //[14:8]=Size of parameter space in Bytes (multiple of a dword),
+   USHORT  UpdatedByUtility:1;         //[15]=Table updated by utility flag
+ #endif
+-}ATOM_TABLE_ATTRIBUTE;
++} ATOM_TABLE_ATTRIBUTE;
+ 
+ /****************************************************************************/
+ // Common header for all command tables.
+ // Every table pointed by _ATOM_MASTER_COMMAND_TABLE has this common header.
+ // And the pointer actually points to this header.
+ /****************************************************************************/
+-typedef struct _ATOM_COMMON_ROM_COMMAND_TABLE_HEADER
+-{
++typedef struct _ATOM_COMMON_ROM_COMMAND_TABLE_HEADER {
+   ATOM_COMMON_TABLE_HEADER CommonHeader;
+   ATOM_TABLE_ATTRIBUTE     TableAttribute;
+-}ATOM_COMMON_ROM_COMMAND_TABLE_HEADER;
++} ATOM_COMMON_ROM_COMMAND_TABLE_HEADER;
+ 
+ /****************************************************************************/
+ // Structures used by ComputeMemoryEnginePLLTable
+@@ -435,22 +429,20 @@ typedef struct _ATOM_ADJUST_MEMORY_CLOCK_FREQ
+ }ATOM_ADJUST_MEMORY_CLOCK_FREQ;
+ #define POINTER_RETURN_FLAG             0x80
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS {
+   ULONG   ulClock;        //When returen, it's the re-calculated clock based on given Fb_div Post_Div and ref_div
+   UCHAR   ucAction;       //0:reserved //1:Memory //2:Engine
+   UCHAR   ucReserved;     //may expand to return larger Fbdiv later
+   UCHAR   ucFbDiv;        //return value
+   UCHAR   ucPostDiv;      //return value
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS;
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2 {
+   ULONG   ulClock;        //When return, [23:0] return real clock
+   UCHAR   ucAction;       //0:reserved;COMPUTE_MEMORY_PLL_PARAM:Memory;COMPUTE_ENGINE_PLL_PARAM:Engine. it return ref_div to be written to register
+   USHORT  usFbDiv;          //return Feedback value to be written to register
+   UCHAR   ucPostDiv;      //return post div to be written to register
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2;
+ 
+ #define COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_PS_ALLOCATION   COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS
+ 
+@@ -472,8 +464,7 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2
+ #define b3SRIOV_LOAD_UCODE                        0x40       //Use by HV GPU driver only, to load uCode. for ASIC_InitTable SCLK parameter only
+ #define b3SRIOV_SKIP_ASIC_INIT                    0x02       //Use by HV GPU driver only, skip ASIC_Init for primary adapter boot. for ASIC_InitTable SCLK parameter only
+ 
+-typedef struct _ATOM_COMPUTE_CLOCK_FREQ
+-{
++typedef struct _ATOM_COMPUTE_CLOCK_FREQ {
+ #if ATOM_BIG_ENDIAN
+   ULONG ulComputeClockFlag:8;                 // =1: COMPUTE_MEMORY_PLL_PARAM, =2: COMPUTE_ENGINE_PLL_PARAM
+   ULONG ulClockFreq:24;                       // in unit of 10kHz
+@@ -481,16 +472,14 @@ typedef struct _ATOM_COMPUTE_CLOCK_FREQ
+   ULONG ulClockFreq:24;                       // in unit of 10kHz
+   ULONG ulComputeClockFlag:8;                 // =1: COMPUTE_MEMORY_PLL_PARAM, =2: COMPUTE_ENGINE_PLL_PARAM
+ #endif
+-}ATOM_COMPUTE_CLOCK_FREQ;
++} ATOM_COMPUTE_CLOCK_FREQ;
+ 
+-typedef struct _ATOM_S_MPLL_FB_DIVIDER
+-{
++typedef struct _ATOM_S_MPLL_FB_DIVIDER {
+   USHORT usFbDivFrac;
+   USHORT usFbDiv;
+-}ATOM_S_MPLL_FB_DIVIDER;
++} ATOM_S_MPLL_FB_DIVIDER;
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3 {
+   union
+   {
+     ATOM_COMPUTE_CLOCK_FREQ  ulClock;         //Input Parameter
+@@ -501,7 +490,7 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3
+   UCHAR   ucPostDiv;                          //Output Parameter
+   UCHAR   ucCntlFlag;                         //Output Parameter
+   UCHAR   ucReserved;
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3;
+ 
+ // ucCntlFlag
+ #define ATOM_PLL_CNTL_FLAG_PLL_POST_DIV_EN          1
+@@ -511,8 +500,7 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3
+ 
+ 
+ // V4 are only used for APU which PLL outside GPU
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4 {
+ #if ATOM_BIG_ENDIAN
+   ULONG  ucPostDiv:8;        //return parameter: post divider which is used to program to register directly
+   ULONG  ulClock:24;         //Input= target clock, output = actual clock
+@@ -520,10 +508,9 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4
+   ULONG  ulClock:24;         //Input= target clock, output = actual clock
+   ULONG  ucPostDiv:8;        //return parameter: post divider which is used to program to register directly
+ #endif
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4;
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5 {
+   union
+   {
+     ATOM_COMPUTE_CLOCK_FREQ  ulClock;         //Input Parameter
+@@ -538,14 +525,13 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5
+     UCHAR   ucInputFlag;                      //Input Flags. ucInputFlag[0] - Strobe(1)/Performance(0) mode
+   };
+   UCHAR   ucReserved;
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5;
+ 
+ 
+-typedef struct _COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6
+-{
++typedef struct _COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6 {
+   ATOM_COMPUTE_CLOCK_FREQ  ulClock;         //Input Parameter
+   ULONG   ulReserved[2];
+-}COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6;
++} COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6;
+ 
+ //ATOM_COMPUTE_CLOCK_FREQ.ulComputeClockFlag
+ #define COMPUTE_GPUCLK_INPUT_FLAG_CLK_TYPE_MASK            0x0f
 -- 
-#Randy
+2.17.1
+
 
