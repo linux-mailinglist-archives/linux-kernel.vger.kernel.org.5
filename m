@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-23118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC1582A7EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:57:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 819CA82A7F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EFA0285033
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:57:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A626E1C22B8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45770568C;
-	Thu, 11 Jan 2024 06:57:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDF163A0;
+	Thu, 11 Jan 2024 07:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ajYwqpnG"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="TCaighes"
 Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9375663
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 06:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A277F5677
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=tMlRLR1qg9/lV8ANg5
-	oVzk/RVrvunJWO7lURJe1t1h8=; b=ajYwqpnGMRiPJTBKgGzZbowc9V/hYuo0VH
-	fqpYjRoXIkyvaZxGgF4mxhANfrMU6QtUQUGofQ1m+bHQGxp2VJF16AM1/icLTQN6
-	amy7Tg10+icGhsFij0ILfrX4O5M0xsoMwFwL0DpCycJKxCoT98jMDUQkp3YLP4o0
-	oA8uBMo/M=
+	s=s110527; h=From:Subject:Date:Message-Id; bh=YOW7VfZ9Nj3SNmJj7c
+	IFF6NAqYW/zZRZtVM5J4qW1mA=; b=TCaighes8OnfSSaxNZLFTm7mESAvL/nbeK
+	uB3Lvoo14zHDdHXlYJZMOd9crUnQXuc5zBR/QVItMk73OTqtKKYrmCa9FIkp555L
+	ks+f2X9NAhrtWlBccR7MvPwnLdD8jOSgZf3besZH39+sk1R9RsUiSacnPKMfuPCS
+	FHhP1XP1c=
 Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3X+8wkZ9lbDKQAA--.17659S2;
-	Thu, 11 Jan 2024 14:56:49 +0800 (CST)
+	by gzga-smtp-mta-g0-1 (Coremail) with SMTP id _____wD3vwEZkp9lweQMAA--.3094S2;
+	Thu, 11 Jan 2024 15:00:42 +0800 (CST)
 From: GuoHua Chen <chenguohua_716@163.com>
-To: airlied@gmail.com,
+To: tzimmermann@suse.de,
+	airlied@gmail.com,
+	maarten.lankhorst@linux.intel.com,
 	daniel@ffwll.ch,
-	tzimmermann@suse.de,
 	mripard@kernel.org,
-	patrik.r.jakobsson@gmail.com,
-	maarten.lankhorst@linux.intel.com
-Cc: dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
+	patrik.r.jakobsson@gmail.com
+Cc: linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
 	GuoHua Chen <chenguohua_716@163.com>
-Subject: [PATCH] drm: Clean up errors in cdv_intel_dp.h
-Date: Thu, 11 Jan 2024 06:56:48 +0000
-Message-Id: <20240111065648.9170-1-chenguohua_716@163.com>
+Subject: [PATCH] drm/gma500: Clean up errors in psb_intel_sdvo.h
+Date: Thu, 11 Jan 2024 07:00:41 +0000
+Message-Id: <20240111070041.9258-1-chenguohua_716@163.com>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wD3X+8wkZ9lbDKQAA--.17659S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur13Ww1fXFyUZr1rJF4kXrb_yoW3trX_WF
-	4UXrsrZrW3Cay5Wry7Ar9I9ryYvF1F93yv9Fy7Ka43Jw17Ary5u3429FykZ3WrCryUWFsr
-	J3WkXFyrCrn3ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUj8wItUUUUU==
-X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/1tbiqBNi1mVOBk5u1AAAsW
+X-CM-TRANSID:_____wD3vwEZkp9lweQMAA--.3094S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7urWkKF1xKr15XF1xtF4fXwb_yoW8ZF1fpa
+	y3Xw45WF4fJrZFgF4rCF1UJFW5G39rG34agFW7Ww1SqFn7CrW8ZFZYga47Ar98WryrCr1S
+	qF1kt3sxuF18XF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U7KsnUUUUU=
+X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/xtbBEB5i1mVOBk2o0gAAsg
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,26 +56,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
 Fix the following errors reported by checkpatch:
 
-ERROR: else should follow close brace '}'
+ERROR: "foo * bar" should be "foo *bar"
+ERROR: "(foo*)" should be "(foo *)"
 
 Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
 ---
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/gma500/psb_intel_sdvo.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index 27cfeb6b470f..135a1226df1a 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -735,7 +735,7 @@ cdv_intel_dp_aux_native_read(struct gma_encoder *encoder,
- 		if ((ack & DP_AUX_NATIVE_REPLY_MASK) == DP_AUX_NATIVE_REPLY_ACK) {
- 			memcpy(recv, reply + 1, ret - 1);
- 			return ret - 1;
--		} else 
-+		} else
- 			if ((ack & DP_AUX_NATIVE_REPLY_MASK) == DP_AUX_NATIVE_REPLY_DEFER)
- 				udelay(100);
- 			else
+diff --git a/drivers/gpu/drm/gma500/psb_intel_sdvo.c b/drivers/gpu/drm/gma500/psb_intel_sdvo.c
+index e4f914deceba..86802c274e5b 100644
+--- a/drivers/gpu/drm/gma500/psb_intel_sdvo.c
++++ b/drivers/gpu/drm/gma500/psb_intel_sdvo.c
+@@ -451,7 +451,7 @@ static const char *cmd_status_names[] = {
+ static bool psb_intel_sdvo_write_cmd(struct psb_intel_sdvo *psb_intel_sdvo, u8 cmd,
+ 				 const void *args, int args_len)
+ {
+-	u8 buf[MAX_ARG_LEN*2 + 2], status;
++	u8 buf[MAX_ARG_LEN * 2 + 2], status;
+ 	struct i2c_msg msgs[MAX_ARG_LEN + 3];
+ 	int i, ret;
+ 
+@@ -466,16 +466,16 @@ static bool psb_intel_sdvo_write_cmd(struct psb_intel_sdvo *psb_intel_sdvo, u8 c
+ 		msgs[i].addr = psb_intel_sdvo->slave_addr;
+ 		msgs[i].flags = 0;
+ 		msgs[i].len = 2;
+-		msgs[i].buf = buf + 2 *i;
+-		buf[2*i + 0] = SDVO_I2C_ARG_0 - i;
+-		buf[2*i + 1] = ((u8*)args)[i];
++		msgs[i].buf = buf + 2 * i;
++		buf[2 * i + 0] = SDVO_I2C_ARG_0 - i;
++		buf[2 * i + 1] = ((u8 *)args)[i];
+ 	}
+ 	msgs[i].addr = psb_intel_sdvo->slave_addr;
+ 	msgs[i].flags = 0;
+ 	msgs[i].len = 2;
+-	msgs[i].buf = buf + 2*i;
+-	buf[2*i + 0] = SDVO_I2C_OPCODE;
+-	buf[2*i + 1] = cmd;
++	msgs[i].buf = buf + 2 * i;
++	buf[2 * i + 0] = SDVO_I2C_OPCODE;
++	buf[2 * i + 1] = cmd;
+ 
+ 	/* the following two are to read the response */
+ 	status = SDVO_I2C_CMD_STATUS;
+@@ -798,7 +798,7 @@ static void psb_intel_sdvo_get_dtd_from_mode(struct psb_intel_sdvo_dtd *dtd,
+ 	dtd->part2.reserved = 0;
+ }
+ 
+-static void psb_intel_sdvo_get_mode_from_dtd(struct drm_display_mode * mode,
++static void psb_intel_sdvo_get_mode_from_dtd(struct drm_display_mode *mode,
+ 					 const struct psb_intel_sdvo_dtd *dtd)
+ {
+ 	mode->hdisplay = dtd->part1.h_active;
 -- 
 2.17.1
 
