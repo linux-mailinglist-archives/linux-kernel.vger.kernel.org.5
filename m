@@ -1,255 +1,102 @@
-Return-Path: <linux-kernel+bounces-24051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 818A182B602
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:35:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD58382B615
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:36:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8458B254AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:35:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E0DCB26906
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C3C5732B;
-	Thu, 11 Jan 2024 20:34:24 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B221758225;
+	Thu, 11 Jan 2024 20:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="d5VrmVml"
+Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B405958104
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 20:34:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3607a12e8d6so29982035ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:34:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705005262; x=1705610062;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2e04BjM1mjimy9z5SfAHbYmJWHgekFgUDhqQfiPXJ78=;
-        b=Yb+nj+1C8rYulX6JFuBiL+Y38S4JTJkz5jW2y5h7eFobdfWlHjE4XdIEClEW2WYopJ
-         i9ea/m5EiLWW+KpA6pHW/7Vslrw/VqBZFmrOsyN3NtYjWehOydDxrqnXNA19vfF+oB9b
-         Stp7GOPwRZ0BSJO9suLiL784k5VPy19irpL1UIL/A6KdXgtUS7iYZXtTdDjKwkbSVDVu
-         DK8zDGdsb6IfGKyisvHmcVbYozzSg2Jl8s/vHXiflroGJKEh+1gO1hrzkLRa4KlzFabd
-         Q5bxNQ0a1ED0gFVVmSVl9zrikVaTvM3WzFAlWZfuEtQtria0DGm22wh0bw6BTyyiiF4J
-         r0Hw==
-X-Gm-Message-State: AOJu0YxX6PQRE+ZN94Ev32M8vsUh4nSZkpVJtnL/3t5nPRFvt3REah9j
-	C14OlmRsiu4VRt8DDori1h5F+LhTKBMa7I9r5Ljjf8EctwtqAp0=
-X-Google-Smtp-Source: AGHT+IEbeRtX1XqsxQE0hvFPl6obm9OJAIxixr0wfXv2ijh+0gntrp556wXALILQAQ0sxces2ZI/LL2ItfppDqIVG19MqHbHIFlc
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828CE58AAC
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 20:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id O1l4rDaqGsg4OO1l4rAocH; Thu, 11 Jan 2024 21:34:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1705005275;
+	bh=RLXbEOhYO7cx+Vn35fW6jbiCqUmAKgWTACteZwWafQ4=;
+	h=From:To:Cc:Subject:Date;
+	b=d5VrmVmlEiqOJEh58FzdOZRSx/wdg4VuBqSAXWOAqvuNIwJuHVdtq7xH4BYplz2Cg
+	 YThE2r8GuvwLQYJOC2pz8JAVkDxXOOFdiB+94d4XumWDMafaj9vLAWQQoRNvfoXQl9
+	 nglyVv6nWT+aF3ltC331ChTlp8p6lmXcmiRl2L1qGXiEppBlACYaoF7yOQnphTlPMl
+	 BBkas+8aEgYxllVszp7E+vlcZqej5oP/LvZpWm/mHDbaudNHMcFlg6usuoD21hN1vA
+	 1ikXwPmOQjXAMQSNewQD4ffrUixxZEV/gcNadUjCJ6n5M/iPRvca5y5UhStXAdMJ3I
+	 Un5gHJ/+840QA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 11 Jan 2024 21:34:35 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] intel_th: Remove usage of the deprecated ida_simple_xx() API
+Date: Thu, 11 Jan 2024 21:34:32 +0100
+Message-Id: <9c092dc6db15984d98732510bb052bb00683489b.1705005258.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d94:b0:360:290:902d with SMTP id
- h20-20020a056e021d9400b003600290902dmr64702ila.3.1705005261967; Thu, 11 Jan
- 2024 12:34:21 -0800 (PST)
-Date: Thu, 11 Jan 2024 12:34:21 -0800
-In-Reply-To: <0000000000005abd7b060eb160cd@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fadb3d060eb178a9@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [net?] KMSAN: uninit-value in validate_xmit_skb
-From: syzbot <syzbot+7f4d0ea3df4d4fa9a65f@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-***
+This is less verbose.
 
-Subject: Re: [syzbot] [net?] KMSAN: uninit-value in validate_xmit_skb
-Author: edumazet@google.com
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/hwtracing/intel_th/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On Thu, Jan 11, 2024 at 9:32=E2=80=AFPM syzbot
-<syzbot+7f4d0ea3df4d4fa9a65f@syzkaller.appspotmail.com> wrote:
->
-> > On Thu, Jan 11, 2024 at 9:27=E2=80=AFPM syzbot
-> > <syzbot+7f4d0ea3df4d4fa9a65f@syzkaller.appspotmail.com> wrote:
-> >>
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kernel=
-org..
-> >> git tree:       upstream
-> >> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1135ab95e8=
-0000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=3De0c7078a6b=
-901aa3
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3D7f4d0ea3df4d=
-4fa9a65f
-> >> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for =
-Debian) 2.40
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D15e15379=
-e80000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D170f6981e8=
-0000
-> >>
-> >> Downloadable assets:
-> >> disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4/=
-disk-fbafc3e6.raw.xz
-> >> vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vml=
-inux-fbafc3e6.xz
-> >> kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4a=
-4/bzImage-fbafc3e6.xz
-> >>
-> >> IMPORTANT: if you fix the issue, please add the following tag to the c=
-ommit:
-> >> Reported-by: syzbot+7f4d0ea3df4d4fa9a65f@syzkaller.appspotmail.com
-> >>
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> >> BUG: KMSAN: uninit-value in skb_gso_segment include/net/gso.h:83 [inli=
-ne]
-> >> BUG: KMSAN: uninit-value in validate_xmit_skb+0x10f2/0x1930 net/core/d=
-ev.c:3629
-> >>  skb_gso_segment include/net/gso.h:83 [inline]
-> >>  validate_xmit_skb+0x10f2/0x1930 net/core/dev.c:3629
-> >>  __dev_queue_xmit+0x1eac/0x5130 net/core/dev.c:4341
-> >>  dev_queue_xmit include/linux/netdevice.h:3134 [inline]
-> >>  packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
-> >>  packet_snd net/packet/af_packet.c:3087 [inline]
-> >>  packet_sendmsg+0x8b1d/0x9f30 net/packet/af_packet.c:3119
-> >>  sock_sendmsg_nosec net/socket.c:730 [inline]
-> >>  __sock_sendmsg net/socket.c:745 [inline]
-> >>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
-> >>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
-> >>  __sys_sendmsg net/socket.c:2667 [inline]
-> >>  __do_sys_sendmsg net/socket.c:2676 [inline]
-> >>  __se_sys_sendmsg net/socket.c:2674 [inline]
-> >>  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
-> >>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> >>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
-> >>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> >>
-> >> Uninit was created at:
-> >>  slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
-> >>  slab_alloc_node mm/slub.c:3478 [inline]
-> >>  kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
-> >>  kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
-> >>  __alloc_skb+0x318/0x740 net/core/skbuff.c:651
-> >>  alloc_skb include/linux/skbuff.h:1286 [inline]
-> >>  alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6334
-> >>  sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2780
-> >>  packet_alloc_skb net/packet/af_packet.c:2936 [inline]
-> >>  packet_snd net/packet/af_packet.c:3030 [inline]
-> >>  packet_sendmsg+0x70e8/0x9f30 net/packet/af_packet.c:3119
-> >>  sock_sendmsg_nosec net/socket.c:730 [inline]
-> >>  __sock_sendmsg net/socket.c:745 [inline]
-> >>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
-> >>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
-> >>  __sys_sendmsg net/socket.c:2667 [inline]
-> >>  __do_sys_sendmsg net/socket.c:2676 [inline]
-> >>  __se_sys_sendmsg net/socket.c:2674 [inline]
-> >>  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
-> >>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> >>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
-> >>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> >>
-> >> CPU: 0 PID: 5025 Comm: syz-executor279 Not tainted 6.7.0-rc7-syzkaller=
--00003-gfbafc3e621c3 #0
-> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIO=
-S Google 11/17/2023
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> >>
-> >>
-> >> ---
-> >> This report is generated by a bot. It may contain errors.
-> >> See https://goo.gl/tpsmEJ for more information about syzbot.
-> >> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >>
-> >> syzbot will keep track of this issue. See:
-> >> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >>
-> >> If the report is already addressed, let syzbot know by replying with:
-> >> #syz fix: exact-commit-title
-> >>
-> >> If you want syzbot to run the reproducer, reply with:
-> >> #syz test: git://repo/address.git branch-or-commit-hash
-> >> If you attach or paste a git patch, syzbot will apply it before testin=
-g.
-> >>
-> >> If you want to overwrite report's subsystems, reply with:
-> >> #syz set subsystems: new-subsystem
-> >> (See the list of subsystem names on the web dashboard)
-> >>
-> >> If the report is a duplicate of another one, reply with:
-> >> #syz dup: exact-subject-of-another-report
-> >>
-> >> If you want to undo deduplication, reply with:
-> >> #syz undup
-> >
-> > #syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
-git
->
-> want either no args or 2 args (repo, branch), got 1
+diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
+index cc7f879bb175..86c8efecd7c2 100644
+--- a/drivers/hwtracing/intel_th/core.c
++++ b/drivers/hwtracing/intel_th/core.c
+@@ -871,7 +871,7 @@ intel_th_alloc(struct device *dev, const struct intel_th_drvdata *drvdata,
+ 	if (!th)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	th->id = ida_simple_get(&intel_th_ida, 0, 0, GFP_KERNEL);
++	th->id = ida_alloc(&intel_th_ida, GFP_KERNEL);
+ 	if (th->id < 0) {
+ 		err = th->id;
+ 		goto err_alloc;
+@@ -931,7 +931,7 @@ intel_th_alloc(struct device *dev, const struct intel_th_drvdata *drvdata,
+ 			    "intel_th/output");
+ 
+ err_ida:
+-	ida_simple_remove(&intel_th_ida, th->id);
++	ida_free(&intel_th_ida, th->id);
+ 
+ err_alloc:
+ 	kfree(th);
+@@ -964,7 +964,7 @@ void intel_th_free(struct intel_th *th)
+ 	__unregister_chrdev(th->major, 0, TH_POSSIBLE_OUTPUTS,
+ 			    "intel_th/output");
+ 
+-	ida_simple_remove(&intel_th_ida, th->id);
++	ida_free(&intel_th_ida, th->id);
+ 
+ 	kfree(th);
+ }
+-- 
+2.34.1
 
-
-#syz test
-
-```
-diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-index 27cc1d4643219a44c01a2404124cd45ef46f7f3d..4dfa9b69ca8d95d43e44831bc16=
-6eadbe5715d3c
-100644
---- a/include/linux/virtio_net.h
-+++ b/include/linux/virtio_net.h
-@@ -3,6 +3,8 @@
- #define _LINUX_VIRTIO_NET_H
-
- #include <linux/if_vlan.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
- #include <linux/udp.h>
- #include <uapi/linux/tcp.h>
- #include <uapi/linux/virtio_net.h>
-@@ -49,6 +51,7 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *s=
-kb,
-                                        const struct virtio_net_hdr *hdr,
-                                        bool little_endian)
- {
-+       unsigned int nh_min_len =3D sizeof(struct iphdr);
-        unsigned int gso_type =3D 0;
-        unsigned int thlen =3D 0;
-        unsigned int p_off =3D 0;
-@@ -65,6 +68,7 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *s=
-kb,
-                        gso_type =3D SKB_GSO_TCPV6;
-                        ip_proto =3D IPPROTO_TCP;
-                        thlen =3D sizeof(struct tcphdr);
-+                       nh_min_len =3D sizeof(struct ipv6hdr);
-                        break;
-                case VIRTIO_NET_HDR_GSO_UDP:
-                        gso_type =3D SKB_GSO_UDP;
-@@ -100,7 +104,8 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff =
-*skb,
-                if (!skb_partial_csum_set(skb, start, off))
-                        return -EINVAL;
-
--               p_off =3D skb_transport_offset(skb) + thlen;
-+               nh_min_len =3D max_t(u32, nh_min_len, skb_transport_offset(=
-skb));
-+               p_off =3D nh_min_len + thlen;
-                if (!pskb_may_pull(skb, p_off))
-                        return -EINVAL;
-        } else {
-@@ -140,7 +145,7 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff =
-*skb,
-
-                        skb_set_transport_header(skb, keys.control.thoff);
-                } else if (gso_type) {
--                       p_off =3D thlen;
-+                       p_off =3D nh_min_len + thlen;
-                        if (!pskb_may_pull(skb, p_off))
-                                return -EINVAL;
-                }
-```
 
