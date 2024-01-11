@@ -1,146 +1,139 @@
-Return-Path: <linux-kernel+bounces-23330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E51282AB29
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:45:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D494C82AB2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AC3B1F24358
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:45:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B63121C21CF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CB311C8C;
-	Thu, 11 Jan 2024 09:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A4D11C94;
+	Thu, 11 Jan 2024 09:46:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="mV5oevAi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="sc/mq8zK"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68E111194;
-	Thu, 11 Jan 2024 09:45:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3D08C433C7;
-	Thu, 11 Jan 2024 09:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704966343;
-	bh=qKFDAC9Z0CvkABbEWUdz+tzPYQm8wVre2lupE0nCoBQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mV5oevAiLf4HdYbwcimI6X5nngi9Byp7IUGyQ9wPzPZXxwXaGZ6J5DOjJ0uRneOde
-	 bZuVNFRnsEfBNPraXxy1T+ShtW5+zXEdHRL8JZ0KD9MFkoXpnV85fQsOpGWARRa/hJ
-	 hPhlH1lxaL33V3kjtO2c1LJMg5tOKVtQDDZgKeGA=
-Date: Thu, 11 Jan 2024 10:45:38 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Pavel Machek <pavel@ucw.cz>, bvanassche@acm.org, hch@lst.de,
-	hare@suse.de, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, torvalds@linux-foundation.org,
-	stable@vger.kernel.org, lwn@lwn.net, jslaby@suse.cz
-Subject: Re: scsi_get_lba breakage in 5.10 -- Re: Linux 5.10.206
-Message-ID: <2024011121-unfailing-backroom-14e6@gregkh>
-References: <2024010527-revision-ended-aea2@gregkh>
- <ZZ042FejzwMM5vDW@duo.ucw.cz>
- <yq1jzoi7hrt.fsf@ca-mkp.ca.oracle.com>
- <2024011047-clench-scheme-1f46@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B00211722;
+	Thu, 11 Jan 2024 09:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40B9kViR007843;
+	Thu, 11 Jan 2024 03:46:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704966391;
+	bh=BkKV7jODf3A3P8yk03zMcE0wRaE/PUSWXFjUCTWGGoI=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=sc/mq8zKVJsO+Y5zP8ISQ3K15joW/OKIWn9Iyy8JBHxhDKHntOEHRG2CUdqSXhmHU
+	 5LgJs6Gm22IzGbg4eAkGsXGQdAG4yKLIlNJFDrsmFQ+T4GWMyQGAXC7WiBrWevurYc
+	 E3j3r66qNTKuv8JTFNj7pci4IPrIE/XcyPtd4538=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40B9kVTx014661
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 11 Jan 2024 03:46:31 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
+ Jan 2024 03:46:31 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 11 Jan 2024 03:46:31 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40B9kSoY029834;
+	Thu, 11 Jan 2024 03:46:28 -0600
+Message-ID: <524ea592-02d6-4a1d-899a-feaa7fd11914@ti.com>
+Date: Thu, 11 Jan 2024 15:16:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024011047-clench-scheme-1f46@gregkh>
+User-Agent: Mozilla Thunderbird
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <s-vadapalli@ti.com>
+Subject: Re: [PATCH net v2 1/1] net: ethernet: ti: am65-cpsw: Fix max mtu to
+ fit ethernet frames
+Content-Language: en-US
+To: =?UTF-8?B?U2FuanXDoW4gR2FyY8OtYSwgSm9yZ2U=?=
+	<Jorge.SanjuanGarcia@duagon.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com"
+	<edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>
+References: <20240105085530.14070-1-jorge.sanjuangarcia@duagon.com>
+ <c025f2f9-ca2c-4fdb-adb1-803745fded0c.a613f387-0b3b-49fd-9401-3a0ed0c1f80e.2e3f49f4-dbd1-4269-9bd1-2d3ffbda767f@emailsignatures365.codetwo.com>
+ <20240105085530.14070-2-jorge.sanjuangarcia@duagon.com>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <20240105085530.14070-2-jorge.sanjuangarcia@duagon.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, Jan 10, 2024 at 10:15:34AM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Jan 09, 2024 at 08:55:52AM -0500, Martin K. Petersen wrote:
-> > 
-> > Pavel,
-> > 
-> > > This is bad idea. This changes return value, but without fixing
-> > > callers; there will be subtle bugs somewhere.
-> > 
-> > I'm not sure why this particular change was backported since it was part
-> > of a larger cleanup of explicitly distinguishing between block layer
-> > sectors and device-specific LBAs. This was done to fix devices using PI
-> > with 4 KB blocks which would otherwise end up getting programmed with
-> > the wrong reference tag value.
-> > 
-> > > At minimum, we need this:
-> > >
-> > > 87662a472a9d8980b26ba5803447df2c4981d467 scsi: iser: Use scsi_get_sector() instead of scsi_get_lba()
-> > 
-> > I agree this would be appropriate. Otherwise we'll print the error being
-> > at the wrong sector in case of an error on a PI device with 4 KB blocks.
-> > However, the message is purely informative.
-> > 
-> > > That will fix iser, but there's also:
-> > >
-> > > drivers/s390/scsi/zfcp_fsf.c:           io->ref_tag_value = scsi_get_lba(scsi_cmnd) & 0xFFFFFFFF;
-> > > drivers/scsi/isci/request.c:            tc->ref_tag_seed_gen = scsi_get_lba(scmd) & 0xffffffff;
-> > > drivers/scsi/isci/request.c:            tc->ref_tag_seed_verify = scsi_get_lba(scmd) & 0xffffffff;
-> > > drivers/scsi/lpfc/lpfc_scsi.c:  lba = scsi_get_lba(sc);
-> > > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > > drivers/scsi/lpfc/lpfc_scsi.c:  reftag = (uint32_t)scsi_get_lba(sc); /* Truncate LBA */
-> > > drivers/scsi/lpfc/lpfc_scsi.c:          start_ref_tag = (uint32_t)scsi_get_lba(cmd); /* Truncate LBA */
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:          failing_sector = scsi_get_lba(cmd);
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                          (unsigned long long)scsi_get_lba(cmd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                                   (unsigned long long)scsi_get_lba(cmnd),
-> > > drivers/scsi/lpfc/lpfc_scsi.c:                                   (unsigned long long)scsi_get_lba(cmnd),
-> > > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
-> > > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
-> > > drivers/scsi/qla2xxx/qla_iocb.c:                    (0xffffffff & scsi_get_lba(cmd)));
-> > > drivers/scsi/qla2xxx/qla_isr.c:     cmd->cmnd[0], (u64)scsi_get_lba(cmd), a_ref_tag, e_ref_tag,
-> > > drivers/scsi/qla2xxx/qla_isr.c:         sector_t lba_s = scsi_get_lba(cmd);
-> > 
-> > Save for two cases in lpfc_queuecommand (which like the iser case will
-> > print the wrong sector number on error) all these look OK to me. Note
-> > that almost all callers of scsi_get_lba() actually intended to get the
-> > protocol LBA as the name indicates and not the block layer sector
-> > number.
-> 
-> Ick, this is going to get complex fast.  How about I revert the whole
-> series, and then just add the one bugfix at the end, in a "fixed by
-> hand" version like I have here below.  Would that be better overall?
-> 
-> Thanks,
-> 
-> greg k-h
-> 
-> 
-> diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-> index 0c4bc42b55c2..3d3d139127ee 100644
-> --- a/drivers/scsi/scsi_error.c
-> +++ b/drivers/scsi/scsi_error.c
-> @@ -1069,6 +1069,7 @@ static int scsi_send_eh_cmnd(struct scsi_cmnd *scmd, unsigned char *cmnd,
->  
->  	scsi_log_send(scmd);
->  	scmd->scsi_done = scsi_eh_done;
-> +	scmd->flags |= SCMD_LAST;
->  
->  	/*
->  	 * Lock sdev->state_mutex to avoid that scsi_device_quiesce() can
-> @@ -2361,6 +2362,7 @@ scsi_ioctl_reset(struct scsi_device *dev, int __user *arg)
->  	scsi_init_command(dev, scmd);
->  	scmd->request = rq;
->  	scmd->cmnd = scsi_req(rq)->cmd;
-> +	scmd->flags |= SCMD_LAST;
->  
->  	scmd->scsi_done		= scsi_reset_provider_done_command;
->  	memset(&scmd->sdb, 0, sizeof(scmd->sdb));
 
-Ok, I have now done this and will push out a -rc1 with these changes in
-it.
 
-greg k-h
+On 05/01/24 14:25, Sanjuán García, Jorge wrote:
+> The value of AM65_CPSW_MAX_PACKET_SIZE represents the maximum length
+> of a received frame. This value is written to the register
+> AM65_CPSW_PORT_REG_RX_MAXLEN.
 > 
+> The maximum MTU configured on the network device should then leave
+> some room for the ethernet headers and frame check. Otherwise, if
+> the network interface is configured to its maximum mtu possible,
+> the frames will be larger than AM65_CPSW_MAX_PACKET_SIZE and will
+> get dropped as oversized.
+> 
+> The switch supports ethernet frame sizes between 64 and 2024 bytes
+> (including VLAN) as stated in the technical reference manual, so
+> define AM65_CPSW_MAX_PACKET_SIZE with that maximum size.
+> 
+> Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth 
+> subsystem driver")
+> Signed-off-by: Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
+
+Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+
+> ---
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c 
+> b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> index 7651f90f51f2..3c7854537cb5 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> @@ -56,7 +56,7 @@
+>   #define AM65_CPSW_MAX_PORTS     8
+> 
+>   #define AM65_CPSW_MIN_PACKET_SIZE       VLAN_ETH_ZLEN
+> -#define AM65_CPSW_MAX_PACKET_SIZE      (VLAN_ETH_FRAME_LEN + ETH_FCS_LEN)
+> +#define AM65_CPSW_MAX_PACKET_SIZE      2024
+> 
+>   #define AM65_CPSW_REG_CTL               0x004
+>   #define AM65_CPSW_REG_STAT_PORT_EN      0x014
+> @@ -2196,7 +2196,8 @@ am65_cpsw_nuss_init_port_ndev(struct am65_cpsw_common 
+> *common, u32 port_idx)
+>           eth_hw_addr_set(port->ndev, port->slave.mac_addr);
+> 
+>           port->ndev->min_mtu = AM65_CPSW_MIN_PACKET_SIZE;
+> -       port->ndev->max_mtu = AM65_CPSW_MAX_PACKET_SIZE;
+> +       port->ndev->max_mtu = AM65_CPSW_MAX_PACKET_SIZE -
+> +                             (VLAN_ETH_HLEN + ETH_FCS_LEN);
+>           port->ndev->hw_features = NETIF_F_SG |
+>                                     NETIF_F_RXCSUM |
+>                                     NETIF_F_HW_CSUM |
+
+..
+
+-- 
+Regards,
+Siddharth.
 
