@@ -1,344 +1,204 @@
-Return-Path: <linux-kernel+bounces-23905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5628382B37F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:00:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863BA82B382
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C62FAB24D0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:00:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F1371C25F2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B846653E0D;
-	Thu, 11 Jan 2024 16:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D126854BC1;
+	Thu, 11 Jan 2024 16:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lofzQF1t"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="UwsrgpME"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2134.outbound.protection.outlook.com [40.107.7.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43C153819;
-	Thu, 11 Jan 2024 16:59:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0496C43390;
-	Thu, 11 Jan 2024 16:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704992341;
-	bh=eQSxTNQ2W6/VSJpR484BvIKV22Pqxjk+fAuWCYj2jVg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lofzQF1tFyOByroeV3UFo1pfjRktuNwSFvxUlJG99QgodmAbjE6YjsCXNXQMTlj8B
-	 RTtDuLpe9nUVY//QwipfkpRBMHeWmhJWLcQrAatkrGL7Ne3qIh3gmnnb099PCYU43w
-	 cAgH+fMxSMnJqfjQLndi//cvUBImJawPX3QIiUVi0Ct4pyinKKtPHjFBFdGtNdPvfV
-	 NS2ApwBN75TaTaXR8dEPspuLpEIqIQCZF13B3byqlhiUhcPedv1gtReJFP7+k1Kcny
-	 LwgdCKPLFbcfzZlee3vX0vMGq9bAyVwqreQFTuOoSoVMxwDVAo7c8/SHl8XZoFBq6x
-	 Vtkh9EHzFYi/Q==
-Date: Thu, 11 Jan 2024 16:58:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Chen Wang <unicorn_wang@outlook.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com, krzysztof.kozlowski+dt@linaro.org,
-	mturquette@baylibre.com, palmer@dabbelt.com,
-	paul.walmsley@sifive.com, richardcochran@gmail.com,
-	robh+dt@kernel.org, sboyd@kernel.org, devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com, guoren@kernel.org, jszhang@kernel.org,
-	inochiama@outlook.com, samuel.holland@sifive.com,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v7 2/4] dt-bindings: clock: sophgo: support SG2042
-Message-ID: <20240111-jolly-prize-930931cc648a@spud>
-References: <cover.1704694903.git.unicorn_wang@outlook.com>
- <925d99d5b4ece01337cb3389aaea4b631894dd1d.1704694903.git.unicorn_wang@outlook.com>
- <f88b79c3-e44b-4136-ae56-10e1f2502e2d@linaro.org>
- <MA0P287MB2822C7A3C1DC7786708E860BFE692@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
- <20240110-untoasted-underfed-fe81479506f6@spud>
- <MA0P287MB282224A6097B4FCCF721C89AFE682@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A02153E37;
+	Thu, 11 Jan 2024 16:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DeJf4yrdyoFXcAWuG/Uz9NxNSaRusFMER0uQaLDjd/bO3yLh+JkAYiMAzyaXUL/i08WfPFHsb1LmQ9lJe92rY/21ngQQMC6f9RSYD0yMsg3XeEgKMygZUew0kzKEwstxnQ2GFOEl12bu+idSjux6L5j8Z7yka7VBWdo+mfYduQNb9QTtJcSdyQUgqyqLcs1USfVF8hcIESKw1Na3rUxkQymy5RF80K36G+dM71Uqafr+T8D7mWXfkpZMY4K9ZTeL4znnnARGxwMhxmwaygjVBoqadL337MbwOW6G3SwqQwTGJrWjoEiIP0rC8JafcFO2bqhVRuy29biI9FA6xOuOaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u7jOCp+77SIEY3uHVjM7WRVe5RLbbfbxHfoUd8RwIKM=;
+ b=J/U7mi8FM7sgTIgLFlmmd2XWLbcowEbhBQ/wSn6dpxH5OYpQmHDvGByhVqF0FWdGoe3emallTnkQlTUBZnfTJeKn+rk8j3etptv5UBhA6WkQQt/3HZ5w4j+AWSFNbOKAajnFnXD0Iy0OmhbV4RESpe1qrkzZkkhQUKDAVv5PYKsE7AM9Ei5wvrMlCsRtCGvTfzFuPPcQDh37atbMpry2xDN+1i1Aemn8aQwhYJzanW7kd8/jNlHIX8UgvdLR/IxnPNMXJ+Bic3JoSdGBEaYKrCJ7mHoZTECAeZzME2g9r+cqfXvM2L1CnNJdhB14/sfnMobmVS3bUWcT1WaOPtKt6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
+ header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u7jOCp+77SIEY3uHVjM7WRVe5RLbbfbxHfoUd8RwIKM=;
+ b=UwsrgpMEmiameQ3Wn4WoFd3xoKeiNKzo0vZ1wqbPeo52kqMcAyImA9Bxs1ADePdHzIdEMXNQ2ZTh/9CkcONMDjMLwj4eqp89A3uvSRxisQZjSsl/5jY/ZphMecG2V+oqP3m1qslYLD2LyvZMYq7vHaWUtT58jHgK0UEYPAd+E20=
+Received: from DB8PR06MB6332.eurprd06.prod.outlook.com (2603:10a6:10:103::23)
+ by AS8PR06MB7480.eurprd06.prod.outlook.com (2603:10a6:20b:332::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Thu, 11 Jan
+ 2024 16:59:06 +0000
+Received: from DB8PR06MB6332.eurprd06.prod.outlook.com
+ ([fe80::2ef6:99ac:4fcc:7039]) by DB8PR06MB6332.eurprd06.prod.outlook.com
+ ([fe80::2ef6:99ac:4fcc:7039%5]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
+ 16:59:06 +0000
+From: POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: Andrew Lunn <andrew@lunn.ch>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "afd@ti.com" <afd@ti.com>,
+	"hkallweit1@gmail.com" <hkallweit1@gmail.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, GEO-CHHER-bsp-development
+	<bsp-development.geo@leica-geosystems.com>
+Subject: Re: [PATCH 1/3] dt-bindings: net: dp83826: add ti,cfg-dac-minus
+ binding
+Thread-Topic: [PATCH 1/3] dt-bindings: net: dp83826: add ti,cfg-dac-minus
+ binding
+Thread-Index: AQHaRKoS6UQg1dt3TU+QGYO25gfEa7DUzvGAgAAC4gCAAAHngIAAAemA
+Date: Thu, 11 Jan 2024 16:59:06 +0000
+Message-ID: <c5b4613a-261d-429b-b59c-c264bc53e315@leica-geosystems.com>
+References: <20240111161927.3689084-1-catalin.popescu@leica-geosystems.com>
+ <c795aa28-b6a2-4db8-b941-05b51b44f1fe@lunn.ch>
+ <a4af4a08-6eea-420b-b76f-47f4e836b476@leica-geosystems.com>
+ <ZaAcvwWbNmSpw/xt@shell.armlinux.org.uk>
+In-Reply-To: <ZaAcvwWbNmSpw/xt@shell.armlinux.org.uk>
+Accept-Language: en-CH, en-US
+Content-Language: aa
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=leica-geosystems.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB8PR06MB6332:EE_|AS8PR06MB7480:EE_
+x-ms-office365-filtering-correlation-id: 24e91041-6e64-4d95-6dad-08dc12c69f4a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ B5Ux1PHKVnwsW19nMN/VFNN3UYiuXkotRHMdTBF9W6uecsEShFhcBTt0NFY2WSGGFwUty5vWWdgfCM5HhCJ3F43yCG4EqmiOkN2KqzlwzSM/C8h923I3pTlCCSfg3oVHRHALzoZzoxLIhfuhcqWozo0W+wePUsWyg6Ho41gLh7cgYnu+XI4/AhhY/6zYDqaZJmuiYLQZ03jZiVZU71yMfFv+v081v3+DDcO8CjA0CrY86EOwNeGVRhoLMYOwItO+/bUzO9gSL4zw+ci29BXpf+2cKNh7Gm/iwTjzEPE9GD8XhGlldlr5TK+GgJcPx2N1HgrwQDYZXPzD091cvTLxujjV0l+mUCFQhx5tRgGzA/E4XKjIefAqu+AsMpK4VRbJ6EHu1ogO+Ao8/UoDDGwGAGFRcWSmiWLmAeI5RsMrdx6lebxO/Dg9uLwgEAnRvuZUL6pB6yQuOky2accqhaPQMKmGS+a0u8/4VYU7RzBxdWCbBjQ7PMPdspvKbmwH1k9G35FKNeGpcfaqdqqPfysve5xOBhKGLL5W0TJwNVWH9Uw117KikiMAvCuHNEqle3BLHcfKA103ZaQV854TUHEDRQE+XnLX35EDEvAERxFdRJGJMsS0eAaC7auA0C2BBvfz6MQi18GsdoZ/tEmEPHATz/Du8Hy5J9MkiJkoaCIO0oPd2fHlSZmBB0e3u2VM60qzDWtrYHLdtktjMtexo2NMRAPmWWUsmwaheh+JPRfYWK8=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR06MB6332.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(376002)(39860400002)(230922051799003)(230473577357003)(230273577357003)(230373577357003)(230173577357003)(1800799012)(186009)(64100799003)(451199024)(36756003)(38070700009)(31686004)(86362001)(31696002)(122000001)(76116006)(107886003)(26005)(45080400002)(478600001)(966005)(2616005)(71200400001)(38100700002)(91956017)(6486002)(53546011)(6506007)(6512007)(4326008)(64756008)(66476007)(316002)(6916009)(66446008)(66556008)(66946007)(2906002)(54906003)(5660300002)(8676002)(7416002)(8936002)(41300700001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?VmZ0UldyUGgvaVBOWXBlUU9wU0todHAwd21JaVBBQXJSNXU4c3MvSkdyYncx?=
+ =?utf-8?B?Y2lWMTNqaDlrZENKRXFZL0c2a3hPUU1TNnpxbXJGdExWT1ptSDRSMys1VzlT?=
+ =?utf-8?B?Y3ErN2RjNmVWSEMvZ2ZEN2FKK0t1OGVORWVENzk3KzQrdllOcER4ZE9PTm5v?=
+ =?utf-8?B?WCtnemtrNWh1MXlrRHFZTXFHcU00ZzJOYU1ja05GekVGMkV6QitZeElqT0M0?=
+ =?utf-8?B?RzZ2NW0wM1crTkkvUXVRa2cxVnFEZjk1dTBya2tDeDBOZUdoMlU2b1hsaXY3?=
+ =?utf-8?B?N0JERmM2QXVpQVNGRDB3ZStzaXVPdEY5b2Y3WFpPS011U09uMklLdTBTamEv?=
+ =?utf-8?B?U3RTNmdrdStOaWpaZkhOTVZWSUZoUm14ZDFHaGZWNld4bDcyY2JnakZVakNa?=
+ =?utf-8?B?a2ZlWXZJOUpSS21EV0QyMEsxV295cy9MeWxQVjJpdXpZa1ZieDdtKzZLaGx2?=
+ =?utf-8?B?RDBTRTcwMSsxM0R6eFVDai9nUTJ5d1QyNmUyRGRsZjB0Vk42MHAyNnY1c1Vy?=
+ =?utf-8?B?cmEyRG5icmJ6RXVkVHVmQzg3WjFQNFlRb1RqTkhDQUdDcHFBbGJjMEZ6RmpT?=
+ =?utf-8?B?NmdVemtTU1BQbWhqeG5jQVEzbjZVbGJkM2RrT01XZGVuYzUvZmdvZjhXZ0RE?=
+ =?utf-8?B?Tk04b0NKdWNNYTJsdDdaa2hNY2pBeFNjeTF1ZVowTDZDWGF3azJlUnZQQTVN?=
+ =?utf-8?B?anhNb253dFY4UjNYdUdoKzlXVE5DYndnWWJrNzRDZVVwaHl1bWRlNkxndjUr?=
+ =?utf-8?B?MXVwZ1k5bzVGdVpNRFEzdFpJeFpHMDNMUjFWc2pkUnkvRW56c2xEcDJteWhE?=
+ =?utf-8?B?bUFpeUdzSVFpUGxDdHFveDFSWWs3Wm5FY2ppb1hrdS9FdlFVeWtCOGlrbUVZ?=
+ =?utf-8?B?YzV1ZUhRUm1tRHlZcGdpcU5kdHltcDZGYkRSWE1tVU1EUWphVW9jRll2TE1C?=
+ =?utf-8?B?V0ZjQzFTZnJWNnE2YktZMWFYZ0hjN0EwRU5aS0VaaXBkT3IvWVN2RGR6V3JZ?=
+ =?utf-8?B?WldUbGJFcFNpRzhYQ0ZoRjlZMkpuRkR1TWZrdFVsdzIxcnlhSVV4bW1UN1kv?=
+ =?utf-8?B?eDNBY1hnRjRyQzNGUlY5ZWZiVWhyeXNNd2ErT0lFUTJ6MjVaaFVwZ21PeEI1?=
+ =?utf-8?B?RXNkbWdwZjNoWTZBSU9iczBqaUZKMjNJdXVQekJNKzRzSzFyRVdPNVNJbi9n?=
+ =?utf-8?B?YVNzVjlFdFdLaUY2KzJYV3l2cmZPbWVYMjJqbTdqSmFDM25kM1VoNVFaWmlZ?=
+ =?utf-8?B?ZG5pYTQ5bHlNUDdOTTgwVWJsalYxMlhUUWxSTTJtRFZuS3dOMSttaG1iYnox?=
+ =?utf-8?B?U0FDMzlYNUltYnpvYk5iYTFhSTl4Um9mWWxIemliYllUaTVRZWVTc2Z1aDNT?=
+ =?utf-8?B?YkRwQlFrWUJlVWEybGNodzZvbjNDcFhVb3VrV3dnUDdLTXJqVHpLRzZhd3FH?=
+ =?utf-8?B?aUQxdm93Znc2YjZuV1VndlJYaGlPcWN5M0VtQ2o5ZFRyYmthZnJqcVBFRGNl?=
+ =?utf-8?B?bWhnWnNaWGpUTTRISEJEd2VmZUFPNHZzTUprM0hYd3FXUzBBQ1FmN0xjRjNL?=
+ =?utf-8?B?VUIvTzZNUXNXTWt2d2lsMkE2RzVyd1BvRTVBOTNZS0psTjF0VytLalJ1NHl2?=
+ =?utf-8?B?TmFoL2wzRjNja3Z2RG9FNEg1VkZlUHRoTlhxZ0kwSHFvd0JDTlIvK0RTdVhR?=
+ =?utf-8?B?MnVTOUM2SW5sTW1OZW4xZjMzNTlOc1hrcE5kSFNDOVlIaytESm1FMk16cDMy?=
+ =?utf-8?B?M3VQZGwvY2x2UHlnNzdJSm8zM0NQVHlUR1JGQWdBMHhEVExodVgrREM0NkJk?=
+ =?utf-8?B?cENzSkVMd0VWMTJZMGJLbUdxdGRnMXJTdnlac1djTll5QUlOYnVHbXV1VWpL?=
+ =?utf-8?B?RXlFOFB4RG5CUGFnOUJWSGlJRzlJWGIwcFlvdU1DRW5YdnhqQmZPcGcxcGsz?=
+ =?utf-8?B?U2RmTitOUU1XWXpmdlVhNjR0QmxUT0pVZXN6RHY2N2tGcWh5dnd3K285QklN?=
+ =?utf-8?B?eXZ5MWJWd1FhUWJ1b1N3d0wxRmNnQ01NSDZYdWN3Mmo3V0ZVTmljN0pzYnlF?=
+ =?utf-8?B?azN0anpGM0VWLzZKV1B1UmhwcnZqZ2dSU2xtNW9Xem1ubnJRSTd0NmpOQ1pE?=
+ =?utf-8?B?a1RldktmQm9Jc28xbklEMG9TVW1OT1Z4aE02cDRFYXFSSVQ4eEtXNW9nT1F6?=
+ =?utf-8?B?Ymc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D858B390801F824A8E57720D1EB74A2F@eurprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HoCpbscajEdid/h2"
-Content-Disposition: inline
-In-Reply-To: <MA0P287MB282224A6097B4FCCF721C89AFE682@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR06MB6332.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24e91041-6e64-4d95-6dad-08dc12c69f4a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2024 16:59:06.4539
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: s+ihsXV+Le0Bo4kai8QG59V7r9QqAS8L30tws/w/TvPLdrSBTD5JcJZJsTFHesSBTVC9Aq4zJ9Fo+B1XdJtPsDZpV5LYeMzrd9fYYpX+CSxmxLKmnBUaoFLmq06BIq7B
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR06MB7480
 
-
---HoCpbscajEdid/h2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jan 11, 2024 at 04:00:04PM +0800, Chen Wang wrote:
-> Resent and fixed some format issue in last email.
->=20
-> On 2024/1/10 22:42, Conor Dooley wrote:
-> > Hey,
-> >=20
-> > On Wed, Jan 10, 2024 at 08:53:42AM +0800, Chen Wang wrote:
-> > > On 2024/1/8 15:04, Krzysztof Kozlowski wrote:
-> > > > On 08/01/2024 07:49, Chen Wang wrote:
-> > > > > From: Chen Wang <unicorn_wang@outlook.com>
-> > > > >=20
-> > > > > Add bindings for the clock generator on the SG2042 RISC-V SoC.
-> > > > >=20
-> > > > > Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> > > > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > > > > ---
-> > > > >    .../bindings/clock/sophgo,sg2042-clkgen.yaml  |  53 ++++++
-> > > > >    .../dt-bindings/clock/sophgo,sg2042-clkgen.h  | 169 ++++++++++=
-++++++++
-> > > > >    2 files changed, 222 insertions(+)
-> > > > >    create mode 100644 Documentation/devicetree/bindings/clock/sop=
-hgo,sg2042-clkgen.yaml
-> > > > >    create mode 100644 include/dt-bindings/clock/sophgo,sg2042-clk=
-gen.h
-> > > > >=20
-> > > > > diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg204=
-2-clkgen.yaml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-clkge=
-n.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..f9935e66fc95
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-clkge=
-n.yaml
-> > > > > @@ -0,0 +1,53 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: http://devicetree.org/schemas/clock/sophgo,sg2042-clkgen.ya=
-ml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: Sophgo SG2042 Clock Generator
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Chen Wang <unicorn_wang@outlook.com>
-> > > > > +
-> > > > > +properties:
-> > > > > +  compatible:
-> > > > > +    const: sophgo,sg2042-clkgen
-> > > > > +
-> > > > > +  reg:
-> > > > > +    maxItems: 1
-> > > > > +
-> > > > > +  sophgo,system-ctrl:
-> > > > > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > > > > +    description:
-> > > > > +      Phandle to SG2042 System Controller node. On SG2042, part =
-of control
-> > > > > +      registers of Clock Controller are defined in System contro=
-ller. Clock
-> > > > > +      driver will use this phandle to get the register map base =
-to plus the
-> > > > > +      offset of the registers to access them.
-> > > > Do not describe the driver, but hardware. What registers are in
-> > > > system-ctrl? What are their purpose? Why this hardware needs them?
-> > > Understood, will fix the words in revision, thanks.
-> > I hope that I am not misunderstanding things, but I got a bit suspicious
-> > of this binding and look at the driver, and saw that there are clocks
-> > registered like:
-> >=20
-> > | static int sg2042_clk_register_gates(struct sg2042_clk_data *clk_data,
-> > | 				     const struct sg2042_gate_clock gate_clks[],
-> > | 				     int num_gate_clks)
-> > | {
-> > | 	struct clk_hw *hw;
-> > | 	const struct sg2042_gate_clock *gate;
-> > | 	int i, ret =3D 0;
-> > | 	void __iomem *reg;
-> > |
-> > | 	for (i =3D 0; i < num_gate_clks; i++) {
-> > | 		gate =3D &gate_clks[i];
-> > | 		if (gate->flag_sysctrl)
-> > | 			reg =3D clk_data->iobase_syscon + gate->offset_enable;
-> > | 		else
-> > | 			reg =3D clk_data->iobase + gate->offset_enable;
-> >=20
-> > iobase_syscon is the base address of the system controller that this
-> > property points at & iobase is the base address of the clock controller
-> > itself.
-> >=20
-> > | 		hw =3D clk_hw_register_gate(NULL,
-> > | 					  gate->name,
-> > | 					  gate->parent_name,
-> > | 					  gate->flags,
-> > | 					  reg,
-> > | 					  gate->bit_idx,
-> > | 					  0,
-> > | 					  &sg2042_clk_lock);
-> >=20
-> > As far as I can tell, in this particular case, for any gate clock that
-> > flag_sysctrl is set, none of the registers actually lie inside the
-> > clkgen region, but instead are entirely contained in the sysctrl region.
-> >=20
-> > I think that this is because your devicetree does not correctly define
-> > the relationship between clocks, and these clocks are actually provided
-> > by the system controller block and are inputs to the clkgen block.
-> >=20
-> > | 		if (IS_ERR(hw)) {
-> > | 			pr_err("failed to register clock %s\n", gate->name);
-> > | 			ret =3D PTR_ERR(hw);
-> > | 			break;
-> > | 		}
-> > |
-> > | 		clk_data->onecell_data.hws[gate->id] =3D hw;
-> > | 	}
-> > |
-> > | 	/* leave unregister to outside if failed */
-> > | 	return ret;
-> > | }
-> >=20
-> > I had a much briefer look at the `sg2042_pll_clock`s that make use of
-> > the regmap, and it doesn't seem like they "mix and match" registers
-> > between both blocks, and instead only have registers in the system
-> > controller? If so, it doesn't seem like this clkgen block should be
-> > providing the PLL clocks either, but instead be taking them as inputs.
-> >=20
-> > Reading stuff like
-> > https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/system=
--control.rst#pll_stat-offset-0x0c0
-> > (and onwards) makes it seem like those PLLs are fully contained within
-> > the system controller register space.
-> >=20
-> > It seems like
-> > https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/clock-=
-reg.rst
-> > is the register map for the clkgen region? It seems like that region
-> > only contains gates and divider clocks, but no PLLs.
-> >=20
-> > Am I missing something, or is this description of the clock controllers
-> > on the soc incomplete?
-> hi=EF=BC=8CConor=EF=BC=8C
->=20
-> There are four types of clocks for SG2042 and following are where their
-> control registers are defined in:
->=20
-> PLL=EF=BC=9Aall in SYS_CTRL
-> DIV: all in CLOCK
-> GATE: some are in SYS_CTRL, some others are in CLOCK
-
-When you say "some", do you meant some entire clocks are in SYS_CTRL and
-some entire clocks are in the CLOCKS? Or do you meant that for a given
-clock, some registers are in SYS_CTRL and some are in CLOCK? It's the
-first option, right?
-
-> MUX: all in CLOCK
->=20
-> For PLLs, yes, they are all controlled by registers defined in SYS_CTRL.
-> About what you said "it doesn't seem like this clkgen block should be
-> providing the PLL clocks either, but instead be taking them as inputs.", I
-> am not very sure what your meaning of "inputs". I try to write DTS with my
-> undrstadning, please help me see if it fits what you mean.
->=20
-> ```dts
->=20
-> sys_ctrl: system-controller@7030010000 {
-> =C2=A0=C2=A0=C2=A0 compatible =3D "sophgo,sg2042-sysctrl";
-> =C2=A0=C2=A0=C2=A0 reg =3D <0x70 0x30010000 0x0 0x1000>;
->=20
-> =C2=A0=C2=A0=C2=A0 pllclk: clock-controller {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compatible =3D "sophgo,sg2042-=
-pll";
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #clock-cells =3D <1>;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clocks =3D <&cgi>;
-> =C2=A0=C2=A0=C2=A0 };
-> };
->=20
-> clkgen: clock-controller@7030012000 {
-> =C2=A0=C2=A0=C2=A0 compatible =3D "sophgo,sg2042-clkgen";
-> =C2=A0=C2=A0=C2=A0 reg =3D <0x70 0x30012000 0x0 0x1000>;
-> =C2=A0=C2=A0=C2=A0 #clock-cells =3D <1>;
-> =C2=A0=C2=A0=C2=A0 clocks =3D <&pllclk MPLL_CLK>,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <&pllclk FPLL_CLK>,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <&pllclk DPLL0_CLK>,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <&pllclk DPLL1_CLK>;
-> =C2=A0=C2=A0=C2=A0 clock-names =3D "cgi", "mpll", "fpll", "dpll0", "dpll1=
-";
-> };
->=20
-> ```
->=20
-> With this change, we describe the plls defined in system control as pllcl=
-k,
-> as a child node of system controller. clkgen will use pllclk as "input"
-> because pll clocks are parent of div clocks .
->=20
-> But there is another remaining question about the gate clock. For those g=
-ate
-> clocks controlled by CLOCK, no problem we will provide then in clkgen, bu=
-t=C2=A0
-> for those gate clocks controlled by registers in SYS_CTRL, they are child
-> gate of the "clk_gate_rp_cpu_normal", which is a gate clock provided by
-> clkgen. If I extracted those SYS_CTRL gate clocks and define them in syst=
-em
-> controller dts node, I may have to use "clk_gate_rp_cpu_normal" as their
-> input, it looks a bit wierd becasue there are cases where each other serv=
-es
-> as input. I try to draft below DTS to explan what I meant. I'm not sure if
-> it can work and I'd love to hear your guidance.
-
-I'm not sure how this sort of circular relationship works for probing
-works either. Stephen etc would know more than me here.
-
-> ```dts
->=20
-> sys_ctrl: system-controller@7030010000 {
-> =C2=A0=C2=A0=C2=A0 compatible =3D "sophgo,sg2042-sysctrl";
-> =C2=A0=C2=A0=C2=A0 reg =3D <0x70 0x30010000 0x0 0x1000>;
->=20
-> =C2=A0=C2=A0=C2=A0 pllclk: clock-controller {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compatible =3D "sophgo,sg2042-=
-pll";
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #clock-cells =3D <1>;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clocks =3D <&cgi>;
-> =C2=A0=C2=A0=C2=A0 };
->=20
-> =C2=A0=C2=A0=C2=A0 somegateclk: clock-controller2 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compatible =3D "sophgo,sg2042-=
-somegate";
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #clock-cells =3D <1>;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clocks =3D <&clkgen GATE_CLK_R=
-P_CPU_NORMAL>;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clock-names =3D "clk_gate_rp_c=
-pu_normal";
-> =C2=A0=C2=A0=C2=A0 };
-> };
->=20
-> clkgen: clock-controller@7030012000 {
-> =C2=A0=C2=A0=C2=A0 compatible =3D "sophgo,sg2042-clkgen";
-> =C2=A0=C2=A0=C2=A0 reg =3D <0x70 0x30012000 0x0 0x1000>;
-> =C2=A0=C2=A0=C2=A0 #clock-cells =3D <1>;
-> =C2=A0=C2=A0=C2=A0 clocks =3D=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <&pllclk MPLL=
-_CLK>,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-<&pllclk FPLL_CLK>,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-<&pllclk DPLL0_CLK>,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-<&pllclk DPLL1_CLK>,;
-> =C2=A0=C2=A0=C2=A0 clock-names =3D "cgi", "mpll", "fpll", "dpll0", "dpll1=
-";
-> };
->=20
-> ```
->=20
-> So, can we put all gate clocks in clkgen to simplify this?
-
-The dts should describe how the hardware actually looks, even if that is
-not really convenient for the operating system.
-
---HoCpbscajEdid/h2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaAeTgAKCRB4tDGHoIJi
-0tgqAP0ScdtTWzpHMsPW0GSOiD8togIuF7H6CxTQPP3tRaZimwD/TzPIHicxvc/i
-gBIQ3MCPICx8OuWHBTiGJF59nOfiLgE=
-=JrSY
------END PGP SIGNATURE-----
-
---HoCpbscajEdid/h2--
+T24gMTEuMDEuMjQgMTc6NTIsIFJ1c3NlbGwgS2luZyAoT3JhY2xlKSB3cm90ZToNCj4gVGhpcyBl
+bWFpbCBpcyBub3QgZnJvbSBIZXhhZ29u4oCZcyBPZmZpY2UgMzY1IGluc3RhbmNlLiBQbGVhc2Ug
+YmUgY2FyZWZ1bCB3aGlsZSBjbGlja2luZyBsaW5rcywgb3BlbmluZyBhdHRhY2htZW50cywgb3Ig
+cmVwbHlpbmcgdG8gdGhpcyBlbWFpbC4NCj4NCj4NCj4gT24gVGh1LCBKYW4gMTEsIDIwMjQgYXQg
+MDQ6NDU6MjZQTSArMDAwMCwgUE9QRVNDVSBDYXRhbGluIHdyb3RlOg0KPj4gT24gMTEuMDEuMjQg
+MTc6MzUsIEFuZHJldyBMdW5uIHdyb3RlOg0KPj4+IFtZb3UgZG9uJ3Qgb2Z0ZW4gZ2V0IGVtYWls
+IGZyb20gYW5kcmV3QGx1bm4uY2guIExlYXJuIHdoeSB0aGlzIGlzIGltcG9ydGFudCBhdCBodHRw
+czovL2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24gXQ0KPj4+DQo+Pj4gVGhp
+cyBlbWFpbCBpcyBub3QgZnJvbSBIZXhhZ29u4oCZcyBPZmZpY2UgMzY1IGluc3RhbmNlLiBQbGVh
+c2UgYmUgY2FyZWZ1bCB3aGlsZSBjbGlja2luZyBsaW5rcywgb3BlbmluZyBhdHRhY2htZW50cywg
+b3IgcmVwbHlpbmcgdG8gdGhpcyBlbWFpbC4NCj4+Pg0KPj4+DQo+Pj4gT24gVGh1LCBKYW4gMTEs
+IDIwMjQgYXQgMDU6MTk6MjVQTSArMDEwMCwgQ2F0YWxpbiBQb3Blc2N1IHdyb3RlOg0KPj4+PiBB
+ZGQgcHJvcGVydHkgdGksY2ZnLWRhYy1taW51cyB0byBhbGxvdyBmb3Igdm9sdGFnZSB0dW5pbmcN
+Cj4+Pj4gb2YgbG9naWNhbCBsZXZlbCAtMSBvZiB0aGUgTUxULTMgZW5jb2RlZCBkYXRhLg0KPj4+
+Pg0KPj4+PiBTaWduZWQtb2ZmLWJ5OiBDYXRhbGluIFBvcGVzY3UgPGNhdGFsaW4ucG9wZXNjdUBs
+ZWljYS1nZW9zeXN0ZW1zLmNvbT4NCj4+Pj4gLS0tDQo+Pj4+ICAgIERvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9uZXQvdGksZHA4MzgyMi55YW1sIHwgOSArKysrKysrKysNCj4+Pj4g
+ICAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKQ0KPj4+Pg0KPj4+PiBkaWZmIC0tZ2l0
+IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC90aSxkcDgzODIyLnlhbWwg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3RpLGRwODM4MjIueWFtbA0K
+Pj4+PiBpbmRleCBkYjc0NDc0MjA3ZWQuLjJmMDEwMzMzYmU0OSAxMDA2NDQNCj4+Pj4gLS0tIGEv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC90aSxkcDgzODIyLnlhbWwNCj4+
+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC90aSxkcDgzODIy
+LnlhbWwNCj4+Pj4gQEAgLTYyLDYgKzYyLDE1IEBAIHByb3BlcnRpZXM6DQo+Pj4+ICAgICAgICAg
+ICBmb3IgdGhlIFBIWS4gIFRoZSBpbnRlcm5hbCBkZWxheSBmb3IgdGhlIFBIWSBpcyBmaXhlZCB0
+byAzLjVucyByZWxhdGl2ZQ0KPj4+PiAgICAgICAgICAgdG8gdHJhbnNtaXQgZGF0YS4NCj4+Pj4N
+Cj4+Pj4gKyAgdGksY2ZnLWRhYy1taW51czoNCj4+Pj4gKyAgICBkZXNjcmlwdGlvbjogfA0KPj4+
+PiArICAgICAgIERQODM4MjYgUEhZIG9ubHkuDQo+Pj4+ICsgICAgICAgU2V0cyB0aGUgdm9sdGFn
+ZSByYXRpbyBvZiB0aGUgbG9naWNhbCBsZXZlbCAtMSBmb3IgdGhlIE1MVC0zIGVuY29kZWQgZGF0
+YS4NCj4+Pj4gKyAgICAgICAwID0gNTAlLCAxID0gNTYuMjUlLCAyID0gNjIuNTAlLCAzID0gNjgu
+NzUlLCA0ID0gNzUlLCA1ID0gODEuMjUlLCA2ID0gODcuNTAlLA0KPj4+PiArICAgICAgIDcgPSA5
+My43NSUsIDggPSAxMDAlLCA5ID0gMTA2LjI1JSwgMTAgPSAxMTIuNTAlLCAxMSA9IDExOC43NSUs
+IDEyID0gMTI1JSwNCj4+Pj4gKyAgICAgICAxMyA9IDEzMS4yNSUsIDE0ID0gMTM3LjUwJSwgMTUg
+PSAxNDMuNzUlLCAxNiA9IDE1MCUuDQo+Pj4+ICsgICAgZW51bTogWzAsIDEsIDIsIDMsIDQsIDUs
+IDYsIDcsIDgsIDksIDEwLCAxMSwgMTIsIDEzLCAxNCwgMTUsIDE2XQ0KPj4+IFdlIHRyeSB0byBh
+dm9pZCByZWdpc3RlciB2YWx1ZXMgaW4gRFQuIFdlIHVzZSByZWFsIHVuaXRzLiBUaGlzIGlzIGEN
+Cj4+PiB2b2x0YWdlIHlvdSBhcmUgY29uZmlndXJpbmcsIHNvIGNhbiB5b3UgY2hhbmdlIHRoZSB1
+bml0IHRvIG1pbGxpdm9sdHM/DQo+Pj4gSGF2ZSB0aGUgZHJpdmVyIGRvIHRoZSBjb252ZXJzaW9u
+IG9mIHZvbHRzIHRvIHJlZ2lzdGVyIHZhbHVlLg0KPj4+DQo+Pj4gSXMgaXQgcG9zc2libGUgdG8g
+Y29uZmlndXJlIGFueSBvZiB0aGUgb3RoZXIgbG9naWNhbCBsZXZlbHM/DQo+PiBIaSBBbmRyZXcs
+DQo+PiBUaGVzZSBhcmUgbm90IHJhdyByZWdpc3RlciB2YWx1ZXMgYW5kIHRoZXNlIGFyZSBub3Qg
+dm9sdGFnZSB2YWx1ZXMgYnV0DQo+PiB2b2x0YWdlIHJhdGlvcy4gSSdtIG1hcHBpbmcgdGhlIHZv
+bHRhZ2UgcmF0aW9zIHRvIGVudW0gdmFsdWVzIFswLTE2XQ0KPj4gd2hpY2ggYXJlIGNvbnZlcnRl
+ZCB0byByZWdpc3RlciByYXcgdmFsdWVzIGJ5IHRoZSBkcml2ZXIuIEkgZG9uJ3Qgc2VlIGENCj4+
+IGJldHRlciB3YXkgdG8gZG8gdGhpcy4NCj4gICAgICAgICAgZW51bTogWyA1MDAwLCA1NjI1LCA2
+MjUwLCA2ODc1LCA3NTAwLCA4MTI1LCA4NzUwLCA5Mzc1LCAxMDAwMCwNCj4gICAgICAgICAgICAg
+ICAgICAxMDYyNSwgMTEyNTAsIDExODc1LCAxMjUwMCAxMzEyNSwgMTM3NTAsIDE0Mzc1LCAxNTAw
+MCBdDQo+DQo+ID8NCkknbSBva2F5IHdpdGggdGhhdCBhcHByb2FjaCBpZiB0aGVyZSdzIG5vIGJl
+dHRlciBvbmUuIEkgd291bGQgbmVlZCB0bw0KcmVtb3ZlIHRoZSByZWdpc3RlciByYXcgdmFsdWVz
+IHRhYmxlcyBmcm9tIHRoZSBkcml2ZXIgYW5kIHVzZSBhIHN3aXRjaA0Kc3RhdGVtZW50IHRvIG1h
+cCB0aG9zZSB2YWx1ZXMgdG8gcmF3IHZhbHVlcy4NCj4NCj4gLS0NCj4gUk1LJ3MgUGF0Y2ggc3lz
+dGVtOiBodHRwczovL3d3dy5hcm1saW51eC5vcmcudWsvZGV2ZWxvcGVyL3BhdGNoZXMvDQo+IEZU
+VFAgaXMgaGVyZSEgODBNYnBzIGRvd24gMTBNYnBzIHVwLiBEZWNlbnQgY29ubmVjdGl2aXR5IGF0
+IGxhc3QhDQoNCg0K
 
