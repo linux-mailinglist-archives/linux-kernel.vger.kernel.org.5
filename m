@@ -1,95 +1,117 @@
-Return-Path: <linux-kernel+bounces-23703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 300C882B074
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36C6882B079
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:18:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 560E81C23873
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:17:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 594AC1C238D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C2B3D0BE;
-	Thu, 11 Jan 2024 14:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67ACD3D3A5;
+	Thu, 11 Jan 2024 14:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vkfbozRu"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aTWSFowT"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48CE53B185
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 14:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e6296636fso1915405e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 06:16:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704982617; x=1705587417; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C7HNZaDiw/8JtL+WOdbC/TQ6GQKXbKUvja93oq/W0PE=;
-        b=vkfbozRugNDFIpcNpfzHeIZCjYgnTFaMzo6J/h5C+anLIsuqkYLV6lWJPxLtybrlA6
-         xrZ3ofRaT181Khw9JAwfnj1hC8oU5YNJVHW7sqTfe7LTHSOojrfRb3ZImLiRLr5nQtNM
-         uulJKizhcZScFhkUfOGqLHjpMhl3TLLOG0NBqiULUOw2HuGCfF6d7rmccRpb+T1DK5z1
-         2bT84SglewgV95Kmhq4YpEVQ3PhAQq/Z9+7vFWE+C/vXBxYvfe4BvQv3ivkqAiVF3p/o
-         pv52e2wznEGu6JaxUTlKuUIowSyzdGPOKXTWoAo3QWetSZKqQ88AyiXczuhrkGKrR+6w
-         zt+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704982617; x=1705587417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C7HNZaDiw/8JtL+WOdbC/TQ6GQKXbKUvja93oq/W0PE=;
-        b=QkEnB8yLRIAPlQlx0uUEswmYIWiq3hWBM99zAKx6RNwfj/fR+ovf+RV0hNebFlJjZG
-         JwcP5OND3GDCssa4QCw1x74weOZ2BD5YGCowyfsA5mKAtMuQ89cGGz4N2fKvnVaMjMOl
-         bZOZlHayspzhOKBxqTeAHucK48U5e4AthFtzTNwDD+iuVMc4YtWNmYnZR7Cw3jVZfrPb
-         PkFLZeAZCGg5rtgGTY7/B0+8Rlg22UpSAHJBVsTx6CaqVkj5Qf2KnVFnndWA7TtgY/Re
-         wy6AjgzFKiMl7Fhxpn+R9YJkxpIMXZuZyBFbgapbytD06LVOr2Oqc7bDjof7NL8jrwnx
-         d9Nw==
-X-Gm-Message-State: AOJu0YzAyMuIdSlcyfz7ktb9k7feWnewkHNF60Q3s1u4ahYjmdMS7oLc
-	VH49t6GTa4s9LhWS1SVKF+pNQdukuoj0Ow==
-X-Google-Smtp-Source: AGHT+IHE7xVs3T4jps/jsae2Tnaipvhm1oyu66/to3BEj+6cPFdVQsBVa3/hqFcjkXCI6xeVBHSvsA==
-X-Received: by 2002:a05:600c:a47:b0:40e:5421:e2dc with SMTP id c7-20020a05600c0a4700b0040e5421e2dcmr444019wmq.198.1704982617490;
-        Thu, 11 Jan 2024 06:16:57 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b0040e549c77a1sm6035367wmq.32.2024.01.11.06.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 06:16:57 -0800 (PST)
-Date: Thu, 11 Jan 2024 17:16:53 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Christian Heusel <christian@heusel.eu>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/ipoib: print symbolic error name instead of error
- code
-Message-ID: <102549f3-2169-40b7-b413-b86bc7965c4c@moroto.mountain>
-References: <20240111141311.987098-1-christian@heusel.eu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7DD29CFA;
+	Thu, 11 Jan 2024 14:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BDUnAQ019952;
+	Thu, 11 Jan 2024 14:18:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mTSColWjPxMy5hFmeWj7zZt2o1PCif6a70FoRgHVrZQ=;
+ b=aTWSFowTkjelJhZBVITSLaXkzq3HRXeI5eTrgg3uwZCeXNIyg0mve+dUxrQpx6kNUy6c
+ mwXJi7oh+C1zpGEj6Rwt1EK7DILkw8G9EO+J090O43zfnWHD5J36oVKdSCZ9qzRMR2ym
+ THXeqNr3rpmaqZZQ0354vRxve7flgMSxLfxXcpXd13h9eBhy4nsgz064P0OpWKQbSNmO
+ 0bOfgu+Xau/ePlskVXhWWGkt+2BiHj7lPKDutU2XZGJRDRR3KtVzTC3r7JR/WpYVfyRh
+ zLwCjpAhHWVOLoP5MCQhfHtQXr/n3wJ7QhWTUJ7mPjlE1DnI/Cj3lquQrCWj8NAlaCuN 3g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjh2yhgtr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:18:02 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40BDYLoM001569;
+	Thu, 11 Jan 2024 14:18:01 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjh2yhgt2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:18:00 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40BE1gOo027421;
+	Thu, 11 Jan 2024 14:17:59 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkw2bd00-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:17:59 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40BEHsvW61342140
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Jan 2024 14:17:54 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 974B42004D;
+	Thu, 11 Jan 2024 14:17:54 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6CB1920043;
+	Thu, 11 Jan 2024 14:17:54 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 11 Jan 2024 14:17:54 +0000 (GMT)
+Date: Thu, 11 Jan 2024 15:17:18 +0100
+From: Halil Pasic <pasic@linux.ibm.com>
+To: Tony Krowiak <akrowiak@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH v2 6/6] s390/vfio-ap: do not reset queue removed from
+ host config
+Message-ID: <20240111151718.5d32e747.pasic@linux.ibm.com>
+In-Reply-To: <20231212212522.307893-7-akrowiak@linux.ibm.com>
+References: <20231212212522.307893-1-akrowiak@linux.ibm.com>
+	<20231212212522.307893-7-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111141311.987098-1-christian@heusel.eu>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oNnj3N06fsAPsUgWGBMUGXTJnQ03Nntt
+X-Proofpoint-ORIG-GUID: yS9H-1cmFgokDSIXfEidxa7IeLBvAi34
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-11_07,2024-01-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
+ bulkscore=0 impostorscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401110113
 
-On Thu, Jan 11, 2024 at 03:13:07PM +0100, Christian Heusel wrote:
-> Utilize the %pe print specifier to get the symbolic error name as a
-> string (i.e "-ENOMEM") in the log message instead of the error code to
-> increase its readablility.
+On Tue, 12 Dec 2023 16:25:17 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> When a queue is unbound from the vfio_ap device driver, it is reset to
+> ensure its crypto data is not leaked when it is bound to another device
+> driver. If the queue is unbound due to the fact that the adapter or domain
+> was removed from the host's AP configuration, then attempting to reset it
+> will fail with response code 01 (APID not valid) getting returned from the
+> reset command. Let's ensure that the queue is assigned to the host's
+> configuration before resetting it.
 > 
-> This change was suggested in
-> https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mountain/
-> 
-> Signed-off-by: Christian Heusel <christian@heusel.eu>
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
 
-Thanks!
-
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-
-regards,
-dan carpenter
-
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
 
