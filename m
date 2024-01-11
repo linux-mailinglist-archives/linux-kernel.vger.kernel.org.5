@@ -1,97 +1,170 @@
-Return-Path: <linux-kernel+bounces-23683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 132F882AFFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:54:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0C5D82B000
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 658B328CEC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:54:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5E531C23ACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9063C067;
-	Thu, 11 Jan 2024 13:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="BXhJs+h3"
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173ED3AC01
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4b72377deb0so1619474e0c.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 05:54:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704981244; x=1705586044; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZlq/DrCdtM/ojaSMhAzGYv+U1jA3k7ByZIcttd1Mrg=;
-        b=BXhJs+h3Y9eC0jASWAvGcKgRDYHcKfKfMwTrL/BUlcMH065SnmfQhvUTMwAy67Q/tE
-         I+c2M0ycBU9KLrfZQ2Qub0mWyJmR6OnMVyonkwILVFEIdf2t3k8TVKnTyh3G7jSW0wyC
-         V78PYq+LRlRfCSrkTHtxxmo4UvAvlpldi67L41HIR1EzfEdP7D4Qgh0mhjxGHuQxn6C1
-         qJTrcVRAY+1+7n3LVco2VTQbgc/OtAjWZ5EmB+VfrseumyE7EHFF+H56Um/6dEM70f+M
-         K61IETa0m/1HEq6LoyiGvDU03jGDF7cFvxKKGfHhSZRCoqxkQPaT9vLlfZwum6QBlXge
-         dD8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704981244; x=1705586044;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wZlq/DrCdtM/ojaSMhAzGYv+U1jA3k7ByZIcttd1Mrg=;
-        b=GbUnlDmkRwUigqr0e3ppU3Whp/KpikQjPQn8i+kYWlnCfotr7WpluYQIqic9h6wqiM
-         DDGuArtQ5HYKPT1HOt9dGDDBdTJHs/DEa9pQKe6MeryfWbqgPrzi5nMkmU3lzTbe0x+t
-         pKYjQJeAiiLr0zVljrXIzRZNo2FDoLekSJkERSdE9g6lvlwrtiC1VrNFHcxL4cemySXU
-         h+/9on0Kx2JzcxxYntwNJwwwSW48zWbaYxFQHr+QKCLQQakoZkMcVYh1RCey2mGSyu2H
-         JiXk6xT0GVRw/B8cnsDr1ZIH6xe6MyEX4zFm/IkcEBYOZnL6/6YozJldUHkggg3y/Q41
-         GDIA==
-X-Gm-Message-State: AOJu0Yz3v2PT0P+rgvbyAxywqO4U+ONjPPufoeXVC4cTRjCxbJZMGECv
-	Cbv3VkB3bsrPGS0yGoseyYuTQ3rTG8g790ePSm1ROXUSmbPymw==
-X-Google-Smtp-Source: AGHT+IH7V+Jz5btSq+pxDhMgIcIn3mHxdwe1bF2gRcpkBD3Xl4SUVQQZWdsiHXNS9FkPVe9GNAzb0nCwViIDa1KnDoc=
-X-Received: by 2002:a05:6122:3889:b0:4b6:b979:a28 with SMTP id
- eo9-20020a056122388900b004b6b9790a28mr475851vkb.17.1704981243859; Thu, 11 Jan
- 2024 05:54:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FBB932C90;
+	Thu, 11 Jan 2024 13:55:03 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6970F1804A
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 722292F4;
+	Thu, 11 Jan 2024 05:55:45 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.35.168])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8E873F73F;
+	Thu, 11 Jan 2024 05:54:58 -0800 (PST)
+Date: Thu, 11 Jan 2024 13:54:56 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Rob Herring <robh@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm64: errata: Add Cortex-A510 speculative
+ unprivileged load workaround
+Message-ID: <ZZ_zMHQdIXwZEpkq@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240110-arm-errata-a510-v1-0-d02bc51aeeee@kernel.org>
+ <20240110-arm-errata-a510-v1-2-d02bc51aeeee@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111131904.1491496-1-hector.palacios@digi.com>
-In-Reply-To: <20240111131904.1491496-1-hector.palacios@digi.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 11 Jan 2024 14:53:52 +0100
-Message-ID: <CAMRc=McWxX7tXvUQiMr+5pRUS_XE7criGFskLOpyq70Ojdabqw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] support i.MX93 truly available GPIO pins
-To: Hector Palacios <hector.palacios@digi.com>
-Cc: bartosz.golaszewski@linaro.org, linus.walleij@linaro.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, haibo.chen@nxp.com, 
-	peng.fan@nxp.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110-arm-errata-a510-v1-2-d02bc51aeeee@kernel.org>
 
-On Thu, Jan 11, 2024 at 2:23=E2=80=AFPM Hector Palacios
-<hector.palacios@digi.com> wrote:
->
-> All four GPIO ports of i.MX93 SoC show 32 pins available, but
-> not every port has 32 pins.
-> Add support on the GPIO driver to 'ngpios' property and set
-> the truly available pins on the SoC device tree.
->
-> Hector Palacios (2):
->       gpio: vf610: add support to DT 'ngpios' property
->       arm64: dts: imx93: specify available 'ngpios' per GPIO port
->
->  arch/arm64/boot/dts/freescale/imx93.dtsi | 4 ++++
->  drivers/gpio/gpio-vf610.c                | 7 ++++++-
->  2 files changed, 10 insertions(+), 1 deletion(-)
->
->
+On Wed, Jan 10, 2024 at 11:29:21AM -0600, Rob Herring wrote:
+> Implement the workaround for ARM Cortex-A510 erratum 3117295. On an
+> affected Cortex-A510 core, a speculatively executed unprivileged load
+> might leak data from a privileged load via a cache side channel. The
+> issue only exists for loads within a translation regime with the same
+> translation (e.g. same ASID and VMID). Therefore, the issue only affects
+> the return to EL0.
+> 
+> The erratum and workaround are the same as ARM Cortex-A520 erratum
+> 2966298, so reuse the existing workaround.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/arch/arm64/silicon-errata.rst |  2 ++
+>  arch/arm64/Kconfig                          | 14 ++++++++++++++
+>  arch/arm64/kernel/cpu_errata.c              | 17 +++++++++++++++--
+>  3 files changed, 31 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
+> index f47f63bcf67c..7acd64c61f50 100644
+> --- a/Documentation/arch/arm64/silicon-errata.rst
+> +++ b/Documentation/arch/arm64/silicon-errata.rst
+> @@ -71,6 +71,8 @@ stable kernels.
+>  +----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | Cortex-A510     | #2658417        | ARM64_ERRATUM_2658417       |
+>  +----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Cortex-A510     | #3117295        | ARM64_ERRATUM_3117295       |
+> ++----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | Cortex-A520     | #2966298        | ARM64_ERRATUM_2966298       |
+>  +----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | Cortex-A53      | #826319         | ARM64_ERRATUM_826319        |
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index ba9f6ceddbbe..456e8680e16e 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1054,6 +1054,20 @@ config ARM64_ERRATUM_2966298
+>  
+>  	  If unsure, say Y.
+>  
+> +config ARM64_ERRATUM_3117295
+> +	bool "Cortex-A510: 3117295: workaround for speculatively executed unprivileged load"
+> +	select ARM64_WORKAROUND_SPECULATIVE_UNPRIV_LOAD
+> +	default y
+> +	help
+> +	  This option adds the workaround for ARM Cortex-A510 erratum 3117295.
+> +
+> +	  On an affected Cortex-A510 core, a speculatively executed unprivileged
+> +	  load might leak data from a privileged level via a cache side channel.
+> +
+> +	  Work around this problem by executing a TLBI before returning to EL0.
+> +
+> +	  If unsure, say Y.
+> +
+>  config CAVIUM_ERRATUM_22375
+>  	bool "Cavium erratum 22375, 24313"
+>  	default y
+> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
+> index cb5e0622168d..8b69fa296470 100644
+> --- a/arch/arm64/kernel/cpu_errata.c
+> +++ b/arch/arm64/kernel/cpu_errata.c
+> @@ -416,6 +416,19 @@ static struct midr_range broken_aarch32_aes[] = {
+>  };
+>  #endif /* CONFIG_ARM64_WORKAROUND_TRBE_WRITE_OUT_OF_RANGE */
+>  
+> +#ifdef CONFIG_ARM64_WORKAROUND_SPECULATIVE_UNPRIV_LOAD
+> +static const struct midr_range erratum_spec_unpriv_load_list[] = {
+> +#ifdef CONFIG_ARM64_ERRATUM_3117295
+> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_A510),
+> +#endif
+> +#ifdef CONFIG_ARM64_ERRATUM_2966298
+> +	/* Cortex-A520 r0p0 to r0p1 */
+> +	MIDR_REV_RANGE(MIDR_CORTEX_A520, 0, 0, 1),
+> +#endif
+> +	{},
+> +};
+> +#endif
+> +
+>  const struct arm64_cpu_capabilities arm64_errata[] = {
+>  #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
+>  	{
+> @@ -715,10 +728,10 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+>  #endif
+>  #ifdef CONFIG_ARM64_WORKAROUND_SPECULATIVE_UNPRIV_LOAD
+>  	{
+> -		.desc = "ARM erratum 2966298",
+> +		.desc = "ARM erratum 2966298 and 3117295",
 
-This is not my email address that comes up when using
-get_maintainer.pl, please use it when sending patches.
+Minor nit: s/and/or/
 
-Bartosz
+>  		.capability = ARM64_WORKAROUND_SPECULATIVE_UNPRIV_LOAD,
+>  		/* Cortex-A520 r0p0 - r0p1 */
+> -		ERRATA_MIDR_REV_RANGE(MIDR_CORTEX_A520, 0, 0, 1),
+> +		ERRATA_MIDR_RANGE_LIST(erratum_spec_unpriv_load_list),
+>  	},
+>  #endif
+>  #ifdef CONFIG_AMPERE_ERRATUM_AC03_CPU_38
+
+Regardless of the nit above, this looks good to me.
+
+I applied this atop the v6.7 (with the prior patch), and checked the following combinations:
+
+	CONFIG_ARM64_ERRATUM_3117295=y && CONFIG_ARM64_ERRATUM_2966298=y
+	CONFIG_ARM64_ERRATUM_3117295=y && CONFIG_ARM64_ERRATUM_2966298=n
+	CONFIG_ARM64_ERRATUM_3117295=n && CONFIG_ARM64_ERRATUM_2966298=y
+	CONFIG_ARM64_ERRATUM_3117295=n && CONFIG_ARM64_ERRATUM_2966298=n
+
+On all cases the resulting Kconfig looked good i.e.
+CONFIG_ARM64_WORKAROUND_CLEAN_CACHE was only selected when at least one of
+those was selected), and the kernel built cleanly and booted fine for each
+configuration.
+
+I don't have a Cortex-A510 to test on, but I see no reason that this shouldn't
+work as described.
+
+With or without the "s/and/or/" fixup above:
+
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+
+Catalin, Will, I assume you'd be happy to adjust that when applying, so there's
+no reason to send a v2.
+
+Mark.
 
