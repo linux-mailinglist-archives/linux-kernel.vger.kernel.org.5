@@ -1,139 +1,111 @@
-Return-Path: <linux-kernel+bounces-23331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D494C82AB2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:47:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E309082AB2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B63121C21CF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:47:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73635B26F8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A4D11C94;
-	Thu, 11 Jan 2024 09:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C4E12E5A;
+	Thu, 11 Jan 2024 09:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="sc/mq8zK"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="r80Gwdip"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B00211722;
-	Thu, 11 Jan 2024 09:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40B9kViR007843;
-	Thu, 11 Jan 2024 03:46:31 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704966391;
-	bh=BkKV7jODf3A3P8yk03zMcE0wRaE/PUSWXFjUCTWGGoI=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=sc/mq8zKVJsO+Y5zP8ISQ3K15joW/OKIWn9Iyy8JBHxhDKHntOEHRG2CUdqSXhmHU
-	 5LgJs6Gm22IzGbg4eAkGsXGQdAG4yKLIlNJFDrsmFQ+T4GWMyQGAXC7WiBrWevurYc
-	 E3j3r66qNTKuv8JTFNj7pci4IPrIE/XcyPtd4538=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40B9kVTx014661
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 11 Jan 2024 03:46:31 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
- Jan 2024 03:46:31 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 11 Jan 2024 03:46:31 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40B9kSoY029834;
-	Thu, 11 Jan 2024 03:46:28 -0600
-Message-ID: <524ea592-02d6-4a1d-899a-feaa7fd11914@ti.com>
-Date: Thu, 11 Jan 2024 15:16:27 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602B612E59
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=2HZhy6w8gpDC4mT19yv0E28LcZ7bJIquaKWzJ4wbSLc=; b=r80GwdipBsSE89YZ5JymRb9hOZ
+	OPiJmNAnH9l6b9p4hd0smTknZaRBfQm6H/yxDy18ajkS9dCADATV65sJ5WupT82g/jIx5QB4nh0b5
+	CNsd/9GGCdQBiVOoelDWB9OZOKLPSF1cGKwuUqx4GwNWzYEzqYFUmEmdAQXTqnVUFxecSFX+b/hUe
+	KpwPcdXXA6oZmJm36ovZ2WeXUohgaVoUPXZBrJN3RMgEPoXREY9J9iHPDkmy8a/Pb+DEpu25NonWO
+	mVxE66leexPfuaIk77g2Ewr74O3va7MBgGUhwxGillVjmpm6WT1A8Ejq3hEPg//InjDCzxmjZc6lG
+	m+J0mOuQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rNreZ-00C7IA-1B;
+	Thu, 11 Jan 2024 09:47:11 +0000
+Date: Thu, 11 Jan 2024 09:47:11 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Josh Triplett <josh@joshtriplett.org>, Kees Cook <kees@kernel.org>,
+	Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+	Alexey Dobriyan <adobriyan@gmail.com>
+Subject: Re: [GIT PULL] execve updates for v6.8-rc1
+Message-ID: <20240111094711.GT1674809@ZenIV>
+References: <202401081028.0E908F9E0A@keescook>
+ <CAHk-=wgznerM-xs+x+krDfE7eVBiy_HOam35rbsFMMOwvYuEKQ@mail.gmail.com>
+ <D01C78AC-830C-4D73-9E9F-7FD38CEF2E82@kernel.org>
+ <ZZ2W_xzCSyOgltad@localhost>
+ <CAHk-=wi75tFVtZdzFRr4hsDeUKmeACbgD46rLe+2bcd=4mHBBw@mail.gmail.com>
+ <ZZ3_Jmb1sb2wQWO_@localhost>
+ <CAHk-=whf9qLO8ipps4QhmS0BkM8mtWJhvnuDSdtw5gFjhzvKNA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <s-vadapalli@ti.com>
-Subject: Re: [PATCH net v2 1/1] net: ethernet: ti: am65-cpsw: Fix max mtu to
- fit ethernet frames
-Content-Language: en-US
-To: =?UTF-8?B?U2FuanXDoW4gR2FyY8OtYSwgSm9yZ2U=?=
-	<Jorge.SanjuanGarcia@duagon.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com"
-	<edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>
-References: <20240105085530.14070-1-jorge.sanjuangarcia@duagon.com>
- <c025f2f9-ca2c-4fdb-adb1-803745fded0c.a613f387-0b3b-49fd-9401-3a0ed0c1f80e.2e3f49f4-dbd1-4269-9bd1-2d3ffbda767f@emailsignatures365.codetwo.com>
- <20240105085530.14070-2-jorge.sanjuangarcia@duagon.com>
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20240105085530.14070-2-jorge.sanjuangarcia@duagon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whf9qLO8ipps4QhmS0BkM8mtWJhvnuDSdtw5gFjhzvKNA@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+On Tue, Jan 09, 2024 at 07:54:30PM -0800, Linus Torvalds wrote:
 
+> Al, comments? We *could* just special-case the execve() code not to
+> use do_filp_open() and avoid this issue that way, but it does feel
+> like even the regular open() case is pessimal with that whole RCU
+> situation.
 
-On 05/01/24 14:25, Sanjuán García, Jorge wrote:
-> The value of AM65_CPSW_MAX_PACKET_SIZE represents the maximum length
-> of a received frame. This value is written to the register
-> AM65_CPSW_PORT_REG_RX_MAXLEN.
-> 
-> The maximum MTU configured on the network device should then leave
-> some room for the ethernet headers and frame check. Otherwise, if
-> the network interface is configured to its maximum mtu possible,
-> the frames will be larger than AM65_CPSW_MAX_PACKET_SIZE and will
-> get dropped as oversized.
-> 
-> The switch supports ethernet frame sizes between 64 and 2024 bytes
-> (including VLAN) as stated in the technical reference manual, so
-> define AM65_CPSW_MAX_PACKET_SIZE with that maximum size.
-> 
-> Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth 
-> subsystem driver")
-> Signed-off-by: Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
+Two things, both related to ->atomic_open():
+	* we pass struct file to ->atomic_open(), so that it either opens
+the sucker _or_ stores the resulting dentry in it (if ->atomic_open() bails
+and tells us to use such-and-such dentry, other than the one it had been
+given).
+	* cleanup logics becomes interesting if we try to keep struct
+file from pass to pass.  Sure, if it had never been touched _or_ if it had
+only been fed to finish_no_open() (i.e. ->atomic_open() bailout path) -
+no problem, we can reuse it.  But once it has hit do_dentry_open(), the
+things get fishy.  We *must* fput() it if we got to setting FMODE_OPENED -
+no plausible way around that.  But what about the case when we fail
+e.g. inside ->open()?  Currently we undo just enough for fput() to do
+the right thing without FMODE_OPENED, but e.g. security_file_open() has
+no undoing for it.  Having it called twice on the same struct file might
+or might not work on all LSMs, but they hadn't been exposed to that until
+now.
 
-Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+We could pass struct file ** to path_openat(), with
+	file = *fp;
+	if (!file) {
+		file = alloc_empty_file(op->open_flag, current_cred());
+		if (IS_ERR(file))
+			return file;
+		*fp = file;
+	}
+in the beginning and have an extra flag that would be
+set as soon as we hit do_dentry_open().  Then we could make the fput()
+in path_openat() failure handling conditional upon that flag.
 
-> ---
->   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c 
-> b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-> index 7651f90f51f2..3c7854537cb5 100644
-> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-> @@ -56,7 +56,7 @@
->   #define AM65_CPSW_MAX_PORTS     8
-> 
->   #define AM65_CPSW_MIN_PACKET_SIZE       VLAN_ETH_ZLEN
-> -#define AM65_CPSW_MAX_PACKET_SIZE      (VLAN_ETH_FRAME_LEN + ETH_FCS_LEN)
-> +#define AM65_CPSW_MAX_PACKET_SIZE      2024
-> 
->   #define AM65_CPSW_REG_CTL               0x004
->   #define AM65_CPSW_REG_STAT_PORT_EN      0x014
-> @@ -2196,7 +2196,8 @@ am65_cpsw_nuss_init_port_ndev(struct am65_cpsw_common 
-> *common, u32 port_idx)
->           eth_hw_addr_set(port->ndev, port->slave.mac_addr);
-> 
->           port->ndev->min_mtu = AM65_CPSW_MIN_PACKET_SIZE;
-> -       port->ndev->max_mtu = AM65_CPSW_MAX_PACKET_SIZE;
-> +       port->ndev->max_mtu = AM65_CPSW_MAX_PACKET_SIZE -
-> +                             (VLAN_ETH_HLEN + ETH_FCS_LEN);
->           port->ndev->hw_features = NETIF_F_SG |
->                                     NETIF_F_RXCSUM |
->                                     NETIF_F_HW_CSUM |
+Doable, but really not pretty, especially since we'd need to massage
+the caller as well...  Less painful variant is
+	if (error == -ECHILD && (flags & LOOKUP_RCU))
+		return ERR_PTR(-ECHILD); // keep file for non-rcu pass
+	*fp = NULL;
+	fput(file);
+	...
+on the way out; that won't help with -ESTALE side of things, but if we
+hit *that*, struct file allocation overhead is really noise.
 
-..
-
--- 
-Regards,
-Siddharth.
+PS: apologies for late reply - had been sick since Saturday, just got more
+or less back to normal.
 
