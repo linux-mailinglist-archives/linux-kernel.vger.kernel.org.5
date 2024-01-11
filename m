@@ -1,116 +1,119 @@
-Return-Path: <linux-kernel+bounces-24096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 644A582B6C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:40:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 464C682B6C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:44:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DF1A287301
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:40:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D45DEB231CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0662A58200;
-	Thu, 11 Jan 2024 21:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QmtR5rry"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B29958221;
+	Thu, 11 Jan 2024 21:44:22 +0000 (UTC)
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F6F5811C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705009234; x=1736545234;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=P8QIKWKyzneFO38LCkd0vx1/9c4bZLeHMfLW6KO/QR4=;
-  b=QmtR5rryzB0gX8NvOr1Un+PDl1O/L0j1e6TcdZViHRcNsCrcQIHoY8oq
-   u7bEhEJN3vEVt4wEZ5W+aWgClR2cke1tC2cr4n6Y/L/p9O68SggkGN6s+
-   l+M76XdM/98JrkEaW6Qa97Av/K4F1a0UAyxxTraNjQU/O35NWGS9MLkPp
-   byGMUW83FcaqSvnht7/LHh0ekqmS8y8byvHaQklcMnyVduMQg5794OcDh
-   XxcWavHxjrY/XNkhl3swP75TjL6TSaQiRqWwX7/kerxuKAbcPiBTz0CkN
-   Ke63gSpQDBQHQAnoIEblI8ni/7Q9qxzQh4/QB6eiJuns0C+2t/8HPL9Rh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="398686089"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="398686089"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 13:40:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="17172987"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 13:40:33 -0800
-Date: Thu, 11 Jan 2024 13:40:32 -0800
-From: Tony Luck <tony.luck@intel.com>
-To: Peter Newman <peternewman@google.com>
-Cc: Amit Singh Tomar <amitsinght@marvell.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	George Cherian <gcherian@marvell.com>,
-	"robh@kernel.org" <robh@kernel.org>
-Subject: Re: [EXT] Re: [RFC 00/12] ARM: MPAM: add support for priority
- partitioning control
-Message-ID: <ZaBgUOQ3iWs3hLrb@agluck-desk3>
-References: <20230815152712.1760046-1-amitsinght@marvell.com>
- <f0e10f31-8571-baf6-6665-b077af067777@intel.com>
- <MW4PR18MB5084D5EEBC450BD66E8063E3C61FA@MW4PR18MB5084.namprd18.prod.outlook.com>
- <6114c8d0-97a1-be54-3e43-30348be38683@intel.com>
- <MW4PR18MB50847032F3ACFDBDBCA6D57AC61CA@MW4PR18MB5084.namprd18.prod.outlook.com>
- <be51596e-2e62-2fb9-4176-b0b2a2abb1d3@intel.com>
- <MW4PR18MB5084EB7DBE4985D981FE84F2C61DA@MW4PR18MB5084.namprd18.prod.outlook.com>
- <CALPaoCgjFKtTtgrh2UwEsX0DsVnmRF2+8LS4CUdSLjMPmLVgMA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EE858200;
+	Thu, 11 Jan 2024 21:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbb4806f67so4241621b6e.3;
+        Thu, 11 Jan 2024 13:44:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705009458; x=1705614258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/9527WbL3UHVjE0IkHquSWZsf0jL/XRwFPuGoiYaBzA=;
+        b=Vr3Y7C5vOAqvfXPfSkBZfaS3h3UcsbbGnxmItJGgcswVw43z0qLWseWlJfn1OvWEJS
+         EDmdRjY/M33pXYHtBovt8ynb8Zt0VgK2DB04Gxxqyc/m5PhMW/T0ahJNO1ouJ8Ds99mp
+         Xd6zBPUgxvooSqMA40rk1tEfsPTOFam1Pydh1eRqAwS3+5A1KWdlb87+kT8oO0sAxMNe
+         yZt01JFtaIuhEL+qYEmaT1HTecYrBwpu56LJfVVKlljDpjbZqJ4RDAWOiDwy+lwe2ovp
+         r348NFro4lx0ain4ZJYwQsf3Yn9wjPtXUDG1Xy8Cllb0b9+hT5oDSxvLVxCdhqIe9y6y
+         4Jwg==
+X-Gm-Message-State: AOJu0YyhyKKXKTxpP5XQ3/bKbzFGTHp/wbvh+kS3jCkvCVJor3d+s8UE
+	7/Dwx2YoZXJj1xfPpDAG2m9kY8Abm+CRMg==
+X-Google-Smtp-Source: AGHT+IEJJ6RzZLxhRre83+gcPXtkyJG5JzAN+cbkrLJlK/Nj13azszg6b9uBTEvsP5Z9YfP1V6tRBQ==
+X-Received: by 2002:a05:6358:c3a8:b0:172:de18:c9e with SMTP id fl40-20020a056358c3a800b00172de180c9emr507384rwb.18.1705009458436;
+        Thu, 11 Jan 2024 13:44:18 -0800 (PST)
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com. [209.85.215.171])
+        by smtp.gmail.com with ESMTPSA id e11-20020a63d94b000000b005c200b11b77sm1698542pgj.86.2024.01.11.13.44.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 13:44:18 -0800 (PST)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso3258370a12.2;
+        Thu, 11 Jan 2024 13:44:18 -0800 (PST)
+X-Received: by 2002:a25:ae10:0:b0:dbd:b56e:5e3e with SMTP id
+ a16-20020a25ae10000000b00dbdb56e5e3emr310886ybj.83.1705009437049; Thu, 11 Jan
+ 2024 13:43:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALPaoCgjFKtTtgrh2UwEsX0DsVnmRF2+8LS4CUdSLjMPmLVgMA@mail.gmail.com>
+References: <20240104130123.37115-1-brgl@bgdev.pl> <20240104130123.37115-4-brgl@bgdev.pl>
+ <20240109144327.GA10780@wunner.de> <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
+ <20240110132853.GA6860@wunner.de> <CAMRc=MdBSAb_kEO2r7r-vwLuRAEv7pMODOMtZoCCRAd=zsQb_w@mail.gmail.com>
+ <20240110164105.GA13451@wunner.de> <CAMRc=MdQKPN8UbagmswjFx7_JvmJuBeuq8+9=z-+GBNUmdpWEA@mail.gmail.com>
+ <20240111104211.GA32504@wunner.de> <CAMRc=MfT_VLo7++K4M89iYrciqWSrX_JyS1LX5kaGTNDNVQiOg@mail.gmail.com>
+ <20240111150201.GA28409@wunner.de> <CAMRc=Mcngw1vw9q0DXRWLKk4o9FOY+Mzz-niueT-v2THvbS1Dw@mail.gmail.com>
+In-Reply-To: <CAMRc=Mcngw1vw9q0DXRWLKk4o9FOY+Mzz-niueT-v2THvbS1Dw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 11 Jan 2024 22:43:45 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUnB_eGhzyOYRczXLMgb65dfHgwHgnv7eXSWDvOvTEdjQ@mail.gmail.com>
+Message-ID: <CAMuHMdUnB_eGhzyOYRczXLMgb65dfHgwHgnv7eXSWDvOvTEdjQ@mail.gmail.com>
+Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Lukas Wunner <lukas@wunner.de>, Kalle Valo <kvalo@kernel.org>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 12:56:34PM -0800, Peter Newman wrote:
-> Hi Amit,
-> 
-> On Thu, Aug 24, 2023 at 1:52 AM Amit Singh Tomar <amitsinght@marvell.com> wrote:
-> 
-> > 2) Second approach that we discussed internally is to have schemata for CPOR, and PPART separated by new line as mentioned/suggested by Peter, But it may require to tweak
-> >    the ARM MPAM device driver a bit. It was kind of toss-up between 2nd and 3nd approach :), and we went with the 3rd one.
-> >
-> >    L3:0=XXXX
-> >    L3:0=PPART=X
+Hi Bartosz,
 
-I'm not sure having multiple lines for the same resource makes anything
-clearer.  I preferred one of the earlier proposals like this one:
+On Thu, Jan 11, 2024 at 5:16=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+> No, it was actually a no-op due to CONFIG_PCI_DYNAMIC_OF_NODES not
+> being set. But this is only available if CONFIG_OF_DYNAMIC is enabled
+> which requires OF_UNITTEST (!).
 
-	L3:0=XXXX,PPART=X,CCAP=X;1=YYYY,CCAP=Y
+Huh? Config PCI_DYNAMIC_OF_NODES does select OF_DYNAMIC.
 
-This makes the schemata file self enumerate which optional capabilities
-are present for each L3 instance (in the above example the second
-instance doesn't support PPART, but does support CCAP).
+Gr{oetje,eeting}s,
 
-Writes to the schemata file already accept partial information, so
-the resctrl schemata_write() function should be coded to allow any of:
+                        Geert
 
-Just update CCAP for L3 instance 1":
-	# echo "L3:1=CCAP=Z" > schemata
 
-Update mask and CCAP for instance 0:
-	# echo "L3:0=ABCD,CCAP=Q" > schemata
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-Update PPART on all instances:
-	# echo "L3:0=PPART=M;1=PPART=N" > schemata
-
-Legacy app that only comprehends partioning updates instance 1:
-	# echo "L3:1=FFFF" > schemata
-
--Tony
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
