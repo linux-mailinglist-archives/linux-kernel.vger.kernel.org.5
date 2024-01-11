@@ -1,144 +1,111 @@
-Return-Path: <linux-kernel+bounces-23861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC46682B2E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:25:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75A3082B2E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:25:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7C51C2621A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:25:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18CB9B21717
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DB050266;
-	Thu, 11 Jan 2024 16:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA314F8A2;
+	Thu, 11 Jan 2024 16:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="omZcBp3P";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="daFQmSRg"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e7eo2TNw"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93114F8B4;
-	Thu, 11 Jan 2024 16:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from alley.prg2.suse.org (unknown [10.100.208.146])
-	by smtp-out1.suse.de (Postfix) with ESMTP id 17335220B5;
-	Thu, 11 Jan 2024 16:25:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704990304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MMA7Jf2m2884PIJudPkb8VYRI5Ehzqro2oR8+njB8z4=;
-	b=omZcBp3PMMiuePhg0CoAme0EZOLLnvHGorGhuiXqdUVzHueKRVJ1S2cm5yB0Os4jyw9+II
-	XT72E5G0QG/k/0Z7BNYHJrPgzDdYruiO3660Q62T0cXLs0qG4FGl0aXYPRmUkNy9ciLr15
-	98/z84jcsljzuhiBTTmPG8EpkqzFxdg=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704990302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MMA7Jf2m2884PIJudPkb8VYRI5Ehzqro2oR8+njB8z4=;
-	b=daFQmSRgfXmQ2xfQHqCLhVDEGrQjfY/3zISaoPq23AIbJc831A9PTJZFzLrNFKJaZT0gRf
-	D12i9akvlzYmBsZoBrp0dT/6avOUJ2QMDNOOY+192RW2ZJqVSNknymCOZ09q4d4NuPmcxZ
-	jEnjmMx1rP6nI6BUHA1jTxasaNOyiMU=
-From: Petr Mladek <pmladek@suse.com>
-To: "James E . J . Bottomley" <jejb@linux.ibm.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chris Down <chris@chrisdown.name>,
-	oe-kbuild-all@lists.linux.dev,
-	Petr Mladek <pmladek@suse.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH] scsi: core: Safe warning about bad dev info string
-Date: Thu, 11 Jan 2024 17:24:19 +0100
-Message-ID: <20240111162419.12406-1-pmladek@suse.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B970E15AC4
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5ce10b4cea9so3804692a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:25:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704990303; x=1705595103; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q7vbyXBr3P0E9528YW5LLlUgtQst+bQffN0BGFft0l8=;
+        b=e7eo2TNwKpO/4ggF4GL2qCh2VuucIDO+uwbwyI4dsSGiGywoNdgYn5QiRgQ82f518U
+         GvKh5tCx9+tnpJ1kmaqryP84bI846lYu8j4Lc8UngfIEEKBs0BK98N2y1J2Eo0f891zN
+         x3hNS+wKL0iVCCHJA71MZQJHaFqH7KMFFfKqkin6f2UxbNURWzJOLxya6LRzgIlc7BXK
+         l6UYlG39Wf7xK8Yy8soVXqLviv6HvdXcMTJk9K0QGzuet73xz17Obt8uedq1NSgM5T6b
+         PzsE3SmUx+LQcUm6nFwR882TXvUKVvOhOzymdr5Z8luo9r56RfG2YugCn6PgE4ZQyGhS
+         QFig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704990303; x=1705595103;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q7vbyXBr3P0E9528YW5LLlUgtQst+bQffN0BGFft0l8=;
+        b=coYv6ahyINrnkQY3BVresXiuVePfPrRni9aAsh4f5ZShM0Yo/MaLWijs0m2cMyUzEX
+         0NZGz/L52yy2Ny8qAOPfkCX9WtHNHCC6bU0BdyhXJz4nPaKsI8ydZgFHOr4pY3uSeih+
+         v88gaU1Wdy+G5Ii8P8whYnjZXUN0uKUZrOXt5VWY1p3HXdDOSflPqTyWeeFXrj6mdEVQ
+         xk4N9YN3bBzm7nUlmi6VIEWnr5im82WLkdNiwwfyknvqSvHXSDr/bAdwmqo6HX3C9lvT
+         W0fQ36KrOqBKJ/elH8P40izcbd+9EJFPfoCVfU2wP6jP64Y+I9mvCZc5sHsRxIVhE5y9
+         E0ag==
+X-Gm-Message-State: AOJu0YxnAsmTePjHYQo+z2cNOj8drFYPPhirMuXmripCTHFRSS1NW1Rt
+	PhGVsN7CSJOlHm+NnNWsDQCaAsGsJyg9/KUUBQ==
+X-Google-Smtp-Source: AGHT+IHWrP9S3u1zxFmOqD1cNfHQ/2dd0lwBop3h+FWQZKNgm3pdcQrx0pMDzQTd+wPGu0bJwYj4qviImnU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:234f:b0:1d5:6a32:66f with SMTP id
+ c15-20020a170903234f00b001d56a32066fmr188plh.4.1704990302913; Thu, 11 Jan
+ 2024 08:25:02 -0800 (PST)
+Date: Thu, 11 Jan 2024 08:25:01 -0800
+In-Reply-To: <ZZ9X5anB/HGS8JR6@linux.bj.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [4.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,intel.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+]
-X-Spam-Level: ****
-X-Spam-Score: 4.90
-X-Spam-Flag: NO
+Mime-Version: 1.0
+References: <20240110002340.485595-1-seanjc@google.com> <ZZ42Vs3uAPwBmezn@chao-email>
+ <ZZ7FMWuTHOV-_Gn7@google.com> <ZZ9X5anB/HGS8JR6@linux.bj.intel.com>
+Message-ID: <ZaAWXSvMgIMkxr50@google.com>
+Subject: Re: [PATCH] x86/cpu: Add a VMX flag to enumerate 5-level EPT support
+ to userspace
+From: Sean Christopherson <seanjc@google.com>
+To: Tao Su <tao1.su@linux.intel.com>
+Cc: Chao Gao <chao.gao@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Yi Lai <yi1.lai@intel.com>, 
+	Xudong Hao <xudong.hao@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-Both "model" and "strflags" are passed to "%s" even when one or both
-are NULL.
+On Thu, Jan 11, 2024, Tao Su wrote:
+> On Wed, Jan 10, 2024 at 08:26:25AM -0800, Sean Christopherson wrote:
+> > On Wed, Jan 10, 2024, Chao Gao wrote:
+> > > On Tue, Jan 09, 2024 at 04:23:40PM -0800, Sean Christopherson wrote:
+> > > >Add a VMX flag in /proc/cpuinfo, ept_5level, so that userspace can query
+> > > >whether or not the CPU supports 5-level EPT paging.  EPT capabilities are
+> > > >enumerated via MSR, i.e. aren't accessible to userspace without help from
+> > > >the kernel, and knowing whether or not 5-level EPT is supported is sadly
+> > > >necessary for userspace to correctly configure KVM VMs.
+> > > 
+> > > This assumes procfs is enabled in Kconfig and userspace has permission to
+> > > access /proc/cpuinfo. But it isn't always true. So, I think it is better to
+> > > advertise max addressable GPA via KVM ioctls.
+> > 
+> > Hrm, so the help for PROC_FS says:
+> > 
+> >   Several programs depend on this, so everyone should say Y here.
+> > 
+> > Given that this is working around something that is borderline an erratum, I'm
+> > inclined to say that userspace shouldn't simply assume the worst if /proc isn't
+> > available.  Practically speaking, I don't think a "real" VM is likely to be
+> > affected; AFAIK, there's no reason for QEMU or any other VMM to _need_ to expose
+> > a memslot at GPA[51:48] unless the VM really has however much memory that is
+> > (hundreds of terabytes?).  And a if someone is trying to run such a massive VM on
+> > such a goofy CPU...
+> 
+> It is unusual to assign a huge RAM to guest, but passthrough a device also may trigger
+> this issue which we have met, i.e. alloc memslot for the 64bit BAR which can set
+> bits[51:48]. BIOS can control the BAR address, e.g. seabios moved 64bit pci window
+> to end of address space by using advertised physical bits[1].
 
-It is safe because vsprintf() would detect the NULL pointer and print
-"(null)". But it is a kernel-specific feature and compiler warns
-about it:
-
-<warning>
-   In file included from include/linux/kernel.h:19,
-                    from arch/x86/include/asm/percpu.h:27,
-                    from arch/x86/include/asm/current.h:6,
-                    from include/linux/sched.h:12,
-                    from include/linux/blkdev.h:5,
-                    from drivers/scsi/scsi_devinfo.c:3:
-   drivers/scsi/scsi_devinfo.c: In function 'scsi_dev_info_list_add_str':
->> include/linux/printk.h:434:44: warning: '%s' directive argument is null [-Wformat-overflow=]
-     434 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-         |                                            ^
-   include/linux/printk.h:430:3: note: in definition of macro 'printk_index_wrap'
-     430 |   _p_func(_fmt, ##__VA_ARGS__);    \
-         |   ^~~~~~~
-   drivers/scsi/scsi_devinfo.c:551:4: note: in expansion of macro 'printk'
-     551 |    printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
-         |    ^~~~~~
-   drivers/scsi/scsi_devinfo.c:552:14: note: format string is defined here
-     552 |           " '%s'\n", __func__, vendor, model,
-         |              ^~
-</warning>
-
-Do not rely on the kernel specific behavior and print the message a safe way.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401112002.AOjwMNM0-lkp@intel.com/
-Signed-off-by: Petr Mladek <pmladek@suse.com>
----
-Note: The patch is only compile tested.
-
- drivers/scsi/scsi_devinfo.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-index 3fcaf10a9dfe..ba7237e83863 100644
---- a/drivers/scsi/scsi_devinfo.c
-+++ b/drivers/scsi/scsi_devinfo.c
-@@ -551,9 +551,9 @@ static int scsi_dev_info_list_add_str(char *dev_list)
- 		if (model)
- 			strflags = strsep(&next, next_check);
- 		if (!model || !strflags) {
--			printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
--			       " '%s'\n", __func__, vendor, model,
--			       strflags);
-+			pr_err("%s: bad dev info string '%s' '%s' '%s'\n",
-+			       __func__, vendor, model ? model : "",
-+			       strflags ? strflags : "");
- 			res = -EINVAL;
- 		} else
- 			res = scsi_dev_info_list_add(0 /* compatible */, vendor,
--- 
-2.43.0
-
+Drat.  Do you know if these CPUs are going to be productized?  We'll still need
+something in KVM either way, but whether or not the problems are more or less
+limited to funky software setups might influence how we address this.
 
