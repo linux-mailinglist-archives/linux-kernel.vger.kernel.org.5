@@ -1,339 +1,119 @@
-Return-Path: <linux-kernel+bounces-23384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 433D782AC04
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6686482AC07
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:32:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0169C1C23514
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:31:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 799C31C234F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B32A1428C;
-	Thu, 11 Jan 2024 10:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BDB14A92;
+	Thu, 11 Jan 2024 10:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="s9TYwrbs"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SEbM+B6C"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B1912E5F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40e5a109b1eso1522885e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:31:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E6514F61;
+	Thu, 11 Jan 2024 10:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5589cfe4b88so469900a12.2;
+        Thu, 11 Jan 2024 02:31:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704969094; x=1705573894; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VO1PqTL7kDIKqlkvs0MpI/a5XSr4LgtU7rByrA2LFig=;
-        b=s9TYwrbszpk0R9lFx1UwHbXCRWfUIbdtLN3n++dc7E7ee2QT9Jvi1/oaEhdhwTPdWR
-         OHGclR/6R2tSXHKsnNCQpxjO2Tk+XU/zE3Ga45cmOSvzQIY4H9oEmmXJdcibgLKJjd6W
-         6Im/sEfg2OcgZsbbqbpcSKJcxpYlybpnzyWyxqLN7NVqnYOzVQptFcf5TWbS0Ry8xPo/
-         tDRPOudLulXTHADIsjpyhvjLzmX3DbvNlTV420c0T3ipa12YsYtWx10/nkP0Utyb2DgH
-         C+swQJ+8So36aZ68dPDeQq2vA2+fJh7Q8Y4/CcDE55N2EjmUMvnk/uw5EYfB+/Nne4gA
-         5AeQ==
+        d=gmail.com; s=20230601; t=1704969110; x=1705573910; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=c96eHGeRMy0FA5YmUP0POLqi/6OSA4NTqHeMHP6wHhc=;
+        b=SEbM+B6CPnjiBr+8eUq2VFtygVxQbF+qShorEGwMkWbJpquAjGxKlI5WHh+8Dv7Yy3
+         oPmxeC9aND1pOzaA/aRxIj0usEAbXgu/MlugzvDBPxRCV2HnX/vpBJUqG6rcVH5rJgs1
+         QJ3bVuMLCrUNck3bCOCp3ubGvC06tElY+vc4ib4W56T+pxpCx/bOLhco6RjmyuVbkawB
+         U/xye9aGZtXwpjlVjPj5Wqdw7kMzY7Ku2/TODl2qgODnAdaq2vVRZOehTQ/w04wADLmx
+         VotUlHbU/5c/FcsqTGFalU9LpWMObbAuGp62XJ8eRQGUeGO1Hz1SG++C9kg/DFpVeCqY
+         JPmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704969094; x=1705573894;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1704969110; x=1705573910;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VO1PqTL7kDIKqlkvs0MpI/a5XSr4LgtU7rByrA2LFig=;
-        b=HWWBl1xsXjfgpeepDBxzaWuuyHW+jEq1BMPhmseVmRByyYRB15L+CiVRzSzmfxjNLF
-         aTXbdaMEr8v+XruaFfRmct4ILLyaiNm4z4i+yH3os0NH1+9fSrmD0ij7OrbN1F4BpB7H
-         sbNtzozzbOtc1kVVR5Xzh3DF5pVCADqU/Z14CoFhVgkKgN7GctTdmfJIFLCF6BQqBv0e
-         Xxm2diidjxyecYuEJyVTiqj+zUAfR1jjgoY27FoBNtT6HcdUNEdC0keb/0eQo4ntNse5
-         x1+kWTfuCGZcLjbKqceVSXMCNbp4fAAA3LYf0xY9PqXRfhloo23WfL7dbad0y0jD3a24
-         aQkQ==
-X-Gm-Message-State: AOJu0YzWD31Y78Y42vS6ruxDQAir4FgLbvF3ZGy10m7RaKnRoSolUup0
-	JOQoKGMumLxLoTgWdgy1CWPchoj6AJ6mMg==
-X-Google-Smtp-Source: AGHT+IE9wMYoTH/9FvCKLbpamot52DXyuXNdS/VLLu37cizLjQIhoL6taHLNg2rzFkelo0z66LO9Bg==
-X-Received: by 2002:a5d:664a:0:b0:337:4c42:8cad with SMTP id f10-20020a5d664a000000b003374c428cadmr982822wrw.7.1704969093944;
-        Thu, 11 Jan 2024 02:31:33 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:999:a3a0:bf36:e934:b395:fd62? ([2a01:e0a:999:a3a0:bf36:e934:b395:fd62])
-        by smtp.gmail.com with ESMTPSA id d16-20020adf9c90000000b003366c058509sm860327wre.23.2024.01.11.02.31.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 02:31:33 -0800 (PST)
-Message-ID: <331610f6-9987-4d1b-8d57-f21311a43f5d@rivosinc.com>
-Date: Thu, 11 Jan 2024 11:31:32 +0100
+        bh=c96eHGeRMy0FA5YmUP0POLqi/6OSA4NTqHeMHP6wHhc=;
+        b=HKPepzRwLYVQKvZ84ena2AYSleeo4dPk9zeC0zcJwFPQ/boiA7t6PL0H1UOgLgblfk
+         5N9zh3lCHiiv3gS6Nr2wWXmgifocy/UKQt7upZsgnin7cfMs5KFwkCPuFBnF1/1uqDcF
+         WRMJDjCQ/hMef9v1ClPhs4HhJ7hLxyR2vInF0+973hBdFs8ozpPEN1Add8EOXjR7XuQs
+         Sr3cB52itfFYZQlyXl9inkHU81oH2ryPEWCaw+fCaf0AcB8QaujS0BsmoXlOMM60MBye
+         JsRMIG+swxkD9zbBIleLucHF/6RyzKRcAbre6eHqONk9RogGv8TdypXifo4UUBHcBzjS
+         gTGw==
+X-Gm-Message-State: AOJu0Yy/G62wXKCM5yiA0wvNwPpW7JdbYug2tMaXPKLSonkPIg1/U3kf
+	sjrt4EsJ8kUZJt94o+kwNP0=
+X-Google-Smtp-Source: AGHT+IG1bsDJjT+tCb6RsDzpYr+HZg8W8eOGQ5g6FgdP2xO4ZZeFbzslfzXkR//fI092SnqELgkksA==
+X-Received: by 2002:a17:907:842:b0:a28:fd0e:6051 with SMTP id ww2-20020a170907084200b00a28fd0e6051mr697695ejb.33.1704969110140;
+        Thu, 11 Jan 2024 02:31:50 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id g6-20020a170906c18600b00a2a9ddd15b8sm409460ejz.173.2024.01.11.02.31.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 02:31:49 -0800 (PST)
+Date: Thu, 11 Jan 2024 12:31:46 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	Simon Horman <horms@kernel.org>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Frank Wunderlich <frank-w@public-files.de>,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com
+Subject: Re: [PATCH net-next 07/15] net: dsa: mt7530: do not run
+ mt7530_setup_port5() if port 5 is disabled
+Message-ID: <20240111103146.t5fzr2wlw2tyrkkb@skbuf>
+References: <20231207184015.u7uoyfhdxiyuw6hh@skbuf>
+ <9b729dab-aebc-4c0c-a5e1-164845cd0948@suswa.mountain>
+ <20231208184652.k2max4kf7r3fgksg@skbuf>
+ <c3a0fc6a-825c-4de3-b5cf-b454a6d4d3cf@arinc9.com>
+ <48b664fb-edf9-4170-abde-2eb99e04f0e5@suswa.mountain>
+ <2ad136ed-be3a-407f-bf3c-5faf664b927c@arinc9.com>
+ <20240109145740.3vbtkuowiwedz5hx@skbuf>
+ <0a086b5f-b319-4f08-9513-a38c214e1da7@arinc9.com>
+ <20240110182358.ci7pg7ipcbsjxqjf@skbuf>
+ <009fec43-0669-419e-a3a9-ce54c676a324@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions &
- cpufeature
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: guoren@kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
- paul.walmsley@sifive.com, palmer@dabbelt.com, panqinglin2020@iscas.ac.cn,
- bjorn@rivosinc.com, conor.dooley@microchip.com, leobras@redhat.com,
- peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn,
- xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com,
- uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org
-References: <20231231082955.16516-1-guoren@kernel.org>
- <20231231082955.16516-2-guoren@kernel.org>
- <6bce1adb-6808-40df-8dd7-b0b2c6031547@rivosinc.com>
- <20240103-77f6b0856efb7a9f4591c53b@orel>
-Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20240103-77f6b0856efb7a9f4591c53b@orel>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <009fec43-0669-419e-a3a9-ce54c676a324@arinc9.com>
 
-
-
-On 03/01/2024 13:00, Andrew Jones wrote:
-> On Wed, Jan 03, 2024 at 10:31:37AM +0100, Clément Léger wrote:
->>
->>
->> On 31/12/2023 09:29, guoren@kernel.org wrote:
->>> From: Guo Ren <guoren@linux.alibaba.com>
->>>
->>> Cache-block prefetch instructions are HINTs to the hardware to
->>> indicate that software intends to perform a particular type of
->>> memory access in the near future. This patch adds prefetch.i,
->>> prefetch.r and prefetch.w instruction definitions by
->>> RISCV_ISA_EXT_ZICBOP cpufeature.
->>>
->>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
->>> Signed-off-by: Guo Ren <guoren@kernel.org>
->>> ---
->>>  arch/riscv/Kconfig                | 15 ++++++++
->>>  arch/riscv/include/asm/hwcap.h    |  1 +
->>>  arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
->>>  arch/riscv/kernel/cpufeature.c    |  1 +
->>>  4 files changed, 77 insertions(+)
->>>
->>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->>> index 24c1799e2ec4..fcbd417d65ea 100644
->>> --- a/arch/riscv/Kconfig
->>> +++ b/arch/riscv/Kconfig
->>> @@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
->>>  
->>>  	   If you don't know what to do here, say Y.
->>>  
->>> +config RISCV_ISA_ZICBOP
->>> +	bool "Zicbop extension support for cache block prefetch"
->>> +	depends on MMU
->>> +	depends on RISCV_ALTERNATIVE
->>> +	default y
->>> +	help
->>> +	  Adds support to dynamically detect the presence of the ZICBOP
->>> +	  extension (Cache Block Prefetch Operations) and enable its
->>> +	  usage.
->>> +
->>> +	  The Zicbop extension can be used to prefetch cache block for
->>> +	  read/write fetch.
->>> +
->>> +	  If you don't know what to do here, say Y.
->>> +
->>>  config TOOLCHAIN_HAS_ZIHINTPAUSE
->>>  	bool
->>>  	default y
->>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
->>> index 06d30526ef3b..77d3b6ee25ab 100644
->>> --- a/arch/riscv/include/asm/hwcap.h
->>> +++ b/arch/riscv/include/asm/hwcap.h
->>> @@ -57,6 +57,7 @@
->>>  #define RISCV_ISA_EXT_ZIHPM		42
->>>  #define RISCV_ISA_EXT_SMSTATEEN		43
->>>  #define RISCV_ISA_EXT_ZICOND		44
->>> +#define RISCV_ISA_EXT_ZICBOP		45
->>
->> Hi Guo,
->>
->> Since you are adding support for the Zicbop extension, you could
->> probably also allow to probe it from userspace using hwprobe. Add a few
->> definitions to sys_riscv.c/hwprobe.h and it will be fine.
+On Thu, Jan 11, 2024 at 01:22:12PM +0300, Arınç ÜNAL wrote:
+> > BTW, besides OpenWrt, what other software is deployed on these SoCs
+> > typically?
 > 
-> To expose to userspace, we should also start parsing the block size,
-> so it can also be exposed to userspace. Starting to parse the block
-> size first requires that we decide we need to parse the block size
-> (see [1]).
-
-Hi Andrew, thanks for the thread.
-
-I read it (and the other ones that are related to it) and basically, it
-seems there was a first decision (expose Zicbop block size indivudally)
-due to the fact the specification did not mentioned anything specific
-about clock sizes  but then after that, there was a clarification in the
-spec stating that Zicbop and Zicbom have the same block size so the
-first decision was questioned again.
-
-From a user coherency point of view, I think it would make more sense to
-expose it individually in hwprobe  so that zicboz, zicbop and zicbom
-have their "own" block size (even though zicbop and zicbom would use the
-same one). Moreover, it would allow us for future evolution easily
-without breaking any userspace later if zicbop and zicbom block size are
-decoupled.
-
-Clément
-
+> Other than OpenWrt which is widely used for these SoCs for its ease of
+> flashing and upgrading, compatibility with legacy U-boot versions that
+> usually come with any vendor making a product out of these SoCs, I can only
+> talk about what I deploy to run Linux. I use mainline U-Boot along with the
+> device trees from the Linux repository to boot mainline Linux kernels with
+> Buildroot as the filesystem.
 > 
-> [1] https://lore.kernel.org/all/20231029123500.739409-1-dbarboza@ventanamicro.com/
-> 
-> Thanks,
-> drew
-> 
-> 
->>
->> Thanks,
->>
->> Clément
->>
->>>  
->>>  #define RISCV_ISA_EXT_MAX		64
->>>  
->>> diff --git a/arch/riscv/include/asm/insn-def.h b/arch/riscv/include/asm/insn-def.h
->>> index e27179b26086..bbda350a63bf 100644
->>> --- a/arch/riscv/include/asm/insn-def.h
->>> +++ b/arch/riscv/include/asm/insn-def.h
->>> @@ -18,6 +18,13 @@
->>>  #define INSN_I_RD_SHIFT			 7
->>>  #define INSN_I_OPCODE_SHIFT		 0
->>>  
->>> +#define INSN_S_SIMM7_SHIFT		25
->>> +#define INSN_S_RS2_SHIFT		20
->>> +#define INSN_S_RS1_SHIFT		15
->>> +#define INSN_S_FUNC3_SHIFT		12
->>> +#define INSN_S_SIMM5_SHIFT		 7
->>> +#define INSN_S_OPCODE_SHIFT		 0
->>> +
->>>  #ifdef __ASSEMBLY__
->>>  
->>>  #ifdef CONFIG_AS_HAS_INSN
->>> @@ -30,6 +37,10 @@
->>>  	.insn	i \opcode, \func3, \rd, \rs1, \simm12
->>>  	.endm
->>>  
->>> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
->>> +	.insn	s \opcode, \func3, \rs2, \simm12(\rs1)
->>> +	.endm
->>> +
->>>  #else
->>>  
->>>  #include <asm/gpr-num.h>
->>> @@ -51,10 +62,20 @@
->>>  		 (\simm12 << INSN_I_SIMM12_SHIFT))
->>>  	.endm
->>>  
->>> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
->>> +	.4byte	((\opcode << INSN_S_OPCODE_SHIFT) |		\
->>> +		 (\func3 << INSN_S_FUNC3_SHIFT) |		\
->>> +		 (.L__gpr_num_\rs2 << INSN_S_RS2_SHIFT) |	\
->>> +		 (.L__gpr_num_\rs1 << INSN_S_RS1_SHIFT) |	\
->>> +		 ((\simm12 & 0x1f) << INSN_S_SIMM5_SHIFT) |	\
->>> +		 (((\simm12 >> 5) & 0x7f) << INSN_S_SIMM7_SHIFT))
->>> +	.endm
->>> +
->>>  #endif
->>>  
->>>  #define __INSN_R(...)	insn_r __VA_ARGS__
->>>  #define __INSN_I(...)	insn_i __VA_ARGS__
->>> +#define __INSN_S(...)	insn_s __VA_ARGS__
->>>  
->>>  #else /* ! __ASSEMBLY__ */
->>>  
->>> @@ -66,6 +87,9 @@
->>>  #define __INSN_I(opcode, func3, rd, rs1, simm12)	\
->>>  	".insn	i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n"
->>>  
->>> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)	\
->>> +	".insn	s " opcode ", " func3 ", " rs2 ", " simm12 "(" rs1 ")\n"
->>> +
->>>  #else
->>>  
->>>  #include <linux/stringify.h>
->>> @@ -92,12 +116,26 @@
->>>  "		 (\\simm12 << " __stringify(INSN_I_SIMM12_SHIFT) "))\n"	\
->>>  "	.endm\n"
->>>  
->>> +#define DEFINE_INSN_S							\
->>> +	__DEFINE_ASM_GPR_NUMS						\
->>> +"	.macro insn_s, opcode, func3, rs2, simm12, rs1\n"		\
->>> +"	.4byte	((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"	\
->>> +"		 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"	\
->>> +"		 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
->>> +"		 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
->>> +"		 ((\\simm12 & 0x1f) << " __stringify(INSN_S_SIMM5_SHIFT) ") |" \
->>> +"		 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
->>> +"	.endm\n"
->>> +
->>>  #define UNDEFINE_INSN_R							\
->>>  "	.purgem insn_r\n"
->>>  
->>>  #define UNDEFINE_INSN_I							\
->>>  "	.purgem insn_i\n"
->>>  
->>> +#define UNDEFINE_INSN_S							\
->>> +"	.purgem insn_s\n"
->>> +
->>>  #define __INSN_R(opcode, func3, func7, rd, rs1, rs2)			\
->>>  	DEFINE_INSN_R							\
->>>  	"insn_r " opcode ", " func3 ", " func7 ", " rd ", " rs1 ", " rs2 "\n" \
->>> @@ -108,6 +146,11 @@
->>>  	"insn_i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n" \
->>>  	UNDEFINE_INSN_I
->>>  
->>> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)			\
->>> +	DEFINE_INSN_S							\
->>> +	"insn_s " opcode ", " func3 ", " rs2 ", " simm12 ", " rs1 "\n"	\
->>> +	UNDEFINE_INSN_S
->>> +
->>>  #endif
->>>  
->>>  #endif /* ! __ASSEMBLY__ */
->>> @@ -120,6 +163,10 @@
->>>  	__INSN_I(RV_##opcode, RV_##func3, RV_##rd,		\
->>>  		 RV_##rs1, RV_##simm12)
->>>  
->>> +#define INSN_S(opcode, func3, rs2, simm12, rs1)			\
->>> +	__INSN_S(RV_##opcode, RV_##func3, RV_##rs2,		\
->>> +		 RV_##simm12, RV_##rs1)
->>> +
->>>  #define RV_OPCODE(v)		__ASM_STR(v)
->>>  #define RV_FUNC3(v)		__ASM_STR(v)
->>>  #define RV_FUNC7(v)		__ASM_STR(v)
->>> @@ -133,6 +180,7 @@
->>>  #define RV___RS2(v)		__RV_REG(v)
->>>  
->>>  #define RV_OPCODE_MISC_MEM	RV_OPCODE(15)
->>> +#define RV_OPCODE_OP_IMM	RV_OPCODE(19)
->>>  #define RV_OPCODE_SYSTEM	RV_OPCODE(115)
->>>  
->>>  #define HFENCE_VVMA(vaddr, asid)				\
->>> @@ -196,4 +244,16 @@
->>>  	INSN_I(OPCODE_MISC_MEM, FUNC3(2), __RD(0),		\
->>>  	       RS1(base), SIMM12(4))
->>>  
->>> +#define CBO_PREFETCH_I(base, offset)				\
->>> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
->>> +	       SIMM12(offset), RS1(base))
->>> +
->>> +#define CBO_PREFETCH_R(base, offset)				\
->>> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
->>> +	       SIMM12(offset), RS1(base))
->>> +
->>> +#define CBO_PREFETCH_W(base, offset)				\
->>> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
->>> +	       SIMM12(offset), RS1(base))
->>> +
->>>  #endif /* __ASM_INSN_DEF_H */
->>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->>> index b3785ffc1570..bdb02b066041 100644
->>> --- a/arch/riscv/kernel/cpufeature.c
->>> +++ b/arch/riscv/kernel/cpufeature.c
->>> @@ -168,6 +168,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>>  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
->>>  	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
->>>  	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
->>> +	__RISCV_ISA_EXT_DATA(zicbop, RISCV_ISA_EXT_ZICBOP),
->>>  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->>>  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->>>  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+> Arınç
+
+I meant what other software (operating system) _instead_ of OpenWRT.
+I'm trying to figure out what other users of PHY muxing there might be.
 
