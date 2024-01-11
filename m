@@ -1,50 +1,58 @@
-Return-Path: <linux-kernel+bounces-24010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0433982B543
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42BA082B553
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:40:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96DFD1F25C8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:38:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8C3A1F26653
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415BE56462;
-	Thu, 11 Jan 2024 19:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D087956779;
+	Thu, 11 Jan 2024 19:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aKqrocxJ"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SPPtBjPT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FCE55E47
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 19:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Jan 2024 11:38:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705001894;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AkzHYxZFi5ouVgT0zy5KypNsq0w5WgyR676jLiAHwes=;
-	b=aKqrocxJT78AHVgmOO5soM2yx71m9o2ggWeLQjfztX924iW2TgDw28QtJUVRZYt8QmtNG6
-	87sj4n+fiAcuKSoXUZ860OXIsqOwxI0lmA2YIG6B3SjjCE6lIVUror/SA3V5ivkRQQ9QJC
-	/HDzAPXkD3DwzkMT/LiYgwtKl8anBbA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-	Dan Schatzberg <schatzberg.dan@gmail.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
-Message-ID: <ZaBDoRr90kPNMrv7@P9FQF9L96D>
-References: <20240111132902.389862-1-hannes@cmpxchg.org>
- <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
- <20240111192807.GA424308@cmpxchg.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D985955C18;
+	Thu, 11 Jan 2024 19:40:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFE49C433C7;
+	Thu, 11 Jan 2024 19:40:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705002004;
+	bh=DmkLUwPO5pHCJHvVcwPy1P4sgjTzQNNak+Eq1cUdG4A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SPPtBjPT+YAd4ocTNd3PGbSKeEby62sm5DsaPgCv2HqVIW9AA61WpCKjUG1nFowUj
+	 3KfWsd59L33mr3lPW1pODJ4DxPp3c0FvcL65M+M43Xd0dsozkiXoWTzMQXYyp+ok+1
+	 Cb30aWs3Sxk5AodiSlMI4eMG+NABT1HgniB893pjpYDswpLiHA/yPSOP9UoGeJLbKt
+	 bnTkQNlGsDQqy8YOmI7KSXeLlghLdU+zlsbZoTu+RaMYkcWjxf+xdeMOQ8myzu+KXS
+	 4DFQ7cH+eAqKWFGmhszUBwC2NDKu/wiPRUDEP+5/MhjNc4xXnfccYuJTOa5a8NwKDV
+	 Z7nFRX4xsl/qg==
+Date: Thu, 11 Jan 2024 12:40:01 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Yonghong Song <yonghong.song@linux.dev>, akpm@linux-foundation.org
+Cc: llvm@lists.linux.dev, patches@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linux-arch@vger.kernel.org,
+	kasan-dev@googlegroups.com, linux-mm@kvack.org,
+	bridge@lists.linux.dev, netdev@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, mykolal@fb.com,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 1/3] selftests/bpf: Update LLVM Phabricator links
+Message-ID: <20240111194001.GA3805856@dev-arch.thelio-3990X>
+References: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
+ <20240109-update-llvm-links-v1-1-eb09b59db071@kernel.org>
+ <6a655e9f-9878-4292-9d16-f988c4bdfc73@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,98 +61,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240111192807.GA424308@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <6a655e9f-9878-4292-9d16-f988c4bdfc73@linux.dev>
 
-On Thu, Jan 11, 2024 at 02:28:07PM -0500, Johannes Weiner wrote:
-> On Thu, Jan 11, 2024 at 09:59:11AM -0800, Roman Gushchin wrote:
-> > On Thu, Jan 11, 2024 at 08:29:02AM -0500, Johannes Weiner wrote:
-> > > While investigating hosts with high cgroup memory pressures, Tejun
-> > > found culprit zombie tasks that had were holding on to a lot of
-> > > memory, had SIGKILL pending, but were stuck in memory.high reclaim.
-> > > 
-> > > In the past, we used to always force-charge allocations from tasks
-> > > that were exiting in order to accelerate them dying and freeing up
-> > > their rss. This changed for memory.max in a4ebf1b6ca1e ("memcg:
-> > > prohibit unconditional exceeding the limit of dying tasks"); it noted
-> > > that this can cause (userspace inducable) containment failures, so it
-> > > added a mandatory reclaim and OOM kill cycle before forcing charges.
-> > > At the time, memory.high enforcement was handled in the userspace
-> > > return path, which isn't reached by dying tasks, and so memory.high
-> > > was still never enforced by dying tasks.
-> > > 
-> > > When c9afe31ec443 ("memcg: synchronously enforce memory.high for large
-> > > overcharges") added synchronous reclaim for memory.high, it added
-> > > unconditional memory.high enforcement for dying tasks as well. The
-> > > callstack shows that this path is where the zombie is stuck in.
-> > > 
-> > > We need to accelerate dying tasks getting past memory.high, but we
-> > > cannot do it quite the same way as we do for memory.max: memory.max is
-> > > enforced strictly, and tasks aren't allowed to move past it without
-> > > FIRST reclaiming and OOM killing if necessary. This ensures very small
-> > > levels of excess. With memory.high, though, enforcement happens lazily
-> > > after the charge, and OOM killing is never triggered. A lot of
-> > > concurrent threads could have pushed, or could actively be pushing,
-> > > the cgroup into excess. The dying task will enter reclaim on every
-> > > allocation attempt, with little hope of restoring balance.
-> > > 
-> > > To fix this, skip synchronous memory.high enforcement on dying tasks
-> > > altogether again. Update memory.high path documentation while at it.
+Hi Yonghong,
+
+On Wed, Jan 10, 2024 at 08:05:36PM -0800, Yonghong Song wrote:
+> 
+> On 1/9/24 2:16 PM, Nathan Chancellor wrote:
+> > reviews.llvm.org was LLVM's Phabricator instances for code review. It
+> > has been abandoned in favor of GitHub pull requests. While the majority
+> > of links in the kernel sources still work because of the work Fangrui
+> > has done turning the dynamic Phabricator instance into a static archive,
+> > there are some issues with that work, so preemptively convert all the
+> > links in the kernel sources to point to the commit on GitHub.
 > > 
-> > It makes total sense to me.
-> > Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-> 
-> Thanks
-> 
-> > However if tasks can stuck for a long time in the "high reclaim" state,
-> > shouldn't we also handle the case when tasks are being killed during the
-> > reclaim? E. g. something like this (completely untested):
-> 
-> Yes, that's probably a good idea.
-> 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index c4c422c81f93..9f971fc6aae8 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2465,6 +2465,9 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
-> >                     READ_ONCE(memcg->memory.high))
-> >                         continue;
+> > Most of the commits have the corresponding differential review link in
+> > the commit message itself so there should not be any loss of fidelity in
+> > the relevant information.
 > > 
-> > +               if (task_is_dying())
-> > +                       break;
-> > +
-> >                 memcg_memory_event(memcg, MEMCG_HIGH);
+> > Additionally, fix a typo in the xdpwall.c print ("LLMV" -> "LLVM") while
+> > in the area.
 > > 
-> >                 psi_memstall_enter(&pflags);
+> > Link: https://discourse.llvm.org/t/update-on-github-pull-requests/71540/172
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > 
-> I think we can skip this one. The loop is for traversing from the
-> charging cgroup to the one that has memory.high set and breached, and
-> then reclaim it. It's not expected to run multiple reclaims.
-
-Yes, the next one is probably enough (hard to say for me without knowing
-exactly where whose dying processes are getting stuck - you should have
-actual stacktraces I guess).
-
+> Ack with one nit below.
 > 
-> > @@ -2645,6 +2648,9 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
-> >         current->memcg_nr_pages_over_high = 0;
-> > 
-> >  retry_reclaim:
-> > +       if (task_is_dying())
-> > +               return;
-> > +
-> >         /*
-> >          * The allocating task should reclaim at least the batch size, but for
-> >          * subsequent retries we only want to do what's necessary to prevent oom
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+<snip>
+
+> > @@ -304,6 +304,6 @@ from running test_progs will look like:
+> >   .. code-block:: console
+> > -  test_xdpwall:FAIL:Does LLVM have https://reviews.llvm.org/D109073? unexpected error: -4007
+> > +  test_xdpwall:FAIL:Does LLVM have https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d5? unexpected error: -4007
+> > -__ https://reviews.llvm.org/D109073
+> > +__ https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d
 > 
-> Yeah this is the better place for this check.
-> 
-> How about this?
+> To be consistent with other links, could you add the missing last alnum '5' to the above link?
 
-Looks really good to me!
+Thanks a lot for catching this and providing an ack. Andrew, could you
+squash this update into selftests-bpf-update-llvm-phabricator-links.patch?
 
-I actually thought about moving the check into mem_cgroup_handle_over_high(),
-and you already did it in this version.
-
-Thanks!
+diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
+index b9a493f66557..e56034abb3c2 100644
+--- a/tools/testing/selftests/bpf/README.rst
++++ b/tools/testing/selftests/bpf/README.rst
+@@ -306,4 +306,4 @@ from running test_progs will look like:
+ 
+   test_xdpwall:FAIL:Does LLVM have https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d5? unexpected error: -4007
+ 
+-__ https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d
++__ https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d5
 
