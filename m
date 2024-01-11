@@ -1,120 +1,115 @@
-Return-Path: <linux-kernel+bounces-22954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FCA882A5CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:08:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E531282A5CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:08:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 593AF1C227F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:08:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831491F2438A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8089F809;
-	Thu, 11 Jan 2024 02:08:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470AF814;
+	Thu, 11 Jan 2024 02:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="RTI1FQHL"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5254C7EA
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=IqMfAJKFYt6J+qstwg
-	7rkqilU4HK/21NbhnZgMySj/E=; b=RTI1FQHLypmfWGLAY7ZqcpRrxF3YQq8VzK
-	H1bOFKnOlWspRfCs5SM59xIyKpYM4GSmSAnnt8U4LPysJGWy6U+VzCD2p1IowMb1
-	nFWXffRHqXpp5IEYt2AkHIBolwvREI9u/9iNFyyaBNPwhvVgVUyI/efKebkbsugx
-	diIKSccV0=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wD3_3FKTZ9lOOObAA--.54228S2;
-	Thu, 11 Jan 2024 10:07:06 +0800 (CST)
-From: chenxuebing <chenxb_99091@126.com>
-To: alexander.deucher@amd.com,
-	daniel@ffwll.ch,
-	airlied@gmail.com,
-	Xinhui.Pan@amd.com,
-	christian.koenig@amd.com
-Cc: linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	chenxuebing <chenxb_99091@126.com>
-Subject: [PATCH] drm/amd: Clean up errors in sdma_v2_4.c
-Date: Thu, 11 Jan 2024 02:07:05 +0000
-Message-Id: <20240111020705.5699-1-chenxb_99091@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wD3_3FKTZ9lOOObAA--.54228S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KF4kGw1fWFyfJw1UJryxZrb_yoW8ur1rpF
-	Z5Zr98uFsYyF13K34UX3WkXrn5Kw1Uuayjyr4jg34I9w15Ar9xXr1xtrWfu345JFWfZrWI
-	qFy7Kry7ZF1jv3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UjtC7UUUUU=
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiOhpixWVEuXmeagABsT
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IH1ZeZrj"
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E046F10EC
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704938917;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qmEEcsA0fyriEKAX8TlwhNLaVQANlK3RwRydup4EB8s=;
+	b=IH1ZeZrj6G+es7br9lTnFYyTgS8/NZ0PXntEb9/Z50vjKtlOktUF47bs/H13CEyBNEL2G4
+	Rtdm1BiJg+oE9KqACaizjUPUDDtYR5OwEN4CIDMNootAWjFqNFtLBWJ976MsR1q1AcffSr
+	nHPjaiVp52YhioD9c5kbusjZypUg/44=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Subject: Re: [PATCH 1/1] selftests: mm: hugepage-vmemmap fails on 64K page
+ size systems.
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20240110075351.f4b6f43e31629ddcb96503cc@linux-foundation.org>
+Date: Thu, 11 Jan 2024 10:07:58 +0800
+Cc: linux-kselftest@vger.kernel.org,
+ Aneesh Kumar <aneesh.kumar@linux.ibm.com>,
+ Linux-MM <linux-mm@kvack.org>,
+ linuxppc-dev@lists.ozlabs.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ Geetika Moolchandani <geetika@linux.ibm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C3CE35A3-7663-4B8E-9E85-8F0C3CD7D9EC@linux.dev>
+References: <3b3a3ae37ba21218481c482a872bbf7526031600.1704865754.git.donettom@linux.vnet.ibm.com>
+ <20240110075351.f4b6f43e31629ddcb96503cc@linux-foundation.org>
+To: Donet Tom <donettom@linux.vnet.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+X-Migadu-Flow: FLOW_OUT
 
-Fix the following errors reported by checkpatch:
 
-ERROR: that open brace { should be on the previous line
-ERROR: trailing statements should be on next line
 
-Signed-off-by: chenxuebing <chenxb_99091@126.com>
----
- drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+> On Jan 10, 2024, at 23:53, Andrew Morton <akpm@linux-foundation.org> =
+wrote:
+>=20
+> (cc Muchun)
+> On Wed, 10 Jan 2024 14:03:35 +0530 Donet Tom =
+<donettom@linux.vnet.ibm.com> wrote:
+>=20
+>> The kernel sefltest mm/hugepage-vmemmap fails on architectures
+>> which has different page size other than 4K. In hugepage-vmemmap
+>> page size used is 4k so the pfn calculation will go wrong on systems
+>> which has different page size .The length of MAP_HUGETLB memory must
+>> be hugepage aligned but in hugepage-vmemmap map length is 2M so this
+>> will not get aligned if the system has differnet hugepage size.
+>>=20
+>> Added  psize() to get the page size and default_huge_page_size() to
+>> get the default hugepage size at run time, hugepage-vmemmap test pass
+>> on powerpc with 64K page size and x86 with 4K page size.
+>>=20
+>> Result on powerpc without patch (page size 64K)
+>> *# ./hugepage-vmemmap
+>> Returned address is 0x7effff000000 whose pfn is 0
+>> Head page flags (100000000) is invalid
+>> check_page_flags: Invalid argument
+>> *#
+>>=20
+>> Result on powerpc with patch (page size 64K)
+>> *# ./hugepage-vmemmap
+>> Returned address is 0x7effff000000 whose pfn is 600
+>> *#
+>>=20
+>> Result on x86 with patch (page size 4K)
+>> *# ./hugepage-vmemmap
+>> Returned address is 0x7fc7c2c00000 whose pfn is 1dac00
+>> *#
+>>=20
+>> Signed-off-by: Donet Tom <donettom@linux.vnet.ibm.com>
+>> Reported-by : Geetika Moolchandani (geetika@linux.ibm.com)
+>> Tested-by : Geetika Moolchandani (geetika@linux.ibm.com)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
-index 8d5d86675a7f..07e19caf2bc1 100644
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
-@@ -57,22 +57,19 @@ static void sdma_v2_4_set_irq_funcs(struct amdgpu_device *adev);
- MODULE_FIRMWARE("amdgpu/topaz_sdma.bin");
- MODULE_FIRMWARE("amdgpu/topaz_sdma1.bin");
- 
--static const u32 sdma_offsets[SDMA_MAX_INSTANCE] =
--{
-+static const u32 sdma_offsets[SDMA_MAX_INSTANCE] = {
- 	SDMA0_REGISTER_OFFSET,
- 	SDMA1_REGISTER_OFFSET
- };
- 
--static const u32 golden_settings_iceland_a11[] =
--{
-+static const u32 golden_settings_iceland_a11[] = {
- 	mmSDMA0_CHICKEN_BITS, 0xfc910007, 0x00810007,
- 	mmSDMA0_CLK_CTRL, 0xff000fff, 0x00000000,
- 	mmSDMA1_CHICKEN_BITS, 0xfc910007, 0x00810007,
- 	mmSDMA1_CLK_CTRL, 0xff000fff, 0x00000000,
- };
- 
--static const u32 iceland_mgcg_cgcg_init[] =
--{
-+static const u32 iceland_mgcg_cgcg_init[] = {
- 	mmSDMA0_CLK_CTRL, 0xff000ff0, 0x00000100,
- 	mmSDMA1_CLK_CTRL, 0xff000ff0, 0x00000100
- };
-@@ -142,7 +139,8 @@ static int sdma_v2_4_init_microcode(struct amdgpu_device *adev)
- 	case CHIP_TOPAZ:
- 		chip_name = "topaz";
- 		break;
--	default: BUG();
-+	default:
-+		BUG();
- 	}
- 
- 	for (i = 0; i < adev->sdma.num_instances; i++) {
-@@ -1258,8 +1256,7 @@ static void sdma_v2_4_set_vm_pte_funcs(struct amdgpu_device *adev)
- 	adev->vm_manager.vm_pte_num_scheds = adev->sdma.num_instances;
- }
- 
--const struct amdgpu_ip_block_version sdma_v2_4_ip_block =
--{
-+const struct amdgpu_ip_block_version sdma_v2_4_ip_block = {
- 	.type = AMD_IP_BLOCK_TYPE_SDMA,
- 	.major = 2,
- 	.minor = 4,
--- 
-2.17.1
+Acked-by: Muchun Song <muchun.song@linux.dev>
+
+>=20
+> I'll add=20
+>=20
+> Fixes: b147c89cd429 ("selftests: vm: add a hugetlb test case")
+> Cc: <stable@vger.kernel.org>
+
+Yes. It should be a real bug fix.
+
+Thanks.
 
 
