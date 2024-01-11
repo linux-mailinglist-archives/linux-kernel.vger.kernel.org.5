@@ -1,82 +1,110 @@
-Return-Path: <linux-kernel+bounces-23602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651C882AEF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:47:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2A4882AEF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:48:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB491C21183
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:47:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 874B01F23AE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13BDA15E86;
-	Thu, 11 Jan 2024 12:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA9F15E99;
+	Thu, 11 Jan 2024 12:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jv6yV/Fp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dBlwR6I2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DBDC15AEB;
-	Thu, 11 Jan 2024 12:47:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 885A4C43390;
-	Thu, 11 Jan 2024 12:47:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704977242;
-	bh=1VjuSDi447ndXyR5iHt0YkDIkWP6vai+3+d8VhFBnbU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jv6yV/FpvH7T7xcObJdtg+YfKwl2NBB9jS7KJMrsBl+ABHzEyz4B60PYCHixUOF7y
-	 IG/zOuhCiePNvOLdv8rti6Po5xbekKW/p3wygx9pGQj7dCdFYAExZM0ChjGMQpLhEo
-	 UNjS3IYDFxu53kKQqTy/EaXSZj/KEaPofTgoEZF/bNak8011VaR1Y/ZcKYEnRehg4H
-	 H8ckgWI4ZW2M1veT9IWIsrbTsZrorLwQi2HsZL2iWLZNiY3t67LXEc/YONTVLybZos
-	 FYibiAwMaCWnhfLFAi1eDqXF/Aj9U3nkzbeHYIQFApy62rhHSTXHrWWr71VN/gDnLp
-	 CCQcDRMCB5v1w==
-Message-ID: <4f693c5e-f350-4f60-bdfc-f0176761ed90@kernel.org>
-Date: Thu, 11 Jan 2024 14:47:19 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1AF15E85;
+	Thu, 11 Jan 2024 12:47:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704977275; x=1736513275;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cYs9Y/tzmUUmAlPWCC8CezHNT235rZZV4IJuzj8AYyE=;
+  b=dBlwR6I2eGokefQ3FnJKpQePHadNesdC7BiJr8kCBh5MG+qOoAtwWmkZ
+   G14GSsOGHX7oQz8aTs3ZfEMRVF9tBkF6bY8QAj+T/iEiSm/iPZwLgkvH5
+   WhWUX0p7wJnP0CENQquKv7x+At6f5oBvy9V+Qvl6VwMYH4/nGjZD/vWK4
+   8sUILGa0b8wteSQhgclMeOBJioAPLvHy0fg5h6zv4MBh51PBy6fIwEuKj
+   pPIgBwlLh+CbMesXauGxux9mgfBN/XLpT0caR+YYZ8HV20l8Wxyae9j08
+   s2jb5z7/g1ate+Lzsm/RR+2xrPWagvygfWZ2/zFvaVxuA+xDS9zlFYLJN
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="12190679"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="12190679"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 04:47:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="873011676"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="873011676"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 Jan 2024 04:47:27 -0800
+Date: Thu, 11 Jan 2024 20:47:27 +0800
+From: Yuan Yao <yuan.yao@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Like Xu <like.xu.linux@gmail.com>
+Subject: Re: [PATCH 2/4] KVM: x86: Rely solely on preempted_in_kernel flag
+ for directed yield
+Message-ID: <20240111124727.wsnmjrh6jdtdbeuo@yy-desk-7060>
+References: <20240110003938.490206-1-seanjc@google.com>
+ <20240110003938.490206-3-seanjc@google.com>
+ <20240110075520.psahkt47hoqodqqf@yy-desk-7060>
+ <ZZ7QOMxBwHZW8oij@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/16] arm64: dts: ti: k3-am64: Add MIT license along with
- GPL-2.0
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Christian Gmeiner <christian.gmeiner@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Pierre Gondois <pierre.gondois@arm.com>, Tony Lindgren <tony@atomide.com>,
- Wadim Egorov <w.egorov@phytec.de>
-References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-6-nm@ti.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20240110140903.4090946-6-nm@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZ7QOMxBwHZW8oij@google.com>
+User-Agent: NeoMutt/20171215
 
-On 10/01/2024 16:08, Nishanth Menon wrote:
-> Modify license to include dual licensing as GPL-2.0-only OR MIT
-> license for SoC and TI evm device tree files. This allows for Linux
-> kernel device tree to be used in other Operating System ecosystems
-> such as Zephyr or FreeBSD.
-> 
-> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
-> with latest SPDX conventions (GPL-2.0 is deprecated).
-> 
-> While at this, update the TI copyright year to sync with current year
-> to indicate license change (and add it at least for one file which was
-> missing TI copyright).
+On Wed, Jan 10, 2024 at 09:13:28AM -0800, Sean Christopherson wrote:
+> On Wed, Jan 10, 2024, Yuan Yao wrote:
+> > On Tue, Jan 09, 2024 at 04:39:36PM -0800, Sean Christopherson wrote:
+> > > @@ -13093,7 +13092,7 @@ bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
+> > >
+> > >  bool kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
+> > >  {
+> > > -	return kvm_arch_vcpu_in_kernel(vcpu);
+> > > +	return vcpu->arch.preempted_in_kernel;
+> > >  }
+> > >
+> > >  bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
+> > > @@ -13116,9 +13115,6 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+> > >  	if (vcpu->arch.guest_state_protected)
+> > >  		return true;
+> > >
+> > > -	if (vcpu != kvm_get_running_vcpu())
+> > > -		return vcpu->arch.preempted_in_kernel;
+> > > -
+> >
+> > Now this function accepts vcpu parameter but can only get information from
+> > "current" vcpu loaded on hardware for VMX.  I'm not sure whether need
+> > "WARN_ON(vcpu != kvm_get_running_vcpu())" here to guard it. i.e.
+> > kvm_guest_state() still uses this function (although it did chekcing before).
+>
+> Eh, I don't think it's worth adding a one-off kvm_get_running_vcpu() sanity check.
+> In the vast majority of cases, if VMREAD or VMWRITE is used improperly, the
+> instruction will fail at some point due to the pCPU not having any VMCS loaded.
+> It's really just cross-vCPU checks that could silently do the wrong thing, and
+> those flows are so few and far between that I'm comfortable taking a "just get
+> it right stance".
+>
+> If we want to add sanity checks, I think my vote would be to plumb @vcpu down
+> into vmcs_read{16,32,64,l} and add sanity checks there, probably with some sort
+> of guard so that the sanity checks can be enabled only for debug kernels.
 
-Acked-by: Roger Quadros <rogerq@kernel.org>
+I got your point.
 
--- 
-cheers,
--roger
+Reviewed-by: Yuan Yao <yuan.yao@intel.com>
 
