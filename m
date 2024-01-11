@@ -1,209 +1,155 @@
-Return-Path: <linux-kernel+bounces-23483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80D2E82AD5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:27:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FE2082AD60
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B6861F238F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:27:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBAB91C2339B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA51015482;
-	Thu, 11 Jan 2024 11:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB8415488;
+	Thu, 11 Jan 2024 11:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="Vi1rgpwz"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="q3jlpGM+"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44C1156C7
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbd99c08cd6so4351480276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:27:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32C014F97
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2a17f3217aso585256166b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:28:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704972432; x=1705577232; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704972502; x=1705577302; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e7JiucPuK5mIn3VsB07u7y+OPsd0Eht681B5IDggD3Q=;
-        b=Vi1rgpwzfzaqLotaLhCGzsFWVPWU1GdUnAytTsZFz7vuJYMkC/xjtHdnZvr9K+TA0f
-         Lwkvbg8H3960iI6jqo9+iuETwbMwrzVj9Ovxb8+MLhAebhSkfS0H6Obmh0zMoox6u9nb
-         A+lB9ASXmluOl+JmVEtYLKj6DRMijkKjP2A1w=
+        bh=1r4p8EZizALAha2W0BpFV/ugv3SVBdRsaxVwbhdyofU=;
+        b=q3jlpGM+7f3viLraFKsP1bjc0pynslWLdE4jNaANsFv+gTTURDv60tiLh/q9YzmJS3
+         BG7+TYcANaX/Y0NC3Z76RnWCwph9UOPHR7E62l2duBj2YPytZZA7Gn9gLZQS4tVt2vIl
+         XKSMKELuF5ELtQUAKuE+UAijSzyI6wR1cWAmpYDk9+NkkEW3Q6XxVjQGHcco/k/AnNOo
+         jUMF/YUwFwe8xaTNJvaBGdkhJrcWjGVAl9rKK1nJlBI+IEQ9VPR82oJ1ougVyquunh/z
+         xMG1hfKWntqCT4YcBsNsWcFV2lOXkjeNf0FwX4mOl/lRzV399s/OD2sYwrtnnGyxVRGH
+         vShw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704972432; x=1705577232;
+        d=1e100.net; s=20230601; t=1704972502; x=1705577302;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e7JiucPuK5mIn3VsB07u7y+OPsd0Eht681B5IDggD3Q=;
-        b=KU8yuSe9jw2KMrND1uu3ejvfOD7+Fx3+M9klSgt7gYweUbUwnk5o7tJ1MtPNBWTD46
-         8ACOWG3Grolxl2WmXiD0gmN85QoSGmhwDjgRklIYublcmx1U/QtqWe5POp7uctr9MsfU
-         D//yRaf55RCZChZxDaSPjnsT2LGZHv15Ix8Magh1VWd9+xBpg/qNrpYeMfRIm+JU4Uoy
-         w0OWDVin4FOlson6FEhF7nwEWC5aXokRK4zd+dcBY6XKKGq5iLryx0d7CsvddefZmRaj
-         pdw7EJpQnD1k/216bbfjYeuy/x53AUPHX9IHkJwxEjgGZAIk0uqVv0fFE+6l1eIM4cfc
-         yd3w==
-X-Gm-Message-State: AOJu0Yyf9egYkUNskkVprhFRWdcVfo42dhzn9Qbt5ZoogN2vpIpn6ja2
-	3ItUUhGi4VJa8PR40xt+HWejtwPD7o9n/7DjdR2umoWwSaUOCQ==
-X-Google-Smtp-Source: AGHT+IEJB+Qnxg6nM+JT5HuGkpy4wIhVH7/I5L9g6bPm+oKIAEIYU5M688AvqqnEcIedqWHcdj7tivFvlabNsODp5ng=
-X-Received: by 2002:a25:ad14:0:b0:dbe:a48f:8322 with SMTP id
- y20-20020a25ad14000000b00dbea48f8322mr1087326ybi.71.1704972431668; Thu, 11
- Jan 2024 03:27:11 -0800 (PST)
+        bh=1r4p8EZizALAha2W0BpFV/ugv3SVBdRsaxVwbhdyofU=;
+        b=n17XHV8RSZsGm4umB/41Bm0eU7Rba7agVkG1uBYwOWqjvxSAR5v26140nHoB12UWaJ
+         046aQ6XWGnMhhWZm2i/W6pwGzl90d0re71lvbLopcGeMC5wj4cZEcF5DqCPIpYADNyE/
+         Tlsyl8UrjOO23A8wIv9+3diUeDe4Hx9RN2FZaaEE9rPyC1z9PldcvDP3nUQCGwc3rYIS
+         viNVrMRlHX3YxReNtaCZ+hGjHAOFSxg6sQ+2yP2MkqGb0kv7PdTmlSZIhHVc8MYDmX4f
+         3hNs0nIAx02cdbv+F4XGBsjevSoSN5l4E/TSKEpiKSFnTGb0LgOjY9HvFVGiwllYqYyM
+         gTbg==
+X-Gm-Message-State: AOJu0Ywq5CYg87cQa/lt4udib8HlYTI70sW2cJ0s8Fjz/V990OWDpKZt
+	r15b3xbg60J1exSSwOJlZCxx0zg5P1XCJTN6YqKObymXrb2g
+X-Google-Smtp-Source: AGHT+IEufoHkvLSX8vgq4YGEOXKsTE0opFs0mnugITz8vjU8xo4oJO5CX6Yg+X0XoMd4DWqJkwdFdlvpvUFOV4j5AXg=
+X-Received: by 2002:a17:906:2496:b0:a2c:4a17:1d66 with SMTP id
+ e22-20020a170906249600b00a2c4a171d66mr425894ejb.47.1704972501963; Thu, 11 Jan
+ 2024 03:28:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110080729.3238251-1-dario.binacchi@amarulasolutions.com>
- <20240110080729.3238251-6-dario.binacchi@amarulasolutions.com> <7889dff7-2c38-43c0-b6f7-281a20ae9733@foss.st.com>
-In-Reply-To: <7889dff7-2c38-43c0-b6f7-281a20ae9733@foss.st.com>
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Date: Thu, 11 Jan 2024 12:27:00 +0100
-Message-ID: <CABGWkvoatqxz2_8_7khHAC8n4gFNyvfDPR3A88fsfuppJxN_5Q@mail.gmail.com>
-Subject: Re: [Linux-stm32] [PATCH v6 5/5] ARM: dts: add stm32f769-disco-mb1225-revb03-mb1166-reva09
-To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Manivannan Sadhasivam <mani@kernel.org>, 
-	Andre Przywara <andre.przywara@arm.com>, linux-stm32@st-md-mailman.stormreply.com, 
-	=?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Sean Nyekjaer <sean@geanix.com>, 
-	linux-amarula@amarulasolutions.com, Peter Rosin <peda@axentia.se>, 
-	linux-arm-kernel@lists.infradead.org
+References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
+ <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
+ <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
+ <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
+ <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
+ <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
+ <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
+ <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
+ <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
+ <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
+ <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
+ <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
+ <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com> <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
+In-Reply-To: <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 11 Jan 2024 03:27:44 -0800
+Message-ID: <CAJD7tkYmOCCR7iipEFF69woXQxOr7byj+GuafGQVBL=UCHUK5A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
+ in zswap_writeback_entry
+To: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc: Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Chris Li <chrisl@kernel.org>, Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Raphael,
-
-On Thu, Jan 11, 2024 at 12:22=E2=80=AFPM Raphael Gallais-Pou
-<raphael.gallais-pou@foss.st.com> wrote:
+On Wed, Jan 10, 2024 at 7:49=E2=80=AFPM Zhongkun He
+<hezhongkun.hzk@bytedance.com> wrote:
 >
->
-> On 1/10/24 09:05, Dario Binacchi wrote:
-> > As reported in the section 8.3 (i. e. Board revision history) of docume=
-nt
-> > UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
-> > related to the board revisions addressed by the patch:
-> > - Board MB1225 revision B-03:
-> >   - Memory MICRON MT48LC4M32B2B5-6A replaced by ISSI IS42S32400F-6BL
-> > - Board MB1166 revision A-09:
-> >   - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
 > >
-> > The patch only adds the DTS support for the new display which belongs t=
-o
-> > to the Novatek NT35510-based panel family.
+> > This sounds dangerous. This is going to introduce a rather large
+> > unexpected side effect - we're changing the readahead behavior in a
+> > seemingly small zswap optimization. In fact, I'd argue that if we do
+> > this, the readahead behavior change will be the "main effect", and the
+> > zswap-side change would be a "happy consequence". We should run a lot
+> > of benchmarking and document the change extensively if we pursue this
+> > route.
 > >
-> > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> >
-> > ---
-> >
-> > Changes in v6:
-> > - Drop patches
-> >   - [5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A=
--CTK
-> >   - [7/8] drm/panel: nt35510: move hardwired parameters to configuratio=
-n
-> >   - [8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-> >   because applied by the maintainer Linus Walleij
-> >
-> > Changes in v5:
-> > - Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_=
-optional().
-> >
-> > Changes in v2:
-> > - Change the status of panel_backlight node to "disabled"
-> > - Delete backlight property from panel0 node.
-> > - Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25=
-025-A-CTK"
-> >   in the same style as the original driver.
-> >
-> >  arch/arm/boot/dts/st/Makefile                  |  1 +
-> >  ...2f769-disco-mb1225-revb03-mb1166-reva09.dts | 18 ++++++++++++++++++
-> >  2 files changed, 19 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-=
-mb1166-reva09.dts
-> >
-> > diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makef=
-ile
-> > index 7892ad69b441..390dbd300a57 100644
-> > --- a/arch/arm/boot/dts/st/Makefile
-> > +++ b/arch/arm/boot/dts/st/Makefile
-> > @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) +=3D \
-> >       stm32f469-disco.dtb \
-> >       stm32f746-disco.dtb \
-> >       stm32f769-disco.dtb \
 >
-> Hi Dario,
+> I agree with the unexpected side effect,  and here I need
+> to clarify the original intention of this patch.Please see the memory
+> offloading steps below.
 >
 >
-> Did you meant dtb here ? ;)
-Good catch!
-Thanks for the review!
-
-Regards,
-Dario
-
+> memory      zswap(reclaim)          memory+swap (writeback)
+> 1G                 0.5G                        1G(tmp memory) + 1G=EF=BC=
+=88swap=EF=BC=89
 >
+> If the decompressed memory cannot be released in time,
+> zswap's writeback has great side effects(mostly clod pages).
+> On the one hand, the memory space has not been reduced,
+> but has increased (from 0.5G->1G).
+> At the same time, it is not put the pages to the tail of the lru.
+> When the memory is insufficient, other pages will be squeezed out
+> and released early.
+> With this patch=EF=BC=8C we can put the tmp pages to the tail and reclaim=
+ it
+> in time when the memory is insufficient or actively reclaimed.
+> So I think this patch makes sense and hope it can be fixed with a
+> suitable approaches.
 >
-> Regards,
+> >
+> > Unless some page flag/readahead expert can confirm that the first
+> > option is safe, my vote is on this option. I mean, it's fairly minimal
+> > codewise, no? Just a bunch of plumbing. We can also keep the other
+> > call sites intact if we just rename the old versions - something along
+> > the line of:
+> >
+> > __read_swap_cache_async_head(..., bool add_to_lru_head)
+> > {
+> > ...
+> > if (add_to_lru_head)
+> >   folio_add_lru(folio)
+> > else
+> >   folio_add_lru_tail(folio);
+> > }
+> >
+> > __read_swap_cache_async(...)
+> > {
+> >    return __read_swap_cache_async_tail(..., true);
+> > }
+> >
+> > A bit boilerplate? Sure. But this seems safer, and I doubt it's *that*
+> > much more work.
+> >
 >
-> Rapha=C3=ABl
->
-> > +     stm32f769-disco-mb1225-revb03-mb1166-reva09.dts \
-> >       stm32429i-eval.dtb \
-> >       stm32746g-eval.dtb \
-> >       stm32h743i-eval.dtb \
-> > diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-=
-reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva=
-09.dts
-> > new file mode 100644
-> > index 000000000000..014cac192375
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.=
-dts
-> > @@ -0,0 +1,18 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.=
-com>
-> > + */
-> > +
-> > +#include "stm32f769-disco.dts"
-> > +
-> > +&panel_backlight {
-> > +     status =3D "disabled";
-> > +};
-> > +
-> > +&panel0 {
-> > +     compatible =3D "frida,frd400b25025", "novatek,nt35510";
-> > +     vddi-supply =3D <&vcc_3v3>;
-> > +     vdd-supply =3D <&vcc_3v3>;
-> > +     /delete-property/backlight;
-> > +     /delete-property/power-supply;
-> > +};
+> Yes=EF=BC=8C agree. I will try it again.
 
-
-
---=20
-
-Dario Binacchi
-
-Senior Embedded Linux Developer
-
-dario.binacchi@amarulasolutions.com
-
-__________________________________
-
-
-Amarula Solutions SRL
-
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-
-T. +39 042 243 5310
-info@amarulasolutions.com
-
-www.amarulasolutions.com
+I agree with Nhat here. Unless someone with enough readahead/page
+flags knowledge says putting PG_readahead pages at the tail of the LRU
+is okay (doubtful), I think we should opt for introducing a
+folio_add_lru_tail() as I initially suggested.
 
