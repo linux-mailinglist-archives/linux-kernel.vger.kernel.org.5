@@ -1,282 +1,171 @@
-Return-Path: <linux-kernel+bounces-23078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BDAA82A766
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:04:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A4B82A76B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43CA61C219E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:04:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EC19B21B1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:05:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABAE5663;
-	Thu, 11 Jan 2024 06:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604D223CA;
+	Thu, 11 Jan 2024 06:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hDXZC+x9"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+HKG1xL"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565E75382;
-	Thu, 11 Jan 2024 06:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40B3p3sp013099;
-	Thu, 11 Jan 2024 06:04:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Dz8QqrNJHM/0z8HtKttYfElf7uRMpQSZFFFaAin6pSY=; b=hD
-	XZC+x93m1cSrMN7D2lI6FVBil3QrP4iucsh3qY3jtacwA4EkrsK0sNv9bMudBDsL
-	phkCqo+wqIxsqC0RsbOc/wLtsYLf5mES/99ht1tolwslH5tphxKzWYKX4dSKRo/2
-	mU9vApEXV4myvKf7eNswEHxd4QZc+BF/rtx8AjRSc7Izk/bie02b/MEQwoe9PqeK
-	JyAGpVU07T6ezYs3/ngeQQvKyqXTAFZVbx4KoX2yZJBaUsQDli/qzzw1Y+fKnOpR
-	ScPzM2xvwRrWk619ykkq176URf79AangJOLL3vX4mL5fcHc9ozgK184PWrawz2Qi
-	1az6O6l5PktT/E1m6OEA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vj0sk957t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 06:04:03 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40B641OM011171
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 06:04:01 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 22:03:58 -0800
-Message-ID: <b169a0c0-785a-4740-af01-ae8f2d94d891@quicinc.com>
-Date: Thu, 11 Jan 2024 14:03:56 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BACD2101;
+	Thu, 11 Jan 2024 06:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d3e8a51e6bso39835755ad.3;
+        Wed, 10 Jan 2024 22:05:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704953146; x=1705557946; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lHGoXIC2FCB2mAKhVqh6NZDuE4LJRbl6RDfBQ0QRmmo=;
+        b=Q+HKG1xLsbBoITDb4YUFsnxMoHpaDEpTOCJwjCqbddCUCI4vcDZ7UWEgokaZHIemXP
+         un/ycE8w5aj6RZVA4Uty5xrL1AZa2RFkgkC5nu8UK1oWcQ2TR5iz86JypqfDWf5MipTX
+         NLFg6XbjJodNGzrMGxeJFg3KHfXBuMbzfWHA4w/yZStQ0amfQWJ6Dwr2GCGKzxf1Jbho
+         PuWcBMlzal+ng/l/TroO4A4/4scy+izDdJ4Fg7Q3H+i3S4nqZXdhbbU/izuMshttjEGh
+         8skdF1g/78HIRkGEJFntsY/Mc+CKX0KxnOdzlE54lfI46sOAhPcDChR53caCOj6vJ8g7
+         SeRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704953146; x=1705557946;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lHGoXIC2FCB2mAKhVqh6NZDuE4LJRbl6RDfBQ0QRmmo=;
+        b=SHGuloj9jn+Oye+Q8eOMnFQYivjuQHjdPhBVziyY8I8lt04B/61eqKSWe6sjPbrAZB
+         pqobOceuHXtZSijPbQmTWsfJM5W6zd4+U9MvsKtErAQeCIZs9E062silyriS+u1nK0a/
+         qhiq0RUPpeA/ssFnqaMXBx1EcjgYutkVRCPWSNgGyilk+wLC7r47EF2uzrN/v2GFROSu
+         DD7wFwPPjY+sLMvQ9pThBEJ4yIJZcEu7gCCvgr2xBmkt1v132kahboPnMcy8tFC9h5j6
+         ohejipr0T/bArW7v/5Go7NVrXzfir/t7TBMt7q9Igyt4zdRBZzN5PdCG2ePwtQQw7uF1
+         T2VQ==
+X-Gm-Message-State: AOJu0YxmExeGcZFS2ZtPZQCYQEU+xZZI0+8lOYUIiDDWqpsLbL2QJ3YB
+	fH777uQEg9NpKnkE2LNJDZjizKmHRsUIvp9YsZ4=
+X-Google-Smtp-Source: AGHT+IH+1q73uvlfGT5vqj6l9FlxKHf19BKYpA8MaR24y+5FzlsjZZl9SiLbskLUCzdqOP3lbR6IitsAoaAGQSftlCY=
+X-Received: by 2002:a17:90a:f513:b0:28d:b4f8:5104 with SMTP id
+ cs19-20020a17090af51300b0028db4f85104mr498035pjb.48.1704953146596; Wed, 10
+ Jan 2024 22:05:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] coresight: Add coresight name support
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        James Clark
-	<james.clark@arm.com>, Mike Leach <mike.leach@linaro.org>
-CC: <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        "Tingwei
- Zhang" <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang
-	<quic_yuanfang@quicinc.com>,
-        Tao Zhang <quic_taozha@quicinc.com>, Leo Yan
-	<leo.yan@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-References: <20231228093321.5522-1-quic_jinlmao@quicinc.com>
- <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
- <b2b6cccb-ede0-4f19-bfaf-efdc203de7f2@arm.com>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <b2b6cccb-ede0-4f19-bfaf-efdc203de7f2@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: oglUc29Fj4N7GYQlzjO-9zhTHpBGaXNW
-X-Proofpoint-ORIG-GUID: oglUc29Fj4N7GYQlzjO-9zhTHpBGaXNW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- adultscore=0 suspectscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401110045
+References: <20230914000348.25790-1-michael@allwinnertech.com>
+ <CA+Da2qzr0SBu-kUtFTnBqT+OObFOSTFgmU30L3B-Rjv3rYbGKw@mail.gmail.com>
+ <CAPDyKFpHw+6vovHRWbhsDwre81U4Uu_X-Wy_viQCZp6nj=5Jkw@mail.gmail.com>
+ <aa657a1d-a25d-21a8-4093-ec8fbe298ca2@allwinnertech.com> <CAPDyKFoJpKdsey8dxbs+NpTDDU5fR7h_=JK+aEdD2oeO5W33WQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFoJpKdsey8dxbs+NpTDDU5fR7h_=JK+aEdD2oeO5W33WQ@mail.gmail.com>
+From: Wenchao Chen <wenchao.chen666@gmail.com>
+Date: Thu, 11 Jan 2024 14:05:35 +0800
+Message-ID: <CA+Da2qzsJyy08dfHDK6h0aVfgzbmCM9A=1XE9nkNkr7NQems_Q@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Add new flag to force hardware reset
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Michael Wu <michael@allwinnertech.com>, adrian.hunter@intel.com, 
+	jinpu.wang@ionos.com, victor.shih@genesyslogic.com.tw, avri.altman@wdc.com, 
+	asuk4.q@gmail.com, f.fainelli@gmail.com, beanhuo@micron.com, 
+	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Sarthak Garg <quic_sartgarg@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 6 Nov 2023 at 22:20, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Mon, 6 Nov 2023 at 13:26, Michael Wu <michael@allwinnertech.com> wrote:
+> >
+> > On 9/25/2023 9:59 PM, Ulf Hansson wrote:
+> > > - trimmed cc-list, + Sartak Garg
+> > >
+> > > On Thu, 14 Sept 2023 at 10:00, Wenchao Chen <wenchao.chen666@gmail.com> wrote:
+> > >>
+> > >> On Thu, 14 Sept 2023 at 08:04, Michael Wu <michael@allwinnertech.com> wrote:
+> > >>>
+> > >>> Entering the recovery system itself indicates a transmission error.
+> > >>> In this situation, we intend to execute the mmc_blk_reset function
+> > >>> to clear any anomalies that may be caused by errors. We have previously
+> > >>> discussed with several MMC device manufacturers, and they expressed
+> > >>> their desire for us to reset the device when errors occur to ensure
+> > >>> stable operation. We aim to make this code compatible with all devices
+> > >>> and ensure its stable performance, so we would like to add this patch
+> > >>>
+> > >>> Signed-off-by: Michael Wu <michael@allwinnertech.com>
+> > >>
+> > >> like: https://lore.kernel.org/linux-mmc/20220603051534.22672-1-quic_sartgarg@quicinc.com/
+> > >
+> > > Looks like this series didn't make it. I was awaiting a rebase from
+> > > Sartak to apply it, but apparently something got in his way for a new
+> > > submission.
+> > >
+> > >>
+> > >> You should enable it in the vendor host.
+> > >
+> > > Yes! We don't want unused code in the core. We need a user of it too.
+> > >
+> > > May I suggest that you pick up Sartak's patch for the core and thus
+> > > add another patch for the host driver you care about and then
+> > > re-submit it as a small series.
+> > >
+> > > Kind regards
+> > > Uffe
+> > >
+> > >>
+> > >>> ---
+> > >>>   drivers/mmc/core/block.c | 2 +-
+> > >>>   include/linux/mmc/host.h | 1 +
+> > >>>   2 files changed, 2 insertions(+), 1 deletion(-)
+> > >>>
+> > >>> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> > >>> index b5b414a71e0b..29fbe0ddeadb 100644
+> > >>> --- a/drivers/mmc/core/block.c
+> > >>> +++ b/drivers/mmc/core/block.c
+> > >>> @@ -1503,7 +1503,7 @@ void mmc_blk_cqe_recovery(struct mmc_queue *mq)
+> > >>>          pr_debug("%s: CQE recovery start\n", mmc_hostname(host));
+> > >>>
+> > >>>          err = mmc_cqe_recovery(host);
+> > >>> -       if (err)
+> > >>> +       if (err || host->cqe_recovery_reset_always)
+> > >>>                  mmc_blk_reset(mq->blkdata, host, MMC_BLK_CQE_RECOVERY);
+> > >>>          mmc_blk_reset_success(mq->blkdata, MMC_BLK_CQE_RECOVERY);
+> > >>>
+> > >>> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> > >>> index 62a6847a3b6f..f578541a06b5 100644
+> > >>> --- a/include/linux/mmc/host.h
+> > >>> +++ b/include/linux/mmc/host.h
+> > >>> @@ -518,6 +518,7 @@ struct mmc_host {
+> > >>>          int                     cqe_qdepth;
+> > >>>          bool                    cqe_enabled;
+> > >>>          bool                    cqe_on;
+> > >>> +       bool                    cqe_recovery_reset_always;
+> > >>>
+> > >>>          /* Inline encryption support */
+> > >>>   #ifdef CONFIG_MMC_CRYPTO
+> > >>> --
+> > >>> 2.29.0
+> > >>>
+> > Dear Ulf,
+> > I have tested Sartak's patch and it is also able to resolve the issue we
+> > are currently facing. Therefore, I would like to inquire about the
+> > expected timeline for merging Sartak's patch.
+>
+Hi Sartak
 
+Any updates?
 
-On 1/3/2024 7:33 PM, Suzuki K Poulose wrote:
-> On 28/12/2023 11:26, James Clark wrote:
->>
->>
->> On 28/12/2023 09:33, Mao Jinlong wrote:
->>> Add coresight name support for custom names which will be
->>> easy to identify the device by the name.
->>>
->>
->> I suppose this is more of a V2 because the subject is the same as the
->> one sent earlier this year. But it looks like the discussion on the
->> previous one wasn't resolved.
->>
->> With the main issues to solve being:
->>
->>   * It would be nice to use the existing root node name instead of adding
->>     a new property. But at the same time DT nodes are supposed to have
->>     generic names.
->>
->>   * This only works for DT and not ACPI
->>
->> To me it seems like adding the new property is just a "cheat" to get
->> around not being allowed to have a specific name for the root node. But
->> if we admit that we need a name I don't see the benefit of not putting
->> the name where the node is already named.
->>
->> Using the root node name at this point would also undo the hard coded
->> per-cpu naming of the CTI and ETM devices, so maybe it would be nice,
->> but it's just too late. That means that a new field is necessary.
-> 
-> The CTI and ETM can be handled as special cases, like they are
-> already done and fall back to the nodename for the rest ?
-> But, I thought the node names must be generic (e.g, cti) and doesn't
-> really solve the naming requirements for naming CTIs. (e.g,
-> <device>_tpda, etr_cti). Is there something I missed ?
-> 
->> Although that field could be a boolean like "use-root-name-for-display"
->> or something like that. In the end it probably doesn't really make a
->> difference whether it's that or a name string. >
->> And maybe the answer to the ACPI question is just that if anyone needs
->> it, they can add it in the future. It doesn't seem like it would
->> conflict with anything we do here.
->>
->>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>> ---
->>>   .../hwtracing/coresight/coresight-cti-core.c  | 20 ++++++++------
->>>   drivers/hwtracing/coresight/coresight-dummy.c | 10 ++++---
->>>   .../hwtracing/coresight/coresight-platform.c  | 27 +++++++++++++++++++
->>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 10 ++++---
->>>   include/linux/coresight.h                     |  1 +
->>>   5 files changed, 53 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c 
->>> b/drivers/hwtracing/coresight/coresight-cti-core.c
->>> index 3999d0a2cb60..60a1e76064a9 100644
->>> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
->>> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
->>> @@ -902,14 +902,18 @@ static int cti_probe(struct amba_device *adev, 
->>> const struct amba_id *id)
->>>       /* default to powered - could change on PM notifications */
->>>       drvdata->config.hw_powered = true;
->>> -    /* set up device name - will depend if cpu bound or otherwise */
->>> -    if (drvdata->ctidev.cpu >= 0)
->>> -        cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, "cti_cpu%d",
->>> -                           drvdata->ctidev.cpu);
->>> -    else
->>> -        cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, 
->>> dev);
->>
->> Can we put the new name stuff inside coresight_alloc_device_name()? Then
->> it happens by default for every device.
-> 
-> +1
-> 
->>
->> I know Suzuki said previously to do it per-device, but the new DT
->> property is just "coresight-name", so it's generic. Rather than being
->> specific like "cti-name". So I don't see the benefit of duplicating the
->> code at this point if we do decide to do it.
-> 
-> My suggestion was to name the device based on the specific device rather
-> than following a generic rule for all device. e.g., A TPDM connected to 
-> modem, could be named as such based on the platform information. It
-> could be any means, for e.g., tpdm nodes are always children nodes of
-> the devices they are connected to ? or could have a phandle to point to 
-> the device they are monitoring etc. And the name could be created from
-> the "monitoring device name" + tpdm. Also, we do this for CPU bound CTI
-> and ETMs already, where we name them based on the CPU.
-
-TPDM can only connect to the funnel or TPDA. The system TPDM is 
-monitoring may not have the device node in DT.
-
-> 
-> But then the "nodename" is something we explored and it looks like
-> may not be an option.
-> 
->>
->>> -    if (!cti_desc.name)
->>> -        return -ENOMEM;
->>> +    cti_desc.name = coresight_get_device_name(dev);
->>> +    if (!cti_desc.name) {
->>> +        /* set up device name - will depend if cpu bound or 
->>> otherwise */
->>> +        if (drvdata->ctidev.cpu >= 0)
->>> +            cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, 
->>> "cti_cpu%d",
->>> +                               drvdata->ctidev.cpu);
->>> +        else {
->>> +            cti_desc.name = 
->>> coresight_alloc_device_name(&cti_sys_devs, dev);
->>> +            if (!cti_desc.name)
->>> +                return -ENOMEM;
->>> +        }
->>> +    }
-> 
-> For these special cases, i.e., CPU bound, we should handle them with 
-> priority.
-> 
-> if (drvdata->ctidev.cpu >= 0)
->      name = devm_kasprintf(... "cti_cpu%d", .. cpu);
-> else
->          name = coresight_alloc_device_name(...);
-> 
->>
->>>       /* setup CPU power management handling for CPU bound CTI 
->>> devices. */
->>>       ret = cti_pm_setup(drvdata);
->>> diff --git a/drivers/hwtracing/coresight/coresight-dummy.c 
->>> b/drivers/hwtracing/coresight/coresight-dummy.c
->>> index e4deafae7bc2..b19cd400df79 100644
->>> --- a/drivers/hwtracing/coresight/coresight-dummy.c
->>> +++ b/drivers/hwtracing/coresight/coresight-dummy.c
->>> @@ -76,10 +76,12 @@ static int dummy_probe(struct platform_device *pdev)
->>>       struct coresight_desc desc = { 0 };
->>>       if (of_device_is_compatible(node, "arm,coresight-dummy-source")) {
->>> -
->>> -        desc.name = coresight_alloc_device_name(&source_devs, dev);
->>> -        if (!desc.name)
->>> -            return -ENOMEM;
->>> +        desc.name = coresight_get_device_name(dev);
->>> +        if (!desc.name) {
->>> +            desc.name = coresight_alloc_device_name(&source_devs, dev);
->>> +            if (!desc.name)
->>> +                return -ENOMEM;
->>> +        }
->>>           desc.type = CORESIGHT_DEV_TYPE_SOURCE;
->>>           desc.subtype.source_subtype =
->>> diff --git a/drivers/hwtracing/coresight/coresight-platform.c 
->>> b/drivers/hwtracing/coresight/coresight-platform.c
->>> index 9d550f5697fa..284aa22a06b7 100644
->>> --- a/drivers/hwtracing/coresight/coresight-platform.c
->>> +++ b/drivers/hwtracing/coresight/coresight-platform.c
->>> @@ -183,6 +183,18 @@ static int of_coresight_get_cpu(struct device *dev)
->>>       return cpu;
->>>   }
->>> +static const char *of_coresight_get_device_name(struct device *dev)
->>> +{
->>> +    const char *name = NULL;
->>> +
->>> +    if (!dev->of_node)
->>> +        return NULL;
->>> +
->>> +    of_property_read_string(dev->of_node, "coresight-name", &name);
->>
->> Do you need to update the binding docs with this new property?
->>
->> Also a minor nit: Maybe "display-name" is better? "Coresight" is
->> implied, and the node is already named, although that node name isn't
->> used for display purposes, but this one is.
-> 
-> On that front, the name is used as a "device" name and not simply 
-> display. So, even "device-name" sounds more appropriate.
-> 
-I will use the device-name.
-
-Thanks
-Jinlong Mao
-> Suzuki
-> 
->>
->> Thanks
->> James
-> 
+> Hi Michael,
+>
+> There is another series [1] that Adrian is working on that is related
+> to the problem in $subject patch. Perhaps you can take a look and try
+> it out instead of Sartak's patch, which seems to have gotten stalled.
+>
+> Kind regards
+> Uffe
+>
+> [1]
+> https://lore.kernel.org/all/20231103084720.6886-1-adrian.hunter@intel.com/
 
