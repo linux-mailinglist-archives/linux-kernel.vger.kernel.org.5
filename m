@@ -1,94 +1,103 @@
-Return-Path: <linux-kernel+bounces-23067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98ACE82A729
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:03:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A75F982A72B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:09:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EB1C1F23EE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 05:03:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA93A1C23363
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 05:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5182A5695;
-	Thu, 11 Jan 2024 05:03:05 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D3E1FB0;
+	Thu, 11 Jan 2024 05:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bcs58dBG"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004DA4693;
-	Thu, 11 Jan 2024 05:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 2AD3D68CFE; Thu, 11 Jan 2024 06:02:57 +0100 (CET)
-Date: Thu, 11 Jan 2024 06:02:57 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Dave Chinner <david@fromorbit.com>,
-	John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-	kbusch@kernel.org, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ming.lei@redhat.com, bvanassche@acm.org,
-	ojaswin@linux.ibm.com
-Subject: Re: [PATCH v2 00/16] block atomic writes
-Message-ID: <20240111050257.GA4457@lst.de>
-References: <20231219051456.GB3964019@frogsfrogsfrogs> <20231219052121.GA338@lst.de> <76c85021-dd9e-49e3-80e3-25a17c7ca455@oracle.com> <20231219151759.GA4468@lst.de> <fff50006-ccd2-4944-ba32-84cbb2dbd1f4@oracle.com> <20231221065031.GA25778@lst.de> <73d03703-6c57-424a-80ea-965e636c34d6@oracle.com> <ZZ3Q4GPrKYo91NQ0@dread.disaster.area> <20240110091929.GA31003@lst.de> <20240111014056.GL722975@frogsfrogsfrogs>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E1C17F1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 05:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2a17f3217aso547366166b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 21:09:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704949754; x=1705554554; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9MKrB6z6h6FCL7Pjwb6W+0zbLJ1lLA75vK6XbRw6+sM=;
+        b=Bcs58dBGPuyHFbj/C8CGutI/YZmAVibVBC+ftbwMeum42qy1n76rQUZg/j+1dLhQlV
+         JQe4JXKVCR+zqAOvWDH6m5d9kYVlsSoqBVk9HzfMVYC1Px49VUpmIyhJHAzaKA+8TYPL
+         Vx5YkegOrxbFqJuYdvO6FlUmlLCR3GuwHq5HWNWXV2Akm3GcHyoAyN2F5DYLFAXLwo3r
+         hBKpvwC5IatNpem40XeTSR1NNNiEqVO81E7ZKERD0VjvwTWJMOIA4OIKP4bl9a7jIK9D
+         EGoZ9n9q31KoopED/tFlc+PObGn3QIcflAZvoF5oQDwjUKVeVBhe7X+ITNN/1wmxgszs
+         iDSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704949754; x=1705554554;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9MKrB6z6h6FCL7Pjwb6W+0zbLJ1lLA75vK6XbRw6+sM=;
+        b=W/fIx19dExkBA8gDOORaayaLfaT4hdLU5uZe5AczZS4kjy0SrRiiTG5QUhjX55trfZ
+         NkB/5g6sowh6/94pXOUunuZ2z9AmDFjVbeOa9aSmxkKduOFDsHxCtoP6PYREktrRLrGc
+         5RAZr/ijVkvyE4K5sawCrDm8YEsU0EpBxANDCTSKnUg4GTmc4FVWZCypwGhpLr5BMORY
+         36opfUcf+ECgn/Uva6W7+d0H9Av2eBSBnb++uXFoZG2ciK/0/ysPu5INSVjVaa37onOF
+         9QknUZdKecwvH6J0WBhmpHYs09cFDvp4z6C/vpuk02QZPm+RL8oQXAmzWsiDSwV7CnzA
+         JBUQ==
+X-Gm-Message-State: AOJu0YzZOvcbjwDZ6Nj/3wkkFIUCiuo9MNk+mQsNeqSXkruqQ9UH2YOH
+	+plCsd8RSxfp2Koyq2qRrwDV1DhI7zp+xDpq4Fo=
+X-Google-Smtp-Source: AGHT+IG2NI/guH0/C72gEVL6DAU5yYa/NpqFiWeVvNPFaDK8jbBVLGZKhkeaKmTGpqjEkryfBjUQTCU0kA85arH3b6k=
+X-Received: by 2002:a17:906:241b:b0:a22:e690:f09f with SMTP id
+ z27-20020a170906241b00b00a22e690f09fmr280341eja.143.1704949754221; Wed, 10
+ Jan 2024 21:09:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111014056.GL722975@frogsfrogsfrogs>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk>
+ <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com> <de221edb-6d12-4bef-97a7-4ab4c2381bfc@nvidia.com>
+In-Reply-To: <de221edb-6d12-4bef-97a7-4ab4c2381bfc@nvidia.com>
+From: Dave Airlie <airlied@gmail.com>
+Date: Thu, 11 Jan 2024 15:09:02 +1000
+Message-ID: <CAPM=9tzNEbJxVtusYLQqvzo14-CW_Nbo65L7Jfb4dF_JM1PBTQ@mail.gmail.com>
+Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+To: John Hubbard <jhubbard@nvidia.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org, 
+	pinskia@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 10, 2024 at 05:40:56PM -0800, Darrick J. Wong wrote:
-> struct statx statx;
-> struct fsxattr fsxattr;
-> int fd = open('/foofile', O_RDWR | O_DIRECT);
-> 
-> ioctl(fd, FS_IOC_GETXATTR, &fsxattr);
-> 
-> fsxattr.fsx_xflags |= FS_XFLAG_FORCEALIGN | FS_XFLAG_WRITE_ATOMIC;
-> fsxattr.fsx_extsize = 16384; /* only for hardware no-tears writes */
-> 
-> ioctl(fd, FS_IOC_SETXATTR, &fsxattr);
-> 
-> statx(fd, "", AT_EMPTY_PATH, STATX_ALL | STATX_WRITE_ATOMIC, &statx);
-> 
-> if (statx.stx_atomic_write_unit_max >= 16384) {
-> 	pwrite(fd, &iov, 1, 0, RWF_SYNC | RWF_ATOMIC);
-> 	printf("HAPPY DANCE\n");
-> }
+> There was an effort to address this, and I remember we even tried to use
+> it: Embedded C++ [2]. This is very simplistic and completely out of date
+> compared to what is being considered here, but it does show that many
+> others have had the same reaction: the language is so large that it
+> wants to be constrained. We actually wrote to Bjarne Stroustrup around
+> that time and asked about both embedded C++ and coding standards, and
+> his reaction was, "don't limit the language, just use education instead".
+>
+> However, in my experience since then, that fails, and you need at least
+> coding standards. Because people will use *everything* they have available,
+> unless they can't. :)
 
-I think this still needs a check if the fs needs alignment for
-atomic writes at all. i.e.
+You don't just need coding standards, you need a compiler that refuses
+to compile that stuff.
 
-struct statx statx;
-struct fsxattr fsxattr;
-int fd = open('/foofile', O_RDWR | O_DIRECT);
+If you want C++ to do what Rust could do, then you need the compiler
+to stop the stupid before you can even write it, otherwise people will
+still write the bad stuff and code review won't catch it all.
 
-ioctl(fd, FS_IOC_GETXATTR, &fsxattr);
-statx(fd, "", AT_EMPTY_PATH, STATX_ALL | STATX_WRITE_ATOMIC, &statx);
-if (statx.stx_atomic_write_unit_max < 16384) {
-	bailout();
-}
+Can we get memory safety with C++ now? and also stop people coding C++
+like it's 1994?
 
-fsxattr.fsx_xflags |= FS_XFLAG_WRITE_ATOMIC;
-if (statx.stx_atomic_write_alignment) {
-	fsxattr.fsx_xflags |= FS_XFLAG_FORCEALIGN;
-	fsxattr.fsx_extsize = 16384; /* only for hardware no-tears writes */
-}
-if (ioctl(fd, FS_IOC_SETXATTR, &fsxattr) < 1) {
-	bailout();
-}
+Kernel C has kinda become a thing without enforcing it, but C wasn't
+really stopping anything bad, so having C that isn't quite kernel C
+get into corners isn't that bad, but introducing C++ without any
+history of kernel C++ is just asking for everyone to do their own
+special things and defend their usage of every corner of the language
+because they wanted to learn it.
 
-pwrite(fd, &iov, 1, 0, RWF_SYNC | RWF_ATOMIC);
-printf("HAPPY DANCE\n");
+Dave.
 
