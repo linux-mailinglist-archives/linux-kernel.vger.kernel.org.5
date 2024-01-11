@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-22948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A3382A5C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:03:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE2882A5C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B9591C228AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:03:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AED3EB272CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:03:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD15D2FA;
-	Thu, 11 Jan 2024 02:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C14DDF5D;
+	Thu, 11 Jan 2024 02:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yfjUfKDo"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1EX4g/8o"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B90944C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F084CD294
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-28bf83bcae2so5110666a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:01:04 -0800 (PST)
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6da83a2cf03so3302340b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:01:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704938463; x=1705543263; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704938465; x=1705543265; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=S8K/qn0TNKAsHDt1ajFUKBR5bZ6xARBJmrA6iyLHTPU=;
-        b=yfjUfKDoElqVE3+fRe6KWLVGB3Ngr7yy7xljEHS1HPNOEWZN9mOEEstx0jqMwCXvnA
-         DE8TDHc5uZkiT8/jH39O+ltF8ZhlaQm5aRe/i30g8YVDgOfE5qPnqTZ37jvwSaUAV5c0
-         PyMNUE/8jKq5/bonxkYsnewkyMpP8HfmrSbjW4y2dClUFQgpcwP85A0dCjBJDUi4dnnl
-         JpOb1Z28eKj60zZju4xgG2Oh450Bv4ophVHtZ24ApVyeFBR5nGf5wIpWIqb6ZG1GR/Ik
-         eABmdHa/KVNu4FomG2yCV/Zn0Q1iljcug2tS17HiL+xpgbYRPaHdRN5u7G1FKtP2w6Ts
-         DYDA==
+        bh=1yded+bpmAK7QB4V7SI1S7JIiv7Mm++nYuN9zOqBzwE=;
+        b=1EX4g/8oJpSk4+xYbfSN1ML93P8YbI0VWrU8dwBgDvYtTwx/zRG+iL2zvn2PhUNPCC
+         N8ER6kn4Xx/MnkeW2J+IbI1dU0iSeyQsBylKf++jj/y4xgnMo5hvCDfYg10TsUfOXewm
+         rHQabi7SVhyhG/oicwowxqBjmPSI2tj55dybM2Pj89WchlptNluwgCtd7/pZlVHeEPIP
+         z/Kr3QrsW5Mw7OVWblROPr2ZLCX6UszT5Klk4zKIgrU/eVG7zJbHtaLXxo34h/vuJckE
+         QghmpWmE+vUhWZtzJ+2uqg/4lGoehj/GYYDT08qGMd/TV4HEhw1ytuk7l+Ljttk/Wic8
+         1iuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704938463; x=1705543263;
+        d=1e100.net; s=20230601; t=1704938465; x=1705543265;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=S8K/qn0TNKAsHDt1ajFUKBR5bZ6xARBJmrA6iyLHTPU=;
-        b=IoGRkuh9LtceJnCI2k0V2Z3GUzE4skExOziNB010pchjezTPas1KVNJDpJ8CGS3cKb
-         QsPlqBiwllyIo2i8BHufN3Xo7KtUSwDRykMU30fEw7+S3wDOmjrxXSXnsMdl2w7I3/Jo
-         NUB2dCmb+CwO+0o+d5r6+k0sU+GNxMIFvayfVhlk0EmWXofJcQigsBi4TizZN1aEebBa
-         +pINdba7CT7uF+0q5D058rRaaqGt7aMXzsLRw84OwvQ7Xuu0rkDHNlCIfahDrndykxwY
-         ZrYOIInJyX2ICdmjUCvx711IZcaB8dAFPp/UeBrM3TR8NbrxLqDnGG7lN2GY+AK5NaFh
-         jlcg==
-X-Gm-Message-State: AOJu0YwiXWh9G3+Kanb2WnBP6VTfAzJXzUHZSAtbNCOrG/RAnXbXxfLW
-	F3VR1HdB+j4A5clclLrJVOU+GooknISmI+yWbQ==
-X-Google-Smtp-Source: AGHT+IHSD9fjbqJvlkpqaABL6emPcHj6dKK9SdhpI0/FNTBle8c/824ljZA4HSmlBkdYHtVhi4s3w3qBcGk=
+        bh=1yded+bpmAK7QB4V7SI1S7JIiv7Mm++nYuN9zOqBzwE=;
+        b=EOY9zxLhUheZjZWvo+4qjkPRDr+KQWw4SHTrTAsmzCxea2eG3LWfW8WpQ1H2ed35oi
+         oVjy3C6uge9ZNEC0YA98mEpE3RZ23ZE7L6C2/Ni+m+EAdEAEsAxMN+aCyHiDW0SPezZ/
+         CCDj2hdsz7/UKKkm2SP7SmC+aoF41DUF6fyJI9NaAid3xLreDQFfhHlXFBP0fqmN9tZ3
+         9YmX2l73cZ1bYGQst9WkEvuq3q0AbJ/D6PPk74P8dlSu2sPvKRKMogF64OW77P0YUa9p
+         00byqaG9Ix1h+TeaxOGS0p4v+8foND9t9lgMB2/Da/dcpvPW2O32jKwbD+0hb8MOjmTg
+         gzvg==
+X-Gm-Message-State: AOJu0YznooCVTMgEosh+BZqwb1RlroXbHdvKFRn3b++4pvzfGSZs4Fmg
+	rRj/Fks4pTwmTezjOK/rJw/qDvkBO59FrBnIcA==
+X-Google-Smtp-Source: AGHT+IFvq58twADSMJm+6d/S+IGe2SEDfp86/oaj1BjXVD6hOjWWQD6324p/9p6gR2+0tHp36tMWsUDDvVw=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:2e8d:b0:28d:34d0:125b with SMTP id
- sn13-20020a17090b2e8d00b0028d34d0125bmr10583pjb.7.1704938463699; Wed, 10 Jan
- 2024 18:01:03 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:3905:b0:6d9:a971:9685 with SMTP id
+ fh5-20020a056a00390500b006d9a9719685mr64912pfb.6.1704938465257; Wed, 10 Jan
+ 2024 18:01:05 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Wed, 10 Jan 2024 18:00:46 -0800
+Date: Wed, 10 Jan 2024 18:00:47 -0800
 In-Reply-To: <20240111020048.844847-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,163 +64,129 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240111020048.844847-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
-Message-ID: <20240111020048.844847-7-seanjc@google.com>
-Subject: [PATCH 6/8] KVM: x86/mmu: Check for usable TDP MMU root while holding
- mmu_lock for read
+Message-ID: <20240111020048.844847-8-seanjc@google.com>
+Subject: [PATCH 7/8] KVM: x86/mmu: Alloc TDP MMU roots while holding mmu_lock
+ for read
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	David Matlack <dmatlack@google.com>, Pattara Teerapong <pteerapong@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-When allocating a new TDP MMU root, check for a usable root while holding
-mmu_lock for read and only acquire mmu_lock for write if a new root needs
-to be created.  There is no need to serialize other MMU operations if a
-vCPU is simply grabbing a reference to an existing root, holding mmu_lock
-for write is "necessary" (spoiler alert, it's not strictly necessary) only
-to ensure KVM doesn't end up with duplicate roots.
+Allocate TDP MMU roots while holding mmu_lock for read, and instead use
+tdp_mmu_pages_lock to guard against duplicate roots.  This allows KVM to
+create new roots without forcing kvm_tdp_mmu_zap_invalidated_roots() to
+yield, e.g. allows vCPUs to load new roots after memslot deletion without
+forcing the zap thread to detect contention and yield (or complete if the
+kernel isn't preemptible).
 
-Allowing vCPUs to get "new" roots in parallel is beneficial to VM boot and
-to setups that frequently delete memslots, i.e. which force all vCPUs to
-reload all roots.
+Note, creating a new TDP MMU root as an mmu_lock reader is safe for two
+reasons: (1) paths that must guarantee all roots/SPTEs are *visited* take
+mmu_lock for write and so are still mutually exclusive, e.g. mmu_notifier
+invalidations, and (2) paths that require all roots/SPTEs to *observe*
+some given state without holding mmu_lock for write must ensure freshness
+through some other means, e.g. toggling dirty logging must first wait for
+SRCU readers to recognize the memslot flags change before processing
+existing roots/SPTEs.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c     |  8 ++---
- arch/x86/kvm/mmu/tdp_mmu.c | 60 +++++++++++++++++++++++++++++++-------
- arch/x86/kvm/mmu/tdp_mmu.h |  2 +-
- 3 files changed, 55 insertions(+), 15 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 55 +++++++++++++++-----------------------
+ 1 file changed, 22 insertions(+), 33 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 3c844e428684..ea18aca23196 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3693,15 +3693,15 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
- 	unsigned i;
- 	int r;
- 
-+	if (tdp_mmu_enabled)
-+		return kvm_tdp_mmu_alloc_root(vcpu);
-+
- 	write_lock(&vcpu->kvm->mmu_lock);
- 	r = make_mmu_pages_available(vcpu);
- 	if (r < 0)
- 		goto out_unlock;
- 
--	if (tdp_mmu_enabled) {
--		root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
--		mmu->root.hpa = root;
--	} else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
-+	if (shadow_root_level >= PT64_ROOT_4LEVEL) {
- 		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level);
- 		mmu->root.hpa = root;
- 	} else if (shadow_root_level == PT32E_ROOT_LEVEL) {
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index e0a8343f66dc..9a8250a14fc1 100644
+index 9a8250a14fc1..d078157e62aa 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -223,21 +223,52 @@ static void tdp_mmu_init_child_sp(struct kvm_mmu_page *child_sp,
+@@ -223,51 +223,42 @@ static void tdp_mmu_init_child_sp(struct kvm_mmu_page *child_sp,
  	tdp_mmu_init_sp(child_sp, iter->sptep, iter->gfn, role);
  }
  
--hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
-+static struct kvm_mmu_page *kvm_tdp_mmu_try_get_root(struct kvm_vcpu *vcpu)
+-static struct kvm_mmu_page *kvm_tdp_mmu_try_get_root(struct kvm_vcpu *vcpu)
+-{
+-	union kvm_mmu_page_role role = vcpu->arch.mmu->root_role;
+-	int as_id = kvm_mmu_role_as_id(role);
+-	struct kvm *kvm = vcpu->kvm;
+-	struct kvm_mmu_page *root;
+-
+-	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
+-		if (root->role.word == role.word)
+-			return root;
+-	}
+-
+-	return NULL;
+-}
+-
+ int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
  {
- 	union kvm_mmu_page_role role = vcpu->arch.mmu->root_role;
+ 	struct kvm_mmu *mmu = vcpu->arch.mmu;
+ 	union kvm_mmu_page_role role = mmu->root_role;
 +	int as_id = kvm_mmu_role_as_id(role);
  	struct kvm *kvm = vcpu->kvm;
  	struct kvm_mmu_page *root;
  
--	lockdep_assert_held_write(&kvm->mmu_lock);
--
--	/* Check for an existing root before allocating a new one. */
--	for_each_valid_tdp_mmu_root(kvm, root, kvm_mmu_role_as_id(role)) {
--		if (root->role.word == role.word &&
--		    kvm_tdp_mmu_get_root(root))
--			goto out;
+ 	/*
+-	 * Check for an existing root while holding mmu_lock for read to avoid
++	 * Check for an existing root before acquiring the pages lock to avoid
+ 	 * unnecessary serialization if multiple vCPUs are loading a new root.
+ 	 * E.g. when bringing up secondary vCPUs, KVM will already have created
+ 	 * a valid root on behalf of the primary vCPU.
+ 	 */
+ 	read_lock(&kvm->mmu_lock);
+-	root = kvm_tdp_mmu_try_get_root(vcpu);
+-	read_unlock(&kvm->mmu_lock);
+ 
+-	if (root)
+-		goto out;
 +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
 +		if (root->role.word == role.word)
-+			return root;
- 	}
++			goto out_read_unlock;
++	}
  
-+	return NULL;
-+}
-+
-+int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_mmu *mmu = vcpu->arch.mmu;
-+	union kvm_mmu_page_role role = mmu->root_role;
-+	struct kvm *kvm = vcpu->kvm;
-+	struct kvm_mmu_page *root;
-+
-+	/*
-+	 * Check for an existing root while holding mmu_lock for read to avoid
-+	 * unnecessary serialization if multiple vCPUs are loading a new root.
-+	 * E.g. when bringing up secondary vCPUs, KVM will already have created
-+	 * a valid root on behalf of the primary vCPU.
-+	 */
-+	read_lock(&kvm->mmu_lock);
-+	root = kvm_tdp_mmu_try_get_root(vcpu);
-+	read_unlock(&kvm->mmu_lock);
-+
-+	if (root)
-+		goto out;
-+
-+	write_lock(&kvm->mmu_lock);
-+
-+	/*
-+	 * Recheck for an existing root after acquiring mmu_lock for write.  It
-+	 * is possible a new usable root was created between dropping mmu_lock
-+	 * (for read) and acquiring it for write.
-+	 */
-+	root = kvm_tdp_mmu_try_get_root(vcpu);
-+	if (root)
-+		goto out_unlock;
-+
+-	write_lock(&kvm->mmu_lock);
++	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+ 
+ 	/*
+-	 * Recheck for an existing root after acquiring mmu_lock for write.  It
+-	 * is possible a new usable root was created between dropping mmu_lock
+-	 * (for read) and acquiring it for write.
++	 * Recheck for an existing root after acquiring the pages lock, another
++	 * vCPU may have raced ahead and created a new usable root.  Manually
++	 * walk the list of roots as the standard macros assume that the pages
++	 * lock is *not* held.  WARN if grabbing a reference to a usable root
++	 * fails, as the last reference to a root can only be put *after* the
++	 * root has been invalidated, which requires holding mmu_lock for write.
+ 	 */
+-	root = kvm_tdp_mmu_try_get_root(vcpu);
+-	if (root)
+-		goto out_unlock;
++	list_for_each_entry(root, &kvm->arch.tdp_mmu_roots, link) {
++		if (root->role.word == role.word &&
++		    !WARN_ON_ONCE(!kvm_tdp_mmu_get_root(root)))
++			goto out_spin_unlock;
++	}
+ 
  	root = tdp_mmu_alloc_sp(vcpu);
  	tdp_mmu_init_sp(root, NULL, 0, role);
- 
-@@ -254,8 +285,17 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+@@ -280,14 +271,12 @@ int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
+ 	 * is ultimately put by kvm_tdp_mmu_zap_invalidated_roots().
+ 	 */
+ 	refcount_set(&root->tdp_mmu_root_count, 2);
+-
+-	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
  	list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
- 	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+-	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
  
-+out_unlock:
-+	write_unlock(&kvm->mmu_lock);
- out:
--	return __pa(root->spt);
-+	/*
-+	 * Note, KVM_REQ_MMU_FREE_OBSOLETE_ROOTS will prevent entering the guest
-+	 * and actually consuming the root if it's invalidated after dropping
-+	 * mmu_lock, and the root can't be freed as this vCPU holds a reference.
-+	 */
-+	mmu->root.hpa = __pa(root->spt);
-+	mmu->root.pgd = 0;
-+	return 0;
- }
- 
- static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-@@ -917,7 +957,7 @@ void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
-  * the VM is being destroyed).
-  *
-  * Note, kvm_tdp_mmu_zap_invalidated_roots() is gifted the TDP MMU's reference.
-- * See kvm_tdp_mmu_get_vcpu_root_hpa().
-+ * See kvm_tdp_mmu_alloc_root().
-  */
- void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm)
- {
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 20d97aa46c49..6e1ea04ca885 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -10,7 +10,7 @@
- void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
- 
--hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
-+int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu);
- 
- __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm_mmu_page *root)
- {
+-out_unlock:
+-	write_unlock(&kvm->mmu_lock);
+-out:
++out_spin_unlock:
++	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
++out_read_unlock:
++	read_unlock(&kvm->mmu_lock);
+ 	/*
+ 	 * Note, KVM_REQ_MMU_FREE_OBSOLETE_ROOTS will prevent entering the guest
+ 	 * and actually consuming the root if it's invalidated after dropping
 -- 
 2.43.0.275.g3460e3d667-goog
 
