@@ -1,171 +1,210 @@
-Return-Path: <linux-kernel+bounces-23250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B83682A9C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:54:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E09B82A959
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:48:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 478D11C222A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:54:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1CDAB21064
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90603FC01;
-	Thu, 11 Jan 2024 08:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2152FBE9;
+	Thu, 11 Jan 2024 08:48:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="Ww8auN30"
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MyiOfUru"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20132D52E
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a2c375d2430so70334566b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:54:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1704963282; x=1705568082; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8fdzAkRigLOJSs0p8z2FKeIqZxw3OTVE9TPYi8cJXf8=;
-        b=Ww8auN30yMp8d0qUl6xxGNzHMHoKPxbrXBAHPgfcT16BZLssWZDTRx7lwa/iKPPl5g
-         DCTP2v6fX+NXur10Fq5rI1dfDIZnPAZx41G2qVEGYDPiNNr9cm1SwS9WcKJJuyHDDFqK
-         evSMVb+kPtr7Ozx4TyGQ1WwRCSkuGcH7EGF8ySUk/knhZG2guDzwh3/F8FpvxcvEkMBo
-         rprJPtUC97NtgcGjkPLgYEl0fGzTT4IqUVprVdvRBXYd5HRinESKJFq3j/zkxKV0izZg
-         76Rh0TKqScuqA5tS5qI18mygdkDt03QecfyLo+2J3P7/GHBWidMdkhlOeko4dyVAEND0
-         A6OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704963282; x=1705568082;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8fdzAkRigLOJSs0p8z2FKeIqZxw3OTVE9TPYi8cJXf8=;
-        b=QpplTHeKnxYmriwp1XZO2cOa95DcTBZNYxqTq/GYEwW1PmZkhhhCyB1/0+hv8V4lbw
-         lJMRLnNFwiuivFpRQvxGp5yFm3F8veP2iDtRxsEsmtuQzWRL/YMskwwD5FJ5de+PSyA+
-         rQtfDd10/RBQoKPBMA5Mtk0fUJYnS2NR9q1g8bsXXwC+/w/uaiDLrsei0+LIysPs34fO
-         uaOkOdlZCaQuTNtXUcM53WqtvAsuLyTKAXXhSqWmWhPJe8LbYPY/hj0IkZHUUNvmupXi
-         s85skobswefqkreOzP7Z4SqOLYC5ehFOWU0At+fvLHIOnEHogx1l/lCp+FdqC+Ott0fW
-         EJ0g==
-X-Gm-Message-State: AOJu0YzfOK6wY/pA4lXJV9DCbddUcGGpMh3dIg+/sQwQ7CcMMC7QjsSU
-	9QXr9Lzg0o+H7n4sE/W18sI2Fsy9bylqUX9qFdcT+EA3IqpnZeCH
-X-Google-Smtp-Source: AGHT+IFq5ynQNEJVSXgc5jOV5wTNN9Vjm/J5WWKvAdAgAN+RMQzy+62aeC55Dtrg2J/oQzlpesDVgA==
-X-Received: by 2002:a17:906:17c4:b0:a28:d427:3959 with SMTP id u4-20020a17090617c400b00a28d4273959mr397730eje.62.1704962870935;
-        Thu, 11 Jan 2024 00:47:50 -0800 (PST)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id rv4-20020a17090710c400b00a26e490e3f2sm305391ejb.181.2024.01.11.00.47.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 00:47:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA55F9DF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704962916;
+	bh=gflHEkCtZCmwgfIS8rr2o7AExOCHAZTyAKAlUQhbSiA=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=MyiOfUrumz7b5nTsabxHteMpzN7xlDrp6SKJZfTgbB1diocrBU8bbPm/U0n9X/BMs
+	 iBFEJairFm1vyV/EJ2ZvCqkZPquIhRtiSehYH3WPA9B90oKLBtio/woDetCIBwptoY
+	 hOkMwg1BpfMj8g4zLn1rS7sV/6Xzjr75TSqh8QG1WjRQnOZSshtDccDFSDTEXCcoP7
+	 OCWc9fagZho7Kyz0OMHztf0mOCe4jUgER82vo8cCbErepO+UC2ErYZ5VBD+FN8n+FR
+	 k0vlz19II9y6LpO+bL9YBt1lWrsZvJy3t5Rf74LWuApG+gDUBAJJV1b9PSaFxb2wcv
+	 fCy1KPRXZo2DQ==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1B534378140A;
+	Thu, 11 Jan 2024 08:48:31 +0000 (UTC)
+Message-ID: <dd96e476-e1ad-4cb5-b5d1-556f720acd17@collabora.com>
+Date: Thu, 11 Jan 2024 13:48:38 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, linmiaohe@huawei.com,
+ mike.kravetz@oracle.com, naoya.horiguchi@nec.com, akpm@linux-foundation.org,
+ songmuchun@bytedance.com, shy828301@gmail.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, jthoughton@google.com,
+ "kernel@collabora.com" <kernel@collabora.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: Re: [PATCH v4 4/4] selftests/mm: add tests for HWPOISON hugetlbfs
+ read
+Content-Language: en-US
+To: Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+ Jiaqi Yan <jiaqiyan@google.com>
+References: <20230713001833.3778937-1-jiaqiyan@google.com>
+ <20230713001833.3778937-5-jiaqiyan@google.com>
+ <be3976b5-0a9c-41c6-8160-88e6c1e5d63e@collabora.com>
+ <CACw3F51WvZDVCpVg9j4j8WmnmAFOsnK+FZDDoVqhgLqVwhPTCA@mail.gmail.com>
+ <e68488e4-764e-4b25-8a47-05bf8976bd19@collabora.com>
+ <079335ab-190f-41f7-b832-6ffe7528fd8b@collabora.com>
+ <a20e7bdb-7344-306d-e8f5-5ee69af7d5ea@oracle.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <a20e7bdb-7344-306d-e8f5-5ee69af7d5ea@oracle.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 11 Jan 2024 09:47:49 +0100
-Message-Id: <CYBQW9KRHVJS.3UOHTOMRWDWVK@fairphone.com>
-Cc: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND v3] arm64: dts: qcom: qcs6490-idp: Add definition
- for three LEDs.
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: <quic_huliu@quicinc.com>, "Andy Gross" <agross@kernel.org>, "Bjorn
- Andersson" <andersson@kernel.org>, "Konrad Dybcio"
- <konrad.dybcio@linaro.org>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240111-lpg-v3-1-811c9e82dae4@quicinc.com>
-In-Reply-To: <20240111-lpg-v3-1-811c9e82dae4@quicinc.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu Jan 11, 2024 at 3:52 AM CET, Hui Liu via B4 Relay wrote:
-> From: Hui Liu <quic_huliu@quicinc.com>
->
-> Add definition for three LEDs to make sure they can
-> be enabled base on QCOM LPG LED driver.
->
-> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
-> ---
-> Changes in v3:
-> - Rephrased commit text and updated the nodes to qcm6490-idp board file.
-> - Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fb=
-bc65a@quicinc.com/
->
-> Changes in v2:
-> - Rephrased commit text and updated the nodes to board file.
-> - Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572=
-cb0@quicinc.com
-> ---
->  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/d=
-ts/qcom/qcm6490-idp.dts
-> index 37c91fdf3ab9..f801144a1556 100644
-> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> @@ -5,6 +5,7 @@
-> =20
->  /dts-v1/;
-> =20
-> +#include <dt-bindings/leds/common.h>
->  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->  #include "sc7280.dtsi"
->  #include "pm7325.dtsi"
-> @@ -414,6 +415,30 @@ vreg_bob_3p296: bob {
->  	};
->  };
-> =20
-> +&pm8350c_pwm {
-> +	#address-cells =3D <1>;
-> +	#size-cells =3D <0>;
-> +	status =3D "okay";
-> +
-> +	led@1 {
-> +		reg =3D <1>;
+On 1/11/24 7:32 AM, Sidhartha Kumar wrote:
+> On 1/10/24 2:15 AM, Muhammad Usama Anjum wrote:
+>> On 1/10/24 11:49 AM, Muhammad Usama Anjum wrote:
+>>> On 1/6/24 2:13 AM, Jiaqi Yan wrote:
+>>>> On Thu, Jan 4, 2024 at 10:27 PM Muhammad Usama Anjum
+>>>> <usama.anjum@collabora.com> wrote:
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> I'm trying to convert this test to TAP as I think the failures
+>>>>> sometimes go
+>>>>> unnoticed on CI systems if we only depend on the return value of the
+>>>>> application. I've enabled the following configurations which aren't
+>>>>> already
+>>>>> present in tools/testing/selftests/mm/config:
+>>>>> CONFIG_MEMORY_FAILURE=y
+>>>>> CONFIG_HWPOISON_INJECT=m
+>>>>>
+>>>>> I'll send a patch to add these configs later. Right now I'm trying to
+>>>>> investigate the failure when we are trying to inject the poison page by
+>>>>> madvise(MADV_HWPOISON). I'm getting device busy every single time. The
+>>>>> test
+>>>>> fails as it doesn't expect any business for the hugetlb memory. I'm not
+>>>>> sure if the poison handling code has issues or test isn't robust enough.
+>>>>>
+>>>>> ./hugetlb-read-hwpoison
+>>>>> Write/read chunk size=0x800
+>>>>>   ... HugeTLB read regression test...
+>>>>>   ...  ... expect to read 0x200000 bytes of data in total
+>>>>>   ...  ... actually read 0x200000 bytes of data in total
+>>>>>   ... HugeTLB read regression test...TEST_PASSED
+>>>>>   ... HugeTLB read HWPOISON test...
+>>>>> [    9.280854] Injecting memory failure for pfn 0x102f01 at process
+>>>>> virtual
+>>>>> address 0x7f28ec101000
+>>>>> [    9.282029] Memory failure: 0x102f01: huge page still referenced by
+>>>>> 511
+>>>>> users
+>>>>> [    9.282987] Memory failure: 0x102f01: recovery action for huge
+>>>>> page: Failed
+>>>>>   ...  !!! MADV_HWPOISON failed: Device or resource busy
+>>>>>   ... HugeTLB read HWPOISON test...TEST_FAILED
+>>>>>
+>>>>> I'm testing on v6.7-rc8. Not sure if this was working previously or not.
+>>>>
+>>>> Thanks for reporting this, Usama!
+>>>>
+>>>> I am also able to repro MADV_HWPOISON failure at "501a06fe8e4c
+>>>> (akpm/mm-stable, mm-stable) zswap: memcontrol: implement zswap
+>>>> writeback disabling."
+>>>>
+>>>> Then I checked out the earliest commit "ba91e7e5d15a (HEAD -> Base)
+>>>> selftests/mm: add tests for HWPOISON hugetlbfs read". The
+>>>> MADV_HWPOISON injection works and and the test passes:
+>>>>
+>>>>   ... HugeTLB read HWPOISON test...
+>>>>   ...  ... expect to read 0x101000 bytes of data in total
+>>>>   ...  !!! read failed: Input/output error
+>>>>   ...  ... actually read 0x101000 bytes of data in total
+>>>>   ... HugeTLB read HWPOISON test...TEST_PASSED
+>>>>   ... HugeTLB seek then read HWPOISON test...
+>>>>   ...  ... init val=4 with offset=0x102000
+>>>>   ...  ... expect to read 0xfe000 bytes of data in total
+>>>>   ...  ... actually read 0xfe000 bytes of data in total
+>>>>   ... HugeTLB seek then read HWPOISON test...TEST_PASSED
+>>>>   ...
+>>>>
+>>>> [ 2109.209225] Injecting memory failure for pfn 0x3190d01 at process
+>>>> virtual address 0x7f75e3101000
+>>>> [ 2109.209438] Memory failure: 0x3190d01: recovery action for huge
+>>>> page: Recovered
+>>>> ...
+>>>>
+>>>> I think something in between broken MADV_HWPOISON on hugetlbfs, and we
+>>>> should be able to figure it out via bisection (and of course by
+>>>> reading delta commits between them, probably related to page
+>>>> refcount).
+>>> Thank you for this information.
+>>>
+>>>>
+>>>> That being said, I will be on vacation from tomorrow until the end of
+>>>> next week. So I will get back to this after next weekend. Meanwhile if
+>>>> you want to go ahead and bisect the problematic commit, that will be
+>>>> very much appreciated.
+>>> I'll try to bisect and post here if I find something.
+>> Found the culprit commit by bisection:
+>>
+>> a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
+>> mm/filemap: remove hugetlb special casing in filemap.c
+>>
+>> hugetlb-read-hwpoison started failing from this patch. I've added the
+>> author of this patch to this bug report.
+>>
+> Hi Usama,
+> 
+> Thanks for pointing this out. After debugging, the below diff seems to fix
+> the issue and allows the tests to pass again. Could you test it on your
+> configuration as well just to confirm.
+> 
+> Thanks,
+> Sidhartha
+> 
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index 36132c9125f9..3a248e4f7e93 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -340,7 +340,7 @@ static ssize_t hugetlbfs_read_iter(struct kiocb *iocb,
+> struct iov_iter *to)
+>                 } else {
+>                         folio_unlock(folio);
+> 
+> -                       if (!folio_test_has_hwpoisoned(folio))
+> +                       if (!folio_test_hwpoison(folio))
+>                                 want = nr;
+>                         else {
+>                                 /*
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index d8c853b35dbb..87f6bf7d8bc1 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -973,7 +973,7 @@ struct page_state {
+>  static bool has_extra_refcount(struct page_state *ps, struct page *p,
+>                                bool extra_pins)
+>  {
+> -       int count = page_count(p) - 1;
+> +       int count = page_count(p) - folio_nr_pages(page_folio(p));
+> 
+>         if (extra_pins)
+>                 count -= 1;
+> 
+Tested the patch, it fixes the test. Please send this patch.
 
-Hi Hui Liu,
+Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-> +		color =3D <LED_COLOR_ID_RED>;
-> +		label =3D "red";
-
-Please remove the deprecated "label" property. Since you already have
-"color" set you only need to add "function". On phones for the
-notification LED we usually use "function =3D LED_FUNCTION_STATUS;"
-
-Also depends on what your hardware looks like, if it's 3 separate LEDs
-then with label replaced it would be okay.
-If the 3 LEDs are in one spot (so you can mix the colors with it), then
-please make it a RGB multi-led like e.g. in sm8550-qrd.dts.
-
-Regards
-Luca
-
-> +	};
-> +
-> +	led@2 {
-> +		reg =3D <2>;
-> +		color =3D <LED_COLOR_ID_GREEN>;
-> +		label =3D "green";
-> +	};
-> +
-> +	led@3 {
-> +		reg =3D <3>;
-> +		color =3D <LED_COLOR_ID_BLUE>;
-> +		label =3D "blue";
-> +	};
-> +};
-> +
->  &qupv3_id_0 {
->  	status =3D "okay";
->  };
->
-> ---
-> base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
-> change-id: 20231215-lpg-4aadd374811a
->
-> Best regards,
-
+-- 
+BR,
+Muhammad Usama Anjum
 
