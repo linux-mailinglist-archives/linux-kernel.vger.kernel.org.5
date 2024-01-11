@@ -1,52 +1,68 @@
-Return-Path: <linux-kernel+bounces-23430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADD3582ACA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:57:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0638282ACAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:57:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 631C91F226BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:57:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD76B281D0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C953914F9C;
-	Thu, 11 Jan 2024 10:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889BB14F76;
+	Thu, 11 Jan 2024 10:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tq7X+Qxj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fD5LF6ZK"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180C31773B;
-	Thu, 11 Jan 2024 10:54:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1867BC433C7;
-	Thu, 11 Jan 2024 10:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704970471;
-	bh=F45rGXqUG2uAkO0sp6Ly0dJuN2iXFQzvSxj7Y6KeR94=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tq7X+QxjA7bK4hgFg/yRiSGes3CiIQLvTBm4H5I9KTPtRbxND+zNAKYU0PLj7Ap1R
-	 CvRC6cKJRCwHqizTqFnswDwJVOcF/aAkT4AHOM9uGrTaUNqYiY7B5X5RfTmZKyyqFh
-	 i7iOvGxQDyaOHxClroicbwMDQ9bKSqjsaieL++1zqqvk6zHIHCP7t8WlIVbT7nU224
-	 usYwsP/+8yu7cqzB940YwaMlKyYIF1XsLSz3YbrCkVwJKH4tlMBSztbMW65Sh33bES
-	 fQ9UOyYqCeaHtc/zShPXFtojLHtL2oBy9drYTpgquaNAZPU2QhQk7F0WZFzn3zxrVa
-	 hacLHu73nSflg==
-Date: Thu, 11 Jan 2024 10:54:26 +0000
-From: Lee Jones <lee@kernel.org>
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
-Cc: Karel Balej <balejk@matfyz.cz>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/5] mfd: 88pm88x: differences with respect to the
- PMIC RFC series
-Message-ID: <20240111105426.GA1678981@google.com>
-References: <20231228100208.2932-1-karelb@gimli.ms.mff.cuni.cz>
- <20231228100208.2932-2-karelb@gimli.ms.mff.cuni.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7750614F61
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5587af6ae5cso1063388a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:56:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704970569; x=1705575369; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5dIC4YOxW3puzkGtWuEVT4Nr9zyyNjs/7yil9gqa73I=;
+        b=fD5LF6ZK6B8RcIvSM4+UYSh39O4WM9BuRoZLbv0pZnY9ExHluBIcVG+oW773yDID93
+         Ovf7jXkHiUG1hNfiKPtBYpp7j0iymnpaeE1cutmG9xvC70RRxtzomEc/c/bdIHgrmVAg
+         k6AAgLbGD9/pNm4WDzPIEMNQZIHaZ/nd0c/LF+hoVzFgz+HtWdugxUQB/4jso6Hubukz
+         7HT3WU0KWm/t+SomGMciOMl3zzmyro4tnot44ByQvrvQchSDz+3qPcS6gF3AqTvBsqP+
+         ePddid/XZjgdaSF0nc2ME3gVUH4mrKjEJW2K7K+kLClS5hqUvLjzZrnMwGA43+dfz2ll
+         F/Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704970569; x=1705575369;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5dIC4YOxW3puzkGtWuEVT4Nr9zyyNjs/7yil9gqa73I=;
+        b=dwvw5HdifL51gY0XnDWgVAE1mvTr+r5ZDEma3OHvy/z1xXeUsCFrrsCmcbBwHB6vsL
+         tW/AnKvJiXm4r0D1XmSDgUoFJR3JfZxKEyHIu/DUp6kkAWtKFKximJozwZsPcCZ6/m65
+         AH7klsiE7ytZ7EMzab4qvKwKPK3g2f3luW+JIZbZm93/k9dfwjaxtfakS7Rjvf1DcwuX
+         amGO5YeK5bieGtQeCxV3FrPCkLNBPj14T8Z9DV2DR4TyNO0Fhi/Lt6hNBzX8IFa4vSUm
+         v/++2GdDmI6RUL1+LvBXHi4ZJpR2xhf29KSetYX3JH1NPz1wuIvm07v7ZyA4qRR3QXOp
+         S7Sw==
+X-Gm-Message-State: AOJu0YzsEkUUk/pzRROzlHOai9IwK4F+uTRjFsoijoaHI9iPW+tCBlQr
+	afM1nXcW32uEDcOHmXi/ZA==
+X-Google-Smtp-Source: AGHT+IHhjypzrVpQep6wtyCwienL5/h97jwvW/jQhvrPFNpCOVhmACE7pfPVxe/6GtqDExiOOjU43g==
+X-Received: by 2002:aa7:d488:0:b0:558:ad7b:f049 with SMTP id b8-20020aa7d488000000b00558ad7bf049mr130760edr.51.1704970569528;
+        Thu, 11 Jan 2024 02:56:09 -0800 (PST)
+Received: from p183 ([46.53.248.125])
+        by smtp.gmail.com with ESMTPSA id j14-20020a50ed0e000000b005550192159bsm468577eds.62.2024.01.11.02.56.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 02:56:09 -0800 (PST)
+Date: Thu, 11 Jan 2024 13:56:07 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Neal Gompa <neal@gompa.dev>,
+	jirislaby@kernel.org, dhowells@redhat.com,
+	linux-kernel@vger.kernel.org, pinskia@gmail.com,
+	kent.overstreet@linux.dev
+Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+Message-ID: <fa64c852-01c4-4e4c-8b89-14db5e0088d0@p183>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,87 +71,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231228100208.2932-2-karelb@gimli.ms.mff.cuni.cz>
 
-The subject needs work.  Please tell us what the patches is doing.
+> SFINAE giving inscrutable errors is why I'm saying C++20,
+> since "concept" means you can get usable error messages.
 
-On Thu, 28 Dec 2023, Karel Balej wrote:
+I'd say concepts are irrelevant for the kernel where standard library is
+tightly controlled by the same people who write rest of the kernel and
+no external users.
 
-> From: Karel Balej <balejk@matfyz.cz>
-
-A full an complete commit message is a must.
-
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> ---
->  drivers/mfd/88pm88x.c       | 14 ++++++++------
->  include/linux/mfd/88pm88x.h |  2 ++
->  2 files changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mfd/88pm88x.c b/drivers/mfd/88pm88x.c
-> index 5db6c65b667d..3424d88a58f6 100644
-> --- a/drivers/mfd/88pm88x.c
-> +++ b/drivers/mfd/88pm88x.c
-> @@ -57,16 +57,16 @@ static struct reg_sequence pm886_presets[] = {
->  	REG_SEQ0(PM88X_REG_BK_OSC_CTRL3, 0xc0),
->  };
->  
-> -static struct resource onkey_resources[] = {
-> +static struct resource pm88x_onkey_resources[] = {
->  	DEFINE_RES_IRQ_NAMED(PM88X_IRQ_ONKEY, "88pm88x-onkey"),
->  };
->  
-> -static struct mfd_cell pm88x_devs[] = {
-> +static struct mfd_cell pm886_devs[] = {
->  	{
->  		.name = "88pm88x-onkey",
-> -		.num_resources = ARRAY_SIZE(onkey_resources),
-> -		.resources = onkey_resources,
-> -		.id = -1,
-> +		.of_compatible = "marvell,88pm88x-onkey",
-> +		.num_resources = ARRAY_SIZE(pm88x_onkey_resources),
-> +		.resources = pm88x_onkey_resources,
->  	},
->  };
->  
-> @@ -74,6 +74,8 @@ static struct pm88x_data pm886_a1_data = {
->  	.whoami = PM886_A1_WHOAMI,
->  	.presets = pm886_presets,
->  	.num_presets = ARRAY_SIZE(pm886_presets),
-> +	.devs = pm886_devs,
-> +	.num_devs = ARRAY_SIZE(pm886_devs),
->  };
->  
->  static const struct regmap_config pm88x_i2c_regmap = {
-> @@ -157,7 +159,7 @@ static int pm88x_probe(struct i2c_client *client)
->  	if (ret)
->  		return ret;
->  
-> -	ret = devm_mfd_add_devices(&client->dev, 0, pm88x_devs, ARRAY_SIZE(pm88x_devs),
-> +	ret = devm_mfd_add_devices(&client->dev, 0, chip->data->devs, chip->data->num_devs,
->  			NULL, 0, regmap_irq_get_domain(chip->irq_data));
->  	if (ret) {
->  		dev_err(&client->dev, "Failed to add devices: %d\n", ret);
-> diff --git a/include/linux/mfd/88pm88x.h b/include/linux/mfd/88pm88x.h
-> index a34c57447827..9a335f6b9c07 100644
-> --- a/include/linux/mfd/88pm88x.h
-> +++ b/include/linux/mfd/88pm88x.h
-> @@ -49,6 +49,8 @@ struct pm88x_data {
->  	unsigned int whoami;
->  	struct reg_sequence *presets;
->  	unsigned int num_presets;
-> +	struct mfd_cell *devs;
-> +	unsigned int num_devs;
-
-Why are you adding extra abstraction?
-
->  };
->  
->  struct pm88x_chip {
-> -- 
-> 2.43.0
-> 
-
--- 
-Lee Jones [李琼斯]
+static_assert() is all you need.
 
