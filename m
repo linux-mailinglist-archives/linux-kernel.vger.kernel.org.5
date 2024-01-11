@@ -1,238 +1,147 @@
-Return-Path: <linux-kernel+bounces-23172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4E9F82A898
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:59:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BE5082A89B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6545028839F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:59:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77322B25B61
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0151DDB6;
-	Thu, 11 Jan 2024 07:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E37D2EE;
+	Thu, 11 Jan 2024 07:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="m2qMZ9WY"
-Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACECFDDA6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=CtQllylb5rBy8xA4pm
-	EMdjJuK4Xkx/RYOeVF0Un8bi0=; b=m2qMZ9WYQ8y6fIYNLa6VLyMFQzYCv7a1JA
-	M5R28m+zOSwNChTRuDX4zFhOxLguxNytXtYDsquX5j2tDfCznoRYucaNjbiqudDj
-	cR1zPgGMCxUGUz2lybSoBWfeEWrFBAKEkIEPIcCqxohEIOPWNCMwlGJnyyL8LCT3
-	0GuXKLiIs=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-1 (Coremail) with SMTP id _____wDH9wPAn59lXj0QAA--.3875S2;
-	Thu, 11 Jan 2024 15:58:56 +0800 (CST)
-From: GuoHua Chen <chenguohua_716@163.com>
-To: daniel@ffwll.ch,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	christian.koenig@amd.com,
-	alexander.deucher@amd.com
-Cc: linux-kernel@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	GuoHua Chen <chenguohua_716@163.com>
-Subject: [PATCH] drm/radeon: Clean up errors in smu7_discrete.h
-Date: Thu, 11 Jan 2024 07:58:54 +0000
-Message-Id: <20240111075854.11116-1-chenguohua_716@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wDH9wPAn59lXj0QAA--.3875S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKw4fur17XrWfKr17Zr13urg_yoW7CryUpF
-	WUKw4IgFZ5Ar13W345AwsYvr4agry5tr1UGr9ruw4Fqw42yrW2kF12ka1UCrWaqws3C393
-	JFsxtF12grWxAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UwFxUUUUUU=
-X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/xtbBEBRi1mVOBk7vVQABso
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ShKIhbJ2"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106B1DF4F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3373a30af67so4514289f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 23:59:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704959993; x=1705564793; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xndt1zrIB/llbpzJBquNAjCEK/PQsh4Vrye/RXmedmM=;
+        b=ShKIhbJ2uBLVp/P1YVhjWXR7hrH1vp+1uGZ0R5zvkrboW8THhJUDFPSosn8q44eBfX
+         eVmEA+b2jQu1lK83LiXzTqLxGdrWSKW1XqCCNlzfYVTz3hdwbnuN8Tmuze4XRxG3/uNc
+         7Ak3ddvSRSazbhCUUDlc+hzkWhDZcvcXH6aMhgtAZIzLjTUJPj6dwsyovpS7Pwn8wVHW
+         /EVtHjErxa3eo90r6cWCp/kw0AxUyFI237DG75hYykSbFLLAfjkl4Y+1hko9KQnYgp1S
+         BJUH7Ymu8jB7BWawfRJEHNmh7oNXSjr9z6utcimMGWFsiloZ2oauhOwUpLMdLkWd6pO1
+         zRwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704959993; x=1705564793;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xndt1zrIB/llbpzJBquNAjCEK/PQsh4Vrye/RXmedmM=;
+        b=aQBjNCLd8IwD+Jd2E1pbHIQbgnl/MCojyS6Pg9ouyt8DiUgkF1W+pRaB4Kt6SeRU+k
+         NPxXU2U201URGFFpGzs+SRAtW8UfRIMJCH3xrhs8OS3xd28WQ2aIvFAVfe4+qPKnbSgJ
+         GTOptrGZHXyS6FL5bzUNXnekvJN3OuPlhlvIFsqdKjrVN6P3/sSrBlZ3jpDaMbG13AGU
+         6jc6F279TKzw82PYZl2DHZ8mSKCJhIoDlYsqATps4vz7zJlUNFXRfQPs6gHBI+598yXN
+         8PX6DagjFt0c55GlGCQzpTaQJbQsOZJmiRyAKt4LhORWUXjPyY40gFELdyQ3fTBX/swI
+         AeQQ==
+X-Gm-Message-State: AOJu0Yyq41R8GGZDomg+SDJRz9zMzqeBYWyAsvdeiiyZvp2N7pAKw8vb
+	246KfbsKzLyRfsVbZ/AkxzcA5V1Bj4UirA==
+X-Google-Smtp-Source: AGHT+IGC4aiBa5J92Arp2wInNsQJBFvNbyEqBauXS8enVzz4ZaAqAUR2Yj4jaFf2ygK7ai8bNRZymw==
+X-Received: by 2002:a5d:408f:0:b0:336:985:8598 with SMTP id o15-20020a5d408f000000b0033609858598mr163367wrp.202.1704959993278;
+        Wed, 10 Jan 2024 23:59:53 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id c28-20020adfa31c000000b0033775980d26sm514449wrb.2.2024.01.10.23.59.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 23:59:52 -0800 (PST)
+Message-ID: <960340e0-81b5-4060-ad76-432925c97fb2@linaro.org>
+Date: Thu, 11 Jan 2024 08:59:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] dt-bindings: clock: qcom,gcc-sm8150: Add gcc video
+ resets for sm8150
+Content-Language: en-US
+To: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Taniya Das <quic_tdas@quicinc.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Ajit Pandey <quic_ajipan@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>,
+ Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240111-sm8150-dfs-support-v2-0-6edb44c83d3b@quicinc.com>
+ <20240111-sm8150-dfs-support-v2-2-6edb44c83d3b@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240111-sm8150-dfs-support-v2-2-6edb44c83d3b@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fix the following errors reported by checkpatch:
+On 11/01/2024 07:32, Satya Priya Kakitapalli wrote:
+> Add gcc video axic, axi0 and axi1 resets for the global clock controller
+> on sm8150.
+> 
+> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+> ---
 
-ERROR: open brace '{' following struct go on the same line
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
----
- drivers/gpu/drm/radeon/smu7_discrete.h | 51 +++++++++-----------------
- 1 file changed, 17 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/smu7_discrete.h b/drivers/gpu/drm/radeon/smu7_discrete.h
-index 0b0b404ff091..1f63cbbd6515 100644
---- a/drivers/gpu/drm/radeon/smu7_discrete.h
-+++ b/drivers/gpu/drm/radeon/smu7_discrete.h
-@@ -35,8 +35,7 @@
- #define SMU7_NUM_GPU_TES 1
- #define SMU7_NUM_NON_TES 2
- 
--struct SMU7_SoftRegisters
--{
-+struct SMU7_SoftRegisters {
-     uint32_t        RefClockFrequency;
-     uint32_t        PmTimerP;
-     uint32_t        FeatureEnables;
-@@ -89,8 +88,7 @@ struct SMU7_SoftRegisters
- 
- typedef struct SMU7_SoftRegisters SMU7_SoftRegisters;
- 
--struct SMU7_Discrete_VoltageLevel
--{
-+struct SMU7_Discrete_VoltageLevel {
-     uint16_t    Voltage;
-     uint16_t    StdVoltageHiSidd;
-     uint16_t    StdVoltageLoSidd;
-@@ -100,8 +98,7 @@ struct SMU7_Discrete_VoltageLevel
- 
- typedef struct SMU7_Discrete_VoltageLevel SMU7_Discrete_VoltageLevel;
- 
--struct SMU7_Discrete_GraphicsLevel
--{
-+struct SMU7_Discrete_GraphicsLevel {
-     uint32_t    Flags;
-     uint32_t    MinVddc;
-     uint32_t    MinVddcPhases;
-@@ -131,8 +128,7 @@ struct SMU7_Discrete_GraphicsLevel
- 
- typedef struct SMU7_Discrete_GraphicsLevel SMU7_Discrete_GraphicsLevel;
- 
--struct SMU7_Discrete_ACPILevel
--{
-+struct SMU7_Discrete_ACPILevel {
-     uint32_t    Flags;
-     uint32_t    MinVddc;
-     uint32_t    MinVddcPhases;
-@@ -153,8 +149,7 @@ struct SMU7_Discrete_ACPILevel
- 
- typedef struct SMU7_Discrete_ACPILevel SMU7_Discrete_ACPILevel;
- 
--struct SMU7_Discrete_Ulv
--{
-+struct SMU7_Discrete_Ulv {
-     uint32_t    CcPwrDynRm;
-     uint32_t    CcPwrDynRm1;
-     uint16_t    VddcOffset;
-@@ -165,8 +160,7 @@ struct SMU7_Discrete_Ulv
- 
- typedef struct SMU7_Discrete_Ulv SMU7_Discrete_Ulv;
- 
--struct SMU7_Discrete_MemoryLevel
--{
-+struct SMU7_Discrete_MemoryLevel {
-     uint32_t    MinVddc;
-     uint32_t    MinVddcPhases;
-     uint32_t    MinVddci;
-@@ -206,8 +200,7 @@ struct SMU7_Discrete_MemoryLevel
- 
- typedef struct SMU7_Discrete_MemoryLevel SMU7_Discrete_MemoryLevel;
- 
--struct SMU7_Discrete_LinkLevel
--{
-+struct SMU7_Discrete_LinkLevel {
-     uint8_t     PcieGenSpeed;
-     uint8_t     PcieLaneCount;
-     uint8_t     EnabledForActivity;
-@@ -220,8 +213,7 @@ struct SMU7_Discrete_LinkLevel
- typedef struct SMU7_Discrete_LinkLevel SMU7_Discrete_LinkLevel;
- 
- 
--struct SMU7_Discrete_MCArbDramTimingTableEntry
--{
-+struct SMU7_Discrete_MCArbDramTimingTableEntry {
-     uint32_t McArbDramTiming;
-     uint32_t McArbDramTiming2;
-     uint8_t  McArbBurstTime;
-@@ -230,15 +222,13 @@ struct SMU7_Discrete_MCArbDramTimingTableEntry
- 
- typedef struct SMU7_Discrete_MCArbDramTimingTableEntry SMU7_Discrete_MCArbDramTimingTableEntry;
- 
--struct SMU7_Discrete_MCArbDramTimingTable
--{
-+struct SMU7_Discrete_MCArbDramTimingTable {
-     SMU7_Discrete_MCArbDramTimingTableEntry entries[SMU__NUM_SCLK_DPM_STATE][SMU__NUM_MCLK_DPM_LEVELS];
- };
- 
- typedef struct SMU7_Discrete_MCArbDramTimingTable SMU7_Discrete_MCArbDramTimingTable;
- 
--struct SMU7_Discrete_UvdLevel
--{
-+struct SMU7_Discrete_UvdLevel {
-     uint32_t VclkFrequency;
-     uint32_t DclkFrequency;
-     uint16_t MinVddc;
-@@ -250,8 +240,7 @@ struct SMU7_Discrete_UvdLevel
- 
- typedef struct SMU7_Discrete_UvdLevel SMU7_Discrete_UvdLevel;
- 
--struct SMU7_Discrete_ExtClkLevel
--{
-+struct SMU7_Discrete_ExtClkLevel {
-     uint32_t Frequency;
-     uint16_t MinVoltage;
-     uint8_t  MinPhases;
-@@ -260,8 +249,7 @@ struct SMU7_Discrete_ExtClkLevel
- 
- typedef struct SMU7_Discrete_ExtClkLevel SMU7_Discrete_ExtClkLevel;
- 
--struct SMU7_Discrete_StateInfo
--{
-+struct SMU7_Discrete_StateInfo {
-     uint32_t SclkFrequency;
-     uint32_t MclkFrequency;
-     uint32_t VclkFrequency;
-@@ -285,8 +273,7 @@ struct SMU7_Discrete_StateInfo
- typedef struct SMU7_Discrete_StateInfo SMU7_Discrete_StateInfo;
- 
- 
--struct SMU7_Discrete_DpmTable
--{
-+struct SMU7_Discrete_DpmTable {
-     SMU7_PIDController                  GraphicsPIDController;
-     SMU7_PIDController                  MemoryPIDController;
-     SMU7_PIDController                  LinkPIDController;
-@@ -406,23 +393,20 @@ typedef struct SMU7_Discrete_DpmTable SMU7_Discrete_DpmTable;
- #define SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE 16
- #define SMU7_DISCRETE_MC_REGISTER_ARRAY_SET_COUNT SMU7_MAX_LEVELS_MEMORY
- 
--struct SMU7_Discrete_MCRegisterAddress
--{
-+struct SMU7_Discrete_MCRegisterAddress {
-     uint16_t s0;
-     uint16_t s1;
- };
- 
- typedef struct SMU7_Discrete_MCRegisterAddress SMU7_Discrete_MCRegisterAddress;
- 
--struct SMU7_Discrete_MCRegisterSet
--{
-+struct SMU7_Discrete_MCRegisterSet {
-     uint32_t value[SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE];
- };
- 
- typedef struct SMU7_Discrete_MCRegisterSet SMU7_Discrete_MCRegisterSet;
- 
--struct SMU7_Discrete_MCRegisters
--{
-+struct SMU7_Discrete_MCRegisters {
-     uint8_t                             last;
-     uint8_t                             reserved[3];
-     SMU7_Discrete_MCRegisterAddress     address[SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE];
-@@ -431,8 +415,7 @@ struct SMU7_Discrete_MCRegisters
- 
- typedef struct SMU7_Discrete_MCRegisters SMU7_Discrete_MCRegisters;
- 
--struct SMU7_Discrete_FanTable
--{
-+struct SMU7_Discrete_FanTable {
- 	uint16_t FdoMode;
- 	int16_t  TempMin;
- 	int16_t  TempMed;
--- 
-2.17.1
+Best regards,
+Krzysztof
 
 
