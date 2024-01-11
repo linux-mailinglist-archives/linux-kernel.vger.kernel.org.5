@@ -1,129 +1,143 @@
-Return-Path: <linux-kernel+bounces-23192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECB3D82A8D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:16:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21FF382A8D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:15:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F29D1F27E69
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:16:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 305DC1C226E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC23DDC1;
-	Thu, 11 Jan 2024 08:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D6DE56E;
+	Thu, 11 Jan 2024 08:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="JA9Zwnud";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AIyIC3ln";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EsnaEA0H";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="I0Vrlw2V"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BNwPN68k"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7439BD534;
-	Thu, 11 Jan 2024 08:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 33C5722055;
-	Thu, 11 Jan 2024 08:15:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704960860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=epYN9+7p5WMnq2SmCY5xMgAlEwe1x52O//QpDZYpGn0=;
-	b=JA9Zwnudb2GOcwYYum4fUlEjX6dXrLnM4EtKlLgoKHF+JJlvz1QcLoxf9e8aVoDvjR/VFS
-	CWz3Ix2Etr09gwXBR0eG+5utuyqByaiuN54QZS0B05Uf1rv0s3LAqZkVz2bSZVyLlnC1F4
-	Zan+ww1Y5bcalGHFSK3I7y8YJDPQAf4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704960860;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=epYN9+7p5WMnq2SmCY5xMgAlEwe1x52O//QpDZYpGn0=;
-	b=AIyIC3lnH3BKUTRyKd8X3gR+B1eVDRBbGs7zxudx55+2N+wC/prMdlXQbVpz/SWjGVDfrJ
-	m/lhwdHceZjun0Bw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704960936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=epYN9+7p5WMnq2SmCY5xMgAlEwe1x52O//QpDZYpGn0=;
-	b=EsnaEA0HoLUMTOeo0yo/OhV+Fbj2MsvQ62BNAsbkWbrGGxNV/7bxFaP8cxcD1jophlUwt9
-	L25/oFp6FIURwVOYTQIl91f2mx2kU3wxCUuwZ9oWqV85aXTrzBmlE6lnyB/sHc7CF+BjtW
-	OZRqVprwoAlshkBk+Dqz56EpIo0qawE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704960936;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=epYN9+7p5WMnq2SmCY5xMgAlEwe1x52O//QpDZYpGn0=;
-	b=I0Vrlw2V1kuHDFQSxN3rdIturjjutppXH/oSxK/+1C6aJart3ZWwa0DgntV7mc9MwBEuEV
-	v/aX/TdZ5Srj1+DA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BF103138E5;
-	Thu, 11 Jan 2024 08:14:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id YXTHG1mjn2XrHQAAn2gu4w
-	(envelope-from <ddiss@suse.de>); Thu, 11 Jan 2024 08:14:17 +0000
-Date: Thu, 11 Jan 2024 19:15:10 +1100
-From: David Disseldorp <ddiss@suse.de>
-To: Christoph Hellwig <hch@lst.de>, Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] initramfs: remove duplicate built-in __initramfs_start
- unpacking
-Message-ID: <20240111191510.09fbab13@echidna>
-In-Reply-To: <20240111064540.GA7285@lst.de>
-References: <20240111062240.9362-1-ddiss@suse.de>
-	<20240111064540.GA7285@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4756EDF68
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso1806175e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:15:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704960923; x=1705565723; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lhNg/hT61OVz92mVen6SG0PHl8H7M3f4I/Xw2MdU3wk=;
+        b=BNwPN68kFDyle69ePV2N5X7wlMK2CyQG1CNAAQpPPvbDVIXOtFnIwjspYyL2D9Gjcn
+         uJqKTrp1WQMDnfZeGW1gtHqMerucZa9etZ73yOSp1hSvfLE9ORdj0XTplIUZcPosq4VW
+         0pw8JF18ihSXtRaqXqPRaddwk7qlhoGat/6jDABv8VzGu32eafNwKG/tL5QUps2B/g2o
+         acvZIo1iN3v5dn4wg4Yb/m29Rq9nUTj49zyJlXxcu4Prr/xq5mbYqMKBp37isZ3YvVrR
+         6hkJtUqvXpTyDonBX5BYkYBOlcMYyG5KS2ONDMWgkEt8k+VcWAocDNh+Q5pc7dkMYoks
+         YPKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704960923; x=1705565723;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lhNg/hT61OVz92mVen6SG0PHl8H7M3f4I/Xw2MdU3wk=;
+        b=M9E0rD7EY7PJRUyhFVMrIu9CZB43v59GdeaHF/1vBGh8EZwe0HTm83SmXHqGmEhnAR
+         l0CrHg/Afg4Hxe/5tlig1Lm1dm570324SXk05MyICkBp7j05WwWQqIc//xAYTOD5dZK3
+         EO/1FiU2bVBsl5RygzA/y22q0OgY668i6gcTsY9JpiJ6oIDjK4kN6LHonhXLcc9YZC9X
+         zMuWHncbJlMYMw6LfNdHaBcJRt5KCAidp2IiQ/3oFW7n8ZKGAhuGyboj+N6sF0KmAgb6
+         ksqZTlURf5Qk/Do78FQ0NstMnAIPYpP4tFwBwig+qFF/xgyG4Tfx3WjlecFXZiitYon6
+         IEnQ==
+X-Gm-Message-State: AOJu0YyL7I/x4WejlpiVwtFi9UdOVjrXIjHcM81673uaDonKWs4F27Ov
+	XrcOUB9PjQXFAS/CCHNz4/rQnd9H9zB6Ow==
+X-Google-Smtp-Source: AGHT+IF/f7owkasdyC/MXgmBm/N1vKiUhNkP2gxMz9Hc0+6VjlV1rdgRGysxvD1ZUx8/gqCrux8hLQ==
+X-Received: by 2002:a05:600c:1547:b0:40e:40b3:99e9 with SMTP id f7-20020a05600c154700b0040e40b399e9mr149158wmg.108.1704960923479;
+        Thu, 11 Jan 2024 00:15:23 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:a5aa:e466:ae57:5a26? ([2a01:e0a:982:cbb0:a5aa:e466:ae57:5a26])
+        by smtp.gmail.com with ESMTPSA id o21-20020a05600c4fd500b0040e34ca648bsm955660wmq.0.2024.01.11.00.15.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 00:15:22 -0800 (PST)
+Message-ID: <60cfb114-aa36-4588-91a5-7353791cb0ae@linaro.org>
+Date: Thu, 11 Jan 2024 09:15:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v1 16/24] dt-bindings: crypto: meson: add new compatibles
+Content-Language: en-US, fr
+To: Alexey Romanov <avromanov@salutedevices.com>, narmstrong@baylibre.com,
+ clabbe@baylibre.com, herbert@gondor.apana.org.au, davem@davemloft.net,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ khilman@baylibre.com, jbrunet@baylibre.com, artin.blumenstingl@googlemail.com
+Cc: linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
+References: <20240110201216.18016-1-avromanov@salutedevices.com>
+ <20240110201216.18016-17-avromanov@salutedevices.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20240110201216.18016-17-avromanov@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.23 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.63)[92.69%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.23
 
-On Thu, 11 Jan 2024 07:45:40 +0100, Christoph Hellwig wrote:
+Hi,
 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On 10/01/2024 21:11, Alexey Romanov wrote:
+> Now we can use crypto driver at G12A/G12B/S4/A1/SM1/AXG.
+> 
+> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> ---
+>   .../devicetree/bindings/crypto/amlogic,gxl-crypto.yaml          | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> index 948e11ebe4ee..317003505510 100644
+> --- a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> @@ -13,6 +13,8 @@ properties:
+>     compatible:
+>       items:
+>         - const: amlogic,gxl-crypto
+> +      - const: amlogic,g12a-crypto
+> +      - const: amlogic,axg-crypto
 
-Thanks Christoph.
-I don't think there's a regular tree for queueing initramfs changes.
-Christian: would the vfs queue be appropriate?
+Please add amlogic,s4-crypto and amlogic,a1-crypto using amlogic,g12a-crypto as fallback,
+it's a requirement for dt bindings to have per-soc compatibles now.
 
-Cheers, David
+Thanks,
+Neil
+
+>   
+>     reg:
+>       maxItems: 1
+
 
