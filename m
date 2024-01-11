@@ -1,190 +1,107 @@
-Return-Path: <linux-kernel+bounces-23357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DE0782AB89
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:05:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CED382AB92
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 631F01C21F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:05:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F9B282472
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A94613FFE;
-	Thu, 11 Jan 2024 10:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0739B12E5B;
+	Thu, 11 Jan 2024 10:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="MxWgyTEi"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSH8f5B6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ADB412E4B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=AE+YN7mp8tF8D2TsFEMmNTNNM/8+22BnneF03zOJeSI=; b=MxWgyTEibe0nbD8DrPgp9yAtAH
-	bVKTEPq1tCLdQWKI1WRnOtkqgM166AITsqWs8tg4V+sL1RIhwLy7C9pQbV5HovfqIs8N0WU5NvWXD
-	Tu587/Y9atBTG3mQfotN6D9febysciM59ZBzJOelJxcICJ++lK301szSUoUYPMAMKAUyfqNJG6x0x
-	y5X9TO+2AhKokrBlI+xOUSVmgOMeTB054YHtAenrBzxgf8ywjU2r+oa57IkL+WWpGekdjw2SEy6Q+
-	babGHgPGHq/VxO9S1EGRuFsM/fE2ALEWthfg2zR+ICBgNiHB7BUKotNjunxGoolFwAvALS+CQVkc0
-	fyaAcTag==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNrvp-00C8wo-06;
-	Thu, 11 Jan 2024 10:05:01 +0000
-Date: Thu, 11 Jan 2024 10:05:01 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Josh Triplett <josh@joshtriplett.org>, Kees Cook <kees@kernel.org>,
-	Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-	Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: [GIT PULL] execve updates for v6.8-rc1
-Message-ID: <20240111100501.GU1674809@ZenIV>
-References: <202401081028.0E908F9E0A@keescook>
- <CAHk-=wgznerM-xs+x+krDfE7eVBiy_HOam35rbsFMMOwvYuEKQ@mail.gmail.com>
- <D01C78AC-830C-4D73-9E9F-7FD38CEF2E82@kernel.org>
- <ZZ2W_xzCSyOgltad@localhost>
- <CAHk-=wi75tFVtZdzFRr4hsDeUKmeACbgD46rLe+2bcd=4mHBBw@mail.gmail.com>
- <ZZ3_Jmb1sb2wQWO_@localhost>
- <CAHk-=whf9qLO8ipps4QhmS0BkM8mtWJhvnuDSdtw5gFjhzvKNA@mail.gmail.com>
- <20240111094711.GT1674809@ZenIV>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418EE12B76;
+	Thu, 11 Jan 2024 10:06:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24D68C43390;
+	Thu, 11 Jan 2024 10:06:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704967597;
+	bh=VYrd9TK5vSZv+DQia/igxBL3YVo83ir67Ef6elbaMrg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bSH8f5B6Cz0YR+iTIx3EPz7hnVD09H687f1+CsbVoZyclMuBnyTNTjsJlQKoAS7VF
+	 +rSapP8GHDNP63b25oeHq0MkgHNwaesLSSNyFyi7RXsNHirr/5b5wD5s1KfFe0YYFf
+	 Nldq23YFUNQvRb9CMzd359iP/X1jAIOXmoJgNYLpV+CB1B9pOvIz0DQ6LAIfnNTVLJ
+	 a7mK7sA2GmsnS+D9xnGHrNw+xxhLeLsegoAs4RFNMDUtOYKz6VAAkERNxWdMF0Ii0H
+	 4mm9t+eZvtbWSN0HxGkbHs0mUl6Hq8W1p8uoF7bK7AnKZWmYcfZGQU0pwgY/jxOtDA
+	 Eju+eJdwEquOA==
+Date: Thu, 11 Jan 2024 10:06:31 +0000
+From: Lee Jones <lee@kernel.org>
+To: Anjelique Melendez <quic_amelende@quicinc.com>
+Cc: pavel@ucw.cz, thierry.reding@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	agross@kernel.org, andersson@kernel.org, luca.weiss@fairphone.com,
+	konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de,
+	quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
+	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v8 4/7] leds: rgb: leds-qcom-lpg: Add support for PPG
+ through single SDAM
+Message-ID: <20240111100631.GL7948@google.com>
+References: <20231221185838.28440-1-quic_amelende@quicinc.com>
+ <20231221185838.28440-5-quic_amelende@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240111094711.GT1674809@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231221185838.28440-5-quic_amelende@quicinc.com>
 
-On Thu, Jan 11, 2024 at 09:47:11AM +0000, Al Viro wrote:
-> Doable, but really not pretty, especially since we'd need to massage
-> the caller as well...  Less painful variant is
-> 	if (error == -ECHILD && (flags & LOOKUP_RCU))
-> 		return ERR_PTR(-ECHILD); // keep file for non-rcu pass
-> 	*fp = NULL;
-> 	fput(file);
-> 	...
-> on the way out; that won't help with -ESTALE side of things, but if we
-> hit *that*, struct file allocation overhead is really noise.
+On Thu, 21 Dec 2023, Anjelique Melendez wrote:
 
-Something like (completely untested) delta below, perhaps?
+> In some PMICs like pmi632, the pattern look up table (LUT) and LPG
+> configuration is stored in a single SDAM module instead of LUT
+> peripheral. This feature is called PPG. PPG uses Qualcomm Programmable
+> Boot Sequencer (PBS) inorder to trigger pattern sequences for PMICs.
+> 
+> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+> Tested-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>  drivers/leds/rgb/leds-qcom-lpg.c | 268 ++++++++++++++++++++++++++++---
+>  1 file changed, 244 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
+> index 68d82a682bf6..a76cb1d6b7b5 100644
+> --- a/drivers/leds/rgb/leds-qcom-lpg.c
+> +++ b/drivers/leds/rgb/leds-qcom-lpg.c
+> @@ -8,11 +8,13 @@
+>  #include <linux/bitfield.h>
+>  #include <linux/led-class-multicolor.h>
+>  #include <linux/module.h>
+> +#include <linux/nvmem-consumer.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pwm.h>
+>  #include <linux/regmap.h>
+>  #include <linux/slab.h>
+> +#include <linux/soc/qcom/qcom-pbs.h>
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 5c318d657503..de770be9bb16 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3765,15 +3765,17 @@ static int do_o_path(struct nameidata *nd, unsigned flags, struct file *file)
- 	return error;
- }
- 
--static struct file *path_openat(struct nameidata *nd,
-+static int path_openat(struct nameidata *nd, struct file **fp,
- 			const struct open_flags *op, unsigned flags)
- {
--	struct file *file;
-+	struct file *file = *fp;
- 	int error;
- 
--	file = alloc_empty_file(op->open_flag, current_cred());
--	if (IS_ERR(file))
--		return file;
-+	if (!file) {
-+		file = alloc_empty_file(op->open_flag, current_cred());
-+		if (IS_ERR(file))
-+			return PTR_ERR(file);
-+	}
- 
- 	if (unlikely(file->f_flags & __O_TMPFILE)) {
- 		error = do_tmpfile(nd, flags, op, file);
-@@ -3789,11 +3791,17 @@ static struct file *path_openat(struct nameidata *nd,
- 		terminate_walk(nd);
- 	}
- 	if (likely(!error)) {
--		if (likely(file->f_mode & FMODE_OPENED))
--			return file;
-+		if (likely(file->f_mode & FMODE_OPENED)) {
-+			*fp = file;
-+			return 0;
-+		}
- 		WARN_ON(1);
- 		error = -EINVAL;
- 	}
-+	if (error == -ECHILD && (flags & LOOKUP_RCU)) {
-+		*fp = file; // reuse on the next pass
-+		return -ECHILD;
-+	}
- 	fput(file);
- 	if (error == -EOPENSTALE) {
- 		if (flags & LOOKUP_RCU)
-@@ -3801,7 +3809,7 @@ static struct file *path_openat(struct nameidata *nd,
- 		else
- 			error = -ESTALE;
- 	}
--	return ERR_PTR(error);
-+	return error;
- }
- 
- struct file *do_filp_open(int dfd, struct filename *pathname,
-@@ -3809,25 +3817,27 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
- {
- 	struct nameidata nd;
- 	int flags = op->lookup_flags;
--	struct file *filp;
-+	struct file *file = NULL;
-+	int err;
- 
- 	set_nameidata(&nd, dfd, pathname, NULL);
--	filp = path_openat(&nd, op, flags | LOOKUP_RCU);
--	if (unlikely(filp == ERR_PTR(-ECHILD)))
--		filp = path_openat(&nd, op, flags);
--	if (unlikely(filp == ERR_PTR(-ESTALE)))
--		filp = path_openat(&nd, op, flags | LOOKUP_REVAL);
-+	err = path_openat(&nd, &file, op, flags | LOOKUP_RCU);
-+	if (unlikely(err == -ECHILD))
-+		err = path_openat(&nd, &file, op, flags);
-+	if (unlikely(err == -ESTALE))
-+		err = path_openat(&nd, &file, op, flags | LOOKUP_REVAL);
- 	restore_nameidata();
--	return filp;
-+	return unlikely(err) ? ERR_PTR(err) : file;
- }
- 
- struct file *do_file_open_root(const struct path *root,
- 		const char *name, const struct open_flags *op)
- {
- 	struct nameidata nd;
--	struct file *file;
-+	struct file *file = NULL;
- 	struct filename *filename;
- 	int flags = op->lookup_flags;
-+	int err;
- 
- 	if (d_is_symlink(root->dentry) && op->intent & LOOKUP_OPEN)
- 		return ERR_PTR(-ELOOP);
-@@ -3837,14 +3847,14 @@ struct file *do_file_open_root(const struct path *root,
- 		return ERR_CAST(filename);
- 
- 	set_nameidata(&nd, -1, filename, root);
--	file = path_openat(&nd, op, flags | LOOKUP_RCU);
--	if (unlikely(file == ERR_PTR(-ECHILD)))
--		file = path_openat(&nd, op, flags);
--	if (unlikely(file == ERR_PTR(-ESTALE)))
--		file = path_openat(&nd, op, flags | LOOKUP_REVAL);
-+	err = path_openat(&nd, &file, op, flags | LOOKUP_RCU);
-+	if (unlikely(err == -ECHILD))
-+		err = path_openat(&nd, &file, op, flags);
-+	if (unlikely(err == -ESTALE))
-+		err = path_openat(&nd, &file, op, flags | LOOKUP_REVAL);
- 	restore_nameidata();
- 	putname(filename);
--	return file;
-+	return unlikely(err) ? ERR_PTR(err) : file;
- }
- 
- static struct dentry *filename_create(int dfd, struct filename *name,
+[...]
+
+> +static void lpg_sdam_apply_lut_control(struct lpg_channel *chan)
+> +{
+> +	struct nvmem_device *lpg_chan_sdam = chan->lpg->lpg_chan_sdam;
+> +	unsigned int lo_idx = chan->pattern_lo_idx;
+> +	unsigned int hi_idx = chan->pattern_hi_idx;
+> +	u8 val = 0, conf = 0;
+> +
+> +	if (!chan->ramp_enabled || chan->pattern_lo_idx == chan->pattern_hi_idx)
+
+Nit: you can use lo_idx and hi_idx here instead, right?
+
+Please fix this up subsequently.
+
+-- 
+Lee Jones [李琼斯]
 
