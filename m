@@ -1,100 +1,143 @@
-Return-Path: <linux-kernel+bounces-22980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475B882A603
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:27:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C621682A61B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CBA21C22EFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:27:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C065285FD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B1F2A3C;
-	Thu, 11 Jan 2024 02:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F762A52;
+	Thu, 11 Jan 2024 02:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="IqhOuiAf"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83DB7FC
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=SALJLRmBOXzxBM8mcf
-	sgEpWIGewiMx1rbO76aYGKWys=; b=IqhOuiAf9hGx6agbB6/LPBHc2iIGlyGfD9
-	edcTWvkWsZI2jtKzWjJbu5asdpmnqV4Xw5hz/vjTwD0jCig6j0YIxl15oT0uteXT
-	q7rGeqUW9EuQ0ZtAWD4FgYE9NlqgRYEU4H3iKDbO5O71Ls9g7MNsneqOB4WBRb/f
-	0S9ArffuY=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g1-5 (Coremail) with SMTP id _____wD3f1IHUp9lQUUtAA--.20942S2;
-	Thu, 11 Jan 2024 10:27:20 +0800 (CST)
-From: chenxuebing <chenxb_99091@126.com>
-To: christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	alexander.deucher@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch
-Cc: amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	chenxuebing <chenxb_99091@126.com>
-Subject: [PATCH] drm/amdgpu: Clean up errors in amdgpu.h
-Date: Thu, 11 Jan 2024 02:27:18 +0000
-Message-Id: <20240111022718.6415-1-chenxb_99091@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wD3f1IHUp9lQUUtAA--.20942S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtF1DCF48KF1fuF4rZr15CFg_yoWkXFb_CF
-	WUAF98Wr43GFnYqr13uw4fZ3yqvr1YvF1kWw1agF9ayr9rZrW5ArWDCryxXw4fua1xWF1D
-	u39Ygr15C3ZakjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRt8nDUUUUU==
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiHA5ixWV2zz6dAAAAsK
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iqt2EVyW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CA910E8;
+	Thu, 11 Jan 2024 02:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704940605; x=1736476605;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0Va+P7X83oGoZ+4IUOYXS7EzUs4E4JPqjUEHp4bqu5U=;
+  b=iqt2EVyWHlxzU65lLKMPUzmsIakxVC7t2J6VbqjVIKYA9LBKtH/Wqt3L
+   eC6rT7FFXjwhBA7Rv3Ds3d0kfWNxwH7Q5c8h8Ou+t0T0q1c9Xyo89+uhM
+   FO9wtoO0Y/pgO+fYQSwbDjoK9uGfQo4RBk/HFMQjG9UA59UYCRXhq1uko
+   NyQeMdq9sjZKWoB5K47gukiTk09YgN6r1+G7Jen/9dOsarboNqkx40/4Y
+   /kIflkiLPyg5gmUXUgQ9mXeacXRKsfT5o7XJhLcWLtDNub4zrcsTuufJG
+   v+TTV+BzYgKcDticjnQIKFpNAWCiRGoy106dmNlkRQjECwUUKCMPmPoAO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="397588095"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="397588095"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 18:36:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="732046535"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="732046535"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga003.jf.intel.com with ESMTP; 10 Jan 2024 18:36:40 -0800
+Message-ID: <65312590-01e1-4f53-a0dc-fc22f75379cd@linux.intel.com>
+Date: Thu, 11 Jan 2024 10:31:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v10 5/5] iommu/vt-d: don't loop for timeout ATS
+ Invalidation request forever
+Content-Language: en-US
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, kevin.tian@intel.com,
+ bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
+ robin.murphy@arm.com, lukas@wunner.de
+References: <20231228170504.720794-1-haifeng.zhao@linux.intel.com>
+ <20231228170504.720794-3-haifeng.zhao@linux.intel.com>
+ <aba65111-47c1-4003-b9a9-19c908507c01@linux.intel.com>
+ <53c563ad-b47b-4962-abc7-f0da3a7181d6@linux.intel.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <53c563ad-b47b-4962-abc7-f0da3a7181d6@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Fix the following errors reported by checkpatch:
+On 1/10/24 4:40 PM, Ethan Zhao wrote:
+> 
+> On 1/10/2024 1:28 PM, Baolu Lu wrote:
+>> On 12/29/23 1:05 AM, Ethan Zhao wrote:
+>>> When the ATS Invalidation request timeout happens, the qi_submit_sync()
+>>> will restart and loop for the invalidation request forever till it is
+>>> done, it will block another Invalidation thread such as the fq_timer
+>>> to issue invalidation request, cause the system lockup as following
+>>>
+>>> [exception RIP: native_queued_spin_lock_slowpath+92]
+>>>
+>>> RIP: ffffffffa9d1025c RSP: ffffb202f268cdc8 RFLAGS: 00000002
+>>>
+>>> RAX: 0000000000000101 RBX: ffffffffab36c2a0 RCX: 0000000000000000
+>>>
+>>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffab36c2a0
+>>>
+>>> RBP: ffffffffab36c2a0 R8: 0000000000000001 R9: 0000000000000000
+>>>
+>>> R10: 0000000000000010 R11: 0000000000000018 R12: 0000000000000000
+>>>
+>>> R13: 0000000000000004 R14: ffff9e10d71b1c88 R15: ffff9e10d71b1980
+>>>
+>>> ORIG_RAX: ffffffffffffffff CS: 0010 SS: 0018
+>>>
+>>> (the left part of exception see the hotplug case of ATS capable device)
+>>>
+>>> If one endpoint device just no response to the ATS Invalidation request,
+>>> but is not gone, it will bring down the whole system, to avoid such
+>>> case, don't try the timeout ATS Invalidation request forever.
+>>>
+>>> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>>> ---
+>>>   drivers/iommu/intel/dmar.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>>> index 0a8d628a42ee..9edb4b44afca 100644
+>>> --- a/drivers/iommu/intel/dmar.c
+>>> +++ b/drivers/iommu/intel/dmar.c
+>>> @@ -1453,7 +1453,7 @@ int qi_submit_sync(struct intel_iommu *iommu, 
+>>> struct qi_desc *desc,
+>>>       reclaim_free_desc(qi);
+>>>       raw_spin_unlock_irqrestore(&qi->q_lock, flags);
+>>>   -    if (rc == -EAGAIN)
+>>> +    if (rc == -EAGAIN && type !=QI_DIOTLB_TYPE && type != 
+>>> QI_DEIOTLB_TYPE)
+>>>           goto restart;
+>>>         if (iotlb_start_ktime)
+>>
+>> Above is also unnecessary if qi_check_fault() returns -ETIMEDOUT,
+>> instead of -EAGAIN. Or did I miss anything?
+> 
+> It is pro if we fold it into qi_check_fault(), the con is we have to add
+> 
+> more parameter to qi_check_fault(), no need check invalidation type
+> 
+> of QI_DIOTLB_TYPE&QI_DEIOTLB_TYPE in qi_check_fault() ?
 
-ERROR: open brace '{' following struct go on the same line
+No need to check the request type as multiple requests might be batched
+together in a single call. This is also the reason why I asked you to
+add a flag bit to this helper and make the intention explicit, say,
 
-Signed-off-by: chenxuebing <chenxb_99091@126.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu.h | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+"This includes requests to interact with a PCI endpoint. The device may
+  become unavailable at any time, so do not attempt to retry if ITE is
+  detected and the device has gone away."
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index 616b6c911767..189bf62076f3 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -114,14 +114,12 @@
- 
- #define MAX_GPU_INSTANCE		64
- 
--struct amdgpu_gpu_instance
--{
-+struct amdgpu_gpu_instance {
- 	struct amdgpu_device		*adev;
- 	int				mgpu_fan_enabled;
- };
- 
--struct amdgpu_mgpu_info
--{
-+struct amdgpu_mgpu_info {
- 	struct amdgpu_gpu_instance	gpu_ins[MAX_GPU_INSTANCE];
- 	struct mutex			mutex;
- 	uint32_t			num_gpu;
-@@ -140,8 +138,7 @@ enum amdgpu_ss {
- 	AMDGPU_SS_DRV_UNLOAD
- };
- 
--struct amdgpu_watchdog_timer
--{
-+struct amdgpu_watchdog_timer {
- 	bool timeout_fatal_disable;
- 	uint32_t period; /* maxCycles = (1 << period), the number of cycles before a timeout */
- };
--- 
-2.17.1
-
+Best regards,
+baolu
 
