@@ -1,137 +1,101 @@
-Return-Path: <linux-kernel+bounces-23503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E2282ADAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:38:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8C5882ADB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0BBC1C227DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:38:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65B031F23691
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:40:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A4C15493;
-	Thu, 11 Jan 2024 11:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106F115493;
+	Thu, 11 Jan 2024 11:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ug8d0jJ9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uq87kzgy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2A0156C8;
-	Thu, 11 Jan 2024 11:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704973092; x=1736509092;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Z1ttDXrYTv+Sve/f2vZWawOKbHHb4+tnEe1pfr93vWw=;
-  b=Ug8d0jJ9XHd1lRGtVWDI3ilJKPxx6DZHW0tqEeVbjnMSDw8lXF2ArJ20
-   oaV/fe2AjhfUA8tFFkHDCQvCYn1I/H+Jvuzq5Bdzo/IcFEdbXCV2VLx0Q
-   Dqyy3DehdxKCd1t6b7hQ4tqqI4aBvmHMSduwnv2Pi/1SCcEBSjI1hI6jn
-   F8XQBtem4+TdJiMq4gwHx6SR9PuCNy16OYnecPBPeKqEOCwu6WSftYH+x
-   in6ERmt59PVSeFMFg3j6v1ADErCHA1E4VufqI6Gv9GSUJ+f2R4K/orLCC
-   qz6yJyJNi/br9NFNzeKyzQH/6SxoNBs2y2R2eUZ6t+oMcGz3G7XUj3cWs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="395965665"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="395965665"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:38:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="1029514569"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="1029514569"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.201])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:38:09 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 11 Jan 2024 13:38:04 +0200 (EET)
-To: Michael Pratt <mcpratt@pm.me>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, 
-    Jiri Slaby <jirislaby@kernel.org>, 
-    Wander Lairson Costa <wander@redhat.com>, 
-    Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 RESEND] serial: 8250: Set fifo timeout with
- uart_fifo_timeout()
-In-Reply-To: <sxGlnHaZVt4mMgmwzplgzx0bwPOv0MaG8us_UlJg2n6QajwaUgqi876d6ctZZrpkAQBLv7iJ2h2sQ4VOdOk16QHDp_D5AJCYpxPXKbBKrFA=@pm.me>
-Message-ID: <d096c04d-581e-2216-4b1d-b4fd1f659a64@linux.intel.com>
-References: <20240111002056.28205-1-mcpratt@pm.me> <2024011125-stiffness-mutilated-75bb@gregkh> <sxGlnHaZVt4mMgmwzplgzx0bwPOv0MaG8us_UlJg2n6QajwaUgqi876d6ctZZrpkAQBLv7iJ2h2sQ4VOdOk16QHDp_D5AJCYpxPXKbBKrFA=@pm.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D96C390;
+	Thu, 11 Jan 2024 11:40:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 304CFC433F1;
+	Thu, 11 Jan 2024 11:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704973226;
+	bh=rGE5aLBgG8rJvHpHzdIZ5UZ/WMT/chk9s1YqtP4odSs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uq87kzgyV/Bo+E6Sqqkjo3Vi1g2cOMAEMp+AVTWTFrlgZ+OsW4JJmm8CQ4cEAH4Dt
+	 tCw1JPLKu1P0sjntzy9JoNDwfX2a+fAzSIONCete70Mcnfk1ZY1hIkwLTbgkEWetzr
+	 sTEPFZtxbzXahrF3Zk0xIOOlOIZvBs9X8t2EGIQJLNU1BrgK05cG/v4bSB7gKeKzty
+	 lfgEK9mginYvPfkX6/8/8HMTILVqGgOEBKSjUjna0i1q/cKM2i3fLTsOhgEqUqoe3S
+	 gQwe4Zte45/KDRXtESj9PtJ2ugYoUPCdmJ8IBvwjA/db97f6xOJd9Km/cIRCUrWA0s
+	 ydDPWUgG2RrVQ==
+Date: Thu, 11 Jan 2024 11:40:21 +0000
+From: Lee Jones <lee@kernel.org>
+To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc: linux-kernel@vger.kernel.org,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-amarula@amarulasolutions.com,
+	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v7 1/5] dt-bindings: mfd: stm32f7: Add binding definition
+ for DSI
+Message-ID: <20240111114021.GJ1678981@google.com>
+References: <20240111113146.16011-1-dario.binacchi@amarulasolutions.com>
+ <20240111113146.16011-2-dario.binacchi@amarulasolutions.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240111113146.16011-2-dario.binacchi@amarulasolutions.com>
 
-On Thu, 11 Jan 2024, Michael Pratt wrote:
+On Thu, 11 Jan 2024, Dario Binacchi wrote:
 
+> Add binding definition for MIPI DSI Host controller.
 > 
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 > 
-> On Thursday, January 11th, 2024 at 01:52, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> ---
 > 
-> > On Thu, Jan 11, 2024 at 12:27:07AM +0000, Michael Pratt wrote:
-> > 
-> > > Commit 8f3631f0f6eb ("serial/8250: Use fifo in 8250 console driver")
+> (no changes since v2)
 > 
-> This is the commit that made the issue present itself.
+> Changes in v2:
+> - Add Acked-by tag of Conor Dooley
 > 
-> I'm not sure whether it's right to say that this "fixes" that commit
-> since it only caused the issue indirectly, and the diff for this patch
-> doesn't touch any lines that the other commit touched, and the method
-> I'm using to fix the issue was not available at the time, and also that
-> for high baud rates like 115200 everything is still fine...
-> (the 10 ms timeout is as old as the tree)
-> 
-> If that's enough for a "Fixes" tag then go ahead (or tell me to add it),
-> but maybe a "Ref" tag would be enough?
-> 
-> You can see the other thread linked for more discussion on that point if you like...
+>  include/dt-bindings/mfd/stm32f7-rcc.h | 1 +
+>  1 file changed, 1 insertion(+)
 
-Besides Fixes tags, you can add dependency information for stable folks 
-with Cc tag using the format described in 
-Documentation/process/stable-kernel-rules.rst
+Acked-by: Lee Jones <lee@kernel.org>
+
+> diff --git a/include/dt-bindings/mfd/stm32f7-rcc.h b/include/dt-bindings/mfd/stm32f7-rcc.h
+> index 8d73a9c51e2b..a4e4f9271395 100644
+> --- a/include/dt-bindings/mfd/stm32f7-rcc.h
+> +++ b/include/dt-bindings/mfd/stm32f7-rcc.h
+> @@ -108,6 +108,7 @@
+>  #define STM32F7_RCC_APB2_SAI1		22
+>  #define STM32F7_RCC_APB2_SAI2		23
+>  #define STM32F7_RCC_APB2_LTDC		26
+> +#define STM32F7_RCC_APB2_DSI		27
+>  
+>  #define STM32F7_APB2_RESET(bit)	(STM32F7_RCC_APB2_##bit + (0x24 * 8))
+>  #define STM32F7_APB2_CLOCK(bit)	(STM32F7_RCC_APB2_##bit + 0xA0)
+> -- 
+> 2.43.0
+> 
 
 -- 
- i.
-
-
-> > > reworked functions for basic 8250 and 16550 type serial devices
-> > > in order to enable and use the internal FIFO device for buffering,
-> > > however the default timeout of 10 ms remained, which is proving
-> > > to be insufficient for low baud rates like 9600, causing data overrun.
-> > > 
-> > > Unforunately, that commit was written and accepted just before commit
-> > > 31f6bd7fad3b ("serial: Store character timing information to uart_port")
-> > > which introduced the frame_time member of the uart_port struct
-> > > in order to store the amount of time it takes to send one UART frame
-> > > relative to the baud rate and other serial port configuration,
-> > > and commit f9008285bb69 ("serial: Drop timeout from uart_port")
-> > > which established function uart_fifo_timeout() in order to
-> > > calculate a reasonable timeout to wait for all frames
-> > > in the FIFO device to flush before writing data again
-> > > using the now stored frame_time value and size of the buffer.
-> > > 
-> > > Fix this by using the new function to calculate the timeout
-> > > whenever the buffer is larger than 1 byte (unknown port default).
-> > > 
-> > > Tested on a MIPS device (ar934x) at baud rates 625, 9600, 115200.
-> > > 
-> > > Signed-off-by: Michael Pratt mcpratt@pm.me
-> > > ---
-> > > v1 thread: https://lore.kernel.org/linux-serial/20231125063552.517-1-mcpratt@pm.me/
-> > 
-> > 
-> > What commit id does this fix?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> --
-> MCP
-> 
+Lee Jones [李琼斯]
 
