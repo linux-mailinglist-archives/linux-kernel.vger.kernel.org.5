@@ -1,70 +1,112 @@
-Return-Path: <linux-kernel+bounces-22974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7383E82A5F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:25:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C2682A5FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F7A81F245A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:25:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B92B287A98
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B693F2106;
-	Thu, 11 Jan 2024 02:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E383239;
+	Thu, 11 Jan 2024 02:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bWzUs2fJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C60010FD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:24:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 83C27C43390;
-	Thu, 11 Jan 2024 02:24:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704939846;
-	bh=ejh3QJNf6tGgnQWiyJb1xyIKINpT2RhuSi5f2y/RmoM=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=bWzUs2fJ+A+IcY/sxgpD4IHEYDtv9ZWU8sBQffsTf86ITHh9IXSp6nJOrwkghte92
-	 Oc6E5W7bjRYS3NeKchyKeztYJihhpCDHfZOlQTyxQwr3RjLv2nxNeIz3RTlrcfn4Pw
-	 ax1/0H15m6ZpzQ3rU5ugaWb/HyVEzizXu6ZzY9cJGfmOwALLaWTGGiVw9wmfz1jf6F
-	 zgat+D1ZfVjqtjQCuEtky/4pEmp1BUJokvhtRkntQFfZQuuofA50UklLQn/1FRWeXm
-	 BjigepiwjU/4nvZq40CsXJlTX/PLhrfKe6B3CqVKcMN4ER6Js6lGjgnUD4l+Dvx4ik
-	 vflxYZEOu1w1w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7008CD8C96F;
-	Thu, 11 Jan 2024 02:24:06 +0000 (UTC)
-Subject: Re: [GIT PULL] header cleanups for 6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ualbkbj75ulsbwbjuphntw7ztb45r2q7iysvxvklmyv5ndnvh7@zxr56mv33vyv>
-References: <ualbkbj75ulsbwbjuphntw7ztb45r2q7iysvxvklmyv5ndnvh7@zxr56mv33vyv>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ualbkbj75ulsbwbjuphntw7ztb45r2q7iysvxvklmyv5ndnvh7@zxr56mv33vyv>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/header_cleanup-2024-01-10
-X-PR-Tracked-Commit-Id: 1e2f2d31997a9496f99e2b43255d6a48b06fbcc2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 78273df7f646f8daf2604ec714bea0897cd03aae
-Message-Id: <170493984645.10151.5723951748883335656.pr-tracker-bot@kernel.org>
-Date: Thu, 11 Jan 2024 02:24:06 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>, Boqun Feng <boqun.feng@gmail.com>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, Kees Cook <keescook@chromium.org>, Paul McKenney <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Thomas Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Will Drewry <wad@chromium.org>, Suren Baghdasaryan <surenb@google.com>
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="V487I366"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A20C256D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=nbbVvUF/7Gsgkfq6Xu
+	1euEZczf3yX7tnXLat+g/jEbg=; b=V487I3661EHGOrtHEJZmbZzrAKmx1eYtqw
+	bjlRIlNd35Bwg8dtgjQt6rb9z+QAzxA3xoPQdMRNsGglKIjWrlOf3Nxs0/+sITr+
+	9nwhILbhYRLul9cXM8NWSs8DGCTUedXsa93jyOR6aPlnhSOSlo0UtgWQgM+5Bi8Q
+	C6BGBvTzc=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g1-5 (Coremail) with SMTP id _____wD331ppUZ9lMjQtAA--.21367S2;
+	Thu, 11 Jan 2024 10:24:41 +0800 (CST)
+From: chenxuebing <chenxb_99091@126.com>
+To: alexander.deucher@amd.com,
+	christian.koenig@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	Xinhui.Pan@amd.com
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	chenxuebing <chenxb_99091@126.com>
+Subject: [PATCH] drm/amdgpu: Clean up errors in jpeg_v2_5.c
+Date: Thu, 11 Jan 2024 02:24:37 +0000
+Message-Id: <20240111022437.6239-1-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD331ppUZ9lMjQtAA--.21367S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7urWDWry7JF13Jry3Ary3twb_yoW8WFWUpa
+	93AFy5urs5CFnFv3ZrX3WDZFnYkw13u3W5CrWUJw1fu3W5Jr98X3s7tFy5Z340qFWxCrWI
+	vr48t3y7X3WIvF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRijjPUUUUU=
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiHAxixWV2zz6PUgAAsI
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Wed, 10 Jan 2024 16:19:17 -0500:
+Fix the following errors reported by checkpatch:
 
-> https://evilpiepirate.org/git/bcachefs.git tags/header_cleanup-2024-01-10
+ERROR: space required before the open parenthesis '('
+ERROR: that open brace { should be on the previous line
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/78273df7f646f8daf2604ec714bea0897cd03aae
+Signed-off-by: chenxuebing <chenxb_99091@126.com>
+---
+ drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Thank you!
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
+index e67a337457ed..99cd49ee8ef6 100644
+--- a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
++++ b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
+@@ -551,7 +551,7 @@ static int jpeg_v2_5_set_powergating_state(void *handle,
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 	int ret;
+ 
+-	if(state == adev->jpeg.cur_state)
++	if (state == adev->jpeg.cur_state)
+ 		return 0;
+ 
+ 	if (state == AMD_PG_STATE_GATE)
+@@ -559,7 +559,7 @@ static int jpeg_v2_5_set_powergating_state(void *handle,
+ 	else
+ 		ret = jpeg_v2_5_start(adev);
+ 
+-	if(!ret)
++	if (!ret)
+ 		adev->jpeg.cur_state = state;
+ 
+ 	return ret;
+@@ -754,8 +754,7 @@ static void jpeg_v2_5_set_irq_funcs(struct amdgpu_device *adev)
+ 	}
+ }
+ 
+-const struct amdgpu_ip_block_version jpeg_v2_5_ip_block =
+-{
++const struct amdgpu_ip_block_version jpeg_v2_5_ip_block = {
+ 		.type = AMD_IP_BLOCK_TYPE_JPEG,
+ 		.major = 2,
+ 		.minor = 5,
+@@ -763,8 +762,7 @@ const struct amdgpu_ip_block_version jpeg_v2_5_ip_block =
+ 		.funcs = &jpeg_v2_5_ip_funcs,
+ };
+ 
+-const struct amdgpu_ip_block_version jpeg_v2_6_ip_block =
+-{
++const struct amdgpu_ip_block_version jpeg_v2_6_ip_block = {
+ 		.type = AMD_IP_BLOCK_TYPE_JPEG,
+ 		.major = 2,
+ 		.minor = 6,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.17.1
+
 
