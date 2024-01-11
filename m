@@ -1,95 +1,72 @@
-Return-Path: <linux-kernel+bounces-23930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80E1382B40C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:27:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3B782B410
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1984528611E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:27:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34F711C23BC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6979524A3;
-	Thu, 11 Jan 2024 17:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF25524B5;
+	Thu, 11 Jan 2024 17:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cmjr8Exr"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="JRGixTjk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA0A50264
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 17:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5f15a1052b3so51217907b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:27:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704994056; x=1705598856; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zwX+Q8u87YRBeqp+9doFk/KRGXo5yTvV0ztJoK1gxhA=;
-        b=cmjr8Exr9t4/hwhLD9gbLaTRyekJkiLl8LgvVj/EmAlJdrFul+YObDIecW6o+tWdBG
-         zGCJqYIKY+FUZufT6YMWZVm4m/26pGDIbGwVD/ltT0SiZxUiv56YOLr25KKD1cCVr6qB
-         6iqyEXAzHl4+mcjLO1xitkxfs779nIvk/aqatH5URs3k1sW9CTUxhw8OpxcLdsdsbZkk
-         yYqegNzpaIWBMT04b0vK7/HsQlMafJKRW3UeBNy7AOz/UZAS+csXnDM8UOv8+aOdI6kx
-         vG2tUTZ/KEHXxCaFAnWfBCLyDIs27fbK45CwYaoqT6C72OSgRsJSE6CFNmKCK3Lk5Oxh
-         E9Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704994056; x=1705598856;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zwX+Q8u87YRBeqp+9doFk/KRGXo5yTvV0ztJoK1gxhA=;
-        b=J1Gouaihz5ULaCJBt2YtWg+HKgGr1Qlx0FgaVtoHn82qj84NyUduYCGuZOAIqG/VoT
-         a3KQlkSzKLMptNwhsCGnRUIjJgu1P+ycS+7pQ3qWf9tZehl2hCd/439Jqq9IQp80TJtC
-         CNtTWTKU8r1UjXT//wAI3n6z5nCIteCXJZUYAuLEYVkpD8ei3rIjuTbF3pNnkZqMxYgX
-         1DLPsFBJ+/APmyveGvot8koTstQp0Y/rbQGajlRCA0LaeL6mNlHidZrmKRJQDZKDmmIz
-         pDI1Q1qFbrHYj/JdqgLfVzb1xcXcKqKZnYINZsVSGu9e/rPlutkMWIVJ0M9molluBNc1
-         EgUA==
-X-Gm-Message-State: AOJu0YyOom8P4Ok8bheUt0qtO0q6KXizXGtUV2kj+bqqqfVI7VNKH7mt
-	ISta5Bn8XmdhnhPI++VLHSa6ACJEhDVBTTEhEImqqqxuxtJPTr8Hqo0vYTieygJ6H64a
-X-Google-Smtp-Source: AGHT+IFXacy54wlB2/avVyvlqWPg2me5MG2fUSxjyMqNRuv2t5PPokTTThra3Y7tS7jvxnp1hqWagKKX50vYF3/UjZg=
-X-Received: by 2002:a81:bc12:0:b0:5e7:5cd8:92b2 with SMTP id
- a18-20020a81bc12000000b005e75cd892b2mr114924ywi.69.1704994056560; Thu, 11 Jan
- 2024 09:27:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7270251C52;
+	Thu, 11 Jan 2024 17:28:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B1AC433C7;
+	Thu, 11 Jan 2024 17:28:32 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="JRGixTjk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1704994110;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VQU+/B75My8JCV9QOfAoQaVoiZZKMfAX5WlSXQ7LsZ8=;
+	b=JRGixTjkJkyB+Uod9GaN7lLh08tBREHRQxoQZ7jj0Nbgau90+b3coSzYv9vG7TbWLxoScs
+	T7qUKY8z2bd5EF8gAw37yDEzxi8dxMibEfBH1ucidj0WndEwTeHR5zQa10wXvjYT+bOOqz
+	xE+wnZ8NnWt5rjp5I/1MNgkKTSnXTIA=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ec4b128a (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 11 Jan 2024 17:28:30 +0000 (UTC)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5f75aee31d2so51263487b3.2;
+        Thu, 11 Jan 2024 09:28:29 -0800 (PST)
+X-Gm-Message-State: AOJu0Yzw2F+oyllVMWQLaoxnnemY4vERvIeEj911+u6v0awcx7JugZSI
+	bEkDwbSbIdU0AJ9iXDf7SAai7azt5JbaxgYWpQ4=
+X-Google-Smtp-Source: AGHT+IEuXaZRUafKB+5MH5F4r3WLlEO3IABB/ps1mlnaPrmjQdZWPBNDATAze8zyWp0pwB0VoEqbgAvv8SD47XTIM4M=
+X-Received: by 2002:a81:ae53:0:b0:5fa:f8b7:80d4 with SMTP id
+ g19-20020a81ae53000000b005faf8b780d4mr116484ywk.89.1704994108587; Thu, 11 Jan
+ 2024 09:28:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1704993255-12753-1-git-send-email-quic_khsieh@quicinc.com>
-In-Reply-To: <1704993255-12753-1-git-send-email-quic_khsieh@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 11 Jan 2024 19:27:25 +0200
-Message-ID: <CAA8EJprHVbPv8ULK3mRPXGOFbuCQ6sw+r68uhdfCe8=E5=YkAw@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/msm/dp: remove mdss_dp_test_bit_depth_to_bpc()
-To: Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc: dri-devel@lists.freedesktop.org, robdclark@gmail.com, sean@poorly.run, 
-	swboyd@chromium.org, dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch, 
-	airlied@gmail.com, agross@kernel.org, andersson@kernel.org, 
-	quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com, 
-	quic_sbillaka@quicinc.com, marijn.suijten@somainline.org, 
-	freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240111154138.7605-1-n.zhandarovich@fintech.ru>
+In-Reply-To: <20240111154138.7605-1-n.zhandarovich@fintech.ru>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Thu, 11 Jan 2024 18:28:16 +0100
+X-Gmail-Original-Message-ID: <CAHmME9o9ZzdWCOmg_s4K4zUUb0BitE+9F7Ox-hCnSHaFQahGtA@mail.gmail.com>
+Message-ID: <CAHmME9o9ZzdWCOmg_s4K4zUUb0BitE+9F7Ox-hCnSHaFQahGtA@mail.gmail.com>
+Subject: Re: [PATCH net] wireguard: receive: annotate data-race around receiving_counter.counter
+To: n.zhandarovich@fintech.ru
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, wireguard@lists.zx2c4.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzbot <syzkaller@googlegroups.com>, 
+	syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 11 Jan 2024 at 19:14, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->
-> mdss_dp_test_bit_depth_to_bpc() can be replace by
-> mdss_dp_test_bit_depth_to_bpp() / 3. Hence remove it.
->
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/dp/dp_debug.c |  2 +-
->  drivers/gpu/drm/msm/dp/dp_link.h  | 23 -----------------------
->  2 files changed, 1 insertion(+), 24 deletions(-)
+Thanks. Jann pointed me at this a few days ago and I was just looking into it.
 
-Thank you!
+Send a v2 with Eric's suggestion and I'll queue it up?
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
--- 
-With best wishes
-Dmitry
+Jason
 
