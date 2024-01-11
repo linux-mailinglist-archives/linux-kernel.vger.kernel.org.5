@@ -1,119 +1,215 @@
-Return-Path: <linux-kernel+bounces-23093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57E182A78A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:25:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C81282A78E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7638B1F23BE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:25:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46A8B281E2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4B1FBFF;
-	Thu, 11 Jan 2024 06:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C4E42592;
+	Thu, 11 Jan 2024 06:27:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="GkipVFTE";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Y/8wUkSJ"
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A202FBF2;
-	Thu, 11 Jan 2024 06:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id BE0CE3200A7A;
-	Thu, 11 Jan 2024 01:24:17 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 11 Jan 2024 01:24:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704954257; x=1705040657; bh=DrHB+y9Pgc
-	vV0CSGp8H420Yn6g7abiIoAQ9Qr6Gyars=; b=GkipVFTE0PStlL9e/y52pEHOHM
-	+nDgLIhX+lPWbqe7arZFqGvrxEt/mZ2l+BGl0OvhbIbEPvLfL1/Y1Qngp+0+Z+aY
-	ua4T6YTQxQl6G1i4M4Dx9lXbiodzGTXB0ZCE6zn5qhxfmc//SR0UyHHkypMqGs21
-	GVTc8LiPYV2ObPT2XVVQflil3evqzbZ5gOu1J/5jZcrQjP2mG6chgGRBCUuNmbIO
-	276SYaLT+zSGmYn2LS3pQ8xEMnqywOtbo2oRX7dTggg3QFaRs0Uwi9URroObMNf1
-	A85G+p0O8KWiXf/pV0YFXLRvK/YBlm5FPQeJQBa/sawDBpG+G1CKdlMFniNA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704954257; x=1705040657; bh=DrHB+y9PgcvV0CSGp8H420Yn6g7a
-	biIoAQ9Qr6Gyars=; b=Y/8wUkSJEobH2iVWvcsm87q14HOzEf7pmiM7brlRtgQX
-	4L/XOIQ3jsYxcIELJUxK/d5vS4fg4bOf9TrGu9/+HRslPN/3bzXGndLFMq2u5mA/
-	1X8DZhvGY+RucQ7w/2slxRdFODZA4i7KOf6OdbuxnWyKx4tF05DUN1drg3YKrHbe
-	3uKiuIKe6XyazwypVu4xDflhDoAOa1KSGMFKiMQyO8qCAPtaDokB2ioy1sYLm9LU
-	joRdj6mJ3ikCQBFIpiqaj+huP+Gbf6ZtVDeGqAaVnekDjpLcHrJUSjOzCZgPRdL8
-	jnxMLt2UJMOPdVusDcoeSqJj2s3LyklhjexnBI7m6g==
-X-ME-Sender: <xms:kImfZToohpB0iiVwCIIpSA4gA8h7hnsWXOMP1kX45e4dmbma1uipEA>
-    <xme:kImfZdpYsbq9wZTS4w6n_ZGDR_1uhdy7I8Nttm2_w71c6dyIx9PEn8b8iBRB4f7BL
-    Ox0xvU51Q6rj8Hrtg0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeivddgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:kImfZQMJr7-RRGACZLQVMhlKrezabwoIQZr8tLGh9sHILBFP-TjdVA>
-    <xmx:kImfZW70Rg18t07fBnnqOk5jWKeaPE8d7rS0if3N8_In5hv4BRVotw>
-    <xmx:kImfZS6rfFwcP9SjhxgzptIJvPsVAlIDJIycNmX4dOtn1SsNwYMtOA>
-    <xmx:kYmfZUSa1bIot4l6cbwDd7RBweTaKAxT-SNfrk_Eo9CQDZGFWdFhqA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id D2E92B6008D; Thu, 11 Jan 2024 01:24:16 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="Jj/9k2Tx"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E49256D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 06:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=r0vUj6pGIqiH+JcHde
+	OSlMJWZuECSyT0n3RL5XfY9A8=; b=Jj/9k2Tx1hOHFZahBwBIiGAPuIam5CaiOD
+	lPjqNGa6Z+t/aN6AX1/7/Xtz5Hei5jNbN5d+kor7nKfD+wmaCe/7TF2QqEO9HgzL
+	M+FcjLyRoSBWV7S2luKqkGQZcK/7LGtB1Z157eoIt5FlFhcdEvqK8TVCsh3xHQ9/
+	TxvmPC+cA=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id _____wDXX79Lip9lMYsyAA--.20534S2;
+	Thu, 11 Jan 2024 14:27:23 +0800 (CST)
+From: chenxuebing <chenxb_99091@126.com>
+To: christian.koenig@amd.com,
+	alexander.deucher@amd.com,
+	Xinhui.Pan@amd.com,
+	daniel@ffwll.ch,
+	airlied@gmail.com
+Cc: linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	chenxuebing <chenxb_99091@126.com>
+Subject: [PATCH] drm/amdgpu: Clean up errors in displayobject.h
+Date: Thu, 11 Jan 2024 06:27:21 +0000
+Message-Id: <20240111062721.8519-1-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wDXX79Lip9lMYsyAA--.20534S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3XFW5trWUJFyxGw1rXFWUArb_yoWxXFW7pF
+	1jvr4DArZ5J3WjqrWUX39YvF95Ja1UCr1xKr9xWrnxtr1vg3ZrZr95t348Aa4Iqr4kKF4f
+	J3WUGFnxZrW5J37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UjPfdUUUUU=
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiWQ1ixWVLYUHeCwAAso
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-Id: <343cedc4-a078-4cf8-ba3b-a1a8df74185b@app.fastmail.com>
-In-Reply-To: <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
-References: <20240110232255.1099757-1-arnd@kernel.org>
- <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
-Date: Thu, 11 Jan 2024 07:23:34 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Frank Li" <Frank.li@nxp.com>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Vinod Koul" <vkoul@kernel.org>, "Peng Fan" <peng.fan@nxp.com>,
- "Fabio Estevam" <festevam@denx.de>, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev
-Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
-Content-Type: text/plain
 
-On Thu, Jan 11, 2024, at 01:02, Frank Li wrote:
-> On Thu, Jan 11, 2024 at 12:03:42AM +0100, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> A change to remove some unnecessary exports ended up removing some
->> necessary ones as well, and caused a build regression by trying to
->> link a single source file into two separate modules:
->
-> You should fix Kconfig to provent fsl-edma and mcf-edma build at the same
-> time.
+Fix the following errors reported by checkpatch:
 
-That sounds like the wrong approach since it prevents
-compile-testing one of the drivers in an allmodconfig
-build.
+ERROR: spaces required around that '=' (ctx:WxV)
+ERROR: space prohibited after that open parenthesis '('
 
-> EXPORT_SYMBOL_GPL is not necesary at all.
->
-> mcf-edma is quit old. ideally, it should be merged into fsl-edma.
+Signed-off-by: chenxuebing <chenxb_99091@126.com>
+---
+ drivers/gpu/drm/amd/include/displayobject.h | 72 ++++++++++-----------
+ 1 file changed, 36 insertions(+), 36 deletions(-)
 
-I have no specific interest in either of the drivers, just
-trying to fix the build regression. I see no harm in exporting
-the symbols, but I can refactor the drivers to link all three
-files into the same module and add a hack to register both
-platform_driver instances from a shared module_init() if
-you think that's better. Unfortunately we can't have more
-than one initcall in a loadable module.
+diff --git a/drivers/gpu/drm/amd/include/displayobject.h b/drivers/gpu/drm/amd/include/displayobject.h
+index 0f9529c40496..ce0c13e4e336 100644
+--- a/drivers/gpu/drm/amd/include/displayobject.h
++++ b/drivers/gpu/drm/amd/include/displayobject.h
+@@ -38,20 +38,20 @@
+ * Display Object Type Definition 
+ *****************************************************/
+ enum display_object_type {
+-DISPLAY_OBJECT_TYPE_NONE						=0x00,
+-DISPLAY_OBJECT_TYPE_GPU							=0x01,
+-DISPLAY_OBJECT_TYPE_ENCODER						=0x02,
+-DISPLAY_OBJECT_TYPE_CONNECTOR					=0x03
++DISPLAY_OBJECT_TYPE_NONE = 0x00,
++DISPLAY_OBJECT_TYPE_GPU	= 0x01,
++DISPLAY_OBJECT_TYPE_ENCODER = 0x02,
++DISPLAY_OBJECT_TYPE_CONNECTOR = 0x03
+ };
+ 
+ /****************************************************
+ * Encorder Object Type Definition 
+ *****************************************************/
+ enum encoder_object_type {
+-ENCODER_OBJECT_ID_NONE							 =0x00,
+-ENCODER_OBJECT_ID_INTERNAL_UNIPHY				 =0x01,
+-ENCODER_OBJECT_ID_INTERNAL_UNIPHY1				 =0x02,
+-ENCODER_OBJECT_ID_INTERNAL_UNIPHY2				 =0x03,
++ENCODER_OBJECT_ID_NONE = 0x00,
++ENCODER_OBJECT_ID_INTERNAL_UNIPHY = 0x01,
++ENCODER_OBJECT_ID_INTERNAL_UNIPHY1 = 0x02,
++ENCODER_OBJECT_ID_INTERNAL_UNIPHY2 = 0x03,
+ };
+ 
+ 
+@@ -60,14 +60,14 @@ ENCODER_OBJECT_ID_INTERNAL_UNIPHY2				 =0x03,
+ *****************************************************/
+ 
+ enum connector_object_type {
+-CONNECTOR_OBJECT_ID_NONE						  =0x00, 
+-CONNECTOR_OBJECT_ID_SINGLE_LINK_DVI_D			  =0x01,
+-CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_D				  =0x02,
+-CONNECTOR_OBJECT_ID_HDMI_TYPE_A					  =0x03,
+-CONNECTOR_OBJECT_ID_LVDS						  =0x04,
+-CONNECTOR_OBJECT_ID_DISPLAYPORT					  =0x05,
+-CONNECTOR_OBJECT_ID_eDP							  =0x06,
+-CONNECTOR_OBJECT_ID_OPM							  =0x07
++CONNECTOR_OBJECT_ID_NONE = 0x00, 
++CONNECTOR_OBJECT_ID_SINGLE_LINK_DVI_D = 0x01,
++CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_D = 0x02,
++CONNECTOR_OBJECT_ID_HDMI_TYPE_A = 0x03,
++CONNECTOR_OBJECT_ID_LVDS = 0x04,
++CONNECTOR_OBJECT_ID_DISPLAYPORT	= 0x05,
++CONNECTOR_OBJECT_ID_eDP = 0x06,
++CONNECTOR_OBJECT_ID_OPM = 0x07
+ };
+ 
+ 
+@@ -81,24 +81,24 @@ CONNECTOR_OBJECT_ID_OPM							  =0x07
+ *****************************************************/
+ 
+ enum object_enum_id {
+-OBJECT_ENUM_ID1									  =0x01,
+-OBJECT_ENUM_ID2									  =0x02,
+-OBJECT_ENUM_ID3									  =0x03,
+-OBJECT_ENUM_ID4									  =0x04,
+-OBJECT_ENUM_ID5									  =0x05,
+-OBJECT_ENUM_ID6									  =0x06
++OBJECT_ENUM_ID1 = 0x01,
++OBJECT_ENUM_ID2 = 0x02,
++OBJECT_ENUM_ID3 = 0x03,
++OBJECT_ENUM_ID4 = 0x04,
++OBJECT_ENUM_ID5	= 0x05,
++OBJECT_ENUM_ID6	= 0x06
+ };
+ 
+ /****************************************************
+ *Object ID Bit definition 
+ *****************************************************/
+ enum object_id_bit {
+-OBJECT_ID_MASK									  =0x00FF,
+-ENUM_ID_MASK									  =0x0F00,
+-OBJECT_TYPE_MASK								  =0xF000,
+-OBJECT_ID_SHIFT									  =0x00,
+-ENUM_ID_SHIFT									  =0x08,
+-OBJECT_TYPE_SHIFT								  =0x0C
++OBJECT_ID_MASK = 0x00FF,
++ENUM_ID_MASK = 0x0F00,
++OBJECT_TYPE_MASK = 0xF000,
++OBJECT_ID_SHIFT = 0x00,
++ENUM_ID_SHIFT = 0x08,
++OBJECT_TYPE_SHIFT = 0x0C
+ };
+ 
+ 
+@@ -106,7 +106,7 @@ OBJECT_TYPE_SHIFT								  =0x0C
+ * GPU Object definition - Shared with BIOS
+ *****************************************************/
+ enum gpu_objet_def {
+-GPU_ENUM_ID1                            = (DISPLAY_OBJECT_TYPE_GPU << OBJECT_TYPE_SHIFT | OBJECT_ENUM_ID1 << ENUM_ID_SHIFT)
++GPU_ENUM_ID1 = (DISPLAY_OBJECT_TYPE_GPU << OBJECT_TYPE_SHIFT | OBJECT_ENUM_ID1 << ENUM_ID_SHIFT)
+ };
+ 
+ /****************************************************
+@@ -114,27 +114,27 @@ GPU_ENUM_ID1                            = (DISPLAY_OBJECT_TYPE_GPU << OBJECT_TYP
+ *****************************************************/
+ 
+ enum encoder_objet_def {
+-ENCODER_INTERNAL_UNIPHY_ENUM_ID1         = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
++ENCODER_INTERNAL_UNIPHY_ENUM_ID1 = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
+                                                  OBJECT_ENUM_ID1 << ENUM_ID_SHIFT |\
+                                                  ENCODER_OBJECT_ID_INTERNAL_UNIPHY << OBJECT_ID_SHIFT),
+ 
+-ENCODER_INTERNAL_UNIPHY_ENUM_ID2         = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
++ENCODER_INTERNAL_UNIPHY_ENUM_ID2 = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
+                                                  OBJECT_ENUM_ID2 << ENUM_ID_SHIFT |\
+                                                  ENCODER_OBJECT_ID_INTERNAL_UNIPHY << OBJECT_ID_SHIFT),
+ 
+-ENCODER_INTERNAL_UNIPHY1_ENUM_ID1        = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
++ENCODER_INTERNAL_UNIPHY1_ENUM_ID1 = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
+                                                  OBJECT_ENUM_ID1 << ENUM_ID_SHIFT |\
+                                                  ENCODER_OBJECT_ID_INTERNAL_UNIPHY1 << OBJECT_ID_SHIFT),
+ 
+-ENCODER_INTERNAL_UNIPHY1_ENUM_ID2        = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
++ENCODER_INTERNAL_UNIPHY1_ENUM_ID2 = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
+                                                  OBJECT_ENUM_ID2 << ENUM_ID_SHIFT |\
+                                                  ENCODER_OBJECT_ID_INTERNAL_UNIPHY1 << OBJECT_ID_SHIFT),
+ 
+-ENCODER_INTERNAL_UNIPHY2_ENUM_ID1        = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
++ENCODER_INTERNAL_UNIPHY2_ENUM_ID1 = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
+                                                  OBJECT_ENUM_ID1 << ENUM_ID_SHIFT |\
+                                                  ENCODER_OBJECT_ID_INTERNAL_UNIPHY2 << OBJECT_ID_SHIFT),
+ 
+-ENCODER_INTERNAL_UNIPHY2_ENUM_ID2        = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
++ENCODER_INTERNAL_UNIPHY2_ENUM_ID2 = (DISPLAY_OBJECT_TYPE_ENCODER << OBJECT_TYPE_SHIFT |\
+                                                  OBJECT_ENUM_ID2 << ENUM_ID_SHIFT |\
+                                                  ENCODER_OBJECT_ID_INTERNAL_UNIPHY2 << OBJECT_ID_SHIFT)
+ };
+@@ -151,7 +151,7 @@ CONNECTOR_LVDS_ENUM_ID1	= (DISPLAY_OBJECT_TYPE_CONNECTOR << OBJECT_TYPE_SHIFT |\
+                                                  CONNECTOR_OBJECT_ID_LVDS << OBJECT_ID_SHIFT),
+ 
+ 
+-CONNECTOR_eDP_ENUM_ID1	= (DISPLAY_OBJECT_TYPE_CONNECTOR << OBJECT_TYPE_SHIFT |\
++CONNECTOR_eDP_ENUM_ID1 = (DISPLAY_OBJECT_TYPE_CONNECTOR << OBJECT_TYPE_SHIFT |\
+                                                  OBJECT_ENUM_ID1 << ENUM_ID_SHIFT |\
+                                                  CONNECTOR_OBJECT_ID_eDP << OBJECT_ID_SHIFT),
+ 
+-- 
+2.17.1
 
-     Arnd
 
