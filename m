@@ -1,81 +1,142 @@
-Return-Path: <linux-kernel+bounces-23869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3593C82B2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97D8282B2FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:31:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AADDA2885FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:30:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 457FD28B4FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7532D50279;
-	Thu, 11 Jan 2024 16:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC934F8A1;
+	Thu, 11 Jan 2024 16:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="xyiwDMkt"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVCo7t3H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B6450248;
-	Thu, 11 Jan 2024 16:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=RZZYfRnPOO3FwcjRLM0jK60UeYXHjeCKu2AE3qKo9Vk=; b=xyiwDMkt2KpmBS8xYraVAQvlHx
-	ksUXbOKxjUC59W+Z9bFz+QIdkOebEt+meVCMITncKXRGJIwO5iUqPcZkDgta2x7LWy0KFng0VPcd/
-	v4dgoZKkC5Bo919UCr6PatZgwj1ydrRC71urHkxqsxTX+s15PWZXh6EkMC1g4vUgWRyE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rNxwk-0050tN-J8; Thu, 11 Jan 2024 17:30:22 +0100
-Date: Thu, 11 Jan 2024 17:30:22 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	quic_kkumarcs@quicinc.com, quic_suruchia@quicinc.com,
-	quic_soni@quicinc.com, quic_pavir@quicinc.com,
-	quic_souravp@quicinc.com, quic_linchen@quicinc.com,
-	quic_leiwei@quicinc.com
-Subject: Re: [PATCH 3/6] arm64: dts: qcom: ipq5332: Add MDIO device tree
-Message-ID: <61973012-3f74-4b58-9575-3bc5199f61d9@lunn.ch>
-References: <20240110112059.2498-1-quic_luoj@quicinc.com>
- <20240110112059.2498-4-quic_luoj@quicinc.com>
- <4bc0aff5-8a1c-44a6-89d8-460961a61310@lunn.ch>
- <e893c298-fbfa-4ae4-9b76-72a5030a5530@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44B14F8A0;
+	Thu, 11 Jan 2024 16:31:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE11C433C7;
+	Thu, 11 Jan 2024 16:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704990705;
+	bh=U1X2QWSXEg//IKtKtRyY+42Ctp17xlrN2XZx68DSDoQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qVCo7t3H64sRsursu9ArdrG/SaPfjjLJiEYI6egm5VvdcdoSPKfPCg5d+rbuqSQbR
+	 NIyBExP9bXGwS1tTubW0NUCAaPHjUxNvC67ZHZCsQvxQs870NuIdCJK0sguAu/HODp
+	 bLQLeniaLjn6yg2Vph7JNq/vvbBD+TqpYfFdcYev7J6l0xByTJ5nmKwFw+nYExT+aB
+	 5wWbVfQb+C5rcTmdxm2OxXNjOJy/kc/EIUGlIdfFHMiaiFUoPKRDu+v0mKQHpq9/w6
+	 66D+4aBle1VlvFsCdFgdbBrsElbybxBzIbEDvCrpWyREdnnAwyD21K151NLa6YatCi
+	 r1MbK4TBzqGyg==
+Date: Thu, 11 Jan 2024 16:31:40 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Ceclan Dumitru <mitrutzceclan@gmail.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Ceclan Dumitru <dumitru.ceclan@analog.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: iio: hmc425a: add conditional GPIO
+ array size constraints
+Message-ID: <20240111-suitcase-collage-889fa8404ab2@spud>
+References: <20240110153757.5754-1-mitrutzceclan@gmail.com>
+ <20240110153757.5754-2-mitrutzceclan@gmail.com>
+ <20240110-unfitting-squander-b1d71c185bb7@spud>
+ <478d9445-96aa-44b3-b598-8f7d7716dbba@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="T/gFBDvK/h08vZL+"
+Content-Disposition: inline
+In-Reply-To: <478d9445-96aa-44b3-b598-8f7d7716dbba@gmail.com>
+
+
+--T/gFBDvK/h08vZL+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e893c298-fbfa-4ae4-9b76-72a5030a5530@quicinc.com>
+Content-Transfer-Encoding: quoted-printable
 
-> Sorry for the confusion, the pin nodes are for the MDIO and MDC, these
-> PINs are used by the dedicated hardware MDIO block in the SoC. I will update
-> the node name from mux_0 to MDC, mux_1 to MDIO, to make it clear. The driver
-> for this node is drivers/net/mdio/mdio-ipq4019.c, it is not related to the
-> mdio-mux-* code.
+On Thu, Jan 11, 2024 at 10:17:58AM +0200, Ceclan Dumitru wrote:
+>=20
+>=20
+> On 1/10/24 18:17, Conor Dooley wrote:
+> > On Wed, Jan 10, 2024 at 05:37:09PM +0200, Dumitru Ceclan wrote:...
+> >>    ctrl-gpios:
+> >>      description:
+> >> -      Must contain an array of 6 GPIO specifiers, referring to the GP=
+IO pins
+> >> -      connected to the control pins V1-V6.
+> >> -    minItems: 6
+> >> +      Must contain an array of GPIO specifiers, referring to the GPIO=
+ pins
+> >> +      connected to the control pins.
+> >> +        ADRF5740  - 4 GPIO connected to D2-D5
+> >> +        HMC540S   - 4 GPIO connected to V1-V4
+> >> +        HMC425A   - 6 GPIO connected to V1-V6
+> >> +    minItems: 1
+> >>      maxItems: 6
+> >> =20
+> >> +allOf:
+> >> +  - if:
+> >> +      properties:
+> >> +        compatible:
+> >> +          contains:
+> >> +            const: adi,hmc425a
+> >> +    then:
+> >> +      properties:
+> >> +        ctrl-gpios:
+> >> +          minItems: 6
+> >=20
+> >> +          maxItems: 6
+> >=20
+> > This one should not be needed, it's already set by constraints on the
+> > property above.
+> >=20
+>=20
+> No, not needed, just inspired from:
+>  /bindings/clock/samsung,exynos7-clock.yaml
+>=20
+> Specifically, the top constraints:
+>   clocks:
+>=20
+>     minItems: 1
+>=20
+>     maxItems: 13
+>=20
+> One of the conditional constraints:
+>   clocks:
+>=20
+>     minItems: 13
+>=20
+>     maxItems: 13
+>=20
+>=20
+> I would only have two arguments for this staying here:
+>  - It stays consistent with other cases
+>  - In the case a new device with more than 6 GPIOs is added, this would
+> need to be put back in
 
-So these is all about pinmux.
+Okay.
 
-When you say:
-> PINs are used by the dedicated hardware MDIO block in the SoC
+--T/gFBDvK/h08vZL+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-do you actually mean:
+-----BEGIN PGP SIGNATURE-----
 
-PINs are used by the two dedicated hardware MDIO blocks in the SoC.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaAX7AAKCRB4tDGHoIJi
+0ru8AQCdBU5wVGAEWO/zsKHdUGmfoPuB9Zz97glaVc3CR4U+UgEApoGcVfC+1Ta7
+DEGHEfg/LLqoQLprkP33lsaWkNIUTwQ=
+=xcFx
+-----END PGP SIGNATURE-----
 
-You have two sets of mdio/mdc configurations here, so i assume there
-are two MDIO hardware blocks, each being an MDIO bus master.
-
-    Andrew
+--T/gFBDvK/h08vZL+--
 
