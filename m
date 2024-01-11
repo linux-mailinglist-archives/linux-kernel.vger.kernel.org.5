@@ -1,137 +1,120 @@
-Return-Path: <linux-kernel+bounces-23712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B1282B0A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:26:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41DD482B0AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F13411F24C5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:26:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCC0928727D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113373D3A2;
-	Thu, 11 Jan 2024 14:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF953D3AB;
+	Thu, 11 Jan 2024 14:28:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="JzGLRDSw"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="NhAGUF3f"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F30A3AC10;
-	Thu, 11 Jan 2024 14:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1704983192; x=1736519192;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=u07jgQAZPh+ETepT/rWlofkLPq/+1wSCR8nHmur/QDA=;
-  b=JzGLRDSwzcVmwpNRtellzuPRao3wOdqfqm2IM6Bgej5PM+xVbJeWWjuT
-   HnrH72ezEzYKYNcUBvo4L1fuADjeqP4TWWReOzVFcFEPzylPtsPCb9+Ds
-   ms4oYpiuhZCweFlMiybmZY3WA1LVuR9rzr4eRvJh2YtXTbyoU3ax/AlP6
-   P7Pz9cH51ljMSuZenkoCeME9ygcxrFN8kC0k3aHHzDgGgvrzKAh11ks2I
-   ABaGegj+6eGSFeB/xChG38veO3dtYQvnJ7M+uf58ulO6b6AjETAswIkrE
-   80VmGl1j6XOqCMK9HRT+oXnJO1HF4FSTvpnDXvOzdKWbexejUQbQkkqiU
-   w==;
-X-IronPort-AV: E=Sophos;i="6.04,186,1695679200"; 
-   d="scan'208";a="34853706"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 11 Jan 2024 15:26:29 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 9698B280075;
-	Thu, 11 Jan 2024 15:26:29 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: bartosz.golaszewski@linaro.org, linus.walleij@linaro.org, Hector Palacios <hector.palacios@digi.com>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, haibo.chen@nxp.com, peng.fan@nxp.com, hector.palacios@digi.com
-Subject: Re: [PATCH 2/2] arm64: dts: imx93: specify available 'ngpios' per GPIO port
-Date: Thu, 11 Jan 2024 15:26:29 +0100
-Message-ID: <4330477.ejJDZkT8p0@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20240111131904.1491496-3-hector.palacios@digi.com>
-References: <20240111131904.1491496-1-hector.palacios@digi.com> <20240111131904.1491496-3-hector.palacios@digi.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB123C092;
+	Thu, 11 Jan 2024 14:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40BA26F2006046;
+	Thu, 11 Jan 2024 15:27:57 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=wTVjmGwYeV5sAYER1puGnO1qZuq5/BoWjcAmcf+ualw=; b=Nh
+	AGUF3fPYpTsl7KrzeNza89HbQL5gIOWEJu4JgU4OsDIdqfk5iPWv+L8iCA5vdmaw
+	aSu0ZLbk6oP4EYKRL26SirDEN2eH7SVdog8UqvXxvMh8fFfRCe8nLaasV0JbIK3P
+	KEsUG8bz62RV5fbPSS8krfWb3955BZX/zdco9Gue5dTWpbvOFyesF4WGYMXGSmTy
+	N8/XX/UC0XtT+pldsoQwjGG8GFCojFgw6k55uFkHc6CsosqCIr4b1BnuNEbw/jlG
+	R98GfhMueBKa0HPQ+1YCoXF2UerVAZLhMZ47P0yb/VBLzNWJyhY8bITnyHGIfp3s
+	0uvB0cu1lUxcJ1V/mfjw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vexrcdgku-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 15:27:57 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CE0D910002A;
+	Thu, 11 Jan 2024 15:27:55 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C09EA27DAAE;
+	Thu, 11 Jan 2024 15:27:55 +0100 (CET)
+Received: from [10.252.29.122] (10.252.29.122) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 11 Jan
+ 2024 15:27:54 +0100
+Message-ID: <a0888e25-4427-420c-a14d-d6504440805c@foss.st.com>
+Date: Thu, 11 Jan 2024 15:27:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 5/5] ARM: dts: add
+ stm32f769-disco-mb1225-revb03-mb1166-reva09
+Content-Language: en-US
+To: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        <linux-kernel@vger.kernel.org>
+CC: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-amarula@amarulasolutions.com>, Lee Jones <lee@kernel.org>,
+        Andre
+ Przywara <andre.przywara@arm.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert
+ Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        =?UTF-8?Q?Leonard_G=C3=B6hrs?=
+	<l.goehrs@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>,
+        Michal Simek <michal.simek@amd.com>, Rob Herring <robh+dt@kernel.org>,
+        Sean Nyekjaer <sean@geanix.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20240111113146.16011-1-dario.binacchi@amarulasolutions.com>
+ <20240111113146.16011-6-dario.binacchi@amarulasolutions.com>
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+In-Reply-To: <20240111113146.16011-6-dario.binacchi@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
 
-Am Donnerstag, 11. Januar 2024, 14:19:04 CET schrieb Hector Palacios:
-> According to NXP HRM for i.MX93, the following GPIO pins are available:
-> - GPIO1: 16 pins (0..15)
-> - GPIO2: 30 pins (0..29)
-> - GPIO3: 32 pins (0..31)
-> - GPIO4: 30 pins (0..29)
->=20
-> Signed-off-by: Hector Palacios <hector.palacios@digi.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx93.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi
-> b/arch/arm64/boot/dts/freescale/imx93.dtsi index 34c0540276d1..7eb2cab7c7=
-49
-> 100644
-> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> @@ -970,6 +970,7 @@ gpio2: gpio@43810000 {
->  				 <&clk IMX93_CLK_GPIO2_GATE>;
->  			clock-names =3D "gpio", "port";
->  			gpio-ranges =3D <&iomuxc 0 4 30>;
-> +			ngpios =3D <30>;
->  		};
->=20
->  		gpio3: gpio@43820000 {
-> @@ -986,6 +987,7 @@ gpio3: gpio@43820000 {
->  			clock-names =3D "gpio", "port";
->  			gpio-ranges =3D <&iomuxc 0 84 8>, <&iomuxc 8 66=20
-18>,
->  				      <&iomuxc 26 34 2>, <&iomuxc 28 0=20
-4>;
-> +			ngpios =3D <32>;
->  		};
->=20
->  		gpio4: gpio@43830000 {
-> @@ -1001,6 +1003,7 @@ gpio4: gpio@43830000 {
->  				 <&clk IMX93_CLK_GPIO4_GATE>;
->  			clock-names =3D "gpio", "port";
->  			gpio-ranges =3D <&iomuxc 0 38 28>, <&iomuxc 28 36=20
-2>;
-> +			ngpios =3D <30>;
->  		};
->=20
->  		gpio1: gpio@47400000 {
-> @@ -1016,6 +1019,7 @@ gpio1: gpio@47400000 {
->  				 <&clk IMX93_CLK_GPIO1_GATE>;
->  			clock-names =3D "gpio", "port";
->  			gpio-ranges =3D <&iomuxc 0 92 16>;
-> +			ngpios =3D <16>;
->  		};
->=20
->  		ocotp: efuse@47510000 {
 
-This leads to warnings upon dtbs_check, e.g.
-arch/arm64/boot/dts/freescale/imx93-tqma9352-mba93xxla.dtb: gpio@43810000:=
-=20
-'ngpios' does not match any of the regexes: '^.+-hog(-[0-9]+)?$', 'pinctrl-
-[0-9]+'
-  from schema $id: http://devicetree.org/schemas/gpio/gpio-vf610.yaml#
+On 1/11/24 12:31, Dario Binacchi wrote:
+> As reported in the section 8.3 (i. e. Board revision history) of document
+> UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
+> related to the board revisions addressed by the patch:
+> - Board MB1225 revision B-03:
+>   - Memory MICRON MT48LC4M32B2B5-6A replaced by ISSI IS42S32400F-6BL
+> - Board MB1166 revision A-09:
+>   - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
+>
+> The patch only adds the DTS support for the new display which belongs to
+> to the Novatek NT35510-based panel family.
+>
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+>
+Hi Dario,
 
-Please address this as well.
 
-Best regards,
-Alexander
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
+Reviewed-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
 
+
+Regards,
+
+Raphaël
 
 
