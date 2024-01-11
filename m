@@ -1,195 +1,143 @@
-Return-Path: <linux-kernel+bounces-23286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A609182AA74
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6114682AA7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBC311C262BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:05:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8773A1C2695E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F16011195;
-	Thu, 11 Jan 2024 09:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44F614F92;
+	Thu, 11 Jan 2024 09:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="kfnBLjdk"
-Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECFB14A82
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=yIRdTiFNyHb0/qm6Ef
-	AjWM6tlpKk3ddwfpRKBB+4ypg=; b=kfnBLjdku5GJ0NIswW5tYgTmDZsdXwhSPe
-	7G26bLH+jsDmSZrICt0Qpm2eq/c4bxdAuQtO0tfjnuZtGhsu4sbT7nUEsfyN9YbJ
-	Mej/uelWwbJtZawfHgtn8Y082/2dOoof0mc9YyB05X67VEpM+80I9xl8YNhHpOS2
-	IgYG6vRZc=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wDnL10Fr59l9pSXAA--.18295S2;
-	Thu, 11 Jan 2024 17:04:06 +0800 (CST)
-From: GuoHua Chen <chenguohua_716@163.com>
-To: daniel@ffwll.ch,
-	Xinhui.Pan@amd.com,
-	alexander.deucher@amd.com,
-	airlied@gmail.com,
-	christian.koenig@amd.com
-Cc: dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	GuoHua Chen <chenguohua_716@163.com>
-Subject: [PATCH] drm/radeon/kms: Clean up errors in smu7_fusion.h
-Date: Thu, 11 Jan 2024 09:04:03 +0000
-Message-Id: <20240111090403.13324-1-chenguohua_716@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wDnL10Fr59l9pSXAA--.18295S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXFWkZF15Jr48GFWfWry3Jwb_yoWrArWfp3
-	y5Aa1agayrA34agry8Cr4rXw4ftr1UurWkCr12k3yrJ3W2kr42gF10kw40yryI9r4kuwnx
-	ZwsFqF1IgrW7ZrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UFZXrUUUUU=
-X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/1tbiqAli1mVOBlFrDAACsM
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="BremuP5j"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6AE14A9C;
+	Thu, 11 Jan 2024 09:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704963874;
+	bh=tm+pzNDRFsAnARFpOm+LIlSach1Kros+MV0VeCv7yrc=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=BremuP5jvAAl5/MN8tRS5dlaw57LcoGBW2TTIM4OOFuRKcwirKQHetzk7D0NqiaAS
+	 H5RNIbFCv0Ky3SauRPuzQblqIa5Pf4jkoiL9oU8QlqCG0tJJojhEmx/qANrnAsq5Fl
+	 49vNBz4XWvRIIXYdNFJ/sYHIRDzk4LPli8Eu25j4PtHuAW8EgPOX4iraBgd1xPQ+r1
+	 mCF5bJ90HkMS9ItF5QsqKkL50hhACB1vGIAaLXjS0zdbnezhP+HxeSk+KKci0KeUjb
+	 /CsyWHFoNFzf5vXbX8q9iZELi28Ha5l8q2ECPKAlqQvssdArkwj5jxWhReAzuCu89Y
+	 9h/6shiHJmX+Q==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8B8AE3781F80;
+	Thu, 11 Jan 2024 09:04:30 +0000 (UTC)
+Message-ID: <31c2d7d7-eaee-4730-9d27-05740f8ef911@collabora.com>
+Date: Thu, 11 Jan 2024 14:04:36 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, teawater@gmail.com,
+ Hui Zhu <teawater@antgroup.com>
+Subject: Re: [PATCH] fs/proc/task_mmu.c: add_to_pagemap: Remove useless
+ parameter addr
+Content-Language: en-US
+To: Hui Zhu <teawaterz@linux.alibaba.com>, akpm@linux-foundation.org,
+ david@redhat.com, avagin@google.com, peterx@redhat.com, hughd@google.com,
+ ryan.roberts@arm.com, wangkefeng.wang@huawei.com, Liam.Howlett@Oracle.com,
+ adobriyan@gmail.com, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org
+References: <20240111084533.40038-1-teawaterz@linux.alibaba.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240111084533.40038-1-teawaterz@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fix the following errors reported by checkpatch:
+On 1/11/24 1:45 PM, Hui Zhu wrote:
+> From: Hui Zhu <teawater@antgroup.com>
+> 
+> Function parameters addr of add_to_pagemap is useless.
+> This commit remove it.
+> 
+> Signed-off-by: Hui Zhu <teawater@antgroup.com>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-ERROR: open brace '{' following struct go on the same line
-ERROR: space prohibited before open square bracket '['
+> ---
+>  fs/proc/task_mmu.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 62b16f42d5d2..882e2569fc31 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1352,8 +1352,7 @@ static inline pagemap_entry_t make_pme(u64 frame, u64 flags)
+>  	return (pagemap_entry_t) { .pme = (frame & PM_PFRAME_MASK) | flags };
+>  }
+>  
+> -static int add_to_pagemap(unsigned long addr, pagemap_entry_t *pme,
+> -			  struct pagemapread *pm)
+> +static int add_to_pagemap(pagemap_entry_t *pme, struct pagemapread *pm)
+>  {
+>  	pm->buffer[pm->pos++] = *pme;
+>  	if (pm->pos >= pm->len)
+> @@ -1380,7 +1379,7 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
+>  			hole_end = end;
+>  
+>  		for (; addr < hole_end; addr += PAGE_SIZE) {
+> -			err = add_to_pagemap(addr, &pme, pm);
+> +			err = add_to_pagemap(&pme, pm);
+>  			if (err)
+>  				goto out;
+>  		}
+> @@ -1392,7 +1391,7 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
+>  		if (vma->vm_flags & VM_SOFTDIRTY)
+>  			pme = make_pme(0, PM_SOFT_DIRTY);
+>  		for (; addr < min(end, vma->vm_end); addr += PAGE_SIZE) {
+> -			err = add_to_pagemap(addr, &pme, pm);
+> +			err = add_to_pagemap(&pme, pm);
+>  			if (err)
+>  				goto out;
+>  		}
+> @@ -1519,7 +1518,7 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
+>  		for (; addr != end; addr += PAGE_SIZE) {
+>  			pagemap_entry_t pme = make_pme(frame, flags);
+>  
+> -			err = add_to_pagemap(addr, &pme, pm);
+> +			err = add_to_pagemap(&pme, pm);
+>  			if (err)
+>  				break;
+>  			if (pm->show_pfn) {
+> @@ -1547,7 +1546,7 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
+>  		pagemap_entry_t pme;
+>  
+>  		pme = pte_to_pagemap_entry(pm, vma, addr, ptep_get(pte));
+> -		err = add_to_pagemap(addr, &pme, pm);
+> +		err = add_to_pagemap(&pme, pm);
+>  		if (err)
+>  			break;
+>  	}
+> @@ -1597,7 +1596,7 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
+>  	for (; addr != end; addr += PAGE_SIZE) {
+>  		pagemap_entry_t pme = make_pme(frame, flags);
+>  
+> -		err = add_to_pagemap(addr, &pme, pm);
+> +		err = add_to_pagemap(&pme, pm);
+>  		if (err)
+>  			return err;
+>  		if (pm->show_pfn && (flags & PM_PRESENT))
 
-Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
----
- drivers/gpu/drm/radeon/smu7_fusion.h | 42 +++++++++++-----------------
- 1 file changed, 16 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/smu7_fusion.h b/drivers/gpu/drm/radeon/smu7_fusion.h
-index 78ada9ffd508..e130f52fe8d6 100644
---- a/drivers/gpu/drm/radeon/smu7_fusion.h
-+++ b/drivers/gpu/drm/radeon/smu7_fusion.h
-@@ -36,8 +36,7 @@
- #define SMU7_NUM_NON_TES 2
- 
- // All 'soft registers' should be uint32_t.
--struct SMU7_SoftRegisters
--{
-+struct SMU7_SoftRegisters {
-     uint32_t        RefClockFrequency;
-     uint32_t        PmTimerP;
-     uint32_t        FeatureEnables;
-@@ -80,8 +79,7 @@ struct SMU7_SoftRegisters
- 
- typedef struct SMU7_SoftRegisters SMU7_SoftRegisters;
- 
--struct SMU7_Fusion_GraphicsLevel
--{
-+struct SMU7_Fusion_GraphicsLevel {
-     uint32_t    MinVddNb;
- 
-     uint32_t    SclkFrequency;
-@@ -111,8 +109,7 @@ struct SMU7_Fusion_GraphicsLevel
- 
- typedef struct SMU7_Fusion_GraphicsLevel SMU7_Fusion_GraphicsLevel;
- 
--struct SMU7_Fusion_GIOLevel
--{
-+struct SMU7_Fusion_GIOLevel {
-     uint8_t     EnabledForActivity;
-     uint8_t     LclkDid;
-     uint8_t     Vid;
-@@ -137,8 +134,7 @@ struct SMU7_Fusion_GIOLevel
- typedef struct SMU7_Fusion_GIOLevel SMU7_Fusion_GIOLevel;
- 
- // UVD VCLK/DCLK state (level) definition.
--struct SMU7_Fusion_UvdLevel
--{
-+struct SMU7_Fusion_UvdLevel {
-     uint32_t VclkFrequency;
-     uint32_t DclkFrequency;
-     uint16_t MinVddNb;
-@@ -155,8 +151,7 @@ struct SMU7_Fusion_UvdLevel
- typedef struct SMU7_Fusion_UvdLevel SMU7_Fusion_UvdLevel;
- 
- // Clocks for other external blocks (VCE, ACP, SAMU).
--struct SMU7_Fusion_ExtClkLevel
--{
-+struct SMU7_Fusion_ExtClkLevel {
-     uint32_t Frequency;
-     uint16_t MinVoltage;
-     uint8_t  Divider;
-@@ -166,8 +161,7 @@ struct SMU7_Fusion_ExtClkLevel
- };
- typedef struct SMU7_Fusion_ExtClkLevel SMU7_Fusion_ExtClkLevel;
- 
--struct SMU7_Fusion_ACPILevel
--{
-+struct SMU7_Fusion_ACPILevel {
-     uint32_t    Flags;
-     uint32_t    MinVddNb;
-     uint32_t    SclkFrequency;
-@@ -181,8 +175,7 @@ struct SMU7_Fusion_ACPILevel
- 
- typedef struct SMU7_Fusion_ACPILevel SMU7_Fusion_ACPILevel;
- 
--struct SMU7_Fusion_NbDpm
--{
-+struct SMU7_Fusion_NbDpm {
-     uint8_t DpmXNbPsHi;
-     uint8_t DpmXNbPsLo;
-     uint8_t Dpm0PgNbPsHi;
-@@ -197,8 +190,7 @@ struct SMU7_Fusion_NbDpm
- 
- typedef struct SMU7_Fusion_NbDpm SMU7_Fusion_NbDpm;
- 
--struct SMU7_Fusion_StateInfo
--{
-+struct SMU7_Fusion_StateInfo {
-     uint32_t SclkFrequency;
-     uint32_t LclkFrequency;
-     uint32_t VclkFrequency;
-@@ -214,8 +206,7 @@ struct SMU7_Fusion_StateInfo
- 
- typedef struct SMU7_Fusion_StateInfo SMU7_Fusion_StateInfo;
- 
--struct SMU7_Fusion_DpmTable
--{
-+struct SMU7_Fusion_DpmTable {
-     uint32_t                            SystemFlags;
- 
-     SMU7_PIDController                  GraphicsPIDController;
-@@ -230,12 +221,12 @@ struct SMU7_Fusion_DpmTable
-     uint8_t                            SamuLevelCount;
-     uint16_t                           FpsHighT;
- 
--    SMU7_Fusion_GraphicsLevel         GraphicsLevel           [SMU__NUM_SCLK_DPM_STATE];
-+    SMU7_Fusion_GraphicsLevel         GraphicsLevel[SMU__NUM_SCLK_DPM_STATE];
-     SMU7_Fusion_ACPILevel             ACPILevel;
--    SMU7_Fusion_UvdLevel              UvdLevel                [SMU7_MAX_LEVELS_UVD];
--    SMU7_Fusion_ExtClkLevel           VceLevel                [SMU7_MAX_LEVELS_VCE];
--    SMU7_Fusion_ExtClkLevel           AcpLevel                [SMU7_MAX_LEVELS_ACP];
--    SMU7_Fusion_ExtClkLevel           SamuLevel               [SMU7_MAX_LEVELS_SAMU];
-+    SMU7_Fusion_UvdLevel              UvdLevel[SMU7_MAX_LEVELS_UVD];
-+    SMU7_Fusion_ExtClkLevel           VceLevel[SMU7_MAX_LEVELS_VCE];
-+    SMU7_Fusion_ExtClkLevel           AcpLevel[SMU7_MAX_LEVELS_ACP];
-+    SMU7_Fusion_ExtClkLevel           SamuLevel[SMU7_MAX_LEVELS_SAMU];
- 
-     uint8_t                           UvdBootLevel;
-     uint8_t                           VceBootLevel;
-@@ -266,10 +257,9 @@ struct SMU7_Fusion_DpmTable
- 
- };
- 
--struct SMU7_Fusion_GIODpmTable
--{
-+struct SMU7_Fusion_GIODpmTable {
- 
--    SMU7_Fusion_GIOLevel              GIOLevel                [SMU7_MAX_LEVELS_GIO];
-+    SMU7_Fusion_GIOLevel              GIOLevel[SMU7_MAX_LEVELS_GIO];
- 
-     SMU7_PIDController                GioPIDController;
- 
 -- 
-2.17.1
-
+BR,
+Muhammad Usama Anjum
 
