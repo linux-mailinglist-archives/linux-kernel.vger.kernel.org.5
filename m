@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-23209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2D882A8FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:22:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAC0282A8FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:22:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40F4F289325
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:22:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCEEA1C23543
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0AC12E78;
-	Thu, 11 Jan 2024 08:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EAFF9EB;
+	Thu, 11 Jan 2024 08:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tno/F8WX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EFHXf8Q5"
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FEFA12E5B;
-	Thu, 11 Jan 2024 08:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA9214A86;
+	Thu, 11 Jan 2024 08:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704961221; x=1736497221;
+  t=1704961226; x=1736497226;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=URPY2Q+tBosWcEFXoClywjzD6iiLnMiyG3Xuko2X9Hg=;
-  b=Tno/F8WXqCOWESFeAv7m6SGWeGn0qHiUhzj9LHQ9vSKeI++gWuEOgdAq
-   HbwKn9S6L55+Avgmv8/sY708hz3iFwVpxe+L5f/0tqkqgSQ71xDCu8EGF
-   Pj5G05ON+G7pp1r0bhBwaCCUow/GojsrmUC+d5jPWLX3rIVbDkR7cjhOo
-   0HYZtJnM+Pvlwthw2uT+MmDY17XP6Jrseyc90HjP5GzYcrteh/3Vg5mia
-   AdJie12BuwsNO2zOK7aGVEjkYYfI1bxlyX9WeVOYKFXQWmDqXgjYd7A+D
-   jHH3BvpuZgOwtVRFprWdu83frLQRrQXBHGpf+clXMKdye8kz6vOWLQz+s
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="465166595"
+  bh=YF2mznNPxiYOY4eRx14gZJdV4+DolWzQx58W70hEjws=;
+  b=EFHXf8Q5AWH9uKnOXFRrSuabZtwfBGPisX80lGF1hpgnxlpwQ1aztlJs
+   rKzRG+ITWSwQcObEpvuLH5Ctnw0Tv0Xwgl3wH1jdP8jIcu5qpGCe8tB6V
+   QOkKivq7XxJlFB0DvxLBnRGgKazdmV+Y6tUivc81geYnolzEnzMxolT2V
+   gwjfuxtzKYXNZ6qh2nxLlpxFdAy9GNXQoLIWSyfjJ4irpt5rhVzfSZe80
+   11mjPxM3SNMGaYJA5IBDBhsY9Jse7bMcqnz78F0HQrRkQETShg7dfYL+S
+   urypokDOEQjHIjZpeRX2nucQTjz738p9KdD4isxO4PXeXan4QWRVmGrkK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="465166630"
 X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="465166595"
+   d="scan'208";a="465166630"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:20:21 -0800
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:20:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="925923186"
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="925923216"
 X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="925923186"
+   d="scan'208";a="925923216"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.52.224])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:20:16 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:20:21 -0800
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: Ingo Molnar <mingo@redhat.com>,
@@ -67,9 +67,9 @@ Cc: Ingo Molnar <mingo@redhat.com>,
 	Ian Rogers <irogers@google.com>,
 	linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH V4 10/11] perf intel-pt: Add documentation for pause / resume
-Date: Thu, 11 Jan 2024 10:19:13 +0200
-Message-Id: <20240111081914.3123-11-adrian.hunter@intel.com>
+Subject: [PATCH V4 11/11] perf intel-pt: Add a test for pause / resume
+Date: Thu, 11 Jan 2024 10:19:14 +0200
+Message-Id: <20240111081914.3123-12-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240111081914.3123-1-adrian.hunter@intel.com>
 References: <20240111081914.3123-1-adrian.hunter@intel.com>
@@ -82,107 +82,59 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Document the use of aux-action config term and provide a simple example.
+Add a simple sub-test to the "Miscellaneous Intel PT testing" test to
+check pause / resume.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/Documentation/perf-intel-pt.txt | 70 ++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+ tools/perf/tests/shell/test_intel_pt.sh | 28 +++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index b3d9fb29ffd3..3a0d73bf8bc2 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -551,6 +551,9 @@ Support for this feature is indicated by:
- which contains "1" if the feature is supported and
- "0" otherwise.
+diff --git a/tools/perf/tests/shell/test_intel_pt.sh b/tools/perf/tests/shell/test_intel_pt.sh
+index 723ec501f99a..e359db0d0ff2 100755
+--- a/tools/perf/tests/shell/test_intel_pt.sh
++++ b/tools/perf/tests/shell/test_intel_pt.sh
+@@ -644,6 +644,33 @@ test_pipe()
+ 	return 0
+ }
  
-+*aux-action=start-paused*::
-+Start tracing paused, refer to the section <<_pause_or_resume_tracing,Pause or Resume Tracing>>
++test_pause_resume()
++{
++	echo "--- Test with pause / resume ---"
++	if ! perf_record_no_decode -o "${perfdatafile}" -e intel_pt/aux-action=start-paused/u uname ; then
++		echo "SKIP: pause / resume is not supported"
++		return 2
++	fi
++	if ! perf_record_no_bpf -o "${perfdatafile}" \
++			-e intel_pt/aux-action=start-paused/u \
++			-e instructions/period=50000,aux-action=resume,name=Resume/u \
++			-e instructions/period=100000,aux-action=pause,name=Pause/u uname  ; then
++		echo "perf record with pause / resume failed"
++		return 1
++	fi
++	if ! perf script -i "${perfdatafile}" --itrace=b -Fperiod,event | \
++			awk 'BEGIN {paused=1;branches=0}
++			     /Resume/ {paused=0}
++			     /branches/ {if (paused) exit 1;branches=1}
++			     /Pause/ {paused=1}
++			     END {if (!branches) exit 1}' ; then
++		echo "perf record with pause / resume failed"
++		return 1
++	fi
++	echo OK
++	return 0
++}
 +
+ count_result()
+ {
+ 	if [ "$1" -eq 2 ] ; then
+@@ -672,6 +699,7 @@ test_power_event			|| ret=$? ; count_result $ret ; ret=0
+ test_no_tnt				|| ret=$? ; count_result $ret ; ret=0
+ test_event_trace			|| ret=$? ; count_result $ret ; ret=0
+ test_pipe				|| ret=$? ; count_result $ret ; ret=0
++test_pause_resume			|| ret=$? ; count_result $ret ; ret=0
  
- config terms on other events
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -566,6 +569,9 @@ and PEBS-via-PT.  In those cases, the other events can have config terms below:
- 		Used to select PEBS-via-PT, refer to the
- 		section <<_pebs_via_intel_pt,PEBS via Intel PT>>
- 
-+*aux-action*::
-+		Used to pause or resume tracing, refer to the section
-+		<<_pause_or_resume_tracing,Pause or Resume Tracing>>
- 
- AUX area sampling option
- ~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -1911,6 +1917,70 @@ For pipe mode, the order of events and timestamps can presumably
- be messed up.
- 
- 
-+Pause or Resume Tracing
-+-----------------------
-+
-+With newer Kernels, it is possible to use other selected events to pause
-+or resume Intel PT tracing.  This is configured by using the "aux-action"
-+config term:
-+
-+"aux-action=pause" is used with events that are to pause Intel PT tracing.
-+
-+"aux-action=resume" is used with events that are to resume Intel PT tracing.
-+
-+"aux-action=start-paused" is used with the Intel PT event to start in a
-+paused state.
-+
-+For example, to trace only the uname system call (sys_newuname) when running the
-+command line utility uname:
-+
-+ $ perf record --kcore -e intel_pt/aux-action=start-paused/k,syscalls:sys_enter_newuname/aux-action=resume/,syscalls:sys_exit_newuname/aux-action=pause/ uname
-+ Linux
-+ [ perf record: Woken up 1 times to write data ]
-+ [ perf record: Captured and wrote 0.043 MB perf.data ]
-+ $ perf script --call-trace
-+ uname   30805 [000] 24001.058782799: name: 0x7ffc9c1865b0
-+ uname   30805 [000] 24001.058784424:  psb offs: 0
-+ uname   30805 [000] 24001.058784424:  cbr: 39 freq: 3904 MHz (139%)
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])        debug_smp_processor_id
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])        __x64_sys_newuname
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])            down_read
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                __cond_resched
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_add
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                    in_lock_functions
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_sub
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])            up_read
-+ uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_add
-+ uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                    in_lock_functions
-+ uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                preempt_count_sub
-+ uname   30805 [000] 24001.058784838: ([kernel.kallsyms])            _copy_to_user
-+ uname   30805 [000] 24001.058784838: ([kernel.kallsyms])        syscall_exit_to_user_mode
-+ uname   30805 [000] 24001.058784838: ([kernel.kallsyms])            syscall_exit_work
-+ uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                perf_syscall_exit
-+ uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                    debug_smp_processor_id
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                    perf_trace_buf_alloc
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_swevent_get_recursion_context
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            debug_smp_processor_id
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        debug_smp_processor_id
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                    perf_tp_event
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_trace_buf_update
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            tracing_gen_ctx_irq_test
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_swevent_event
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            __perf_event_account_interrupt
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                __this_cpu_preempt_check
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            perf_event_output_forward
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                perf_event_aux_pause
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                    ring_buffer_get
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                        __rcu_read_lock
-+ uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                        __rcu_read_unlock
-+ uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                    pt_event_stop
-+ uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        debug_smp_processor_id
-+ uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        debug_smp_processor_id
-+ uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        native_write_msr
-+ uname   30805 [000] 24001.058785463: ([kernel.kallsyms])                                        native_write_msr
-+ uname   30805 [000] 24001.058785639: 0x0
-+
-+
- EXAMPLE
- -------
+ cleanup
  
 -- 
 2.34.1
