@@ -1,133 +1,139 @@
-Return-Path: <linux-kernel+bounces-22997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D111D82A630
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:55:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D33D682A62E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74AAFB25C4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:55:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A01DD1C2287E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFB1EC8;
-	Thu, 11 Jan 2024 02:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B83EC0;
+	Thu, 11 Jan 2024 02:53:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="atetTZY3"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eb3wna++"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C21DA3C;
-	Thu, 11 Jan 2024 02:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704941728; x=1736477728;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HoH9MUvgkubUOlwwOn66/K+dJfeGm9DqWpVIQurTjTE=;
-  b=atetTZY3iM3vS6P/vHQUtKxkk8KfDK5nOXQatWwnbob7kLhfYX7EyQo8
-   JIk7mnSYI0yXwcSbgxppbk5xdkRT6K9iawiCCsWdcB5PNFSiDf1C31mtN
-   QrnnesNBVMmGNEfCtkT1sMpy86r/hMqkujC3noLs4DmUASIBr+KvtpFxu
-   yPcM8iO9NI8LLCZTacbalv/GFb87AAfCeW+5OLPLf9rI/P6rNxKn3tAlV
-   UFOjA6fvmSRWAso9GMmYpB4QQEhi6r/p2ZBOCHjpJJLkrKRnqK8mEndzT
-   Ja4bt4qkhZWeMTvXG5LByu76xtNipBD338+W8rHCyT7+S1fi+SAUU7wnN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5805754"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="5805754"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 18:55:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="775454469"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="775454469"
-Received: from linux.bj.intel.com ([10.238.157.71])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 18:55:23 -0800
-Date: Thu, 11 Jan 2024 10:52:21 +0800
-From: Tao Su <tao1.su@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Chao Gao <chao.gao@intel.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Yi Lai <yi1.lai@intel.com>, Xudong Hao <xudong.hao@intel.com>
-Subject: Re: [PATCH] x86/cpu: Add a VMX flag to enumerate 5-level EPT support
- to userspace
-Message-ID: <ZZ9X5anB/HGS8JR6@linux.bj.intel.com>
-References: <20240110002340.485595-1-seanjc@google.com>
- <ZZ42Vs3uAPwBmezn@chao-email>
- <ZZ7FMWuTHOV-_Gn7@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA171C16;
+	Thu, 11 Jan 2024 02:53:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 80DD2C433C7;
+	Thu, 11 Jan 2024 02:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704941638;
+	bh=UplJWH4Q/tqUK9lL0NeQ0i3KjWIEOgUf4v3sM9Fc79Q=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=eb3wna++o9nQcqx77zTqpfG0Z/wRpYlPwZs0rmcvTuNqEbn7k7TMFkhNJMdvyBpJh
+	 R1V2IJEjM6qiNvxMFkrbh5GS/n+Q3tHRx6lAzwIyVEoBxMOCSP5HmJmgI9AxG5AKki
+	 /1dSjcuJv7TXCzo9wDB8Idmykw3SJZ1sUEGKJJPKjCEU1E5yiUquWCsAbzIz97oGmV
+	 HnEFZpk2LbELB3rHWYPrX0s/yBtAHy5QtWKePD8y4z530RtTfB6uT066zEhXS8sU1x
+	 zoqUf+ZZBjrm5YP9yiCCGds2iMzheJyoi3H43E9+fouM6l0eiqbUjrbkQaJqqrJIRb
+	 r4Vsp/f+nWahQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D7F4C4707C;
+	Thu, 11 Jan 2024 02:53:58 +0000 (UTC)
+From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
+Date: Thu, 11 Jan 2024 10:52:58 +0800
+Subject: [PATCH RESEND v3] arm64: dts: qcom: qcs6490-idp: Add definition
+ for three LEDs.
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZ7FMWuTHOV-_Gn7@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240111-lpg-v3-1-811c9e82dae4@quicinc.com>
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704941637; l=1646;
+ i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
+ bh=jkgKPcTHB0LvObnOdM+JMFH2yGRqbzzTL1fwXf6UZho=;
+ b=7pv7EDwJ2g9yQxFYnyhYX0JwYuAgStVMqFM5Z0qMfu0ILqrf5UFuKESXSC6pCrzbri/kt6bX7
+ FmKxPZuaEx5AvdmlXsmr7nBM3vNCFvVJw3JDYNjt8GDx1QqzDTtxX8t
+X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
+ pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
+X-Endpoint-Received:
+ by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
+X-Original-From: Hui Liu <quic_huliu@quicinc.com>
+Reply-To: <quic_huliu@quicinc.com>
 
-On Wed, Jan 10, 2024 at 08:26:25AM -0800, Sean Christopherson wrote:
-> On Wed, Jan 10, 2024, Chao Gao wrote:
-> > On Tue, Jan 09, 2024 at 04:23:40PM -0800, Sean Christopherson wrote:
-> > >Add a VMX flag in /proc/cpuinfo, ept_5level, so that userspace can query
-> > >whether or not the CPU supports 5-level EPT paging.  EPT capabilities are
-> > >enumerated via MSR, i.e. aren't accessible to userspace without help from
-> > >the kernel, and knowing whether or not 5-level EPT is supported is sadly
-> > >necessary for userspace to correctly configure KVM VMs.
-> > 
-> > This assumes procfs is enabled in Kconfig and userspace has permission to
-> > access /proc/cpuinfo. But it isn't always true. So, I think it is better to
-> > advertise max addressable GPA via KVM ioctls.
-> 
-> Hrm, so the help for PROC_FS says:
-> 
->   Several programs depend on this, so everyone should say Y here.
-> 
-> Given that this is working around something that is borderline an erratum, I'm
-> inclined to say that userspace shouldn't simply assume the worst if /proc isn't
-> available.  Practically speaking, I don't think a "real" VM is likely to be
-> affected; AFAIK, there's no reason for QEMU or any other VMM to _need_ to expose
-> a memslot at GPA[51:48] unless the VM really has however much memory that is
-> (hundreds of terabytes?).  And a if someone is trying to run such a massive VM on
-> such a goofy CPU...
+From: Hui Liu <quic_huliu@quicinc.com>
 
-It is unusual to assign a huge RAM to guest, but passthrough a device also may trigger
-this issue which we have met, i.e. alloc memslot for the 64bit BAR which can set
-bits[51:48]. BIOS can control the BAR address, e.g. seabios moved 64bit pci window
-to end of address space by using advertised physical bits[1].
+Add definition for three LEDs to make sure they can
+be enabled base on QCOM LPG LED driver.
 
-[1] https://gitlab.com/qemu-project/seabios/-/commit/bcfed7e270776ab5595cafc6f1794bea0cae1c6c
+Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+---
+Changes in v3:
+- Rephrased commit text and updated the nodes to qcm6490-idp board file.
+- Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
 
-> 
-> I don't think it's unreasonable for KVM selftests to require access to
-> /proc/cpuinfo.  Or actually, they can probably do the same thing and self-limit
-> to 48-bit addresses if /proc/cpuinfo isn't available.
-> 
-> I'm not totally opposed to adding a more programmatic way for userspace to query
-> 5-level EPT support, it just seems unnecessary.  E.g. unlike CPUID, userspace
-> can't directly influence whether or not KVM uses 5-level EPT.  Even in hindsight,
-> I'm not entirely sure KVM should expose such a knob, as it raises questions around
-> interactions guest.MAXPHYADDR and memslots that I would rather avoid.
-> 
-> And even if we do add such uAPI, enumerating 5-level EPT in /proc/cpuinfo is
-> definitely worthwhile, the only thing that would need to be tweaked is the
-> justification in the changelog.
-> 
-> One thing we can do irrespective of feature enumeration is have kvm_mmu_page_fault()
-> exit to userspace with an explicit error if the guest faults ona GPA that KVM
-> knows it can't map, i.e. exit with KVM_EXIT_INTERNAL_ERROR or maybe even
-> KVM_EXIT_MEMORY_FAULT instead of looping indefinitely.
+Changes in v2:
+- Rephrased commit text and updated the nodes to board file.
+- Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
+---
+ arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-If KVM does report guest.MAXPHYADDR=host.MAXPHYADDR, it is not reasonable to kill the
-guest directly. And just reporting that it does not support 5-level EPT in /proc/cpuinfo
-will make it difficult for users to realize that physical-bits needs to be forcibly
-limited in the command. But advertising max addressable GPA via ioctl and this patch do
-not conflict.
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+index 37c91fdf3ab9..f801144a1556 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+@@ -5,6 +5,7 @@
+ 
+ /dts-v1/;
+ 
++#include <dt-bindings/leds/common.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sc7280.dtsi"
+ #include "pm7325.dtsi"
+@@ -414,6 +415,30 @@ vreg_bob_3p296: bob {
+ 	};
+ };
+ 
++&pm8350c_pwm {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	led@1 {
++		reg = <1>;
++		color = <LED_COLOR_ID_RED>;
++		label = "red";
++	};
++
++	led@2 {
++		reg = <2>;
++		color = <LED_COLOR_ID_GREEN>;
++		label = "green";
++	};
++
++	led@3 {
++		reg = <3>;
++		color = <LED_COLOR_ID_BLUE>;
++		label = "blue";
++	};
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
 
-Thanks,
-Tao
+---
+base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
+change-id: 20231215-lpg-4aadd374811a
+
+Best regards,
+-- 
+Hui Liu <quic_huliu@quicinc.com>
+
 
