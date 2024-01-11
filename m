@@ -1,106 +1,173 @@
-Return-Path: <linux-kernel+bounces-22910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6D8882A53F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:33:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA1A582A541
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1481F23B46
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:33:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477301F2634C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC98A48;
-	Thu, 11 Jan 2024 00:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E21A814;
+	Thu, 11 Jan 2024 00:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Bk8jsCWS"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="N+IF8RrF"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53839C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e741123acso5346439e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:33:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE9E393
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d3eb299e2eso29915015ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:39:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1704933197; x=1705537997; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ecki/5hmhCZ1pJBgLNzGL9kIecS6fNHUeL7VAgIOt7A=;
-        b=Bk8jsCWS00+g1h8IQnFBzc2hy0GzlCs8SwyTYIwroZlRNlOvzsfSOOgTVFSn0GTCga
-         Kv51ZO7luZxGiphpjF9kjLQfjXU3uXEsRRmRnt2qwo0XyVpiAjFqMxYjTAYDJZCJMeK4
-         y+z2/xNVkbSGJpgkvXfd6S8C+3QLX6M4YJV8o=
+        d=chromium.org; s=google; t=1704933563; x=1705538363; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2tzVam0hFnVO15kFt069Z14hbEubNMkoHdOSTm/yrjg=;
+        b=N+IF8RrFbG8TDazBj+H0IBGAaIyLPOMCtAR5xyiFOEAnOSUEiXMCngtgOlTvg4+PcD
+         EIEUoPQ5hOGxrq/ZoUBGMTKFzvlCKmB7skeoH6eZH/VNCKBJrZLo4N+qIK7WtiahZEpm
+         0URGVuh7RRDe8k1BepQPuchj3XSGfxBtLN8PM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704933197; x=1705537997;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ecki/5hmhCZ1pJBgLNzGL9kIecS6fNHUeL7VAgIOt7A=;
-        b=iNQgdW35T2CGQWBsTELx8wcznEJbrQKO8qLs7XYj/My7YW2KEX6rHWk/FB11fLwi0Z
-         ifoM/ZBIysVG5qNnhLjxx2LA7JaM5Ba1yb69/pX4ZVaTnDLYgquhzmuTsJetCJXt7vNg
-         Xv19F1EkE6C9MENw4cVzGn7+C79rPhwkfm4Om8FJwljinpbUZjMhT9H4intuTRuYhO2P
-         pY3fta4TWQ/P5YQYpjJufjsb4Wgph20kzxAqvjevRO1Epvegbd/rU1emt9X1DhjK8bZM
-         zFPv42IrNgl1G6LgLbLqrDPmF64LMoRvx4Omk2VBh7pAI5MDMUriQkx9+9Fok0A9ukkD
-         HIhQ==
-X-Gm-Message-State: AOJu0Yx4VMVeLx7c+ohPoQE7+yXvt1hITxm0W7XOMdPUVenEmkX4z2bH
-	QAMYHv7kV3Y+/PfVaO5C58GPYbEnj+FOSPgHlY0AaFW4HnIT4FL/
-X-Google-Smtp-Source: AGHT+IF8kBsBMnxEoD+G0viIfry6mrHQvykjb1HFqYQOwin0zDNR1BD8Al0Z6B6KtiHGvKbP7Sh0qA==
-X-Received: by 2002:a19:4f58:0:b0:50e:bd97:5ccd with SMTP id a24-20020a194f58000000b0050ebd975ccdmr108200lfk.19.1704933196942;
-        Wed, 10 Jan 2024 16:33:16 -0800 (PST)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id r10-20020a1709060d4a00b00a2a13835f4csm2564989ejh.167.2024.01.10.16.33.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jan 2024 16:33:15 -0800 (PST)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26f73732c5so558712266b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:33:14 -0800 (PST)
-X-Received: by 2002:a17:907:1c9b:b0:a28:d5dd:574f with SMTP id
- nb27-20020a1709071c9b00b00a28d5dd574fmr218565ejc.31.1704933194074; Wed, 10
- Jan 2024 16:33:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704933563; x=1705538363;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2tzVam0hFnVO15kFt069Z14hbEubNMkoHdOSTm/yrjg=;
+        b=VsQUVPMqmp1FVTF1f09TkrcCINa5OwAMFoEdb4azXftMpoV1AcsbtyJnCk4SewUwpR
+         dGE1Zn+7kd4Vo/qNUOPiiLkLTqkiaa1xLRrMu9u5omZPxUGsm1k1DlxjtLH5OBNyvn21
+         PWQ+4KFNsLMXHPU2n/efix8RopYrs02BWSOnBT+fdh1CSX+LNH202vgaKsiNkX0T3My8
+         hKKRo6HkiImQL6irjG0fJ6krHgSE9CS/rxoKBi4yBHW+3Rp0sI1jSaXGT9fhZMyxVarJ
+         EjPHqhDRhGdul7yT08P2JNuTSr/xaptsIlV5bDVEmI/D2DNfLec90c+OhgCodsCQTxeu
+         dIqQ==
+X-Gm-Message-State: AOJu0Ywg+7rE4hhCJBmu45OUWPUcKFaNwJMUZeicZS7iwWcDpxgtbFwp
+	GOGy+/hYMBxgFs1jssYPm5OyK2xCierv
+X-Google-Smtp-Source: AGHT+IECP2Bnyo5GM1JeB3lzEBvXWpVakVzi6DxHRYvR9KdZ0qjFnMRCoI+Gv8jwwvmVX7sWsHD30Q==
+X-Received: by 2002:a17:902:da84:b0:1d4:60b1:27af with SMTP id j4-20020a170902da8400b001d460b127afmr396174plx.97.1704933563663;
+        Wed, 10 Jan 2024 16:39:23 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v3-20020a1709029a0300b001d4c316e3a4sm4210089plp.189.2024.01.10.16.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 16:39:23 -0800 (PST)
+Date: Wed, 10 Jan 2024 16:39:22 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <202401101625.3664EA5B@keescook>
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook>
+ <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231025140205.3586473-1-mszeredi@redhat.com> <20231025140205.3586473-6-mszeredi@redhat.com>
- <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
-In-Reply-To: <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 10 Jan 2024 16:32:57 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
-Message-ID: <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
-Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Miklos Szeredi <mszeredi@redhat.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-man@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	Karel Zak <kzak@redhat.com>, Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <christian@brauner.io>, 
-	Amir Goldstein <amir73il@gmail.com>, Matthew House <mattlloydhouse@gmail.com>, 
-	Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
 
-On Wed, 10 Jan 2024 at 14:23, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> with this patch in the tree, all sh4 builds fail with ICE.
->
-> during RTL pass: final
-> In file included from fs/namespace.c:11:
-> fs/namespace.c: In function '__se_sys_listmount':
-> include/linux/syscalls.h:258:9: internal compiler error: in change_address_1, at emit-rtl.c:2275
+On Wed, Jan 10, 2024 at 07:04:47PM -0500, Kent Overstreet wrote:
+> On Wed, Jan 10, 2024 at 03:48:43PM -0800, Kees Cook wrote:
+> > On Wed, Jan 10, 2024 at 02:36:30PM -0500, Kent Overstreet wrote:
+> > > [...]
+> > >       bcachefs: %pg is banished
+> > 
+> > Hi!
+> > 
+> > Not a PR blocker, but this patch re-introduces users of strlcpy() which
+> > has been otherwise removed this cycle. I'll send a patch to replace
+> > these new uses, but process-wise, I'd like check on how bcachefs patches
+> > are reviewed.
+> 
+> I'm happy to fix it. Perhaps the declaration could get a depracated
+> warning, though?
 
-We do have those very ugly SYSCALL_DEFINEx() macros, but I'm not
-seeing _anything_ that would be odd about the listmount case.
+That's one of checkpatch.pl's purposes, seeing as how deprecation warnings
+are ... deprecated. :P
+https://docs.kernel.org/process/deprecated.html#id1
+This has made treewide changes like this more difficult, but these are
+the Rules From Linus. ;)
 
-And the "__se_sys" thing in particular is just a fairly trivial wrapper.
+> > Normally I'd go find the original email that posted the patch and reply
+> > there, but I couldn't find a development list where this patch was
+> > posted. Where is this happening? (Being posted somewhere is supposed
+> > to be a prerequisite for living in -next. E.g. quoting from the -next
+> > inclusion boiler-plate: "* posted to the relevant mailing list,") It
+> > looks like it was authored 5 days ago, which is cutting it awfully close
+> > to the merge window opening:
+> > 
+> > 	AuthorDate: Fri Jan 5 11:58:50 2024 -0500
+> 
+> I'm confident in my testing; if it was a patch that needed more soak
+> time it would have waited.
+> 
+> > Actually, it looks like you rebased onto v6.7-rc7? This is normally
+> > strongly discouraged. The common merge base is -rc2.
+> 
+> Is there something special about rc2?
 
-It does use that asmlinkage_protect() thing, and it is unquestionably
-horrendously ugly (staring too long at <linux/syscalls.h> has been
-known to cause madness and despair), but we do that for *every* single
-system call and I don't see why the new listmount entry would be
-different.
+It's what sfr suggested as it's when many subsystem maintainers merge
+to when opening their trees for development. Usually it's a good tree
+state: after stabilization fixes from any rc1 rough edges.
 
-           Linus
+> I reorder patches fairly often just in the normal course of backporting
+> fixes, and if I have to rebase everything for a backport I'll often
+> rebase onto a newer kernel so that the people who are running my tree
+> are testing something more stable - it does come up.
+
+Okay, gotcha. I personally don't care how maintainers handle rebasing; I
+was just confused about the timing and why I couldn't find the original
+patch on any lists. :) And to potentially warn about Linus possibly not
+liking the rebase too.
+
+> 
+> > It also seems it didn't get a run through scripts/checkpatch.pl, which
+> > shows 4 warnings, 2 or which point out the strlcpy deprecation:
+> > 
+> > WARNING: Prefer strscpy over strlcpy - see: https://github.com/KSPP/linux/issues/89
+> > #123: FILE: fs/bcachefs/super.c:1389:
+> > +               strlcpy(c->name, name.buf, sizeof(c->name));
+> > 
+> > WARNING: Prefer strscpy over strlcpy - see: https://github.com/KSPP/linux/issues/89
+> > #124: FILE: fs/bcachefs/super.c:1390:
+> > +       strlcpy(ca->name, name.buf, sizeof(ca->name));
+> > 
+> > Please make sure you're running checkpatch.pl -- it'll make integration,
+> > technical debt reduction, and coding style adjustments much easier. :)
+> 
+> Well, we do have rather a lot of linters these days.
+> 
+> That's actually something I've been meaning to raise - perhaps we could
+> start thinking about some pluggable way of running linters so that
+> they're all run as part of a normal kernel build (and something that
+> would be easy to drop new linters in to; I'd like to write some bcachefs
+> specific ones).
+
+With no central CI, the best we've got is everyone running the same
+"minimum set" of checks. I'm most familiar with netdev's CI which has
+such things (and checkpatch.pl is included). For example see:
+https://patchwork.kernel.org/project/netdevbpf/patch/20240110110451.5473-3-ptikhomirov@virtuozzo.com/
+
+> The current model of "I have to remember to run these 5 things, and then
+> I'm going to get email nags for 3 more that I can't run" is not terribly
+> scalable :)
+
+Oh, I hear you. It's positively agonizing for those of us doing treewide
+changes. I've got at least 4 CIs I check (in addition to my own) just to
+check everyone's various coverage tools.
+
+At the very least, checkpatch.pl is the common denominator:
+https://docs.kernel.org/process/submitting-patches.html#style-check-your-changes
+
+-Kees
+
+-- 
+Kees Cook
 
