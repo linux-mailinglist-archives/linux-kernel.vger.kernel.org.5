@@ -1,39 +1,49 @@
-Return-Path: <linux-kernel+bounces-23700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD3CC82B063
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:14:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8285D82B067
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:14:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C8691F2431B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:14:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D42B9B221B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D573F3D3BC;
-	Thu, 11 Jan 2024 14:13:58 +0000 (UTC)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA6E3C097;
-	Thu, 11 Jan 2024 14:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
-Received: from meterpeter.fritz.box ([84.170.86.196]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MYNaE-1rjG3i2Sfa-00VRpy; Thu, 11 Jan 2024 15:13:48 +0100
-From: Christian Heusel <christian@heusel.eu>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Christian Heusel <christian@heusel.eu>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: dan.carpenter@linaro.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] RDMA/ipoib: print symbolic error name instead of error code
-Date: Thu, 11 Jan 2024 15:13:07 +0100
-Message-ID: <20240111141311.987098-1-christian@heusel.eu>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE533D3A6;
+	Thu, 11 Jan 2024 14:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="dqSBd+ty"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0A13B198;
+	Thu, 11 Jan 2024 14:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=XGWcN
+	p2I/ujeacYSKUECw91AKfIpyCL2r7w3wnpKdeU=; b=dqSBd+tyVLvCJXw3k6q+1
+	i+vi3E7cM2gwwGZYlWK858NpXXOfFwSaCpg1kanmobzPnlQRYCHMjjc/S+w4HXhP
+	8W9BhozmhIBiDvRXH4B0eQOJYZE9Xo0y2+LXke5zh7uVinRAAWBH5VPDR/iYfFfm
+	KC2Aps5DmCGAlgaXpv69f8=
+Received: from localhost.localdomain (unknown [36.4.236.25])
+	by zwqz-smtp-mta-g0-2 (Coremail) with SMTP id _____wDHr_R0959layVQBA--.35417S4;
+	Thu, 11 Jan 2024 22:13:37 +0800 (CST)
+From: Lizhe <sensor1010@163.com>
+To: ilpo.jarvinen@linux.intel.com,
+	gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	frank.li@vivo.com,
+	tglx@linutronix.de,
+	zhang_shurong@foxmail.com,
+	robh@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	Lizhe <sensor1010@163.com>
+Subject: [PATCH v8] serial: linflexuart: Remove redundant uart type assignment
+Date: Thu, 11 Jan 2024 06:13:07 -0800
+Message-Id: <20240111141307.123458-1-sensor1010@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,53 +51,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:wNGA7dXoti0IL3TEU+KqUFkCUciIMfSkkSMI/NYja8ogVepUL3e
- TGRjkyirGIb2pJZIOOoixzOEJ22UU7f9uOW/LcGSDDepYJfZHreeH46ifoTTtlKkR4SCg6Q
- lQBBO/1SvCNkPAnI5wBULXewHYeLtNxzoqXoqxofmaUAOCWcb0v98uqzfgC3JjjABfMcJCU
- 7YgGfJECClgkraUFsW6Hg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jNuHSP06OIQ=;aGQlGeZEK9YIGpp7rzf504hGOpP
- mUtBN3bf8+j3vfgUJ6FY+uh+lsD3+JmsGOZuY0ihSXSheHJmSxlXlRqUKkHYRE0N4KUhjrK97
- EQlq8X+DMEr0Ac56tEgQnSAOa4kfm5k7RPbx7zJjv2IZQXuGRn8goU+TiogdzREq3A9QmHXVE
- +6I1ExsyMCnQsfTnAo2ACu6q1aSy7sy+789wkWvUeqv89L4CAwjsYA0G2gCDTYNOAQTRmXfkV
- lHslwo7G1dk4sy7ymkLwJf1FLfYmZLLAZJNo7Xkak+cEIY/msZr8SiIqrIIl0T5cINAg7LaF9
- R/SPZQXf3NsCBap5hsj4RRzR+ytyk9GNrf8FkghitAGnKd5IJtUamNbiX5b0f2qYiO0Loo8R0
- qGKpjLqaVf8N40JUFQUMxuc+Wfz/DzstUHKwQdpaj7Ho/9Scthe0kX0OGVfNdDxNVWiw6WTcb
- 3vxTdiWjWiu/08HthslVChk5RxyR66P1kYOL6t3fv01YMoukowP3KrFB884BzKpdA50wdcguB
- VDPSuFRy7FhTCK1YAArCXlIycOlkw04YDTahXVp1fRW7o1P4GjiCxR1Iuk6QDzyFOcCBbwDZE
- HJs+/s+hKBR8t1yjGknSi+PAjgcJTyb4ffC+L5bUtxizIXFElT9y5CG1FqjSfvKBocmgghpJQ
- Gl43Hdk0d5z0Z06GQTOOgdIXVWRfmy6SJV5roMVIhFBFhLPtW8rdP4RzlxdqhLkCgaxShL86r
- yDcN2lMjX/4rJjqZ4sVGOG9090ltBu6xvcbNFmyCqtXQXDb2Lvi4oQazfWpSOHgSHzKTpmLN2
- Ky1lIN5ScEnn/UlrrkO+bJ1rLJlmiI9nzz9VAZNNWDoZlPI2Eo97pO2PyxrKtv2kq2b3LXlJM
- 45NZwFUz2mSyjBw==
+X-CM-TRANSID:_____wDHr_R0959layVQBA--.35417S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Gr4rXF4xArWDWryUZw48Xrb_yoWfGrX_uF
+	1DZ347uw10kFWayFnrJFyYkrySgrs5ZF48ZF10q39aq3yDZ3yrXr9rX39rW39rG3yUXr9r
+	GwsrWr1ayrsrXjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRNvtCUUUUUU==
+X-CM-SenderInfo: 5vhq20jurqiii6rwjhhfrp/xtbBXhhhq2VOA58K1gADsk
 
-Utilize the %pe print specifier to get the symbolic error name as a
-string (i.e "-ENOMEM") in the log message instead of the error code to
-increase its readablility.
+in linflex_config_port(). the member variable type will be
+assigned again. see linflex_connfig_port().
 
-This change was suggested in
-https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mountain/
+v7:
+    the first word and use terminating stop at the end of the sentence.
+v6:
+    Use full sentences in the commit message.
+v5:
+    Add a change log.
 
-Signed-off-by: Christian Heusel <christian@heusel.eu>
+Signed-off-by: Lizhe <sensor1010@163.com>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/tty/serial/fsl_linflexuart.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-index 5b3154503bf4..b9cb2cc6ebf0 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-@@ -287,8 +287,7 @@ static int ipoib_mcast_join_finish(struct ipoib_mcast *mcast,
+diff --git a/drivers/tty/serial/fsl_linflexuart.c b/drivers/tty/serial/fsl_linflexuart.c
+index 3bdaf1ddc309..c5a04a168c15 100644
+--- a/drivers/tty/serial/fsl_linflexuart.c
++++ b/drivers/tty/serial/fsl_linflexuart.c
+@@ -837,7 +837,6 @@ static int linflex_probe(struct platform_device *pdev)
+ 		return ret;
  
- 	ah = ipoib_create_ah(dev, priv->pd, &av);
- 	if (IS_ERR(ah)) {
--		ipoib_warn(priv, "ib_address_create failed %ld\n",
--			   -PTR_ERR(ah));
-+		ipoib_warn(priv, "ib_address_create failed %pe\n", ah);
- 		/* use original error */
- 		return PTR_ERR(ah);
- 	}
+ 	sport->dev = &pdev->dev;
+-	sport->type = PORT_LINFLEXUART;
+ 	sport->iotype = UPIO_MEM;
+ 	sport->irq = ret;
+ 	sport->ops = &linflex_pops;
 -- 
-2.43.0
+2.25.1
 
 
