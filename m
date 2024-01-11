@@ -1,103 +1,417 @@
-Return-Path: <linux-kernel+bounces-23298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB27982AAAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:19:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CAB182AAAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0EE71C2684E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:19:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A9FE1F2891B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB0C10A14;
-	Thu, 11 Jan 2024 09:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 853A612E78;
+	Thu, 11 Jan 2024 09:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="W8Aih2z/"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE8A1078D;
-	Thu, 11 Jan 2024 09:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B174040E01B2;
-	Thu, 11 Jan 2024 09:19:31 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 75rQRR9rxJhI; Thu, 11 Jan 2024 09:19:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704964768; bh=TukuYSY8K4PgC2+/1f/CzkqHRiMiVTc5HcHBppG/p8M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W8Aih2z/501plmUS7atfC64dlRQjOShAvBVndfMrWqPeBQKwBnCEq53iFOffzOCj6
-	 ASz2LhAD1wuXwfVGG5ogOrzKmhgKo60wgF4/1r2KjBhQZeh/l6pFL6nQNw76kTt9O/
-	 dm+pN55ueeegyOIFo0LjiJaHFx5LBggJ55msozJblKm+F0qVc57Jezs77wUBITm38r
-	 tWH64cDU+oqGrIU2fNmHbzR9so/IH4mXRbmqmkOWauvEvwnw9Q6xzLjPCChjcXt2+i
-	 muF/rWyUlQOmNC4FZ0OvNHj7OQ9dynCkBL5SSjDeuMzCejsfNzaoIdmknN+Vp3GOTL
-	 i0BfxTbnmpU595EH1Ao4ICDVn5KOM2qawY7/YoOwKRCixytB5wu2MhhQmaAymfziKz
-	 bTCqwdLPHj5p7OFF9ZfFDuQxpACgfqF6zyHr7dHCpjccN62bzp3mDnM/AiI2vRtXje
-	 oLRbbwsaDoH2f9dOufnVLzA3H2FG6bETwWlgYs1iR8AINPYn7Ej40RFp3aC2Fjm1Ud
-	 KGHr1WOJ/T/x5JVqZg2h2REIidws6w4VUqV/OI1QKmssRg2BDJS8pkZ/9G4FncRv1Y
-	 rRthqLpawTvqyn1cnoSncVft689dDt5ZU+bAeZxQZy6NO8vdr0lBTAI5QE41F9xrmq
-	 IOQ34SEkJI/cOBXUxv2O0scU=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3A5AE40E0196;
-	Thu, 11 Jan 2024 09:19:10 +0000 (UTC)
-Date: Thu, 11 Jan 2024 10:19:04 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Meng, Li (Jassmine)" <Li.Meng@amd.com>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	"Huang, Ray" <Ray.Huang@amd.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
-	"Sharma, Deepak" <Deepak.Sharma@amd.com>,
-	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
-	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
-	"Yuan, Perry" <Perry.Yuan@amd.com>,
-	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Oleksandr Natalenko <oleksandr@natalenko.name>
-Subject: Re: [PATCH V12 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for
- the expansion.
-Message-ID: <20240111091904.GAZZ-yiBNC8O6KN99S@fat_crate.local>
-References: <20231205063537.872834-1-li.meng@amd.com>
- <20231205063537.872834-2-li.meng@amd.com>
- <20240109104504.GAZZ0jsFrrncZ8Vx8y@fat_crate.local>
- <DM4PR12MB63515E818A5B4D5E512F5234F7692@DM4PR12MB6351.namprd12.prod.outlook.com>
- <20240110100402.GAZZ5rklxQUZk_KFV4@fat_crate.local>
- <DM4PR12MB6351BAC3EDC9BD184D5D1FAFF7682@DM4PR12MB6351.namprd12.prod.outlook.com>
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="nzL0TTFU"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A4C11C93
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=ANh4pAwZpkDzMmcYP4
+	1qmTYtR0ncmnJwKttV5HAQYLE=; b=nzL0TTFUMyTRzUuQucsBhgV2CmdunPa9rW
+	Hi7Kb/CzeKtmW/mVy39jAZtAAPUiPAzXUG1RJXDQMoyATnzftpHGHQgXHK2FYGn7
+	YUAELHBvWWDov10bLseuh0yV/zayM5aNacQdGyctjOxauWmPoNjz7ejzuBHjVwjq
+	zMWdvrpnY=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3v+6gsp9lfGWlAA--.23421S2;
+	Thu, 11 Jan 2024 17:19:28 +0800 (CST)
+From: XueBing Chen <chenxb_99091@126.com>
+To: daniel@ffwll.ch,
+	Xinhui.Pan@amd.com,
+	alexander.deucher@amd.com,
+	airlied@gmail.com,
+	christian.koenig@amd.com
+Cc: dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	XueBing Chen <chenxb_99091@126.com>
+Subject: [PATCH] drm/radeon: Clean up errors in atombios.h
+Date: Thu, 11 Jan 2024 09:19:27 +0000
+Message-Id: <20240111091927.13653-1-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD3v+6gsp9lfGWlAA--.23421S2
+X-Coremail-Antispam: 1Uf129KBjvAXoWfJr48trWrAF18Kw1xGry8Xwb_yoW8Wr4fXo
+	W7GF9xJr47Gw15Jr4Utry8ta45KrsIqw1UGr13Gryj9rWDGr1DJr1DA3WUJr1fKF17Zw1D
+	Zry2q34DXry8A3W5n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RRJPiDUUUU
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiGAFixWVLZWkxpgAAsL
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM4PR12MB6351BAC3EDC9BD184D5D1FAFF7682@DM4PR12MB6351.namprd12.prod.outlook.com>
 
-On Thu, Jan 11, 2024 at 08:10:48AM +0000, Meng, Li (Jassmine) wrote:
-> I will modify it soon.
+Fix the following errors reported by checkpatch:
 
-No, don't modify it, don't do anything. Please read the whole thread
-again.
+ERROR: open brace '{' following struct go on the same line
+ERROR: space required after that close brace '}'
 
+Signed-off-by: XueBing Chen <chenxb_99091@126.com>
+---
+ drivers/gpu/drm/radeon/atombios.h | 135 ++++++++++++------------------
+ 1 file changed, 54 insertions(+), 81 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/atombios.h b/drivers/gpu/drm/radeon/atombios.h
+index 2db40789235c..141dc17ba632 100644
+--- a/drivers/gpu/drm/radeon/atombios.h
++++ b/drivers/gpu/drm/radeon/atombios.h
+@@ -197,19 +197,17 @@
+   Every table pointed  _ATOM_MASTER_DATA_TABLE has this common header. 
+   And the pointer actually points to this header. */
+ 
+-typedef struct _ATOM_COMMON_TABLE_HEADER
+-{
++typedef struct _ATOM_COMMON_TABLE_HEADER {
+   USHORT usStructureSize;
+   UCHAR  ucTableFormatRevision;   /*Change it when the Parser is not backward compatible */
+   UCHAR  ucTableContentRevision;  /*Change it only when the table needs to change but the firmware */
+                                   /*Image can't be updated, while Driver needs to carry the new table! */
+-}ATOM_COMMON_TABLE_HEADER;
++} ATOM_COMMON_TABLE_HEADER;
+ 
+ /****************************************************************************/	
+ // Structure stores the ROM header.
+ /****************************************************************************/	
+-typedef struct _ATOM_ROM_HEADER
+-{
++typedef struct _ATOM_ROM_HEADER {
+   ATOM_COMMON_TABLE_HEADER		sHeader;
+   UCHAR	 uaFirmWareSignature[4];    /*Signature to distinguish between Atombios and non-atombios, 
+                                       atombios should init it as "ATOM", don't change the position */
+@@ -228,7 +226,7 @@ typedef struct _ATOM_ROM_HEADER
+   USHORT usMasterDataTableOffset;   /*Offset for SW to get all data table offsets, Don't change the position */
+   UCHAR  ucExtendedFunctionCode;
+   UCHAR  ucReserved;
+-}ATOM_ROM_HEADER;
++} ATOM_ROM_HEADER;
+ 
+ /*==============================Command Table Portion==================================== */
+ 
+@@ -342,17 +340,15 @@ typedef struct _ATOM_MASTER_LIST_OF_COMMAND_TABLES{
+ #define LCD1OutputControl                        HW_Misc_Operation
+ #define TV1OutputControl                         Gfx_Harvesting
+ 
+-typedef struct _ATOM_MASTER_COMMAND_TABLE
+-{
++typedef struct _ATOM_MASTER_COMMAND_TABLE {
+   ATOM_COMMON_TABLE_HEADER           sHeader;
+   ATOM_MASTER_LIST_OF_COMMAND_TABLES ListOfCommandTables;
+-}ATOM_MASTER_COMMAND_TABLE;
++} ATOM_MASTER_COMMAND_TABLE;
+ 
+ /****************************************************************************/	
+ // Structures used in every command table
+ /****************************************************************************/	
+-typedef struct _ATOM_TABLE_ATTRIBUTE
+-{
++typedef struct _ATOM_TABLE_ATTRIBUTE {
+ #if ATOM_BIG_ENDIAN
+   USHORT  UpdatedByUtility:1;         //[15]=Table updated by utility flag
+   USHORT  PS_SizeInBytes:7;           //[14:8]=Size of parameter space in Bytes (multiple of a dword), 
+@@ -362,24 +358,22 @@ typedef struct _ATOM_TABLE_ATTRIBUTE
+   USHORT  PS_SizeInBytes:7;           //[14:8]=Size of parameter space in Bytes (multiple of a dword), 
+   USHORT  UpdatedByUtility:1;         //[15]=Table updated by utility flag
+ #endif
+-}ATOM_TABLE_ATTRIBUTE;
++} ATOM_TABLE_ATTRIBUTE;
+ 
+-typedef union _ATOM_TABLE_ATTRIBUTE_ACCESS
+-{
++typedef union _ATOM_TABLE_ATTRIBUTE_ACCESS {
+   ATOM_TABLE_ATTRIBUTE sbfAccess;
+   USHORT               susAccess;
+-}ATOM_TABLE_ATTRIBUTE_ACCESS;
++} ATOM_TABLE_ATTRIBUTE_ACCESS;
+ 
+ /****************************************************************************/	
+ // Common header for all command tables.
+ // Every table pointed by _ATOM_MASTER_COMMAND_TABLE has this common header. 
+ // And the pointer actually points to this header.
+ /****************************************************************************/	
+-typedef struct _ATOM_COMMON_ROM_COMMAND_TABLE_HEADER
+-{
++typedef struct _ATOM_COMMON_ROM_COMMAND_TABLE_HEADER {
+   ATOM_COMMON_TABLE_HEADER CommonHeader;
+   ATOM_TABLE_ATTRIBUTE     TableAttribute;	
+-}ATOM_COMMON_ROM_COMMAND_TABLE_HEADER;
++} ATOM_COMMON_ROM_COMMAND_TABLE_HEADER;
+ 
+ /****************************************************************************/	
+ // Structures used by ComputeMemoryEnginePLLTable
+@@ -391,8 +385,7 @@ typedef struct _ATOM_COMMON_ROM_COMMAND_TABLE_HEADER
+ /****************************************************************************/	
+ // Structures used by AdjustMemoryControllerTable
+ /****************************************************************************/	
+-typedef struct _ATOM_ADJUST_MEMORY_CLOCK_FREQ
+-{
++typedef struct _ATOM_ADJUST_MEMORY_CLOCK_FREQ {
+ #if ATOM_BIG_ENDIAN
+   ULONG ulPointerReturnFlag:1;      // BYTE_3[7]=1 - Return the pointer to the right Data Block; BYTE_3[7]=0 - Program the right Data Block 
+   ULONG ulMemoryModuleNumber:7;     // BYTE_3[6:0]
+@@ -402,25 +395,23 @@ typedef struct _ATOM_ADJUST_MEMORY_CLOCK_FREQ
+   ULONG ulMemoryModuleNumber:7;     // BYTE_3[6:0]
+   ULONG ulPointerReturnFlag:1;      // BYTE_3[7]=1 - Return the pointer to the right Data Block; BYTE_3[7]=0 - Program the right Data Block 
+ #endif
+-}ATOM_ADJUST_MEMORY_CLOCK_FREQ;
++} ATOM_ADJUST_MEMORY_CLOCK_FREQ;
+ #define POINTER_RETURN_FLAG             0x80
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS {
+   ULONG   ulClock;        //When returen, it's the re-calculated clock based on given Fb_div Post_Div and ref_div
+   UCHAR   ucAction;       //0:reserved //1:Memory //2:Engine  
+   UCHAR   ucReserved;     //may expand to return larger Fbdiv later
+   UCHAR   ucFbDiv;        //return value
+   UCHAR   ucPostDiv;      //return value
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS;
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2 {
+   ULONG   ulClock;        //When return, [23:0] return real clock 
+   UCHAR   ucAction;       //0:reserved;COMPUTE_MEMORY_PLL_PARAM:Memory;COMPUTE_ENGINE_PLL_PARAM:Engine. it return ref_div to be written to register
+   USHORT  usFbDiv;		    //return Feedback value to be written to register
+   UCHAR   ucPostDiv;      //return post div to be written to register
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2;
+ #define COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_PS_ALLOCATION   COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS
+ 
+ 
+@@ -438,8 +429,7 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V2
+ #define b3FIRST_TIME_CHANGE_CLOCK									0x08       //Applicable to both memory and engine clock change,when set, it means this is 1st time to change clock after ASIC bootup
+ #define b3SKIP_SW_PROGRAM_PLL											0x10			 //Applicable to both memory and engine clock change, when set, it means the table will not program SPLL/MPLL
+ 
+-typedef struct _ATOM_COMPUTE_CLOCK_FREQ
+-{
++typedef struct _ATOM_COMPUTE_CLOCK_FREQ {
+ #if ATOM_BIG_ENDIAN
+   ULONG ulComputeClockFlag:8;                 // =1: COMPUTE_MEMORY_PLL_PARAM, =2: COMPUTE_ENGINE_PLL_PARAM
+   ULONG ulClockFreq:24;                       // in unit of 10kHz
+@@ -447,16 +437,14 @@ typedef struct _ATOM_COMPUTE_CLOCK_FREQ
+   ULONG ulClockFreq:24;                       // in unit of 10kHz
+   ULONG ulComputeClockFlag:8;                 // =1: COMPUTE_MEMORY_PLL_PARAM, =2: COMPUTE_ENGINE_PLL_PARAM
+ #endif
+-}ATOM_COMPUTE_CLOCK_FREQ;
++} ATOM_COMPUTE_CLOCK_FREQ;
+ 
+-typedef struct _ATOM_S_MPLL_FB_DIVIDER
+-{
++typedef struct _ATOM_S_MPLL_FB_DIVIDER {
+   USHORT usFbDivFrac;  
+   USHORT usFbDiv;  
+-}ATOM_S_MPLL_FB_DIVIDER;
++} ATOM_S_MPLL_FB_DIVIDER;
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3 {
+   union
+   {
+     ATOM_COMPUTE_CLOCK_FREQ  ulClock;         //Input Parameter
+@@ -467,7 +455,7 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3
+   UCHAR   ucPostDiv;                          //Output Parameter      
+   UCHAR   ucCntlFlag;                         //Output Parameter      
+   UCHAR   ucReserved;
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3;
+ 
+ // ucCntlFlag
+ #define ATOM_PLL_CNTL_FLAG_PLL_POST_DIV_EN          1
+@@ -477,8 +465,7 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V3
+ 
+ 
+ // V4 are only used for APU which PLL outside GPU
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4 {
+ #if ATOM_BIG_ENDIAN
+   ULONG  ucPostDiv:8;        //return parameter: post divider which is used to program to register directly
+   ULONG  ulClock:24;         //Input= target clock, output = actual clock 
+@@ -486,10 +473,9 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4
+   ULONG  ulClock:24;         //Input= target clock, output = actual clock 
+   ULONG  ucPostDiv:8;        //return parameter: post divider which is used to program to register directly
+ #endif
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4;
+ 
+-typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5
+-{
++typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5 {
+   union
+   {
+     ATOM_COMPUTE_CLOCK_FREQ  ulClock;         //Input Parameter
+@@ -504,29 +490,27 @@ typedef struct _COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5
+     UCHAR   ucInputFlag;                      //Input Flags. ucInputFlag[0] - Strobe(1)/Performance(0) mode
+   };
+   UCHAR   ucReserved;                       
+-}COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5;
++} COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V5;
+ 
+ 
+-typedef struct _COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6
+-{
++typedef struct _COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6 {
+   ATOM_COMPUTE_CLOCK_FREQ  ulClock;         //Input Parameter
+   ULONG   ulReserved[2];
+-}COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6;
++} COMPUTE_GPU_CLOCK_INPUT_PARAMETERS_V1_6;
+ 
+ //ATOM_COMPUTE_CLOCK_FREQ.ulComputeClockFlag
+ #define COMPUTE_GPUCLK_INPUT_FLAG_CLK_TYPE_MASK            0x0f
+ #define COMPUTE_GPUCLK_INPUT_FLAG_DEFAULT_GPUCLK           0x00
+ #define COMPUTE_GPUCLK_INPUT_FLAG_SCLK                     0x01
+ 
+-typedef struct _COMPUTE_GPU_CLOCK_OUTPUT_PARAMETERS_V1_6
+-{
++typedef struct _COMPUTE_GPU_CLOCK_OUTPUT_PARAMETERS_V1_6 {
+   COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_V4  ulClock;         //Output Parameter: ucPostDiv=DFS divider
+   ATOM_S_MPLL_FB_DIVIDER   ulFbDiv;         //Output Parameter: PLL FB divider
+   UCHAR   ucPllRefDiv;                      //Output Parameter: PLL ref divider      
+   UCHAR   ucPllPostDiv;                     //Output Parameter: PLL post divider      
+   UCHAR   ucPllCntlFlag;                    //Output Flags: control flag
+   UCHAR   ucReserved;                       
+-}COMPUTE_GPU_CLOCK_OUTPUT_PARAMETERS_V1_6;
++} COMPUTE_GPU_CLOCK_OUTPUT_PARAMETERS_V1_6;
+ 
+ //ucPllCntlFlag
+ #define SPLL_CNTL_FLAG_VCO_MODE_MASK            0x03 
+@@ -536,8 +520,7 @@ typedef struct _COMPUTE_GPU_CLOCK_OUTPUT_PARAMETERS_V1_6
+ #define ATOM_PLL_INPUT_FLAG_PLL_STROBE_MODE_EN  1   // 1-StrobeMode, 0-PerformanceMode
+ 
+ // use for ComputeMemoryClockParamTable
+-typedef struct _COMPUTE_MEMORY_CLOCK_PARAM_PARAMETERS_V2_1
+-{
++typedef struct _COMPUTE_MEMORY_CLOCK_PARAM_PARAMETERS_V2_1 {
+   union
+   {
+     ULONG  ulClock;         
+@@ -550,7 +533,7 @@ typedef struct _COMPUTE_MEMORY_CLOCK_PARAM_PARAMETERS_V2_1
+     UCHAR   ucPllCntlFlag;                    //Output: 
+   };
+   UCHAR   ucBWCntl;                       
+-}COMPUTE_MEMORY_CLOCK_PARAM_PARAMETERS_V2_1;
++} COMPUTE_MEMORY_CLOCK_PARAM_PARAMETERS_V2_1;
+ 
+ // definition of ucInputFlag
+ #define MPLL_INPUT_FLAG_STROBE_MODE_EN          0x01
+@@ -563,81 +546,71 @@ typedef struct _COMPUTE_MEMORY_CLOCK_PARAM_PARAMETERS_V2_1
+ //MPLL_CNTL_FLAG_BYPASS_AD_PLL has a wrong name, should be BYPASS_DQ_PLL
+ #define MPLL_CNTL_FLAG_BYPASS_AD_PLL            0x04
+ 
+-typedef struct _DYNAMICE_MEMORY_SETTINGS_PARAMETER
+-{
++typedef struct _DYNAMICE_MEMORY_SETTINGS_PARAMETER {
+   ATOM_COMPUTE_CLOCK_FREQ ulClock;
+   ULONG ulReserved[2];
+-}DYNAMICE_MEMORY_SETTINGS_PARAMETER;
++} DYNAMICE_MEMORY_SETTINGS_PARAMETER;
+ 
+-typedef struct _DYNAMICE_ENGINE_SETTINGS_PARAMETER
+-{
++typedef struct _DYNAMICE_ENGINE_SETTINGS_PARAMETER {
+   ATOM_COMPUTE_CLOCK_FREQ ulClock;
+   ULONG ulMemoryClock;
+   ULONG ulReserved;
+-}DYNAMICE_ENGINE_SETTINGS_PARAMETER;
++} DYNAMICE_ENGINE_SETTINGS_PARAMETER;
+ 
+ /****************************************************************************/	
+ // Structures used by SetEngineClockTable
+ /****************************************************************************/	
+-typedef struct _SET_ENGINE_CLOCK_PARAMETERS
+-{
++typedef struct _SET_ENGINE_CLOCK_PARAMETERS {
+   ULONG ulTargetEngineClock;          //In 10Khz unit
+-}SET_ENGINE_CLOCK_PARAMETERS;
++} SET_ENGINE_CLOCK_PARAMETERS;
+ 
+-typedef struct _SET_ENGINE_CLOCK_PS_ALLOCATION
+-{
++typedef struct _SET_ENGINE_CLOCK_PS_ALLOCATION {
+   ULONG ulTargetEngineClock;          //In 10Khz unit
+   COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_PS_ALLOCATION sReserved;
+-}SET_ENGINE_CLOCK_PS_ALLOCATION;
++} SET_ENGINE_CLOCK_PS_ALLOCATION;
+ 
+ /****************************************************************************/	
+ // Structures used by SetMemoryClockTable
+ /****************************************************************************/	
+-typedef struct _SET_MEMORY_CLOCK_PARAMETERS
+-{
++typedef struct _SET_MEMORY_CLOCK_PARAMETERS {
+   ULONG ulTargetMemoryClock;          //In 10Khz unit
+-}SET_MEMORY_CLOCK_PARAMETERS;
++} SET_MEMORY_CLOCK_PARAMETERS;
+ 
+-typedef struct _SET_MEMORY_CLOCK_PS_ALLOCATION
+-{
++typedef struct _SET_MEMORY_CLOCK_PS_ALLOCATION {
+   ULONG ulTargetMemoryClock;          //In 10Khz unit
+   COMPUTE_MEMORY_ENGINE_PLL_PARAMETERS_PS_ALLOCATION sReserved;
+-}SET_MEMORY_CLOCK_PS_ALLOCATION;
++} SET_MEMORY_CLOCK_PS_ALLOCATION;
+ 
+ /****************************************************************************/	
+ // Structures used by ASIC_Init.ctb
+ /****************************************************************************/	
+-typedef struct _ASIC_INIT_PARAMETERS
+-{
++typedef struct _ASIC_INIT_PARAMETERS {
+   ULONG ulDefaultEngineClock;         //In 10Khz unit
+   ULONG ulDefaultMemoryClock;         //In 10Khz unit
+-}ASIC_INIT_PARAMETERS;
++} ASIC_INIT_PARAMETERS;
+ 
+-typedef struct _ASIC_INIT_PS_ALLOCATION
+-{
++typedef struct _ASIC_INIT_PS_ALLOCATION {
+   ASIC_INIT_PARAMETERS sASICInitClocks;
+   SET_ENGINE_CLOCK_PS_ALLOCATION sReserved; //Caller doesn't need to init this structure
+-}ASIC_INIT_PS_ALLOCATION;
++} ASIC_INIT_PS_ALLOCATION;
+ 
+ /****************************************************************************/	
+ // Structure used by DynamicClockGatingTable.ctb
+ /****************************************************************************/	
+-typedef struct _DYNAMIC_CLOCK_GATING_PARAMETERS 
+-{
++typedef struct _DYNAMIC_CLOCK_GATING_PARAMETERS {
+   UCHAR ucEnable;                     // ATOM_ENABLE or ATOM_DISABLE
+   UCHAR ucPadding[3];
+-}DYNAMIC_CLOCK_GATING_PARAMETERS;
++} DYNAMIC_CLOCK_GATING_PARAMETERS;
+ #define  DYNAMIC_CLOCK_GATING_PS_ALLOCATION  DYNAMIC_CLOCK_GATING_PARAMETERS
+ 
+ /****************************************************************************/	
+ // Structure used by EnableDispPowerGatingTable.ctb
+ /****************************************************************************/	
+-typedef struct _ENABLE_DISP_POWER_GATING_PARAMETERS_V2_1 
+-{
++typedef struct _ENABLE_DISP_POWER_GATING_PARAMETERS_V2_1 {
+   UCHAR ucDispPipeId;                 // ATOM_CRTC1, ATOM_CRTC2, ...
+   UCHAR ucEnable;                     // ATOM_ENABLE or ATOM_DISABLE
+   UCHAR ucPadding[2];
+-}ENABLE_DISP_POWER_GATING_PARAMETERS_V2_1;
++} ENABLE_DISP_POWER_GATING_PARAMETERS_V2_1;
+ 
+ /****************************************************************************/	
+ // Structure used by EnableASIC_StaticPwrMgtTable.ctb
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
