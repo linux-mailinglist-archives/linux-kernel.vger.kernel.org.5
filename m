@@ -1,114 +1,82 @@
-Return-Path: <linux-kernel+bounces-23157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 908C682A877
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:38:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0DC682A87B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:38:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3145DB22CCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:38:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7543E1F243DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9EFDDB8;
-	Thu, 11 Jan 2024 07:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A27D8DDBA;
+	Thu, 11 Jan 2024 07:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="EcQuPDsb"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2294DDA7
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1704958665; x=1705217865;
-	bh=XEdL+zlaCmbj7cKCMxcTYDhIlR/mw4v0wVNnc38KC+k=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=EcQuPDsbuQ7ERSws+3+A2Mb+94DWzBl8W1VvjxHkgppM2pt4IBwIOmG4cV6xwS4oO
-	 Xvk4caecFLACjs8qW+0TcnRIwGTG40Ucky/NT/6XIjXi+q4InoxMCsWLOjnn2f0UoD
-	 9zmykoCKV2hbwbKdPKWAR+QIAS8/mpRXjW6a7YpfwsRb0kuNQN2Bmq2DFbmG9g0h/a
-	 yrB/uYjV8Jr3ksH08q0clhOUUj5toiAqptOUgXqe2xdeXdcP/oQAkhiYkSaKPRWVFY
-	 d6UPIC/dduLBPjta20p/1d6NZI3EmMpZX8SAx0/00B1/rWkLBZ79M8DzCfhVuzR4t3
-	 8hd4PxGPx+LLQ==
-Date: Thu, 11 Jan 2024 07:37:24 +0000
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From: Michael Pratt <mcpratt@pm.me>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>, Wander Lairson Costa <wander@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 RESEND] serial: 8250: Set fifo timeout with uart_fifo_timeout()
-Message-ID: <sxGlnHaZVt4mMgmwzplgzx0bwPOv0MaG8us_UlJg2n6QajwaUgqi876d6ctZZrpkAQBLv7iJ2h2sQ4VOdOk16QHDp_D5AJCYpxPXKbBKrFA=@pm.me>
-In-Reply-To: <2024011125-stiffness-mutilated-75bb@gregkh>
-References: <20240111002056.28205-1-mcpratt@pm.me> <2024011125-stiffness-mutilated-75bb@gregkh>
-Feedback-ID: 27397442:user:proton
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Hezbn2R0"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8E9DDA6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=5T0AHkxZ0BUdC30HXl
+	e6vf8EoCWrpjRutkeHm3gI4X8=; b=Hezbn2R0UcTrThAh2Y53WDMxRlrS4Z7jUm
+	PJEwiMvDRuUhi/iLp4vhNX5WnV0nBRidvhWmd+pWEiQuy8us3OOtG++6Cd1iabJa
+	fioOfn+nCQ1nwiVdIdSkmf+Y9uvWzPO3kBUkoRXSOS7Xn7S+ql6XqmQ2xpCRHxSG
+	M/Vh1FJ/8=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-4 (Coremail) with SMTP id _____wD3P5Dhmp9l+sqRAA--.14643S2;
+	Thu, 11 Jan 2024 15:38:09 +0800 (CST)
+From: GuoHua Chen <chenguohua_716@163.com>
+To: daniel@ffwll.ch,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	christian.koenig@amd.com,
+	alexander.deucher@amd.com
+Cc: linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	GuoHua Chen <chenguohua_716@163.com>
+Subject: [PATCH] drm/radeon/r100: Clean up errors in r100.c
+Date: Thu, 11 Jan 2024 07:38:07 +0000
+Message-Id: <20240111073807.10577-1-chenguohua_716@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD3P5Dhmp9l+sqRAA--.14643S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZFy8tFWUGrWfWr48ZrW3Awb_yoW3ArcEgF
+	18XFsFqas29F9IgF1j9FWvvryIvr45urs5Cr1Iya4fKF1xZryxZ3sak39xXws5Aa9IqFWD
+	Jw4ktFy3ArsFgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUtC7UUUUUU==
+X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/xtbBEBpi1mVOBk6DhgADsb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
+Fix the following errors reported by checkpatch:
 
+ERROR: spaces required around that '+=' (ctx:VxV)o
 
-On Thursday, January 11th, 2024 at 01:52, Greg Kroah-Hartman <gregkh@linuxf=
-oundation.org> wrote:
+Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
+---
+ drivers/gpu/drm/radeon/r100.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Thu, Jan 11, 2024 at 12:27:07AM +0000, Michael Pratt wrote:
->=20
-> > Commit 8f3631f0f6eb ("serial/8250: Use fifo in 8250 console driver")
+diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.c
+index cfeca2694d5f..86b8b770af19 100644
+--- a/drivers/gpu/drm/radeon/r100.c
++++ b/drivers/gpu/drm/radeon/r100.c
+@@ -1327,7 +1327,7 @@ int r100_packet3_load_vbpntr(struct radeon_cs_parser *p,
+ 	    return -EINVAL;
+ 	}
+ 	track->num_arrays = c;
+-	for (i = 0; i < (c - 1); i+=2, idx+=3) {
++	for (i = 0; i < (c - 1); i += 2, idx += 3) {
+ 		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+ 		if (r) {
+ 			DRM_ERROR("No reloc for packet3 %d\n",
+-- 
+2.17.1
 
-This is the commit that made the issue present itself.
-
-I'm not sure whether it's right to say that this "fixes" that commit
-since it only caused the issue indirectly, and the diff for this patch
-doesn't touch any lines that the other commit touched, and the method
-I'm using to fix the issue was not available at the time, and also that
-for high baud rates like 115200 everything is still fine...
-(the 10 ms timeout is as old as the tree)
-
-If that's enough for a "Fixes" tag then go ahead (or tell me to add it),
-but maybe a "Ref" tag would be enough?
-
-You can see the other thread linked for more discussion on that point if yo=
-u like...
-
-> > reworked functions for basic 8250 and 16550 type serial devices
-> > in order to enable and use the internal FIFO device for buffering,
-> > however the default timeout of 10 ms remained, which is proving
-> > to be insufficient for low baud rates like 9600, causing data overrun.
-> >=20
-> > Unforunately, that commit was written and accepted just before commit
-> > 31f6bd7fad3b ("serial: Store character timing information to uart_port"=
-)
-> > which introduced the frame_time member of the uart_port struct
-> > in order to store the amount of time it takes to send one UART frame
-> > relative to the baud rate and other serial port configuration,
-> > and commit f9008285bb69 ("serial: Drop timeout from uart_port")
-> > which established function uart_fifo_timeout() in order to
-> > calculate a reasonable timeout to wait for all frames
-> > in the FIFO device to flush before writing data again
-> > using the now stored frame_time value and size of the buffer.
-> >=20
-> > Fix this by using the new function to calculate the timeout
-> > whenever the buffer is larger than 1 byte (unknown port default).
-> >=20
-> > Tested on a MIPS device (ar934x) at baud rates 625, 9600, 115200.
-> >=20
-> > Signed-off-by: Michael Pratt mcpratt@pm.me
-> > ---
-> > v1 thread: https://lore.kernel.org/linux-serial/20231125063552.517-1-mc=
-pratt@pm.me/
->=20
->=20
-> What commit id does this fix?
->=20
-> thanks,
->=20
-> greg k-h
-
---
-MCP
 
