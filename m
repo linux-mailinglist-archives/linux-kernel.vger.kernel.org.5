@@ -1,103 +1,106 @@
-Return-Path: <linux-kernel+bounces-22909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C62982A538
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:27:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6D8882A53F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:33:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF1B92896B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1481F23B46
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439B236A;
-	Thu, 11 Jan 2024 00:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC98A48;
+	Thu, 11 Jan 2024 00:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="kiRmVSS0"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Bk8jsCWS"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8802A190
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1704932851; x=1705192051;
-	bh=OkijiJRSxRVwfQmNOQyfPf4G65ZauMEV3546lKD1NdU=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=kiRmVSS0MAP+lN1koA8/H2LWxs1U6Ao4PB1IJbe/EplLh6vONLTNFLVlJa6PQjaPB
-	 4x/yEMwxQI2ncMZ+BHf+Ll86FabImYyBg9/cOtsqCP+RM4lSykT/2mpuLxu7LkvYlj
-	 sClfb9ALClDG0zpVJQvYBrEY8ZaTM/ou2gVNZCKuLz2wQ8KzRhpzKKPZx6sxk/05/m
-	 n3a86uJV6To79UNz6SOrZ+SnHYAiBOGWKBtjcH4DxzJeoETTFg7QEwFlUPCR7j4AOS
-	 h9kAOArObmTyHFkLITab9Xe1z+VCHQ+97ccDJGl6BzexljvS/5MMtIdwWA5evK6y0l
-	 CYF72fbQHS2mg==
-Date: Thu, 11 Jan 2024 00:27:07 +0000
-To: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
-From: Michael Pratt <mcpratt@pm.me>
-Cc: Wander Lairson Costa <wander@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Michael Pratt <mcpratt@pm.me>
-Subject: [PATCH v1 RESEND] serial: 8250: Set fifo timeout with uart_fifo_timeout()
-Message-ID: <20240111002056.28205-1-mcpratt@pm.me>
-Feedback-ID: 27397442:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53839C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:33:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e741123acso5346439e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:33:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1704933197; x=1705537997; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ecki/5hmhCZ1pJBgLNzGL9kIecS6fNHUeL7VAgIOt7A=;
+        b=Bk8jsCWS00+g1h8IQnFBzc2hy0GzlCs8SwyTYIwroZlRNlOvzsfSOOgTVFSn0GTCga
+         Kv51ZO7luZxGiphpjF9kjLQfjXU3uXEsRRmRnt2qwo0XyVpiAjFqMxYjTAYDJZCJMeK4
+         y+z2/xNVkbSGJpgkvXfd6S8C+3QLX6M4YJV8o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704933197; x=1705537997;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ecki/5hmhCZ1pJBgLNzGL9kIecS6fNHUeL7VAgIOt7A=;
+        b=iNQgdW35T2CGQWBsTELx8wcznEJbrQKO8qLs7XYj/My7YW2KEX6rHWk/FB11fLwi0Z
+         ifoM/ZBIysVG5qNnhLjxx2LA7JaM5Ba1yb69/pX4ZVaTnDLYgquhzmuTsJetCJXt7vNg
+         Xv19F1EkE6C9MENw4cVzGn7+C79rPhwkfm4Om8FJwljinpbUZjMhT9H4intuTRuYhO2P
+         pY3fta4TWQ/P5YQYpjJufjsb4Wgph20kzxAqvjevRO1Epvegbd/rU1emt9X1DhjK8bZM
+         zFPv42IrNgl1G6LgLbLqrDPmF64LMoRvx4Omk2VBh7pAI5MDMUriQkx9+9Fok0A9ukkD
+         HIhQ==
+X-Gm-Message-State: AOJu0Yx4VMVeLx7c+ohPoQE7+yXvt1hITxm0W7XOMdPUVenEmkX4z2bH
+	QAMYHv7kV3Y+/PfVaO5C58GPYbEnj+FOSPgHlY0AaFW4HnIT4FL/
+X-Google-Smtp-Source: AGHT+IF8kBsBMnxEoD+G0viIfry6mrHQvykjb1HFqYQOwin0zDNR1BD8Al0Z6B6KtiHGvKbP7Sh0qA==
+X-Received: by 2002:a19:4f58:0:b0:50e:bd97:5ccd with SMTP id a24-20020a194f58000000b0050ebd975ccdmr108200lfk.19.1704933196942;
+        Wed, 10 Jan 2024 16:33:16 -0800 (PST)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id r10-20020a1709060d4a00b00a2a13835f4csm2564989ejh.167.2024.01.10.16.33.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 16:33:15 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26f73732c5so558712266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:33:14 -0800 (PST)
+X-Received: by 2002:a17:907:1c9b:b0:a28:d5dd:574f with SMTP id
+ nb27-20020a1709071c9b00b00a28d5dd574fmr218565ejc.31.1704933194074; Wed, 10
+ Jan 2024 16:33:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20231025140205.3586473-1-mszeredi@redhat.com> <20231025140205.3586473-6-mszeredi@redhat.com>
+ <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
+In-Reply-To: <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 10 Jan 2024 16:32:57 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
+Message-ID: <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
+Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Miklos Szeredi <mszeredi@redhat.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-man@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	Karel Zak <kzak@redhat.com>, Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <christian@brauner.io>, 
+	Amir Goldstein <amir73il@gmail.com>, Matthew House <mattlloydhouse@gmail.com>, 
+	Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 
-Commit 8f3631f0f6eb ("serial/8250: Use fifo in 8250 console driver")
-reworked functions for basic 8250 and 16550 type serial devices
-in order to enable and use the internal FIFO device for buffering,
-however the default timeout of 10 ms remained, which is proving
-to be insufficient for low baud rates like 9600, causing data overrun.
+On Wed, 10 Jan 2024 at 14:23, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> with this patch in the tree, all sh4 builds fail with ICE.
+>
+> during RTL pass: final
+> In file included from fs/namespace.c:11:
+> fs/namespace.c: In function '__se_sys_listmount':
+> include/linux/syscalls.h:258:9: internal compiler error: in change_address_1, at emit-rtl.c:2275
 
-Unforunately, that commit was written and accepted just before commit
-31f6bd7fad3b ("serial: Store character timing information to uart_port")
-which introduced the frame_time member of the uart_port struct
-in order to store the amount of time it takes to send one UART frame
-relative to the baud rate and other serial port configuration,
-and commit f9008285bb69 ("serial: Drop timeout from uart_port")
-which established function uart_fifo_timeout() in order to
-calculate a reasonable timeout to wait for all frames
-in the FIFO device to flush before writing data again
-using the now stored frame_time value and size of the buffer.
+We do have those very ugly SYSCALL_DEFINEx() macros, but I'm not
+seeing _anything_ that would be odd about the listmount case.
 
-Fix this by using the new function to calculate the timeout
-whenever the buffer is larger than 1 byte (unknown port default).
+And the "__se_sys" thing in particular is just a fairly trivial wrapper.
 
-Tested on a MIPS device (ar934x) at baud rates 625, 9600, 115200.
+It does use that asmlinkage_protect() thing, and it is unquestionably
+horrendously ugly (staring too long at <linux/syscalls.h> has been
+known to cause madness and despair), but we do that for *every* single
+system call and I don't see why the new listmount entry would be
+different.
 
-Signed-off-by: Michael Pratt <mcpratt@pm.me>
----
-v1 thread: https://lore.kernel.org/linux-serial/20231125063552.517-1-mcprat=
-t@pm.me/
-
- drivers/tty/serial/8250/8250_port.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/=
-8250_port.c
-index 8ca061d3bbb9..777b61a79c5e 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2076,7 +2076,10 @@ static void wait_for_lsr(struct uart_8250_port *up, =
-int bits)
- {
- =09unsigned int status, tmout =3D 10000;
-=20
--=09/* Wait up to 10ms for the character(s) to be sent. */
-+=09/* Wait for a time relative to buffer size and baud */
-+=09if (up->port.fifosize > 1)
-+=09=09tmout =3D jiffies_to_usecs(uart_fifo_timeout(&up->port));
-+
- =09for (;;) {
- =09=09status =3D serial_lsr_in(up);
-=20
---=20
-2.30.2
-
-
+           Linus
 
