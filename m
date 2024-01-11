@@ -1,153 +1,137 @@
-Return-Path: <linux-kernel+bounces-23678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27BB882AFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:47:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2258782AFF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DA451C23E72
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:47:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9270428C659
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06FB2EAFB;
-	Thu, 11 Jan 2024 13:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5F432C91;
+	Thu, 11 Jan 2024 13:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Otuorx5P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lifmaGlP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C1E360B1;
-	Thu, 11 Jan 2024 13:47:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D947C433C7;
-	Thu, 11 Jan 2024 13:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704980846;
-	bh=VmYIuHNFpAz3LOz9NBDiJCUeFlaLSYys+F8WdobNIWw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Otuorx5P1ZH+ifPjHawCm0vkd+0hzqgsloxeS60G75hlMfsHHww6a2ZKKRJm2dUVR
-	 mXDpLoqwenyisqT9aP3L2+qViHBsFZW15X8WxyclbXTD+91bFsaKxNatFGGmg7m6vJ
-	 LSMmmDmIenIuz2aNFCjrdoN0AOx8C22c9B8PAXXEpt13N7CbcyCGMBaxthC5zb0C+h
-	 cYfdac8ERIJ9dnuff5R2KCm3xdnqjXq/qz0tul35ujIQbPqD1d8fjgHqOw/FXxJhOT
-	 6CuhPSYa6SVAFUZBXH3zynca1S9X5twmQG0uZO7aeUaP3OQeOapXjq37+lJTdCrJ3/
-	 mqfSR80rUzdjQ==
-Date: Thu, 11 Jan 2024 22:47:20 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 11/34] function_graph: Have the instances use their
- own ftrace_ops for filtering
-Message-Id: <20240111224720.12d2062d360641be25deb9d2@kernel.org>
-In-Reply-To: <ZZwOubTSbB_FucVz@FVFF77S0Q05N>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-	<170290522555.220107.1435543481968270637.stgit@devnote2>
-	<ZZg3tlOynx7YVLGQ@FVFF77S0Q05N>
-	<20240108101436.07509def635fbecf80a59ae6@kernel.org>
-	<ZZvp08OFIFbP3rnk@FVFF77S0Q05N>
-	<ZZwEz8HsTa2IZE3L@FVFF77S0Q05N>
-	<ZZwOubTSbB_FucVz@FVFF77S0Q05N>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD0B2E636;
+	Thu, 11 Jan 2024 13:50:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704981015; x=1736517015;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4hrJy3nMlZELyZXYI0OSdCP1LFkw90PNqcYzG1I5ekg=;
+  b=lifmaGlPoJ0mg1SKkAYL+QFZDL8lY6vFJh5OQmymMMfIJCd9YD5PLOyE
+   /9LADfoiAJFIl4cV8EzpXkRK86ZTSWCixdFPR+HIwseSr/+1EExef01y2
+   jznTteg/77bGidmxLDeLfuUackia+wvOpZHjbiwRiL6H06b85Rfgz2oTJ
+   jjZw711pVxoLthsG2DNAi2WqMeCxk1OPDeofoeANJxlbCEiQK0rtnaLue
+   A8K4tA/BM28EdIFIji1XU8+GjhAwpx7LeTAeZtoEC6EJUADO1BA3opWD5
+   loSZCdpBZnOE+Vsa5BYMvEebNTJzzyc1zwvq4IySmYv2A/Qcdb63FHV7E
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="6206843"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="6206843"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 05:50:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="1029554128"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="1029554128"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 11 Jan 2024 05:50:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNvRh-0008Ja-2J;
+	Thu, 11 Jan 2024 13:50:09 +0000
+Date: Thu, 11 Jan 2024 21:49:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, Dimitri Fedrau <dima.fedrau@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 net-next 5/5] net: phy: marvell-88q2xxx: add driver
+ for the Marvell 88Q2220 PHY
+Message-ID: <202401112120.tfRSOQJm-lkp@intel.com>
+References: <20240108093702.13476-6-dima.fedrau@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108093702.13476-6-dima.fedrau@gmail.com>
 
-On Mon, 8 Jan 2024 15:03:21 +0000
-Mark Rutland <mark.rutland@arm.com> wrote:
+Hi Dimitri,
 
-> On Mon, Jan 08, 2024 at 02:21:03PM +0000, Mark Rutland wrote:
-> > On Mon, Jan 08, 2024 at 12:25:55PM +0000, Mark Rutland wrote:
-> > > We also have HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, but since the return address is
-> > > not on the stack at the point function-entry is intercepted we use the FP as
-> > > the retp value -- in the absence of tail calls this will be different between a
-> > > caller and callee.
-> > 
-> > Ah; I just spotted that this patch changed that in ftrace_graph_func(), which
-> > is the source of the bug. 
-> > 
-> > As of this patch, we use the address of fregs->lr as the retp value, but the
-> > unwinder still uses the FP value, and so when unwind_recover_return_address()
-> > calls ftrace_graph_ret_addr(), the retp value won't match the expected entry on
-> > the fgraph ret_stack, resulting in failing to find the expected entry.
-> > 
-> > Since the ftrace_regs only exist transiently during function entry/exit, it's
-> > possible for a stackframe to reuse that same address on the stack, which would
-> > result in finding a different entry by mistake.
-> > 
-> > The diff below restores the existing behaviour and fixes the issue for me.
-> > Could you please fold that into this patch?
-> > 
-> > On a separate note, looking at how this patch changed arm64's
-> > ftrace_graph_func(), do we need similar changes to arm64's
-> > prepare_ftrace_return() for the old-style mcount based ftrace?
-> > 
-> > Mark.
-> > 
-> > ---->8----
-> > diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-> > index 205937e04ece..329092ce06ba 100644
-> > --- a/arch/arm64/kernel/ftrace.c
-> > +++ b/arch/arm64/kernel/ftrace.c
-> > @@ -495,7 +495,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> >         if (bit < 0)
-> >                 return;
-> >  
-> > -       if (!function_graph_enter_ops(*parent, ip, fregs->fp, parent, gops))
-> > +       if (!function_graph_enter_ops(*parent, ip, fregs->fp, (void *)fregs->fp, gops))
-> >                 *parent = (unsigned long)&return_to_handler;
-> >  
-> >         ftrace_test_recursion_unlock(bit);
-> 
-> Thinking some more, this line gets excessively long when we pass the fregs too,
-> so it's probably worth adding a local variable for fp, i.e. the diff below.
+kernel test robot noticed the following build warnings:
 
-Yeah, that will be better to keep the line short.
+[auto build test WARNING on net-next/main]
 
-Thank you,
+url:    https://github.com/intel-lab-lkp/linux/commits/Dimitri-Fedrau/net-phy-Add-BaseT1-auto-negotiation-constants/20240108-174130
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240108093702.13476-6-dima.fedrau%40gmail.com
+patch subject: [PATCH v4 net-next 5/5] net: phy: marvell-88q2xxx: add driver for the Marvell 88Q2220 PHY
+config: i386-randconfig-063-20240111 (https://download.01.org/0day-ci/archive/20240111/202401112120.tfRSOQJm-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240111/202401112120.tfRSOQJm-lkp@intel.com/reproduce)
 
-> 
-> Mark.
-> 
-> ---->8----
-> diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-> index 205937e04ece..d4e142ef4686 100644
-> --- a/arch/arm64/kernel/ftrace.c
-> +++ b/arch/arm64/kernel/ftrace.c
-> @@ -481,8 +481,9 @@ void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
->  void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->                        struct ftrace_ops *op, struct ftrace_regs *fregs)
->  {
-> -       unsigned long *parent = &fregs->lr;
->         struct fgraph_ops *gops = container_of(op, struct fgraph_ops, ops);
-> +       unsigned long *parent = &fregs->lr;
-> +       unsigned long fp = fregs->fp;
->         int bit;
->  
->         if (unlikely(ftrace_graph_is_dead()))
-> @@ -495,7 +496,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->         if (bit < 0)
->                 return;
->  
-> -       if (!function_graph_enter_ops(*parent, ip, fregs->fp, parent, gops))
-> +       if (!function_graph_enter_ops(*parent, ip, fp, (void *)fp, gops))
->                 *parent = (unsigned long)&return_to_handler;
->  
->         ftrace_test_recursion_unlock(bit);
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401112120.tfRSOQJm-lkp@intel.com/
 
+sparse warnings: (new ones prefixed by >>)
+>> drivers/net/phy/marvell-88q2xxx.c:45:22: sparse: sparse: symbol 'mv88q222x_revb0_init_seq0' was not declared. Should it be static?
+>> drivers/net/phy/marvell-88q2xxx.c:56:22: sparse: sparse: symbol 'mv88q222x_revb0_init_seq1' was not declared. Should it be static?
+
+vim +/mv88q222x_revb0_init_seq0 +45 drivers/net/phy/marvell-88q2xxx.c
+
+    44	
+  > 45	const struct mmd_val mv88q222x_revb0_init_seq0[] = {
+    46		{ MDIO_MMD_PCS, 0x8033, 0x6801 },
+    47		{ MDIO_MMD_AN, MDIO_AN_T1_CTRL, 0x0 },
+    48		{ MDIO_MMD_PMAPMD, MDIO_CTRL1,
+    49		  MDIO_CTRL1_LPOWER | MDIO_PMA_CTRL1_SPEED1000 },
+    50		{ MDIO_MMD_PCS, 0xfe1b, 0x48 },
+    51		{ MDIO_MMD_PCS, 0xffe4, 0x6b6 },
+    52		{ MDIO_MMD_PMAPMD, MDIO_CTRL1, 0x0 },
+    53		{ MDIO_MMD_PCS, MDIO_CTRL1, 0x0 },
+    54	};
+    55	
+  > 56	const struct mmd_val mv88q222x_revb0_init_seq1[] = {
+    57		{ MDIO_MMD_PCS, 0xfe79, 0x0 },
+    58		{ MDIO_MMD_PCS, 0xfe07, 0x125a },
+    59		{ MDIO_MMD_PCS, 0xfe09, 0x1288 },
+    60		{ MDIO_MMD_PCS, 0xfe08, 0x2588 },
+    61		{ MDIO_MMD_PCS, 0xfe11, 0x1105 },
+    62		{ MDIO_MMD_PCS, 0xfe72, 0x042c },
+    63		{ MDIO_MMD_PCS, 0xfbba, 0xcb2 },
+    64		{ MDIO_MMD_PCS, 0xfbbb, 0xc4a },
+    65		{ MDIO_MMD_AN, 0x8032, 0x2020 },
+    66		{ MDIO_MMD_AN, 0x8031, 0xa28 },
+    67		{ MDIO_MMD_AN, 0x8031, 0xc28 },
+    68		{ MDIO_MMD_PCS, 0xffdb, 0xfc10 },
+    69		{ MDIO_MMD_PCS, 0xfe1b, 0x58 },
+    70		{ MDIO_MMD_PCS, 0xfe79, 0x4 },
+    71		{ MDIO_MMD_PCS, 0xfe5f, 0xe8 },
+    72		{ MDIO_MMD_PCS, 0xfe05, 0x755c },
+    73	};
+    74	
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
