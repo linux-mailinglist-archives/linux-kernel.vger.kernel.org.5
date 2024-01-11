@@ -1,117 +1,276 @@
-Return-Path: <linux-kernel+bounces-23953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D740882B468
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1129C82B470
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66A41B235F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:58:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7080BB22247
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:59:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41948537E9;
-	Thu, 11 Jan 2024 17:57:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="fbuJpoFg"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504DB53812;
+	Thu, 11 Jan 2024 17:59:17 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD3052F78
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 17:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cd1232a2c7so67172171fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:57:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704995873; x=1705600673; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QIIeAnjVtiEzwNi51WQJcgMz4b/6vXhUoTESmsgqD3I=;
-        b=fbuJpoFg4XKb+qqfc0DlpQ3P5zlOYh+Hubjz7VmektWFRQT/C+bubbf0xd7luCiqnS
-         W56iKXQK3BKMJ2Fg27SpzxeSGtgS0ja58U4/zFoEdurnagxeuKNnmhZbaNC31TvtKoMR
-         nHthmiScL7GAr/9xyuBCUlVZ5u1DjZMlxHgFY92MaJFBkYya4DF9vmrT77XUH/YzBZ0n
-         qQxCa6LsK6EntUh4dX/lU3Bh55j+V342C+0HHI4LP/XJxNk2pltaUipFNPHeYIYKSWBW
-         EpH+Yj3+7IRt+n7WGtnnGAXxIhBkAN3nMDvrt2zSZkk+3c8j8gss5kqi4ZteVGj44qIr
-         X8zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704995873; x=1705600673;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QIIeAnjVtiEzwNi51WQJcgMz4b/6vXhUoTESmsgqD3I=;
-        b=ttMybrhvWRfv6ODrJq3PwOEu20BeHMfWAVYCXdTovlZHiqLWb+JODNV4+ZyBtKdat7
-         EzQdFuR9QyiVTEX0J6WSqSKEI57ZJV3bIXFRNv+njZUhYbcsZtUs+YlfH1QDku1qgWXh
-         MVkmXgF7BHlQk5mn4i/SQoEAwqwhpEBgvDPmIwucWLvPgE6YnpTaWzAtp26NdfA/cxbR
-         p/eEF/uNphFBM78dJQKLF3mBewuBWPFZa9fd+7RUW7uz159sWsWIVlyJrMQlaHcLNrLE
-         96hS7nnVZ6zta4uubo6g2iFy7bn3eOCkr7u2e6Tj0rm7c+opRf8nb3JUm694cR/RADuw
-         HTfQ==
-X-Gm-Message-State: AOJu0YxTyOhXkZ/D/C1G8VV7/8xlu00jNirxSTQ0X6IpgPju8FcMDZR2
-	8q3USdNwGl30DI0HSiAGO5Jr33Q2utcOA61JRdl5e33sFRG6sQ==
-X-Google-Smtp-Source: AGHT+IHTHFHgOxQHH3kFRf98AOHdLGEvuqdjqKXJ0SrG1lf8zP10i7sGdzjJujc+f8huruMNKYE4dgf6/S/NYhjxxd4=
-X-Received: by 2002:a2e:b0cc:0:b0:2cb:2d48:32b with SMTP id
- g12-20020a2eb0cc000000b002cb2d48032bmr53184ljl.53.1704995872651; Thu, 11 Jan
- 2024 09:57:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F05852F6A;
+	Thu, 11 Jan 2024 17:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T9snT06zPz6J6XT;
+	Fri, 12 Jan 2024 01:57:17 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 48896140595;
+	Fri, 12 Jan 2024 01:59:10 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 11 Jan
+ 2024 17:59:09 +0000
+Date: Thu, 11 Jan 2024 17:59:08 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
+	<justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for
+ processors described as container packages
+Message-ID: <20240111175908.00002f46@Huawei.com>
+In-Reply-To: <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+	<CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
- <20240109-axi-spi-engine-series-3-v1-5-e42c6a986580@baylibre.com>
- <a94d7aae-3d5c-4204-83f6-5374c3166f58@sirena.org.uk> <CAMknhBEEC4F2_hpJ_405bfrb3KNkAYpjDoJbnmOFXodp8yLACg@mail.gmail.com>
- <d19dac5c-eef6-4543-9eee-787262c0f52c@sirena.org.uk>
-In-Reply-To: <d19dac5c-eef6-4543-9eee-787262c0f52c@sirena.org.uk>
-From: David Lechner <dlechner@baylibre.com>
-Date: Thu, 11 Jan 2024 11:57:41 -0600
-Message-ID: <CAMknhBFXBVXZ8BFaNi9Anih3kH79T2Z8Jy72mQ2GcKj+38mxJg@mail.gmail.com>
-Subject: Re: [PATCH 05/13] spi: axi-spi-engine: add SPI offload support
-To: Mark Brown <broonie@kernel.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Michael Hennerich <michael.hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Frank Rowand <frowand.list@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Jonathan Corbet <corbet@lwn.net>, linux-spi@vger.kernel.org, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Jan 11, 2024 at 7:00=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
-te:
->
-> On Wed, Jan 10, 2024 at 04:31:25PM -0600, David Lechner wrote:
-> > On Wed, Jan 10, 2024 at 3:39=E2=80=AFPM Mark Brown <broonie@kernel.org>=
- wrote:
->
-> > > Glancing through here I'm not seeing anything here that handles DMA
-> > > mapping, given that the controller will clearly be doing DMA here tha=
-t
-> > > seems surprising.
->
-> > In the use case implemented in this series, the RX data is going to
-> > DMA, but in general, that doesn't have to be the case. In theory, it
-> > could get piped directly to a DSP or something like that. So I left
-> > the RX DMA part out of the SPI controller and implemented as a
-> > separate device in "iio: offload: add new PWM triggered DMA buffer
-> > driver". The SPI controller itself isn't aware that it is connected to
-> > DMA (i.e. there are no registers that have to be poked to enable DMA
-> > or anything like that).
->
-> If there's a buffer being assigned to the device (or removed from the
-> device) it needs mapping, this will ensure the device is allowed to
-> access it if there's IOMMUs involved, and that there's no pending cache
-> operations which could corrupt data.
+On Mon, 18 Dec 2023 21:17:34 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-Currently, in this series, the mapping is being handled by the
-existing DMA buffer framework in the IIO subsystem. It is the IIO
-device that owns/manages the DMA rather than the SPI controller. Nuno
-has also made some relevant comments in some of the other threads
-about why it would be preferable to do it that way. But this sounds
-like something we should come back to later after we have a look at
-breaking down this series into smaller parts.
+> On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux=
+org.uk> wrote:
+> >
+> > From: James Morse <james.morse@arm.com>
+
+Done some digging + machine faking.  This is mid stage results at best.
+
+Summary: I don't think this patch is necessary.  If anyone happens to be in
+the mood for testing on various platforms, can you drop this patch and
+see if everything still works.
+
+With this patch in place, and a processor container containing
+Processor() objects acpi_process_add is called twice - once via
+the path added here and once via acpi_bus_attach etc.
+
+Maybe it's a left over from earlier approaches to some of this?
+
+
+> >
+> > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+> > 5.2.12:
+> >
+> > "Starting with ACPI Specification 6.3, the use of the Processor() object
+> > was deprecated. Only legacy systems should continue with this usage. On
+> > the Itanium architecture only, a _UID is provided for the Processor()
+> > that is a string object. This usage of _UID is also deprecated since it
+> > can preclude an OSPM from being able to match a processor to a
+> > non-enumerable device, such as those defined in the MADT. From ACPI
+> > Specification 6.3 onward, all processor objects for all architectures
+> > except Itanium must now use Device() objects with an _HID of ACPI0007,
+> > and use only integer _UID values."
+
+Well, we definitely don't care about Itanium any more so most of this is ir=
+relevant
+and can be scrubbed going forwards!
+
+Otherwise I think we only care about Device() and Processor() being two thi=
+ngs
+that might be seen to describe CPUs and they may or may not be in a
+Processor container.
+
+> >
+> > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and=
+_Control.html#declaring-processors
+> >
+> > Duplicate descriptions are not allowed, the ACPI processor driver alrea=
+dy
+> > parses the UID from both devices and containers. acpi_processor_get_inf=
+o()
+> > returns an error if the UID exists twice in the DSDT. =20
+>=20
+> I'm not really sure how the above is related to the actual patch.
+
+This is nasty.  They key is that with this patch in place, we are actually
+adding them twice if they are are instantiated via Processor() in a process=
+or
+container.  So this reference is explaining why we don't get two lots regis=
+tered.
+
+This patch should call out explicitly why we want to do it twice
+(I'm assuming on a temporary baseis).
+
+>=20
+> > The missing probe for CPUs described as packages =20
+>=20
+> It is unclear what exactly is meant by "CPUs described as packages".
+>=20
+> From the patch, it looks like those would be Processor() objects
+> defined under a processor container device.
+Agreed.
+
+>=20
+> > creates a problem for
+> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> > described like this don't get registered, leading to errors from other
+> > subsystems when they try to add new sysfs entries to the CPU node.
+> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> >
+> > To fix this, parse the processor container and call acpi_processor_add()
+> > for each processor that is discovered like this. =20
+>=20
+> Discovered like what?
+Doesn't add any info.
+
+"To fix this, parse the processor container and call acpi_processor_add() f=
+or
+each processor found."
+
+>=20
+> > The processor container
+> > handler is added with acpi_scan_add_handler(), so no detach call will
+> > arrive. =20
+>=20
+> The above requires clarification too.
+>=20
+> > Qemu TCG describes CPUs using processor devices in a processor containe=
+r.
+
+Hmm. This isn't so clear cut.
+
+For ARM it does it nicely with ACPI0007 etc. For x86 it is still
+Processor() under some circumstances... (why exactly doesn't matter here
+- it's all legacy mess).
+
+To poke this I hacked the arm virt qemu platform to use Processor() in a
+container so I could like for like comparisons.
+
+The logic that injects a HID into Processor() objects means the existing
+handlers get fired without this patch.  I'm going to assume that might
+not be the case later in this patch set, but I've not found where it
+is broken yet :(
+
+
+> > For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
+> > https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.=
+html#processor-container-device
+> >
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > ---
+> > Outstanding comments:
+> >  https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
+> >  https://lore.kernel.org/r/50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.=
+com
+> > ---
+> >  drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> >
+> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processo=
+r.c
+> > index 4fe2ef54088c..6a542e0ce396 100644
+> > --- a/drivers/acpi/acpi_processor.c
+> > +++ b/drivers/acpi/acpi_processor.c
+> > @@ -626,9 +626,31 @@ static struct acpi_scan_handler processor_handler =
+=3D {
+> >         },
+> >  };
+> >
+> > +static acpi_status acpi_processor_container_walk(acpi_handle handle,
+> > +                                                u32 lvl,
+> > +                                                void *context,
+> > +                                                void **rv)
+> > +{
+> > +       struct acpi_device *adev;
+> > +       acpi_status status;
+> > +
+> > +       adev =3D acpi_get_acpi_dev(handle);
+> > +       if (!adev)
+> > +               return AE_ERROR; =20
+>=20
+> Why is the reference counting needed here?
+>=20
+> Wouldn't acpi_fetch_acpi_dev() suffice?
+You are the expert here :)  I can't see why the reference is needed
+so would be fine with dropping it.
+
+>=20
+> Also, should the walk really be terminated on the first error?
+
+If this patch makes sense things will probably blow up later but no
+worse than before so sure, keep going.
+
+>=20
+> > +
+> > +       status =3D acpi_processor_add(adev, &processor_device_ids[0]);
+> > +       acpi_put_acpi_dev(adev);
+> > +
+> > +       return status;
+> > +}
+> > +
+> >  static int acpi_processor_container_attach(struct acpi_device *dev,
+> >                                            const struct acpi_device_id =
+*id)
+> >  {
+> > +       acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
+> > +                           ACPI_UINT32_MAX, acpi_processor_container_w=
+alk,
+> > +                           NULL, NULL, NULL); =20
+>=20
+> This covers processor objects only, so why is this not needed for
+> processor devices defined under a processor container object?
+
+Both cases are covered by the existing handling without this.
+
+I'm far from clear on why we need this patch.  Presumably
+it's the reference in the description on it breaking for
+Processor Package containing Processor() objects that matters
+after a move... I'm struggling to find that move though!
+
+
+
+>=20
+> It is not obvious, so it would be nice to add a comment explaining the
+> difference.
+>=20
+> > +
+> >         return 1;
+> >  }
+> >
+> > -- =20
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
 
