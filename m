@@ -1,181 +1,131 @@
-Return-Path: <linux-kernel+bounces-23706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 866D382B07F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:20:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ABF782B084
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:21:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D97EB220E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:19:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA30328965F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84763C497;
-	Thu, 11 Jan 2024 14:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7C03C6A4;
+	Thu, 11 Jan 2024 14:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HDAZs6aJ"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GPrOWCXO"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA243D542
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 14:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704982787; x=1736518787;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=m9r/zSGvLdOLi0BGLqhWMQAD8e0dWyA3OSr/FvhjBSg=;
-  b=HDAZs6aJxlNtnhtFqsBrZlEuw43GzA/82ADkhfLTo4kER5OBqiZ5+pLc
-   uNp23YdV6SaBTfMX77jq8R/Y822nTO5yj8KQ64mwJqn29XpkqCAMNttsp
-   JLxAOvrpRVK7LLh2eZlDLX2Y7sgWnspq0VD8wmWJtwCLqLDfqLtQyeYeC
-   FLaz3MtNjEDCR5FZVD8A9BiYx22Hza84SO2pvo8XiYMsQHEB1zmpSsGak
-   Ikie8n5fDS+xDqHatoYwGwJJgp/KE9m1OUgIdiWDtk8H+0lvza/KgGRZS
-   9lmxlKsdlZPi/28W0lE0ZrPDkmNWLbRRwF6r5M4NTLb+vruUE/Cap4qS9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="402632012"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="402632012"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 06:19:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="17055629"
-Received: from unknown (HELO [10.125.177.125]) ([10.125.177.125])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 06:19:46 -0800
-Message-ID: <1a3661d5-3539-4443-88da-003dea920188@linux.intel.com>
-Date: Thu, 11 Jan 2024 06:19:46 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CD63C097;
+	Thu, 11 Jan 2024 14:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cd1aeb1bf3so50054481fa.1;
+        Thu, 11 Jan 2024 06:21:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704982873; x=1705587673; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RwaiGVnOJ4Du9HqZqbeixpFvs9VfyRazD4DEKYzZ3xs=;
+        b=GPrOWCXOOFiNNjB7fIXRrMFTsMzDyCk66/Jw3pxNetsV6FKjhrXVQQEp7JukWZh0Xc
+         synTBokOPNYYd7hnsVkCdcl85+TjIhV9hfe60vDXjT7GrKS40+C4mEhHnuRIOChTZaFR
+         bKC63FTPViXKw63fPi0C84AetInXSo/ysFh8g36Hyl7gZomg7u9eoz+VwDpbAc5n7AHt
+         GZCoNlpswEFC9952mjCdDl6S+XgQAG/gDksrY6lORpTuIVM4W5mob4S1r6GNQhgvq1BD
+         L7+pteHA7IkqkBfLNf3cXQ8UzT9j+M05G4VXneUd1mYfejXPtwXtr22ktOnfmicb2Lok
+         YlTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704982873; x=1705587673;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RwaiGVnOJ4Du9HqZqbeixpFvs9VfyRazD4DEKYzZ3xs=;
+        b=WiJdFxAZbQX8rBtKPVXdJFrEw+4ApHIruRGGgiHLLV4ZNrfO3xpGq109JepRejx5Ba
+         3BEEcxlOy+0enKARF4sFvdCuL7Bjhz+OfOFp0ljy2dFJKCp9Zeyc2WT7HYZVmatMC1AJ
+         cLBvZcHQCPMohvP2hXiPTwmQJc5F6UdYI7ORwG7lCcFcnU3xKiAUMojxC3j6ODlhs9NJ
+         yRSw0tn6qEqNnUMeniJ7/c3ziA/sT/KZqRwPTBL0/sh8KXzjjp4fMtjBl5WbO9QG1K+a
+         rGeuvEM0a+cmKVyT8O4+w5ZHYdFZuEZZipvh5tO9wzfFaUSLqVCA4Fx6QEfJRm69lOJ+
+         KzQA==
+X-Gm-Message-State: AOJu0Yy7aqRLnwEObDcVnDerbJcZi39q/l2vDT9Ag6zoxZWLq9gmYrUf
+	5OtDXUTZbubrk0ZFGEN40likGXqtT78gaB29mBs=
+X-Google-Smtp-Source: AGHT+IGASPuQqXfakyAKXe5VY1bHxQL6IYqanbxagT73RkRxA5RqV6D1bl0yQv8fT94XiGX8zMneuUjWQoT9/ZpENCM=
+X-Received: by 2002:a2e:96c7:0:b0:2cd:1aa5:db82 with SMTP id
+ d7-20020a2e96c7000000b002cd1aa5db82mr537079ljj.21.1704982872565; Thu, 11 Jan
+ 2024 06:21:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2] x86/mm: Fix memory encryption features advertisement
-Content-Language: en-US
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, linux-coco@lists.linux.dev,
- linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
- Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-References: <20240111111224.25289-1-kirill.shutemov@linux.intel.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240111111224.25289-1-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Steve French <smfrench@gmail.com>
+Date: Thu, 11 Jan 2024 08:20:59 -0600
+Message-ID: <CAH2r5mvajaHtTgnfMYd2BQ+w9XoBvN7tcjaG17W-Zb9r0KDG_w@mail.gmail.com>
+Subject: [GIT PULL] ksmbd server fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: CIFS <linux-cifs@vger.kernel.org>, Namjae Jeon <linkinjeon@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+Please pull the following changes since commit
+0dd3ee31125508cd67f7e7172247f05b7fd1753a:
 
+  Linux 6.7 (2024-01-07 12:18:38 -0800)
 
-On 1/11/2024 3:12 AM, Kirill A. Shutemov wrote:
-> When memory encryption is enabled, the kernel prints the encryption
-> flavor that the system supports.
-> 
-> The check assumes that everything is AMD SME/SEV if it doesn't have
-> the TDX CPU feature set.
-> 
-> Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
-> on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
-> encryption enabled for I/O without the rest of CoCo enabling.
-> 
-> To avoid confusion, check the cc_vendor directly.
-> 
-> Possible alternative is to completely removing the print statement.
-> For a regular TDX guest, the kernel already prints a message indicating
-> that it is booting on TDX. Similarly, AMD and Hyper-V can also display
-> a message during their enumeration process.
+are available in the Git repository at:
 
-With this change, will it print "Intel TDX" for Hyper-V?
+  git://git.samba.org/ksmbd.git tags/6.8-rc-smb-server-fixes
 
-IMO, since there is already a debug message for type identification, we
-can remove this part. 
+for you to fetch changes up to 8fb7b723924cc9306bc161f45496497aec733904:
 
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-> ---
->  arch/x86/mm/mem_encrypt.c | 56 +++++++++++++++++++++------------------
->  1 file changed, 30 insertions(+), 26 deletions(-)
-> 
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index c290c55b632b..d035bce3a2b0 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -42,38 +42,42 @@ bool force_dma_unencrypted(struct device *dev)
->  
->  static void print_mem_encrypt_feature_info(void)
->  {
-> -	pr_info("Memory Encryption Features active:");
-> +	pr_info("Memory Encryption Features active: ");
->  
-> -	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
-> -		pr_cont(" Intel TDX\n");
-> -		return;
-> -	}
-> +	switch (cc_vendor) {
-> +	case CC_VENDOR_INTEL:
-> +		pr_cont("Intel TDX\n");
-> +		break;
-> +	case CC_VENDOR_AMD:
-> +		pr_cont("AMD");
->  
-> -	pr_cont(" AMD");
-> -
-> -	/* Secure Memory Encryption */
-> -	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
-> +		/* Secure Memory Encryption */
-> +		if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
->  		/*
->  		 * SME is mutually exclusive with any of the SEV
->  		 * features below.
-> -		 */
-> -		pr_cont(" SME\n");
-> -		return;
-> +		*/
-> +			pr_cont(" SME\n");
-> +			return;
-> +		}
-> +
-> +		/* Secure Encrypted Virtualization */
-> +		if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-> +			pr_cont(" SEV");
-> +
-> +		/* Encrypted Register State */
-> +		if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-> +			pr_cont(" SEV-ES");
-> +
-> +		/* Secure Nested Paging */
-> +		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
-> +			pr_cont(" SEV-SNP");
-> +
-> +		pr_cont("\n");
-> +		break;
-> +	default:
-> +		pr_cont("Unknown\n");
->  	}
-> -
-> -	/* Secure Encrypted Virtualization */
-> -	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-> -		pr_cont(" SEV");
-> -
-> -	/* Encrypted Register State */
-> -	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-> -		pr_cont(" SEV-ES");
-> -
-> -	/* Secure Nested Paging */
-> -	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
-> -		pr_cont(" SEV-SNP");
-> -
-> -	pr_cont("\n");
->  }
->  
->  /* Architecture __weak replacement functions */
+  ksmbd: Add missing set_freezable() for freezable kthread (2024-01-09
+20:01:16 -0600)
+
+----------------------------------------------------------------
+11 ksmbd server fixes
+- memory allocation fix
+- Three lease fixes, including important rename fix
+- read only share fix
+- thread freeze fix
+- Three cleanup fixes (two kernel doc related)
+- locking fix in setting EAs
+- packet header validation fix
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      ksmbd: Remove usage of the deprecated ida_simple_xx() API
+
+Fedor Pchelkin (1):
+      ksmbd: free ppace array on error in parse_dacl
+
+Kevin Hao (1):
+      ksmbd: Add missing set_freezable() for freezable kthread
+
+Li Nan (1):
+      ksmbd: validate the zero field of packet header
+
+Namjae Jeon (5):
+      ksmbd: set v2 lease version on lease upgrade
+      ksmbd: fix potential circular locking issue in smb2_set_ea()
+      ksmbd: don't increment epoch if current state and request state are same
+      ksmbd: don't allow O_TRUNC open on read-only share
+      ksmbd: send lease break notification on FILE_RENAME_INFORMATION
+
+Randy Dunlap (2):
+      ksmbd: auth: fix most kernel-doc warnings
+      ksmbd: vfs: fix all kernel-doc warnings
+
+ fs/smb/server/auth.c           | 14 ++++++++------
+ fs/smb/server/connection.c     |  1 +
+ fs/smb/server/mgmt/ksmbd_ida.c | 21 ++++++---------------
+ fs/smb/server/oplock.c         | 16 +++++++++++-----
+ fs/smb/server/smb2pdu.c        | 31 ++++++++++++++-----------------
+ fs/smb/server/smb_common.c     |  6 +++++-
+ fs/smb/server/smbacl.c         | 11 +++++++----
+ fs/smb/server/vfs.c            | 28 ++++++++++++++++++----------
+ 8 files changed, 70 insertions(+), 58 deletions(-)
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Thanks,
+
+Steve
 
