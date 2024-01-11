@@ -1,111 +1,77 @@
-Return-Path: <linux-kernel+bounces-24100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF30082B6DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:52:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B167A82B6E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:54:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A000F1F2548D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:52:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6E611C210E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F59558215;
-	Thu, 11 Jan 2024 21:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F094A5820B;
+	Thu, 11 Jan 2024 21:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="xet3vbjy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF7156B83;
-	Thu, 11 Jan 2024 21:52:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 573C2C433C7;
-	Thu, 11 Jan 2024 21:52:16 +0000 (UTC)
-Date: Thu, 11 Jan 2024 16:53:19 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
- default ownership
-Message-ID: <20240111165319.4bb2af76@gandalf.local.home>
-In-Reply-To: <20240111-unzahl-gefegt-433acb8a841d@brauner>
-References: <20240103203246.115732ec@gandalf.local.home>
-	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
-	<20240105095954.67de63c2@gandalf.local.home>
-	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
-	<20240107132912.71b109d8@rorschach.local.home>
-	<20240108-ortsrand-ziehen-4e9a9a58e708@brauner>
-	<20240108102331.7de98cab@gandalf.local.home>
-	<20240110-murren-extra-cd1241aae470@brauner>
-	<20240110080746.50f7767d@gandalf.local.home>
-	<20240111-unzahl-gefegt-433acb8a841d@brauner>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1A456B83
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:54:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 518A8C433F1;
+	Thu, 11 Jan 2024 21:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1705010045;
+	bh=5T6qmUEqSEe0y8Obv/o5UTTw7CLDO4G0csQ596TuakI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=xet3vbjyx49+zfrk6MoGZp+RE0E2OV0FzrKZ0ZXmFapYLTO35UsS1r5wNfkz/t7Ci
+	 WJPKnqknMB31sMqW/lhl4CfY/mRU88A/qTLaNF0sg2Z0Eq06Ry54XJPDv0c37pz6Zs
+	 QrkOb2PFKYrp1Ufezc7HHacf5qcOkOpd4lFQwQq8=
+Date: Thu, 11 Jan 2024 13:54:04 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+Cc: Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm, oom: Add lru_add_drain() in __oom_reap_task_mm()
+Message-Id: <20240111135404.609af4a26d0118c0d290f11c@linux-foundation.org>
+In-Reply-To: <b2096bcb-bda6-4831-85a2-67759e783e4d@oracle.com>
+References: <20240109091511.8299-1-jianfeng.w.wang@oracle.com>
+	<ZZ5Zb3FYqY8FZgB3@tiehlicka>
+	<1d866f1b-94b3-43ec-8f4c-2de31b82d3d1@oracle.com>
+	<ZZ-q0PZ-XCDwA4oG@tiehlicka>
+	<b2096bcb-bda6-4831-85a2-67759e783e4d@oracle.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Jan 2024 22:01:32 +0100
-Christian Brauner <brauner@kernel.org> wrote:
+On Thu, 11 Jan 2024 10:54:45 -0800 Jianfeng Wang <jianfeng.w.wang@oracle.com> wrote:
 
-> What I'm pointing out in the current logic is that the caller is
-> taxed twice:
 > 
-> (1) Once when the VFS has done inode_permission(MAY_EXEC, "xfs")
-> (2) And again when you call lookup_one_len() in eventfs_start_creating()
->     _because_ the permission check in lookup_one_len() is the exact
->     same permission check again that the vfs has done
->     inode_permission(MAY_EXEC, "xfs").
+> > Unless you can show any actual runtime effect of this patch then I think
+> > it shouldn't be merged.
+> > 
+> 
+> Thanks for raising your concern.
+> I'd call it a trade-off rather than "not really correct". Look at
+> unmap_region() / free_pages_and_swap_cache() written by Linus. These are in
+> favor of this pattern, which indicates that the trade-off (i.e. draining
+> local CPU or draining all CPUs or no draining at all) had been made in the
+> same way in the past. I don't have a specific runtime effect to provide,
+> except that it will free 10s kB pages immediately during OOM.
 
-As I described in: https://lore.kernel.org/all/20240110133154.6e18feb9@gandalf.local.home/
+I don't think it's necessary to run lru_add_drain() for each vma.  Once
+we've done it it once, it can be skipped for additional vmas.
 
-The eventfs files below "events" doesn't need the .permissions callback at
-all. It's only there because the "events" inode uses it.
+That's pretty minor because the second and successive calls will be
+cheap.  But it becomes much more significant if we switch to
+lru_add_drain_all(), which sounds like what we should be doing here. 
+Is it possible?
 
-The .permissions call for eventfs has:
-
-static int eventfs_permission(struct mnt_idmap *idmap,
-			      struct inode *inode, int mask)
-{
-	set_top_events_ownership(inode);
-	return generic_permission(idmap, inode, mask);
-}
-
-Where the "set_top_events_ownership() is a nop for everything but the
-"events" directory.
-
-I guess I could have two ops:
-
-static const struct inode_operations eventfs_root_dir_inode_operations = {
-	.lookup		= eventfs_root_lookup,
-	.setattr	= eventfs_set_attr,
-	.getattr	= eventfs_get_attr,
-	.permission	= eventfs_permission,
-};
-
-static const struct inode_operations eventfs_dir_inode_operations = {
-	.lookup		= eventfs_root_lookup,
-	.setattr	= eventfs_set_attr,
-	.getattr	= eventfs_get_attr,
-};
-
-And use the second one for all dentries below the root, but I figured it's
-not that big of a deal if I called the permissions on all. Perhaps I should
-do it with two?
-
-Anyway, the issue is with "events" directory and remounting, because like
-the tracefs system, the inode and dentry for "evnets" is created at boot
-up, before the mount happens. The VFS layer is going to check the
-permissions of its inode and dentry, which will be incorrect if the mount
-was mounted with a "gid" option.
-
-
--- Steve
 
