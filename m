@@ -1,180 +1,165 @@
-Return-Path: <linux-kernel+bounces-23834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DFAA82B27F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:10:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF1D82B27E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AAA81C225CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:10:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41BFE283996
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792EF4F883;
-	Thu, 11 Jan 2024 16:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F09D4F882;
+	Thu, 11 Jan 2024 16:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="F2JtKCd2";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JyUaLbvL"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="jb2fyZuO"
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2075.outbound.protection.outlook.com [40.107.13.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26944F5EB
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 2B8683200ADA;
-	Thu, 11 Jan 2024 11:10:19 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 11 Jan 2024 11:10:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:subject:subject:to:to; s=fm2; t=1704989418; x=1705075818; bh=9R
-	zTEvhCKL7Awc276Zv+gQzOpQmx3QFfr62ZtDcmxl0=; b=F2JtKCd2ne/gs9Cdl5
-	Xf5PybmLlsvLZ2MrcGh/bWpxnjf+zp2lW8AwJsORGFkOTM5w3Dmzg7IfDVNMJdyB
-	nFZua0JNEDRHR/a5jdapaBeZtTEOVYECnA+CKCqetyGU2qQFXm0l3CQe5oU2skjm
-	G/FgoWhV+7Uq8ER0AAhPF1+XHTEfcKVDwobMjc/MNcMmKghpagxIO/SogK/+KL0v
-	q5Nf13Tai6dZF4y7qJ3Lj9KKYnqfE5gxXPGlz4O3IIlDJK5/m0XVcOwW6lo+Dd73
-	VvEoL7ULh13o6aXWFTAsNBIkRWvqLLDN6h1UN3LFnj20Eq/y4SGHYpiKv7EJsryY
-	EbEg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1704989418; x=1705075818; bh=9RzTEvhCKL7Aw
-	c276Zv+gQzOpQmx3QFfr62ZtDcmxl0=; b=JyUaLbvLrAjM/4vuCLILKt5YcZ5fq
-	4mGkNFOzd5wwpxRhbp/APfrn938Q0EZM7pUfN2iXL2OcXIPhffN/VwbNeur+HS6O
-	ejpU3CUBiaAFmdB+FFbUfUAupUi2ouIAnw7sXbegataypOMrNOVTV1jISJFpYOBk
-	H/yWVuJ/KFSmidefjNlWsXsVXf8AY1lcT+WtVyxSPlhu+Qw46LYu36G+MEu7y+sq
-	5KRtT5YBy518GHBdfCMtJpNaCt1Rjz0pLPV09tztgvHJoW/Bfr1aQFZWgMZTETX8
-	amPQmkCBcBX8SEzOwH9bim03+eg4Ci3gNJVOCKNqrS+Q7Z3wTK3cjyiow==
-X-ME-Sender: <xms:6hKgZV7pDxt4jGyIYcSR_9bczrdnUHI8r02soLYCfPeGcQ9LuFrKCg>
-    <xme:6hKgZS7tDsATHrcJp4FTxmmI3H-Uw8bzaTpTKa6FlOrnTroyRzkBM0usq7ds12aPu
-    jt5iKopkMIzI7Df2zk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeifedgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkfffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpefgffevuddtledthfduiedtvddvtdelfeekhfeggfevveelgfeitdeileeffefg
-    ieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:6hKgZceoOrEMZd48J4wpycMMr8r6MWi8-SQp_y5sPm5qxsgJBS_qEQ>
-    <xmx:6hKgZeIS9JfUxMH78OkSr6nhls3PknNijAH2vqNLvelmzkyJZ-neHw>
-    <xmx:6hKgZZLafpwUnFBE2n84jJkptSJuLQRd7XnSOb_ZbJopyqLIvJMMUw>
-    <xmx:6hKgZXjYMWKiXxh9czlzIOIXAN108KG9HFbpw-GiXZqWLH8dWNS_Qg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 04C6DB6008D; Thu, 11 Jan 2024 11:10:17 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130823B193;
+	Thu, 11 Jan 2024 16:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SO86N7X68ksbhpeOmADvtl/JIA7qAPrNhXtw2ctOJYMPpDjNDBae37/qwdu+01nXJOyny1OFVIsdxRdpvNqjFbLP9dXO0rlcsdB53Ge138hP5H1+FNPfqYi0DVcq/36j27Q8kzCcs7f41FJNJfXSXNPZTiGsj42YeBacyNomDGtkjbF62Bv/XDgMRij4mT4qqWdpN/YSSfcD8BLyxnwbHiNwJaYKqDxERWUvUXXxwXuOM5XtoG/YoIB0GH2rxp0Tknen6MBCmi1n1xxvKiDWrrp/Yh2Q7xxY9fjob8XDZP2zPKHMzdg+vvjCve867PPPDaz8t6QaHAtJcVTM3+QqtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jTS4IQNsDXHG7aIBJ9ZwW45udhw/kN+YghsHriV55eE=;
+ b=jxs93MwMqieg7CBmj7KavvRurOntn2zVSTzrP64ne7wtDZVoxzmmvineL5FmMwWmLifa/ip6d0EAUGhpxYJ+9l8qg64f1sAEIg6elvNRHY+h34kYppudcPI8fK3OFDHef26gQKkE8+UZY5vzHEVV7GqIF0ur06m1BMnbBB6TpbV8onUfmRttr1b5rfjxH4/cmu4NauXEmltCxml2p116Ulp4Plxs8V90/S7AHGpcU72wvR6+WY9Y0rj9VdMilrmvJ+st23WzDur3Jl5k4wugUcUk6fCmWnYnz+oRD3g+y5Df5vQUcg9XIE2NGUV2eGa0ew+5GdZw4eh8Ihh+1JOiRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jTS4IQNsDXHG7aIBJ9ZwW45udhw/kN+YghsHriV55eE=;
+ b=jb2fyZuO7xvfLvf0tpFvOIWMf802RDJFHdwOsS8V5c1HVhAI6a8UvCeP4S5x9UohT2QipLXeIYq9uY071VKRNs8zWNB4l8LNqLATRRnIWLt1ipwZjXE1aJ93UGjwfoNXQRqj0/Qim9dyn/FZMr08hBEbm/QwtgpWlAvJ0f2eD0w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS8PR04MB7511.eurprd04.prod.outlook.com (2603:10a6:20b:23f::5)
+ by PAXPR04MB8765.eurprd04.prod.outlook.com (2603:10a6:102:20c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Thu, 11 Jan
+ 2024 16:09:31 +0000
+Received: from AS8PR04MB7511.eurprd04.prod.outlook.com
+ ([fe80::8ee3:bac5:a2da:d469]) by AS8PR04MB7511.eurprd04.prod.outlook.com
+ ([fe80::8ee3:bac5:a2da:d469%4]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
+ 16:09:31 +0000
+Date: Thu, 11 Jan 2024 11:09:22 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Peng Fan <peng.fan@nxp.com>, Fabio Estevam <festevam@denx.de>,
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev
+Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
+Message-ID: <ZaASsqnq5ZYdcjm6@lizhi-Precision-Tower-5810>
+References: <20240110232255.1099757-1-arnd@kernel.org>
+ <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
+ <343cedc4-a078-4cf8-ba3b-a1a8df74185b@app.fastmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <343cedc4-a078-4cf8-ba3b-a1a8df74185b@app.fastmail.com>
+X-ClientProxiedBy: BY5PR04CA0020.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::30) To AS8PR04MB7511.eurprd04.prod.outlook.com
+ (2603:10a6:20b:23f::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <1c120ba6-3c94-4d94-8497-afb6c5063d3c@app.fastmail.com>
-Date: Thu, 11 Jan 2024 17:09:20 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc: soc@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL 0/4] ARM: SoC updates for 6.8
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB7511:EE_|PAXPR04MB8765:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef9d41f6-e324-4546-232c-08dc12bfb1c2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	IDASIq+du+lFPuMQw3orQvUeDZhDCFr81LlYlMH1I2pZsH+9cIxBAHhvtec9y1KvsnhPkpqLT1G8JVjgblR5qORlV438JAkaKvII/IhKAZQfx4/FS/YOkns73jImbYrbzpSG59DMv6EQeYV4zVyA7DQGxSvtaTSfMMmRSQ8YVpbv7cFJlGAvQxkFhTBYlXOyk9DHUJjUrvPpQh9b1N5CyLQwaTkqHAj0EV2vFgzco941tujcT74KfdyhrVBR/EJe3r4ilZApO6WWaJ4/dX8PVyGr0RP1LrhnYg8XO9v7VSHVaL3NVNFNVVpnNYKliiqBM+k2r3ODn0GIeQ2Es2eD7iZeAbvY0TqaTZC8ZdO0OcSYRBkTfgjBEm6C3mUaXmMuyECf92O8kCNfmFP5DYfKv4E9dTXfj79E0pBgMcoVcbQsWQ799d28IHvvPOmnDbnFOefYJEECyf8NqMk/I39yKrToqYReV3FuMUzPvQCCPRZ3T8X2VWmcxJQg2bY5MlZyal+Nb+zunQJeA/ySuIEk0Mp98UiR4IGDnSywp+0zh3B5AC2kXIDZJaiq6DPpWKDdgfvCLf4Tcpaai/S7zsv9ECZ86+oMhmkmhPNrzgbHpI6DhReLsViDm7Kz0yUs/D7y
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB7511.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(39860400002)(136003)(346002)(366004)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(66899024)(2906002)(6666004)(5660300002)(478600001)(6512007)(4326008)(38350700005)(41300700001)(6916009)(8936002)(66556008)(66476007)(316002)(66946007)(54906003)(6486002)(9686003)(8676002)(6506007)(86362001)(52116002)(33716001)(26005)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?26cqKAndKbs/gp0Okx6qDlQ4S0/JF/dsbS6sxQAQjnmB8HoN6i+EsON1vs+o?=
+ =?us-ascii?Q?/D2+Q8rVShhfM6URFeRhlappwTfwhyRL9hDxCh3JI+IRR+Sl8dEeeasTChHY?=
+ =?us-ascii?Q?34mST7KmHoeFVenzHgY9DkTN1mc5knpdYzDSz6A1tbaa3lawq8jGRbgneWHA?=
+ =?us-ascii?Q?3it2uSEWg+ryZeyMm7TgMnE1KilTk8+GEq3y1OYB8rME39hVSMty6kmN777S?=
+ =?us-ascii?Q?AO6hy20y6Wol8mU2XeeDvNZvwA5zdhaNFUxiZeiO6/eHTtjaJz+ppf4pk7gk?=
+ =?us-ascii?Q?Zwz83JpD8gMp0SHLUsHkukhtioXyagvc//eZPbCKeNCG7ndXXjmK+vtBtey4?=
+ =?us-ascii?Q?nKFDPvcv38dSCiKYAUfz9Jv6Jer+EJG+tsFquAoallt6LKIMtF5E1NdsxP0S?=
+ =?us-ascii?Q?ADVr3L9gsCzHC1HzG9D0y4viDBnUKoa51Yk0g/XpSEUBYtxt/fa/oT5ZazCz?=
+ =?us-ascii?Q?92Mg/+1dhWAE8hI+80ffuM7IaxXc9DphfuYRils+D3E2EYtV8mezd7Lw8/q6?=
+ =?us-ascii?Q?EAjqGebx5ptLJr0V0AfVUFJlOlP9Dr+wW+aU3GQjKBILOD9YfFXQF7LuzFsz?=
+ =?us-ascii?Q?+sHjEAaKJVx1W+ERSX1wxc4azl1ob9IezBrWD29v9pHTDB7dFCQ8ak0RzsPM?=
+ =?us-ascii?Q?5iLdS45JBXyfCBjekb39kGWTWATBUd7bXhnD4CsxPM/HtPZnDXCzK+RC+rZc?=
+ =?us-ascii?Q?q9OnCPgodUr8WIQ5qfkMuZDCNEC5mwvjKjV6Ck0ekxAMGtk+GcZwFZv9C/A/?=
+ =?us-ascii?Q?NygLtT0actYalF7IuDcMmKtPZ22c7etOrYk63Ywc7CNQXxY/Rg9OYx2spzCq?=
+ =?us-ascii?Q?qXw6mYsFT8U5dZjeAcRf/QxndQdgWqFF2z8avD7oNz0bhGUjhrKdAF3FUjXA?=
+ =?us-ascii?Q?yyanXNVpq/E57uarcAYQIJUaFv7dUY1wqNheBGRjAvDY6QntjfsEsDN8TFZA?=
+ =?us-ascii?Q?b6BiNJqk7jTAioGykJP0F+0peqAU9sDlk9lbQ8gvHgK55H+Pt3QXJ9dUOlBw?=
+ =?us-ascii?Q?RLjpbE8CAZMLDk+8EaN/MLTmGaM7fg+9kcB879cwDDUkrJGNKMaoSYAQe55A?=
+ =?us-ascii?Q?U2v9ctLP34WAHJwNM87Nc9N4QlY2DQe1Y7WVzSidQOKIoBGlJXaqENn5M4Cf?=
+ =?us-ascii?Q?745Y9nLUj1KUDBz86grsWs8rRkRl6q4JYTNrN1AhPI+oqANv/ftnek5QTGXa?=
+ =?us-ascii?Q?XpcuVYwifBoqa4qXbKZkuY7aCOkHQgaS8rxnSt3KV9xiDuy0IbcOBsOIn2zf?=
+ =?us-ascii?Q?cIHE/VdfH57ufcuaq/SjCN3j0D4hze3gqs1d/fJzHGuei7Tq/FKuX4TlW75m?=
+ =?us-ascii?Q?64yzI9sQmQrxSIswPVxrDjqBJi/Il6c6vFW0oBPVLcB0sUCO6FR8apLp6Tze?=
+ =?us-ascii?Q?RG/DD1bwof11vgyISOZIrHjOxDH/t1mNuGRGgfevZ4u6lRptvj9tgLz2RbsP?=
+ =?us-ascii?Q?R+EUJOefAw4YGoqwW3b4S/9/FcYFtOj9lIBa9cM/Usl88YDf/dHm9Cjc4xHx?=
+ =?us-ascii?Q?WrP1aFNpMm+4EcpCLT6tWFnDb9qf3bQ2R9LC3y/E+WuTsLLn/ymVD39y4M2H?=
+ =?us-ascii?Q?eItWd9N7LmEZYHCXldUm8OEwaMIBsjs1M2A1prar?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef9d41f6-e324-4546-232c-08dc12bfb1c2
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB7511.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 16:09:31.1700
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RjpoCY+H5+wSqI+x967mwBLkEmjFYKzMX0hdBp9jx36Di3FBHCmru2p17OE9ggWVa0QTEWz+Ee8UPXePuRyFlg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8765
 
-There are 1095 non-merge commits from 204 developers this time,
-but only 68 branches I merged from platform maintainers.
-The most active developers are:
+On Thu, Jan 11, 2024 at 07:23:34AM +0100, Arnd Bergmann wrote:
+> On Thu, Jan 11, 2024, at 01:02, Frank Li wrote:
+> > On Thu, Jan 11, 2024 at 12:03:42AM +0100, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >> 
+> >> A change to remove some unnecessary exports ended up removing some
+> >> necessary ones as well, and caused a build regression by trying to
+> >> link a single source file into two separate modules:
+> >
+> > You should fix Kconfig to provent fsl-edma and mcf-edma build at the same
+> > time.
+> 
+> That sounds like the wrong approach since it prevents
+> compile-testing one of the drivers in an allmodconfig
+> build.
+> 
+> > EXPORT_SYMBOL_GPL is not necesary at all.
+> >
+> > mcf-edma is quit old. ideally, it should be merged into fsl-edma.
+> 
+> I have no specific interest in either of the drivers, just
+> trying to fix the build regression. I see no harm in exporting
+> the symbols, but I can refactor the drivers to link all three
+> files into the same module and add a hack to register both
+> platform_driver instances from a shared module_init() if
+> you think that's better. Unfortunately we can't have more
+> than one initcall in a loadable module.
 
-     98 Krzysztof Kozlowski
-     65 Dmitry Baryshkov
-     46 Fabio Estevam
-     43 Konrad Dybcio
-     33 Neil Armstrong
-     31 Uwe Kleine-K=C3=B6nig
-     31 Johan Hovold
-     30 Luca Weiss
-     28 AngeloGioacchino Del Regno
-     20 Andrew Davis
-     19 Moudy Ho
-     17 Peter Griffin
-     17 Herve Codina
-     17 Alexander Stein
-     14 Geert Uytterhoeven
-     14 Alex Bee
-     13 Stephan Gerhold
-     12 Michal Simek
-     11 Rob Herring
-     11 Jaewon Kim
+It should be better link into same module because some debugfs and trace
+improvement are on my TODO list. Export symbols will make more unnessary
+complex. Or simple exclude MCF_EDMA by change Kconfig
 
-As the dirstat shows, the changes are once more dominated by
-Qualcomm DT updates, which also matches the number of machines
-they support and that are newly added:
+config MCF_EDMA                                                            
+        tristate "Freescale eDMA engine support, ColdFire mcf5441x SoCs"   
+        depends on !FSL_EDMA
+		   ^^^^^
+	depends on M5441x || COMPILE_TEST 
 
-   0.4% Documentation/devicetree/bindings/arm/mediatek/
-   0.5% Documentation/devicetree/bindings/arm/
-   0.6% Documentation/devicetree/bindings/clock/
-   0.3% Documentation/devicetree/bindings/display/mediatek/
-   0.5% Documentation/devicetree/bindings/interconnect/
-   0.7% Documentation/devicetree/bindings/media/
-   0.4% Documentation/devicetree/bindings/sound/
-   0.7% Documentation/devicetree/bindings/
-   0.4% arch/arm/boot/dts/marvell/
-   0.4% arch/arm/boot/dts/nxp/imx/
-   3.8% arch/arm/boot/dts/qcom/
-   0.4% arch/arm/boot/dts/renesas/
-   1.5% arch/arm/boot/dts/rockchip/
-   1.0% arch/arm/boot/dts/st/
-   1.0% arch/arm/boot/dts/ti/omap/
-   0.5% arch/arm/boot/dts/
-   1.2% arch/arm/
-   0.3% arch/arm64/boot/dts/allwinner/
-   0.6% arch/arm64/boot/dts/amlogic/
-   2.7% arch/arm64/boot/dts/exynos/google/
-   2.7% arch/arm64/boot/dts/exynos/
-   5.9% arch/arm64/boot/dts/freescale/
-   0.7% arch/arm64/boot/dts/marvell/
-   4.3% arch/arm64/boot/dts/mediatek/
-  30.4% arch/arm64/boot/dts/qcom/
-   0.7% arch/arm64/boot/dts/renesas/
-   6.8% arch/arm64/boot/dts/rockchip/
-   0.4% arch/arm64/boot/dts/sprd/
-   4.5% arch/arm64/boot/dts/ti/
-   0.5% arch/arm64/boot/dts/
-   0.4% arch/riscv/boot/dts/sophgo/
-   0.4% arch/riscv/boot/dts/
-   6.7% drivers/clk/samsung/
-   0.3% drivers/firmware/arm_scmi/
-   0.9% drivers/firmware/microchip/
-   0.7% drivers/mailbox/
-   0.9% drivers/soc/apple/
-   0.9% drivers/soc/fsl/qe/
-   0.3% drivers/soc/hisilicon/
-   3.7% drivers/soc/mediatek/
-   0.7% drivers/soc/qcom/
-   0.8% drivers/tee/optee/
-   1.3% drivers/
-   3.1% include/dt-bindings/clock/
-   0.7% include/dt-bindings/interconnect/
-   0.3% include/dt-bindings/reset/
-   0.4% include/
- 1024 files changed, 60736 insertions(+), 7782 deletions(-)
 
-Six new arm64 SoCs are added: Samsung ExynosAutov920,
-Google gs101 (Tensor G1), MediaTek MT8188, Qualcomm
-SM8650 (Snapdragon 8 Gen 3), Qualcomm X1E80100 (Snapdragon
-X Elite) and Unisoc UMS9620 (Tanggula 7 series). More details
-are in the soc-dt-6.8 tag description.
-
-The DT branch has two merge conflicts against earlier
-bugfixes. If you want to validate your conflict
-resolution against what I have, please see=20
-
-https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git test-merge
-
-    Arnd
+> 
+>      Arnd
 
