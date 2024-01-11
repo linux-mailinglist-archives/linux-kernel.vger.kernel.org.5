@@ -1,169 +1,273 @@
-Return-Path: <linux-kernel+bounces-24007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5340982B530
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:25:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A527882B534
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7AB91F25D8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:25:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19E89B213A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9974954FB4;
-	Thu, 11 Jan 2024 19:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C037455C24;
+	Thu, 11 Jan 2024 19:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LdUu5dX8"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="LOJWXVEV"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8267323CA
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 19:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bed944f553so130802439f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:25:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F80B55C0E
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 19:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-429b9bbd39eso10314151cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:28:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705001129; x=1705605929; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vg6FnkVOdWEv0+8ytRIEDXW7BwqBOcvuaxdwffWiGI0=;
-        b=LdUu5dX8/P3biQturS00dvvltV9+zl+H/BixXPc0ZdaGHxxAXwQpcYlEIEPdKYBne1
-         MJCVLM/8N62/A75iqxe/Lb0XLJqOA4mvQ3o/MLchUfz4YJDCWYRaenM0FVgPciSd9JDv
-         a7tOhqZKePKIOuyq8k3xszYKA+gLL7rJcSof+Wo2kdRh6YO6ClFQMFfuf5YEfsii56Es
-         odvRpm0a1Yy8/El+3NS0/Del45/1XYWCbm8TuLQEcofvisQF2ULqM5uBQq8Eg5O1bJwG
-         iyEjKQAtcmZVX/V6/aYgBA4pXDIiU+myZ5UbUUfWBmLplQ/mVN4REAgvFBpaprzl4DRA
-         quFA==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705001292; x=1705606092; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G+qi7MD6q3W8+pUjVS0O2dTJ96sM/4HvoNFot/q7Uh0=;
+        b=LOJWXVEV2ucQfbfD3SZb2dC3AB1OHtNRpXYyBSFwkoCBRwPos1vSI2gVR3W0Es7YaA
+         5FAEJr/xjX/r6SjLp+3LHJRfQSEWbll1WKIQM13PgOv3CK1RE6c0jDob9+tXMLp2rUzQ
+         mK0gEk3dQ7230riBNywPPF+nzJNXNggezoUob+KQ62m/KizWbZR/cCzFrLn401NujJSv
+         O9ckVeD+ChSwC7NUr3xuKGXaK0/7FU1S1TIB0TtV7W98QAU2C/dB0LOEkKZ2tnoRqlYk
+         9cPUPmxI+/nsZOQnYciTYBY70ifrWgNfFM95nUgj2JANKtyt0dSvR99DLbQT2CzkZvY5
+         dI1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705001129; x=1705605929;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vg6FnkVOdWEv0+8ytRIEDXW7BwqBOcvuaxdwffWiGI0=;
-        b=j+k0pChOUMrUcZOR/AMa/qDTBnP5NK4ggsuBIoFXl4lTbxNtF9yAmjUP37Cq0iB6dK
-         a6OtEoLFrA8D/rkANB3qNS0UVEr16FjqyO6Y5OskexhLL9MJgx2qVOL7wDR2IlOX+u1d
-         bb9g3+ShRRP7PwKMZkOq3VoJ0vz7tHtpiDbSLnnLbhnT2pxh+4SgoMRRkCt2/VOinp+8
-         EyILWqhw4cH4glRodn+eqbQ+d00eFqs/vkDiC67N9I2q0gLGjnPZXN9GwegH7zKU2BgW
-         +HnJNYCDJQqLhOrT48LRSztOyfWYEFi41XphLGEBvBF4OsqDdil52CwGa8Ei9JPBRRks
-         8sug==
-X-Gm-Message-State: AOJu0YzDu3fecmb4A5CBWjxdmJNpPuKs3TJsTktkAe1VJfc7lM6+j2Wp
-	48tdA5Hz0hwXeQyCXBYlP6yaxjmpTMLNmDy2SzU=
-X-Google-Smtp-Source: AGHT+IHE+qXVynwxYNyO5DvdOo23alqFfocIn59zqDm7cPaShqSZHiYuVVyN6gJUAu6G5pb6cEnkqXug0iax5iy0E1A=
-X-Received: by 2002:a6b:f107:0:b0:7ba:b744:bb0 with SMTP id
- e7-20020a6bf107000000b007bab7440bb0mr160243iog.35.1705001129464; Thu, 11 Jan
- 2024 11:25:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705001292; x=1705606092;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G+qi7MD6q3W8+pUjVS0O2dTJ96sM/4HvoNFot/q7Uh0=;
+        b=TWHx/Ty33iO8TFDP4xRHOZrOX0vro3oIU1azQRgt4S/jMBmJx+OllgzG3WiiKquufy
+         f4hSRYNMpyxlkFMzh1/ijieeaTaUBmsv5Fe08ZhCkPT5g+HCYv0WFpsxtb6kr+1moRy9
+         hyWfM11oVngZZlH/NqMNI10pNz9szHj1v39rgT2uvsVu07DOejX9zjalGxYHTH5G7/RV
+         4KEhK2Q96x5dv91iXx5vC3wzeKCQ3yApCAq0U1mdgsL6k91IXpegwcGZmBY1pxBPHvUp
+         C/IwSWN2uo+It4lUEAecFIPJQRwHhBnQgwhZbSwWSFhLauCf3cqVIklCNnJXMk834PtY
+         QGsg==
+X-Gm-Message-State: AOJu0YwJFar50UQ9YoguHAHR1JIqnnpy6PWUDOoCPSCqR4QxWY9EPXZ3
+	YfNIdZjd21pUimHyvP35BPo6fCHnBv4xRQ==
+X-Google-Smtp-Source: AGHT+IFyX3xTWizP3R3FAeH0+OH2ehQEAC3O6C+6V4EQJvLdtdWP94DaIZPXJjMDMMjv+ghgBIYqXw==
+X-Received: by 2002:ac8:5b8e:0:b0:429:cb93:94b4 with SMTP id a14-20020ac85b8e000000b00429cb9394b4mr67054qta.32.1705001292141;
+        Thu, 11 Jan 2024 11:28:12 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id cn3-20020a05622a248300b00429c8ae9b94sm387630qtb.85.2024.01.11.11.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 11:28:11 -0800 (PST)
+Date: Thu, 11 Jan 2024 14:28:07 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+	Dan Schatzberg <schatzberg.dan@gmail.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
+Message-ID: <20240111192807.GA424308@cmpxchg.org>
+References: <20240111132902.389862-1-hannes@cmpxchg.org>
+ <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
- <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
- <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
- <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
- <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
- <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
- <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
- <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
- <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
- <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
- <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
- <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
- <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com> <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
-In-Reply-To: <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 11 Jan 2024 11:25:18 -0800
-Message-ID: <CAKEwX=OsTQCJd12S3NajRMRy_s3q3yGFpS7S=_3-yOYK6+ezzA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
- in zswap_writeback_entry
-To: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Chris Li <chrisl@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
 
-On Wed, Jan 10, 2024 at 7:49=E2=80=AFPM Zhongkun He
-<hezhongkun.hzk@bytedance.com> wrote:
->
-> >
-> > This sounds dangerous. This is going to introduce a rather large
-> > unexpected side effect - we're changing the readahead behavior in a
-> > seemingly small zswap optimization. In fact, I'd argue that if we do
-> > this, the readahead behavior change will be the "main effect", and the
-> > zswap-side change would be a "happy consequence". We should run a lot
-> > of benchmarking and document the change extensively if we pursue this
-> > route.
-> >
->
-> I agree with the unexpected side effect,  and here I need
-> to clarify the original intention of this patch.Please see the memory
-> offloading steps below.
->
->
-> memory      zswap(reclaim)          memory+swap (writeback)
-> 1G                 0.5G                        1G(tmp memory) + 1G=EF=BC=
-=88swap=EF=BC=89
->
-> If the decompressed memory cannot be released in time,
-> zswap's writeback has great side effects(mostly clod pages).
-> On the one hand, the memory space has not been reduced,
-> but has increased (from 0.5G->1G).
-> At the same time, it is not put the pages to the tail of the lru.
-> When the memory is insufficient, other pages will be squeezed out
-> and released early.
-> With this patch=EF=BC=8C we can put the tmp pages to the tail and reclaim=
- it
-> in time when the memory is insufficient or actively reclaimed.
-> So I think this patch makes sense and hope it can be fixed with a
-> suitable approaches.
+On Thu, Jan 11, 2024 at 09:59:11AM -0800, Roman Gushchin wrote:
+> On Thu, Jan 11, 2024 at 08:29:02AM -0500, Johannes Weiner wrote:
+> > While investigating hosts with high cgroup memory pressures, Tejun
+> > found culprit zombie tasks that had were holding on to a lot of
+> > memory, had SIGKILL pending, but were stuck in memory.high reclaim.
+> > 
+> > In the past, we used to always force-charge allocations from tasks
+> > that were exiting in order to accelerate them dying and freeing up
+> > their rss. This changed for memory.max in a4ebf1b6ca1e ("memcg:
+> > prohibit unconditional exceeding the limit of dying tasks"); it noted
+> > that this can cause (userspace inducable) containment failures, so it
+> > added a mandatory reclaim and OOM kill cycle before forcing charges.
+> > At the time, memory.high enforcement was handled in the userspace
+> > return path, which isn't reached by dying tasks, and so memory.high
+> > was still never enforced by dying tasks.
+> > 
+> > When c9afe31ec443 ("memcg: synchronously enforce memory.high for large
+> > overcharges") added synchronous reclaim for memory.high, it added
+> > unconditional memory.high enforcement for dying tasks as well. The
+> > callstack shows that this path is where the zombie is stuck in.
+> > 
+> > We need to accelerate dying tasks getting past memory.high, but we
+> > cannot do it quite the same way as we do for memory.max: memory.max is
+> > enforced strictly, and tasks aren't allowed to move past it without
+> > FIRST reclaiming and OOM killing if necessary. This ensures very small
+> > levels of excess. With memory.high, though, enforcement happens lazily
+> > after the charge, and OOM killing is never triggered. A lot of
+> > concurrent threads could have pushed, or could actively be pushing,
+> > the cgroup into excess. The dying task will enter reclaim on every
+> > allocation attempt, with little hope of restoring balance.
+> > 
+> > To fix this, skip synchronous memory.high enforcement on dying tasks
+> > altogether again. Update memory.high path documentation while at it.
+> 
+> It makes total sense to me.
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Makes sense to me. IIUC, that's the original intention behind calling
-SetPageReclaim() - unfortunately that doesn't work :) And IIRC, your
-original attempt shows reduction in swap usage (albeit at the cost of
-performance regression), which means we're onto something. I believe
-that the folio_lru_add_tail() approach will work :)
+Thanks
 
-Please include a version of the clarification paragraph above in your
-later version to explain the goal of the optimization, along with
-suitable benchmark numbers to show the effect (such as minimal change
-in performance, and reduction in some metrics). Maybe include the link
-to the original patch that introduces SetPageReclaim() too, to show
-the motivation behind all of this :) It'd be nice to have all the
-contexts readily available, in case we need to revisit this in the
-future (as was the case with the SetPageReclaim() here).
+> However if tasks can stuck for a long time in the "high reclaim" state,
+> shouldn't we also handle the case when tasks are being killed during the
+> reclaim? E. g. something like this (completely untested):
 
->
-> >
-> > Unless some page flag/readahead expert can confirm that the first
-> > option is safe, my vote is on this option. I mean, it's fairly minimal
-> > codewise, no? Just a bunch of plumbing. We can also keep the other
-> > call sites intact if we just rename the old versions - something along
-> > the line of:
-> >
-> > __read_swap_cache_async_head(..., bool add_to_lru_head)
-> > {
-> > ...
-> > if (add_to_lru_head)
-> >   folio_add_lru(folio)
-> > else
-> >   folio_add_lru_tail(folio);
-> > }
-> >
-> > __read_swap_cache_async(...)
-> > {
-> >    return __read_swap_cache_async_tail(..., true);
-> > }
-> >
-> > A bit boilerplate? Sure. But this seems safer, and I doubt it's *that*
-> > much more work.
-> >
->
-> Yes=EF=BC=8C agree. I will try it again.
+Yes, that's probably a good idea.
 
-Look forward to seeing it! Thanks for your patience and for working on this=
-.
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c4c422c81f93..9f971fc6aae8 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2465,6 +2465,9 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+>                     READ_ONCE(memcg->memory.high))
+>                         continue;
+> 
+> +               if (task_is_dying())
+> +                       break;
+> +
+>                 memcg_memory_event(memcg, MEMCG_HIGH);
+> 
+>                 psi_memstall_enter(&pflags);
+
+I think we can skip this one. The loop is for traversing from the
+charging cgroup to the one that has memory.high set and breached, and
+then reclaim it. It's not expected to run multiple reclaims.
+
+> @@ -2645,6 +2648,9 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+>         current->memcg_nr_pages_over_high = 0;
+> 
+>  retry_reclaim:
+> +       if (task_is_dying())
+> +               return;
+> +
+>         /*
+>          * The allocating task should reclaim at least the batch size, but for
+>          * subsequent retries we only want to do what's necessary to prevent oom
+
+Yeah this is the better place for this check.
+
+How about this?
+
+---
+
+From 6124a13cb073f5ff06b9c1309505bc937d65d6e5 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Thu, 11 Jan 2024 07:18:47 -0500
+Subject: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
+
+While investigating hosts with high cgroup memory pressures, Tejun
+found culprit zombie tasks that had were holding on to a lot of
+memory, had SIGKILL pending, but were stuck in memory.high reclaim.
+
+In the past, we used to always force-charge allocations from tasks
+that were exiting in order to accelerate them dying and freeing up
+their rss. This changed for memory.max in a4ebf1b6ca1e ("memcg:
+prohibit unconditional exceeding the limit of dying tasks"); it noted
+that this can cause (userspace inducable) containment failures, so it
+added a mandatory reclaim and OOM kill cycle before forcing charges.
+At the time, memory.high enforcement was handled in the userspace
+return path, which isn't reached by dying tasks, and so memory.high
+was still never enforced by dying tasks.
+
+When c9afe31ec443 ("memcg: synchronously enforce memory.high for large
+overcharges") added synchronous reclaim for memory.high, it added
+unconditional memory.high enforcement for dying tasks as well. The
+callstack shows that this path is where the zombie is stuck in.
+
+We need to accelerate dying tasks getting past memory.high, but we
+cannot do it quite the same way as we do for memory.max: memory.max is
+enforced strictly, and tasks aren't allowed to move past it without
+FIRST reclaiming and OOM killing if necessary. This ensures very small
+levels of excess. With memory.high, though, enforcement happens lazily
+after the charge, and OOM killing is never triggered. A lot of
+concurrent threads could have pushed, or could actively be pushing,
+the cgroup into excess. The dying task will enter reclaim on every
+allocation attempt, with little hope of restoring balance.
+
+To fix this, skip synchronous memory.high enforcement on dying tasks
+altogether again. Update memory.high path documentation while at it.
+
+Fixes: c9afe31ec443 ("memcg: synchronously enforce memory.high for large overcharges")
+Reported-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 73692cd8c142..7be7a2f4e536 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2603,8 +2603,9 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+ }
+ 
+ /*
+- * Scheduled by try_charge() to be executed from the userland return path
+- * and reclaims memory over the high limit.
++ * Reclaims memory over the high limit. Called directly from
++ * try_charge() (context permitting), as well as from the userland
++ * return path where reclaim is always able to block.
+  */
+ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ {
+@@ -2623,6 +2624,17 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	current->memcg_nr_pages_over_high = 0;
+ 
+ retry_reclaim:
++	/*
++	 * Bail if the task is already exiting. Unlike memory.max,
++	 * memory.high enforcement isn't as strict, and there is no
++	 * OOM killer involved, which means the excess could already
++	 * be much bigger (and still growing) than it could for
++	 * memory.max; the dying task could get stuck in fruitless
++	 * reclaim for a long time, which isn't desirable.
++	 */
++	if (task_is_dying())
++		goto out;
++
+ 	/*
+ 	 * The allocating task should reclaim at least the batch size, but for
+ 	 * subsequent retries we only want to do what's necessary to prevent oom
+@@ -2673,6 +2685,9 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	}
+ 
+ 	/*
++	 * Reclaim didn't manage to push usage below the limit, slow
++	 * this allocating task down.
++	 *
+ 	 * If we exit early, we're guaranteed to die (since
+ 	 * schedule_timeout_killable sets TASK_KILLABLE). This means we don't
+ 	 * need to account for any ill-begotten jiffies to pay them off later.
+@@ -2867,11 +2882,17 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		}
+ 	} while ((memcg = parent_mem_cgroup(memcg)));
+ 
++	/*
++	 * Reclaim is set up above to be called from the userland
++	 * return path. But also attempt synchronous reclaim to avoid
++	 * excessive overrun while the task is still inside the
++	 * kernel. If this is successful, the return path will see it
++	 * when it rechecks the overage and simply bail out.
++	 */
+ 	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
+ 	    !(current->flags & PF_MEMALLOC) &&
+-	    gfpflags_allow_blocking(gfp_mask)) {
++	    gfpflags_allow_blocking(gfp_mask))
+ 		mem_cgroup_handle_over_high(gfp_mask);
+-	}
+ 	return 0;
+ }
+ 
+-- 
+2.43.0
+
 
