@@ -1,53 +1,42 @@
-Return-Path: <linux-kernel+bounces-23021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21E6682A66C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:22:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8CC082A66F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 145761C230D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:22:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87509284000
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4FBEC9;
-	Thu, 11 Jan 2024 03:22:02 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4841C16;
+	Thu, 11 Jan 2024 03:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MWF2Dpq7"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309A9EBB
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 7ba693d7b893478cb3666b0f55a16ff9-20240111
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:d96497ca-ea87-411e-bb5f-78c71e7f1c5d,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:d96497ca-ea87-411e-bb5f-78c71e7f1c5d,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:7fb4b882-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:2401111121497VF3I11C,BulkQuantity:0,Recheck:0,SF:64|66|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 7ba693d7b893478cb3666b0f55a16ff9-20240111
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 405513473; Thu, 11 Jan 2024 11:21:48 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 09549E000EB9;
-	Thu, 11 Jan 2024 11:21:48 +0800 (CST)
-X-ns-mid: postfix-659F5ECB-954882627
-Received: from [172.20.15.234] (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 82634E000EB9;
-	Thu, 11 Jan 2024 11:21:46 +0800 (CST)
-Message-ID: <cc9b456f-31f6-46f0-a6e6-f553779a775b@kylinos.cn>
-Date: Thu, 11 Jan 2024 11:21:46 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C74415A1;
+	Thu, 11 Jan 2024 03:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=k1Ho/05+osX5yBSt3dsuOnnijSKuAo5CebqXC420Q7U=; b=MWF2Dpq7Y6wltSXPDDINajcI5z
+	GhKGOIHtn/iLM+LJ31ocb50G/zGRv9WgoBOdPN1TOs8JykLCj8Gl9i6djrIYjtQqas8MjVYXPV0Aq
+	GV3HqHmZZEknI5KXH+mzG2SSyiJ8KsqyI7C03URgKjcGhZ9XT7UpQkKhJKP00wIP9cqBM4sbORtNc
+	xpXLLhh7oo2SJfj8gMZuYuCq47n0a8Hbj7Dcsg1AkLcRT4fFe9YZYapYiTpSWeIhmSs226DK/EE4K
+	DThCQgo5w0AKIpDk9oU4dL36zaeM2RIC3A+ZmqRgriedyiHl+T7jCwTkruDtW9jHj1Oif59TTPvUp
+	9u/kWvSQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rNleL-00FbcJ-1o;
+	Thu, 11 Jan 2024 03:22:33 +0000
+Message-ID: <55680bae-966a-4a31-85f9-9ca516b80145@infradead.org>
+Date: Wed, 10 Jan 2024 19:22:33 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,71 +44,98 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ubifs: Remove unreachable code
+Subject: Re: [PATCH v2 3/8] buffer: Add kernel-doc for try_to_free_buffers()
 Content-Language: en-US
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: richard@nod.at, Artem.Bityutskiy@nokia.com, kunwu.chan@hotmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231111143314.1518314-1-chentao@kylinos.cn>
- <CAFLxGvzAncnBTEbHZ0pA-oF6n9P+wKFMugz8c+8UQKoPeBiYig@mail.gmail.com>
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <CAFLxGvzAncnBTEbHZ0pA-oF6n9P+wKFMugz8c+8UQKoPeBiYig@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240109143357.2375046-1-willy@infradead.org>
+ <20240109143357.2375046-4-willy@infradead.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240109143357.2375046-4-willy@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+Hi,
 
+On 1/9/24 06:33, Matthew Wilcox (Oracle) wrote:
+> The documentation for this function has become separated from it over
+> time; move it to the right place and turn it into kernel-doc.  Mild
+> editing of the content to make it more about what the function does, and
+> less about how it does it.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/buffer.c | 44 ++++++++++++++++++++++++--------------------
+>  1 file changed, 24 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index 071f01b28c90..25861241657f 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -2864,26 +2864,6 @@ int sync_dirty_buffer(struct buffer_head *bh)
+>  }
+>  EXPORT_SYMBOL(sync_dirty_buffer);
+>  
+> -/*
+> - * try_to_free_buffers() checks if all the buffers on this particular folio
+> - * are unused, and releases them if so.
+> - *
+> - * Exclusion against try_to_free_buffers may be obtained by either
+> - * locking the folio or by holding its mapping's i_private_lock.
+> - *
+> - * If the folio is dirty but all the buffers are clean then we need to
+> - * be sure to mark the folio clean as well.  This is because the folio
+> - * may be against a block device, and a later reattachment of buffers
+> - * to a dirty folio will set *all* buffers dirty.  Which would corrupt
+> - * filesystem data on the same device.
+> - *
+> - * The same applies to regular filesystem folios: if all the buffers are
+> - * clean then we set the folio clean and proceed.  To do that, we require
+> - * total exclusion from block_dirty_folio().  That is obtained with
+> - * i_private_lock.
+> - *
+> - * try_to_free_buffers() is non-blocking.
+> - */
+>  static inline int buffer_busy(struct buffer_head *bh)
+>  {
+>  	return atomic_read(&bh->b_count) |
+> @@ -2917,6 +2897,30 @@ drop_buffers(struct folio *folio, struct buffer_head **buffers_to_free)
+>  	return false;
+>  }
+>  
+> +/**
+> + * try_to_free_buffers: Release buffers attached to this folio.
 
-On 2024/1/5 23:55, Richard Weinberger wrote:
-> On Sat, Nov 11, 2023 at 3:33=E2=80=AFPM Kunwu Chan <chentao@kylinos.cn>=
- wrote:
->>
->> Because there is no break statement in the dead loop above,it is
->> impossible to execute the 'err=3D0' statement.Delete the code that
->> will never execute and initialize 'err' at the start of the function.
->>
->> Fixes: 6fb324a4b0c3 ("UBIFS: allocate ltab checking buffer on demand")
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   fs/ubifs/lpt_commit.c | 5 ++---
->>   1 file changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
->> index c4d079328b92..d4751628fe70 100644
->> --- a/fs/ubifs/lpt_commit.c
->> +++ b/fs/ubifs/lpt_commit.c
->> @@ -1589,8 +1589,8 @@ static int dbg_is_node_dirty(struct ubifs_info *=
-c, int node_type, int lnum,
->>    */
->>   static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
->>   {
->> -       int err, len =3D c->leb_size, dirty =3D 0, node_type, node_num=
-, node_len;
->> -       int ret;
->> +       int len =3D c->leb_size, dirty =3D 0, node_type, node_num, nod=
-e_len;
->> +       int ret, err =3D 0;
->>          void *buf, *p;
->=20
-> Now it is still dead code.
-> A few lines later err will be used for the result of ubifs_leb_read().
-> So you can remove the initialization of err completely.
+preferably s/_buffers: /_buffers - /
 
-Thanks, I will modify in v2 patch.
+> + * @folio: The folio.
+> + *
+> + * If any buffers are in use (dirty, under writeback, elevated refcount),
+> + * no buffers will be freed.
+> + *
+> + * If the folio is dirty but all the buffers are clean then we need to
+> + * be sure to mark the folio clean as well.  This is because the folio
+> + * may be against a block device, and a later reattachment of buffers
+> + * to a dirty folio will set *all* buffers dirty.  Which would corrupt
+> + * filesystem data on the same device.
+> + *
+> + * The same applies to regular filesystem folios: if all the buffers are
+> + * clean then we set the folio clean and proceed.  To do that, we require
+> + * total exclusion from block_dirty_folio().  That is obtained with
+> + * i_private_lock.
+> + *
+> + * Exclusion against try_to_free_buffers may be obtained by either
+> + * locking the folio or by holding its mapping's i_private_lock.
+> + *
+> + * Context: Process context.  @folio must be locked.  Will not sleep.
+> + * Return: true if all buffers attached to this folio were freed.
+> + */
+>  bool try_to_free_buffers(struct folio *folio)
+>  {
+>  	struct address_space * const mapping = folio->mapping;
 
->=20
->>          if (!dbg_is_chk_lprops(c))
->> @@ -1646,7 +1646,6 @@ static int dbg_check_ltab_lnum(struct ubifs_info=
- *c, int lnum)
->>                  len -=3D node_len;
->>          }
->>
->> -       err =3D 0;
->>   out:
->>          vfree(buf);
->>          return err;
->> --
->> 2.34.1
->>
->=20
->=20
+-- 
+#Randy
 
