@@ -1,139 +1,156 @@
-Return-Path: <linux-kernel+bounces-23883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A78B82B32C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:43:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C6FF82B332
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:44:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B88C11F27915
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:43:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F0D41C22D2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F241851012;
-	Thu, 11 Jan 2024 16:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5744B50270;
+	Thu, 11 Jan 2024 16:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="k0APHmvs"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xDz0ocW8"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3EE751000;
-	Thu, 11 Jan 2024 16:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BGUDYx020123;
-	Thu, 11 Jan 2024 16:43:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=QfofUW+gNGgsqCak0mF/ypLKjhwjuZva/HN79itdiTk=;
- b=k0APHmvsPttHDwNU56VB4OLnkX4tquHovsq2RMMG5YZ2wV9hl0Jjcl0oJ6/zbeHgmbnp
- 1FnT3NpHvlIosdb0qSh5A0l8mqlg6Z3bCK6s8Lum09BzCu1ofatCzmeGuozQzdgijosy
- 5LF5sOR2m1JkuoUeKelGd+VO6W9ltNBZ/iRCJicIB3v4dG6XB+bFWZLOT5hlXLLzRhdv
- ESjdRZLKXTqw3ZC+PQToqBWyDHEAuz6v7T78BQT4MFRd7PR/a6+WaqE1jOTU2EuybI1v
- mrOY1fXpFS/NFNDH3uL7XNzBIMxW0XoUYSnBjUqpp8JvTVSJjEGEPdInJDgsuf7xEFgc Hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjj673g48-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 16:43:11 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40BGUuAg023403;
-	Thu, 11 Jan 2024 16:43:10 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjj673g3t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 16:43:10 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40BGBmBa027253;
-	Thu, 11 Jan 2024 16:43:09 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkw2c5am-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 16:43:09 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40BGh9Fm9831052
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Jan 2024 16:43:09 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 02F3758059;
-	Thu, 11 Jan 2024 16:43:09 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 953C758043;
-	Thu, 11 Jan 2024 16:43:08 +0000 (GMT)
-Received: from [9.24.12.86] (unknown [9.24.12.86])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 11 Jan 2024 16:43:08 +0000 (GMT)
-Message-ID: <77fe0ccd-53ff-4773-9787-0d038434297f@linux.ibm.com>
-Date: Thu, 11 Jan 2024 10:43:08 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] tpm: tis-i2c: Add more compatible strings
-To: Conor Dooley <conor@kernel.org>
-Cc: peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
-        Joel Stanley <joel@jms.id.au>, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lukas Wunner <lukas@wunner.de>
-References: <20231214144954.3833998-1-ninad@linux.ibm.com>
- <20231214144954.3833998-2-ninad@linux.ibm.com>
- <20240109-saddling-nintendo-c7fbb46bb0dd@spud>
-Content-Language: en-US
-From: Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <20240109-saddling-nintendo-c7fbb46bb0dd@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8AxYTwGMAwDRaW4WCoovdG1HTbAqRiPR
-X-Proofpoint-ORIG-GUID: uNmibd16FkQaA9myJV97P3x6KBBICxxn
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A2C51C26
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-337874b8164so626166f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:43:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704991436; x=1705596236; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jTNEFYhxC94EAl/ojLdJRih+xoob4znGGot3ahEGPpw=;
+        b=xDz0ocW8zL0fRLQa1sIyp/pNbUHSguj1Y8EJrAuN6U6VxHthqqoN5rAI1zSZDB7i/a
+         cZ0OIcIMXYt9mGVqIVQF6co7V+hZk9yFfL0sY2oK+207zGp/8zzjm9flpNE/PjhWghfg
+         ZF+fD/8hlnEZ5Gvus6FH/gUFU0UmhhFqG2jiz3A3RLcVZxQ9NCyulnsvK88Hm4wComMv
+         58CZyvtJebD4qedmBKxdE1gS5445YFMKgQhnrGPSH94Wg/3iySc/UV47WRdFD/QLOdXg
+         nEwYPnPNkD+t6PlqOYw+moNgoyU/lyL5qB7tmyce3pMb/TZCq0ax+9dFc6WBUaH0qmJU
+         mEtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704991436; x=1705596236;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jTNEFYhxC94EAl/ojLdJRih+xoob4znGGot3ahEGPpw=;
+        b=l1gXcDo4Xuf08ammJqI3AfLqa32r2P07X87pfe8Yq+TlN74190pgbVZ2f8YDKXQ+BH
+         eRPp40ooD6DyfaYfpCITMg8PKoRVQNKQXtnFu89tgMZ133gYMuVWF+AVAcQC2rpNlctq
+         CgNOLDaex8xA/awtMcZglf5JjnZoMrDBcppE93KYD5vZk7dpDD9a0alSw2f+fpa6sd9I
+         sMbUT89EkJSRIScWDrcMrrjZSB5489WkVu2P+SARzlok094tSXBMVJDjQ2cJkxIAxZj7
+         fnfyi/wdvWbxhV9P9tYG1a8YjCfN6xjpRQHcjepZAQ/lwJcKzVor+GYUeFIWhQ+Vu70p
+         jObQ==
+X-Gm-Message-State: AOJu0Yxr0NV69TzIWUpJiqf1vamKp+rxsMsGZOgmcdZCOku2ht4cZeqO
+	iAy88cTFEnO6acBF5WeqC7KFLrzTyRmxRg==
+X-Google-Smtp-Source: AGHT+IGFJCtPiincHLPIOfqG9ak9tbib0gBnH22W7vfoQpyy6uHDGNXCtIzUf7vnM3ERfazJiU3rvQ==
+X-Received: by 2002:a5d:53c3:0:b0:336:5ddc:f474 with SMTP id a3-20020a5d53c3000000b003365ddcf474mr15308wrw.51.1704991436311;
+        Thu, 11 Jan 2024 08:43:56 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id f6-20020a5d4dc6000000b00336a2566aa2sm1606389wru.61.2024.01.11.08.43.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 08:43:55 -0800 (PST)
+Message-ID: <afb2cc4d-efcd-4d99-ac78-a65ffa148c74@linaro.org>
+Date: Thu, 11 Jan 2024 17:43:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-11_09,2024-01-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
- impostorscore=0 phishscore=0 spamscore=0 clxscore=1015 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401110131
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/6] arm64: dts: qcom: ipq5332: Add MDIO device tree
+Content-Language: en-US
+To: Jie Luo <quic_luoj@quicinc.com>, Andrew Lunn <andrew@lunn.ch>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ quic_kkumarcs@quicinc.com, quic_suruchia@quicinc.com, quic_soni@quicinc.com,
+ quic_pavir@quicinc.com, quic_souravp@quicinc.com, quic_linchen@quicinc.com,
+ quic_leiwei@quicinc.com
+References: <20240110112059.2498-1-quic_luoj@quicinc.com>
+ <20240110112059.2498-4-quic_luoj@quicinc.com>
+ <4bc0aff5-8a1c-44a6-89d8-460961a61310@lunn.ch>
+ <e893c298-fbfa-4ae4-9b76-72a5030a5530@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <e893c298-fbfa-4ae4-9b76-72a5030a5530@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello Conor,
-
-On 1/9/24 11:11, Conor Dooley wrote:
-> On Thu, Dec 14, 2023 at 08:49:53AM -0600, Ninad Palsule wrote:
->> From: Joel Stanley <joel@jms.id.au>
+On 11/01/2024 16:59, Jie Luo wrote:
+>>> +				mux_1 {
+>>> +					pins = "gpio28";
+>>> +					function = "mdio1";
+>>> +					drive-strength = <8>;
+>>> +					bias-pull-up;
+>>> +				};
 >>
->> The NPCT75x TPM is TIS compatible. It has an I2C and SPI interface.
+>> I don't know why i'm asking this, because i don't really expect a
+>> usable answer. What sort of MUX is this? Should you be using one of
+>> the muxes in drivers/net/mdio/mdio-mux-* or something similar?
 >>
->> https://www.nuvoton.com/products/cloud-computing/security/trusted-platform-module-tpm/
->>
->> Add a compatible string for it, and the generic compatible.
->>
->> Signed-off-by: Joel Stanley <joel@jms.id.au>
->> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
->> Link: https://lore.kernel.org/r/20220928043957.2636877-4-joel@jms.id.au
->> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
-> I don't understand why you broke this series up and dropped patches.
-> NAK, these compatibles are not documented.
->
-The original series has three patches:
+>>      Andrew
+> 
+> Sorry for the confusion, the pin nodes are for the MDIO and MDC, these
+> PINs are used by the dedicated hardware MDIO block in the SoC. I will 
+> update the node name from mux_0 to MDC, mux_1 to MDIO, to make it clear. 
+> The driver for this node is drivers/net/mdio/mdio-ipq4019.c, it is not 
+> related to the mdio-mux-* code.
 
-1) Adding compatibility string which I am adding in this series.
+NAK. Run dtbs_check tests on your DTS first.
 
-2) Adding schema for the TIS I2c devices which is already covered by 
-Lukas's patch (already merged in linux-next) 
-https://lore.kernel.org/all/3f56f0a2bb90697a23e83583a21684b75dc7eea2.1701093036.git.lukas@wunner.de/
-
-3) Removing "Infineon,slb9673" from trivial-devices.yaml which is not 
-done as it is already added in the TPM specific file. I will add it in 
-my patch. Good catch!
-
-Thanks for the review.
-
-Regards,
-
-Ninad
+Best regards,
+Krzysztof
 
 
