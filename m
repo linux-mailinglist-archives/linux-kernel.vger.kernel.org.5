@@ -1,322 +1,157 @@
-Return-Path: <linux-kernel+bounces-23075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A85D82A757
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:58:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D155A82A75E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DB9D287AF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 05:58:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046DF1C231AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 05:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 767292105;
-	Thu, 11 Jan 2024 05:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E991539D;
+	Thu, 11 Jan 2024 05:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pTPm3zxd"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CzqZMzEZ"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7971023AD;
-	Thu, 11 Jan 2024 05:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40B39AxF031772;
-	Thu, 11 Jan 2024 05:57:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=3EerDphvtT4Nm4refaxF5SmnQ54MryEw5rvZXl4CSgc=; b=pT
-	Pm3zxdvmrItzsq8fk0MHIKD1pvx4wSU5AI5YkwAnMapJUmhOLnyohEiL+xzblY+T
-	nn4hFPj+Y7UXymsQobEN0+DtknHJ/GuaoAs13oFupVwPFBIwGXHztx/CDeYHbUUP
-	uXJnAjDsLE3Wcfdh6yIBgGDqkH0Z6ILV+x+A/8KJuzdgmS5LFTXjYhno5fKNiT3e
-	Ak4knTuNK9QetQpbnpbIvCKXT/oeCUlHHHQiFXzHhrFR7wTCyKKiU/49l/pTYnU2
-	wWAQVqUihMe2euew8rsAY1VudRq/brnOLVm4n7W+AyJ6FtIuBxobacqiRMANlmNB
-	bVvdiiDlIP1M4vsiDtUw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhvwx1ug4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 05:57:41 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40B5ve6E008399
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 05:57:40 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
- 2024 21:57:38 -0800
-Message-ID: <12fa18c9-52ad-4e84-b495-63c5a3a73143@quicinc.com>
-Date: Thu, 11 Jan 2024 13:57:35 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5DE5382;
+	Thu, 11 Jan 2024 05:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50eaa8b447bso5330201e87.1;
+        Wed, 10 Jan 2024 21:59:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704952764; x=1705557564; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FJ87IotFFb22oBVL3yLTlm/KMv2+8lgNVJRq/vObCyk=;
+        b=CzqZMzEZtvDdKV5J1zvfpPjPR0wILxDKt26BQKl6dgvHwvuCdUpx9zofNRErh3RHcX
+         4RuSBM6WZWJ1QKGW+9aiqdcuZ62e09X44gxoTRBDE+voHnFnRDsr+edQ5ck1zC7LsJhN
+         EMK1qwLK1bRNnbMuChx86E3Azw77svFukz6fqTpXK3bsM2rTrEDn7RijQtfJzRULk5fh
+         03jquwf/rzboIOEKrCR16L4yr1+Xatxw99hk68jjfEH+31e9vDr7ITE8LCsNPBfAQQpH
+         P6UrE+PD1kzUZiHQ0KvBiTXXqrktw2yk9LaQhbiPyPJxRxnNuSars1Af7vD/wPL9xNN4
+         4M3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704952764; x=1705557564;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FJ87IotFFb22oBVL3yLTlm/KMv2+8lgNVJRq/vObCyk=;
+        b=PZikC1qFb00UIl7giDpbUhRi+PwG7WMGC2I2TAEF1QH5b8owBpy+p/8rvT3vq+CCsV
+         V461beb9lR8JKSyJ8vearvFNjmrLIwdr8iJQp047Rwx+y81rtRcoq5yQ/yYSOHA76ehV
+         lG2l3qp7uLV1MfLdNTGrt1s2zyKLXu7rjfQwT4PmnAXsQMnVUVqx3nnKa0jZFzbUvrOX
+         s/zCJhOF6LAB2tHaRWCdKxPTPkGzCPKp2F8Xet1nwZI0SRPETfv9nGa3Y0Ltqxv7XDHQ
+         MJ8M7lvivuv4Xh6kXxoODM4mc+k54GZl5vBHmg5W8oItq7JtStAu94AtWAezRC/u+uR9
+         5KZQ==
+X-Gm-Message-State: AOJu0YyVqvzD5u0f/yOoNxYT7dq5ZdTTUXgj+AXRBVyKnTXhwC7XN5aF
+	/LgPOEbucY8bFWak009t9Uj9eZlnQaX9WuTMcro=
+X-Google-Smtp-Source: AGHT+IGQ5ZV/gXo7v/rJ2auVyXpmqs0QYfi3tBSjxW2wUQzS96ysR1EG48kjTCbHRzoOg/0bxoYvPzkVO6R5r9tJSuk=
+X-Received: by 2002:a05:6512:3990:b0:50e:2e5d:10a8 with SMTP id
+ j16-20020a056512399000b0050e2e5d10a8mr136706lfu.133.1704952763509; Wed, 10
+ Jan 2024 21:59:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] coresight: Add coresight name support
-Content-Language: en-US
-To: Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>
-CC: Suzuki K Poulose <suzuki.poulose@arm.com>, <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang
-	<quic_taozha@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>
-References: <20231228093321.5522-1-quic_jinlmao@quicinc.com>
- <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
- <CAJ9a7Vgi=ELOhXNF97KrBtV5ef8khwWqzWKevrYW2RtBBtsppw@mail.gmail.com>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <CAJ9a7Vgi=ELOhXNF97KrBtV5ef8khwWqzWKevrYW2RtBBtsppw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 2eFVWgWr6AdXpi8dlOVE41U1tHCd_UCF
-X-Proofpoint-ORIG-GUID: 2eFVWgWr6AdXpi8dlOVE41U1tHCd_UCF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0 mlxscore=0
- impostorscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401110045
+References: <1850031.1704921100@warthog.procyon.org.uk>
+In-Reply-To: <1850031.1704921100@warthog.procyon.org.uk>
+Reply-To: sedat.dilek@gmail.com
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Thu, 11 Jan 2024 06:58:46 +0100
+Message-ID: <CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com>
+Subject: Re: [PATCH] keys, dns: Fix size check of V1 server-list header
+To: David Howells <dhowells@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Edward Adam Davis <eadavis@qq.com>, 
+	Pengfei Xu <pengfei.xu@intel.com>, Simon Horman <horms@kernel.org>, 
+	Markus Suvanto <markus.suvanto@gmail.com>, Jeffrey E Altman <jaltman@auristor.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Wang Lei <wang840925@gmail.com>, 
+	Jeff Layton <jlayton@redhat.com>, Steve French <smfrench@gmail.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	linux-afs@lists.infradead.org, keyrings@vger.kernel.org, 
+	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 10, 2024 at 10:12=E2=80=AFPM David Howells <dhowells@redhat.com=
+> wrote:
+>
+>
+> Fix the size check added to dns_resolver_preparse() for the V1 server-lis=
+t
+> header so that it doesn't give EINVAL if the size supplied is the same as
+> the size of the header struct (which should be valid).
+>
+> This can be tested with:
+>
+>         echo -n -e '\0\0\01\xff\0\0' | keyctl padd dns_resolver desc @p
+>
+> which will give "add_key: Invalid argument" without this fix.
+>
+> Fixes: 1997b3cb4217 ("keys, dns: Fix missing size check of V1 server-list=
+ header")
 
+[ CC stable@vger.kernel.org ]
 
-On 1/2/2024 8:04 PM, Mike Leach wrote:
-> As James mentions this is clearly a V2 of a previous patch - please
-> mark as such in future.
-> 
-> Adding to what James has already said:-
-> 
-> 1) Mapping between the canonical names used in the drivers and the
-> information as to the precise device is as easy as running 'ls' on
-> /sys/bus/coresight/devices:-
+Your (follow-up) patch is now upstream.
 
-For the components bounded with CPU, we can easily identify them by the 
-number in the name. But for other components, we can only get the 
-component type and registers address of it. We can't identify which 
-system it belongs to from current name.
+https://git.kernel.org/linus/acc657692aed438e9931438f8c923b2b107aebf9
 
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 cti_sys0 -> 
-./../../devices/platform/soc@0/138f0000.cti/cti_sys0
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 cti_sys1 -> 
-./../../devices/platform/soc@0/13900000.cti/cti_sys1
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm0 -> 
-./../../devices/platform/soc@0/10b0d000.tpdm/tpdm0
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm1 -> 
-./../../devices/platform/soc@0/10c28000.tpdm/tpdm1
-lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm2 -> 
-./../../devices/platform/soc@0/10c29000.tpdm/tpdm2
+This misses CC: Stable Tag as suggested by Linus.
 
-> 
-> root@linaro-developer:/home/linaro/cs-mods# ls -al /sys/bus/coresight/devices/
-> total 0
-> drwxr-xr-x 2 root root 0 Jan  2 11:27 .
-> drwxr-xr-x 4 root root 0 Jan  2 11:27 ..
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu0 ->
-> ../../../devices/platform/soc@0/858000.cti/cti_cpu0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu1 ->
-> ../../../devices/platform/soc@0/859000.cti/cti_cpu1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu2 ->
-> ../../../devices/platform/soc@0/85a000.cti/cti_cpu2
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu3 ->
-> ../../../devices/platform/soc@0/85b000.cti/cti_cpu3
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys0 ->
-> ../../../devices/platform/soc@0/810000.cti/cti_sys0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys1 ->
-> ../../../devices/platform/soc@0/811000.cti/cti_sys1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm0 ->
-> ../../../devices/platform/soc@0/85c000.etm/etm0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm1 ->
-> ../../../devices/platform/soc@0/85d000.etm/etm1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm2 ->
-> ../../../devices/platform/soc@0/85e000.etm/etm2
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm3 ->
-> ../../../devices/platform/soc@0/85f000.etm/etm3
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel0 ->
-> ../../../devices/platform/soc@0/821000.funnel/funnel0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel1 ->
-> ../../../devices/platform/soc@0/841000.funnel/funnel1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 replicator0 ->
-> ../../../devices/platform/soc@0/824000.replicator/replicator0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etf0 ->
-> ../../../devices/platform/soc@0/825000.etf/tmc_etf0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etr0 ->
-> ../../../devices/platform/soc@0/826000.etr/tmc_etr0
-> 
-> 
-> 2) The patch set must contain the usage and specification in the .yaml
->   file(s) of the property used.
-> 
-I will add the usage in yaml.
+Looks like linux-6.1.y and linux-6.6.y needs it, too.
 
-> However, there was a standard property called 'name' which is
-> deprecated - see
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html
-> section 2.3.11. I do not believe that adding another 'name' property
-> would be accepted by the DT maintainers.
-> 
-> 3) the 'device_node' structure has a 'name' field that contains the
-> node name in the DT approved "node-name@unit-address" format.This
-> contains whatever node names you used in the dt.  Why not use this if
-> a change has to be made and find some conditional to activate it.
-> 
-> However, given point 1) above, the problem is solved and the patch
-> adds no new information not already available.
-> 
-The name in the DT only has the general class of device and registers 
-address. It can't describe the subsystem it belongs to.
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
+=3Dv6.6.11&id=3Dda89365158f6f656b28bcdbcbbe9eaf97c63c474
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
+=3Dv6.1.72&id=3D079eefaecfd7bbb8fcc30eccb0dfdf50c91f1805
 
-Thanks
-Jinlong Mao
+BG,
+-Sedat-
 
-> Regards
-> 
-> Mike
-> 
-> On Thu, 28 Dec 2023 at 11:26, James Clark <james.clark@arm.com> wrote:
->>
->>
->>
->> On 28/12/2023 09:33, Mao Jinlong wrote:
->>> Add coresight name support for custom names which will be
->>> easy to identify the device by the name.
->>>
->>
->> I suppose this is more of a V2 because the subject is the same as the
->> one sent earlier this year. But it looks like the discussion on the
->> previous one wasn't resolved.
->>
->> With the main issues to solve being:
->>
->>   * It would be nice to use the existing root node name instead of adding
->>     a new property. But at the same time DT nodes are supposed to have
->>     generic names.
->>
->>   * This only works for DT and not ACPI
->>
->> To me it seems like adding the new property is just a "cheat" to get
->> around not being allowed to have a specific name for the root node. But
->> if we admit that we need a name I don't see the benefit of not putting
->> the name where the node is already named.
->>
->> Using the root node name at this point would also undo the hard coded
->> per-cpu naming of the CTI and ETM devices, so maybe it would be nice,
->> but it's just too late. That means that a new field is necessary.
->> Although that field could be a boolean like "use-root-name-for-display"
->> or something like that. In the end it probably doesn't really make a
->> difference whether it's that or a name string.
->>
->> And maybe the answer to the ACPI question is just that if anyone needs
->> it, they can add it in the future. It doesn't seem like it would
->> conflict with anything we do here.
->>
->>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>> ---
->>>   .../hwtracing/coresight/coresight-cti-core.c  | 20 ++++++++------
->>>   drivers/hwtracing/coresight/coresight-dummy.c | 10 ++++---
->>>   .../hwtracing/coresight/coresight-platform.c  | 27 +++++++++++++++++++
->>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 10 ++++---
->>>   include/linux/coresight.h                     |  1 +
->>>   5 files changed, 53 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
->>> index 3999d0a2cb60..60a1e76064a9 100644
->>> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
->>> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
->>> @@ -902,14 +902,18 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->>>        /* default to powered - could change on PM notifications */
->>>        drvdata->config.hw_powered = true;
->>>
->>> -     /* set up device name - will depend if cpu bound or otherwise */
->>> -     if (drvdata->ctidev.cpu >= 0)
->>> -             cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, "cti_cpu%d",
->>> -                                            drvdata->ctidev.cpu);
->>> -     else
->>> -             cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
->>
->> Can we put the new name stuff inside coresight_alloc_device_name()? Then
->> it happens by default for every device.
->>
->> I know Suzuki said previously to do it per-device, but the new DT
->> property is just "coresight-name", so it's generic. Rather than being
->> specific like "cti-name". So I don't see the benefit of duplicating the
->> code at this point if we do decide to do it.
->>
->>> -     if (!cti_desc.name)
->>> -             return -ENOMEM;
->>> +     cti_desc.name = coresight_get_device_name(dev);
->>> +     if (!cti_desc.name) {
->>> +             /* set up device name - will depend if cpu bound or otherwise */
->>> +             if (drvdata->ctidev.cpu >= 0)
->>> +                     cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, "cti_cpu%d",
->>> +                                                    drvdata->ctidev.cpu);
->>> +             else {
->>> +                     cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
->>> +                     if (!cti_desc.name)
->>> +                             return -ENOMEM;
->>> +             }
->>> +     }
->>
->>>
->>>        /* setup CPU power management handling for CPU bound CTI devices. */
->>>        ret = cti_pm_setup(drvdata);
->>> diff --git a/drivers/hwtracing/coresight/coresight-dummy.c b/drivers/hwtracing/coresight/coresight-dummy.c
->>> index e4deafae7bc2..b19cd400df79 100644
->>> --- a/drivers/hwtracing/coresight/coresight-dummy.c
->>> +++ b/drivers/hwtracing/coresight/coresight-dummy.c
->>> @@ -76,10 +76,12 @@ static int dummy_probe(struct platform_device *pdev)
->>>        struct coresight_desc desc = { 0 };
->>>
->>>        if (of_device_is_compatible(node, "arm,coresight-dummy-source")) {
->>> -
->>> -             desc.name = coresight_alloc_device_name(&source_devs, dev);
->>> -             if (!desc.name)
->>> -                     return -ENOMEM;
->>> +             desc.name = coresight_get_device_name(dev);
->>> +             if (!desc.name) {
->>> +                     desc.name = coresight_alloc_device_name(&source_devs, dev);
->>> +                     if (!desc.name)
->>> +                             return -ENOMEM;
->>> +             }
->>>
->>>                desc.type = CORESIGHT_DEV_TYPE_SOURCE;
->>>                desc.subtype.source_subtype =
->>> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
->>> index 9d550f5697fa..284aa22a06b7 100644
->>> --- a/drivers/hwtracing/coresight/coresight-platform.c
->>> +++ b/drivers/hwtracing/coresight/coresight-platform.c
->>> @@ -183,6 +183,18 @@ static int of_coresight_get_cpu(struct device *dev)
->>>        return cpu;
->>>   }
->>>
->>> +static const char *of_coresight_get_device_name(struct device *dev)
->>> +{
->>> +     const char *name = NULL;
->>> +
->>> +     if (!dev->of_node)
->>> +             return NULL;
->>> +
->>> +     of_property_read_string(dev->of_node, "coresight-name", &name);
->>
->> Do you need to update the binding docs with this new property?
->>
->> Also a minor nit: Maybe "display-name" is better? "Coresight" is
->> implied, and the node is already named, although that node name isn't
->> used for display purposes, but this one is.
->>
->> Thanks
->> James
-> 
-> 
-> 
+> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> Link: https://lore.kernel.org/r/ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com/
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Edward Adam Davis <eadavis@qq.com>
+> cc: Linus Torvalds <torvalds@linux-foundation.org>
+> cc: Simon Horman <horms@kernel.org>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Jeffrey E Altman <jaltman@auristor.com>
+> Cc: Wang Lei <wang840925@gmail.com>
+> Cc: Jeff Layton <jlayton@redhat.com>
+> Cc: Steve French <sfrench@us.ibm.com>
+> Cc: Marc Dionne <marc.dionne@auristor.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> ---
+>  net/dns_resolver/dns_key.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
+> index f18ca02aa95a..c42ddd85ff1f 100644
+> --- a/net/dns_resolver/dns_key.c
+> +++ b/net/dns_resolver/dns_key.c
+> @@ -104,7 +104,7 @@ dns_resolver_preparse(struct key_preparsed_payload *p=
+rep)
+>                 const struct dns_server_list_v1_header *v1;
+>
+>                 /* It may be a server list. */
+> -               if (datalen <=3D sizeof(*v1))
+> +               if (datalen < sizeof(*v1))
+>                         return -EINVAL;
+>
+>                 v1 =3D (const struct dns_server_list_v1_header *)data;
+>
+>
 
