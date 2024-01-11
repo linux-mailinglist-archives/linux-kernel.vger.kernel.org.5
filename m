@@ -1,127 +1,160 @@
-Return-Path: <linux-kernel+bounces-23992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE10A82B4E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4AAC82B4EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51AFFB23019
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:47:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57D77B25691
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC0854BDE;
-	Thu, 11 Jan 2024 18:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B114354FB1;
+	Thu, 11 Jan 2024 18:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="QdyXNbVg"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wy52FIvW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yq895Kaf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wy52FIvW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yq895Kaf"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243AFDF57;
-	Thu, 11 Jan 2024 18:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=sG0vta/K25cX+m3KWmJQGIOyHDu76/qWE53sJiW1pFo=; b=QdyXNbVgAPkw53YLTW5MFLAwGd
-	JSmyBJYT187WJ9+lEgwFU4PhK1dNACRkVKJfr68Vrl3dvWbrfDcajsyxvDC+L+X9FlhxRdzkHifJ7
-	Nyxxyw4E6rhW4a9StvHd/8k0K7cZ2ejK8wWeAxlnWB3EXAqRbexHDSm2Ym+JznIMwLMETkZI1EOBF
-	aFTVH+8Oirspf3X8ccXVNUEcwyl/yFabJZJG4kbTOUGr9HGQnWzceum2L980kdwneZgFV/2GpF9u7
-	+ZMQvD6P6lp8CqjbYvw2rm5IOxMyXQjXa+F/gD8ocRGtER1nVEgTt8Q6I3eYKL9yLoSjoGENQ2Kyy
-	yStOVlHw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54562)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rO04n-0006t8-0R;
-	Thu, 11 Jan 2024 18:46:49 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rO04l-0006ah-8R; Thu, 11 Jan 2024 18:46:47 +0000
-Date: Thu, 11 Jan 2024 18:46:47 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
- described as container packages
-Message-ID: <ZaA3l4yjgCXxSiVg@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
- <20240111175908.00002f46@Huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3656F42068;
+	Thu, 11 Jan 2024 18:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 05025220C2;
+	Thu, 11 Jan 2024 18:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704999085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=wy52FIvW+CtgGNtHDERO0/tXEdU7+QrmUfxJgmxmOzMDoBZ38dCOYmZnY58GT5QhzaRAMA
+	poyxFbtmYmtW+ZyLvh91CTusE8pEqa3qP7mnBEvDgFZ0urdvrmqAG1KYTGYHNrkR0aT2H8
+	3vNozGFjLyAQWc8nKHDrRK1uZbT/H1k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704999085;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=yq895KafECOGtBV29JLlyW5haxoeE+Mc/e5YMVnOpLZ8LpNm2+pNbR5PCv6PvhXdvyNpym
+	G36rATxmFreB6RBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704999085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=wy52FIvW+CtgGNtHDERO0/tXEdU7+QrmUfxJgmxmOzMDoBZ38dCOYmZnY58GT5QhzaRAMA
+	poyxFbtmYmtW+ZyLvh91CTusE8pEqa3qP7mnBEvDgFZ0urdvrmqAG1KYTGYHNrkR0aT2H8
+	3vNozGFjLyAQWc8nKHDrRK1uZbT/H1k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704999085;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=yq895KafECOGtBV29JLlyW5haxoeE+Mc/e5YMVnOpLZ8LpNm2+pNbR5PCv6PvhXdvyNpym
+	G36rATxmFreB6RBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6310132CF;
+	Thu, 11 Jan 2024 18:51:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CZryN6w4oGWpegAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 11 Jan 2024 18:51:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 834FBA0807; Thu, 11 Jan 2024 19:51:24 +0100 (CET)
+Date: Thu, 11 Jan 2024 19:51:24 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+3779764ddb7a3e19437f@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, axboe@kernel.dk, bpf@vger.kernel.org,
+	brauner@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+	haoluo@google.com, hawk@kernel.org, jack@suse.cz,
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+	kuba@kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, luto@kernel.org, martin.lau@linux.dev,
+	netdev@vger.kernel.org, peterz@infradead.org,
+	reiserfs-devel@vger.kernel.org, sdf@google.com, song@kernel.org,
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+	tintinm2017@gmail.com, yhs@fb.com, yukuai3@huawei.com
+Subject: Re: [syzbot] [bpf?] [reiserfs?] WARNING: locking bug in corrupted (2)
+Message-ID: <20240111185124.ajlkmj4b2p57kbli@quack3>
+References: <000000000000a4a46106002c5e42@google.com>
+ <000000000000301d7e060eae2133@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240111175908.00002f46@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <000000000000301d7e060eae2133@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [2.83 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.07)[62.78%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a];
+	 TAGGED_RCPT(0.00)[3779764ddb7a3e19437f];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RL3o6cafsyspy4quzngzwrpg9m)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[29];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,kernel.dk,vger.kernel.org,iogearbox.net,davemloft.net,google.com,suse.cz,gmail.com,linux.dev,infradead.org,googlegroups.com,linutronix.de,fb.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Level: **
+X-Spam-Score: 2.83
+X-Spam-Flag: NO
 
-On Thu, Jan 11, 2024 at 05:59:08PM +0000, Jonathan Cameron wrote:
-> On Mon, 18 Dec 2023 21:17:34 +0100
-> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+On Thu 11-01-24 08:35:04, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
 > 
-> > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > >
-> > > From: James Morse <james.morse@arm.com>
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
 > 
-> Done some digging + machine faking.  This is mid stage results at best.
+>     fs: Block writes to mounted block devices
 > 
-> Summary: I don't think this patch is necessary.  If anyone happens to be in
-> the mood for testing on various platforms, can you drop this patch and
-> see if everything still works.
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=120430a5e80000
+> start commit:   c17414a273b8 Merge tag 'sh-for-v6.5-tag1' of git://git.ker..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3779764ddb7a3e19437f
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bbd544a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fd50b0a80000
 > 
-> With this patch in place, and a processor container containing
-> Processor() objects acpi_process_add is called twice - once via
-> the path added here and once via acpi_bus_attach etc.
-> 
-> Maybe it's a left over from earlier approaches to some of this?
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-From what you're saying, it seems that way. It would be really good to
-get a reply from James to see whether he agrees - or at least get the
-reason why this patch is in the series... but I suspect that will never
-come.
+Looks plausible.
+ 
+#syz fix: fs: Block writes to mounted block devices
 
-> Both cases are covered by the existing handling without this.
-> 
-> I'm far from clear on why we need this patch.  Presumably
-> it's the reference in the description on it breaking for
-> Processor Package containing Processor() objects that matters
-> after a move... I'm struggling to find that move though!
-
-I do know that James did a lot of testing, so maybe he found some
-corner case somewhere which made this necessary - but without input
-from James, we can't know that.
-
-So, maybe the right way forward on this is to re-test the series
-with this patch dropped, and see whether there's any ill effects.
-It should be possible to resurect the patch if it does turn out to
-be necessary.
-
-Does that sound like a good way forward?
-
-Thanks.
-
+								Honza
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
