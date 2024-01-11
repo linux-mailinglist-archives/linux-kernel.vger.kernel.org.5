@@ -1,121 +1,115 @@
-Return-Path: <linux-kernel+bounces-23805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ECF282B1F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:41:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F243482B1FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:42:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EC5E1F23108
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:41:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F5E22854C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983694D5BC;
-	Thu, 11 Jan 2024 15:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7XPIjZS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404E64EB33;
+	Thu, 11 Jan 2024 15:41:50 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C294D127;
-	Thu, 11 Jan 2024 15:41:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC6B0C433F1;
-	Thu, 11 Jan 2024 15:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704987677;
-	bh=ec2MWNR95rQrBx7ChqqY0NN4ZsZmpqqTnoX9MBjREsM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h7XPIjZSKqSBL24Lqm1sxksD7sbgJUHj0zdYTdKP+A8dtMoUGOVY0DJQu2C+KXZZt
-	 Clrv4pUaATGXam4fXMuVYD2DyQdsqiy1lRXVa6qb9ba+UlNgOZNz/Ov0FWIQILIsY7
-	 eQ0QmR+OspwwivEyPQFKbJxHfrUX+guQDvnsnrWc2R5VUhIoCdaJQuNZley+WKurMa
-	 yOlhlmLmf6KoMDOK9kv+TV5exUGqWnHjU2xxdqKj6JsX7qNGz/XFMvlbCYogDV3uJd
-	 e/lUJ181P5eAWUOq37ofn5iSjY1zUNlD+BIVjjePOdQvkkDFv7uDQDnaLUkKx8g5Re
-	 zHKQDdO+aZFoQ==
-Date: Thu, 11 Jan 2024 15:41:09 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Jonathan Corbet <corbet@lwn.net>, linux-spi@vger.kernel.org,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/13] spi: add core support for controllers with offload
- capabilities
-Message-ID: <ee19aa9e-cb51-41fb-a980-e3df579b5d35@sirena.org.uk>
-References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
- <20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
- <0c0b1954825dc174cab48060e96ddadadc18aefd.camel@gmail.com>
- <aae36622-4e05-4f16-9460-d7614fd599aa@sirena.org.uk>
- <5b62d742fa789e9860781b6f5f1fda4f583b0e5b.camel@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2D94D13A;
+	Thu, 11 Jan 2024 15:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 11 Jan
+ 2024 18:41:44 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 11 Jan
+ 2024 18:41:43 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<wireguard@lists.zx2c4.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, syzbot <syzkaller@googlegroups.com>,
+	<syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com>
+Subject: [PATCH net] wireguard: receive: annotate data-race around receiving_counter.counter
+Date: Thu, 11 Jan 2024 07:41:38 -0800
+Message-ID: <20240111154138.7605-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5fy9KoLsuSv9gV8C"
-Content-Disposition: inline
-In-Reply-To: <5b62d742fa789e9860781b6f5f1fda4f583b0e5b.camel@gmail.com>
-X-Cookie: Does the name Pavlov ring a bell?
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
+Syzkaller with KCSAN identified a data-race issue [1] when accessing
+keypair->receiving_counter.counter.
 
---5fy9KoLsuSv9gV8C
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch uses READ_ONCE() and WRITE_ONCE() annotations to fix the
+problem.
 
-On Thu, Jan 11, 2024 at 03:11:32PM +0100, Nuno S=E1 wrote:
-> On Thu, 2024-01-11 at 13:33 +0000, Mark Brown wrote:
+[1]
+BUG: KCSAN: data-race in wg_packet_decrypt_worker / wg_packet_rx_poll
 
-> > I tend to agree that we shouldn't be exposing this to SPI device drivers
-> > however we will want to keep track of if the unit is busy, and designing
-> > it to cope with multiple offloads does seem like sensible future
-> > proofing.=A0 There's also the possibility that one engine might be able=
- to
+write to 0xffff888107765888 of 8 bytes by interrupt on cpu 0:
+ counter_validate drivers/net/wireguard/receive.c:321 [inline]
+ wg_packet_rx_poll+0x3ac/0xf00 drivers/net/wireguard/receive.c:461
+ __napi_poll+0x60/0x3b0 net/core/dev.c:6536
+ napi_poll net/core/dev.c:6605 [inline]
+ net_rx_action+0x32b/0x750 net/core/dev.c:6738
+ __do_softirq+0xc4/0x279 kernel/softirq.c:553
+ do_softirq+0x5e/0x90 kernel/softirq.c:454
+ __local_bh_enable_ip+0x64/0x70 kernel/softirq.c:381
+ __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:167 [inline]
+ _raw_spin_unlock_bh+0x36/0x40 kernel/locking/spinlock.c:210
+ spin_unlock_bh include/linux/spinlock.h:396 [inline]
+ ptr_ring_consume_bh include/linux/ptr_ring.h:367 [inline]
+ wg_packet_decrypt_worker+0x6c5/0x700 drivers/net/wireguard/receive.c:499
+ process_one_work kernel/workqueue.c:2633 [inline]
+ ...
 
-> Fair enough. But wouldn't a simple DT integer property (handled by the sp=
-i core)
-> to identify the offload index be easier for SPI device drivers? We could =
-still
-> have dedicated interfaces for checking if the unit is busy or not... The =
-point
-> is that we would not need an explicit get() from SPI drivers.
+read to 0xffff888107765888 of 8 bytes by task 3196 on cpu 1:
+ decrypt_packet drivers/net/wireguard/receive.c:252 [inline]
+ wg_packet_decrypt_worker+0x220/0x700 drivers/net/wireguard/receive.c:501
+ process_one_work kernel/workqueue.c:2633 [inline]
+ process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2706
+ worker_thread+0x525/0x730 kernel/workqueue.c:2787
+ ...
 
-It feels like we'd need a get/release operation of some kind for mutual
-exclusion, it's not just the discovery it's also figuring out if the
-hardware is in use at a given moment.
+Fixes: a9e90d9931f3 ("wireguard: noise: separate receive counter from send counter")
+Reported-by: syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ drivers/net/wireguard/receive.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> I'm of course assuming that one spi device can only be connected to one e=
-ngine
-> which seems reasonable to me.
-
-I can see someone implementing this with for example the microcontroller
-cores a lot of SoCs have in which case all bets are off.
-
---5fy9KoLsuSv9gV8C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWgDBUACgkQJNaLcl1U
-h9Cg3gf+NhvfHRGy0X1W6CWSGPIFhafoskakda+cHtUJRILWspChnBvvbTC/LIDg
-zJTlReSwlIUo4jgarKzB/9ly9DI72xoojbI6CTabmAP/ALZVN+oGg9y9N2wuO6Fb
-9Y5t2BPK6Inlb5DV1rhhqTmQBiYaFku6IcNAOO2dMKCTQ3ZSE+xpxNjC9RcAF4DZ
-Lad9xm6xr2kZ7wRVIzkBJm1dWE+HXWK8EYbp8IgM9nqAhTAx6Qu4mL8WtQD3u3d1
-FWvQmmjnlX9Kqcm6AX7sLTWVX/vdjRKiHsDZOMw7zpVXjUl+NReshASo76HiP3RY
-z/mLbFwPQlW2omxzDC+0oThIFe8gEQ==
-=32pw
------END PGP SIGNATURE-----
-
---5fy9KoLsuSv9gV8C--
+diff --git a/drivers/net/wireguard/receive.c b/drivers/net/wireguard/receive.c
+index a176653c8861..d91383afb6e2 100644
+--- a/drivers/net/wireguard/receive.c
++++ b/drivers/net/wireguard/receive.c
+@@ -251,7 +251,7 @@ static bool decrypt_packet(struct sk_buff *skb, struct noise_keypair *keypair)
+ 
+ 	if (unlikely(!READ_ONCE(keypair->receiving.is_valid) ||
+ 		  wg_birthdate_has_expired(keypair->receiving.birthdate, REJECT_AFTER_TIME) ||
+-		  keypair->receiving_counter.counter >= REJECT_AFTER_MESSAGES)) {
++		  READ_ONCE(keypair->receiving_counter.counter) >= REJECT_AFTER_MESSAGES)) {
+ 		WRITE_ONCE(keypair->receiving.is_valid, false);
+ 		return false;
+ 	}
+@@ -318,7 +318,7 @@ static bool counter_validate(struct noise_replay_counter *counter, u64 their_cou
+ 		for (i = 1; i <= top; ++i)
+ 			counter->backtrack[(i + index_current) &
+ 				((COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1)] = 0;
+-		counter->counter = their_counter;
++		WRITE_ONCE(counter->counter, their_counter);
+ 	}
+ 
+ 	index &= (COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1;
 
