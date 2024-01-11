@@ -1,105 +1,120 @@
-Return-Path: <linux-kernel+bounces-24020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0168382B581
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA1C82B57F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:55:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA9771F250C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:56:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96BF81F2317D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B52756B6A;
-	Thu, 11 Jan 2024 19:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E03456761;
+	Thu, 11 Jan 2024 19:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vXUnY8To"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PEGyhgxD"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE115676A;
-	Thu, 11 Jan 2024 19:55:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705002944;
-	bh=SmeOEDSBky71Md5WcIgFutmSu6F+tVl6/qd5e5Nr00I=;
-	h=From:To:Cc:Subject:Date:From;
-	b=vXUnY8TokOIid07j7JM3xAa6tWdwjj2xyHSGuAXP1cTmJrPb+dtU9lKsB3GINxata
-	 uuEkniEOyCZ+2jDJ1Oor6r9Z9D5oecP/6jjVjT0/NytnnbtvFBp84swvmWtXpzVap6
-	 2tzb9d3AIWMTzvDV+JXpsJyZDuDb3ql2UTdv04Uo07yd+Rfjoe7taQYgl3RQnhkyis
-	 maRheIu04/BTdEN+WxUapufoIdG+H51lE+53vrQiOsXSuq2YE0LoKOuzAW9+VeAFZQ
-	 IN81QP0RDna7P9+REF+hROxy82SpudMNKHzeQubyYQqHezxy9bXqatha62wQs6F3Kv
-	 5fC+RDYnksbfg==
-Received: from localhost.localdomain (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 35F703780894;
-	Thu, 11 Jan 2024 19:55:39 +0000 (UTC)
-From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>
-Cc: kernel@collabora.com,
-	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Enric Balletbo i Serra <eballetbo@kernel.org>,
-	Ikjoon Jang <ikjn@chromium.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Stephen Boyd <swboyd@chromium.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH] arm64: dts: mt8183: juniper: Remove CrosEC base detection node
-Date: Thu, 11 Jan 2024 16:53:12 -0300
-Message-ID: <20240111195335.871096-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C1814F7A;
+	Thu, 11 Jan 2024 19:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40BDcV7s002400;
+	Thu, 11 Jan 2024 19:55:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=+lnLLq7TtR/P4rD+oeQ2l6vvdyl0+p2FDMljpW6W2Wg=; b=PE
+	GyhgxD8J8J1+Hq3ddbVARjE+425WyDmuRrGuVBKzTbvbQn6EVj0WfaK3e/t8w3dq
+	P8BWDzlO0Gk4FFkrtvmF1DbeCPM8Cn7/9c0BMik4eVoKCQeIY01PMD2WyhDWnyZa
+	em/Fd6OXnHw7jlGwa8JBwAm7nZxvDnlS6uqRc5Q1mFJOYlMJF/grKpVbGts7ejmW
+	PwaN1XI8X1aR0DJfYC2YwsB3DfPyfdcX0LNBPB/iKRpSXG8M23S2u9dRIMbI2Zq7
+	zbvxWUmokC/HbcpjxwHdzwXPuVsTfg8Y7mCd6d0vOLKIgjFI3HSUMKLvIVJVS70q
+	owl/zeg+UqsXyoH0Aukg==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjckh9ngx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 19:55:42 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40BJtfiG010113
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 19:55:41 GMT
+Received: from [10.110.45.184] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 11 Jan
+ 2024 11:55:40 -0800
+Message-ID: <12d6fe9b-4b07-4c67-a18e-92db9d858a9d@quicinc.com>
+Date: Thu, 11 Jan 2024 11:55:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] arm64: dts: qcom: sm8650: mark gpio74 as reserved
+Content-Language: en-US
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Georgi Djakov <djakov@kernel.org>
+References: <20240111-topic-sm8650-upstream-qrd-fix-gpio-reserved-v1-0-fad39b4c5def@linaro.org>
+From: Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <20240111-topic-sm8650-upstream-qrd-fix-gpio-reserved-v1-0-fad39b4c5def@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: iuGBkGpTRV0jC_HYW6Pj3vgvQcVsadhB
+X-Proofpoint-GUID: iuGBkGpTRV0jC_HYW6Pj3vgvQcVsadhB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=682 phishscore=0 mlxscore=0
+ adultscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1011
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401110154
 
-The cbas node is used to describe base detection functionality in the
-ChromeOS EC, which is used for units that have a detachable keyboard and
-thus rely on this functionality to switch between tablet and laptop
-mode.
 
-The juniper-sku16 machine is a convertible, meaning the keyboard can be
-flipped but not detached. The detection for the keyboard getting
-flipped is handled by the driver bound to the keyboard-controller
-node in the EC.
 
-Since there is no base detection in this machine, and the device backed
-by this node fails to probe and goes unused, delete the node from the
-DT.
+On 1/11/2024 8:58 AM, Neil Armstrong wrote:
+> The TLMM gpio74 is also used to communicate with the secure NFC
+> on-board module, some variants of the SM8650 QRD & MTP boards requires
+> this GPIO to be dedicated to the secure firmware and set reserved
+> in order to successfully initialize the TLMM GPIOs from HLOS (Linux).
+> On the other boards this GPIO is unused so it's still safe to mark
+> the GPIO as reserved.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Fixes: 4fa8492d1e5b ("arm64: dts: mt8183: add cbas node under cros_ec")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Double checked these and no others currently are also reserved.
 
----
+Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 
- .../boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts   | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts
-index 8ac6bf5b17f9..8096ca215258 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts
-@@ -13,3 +13,6 @@ / {
- 	compatible = "google,juniper-sku16", "google,juniper", "mediatek,mt8183";
- };
- 
-+&cros_ec {
-+	/delete-node/ cbas;
-+};
--- 
-2.43.0
-
+> ---
+> Neil Armstrong (2):
+>       arm64: dts: qcom: sm8650-qrd: add gpio74 as reserved gpio
+>       arm64: dts: qcom: sm8650-mtp: add gpio74 as reserved gpio
+> 
+>  arch/arm64/boot/dts/qcom/sm8650-mtp.dts | 2 +-
+>  arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> ---
+> base-commit: bffdfd2e7e63175ae261131a620f809d946cf9a7
+> change-id: 20240111-topic-sm8650-upstream-qrd-fix-gpio-reserved-1c3d56c2d3e8
+> 
+> Best regards,
 
