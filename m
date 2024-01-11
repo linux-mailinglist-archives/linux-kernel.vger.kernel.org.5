@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-23202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC1182A8EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:20:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4202182A8F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87F891F21C22
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:20:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C738B2737F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C9D2F9E0;
-	Thu, 11 Jan 2024 08:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88C3E546;
+	Thu, 11 Jan 2024 08:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kI2nw5f/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MFS/kV/D"
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13EC0F9EF;
-	Thu, 11 Jan 2024 08:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8059FBF6;
+	Thu, 11 Jan 2024 08:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704961186; x=1736497186;
+  t=1704961190; x=1736497190;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=tu9E652ONSBsccr80I5sJ0ZIDYKgQL8NQOkj5aWqOCA=;
-  b=kI2nw5f/QJwfoBL6cn0yDZarQTF4u5kJKjD4u/f8wc8NxMjTh3M/0iNM
-   bbB2uiKusVWsLYa1fXOs0mXZcclPZwFL9j/iiEb62VRsBWFgT1VolLSoj
-   WCSuWecZDSLb3ke/IEZjmpQ2XH0oeq0t5VuAK+5r6v8LahGaLyiTVhlDy
-   5kIZH6YALVziU/lbaEuE9o6IR5LNcoW/T/2+4CkSAcmkGJT0DfPH+oK6N
-   oLuYjxX+alHc65QqX1j72zIZMPhkuUtr7bfXVWlBB/xpI5+gj7SbpkuD2
-   k4Is0SWIAGVo25QQBJG9KNImZi5i90dIf8ugl3djpyFOpjuiBDp+W3tqt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="465166381"
+  bh=o2fWLNMBXVzyChynTVWEYU8VaMjHcltrDUv17RXpnuw=;
+  b=MFS/kV/DB7rIxbRHD09KRuQdgQViD8oc5Vy7BhDsCIzpldZMfdu+N9Il
+   IwP2ViWyFaiBDBzqK/eUzDjZZnAMGLV0c0Op0TozyvTCErlRd3m73ASfd
+   cbfOaBX+sLN7+H2F7oiAOq9PDsdLJV5u9phmla36RUx5GVS/miZ9LGOWH
+   F4MaYup389/85+bLxBgjZcpSOci2hRprTYkGenti9/wqXi6v3QVS2RPby
+   xN1dELkiUyXp5/K7cPZQynsnUSOCAyIqK1j+RoFbiseP2nIO8kFIGgOsu
+   jmFXAfYPnhsQzp2RAgCb8ia4KP9vAvVtfJUYfym2LrkWf6O5F6Iuc8Pj9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="465166420"
 X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="465166381"
+   d="scan'208";a="465166420"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:19:45 -0800
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:19:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="925923034"
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="925923045"
 X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="925923034"
+   d="scan'208";a="925923045"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.52.224])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:19:40 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 00:19:45 -0800
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: Ingo Molnar <mingo@redhat.com>,
@@ -67,9 +67,9 @@ Cc: Ingo Molnar <mingo@redhat.com>,
 	Ian Rogers <irogers@google.com>,
 	linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH V4 03/11] perf tools: Enable evsel__is_aux_event() to work for ARM/ARM64
-Date: Thu, 11 Jan 2024 10:19:06 +0200
-Message-Id: <20240111081914.3123-4-adrian.hunter@intel.com>
+Subject: [PATCH V4 04/11] perf tools: Enable evsel__is_aux_event() to work for S390_CPUMSF
+Date: Thu, 11 Jan 2024 10:19:07 +0200
+Message-Id: <20240111081914.3123-5-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240111081914.3123-1-adrian.hunter@intel.com>
 References: <20240111081914.3123-1-adrian.hunter@intel.com>
@@ -82,39 +82,39 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Set pmu->auxtrace on ARM/ARM64 AUX area PMUs. evsel__is_aux_event() needs
-the setting to identify AUX area tracing selected events.
+evsel__is_aux_event() identifies AUX area tracing selected events.
+
+S390_CPUMSF uses a raw event type (PERF_TYPE_RAW - refer
+s390_cpumsf_evsel_is_auxtrace()) not a PMU type value that could be checked
+in evsel__is_aux_event(). However it sets needs_auxtrace_mmap (refer
+auxtrace_record__init()), so check that first.
 
 Currently, the features that use evsel__is_aux_event() are used only by
 Intel PT, but that may change in the future.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/arch/arm/util/pmu.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/util/pmu.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-index 7f3af3b97f3b..88fbd366246d 100644
---- a/tools/perf/arch/arm/util/pmu.c
-+++ b/tools/perf/arch/arm/util/pmu.c
-@@ -19,14 +19,17 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- #ifdef HAVE_AUXTRACE_SUPPORT
- 	if (!strcmp(pmu->name, CORESIGHT_ETM_PMU_NAME)) {
- 		/* add ETM default config here */
-+		pmu->auxtrace = true;
- 		pmu->selectable = true;
- 		pmu->perf_event_attr_init_default = cs_etm_get_default_config;
- #if defined(__aarch64__)
- 	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
-+		pmu->auxtrace = true;
- 		pmu->selectable = true;
- 		pmu->is_uncore = false;
- 		pmu->perf_event_attr_init_default = arm_spe_pmu_default_config;
- 	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
-+		pmu->auxtrace = true;
- 		pmu->selectable = true;
- #endif
- 	}
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 3c9609944a2f..7f1b96936ff1 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -1096,8 +1096,12 @@ void perf_pmu__warn_invalid_formats(struct perf_pmu *pmu)
+ 
+ bool evsel__is_aux_event(const struct evsel *evsel)
+ {
+-	struct perf_pmu *pmu = evsel__find_pmu(evsel);
++	struct perf_pmu *pmu;
++
++	if (evsel->needs_auxtrace_mmap)
++		return true;
+ 
++	pmu = evsel__find_pmu(evsel);
+ 	return pmu && pmu->auxtrace;
+ }
+ 
 -- 
 2.34.1
 
