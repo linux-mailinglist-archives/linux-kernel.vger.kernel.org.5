@@ -1,215 +1,193 @@
-Return-Path: <linux-kernel+bounces-23092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E761682A788
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:24:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F76082A76D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DA53B22B8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:24:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 784D41F22795
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D6EF4F2;
-	Thu, 11 Jan 2024 06:23:37 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31293DDB6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 06:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-fc-659f85c84c60
-From: Byungchul Park <byungchul@sk.com>
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: kernel_team@skhynix.com,
-	akpm@linux-foundation.org,
-	ying.huang@intel.com,
-	namit@vmware.com,
-	xhao@linux.alibaba.com,
-	mgorman@techsingularity.net,
-	hughd@google.com,
-	willy@infradead.org,
-	david@redhat.com,
-	peterz@infradead.org,
-	luto@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com
-Subject: [v5 7/7] mm: Pause migrc mechanism at high memory pressure
-Date: Thu, 11 Jan 2024 15:07:57 +0900
-Message-Id: <20240111060757.13563-8-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240111060757.13563-1-byungchul@sk.com>
-References: <20240111060757.13563-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMLMWRmVeSWpSXmKPExsXC9ZZnke6J1vmpBt+OS1rMWb+GzeLzhn9s
-	Fi82tDNafF3/i9ni6ac+FovLu+awWdxb85/V4vyutawWO5buY7K4dGABk8X1XQ8ZLY73HmCy
-	2LxpKrPF7x9AdXOmWFmcnDWZxUHA43trH4vHgk2lHptXaHks3vOSyWPTqk42j02fJrF7vDt3
-	jt3jxIzfLB47H1p6zDsZ6PF+31U2j62/7Dw+b5LzeDf/LVsAXxSXTUpqTmZZapG+XQJXRuvT
-	24wF15Qq7p/7wt7AOEGmi5GTQ0LAROLXs9WMXYwcYPbXpUogYTYBdYkbN34yg9giAmYSB1v/
-	sHcxcnEwCzxgkpj7dgUjSEJYwFniypE37CA2i4CqROeWKWANvAKmEvv6/7NAzJeXWL3hAFic
-	E2jQhcOzwHYJAdU8aqsDmSkh8J1N4tSzHmaIekmJgytusExg5F3AyLCKUSgzryw3MTPHRC+j
-	Mi+zQi85P3cTIzDol9X+id7B+OlC8CFGAQ5GJR7eB4vmpQqxJpYVV+YeYpTgYFYS4VX4PCdV
-	iDclsbIqtSg/vqg0J7X4EKM0B4uSOK/Rt/IUIYH0xJLU7NTUgtQimCwTB6dUA2NK4BODuvaY
-	85cFJTwi2gO2xOTpXdLxvB3rWPEvRO3BVrPfk2a/mLP0+O0inqUT706TTah6NNH0uJH4iclr
-	Pt/dVa+umMV6Z9WRz9p28tvio3J3Gu/8fDNWbOU7j4txHAvdkpoumdT7HLhWKNuyKt/lit/x
-	yiS/n25KJz/XTOMoPKi/aJ3Yu0glluKMREMt5qLiRAA8WMaJdgIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFLMWRmVeSWpSXmKPExsXC5WfdrHuidX6qwatdfBZz1q9hs/i84R+b
-	xYsN7YwWX9f/YrZ4+qmPxeLw3JOsFpd3zWGzuLfmP6vF+V1rWS12LN3HZHHpwAImi+u7HjJa
-	HO89wGSxedNUZovfP4Dq5kyxsjg5azKLg6DH99Y+Fo8Fm0o9Nq/Q8li85yWTx6ZVnWwemz5N
-	Yvd4d+4cu8eJGb9ZPHY+tPSYdzLQ4/2+q2wei198YPLY+svO4/MmOY9389+yBfBHcdmkpOZk
-	lqUW6dslcGW0Pr3NWHBNqeL+uS/sDYwTZLoYOTgkBEwkvi5V6mLk5GATUJe4ceMnM4gtImAm
-	cbD1D3sXIxcHs8ADJom5b1cwgiSEBZwlrhx5ww5iswioSnRumQLWwCtgKrGv/z8LiC0hIC+x
-	esMBsDgn0KALh2cxguwSAqp51FY3gZFrASPDKkaRzLyy3MTMHFO94uyMyrzMCr3k/NxNjMAQ
-	Xlb7Z+IOxi+X3Q8xCnAwKvHwGryclyrEmlhWXJl7iFGCg1lJhFfh85xUId6UxMqq1KL8+KLS
-	nNTiQ4zSHCxK4rxe4akJQgLpiSWp2ampBalFMFkmDk6pBsYWjaCUo+t/GWzL++0tv2VW7tMf
-	f5/V301+XBobrB6ynffi8vTP7d/z9nGtcdu9oVps9zaOiwtn+6oa7T+kw7hwkYHh6nQHY0HB
-	m7xr52xLmj7vQtXT0wc2yarpOrhskFvDf2NXl4iBQWjBnS+Nxit2f65gPy+tfdJzQvmzsNOT
-	/p/33HyE/9I+JZbijERDLeai4kQAdp/uwF0CAAA=
-X-CFilter-Loop: Reflected
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CDB23CD;
+	Thu, 11 Jan 2024 06:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LVobSU4f"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE54E2105;
+	Thu, 11 Jan 2024 06:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40B5e1kf022118;
+	Thu, 11 Jan 2024 06:08:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=/6QUE+JTKVJzsM5DjhsgngB9QhhyX2fGpNdXNdgcBSc=; b=LV
+	obSU4fQxCfixukwig4w/EowuyZfFWyhvGAbfNEOEY0mfcbu2+7Xesp98l4fdCWaq
+	Mcj3HDPadDMISsFnlEZZvd4d5tRsfdA5ciZfwpfa+DtKcDBUYMBWxHHuN5u5M95m
+	zdnpCNV5GvKPDJATdBtyzIBG1MLrKP4IJ7SoCLsO6gU995zpnpm/uJilWdxOzKXa
+	PhfUyMUtFrupTeBZ5WPQx0Zcip51hN3OdBrw6Nd55QDP5VrRZzpQGoUxmY/TUDyZ
+	Zr8C6rV48lF/y5KSO41QVPtVGqEo51hIqEPp/s9camoOlqpqJU9dg39DNI4jCt/l
+	/D6WeLqNmpcSGhizyRsA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhuak23g8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 06:08:26 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40B68PaD016302
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 06:08:25 GMT
+Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 10 Jan
+ 2024 22:08:22 -0800
+Message-ID: <1ae3c5a4-97d9-415e-8dd5-520e00c5e94f@quicinc.com>
+Date: Thu, 11 Jan 2024 14:08:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] coresight: Add coresight name support
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, Mike Leach <mike.leach@linaro.org>
+CC: James Clark <james.clark@arm.com>,
+        Suzuki K Poulose
+	<suzuki.poulose@arm.com>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Tao Zhang
+	<quic_taozha@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>
+References: <20231228093321.5522-1-quic_jinlmao@quicinc.com>
+ <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
+ <CAJ9a7Vgi=ELOhXNF97KrBtV5ef8khwWqzWKevrYW2RtBBtsppw@mail.gmail.com>
+ <CAL_JsqKYuqKxokDzs3xVWqYZoFfyMwMrLd17DpfCO_x7CXvRZw@mail.gmail.com>
+From: Jinlong Mao <quic_jinlmao@quicinc.com>
+In-Reply-To: <CAL_JsqKYuqKxokDzs3xVWqYZoFfyMwMrLd17DpfCO_x7CXvRZw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aDXdIDVa0rJXl0VcJ7YVHUHWWCD7Xl8w
+X-Proofpoint-ORIG-GUID: aDXdIDVa0rJXl0VcJ7YVHUHWWCD7Xl8w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=676
+ impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0 suspectscore=0
+ adultscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401110047
 
-Regression was observed when the system is in high memory pressure with
-swap on, where migrc might keep a number of folios in its pending queue,
-which possibly makes it worse. So temporarily prevented migrc from
-working on that condition.
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- mm/internal.h   | 20 ++++++++++++++++++++
- mm/migrate.c    | 16 ++++++++++++++++
- mm/page_alloc.c | 13 +++++++++++++
- 3 files changed, 49 insertions(+)
 
-diff --git a/mm/internal.h b/mm/internal.h
-index dc72a04d33a8..cade8219b417 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1295,6 +1295,8 @@ static inline void shrinker_debugfs_remove(struct dentry *debugfs_entry,
- #endif /* CONFIG_SHRINKER_DEBUG */
- 
- #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-+extern atomic_t migrc_pause_cnt;
-+
- /*
-  * Reset the indicator indicating there are no writable mappings at the
-  * beginning of every rmap traverse for unmap. Migrc can work only when
-@@ -1323,6 +1325,21 @@ static inline bool can_migrc_test(void)
- 	return current->can_migrc && current->tlb_ubc_ro.flush_required;
- }
- 
-+static inline void migrc_pause(void)
-+{
-+	atomic_inc(&migrc_pause_cnt);
-+}
-+
-+static inline void migrc_resume(void)
-+{
-+	atomic_dec(&migrc_pause_cnt);
-+}
-+
-+static inline bool migrc_paused(void)
-+{
-+	return !!atomic_read(&migrc_pause_cnt);
-+}
-+
- /*
-  * Return the number of folios pending TLB flush that have yet to get
-  * freed in the zone.
-@@ -1340,6 +1357,9 @@ bool migrc_flush_free_folios(void);
- static inline void can_migrc_init(void) {}
- static inline void can_migrc_fail(void) {}
- static inline bool can_migrc_test(void) { return false; }
-+static inline void migrc_pause(void) {}
-+static inline void migrc_resume(void) {}
-+static inline bool migrc_paused(void) { return false; }
- static inline int migrc_pending_nr_in_zone(struct zone *z) { return 0; }
- static inline bool migrc_flush_free_folios(void) { return false; }
- #endif
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 181bfe260442..d072591c6ce6 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -62,6 +62,12 @@ static struct tlbflush_unmap_batch migrc_ubc;
- static LIST_HEAD(migrc_folios);
- static DEFINE_SPINLOCK(migrc_lock);
- 
-+/*
-+ * Increase on entry of handling high memory pressure e.g. direct
-+ * reclaim, decrease on the exit. See __alloc_pages_slowpath().
-+ */
-+atomic_t migrc_pause_cnt = ATOMIC_INIT(0);
-+
- /*
-  * Need to synchronize between TLB flush and managing pending CPUs in
-  * migrc_ubc. Take a look at the following scenario:
-@@ -1892,6 +1898,7 @@ static int migrate_pages_batch(struct list_head *from,
- 	 */
- 	init_tlb_ubc(&pending_ubc);
- 	do_migrc = (reason == MR_DEMOTION || reason == MR_NUMA_MISPLACED);
-+	do_migrc = do_migrc && !migrc_paused();
- 
- 	for (pass = 0; pass < nr_pass && retry; pass++) {
- 		retry = 0;
-@@ -1930,6 +1937,15 @@ static int migrate_pages_batch(struct list_head *from,
- 				continue;
- 			}
- 
-+			/*
-+			 * In case that the system is in high memory
-+			 * pressure, give up migrc mechanism this turn.
-+			 */
-+			if (unlikely(do_migrc && migrc_paused())) {
-+				fold_ubc(tlb_ubc, &pending_ubc);
-+				do_migrc = false;
-+			}
-+
- 			can_migrc_init();
- 			rc = migrate_folio_unmap(get_new_folio, put_new_folio,
- 					private, folio, &dst, mode, reason,
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 6ef0c22b1109..366777afce7f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4072,6 +4072,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	unsigned int cpuset_mems_cookie;
- 	unsigned int zonelist_iter_cookie;
- 	int reserve_flags;
-+	bool migrc_paused = false;
- 
- restart:
- 	compaction_retries = 0;
-@@ -4203,6 +4204,16 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	if (page)
- 		goto got_pg;
- 
-+	/*
-+	 * The system is in very high memory pressure. Pause migrc from
-+	 * expanding its pending queue temporarily.
-+	 */
-+	if (!migrc_paused) {
-+		migrc_pause();
-+		migrc_paused = true;
-+		migrc_flush_free_folios();
-+	}
-+
- 	/* Caller is not willing to reclaim, we can't balance anything */
- 	if (!can_direct_reclaim)
- 		goto nopage;
-@@ -4330,6 +4341,8 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	warn_alloc(gfp_mask, ac->nodemask,
- 			"page allocation failure: order:%u", order);
- got_pg:
-+	if (migrc_paused)
-+		migrc_resume();
- 	return page;
- }
- 
--- 
-2.17.1
+On 1/3/2024 11:32 PM, Rob Herring wrote:
+> On Tue, Jan 2, 2024 at 5:05 AM Mike Leach <mike.leach@linaro.org> wrote:
+>>
+>> As James mentions this is clearly a V2 of a previous patch - please
+>> mark as such in future.
+>>
+>> Adding to what James has already said:-
+>>
+>> 1) Mapping between the canonical names used in the drivers and the
+>> information as to the precise device is as easy as running 'ls' on
+>> /sys/bus/coresight/devices:-
+>>
+>> root@linaro-developer:/home/linaro/cs-mods# ls -al /sys/bus/coresight/devices/
+>> total 0
+>> drwxr-xr-x 2 root root 0 Jan  2 11:27 .
+>> drwxr-xr-x 4 root root 0 Jan  2 11:27 ..
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu0 ->
+>> ../../../devices/platform/soc@0/858000.cti/cti_cpu0
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu1 ->
+>> ../../../devices/platform/soc@0/859000.cti/cti_cpu1
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu2 ->
+>> ../../../devices/platform/soc@0/85a000.cti/cti_cpu2
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu3 ->
+>> ../../../devices/platform/soc@0/85b000.cti/cti_cpu3
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys0 ->
+>> ../../../devices/platform/soc@0/810000.cti/cti_sys0
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys1 ->
+>> ../../../devices/platform/soc@0/811000.cti/cti_sys1
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm0 ->
+>> ../../../devices/platform/soc@0/85c000.etm/etm0
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm1 ->
+>> ../../../devices/platform/soc@0/85d000.etm/etm1
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm2 ->
+>> ../../../devices/platform/soc@0/85e000.etm/etm2
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm3 ->
+>> ../../../devices/platform/soc@0/85f000.etm/etm3
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel0 ->
+>> ../../../devices/platform/soc@0/821000.funnel/funnel0
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel1 ->
+>> ../../../devices/platform/soc@0/841000.funnel/funnel1
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:42 replicator0 ->
+>> ../../../devices/platform/soc@0/824000.replicator/replicator0
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etf0 ->
+>> ../../../devices/platform/soc@0/825000.etf/tmc_etf0
+>> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etr0 ->
+>> ../../../devices/platform/soc@0/826000.etr/tmc_etr0
+>>
+>>
+>> 2) The patch set must contain the usage and specification in the .yaml
+>>   file(s) of the property used.
+> 
+> For the record, I don't like "coresight-name". I don't have another
+> suggestion because "easy" is not sufficient reasoning for why this is
+> needed.
 
+For example, if we want to configure the trigger and HW events for 
+modem, we can't know which cti or TPDM is for modem from current names.
+
+lrwxrwxrwx    1 root     0                0 Jan  1 00:01 cti_sys0 -> 
+./../../devices/platform/soc@0/138f0000.cti/cti_sys0
+lrwxrwxrwx    1 root     0                0 Jan  1 00:01 cti_sys1 -> 
+./../../devices/platform/soc@0/13900000.cti/cti_sys1
+lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm0 -> 
+./../../devices/platform/soc@0/10b0d000.tpdm/tpdm0
+lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm1 -> 
+./../../devices/platform/soc@0/10c28000.tpdm/tpdm1
+lrwxrwxrwx    1 root     0                0 Jan  1 00:01 tpdm2 -> 
+./../../devices/platform/soc@0/10c29000.tpdm/tpdm2
+
+Thanks
+Jinlong Mao
+> 
+>> However, there was a standard property called 'name' which is
+>> deprecated - see
+>> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html
+>> section 2.3.11. I do not believe that adding another 'name' property
+>> would be accepted by the DT maintainers.
+> 
+> "name" is just the node name for anything in the last 15 years. They
+> used to be separate, but would still mostly be the same. The only case
+> I found with them different was old PowerPC Macs.
+> 
+>> 3) the 'device_node' structure has a 'name' field that contains the
+>> node name in the DT approved "node-name@unit-address" format.
+> 
+> Actually, it is without the unit-address. full_name is with the unit-address.
+> 
+>> This
+>> contains whatever node names you used in the dt.  Why not use this if
+>> a change has to be made and find some conditional to activate it.
+> 
+> Don't go accessing "name" or "full_name" directly. I intend to get rid
+> of "name" and generate it from full_name. So use the accessors and
+> printk specifiers if you need node names.
+> 
+> Rob
 
