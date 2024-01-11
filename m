@@ -1,168 +1,192 @@
-Return-Path: <linux-kernel+bounces-23624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A652282AF43
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:12:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89AC082AF9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56813282360
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:12:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B33D0B269AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F4E1640C;
-	Thu, 11 Jan 2024 13:12:00 +0000 (UTC)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FFC358AC;
+	Thu, 11 Jan 2024 13:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkE+6dYm"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFF216402;
-	Thu, 11 Jan 2024 13:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAFB38DF4;
+	Thu, 11 Jan 2024 13:22:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbeff495c16so3868849276.3;
-        Thu, 11 Jan 2024 05:11:58 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e60e135a7so4268655e9.0;
+        Thu, 11 Jan 2024 05:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704979339; x=1705584139; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sDkpti5QnC20mGTE6Quk7MeID3t58utIY/P3B/Bf2Go=;
+        b=GkE+6dYmsRQ0QJHsxs77Ws3Rv7OUk3xKxEacg9twj521ty1sre6ccWlQR5zEddL55L
+         yqtloLusw83a0qJHTrQHpUSmzjI1g7r6cCCLv5qoZa8/e0xBSadIi+uvJ3CLXtzesoMR
+         dUAFmLN68OEuvKu+kBPHn/fxSNFk7ti1bdMbkTJkEMRbWK3rGPiC6CkZf/JvDqrvj4oP
+         4Q1kf6vVLIKJUSJgESm6D2MltgY2YKX4p0PhbkKYlEKuXRxmgts6elhVYiXL6m48AVX+
+         0Nn7DiXA7QF0Yz1WiLlMHP6VOQd7CaaBCh+dNE980MjrTOfIOUnJx0PgVsGrSI0uuDRT
+         rPRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704978717; x=1705583517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EQ5ASUjPjhRUwAFEFid0Fjz0cuH2JwdEJzRuxsRLB6E=;
-        b=voczaj17bjLaRuLcIK6jUoe9F+sO4agXLJUSiPTH/MIVmKF38qA73Euk1ixepv3Gub
-         vAQQYm6t4cXLRdWq7sxEMpzX7FwUt+0KnmTIwpBSpGub4jHbSZ5KgcBA0b1ekKjrfnM9
-         o+m9XfTryJZ869OlrQqgisyiTWIH9LI2R19SdIqNi5XCUHZO1LS7EToG3dsJc/vMkQ5i
-         NSdvVsG+V7VlblLYVyHPviOjS5vG2VeUcQcMqhNK20AvxDwbLiuN2QK64KI+gzDKTTn7
-         idr4bvT005xlJpU33dpgwhYpoXlseVHs2OEpG43L8cYm96m04iTDXY3LfZcjtMwdPXIS
-         +azg==
-X-Gm-Message-State: AOJu0YyEfEQyjqtwPSLyik/9PBZhc7a/yfwx7yZtJAA49FFXjPqgrsoN
-	p3SKTRX7P5BbwKUevqH0KPSEGOf88sxp8A==
-X-Google-Smtp-Source: AGHT+IEzD0uVreGZAwqlBop/uwyWMbPjNMtAG8JRsen5l9An1M14n2Xn/t4JIfaCL1vJAOnFmqUbVg==
-X-Received: by 2002:a25:aa49:0:b0:dbe:9c77:84ef with SMTP id s67-20020a25aa49000000b00dbe9c7784efmr1189271ybi.19.1704978717032;
-        Thu, 11 Jan 2024 05:11:57 -0800 (PST)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id d4-20020a5b0c44000000b00dbf26ef0daesm344960ybr.6.2024.01.11.05.11.56
+        d=1e100.net; s=20230601; t=1704979339; x=1705584139;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sDkpti5QnC20mGTE6Quk7MeID3t58utIY/P3B/Bf2Go=;
+        b=C1CYdrvrwTkDU2xecyVKIw6hoQ0FUz3/XOoWRhUt68Efdh4FdB8oZyFIl2KhACuAxs
+         BcLqbb+roI2STNrA5Ik2wKepaDl6GjvQwC0/ekX3QMV3A5zhLc37sraUm8x7N0GixxzU
+         55dp7m84NEL8+e5TT6OCAdY2J7eKH6Oiiy1SKvobZjAQ+hhAzmV6eSHvmkIj1l2Kq9cg
+         hMiRXFzFp1bY47BO69d+lI7Gisw0P8T9yMEUEo3pqZG4RQ8x9Jorm24dBabKBGn/UESO
+         jBqj5lB2x/OGMo55rQqKzVPbfWHjIZAgo4wzod56JmSD3fU9uojadA28i7x+UGsWy4+4
+         NiMQ==
+X-Gm-Message-State: AOJu0Yzq3ANq70E3SRWKdObKRXqAwGAm5/6MlGqAgqT7/utiTEyASXaS
+	rinWztS9jQQBBsb9EAQEiDTsgIg8BHw=
+X-Google-Smtp-Source: AGHT+IG8TJ20wwkiN5fvnJyYn2Xy5/6wc+hbl93MAAiRwbX/x1uENpBozNWS/ndF2kUI+Ib+8lG6lA==
+X-Received: by 2002:a05:600c:4e91:b0:40e:532c:7cb1 with SMTP id f17-20020a05600c4e9100b0040e532c7cb1mr505653wmq.125.1704979338631;
+        Thu, 11 Jan 2024 05:22:18 -0800 (PST)
+Received: from ?IPV6:2620:10d:c096:310::2eef? ([2620:10d:c092:600::1:18af])
+        by smtp.gmail.com with ESMTPSA id fl13-20020a05600c0b8d00b0040d8cd116e4sm5854091wmb.37.2024.01.11.05.22.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 05:11:56 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbed4b84667so4727850276.0;
-        Thu, 11 Jan 2024 05:11:56 -0800 (PST)
-X-Received: by 2002:a25:41cf:0:b0:dbd:ab41:60d5 with SMTP id
- o198-20020a2541cf000000b00dbdab4160d5mr1033855yba.123.1704978716687; Thu, 11
- Jan 2024 05:11:56 -0800 (PST)
+        Thu, 11 Jan 2024 05:22:18 -0800 (PST)
+Message-ID: <bd9b3982-95ca-4789-a3d5-6c456083248b@gmail.com>
+Date: Thu, 11 Jan 2024 13:12:36 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik> <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik> <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki> <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
- <20240110141455.GC1698252@pevik> <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
-In-Reply-To: <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 11 Jan 2024 14:11:43 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX5ACKVBQvEwMi7KHZkSVGZPJoocEC1wosfB7zc0u2mbA@mail.gmail.com>
-Message-ID: <CAMuHMdX5ACKVBQvEwMi7KHZkSVGZPJoocEC1wosfB7zc0u2mbA@mail.gmail.com>
-Subject: Re: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-To: Rob Landley <rob@landley.net>
-Cc: Petr Vorel <pvorel@suse.cz>, Tim Bird <tim.bird@sony.com>, Cyril Hrubis <chrubis@suse.cz>, 
-	"ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang <liwang@redhat.com>, 
-	Andrea Cervesato <andrea.cervesato@suse.com>, Greg Ungerer <gerg@linux-m68k.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Christophe Lyon <christophe.lyon@linaro.org>, 
-	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, Linux-sh list <linux-sh@vger.kernel.org>, 
-	"automated-testing@lists.yoctoproject.org" <automated-testing@lists.yoctoproject.org>, 
-	"buildroot@buildroot.org" <buildroot@buildroot.org>, Niklas Cassel <niklas.cassel@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
+ threads.
+To: Xiaobing Li <xiaobing.li@samsung.com>
+Cc: axboe@kernel.dk, linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+ kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
+ kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com
+References: <c9505525-54d9-4610-a47a-5f8d2d3f8de6@gmail.com>
+ <CGME20240110091327epcas5p493e0d77a122a067b6cd41ecbf92bd6eb@epcas5p4.samsung.com>
+ <20240110090523.1612321-1-xiaobing.li@samsung.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20240110090523.1612321-1-xiaobing.li@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Rob,
+On 1/10/24 09:05, Xiaobing Li wrote:
+> On 1/5/24 04:02 AM, Pavel Begunkov wrote:
+>> On 1/3/24 05:49, Xiaobing Li wrote:
+>>> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
+>>>> Why it uses jiffies instead of some task run time?
+>>>> Consequently, why it's fine to account irq time and other
+>>>> preemption? (hint, it's not)
+>>>>
+>>>> Why it can't be done with userspace and/or bpf? Why
+>>>> can't it be estimated by checking and tracking
+>>>> IORING_SQ_NEED_WAKEUP in userspace?
+>>>>
+>>>> What's the use case in particular? Considering that
+>>>> one of the previous revisions was uapi-less, something
+>>>> is really fishy here. Again, it's a procfs file nobody
+>>>> but a few would want to parse to use the feature.
+>>>>
+>>>> Why it just keeps aggregating stats for the whole
+>>>> life time of the ring? If the workload changes,
+>>>> that would either totally screw the stats or would make
+>>>> it too inert to be useful. That's especially relevant
+>>>> for long running (days) processes. There should be a
+>>>> way to reset it so it starts counting anew.
+>>>
+>>> Hi, Jens and Pavel,
+>>> I carefully read the questions you raised.
+>>> First of all, as to why I use jiffies to statistics time, it
+>>> is because I have done some performance tests and found that
+>>> using jiffies has a relatively smaller loss of performance
+>>> than using task run time. Of course, using task run time is
+>>
+>> How does taking a measure for task runtime looks like? I expect it to
+>> be a simple read of a variable inside task_struct, maybe with READ_ONCE,
+>> in which case the overhead shouldn't be realistically measurable. Does
+>> it need locking?
+> 
+> The task runtime I am talking about is similar to this:
+> start = get_system_time(current);
+> do_io_part();
+> sq->total_time += get_system_time(current) - start;
+> 
+> Currently, it is not possible to obtain the execution time of a piece of
+> code by a simple read of a variable inside task_struct.
+> Or do you have any good ideas?
 
-On Wed, Jan 10, 2024 at 8:17=E2=80=AFPM Rob Landley <rob@landley.net> wrote=
-:
-> You can't fork() on nommu because copies of the mappings have different
-> addresses, meaning any pointers in the copied mappings would point into t=
-he OLD
-> mappings (belonging to the parent process), and fixing them up is 100%
-> equivalent to the "garbage collection in C" problem. (It's AI-complete. O=
-f the
-> C3PO kind, not the "autocorrect with syntax checking" kind.) People get h=
-ung up
-> on the "it would be very inefficient to do that because no copy-on-write"
-> problem and miss the "the child couldn't FUNCTION because its pointer var=
-iables
-> all contain parent addresses" problem.
+Jens answered it well
 
-Actually you can implement fork(), if you teach the compiler to use
-separate stacks for return addresses and data:
-  - The first stack would contain only absolute addresses, to be
-    relocated after copying,
-  - The second stack would contain integers and relative pointers
-    (see FDPIC below), which do not need relocation after copying.
+>>> indeed more accurate.  But in fact, our requirements for
+>>> accuracy are not particularly high, so after comprehensive
+>>
+>> I'm looking at it as a generic feature for everyone, and the
+>> accuracy behaviour is dependent on circumstances. High load
+>> networking spends quite a good share of CPU in softirq, and
+>> preemption would be dependent on config, scheduling, pinning,
+>> etc.
+> 
+> Yes, I quite agree that the accuracy behaviour is dependent on circumstances.
+> In fact, judging from some test results we have done, the current solution
+> can basically meet everyone's requirements, and the error in the calculation
+> result of utilization is estimated to be within 0.5%.
 
-> The OTHER fun thing about nommu is you can't run conventional ELF binarie=
-s,
-> because everything is linked at fixed address. So you might be able to ru=
-n ONE
-> instance of the program as your init task, assuming those addresses were
-> available even then, but as soon as you try to run a second one it's a co=
-nflict.
->
-> The quick and dirty work around is to make PIE binaries, which can reloca=
-te
-> everything into available space, which works but doesn't scale. The probl=
-em with
-> ELF PIE is that everything is linked contiguously from a single base poin=
-ter,
-> meaning your text, rodata, data, and bss segments are all one linear blob=
- So if
-> you run two instances of bash, you've loaded two copies of the test and t=
-he
-> rodoata. This fills up your memory fast.
->
-> AND PIE requires contiguous memory, which nommu is bad at providing becau=
-se it
-> has no page tables to remap stuff. With an mmu it can coalesce scattered
-> physical pages into a virtually contiguous range, but without an mmu you =
-can
-> have plenty of memory free but in tiny chunks, none big enough to satisfy=
- an
-> allocation request.
->
-> So they invented FDPIC, which is ELF with FOUR base pointers. Each major =
-section
-> (rodata, text, data, and bss) has its own base pointer, so you need to fi=
-nd
-> smaller chunks of memory to load them into (and thus it can work on a mor=
-e
-> fragmented system), AND it means that two instances of the same program c=
-an
-> share the read-only sections (rodata and text) so you only need new copie=
-s of
-> the writeable segments (data and bss. And the heap. And the stack.)
+Which sounds more than fine, but there are cases where irqs are
+eating up 10s of percents of CPU, which is likely to be more
+troublesome.
 
-Or Amiga LoadSeg() relocatable binaries and shared libraries ;-)
-As this supported splitting code, data, and bss in lots of smaller
-hunks, it could counter fragmented memory quite well.
+>>> consideration, we finally chose to use jiffies.
+>>> Of course, if you think that a little more performance loss
+>>> here has no impact, I can use task run time instead, but in
+>>> this case, does the way of calculating sqpoll thread timeout
+>>> also need to be changed, because it is also calculated through
+>>> jiffies.
+>>
+>> That's a good point. It doesn't have to change unless you're
+>> directly inferring the idle time parameter from those two
+>> time values rather than using the ratio. E.g. a simple
+>> bisection of the idle time based on the utilisation metric
+>> shouldn't change. But that definitely raises the question
+>> what idle_time parameter should exactly mean, and what is
+>> more convenient for algorithms.
+> 
+> We think that idle_time represents the time spent by the sqpoll thread
+> except for submitting IO.
 
-BTW, can't you run and thus test nommu-binaries under normal Linux, too?
+I mean the idle_time parameter, i.e.
+struct io_uring_params :: sq_thread_idle, which is how long an SQPOLL
+thread should be continuously starved of any work to go to sleep.
 
-Gr{oetje,eeting}s,
+For example:
+sq_thread_idle = 10ms
 
-                        Geert
+   -> 9ms starving -> (do work) -> ...
+   -> 9ms starving -> (do work) -> ...
+   -> 11ms starving -> (more than idle, go sleep)
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+And the question was whether to count those delays in wall clock
+time, as it currently is, and which is likely to be more natural
+for userspace, or otherwise theoretically it could be task local time.
+  
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> In a ring, it may take time M to submit IO, or it may not submit IO in the
+> entire cycle. Then we can optimize the efficiency of the sqpoll thread in
+> two directions. The first is to reduce the number of rings that no IO submit,
+> The second is to increase the time M to increase the proportion of time
+> submitted IO in the ring.
+> In order to observe the CPU ratio of sqthread's actual processing IO part,
+> we need this patch.
+
+-- 
+Pavel Begunkov
 
