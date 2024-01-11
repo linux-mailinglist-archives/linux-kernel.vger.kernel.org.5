@@ -1,186 +1,178 @@
-Return-Path: <linux-kernel+bounces-23319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CAB82AB04
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:32:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB0BD82AB00
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FF33284C81
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:32:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA5131C213A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68B514F85;
-	Thu, 11 Jan 2024 09:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A016814A9E;
+	Thu, 11 Jan 2024 09:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="aAhgOOjr"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xhbOqDX1"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEAAF14F77
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so2241101a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:31:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EB414AA4
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557a3ce9942so5287944a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:31:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704965477; x=1705570277; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cUtZ/fl35OGrV0n4xrT7BhxLu5Q7HTfNcZ5vLHqEvsY=;
-        b=aAhgOOjriQGmuzcaLibbZYF/b0kB2ZBDGRV4mR9LeIBAz8s51PwlgJF50yUhIXudLl
-         Y43c9cI3Og7sdQ/hmDFoV2RDzcw/XfQMWsJhfMMKbkdA7D1S5HfdGI+dS98i+cpg8rfn
-         FnME2T9wGG2g4qhaWz7MOSO3uKp/G26iAek3FvUj5GGqAo11UFehInxOgoLb4Ypc3MBq
-         0sJhgef9UnXBfDc4/9Je0klHvh0MUwOE+DxaiD+xbcVwnRWR5yY8bGJoM6kbw1gyGxaj
-         uY9EZ0RI50vYjHGvLcjNmuq2v+5URsYtBfDFp/l7JdzR2sU02C1M88u2FaVvT24V5FCF
-         lJkg==
+        d=linaro.org; s=google; t=1704965474; x=1705570274; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Eor6lImS7ySePlUmbye/lNdlPbDxWcSpzNk/0V1lmvk=;
+        b=xhbOqDX1gcf+xuQdqaFkzKm3nkB6C5TFHK7Ffkt9MTSEAxytdHiJK4/a2WY1mKTCcC
+         vDfNt8+9bM72vSOb+pZx3Gu/RsHJljwMqaWYYaGL4OXk/BpK83loZ8keX8QJxdr8rXWF
+         AWMO3CUSPMpRIvW3wi4EIkhJp8BtiaHCrzuplK26kCnlBj9eXNVc/qIWPk0vnWIIpiFu
+         vTOm84cPWDy0RTWLwD1e6QS6dEivAhc8PxiGMa16sSrdsokCgHsiIkHuvSoHwgB9DmRR
+         lD+BU7mFTF2uKfrwTSJj2q5CNFw6tw4TMQgDgyNYfRgDd2O0u+/itA5A7fXwAnrjBkSv
+         avzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704965477; x=1705570277;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cUtZ/fl35OGrV0n4xrT7BhxLu5Q7HTfNcZ5vLHqEvsY=;
-        b=S322wmHyYKp6n88rCzPsdBDUystIEa1rlYDhoSTC3uaBF+C91m98gZ7Ra4Ue79WEC0
-         R98D1Bb3CBCZnffv7c193HqtErj+WZ04sJydQBwFlILYIY/nJx0kIiTH6lsSY9AjRapM
-         RjNSCFu8ID+gMs0cxo+faGQ28LlX7pZkx7U31vZKfVO9kTCdOZvATU6KlVK5ZgPEYzDM
-         Z8GwGAV/7r8h5QjdMQQSLiCfjKr45B2xK/qsWvFud51+1cm2iY9jCyBEL5NhlegmDtO1
-         W2UptASQSUflj/ZqYbw9Kz4ePr00ZOTAJdTs5pdobpW0OCMtdXIHOvWhTPsxCCMIncv+
-         qm5w==
-X-Gm-Message-State: AOJu0Yx42e8em54Iy03FULPUEriJUP8gDkXZIbmpQjvqLnb0q24YJA5n
-	XWFxqUAIAKaNCUCkWNN/PIPVIMlp36FmZA==
-X-Google-Smtp-Source: AGHT+IF4264zzKBNpeub4VH/x1A2zu/MAt7+saMEpmuhHRaKZH8w152mN6eN2xwM9KYg/qXnJMYHcw==
-X-Received: by 2002:a05:6a21:32aa:b0:19a:1719:8cd4 with SMTP id yt42-20020a056a2132aa00b0019a17198cd4mr595390pzb.107.1704965476861;
-        Thu, 11 Jan 2024 01:31:16 -0800 (PST)
-Received: from sunil-laptop.. ([106.51.188.200])
-        by smtp.gmail.com with ESMTPSA id jd2-20020a170903260200b001d4a7cf0673sm730566plb.117.2024.01.11.01.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 01:31:16 -0800 (PST)
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Conor Dooley <conor@kernel.org>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [PATCH -next 2/2] cpuidle: RISC-V: Add ACPI LPI support
-Date: Thu, 11 Jan 2024 15:00:58 +0530
-Message-Id: <20240111093058.121838-3-sunilvl@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240111093058.121838-1-sunilvl@ventanamicro.com>
-References: <20240111093058.121838-1-sunilvl@ventanamicro.com>
+        d=1e100.net; s=20230601; t=1704965474; x=1705570274;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Eor6lImS7ySePlUmbye/lNdlPbDxWcSpzNk/0V1lmvk=;
+        b=MVirvW1hMITMbvxbLmT9lEK+6fLgKuCD9xNrRrYuFmfYDffXwMpNekprVU3XOZnpzT
+         6hAdMTjz71FsAQuW+RxU5lYSPXN/Z12/6qSoks1/j562kbA4sDXSKZRwplJzJuqKHD/c
+         zwZgVurJWxSmDfUaOTNdUTYIUCvJcHvdIVk6DogpYCKEQHFA7N6UYiXkhA237jWN6ZaK
+         pYoLZHod2CL8W4Lp45wJikvGRilXjLKTRH43ivqTVEcavM0Tfp5n2KZ4cmBnqQSQQYYs
+         Mb6ZJYLXGAd+0F3IRVTk5OungSu4n3r5hn6aHNsnABGNfHmsleQ3sCVCnA0St/exfWHw
+         wMtw==
+X-Gm-Message-State: AOJu0YzbUYbf1Vt76i60ulThIYcwvGfH3jlHIvZszyDrnOTv3DjMXX6u
+	NTbN2GmqQ05yuq0a5jui8mLNiBV0Se7f2A==
+X-Google-Smtp-Source: AGHT+IGD9nTnB2PCUwRoN7P9hfHTaak6Rf6N5a7I+i6QTcDjkE0MZWvuwl97F/xmIbbqjFd1l3G8BA==
+X-Received: by 2002:a17:906:2459:b0:a2b:643:322 with SMTP id a25-20020a170906245900b00a2b06430322mr243390ejb.138.1704965474275;
+        Thu, 11 Jan 2024 01:31:14 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id b4-20020a170906150400b00a2a37f63216sm353336ejd.171.2024.01.11.01.31.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 01:31:13 -0800 (PST)
+Message-ID: <039a4223-3412-415e-a5e6-c5dca53c96e1@linaro.org>
+Date: Thu, 11 Jan 2024 10:31:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 00/24] Support more Amlogic SoC families in crypto
+ driver
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Alexey Romanov <avromanov@salutedevices.com>,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc: "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+ "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+ "clabbe@baylibre.com" <clabbe@baylibre.com>,
+ "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "khilman@baylibre.com" <khilman@baylibre.com>,
+ "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+ "artin.blumenstingl@googlemail.com" <artin.blumenstingl@googlemail.com>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ "linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
+References: <20240110201216.18016-1-avromanov@salutedevices.com>
+ <ZZ8HP7dJgVaZLMw5@Red> <20240111091840.7fe4lqx225rdlwly@cab-wsm-0029881>
+ <910736a3-069f-430c-ba6c-221777ddcda2@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <910736a3-069f-430c-ba6c-221777ddcda2@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add required callbacks to support Low Power Idle (LPI) on ACPI based
-RISC-V platforms.
+On 11/01/2024 10:29, Krzysztof Kozlowski wrote:
+> On 11/01/2024 10:18, Alexey Romanov wrote:
+>> Hello!
+>>
+>> On Wed, Jan 10, 2024 at 10:08:15PM +0100, Corentin Labbe wrote:
+>>> Le Wed, Jan 10, 2024 at 11:11:16PM +0300, Alexey Romanov a 'ecrit :
+>>>> Hello!
+>>>>
+>>>> This patchset expand the funcionality of the Amlogic
+>>>> crypto driver by adding support for more SoC families: 
+>>>> AXG, G12A, G12B, SM1, A1, S4.
+>>>>
+>>>> Also specify and enable crypto node in device tree
+>>>> for reference Amlogic devices.
+>>>>
+>>>> Tested on AXG, G12A/B, SM1, A1 and S4 devices via
+>>>> custom tests and trcypt module.
+>>>
+>>> Hello
+>>>
+>>> Thanks for your patch series.
+>>> Unfortunatly, I fail to apply it for testing on top of linux-next.
+>>> On top of which tree did you have tested ?
+>>
+>> We use 6.5-rc3.
+> 
+> Don't develop on old trees... I mean, internally you can do whatever you
+> wish, but don't work upstream on such trees.
 
-Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
----
- drivers/cpuidle/cpuidle-riscv-sbi.c | 78 +++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+Number of email bounces also prove the point: you did not Cc right
+people due to work on some ancient files.
 
-diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/cpuidle-riscv-sbi.c
-index e8094fc92491..cea67a54ab39 100644
---- a/drivers/cpuidle/cpuidle-riscv-sbi.c
-+++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
-@@ -632,3 +632,81 @@ static int __init sbi_cpuidle_init(void)
- 	return 0;
- }
- device_initcall(sbi_cpuidle_init);
-+
-+#ifdef CONFIG_ACPI_PROCESSOR_IDLE
-+
-+#include <linux/acpi.h>
-+#include <acpi/processor.h>
-+
-+#define RISCV_FFH_LPI_TYPE_MASK		0x1000000000000000ULL
-+#define RISCV_FFH_LPI_RSVD_MASK		0x0FFFFFFF00000000ULL
-+
-+static int acpi_cpu_init_idle(unsigned int cpu)
-+{
-+	int i;
-+	struct acpi_lpi_state *lpi;
-+	struct acpi_processor *pr = per_cpu(processors, cpu);
-+
-+	if (unlikely(!pr || !pr->flags.has_lpi))
-+		return -EINVAL;
-+
-+	/*
-+	 * The SBI HSM suspend function is only available when:
-+	 * 1) SBI version is 0.3 or higher
-+	 * 2) SBI HSM extension is available
-+	 */
-+	if (sbi_spec_version < sbi_mk_version(0, 3) ||
-+	    !sbi_probe_extension(SBI_EXT_HSM)) {
-+		pr_warn("HSM suspend not available\n");
-+		return -EINVAL;
-+	}
-+
-+	if (pr->power.count <= 1)
-+		return -ENODEV;
-+
-+	for (i = 1; i < pr->power.count; i++) {
-+		u32 state;
-+
-+		lpi = &pr->power.lpi_states[i];
-+
-+		/* Validate Entry Method as per FFH spec.
-+		 * bits[63:60] should be 0x1
-+		 * bits[59:32] should be 0x0
-+		 * bits[31:0] represent a SBI power_state
-+		 */
-+		if (!(lpi->address & RISCV_FFH_LPI_TYPE_MASK) ||
-+		    (lpi->address & RISCV_FFH_LPI_RSVD_MASK)) {
-+			pr_warn("Invalid LPI entry method %#llx\n", lpi->address);
-+			return -EINVAL;
-+		}
-+
-+		state = lpi->address;
-+		if (!sbi_suspend_state_is_valid(state)) {
-+			pr_warn("Invalid SBI power state %#x\n", state);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int acpi_processor_ffh_lpi_probe(unsigned int cpu)
-+{
-+	return acpi_cpu_init_idle(cpu);
-+}
-+
-+int acpi_processor_ffh_lpi_enter(struct acpi_lpi_state *lpi)
-+{
-+	u32 state = lpi->address;
-+
-+	if (state & SBI_HSM_SUSP_NON_RET_BIT)
-+		return CPU_PM_CPU_IDLE_ENTER_PARAM(sbi_suspend,
-+						   lpi->index,
-+						   state);
-+	else
-+		return CPU_PM_CPU_IDLE_ENTER_RETENTION_PARAM(sbi_suspend,
-+							     lpi->index,
-+							     state);
-+}
-+
-+#endif
--- 
-2.34.1
+Best regards,
+Krzysztof
 
 
