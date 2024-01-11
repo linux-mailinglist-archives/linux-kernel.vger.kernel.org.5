@@ -1,170 +1,208 @@
-Return-Path: <linux-kernel+bounces-23690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B87E282B00F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:56:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1966B82B016
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:59:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE50A1C2383A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:56:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3794C1C2227A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D201317989;
-	Thu, 11 Jan 2024 13:56:07 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AA73AC30;
+	Thu, 11 Jan 2024 13:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EEUwZjly"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16F823C062;
-	Thu, 11 Jan 2024 13:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4T9mQK3ZqxzNkn4;
-	Thu, 11 Jan 2024 21:55:21 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6A93B180077;
-	Thu, 11 Jan 2024 21:56:00 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 11 Jan 2024 21:55:59 +0800
-From: Tong Tiangen <tongtiangen@huawei.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, <wangkefeng.wang@huawei.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Tony Luck <tony.luck@intel.com>, Andy Lutomirski
-	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Naoya Horiguchi <naoya.horiguchi@nec.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>,
-	<linux-mm@kvack.org>, Tong Tiangen <tongtiangen@huawei.com>, Guohanjun
-	<guohanjun@huawei.com>
-Subject: [PATCH -next v4 3/3] x86/mce: set MCE_IN_KERNEL_COPY_MC for DEFAULT_MCE_SAFE exception
-Date: Thu, 11 Jan 2024 21:55:48 +0800
-Message-ID: <20240111135548.3207437-4-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240111135548.3207437-1-tongtiangen@huawei.com>
-References: <20240111135548.3207437-1-tongtiangen@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E670171B3
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704981546;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UJCpiBiFJp+ilkkdFnmazVyEABhFVrNwz/OOCsk4Ogs=;
+	b=EEUwZjlylMPPUP7zbNa5OmAPDIiocL2CR3w2NfeGCykJyT16jsOuyNBEu0N0p24U1OEseM
+	bcYsgiLFghKDdS5vS5lwBr6r97qPnVOTNIxGbUSZfnpGj83Tcb3C1uCK8dCuJVrFXEimGT
+	Zq1i846BqICLjqrmApuwY+xoYvtcLWg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-673-kknnswe1PSKrWVAeKbUdLA-1; Thu,
+ 11 Jan 2024 08:59:03 -0500
+X-MC-Unique: kknnswe1PSKrWVAeKbUdLA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DC9163812597;
+	Thu, 11 Jan 2024 13:59:02 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.226.159])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id CE41440C6EBA;
+	Thu, 11 Jan 2024 13:59:01 +0000 (UTC)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>,
+	Jan Richter <jarichte@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: selftests: Compare wall time from xen shinfo against KVM_GET_CLOCK
+Date: Thu, 11 Jan 2024 14:59:01 +0100
+Message-ID: <20240111135901.1785096-1-vkuznets@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600017.china.huawei.com (7.193.23.234)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+xen_shinfo_test is observed to be flaky failing sporadically with
+"VM time too old". With min_ts/max_ts debug print added:
 
-If an MCE has happened in kernel space and the kernel can recover,
-mce.kflags MCE_IN_KERNEL_RECOV will set in error_context().
+Wall clock (v 3269818) 1704906491.986255664
+Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
+Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
+min_ts: 1704906491.986312153
+max_ts: 1704906506.001006963
+==== Test Assertion Failure ====
+  x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &vm_ts) <= 0
+  pid=32724 tid=32724 errno=4 - Interrupted system call
+     1	0x00000000004030ad: main at xen_shinfo_test.c:1003
+     2	0x00007fca6b23feaf: ?? ??:0
+     3	0x00007fca6b23ff5f: ?? ??:0
+     4	0x0000000000405e04: _start at ??:?
+  VM time too old
 
-With the setting of MCE_IN_KERNEL_RECOV, the MCE is handled in
-do_machine_check(). But due to lack of MCE_IN_KERNEL_COPY_MC, although the
-kernel won't panic, the corrupted page don't be isolated, new one maybe
-consume it again, which is not what we expected.
+The test compares wall clock data from shinfo (which is the output of
+kvm_get_wall_clock_epoch()) against clock_gettime(CLOCK_REALTIME) in the
+host system before the VM is created. In the example above, it compares
 
-In order to avoid above issue, some hwpoison recover process[1][2][3],
-memory_failure_queue() is called to cope with such unhandled corrupted
-pages, also there are some other already existed MC-safe copy scenarios,
-eg, nvdimm, dm-writecache, dax, which don't isolate corrupted pages.
+ shinfo: 1704906491.986255664 vs min_ts: 1704906491.986312153
 
-The best way to fix them is set MCE_IN_KERNEL_COPY_MC for MC-Safe Copy,
-then let the core do_machine_check() to isolate corrupted page instead
-of doing it one-by-one.
+and fails as the later is greater than the former.  While this sounds like
+a sane test, it doesn't pass reality check: kvm_get_wall_clock_epoch()
+calculates guest's epoch (realtime when the guest was created) by
+subtracting kvmclock from the current realtime and the calculation happens
+when shinfo is setup. The problem is that kvmclock is a raw clock and
+realtime clock is affected by NTP. This means that if realtime ticks with a
+slightly reduced frequency, "guest's epoch" calculated by
+kvm_get_wall_clock_epoch() will actually tick backwards! This is not a big
+issue from guest's perspective as the guest can't really observe this but
+this epoch can't be compared with a fixed clock_gettime() on the host.
 
-EX_TYPE_FAULT_MCE_SAFE is used for the FPU. Here, we do not touch the logic
-of FPU. We only modify the logic of EX_TYPE_DEFAULT_MCE_SAFE which is used
-in the scenarios described above.
+Replace the check with comparing wall clock data from shinfo to
+KVM_GET_CLOCK. The later gives both realtime and kvmclock so guest's epoch
+can be calculated by subtraction. Note, the computed epoch may still differ
+a few nanoseconds from shinfo as different TSC is used and there are
+rounding errors but 100 nanoseconds margin should be enough to cover
+it (famous last words).
 
-[1] commit d302c2398ba2 ("mm, hwpoison: when copy-on-write hits poison, take page offline")
-[2] commit 1cb9dc4b475c ("mm: hwpoison: support recovery from HugePage copy-on-write faults")
-[3] commit 6b970599e807 ("mm: hwpoison: support recovery from ksm_might_need_to_copy()")
-
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Reported-by: Jan Richter <jarichte@redhat.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- arch/x86/kernel/cpu/mce/severity.c |  4 ++--
- mm/ksm.c                           |  1 -
- mm/memory.c                        | 13 ++++---------
- 3 files changed, 6 insertions(+), 12 deletions(-)
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    | 36 ++++++++-----------
+ 1 file changed, 14 insertions(+), 22 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-index df67a7a13034..b4b1d028cbb3 100644
---- a/arch/x86/kernel/cpu/mce/severity.c
-+++ b/arch/x86/kernel/cpu/mce/severity.c
-@@ -292,11 +292,11 @@ static noinstr int error_context(struct mce *m, struct pt_regs *regs)
- 	case EX_TYPE_UACCESS:
- 		if (!copy_user)
- 			return IN_KERNEL;
-+		fallthrough;
-+	case EX_TYPE_DEFAULT_MCE_SAFE:
- 		m->kflags |= MCE_IN_KERNEL_COPY_MC;
- 		fallthrough;
+diff --git a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+index 9ec9ab60b63e..5e1ad243d95d 100644
+--- a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
++++ b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+@@ -375,20 +375,6 @@ static void guest_code(void)
+ 	GUEST_SYNC(TEST_DONE);
+ }
+ 
+-static int cmp_timespec(struct timespec *a, struct timespec *b)
+-{
+-	if (a->tv_sec > b->tv_sec)
+-		return 1;
+-	else if (a->tv_sec < b->tv_sec)
+-		return -1;
+-	else if (a->tv_nsec > b->tv_nsec)
+-		return 1;
+-	else if (a->tv_nsec < b->tv_nsec)
+-		return -1;
+-	else
+-		return 0;
+-}
 -
- 	case EX_TYPE_FAULT_MCE_SAFE:
--	case EX_TYPE_DEFAULT_MCE_SAFE:
- 		m->kflags |= MCE_IN_KERNEL_RECOV;
- 		return IN_KERNEL_RECOV;
+ static struct vcpu_info *vinfo;
+ static struct kvm_vcpu *vcpu;
  
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 8c001819cf10..ba9d324ea1c6 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -3084,7 +3084,6 @@ struct folio *ksm_might_need_to_copy(struct folio *folio,
- 		if (copy_mc_user_highpage(folio_page(new_folio, 0), page,
- 								addr, vma)) {
- 			folio_put(new_folio);
--			memory_failure_queue(folio_pfn(folio), 0);
- 			return ERR_PTR(-EHWPOISON);
- 		}
- 		folio_set_dirty(new_folio);
-diff --git a/mm/memory.c b/mm/memory.c
-index c66af4520958..33d8903ab2af 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2843,10 +2843,8 @@ static inline int __wp_page_copy_user(struct page *dst, struct page *src,
- 	unsigned long addr = vmf->address;
+@@ -425,7 +411,6 @@ static void *juggle_shinfo_state(void *arg)
  
- 	if (likely(src)) {
--		if (copy_mc_user_highpage(dst, src, addr, vma)) {
--			memory_failure_queue(page_to_pfn(src), 0);
-+		if (copy_mc_user_highpage(dst, src, addr, vma))
- 			return -EHWPOISON;
--		}
- 		return 0;
- 	}
+ int main(int argc, char *argv[])
+ {
+-	struct timespec min_ts, max_ts, vm_ts;
+ 	struct kvm_xen_hvm_attr evt_reset;
+ 	struct kvm_vm *vm;
+ 	pthread_t thread;
+@@ -443,8 +428,6 @@ int main(int argc, char *argv[])
+ 	bool do_eventfd_tests = !!(xen_caps & KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL);
+ 	bool do_evtchn_tests = do_eventfd_tests && !!(xen_caps & KVM_XEN_HVM_CONFIG_EVTCHN_SEND);
  
-@@ -6176,10 +6174,8 @@ static int copy_user_gigantic_page(struct folio *dst, struct folio *src,
+-	clock_gettime(CLOCK_REALTIME, &min_ts);
+-
+ 	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
  
- 		cond_resched();
- 		if (copy_mc_user_highpage(dst_page, src_page,
--					  addr + i*PAGE_SIZE, vma)) {
--			memory_failure_queue(page_to_pfn(src_page), 0);
-+					  addr + i*PAGE_SIZE, vma))
- 			return -EHWPOISON;
--		}
- 	}
- 	return 0;
- }
-@@ -6196,10 +6192,9 @@ static int copy_subpage(unsigned long addr, int idx, void *arg)
- 	struct page *dst = nth_page(copy_arg->dst, idx);
- 	struct page *src = nth_page(copy_arg->src, idx);
+ 	/* Map a region for the shared_info page */
+@@ -969,7 +952,6 @@ int main(int argc, char *argv[])
+ 	vm_ioctl(vm, KVM_XEN_HVM_SET_ATTR, &evt_reset);
  
--	if (copy_mc_user_highpage(dst, src, addr, copy_arg->vma)) {
--		memory_failure_queue(page_to_pfn(src), 0);
-+	if (copy_mc_user_highpage(dst, src, addr, copy_arg->vma))
- 		return -EHWPOISON;
--	}
+ 	alarm(0);
+-	clock_gettime(CLOCK_REALTIME, &max_ts);
+ 
+ 	/*
+ 	 * Just a *really* basic check that things are being put in the
+@@ -978,11 +960,16 @@ int main(int argc, char *argv[])
+ 	 */
+ 	struct pvclock_wall_clock *wc;
+ 	struct pvclock_vcpu_time_info *ti, *ti2;
++	struct kvm_clock_data kcdata;
++	long long delta;
+ 
+ 	wc = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0xc00);
+ 	ti = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0x40 + 0x20);
+ 	ti2 = addr_gpa2hva(vm, PVTIME_ADDR);
+ 
++	vm_ioctl(vm, KVM_GET_CLOCK, &kcdata);
++	delta = (wc->sec * NSEC_PER_SEC + wc->nsec) - (kcdata.realtime - kcdata.clock);
 +
- 	return 0;
- }
+ 	if (verbose) {
+ 		printf("Wall clock (v %d) %d.%09d\n", wc->version, wc->sec, wc->nsec);
+ 		printf("Time info 1: v %u tsc %" PRIu64 " time %" PRIu64 " mul %u shift %u flags %x\n",
+@@ -991,14 +978,19 @@ int main(int argc, char *argv[])
+ 		printf("Time info 2: v %u tsc %" PRIu64 " time %" PRIu64 " mul %u shift %u flags %x\n",
+ 		       ti2->version, ti2->tsc_timestamp, ti2->system_time, ti2->tsc_to_system_mul,
+ 		       ti2->tsc_shift, ti2->flags);
++		printf("KVM_GET_CLOCK realtime: %lld.%09lld\n", kcdata.realtime / NSEC_PER_SEC,
++		       kcdata.realtime % NSEC_PER_SEC);
++		printf("KVM_GET_CLOCK clock: %lld.%09lld\n", kcdata.clock / NSEC_PER_SEC,
++		       kcdata.clock % NSEC_PER_SEC);
+ 	}
  
+-	vm_ts.tv_sec = wc->sec;
+-	vm_ts.tv_nsec = wc->nsec;
+ 	TEST_ASSERT(wc->version && !(wc->version & 1),
+ 		    "Bad wallclock version %x", wc->version);
+-	TEST_ASSERT(cmp_timespec(&min_ts, &vm_ts) <= 0, "VM time too old");
+-	TEST_ASSERT(cmp_timespec(&max_ts, &vm_ts) >= 0, "VM time too new");
++
++	TEST_ASSERT(llabs(delta) < 100,
++		    "Guest's epoch from shinfo %d.%09d differs from KVM_GET_CLOCK %lld.%lld",
++		    wc->sec, wc->nsec, (kcdata.realtime - kcdata.clock) / NSEC_PER_SEC,
++		    (kcdata.realtime - kcdata.clock) % NSEC_PER_SEC);
+ 
+ 	TEST_ASSERT(ti->version && !(ti->version & 1),
+ 		    "Bad time_info version %x", ti->version);
 -- 
-2.25.1
+2.43.0
 
 
