@@ -1,113 +1,213 @@
-Return-Path: <linux-kernel+bounces-24075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD40182B674
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:12:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6AD82B677
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E23251C21133
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:12:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B469B20FDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060765812C;
-	Thu, 11 Jan 2024 21:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9DA258208;
+	Thu, 11 Jan 2024 21:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A0pJnAwl"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="qxz6Eh8d"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E088056B78
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8CF58200
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:13:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55818b7053eso738a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:12:41 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5e76948cda7so56989527b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:13:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705007560; x=1705612360; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705007631; x=1705612431; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TXKMeHE0UqYe035FlRaJ7XqcpRM1yLnLjZRHyMyh4RI=;
-        b=A0pJnAwlc3jj58tN5TdixN1NUYwmxPk28pfOGrjL/cjQ/JWFR+GjcW5PqyGpl+J3PL
-         wKnXWxQ7LzlzX5GFAy5fRe7C88aq7eRfYnfsqqqDP1aVLjbOqumFCXTx5b+n7K5U4EyF
-         W0Ix5ITX8CzYtCeVIcDY1QmiL1nv+qiMKyYJvg4eNsV8t+NljbVZ3DqUxjLNqR5TV+IL
-         89MlpkLvDwCFlxedRJcwG+N4puB8WMvommLG6los0YBDVoF9dJjbRfQvbeOx9CVNrlSe
-         HyOfizhxezj8RuP6EOAxvtN5b+cBxjunRaB1lwcj6ntvoSn16hVK8afJi+hReOqUTYzJ
-         mLHQ==
+        bh=d+xq1TtNnp/gjdjiyMqlvepkDkjpAkmL94vcnwd59ac=;
+        b=qxz6Eh8dJ4tFqORQWmW6J6uxdezFoa44DcXjoYBzoOMsOciZlIBZKXkcKr0XGEFn9b
+         nZE13t4gPWtmkEa4gg97SvgDuUYitZvbpbUsJ+OZFV1brbltAV49Dyw7Nawmj6juZ2WV
+         iJSLuioOSsr1b7CRbEkBeYPJNlNkJAm9Eg2cZM2VO7UpW7jR/zWhv2BtNE7Q/Xi/cVD4
+         mjvN7BYRelq3Gmc72WOY6MHqv9Jb908wCSB05zjO0BozfLSWNqIwXQv0LOrasyU6iQk6
+         6DDXelWkePxFlWA57qF2MY2I3c4oyh0ZlKICg5QEG2AVlgXLeOGPJNBp+wvqcTzXtjQV
+         EABw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705007560; x=1705612360;
+        d=1e100.net; s=20230601; t=1705007631; x=1705612431;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TXKMeHE0UqYe035FlRaJ7XqcpRM1yLnLjZRHyMyh4RI=;
-        b=Robv9+S1jI3ajYLgt4t1a3/20oTBorxe3FZN55UJyXW1cPEJshVzPgal2AtRlMLb5X
-         CEqCXGsRvA1ixBWkSeq4FXnvNUJlfn1SY2HI2Jji5PmHgmbNv5nlXiPDwhztvGLpberV
-         7iHgybUGPzaYwGAxwmInwgtmO96hz+swxiu21pTiQ1uqb6ManVODSaQQZ0jXqPq5xj47
-         p2fkkABURVjPGqifqyJFwHs0hV9NbyoQcHfgRMZlOYc9x/UQhX7nVwieOhEqE6sT8j3P
-         AIfXQr4vZ3i5gtxElR6TeJDasKvJ3AiivbcxaqMuZd4d0c1J2DvYP+fxZFdl26GZt1/p
-         XlwQ==
-X-Gm-Message-State: AOJu0Yw7QXIiZUePD00vKFACkCGYFXg4Ji4Lq5/I2ns5r+hC31F/bMt2
-	Lhk5bO1vMC7R63UQ2cMcdfcz03eifPER3OcsMGrSsyeU/sfW
-X-Google-Smtp-Source: AGHT+IFA1psE8PhsjwaWCXa6scrGZNo5bxthRkTx7YaDJIkZjv5TnCu2SGzCwTWoqP9VFprLwwk3ZRTim4wWr+rUtNw=
-X-Received: by 2002:aa7:d9d6:0:b0:557:3c8a:7242 with SMTP id
- v22-20020aa7d9d6000000b005573c8a7242mr192200eds.3.1705007559991; Thu, 11 Jan
- 2024 13:12:39 -0800 (PST)
+        bh=d+xq1TtNnp/gjdjiyMqlvepkDkjpAkmL94vcnwd59ac=;
+        b=v2+BJLeknukYrGTl745R3mClqdb3kb8qhvYGK/qA0Zj5ndH9lwxVTRPsEgUEpVcQL7
+         +o0QEHTvL3qGFamW9w+LAuJb8Cyfz1QhvDt8L7dx3+RYvDbvO2VFYwsqGy0VI5JKdpuR
+         /Sxc+EZj6LotR/OfOUlRUyLZTqUZAk9ATbU1ttY7Y1GfbxJVtfo++lfM/2BtAIiM4iki
+         oMG7Pcbxx7UsshqgpGT+VelJ4jzUmAyuinyMZGldHqvcBeLGrpzc1MS9ZKPGN5Rmow5w
+         75q3ja6eo3Ah53wziPezSRtAiP0wSI2tcikiwNzxnuvb0yzx7tq5/TAGgheU5R8fuMj0
+         rNEQ==
+X-Gm-Message-State: AOJu0Yzlm7ooiNXki153ohrvl8Uq5V6hz64LXr3JyrkL8R5gxWrClEv5
+	ZlYGyWlfp5rfEPCuFnAw0ntLhq5K9BWJTZ0DbbKtJqPq8p9D
+X-Google-Smtp-Source: AGHT+IHILrutT2/eQmrr2s79qeIc3WjC8/Moy6OGTbSSGmdU44d/ZhXjSyGZI8OltlzGi28+6US+BuB9FVHvLo1lUYE=
+X-Received: by 2002:a81:5dd5:0:b0:5f8:c3a:6989 with SMTP id
+ r204-20020a815dd5000000b005f80c3a6989mr472875ywb.34.1705007631145; Thu, 11
+ Jan 2024 13:13:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110002340.485595-1-seanjc@google.com> <ZZ42Vs3uAPwBmezn@chao-email>
- <ZZ7FMWuTHOV-_Gn7@google.com> <ZZ9X5anB/HGS8JR6@linux.bj.intel.com>
- <ZaAWXSvMgIMkxr50@google.com> <CABgObfaByKFKRtLpY1yAJFmcY1WxWcn3tpeVw7Nho+qk0PFUbQ@mail.gmail.com>
-In-Reply-To: <CABgObfaByKFKRtLpY1yAJFmcY1WxWcn3tpeVw7Nho+qk0PFUbQ@mail.gmail.com>
-From: Jim Mattson <jmattson@google.com>
-Date: Thu, 11 Jan 2024 13:12:24 -0800
-Message-ID: <CALMp9eQzZkGsg2aUeK0vy--qOGCOXpHByGrNK4SFU38jYQZT9A@mail.gmail.com>
-Subject: Re: [PATCH] x86/cpu: Add a VMX flag to enumerate 5-level EPT support
- to userspace
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>, Tao Su <tao1.su@linux.intel.com>, 
-	Chao Gao <chao.gao@intel.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, Yi Lai <yi1.lai@intel.com>, 
-	Xudong Hao <xudong.hao@intel.com>
+References: <00000000000011d709060eadffd3@google.com> <CAJuCfpG-8w_KQ8bWvSr=GrXM+Jx3YKn5DqTFJU2MaMojML_a-A@mail.gmail.com>
+ <CAJuCfpFfKYn+G1+puQ0KxzWCnbfFT51tKwV8MnrP7YZcJAORwg@mail.gmail.com>
+ <CAJuCfpHTAAPEjMLrcxyG8zW7HA47EinB8CQfKGmBw7gGxqQ=vA@mail.gmail.com>
+ <5ed23cf3-eedd-44aa-a498-d2a9ab046535@redhat.com> <CAJuCfpG5T71Sc46pB2eGpV7TreMZX2VZ-kDfaNmtn+etP0q9JA@mail.gmail.com>
+ <bf9dbc58-35c4-4a35-b194-6d8d9e7e4923@redhat.com> <CAJuCfpGRA7KJhMBneqAj+dw=rQReU7PyR1r34yqrNSoa-RUKbg@mail.gmail.com>
+ <15ce90cd-ff0b-4bc3-bee4-880bee3200ae@redhat.com>
+In-Reply-To: <15ce90cd-ff0b-4bc3-bee4-880bee3200ae@redhat.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 11 Jan 2024 13:13:40 -0800
+Message-ID: <CAJuCfpFcjxX4RkcYyzLWMBqPw4amzbiJCZx8UdmM1H2_QkoOqA@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in move_pages
+To: David Hildenbrand <david@redhat.com>
+Cc: syzbot <syzbot+705209281e36404998f6@syzkaller.appspotmail.com>, 
+	Peter Xu <peterx@redhat.com>, aarcange@redhat.com, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 12:02=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com=
+On Thu, Jan 11, 2024 at 1:06=E2=80=AFPM David Hildenbrand <david@redhat.com=
 > wrote:
 >
-> On Thu, Jan 11, 2024 at 5:25=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> > > It is unusual to assign a huge RAM to guest, but passthrough a device=
- also may trigger
-> > > this issue which we have met, i.e. alloc memslot for the 64bit BAR wh=
-ich can set
-> > > bits[51:48]. BIOS can control the BAR address, e.g. seabios moved 64b=
-it pci window
-> > > to end of address space by using advertised physical bits[1].
+> On 11.01.24 22:04, Suren Baghdasaryan wrote:
+> > On Thu, Jan 11, 2024 at 9:00=E2=80=AFPM David Hildenbrand <david@redhat=
+com> wrote:
+> >>
+> >> On 11.01.24 21:20, Suren Baghdasaryan wrote:
+> >>> On Thu, Jan 11, 2024 at 6:58=E2=80=AFPM David Hildenbrand <david@redh=
+at.com> wrote:
+> >>>>
+> >>>> On 11.01.24 19:34, Suren Baghdasaryan wrote:
+> >>>>> On Thu, Jan 11, 2024 at 8:44=E2=80=AFAM Suren Baghdasaryan <surenb@=
+google.com> wrote:
+> >>>>>>
+> >>>>>> On Thu, Jan 11, 2024 at 8:40=E2=80=AFAM Suren Baghdasaryan <surenb=
+@google.com> wrote:
+> >>>>>>>
+> >>>>>>> On Thu, Jan 11, 2024 at 8:25=E2=80=AFAM syzbot
+> >>>>>>> <syzbot+705209281e36404998f6@syzkaller.appspotmail.com> wrote:
+> >>>>>>>>
+> >>>>>>>> Hello,
+> >>>>>>>>
+> >>>>>>>> syzbot found the following issue on:
+> >>>>>>>>
+> >>>>>>>> HEAD commit:    e2425464bc87 Add linux-next specific files for 2=
+0240105
+> >>>>>>>> git tree:       linux-next
+> >>>>>>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1494=
+1cdee80000
+> >>>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4056=
+b9349f3da8c9
+> >>>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3D705209=
+281e36404998f6
+> >>>>>>>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binut=
+ils for Debian) 2.40
+> >>>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12=
+5d0a09e80000
+> >>>>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15bc=
+7331e80000
+> >>>>>>>>
+> >>>>>>>> Downloadable assets:
+> >>>>>>>> disk image: https://storage.googleapis.com/syzbot-assets/2f73818=
+5e2cf/disk-e2425464.raw.xz
+> >>>>>>>> vmlinux: https://storage.googleapis.com/syzbot-assets/b248fcf4ea=
+46/vmlinux-e2425464.xz
+> >>>>>>>> kernel image: https://storage.googleapis.com/syzbot-assets/a9945=
+c8223f4/bzImage-e2425464.xz
+> >>>>>>>>
+> >>>>>>>> The issue was bisected to:
+> >>>>>>>>
+> >>>>>>>> commit adef440691bab824e39c1b17382322d195e1fab0
+> >>>>>>>> Author: Andrea Arcangeli <aarcange@redhat.com>
+> >>>>>>>> Date:   Wed Dec 6 10:36:56 2023 +0000
+> >>>>>>>>
+> >>>>>>>>        userfaultfd: UFFDIO_MOVE uABI
+> >>>>>>>>
+> >>>>>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1=
+1cb6ea9e80000
+> >>>>>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D1=
+3cb6ea9e80000
+> >>>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15cb=
+6ea9e80000
+> >>>>>>>>
+> >>>>>>>> IMPORTANT: if you fix the issue, please add the following tag to=
+ the commit:
+> >>>>>>>> Reported-by: syzbot+705209281e36404998f6@syzkaller.appspotmail.c=
+om
+> >>>>>>>> Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
+> >>>>>>>>
+> >>>>>>>>     do_one_initcall+0x128/0x680 init/main.c:1237
+> >>>>>>>>     do_initcall_level init/main.c:1299 [inline]
+> >>>>>>>>     do_initcalls init/main.c:1315 [inline]
+> >>>>>>>>     do_basic_setup init/main.c:1334 [inline]
+> >>>>>>>>     kernel_init_freeable+0x692/0xc30 init/main.c:1552
+> >>>>>>>>     kernel_init+0x1c/0x2a0 init/main.c:1442
+> >>>>>>>>     ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+> >>>>>>>>     ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+> >>>>>>>> ------------[ cut here ]------------
+> >>>>>>>> kernel BUG at include/linux/page-flags.h:1035!
+> >>>>>>>> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> >>>>>>>> CPU: 0 PID: 5068 Comm: syz-executor191 Not tainted 6.7.0-rc8-nex=
+t-20240105-syzkaller #0
+> >>>>>>>> Hardware name: Google Google Compute Engine/Google Compute Engin=
+e, BIOS Google 11/17/2023
+> >>>>>>>> RIP: 0010:PageAnonExclusive include/linux/page-flags.h:1035 [inl=
+ine]
+> >>>>>>>
+> >>>>>>>    From a quick look, I think the new ioctl is being used against=
+ a
+> >>>>>>> file-backed page and that's why PageAnonExclusive() throws this e=
+rror.
+> >>>>>>> I'll confirm if this is indeed the case and will add checks for t=
+hat
+> >>>>>>> case. Thanks!
+> >>>>>>
+> >>>>>> Hmm. Looking at the reproducer it does not look like a file-backed
+> >>>>>> memory... Anyways, I'm on it.
+> >>>>>
+> >>>>> Looks like the test is trying to move the huge_zero_page. Wonder ho=
+w
+> >>>>> we should handle this. Just fail or do something else? Adding David
+> >>>>> and Peter for feedback.
+> >>>>
+> >>>> You'll need some special-casing to handle that. But it should be fai=
+rly
+> >>>> easy.
+> >>>
+> >>> Ok, so should we treat zeropage the same as PAE and map destination
+> >>> PTE/PMD to zeropage while clearing source PTE/PMD?
+> >>
+> >> Likely yes. So it's transparent for user space what we are moving. (th=
+is
+> >> sounds like an easy case to not require a prior write access just to
+> >> move it)
 > >
-> > Drat.  Do you know if these CPUs are going to be productized?  We'll st=
-ill need
-> > something in KVM either way, but whether or not the problems are more o=
-r less
-> > limited to funky software setups might influence how we address this.
+> > Ok, working on it. split_huge_pmd() already knows how to split
+> > huge_zero_page but I think I'll need special handling in both
+> > move_pages_pte() and move_pages_huge_pmd().
 >
-> Wait, we do have an API for guest physical address size. It's
-> KVM_GET_SUPPORTED_CPUID2: the # of bits is in leaf 0x80000008, bits
-> 0:7 of EAX. In fact that leaf is what firmware uses to place the BARs.
-> So it just needs to be adjusted for VMX in __do_cpuid_func, and looked
-> up in selftests.
+> A PTE-mapped huge zeropage is just a page table populated with the
+> ordinary shared zeropage. Are you moving the ordinary shared zeropage as
+> well? If not, you should do so for consistency (or not do either :) ).
 
-We've discussed this. The only *supported* value for guest.MAXPHYADDR
-is host.MAXPHYADDR.
+Yes, I think I should move ordinary zeropages as well.
 
-If EPT doesn't also support that value, then the only *supported*
-configuration is shadow paging.
-
-If someone wants to run with scissors, that's fine, but don't abuse
-KVM_GET_SUPPORTED_CPUID2 to return an *unsupported* configuration.
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
