@@ -1,76 +1,46 @@
-Return-Path: <linux-kernel+bounces-22901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A48BD82A524
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:03:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB1E982A526
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3F7528592B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:03:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50D92B242BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:05:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144CB15ACD;
-	Thu, 11 Jan 2024 00:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4CC15AD3;
+	Thu, 11 Jan 2024 00:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Vc28TvXz"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TPVwtBA0"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF8815AC6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d4ca2fd2fbso25324395ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:03:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704931410; x=1705536210; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ba4Wlhw2vCHiq+Wpp/loRi1cOOmQkbqPw4UUSpZg/xo=;
-        b=Vc28TvXz7MCg/0+a6kZy8X0I1doO37oxUP/5KPlYRlwt3Nk0WV3489ekJzhy0SkUTH
-         2Y5SZEnnrOKtFtxPeUpuXh5fkShioRbViQidC39wzsT5FIZ0Zs2gVNAos7Xzy6RB1yu0
-         YPiLi1mUjq8g9X1c1HvDy8OFb2KxuS2WxhJw4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704931410; x=1705536210;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ba4Wlhw2vCHiq+Wpp/loRi1cOOmQkbqPw4UUSpZg/xo=;
-        b=t+48LSF95x5LdkTbo2t7b7DWuP03Ymui+fIdDBxVFyC/ImovQS7tSlyV7ENimNknHq
-         pysaKrH1O2XlCrPYsnr5iidJJexoYWnUuiqJV8Vc7JSd0Oyia7vdQiw6UC15dBdyHUIb
-         dg/q6SJyRumntmZfDadMpKabdoudOaPZGifyadZvH09uTayKsxvy9+PSiywkMRY5VODY
-         +Qo6t7RyQn1WMxr0GAMA+pQOvUrylsP7LCiW1mmljLb5ri7JfbqzgeLpnZQtrHcEi9Ny
-         9fnYV8OI62LEqiCLnBhkgYydnoE/Ee5TGJWHcvMusDL9xnNJj38RZWiViaPXy17fjK6t
-         I57Q==
-X-Gm-Message-State: AOJu0YwMN8Pfi7k3HlODag79wSzq2WzbIxhw7BTeGMiMsnB7kICn+NfV
-	XXdTzGP65Ryom9yG0TpGd9LcTgWzPGj9
-X-Google-Smtp-Source: AGHT+IH/q5mx8pcXScPlJfZ0Wh44Wk98MeulCYW2AroSeNwaysjkH6eufQcIXWUMDkxuUXHl3w9CbQ==
-X-Received: by 2002:a17:902:e843:b0:1d4:be2a:ae2c with SMTP id t3-20020a170902e84300b001d4be2aae2cmr301395plg.77.1704931409677;
-        Wed, 10 Jan 2024 16:03:29 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o7-20020a170902d4c700b001d362b6b0eesm4246119plg.168.2024.01.10.16.03.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 16:03:28 -0800 (PST)
-Date: Wed, 10 Jan 2024 16:03:28 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	linux-hardening@vger.kernel.org, error27@gmail.com,
-	gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
-	Vishnu Dasa <vdasa@vmware.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
-	darren.kenny@oracle.com, syzkaller <syzkaller@googlegroups.com>
-Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
- dg_dispatch_as_host()
-Message-ID: <202401101601.30ED61A1A3@keescook>
-References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
- <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
- <202401081430.9DAB37B46@keescook>
- <9c742547-0021-464b-b7a8-7af46b0a4afa@embeddedor.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBEC15AC1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 10 Jan 2024 19:04:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704931490;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2IQAAkxnLuUMxv9NSh6qvw4HFuvQ0QulM8iosjGYXXE=;
+	b=TPVwtBA0nNR2Dlq5cBC3uagm3udcuT1hk8dDtZXNC8HJxUYCKEXfCRCte0HOK8Sant73Md
+	bpQmLn62djM356rAQfc8yXRyh9Ct+EvdIVSTiUVCQoRqy/JY3dI1SHGfI5bMzKGc3phKX5
+	WMQU/j2liBSQUyVHU3OGj8Wbn741nH8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kees Cook <keescook@chromium.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,80 +49,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c742547-0021-464b-b7a8-7af46b0a4afa@embeddedor.com>
+In-Reply-To: <202401101525.112E8234@keescook>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 08, 2024 at 08:05:38PM -0600, Gustavo A. R. Silva wrote:
-> On 1/8/24 16:37, Kees Cook wrote:
-> > On Fri, Jan 05, 2024 at 08:40:00AM -0800, Harshit Mogalapalli wrote:
-> > > Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
-> > > 
-> > > memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
-> > > at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
-> > > 
-> > > WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
-> > > dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
-> > > 
-> > > Some code commentry, based on my understanding:
-> > > 
-> > > 544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
-> > > /// This is 24 + payload_size
-> > > 
-> > > memcpy(&dg_info->msg, dg, dg_size);
-> > > 	Destination = dg_info->msg ---> this is a 24 byte
-> > > 					structure(struct vmci_datagram)
-> > > 	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
-> > > 	Size = dg_size = 24 + payload_size
-> > > 
-> > > {payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
-> > > 
-> > >   35 struct delayed_datagram_info {
-> > >   36         struct datagram_entry *entry;
-> > >   37         struct work_struct work;
-> > >   38         bool in_dg_host_queue;
-> > >   39         /* msg and msg_payload must be together. */
-> > >   40         struct vmci_datagram msg;
-> > >   41         u8 msg_payload[];
-> > >   42 };
-> > > 
-> > > So those extra bytes of payload are copied into msg_payload[], a run time
-> > > warning is seen while fuzzing with Syzkaller.
-> > > 
-> > > One possible way to fix the warning is to split the memcpy() into
-> > > two parts -- one -- direct assignment of msg and second taking care of payload.
-> > > 
-> > > Gustavo quoted:
-> > > "Under FORTIFY_SOURCE we should not copy data across multiple members
-> > > in a structure."
-> > > 
-> > > Reported-by: syzkaller <syzkaller@googlegroups.com>
-> > > Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
-> > > Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > > Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> > 
-> > Thanks for getting this fixed!
-> > 
-> > Yeah, it's a "false positive" in the sense that the code was expecting
+On Wed, Jan 10, 2024 at 03:48:43PM -0800, Kees Cook wrote:
+> On Wed, Jan 10, 2024 at 02:36:30PM -0500, Kent Overstreet wrote:
+> > [...]
+> >       bcachefs: %pg is banished
 > 
-> It's a false positive _bug_, and a legitimate _warning_ coming from fortified
-> memcpy().
+> Hi!
 > 
-> > to write into msg_payload. The warning is triggered because of the write
-> > across the flex array boundary, which trips a bug in GCC and Clang,
-> > which we're forced to work around.
-> 
-> The warning is triggered because of a write beyond the boundaries of
-> `dg_info->msg`. It's not directly related to the fact that there is a
-> flexible-array member following `dg_info->msg`.
-> 
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101832 (fixed in GCC 14+)
-> > 	 (not yet fixed in Clang)
-> 
-> This issue is not related to the compiler bugs mentioned above.
+> Not a PR blocker, but this patch re-introduces users of strlcpy() which
+> has been otherwise removed this cycle. I'll send a patch to replace
+> these new uses, but process-wise, I'd like check on how bcachefs patches
+> are reviewed.
 
-Oops, yes, thanks for fixing my confusion. Right, this is a direct write
-across members into the flex array, not a composite destination. Yay
-all the corner cases. :P
+I'm happy to fix it. Perhaps the declaration could get a depracated
+warning, though?
 
--- 
-Kees Cook
+> Normally I'd go find the original email that posted the patch and reply
+> there, but I couldn't find a development list where this patch was
+> posted. Where is this happening? (Being posted somewhere is supposed
+> to be a prerequisite for living in -next. E.g. quoting from the -next
+> inclusion boiler-plate: "* posted to the relevant mailing list,") It
+> looks like it was authored 5 days ago, which is cutting it awfully close
+> to the merge window opening:
+> 
+> 	AuthorDate: Fri Jan 5 11:58:50 2024 -0500
+
+I'm confident in my testing; if it was a patch that needed more soak
+time it would have waited.
+
+> Actually, it looks like you rebased onto v6.7-rc7? This is normally
+> strongly discouraged. The common merge base is -rc2.
+
+Is there something special about rc2?
+
+I reorder patches fairly often just in the normal course of backporting
+fixes, and if I have to rebase everything for a backport I'll often
+rebase onto a newer kernel so that the people who are running my tree
+are testing something more stable - it does come up.
+
+> It also seems it didn't get a run through scripts/checkpatch.pl, which
+> shows 4 warnings, 2 or which point out the strlcpy deprecation:
+> 
+> WARNING: Prefer strscpy over strlcpy - see: https://github.com/KSPP/linux/issues/89
+> #123: FILE: fs/bcachefs/super.c:1389:
+> +               strlcpy(c->name, name.buf, sizeof(c->name));
+> 
+> WARNING: Prefer strscpy over strlcpy - see: https://github.com/KSPP/linux/issues/89
+> #124: FILE: fs/bcachefs/super.c:1390:
+> +       strlcpy(ca->name, name.buf, sizeof(ca->name));
+> 
+> Please make sure you're running checkpatch.pl -- it'll make integration,
+> technical debt reduction, and coding style adjustments much easier. :)
+
+Well, we do have rather a lot of linters these days.
+
+That's actually something I've been meaning to raise - perhaps we could
+start thinking about some pluggable way of running linters so that
+they're all run as part of a normal kernel build (and something that
+would be easy to drop new linters in to; I'd like to write some bcachefs
+specific ones).
+
+The current model of "I have to remember to run these 5 things, and then
+I'm going to get email nags for 3 more that I can't run" is not terribly
+scalable :)
 
