@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-23916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B6182B3D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:17:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D58082B3D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16F21C234EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:17:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08B54284BCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C41F51C26;
-	Thu, 11 Jan 2024 17:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809B155C1A;
+	Thu, 11 Jan 2024 17:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G96cQSSH"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AEplgu4o"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5E6524D4
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 17:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC4453E2D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 17:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e60e13581so7964395e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:16:02 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e6297a00fso3984875e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:16:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704993361; x=1705598161; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704993362; x=1705598162; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mfriAxDaivGVMjnHfnRqJc4SkjUzQn+MLu6xDC6kMZU=;
-        b=G96cQSSHLA1CQHDzFnFxromZI+Sy6rTx2gXG80zVyKp3ScvuEVK9dTolCT5QypONLq
-         XuQY9ge/9frITOFChkrnvb1BJhbY2U4LNgPvT1G9rD9qgLX99VVj1gkQTD+4GRx0nMwY
-         hIzjpwa6XcEacVAKqDQhAvIY7gJJWttygt2n4Whqu6EsvBUaPtJJtAIhrvORxCu5kANr
-         NhLzQ+Usb4Nu07cN8KMLdIaZirRZkAJ2OIK7hhqyzv1EBu8/frIC379oLosugrkYG/xb
-         tUqLYc2BBg83AtaPuQ41ajhWh/vLWbgIugRAyNKSI4F8zKq/gTXV3BgPl6PVw9Vo4+wi
-         s2Kg==
+        bh=OTCpctKriB7uXRSodgWU7ASU0fozf33p4eRnAXNX9ao=;
+        b=AEplgu4oOF6ozBG0lZva+pRo5cGNqxmSZatnSSq/1VVKvLcjxlN/K+Tr83qKcMHI2b
+         4NOfHk6tZvvNQrAQBVYYYE1AJBdGYxqtU23mTczPNuqpoOh8ctAhbh03WRayRzEK9MIM
+         gsqg+EGEbNmZ4CENBZceHYiYZJx1F+hCbKndoWZWjxPAXFtgGrNhap7FhXBiOQHnyjeO
+         sXwdKweweLt6VwplqPmeJ9zCUH30HtZ7Q80zxqHvPG/RSvDb2xLo6PB8vjdguDGBgxOz
+         KcFGhCgia16vWT33Pok3HDWQhG3u/xT9bNqX6Xqz5O3nt4OIKjMOH6ALuTXVJryGrKAQ
+         1O/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704993361; x=1705598161;
+        d=1e100.net; s=20230601; t=1704993362; x=1705598162;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mfriAxDaivGVMjnHfnRqJc4SkjUzQn+MLu6xDC6kMZU=;
-        b=Gt718eYMi9SsZEqvxF1MNTEdKqFwCBOdFu775rmMa3HBlV2NMaxE2Nu5dQYejpXNTk
-         dz15nRRuDNvH5qUshTVn5S1OKlXaBy6pCOLt4ttxZyMpkgM/8vQ5Mfm4y3dxgY+P1sHs
-         +7WDZuhe1D/4siKkN1fcRhcj/pyS6+ENvoV8joHVcBb1ov9niarveKPBHF69ZCaWbFrl
-         kVwyeCHzoDTOwT1GwlT+OvgfFC/woWaQTmXZKIaLsOtFAs6jQEtFjqUBzlhE6VrjqTzn
-         Tq/3ZhJWrj/504PM+HwGxSpgMxDmk6VrHvrIni2E3fKTsUx81Jw+H8ux/Ua3jgfJpes5
-         s/DA==
-X-Gm-Message-State: AOJu0YzorJ5ILQwvnU5c1ATG/ZW14RhJ0ECPcWXr/HmYyMLhAG3rv2FC
-	W7+uoQfHBsyivVduP4FQUEnSRI6LFlDEaA==
-X-Google-Smtp-Source: AGHT+IFTAJjuODtinWf1j4rHE1pgTSYKJXdkWpjS64X4n3za2zDyPghtkwTmZko7PfwqInKZagaYcw==
-X-Received: by 2002:a05:600c:a41:b0:40e:511d:8dfe with SMTP id c1-20020a05600c0a4100b0040e511d8dfemr55096wmq.151.1704993360868;
-        Thu, 11 Jan 2024 09:16:00 -0800 (PST)
+        bh=OTCpctKriB7uXRSodgWU7ASU0fozf33p4eRnAXNX9ao=;
+        b=IZRbig8yJivjyfdXtCMAWDLmw8xkH8iVj5H4fT2LlConAkXZy6gskQoRjxlzoYIm8y
+         fnEtCgJI68hHQo9yBfD95S3t91QgvLvSnbe5terlu/FpKUAkBrci/KoT1sv8p1YjyKhK
+         AM/vQjbcpqvajJcRC7oSupx/63/gt+EMumHhfb48VwpnihdLN3f/IYY7OBRxxap0mMlr
+         SFjuT6yVFdhq1jRUG+WQCQr+QQ7qb/6rVqwe2GOg2/zAsSVcUrV2nMcWglDxeWvsMp59
+         hQGRpG4eVMmrwOujXuSGCNHv4UIjDpCkM5nRMqU4Er6DO9HBM2axcnp3NVAL59047Sem
+         neDA==
+X-Gm-Message-State: AOJu0Yy8eHc1Z+pKJtA667xD1n+j73xgHSvGxxCPTsIIWUEgIyXJrPMj
+	JauQ++H5cCD2gAQ9Z1HcQGV9AT/aWEyULQ==
+X-Google-Smtp-Source: AGHT+IG+6t738GyN4dqGv5Sb2wQ8dIGp8Me3n7bsMDvJOFOz6rJZidY4/EwrRPFM4f+/X49R6RyaWA==
+X-Received: by 2002:a05:600c:4d92:b0:40d:3dbf:9833 with SMTP id v18-20020a05600c4d9200b0040d3dbf9833mr50875wmp.233.1704993362089;
+        Thu, 11 Jan 2024 09:16:02 -0800 (PST)
 Received: from [127.0.1.1] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id fc19-20020a05600c525300b0040d839e7bb3sm6610653wmb.19.2024.01.11.09.15.59
+        by smtp.gmail.com with ESMTPSA id fc19-20020a05600c525300b0040d839e7bb3sm6610653wmb.19.2024.01.11.09.16.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 09:16:00 -0800 (PST)
+        Thu, 11 Jan 2024 09:16:01 -0800 (PST)
 From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date: Thu, 11 Jan 2024 17:15:56 +0000
-Subject: [PATCH v4 3/4] arm64: dts: qcom: sc8280xp: camss: Add CCI
- definitions
+Date: Thu, 11 Jan 2024 17:15:57 +0000
+Subject: [PATCH v4 4/4] arm64: dts: qcom: sc8280xp: camss: Add CAMSS block
+ definition
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240111-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v4-3-cdd5c57ff1dc@linaro.org>
+Message-Id: <20240111-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v4-4-cdd5c57ff1dc@linaro.org>
 References: <20240111-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v4-0-cdd5c57ff1dc@linaro.org>
 In-Reply-To: <20240111-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v4-0-cdd5c57ff1dc@linaro.org>
 To: Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>, 
@@ -83,342 +83,269 @@ Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 X-Mailer: b4 0.13-dev-4e032
 
-sc8280xp has four Camera Control Interface (CCI) blocks which pinout to
-two I2C master controllers for each CCI.
+Add CAMSS block definition for sc8280xp.
 
-The CCI I2C pins are not muxed so we define them in the dtsi.
+This drop contains definitions for the following components on sc8280xp:
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+VFE * 4
+VFE Lite * 4
+CSID * 4
+CSIPHY * 4
+
+This dtsi definition has been developed and validated on a Lenovo X13s
+laptop.
+
 Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 307 +++++++++++++++++++++++++++++++++
- 1 file changed, 307 insertions(+)
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 235 +++++++++++++++++++++++++++++++++
+ 1 file changed, 235 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-index febf28356ff8..1949b4fa04e9 100644
+index 1949b4fa04e9..363a89e403bd 100644
 --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-@@ -3451,6 +3451,169 @@ usb_1_role_switch: endpoint {
+@@ -3614,6 +3614,241 @@ cci3_i2c1: i2c-bus@1 {
  			};
  		};
  
-+		cci0: cci@ac4a000 {
-+			compatible = "qcom,sc8280xp-cci", "qcom,msm8996-cci";
-+			reg = <0 0x0ac4a000 0 0x1000>;
++		camss: camss@ac5a000 {
++			compatible = "qcom,sc8280xp-camss";
 +
-+			interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
++			reg = <0 0x0ac5a000 0 0x2000>,
++			      <0 0x0ac5c000 0 0x2000>,
++			      <0 0x0ac65000 0 0x2000>,
++			      <0 0x0ac67000 0 0x2000>,
++			      <0 0x0acaf000 0 0x4000>,
++			      <0 0x0acb3000 0 0x1000>,
++			      <0 0x0acb6000 0 0x4000>,
++			      <0 0x0acba000 0 0x1000>,
++			      <0 0x0acbd000 0 0x4000>,
++			      <0 0x0acc1000 0 0x1000>,
++			      <0 0x0acc4000 0 0x4000>,
++			      <0 0x0acc8000 0 0x1000>,
++			      <0 0x0accb000 0 0x4000>,
++			      <0 0x0accf000 0 0x1000>,
++			      <0 0x0acd2000 0 0x4000>,
++			      <0 0x0acd6000 0 0x1000>,
++			      <0 0x0acd9000 0 0x4000>,
++			      <0 0x0acdd000 0 0x1000>,
++			      <0 0x0ace0000 0 0x4000>,
++			      <0 0x0ace4000 0 0x1000>;
++			reg-names = "csiphy2",
++				    "csiphy3",
++				    "csiphy0",
++				    "csiphy1",
++				    "vfe0",
++				    "csid0",
++				    "vfe1",
++				    "csid1",
++				    "vfe2",
++				    "csid2",
++				    "vfe_lite0",
++				    "csid0_lite",
++				    "vfe_lite1",
++				    "csid1_lite",
++				    "vfe_lite2",
++				    "csid2_lite",
++				    "vfe_lite3",
++				    "csid3_lite",
++				    "vfe3",
++				    "csid3";
++
++			interrupts = <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 360 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 464 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 466 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 467 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 468 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 477 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 478 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 479 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 758 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 759 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 760 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 761 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 762 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 764 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "csid1_lite",
++					  "vfe_lite1",
++					  "csiphy3",
++					  "csid0",
++					  "vfe0",
++					  "csid1",
++					  "vfe1",
++					  "csid0_lite",
++					  "vfe_lite0",
++					  "csiphy0",
++					  "csiphy1",
++					  "csiphy2",
++					  "csid2",
++					  "vfe2",
++					  "csid3_lite",
++					  "csid2_lite",
++					  "vfe_lite3",
++					  "vfe_lite2",
++					  "csid3",
++					  "vfe3";
++
++			power-domains = <&camcc IFE_0_GDSC>,
++					<&camcc IFE_1_GDSC>,
++					<&camcc IFE_2_GDSC>,
++					<&camcc IFE_3_GDSC>,
++					<&camcc TITAN_TOP_GDSC>;
++			power-domain-names = "ife0",
++					     "ife1",
++					     "ife2",
++					     "ife3",
++					     "top";
 +
 +			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
-+				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
 +				 <&camcc CAMCC_CPAS_AHB_CLK>,
-+				 <&camcc CAMCC_CCI_0_CLK>;
++				 <&camcc CAMCC_CSIPHY0_CLK>,
++				 <&camcc CAMCC_CSI0PHYTIMER_CLK>,
++				 <&camcc CAMCC_CSIPHY1_CLK>,
++				 <&camcc CAMCC_CSI1PHYTIMER_CLK>,
++				 <&camcc CAMCC_CSIPHY2_CLK>,
++				 <&camcc CAMCC_CSI2PHYTIMER_CLK>,
++				 <&camcc CAMCC_CSIPHY3_CLK>,
++				 <&camcc CAMCC_CSI3PHYTIMER_CLK>,
++				 <&camcc CAMCC_IFE_0_AXI_CLK>,
++				 <&camcc CAMCC_IFE_0_CLK>,
++				 <&camcc CAMCC_IFE_0_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_0_CSID_CLK>,
++				 <&camcc CAMCC_IFE_1_AXI_CLK>,
++				 <&camcc CAMCC_IFE_1_CLK>,
++				 <&camcc CAMCC_IFE_1_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_1_CSID_CLK>,
++				 <&camcc CAMCC_IFE_2_AXI_CLK>,
++				 <&camcc CAMCC_IFE_2_CLK>,
++				 <&camcc CAMCC_IFE_2_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_2_CSID_CLK>,
++				 <&camcc CAMCC_IFE_3_AXI_CLK>,
++				 <&camcc CAMCC_IFE_3_CLK>,
++				 <&camcc CAMCC_IFE_3_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_3_CSID_CLK>,
++				 <&camcc CAMCC_IFE_LITE_0_CLK>,
++				 <&camcc CAMCC_IFE_LITE_0_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_LITE_0_CSID_CLK>,
++				 <&camcc CAMCC_IFE_LITE_1_CLK>,
++				 <&camcc CAMCC_IFE_LITE_1_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_LITE_1_CSID_CLK>,
++				 <&camcc CAMCC_IFE_LITE_2_CLK>,
++				 <&camcc CAMCC_IFE_LITE_2_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_LITE_2_CSID_CLK>,
++				 <&camcc CAMCC_IFE_LITE_3_CLK>,
++				 <&camcc CAMCC_IFE_LITE_3_CPHY_RX_CLK>,
++				 <&camcc CAMCC_IFE_LITE_3_CSID_CLK>,
++				 <&gcc GCC_CAMERA_HF_AXI_CLK>,
++				 <&gcc GCC_CAMERA_SF_AXI_CLK>;
 +			clock-names = "camnoc_axi",
-+				      "slow_ahb_src",
 +				      "cpas_ahb",
-+				      "cci";
++				      "csiphy0",
++				      "csiphy0_timer",
++				      "csiphy1",
++				      "csiphy1_timer",
++				      "csiphy2",
++				      "csiphy2_timer",
++				      "csiphy3",
++				      "csiphy3_timer",
++				      "vfe0_axi",
++				      "vfe0",
++				      "vfe0_cphy_rx",
++				      "vfe0_csid",
++				      "vfe1_axi",
++				      "vfe1",
++				      "vfe1_cphy_rx",
++				      "vfe1_csid",
++				      "vfe2_axi",
++				      "vfe2",
++				      "vfe2_cphy_rx",
++				      "vfe2_csid",
++				      "vfe3_axi",
++				      "vfe3",
++				      "vfe3_cphy_rx",
++				      "vfe3_csid",
++				      "vfe_lite0",
++				      "vfe_lite0_cphy_rx",
++				      "vfe_lite0_csid",
++				      "vfe_lite1",
++				      "vfe_lite1_cphy_rx",
++				      "vfe_lite1_csid",
++				      "vfe_lite2",
++				      "vfe_lite2_cphy_rx",
++				      "vfe_lite2_csid",
++				      "vfe_lite3",
++				      "vfe_lite3_cphy_rx",
++				      "vfe_lite3_csid",
++				      "gcc_axi_hf",
++				      "gcc_axi_sf";
 +
-+			power-domains = <&camcc TITAN_TOP_GDSC>;
++			iommus = <&apps_smmu 0x2000 0x4e0>,
++				 <&apps_smmu 0x2020 0x4e0>,
++				 <&apps_smmu 0x2040 0x4e0>,
++				 <&apps_smmu 0x2060 0x4e0>,
++				 <&apps_smmu 0x2080 0x4e0>,
++				 <&apps_smmu 0x20e0 0x4e0>,
++				 <&apps_smmu 0x20c0 0x4e0>,
++				 <&apps_smmu 0x20a0 0x4e0>,
++				 <&apps_smmu 0x2400 0x4e0>,
++				 <&apps_smmu 0x2420 0x4e0>,
++				 <&apps_smmu 0x2440 0x4e0>,
++				 <&apps_smmu 0x2460 0x4e0>,
++				 <&apps_smmu 0x2480 0x4e0>,
++				 <&apps_smmu 0x24e0 0x4e0>,
++				 <&apps_smmu 0x24c0 0x4e0>,
++				 <&apps_smmu 0x24a0 0x4e0>;
 +
-+			pinctrl-0 = <&cci0_default>;
-+			pinctrl-1 = <&cci0_sleep>;
-+			pinctrl-names = "default", "sleep";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
++			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_CAMERA_CFG 0>,
++					<&mmss_noc MASTER_CAMNOC_HF 0 &mc_virt SLAVE_EBI1 0>,
++					<&mmss_noc MASTER_CAMNOC_SF 0 &mc_virt SLAVE_EBI1 0>,
++					<&mmss_noc MASTER_CAMNOC_ICP 0 &mc_virt SLAVE_EBI1 0>;
++			interconnect-names = "cam_ahb",
++					     "cam_hf_mnoc",
++					     "cam_sf_mnoc",
++					     "cam_sf_icp_mnoc";
 +
 +			status = "disabled";
 +
-+			cci0_i2c0: i2c-bus@0 {
-+				reg = <0>;
-+				clock-frequency = <1000000>;
++			ports {
 +				#address-cells = <1>;
 +				#size-cells = <0>;
-+			};
 +
-+			cci0_i2c1: i2c-bus@1 {
-+				reg = <1>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+		};
++				port@0 {
++					reg = <0>;
++					#address-cells = <1>;
++					#size-cells = <0>;
++				};
 +
-+		cci1: cci@ac4b000 {
-+			compatible = "qcom,sc8280xp-cci", "qcom,msm8996-cci";
-+			reg = <0 0x0ac4b000 0 0x1000>;
++				port@1 {
++					reg = <1>;
++					#address-cells = <1>;
++					#size-cells = <0>;
++				};
 +
-+			interrupts = <GIC_SPI 271 IRQ_TYPE_EDGE_RISING>;
++				port@2 {
++					reg = <2>;
++					#address-cells = <1>;
++					#size-cells = <0>;
++				};
 +
-+			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
-+				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
-+				 <&camcc CAMCC_CPAS_AHB_CLK>,
-+				 <&camcc CAMCC_CCI_1_CLK>;
-+			clock-names = "camnoc_axi",
-+				      "slow_ahb_src",
-+				      "cpas_ahb",
-+				      "cci";
-+
-+			power-domains = <&camcc TITAN_TOP_GDSC>;
-+
-+			pinctrl-0 = <&cci1_default>;
-+			pinctrl-1 = <&cci1_sleep>;
-+			pinctrl-names = "default", "sleep";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			status = "disabled";
-+
-+			cci1_i2c0: i2c-bus@0 {
-+				reg = <0>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			cci1_i2c1: i2c-bus@1 {
-+				reg = <1>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+		};
-+
-+		cci2: cci@ac4c000 {
-+			compatible = "qcom,sc8280xp-cci", "qcom,msm8996-cci";
-+			reg = <0 0x0ac4c000 0 0x1000>;
-+
-+			interrupts = <GIC_SPI 651 IRQ_TYPE_EDGE_RISING>;
-+
-+			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
-+				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
-+				 <&camcc CAMCC_CPAS_AHB_CLK>,
-+				 <&camcc CAMCC_CCI_2_CLK>;
-+			clock-names = "camnoc_axi",
-+				      "slow_ahb_src",
-+				      "cpas_ahb",
-+				      "cci";
-+			power-domains = <&camcc TITAN_TOP_GDSC>;
-+
-+			pinctrl-0 = <&cci2_default>;
-+			pinctrl-1 = <&cci2_sleep>;
-+			pinctrl-names = "default", "sleep";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			status = "disabled";
-+
-+			cci2_i2c0: i2c-bus@0 {
-+				reg = <0>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			cci2_i2c1: i2c-bus@1 {
-+				reg = <1>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+		};
-+
-+		cci3: cci@ac4d000 {
-+			compatible = "qcom,sc8280xp-cci", "qcom,msm8996-cci";
-+			reg = <0 0x0ac4d000 0 0x1000>;
-+
-+			interrupts = <GIC_SPI 650 IRQ_TYPE_EDGE_RISING>;
-+
-+			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
-+				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
-+				 <&camcc CAMCC_CPAS_AHB_CLK>,
-+				 <&camcc CAMCC_CCI_3_CLK>;
-+			clock-names = "camnoc_axi",
-+				      "slow_ahb_src",
-+				      "cpas_ahb",
-+				      "cci";
-+
-+			power-domains = <&camcc TITAN_TOP_GDSC>;
-+
-+			pinctrl-0 = <&cci3_default>;
-+			pinctrl-1 = <&cci3_sleep>;
-+			pinctrl-names = "default", "sleep";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			status = "disabled";
-+
-+			cci3_i2c0: i2c-bus@0 {
-+				reg = <0>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			cci3_i2c1: i2c-bus@1 {
-+				reg = <1>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
++				port@3 {
++					reg = <3>;
++					#address-cells = <1>;
++					#size-cells = <0>;
++				};
 +			};
 +		};
 +
  		camcc: clock-controller@ad00000 {
  			compatible = "qcom,sc8280xp-camcc";
  			reg = <0 0x0ad00000 0 0x20000>;
-@@ -4076,6 +4239,150 @@ tlmm: pinctrl@f100000 {
- 			#interrupt-cells = <2>;
- 			gpio-ranges = <&tlmm 0 0 230>;
- 			wakeup-parent = <&pdc>;
-+
-+			cci0_default: cci0-default-state {
-+				cci0_i2c0_default: cci0-i2c0-default-pins {
-+					/* cci_i2c_sda0, cci_i2c_scl0 */
-+					pins = "gpio113", "gpio114";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+
-+				cci0_i2c1_default: cci0-i2c1-default-pins {
-+					/* cci_i2c_sda1, cci_i2c_scl1 */
-+					pins = "gpio115", "gpio116";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			cci0_sleep: cci0-sleep-state {
-+				cci0_i2c0_sleep: cci0-i2c0-sleep-pins {
-+					/* cci_i2c_sda0, cci_i2c_scl0 */
-+					pins = "gpio113", "gpio114";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+
-+				cci0_i2c1_sleep: cci0-i2c1-sleep-pins {
-+					/* cci_i2c_sda1, cci_i2c_scl1 */
-+					pins = "gpio115", "gpio116";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+			};
-+
-+			cci1_default: cci1-default-state {
-+				cci1_i2c0_default: cci1-i2c0-default-pins {
-+					/* cci_i2c_sda2, cci_i2c_scl2 */
-+					pins = "gpio10","gpio11";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+
-+				cci1_i2c1_default: cci1-i2c1-default-pins {
-+					/* cci_i2c_sda3, cci_i2c_scl3 */
-+					pins = "gpio123","gpio124";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			cci1_sleep: cci1-sleep-state {
-+				cci1_i2c0_sleep: cci1-i2c0-sleep-pins {
-+					/* cci_i2c_sda2, cci_i2c_scl2 */
-+					pins = "gpio10","gpio11";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+
-+				cci1_i2c1_sleep: cci1-i2c1-sleep-pins {
-+					/* cci_i2c_sda3, cci_i2c_scl3 */
-+					pins = "gpio123","gpio124";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+			};
-+
-+			cci2_default: cci2-default-state {
-+				cci2_i2c0_default: cci2-i2c0-default-pins {
-+					/* cci_i2c_sda4, cci_i2c_scl4 */
-+					pins = "gpio117","gpio118";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+
-+				cci2_i2c1_default: cci2-i2c1-default-pins {
-+					/* cci_i2c_sda5, cci_i2c_scl5 */
-+					pins = "gpio12","gpio13";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			cci2_sleep: cci2-sleep-state {
-+				cci2_i2c0_sleep: cci2-i2c0-sleep-pins {
-+					/* cci_i2c_sda4, cci_i2c_scl4 */
-+					pins = "gpio117","gpio118";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+
-+				cci2_i2c1_sleep: cci2-i2c1-sleep-pins {
-+					/* cci_i2c_sda5, cci_i2c_scl5 */
-+					pins = "gpio12","gpio13";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+			};
-+
-+			cci3_default: cci3-default-state {
-+				cci3_i2c0_default: cci3-i2c0-default-pins {
-+					/* cci_i2c_sda6, cci_i2c_scl6 */
-+					pins = "gpio145","gpio146";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+
-+				cci3_i2c1_default: cci3-i2c1-default-pins {
-+					/* cci_i2c_sda7, cci_i2c_scl7 */
-+					pins = "gpio164","gpio165";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			cci3_sleep: cci3-sleep-state {
-+				cci3_i2c0_sleep: cci3-i2c0-sleep-pins {
-+					/* cci_i2c_sda6, cci_i2c_scl6 */
-+					pins = "gpio145","gpio146";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+
-+				cci3_i2c1_sleep: cci3-i2c1-sleep-pins {
-+					/* cci_i2c_sda7, cci_i2c_scl7 */
-+					pins = "gpio164","gpio165";
-+					function = "cci_i2c";
-+					drive-strength = <2>;
-+					bias-pull-down;
-+				};
-+			};
- 		};
- 
- 		apps_smmu: iommu@15000000 {
 
 -- 
 2.42.0
