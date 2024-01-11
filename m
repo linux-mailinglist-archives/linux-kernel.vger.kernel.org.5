@@ -1,238 +1,88 @@
-Return-Path: <linux-kernel+bounces-24070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2656382B65E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:06:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A7C682B663
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:09:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D0ED1C23DAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:06:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16D6C1F265C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C6C5811F;
-	Thu, 11 Jan 2024 21:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE0A58128;
+	Thu, 11 Jan 2024 21:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VysnEL1J"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a+lHXGXi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6535D58116
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705007185;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=jL8WTqzaplUlKbEhGjmjhkxdmTGzcgEtUgapc4raQqc=;
-	b=VysnEL1JHdkcVlpo33lcCTYvgEm8dn/v7dWs+27dIg/nOMSxiTbJi4STxE5/H10fJfBKGM
-	O7C8W1d0MtFFaYWIjC8z0/0npwt0P0JnwtLWLl31wHh0lxedchI7w8zr/1pL6G9kZNIc55
-	RiTBbJmP+h1qbUW+ReDqiDBO0baoMPQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-458-sJjhUCLDNhSfvpOSrYgGwg-1; Thu, 11 Jan 2024 16:06:23 -0500
-X-MC-Unique: sJjhUCLDNhSfvpOSrYgGwg-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3368698efbdso3093736f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:06:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705007182; x=1705611982;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jL8WTqzaplUlKbEhGjmjhkxdmTGzcgEtUgapc4raQqc=;
-        b=kKKiZFYX3vLGT8Rgmxc+q5Utm98GV6YmBuoyq/RTmdHRRe04IX/xvn26sz8LkqAO3R
-         RfuE5aUilp4qlyF4YkmB01ORqHpiCBLbDKjPYdYrOvYmw6kPLhpc7zXByNV8/3djj9Cq
-         YQh6j8X6D9qsSpR7H2EndU+vBMWUIbA8zqJMPHlzQPMel/6SshSvc+qQhx99Oe99rsvC
-         w5vGqDwrA1I5Syn6fMMCL9HSGh+PcMO/ENGBWpx1q55gnmB0qfiyqGLgFO0+KFRo8XSU
-         wWRMFqxoDIUYamSYj3fwbirB/bCb3cDZ6zzTvudiRS6/MpkSma1aw6D5E/RFqnloi4CN
-         P+yg==
-X-Gm-Message-State: AOJu0Yy3/VyzYnCArg7oSrjY1cc4+YGbyzTgxXgeGyk1qF8/q+Lv+HaM
-	hQpQ9KMxzMvJ4ZqtUiNwymiBMxcf+29ZTTUfttMNjL5L2/2GOmwa/JO2X4u98LHMq2mYC2eJyXd
-	1iUMyR4jAdem4I7RF/9IkKbixppgPnHL4
-X-Received: by 2002:a5d:46c6:0:b0:336:7077:c8c4 with SMTP id g6-20020a5d46c6000000b003367077c8c4mr181345wrs.139.1705007182666;
-        Thu, 11 Jan 2024 13:06:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG1+pNWAmmC6YT6CmMYQRRdpgOQnrUIWZIENoGNnBJ7g+O5FhKTi8a4v+Eoykd3whtTrSwp5A==
-X-Received: by 2002:a5d:46c6:0:b0:336:7077:c8c4 with SMTP id g6-20020a5d46c6000000b003367077c8c4mr181338wrs.139.1705007182276;
-        Thu, 11 Jan 2024 13:06:22 -0800 (PST)
-Received: from ?IPV6:2003:cb:c747:f900:6099:1901:b863:450f? (p200300cbc747f90060991901b863450f.dip0.t-ipconnect.de. [2003:cb:c747:f900:6099:1901:b863:450f])
-        by smtp.gmail.com with ESMTPSA id i6-20020adff306000000b003377e22ffdcsm2047588wro.85.2024.01.11.13.06.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 13:06:21 -0800 (PST)
-Message-ID: <15ce90cd-ff0b-4bc3-bee4-880bee3200ae@redhat.com>
-Date: Thu, 11 Jan 2024 22:06:20 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB6C58116;
+	Thu, 11 Jan 2024 21:09:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D58C433C7;
+	Thu, 11 Jan 2024 21:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705007356;
+	bh=+KzTILx7kXZyjh5eU7PaENUbBCcP673i64WFILoe7qY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a+lHXGXi7pbL53BwsXmNiOUMLsRn2/7FCqiwcuXqsQTt2MIo6S3lhxwWEaf3PzX28
+	 OOGI4wXtERUCMb1WC8xxW10WQ9IqYOPfRAHCu0FMdLcnZzMz0aaFRMKN51ePD2CGPw
+	 SBk7/zJrIUAlG2juFn220NWKxQhRi5TcvMiSgbKsItAiItXBcE8uL+C57fo/4MiD9d
+	 mZVHr37tvdQ1T8lwcH3DtAoZ1h7dsTv/R+rVJCdedhfy0/7iZ5uHDGezV/eX7pbSE9
+	 2CG1l9XTeXpcSdvmIQQ/cKQd0ZiHV2L0iaB0hev3RyfnV+nzEyOmjSZ9nhgyqxSmQZ
+	 bSuI+lVicMvKw==
+Date: Thu, 11 Jan 2024 15:09:14 -0600
+From: Rob Herring <robh@kernel.org>
+To: Michal Simek <michal.simek@amd.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	kishore Manne <nava.kishore.manne@amd.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org, michal.simek@xilinx.com,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Tom Rix <trix@redhat.com>,
+	"open list:FPGA MANAGER FRAMEWORK" <linux-fpga@vger.kernel.org>,
+	monstr@monstr.eu, git@xilinx.com,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: fpga: Convert bridge binding to yaml
+Message-ID: <170500735096.1126044.11641247061906726408.robh@kernel.org>
+References: <14558a4dcfab5255c1683015287e9c7f48b1afc2.1704807147.git.michal.simek@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [mm?] kernel BUG in move_pages
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: syzbot <syzbot+705209281e36404998f6@syzkaller.appspotmail.com>,
- Peter Xu <peterx@redhat.com>, aarcange@redhat.com,
- akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- syzkaller-bugs@googlegroups.com
-References: <00000000000011d709060eadffd3@google.com>
- <CAJuCfpG-8w_KQ8bWvSr=GrXM+Jx3YKn5DqTFJU2MaMojML_a-A@mail.gmail.com>
- <CAJuCfpFfKYn+G1+puQ0KxzWCnbfFT51tKwV8MnrP7YZcJAORwg@mail.gmail.com>
- <CAJuCfpHTAAPEjMLrcxyG8zW7HA47EinB8CQfKGmBw7gGxqQ=vA@mail.gmail.com>
- <5ed23cf3-eedd-44aa-a498-d2a9ab046535@redhat.com>
- <CAJuCfpG5T71Sc46pB2eGpV7TreMZX2VZ-kDfaNmtn+etP0q9JA@mail.gmail.com>
- <bf9dbc58-35c4-4a35-b194-6d8d9e7e4923@redhat.com>
- <CAJuCfpGRA7KJhMBneqAj+dw=rQReU7PyR1r34yqrNSoa-RUKbg@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAJuCfpGRA7KJhMBneqAj+dw=rQReU7PyR1r34yqrNSoa-RUKbg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14558a4dcfab5255c1683015287e9c7f48b1afc2.1704807147.git.michal.simek@amd.com>
 
-On 11.01.24 22:04, Suren Baghdasaryan wrote:
-> On Thu, Jan 11, 2024 at 9:00 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 11.01.24 21:20, Suren Baghdasaryan wrote:
->>> On Thu, Jan 11, 2024 at 6:58 PM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 11.01.24 19:34, Suren Baghdasaryan wrote:
->>>>> On Thu, Jan 11, 2024 at 8:44 AM Suren Baghdasaryan <surenb@google.com> wrote:
->>>>>>
->>>>>> On Thu, Jan 11, 2024 at 8:40 AM Suren Baghdasaryan <surenb@google.com> wrote:
->>>>>>>
->>>>>>> On Thu, Jan 11, 2024 at 8:25 AM syzbot
->>>>>>> <syzbot+705209281e36404998f6@syzkaller.appspotmail.com> wrote:
->>>>>>>>
->>>>>>>> Hello,
->>>>>>>>
->>>>>>>> syzbot found the following issue on:
->>>>>>>>
->>>>>>>> HEAD commit:    e2425464bc87 Add linux-next specific files for 20240105
->>>>>>>> git tree:       linux-next
->>>>>>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14941cdee80000
->>>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=4056b9349f3da8c9
->>>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=705209281e36404998f6
->>>>>>>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
->>>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=125d0a09e80000
->>>>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc7331e80000
->>>>>>>>
->>>>>>>> Downloadable assets:
->>>>>>>> disk image: https://storage.googleapis.com/syzbot-assets/2f738185e2cf/disk-e2425464.raw.xz
->>>>>>>> vmlinux: https://storage.googleapis.com/syzbot-assets/b248fcf4ea46/vmlinux-e2425464.xz
->>>>>>>> kernel image: https://storage.googleapis.com/syzbot-assets/a9945c8223f4/bzImage-e2425464.xz
->>>>>>>>
->>>>>>>> The issue was bisected to:
->>>>>>>>
->>>>>>>> commit adef440691bab824e39c1b17382322d195e1fab0
->>>>>>>> Author: Andrea Arcangeli <aarcange@redhat.com>
->>>>>>>> Date:   Wed Dec 6 10:36:56 2023 +0000
->>>>>>>>
->>>>>>>>        userfaultfd: UFFDIO_MOVE uABI
->>>>>>>>
->>>>>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11cb6ea9e80000
->>>>>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13cb6ea9e80000
->>>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15cb6ea9e80000
->>>>>>>>
->>>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>>>>> Reported-by: syzbot+705209281e36404998f6@syzkaller.appspotmail.com
->>>>>>>> Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
->>>>>>>>
->>>>>>>>     do_one_initcall+0x128/0x680 init/main.c:1237
->>>>>>>>     do_initcall_level init/main.c:1299 [inline]
->>>>>>>>     do_initcalls init/main.c:1315 [inline]
->>>>>>>>     do_basic_setup init/main.c:1334 [inline]
->>>>>>>>     kernel_init_freeable+0x692/0xc30 init/main.c:1552
->>>>>>>>     kernel_init+0x1c/0x2a0 init/main.c:1442
->>>>>>>>     ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->>>>>>>>     ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
->>>>>>>> ------------[ cut here ]------------
->>>>>>>> kernel BUG at include/linux/page-flags.h:1035!
->>>>>>>> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
->>>>>>>> CPU: 0 PID: 5068 Comm: syz-executor191 Not tainted 6.7.0-rc8-next-20240105-syzkaller #0
->>>>>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
->>>>>>>> RIP: 0010:PageAnonExclusive include/linux/page-flags.h:1035 [inline]
->>>>>>>
->>>>>>>    From a quick look, I think the new ioctl is being used against a
->>>>>>> file-backed page and that's why PageAnonExclusive() throws this error.
->>>>>>> I'll confirm if this is indeed the case and will add checks for that
->>>>>>> case. Thanks!
->>>>>>
->>>>>> Hmm. Looking at the reproducer it does not look like a file-backed
->>>>>> memory... Anyways, I'm on it.
->>>>>
->>>>> Looks like the test is trying to move the huge_zero_page. Wonder how
->>>>> we should handle this. Just fail or do something else? Adding David
->>>>> and Peter for feedback.
->>>>
->>>> You'll need some special-casing to handle that. But it should be fairly
->>>> easy.
->>>
->>> Ok, so should we treat zeropage the same as PAE and map destination
->>> PTE/PMD to zeropage while clearing source PTE/PMD?
->>
->> Likely yes. So it's transparent for user space what we are moving. (this
->> sounds like an easy case to not require a prior write access just to
->> move it)
+
+On Tue, 09 Jan 2024 14:32:38 +0100, Michal Simek wrote:
+> Convert the generic fpga bridge DT binding to json-schema.
 > 
-> Ok, working on it. split_huge_pmd() already knows how to split
-> huge_zero_page but I think I'll need special handling in both
-> move_pages_pte() and move_pages_huge_pmd().
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+> 
+> Changes in v3:
+> - Improve regex to cover also nodes out of bus
+> 
+> Keeping Krzysztof's tag which I got in v1. Feel free to reject if you
+> see any issue there.
+> 
+> ---
+>  .../devicetree/bindings/fpga/fpga-bridge.txt  | 13 --------
+>  .../devicetree/bindings/fpga/fpga-bridge.yaml | 30 +++++++++++++++++++
+>  .../bindings/fpga/xlnx,pr-decoupler.yaml      |  5 +++-
+>  3 files changed, 34 insertions(+), 14 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/fpga/fpga-bridge.txt
+>  create mode 100644 Documentation/devicetree/bindings/fpga/fpga-bridge.yaml
+> 
 
-A PTE-mapped huge zeropage is just a page table populated with the 
-ordinary shared zeropage. Are you moving the ordinary shared zeropage as 
-well? If not, you should do so for consistency (or not do either :) ).
-
--- 
-Cheers,
-
-David / dhildenb
+Applied, thanks!
 
 
