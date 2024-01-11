@@ -1,177 +1,101 @@
-Return-Path: <linux-kernel+bounces-23476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60CF382AD4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:23:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E9BA82AD48
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBBE6B26EEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:23:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DF3228871E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A40914F92;
-	Thu, 11 Jan 2024 11:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA88214F9B;
+	Thu, 11 Jan 2024 11:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Ady4bBw4"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IxEkt4DL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC031549A;
-	Thu, 11 Jan 2024 11:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40BA1fUg011257;
-	Thu, 11 Jan 2024 12:22:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=m3GNVAvX3k8htTlkp4Usks8fTVv88WEHu4xrWJGJQwU=; b=Ad
-	y4bBw4Wy7pvRySTAQn+a92J5NKcopXq7oMKUuI3RDuYuu2S1D+2PHarEO5pnuRO7
-	ClWnlSti34jH4+rSXWpgUI8MbqTjO3xAKQrbFbyFTE5LAqJ8lkjdbQqipABTCJ+8
-	ZG7Wqi2DpnFzLDRHQrCNG1iq2YdTT38yNI3/VkFFlW13DqK8KwxCnfNMgwu82EZT
-	pH5SA6w+Gyf+w/R74zmuN8SLHIJIhIN3wbwHMe8cAA9n2RTe1083OSCE2s4JvbOa
-	hyjUlLD3SWqGdq+bqrm46uKQV4tOjCSABUXdXyP6+rUDvW07iBxfiWh08DspZGXc
-	4sx3iaPbHKR5b0rFyROw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vexrccsnq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 12:22:53 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4DC0D10002A;
-	Thu, 11 Jan 2024 12:22:52 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3EA4E237D84;
-	Thu, 11 Jan 2024 12:22:52 +0100 (CET)
-Received: from [10.252.29.122] (10.252.29.122) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 11 Jan
- 2024 12:22:49 +0100
-Message-ID: <7889dff7-2c38-43c0-b6f7-281a20ae9733@foss.st.com>
-Date: Thu, 11 Jan 2024 12:22:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA03314F90
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704972197; x=1736508197;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IhLVf1IN4DSrbYF9P13rk6JGQJ+d09K7DNovQma/Gpc=;
+  b=IxEkt4DL9N66BUh+U0i+FlV5R8mPwxZi7Up/qjwNz9Y/N5sJCORrIN3N
+   FQzj6BRb7b8d61Ic8/9S0DWU43E4n9D6CBv8KyJwH6LJ1NRFL+blPKr8U
+   TZ5uePheb032va/3aa2kMNpWYTbpOsO+LgDgw7Ihus5KjR1LARVC/Z/oI
+   x7nMDU6JyHP4EQtqahbTyxnrvD1b6xhVo83YGqO7Iy08dKCdCeOPjJ/r1
+   kPN2os/mEvw3qqXwsDy27x+mP/sBVIAwZBgAqhvWQhghrpzTFJjoCWRB3
+   5p2PK+NX30Hs7zn9X5pTafp1wQx70ggN7K17NwVzlsHyacpP9NM9EnmIS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5546859"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="5546859"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:23:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="852916313"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="852916313"
+Received: from gcrisanx-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.56])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:23:15 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id BD76F10A557; Thu, 11 Jan 2024 14:23:12 +0300 (+03)
+Date: Thu, 11 Jan 2024 14:23:12 +0300
+From: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Xiaoyao Li <xiaoyao.li@intel.com>, linux-kernel@vger.kernel.org,
+	linux-coco@lists.linux.dev
+Subject: Re: [PATCH v2] virt: tdx-guest: Handle GetQuote request error code
+Message-ID: <20240111112312.zdgkmfywscp2kvxw@box.shutemov.name>
+References: <20240111033245.2632484-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Linux-stm32] [PATCH v6 5/5] ARM: dts: add
- stm32f769-disco-mb1225-revb03-mb1166-reva09
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        <linux-kernel@vger.kernel.org>
-CC: <devicetree@vger.kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-        Florian
- Fainelli <f.fainelli@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Andre Przywara
-	<andre.przywara@arm.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Sean Nyekjaer <sean@geanix.com>, <linux-amarula@amarulasolutions.com>,
-        Peter Rosin <peda@axentia.se>, <linux-arm-kernel@lists.infradead.org>
-References: <20240110080729.3238251-1-dario.binacchi@amarulasolutions.com>
- <20240110080729.3238251-6-dario.binacchi@amarulasolutions.com>
-Content-Language: en-US
-From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-In-Reply-To: <20240110080729.3238251-6-dario.binacchi@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111033245.2632484-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 
+On Thu, Jan 11, 2024 at 03:32:45AM +0000, Kuppuswamy Sathyanarayanan wrote:
+> During the TDX guest attestation process, TSM ConfigFS ABI is used by
+> the user attestation agent to get the signed VM measurement data (a.k.a
+> Quote), which can be used by a remote verifier to validate the
+> trustworthiness of the guest. When a user requests for the Quote data
+> via the ConfigFS ABI, the TDX Quote generation handler
+> (tdx_report_new()) forwards the request to VMM (or QE) via a hypercall,
+> and then shares the output with the user.
+> 
+> Currently, when handling the Quote generation request, tdx_report_new()
+> handler only checks whether the VMM successfully processed the request
+> and if it is true it returns success and shares the output to the user
+> without actually validating the output data. Since the VMM can return
+> error even after processing the Quote request, always returning success
+> for the processed requests is incorrect and will create confusion to
+> the user. Although for the failed request, output buffer length will
+> be zero and can also be used by the user to identify the failure case,
+> it will be more clear to return error for all failed cases.
+> 
+> Validate the Quote data output status and return error code for all
+> failed cases.
+> 
+> Fixes: f4738f56d1dc ("virt: tdx-guest: Add Quote generation support using TSM_REPORTS")
+> Reported-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Closes: https://lore.kernel.org/linux-coco/6bdf569c-684a-4459-af7c-4430691804eb@linux.intel.com/T/#u
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-On 1/10/24 09:05, Dario Binacchi wrote:
-> As reported in the section 8.3 (i. e. Board revision history) of document
-> UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
-> related to the board revisions addressed by the patch:
-> - Board MB1225 revision B-03:
->   - Memory MICRON MT48LC4M32B2B5-6A replaced by ISSI IS42S32400F-6BL
-> - Board MB1166 revision A-09:
->   - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
->
-> The patch only adds the DTS support for the new display which belongs to
-> to the Novatek NT35510-based panel family.
->
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
->
-> ---
->
-> Changes in v6:
-> - Drop patches
->   - [5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
->   - [7/8] drm/panel: nt35510: move hardwired parameters to configuration
->   - [8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
->   because applied by the maintainer Linus Walleij
->
-> Changes in v5:
-> - Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_optional().
->
-> Changes in v2:
-> - Change the status of panel_backlight node to "disabled"
-> - Delete backlight property from panel0 node.
-> - Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
->   in the same style as the original driver.
->
->  arch/arm/boot/dts/st/Makefile                  |  1 +
->  ...2f769-disco-mb1225-revb03-mb1166-reva09.dts | 18 ++++++++++++++++++
->  2 files changed, 19 insertions(+)
->  create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
->
-> diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
-> index 7892ad69b441..390dbd300a57 100644
-> --- a/arch/arm/boot/dts/st/Makefile
-> +++ b/arch/arm/boot/dts/st/Makefile
-> @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
->  	stm32f469-disco.dtb \
->  	stm32f746-disco.dtb \
->  	stm32f769-disco.dtb \
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Hi Dario,
-
-
-Did you meant dtb here ? ;)
-
-
-Regards,
-
-Raphaël
-
-> +	stm32f769-disco-mb1225-revb03-mb1166-reva09.dts \
->  	stm32429i-eval.dtb \
->  	stm32746g-eval.dtb \
->  	stm32h743i-eval.dtb \
-> diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-> new file mode 100644
-> index 000000000000..014cac192375
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> + */
-> +
-> +#include "stm32f769-disco.dts"
-> +
-> +&panel_backlight {
-> +	status = "disabled";
-> +};
-> +
-> +&panel0 {
-> +	compatible = "frida,frd400b25025", "novatek,nt35510";
-> +	vddi-supply = <&vcc_3v3>;
-> +	vdd-supply = <&vcc_3v3>;
-> +	/delete-property/backlight;
-> +	/delete-property/power-supply;
-> +};
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
