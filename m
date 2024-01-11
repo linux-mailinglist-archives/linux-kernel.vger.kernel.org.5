@@ -1,171 +1,150 @@
-Return-Path: <linux-kernel+bounces-23363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C9FC82ABA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:10:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05DE582AADC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:28:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B0611F23B27
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:10:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E71AB1C227C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B1212E6E;
-	Thu, 11 Jan 2024 10:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6EF10A38;
+	Thu, 11 Jan 2024 09:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="n2PCtOuU"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	dkim=pass (1024-bit key) header.d=axentia.se header.i=@axentia.se header.b="LIcgHMW0"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2139.outbound.protection.outlook.com [40.107.21.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A6E12E4C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240111100956epoutp031b8c68cb77319a367646577a4d8851f6~pQy13hzFm3269232692epoutp03_
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:09:56 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240111100956epoutp031b8c68cb77319a367646577a4d8851f6~pQy13hzFm3269232692epoutp03_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1704967796;
-	bh=rOSaugW4HgwR/OGMwEvr/uequ4lFGLwt4vZNG2atrCg=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=n2PCtOuUK8QF8viCYzsbrvoGkTwskW/+SSa74i/ikhTgdOQPCd8+50qJUNZJNPVQR
-	 OvKNA29nCU4oqXlnwwgdJgG4dCBdqJ1DgL8Rfry6VNK+1Aec2hLZvrX5V03Lr+U5PQ
-	 JBPmhbEzGOOc/R7LnN6TUv4+7uhxx4AkidbClZk8=
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.42.80]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20240111100955epcas5p30b39af37a470380276ce5c13fa80f325~pQy1Igb7A1877718777epcas5p37;
-	Thu, 11 Jan 2024 10:09:55 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	DB.3E.19369.37EBF956; Thu, 11 Jan 2024 19:09:55 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240111092805epcas5p2ebb993010ae31d039e8f9de1e7818f7c~pQOTew75o2611126111epcas5p27;
-	Thu, 11 Jan 2024 09:28:05 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240111092805epsmtrp25a16d740e19af0f0fd4935b028441b9a~pQOTd_HKN0796607966epsmtrp2T;
-	Thu, 11 Jan 2024 09:28:05 +0000 (GMT)
-X-AuditID: b6c32a50-c99ff70000004ba9-00-659fbe73b83e
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	0F.7E.18939.5A4BF956; Thu, 11 Jan 2024 18:28:05 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.44]) by
-	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240111092802epsmtip2a15f88b2710903e6573a3169282f850a~pQOQ9_sXL0381003810epsmtip2_;
-	Thu, 11 Jan 2024 09:28:02 +0000 (GMT)
-From: Onkarnarth <onkarnath.1@samsung.com>
-To: paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-	joel@joelfernandes.org, josh@joshtriplett.org, boqun.feng@gmail.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	r.thapliyal@samsung.com, maninder1.s@samsung.com, onkarnath.1@samsung.com
-Subject: [PATCH 1/1] rcu/sync: remove un-used rcu_sync_enter_start function
-Date: Thu, 11 Jan 2024 14:57:22 +0530
-Message-Id: <20240111092722.322454-1-onkarnath.1@samsung.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E477D11C85;
+	Thu, 11 Jan 2024 09:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=axentia.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axentia.se
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WSoGyOab7Ujqip8zfkzlKsWzrhb20+kWN3jD+sVBhcH547wrym1EcKiOIaxd24ZUoPDRu7Q8MNUaSaYIkCt0hVXBiObdRbqbQEsZmIUTP74E3/uyZOiobLvaWEnMz8IzlIcHlMaeI3s4U5VYkNuhCzKqT1ij6GfjEKxazVcKDT9VFlbKBy/G+9K62JaotpV+/d3/hz7eohFu31zVtzawPNkI3WV/m9ocB4i72yXEAaPiK8KYWGw5TEAS/KTUhr4cyaS+058Woi4CS56pt1n979e6N5Um6ZnJx8sH0sgMP3MUlOTzD15qNLarjM7C1w67pUnSBSWIAQhUNNlNzoQDUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YHPDclFgNkng3mdMgi5PMvS21uG8Kw2BdGJF8FFrKjo=;
+ b=kDETzdsGA2ehbgDK0Qjs7OGFTdDmzn7spwh5dj7RZgJTbU5idZAdcN11g7l5Nz/ODPyI5gIA5E1yOfERMYpY1sz6zbSaOVzVqlXKTt4+ipmsyqiBli/zuycj8IkL04aHikgubksf6V38RaNMg1tqpYpzWlBex2XNT6gLee7JrEqRIr7cVSDygHimtmlxKMQJTpUaQO2dV42BFJZurBP1uuPfgZs+uilarQIWteMYvfJRtu8nrsexKM+FYy/rq9cV+ZUK9k7+pFdlXpdM9WjjpRw2q1OMa+oM/yvd4Yx2wLLLnvYBNEQNLlEG/S9q3HPi14whgzJQxcsTXvv6TNgynQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YHPDclFgNkng3mdMgi5PMvS21uG8Kw2BdGJF8FFrKjo=;
+ b=LIcgHMW04MK/TxdDIIP3aiGHWp/GCw2VFvZ1b0JCRZow2ZDqhEIgXlJCaaTWXQm/EGRQpyBgCY+S6KOTd3cdPcECsRwWt3LRz68kOBGMkKwD64sjYjr+W2fvena2orXtgQjOrTN23GY3aSe+ewXu3yubRWBy2Un9a4/ZnnQePUY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=axentia.se;
+Received: from DU0PR02MB8500.eurprd02.prod.outlook.com (2603:10a6:10:3e3::8)
+ by DB5PR02MB10286.eurprd02.prod.outlook.com (2603:10a6:10:4a7::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Thu, 11 Jan
+ 2024 09:27:48 +0000
+Received: from DU0PR02MB8500.eurprd02.prod.outlook.com
+ ([fe80::4c56:a71b:d42d:11ba]) by DU0PR02MB8500.eurprd02.prod.outlook.com
+ ([fe80::4c56:a71b:d42d:11ba%3]) with mapi id 15.20.7181.015; Thu, 11 Jan 2024
+ 09:27:48 +0000
+Message-ID: <c50cd8ad-3bb0-e6fe-8ae0-c18ec53b2ce2@axentia.se>
+Date: Thu, 11 Jan 2024 10:27:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] i2c: muxes: pca954x: Allow sharing reset GPIO
+Content-Language: sv-SE
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ krzysztof.kozlowski@linaro.org, p.zabel@pengutronix.de
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240108041913.7078-1-chris.packham@alliedtelesis.co.nz>
+From: Peter Rosin <peda@axentia.se>
+In-Reply-To: <20240108041913.7078-1-chris.packham@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MM0P280CA0008.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:a::30) To DU0PR02MB8500.eurprd02.prod.outlook.com
+ (2603:10a6:10:3e3::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPKsWRmVeSWpSXmKPExsWy7bCmlm7xvvmpBl9/Klqs2dLIZLGgaS+r
-	xdS1u5ksljWoWvxfkG9xedccNovD89tYLDafPcNssaLnA6vFpyXfWCw+zPnHbvHmyi82i433
-	si3Ozj7HarGv4wGTA7/H0tNv2Dx2zrrL7tGy7xa7x8JPX1k9br229di0qpPNY+KeOo++LasY
-	PT5vkgvgjOKySUnNySxLLdK3S+DKuHPmN1PBR96Kn6dOsDUwXuPuYuTkkBAwkVjUd4yti5GL
-	Q0hgD6PEjE3f2EASQgKfGCXeTnWESADZxzYuZYXpWPlgBxNEYiejxIbW71DOF0aJXV2bmECq
-	2AS0JGbcOQCWEBH4wSjRPbOXHcRhFmhilJh/fCrYEmEBb4kHV06D2SwCqhKzF28FKuLg4BWw
-	lfjfbQ+xTl5i5qXv7CA2r4CgxMmZT1hAbGagePPW2cwgMyUEFnJI9Mz+xwzR4CJxesEZJghb
-	WOLV8S3sELaUxOd3e9kg7HyJltmzmEF2SQjUSFx9qgoRtpd4cnEhK0iYWUBTYv0ufYiwrMTU
-	U+uYINbySfT+fgI1nVdixzwYW1Xi15SpLBC2tMT933PZIKZ7SPxZbwYJ0ViJyYd6WCcwys9C
-	8swsJM/MQli8gJF5FaNUakFxbnpqsmmBoW5earlecWJucWleul5yfu4mRnAa0wrYwbh6w1+9
-	Q4xMHIyHGCU4mJVEeBU+z0kV4k1JrKxKLcqPLyrNSS0+xCjNwaIkzvu6dW6KkEB6Yklqdmpq
-	QWoRTJaJg1OqgWmDlXzzsSmOz6QdRW7z8N6JO/ZCh1HbjyfTZjZrm1vIGWFrL5b0DclX5RPe
-	py33OWZ9yKTYqfA0q5jBa1Objqv2KsvqFI+X/dju/fhKm+Saswfu/9teefFPaUbFuch4qYeZ
-	xTaLRaNX7Mx+FLfHitHW78tKS51V8reF1/7IuK/4d4Hf0hnbxJQ6gheKdQYunGNivXLO7P5b
-	gf0st3KDFly/1vf6osgPPeu/PPs/vk2+td93KXdKkqnXmzPXREP1N+v4/3B8+1I9TOLV6fI4
-	k502a2qFYma6mrFu9JW1TT9V6smVeaat7Uesi+KUXQ5e05UWGbL+1JLxv6LkMO2P3yaLrQK6
-	cdqnWwKZkvUdlFiKMxINtZiLihMB8mBVetIDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMLMWRmVeSWpSXmKPExsWy7bCSvO7SLfNTDf6sVrZYs6WRyWJB015W
-	i6lrdzNZLGtQtfi/IN/i8q45bBaH57exWGw+e4bZYkXPB1aLT0u+sVh8mPOP3eLNlV9sFhvv
-	ZVucnX2O1WJfxwMmB36PpaffsHnsnHWX3aNl3y12j4WfvrJ63Hpt67FpVSebx8Q9dR59W1Yx
-	enzeJBfAGcVlk5Kak1mWWqRvl8CVcefMb6aCj7wVP0+dYGtgvMbdxcjJISFgIrHywQ6mLkYu
-	DiGB7YwSmy61sEMkpCU+XZ4DZQtLrPz3nB2i6BOjxNWrM5hAEmwCWhIz7hwA6xYRaGGSWLr4
-	DSuIwyzQwShxe+8lsHZhAW+JB1dOs4HYLAKqErMXbwWKc3DwCthK/O+2h9ggLzHz0newcl4B
-	QYmTM5+wgNjMQPHmrbOZJzDyzUKSmoUktYCRaRWjaGpBcW56bnKBoV5xYm5xaV66XnJ+7iZG
-	cDxoBe1gXLb+r94hRiYOxkOMEhzMSiK8Cp/npArxpiRWVqUW5ccXleakFh9ilOZgURLnVc7p
-	TBESSE8sSc1OTS1ILYLJMnFwSjUwlUX63T+8k+3Amn3Ocret6iJ7eQv1LqQv1bR+c1lsUeBH
-	0eXpOsta9touK5m9vmSJzoFJ4sw/X9tITIv6VMuVynvc3qBTMCjvlrNyw/H3N3nb9+6unvSp
-	fW6i32z5qP26BlP22mSc1F2+/MZMzuu9V9ZP+fVx2+FFbD0L7NaW1C+/+i0q9XzZOUXZjVHy
-	+f9OCB/LOn3gkoHt+3K9L2opK7STnhRc4lghmOcYpe2/61VshsMR69M/H6fUXZ/vela2/NKS
-	c+FW3iblWpMkI3f9a1jqOaFJIHDfFtF1S/7MF7hSzM249vtCPfPlarHHI1+sFNh3aUnP0Vf2
-	qwI32MS84k39OJVz/rF1GmsZtXjTfiqxFGckGmoxFxUnAgCoLIAF9gIAAA==
-X-CMS-MailID: 20240111092805epcas5p2ebb993010ae31d039e8f9de1e7818f7c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20240111092805epcas5p2ebb993010ae31d039e8f9de1e7818f7c
-References: <CGME20240111092805epcas5p2ebb993010ae31d039e8f9de1e7818f7c@epcas5p2.samsung.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR02MB8500:EE_|DB5PR02MB10286:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb09a0e3-caf7-4ed1-0016-08dc1287931f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	upsRfirgha7pKbkpBKzh6NPOpDp9Me9rAkEZ4SKmO9nZRuio4tCw8YM11jzIIcPy5vLLxWQv+rKYj9loM4gRzs9yIART5ZwUlgj8j++v3mJVZS+iDUgG2ZVLtnFqoFVwr4qhO5knd54zjWCZbgfIfUz+G4qNsXcXxXYaJy9cGVEybsciV81mX9B67BkC2z58DVtmyiQPyVU8/soObTrLcqwkjAY9q5PWphGkFo/CBl9VWABpOpb0N9S9lAQ8+U2LYC7zmNluNIrABGG8LNGCEd/nY6sMzdwnQaUY89CkYNSzhcBAe6kX+qng9+8IqeGZiTp9bdMLKBZ43UBjnbuPj8pf3CYEHhXqciVBCeLbXVwPkwN4duxxiuWW6naJ3rbDeP1Bc8V0yGh5PpCQn7WnrI/CLfGgOUivXxDzgeTLtqshqI6e82wMJR9ffHdXjb+W7gDqnFZDlGpvQLcWl/fczZDq+lpMWv44ZYZTcCuhuZUgSlV1qk6DSbkDpXxAAkSleLX58yDTHoB2DSsNPqpFLJxCXFCqoaKbEhrZylLmv7QFE30/D7Po4ut9BzeAwUOpLlWLK04z8rQMAzXRKBjcf3LKVh2jCHCsiqMWjG/JCUb1DokOSu3bT+/tN6TG+D/lABT4NuLA0MsO/VQxqLzjSA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR02MB8500.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39830400003)(346002)(396003)(136003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(31686004)(66899024)(41300700001)(36756003)(86362001)(31696002)(2906002)(38100700002)(478600001)(2616005)(26005)(6506007)(316002)(66946007)(66556008)(66476007)(4744005)(6486002)(5660300002)(8936002)(8676002)(4326008)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SUlrN2NWTklYSy9xV0dETHhLQnQxQUV0Q0tIeUx3NVprY3JTaFlTZXN5blpJ?=
+ =?utf-8?B?ditkVnpBeVBuY2dheW5tZkdJY3F5RCtOci9aMGo1cC9QenMwajJSZ0REdG5Z?=
+ =?utf-8?B?dTRhTk1Iamt5cUxVSWNGL3M3bis3Q01LNkJ0THFyTURjOFJHRE1tY1p4TnM2?=
+ =?utf-8?B?SUNyUGZwQnhIeFpvOS9xdW1JdDc5RW9VOURIMzFJWFlka2JONmZGeHRScVhr?=
+ =?utf-8?B?MnprK0Uybmd1cmJtRFcwVm5NL2g4QmExdVRUekxGMGJqZ3Q3QTdpMjVxNnlk?=
+ =?utf-8?B?cG5nMm92SzdzeTBwNVpnNklwenFVQXFYVWY4SktpdnNWNjBkRlByeERka3hH?=
+ =?utf-8?B?aVZDK3FnM1IrNE5tWnlBdE9vbnpocXFOQnpUUEM3RzVva0UyOUs1SU5rWWR0?=
+ =?utf-8?B?YnJ2SmdUbHpXRTlBUzZRQUR2STJQRG9NcHpJc3Y2Wkx2allobE90ZDhtWVF3?=
+ =?utf-8?B?d2FvSUs2Y1J5UENEMzNMUUJwcE5mdEpydFN3TjU3bWtnMHR4VkxJRVQzZElY?=
+ =?utf-8?B?QTUwTjI4SjF6blNXWE1yUGNlMDJORkJWMVV4MlZWcDlkMDVQNFVqT3FxQjdx?=
+ =?utf-8?B?bUs3RnlvRzVLMVhoMWY0NytKK05STk5qaklNT2szQ2dFWDBRN0QxdENIclpa?=
+ =?utf-8?B?QjF2UkJBNGFpZk5ZaUcxVEdZb2RDeGFWQWdaazd1SzRzR2hkUXBNaEZSZXBC?=
+ =?utf-8?B?NzRPN1dPZEJnRjRpQTdSUDJoZThwRHRpOE4vZjJNWmo0azBOeW1hbkhrQ0JR?=
+ =?utf-8?B?VWJUTnlvMnJGRittRjY1ZFNPWjNYOWg1SnNXc0UrMjRVbW9LelNWQkpzUzBq?=
+ =?utf-8?B?RWFNSXlBTEpNdUNnKytqZXJ6Y1RnMjhaeDhkekdhZFhNY29NMmJpb3FUUWxl?=
+ =?utf-8?B?OFlwQXdEUFluZ3h0ZXhYU3FFVVBrVHVkZE01Ti9Ld0Jrc2wzY3NOUjlCcXhv?=
+ =?utf-8?B?UTV3cWhmb2tPSnVENGd5Z3J0T3NaMU56dVNoKzhKalJNUHVoK3VsSnc0RXlN?=
+ =?utf-8?B?Y3FySmlPUkw0TWZYdjVkOFBOZzRncHBwZktYbEN6YkVIMkowVW82bjRjaHoy?=
+ =?utf-8?B?QlRVbGgwUk0xSENLMGZIaGlRQnNyVWFYM3RkcEtUYmtOcEJIbDFEdFZSc2hD?=
+ =?utf-8?B?R1FBTk8raEFxOGZtbW94NG4wcVhzVkhHb2x1NUYyekozVTlGNDhqTm5DSGZM?=
+ =?utf-8?B?RDA0Mk9ucEQwcDlGZVVhMnJSUkptUnpaWDRKUWJ6V3RLWW9EelFXaFR0TlVl?=
+ =?utf-8?B?RXUyNnFzL1dOTXpCQ0hJNTBlc0M5a2hwQlhNWExuQVNvNTZYaEJrM3dZa2Nj?=
+ =?utf-8?B?elpSNCtzWmM2OWpaZlFwenBRck5wVWQwbVFqbWw2WnlXZnRselhJdDRleFVF?=
+ =?utf-8?B?am1JOFo5ZVdtc0RNa0k1RFFzc005SEpFTENuVXM1MDJxQndoSWZqeUNHcVBL?=
+ =?utf-8?B?bmhUN1pTZmZDMkIyNTNtZkhMb1NtcW5mdW9BRUhQYzFUZ1B5QXhERVhjZ1hv?=
+ =?utf-8?B?YTlTdVpRV3FGZHRoUTR4elV0cUNKQlMrUU5MZUJaellzZXhQbjVDc244SU1G?=
+ =?utf-8?B?c3ZGRmtISTAyanJlTmNjSE5KTVBaKzR5T0gwanp3OEtMZWdxRytkekp6UVVL?=
+ =?utf-8?B?UnVvZU5nVXloREM1a3A3THNKZFBYelhsRzRsTUpMMU15aktibTdPSnZ6SXdW?=
+ =?utf-8?B?SnVaQjFNcDVZeE1FWU5MMmdnYVkwMUZ1by90MmM4SkdncWFSdGF3K2U0allt?=
+ =?utf-8?B?UFFRTXJSeCttUHVnZnFVSG43RkIzSUhDaVIrdnAwZjI3RjJyVDNZWTNqYUhJ?=
+ =?utf-8?B?RDhuWDYzZ2hlU3dVQmZxNkJrdVJjMXoxY1drWFN0Z2NJVGF2UVpDeHhRUmx4?=
+ =?utf-8?B?Ulp1ZnBIeWdSVkwxS3BBM0kzVG1MVDhvZDVZSnV1WmZLLzJyR1VBWDBRWmRx?=
+ =?utf-8?B?RDVWY1lMVDlqeDE2TFY0WEgraDdBZnJxdUhLQWszdHQyekdJOVhIZi9VQnJ4?=
+ =?utf-8?B?eGVnSjQ3dzBsNzY5YlVqdS91VDFaYTlnUjl2ekd4TDRxMDJKdWF4Z2ozYTUr?=
+ =?utf-8?B?cStVazhMK0dTNVRmbkhEbEtKY2FzRWErQzF0UUJoWWRra2wrMUlOcjBuRVNl?=
+ =?utf-8?Q?AzNw0m+hczWxFpc87LXV5hXG0?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb09a0e3-caf7-4ed1-0016-08dc1287931f
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB8500.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 09:27:48.0222
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7V4ypuqOcHvp0b2d+Hu+ofgFfSWkOryA3K23gCt6Euy7DulOA0dVi5LCl4k1zIyd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5PR02MB10286
 
-From: Onkarnath <onkarnath.1@samsung.com>
+Hi!
 
-With commit '6a010a49b63a ("cgroup: Make !percpu threadgroup_rwsem
-operations optional")' usage of rcu_sync_enter_start is removed.
+2024-01-08 at 05:19, Chris Packham wrote:
+> Some hardware designs with multiple PCA954x devices use a reset GPIO
+> connected to all the muxes. Support this configuration by making use of
+> the reset controller framework which can deal with the shared reset
+> GPIOs. Fall back to the old GPIO descriptor method if the reset
+> controller framework is not enabled.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-So this function can also be removed.
+Looks good to me.
 
-Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
----
- include/linux/rcu_sync.h |  1 -
- kernel/rcu/sync.c        | 16 ----------------
- 2 files changed, 17 deletions(-)
+Acked-by: Peter Rosin <peda@axentia.se>
 
-diff --git a/include/linux/rcu_sync.h b/include/linux/rcu_sync.h
-index 0027d4c8087c..3860dbb9107a 100644
---- a/include/linux/rcu_sync.h
-+++ b/include/linux/rcu_sync.h
-@@ -37,7 +37,6 @@ static inline bool rcu_sync_is_idle(struct rcu_sync *rsp)
- }
- 
- extern void rcu_sync_init(struct rcu_sync *);
--extern void rcu_sync_enter_start(struct rcu_sync *);
- extern void rcu_sync_enter(struct rcu_sync *);
- extern void rcu_sync_exit(struct rcu_sync *);
- extern void rcu_sync_dtor(struct rcu_sync *);
-diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
-index e550f97779b8..86df878a2fee 100644
---- a/kernel/rcu/sync.c
-+++ b/kernel/rcu/sync.c
-@@ -24,22 +24,6 @@ void rcu_sync_init(struct rcu_sync *rsp)
- 	init_waitqueue_head(&rsp->gp_wait);
- }
- 
--/**
-- * rcu_sync_enter_start - Force readers onto slow path for multiple updates
-- * @rsp: Pointer to rcu_sync structure to use for synchronization
-- *
-- * Must be called after rcu_sync_init() and before first use.
-- *
-- * Ensures rcu_sync_is_idle() returns false and rcu_sync_{enter,exit}()
-- * pairs turn into NO-OPs.
-- */
--void rcu_sync_enter_start(struct rcu_sync *rsp)
--{
--	rsp->gp_count++;
--	rsp->gp_state = GP_PASSED;
--}
--
--
- static void rcu_sync_func(struct rcu_head *rhp);
- 
- static void rcu_sync_call(struct rcu_sync *rsp)
--- 
-2.25.1
-
+Cheers,
+Peter
 
