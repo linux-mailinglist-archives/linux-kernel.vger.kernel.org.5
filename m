@@ -1,119 +1,124 @@
-Return-Path: <linux-kernel+bounces-23349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5027B82AB72
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:00:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2B6482AB70
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6B9CB22650
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:59:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 847D01F26F34
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A577F125DA;
-	Thu, 11 Jan 2024 09:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E2312B81;
+	Thu, 11 Jan 2024 09:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XYDiGKcn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jD9Ganho"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2F212E6B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704967177; x=1736503177;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=wWtjtpvLpCpNq6v6WPPTrwuiaHZ9+Yn/ZZKrzAQXEDo=;
-  b=XYDiGKcnNutdLGi4OZPb2N/dnzrmfFYD570fsPl3jzDXnlGPCWwHkt42
-   7ROI9med6L8rJL5hfYeMs/1N50k0KimkmfAXjXpagYKcXfWkLDceRmP6a
-   sBamzBB+4sLCFxb7hVbgk8GlgotWYjXHCsqPBe6CaabpjExQy5eR2/XRs
-   862/qyqpq1PzrgBNX+FXxRJ6T4pyqMxko9pvQQuQkNj0NqaQE4UIK+2rB
-   4JLFL6KHCLeKiAFJuyajq9HoOHVDxlTT6/FsFR+GoIkZA8tMWyYEC0AmL
-   Ju8FRrL2PjOBUZXaspzH07+rjSenr0hXcsFFut6PyNYcXbtKbmrc9LfeG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5530914"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="5530914"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 01:59:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="782568762"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="782568762"
-Received: from gaertgee-mobl.ger.corp.intel.com (HELO localhost) ([10.252.54.206])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 01:59:24 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: chenxuebing <chenxb_99091@126.com>, airlied@gmail.com,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, daniel@ffwll.ch,
- tzimmermann@suse.de
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- chenxuebing <chenxb_99091@126.com>
-Subject: Re: [PATCH] drm: Clean up errors in drm_dp_mst_topology.h
-In-Reply-To: <20240111064245.8789-1-chenxb_99091@126.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240111064245.8789-1-chenxb_99091@126.com>
-Date: Thu, 11 Jan 2024 11:59:21 +0200
-Message-ID: <875y00ur5y.fsf@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1B511C85;
+	Thu, 11 Jan 2024 09:59:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F5EC43394;
+	Thu, 11 Jan 2024 09:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704967169;
+	bh=1KGPvZ+Jg0PX+zqhJQSKMoD+l3+PBPpn18BXoSciB6Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jD9Ganho3AgqZxZXa2ui0CQk0kCwFljYXGvdhWYhpyWhLLxjiKN5jO11LGEMhDQmv
+	 ltSiSEoDchrykh8SbvtM3DWFiV6VjW20ML6HVpce+wBNEZhVcbNvpYmF2or32ccDyf
+	 iO5TcEgTtHQtYOY6PSXD2HzAv9TOWPlXv449dMqRYoiBcMeq5C82Z7/LM/aN9SEdGI
+	 F47obgCueOdlUkPCLZzLyR2a1sK0wQauokZmfBInPe00ttIm2rlqKisgY/VLQRiGko
+	 1Q+0jyHycLWF+uLYCg7e+/9i9AsrrMVA0RArTDgP3h+TxCKBul4BkMhlhvqBqff/vP
+	 kDkUGGZalwzAg==
+Date: Thu, 11 Jan 2024 11:59:25 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc: Greg Sword <gregsword0@gmail.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+	"jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>
+Subject: Re: [PATCH for-next v4 2/2] RDMA/rxe: Remove rxe_info from
+ rxe_set_mtu
+Message-ID: <20240111095925.GB7488@unreal>
+References: <20240109083253.3629967-1-lizhijian@fujitsu.com>
+ <20240109083253.3629967-2-lizhijian@fujitsu.com>
+ <CAEz=LcvphS6QECpHTFhrRoC=FcSbEU4j_XuqJF7ognjJu+uF6Q@mail.gmail.com>
+ <dbbd1887-af93-4323-ac27-f937bafc5756@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dbbd1887-af93-4323-ac27-f937bafc5756@fujitsu.com>
 
-On Thu, 11 Jan 2024, chenxuebing <chenxb_99091@126.com> wrote:
-> Fix the following errors reported by checkpatch:
->
-> ERROR: space prohibited before open square bracket '['
+On Wed, Jan 10, 2024 at 01:22:12AM +0000, Zhijian Li (Fujitsu) wrote:
+> 
+> 
+> On 09/01/2024 17:20, Greg Sword wrote:
+> > On Tue, Jan 9, 2024 at 4:41 PM Li Zhijian <lizhijian@fujitsu.com> wrote:
+> >>
+> >> commit 9ac01f434a1e ("RDMA/rxe: Extend dbg log messages to err and info")
+> >> newly added this info. But it did only show null device when
+> >> the rdma_rxe is being loaded because dev_name(rxe->ib_dev->dev)
+> >> has not yet been assigned at the moment:
+> >>
+> >> "(null): rxe_set_mtu: Set mtu to 1024"
+> >>
+> >> Remove it to silent this message, check the mtu from it backend link
+> >> instead if needed.
+> >>
+> >> CC: Bob Pearson <rpearsonhpe@gmail.com>
+> >> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> >> ---
+> >> V4: Remove it rather than re-order rxe_set_mtu() and rxe_register_device()
+> >> ---
+> >>   drivers/infiniband/sw/rxe/rxe.c | 2 --
+> >>   1 file changed, 2 deletions(-)
+> >>
+> >> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+> >> index a086d588e159..ae466e72fc43 100644
+> >> --- a/drivers/infiniband/sw/rxe/rxe.c
+> >> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> >> @@ -160,8 +160,6 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
+> >>
+> >>          port->attr.active_mtu = mtu;
+> >>          port->mtu_cap = ib_mtu_enum_to_int(mtu);
+> >> -
+> >> -       rxe_info_dev(rxe, "Set mtu to %d\n", port->mtu_cap);
+> > 
+> > I'd like to keep this statement so I can tell if the mtu setup was
+> > successful or not.
+> 
+> During the module loading, once it's loaded successfully, the mtu is set as well.
+> 
+> The another caller rxe_notify()->rxe_set_mtu() already had its own dbg message for this,
+> people can enable the dbg if needed.
+> 
+> Anyway, I'm open to your point.
 
-Same here, checkpatch just isn't clever enough to realize it's within a
-macro.
+IMHO, this print can be safely removed.
 
-BR,
-Jani.
+Thanks
 
->
-> Signed-off-by: chenxuebing <chenxb_99091@126.com>
-> ---
->  drivers/gpu/drm/display/drm_dp_mst_topology.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> index bd6c24d4213c..a4a24ec11b80 100644
-> --- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> @@ -100,7 +100,7 @@ static bool drm_dp_mst_port_downstream_of_branch(struct drm_dp_mst_port *port,
->  
->  #define DBG_PREFIX "[dp_mst]"
->  
-> -#define DP_STR(x) [DP_ ## x] = #x
-> +#define DP_STR(x)[DP_ ## x] = #x
->  
->  static const char *drm_dp_mst_req_type_str(u8 req_type)
->  {
-> @@ -131,7 +131,7 @@ static const char *drm_dp_mst_req_type_str(u8 req_type)
->  }
->  
->  #undef DP_STR
-> -#define DP_STR(x) [DP_NAK_ ## x] = #x
-> +#define DP_STR(x)[DP_NAK_ ## x] = #x
->  
->  static const char *drm_dp_mst_nak_reason_str(u8 nak_reason)
->  {
-> @@ -156,7 +156,7 @@ static const char *drm_dp_mst_nak_reason_str(u8 nak_reason)
->  }
->  
->  #undef DP_STR
-> -#define DP_STR(x) [DRM_DP_SIDEBAND_TX_ ## x] = #x
-> +#define DP_STR(x)[DRM_DP_SIDEBAND_TX_ ## x] = #x
->  
->  static const char *drm_dp_mst_sideband_tx_state_str(int state)
->  {
-
--- 
-Jani Nikula, Intel
+> 
+> 
+> Thanks
+> Zhijian
+> 
+> 
+> > 
+> >>   }
+> >>
+> >>   /* called by ifc layer to create new rxe device.
+> >> --
+> >> 2.29.2
+> >>
+> >>
 
