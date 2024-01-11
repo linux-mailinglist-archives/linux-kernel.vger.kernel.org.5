@@ -1,52 +1,59 @@
-Return-Path: <linux-kernel+bounces-23660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E8E82AFC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:34:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8850B82AFC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC2A72870D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:34:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED131C24000
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A916118025;
-	Thu, 11 Jan 2024 13:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E63018033;
+	Thu, 11 Jan 2024 13:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="n1PnrTZ7"
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="sGG1vr+s"
 Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94B917987;
-	Thu, 11 Jan 2024 13:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBF617989;
+	Thu, 11 Jan 2024 13:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
 Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 948CC60886;
-	Thu, 11 Jan 2024 13:34:07 +0000 (UTC)
+	by mail5.25mail.st (Postfix) with ESMTPSA id 523536089B;
+	Thu, 11 Jan 2024 13:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1704980066;
+	s=25mailst; t=1704980131;
 	bh=spHBxL0T5QVtiotbfLvZE1HJm4xym++up4FJ1+AM8Bs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n1PnrTZ7hmDB/4z4jfOJlS3Cz/cMA4btKVdeXmQ1yohcU79B66TyPutTqa1CSuFYX
-	 OuIXjWI9nJ+rHrr/aMFOmCOql9tjSaC6HBUhswerOEdsgArwA7paDK5M/2nVW/nL1I
-	 1RJsZ6tFID6nxTyeRfnSIg6bSd6wYwWCywfiXcCQfATit4JWkd4j4a8IbBIIq+VxvF
-	 WurVBhxxA1TiAqOUYN/RldfuSFpdD6hGDgzXgjy02ObrD/AnUOjUTwwRaH0PnXcbTt
-	 LXyAHnHwssQ0WBhEK0DeCB71a1QL5nDbkDJtyLLPeA5i7xVwyZ3fGlZ2JFND+9bBAo
-	 CArZmRX4DM0wA==
-Date: Thu, 11 Jan 2024 15:34:04 +0200
+	b=sGG1vr+s2ysVGTKGRniHpF6qqkvBc46VzszE+/9KJNqIrzv2RpnswlYRvm4iAWIv1
+	 Wqh5VgTrZqDv9OXsenP23W/9DZ//vfRuC/R2/4C0kYiXBsLBDLGfrkzeQilwW+fS5m
+	 l+nLeDYhWu5mNSASKPyGezLbAjfOowCjUnJyD0VbW9Li4AVqTiHpE9JAN+Be88Yu97
+	 fSwfzke4x9dKAPbqUzUrQh4BmEQ3a+7uvJs9TDv6Td6eT/AlMFOAqs+vJuz/FcS+Pu
+	 MFpEicvKetpTAy5Hfqr2sGxzQsE9m6QHtnaaFgc1tsTemuF1T6YA1uTGb6Yo5VPIHY
+	 q1RoK6SBCJFFw==
+Date: Thu, 11 Jan 2024 15:34:56 +0200
 From: Tony Lindgren <tony@atomide.com>
 To: Nishanth Menon <nm@ti.com>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 04/16] arm64: dts: ti: k3-am62p: Add MIT license along
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	"Alexander A. Klimov" <grandmaster@al2klimov.de>,
+	Jan Kiszka <jan.kiszka@siemens.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+	Pierre Gondois <pierre.gondois@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH 06/16] arm64: dts: ti: k3-am65: Add MIT license along
  with GPL-2.0
-Message-ID: <20240111133404.GD5185@atomide.com>
+Message-ID: <20240111133456.GE5185@atomide.com>
 References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-5-nm@ti.com>
+ <20240110140903.4090946-7-nm@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +62,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240110140903.4090946-5-nm@ti.com>
+In-Reply-To: <20240110140903.4090946-7-nm@ti.com>
 
 * Nishanth Menon <nm@ti.com> [700101 02:00]:
 > Modify license to include dual licensing as GPL-2.0-only OR MIT
