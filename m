@@ -1,86 +1,92 @@
-Return-Path: <linux-kernel+bounces-23293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CF382AA94
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:11:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 196D882AAC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C845284735
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:11:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CCEF1C25E40
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF15C1094E;
-	Thu, 11 Jan 2024 09:11:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441C912E7E;
+	Thu, 11 Jan 2024 09:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="heWpginE"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J+HHQivC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE8AD291;
-	Thu, 11 Jan 2024 09:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e60e13703so2591445e9.0;
-        Thu, 11 Jan 2024 01:11:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704964266; x=1705569066; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=58H3B21puKPucFrgZrCCs4UrdvBkL+jeM2Mpg7ywRvc=;
-        b=heWpginEoTaue2cw4AFKxoqn+1s5klWNgpIzpc3ZpRzmHBP5b6iwoOOk+w04OrfIC7
-         xUEz014CLBc8rksDwPT8CNjw0EPnW+oSrSWy2fTklbY5sibD1ExleD2lu/tCFyE7cRen
-         iLV+9YTszyT1770c+WaVD2ZuN1o7ayh4lHpjgvNOfnsz48Fp5bw+7n8KtM1qckX3LF2V
-         wSUV0LifXmvwcLssN7hShY0dj9B6AlOs3rf+iXz+ts1UHuPb76hTTP9f5PdKdbDHq83Y
-         5gi12sZylstf0J3U3179R/nlc01iwAbuKAEDpdQ8Ce+uGFnFwH73nUFBkpHhWRI9xDDD
-         HRdw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9BD12E5F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704964913;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=18eURhzPqjh6OO9ktQkfsRySWY9tUDGvnWhEFURW+fY=;
+	b=J+HHQivC6LN52GtERTJ+pHD1BcH61f6+oJ/dEwTmB9Wrw6/RolgbaIvXQqrJ3IOcQwrS7e
+	fHb7ZxHCE2En/VDlwlGCuHv/2ynLgdmNv12sP49DyVIyeFsl0LT0aHRZsmTvY6fwiTmjAq
+	DXi5SqQoYUOjS5s7Fp7ytzn3NLmj+FE=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-482-VB-_lx03M_aa6uiVhn_TJA-1; Thu, 11 Jan 2024 04:21:50 -0500
+X-MC-Unique: VB-_lx03M_aa6uiVhn_TJA-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1d50d0e552dso8851625ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:21:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704964266; x=1705569066;
+        d=1e100.net; s=20230601; t=1704964910; x=1705569710;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=58H3B21puKPucFrgZrCCs4UrdvBkL+jeM2Mpg7ywRvc=;
-        b=m46Zv0gSe1deAIjyOrkHV4A5J9ihqP6fPSRQuRX4XI7L8IE66ll1ANx48H5C7sF/zX
-         SbxG9OJgQNqsfPWsi25VX+s75bcaEO6rNXX4WQ5H4+LiJScDIDkP5+aT5iq5nZOh5A3m
-         wbM5kDaTCWlHIe4W0Foxn/jiRKbAtFhPwUKgt2l9kt/8+AtBU82Zf34QD9rqdtYh5TAf
-         QdyjwPgovpKu3flCQIjwmrIFiKewB+iGL17P659+VpzdRN42oO5SggLWEWAJ7MAaM6k7
-         I7Mc+6PttnWRJODhqtYC2Dt7Q+IkKfi6kRiweMHn6wXjRKuo4wT6WToCzOdzrN+Lix2/
-         BIDg==
-X-Gm-Message-State: AOJu0YxQflsj9ym6KQm0PSODlY+BlA3XD9VNuWdMyd2p6cAsaZx4A45e
-	zj66lnbtcyYVHTW+UgGCkGQ=
-X-Google-Smtp-Source: AGHT+IE1tP3ziJ71aNWf7nd5bjIvUPih/2iLsXlWGYDp+UdvA8FDX5JyJaWF4HkNkgCLLNfW5toheA==
-X-Received: by 2002:a05:600c:444c:b0:40e:498b:dd35 with SMTP id v12-20020a05600c444c00b0040e498bdd35mr207291wmn.26.1704964265350;
-        Thu, 11 Jan 2024 01:11:05 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05600c430c00b0040e596320bfsm1151028wme.0.2024.01.11.01.11.04
+        bh=18eURhzPqjh6OO9ktQkfsRySWY9tUDGvnWhEFURW+fY=;
+        b=uSUvdQh74Gau+0dBlUyqlK0xFS/L2ABt2zocHeiidKa6UCH0D4t+4QsTpL8mKtSIoZ
+         XV9aGP4ZA4lU364TALLjiN4bA1eJuVzpYBWBDs2w30NFnqTa2YmLOKmGxhyiJxZqXFBU
+         NHQmH59VWMWBtPM8UW9MnlsNFYc2NXxv+ZRIx0coGHI501piCR11hwn8NOHXjY4SrkRC
+         h1W83kjPvBYHQFamnYOZmYvindlooZFQdXnCztgxfuok5apklLHtXWZDbZ4bFs+xYBY0
+         0mVIwbEBnl4jFxq5GhqumA8lKMsKS3WKKUAfId3QLtHzfPWCw6GupisBoAZRlTZLJt0z
+         E78g==
+X-Gm-Message-State: AOJu0YyIzIYWCGsTOHdkP3itlFeGkdFKfHbNrNbafciwKcuhIR/EEgNt
+	8zGWEJ0tYZgsmd/snG22ZJIcw1fGG90eIKrr2SPCzVmlEheyQ8V6dIH83tHTg5ZDaGlcgYdBzTW
+	LFw2AWw4TpTZxr3DSrwQw0cbiRDTdw6TG
+X-Received: by 2002:a05:6122:4104:b0:4b6:e3fa:7599 with SMTP id ce4-20020a056122410400b004b6e3fa7599mr1397000vkb.0.1704964487940;
+        Thu, 11 Jan 2024 01:14:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGsCflr1cnBg8FbDO4MmTrvarkaVOthrTYfY/uZOhpa7zT35UnHSVpI8slHFl4ak53EWIvl9w==
+X-Received: by 2002:a05:6122:4104:b0:4b6:e3fa:7599 with SMTP id ce4-20020a056122410400b004b6e3fa7599mr1396985vkb.0.1704964487656;
+        Thu, 11 Jan 2024 01:14:47 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id ch7-20020a05622a40c700b00429970654b6sm281418qtb.33.2024.01.11.01.14.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 01:11:05 -0800 (PST)
-Message-ID: <4c15f3f2d54363698d13a9c5b50a82684e143afd.camel@gmail.com>
-Subject: Re: [PATCH 04/13] spi: dt-bindings: adi,axi-spi-engine: add offload
- bindings
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: David Lechner <dlechner@baylibre.com>, Rob Herring <robh@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>, Jonathan Cameron <jic23@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>,
- Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,  Frank Rowand
- <frowand.list@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, Uwe
- =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Jonathan
- Corbet <corbet@lwn.net>,  linux-spi@vger.kernel.org,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Date: Thu, 11 Jan 2024 10:14:16 +0100
-In-Reply-To: <CAMknhBGwb+9Eo5ghG+Zk3BpMuMZfQxAAwGEGUMspcJzHzKWyXA@mail.gmail.com>
-References: 
-	<20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
-	 <20240109-axi-spi-engine-series-3-v1-4-e42c6a986580@baylibre.com>
-	 <20240110231456.GB2854345-robh@kernel.org>
-	 <CAMknhBGwb+9Eo5ghG+Zk3BpMuMZfQxAAwGEGUMspcJzHzKWyXA@mail.gmail.com>
+        Thu, 11 Jan 2024 01:14:47 -0800 (PST)
+Message-ID: <42cf5ca70c940b3e68c8ad0e4bab6f14f87d4486.camel@redhat.com>
+Subject: Re: [PATCH v5 RESEND 0/5] Regather scattered PCI-Code
+From: Philipp Stanner <pstanner@redhat.com>
+To: Johannes Berg <johannes@sipsolutions.net>, Bjorn Helgaas
+ <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>, Randy Dunlap
+ <rdunlap@infradead.org>, NeilBrown <neilb@suse.de>, John Sanpe
+ <sanpeqf@gmail.com>,  Kent Overstreet <kent.overstreet@gmail.com>, Niklas
+ Schnelle <schnelle@linux.ibm.com>, Dave Jiang <dave.jiang@intel.com>,
+ Uladzislau Koshchanka <koshchanka@gmail.com>,  "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, David Gow <davidgow@google.com>, Kees Cook
+ <keescook@chromium.org>, Rae Moar <rmoar@google.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, "wuqiang.matt" <wuqiang.matt@bytedance.com>, Yury
+ Norov <yury.norov@gmail.com>, Jason Baron <jbaron@akamai.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Marco Elver <elver@google.com>, Andrew
+ Morton <akpm@linux-foundation.org>, Ben Dooks <ben.dooks@codethink.co.uk>, 
+ dakr@redhat.com
+Cc: linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, 
+	linux-arch@vger.kernel.org, stable@vger.kernel.org
+Date: Thu, 11 Jan 2024 10:14:43 +0100
+In-Reply-To: <43478eb70cf5f1120316739803c7622ab5f9e16a.camel@sipsolutions.net>
+References: <20240111085540.7740-1-pstanner@redhat.com>
+	 <43478eb70cf5f1120316739803c7622ab5f9e16a.camel@sipsolutions.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,69 +94,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2024-01-10 at 18:06 -0600, David Lechner wrote:
-> On Wed, Jan 10, 2024 at 5:15=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
-te:
-> >=20
-> > On Wed, Jan 10, 2024 at 01:49:45PM -0600, David Lechner wrote:
-> > > The ADI AXI SPI Engine driver supports offloading SPI transfers to
-> > > hardware. This is essentially a feature that allows recording an
-> > > arbitrary sequence of SPI transfers and then playing them back with
-> > > no CPU intervention via a hardware trigger.
-> > >=20
-> > > This adds the bindings for this feature. Each SPI Engine instance
-> > > can have from 0 to 32 offload instances. Each offload instance has a
-> > > trigger input and a data stream output. As an example, this could be
-> > > used with an ADC SPI peripheral. In this case the trigger is connecte=
-d
-> > > to a PWM/clock to determine the sampling rate for the ADC and the out=
-put
-> > > stream is connected to a DMA channel to pipe the sample data to memor=
-y.
-> > >=20
-> > > SPI peripherals act as consumers of the offload instances. Typically,
-> > > one SPI peripheral will be connected to one offload instance. But to
-> > > make the bindings future-proof, the property is an array.
-> >=20
-> > Is there some sort of arbitration between multiple offload engines on
-> > the same chip select? If not, I don't see how it would work.
+On Thu, 2024-01-11 at 10:03 +0100, Johannes Berg wrote:
+> On Thu, 2024-01-11 at 09:55 +0100, Philipp Stanner wrote:
+> > Second Resend. Would be cool if someone could tell me what I'll
+> > have to
+> > do so we can get this merged.
 >=20
-> There is only one SPI engine driving the SPI controller, so if two
-> offloads are triggered at the same time, they will be executed
-> serially.
->=20
-> >=20
-> > I think this whole thing could be simplified down to just 3
-> > SPI controller properties: pwms, dmas, and adi,offload-cs-map. Each
-> > property is has entries equal the number of offload engines. The last
-> > one maps an offload engine to a SPI chip-select.
->=20
-> Offloads could be connected to virtually anything, not just pwms and
-> dmas, so making pwms and dmas controller properties doesn't seem right
-> to me. What if we have one that uses a gpio trigger or clock trigger?
-> Or what if we have one where the output goes to a DSP instead of DMA?
-> This is why I made offload@ nodes with a compatible property - to
-> describe what is actually connected to each offload instance since it
-> could be an unlimited range of different things.
->=20
+> I don't even know who'd merge it, but um doesn't seem appropriate...
 
-Yeah, again, that is conceptually correct but I'm just not sure if the extr=
-a
-complexity pays off. The peripheral device connected to the offload should =
-know
-what trigger + data path it has. So I don't really think that horrible to h=
-ave
-the properties in the peripheral device. And there's not much that boilerpl=
-ate
-code anyways (at least in ADI usecases). And, as already said, for the trig=
-gers
-we might be able to have something generic but for the dmas (or whatever el=
-se)
-would be more tricky. In IIO case, setting up an IIO DMA buffer, is one API=
- call
-- so not much repetition in it...
+UM isn't a recipent, I'd guess it's some mail filter which might make
+it appear that way :)
+The lists I sent this to are
+linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+linux-arch@vger.kernel.org, stable@vger.kernel.org
 
-- Nuno S=C3=A1
+Anyways, PCI is for sure who should merge this, since it's 100% about
+PCI.
+
+> >=20
+> > @Stable-Kernel:
+> > You receive this patch series because its first patch fixes leaks
+> > in
+> > PCI.
+>=20
+> Too early for that, stable just ignores stuff before it hits
+> mainline.
+
+I know, they're in CC because of the "Fixes: "
+
+P.
+
+>=20
+> johannes
 >=20
 
 
