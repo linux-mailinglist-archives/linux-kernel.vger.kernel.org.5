@@ -1,146 +1,206 @@
-Return-Path: <linux-kernel+bounces-23811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25A582B20F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 751EF82B215
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:49:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F6D0285CA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:46:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2304F285B39
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087824F20F;
-	Thu, 11 Jan 2024 15:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11394D5AA;
+	Thu, 11 Jan 2024 15:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="T0C2mlLz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rZ1rIsym";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="T0C2mlLz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rZ1rIsym"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="N2iGFPVQ"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B7A4CE01;
-	Thu, 11 Jan 2024 15:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 966621FBAD;
-	Thu, 11 Jan 2024 15:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704987991;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nyGnkTpDkCQODLv1dHvo4JLTb7MOnektuQjecIOtmts=;
-	b=T0C2mlLzu9Wa4doab1YB0VeC/jFGkKhj7JFUn1xN5bMAjSNpr1/9ld8pl92+gvlDJUen25
-	GnfwH0JDD6AMhECVWDKnCwalquGOK/tK82jVLtk3jVj5uTKuF8x1GhiKsR0GNYNIakVbZQ
-	sEPeiKm8BIulb3afxkQ50YkrLYW6Mj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704987991;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nyGnkTpDkCQODLv1dHvo4JLTb7MOnektuQjecIOtmts=;
-	b=rZ1rIsymKzvyqN1n4uMj3wy/d3A4NPzBHbnEctKbWVSFYJwpjggS4pkR4Nk8ibDWtaZfTT
-	wGo0Jn/r4E3bikDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704987991;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nyGnkTpDkCQODLv1dHvo4JLTb7MOnektuQjecIOtmts=;
-	b=T0C2mlLzu9Wa4doab1YB0VeC/jFGkKhj7JFUn1xN5bMAjSNpr1/9ld8pl92+gvlDJUen25
-	GnfwH0JDD6AMhECVWDKnCwalquGOK/tK82jVLtk3jVj5uTKuF8x1GhiKsR0GNYNIakVbZQ
-	sEPeiKm8BIulb3afxkQ50YkrLYW6Mj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704987991;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nyGnkTpDkCQODLv1dHvo4JLTb7MOnektuQjecIOtmts=;
-	b=rZ1rIsymKzvyqN1n4uMj3wy/d3A4NPzBHbnEctKbWVSFYJwpjggS4pkR4Nk8ibDWtaZfTT
-	wGo0Jn/r4E3bikDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 79BED138E5;
-	Thu, 11 Jan 2024 15:46:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id xN8/HVYNoGX3eAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 11 Jan 2024 15:46:30 +0000
-Date: Thu, 11 Jan 2024 16:46:15 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Btrfs updates for 6.8
-Message-ID: <20240111154615.GF31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1704481157.git.dsterba@suse.com>
- <CAHk-=wjju0S87C+pdF=0i0hVky+HeMj1xVFwUdV867YoLheL5Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9C94CDE9
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1704988169;
+	bh=CiSR0Tuk8JBUjA4HrB2X52STAqq56NnAYbyj25ClA9g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=N2iGFPVQl/3OZWrtZHRqk055f6PMfMCN4b0gU0qjkpId3g1bWEM3Gc4tADi70dNaP
+	 6iegc9DBiivGsD1wg6akSh2B209PRfnxDj381hVscFIXHh8pDNWz02gTI00HVaENbo
+	 Bazm5fG0PAwtFsL7PAYa53SKValB5TqYfMYdHr+hEk5NCsiYCwZWbvfYpo4+8dAnIa
+	 RNHRLwW4IqjtawhzVyQ9l1MFSp4E7onShLuoY1Il6wyANDCJn6BCdb+8jK0XOgwJpy
+	 ShZuhBl9Wfm24WiwUDLtH57AUovjm9FbATPS4z6n1He3eZXfb4T/4AaqrUoyIsKvpa
+	 EwirL1wEIL+2Q==
+Received: from localhost.localdomain (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4T9py148ypzKTm;
+	Thu, 11 Jan 2024 10:49:29 -0500 (EST)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH] selftests/rseq: Do not skip !allowed_cpus for mm_cid
+Date: Thu, 11 Jan 2024 10:49:22 -0500
+Message-Id: <20240111154922.600919-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjju0S87C+pdF=0i0hVky+HeMj1xVFwUdV867YoLheL5Q@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=T0C2mlLz;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rZ1rIsym
-X-Spamd-Result: default: False [-0.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[13.52%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.01
-X-Rspamd-Queue-Id: 966621FBAD
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 10, 2024 at 09:34:28AM -0800, Linus Torvalds wrote:
-> On Fri, 5 Jan 2024 at 11:04, David Sterba <dsterba@suse.com> wrote:
-> >
-> > There are possible minor merge conflicts reported by linux-next.
-> 
-> Bah. The block open mode changes were ugly. I did my best to make the
-> end result legible.
-> 
-> You may want to note the btrfs_open_mode() helper I added and possibly
-> do it differently.
+Indexing with mm_cid is incompatible with skipping disallowed cpumask,
+because concurrency IDs are based on a virtual ID allocation which is
+unrelated to the physical CPU mask.
 
-Thanks, 1200+ lines of the merge diff certainly did not make it easy.
-My local tests passed and the conflict resolution seem to do the
-right thing. Josef sent a different fixup [1] altough it seems he
-based it on the master branch without your resolution, but the logic
-looks equivalent.
+These issues can be reproduced by running the rseq selftests under a
+taskset which excludes CPU 0, e.g.
 
-[1] https://lore.kernel.org/linux-btrfs/2fe68e18d89abb7313392c8da61aaa9881bbe945.1704917721.git.josef@toxicpanda.com/
+  taskset -c 10-20 ./run_param_test.sh
+
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+---
+ .../selftests/rseq/basic_percpu_ops_test.c    | 14 ++++++++++--
+ tools/testing/selftests/rseq/param_test.c     | 22 ++++++++++++++-----
+ 2 files changed, 28 insertions(+), 8 deletions(-)
+
+diff --git a/tools/testing/selftests/rseq/basic_percpu_ops_test.c b/tools/testing/selftests/rseq/basic_percpu_ops_test.c
+index 887542961968..2348d2c20d0a 100644
+--- a/tools/testing/selftests/rseq/basic_percpu_ops_test.c
++++ b/tools/testing/selftests/rseq/basic_percpu_ops_test.c
+@@ -24,6 +24,11 @@ bool rseq_validate_cpu_id(void)
+ {
+ 	return rseq_mm_cid_available();
+ }
++static
++bool rseq_use_cpu_index(void)
++{
++	return false;	/* Use mm_cid */
++}
+ #else
+ # define RSEQ_PERCPU	RSEQ_PERCPU_CPU_ID
+ static
+@@ -36,6 +41,11 @@ bool rseq_validate_cpu_id(void)
+ {
+ 	return rseq_current_cpu_raw() >= 0;
+ }
++static
++bool rseq_use_cpu_index(void)
++{
++	return true;	/* Use cpu_id as index. */
++}
+ #endif
+ 
+ struct percpu_lock_entry {
+@@ -274,7 +284,7 @@ void test_percpu_list(void)
+ 	/* Generate list entries for every usable cpu. */
+ 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 		for (j = 1; j <= 100; j++) {
+ 			struct percpu_list_node *node;
+@@ -299,7 +309,7 @@ void test_percpu_list(void)
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+ 		struct percpu_list_node *node;
+ 
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 
+ 		while ((node = __percpu_list_pop(&list, i))) {
+diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/selftests/rseq/param_test.c
+index 20403d58345c..2f37961240ca 100644
+--- a/tools/testing/selftests/rseq/param_test.c
++++ b/tools/testing/selftests/rseq/param_test.c
+@@ -288,6 +288,11 @@ bool rseq_validate_cpu_id(void)
+ {
+ 	return rseq_mm_cid_available();
+ }
++static
++bool rseq_use_cpu_index(void)
++{
++	return false;	/* Use mm_cid */
++}
+ # ifdef TEST_MEMBARRIER
+ /*
+  * Membarrier does not currently support targeting a mm_cid, so
+@@ -312,6 +317,11 @@ bool rseq_validate_cpu_id(void)
+ {
+ 	return rseq_current_cpu_raw() >= 0;
+ }
++static
++bool rseq_use_cpu_index(void)
++{
++	return true;	/* Use cpu_id as index. */
++}
+ # ifdef TEST_MEMBARRIER
+ static
+ int rseq_membarrier_expedited(int cpu)
+@@ -715,7 +725,7 @@ void test_percpu_list(void)
+ 	/* Generate list entries for every usable cpu. */
+ 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 		for (j = 1; j <= 100; j++) {
+ 			struct percpu_list_node *node;
+@@ -752,7 +762,7 @@ void test_percpu_list(void)
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+ 		struct percpu_list_node *node;
+ 
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 
+ 		while ((node = __percpu_list_pop(&list, i))) {
+@@ -902,7 +912,7 @@ void test_percpu_buffer(void)
+ 	/* Generate list entries for every usable cpu. */
+ 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 		/* Worse-case is every item in same CPU. */
+ 		buffer.c[i].array =
+@@ -952,7 +962,7 @@ void test_percpu_buffer(void)
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+ 		struct percpu_buffer_node *node;
+ 
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 
+ 		while ((node = __percpu_buffer_pop(&buffer, i))) {
+@@ -1113,7 +1123,7 @@ void test_percpu_memcpy_buffer(void)
+ 	/* Generate list entries for every usable cpu. */
+ 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 		/* Worse-case is every item in same CPU. */
+ 		buffer.c[i].array =
+@@ -1160,7 +1170,7 @@ void test_percpu_memcpy_buffer(void)
+ 	for (i = 0; i < CPU_SETSIZE; i++) {
+ 		struct percpu_memcpy_buffer_node item;
+ 
+-		if (!CPU_ISSET(i, &allowed_cpus))
++		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
+ 			continue;
+ 
+ 		while (__percpu_memcpy_buffer_pop(&buffer, &item, i)) {
+-- 
+2.25.1
+
 
