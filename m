@@ -1,177 +1,169 @@
-Return-Path: <linux-kernel+bounces-24081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8DDD82B68A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:21:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68FC182B68B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 786CAB23EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 270601F215D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2035812F;
-	Thu, 11 Jan 2024 21:20:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721B558132;
+	Thu, 11 Jan 2024 21:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3JZ9fE5x"
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="crIQjWq3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C3E58120
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-467021612acso1440014137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:20:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705008044; x=1705612844; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fV8E3GY3Bf8X4jIpwdPtDTsqut4T51x4SGgA0WQsHBg=;
-        b=3JZ9fE5xote49FhIjSUNfJ2QyZuZ/cGQ3Msh4at9C73v4YVITT51p7izDtUJmdYThy
-         VYtkFeC3C9X/PHgsY9E07ypfDbLz3u99Ig2RrhGn7t0RphOyYOYS8zA/2NSmtxPjfkze
-         fk448XSLJldloTM7Yhn9qc7o+nyP6hNeHHhGBdkUNcPAT4etYh//xHSPplHBS5d/8uSM
-         ZJ18mXf444jmVgxrQZzLnqAxTOv9ZkmUdfqXtgHWI3cjD+Mlh/85zETulYLzPpgzlVI9
-         n6WCJqPTA4tMaby52qXh5tduSuBS1c9p1JiYidCjAm/FCdVFo55V2GIfM9tRSt0T3aBs
-         Ikhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705008044; x=1705612844;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fV8E3GY3Bf8X4jIpwdPtDTsqut4T51x4SGgA0WQsHBg=;
-        b=o8496b7Uot3uJbgPVaVJ2aO1ckodygRPNkmgy4QmhPJNMVVwSE5ZqhIXwzKI5abu2l
-         EXPT5i65OyQWCyQVWC0B8kl1PqHAEUCbm0teLsCyZYUrfwtwWwm6KRcSh+rRjSYY5J5q
-         tMFpRQtUf0zuq4vQYgBXEKCZ7PtK3tbjBkvI+gcy6BCsIzii5se+QBXuWbnCOMJrXAUU
-         lO1wtkzrmNegRpk1P8EN6zIIZwfT1ppwYO06jnl6NCJYnlmafCrctSzPfYP0x7TQFlf1
-         VMHdk+I7EL2axxE6/Fy5+hgCgP9suYCtDDDOv4rxRlwoS6MWyRhaPptc/NcOpGa1uLFQ
-         ZWSw==
-X-Gm-Message-State: AOJu0YweSbCZUv8G4CcOx79n5rUigSSJ7C3Apngm+2ryRz9aBBsL3MRt
-	rDpwXqch2PXMJuXTP6eCP+PWgDobdadf6lGzjsx5SByEA8gV
-X-Google-Smtp-Source: AGHT+IGD0yFAepkYBqAzxYxiPmzH2nLXLz0AQf5J6Kh1QXElngJUOD9LfOmgQyL5SKVkBz4lh0erKjErSzCLxOG6bbo=
-X-Received: by 2002:a67:f2d4:0:b0:468:1083:39ea with SMTP id
- a20-20020a67f2d4000000b00468108339eamr448515vsn.20.1705008043947; Thu, 11 Jan
- 2024 13:20:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329EA58125
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705008059; x=1736544059;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8h5DFjlxATjdb8q4sJ0FkG/DSlJ4OkJJ5yUhgXAKbmI=;
+  b=crIQjWq3K1QJTaSS3A/g5Oa0b0kL/qDQ2Ejk2ya8KEImoh0H1B3K5TrA
+   dYNdB9baVczy69oxOKS9lklSH7a3ysVNgyDWZsvV47p59cSTPF56Dof9a
+   1uhJPQzjAOp7iA2oYmiUHiZpday+TXf8L+zfYLZvg1vms7LTHEw3lTooa
+   eqjPidy2yzZOwKWgXCn+7vUeUtyTJj+V1Cm7wQkUYdXo+bWxIsKJNJ8gh
+   Am7wDk47q9CdTAT2PF83ujzZlrDpYG2f4WlSgrLH4O++WQ4yDZmbPFNYg
+   E2qeRn+aYkaUmpske4e0foBJFxNyxdf8DRby5EOCrXI7XDg4v9r5Fda4f
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="6354590"
+X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
+   d="scan'208";a="6354590"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 13:20:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="873156989"
+X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
+   d="scan'208";a="873156989"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 Jan 2024 13:20:57 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rO2Tv-0008kk-1U;
+	Thu, 11 Jan 2024 21:20:55 +0000
+Date: Fri, 12 Jan 2024 05:20:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/base/regmap/regmap-kunit.c:795:43: sparse: sparse: cast to
+ restricted __le16
+Message-ID: <202401120557.tDMmzgkZ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111001155.746-1-carlosgalo@google.com> <202401120052.rdFjpivG-lkp@intel.com>
-In-Reply-To: <202401120052.rdFjpivG-lkp@intel.com>
-From: Carlos Galo <carlosgalo@google.com>
-Date: Thu, 11 Jan 2024 13:20:30 -0800
-Message-ID: <CABtOLRJ8=fPePsAG1-QyF_uo2X=sOGXcgsU_fJJXk3mFyOVN+w@mail.gmail.com>
-Subject: Re: [PATCH] mm: Update mark_victim tracepoints fields
-To: kernel test robot <lkp@intel.com>
-Cc: rostedt@goodmis.org, akpm@linux-foundation.org, surenb@google.com, 
-	oe-kbuild-all@lists.linux.dev, android-mm@google.com, kernel-team@android.com, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, Jan 11, 2024 at 9:08=E2=80=AFAM kernel test robot <lkp@intel.com> w=
-rote:
->
-> Hi Carlos,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on 0dd3ee31125508cd67f7e7172247f05b7fd1753a]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Carlos-Galo/mm-Upd=
-ate-mark_victim-tracepoints-fields/20240111-081635
-> base:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
-> patch link:    https://lore.kernel.org/r/20240111001155.746-1-carlosgalo%=
-40google.com
-> patch subject: [PATCH] mm: Update mark_victim tracepoints fields
-> config: x86_64-defconfig (https://download.01.org/0day-ci/archive/2024011=
-2/202401120052.rdFjpivG-lkp@intel.com/config)
-> compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20240112/202401120052.rdFjpivG-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202401120052.rdFjpivG-lkp=
-@intel.com/
->
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   de927f6c0b07d9e698416c5b287c521b07694cac
+commit: 155a6bd6375b584c8bdbf963b8ddef672ff9aca3 regmap: Provide basic KUnit coverage for the raw register I/O
+date:   7 months ago
+config: x86_64-randconfig-123-20240106 (https://download.01.org/0day-ci/archive/20240112/202401120557.tDMmzgkZ-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401120557.tDMmzgkZ-lkp@intel.com/reproduce)
 
-Sorry, I missed a comma in my final editing.
-I posted a V2 here:
-https://lore.kernel.org/lkml/20240111210539.636607-1-carlosgalo@google.com/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401120557.tDMmzgkZ-lkp@intel.com/
 
-Thanks,
-Carlos
+sparse warnings: (new ones prefixed by >>)
+>> drivers/base/regmap/regmap-kunit.c:795:43: sparse: sparse: cast to restricted __le16
+>> drivers/base/regmap/regmap-kunit.c:798:43: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:875:25: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:875:25: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:877:25: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-kunit.c:877:25: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-kunit.c:944:33: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:944:33: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:947:33: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-kunit.c:947:33: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-kunit.c:989:17: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:989:17: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:992:17: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-kunit.c:992:17: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-kunit.c:1004:33: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:1004:33: sparse: sparse: cast to restricted __be16
+   drivers/base/regmap/regmap-kunit.c:1007:33: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-kunit.c:1007:33: sparse: sparse: cast to restricted __le16
 
-> All errors (new ones prefixed by >>):
->
->    In file included from include/trace/define_trace.h:102,
->                     from include/trace/events/oom.h:206,
->                     from mm/oom_kill.c:54:
->    include/trace/events/oom.h: In function 'trace_raw_output_mark_victim'=
-:
-> >> include/trace/stages/stage3_trace_output.h:6:17: error: called object =
-is not a function or function pointer
->        6 | #define __entry field
->          |                 ^~~~~
->    include/trace/trace_events.h:203:34: note: in definition of macro 'DEC=
-LARE_EVENT_CLASS'
->      203 |         trace_event_printf(iter, print);                      =
-          \
->          |                                  ^~~~~
->    include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAM=
-S'
->       45 |                              PARAMS(print));                  =
- \
->          |                              ^~~~~~
->    include/trace/events/oom.h:74:1: note: in expansion of macro 'TRACE_EV=
-ENT'
->       74 | TRACE_EVENT(mark_victim,
->          | ^~~~~~~~~~~
->    include/trace/events/oom.h:93:9: note: in expansion of macro 'TP_print=
-k'
->       93 |         TP_printk("pid=3D%d uid=3D%u comm=3D%s oom_score_adj=
-=3D%hd",
->          |         ^~~~~~~~~
->    include/trace/events/oom.h:95:17: note: in expansion of macro '__entry=
-'
->       95 |                 __entry->uid
->          |                 ^~~~~~~
-> >> include/trace/trace_events.h:203:39: error: expected expression before=
- ')' token
->      203 |         trace_event_printf(iter, print);                      =
-          \
->          |                                       ^
->    include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLAR=
-E_EVENT_CLASS'
->       40 |         DECLARE_EVENT_CLASS(name,                             =
- \
->          |         ^~~~~~~~~~~~~~~~~~~
->    include/trace/events/oom.h:74:1: note: in expansion of macro 'TRACE_EV=
-ENT'
->       74 | TRACE_EVENT(mark_victim,
->          | ^~~~~~~~~~~
->
->
-> vim +6 include/trace/stages/stage3_trace_output.h
->
-> af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Goog=
-le  2022-03-03  4)
-> af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Goog=
-le  2022-03-03  5) #undef __entry
-> af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Goog=
-le  2022-03-03 @6) #define __entry field
-> af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Goog=
-le  2022-03-03  7)
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+vim +795 drivers/base/regmap/regmap-kunit.c
+
+   758	
+   759	static struct regmap *gen_raw_regmap(struct regmap_config *config,
+   760					     struct raw_test_types *test_type,
+   761					     struct regmap_ram_data **data)
+   762	{
+   763		u16 *buf;
+   764		struct regmap *ret;
+   765		size_t size = (config->max_register + 1) * config->reg_bits / 8;
+   766		int i;
+   767		struct reg_default *defaults;
+   768	
+   769		config->cache_type = test_type->cache_type;
+   770		config->val_format_endian = test_type->val_endian;
+   771	
+   772		buf = kmalloc(size, GFP_KERNEL);
+   773		if (!buf)
+   774			return ERR_PTR(-ENOMEM);
+   775	
+   776		get_random_bytes(buf, size);
+   777	
+   778		*data = kzalloc(sizeof(**data), GFP_KERNEL);
+   779		if (!(*data))
+   780			return ERR_PTR(-ENOMEM);
+   781		(*data)->vals = (void *)buf;
+   782	
+   783		config->num_reg_defaults = config->max_register + 1;
+   784		defaults = kcalloc(config->num_reg_defaults,
+   785				   sizeof(struct reg_default),
+   786				   GFP_KERNEL);
+   787		if (!defaults)
+   788			return ERR_PTR(-ENOMEM);
+   789		config->reg_defaults = defaults;
+   790	
+   791		for (i = 0; i < config->num_reg_defaults; i++) {
+   792			defaults[i].reg = i;
+   793			switch (test_type->val_endian) {
+   794			case REGMAP_ENDIAN_LITTLE:
+ > 795				defaults[i].def = le16_to_cpu(buf[i]);
+   796				break;
+   797			case REGMAP_ENDIAN_BIG:
+ > 798				defaults[i].def = be16_to_cpu(buf[i]);
+   799				break;
+   800			default:
+   801				return ERR_PTR(-EINVAL);
+   802			}
+   803		}
+   804	
+   805		/*
+   806		 * We use the defaults in the tests but they don't make sense
+   807		 * to the core if there's no cache.
+   808		 */
+   809		if (config->cache_type == REGCACHE_NONE)
+   810			config->num_reg_defaults = 0;
+   811	
+   812		ret = regmap_init_raw_ram(config, *data);
+   813		if (IS_ERR(ret)) {
+   814			kfree(buf);
+   815			kfree(*data);
+   816		}
+   817	
+   818		return ret;
+   819	}
+   820	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
