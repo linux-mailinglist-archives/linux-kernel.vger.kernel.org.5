@@ -1,189 +1,63 @@
-Return-Path: <linux-kernel+bounces-24058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F7E082B62F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:46:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6266682B634
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9AC31F2578C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:46:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7AE02888C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2B358116;
-	Thu, 11 Jan 2024 20:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACC05811E;
+	Thu, 11 Jan 2024 20:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VSoOycpo"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNCmk8OT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F326C5810C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 20:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705005973; x=1736541973;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=T2rvntaxntUFoByN0BT0fZMFdWSF0JFiW3RrtTg9eZA=;
-  b=VSoOycpoYHgPQb3lBhFZpIp11tZCSC+jT72ZUKm292NpHRNWpTYgTNQ/
-   5LhWBs88PZlqnVCcAMxi2vphd0bmUHewk0sAj1XB/azGiQu1rKyb1Qb5Q
-   WkRiE404upLYKpchyKnI+8Xz/1KIoBKdrGbMEiwJEVhZjU826S8ITQBgS
-   WmBt/a23iAiwBXxfmMNzr5KuJq309HADf2+4KX/Hx5+uHd5EejBv6IDnz
-   OzzeSsVSD4v8kKdlcjA575jGFG1bKhgD71k0r+PwG53cTGm/6mB/XF177
-   PEXNRogw0jya52OfYJ2PQ2wnqMTjRxT9qxkoa2RcCKmw/tdYoGy8QCoEP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="465370237"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="465370237"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 12:46:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="24769986"
-Received: from unknown (HELO [10.125.177.125]) ([10.125.177.125])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 12:46:12 -0800
-Message-ID: <6926ef5e-e2fd-42b0-b7de-11a06ac1f81b@linux.intel.com>
-Date: Thu, 11 Jan 2024 12:46:11 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EECF5810A;
+	Thu, 11 Jan 2024 20:47:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8635C433F1;
+	Thu, 11 Jan 2024 20:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705006077;
+	bh=M/+nO8sJ+V5s6gV1QS2HNCfEa4Pe0Ufyowvz6d/9x+c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=iNCmk8OTvawS5zCELb+HRcB+l9P56yWGAwdrDVlV2G7Qfu9WvaCNjkb6N8QieOoAI
+	 zWxC5OvZdfE8AAefd/Z5PTzItDUF1dY0fz48p/bIgXHRLlnA2/tups1VLImugKRKmU
+	 HlHLiLYK+3Mkfy2rnLuVZyResfbwOb5mh9pqBakwSIHo9mF1iiKKlHJYeqSw8TKlp5
+	 AcruYZSKHyOD1yFSR/rluufwKV2HO9HwVpu0toL9yaFwUC76GeidLXAc/FLjwus0d9
+	 RlSvPYHTkpxNuKiV7xMsugFvrTiPIi2M1t2gWK7gTb73tba3dIWRwhIfxnpb7m+Lb3
+	 hdubl1AKXJBEA==
+From: Kalle Valo <kvalo@kernel.org>
+To: ath11k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, regressions@lists.linux.dev,
+    linux-kernel@vger.kernel.org
+Subject: [regression] ath11k broken in v6.7
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Date: Thu, 11 Jan 2024 22:47:54 +0200
+Message-ID: <874jfjiolh.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2] x86/mm: Fix memory encryption features advertisement
-Content-Language: en-US
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, linux-coco@lists.linux.dev,
- linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
- Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-References: <20240111111224.25289-1-kirill.shutemov@linux.intel.com>
- <1a3661d5-3539-4443-88da-003dea920188@linux.intel.com>
-In-Reply-To: <1a3661d5-3539-4443-88da-003dea920188@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
+Hi,
 
+Just trying to make everyone aware because I suspect this will affect
+quite a few people: ath11k is crashing during suspend on v6.7 due to a
+mac80211 patch, more info:
 
-On 1/11/2024 6:19 AM, Kuppuswamy Sathyanarayanan wrote:
-> 
-> 
-> On 1/11/2024 3:12 AM, Kirill A. Shutemov wrote:
->> When memory encryption is enabled, the kernel prints the encryption
->> flavor that the system supports.
->>
->> The check assumes that everything is AMD SME/SEV if it doesn't have
->> the TDX CPU feature set.
->>
->> Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
->> on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
->> encryption enabled for I/O without the rest of CoCo enabling.
->>
->> To avoid confusion, check the cc_vendor directly.
->>
->> Possible alternative is to completely removing the print statement.
->> For a regular TDX guest, the kernel already prints a message indicating
->> that it is booting on TDX. Similarly, AMD and Hyper-V can also display
->> a message during their enumeration process.
-> 
-> With this change, will it print "Intel TDX" for Hyper-V?
-> 
-> IMO, since there is already a debug message for type identification, we
-> can remove this part. 
-> 
->>
->> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> Cc: Dexuan Cui <decui@microsoft.com>
->> Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
->> ---
+https://bugzilla.kernel.org/show_bug.cgi?id=218364
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Proposed fix:
 
->>  arch/x86/mm/mem_encrypt.c | 56 +++++++++++++++++++++------------------
->>  1 file changed, 30 insertions(+), 26 deletions(-)
->>
->> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
->> index c290c55b632b..d035bce3a2b0 100644
->> --- a/arch/x86/mm/mem_encrypt.c
->> +++ b/arch/x86/mm/mem_encrypt.c
->> @@ -42,38 +42,42 @@ bool force_dma_unencrypted(struct device *dev)
->>  
->>  static void print_mem_encrypt_feature_info(void)
->>  {
->> -	pr_info("Memory Encryption Features active:");
->> +	pr_info("Memory Encryption Features active: ");
->>  
->> -	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
->> -		pr_cont(" Intel TDX\n");
->> -		return;
->> -	}
->> +	switch (cc_vendor) {
->> +	case CC_VENDOR_INTEL:
->> +		pr_cont("Intel TDX\n");
->> +		break;
->> +	case CC_VENDOR_AMD:
->> +		pr_cont("AMD");
->>  
->> -	pr_cont(" AMD");
->> -
->> -	/* Secure Memory Encryption */
->> -	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
->> +		/* Secure Memory Encryption */
->> +		if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
->>  		/*
->>  		 * SME is mutually exclusive with any of the SEV
->>  		 * features below.
->> -		 */
->> -		pr_cont(" SME\n");
->> -		return;
->> +		*/
->> +			pr_cont(" SME\n");
->> +			return;
->> +		}
->> +
->> +		/* Secure Encrypted Virtualization */
->> +		if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
->> +			pr_cont(" SEV");
->> +
->> +		/* Encrypted Register State */
->> +		if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
->> +			pr_cont(" SEV-ES");
->> +
->> +		/* Secure Nested Paging */
->> +		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
->> +			pr_cont(" SEV-SNP");
->> +
->> +		pr_cont("\n");
->> +		break;
->> +	default:
->> +		pr_cont("Unknown\n");
->>  	}
->> -
->> -	/* Secure Encrypted Virtualization */
->> -	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
->> -		pr_cont(" SEV");
->> -
->> -	/* Encrypted Register State */
->> -	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
->> -		pr_cont(" SEV-ES");
->> -
->> -	/* Secure Nested Paging */
->> -	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
->> -		pr_cont(" SEV-SNP");
->> -
->> -	pr_cont("\n");
->>  }
->>  
->>  /* Architecture __weak replacement functions */
-> 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240111170629.1257217-1-benjamin@sipsolutions.net/
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Kalle
 
