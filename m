@@ -1,83 +1,116 @@
-Return-Path: <linux-kernel+bounces-23231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AA4C82A936
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:37:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC9382A938
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BA751F22269
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:37:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A29021C20E19
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B89101E6;
-	Thu, 11 Jan 2024 08:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="DEhWlRLc"
-Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0A0101C3
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=hFyLYRGrdMsKKrb572
-	UmJNs+TslUNdb4TSStKU71wo4=; b=DEhWlRLc5nBvJc7T1kmQf5FQf0jlfjkFW3
-	Hhnec7P3YSfo8sSEuXaPZh6Zo8tqBw508Gb6QmnpMCTo6GRaIL2FQuUqxPux05ko
-	5WKs0iMfCHdvTVJNb08oxXKhZZHscYNnJJ616H9rt3dTmPpAdBd51Jf4NWTk9SSo
-	84hhgL+lI=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-0 (Coremail) with SMTP id _____wDnb5SnqJ9l0suUAA--.19779S2;
-	Thu, 11 Jan 2024 16:36:55 +0800 (CST)
-From: GuoHua Chen <chenguohua_716@163.com>
-To: daniel@ffwll.ch,
-	Xinhui.Pan@amd.com,
-	alexander.deucher@amd.com,
-	airlied@gmail.com,
-	christian.koenig@amd.com
-Cc: dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	GuoHua Chen <chenguohua_716@163.com>
-Subject: [PATCH] drm/radeon: Clean up errors in r600.c
-Date: Thu, 11 Jan 2024 08:36:54 +0000
-Message-Id: <20240111083654.12411-1-chenguohua_716@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wDnb5SnqJ9l0suUAA--.19779S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKFWDZrWxuFy5Kry8JFWfuFg_yoW3WFX_Ca
-	48Xws5JFW0vasY9F1IvF4DZr92ya18u397Gw1xKFn3Kry2q3yfua95Gr1fX3y8JF42qF1D
-	Aan3XFy3CFsIvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUZXo7UUUUU==
-X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/xtbBEAti1mVOBk-1wgACs4
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D15F512;
+	Thu, 11 Jan 2024 08:38:19 +0000 (UTC)
+Received: from er-systems.de (er-systems.de [162.55.144.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B9C11704
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:38:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lio96.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lio96.de
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by er-systems.de (Postfix) with ESMTP id 174E5ECDAE2;
+	Thu, 11 Jan 2024 09:38:12 +0100 (CET)
+X-Spam-Level: 
+Received: from localhost (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by er-systems.de (Postfix) with ESMTPS id F3A49ECDAC4;
+	Thu, 11 Jan 2024 09:38:11 +0100 (CET)
+Date: Thu, 11 Jan 2024 09:38:11 +0100 (CET)
+From: Thomas Voegtle <tv@lio96.de>
+To: Arnd Bergmann <arnd@arndb.de>
+cc: linux-kernel@vger.kernel.org
+Subject: Re: Build error kernel/cgroup/rstat.c on v6.7-1959-gaffc5af36bbb
+In-Reply-To: <91fe3dea-ca35-4dc9-ac13-e4eb0df30951@app.fastmail.com>
+Message-ID: <23af29c5-55ec-f63f-ddc9-43756fc0d60d@lio96.de>
+References: <f8ed4fe9-edcc-1cdf-65cc-7cc9d4f913a4@lio96.de> <c7cb5834-1cf9-48ae-968a-d2807b6b9467@app.fastmail.com> <c6c5fe88-c024-40db-ad1c-4e6681e3d7af@lio96.de> <91fe3dea-ca35-4dc9-ac13-e4eb0df30951@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="933399184-1140405057-1704962291=:22212"
+X-Virus-Status: No
+X-Virus-Checker-Version: clamassassin 1.2.4 with clamdscan / ClamAV 0.103.11/27150/Wed Jan 10 10:40:48 2024
 
-Fix the following errors reported by checkpatch:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-ERROR: that open brace { should be on the previous line
+--933399184-1140405057-1704962291=:22212
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
----
- drivers/gpu/drm/radeon/r600.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On Thu, 11 Jan 2024, Arnd Bergmann wrote:
 
-diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
-index a17b95eec65f..b5e97d95a19f 100644
---- a/drivers/gpu/drm/radeon/r600.c
-+++ b/drivers/gpu/drm/radeon/r600.c
-@@ -99,8 +99,7 @@ MODULE_FIRMWARE("radeon/SUMO_me.bin");
- MODULE_FIRMWARE("radeon/SUMO2_pfp.bin");
- MODULE_FIRMWARE("radeon/SUMO2_me.bin");
- 
--static const u32 crtc_offsets[2] =
--{
-+static const u32 crtc_offsets[2] = {
- 	0,
- 	AVIVO_D2CRTC_H_TOTAL - AVIVO_D1CRTC_H_TOTAL
- };
--- 
-2.17.1
+> On Wed, Jan 10, 2024, at 22:18, Thomas Voegtle wrote:
+>> On Wed, 10 Jan 2024, Arnd Bergmann wrote:
+>>
+>>> On Wed, Jan 10, 2024, at 20:50, Thomas Voegtle wrote:
+>>>> Hello,
+>>>>
+>>>> building v6.7-1959-gaffc5af36bbb I get this:
+>>>>
+>>>> ...
+>>>>    CALL    scripts/checksyscalls.sh
+>>>>    DESCEND objtool
+>>>>    INSTALL libsubcmd_headers
+>>>>    CC      kernel/cgroup/rstat.o
+>>>> kernel/cgroup/rstat.c:218:22: error: no previous prototype for
+>>>> ‘bpf_rstat_flush’ [-Werror=missing-prototypes]
+>>>>   __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
+>>>>                        ^~~~~~~~~~~~~~~
+>>>>
+>>>>
+>>>> git bisects points to:
+>>>>
+>>>> commit 0fcb70851fbfea1776ae62f67c503fef8f0292b9 (refs/bisect/bad)
+>>>> Author: Arnd Bergmann <arnd@arndb.de>
+>>>> Date:   Thu Nov 23 12:05:06 2023 +0100
+>>>>
+>>>>      Makefile.extrawarn: turn on missing-prototypes globally
+>>>>
+>>>>
+>>>> My config is attached.
+>>>> openSUSE Leap 15.5 x86_64 with gcc 7.5.0
+>>>>
+>>>>
+>>>> Is this already known?
+>>>
+>>> There is a workaround in linux-next, see commit
+>>> 15fb6f2b6c4c ("bpf: Add __bpf_hook_{start,end} macros")
+>>>
+>>> I assume this will be merged soon.
+>>
+>> That commit is already merged?
+>
+> It's probably missing this one then:
+>
+> 689b097a06ba ("compiler-gcc: Suppress -Wmissing-prototypes warning for all supported GCC")
+>
+>    Arnd
+>
+
+With that patch (689b097a06ba) it builds fine.
+
+Thanks.
+
+
+       Thomas
+
+--933399184-1140405057-1704962291=:22212--
 
 
