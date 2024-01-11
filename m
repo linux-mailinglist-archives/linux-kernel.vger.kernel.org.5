@@ -1,83 +1,100 @@
-Return-Path: <linux-kernel+bounces-23431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0638282ACAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:57:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 281F082ACAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:57:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD76B281D0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:57:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D15671F23330
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889BB14F76;
-	Thu, 11 Jan 2024 10:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A14215492;
+	Thu, 11 Jan 2024 10:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fD5LF6ZK"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dAeApq8O"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7750614F61
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5587af6ae5cso1063388a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:56:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704970569; x=1705575369; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5dIC4YOxW3puzkGtWuEVT4Nr9zyyNjs/7yil9gqa73I=;
-        b=fD5LF6ZK6B8RcIvSM4+UYSh39O4WM9BuRoZLbv0pZnY9ExHluBIcVG+oW773yDID93
-         Ovf7jXkHiUG1hNfiKPtBYpp7j0iymnpaeE1cutmG9xvC70RRxtzomEc/c/bdIHgrmVAg
-         k6AAgLbGD9/pNm4WDzPIEMNQZIHaZ/nd0c/LF+hoVzFgz+HtWdugxUQB/4jso6Hubukz
-         7HT3WU0KWm/t+SomGMciOMl3zzmyro4tnot44ByQvrvQchSDz+3qPcS6gF3AqTvBsqP+
-         ePddid/XZjgdaSF0nc2ME3gVUH4mrKjEJW2K7K+kLClS5hqUvLjzZrnMwGA43+dfz2ll
-         F/Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704970569; x=1705575369;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5dIC4YOxW3puzkGtWuEVT4Nr9zyyNjs/7yil9gqa73I=;
-        b=dwvw5HdifL51gY0XnDWgVAE1mvTr+r5ZDEma3OHvy/z1xXeUsCFrrsCmcbBwHB6vsL
-         tW/AnKvJiXm4r0D1XmSDgUoFJR3JfZxKEyHIu/DUp6kkAWtKFKximJozwZsPcCZ6/m65
-         AH7klsiE7ytZ7EMzab4qvKwKPK3g2f3luW+JIZbZm93/k9dfwjaxtfakS7Rjvf1DcwuX
-         amGO5YeK5bieGtQeCxV3FrPCkLNBPj14T8Z9DV2DR4TyNO0Fhi/Lt6hNBzX8IFa4vSUm
-         v/++2GdDmI6RUL1+LvBXHi4ZJpR2xhf29KSetYX3JH1NPz1wuIvm07v7ZyA4qRR3QXOp
-         S7Sw==
-X-Gm-Message-State: AOJu0YzsEkUUk/pzRROzlHOai9IwK4F+uTRjFsoijoaHI9iPW+tCBlQr
-	afM1nXcW32uEDcOHmXi/ZA==
-X-Google-Smtp-Source: AGHT+IHhjypzrVpQep6wtyCwienL5/h97jwvW/jQhvrPFNpCOVhmACE7pfPVxe/6GtqDExiOOjU43g==
-X-Received: by 2002:aa7:d488:0:b0:558:ad7b:f049 with SMTP id b8-20020aa7d488000000b00558ad7bf049mr130760edr.51.1704970569528;
-        Thu, 11 Jan 2024 02:56:09 -0800 (PST)
-Received: from p183 ([46.53.248.125])
-        by smtp.gmail.com with ESMTPSA id j14-20020a50ed0e000000b005550192159bsm468577eds.62.2024.01.11.02.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 02:56:09 -0800 (PST)
-Date: Thu, 11 Jan 2024 13:56:07 +0300
-From: Alexey Dobriyan <adobriyan@gmail.com>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Neal Gompa <neal@gompa.dev>,
-	jirislaby@kernel.org, dhowells@redhat.com,
-	linux-kernel@vger.kernel.org, pinskia@gmail.com,
-	kent.overstreet@linux.dev
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
-Message-ID: <fa64c852-01c4-4e4c-8b89-14db5e0088d0@p183>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA1E14ABB;
+	Thu, 11 Jan 2024 10:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704970598;
+	bh=HsX3oWaHYvaVq5DEKrjIniKdQPIuXWrIZcYPPGl0S0g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dAeApq8OV4J2GdqaCosfDkz6H+gpiKgp/LOCmVgGJaV82DjC57g9WSxrOOfwQv9ki
+	 n1Uu1lCTy4pOpcflys0VNJquTaIgDnVX9iVKOnFSAxwUbpfTaNtOwObRnCcCCGfohn
+	 wo6LVIlBfd8tTtpWEeSBgvDAYJQwRmLl64ap+eanv+SASJb2RP/5NgfgD1ympja7wh
+	 67ylVrT68HjMxHU6fSgF0TkRboWJBLzJwRBWgNWBdUm0dk1/6XFG7AWPRjgLiI8oUQ
+	 GUkJAu1oHrtc18fJXCX07CS5OP5UYg74Ogld1Y+20BWz4L8URqcdUK8c5tL9Er6vcS
+	 DM47q20DfNtQQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B58B537811D1;
+	Thu, 11 Jan 2024 10:56:37 +0000 (UTC)
+Message-ID: <13493023-7b68-4a25-83c3-b870bf00ccb3@collabora.com>
+Date: Thu, 11 Jan 2024 11:56:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 0/2] mt7981b: initial DT code
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Daniel Golle <daniel@makrotopia.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ jason-ch chen <Jason-ch.Chen@mediatek.com>,
+ Macpaul Lin <macpaul.lin@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, soc@kernel.org,
+ linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+References: <20240111103928.721-1-zajec5@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240111103928.721-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> SFINAE giving inscrutable errors is why I'm saying C++20,
-> since "concept" means you can get usable error messages.
+Il 11/01/24 11:39, Rafał Miłecki ha scritto:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> This work is based on linux-next content and was successfully verified
+> using "dtbs_check".
+> 
+> I'm not sure who should apply this work. Given I received reviews from
+> AngeloGioacchino should I expect Arnd to pick it to his tree directly?
 
-I'd say concepts are irrelevant for the kernel where standard library is
-tightly controlled by the same people who write rest of the kernel and
-no external users.
+This is MediaTek and gets picked by MediaTek maintainers - either me or Matthias.
 
-static_assert() is all you need.
+Cheers,
+Angelo
+
+> 
+> Rafał Miłecki (2):
+>    dt-bindings: arm64: mediatek: Add MT7981B and Xiaomi AX3000T
+>    arm64: dts: mediatek: Add initial MT7981B and Xiaomi AX3000T
+> 
+>   .../devicetree/bindings/arm/mediatek.yaml     |   4 +
+>   arch/arm64/boot/dts/mediatek/Makefile         |   1 +
+>   .../dts/mediatek/mt7981b-xiaomi-ax3000t.dts   |  15 +++
+>   arch/arm64/boot/dts/mediatek/mt7981b.dtsi     | 105 ++++++++++++++++++
+>   4 files changed, 125 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7981b-xiaomi-ax3000t.dts
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7981b.dtsi
+> 
+
+
 
