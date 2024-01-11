@@ -1,206 +1,95 @@
-Return-Path: <linux-kernel+bounces-23812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 751EF82B215
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:49:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1682C82B216
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2304F285B39
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:49:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E0C81C24910
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:50:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11394D5AA;
-	Thu, 11 Jan 2024 15:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475CC4F1E6;
+	Thu, 11 Jan 2024 15:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="N2iGFPVQ"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIt5S9SO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9C94CDE9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1704988169;
-	bh=CiSR0Tuk8JBUjA4HrB2X52STAqq56NnAYbyj25ClA9g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=N2iGFPVQl/3OZWrtZHRqk055f6PMfMCN4b0gU0qjkpId3g1bWEM3Gc4tADi70dNaP
-	 6iegc9DBiivGsD1wg6akSh2B209PRfnxDj381hVscFIXHh8pDNWz02gTI00HVaENbo
-	 Bazm5fG0PAwtFsL7PAYa53SKValB5TqYfMYdHr+hEk5NCsiYCwZWbvfYpo4+8dAnIa
-	 RNHRLwW4IqjtawhzVyQ9l1MFSp4E7onShLuoY1Il6wyANDCJn6BCdb+8jK0XOgwJpy
-	 ShZuhBl9Wfm24WiwUDLtH57AUovjm9FbATPS4z6n1He3eZXfb4T/4AaqrUoyIsKvpa
-	 EwirL1wEIL+2Q==
-Received: from localhost.localdomain (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4T9py148ypzKTm;
-	Thu, 11 Jan 2024 10:49:29 -0500 (EST)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH] selftests/rseq: Do not skip !allowed_cpus for mm_cid
-Date: Thu, 11 Jan 2024 10:49:22 -0500
-Message-Id: <20240111154922.600919-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBBB4CDE9;
+	Thu, 11 Jan 2024 15:49:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F0CBC433A6;
+	Thu, 11 Jan 2024 15:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704988192;
+	bh=G9n/W8hlwgFdV2XQPUCibHVKDRupPUflmAwUSZ1qwoM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VIt5S9SOP2dAXfAI5csudeLa8eUfApLnPkda4VcyuWAAntp34FktC9PARGLSGqNhP
+	 m6VZ7ggviPTdMIHnka1KPiSJRX03tAHXNJiGZ6FQ7nG6dCJ0rhfO8uuH+PBE60YwDX
+	 sQeD+Uoqc5nMFWO/TsuI9vcw4eRMXQ5xQ6gTfLZKYYwlOVy91LjhKwn2I1z6E4WnCK
+	 tmGesgVvOsU+mbo+sPfdiJSvpF1gBM2Ri+lkvDOGdpmZh0LZBOiKZGH0RQmFXd3l53
+	 b0iJ1FaIvn3OJFlV9aEO2jIFzwVX1DDmXe08ppXIPIlwVXN8dind+QFVMms28AGNx/
+	 Di6gb/IGLhCHg==
+Date: Thu, 11 Jan 2024 15:49:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Russell King <linux@armlinux.org.uk>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Vladimir Murzin <vladimir.murzin@arm.com>,
+	Zhen Lei <thunder.leizhen@huawei.com>,
+	Keith Packard <keithpac@amazon.com>,
+	Haibo Li <haibo.li@mediatek.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alexandre Mergnat <amergnat@baylibre.com>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ARM: unwind: Add missing "Call trace:" line
+Message-ID: <6784d8b9-4933-40e7-a00a-a7581bc11ea7@sirena.org.uk>
+References: <20240110215554.work.460-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="QeCY3H4cDzibhSMr"
+Content-Disposition: inline
+In-Reply-To: <20240110215554.work.460-kees@kernel.org>
+X-Cookie: Does the name Pavlov ring a bell?
 
-Indexing with mm_cid is incompatible with skipping disallowed cpumask,
-because concurrency IDs are based on a virtual ID allocation which is
-unrelated to the physical CPU mask.
 
-These issues can be reproduced by running the rseq selftests under a
-taskset which excludes CPU 0, e.g.
+--QeCY3H4cDzibhSMr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  taskset -c 10-20 ./run_param_test.sh
+On Wed, Jan 10, 2024 at 01:56:01PM -0800, Kees Cook wrote:
+> Every other architecture in Linux includes the line "Call trace:" before
+> backtraces. In some cases ARM would print "Backtrace:", but this was
+> only via 1 specific call path, and wasn't included in CPU Oops nor things
+> like KASAN, UBSAN, etc that called dump_stack(). Regularize this line
+> so CI systems and other things (like LKDTM) that depend on parsing
+> "Call trace:" out of dmesg will see it for ARM.
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
----
- .../selftests/rseq/basic_percpu_ops_test.c    | 14 ++++++++++--
- tools/testing/selftests/rseq/param_test.c     | 22 ++++++++++++++-----
- 2 files changed, 28 insertions(+), 8 deletions(-)
+Reviewed-by: Mark Brown <broonie@kernel.org>
 
-diff --git a/tools/testing/selftests/rseq/basic_percpu_ops_test.c b/tools/testing/selftests/rseq/basic_percpu_ops_test.c
-index 887542961968..2348d2c20d0a 100644
---- a/tools/testing/selftests/rseq/basic_percpu_ops_test.c
-+++ b/tools/testing/selftests/rseq/basic_percpu_ops_test.c
-@@ -24,6 +24,11 @@ bool rseq_validate_cpu_id(void)
- {
- 	return rseq_mm_cid_available();
- }
-+static
-+bool rseq_use_cpu_index(void)
-+{
-+	return false;	/* Use mm_cid */
-+}
- #else
- # define RSEQ_PERCPU	RSEQ_PERCPU_CPU_ID
- static
-@@ -36,6 +41,11 @@ bool rseq_validate_cpu_id(void)
- {
- 	return rseq_current_cpu_raw() >= 0;
- }
-+static
-+bool rseq_use_cpu_index(void)
-+{
-+	return true;	/* Use cpu_id as index. */
-+}
- #endif
- 
- struct percpu_lock_entry {
-@@ -274,7 +284,7 @@ void test_percpu_list(void)
- 	/* Generate list entries for every usable cpu. */
- 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
- 	for (i = 0; i < CPU_SETSIZE; i++) {
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 		for (j = 1; j <= 100; j++) {
- 			struct percpu_list_node *node;
-@@ -299,7 +309,7 @@ void test_percpu_list(void)
- 	for (i = 0; i < CPU_SETSIZE; i++) {
- 		struct percpu_list_node *node;
- 
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 
- 		while ((node = __percpu_list_pop(&list, i))) {
-diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/selftests/rseq/param_test.c
-index 20403d58345c..2f37961240ca 100644
---- a/tools/testing/selftests/rseq/param_test.c
-+++ b/tools/testing/selftests/rseq/param_test.c
-@@ -288,6 +288,11 @@ bool rseq_validate_cpu_id(void)
- {
- 	return rseq_mm_cid_available();
- }
-+static
-+bool rseq_use_cpu_index(void)
-+{
-+	return false;	/* Use mm_cid */
-+}
- # ifdef TEST_MEMBARRIER
- /*
-  * Membarrier does not currently support targeting a mm_cid, so
-@@ -312,6 +317,11 @@ bool rseq_validate_cpu_id(void)
- {
- 	return rseq_current_cpu_raw() >= 0;
- }
-+static
-+bool rseq_use_cpu_index(void)
-+{
-+	return true;	/* Use cpu_id as index. */
-+}
- # ifdef TEST_MEMBARRIER
- static
- int rseq_membarrier_expedited(int cpu)
-@@ -715,7 +725,7 @@ void test_percpu_list(void)
- 	/* Generate list entries for every usable cpu. */
- 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
- 	for (i = 0; i < CPU_SETSIZE; i++) {
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 		for (j = 1; j <= 100; j++) {
- 			struct percpu_list_node *node;
-@@ -752,7 +762,7 @@ void test_percpu_list(void)
- 	for (i = 0; i < CPU_SETSIZE; i++) {
- 		struct percpu_list_node *node;
- 
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 
- 		while ((node = __percpu_list_pop(&list, i))) {
-@@ -902,7 +912,7 @@ void test_percpu_buffer(void)
- 	/* Generate list entries for every usable cpu. */
- 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
- 	for (i = 0; i < CPU_SETSIZE; i++) {
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 		/* Worse-case is every item in same CPU. */
- 		buffer.c[i].array =
-@@ -952,7 +962,7 @@ void test_percpu_buffer(void)
- 	for (i = 0; i < CPU_SETSIZE; i++) {
- 		struct percpu_buffer_node *node;
- 
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 
- 		while ((node = __percpu_buffer_pop(&buffer, i))) {
-@@ -1113,7 +1123,7 @@ void test_percpu_memcpy_buffer(void)
- 	/* Generate list entries for every usable cpu. */
- 	sched_getaffinity(0, sizeof(allowed_cpus), &allowed_cpus);
- 	for (i = 0; i < CPU_SETSIZE; i++) {
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 		/* Worse-case is every item in same CPU. */
- 		buffer.c[i].array =
-@@ -1160,7 +1170,7 @@ void test_percpu_memcpy_buffer(void)
- 	for (i = 0; i < CPU_SETSIZE; i++) {
- 		struct percpu_memcpy_buffer_node item;
- 
--		if (!CPU_ISSET(i, &allowed_cpus))
-+		if (rseq_use_cpu_index() && !CPU_ISSET(i, &allowed_cpus))
- 			continue;
- 
- 		while (__percpu_memcpy_buffer_pop(&buffer, &item, i)) {
--- 
-2.25.1
+--QeCY3H4cDzibhSMr
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWgDhUACgkQJNaLcl1U
+h9BJewf8DvQ4N4ZXs9SBjfdUJ68ZkYO6tUnl5kMwZ8FBDrLj9+JBI11MRBZUv8Tb
+bbzaBZmxZfPQQ0JXzrhspLC9le/mAwR3jTKh/zBRsBFCAGB0hJM2EJu0YxkYH2h7
+wvHKV6TKoRfi3KPM3jspqeSguHfKfI3tItl9uqM3llyIPzsOD1yAdGlVq1HLFzH5
+whVKwhqHo/SRNLevqIB3gnvClys7OwvHY1sr4jkLr2lOd0X0dgVUXJZVMoDMzsfU
+FbUFPhVDDJwZekOgexc1W3ESBobXMjDuQPste90QTbwa2vU/1fQKc7rUAIes3CTs
+rCxMoJim9kXmZLAf9UCL3sr0OtkK5Q==
+=OAG9
+-----END PGP SIGNATURE-----
+
+--QeCY3H4cDzibhSMr--
 
