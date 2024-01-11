@@ -1,291 +1,204 @@
-Return-Path: <linux-kernel+bounces-23378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE6C82ABD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:20:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D55782ABCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A53AE1F23442
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:20:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D6CC1C257F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A322414AB2;
-	Thu, 11 Jan 2024 10:20:02 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8527D12E70;
+	Thu, 11 Jan 2024 10:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="U8DS6LvC"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C801426C;
-	Thu, 11 Jan 2024 10:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T9gZf0gDvz6K8Kq;
-	Thu, 11 Jan 2024 18:17:14 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3C7501400CD;
-	Thu, 11 Jan 2024 18:19:51 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 11 Jan
- 2024 10:19:50 +0000
-Date: Thu, 11 Jan 2024 10:19:49 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or
- functional) devices
-Message-ID: <20240111101949.000075dc@Huawei.com>
-In-Reply-To: <20240102143925.00004361@Huawei.com>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<ZXxxa+XZjPZtNfJ+@shell.armlinux.org.uk>
-	<20231215161539.00000940@Huawei.com>
-	<5760569.DvuYhMxLoT@kreacher>
-	<20240102143925.00004361@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE681426C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2ac304e526so430153166b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:19:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1704968391; x=1705573191; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JFpe6quqGni9rXpbkR8i3EOKdmU+rRM5UIvhZyNTIx4=;
+        b=U8DS6LvCbGfwQ0WdgUshwoXZAwBck+cCy5BNTN3yHy6mY0ESfS07hv5+zG/8JnKAjB
+         BES6pSRHW4q8F+spzopAnvUS+wHvtjV/W4ZCerjNEZzVPhJ1rRqFo2csbMysouavwwmd
+         j3TADBp0FTziUpckkW0oud1QzYfFZTaafxJmofsLLPScID2Ina69GdmDr3f8tCedHeSW
+         i/56d85vgA57mRkU/tV2XLZV2wNLHlvwe/nN+Ms4eHzU1svmoBJ8wSnl5F2CAvr1VDvj
+         yNKl7gNsXa8muvSaqo2P50slDNV9T8ft0zGr3qt73AEvTYKNRxS06FJmEpgg+IYGw/x1
+         C2Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704968391; x=1705573191;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JFpe6quqGni9rXpbkR8i3EOKdmU+rRM5UIvhZyNTIx4=;
+        b=qiOYAAVq8iHMo6CfPPLr/FdQPC39xxtjqkB1bs4WdkfR20fa3nizhnaDupJbMV2b/h
+         oLJddnBMxpM9Bz9DQqaVVfnnHkraQKi/zD1vAcQ2BNdeUgPEjEJJaGTBAKWTJgnGjG/W
+         eeNs0/6AmQOCoo5gbbCB88/E7AwgLs8eaA3cibOqEwgXpbdx2HtCLLDP5BB8+MkTswOz
+         LuNb4HhbwbvIJPEQWu621ZrXm8L3dMMlQe368HeVl6Sg7bBLlDgB7n6F/2lDCTUntO+k
+         KIf7lN/wCzWMRjtak6UCvzUQC5g3fxrbCNexgaSiJ9C/wpHzmqUddNg+6dUHk8vB2JPg
+         Z9KA==
+X-Gm-Message-State: AOJu0YyGaV219bTdC5UR5JuHOuy40iI4Z6Kw447plWuIX4e+ihCXjHDp
+	YTr6ysSqJquEmNELUkpApuZc4Uja6IAElQ==
+X-Google-Smtp-Source: AGHT+IFBiFizSgukfmU2Pf8DgRLe/lNPDSpgXIEvVijwWkTDP8QaOfuxfYm/bTSm93if/g/LI4WU0w==
+X-Received: by 2002:a17:907:93d1:b0:a28:f817:6a7c with SMTP id cp17-20020a17090793d100b00a28f8176a7cmr377770ejc.3.1704968390975;
+        Thu, 11 Jan 2024 02:19:50 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id c13-20020a170906170d00b00a2c047c6847sm393036eje.113.2024.01.11.02.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 02:19:50 -0800 (PST)
+Date: Thu, 11 Jan 2024 11:19:49 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Anup Patel <anup@brainfault.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Conor Dooley <conor@kernel.org>, Atish Kumar Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH -next 2/2] cpuidle: RISC-V: Add ACPI LPI support
+Message-ID: <20240111-d37d338a6b1aa71e944ebe05@orel>
+References: <20240111093058.121838-1-sunilvl@ventanamicro.com>
+ <20240111093058.121838-3-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111093058.121838-3-sunilvl@ventanamicro.com>
 
-On Tue, 2 Jan 2024 14:39:25 +0000
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Thu, Jan 11, 2024 at 03:00:58PM +0530, Sunil V L wrote:
+> Add required callbacks to support Low Power Idle (LPI) on ACPI based
+> RISC-V platforms.
+> 
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  drivers/cpuidle/cpuidle-riscv-sbi.c | 78 +++++++++++++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+> 
+> diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> index e8094fc92491..cea67a54ab39 100644
+> --- a/drivers/cpuidle/cpuidle-riscv-sbi.c
+> +++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> @@ -632,3 +632,81 @@ static int __init sbi_cpuidle_init(void)
+>  	return 0;
+>  }
+>  device_initcall(sbi_cpuidle_init);
+> +
+> +#ifdef CONFIG_ACPI_PROCESSOR_IDLE
+> +
+> +#include <linux/acpi.h>
+> +#include <acpi/processor.h>
+> +
+> +#define RISCV_FFH_LPI_TYPE_MASK		0x1000000000000000ULL
+> +#define RISCV_FFH_LPI_RSVD_MASK		0x0FFFFFFF00000000ULL
 
-> On Fri, 15 Dec 2023 20:47:31 +0100
-> "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
->=20
-> > On Friday, December 15, 2023 5:15:39 PM CET Jonathan Cameron wrote: =20
-> > > On Fri, 15 Dec 2023 15:31:55 +0000
-> > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> > >    =20
-> > > > On Thu, Dec 14, 2023 at 07:37:10PM +0100, Rafael J. Wysocki wrote: =
-  =20
-> > > > > On Thu, Dec 14, 2023 at 7:16=E2=80=AFPM Rafael J. Wysocki <rafael=
-@kernel.org> wrote:     =20
-> > > > > >
-> > > > > > On Thu, Dec 14, 2023 at 7:10=E2=80=AFPM Russell King (Oracle)
-> > > > > > <linux@armlinux.org.uk> wrote:     =20
-> > > > > > > I guess we need something like:
-> > > > > > >
-> > > > > > >         if (device->status.present)
-> > > > > > >                 return device->device_type !=3D ACPI_BUS_TYPE=
-_PROCESSOR ||
-> > > > > > >                        device->status.enabled;
-> > > > > > >         else
-> > > > > > >                 return device->status.functional;
-> > > > > > >
-> > > > > > > so we only check device->status.enabled for processor-type de=
-vices?     =20
-> > > > > >
-> > > > > > Yes, something like this.     =20
-> > > > >=20
-> > > > > However, that is not sufficient, because there are
-> > > > > ACPI_BUS_TYPE_DEVICE devices representing processors.
-> > > > >=20
-> > > > > I'm not sure about a clean way to do it ATM.     =20
-> > > >=20
-> > > > Ok, how about:
-> > > >=20
-> > > > static bool acpi_dev_is_processor(const struct acpi_device *device)
-> > > > {
-> > > > 	struct acpi_hardware_id *hwid;
-> > > >=20
-> > > > 	if (device->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
-> > > > 		return true;
-> > > >=20
-> > > > 	if (device->device_type !=3D ACPI_BUS_TYPE_DEVICE)
-> > > > 		return false;
-> > > >=20
-> > > > 	list_for_each_entry(hwid, &device->pnp.ids, list)
-> > > > 		if (!strcmp(ACPI_PROCESSOR_OBJECT_HID, hwid->id) ||
-> > > > 		    !strcmp(ACPI_PROCESSOR_DEVICE_HID, hwid->id))
-> > > > 			return true;
-> > > >=20
-> > > > 	return false;
-> > > > }
-> > > >=20
-> > > > and then:
-> > > >=20
-> > > > 	if (device->status.present)
-> > > > 		return !acpi_dev_is_processor(device) || device->status.enabled;
-> > > > 	else
-> > > > 		return device->status.functional;
-> > > >=20
-> > > > ?
-> > > >    =20
-> > > Changing it to CPU only for now makes sense to me and I think this co=
-de snippet should do the
-> > > job.  Nice and simple.   =20
-> >=20
-> > Well, except that it does checks that are done elsewhere slightly
-> > differently, which from the maintenance POV is not nice.
-> >=20
-> > Maybe something like the appended patch (untested). =20
->=20
-> Hi Rafael,
->=20
-> As far as I can see that's functionally equivalent, so looks good to me.
-> I'm not set up to test this today though, so will defer to Russell on whe=
-ther
-> there is anything missing
->=20
-> Thanks for putting this together.
+GENMASK might look nicer and the type mask is 0xF000000000000000ULL,
+where 0x1000000000000000ULL means that the type is an SBI identifier.
+We need both defined
 
-This is rather embarrassing...
+#define RISCV_FFH_LPI_TYPE_MASK              0xF000000000000000ULL
+#define RISCV_FFH_LPI_TYPE_SBI               0x1000000000000000ULL
 
-I span this up on a QEMU instance with some prints to find out we need
-the !acpi_device_is_processor() restriction.
-On my 'random' test setup it fails on one device. ACPI0017 - which I
-happen to know rather well. It's the weird pseudo device that lets
-a CXL aware OS know there is a CEDT table to probe.
+as I point out below.
 
-Whilst I really don't like that hack (it is all about making software
-distribution of out of tree modules easier rather than something
-fundamental), I'm the CXL QEMU maintainer :(
+> +
+> +static int acpi_cpu_init_idle(unsigned int cpu)
+> +{
+> +	int i;
+> +	struct acpi_lpi_state *lpi;
+> +	struct acpi_processor *pr = per_cpu(processors, cpu);
+> +
+> +	if (unlikely(!pr || !pr->flags.has_lpi))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * The SBI HSM suspend function is only available when:
+> +	 * 1) SBI version is 0.3 or higher
+> +	 * 2) SBI HSM extension is available
+> +	 */
+> +	if (sbi_spec_version < sbi_mk_version(0, 3) ||
+> +	    !sbi_probe_extension(SBI_EXT_HSM)) {
+> +		pr_warn("HSM suspend not available\n");
 
-Will fix that, but it shows there is at least one broken firmware out
-there.
+The comment and these lines match what's done in sbi_cpuidle_init().
+How about a static helper function to avoid duplication?
 
-On plus side, Rafael's code seems to work as expected and lets that
-buggy firwmare carry on working :) So lets pretend the bug in qemu
-is a deliberate test case!
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (pr->power.count <= 1)
+> +		return -ENODEV;
+> +
+> +	for (i = 1; i < pr->power.count; i++) {
+> +		u32 state;
+> +
+> +		lpi = &pr->power.lpi_states[i];
+> +
+> +		/* Validate Entry Method as per FFH spec.
+> +		 * bits[63:60] should be 0x1
+> +		 * bits[59:32] should be 0x0
+> +		 * bits[31:0] represent a SBI power_state
+                                        ^ an
 
-Jonathan
+> +		 */
 
-p.s. My test setup blows up later for an unrelated reason with latest
-kernel, so I'll be off debugging that for a while :(
+Comment block needs opening wing (/*)
 
+> +		if (!(lpi->address & RISCV_FFH_LPI_TYPE_MASK) ||
 
->=20
-> Jonathan
->=20
-> >=20
-> > ---
-> >  drivers/acpi/acpi_processor.c |   11 +++++++++++
-> >  drivers/acpi/internal.h       |    3 +++
-> >  drivers/acpi/scan.c           |   24 +++++++++++++++++++++++-
-> >  3 files changed, 37 insertions(+), 1 deletion(-)
-> >=20
-> > Index: linux-pm/drivers/acpi/acpi_processor.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/acpi/acpi_processor.c
-> > +++ linux-pm/drivers/acpi/acpi_processor.c
-> > @@ -644,6 +644,17 @@ static struct acpi_scan_handler processo
-> >  	},
-> >  };
-> > =20
-> > +bool acpi_device_is_processor(const struct acpi_device *adev)
-> > +{
-> > +	if (adev->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
-> > +		return true;
-> > +
-> > +	if (adev->device_type !=3D ACPI_BUS_TYPE_DEVICE)
-> > +		return false;
-> > +
-> > +	return acpi_scan_check_handler(adev, &processor_handler);
-> > +}
-> > +
-> >  static int acpi_processor_container_attach(struct acpi_device *dev,
-> >  					   const struct acpi_device_id *id)
-> >  {
-> > Index: linux-pm/drivers/acpi/internal.h
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/acpi/internal.h
-> > +++ linux-pm/drivers/acpi/internal.h
-> > @@ -62,6 +62,8 @@ void acpi_sysfs_add_hotplug_profile(stru
-> >  int acpi_scan_add_handler_with_hotplug(struct acpi_scan_handler *handl=
-er,
-> >  				       const char *hotplug_profile_name);
-> >  void acpi_scan_hotplug_enabled(struct acpi_hotplug_profile *hotplug, b=
-ool val);
-> > +bool acpi_scan_check_handler(const struct acpi_device *adev,
-> > +			     struct acpi_scan_handler *handler);
-> > =20
-> >  #ifdef CONFIG_DEBUG_FS
-> >  extern struct dentry *acpi_debugfs_dir;
-> > @@ -133,6 +135,7 @@ int acpi_bus_register_early_device(int t
-> >  const struct acpi_device *acpi_companion_match(const struct device *de=
-v);
-> >  int __acpi_device_uevent_modalias(const struct acpi_device *adev,
-> >  				  struct kobj_uevent_env *env);
-> > +bool acpi_device_is_processor(const struct acpi_device *adev);
-> > =20
-> >  /* -------------------------------------------------------------------=
--------
-> >                                    Power Resource
-> > Index: linux-pm/drivers/acpi/scan.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/acpi/scan.c
-> > +++ linux-pm/drivers/acpi/scan.c
-> > @@ -1938,6 +1938,19 @@ static bool acpi_scan_handler_matching(s
-> >  	return false;
-> >  }
-> > =20
-> > +bool acpi_scan_check_handler(const struct acpi_device *adev,
-> > +			     struct acpi_scan_handler *handler)
-> > +{
-> > +	struct acpi_hardware_id *hwid;
-> > +
-> > +	list_for_each_entry(hwid, &adev->pnp.ids, list) {
-> > +		if (acpi_scan_handler_matching(handler, hwid->id, NULL))
-> > +			return true;
-> > +	}
-> > +
-> > +	return false;
-> > +}
-> > +
-> >  static struct acpi_scan_handler *acpi_scan_match_handler(const char *i=
-dstr,
-> >  					const struct acpi_device_id **matchid)
-> >  {
-> > @@ -2410,7 +2423,16 @@ bool acpi_dev_ready_for_enumeration(cons
-> >  	if (device->flags.honor_deps && device->dep_unmet)
-> >  		return false;
-> > =20
-> > -	return acpi_device_is_present(device);
-> > +	if (device->status.functional)
-> > +		return true;
-> > +
-> > +	if (!device->status.present)
-> > +		return false;
-> > +
-> > +	if (device->status.enabled)
-> > +		return true; /* Fast path. */
-> > +
-> > +	return !acpi_device_is_processor(device);
-> >  }
-> >  EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
-> > =20
-> >=20
-> >=20
-> >  =20
->=20
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+This should be (lpi->address & RISCV_FFH_LPI_TYPE_MASK) != RISCV_FFH_LPI_TYPE_SBI
 
+> +		    (lpi->address & RISCV_FFH_LPI_RSVD_MASK)) {
+> +			pr_warn("Invalid LPI entry method %#llx\n", lpi->address);
+> +			return -EINVAL;
+> +		}
+> +
+> +		state = lpi->address;
+> +		if (!sbi_suspend_state_is_valid(state)) {
+> +			pr_warn("Invalid SBI power state %#x\n", state);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int acpi_processor_ffh_lpi_probe(unsigned int cpu)
+> +{
+> +	return acpi_cpu_init_idle(cpu);
+> +}
+> +
+> +int acpi_processor_ffh_lpi_enter(struct acpi_lpi_state *lpi)
+> +{
+> +	u32 state = lpi->address;
+> +
+> +	if (state & SBI_HSM_SUSP_NON_RET_BIT)
+> +		return CPU_PM_CPU_IDLE_ENTER_PARAM(sbi_suspend,
+> +						   lpi->index,
+> +						   state);
+> +	else
+> +		return CPU_PM_CPU_IDLE_ENTER_RETENTION_PARAM(sbi_suspend,
+> +							     lpi->index,
+> +							     state);
+> +}
+> +
+> +#endif
+> -- 
+> 2.34.1
+>
+
+Thanks,
+drew
 
