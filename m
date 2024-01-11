@@ -1,73 +1,70 @@
-Return-Path: <linux-kernel+bounces-24077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A87582B679
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:14:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA2C82B683
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:18:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDBBF2854B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:14:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D43E1B21C33
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829AF5812E;
-	Thu, 11 Jan 2024 21:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C8735812F;
+	Thu, 11 Jan 2024 21:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="m20FhbrG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="baZnl51p"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6BC958202;
-	Thu, 11 Jan 2024 21:14:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C515EC433C7;
-	Thu, 11 Jan 2024 21:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1705007646;
-	bh=KluFjsv67Zzv4EJRU7xqsvgiJikPQyze7Cf8ZgqSCis=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=m20FhbrGGOqwjqsNEt1pNssDuYEn/rXR5ntOE7yUlw8vd+A18DdEIgwGCmySqsWmM
-	 HTwPiklqO90WP0flT96lpytIYRuz5r6zQQ8DR6byWK4Q5kLUJjTPdrmX5mgdu+005A
-	 InqTak3NQpyZOm/ZvA2N5W9ZuESSbJDhonGj5ulU=
-Date: Thu, 11 Jan 2024 13:14:05 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Shuah Khan <shuah@kernel.org>, "Joel Fernandes (Google)"
- <joel@joelfernandes.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
- kernel@collabora.com, linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/mm: mremap_test: fix build warning
-Message-Id: <20240111131405.4b47521fb8884760d712e93d@linux-foundation.org>
-In-Reply-To: <20240111082039.3398848-1-usama.anjum@collabora.com>
-References: <20240111082039.3398848-1-usama.anjum@collabora.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CE855E5A;
+	Thu, 11 Jan 2024 21:18:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 22940C433F1;
+	Thu, 11 Jan 2024 21:18:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705007882;
+	bh=W4gNLu7iRl5KrtqH7r+sc4aCOBlQ4akYGPjSoE2XqEg=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=baZnl51pXyyNhrKK4i7MCn6ZXuRoVS9b5VXAjlhnP68wVEVyDm07XJ2sIekj+WYZj
+	 X3DsFD9pXRGVJHk4OrRKCD2px7pTxJiDFAXKrCEQOF8IdYLBK+5kL2qRnQtVPjCT9i
+	 o94hbaygtC3tcO4zhBzlKRIE/4ANSck403l/DaTWLoxZWrrCiUnipj2iasWyAYfxdh
+	 EKL2doKFITZqxLM2kHB0oeDWsixNKqOjfb1PxgZsuZRiamWW0mFlMqZVIu90AVQtTk
+	 eKJg1Oozl/C9X83lJG7jh5kak6ZjTfGtDy8CYPP+TyUmj/RlsJfKfKXsickd+IIEkj
+	 hQ0ZgLMS/fCmA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0CB3AD8C96C;
+	Thu, 11 Jan 2024 21:18:02 +0000 (UTC)
+Subject: Re: [GIT PULL] Rust for v6.8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240108012055.519813-1-ojeda@kernel.org>
+References: <20240108012055.519813-1-ojeda@kernel.org>
+X-PR-Tracked-List-Id: <rust-for-linux.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240108012055.519813-1-ojeda@kernel.org>
+X-PR-Tracked-Remote: https://github.com/Rust-for-Linux/linux.git tags/rust-6.8
+X-PR-Tracked-Commit-Id: 711cbfc717650532624ca9f56fbaf191bed56e67
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b6964fe2398cb8939c3d4fc6960a6be93687305d
+Message-Id: <170500788204.23189.13040745070216693754.pr-tracker-bot@kernel.org>
+Date: Thu, 11 Jan 2024 21:18:02 +0000
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Miguel Ojeda <ojeda@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On Thu, 11 Jan 2024 13:20:38 +0500 Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
+The pull request you sent on Mon,  8 Jan 2024 02:20:55 +0100:
 
-> Fix following build warning:
-> warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long long unsigned int’
-> 
+> https://github.com/Rust-for-Linux/linux.git tags/rust-6.8
 
-Looks good to me, but... grumble.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b6964fe2398cb8939c3d4fc6960a6be93687305d
 
-`i' is an integer.  That's just how it is, Blame Fortran if you like. 
-Discovering that someone used `i' for an unsigned long long is like
-seeing
+Thank you!
 
-	struct inode *page;
-
-It is surprising, and readers shouldn't be subjected to surprises.
-
-`i' is used in two ways here.  Twice to iterate across threshold values
-(as a ULL) and once to iterate across dest_preamble_size, which is an
-int.  It would be better to have two different variables for the two
-different uses.  Ones with more appropriate names than `i'.
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
