@@ -1,178 +1,142 @@
-Return-Path: <linux-kernel+bounces-23593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B32C82AED5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:37:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59EE882AED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:38:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF188B218E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:37:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEC00283DBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0734F15AE9;
-	Thu, 11 Jan 2024 12:37:43 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3810B15AD9;
+	Thu, 11 Jan 2024 12:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="yiZujOEu"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7FE15E85;
-	Thu, 11 Jan 2024 12:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T9kgj6n8Yz1Q7kX;
-	Thu, 11 Jan 2024 20:36:49 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id B5CB4140555;
-	Thu, 11 Jan 2024 20:37:20 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 11 Jan
- 2024 20:37:20 +0800
-Subject: Re: [PATCH net-next 3/6] mm/page_alloc: use initial zero offset for
- page_frag_alloc_align()
-To: Alexander Duyck <alexander.duyck@gmail.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
-	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
-References: <20240103095650.25769-1-linyunsheng@huawei.com>
- <20240103095650.25769-4-linyunsheng@huawei.com>
- <f4abe71b3439b39d17a6fb2d410180f367cadf5c.camel@gmail.com>
- <74c9a3a1-5204-f79a-95ff-5c108ec6cf2a@huawei.com>
- <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
- <f138193c-30e0-b1ba-1735-5f569230724b@huawei.com>
- <CAKgT0UcujEktOnHx7mxWd+Jah1J9mHFWnTx35vc3x25uUadxaA@mail.gmail.com>
- <b77ef32e-64b9-2e4f-8041-ccb46dea4caa@huawei.com>
- <CAKgT0UfXv-2GrPY99-ZVZgjGEHvDqww6qLLT_Fben=_oNJM+xg@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <02377589-0b2d-d924-4dca-3552e0b4913d@huawei.com>
-Date: Thu, 11 Jan 2024 20:37:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF75A15ADF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd7e348311so19457521fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 04:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1704976687; x=1705581487; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ete2pqNcnu2TXhEIiwhI0CAEIAFmjp8VA7JbkeZ2gsc=;
+        b=yiZujOEut6wA3R8QWdiNELede4hEQzJH919zsR7idBVdHPjfBZPTUjGuL/9eeTRSu4
+         AgGn6eKRBEGbSfFEtcqr5NGsh6a2wkcs5qa8zb9AyDCqy19EMU/yJj2P6muJFJyC6dcz
+         EjousrMHje02ancQLkpLqd09Yq4+LD8uzmzJTj9nItowYYLbCf1OOecj0Ni5GAE+d8lR
+         WyWNJNps9euiYwNzy7rpTd8dJ1V41CpwVH71GfXiKtmNHBr6tyqKdBhKrWRPhretpS1m
+         EzYk4Maso5T9yfCM0BpHG3UtOVioMzBsK1ia6Wp8Bo2CXa5ZqylOIPWl2qT4zD+5q7fE
+         XXqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704976687; x=1705581487;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ete2pqNcnu2TXhEIiwhI0CAEIAFmjp8VA7JbkeZ2gsc=;
+        b=nXeQ86RPJVjxJYKKTYq3qEtapeBS+470mi/DFoFvu9vZMunrpv4T2DqP27wiJvZXcm
+         s6eduGnZWK/9spWG25Prjy6mrk7PaEDDXkzSihEEynJ2GTxltSSMMVqp6qZp8B+gXQBe
+         pdhIcqTUBqf7Ut4f4eRL5mpRhO0Mh/i0pIbunkG+n9+kbI39GO7yNbydA14IM67sO1AV
+         UtjLcOO1B2zEn44g8Wxmg5OYZk44YLF9APv4eKWO45XGog2v4BXr+56xgf0zsAXS9qq2
+         0lGQ2UUoDAc/NDMQS1q8WwmD2hd1G8bx65dWcy7Y4iy47K7y14LQpY3lwnyymeTtbAl9
+         n0SA==
+X-Gm-Message-State: AOJu0Yyx4oCb6YVVkfI4Y01usccW0Ft5GLJyTMfd55bujSRf0i3EmvHA
+	zdivBc5XYqds2QUZrvZ6POxw+ds4w3Enaw==
+X-Google-Smtp-Source: AGHT+IFTsRjfKAYEB1WoIzCnUMVluvPztCiMvi0dNrHcRqljUomoEzLhD3e7B7ZU/QBhuo7P3pyMMA==
+X-Received: by 2002:a2e:2a83:0:b0:2cd:8276:933b with SMTP id q125-20020a2e2a83000000b002cd8276933bmr354940ljq.97.1704976686890;
+        Thu, 11 Jan 2024 04:38:06 -0800 (PST)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id v23-20020a056402185700b005578654b081sm567335edy.23.2024.01.11.04.38.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 04:38:06 -0800 (PST)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Date: Thu, 11 Jan 2024 13:38:04 +0100
+Subject: [PATCH] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UfXv-2GrPY99-ZVZgjGEHvDqww6qLLT_Fben=_oNJM+xg@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Message-Id: <20240111-drm-panel-bridge-fixup-v1-1-e06292f6f500@fairphone.com>
+X-B4-Tracking: v=1; b=H4sIACvhn2UC/x2MSwqFMAwAryJZG7DFD31XERdqUw34aklRBPHuB
+ pfDMHNDJmHK8CtuEDo58x4VTFnAvI5xIWSvDLaydWWMQS9/TGOkDSdhrz7wdSRsZuu6LkyudQE
+ 0TkIqvnE/PM8LcW1MbGgAAAA=
+To: Andrzej Hajda <andrzej.hajda@intel.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.4
 
-On 2024/1/11 0:21, Alexander Duyck wrote:
+Since the kconfig symbol of DRM_PANEL_BRIDGE is only adding
+bridge/panel.o to drm_kms_helper object, we need to select
+DRM_KMS_HELPER to make sure the file is actually getting built.
 
-..
+Otherwise with certain defconfigs e.g. devm_drm_of_get_bridge will not
+be properly available:
 
->>
->> The main usecase in my mind is the page_frag used in the tx part for
->> networking if we are able to unify the page_frag and page_frag_cache in
->> the future:
->> https://elixir.bootlin.com/linux/v6.7-rc8/source/net/ipv4/tcp.c#L1183
->>
->> Do you think if it makes sense to unify them using below unified struct,
->> and provide API for returning 'page' and 'va' as page_pool does now?
-> 
-> Short answer is no. The difference between the two is the use case,
-> and combining page and va in the same struct just ends up generating
-> indirect data duplication. So one step would be to look at seeing what
-> we could do to either convert page to va or va to page without taking
-> a significant penalty in either page_frag or page_frag_cache use case.
+  aarch64-linux-gnu-ld: drivers/phy/qualcomm/phy-qcom-qmp-combo.o: in function `qmp_combo_bridge_attach':
+  drivers/phy/qualcomm/phy-qcom-qmp-combo.c:3204:(.text+0x8f4): undefined reference to `devm_drm_of_get_bridge'
 
-I think we might do something like the page_pool using some unused fields
-in 'struct page' as the metadata of page_frag/page_frag_cache, and reduce
-page_frag or page_frag_cache to a single pointer of 'struct page'?
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+I can see "depends on DRM_KMS_HELPER" was removed with commit
+3c3384050d68 ("drm: Don't make DRM_PANEL_BRIDGE dependent on DRM_KMS_HELPERS")
 
-I looked the the fields used by page_pool in 'struct page', it seems it is
-enough for page_frag case too.
+I'm not too familiar with Kconfig but it feels more correct if
+PHY_QCOM_QMP_COMBO selects DRM_PANEL_BRIDGE that that's enough; and it
+doesn't also has to explicitly select DRM_KMS_HELPER because of how the
+objects are built in the Makefile.
 
-> I had opted for using the virtual address as the Rx path has a strong
-> need for accessing the memory as soon as it is written to begin basic
-> parsing tasks and the like. In addition it is usually cheaper to go
-> from a virtual to a page rather than the other way around.
+Alternatively solution to this patch could be adjusting this line in
+include/drm/drm_bridge.h:
 
-Is there a reason why it is usually cheaper to go from a virtual to a page
-rather than the other way around? I looked the implementations of them, But
-had not figured why yet.
+  -#if defined(CONFIG_OF) && defined(CONFIG_DRM_PANEL_BRIDGE)
+  +#if defined(CONFIG_OF) && defined(CONFIG_DRM_PANEL_BRIDGE) && defined(CONFIG_DRM_KMS_HELPER)
+   struct drm_bridge *devm_drm_of_get_bridge(struct device *dev, struct device_node *node,
+                                            u32 port, u32 endpoint);
 
-> 
-> As for the rest of the fields we have essentially 2 main use cases.
-> The first is the Rx path which usually implies DMA and not knowing
-> what size of the incoming frame is and the need to have allocation
-> succeed to avoid jamming up a device. So basically it is always doing
-> something like allocating 2K although it may only receive somewhere
-> between 60B to 1514B, and it is always allocating from reserves. For
-> something like Tx keeping the pagecnt_bias and pfmemalloc values
+. and then selecting DRM_KMS_HELPER for PHY_QCOM_QMP_COMBO.
 
-I am not so sure I understand why it is ok to keep reusing a pfmemalloc
-page for Tx yet?
+But I think the solution in this patch is better. Let me know what you
+think.
+---
+ drivers/gpu/drm/bridge/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-I am assuming the pfmemalloc is not about a specific page, but about the
-state of mm system when a page is allocated under memory pressure?
-The pfmemalloc is used to drop some rx packet which is not helpful for
-reducing the memory pressure? And tx does not need to handle the pfmemalloc
-case?
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index ac9ec5073619..ae782b427829 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -8,6 +8,7 @@ config DRM_BRIDGE
+ config DRM_PANEL_BRIDGE
+ 	def_bool y
+ 	depends on DRM_BRIDGE
++	select DRM_KMS_HELPER
+ 	select DRM_PANEL
+ 	help
+ 	  DRM bridge wrapper of DRM panels
 
-> doesn't make much sense as neither is really needed for the Tx use
-> case. Instead they can just make calls to page_get as they slice off
+---
+base-commit: b9c3a1fa6fb324e691a03cf124b79f4842e65d76
+change-id: 20240111-drm-panel-bridge-fixup-5c2977fb969f
 
-I think for small packet, the bias may help to avoid some atomic
-operations and some cache bouncing?
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
 
-> pieces of the page, and they have the option of failing if they cannot
-> get enough memory to put the skb together.
-> 
->> It may mean we need to add one pointer to the new struct and are not able
->> do some trick for performance, I suppose that is ok as there are always
->> some trade off for maintainability and evolvability?
->>
->> struct page_frag {
->>         struct *page;
->>         void *va;
->> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->>         __u16 offset;
->>         __u16 size;
->> #else
->>         __u32 offset;
->> #endif
->>         /* we maintain a pagecount bias, so that we dont dirty cache line
->>          * containing page->_refcount every time we allocate a fragment.
->>          */
->>         unsigned int            pagecnt_bias;
->>         bool pfmemalloc;
->> };
-> 
-> My general thought was to instead just make the page_frag a member of
-> the page_frag_cache since those two blocks would be the same. Then we
-> could see how we evolve things from there. By doing that there should
-> essentially be no code change
-
-Yes, that is a possible way to evolve things. But I seems to perfer to
-use the unused fields in 'struct page' for now, WDYT?
-
-> 
->> Another usecase that is not really related is: hw may be configured with
->> a small BD buf size, for 2K and configured with a big mtu size or have
->> hw gro enabled, for 4K pagesize, that means we may be able to reduce the
->> number of the frag num to half as it is usually the case that two
->> consecutive BD pointing to the same page. I implemented a POC in hns3
->> long time ago using the frag implememtation in page_pool, it did show
->> some obvious peformance gain, But as the priority shifts, I have not
->> been able to continue that POC yet.
-> 
-> The main issue for that use case is that in order to make it work you
-> are having to usually copybreak the headers out of the page frags as
-> you won't be able to save the space for the skb tailroom. Either that
-> or you are using header/data split and in that case the data portion
-> should really be written to full pages instead of page fragments
-
-I am not sure how hw implement the header/data split yet, is the hw able
-to not enabling header/data split for small packets and enabling header/data
-split for medium/big packets for the same queue, maybe spaning data part on
-multi-bd for big packets, so that we have least memory usages and performance
-penalty for small/medium/big packets received in the same queue?
-
-> anyway and be making use of page pool instead.
 
