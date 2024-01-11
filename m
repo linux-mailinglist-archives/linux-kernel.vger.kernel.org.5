@@ -1,118 +1,104 @@
-Return-Path: <linux-kernel+bounces-23864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A54B82B2E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:28:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF33082B2EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83872B25984
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:28:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54A491F26A11
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8241D4F8A2;
-	Thu, 11 Jan 2024 16:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD464F8B7;
+	Thu, 11 Jan 2024 16:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JkO7VKBo"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hvYf1RF6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CBA4F5FB
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a27733ae1dfso632097666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:27:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704990470; x=1705595270; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=plL10T18yoNF2cn1blPIOwyBNDgoNEpTCTt3sDg3Bg0=;
-        b=JkO7VKBoq+mhNqY4DS8aZopgTQViY0z3WVNAyAlB9oO89t0XObaHJVgw2/iG8jiJJc
-         lsCsozynZf3hVNh9B+lH+iYqzv5uz27yFBv0lOVBB2D0x5lSHYNqIAYSSnS+h3fkYYjV
-         QM172zgYHL0SKMsJJJAh6LR30C5eNuZQrPmURxvHUxGMblMzXI27Ky9xlV51jLJ+Y8W5
-         bl2iRWA1bhGst6tUhQOAWUdpWCglTKZSLHEwx4osCiClVbV/CLiKJERDsKiPyn9lnD0v
-         S+8MTwE63JpygAxPAvNMCOTGCcxPgkldtyOJ1/w3DjJaOdy62Rs6HmqhxAbpDOZO0x7S
-         dDcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704990470; x=1705595270;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=plL10T18yoNF2cn1blPIOwyBNDgoNEpTCTt3sDg3Bg0=;
-        b=dfZmioTuonsBy0n5lC0HxR0AtuOLgsYjFwqFt4im/SRxlG01u/kDQQupg3fy2ywlUr
-         +d59xLFGgMMHrChkNOucAYZWoRvIkYNgOZh6fqRKSOxmAQOAHbfQMv0VAMMdGnBgcF94
-         3U5t26cIr6XdyFvckr+DV99Z/b8STHanDm8jnbk8zP4xV3uAhDiQntlERuwbbN2seCPq
-         5Lc5olbNGJOPn6oQ9gcSyIOp9dSLRWASrgTYXST+bM6W013AGfm3XYHI8GSK7IlJZWO0
-         oplpgLRSJoOX72aHFtMnBki0uN+lIsdNhClg98C5tjZOOxqLlBQVpG8CS4UFtodEyYYI
-         dTLw==
-X-Gm-Message-State: AOJu0YzdDtLgfYxFntF6D0V7peonGdtcVEPAr9PxRNGHjMrSQ70yBr1K
-	pNVnFQQ/khfhEybINg/uF0kgxeBE4CUt1A==
-X-Google-Smtp-Source: AGHT+IHMaSBFXfruQLkk+kFdLGi/DEBrOwgWv2codSYUyy6UUbGamfDp2bjrOv6DhUdWCNXlsojusQ==
-X-Received: by 2002:a17:907:3f25:b0:a2c:33ce:8c80 with SMTP id hq37-20020a1709073f2500b00a2c33ce8c80mr631263ejc.36.1704990470057;
-        Thu, 11 Jan 2024 08:27:50 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id j15-20020a1709066dcf00b00a2a6e8f693esm748186ejt.152.2024.01.11.08.27.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 08:27:49 -0800 (PST)
-Date: Thu, 11 Jan 2024 17:27:44 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: kernel test robot <lkp@intel.com>
-Cc: Chris Down <chris@chrisdown.name>, oe-kbuild-all@lists.linux.dev,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5AF4F89C;
+	Thu, 11 Jan 2024 16:28:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24BD9C433F1;
+	Thu, 11 Jan 2024 16:28:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704990519;
+	bh=wOlw6k8oeC5WKfVf/WyGf04YxAUDhKpIuRBaG8SWzXg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hvYf1RF6DuM/eVkHhjtTnrm4XHlLDo7AH1VNzHShDw1mFxJhgPvSmSoODMm2I3D75
+	 Dxh0yBW7wvX9tr5/wPuDviqS9VfriM8H+JjVDIVsoq4J0ypKM+KgzhSCS4KTfZh972
+	 WeFKbC8kWdlzezOM4M3gAgvP/KtoCKDhUlijhfmientVwgiBHTDKuKtLyBP1LdXKr8
+	 KtGRgGaGIkOrYch0RL7PC3sWIVrdkAIbs/6++VdxZtixlW8G9WIHB5zdSQHVnieGyE
+	 iBRNA/w8hR2ZGny1QGQCsF8KYUsisgjyrMqkkO0vdkG1KMOP5857vaZVKGKo0Uv2Ot
+	 DcE/6Heg1ZCVg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: include/linux/printk.h:434:44: warning: '%s' directive argument
- is null
-Message-ID: <ZaAXAGqUJCxmCXzm@alley>
-References: <202401112002.AOjwMNM0-lkp@intel.com>
+Subject: [PATCH] [net-next v2] wangxunx: select CONFIG_PHYLINK where needed
+Date: Thu, 11 Jan 2024 17:27:53 +0100
+Message-Id: <20240111162828.68564-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202401112002.AOjwMNM0-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu 2024-01-11 20:29:05, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   de927f6c0b07d9e698416c5b287c521b07694cac
-> commit: 337015573718b161891a3473d25f59273f2e626b printk: Userspace format indexing support
-> date:   2 years, 6 months ago
-> config: x86_64-randconfig-002-20240105 (https://download.01.org/0day-ci/archive/20240111/202401112002.AOjwMNM0-lkp@intel.com/config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240111/202401112002.AOjwMNM0-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202401112002.AOjwMNM0-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    In file included from include/linux/kernel.h:19,
->                     from arch/x86/include/asm/percpu.h:27,
->                     from arch/x86/include/asm/current.h:6,
->                     from include/linux/sched.h:12,
->                     from include/linux/blkdev.h:5,
->                     from drivers/scsi/scsi_devinfo.c:3:
->    drivers/scsi/scsi_devinfo.c: In function 'scsi_dev_info_list_add_str':
-> >> include/linux/printk.h:434:44: warning: '%s' directive argument is null [-Wformat-overflow=]
->      434 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
->          |                                            ^
->    include/linux/printk.h:430:3: note: in definition of macro 'printk_index_wrap'
->      430 |   _p_func(_fmt, ##__VA_ARGS__);    \
->          |   ^~~~~~~
->    drivers/scsi/scsi_devinfo.c:551:4: note: in expansion of macro 'printk'
->      551 |    printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
->          |    ^~~~~~
->    drivers/scsi/scsi_devinfo.c:552:14: note: format string is defined here
->      552 |           " '%s'\n", __func__, vendor, model,
->          |              ^~
+From: Arnd Bergmann <arnd@arndb.de>
 
-This should get fixed by
-https://lore.kernel.org/all/20240111162419.12406-1-pmladek@suse.com/
+The ngbe driver needs phylink:
 
-Best Regards,
-Petr
+arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/libwx/wx_ethtool.o: in function `wx_nway_reset':
+wx_ethtool.c:(.text+0x458): undefined reference to `phylink_ethtool_nway_reset'
+arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/ngbe/ngbe_main.o: in function `ngbe_remove':
+ngbe_main.c:(.text+0x7c): undefined reference to `phylink_destroy'
+arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/ngbe/ngbe_main.o: in function `ngbe_open':
+ngbe_main.c:(.text+0xf90): undefined reference to `phylink_connect_phy'
+arm-linux-gnueabi-ld: drivers/net/ethernet/wangxun/ngbe/ngbe_mdio.o: in function `ngbe_mdio_init':
+ngbe_mdio.c:(.text+0x314): undefined reference to `phylink_create'
+
+Add the missing Kconfig description for this.
+
+Fixes: bc2426d74aa3 ("net: ngbe: convert phylib to phylink")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+This addresses a build regression in net-next at the moment, it would be good to
+have the fix merged into net-next before it makes it into mainline.
+
+v2: As suggested by rmk, remove the PHYLIB reference in the process, since PHYLINK
+    requires that already
+---
+ drivers/net/ethernet/wangxun/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/wangxun/Kconfig b/drivers/net/ethernet/wangxun/Kconfig
+index 23cd610bd376..85cdbdd44fec 100644
+--- a/drivers/net/ethernet/wangxun/Kconfig
++++ b/drivers/net/ethernet/wangxun/Kconfig
+@@ -26,7 +26,7 @@ config NGBE
+ 	tristate "Wangxun(R) GbE PCI Express adapters support"
+ 	depends on PCI
+ 	select LIBWX
+-	select PHYLIB
++	select PHYLINK
+ 	help
+ 	  This driver supports Wangxun(R) GbE PCI Express family of
+ 	  adapters.
+-- 
+2.39.2
+
 
