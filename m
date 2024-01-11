@@ -1,154 +1,119 @@
-Return-Path: <linux-kernel+bounces-23084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A120882A77E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:23:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D57E182A78A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F5B9285DD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:23:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7638B1F23BE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704122592;
-	Thu, 11 Jan 2024 06:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4B1FBFF;
+	Thu, 11 Jan 2024 06:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DQ9BnO9/";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2hI3TVul";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lDbfuXmN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="PVX3jxHN"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="GkipVFTE";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Y/8wUkSJ"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE16623C1;
-	Thu, 11 Jan 2024 06:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 41443221E8;
-	Thu, 11 Jan 2024 06:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704954079; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
-	b=DQ9BnO9/AjVn8onMqZnchn5gPvt/80svfZQh1zrGNEgOqet0hXnQoBLimBX/Qe89QEmfv2
-	7CcgoAWwLo+KiB+1E8Ond9rI5kioWHnMT0ZnOT2Oekaydr/xK52GOkpANFf60k3w3SeD4d
-	u6vNLw+q5lM6pLh/16wZM+0R/jyeNko=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704954079;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
-	b=2hI3TVulZ73IfMXUKy26ToHCqfoOxoynWwQiQporQYsV9XMC88hRmgCuRaXnrsBfVu5KiI
-	F2KRwGl/MTuV0/DA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704954155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
-	b=lDbfuXmNZvbVsaFNEJtyMz8S/yvRnBrgrGEuNysTbSb+2OIdPNivoKputDTiwVcIqWIeQR
-	gnWq7X3Ze8wTw5kuFU9GXxX7gUjUjvqZVU2gi3DHozNRO57fhmKugT6s0s6Ncb/96V5BVr
-	ScvrK5I5ZHi3q3D/3WS7Bi3Hft50ljs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704954155;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
-	b=PVX3jxHNS+reAC05gT3M2xsrCvl48A47PLSnmtMTpc1BBzHknVI/iHdrJuXTHoKCUJS/sX
-	V0gFomUoZ9MjoEAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2931B13635;
-	Thu, 11 Jan 2024 06:21:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7ff2MtyIn2WjTgAAD6G6ig
-	(envelope-from <ddiss@suse.de>); Thu, 11 Jan 2024 06:21:16 +0000
-From: David Disseldorp <ddiss@suse.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	David Disseldorp <ddiss@suse.de>
-Subject: [PATCH] initramfs: remove duplicate built-in __initramfs_start unpacking
-Date: Thu, 11 Jan 2024 17:22:40 +1100
-Message-Id: <20240111062240.9362-1-ddiss@suse.de>
-X-Mailer: git-send-email 2.35.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A202FBF2;
+	Thu, 11 Jan 2024 06:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id BE0CE3200A7A;
+	Thu, 11 Jan 2024 01:24:17 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 11 Jan 2024 01:24:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1704954257; x=1705040657; bh=DrHB+y9Pgc
+	vV0CSGp8H420Yn6g7abiIoAQ9Qr6Gyars=; b=GkipVFTE0PStlL9e/y52pEHOHM
+	+nDgLIhX+lPWbqe7arZFqGvrxEt/mZ2l+BGl0OvhbIbEPvLfL1/Y1Qngp+0+Z+aY
+	ua4T6YTQxQl6G1i4M4Dx9lXbiodzGTXB0ZCE6zn5qhxfmc//SR0UyHHkypMqGs21
+	GVTc8LiPYV2ObPT2XVVQflil3evqzbZ5gOu1J/5jZcrQjP2mG6chgGRBCUuNmbIO
+	276SYaLT+zSGmYn2LS3pQ8xEMnqywOtbo2oRX7dTggg3QFaRs0Uwi9URroObMNf1
+	A85G+p0O8KWiXf/pV0YFXLRvK/YBlm5FPQeJQBa/sawDBpG+G1CKdlMFniNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704954257; x=1705040657; bh=DrHB+y9PgcvV0CSGp8H420Yn6g7a
+	biIoAQ9Qr6Gyars=; b=Y/8wUkSJEobH2iVWvcsm87q14HOzEf7pmiM7brlRtgQX
+	4L/XOIQ3jsYxcIELJUxK/d5vS4fg4bOf9TrGu9/+HRslPN/3bzXGndLFMq2u5mA/
+	1X8DZhvGY+RucQ7w/2slxRdFODZA4i7KOf6OdbuxnWyKx4tF05DUN1drg3YKrHbe
+	3uKiuIKe6XyazwypVu4xDflhDoAOa1KSGMFKiMQyO8qCAPtaDokB2ioy1sYLm9LU
+	joRdj6mJ3ikCQBFIpiqaj+huP+Gbf6ZtVDeGqAaVnekDjpLcHrJUSjOzCZgPRdL8
+	jnxMLt2UJMOPdVusDcoeSqJj2s3LyklhjexnBI7m6g==
+X-ME-Sender: <xms:kImfZToohpB0iiVwCIIpSA4gA8h7hnsWXOMP1kX45e4dmbma1uipEA>
+    <xme:kImfZdpYsbq9wZTS4w6n_ZGDR_1uhdy7I8Nttm2_w71c6dyIx9PEn8b8iBRB4f7BL
+    Ox0xvU51Q6rj8Hrtg0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeivddgledvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:kImfZQMJr7-RRGACZLQVMhlKrezabwoIQZr8tLGh9sHILBFP-TjdVA>
+    <xmx:kImfZW70Rg18t07fBnnqOk5jWKeaPE8d7rS0if3N8_In5hv4BRVotw>
+    <xmx:kImfZS6rfFwcP9SjhxgzptIJvPsVAlIDJIycNmX4dOtn1SsNwYMtOA>
+    <xmx:kYmfZUSa1bIot4l6cbwDd7RBweTaKAxT-SNfrk_Eo9CQDZGFWdFhqA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id D2E92B6008D; Thu, 11 Jan 2024 01:24:16 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=lDbfuXmN;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=PVX3jxHN
-X-Spamd-Result: default: False [3.19 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[42.52%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 3.19
-X-Rspamd-Queue-Id: 41443221E8
-X-Spam-Level: ***
-X-Spam-Flag: NO
-X-Spamd-Bar: +++
+Message-Id: <343cedc4-a078-4cf8-ba3b-a1a8df74185b@app.fastmail.com>
+In-Reply-To: <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
+References: <20240110232255.1099757-1-arnd@kernel.org>
+ <ZZ8wMWQMo4eGnSuG@lizhi-Precision-Tower-5810>
+Date: Thu, 11 Jan 2024 07:23:34 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Frank Li" <Frank.li@nxp.com>, "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Vinod Koul" <vkoul@kernel.org>, "Peng Fan" <peng.fan@nxp.com>,
+ "Fabio Estevam" <festevam@denx.de>, dmaengine@vger.kernel.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
+Content-Type: text/plain
 
-If initrd_start cpio extraction fails, CONFIG_BLK_DEV_RAM triggers
-fallback to initrd.image handling via populate_initrd_image().
-The populate_initrd_image() call follows successful extraction of any
-built-in cpio archive at __initramfs_start, but currently performs
-built-in archive extraction a second time.
+On Thu, Jan 11, 2024, at 01:02, Frank Li wrote:
+> On Thu, Jan 11, 2024 at 12:03:42AM +0100, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> A change to remove some unnecessary exports ended up removing some
+>> necessary ones as well, and caused a build regression by trying to
+>> link a single source file into two separate modules:
+>
+> You should fix Kconfig to provent fsl-edma and mcf-edma build at the same
+> time.
 
-Prior to commit b2a74d5f9d446 ("initramfs: remove clean_rootfs"),
-the second built-in initramfs unpack call was used to repopulate entries
-removed by clean_rootfs(), but it's no longer necessary now the contents
-of the previous extraction are retained.
+That sounds like the wrong approach since it prevents
+compile-testing one of the drivers in an allmodconfig
+build.
 
-Signed-off-by: David Disseldorp <ddiss@suse.de>
----
- init/initramfs.c | 2 --
- 1 file changed, 2 deletions(-)
+> EXPORT_SYMBOL_GPL is not necesary at all.
+>
+> mcf-edma is quit old. ideally, it should be merged into fsl-edma.
 
-diff --git a/init/initramfs.c b/init/initramfs.c
-index 8d0fd946cdd2b..2edd3007a6857 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -669,8 +669,6 @@ static void __init populate_initrd_image(char *err)
- 	struct file *file;
- 	loff_t pos = 0;
- 
--	unpack_to_rootfs(__initramfs_start, __initramfs_size);
--
- 	printk(KERN_INFO "rootfs image is not initramfs (%s); looks like an initrd\n",
- 			err);
- 	file = filp_open("/initrd.image", O_WRONLY | O_CREAT, 0700);
--- 
-2.35.3
+I have no specific interest in either of the drivers, just
+trying to fix the build regression. I see no harm in exporting
+the symbols, but I can refactor the drivers to link all three
+files into the same module and add a hack to register both
+platform_driver instances from a shared module_init() if
+you think that's better. Unfortunately we can't have more
+than one initcall in a loadable module.
 
+     Arnd
 
