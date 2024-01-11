@@ -1,65 +1,70 @@
-Return-Path: <linux-kernel+bounces-23995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA10E82B4F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:57:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9AC82B4F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:58:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A2C01F25DAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:57:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44212B230B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F8E5578D;
-	Thu, 11 Jan 2024 18:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87DC54BD8;
+	Thu, 11 Jan 2024 18:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mh3fcnUi"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KxfoJUcO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C189C26AC7;
-	Thu, 11 Jan 2024 18:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5efb0e180f0so58777927b3.1;
-        Thu, 11 Jan 2024 10:57:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704999441; x=1705604241; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=tFh3qsYh0T8RX+oziEs6jEklh5e0dLow8jErOyNNUZU=;
-        b=mh3fcnUisgeVNc1NyJrc+BjKORZflHhLaU8/uARxVkd2AA22vMJiJWF/8sx1hwg1HI
-         AIvEK1QoY+xaOXJUa/xaLPgYiHEVicyqaSWwRRfkJenwxNehW5XQbLBPJfXjmNh3dXGC
-         VwOvrhDNszz5r5kVR34NUJm1wkMDB4bpWewrIjDxiItccpmkoBV2s2zz2umoqFgTIxv1
-         SGbOskZjmcNz1ObOwXLzOnXq0sWZxrxwwuWVU8q+AZoND6ZHQWrv1KgHcc4+RyWXksK+
-         u7PR8LnxRrx61S579CIlqvznovSw51UXIGdj5dJRX27csGE6KNEM/INoaPaiJ/szuNRk
-         q2IQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3218B54BD1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 18:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704999496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=mC7tqDcYGwRmlYv1/mdyf7TGoQX0cRu3R4Vlw7d7rm8=;
+	b=KxfoJUcOsPg2MYy4viAt5Elu2IwFx65qkDzVnc+G5z6pvbPsbnHmUhSo0MJ3oJ8Q47fRt6
+	/191h0vjKaoPvYV5FJScArHxIT6mxxr7ilcvoJjJdxAOgYvQA4DOPP4pgAcx8ph3DkpQvs
+	lo7ck3nRv7B4OX5/PScJN0V1csxOYkg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-7m3Ys518NmS0rHdmBBtTYA-1; Thu, 11 Jan 2024 13:58:05 -0500
+X-MC-Unique: 7m3Ys518NmS0rHdmBBtTYA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33768a5f55cso3406360f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:58:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704999441; x=1705604241;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tFh3qsYh0T8RX+oziEs6jEklh5e0dLow8jErOyNNUZU=;
-        b=c+YJZlZR5bntAsMCS9RY0fo2a7a288zXJYprCwhkLFtqWj/AHaNKmE5kJGqEyN8/4+
-         6+rsoWPppLLjefWD137aiNtLiYPvooLNZ6XCadDbGJlrvNISeHRDPFaKAYMl4p0B9wrR
-         71v6L5yu0reXT0I0NXMVAsktY04wd+7G3YjOOPIZI5bEpedoSOc3BC+Wt8IHLZYu0rfi
-         m2yOVbhZYui26e6a6hWNAA7rZE4R2aGU56N3tS/QRQHK2fWmhbKu/W6qUeOtguRi7YdG
-         NwFb4bpgNZ+Eg4E8hete6i6xSYWXe9hRuGFmVcODXmrkMJZicujSyrjIyfOBPr1jXGP7
-         +I+w==
-X-Gm-Message-State: AOJu0Ywt4oBGrEotqyKTZmQn/OghIIdvX2mtWsyH10MMmIzs4AkWELVT
-	R6IF2fdriU8D6TML6ZxFfGE=
-X-Google-Smtp-Source: AGHT+IEjOVlqBPgWjm1I/LWUZ0pAOGk0PP7MBg5TBGrx2KB/NwqwHabBz3kBY8lmmtJ1qSDp62bfRQ==
-X-Received: by 2002:a81:f005:0:b0:5fa:ea54:f413 with SMTP id p5-20020a81f005000000b005faea54f413mr247403ywm.1.1704999440683;
-        Thu, 11 Jan 2024 10:57:20 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i3-20020a819103000000b005e8da478ccasm630440ywg.97.2024.01.11.10.57.18
+        d=1e100.net; s=20230601; t=1704999482; x=1705604282;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mC7tqDcYGwRmlYv1/mdyf7TGoQX0cRu3R4Vlw7d7rm8=;
+        b=Lm7yNVrPHb3gvPbwX1SNCINxrFVQeTeJqdehYUv1Ivz+muh+u6YNNa6+n6nHZMl/en
+         5xjb4bWf+IGgnDcpmI+7WL++HzJgGtA0dfE8ofDmihJFc7ybQbk40waUvflbfzXydaXH
+         TXgcitLlZMnSq6T4xWMTj8yAVU3P2C2wHnPDlMReNhQCn/OBzpRzUYOkBGqAp8o5uDmI
+         BAUBxCtrysCsomp7IKmrlBvr1hpJQTDX7y8ipQgnVUjP3eRTjvPnVzcTK6WCJd+DM/Ut
+         9fG21VLsUyKuWZUNjZFYnvuyZHEpYgEBGh7g8vBJg/KJVnYO3lCqPHVujGau6t3N2nB/
+         K2qQ==
+X-Gm-Message-State: AOJu0YzGXr5OUxoqZLbrSrj4MUErF0lKuo6HUB1hTTCS32MrG/WILP5m
+	BUuXugTRcPEed2dhE9LkfIxjHH3KkmrTjhxZxwBjYlnn0BaGFR3GhWe6FOC9ssZU6Z4nu+hjfCY
+	6j1GYHoUQob3BsUCF/b2Gcdu8q83RvUT2
+X-Received: by 2002:a5d:4f90:0:b0:337:6192:4a42 with SMTP id d16-20020a5d4f90000000b0033761924a42mr137110wru.25.1704999482449;
+        Thu, 11 Jan 2024 10:58:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH6LR9GhbRJjbZuUFjpjGIUJWQxodB6jBltbloatzZOZ5mqJ232k/NphevFyF9HtQX4fVJ39A==
+X-Received: by 2002:a5d:4f90:0:b0:337:6192:4a42 with SMTP id d16-20020a5d4f90000000b0033761924a42mr137105wru.25.1704999482069;
+        Thu, 11 Jan 2024 10:58:02 -0800 (PST)
+Received: from ?IPV6:2003:cb:c747:f900:6099:1901:b863:450f? (p200300cbc747f90060991901b863450f.dip0.t-ipconnect.de. [2003:cb:c747:f900:6099:1901:b863:450f])
+        by smtp.gmail.com with ESMTPSA id h6-20020adf9cc6000000b003375d8b0460sm1847435wre.1.2024.01.11.10.58.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 10:57:19 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <2f595f28-7fcd-4196-a0b1-6598781530b9@roeck-us.net>
-Date: Thu, 11 Jan 2024 10:57:17 -0800
+        Thu, 11 Jan 2024 10:58:01 -0800 (PST)
+Message-ID: <5ed23cf3-eedd-44aa-a498-d2a9ab046535@redhat.com>
+Date: Thu, 11 Jan 2024 19:58:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,165 +72,143 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
+Subject: Re: [syzbot] [mm?] kernel BUG in move_pages
+To: Suren Baghdasaryan <surenb@google.com>,
+ syzbot <syzbot+705209281e36404998f6@syzkaller.appspotmail.com>,
+ Peter Xu <peterx@redhat.com>
+Cc: aarcange@redhat.com, akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ syzkaller-bugs@googlegroups.com
+References: <00000000000011d709060eadffd3@google.com>
+ <CAJuCfpG-8w_KQ8bWvSr=GrXM+Jx3YKn5DqTFJU2MaMojML_a-A@mail.gmail.com>
+ <CAJuCfpFfKYn+G1+puQ0KxzWCnbfFT51tKwV8MnrP7YZcJAORwg@mail.gmail.com>
+ <CAJuCfpHTAAPEjMLrcxyG8zW7HA47EinB8CQfKGmBw7gGxqQ=vA@mail.gmail.com>
 Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Miklos Szeredi <mszeredi@redhat.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
- Karel Zak <kzak@redhat.com>, Ian Kent <raven@themaw.net>,
- David Howells <dhowells@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <christian@brauner.io>, Amir Goldstein
- <amir73il@gmail.com>, Matthew House <mattlloydhouse@gmail.com>,
- Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-6-mszeredi@redhat.com>
- <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
- <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAJuCfpHTAAPEjMLrcxyG8zW7HA47EinB8CQfKGmBw7gGxqQ=vA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 1/10/24 16:32, Linus Torvalds wrote:
-> On Wed, 10 Jan 2024 at 14:23, Guenter Roeck <linux@roeck-us.net> wrote:
+On 11.01.24 19:34, Suren Baghdasaryan wrote:
+> On Thu, Jan 11, 2024 at 8:44 AM Suren Baghdasaryan <surenb@google.com> wrote:
 >>
->> with this patch in the tree, all sh4 builds fail with ICE.
+>> On Thu, Jan 11, 2024 at 8:40 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>>>
+>>> On Thu, Jan 11, 2024 at 8:25 AM syzbot
+>>> <syzbot+705209281e36404998f6@syzkaller.appspotmail.com> wrote:
+>>>>
+>>>> Hello,
+>>>>
+>>>> syzbot found the following issue on:
+>>>>
+>>>> HEAD commit:    e2425464bc87 Add linux-next specific files for 20240105
+>>>> git tree:       linux-next
+>>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14941cdee80000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=4056b9349f3da8c9
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=705209281e36404998f6
+>>>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=125d0a09e80000
+>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc7331e80000
+>>>>
+>>>> Downloadable assets:
+>>>> disk image: https://storage.googleapis.com/syzbot-assets/2f738185e2cf/disk-e2425464.raw.xz
+>>>> vmlinux: https://storage.googleapis.com/syzbot-assets/b248fcf4ea46/vmlinux-e2425464.xz
+>>>> kernel image: https://storage.googleapis.com/syzbot-assets/a9945c8223f4/bzImage-e2425464.xz
+>>>>
+>>>> The issue was bisected to:
+>>>>
+>>>> commit adef440691bab824e39c1b17382322d195e1fab0
+>>>> Author: Andrea Arcangeli <aarcange@redhat.com>
+>>>> Date:   Wed Dec 6 10:36:56 2023 +0000
+>>>>
+>>>>      userfaultfd: UFFDIO_MOVE uABI
+>>>>
+>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11cb6ea9e80000
+>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13cb6ea9e80000
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15cb6ea9e80000
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+705209281e36404998f6@syzkaller.appspotmail.com
+>>>> Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
+>>>>
+>>>>   do_one_initcall+0x128/0x680 init/main.c:1237
+>>>>   do_initcall_level init/main.c:1299 [inline]
+>>>>   do_initcalls init/main.c:1315 [inline]
+>>>>   do_basic_setup init/main.c:1334 [inline]
+>>>>   kernel_init_freeable+0x692/0xc30 init/main.c:1552
+>>>>   kernel_init+0x1c/0x2a0 init/main.c:1442
+>>>>   ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>>>>   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+>>>> ------------[ cut here ]------------
+>>>> kernel BUG at include/linux/page-flags.h:1035!
+>>>> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+>>>> CPU: 0 PID: 5068 Comm: syz-executor191 Not tainted 6.7.0-rc8-next-20240105-syzkaller #0
+>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+>>>> RIP: 0010:PageAnonExclusive include/linux/page-flags.h:1035 [inline]
+>>>
+>>>  From a quick look, I think the new ioctl is being used against a
+>>> file-backed page and that's why PageAnonExclusive() throws this error.
+>>> I'll confirm if this is indeed the case and will add checks for that
+>>> case. Thanks!
 >>
->> during RTL pass: final
->> In file included from fs/namespace.c:11:
->> fs/namespace.c: In function '__se_sys_listmount':
->> include/linux/syscalls.h:258:9: internal compiler error: in change_address_1, at emit-rtl.c:2275
+>> Hmm. Looking at the reproducer it does not look like a file-backed
+>> memory... Anyways, I'm on it.
 > 
-> We do have those very ugly SYSCALL_DEFINEx() macros, but I'm not
-> seeing _anything_ that would be odd about the listmount case.
-> 
-> And the "__se_sys" thing in particular is just a fairly trivial wrapper.
-> 
-> It does use that asmlinkage_protect() thing, and it is unquestionably
-> horrendously ugly (staring too long at <linux/syscalls.h> has been
-> known to cause madness and despair), but we do that for *every* single
-> system call and I don't see why the new listmount entry would be
-> different.
-> 
+> Looks like the test is trying to move the huge_zero_page. Wonder how
+> we should handle this. Just fail or do something else? Adding David
+> and Peter for feedback.
 
-It isn't the syscall. The following hack avoids the problem.
+You'll need some special-casing to handle that. But it should be fairly 
+easy.
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index ef1fd6829814..28fe2a55bd94 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -5070,8 +5070,10 @@ static ssize_t do_listmount(struct mount *first, struct path *orig, u64 mnt_id,
-                 ctr = array_index_nospec(ctr, bufsize);
-                 if (put_user(r->mnt_id_unique, buf + ctr))
-                         return -EFAULT;
-+#if 0
-                 if (check_add_overflow(ctr, 1, &ctr))
-                         return -ERANGE;
-+#endif
+-- 
+Cheers,
 
-But it isn't check_add_overflow() either. This "helps" as well.
-
-diff --git a/fs/namespace.c b/fs/namespace.c
-index ef1fd6829814..b53cb2f13530 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -5068,8 +5068,10 @@ static ssize_t do_listmount(struct mount *first, struct path *orig, u64 mnt_id,
-                 if (!is_path_reachable(r, r->mnt.mnt_root, orig))
-                         continue;
-                 ctr = array_index_nospec(ctr, bufsize);
-+#if 0
-                 if (put_user(r->mnt_id_unique, buf + ctr))
-                         return -EFAULT;
-+#endif
-                 if (check_add_overflow(ctr, 1, &ctr))
-                         return -ERANGE;
-
-
-Any variance of put_user() with &buf[ctr] or buf + ctr fails
-if ctr is a variable and permitted to be != 0. For example,
-commenting out the call to check_add_overflow() and starting
-the loop with ctr = 1 also triggers the problem, as does replacing
-the call to check_add_overflow() with ctr++;. Using a temporary
-variable such as in
-	u64 __user *pbuf;
-	...
-	pbuf = buf + ctr;
-	if (put_user(r->mnt_id_unique, pbuf))
-                         return -EFAULT;
-
-doesn't help either. But this does:
-
--               if (put_user(r->mnt_id_unique, buf + ctr))
-+               if (put_user(r->mnt_id_unique, (u32 *)(buf + ctr)))
-
-and "buf + 17" as well as "&buf[17]" work as well. Essentially,
-every combination of "buf + ctr" or "&buf[ctr]" fails if buf
-is u64* and ctr is a variable.
-
-The following works. Would this be acceptable ?
-
-diff --git a/fs/namespace.c b/fs/namespace.c
-index ef1fd6829814..dc0f844205d9 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -5068,10 +5068,11 @@ static ssize_t do_listmount(struct mount *first, struct path *orig, u64 mnt_id,
-                 if (!is_path_reachable(r, r->mnt.mnt_root, orig))
-                         continue;
-                 ctr = array_index_nospec(ctr, bufsize);
--               if (put_user(r->mnt_id_unique, buf + ctr))
-+               if (put_user(r->mnt_id_unique, buf))
-                         return -EFAULT;
-                 if (check_add_overflow(ctr, 1, &ctr))
-                         return -ERANGE;
-+               buf++;
-         }
-         return ctr;
-  }
-
-Guenter
+David / dhildenb
 
 
