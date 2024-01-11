@@ -1,96 +1,43 @@
-Return-Path: <linux-kernel+bounces-23499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F51782ADA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:36:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22BF82ADAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F55AB21668
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:36:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2498A287004
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348FA154BD;
-	Thu, 11 Jan 2024 11:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB371549A;
+	Thu, 11 Jan 2024 11:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IvFJ3gZn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hJKlqkF2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B48915482;
-	Thu, 11 Jan 2024 11:35:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69AFEC433F1;
-	Thu, 11 Jan 2024 11:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3F215482
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:38:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E7FAC433C7;
+	Thu, 11 Jan 2024 11:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704972955;
-	bh=aBdXrdu7Fc3ywB3LGukHqXOp/HVe7tj8vpqYpP1GRMc=;
+	s=k20201202; t=1704973083;
+	bh=+k8TWVbkF/+QNIM0Rm/51/WpkmMdTzXk0cSBs2TISkM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IvFJ3gZnJZmOW4n1hDb23BAssZ0EUOybEz7w/eZDwzNSg5bilSn8XI9BXJJ93D/0d
-	 o09I04nLNlA3Cow6eZT+PujIFuptFMcf9eUDNW4/nTJCqwOl7iWyVUTZwo9hs+OXin
-	 y2gDzAAfeTSFB0im9juwXFPOpR4dsX9yshWNxTXZwcnDMtps8uQPbeU+EDjq3ElIrY
-	 N1XqwjNc02YboOdua/+DnwuYUdKah9CSZ6vhEAsofIaGvd1HDRccJAh4DUTdcHVwZ5
-	 0FPsse1MSDcaCS6sx5uUIBSOScPpXiJbtYDqM44o/fGRMiRUn8P9XMVj1QSBKga5eF
-	 hhSYZuH+NvKCA==
-Date: Thu, 11 Jan 2024 11:35:41 +0000
+	b=hJKlqkF2BDQ+RRbWt5YYQSXVDcmgE2ItEeZ0Uszoj8PliO1jukjgupdbtS6GlY4sD
+	 bywybUifPG/0UAlAh5jjmJiUacdW7eWnPU4H0HG/0wrR0f0Uy67UrzsT8I7/9nL7YW
+	 tFujCV6R5+fpqSB2zmLuMFkzr7tSKdFQ7Q0TjrJj7yWI/7kL8c1U94KDNVvc2JK3L4
+	 aBlEornG3f/Mda1xzcyHNxpw8EfkaJb0ZWuHxRB4G4+po3MyDgqDRwPkB9WRsqk7mG
+	 ly4mW2hgGQqgML0zxXXa+lWNRtG5vZxPx9VRnWOU4UM8dgQM/M1iCU8zU0o41XK7pQ
+	 7lcjYExpuA4cw==
+Date: Thu, 11 Jan 2024 11:38:00 +0000
 From: Lee Jones <lee@kernel.org>
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Yang Xiwen <forbidden405@foxmail.com>,
-	Sebastian Reichel <sre@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-fbdev@vger.kernel.org
-Subject: Re: [DO NOT MERGE v6 23/37] mfd: sm501: Convert platform_data to OF
- property
-Message-ID: <20240111113541.GH1678981@google.com>
-References: <cover.1704788539.git.ysato@users.sourceforge.jp>
- <569f0bfb4fa3fcec8fbd64f67fc4fd2d1cba3f77.1704788539.git.ysato@users.sourceforge.jp>
+To: chenxuebing <chenxb_99091@126.com>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: twl: Clean up errors in twl.h
+Message-ID: <20240111113800.GI1678981@google.com>
+References: <20240111014555.5117-1-chenxb_99091@126.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,28 +47,45 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <569f0bfb4fa3fcec8fbd64f67fc4fd2d1cba3f77.1704788539.git.ysato@users.sourceforge.jp>
+In-Reply-To: <20240111014555.5117-1-chenxb_99091@126.com>
 
-On Tue, 09 Jan 2024, Yoshinori Sato wrote:
+The subject needs to be improved.
 
-> Various parameters of SM501 can be set using platform_data,
-> so parameters cannot be passed in the DeviceTree target.
-> Expands the parameters set in platform_data so that they can be
-> specified using DeviceTree properties.
+Succinctly explain what you're doing.
+
+On Thu, 11 Jan 2024, chenxuebing wrote:
+
+> Fix the following errors reported by checkpatch:
 > 
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+> ERROR: space prohibited after that open parenthesis '('
+> ERROR: open brace '{' following function definitions go on the next line
+> 
+> Signed-off-by: chenxuebing <chenxb_99091@126.com>
+
+Is this your first or last name, or both?
+
 > ---
->  drivers/mfd/sm501.c           | 436 ++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/mcp.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mfd/mcp.h b/include/linux/mfd/mcp.h
+> index fd5cafc77e8a..ed56c67bbbc7 100644
+> --- a/include/linux/mfd/mcp.h
+> +++ b/include/linux/mfd/mcp.h
+> @@ -53,7 +53,7 @@ int mcp_driver_register(struct mcp_driver *);
+>  void mcp_driver_unregister(struct mcp_driver *);
+>  
+>  #define mcp_get_drvdata(mcp)	dev_get_drvdata(&(mcp)->attached_device)
+> -#define mcp_set_drvdata(mcp,d)	dev_set_drvdata(&(mcp)->attached_device, d)
+> +#define mcp_set_drvdata(mcp, d)	dev_set_drvdata(&(mcp)->attached_device, d)
 
-How has this grown from 99 lines to 436 lines?
+The code is fine, obviously.
 
-Most of it almost certainly needs moving (back?) out to the leaf
-drivers.  A great deal of the properties parsed in here are only
-relevant to a single device (display for instance).  Please move all
-non-generic handling out to the relevant subsystems.
-
->  drivers/video/fbdev/sm501fb.c | 106 +++++++++
->  2 files changed, 542 insertions(+)
+>  static inline void *mcp_priv(struct mcp *mcp)
+>  {
+> -- 
+> 2.17.1
+> 
 
 -- 
 Lee Jones [李琼斯]
