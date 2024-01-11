@@ -1,166 +1,336 @@
-Return-Path: <linux-kernel+bounces-23933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E680C82B415
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:29:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6A0282B422
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:31:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 693C81F2444F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:29:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 165A31F2444F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2695380A;
-	Thu, 11 Jan 2024 17:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1D651007;
+	Thu, 11 Jan 2024 17:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="RSbD7mge"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2064.outbound.protection.outlook.com [40.107.22.64])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Tg1xTk0Q"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97584537E5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 17:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OjMLUqdvO3wcVb0Z7DW9QXTcZX+CCMILTJFa3Z2j5iupFETgTT30GaeD6ZWRzCsAF9TsxuhfeAbVwCkk8LL+/zInS3HarEz6UMHh5a/9YXZQNDSlydksUS/iPpO0cMumj4Rmsd42S7RpAro+ydlfSkQui5F3rWMeWaaYDCeNTWDJyQCEXyCM1Y+x/xXVd0D0njIWG0W8eD+67/PiUxYHkn3u1DevnavWUT5sdj5QDQM0i8/P/m8CHpIa/c9uab9SfsGD8g9XUAAG4bnR4E85CsCQcjoebDfzi3gZhoE02rWbroDcORyDcHNSAqPwPwK0LdsZmPD/ySAjXGtZWg8tog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EyDqb6dIjKs/bSyVZNWkRJ6cyxo1vc7oLWtagoNkFz8=;
- b=IHAXd384GBTZUMxI+8sBrwA7T2hOik/8IYrUzmAoYaWRR52ng16Ja+wWS9itzOCkxZDm+FpR0tIHun37653ib0zXN5rVBg3tAlz2SYuhg91C0O7lWsMYWl9+z/e8cqI/oS6EdkSWrkLIHnaAPG8fW40o+ACHopPwcAb61aJFFtAUUT4jgDf1dUsnTMliRw24WYqXoyZpH6c0rpQmQf8RP25noaX2I3SwNFwQmqhvpFwqCV0phaL7L8k7+T9ImWyvEjgnFIgSf3qR3Q/ZvBqaXYBWwzAPZeMIY6yCPNFOLj/cgvfjpSSa2TzjtZEYx3ZCRoLditQ3WnGTTDhryH7ZDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EyDqb6dIjKs/bSyVZNWkRJ6cyxo1vc7oLWtagoNkFz8=;
- b=RSbD7mgeSRuJZtIVUvELkZif+py7mW5d8HVZrsq4E4OCaOMYa8yU1iRdgR5lTcqO+hEjLkuuDgFD2RTbF45VvhU1FdJHXGrSYTbrkeEbQfAJyXsa3q5KeXWbbe8/tjpQFEOqoj8qF1Yj9o/Q9RPRRmFg/zJlU6XLnE1BTKFohaE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com (2603:10a6:20b:23f::5)
- by VI1PR04MB7200.eurprd04.prod.outlook.com (2603:10a6:800:12d::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Thu, 11 Jan
- 2024 17:29:08 +0000
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469]) by AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469%4]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
- 17:29:08 +0000
-Date: Thu, 11 Jan 2024 12:29:00 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
-	linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-	miquel.raynal@bootlin.com, zbigniew.lukwinski@linux.intel.com
-Subject: Re: [PATCH 1/1] i3c: master: svc: return error when read length
- bigger than 255
-Message-ID: <ZaAlXJQuZbej5o+r@lizhi-Precision-Tower-5810>
-References: <20240110222503.2381599-1-Frank.Li@nxp.com>
- <20240111001523f69f6a29@mail.local>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111001523f69f6a29@mail.local>
-X-ClientProxiedBy: SJ0PR03CA0283.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::18) To AS8PR04MB7511.eurprd04.prod.outlook.com
- (2603:10a6:20b:23f::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C526A10A20;
+	Thu, 11 Jan 2024 17:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40BHUcSQ028698;
+	Thu, 11 Jan 2024 11:30:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704994238;
+	bh=gTnuOd1liaA1cTS1/8MS3fyRnvkMY17fCbVAXhovc88=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=Tg1xTk0QFs8noasBA22wbNZz/4Y/MK7EAA6xds3KXm5uotl5HlN1GT4QuRfyrVHPA
+	 s1zECmx0JJExo6m4pkws+inNXl/venFXd/LGX6bGNTJs7ZjPcIcDSpbK4Z31/q1ekB
+	 YfMIilOrk10tsYFFM2oUYq+xgWyZ9YoMntuVthXE=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40BHUct5008947
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 11 Jan 2024 11:30:38 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
+ Jan 2024 11:30:38 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 11 Jan 2024 11:30:38 -0600
+Received: from [10.249.40.136] ([10.249.40.136])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40BHUbYO096156;
+	Thu, 11 Jan 2024 11:30:37 -0600
+Message-ID: <d67aba3f-d95a-4dfc-8fdb-234843047432@ti.com>
+Date: Thu, 11 Jan 2024 11:30:37 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB7511:EE_|VI1PR04MB7200:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5cbb2574-713d-4148-ae17-08dc12cad157
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4SRjBrsKYZk0jJWZHAgAaedpwDhGGY/79fO2rglejM2zjAxl8zXB5TB2R2bzuXFnmys4wi3YHd9qXnnP3RtEvkqufjIFbrexclgsVDakfbcFFZPePJMV+ITFabPTWeS6itLl1Mu1UmxNEQKVJaW38lM4AXY8YqOyq4qxezwx29peQ0rgFAulOaUZo3EJy/k9EUVj6ehCTVrGDVT/c2PQwuBQ1l4rg7HCp7KBJD5uu3k+Tsh88fF42OsbMKOeeST+0q6u6klSIUDBRc/zyv/jTkxDUkxJJa0IsQzf1WA1uzfwwSUYB1XHKqVhe4j2Nmy94V8JQggbV9WNl+efEuTmqA8yF2QxxFXCYPIKvBYmj4bdsAIO/W1yRjGZrkWgUdku0eH+GEFQjbAlCPpjmFN9HzxV1TV+qFI/CqYBX1qBcXWteCDxPZZbuKNczzSC4akFt5mJ75dtKbWGpMApwC4NjSwVp3pd3bswkUviBa5C05oLVw5SwhB5O9960eiQWj6fxeicXgcInKN8MVNA+DRSRjN/4JsgoAkncGzB57TWE400/0L8qKS0se6utbKvPY86kklFLfKomHJxnD5ZqpbpPeiK0yoOoFZAGlygFFnYLbb65YsUEGgdEK7pqOAX61aizZYPS27KmJ0m617n2VshCQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB7511.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(366004)(396003)(39860400002)(346002)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(966005)(38100700002)(6666004)(478600001)(83380400001)(6512007)(9686003)(26005)(6506007)(52116002)(8936002)(8676002)(316002)(4326008)(2906002)(5660300002)(6486002)(6916009)(38350700005)(66946007)(66556008)(66476007)(41300700001)(86362001)(33716001)(135533001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?mutMHT5mGQi0TBVNxdCEwMJRATH7WJttnNni2O6/LSfn0VNQ2BOssY+S4ieC?=
- =?us-ascii?Q?gK2Ja2nYiEwHvo0z/xKkT5kpNeGxM5n/tikZEx62NYRvKohyRmadzuJOMbdN?=
- =?us-ascii?Q?Mrg8nbyX+pDxDfWOV7vCSnhLTtu2I68Nh8NMsXCFte0L/QG/4ZUdY2eLj2ss?=
- =?us-ascii?Q?8m86/WpTexbOrRN+5dgjoArfAIG/CycwQG73nymUbzUWFDFHKgm0djaOkRJb?=
- =?us-ascii?Q?A41o6v+oAXPtWPeeZZzsT9aaWN/vhziV3zbmpbBcyym9Fj1HCoS2KIId03bw?=
- =?us-ascii?Q?WWbFJUTbhP8wjMiWLyj5/sBwWWAmyFQK6cizv9gff+VGstg7aB8asu18aHzm?=
- =?us-ascii?Q?Azk7+J1jsrCA2o4M0FaFVRZr98e0+j+FGCuUKvWb3qdE7rnhso41dYyO2MIi?=
- =?us-ascii?Q?2AdH2dQ811B0i15Zk7rlqcjDv7jHi5U9ZtDX0+IBeN/E5IQIOaqV3mjEmbeo?=
- =?us-ascii?Q?dUtxFHEkeB52IDStAZ4m+dk+Hzy/+HOWdiIPe48CFgCCBLPnkss/8FqKoMC+?=
- =?us-ascii?Q?v9Hqnm8+HEDzQC9ew6P25QG5DJwyl/bH0ffQSt6NjQU33zyHTJJMGelcfthx?=
- =?us-ascii?Q?1PHFOpEBGwDGL1gptCkut6vwCSCvSGyjmYmCKdp9H3smLiGtGQEf8KJ+LH+P?=
- =?us-ascii?Q?9F+MLn8EWSb4267U02y3e/ZvfMafpoyHmS/OynOysEHf340AFfwvkQ3RxoPn?=
- =?us-ascii?Q?Wr6o7CfeL7XRPC+D/EhHKo6g7D2pW+x8YPks/HR2rjbdDgENZL0CssCA5hSB?=
- =?us-ascii?Q?10Lfrik5DnsAOvDniQPJntQbr8q2eJxU11EXAo2OxWHVoCroz3RNhm5x36Xy?=
- =?us-ascii?Q?kqNVhEyMqwuGna+jbfBnn8Wyb/esdTBx+kgtBrwEreOOZARoiYXzKQDNl5W2?=
- =?us-ascii?Q?VBqrFsHK0R5G/5Y6Il+K39oNPvIVgUnwfit0nDESms+gT4noQU84ySAJcqsB?=
- =?us-ascii?Q?aTjyMZ5Pw+TevkwsAa+3g8WeLX8Jq/VndPnxWDC5cjdJDDHY6lB9WAODtkL1?=
- =?us-ascii?Q?QGFax8gT7YfaHhQeCOmKJ4nXmNm+yS4R03UJ4S2TjtG9cO1DtQdCw7v08x9T?=
- =?us-ascii?Q?C6/Fl+68qcJFNSEr/f4roF7yPMJvQGAu6SuiCG1Jp8wXvZDPoGCYaiz7PRQz?=
- =?us-ascii?Q?RbKHDHzgbC0mpWSNAqmyFZfcqQDNR4hmOm+KBq1/6E0DAdCTa8eJ5P3OX/NH?=
- =?us-ascii?Q?nAMuY77zJkd1dtx3lPdHwqaOvPbjbzipgw6plg79m0N7NUoBLW8We+ojf6PS?=
- =?us-ascii?Q?WofUVLSo/NT9OCF5ylvqIozUWdUMDsKeDWcYf1PJ+Sj0DqPaYCo31jIrdH9/?=
- =?us-ascii?Q?pETAvQYML0MC4mjUIZkczdYlhkumSSwueK8cKFq1iglm1ulR0hCXBot+DoMK?=
- =?us-ascii?Q?1t6HEMSg6J0f0tVA6YKRZcxwy5JVh0b6Xkb8BbY1MlH7Ny01P5of/uMeWMHS?=
- =?us-ascii?Q?5dDzvUH/Rcs3D2oTaJUdPE4ySZSbE90lW9ON/MV8qNoDeZiq79j9zRpWBtm5?=
- =?us-ascii?Q?VLOabJOTTxhh6A6x2NJZyvthF6XquAmVOKqxxC7GjF9jlQ2R7WcdAGVLj6Em?=
- =?us-ascii?Q?IELdPGe+ilnd2n/d+A5whzP3ln9MVzmMgQsZ/8Wp?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5cbb2574-713d-4148-ae17-08dc12cad157
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB7511.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 17:29:08.6330
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PgVf2bbFq8p6CjEnJX7c5vC4dtD1KdqgzjdZjD06cYrS6ItHIXI1KWzN5caRS2SXeB1du0S1G5hwTCY5kUouXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/8] iio: new DMABUF based API, v5
+To: Paul Cercueil <paul@crapouillou.net>, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Vinod Koul
+	<vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+CC: Michael Hennerich <Michael.Hennerich@analog.com>,
+        <linux-doc@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        =?UTF-8?Q?Nuno_S=C3=A1?=
+	<noname.nuno@gmail.com>,
+        <dmaengine@vger.kernel.org>, <linux-media@vger.kernel.org>
+References: <20231219175009.65482-1-paul@crapouillou.net>
+ <6ec8c7c4-588a-48b5-b0c5-56ca5216a757@ti.com>
+ <bbd6e9d6f239efee8886e08f3c3493fc968e53ce.camel@crapouillou.net>
+Content-Language: en-US
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <bbd6e9d6f239efee8886e08f3c3493fc968e53ce.camel@crapouillou.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Jan 11, 2024 at 01:15:23AM +0100, Alexandre Belloni wrote:
-> On 10/01/2024 17:25:03-0500, Frank Li wrote:
-> > RDTERM in MCTRL is 8 bits. Add a length check to prevent silent data errors
-> > when the read length exceeds 255 bytes during each i3c_priv_xfer operation.
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> >  drivers/i3c/master/svc-i3c-master.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
-> > index bd10bb698da0f..181b56953fb28 100644
-> > --- a/drivers/i3c/master/svc-i3c-master.c
-> > +++ b/drivers/i3c/master/svc-i3c-master.c
-> > @@ -1375,6 +1375,11 @@ static int svc_i3c_master_priv_xfers(struct i3c_dev_desc *dev,
-> >  		cmd->len = xfers[i].len;
-> >  		cmd->actual_len = xfers[i].rnw ? xfers[i].len : 0;
-> >  		cmd->continued = (i + 1) < nxfers;
-> > +
-> > +		if (cmd->rnw && cmd->len > 255) {
-> > +			dev_err(master->dev, "only support read less than 255 each xfer\n");
+On 1/11/24 3:20 AM, Paul Cercueil wrote:
+> Hi Andrew,
 > 
-> What would be the end user action upon seeing this message? Is it actually
-> useful?
-
-Hold on, I found an method. It may support > 255 transfer.
-
-Frank Li
-
+> Le lundi 08 janvier 2024 à 15:12 -0600, Andrew Davis a écrit :
+>> On 12/19/23 11:50 AM, Paul Cercueil wrote:
+>>> [V4 was: "iio: Add buffer write() support"][1]
+>>>
+>>> Hi Jonathan,
+>>>
+>>> This is a respin of the V3 of my patchset that introduced a new
+>>> interface based on DMABUF objects [2].
+>>>
+>>> The V4 was a split of the patchset, to attempt to upstream buffer
+>>> write() support first. But since there is no current user upstream,
+>>> it
+>>> was not merged. This V5 is about doing the opposite, and contains
+>>> the
+>>> new DMABUF interface, without adding the buffer write() support. It
+>>> can
+>>> already be used with the upstream adi-axi-adc driver.
+>>>
+>>> In user-space, Libiio uses it to transfer back and forth blocks of
+>>> samples between the hardware and the applications, without having
+>>> to
+>>> copy the data.
+>>>
+>>> On a ZCU102 with a FMComms3 daughter board, running Libiio from the
+>>> pcercuei/dev-new-dmabuf-api branch [3], compiled with
+>>> WITH_LOCAL_DMABUF_API=OFF (so that it uses fileio):
+>>>     sudo utils/iio_rwdev -b 4096 -B cf-ad9361-lpc
+>>>     Throughput: 116 MiB/s
+>>>
+>>> Same hardware, with the DMABUF API (WITH_LOCAL_DMABUF_API=ON):
+>>>     sudo utils/iio_rwdev -b 4096 -B cf-ad9361-lpc
+>>>     Throughput: 475 MiB/s
+>>>
+>>> This benchmark only measures the speed at which the data can be
+>>> fetched
+>>> to iio_rwdev's internal buffers, and does not actually try to read
+>>> the
+>>> data (e.g. to pipe it to stdout). It shows that fetching the data
+>>> is
+>>> more than 4x faster using the new interface.
+>>>
+>>> When actually reading the data, the performance difference isn't
+>>> that
+>>> impressive (maybe because in case of DMABUF the data is not in
+>>> cache):
+>>>
+>>> WITH_LOCAL_DMABUF_API=OFF (so that it uses fileio):
+>>>     sudo utils/iio_rwdev -b 4096 cf-ad9361-lpc | dd of=/dev/zero
+>>> status=progress
+>>>     2446422528 bytes (2.4 GB, 2.3 GiB) copied, 22 s, 111 MB/s
+>>>
+>>> WITH_LOCAL_DMABUF_API=ON:
+>>>     sudo utils/iio_rwdev -b 4096 cf-ad9361-lpc | dd of=/dev/zero
+>>> status=progress
+>>>     2334388736 bytes (2.3 GB, 2.2 GiB) copied, 21 s, 114 MB/s
+>>>
+>>> One interesting thing to note is that fileio is (currently)
+>>> actually
+>>> faster than the DMABUF interface if you increase a lot the buffer
+>>> size.
+>>> My explanation is that the cache invalidation routine takes more
+>>> and
+>>> more time the bigger the DMABUF gets. This is because the DMABUF is
+>>> backed by small-size pages, so a (e.g.) 64 MiB DMABUF is backed by
+>>> up
+>>> to 16 thousands pages, that have to be invalidated one by one. This
+>>> can
+>>> be addressed by using huge pages, but the udmabuf driver does not
+>>> (yet)
+>>> support creating DMABUFs backed by huge pages.
+>>>
+>>
+>> Have you tried DMABUFs created using the DMABUF System heap exporter?
+>> (drivers/dma-buf/heaps/system_heap.c) It should be able to handle
+>> larger allocation better here, and if you don't have any active
+>> mmaps or vmaps then it can skip CPU-side coherency maintenance
+>> (useful for device to device transfers).
 > 
-> > +			return -EINVAL;
-> > +		}
-> >  	}
-> >  
-> >  	mutex_lock(&master->lock);
-> > -- 
-> > 2.34.1
-> > 
+> I didn't know about it!
 > 
-> -- 
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+> But udmabuf also allows you to skip CPU-side coherency maintenance,
+> since DMABUFs have two ioctls to start/finish CPU access anyway.
+> 
+
+The only way it lets you skip that is if your application just doesn't
+call those begin/end ioctls, which is wrong. That may work on a system
+where CPU caches can be snooped by all devices that could attach to
+a buffer(x86), but that might not work on others(ARM). So calling
+those begin/end ioctls is required[0]. If maintenance is not actually
+needed then the kernel will turn those calls into NOPs for you, but only
+the kernel can know when that is correct (based on the running system
+and the devices attached to that buffer), not userspace.
+
+>> Allocating DMABUFs out of user pages has a bunch of other issues you
+>> might run into also. I'd argue udmabuf is now completely superseded
+>> by DMABUF system heaps. Try it out :)
+> 
+> I'm curious, what other issues?
+> 
+
+For starters the {begin,end}_cpu_access() callbacks don't actually
+sync the pages for any of the devices attached to the DMABUF, it
+only makes a fake mapping for the misc device(CPU) then syncs with
+that. That probably works for the QEMU case it was designed for where
+the device is always a VM instance running on the same CPU, but for
+any real devices the sync never happens towards them.
+
+I have some patches fixing the above I'll post this cycle, but it
+wont help with folks doing reads/wrties on the original shmem/memfd
+outside of the begin/end ioctls. So there is a fundamental issue
+with the buffer's backing memory's ownership/lifecycle that makes
+udmabuf broken by design.
+
+The DMABUF System Heap owns the backing memory and manages that
+memory's lifecycle as all correct DMABUF exporters must.
+
+> The good thing about udmabuf is that the memory is backed by pages, so
+> we can use MSG_ZEROCOPY on sockets to transfer the mmapped data over
+> the network (having a DMABUF interface to the network stack would be
+> better, but I'm not opening that can of worms).
+> 
+
+Yes, having a DMABUF importer interface for the network stack would be
+the best long-term solution here, and one will probably end up being
+needed for zero-copy buffer passing directly between HW and network
+which seems to be a growing area of interest. And would help solve
+some cases where MSG_ZEROCOPY fails (such as devices without
+scatter-gather) by making sure the backing buffer meets the needs
+of all attached devices, etc.. But I do agree let's leave those
+worm-cans for someone else to open :)
+
+I wonder what would happen if you tried a MSG_ZEROCOPY on a buffer
+that was an mmap'd address from a DMABUF.. probably nothing good
+but might be worth looking into.
+
+Andrew
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/dma-buf/dma-buf.c#n1323
+
+>> Andrew
+> 
+> Cheers,
+> -Paul
+> 
+>>> Anyway, the real benefits happen when the DMABUFs are either shared
+>>> between IIO devices, or between the IIO subsystem and another
+>>> filesystem. In that case, the DMABUFs are simply passed around
+>>> drivers,
+>>> without the data being copied at any moment.
+>>>
+>>> We use that feature to transfer samples from our transceivers to
+>>> USB,
+>>> using a DMABUF interface to FunctionFS [4].
+>>>
+>>> This drastically increases the throughput, to about 274 MiB/s over
+>>> a
+>>> USB3 link, vs. 127 MiB/s using IIO's fileio interface + write() to
+>>> the
+>>> FunctionFS endpoints, for a lower CPU usage (0.85 vs. 0.65 load
+>>> avg.).
+>>>
+>>> Based on linux-next/next-20231219.
+>>>
+>>> Cheers,
+>>> -Paul
+>>>
+>>> [1]
+>>> https://lore.kernel.org/all/20230807112113.47157-1-paul@crapouillou.net/
+>>> [2]
+>>> https://lore.kernel.org/all/20230403154800.215924-1-paul@crapouillou.net/
+>>> [3]
+>>> https://github.com/analogdevicesinc/libiio/tree/pcercuei/dev-new-dmabuf-api
+>>> [4]
+>>> https://lore.kernel.org/all/20230322092118.9213-1-paul@crapouillou.net/
+>>>
+>>> ---
+>>> Changelog:
+>>> - [3/8]: Replace V3's dmaengine_prep_slave_dma_array() with a new
+>>>     dmaengine_prep_slave_dma_vec(), which uses a new 'dma_vec'
+>>> struct.
+>>>     Note that at some point we will need to support cyclic transfers
+>>>     using dmaengine_prep_slave_dma_vec(). Maybe with a new "flags"
+>>>     parameter to the function?
+>>>
+>>> - [4/8]: Implement .device_prep_slave_dma_vec() instead of V3's
+>>>     .device_prep_slave_dma_array().
+>>>
+>>>     @Vinod: this patch will cause a small conflict with my other
+>>>     patchset adding scatter-gather support to the axi-dmac driver.
+>>>     This patch adds a call to axi_dmac_alloc_desc(num_sgs), but the
+>>>     prototype of this function changed in my other patchset - it
+>>> would
+>>>     have to be passed the "chan" variable. I don't know how you
+>>> prefer it
+>>>     to be resolved. Worst case scenario (and if @Jonathan is okay
+>>> with
+>>>     that) this one patch can be re-sent later, but it would make
+>>> this
+>>>     patchset less "atomic".
+>>>
+>>> - [5/8]:
+>>>     - Use dev_err() instead of pr_err()
+>>>     - Inline to_iio_dma_fence()
+>>>     - Add comment to explain why we unref twice when detaching
+>>> dmabuf
+>>>     - Remove TODO comment. It is actually safe to free the file's
+>>>       private data even when transfers are still pending because it
+>>>       won't be accessed.
+>>>     - Fix documentation of new fields in struct
+>>> iio_buffer_access_funcs
+>>>     - iio_dma_resv_lock() does not need to be exported, make it
+>>> static
+>>>
+>>> - [7/8]:
+>>>     - Use the new dmaengine_prep_slave_dma_vec().
+>>>     - Restrict to input buffers, since output buffers are not yet
+>>>       supported by IIO buffers.
+>>>
+>>> - [8/8]:
+>>>     Use description lists for the documentation of the three new
+>>> IOCTLs
+>>>     instead of abusing subsections.
+>>>
+>>> ---
+>>> Alexandru Ardelean (1):
+>>>     iio: buffer-dma: split iio_dma_buffer_fileio_free() function
+>>>
+>>> Paul Cercueil (7):
+>>>     iio: buffer-dma: Get rid of outgoing queue
+>>>     dmaengine: Add API function dmaengine_prep_slave_dma_vec()
+>>>     dmaengine: dma-axi-dmac: Implement device_prep_slave_dma_vec
+>>>     iio: core: Add new DMABUF interface infrastructure
+>>>     iio: buffer-dma: Enable support for DMABUFs
+>>>     iio: buffer-dmaengine: Support new DMABUF based userspace API
+>>>     Documentation: iio: Document high-speed DMABUF based API
+>>>
+>>>    Documentation/iio/dmabuf_api.rst              |  54 +++
+>>>    Documentation/iio/index.rst                   |   2 +
+>>>    drivers/dma/dma-axi-dmac.c                    |  40 ++
+>>>    drivers/iio/buffer/industrialio-buffer-dma.c  | 242 ++++++++---
+>>>    .../buffer/industrialio-buffer-dmaengine.c    |  52 ++-
+>>>    drivers/iio/industrialio-buffer.c             | 402
+>>> ++++++++++++++++++
+>>>    include/linux/dmaengine.h                     |  25 ++
+>>>    include/linux/iio/buffer-dma.h                |  33 +-
+>>>    include/linux/iio/buffer_impl.h               |  26 ++
+>>>    include/uapi/linux/iio/buffer.h               |  22 +
+>>>    10 files changed, 836 insertions(+), 62 deletions(-)
+>>>    create mode 100644 Documentation/iio/dmabuf_api.rst
+>>>
+> 
 
