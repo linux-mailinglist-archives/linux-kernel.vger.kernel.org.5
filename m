@@ -1,138 +1,143 @@
-Return-Path: <linux-kernel+bounces-23910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7648A82B3B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:08:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0D8182B3BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:14:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13D8AB22A9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:08:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EBDB1C23B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024C951C2E;
-	Thu, 11 Jan 2024 17:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09EFF51C5E;
+	Thu, 11 Jan 2024 17:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F3mQ8372"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QyhCROXA"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C265100A;
-	Thu, 11 Jan 2024 17:08:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704992917; x=1736528917;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pZADfUlkNjpKkgkO8I89jRqUgQvYhM2PinPZp/8ueuk=;
-  b=F3mQ8372Kibz9w747lmsfwa/I0swiUHLsh4xnvRjf4EJar6FML4tlqa6
-   kD1Rx82XhXvAEzVvSGKultxQFyHw0XD5LZOEodf6w+FJ3U3zHQ8dm2rbO
-   MCPPnbo/GzsLKhMZ/qci2CxTZE8KcLogXR+/wrR2BdEKL0qnHyOq0459V
-   7glzznR6Ur/IaSiVEao3MfQBLxhmjUgZ830jWEHnmCotnAa/8oMTLbnod
-   FlInT32T6zw+JUP2ulcCrZatgq0Ie1X2aeW9WbB2K+009kBUzy5qp6HMT
-   dkUY9iyutpaspIFVcn16Vhfy0H21UNLjKhlcMuKNRTdWMrId7/9gqgh6a
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="430098460"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="430098460"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 09:08:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="31086890"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 11 Jan 2024 09:07:58 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNyX5-0008WK-12;
-	Thu, 11 Jan 2024 17:07:55 +0000
-Date: Fri, 12 Jan 2024 01:07:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Carlos Galo <carlosgalo@google.com>, rostedt@goodmis.org,
-	akpm@linux-foundation.org, surenb@google.com
-Cc: oe-kbuild-all@lists.linux.dev, android-mm@google.com,
-	kernel-team@android.com, Carlos Galo <carlosgalo@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH] mm: Update mark_victim tracepoints fields
-Message-ID: <202401120052.rdFjpivG-lkp@intel.com>
-References: <20240111001155.746-1-carlosgalo@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2A151C2A;
+	Thu, 11 Jan 2024 17:14:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40BExWNr013063;
+	Thu, 11 Jan 2024 17:14:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=6bMyPUPE14ZybsNMO3LzBjdI9wYqf9xHh7+eqo87zh4=; b=Qy
+	hCROXAiOmFs9zDawFuEWnagFrvfRbOlWk5La93QCW2tuiLNwx32vTXkbvjdhg1RZ
+	xciEFpbtZY6bdhXNfXcLnPxdOQr/mggpn4Gg+D3hhA6V6F2pJGhoO0fwmnPYoFaQ
+	HzOkTkFhHFvlKbyshi9j8NdGY1BzQTqbs+xRg3CQMMStHFSFjm65rc11g9BTbxvF
+	ZRWf/EqIKMIqZBArN+DHcLXbgntrBxM6OV8WIDsm2bO1kWTkuvYOk4KnlIWgIB9T
+	711eIrwHHbxmYItTuuIrP148S7sRp2VeLO/XVWqd2gtOy24kLF9MywKfB6V1P2Iv
+	Fbe0X4v6aLxHI01nwWLA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjjjj0b90-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 17:14:25 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40BHEOIw012875
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 17:14:24 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 11 Jan 2024 09:14:23 -0800
+From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+To: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <andersson@kernel.org>
+CC: Kuogee Hsieh <quic_khsieh@quicinc.com>, <quic_abhinavk@quicinc.com>,
+        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] drm/msm/dp: remove mdss_dp_test_bit_depth_to_bpc()
+Date: Thu, 11 Jan 2024 09:14:15 -0800
+Message-ID: <1704993255-12753-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111001155.746-1-carlosgalo@google.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZpaN76iMHrE9ikFhkyKykw1A9ybkz516
+X-Proofpoint-GUID: ZpaN76iMHrE9ikFhkyKykw1A9ybkz516
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ phishscore=0 mlxscore=0 spamscore=0 impostorscore=0 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401110135
 
-Hi Carlos,
+mdss_dp_test_bit_depth_to_bpc() can be replace by
+mdss_dp_test_bit_depth_to_bpp() / 3. Hence remove it.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+---
+ drivers/gpu/drm/msm/dp/dp_debug.c |  2 +-
+ drivers/gpu/drm/msm/dp/dp_link.h  | 23 -----------------------
+ 2 files changed, 1 insertion(+), 24 deletions(-)
 
-[auto build test ERROR on 0dd3ee31125508cd67f7e7172247f05b7fd1753a]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Carlos-Galo/mm-Update-mark_victim-tracepoints-fields/20240111-081635
-base:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
-patch link:    https://lore.kernel.org/r/20240111001155.746-1-carlosgalo%40google.com
-patch subject: [PATCH] mm: Update mark_victim tracepoints fields
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20240112/202401120052.rdFjpivG-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401120052.rdFjpivG-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401120052.rdFjpivG-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/trace/define_trace.h:102,
-                    from include/trace/events/oom.h:206,
-                    from mm/oom_kill.c:54:
-   include/trace/events/oom.h: In function 'trace_raw_output_mark_victim':
->> include/trace/stages/stage3_trace_output.h:6:17: error: called object is not a function or function pointer
-       6 | #define __entry field
-         |                 ^~~~~
-   include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_EVENT_CLASS'
-     203 |         trace_event_printf(iter, print);                                \
-         |                                  ^~~~~
-   include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAMS'
-      45 |                              PARAMS(print));                   \
-         |                              ^~~~~~
-   include/trace/events/oom.h:74:1: note: in expansion of macro 'TRACE_EVENT'
-      74 | TRACE_EVENT(mark_victim,
-         | ^~~~~~~~~~~
-   include/trace/events/oom.h:93:9: note: in expansion of macro 'TP_printk'
-      93 |         TP_printk("pid=%d uid=%u comm=%s oom_score_adj=%hd",
-         |         ^~~~~~~~~
-   include/trace/events/oom.h:95:17: note: in expansion of macro '__entry'
-      95 |                 __entry->uid
-         |                 ^~~~~~~
->> include/trace/trace_events.h:203:39: error: expected expression before ')' token
-     203 |         trace_event_printf(iter, print);                                \
-         |                                       ^
-   include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLARE_EVENT_CLASS'
-      40 |         DECLARE_EVENT_CLASS(name,                              \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/trace/events/oom.h:74:1: note: in expansion of macro 'TRACE_EVENT'
-      74 | TRACE_EVENT(mark_victim,
-         | ^~~~~~~~~~~
-
-
-vim +6 include/trace/stages/stage3_trace_output.h
-
-af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Google  2022-03-03  4) 
-af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Google  2022-03-03  5) #undef __entry
-af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Google  2022-03-03 @6) #define __entry field
-af6b9668e85ffd include/trace/stages/stage3_defines.h Steven Rostedt (Google  2022-03-03  7) 
-
+diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c b/drivers/gpu/drm/msm/dp/dp_debug.c
+index 3bba901..534079e 100644
+--- a/drivers/gpu/drm/msm/dp/dp_debug.c
++++ b/drivers/gpu/drm/msm/dp/dp_debug.c
+@@ -105,7 +105,7 @@ static int dp_test_data_show(struct seq_file *m, void *data)
+ 		seq_printf(m, "vdisplay: %d\n",
+ 				debug->link->test_video.test_v_height);
+ 		seq_printf(m, "bpc: %u\n",
+-				dp_link_bit_depth_to_bpc(bpc));
++				dp_link_bit_depth_to_bpp(bpc) / 3);
+ 	} else {
+ 		seq_puts(m, "0");
+ 	}
+diff --git a/drivers/gpu/drm/msm/dp/dp_link.h b/drivers/gpu/drm/msm/dp/dp_link.h
+index 9dd4dd9..83da170 100644
+--- a/drivers/gpu/drm/msm/dp/dp_link.h
++++ b/drivers/gpu/drm/msm/dp/dp_link.h
+@@ -112,29 +112,6 @@ static inline u32 dp_link_bit_depth_to_bpp(u32 tbd)
+ 	}
+ }
+ 
+-/**
+- * dp_test_bit_depth_to_bpc() - convert test bit depth to bpc
+- * @tbd: test bit depth
+- *
+- * Returns the bits per comp (bpc) to be used corresponding to the
+- * bit depth value. This function assumes that bit depth has
+- * already been validated.
+- */
+-static inline u32 dp_link_bit_depth_to_bpc(u32 tbd)
+-{
+-	switch (tbd) {
+-	case DP_TEST_BIT_DEPTH_6:
+-		return 6;
+-	case DP_TEST_BIT_DEPTH_8:
+-		return 8;
+-	case DP_TEST_BIT_DEPTH_10:
+-		return 10;
+-	case DP_TEST_BIT_DEPTH_UNKNOWN:
+-	default:
+-		return 0;
+-	}
+-}
+-
+ void dp_link_reset_phy_params_vx_px(struct dp_link *dp_link);
+ u32 dp_link_get_test_bits_depth(struct dp_link *dp_link, u32 bpp);
+ int dp_link_process_request(struct dp_link *dp_link);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.7.4
+
 
