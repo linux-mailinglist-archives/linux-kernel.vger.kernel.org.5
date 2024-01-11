@@ -1,102 +1,91 @@
-Return-Path: <linux-kernel+bounces-23879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4872F82B323
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:38:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3EBF82B326
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E0B4B27F51
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:38:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AFD2282B09
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289E650266;
-	Thu, 11 Jan 2024 16:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D1050266;
+	Thu, 11 Jan 2024 16:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l9/uIyZs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nisoBO3t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B0451C20;
-	Thu, 11 Jan 2024 16:38:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9951FC433F1;
-	Thu, 11 Jan 2024 16:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E20E50250;
+	Thu, 11 Jan 2024 16:40:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF60AC433F1;
+	Thu, 11 Jan 2024 16:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704991094;
-	bh=vensfg+J8SVeMtgMS00rhZLlyAuI1umQrZCMNdiRlvg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=l9/uIyZsGEUhndieBsQ/eDDcI5W7RBsuJ14bm+6RfSmbLiJcMqKpPkHa14Mn7yeon
-	 kMOD2Htw/sJb13OHZGg89RSTUxxPL1s+YxjRfQidKEZIUbsjvlOofa5b0pK+JFGwCO
-	 efSZwXL6p5sp10554Ra/TAmCKobHsb1q43Xn488o+MIe4l9yBCwmVbIzc2reHfHx4Y
-	 bmVh72wHP+OvccNYSZNwEzhckWQesmskTX74C8ORajPTWRxynIBnKfBqHy1kBTxXhL
-	 8u5Q3HqOnu5ijUpc1kfbSZUKB2lHJbMMdq06nQvfP7zjGJZ0j53LRKJjTZBtwt5xlZ
-	 UtkOmEA9EXpyg==
-Date: Thu, 11 Jan 2024 16:38:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: iio: adc: Add binding for AD7380 ADCs
-Message-ID: <20240111-whoever-contrite-d53acf2d8449@spud>
-References: <20240110-ad7380-mainline-v4-0-93a1d96b50fa@baylibre.com>
- <20240110-ad7380-mainline-v4-1-93a1d96b50fa@baylibre.com>
+	s=k20201202; t=1704991201;
+	bh=+q75K7vH+apl/4khPV5F4/P02Rn9eXRp5swe8VqdbCE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nisoBO3t1G8MJenBLBJYJ2eSEgRZVUq3hy1k9wblBpjYRq49J2U8Trc7cenwMFKoD
+	 3fxzoBofSwVs7ITy/TjLNPaea/32K4rN2BCcjh85+OVBm1xHpWSmOz/eQ9LQ6CUus4
+	 EBOU7aQPA6giO+jqE6Lb+/WQttoBbo6D7kwnqbFhINYaw/arh7ixFbzzIGoSHdv7WB
+	 hfAP4bG8eWc9fZNHm0AkX/T8DEZS/lykAIFzleSMKMfuppPwknv/MVdFV1rIawBJIE
+	 6WR1U3s4xbbCRn3a2PAgyk766sJ0TWo6zc2y+SAO0xguzUZfboIJkFIy84zApH1D6w
+	 JPIcRA+euir/Q==
+From: Lee Jones <lee@kernel.org>
+To: lee@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Tony Lindgren <tony@atomide.com>,
+	Keshava Munegowda <keshava_mgowda@ti.com>,
+	Roger Quadros <rogerq@ti.com>,
+	linux-omap@vger.kernel.org
+Subject: [PATCH 1/1] mfd: omap-usb-host: Increase size of buffer to include all possible values
+Date: Thu, 11 Jan 2024 16:39:49 +0000
+Message-ID: <20240111163949.1976778-1-lee@kernel.org>
+X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GswiscgIN4jIlUpQ"
-Content-Disposition: inline
-In-Reply-To: <20240110-ad7380-mainline-v4-1-93a1d96b50fa@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Avoid these nasty W=1 errors:
 
---GswiscgIN4jIlUpQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  drivers/mfd/omap-usb-host.c: In function ‘usbhs_omap_probe’:
+  drivers/mfd/omap-usb-host.c:706:54: error: ‘_clk’ directive output may be truncated writing 4 bytes into a region of size between 1 and 11 [-Werror=format-truncation=]
+  drivers/mfd/omap-usb-host.c:705:17: note: ‘snprintf’ output between 24 and 34 bytes into a destination of size 30
+  drivers/mfd/omap-usb-host.c:721:56: error: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 8 [-Werror=format-truncation=]
+  drivers/mfd/omap-usb-host.c:721:33: note: directive argument in the range [-2147483640, 2147483647]
+  drivers/mfd/omap-usb-host.c:720:17: note: ‘snprintf’ output between 28 and 38 bytes into a destination of size 30
+  drivers/mfd/omap-usb-host.c:731:55: error: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 9 [-Werror=format-truncation=]
+  drivers/mfd/omap-usb-host.c:731:33: note: directive argument in the range [-2147483640, 2147483647]
+  drivers/mfd/omap-usb-host.c:730:17: note: ‘snprintf’ output between 27 and 37 bytes into a destination of size 30
 
-On Wed, Jan 10, 2024 at 02:28:40PM -0600, David Lechner wrote:
-> This adds a binding specification for the Analog Devices Inc. AD7380
-> family of ADCs.
->=20
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> ---
->=20
-> As discussed in [1], the proposed spi-rx-bus-channels property is a compl=
-ex
-> new SPI core feature, so it was nacked for now on the grounds that it sho=
-uld
-> be accepted without the corresponding SPI core changes. I dropped the Rev=
-iewed-by
-> since no DT maintainers responded on that thread.
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: Keshava Munegowda <keshava_mgowda@ti.com>
+Cc: Roger Quadros <rogerq@ti.com>
+Cc: linux-omap@vger.kernel.org
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+ drivers/mfd/omap-usb-host.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think that's reasonable. Better to wait and do something correct when
-the problme is understood than rush into something. You can re-add
+diff --git a/drivers/mfd/omap-usb-host.c b/drivers/mfd/omap-usb-host.c
+index ebc62033db169..949feb03d4f8d 100644
+--- a/drivers/mfd/omap-usb-host.c
++++ b/drivers/mfd/omap-usb-host.c
+@@ -699,7 +699,7 @@ static int usbhs_omap_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	for (i = 0; i < omap->nports; i++) {
+-		char clkname[30];
++		char clkname[40];
+ 
+ 		/* clock names are indexed from 1*/
+ 		snprintf(clkname, sizeof(clkname),
+-- 
+2.43.0.275.g3460e3d667-goog
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
---GswiscgIN4jIlUpQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaAZcQAKCRB4tDGHoIJi
-0h3EAQC2bokNeJPvLOwEhcZQrLSKNCfMaRNUzPMNHHA1GLscXgEA+9Ke6AXl/FwA
-8ku3yrzsKK+nUZ3Bk2dSeNyAcPr4Zg0=
-=JgeG
------END PGP SIGNATURE-----
-
---GswiscgIN4jIlUpQ--
 
