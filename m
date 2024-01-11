@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-23641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54CDE82AF7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C7682AF84
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:21:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB09B287095
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:21:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2CCD283C43
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB9E3FE27;
-	Thu, 11 Jan 2024 13:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCD640BE7;
+	Thu, 11 Jan 2024 13:18:15 +0000 (UTC)
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9466F3D56F;
-	Thu, 11 Jan 2024 13:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1883E49B;
+	Thu, 11 Jan 2024 13:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T9lXN0bLXz6K8xn;
-	Thu, 11 Jan 2024 21:15:32 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T9lXP0cv3z6K8yK;
+	Thu, 11 Jan 2024 21:15:33 +0800 (CST)
 Received: from lhrpeml500006.china.huawei.com (unknown [7.191.161.198])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5C6D2140D37;
-	Thu, 11 Jan 2024 21:18:09 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 56A98140CB9;
+	Thu, 11 Jan 2024 21:18:10 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 11 Jan 2024 13:18:08 +0000
+ 15.1.2507.35; Thu, 11 Jan 2024 13:18:09 +0000
 From: <shiju.jose@huawei.com>
 To: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
 	<linux-mm@kvack.org>, <dave@stgolabs.net>, <jonathan.cameron@huawei.com>,
@@ -46,9 +46,9 @@ CC: <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
 	<kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
 	<linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH v5 08/12] cxl/memscrub: Register CXL device ECS with scrub configure driver
-Date: Thu, 11 Jan 2024 21:17:37 +0800
-Message-ID: <20240111131741.1356-9-shiju.jose@huawei.com>
+Subject: [RFC PATCH v5 09/12] ACPI:RASF: Add common library for RASF and RAS2 PCC interfaces
+Date: Thu, 11 Jan 2024 21:17:38 +0800
+Message-ID: <20240111131741.1356-10-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
 In-Reply-To: <20240111131741.1356-1-shiju.jose@huawei.com>
 References: <20240111131741.1356-1-shiju.jose@huawei.com>
@@ -63,307 +63,412 @@ Content-Type: text/plain
 X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
  lhrpeml500006.china.huawei.com (7.191.161.198)
 
-From: Shiju Jose <shiju.jose@huawei.com>
+From: A Somasundaram <somasundaram.a@hpe.com>
 
-Register with the scrub configure driver to expose the sysfs attributes
-to the user for configuring the CXL memory device's ECS feature.
-Add the static CXL ECS specific attributes to support configuring the
-CXL memory device ECS feature.
+The code contains PCC interfaces for RASF and RAS2 table, functions to send
+RASF commands as per ACPI 5.1 and RAS2 commands as per ACPI 6.5 & upwards
+revision.
 
+References for this implementation,
+ACPI specification 6.5, section 5.2.20 for RASF table, section 5.2.21 for RAS2
+table and chapter 14 for PCC (Platform Communication Channel).
+
+Driver uses PCC interfaces to communicate to the ACPI HW.
+This code implements PCC interfaces and the functions to send the RASF/RAS2
+commands to be used by OSPM.
+
+Signed-off-by: A Somasundaram <somasundaram.a@hpe.com>
+Co-developed-by: Shiju Jose <shiju.jose@huawei.com>
 Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 ---
- drivers/cxl/core/memscrub.c | 253 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 250 insertions(+), 3 deletions(-)
+ drivers/acpi/Kconfig            |  15 ++
+ drivers/acpi/Makefile           |   1 +
+ drivers/acpi/rasf_acpi_common.c | 272 ++++++++++++++++++++++++++++++++
+ include/acpi/rasf_acpi.h        |  58 +++++++
+ 4 files changed, 346 insertions(+)
+ create mode 100755 drivers/acpi/rasf_acpi_common.c
+ create mode 100644 include/acpi/rasf_acpi.h
 
-diff --git a/drivers/cxl/core/memscrub.c b/drivers/cxl/core/memscrub.c
-index 48fd02a4bfaf..e76b1be3876d 100644
---- a/drivers/cxl/core/memscrub.c
-+++ b/drivers/cxl/core/memscrub.c
-@@ -464,6 +464,8 @@ EXPORT_SYMBOL_NS_GPL(cxl_mem_patrol_scrub_init, CXL);
- #define CXL_MEMDEV_ECS_GET_FEAT_VERSION	0x01
- #define CXL_MEMDEV_ECS_SET_FEAT_VERSION	0x01
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index f819e760ff19..c5a2a094c2af 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -280,6 +280,21 @@ config ACPI_CPPC_LIB
+ 	  If your platform does not support CPPC in firmware,
+ 	  leave this option disabled.
  
-+#define CXL_DDR5_ECS	"cxl_ecs"
++config ACPI_RASF
++	bool "ACPI RASF driver"
++	depends on ACPI_PROCESSOR
++	select MAILBOX
++	select PCC
++	help
++	  The driver adds support for PCC (platform communication
++	  channel) interfaces to communicate with the ACPI complaint
++	  hardware platform supports RASF(RAS Feature table) or
++	  and RAS2(RAS2 Feature table).
++	  The driver adds support for RASF/RAS2(extraction of RASF/RAS2
++	  tables from OS system table), PCC interfaces and OSPM interfaces
++	  to send RASF & RAS2 commands. Driver adds platform device which
++	  binds to the RASF/RAS2 memory driver.
 +
- static const uuid_t cxl_ecs_uuid =
- 	UUID_INIT(0xe5b13f22, 0x2328, 0x4a14, 0xb8, 0xba, 0xb9, 0x69, 0x1e,     \
- 		  0x89, 0x33, 0x86);
-@@ -582,9 +584,8 @@ static int cxl_mem_ecs_get_attrbs(struct device *dev, int fru_id,
- 	return 0;
- }
- 
--static int __maybe_unused
--cxl_mem_ecs_set_attrbs(struct device *dev, int fru_id,
--		       struct cxl_memdev_ecs_params *params, u8 param_type)
-+static int cxl_mem_ecs_set_attrbs(struct device *dev, int fru_id,
-+				  struct cxl_memdev_ecs_params *params, u8 param_type)
- {
- 	struct cxl_memdev_ecs_feat_read_attrbs *rd_attrbs __free(kvfree) = NULL;
- 	struct cxl_memdev_ecs_set_feat_pi *set_pi __free(kvfree) = NULL;
-@@ -731,10 +732,247 @@ cxl_mem_ecs_set_attrbs(struct device *dev, int fru_id,
- 	return 0;
- }
- 
-+static int cxl_mem_ecs_log_entry_type_write(struct device *dev, int region_id, long val)
+ config ACPI_PROCESSOR
+ 	tristate "Processor"
+ 	depends on X86 || ARM64 || LOONGARCH
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index eaa09bf52f17..f0788390516b 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -104,6 +104,7 @@ obj-$(CONFIG_ACPI_CUSTOM_METHOD)+= custom_method.o
+ obj-$(CONFIG_ACPI_BGRT)		+= bgrt.o
+ obj-$(CONFIG_ACPI_CPPC_LIB)	+= cppc_acpi.o
+ obj-$(CONFIG_ACPI_SPCR_TABLE)	+= spcr.o
++obj-$(CONFIG_ACPI_RASF)		+= rasf_acpi_common.o
+ obj-$(CONFIG_ACPI_DEBUGGER_USER) += acpi_dbg.o
+ obj-$(CONFIG_ACPI_PPTT) 	+= pptt.o
+ obj-$(CONFIG_ACPI_PFRUT)	+= pfr_update.o pfr_telemetry.o
+diff --git a/drivers/acpi/rasf_acpi_common.c b/drivers/acpi/rasf_acpi_common.c
+new file mode 100755
+index 000000000000..3ee34f5d12d3
+--- /dev/null
++++ b/drivers/acpi/rasf_acpi_common.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * rasf_acpi_common.c - ACPI RASF table processing common functions
++ *
++ * (C) Copyright 2014, 2015 Hewlett-Packard Enterprises.
++ *
++ * Copyright (c) 2023 HiSilicon Limited.
++ *
++ * Support for
++ * RASF - ACPI 6.5 Specification, section 5.2.20
++ * RAS2 - ACPI 6.5 Specification, section 5.2.21
++ * PCC(Platform Communications Channel) - ACPI 6.5 Specification,
++ * chapter 14.
++ *
++ * Code contains common functions for RASF.
++ * PCC(Platform communication channel) interfaces for the RASF & RAS2
++ * and the functions for sending RASF & RAS2 commands to the ACPI HW.
++ */
++
++#define pr_fmt(fmt)	"ACPI RASF COMMON: " fmt
++
++#include <linux/export.h>
++#include <linux/delay.h>
++#include <linux/ktime.h>
++#include <linux/platform_device.h>
++#include <acpi/rasf_acpi.h>
++#include <acpi/acpixf.h>
++
++static int rasf_check_pcc_chan(struct rasf_context *rasf_ctx)
 +{
-+	struct cxl_memdev_ecs_params params;
-+	int ret;
++	int ret = -EIO;
++	struct acpi_rasf_shared_memory  __iomem *generic_comm_base = rasf_ctx->pcc_comm_addr;
++	ktime_t next_deadline = ktime_add(ktime_get(), rasf_ctx->deadline);
 +
-+	params.log_entry_type = val;
-+	ret = cxl_mem_ecs_set_attrbs(dev, region_id, &params,
-+				     CXL_MEMDEV_ECS_PARAM_LOG_ENTRY_TYPE);
-+	if (ret) {
-+		dev_err(dev->parent, "Set CXL ECS params for log entry type fail ret=%d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cxl_mem_ecs_threshold_write(struct device *dev, int region_id, long val)
-+{
-+	struct cxl_memdev_ecs_params params;
-+	int ret;
-+
-+	params.threshold = val;
-+	ret = cxl_mem_ecs_set_attrbs(dev, region_id, &params,
-+				     CXL_MEMDEV_ECS_PARAM_THRESHOLD);
-+	if (ret) {
-+		dev_err(dev->parent, "Set CXL ECS params for threshold fail ret=%d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cxl_mem_ecs_mode_write(struct device *dev, int region_id, long val)
-+{
-+	struct cxl_memdev_ecs_params params;
-+	int ret;
-+
-+	params.mode = val;
-+	ret = cxl_mem_ecs_set_attrbs(dev, region_id, &params,
-+				     CXL_MEMDEV_ECS_PARAM_MODE);
-+	if (ret) {
-+		dev_err(dev->parent, "Set CXL ECS params for mode fail ret=%d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cxl_mem_ecs_reset_counter_write(struct device *dev, int region_id, long val)
-+{
-+	struct cxl_memdev_ecs_params params;
-+	int ret;
-+
-+	params.reset_counter = val;
-+	ret = cxl_mem_ecs_set_attrbs(dev, region_id, &params,
-+				     CXL_MEMDEV_ECS_PARAM_RESET_COUNTER);
-+	if (ret) {
-+		dev_err(dev->parent, "Set CXL ECS params for reset ECC counter fail ret=%d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+enum cxl_mem_ecs_scrub_attributes {
-+	cxl_ecs_log_entry_type,
-+	cxl_ecs_log_entry_type_per_dram,
-+	cxl_ecs_log_entry_type_per_memory_media,
-+	cxl_ecs_mode,
-+	cxl_ecs_mode_counts_codewords,
-+	cxl_ecs_mode_counts_rows,
-+	cxl_ecs_reset,
-+	cxl_ecs_threshold,
-+	cxl_ecs_threshold_available,
-+	cxl_ecs_max_attrs,
-+};
-+
-+static ssize_t cxl_mem_ecs_show_scrub_attr(struct device *dev, char *buf,
-+					   int attr_id)
-+{
-+	struct cxl_ecs_context *cxl_ecs_ctx = dev_get_drvdata(dev);
-+	int region_id = cxl_ecs_ctx->region_id;
-+	struct cxl_memdev_ecs_params params;
-+	int ret;
-+
-+	if (attr_id == cxl_ecs_log_entry_type ||
-+	    attr_id == cxl_ecs_log_entry_type_per_dram ||
-+	    attr_id == cxl_ecs_log_entry_type_per_memory_media ||
-+	    attr_id == cxl_ecs_mode ||
-+	    attr_id == cxl_ecs_mode_counts_codewords ||
-+	    attr_id == cxl_ecs_mode_counts_rows ||
-+	    attr_id == cxl_ecs_threshold) {
-+		ret = cxl_mem_ecs_get_attrbs(dev, region_id, &params);
-+		if (ret) {
-+			dev_err(dev->parent, "Get CXL ECS params fail ret=%d\n", ret);
-+			return ret;
++	while (!ktime_after(ktime_get(), next_deadline)) {
++		/*
++		 * As per ACPI spec, the PCC space wil be initialized by
++		 * platform and should have set the command completion bit when
++		 * PCC can be used by OSPM
++		 */
++		if (readw_relaxed(&generic_comm_base->status) & RASF_PCC_CMD_COMPLETE) {
++			ret = 0;
++			break;
 +		}
++		/*
++		 * Reducing the bus traffic in case this loop takes longer than
++		 * a few retries.
++		 */
++		udelay(10);
 +	}
 +
-+	switch (attr_id) {
-+	case cxl_ecs_log_entry_type:
-+		return sprintf(buf, "%d\n", params.log_entry_type);
-+	case cxl_ecs_log_entry_type_per_dram:
-+		if (params.log_entry_type == ECS_LOG_ENTRY_TYPE_DRAM)
-+			return sysfs_emit(buf, "1\n");
-+		else
-+			return sysfs_emit(buf, "0\n");
-+	case cxl_ecs_log_entry_type_per_memory_media:
-+		if (params.log_entry_type == ECS_LOG_ENTRY_TYPE_MEM_MEDIA_FRU)
-+			return sysfs_emit(buf, "1\n");
-+		else
-+			return sysfs_emit(buf, "0\n");
-+	case cxl_ecs_mode:
-+		return sprintf(buf, "%d\n", params.mode);
-+	case cxl_ecs_mode_counts_codewords:
-+		if (params.mode == ECS_MODE_COUNTS_CODEWORDS)
-+			return sysfs_emit(buf, "1\n");
-+		else
-+			return sysfs_emit(buf, "0\n");
-+	case cxl_ecs_mode_counts_rows:
-+		if (params.mode == ECS_MODE_COUNTS_ROWS)
-+			return sysfs_emit(buf, "1\n");
-+		else
-+			return sysfs_emit(buf, "0\n");
-+	case cxl_ecs_threshold:
-+		return sprintf(buf, "%d\n", params.threshold);
-+	case cxl_ecs_threshold_available:
-+		return sysfs_emit(buf, "256,1024,4096\n");
-+	}
-+
-+	return -ENOTSUPP;
++	return ret;
 +}
 +
-+static ssize_t cxl_mem_ecs_store_scrub_attr(struct device *dev, const char *buf,
-+					    size_t count, int attr_id)
++/**
++ * rasf_send_pcc_cmd() - Send RASF command via PCC channel
++ * @rasf_ctx:	pointer to the rasf context structure
++ * @cmd:	command to send
++ *
++ * Returns: 0 on success, an error otherwise
++ */
++int rasf_send_pcc_cmd(struct rasf_context *rasf_ctx, u16 cmd)
 +{
-+	struct cxl_ecs_context *cxl_ecs_ctx = dev_get_drvdata(dev);
-+	int region_id = cxl_ecs_ctx->region_id;
-+	long val;
-+	int ret;
++	int ret = -EIO;
++	struct acpi_rasf_shared_memory  *generic_comm_base =
++		(struct acpi_rasf_shared_memory *)rasf_ctx->pcc_comm_addr;
++	static ktime_t last_cmd_cmpl_time, last_mpar_reset;
++	static int mpar_count;
++	unsigned int time_delta;
 +
-+	ret = kstrtol(buf, 10, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	switch (attr_id) {
-+	case cxl_ecs_log_entry_type:
-+		ret = cxl_mem_ecs_log_entry_type_write(dev, region_id, val);
++	if (cmd == RASF_PCC_CMD_EXEC) {
++		ret = rasf_check_pcc_chan(rasf_ctx);
 +		if (ret)
-+			return -ENOTSUPP;
-+		break;
-+	case cxl_ecs_mode:
-+		ret = cxl_mem_ecs_mode_write(dev, region_id, val);
-+		if (ret)
-+			return -ENOTSUPP;
-+		break;
-+	case cxl_ecs_reset:
-+		ret = cxl_mem_ecs_reset_counter_write(dev, region_id, val);
-+		if (ret)
-+			return -ENOTSUPP;
-+		break;
-+	case cxl_ecs_threshold:
-+		ret = cxl_mem_ecs_threshold_write(dev, region_id, val);
-+		if (ret)
-+			return -ENOTSUPP;
-+		break;
-+	default:
-+		return -ENOTSUPP;
++			return ret;
 +	}
 +
-+	return count;
++	/*
++	 * Handle the Minimum Request Turnaround Time(MRTT)
++	 * "The minimum amount of time that OSPM must wait after the completion
++	 * of a command before issuing the next command, in microseconds"
++	 */
++	if (rasf_ctx->pcc_mrtt) {
++		time_delta = ktime_us_delta(ktime_get(), last_cmd_cmpl_time);
++		if (rasf_ctx->pcc_mrtt > time_delta)
++			udelay(rasf_ctx->pcc_mrtt - time_delta);
++	}
++
++	/*
++	 * Handle the non-zero Maximum Periodic Access Rate(MPAR)
++	 * "The maximum number of periodic requests that the subspace channel can
++	 * support, reported in commands per minute. 0 indicates no limitation."
++	 *
++	 * This parameter should be ideally zero or large enough so that it can
++	 * handle maximum number of requests that all the cores in the system can
++	 * collectively generate. If it is not, we will follow the spec and just
++	 * not send the request to the platform after hitting the MPAR limit in
++	 * any 60s window
++	 */
++	if (rasf_ctx->pcc_mpar) {
++		if (mpar_count == 0) {
++			time_delta = ktime_ms_delta(ktime_get(), last_mpar_reset);
++			if (time_delta < 60 * MSEC_PER_SEC) {
++				pr_debug("PCC cmd not sent due to MPAR limit");
++				return -EIO;
++			}
++			last_mpar_reset = ktime_get();
++			mpar_count = rasf_ctx->pcc_mpar;
++		}
++		mpar_count--;
++	}
++
++	/* Write to the shared comm region. */
++	writew_relaxed(cmd, &generic_comm_base->command);
++
++	/* Flip CMD COMPLETE bit */
++	writew_relaxed(0, &generic_comm_base->status);
++
++	/* Ring doorbell */
++	ret = mbox_send_message(rasf_ctx->pcc_channel, &cmd);
++	if (ret < 0) {
++		pr_err("Err sending PCC mbox message. cmd:%d, ret:%d\n",
++				cmd, ret);
++		return ret;
++	}
++
++	/*
++	 * For READs we need to ensure the cmd completed to ensure
++	 * the ensuing read()s can proceed. For WRITEs we dont care
++	 * because the actual write()s are done before coming here
++	 * and the next READ or WRITE will check if the channel
++	 * is busy/free at the entry of this call.
++	 *
++	 * If Minimum Request Turnaround Time is non-zero, we need
++	 * to record the completion time of both READ and WRITE
++	 * command for proper handling of MRTT, so we need to check
++	 * for pcc_mrtt in addition to CMD_READ
++	 */
++	if (cmd == RASF_PCC_CMD_EXEC || rasf_ctx->pcc_mrtt) {
++		ret = rasf_check_pcc_chan(rasf_ctx);
++		if (rasf_ctx->pcc_mrtt)
++			last_cmd_cmpl_time = ktime_get();
++	}
++
++	if (rasf_ctx->pcc_channel->mbox->txdone_irq)
++		mbox_chan_txdone(rasf_ctx->pcc_channel, ret);
++	else
++		mbox_client_txdone(rasf_ctx->pcc_channel, ret);
++
++	return ret;
 +}
++EXPORT_SYMBOL_GPL(rasf_send_pcc_cmd);
 +
-+#define CXL_ECS_SCRUB_ATTR_RW(attrb)						\
-+static ssize_t attrb##_show(struct device *dev,				\
-+			    struct device_attribute *attr, char *buf)	\
-+{									\
-+	return cxl_mem_ecs_show_scrub_attr(dev, buf, (cxl_ecs_##attrb));	\
-+}									\
-+static ssize_t attrb##_store(struct device *dev,			\
-+			     struct device_attribute *attr,		\
-+			     const char *buf, size_t count)		\
-+{									\
-+	return cxl_mem_ecs_store_scrub_attr(dev, buf, count, (cxl_ecs_##attrb));\
-+}									\
-+static DEVICE_ATTR_RW(attrb)
++/**
++ * rasf_register_pcc_channel() - Register PCC channel
++ * @rasf_ctx:	pointer to the rasf context structure
++ *
++ * Returns: 0 on success, an error otherwise
++ */
++int rasf_register_pcc_channel(struct rasf_context *rasf_ctx)
++{
++	u64 usecs_lat;
++	unsigned int len;
++	struct pcc_mbox_chan *pcc_chan;
++	struct mbox_client *rasf_mbox_cl;
++	struct acpi_pcct_hw_reduced *rasf_ss;
 +
-+#define CXL_ECS_SCRUB_ATTR_RO(attrb)						\
-+static ssize_t attrb##_show(struct device *dev,				\
-+			    struct device_attribute *attr, char *buf)	\
-+{									\
-+	return cxl_mem_ecs_show_scrub_attr(dev, buf, (cxl_ecs_##attrb));	\
-+}									\
-+static DEVICE_ATTR_RO(attrb)
++	rasf_mbox_cl = &rasf_ctx->mbox_client;
++	if (!rasf_mbox_cl || rasf_ctx->pcc_subspace_idx < 0)
++		return -EINVAL;
 +
-+#define CXL_ECS_SCRUB_ATTR_WO(attrb)						\
-+static ssize_t attrb##_store(struct device *dev,			\
-+			     struct device_attribute *attr,		\
-+			     const char *buf, size_t count)		\
-+{									\
-+	return cxl_mem_ecs_store_scrub_attr(dev, buf, count, (cxl_ecs_##attrb));\
-+}									\
-+static DEVICE_ATTR_WO(attrb)
++	pcc_chan = pcc_mbox_request_channel(rasf_mbox_cl,
++				rasf_ctx->pcc_subspace_idx);
 +
-+CXL_ECS_SCRUB_ATTR_RW(log_entry_type);
-+CXL_ECS_SCRUB_ATTR_RO(log_entry_type_per_dram);
-+CXL_ECS_SCRUB_ATTR_RO(log_entry_type_per_memory_media);
-+CXL_ECS_SCRUB_ATTR_RW(mode);
-+CXL_ECS_SCRUB_ATTR_RO(mode_counts_codewords);
-+CXL_ECS_SCRUB_ATTR_RO(mode_counts_rows);
-+CXL_ECS_SCRUB_ATTR_WO(reset);
-+CXL_ECS_SCRUB_ATTR_RW(threshold);
-+CXL_ECS_SCRUB_ATTR_RO(threshold_available);
++	if (IS_ERR(pcc_chan)) {
++		pr_err("Failed to find PCC channel for subspace %d\n",
++		       rasf_ctx->pcc_subspace_idx);
++		return -ENODEV;
++	}
++	rasf_ctx->pcc_chan = pcc_chan;
++	rasf_ctx->pcc_channel = pcc_chan->mchan;
++	/*
++	 * The PCC mailbox controller driver should
++	 * have parsed the PCCT (global table of all
++	 * PCC channels) and stored pointers to the
++	 * subspace communication region in con_priv.
++	 */
++	rasf_ss = rasf_ctx->pcc_channel->con_priv;
 +
-+static struct attribute *cxl_mem_ecs_scrub_attrs[] = {
-+	&dev_attr_log_entry_type.attr,
-+	&dev_attr_log_entry_type_per_dram.attr,
-+	&dev_attr_log_entry_type_per_memory_media.attr,
-+	&dev_attr_mode.attr,
-+	&dev_attr_mode_counts_codewords.attr,
-+	&dev_attr_mode_counts_rows.attr,
-+	&dev_attr_reset.attr,
-+	&dev_attr_threshold.attr,
-+	&dev_attr_threshold_available.attr,
-+	NULL,
++	if (!rasf_ss) {
++		pr_err("No PCC subspace found for RASF\n");
++		pcc_mbox_free_channel(rasf_ctx->pcc_chan);
++		return -ENODEV;
++	}
++
++	/*
++	 * This is the shared communication region
++	 * for the OS and Platform to communicate over.
++	 */
++	rasf_ctx->comm_base_addr = rasf_ss->base_address;
++	len = rasf_ss->length;
++	pr_debug("PCC subspace for RASF=0x%llx len=%d\n",
++		  rasf_ctx->comm_base_addr, len);
++
++	/*
++	 * rasf_ss->latency is just a Nominal value. In reality
++	 * the remote processor could be much slower to reply.
++	 * So add an arbitrary amount of wait on top of Nominal.
++	 */
++	usecs_lat = RASF_NUM_RETRIES * rasf_ss->latency;
++	rasf_ctx->deadline = ns_to_ktime(usecs_lat * NSEC_PER_USEC);
++	rasf_ctx->pcc_mrtt = rasf_ss->min_turnaround_time;
++	rasf_ctx->pcc_mpar = rasf_ss->max_access_rate;
++	rasf_ctx->pcc_comm_addr = acpi_os_ioremap(rasf_ctx->comm_base_addr, len);
++	pr_debug("pcc_comm_addr=%p\n", rasf_ctx->pcc_comm_addr);
++
++	/* Set flag so that we dont come here for each CPU. */
++	rasf_ctx->pcc_channel_acquired = true;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rasf_register_pcc_channel);
++
++/**
++ * rasf_unregister_pcc_channel() - Unregister PCC channel
++ * @rasf_ctx:	pointer to the rasf context structure
++ *
++ * Returns: 0 on success, an error otherwise
++ */
++int rasf_unregister_pcc_channel(struct rasf_context *rasf_ctx)
++{
++	if (!rasf_ctx->pcc_chan)
++		return -EINVAL;
++
++	pcc_mbox_free_channel(rasf_ctx->pcc_chan);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rasf_unregister_pcc_channel);
++
++/**
++ * rasf_add_platform_device() - Add a platform device for RASF
++ * @name:	name of the device we're adding
++ * @data:	platform specific data for this platform device
++ * @size:	size of platform specific data
++ *
++ * Returns: pointer to platform device on success, an error otherwise
++ */
++struct platform_device *rasf_add_platform_device(char *name, const void *data,
++						 size_t size)
++{
++	int ret;
++	struct platform_device *pdev;
++
++	pdev = platform_device_alloc(name, PLATFORM_DEVID_AUTO);
++	if (!pdev)
++		return NULL;
++
++	ret = platform_device_add_data(pdev, data, size);
++	if (ret)
++		goto dev_put;
++
++	ret = platform_device_add(pdev);
++	if (ret)
++		goto dev_put;
++
++	return pdev;
++
++dev_put:
++	platform_device_put(pdev);
++
++	return NULL;
++}
+diff --git a/include/acpi/rasf_acpi.h b/include/acpi/rasf_acpi.h
+new file mode 100644
+index 000000000000..aa4f935b28cf
+--- /dev/null
++++ b/include/acpi/rasf_acpi.h
+@@ -0,0 +1,58 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * RASF driver header file
++ *
++ * (C) Copyright 2014, 2015 Hewlett-Packard Enterprises
++ *
++ * Copyright (c) 2023 HiSilicon Limited
++ */
++
++#ifndef _RASF_ACPI_H
++#define _RASF_ACPI_H
++
++#include <linux/acpi.h>
++#include <linux/mailbox_client.h>
++#include <linux/mailbox_controller.h>
++#include <linux/types.h>
++#include <acpi/pcc.h>
++
++#define RASF_PCC_CMD_COMPLETE 1
++
++/* RASF specific PCC commands */
++#define RASF_PCC_CMD_EXEC 0x01
++
++#define RASF_FAILURE 0
++#define RASF_SUCCESS 1
++
++/*
++ * Arbitrary Retries for PCC commands.
++ */
++#define RASF_NUM_RETRIES 600
++
++/*
++ * Data structures for PCC communication and RASF table
++ */
++struct rasf_context {
++	struct device *dev;
++	int id;
++	struct mbox_client mbox_client;
++	struct mbox_chan *pcc_channel;
++	struct pcc_mbox_chan *pcc_chan;
++	void __iomem *pcc_comm_addr;
++	u64 comm_base_addr;
++	int pcc_subspace_idx;
++	bool pcc_channel_acquired;
++	ktime_t deadline;
++	unsigned int pcc_mpar;
++	unsigned int pcc_mrtt;
++	spinlock_t spinlock; /* Lock to provide mutually exclusive access to PCC channel */
++	struct device *scrub_dev;
++	const struct rasf_hw_scrub_ops *ops;
 +};
 +
-+static struct attribute_group cxl_mem_ecs_attr_group = {
-+	.attrs = cxl_mem_ecs_scrub_attrs,
-+};
-+
- int cxl_mem_ecs_init(struct cxl_memdev *cxlmd, int region_id)
- {
-+	char scrub_name[CXL_MEMDEV_MAX_NAME_LENGTH];
- 	struct cxl_mbox_supp_feat_entry feat_entry;
- 	struct cxl_ecs_context *cxl_ecs_ctx;
-+	struct device *cxl_scrub_dev;
- 	int nmedia_frus;
- 	int ret;
- 
-@@ -755,6 +993,15 @@ int cxl_mem_ecs_init(struct cxl_memdev *cxlmd, int region_id)
- 		cxl_ecs_ctx->get_feat_size = feat_entry.get_feat_size;
- 		cxl_ecs_ctx->set_feat_size = feat_entry.set_feat_size;
- 		cxl_ecs_ctx->region_id = region_id;
-+
-+		snprintf(scrub_name, sizeof(scrub_name), "%s_%s_region%d",
-+			 CXL_DDR5_ECS, dev_name(&cxlmd->dev), cxl_ecs_ctx->region_id);
-+		cxl_scrub_dev = devm_scrub_device_register(&cxlmd->dev, scrub_name,
-+							  cxl_ecs_ctx, NULL,
-+							  cxl_ecs_ctx->region_id,
-+							  &cxl_mem_ecs_attr_group);
-+		if (IS_ERR(cxl_scrub_dev))
-+			return PTR_ERR(cxl_scrub_dev);
- 	}
- 
- 	return 0;
++struct platform_device *rasf_add_platform_device(char *name, const void *data,
++						 size_t size);
++int rasf_send_pcc_cmd(struct rasf_context *rasf_ctx, u16 cmd);
++int rasf_register_pcc_channel(struct rasf_context *rasf_ctx);
++int rasf_unregister_pcc_channel(struct rasf_context *rasf_ctx);
++#endif /* _RASF_ACPI_H */
 -- 
 2.34.1
 
