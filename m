@@ -1,138 +1,93 @@
-Return-Path: <linux-kernel+bounces-23289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821A282AA82
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:06:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A01C982AA83
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3205228B4CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:06:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F90A1F22B66
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:06:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3DC6101C4;
-	Thu, 11 Jan 2024 09:05:24 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAF2DF6E;
-	Thu, 11 Jan 2024 09:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5edfcba97e3so53639907b3.2;
-        Thu, 11 Jan 2024 01:05:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704963921; x=1705568721;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iR6KU/zGe5ub/62SWQbwkfMRKXXvW7W7wYmrGRm2qBE=;
-        b=gYXHOGG3tkCqkbtLdpX4dcQklepvn6Bepm9GYZTcJTxNvEeQ8Dms0wlGMgwlboBswh
-         +GroZYRA2OOcyGJ/ERvOqr98ZXKTcTIG7vhCEDuOia7AVFDQPkaWJFimADwr4TvwMO2C
-         pdEufVdFJkm88EEDfREcX7cn1zDdSDrqLWBY3crbirO2LDbwDfO3d5fKv1k15DYhL0ft
-         LvWFj2vxLyeHNwj5kK6sZbnW//FjQ7uideRCaKgURGDqEFFiqHj5oqBgdPAEV3e2ioGg
-         aVknLTI76MlZI7iwP5haxNJOZajuPO3TFQ9NBQZQztNUni+grig9V3HPd++tDsjWWZSC
-         fI/g==
-X-Gm-Message-State: AOJu0Yx2JFAzmn393PWiluols84mZEF/VuNNR3jGYyq/IdByCoIvfkeq
-	XWPCsuv05VeebxarblzuplOAwmH9sGcFHw==
-X-Google-Smtp-Source: AGHT+IEPl3K98FtUDTMOoP6Sn8AxfrFnU3KMpA7rl3Oft8tdXtvZ9KYKqRRtsyYpCS7ljRmkPaSysA==
-X-Received: by 2002:a05:690c:fd1:b0:5d7:1940:f3d2 with SMTP id dg17-20020a05690c0fd100b005d71940f3d2mr296288ywb.58.1704963920831;
-        Thu, 11 Jan 2024 01:05:20 -0800 (PST)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id u80-20020a818453000000b005e7467eaa43sm254600ywf.32.2024.01.11.01.05.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 01:05:20 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbf2b5556f9so1367952276.2;
-        Thu, 11 Jan 2024 01:05:20 -0800 (PST)
-X-Received: by 2002:a5b:5d2:0:b0:dbf:196c:b615 with SMTP id
- w18-20020a5b05d2000000b00dbf196cb615mr950823ybp.0.1704963919994; Thu, 11 Jan
- 2024 01:05:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FAE111A5;
+	Thu, 11 Jan 2024 09:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="HZWDLfxE"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CF311719
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=mLot53AR6aiH5Wu6Ry
+	wzmhBMvsIGYJAJhAMQ1/Sq9gY=; b=HZWDLfxEy0lzzfSLeDN2b1JqyKcD/l6VKF
+	aSJsMuvz1/7N73jCF+Ir161PXR4zP7LP6TJ/UFjiO4bMWoU72vmwTpwonvAGk/94
+	+EJvtmYMuoMNMLU5dWmdutQRA67zwRTxlys7e6uUHFeZoDvUMol9aWsW9bvP/srg
+	40uOm10BQ=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wD3H6Vir59ldLCXAA--.13381S2;
+	Thu, 11 Jan 2024 17:05:38 +0800 (CST)
+From: GuoHua Chen <chenguohua_716@163.com>
+To: daniel@ffwll.ch,
+	Xinhui.Pan@amd.com,
+	alexander.deucher@amd.com,
+	airlied@gmail.com,
+	christian.koenig@amd.com
+Cc: dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	GuoHua Chen <chenguohua_716@163.com>
+Subject: [PATCH] drm/radeon/kms: Clean up errors in smu7.h
+Date: Thu, 11 Jan 2024 09:05:36 +0000
+Message-Id: <20240111090536.13410-1-chenguohua_716@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD3H6Vir59ldLCXAA--.13381S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtF1kXF13tr13WF4fCr1kGrg_yoWDZFb_CF
+	1qg3Z5WrZFkFyvqr17AFW7CFZIyF4qvw1xK34Fg34fXrnIqa13urWvkrW7Xw1rWayfXF90
+	yan0vF1fAFsxtjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU9mR7UUUUU==
+X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/xtbBEhVi1mVOBlC+9wAAsH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 11 Jan 2024 10:05:00 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXSLBARbtc91F=cWqTdL+UcT4wJbr0_m5+iz_6BXA4Acw@mail.gmail.com>
-Message-ID: <CAMuHMdXSLBARbtc91F=cWqTdL+UcT4wJbr0_m5+iz_6BXA4Acw@mail.gmail.com>
-Subject: Re: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Tudor Ambarus <tudor.ambarus@linaro.org>, Kees Cook <keescook@chromium.org>, 
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Prabhakar,
+Fix the following errors reported by checkpatch:
 
-On Wed, Jan 10, 2024 at 11:23=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> gcc points out that the fix-byte buffer might be too small:
-> drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
-> drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing between=
- 1 and 10 bytes into a region of size 3 [-Wformat-overflow=3D]
->   720 |         sprintf(pdev_irqname, "ch%u", index);
->       |                                  ^~
-> In function 'usb_dmac_chan_probe',
->     inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
-> drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range [=
-0, 4294967294]
->   720 |         sprintf(pdev_irqname, "ch%u", index);
->       |                               ^~~~~~
-> drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 13 =
-bytes into a destination of size 5
->   720 |         sprintf(pdev_irqname, "ch%u", index);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Maximum number of channels for USB-DMAC as per the driver is 1-99 so use
-> u8 instead of unsigned int/int for DMAC channel indexing and make the
-> pdev_irqname string long enough to avoid the warning.
->
-> While at it use scnprintf() instead of sprintf() to make the code more
-> robust.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+ERROR: open brace '{' following struct go on the same line
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
+---
+ drivers/gpu/drm/radeon/smu7.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-One nit below.
+diff --git a/drivers/gpu/drm/radeon/smu7.h b/drivers/gpu/drm/radeon/smu7.h
+index 75a380a15292..985d720dbc0d 100644
+--- a/drivers/gpu/drm/radeon/smu7.h
++++ b/drivers/gpu/drm/radeon/smu7.h
+@@ -82,8 +82,7 @@
+ #define SCRATCH_B_CURR_SAMU_INDEX_MASK  (0x7<<SCRATCH_B_CURR_SAMU_INDEX_SHIFT)
+ 
+ 
+-struct SMU7_PIDController
+-{
++struct SMU7_PIDController {
+     uint32_t Ki;
+     int32_t LFWindupUL;
+     int32_t LFWindupLL;
+@@ -117,8 +116,7 @@ typedef struct SMU7_PIDController SMU7_PIDController;
+ #define SMU7_VCE_MCLK_HANDSHAKE_DISABLE                  0x00010000
+ #define SMU7_VCE_SCLK_HANDSHAKE_DISABLE                  0x00020000
+ 
+-struct SMU7_Firmware_Header
+-{
++struct SMU7_Firmware_Header {
+     uint32_t Digest[5];
+     uint32_t Version;
+     uint32_t HeaderSize;
+-- 
+2.17.1
 
-> --- a/drivers/dma/sh/usb-dmac.c
-> +++ b/drivers/dma/sh/usb-dmac.c
-
-> @@ -768,8 +768,8 @@ static int usb_dmac_probe(struct platform_device *pde=
-v)
->         const enum dma_slave_buswidth widths =3D USB_DMAC_SLAVE_BUSWIDTH;
->         struct dma_device *engine;
->         struct usb_dmac *dmac;
-> -       unsigned int i;
->         int ret;
-> +       u8 i;
-
-Personally, I'm not much a fan of making loop counters smaller than
-(unsigned) int.  If you do go this way, there are more loops over all
-channels still using int.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
