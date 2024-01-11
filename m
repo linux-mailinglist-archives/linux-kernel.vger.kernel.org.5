@@ -1,189 +1,168 @@
-Return-Path: <linux-kernel+bounces-22904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09F5382A52F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C5EF82A530
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:07:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9268D2840DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:07:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BC22284DF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 00:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9BF363;
-	Thu, 11 Jan 2024 00:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7710CED4;
+	Thu, 11 Jan 2024 00:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="TshI3M6K"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2071.outbound.protection.outlook.com [40.107.7.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="N86QjvFN"
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800E2EC8;
-	Thu, 11 Jan 2024 00:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PPKwW401XAAI6ITJ3iPXHHj86nm2vr85pPD+yCGn8yyt7hQ6OOMA4d88EznhoKvc6XwUpjfw9fyxvQlPEviewlgFEUFgwIZ4hkMyIlozChrZYjEe8jlxquDdUXtKe/9ZjlCjtYx0jlUTeTAiI/az7jroY6Hts+Yv8bCUM3ctCcaYnYSbGwzwLGuxYWWsFQyjVAY9CfcPZ5kwQQI392/JcVNf0XS+j0U0jBuaXd0d+HFy4fdqK7UcvALFxOKwngtKm60IXQNjXUWZsoPHZQXMpehWDl0a+848HBw4g2Ly98VvTwKYB1ll0hO+MXOK9omPG3oMeDIyvqzMZH5atCX+wA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XkIVsFwXqFn2W0jYQp+i3guKuV/P2Eseu7yVNB0ztlw=;
- b=H0pWJISGg2e1JAY8fnIGXZsNml4p3Y5+CSPUc17P6kE1NhXWTkUFx/sehPAX5bFy7QBQ589lYQYR7vPtO6rHCphNO6wXJjB0FcTLm736l6xBf4thIolFzw9xw+w+VdCMS97khNZHCrdif7MKG+k6DcDTDjjZbEkV/ji0TuNSNTBrtYnt9JPMpGs0aq4LXiIK0CPRDMmHHyinO3/m/SMB397wMXycifADTJDc7ag9J/D7BW40QYkPsKdHIn/j1W9mSHFkULOz8XrDzOkPfgl8zgbalodtYrAG+h5HsDCPvfW9cok0UZuP3DY6qEZWsnl0sauY4o17hF4KQXcyn20DKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XkIVsFwXqFn2W0jYQp+i3guKuV/P2Eseu7yVNB0ztlw=;
- b=TshI3M6KKiW+kCZBrYzBrqMAg+o8b+C1xJifh4U4xLZLGCtgIKJYO3Mxq5wAkinB+c6yQjC4Tib9v7H1UdQ6d74bsTg6a2KMf0FX8o06j3T68OOLjsrexyabEeAaqFBH23kh8heerh8+9kHEDUmEZV2CeQ4L1AMZ6xOs6izyU+s=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM9PR04MB8748.eurprd04.prod.outlook.com (2603:10a6:20b:409::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Thu, 11 Jan
- 2024 00:07:30 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7159.020; Thu, 11 Jan 2024
- 00:07:30 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Cristian Marussi <cristian.marussi@arm.com>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>
-CC: "sudeep.holla@arm.com" <sudeep.holla@arm.com>, "mturquette@baylibre.com"
-	<mturquette@baylibre.com>, "sboyd@kernel.org" <sboyd@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-clk@vger.kernel.org"
-	<linux-clk@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Ranjani Vaidyanathan
-	<ranjani.vaidyanathan@nxp.com>, Glen G Wienecke <glen.wienecke@nxp.com>,
-	Nitin Garg <nitin.garg_3@nxp.com>, Chuck Cannon <chuck.cannon@nxp.com>
-Subject: RE: [PATCH V2 2/2] clk: scmi: support state_ctrl_forbidden
-Thread-Topic: [PATCH V2 2/2] clk: scmi: support state_ctrl_forbidden
-Thread-Index: AQHaKO/hcegSzKiHwky3h5GWn2PoCLDTZMiAgACNREA=
-Date: Thu, 11 Jan 2024 00:07:30 +0000
-Message-ID:
- <DU0PR04MB941722B7265053B7F703A11B88682@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20231207093345.581048-1-peng.fan@oss.nxp.com>
- <20231207093345.581048-2-peng.fan@oss.nxp.com> <ZZ66adlVpON9zVbH@pluto>
-In-Reply-To: <ZZ66adlVpON9zVbH@pluto>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AM9PR04MB8748:EE_
-x-ms-office365-filtering-correlation-id: 248b39ea-0cd3-47a1-f56f-08dc12394d85
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- EFFpOkitGa6OLLO6iVynsUxMAU9ICPDACHxnLGaw8hQ66LBRSN4j7gR6pmeQasX7QxAe/f535NgfYCvHKvtS4vv+hsOM+0o0qr4TCtW1JEOEZ9xTwJ3XjDEW5QRRi1ypqqrok2cpkGW8qVAUZwA264XSbbTSaNgljQaiLFOtbmnK8LrpvIJ+k0s4Gk7Ghtajb+aQYr8sTdES80c+y6Cw1Jy8f0MZet7b/+JAjd8wqJL7+loCAAb/tBd+DflKEckKzdbsXXUYWLdluch/8IF5gmc+ni4UtkeX7mowN2JhHIeD9ggBMDtZ++0ohbG+Vl2CBLXQPYKQ4K3vRgStWtq227fsJK4Pi0Hp58HzC3C5vDuVn05+9GNF9ivt5a9LHmkniPwgp4sninuQDNf7JClNzsNqakHuFdJk5fSZymyy6V6TMKPZ+QLws6ShYOR0m4lM0e4KltM/SL1TT6jYu8sqThoxbSIODgd8GuCFcziPo6WTpwcGW6tMU7lBnqic6WvxYdUJ4ml4+0GdjU9EFUWPRxw6ICaAZtE92JY7Gxn0x7F+6YUWXRUmLQ05Pf6fZGHPmnVlsn5pL0xP2BFkdNa3wCzwX2+J6csxhcF7xb19+PsIA5tvd5GOSIepL6UqrPeGFNG9eSQKqJw6K+rTs+qIWw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39860400002)(396003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(9686003)(8676002)(8936002)(478600001)(54906003)(71200400001)(316002)(6506007)(7696005)(66446008)(64756008)(66556008)(76116006)(66476007)(110136005)(66946007)(52536014)(83380400001)(55016003)(44832011)(4326008)(26005)(33656002)(38100700002)(2906002)(5660300002)(41300700001)(38070700009)(122000001)(86362001)(21443003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?gaVZ2V1u7YQx0MOtzHCi2d2aa0cgH4W8E1nAAsmNXx9Gk5IQRBi3y6Xt95zs?=
- =?us-ascii?Q?p6BQDO8p3DY0S3vPsECApuqr4UGkgibKzCJQn8xV6d/UUJEmb+dMLXOtuKqn?=
- =?us-ascii?Q?XD27HVMupT0Y3FUML7iwY+lBpJkI9SbAefqR7/izCvLceinWdZaGUsNWtpaV?=
- =?us-ascii?Q?vx9tWEp5krk+gCx8xdrPJYh3lhgXAAB/rVKNbyWzleEUzydQj8oCST8AGT4o?=
- =?us-ascii?Q?s1tSz7Pk1w7YgaCYMD+jFvu/zduUHmgLFObvyLd5sFuCIUWSzFYqH9h0KDfJ?=
- =?us-ascii?Q?1lGOFEZ/KXPARkvT/B8ygniE/xd0Hg1tnM/UQBwDjH7m65Xoc4G72XyxFPHC?=
- =?us-ascii?Q?B510wHbUEJBZuF76RiaZ8TFcdkfb8m4wtsK+E3LC33hHykYrzpoIQF9iztHJ?=
- =?us-ascii?Q?xfIUjWlIZ8KRemG31jsl6FBgoQZyAZ+zuUQsv9XWB0bsY1JHjXI+NenEWcFg?=
- =?us-ascii?Q?FWI9ng84BpfPHGIAKjQM2BvAsQVTxqDTqUutHqWbAQESDKCTR5IBolAvZX6J?=
- =?us-ascii?Q?t4p24L4ccxq2QZqSDryYjkl6MnkG46OSGtp6RLPE8U1D3GGFfQ+YvwL1dpIx?=
- =?us-ascii?Q?4jU/zrx3Cs+meQeWNkLkh4S0uj5QN0cfe6eoA8a13E8RKa6q/ZgSZD17P8SD?=
- =?us-ascii?Q?4eXYtBhadQlc0EurJfjDedvLDlgGmiOuXGLwJ9if6fDrvFE6qh5VFoCdW2iy?=
- =?us-ascii?Q?/KXG7gCLjPx9YX/vTYCYNu4MwkobtgUaosbcQ0APAPCDL4v4WE73XFGMAq4o?=
- =?us-ascii?Q?PdCyvOXTKD/9FkSX/JYaeNLd6J8rKVV2kbTV5XmjUTxP8ME8eS+WQdnVNsWd?=
- =?us-ascii?Q?4rzuTH9GU4LCY2NOfC3Ic+dus9NRMAi6hD9sydzSpxXngTKZGdGh+wA7qef9?=
- =?us-ascii?Q?JiGto7U0onnTpBhzZVrU9vFdHZUe57l69UKU8XSzgZKXkdSjh00eyqcAadyz?=
- =?us-ascii?Q?FUlZU+Zee7VHfua7J4eSM7rOspIuLNju3qHQ7KAyC25qs2/uFN4Ma2EgRMsZ?=
- =?us-ascii?Q?2IbvDHWSIMY4ibeEdk3SW8PxCfXMXaQMptIp+eqY6CT2H95s01RtJoSa38iI?=
- =?us-ascii?Q?O7n5dP13l9fzwYiHefu9i+cwbDZqEeL3QPvKFesSuO8mGOk3Zi/NRHjan3gH?=
- =?us-ascii?Q?P1tJLWS7mkwtBUGf76wfKQU8p1HTyNEju2JSR0wVBOznAPJuAo7+Z2CVnGT1?=
- =?us-ascii?Q?cBE8GHFPnuU3BcoKJv1kYrh3z4iVUC/Sc9sccqr+WX1KayGvzSTnalO795bk?=
- =?us-ascii?Q?kGmB7JuXp81Iq016L+QvoLuw6M8vPWoD0ohLvwVAhn2WPNsqAbcOOjrBGCVZ?=
- =?us-ascii?Q?sbWycnQvjt2iUkbg6aM7CjmIyUwb1uFMNnoQbhDqVbr5o0Pj8sNTpJtyqB4a?=
- =?us-ascii?Q?e/mrlyOBTA/dCJhjvQLWziR6xUZUDvuPD+rBgCv+NX5hBBQ69ZoI1UGoMEbt?=
- =?us-ascii?Q?gPfFeGntEiwnbtOhWsQ6uRZhUgcm1BTiF5mZr9RTqGFKlv7SBCVKHUMtT2nC?=
- =?us-ascii?Q?GC6mltzJPWy3toN2dkZUmLHus8rB0VnE7l0JAqSpPZAXaZ38bZuHJrg62Jd5?=
- =?us-ascii?Q?7IRXNYeWLG/jtW0onyk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C079EBB
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bc1414b48eso5250649b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 16:07:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704931662; x=1705536462; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TShArdENafTOCTnI/LZrgLzX+BUXpRaca4Iuv2KbFTM=;
+        b=N86QjvFNOBl6smc2FKWY7Jbopu9SnKSwBRQT9yrd6EgOSx682/a1ohT6JVQfs4m4tH
+         UfEcWeTW+VBbhtCc4UZMYKb6sahAcan6WPBcbc/hAsi772h5ch14EeDDP+m5V0wkZnFR
+         HSRMDEXO6d7dQgStFx+PjhYMwW7UnJATPydKg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704931662; x=1705536462;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TShArdENafTOCTnI/LZrgLzX+BUXpRaca4Iuv2KbFTM=;
+        b=ncqzplIp3l2jeHG1cPLT+oHH+MLFwGmBmP2So35z6dp7mSm0/5cgu4sa1Qzom5CpFP
+         mq+zxVMJT8QhR9nbGL0uRQZ25IGfuXFJgjL8+EoipgTo9MHrTbCPiHrllE2U2fbwC17J
+         idZ/ZlccRFmtYtRG1w7F6IHRIpa/LWMLGgkMjOF5syjUp1InFoovEpF4Y1Pew1gb1p8U
+         5gGjF+vZIdJPdla1oGG1Pnm6N7qSuRKhAUTwl4q1rckQj/3K4MZmABmu0ccQtpLAOtHn
+         HmpvqVlk5f4PouJnaKnZxfeT3feqMCwipaQZkJqOEfHBmk9d9lXaXAaJRZMJoAwTU2B/
+         64uQ==
+X-Gm-Message-State: AOJu0YxNNSeKf/NK8F/cQMmuRPJhM/jxeR2mW9me8DR8WJX75CMWURlL
+	AcJGp4Gn3yKEq4fgYciG+6iemPIxR+Nk
+X-Google-Smtp-Source: AGHT+IF4wsWW4fsdG3n0P/pFi84A5z4SQ8M8M+ff5o1gwQ0sPG0mgKcVKIK/ayHuiVxMzj7fz7a14Q==
+X-Received: by 2002:a05:6808:3605:b0:3bd:48a1:c49f with SMTP id ct5-20020a056808360500b003bd48a1c49fmr416053oib.27.1704931662499;
+        Wed, 10 Jan 2024 16:07:42 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g5-20020a62f945000000b006d997b5d009sm3997315pfm.69.2024.01.10.16.07.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 16:07:41 -0800 (PST)
+Date: Wed, 10 Jan 2024 16:07:41 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Tanzir Hasan <tanzhasanwork@gmail.com>,
+	Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH v2 2/2] lib/string: shrink lib/string.i via IWYU
+Message-ID: <202401101606.A31647E@keescook>
+References: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
+ <20231214-libstringheader-v2-2-0f195dcff204@google.com>
+ <20240109214910.oeopqq5j2gyl33dc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 248b39ea-0cd3-47a1-f56f-08dc12394d85
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2024 00:07:30.2680
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8WjE3tY4W1c7fAKeho1XumOhTsUjVhtGPIB4m5zCYQ24F7o/FpHLsSlDXQn7onEsQDAZxulutHQicX/2SXDZVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8748
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109214910.oeopqq5j2gyl33dc@google.com>
 
-> Subject: Re: [PATCH V2 2/2] clk: scmi: support state_ctrl_forbidden
->=20
-> On Thu, Dec 07, 2023 at 05:33:45PM +0800, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
+On Tue, Jan 09, 2024 at 09:49:10PM +0000, Justin Stitt wrote:
+> On Thu, Dec 14, 2023 at 09:06:13PM +0000, tanzirh@google.com wrote:
+> > This diff uses an open source tool include-what-you-use (IWYU) to modify
+> > the include list changing indirect includes to direct includes.
+> > IWYU is implemented using the IWYUScripts github repository which is a tool that is
+> > currently undergoing development. These changes seek to improve build times.
 > >
-> > Some clocks may exported to linux, while those clocks are not allowed
-> > to configure by Linux. For example:
+> > This change to lib/string.c resulted in a preprocessed size of
+> > lib/string.i from 26371 lines to 5259 lines (-80%) for the x86
+> > defconfig.
 > >
->=20
-> Hi,
->=20
-> > SYS_CLK1-----
-> >              \
-> > 	     --MUX--->MMC1_CLK
-> >              /
-> > SYS_CLK2-----
-> >
-> > MMC1 needs set parent, so SYS_CLK1 and SYS_CLK2 are exported to Linux,
-> > then the clk propagation will touch SYS_CLK1 or SYS_CLK2.
-> > So we need bypass the failure for SYS_CLK1 or SYS_CLK2 when enable the
-> > clock of MMC1.
-> >
->=20
->=20
-> So I was puzzled a bit at first (as said) by the fact that here we silent=
-ly swallow
-> the failure if the SCMI Clock cannot be disabled, BUT then I spotted in
-> include/linux/clk.h
->=20
-> 	/**
-> 	 * clk_enable - inform the system when the clock source should be
-> running.
-> 	 * @clk: clock source
-> 	 *
-> 	 * If the clock can not be enabled/disabled, this should return success.
->=20
-> ...so I suppose it is fine for the CLK framework at the end.
->=20
-> My next remaining question is why are you not doing the same when (ret =
-=3D=3D -
-> EACCES && clk->info->state_ctrl_forbidden) for atomic_ops ?
->=20
-> I.e. in:
->=20
-> 	clk-scmi.c::static int scmi_clk_atomic_enable(struct clk_hw *hw)
->=20
-> Any particular reason (beside not needing it in your particular case...)
+> 
+> Tanzir, I wonder if you could include some of the symbol names used for
+> some of these more esoteric headers. Let me describe what I mean:
+> 
+> Andy talks about "why <vdso/...>" and perhaps some comments (in your
+> patch message, not in the source itself) about which symbols are being
+> used from these headers would serve useful. I believe IWYU can generate
+> this information and should clear up some confusion or lead to better
+> suggestions from reviewers if we understand why a header is being
+> included.
 
-No particular reason, we not use atomic_ops in our case. So I am not able
-to test it. I could add the same in atomic_ops in V3.
+If there aren't any other objections, I'd like to pick this up in my
+tree after the merge window closes.
 
-Thanks,
-Peng.
->=20
-> Thanks,
-> Cristian
+> 
+> At any rate, this builds for me doing randconfigs on x86_64 with these
+> KCONFIG_SEEDs
+> 1: 0x3DD9D136
+> 2: 0xB4440EE4
+> 3: 0x98778270
+> 4: 0x8C237F26
+> 5: 0x244F8A64
+> 6: 0x5A5C5E5C
+> 7: 0xA77896BC
+> 8: 0x9B5FF0D5
+> 9: 0x24F23F6A
+> 10: 0x35C0A107
+> 
+> I applied your patch on top of 5db8752c3b81bd33.
+> 
+> Tested-by: Justin Stitt <justinstitt@google.com>
 
+Thanks for the testing!
+
+-Kees
+
+> > Link: https://github.com/ClangBuiltLinux/IWYUScripts
+> >
+> > Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+> > ---
+> >  lib/string.c | 14 +++++++-------
+> >  1 file changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/lib/string.c b/lib/string.c
+> > index be26623953d2..7fe1acefb1a1 100644
+> > --- a/lib/string.c
+> > +++ b/lib/string.c
+> > @@ -16,16 +16,16 @@
+> >
+> >  #define __NO_FORTIFY
+> >  #include <linux/types.h>
+> > -#include <linux/string.h>
+> > -#include <linux/ctype.h>
+> > -#include <linux/kernel.h>
+> > -#include <linux/export.h>
+> > +#include <linux/bits.h>
+> >  #include <linux/bug.h>
+> >  #include <linux/errno.h>
+> > -#include <linux/slab.h>
+> > -
+> > +#include <asm/rwonce.h>
+> > +#include <linux/linkage.h>
+> > +#include <linux/stddef.h>
+> > +#include <vdso/limits.h>
+> > +#include <linux/string.h>
+> > +#include <linux/ctype.h>
+> >  #include <asm/unaligned.h>
+> > -#include <asm/byteorder.h>
+> >  #include <asm/word-at-a-time.h>
+> >  #include <asm/page.h>
+> >
+> >
+> > --
+> > 2.43.0.472.g3155946c3a-goog
+> >
+> Thanks
+> Justin
+
+-- 
+Kees Cook
 
