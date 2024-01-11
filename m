@@ -1,53 +1,41 @@
-Return-Path: <linux-kernel+bounces-23548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F4782AE52
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:05:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F08782AE55
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:06:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 683241C22CB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:05:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2264283A32
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4D23A8FF;
-	Thu, 11 Jan 2024 12:01:42 +0000 (UTC)
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FCC22093;
-	Thu, 11 Jan 2024 12:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W-PfInN_1704974495;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W-PfInN_1704974495)
-          by smtp.aliyun-inc.com;
-          Thu, 11 Jan 2024 20:01:36 +0800
-From: Wen Gu <guwen@linux.alibaba.com>
-To: wintera@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com,
-	svens@linux.ibm.com,
-	alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AAE3D387;
+	Thu, 11 Jan 2024 12:01:44 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A6432C89;
+	Thu, 11 Jan 2024 12:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8CxLOui2J9lh0EEAA--.12675S3;
+	Thu, 11 Jan 2024 20:01:38 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxO9yg2J9llQsQAA--.41850S2;
+	Thu, 11 Jan 2024 20:01:37 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 15/15] net/smc: implement DMB-merged operations of loopback-ism
-Date: Thu, 11 Jan 2024 20:00:36 +0800
-Message-Id: <20240111120036.109903-16-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240111120036.109903-1-guwen@linux.alibaba.com>
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
+Subject: [PATCH bpf-next v1] selftests/bpf: Skip callback tests if jit is disabled in test_verifier
+Date: Thu, 11 Jan 2024 20:01:36 +0800
+Message-ID: <20240111120136.16013-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,212 +43,126 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8CxO9yg2J9llQsQAA--.41850S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxGFW3tr1UtrW5ur1xGr1kCrX_yoW5ury3pF
+	WkCr1qkF1UJFySgr17Arn3JFWFvw4vqw18Gr98G3yUZa1DA343Jrn7KFyjvF9xGrW5ua4S
+	vFWI9FW5uw4UXFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j0FALUUUUU=
 
-This implements operations related to merging sndbuf with peer DMB in
-loopback-ism. The DMB won't be unregistered until no sndbuf is attached
-to it.
+If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
+exist 6 failed tests.
 
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+  [root@linux bpf]# ./test_verifier | grep FAIL
+  #106/p inline simple bpf_loop call FAIL
+  #107/p don't inline bpf_loop call, flags non-zero FAIL
+  #108/p don't inline bpf_loop call, callback non-constant FAIL
+  #109/p bpf_loop_inline and a dead func FAIL
+  #110/p bpf_loop_inline stack locations for loop vars FAIL
+  #111/p inline bpf_loop call in a big program FAIL
+  Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
+
+The test log shows that callbacks are not allowed in non-JITed programs,
+interpreter doesn't support them yet, thus these tests should be skipped
+if jit is disabled, copy some check functions from the other places under
+tools directory, and then handle this case in do_test_single().
+
+With this patch:
+
+  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+  [root@linux bpf]# ./test_verifier | grep FAIL
+  Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- net/smc/smc_loopback.c | 101 +++++++++++++++++++++++++++++++++++++++--
- net/smc/smc_loopback.h |   4 ++
- 2 files changed, 102 insertions(+), 3 deletions(-)
 
-diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-index bfbb346ef01a..296a4d1f1a33 100644
---- a/net/smc/smc_loopback.c
-+++ b/net/smc/smc_loopback.c
-@@ -298,6 +298,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 	dmb_node->len = dmb->dmb_len;
- 	dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
-+	refcount_set(&dmb_node->refcnt, 1);
+Thanks very much for the feedbacks from Eduard, John, Jiri and Daniel.
+I do not move loop inlining tests to test_progs, just copy some check
+functions and do the minimal changes in test_verifier.
+
+ tools/testing/selftests/bpf/test_verifier.c | 39 +++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index f36e41435be7..7c74e65ee25c 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -21,6 +21,7 @@
+ #include <sched.h>
+ #include <limits.h>
+ #include <assert.h>
++#include <fcntl.h>
  
- again:
- 	/* add new dmb into hash table */
-@@ -311,6 +312,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 	hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
- 	write_unlock(&ldev->dmb_ht_lock);
-+	atomic_inc(&ldev->dmb_cnt);
- 	SMC_LO_STAT_DMBS_INC(ldev);
- 
- 	dmb->sba_idx = dmb_node->sba_idx;
-@@ -333,8 +335,8 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
- 
--	/* remove dmb from hash table */
--	write_lock(&ldev->dmb_ht_lock);
-+	/* find dmb from hash table */
-+	read_lock(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
- 		if (tmp_node->token == dmb->dmb_tok) {
- 			dmb_node = tmp_node;
-@@ -342,9 +344,18 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 		}
- 	}
- 	if (!dmb_node) {
--		write_unlock(&ldev->dmb_ht_lock);
-+		read_unlock(&ldev->dmb_ht_lock);
- 		return -EINVAL;
- 	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	/* wait for peer sndbuf to detach from this dmb */
-+	if (!refcount_dec_and_test(&dmb_node->refcnt))
-+		wait_event(ldev->dmbs_release,
-+			   !refcount_read(&dmb_node->refcnt));
-+
-+	/* remove dmb from hash table */
-+	write_lock(&ldev->dmb_ht_lock);
- 	hash_del(&dmb_node->list);
- 	write_unlock(&ldev->dmb_ht_lock);
- 
-@@ -353,6 +364,73 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 	kfree(dmb_node);
- 	SMC_LO_STAT_DMBS_DEC(ldev);
- 
-+	if (atomic_dec_and_test(&ldev->dmb_cnt))
-+		wake_up(&ldev->ldev_release);
-+	return 0;
-+}
-+
-+static int smc_lo_support_dmb_nocopy(struct smcd_dev *smcd)
-+{
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	return (ldev->dmb_copy == SMC_LO_DMB_NOCOPY);
-+}
-+
-+static int smc_lo_attach_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
-+		if (tmp_node->token == dmb->dmb_tok) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	if (!refcount_inc_not_zero(&dmb_node->refcnt))
-+		/* the dmb is being unregistered, but has
-+		 * not been removed from the hash table.
-+		 */
-+		return -EINVAL;
-+
-+	/* provide dmb information */
-+	dmb->sba_idx = dmb_node->sba_idx;
-+	dmb->dmb_tok = dmb_node->token;
-+	dmb->cpu_addr = dmb_node->cpu_addr;
-+	dmb->dma_addr = dmb_node->dma_addr;
-+	dmb->dmb_len = dmb_node->len;
-+	return 0;
-+}
-+
-+static int smc_lo_detach_dmb(struct smcd_dev *smcd, u64 token)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, token) {
-+		if (tmp_node->token == token) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	if (refcount_dec_and_test(&dmb_node->refcnt))
-+		wake_up_all(&ldev->dmbs_release);
- 	return 0;
+ #include <linux/unistd.h>
+ #include <linux/filter.h>
+@@ -1397,6 +1398,34 @@ static bool is_skip_insn(struct bpf_insn *insn)
+ 	return memcmp(insn, &skip_insn, sizeof(skip_insn)) == 0;
  }
  
-@@ -389,6 +467,14 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
- 	struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
- 
-+	/* if sndbuf is merged with peer DMB, there is
-+	 * no need to copy data from sndbuf to peer DMB.
-+	 */
-+	if (!sf && smc_lo_support_dmb_nocopy(smcd)) {
-+		SMC_LO_STAT_XFER_BYTES(ldev, size);
-+		return 0;
++static inline bool is_ldimm64_insn(struct bpf_insn *insn)
++{
++	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
++}
++
++static bool insn_is_pseudo_func(struct bpf_insn *insn)
++{
++	return is_ldimm64_insn(insn) && insn->src_reg == BPF_PSEUDO_FUNC;
++}
++
++static bool is_jit_enabled(void)
++{
++	const char *jit_sysctl = "/proc/sys/net/core/bpf_jit_enable";
++	bool enabled = false;
++	int sysctl_fd;
++
++	sysctl_fd = open(jit_sysctl, 0, O_RDONLY);
++	if (sysctl_fd != -1) {
++		char tmpc;
++
++		if (read(sysctl_fd, &tmpc, sizeof(tmpc)) == 1)
++			enabled = (tmpc != '0');
++		close(sysctl_fd);
 +	}
 +
- 	read_lock(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
- 		if (tmp_node->token == dmb_tok) {
-@@ -444,6 +530,9 @@ static const struct smcd_ops lo_ops = {
- 	.query_remote_gid = smc_lo_query_rgid,
- 	.register_dmb = smc_lo_register_dmb,
- 	.unregister_dmb = smc_lo_unregister_dmb,
-+	.support_dmb_nocopy = smc_lo_support_dmb_nocopy,
-+	.attach_dmb = smc_lo_attach_dmb,
-+	.detach_dmb = smc_lo_detach_dmb,
- 	.add_vlan_id = smc_lo_add_vlan_id,
- 	.del_vlan_id = smc_lo_del_vlan_id,
- 	.set_vlan_required = smc_lo_set_vlan_required,
-@@ -529,12 +618,18 @@ static int smc_lo_dev_init(struct smc_lo_dev *ldev)
- 	smc_lo_generate_id(ldev);
- 	rwlock_init(&ldev->dmb_ht_lock);
- 	hash_init(ldev->dmb_ht);
-+	atomic_set(&ldev->dmb_cnt, 0);
-+	init_waitqueue_head(&ldev->dmbs_release);
-+	init_waitqueue_head(&ldev->ldev_release);
++	return enabled;
++}
 +
- 	return smcd_lo_register_dev(ldev);
- }
- 
- static void smc_lo_dev_exit(struct smc_lo_dev *ldev)
+ static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
  {
- 	smcd_lo_unregister_dev(ldev);
-+	if (atomic_read(&ldev->dmb_cnt))
-+		wait_event(ldev->ldev_release, !atomic_read(&ldev->dmb_cnt));
- }
+ 	int i;
+@@ -1662,6 +1691,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 		goto close_fds;
+ 	}
  
- static void smc_lo_dev_release(struct device *dev)
-diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
-index 7ecb4a35eb36..19a1eace2255 100644
---- a/net/smc/smc_loopback.h
-+++ b/net/smc/smc_loopback.h
-@@ -40,6 +40,7 @@ struct smc_lo_dmb_node {
- 	u32 sba_idx;
- 	void *cpu_addr;
- 	dma_addr_t dma_addr;
-+	refcount_t refcnt;
- };
++	if (!is_jit_enabled()) {
++		for (i = 0; i < prog_len; i++, prog++) {
++			if (insn_is_pseudo_func(prog)) {
++				printf("SKIP (callbacks are not allowed in non-JITed programs)\n");
++				skips++;
++				goto close_fds;
++			}
++		}
++	}
++
+ 	alignment_prevented_execution = 0;
  
- struct smc_lo_dev_stats64 {
-@@ -56,9 +57,12 @@ struct smc_lo_dev {
- 	u16 chid;
- 	struct smcd_gid local_gid;
- 	struct smc_lo_dev_stats64 __percpu *stats;
-+	atomic_t dmb_cnt;
- 	rwlock_t dmb_ht_lock;
- 	DECLARE_BITMAP(sba_idx_mask, SMC_LO_MAX_DMBS);
- 	DECLARE_HASHTABLE(dmb_ht, SMC_LO_DMBS_HASH_BITS);
-+	wait_queue_head_t dmbs_release;
-+	wait_queue_head_t ldev_release;
- };
- 
- #define SMC_LO_STAT_SUB(ldev, key, val) \
+ 	if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
 -- 
-2.32.0.3.g01195cf9f
+2.42.0
 
 
