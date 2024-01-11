@@ -1,158 +1,144 @@
-Return-Path: <linux-kernel+bounces-23859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C288082B2DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:24:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC46682B2E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F1A6289373
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:24:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7C51C2621A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970A050255;
-	Thu, 11 Jan 2024 16:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DB050266;
+	Thu, 11 Jan 2024 16:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ppfd7wav"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="omZcBp3P";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="daFQmSRg"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4220C50245
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BEsRr0030404;
-	Thu, 11 Jan 2024 16:23:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yvEoKVrxCx84Qso2ZKN68nnOcsKKBjWqodWTF4MPK2Y=;
- b=Ppfd7wav0FWB0+C05oE/+mZBq6q/VsxjP8wCJOGitOhvDYAAtJZSBZZEzj5sQfZMcuPJ
- zPyc0td38+BO9hcWGT7hJ7VIp7NerKEbo/i2oiaAxp3DwvRgCf7kwLVBIZq53F6BXOnB
- aRW0+JKpsgAodCSroB+tiX90OiBw6ReTwgbYbt5d1mEXBQWyO/cjN/qG8ftyicNKShwE
- PIQQ7NOuolKYJDawchgEQDuIZ1I4t9HynPGVnTi8mz8Kcw205QuMoofOgHyiilyl0RU8
- 8qS9MZFdWmF/WdOe15IGsMjBXP70/R3Jor5BqhKiN5hLWlmvx13/js2Ff60CIvs9voGi 0w== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjjghap60-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 16:23:32 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40BDjbfp026992;
-	Thu, 11 Jan 2024 16:23:31 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkw2c1x8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 16:23:31 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40BGNU1a17564308
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Jan 2024 16:23:31 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9FD5158068;
-	Thu, 11 Jan 2024 16:23:30 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 36C6458062;
-	Thu, 11 Jan 2024 16:23:30 +0000 (GMT)
-Received: from [9.24.12.86] (unknown [9.24.12.86])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 11 Jan 2024 16:23:30 +0000 (GMT)
-Message-ID: <c5a4cde9-cc30-48f7-8da0-7c0e71d7d2aa@linux.ibm.com>
-Date: Thu, 11 Jan 2024 10:23:29 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93114F8B4;
+	Thu, 11 Jan 2024 16:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from alley.prg2.suse.org (unknown [10.100.208.146])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 17335220B5;
+	Thu, 11 Jan 2024 16:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704990304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MMA7Jf2m2884PIJudPkb8VYRI5Ehzqro2oR8+njB8z4=;
+	b=omZcBp3PMMiuePhg0CoAme0EZOLLnvHGorGhuiXqdUVzHueKRVJ1S2cm5yB0Os4jyw9+II
+	XT72E5G0QG/k/0Z7BNYHJrPgzDdYruiO3660Q62T0cXLs0qG4FGl0aXYPRmUkNy9ciLr15
+	98/z84jcsljzuhiBTTmPG8EpkqzFxdg=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704990302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MMA7Jf2m2884PIJudPkb8VYRI5Ehzqro2oR8+njB8z4=;
+	b=daFQmSRgfXmQ2xfQHqCLhVDEGrQjfY/3zISaoPq23AIbJc831A9PTJZFzLrNFKJaZT0gRf
+	D12i9akvlzYmBsZoBrp0dT/6avOUJ2QMDNOOY+192RW2ZJqVSNknymCOZ09q4d4NuPmcxZ
+	jEnjmMx1rP6nI6BUHA1jTxasaNOyiMU=
+From: Petr Mladek <pmladek@suse.com>
+To: "James E . J . Bottomley" <jejb@linux.ibm.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chris Down <chris@chrisdown.name>,
+	oe-kbuild-all@lists.linux.dev,
+	Petr Mladek <pmladek@suse.com>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] scsi: core: Safe warning about bad dev info string
+Date: Thu, 11 Jan 2024 17:24:19 +0100
+Message-ID: <20240111162419.12406-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] soc/aspeed: Add host side BMC device driver
-Content-Language: en-US
-To: Ninad Palsule <ninad@linux.vnet.ibm.com>, Andrew Lunn <andrew@lunn.ch>
-Cc: joel@jms.id.au, andrew@aj.id.au, eajames@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org
-References: <20230821183525.3427144-1-ninad@linux.ibm.com>
- <20230821183525.3427144-2-ninad@linux.ibm.com>
- <5159abb8-1b4c-4576-b370-4dd9db142beb@lunn.ch>
- <6cea8ee7-f845-6ef3-631f-3f252ff5e949@linux.vnet.ibm.com>
- <5c918888-6933-7661-45f0-32ae4521aa2c@linux.vnet.ibm.com>
-From: Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <5c918888-6933-7661-45f0-32ae4521aa2c@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AVbA9MnxxCVVkGqCoodM0HqcSyFelbg7
-X-Proofpoint-ORIG-GUID: AVbA9MnxxCVVkGqCoodM0HqcSyFelbg7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-11_09,2024-01-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 adultscore=0 impostorscore=0
- phishscore=0 clxscore=1011 mlxlogscore=999 priorityscore=1501 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401110128
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [4.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,intel.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+]
+X-Spam-Level: ****
+X-Spam-Score: 4.90
+X-Spam-Flag: NO
 
-Hello Andrew,
+Both "model" and "strflags" are passed to "%s" even when one or both
+are NULL.
 
-On 8/23/23 12:32, Ninad Palsule wrote:
-> Hello Andrew,
->
-> On 8/22/23 11:14 AM, Ninad Palsule wrote:
->> Hello Andrew,
->>
->> Thanks for the review.
->>
->> On 8/21/23 2:29 PM, Andrew Lunn wrote:
->>>> Testing:
->>>>    - This is tested on IBM rainier system with BMC. It requires BMC 
->>>> side
->>>>      BMC device driver which is available in the ASPEED's 5.15 SDK
->>>>      kernel.
->>> How relevant is that? To the host side, it just appears to be an
->>> 16550A. Is the SDK emulating an 16550A? If you where to use a
->>> different kernel, is it still guaranteed to be an 16550A? I also
->>> notice there is a mainline
->>> drivers/tty/serial/8250/8250_aspeed_vuart.c. Could that be used on the
->>> BMC? That would be a better testing target than the vendor kernel.
->>
->> This is just to indicate how I tested my code.
->>
->> Yes, aspeed chip (in this case ast2600) is compatible with 16550 UART.
->>
->> I am guessing it should work with different kernel too as 16550 
->> standard is used.
->>
->> The 8250_aspeed_vuart.c is a BMC side driver for accessing VUART over 
->> LPC bus and
->>
->> this is a host side driver to access VUART over PCIe bus.
->>
->>>> +config ASPEED_HOST_BMC_DEV
->>>> +    bool "ASPEED SoC Host BMC device driver"
->>>> +    default ARCH_ASPEED
->>>> +    select SOC_BUS
->>>> +    default ARCH_ASPEED
->>> same default twice?
->> Removed.
->>
->>>> +late_initcall(aspeed_host_bmc_device_init);
->>>> +module_exit(aspeed_host_bmc_device_exit);
->>> It looks like you can use module_pci_driver() ?
->> yes, It should work unless the late initcall is important. I will 
->> test it and see.
->
-> I will not be able to use module_pci_driver() as it doesn't support 
-> late initcall which is required otherwise
->
-> 8250 registration fails. So I am not making this change.
+It is safe because vsprintf() would detect the NULL pointer and print
+"(null)". But it is a kernel-specific feature and compiler warns
+about it:
 
-Please let me know if you are fine with this.
+<warning>
+   In file included from include/linux/kernel.h:19,
+                    from arch/x86/include/asm/percpu.h:27,
+                    from arch/x86/include/asm/current.h:6,
+                    from include/linux/sched.h:12,
+                    from include/linux/blkdev.h:5,
+                    from drivers/scsi/scsi_devinfo.c:3:
+   drivers/scsi/scsi_devinfo.c: In function 'scsi_dev_info_list_add_str':
+>> include/linux/printk.h:434:44: warning: '%s' directive argument is null [-Wformat-overflow=]
+     434 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
+         |                                            ^
+   include/linux/printk.h:430:3: note: in definition of macro 'printk_index_wrap'
+     430 |   _p_func(_fmt, ##__VA_ARGS__);    \
+         |   ^~~~~~~
+   drivers/scsi/scsi_devinfo.c:551:4: note: in expansion of macro 'printk'
+     551 |    printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
+         |    ^~~~~~
+   drivers/scsi/scsi_devinfo.c:552:14: note: format string is defined here
+     552 |           " '%s'\n", __func__, vendor, model,
+         |              ^~
+</warning>
 
-Thanks for the review.
+Do not rely on the kernel specific behavior and print the message a safe way.
 
-Regards,
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401112002.AOjwMNM0-lkp@intel.com/
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+Note: The patch is only compile tested.
 
-Ninad
+ drivers/scsi/scsi_devinfo.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
+index 3fcaf10a9dfe..ba7237e83863 100644
+--- a/drivers/scsi/scsi_devinfo.c
++++ b/drivers/scsi/scsi_devinfo.c
+@@ -551,9 +551,9 @@ static int scsi_dev_info_list_add_str(char *dev_list)
+ 		if (model)
+ 			strflags = strsep(&next, next_check);
+ 		if (!model || !strflags) {
+-			printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
+-			       " '%s'\n", __func__, vendor, model,
+-			       strflags);
++			pr_err("%s: bad dev info string '%s' '%s' '%s'\n",
++			       __func__, vendor, model ? model : "",
++			       strflags ? strflags : "");
+ 			res = -EINVAL;
+ 		} else
+ 			res = scsi_dev_info_list_add(0 /* compatible */, vendor,
+-- 
+2.43.0
 
 
