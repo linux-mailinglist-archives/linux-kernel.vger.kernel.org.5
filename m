@@ -1,75 +1,61 @@
-Return-Path: <linux-kernel+bounces-23586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 209E082AEB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:28:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0901A82AEB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:30:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99154B20F02
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:28:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 142F51C22EEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EAF15AD1;
-	Thu, 11 Jan 2024 12:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9548F15AEE;
+	Thu, 11 Jan 2024 12:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="G33nWuG3"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nFPuKTiD"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195BF15AC0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a28f66dc7ffso1138244966b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 04:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704976091; x=1705580891; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=met0TS3f1iN0VupGC8yYYJUiPelRlG/OMDMfE7CCcUo=;
-        b=G33nWuG3pLKr7rTBDaurck8orl0FgWfYCi43NSlluN/SbUxFOjJ5Veq7LDpckGqJhG
-         LrF/lMkBDjpGF8v+shcQPxDatrd/SV25rwN7o0QJjT5p3Ij88MWmgnYb4NVojCviLoyZ
-         wC8CDkRoed3U4J9BxavOH9t/av9msxnHf57/KhpR0fsPU1n0BmC75JtNFmufP8d73nvB
-         ZNnO8jaUUMcNsOSKRM9BKNEqNO08L3zwhYNuwh0VL5TEUofClHF/OEvcXWp7MfgCZsz+
-         Cc4Z7PjFQVkkzPBfyHsRwnpT0aDTtVSh0+nKtXfvei5+xElPl0Fjacmipv0y79Bj1zKF
-         8AJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704976091; x=1705580891;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=met0TS3f1iN0VupGC8yYYJUiPelRlG/OMDMfE7CCcUo=;
-        b=L/GkxLwxdxtAElHiEUaCqlVHiwkx8qSNs5X2t75fwGAlQ7JNfmZrsQvE49s7svx2uW
-         MnuMdZw7vL54T+dZbi9PRpIJQ4w4O+yk3ZDnNodxdUpKcNwt/+1j+DF1YB5j+eyZtSDe
-         1OWAzOB9sirJjFZjpMD2iLU1l2WZeXOFhd+VsOtcNDvI0yGWbnQl7DYBhjA9YJlLUXaG
-         41ThVk5aTf4tuZpRxmFclrZT2Dn/qeJr3L6UvjX/kSb8XGxSZpfJR2+wyaCdMkdRI5d0
-         8wPGaDcepLuGaE7WrgTVTAS+WJo6SYCrcrCAFpDYYYVJGVB534AQEe52coU/4rc+Nzjk
-         3Oug==
-X-Gm-Message-State: AOJu0Yz2TYq4YltzXthLNmCKa6BK54JQsl8flBz0F52rcrTrbdu+ErRX
-	MsGaw48CMRuMB7NqmFBlY1XG1ecQ9LCU6A==
-X-Google-Smtp-Source: AGHT+IEkg2z959ndk+FzzQaRGZjtyR4oRWJbgbi4WbvdpfH73VMDgLf0V+BD0aiz0hAD1dgeK/Pwbw==
-X-Received: by 2002:a17:907:7f29:b0:a29:eefc:ef80 with SMTP id qf41-20020a1709077f2900b00a29eefcef80mr809934ejc.33.1704976091271;
-        Thu, 11 Jan 2024 04:28:11 -0800 (PST)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id ox9-20020a170907100900b00a2825a9e1d0sm526002ejb.174.2024.01.11.04.28.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 04:28:10 -0800 (PST)
-Date: Thu, 11 Jan 2024 13:28:09 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Sunil V L <sunilvl@ventanamicro.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Anup Patel <anup@brainfault.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Conor Dooley <conor@kernel.org>, Atish Kumar Patra <atishp@rivosinc.com>
-Subject: Re: Re: [PATCH -next 1/2] ACPI: Enable ACPI_PROCESSOR for RISC-V
-Message-ID: <20240111-e3a13157f1869342e2c8e942@orel>
-References: <20240111093058.121838-1-sunilvl@ventanamicro.com>
- <20240111093058.121838-2-sunilvl@ventanamicro.com>
- <20240111-bb411d2dd39eb859dd049fa0@orel>
- <ZZ_cBlOSW9VCjkOv@bogus>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE8A15ADC
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704976211; x=1736512211;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=n5tknuiJOqHvGtIJ6aXYYfROsKwyLjFr33pFTiI9818=;
+  b=nFPuKTiDf2ZIs0+En5uddakDuTrQQiFlegBCPVcuK7IpIZ+8TT3lTyOc
+   zNwDkZIIWZvoJRgXeJ9PHwFtmcSEmetKRwtfmHQ2hI0DTAEjkMm0ChQ/b
+   Nme/qwf6gLkWTIescpNOSZTANQLdKlkVcRlJF3jHoJ85MuYVtHHmIcPiT
+   cPy3+pFZ7SE2wYDv0clPErkgQ05hPRFIz3SA63QC8zMRSu/lQjlmG9PN+
+   scsDLUYOL+kTjnF5Gv3iULDTriL8IU4vPNYp3MkjFkfe/ki0DZUj+Tw77
+   7hpm3gXPZbcz+KGPAoVoG1UniTmF+HkWhUFVVDhnvcIWAd+SxoqJAR9sR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="5911827"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="5911827"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 04:30:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="782626784"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="782626784"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 11 Jan 2024 04:30:08 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNuCD-0008G1-0C;
+	Thu, 11 Jan 2024 12:30:05 +0000
+Date: Thu, 11 Jan 2024 20:29:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chris Down <chris@chrisdown.name>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Petr Mladek <pmladek@suse.com>
+Subject: include/linux/printk.h:434:44: warning: '%s' directive argument is
+ null
+Message-ID: <202401112002.AOjwMNM0-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,39 +64,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZ_cBlOSW9VCjkOv@bogus>
 
-On Thu, Jan 11, 2024 at 12:16:06PM +0000, Sudeep Holla wrote:
-> On Thu, Jan 11, 2024 at 11:00:12AM +0100, Andrew Jones wrote:
-> 
-> [...]
-> 
-> > Also, interestingly, it looks like this ancient line
-> >
-> >  obj-$(CONFIG_ACPI_PROCESSOR)    += processor.o
-> >
-> > in drivers/acpi/Makefile should be removed,
-> 
-> No
-> 
-> > since there's no drivers/acpi/processor.c file.
-> 
-> Correct, but ..
-> 
-> > I guess the make process silently filters object files which don't have
-> > corresponding source files?
-> 
-> May be, but I doubt if that is the case here.
-> 
-> processor.o is just aggregation of all processor_*.o and this will be
-> the processor.ko when built as a module.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   de927f6c0b07d9e698416c5b287c521b07694cac
+commit: 337015573718b161891a3473d25f59273f2e626b printk: Userspace format indexing support
+date:   2 years, 6 months ago
+config: x86_64-randconfig-002-20240105 (https://download.01.org/0day-ci/archive/20240111/202401112002.AOjwMNM0-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240111/202401112002.AOjwMNM0-lkp@intel.com/reproduce)
 
-Oh, I see. I had tried looking for a processor.o after building, to see if
-it was something like that, but it still didn't appear. It didn't occur to
-me to also try ACPI_PROCESSOR as a module.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401112002.AOjwMNM0-lkp@intel.com/
 
-I'll go put my head in some sand now.
+All warnings (new ones prefixed by >>):
 
-Thanks,
-drew
+   In file included from include/linux/kernel.h:19,
+                    from arch/x86/include/asm/percpu.h:27,
+                    from arch/x86/include/asm/current.h:6,
+                    from include/linux/sched.h:12,
+                    from include/linux/blkdev.h:5,
+                    from drivers/scsi/scsi_devinfo.c:3:
+   drivers/scsi/scsi_devinfo.c: In function 'scsi_dev_info_list_add_str':
+>> include/linux/printk.h:434:44: warning: '%s' directive argument is null [-Wformat-overflow=]
+     434 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
+         |                                            ^
+   include/linux/printk.h:430:3: note: in definition of macro 'printk_index_wrap'
+     430 |   _p_func(_fmt, ##__VA_ARGS__);    \
+         |   ^~~~~~~
+   drivers/scsi/scsi_devinfo.c:551:4: note: in expansion of macro 'printk'
+     551 |    printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
+         |    ^~~~~~
+   drivers/scsi/scsi_devinfo.c:552:14: note: format string is defined here
+     552 |           " '%s'\n", __func__, vendor, model,
+         |              ^~
+
+
+vim +434 include/linux/printk.h
+
+   406	
+   407	/*
+   408	 * Some subsystems have their own custom printk that applies a va_format to a
+   409	 * generic format, for example, to include a device number or other metadata
+   410	 * alongside the format supplied by the caller.
+   411	 *
+   412	 * In order to store these in the way they would be emitted by the printk
+   413	 * infrastructure, the subsystem provides us with the start, fixed string, and
+   414	 * any subsequent text in the format string.
+   415	 *
+   416	 * We take a variable argument list as pr_fmt/dev_fmt/etc are sometimes passed
+   417	 * as multiple arguments (eg: `"%s: ", "blah"`), and we must only take the
+   418	 * first one.
+   419	 *
+   420	 * subsys_fmt_prefix must be known at compile time, or compilation will fail
+   421	 * (since this is a mistake). If fmt or level is not known at compile time, no
+   422	 * index entry will be made (since this can legitimately happen).
+   423	 */
+   424	#define printk_index_subsys_emit(subsys_fmt_prefix, level, fmt, ...) \
+   425		__printk_index_emit(fmt, level, subsys_fmt_prefix)
+   426	
+   427	#define printk_index_wrap(_p_func, _fmt, ...)				\
+   428		({								\
+   429			__printk_index_emit(_fmt, NULL, NULL);			\
+   430			_p_func(_fmt, ##__VA_ARGS__);				\
+   431		})
+   432	
+   433	
+ > 434	#define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
+   435	#define printk_deferred(fmt, ...)					\
+   436		printk_index_wrap(_printk_deferred, fmt, ##__VA_ARGS__)
+   437	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
