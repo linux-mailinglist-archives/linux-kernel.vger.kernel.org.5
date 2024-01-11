@@ -1,464 +1,315 @@
-Return-Path: <linux-kernel+bounces-22960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2821E82A5D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE7082A5E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:21:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FBFA286FC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:15:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A782B287A51
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D8FECD;
-	Thu, 11 Jan 2024 02:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499E4EA3;
+	Thu, 11 Jan 2024 02:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3inKH6u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D0WcN9Wq"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE66AA3C;
-	Thu, 11 Jan 2024 02:15:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97446C433C7;
-	Thu, 11 Jan 2024 02:15:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704939339;
-	bh=0U7UdpY/IjvAiw6+j0d4eaCV3ryy73Gho9qnYjlQbhY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=X3inKH6uyTPIy4ke+5jkyx7SEM6V5D4gBNW6e9YdXBGIrSYV/pduPzGQeEfdP1ODS
-	 Jg+F13rTufWLEp0s4IYDfXCcfNqMzw91lGVhUSHtIK/kJwq3aSlzJjBQNur2KVowcm
-	 5+aLpLXkq8NhjGXSCQ3IpTBNzyRYjAes75pNi9qofmua6l2PE9yQbkjRlU0Di+58Ai
-	 Yc72vIuOIagYRuJZEikn7WTC2VlDomYe0r25ZRon8RDwnq6T4KIZRuVTyC+PfxDbVP
-	 vOKYj4Rycb3gFaoIWV1GwBQncUYJWTON+YHOQuFPRaiPY36N8J2ZmwXg5xLa92+MzC
-	 LCfMgJBnCHQ+Q==
-Date: Thu, 11 Jan 2024 11:15:33 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 11/34] function_graph: Have the instances use their
- own ftrace_ops for filtering
-Message-Id: <20240111111533.41b39378a61512cc7462079e@kernel.org>
-In-Reply-To: <ZZvp08OFIFbP3rnk@FVFF77S0Q05N>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-	<170290522555.220107.1435543481968270637.stgit@devnote2>
-	<ZZg3tlOynx7YVLGQ@FVFF77S0Q05N>
-	<20240108101436.07509def635fbecf80a59ae6@kernel.org>
-	<ZZvp08OFIFbP3rnk@FVFF77S0Q05N>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10553A3C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704939673; x=1736475673;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=5Bi1V6PyooXbBfkBX3Da/BWGZe0K0XwNaK4kYIsAVus=;
+  b=D0WcN9WqQ0a3yzS61PTilZzmYYT/pGVNo5Q+uGOeW9jHkPIDUJyfvhyo
+   rsNwmsrRNJyshT4xoM95IVolt5v9ZIZ4CB4+TwEYNhPLCj5OVegxBDWLc
+   2nzegN25Li62TzejRTe5sAGx+ocIcaPa3wpHBJLBpymfr/0RDIoX8M2BQ
+   pTsroHUJnrSOZv1EBBNlIgy6rSV9SrmMOYY6W258Ys8Tg5OFmLisb2D0D
+   dsQU/shcU2O2mFCflNIWib442zCawecpnzMaZh7mLm5O0K4MyyRUIK2bO
+   Mk10IW/rFyeXne+YMuxH4Q1X9TQWY/dJZJBghShFUQX8xBDfJ0NFqCtwj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="402487467"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="402487467"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 18:21:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="925849799"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="925849799"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jan 2024 18:21:11 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 10 Jan 2024 18:21:11 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 10 Jan 2024 18:21:11 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Jan 2024 18:21:11 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fODH38RLP8A/I9PN6n0uQROoX5jsYJhbT1IudsZ6eBVWKSJTJ0Havfo29sCYQUX3KrxuuyNNRqJjpo4zKUFIrkI7ToOpwpz9SMQM1kRIRw4Z5n9koBSinmqiNhuq9ABzohJ+ckhP1BNd2nfraWH9sayLJE/COWusKQOrbzWkKICkeR9o0QV0TMajfmP4Oej1lENjMlWYBc6kuTGv6XVLfSbLo41GtHUb1ODebTWNK+DyC75w34uvQoO1gHhvRnOnV7Ubz88a8GCjzyHnc34lr59VpOiG9eOc5mkNDVxK27DI/BFF4bldSga+n5BOnFJY0bZ9oT5W9UmkRiQLEP/JMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HvwI8fimlz1aMEBcO0GGLULDaoHKRzUv3ftjo2s35Fw=;
+ b=LgcpNWGFG8+pVsnV2QZL27CmAKcH1gX14fqrX5M7Gvhy2NjHU4ecmgw9SMd6ESuGC/PjKuKSDJIQ3h0wPgziWoukY54RCEDQrE3jErhT7VMdg1/5xfgNIPCuZqyGSt295s7WgiAD3o/BsB4lldi+S395vOJJrsY6ublEBinwVc8AtRufDEGS4rV3+Jc9pXxsPodCPIZ2ijwXFgMfIqzdNkQtb5pe/XF+tHdV1T07n5whxBYncuocRhfrVDEAgplw85AZ0l8xdEeVAAEnz3EAUmfjheGNtSlyTigViGZlPhcV03NiTQKRzpD7xmlLPmkfFsQWRutV4jg2k2jYLaPY1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
+ by DS7PR11MB5968.namprd11.prod.outlook.com (2603:10b6:8:73::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.27; Thu, 11 Jan 2024 02:21:09 +0000
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::25c4:9c11:c628:1283]) by PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::25c4:9c11:c628:1283%4]) with mapi id 15.20.7181.015; Thu, 11 Jan 2024
+ 02:21:08 +0000
+Date: Thu, 11 Jan 2024 10:15:38 +0800
+From: Pengfei Xu <pengfei.xu@intel.com>
+To: <mcgrof@kernel.org>
+CC: <david@redhat.com>, <brauner@kernel.org>, <yosryahmed@google.com>,
+	<dave@stgolabs.net>, <willy@infradead.org>, <keescook@chromium.org>,
+	<heng.su@intel.com>, <pengfei.xu@intel.com>, <linux-kernel@vger.kernel.org>,
+	<lkp@intel.com>
+Subject: [Syzkaller & bisect] There is WARNING in shmem_writepage in v6.7
+Message-ID: <ZZ9PShXjKJkVelNm@xpf.sh.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SG2PR02CA0051.apcprd02.prod.outlook.com
+ (2603:1096:4:54::15) To PH0PR11MB4839.namprd11.prod.outlook.com
+ (2603:10b6:510:42::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4839:EE_|DS7PR11MB5968:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2d994dd0-ec04-4f0f-d53a-08dc124bf887
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uYzKRljg/18IOv0Xp4uKPOFWaOqTIryu6VwejeVUTVSe3SP4cDueWhaUa7cM1Ko4qobfiQqwDojdcNxRX423A4ByUA3ocpk+3xzzErUeWu2vomkwAdFCul3vQlHCIURnu5VGYety/kySt2Aw2iE6QDbKmUOMtKdFOikDMNImZsu18jSg37LYYK6QQnb6eM7v0IfSLJLmwvVYnaELX739JubyGaZ3X3a55XvytPPUs0vGTSAvIgddKElygvs9blYlykmULnjKF/lTiIG0UPGUDMI2HPmB+4jG55LxSkeEVR0l92CqjvXByr3nsO95duGNoVvUqnZFnOrNeQW037zWJObZY0l+mqH70PQut/0Mnc86MEitFR10Hp2XT/G4ecOvZeIJt+e3NKVM58S8qVbG/7+Kug3EA1WgGTpHWps1VyWN0h5LTTs7duuhnOzEkUh7tZVwSSSw/xFB6tGMFj+tdsDyD5bg7P7MNjNx/xbC08BtkStd+e12c7JRwkG2TYl97wxw/8Tmc3N3vEGKh2e7OnFrXf7GEtKbO+C7DlG4QOHibATI5r6ECXKiyWjZZ4uXRGUM8hbeFuAi4nBe1US8vSU5Ub/0IdxH6b/0EzHtxzj63ZguCSQbiE2LTyaPpkc2bbJyWxbZWJLfVleaNbpFQ/aY4QyqSSGFQhLmHT9ZvcfqJZg78BXV3fYyyPc7nLNh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4839.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(136003)(376002)(230922051799003)(230173577357003)(230273577357003)(186009)(64100799003)(451199024)(1800799012)(966005)(478600001)(45080400002)(6506007)(6512007)(107886003)(26005)(38100700002)(82960400001)(86362001)(6666004)(2906002)(41300700001)(44832011)(4326008)(83380400001)(5660300002)(66946007)(8936002)(6486002)(66556008)(8676002)(6916009)(66476007)(316002)(21314003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yjm326u2yC56+ki6bvHUzRQIjwMLUjuTIZNSWYwh7Rq+GeBGVY9LFQeOpq5g?=
+ =?us-ascii?Q?viYTV/lH16LKW57YYWxEmiZOaRpMKBZ4xnkEJrBs7omf/2KPy2E8eFgzyQXX?=
+ =?us-ascii?Q?lDGhTHwTes6+1iY/5Dx8SqBokrvEqzh0EWlISx/xeAAqoGhHCGk/kD8Gezpe?=
+ =?us-ascii?Q?6wN8t+LA4sPVWQzcnK3jlgF48rWj5Mo66Hgwb/j4cqF774G++0g64nfIF/ZF?=
+ =?us-ascii?Q?lFVe7hyrmCC+Qz2+yOlS8vnHgj/+KJoYMx4leSK4a9seIR47WGArcmnUvPdO?=
+ =?us-ascii?Q?P7MmXZIL7N5B1lesQ9t/FycJOuxMQLezZqhilAM6BnA+z6dLBO5h29YFXkys?=
+ =?us-ascii?Q?Mm1dSESEt2+hKFsyubve5RGp6g7g7temt+Bu+YV268BMfR1SCWvym5fFTIYE?=
+ =?us-ascii?Q?waWeB8zg6U7cyTq+MZ9mNN/1evwBaGnSCxvId7XOV+UB/em6VGYF91GYVLKC?=
+ =?us-ascii?Q?ICVhrh7eV76WH8HhirviIcN1IHHo/ySvH7bycOqmn43MyUo+/ubnKLet3BeM?=
+ =?us-ascii?Q?cOuimr76e0frSlBtWKt/704a5ZnvxKlW59CkvEVLH8KnXeTYDT65Wn6P16et?=
+ =?us-ascii?Q?/QXR9GwEKmZYV1y+24P6r1XLPO3E0irPMRkGpJztBmjCCdQlENI9kmuIuLdy?=
+ =?us-ascii?Q?XFQJbl1siyVqbGGKUIRbujL1i/C52dG777kRtbloL6Au9qRtZA4ZvwI15d1O?=
+ =?us-ascii?Q?sN4vrYzpo/LSFOOAnBik1UO9UaqN6rhuJALpCMbqkWbuUUMufFsuVjcSEmBu?=
+ =?us-ascii?Q?v+SOViZE+DqwUS+NJEXUNYIWx/v8h93cbr+ypeU30QVQNDKcAE80hckyu0cd?=
+ =?us-ascii?Q?7z4qs/BueR068Ka9UT8l4seYpq9Sp3Rhc4bNKUvxqM7C+/pL/rYnOkbOwedj?=
+ =?us-ascii?Q?K2uGGScyVcGHkgjRByY2PhYlhh5x4eCpR9ev+CEqsVyohAA+dcwNXSc6Vs0N?=
+ =?us-ascii?Q?HHH/1e+bftfVqMifIV1oAdKwrbR9IJfm0qoehCWu1LB/tcn4XX0ZjR8PEOFq?=
+ =?us-ascii?Q?6nA28IVa0cNpbiEPvptHmFVmcVwEaF0IJqbU893tCWQj91yKAidYYYQKsnXl?=
+ =?us-ascii?Q?E2lR7lhCmX8cS4LbV51awlGu9urX2Djq1rq9WOLrhX3VKwhbQc6Hqimj9r6p?=
+ =?us-ascii?Q?goy9+0tLQZ+kS8hHrEBWsEk2U2OefeSuvlk6DfDHOAszQTythrWlj5L5UN6G?=
+ =?us-ascii?Q?L5UXvqlMsb6N4I8p5nHY0Mc3kS9J1vUm0F8ryKzCb1d2Z9YFcYVcjxLgR7ob?=
+ =?us-ascii?Q?+oGe8UFTdXOm4y6J5ZPyZF4+5uF23G6dnz29SR+harid2XOgfHwlebKAueHB?=
+ =?us-ascii?Q?N2bmQ9EcYalX63Ac6CV78UrNvByNfKN7gYRNeCQzvR74zpm7yr5/zOu2OJyw?=
+ =?us-ascii?Q?ZSdpkkfUWgepi32oxVSrVqy3AGDVqP0G8tvttrfZRTgQqaV1KpQWJENpb0ny?=
+ =?us-ascii?Q?pI0eVD0VTtRROSvPd9GGTftHqLRlRMT0rx3kvP5dA/t1gEFvEIHtE6+Ip/Wi?=
+ =?us-ascii?Q?0r6jbKZVniwBDppBFv3/QIPIeh2pyspiq5ZdVsW5M5piWd1nloeJe64v69VW?=
+ =?us-ascii?Q?6bRAJ0wdgESwYPmcX0Dr6BFYNd56AJ9Kw4TWkZHw?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d994dd0-ec04-4f0f-d53a-08dc124bf887
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4839.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 02:21:08.3138
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BlRA769vqKWQAI/6przO0rNR+Lkkb1fETUia7CZP5ckdJn5C8IAwdafE9lXwdYx1lXNd3PtLinhxgSZXB4mueA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB5968
+X-OriginatorOrg: intel.com
 
-Hi Mark,
+Hi Luis Chamberlain,
 
-Thanks for the investigation.
+There is WARNING in shmem_writepage in v6.7 in guest.
 
-On Mon, 8 Jan 2024 12:25:55 +0000
-Mark Rutland <mark.rutland@arm.com> wrote:
+All detailed info: https://github.com/xupengfe/syzkaller_logs/tree/main/240110_151928_shmem_writepage
+Syzkaller syscall reproduced steps: https://github.com/xupengfe/syzkaller_logs/blob/main/240110_151928_shmem_writepage/repro.prog
+Syzkaller reproduced code: https://github.com/xupengfe/syzkaller_logs/blob/main/240110_151928_shmem_writepage/repro.c
+Binary: https://github.com/xupengfe/syzkaller_logs/raw/main/240110_151928_shmem_writepage/repro
+Kconfig(make olddefconfig): https://github.com/xupengfe/syzkaller_logs/blob/main/240110_151928_shmem_writepage/kconfig_origin
+Bisect info: https://github.com/xupengfe/syzkaller_logs/blob/main/240110_151928_shmem_writepage/bisect_info.log
+Issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/main/240110_151928_shmem_writepage/0dd3ee31125508cd67f7e7172247f05b7fd1753a_dmesg.log
+v6.7 bzImage: https://github.com/xupengfe/syzkaller_logs/raw/main/240110_151928_shmem_writepage/bzImage_v6.7.tar.gz
 
-> Hi,
-> 
-> There's a bit more of an info-dump below; I'll go try to dump the fgraph shadow
-> stack so that we can analyse this in more detail.
-> 
-> On Mon, Jan 08, 2024 at 10:14:36AM +0900, Masami Hiramatsu wrote:
-> > On Fri, 5 Jan 2024 17:09:10 +0000
-> > Mark Rutland <mark.rutland@arm.com> wrote:
-> > 
-> > > On Mon, Dec 18, 2023 at 10:13:46PM +0900, Masami Hiramatsu (Google) wrote:
-> > > > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > > 
-> > > > Allow for instances to have their own ftrace_ops part of the fgraph_ops
-> > > > that makes the funtion_graph tracer filter on the set_ftrace_filter file
-> > > > of the instance and not the top instance.
-> > > > 
-> > > > This also change how the function_graph handles multiple instances on the
-> > > > shadow stack. Previously we use ARRAY type entries to record which one
-> > > > is enabled, and this makes it a bitmap of the fgraph_array's indexes.
-> > > > Previous function_graph_enter() expects calling back from
-> > > > prepare_ftrace_return() function which is called back only once if it is
-> > > > enabled. But this introduces different ftrace_ops for each fgraph
-> > > > instance and those are called from ftrace_graph_func() one by one. Thus
-> > > > we can not loop on the fgraph_array(), and need to reuse the ret_stack
-> > > > pushed by the previous instance. Finding the ret_stack is easy because
-> > > > we can check the ret_stack->func. But that is not enough for the self-
-> > > > recursive tail-call case. Thus fgraph uses the bitmap entry to find it
-> > > > is already set (this means that entry is for previous tail call).
-> > > > 
-> > > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > As a heads-up, while testing the topic/fprobe-on-fgraph branch on arm64, I get
-> > > a warning which bisets down to this commit:
-> > 
-> > Hmm, so does this happen when enabling function graph tracer?
-> 
-> Yes; I see it during the function_graph boot-time self-test if I also enable
-> CONFIG_IRQSOFF_TRACER=y. I can also trigger it regardless of
-> CONFIG_IRQSOFF_TRACER if I cat /proc/self/stack with the function_graph tracer
-> enabled (note that I hacked the unwinder to continue after failing to recover a
-> return address):
-> 
-> | # mount -t tracefs none /sys/kernel/tracing/
-> | # echo function_graph > /sys/kernel/tracing/current_tracer
-> | # cat /proc/self/stack
-> | [   37.469980] ------------[ cut here ]------------
-> | [   37.471503] WARNING: CPU: 2 PID: 174 at arch/arm64/kernel/stacktrace.c:84 arch_stack_walk+0x2d8/0x338
-> | [   37.474381] Modules linked in:
-> | [   37.475501] CPU: 2 PID: 174 Comm: cat Not tainted 6.7.0-rc2-00026-gea1e68a341c2-dirty #15
-> | [   37.478133] Hardware name: linux,dummy-virt (DT)
-> | [   37.479670] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> | [   37.481923] pc : arch_stack_walk+0x2d8/0x338
-> | [   37.483373] lr : arch_stack_walk+0x1bc/0x338
-> | [   37.484818] sp : ffff8000835f3a90
-> | [   37.485974] x29: ffff8000835f3a90 x28: ffff8000835f3b80 x27: ffff8000835f3b38
-> | [   37.488405] x26: ffff000004341e00 x25: ffff8000835f4000 x24: ffff80008002df18
-> | [   37.490842] x23: ffff80008002df18 x22: ffff8000835f3b60 x21: ffff80008015d240
-> | [   37.493269] x20: ffff8000835f3b50 x19: ffff8000835f3b40 x18: 0000000000000000
-> | [   37.495704] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> | [   37.498144] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-> | [   37.500579] x11: ffff800082b4d920 x10: ffff8000835f3a70 x9 : ffff8000800e55a0
-> | [   37.503021] x8 : ffff80008002df18 x7 : ffff000004341e00 x6 : 00000000ffffffff
-> | [   37.505452] x5 : 0000000000000000 x4 : ffff8000835f3e48 x3 : ffff8000835f3b80
-> | [   37.507888] x2 : ffff80008002df18 x1 : ffff000007f7b000 x0 : ffff80008002df18
-> | [   37.510319] Call trace:
-> | [   37.511202]  arch_stack_walk+0x2d8/0x338
-> | [   37.512541]  stack_trace_save_tsk+0x90/0x110
-> | [   37.514012]  return_to_handler+0x0/0x48
-> | [   37.515336]  return_to_handler+0x0/0x48
-> | [   37.516657]  return_to_handler+0x0/0x48
-> | [   37.517985]  return_to_handler+0x0/0x48
-> | [   37.519305]  return_to_handler+0x0/0x48
-> | [   37.520623]  return_to_handler+0x0/0x48
-> | [   37.521957]  return_to_handler+0x0/0x48
-> | [   37.523272]  return_to_handler+0x0/0x48
-> | [   37.524595]  return_to_handler+0x0/0x48
-> | [   37.525931]  return_to_handler+0x0/0x48
-> | [   37.527254]  return_to_handler+0x0/0x48
-> | [   37.528564]  el0t_64_sync_handler+0x120/0x130
-> | [   37.530046]  el0t_64_sync+0x190/0x198
-> | [   37.531310] ---[ end trace 0000000000000000 ]---
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] ftrace_stub_graph+0x8/0x8
-> | [<0>] el0t_64_sync_handler+0x120/0x130
-> | [<0>] el0t_64_sync+0x190/0x198
+Bisected and found the suspected commit:
+9a976f0c847b shmem: skip page split if we're not reclaiming
 
-Hmm, I haven't see this mode.
+"
+[   31.541851] ------------[ cut here ]------------
+[   31.542523] WARNING: CPU: 0 PID: 952 at mm/shmem.c:1438 shmem_writepage+0x28d/0x10f0
+[   31.543355] Modules linked in:
+[   31.543711] CPU: 0 PID: 952 Comm: repro Not tainted 6.7.0-0dd3ee311255+ #1
+[   31.544455] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+[   31.546342] RIP: 0010:shmem_writepage+0x28d/0x10f0
+[   31.546892] Code: 31 ff 0f b6 80 c5 00 00 00 89 c6 88 85 28 ff ff ff e8 a7 55 bd ff 0f b6 85 28 ff ff ff 84 c0 0f 84 7a 01 00 00 e8 e3 5a bd ff <0f> 0b e8 dc 5a bd ff 4c 89 e7 e8 b4 67 fa ff 4c 89 f2 48 b8 00 00
+[   31.548893] RSP: 0018:ffff88801aa27040 EFLAGS: 00010293
+[   31.549805] RAX: 0000000000000000 RBX: ffffea00008eeac0 RCX: ffffffff81a433b6
+[   31.550583] RDX: ffff888023d84a00 RSI: ffffffff81a4342d RDI: 0000000000000007
+[   31.551352] RBP: ffff88801aa27140 R08: ffff8880118a6b28 R09: fffff9400011dd58
+[   31.552123] R10: 0000000000002000 R11: 0000000000000001 R12: ffffea00008eeac0
+[   31.552891] R13: ffff8880118a67e8 R14: ffff88801aa271bc R15: 0000000000000008
+[   31.553710] FS:  00007f47e5bb7640(0000) GS:ffff88806cc00000(0000) knlGS:0000000000000000
+[   31.554577] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   31.555205] CR2: 00007f47e584e1f0 CR3: 000000000f772003 CR4: 0000000000770ef0
+[   31.556039] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   31.556835] DR3: 0000000000000000 DR6: 00000000ffff07f0 DR7: 0000000000000400
+[   31.557656] PKRU: 55555554
+[   31.557969] Call Trace:
+[   31.558267]  <TASK>
+[   31.558536]  ? show_regs+0xa9/0xc0
+[   31.558946]  ? __warn+0xef/0x340
+[   31.559325]  ? report_bug+0x25e/0x4b0
+[   31.559766]  ? shmem_writepage+0x28d/0x10f0
+[   31.560251]  ? report_bug+0x2cb/0x4b0
+[   31.560674]  ? shmem_writepage+0x28d/0x10f0
+[   31.561188]  ? handle_bug+0xa2/0x130
+[   31.561629]  ? exc_invalid_op+0x3c/0x80
+[   31.562081]  ? asm_exc_invalid_op+0x1f/0x30
+[   31.562576]  ? shmem_writepage+0x216/0x10f0
+[   31.563052]  ? shmem_writepage+0x28d/0x10f0
+[   31.563530]  ? shmem_writepage+0x28d/0x10f0
+[   31.564065]  ? __pfx_shmem_writepage+0x10/0x10
+[   31.564584]  ? __sanitizer_cov_trace_const_cmp8+0x1c/0x30
+[   31.565223]  ? __kasan_check_write+0x18/0x20
+[   31.565727]  ? folio_clear_dirty_for_io+0xc1/0x600
+[   31.566280]  pageout+0x3aa/0x900
+[   31.566664]  ? __pfx_pageout+0x10/0x10
+[   31.567096]  ? __pfx_kvm_flush_tlb_multi+0x10/0x10
+[   31.567653]  ? arch_tlbbatch_flush+0x2b9/0x430
+[   31.568175]  shrink_folio_list+0x122b/0x35f0
+[   31.568680]  ? __pfx_shrink_folio_list+0x10/0x10
+[   31.569236]  ? __lock_acquire+0x1a03/0x5cc0
+[   31.569747]  ? __lock_acquire+0x1a03/0x5cc0
+[   31.570244]  reclaim_folio_list+0xd9/0x2f0
+[   31.570710]  ? __pfx___lock_acquire+0x10/0x10
+[   31.571213]  ? __pfx_reclaim_folio_list+0x10/0x10
+[   31.571787]  reclaim_pages+0x39c/0x5b0
+[   31.572271]  ? __pfx_reclaim_pages+0x10/0x10
+[   31.572780]  madvise_cold_or_pageout_pte_range+0x1297/0x2450
+[   31.573478]  ? __pfx_madvise_cold_or_pageout_pte_range+0x10/0x10
+[   31.574172]  ? __pfx_madvise_cold_or_pageout_pte_range+0x10/0x10
+[   31.574841]  walk_pgd_range+0x11a8/0x21e0
+[   31.575333]  ? __pfx_walk_pgd_range+0x10/0x10
+[   31.575845]  __walk_page_range+0x637/0x760
+[   31.576316]  ? find_vma+0xc5/0x140
+[   31.576715]  ? __pfx_find_vma+0x10/0x10
+[   31.577187]  ? __this_cpu_preempt_check+0x21/0x30
+[   31.577736]  ? __sanitizer_cov_trace_const_cmp8+0x1c/0x30
+[   31.578344]  ? walk_page_test+0xac/0x1c0
+[   31.578803]  walk_page_range+0x3a0/0x830
+[   31.579262]  ? __pfx_walk_page_range+0x10/0x10
+[   31.579790]  madvise_pageout+0x37d/0x8f0
+[   31.580289]  ? __pfx_madvise_pageout+0x10/0x10
+[   31.580794]  ? mas_prev+0x103/0x650
+[   31.581239]  ? __this_cpu_preempt_check+0x21/0x30
+[   31.581756]  ? lock_is_held_type+0xf0/0x150
+[   31.582222]  do_madvise.part.0+0xaf6/0x2ae0
+[   31.582674]  ? __pfx___lock_acquire+0x10/0x10
+[   31.583185]  ? __pfx_do_madvise.part.0+0x10/0x10
+[   31.583713]  ? lock_release+0x417/0x7e0
+[   31.584156]  ? __pfx_lock_release+0x10/0x10
+[   31.584635]  ? __this_cpu_preempt_check+0x21/0x30
+[   31.585216]  ? seqcount_lockdep_reader_access.constprop.0+0xb4/0xd0
+[   31.585925]  ? lockdep_hardirqs_on+0x8a/0x110
+[   31.586420]  ? seqcount_lockdep_reader_access.constprop.0+0xb4/0xd0
+[   31.587114]  ? trace_hardirqs_on+0x26/0x120
+[   31.587597]  ? seqcount_lockdep_reader_access.constprop.0+0xc0/0xd0
+[   31.588330]  ? __sanitizer_cov_trace_cmp4+0x1a/0x20
+[   31.588881]  ? ktime_get_coarse_real_ts64+0xbf/0xf0
+[   31.589473]  ? __audit_syscall_entry+0x39e/0x500
+[   31.590026]  __x64_sys_madvise+0x13a/0x180
+[   31.590500]  do_syscall_64+0x42/0xf0
+[   31.590916]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+[   31.591482] RIP: 0033:0x7f47e583ee5d
+[   31.591890] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 93 af 1b 00 f7 d8 64 89 01 48
+[   31.593912] RSP: 002b:00007f47e5bb6df8 EFLAGS: 00000297 ORIG_RAX: 000000000000001c
+[   31.594742] RAX: ffffffffffffffda RBX: 00007f47e5bb7640 RCX: 00007f47e583ee5d
+[   31.595516] RDX: 0000000000000015 RSI: 0000000000004000 RDI: 0000000020ffb000
+[   31.596329] RBP: 00007f47e5bb6e20 R08: 0000000000000000 R09: 0000000000000000
+[   31.597140] R10: 0000000000000000 R11: 0000000000000297 R12: 00007f47e5bb7640
+[   31.597927] R13: 0000000000000000 R14: 00007f47e589f560 R15: 0000000000000000
+[   31.598725]  </TASK>
+[   31.598986] irq event stamp: 1493
+[   31.599358] hardirqs last  enabled at (1501): [<ffffffff8142b0e5>] console_unlock+0x2d5/0x310
+[   31.600278] hardirqs last disabled at (1508): [<ffffffff8142b0ca>] console_unlock+0x2ba/0x310
+[   31.601242] softirqs last  enabled at (1318): [<ffffffff812674f8>] __irq_exit_rcu+0xa8/0x110
+[   31.602187] softirqs last disabled at (1313): [<ffffffff812674f8>] __irq_exit_rcu+0xa8/0x110
+[   31.603220] ---[ end trace 0000000000000000 ]---
+"
 
-> 
-> One interesting thing there is that there are two distinct failure modes: the
-> unwind for the WARNING gives return_to_handler instead of the original return
-> address, and the unwind returned from /proc/self/stack gives ftrace_stub_graph
-> rather than the original return address.
-> 
-> > > 
-> > > | Testing tracer function_graph: 
-> > > | ------------[ cut here ]------------
-> > > | WARNING: CPU: 2 PID: 0 at arch/arm64/kernel/stacktrace.c:84 arch_stack_walk+0x3c0/0x3d8
-> > > | Modules linked in:
-> > > | CPU: 2 PID: 0 Comm: swapper/2 Not tainted 6.7.0-rc2-00026-gea1e68a341c2 #12
-> > > | Hardware name: linux,dummy-virt (DT)
-> > > | pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > | pc : arch_stack_walk+0x3c0/0x3d8
-> > > | lr : arch_stack_walk+0x260/0x3d8
-> > > | sp : ffff80008318be00
-> > > | x29: ffff80008318be00 x28: ffff000003c0ae80 x27: 0000000000000000
-> > > | x26: 0000000000000000 x25: ffff000003c0ae80 x24: 0000000000000000
-> > > | x23: ffff8000800234c8 x22: ffff80008002dc30 x21: ffff800080035d10
-> > > | x20: ffff80008318bee8 x19: ffff800080023460 x18: ffff800083453c68
-> > > | x17: 0000000000000000 x16: ffff800083188000 x15: 000000008ccc5058
-> > > | x14: 0000000000000004 x13: ffff800082b8c4f0 x12: 0000000000000000
-> > > | x11: ffff800081fba9b0 x10: ffff80008318bff0 x9 : ffff800080010798
-> > > | x8 : ffff80008002dc30 x7 : ffff000003c0ae80 x6 : 00000000ffffffff
-> > > | x5 : 0000000000000000 x4 : ffff8000832a3c18 x3 : ffff80008318bff0
-> > > | x2 : ffff80008002dc30 x1 : ffff80008002dc30 x0 : ffff80008002dc30
-> > > | Call trace:
-> > > |  arch_stack_walk+0x3c0/0x3d8
-> > > |  return_address+0x40/0x80
-> > > |  trace_hardirqs_on+0x8c/0x198
-> > > |  __do_softirq+0xe8/0x440
-> > > | ---[ end trace 0000000000000000 ]---
-> 
-> With the smae hack to continue after failing to recover a return address, the
-> failure in the selftest looks like:
-> 
-> | ------------[ cut here ]------------
-> | WARNING: CPU: 7 PID: 0 at arch/arm64/kernel/stacktrace.c:84 arch_stack_walk+0x2d8/0x338
-> | Modules linked in:
-> | CPU: 7 PID: 0 Comm: swapper/7 Not tainted 6.7.0-rc2-00026-gea1e68a341c2-dirty #14
-> | Hardware name: linux,dummy-virt (DT)
-> | pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> | pc : arch_stack_walk+0x2d8/0x338
-> | lr : arch_stack_walk+0x1bc/0x338
-> | sp : ffff8000830c3e20
-> | x29: ffff8000830c3e20 x28: ffff8000830c3ff0 x27: ffff8000830c3ec8
-> | x26: ffff0000037e0000 x25: ffff8000830c4000 x24: ffff80008002e080
-> | x23: ffff80008002e080 x22: ffff8000830c3ee8 x21: ffff800080023418
-> | x20: ffff8000830c3f50 x19: ffff8000830c3f40 x18: ffffffffffffffff
-> | x17: 0000000000000000 x16: ffff8000830c0000 x15: 0000000000000000
-> | x14: 0000000000000002 x13: ffff8000800360f8 x12: ffff800080028330
-> | x11: ffff800081f4a978 x10: ffff8000830c3ff0 x9 : ffff800080010798
-> | x8 : ffff80008002e080 x7 : ffff0000037e0000 x6 : 00000000ffffffff
-> | x5 : 0000000000000000 x4 : ffff8000831dbc18 x3 : ffff8000830c3ff0
-> | x2 : ffff80008002e080 x1 : ffff0000040a3000 x0 : ffff80008002e080
-> | Call trace:
-> |  arch_stack_walk+0x2d8/0x338
-> |  return_address+0x40/0x80
-> |  trace_hardirqs_on+0x8c/0x198
-> |  __do_softirq+0xe8/0x43c
-> |  return_to_handler+0x0/0x48
-> |  return_to_handler+0x0/0x48
-> |  do_softirq_own_stack+0x24/0x38
-> |  return_to_handler+0x0/0x48
-> |  el1_interrupt+0x38/0x68
-> |  el1h_64_irq_handler+0x18/0x28
-> |  el1h_64_irq+0x64/0x68
-> |  default_idle_call+0x70/0x178
-> |  do_idle+0x228/0x290
-> |  cpu_startup_entry+0x40/0x50
-> |  secondary_start_kernel+0x138/0x160
-> |  __secondary_switched+0xb8/0xc0
-> | ---[ end trace 0000000000000000 ]---
+Hope it helps.
 
-I usually see this and reproduced. Here, I also add a dump of shadow stack.
-It seems that the unwinder goes to the bottome of the shadow stack.
-
-/sys/kernel/tracing # echo function_graph > current_tracer 
-[   89.887750] ------------[ cut here ]------------
-[   89.889864] Dump: return_to_handler = ffffb45fc6a2f1e8
-[   89.891833]  ret_stack[20]: 20406 0x20406 type = 1, index = 6
-[   89.896118]  ret_stack[19]: ffff800080003be8 0xffff800080003be8 type = 2, index = 1000
-[   89.896233]  ret_stack[18]: ffff800080003c20 0xffff800080003c20 type = 3, index = 32
-[   89.896362]  ret_stack[17]: 0 0x0 type = 0, index = 0
-[   89.896425]  ret_stack[16]: 14edac7710 0x14edac7710 type = 1, index = 784
-[   89.896635]  ret_stack[15]: ffffb45fc6a1610c call_break_hook+0x4/0x108 type = 0, index = 268
-[   89.897882]  ret_stack[14]: ffffb45fc6a162fc brk_handler+0x24/0x70 type = 0, index = 764
-[   89.898139]  ret_stack[13]: 20406 0x20406 type = 1, index = 6
-[   89.898337]  ret_stack[12]: ffff800080003c08 0xffff800080003c08 type = 3, index = 8
-[   89.898554]  ret_stack[11]: ffff800080003c40 0xffff800080003c40 type = 3, index = 64
-[   89.898645]  ret_stack[10]: 0 0x0 type = 0, index = 0
-[   89.898832]  ret_stack[9]: 14eda8f920 0x14eda8f920 type = 2, index = 288
-[   89.899069]  ret_stack[8]: ffffb45fc6a162dc brk_handler+0x4/0x70 type = 0, index = 732
-[   89.899230]  ret_stack[7]: ffffb45fc6a36c24 do_debug_exception+0x74/0x108 type = 3, index = 36
-[   89.899385]  ret_stack[6]: 20406 0x20406 type = 1, index = 6
-[   89.899456]  ret_stack[5]: ffff800080003fb8 0xffff800080003fb8 type = 3, index = 952
-[   89.899518]  ret_stack[4]: ffff800080003ff0 0xffff800080003ff0 type = 3, index = 1008
-[   89.899578]  ret_stack[3]: ffff62a80534d21c 0xffff62a80534d21c type = 0, index = 540
-[   89.899637]  ret_stack[2]: 14ed8ed2e0 0x14ed8ed2e0 type = 0, index = 736
-[   89.899695]  ret_stack[1]: ffffb45fc6a1069c __do_softirq+0x4/0x4f0 type = 1, index = 668
-[   89.899986] ret_stack[15]: ffff62a80534d070
-[   89.900221] 	func: call_break_hook, return:brk_handler
-[   89.901025] ret_stack[8]: ffff62a80534d038
-[   89.901223] 	func: brk_handler, return:do_debug_exception
-[   89.901450] ret_stack[1]: ffff62a80534d000
-[   89.901501] 	func: __do_softirq, return:____do_softirq
-[   89.901693] ret_stack[1]: 0
-[   90.015738] WARNING: CPU: 0 PID: 0 at arch/arm64/kernel/stacktrace.c:84 arch_stack_walk+0x2d8/0x380
-[   90.022314] Modules linked in:
-[   90.032375] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G                 N 6.7.0-rc8-00036-g3897e34e8ae2-dirty #79
-[   90.038797] Hardware name: linux,dummy-virt (DT)
-[   90.044170] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   90.048879] pc : arch_stack_walk+0x2d8/0x380
-[   90.052222] lr : arch_stack_walk+0x248/0x380
-[   90.055635] sp : ffff800080003e20
-[   90.058147] x29: ffff800080003e20 x28: ffffb45fc91993c0 x27: 0000000000000000
-[   90.063705] x26: 0000000000000000 x25: 0000000000000000 x24: ffffb45fc918fb40
-[   90.068946] x23: ffffb45fc6a247b8 x22: ffffb45fc6a2f1e8 x21: ffffb45fc6a35b30
-[   90.074894] x20: ffff800080003ef8 x19: ffffb45fc6a24750 x18: 0000000000000000
-[   90.078796] x17: 0000000000000000 x16: ffff800080000000 x15: 0000ffffff477588
-[   90.084310] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-[   90.088898] x11: ffffb45fc924ca08 x10: ffff62a8040341c0 x9 : ffffb45fc6a10760
-[   90.094430] x8 : ffffb45fc6a2f1e8 x7 : ffffb45fc91993c0 x6 : ffff62a80534d000
-[   90.099829] x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff800080003ff0
-[   90.104442] x2 : ffffb45fc6a2f1e8 x1 : ffffb45fc6a2f1e8 x0 : ffffb45fc6a2f1e8
-[   90.111735] Call trace:
-[   90.114923]  arch_stack_walk+0x2d8/0x380
-[   90.118820]  return_address+0x40/0x80
-[   90.122057]  trace_hardirqs_on+0xa0/0x100
-[   90.125001]  __do_softirq+0xec/0x4f0
-[   90.130907] irq event stamp: 102709
-[   90.134223] hardirqs last  enabled at (102707): [<ffffb45fc7af51d8>] default_idle_call+0xa0/0x160
-[   90.140612] hardirqs last disabled at (102708): [<ffffb45fc7af26ec>] el1_interrupt+0x24/0x68
-[   90.145877] softirqs last  enabled at (102702): [<ffffb45fc6a10b40>] __do_softirq+0x4a8/0x4f0
-[   90.148952] softirqs last disabled at (102709): [<ffffb45fc6a2f1e8>] return_to_handler+0x0/0x50
-[   90.152834] ---[ end trace 0000000000000000 ]---
-
-
-> 
-> The portion of the trace with:
-> 
-> 	__do_softirq+0xe8/0x43c
-> 	return_to_handler+0x0/0x48
-> 	return_to_handler+0x0/0x48
-> 	do_softirq_own_stack+0x24/0x38
-> 
-> ... should be something like:
-> 
-> 	__do_softirq
-> 	____do_softirq
-> 	call_on_irq_stack	// asm trampoline, not traceable
-> 	do_softirq_own_stack
-> 
-> The generated assembly for do_softirq_own_stack(), ____do_softirq(), and
-> __do_softirq() is as I'd expect with no tail calls, so I can't see an obvious
-> reason the return address cannot be recovered correctly.
-
-My question is that even if unwinder fails, the program runs normally.
-Isn't it a real stack entry?
-
-> 
-> > > That's a warning in arm64's unwind_recover_return_address() function, which
-> > > fires when ftrace_graph_ret_addr() finds return_to_handler:
-> > > 
-> > > 	if (state->task->ret_stack &&
-> > > 	    (state->pc == (unsigned long)return_to_handler)) {
-> > > 		unsigned long orig_pc;
-> > > 		orig_pc = ftrace_graph_ret_addr(state->task, NULL, state->pc,
-> > > 						(void *)state->fp);
-> > > 		if (WARN_ON_ONCE(state->pc == orig_pc))
-> > > 			return -EINVAL;
-> > > 		state->pc = orig_pc;
-> > > 	}
-> > > 
-> > > The rationale there is that since tail calls are (currently) disabled on arm64,
-> > > the only reason for ftrace_graph_ret_addr() to return return_to_handler is when
-> > > it fails to find the original return address.
-> > 
-> > Yes. what about FP check?
-> 
-> Do you mean HAVE_FUNCTION_GRAPH_FP_TEST?
-> 
-> That is enabled, and there are warnings from ftrace_pop_return_trace(), so I
-> believe push/pop is balanced.
-
-OK.
-
-> 
-> We also have HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, but since the return address is
-> not on the stack at the point function-entry is intercepted we use the FP as
-> the retp value -- in the absence of tail calls this will be different between a
-> caller and callee.
-> 
-> > > Does this change make it legitimate for ftrace_graph_ret_addr() to return
-> > > return_to_handler in other cases, or is that a bug?
-> > 
-> > It should be a bug to be fixed.
-> 
-> Cool; thanks for confirming!
-> 
-> > > Either way, we'll need *some* way to recover the original return addresss...
-> > 
-> > At least it needs to dump the shadow stack so that we can analyze what
-> > happened. 
-> 
-> Sounds like a plan; as above I'll have a go at putting that together and will
-> dump the results here.
-
-Yeah, please try below patch.
-
-Thanks,
+Thanks!
 
 ---
- arch/arm64/kernel/stacktrace.c | 10 +++++++++-
- include/linux/ftrace.h         |  2 ++
- kernel/trace/fgraph.c          | 24 ++++++++++++++++++++++++
- 3 files changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 17f66a74c745..0eaba1bad599 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -81,8 +81,16 @@ unwind_recover_return_address(struct unwind_state *state)
- 		unsigned long orig_pc;
- 		orig_pc = ftrace_graph_ret_addr(state->task, NULL, state->pc,
- 						(void *)state->fp);
--		if (WARN_ON_ONCE(state->pc == orig_pc))
-+		if (WARN_ON_ONCE(state->pc == orig_pc)) {
-+			static bool dumped;
-+
-+			if (!dumped) {
-+				pr_info("Dump: return_to_handler = %lx\n", (unsigned long)return_to_handler);
-+				dumped = true;
-+				fgraph_dump_ret_stack(state->task);
-+			}
- 			return -EINVAL;
-+		}
- 		state->pc = orig_pc;
- 	}
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index ad28daa507f7..cfb79977fdec 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1258,6 +1258,8 @@ static inline void unpause_graph_tracing(void)
- {
- 	atomic_dec(&current->tracing_graph_pause);
- }
-+
-+void fgraph_dump_ret_stack(struct task_struct *t);
- #else /* !CONFIG_FUNCTION_GRAPH_TRACER */
- 
- #define __notrace_funcgraph
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 0f11f80bdd6c..5dd560fbacce 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -437,6 +437,30 @@ get_ret_stack(struct task_struct *t, int offset, int *index)
- 	return RET_STACK(t, offset);
- }
- 
-+void fgraph_dump_ret_stack(struct task_struct *t)
-+{
-+	struct ftrace_ret_stack *ret_stack;
-+	unsigned long val;
-+	int i, offset, next;
-+
-+	for (i = t->curr_ret_stack - 1; i > 0; i--) {
-+		val = get_fgraph_entry(t, i);
-+		pr_err(" ret_stack[%d]: %lx %pS type = %d, index = %d\n",
-+			i, val, (void *)val, __get_type(val), __get_index(val));
-+	}
-+	offset = t->curr_ret_stack;
-+	do {
-+		ret_stack = get_ret_stack(t, offset, &next);
-+		pr_err("ret_stack[%d]: %lx\n",
-+			next + 1, (unsigned long)ret_stack);
-+		if (ret_stack) {
-+			pr_err("\tfunc: %ps, return:%ps\n",
-+				(void *)ret_stack->func, (void *)ret_stack->ret);
-+		}
-+		offset = next;
-+	} while (ret_stack);
-+}
-+
- /* Both enabled by default (can be cleared by function_graph tracer flags */
- static bool fgraph_sleep_time = true;
- 
--- 
-2.34.1
+If you don't need the following environment to reproduce the problem or if you
+already have one reproduced environment, please ignore the following information.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+How to reproduce:
+git clone https://gitlab.com/xupengfe/repro_vm_env.git
+cd repro_vm_env
+tar -xvf repro_vm_env.tar.gz
+cd repro_vm_env; ./start3.sh  // it needs qemu-system-x86_64 and I used v7.1.0
+  // start3.sh will load bzImage_2241ab53cbb5cdb08a6b2d4688feb13971058f65 v6.2-rc5 kernel
+  // You could change the bzImage_xxx as you want
+  // Maybe you need to remove line "-drive if=pflash,format=raw,readonly=on,file=./OVMF_CODE.fd \" for different qemu version
+You could use below command to log in, there is no password for root.
+ssh -p 10023 root@localhost
+
+After login vm(virtual machine) successfully, you could transfer reproduced
+binary to the vm by below way, and reproduce the problem in vm:
+gcc -pthread -o repro repro.c
+scp -P 10023 repro root@localhost:/root/
+
+Get the bzImage for target kernel:
+Please use target kconfig and copy it to kernel_src/.config
+make olddefconfig
+make -jx bzImage           //x should equal or less than cpu num your pc has
+
+Fill the bzImage file into above start3.sh to load the target kernel in vm.
+
+
+Tips:
+If you already have qemu-system-x86_64, please ignore below info.
+If you want to install qemu v7.1.0 version:
+git clone https://github.com/qemu/qemu.git
+cd qemu
+git checkout -f v7.1.0
+mkdir build
+cd build
+yum install -y ninja-build.x86_64
+yum -y install libslirp-devel.x86_64
+./configure --target-list=x86_64-softmmu --enable-kvm --enable-vnc --enable-gtk --enable-sdl --enable-usb-redir --enable-slirp
+make
+make install
+
+Best Regards,
+Thanks!
 
