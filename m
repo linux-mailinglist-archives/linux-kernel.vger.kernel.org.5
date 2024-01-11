@@ -1,140 +1,146 @@
-Return-Path: <linux-kernel+bounces-24028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C1782B598
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:59:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E278682B5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:01:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D0591C2475E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:59:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74DAC287FDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1445756761;
-	Thu, 11 Jan 2024 19:59:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 640E256B7D;
+	Thu, 11 Jan 2024 20:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WyYHUT+t"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yjw9k24/"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E95156751
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 19:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705003147; x=1736539147;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zWgdszgF2upi1RJNQNcI5k8HBE/XFq2LbjMvesYoLCk=;
-  b=WyYHUT+tFWycSN8F74TmVVL61TNZfDE/N/Bn8+j6x8PMotxHEPl2Mi4q
-   yi4LOq3oC77D72UoCfM89WAn9SveFAzd97vwFPiyGMVpU0ghiX1ICb++0
-   5NUWQr01lOsUrolz8VbVRjjExw0tHGucJixgjt4FGMf3L0n6RdNSNF4k6
-   4AlnxfwheCVl2CRU61FHDwHDv7uSOERJ5to3uwzO305r47jM25zNC46La
-   ibuazPpyW12/MeLHblCcnv2sdr4hdDeBIy1aq4n8URaHx61PCYXtiLxiC
-   O86X9IiAz6KfEPrZOD1+Lg3areWB8wSAIqmCg5t8WbXRLoLb/VupzFURh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="397846585"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="397846585"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 11:59:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="786108629"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="786108629"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Jan 2024 11:59:01 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rO1CS-0008gU-0D;
-	Thu, 11 Jan 2024 19:58:51 +0000
-Date: Fri, 12 Jan 2024 03:58:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: oe-kbuild-all@lists.linux.dev, kernel_team@skhynix.com,
-	akpm@linux-foundation.org, ying.huang@intel.com, namit@vmware.com,
-	xhao@linux.alibaba.com, mgorman@techsingularity.net,
-	hughd@google.com, willy@infradead.org, david@redhat.com,
-	peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
-Subject: Re: [v5 6/7] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-Message-ID: <202401120309.9xlXPJBx-lkp@intel.com>
-References: <20240111060757.13563-7-byungchul@sk.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1548C4CDE9;
+	Thu, 11 Jan 2024 20:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e5521dab6so23923475e9.1;
+        Thu, 11 Jan 2024 12:01:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705003262; x=1705608062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HAL60ZiXYTrQWwc6XvTjBF7mU0s/R7MUfIaHS38evWw=;
+        b=Yjw9k24/aZTgNRl5he5a0Vg8/Yy0jMdXZhoAoSPnfwwvUeMA4Qn31c1XiLN+UPgtQ1
+         WAqFFGlMxMdz6CvMXVfYXdZjGEUbjbODFAZ/3WnesaHK6Qip6LgxG1+n1CEFQoG5UFbR
+         Qo7LLWAHQPG+H3feGi+VlGRPq5PHJKsp2OnM/PVDW9My+47hbJbJHPkJZekb8rvIxxOb
+         9oFUGl5Yck2WXBPkm+D9OVI/k/zj90X5IrV8oysRtblRZwep3WUf+sIUye8RFv7070XP
+         m7yTGU4XXn4jSoac3RZCUdLraX2PgLIxAClGpmm9d4SHIE2KGyZZ7GW9hS36UM1CMBtU
+         CVlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705003262; x=1705608062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HAL60ZiXYTrQWwc6XvTjBF7mU0s/R7MUfIaHS38evWw=;
+        b=rkKohqDrUywf2Jd0QPkLqApPa7xT6SM4Y+8RZtjHoQsEMbINVfyAEyM+lxuf/glYBP
+         MCcXC3lqP6j3TGDYF8r0dGaat+vUZC2/4+yWTOdabmDHfyaBvDxX3HqqNf7dpss8O0df
+         WYXL1cueeisGe52zeElZ05TSGHBHOnQ5QgxPY/p+WjjLHiHEb8r/5EwBhqsQMBckyn0o
+         lv4pxCbDypMlVyNvH7MkwpMCD0p1QQPkdAGnYx/XG1cSWdC0tvHjGERQLbXMD+UY2Bb1
+         fgJGCoei9nFslllazNysPeIIi/tOWxEU9UdXtpTNtxSZTvL+jW/LJ2l1uAsG81v8Y5f7
+         RKeQ==
+X-Gm-Message-State: AOJu0YwHN1EVUHNOdmfd/DgEwfvWBYKvTWjr+L9yjgzlWTg5cwTXIWLy
+	WEhcs3pgJzZ+9h36uWki82ckH2MvBYn192NgLqQ=
+X-Google-Smtp-Source: AGHT+IEuD70YW9odmSJBW0ovp3CIEuHoCB7eupgpN0U69zefCCa6AEpsUHBsIEtkfYtc2dUZae2qy6ZzWQ5YfFTTiDA=
+X-Received: by 2002:a05:600c:6548:b0:40e:52a7:ac58 with SMTP id
+ dn8-20020a05600c654800b0040e52a7ac58mr243439wmb.65.1705003261872; Thu, 11 Jan
+ 2024 12:01:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111060757.13563-7-byungchul@sk.com>
+References: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
+ <20240109-update-llvm-links-v1-1-eb09b59db071@kernel.org> <6a655e9f-9878-4292-9d16-f988c4bdfc73@linux.dev>
+ <20240111194001.GA3805856@dev-arch.thelio-3990X>
+In-Reply-To: <20240111194001.GA3805856@dev-arch.thelio-3990X>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 11 Jan 2024 12:00:50 -0800
+Message-ID: <CAADnVQKFv2DKE=Um=+kcEzSWYCp9USQT_VpTawzNY6eRaUdu5g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] selftests/bpf: Update LLVM Phabricator links
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, patches@lists.linux.dev, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	ppc-dev <linuxppc-dev@lists.ozlabs.org>, kvm@vger.kernel.org, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-trace-kernel@vger.kernel.org, 
+	linux-s390 <linux-s390@vger.kernel.org>, 
+	Linux Power Management <linux-pm@vger.kernel.org>, 
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, linux-efi <linux-efi@vger.kernel.org>, 
+	amd-gfx list <amd-gfx@lists.freedesktop.org>, dri-devel@lists.freedesktop.org, 
+	linux-media@vger.kernel.org, linux-arch <linux-arch@vger.kernel.org>, 
+	kasan-dev <kasan-dev@googlegroups.com>, linux-mm <linux-mm@kvack.org>, bridge@lists.linux.dev, 
+	Network Development <netdev@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Byungchul,
+On Thu, Jan 11, 2024 at 11:40=E2=80=AFAM Nathan Chancellor <nathan@kernel.o=
+rg> wrote:
+>
+> Hi Yonghong,
+>
+> On Wed, Jan 10, 2024 at 08:05:36PM -0800, Yonghong Song wrote:
+> >
+> > On 1/9/24 2:16 PM, Nathan Chancellor wrote:
+> > > reviews.llvm.org was LLVM's Phabricator instances for code review. It
+> > > has been abandoned in favor of GitHub pull requests. While the majori=
+ty
+> > > of links in the kernel sources still work because of the work Fangrui
+> > > has done turning the dynamic Phabricator instance into a static archi=
+ve,
+> > > there are some issues with that work, so preemptively convert all the
+> > > links in the kernel sources to point to the commit on GitHub.
+> > >
+> > > Most of the commits have the corresponding differential review link i=
+n
+> > > the commit message itself so there should not be any loss of fidelity=
+ in
+> > > the relevant information.
+> > >
+> > > Additionally, fix a typo in the xdpwall.c print ("LLMV" -> "LLVM") wh=
+ile
+> > > in the area.
+> > >
+> > > Link: https://discourse.llvm.org/t/update-on-github-pull-requests/715=
+40/172
+> > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> >
+> > Ack with one nit below.
+> >
+> > Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>
+> <snip>
+>
+> > > @@ -304,6 +304,6 @@ from running test_progs will look like:
+> > >   .. code-block:: console
+> > > -  test_xdpwall:FAIL:Does LLVM have https://reviews.llvm.org/D109073?=
+ unexpected error: -4007
+> > > +  test_xdpwall:FAIL:Does LLVM have https://github.com/llvm/llvm-proj=
+ect/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d5? unexpected error: -400=
+7
+> > > -__ https://reviews.llvm.org/D109073
+> > > +__ https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf4=
+1d121afa5d031b319d
+> >
+> > To be consistent with other links, could you add the missing last alnum=
+ '5' to the above link?
+>
+> Thanks a lot for catching this and providing an ack. Andrew, could you
+> squash this update into selftests-bpf-update-llvm-phabricator-links.patch=
+?
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on tip/sched/core tip/x86/core arm64/for-next/core tip/x86/mm linus/master v6.7 next-20240111]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/x86-tlb-Add-APIs-manipulating-tlb-batch-s-arch-data/20240111-141049
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20240111060757.13563-7-byungchul%40sk.com
-patch subject: [v5 6/7] mm: Defer TLB flush by keeping both src and dst folios at migration
-config: x86_64-buildonly-randconfig-005-20240111 (https://download.01.org/0day-ci/archive/20240112/202401120309.9xlXPJBx-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401120309.9xlXPJBx-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401120309.9xlXPJBx-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from mm/hwpoison-inject.c:10:
-   mm/internal.h: In function 'init_tlb_ubc':
->> mm/internal.h:931:9: error: implicit declaration of function 'arch_tlbbatch_clear' [-Werror=implicit-function-declaration]
-     931 |         arch_tlbbatch_clear(&ubc->arch);
-         |         ^~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/arch_tlbbatch_clear +931 mm/internal.h
-
-   928	
-   929	static inline void init_tlb_ubc(struct tlbflush_unmap_batch *ubc)
-   930	{
- > 931		arch_tlbbatch_clear(&ubc->arch);
-   932		ubc->flush_required = false;
-   933		ubc->writable = false;
-   934	}
-   935	#else
-   936	static inline void try_to_unmap_flush(void)
-   937	{
-   938	}
-   939	static inline void try_to_unmap_flush_dirty(void)
-   940	{
-   941	}
-   942	static inline void flush_tlb_batched_pending(struct mm_struct *mm)
-   943	{
-   944	}
-   945	static inline void fold_ubc(struct tlbflush_unmap_batch *dst, struct tlbflush_unmap_batch *src)
-   946	{
-   947	}
-   948	static inline void init_tlb_ubc(struct tlbflush_unmap_batch *ubc)
-   949	{
-   950	}
-   951	#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
-   952	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Please send a new patch.
+We'd like to take all bpf patches through the bpf tree to avoid conflicts.
 
