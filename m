@@ -1,112 +1,139 @@
-Return-Path: <linux-kernel+bounces-23882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA38382B329
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A78B82B32C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40D6DB24FE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B88C11F27915
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDE950266;
-	Thu, 11 Jan 2024 16:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F241851012;
+	Thu, 11 Jan 2024 16:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bcieYNXp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="k0APHmvs"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5EB29CFB
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704991338;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VqrInYkNLx1NtjOqgVxpVM91IYukVc31dOGwzdzlGfI=;
-	b=bcieYNXpRqMoVNkm5HaKE8DRiwDcnBbtKQmpOY/4l52X36j3lpwsLwGUK1K9MKDAW7tpTk
-	8cfbv1g58trjOLTM4/bLPknjsIkWkY3icH3yH6l6YlIn78ihO80hL58P1b2LhZlLyt7fZR
-	QgX8CaXfIEsS4DZsBQls5sMwQ0GW/Xc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-522-UpLrGVGfMfWuXurDF-TKjw-1; Thu, 11 Jan 2024 11:42:13 -0500
-X-MC-Unique: UpLrGVGfMfWuXurDF-TKjw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EF910882321;
-	Thu, 11 Jan 2024 16:42:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E5C7A2166B31;
-	Thu, 11 Jan 2024 16:42:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-    Chuck Lever III <chuck.lever@oracle.com>
-cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-    linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-    linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Rebuilding at least part of my krb5 crypto lib on crypto-aead
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3EE751000;
+	Thu, 11 Jan 2024 16:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BGUDYx020123;
+	Thu, 11 Jan 2024 16:43:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=QfofUW+gNGgsqCak0mF/ypLKjhwjuZva/HN79itdiTk=;
+ b=k0APHmvsPttHDwNU56VB4OLnkX4tquHovsq2RMMG5YZ2wV9hl0Jjcl0oJ6/zbeHgmbnp
+ 1FnT3NpHvlIosdb0qSh5A0l8mqlg6Z3bCK6s8Lum09BzCu1ofatCzmeGuozQzdgijosy
+ 5LF5sOR2m1JkuoUeKelGd+VO6W9ltNBZ/iRCJicIB3v4dG6XB+bFWZLOT5hlXLLzRhdv
+ ESjdRZLKXTqw3ZC+PQToqBWyDHEAuz6v7T78BQT4MFRd7PR/a6+WaqE1jOTU2EuybI1v
+ mrOY1fXpFS/NFNDH3uL7XNzBIMxW0XoUYSnBjUqpp8JvTVSJjEGEPdInJDgsuf7xEFgc Hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjj673g48-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 16:43:11 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40BGUuAg023403;
+	Thu, 11 Jan 2024 16:43:10 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjj673g3t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 16:43:10 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40BGBmBa027253;
+	Thu, 11 Jan 2024 16:43:09 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkw2c5am-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 16:43:09 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40BGh9Fm9831052
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Jan 2024 16:43:09 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 02F3758059;
+	Thu, 11 Jan 2024 16:43:09 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 953C758043;
+	Thu, 11 Jan 2024 16:43:08 +0000 (GMT)
+Received: from [9.24.12.86] (unknown [9.24.12.86])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 11 Jan 2024 16:43:08 +0000 (GMT)
+Message-ID: <77fe0ccd-53ff-4773-9787-0d038434297f@linux.ibm.com>
+Date: Thu, 11 Jan 2024 10:43:08 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] tpm: tis-i2c: Add more compatible strings
+To: Conor Dooley <conor@kernel.org>
+Cc: peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        Joel Stanley <joel@jms.id.au>, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lukas Wunner <lukas@wunner.de>
+References: <20231214144954.3833998-1-ninad@linux.ibm.com>
+ <20231214144954.3833998-2-ninad@linux.ibm.com>
+ <20240109-saddling-nintendo-c7fbb46bb0dd@spud>
+Content-Language: en-US
+From: Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <20240109-saddling-nintendo-c7fbb46bb0dd@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 8AxYTwGMAwDRaW4WCoovdG1HTbAqRiPR
+X-Proofpoint-ORIG-GUID: uNmibd16FkQaA9myJV97P3x6KBBICxxn
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2131431.1704991328.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 11 Jan 2024 16:42:08 +0000
-Message-ID: <2131432.1704991328@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-11_09,2024-01-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
+ impostorscore=0 phishscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401110131
 
-Hi Herbert, Chuck,
+Hello Conor,
 
-I've been thinking more on how I might go about rebuilding at least part o=
-f my
-krb5 crypto library on top of the AEAD template.
+On 1/9/24 11:11, Conor Dooley wrote:
+> On Thu, Dec 14, 2023 at 08:49:53AM -0600, Ninad Palsule wrote:
+>> From: Joel Stanley <joel@jms.id.au>
+>>
+>> The NPCT75x TPM is TIS compatible. It has an I2C and SPI interface.
+>>
+>> https://www.nuvoton.com/products/cloud-computing/security/trusted-platform-module-tpm/
+>>
+>> Add a compatible string for it, and the generic compatible.
+>>
+>> Signed-off-by: Joel Stanley <joel@jms.id.au>
+>> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+>> Link: https://lore.kernel.org/r/20220928043957.2636877-4-joel@jms.id.au
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+> I don't understand why you broke this series up and dropped patches.
+> NAK, these compatibles are not documented.
+>
+The original series has three patches:
 
-I don't think it makes sense to try and put the entirety of it in there.
-There are functions that completely don't fit (such as key generation) and=
- the
-catalogue of Kerberos type values and associated parameters.
+1) Adding compatibility string which I am adding in this series.
 
-Also, I'm not sure it makes sense to try and squeeze the Integrity-type
-operations get_mic and verify_mic as AEAD.  get_mic might work as AEAD, bu=
-t
-all a wrapper would add is to emplace the checksum into ciphertext buffer.
-The actual checksumming is handled by a SHASH algorithm perfectly well.
-verify_mic doesn't really make sense as it has no output other than "yes/n=
-o" -
-and so is also handled fine by a SHASH algorithm.
+2) Adding schema for the TIS I2c devices which is already covered by 
+Lukas's patch (already merged in linux-next) 
+https://lore.kernel.org/all/3f56f0a2bb90697a23e83583a21684b75dc7eea2.1701093036.git.lukas@wunner.de/
 
-Where it does make sense is at the core of the encrypt/decrypt ops where I
-have four compound ops to choose from:
+3) Removing "Infineon,slb9673" from trivial-devices.yaml which is not 
+done as it is already added in the TPM specific file. I will add it in 
+my patch. Good catch!
 
-	- encrypt-then-hash
-	- hash-then-decrypt
-	- hash-then-encrypt
-	- decrypt-then-hash
+Thanks for the review.
 
-These can conceivably be hardware optimised to do both parts of the op
-simultaneously.  I *think* I've seen a suggestion that x86_64 AVX has
-sufficient registers available to do both AES and SHA simultaneously, say.
+Regards,
 
-The question I then have is this: How do I parameterise the crypto algorit=
-hm
-inside AEAD?  Can I do something like:
-
-	cipher =3D crypto_alloc_sync_aead("enc-then-hash(cts(cbc(camellia)),cmac(=
-camellia))");
-
-David
+Ninad
 
 
