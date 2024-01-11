@@ -1,152 +1,149 @@
-Return-Path: <linux-kernel+bounces-22941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8823C82A5B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:59:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C894A82A5B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:01:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2675A28B40F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:59:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D0D71F2251D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A601EA3;
-	Thu, 11 Jan 2024 01:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0627EBF;
+	Thu, 11 Jan 2024 02:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="i7ETgvLp"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1892AA3C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:59:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=MqvsdNpdgdevTDXLx/
-	3wHJ+fUvPHE2tkCRPaSkqqFnc=; b=i7ETgvLpkj+Tbbo+l+WL6t6bbaDDejUXEj
-	qCENh2JYuyyi9iPi/mULh1o3ePit2vHRLu0f9N5zNh+NcldamrNkmOPSYuZwBQNk
-	M5hxqckrQTUEXkEM7fYH3jZPlihxQmmm+EHnAX12MGTuYsReP1trzYKBTLppTdqo
-	SAaCtkOt0=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id _____wDXH75oS59l9eMsAA--.11769S2;
-	Thu, 11 Jan 2024 09:59:05 +0800 (CST)
-From: chenxuebing <chenxb_99091@126.com>
-To: daniel@ffwll.ch,
-	alexander.deucher@amd.com,
-	christian.koenig@amd.com,
-	airlied@gmail.com,
-	Xinhui.Pan@amd.com
-Cc: dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org,
-	chenxuebing <chenxb_99091@126.com>
-Subject: [PATCH] drm/amdgpu: Clean up errors in clearstate_gfx9.h
-Date: Thu, 11 Jan 2024 01:59:03 +0000
-Message-Id: <20240111015903.5433-1-chenxb_99091@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wDXH75oS59l9eMsAA--.11769S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCF4rXF48CFyUJFWrJrWkWFg_yoW5tFWxpF
-	1DAr1Ig3yxJ3WaqrWxtFs8KF1fGrZFv3Z2yr47K3WxG3Z5XayDXa4DJ3yrCrWUtFykZF1q
-	yF4vqrWUKay8Cw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UbF4iUUUUU=
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiWQtixWVLYT1tUwAAs5
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LRgSy5UF"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F9A7ED
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5efe82b835fso90745917b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 18:00:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704938452; x=1705543252; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HzOU3SyoPVJ6Dww3XOn2Ne2tHVPGDMAiBtAU3lr6VwM=;
+        b=LRgSy5UFAFUcGu2SaZfg7qp5wXkBcbAN8sb4Qvaiyr8XmZXhZLhIvSo4ox7udaCJ5N
+         TnIS/6lrntKL6pN02SOBOEIRUJnjI7qEn11LObq7TqdU4dUMyjZi5UU1IbasjANLWIxt
+         x7K70I3csgrdyBbkxK4AtqPO+yKw48JCie7Rwk6FidCWsvw4Fk5lUV07UvqbMbpyuVqZ
+         wonrgfdlrDYLVvtiSFaf3hPqXZgPQ/JJNnzwnBcesBoa2lmr7JZ9MyyPYgDehHqFPCCB
+         aOT9JSm5mw/dF6zVXx3xU+yeiT/qTIcS35wtW5w/JvsF5Z8YbzeK4hbrJ9UCndWDmqH+
+         s6dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704938452; x=1705543252;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HzOU3SyoPVJ6Dww3XOn2Ne2tHVPGDMAiBtAU3lr6VwM=;
+        b=Ce8ULzFryaroyO2M8bvu0PQJhJZfYxNbYn2oQLoiiALd/ojj1aSz0IF9nirEhRKgsi
+         EtpRGBCJ40a2XNxK0l/+94aiE7U3pIyJ0MBcwerZTgBKi23lgBrUhmEwMA3U93gxwLcr
+         pDLJcp7UAHyviNoET8GP4gie9QbbXGXIYgi51i+8ZZzLRJ4L2kWX4xU9UjmrODEb9IN6
+         T9+nDcQv35JUV+uI7MhgS+dBAE03PgDD1U7ExpeagbY6DGWGAJM/e+pbPilzLYap4aYX
+         JIwIateN8YyO3Yvm2o6Mn6zADkEB9SQegr9Q1z9QVHtE76h4MXYeEZ6DXI/mkhLxDkgT
+         cQOQ==
+X-Gm-Message-State: AOJu0YwtzrFYje1OCLi3cNzq0VgQ4up/xrX7leNjhzfQS97pavsdGnYY
+	c/jky6q7mLc64f5kzXHxkriXN1qNUg5cMbNNmA==
+X-Google-Smtp-Source: AGHT+IFsBiQQOb+e4YvDeAqxVv4bZiqvjH7FaF7AN/tnvugHNZDSEcFWL/8rNIK1XhXSy0giwLh7EMuDJw8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:dd12:0:b0:5e8:4440:c52e with SMTP id
+ e18-20020a81dd12000000b005e84440c52emr311775ywn.7.1704938452584; Wed, 10 Jan
+ 2024 18:00:52 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Wed, 10 Jan 2024 18:00:40 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
+Message-ID: <20240111020048.844847-1-seanjc@google.com>
+Subject: [PATCH 0/8] KVM: x86/mmu: Allow TDP MMU (un)load to run in parallel
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Matlack <dmatlack@google.com>, Pattara Teerapong <pteerapong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Fix the following errors reported by checkpatch:
+This series is the result of digging into why deleting a memslot, which on
+x86 forces all vCPUs to reload a new MMU root, causes noticeably more jitter
+in vCPUs and other tasks when running with the TDP MMU than the Shadow MMU
+(with TDP enabled).
 
-ERROR: that open brace { should be on the previous line
+Patch 1 addresses the most obvious issue by simply zapping at a finer
+granularity so that if a different task, e.g. a vCPU, wants to run on the
+pCPU doing the zapping, it doesn't have to wait for KVM to zap an entire
+1GiB region, which can take a hundreds of microseconds (or more).  The
+shadow MMU checks for need_resched() (and mmu_lock contention, see below)
+every 10 zaps, which is why the shadow MMU doesn't induce the same level
+of jitter.
 
-Signed-off-by: chenxuebing <chenxb_99091@126.com>
----
- drivers/gpu/drm/amd/amdgpu/clearstate_gfx9.h | 27 +++++++-------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+On preemptible kernels, zapping at 4KiB granularity will also cause the
+zapping task to yield mmu_lock much more aggressively if a writer comes
+along.  That _sounds_ like a good thing, and most of the time it is, but
+sometimes bouncing mmu_lock can be a big net negative:
+https://lore.kernel.org/all/20240110012045.505046-1-seanjc@google.com
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/clearstate_gfx9.h b/drivers/gpu/drm/amd/amdgpu/clearstate_gfx9.h
-index 567a904804bc..9c85ca6358c1 100644
---- a/drivers/gpu/drm/amd/amdgpu/clearstate_gfx9.h
-+++ b/drivers/gpu/drm/amd/amdgpu/clearstate_gfx9.h
-@@ -21,8 +21,7 @@
-  *
-  */
- 
--static const unsigned int gfx9_SECT_CONTEXT_def_1[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_1[] = {
-     0x00000000, // DB_RENDER_CONTROL
-     0x00000000, // DB_COUNT_CONTROL
-     0x00000000, // DB_DEPTH_VIEW
-@@ -236,8 +235,7 @@ static const unsigned int gfx9_SECT_CONTEXT_def_1[] =
-     0x00000000, // PA_SC_VPORT_ZMIN_15
-     0x3f800000, // PA_SC_VPORT_ZMAX_15
- };
--static const unsigned int gfx9_SECT_CONTEXT_def_2[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_2[] = {
-     0x00000000, // PA_SC_SCREEN_EXTENT_CONTROL
-     0x00000000, // PA_SC_TILE_STEERING_OVERRIDE
-     0x00000000, // CP_PERFMON_CNTX_CNTL
-@@ -521,15 +519,13 @@ static const unsigned int gfx9_SECT_CONTEXT_def_2[] =
-     0x00000000, // CB_MRT6_EPITCH
-     0x00000000, // CB_MRT7_EPITCH
- };
--static const unsigned int gfx9_SECT_CONTEXT_def_3[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_3[] = {
-     0x00000000, // PA_CL_POINT_X_RAD
-     0x00000000, // PA_CL_POINT_Y_RAD
-     0x00000000, // PA_CL_POINT_SIZE
-     0x00000000, // PA_CL_POINT_CULL_RAD
- };
--static const unsigned int gfx9_SECT_CONTEXT_def_4[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_4[] = {
-     0x00000000, // DB_DEPTH_CONTROL
-     0x00000000, // DB_EQAA
-     0x00000000, // CB_COLOR_CONTROL
-@@ -688,17 +684,14 @@ static const unsigned int gfx9_SECT_CONTEXT_def_4[] =
-     0x00000000, // VGT_GS_OUT_PRIM_TYPE
-     0x00000000, // IA_ENHANCE
- };
--static const unsigned int gfx9_SECT_CONTEXT_def_5[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_5[] = {
-     0x00000000, // WD_ENHANCE
-     0x00000000, // VGT_PRIMITIVEID_EN
- };
--static const unsigned int gfx9_SECT_CONTEXT_def_6[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_6[] = {
-     0x00000000, // VGT_PRIMITIVEID_RESET
- };
--static const unsigned int gfx9_SECT_CONTEXT_def_7[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_7[] = {
-     0x00000000, // VGT_GS_MAX_PRIMS_PER_SUBGROUP
-     0x00000000, // VGT_DRAW_PAYLOAD_CNTL
-     0, // HOLE
-@@ -766,8 +759,7 @@ static const unsigned int gfx9_SECT_CONTEXT_def_7[] =
-     0x00000000, // VGT_STRMOUT_CONFIG
-     0x00000000, // VGT_STRMOUT_BUFFER_CONFIG
- };
--static const unsigned int gfx9_SECT_CONTEXT_def_8[] =
--{
-+static const unsigned int gfx9_SECT_CONTEXT_def_8[] = {
-     0x00000000, // PA_SC_CENTROID_PRIORITY_0
-     0x00000000, // PA_SC_CENTROID_PRIORITY_1
-     0x00001000, // PA_SC_LINE_CNTL
-@@ -924,8 +916,7 @@ static const unsigned int gfx9_SECT_CONTEXT_def_8[] =
-     0x00000000, // CB_COLOR7_DCC_BASE
-     0x00000000, // CB_COLOR7_DCC_BASE_EXT
- };
--static const struct cs_extent_def gfx9_SECT_CONTEXT_defs[] =
--{
-+static const struct cs_extent_def gfx9_SECT_CONTEXT_defs[] = {
-     {gfx9_SECT_CONTEXT_def_1, 0x0000a000, 212 },
-     {gfx9_SECT_CONTEXT_def_2, 0x0000a0d6, 282 },
-     {gfx9_SECT_CONTEXT_def_3, 0x0000a1f5, 4 },
+While trying to figure out whether or not frequently yielding mmu_lock
+would be a negative or positive, I ran into extremely high latencies for
+loading TDP MMU roots on VMs with large-ish numbers of vCPUs, e.g. a vCPU
+could end up taking more than a second to 
+
+Long story short, the issue is that the TDP MMU acquires mmu_lock for
+write when unloading roots, and again when loading a "new" root (in quotes
+because most vCPUs end up loading an existing root).  With a decent number
+of vCPUs, that results in a _lot_ mmu_lock contention, as every vCPU will
+take and release mmu_lock for write to unload its roots, and then again to
+load a new root.  Due to rwlock's fairness (waiting writers block new
+readers), the contention can result in rather nasty worst case scenarios.
+
+Patches 6-8 fix the issues by taking mmu_lock for read.  The free path is
+very straightforward and doesn't require any new protection (IIRC, the only
+reason we didn't pursue this when reworking the TDP MMU zapping back at the
+end of 2021 was because we had bigger issues to solve).  Allocating a new
+root with mmu_lock held for read is a little harder, but still fairly easy.
+KVM only needs to ensure that it doesn't create duplicate roots, because
+everything that needs mmu_lock to ensure ordering must take mmu_lock for
+write, i.e. is still mutually exclusive with new roots coming along.
+
+Patches 2-5 are small cleanups to avoid doing work for invalid roots, e.g.
+when zapping SPTEs purely to affect guest behavior, there's no need to zap
+invalid roots because they are unreachable from the guest.
+
+All told, this significantly reduces mmu_lock contention when doing a fast
+zap, i.e. when deleting memslots, and takes the worst case latency for a
+vCPU to load a new root from >3ms to <100us for large-ish VMs (100+ vCPUs)
+For small and medium sized VMs (<24 vCPUs), the vast majority of loads
+takes less than 1us, with the worst case being <10us, versus >200us without
+this series.
+
+Note, I did all of the latency testing before the holidays, and then
+managed to lose almost all of my notes, which is why I don't have more
+precise data on the exact setups and latency bins.  /facepalm
+
+Sean Christopherson (8):
+  KVM: x86/mmu: Zap invalidated TDP MMU roots at 4KiB granularity
+  KVM: x86/mmu: Don't do TLB flush when zappings SPTEs in invalid roots
+  KVM: x86/mmu: Allow passing '-1' for "all" as_id for TDP MMU iterators
+  KVM: x86/mmu: Skip invalid roots when zapping leaf SPTEs for GFN range
+  KVM: x86/mmu: Skip invalid TDP MMU roots when write-protecting SPTEs
+  KVM: x86/mmu: Check for usable TDP MMU root while holding mmu_lock for
+    read
+  KVM: x86/mmu: Alloc TDP MMU roots while holding mmu_lock for read
+  KVM: x86/mmu: Free TDP MMU roots while holding mmy_lock for read
+
+ arch/x86/kvm/mmu/mmu.c     |  33 +++++++---
+ arch/x86/kvm/mmu/tdp_mmu.c | 124 ++++++++++++++++++++++++++-----------
+ arch/x86/kvm/mmu/tdp_mmu.h |   2 +-
+ 3 files changed, 111 insertions(+), 48 deletions(-)
+
+
+base-commit: 1c6d984f523f67ecfad1083bb04c55d91977bb15
 -- 
-2.17.1
+2.43.0.275.g3460e3d667-goog
 
 
