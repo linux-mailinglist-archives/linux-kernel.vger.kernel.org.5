@@ -1,174 +1,123 @@
-Return-Path: <linux-kernel+bounces-23457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F0082AD10
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:12:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA6D82AD11
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDE0E1C2216E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:12:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDCF4B217D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3025514F9B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4852814A9E;
 	Thu, 11 Jan 2024 11:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W61qeUVg"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Op2JJO3W"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE6314F88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A9E14F8A
 	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704971554; x=1736507554;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1YFtBXWVelzOCij9mu8FZw930rKm1mM6tLkMC1PxwA8=;
-  b=W61qeUVgV7B7ZJ/4uZmGD/ID7cFfikWkAYSIqDLkThXVDJGGIsBRHnhz
-   n1h6WJqTnxDhvQ9jCr5Snpbl8M1AqvNqTn7p+bl6VBgtCJ1Rr8mXYd6nz
-   j1VTXSjcWmOkz1zZN/foNsYQA2XxzgLQhx+L69Q97FZleQ38j5tuC2Nui
-   vluMKWTh6TZlf3FmIHTtw05G9p3e7xm+1OrUv4aM0iVueGtC9ZgYXr+8D
-   yVwWbkgHF5cqg4QqIGj9pqAEcpA9jsHl9iQULcm67Cf+cEnXgTMuhzvcD
-   LKfD3mSgTRzWfDYkv1Mojce0U0kBrRTeLCJ2SJgZGIXv2QGGZMVGv6qX7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="6175587"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="6175587"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:12:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="24593644"
-Received: from gcrisanx-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.56])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:12:30 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id B879810A557; Thu, 11 Jan 2024 14:12:27 +0300 (+03)
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Subject: [PATCHv2] x86/mm: Fix memory encryption features advertisement
-Date: Thu, 11 Jan 2024 14:12:24 +0300
-Message-ID: <20240111111224.25289-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a27cd5850d6so557175866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:12:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704971552; x=1705576352; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=j29OWMY+YhlAhxuY2wSmEUDqrXvXRySnRlcR4UOyYDs=;
+        b=Op2JJO3W2PqjIFR4T57K8qxVHB+CrH4pPTmqkpDsMjxr1y+O7ktyp0XLn2D0Py/idi
+         FS9HTdedHNiwk4fz9+bnI7Wc/DWK58f72u3segBIMV4H3dwF6OL4uvDCJWSvg97Ham/G
+         oiqtcXzX9tZnIe9R+qlpHMpbtPTBHY1RZ6M9M8ePoLkgmPKOgq093G+Y/jjFcc//9FOv
+         EV6jt28qERF32xFToJWBd7/cyih/Tdmgmdyd/jAaTJo9ATBf6Ko++kk4d+XE+oOOs6X0
+         BN+ZLUPGG5+TX9UUXPMrPUdIaSICrELsl5DaKC9MqtaQwx4m+q428nPJWr6TeZzVlEia
+         Rayg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704971552; x=1705576352;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j29OWMY+YhlAhxuY2wSmEUDqrXvXRySnRlcR4UOyYDs=;
+        b=NnftlFO1kJ+hUHfSgDOWU1gy4zbyqW1/RwvYLWBrVk2EKiGJZbW5PTiNTkwAlzADwv
+         NML0fFn+044Qy4fWhHsm1vZ8h+RDnXTTgGS3iABOGEB7bbEOw4dxvBWPr6YKSSsB7gnH
+         MJGcHrfnQ25+H9BWnuHh/5unVZRUglEJhXaB0hqloRbpT4FUL8FAdP2tdfzfbiFzWbwp
+         EGgJIwzoXCG4cDGZc++S6qzOyi2EhtfAa3lAOPOME/aZYltVP3cYb4EXLREBUZRcTTjV
+         Dwca2ZR5vFohTgB9Uv67u+oxdgdwuk6Hzc5awLoYNBJh9PAwWrRkLH7jAk5fs0NIQ3DS
+         jvZg==
+X-Gm-Message-State: AOJu0Yzpfc+8rU+2NBBz13NHttl68s0LkllccU1R87NN2zprUtQ17CA1
+	V/MAaNAVCrgWXPSgpVq6ZA==
+X-Google-Smtp-Source: AGHT+IGY6pvJzNC9IfqB8JzaqWEkmArbIRgldCVN55kJkASg2hLv2TIU1j+J2Sgavbv3ASVk8nPSEw==
+X-Received: by 2002:a17:906:af13:b0:a29:a2d6:4e6d with SMTP id lx19-20020a170906af1300b00a29a2d64e6dmr423020ejb.79.1704971552107;
+        Thu, 11 Jan 2024 03:12:32 -0800 (PST)
+Received: from p183 ([46.53.248.125])
+        by smtp.gmail.com with ESMTPSA id ca23-20020a170906a3d700b00a2bd01c2349sm442783ejb.169.2024.01.11.03.12.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 03:12:31 -0800 (PST)
+Date: Thu, 11 Jan 2024 14:12:29 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: Neal Gompa <neal@gompa.dev>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Jason Gunthorpe <jgg@nvidia.com>,
+	jirislaby@kernel.org, dhowells@redhat.com,
+	linux-kernel@vger.kernel.org, pinskia@gmail.com,
+	kent.overstreet@linux.dev
+Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+Message-ID: <80cc3496-0a30-4905-9d94-c492abb78c0d@p183>
+References: <fa64c852-01c4-4e4c-8b89-14db5e0088d0@p183>
+ <CAEg-Je9ahyp+asVHCcMr7KXYqDRzxJnQmqYcz1V+LH3ZEfT+Ww@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEg-Je9ahyp+asVHCcMr7KXYqDRzxJnQmqYcz1V+LH3ZEfT+Ww@mail.gmail.com>
 
-When memory encryption is enabled, the kernel prints the encryption
-flavor that the system supports.
+On Thu, Jan 11, 2024 at 05:58:51AM -0500, Neal Gompa wrote:
+> On Thu, Jan 11, 2024 at 5:56 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> >
+> > > SFINAE giving inscrutable errors is why I'm saying C++20,
+> > > since "concept" means you can get usable error messages.
+> >
+> > I'd say concepts are irrelevant for the kernel where standard library is
+> > tightly controlled by the same people who write rest of the kernel and
+> > no external users.
+> >
+> > static_assert() is all you need.
+> 
+> We have external users all the time, though. People who write external
+> modules or new modules would fall in that classification. Why should
+> it be harder for them?
 
-The check assumes that everything is AMD SME/SEV if it doesn't have
-the TDX CPU feature set.
+static_assert gives filename:line which clearly points to the source of
+an error.
 
-Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
-on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
-encryption enabled for I/O without the rest of CoCo enabling.
+Concepts are SFINAE replacement but if there is little SFINAE there will
+be little concepts too.
 
-To avoid confusion, check the cc_vendor directly.
+Another quite silly thing with concepts (and with noexcept propagation)
+is that programmer has to write an implementation then chop control flow
+and put everything else into the requires. And then to keep both in sync.
 
-Possible alternative is to completely removing the print statement.
-For a regular TDX guest, the kernel already prints a message indicating
-that it is booting on TDX. Similarly, AMD and Hyper-V can also display
-a message during their enumeration process.
+This is an example from cppreference:
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Dexuan Cui <decui@microsoft.com>
-Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
----
- arch/x86/mm/mem_encrypt.c | 56 +++++++++++++++++++++------------------
- 1 file changed, 30 insertions(+), 26 deletions(-)
+	template<typename T>
+		requires Addable<T>
+	T
+	add(T a, T b)
+	{
+		return a + b;
+	}
 
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index c290c55b632b..d035bce3a2b0 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -42,38 +42,42 @@ bool force_dma_unencrypted(struct device *dev)
- 
- static void print_mem_encrypt_feature_info(void)
- {
--	pr_info("Memory Encryption Features active:");
-+	pr_info("Memory Encryption Features active: ");
- 
--	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
--		pr_cont(" Intel TDX\n");
--		return;
--	}
-+	switch (cc_vendor) {
-+	case CC_VENDOR_INTEL:
-+		pr_cont("Intel TDX\n");
-+		break;
-+	case CC_VENDOR_AMD:
-+		pr_cont("AMD");
- 
--	pr_cont(" AMD");
--
--	/* Secure Memory Encryption */
--	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
-+		/* Secure Memory Encryption */
-+		if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
- 		/*
- 		 * SME is mutually exclusive with any of the SEV
- 		 * features below.
--		 */
--		pr_cont(" SME\n");
--		return;
-+		*/
-+			pr_cont(" SME\n");
-+			return;
-+		}
-+
-+		/* Secure Encrypted Virtualization */
-+		if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-+			pr_cont(" SEV");
-+
-+		/* Encrypted Register State */
-+		if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-+			pr_cont(" SEV-ES");
-+
-+		/* Secure Nested Paging */
-+		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
-+			pr_cont(" SEV-SNP");
-+
-+		pr_cont("\n");
-+		break;
-+	default:
-+		pr_cont("Unknown\n");
- 	}
--
--	/* Secure Encrypted Virtualization */
--	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
--		pr_cont(" SEV");
--
--	/* Encrypted Register State */
--	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
--		pr_cont(" SEV-ES");
--
--	/* Secure Nested Paging */
--	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
--		pr_cont(" SEV-SNP");
--
--	pr_cont("\n");
- }
- 
- /* Architecture __weak replacement functions */
--- 
-2.41.0
+Guess what Addable<> is?
 
+They are kind of nice for simple things:
+
+	template<typename It>
+	concept MinimalIterator = requires(It it) { ++it; *it; it++; };
 
