@@ -1,87 +1,182 @@
-Return-Path: <linux-kernel+bounces-23362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F91E82AB9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:08:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6BC82ABA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EF6E1C23971
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:08:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 363061C24D55
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EAF12E5A;
-	Thu, 11 Jan 2024 10:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Td+xNZv4"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C044112E5A;
+	Thu, 11 Jan 2024 10:13:06 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240FE12E47
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso4230610276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:08:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704967708; x=1705572508; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zps4PpI8OaSz9bFumvCqbmdTj+6HsktbWUC2QnoS1I0=;
-        b=Td+xNZv4y5b9IoiN+fbK12/DpWjWtry8Wy9fOitlq9gKupxOIp+Hfk9Gw/xfMY6fYV
-         6ZBIchVtHqtJa4iHCvneKYJxF5aE8Pzec2JuhPpyveERZ5naVBCOSgSblGhF/we+l4O4
-         DkBwWl1MQPX/Cqt9q0DHOJpf6+7VymNNUQSBfcLD7kR0/y4QI0tzifh5ZqGqY9B7gWMo
-         FOh8VExVQrkGgf0Kujgwqwey4YhJtS77KErnAKEA0bDJfu9Mv3+73VwfUNABfr0VDnqW
-         38mZoH89Wh+IazF5yiI+3q3rxs2+Bstic5xDrlD5M3Ui41YU053du/O+ZK5/S451ISEM
-         T5iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704967708; x=1705572508;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zps4PpI8OaSz9bFumvCqbmdTj+6HsktbWUC2QnoS1I0=;
-        b=R4bdphG0j/olCXxRXi2Hf2WrhYgLi3/qT4fb1lnYMqg0TYRsJClpsrmbrvJNjK9lFp
-         r7NE+t56znokwylKbu7V4vbFYLKcqz+bpwCkwPGcCeLjHrmjALKF3rDyNvpD1U0qcdo2
-         fokbXnL+1w7MVcWtfvqy1w/IC2ZLB3qAwmQIfo+WKnmlSLoRqLclOrUMjaNS37vXoQdc
-         aa2mi7y91Kg2BCo4cjFzPmw4IbZ0aQcXDJvEfGA7Sve/q1zNTZ+Fcu+wsulM6gLQHnxH
-         NLPVyoB0m+bCZ3oCH+Yc72zeXGu6f/ZGPql4l/VZWDRdFjo6kwPFihxht3/+djdhZyX1
-         ncVQ==
-X-Gm-Message-State: AOJu0YwBATwMDWXjGPcjFzIA7YqRCQH+nUSakeTsOS18yRryCXPvSyLi
-	HWoCUrB/vOKQ/vpgPjaJlEKT0HZuE3KL/yZWhDU=
-X-Google-Smtp-Source: AGHT+IEc6EgqOT3zTVEg2np101S995ycMLJ/8Szd+uMjyBhwO9sz6YXT+p1w2VTbeLW3f1iFxgsVuKsew3azO7AfTt4=
-X-Received: by 2002:a05:6902:4f1:b0:dbe:a6da:204d with SMTP id
- w17-20020a05690204f100b00dbea6da204dmr882032ybs.81.1704967708072; Thu, 11 Jan
- 2024 02:08:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 600E311737;
+	Thu, 11 Jan 2024 10:13:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A62EC433C7;
+	Thu, 11 Jan 2024 10:13:03 +0000 (UTC)
+Date: Thu, 11 Jan 2024 10:13:01 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ido Schimmel <idosch@idosch.org>
+Cc: Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org, will@kernel.org,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+	zhangzekun11@huawei.com, john.g.garry@oracle.com,
+	dheerajkumar.srivastava@amd.com, jsnitsel@redhat.com
+Subject: Re: [PATCH v3 0/2] iommu/iova: Make the rcache depot properly
+ flexible
+Message-ID: <ZZ-_LWz_4KxOkRsA@arm.com>
+References: <cover.1694535580.git.robin.murphy@arm.com>
+ <ZY1osaGLyT-sdKE8@shredder>
+ <c9cf02b5-7add-46ea-8db1-46fdce191c1c@arm.com>
+ <ZZ2AqZT4dD-s01q9@shredder>
+ <ab22c439-e7da-49b5-b20b-856daf376c02@arm.com>
+ <ZZ7atzgT6_kOvWnJ@arm.com>
+ <ZZ-ky9UCoHwbyqfn@shredder>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111070652.71717-1-pranavsubbu@gmail.com> <2024011144-silica-viral-9e79@gregkh>
- <CAP1Lp88vEZJtd69Njf9uZ5VXypwZ-5vLdBHf2xoLSpqmeyEQiA@mail.gmail.com>
- <CAP1Lp8-CP-uELVam=18oADOEvL_13wXkTyDLHKbjQe1ZyxiG9g@mail.gmail.com> <2024011144-sinister-baking-952d@gregkh>
-In-Reply-To: <2024011144-sinister-baking-952d@gregkh>
-From: Pranav Athreya <pranavsubbu@gmail.com>
-Date: Thu, 11 Jan 2024 15:38:16 +0530
-Message-ID: <CAP1Lp89zshQW_s0eLJjekr5tyc3XLaPnh2VGFrNDHTA7GT51ZQ@mail.gmail.com>
-Subject: Re: [PATCH] staging: vt6655: Remove extra blank lines between code blocks
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Forest Bond <forest@alittletooquiet.net>, linux-staging@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZ-ky9UCoHwbyqfn@shredder>
 
-On Thu, Jan 11, 2024 at 2:57=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> Yes, please read the kernel documentation for how to submit a new
-> version of a patch.
+On Thu, Jan 11, 2024 at 10:20:27AM +0200, Ido Schimmel wrote:
+> On Wed, Jan 10, 2024 at 05:58:15PM +0000, Catalin Marinas wrote:
+> > Transient false positives are possible, especially as the code doesn't
+> > use a double-linked list (for the latter, kmemleak does checksumming and
+> > detects the prev/next change, defers the reporting until the object
+> > becomes stable). That said, if a new scan is forced (echo scan >
+> > /sys/kernel/debug/kmemleak), are the same objects still listed as leaks?
+> > If yes, they may not be transient.
+> 
+> We are doing "scan" and "clear" after each test. I will disable the
+> "clear" and see if the leaks persist.
 
-Reading the docs now and will send the patch right after. My sincere
-apologies for the top posting.
+If it is indeed a false positive, you can try the patch below (I haven't
+given it any run-time test, only compiled):
 
-Yours Sincerely,
+diff --git a/Documentation/dev-tools/kmemleak.rst b/Documentation/dev-tools/kmemleak.rst
+index 2cb00b53339f..7d784e03f3f9 100644
+--- a/Documentation/dev-tools/kmemleak.rst
++++ b/Documentation/dev-tools/kmemleak.rst
+@@ -161,6 +161,7 @@ See the include/linux/kmemleak.h header for the functions prototype.
+ - ``kmemleak_free_percpu``	 - notify of a percpu memory block freeing
+ - ``kmemleak_update_trace``	 - update object allocation stack trace
+ - ``kmemleak_not_leak``	 - mark an object as not a leak
++- ``kmemleak_transient_leak``	 - mark an object as a transient leak
+ - ``kmemleak_ignore``		 - do not scan or report an object as leak
+ - ``kmemleak_scan_area``	 - add scan areas inside a memory block
+ - ``kmemleak_no_scan``	 - do not scan a memory block
+diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+index d30e453d0fb4..c1d0775080ff 100644
+--- a/drivers/iommu/iova.c
++++ b/drivers/iommu/iova.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/iova.h>
++#include <linux/kmemleak.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/smp.h>
+@@ -730,6 +731,11 @@ static struct iova_magazine *iova_depot_pop(struct iova_rcache *rcache)
+ {
+ 	struct iova_magazine *mag = rcache->depot;
+ 
++	/*
++	 * As the mag->next pointer is moved to rcache->depot and reset via
++	 * the mag->size assignment, mark the transient false positive.
++	 */
++	kmemleak_transient_leak(mag->next);
+ 	rcache->depot = mag->next;
+ 	mag->size = IOVA_MAG_SIZE;
+ 	rcache->depot_size--;
+diff --git a/include/linux/kmemleak.h b/include/linux/kmemleak.h
+index 6a3cd1bf4680..93a73c076d16 100644
+--- a/include/linux/kmemleak.h
++++ b/include/linux/kmemleak.h
+@@ -26,6 +26,7 @@ extern void kmemleak_free_part(const void *ptr, size_t size) __ref;
+ extern void kmemleak_free_percpu(const void __percpu *ptr) __ref;
+ extern void kmemleak_update_trace(const void *ptr) __ref;
+ extern void kmemleak_not_leak(const void *ptr) __ref;
++extern void kmemleak_transient_leak(const void *ptr) __ref;
+ extern void kmemleak_ignore(const void *ptr) __ref;
+ extern void kmemleak_scan_area(const void *ptr, size_t size, gfp_t gfp) __ref;
+ extern void kmemleak_no_scan(const void *ptr) __ref;
+@@ -93,6 +94,9 @@ static inline void kmemleak_update_trace(const void *ptr)
+ static inline void kmemleak_not_leak(const void *ptr)
+ {
+ }
++static inline void kmemleak_transient_leak(const void *ptr)
++{
++}
+ static inline void kmemleak_ignore(const void *ptr)
+ {
+ }
+diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+index 5501363d6b31..9fd338063cea 100644
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -915,6 +915,28 @@ static void make_black_object(unsigned long ptr, bool is_phys)
+ 	paint_ptr(ptr, KMEMLEAK_BLACK, is_phys);
+ }
+ 
++/*
++ * Reset the checksum of an object. The immediate effect is that it will not
++ * be reported as a leak during the next scan until its checksum is updated.
++ */
++static void reset_checksum(unsigned long ptr)
++{
++	unsigned long flags;
++	struct kmemleak_object *object;
++
++	object = find_and_get_object(ptr, 0);
++	if (!object) {
++		kmemleak_warn("Not resetting the checksum of an unknown object at 0x%08lx\n",
++			      ptr);
++		return;
++	}
++
++	raw_spin_lock_irqsave(&object->lock, flags);
++	object->checksum = 0;
++	raw_spin_unlock_irqrestore(&object->lock, flags);
++	put_object(object);
++}
++
+ /*
+  * Add a scanning area to the object. If at least one such area is added,
+  * kmemleak will only scan these ranges rather than the whole memory block.
+@@ -1194,6 +1216,23 @@ void __ref kmemleak_not_leak(const void *ptr)
+ }
+ EXPORT_SYMBOL(kmemleak_not_leak);
+ 
++/**
++ * kmemleak_transient_leak - mark an allocated object as transient false positive
++ * @ptr:	pointer to beginning of the object
++ *
++ * Calling this function on an object will cause the memory block to not be
++ * reported as a leak temporarily. This may happen, for example, if the object
++ * is part of a singly linked list and the ->next reference it is changed.
++ */
++void __ref kmemleak_transient_leak(const void *ptr)
++{
++	pr_debug("%s(0x%px)\n", __func__, ptr);
++
++	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
++		reset_checksum((unsigned long)ptr);
++}
++EXPORT_SYMBOL(kmemleak_transient_leak);
++
+ /**
+  * kmemleak_ignore - ignore an allocated object
+  * @ptr:	pointer to beginning of the object
 
-Pranav.
+-- 
+Catalin
 
