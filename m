@@ -1,65 +1,70 @@
-Return-Path: <linux-kernel+bounces-23214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05F6382A908
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:23:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB5FA82A90A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F98A289354
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:23:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 263EDB262B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3195EAD9;
-	Thu, 11 Jan 2024 08:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E5BF9C8;
+	Thu, 11 Jan 2024 08:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qQb58Du0"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZZGX4L9W"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997FBE55F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:21:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e5451c13aso21658105e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:21:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704961305; x=1705566105; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g+INtuCzXZMB5vPoBtDF4HGWZCz4QqAdQc9inSH6V3I=;
-        b=qQb58Du0Wj8Q8giyu+BPdZTKvJaSRejOzDYezEyGnU2yMU06DMNUGQNxjyAF40URH+
-         rKazTVUi3wyafvCQvq3fzcBc2YuGvVmXPtip1j7cWXM1+kFAUN9jQ2muHqtB/3FCyYdU
-         QSUilQAbGSFwvcp5E8B935qz7YpajDbk3aObLV4ECP7S8ofTHob3P/HBGpOxfSJ/yFPc
-         BCPs+im+5PX4DhyktIEDMZMsDrYp3OLOC4oR7J3hHXaT8aJ00bNIHAo32Bc2p3qRu6g1
-         ooPqDqdiCnnukALOfY68aQAHHLGnBrZtEbAsHaW8iogJ9IANrnzWzf+4KQR7mG10vn4s
-         nh7w==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C18FF517
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704961383;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=FFrOhLqLHBhQK8g4tGHoyZu2BFidPN3Brloj+ylOX7k=;
+	b=ZZGX4L9WbcmxBjw95dBTUN1mM8zzTMb7jXLOLfHD4MpNcpyltYLwq2q5vjqLkNebfEHEnP
+	Ik9kgVyTB/hDVQA/l8cx8BJt1eeNA7EBLfXzBoTqLWYTUfSEN/BK58HvLLn87V7e/anH3D
+	zRxiIa8ow2DO8QqQDpauMw5hc6Ai628=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-64-nG-O8M7sMUqQ_6xxLifg3Q-1; Thu, 11 Jan 2024 03:23:01 -0500
+X-MC-Unique: nG-O8M7sMUqQ_6xxLifg3Q-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3369382a524so3217007f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:22:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704961305; x=1705566105;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=g+INtuCzXZMB5vPoBtDF4HGWZCz4QqAdQc9inSH6V3I=;
-        b=KXU/ZZmdcWlFV9L4IzLnVqssXa2pEn4vWVT1atiV4w3rIacWcyqm0Oq7cixqouGHlF
-         P2mYYF6wgdSUV/67/GyUmY6b/8X6yB1D4mh9KfZcz5DUn9w1FkpspjVIisum/12cOY1i
-         7eDxTEsRKoZxidoc/DClyWOopRlpMloD0yNtor2QWSYMrvkNMhurGFKcX2g4i1u6tn0h
-         RKdzpCyauS/gs5a4ogPxY02tj0K+sfaY3SVHIk+HGEq77uKZ3EUConyLKPmO3yjKkcNY
-         PNWX7Ir57La1pfpIVR99ldtXzMKmoA6PLqBLCAntAO7t3Lr2+xjzH8cbECq7pa/Iqu+L
-         xINA==
-X-Gm-Message-State: AOJu0YzRxhxkBVnvSGs5hxEaeP1Frtnoo4lKud97JMFu7gy2X3yTckH6
-	FQdJdsAUMbJbAHIdTu+NJre5SVYIFJWs3w==
-X-Google-Smtp-Source: AGHT+IGKYSJFYYftTbEsXewabF8ly7Uq9Hr2T4UxRu3h0Kf1/AGZ26ERGkOmIN6op9zO12N2BBHMwA==
-X-Received: by 2002:a05:600c:3108:b0:40e:5ebb:6af6 with SMTP id g8-20020a05600c310800b0040e5ebb6af6mr126557wmo.245.1704961304836;
-        Thu, 11 Jan 2024 00:21:44 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:a5aa:e466:ae57:5a26? ([2a01:e0a:982:cbb0:a5aa:e466:ae57:5a26])
-        by smtp.gmail.com with ESMTPSA id j27-20020adfb31b000000b00336e32338f3sm550474wrd.70.2024.01.11.00.21.43
+        d=1e100.net; s=20230601; t=1704961378; x=1705566178;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FFrOhLqLHBhQK8g4tGHoyZu2BFidPN3Brloj+ylOX7k=;
+        b=kGBDS4DyXtocW/TmlE6M47o3SBuBdnoyelYibmVSokMWA3KG7/kh01EQNGmKo+1r7m
+         QwJavZOJmHzBkUHwrSAR5h2nFm1OamQPUbOzz9n/u+LUVw6ahAa3e60Dyq2BSODEOGel
+         rcCX/chSvMSDZLpBOLdVM64MzfwrV1SMme57ZnpnjhKrhQ1bbNnwchZrBze5SlVgDks2
+         UDczDjU4fhJZAh0aLNckZRGfO7BR8uE+V4eZBKEUKBd80gRLEcDgnrT3ZTh0FZ0yL+NM
+         RwO8Z9X6PeEaI0d1W1oxwgGXftWlFSnb4owLUTPatVODI2HKHeHFwMXAwtPROukaBTjU
+         dEqw==
+X-Gm-Message-State: AOJu0YwOTg996ON5KC5dAqNyT0mGF1CycPjquIndoWHKH+Ok/9Uwgxbg
+	X/CrpCymK1MyW38ZNFYucrQdPDeXnFvJOEYT0WLQp43/m0eJllrytsAZxBG4sJg70IIGGtABz/L
+	zgWr95xfQaF+G3m7bNsp0kdsyjfLRzyiC31rDchh5
+X-Received: by 2002:adf:ffc8:0:b0:337:76ae:34ca with SMTP id x8-20020adfffc8000000b0033776ae34camr400228wrs.77.1704961378408;
+        Thu, 11 Jan 2024 00:22:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEawcpZkYtraT+cyYdKb8F1YNsa2W9psfYa7+2lJDiyznBOcY6bZt6Ki/naLMqjKzSkOlIwCg==
+X-Received: by 2002:adf:ffc8:0:b0:337:76ae:34ca with SMTP id x8-20020adfffc8000000b0033776ae34camr400222wrs.77.1704961377953;
+        Thu, 11 Jan 2024 00:22:57 -0800 (PST)
+Received: from ?IPV6:2003:cb:c747:f900:6099:1901:b863:450f? (p200300cbc747f90060991901b863450f.dip0.t-ipconnect.de. [2003:cb:c747:f900:6099:1901:b863:450f])
+        by smtp.gmail.com with ESMTPSA id q2-20020a056000136200b003373fe3d345sm555704wrz.65.2024.01.11.00.22.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 00:21:44 -0800 (PST)
-Message-ID: <1a3b5004-751a-4479-be89-97265ca63d92@linaro.org>
-Date: Thu, 11 Jan 2024 09:21:43 +0100
+        Thu, 11 Jan 2024 00:22:57 -0800 (PST)
+Message-ID: <dfb2662d-900e-4b36-b2a0-78ad7f397861@redhat.com>
+Date: Thu, 11 Jan 2024 09:22:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,232 +72,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v1 01/24] drivers: crypto: meson: don't hardcode IRQ count
-Content-Language: en-US, fr
-To: Alexey Romanov <avromanov@salutedevices.com>, narmstrong@baylibre.com,
- clabbe@baylibre.com, herbert@gondor.apana.org.au, davem@davemloft.net,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- khilman@baylibre.com, jbrunet@baylibre.com, artin.blumenstingl@googlemail.com
-Cc: linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com,
- Jan Dakinevich <yvdakinevich@salutedevices.com>
-References: <20240110201216.18016-1-avromanov@salutedevices.com>
- <20240110201216.18016-2-avromanov@salutedevices.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240110201216.18016-2-avromanov@salutedevices.com>
+Subject: Re: [PATCH] driver/virtio: Add Memory Balloon Support for SEV/SEV-ES
+To: Zheyun Shen <szy0127@sjtu.edu.cn>, Jason Wang <jasowang@redhat.com>,
+ mst <mst@redhat.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+ virtualization <virtualization@lists.linux.dev>,
+ xuanzhuo <xuanzhuo@linux.alibaba.com>
+References: <1824181559.1228150.1704954908335.JavaMail.zimbra@sjtu.edu.cn>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <1824181559.1228150.1704954908335.JavaMail.zimbra@sjtu.edu.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 10/01/2024 21:11, Alexey Romanov wrote:
-> IRQ count is no longer hardcoded, and make it part of
-> struct meson_flow. We need this for extend driver support for
-> other Amlogic SoC's.
-
-In this case you must make the interrupts maxItems lower for the new platforms in the bindings.
-
-Neil
-
+>>> For now, SEV pins guest's memory to avoid swapping or
+>>> moving ciphertext, but leading to the inhibition of
+>>> Memory Ballooning.
+>>>
+>>> In Memory Ballooning, only guest's free pages will be relocated
+>>> in balloon inflation and deflation, so the difference of plaintext
+>>> doesn't matter to guest.
 > 
-> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
-> Signed-off-by: Jan Dakinevich <yvdakinevich@salutedevices.com>
-> ---
->   drivers/crypto/amlogic/amlogic-gxl-cipher.c |  2 +-
->   drivers/crypto/amlogic/amlogic-gxl-core.c   | 47 ++++++++++++---------
->   drivers/crypto/amlogic/amlogic-gxl.h        |  8 ++--
->   3 files changed, 31 insertions(+), 26 deletions(-)
+>> This seems only true if the page is zeroed, is this true here?
 > 
-> diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-> index af017a087ebf..e01ed6347c3d 100644
-> --- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-> +++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-> @@ -19,7 +19,7 @@
->   
->   static int get_engine_number(struct meson_dev *mc)
->   {
-> -	return atomic_inc_return(&mc->flow) % MAXFLOW;
-> +	return atomic_inc_return(&mc->flow) % mc->flow_cnt;
->   }
->   
->   static bool meson_cipher_need_fallback(struct skcipher_request *areq)
-> diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
-> index 937187027ad5..a5df061f9890 100644
-> --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
-> +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
-> @@ -26,8 +26,8 @@ static irqreturn_t meson_irq_handler(int irq, void *data)
->   	int flow;
->   	u32 p;
->   
-> -	for (flow = 0; flow < MAXFLOW; flow++) {
-> -		if (mc->irqs[flow] == irq) {
-> +	for (flow = 0; flow < mc->flow_cnt; flow++) {
-> +		if (mc->chanlist[flow].irq == irq) {
->   			p = readl(mc->base + ((0x04 + flow) << 2));
->   			if (p) {
->   				writel_relaxed(0xF, mc->base + ((0x4 + flow) << 2));
-> @@ -103,7 +103,7 @@ static int meson_debugfs_show(struct seq_file *seq, void *v)
->   	struct meson_dev *mc = seq->private;
->   	int i;
->   
-> -	for (i = 0; i < MAXFLOW; i++)
-> +	for (i = 0; i < mc->flow_cnt; i++)
->   		seq_printf(seq, "Channel %d: nreq %lu\n", i, mc->chanlist[i].stat_req);
->   
->   	for (i = 0; i < ARRAY_SIZE(mc_algs); i++) {
-> @@ -138,14 +138,32 @@ static void meson_free_chanlist(struct meson_dev *mc, int i)
->    */
->   static int meson_allocate_chanlist(struct meson_dev *mc)
->   {
-> +	struct platform_device *pdev = to_platform_device(mc->dev);
->   	int i, err;
->   
-> -	mc->chanlist = devm_kcalloc(mc->dev, MAXFLOW,
-> +	mc->flow_cnt = platform_irq_count(pdev);
-> +	if (mc->flow_cnt <= 0) {
-> +		dev_err(mc->dev, "No IRQs defined\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	mc->chanlist = devm_kcalloc(mc->dev, mc->flow_cnt,
->   				    sizeof(struct meson_flow), GFP_KERNEL);
->   	if (!mc->chanlist)
->   		return -ENOMEM;
->   
-> -	for (i = 0; i < MAXFLOW; i++) {
-> +	for (i = 0; i < mc->flow_cnt; i++) {
-> +		mc->chanlist[i].irq = platform_get_irq(pdev, i);
-> +		if (mc->chanlist[i].irq < 0)
-> +			return mc->chanlist[i].irq;
-> +
-> +		err = devm_request_irq(mc->dev, mc->chanlist[i].irq,
-> +				       meson_irq_handler, 0, "aml-crypto", mc);
-> +		if (err < 0) {
-> +			dev_err(mc->dev, "Cannot request IRQ for flow %d\n", i);
-> +			return err;
-> +		}
-> +
->   		init_completion(&mc->chanlist[i].complete);
->   
->   		mc->chanlist[i].engine = crypto_engine_alloc_init(mc->dev, true);
-> @@ -215,7 +233,7 @@ static void meson_unregister_algs(struct meson_dev *mc)
->   static int meson_crypto_probe(struct platform_device *pdev)
->   {
->   	struct meson_dev *mc;
-> -	int err, i;
-> +	int err;
->   
->   	mc = devm_kzalloc(&pdev->dev, sizeof(*mc), GFP_KERNEL);
->   	if (!mc)
-> @@ -237,19 +255,6 @@ static int meson_crypto_probe(struct platform_device *pdev)
->   		return err;
->   	}
->   
-> -	for (i = 0; i < MAXFLOW; i++) {
-> -		mc->irqs[i] = platform_get_irq(pdev, i);
-> -		if (mc->irqs[i] < 0)
-> -			return mc->irqs[i];
-> -
-> -		err = devm_request_irq(&pdev->dev, mc->irqs[i], meson_irq_handler, 0,
-> -				       "gxl-crypto", mc);
-> -		if (err < 0) {
-> -			dev_err(mc->dev, "Cannot request IRQ for flow %d\n", i);
-> -			return err;
-> -		}
-> -	}
-> -
->   	err = clk_prepare_enable(mc->busclk);
->   	if (err != 0) {
->   		dev_err(&pdev->dev, "Cannot prepare_enable busclk\n");
-> @@ -273,7 +278,7 @@ static int meson_crypto_probe(struct platform_device *pdev)
->   error_alg:
->   	meson_unregister_algs(mc);
->   error_flow:
-> -	meson_free_chanlist(mc, MAXFLOW - 1);
-> +	meson_free_chanlist(mc, mc->flow_cnt - 1);
->   	clk_disable_unprepare(mc->busclk);
->   	return err;
->   }
-> @@ -288,7 +293,7 @@ static int meson_crypto_remove(struct platform_device *pdev)
->   
->   	meson_unregister_algs(mc);
->   
-> -	meson_free_chanlist(mc, MAXFLOW - 1);
-> +	meson_free_chanlist(mc, mc->flow_cnt - 1);
->   
->   	clk_disable_unprepare(mc->busclk);
->   	return 0;
-> diff --git a/drivers/crypto/amlogic/amlogic-gxl.h b/drivers/crypto/amlogic/amlogic-gxl.h
-> index 8c0746a1d6d4..e5cc6e028fa8 100644
-> --- a/drivers/crypto/amlogic/amlogic-gxl.h
-> +++ b/drivers/crypto/amlogic/amlogic-gxl.h
-> @@ -22,8 +22,6 @@
->   #define MESON_OPMODE_ECB 0
->   #define MESON_OPMODE_CBC 1
->   
-> -#define MAXFLOW 2
-> -
->   #define MAXDESC 64
->   
->   #define DESC_LAST BIT(18)
-> @@ -62,6 +60,7 @@ struct meson_desc {
->    * @keylen:	keylen for this flow operation
->    * @complete:	completion for the current task on this flow
->    * @status:	set to 1 by interrupt if task is done
-> + * @irq:	IRQ number for amlogic-crypto
->    * @t_phy:	Physical address of task
->    * @tl:		pointer to the current ce_task for this flow
->    * @stat_req:	number of request done by this flow
-> @@ -70,6 +69,7 @@ struct meson_flow {
->   	struct crypto_engine *engine;
->   	struct completion complete;
->   	int status;
-> +	int irq;
->   	unsigned int keylen;
->   	dma_addr_t t_phy;
->   	struct meson_desc *tl;
-> @@ -85,7 +85,7 @@ struct meson_flow {
->    * @dev:	the platform device
->    * @chanlist:	array of all flow
->    * @flow:	flow to use in next request
-> - * @irqs:	IRQ numbers for amlogic-crypto
-> + * @flow_cnt:	flow count for amlogic-crypto
->    * @dbgfs_dir:	Debugfs dentry for statistic directory
->    * @dbgfs_stats: Debugfs dentry for statistic counters
->    */
-> @@ -95,7 +95,7 @@ struct meson_dev {
->   	struct device *dev;
->   	struct meson_flow *chanlist;
->   	atomic_t flow;
-> -	int irqs[MAXFLOW];
-> +	int flow_cnt;
->   #ifdef CONFIG_CRYPTO_DEV_AMLOGIC_GXL_DEBUG
->   	struct dentry *dbgfs_dir;
->   #endif
+> Sorry, I cannot figure out why the pages should be zeroed. I think
+> both host kernel and guest kernel assume that the pages are not
+> zeroed and will use kzalloc or manually zero them in real applications,
+> which is same as non-SEV environments.
+
+balloon_page_alloc() will not zero the memory (no __GFP_ZERO set). Only 
+in some configurations (zero-on-alloc, zero-on-free), the kernel would 
+do that implicitly.
+
+So we'd eventually be leaking secrets to the untrusted hypervisor?
+
+
+> I have tested in SEV-ES, reclaiming memory by balloon inflation and reuse
+> them after balloon deflation both works well with the patch. Hypervisor
+> can normally give the reclaimed memory from one CVM to another, or give
+> back to the origin CVM.
+
+I'll comment on your misconception of memory overcommit separately.
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
