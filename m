@@ -1,63 +1,38 @@
-Return-Path: <linux-kernel+bounces-23650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89AC082AF9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:24:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571D782AF46
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:14:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B33D0B269AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:24:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B43001F22A2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FFC358AC;
-	Thu, 11 Jan 2024 13:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446DB1640B;
+	Thu, 11 Jan 2024 13:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkE+6dYm"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kna0unYg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAFB38DF4;
-	Thu, 11 Jan 2024 13:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e60e135a7so4268655e9.0;
-        Thu, 11 Jan 2024 05:22:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704979339; x=1705584139; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sDkpti5QnC20mGTE6Quk7MeID3t58utIY/P3B/Bf2Go=;
-        b=GkE+6dYmsRQ0QJHsxs77Ws3Rv7OUk3xKxEacg9twj521ty1sre6ccWlQR5zEddL55L
-         yqtloLusw83a0qJHTrQHpUSmzjI1g7r6cCCLv5qoZa8/e0xBSadIi+uvJ3CLXtzesoMR
-         dUAFmLN68OEuvKu+kBPHn/fxSNFk7ti1bdMbkTJkEMRbWK3rGPiC6CkZf/JvDqrvj4oP
-         4Q1kf6vVLIKJUSJgESm6D2MltgY2YKX4p0PhbkKYlEKuXRxmgts6elhVYiXL6m48AVX+
-         0Nn7DiXA7QF0Yz1WiLlMHP6VOQd7CaaBCh+dNE980MjrTOfIOUnJx0PgVsGrSI0uuDRT
-         rPRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704979339; x=1705584139;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sDkpti5QnC20mGTE6Quk7MeID3t58utIY/P3B/Bf2Go=;
-        b=C1CYdrvrwTkDU2xecyVKIw6hoQ0FUz3/XOoWRhUt68Efdh4FdB8oZyFIl2KhACuAxs
-         BcLqbb+roI2STNrA5Ik2wKepaDl6GjvQwC0/ekX3QMV3A5zhLc37sraUm8x7N0GixxzU
-         55dp7m84NEL8+e5TT6OCAdY2J7eKH6Oiiy1SKvobZjAQ+hhAzmV6eSHvmkIj1l2Kq9cg
-         hMiRXFzFp1bY47BO69d+lI7Gisw0P8T9yMEUEo3pqZG4RQ8x9Jorm24dBabKBGn/UESO
-         jBqj5lB2x/OGMo55rQqKzVPbfWHjIZAgo4wzod56JmSD3fU9uojadA28i7x+UGsWy4+4
-         NiMQ==
-X-Gm-Message-State: AOJu0Yzq3ANq70E3SRWKdObKRXqAwGAm5/6MlGqAgqT7/utiTEyASXaS
-	rinWztS9jQQBBsb9EAQEiDTsgIg8BHw=
-X-Google-Smtp-Source: AGHT+IG8TJ20wwkiN5fvnJyYn2Xy5/6wc+hbl93MAAiRwbX/x1uENpBozNWS/ndF2kUI+Ib+8lG6lA==
-X-Received: by 2002:a05:600c:4e91:b0:40e:532c:7cb1 with SMTP id f17-20020a05600c4e9100b0040e532c7cb1mr505653wmq.125.1704979338631;
-        Thu, 11 Jan 2024 05:22:18 -0800 (PST)
-Received: from ?IPV6:2620:10d:c096:310::2eef? ([2620:10d:c092:600::1:18af])
-        by smtp.gmail.com with ESMTPSA id fl13-20020a05600c0b8d00b0040d8cd116e4sm5854091wmb.37.2024.01.11.05.22.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 05:22:18 -0800 (PST)
-Message-ID: <bd9b3982-95ca-4789-a3d5-6c456083248b@gmail.com>
-Date: Thu, 11 Jan 2024 13:12:36 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4640E15EB9;
+	Thu, 11 Jan 2024 13:14:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B237DC433F1;
+	Thu, 11 Jan 2024 13:14:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704978863;
+	bh=7BVwidNlNPdO0dBFOWV0pZxnwTswSlr2V87WoJyHK+A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Kna0unYgE1zuYS4t2T9ShB00bWyUevyGoNyKE2U2W1EJ9Cat4DnPBvUWiL+PQIXL7
+	 D+kmrHYHBnp/Zogn+DqV0jtaIFuY1FbwcYUMpI43m0SloILY0wVLDbEz9h0/YUQCQ0
+	 nqwlhd38hHh/LYlVNcR80luTUj5hjrnOx8rBJqnY5tuLrAoUlMhg/5YXVOcM9yScWZ
+	 ZtcTX9wfSfCP9VAtsUzArxMy6ggPh38iZ/ZmDXZrQe3GZvD+qOYPecwV3sL+G6Ck1B
+	 j/N8fWpyBnftzyDzNJvyEiRvZ1aW/NnzYA6M8gR/GqX5YtlCH/7o2sUpqdesPiSWc+
+	 jVSM/h8IFkSfg==
+Message-ID: <96719046-d391-42be-8abc-564c9c909b97@kernel.org>
+Date: Thu, 11 Jan 2024 15:14:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,128 +40,265 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
- threads.
-To: Xiaobing Li <xiaobing.li@samsung.com>
-Cc: axboe@kernel.dk, linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
- kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
- kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com
-References: <c9505525-54d9-4610-a47a-5f8d2d3f8de6@gmail.com>
- <CGME20240110091327epcas5p493e0d77a122a067b6cd41ecbf92bd6eb@epcas5p4.samsung.com>
- <20240110090523.1612321-1-xiaobing.li@samsung.com>
+Subject: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
+To: Tomeu Vizoso <tomeu@tomeuvizoso.net>,
+ Cancan Chang <Cancan.Chang@amlogic.com>
+Cc: Jagan Teki <jagan@edgeble.ai>, linux-media <linux-media@vger.kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Dave Airlie
+ <airlied@redhat.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <SEYPR03MB704641091854162959578D7E9AFFA@SEYPR03MB7046.apcprd03.prod.outlook.com>
+ <CA+VMnFyhp9D8cjtvLVzdKGETouOuH=MKgjOu1pn00WDRB=5oUg@mail.gmail.com>
+ <CAFCwf12sUL5bcXhYKwRkMxLtSDtLfTK003oxkRDVmThx1ARV-A@mail.gmail.com>
+ <SEYPR03MB70462A385A52A317427E93B59AFCA@SEYPR03MB7046.apcprd03.prod.outlook.com>
+ <CAFCwf11hxBpg3T6MoVrL0GaOD_=xB+-dWeEtDH0cCyzyQ-q1tg@mail.gmail.com>
+ <SEYPR03MB70463AEED951A0E2C18481099AC2A@SEYPR03MB7046.apcprd03.prod.outlook.com>
+ <CAFCwf13ZiYYoXE+S_wQ_EhjiACPGJGT+70_stwpY_=aD=VYa4A@mail.gmail.com>
+ <SEYPR03MB704690FD9116A31D6FBCF32A9AC1A@SEYPR03MB7046.apcprd03.prod.outlook.com>
+ <CAFCwf128vYZ+EGHvZD0_ND2CGBzwMKk6OyhVRW_z=xCOSmi47w@mail.gmail.com>
+ <SEYPR03MB7046F74834B7D789C2DD4E459AC1A@SEYPR03MB7046.apcprd03.prod.outlook.com>
+ <CAFCwf10HAi+HEEWy=C4395eaHh_iSmcW1v87A+1J8QN9_P7tUQ@mail.gmail.com>
+ <SEYPR03MB704698F40D90FF6B50D72AC39AC8A@SEYPR03MB7046.apcprd03.prod.outlook.com>
+ <CAAObsKBpD3D76_ugTYDT8p-Fhb6zXOmQQP0yb7qj9jK+=JrqgA@mail.gmail.com>
 Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20240110090523.1612321-1-xiaobing.li@samsung.com>
+From: Oded Gabbay <ogabbay@kernel.org>
+In-Reply-To: <CAAObsKBpD3D76_ugTYDT8p-Fhb6zXOmQQP0yb7qj9jK+=JrqgA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 1/10/24 09:05, Xiaobing Li wrote:
-> On 1/5/24 04:02 AM, Pavel Begunkov wrote:
->> On 1/3/24 05:49, Xiaobing Li wrote:
->>> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
->>>> Why it uses jiffies instead of some task run time?
->>>> Consequently, why it's fine to account irq time and other
->>>> preemption? (hint, it's not)
->>>>
->>>> Why it can't be done with userspace and/or bpf? Why
->>>> can't it be estimated by checking and tracking
->>>> IORING_SQ_NEED_WAKEUP in userspace?
->>>>
->>>> What's the use case in particular? Considering that
->>>> one of the previous revisions was uapi-less, something
->>>> is really fishy here. Again, it's a procfs file nobody
->>>> but a few would want to parse to use the feature.
->>>>
->>>> Why it just keeps aggregating stats for the whole
->>>> life time of the ring? If the workload changes,
->>>> that would either totally screw the stats or would make
->>>> it too inert to be useful. That's especially relevant
->>>> for long running (days) processes. There should be a
->>>> way to reset it so it starts counting anew.
+On 11/01/2024 10:04, Tomeu Vizoso wrote:
+> Hi Oded,
+> 
+> Out of curiosity, did you end up taking a look at Amlogic's driver?
+> 
+> Cheers,
+> 
+> Tomeu
+Hi Tomeu,
+Yes, I have looked at the driver's code. It was not an in-depth review, 
+but I tried to mainly understand the features the driver provide to the 
+user and how much complex it is.
+
+ From what I could see, this is a full-fledged accelerator which 
+requires command submission/completion handling, memory management, 
+information and debug capabilities and more.
+
+Therefore, I do think the correct place is in the accel sub-system, 
+which will require you to convert the driver to use drm (we can discuss 
+exactly what is the level of integration required).
+
+As I said, I didn't do a full-fledged review, but please note the driver 
+has a lot of OS-wrapper code, which is not acceptable in the Linux 
+kernel, so you will have to clean all the up.
+
+Thanks,
+Oded
+
+> 
+> On Sat, Oct 7, 2023 at 8:37 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
+>>
+>> Oded,
+>>         You can get the driver code from  github link： https://github.com/OldDaddy9/driver
+>>          e.g.  git clone https://github.com/OldDaddy9/driver.git
+>>
+>> ________________________________________
+>> 发件人: Oded Gabbay <ogabbay@kernel.org>
+>> 发送时间: 2023年10月3日 18:52
+>> 收件人: Cancan Chang
+>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
+>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
+>>
+>> [ EXTERNAL EMAIL ]
+>>
+>> On Thu, Sep 28, 2023 at 11:16 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
 >>>
->>> Hi, Jens and Pavel,
->>> I carefully read the questions you raised.
->>> First of all, as to why I use jiffies to statistics time, it
->>> is because I have done some performance tests and found that
->>> using jiffies has a relatively smaller loss of performance
->>> than using task run time. Of course, using task run time is
+>>> “What happens if you call this again without waiting for the previous
+>>> inference to complete ?”
+>>>     --- There is a work-queue in the driver to manage inference tasks.
+>>>           When two consecutive inference tasks occur, the second inference task will be add to
+>>>           the "pending list". While the previous inference task ends, the second inference task will
+>>>           switch to the "scheduled list", and be executed.
+>>>           Each inference task has an id,  "inferece" and "wait until finish" are paired.
+>>>
+>>>           thanks
+>> Thanks for the clarification.
+>> I'll wait for your driver's code link. It doesn't have to be a patch
+>> series at this point. A link to a git repo is enough.
+>> I just want to do a quick pass.
 >>
->> How does taking a measure for task runtime looks like? I expect it to
->> be a simple read of a variable inside task_struct, maybe with READ_ONCE,
->> in which case the overhead shouldn't be realistically measurable. Does
->> it need locking?
-> 
-> The task runtime I am talking about is similar to this:
-> start = get_system_time(current);
-> do_io_part();
-> sq->total_time += get_system_time(current) - start;
-> 
-> Currently, it is not possible to obtain the execution time of a piece of
-> code by a simple read of a variable inside task_struct.
-> Or do you have any good ideas?
-
-Jens answered it well
-
->>> indeed more accurate.  But in fact, our requirements for
->>> accuracy are not particularly high, so after comprehensive
+>> Thanks,
+>> Oded
 >>
->> I'm looking at it as a generic feature for everyone, and the
->> accuracy behaviour is dependent on circumstances. High load
->> networking spends quite a good share of CPU in softirq, and
->> preemption would be dependent on config, scheduling, pinning,
->> etc.
-> 
-> Yes, I quite agree that the accuracy behaviour is dependent on circumstances.
-> In fact, judging from some test results we have done, the current solution
-> can basically meet everyone's requirements, and the error in the calculation
-> result of utilization is estimated to be within 0.5%.
-
-Which sounds more than fine, but there are cases where irqs are
-eating up 10s of percents of CPU, which is likely to be more
-troublesome.
-
->>> consideration, we finally chose to use jiffies.
->>> Of course, if you think that a little more performance loss
->>> here has no impact, I can use task run time instead, but in
->>> this case, does the way of calculating sqpoll thread timeout
->>> also need to be changed, because it is also calculated through
->>> jiffies.
 >>
->> That's a good point. It doesn't have to change unless you're
->> directly inferring the idle time parameter from those two
->> time values rather than using the ratio. E.g. a simple
->> bisection of the idle time based on the utilisation metric
->> shouldn't change. But that definitely raises the question
->> what idle_time parameter should exactly mean, and what is
->> more convenient for algorithms.
-> 
-> We think that idle_time represents the time spent by the sqpoll thread
-> except for submitting IO.
+>>
+>>>
+>>> ________________________________________
+>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
+>>> 发送时间: 2023年9月28日 15:40
+>>> 收件人: Cancan Chang
+>>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
+>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
+>>>
+>>> [ EXTERNAL EMAIL ]
+>>>
+>>> On Thu, Sep 28, 2023 at 10:25 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
+>>>>
+>>>> “Could you please post a link to the driver's source code ?
+>>>> In addition, could you please elaborate which userspace libraries
+>>>> exists that work with your driver ? Are any of them open-source ?”
+>>>> --- We will prepare the adla driver link after the holiday on October 6th.
+>>>>       It's a pity that there is no open-source userspace library.
+>>>>       But you can probably understand it through a workflow, which can be simplified as:
+>>>>       1. create model context
+>>>>            ret = ioctl(context->fd, ADLAK_IOCTL_REGISTER_NETWORK, &desc);
+>>>>       2.  set inputs
+>>>>       3.  inference
+>>>>             ret = ioctl(context->fd, ADLAK_IOCTL_INVOKE, &invoke_dec);
+>>> What happens if you call this again without waiting for the previous
+>>> inference to complete ?
+>>> Oded
+>>>>       4.  wait for the inference to complete
+>>>>             ret = ioctl(context->fd, ADLAK_IOCTL_WAIT_UNTIL_FINISH, &stat_req_desc);
+>>>>       5.  destroy model context
+>>>>             ret = ioctl(context->fd, ADLAK_IOCTL_DESTROY_NETWORK, &submit_del);
+>>>>
+>>>>
+>>>>        thanks
+>>>>
+>>>>
+>>>> ________________________________________
+>>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
+>>>> 发送时间: 2023年9月28日 13:28
+>>>> 收件人: Cancan Chang
+>>>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
+>>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
+>>>>
+>>>> [ EXTERNAL EMAIL ]
+>>>>
+>>>> On Wed, Sep 27, 2023 at 10:01 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
+>>>>>
+>>>>> “Or do you handle one cmd at a time, where the user sends a cmd buffer
+>>>>> to the driver and the driver then submit it by writing to a couple of
+>>>>> registers and polls on some status register until its done, or waits
+>>>>> for an interrupt to mark it as done ?”
+>>>>>    --- yes， user sends a cmd buffer to driver, and driver triggers hardware by writing to register,
+>>>>>          and then, waits for an interrupt to mark it  as done.
+>>>>>
+>>>>>      My current driver is very different from drm, so I want to know if I have to switch to drm？
+>>>> Could you please post a link to the driver's source code ?
+>>>> In addition, could you please elaborate which userspace libraries
+>>>> exists that work with your driver ? Are any of them open-source ?
+>>>>
+>>>>>      Maybe I can refer to /driver/accel/habanalabs.
+>>>> That's definitely a possibility.
+>>>>
+>>>> Oded
+>>>>>
+>>>>> thanks
+>>>>>
+>>>>> ________________________________________
+>>>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
+>>>>> 发送时间: 2023年9月26日 20:54
+>>>>> 收件人: Cancan Chang
+>>>>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
+>>>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
+>>>>>
+>>>>> [ EXTERNAL EMAIL ]
+>>>>>
+>>>>> On Mon, Sep 25, 2023 at 12:29 PM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
+>>>>>>
+>>>>>> Thank you for your reply from Jagan & Oded.
+>>>>>>
+>>>>>> It is very appropritate for my driver to be placed in driver/accel.
+>>>>>>
+>>>>>> My accelerator is named ADLA(Amlogic Deep Learning Accelerator).
+>>>>>> It is an IP in SOC,mainly used for neural network models acceleration.
+>>>>>> It will split and compile the neural network model into a private format cmd buffer,
+>>>>>> and submit this cmd buffer to ADLA hardware. It is not programmable device.
+>>>>> What exactly does it mean to "submit this cmd buffer to ADLA hardware" ?
+>>>>>
+>>>>> Does your h/w provides queues for the user/driver to put their
+>>>>> workloads/cmd-bufs on them ? And does it provide some completion queue
+>>>>> to notify when the work is completed?
+>>>>>
+>>>>> Or do you handle one cmd at a time, where the user sends a cmd buffer
+>>>>> to the driver and the driver then submit it by writing to a couple of
+>>>>> registers and polls on some status register until its done, or waits
+>>>>> for an interrupt to mark it as done ?
+>>>>>
+>>>>>>
+>>>>>> ADLA includes four hardware engines:
+>>>>>> RS engines             : working for the reshape operators
+>>>>>> MAC engines         : working for the convolution operators
+>>>>>> DW engines           : working for the planer & Elementwise operators
+>>>>>> Activation engines : working for activation operators(ReLu,tanh..)
+>>>>>>
+>>>>>> By the way, my IP is mainly used for SOC, and the current driver registration is through the platform_driver,
+>>>>>> is it necessary to switch to drm?
+>>>>> This probably depends on the answer to my question above. btw, there
+>>>>> are drivers in drm that handle IPs that are part of an SOC, so
+>>>>> platform_driver is supported.
+>>>>>
+>>>>> Oded
+>>>>>
+>>>>>>
+>>>>>> thanks.
+>>>>>>
+>>>>>> ________________________________________
+>>>>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
+>>>>>> 发送时间: 2023年9月22日 23:08
+>>>>>> 收件人: Jagan Teki
+>>>>>> 抄送: Cancan Chang; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
+>>>>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
+>>>>>>
+>>>>>> [你通常不会收到来自 ogabbay@kernel.org 的电子邮件。请访问 https://aka.ms/LearnAboutSenderIdentification，以了解这一点为什么很重要]
+>>>>>>
+>>>>>> [ EXTERNAL EMAIL ]
+>>>>>>
+>>>>>> On Fri, Sep 22, 2023 at 12:38 PM Jagan Teki <jagan@edgeble.ai> wrote:
+>>>>>>>
+>>>>>>> On Fri, 22 Sept 2023 at 15:04, Cancan Chang <Cancan.Chang@amlogic.com> wrote:
+>>>>>>>>
+>>>>>>>> Dear Media Maintainers:
+>>>>>>>>       Thanks for your attention. Before describing my problem，let me introduce to you what I  mean by NPU.
+>>>>>>>>       NPU is Neural Processing Unit, It is designed for deep learning acceleration, It is also called TPU, APU ..
+>>>>>>>>
+>>>>>>>>       The real problems:
+>>>>>>>>        When I was about to upstream my NPU driver codes to linux mainline, i meet two problems:
+>>>>>>>>          1.  According to my research, There is no NPU module path in the linux (base on linux 6.5.4) , I have searched all linux projects and found no organization or comany that has submitted NPU code. Is there a path prepared for NPU driver currently?
+>>>>>>>>          2.   If there is no NPU driver path currently, I am going to put my NPU driver code in the drivers/media/platform/amlogic/ ﻿, because my NPU driver belongs to amlogic. and amlogic NPU is mainly used for AI vision applications. Is this plan suitabe for you?
+>>>>>>>
+>>>>>>> If I'm correct about the discussion with Oded Gabby before. I think
+>>>>>>> the drivers/accel/ is proper for AI Accelerators including NPU.
+>>>>>>>
+>>>>>>> + Oded in case he can comment.
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Jagan.
+>>>>>> Thanks Jagan for adding me to this thread. Adding Dave & Daniel as well.
+>>>>>>
+>>>>>> Indeed, the drivers/accel is the place for Accelerators, mainly for
+>>>>>> AI/Deep-Learning accelerators.
+>>>>>> We currently have 3 drivers there already.
+>>>>>>
+>>>>>> The accel subsystem is part of the larger drm subsystem. Basically, to
+>>>>>> get into accel, you need to integrate your driver with the drm at the
+>>>>>> basic level (registering a device, hooking up with the proper
+>>>>>> callbacks). ofc the more you use code from drm, the better.
+>>>>>> You can take a look at the drivers under accel for some examples on
+>>>>>> how to do that.
+>>>>>>
+>>>>>> Could you please describe in a couple of sentences what your
+>>>>>> accelerator does, which engines it contains, how you program it. i.e.
+>>>>>> Is it a fixed-function device where you write to a couple of registers
+>>>>>> to execute workloads, or is it a fully programmable device where you
+>>>>>> load compiled code into it (GPU style) ?
+>>>>>>
+>>>>>> For better background on the accel subsystem, please read the following:
+>>>>>> https://docs.kernel.org/accel/introduction.html
+>>>>>> This introduction also contains links to other important email threads
+>>>>>> and to Dave Airlie's BOF summary in LPC2022.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Oded
 
-I mean the idle_time parameter, i.e.
-struct io_uring_params :: sq_thread_idle, which is how long an SQPOLL
-thread should be continuously starved of any work to go to sleep.
-
-For example:
-sq_thread_idle = 10ms
-
-   -> 9ms starving -> (do work) -> ...
-   -> 9ms starving -> (do work) -> ...
-   -> 11ms starving -> (more than idle, go sleep)
-
-And the question was whether to count those delays in wall clock
-time, as it currently is, and which is likely to be more natural
-for userspace, or otherwise theoretically it could be task local time.
-  
-
-> In a ring, it may take time M to submit IO, or it may not submit IO in the
-> entire cycle. Then we can optimize the efficiency of the sqpoll thread in
-> two directions. The first is to reduce the number of rings that no IO submit,
-> The second is to increase the time M to increase the proportion of time
-> submitted IO in the ring.
-> In order to observe the CPU ratio of sqthread's actual processing IO part,
-> we need this patch.
-
--- 
-Pavel Begunkov
 
