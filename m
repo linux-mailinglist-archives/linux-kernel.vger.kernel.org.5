@@ -1,158 +1,140 @@
-Return-Path: <linux-kernel+bounces-23997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5F582B4FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:00:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B0F82B50C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 20:05:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7748B23E4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:59:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02821B22B9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5160F54F9A;
-	Thu, 11 Jan 2024 18:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B0754FB4;
+	Thu, 11 Jan 2024 19:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="ZkTHIsZp"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vbEVo1cf"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC7B54BC8
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 18:59:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-116-100.bstnma.fios.verizon.net [173.48.116.100])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40BIxUMO029748
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 13:59:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1704999572; bh=gcMsWKBHfHITg90LTV5PJyLcI8YcXQhS+yVAEbZ7a1Q=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=ZkTHIsZpdNnL3WQfqmiUyWvO6IYSdWBC+aI5ThXCi3D8fYjJnstaa3jiX1WBQIW/+
-	 ROdWOY8SsW1AuFec7bsdnroWT6Xaiqq8hmyCEGrjfEAtA1/zGcN1O/SHgWkxTZjNe6
-	 wb5K4/M1wEwd/XsVhNWafA96OJLmu9LODNO3Ej1uYV2gXPceYgIwDqegUZ7VUXsyOD
-	 UO5q3RGUneAIHALri3/jZKdBGK+x5fRDH13GOjcb1h1JM8KdqIUwF7efTUKQmICeuk
-	 2xv0jeyfQdUy9hSMHbPe16KIPlyQWyVswJ1IhRtzshh30lwIqQ/YDQGTlOo4DjvA1o
-	 q+n/LZ3so5Cng==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 12EBB15C0276; Thu, 11 Jan 2024 13:59:30 -0500 (EST)
-Date: Thu, 11 Jan 2024 13:59:30 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Allen <allen.lkml@gmail.com>
-Cc: linux-ext4@vger.kernel.org, jack@suse.cz,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Allen Pais <apais@linux.microsoft.com>,
-        kelseysteele@linux.microsoft.com, tyhicks@linux.microsoft.com
-Subject: Re: EXT4-fs: Intermitent segfault with memory corruption
-Message-ID: <20240111185930.GA911245@mit.edu>
-References: <CAOMdWS+A8-5yT+_O+7xmyVvAfZmEsDr7nDwWHtLWLeefmDFqOA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2E954BD7
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 19:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5ebca94cf74so57130387b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:05:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704999917; x=1705604717; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=70TTwy7LzJ9GVDP1sBtk+/a7RwgjO7meqYg7DVI2Mn4=;
+        b=vbEVo1cfRNUWDL/9Z0uC33NP/KMt+x6vkpE3hiAg3gX7lxp7yUiQm0ywUOYVRQgdlB
+         17zhnqnx0dkk7Jcdlb/yhtNsISvpGIqMpnPxReOY69eBnjNaWPBdTm5sFlWCZKOsjSXV
+         lgYAvDIl/S3DwqmNiXmJGMY74TKaWaNZzNV1Q4l/TFLIKPbSehhZYya0G1y0krAxXImM
+         MCjZUOSM8y49tW84GeiKCTIMqF1VzFUua6VKZBymxFQo+XmYjEz4R6v/HkFqHf21RjcD
+         YRzR+C6mSQgBYPtG5bZhZT/mgQ9U3s8oD7ECBn44e51CjHtD7Udyy30e+V4kTdRf95I5
+         YhYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704999917; x=1705604717;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=70TTwy7LzJ9GVDP1sBtk+/a7RwgjO7meqYg7DVI2Mn4=;
+        b=opWTlaj4cTJncZy4g2nSIABOBuXzPcrby5ixWRwts3WQS+/UM1aELQEHFrgqOfHy6I
+         12g5B6OVgOxEJHBBIGWvUatUa+IyeKEJJk12fhaD7A8z4PP0qWQOPNh2/l9lWN8zGPa+
+         pAqRqG/kNkaFo2e5EmkJ0W5goi8KjQo/FrlnJzWXHYzNHUUElqWfl4gG9f2+TAhGtdT3
+         gY2ZbSEC4ahmEt56FvNaLvr0LcvHMt6IKnDhJI++AXprUZw+8m4rXOlpasb6x/LhL1fK
+         1bcLnI/eOqSodxLROEYI4p68pPJV3lWOiOVR4mBkPVb1/oBbCnlJI7CA4QcH/xQssuFx
+         Ggiw==
+X-Gm-Message-State: AOJu0YwFdZYBla6SiR4i8P8pfOdurEgld6LhbrEPYve+A4zyc5fHVvH5
+	bm4r1pDt6iwXcXdQavRnWtJeLE0DO8AP6qIKMa4iMGcWIsVLIg==
+X-Google-Smtp-Source: AGHT+IFMkYvl2Wa5/NCqZqn4cbISrWXSUz1HnKOQORQuB44S6pFNOTZlV/+yw0l5PId0r0Bl0UycfcQ6y7eCvxaNdSU=
+X-Received: by 2002:a0d:d5c3:0:b0:5f6:7816:f330 with SMTP id
+ x186-20020a0dd5c3000000b005f67816f330mr264155ywd.94.1704999917362; Thu, 11
+ Jan 2024 11:05:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMdWS+A8-5yT+_O+7xmyVvAfZmEsDr7nDwWHtLWLeefmDFqOA@mail.gmail.com>
+References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
+ <20240110-fp4-panel-v2-2-8ad11174f65b@fairphone.com> <CACRpkdaWTfPDCin_L6pefHsokjNyO8Mo6hWPdzPLLi1EUkKUuA@mail.gmail.com>
+ <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com>
+In-Reply-To: <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 11 Jan 2024 20:05:04 +0100
+Message-ID: <CACRpkdZQbVXfBa70nhDOqfWPbsh-6DgX-uvZOxr19pzMmF2giQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for DJN HX83112A LCD panel
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, ~postmarketos/upstreaming@lists.sr.ht, 
+	phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 07:26:06AM -0800, Allen wrote:
-> 
-> I hope this email finds you well. We are reaching out to report a
-> persistent issue that we have been facing on Windows Subsystem for
-> Linux (WSL)[1] with various kernel versions. We have encountered the
-> problem on kernel versions v5.15, v6.1, v6.6 stable kernels, and also
-> the current upstream kernel. While the issue takes longer to reproduce
-> on v5.15, it is consistently observable across these versions.
+On Thu, Jan 11, 2024 at 4:28=E2=80=AFPM Luca Weiss <luca.weiss@fairphone.co=
+m> wrote:
 
-You've tried reproducing (successfully) the problem across multiple
-kernel versions.  Have you tried reproducing this on multiple
-different hardware platforms?  e.g., with different desktops and/or
-servers, and with different storage devices?
+> In some internal documentation it says "LCD Driver IC" "HX83112A" and I
+> don't see any reference to Truly 5P65 anywhere.
 
-The symptoms you are reporting are very highly correlated with
-hardware problems, or in the case where you are running under
-virtualization, with bugs in the VMM and/or the host OS's storage
-stack.
+In the Android directory I pointed to I see this file:
+HX83112_Android_Driver/Truly_5p65_module_fw/UpdateFW.bat
 
-In particular, these errors:
+(Notice the 5p65 fw dir is *inside* the HX82112 dir)
 
-> EXT4-fs error (device sdc): ext4_find_dest_de:2092: inode #32168:
-> block 2334198: comm dpkg: bad entry in directory: rec_len is smaller
-> than minimal - offset=0, inode=0, rec_len=0, size=4084 fake=0
-> 
-> and
-> 
-> EXT4-fs warning (device sdc): dx_probe:890: inode #27771: comm dpkg:
-> dx entry: limit 0 != root limit 508
-> EXT4-fs warning (device sdc): dx_probe:964: inode #27771: comm dpkg:
-> Corrupt directory, running e2fsck is recommended
-> EXT4-fs error (device sdc): ext4_empty_dir:3098: inode #27753: block
-> 133944722: comm dpkg: bad entry in directory: rec_len is smaller than
-> minimal - offset=0, inode=0, rec_len=0, size=4096 fake=0
+And in that file:
+adb push TRULY_5P65_1080_2160_HX83112A_D01C01.bin
+/system/etc/firmware/Himax_firmware.bin
 
-.. sesem to hint that ext4 has read a directory block where all or
-part of its contents have been replaced with all zeros (hence the
-record length, or the hash tree index, is zero).  That typically is
-caused by a hardware and/or VMM problem.
+Clearly indicating that they are pushing a Truly 5P65 firmware into
+the Himax display firmware directory.
 
-> or we see a segfault message where the source can change depending on
-> which command we're testing with (dpkg, apt, gcc..):
-> 
-> dpkg[135]: segfault at 0 ip 00007f9209eb6a19 sp 00007ffd8a6a0b08 error
-> 4 in libc-2.31.so[7f9209d6e000+159000] likely on CPU 1 (core 0, socket
-> 0)
+To be fair, that is the driver for the touchscreen part of HX83112A,
+but ... Truly is a well known manufacturer of display controllers?
 
-And this could very well be because a data block has been replaced
-with garbage, or the wrong data block, or all zeroes.
+But... given that you have a @fairphone.com mal address and
+a working relationship with them, can't you just ask?
 
-It might also be load related --- that is, the problem only shows up
-the system is more heavily loaded, which might explain when enabling
-debugging causes the problem to be harder to reproduce.
+> On their website they have this sentence:
 
+All OEMs want to look like everything is their own product. It is
+business as usual.
 
-I am very doubtful that the problem is in the ext4 code proper,
-especially since no one else has reported this problem, and at $WORK,
-we are running continuous testing where we are running fstests runs on
-ext4 against a wide range of hardware (e.g., HDD's, SSD's, iscsi,
-etc.) and hardware platforms (arm64 and x86).  And that's just for our
-data center kernels which are based on various LTS kernels.  For
-Google's Compute Optimized OS, which is used in both 1st party and 3rd
-party VM's in Google Cloud VM's, we are doing similar testing using
-gce-xfstests[1] on a continuous basis, and we haven't seen the kind of
-bugs that you are reporting.
+Further on the same note since I guess you have a datasheet)
+please bring in #defines for the commands (the first byte in the
+write sequences, for examples:
 
-[1] https://thunk.org/gce-xfstests.
++       mipi_dsi_dcs_write_seq(dsi, 0xbd, 0x02);
++       mipi_dsi_dcs_write_seq(dsi, 0xd8,
++                              0xaa, 0xff, 0xff, 0xff, 0xff, 0xff, 0xaa, 0x=
+ff,
++                              0xff, 0xff, 0xff, 0xff);
++       mipi_dsi_dcs_write_seq(dsi, 0xbd, 0x03);
 
-For that matter, I am regularly running gce-xfstests for ext4's
-upstream development, and other ext4 developers run fstests using
-kvm-xfstests and fstests on a varriety of different hardware devices
-and virtualization environments.  So that tends to suggest that the
-problem is either in the hardware or virtualization environment (WSL)
-that you are using.
+Clearly 0xbd is HX83112_CMD_SETREGBANK?
+(This is easily spotted from the similar structure in the
+existing panel-himax-hx8394.c.) So please add #defines
+for all commands you know, especially if you have a datasheet
+because we reviewers don't have them and "it's just magic
+bytes" isn't very compelling. It adds a lot to understanding.
 
+I strongly suspect other Himax displays such as HX8394 to
+be using a Truly controller as well, hence the similarities.
 
-So to that end, you might want to consider running some lower-level
-tests --- for example using fio with data verification enabled.  We
-also get a huge amount of mileage using fstests to detect problems
-lower in the file system stack.  This is why we use fstests/xfstests
-on ext4 for essentially every single storage device (such as iSCSI,
-HDD, Flash, etc.)  So setting up fstesets on a variety of file systems
-and storage devices is not a bad idea.
+In a datasheet for their TFT800480-84-V1-E display controller
+Truly kept the init sequence name of void LCD_INIT_HX8290(void)
+for example.
 
-It shouldn't be difficult to take the test appliance in
-kvm-xfstests[2][3] and getting it to work under WSL.  (For example,
-over the holidays, I've gotten fstests running on MacOS on a Macbook
-Air M2 15" using the hvf framework.)  However, I suggest that you
-focus on lower-level block and memory stress testing before worrying
-about how to run fstests under WSL.
-
-[2] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
-[3] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
-
-Cheers,
-
-					- Ted
+Yours,
+Linus Walleij
 
