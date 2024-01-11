@@ -1,288 +1,228 @@
-Return-Path: <linux-kernel+bounces-22992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D551982A623
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A809582A628
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB5D52888CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:44:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5103E2838ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCE017C1;
-	Thu, 11 Jan 2024 02:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D19EECD;
+	Thu, 11 Jan 2024 02:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YpWF7E2t"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="ogGYVE3U";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="BBKXWgFN"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3935D15C5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704941083; x=1736477083;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8QxaGWqxhbovQdTaNlMKvKnLjgphBiT1P2soA+JBH2c=;
-  b=YpWF7E2tPB5260QOi1F+jvYwY/mAAzMZkHGaY0Mfy/ZCS0G4aFHxtSKD
-   n4V28h4eVGHOBNTGEIPu3xOoEPPaczJGHcSfdvNWDORh05FywtBa05dRX
-   aqY1n1rr1vX5Ul0OI1GTylG3lr0XJSdxXo5iRv6heUbqJPz8rMY1ZpSYY
-   s3pAWjuCS5rp4AOGvZnlbALPhOaS/Z3uBGKi/VblYX0jH2fazpEwUYKNI
-   0B/Q8wUzjFufEPAr7jLqH6AbloYMPKaRX6Y6Qvpo9r12yfjV4mwqjIzCu
-   VeVDaHbjJRonMhj/aE8WpEXW59kGdA1SiO7elblZCDGhB/9ZiDD/VuD9U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="12073660"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="12073660"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 18:44:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="1113666347"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="1113666347"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Jan 2024 18:44:40 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNl3c-0007ju-2H;
-	Thu, 11 Jan 2024 02:44:37 +0000
-Date: Thu, 11 Jan 2024 10:44:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1
- (different address spaces)
-Message-ID: <202401111036.STMizmwE-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0ACEA3;
+	Thu, 11 Jan 2024 02:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: b0c6da78b02b11eea2298b7352fd921d-20240111
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=RB7CM+px576ASLdrCXUKajG6cjg/xxcCdaMH7UbQMq4=;
+	b=ogGYVE3Us6+GD5NnQmeIi1RJA+u6Fewf9Ja0E9r1Dr6cpQR5ninwPFqjtw6+Hgk5cI0ZmCEeHZFHieOTGFPcHzqH6snkb0fFGYySiK5T8lj4/1eCOVyxKHD+4AEjtfgAW6rgCpFkox8uBxTjFFogphXadbaI76b501MDqiQWnt8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:1ba34528-3ec3-4549-9a78-c3965b4dd501,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:158e092f-1ab8-4133-9780-81938111c800,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: b0c6da78b02b11eea2298b7352fd921d-20240111
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+	(envelope-from <ck.hu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1308697647; Thu, 11 Jan 2024 10:46:59 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 11 Jan 2024 10:46:58 +0800
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 11 Jan 2024 10:46:58 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RhC/G+EzhO0a+YY/oKdgQp7Pjp/tnkltVbGa0nmQ2ZlZteq0cbugLnhWZoWuQr9aC5rin5JeEZgGZK61rfl22SLua+er93z+aZDpR1+8sXqY8KUfs6+fb/KNz0mHpx9s0riOhRNzRpIpVP3zk0si5hRsFHxYlCdjwomFi2HFAN7xlFBEGZVj91UVFHo/i6zMFvDc/ItmGxQHV1p3vE3srSyZ3xvSzxQiX+2xP0pwbd3tfFK4wpFP4+xaBgrSERogeAPogsrXRzdp5ZWOUYdk7otcUAqXojI/bXvj5ANuJp/S4U42L9KVt0HzkWVCz/VyHEE5Rgsvi4UbTZAH8FxUDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RB7CM+px576ASLdrCXUKajG6cjg/xxcCdaMH7UbQMq4=;
+ b=dAdiY2Nrks40i5tKJQ2M29WApIZ3QIZ8h3NWHQkezfU4V8gTFU/MKGom4rFJbFyQX34t82X1IDHCMC8ijNkcRB0ggjAWDohryKwrtDveGDxsx45drX7M11y23cW7OZAsW+5HYV1zOUOlN0mSt9Jz0TAl7Ui+CP0oU1cisA3GlqklTvXPyJ+3zWeoY9hFXnSVa4QTzgOL5pZXgKkX+AE2+YYaB3m7Is/AiceWG5MtIzcxBnpZMedm/97tHhmATfK3UqYbdv2+7L+ESYHqWxn7eggrHMDjom1c5qna2ld0FD7iaw7E5Md4phKF3SLRPxIcPElhx/KVwOEgww8b+w+9Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RB7CM+px576ASLdrCXUKajG6cjg/xxcCdaMH7UbQMq4=;
+ b=BBKXWgFNAE471NuSt7/c3qQ9fW9buch0qxihf1tiVoBree0z9AWq9zBH4sNl2v2TU3eEAspa+fesL8krZ0QBglZ3n9Oipbzo8yPe6ttt2BUYxNk41ZChD9qSMd0Tf3Hb5aQfj9MklITlc0hxuK6MrN/47n3RiClFqlKnCma1jxE=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by SEYPR03MB6458.apcprd03.prod.outlook.com (2603:1096:101:3f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Thu, 11 Jan
+ 2024 02:46:55 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::eb43:57cb:edfd:3762]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::eb43:57cb:edfd:3762%7]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
+ 02:46:55 +0000
+From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To: "jstephan@baylibre.com" <jstephan@baylibre.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "paul.elder@ideasonboard.com"
+	<paul.elder@ideasonboard.com>, "mchehab@kernel.org" <mchehab@kernel.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	=?utf-8?B?QW5keSBIc2llaCAo6Kyd5pm655qTKQ==?= <Andy.Hsieh@mediatek.com>,
+	=?utf-8?B?TG91aXMgS3VvICjpg63lvrflr6cp?= <louis.kuo@mediatek.com>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "laurent.pinchart@ideasonboard.com"
+	<laurent.pinchart@ideasonboard.com>, "fsylvestre@baylibre.com"
+	<fsylvestre@baylibre.com>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>, "pnguyen@baylibre.com"
+	<pnguyen@baylibre.com>
+Subject: Re: [PATCH v4 3/5] media: platform: mediatek: isp_30: add mediatek
+ ISP3.0 sensor interface
+Thread-Topic: [PATCH v4 3/5] media: platform: mediatek: isp_30: add mediatek
+ ISP3.0 sensor interface
+Thread-Index: AQHaQ8+FLeNoj2TSiEO6O2ToF6Nq3rDT6T8A
+Date: Thu, 11 Jan 2024 02:46:55 +0000
+Message-ID: <fae64e22742717398feb96bcde573cd44cca25bf.camel@mediatek.com>
+References: <20240110141443.364655-1-jstephan@baylibre.com>
+	 <20240110141443.364655-4-jstephan@baylibre.com>
+In-Reply-To: <20240110141443.364655-4-jstephan@baylibre.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEYPR03MB6458:EE_
+x-ms-office365-filtering-correlation-id: f074aa18-bf46-4b8a-bbb6-08dc124f92ed
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: F2OIvMVZp6X/xhGNqsfSdKsWlw1BscUTJ2kI8m5i1iJIaFpH5vwjZxj7xbtFo/F9obb78RV92g/Z3B0xqfm+FEr0IoWmIjqRcRgCGw6B1RiPxasUOATLqcJNUiU0YohAiyGtjGPic7JU7S2ZOanW3VocArxHj5wk43GI+/S/y1sYN7l18JYvUDrC6mxwy43B5pF6Q1zoBW+ck/uYCTT/SE0Gl+hGO9w+waAfL79eIVWAHv5bQGts8D1TYyoru6p5RFeRoriqoVK7zmOcLGNK7k5uXifBnE2/9Aiah/KefESWWVPNKFHJ3fr+bnwW4SgMwLqe4rskLbGI6+Ho8cg+88NrAFC006KQ9la3sZzZlTEizIdf29c5+z+oWooXG3pqb5o1VXB56b1bUE08h5ma1ohso4psK4X6r+tYzzVNQt8C2yUOLmUwJFCWyMg1EikiE09y9uShacJinWl2QMGa13Q+HvMV2QrFTK1eiDy9RQZHtstYTOYFOdj1QImkXtZFo81vCMx2TnJwmwxpvC7HN4ix66hvy1kJ8NtCljE3a4SSeJd7mZuHSkXi/M+HJHfvKsuMFJophSjBE3MVMBih2Gjn4gAOASNnSrhCpnD1mQCXbINuaTWUdhIwCL0nFJykXNblc/NHtxFF5FrmBk+JM5/6KBgYz8L1TDWlOaHFm6A3ssbuYO0WdIyV9+ZDVRGXCT+PtQ+NuImpKsFPdg9qiQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(346002)(136003)(376002)(230273577357003)(230922051799003)(230173577357003)(186009)(64100799003)(1800799012)(451199024)(71200400001)(478600001)(6506007)(6512007)(2616005)(26005)(122000001)(38070700009)(38100700002)(86362001)(36756003)(85182001)(41300700001)(2906002)(76116006)(83380400001)(5660300002)(7416002)(8936002)(8676002)(4326008)(66946007)(6486002)(66446008)(66476007)(54906003)(66556008)(64756008)(6916009)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bWNEanZLdkMyYUNTR0JQMTYrMml5R1pHTWRQQ1BHcThlb3loR3J2azVPVGwy?=
+ =?utf-8?B?U3B2a2QrYjk4ZTIxZTZHOE9zN3FPNU9yMmljWVlpaVA3N0FIUGxkN0xyWUk0?=
+ =?utf-8?B?ZzI1M1pUN1RWWVZLUzNTTC9wMHdHbVJrQy9kSW5LZEpuVFBON25qUkxXVVlD?=
+ =?utf-8?B?UnJqQUdJR0pVUlhpRTNFakZGbVRmLzBtaXRxSU9RTWNCbG5MMmVncUFwT05N?=
+ =?utf-8?B?SExYdDFFUnRaTHErcGp3K01BeWlJQTRDUjlxSG5vcFdJZ1dBNW5ZWit5TTFy?=
+ =?utf-8?B?SXh0bjRTMmxBaUZzdWk2MDkrUHRaTVVlWEFsRTdRUEMxcHMyWXliaEF5Ly90?=
+ =?utf-8?B?eTZDdzFoUUtGWWd6MHNBTkNJSDY3L01IVkY4NFBsbXhweDdISDR1ZG82NFNz?=
+ =?utf-8?B?dXoxK051Z0VCZ3VoVVpCK3ZqdWJMRHBmQUhsM0pYSnRSSW0waDBNNGV4SXpB?=
+ =?utf-8?B?Qmkwa09kZ2QyMkN0MWNwaGVvVlJXUVRGbDN6eURNaE1MVkIvOGFjeWltcnhE?=
+ =?utf-8?B?VFh6d3JSNXJnRXRzZ1lqamxKYVhJaG5pYTdxMEVBYVB4UDBBTmJKdkdKb0py?=
+ =?utf-8?B?MCtBYmJmWDdLQkYxZEpUZGorUW42SzVtaDBtTWwzY242QlptVzlHbEl4K1ha?=
+ =?utf-8?B?RmVmMENSbGJPK01nd1VWODhoWjh0NVhGOXB6ZW5zcU1QSjZTRWJvOXFjb0Zs?=
+ =?utf-8?B?Yi9jZlRKUmFsWGdUSUxiZlcvd0JLUURDeGxEMnRLeDJEeVRGRTA0dlMweXlw?=
+ =?utf-8?B?MEVaVzFsVGtuN2hLcmE1blVCOVZSRWlHTmVackwvajY3OTlxWXhkUHc3c0hZ?=
+ =?utf-8?B?OTg5aklDeFhYNEtmV0FLeFNhbGorTTJYdFd0VXowc0VDYWU3Q3MvVXgzZXhF?=
+ =?utf-8?B?U2tZTW5HUkU3MHBGSmJkMEZESlkycDFUU0ZtdnJDdyszZjBGSkU5VDRCMEVJ?=
+ =?utf-8?B?K1B6WFZpU1VPTU1CUG1ieTVpOFMrejlJUm92VGt0R1pOQnN5ODNFLzROOWxs?=
+ =?utf-8?B?a293aVZ1U1J5OHRYeHhlSTZrS3lHRyt3VHE2YURudXJTZ1JRaTJHOVVQZlFO?=
+ =?utf-8?B?djQ3Vzcza1pOV2hCZ1RHRmtIS1lKQXBGMk1PZTdkOEJ2SGJ2NUo2VmcwdnNz?=
+ =?utf-8?B?UXREdDQ5d2xiWFY5Si91VGJYUUpyZjlURVc1d2ZsM1pjQjRZMEViL1J5TGFQ?=
+ =?utf-8?B?VFJScFliUkgrNWdQTCtKeWIwNUxwNU8xakgrNUdVTFJNOC9VZUlmMkNMMHpr?=
+ =?utf-8?B?c3BSMG01ckVueUFNL2I1OG5qWHRrb1FBTVhtVmduMDJMTjhxSC93WDM3WWp4?=
+ =?utf-8?B?eXI1RXM0clVTR3orV2JoQjJWbXRJRTAwOUJHUFN6b3RqYzB6NEdWNVdmTDF4?=
+ =?utf-8?B?ZndIejhwWktBRit5b09pK2c5VkhXRlZnOEc2RGN5STZ5TDhvaEszRm0xay9C?=
+ =?utf-8?B?a21rcC9kb2UyQTZBd0d0ZU94SWlNbEJwc2RNUWhKcEtPanFCSlM0TUQzOWR4?=
+ =?utf-8?B?N2l1dnJMbklndkxOWGk0dG5MUDlDb1l5MmROWkxNbTJhazQ4d0VaK25Bb0pL?=
+ =?utf-8?B?b1ZRQ1FoV0dwUGJsUTJBd2pGbjJ0bW8rMVptWnBTUmp5RFNseklqRUZUcVNq?=
+ =?utf-8?B?K3Z2SSsza1d4aXE5MXBKMjZYL1hLeHAyME5weHluWlZNaCtrbm05bVFqeVVj?=
+ =?utf-8?B?SmtGOGZoaUw1Z0I2ZzBWV3hyTTMzSjZYSjdTcGtzakFLekZJdXZsbWp6aFl6?=
+ =?utf-8?B?aG1aQlhSeDVrUkRiNzRJSnFpSVIzTmp5STEzUjEvcFBEN1R0QWNxV1h0cVY4?=
+ =?utf-8?B?aldyK1ZIN1VCNGFnUW4waFBHSEV6UUFzUS8ySUZhWE0zUmhSWEYzcTVnd1VD?=
+ =?utf-8?B?ZVRDTFU5QUJxdXVuS3Y1SUw1Rko0RmJMM0lFNEFTY0ozSlZhOUhidzFkZ0F3?=
+ =?utf-8?B?blBIa0FWRjFmSmVaZmVtTnZNTGEzeGp1V3NxemVGdi82QUN1WE9va1NCMjFC?=
+ =?utf-8?B?T3lycFdydXUyeis2WlZLTnVDNFNWTHpIWXd0N1lETjRFSXA1YlhZODhOY083?=
+ =?utf-8?B?L3dxeEZYem96R3hGQnA0QStuS1RJSXpHVjYvYlROa0tLb1FMMXBOVDlzTEt6?=
+ =?utf-8?Q?SbmzTqgp5voyGs5hllX36T0Zh?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AAB9050ACD4C494687DBE3250E2A7F22@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f074aa18-bf46-4b8a-bbb6-08dc124f92ed
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2024 02:46:55.6283
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LB2memu0afVsYVwz2kjIhRFQMTMT67jmwEI+7UsbeJLHsyWjGkJjtZUlk5GgeYDshjzzF7hHkxnD/clabZ8lsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB6458
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--15.782300-8.000000
+X-TMASE-MatchedRID: cgbqQT5W8hcOwH4pD14DsPHkpkyUphL9meN8m2FdGic3xO2R3boBWFbu
+	qIY+/skQkABPgKBt/0qbqzDH9G7eTD1LciJB3541oMfp2vHck9VUazBX+AUFSdMX3aKQxXaBZvo
+	+mFW19mCM0+ypVXg5IL85IS9eQZ7lYMkAB7/RF7dCnGIuUMP0VXJrB0Cu3DDnmyiLZetSf8n5kv
+	mj69FXvKEwgORH8p/AjaPj0W1qn0Q7AFczfjr/7Oey7ImR563FRvEHWySVJUsLwKzqpgAI/fmBw
+	Ltao/G0wyZe1PURXBE=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--15.782300-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	1D840FB2F67E83B4892384812D0E51C24CFD3CD30892392CF1AFD00D4A8D10942000:8
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   acc657692aed438e9931438f8c923b2b107aebf9
-commit: e362359ace6f87c201531872486ff295df306d13 posix-cpu-timers: Cleanup CPU timers before freeing them during exec
-date:   1 year, 5 months ago
-config: x86_64-randconfig-121-20240107 (https://download.01.org/0day-ci/archive/20240111/202401111036.STMizmwE-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240111/202401111036.STMizmwE-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401111036.STMizmwE-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   fs/exec.c:415:39: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected char const [noderef] __user * @@     got void * @@
-   fs/exec.c:415:39: sparse:     expected char const [noderef] __user *
-   fs/exec.c:415:39: sparse:     got void *
-   fs/exec.c:422:31: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected char const [noderef] __user * @@     got void * @@
-   fs/exec.c:422:31: sparse:     expected char const [noderef] __user *
-   fs/exec.c:422:31: sparse:     got void *
-   fs/exec.c:1051:48: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   fs/exec.c:1051:48: sparse:     expected struct sighand_struct *oldsighand
-   fs/exec.c:1051:48: sparse:     got struct sighand_struct [noderef] __rcu *sighand
-   fs/exec.c:1158:56: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *parent @@
-   fs/exec.c:1158:56: sparse:     expected struct task_struct *parent
-   fs/exec.c:1158:56: sparse:     got struct task_struct [noderef] __rcu *parent
-   fs/exec.c:1193:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   fs/exec.c:1193:47: sparse:     expected struct sighand_struct *oldsighand
-   fs/exec.c:1193:47: sparse:     got struct sighand_struct [noderef] __rcu *sighand
->> fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   fs/exec.c:1307:26: sparse:     expected struct spinlock [usertype] *lock
-   fs/exec.c:1307:26: sparse:     got struct spinlock [noderef] __rcu *
-   fs/exec.c:1309:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   fs/exec.c:1309:28: sparse:     expected struct spinlock [usertype] *lock
-   fs/exec.c:1309:28: sparse:     got struct spinlock [noderef] __rcu *
-   fs/exec.c:1766:70: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *parent @@
-   fs/exec.c:1766:70: sparse:     expected struct task_struct *tsk
-   fs/exec.c:1766:70: sparse:     got struct task_struct [noderef] __rcu *parent
-
-vim +1307 fs/exec.c
-
-  1243	
-  1244	/*
-  1245	 * Calling this is the point of no return. None of the failures will be
-  1246	 * seen by userspace since either the process is already taking a fatal
-  1247	 * signal (via de_thread() or coredump), or will have SEGV raised
-  1248	 * (after exec_mmap()) by search_binary_handler (see below).
-  1249	 */
-  1250	int begin_new_exec(struct linux_binprm * bprm)
-  1251	{
-  1252		struct task_struct *me = current;
-  1253		int retval;
-  1254	
-  1255		/* Once we are committed compute the creds */
-  1256		retval = bprm_creds_from_file(bprm);
-  1257		if (retval)
-  1258			return retval;
-  1259	
-  1260		/*
-  1261		 * Ensure all future errors are fatal.
-  1262		 */
-  1263		bprm->point_of_no_return = true;
-  1264	
-  1265		/*
-  1266		 * Make this the only thread in the thread group.
-  1267		 */
-  1268		retval = de_thread(me);
-  1269		if (retval)
-  1270			goto out;
-  1271	
-  1272		/*
-  1273		 * Cancel any io_uring activity across execve
-  1274		 */
-  1275		io_uring_task_cancel();
-  1276	
-  1277		/* Ensure the files table is not shared. */
-  1278		retval = unshare_files();
-  1279		if (retval)
-  1280			goto out;
-  1281	
-  1282		/*
-  1283		 * Must be called _before_ exec_mmap() as bprm->mm is
-  1284		 * not visible until then. This also enables the update
-  1285		 * to be lockless.
-  1286		 */
-  1287		retval = set_mm_exe_file(bprm->mm, bprm->file);
-  1288		if (retval)
-  1289			goto out;
-  1290	
-  1291		/* If the binary is not readable then enforce mm->dumpable=0 */
-  1292		would_dump(bprm, bprm->file);
-  1293		if (bprm->have_execfd)
-  1294			would_dump(bprm, bprm->executable);
-  1295	
-  1296		/*
-  1297		 * Release all of the old mmap stuff
-  1298		 */
-  1299		acct_arg_size(bprm, 0);
-  1300		retval = exec_mmap(bprm->mm);
-  1301		if (retval)
-  1302			goto out;
-  1303	
-  1304		bprm->mm = NULL;
-  1305	
-  1306	#ifdef CONFIG_POSIX_TIMERS
-> 1307		spin_lock_irq(&me->sighand->siglock);
-  1308		posix_cpu_timers_exit(me);
-  1309		spin_unlock_irq(&me->sighand->siglock);
-  1310		exit_itimers(me);
-  1311		flush_itimer_signals();
-  1312	#endif
-  1313	
-  1314		/*
-  1315		 * Make the signal table private.
-  1316		 */
-  1317		retval = unshare_sighand(me);
-  1318		if (retval)
-  1319			goto out_unlock;
-  1320	
-  1321		me->flags &= ~(PF_RANDOMIZE | PF_FORKNOEXEC |
-  1322						PF_NOFREEZE | PF_NO_SETAFFINITY);
-  1323		flush_thread();
-  1324		me->personality &= ~bprm->per_clear;
-  1325	
-  1326		clear_syscall_work_syscall_user_dispatch(me);
-  1327	
-  1328		/*
-  1329		 * We have to apply CLOEXEC before we change whether the process is
-  1330		 * dumpable (in setup_new_exec) to avoid a race with a process in userspace
-  1331		 * trying to access the should-be-closed file descriptors of a process
-  1332		 * undergoing exec(2).
-  1333		 */
-  1334		do_close_on_exec(me->files);
-  1335	
-  1336		if (bprm->secureexec) {
-  1337			/* Make sure parent cannot signal privileged process. */
-  1338			me->pdeath_signal = 0;
-  1339	
-  1340			/*
-  1341			 * For secureexec, reset the stack limit to sane default to
-  1342			 * avoid bad behavior from the prior rlimits. This has to
-  1343			 * happen before arch_pick_mmap_layout(), which examines
-  1344			 * RLIMIT_STACK, but after the point of no return to avoid
-  1345			 * needing to clean up the change on failure.
-  1346			 */
-  1347			if (bprm->rlim_stack.rlim_cur > _STK_LIM)
-  1348				bprm->rlim_stack.rlim_cur = _STK_LIM;
-  1349		}
-  1350	
-  1351		me->sas_ss_sp = me->sas_ss_size = 0;
-  1352	
-  1353		/*
-  1354		 * Figure out dumpability. Note that this checking only of current
-  1355		 * is wrong, but userspace depends on it. This should be testing
-  1356		 * bprm->secureexec instead.
-  1357		 */
-  1358		if (bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP ||
-  1359		    !(uid_eq(current_euid(), current_uid()) &&
-  1360		      gid_eq(current_egid(), current_gid())))
-  1361			set_dumpable(current->mm, suid_dumpable);
-  1362		else
-  1363			set_dumpable(current->mm, SUID_DUMP_USER);
-  1364	
-  1365		perf_event_exec();
-  1366		__set_task_comm(me, kbasename(bprm->filename), true);
-  1367	
-  1368		/* An exec changes our domain. We are no longer part of the thread
-  1369		   group */
-  1370		WRITE_ONCE(me->self_exec_id, me->self_exec_id + 1);
-  1371		flush_signal_handlers(me, 0);
-  1372	
-  1373		retval = set_cred_ucounts(bprm->cred);
-  1374		if (retval < 0)
-  1375			goto out_unlock;
-  1376	
-  1377		/*
-  1378		 * install the new credentials for this executable
-  1379		 */
-  1380		security_bprm_committing_creds(bprm);
-  1381	
-  1382		commit_creds(bprm->cred);
-  1383		bprm->cred = NULL;
-  1384	
-  1385		/*
-  1386		 * Disable monitoring for regular users
-  1387		 * when executing setuid binaries. Must
-  1388		 * wait until new credentials are committed
-  1389		 * by commit_creds() above
-  1390		 */
-  1391		if (get_dumpable(me->mm) != SUID_DUMP_USER)
-  1392			perf_event_exit_task(me);
-  1393		/*
-  1394		 * cred_guard_mutex must be held at least to this point to prevent
-  1395		 * ptrace_attach() from altering our determination of the task's
-  1396		 * credentials; any time after this it may be unlocked.
-  1397		 */
-  1398		security_bprm_committed_creds(bprm);
-  1399	
-  1400		/* Pass the opened binary to the interpreter. */
-  1401		if (bprm->have_execfd) {
-  1402			retval = get_unused_fd_flags(0);
-  1403			if (retval < 0)
-  1404				goto out_unlock;
-  1405			fd_install(retval, bprm->executable);
-  1406			bprm->executable = NULL;
-  1407			bprm->execfd = retval;
-  1408		}
-  1409		return 0;
-  1410	
-  1411	out_unlock:
-  1412		up_write(&me->signal->exec_update_lock);
-  1413	out:
-  1414		return retval;
-  1415	}
-  1416	EXPORT_SYMBOL(begin_new_exec);
-  1417	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+SGksIEp1bGllbjoNCg0KT24gV2VkLCAyMDI0LTAxLTEwIGF0IDE1OjE0ICswMTAwLCBKdWxpZW4g
+U3RlcGhhbiB3cm90ZToNCj4gIAkgDQo+IEV4dGVybmFsIGVtYWlsIDogUGxlYXNlIGRvIG5vdCBj
+bGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVudGlsDQo+IHlvdSBoYXZlIHZlcmlmaWVk
+IHRoZSBzZW5kZXIgb3IgdGhlIGNvbnRlbnQuDQo+ICBGcm9tOiBMb3VpcyBLdW8gPGxvdWlzLmt1
+b0BtZWRpYXRlay5jb20+DQo+IA0KPiBUaGlzIHdpbGwgYWRkIHRoZSBtZWRpYXRlayBJU1AzLjAg
+c2VuaW5mIChzZW5zb3IgaW50ZXJmYWNlKSBkcml2ZXINCj4gZm91bmQNCj4gb24gc2V2ZXJhbCBN
+ZWRpYXRlayBTb0NzIHN1Y2ggYXMgdGhlIG10ODM2NS4NCj4gDQo+IFRoZW4gc2VuaW5mIG1vZHVs
+ZSBoYXMgNCBwaHlzaWNhbCBDU0ktMiBpbnB1dHMuIERlcGVuZGluZyBvbiB0aGUgc29jDQo+IHRo
+ZXkNCj4gbWF5IG5vdCBiZSBhbGwgY29ubmVjdGVkLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTG91
+aXMgS3VvIDxsb3Vpcy5rdW9AbWVkaWF0ZWsuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBQaGktYmFu
+ZyBOZ3V5ZW4gPHBuZ3V5ZW5AYmF5bGlicmUuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBGbG9yaWFu
+IFN5bHZlc3RyZSA8ZnN5bHZlc3RyZUBiYXlsaWJyZS5jb20+DQo+IENvLWRldmVsb3BlZC1ieTog
+TGF1cmVudCBQaW5jaGFydCA8bGF1cmVudC5waW5jaGFydEBpZGVhc29uYm9hcmQuY29tPg0KPiBT
+aWduZWQtb2ZmLWJ5OiBMYXVyZW50IFBpbmNoYXJ0IDxsYXVyZW50LnBpbmNoYXJ0QGlkZWFzb25i
+b2FyZC5jb20+DQo+IENvLWRldmVsb3BlZC1ieTogSnVsaWVuIFN0ZXBoYW4gPGpzdGVwaGFuQGJh
+eWxpYnJlLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogSnVsaWVuIFN0ZXBoYW4gPGpzdGVwaGFuQGJh
+eWxpYnJlLmNvbT4NCj4gLS0tDQo+ICBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgICAxICsNCj4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbWVkaWF0ZWsv
+S2NvbmZpZyAgICAgICB8ICAgIDEgKw0KPiAgZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tZWRpYXRl
+ay9NYWtlZmlsZSAgICAgIHwgICAgMSArDQo+ICBkcml2ZXJzL21lZGlhL3BsYXRmb3JtL21lZGlh
+dGVrL2lzcC9LY29uZmlnICAgfCAgICAyICsNCj4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbWVk
+aWF0ZWsvaXNwL01ha2VmaWxlICB8ICAgIDMgKw0KPiAgLi4uL3BsYXRmb3JtL21lZGlhdGVrL2lz
+cC9pc3BfMzAvS2NvbmZpZyAgICAgIHwgICAxNiArDQo+ICAuLi4vcGxhdGZvcm0vbWVkaWF0ZWsv
+aXNwL2lzcF8zMC9NYWtlZmlsZSAgICAgfCAgICAzICsNCj4gIC4uLi9tZWRpYXRlay9pc3AvaXNw
+XzMwL3NlbmluZi9NYWtlZmlsZSAgICAgICB8ICAgIDUgKw0KPiAgLi4uL21lZGlhdGVrL2lzcC9p
+c3BfMzAvc2VuaW5mL210a19zZW5pbmYuYyAgIHwgMTQ4OCANCj4gKysrKysrKysrKysrKysrKysN
+Cj4gIC4uLi9pc3AvaXNwXzMwL3NlbmluZi9tdGtfc2VuaW5mX3JlZy5oICAgICAgICB8ICAxMTIg
+KysNCj4gIA0KDQpJIHRoaW5rIHlvdSBjb3VsZCBwdXQgbXRrX3NlbmluZi5jIGFuZCBtdGtfc2Vu
+aW5mX3JlZy5oIGluDQpkcml2ZXJzL21lZGlhL3BsYXRmb3JtL21lZGlhdGVrL2lzcC4gVGhlIHNl
+bmluZiBkcml2ZXIgaGFzIG9ubHkgdHdvDQpmaWxlcywgc28gaXQncyBub3QgbmVjZXNzYXJ5IHRv
+IGNyZWF0ZSBhIGZvbGRlciAnc2VuaW5mJyBmb3Igb25seSB0d28NCmZpbGVzLiBBbmQgZm9yIGlz
+cF8zMCwgd2UgaGF2ZSBubyBhbnkgaW5mb3JtYXRpb24gaG93IG1hbnkgZGlmZmVyZW5jZQ0Kd2l0
+aCBvdGhlciBpc3BfeHgsIGZvciBleGFtcGxlIGlzcF80MCwgaWYgc2VuaW5mIGRyaXZlciBpbiBp
+c3BfMzAgYW5kDQppbiBpc3BfNDAgaGFzIG9ubHkgMTAlIGRpZmZlcmVuY2UsIGl0J3Mgbm90IG5l
+Y2Vzc2FyeSB0byBkdXBsaWNhdGUgdGhlDQo5MCUgY29tbW9uIGNvZGUgaW4gZGlmZmVyZW50IGZv
+bGRlci4gU28gaW5pdGlhbGx5LCBqdXN0IHBsYWNlIHRoZQ0Kc2VuaW5mIGRyaXZlciBpbiBtZWRp
+YXRlay9pc3AgZm9sZGVyLiBXaGVuIG90aGVyIFNvQyBzZW5pbmYgZHJpdmVyDQp1cHN0cmVhbSwg
+d2Ugd291bGQgaGF2ZSBlbm91Z2ggaW5mb3JtYXRpb24gdG8gZGVjaWRlIHRvIGdlbmVyYXRlIG5l
+dw0KZmlsZSBvciBuZXcgZm9sZGVyIGZvciBuZXcgU29DLg0KDQpSZWdhcmRzLA0KQ0sNCg0K
 
