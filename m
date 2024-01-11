@@ -1,100 +1,116 @@
-Return-Path: <linux-kernel+bounces-23432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281F082ACAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:57:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F92282ACB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D15671F23330
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:57:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C11EB279AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A14215492;
-	Thu, 11 Jan 2024 10:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D2914F75;
+	Thu, 11 Jan 2024 10:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dAeApq8O"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gnCVlOR1"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA1E14ABB;
-	Thu, 11 Jan 2024 10:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704970598;
-	bh=HsX3oWaHYvaVq5DEKrjIniKdQPIuXWrIZcYPPGl0S0g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dAeApq8OV4J2GdqaCosfDkz6H+gpiKgp/LOCmVgGJaV82DjC57g9WSxrOOfwQv9ki
-	 n1Uu1lCTy4pOpcflys0VNJquTaIgDnVX9iVKOnFSAxwUbpfTaNtOwObRnCcCCGfohn
-	 wo6LVIlBfd8tTtpWEeSBgvDAYJQwRmLl64ap+eanv+SASJb2RP/5NgfgD1ympja7wh
-	 67ylVrT68HjMxHU6fSgF0TkRboWJBLzJwRBWgNWBdUm0dk1/6XFG7AWPRjgLiI8oUQ
-	 GUkJAu1oHrtc18fJXCX07CS5OP5UYg74Ogld1Y+20BWz4L8URqcdUK8c5tL9Er6vcS
-	 DM47q20DfNtQQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B58B537811D1;
-	Thu, 11 Jan 2024 10:56:37 +0000 (UTC)
-Message-ID: <13493023-7b68-4a25-83c3-b870bf00ccb3@collabora.com>
-Date: Thu, 11 Jan 2024 11:56:36 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C19B14F60;
+	Thu, 11 Jan 2024 10:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d3eb299e2eso32260815ad.2;
+        Thu, 11 Jan 2024 02:58:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704970685; x=1705575485; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XWamW41Ap8oPTNtdnzB8JWBusKcGic3r0TyiCdKA/iE=;
+        b=gnCVlOR1Vv+DgsETON4rR0wm53RPkUvzjlCrXl9jqA46MWFPyaiQyKF6SXVvqM8Uk0
+         4bAkmERMh1OMvryWiZ5nes4j+LYsnP7HalFB61jQhPuenKgEjrdcHQMbJJzrBDjYs0qa
+         xEfPrMRt0MkdGH9pgjlSK1+fSSCqkS4xnNFDWnmzg4kTsu6fv2nCW1SY+lO051ekzzqM
+         QZitFG26kVzidNFe7BLdl+gjuJWNgGy4bOccDx7opI12tU0MbgM67JAfRZe0ODTyW/0t
+         3M5oVHFdWIzJDwVAdZ+sslwVJgkbYxwcEMBlIDDDCO+TkGe4Q2L7RKVhaGZDGnS5z/ZA
+         5kGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704970685; x=1705575485;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XWamW41Ap8oPTNtdnzB8JWBusKcGic3r0TyiCdKA/iE=;
+        b=CnfqXedSDJZ4v2MkmgcK4OADyk9/ebaA3phYItt777n2rqoZJ/3B+4RvxkEABILnEH
+         re67fSs282R6Cs6kS/VV8tmRwc/xBn6H/pteZgxGdwiAQ1NraafMK1zThMR1Ne/3oTIh
+         Z9OpLVowXS9XGpJnfyXkOC2CLasumdIERkvIK+SwBBQIm0TSZZ4aLUwUP5cmJ65P5LbQ
+         DPpD67+EezCX0vAkSJ3GsVIaeZubxjBeodBH2TGGMgSQFeKGO7sECHcEe+S6yuVAVmDi
+         oYEKYtNkdWZEs+mQOtU6rvcQqJ7L8xMBD2tXbNF/uIc9E76/HELNU56jHtQmIfdnlvBx
+         oetg==
+X-Gm-Message-State: AOJu0YwJoKk2lSN8pu0H5BANW04TrHyFR4dOQ/DgYtPYeWZW1V8XE6Dv
+	TFNlZDOjmY9bY0o71qqNDEw=
+X-Google-Smtp-Source: AGHT+IGEJmiv9Djq3/WfoW+VTA+3JXoOAH7U0B34FApIQWSNLeGcAmUYrMopts7S+gaYCex3VKSuLw==
+X-Received: by 2002:a17:902:e88f:b0:1d4:ceaf:e7bd with SMTP id w15-20020a170902e88f00b001d4ceafe7bdmr819484plg.99.1704970685243;
+        Thu, 11 Jan 2024 02:58:05 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id iy12-20020a170903130c00b001d536a910fasm903632plb.77.2024.01.11.02.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 02:58:04 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 8B4951864A63A; Thu, 11 Jan 2024 17:58:01 +0700 (WIB)
+Date: Thu, 11 Jan 2024 17:58:01 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Networking <netdev@vger.kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Subject: What to do on MIA maintainers?
+Message-ID: <ZZ_JuZd0RJUzIrgY@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 0/2] mt7981b: initial DT code
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
- Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Daniel Golle <daniel@makrotopia.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- jason-ch chen <Jason-ch.Chen@mediatek.com>,
- Macpaul Lin <macpaul.lin@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, soc@kernel.org,
- linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-References: <20240111103928.721-1-zajec5@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240111103928.721-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-Il 11/01/24 11:39, Rafał Miłecki ha scritto:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> This work is based on linux-next content and was successfully verified
-> using "dtbs_check".
-> 
-> I'm not sure who should apply this work. Given I received reviews from
-> AngeloGioacchino should I expect Arnd to pick it to his tree directly?
-
-This is MediaTek and gets picked by MediaTek maintainers - either me or Matthias.
-
-Cheers,
-Angelo
-
-> 
-> Rafał Miłecki (2):
->    dt-bindings: arm64: mediatek: Add MT7981B and Xiaomi AX3000T
->    arm64: dts: mediatek: Add initial MT7981B and Xiaomi AX3000T
-> 
->   .../devicetree/bindings/arm/mediatek.yaml     |   4 +
->   arch/arm64/boot/dts/mediatek/Makefile         |   1 +
->   .../dts/mediatek/mt7981b-xiaomi-ax3000t.dts   |  15 +++
->   arch/arm64/boot/dts/mediatek/mt7981b.dtsi     | 105 ++++++++++++++++++
->   4 files changed, 125 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt7981b-xiaomi-ax3000t.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt7981b.dtsi
-> 
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="BYm8BsRp/pqDToxj"
+Content-Disposition: inline
 
 
+--BYm8BsRp/pqDToxj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi maintainers,
+
+Earlier in late last December, I sent a patch removing Karsten Keil
+<isdn@linux-pingi.de> from MAINTAINERS due to inactivity [1], but Greg was
+unsure about that [2]. So I privately tried to reach Karsten (asking for
+confirmation), but until now he is still not responding to my outreach, hen=
+ce
+IMO he is MIA.
+
+What to do on this situation? Should he be removed from MAINTAINERS?
+
+Thanks.
+
+[1]: https://lore.kernel.org/lkml/20231221091419.11764-2-bagasdotme@gmail.c=
+om/
+[2]: https://lore.kernel.org/lkml/2023122156-diocese-movie-3d75@gregkh/
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--BYm8BsRp/pqDToxj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZZ/JtAAKCRD2uYlJVVFO
+ozkUAP9szxEqgdPe1IMIXsaME+pJR8JQd6UbQsdKADzuthaWVQEAqf1Sniqmm9Iv
+Yv79OMOp7ZCyowFW6JEoGFalIYqgYgY=
+=Gv1a
+-----END PGP SIGNATURE-----
+
+--BYm8BsRp/pqDToxj--
 
