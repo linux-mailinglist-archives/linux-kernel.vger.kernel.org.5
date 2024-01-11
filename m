@@ -1,278 +1,90 @@
-Return-Path: <linux-kernel+bounces-23472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F97082AD41
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:22:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C48082AD43
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:22:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE50B288067
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:22:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A2131C22541
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCD014F96;
-	Thu, 11 Jan 2024 11:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF6F1549E;
+	Thu, 11 Jan 2024 11:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hLOX0mqy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FAAF14F8B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 11:22:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B0C7C433F1;
-	Thu, 11 Jan 2024 11:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704972126;
-	bh=VxNPM/MxJ0rF6RJjeSHH15KLSJ/SFdXF4lDCYWBKx0g=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=hLOX0mqy2MXEbSZZzFrQURXhDxqXebDl4a53WAaNw2YSVQcbJv+vZzVm53uDcPXkn
-	 7DtOnCqMcTQCB5+j9K8aEL+22lYydozrcsIpV4oyJKrB8ZQ0Ez7bcRwlLd+mQIsvBL
-	 pNIIPtQXa0qfS/LkbbYoD+GLLi9CSuyFtS7GI1F8Lo78gQJYiA+V7mXoYh95gAo7DL
-	 lpWq2RaM0TbRa05DX9B1RZXZkOH9J+fiQvOXjPZJEuwpLeeLVvnukNKzKHrlOmgb3h
-	 /GIa73LaB5EQKVhOREDObxYAgVscljqJ04AIlEh3uT9DuDPOUaT4700cRWw+fXpIke
-	 Vnut/nz2XHEmg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A9D89CE045D; Thu, 11 Jan 2024 03:22:05 -0800 (PST)
-Date: Thu, 11 Jan 2024 03:22:05 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Liam R. Howlett" <liam.howlett@oracle.com>
-Subject: Re: [RFC] Sleep waiting for an rwsem to be unlocked
-Message-ID: <e13a9727-dc8b-4d35-867d-002bf4bd96f0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ZZ1+ZicgN8dZ3zj3@casper.infradead.org>
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="dpIIZg/1"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7011815483;
+	Thu, 11 Jan 2024 11:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=oYIJtJZyfg4O+s7Vei
+	8aQJlxSwWP1pijhtijPJRzGR8=; b=dpIIZg/1cF+d+AG1FasItcx4haTsUYRy1N
+	RxSCESZgvn1AKaE8/9Bk+a2Nl1nSvEAmVBw9OUpjTIqAS3ChwyRiB1xYjgw/3jsV
+	tYRjg0h+jtog8q+6xqzwd/JI1G4Nzbe5K6PvRdrPicL+FpWi7XWwiqP70ZcdWuse
+	eyOopUEd4=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g1-3 (Coremail) with SMTP id _____wD3X9dmz59lMjg5AA--.49211S2;
+	Thu, 11 Jan 2024 19:22:15 +0800 (CST)
+From: XueBing Chen <chenxb_99091@126.com>
+To: jejb@linux.ibm.com,
+	njavali@marvell.com,
+	martin.petersen@oracle.com,
+	mrangankar@marvell.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	XueBing Chen <chenxb_99091@126.com>
+Subject: [PATCH] scsi: qla4xxx: Clean up errors in ql4_iocb.c
+Date: Thu, 11 Jan 2024 11:22:13 +0000
+Message-Id: <20240111112213.15635-1-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD3X9dmz59lMjg5AA--.49211S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZryDWw45JFWkKFW5Jr18Xwb_yoW8JFWfpF
+	4vy345Cw48AF1UuryUAFn5uFya9w1qgryUGan3Wa98AFn8uFyvvr1jyFyYkas5Wwn7GF1S
+	gF1Dtry3WF1UJr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U0FAJUUUUU=
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiOhJixWVEuYG6PgADsR
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZ1+ZicgN8dZ3zj3@casper.infradead.org>
 
-On Tue, Jan 09, 2024 at 05:12:06PM +0000, Matthew Wilcox wrote:
-> The problem we're trying to solve is a lock-free walk of
-> /proc/$pid/maps. If the process is modifying the VMAs at the same time
-> the reader is walking them, it can see garbage.  For page faults, we
-> handle this by taking the mmap_lock for read and retrying the page fault
-> (excluding any further modifications).
-> 
-> We don't want to take that approach for the maps file.  The monitoring
-> task may have a significantly lower process priority, and so taking
-> the mmap_lock for read can block it for a significant period of time.
-> The obvious answer is to do some kind of backoff+sleep.  But we already
-> have a wait queue, so why not use it?
-> 
-> I haven't done the rwbase version; this is just a demonstration of what
-> we could do.  It's also untested other than by compilation.  It might
-> well be missing something.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fix the following errors reported by checkpatch:
 
-At first glance, this is good and sufficient for this use case.
+ERROR: "foo * bar" should be "foo *bar"
+ERROR: space required before the open brace '{'
 
-I do have one question that would be important if anyone were to want
-to rely on the "This is equivalent to calling down_read(); up_read()"
-statement in the header comment, please see below.
+Signed-off-by: XueBing Chen <chenxb_99091@126.com>
+---
+ drivers/scsi/qla4xxx/ql4_iocb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-							Thanx, Paul
+diff --git a/drivers/scsi/qla4xxx/ql4_iocb.c b/drivers/scsi/qla4xxx/ql4_iocb.c
+index 28eab07935ba..3b2680e91d0b 100644
+--- a/drivers/scsi/qla4xxx/ql4_iocb.c
++++ b/drivers/scsi/qla4xxx/ql4_iocb.c
+@@ -269,7 +269,7 @@ void qla4xxx_complete_iocb(struct scsi_qla_host *ha)
+  * This routine is called by qla4xxx_queuecommand to build an ISP
+  * command and pass it to the ISP for execution.
+  **/
+-int qla4xxx_send_command_to_isp(struct scsi_qla_host *ha, struct srb * srb)
++int qla4xxx_send_command_to_isp(struct scsi_qla_host *ha, struct srb *srb)
+ {
+ 	struct scsi_cmnd *cmd = srb->cmd;
+ 	struct ddb_entry *ddb_entry;
+@@ -342,7 +342,7 @@ int qla4xxx_send_command_to_isp(struct scsi_qla_host *ha, struct srb * srb)
+ 			cmd_entry->control_flags = CF_READ;
+ 
+ 		ha->bytes_xfered += scsi_bufflen(cmd);
+-		if (ha->bytes_xfered & ~0xFFFFF){
++		if (ha->bytes_xfered & ~0xFFFFF) {
+ 			ha->total_mbytes_xferred += ha->bytes_xfered >> 20;
+ 			ha->bytes_xfered &= 0xFFFFF;
+ 		}
+-- 
+2.17.1
 
-> ---
->  include/linux/rwsem.h  |   6 +++
->  kernel/locking/rwsem.c | 104 ++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 108 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-> index 4f1c18992f76..e7bf9dfc471a 100644
-> --- a/include/linux/rwsem.h
-> +++ b/include/linux/rwsem.h
-> @@ -250,6 +250,12 @@ DEFINE_GUARD_COND(rwsem_write, _try, down_write_trylock(_T))
->   */
->  extern void downgrade_write(struct rw_semaphore *sem);
->  
-> +/*
-> + * wait for current writer to be finished
-> + */
-> +void rwsem_wait(struct rw_semaphore *sem);
-> +int __must_check rwsem_wait_killable(struct rw_semaphore *sem);
-> +
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  /*
->   * nested locking. NOTE: rwsems are not allowed to recurse
-> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> index 2340b6d90ec6..7c8096c5586f 100644
-> --- a/kernel/locking/rwsem.c
-> +++ b/kernel/locking/rwsem.c
-> @@ -332,7 +332,8 @@ EXPORT_SYMBOL(__init_rwsem);
->  
->  enum rwsem_waiter_type {
->  	RWSEM_WAITING_FOR_WRITE,
-> -	RWSEM_WAITING_FOR_READ
-> +	RWSEM_WAITING_FOR_READ,
-> +	RWSEM_WAITING_FOR_RELEASE,
->  };
->  
->  struct rwsem_waiter {
-> @@ -511,7 +512,8 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
->  		if (waiter->type == RWSEM_WAITING_FOR_WRITE)
->  			continue;
->  
-> -		woken++;
-> +		if (waiter->type == RWSEM_WAITING_FOR_READ)
-> +			woken++;
->  		list_move_tail(&waiter->list, &wlist);
->  
->  		/*
-> @@ -1401,6 +1403,67 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
->  	preempt_enable();
->  }
->  
-> +static inline int __wait_read_common(struct rw_semaphore *sem, int state)
-> +{
-> +	int ret = 0;
-> +	long adjustment = 0;
-> +	struct rwsem_waiter waiter;
-> +	DEFINE_WAKE_Q(wake_q);
-> +
-> +	waiter.task = current;
-> +	waiter.type = RWSEM_WAITING_FOR_RELEASE;
-> +	waiter.timeout = jiffies + RWSEM_WAIT_TIMEOUT;
-> +	waiter.handoff_set = false;
-> +
-> +	preempt_disable();
-> +	raw_spin_lock_irq(&sem->wait_lock);
-> +	if (list_empty(&sem->wait_list)) {
-> +		if (!(atomic_long_read(&sem->count) & RWSEM_WRITER_MASK)) {
-> +			/* Provide lock ACQUIRE */
-> +			smp_acquire__after_ctrl_dep();
-> +			raw_spin_unlock_irq(&sem->wait_lock);
-> +			goto done;
-
-If we take this path, we are ordered against the prior writer's release
-courtesy of the acquire ordering on ->count.  But we are not ordered
-against the next writer's acquisition if that writer takes the fastpath
-because rwsem_write_trylock() only does acquire semantics.
-
-Again, this does not matter for your use case, and it all just works on
-strongly ordered systems such as x86.
-
-Assuming I am not just confused here, as far as I am concerned, this could
-be fixed by adjusting the guarantees in the rwsem_wait_killable() function's
-header comment.
-
-But it might be good to avoid the sharp edges that would be provided
-by weakening that guarantee.
-
-To that end, I -think- that a fix that would save that header
-comment's current wording would insert an smp_mb() before the above
-atomic_long_read(), but I could easily be wrong.  Plus there might well
-need to be similar adjustments later in the code.  (I don't immediately
-see any, but it has been a good long while since I have stared at
-this code.)
-
-Thoughts from people more familiar with this code?
-
-> +		}
-> +		adjustment = RWSEM_FLAG_WAITERS;
-> +	}
-> +	rwsem_add_waiter(sem, &waiter);
-> +	if (adjustment) {
-> +		long count = atomic_long_add_return(adjustment, &sem->count);
-> +		rwsem_cond_wake_waiter(sem, count, &wake_q);
-> +	}
-> +	raw_spin_unlock_irq(&sem->wait_lock);
-> +
-> +	if (!wake_q_empty(&wake_q))
-> +		wake_up_q(&wake_q);
-> +
-> +	for (;;) {
-> +		set_current_state(state);
-> +		if (!smp_load_acquire(&waiter.task)) {
-> +			/* Matches rwsem_mark_wake()'s smp_store_release(). */
-> +			break;
-> +		}
-> +		if (signal_pending_state(state, current)) {
-> +			raw_spin_lock_irq(&sem->wait_lock);
-> +			if (waiter.task)
-> +				goto out_nolock;
-> +			raw_spin_unlock_irq(&sem->wait_lock);
-> +			/* Ordered by sem->wait_lock against rwsem_mark_wake(). */
-> +			break;
-> +		}
-> +		schedule_preempt_disabled();
-> +	}
-> +
-> +	__set_current_state(TASK_RUNNING);
-> +done:
-> +	preempt_enable();
-> +	return ret;
-> +out_nolock:
-> +	rwsem_del_wake_waiter(sem, &waiter, &wake_q);
-> +	__set_current_state(TASK_RUNNING);
-> +	ret = -EINTR;
-> +	goto done;
-> +}
-> +
->  #else /* !CONFIG_PREEMPT_RT */
->  
->  #define RT_MUTEX_BUILD_MUTEX
-> @@ -1500,6 +1563,11 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
->  	rwbase_write_downgrade(&sem->rwbase);
->  }
->  
-> +static inline int __wait_read_killable(struct rw_semaphore *sem)
-> +{
-> +	return rwbase_wait_lock(&sem->rwbase, TASK_KILLABLE);
-> +}
-> +
->  /* Debug stubs for the common API */
->  #define DEBUG_RWSEMS_WARN_ON(c, sem)
->  
-> @@ -1643,6 +1711,38 @@ void downgrade_write(struct rw_semaphore *sem)
->  }
->  EXPORT_SYMBOL(downgrade_write);
->  
-> +/**
-> + * rwsem_wait_killable - Wait for current write lock holder to release lock
-> + * @sem: The semaphore to wait on.
-> + *
-> + * This is equivalent to calling down_read(); up_read() but avoids the
-> + * possibility that the thread will be preempted while holding the lock
-> + * causing threads that want to take the lock for writes to block.  The
-> + * intended use case is for lockless readers who notice an inconsistent
-> + * state and want to wait for the current writer to finish.
-> + */
-> +int rwsem_wait_killable(struct rw_semaphore *sem)
-> +{
-> +	might_sleep();
-> +
-> +	rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
-> +	rwsem_release(&sem->dep_map, _RET_IP_);
-> +
-> +	return __wait_read_common(sem, TASK_KILLABLE);
-> +}
-> +EXPORT_SYMBOL(rwsem_wait_killable);
-> +
-> +void rwsem_wait(struct rw_semaphore *sem)
-> +{
-> +	might_sleep();
-> +
-> +	rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
-> +	rwsem_release(&sem->dep_map, _RET_IP_);
-> +
-> +	__wait_read_common(sem, TASK_UNINTERRUPTIBLE);
-> +}
-> +EXPORT_SYMBOL(rwsem_wait);
-> +
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  
->  void down_read_nested(struct rw_semaphore *sem, int subclass)
-> -- 
-> 2.43.0
-> 
 
