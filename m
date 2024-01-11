@@ -1,150 +1,361 @@
-Return-Path: <linux-kernel+bounces-23877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C39B82B31F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:37:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C28B82B320
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30F921C24445
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:37:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EA4B28D021
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417CA50268;
-	Thu, 11 Jan 2024 16:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672885100A;
+	Thu, 11 Jan 2024 16:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="pIoaubWI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mlHrRsJ9"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="moGfzBYI"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375715024E;
-	Thu, 11 Jan 2024 16:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 9FC743200A0F;
-	Thu, 11 Jan 2024 11:37:33 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 11 Jan 2024 11:37:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704991053; x=1705077453; bh=LSf0SiijIV
-	zkqraaNl7VZeYKE9TrQNnQYNEHNGLb4m8=; b=pIoaubWIow5E/9yD4EaILySIjh
-	GpbArRXiopDzKgj/x5OSJP1/XrLuOiFYpW2OCZrAxPlGEEDEnMaQspUVvdGYNBeZ
-	9eqSS6uRBInNQjp0mSFBeMRycMepS2IZ/LumKkG2hovNWwHSfnNwg0V/cT1TiPKm
-	OY99U7plvUSsrXJF2u8wITKGJ4ybLeKw5PtBGzi8j4ry4SCDC6b0NP+EPr+8Z61l
-	C81i8xYvoW5uLVnjSzOSawclt2UYMTQKgHgi274QAuKVYsPYN2YLZCZrzUpjHyHB
-	sbd7NZEkdctr+xwi6R6vTMxc6rWcxKHsdmsM68DKRwi14iDGbyEtey+UqdQg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704991053; x=1705077453; bh=LSf0SiijIVzkqraaNl7VZeYKE9Tr
-	QNnQYNEHNGLb4m8=; b=mlHrRsJ9xxJZ9UagtFXuT/OJT5doT6uscqzyrs+n0D4Y
-	Pyg0iG1906ueZkDsppl4UAurbfyC3HKQNOjlZSZlcZEHrtbZO2+cgQC83edJ6T8Z
-	NFWyfkJwRaNGRD149FEE7YAdAMxJjupM8dNCDvrWRLlQuHUS9XNaD32Y6xPIxiQ5
-	TtubAhgrRmuHjBbClF4HGf3MT+BZj21t/Wg5XrEFzwz3+Yitjyz2zoPQFnP7fh4T
-	2hVTWhD+Jn91CKM8U03V1S2P+STQq+ODDAMzRmybN/CllIr8SPcsFbkzGoJI3Y7Q
-	9mZeahCRYW00ajKxKM9ijfioL7FN04QX74eg5RGsnQ==
-X-ME-Sender: <xms:TBmgZU229WBGtd_QXI9TXSe2-4gRumcA3JyJ-44zqCTcHXy7Shg4bw>
-    <xme:TBmgZfHoWScO662orEBhvNW6DT1eb6mQnRq4PmYyBtLTc31Y5QxHAz7mNwChOPO7H
-    tj-0msC_ic9l30ZK14>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeifedgkeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:TBmgZc4MHTy5-w9E7CFl6SQFvCiemLxW0lZhVSStFo-FBXYolIEu8w>
-    <xmx:TBmgZd3zqmj_j6cZVMftC_8YVk7uWgmoaLjtztaPthkuXd2yxW0Xig>
-    <xmx:TBmgZXEn4tnFkThHXyWwySxBN6U76OIeB-V2Or0mf985HK2yGWN0QQ>
-    <xmx:TRmgZc5IIbD0bZI_q2xGVAEOfKenrHdn_PdlPA_kAS68eWmjFC0eug>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C0B46B6008D; Thu, 11 Jan 2024 11:37:32 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD8D5025B
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso12699a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:37:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704991055; x=1705595855; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MwE+FOqKzVGunuMnPmDZXXe5C3CxxMmG6JOVjSLFx/g=;
+        b=moGfzBYI8sDDjSzcn7WYXGirEV0zthDA+dn8iigdIc5O1Co0wM/80e2IqoEPyMw9Yc
+         fcxbAhypOaSDpra3HDtI4VlcZekONnNuyRlZhOkuvb7iitJ2G3BlIGaCEBxxzu+Pe0+0
+         ZEVMH+oP+9LkNNZLcutMmmcn7xkEspMxoEgm6YhA/hr5BNHRYDGj8TEILDEgFRatFSSH
+         eY9KD1ryeBbFEHVMh5grDI29N0/yNMnBM3fUr+Gk2bro/2LTCuoa7LmYZbkUHF4d0cVF
+         BuTK/lpC4wpwfIcYvzxSckyZYtWqXIMsGT79lLpQR0MkKtBPGbqzVXKCOBi3G/2odJsB
+         SKbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704991055; x=1705595855;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MwE+FOqKzVGunuMnPmDZXXe5C3CxxMmG6JOVjSLFx/g=;
+        b=Q5FOcXC3+8t1L8Kub7rhitlmiIEZ43Oi2Sc78DWnWllDJnW7ytACUWNG/TZaf5k/U6
+         ACCYPB1iXgQkwdp8MeqTj5oi5VstcqYmGkzOUnwMpJe8EqtxveS5iN3WmYQdiTlYIvDR
+         g+XbvxuaupojAnYJLskVRYeGOAPRC1Xu1EMTux1cEp2lMfkgAyYL885E+RdTBgtm21lG
+         6D6k+NXuiw++Y8+UO9vNvUljDSxe8ENG9/Otav80Y9CiGp7N2m5Cwp1gILCSXqnDwWJj
+         QhBweG7+ZqM1PFtsqZSIIaQ/DmINxJVqCWWGgvSnDRuhil0KwTWwTV+izyhWhpOHQlAr
+         Z6Sw==
+X-Gm-Message-State: AOJu0YxJRsrXldAhyCHgBaqJZK8WOPfpVdLi75bL6d2yYHCXc/Gf3v1G
+	c/V2/BGcuPhc7QheYMDEEDzgJ6UOkdgrPwKqoguQ6pn9GfnO
+X-Google-Smtp-Source: AGHT+IF5MfhttaDANKxdOPhA5e+P0Nyb3HfIeqx9XHYYXEBWmMiP4gaR0gmQhDCHbxb20Umb6ruNeMQvLY/KoWx6qbw=
+X-Received: by 2002:aa7:c506:0:b0:557:3e55:41e3 with SMTP id
+ o6-20020aa7c506000000b005573e5541e3mr134398edq.0.1704991054745; Thu, 11 Jan
+ 2024 08:37:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <bb175a67-462b-41a7-804a-ec990291a00e@app.fastmail.com>
-In-Reply-To: <908325ed-08af-4b0c-926e-da9afba25772@app.fastmail.com>
-References: 
- <CA+G9fYvDNksfKNvtfERaBa9t2MJNucfD_s3LgKGw_z2otW+nyw@mail.gmail.com>
- <628bf675-77fc-4ccc-be2f-9c3ec8a7b0b8@moroto.mountain>
- <908325ed-08af-4b0c-926e-da9afba25772@app.fastmail.com>
-Date: Thu, 11 Jan 2024 17:37:12 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Dan Carpenter" <dan.carpenter@linaro.org>,
- "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "Uladzislau Rezki" <urezki@gmail.com>
-Cc: linux-next <linux-next@vger.kernel.org>,
- "open list" <linux-kernel@vger.kernel.org>,
- "Linux Regressions" <regressions@lists.linux.dev>,
- clang-built-linux <llvm@lists.linux.dev>, lkft-triage@lists.linaro.org,
- "Andrew Morton" <akpm@linux-foundation.org>
-Subject: Re: mm/vmalloc.c:4691:25: error: variable 'addr' is uninitialized when used
- here [-Werror,-Wuninitialized]
-Content-Type: text/plain
+References: <20240104162510.72773-1-urezki@gmail.com> <20240104162510.72773-2-urezki@gmail.com>
+ <ZZ2bi5iPwXLgjB-f@google.com> <ZZ5htIcrlpxz5AKM@pc636>
+In-Reply-To: <ZZ5htIcrlpxz5AKM@pc636>
+From: Kalesh Singh <kaleshsingh@google.com>
+Date: Thu, 11 Jan 2024 08:37:22 -0800
+Message-ID: <CAC_TJvfe52GRrjHMfvAorC+PtTBRK0hxL9OPoi0SMqDV3XkFZw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, 
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Hillf Danton <hdanton@sina.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024, at 13:55, Arnd Bergmann wrote:
-> On Thu, Jan 11, 2024, at 12:16, Dan Carpenter wrote:
->> On Thu, Jan 11, 2024 at 04:23:09PM +0530, Naresh Kamboju wrote:
->>> Following build failures noticed on i386 and x86 with clang builds on the
->>> Linux next-20240111 tag.
->>> 
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>> 
->>> Build error:
->>> ----------
->>> mm/vmalloc.c:4691:25: error: variable 'addr' is uninitialized when
->>> used here [-Werror,-Wuninitialized]
->>>  4691 |                 va = __find_vmap_area(addr, &vn->busy.root);
->>>       |                                       ^~~~
->>> mm/vmalloc.c:4684:20: note: initialize the variable 'addr' to silence
->>> this warning
->>>  4684 |         unsigned long addr;
->>>       |                           ^
->>>       |                            = 0
->>> 1 error generated.
->>
->> We turned off uninitialized variable warnings for GCC a long time ago...
->> :/ I don't know if we'll be able to re-enable it in a -Werror world
->> although Clang seems to be managing alright so perhaps there is hope.
+On Wed, Jan 10, 2024 at 1:22=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com>=
+ wrote:
 >
-> The problem with gcc's warning is that it is non-deterministic and
-> in recent versions actually got more false-positives even without
-> -Os or -fsanitize=. Clang does not catch all that gcc does because
-> it doesn't track state across inline functions, but at least its
-> output is always the same regardless of optimization and other
-> options.
+> Hello, Kalesh!
 >
-> At least this particular one is an obvious bug and easily gets
-> caught by lkft and lkp even if gcc's -Wuninitilized doesn't
-> flag it.
+> >
+> > Hi Uladzislau,
+> >
+> > I've tried your patches (v3) on Android with 6.1.43 kernel.
+> >
+> > The test cycles 10 apps (including camera) sequentially for 100
+> > iterations.
+> >
+> > I've set rcu_normal to override the rcu_expedited in the boot
+> > parameters:
+> >
+> > adb shell cat /proc/cmdline | tr ' ' '\n' | grep rcu
+> >
+> > rcupdate.rcu_normal=3D1
+> > rcupdate.rcu_expedited=3D1
+> > rcu_nocbs=3D0-7
+> >
+> >
+> > The configurations are:
+> >
+> > A - echo 0 >/sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> > B - echo 1 >/sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> >
+> > Results:
+> >
+> > =3D APP LAUNCH TIME =3D
+> >                                 delta (B-A)    ratio(%)
+> >    overall_app_launch_time(ms)    -11399.00       -6.65
+> >
+> >
+> > =3D=3D camera_launch_time
+> >       type  delta(B-A %)  A_count  B_count
+> >        HOT         -7.05       99       99
+> >       COLD         -6.33        1        1
+> >
+> >
 
-As it turns out, gcc did find this one in the default -Wuninitialized
-regardless of -Wmaybe-uninitialized:
+Hi Uladzislau,
 
-mm/vmalloc.c: In function 'vmalloc_dump_obj':
-mm/vmalloc.c:4691:22: error: 'addr' is used uninitialized [-Werror=uninitialized]
- 4691 |                 va = __find_vmap_area(addr, &vn->busy.root);
-      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-mm/vmalloc.c:4684:23: note: 'addr' was declared here
- 4684 |         unsigned long addr;
-      |                       ^~~~
+> If i interpret it correctly you also see that this series reduces
+> a launch time by 6/7% on your app set. Is that correct?
 
-and I see that Uladzislau Rezki already sent a fix, which
-is the same that I tried out in my randconfig tree:
-https://lore.kernel.org/lkml/ZaARXdbigD1hWuOS@pc638.lan/
+Yes your understanding is correct.
 
-    Arnd
+>
+> > =3D=3D=3D Function Latencies =3D=3D=3D
+> >
+> > Tracing synchronize_rcu_expedited.  Hit Ctrl-C to exit                 =
+             Tracing synchronize_rcu_expedited.  Hit Ctrl-C to exit
+> >
+> >      nsec                : count    distribution                       =
+                  nsec                : count    distribution
+> >          0 -> 1          : 0        |                                  =
+      |               0 -> 1          : 0        |                         =
+               |
+> >          2 -> 3          : 0        |                                  =
+      |               2 -> 3          : 0        |                         =
+               |
+> >          4 -> 7          : 0        |                                  =
+      |               4 -> 7          : 0        |                         =
+               |
+> >          8 -> 15         : 0        |                                  =
+      |               8 -> 15         : 0        |                         =
+               |
+> >         16 -> 31         : 0        |                                  =
+      |              16 -> 31         : 0        |                         =
+               |
+> >         32 -> 63         : 0        |                                  =
+      |              32 -> 63         : 0        |                         =
+               |
+> >         64 -> 127        : 0        |                                  =
+      |              64 -> 127        : 0        |                         =
+               |
+> >        128 -> 255        : 0        |                                  =
+      |             128 -> 255        : 0        |                         =
+               |
+> >        256 -> 511        : 0        |                                  =
+      |             256 -> 511        : 0        |                         =
+               |
+> >        512 -> 1023       : 0        |                                  =
+      |             512 -> 1023       : 0        |                         =
+               |
+> >       1024 -> 2047       : 0        |                                  =
+      |            1024 -> 2047       : 0        |                         =
+               |
+> >       2048 -> 4095       : 0        |                                  =
+      |            2048 -> 4095       : 0        |                         =
+               |
+> >       4096 -> 8191       : 0        |                                  =
+      |            4096 -> 8191       : 0        |                         =
+               |
+> >       8192 -> 16383      : 0        |                                  =
+      |            8192 -> 16383      : 0        |                         =
+               |
+> >      16384 -> 32767      : 0        |                                  =
+      |           16384 -> 32767      : 0        |                         =
+               |
+> >      32768 -> 65535      : 0        |                                  =
+      |           32768 -> 65535      : 0        |                         =
+               |
+> >      65536 -> 131071     : 0        |                                  =
+      |           65536 -> 131071     : 0        |                         =
+               |
+> >     131072 -> 262143     : 0        |                                  =
+      |          131072 -> 262143     : 0        |                         =
+               |
+> >     262144 -> 524287     : 0        |                                  =
+      |          262144 -> 524287     : 0        |                         =
+               |
+> >     524288 -> 1048575    : 0        |                                  =
+      |          524288 -> 1048575    : 0        |                         =
+               |
+> >    1048576 -> 2097151    : 0        |                                  =
+      |         1048576 -> 2097151    : 0        |                         =
+               |
+> >    2097152 -> 4194303    : 0        |                                  =
+      |         2097152 -> 4194303    : 0        |                         =
+               |
+> >    4194304 -> 8388607    : 871      |**                                =
+      |         4194304 -> 8388607    : 1180     |****                     =
+               |
+> >    8388608 -> 16777215   : 3204     |********                          =
+      |         8388608 -> 16777215   : 7020     |*************************=
+               |
+> >   16777216 -> 33554431   : 15013    |**********************************=
+******|        16777216 -> 33554431   : 10952    |*************************=
+***************|
+> > Exiting trace of synchronize_rcu_expedited                             =
+             Exiting trace of synchronize_rcu_expedited
+> >
+> >
+> > Tracing synchronize_rcu.  Hit Ctrl-C to exit                           =
+             Tracing synchronize_rcu.  Hit Ctrl-C to exit
+> >
+> >      nsec                : count    distribution                       =
+                  nsec                : count    distribution
+> >          0 -> 1          : 0        |                                  =
+      |               0 -> 1          : 0        |                         =
+               |
+> >          2 -> 3          : 0        |                                  =
+      |               2 -> 3          : 0        |                         =
+               |
+> >          4 -> 7          : 0        |                                  =
+      |               4 -> 7          : 0        |                         =
+               |
+> >          8 -> 15         : 0        |                                  =
+      |               8 -> 15         : 0        |                         =
+               |
+> >         16 -> 31         : 0        |                                  =
+      |              16 -> 31         : 0        |                         =
+               |
+> >         32 -> 63         : 0        |                                  =
+      |              32 -> 63         : 0        |                         =
+               |
+> >         64 -> 127        : 0        |                                  =
+      |              64 -> 127        : 0        |                         =
+               |
+> >        128 -> 255        : 0        |                                  =
+      |             128 -> 255        : 0        |                         =
+               |
+> >        256 -> 511        : 0        |                                  =
+      |             256 -> 511        : 0        |                         =
+               |
+> >        512 -> 1023       : 0        |                                  =
+      |             512 -> 1023       : 0        |                         =
+               |
+> >       1024 -> 2047       : 0        |                                  =
+      |            1024 -> 2047       : 0        |                         =
+               |
+> >       2048 -> 4095       : 0        |                                  =
+      |            2048 -> 4095       : 0        |                         =
+               |
+> >       4096 -> 8191       : 0        |                                  =
+      |            4096 -> 8191       : 0        |                         =
+               |
+> >       8192 -> 16383      : 0        |                                  =
+      |            8192 -> 16383      : 0        |                         =
+               |
+> >      16384 -> 32767      : 0        |                                  =
+      |           16384 -> 32767      : 0        |                         =
+               |
+> >      32768 -> 65535      : 0        |                                  =
+      |           32768 -> 65535      : 0        |                         =
+               |
+> >      65536 -> 131071     : 0        |                                  =
+      |           65536 -> 131071     : 0        |                         =
+               |
+> >     131072 -> 262143     : 0        |                                  =
+      |          131072 -> 262143     : 0        |                         =
+               |
+> >     262144 -> 524287     : 0        |                                  =
+      |          262144 -> 524287     : 0        |                         =
+               |
+> >     524288 -> 1048575    : 0        |                                  =
+      |          524288 -> 1048575    : 0        |                         =
+               |
+> >    1048576 -> 2097151    : 0        |                                  =
+      |         1048576 -> 2097151    : 0        |                         =
+               |
+> >    2097152 -> 4194303    : 0        |                                  =
+      |         2097152 -> 4194303    : 0        |                         =
+               |
+> >    4194304 -> 8388607    : 861      |**                                =
+      |         4194304 -> 8388607    : 1136     |****                     =
+               |
+> >    8388608 -> 16777215   : 3111     |********                          =
+      |         8388608 -> 16777215   : 6320     |************************ =
+               |
+> >   16777216 -> 33554431   : 13901    |**********************************=
+******|        16777216 -> 33554431   : 10484    |*************************=
+***************|
+> > Exiting trace of synchronize_rcu                                       =
+             Exiting trace of synchronize_rcu
+> >
+> Who is B and who is A?
+
+Left is A (rcu_normal_wake_from_gp=3D0)  and right is B
+(rcu_normal_wake_from_gp=3D1)
+>
+> >
+> > Interestingly I tried the same experiment without rcu_normal=3D1 (leavi=
+ng rcu_expedited=3D1):
+> >
+> > adb shell cat /proc/cmdline | tr ' ' '\n' | grep rcu
+> > rcupdate.rcu_expedited=3D1
+> > rcu_nocbs=3D0-7
+> >
+> > In this case I also saw the -6 to -7% decrease in the app launch times
+> > but I don't have a good explanation why that would be? (The fucntion
+> > latency histograms in this case didn't show any significant difference)=
+.
+> > Do you have any insight why this may happen?
+> >
+> When rcu_expedited=3D1 is set and rcu_normal=3D0 is disabled. The
+> synchronize_rcu() call is converted into synchronize_rcu_expidited():
+>
+> <snip>
+> void synchronize_rcu(void)
+> {
+>         unsigned long flags;
+>         struct rcu_node *rnp;
+>
+>         RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
+>                          lock_is_held(&rcu_lock_map) ||
+>                          lock_is_held(&rcu_sched_lock_map),
+>                          "Illegal synchronize_rcu() in RCU read-side crit=
+ical section");
+>         if (!rcu_blocking_is_gp()) {
+>                 if (rcu_gp_is_expedited())
+>                         synchronize_rcu_expedited();
+>                 else
+>                         synchronize_rcu_normal();
+>                 return;
+>         }
+> ...
+> <snip>
+>
+> rcu_gp_is_expidited() is true, so invoke "expedited" version.
+>
+> I see some concerns in preferring an expedited version as a global
+> replacement. First of all it is related to latency sensitive workloads
+> because in order to expedite a grace period it sends out IPIs on all
+> online CPUs to force them to report a quiescent-state asap. I have not
+> investigated yet how it affects such workloads.
+>
+> Therefore, in your case, you also see a performance boost of your app set=
+s.
+
+IIUC the patch shouldn't affect the case? The only difference in A vs
+B is rcu_normal_wake_from_gp (both have rcu_expedited=3D1).
+
+Thanks,
+Kalesh
+>
+> Thank you for looking at it!
+>
+> --
+> Uladzislau Rezki
 
