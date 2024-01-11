@@ -1,533 +1,173 @@
-Return-Path: <linux-kernel+bounces-23312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA6882AAE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:28:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FCB82AAE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F25A01C21636
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:28:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5AD2284736
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3041119D;
-	Thu, 11 Jan 2024 09:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE05511727;
+	Thu, 11 Jan 2024 09:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="kvwtGySq"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5AE10979
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=NsAuQ/VZyLm6eTN79C
-	ngVW2zvLDoiR/DoNqlCE9BxIs=; b=kvwtGySqg2oaUQ84yKDlvU4f7Kzt6Lw2Kg
-	50GXRTM/fKGygX8AueOwd8yOogj98oVJ4s2MblegGyXRlym+6MSNkiutzWMgOX8R
-	kGWypGJOaPBNtHkSTURaTm5YobX6H9Db5NRpVHUFMcWimHF5GCR/nVez+rbqHwIN
-	P6pSbW/4o=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3H4KotJ9l_JClAA--.62613S2;
-	Thu, 11 Jan 2024 17:28:08 +0800 (CST)
-From: XueBing Chen <chenxb_99091@126.com>
-To: daniel@ffwll.ch,
-	Xinhui.Pan@amd.com,
-	alexander.deucher@amd.com,
-	airlied@gmail.com,
-	christian.koenig@amd.com
-Cc: dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	XueBing Chen <chenxb_99091@126.com>
-Subject: [PATCH] drm/radeon: Clean up errors in pptable.h
-Date: Thu, 11 Jan 2024 09:28:06 +0000
-Message-Id: <20240111092806.13826-1-chenxb_99091@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wD3H4KotJ9l_JClAA--.62613S2
-X-Coremail-Antispam: 1Uf129KBjvAXoW3tF47tr4rCw4xAr17tw1fJFb_yoW8Wr1fZo
-	WxWFs7Wa1fKr1DAayjvry0qFWqg3s8Kw4UG34Ykr9rWa9xXF48Ja13XF97Ka4agwnxurWj
-	kr18Ga4jkFykAr43n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RRJPiDUUUU
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiOgxixWVEuYB2XgAAsh
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i9rUgT1Z"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BEB010785
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55642663ac4so5732455a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:29:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704965397; x=1705570197; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=zI8aOKoY1J1LzQGBJCecKcYIvB4FJqN1IGqRzkcldyQ=;
+        b=i9rUgT1ZEzcGgBtvzCddhCA61kOfq5KEeaXh68BGqZtpTCAxM5/65iNYXgoHSmMLPm
+         nxNTcZxBX+Ctx1thUv3gDNnpZxtqJBu+a0iVymZyPYLgUNH4j4YQwz8UmAr/uHdJtm5V
+         9HMaUgQGflQPc+uNuG2cBG4PMoxu5yshzXgi0JUL+72oxelikabHBmn3qrMvDIZWKjT1
+         xp4suj488nlwwHVDi8po3lwVD7WJQV3/XJRmmuIctjmUm/+NuvmYNXKWh4NlFJo/fZ/G
+         ZSi5dpk2mEYgwDjqcySE3e1sYjgS/2vDiMFlRPuNmcPwU7eX3L+Q+AH3vjzaNIVJLC5w
+         4pSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704965397; x=1705570197;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zI8aOKoY1J1LzQGBJCecKcYIvB4FJqN1IGqRzkcldyQ=;
+        b=QV4Sjk3x5MeQUwxkH/kJkZ3xNKKt7WST8BrAAsMRBKWiswiNb9ABd2C9NQsHn0c7Y/
+         BzVP35Zp9Eh0pqLRTGr1VNVwZSqiEWVx5xW+UvTUvf1CZ5IrmpH/su0q2ZJfZMtb+unF
+         wT53YrU6RF0zlAPVsrGTRf/ohfZIbej4hEJBm/zSzlgFIkwCh+F0JMoaFotC+WIH2tI4
+         Y8F2iYnhAsI5E50NH2wTHgTxS+PpY1GYQWT/0iMj8IdktdkGohy+QpNXgXQp7Jy+j6gI
+         Dn8Wm/8UHrJgs2U7EQiGV9IjmAu4Dr9zIlpKoYZYbwjko7rYJC84hq62qkpgFYpsENEn
+         AMvQ==
+X-Gm-Message-State: AOJu0YxzGPJ4bOy8tqf8wdefc0djd/nrE6OPLpMo1nRzkxrH6oUsCVEu
+	Fo4AcMy9JJ7C91kSdtu6mpxCQ7bkvIAONw==
+X-Google-Smtp-Source: AGHT+IFmJvC4h8dnnPMKN5HoXLRJV8fo6ByPAMiPWXQlUHuh1MZAApTAIIIoZ7IAwmgZNLXXFThv7A==
+X-Received: by 2002:a17:907:9346:b0:a29:335f:4248 with SMTP id bv6-20020a170907934600b00a29335f4248mr481321ejc.45.1704965397637;
+        Thu, 11 Jan 2024 01:29:57 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id b4-20020a170906150400b00a2a37f63216sm353336ejd.171.2024.01.11.01.29.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 01:29:56 -0800 (PST)
+Message-ID: <910736a3-069f-430c-ba6c-221777ddcda2@linaro.org>
+Date: Thu, 11 Jan 2024 10:29:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 00/24] Support more Amlogic SoC families in crypto
+ driver
+To: Alexey Romanov <avromanov@salutedevices.com>,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc: "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+ "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+ "clabbe@baylibre.com" <clabbe@baylibre.com>,
+ "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "khilman@baylibre.com" <khilman@baylibre.com>,
+ "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+ "artin.blumenstingl@googlemail.com" <artin.blumenstingl@googlemail.com>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ "linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
+References: <20240110201216.18016-1-avromanov@salutedevices.com>
+ <ZZ8HP7dJgVaZLMw5@Red> <20240111091840.7fe4lqx225rdlwly@cab-wsm-0029881>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240111091840.7fe4lqx225rdlwly@cab-wsm-0029881>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fix the following errors reported by checkpatch:
+On 11/01/2024 10:18, Alexey Romanov wrote:
+> Hello!
+> 
+> On Wed, Jan 10, 2024 at 10:08:15PM +0100, Corentin Labbe wrote:
+>> Le Wed, Jan 10, 2024 at 11:11:16PM +0300, Alexey Romanov a 'ecrit :
+>>> Hello!
+>>>
+>>> This patchset expand the funcionality of the Amlogic
+>>> crypto driver by adding support for more SoC families: 
+>>> AXG, G12A, G12B, SM1, A1, S4.
+>>>
+>>> Also specify and enable crypto node in device tree
+>>> for reference Amlogic devices.
+>>>
+>>> Tested on AXG, G12A/B, SM1, A1 and S4 devices via
+>>> custom tests and trcypt module.
+>>
+>> Hello
+>>
+>> Thanks for your patch series.
+>> Unfortunatly, I fail to apply it for testing on top of linux-next.
+>> On top of which tree did you have tested ?
+> 
+> We use 6.5-rc3.
 
-ERROR: open brace '{' following struct go on the same line
-ERROR: space required after that close brace '}'
+Don't develop on old trees... I mean, internally you can do whatever you
+wish, but don't work upstream on such trees.
 
-Signed-off-by: XueBing Chen <chenxb_99091@126.com>
----
- drivers/gpu/drm/radeon/pptable.h | 204 +++++++++++++------------------
- 1 file changed, 82 insertions(+), 122 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/pptable.h b/drivers/gpu/drm/radeon/pptable.h
-index 94947229888b..594050be1cbd 100644
---- a/drivers/gpu/drm/radeon/pptable.h
-+++ b/drivers/gpu/drm/radeon/pptable.h
-@@ -90,22 +90,19 @@ typedef struct _ATOM_PPLIB_FANTABLE
-     USHORT  usPWMHigh;                       // The PWM value at THigh.
- } ATOM_PPLIB_FANTABLE;
- 
--typedef struct _ATOM_PPLIB_FANTABLE2
--{
-+typedef struct _ATOM_PPLIB_FANTABLE2 {
-     ATOM_PPLIB_FANTABLE basicTable;
-     USHORT  usTMax;                          // The max temperature
- } ATOM_PPLIB_FANTABLE2;
- 
--typedef struct _ATOM_PPLIB_FANTABLE3
--{
-+typedef struct _ATOM_PPLIB_FANTABLE3 {
- 	ATOM_PPLIB_FANTABLE2 basicTable2;
- 	UCHAR ucFanControlMode;
- 	USHORT usFanPWMMax;
- 	USHORT usFanOutputSensitivity;
- } ATOM_PPLIB_FANTABLE3;
- 
--typedef struct _ATOM_PPLIB_EXTENDEDHEADER
--{
-+typedef struct _ATOM_PPLIB_EXTENDEDHEADER {
-     USHORT  usSize;
-     ULONG   ulMaxEngineClock;   // For Overdrive.
-     ULONG   ulMaxMemoryClock;   // For Overdrive.
-@@ -144,8 +141,7 @@ typedef struct _ATOM_PPLIB_EXTENDEDHEADER
- #define ATOM_PP_PLATFORM_CAP_TEMP_INVERSION   0x00400000            // Does the driver supports Temp Inversion feature.
- #define ATOM_PP_PLATFORM_CAP_EVV    0x00800000
- 
--typedef struct _ATOM_PPLIB_POWERPLAYTABLE
--{
-+typedef struct _ATOM_PPLIB_POWERPLAYTABLE {
-       ATOM_COMMON_TABLE_HEADER sHeader;
- 
-       UCHAR ucDataRevision;
-@@ -178,23 +174,20 @@ typedef struct _ATOM_PPLIB_POWERPLAYTABLE
- 
- } ATOM_PPLIB_POWERPLAYTABLE;
- 
--typedef struct _ATOM_PPLIB_POWERPLAYTABLE2
--{
-+typedef struct _ATOM_PPLIB_POWERPLAYTABLE2 {
-     ATOM_PPLIB_POWERPLAYTABLE basicTable;
-     UCHAR   ucNumCustomThermalPolicy;
-     USHORT  usCustomThermalPolicyArrayOffset;
--}ATOM_PPLIB_POWERPLAYTABLE2, *LPATOM_PPLIB_POWERPLAYTABLE2;
-+} ATOM_PPLIB_POWERPLAYTABLE2, *LPATOM_PPLIB_POWERPLAYTABLE2;
- 
--typedef struct _ATOM_PPLIB_POWERPLAYTABLE3
--{
-+typedef struct _ATOM_PPLIB_POWERPLAYTABLE3 {
-     ATOM_PPLIB_POWERPLAYTABLE2 basicTable2;
-     USHORT                     usFormatID;                      // To be used ONLY by PPGen.
-     USHORT                     usFanTableOffset;
-     USHORT                     usExtendendedHeaderOffset;
- } ATOM_PPLIB_POWERPLAYTABLE3, *LPATOM_PPLIB_POWERPLAYTABLE3;
- 
--typedef struct _ATOM_PPLIB_POWERPLAYTABLE4
--{
-+typedef struct _ATOM_PPLIB_POWERPLAYTABLE4 {
-     ATOM_PPLIB_POWERPLAYTABLE3 basicTable3;
-     ULONG                      ulGoldenPPID;                    // PPGen use only     
-     ULONG                      ulGoldenRevision;                // PPGen use only
-@@ -206,8 +199,7 @@ typedef struct _ATOM_PPLIB_POWERPLAYTABLE4
-     USHORT                     usMvddDependencyOnMCLKOffset;  
- } ATOM_PPLIB_POWERPLAYTABLE4, *LPATOM_PPLIB_POWERPLAYTABLE4;
- 
--typedef struct _ATOM_PPLIB_POWERPLAYTABLE5
--{
-+typedef struct _ATOM_PPLIB_POWERPLAYTABLE5 {
-     ATOM_PPLIB_POWERPLAYTABLE4 basicTable4;
-     ULONG                      ulTDPLimit;
-     ULONG                      ulNearTDPLimit;
-@@ -283,20 +275,18 @@ typedef struct _ATOM_PPLIB_POWERPLAYTABLE5
- #define ATOM_PPLIB_ENABLE_DRR                       0x00080000
- 
- // remaining 16 bits are reserved
--typedef struct _ATOM_PPLIB_THERMAL_STATE
--{
-+typedef struct _ATOM_PPLIB_THERMAL_STATE {
-     UCHAR   ucMinTemperature;
-     UCHAR   ucMaxTemperature;
-     UCHAR   ucThermalAction;
--}ATOM_PPLIB_THERMAL_STATE, *LPATOM_PPLIB_THERMAL_STATE;
-+} ATOM_PPLIB_THERMAL_STATE, *LPATOM_PPLIB_THERMAL_STATE;
- 
- // Contained in an array starting at the offset
- // in ATOM_PPLIB_POWERPLAYTABLE::usNonClockInfoArrayOffset.
- // referenced from ATOM_PPLIB_STATE_INFO::ucNonClockStateIndex
- #define ATOM_PPLIB_NONCLOCKINFO_VER1      12
- #define ATOM_PPLIB_NONCLOCKINFO_VER2      24
--typedef struct _ATOM_PPLIB_NONCLOCK_INFO
--{
-+typedef struct _ATOM_PPLIB_NONCLOCK_INFO {
-       USHORT usClassification;
-       UCHAR  ucMinTemperature;
-       UCHAR  ucMaxTemperature;
-@@ -311,8 +301,7 @@ typedef struct _ATOM_PPLIB_NONCLOCK_INFO
- // Contained in an array starting at the offset
- // in ATOM_PPLIB_POWERPLAYTABLE::usClockInfoArrayOffset.
- // referenced from ATOM_PPLIB_STATE::ucClockStateIndices
--typedef struct _ATOM_PPLIB_R600_CLOCK_INFO
--{
-+typedef struct _ATOM_PPLIB_R600_CLOCK_INFO {
-       USHORT usEngineClockLow;
-       UCHAR ucEngineClockHigh;
- 
-@@ -335,9 +324,7 @@ typedef struct _ATOM_PPLIB_R600_CLOCK_INFO
- #define ATOM_PPLIB_R600_FLAGS_MEMORY_DLL_OFF   16
- #define ATOM_PPLIB_R600_FLAGS_LOWPOWER         32   // On the RV770 use 'low power' setting (sequencer S0).
- 
--typedef struct _ATOM_PPLIB_RS780_CLOCK_INFO
--
--{
-+typedef struct _ATOM_PPLIB_RS780_CLOCK_INFO {
-       USHORT usLowEngineClockLow;         // Low Engine clock in MHz (the same way as on the R600).
-       UCHAR  ucLowEngineClockHigh;
-       USHORT usHighEngineClockLow;        // High Engine clock in MHz.
-@@ -365,8 +352,7 @@ typedef struct _ATOM_PPLIB_RS780_CLOCK_INFO
- #define ATOM_PPLIB_RS780_HTLINKFREQ_LOW        1 
- #define ATOM_PPLIB_RS780_HTLINKFREQ_HIGH       2 
- 
--typedef struct _ATOM_PPLIB_EVERGREEN_CLOCK_INFO
--{
-+typedef struct _ATOM_PPLIB_EVERGREEN_CLOCK_INFO {
-       USHORT usEngineClockLow;
-       UCHAR  ucEngineClockHigh;
- 
-@@ -381,8 +367,7 @@ typedef struct _ATOM_PPLIB_EVERGREEN_CLOCK_INFO
- 
- } ATOM_PPLIB_EVERGREEN_CLOCK_INFO;
- 
--typedef struct _ATOM_PPLIB_SI_CLOCK_INFO
--{
-+typedef struct _ATOM_PPLIB_SI_CLOCK_INFO {
-       USHORT usEngineClockLow;
-       UCHAR  ucEngineClockHigh;
- 
-@@ -398,8 +383,7 @@ typedef struct _ATOM_PPLIB_SI_CLOCK_INFO
- 
- } ATOM_PPLIB_SI_CLOCK_INFO;
- 
--typedef struct _ATOM_PPLIB_CI_CLOCK_INFO
--{
-+typedef struct _ATOM_PPLIB_CI_CLOCK_INFO {
-       USHORT usEngineClockLow;
-       UCHAR  ucEngineClockHigh;
- 
-@@ -419,10 +403,9 @@ typedef struct _ATOM_PPLIB_SUMO_CLOCK_INFO{
-       USHORT rsv1;
-       //please initialize to 0s
-       ULONG rsv2[2];
--}ATOM_PPLIB_SUMO_CLOCK_INFO;
-+} ATOM_PPLIB_SUMO_CLOCK_INFO;
- 
--typedef struct _ATOM_PPLIB_STATE_V2
--{
-+typedef struct _ATOM_PPLIB_STATE_V2 {
-       //number of valid dpm levels in this state; Driver uses it to calculate the whole 
-       //size of the state: sizeof(ATOM_PPLIB_STATE_V2) + (ucNumDPMLevels - 1) * sizeof(UCHAR)
-       UCHAR ucNumDPMLevels;
-@@ -435,15 +418,15 @@ typedef struct _ATOM_PPLIB_STATE_V2
-       UCHAR clockInfoIndex[1];
- } ATOM_PPLIB_STATE_V2;
- 
--typedef struct _StateArray{
-+typedef struct _StateArray {
-     //how many states we have 
-     UCHAR ucNumEntries;
-     
-     ATOM_PPLIB_STATE_V2 states[1];
--}StateArray;
-+} StateArray;
- 
- 
--typedef struct _ClockInfoArray{
-+typedef struct _ClockInfoArray {
-     //how many clock levels we have
-     UCHAR ucNumEntries;
-     
-@@ -451,9 +434,9 @@ typedef struct _ClockInfoArray{
-     UCHAR ucEntrySize;
-     
-     UCHAR clockInfo[1];
--}ClockInfoArray;
-+} ClockInfoArray;
- 
--typedef struct _NonClockInfoArray{
-+typedef struct _NonClockInfoArray {
- 
-     //how many non-clock levels we have. normally should be same as number of states
-     UCHAR ucNumEntries;
-@@ -461,39 +444,34 @@ typedef struct _NonClockInfoArray{
-     UCHAR ucEntrySize;
-     
-     ATOM_PPLIB_NONCLOCK_INFO nonClockInfo[1];
--}NonClockInfoArray;
-+} NonClockInfoArray;
- 
--typedef struct _ATOM_PPLIB_Clock_Voltage_Dependency_Record
--{
-+typedef struct _ATOM_PPLIB_Clock_Voltage_Dependency_Record {
-     USHORT usClockLow;
-     UCHAR  ucClockHigh;
-     USHORT usVoltage;
--}ATOM_PPLIB_Clock_Voltage_Dependency_Record;
-+} ATOM_PPLIB_Clock_Voltage_Dependency_Record;
- 
--typedef struct _ATOM_PPLIB_Clock_Voltage_Dependency_Table
--{
-+typedef struct _ATOM_PPLIB_Clock_Voltage_Dependency_Table {
-     UCHAR ucNumEntries;                                                // Number of entries.
-     ATOM_PPLIB_Clock_Voltage_Dependency_Record entries[1];             // Dynamically allocate entries.
--}ATOM_PPLIB_Clock_Voltage_Dependency_Table;
-+} ATOM_PPLIB_Clock_Voltage_Dependency_Table;
- 
--typedef struct _ATOM_PPLIB_Clock_Voltage_Limit_Record
--{
-+typedef struct _ATOM_PPLIB_Clock_Voltage_Limit_Record {
-     USHORT usSclkLow;
-     UCHAR  ucSclkHigh;
-     USHORT usMclkLow;
-     UCHAR  ucMclkHigh;
-     USHORT usVddc;
-     USHORT usVddci;
--}ATOM_PPLIB_Clock_Voltage_Limit_Record;
-+} ATOM_PPLIB_Clock_Voltage_Limit_Record;
- 
--typedef struct _ATOM_PPLIB_Clock_Voltage_Limit_Table
--{
-+typedef struct _ATOM_PPLIB_Clock_Voltage_Limit_Table {
-     UCHAR ucNumEntries;                                                // Number of entries.
-     ATOM_PPLIB_Clock_Voltage_Limit_Record entries[1];                  // Dynamically allocate entries.
--}ATOM_PPLIB_Clock_Voltage_Limit_Table;
-+} ATOM_PPLIB_Clock_Voltage_Limit_Table;
- 
--union _ATOM_PPLIB_CAC_Leakage_Record
--{
-+union _ATOM_PPLIB_CAC_Leakage_Record {
-     struct
-     {
-         USHORT usVddc;          // We use this field for the "fake" standardized VDDC for power calculations; For CI and newer, we use this as the real VDDC value. in CI we read it as StdVoltageHiSidd
-@@ -510,141 +488,126 @@ union _ATOM_PPLIB_CAC_Leakage_Record
- 
- typedef union _ATOM_PPLIB_CAC_Leakage_Record ATOM_PPLIB_CAC_Leakage_Record;
- 
--typedef struct _ATOM_PPLIB_CAC_Leakage_Table
--{
-+typedef struct _ATOM_PPLIB_CAC_Leakage_Table {
-     UCHAR ucNumEntries;                                                 // Number of entries.
-     ATOM_PPLIB_CAC_Leakage_Record entries[1];                           // Dynamically allocate entries.
--}ATOM_PPLIB_CAC_Leakage_Table;
-+} ATOM_PPLIB_CAC_Leakage_Table;
- 
--typedef struct _ATOM_PPLIB_PhaseSheddingLimits_Record
--{
-+typedef struct _ATOM_PPLIB_PhaseSheddingLimits_Record {
-     USHORT usVoltage;
-     USHORT usSclkLow;
-     UCHAR  ucSclkHigh;
-     USHORT usMclkLow;
-     UCHAR  ucMclkHigh;
--}ATOM_PPLIB_PhaseSheddingLimits_Record;
-+} ATOM_PPLIB_PhaseSheddingLimits_Record;
- 
--typedef struct _ATOM_PPLIB_PhaseSheddingLimits_Table
--{
-+typedef struct _ATOM_PPLIB_PhaseSheddingLimits_Table {
-     UCHAR ucNumEntries;                                                 // Number of entries.
-     ATOM_PPLIB_PhaseSheddingLimits_Record entries[1];                   // Dynamically allocate entries.
--}ATOM_PPLIB_PhaseSheddingLimits_Table;
-+} ATOM_PPLIB_PhaseSheddingLimits_Table;
- 
--typedef struct _VCEClockInfo{
-+typedef struct _VCEClockInfo {
-     USHORT usEVClkLow;
-     UCHAR  ucEVClkHigh;
-     USHORT usECClkLow;
-     UCHAR  ucECClkHigh;
--}VCEClockInfo;
-+} VCEClockInfo;
- 
--typedef struct _VCEClockInfoArray{
-+typedef struct _VCEClockInfoArray {
-     UCHAR ucNumEntries;
-     VCEClockInfo entries[1];
--}VCEClockInfoArray;
-+} VCEClockInfoArray;
- 
--typedef struct _ATOM_PPLIB_VCE_Clock_Voltage_Limit_Record
--{
-+typedef struct _ATOM_PPLIB_VCE_Clock_Voltage_Limit_Record {
-     USHORT usVoltage;
-     UCHAR  ucVCEClockInfoIndex;
--}ATOM_PPLIB_VCE_Clock_Voltage_Limit_Record;
-+} ATOM_PPLIB_VCE_Clock_Voltage_Limit_Record;
- 
--typedef struct _ATOM_PPLIB_VCE_Clock_Voltage_Limit_Table
--{
-+typedef struct _ATOM_PPLIB_VCE_Clock_Voltage_Limit_Table {
-     UCHAR numEntries;
-     ATOM_PPLIB_VCE_Clock_Voltage_Limit_Record entries[1];
--}ATOM_PPLIB_VCE_Clock_Voltage_Limit_Table;
-+} ATOM_PPLIB_VCE_Clock_Voltage_Limit_Table;
- 
--typedef struct _ATOM_PPLIB_VCE_State_Record
--{
-+typedef struct _ATOM_PPLIB_VCE_State_Record {
-     UCHAR  ucVCEClockInfoIndex;
-     UCHAR  ucClockInfoIndex; //highest 2 bits indicates memory p-states, lower 6bits indicates index to ClockInfoArrary
--}ATOM_PPLIB_VCE_State_Record;
-+} ATOM_PPLIB_VCE_State_Record;
- 
--typedef struct _ATOM_PPLIB_VCE_State_Table
--{
-+typedef struct _ATOM_PPLIB_VCE_State_Table {
-     UCHAR numEntries;
-     ATOM_PPLIB_VCE_State_Record entries[1];
--}ATOM_PPLIB_VCE_State_Table;
-+} ATOM_PPLIB_VCE_State_Table;
- 
- 
--typedef struct _ATOM_PPLIB_VCE_Table
--{
-+typedef struct _ATOM_PPLIB_VCE_Table {
-       UCHAR revid;
- //    VCEClockInfoArray array;
- //    ATOM_PPLIB_VCE_Clock_Voltage_Limit_Table limits;
- //    ATOM_PPLIB_VCE_State_Table states;
--}ATOM_PPLIB_VCE_Table;
-+} ATOM_PPLIB_VCE_Table;
- 
- 
--typedef struct _UVDClockInfo{
-+typedef struct _UVDClockInfo {
-     USHORT usVClkLow;
-     UCHAR  ucVClkHigh;
-     USHORT usDClkLow;
-     UCHAR  ucDClkHigh;
--}UVDClockInfo;
-+} UVDClockInfo;
- 
--typedef struct _UVDClockInfoArray{
-+typedef struct _UVDClockInfoArray {
-     UCHAR ucNumEntries;
-     UVDClockInfo entries[1];
--}UVDClockInfoArray;
-+} UVDClockInfoArray;
- 
--typedef struct _ATOM_PPLIB_UVD_Clock_Voltage_Limit_Record
--{
-+typedef struct _ATOM_PPLIB_UVD_Clock_Voltage_Limit_Record {
-     USHORT usVoltage;
-     UCHAR  ucUVDClockInfoIndex;
--}ATOM_PPLIB_UVD_Clock_Voltage_Limit_Record;
-+} ATOM_PPLIB_UVD_Clock_Voltage_Limit_Record;
- 
--typedef struct _ATOM_PPLIB_UVD_Clock_Voltage_Limit_Table
--{
-+typedef struct _ATOM_PPLIB_UVD_Clock_Voltage_Limit_Table {
-     UCHAR numEntries;
-     ATOM_PPLIB_UVD_Clock_Voltage_Limit_Record entries[1];
--}ATOM_PPLIB_UVD_Clock_Voltage_Limit_Table;
-+} ATOM_PPLIB_UVD_Clock_Voltage_Limit_Table;
- 
--typedef struct _ATOM_PPLIB_UVD_Table
--{
-+typedef struct _ATOM_PPLIB_UVD_Table {
-       UCHAR revid;
- //    UVDClockInfoArray array;
- //    ATOM_PPLIB_UVD_Clock_Voltage_Limit_Table limits;
--}ATOM_PPLIB_UVD_Table;
-+} ATOM_PPLIB_UVD_Table;
- 
--typedef struct _ATOM_PPLIB_SAMClk_Voltage_Limit_Record
--{
-+typedef struct _ATOM_PPLIB_SAMClk_Voltage_Limit_Record {
-       USHORT usVoltage;
-       USHORT usSAMClockLow;
-       UCHAR  ucSAMClockHigh;
--}ATOM_PPLIB_SAMClk_Voltage_Limit_Record;
-+} ATOM_PPLIB_SAMClk_Voltage_Limit_Record;
- 
--typedef struct _ATOM_PPLIB_SAMClk_Voltage_Limit_Table{
-+typedef struct _ATOM_PPLIB_SAMClk_Voltage_Limit_Table {
-     UCHAR numEntries;
-     ATOM_PPLIB_SAMClk_Voltage_Limit_Record entries[1];
--}ATOM_PPLIB_SAMClk_Voltage_Limit_Table;
-+} ATOM_PPLIB_SAMClk_Voltage_Limit_Table;
- 
--typedef struct _ATOM_PPLIB_SAMU_Table
--{
-+typedef struct _ATOM_PPLIB_SAMU_Table {
-       UCHAR revid;
-       ATOM_PPLIB_SAMClk_Voltage_Limit_Table limits;
--}ATOM_PPLIB_SAMU_Table;
-+} ATOM_PPLIB_SAMU_Table;
- 
--typedef struct _ATOM_PPLIB_ACPClk_Voltage_Limit_Record
--{
-+typedef struct _ATOM_PPLIB_ACPClk_Voltage_Limit_Record {
-       USHORT usVoltage;
-       USHORT usACPClockLow;
-       UCHAR  ucACPClockHigh;
--}ATOM_PPLIB_ACPClk_Voltage_Limit_Record;
-+} ATOM_PPLIB_ACPClk_Voltage_Limit_Record;
- 
--typedef struct _ATOM_PPLIB_ACPClk_Voltage_Limit_Table{
-+typedef struct _ATOM_PPLIB_ACPClk_Voltage_Limit_Table {
-     UCHAR numEntries;
-     ATOM_PPLIB_ACPClk_Voltage_Limit_Record entries[1];
--}ATOM_PPLIB_ACPClk_Voltage_Limit_Table;
-+} ATOM_PPLIB_ACPClk_Voltage_Limit_Table;
- 
--typedef struct _ATOM_PPLIB_ACP_Table
--{
-+typedef struct _ATOM_PPLIB_ACP_Table {
-       UCHAR revid;
-       ATOM_PPLIB_ACPClk_Voltage_Limit_Table limits;
--}ATOM_PPLIB_ACP_Table;
-+} ATOM_PPLIB_ACP_Table;
- 
--typedef struct _ATOM_PowerTune_Table{
-+typedef struct _ATOM_PowerTune_Table {
-     USHORT usTDP;
-     USHORT usConfigurableTDP;
-     USHORT usTDC;
-@@ -652,16 +615,14 @@ typedef struct _ATOM_PowerTune_Table{
-     USHORT usSmallPowerLimit;
-     USHORT usLowCACLeakage;
-     USHORT usHighCACLeakage;
--}ATOM_PowerTune_Table;
-+} ATOM_PowerTune_Table;
- 
--typedef struct _ATOM_PPLIB_POWERTUNE_Table
--{
-+typedef struct _ATOM_PPLIB_POWERTUNE_Table {
-       UCHAR revid;
-       ATOM_PowerTune_Table power_tune_table;
--}ATOM_PPLIB_POWERTUNE_Table;
-+} ATOM_PPLIB_POWERTUNE_Table;
- 
--typedef struct _ATOM_PPLIB_POWERTUNE_Table_V1
--{
-+typedef struct _ATOM_PPLIB_POWERTUNE_Table_V1 {
-       UCHAR revid;
-       ATOM_PowerTune_Table power_tune_table;
-       USHORT usMaximumPowerDeliveryLimit;
-@@ -670,8 +631,7 @@ typedef struct _ATOM_PPLIB_POWERTUNE_Table_V1
- 
- #define ATOM_PPM_A_A    1
- #define ATOM_PPM_A_I    2
--typedef struct _ATOM_PPLIB_PPM_Table
--{
-+typedef struct _ATOM_PPLIB_PPM_Table {
-       UCHAR  ucRevId;
-       UCHAR  ucPpmDesign;          //A+I or A+A
-       USHORT usCpuCoreNumber;
--- 
-2.17.1
+Best regards,
+Krzysztof
 
 
