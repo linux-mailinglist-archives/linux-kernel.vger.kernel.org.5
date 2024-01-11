@@ -1,313 +1,179 @@
-Return-Path: <linux-kernel+bounces-23574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A53B382AE8C
+	by mail.lfdr.de (Postfix) with ESMTPS id D467982AE8D
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F31F91F2816D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:19:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73BDE1F28249
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E897A15ACD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B1815AC9;
 	Thu, 11 Jan 2024 12:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="aKhl99aq"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=nec.com header.i=@nec.com header.b="qqrCY5Ba"
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2058.outbound.protection.outlook.com [40.107.114.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D917156F3;
-	Thu, 11 Jan 2024 12:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6F6E7896;
-	Thu, 11 Jan 2024 13:17:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1704975475;
-	bh=UyrD6JFTO3THsOc0NwrLYt/hWeSjSzysWC0BvTLbJ9A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aKhl99aqbg8X9uJF84Imt7ngI9YBkK+PfijqOOUtelk2FJ+NgvkupU6/FYmisjhU6
-	 uXOihyHRRaciLowIJ7DC43EGu9Lo1hy96AjXtaftnCHb4aLmEfVWiKKbq8VAC4nBQR
-	 KWDuLCsHBCZ5TcZaXd+YiE8fuCpj0W3c8K9XrxqY=
-Message-ID: <720246cf-cba0-43c4-ac55-879012dc27d3@ideasonboard.com>
-Date: Thu, 11 Jan 2024 14:18:55 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6468F156EF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nec.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nec.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ILcCZI/hNd8V//WXiOUK6pbZ0JeaQDVInjjh9aWVfoo4L3FGaiFSlK/2NlwfO+7RhN6UB97GuB17GVmU/nazfQ7AfPZov+Qf6gBZppNTP9MMCES8X1OKGqFIYDITbNOgnnK/yq3q6puqsN3NT3NPJ1YjDcZeqhvCwF5IbXGfwVS853G4tt5tyPxIPa7DFKOEZGXR25rKr/rFALul9ZlPHpwkyyGDpMouyLhUfO+Q6BEy9mqqoFHP2dOFRHRWpMGmv4svWpQLMdCPGCLkIFf9XZ7sNg6L3ASEh1z/oDz84Bw/MYx0OiQbDR49q9FZxY/hHeikXlWMGF3CT3A7tWITxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9nq9vTua3hhQFtgQumwCXiMvJOdCI/YjeX8+jXDvj7s=;
+ b=bePyu0r3EWBgQ7IpZz4i324pMsyJFdyosdoF6e0ZY4xXet6+hCYvdNOYcKeSIrrKwKWuE0Vliv34OsqBv5EnQyihS8o5ZkTRoQ9gWLWizQ05EhTyQJGWbsYCC9pCxFT4TxyIMiyJTiyWxmBYZLrX4GY6ng1lg2uJJ/MUZPR2dl+craGAHewZok0x2FnS8GNNwxeG0PadVgaKiCaYrvxWXQHn6I1mFKsHMfiD+b3fw92x2jRAw7cX6H7763DiZB/vGYBsJtVZtldNbsTlQKWc+YtsSbAVXwP/DBpF2v0nXEFlJO8uPA+1ZzIXRqYHvutRaFLtWkGDszAAXbwDS7e9fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9nq9vTua3hhQFtgQumwCXiMvJOdCI/YjeX8+jXDvj7s=;
+ b=qqrCY5BabyyPjeAfWgJVAc405XOuaS4BoPiQ2AHEVUzgQLgkhfQWrExOxLTsZLa+9wxR1fsPV3GE/e1O43QeQvgZw2OWfRKWjhW/uNcX/KaXZDpHYkV2T0J0Qhj7nYxeTTA9hDD77nBVvTiHQ1SziumV7OqFvhZnUwQpCPhBMVQOHhCgv40sBN+VI64H5/1ICbqMNvKGN5ROCHVK36EZqxKwqazJ31FBcru62CSPJQ7ZdWGE/7X1Razfdy5NDKjGHgS4PJXoGj6nsRR6+h55JiShbRIhFMzsHXZC8Y0utHljQrwzw4rTS90T/VgwiN4qjeMH6q39GXHYfjDMS1+05w==
+Received: from TYCPR01MB8389.jpnprd01.prod.outlook.com (2603:1096:400:15f::5)
+ by TY3PR01MB10468.jpnprd01.prod.outlook.com (2603:1096:400:310::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.13; Thu, 11 Jan
+ 2024 12:18:58 +0000
+Received: from TYCPR01MB8389.jpnprd01.prod.outlook.com
+ ([fe80::97b4:ef67:3174:a230]) by TYCPR01MB8389.jpnprd01.prod.outlook.com
+ ([fe80::97b4:ef67:3174:a230%3]) with mapi id 15.20.7181.015; Thu, 11 Jan 2024
+ 12:18:58 +0000
+From: =?utf-8?B?Tk9NVVJBIEpVTklDSEko6YeO5p2R44CA5rez5LiAKQ==?=
+	<junichi.nomura@nec.com>
+To: "mingo@redhat.com" <mingo@redhat.com>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org"
+	<x86@kernel.org>
+CC: =?utf-8?B?Tk9NVVJBIEpVTklDSEko6YeO5p2R44CA5rez5LiAKQ==?=
+	<junichi.nomura@nec.com>, "hpa@zytor.com" <hpa@zytor.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"ardb@kernel.org" <ardb@kernel.org>, "david@redhat.com" <david@redhat.com>,
+	"nikunj@amd.com" <nikunj@amd.com>, "thomas.lendacky@amd.com"
+	<thomas.lendacky@amd.com>, "debarbos@redhat.com" <debarbos@redhat.com>,
+	"jlelli@redhat.com" <jlelli@redhat.com>, "lgoncalv@redhat.com"
+	<lgoncalv@redhat.com>, "dzickus@redhat.com" <dzickus@redhat.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/boot: Add a message about ignored early NMIs
+Thread-Topic: [PATCH] x86/boot: Add a message about ignored early NMIs
+Thread-Index: AQHaRIhafVlQIpM4zE+vUjXyVtJi6Q==
+Date: Thu, 11 Jan 2024 12:18:58 +0000
+Message-ID: <cb2652ba-5957-87da-7d13-814d9ec1a65e@nec.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nec.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYCPR01MB8389:EE_|TY3PR01MB10468:EE_
+x-ms-office365-filtering-correlation-id: 85e96c35-9c59-476f-aee0-08dc129f7d0b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ oS9QSHeCkEx15HW+/CMaxLPt9YL5Nw8Z3uA4wsW3atHh6jLVTA67taSOLV2Zp0TAMo2CDyiD4iYLN8KSPVsZARYqJfiV94l0+Ax7uF5FB0jKle94s5vz5X+3kVRveX06RkyWQl/iXX/ba74W19mKJoLgXeM1CC9IJz6H3X+QzK+mxbP5V7ZnnlcW164MgCLrKL1VbRWqs/o2zPRBd7c5hZDtd1gioBVOy3Ab+rXZdZv0Ifh9y4x9aDXJQF89GPw3EXAcqim0rx5ySwRGBhlOHc8jH24mArnrgVlP7ijqCQBAtWcjyuWNDcBBlH8juGYHkNLtqQ44pw6fU0vq8Z40YORkyiA7THWJUBra6gVprM4o+LruR5+6v/8qs+VimOkysP2oz/JMuk3JK+X7s9gIPuPNiq6cYM263jg04g5dgE0HbKJ52c/4f0xL3gxCmMGlWxBoBZgrKRv1T5HCBQ/yHZu549BBFU4wDC3txQdwKe0RGvPNiKg9KceeC3esNJZXqBq6DBbSDNE6ZC0+fYpyfLRy8afqQJnpYocHIJweMkh7D9j6FGogsayiMuPNZCg2vM6CHVwZ8QgeYB1GQXPk3x0OYojZGsgkW4VYZC/3svS9ReyeEMyfj/PDk55/FL0Pm/Q0hGNwhEMij8hp2Vv8qA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB8389.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(346002)(39860400002)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(5660300002)(4326008)(8676002)(8936002)(7416002)(2906002)(31686004)(76116006)(66946007)(54906003)(66556008)(64756008)(66476007)(66446008)(15650500001)(110136005)(316002)(6512007)(6506007)(966005)(6486002)(478600001)(41300700001)(71200400001)(85182001)(36756003)(26005)(2616005)(38100700002)(31696002)(83380400001)(86362001)(38070700009)(82960400001)(122000001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?QlMwM1dOcmJJNTZWYXBGU1owLzFSeEtJZWQzQitWTHVRbDlKSXNGbU45elgw?=
+ =?utf-8?B?cDA2YWUwOUJ5REJyNFhMNS9Cc0k2Z1BtR2E0SXlLTVZzSnNnNXJGS09KU0pX?=
+ =?utf-8?B?bDcxbGhOYU9DQXlqaVlEMWpFZFJDbWNvZUppWS9vRDdWMFYxaXZOMEFBb1NJ?=
+ =?utf-8?B?bFJHd2tjU3d2K0o4SWJKeFh0RzFnT3lKOE80U1NNdTZnd0x1R3BjU2tMcGpU?=
+ =?utf-8?B?UVZiWkVKOVY0bzUwTW5lcFcwQmg0TlRacG1yOXJaNklyQ3pGSjhxQ2d3bXYx?=
+ =?utf-8?B?Q2thNlZPcjhvbktTRTJZa09aMlo2bmdqWnMvV3VqUUc1OWJ5VU1CblcyekF3?=
+ =?utf-8?B?bG9xVWRYSFNvWHdzcWkvNlRUNWxZTVN2QytQQzNRQWVoYkVFYU5lQ2xHWmtR?=
+ =?utf-8?B?Q3FVZDNUSFNlVHAvQkdrM3JrSk1aNjY3OFFtSTRsTm00YlczQnlCczA5bHJF?=
+ =?utf-8?B?VW0wS3hwdHJtR2R4QmVBV0FKVHFNd0p5YjRvOEFnWjlkQmlwMXVWdUdpRmo0?=
+ =?utf-8?B?V2NmYTU0bkZjaHZWaWdROXJhVHdXV1JkYjRqRGd6ajd1SHFVekNsTktxWm1I?=
+ =?utf-8?B?Y2ZaYVFUVTY3NXVIU1hQaFNSNVJLRW93SnF6RlRlV2E5anFIZlVyNnZtZ0k0?=
+ =?utf-8?B?Y2FhcnRpM2xhL0ZLaXliOVN0YzlsdVo4WDIxb1pJL3p6cFpHOEpGZ1plenRs?=
+ =?utf-8?B?N2kxZDBUUlRmZHJnc3Y5d3RLeGtTV3d6Z01aTXd1d3UreFVMVXBRcmtjWEhs?=
+ =?utf-8?B?dkd1bS81UWVNTm5SUDkvOVBOdFNQbmwxYnVmN0I2SmtnWGRHa2ZGKzlYQ2w1?=
+ =?utf-8?B?R0JvTVc2ZFFQWG5RMDdwYVBKNzBZWlJrOTdvOXh3amVIbnZxTkV5QUNnSk43?=
+ =?utf-8?B?V3hFZlFXU21oNXBvZFFBTFE4OEcxbElQMjNxOEZMM0owLytVOW9yeVUraXNW?=
+ =?utf-8?B?ejF0R3NMQU5MNGdjWlIxSEdldGdHNE5hM0Z5VXdGSWdzNzJ0YWVTSVMxa2tv?=
+ =?utf-8?B?NU0vOVpudjFENGxUSk1LV3dZVGhsb3BFSEx0RlZiWWUyYmluSjVPMzdzUHNr?=
+ =?utf-8?B?QkdNQ3l2ZzZZb1U5TVVvTGsrbXdOekJMTDdsbHV2QitwdmlMeFFOczdiMHdH?=
+ =?utf-8?B?ejhtZG5TSDRCQzZYYWhUT1FxRkpkYmtnTDNJYUw1Z1U5M0RKZ2VERjJGaGlu?=
+ =?utf-8?B?aUFnejZ3R010R2tPWUhha1hYMTBqTmxkUHF5RVJpTmxXWHp0bkIvQWVKVHcv?=
+ =?utf-8?B?QVdXZ1JCYkNsNFBZTGRxYjlYMVZGOW1tRk1rdDZxTUNRSHBUZGpTWUVtcXYy?=
+ =?utf-8?B?YVZMOHJKalh0RUNHSDBBVm5nTWg0RUdYc1pra1NuUy9EdFNyM0Y4TkoyU3Mz?=
+ =?utf-8?B?K2ZNLzd5cmY4bVZqTjk2K21FOGpLVmVFcjJrVmdwNmd1NHZ0b1luMndpcExz?=
+ =?utf-8?B?UGorODFFTnFRVjh4RVhQOStQZkpTTjhKR2trSkhMU29TWjUwSml2NnluV1Bk?=
+ =?utf-8?B?UW5Kc3Zuem1kZWdJcnpNcHdIdTFrVDZYTXF4K0puaWJLRXV2ZmlpWFN5ZW1t?=
+ =?utf-8?B?dWNxc0ViN2xVL0ordDJvN1JYTkFsRDVadHA4U1krL0EzSk1GVDc1eDg5bnBj?=
+ =?utf-8?B?azJldzl2Y2lvaDEyNUNyNEFYQkZQWENmS2J5WUpIdXpHeTZiUUl3c0h5RHhh?=
+ =?utf-8?B?d2twTjN3TnJ6bE52VkNva1BtQ1VEb3hHakszVGU5aFlGVVJKSUxDTlNiSWpE?=
+ =?utf-8?B?S2xaQjNLbnZpdVVCa2dZUlRsdG8wZmh0WWNYaXFUYzlCU0NtNXcxUExpUk1V?=
+ =?utf-8?B?QUdid2xGbjJJTnUycklJNk8zTXB2eUVYSlViY3dxTm9EWGM5VVJQM2FLMHph?=
+ =?utf-8?B?N3ZiSnl4bkhWU3phVGFvbGdSMHA4dlAvSFpDQmJEK3RZeHVqeE1sZkg4NUtQ?=
+ =?utf-8?B?UHd5NTlNUGlFZUNOeTRPTGowNHZLa01aNEpqT1ZlZmI2cjE0Nlc2NWdiME1k?=
+ =?utf-8?B?Rm51b3ZGU2oxRkZwV0QvSm5paFdkL1E5RXJEbGozUXdPZ1BGZDVFWW9RTzds?=
+ =?utf-8?B?TnVBVDl4c0ErNW1ScTdkQjE4bVlFK3N6WlhYbW9XZ3p1amJTK0ducDYyN3BR?=
+ =?utf-8?B?UDZiNkhrZ3JHcFNsRW9WbGNsNHJNdzNTK0ZhZXIvSTRueG9tdnYrWXVyYjVP?=
+ =?utf-8?B?ekE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4D4681D0DE147A42AB7E022A2B11B8BB@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/16] arm64: dts: ti: k3-am65: Add MIT license along with
- GPL-2.0
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>,
- Jan Kiszka <jan.kiszka@siemens.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Pierre Gondois <pierre.gondois@arm.com>, Rob Herring <robh@kernel.org>,
- Tony Lindgren <tony@atomide.com>
-References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-7-nm@ti.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240110140903.4090946-7-nm@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB8389.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85e96c35-9c59-476f-aee0-08dc129f7d0b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2024 12:18:58.6726
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CxBId7p/tAK1MigZBWev/QNNSP6Lxg8xdAuuxPGPQqngCxkH+i/d29w3VVMNc/96jHw6p2w5GBNrN6rcF4Yyew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10468
 
-On 10/01/2024 16:08, Nishanth Menon wrote:
-> Modify license to include dual licensing as GPL-2.0-only OR MIT
-> license for SoC and TI evm device tree files. This allows for Linux
-> kernel device tree to be used in other Operating System ecosystems
-> such as Zephyr or FreeBSD.
-> 
-> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
-> with latest SPDX conventions (GPL-2.0 is deprecated).
-> 
-> While at this, update the TI copyright year to sync with current year
-> to indicate license change (and add it at least for one file which was
-> missing TI copyright).
-> 
-> Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-> Cc: Jan Kiszka <jan.kiszka@siemens.com>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> Cc: Pierre Gondois <pierre.gondois@arm.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-am65-main.dtsi                     | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi                      | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi                   | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am65.dtsi                          | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am652.dtsi                         | 4 ++--
->   .../dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso     | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am654-base-board.dts               | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso                  | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am654-idk.dtso                     | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi      | 5 ++++-
->   arch/arm64/boot/dts/ti/k3-am654.dtsi                         | 4 ++--
->   11 files changed, 24 insertions(+), 21 deletions(-)
-
-Acked-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-  Tomi
-
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index fcea54465636..e55a8c891bc9 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM6 SoC Family Main Domain peripherals
->    *
-> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   #include <dt-bindings/phy/phy-am654-serdes.h>
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> index ecd7356f3315..6ff3ccc39fb4 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM6 SoC Family MCU Domain peripherals
->    *
-> - * Copyright (C) 2016-2020 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   &cbass_mcu {
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-> index f037b36243ce..37527890ddea 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM6 SoC Family Wakeup Domain peripherals
->    *
-> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   &cbass_wakeup {
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> index 4d7b6155a76b..c59baebc5a25 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM6 SoC Family
->    *
-> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   #include <dt-bindings/gpio/gpio.h>
-> diff --git a/arch/arm64/boot/dts/ti/k3-am652.dtsi b/arch/arm64/boot/dts/ti/k3-am652.dtsi
-> index 0f22e00faa90..cbb3caaf82c3 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am652.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am652.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM65 SoC family in Dual core configuration
->    *
-> - * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   #include "k3-am65.dtsi"
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso b/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
-> index 4209d991eb6b..364c57b3b3a0 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
-> @@ -1,10 +1,10 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /**
->    * OLDI-LCD1EVM Rocktech integrated panel and touch DT overlay for AM654-EVM.
->    * Panel Link: https://www.digimax.it/en/tft-lcd/20881-RK101II01D-CT
->    * AM654 LCD EVM: https://www.ti.com/tool/TMDSLCD1EVM
->    *
-> - * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> index 822c288d2797..5109e1bf68d0 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> @@ -1,6 +1,6 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
-> - * Copyright (C) 2016-2020 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> index ec8cf20ca3ac..0a6e75265ba9 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /**
->    * DT overlay for IDK application board on AM654 EVM
->    *
-> - * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2018-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-> index 150428dfce6f..8bdb87fcbde0 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /**
->    * DT overlay for IDK application board on AM654 EVM
->    *
-> - * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2018-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi b/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
-> index 9021c738056b..de5a2ed907a7 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
-> @@ -1,4 +1,7 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
-> +/*
-> + * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
-> + */
->   
->   #include <dt-bindings/thermal/thermal.h>
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654.dtsi b/arch/arm64/boot/dts/ti/k3-am654.dtsi
-> index 888567b921f0..bb77c8454734 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am654.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM6 SoC family in Quad core configuration
->    *
-> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   #include "k3-am65.dtsi"
-
+Q29tbWl0IDc4YTUwOWZiYTljOSAoIng4Ni9ib290OiBJZ25vcmUgTk1JcyBkdXJpbmcgdmVyeSBl
+YXJseSBib290IikgYWRkZWQNCmVtcHR5IGhhbmRsZXIgaW4gZWFybHkgYm9vdCBzdGFnZSB0byBh
+dm9pZCBib290IGZhaWx1cmUgYnkgc3B1cmlvdXMgTk1Jcy4NCg0KQWRkIGEgZGlhZ25vc3RpYyBt
+ZXNzYWdlIGluIGNhc2Ugd2UgbmVlZCB0byBrbm93IHdoZXRoZXIgZWFybHkgTk1JcyBoYXZlDQpv
+Y2N1cnJlZCBhbmQvb3Igd2hhdCBoYXBwZW5lZCB0byB0aGVtLg0KDQpTaWduZWQtb2ZmLWJ5OiBK
+dW4naWNoaSBOb211cmEgPGp1bmljaGkubm9tdXJhQG5lYy5jb20+DQpTdWdnZXN0ZWQtYnk6IEJv
+cmlzbGF2IFBldGtvdiA8YnBAYWxpZW44LmRlPg0KU3VnZ2VzdGVkLWJ5OiBILiBQZXRlciBBbnZp
+biA8aHBhQHp5dG9yLmNvbT4NCkxpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAy
+MzExMzAxMDMzMzkuR0NaV2hsQTE5NnVSa2xUTU5GQGZhdF9jcmF0ZS5sb2NhbC8NCg0KZGlmZiAt
+LWdpdCBhL2FyY2gveDg2L2Jvb3QvY29tcHJlc3NlZC9pZGVudF9tYXBfNjQuYyBiL2FyY2gveDg2
+L2Jvb3QvY29tcHJlc3NlZC9pZGVudF9tYXBfNjQuYw0KLS0tIGEvYXJjaC94ODYvYm9vdC9jb21w
+cmVzc2VkL2lkZW50X21hcF82NC5jDQorKysgYi9hcmNoL3g4Ni9ib290L2NvbXByZXNzZWQvaWRl
+bnRfbWFwXzY0LmMNCkBAIC0zODcsNyArMzg3LDEwIEBAIHZvaWQgZG9fYm9vdF9wYWdlX2ZhdWx0
+KHN0cnVjdCBwdF9yZWdzICpyZWdzLCB1bnNpZ25lZCBsb25nIGVycm9yX2NvZGUpDQogICAgICAg
+ICBrZXJuZWxfYWRkX2lkZW50aXR5X21hcChhZGRyZXNzLCBlbmQpOw0KICB9DQoNCitleHRlcm4g
+aW50IHNwdXJpb3VzX25taV9jb3VudDsNCisNCiAgdm9pZCBkb19ib290X25taV90cmFwKHN0cnVj
+dCBwdF9yZWdzICpyZWdzLCB1bnNpZ25lZCBsb25nIGVycm9yX2NvZGUpDQogIHsNCiAgICAgICAg
+IC8qIEVtcHR5IGhhbmRsZXIgdG8gaWdub3JlIE5NSSBkdXJpbmcgZWFybHkgYm9vdCAqLw0KKyAg
+ICAgICBzcHVyaW91c19ubWlfY291bnQrKzsNCiAgfQ0KZGlmZiAtLWdpdCBhL2FyY2gveDg2L2Jv
+b3QvY29tcHJlc3NlZC9taXNjLmMgYi9hcmNoL3g4Ni9ib290L2NvbXByZXNzZWQvbWlzYy5jDQot
+LS0gYS9hcmNoL3g4Ni9ib290L2NvbXByZXNzZWQvbWlzYy5jDQorKysgYi9hcmNoL3g4Ni9ib290
+L2NvbXByZXNzZWQvbWlzYy5jDQpAQCAtMzU3LDYgKzM1Nyw4IEBAIHVuc2lnbmVkIGxvbmcgZGVj
+b21wcmVzc19rZXJuZWwodW5zaWduZWQgY2hhciAqb3V0YnVmLCB1bnNpZ25lZCBsb25nIHZpcnRf
+YWRkciwNCiAgICAgICAgIHJldHVybiBlbnRyeTsNCiAgfQ0KDQoraW50IHNwdXJpb3VzX25taV9j
+b3VudDsNCisNCiAgLyoNCiAgICogVGhlIGNvbXByZXNzZWQga2VybmVsIGltYWdlIChaTyksIGhh
+cyBiZWVuIG1vdmVkIHNvIHRoYXQgaXRzIHBvc2l0aW9uDQogICAqIGlzIGFnYWluc3QgdGhlIGVu
+ZCBvZiB0aGUgYnVmZmVyIHVzZWQgdG8gaG9sZCB0aGUgdW5jb21wcmVzc2VkIGtlcm5lbA0KQEAg
+LTQ5Myw2ICs0OTUsMTIgQEAgYXNtbGlua2FnZSBfX3Zpc2libGUgdm9pZCAqZXh0cmFjdF9rZXJu
+ZWwodm9pZCAqcm1vZGUsIHVuc2lnbmVkIGNoYXIgKm91dHB1dCkNCiAgICAgICAgIC8qIERpc2Fi
+bGUgZXhjZXB0aW9uIGhhbmRsaW5nIGJlZm9yZSBib290aW5nIHRoZSBrZXJuZWwgKi8NCiAgICAg
+ICAgIGNsZWFudXBfZXhjZXB0aW9uX2hhbmRsaW5nKCk7DQoNCisgICAgICAgaWYgKHNwdXJpb3Vz
+X25taV9jb3VudCkgew0KKyAgICAgICAgICAgICAgIGVycm9yX3B1dHN0cigiU3B1cmlvdXMgZWFy
+bHkgTk1JIGlnbm9yZWQuIE51bWJlciBvZiBOTUlzOiAweCIpOw0KKyAgICAgICAgICAgICAgIGVy
+cm9yX3B1dGhleChzcHVyaW91c19ubWlfY291bnQpOw0KKyAgICAgICAgICAgICAgIGVycm9yX3B1
+dHN0cigiXG4iKTsNCisgICAgICAgfQ0KKw0KICAgICAgICAgcmV0dXJuIG91dHB1dCArIGVudHJ5
+X29mZnNldDsNCiAgfQ0K
 
