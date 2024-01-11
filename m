@@ -1,292 +1,113 @@
-Return-Path: <linux-kernel+bounces-24142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E56F82B829
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:43:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B3382B820
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3204285A27
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:43:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97A41B20ED5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 23:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCE95B204;
-	Thu, 11 Jan 2024 23:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F2859B79;
+	Thu, 11 Jan 2024 23:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Tr8tWk+Q"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a5qWjW9y"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CD95A108
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF8959B69
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:42:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d9bee259c5so3771945b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:42:32 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-28be52a85b9so4155422a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:42:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705016552; x=1705621352; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dPOt9smlRtRbYxwBRyVbgWAEdHEPdj5BH7dSKIF5aYg=;
-        b=Tr8tWk+QJJePIQp2HV89Zztn8laajT5b87Dl9vqi+uWu3z2gRoCVn3PZKoSJmXLCT/
-         7R+aAFWWmZ3XrFgWy5rV35EotMH8R+PNXgOUbVFvvd+RcY+Z4eS4KtT8kyunpub6dL5U
-         8mx7BWxfRvjgV4//WSKrK5673Gf21gDKL8e/s=
+        d=chromium.org; s=google; t=1705016541; x=1705621341; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HLRr3cB956ITDOde4XWHLwfBAaAcN3eYLs/KzgE1pRQ=;
+        b=a5qWjW9yo4c1/T7BMdV3f9YajqD8Ud9NEhvBr5fJYN38WQ9jnsrVgKt5JGiUSCk/1n
+         WC1wQuEK0MdY82dkaMAN13BtBOBwF5wCmecSvgG7uR5UYtcpzjdUsI8K1xdoigWBziT4
+         dct7uefkdXD+yVMsi5Y2CSZKSzXCvkSBR8g8M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705016552; x=1705621352;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dPOt9smlRtRbYxwBRyVbgWAEdHEPdj5BH7dSKIF5aYg=;
-        b=t5Ta6hcmFnaoWxmp+LwNt51oTVY0YiUcutkK3G5TTSB9vh5MxL9Ro61tDA4e23D4nZ
-         zt7n76p5ltEVYS/y4cIIWxGWP7p87r6f5IkGSguvEYt1ElBcO3RsosgPSVb/Rv8TOCsX
-         R6sqk8LoSurRPHKMTwP8ndcD84Rj9tsCQKu60gFqRu/4XqFkzJ3QowSVBk9PsfY1ZDiY
-         g9N9I/EVKP2bJk/khi0wB65tud1V7x5laFV81y9JUGEP64BqL9IPZ4z3+ghjp+QSwhIq
-         zavGhrMTNllh61rUiv3U65WiJ7RjzZZbYe0bD9+2ltmuivPTq9pwCGN1eTVlHE3o/hrH
-         B0iA==
-X-Gm-Message-State: AOJu0YxSPXs9c+Hn1DVCHb8h1CuNR6XnL04eFfEG3v2BMVk7I4eKbc1V
-	9Kfp09oSXr0kJdNNuLI9ZndUuLlLDuom
-X-Google-Smtp-Source: AGHT+IHJDwdHYyS7Zbj3sKxeCcxONqJ1iFvG2HlgJ22bfBwKo2IZ7jo/F+uXbfaJl4SWskGm+QdBFw==
-X-Received: by 2002:a05:6a00:22d5:b0:6d9:bf59:462a with SMTP id f21-20020a056a0022d500b006d9bf59462amr98647pfj.65.1705016551711;
-        Thu, 11 Jan 2024 15:42:31 -0800 (PST)
-Received: from localhost (34.85.168.34.bc.googleusercontent.com. [34.168.85.34])
-        by smtp.gmail.com with UTF8SMTPSA id n40-20020a056a000d6800b006d5929810a6sm1785848pfv.83.2024.01.11.15.42.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 15:42:31 -0800 (PST)
-From: jeffxu@chromium.org
-To: akpm@linux-foundation.org,
-	keescook@chromium.org,
-	jannh@google.com,
-	sroettger@google.com,
-	willy@infradead.org,
-	gregkh@linuxfoundation.org,
-	torvalds@linux-foundation.org,
-	usama.anjum@collabora.com,
-	rdunlap@infradead.org
-Cc: jeffxu@google.com,
-	jorgelo@chromium.org,
-	groeck@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org,
-	pedro.falcato@gmail.com,
-	dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org,
-	deraadt@openbsd.org,
-	Jeff Xu <jeffxu@chromium.org>
-Subject: [PATCH v6 4/4] mseal:add documentation
-Date: Thu, 11 Jan 2024 23:41:41 +0000
-Message-ID: <20240111234142.2944934-5-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
-In-Reply-To: <20240111234142.2944934-1-jeffxu@chromium.org>
-References: <20240111234142.2944934-1-jeffxu@chromium.org>
+        d=1e100.net; s=20230601; t=1705016541; x=1705621341;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HLRr3cB956ITDOde4XWHLwfBAaAcN3eYLs/KzgE1pRQ=;
+        b=qIijzdnSL1YaDyl7kAbeSJn0GOv7+YTLdmeXaKC7+T2C4cJKrgnIMMMeInJFH0wDQw
+         RBcgQ/u/DbJLiLYrZFFrug4T0QqgPegAIQXbt7RMl8QBKO6HMgg0K9ZHsAkFHEk8nurt
+         EclfdsNCeUOQRWiY3S8cyU4uppll4SUceBWRzVxjl/Lif7JQDdYOiZW+sNazD8UZAJPX
+         hkdBnGPZ68ZCfCGno5CXdFCo4gi7O7/1Hnu0pvMC2fllFX40g5Jz4wxAf9u5VttIsOeD
+         BsixPLamM3wHIoIcsdf1jhjOg+VjStQa4oTbuh7zwXTe1lmMqTO3ZJiPkcYJWH50zRb7
+         7T2Q==
+X-Gm-Message-State: AOJu0Yxi3x7FZ+8MJZnbnlGDSV9pPls5JYa2+uBpIqrcikWn4+XXUtSb
+	t8vOa4DP2ZTfJtfGDN7Wud0Dv01VmUd+
+X-Google-Smtp-Source: AGHT+IFSa007JS+IUFxOECtmcf0vetaWGEBAt+YZNTxVumwI+0QQQjLM7xCpUBx/BLuHyGiobto1YQ==
+X-Received: by 2002:a17:90a:458f:b0:28b:fe1b:5274 with SMTP id v15-20020a17090a458f00b0028bfe1b5274mr533729pjg.32.1705016540850;
+        Thu, 11 Jan 2024 15:42:20 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id eu15-20020a17090af94f00b0028b845f2890sm4534946pjb.33.2024.01.11.15.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 15:42:20 -0800 (PST)
+Date: Thu, 11 Jan 2024 15:42:19 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <202401111534.859084884C@keescook>
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook>
+ <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+ <202401101625.3664EA5B@keescook>
+ <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <CAHk-=wigjbr7d0ZLo+6wbMk31bBMn8sEwHEJCYBRFuNRhzO+Kw@mail.gmail.com>
+ <ZaByTq3uy0NfYuQs@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaByTq3uy0NfYuQs@casper.infradead.org>
 
-From: Jeff Xu <jeffxu@chromium.org>
+On Thu, Jan 11, 2024 at 10:57:18PM +0000, Matthew Wilcox wrote:
+> On Wed, Jan 10, 2024 at 05:47:20PM -0800, Linus Torvalds wrote:
+> > No, because the whole idea of "let me mark something deprecated and
+> > then not just remove it" is GARBAGE.
+> > 
+> > If somebody wants to deprecate something, it is up to *them* to finish
+> > the job. Not annoy thousands of other developers with idiotic
+> > warnings.
+> 
+> What would be nice is something that warned about _new_ uses being
+> added.  ie checkpatch.  Let's at least not make the problem worse.
 
-Add documentation for mseal().
+For now, we've just kind of "dealt with it". For things that show up
+with new -W options we've enlisted sfr to do the -next builds with it
+explicitly added (but not to the tree) so he could generate nag emails
+when new warnings appeared. That could happen if we added it to W=1
+builds, or some other flag like REPORT_DEPRECATED=1.
 
-Signed-off-by: Jeff Xu <jeffxu@chromium.org>
----
- Documentation/userspace-api/mseal.rst | 181 ++++++++++++++++++++++++++
- 1 file changed, 181 insertions(+)
- create mode 100644 Documentation/userspace-api/mseal.rst
+Another ugly idea would be to do a treewide replacement of "func" to
+"func_deprecated", and make "func" just a wrapper for it that is marked
+with __deprecated. Then only new instances would show up (assuming people
+weren't trying to actively bypass the deprecation work by adding calls to
+"func_deprecated"). :P Then the refactoring to replace "func_deprecated"
+could happen a bit more easily.
 
-diff --git a/Documentation/userspace-api/mseal.rst b/Documentation/userspace-api/mseal.rst
-new file mode 100644
-index 000000000000..3ca0c9ce3967
---- /dev/null
-+++ b/Documentation/userspace-api/mseal.rst
-@@ -0,0 +1,181 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Introduction of mseal
-+=====================
-+
-+:Author: Jeff Xu <jeffxu@chromium.org>
-+
-+Modern CPUs support memory permissions such as RW and NX bits. The memory
-+permission feature improves security stance on memory corruption bugs, i.e.
-+the attacker can’t just write to arbitrary memory and point the code to it,
-+the memory has to be marked with X bit, or else an exception will happen.
-+
-+Memory sealing additionally protects the mapping itself against
-+modifications. This is useful to mitigate memory corruption issues where a
-+corrupted pointer is passed to a memory management system. For example,
-+such an attacker primitive can break control-flow integrity guarantees
-+since read-only memory that is supposed to be trusted can become writable
-+or .text pages can get remapped. Memory sealing can automatically be
-+applied by the runtime loader to seal .text and .rodata pages and
-+applications can additionally seal security critical data at runtime.
-+
-+A similar feature already exists in the XNU kernel with the
-+VM_FLAGS_PERMANENT flag [1] and on OpenBSD with the mimmutable syscall [2].
-+
-+User API
-+========
-+Two system calls are involved in virtual memory sealing, mseal() and mmap().
-+
-+mseal()
-+-----------
-+The mseal() syscall has the following signature:
-+
-+``int mseal(void addr, size_t len, unsigned long flags)``
-+
-+**addr/len**: virtual memory address range.
-+
-+The address range set by ``addr``/``len`` must meet:
-+   - The start address must be in an allocated VMA.
-+   - The start address must be page aligned.
-+   - The end address (``addr`` + ``len``) must be in an allocated VMA.
-+   - no gap (unallocated memory) between start and end address.
-+
-+The ``len`` will be paged aligned implicitly by the kernel.
-+
-+**flags**: reserved for future use.
-+
-+**return values**:
-+
-+- ``0``: Success.
-+
-+- ``-EINVAL``:
-+    - Invalid input ``flags``.
-+    - The start address (``addr``) is not page aligned.
-+    - Address range (``addr`` + ``len``) overflow.
-+
-+- ``-ENOMEM``:
-+    - The start address (``addr``) is not allocated.
-+    - The end address (``addr`` + ``len``) is not allocated.
-+    - A gap (unallocated memory) between start and end address.
-+
-+- ``-EACCES``:
-+    - ``MAP_SEALABLE`` is not set during mmap().
-+
-+- ``-EPERM``:
-+    - sealing is supported only on 64-bit CPUs, 32-bit is not supported.
-+
-+- For above error cases, users can expect the given memory range is
-+  unmodified, i.e. no partial update.
-+
-+- There might be other internal errors/cases not listed here, e.g.
-+  error during merging/splitting VMAs, or the process reaching the max
-+  number of supported VMAs. In those cases, partial updates to the given
-+  memory range could happen. However, those cases should be rare.
-+
-+**Blocked operations after sealing**:
-+    Unmapping, moving to another location, and shrinking the size,
-+    via munmap() and mremap(), can leave an empty space, therefore
-+    can be replaced with a VMA with a new set of attributes.
-+
-+    Moving or expanding a different VMA into the current location,
-+    via mremap().
-+
-+    Modifying a VMA via mmap(MAP_FIXED).
-+
-+    Size expansion, via mremap(), does not appear to pose any
-+    specific risks to sealed VMAs. It is included anyway because
-+    the use case is unclear. In any case, users can rely on
-+    merging to expand a sealed VMA.
-+
-+    mprotect() and pkey_mprotect().
-+
-+    Some destructive madvice() behaviors (e.g. MADV_DONTNEED)
-+    for anonymous memory, when users don't have write permission to the
-+    memory. Those behaviors can alter region contents by discarding pages,
-+    effectively a memset(0) for anonymous memory.
-+
-+**Note**:
-+
-+- mseal() only works on 64-bit CPUs, not 32-bit CPU.
-+
-+- users can call mseal() multiple times, mseal() on an already sealed memory
-+  is a no-action (not error).
-+
-+- munseal() is not supported.
-+
-+mmap()
-+----------
-+``void *mmap(void* addr, size_t length, int prot, int flags, int fd,
-+off_t offset);``
-+
-+We add two changes in ``prot`` and ``flags`` of  mmap() related to
-+memory sealing.
-+
-+**prot**
-+
-+The ``PROT_SEAL`` bit in ``prot`` field of mmap().
-+
-+When present, it marks the memory is sealed since creation.
-+
-+This is useful as optimization because it avoids having to make two
-+system calls: one for mmap() and one for mseal().
-+
-+It's worth noting that even though the sealing is set via the
-+``prot`` field in mmap(), it can't be set in the ``prot``
-+field in later mprotect(). This is unlike the ``PROT_READ``,
-+``PROT_WRITE``, ``PROT_EXEC`` bits, e.g. if ``PROT_WRITE`` is not set in
-+mprotect(), it means that the region is not writable.
-+
-+Setting ``PROT_SEAL`` implies setting ``MAP_SEALABLE`` below.
-+
-+**flags**
-+
-+The ``MAP_SEALABLE`` bit in the ``flags`` field of mmap().
-+
-+When present, it marks the map as sealable. A map created
-+without ``MAP_SEALABLE`` will not support sealing. In other words,
-+mseal() will fail for such a map.
-+
-+
-+Applications that don't care about sealing will expect their
-+behavior unchanged. For those that need sealing support, opt in
-+by adding ``MAP_SEALABLE`` in mmap().
-+
-+Note: for a map created without ``MAP_SEALABLE`` or a map created
-+with ``MAP_SEALABLE`` but not sealed yet, mmap(MAP_FIXED) can
-+change the sealable or sealing bit.
-+
-+Use Case:
-+=========
-+- glibc:
-+  The dynamic linker, during loading ELF executables, can apply sealing to
-+  non-writable memory segments.
-+
-+- Chrome browser: protect some security sensitive data-structures.
-+
-+Additional notes:
-+=================
-+As Jann Horn pointed out in [3], there are still a few ways to write
-+to RO memory, which is, in a way, by design. Those cases are not covered
-+by mseal(). If applications want to block such cases, sandbox tools (such as
-+seccomp, LSM, etc) might be considered.
-+
-+Those cases are:
-+
-+- Write to read-only memory through /proc/self/mem interface.
-+- Write to read-only memory through ptrace (such as PTRACE_POKETEXT).
-+- userfaultfd.
-+
-+The idea that inspired this patch comes from Stephen Röttger’s work in V8
-+CFI [4]. Chrome browser in ChromeOS will be the first user of this API.
-+
-+Reference:
-+==========
-+[1] https://github.com/apple-oss-distributions/xnu/blob/1031c584a5e37aff177559b9f69dbd3c8c3fd30a/osfmk/mach/vm_statistics.h#L274
-+
-+[2] https://man.openbsd.org/mimmutable.2
-+
-+[3] https://lore.kernel.org/lkml/CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gmail.com
-+
-+[4] https://docs.google.com/document/d/1O2jwK4dxI3nRcOJuPYkonhTkNQfbmwdvxQMyXgeaRHo/edit#heading=h.bvaojj9fu6hc
+Most past deprecations have pretty narrow usage. This is not true with
+the string functions, which is why it's more noticeable here. :P
+
+-Kees
+
 -- 
-2.43.0.275.g3460e3d667-goog
-
+Kees Cook
 
