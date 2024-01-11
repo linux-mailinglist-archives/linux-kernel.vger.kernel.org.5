@@ -1,232 +1,231 @@
-Return-Path: <linux-kernel+bounces-23994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95A0582B4F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:55:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA10E82B4F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 19:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9421E1C231F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:55:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A2C01F25DAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965C154BD7;
-	Thu, 11 Jan 2024 18:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F8E5578D;
+	Thu, 11 Jan 2024 18:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GmRNYWxN";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qC9MwQNb"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mh3fcnUi"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCC818E09
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 18:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BHs6Om027571;
-	Thu, 11 Jan 2024 18:54:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=rKfRgwMZmlF5BvgPh1uNNR4Xnjo5ctCVbqxS8IV05p0=;
- b=GmRNYWxNG1CGIecCeBSDS+zwfj6DUsan98HxLgkYGHK1JkKEQHEc8EcuyyY7kNeE2eCY
- MtcKRHT8l2X8NHNvKUzgbOZ+/RdNC6iK0YwF8deRrxzPiaJE/iTcfEhN+iEtpG1mEA3w
- qqpsLEusYeA6jV0hbGqm5/zrnca2MwFSuzlf11muqCOdZAt+9J6L9PnSwvBmTvu7KBKa
- 1sCf7CbsA75B4mI2TJwwqqRs/RgI7ju7Dqs6QI0XXx9OOC3RWvdzF5UA0GhqYLXYZ+/r
- lJ410Dnt5+g5pa4VLEqPEYU8BLWS/HpGceo4vKGoKp6hAYRArqHy8yzHZPdo/19MYaez Ag== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vjjb6rpsm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Jan 2024 18:54:51 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40BIZxCF012162;
-	Thu, 11 Jan 2024 18:54:49 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vfuwmduuc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Jan 2024 18:54:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lPd6xwqWkYJ1tuEfzPwUs4rPNJedwmcgWNQfuYOt8zIQmTuTN1ld0VbljIMmjgIOy2Fus51/qg1EEaIyPUyTq6tKWbBzHX6eUhtbU0jKsR3Nyf3JG+7GAZukIFFaaOY0yc0W17tG68f9U3Zu7WqIWmftOsS4htNeawsJQ6Q88i9RsUh8qgDeqGaAes3o+kUcFYUDX4yG9TF4/NdvSAIXNcEurRHHP/usBMQDZEnYjem7YKqAnT0M8P7qCirAP+ROTZ7INIpiQ9M0kIeX6dzvLyoandmmiP9EjZtdAwWTabN4YWQfeXBh1a9hUILWsq3AEWNM9QVNl9dLO0GCJxn37A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rKfRgwMZmlF5BvgPh1uNNR4Xnjo5ctCVbqxS8IV05p0=;
- b=n989KJF8mJo0fW2OBb8jLSgHHxgYTgVN3F/6wRpP7VCQrI3t+/whqsp0+g4r6R7PyU3UpJxIpwDiWwMhk+4NwbfhwI5Oa778OKOdppjzQs+rocTW7dj1cQcpR/zqSvP7ZH2BZ0HaR5d/w3bLU3UQA0sQ6Fal2Y1b3uCb1MWAepK7TbGBBkUao1+DI9eKzHiPhzlVPC1xXzHj+Agi7svZ6tTWQBPaO32AcGIB82kyZTTwfMq0dyT6hrmAfYTtW6UM4JRQ31lHNcybYG1dU5w2ZiosGulMgTtcarBeTbi3Us8m914224H7A0xWIPTjWDlo5RyPfwuH113FVNxqfHLTUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C189C26AC7;
+	Thu, 11 Jan 2024 18:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5efb0e180f0so58777927b3.1;
+        Thu, 11 Jan 2024 10:57:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rKfRgwMZmlF5BvgPh1uNNR4Xnjo5ctCVbqxS8IV05p0=;
- b=qC9MwQNbuDQsuCBeNOQmJhUjBehrknm980K5+T1mdjya4qTZuherXYE6eRGaVTk9yqnesdeRYTjq0hzhhcVKjFOoJs8bA1FkgyBQUnW7aQ7fAe/aA1AFzQwzm3tP38lzLr2jlRA/hYE/+UkcfkDLue7Ju/gBfhLg7cCANJadjes=
-Received: from MN2SPR01MB0026.namprd10.prod.outlook.com (2603:10b6:208:cf::18)
- by CH0PR10MB7437.namprd10.prod.outlook.com (2603:10b6:610:193::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Thu, 11 Jan
- 2024 18:54:47 +0000
-Received: from MN2SPR01MB0026.namprd10.prod.outlook.com
- ([fe80::7dbd:113e:6ce0:23d3]) by MN2SPR01MB0026.namprd10.prod.outlook.com
- ([fe80::7dbd:113e:6ce0:23d3%7]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
- 18:54:47 +0000
-Message-ID: <b2096bcb-bda6-4831-85a2-67759e783e4d@oracle.com>
-Date: Thu, 11 Jan 2024 10:54:45 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm, oom: Add lru_add_drain() in __oom_reap_task_mm()
-Content-Language: en-US
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20240109091511.8299-1-jianfeng.w.wang@oracle.com>
- <ZZ5Zb3FYqY8FZgB3@tiehlicka>
- <1d866f1b-94b3-43ec-8f4c-2de31b82d3d1@oracle.com>
- <ZZ-q0PZ-XCDwA4oG@tiehlicka>
-From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-In-Reply-To: <ZZ-q0PZ-XCDwA4oG@tiehlicka>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR05CA0009.namprd05.prod.outlook.com
- (2603:10b6:208:c0::22) To MN2SPR01MB0026.namprd10.prod.outlook.com
- (2603:10b6:208:cf::18)
+        d=gmail.com; s=20230601; t=1704999441; x=1705604241; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=tFh3qsYh0T8RX+oziEs6jEklh5e0dLow8jErOyNNUZU=;
+        b=mh3fcnUisgeVNc1NyJrc+BjKORZflHhLaU8/uARxVkd2AA22vMJiJWF/8sx1hwg1HI
+         AIvEK1QoY+xaOXJUa/xaLPgYiHEVicyqaSWwRRfkJenwxNehW5XQbLBPJfXjmNh3dXGC
+         VwOvrhDNszz5r5kVR34NUJm1wkMDB4bpWewrIjDxiItccpmkoBV2s2zz2umoqFgTIxv1
+         SGbOskZjmcNz1ObOwXLzOnXq0sWZxrxwwuWVU8q+AZoND6ZHQWrv1KgHcc4+RyWXksK+
+         u7PR8LnxRrx61S579CIlqvznovSw51UXIGdj5dJRX27csGE6KNEM/INoaPaiJ/szuNRk
+         q2IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704999441; x=1705604241;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tFh3qsYh0T8RX+oziEs6jEklh5e0dLow8jErOyNNUZU=;
+        b=c+YJZlZR5bntAsMCS9RY0fo2a7a288zXJYprCwhkLFtqWj/AHaNKmE5kJGqEyN8/4+
+         6+rsoWPppLLjefWD137aiNtLiYPvooLNZ6XCadDbGJlrvNISeHRDPFaKAYMl4p0B9wrR
+         71v6L5yu0reXT0I0NXMVAsktY04wd+7G3YjOOPIZI5bEpedoSOc3BC+Wt8IHLZYu0rfi
+         m2yOVbhZYui26e6a6hWNAA7rZE4R2aGU56N3tS/QRQHK2fWmhbKu/W6qUeOtguRi7YdG
+         NwFb4bpgNZ+Eg4E8hete6i6xSYWXe9hRuGFmVcODXmrkMJZicujSyrjIyfOBPr1jXGP7
+         +I+w==
+X-Gm-Message-State: AOJu0Ywt4oBGrEotqyKTZmQn/OghIIdvX2mtWsyH10MMmIzs4AkWELVT
+	R6IF2fdriU8D6TML6ZxFfGE=
+X-Google-Smtp-Source: AGHT+IEjOVlqBPgWjm1I/LWUZ0pAOGk0PP7MBg5TBGrx2KB/NwqwHabBz3kBY8lmmtJ1qSDp62bfRQ==
+X-Received: by 2002:a81:f005:0:b0:5fa:ea54:f413 with SMTP id p5-20020a81f005000000b005faea54f413mr247403ywm.1.1704999440683;
+        Thu, 11 Jan 2024 10:57:20 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i3-20020a819103000000b005e8da478ccasm630440ywg.97.2024.01.11.10.57.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 10:57:19 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <2f595f28-7fcd-4196-a0b1-6598781530b9@roeck-us.net>
+Date: Thu, 11 Jan 2024 10:57:17 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2SPR01MB0026:EE_|CH0PR10MB7437:EE_
-X-MS-Office365-Filtering-Correlation-Id: 839b779a-0701-430d-fe03-08dc12d6c893
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	B9FIrcND9FglEnARSqr5oaheJrQiE2TTYUN+22J8g86MPGCAvmjr/8W84DgugF4YL2nOiiRzEI1F9ui4DLbN1fTZQsQW3Y3uVONct31d1QQkpXm60JqvyG2lgJboBw/vA9zrWWtIb3afbsb7aRjRN/SKQKFBV/Bs6TK0D6ZZmPv7F9ZBXkGwH/enyvJGZE3x4OpHCKQ65D4BKY10QtvtHKRDKttnRBRipU3FIkpuGmZiadHicTk6ki+qTjK8CPwBZG48loBplD5FDWIb8vcLCrQfXY8obIqRu4gr8C3ahShooXJSU8RqxbW9TFeWnZKB/bLOHHje9wn0ZVBa508DOraYRpuXOI4t4cef27fGuz96nhPG+UcLpFKwotorRLlEDaN6Wu7y80R9MazKDqXtqZeM9F7joHwcpxJQWEcHWOH/Ow+ueaoYInrPoHGSb6Nh2WsWIN4XHLnHhyLW4FPrz66cpvB4m4HwY068Iu50Uu89APSrsyFznJOG+25P4WJqwNE6JY22fzq9cn166iF6PvduXGdJ7GBc4gLdytoPjRa4LYfbZudBzllzYMUw39vUY/yiYd+B/hucD78TX/oNtlC8c8i/Kwv3kHTU/dYZHf0TNzjWc4IF/WZo+lzmnpnF5kzCu83iXVgsRsFK5WE2+A==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2SPR01MB0026.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(136003)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(26005)(2616005)(6506007)(478600001)(6512007)(53546011)(83380400001)(5660300002)(2906002)(41300700001)(4326008)(6486002)(8676002)(8936002)(6916009)(66476007)(66556008)(66946007)(316002)(86362001)(31696002)(38100700002)(36756003)(66899024)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?bzd4T01yRkNhNkZDcXhnenp4d2lObDdjN29IZFh0WFcxZkwwUDZiTmdiUC9x?=
- =?utf-8?B?QnVubDhDT3NNdU9RQk9ybTVyMC80WEg5cTB4TmdpVG51QjhiemRRZ1pFbGQw?=
- =?utf-8?B?cXJGK3dpNlZCb0xic3R6M2xOeHd5eFliR3BhZGFpQkZpWnlXV3ZLM3pwR2V3?=
- =?utf-8?B?R3hmbGRrRCtyQXg5NzN2cDRZVXV2SDF4anJjZy9qVzZCUUMyNVRkcTR1clBp?=
- =?utf-8?B?d0RmMk5oUXloU3VsYkk2MVkwaUVFSXpYRXMwSExLTWdoMzZycWpKYU1Cc0Qy?=
- =?utf-8?B?THcxdU9EZXlTL1AxRXdCT2J2L3JYNkJhbWZMNGRlUnBLQU1aSVJPcW1rc1JQ?=
- =?utf-8?B?eWpZQ1lvWUhhbjhtckI5SkR6MmFuR0w4d251a211TStHaitrRlJpNncrTzE5?=
- =?utf-8?B?M29ITjBJbEI1ZjFoTmZJbmJzbHduY3d2WmorNk96bklneElyd1FJNTdscE1P?=
- =?utf-8?B?TDh0bitoRmg2aXRJa0lyUndiMG5VTFhITGVrSWhLRHdYOUVxWFNabTdOR1JN?=
- =?utf-8?B?MkdSNnlZekFVWW9CaHlPNUFkYWZFNXNHa2draUlKdHBoZTcyNXJwZm1wa3pl?=
- =?utf-8?B?ZVZZc21GWHFMNG4zWFVXSmV3SVlmNU5XY0VEMkdEUnFNbkJtN1lOTjNNYVNL?=
- =?utf-8?B?c2tjcFUxbVFrWmdtNHhuUGRqOFBReDVVdHQ4aGNKbVpyZ290ZVhyZmhKSVFM?=
- =?utf-8?B?R2lYZS9IOFpHbnlFN0xFZVZuRHNwYnpKUWRZYkhzeE5iM2krWWwrUFlaUnp4?=
- =?utf-8?B?dmN2U2FQRDA4N29DR3hRK01udVVRbzNmVTUyelhEb2xCOE1VZFMxc0JxM3BC?=
- =?utf-8?B?bDJtbkwxQ29VS2MxOGEyV0I2eGNhK1libVd1bURERUg3VUZydVdEVklmUkMw?=
- =?utf-8?B?TGQzVlpuTUtQTk5CdmxXZVZobDZDYjIvSmovMElDaTduSlpDdjMzd2lsclF1?=
- =?utf-8?B?TUY2d2JLa2tGSmVtNzlTUWREUUpVWitmU2cvSXZIQjNyZzNUYVFMM3gvV3pa?=
- =?utf-8?B?SXlsN3k3aE5DLzVvcWl1TG9iaEtlcHh0Z1R1QUZoQ1JlUWdvRk5MMzUxbXRU?=
- =?utf-8?B?K2NzWDQvVFZqSTU3YmduSzQyaW5iU1pGZVRWOHZHalMwTTdYckZ2ZXQzYUYz?=
- =?utf-8?B?dDZWcm9KbDN4OFVKZWQxcXIvWUxTaTJ6VFZBUXMrNVRvNWRvYjBQeEViTGlj?=
- =?utf-8?B?VzRlWEowVmJFWGdaUDA0cU1EQmN1RTRBMDRORGFWZ0hEVUZEMmFVWDRDTEln?=
- =?utf-8?B?eHhCWldBYTZOcFlhaldtbGR5NmhzY2JtMGkzUklQTjVTT21ET2I1bWhMbnZG?=
- =?utf-8?B?OU95Q2VaNVVqNXdUMXNCUHpmSjl6Wmk3aEtabmZkV2hqa3NMc2xnSXVEOWNK?=
- =?utf-8?B?S2tJMFpjellCSDh2bkdSdmMva0M3RytTeU9wU25SN0V1bUhTOW9HaGtMWUFT?=
- =?utf-8?B?cElVZ3Zid1o5NnRHbnc1WFM2MWJTOHFadlAwM3RKbmtnR3B0NXRFRU9yNy9Q?=
- =?utf-8?B?R3F0V2lJVmY4UStrTzBmUFYrNHpaTHViK0FTNzJ6QmkvbkJNUUpqV092VUhl?=
- =?utf-8?B?QUFpMVE0SitSVk4wNk5BenN1TVJrdjNRT0hhQVRHK28rV3JaN3FCMlhUNEtk?=
- =?utf-8?B?L1kzTERQOGJxMy9BNkNjbUUrVUVCSGxzR3p1YnprNnAxUkMrRGxkalZDb3lT?=
- =?utf-8?B?c29WVFlLakdPeDJiWjFJWDFvejArblNUQUFYdzZ4TVIxUzZIZlJ3VlRpbDN6?=
- =?utf-8?B?V2ovcCtrYTF0TDJwNG4xa2ttZkVzWktyelhFalQrOUR3YjBYRklmZ0FvUzR1?=
- =?utf-8?B?VTZnbzF6RVpkcDhENHpXVGlBVERmUGxuL1Y4QmlndTk2a0ZUbkNpSjlYOUZG?=
- =?utf-8?B?WEhQak5QL3ZTbXoxK1BRdmo4ckl3ckIyeGJ2SDRjbjl3ekFCMHJqMXdjdjR1?=
- =?utf-8?B?RVNMNEt4cWUwV09sM0NtbzNuRlQzdXIydDErRG9nelRNYjFuZ0huelVFeUhZ?=
- =?utf-8?B?RFFqak80Mk9oOGtPUFRFcnpDRDd1blZKdUdmVXVrZHliT05kUVl6YW9OalZN?=
- =?utf-8?B?MGd3K1N2bEp5cnF6UDh3bXhDUFNhSklpd0hQdlpEL01Nd0Q1dGhEL3ZtRDY4?=
- =?utf-8?B?MDltb3BHWStTenU4NWJuVlU5NW1kdDZsdkxJaXdsaGNJa2NLSGRLWTRheGNj?=
- =?utf-8?B?VkE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	5+LYF6rO/7avDb7lzx81C8+4TAcGZ18NXT6e436MSItCF1Oj1gOXCtJ9ImJx3AW5mXvGMay00Hsxkss+L9Qw/eUDD3Aw35rRnsLAXUb8Ih8cjKHMSNYq97n3J5UlUZAlaWt3KwXfyzL1iKQuBm8QNvEs3n9CrlJewoMTENSR6vDRvmwaRHF9fZ6sqYyy7H47bfk6/jG82SwKaFzP01pKB5MATpRS3NdFAai6+GrWeLCzJQSYF3NwUT9ii3qoQzkLqyoM4gjlGxrdL+lInVwe/qnphdHtKvbK5z82YQVuI01sfTTcwOcKMCzl5usqlCs14O+Vs6iAFod0p1HVr8s0daCqass/1/el5vsCTLHp3lV9MIKzm5nRkI+oWPR9VWQLIUMP8JGl9t3XfoXy8Eqj30DIq8uq39D/sahSNZbZAHyFxPadQMDBEEQtngZ0/F4Rzs7PH9XrFKmU5siu2l43rvABJyCOn8Fyg4sqyjt3NOnvMitNADuflh5UWSbsCUoWGXl5yecLc/HK8pa3ZUnD6Wkinwq1hpfcaSeGT4/ySgFejreI++0NvXvnt7gP3g0/apD4LDriNKURyb21aCbxAIg5vXKIXxAUyvVbXy+mLDg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 839b779a-0701-430d-fe03-08dc12d6c893
-X-MS-Exchange-CrossTenant-AuthSource: MN2SPR01MB0026.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 18:54:47.8364
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rMiK3yRNC2Xu3zqk+d9Podw2CFiG9VbMbDv6NoXrGLUwqBrYJbF322LyVveDRVaHTZSDkuvMURaZLFf54zjfNZPF2pqWKql6LqNQ///bT0A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB7437
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-11_10,2024-01-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 adultscore=0 spamscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401110148
-X-Proofpoint-GUID: MFrnyKBCorDDXkv9WWkxWbZVo2QaVHL4
-X-Proofpoint-ORIG-GUID: MFrnyKBCorDDXkv9WWkxWbZVo2QaVHL4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Miklos Szeredi <mszeredi@redhat.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
+ Karel Zak <kzak@redhat.com>, Ian Kent <raven@themaw.net>,
+ David Howells <dhowells@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <christian@brauner.io>, Amir Goldstein
+ <amir73il@gmail.com>, Matthew House <mattlloydhouse@gmail.com>,
+ Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>
+References: <20231025140205.3586473-1-mszeredi@redhat.com>
+ <20231025140205.3586473-6-mszeredi@redhat.com>
+ <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
+ <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-On 1/11/24 12:46 AM, Michal Hocko wrote:
-> On Wed 10-01-24 11:02:03, Jianfeng Wang wrote:
->> On 1/10/24 12:46 AM, Michal Hocko wrote:
->>> On Tue 09-01-24 01:15:11, Jianfeng Wang wrote:
->>>> The oom_reaper tries to reclaim additional memory owned by the oom
->>>> victim. In __oom_reap_task_mm(), it uses mmu_gather for batched page
->>>> free. After oom_reaper was added, mmu_gather feature introduced
->>>> CONFIG_MMU_GATHER_NO_GATHER (in 'commit 952a31c9e6fa ("asm-generic/tlb:
->>>> Introduce CONFIG_HAVE_MMU_GATHER_NO_GATHER=y")', an option to skip batched
->>>> page free. If set, tlb_batch_pages_flush(), which is responsible for
->>>> calling lru_add_drain(), is skipped during tlb_finish_mmu(). Without it,
->>>> pages could still be held by per-cpu fbatches rather than be freed.
->>>>
->>>> This fix adds lru_add_drain() prior to mmu_gather. This makes the code
->>>> consistent with other cases where mmu_gather is used for freeing pages.
->>>
->>> Does this fix any actual problem or is this pure code consistency thing?
->>> I am asking because it doesn't make much sense to me TBH, LRU cache
->>> draining is usually important when we want to ensure that cached pages
->>> are put to LRU to be dealt with because otherwise the MM code wouldn't
->>> be able to deal with them. OOM reaper doesn't necessarily run on the
->>> same CPU as the oom victim so draining on a local CPU doesn't
->>> necessarily do anything for the victim's pages.
->>>
->>> While this patch is not harmful I really do not see much point in adding
->>> the local draining here. Could you clarify please?
->>>
->> It targets the case described in the patch's commit message: oom_killer
->> thinks that it 'reclaims' pages while pages are still held by per-cpu
->> fbatches with a ref count.
+On 1/10/24 16:32, Linus Torvalds wrote:
+> On Wed, 10 Jan 2024 at 14:23, Guenter Roeck <linux@roeck-us.net> wrote:
 >>
->> I admit that pages may sit on a different core(s). Given that
->> doing remote calls to all CPUs with lru_add_drain_all() is expensive,
->> this line of code can be helpful if it happens to give back a few pages
->> to the system right away without the overhead, especially when oom is
->> involved. Plus, it also makes the code consistent with other places
->> using mmu_gather feature to free pages in batch.
+>> with this patch in the tree, all sh4 builds fail with ICE.
+>>
+>> during RTL pass: final
+>> In file included from fs/namespace.c:11:
+>> fs/namespace.c: In function '__se_sys_listmount':
+>> include/linux/syscalls.h:258:9: internal compiler error: in change_address_1, at emit-rtl.c:2275
 > 
-> I would argue that consistency the biggest problem of this patch. It
-> tries to follow a pattern that is just not really correct. First it
-> operates on a random CPU from the oom victim perspective and second it
-> doesn't really block any unmapping operation and that is the main
-> purpose of the reaper. Sure it frees a lot of unmapped memory but if
-> there are couple of pages that cannot be freed imeediately because they
-> are sitting on a per-cpu LRU caches then this is not a deal breaker. As
-> you have noted those pages might be sitting on any per-cpu cache.
+> We do have those very ugly SYSCALL_DEFINEx() macros, but I'm not
+> seeing _anything_ that would be odd about the listmount case.
 > 
-> So I do not really see that as a good justification. People will follow
-> that pattern even more and spread lru_add_drain to other random places.
+> And the "__se_sys" thing in particular is just a fairly trivial wrapper.
 > 
-> Unless you can show any actual runtime effect of this patch then I think
-> it shouldn't be merged.
+> It does use that asmlinkage_protect() thing, and it is unquestionably
+> horrendously ugly (staring too long at <linux/syscalls.h> has been
+> known to cause madness and despair), but we do that for *every* single
+> system call and I don't see why the new listmount entry would be
+> different.
 > 
 
-Thanks for raising your concern.
-I'd call it a trade-off rather than "not really correct". Look at
-unmap_region() / free_pages_and_swap_cache() written by Linus. These are in
-favor of this pattern, which indicates that the trade-off (i.e. draining
-local CPU or draining all CPUs or no draining at all) had been made in the
-same way in the past. I don't have a specific runtime effect to provide,
-except that it will free 10s kB pages immediately during OOM.
+It isn't the syscall. The following hack avoids the problem.
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index ef1fd6829814..28fe2a55bd94 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -5070,8 +5070,10 @@ static ssize_t do_listmount(struct mount *first, struct path *orig, u64 mnt_id,
+                 ctr = array_index_nospec(ctr, bufsize);
+                 if (put_user(r->mnt_id_unique, buf + ctr))
+                         return -EFAULT;
++#if 0
+                 if (check_add_overflow(ctr, 1, &ctr))
+                         return -ERANGE;
++#endif
+
+But it isn't check_add_overflow() either. This "helps" as well.
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index ef1fd6829814..b53cb2f13530 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -5068,8 +5068,10 @@ static ssize_t do_listmount(struct mount *first, struct path *orig, u64 mnt_id,
+                 if (!is_path_reachable(r, r->mnt.mnt_root, orig))
+                         continue;
+                 ctr = array_index_nospec(ctr, bufsize);
++#if 0
+                 if (put_user(r->mnt_id_unique, buf + ctr))
+                         return -EFAULT;
++#endif
+                 if (check_add_overflow(ctr, 1, &ctr))
+                         return -ERANGE;
+
+
+Any variance of put_user() with &buf[ctr] or buf + ctr fails
+if ctr is a variable and permitted to be != 0. For example,
+commenting out the call to check_add_overflow() and starting
+the loop with ctr = 1 also triggers the problem, as does replacing
+the call to check_add_overflow() with ctr++;. Using a temporary
+variable such as in
+	u64 __user *pbuf;
+	...
+	pbuf = buf + ctr;
+	if (put_user(r->mnt_id_unique, pbuf))
+                         return -EFAULT;
+
+doesn't help either. But this does:
+
+-               if (put_user(r->mnt_id_unique, buf + ctr))
++               if (put_user(r->mnt_id_unique, (u32 *)(buf + ctr)))
+
+and "buf + 17" as well as "&buf[17]" work as well. Essentially,
+every combination of "buf + ctr" or "&buf[ctr]" fails if buf
+is u64* and ctr is a variable.
+
+The following works. Would this be acceptable ?
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index ef1fd6829814..dc0f844205d9 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -5068,10 +5068,11 @@ static ssize_t do_listmount(struct mount *first, struct path *orig, u64 mnt_id,
+                 if (!is_path_reachable(r, r->mnt.mnt_root, orig))
+                         continue;
+                 ctr = array_index_nospec(ctr, bufsize);
+-               if (put_user(r->mnt_id_unique, buf + ctr))
++               if (put_user(r->mnt_id_unique, buf))
+                         return -EFAULT;
+                 if (check_add_overflow(ctr, 1, &ctr))
+                         return -ERANGE;
++               buf++;
+         }
+         return ctr;
+  }
+
+Guenter
+
 
