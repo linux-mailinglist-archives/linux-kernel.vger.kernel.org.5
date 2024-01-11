@@ -1,210 +1,144 @@
-Return-Path: <linux-kernel+bounces-23244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E09B82A959
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:48:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC9E682A955
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1CDAB21064
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:48:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02724287D42
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2152FBE9;
-	Thu, 11 Jan 2024 08:48:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2DDFC0C;
+	Thu, 11 Jan 2024 08:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MyiOfUru"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQpE2h0o"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA55F9DF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704962916;
-	bh=gflHEkCtZCmwgfIS8rr2o7AExOCHAZTyAKAlUQhbSiA=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=MyiOfUrumz7b5nTsabxHteMpzN7xlDrp6SKJZfTgbB1diocrBU8bbPm/U0n9X/BMs
-	 iBFEJairFm1vyV/EJ2ZvCqkZPquIhRtiSehYH3WPA9B90oKLBtio/woDetCIBwptoY
-	 hOkMwg1BpfMj8g4zLn1rS7sV/6Xzjr75TSqh8QG1WjRQnOZSshtDccDFSDTEXCcoP7
-	 OCWc9fagZho7Kyz0OMHztf0mOCe4jUgER82vo8cCbErepO+UC2ErYZ5VBD+FN8n+FR
-	 k0vlz19II9y6LpO+bL9YBt1lWrsZvJy3t5Rf74LWuApG+gDUBAJJV1b9PSaFxb2wcv
-	 fCy1KPRXZo2DQ==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1B534378140A;
-	Thu, 11 Jan 2024 08:48:31 +0000 (UTC)
-Message-ID: <dd96e476-e1ad-4cb5-b5d1-556f720acd17@collabora.com>
-Date: Thu, 11 Jan 2024 13:48:38 +0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FF211C8C;
+	Thu, 11 Jan 2024 08:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e61ff3e37so422645e9.1;
+        Thu, 11 Jan 2024 00:45:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704962757; x=1705567557; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XnXGwZ90m0aaWtoshE1c+60rdXXd9xE4R+DPUoXirhg=;
+        b=bQpE2h0oOho6RSJJGBJPdo04CCZe45nqNgK8oN+UczucLqK8AJ07HFKt2+IKipXx8R
+         vDX0rzjXzRQXq2bHwacUt2Y7aYCbdKeB5cgTTpYF0K8GwgByAwoCVpYwfDVtxeK0Wbsv
+         rvM92oUnh+A8g6QBUHW8HCgHO0sYGWBBO774qlkBZWY0qdhSspZC5AwndM0cSOymRYff
+         vPUh1sR8iDaeAksE5gpQYbN/3SMpUo5NG/Fs2OjHFRW73F84/9Vgw0Z9+U5WNl8+LDla
+         9wB28AFQ/IJRqgUtND2xihtP4Ozjkbt1Exp3fdsdOznpndmRYCLkgsZCV+aVHf/TLVPn
+         dmSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704962757; x=1705567557;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XnXGwZ90m0aaWtoshE1c+60rdXXd9xE4R+DPUoXirhg=;
+        b=h3qTHl2UCyp3U9edeRUPcdSKPB4jFAytMO8F1RDKU3ySqJh5bPR5hnQsjyZo1c9I4D
+         UGplPy76d5+58iCP8L691AC1INO/CwX7zP5wE7GEKhOdm+SQqkzdyVRg1W5QZdRCl6tE
+         JDxxKKu5EeGa4IAkCz+SlNFhT5koRVD7nOBSDCb9raGkKiX7GSw68C//u6P2ZH3LKMvb
+         9Qxqxo80euySgGEGobjneTFOH0OZise/CnPjca3VOaSLYCUTbaHTaVQDw9GStwO9f9cc
+         FJgn4n1qzibANb/CivgOXwW2RF1kbXVFaufzQKiao50re5Rd/OBgs9fbK68WHupoP7fu
+         NGJA==
+X-Gm-Message-State: AOJu0YxJxl3OYedl2qC/AGkyrUgmRCkk7ZbKN2+5rzsaPBh2IdYe0M7A
+	Py/jChAT+FjpmEpMSNSFhjY=
+X-Google-Smtp-Source: AGHT+IHWay0LKAaf6f5AsLsJfQGOlRBcT0TnnnSJL09Q2WvM12Zsgwn+NZHu8+7z/vzkPhYyU0+OlQ==
+X-Received: by 2002:a7b:c414:0:b0:40e:5be9:2ac3 with SMTP id k20-20020a7bc414000000b0040e5be92ac3mr207183wmi.137.1704962756651;
+        Thu, 11 Jan 2024 00:45:56 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id l22-20020a05600c4f1600b0040d6b91efd9sm4930135wmq.44.2024.01.11.00.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 00:45:56 -0800 (PST)
+Message-ID: <0c0b1954825dc174cab48060e96ddadadc18aefd.camel@gmail.com>
+Subject: Re: [PATCH 01/13] spi: add core support for controllers with
+ offload capabilities
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: David Lechner <dlechner@baylibre.com>, Mark Brown <broonie@kernel.org>, 
+ Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>,  Michael Hennerich <michael.hennerich@analog.com>,
+ Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>, Frank Rowand
+ <frowand.list@gmail.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>, Uwe
+ =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Jonathan
+ Corbet <corbet@lwn.net>,  linux-spi@vger.kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Date: Thu, 11 Jan 2024 09:49:08 +0100
+In-Reply-To: <20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+References: 
+	<20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+	 <20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, linmiaohe@huawei.com,
- mike.kravetz@oracle.com, naoya.horiguchi@nec.com, akpm@linux-foundation.org,
- songmuchun@bytedance.com, shy828301@gmail.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, jthoughton@google.com,
- "kernel@collabora.com" <kernel@collabora.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: [PATCH v4 4/4] selftests/mm: add tests for HWPOISON hugetlbfs
- read
-Content-Language: en-US
-To: Sidhartha Kumar <sidhartha.kumar@oracle.com>,
- Jiaqi Yan <jiaqiyan@google.com>
-References: <20230713001833.3778937-1-jiaqiyan@google.com>
- <20230713001833.3778937-5-jiaqiyan@google.com>
- <be3976b5-0a9c-41c6-8160-88e6c1e5d63e@collabora.com>
- <CACw3F51WvZDVCpVg9j4j8WmnmAFOsnK+FZDDoVqhgLqVwhPTCA@mail.gmail.com>
- <e68488e4-764e-4b25-8a47-05bf8976bd19@collabora.com>
- <079335ab-190f-41f7-b832-6ffe7528fd8b@collabora.com>
- <a20e7bdb-7344-306d-e8f5-5ee69af7d5ea@oracle.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <a20e7bdb-7344-306d-e8f5-5ee69af7d5ea@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 1/11/24 7:32 AM, Sidhartha Kumar wrote:
-> On 1/10/24 2:15 AM, Muhammad Usama Anjum wrote:
->> On 1/10/24 11:49 AM, Muhammad Usama Anjum wrote:
->>> On 1/6/24 2:13 AM, Jiaqi Yan wrote:
->>>> On Thu, Jan 4, 2024 at 10:27 PM Muhammad Usama Anjum
->>>> <usama.anjum@collabora.com> wrote:
->>>>>
->>>>> Hi,
->>>>>
->>>>> I'm trying to convert this test to TAP as I think the failures
->>>>> sometimes go
->>>>> unnoticed on CI systems if we only depend on the return value of the
->>>>> application. I've enabled the following configurations which aren't
->>>>> already
->>>>> present in tools/testing/selftests/mm/config:
->>>>> CONFIG_MEMORY_FAILURE=y
->>>>> CONFIG_HWPOISON_INJECT=m
->>>>>
->>>>> I'll send a patch to add these configs later. Right now I'm trying to
->>>>> investigate the failure when we are trying to inject the poison page by
->>>>> madvise(MADV_HWPOISON). I'm getting device busy every single time. The
->>>>> test
->>>>> fails as it doesn't expect any business for the hugetlb memory. I'm not
->>>>> sure if the poison handling code has issues or test isn't robust enough.
->>>>>
->>>>> ./hugetlb-read-hwpoison
->>>>> Write/read chunk size=0x800
->>>>>   ... HugeTLB read regression test...
->>>>>   ...  ... expect to read 0x200000 bytes of data in total
->>>>>   ...  ... actually read 0x200000 bytes of data in total
->>>>>   ... HugeTLB read regression test...TEST_PASSED
->>>>>   ... HugeTLB read HWPOISON test...
->>>>> [    9.280854] Injecting memory failure for pfn 0x102f01 at process
->>>>> virtual
->>>>> address 0x7f28ec101000
->>>>> [    9.282029] Memory failure: 0x102f01: huge page still referenced by
->>>>> 511
->>>>> users
->>>>> [    9.282987] Memory failure: 0x102f01: recovery action for huge
->>>>> page: Failed
->>>>>   ...  !!! MADV_HWPOISON failed: Device or resource busy
->>>>>   ... HugeTLB read HWPOISON test...TEST_FAILED
->>>>>
->>>>> I'm testing on v6.7-rc8. Not sure if this was working previously or not.
->>>>
->>>> Thanks for reporting this, Usama!
->>>>
->>>> I am also able to repro MADV_HWPOISON failure at "501a06fe8e4c
->>>> (akpm/mm-stable, mm-stable) zswap: memcontrol: implement zswap
->>>> writeback disabling."
->>>>
->>>> Then I checked out the earliest commit "ba91e7e5d15a (HEAD -> Base)
->>>> selftests/mm: add tests for HWPOISON hugetlbfs read". The
->>>> MADV_HWPOISON injection works and and the test passes:
->>>>
->>>>   ... HugeTLB read HWPOISON test...
->>>>   ...  ... expect to read 0x101000 bytes of data in total
->>>>   ...  !!! read failed: Input/output error
->>>>   ...  ... actually read 0x101000 bytes of data in total
->>>>   ... HugeTLB read HWPOISON test...TEST_PASSED
->>>>   ... HugeTLB seek then read HWPOISON test...
->>>>   ...  ... init val=4 with offset=0x102000
->>>>   ...  ... expect to read 0xfe000 bytes of data in total
->>>>   ...  ... actually read 0xfe000 bytes of data in total
->>>>   ... HugeTLB seek then read HWPOISON test...TEST_PASSED
->>>>   ...
->>>>
->>>> [ 2109.209225] Injecting memory failure for pfn 0x3190d01 at process
->>>> virtual address 0x7f75e3101000
->>>> [ 2109.209438] Memory failure: 0x3190d01: recovery action for huge
->>>> page: Recovered
->>>> ...
->>>>
->>>> I think something in between broken MADV_HWPOISON on hugetlbfs, and we
->>>> should be able to figure it out via bisection (and of course by
->>>> reading delta commits between them, probably related to page
->>>> refcount).
->>> Thank you for this information.
->>>
->>>>
->>>> That being said, I will be on vacation from tomorrow until the end of
->>>> next week. So I will get back to this after next weekend. Meanwhile if
->>>> you want to go ahead and bisect the problematic commit, that will be
->>>> very much appreciated.
->>> I'll try to bisect and post here if I find something.
->> Found the culprit commit by bisection:
->>
->> a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
->> mm/filemap: remove hugetlb special casing in filemap.c
->>
->> hugetlb-read-hwpoison started failing from this patch. I've added the
->> author of this patch to this bug report.
->>
-> Hi Usama,
-> 
-> Thanks for pointing this out. After debugging, the below diff seems to fix
-> the issue and allows the tests to pass again. Could you test it on your
-> configuration as well just to confirm.
-> 
-> Thanks,
-> Sidhartha
-> 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 36132c9125f9..3a248e4f7e93 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -340,7 +340,7 @@ static ssize_t hugetlbfs_read_iter(struct kiocb *iocb,
-> struct iov_iter *to)
->                 } else {
->                         folio_unlock(folio);
-> 
-> -                       if (!folio_test_has_hwpoisoned(folio))
-> +                       if (!folio_test_hwpoison(folio))
->                                 want = nr;
->                         else {
->                                 /*
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index d8c853b35dbb..87f6bf7d8bc1 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -973,7 +973,7 @@ struct page_state {
->  static bool has_extra_refcount(struct page_state *ps, struct page *p,
->                                bool extra_pins)
->  {
-> -       int count = page_count(p) - 1;
-> +       int count = page_count(p) - folio_nr_pages(page_folio(p));
-> 
->         if (extra_pins)
->                 count -= 1;
-> 
-Tested the patch, it fixes the test. Please send this patch.
+Hi David,
 
-Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
--- 
-BR,
-Muhammad Usama Anjum
+On Wed, 2024-01-10 at 13:49 -0600, David Lechner wrote:
+> This adds a feature for specialized SPI controllers that can record
+> a series of SPI transfers, including tx data, cs assertions, delays,
+> etc. and then play them back using a hardware trigger without CPU
+> intervention.
+>=20
+> The intended use case for this is with the AXI SPI Engine to capture
+> data from ADCs at high rates (MSPS) with a stable sample period.
+>=20
+> Most of the implementation is controller-specific and will be handled by
+> drivers that implement the offload_ops callbacks. The API follows a
+> prepare/enable pattern that should be familiar to users of the clk
+> subsystem.
+>=20
+> Consumers of this API will make calls similar to this:
+>=20
+> =C2=A0=C2=A0=C2=A0 /* in probe() */
+> =C2=A0=C2=A0=C2=A0 offload =3D spi_offload_get(spi, 0);
+> =C2=A0=C2=A0=C2=A0 ...
+>=20
+On top of what Mark already stated, and as we already discussed offline, I
+personally don't like this provider - consumer interface for the offload. T=
+he
+first thing is that this is taking into account the possibility of having
+multiple offload cores. While the FGPA core was designed with that in mind,=
+ we
+don't really have any design using multiple offloads in one spi engine (alw=
+ays
+one). Hence this is all pretty much untested.
+
+If we want to already have this support, my feeling is that we should have =
+a
+simple integer dt property for the peripheral devices (similar to cs). When=
+ a
+device is being created/added, the spi core would parse this property and g=
+et
+it's offload index. The point is that this would all be transparent for spi
+devices drivers that would only have to call the SPI API's and the core wou=
+ld
+make sure the right index is passed to the controller.
+
+But honestly, IMO, I would just keep things simple for now and assume one c=
+ore
+per engine.
+
+I would probably also prefer to see all the new interfaces part of the
+spi_controller struct directly...
+
+- Nuno S=C3=A1
+
+
 
