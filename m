@@ -1,106 +1,109 @@
-Return-Path: <linux-kernel+bounces-23784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0862382B1B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:25:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E8882B1B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:26:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46C62B22943
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:25:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F03E1F22A56
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A064CB43;
-	Thu, 11 Jan 2024 15:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4284CB43;
+	Thu, 11 Jan 2024 15:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="b6JSv2M1"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGYvglm5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E6A4C623
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so4751364f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:25:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704986728; x=1705591528; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=evBY7G5meh2vgcdCD04AA8ujExPP16KlKzDgrJGrxTk=;
-        b=b6JSv2M1hfS3jdAMhDkYoXX1nawC/L6Gpgm/YgOzlLeFYAzZO9iPvpGnjWc6oZEF2G
-         dkAQzDrYrnEg7vQTIAxwx8GuKcFWj4fKLvFXFw7SDuta5mxrRjagd5MZ5mPA0ykB+M9G
-         Bo7/D0aJTCLRRn+OQZ7e4af8318t3sXSWSHv4SBaGXqdPYhbcocSAWChbiRCO247qQvl
-         v10AtzPXcZlYXtNBtGxN1jyYC+JYA4m5Iqm1i0LFlf3tC/BLeE6j1ETw/RNmPzenB/iS
-         ICG2/Gy3+n0i3Q/JUf/kF4tyS2SPxD3FRP6/G8xuh1Ctk4g07Dz0qqOOP8gDKidNyGaW
-         4/tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704986728; x=1705591528;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=evBY7G5meh2vgcdCD04AA8ujExPP16KlKzDgrJGrxTk=;
-        b=c4nwxFobwMnbBKDujVfDNxKy86lVjKN97JX2vraZWhqi5wZaqRVzZcFOZvsfRWJL7C
-         5ZLWhdrL5dFqC15FkkYkO0t1LB61LIXtPY7IpJ2p2ofYQJ1I4GT7W6goWcjHL1z9JeME
-         bbKLT0e3mVSu0YiCcKcBm/oanwRDMMgLJQ7q2EctS/V4NbRaHWYOmHD0jdZJ/cx4g+sp
-         hJ1TnyDPm5X37NkUeS3Aa7OvKngzs1mAHBo4mEtMGDbLqTTn1FTqO2d5JZQ2v6yqwXr7
-         sH7qp4h6mDYxjm9CWpYL5rndRa6mPPkwGjtcdchwTcFYg3l3a/GrjSKn4T/xtlWOzKPI
-         S0vA==
-X-Gm-Message-State: AOJu0Yz38dybzCS95XhejK5xDgUqZolXOTYg+EKNhm+1G7f07K25gLqD
-	nThRzx/uIGAWKFxSSNyjHozSiB66vNVZeQ==
-X-Google-Smtp-Source: AGHT+IFesYHsHdevt0age8LfkFxLnKkt6ZJll+ndYqVH4+HSaalewhELgBI2dUZmfL+p41qv8jcyyQ==
-X-Received: by 2002:adf:f18d:0:b0:337:6539:2033 with SMTP id h13-20020adff18d000000b0033765392033mr866994wro.56.1704986728007;
-        Thu, 11 Jan 2024 07:25:28 -0800 (PST)
-Received: from [192.168.1.70] ([84.102.31.226])
-        by smtp.gmail.com with ESMTPSA id d6-20020a056000114600b003366a9cb0d1sm1445502wrx.92.2024.01.11.07.25.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 07:25:27 -0800 (PST)
-Message-ID: <78476abd-08a7-46a8-8ffc-425a311eee37@baylibre.com>
-Date: Thu, 11 Jan 2024 16:25:26 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50E04D127;
+	Thu, 11 Jan 2024 15:25:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927C8C433C7;
+	Thu, 11 Jan 2024 15:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704986755;
+	bh=ZxKTB6mPR4ix+a5ENOF86x5FJJZQzDK6U+BnWyQUhHA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GGYvglm5SvsGaIX8jj41feRKiWaLnkbslwd+C0Nj0jUfukuNGaUYasmp5QmGDe7y0
+	 ewHud30NKqW9DIIgYVLfQWx98OM9QIyR8rr0FPAH4iQ5utMdS5VD1Y7EOKfgEsF3f3
+	 aiqUs+f7+G/vf2N1HVpuWiRh3y8JbnsYrVGtUSV4Ug/xrDdoQXPqevdrfDVI99cyd1
+	 9S7DXiiv/TcjrgWCln5PaMpd2yxhKAMr/foS1v7d/cokr1aA+QRIm9KiT0lVEo+gpL
+	 WjG1TiVboaTKXVwwTCR3ix5HZYaUTblwvXGt/pynPCEh73h81sdyF/kiysLc6kTzJs
+	 Xozzz7bgZ8bng==
+Date: Thu, 11 Jan 2024 15:25:49 +0000
+From: Lee Jones <lee@kernel.org>
+To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
+Cc: Karel Balej <balejk@matfyz.cz>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/5] mfd: 88pm88x: differences with respect to the
+ PMIC RFC series
+Message-ID: <20240111152549.GL1678981@google.com>
+References: <20231228100208.2932-1-karelb@gimli.ms.mff.cuni.cz>
+ <20231228100208.2932-2-karelb@gimli.ms.mff.cuni.cz>
+ <20240111105426.GA1678981@google.com>
+ <CYBYXXCP3O1O.2M5YMCRW3SIMY@gimli.ms.mff.cuni.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/16] arm64: dts: ti: k3-am62a7: Add MIT license along
- with GPL-2.0
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Pierre Gondois <pierre.gondois@arm.com>, Tony Lindgren <tony@atomide.com>
-References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-3-nm@ti.com>
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20240110140903.4090946-3-nm@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CYBYXXCP3O1O.2M5YMCRW3SIMY@gimli.ms.mff.cuni.cz>
 
-On 1/10/24 15:08, Nishanth Menon wrote:
-> Modify license to include dual licensing as GPL-2.0-only OR MIT
-> license for SoC and TI evm device tree files. This allows for Linux
-> kernel device tree to be used in other Operating System ecosystems
-> such as Zephyr or FreeBSD.
->
-> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync with
-> latest SPDX conventions (GPL-2.0 is deprecated).
->
-> While at this, update the TI copyright year to sync with current year to
-> indicate license change (and add it at least for one file which was
-> missing TI copyright).
->
-> Cc: Julien Panis <jpanis@baylibre.com>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Cc: Pierre Gondois <pierre.gondois@arm.com>
-> Cc: Tony Lindgren <tony@atomide.com>
+On Thu, 11 Jan 2024, Karel Balej wrote:
 
-Acked-by:Julien Panis <jpanis@baylibre.com>
+> Lee,
+> 
+> On Thu Jan 11, 2024 at 11:54 AM CET, Lee Jones wrote:
+> > The subject needs work.  Please tell us what the patches is doing.
+> >
+> > On Thu, 28 Dec 2023, Karel Balej wrote:
+> >
+> > > From: Karel Balej <balejk@matfyz.cz>
+> >
+> > A full an complete commit message is a must.
+> 
+> I have not provided a detailed description here because as I have noted
+> in the cover letter, this patch will be squashed into the MFD series. I
+> sent it only as a bridge between the two series, sorry for the
+> confusion.
+> 
+> > > diff --git a/include/linux/mfd/88pm88x.h b/include/linux/mfd/88pm88x.h
+> > > index a34c57447827..9a335f6b9c07 100644
+> > > --- a/include/linux/mfd/88pm88x.h
+> > > +++ b/include/linux/mfd/88pm88x.h
+> > > @@ -49,6 +49,8 @@ struct pm88x_data {
+> > >  	unsigned int whoami;
+> > >  	struct reg_sequence *presets;
+> > >  	unsigned int num_presets;
+> > > +	struct mfd_cell *devs;
+> > > +	unsigned int num_devs;
+> >
+> > Why are you adding extra abstraction?
+> 
+> Right, this is probably not necessary now since I'm only implementing
+> support for one of the chips - it's just that I keep thinking about it
+> as a driver for both of them and thus tend to write it a bit more
+> abstractly. Shall I then drop this and also the `presets` member which
+> is also chip-specific?
 
+Even if you were to support multiple devices, this strategy is unusual
+and isn't likely to be accepted.
+
+With respect to the other variables, you are in a better position to
+know if they are still required.  By the sounds of it, I'd suggest it
+might be better to remove them.
+
+-- 
+Lee Jones [李琼斯]
 
