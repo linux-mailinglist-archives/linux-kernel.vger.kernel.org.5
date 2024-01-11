@@ -1,153 +1,171 @@
-Return-Path: <linux-kernel+bounces-23241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9BD82A956
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B83682A9C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9C11C23F42
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:46:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 478D11C222A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5217510A03;
-	Thu, 11 Jan 2024 08:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90603FC01;
+	Thu, 11 Jan 2024 08:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="e4m9cSu+";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lW37eauM"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="Ww8auN30"
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC0C10940
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 237BB1FB8D;
-	Thu, 11 Jan 2024 08:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704962678; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IdRbXT6KWpUzahecRbqmMLz9QYgtWWSOiBuKfzahGm4=;
-	b=e4m9cSu+JtjkKXBsa/A8ayGBh/KZsh+30cjHUIaGPv4RGg/99sP8YbSWDzHTA9ZUScXEdf
-	S4I2cmqrF9SCcF/3h4GiNkaBFvUJeArqaQMICR+GO08pQAvTSLMKbm2rUt1FxWV3AnzAWh
-	nk2iN8sT6cMWx/v18I5a5Fn7R3Zrgd8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704962754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IdRbXT6KWpUzahecRbqmMLz9QYgtWWSOiBuKfzahGm4=;
-	b=lW37eauMFxGqcxJ5l1Qy3X5TVFa5XvZzxj7ajhxTiqQa3hJHQeW+2LkT/aXoJQ3skpEKJ7
-	pJCu8CDZx6QDMag1fR0KR7ZP+JZDxAuZID7dwdqJJX9ySUuOK6aYmzjNTsnFjQ3tahEETS
-	Wo7fcYNDFemMdH5BjxKSQ0k91iX5qps=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 413C513635;
-	Thu, 11 Jan 2024 08:44:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id afVYDHaqn2VFbwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 11 Jan 2024 08:44:38 +0000
-Date: Thu, 11 Jan 2024 09:46:08 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm, oom: Add lru_add_drain() in __oom_reap_task_mm()
-Message-ID: <ZZ-q0PZ-XCDwA4oG@tiehlicka>
-References: <20240109091511.8299-1-jianfeng.w.wang@oracle.com>
- <ZZ5Zb3FYqY8FZgB3@tiehlicka>
- <1d866f1b-94b3-43ec-8f4c-2de31b82d3d1@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20132D52E
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a2c375d2430so70334566b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 00:54:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1704963282; x=1705568082; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8fdzAkRigLOJSs0p8z2FKeIqZxw3OTVE9TPYi8cJXf8=;
+        b=Ww8auN30yMp8d0qUl6xxGNzHMHoKPxbrXBAHPgfcT16BZLssWZDTRx7lwa/iKPPl5g
+         DCTP2v6fX+NXur10Fq5rI1dfDIZnPAZx41G2qVEGYDPiNNr9cm1SwS9WcKJJuyHDDFqK
+         evSMVb+kPtr7Ozx4TyGQ1WwRCSkuGcH7EGF8ySUk/knhZG2guDzwh3/F8FpvxcvEkMBo
+         rprJPtUC97NtgcGjkPLgYEl0fGzTT4IqUVprVdvRBXYd5HRinESKJFq3j/zkxKV0izZg
+         76Rh0TKqScuqA5tS5qI18mygdkDt03QecfyLo+2J3P7/GHBWidMdkhlOeko4dyVAEND0
+         A6OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704963282; x=1705568082;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8fdzAkRigLOJSs0p8z2FKeIqZxw3OTVE9TPYi8cJXf8=;
+        b=QpplTHeKnxYmriwp1XZO2cOa95DcTBZNYxqTq/GYEwW1PmZkhhhCyB1/0+hv8V4lbw
+         lJMRLnNFwiuivFpRQvxGp5yFm3F8veP2iDtRxsEsmtuQzWRL/YMskwwD5FJ5de+PSyA+
+         rQtfDd10/RBQoKPBMA5Mtk0fUJYnS2NR9q1g8bsXXwC+/w/uaiDLrsei0+LIysPs34fO
+         uaOkOdlZCaQuTNtXUcM53WqtvAsuLyTKAXXhSqWmWhPJe8LbYPY/hj0IkZHUUNvmupXi
+         s85skobswefqkreOzP7Z4SqOLYC5ehFOWU0At+fvLHIOnEHogx1l/lCp+FdqC+Ott0fW
+         EJ0g==
+X-Gm-Message-State: AOJu0YzfOK6wY/pA4lXJV9DCbddUcGGpMh3dIg+/sQwQ7CcMMC7QjsSU
+	9QXr9Lzg0o+H7n4sE/W18sI2Fsy9bylqUX9qFdcT+EA3IqpnZeCH
+X-Google-Smtp-Source: AGHT+IFq5ynQNEJVSXgc5jOV5wTNN9Vjm/J5WWKvAdAgAN+RMQzy+62aeC55Dtrg2J/oQzlpesDVgA==
+X-Received: by 2002:a17:906:17c4:b0:a28:d427:3959 with SMTP id u4-20020a17090617c400b00a28d4273959mr397730eje.62.1704962870935;
+        Thu, 11 Jan 2024 00:47:50 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id rv4-20020a17090710c400b00a26e490e3f2sm305391ejb.181.2024.01.11.00.47.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 00:47:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d866f1b-94b3-43ec-8f4c-2de31b82d3d1@oracle.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.60
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 11 Jan 2024 09:47:49 +0100
+Message-Id: <CYBQW9KRHVJS.3UOHTOMRWDWVK@fairphone.com>
+Cc: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RESEND v3] arm64: dts: qcom: qcs6490-idp: Add definition
+ for three LEDs.
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: <quic_huliu@quicinc.com>, "Andy Gross" <agross@kernel.org>, "Bjorn
+ Andersson" <andersson@kernel.org>, "Konrad Dybcio"
+ <konrad.dybcio@linaro.org>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240111-lpg-v3-1-811c9e82dae4@quicinc.com>
+In-Reply-To: <20240111-lpg-v3-1-811c9e82dae4@quicinc.com>
 
-On Wed 10-01-24 11:02:03, Jianfeng Wang wrote:
-> On 1/10/24 12:46 AM, Michal Hocko wrote:
-> > On Tue 09-01-24 01:15:11, Jianfeng Wang wrote:
-> >> The oom_reaper tries to reclaim additional memory owned by the oom
-> >> victim. In __oom_reap_task_mm(), it uses mmu_gather for batched page
-> >> free. After oom_reaper was added, mmu_gather feature introduced
-> >> CONFIG_MMU_GATHER_NO_GATHER (in 'commit 952a31c9e6fa ("asm-generic/tlb:
-> >> Introduce CONFIG_HAVE_MMU_GATHER_NO_GATHER=y")', an option to skip batched
-> >> page free. If set, tlb_batch_pages_flush(), which is responsible for
-> >> calling lru_add_drain(), is skipped during tlb_finish_mmu(). Without it,
-> >> pages could still be held by per-cpu fbatches rather than be freed.
-> >>
-> >> This fix adds lru_add_drain() prior to mmu_gather. This makes the code
-> >> consistent with other cases where mmu_gather is used for freeing pages.
-> > 
-> > Does this fix any actual problem or is this pure code consistency thing?
-> > I am asking because it doesn't make much sense to me TBH, LRU cache
-> > draining is usually important when we want to ensure that cached pages
-> > are put to LRU to be dealt with because otherwise the MM code wouldn't
-> > be able to deal with them. OOM reaper doesn't necessarily run on the
-> > same CPU as the oom victim so draining on a local CPU doesn't
-> > necessarily do anything for the victim's pages.
-> > 
-> > While this patch is not harmful I really do not see much point in adding
-> > the local draining here. Could you clarify please?
-> > 
-> It targets the case described in the patch's commit message: oom_killer
-> thinks that it 'reclaims' pages while pages are still held by per-cpu
-> fbatches with a ref count.
-> 
-> I admit that pages may sit on a different core(s). Given that
-> doing remote calls to all CPUs with lru_add_drain_all() is expensive,
-> this line of code can be helpful if it happens to give back a few pages
-> to the system right away without the overhead, especially when oom is
-> involved. Plus, it also makes the code consistent with other places
-> using mmu_gather feature to free pages in batch.
+On Thu Jan 11, 2024 at 3:52 AM CET, Hui Liu via B4 Relay wrote:
+> From: Hui Liu <quic_huliu@quicinc.com>
+>
+> Add definition for three LEDs to make sure they can
+> be enabled base on QCOM LPG LED driver.
+>
+> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> ---
+> Changes in v3:
+> - Rephrased commit text and updated the nodes to qcm6490-idp board file.
+> - Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fb=
+bc65a@quicinc.com/
+>
+> Changes in v2:
+> - Rephrased commit text and updated the nodes to board file.
+> - Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572=
+cb0@quicinc.com
+> ---
+>  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/d=
+ts/qcom/qcm6490-idp.dts
+> index 37c91fdf3ab9..f801144a1556 100644
+> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> @@ -5,6 +5,7 @@
+> =20
+>  /dts-v1/;
+> =20
+> +#include <dt-bindings/leds/common.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include "sc7280.dtsi"
+>  #include "pm7325.dtsi"
+> @@ -414,6 +415,30 @@ vreg_bob_3p296: bob {
+>  	};
+>  };
+> =20
+> +&pm8350c_pwm {
+> +	#address-cells =3D <1>;
+> +	#size-cells =3D <0>;
+> +	status =3D "okay";
+> +
+> +	led@1 {
+> +		reg =3D <1>;
 
-I would argue that consistency the biggest problem of this patch. It
-tries to follow a pattern that is just not really correct. First it
-operates on a random CPU from the oom victim perspective and second it
-doesn't really block any unmapping operation and that is the main
-purpose of the reaper. Sure it frees a lot of unmapped memory but if
-there are couple of pages that cannot be freed imeediately because they
-are sitting on a per-cpu LRU caches then this is not a deal breaker. As
-you have noted those pages might be sitting on any per-cpu cache.
+Hi Hui Liu,
 
-So I do not really see that as a good justification. People will follow
-that pattern even more and spread lru_add_drain to other random places.
+> +		color =3D <LED_COLOR_ID_RED>;
+> +		label =3D "red";
 
-Unless you can show any actual runtime effect of this patch then I think
-it shouldn't be merged.
+Please remove the deprecated "label" property. Since you already have
+"color" set you only need to add "function". On phones for the
+notification LED we usually use "function =3D LED_FUNCTION_STATUS;"
 
--- 
-Michal Hocko
-SUSE Labs
+Also depends on what your hardware looks like, if it's 3 separate LEDs
+then with label replaced it would be okay.
+If the 3 LEDs are in one spot (so you can mix the colors with it), then
+please make it a RGB multi-led like e.g. in sm8550-qrd.dts.
+
+Regards
+Luca
+
+> +	};
+> +
+> +	led@2 {
+> +		reg =3D <2>;
+> +		color =3D <LED_COLOR_ID_GREEN>;
+> +		label =3D "green";
+> +	};
+> +
+> +	led@3 {
+> +		reg =3D <3>;
+> +		color =3D <LED_COLOR_ID_BLUE>;
+> +		label =3D "blue";
+> +	};
+> +};
+> +
+>  &qupv3_id_0 {
+>  	status =3D "okay";
+>  };
+>
+> ---
+> base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
+> change-id: 20231215-lpg-4aadd374811a
+>
+> Best regards,
+
 
