@@ -1,100 +1,137 @@
-Return-Path: <linux-kernel+bounces-23756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E40082B147
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:02:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6DE82B146
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2045A1F242B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:02:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACD85B21E8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278304B5BA;
-	Thu, 11 Jan 2024 15:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1ofI72sB"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472724CB25;
+	Thu, 11 Jan 2024 15:02:14 +0000 (UTC)
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B004D128
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bbd7d60729so4544179b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:02:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704985349; x=1705590149; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AXxf4IYdHRNOCXV3BfrCT7sMwSBwZiXUq0fFiawq+m0=;
-        b=1ofI72sBfEKFrbfIddPIRvLj8hXMWN0CnoJ4dz79C+ZGTD223cAwDJ3iJqrf+whd5b
-         6gW3DniKA3biV1yPnPe6wp2bsa+ujFUNcqnVZp/V2k5UUvzpnU9dD+9xWO09h+phigd9
-         KsyP0k1gZ3nmTu9xXcoJZcOGey5Y0gZgbTaj/rgMEi/SQtU8M1VPMIHXubzzlx414xLq
-         oWBc0IRabVp069qge1YpkKnv5MLKeOyQ/ygwejIpDOw0LchPjdTFEp4SckvhGDLU8zib
-         FVVBcZieOTAedJ7lc8ztYbeN2+F8VcFP1igmu3K1I9O8fcQsO28n8A/jloIj7txDSrmx
-         XdBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704985349; x=1705590149;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AXxf4IYdHRNOCXV3BfrCT7sMwSBwZiXUq0fFiawq+m0=;
-        b=P/D0IB8SpVJ7gxlfd/w3v3ljb0OpwCX0087Qk7nuig7FN4laXBW5+iKBfuMJvFb5yn
-         IGWKRVJ78bD1udkWEIkOO0P8eZPE/JPBwqH5UoX1NfnJhaP8i5SsKVaBY+nqz6i0wnvN
-         KUAPWI+wXAKRF2TymRRS/ITFdyugUKI1hrTHbbV8irG0L/7OD3UESgUACgG5JWSd6+W/
-         YmiKOer52nrXQjjKhsWv7Y/DWcyso2MGy/0BRYhU2oD5j2pjorfp+o1XK3xuqsTJLc8S
-         jffCd+bNUMB9FPmKbxAMrD0iiOaKXEyAwGYgZaMlc1MRBijQCVy2UYu5vujN0wvNfBUC
-         Oakw==
-X-Gm-Message-State: AOJu0YxAi1Xd5JbHJFaJXPoI8OwG5BMGSefYC3cHXSZVFEm93X130+2D
-	al9z8PhjgJmeQ4C0z3plWVR3nr8/dj31VDo7ui8simCJ6izn
-X-Google-Smtp-Source: AGHT+IF93tOujgWbRonD2nfYrfu+/PBOD6H5SB+QWbotDoP6sUofoL00lp3Jp385fPeLA0Ayoam+fRNgK03LqW/sun8=
-X-Received: by 2002:a05:6808:1152:b0:3bd:59b2:93fd with SMTP id
- u18-20020a056808115200b003bd59b293fdmr321214oiu.68.1704985349083; Thu, 11 Jan
- 2024 07:02:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AEA4A987;
+	Thu, 11 Jan 2024 15:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 9E573300000BE;
+	Thu, 11 Jan 2024 16:02:01 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 8FBBBDAB62; Thu, 11 Jan 2024 16:02:01 +0100 (CET)
+Date: Thu, 11 Jan 2024 16:02:01 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Terry Bowman <terry.bowman@amd.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-pci@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
+Message-ID: <20240111150201.GA28409@wunner.de>
+References: <20240104130123.37115-1-brgl@bgdev.pl>
+ <20240104130123.37115-4-brgl@bgdev.pl>
+ <20240109144327.GA10780@wunner.de>
+ <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
+ <20240110132853.GA6860@wunner.de>
+ <CAMRc=MdBSAb_kEO2r7r-vwLuRAEv7pMODOMtZoCCRAd=zsQb_w@mail.gmail.com>
+ <20240110164105.GA13451@wunner.de>
+ <CAMRc=MdQKPN8UbagmswjFx7_JvmJuBeuq8+9=z-+GBNUmdpWEA@mail.gmail.com>
+ <20240111104211.GA32504@wunner.de>
+ <CAMRc=MfT_VLo7++K4M89iYrciqWSrX_JyS1LX5kaGTNDNVQiOg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401111558.1374ae6f-oliver.sang@intel.com> <b1adbb1c-62b7-459f-a1bb-63774895fbb3@I-love.SAKURA.ne.jp>
-In-Reply-To: <b1adbb1c-62b7-459f-a1bb-63774895fbb3@I-love.SAKURA.ne.jp>
-From: Marco Elver <elver@google.com>
-Date: Thu, 11 Jan 2024 16:01:49 +0100
-Message-ID: <CANpmjNNgCt0pByJhEhViyCQXk_9_1a-KfVjQcx4rSFZtuZNe9g@mail.gmail.com>
-Subject: Re: [linus:master] [kasan] a414d4286f: INFO:trying_to_register_non-static_key
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: kernel test robot <oliver.sang@intel.com>, Andrey Konovalov <andreyknvl@google.com>, oe-lkp@lists.linux.dev, 
-	lkp@intel.com, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Evgenii Stepanov <eugenis@google.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMRc=MfT_VLo7++K4M89iYrciqWSrX_JyS1LX5kaGTNDNVQiOg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Thu, 11 Jan 2024 at 16:00, Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> Commit a414d4286f34 ("kasan: handle concurrent kasan_record_aux_stack calls")
-> calls raw_spin_lock_init(&alloc_meta->aux_lock) after __memset() in
-> kasan_init_object_meta(), but does not call raw_spin_lock_init() after __memset()
-> in release_alloc_meta(), resulting in lock map information being zeroed out?
->
-> We should not zero out the whole sizeof(struct kasan_alloc_meta) bytes from
-> release_alloc_meta() in order not to undo raw_spin_lock_init() from
-> kasan_init_object_meta() ?
+On Thu, Jan 11, 2024 at 05:09:09AM -0600, Bartosz Golaszewski wrote:
+> On Thu, 11 Jan 2024 11:42:11 +0100, Lukas Wunner <lukas@wunner.de> said:
+> > On Wed, Jan 10, 2024 at 02:18:30PM -0600, Bartosz Golaszewski wrote:
+> >> On Wed, 10 Jan 2024 17:41:05 +0100, Lukas Wunner <lukas@wunner.de> said:
+> >> > On Wed, Jan 10, 2024 at 05:26:52PM +0100, Bartosz Golaszewski wrote:
+> >> > > Seems like the following must be true but isn't in my case (from
+> >> > > pci_bus_add_device()):
+> >> > >
+> >> > >     if (pci_is_bridge(dev))
+> >> > >         of_pci_make_dev_node(dev);
+> >> > >
+> >> > > Shouldn't it evaluate to true for ports?
+> >> >
+> >> > It should.
+> >> >
+> >> > What does "lspci -vvvvxxxx -s BB:DD.F" say for the port in question?
+> 
+> # lspci -vvvvxxxx -s 0000:00:00
+> 0000:00:00.0 PCI bridge: Qualcomm Technologies, Inc Device 010b
+> (prog-if 00 [Normal decode])
+> 	Device tree node: /sys/firmware/devicetree/base/soc@0/pcie@1c00000/pcie@0
+[...]
+> 00: cb 17 0b 01 07 05 10 00 00 00 04 06 00 00 01 00
+                                                ^^
+The Header Type in config space is 0x1, i.e. PCI_HEADER_TYPE_BRIDGE.
 
-Does this fix it:
-https://lore.kernel.org/all/20240109221234.90929-1-andrey.konovalov@linux.dev/
+So pci_is_bridge(dev) does return true (unlike what you write above)
+and control flow enters of_pci_make_dev_node().
 
-> On 2024/01/11 16:29, kernel test robot wrote:
-> > [    1.582812][    T0] INFO: trying to register non-static key.
-> > [    1.583305][    T0] The code is fine but needs lockdep annotation, or maybe
-> > [    1.583887][    T0] you didn't initialize this object before use?
-> > [    1.584409][    T0] turning off the locking correctness validator.
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/b1adbb1c-62b7-459f-a1bb-63774895fbb3%40I-love.SAKURA.ne.jp.
+But perhaps of_pci_make_dev_node() returns immediately because:
+
+	/*
+	 * If there is already a device tree node linked to this device,
+	 * return immediately.
+	 */
+	if (pci_device_to_OF_node(pdev))
+		return;
+
+..and lspci does list a devicetree node for that Root Port.
+
+In any case, of_pci_make_dev_node() is the right place to add
+the call to of_platform_populate().  Just make sure it's called
+even if there is already a DT node for the Root Port itself.
+
+Thanks,
+
+Lukas
 
