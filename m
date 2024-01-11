@@ -1,117 +1,119 @@
-Return-Path: <linux-kernel+bounces-22931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAD882A59F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:41:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80D6F82A5A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADD1B1C2261C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:41:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E1ED2890EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 01:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564BFED2;
-	Thu, 11 Jan 2024 01:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C874D1858;
+	Thu, 11 Jan 2024 01:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cfDXvP+m"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uh0of29+"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF19650;
-	Thu, 11 Jan 2024 01:40:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1D61C433F1;
-	Thu, 11 Jan 2024 01:40:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704937257;
-	bh=u51yyq5q6reKn5H0CqnJR7jUYlsGmLnDJKKy8teJDRs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cfDXvP+m7491pQR0YUCkm0mTB2aBegWGodHoLZFFG4xnm1HYzXRQuH2gS9jmS4sxK
-	 4a1YcSnAQwsufJxQwNnVNUv8zlTNrN2c8FDL4SvgoPYxlV5HCtl48g/zf8dKFEZFKy
-	 s2oFPeyW0anIBYuwCbKWlfg0iILlMck90/uZ6HjK3pEsmr6x3ggHxQYlbGaZ+LM+u9
-	 Cdp1Me8dqv2fMqivWwzjoUve3j+IWy/LLnsB6hnY7qN7e4nycBAq9OtxqrOqUVgXsd
-	 pNUpTm723vIzDa8WcFdKrRTfElEbLc8gQRM3fqF3Cypry45w0MWn8V/GMykrc5s3y6
-	 6wFr/xhlj/0lw==
-Date: Wed, 10 Jan 2024 17:40:56 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Dave Chinner <david@fromorbit.com>,
-	John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-	kbusch@kernel.org, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ming.lei@redhat.com, bvanassche@acm.org,
-	ojaswin@linux.ibm.com
-Subject: Re: [PATCH v2 00/16] block atomic writes
-Message-ID: <20240111014056.GL722975@frogsfrogsfrogs>
-References: <c729b03c-b1d1-4458-9983-113f8cd752cd@oracle.com>
- <20231219051456.GB3964019@frogsfrogsfrogs>
- <20231219052121.GA338@lst.de>
- <76c85021-dd9e-49e3-80e3-25a17c7ca455@oracle.com>
- <20231219151759.GA4468@lst.de>
- <fff50006-ccd2-4944-ba32-84cbb2dbd1f4@oracle.com>
- <20231221065031.GA25778@lst.de>
- <73d03703-6c57-424a-80ea-965e636c34d6@oracle.com>
- <ZZ3Q4GPrKYo91NQ0@dread.disaster.area>
- <20240110091929.GA31003@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8563117C1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-337874b8164so79652f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 17:42:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704937371; x=1705542171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=573C8j1oW9pjIQTawxUe9zQgrGOkmk9aCSFBWOlk+GA=;
+        b=Uh0of29+/sBQ1ViJPMxO5QKddz+h4K0hWldINK+oSMOS7Hv8mF67nsFcZVne74VmvP
+         SUz8N5qLJkdO+l4Erb04lqWkSdctn+DqvB3VD8yP0RcZoUwcDb4V2/1REH7BeqCGdTus
+         6vptcLGlcDHNcMs3FQV/gUkwcibInltenR9rtL8JdFi2cvBM1qU1uOH6NXLGA+oX45f3
+         jbvJaa72OKoTyyYvs4lJ8bc4XH+zyLYHNj0A1Yi/tWU3AmbV/gnh62kaydqvoor3/pH0
+         OfKKXE8QsYt3M5zcCHzi3iUYZyd91Zn1yKqVSrkCQQixNSTIjL2bPbMEAeJdAeIJ+U4P
+         C6rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704937371; x=1705542171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=573C8j1oW9pjIQTawxUe9zQgrGOkmk9aCSFBWOlk+GA=;
+        b=BPHxtWa0wSl5rCosdvXKIxSKg2dz9NsNyRnNJjLxU9EYY7oxSkvzf3Z6m3Wo99dk3V
+         jYaails/ALKfmTcgKmfSi9KBedUCOmpV5Q/eG9Ls0CO9rR/Y/PcbZ/EiXpCdBT7i3M70
+         r48zd+Bi7rCdOzucbCCv6JdafagVYhydb1V26/YgbizzwZwLWiIEjwGMDevjrV/uPEV3
+         /Lp7jYnpgfY8Vxynu2nb9h2md0SNwBmp6T2JMf2ZkPQUJ13Waem9eBElNjY7Vpe+c+mq
+         nVoflxKbHUo7G+Jr9xDeMROCPCvWMwK+mr16JuUdekwwvk094eIyaZy2zquQHC/LSfAD
+         v2Sw==
+X-Gm-Message-State: AOJu0YyZDW8UHChAH1z+uQaOQCX5Iq05FH6zFg5hElMMBZf2kKLr+JAv
+	Q6ZsmX2HjI1gk/UDtIbSTIxcZBTzD0amynovYQY=
+X-Google-Smtp-Source: AGHT+IF1QQxMj+kJ7E5CkPp9//yJvfVwqEeCmFKFHCWTvnFQD7/ODwzXbyzBUE4kGeCpdOfe72f4HAr3EIT9SF4xZWk=
+X-Received: by 2002:a5d:6249:0:b0:336:6e22:672c with SMTP id
+ m9-20020a5d6249000000b003366e22672cmr152305wrv.88.1704937371516; Wed, 10 Jan
+ 2024 17:42:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110091929.GA31003@lst.de>
+References: <ZZb2f0U4qTWDjCGj@FVFF77S0Q05N.cambridge.arm.com>
+ <CAJNi4rOpzmQAW1Fjst-Em=SQ7q8QsQh0PWhVxUizrOW9JukOgQ@mail.gmail.com>
+ <ZZvS8rigFJR8L56c@FVFF77S0Q05N> <fb6c8253fd90e66c036a85954c3299bc2c047473.camel@xry111.site>
+ <CAJNi4rPj0Wc7ByqrS-GVLUUEnOFPZi8A5nLLCEEJErqAe16EZw@mail.gmail.com>
+ <9aef98eed96ed32962ce90499291cb30ad5e3e14.camel@xry111.site>
+ <20240109074843.GI19790@gate.crashing.org> <4ee8067e72028b070d92e10fa33ddde3a498cb48.camel@xry111.site>
+ <20240109082647.GJ19790@gate.crashing.org> <CAJNi4rM_w5JKjug1PtV+tHyk11DUhRJ-K1pSDE6P1x8KSU2wrg@mail.gmail.com>
+ <20240110141005.GL19790@gate.crashing.org>
+In-Reply-To: <20240110141005.GL19790@gate.crashing.org>
+From: richard clark <richard.xnu.clark@gmail.com>
+Date: Thu, 11 Jan 2024 09:42:40 +0800
+Message-ID: <CAJNi4rMw1rN64hGZbraoDwtOJOMOumVWL_8iLaCb=TYXAhD2Jg@mail.gmail.com>
+Subject: Re: undefined reference to `__aarch64_cas4_sync' error on arm64
+ native build
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Cc: Xi Ruoyao <xry111@xry111.site>, Mark Rutland <mark.rutland@arm.com>, gcc-help@gcc.gnu.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 10:19:29AM +0100, Christoph Hellwig wrote:
-> On Wed, Jan 10, 2024 at 10:04:00AM +1100, Dave Chinner wrote:
-> > Hence history teaches us that we should be designing the API around
-> > the generic filesystem function required (hard alignment of physical
-> > extent allocation), not the specific use case that requires that
-> > functionality.
-> 
-> I disagree.  The alignment requirement is an artefact of how you
-> implement atomic writes.  As the fs user I care that I can do atomic
-> writes on a file and need to query how big the writes can be and
-> what alignment is required.
-> 
-> The forcealign feature is a sensible fs side implementation of that
-> if using hardware based atomic writes with alignment requirements,
-> but it is a really lousy userspace API.
-> 
-> So with John's API proposal for XFS with hardware alignment based atomic
-> writes we could still use force align.
-> 
-> Requesting atomic writes for an inode will set the forcealign flag
-> and the extent size hint, and after that it'll report atomic write
-> capabilities.  Roughly the same implementation, but not an API
-> tied to an implementation detail.
+On Wed, Jan 10, 2024 at 10:12=E2=80=AFPM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
+>
+> On Wed, Jan 10, 2024 at 01:59:53PM +0800, richard clark wrote:
+> > A ported driver in linux kernel calls '__sync_val_compare_and_swap',
+>
+> That is a builtin function.  It does not necessarily expand to an actual
+> function call.  aarch64 will typically expand it to inline code.
+>
+native gcc version:
+gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+cross-compiler gcc version:
+aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
 
-Sounds good to me!  So to summarize, this is approximately what
-userspace programs would have to do something like this:
+Interesting, the same '__sync_val_compare_and_swap' in the .c file
+will be 'U __aarch64_cas4_sync' in the .o file compiled by native,
+will be 't __cmpxchg_case_mb_32' in the .o file compiled by
+aarch64-linux-gnu-gcc... don't know what the reason is
 
-struct statx statx;
-struct fsxattr fsxattr;
-int fd = open('/foofile', O_RDWR | O_DIRECT);
-
-ioctl(fd, FS_IOC_GETXATTR, &fsxattr);
-
-fsxattr.fsx_xflags |= FS_XFLAG_FORCEALIGN | FS_XFLAG_WRITE_ATOMIC;
-fsxattr.fsx_extsize = 16384; /* only for hardware no-tears writes */
-
-ioctl(fd, FS_IOC_SETXATTR, &fsxattr);
-
-statx(fd, "", AT_EMPTY_PATH, STATX_ALL | STATX_WRITE_ATOMIC, &statx);
-
-if (statx.stx_atomic_write_unit_max >= 16384) {
-	pwrite(fd, &iov, 1, 0, RWF_SYNC | RWF_ATOMIC);
-	printf("HAPPY DANCE\n");
-}
-
-(Assume we bail out on errors.)
-
---D
+>
+> > the cross-compiler 'aarch64-linux-gnu-gcc' doesn't complain
+> > '__aarch64_cas1_sync' undefined reference, but the native compiler
+> > will complain. As Mark mentioned, I double check that both cross and
+> > native compiler should have  ''-moutline-atomics' option enabled, do
+> > you know the reason for that?
+>
+> Ah, so you are requesting external functions.
+>
+> I am no aarch64 expert, but apparently there were some problems in
+> GCC 11, maybe that is what you saw?  Or with some distros, anyway.
+>
+> It also matters if you have ARMv8.1-A enabled, the LSE instructions.
+>
+> Open a GCC bug report if you have more details?  Thanks,
+>
+>
+> Segher
 
