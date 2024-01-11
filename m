@@ -1,98 +1,158 @@
-Return-Path: <linux-kernel+bounces-23525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3102382AE00
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:56:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA25282AE06
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB03AB21F65
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:56:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61DC5281BE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C10F156CE;
-	Thu, 11 Jan 2024 11:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758C0156CB;
+	Thu, 11 Jan 2024 11:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bUFkSZhz"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZSa9qy7T"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0648B14F88;
-	Thu, 11 Jan 2024 11:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704974196; x=1736510196;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=rxfB6CJ33YC73UGGmfDn7hZc0Y7X2EI0dmmGO62rrxA=;
-  b=bUFkSZhz7q/+UU1fw7vtB9c5sVycqecMoBuDw8qhVn6w1c4fl3dRIQPO
-   ccFkz29+qM4VlAl0Vh4ZK7l8h/eTMeQdIBbWgJhLF9+5Nt7Qv4ub1XsC1
-   jkSJC4vxIbfiE1WwkZLaRMO/49+NyOPpBGSUzgSli8a29vQvH3qLnAVza
-   OUrmv97CSFGrQcPtnDHnpI1gGMhD2kBRbgV2APqp1rfaMV/3eauP07evC
-   cNuWvjAUlmCm+vLDkPc/FsH/Kam5i0m5wCZLh5xggkPtrIDSKtU7VDaPT
-   a76gW4t7XJA20VRlOlp+XQ70lHpM/WI53V8jU454LWAK4BYkMIm7hhhzU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="389261859"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="389261859"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:56:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="758734850"
-X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
-   d="scan'208";a="758734850"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.201])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 03:56:32 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 11 Jan 2024 13:56:28 +0200 (EET)
-To: Dan Carpenter <dan.carpenter@linaro.org>
-cc: Hans de Goede <hdegoede@redhat.com>, Henry Shi <henryshi2018@gmail.com>, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: silicom-platform: clean up a check
-In-Reply-To: <0402e613-446a-40d1-b676-0422f6223aa8@moroto.mountain>
-Message-ID: <90c2576b-006d-36eb-1fac-c4c4a6eccb4a@linux.intel.com>
-References: <0402e613-446a-40d1-b676-0422f6223aa8@moroto.mountain>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C9F154AC;
+	Thu, 11 Jan 2024 11:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704974255;
+	bh=rRQZLwAtR4o/VCOAcxTzVSxdZ70bLgI9faWJJSJCsAc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZSa9qy7Tl9zR64Qk9SDK6NPPOQBrzuuwsbhm3ASkRxLSEX697ewBw5gAVzlmlRKPT
+	 GOysylcxC/VF0/iodKdVsdSwxKl10VbKYgjyh95ntez4wUTALdQgndOCTgoo8MX2Wy
+	 7mEHqSeuw59iX+8bFLDK6Meh50irC3QYn5AaPZVbMXs5Ey1+/LWwHQ66snbhCZgLA5
+	 VBzcW08jGuJFn0SjoUXr/T3OMXil63gF9e0K2dNOg7LgLs8ik2OBVww6D/G+Mnn3XC
+	 figD78k9CAo2SC4FXRj5LNOotc1bojTHrP5AutXeI2mLokdmkKD2xWyTo5zIpOWylE
+	 wCDITlgc9Bp6w==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A519A3781182;
+	Thu, 11 Jan 2024 11:57:32 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/7] selftests/mm: hugepage-shm: conform test to TAP format output
+Date: Thu, 11 Jan 2024 16:56:30 +0500
+Message-ID: <20240111115639.3981970-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Wed, 10 Jan 2024, Dan Carpenter wrote:
+Conform the layout, informational and status messages to TAP. No
+functional change is intended other than the layout of output messages.
 
-> "value" is either non-zero, or zero.  There isn't a third option.
-> Delete the unnecessary code.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->  drivers/platform/x86/silicom-platform.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
-> index 6ce43ccb3112..5cac698bf98d 100644
-> --- a/drivers/platform/x86/silicom-platform.c
-> +++ b/drivers/platform/x86/silicom-platform.c
-> @@ -258,10 +258,8 @@ static void silicom_gpio_set(struct gpio_chip *gc,
->  
->  	if (value)
->  		silicom_mec_port_set(channel, 0);
-> -	else if (value == 0)
-> -		silicom_mec_port_set(channel, 1);
->  	else
-> -		pr_err("Wrong argument value: %d\n", value);
-> +		silicom_mec_port_set(channel, 1);
+The "." was being printed inside for loop to indicate the writes
+progress. This was extraneous and hence removed in the patch.
 
-This covers both cases without if:
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ tools/testing/selftests/mm/hugepage-shm.c | 47 +++++++++++------------
+ 1 file changed, 22 insertions(+), 25 deletions(-)
 
-	silicom_mec_port_set(channel, !value);
-
-
+diff --git a/tools/testing/selftests/mm/hugepage-shm.c b/tools/testing/selftests/mm/hugepage-shm.c
+index 478bb1e989e9..f949dbbc3454 100644
+--- a/tools/testing/selftests/mm/hugepage-shm.c
++++ b/tools/testing/selftests/mm/hugepage-shm.c
+@@ -34,11 +34,10 @@
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+ #include <sys/mman.h>
++#include "../kselftest.h"
+ 
+ #define LENGTH (256UL*1024*1024)
+ 
+-#define dprintf(x)  printf(x)
+-
+ /* Only ia64 requires this */
+ #ifdef __ia64__
+ #define ADDR (void *)(0x8000000000000000UL)
+@@ -54,44 +53,42 @@ int main(void)
+ 	unsigned long i;
+ 	char *shmaddr;
+ 
++	ksft_print_header();
++	ksft_set_plan(1);
++
+ 	shmid = shmget(2, LENGTH, SHM_HUGETLB | IPC_CREAT | SHM_R | SHM_W);
+-	if (shmid < 0) {
+-		perror("shmget");
+-		exit(1);
+-	}
+-	printf("shmid: 0x%x\n", shmid);
++	if (shmid < 0)
++		ksft_exit_fail_msg("shmget: %s\n", strerror(errno));
++
++	ksft_print_msg("shmid: 0x%x\n", shmid);
+ 
+ 	shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
+ 	if (shmaddr == (char *)-1) {
+-		perror("Shared memory attach failure");
+ 		shmctl(shmid, IPC_RMID, NULL);
+-		exit(2);
++		ksft_exit_fail_msg("Shared memory attach failure: %s\n", strerror(errno));
+ 	}
+-	printf("shmaddr: %p\n", shmaddr);
+ 
+-	dprintf("Starting the writes:\n");
+-	for (i = 0; i < LENGTH; i++) {
++	ksft_print_msg("shmaddr: %p\n", shmaddr);
++
++	ksft_print_msg("Starting the writes:");
++	for (i = 0; i < LENGTH; i++)
+ 		shmaddr[i] = (char)(i);
+-		if (!(i % (1024 * 1024)))
+-			dprintf(".");
+-	}
+-	dprintf("\n");
++	ksft_print_msg("Done.\n");
+ 
+-	dprintf("Starting the Check...");
++	ksft_print_msg("Starting the Check...");
+ 	for (i = 0; i < LENGTH; i++)
+-		if (shmaddr[i] != (char)i) {
+-			printf("\nIndex %lu mismatched\n", i);
+-			exit(3);
+-		}
+-	dprintf("Done.\n");
++		if (shmaddr[i] != (char)i)
++			ksft_exit_fail_msg("\nIndex %lu mismatched\n", i);
++	ksft_print_msg("Done.\n");
+ 
+ 	if (shmdt((const void *)shmaddr) != 0) {
+-		perror("Detach failure");
+ 		shmctl(shmid, IPC_RMID, NULL);
+-		exit(4);
++		ksft_exit_fail_msg("Detach failure: %s\n", strerror(errno));
+ 	}
+ 
+ 	shmctl(shmid, IPC_RMID, NULL);
+ 
+-	return 0;
++	ksft_test_result_pass("Completed test\n");
++
++	ksft_finished();
+ }
 -- 
- i.
+2.42.0
 
 
