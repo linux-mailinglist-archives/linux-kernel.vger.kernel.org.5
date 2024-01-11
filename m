@@ -1,118 +1,140 @@
-Return-Path: <linux-kernel+bounces-23779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 010DF82B188
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:16:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E1A282B18D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:18:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F6CEB2515F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:16:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D28FD282A1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B2E4CB3C;
-	Thu, 11 Jan 2024 15:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD6A4C60B;
+	Thu, 11 Jan 2024 15:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="lTKWSADz"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="C7DPFKF2"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733B44C60A
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50ec948ad31so4253096e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:16:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0614D127
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50ed808db11so2449397e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:17:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1704986177; x=1705590977; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YPZFW6fjituFN6UJOUsGOAPd8JoXYWow7QZvMD6pj6I=;
-        b=lTKWSADzlhcUnTD8rxogVa00pl1q/hD4/VtqPH0WDv5Mf2b7Kbb34VZ/aov9kcyphz
-         hX2YYFZc0TObsrL6ZFZvlbly48nnjIpKpdILn2ZAr9NBc5AO7VafXmmPGSmwK1GeVOzd
-         +iEwTlNI824sko3kaPZIEL/kWm7kNtRFadswIzwrXjCZPE0hfO0Rw78F+ckfbieEPlow
-         /VWiRXgIXJymDba8PjRBLNfLDT/OcGp1j8LFXB2KjN1ad9kvsXqM3ftFzk5rB17zhGYq
-         8KWQYr7YkC2V/Y423P2VOAk/L6gUxeCNZ9XrthZFR4noE+yUB+jvicMdS03rDtY+69Fj
-         r06g==
+        d=suse.com; s=google; t=1704986272; x=1705591072; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=89hILc8fV7OBcQ3dgWJZyYhw//2b4isBBhmMXFJEhAw=;
+        b=C7DPFKF26TKMW6PIxoivqKUA5SrT38l7Ad2wSTuGTrdxOr4pvcn/XtJJnArSgAThBD
+         +AJVaKIL3zWu3Alt1XtESNfGve9xBaNfbNeaQHzD/AZcQDKPGRQO5X0RjluT8WvmO0tY
+         v60aOrPFce65cCrPyzmRBMfLDRSgAZ9AilBNYWnQGPLwxaH5Aqm+5LW9fYzpM/j/PWGH
+         ApuHTQxZav7V9/TiGCDLYaicK1ctgwfRMLScHU817hX3cOxx/THJyBvCsfF98ReIHiKs
+         O9lAUrz340sf20lrciVKgEE0YG/eTmAaGrMGZnMFpSDWCyllREaUHYu2bI15M6sKCR1A
+         86Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704986177; x=1705590977;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YPZFW6fjituFN6UJOUsGOAPd8JoXYWow7QZvMD6pj6I=;
-        b=ufR7QlHxQdYvv2NVguStsaTVZQHNJIgAMbKKvCVca5hEUWr79XdKvb256KE9EJFSWL
-         M23MdgmD18Dwbvw7wMgp204einxMZiT2GiJdJcroxib+hiIrZs+4ZgFRBzpE9YaJ/QVH
-         qG1kRiEThufIJqASCk+bYKyayngoysM4QLhZ4e7LmUMx54NScJHkKfFcVPHfWQuLtBii
-         aAWmPpfqphncuvpe1V1I5FdzoZPfSwJh9qTdB1c0fhbBazFMuJXya04BulnB0PGU0+Fi
-         Yi3ifFwfJqpU5fSvWydy80Pj6SjvSjEKkHGIOmTSyYhGAq6vWNB1IHumaCr0L5E6NSkI
-         LFQA==
-X-Gm-Message-State: AOJu0YxIav1I6AO26PadHjeOtxKlQVamnCWtRgmEAs++dkGD3fPcG+63
-	1Tsfga7M76gG7sAOaPQ70w2iMFgKhUyk7JVdKd219O5oGs2/FA==
-X-Google-Smtp-Source: AGHT+IEZLeQNv6vCjr34+occd/nO2c9YnZOYz4CaUUfcYXZe8yRhNltwk0drriyy4oGP+4xVoZ71xb7w9RVqI3OQj5U=
-X-Received: by 2002:ac2:58d0:0:b0:50e:7709:9fc2 with SMTP id
- u16-20020ac258d0000000b0050e77099fc2mr626322lfo.78.1704986177471; Thu, 11 Jan
- 2024 07:16:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704986272; x=1705591072;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=89hILc8fV7OBcQ3dgWJZyYhw//2b4isBBhmMXFJEhAw=;
+        b=lMhxN9y3c7HluxAnyK8YZ1DxPHDi+Qr1VYx3uxRIDA8sweQMzx4BOfcbu7Y045Hlch
+         dAfWjmxIblFE6dv3XCVTLSVNFGui1mEMblQ4IGaX/sp9F3bQc6TTcFKOdfDoW2VbHpYS
+         hLe6VoEyT6mPTABPFuodMA586dk8lZibGsYt9oDZADlShXd47we7AaNVh46ZTyynQhIF
+         SZ6VMmQmtc8s/veR+6NmTi9a2amsMag4gaQRJKQMLWz5VT7J1fx8lL2JzB2S4yyEHvrW
+         2RvbOA+Xh19CQIE/h7SDiOto7uxMF+0ZyFBd3mr6mUIK23qBwXxT+iSUB1m0esR4CucZ
+         D4eQ==
+X-Gm-Message-State: AOJu0YzyWI0TQEhXb3V8dRPxGTcB309SjSsnv6NU4Go6gFuj0VhHuvmS
+	rMd8PYEE9acFu6errS1xHJ8vf/8aMZZISA==
+X-Google-Smtp-Source: AGHT+IGQxjTvuqUbZLYG67DMQyCKnaTyvAuZG8a1BLSP0ZFzDwIZ8/MUR8Cx7JtmDfDxDr9JNiEvUQ==
+X-Received: by 2002:a05:6512:e85:b0:50e:abd1:bfc3 with SMTP id bi5-20020a0565120e8500b0050eabd1bfc3mr778644lfb.88.1704986272241;
+        Thu, 11 Jan 2024 07:17:52 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id m23-20020a50ef17000000b0055751515a84sm709308eds.51.2024.01.11.07.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 07:17:52 -0800 (PST)
+Date: Thu, 11 Jan 2024 16:17:50 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Attreyee M <tintinm2017@gmail.com>,
+	Bagas Sanjaya <bagasdotme@gmail.com>, jpoimboe@kernel.org,
+	jikos@kernel.org, mbenes@suse.cz, joe.lawrence@redhat.com,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	live-patching@vger.kernel.org
+Subject: Re: [PATCH] Documentation/livepatch: Update terminology in livepatch
+Message-ID: <ZaAGnlmCMbl0dhij@alley>
+References: <20231223205813.32083-1-tintinm2017@gmail.com>
+ <87o7eg607d.fsf@meer.lwn.net>
+ <ZYpb6Woh45ZnEvCP@archie.me>
+ <CAJjsb4reD_TVWRFonp90xXD4Ye2OOfOd894PzmfMKaP3qFkbYg@mail.gmail.com>
+ <87jzohoy02.fsf@meer.lwn.net>
+ <49cfdce3094fcc37ecf01bb358509c64ee8feed9.camel@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221070449.1809020-1-songshuaishuai@tinylab.org> <170498463757.20080.7960935665061816471.git-patchwork-notify@kernel.org>
-In-Reply-To: <170498463757.20080.7960935665061816471.git-patchwork-notify@kernel.org>
-From: Andy Chiu <andy.chiu@sifive.com>
-Date: Thu, 11 Jan 2024 23:16:06 +0800
-Message-ID: <CABgGipX7Jf7M8ZYgeRPcE9tkzc7XWpfWErsiacn2Pa9h=vG2cQ@mail.gmail.com>
-Subject: Re: [PATCH] riscv: vector: Check SR_SD before saving vstate
-To: patchwork-bot+linux-riscv@kernel.org, Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Song Shuai <songshuaishuai@tinylab.org>, linux-riscv@lists.infradead.org, 
-	paul.walmsley@sifive.com, aou@eecs.berkeley.edu, greentime.hu@sifive.com, 
-	conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com, 
-	xiao.w.wang@intel.com, heiko@sntech.de, ruinland.tsai@sifive.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <49cfdce3094fcc37ecf01bb358509c64ee8feed9.camel@suse.com>
 
-Hi Palmer,
+On Wed 2024-01-10 15:51:40, Marcos Paulo de Souza wrote:
+> On Wed, 2024-01-10 at 11:15 -0700, Jonathan Corbet wrote:
+> > Attreyee M <tintinm2017@gmail.com> writes:
+> > 
+> > > Hello maintainers, 
+> > > 
+> > > I wanted to ask if this patch of mine is accepted as of now. 
+> > 
+> > You never responded to the question that is still quoted in your
+> > (unfortunately top-posted) email:
+> > 
+> > > So this is a classic example of saying what you have done, but not
+> > > why.
+> > > What makes this a change that we want?
+> > 
+> > So no, not accepted.  Even with a proper changelog, though, I'm not
+> > sure
+> > I see the value in that particular change.
+> 
+> >From time to time I see people complaining about the lack of new people
+> coming to kernel development,
 
-On Thu, Jan 11, 2024 at 10:50=E2=80=AFPM <patchwork-bot+linux-riscv@kernel.=
-org> wrote:
->
-> Hello:
->
-> This patch was applied to riscv/linux.git (for-next)
+IMHO, it is much worse on the maintainers' side. There is a lack
+of maintainers. And I believe that most of them have hard times
+to manage the load. They should provide hints. But we could
+not expect that they would do the work.
 
-IIUC the conclusion for this thread is not to check SD bit for either
-vector or fpu. The patch for this was sent together with the
-kernel-mode vector series and has been reviewed-by both Song and Guo.
+> and that Documentation would be a good
+> start for some of them to learn how to send patches by email (which by
+> itself is difficult...).
 
-> by Palmer Dabbelt <palmer@rivosinc.com>:
->
-> On Thu, 21 Dec 2023 15:04:49 +0800 you wrote:
-> > The SD bit summarizes the dirty states of FS, VS, or XS fields,
-> > providing a "fast check" before saving fstate or vstate.
-> >
-> > Let __switch_to_vector() check SD bit as __switch_to_fpu() does.
-> >
-> > Fixes: 3a2df6323def ("riscv: Add task switch support for vector")
-> > Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
-> >
-> > [...]
->
-> Here is the summary with links:
->   - riscv: vector: Check SR_SD before saving vstate
->     https://git.kernel.org/riscv/c/e1b76bc00ed1
->
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
->
->
+Attreyee, please read Documentation/process/submitting-patches.rst
+before you send another version.
 
-Please let me know if I missed anything.
+Also please run scripts/checkpatch.pl before you send the patches.
 
-Thanks,
-Andy
+> As Documentation patches aren't backported, why not accept this patch?
+> 
+> Jon, I understand your reasoning, but I agree with Attreyee here. The
+> term "acquire" fits better when in conjunction with "released" than
+> "get".
+> 
+> Can you show an example of a good commit message to Attreyee so he can
+> adjust and resend? I'm sure the next time he'll consider remember the
+> suggestion given and the next patch will have a better commit message.
+
+I suggest that Attreyee makes another attempt himself.
+
+John explained what was the problem. Attreyee could get inspiration from
+the git history. Anyway, the commit message simply should explain why
+"acquire" is better than "get".
+
+Best Regards,
+Petr
 
