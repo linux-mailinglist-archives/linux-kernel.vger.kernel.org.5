@@ -1,145 +1,114 @@
-Return-Path: <linux-kernel+bounces-23291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C0FC82AA8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:09:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AF5482AA3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E6831F228E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:09:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 168331F2630F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A772C10957;
-	Thu, 11 Jan 2024 09:09:01 +0000 (UTC)
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB9116428;
+	Thu, 11 Jan 2024 09:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="nffDKb6F"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9525D101FB;
-	Thu, 11 Jan 2024 09:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6dc36e501e1so3434378a34.1;
-        Thu, 11 Jan 2024 01:08:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6838816420
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28ca63fd071so2687794a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 01:02:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1704963739; x=1705568539; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+g8rx/Js9kR9z/v7+Mn1kTVZXJSN4sbVOGbBgK7rO7Y=;
+        b=nffDKb6F8Wo/dkiC42w6CwY2fB0Y+mLFMG6O3Ar9G4AT+3aJShOCDpaygqiRBvsCT9
+         bJRk8MojAPNWK6tNvFCzYT2b+Vq3VLxowgudjtaC1sxpQZGaihQLu5nxCJuJm5gHs4y3
+         mVAY0421ojNpxUjVuiC8+4AannqZtGdZDdjxjQ9/OunWrI3XTgr+8CuqoGA/eIFaDDQe
+         5fmotibGaDx++fwgVRJhVr1G6MNVVVHYD4jqizj28KEDY1TLbOZ+B/8ozdJRHA1G+IFA
+         iE8Ypqq8WPHCI5P3QEbtoXV52L/VZabHAlVIG1j1EcYbdsuTdhwGk8sQLL4RcTrl2iFf
+         uvNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704964138; x=1705568938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7s8mOe6yBrTL8Dc+4RBtqbm0YylyeY2R2uNKT3a55V8=;
-        b=Lyd+IrHoz6Nk7QLTjKdRssSu1eWUG5FOwduoh/dDzxVjxAdrQne23pmfdHmFXnSEEB
-         LZYNwAtfLOeKpYCLy4zf57XGb+YgIKT3jtTCe47IYVeMWx4AY4A7m7BAJ1LbCf75bIJl
-         EmTGDPE5tao+wpyt7Nn4y0nFnpouitemvEfqC0wo3B3WeDcdXYUv35KkFsmjFsMD2VSD
-         MMdZh634CWICqQK4IBDyVTNzFTB1hNQZwwQutOW00aECBOthrx0DCTjFNhCMG+f21eti
-         9LhfFLkXRLHEWSdJHZaB+ih622fExGvGkPZKbji0p93FAnhUl2tsUomu7s9+VfFXU6rD
-         qkPQ==
-X-Gm-Message-State: AOJu0Yxhgkwy7QqED6vEknsfy1mW31Ns3CWLrqN4MBQpEboMSZzgtnkN
-	9Y2Lc4BaTdqvcilssQL1GuHLc7GYcvkXYA==
-X-Google-Smtp-Source: AGHT+IE6wcozzThLKTxEe+RwwmuuBKAGvcbNTPskMBgyKIQ2pNnoMJBMr4L4SOPTDBtUsp2PKYGnqg==
-X-Received: by 2002:a81:a747:0:b0:5f6:e673:3f1c with SMTP id e68-20020a81a747000000b005f6e6733f1cmr301977ywh.98.1704963669071;
-        Thu, 11 Jan 2024 01:01:09 -0800 (PST)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id g189-20020a0df6c6000000b005a4da74b869sm246045ywf.139.2024.01.11.01.01.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 01:01:08 -0800 (PST)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5e7f0bf46a2so48228847b3.1;
-        Thu, 11 Jan 2024 01:01:08 -0800 (PST)
-X-Received: by 2002:a81:bc50:0:b0:5f3:6024:53c with SMTP id
- b16-20020a81bc50000000b005f36024053cmr322891ywl.32.1704963668540; Thu, 11 Jan
- 2024 01:01:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704963739; x=1705568539;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+g8rx/Js9kR9z/v7+Mn1kTVZXJSN4sbVOGbBgK7rO7Y=;
+        b=HAJEdOwFwDPX5wSdECCxmaVquCyfS2c6GrdU28LG2clvR6aQ8keZjKusLms28tCQkO
+         6y8tJo5aR6Lk4yyLXH06hWeccfAn3Z85kqToBMesdXBY+Cg5q5igslBHgiOZqIHzZ1xG
+         XF+ay/ESgKmKWbgZPAiR5X73pE1aSd6wU3Xug7YHkcADORoTv4TnXq4q4T/zSziS5waQ
+         OS6vekyJpORPrU56X9bkESmFaX/YAsT1jfRQhmmbKHzbUQJhL8Ix8LJypkJtk3LM32yZ
+         So0qctdRQ23nh/0+mfVZoCd24KENXCQ0/SapjPCAznNJf4IpBSqDmvcwON7BBQIChWpW
+         9P7A==
+X-Gm-Message-State: AOJu0YzpFTr5XRwNfmgM6T7pxwOMc7aBS13MCByHm5gKwORHCnlKzC2f
+	LMKpzBKxynZBJS93UX/FWG+R/GC2aVb7Dn74Xb8yfenqWIQ=
+X-Google-Smtp-Source: AGHT+IG1anub9IXtnzE0NkJV8/hkigke48pXyoI6NhvhVXOStVvkDJD/vNcvk7XrJv0ekhWe9d6Eug==
+X-Received: by 2002:a17:90a:df03:b0:28c:8eb9:3029 with SMTP id gp3-20020a17090adf0300b0028c8eb93029mr692801pjb.50.1704963739586;
+        Thu, 11 Jan 2024 01:02:19 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-249-6.pa.nsw.optusnet.com.au. [49.180.249.6])
+        by smtp.gmail.com with ESMTPSA id sb8-20020a17090b50c800b0028be1050020sm3144238pjb.29.2024.01.11.01.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 01:02:19 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rNqx6-008svE-12;
+	Thu, 11 Jan 2024 20:02:16 +1100
+Date: Thu, 11 Jan 2024 20:02:16 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
+Message-ID: <ZZ+umGZ2NFQN/KuW@dread.disaster.area>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240102184633.748113-8-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110222717.193719-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240110222717.193719-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 11 Jan 2024 10:00:53 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX4bv0dtJ-G1o9by91RmP3DH1HQKvDL51g_25Yq=Yd2LQ@mail.gmail.com>
-Message-ID: <CAMuHMdX4bv0dtJ-G1o9by91RmP3DH1HQKvDL51g_25Yq=Yd2LQ@mail.gmail.com>
-Subject: Re: [PATCH] dmaengine: sh: rz-dmac: Avoid format-overflow warning
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, dmaengine@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102184633.748113-8-urezki@gmail.com>
 
-Hi Prabhakar,
+On Tue, Jan 02, 2024 at 07:46:29PM +0100, Uladzislau Rezki (Sony) wrote:
+> Concurrent access to a global vmap space is a bottle-neck.
+> We can simulate a high contention by running a vmalloc test
+> suite.
+> 
+> To address it, introduce an effective vmap node logic. Each
+> node behaves as independent entity. When a node is accessed
+> it serves a request directly(if possible) from its pool.
+> 
+> This model has a size based pool for requests, i.e. pools are
+> serialized and populated based on object size and real demand.
+> A maximum object size that pool can handle is set to 256 pages.
+> 
+> This technique reduces a pressure on the global vmap lock.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-On Wed, Jan 10, 2024 at 11:27=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> The max channel count for RZ DMAC is 16, hence use u8 instead of unsigned
-> int and make the pdev_irqname string long enough to avoid the warning.
+Why not use a llist for this? That gets rid of the need for a
+new pool_lock altogether...
 
-Note that the danger lies into someone changing
-RZ_DMAC_MAX_CHANNELS later...
+Cheers,
 
-> This fixes the below issue:
-> drivers/dma/sh/rz-dmac.c: In function =E2=80=98rz_dmac_probe=E2=80=99:
-> drivers/dma/sh/rz-dmac.c:770:34: warning: =E2=80=98%u=E2=80=99 directive =
-writing between 1 and 10 bytes into a region of size 3 [-Wformat-overflow=
-=3D]
->   770 |         sprintf(pdev_irqname, "ch%u", index);
->       |                                  ^~
-> In function =E2=80=98rz_dmac_chan_probe=E2=80=99,
->     inlined from =E2=80=98rz_dmac_probe=E2=80=99 at drivers/dma/sh/rz-dma=
-c.c:910:9:
-> drivers/dma/sh/rz-dmac.c:770:31: note: directive argument in the range [0=
-, 4294967294]
->   770 |         sprintf(pdev_irqname, "ch%u", index);
->       |                               ^~~~~~
-> drivers/dma/sh/rz-dmac.c:770:9: note: =E2=80=98sprintf=E2=80=99 output be=
-tween 4 and 13 bytes into a destination of size 5
->   770 |         sprintf(pdev_irqname, "ch%u", index);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> While at it use scnprintf() instead of sprintf() to make the code
-> more robust.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Some nits below...
-
-> --- a/drivers/dma/sh/rz-dmac.c
-> +++ b/drivers/dma/sh/rz-dmac.c
-> @@ -845,9 +845,9 @@ static int rz_dmac_probe(struct platform_device *pdev=
-)
->         struct dma_device *engine;
->         struct rz_dmac *dmac;
->         int channel_num;
-> -       unsigned int i;
->         int ret;
->         int irq;
-> +       u8 i;
-
-Personally, I'm not much a fan of making loop counters smaller than
-(unsigned) int.  If you do go this way, you should change channel_num
-to u8, too, just like i in rz_dmac_remove().
-
->
->         dmac =3D devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
->         if (!dmac)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
