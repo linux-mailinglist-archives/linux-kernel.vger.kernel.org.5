@@ -1,373 +1,198 @@
-Return-Path: <linux-kernel+bounces-24087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D2F82B6A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:25:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4D4882B65D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:04:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D9A8282A92
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:25:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22E56B21C03
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5515812B;
-	Thu, 11 Jan 2024 21:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A71B5811C;
+	Thu, 11 Jan 2024 21:04:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aarsen.me header.i=@aarsen.me header.b="HlJuRmvR"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="RCucMcQV"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0EB35812A
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=aarsen.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aarsen.me
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4T9yPk5bKGz9scR;
-	Thu, 11 Jan 2024 22:25:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aarsen.me; s=MBO0001;
-	t=1705008330;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=TLtu3x1/NMFhl9k9RQJ078ylQIzYtpK52w0Kj3MJ9+Q=;
-	b=HlJuRmvRETTSsJXCAwjrlgbXj6Ce2ze+FPg3cZY97V4eXBQZA8tU1DLAT6sEgALwe7+vnJ
-	oMMY7bZHPHX5XIBUUiElKpZQYXTm0dM908Y76fbEBVEKIQOPQtpWyPAddgo5VPWmpveOay
-	W/jA07BnJfHoVthWJKEnGb5DUVShooaeIKunqnhly0qA8V+cznmBs7lEFHU+8H9qnYWiRI
-	cj3VC109z3emAMEETNk2b989xivsnZBDOvvDzRFQnIFuN3w/M/u27c9PJ2ywuY2ESQgojt
-	T3DV8Nx3k5J5c4CzAJ7iEhBMkw4cPLOE1NHzf1jLjBt7bGlDFGEOblHJW58B0A==
-From: Arsen =?utf-8?Q?Arsenovi=C4=87?= <arsen@aarsen.me>
-To: Andrew Pinski <pinskia@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
-Date: Thu, 11 Jan 2024 22:01:51 +0100
-In-reply-to: <CA+=Sn1n18OmcDzDrZky_KqMW76ttTLGnMYnH5CPg7m9SXor1qQ@mail.gmail.com>
-Message-ID: <864jfjr29j.fsf@aarsen.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E14656B80
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e7c1012a42so55023557b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 13:04:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705007058; x=1705611858; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BZBM9DHTMRa5r9o/EOHYBsOH+N+oJgezGzR9/BcPyBA=;
+        b=RCucMcQVSqfQFlmmPdKzjKcHChkEzqq1eGhDOueJV5NOYXx/dCBwjTBUDsu8rDzSpa
+         GTwmuK4xuahgPNPs4C+Hlrm5sL61/3YSMpKFBwlNkwvX9o2UgBKcoxKdKWzYgtIfddz/
+         lus4eKgPBN+Ezv3YWsQolBD0bI/nuuOIhUxk2H9V9KiUmDMIlK85a6hf0sW81/iXnJqr
+         kGLnAxnLKWDIXdoUhG9Q4CHJA1Wapzt6AkoEXQ3rbVgsCII+aY79RUde15FR46pb4+4z
+         PWMp7NP1QLIHQxTbrjl4faBZajV7CoBRVW5wPii+a2oj1VmtipnpDH5vG1exMjEQqH6X
+         /0HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705007058; x=1705611858;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BZBM9DHTMRa5r9o/EOHYBsOH+N+oJgezGzR9/BcPyBA=;
+        b=rJBFnKkjXE1avEO+HM00ntJMdgDNdIRZlBD6YpLmZSbglXKYf1vgqVYqeSRoZHkFcl
+         px60OqizkSxCUO89bRG5qpbWDGs5wcnYuUqIpg0rUfKGf1SKV5HKAhm1NM666+wesj+T
+         NVAx5NQIPT3fkf9HEr02dcDy/o5s+ACw1sL5B/d6LzkgJ7qOVVAeJ5BBMBboB5Yl8baw
+         t625h6xlz21NmwFm+aJtLdbaH4vR6oH4gYSZ5BYJcTjUe1qncRfNcBtbzmTUbdBT3tdW
+         FZaHv5kWLIHejx3NQqZyusQT5d2xUfm55u+2mqEmIg2RgvqGNopHHm8KcE6vHO1dqsxk
+         fsfw==
+X-Gm-Message-State: AOJu0YwYG1CXCh0eMwqT4J208nz/SEAaTYVxHglLv/tlVuDgyu7CNzxb
+	Q+9FocqvTVWb2x9HF+kwnTNTVTM/lStjnXuB4xaVH0mZ10eN
+X-Google-Smtp-Source: AGHT+IFU4vD3qg9bo1/N+GrmostDVqHnqU0mqNePYQwXjQmDgut8e6ATb+n1Jg+lw2BRcgjE9YjbaH/XiOpxGxGcl3s=
+X-Received: by 2002:a81:c80e:0:b0:5f1:e1f:fe7a with SMTP id
+ n14-20020a81c80e000000b005f10e1ffe7amr399574ywi.10.1705007057927; Thu, 11 Jan
+ 2024 13:04:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-
---=-=-=
-Content-Type: text/plain; charset=utf-8
+References: <00000000000011d709060eadffd3@google.com> <CAJuCfpG-8w_KQ8bWvSr=GrXM+Jx3YKn5DqTFJU2MaMojML_a-A@mail.gmail.com>
+ <CAJuCfpFfKYn+G1+puQ0KxzWCnbfFT51tKwV8MnrP7YZcJAORwg@mail.gmail.com>
+ <CAJuCfpHTAAPEjMLrcxyG8zW7HA47EinB8CQfKGmBw7gGxqQ=vA@mail.gmail.com>
+ <5ed23cf3-eedd-44aa-a498-d2a9ab046535@redhat.com> <CAJuCfpG5T71Sc46pB2eGpV7TreMZX2VZ-kDfaNmtn+etP0q9JA@mail.gmail.com>
+ <bf9dbc58-35c4-4a35-b194-6d8d9e7e4923@redhat.com>
+In-Reply-To: <bf9dbc58-35c4-4a35-b194-6d8d9e7e4923@redhat.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 11 Jan 2024 21:04:06 +0000
+Message-ID: <CAJuCfpGRA7KJhMBneqAj+dw=rQReU7PyR1r34yqrNSoa-RUKbg@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in move_pages
+To: David Hildenbrand <david@redhat.com>
+Cc: syzbot <syzbot+705209281e36404998f6@syzkaller.appspotmail.com>, 
+	Peter Xu <peterx@redhat.com>, aarcange@redhat.com, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-
-Andrew Pinski <pinskia@gmail.com> writes:
-
-> On Tue, Jan 9, 2024 at 11:57=E2=80=AFAM H. Peter Anvin <hpa@zytor.com> wr=
-ote:
->>
->> Hi all, I'm going to stir the hornet's nest and make what has become the
->> ultimate sacrilege.
->>
->> Andrew Pinski recently made aware of this thread. I realize it was
->> released on April 1, 2018, and either was a joke or might have been
->> taken as one. However, I think there is validity to it, and I'm going to
->> try to motivate my opinion here.
->>
->> Both C and C++ has had a lot of development since 1999, and C++ has in
->> fact, in my personal opinion, finally "grown up" to be a better C for
->> the kind of embedded programming that an OS kernel epitomizes. I'm
->> saying that as the author of a very large number of macro and inline
->> assembly hacks in the kernel.
->>
->> What really makes me say that is that a lot of things we have recently
->> asked for gcc-specific extensions are in fact relatively easy to
->> implement in standard C++ and, in many cases, allows for infrastructure
->> improvement *without* global code changes (see below.)
->>
->> C++14 is in my option the "minimum" version that has reasonable
->> metaprogramming support has most of it without the type hell of earlier
->> versions (C++11 had most of it, but C++14 fills in some key missing piec=
-es).
->>
->> However C++20 is really the main game changer in my opinion; although
->> earlier versions could play a lot of SFINAE hacks they also gave
->> absolutely useless barf as error messages. C++20 adds concepts, which
->> makes it possible to actually get reasonable errors.
->>
->> We do a lot of metaprogramming in the Linux kernel, implemented with
->> some often truly hideous macro hacks. These are also virtually
->> impossible to debug. Consider the uaccess.h type hacks, some of which I
->> designed and wrote. In C++, the various casts and case statements can be
->> unwound into separate template instances, and with some cleverness can
->> also strictly enforce things like user space vs kernel space pointers as
->> well as already-verified versus unverified user space pointers, not to
->> mention easily handle the case of 32-bit user space types in a 64-bit
->> kernel and make endianness conversion enforceable.
->>
->> Now, "why not Rust"? First of all, Rust uses a different (often, in my
->> opinion, gratuitously so) syntax, and not only would all the kernel
->> developers need to become intimately familiar to the level of getting
->> the same kind of "feel" as we have for C, but converting C code to Rust
->> isn't something that can be done piecemeal, whereas with some cleanups
->> the existing C code can be compiled as C++.
->>
->> However, I find that I disagree with some of David's conclusions; in
->> fact I believe David is unnecessarily *pessimistic* at least given
->> modern C++.
->>
->> Note that no one in their sane mind would expect to use all the features
->> of C++. Just like we have "kernel C" (currently a subset of C11 with a
->> relatively large set of allowed compiler-specific extensions) we would
->> have "kernel C++", which I would suggest to be a strictly defined subset
->> of C++20 combined with a similar set of compiler extensions.) I realize
->> C++20 compiler support is still very new for obvious reasons, so at
->> least some of this is forward looking.
->>
->> So, notes on this specific subset based on David's comments.
->>
->> On 4/1/18 13:40, David Howells wrote:
->> >
->> > Here are a series of patches to start converting the kernel to C++.  It
->> > requires g++ v8.
->> >
->> > What rocks:
->> >
->> >   (1) Inline template functions, which makes implementation of things =
-like
->> >       cmpxchg() and get_user() much cleaner.
->>
->> Much, much cleaner indeed. But it also allows for introducing things
->> like inline patching of immediates *without* having to change literally
->> every instance of a variable.
->>
->> I wrote, in fact, such a patchset. It probably included the most awful
->> assembly hacks I have ever done, in order to implement the mechanics,
->> but what *really* made me give up on it was the fact that every site
->> where a patchable variable is invoked would have to be changed from, say:
->>
->>         foo =3D bar + some_init_offset;
->>
->> ... to ...
->>
->>         foo =3D imm_add(bar, some_init_offset);
->>
->>
->> >   (2) Inline overloaded functions, which makes implementation of thing=
-s like
->> >       static_branch_likely() cleaner.
->>
->> Basically a subset of the above (it just means that for a specific set
->> of very common cases it isn't necessary to go all the way to using
->> templates, which makes the syntax nicer.)
->>
->> >   (3) Class inheritance.  For instance, all those inode wrappers that =
-require
->> >       the base inode struct to be included and that has to be accessed=
- with
->> >       something like:
->> >
->> >       inode->vfs_inode.i_mtime
->> >
->> >       when you could instead do:
->> >
->> >       inode->i_mtime
->>
->> This is nice, but it is fundamentally syntactic sugar. Similar things
->> can be done with anonymous structures, *except* that C doesn't allow
->> another structure to be anonymously included; you have to have an
->> entirely new "struct" statement defining all the fields. Welcome to
->> macro hell.
->>
->> > What I would disallow:
->> >
->> >   (1) new and delete.  There's no way to pass GFP_* flags in.
->>
->> Yes, there is.
->>
->> void * operator new (size_t count, gfp_flags_t flags);
->> void operator delete(void *ptr, ...whatever kfree/vfree/etc need, or a
->> suitable flag);
->>
->> >   (2) Constructors and destructors.  Nests of implicit code makes the =
-code less
->> >       obvious, and the replacement of static initialisation with const=
-ructor
->> >       calls would make the code size larger.
->>
->> Yes and no. It also makes it *way* easier to convert to and from using
->> dedicated slabs; we already use semi-initialized slabs for some kinds of
->> objects, but it requires new code to make use of.
->>
->> We already *do* use constructors and *especially* destructors for a lot
->> of objects, we just call them out.
->>
->> Note that modern C++ also has the ability to construct and destruct
->> objects in-place, so allocation and construction/destruction aren't
->> necessarily related.
->>
->> There is no reason you can't do static initialization where possible;
->> even constructors can be evaluated at compile time if they are constexpr.
->>
->> Constructors (and destructors, for modules) in conjunction with gcc's
->> init_priority() extension is also a nice replacement for linker hack
->> tables to invoke intializer functions.
->>
->> >   (3) Exceptions and RTTI.  RTTI would bulk the kernel up too much and
->> >       exception handling is limited without it, and since destructors =
-are not
->> >       allowed, you still have to manually clean up after an error.
->>
->> Agreed here, especially since on many platforms exception handling
->> relies on DWARF unwind information.
+On Thu, Jan 11, 2024 at 9:00=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> Let me just add a few things about exceptions and RTTI.
-> In the darwin kernel, C++ is used for device drivers and both
-> exceptions and RTTI is not used there either. They have been using C++
-> for kernel drivers since the early 2000s even.
-> You can find out more at https://developer.apple.com/documentation/driver=
-kit .
-> There even was a GCC option added an option which would also disable
-> RTTI and change the ABI to explicitly for the kernel.
-> -fapple-kext/-mkernel (the former is for only loadable modules while
-> the latter is for kernel too).
+> On 11.01.24 21:20, Suren Baghdasaryan wrote:
+> > On Thu, Jan 11, 2024 at 6:58=E2=80=AFPM David Hildenbrand <david@redhat=
+com> wrote:
+> >>
+> >> On 11.01.24 19:34, Suren Baghdasaryan wrote:
+> >>> On Thu, Jan 11, 2024 at 8:44=E2=80=AFAM Suren Baghdasaryan <surenb@go=
+ogle.com> wrote:
+> >>>>
+> >>>> On Thu, Jan 11, 2024 at 8:40=E2=80=AFAM Suren Baghdasaryan <surenb@g=
+oogle.com> wrote:
+> >>>>>
+> >>>>> On Thu, Jan 11, 2024 at 8:25=E2=80=AFAM syzbot
+> >>>>> <syzbot+705209281e36404998f6@syzkaller.appspotmail.com> wrote:
+> >>>>>>
+> >>>>>> Hello,
+> >>>>>>
+> >>>>>> syzbot found the following issue on:
+> >>>>>>
+> >>>>>> HEAD commit:    e2425464bc87 Add linux-next specific files for 202=
+40105
+> >>>>>> git tree:       linux-next
+> >>>>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D14941c=
+dee80000
+> >>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4056b9=
+349f3da8c9
+> >>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3D70520928=
+1e36404998f6
+> >>>>>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutil=
+s for Debian) 2.40
+> >>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D125d=
+0a09e80000
+> >>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15bc73=
+31e80000
+> >>>>>>
+> >>>>>> Downloadable assets:
+> >>>>>> disk image: https://storage.googleapis.com/syzbot-assets/2f738185e=
+2cf/disk-e2425464.raw.xz
+> >>>>>> vmlinux: https://storage.googleapis.com/syzbot-assets/b248fcf4ea46=
+/vmlinux-e2425464.xz
+> >>>>>> kernel image: https://storage.googleapis.com/syzbot-assets/a9945c8=
+223f4/bzImage-e2425464.xz
+> >>>>>>
+> >>>>>> The issue was bisected to:
+> >>>>>>
+> >>>>>> commit adef440691bab824e39c1b17382322d195e1fab0
+> >>>>>> Author: Andrea Arcangeli <aarcange@redhat.com>
+> >>>>>> Date:   Wed Dec 6 10:36:56 2023 +0000
+> >>>>>>
+> >>>>>>       userfaultfd: UFFDIO_MOVE uABI
+> >>>>>>
+> >>>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D11c=
+b6ea9e80000
+> >>>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D13c=
+b6ea9e80000
+> >>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15cb6e=
+a9e80000
+> >>>>>>
+> >>>>>> IMPORTANT: if you fix the issue, please add the following tag to t=
+he commit:
+> >>>>>> Reported-by: syzbot+705209281e36404998f6@syzkaller.appspotmail.com
+> >>>>>> Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
+> >>>>>>
+> >>>>>>    do_one_initcall+0x128/0x680 init/main.c:1237
+> >>>>>>    do_initcall_level init/main.c:1299 [inline]
+> >>>>>>    do_initcalls init/main.c:1315 [inline]
+> >>>>>>    do_basic_setup init/main.c:1334 [inline]
+> >>>>>>    kernel_init_freeable+0x692/0xc30 init/main.c:1552
+> >>>>>>    kernel_init+0x1c/0x2a0 init/main.c:1442
+> >>>>>>    ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+> >>>>>>    ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+> >>>>>> ------------[ cut here ]------------
+> >>>>>> kernel BUG at include/linux/page-flags.h:1035!
+> >>>>>> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> >>>>>> CPU: 0 PID: 5068 Comm: syz-executor191 Not tainted 6.7.0-rc8-next-=
+20240105-syzkaller #0
+> >>>>>> Hardware name: Google Google Compute Engine/Google Compute Engine,=
+ BIOS Google 11/17/2023
+> >>>>>> RIP: 0010:PageAnonExclusive include/linux/page-flags.h:1035 [inlin=
+e]
+> >>>>>
+> >>>>>   From a quick look, I think the new ioctl is being used against a
+> >>>>> file-backed page and that's why PageAnonExclusive() throws this err=
+or.
+> >>>>> I'll confirm if this is indeed the case and will add checks for tha=
+t
+> >>>>> case. Thanks!
+> >>>>
+> >>>> Hmm. Looking at the reproducer it does not look like a file-backed
+> >>>> memory... Anyways, I'm on it.
+> >>>
+> >>> Looks like the test is trying to move the huge_zero_page. Wonder how
+> >>> we should handle this. Just fail or do something else? Adding David
+> >>> and Peter for feedback.
+> >>
+> >> You'll need some special-casing to handle that. But it should be fairl=
+y
+> >> easy.
+> >
+> > Ok, so should we treat zeropage the same as PAE and map destination
+> > PTE/PMD to zeropage while clearing source PTE/PMD?
 >
-> Note even in GCC, we disable exceptions and RTTI while building GCC.
-> This is specifically due to not wanting to use them and use other
-> methods to do that.
-> Note GDB on the other hand used to use setjmp/longjmp for their
-> exception handling in C and I think they moved over to using C++
-> exceptions which simplified things there. But as far as I know the
-> Linux kernel does not use a mechanism like that (I know of copy
-> from/to user using HW exceptions/error/interrupt handling but that is
-> a special case only).
+> Likely yes. So it's transparent for user space what we are moving. (this
+> sounds like an easy case to not require a prior write access just to
+> move it)
+
+Ok, working on it. split_huge_pmd() already knows how to split
+huge_zero_page but I think I'll need special handling in both
+move_pages_pte() and move_pages_huge_pmd().
+
 >
+> --
+> Cheers,
 >
->>
->> >   (4) Operator overloading (except in special cases).
->>
->> See the example of inline patching above. But yes, overloading and
->> *especially* operator overloading should be used only with care; this is
->> pretty much true across the board.
->>
->> >   (5) Function overloading (except in special inline cases).
->>
->> I think we might find non-inline cases where it matters, too.
->>
->> >   (6) STL (though some type trait bits are needed to replace __builtin=
-s that
->> >       don't exist in g++).
->>
->> Just like there are parts of the C library which is really about the
->> compiler and not part of the library. <type_traits> is part of that for =
-C++.
+> David / dhildenb
 >
-> There is an idea of a free standing C++ library. newer versions of
-> GCC/libstdc++ does support that but IIRC can only be configured at
-> compile time of GCC.
-> type_traits and a few other headers are included in that. I have not
-> looked into it fully though.
-
-There is, and it's quite extensive (and I plan on extending it further
-in GCC 15, if I get the chance to).  The full list of headers libstdc++
-exports for freestanding use is a bit larger than the standard one:
-https://gcc.gnu.org/cgit/gcc/tree/libstdc++-v3/include/Makefile.am#n28
-
-(note that some are partially supported.. I lack a full list of which)
-
-Most (actually, nearly all) of the libstdc++ code works for kernel
-environments, and it is very mature and well-tested, so it can and
-should be used by kernels too.  I haven't fully enabled using it in such
-a manner yet, but
-
-We could handle the kernel specific configuration via a multilib or so
-(so, the multilib list becomes 32, 64, x32, and a new k64 or so on
-amd64).  Presumably, something like that could be done for libgcc too?
-
-It is not necessarily only configurable at build-time, but the libstdc++
-configuration augmented by -ffreestanding and the one generated by a
-'proper' freestanding build of libstdc++ differ currently.  Maybe they
-can be brought together close enough for Linux?
-
-Managarm, which is the kernel I had in mind when working on getting more
-freestanding stuff has a dedicated kernel build of GCC, however, so I
-didn't test this case much.  I'd like to, sooner or later, consolidate
-it into the normal managarm system GCC, as a multilib, but I haven't had
-time to do so yet.
-
-In any case, I strongly prefer configuring toolchains 'properly'.
-
-> Thanks,
-> Andrew Pinski
->
->>
->> >   (7) 'class', 'private', 'namespace'.
->> >
->> >   (8) 'virtual'.  Don't want virtual base classes, though virtual func=
-tion
->> >       tables might make operations tables more efficient.
->>
->> Operations tables *are* virtual classes. virtual base classes make sense
->> in a lot of cases, and we de facto use them already.
->>
->> However, Linux also does conversion of polymorphic objects from one type
->> to another -- that is for example how device nodes are implemented.
->> Using this with C++ polymorphism without RTTI does require some
->> compiler-specific hacks, unfortunately.
->>
->> > Issues:
->> >
->> >   (1) Need spaces inserting between strings and symbols.
->>
->> I have to admit I don't really grok this?
->>
->> >   (2) Direct assignment of pointers to/from void* isn't allowed by C++=
-, though
->> >       g++ grudgingly permits it with -fpermissive.  I would imagine th=
-at a
->> >       compiler option could easily be added to hide the error entirely.
->>
->> Seriously. It should also enforce that it should be a trivial type.
->> Unfortunately it doesn't look like there is a way to create user-defined
->> implicit conversions from one pointer to another (via a helper class),
->> which otherwise would have had some other nice applications.
->>
->> >   (3) Need gcc v8+ to statically initialise an object of any struct th=
-at's not
->> >       really simple (e.g. if it's got an embedded union).
->>
->> Worst case: constexpr constructor.
->>
->> >   (4) Symbol length.  Really need to extern "C" everything to reduce t=
-he size
->> >       of the symbols stored in the kernel image.  This shouldn't be a =
-problem
->> >       if out-of-line function overloading isn't permitted.
->>
->> This really would lose arguably the absolutely biggest advantage of C++:
->> type-safe linkage. This is the one reason why Linus actually tried to
->> use C++ in one single version of the kernel in the early days (0.99.14,
->> if I remember correctly.) At that time, g++ was nowhere near mature
->> enough, and it got dropped right away.
->>
->>
->> > So far, it gets as far as compiling init/main.c to a .o file.
->>
->> ;)
-
-
-=2D-
-Arsen Arsenovi=C4=87
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iOYEARYKAI4WIQT+4rPRE/wAoxYtYGFSwpQwHqLEkwUCZaBcyF8UgAAAAAAuAChp
-c3N1ZXItZnByQG5vdGF0aW9ucy5vcGVucGdwLmZpZnRoaG9yc2VtYW4ubmV0RkVF
-MkIzRDExM0ZDMDBBMzE2MkQ2MDYxNTJDMjk0MzAxRUEyQzQ5MxAcYXJzZW5AYWFy
-c2VuLm1lAAoJEFLClDAeosSTGhoBAIIxcLh2fweOcUFVZgHjTIvnZ+20pE7q8g3O
-TTxv//YwAQCk3qcPGFg5HzDd9tk/F8IQnBgFVmyg/3UMZ5hPaZjcAA==
-=kkl0
------END PGP SIGNATURE-----
---=-=-=--
 
