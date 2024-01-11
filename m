@@ -1,163 +1,153 @@
-Return-Path: <linux-kernel+bounces-23132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4FC82A814
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:14:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC2282A823
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C04071C212BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:14:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06461287DDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96020D271;
-	Thu, 11 Jan 2024 07:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E89D52D;
+	Thu, 11 Jan 2024 07:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PsxFlqiM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="zGnNVz9N"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AA8DDAD;
-	Thu, 11 Jan 2024 07:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704957264; x=1736493264;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TwjCUuzwUOMo/dYEA4GwmnKF1gt7VZ+tjYe5DJBJoEM=;
-  b=PsxFlqiM25EHVaiQabPdmwbPVsYzFdepEUQIHN7hWX9FyX3YRFBTkXPs
-   y3j3T7impGSkxmopEmFzYP/9UwwT3ivW7USqw9Hd/23aUJeBIUTOJ70Ny
-   tHJpxPP29fJJBV5ftKyfFV2AP0wg8J71EYDTJOBXIAnI2YpHmtGpGAcew
-   VyDdHlv0AcHp9vcmPtkWN7LMIfre8ZtIdegGKjYrF752KCyshIhH8wUdD
-   V39xWHoA64c+XYvWGXKiuMu3xARI4tfWn2TNF8A2NpolNHAIgBFit8xfZ
-   h+/71UebPhobW0vAlstTdfkphgYpkz/g7yG/Swt3J5sEEj0auv5dOkb64
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="395910247"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="395910247"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 23:14:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="732116839"
-X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
-   d="scan'208";a="732116839"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.8.238]) ([10.93.8.238])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 23:14:15 -0800
-Message-ID: <4d50c00a-9718-4ec5-bdef-ea14c7727ff4@linux.intel.com>
-Date: Thu, 11 Jan 2024 15:14:12 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4D6D2F3;
+	Thu, 11 Jan 2024 07:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40B2SaOE030198;
+	Thu, 11 Jan 2024 08:16:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=+X4Cxs8
+	db+Il6tUMjOf6juuuQ6x88rMKAMZWEwcxwR0=; b=zGnNVz9NsQyR7xdOIIJT3jY
+	QyOmnZ9kPd8mEoGkEzGWiYN9ZEBUCac8fartg2KfM5N2qOkmV7fMISht5wm1a2rG
+	coFNpm7NrHlJa0kln+Ew7/i+q7kJoKiwQWK+D2onHNBMIlstCJK6SZ6PGJ6cVSC5
+	ZlckpP7kg+Uw59EvuNypSi5v7ReNsNY8jXm1K5d65VUWcTRRzX1hd5fkVQDMJ2mK
+	wsZyLoX1fl1U+JXjon9tXb7PqEIby6Z4K22dEF3jgvDhRO/YAstvq5HofSqBvTX1
+	RqWJ5adUqqV+NSR76RNKfIxvo+PuGGI2lVsA2XPYHDmAxySyTkkzAax5QamMTsw=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vey30v352-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 08:16:08 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 662CF10002A;
+	Thu, 11 Jan 2024 08:16:07 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 52FC32194E0;
+	Thu, 11 Jan 2024 08:16:07 +0100 (CET)
+Received: from localhost (10.201.21.240) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 11 Jan
+ 2024 08:16:07 +0100
+From: <gabriel.fernandez@foss.st.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd
+	<sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+CC: <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 0/3] Introduce STM32MP257 clock driver
+Date: Thu, 11 Jan 2024 08:15:33 +0100
+Message-ID: <20240111071536.659409-1-gabriel.fernandez@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 07/10] iommu/vt-d: Allow qi_submit_sync() to return the
- QI faults
-To: Baolu Lu <baolu.lu@linux.intel.com>, "Tian, Kevin"
- <kevin.tian@intel.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
- "joro@8bytes.org" <joro@8bytes.org>,
- "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
- "jgg@nvidia.com" <jgg@nvidia.com>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>
-Cc: "cohuck@redhat.com" <cohuck@redhat.com>,
- "eric.auger@redhat.com" <eric.auger@redhat.com>,
- "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
- "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
- "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
- "peterx@redhat.com" <peterx@redhat.com>,
- "jasowang@redhat.com" <jasowang@redhat.com>,
- "shameerali.kolothum.thodi@huawei.com"
- <shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
- "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
- "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
- "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
- "j.granados@samsung.com" <j.granados@samsung.com>
-References: <20231227161354.67701-1-yi.l.liu@intel.com>
- <20231227161354.67701-8-yi.l.liu@intel.com>
- <BN9PR11MB5276429906ED56258BB433068C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <50098edc-2bbb-4c8f-9360-6990f0f5d88a@linux.intel.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <50098edc-2bbb-4c8f-9360-6990f0f5d88a@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
 
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-On 1/1/2024 11:34 AM, Baolu Lu wrote:
-> On 12/28/23 2:17 PM, Tian, Kevin wrote:
->>> raw_spin_lock_irqsave(&qi->q_lock, flags);
->>>       /*
->>> @@ -1430,7 +1439,7 @@ int qi_submit_sync(struct intel_iommu *iommu,
->>> struct qi_desc *desc,
->>>            * a deadlock where the interrupt context can wait
->>> indefinitely
->>>            * for free slots in the queue.
->>>            */
->>> -        rc = qi_check_fault(iommu, index, wait_index);
->>> +        rc = qi_check_fault(iommu, index, wait_index, fault);
->>>           if (rc)
->>>               break;
->> and as replied in another thread let's change qi_check_fault to return
->> -ETIMEDOUT to break the restart loop when fault pointer is valid.
->
-> It's fine to break the retry loop when fault happens and the fault
-> pointer is valid. Please don't forget to add an explanation comment
-> around the code. Something like:
->
-> /*
->  * The caller is able to handle the fault by itself. The IOMMU driver
->  * should not attempt to retry this request.
->  */
+v8:
+  - use .index of clk_parent_data struct to define a parent
+  - remove unnecessary dependency check with SCMI clock driver
+  - convert to platform device APIs
+  - convert to devm_of_clk_add_hw_provider()
+  - convert single value enum to a define
 
-If caller could pass desc with mixed iotlb & devtlb invalidation request,
+v7: base on next-20231219
+  - These patches below are applied to clk-next:
+      clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
+      clk: stm32mp1: use stm32mp13 reset driver
+      dt-bindings: stm32: add clocks and reset binding for stm32mp25
+  - remove unnecessary includes
+  - migrate clock parents to struct clk_parent_data and remove
+    CLK_STM32_XXX() macros  to have a more readble code
+  - use platform device APIs (devm_of_iomap() instead of_iomap())
+  - move content of stm32mp25_rcc_init() to stm32mp25_rcc_clocks_probe()
+  - simply get_clock_deps()
+  - add const to stm32mp25_data struct
+  - remove ck_icn_p_serc clock (will be integrate later with security
+    management)
 
-it would be problematic/difficult for caller or qi_submit_sync() to do
+v6:
+  - remove useless defines in drivers/clk/stm32/stm32mp25_rcc.h
 
-error handling, imagine a case like,
+v5:
+  - Fix sparse warnings: was not declared. Should it be static?
+    drivers/clk/stm32/clk-stm32mp13.c:1516:29: symbol 'stm32mp13_reset_data'
+    drivers/clk/stm32/clk-stm32mp1.c:2148:29: symbol 'stm32mp1_reset_data'
+    drivers/clk/stm32/clk-stm32mp25.c:1003:5: symbol 'stm32mp25_cpt_gate'
+    drivers/clk/stm32/clk-stm32mp25.c:1005:29: symbol 'stm32mp25_clock_data'
+    drivers/clk/stm32/clk-stm32mp25.c:1011:29: symbol 'stm32mp25_reset_data'
 
-1. call qi_submit_sync() with iotlb & devltb.
+v4:
+  - use GPL-2.0-only OR BSD-2-Clause for clock and reset binding files
+  - use quotes ' for #clock-cells and #reset-cells in YAML documentation
+  - reset binding start now to 0 instead 1
+  - improve management of reset lines that are not managed
 
-2. qi_submit_sync() detects the target device is dead.
+v3:
+  - from Rob Herring change clock item description in YAML documentation
+v2:
+  - rework reset binding (use ID witch start from 0)
+  - rework reset driver to manage STM32MP13 / STM32MP15 / STM32MP25
+  - rework YAML documentation
 
-3.  break the loop, or will block other invalidation submitter / hang.
+Gabriel Fernandez (3):
+  clk: stm32mp13: use platform device APIs
+  clk: stm32: introduce clocks for STM32MP257 platform
+  arm64: dts: st: add rcc support in stm32mp251
 
-4. it is hard for qi_submit_sync() to extract those iotlb invalidation 
-to retry.
+ arch/arm64/boot/dts/st/stm32mp251.dtsi |  132 +-
+ drivers/clk/stm32/Kconfig              |    7 +
+ drivers/clk/stm32/Makefile             |    1 +
+ drivers/clk/stm32/clk-stm32-core.c     |   11 +-
+ drivers/clk/stm32/clk-stm32mp13.c      |   72 +-
+ drivers/clk/stm32/clk-stm32mp25.c      | 1876 ++++++++++++++++++++++++
+ drivers/clk/stm32/reset-stm32.c        |   59 +-
+ drivers/clk/stm32/reset-stm32.h        |    7 +
+ drivers/clk/stm32/stm32mp25_rcc.h      |  712 +++++++++
+ 9 files changed, 2765 insertions(+), 112 deletions(-)
+ create mode 100644 drivers/clk/stm32/clk-stm32mp25.c
+ create mode 100644 drivers/clk/stm32/stm32mp25_rcc.h
 
-5. it is also difficult for caller to retry the iotlb invalidation, or
+-- 
+2.25.1
 
-     leave iotlb out-of-sync. ---there is no sync at all, device is gone.
-
-and if only ITE fault hit, but target device is there && configuration
-
-space reading okay, the ITE is probably left by previous request for
-
-other device, not triggered by this batch, the question is we couldn't
-
-identify the ITE device is just the same as current target ? if the same,
-
-then breaking out is reasonable, or just leave the problem to caller,
-
-something in the request batch is bad, some requests someone request
-
-befoere is bad, but the request is not from the same caller.
-
-
-Thanks,
-
-Ethan
-
-
->
-> Best regards,
-> baolu
->
 
