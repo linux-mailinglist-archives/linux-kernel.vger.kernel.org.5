@@ -1,101 +1,143 @@
-Return-Path: <linux-kernel+bounces-23504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8C5882ADB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:40:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1176182ADB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:42:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65B031F23691
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:40:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B527C286588
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106F115493;
-	Thu, 11 Jan 2024 11:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E15215493;
+	Thu, 11 Jan 2024 11:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uq87kzgy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e/vn3dqn"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D96C390;
-	Thu, 11 Jan 2024 11:40:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 304CFC433F1;
-	Thu, 11 Jan 2024 11:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704973226;
-	bh=rGE5aLBgG8rJvHpHzdIZ5UZ/WMT/chk9s1YqtP4odSs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uq87kzgyV/Bo+E6Sqqkjo3Vi1g2cOMAEMp+AVTWTFrlgZ+OsW4JJmm8CQ4cEAH4Dt
-	 tCw1JPLKu1P0sjntzy9JoNDwfX2a+fAzSIONCete70Mcnfk1ZY1hIkwLTbgkEWetzr
-	 sTEPFZtxbzXahrF3Zk0xIOOlOIZvBs9X8t2EGIQJLNU1BrgK05cG/v4bSB7gKeKzty
-	 lfgEK9mginYvPfkX6/8/8HMTILVqGgOEBKSjUjna0i1q/cKM2i3fLTsOhgEqUqoe3S
-	 gQwe4Zte45/KDRXtESj9PtJ2ugYoUPCdmJ8IBvwjA/db97f6xOJd9Km/cIRCUrWA0s
-	 ydDPWUgG2RrVQ==
-Date: Thu, 11 Jan 2024 11:40:21 +0000
-From: Lee Jones <lee@kernel.org>
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: linux-kernel@vger.kernel.org,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-amarula@amarulasolutions.com,
-	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v7 1/5] dt-bindings: mfd: stm32f7: Add binding definition
- for DSI
-Message-ID: <20240111114021.GJ1678981@google.com>
-References: <20240111113146.16011-1-dario.binacchi@amarulasolutions.com>
- <20240111113146.16011-2-dario.binacchi@amarulasolutions.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E198F62;
+	Thu, 11 Jan 2024 11:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4b77948f7deso1603258e0c.0;
+        Thu, 11 Jan 2024 03:42:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704973341; x=1705578141; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U34z3M5y8NqKnCvOeskNHlh3oGzO6JvIqhzswOkQUmk=;
+        b=e/vn3dqn4K7/DqoMHPhU7mTETwTpDUQ3f3huhh4s6IfKR5XGSiXY//NUKYdwSGr5ia
+         WVqU2eXqp5FEbsUgHXqfM8QfcHv3pilUOo+kq9r8OhZ8hrs8qdDTe3gJOf8jOjbTzFgJ
+         yOrWJBwV7NfulignmnNohG/m5diu09O0ibwMr+9SNUBdTRDiP3rVyfMz63CsviFEOZtY
+         XsusipAjrBro4HR7C9ZvbvU6SThANS4bIG6kui2aj+YK2dPzUImLbmLlGSNo1NL0Py9x
+         90AduWYKX8Kej3EouEqArhinAu6aBX00jBKCURd84V+Ln5IBNv6/mBPPP2e27GLFJ6N2
+         mv0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704973341; x=1705578141;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U34z3M5y8NqKnCvOeskNHlh3oGzO6JvIqhzswOkQUmk=;
+        b=ojbtwqKYvx7tRkpgEr+MdpRgsq484O6krW30OIQy1Tn6c62s7v1XvwsiOd3Y4PecJr
+         t6yI4PtIcv+AorK/DVdVscMS5fC+1/QHD/Umm0IdY1puyVpcMinYPZ0M3WryyqW77e5L
+         PF4j2ksT2eCyOtEEbg6O+TAyft2odX919MfjpOk3+e1p2GDlT7Y+aZ1sNCHaY3+hfuzd
+         TC4eX+WNR+pBpKYpww5XAwEA3SS7PcBhvDKGbGyuulUVnrjK3Sx+vOwIlBXwAGoQyRR0
+         iZ5QhpIZnxxFZIilR5TZ/kJHzsIddI6NCBt+IEL2Y2+WU0ZlNIaSMkY8ePjhoNw3jkaA
+         zUnw==
+X-Gm-Message-State: AOJu0YwXuK33VbEFNchDiM5aprVkUnoBuDOILyZ2P89lNnx1o4BK2tB9
+	ogrQtIpPDzEAQbISGrEbjVJSv0x4Aqy4JmiwxW4=
+X-Google-Smtp-Source: AGHT+IGiJJoU0Nw3B68wa0YIFKcUk/MwLlprqtndI6rNs4+OFJG3dn9vSfPhJnmB2vK7IC/PxSJ9JG3zd5CxFW2uPK0=
+X-Received: by 2002:a05:6122:14af:b0:4b6:d1da:5bd1 with SMTP id
+ c15-20020a05612214af00b004b6d1da5bd1mr242032vkq.2.1704973340720; Thu, 11 Jan
+ 2024 03:42:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240111113146.16011-2-dario.binacchi@amarulasolutions.com>
+References: <20240110222210.193479-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXSLBARbtc91F=cWqTdL+UcT4wJbr0_m5+iz_6BXA4Acw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXSLBARbtc91F=cWqTdL+UcT4wJbr0_m5+iz_6BXA4Acw@mail.gmail.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Thu, 11 Jan 2024 11:41:54 +0000
+Message-ID: <CA+V-a8vwcyVbxyKkZyepcQsxSooa-gy_-KYDJdTnQkRW9MQ01w@mail.gmail.com>
+Subject: Re: [PATCH] dmaengine: usb-dmac: Avoid format-overflow warning
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Vinod Koul <vkoul@kernel.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, Kees Cook <keescook@chromium.org>, 
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 11 Jan 2024, Dario Binacchi wrote:
+Hi Geert,
 
-> Add binding definition for MIPI DSI Host controller.
-> 
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> ---
-> 
-> (no changes since v2)
-> 
-> Changes in v2:
-> - Add Acked-by tag of Conor Dooley
-> 
->  include/dt-bindings/mfd/stm32f7-rcc.h | 1 +
->  1 file changed, 1 insertion(+)
+Thank you for the review.
 
-Acked-by: Lee Jones <lee@kernel.org>
+On Thu, Jan 11, 2024 at 9:05=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Wed, Jan 10, 2024 at 11:23=E2=80=AFPM Prabhakar <prabhakar.csengg@gmai=
+l.com> wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > gcc points out that the fix-byte buffer might be too small:
+> > drivers/dma/sh/usb-dmac.c: In function 'usb_dmac_probe':
+> > drivers/dma/sh/usb-dmac.c:720:34: warning: '%u' directive writing betwe=
+en 1 and 10 bytes into a region of size 3 [-Wformat-overflow=3D]
+> >   720 |         sprintf(pdev_irqname, "ch%u", index);
+> >       |                                  ^~
+> > In function 'usb_dmac_chan_probe',
+> >     inlined from 'usb_dmac_probe' at drivers/dma/sh/usb-dmac.c:814:9:
+> > drivers/dma/sh/usb-dmac.c:720:31: note: directive argument in the range=
+ [0, 4294967294]
+> >   720 |         sprintf(pdev_irqname, "ch%u", index);
+> >       |                               ^~~~~~
+> > drivers/dma/sh/usb-dmac.c:720:9: note: 'sprintf' output between 4 and 1=
+3 bytes into a destination of size 5
+> >   720 |         sprintf(pdev_irqname, "ch%u", index);
+> >       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > Maximum number of channels for USB-DMAC as per the driver is 1-99 so us=
+e
+> > u8 instead of unsigned int/int for DMAC channel indexing and make the
+> > pdev_irqname string long enough to avoid the warning.
+> >
+> > While at it use scnprintf() instead of sprintf() to make the code more
+> > robust.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> One nit below.
+>
+> > --- a/drivers/dma/sh/usb-dmac.c
+> > +++ b/drivers/dma/sh/usb-dmac.c
+>
+> > @@ -768,8 +768,8 @@ static int usb_dmac_probe(struct platform_device *p=
+dev)
+> >         const enum dma_slave_buswidth widths =3D USB_DMAC_SLAVE_BUSWIDT=
+H;
+> >         struct dma_device *engine;
+> >         struct usb_dmac *dmac;
+> > -       unsigned int i;
+> >         int ret;
+> > +       u8 i;
+>
+> Personally, I'm not much a fan of making loop counters smaller than
+> (unsigned) int.  If you do go this way, there are more loops over all
+> channels still using int.
+>
+Agreed. So shall I drop Kees suggestion and leave the patch as is?
 
-> diff --git a/include/dt-bindings/mfd/stm32f7-rcc.h b/include/dt-bindings/mfd/stm32f7-rcc.h
-> index 8d73a9c51e2b..a4e4f9271395 100644
-> --- a/include/dt-bindings/mfd/stm32f7-rcc.h
-> +++ b/include/dt-bindings/mfd/stm32f7-rcc.h
-> @@ -108,6 +108,7 @@
->  #define STM32F7_RCC_APB2_SAI1		22
->  #define STM32F7_RCC_APB2_SAI2		23
->  #define STM32F7_RCC_APB2_LTDC		26
-> +#define STM32F7_RCC_APB2_DSI		27
->  
->  #define STM32F7_APB2_RESET(bit)	(STM32F7_RCC_APB2_##bit + (0x24 * 8))
->  #define STM32F7_APB2_CLOCK(bit)	(STM32F7_RCC_APB2_##bit + 0xA0)
-> -- 
-> 2.43.0
-> 
-
--- 
-Lee Jones [李琼斯]
+Cheers,
+Prabhakar
 
