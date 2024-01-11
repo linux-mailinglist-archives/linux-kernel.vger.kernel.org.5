@@ -1,278 +1,154 @@
-Return-Path: <linux-kernel+bounces-23083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF8A082A774
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:13:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A120882A77E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6B581C21871
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:13:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F5B9285DD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69FF2594;
-	Thu, 11 Jan 2024 06:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704122592;
+	Thu, 11 Jan 2024 06:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="F4ppTMFL"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9456C5382;
-	Thu, 11 Jan 2024 06:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-	id 7A36A209C43A; Wed, 10 Jan 2024 22:13:19 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7A36A209C43A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1704953599;
-	bh=Vx6uwJdgmYeQ9YCQC3Gj9uTpE/Inxmh3nP0kQERH+Cs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F4ppTMFLicty7Ad4PVvjI+E3NO/r6Mx6EgTdjLUiDZxrRcX4ztiUXZlY76P9z3EEg
-	 1gnXNyMrQ3FnE4aSOYMK8WKwXEy3RN6o4TpI6SANKlk4H8UwCSKirPUch22vAsvXjr
-	 6c4N1IcWWNeQLsTlBakVSokhRjGDSJ0Svpo1x6FQ=
-Date: Wed, 10 Jan 2024 22:13:19 -0800
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: Yury Norov <yury.norov@gmail.com>,
-	"kys@microsoft.com" <kys@microsoft.com>,
-	"haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"decui@microsoft.com" <decui@microsoft.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"longli@microsoft.com" <longli@microsoft.com>,
-	"leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"schakrabarti@microsoft.com" <schakrabarti@microsoft.com>,
-	"paulros@microsoft.com" <paulros@microsoft.com>
-Subject: Re: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs
- per CPUs
-Message-ID: <20240111061319.GC5436@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1704797478-32377-1-git-send-email-schakrabarti@linux.microsoft.com>
- <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
- <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <ZZ3Wsxq8rHShTUdA@yury-ThinkPad>
- <SN6PR02MB415704D36B82D5793CC4558FD4692@SN6PR02MB4157.namprd02.prod.outlook.com>
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DQ9BnO9/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2hI3TVul";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lDbfuXmN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="PVX3jxHN"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE16623C1;
+	Thu, 11 Jan 2024 06:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 41443221E8;
+	Thu, 11 Jan 2024 06:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704954079; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
+	b=DQ9BnO9/AjVn8onMqZnchn5gPvt/80svfZQh1zrGNEgOqet0hXnQoBLimBX/Qe89QEmfv2
+	7CcgoAWwLo+KiB+1E8Ond9rI5kioWHnMT0ZnOT2Oekaydr/xK52GOkpANFf60k3w3SeD4d
+	u6vNLw+q5lM6pLh/16wZM+0R/jyeNko=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704954079;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
+	b=2hI3TVulZ73IfMXUKy26ToHCqfoOxoynWwQiQporQYsV9XMC88hRmgCuRaXnrsBfVu5KiI
+	F2KRwGl/MTuV0/DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704954155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
+	b=lDbfuXmNZvbVsaFNEJtyMz8S/yvRnBrgrGEuNysTbSb+2OIdPNivoKputDTiwVcIqWIeQR
+	gnWq7X3Ze8wTw5kuFU9GXxX7gUjUjvqZVU2gi3DHozNRO57fhmKugT6s0s6Ncb/96V5BVr
+	ScvrK5I5ZHi3q3D/3WS7Bi3Hft50ljs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704954155;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GhgTsGSYZqMlLkF6ctTWj2wKU/kDUrvtJ+VkGRpxij8=;
+	b=PVX3jxHNS+reAC05gT3M2xsrCvl48A47PLSnmtMTpc1BBzHknVI/iHdrJuXTHoKCUJS/sX
+	V0gFomUoZ9MjoEAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2931B13635;
+	Thu, 11 Jan 2024 06:21:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7ff2MtyIn2WjTgAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Thu, 11 Jan 2024 06:21:16 +0000
+From: David Disseldorp <ddiss@suse.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	David Disseldorp <ddiss@suse.de>
+Subject: [PATCH] initramfs: remove duplicate built-in __initramfs_start unpacking
+Date: Thu, 11 Jan 2024 17:22:40 +1100
+Message-Id: <20240111062240.9362-1-ddiss@suse.de>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN6PR02MB415704D36B82D5793CC4558FD4692@SN6PR02MB4157.namprd02.prod.outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=lDbfuXmN;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=PVX3jxHN
+X-Spamd-Result: default: False [3.19 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[42.52%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 3.19
+X-Rspamd-Queue-Id: 41443221E8
+X-Spam-Level: ***
+X-Spam-Flag: NO
+X-Spamd-Bar: +++
 
-On Wed, Jan 10, 2024 at 12:27:54AM +0000, Michael Kelley wrote:
-> From: Yury Norov <yury.norov@gmail.com> Sent: Tuesday, January 9, 2024 3:29 PM
-> > 
-> > Hi Michael,
-> > 
-> > So, I'm just a guy who helped to formulate the heuristics in an
-> > itemized form, and implement them using the existing kernel API.
-> > I have no access to MANA machines and I ran no performance tests
-> > myself.
-> 
-> Agreed. :-)   Given the heritage of the patch, I should have clarified
-> that my question was directed to Souradeep.  Regardless, your work
-> on the cpumask manipulation made everything better and clearer.
-> 
-> > 
-> > On Tue, Jan 09, 2024 at 07:22:38PM +0000, Michael Kelley wrote:
-> > > From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent:
-> > Tuesday, January 9, 2024 2:51 AM
-> > > >
-> > > > From: Yury Norov <yury.norov@gmail.com>
-> > > >
-> > > > Souradeep investigated that the driver performs faster if IRQs are
-> > > > spread on CPUs with the following heuristics:
-> > > >
-> > > > 1. No more than one IRQ per CPU, if possible;
-> > > > 2. NUMA locality is the second priority;
-> > > > 3. Sibling dislocality is the last priority.
-> > > >
-> > > > Let's consider this topology:
-> > > >
-> > > > Node            0               1
-> > > > Core        0       1       2       3
-> > > > CPU       0   1   2   3   4   5   6   7
-> > > >
-> > > > The most performant IRQ distribution based on the above topology
-> > > > and heuristics may look like this:
-> > > >
-> > > > IRQ     Nodes   Cores   CPUs
-> > > > 0       1       0       0-1
-> > > > 1       1       1       2-3
-> > > > 2       1       0       0-1
-> > > > 3       1       1       2-3
-> > > > 4       2       2       4-5
-> > > > 5       2       3       6-7
-> > > > 6       2       2       4-5
-> > > > 7       2       3       6-7
-> > >
-> > > I didn't pay attention to the detailed discussion of this issue
-> > > over the past 2 to 3 weeks during the holidays in the U.S., but
-> > > the above doesn't align with the original problem as I understood
-> > > it.  I thought the original problem was to avoid putting IRQs on
-> > > both hyper-threads in the same core, and that the perf
-> > > improvements are based on that configuration.  At least that's
-> > > what the commit message for Patch 4/4 in this series says.
-> > 
-> > Yes, and the original distribution suggested by Souradeep looks very
-> > similar:
-> > 
-> >   IRQ     Nodes   Cores   CPUs
-> >   0       1       0       0
-> >   1       1       1       2
-> >   2       1       0       1
-> >   3       1       1       3
-> >   4       2       2       4
-> >   5       2       3       6
-> >   6       2       2       5
-> >   7       2       3       7
-> > 
-> > I just added a bit more flexibility, so that kernel may pick any
-> > sibling for the IRQ. As I understand, both approaches have similar
-> > performance. Probably my fine-tune added another half-percent...
-> > 
-> > Souradeep, can you please share the exact numbers on this?
-> > 
-> > > The above chart results in 8 IRQs being assigned to the 8 CPUs,
-> > > probably with 1 IRQ per CPU.   At least on x86, if the affinity
-> > > mask for an IRQ contains multiple CPUs, matrix_find_best_cpu()
-> > > should balance the IRQ assignments between the CPUs in the mask.
-> > > So the original problem is still present because both hyper-threads
-> > > in a core are likely to have an IRQ assigned.
-> > 
-> > That's what I think, if the topology makes us to put IRQs in the
-> > same sibling group, the best thing we can to is to rely on existing
-> > balancing mechanisms in a hope that they will do their job well.
-> > 
-> > > Of course, this example has 8 IRQs and 8 CPUs, so assigning an
-> > > IRQ to every hyper-thread may be the only choice.  If that's the
-> > > case, maybe this just isn't a good example to illustrate the
-> > > original problem and solution.
-> > 
-> > Yeah... This example illustrates the order of IRQ distribution.
-> > I really doubt that if we distribute IRQs like in the above example,
-> > there would be any difference in performance. But I think it's quite
-> > a good illustration. I could write the title for the table like this:
-> > 
-> >         The order of IRQ distribution for the best performance
-> >         based on [...] may look like this.
-> > 
-> > > But even with a better example
-> > > where the # of IRQs is <= half the # of CPUs in a NUMA node,
-> > > I don't think the code below accomplishes the original intent.
-> > >
-> > > Maybe I've missed something along the way in getting to this
-> > > version of the patch.  Please feel free to set me straight. :-)
-> > 
-> > Hmm. So if the number of IRQs is the half # of CPUs in the nodes,
-> > which is 2 in the example above, the distribution will look like
-> > this:
-> > 
-> >   IRQ     Nodes   Cores   CPUs
-> >   0       1       0       0-1
-> >   1       1       1       2-3
-> > 
-> > And each IRQ belongs to a different sibling group. This follows
-> > the rules above.
-> > 
-> > I think of it like we assign an IRQ to a group of 2 CPUs, so from
-> > the heuristic #1 perspective, each CPU is assigned with 1/2 of the
-> > IRQ.
-> > 
-> > If I add one more IRQ, then according to the heuristics, NUMA locality
-> > trumps sibling dislocality, so we'd assign IRO to the same node on any
-> > core. My algorithm assigns it to the core #0:
-> > 
-> >   2       1       0       0-1
-> > 
-> > This doubles # of IRQs for the CPUs 0 and 1: from 1/2 to 1.
-> > 
-> > The next IRQ should be assigned to the same node again, and we've got
-> > the only choice:
-> > 
-> > 
-> >   3       1       1       2-3
-> > 
-> > Starting from IRQ #5, the node #1 is full - each CPU is assigned with
-> > exactly one IRQ, and the heuristic #1 makes us to switch to the other
-> > node; and then do the same thing:
-> > 
-> >   4       2       2       4-5
-> >   5       2       3       6-7
-> >   6       2       2       4-5
-> >   7       2       3       6-7
-> > 
-> > So I think the algorithm is correct... Really hope the above makes
-> > sense. :) If so, I can add it to the commit message for patch #3.
-> 
-> Thinking about it further, I agree with you.  If we want NUMA
-> locality to trump avoiding hyper-threads in the same core, then
-> I'm good with the algorithm.   If I think of the "weight" variable
-> in your function as the "number of IRQs to assign to CPUs in
-> this NUMA hop", then it makes sense to decrement it by 1
-> each time irq_set_affinity_and_hint() is called.  I was confused
-> by likely removing multiple cpus from the "cpus" cpumask
-> juxtaposed with decrementing "weight" by only 1, and by my
-> preconception that to get the perf benefit we wanted to avoid
-> hyper-threads in the same core.
-> 
-> > 
-> > Nevertheless... Souradeep, in addition to the performance numbers, can
-> > you share your topology and actual IRQ distribution that gains 15%? I
-> > think it should be added to the patch #4 commit message.
-> 
-> Yes -- this is the key thing for me.  What is the configuration that
-> shows the 15% performance gain?  Patch 3/4 and Patch 4/4 in the
-> series need to be consistent in describing when there's a performance
-> benefit and when there's no significant difference.   In Patch 4/4,
-> the mana driver creates IRQs equal to the # of CPUs, up to
-> MANA_MAX_NUM_QUEUES, which is 64.  So the new algorithm
-> still assigns IRQs to both hyper-threads in cores in the local NUMA
-> node (unless the node is bigger than 64 CPUs, which I don't think
-> happens in Azure today).  For the first hop from the local NUMA
-> node, IRQs might get assigned to only one hyper-thread in a core
-> if the total CPU count in the VM is more than 64.
-The test topology was used to check the performance between
-cpu_local_spread() and the new approach is :
-Case 1
-IRQ     Nodes  Cores CPUs
-0       1      0     0-1
-1       1      1     2-3
-2       1      2     4-5
-3       1      3     6-7
+If initrd_start cpio extraction fails, CONFIG_BLK_DEV_RAM triggers
+fallback to initrd.image handling via populate_initrd_image().
+The populate_initrd_image() call follows successful extraction of any
+built-in cpio archive at __initramfs_start, but currently performs
+built-in archive extraction a second time.
 
-and with existing cpu_local_spread()
-Case 2
-IRQ    Nodes  Cores CPUs
-0      1      0     0
-1      1      0     1
-2      1      1     2
-3      1      1     3
+Prior to commit b2a74d5f9d446 ("initramfs: remove clean_rootfs"),
+the second built-in initramfs unpack call was used to repopulate entries
+removed by clean_rootfs(), but it's no longer necessary now the contents
+of the previous extraction are retained.
 
-Total 4 channels were used, which was set up by ethtool.
-case 1 with ntttcp has given 15 percent better performance, than
-case 2. During the test irqbalance was disabled as well.
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+---
+ init/initramfs.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Also you are right, with 64CPU system this approach will spread
-the irqs like the cpu_local_spread() but in the future we will offer
-MANA nodes, with more than 64 CPUs. There it this new design will 
-give better performance.
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 8d0fd946cdd2b..2edd3007a6857 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -669,8 +669,6 @@ static void __init populate_initrd_image(char *err)
+ 	struct file *file;
+ 	loff_t pos = 0;
+ 
+-	unpack_to_rootfs(__initramfs_start, __initramfs_size);
+-
+ 	printk(KERN_INFO "rootfs image is not initramfs (%s); looks like an initrd\n",
+ 			err);
+ 	file = filp_open("/initrd.image", O_WRONLY | O_CREAT, 0700);
+-- 
+2.35.3
 
-I will add this performance benefit details in commit message of
-next version.
-> 
-> Michael
 
