@@ -1,89 +1,83 @@
-Return-Path: <linux-kernel+bounces-23013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E895B82A658
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:10:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C15582A65B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 04:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7136BB26EE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:10:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D5C728B3E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FA8EC8;
-	Thu, 11 Jan 2024 03:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="djDg4L3h"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4678CEA3
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 03:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=V+U+dM4OmVoTS2YC8A
-	HkHWnI+5wCPS12G/XIW6Y2PUA=; b=djDg4L3hZ0Xx/UqfoqIRFXLMjig4SvZ43D
-	CNSAuDuagp3i4ferjDOHRpAe6FVO6FylnFkcrerNamkqwJWJrN2+FQfSXIpHQBKn
-	0frf5QvpBYft/UaAtjGcm+ZNSoS7KgHKpvlW9wZZGLVkb6W+/mriuxUKK/aGPhzf
-	rHGZI+VsU=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g1-3 (Coremail) with SMTP id _____wD3P8UAXJ9lO5guAA--.26719S2;
-	Thu, 11 Jan 2024 11:09:53 +0800 (CST)
-From: chenxuebing <chenxb_99091@126.com>
-To: daniel@ffwll.ch,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	alexander.deucher@amd.com,
-	airlied@gmail.com
-Cc: dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org,
-	chenxuebing <chenxb_99091@126.com>
-Subject: [PATCH] drm/amd/include/vega10_ip_offset:Clean up errors in vega10_ip_offset.h
-Date: Thu, 11 Jan 2024 03:09:51 +0000
-Message-Id: <20240111030951.7046-1-chenxb_99091@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wD3P8UAXJ9lO5guAA--.26719S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtr1kGF1xAF1DJw1kKFW8Xrb_yoWfJrc_Ca
-	4xXwn3GFWxZFnIqF12kF1xC34jk3WruFn3Ww1SyFyftrZrAr1UW3y5GrnrXr4ruasxCFs7
-	Aa48XFy3ZrnagjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRK9atUUUUU==
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiWQRixWVLYT7npQAAsJ
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4053ED6;
+	Thu, 11 Jan 2024 03:10:47 +0000 (UTC)
+Received: from mail-m49197.qiye.163.com (mail-m49197.qiye.163.com [45.254.49.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E042A15C2;
+	Thu, 11 Jan 2024 03:10:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jmu.edu.cn
+Received: from amadeus-Vostro-3710.lan (unknown [113.118.191.185])
+	by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 14CC080007F;
+	Thu, 11 Jan 2024 11:10:30 +0800 (CST)
+From: Chukun Pan <amadeus@jmu.edu.cn>
+To: krzysztof.kozlowski@linaro.org
+Cc: amadeus@jmu.edu.cn,
+	andersson@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	konrad.dybcio@linaro.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: ipq6018: enable sdhci node
+Date: Thu, 11 Jan 2024 11:10:26 +0800
+Message-Id: <20240111031026.2175521-1-amadeus@jmu.edu.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <4f070678-63b6-4657-ad4f-c32256adbf1f@linaro.org>
+References: <4f070678-63b6-4657-ad4f-c32256adbf1f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZTENPVkxNGRpNGR8ZH01NHlUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpKSFVKSkNVSkJKVUpDTllXWRYaDxIVHRRZQVlPS0hVSkpLSEpDVUpLS1VLWQY+
+X-HM-Tid: 0a8cf67ff5d9b03akuuu14cc080007f
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ngw6EDo*KzwiDCkcFR4pIR5L
+	PFFPCz5VSlVKTEtPQk9JTUhKSUNMVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWUpK
+	SFVKSkNVSkJKVUpDTllXWQgBWUFKQ05DNwY+
 
-Fix the following errors reported by checkpatch:
+On 10/01/2024 16:10, Chukun Pan wrote:
+> Changes from v2:
+> * arm64: dts: qcom: ipq6018: add LDOA2 regulator
+> No Changes:
+> * arm64: dts: qcom: ipq8074: add MicroSD node
 
-ERROR: open brace '{' following enum go on the same line
+I wrote it wrong in cover-letter, it's ipq6018, not ipq8074.
+No Changes:
+  arm64: dts: qcom: ipq6018: enable sdhci node
 
-Signed-off-by: chenxuebing <chenxb_99091@126.com>
----
- drivers/gpu/drm/amd/include/vega10_ip_offset.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On 10/01/2024 16:22, Krzysztof wrote:
+> How? It is disabled...
 
-diff --git a/drivers/gpu/drm/amd/include/vega10_ip_offset.h b/drivers/gpu/drm/amd/include/vega10_ip_offset.h
-index 3a22a5d16919..1e1ca69f21f7 100644
---- a/drivers/gpu/drm/amd/include/vega10_ip_offset.h
-+++ b/drivers/gpu/drm/amd/include/vega10_ip_offset.h
-@@ -24,13 +24,11 @@
- #define MAX_INSTANCE                                       5
- #define MAX_SEGMENT                                        5
- 
--struct IP_BASE_INSTANCE
--{
-+struct IP_BASE_INSTANCE {
-     unsigned int segment[MAX_SEGMENT];
- };
- 
--struct IP_BASE
--{
-+struct IP_BASE {
-     struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
- };
- 
+Disable it because not all devices have eMMC or MicroSD connected.
+I enabled it on the dts of the device and tested it on my ipq6000.
+
+> Aren't these three properties of the board?
+
+These are just general properties.
+
+Thanks,
+Chukun
+
 -- 
-2.17.1
+2.25.1
 
 
