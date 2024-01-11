@@ -1,157 +1,160 @@
-Return-Path: <linux-kernel+bounces-23076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D155A82A75E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:59:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9D482A762
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:02:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046DF1C231AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 05:59:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDBC2280EED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 06:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E991539D;
-	Thu, 11 Jan 2024 05:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA96F257C;
+	Thu, 11 Jan 2024 06:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CzqZMzEZ"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VlrpjuF9"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5DE5382;
-	Thu, 11 Jan 2024 05:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50eaa8b447bso5330201e87.1;
-        Wed, 10 Jan 2024 21:59:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D3C2105
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 06:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ebca94cf74so48584827b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jan 2024 22:02:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704952764; x=1705557564; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704952964; x=1705557764; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FJ87IotFFb22oBVL3yLTlm/KMv2+8lgNVJRq/vObCyk=;
-        b=CzqZMzEZtvDdKV5J1zvfpPjPR0wILxDKt26BQKl6dgvHwvuCdUpx9zofNRErh3RHcX
-         4RuSBM6WZWJ1QKGW+9aiqdcuZ62e09X44gxoTRBDE+voHnFnRDsr+edQ5ck1zC7LsJhN
-         EMK1qwLK1bRNnbMuChx86E3Azw77svFukz6fqTpXK3bsM2rTrEDn7RijQtfJzRULk5fh
-         03jquwf/rzboIOEKrCR16L4yr1+Xatxw99hk68jjfEH+31e9vDr7ITE8LCsNPBfAQQpH
-         P6UrE+PD1kzUZiHQ0KvBiTXXqrktw2yk9LaQhbiPyPJxRxnNuSars1Af7vD/wPL9xNN4
-         4M3Q==
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ySHzwq8dArh41wbtGZhqWN/9T6QDBMF2vzUl/zhZMLY=;
+        b=VlrpjuF9C+0pSL5uLMEvF8hdxOsqh2OYykReh1PdTPyvEyI/biagq1lrv+znS0wxrm
+         KUv/tTLK+wMXS7OLintc++m+RyKnVZGgqtnzwfEBYV/MgcSStVlWbHdL6TDUc2QvdFW3
+         44KcDx1DnAc9uwcc6GNkAc7fu3wXj2hezeRyTI/wpZ8CjnqAj/HCrjtZlESqvAkK0j4B
+         HHeIOEQfQYXe82uJWgifrUKpL4MqaRxRexDu53tpdxDLkqUFz+drNqcnzoEEdkiirXep
+         qFhxnKk5tDvS5cGz1iUykv767cdX7UfpM2WHJ8mvj8LZjNbkb9uhHPnRP1PoaEjD3jQ2
+         8Xkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704952764; x=1705557564;
+        d=1e100.net; s=20230601; t=1704952964; x=1705557764;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FJ87IotFFb22oBVL3yLTlm/KMv2+8lgNVJRq/vObCyk=;
-        b=PZikC1qFb00UIl7giDpbUhRi+PwG7WMGC2I2TAEF1QH5b8owBpy+p/8rvT3vq+CCsV
-         V461beb9lR8JKSyJ8vearvFNjmrLIwdr8iJQp047Rwx+y81rtRcoq5yQ/yYSOHA76ehV
-         lG2l3qp7uLV1MfLdNTGrt1s2zyKLXu7rjfQwT4PmnAXsQMnVUVqx3nnKa0jZFzbUvrOX
-         s/zCJhOF6LAB2tHaRWCdKxPTPkGzCPKp2F8Xet1nwZI0SRPETfv9nGa3Y0Ltqxv7XDHQ
-         MJ8M7lvivuv4Xh6kXxoODM4mc+k54GZl5vBHmg5W8oItq7JtStAu94AtWAezRC/u+uR9
-         5KZQ==
-X-Gm-Message-State: AOJu0YyVqvzD5u0f/yOoNxYT7dq5ZdTTUXgj+AXRBVyKnTXhwC7XN5aF
-	/LgPOEbucY8bFWak009t9Uj9eZlnQaX9WuTMcro=
-X-Google-Smtp-Source: AGHT+IGQ5ZV/gXo7v/rJ2auVyXpmqs0QYfi3tBSjxW2wUQzS96ysR1EG48kjTCbHRzoOg/0bxoYvPzkVO6R5r9tJSuk=
-X-Received: by 2002:a05:6512:3990:b0:50e:2e5d:10a8 with SMTP id
- j16-20020a056512399000b0050e2e5d10a8mr136706lfu.133.1704952763509; Wed, 10
- Jan 2024 21:59:23 -0800 (PST)
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ySHzwq8dArh41wbtGZhqWN/9T6QDBMF2vzUl/zhZMLY=;
+        b=JV9OJqK/AJKMPykvq1YU2fqZbC7wFNRn4wtVu16dGKNTKRGAMJ5ci0ZiELG2UdZmvR
+         iLV/XRmckMgkmxrAO/4B1Z95e9exGPCuGih9p90Dkm6msMltEbDSU+h3zMw36c/ts03A
+         H8DDY/r7Uqa7JEoJOPdC3Q9TPRsvK0wnPPnSzkeeMLoiYgbhFz09CeTVCIzmsiwVwa1H
+         xoJrnFy9L7Qfj2IS4mx+ecLmvdTRehIC24EU+u3pKvrbxTB7SeZd3XJg02U/3p7ers/T
+         iDSRJxiK/x7UZPDMvZuVGXeAu1kOXiSnutTlQFkHiD4N/WmqtAh/2kFkh8H/y54uwA3E
+         JZ7w==
+X-Gm-Message-State: AOJu0YxCY4cv94e5zsizIrOpTPhRyexsCKxsKNy32APu2St+6UT2KCxD
+	FIwCWx5Xpbou197uxtEpuzpR8qbFBK/BsG4EuDFrLFXAECLktg==
+X-Google-Smtp-Source: AGHT+IGuDiBtMY4/ypDlMkdqA3oJpXB3cTMlLMCSTpowgDMc7JMkgVnsbEwMIUUhX9GileAo0dWmq0OxUBnadUBxYgY=
+X-Received: by 2002:a0d:e28c:0:b0:5f8:f213:a4e0 with SMTP id
+ l134-20020a0de28c000000b005f8f213a4e0mr121140ywe.41.1704952963981; Wed, 10
+ Jan 2024 22:02:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1850031.1704921100@warthog.procyon.org.uk>
-In-Reply-To: <1850031.1704921100@warthog.procyon.org.uk>
-Reply-To: sedat.dilek@gmail.com
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Date: Thu, 11 Jan 2024 06:58:46 +0100
-Message-ID: <CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com>
-Subject: Re: [PATCH] keys, dns: Fix size check of V1 server-list header
-To: David Howells <dhowells@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Edward Adam Davis <eadavis@qq.com>, 
-	Pengfei Xu <pengfei.xu@intel.com>, Simon Horman <horms@kernel.org>, 
-	Markus Suvanto <markus.suvanto@gmail.com>, Jeffrey E Altman <jaltman@auristor.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, Wang Lei <wang840925@gmail.com>, 
-	Jeff Layton <jlayton@redhat.com>, Steve French <smfrench@gmail.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	linux-afs@lists.infradead.org, keyrings@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
+References: <20240111-qrb2210-rb1-no-cluster-idle-v1-1-cec14ec15b02@linaro.org>
+ <20240111044508.GA3761@thinkpad>
+In-Reply-To: <20240111044508.GA3761@thinkpad>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 11 Jan 2024 08:02:32 +0200
+Message-ID: <CAA8EJpp+i58Z_QN4L1NRXoEcoRJNNu3S3JqeYgFP7LY-GBDP0w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: qrb2210-rb1: disable cluster power domains
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 10:12=E2=80=AFPM David Howells <dhowells@redhat.com=
-> wrote:
+On Thu, 11 Jan 2024 at 06:45, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
 >
+> On Thu, Jan 11, 2024 at 04:01:14AM +0200, Dmitry Baryshkov wrote:
+> > If cluster domain idle state is enabled on the RB1, the board becomes
+> > significantly less responsive. Under certain circumstances (if some of
+> > the devices are disabled in kernel config) the board can even lock up.
+> >
+> > It seems this is caused by the MPM not being pinged during CPU idle (in
+> > the same way the RPMh is pinged when cluster idle is entered).
+> >
 >
-> Fix the size check added to dns_resolver_preparse() for the V1 server-lis=
-t
-> header so that it doesn't give EINVAL if the size supplied is the same as
-> the size of the header struct (which should be valid).
->
-> This can be tested with:
->
->         echo -n -e '\0\0\01\xff\0\0' | keyctl padd dns_resolver desc @p
->
-> which will give "add_key: Invalid argument" without this fix.
->
-> Fixes: 1997b3cb4217 ("keys, dns: Fix missing size check of V1 server-list=
- header")
+> What does "ping" mean here? Please be more specific.
 
-[ CC stable@vger.kernel.org ]
+See rpmh_rsc_pd_callback(), rpmh_flush() and rpmh_rsc_write_next_wakeup().
 
-Your (follow-up) patch is now upstream.
+RPMh driver (among other things) on entering the idle writes the next
+wake up time to the RPMh. The MPM driver in the vendor kernel does the
+same, see msm_mpm_timer_write() in msm-4.19
 
-https://git.kernel.org/linus/acc657692aed438e9931438f8c923b2b107aebf9
-
-This misses CC: Stable Tag as suggested by Linus.
-
-Looks like linux-6.1.y and linux-6.6.y needs it, too.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
-=3Dv6.6.11&id=3Dda89365158f6f656b28bcdbcbbe9eaf97c63c474
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
-=3Dv6.1.72&id=3D079eefaecfd7bbb8fcc30eccb0dfdf50c91f1805
-
-BG,
--Sedat-
-
-> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-> Link: https://lore.kernel.org/r/ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com/
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Edward Adam Davis <eadavis@qq.com>
-> cc: Linus Torvalds <torvalds@linux-foundation.org>
-> cc: Simon Horman <horms@kernel.org>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Jeffrey E Altman <jaltman@auristor.com>
-> Cc: Wang Lei <wang840925@gmail.com>
-> Cc: Jeff Layton <jlayton@redhat.com>
-> Cc: Steve French <sfrench@us.ibm.com>
-> Cc: Marc Dionne <marc.dionne@auristor.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> ---
->  net/dns_resolver/dns_key.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
-> index f18ca02aa95a..c42ddd85ff1f 100644
-> --- a/net/dns_resolver/dns_key.c
-> +++ b/net/dns_resolver/dns_key.c
-> @@ -104,7 +104,7 @@ dns_resolver_preparse(struct key_preparsed_payload *p=
-rep)
->                 const struct dns_server_list_v1_header *v1;
+> - Mani
 >
->                 /* It may be a server list. */
-> -               if (datalen <=3D sizeof(*v1))
-> +               if (datalen < sizeof(*v1))
->                         return -EINVAL;
+> > Disable cluster domain idle for the RB1 board until MPM driver is fixed
+> > to cooperate with the CPU idle states.
+> >
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/qrb2210-rb1.dts | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts b/arch/arm64/boot=
+/dts/qcom/qrb2210-rb1.dts
+> > index aa53b6af6d9c..9a0308ef8b0f 100644
+> > --- a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
+> > +++ b/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
+> > @@ -177,6 +177,24 @@ vph_pwr: regulator-vph-pwr {
+> >       };
+> >  };
+> >
+> > +&CPU_PD0 {
+> > +     /delete-property/ power-domains;
+> > +};
+> > +
+> > +&CPU_PD1 {
+> > +     /delete-property/ power-domains;
+> > +};
+> > +
+> > +&CPU_PD2 {
+> > +     /delete-property/ power-domains;
+> > +};
+> > +
+> > +&CPU_PD3 {
+> > +     /delete-property/ power-domains;
+> > +};
+> > +
+> > +/delete-node/ &CLUSTER_PD;
+> > +
+> >  &gpi_dma0 {
+> >       status =3D "okay";
+> >  };
+> >
+> > ---
+> > base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
+> > change-id: 20240111-qrb2210-rb1-no-cluster-idle-7bf43b3a0452
+> >
+> > Best regards,
+> > --
+> > Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >
+> >
 >
->                 v1 =3D (const struct dns_server_list_v1_header *)data;
->
->
+> --
+> =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=A9=
+=E0=AF=8D =E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=AE=
+=E0=AF=8D
+
+
+
+--=20
+With best wishes
+Dmitry
 
