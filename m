@@ -1,180 +1,198 @@
-Return-Path: <linux-kernel+bounces-23794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 901DE82B1D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:30:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF6382B1D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43141C21DF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:30:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E118B222D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A694EB45;
-	Thu, 11 Jan 2024 15:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38A54CDFE;
+	Thu, 11 Jan 2024 15:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="fn6fZr8q"
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2137.outbound.protection.outlook.com [40.107.105.137])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Xj5PU+4T"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD064EB21
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 15:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XpcDlKqQlXWkMfXqge34gOF5vyg3C7iasijHkodLgzAljpihTHgcXE7O/n1LIqUiIOf2qb2i1IJmzru8XxWiCyKizgVPMYcqWpa+u2X44SWdm5nvHIPRggR7cAb2zIZtsZzLSjT4FwI9pqYf5QZhsr1QL90jnJVX4R1LAkXDpf6k9SgR/W7eTDfCIfseMZfOMS3dyj8puoecqH37Rgqeq/PzHUhtpDdJ4agoGPR6K6DKa5g9dWkz0eYoQx9CiOD7mjIvjdytxSEKqxaNwMnHOs0pzjChtesRiDD2ioa30cC3Bc3Oj3tiqdWsfmA/IKeIsvjf3MS3vMWQxdh1fB5qrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y8jsp3SYztN1vWNwFiabAnRYvtCVSABqpxAqCQFQcRI=;
- b=IXd3IVbh6iQRszQcwqvmynAQnOo51v4sFE4TY+PbxADPgg10GN7WwhnHfCPGYsoJOO0dEoVKcObciz7X8Cf3kY5LzPZiFLMEtwV9dmOdKNPfTyVbZYFP7SOPY/Jq8osRaBMy4Zh5mJ8m4BI5qfRVxJW7atuEEzMJdKWw3ojWOuFc7WAO4cs6P7wkq4RW2I36ASy5/gDK82LnS5vZ1a5/uIcAiEY69aUj3rnRT+r+zz3gfU+0UjbrFcvM3s7gA4JGz8cRY0hwRtwukwmReGwQGdfN5uR7DgGnqJ6jPELaHZDoWtrCR8TdRxUTN1m3zij/FdZ0T8biYwHjmZwP42+paA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 193.8.40.94) smtp.rcpttodomain=vger.kernel.org
- smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
- action=none header.from=leica-geosystems.com; dkim=none (message not signed);
- arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y8jsp3SYztN1vWNwFiabAnRYvtCVSABqpxAqCQFQcRI=;
- b=fn6fZr8qsNutYAn/1XAng/K805YfhepO7Wbt02eoUPsJ+TBCu2vsyF974dxAymij8c35rSpYuDjk24ci3H4EaUqH+2CulhWPj3zSkhETcXzhWNT+m9ULVoNjjvwjO8Ny1nN42rPBCv+CSsJfpORdBkeSNLB0src3DdHy34rkK4A=
-Received: from DU2P251CA0016.EURP251.PROD.OUTLOOK.COM (2603:10a6:10:230::18)
- by VI1PR06MB6381.eurprd06.prod.outlook.com (2603:10a6:800:12f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Thu, 11 Jan
- 2024 15:29:03 +0000
-Received: from DB5PEPF00014B8A.eurprd02.prod.outlook.com
- (2603:10a6:10:230:cafe::4) by DU2P251CA0016.outlook.office365.com
- (2603:10a6:10:230::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19 via Frontend
- Transport; Thu, 11 Jan 2024 15:29:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
- smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
-Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
- designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.8.40.94; helo=hexagon.com; pr=C
-Received: from hexagon.com (193.8.40.94) by
- DB5PEPF00014B8A.mail.protection.outlook.com (10.167.8.198) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7181.14 via Frontend Transport; Thu, 11 Jan 2024 15:29:03 +0000
-Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
-	 Thu, 11 Jan 2024 16:29:02 +0100
-From: Catalin Popescu <catalin.popescu@leica-geosystems.com>
-To: srinivas.kandagatla@linaro.org,
-	miquel.raynal@bootlin.com
-Cc: michael@walle.cc,
-	rafal@milecki.pl,
-	robh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	bsp-development.geo@leica-geosystems.com,
-	gregkh@linuxfoundation.org,
-	luca.ceresoli@bootlin.com,
-	Catalin Popescu <catalin.popescu@leica-geosystems.com>
-Subject: [PATCH] nvmem: core: add fixed-layout declaration
-Date: Thu, 11 Jan 2024 16:28:49 +0100
-Message-Id: <20240111152849.3649549-1-catalin.popescu@leica-geosystems.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2AC4BAB0;
+	Thu, 11 Jan 2024 15:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40BDeICA013870;
+	Thu, 11 Jan 2024 15:30:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=tLmJlo9a7XOpcogJ276/ISRo79ph673bZD10y+Fx8EM=; b=Xj
+	5PU+4TrVzZyncEd26+c6NVlxOQ49eA3PLOmanRaojLh2RWPvZAT09SPWWVftjt3A
+	n0TL29mBXoPnAhGzXsJA26PyBYr/3LZSvYMvEvD1qfGPLVyzQErB3ygJaIeqPXXx
+	M76HGIcInoeLs/D4ha3D1U8Tn+KZYgGEWCY/eOfzQvFkP86qfjY/gOUFM+vDF+Og
+	gEoHGDFsot45kk/ggePlsUazxpyleLE9Jb3QzB9RrDsA3H1vvk0VUMOZYYM9mv+I
+	hnzEZH+huEjBh7HVhewOZq+pvuUdHPBUbjcN63lqcIxXg2gLa8+7vAcBOgA7C3Jg
+	FFnsFXvn8/HPv66HQoLQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjcsk0xhj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 15:30:57 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40BFUu1H001016
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 15:30:56 GMT
+Received: from [10.253.37.156] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 11 Jan
+ 2024 07:30:52 -0800
+Message-ID: <de0ad768-05fa-4bb1-bcbc-0adb28cb2257@quicinc.com>
+Date: Thu, 11 Jan 2024 23:30:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 11 Jan 2024 15:29:02.0886 (UTC) FILETIME=[E804A460:01DA44A2]
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB5PEPF00014B8A:EE_|VI1PR06MB6381:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 7f8ec542-2ef9-454c-a5d9-08dc12ba0ab7
-X-SET-LOWER-SCL-SCANNER: YES
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Ebr9OtAmAqhK9Epztwa4TxOOnUVZ6tkhwO0WIyTR+pnju5Clut8bFHvHb9172v36W/NDDbMzULbJOmJtvhLbh3NOZMXj1R9KkbF6e4MG2JqS1Ql1eNYpsonGKBhP2/KZpNA1Lc8E6GEFYqwMzWAZQRIf5IQ8sxTPTb3Z8s+2sWJB5aXucwB96OYlLNKVMH/EVccS7y1vC2J2uAbkvq6TimJ6TBDZpSdmH5iwCnuZTKh0Ttq2z2/l0FR1zikVjj2JXpm1HSS6KEL7IfPDBXm98pijkTv6NpAy7NdF9ldBhqtVCJvRGHe7tTYfg2oUYJ1Ajo2sUf28Fn9tAwLZsZuHCjY6N5f9RN1qxjhHBRHNauoO4DkxSi6Mlpq28UT4bVgVGAb3ulc4A6S92zrXRm5DpI1j7uoJ5aQ7CGTyHV8wuVqL8jr5hPwwD3NLlwpZCTGrKag8YfICdjgoW0nl4NNP3z/mN/EF/VJDmQG+EavZkc4cXPQA0azyJQh1FQfcshKxQRAtqElej+uf7TJfNKWH4Eho3mEvkjkwDsd/9BX5Ztitcyeh9g8gd/KZVfGuz40zom6mItkVdQO4f9ra1LOA6LYSY4fH0bm/S9AZPHeOTuQyk586Af0wCoTsNuigRJzEzTX20XOHGc97zZHWOBxm1qOx9RhDgLhAYflnld1IKq1p+9Yf1nx8w0hVaR4isd4du1x5FeF5ZQos92Ipgk4WtDe0UqHbSqf6ghORxnZWScs8xbUgZkfrvbnvQxg/nb1T
-X-Forefront-Antispam-Report:
-	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(82310400011)(46966006)(36840700001)(40470700004)(40480700001)(40460700003)(41300700001)(83380400001)(82740400003)(70206006)(356005)(70586007)(81166007)(86362001)(36756003)(316002)(36860700001)(47076005)(1076003)(336012)(2616005)(107886003)(26005)(6666004)(2906002)(8676002)(5660300002)(4326008)(8936002)(478600001)(44832011);DIR:OUT;SFP:1102;
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 15:29:03.2167
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f8ec542-2ef9-454c-a5d9-08dc12ba0ab7
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DB5PEPF00014B8A.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR06MB6381
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: ipq9574: Add PPE device tree node
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <quic_kkumarcs@quicinc.com>, <quic_suruchia@quicinc.com>,
+        <quic_soni@quicinc.com>, <quic_pavir@quicinc.com>,
+        <quic_souravp@quicinc.com>, <quic_linchen@quicinc.com>,
+        <quic_leiwei@quicinc.com>
+References: <20240110112059.2498-1-quic_luoj@quicinc.com>
+ <20240110112059.2498-2-quic_luoj@quicinc.com>
+ <a42718a9-d0f9-47d9-9ee8-fb520ed2a7a8@linaro.org>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <a42718a9-d0f9-47d9-9ee8-fb520ed2a7a8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: m18IytmkWCOaHnH4b1m_JtGxV9MuEBgm
+X-Proofpoint-GUID: m18IytmkWCOaHnH4b1m_JtGxV9MuEBgm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 impostorscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401110121
 
-Declare fixed-layout as a supported layout and use add_cells
-callback to parse the cells. This adds consistency over layouts
-parsing as fixed-layout parsing is now handled in the same way
-than others nvmem layouts.
 
-Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
----
- drivers/nvmem/core.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 608b352a7d91..d7f34cbea34b 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -746,7 +746,9 @@ static int nvmem_add_cells_from_legacy_of(struct nvmem_device *nvmem)
- 	return nvmem_add_cells_from_dt(nvmem, nvmem->dev.of_node);
- }
- 
--static int nvmem_add_cells_from_fixed_layout(struct nvmem_device *nvmem)
-+static int nvmem_add_cells_from_fixed_layout(struct device *dev,
-+					     struct nvmem_device *nvmem,
-+					     struct nvmem_layout *layout)
- {
- 	struct device_node *layout_np;
- 	int err = 0;
-@@ -755,8 +757,7 @@ static int nvmem_add_cells_from_fixed_layout(struct nvmem_device *nvmem)
- 	if (!layout_np)
- 		return 0;
- 
--	if (of_device_is_compatible(layout_np, "fixed-layout"))
--		err = nvmem_add_cells_from_dt(nvmem, layout_np);
-+	err = nvmem_add_cells_from_dt(nvmem, layout_np);
- 
- 	of_node_put(layout_np);
- 
-@@ -1009,10 +1010,6 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 			goto err_remove_cells;
- 	}
- 
--	rval = nvmem_add_cells_from_fixed_layout(nvmem);
--	if (rval)
--		goto err_remove_cells;
--
- 	rval = nvmem_add_cells_from_layout(nvmem);
- 	if (rval)
- 		goto err_remove_cells;
-@@ -2132,6 +2129,19 @@ const char *nvmem_dev_name(struct nvmem_device *nvmem)
- }
- EXPORT_SYMBOL_GPL(nvmem_dev_name);
- 
-+static const struct of_device_id fixed_layout_of_match_table[] = {
-+	{ .compatible = "fixed-layout", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, fixed_layout_of_match_table);
-+
-+static struct nvmem_layout fixed_layout = {
-+	.name = "NVMEM fixed layout",
-+	.of_match_table = fixed_layout_of_match_table,
-+	.add_cells = nvmem_add_cells_from_fixed_layout,
-+};
-+module_nvmem_layout_driver(fixed_layout);
-+
- static int __init nvmem_init(void)
- {
- 	return bus_register(&nvmem_bus_type);
--- 
-2.34.1
+On 1/10/2024 7:40 PM, Krzysztof Kozlowski wrote:
+> On 10/01/2024 12:20, Luo Jie wrote:
+>> The PPE device tree node includes the PPE initialization configurations
+>> and UNIPHY instance configuration.
+>>
+>> Ther are 3 UNIPHYs(PCS) on the platform ipq9574, which register the
+>> clock provider to output the clock for PPE port to work on the different
+>> link speed.
+>>
+>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/ipq9574.dtsi | 730 +++++++++++++++++++++++++-
+>>   1 file changed, 724 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+>> index 810cda4a850f..5fa241e27c8b 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+>> @@ -775,16 +775,734 @@ nsscc: nsscc@39b00000 {
+>>   				 <&bias_pll_nss_noc_clk>,
+>>   				 <&bias_pll_ubi_nc_clk>,
+>>   				 <&gcc_gpll0_out_aux>,
+>> -				 <0>,
+>> -				 <0>,
+>> -				 <0>,
+>> -				 <0>,
+>> -				 <0>,
+>> -				 <0>,
+>> +				 <&uniphys 0>,
+>> +				 <&uniphys 1>,
+>> +				 <&uniphys 2>,
+>> +				 <&uniphys 3>,
+>> +				 <&uniphys 4>,
+>> +				 <&uniphys 5>,
+>>   				 <&xo_board_clk>;
+>>   			#clock-cells = <1>;
+>>   			#reset-cells = <1>;
+>>   		};
+>> +
+>> +		qcom_ppe: qcom-ppe@3a000000 {
+> 
+> qcom is definitely not a generic name.
+> 
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
+Ok, will update to use a generic name in the link, Thanks for the
+guidance and the link.
+> 
+> 
+>> +			compatible = "qcom,ipq9574-ppe";
+> 
+> I don't see this documented. I don't see reference to posted bindings.
+
+The DT bindings patch was part of the driver series as below. This
+property was documented in the DT bindings patch. Attaching it to DTSI 
+series should make it more clear. If this is fine, I will update the 
+DTSI series with the DT bindings patch.
+https://lore.kernel.org/netdev/20240110142428.52026d9e@kernel.org/
+
+> 
+> Please run scripts/checkpatch.pl and fix reported warnings. Some
+> warnings can be ignored, but the code here looks like it needs a fix.
+> Feel free to get in touch if the warning is not clear.
+> 
+> Ignoring this warning is a sign you don't really check your patches
+> before sending.
+
+We have run the checkpatch.pl on the whole patch series including this
+device tree patch set together with PPE driver patch set.
+As mentioned above, I will add the DT bindings patch into the DTS
+series. This should help with the checkpatch issue.
+
+> 
+>> +			reg = <0x3a000000 0xb00000>;
+>> +			#address-cells = <1>;
+>> +			#size-cells = <1>;
+>> +			ranges;
+> 
+> Put after reg.
+Ok.
+
+> 
+>> +			status = "okay";
+> 
+> Drop
+Ok.
+
+> 
+> All of above comments apply to your entire patchset and all places.
+> 
+> Looking at code further, it does not look like suitable for mainline,
+> but copy of downstream code. That's not what we expect upstream. Please
+> go back to your bindings first. Also, I really insist you reaching out
+> to other folks to help you in this process.
+> 
+> Best regards,
+> Krzysztof
+> 
+We will do internal review of the gaps and update the patches as per
+your comments.
+
+Thanks for the review comments.
 
