@@ -1,166 +1,133 @@
-Return-Path: <linux-kernel+bounces-23699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2CF82B055
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:10:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4817C82B051
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 274EE1C23C9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:10:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAA1D28490E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FE23C092;
-	Thu, 11 Jan 2024 14:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647473C48D;
+	Thu, 11 Jan 2024 14:08:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kEzW59OM"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G+oqQ9qM"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C879F16402;
-	Thu, 11 Jan 2024 14:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40B8iOiw022127;
-	Thu, 11 Jan 2024 14:09:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=EBT9hjnHIPcZmQBZESqJ6bAifbppCQratsO43cLPeuk=; b=kE
-	zW59OMVQQkDyjpskLzbPFHXDJKu3k65R58Q5Wfqv251b+HrrLlb9/3g2I21dk5mM
-	ah7NKNZfDPQyWD0pA2jXJspocBZWfPSRU72QO4hhy3qIPuCiSLl8gTTR/dvSW72q
-	Itq/M9pboozyP6hebORY6JLYpqdqS3bAjUZql8gZDKSHQihqOBeUGXrYRq7OfJaO
-	ov30RBtUZrvxz4wqE9XVBad2ynx2rqspPAmYLdFRG1VVLhlsO+SDQ3FIi6iNs6Jh
-	5Lm4C894/SqjWXbV/Ew9w0mciO9JzIo/O8TCy+EC0IVK/g108hVzqOEjTnQw47VK
-	7T4w3oVXcYDE7ePbfPJg==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjcmu8rs4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 14:09:40 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40BE9di3018115
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 14:09:39 GMT
-Received: from [10.216.36.30] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 11 Jan
- 2024 06:09:37 -0800
-Message-ID: <e83c9db6-ccac-7546-e9bb-39d404c4aea5@quicinc.com>
-Date: Thu, 11 Jan 2024 19:39:34 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0FE3B187;
+	Thu, 11 Jan 2024 14:08:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a29a4f610b1so579799966b.3;
+        Thu, 11 Jan 2024 06:08:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704982101; x=1705586901; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WoJC8tdnDZuFg5WsFgtASovnc1Tl99lnT/+ICbRlVwA=;
+        b=G+oqQ9qMsSnvIG2xsqqlMDBNGN7bdvOXAudCaiFcF3RpwRSoxNq57VZbT679SZpcwR
+         mQv+YkKVIUqDbVaE8jtHv9n/4PHgC41jMsf0wCoGVMeo2ct2W0n2vjr9EM009tMmnIwx
+         +h+Z9FEu4BTwuGnUfHtsNPL+ZED5QhH+44yoTObj9tw2ypKQnAS5upt0OInlEbqwPEqP
+         GE3NR1H8yVgVwcw0MCG+XlPOGHD6FyenNZe91OPM9dWIXA6nkf+rSTAd6VuSu2y+ntjG
+         W98YktW1L4PcwcX0nk0Afl/n8IShAeeR2RHALiMAKMnCS0vsFTHCRIooIgSzN+xcLwf+
+         gsVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704982101; x=1705586901;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WoJC8tdnDZuFg5WsFgtASovnc1Tl99lnT/+ICbRlVwA=;
+        b=Kqjem/diqyHz2gSf7TRvAoAgbs4eJ7uNtxqT0l9oNpFXtppZe+VlRAoDc1r9iVAgRw
+         gpm95X8PPacIUTN87MwhVOS/fo/9qTFrM1BAbePd9YRw5j7ECZXujNVJim2nDLh5EN/G
+         BSwsTXQ/qOVCFJK319bAq4IasgGki+kQrmeB2GjPhPlLzQ79zelNwHt3dWNLACDzTK9y
+         dJ07MHiRHWlwZ4kCWSRX87BR4nnglBG5V+a4JecAAN+U5R5WBnmNF0L+OPptiuA/lioy
+         T5Bt5k4BQcMay9I8c8aVV+EFYdA+Yy++swWnSx7b4P0+VkioXRSaK/TVjXGygIMuBsZ+
+         89Uw==
+X-Gm-Message-State: AOJu0Yyq8Y0FQmdpv6HcL7dVxzS1aC39CnmABkeykkLUzB3QA4IeAmvf
+	u1Z260p8U4dnZ6m/7hwbpb0=
+X-Google-Smtp-Source: AGHT+IEFa0SyyLPtJIEyD1MDs+PWNcn+s3GPOMBXhDIA1k2L4TV8ak6uzCy/6bBxHMPtd2QnR9l+OQ==
+X-Received: by 2002:a17:906:c08c:b0:a28:bf58:756d with SMTP id f12-20020a170906c08c00b00a28bf58756dmr554052ejz.128.1704982101155;
+        Thu, 11 Jan 2024 06:08:21 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id ov18-20020a170906fc1200b00a2a184687dasm618425ejb.31.2024.01.11.06.08.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 06:08:20 -0800 (PST)
+Message-ID: <5b62d742fa789e9860781b6f5f1fda4f583b0e5b.camel@gmail.com>
+Subject: Re: [PATCH 01/13] spi: add core support for controllers with
+ offload capabilities
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>, Jonathan Cameron
+ <jic23@kernel.org>,  Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Michael Hennerich <michael.hennerich@analog.com>,  Nuno
+ =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>, Frank Rowand
+ <frowand.list@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, Uwe
+ =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Jonathan
+ Corbet <corbet@lwn.net>,  linux-spi@vger.kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Date: Thu, 11 Jan 2024 15:11:32 +0100
+In-Reply-To: <aae36622-4e05-4f16-9460-d7614fd599aa@sirena.org.uk>
+References: 
+	<20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+	 <20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+	 <0c0b1954825dc174cab48060e96ddadadc18aefd.camel@gmail.com>
+	 <aae36622-4e05-4f16-9460-d7614fd599aa@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] thermal/sysfs: Always enable hysteresis write support
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui
-	<rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240106191502.29126-1-quic_manafm@quicinc.com>
- <CAJZ5v0gE6eEpALrfxHvCd5TRqjB+v8pffG4CKLTVXiSvuiWhHg@mail.gmail.com>
- <d7b82fc8-0ed8-80b8-9eb8-c77f9277178f@quicinc.com>
- <CAJZ5v0g4hnRqRCseRnTjfEF+-2=ZT8U9=2m9FODqh3G8eDd=Sw@mail.gmail.com>
-From: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-In-Reply-To: <CAJZ5v0g4hnRqRCseRnTjfEF+-2=ZT8U9=2m9FODqh3G8eDd=Sw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: J8QomHJhNTK1hn-OVpVKAd32KcoMq2vk
-X-Proofpoint-ORIG-GUID: J8QomHJhNTK1hn-OVpVKAd32KcoMq2vk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 malwarescore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=877 mlxscore=0 suspectscore=0 phishscore=0 bulkscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401110112
 
-Hi Rafael,
+On Thu, 2024-01-11 at 13:33 +0000, Mark Brown wrote:
+> On Thu, Jan 11, 2024 at 09:49:08AM +0100, Nuno S=C3=A1 wrote:
+> > On Wed, 2024-01-10 at 13:49 -0600, David Lechner wrote:
+>=20
+> > > =C2=A0=C2=A0=C2=A0 /* in probe() */
+> > > =C2=A0=C2=A0=C2=A0 offload =3D spi_offload_get(spi, 0);
+>=20
+> > On top of what Mark already stated, and as we already discussed offline=
+, I
+> > personally don't like this provider - consumer interface for the offloa=
+d.
+> > The
+> > first thing is that this is taking into account the possibility of havi=
+ng
+> > multiple offload cores. While the FGPA core was designed with that in m=
+ind,
+> > we
+> > don't really have any design using multiple offloads in one spi engine
+> > (always
+> > one). Hence this is all pretty much untested.
+>=20
+> I tend to agree that we shouldn't be exposing this to SPI device drivers
+> however we will want to keep track of if the unit is busy, and designing
+> it to cope with multiple offloads does seem like sensible future
+> proofing.=C2=A0 There's also the possibility that one engine might be abl=
+e to
 
-On 1/10/2024 6:18 PM, Rafael J. Wysocki wrote:
-> Hi Manaf,
->
-> On Wed, Jan 10, 2024 at 9:17 AM Manaf Meethalavalappu Pallikunhi
-> <quic_manafm@quicinc.com> wrote:
->> Hi Rafael,
->>
->> On 1/9/2024 7:12 PM, Rafael J. Wysocki wrote:
->>
->> On Sat, Jan 6, 2024 at 8:16 PM Manaf Meethalavalappu Pallikunhi
->> <quic_manafm@quicinc.com> wrote:
->>
->> The commit 2e38a2a981b2("thermal/core: Add a generic
->> thermal_zone_set_trip() function") adds the support to update
->> trip hysteresis even if set_trip_hyst() operation is not defined.
->> But during hysteresis attribute creation, if this operation is
->> defined then only it enables hysteresis write access. It leads
->> to a case where hysteresis sysfs will be read only for a thermal
->> zone when its set_trip_hyst() operation is not defined.
->>
->> Which is by design.
->>
->> I think it is regression after recent re-work. If a sensor is registered with thermal framework via thermal_of,
->>
->> sensor driver doesn't need to know the trip configuration and nothing to do with set_trip_hyst() in driver.
->>
->> Without this change, if a sensor needs to be monitored from userspace(trip/hysteresis),
-> What exactly do you mean by "monitored" here?
+Fair enough. But wouldn't a simple DT integer property (handled by the spi =
+core)
+to identify the offload index be easier for SPI device drivers? We could st=
+ill
+have dedicated interfaces for checking if the unit is busy or not... The po=
+int
+is that we would not need an explicit get() from SPI drivers.
 
-There can be userspace thermal manager/clients(eg: thermal HAL in 
-android, thermal manager daemon etc. ) with different trip 
-pairs(temperature and hysteresis) for its own thermal management, 
-temperature reporting, thermal tuning etc.
+I'm of course assuming that one spi device can only be connected to one eng=
+ine
+which seems reasonable to me.
 
-This client can update trip and hysteresis dynamically via thermal zone 
-trip point sysfs nodes for event violation notification irrespective of 
-kernel thermal zone devicetree trip values.
+- Nuno S=C3=A1
 
-This was supporting until this rework without any set_trip_* ops from 
-sensor driver.
-
->
->> it is enforcing sensor driver to add  dummy set_trip_hyst() operation. Correct me otherwise
-> With the current design, whether or not trip properties can be updated
-> by user space is a thermal zone property expressed by the presence of
-> the set_trip_* operations, so yes, whoever registers the thermal zone
-
-If you look at current code, it is allowing to set trip temperature 
-without set_trip_temp() operation, only hysteresis is not allowed.
-
-As I mentioned above cases, userspace sysfs update is usecase/client 
-driven, not always a sensor driver specific requirement especially a 
-sensor is registered via thermal_of.  Not sure adding a dummy ops in 
-every sensor driver to achieve above requirement is right solution here.
-
-> needs to provide those so that user space can update the trip
-> properties.
->
->> For some thermal zone types (eg. acpi), updating trip hysteresis via
->> sysfs might lead to incorrect behavior.
->>
->> To address this issue, is it okay to  guard  hysteresis write permission under CONFIG_THERMAL_WRITABLE_TRIPS defconfig ?
-> Not really, because it would affect all of the thermal zones then.
->
-> TBH, the exact scenario in which user space needs to update trip
-> hysteresis is not particularly clear to me, so can you provide some
-> more details, please?
-
-I hope I explained more information in above comment. let me know otherwise.
-
-Thanks,
-
-Manaf
-
->
-> Thanks!
 
