@@ -1,93 +1,145 @@
-Return-Path: <linux-kernel+bounces-23280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8AF182AA1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0FC82AA8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5805C1F217BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:04:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E6831F228E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24B011195;
-	Thu, 11 Jan 2024 09:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="HEXYSBHl"
-Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7FF710940
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 09:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=MTVN4F7Q/6GUVtGLXv
-	BAx+h+E7050Jgk+qf/1nmhWoc=; b=HEXYSBHlW7q3TnpXkd6y501I7anlK3t/Gq
-	x10HtVbgM1A60WuvNQCjdvsyGLih1+xW8UdlwX4n2nhtskQxNY4bFOooOXrjCexi
-	+w4uiphLrwxsHriJlCjq+Oy4mP9QFEyNVORXdruD35OxNFUjqgbU1Itc50FbUdDC
-	GT9r9BiHE=
-Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wDXP+0jrp9lYaaXAA--.18866S2;
-	Thu, 11 Jan 2024 17:00:19 +0800 (CST)
-From: GuoHua Chen <chenguohua_716@163.com>
-To: daniel@ffwll.ch,
-	Xinhui.Pan@amd.com,
-	alexander.deucher@amd.com,
-	airlied@gmail.com,
-	christian.koenig@amd.com
-Cc: dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	GuoHua Chen <chenguohua_716@163.com>
-Subject: [PATCH] drm/radeon: Clean up errors in r600_dpm.c
-Date: Thu, 11 Jan 2024 09:00:17 +0000
-Message-Id: <20240111090017.13235-1-chenguohua_716@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wDXP+0jrp9lYaaXAA--.18866S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKFWDZrWxuFy5Kry8JFWfuFg_yoWDGrb_C3
-	WxW3y7JrW3Kr9YgFyIkan5X3s2vr1j93Z3Ww1Fva4fJr12qFs5W3yDJryxXr1UGFW3Wrn5
-	JrWUJF1SkrsxWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUZXo7UUUUU==
-X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/xtbBEh5i1mVOBlCZjwAAsT
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A772C10957;
+	Thu, 11 Jan 2024 09:09:01 +0000 (UTC)
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9525D101FB;
+	Thu, 11 Jan 2024 09:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6dc36e501e1so3434378a34.1;
+        Thu, 11 Jan 2024 01:08:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704964138; x=1705568938;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7s8mOe6yBrTL8Dc+4RBtqbm0YylyeY2R2uNKT3a55V8=;
+        b=Lyd+IrHoz6Nk7QLTjKdRssSu1eWUG5FOwduoh/dDzxVjxAdrQne23pmfdHmFXnSEEB
+         LZYNwAtfLOeKpYCLy4zf57XGb+YgIKT3jtTCe47IYVeMWx4AY4A7m7BAJ1LbCf75bIJl
+         EmTGDPE5tao+wpyt7Nn4y0nFnpouitemvEfqC0wo3B3WeDcdXYUv35KkFsmjFsMD2VSD
+         MMdZh634CWICqQK4IBDyVTNzFTB1hNQZwwQutOW00aECBOthrx0DCTjFNhCMG+f21eti
+         9LhfFLkXRLHEWSdJHZaB+ih622fExGvGkPZKbji0p93FAnhUl2tsUomu7s9+VfFXU6rD
+         qkPQ==
+X-Gm-Message-State: AOJu0Yxhgkwy7QqED6vEknsfy1mW31Ns3CWLrqN4MBQpEboMSZzgtnkN
+	9Y2Lc4BaTdqvcilssQL1GuHLc7GYcvkXYA==
+X-Google-Smtp-Source: AGHT+IE6wcozzThLKTxEe+RwwmuuBKAGvcbNTPskMBgyKIQ2pNnoMJBMr4L4SOPTDBtUsp2PKYGnqg==
+X-Received: by 2002:a81:a747:0:b0:5f6:e673:3f1c with SMTP id e68-20020a81a747000000b005f6e6733f1cmr301977ywh.98.1704963669071;
+        Thu, 11 Jan 2024 01:01:09 -0800 (PST)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
+        by smtp.gmail.com with ESMTPSA id g189-20020a0df6c6000000b005a4da74b869sm246045ywf.139.2024.01.11.01.01.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 01:01:08 -0800 (PST)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5e7f0bf46a2so48228847b3.1;
+        Thu, 11 Jan 2024 01:01:08 -0800 (PST)
+X-Received: by 2002:a81:bc50:0:b0:5f3:6024:53c with SMTP id
+ b16-20020a81bc50000000b005f36024053cmr322891ywl.32.1704963668540; Thu, 11 Jan
+ 2024 01:01:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240110222717.193719-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240110222717.193719-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 11 Jan 2024 10:00:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX4bv0dtJ-G1o9by91RmP3DH1HQKvDL51g_25Yq=Yd2LQ@mail.gmail.com>
+Message-ID: <CAMuHMdX4bv0dtJ-G1o9by91RmP3DH1HQKvDL51g_25Yq=Yd2LQ@mail.gmail.com>
+Subject: Re: [PATCH] dmaengine: sh: rz-dmac: Avoid format-overflow warning
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Biju Das <biju.das.jz@bp.renesas.com>, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fix the following errors reported by checkpatch:
+Hi Prabhakar,
 
-ERROR: that open brace { should be on the previous line
+On Wed, Jan 10, 2024 at 11:27=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> The max channel count for RZ DMAC is 16, hence use u8 instead of unsigned
+> int and make the pdev_irqname string long enough to avoid the warning.
 
-Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
----
- drivers/gpu/drm/radeon/r600_dpm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Note that the danger lies into someone changing
+RZ_DMAC_MAX_CHANNELS later...
 
-diff --git a/drivers/gpu/drm/radeon/r600_dpm.c b/drivers/gpu/drm/radeon/r600_dpm.c
-index 9d2bcb9551e6..64980a61d38a 100644
---- a/drivers/gpu/drm/radeon/r600_dpm.c
-+++ b/drivers/gpu/drm/radeon/r600_dpm.c
-@@ -28,8 +28,7 @@
- #include "r600_dpm.h"
- #include "atom.h"
- 
--const u32 r600_utc[R600_PM_NUMBER_OF_TC] =
--{
-+const u32 r600_utc[R600_PM_NUMBER_OF_TC] = {
- 	R600_UTC_DFLT_00,
- 	R600_UTC_DFLT_01,
- 	R600_UTC_DFLT_02,
-@@ -47,8 +46,7 @@ const u32 r600_utc[R600_PM_NUMBER_OF_TC] =
- 	R600_UTC_DFLT_14,
- };
- 
--const u32 r600_dtc[R600_PM_NUMBER_OF_TC] =
--{
-+const u32 r600_dtc[R600_PM_NUMBER_OF_TC] = {
- 	R600_DTC_DFLT_00,
- 	R600_DTC_DFLT_01,
- 	R600_DTC_DFLT_02,
--- 
-2.17.1
+> This fixes the below issue:
+> drivers/dma/sh/rz-dmac.c: In function =E2=80=98rz_dmac_probe=E2=80=99:
+> drivers/dma/sh/rz-dmac.c:770:34: warning: =E2=80=98%u=E2=80=99 directive =
+writing between 1 and 10 bytes into a region of size 3 [-Wformat-overflow=
+=3D]
+>   770 |         sprintf(pdev_irqname, "ch%u", index);
+>       |                                  ^~
+> In function =E2=80=98rz_dmac_chan_probe=E2=80=99,
+>     inlined from =E2=80=98rz_dmac_probe=E2=80=99 at drivers/dma/sh/rz-dma=
+c.c:910:9:
+> drivers/dma/sh/rz-dmac.c:770:31: note: directive argument in the range [0=
+, 4294967294]
+>   770 |         sprintf(pdev_irqname, "ch%u", index);
+>       |                               ^~~~~~
+> drivers/dma/sh/rz-dmac.c:770:9: note: =E2=80=98sprintf=E2=80=99 output be=
+tween 4 and 13 bytes into a destination of size 5
+>   770 |         sprintf(pdev_irqname, "ch%u", index);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> While at it use scnprintf() instead of sprintf() to make the code
+> more robust.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Some nits below...
+
+> --- a/drivers/dma/sh/rz-dmac.c
+> +++ b/drivers/dma/sh/rz-dmac.c
+> @@ -845,9 +845,9 @@ static int rz_dmac_probe(struct platform_device *pdev=
+)
+>         struct dma_device *engine;
+>         struct rz_dmac *dmac;
+>         int channel_num;
+> -       unsigned int i;
+>         int ret;
+>         int irq;
+> +       u8 i;
+
+Personally, I'm not much a fan of making loop counters smaller than
+(unsigned) int.  If you do go this way, you should change channel_num
+to u8, too, just like i in rz_dmac_remove().
+
+>
+>         dmac =3D devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
+>         if (!dmac)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
