@@ -1,99 +1,150 @@
-Return-Path: <linux-kernel+bounces-23355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 359CF82AB82
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:03:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD1382AB88
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47B841C21E0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:03:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A7801F23243
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6051C12E52;
-	Thu, 11 Jan 2024 10:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F1F12E5B;
+	Thu, 11 Jan 2024 10:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="vE1AA7fU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtbLBQ1s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD22B12E47;
-	Thu, 11 Jan 2024 10:03:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE793C433C7;
-	Thu, 11 Jan 2024 10:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704967397;
-	bh=XKju82+bUIQUC2/IEKI3rWnSmsS5G+w7eqtJG86hh90=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vE1AA7fUthH45yZcRUBa4OzJIYWGm2k2UED9/2miba5n74LCLpqMXf3CcA56sdNwd
-	 RIjFQwZwSuqpk/s6FCLAQSGE9bEsCRc9uq0drr43QB+1NTB5heMTEzweqs+s0U1WMV
-	 INM5Zrvf1NpL4bcpYm9UnSqoHRliv8nfYP8xIl50=
-Date: Thu, 11 Jan 2024 11:03:14 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: joel@jms.id.au, andrew@codeconstruct.com.au,
-	andriy.shevchenko@linux.intel.com, linux-usb@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, kunwu.chan@hotmail.com,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: aspeed: Check return value of kasprintf in
- ast_vhub_alloc_epn
-Message-ID: <2024011132-gigolo-cornmeal-844f@gregkh>
-References: <20231122014212.304254-1-chentao@kylinos.cn>
- <2023112236-bullseye-pranker-491e@gregkh>
- <346b631c-8b46-4b41-9188-8cbaaa1ff178@kylinos.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0139210A14;
+	Thu, 11 Jan 2024 10:05:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB533C433C7;
+	Thu, 11 Jan 2024 10:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704967505;
+	bh=ejfpJMtejqF7iTeQRs32sW6QKpxHOspsw5qIUc8L8L8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=XtbLBQ1sODZpr5AfAtsfLyJzKL3XQWdfRKIsgkgBSZp09KkeoRNzlrIcM/WgtZoXJ
+	 oRnZDzg5/TCEsUhfb+DrpYbQS8hgxN7A1iAn//Xku9n9cveXIsJ06obOQRrJNdGaP8
+	 21uBqf+mcX3O9CU816UfMiRg/1EbFkaJ/LcuFUMaSJ1adBTpI2h0lQks5B871hgXaB
+	 kRHutNWGg67nnXUWIDLfxgla1gb0ooonyS/g+V7BqAhMCddnZoziY290N/I9Yf6Fw3
+	 +swu0mV1GZMLouevulYmukZK7XJ5jAvRwbiVvTvL5VByU+GtepSzciHQXuN0NcbXQD
+	 rFBG1Nbf7zL+w==
+From: Lee Jones <lee@kernel.org>
+To: pavel@ucw.cz, lee@kernel.org, thierry.reding@gmail.com, 
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+ agross@kernel.org, andersson@kernel.org, 
+ Anjelique Melendez <quic_amelende@quicinc.com>
+Cc: luca.weiss@fairphone.com, konrad.dybcio@linaro.org, 
+ u.kleine-koenig@pengutronix.de, quic_subbaram@quicinc.com, 
+ quic_gurus@quicinc.com, linux-leds@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
+In-Reply-To: <20231221185838.28440-1-quic_amelende@quicinc.com>
+References: <20231221185838.28440-1-quic_amelende@quicinc.com>
+Subject: Re: (subset) [PATCH v8 0/7] Add support for LUT PPG
+Message-Id: <170496750168.1654525.11132648331912183091.b4-ty@kernel.org>
+Date: Thu, 11 Jan 2024 10:05:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <346b631c-8b46-4b41-9188-8cbaaa1ff178@kylinos.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
 
-On Thu, Jan 11, 2024 at 05:31:35PM +0800, Kunwu Chan wrote:
-> Sorry, I didn't find out about this email until now because it was
-> intercepted by my company's email server.
+On Thu, 21 Dec 2023 10:58:30 -0800, Anjelique Melendez wrote:
+> In certain PMICs, LUT pattern and LPG configuration is stored in SDAM
+> modules instead of LUT peripheral. This feature is called PPG.
 > 
-> On 2023/11/22 20:10, Greg KH wrote:
-> > On Wed, Nov 22, 2023 at 09:42:12AM +0800, Kunwu Chan wrote:
-> > > kasprintf() returns a pointer to dynamically allocated memory
-> > > which can be NULL upon failure. Ensure the allocation was successful
-> > > by checking the pointer validity.
-> > > 
-> > > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> > > ---
-> > >   drivers/usb/gadget/udc/aspeed-vhub/epn.c | 2 ++
-> > >   1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/drivers/usb/gadget/udc/aspeed-vhub/epn.c b/drivers/usb/gadget/udc/aspeed-vhub/epn.c
-> > > index 148d7ec3ebf4..e0854e878411 100644
-> > > --- a/drivers/usb/gadget/udc/aspeed-vhub/epn.c
-> > > +++ b/drivers/usb/gadget/udc/aspeed-vhub/epn.c
-> > > @@ -826,6 +826,8 @@ struct ast_vhub_ep *ast_vhub_alloc_epn(struct ast_vhub_dev *d, u8 addr)
-> > >   	ep->vhub = vhub;
-> > >   	ep->ep.ops = &ast_vhub_epn_ops;
-> > >   	ep->ep.name = kasprintf(GFP_KERNEL, "ep%d", addr);
-> > > +	if (!ep->ep.name)
-> > > +		return NULL;
-> > 
-> > This will break things if this ever triggers.  How was this tested?  The
-> It's my fault, I think it's too simplistic. Compiled test only.
-> Cause I don't know how to test effectively. I didn't find a way to test this
-> in 'Documentation/usb/gadget-testing.rst'.
-> > "slot" for this device will still be seen as used and so the resources
-> > never freed and then you can run out of space for real devices, right?
-> > 
-> > Looks like the other error handling in this function below this call is
-> > also broken, can you fix that up too?Yes, after reading the relevant code, I found that this is indeed a problem.
-> So I write the v2 patch below, but the same question bothering me, about how
-> to test effectively and what hardware equipment is needed? I'm new to this
-> area, do you have any suggestions?
+> This change series adds support for PPG. Thanks!
+> Changes since v7:
+>   - Patch 4/7
+>     - Initialize hi/lo_pause variables in lpg_pattern_set()
+> Changes since v6:
+>   - Patch 2/7
+>     - Removed required by constraint on PPG dt properties
+> Changes since v5:
+>   - Patch 4/7
+>     - Update logic so that multicolor led device triggers pattern
+>       on all LEDs at the same time
+>     - Update nitpicks from Lee
+>   - Patch 5/7
+>     - Update nitpicks from Lee
+> Changes since v4:
+>   - Patch 3/7
+>     - Get rid of r/w helpers
+>     - Use regmap_read_poll_timeout() in qcom_pbs_wait_for_ack()
+>     - Update error path in qcom_pbs_trigger_event()
+>     - Fix reverse christmas tree
+>   - Patch 4/7
+>     - Get rid of r/w helpers
+>     - Update variables to use "sdam" instead of "nvmem"
+>     - Fix comments
+>     - Fix reverse christmas tree
+>     - Update lpg_pattern_set() logic
+>   - Patch 5/7
+>     - Removed sdam_lut_base from lpg_data
+> Changes since v3:
+>   - Patch 4/7
+>     - Fix function returns
+>     - Move register definition to top of file
+>     - Revert max_brightness and probe accidental changes
+>     - Combine init_sdam() and parse_sdam()
+>     - Change error prints in probe to use dev_err_probe
+>     - Remove ppg_en variable
+>     - Update when pbs triggers are set/cleared
+>   - Patch 6/7
+>     - Remove use of nvmem_count
+>     - Move register definition to top of file
+>     - Remove lpg_get_sdam_lut_idx()
+> Changes since v2:
+>   - Patch 1/7
+>     - Fix dt_binding_check error
+>     - Rename binding file to match compatible
+>     - Iclude SoC specific comptaibles
+>   - Patch 2/7
+>     - Update nvmem-names list
+>   - Patch 3/7
+>     - Update EXPORT_SYMBOL to EXPORT_SYMBOL_GPL
+>     - Fix return/break logic in qcom_pbs_wait_for_ack()
+>     - Update iterators to be int
+>     - Add constants
+>     - Fix function calls in qcom_pbs_trigger_event()
+>     - Remove unnessary comments
+>     - Return -EPROBE_DEFER from get_pbs_client_device()
+> Changes since v1:
+>   - Patch 1/7
+>     - Fix dt_binding_check errors
+>     - Update binding description
+>   - Path 2/7
+>     - Fix dt_binding_check errors
+>     - Update per variant constraints
+>     - Update nvmem description
+>   - Patch 3/7
+>     - Update get_pbs_client_device()
+>     - Drop use of printk
+>     - Remove unused function
+> 
+> [...]
 
-That is up to you, but you need to test stuff like this if you wish to
-change it as your previous patch obviously would have broken things.
+Applied, thanks!
 
-good luck!
+[2/7] dt-bindings: leds: leds-qcom-lpg: Add support for LPG PPG
+      commit: 2fdd08fec742e0c94a2a06a0c9ee0912b6f7ac39
+[4/7] leds: rgb: leds-qcom-lpg: Add support for PPG through single SDAM
+      commit: 07a1afc8fbb77cc893e2285112482902ac88a295
+[5/7] leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data to support PPG
+      commit: f4f5f6a6f8d7bcc8efd0eee6751def22c9a38fd0
+[6/7] leds: rgb: leds-qcom-lpg: Include support for PPG with dedicated LUT SDAM
+      commit: 7399a927272de1fc42f4da8af1d8d60b65a15b84
+[7/7] leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
+      commit: 7b4066868689b1f341e61957611d252b6fa8cafc
 
-greg k-h
+--
+Lee Jones [李琼斯]
+
 
