@@ -1,154 +1,163 @@
-Return-Path: <linux-kernel+bounces-23131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F87A82A811
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:13:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4FC82A814
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:14:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B066283B71
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:13:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C04071C212BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:14:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A225D304;
-	Thu, 11 Jan 2024 07:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96020D271;
+	Thu, 11 Jan 2024 07:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X+cOTuN5"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PsxFlqiM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1F3D2E5;
-	Thu, 11 Jan 2024 07:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso3818518a12.2;
-        Wed, 10 Jan 2024 23:13:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704957185; x=1705561985; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/uoyWbE2xaZf2TSvVNAEFtqD9eBBBq5P8ndHqpI2t7M=;
-        b=X+cOTuN561JrstNhs/ITTxZKiDyVX6mTcQ7dlPOvB8cSFAPNmqQ9YPjpswtBpBroyB
-         P+7n7xMjpd/3h4lQVYVmcEZj4v53vb+3whq53beeD6IwwBka45RltZsE9Vp41KnScPt8
-         WblMEmBRwtKrQ6gvdqDWQpXcmoLil8PHjTpSd8MSwo40rAW0V7kDezmWSuxJuYHe8f7t
-         Pq5AeWnrXDuVMKDTe0WoBLres/tgpA0llcZ84yrocOA727ZJEmUlX1wg8M2uCLXrveBY
-         bJUreMPoaMtUqVhuoyigkOhEuUy5C+uzkXSbTz2hY6Fwtc4VXLuMKgjdcdHi19Pl4d+a
-         v9uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704957185; x=1705561985;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/uoyWbE2xaZf2TSvVNAEFtqD9eBBBq5P8ndHqpI2t7M=;
-        b=gx0yp4mDRAm6W93TjK8YxfW8qe/gdvlFaywqTYRvLi1406wcJKc3/nOLWB4opYrSJk
-         76RdNspNs9dOKT5/oBdagWbN+QrqpZHXX1JwximFr4vhE1KdthdjasM9Rlvoupcx5z+Y
-         rlBhtCRoI2rSecoTVAtbUStMoPeo7Qdiud+2Pa7euIlznOlTstT3tshhKYmHRHUcBJzS
-         F/OuMA+tyOqCO+8mXmdxYuQv0dZ+Ji3Sf/6EyGM7INs9ccoNDzFR/TR3w9PyLM1oM9g3
-         RmBxdVErzYzV5/G8pb4yPJV4FBzjZ/f+86I/XdvV/PTXTv8Mkd1RPHnC0rFGdIkdE7QI
-         x1yw==
-X-Gm-Message-State: AOJu0Yx48v6fqwCuZq/h+lIP2eq5LsDbLemSsJvcJiarF+QPChFPGXZp
-	mkOg0ogOPMh2v+3MW2iwNOy/Sfgp+aw=
-X-Google-Smtp-Source: AGHT+IG7Hg4E09Ai9/gue83kmEihR6sBHD0356uYEBnLh79dcG4hDo0Nzw8cwjwJs+VAJGMn/z9sNg==
-X-Received: by 2002:a05:6a20:3948:b0:19a:112e:89dc with SMTP id r8-20020a056a20394800b0019a112e89dcmr635621pzg.62.1704957184593;
-        Wed, 10 Jan 2024 23:13:04 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:70e2:a0a5:5166:fbbf])
-        by smtp.gmail.com with ESMTPSA id i63-20020a638742000000b005b458aa0541sm483482pge.15.2024.01.10.23.13.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 23:13:04 -0800 (PST)
-Date: Wed, 10 Jan 2024 23:13:01 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Anshul Dalal <anshulusr@gmail.com>
-Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: adafruit-seesaw - only report buttons that changed
- state
-Message-ID: <ZZ-U_bmZpIdoYA6c@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AA8DDAD;
+	Thu, 11 Jan 2024 07:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704957264; x=1736493264;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=TwjCUuzwUOMo/dYEA4GwmnKF1gt7VZ+tjYe5DJBJoEM=;
+  b=PsxFlqiM25EHVaiQabPdmwbPVsYzFdepEUQIHN7hWX9FyX3YRFBTkXPs
+   y3j3T7impGSkxmopEmFzYP/9UwwT3ivW7USqw9Hd/23aUJeBIUTOJ70Ny
+   tHJpxPP29fJJBV5ftKyfFV2AP0wg8J71EYDTJOBXIAnI2YpHmtGpGAcew
+   VyDdHlv0AcHp9vcmPtkWN7LMIfre8ZtIdegGKjYrF752KCyshIhH8wUdD
+   V39xWHoA64c+XYvWGXKiuMu3xARI4tfWn2TNF8A2NpolNHAIgBFit8xfZ
+   h+/71UebPhobW0vAlstTdfkphgYpkz/g7yG/Swt3J5sEEj0auv5dOkb64
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="395910247"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="395910247"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 23:14:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="732116839"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="732116839"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.8.238]) ([10.93.8.238])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 23:14:15 -0800
+Message-ID: <4d50c00a-9718-4ec5-bdef-ea14c7727ff4@linux.intel.com>
+Date: Thu, 11 Jan 2024 15:14:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-If a button has not changed its state when we poll the device the
-driver does not need to report it. While duplicate events will be
-filtered out by the input core anyway we can do it very cheaply
-directly in the driver.
-
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/joystick/adafruit-seesaw.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/input/joystick/adafruit-seesaw.c b/drivers/input/joystick/adafruit-seesaw.c
-index 1b9279f024cc..5c775ca886a5 100644
---- a/drivers/input/joystick/adafruit-seesaw.c
-+++ b/drivers/input/joystick/adafruit-seesaw.c
-@@ -56,7 +56,7 @@
- #define SEESAW_GAMEPAD_POLL_MIN		8
- #define SEESAW_GAMEPAD_POLL_MAX		32
- 
--static const unsigned long SEESAW_BUTTON_MASK =
-+static const u32 SEESAW_BUTTON_MASK =
- 	BIT(SEESAW_BUTTON_A) | BIT(SEESAW_BUTTON_B) | BIT(SEESAW_BUTTON_X) |
- 	BIT(SEESAW_BUTTON_Y) | BIT(SEESAW_BUTTON_START) |
- 	BIT(SEESAW_BUTTON_SELECT);
-@@ -64,6 +64,7 @@ static const unsigned long SEESAW_BUTTON_MASK =
- struct seesaw_gamepad {
- 	struct input_dev *input_dev;
- 	struct i2c_client *i2c_client;
-+	u32 button_state;
- };
- 
- struct seesaw_data {
-@@ -178,10 +179,20 @@ static int seesaw_read_data(struct i2c_client *client, struct seesaw_data *data)
- 	return 0;
- }
- 
-+static int seesaw_open(struct input_dev *input)
-+{
-+	struct seesaw_gamepad *private = input_get_drvdata(input);
-+
-+	private->button_state = 0;
-+
-+	return 0;
-+}
-+
- static void seesaw_poll(struct input_dev *input)
- {
- 	struct seesaw_gamepad *private = input_get_drvdata(input);
- 	struct seesaw_data data;
-+	unsigned long changed;
- 	int err, i;
- 
- 	err = seesaw_read_data(private->i2c_client, &data);
-@@ -194,8 +205,11 @@ static void seesaw_poll(struct input_dev *input)
- 	input_report_abs(input, ABS_X, data.x);
- 	input_report_abs(input, ABS_Y, data.y);
- 
--	for_each_set_bit(i, &SEESAW_BUTTON_MASK,
--			 BITS_PER_TYPE(SEESAW_BUTTON_MASK)) {
-+	data.button_state &= SEESAW_BUTTON_MASK;
-+	changed = private->button_state ^ data.button_state;
-+	private->button_state = data.button_state;
-+
-+	for_each_set_bit(i, &changed, fls(SEESAW_BUTTON_MASK)) {
- 		if (!sparse_keymap_report_event(input, i,
- 						data.button_state & BIT(i),
- 						false))
-@@ -253,6 +267,7 @@ static int seesaw_probe(struct i2c_client *client)
- 	seesaw->input_dev->id.bustype = BUS_I2C;
- 	seesaw->input_dev->name = "Adafruit Seesaw Gamepad";
- 	seesaw->input_dev->phys = "i2c/" SEESAW_DEVICE_NAME;
-+	seesaw->input_dev->open = seesaw_open;
- 	input_set_drvdata(seesaw->input_dev, seesaw);
- 	input_set_abs_params(seesaw->input_dev, ABS_X,
- 			     0, SEESAW_JOYSTICK_MAX_AXIS,
--- 
-2.43.0.275.g3460e3d667-goog
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 07/10] iommu/vt-d: Allow qi_submit_sync() to return the
+ QI faults
+To: Baolu Lu <baolu.lu@linux.intel.com>, "Tian, Kevin"
+ <kevin.tian@intel.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+ "joro@8bytes.org" <joro@8bytes.org>,
+ "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+ "jgg@nvidia.com" <jgg@nvidia.com>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>
+Cc: "cohuck@redhat.com" <cohuck@redhat.com>,
+ "eric.auger@redhat.com" <eric.auger@redhat.com>,
+ "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+ "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+ "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+ "peterx@redhat.com" <peterx@redhat.com>,
+ "jasowang@redhat.com" <jasowang@redhat.com>,
+ "shameerali.kolothum.thodi@huawei.com"
+ <shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+ "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+ "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+ "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
+ "j.granados@samsung.com" <j.granados@samsung.com>
+References: <20231227161354.67701-1-yi.l.liu@intel.com>
+ <20231227161354.67701-8-yi.l.liu@intel.com>
+ <BN9PR11MB5276429906ED56258BB433068C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <50098edc-2bbb-4c8f-9360-6990f0f5d88a@linux.intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <50098edc-2bbb-4c8f-9360-6990f0f5d88a@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
--- 
-Dmitry
+On 1/1/2024 11:34 AM, Baolu Lu wrote:
+> On 12/28/23 2:17 PM, Tian, Kevin wrote:
+>>> raw_spin_lock_irqsave(&qi->q_lock, flags);
+>>>       /*
+>>> @@ -1430,7 +1439,7 @@ int qi_submit_sync(struct intel_iommu *iommu,
+>>> struct qi_desc *desc,
+>>>            * a deadlock where the interrupt context can wait
+>>> indefinitely
+>>>            * for free slots in the queue.
+>>>            */
+>>> -        rc = qi_check_fault(iommu, index, wait_index);
+>>> +        rc = qi_check_fault(iommu, index, wait_index, fault);
+>>>           if (rc)
+>>>               break;
+>> and as replied in another thread let's change qi_check_fault to return
+>> -ETIMEDOUT to break the restart loop when fault pointer is valid.
+>
+> It's fine to break the retry loop when fault happens and the fault
+> pointer is valid. Please don't forget to add an explanation comment
+> around the code. Something like:
+>
+> /*
+>  * The caller is able to handle the fault by itself. The IOMMU driver
+>  * should not attempt to retry this request.
+>  */
+
+If caller could pass desc with mixed iotlb & devtlb invalidation request,
+
+it would be problematic/difficult for caller or qi_submit_sync() to do
+
+error handling, imagine a case like,
+
+1. call qi_submit_sync() with iotlb & devltb.
+
+2. qi_submit_sync() detects the target device is dead.
+
+3.  break the loop, or will block other invalidation submitter / hang.
+
+4. it is hard for qi_submit_sync() to extract those iotlb invalidation 
+to retry.
+
+5. it is also difficult for caller to retry the iotlb invalidation, or
+
+     leave iotlb out-of-sync. ---there is no sync at all, device is gone.
+
+and if only ITE fault hit, but target device is there && configuration
+
+space reading okay, the ITE is probably left by previous request for
+
+other device, not triggered by this batch, the question is we couldn't
+
+identify the ITE device is just the same as current target ? if the same,
+
+then breaking out is reasonable, or just leave the problem to caller,
+
+something in the request batch is bad, some requests someone request
+
+befoere is bad, but the request is not from the same caller.
+
+
+Thanks,
+
+Ethan
+
+
+>
+> Best regards,
+> baolu
+>
 
