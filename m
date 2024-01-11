@@ -1,198 +1,140 @@
-Return-Path: <linux-kernel+bounces-23795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF6382B1D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:31:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC9482B1E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 16:33:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E118B222D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:31:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E280F281B36
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38A54CDFE;
-	Thu, 11 Jan 2024 15:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A194EB41;
+	Thu, 11 Jan 2024 15:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Xj5PU+4T"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jk9DvIOP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2AC4BAB0;
-	Thu, 11 Jan 2024 15:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40BDeICA013870;
-	Thu, 11 Jan 2024 15:30:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=tLmJlo9a7XOpcogJ276/ISRo79ph673bZD10y+Fx8EM=; b=Xj
-	5PU+4TrVzZyncEd26+c6NVlxOQ49eA3PLOmanRaojLh2RWPvZAT09SPWWVftjt3A
-	n0TL29mBXoPnAhGzXsJA26PyBYr/3LZSvYMvEvD1qfGPLVyzQErB3ygJaIeqPXXx
-	M76HGIcInoeLs/D4ha3D1U8Tn+KZYgGEWCY/eOfzQvFkP86qfjY/gOUFM+vDF+Og
-	gEoHGDFsot45kk/ggePlsUazxpyleLE9Jb3QzB9RrDsA3H1vvk0VUMOZYYM9mv+I
-	hnzEZH+huEjBh7HVhewOZq+pvuUdHPBUbjcN63lqcIxXg2gLa8+7vAcBOgA7C3Jg
-	FFnsFXvn8/HPv66HQoLQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjcsk0xhj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 15:30:57 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40BFUu1H001016
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 15:30:56 GMT
-Received: from [10.253.37.156] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 11 Jan
- 2024 07:30:52 -0800
-Message-ID: <de0ad768-05fa-4bb1-bcbc-0adb28cb2257@quicinc.com>
-Date: Thu, 11 Jan 2024 23:30:48 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44FE4EB33;
+	Thu, 11 Jan 2024 15:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704987166; x=1736523166;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PdaGGrwqDgKANv4fennnp3SNYJCXj4mN51AfYb3oMWU=;
+  b=jk9DvIOP1p+4oSaBqZQyacXJPIvutxtMPWKhRQ46SGl1/RaBm9McsWbC
+   gNDtcRw/UGGcCL0wDsaqnIxhimsnekpxlinhR1CuDd1MZyrIlkGoY+8Hp
+   elCicaOQOt6iDERZZ49h3irmdWUCr0YctxpS1oeWkkcczjpQ6YRe4u7fh
+   5Fg5Fa7REm7HVcZMxezK8n2hVr8oj0kGal9nvo1a/2D7vvUAftwYPMrvH
+   x5H1BYfnCk43Te55Vd6dkjaZgcm/TkgenLIB79sZL3wEwROVx34fvUteP
+   kt9XjsW3nZQtQopVAzqaGZ47/j0fHF4FWAtBJrDtbNryoRfFlcrtPrBX2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="12368657"
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="12368657"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 07:32:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,186,1695711600"; 
+   d="scan'208";a="24356280"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 11 Jan 2024 07:32:42 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rNx23-0008PE-1E;
+	Thu, 11 Jan 2024 15:32:02 +0000
+Date: Thu, 11 Jan 2024 23:30:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>, sre@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Bhavin Sharma <bhavin.sharma@siliconsignals.io>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>,
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] power: supply: Add STC3117 fuel gauge unit driver
+Message-ID: <202401112330.LVTGnI1p-lkp@intel.com>
+References: <20240106133546.936261-1-bhavin.sharma@siliconsignals.io>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: ipq9574: Add PPE device tree node
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <quic_kkumarcs@quicinc.com>, <quic_suruchia@quicinc.com>,
-        <quic_soni@quicinc.com>, <quic_pavir@quicinc.com>,
-        <quic_souravp@quicinc.com>, <quic_linchen@quicinc.com>,
-        <quic_leiwei@quicinc.com>
-References: <20240110112059.2498-1-quic_luoj@quicinc.com>
- <20240110112059.2498-2-quic_luoj@quicinc.com>
- <a42718a9-d0f9-47d9-9ee8-fb520ed2a7a8@linaro.org>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <a42718a9-d0f9-47d9-9ee8-fb520ed2a7a8@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: m18IytmkWCOaHnH4b1m_JtGxV9MuEBgm
-X-Proofpoint-GUID: m18IytmkWCOaHnH4b1m_JtGxV9MuEBgm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 spamscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 impostorscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401110121
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240106133546.936261-1-bhavin.sharma@siliconsignals.io>
 
+Hi Bhavin,
 
+kernel test robot noticed the following build warnings:
 
-On 1/10/2024 7:40 PM, Krzysztof Kozlowski wrote:
-> On 10/01/2024 12:20, Luo Jie wrote:
->> The PPE device tree node includes the PPE initialization configurations
->> and UNIPHY instance configuration.
->>
->> Ther are 3 UNIPHYs(PCS) on the platform ipq9574, which register the
->> clock provider to output the clock for PPE port to work on the different
->> link speed.
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq9574.dtsi | 730 +++++++++++++++++++++++++-
->>   1 file changed, 724 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> index 810cda4a850f..5fa241e27c8b 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> @@ -775,16 +775,734 @@ nsscc: nsscc@39b00000 {
->>   				 <&bias_pll_nss_noc_clk>,
->>   				 <&bias_pll_ubi_nc_clk>,
->>   				 <&gcc_gpll0_out_aux>,
->> -				 <0>,
->> -				 <0>,
->> -				 <0>,
->> -				 <0>,
->> -				 <0>,
->> -				 <0>,
->> +				 <&uniphys 0>,
->> +				 <&uniphys 1>,
->> +				 <&uniphys 2>,
->> +				 <&uniphys 3>,
->> +				 <&uniphys 4>,
->> +				 <&uniphys 5>,
->>   				 <&xo_board_clk>;
->>   			#clock-cells = <1>;
->>   			#reset-cells = <1>;
->>   		};
->> +
->> +		qcom_ppe: qcom-ppe@3a000000 {
-> 
-> qcom is definitely not a generic name.
-> 
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+[auto build test WARNING on sre-power-supply/for-next]
+[also build test WARNING on robh/for-next linus/master v6.7 next-20240111]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Ok, will update to use a generic name in the link, Thanks for the
-guidance and the link.
-> 
-> 
->> +			compatible = "qcom,ipq9574-ppe";
-> 
-> I don't see this documented. I don't see reference to posted bindings.
+url:    https://github.com/intel-lab-lkp/linux/commits/Bhavin-Sharma/dt-bindings-power-supply-stc3117-Convert-to-DT-schema-format/20240106-213744
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git for-next
+patch link:    https://lore.kernel.org/r/20240106133546.936261-1-bhavin.sharma%40siliconsignals.io
+patch subject: [PATCH v2 1/2] power: supply: Add STC3117 fuel gauge unit driver
+config: x86_64-randconfig-r131-20240111 (https://download.01.org/0day-ci/archive/20240111/202401112330.LVTGnI1p-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240111/202401112330.LVTGnI1p-lkp@intel.com/reproduce)
 
-The DT bindings patch was part of the driver series as below. This
-property was documented in the DT bindings patch. Attaching it to DTSI 
-series should make it more clear. If this is fine, I will update the 
-DTSI series with the DT bindings patch.
-https://lore.kernel.org/netdev/20240110142428.52026d9e@kernel.org/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401112330.LVTGnI1p-lkp@intel.com/
 
-> 
-> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> warnings can be ignored, but the code here looks like it needs a fix.
-> Feel free to get in touch if the warning is not clear.
-> 
-> Ignoring this warning is a sign you don't really check your patches
-> before sending.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/power/supply/stc3117_fuel_gauge.c:31:25: sparse: sparse: symbol 'tmp_client' was not declared. Should it be static?
+>> drivers/power/supply/stc3117_fuel_gauge.c:32:21: sparse: sparse: symbol 'stc_sply' was not declared. Should it be static?
+>> drivers/power/supply/stc3117_fuel_gauge.c:49:19: sparse: sparse: symbol 'stc3117_i2c_driver' was not declared. Should it be static?
 
-We have run the checkpatch.pl on the whole patch series including this
-device tree patch set together with PPE driver patch set.
-As mentioned above, I will add the DT bindings patch into the DTS
-series. This should help with the checkpatch issue.
+vim +/tmp_client +31 drivers/power/supply/stc3117_fuel_gauge.c
 
-> 
->> +			reg = <0x3a000000 0xb00000>;
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +			ranges;
-> 
-> Put after reg.
-Ok.
+    30	
+  > 31	const struct i2c_client *tmp_client;
+  > 32	struct power_supply *stc_sply;
+    33	
+    34	static const struct of_device_id stc3117_of_match[] = {
+    35		{ .compatible = "st,stc3117-fgu" },
+    36		{},
+    37	};
+    38	
+    39	MODULE_DEVICE_TABLE(of, stc3117_of_match);
+    40	
+    41	static const struct i2c_device_id stc3117_id[] = {
+    42		{"stc3117", 0},
+    43		{},
+    44	};
+    45	
+    46	
+    47	MODULE_DEVICE_TABLE(i2c, stc3117_id);
+    48	
+  > 49	struct i2c_driver stc3117_i2c_driver = {
+    50		.driver = {
+    51			.name = "stc3117_i2c_driver",
+    52			.owner = THIS_MODULE,
+    53			.of_match_table = of_match_ptr(stc3117_of_match),
+    54		},
+    55		.probe = stc3117_probe,
+    56		.id_table = stc3117_id,
+    57		.remove = stc3117_dev_remove,
+    58	};
+    59	
+    60	
 
-> 
->> +			status = "okay";
-> 
-> Drop
-Ok.
-
-> 
-> All of above comments apply to your entire patchset and all places.
-> 
-> Looking at code further, it does not look like suitable for mainline,
-> but copy of downstream code. That's not what we expect upstream. Please
-> go back to your bindings first. Also, I really insist you reaching out
-> to other folks to help you in this process.
-> 
-> Best regards,
-> Krzysztof
-> 
-We will do internal review of the gaps and update the patches as per
-your comments.
-
-Thanks for the review comments.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
