@@ -1,42 +1,78 @@
-Return-Path: <linux-kernel+bounces-23717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F165082B0BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:39:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A10282B0C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 223AB1C23A69
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:39:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDD85B23504
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADF34CE01;
-	Thu, 11 Jan 2024 14:38:52 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4534EB33;
+	Thu, 11 Jan 2024 14:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="M0wQDBk8"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5D64C3C4;
-	Thu, 11 Jan 2024 14:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from r.smirnovsmtp.omp.ru (10.189.215.22) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 11 Jan
- 2024 17:38:39 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Roman Smirnov <r.smirnov@omp.ru>, "Matthew Wilcox (Oracle)"
-	<willy@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Alexey
- Khoroshilov <khoroshilov@ispras.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, <lvc-project@linuxtesting.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, Miaohe Lin <linmiaohe@huawei.com>
-Subject: [PATCH 5.10 2/2] mm/truncate: Replace page_mapped() call in invalidate_inode_page()
-Date: Thu, 11 Jan 2024 14:37:47 +0000
-Message-ID: <20240111143747.4418-3-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240111143747.4418-1-r.smirnov@omp.ru>
-References: <20240111143747.4418-1-r.smirnov@omp.ru>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CE34EB21;
+	Thu, 11 Jan 2024 14:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BESpE2005896;
+	Thu, 11 Jan 2024 14:38:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=zfildR9DnDi32vKf+vQPMujSLE9aUyOrRoF9q0VtweU=;
+ b=M0wQDBk8M5UlsiINif+3mvbP5CW2z9hQ7/2AOP9c30XQTK/XOipaxiujZV8vjl+MW2Wk
+ sb+jHRnNM3uwf1CMS/dx/gX17kJ9iMqV6dyLFCkqCKZBl6iONYU3bWF+D0ATRfrYXo2T
+ X6MMRLHu6abUXmlNTBCEIdLyNNoLkuhxUDVyTkl21HYbGqqW9mEZIr0PVR7E+Ojx2d+f
+ us1ue7XJKA9mzgLrk31mIIxqLzM3tXCeyyK9o2heo77AHPtPDeXwdsKGV51ZrPTVqJHo
+ qNHmmMYFCT7zcxlUFunFiHCkp5vRB4Qwv/qjphuxlD/helzs1B2WwxiVynPmBxdR3Voi tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjev85wte-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:38:51 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40BDSGmK004398;
+	Thu, 11 Jan 2024 14:38:50 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjev85wt3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:38:50 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40BETZTF022819;
+	Thu, 11 Jan 2024 14:38:49 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfhjyv4as-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:38:49 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40BEcmdY52167004
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Jan 2024 14:38:49 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8FBF058063;
+	Thu, 11 Jan 2024 14:38:48 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B58A458059;
+	Thu, 11 Jan 2024 14:38:47 +0000 (GMT)
+Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.174.181])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 11 Jan 2024 14:38:47 +0000 (GMT)
+From: Tony Krowiak <akrowiak@linux.ibm.com>
+To: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc: jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
+        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+Subject: [PATCH v3 0/6] s390/vfio-ap: reset queues removed from guest's AP configuration
+Date: Thu, 11 Jan 2024 09:38:34 -0500
+Message-ID: <20240111143846.8801-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,75 +80,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch02.omp.ru (10.188.4.13) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/11/2024 14:25:57
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 182570 [Jan 11 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;r.smirnovsmtp.omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/11/2024 14:31:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/11/2024 1:37:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: w7nrDayS6I9j88kc4nx2rqknorvmOaeu
+X-Proofpoint-GUID: h8j5oelMA5wLJwcdGidm3D-6rT_RuTFN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-11_07,2024-01-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=981 malwarescore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 suspectscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401110116
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+All queues removed from a guest's AP configuration must be reset so when
+they are subsequently made available again to a guest, they re-appear in a
+reset state. There are some scenarios where this is not the case. For 
+example, if a queue device that is passed through to a guest is unbound 
+from the vfio_ap device driver, the adapter to which the queue is attached
+will be removed from the guest's AP configuration. Doing so implicitly
+removes all queues associated with that adapter because the AP architecture
+precludes removing a single queue. Those queues also need to be reset.
 
-Commit e41c81d0d30e1a6ebf408feaf561f80cac4457dc upstream.
+This patch series ensures that all queues removed from a guest's AP
+configuration are reset for all possible scenarios.
 
-folio_mapped() is expensive because it has to check each page's mapcount
-field.  A cheaper check is whether there are any extra references to
-the page, other than the one we own, one from the page private data and
-the ones held by the page cache.
+Changelog v1=> v2:
+-----------------
+* Added r-b's to patch 6/6 for Jason and Halil
 
-The call to remove_mapping() will fail in any case if it cannot freeze
-the refcount, but failing here avoids cycling the i_pages spinlock.
+Tony Krowiak (6):
+  s390/vfio-ap: always filter entire AP matrix
+  s390/vfio-ap: loop over the shadow APCB when filtering guest's AP
+    configuration
+  s390/vfio-ap: let 'on_scan_complete' callback filter matrix and update
+    guest's APCB
+  s390/vfio-ap: reset queues filtered from the guest's AP config
+  s390/vfio-ap: reset queues associated with adapter for queue unbound
+    from driver
+  s390/vfio-ap: do not reset queue removed from host config
 
-[Roman: replaced folio_ref_count() call with page_ref_count(),
-folio_nr_pages() call with compound_nr() and
-folio_has_private() call with page_has_private()]
+ drivers/s390/crypto/vfio_ap_ops.c     | 268 +++++++++++++++++---------
+ drivers/s390/crypto/vfio_ap_private.h |  11 +-
+ 2 files changed, 184 insertions(+), 95 deletions(-)
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
----
- mm/truncate.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 03998fd86e4a..72d6c62756fd 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -232,7 +232,8 @@ int invalidate_inode_page(struct page *page)
- 		return 0;
- 	if (PageDirty(page) || PageWriteback(page))
- 		return 0;
--	if (page_mapped(page))
-+	if (page_ref_count(page) >
-+			compound_nr(page) + page_has_private(page) + 1)
- 		return 0;
- 	if (page_has_private(page) && !try_to_release_page(page, 0))
- 		return 0;
 -- 
-2.34.1
+2.43.0
 
 
