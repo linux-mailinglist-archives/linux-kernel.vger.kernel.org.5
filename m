@@ -1,115 +1,180 @@
-Return-Path: <linux-kernel+bounces-22955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E531282A5CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:08:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B78182A5D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831491F2438A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98A91282DEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470AF814;
-	Thu, 11 Jan 2024 02:08:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5C5A48;
+	Thu, 11 Jan 2024 02:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IH1ZeZrj"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jm5Bck8Y"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E046F10EC
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704938917;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qmEEcsA0fyriEKAX8TlwhNLaVQANlK3RwRydup4EB8s=;
-	b=IH1ZeZrj6G+es7br9lTnFYyTgS8/NZ0PXntEb9/Z50vjKtlOktUF47bs/H13CEyBNEL2G4
-	Rtdm1BiJg+oE9KqACaizjUPUDDtYR5OwEN4CIDMNootAWjFqNFtLBWJ976MsR1q1AcffSr
-	nHPjaiVp52YhioD9c5kbusjZypUg/44=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A176210E1;
+	Thu, 11 Jan 2024 02:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9b2c8e2a4so4184165b3a.0;
+        Wed, 10 Jan 2024 18:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704938979; x=1705543779; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CVGerGdxypNJVY8HvlvaxvCAEco/EBTEFEtuf6vbduo=;
+        b=jm5Bck8Y16UUyTOzNZm4tVBh7Yvo8WvHqzk6iEwRZ7wvcrGeBf+C1vWjDrJV/ceExV
+         dulzFNGiJMZUBvg+8XwPUuRaxclyMYWw0BhwIu6b7qMJ5TNPHqsq/NCvYQ8rnI/ew+g2
+         yaEkngmGeLdiviaTtY0Nbv5rB1Ht0geHsiqfAGOFde1PtKldEk6A575ZfSP4m7qnAqV+
+         TIbCoAda3rZDyOxZ1WE+iPbxUHLjGPBXYwiVtuxk1MeV/LNOhKn46K6ejuJ0Fj19+pXp
+         UL1acTPUQWWXFEIHOpehWF9EbQZsg2ktdtDC/pNdGabUp5bN974BKPKkT+Cwg/ToGE+0
+         K0jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704938979; x=1705543779;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CVGerGdxypNJVY8HvlvaxvCAEco/EBTEFEtuf6vbduo=;
+        b=hqxz3hrbYs0BRyk5Fpi0HVW159fDCeOh24L+krMlFyeBiEQhtwwtJ8ben4yBcHlaPH
+         dlSBIxKFn/9f3o6ZePKFGzNQhxjWHYRcaCGrwHbBQi1NiHy9kxP74+PVr3SMoRvR3Guz
+         zRqJUZ05CSsSQGvGwz6pBFRKeNEZO1BEAx7QHkBeFLdwLbYp6eQSKzANY1BoTtw1nGMe
+         AwLGYG9E61mj+dLA6OB+ogj6yunLc9ZRmbqMQ/RIUQ6PRcEqqpSocpNV5ENbK/rnXd2i
+         +i83yYX+KwXhoAFBew4OXEvfmsJAcfRn0r195oRNBh5omu9LvNqzElvayy16eyePGeN0
+         dRGQ==
+X-Gm-Message-State: AOJu0Yy7MJE7cTNqqVkIZn/Wo43qJqCZQMYztOGcBw5j6EG8k1spGSpq
+	hNnTa45d03Oyxwvkbvs8O7xCk875PFI=
+X-Google-Smtp-Source: AGHT+IGVo2uCtb4VSxIAhKcpBlrex2yfbiT1vAScDBBEEG/rgT5d8ZrFawa6mQ9ZzYkrbyHEwvAmMA==
+X-Received: by 2002:a05:6a21:498d:b0:199:a2eb:ee7b with SMTP id ax13-20020a056a21498d00b00199a2ebee7bmr57177pzc.51.1704938978885;
+        Wed, 10 Jan 2024 18:09:38 -0800 (PST)
+Received: from [10.193.226.49] ([106.39.42.235])
+        by smtp.gmail.com with ESMTPSA id r3-20020aa78b83000000b006d9beb968c3sm673pfd.106.2024.01.10.18.09.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 18:09:38 -0800 (PST)
+Message-ID: <8788068e-39ae-4307-b789-03d90d414421@gmail.com>
+Date: Thu, 11 Jan 2024 10:09:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH 1/1] selftests: mm: hugepage-vmemmap fails on 64K page
- size systems.
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240110075351.f4b6f43e31629ddcb96503cc@linux-foundation.org>
-Date: Thu, 11 Jan 2024 10:07:58 +0800
-Cc: linux-kselftest@vger.kernel.org,
- Aneesh Kumar <aneesh.kumar@linux.ibm.com>,
- Linux-MM <linux-mm@kvack.org>,
- linuxppc-dev@lists.ozlabs.org,
- LKML <linux-kernel@vger.kernel.org>,
- Geetika Moolchandani <geetika@linux.ibm.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C3CE35A3-7663-4B8E-9E85-8F0C3CD7D9EC@linux.dev>
-References: <3b3a3ae37ba21218481c482a872bbf7526031600.1704865754.git.donettom@linux.vnet.ibm.com>
- <20240110075351.f4b6f43e31629ddcb96503cc@linux-foundation.org>
-To: Donet Tom <donettom@linux.vnet.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] md/raid5: fix atomicity violation in raid5_cache_count
+From: Gui-Dong Han <2045gemini@gmail.com>
+To: song@kernel.org, yukuai3@huawei.com
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ baijiaju1990@outlook.com, BassCheck <bass@buaa.edu.cn>
+References: <20231222045224.4439-1-2045gemini@gmail.com>
+ <f311998f-303f-44a6-9525-0611152d521a@gmail.com>
+In-Reply-To: <f311998f-303f-44a6-9525-0611152d521a@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+Dear Kuai,
 
+Due to unknown reasons, I did not see your response in my Gmail. I came 
+across it on Patchwork and understand the need to pair READ_ONCE() with 
+WRITE_ONCE(). I'll make these changes and submit patch v3 soon. Thank 
+you for your guidance.
 
-> On Jan 10, 2024, at 23:53, Andrew Morton <akpm@linux-foundation.org> =
-wrote:
->=20
-> (cc Muchun)
-> On Wed, 10 Jan 2024 14:03:35 +0530 Donet Tom =
-<donettom@linux.vnet.ibm.com> wrote:
->=20
->> The kernel sefltest mm/hugepage-vmemmap fails on architectures
->> which has different page size other than 4K. In hugepage-vmemmap
->> page size used is 4k so the pfn calculation will go wrong on systems
->> which has different page size .The length of MAP_HUGETLB memory must
->> be hugepage aligned but in hugepage-vmemmap map length is 2M so this
->> will not get aligned if the system has differnet hugepage size.
->>=20
->> Added  psize() to get the page size and default_huge_page_size() to
->> get the default hugepage size at run time, hugepage-vmemmap test pass
->> on powerpc with 64K page size and x86 with 4K page size.
->>=20
->> Result on powerpc without patch (page size 64K)
->> *# ./hugepage-vmemmap
->> Returned address is 0x7effff000000 whose pfn is 0
->> Head page flags (100000000) is invalid
->> check_page_flags: Invalid argument
->> *#
->>=20
->> Result on powerpc with patch (page size 64K)
->> *# ./hugepage-vmemmap
->> Returned address is 0x7effff000000 whose pfn is 600
->> *#
->>=20
->> Result on x86 with patch (page size 4K)
->> *# ./hugepage-vmemmap
->> Returned address is 0x7fc7c2c00000 whose pfn is 1dac00
->> *#
->>=20
->> Signed-off-by: Donet Tom <donettom@linux.vnet.ibm.com>
->> Reported-by : Geetika Moolchandani (geetika@linux.ibm.com)
->> Tested-by : Geetika Moolchandani (geetika@linux.ibm.com)
+Best,
+Han
 
-Acked-by: Muchun Song <muchun.song@linux.dev>
-
->=20
-> I'll add=20
->=20
-> Fixes: b147c89cd429 ("selftests: vm: add a hugetlb test case")
-> Cc: <stable@vger.kernel.org>
-
-Yes. It should be a real bug fix.
-
-Thanks.
-
+On 11/1/2024 上午9:51, Gui-Dong Han wrote:
+> Dear All:
+>
+> I hope this email finds you well. I hope you haven't missed my 
+> previous email, as I understand that everyone has a busy schedule. I 
+> just wanted to follow up on my previous message sent.
+> I understand that you may be occupied with other tasks or priorities. 
+> However, I would greatly appreciate it if you could spare a few 
+> moments to check the patch in my previous email. Your prompt response 
+> would be highly valuable to me.
+> Thank you for your attention to this matter, and I look forward to 
+> hearing from you soon.
+>
+> Thanks,
+> Han
+>
+> On 22/12/2023 下午12:52, Gui-Dong Han wrote:
+>> In raid5_cache_count():
+>>     if (conf->max_nr_stripes < conf->min_nr_stripes)
+>>         return 0;
+>>     return conf->max_nr_stripes - conf->min_nr_stripes;
+>> The current check is ineffective, as the values could change immediately
+>> after being checked.
+>>
+>> In raid5_set_cache_size():
+>>     ...
+>>     conf->min_nr_stripes = size;
+>>     ...
+>>     while (size > conf->max_nr_stripes)
+>>         conf->min_nr_stripes = conf->max_nr_stripes;
+>>     ...
+>>
+>> Due to intermediate value updates in raid5_set_cache_size(), concurrent
+>> execution of raid5_cache_count() and raid5_set_cache_size() may lead to
+>> inconsistent reads of conf->max_nr_stripes and conf->min_nr_stripes.
+>> The current checks are ineffective as values could change immediately
+>> after being checked, raising the risk of conf->min_nr_stripes exceeding
+>> conf->max_nr_stripes and potentially causing an integer overflow.
+>>
+>> This possible bug is found by an experimental static analysis tool
+>> developed by our team. This tool analyzes the locking APIs to extract
+>> function pairs that can be concurrently executed, and then analyzes the
+>> instructions in the paired functions to identify possible concurrency 
+>> bugs
+>> including data races and atomicity violations. The above possible bug is
+>> reported when our tool analyzes the source code of Linux 6.2.
+>>
+>> To resolve this issue, it is suggested to introduce local variables
+>> 'min_stripes' and 'max_stripes' in raid5_cache_count() to ensure the
+>> values remain stable throughout the check. Adding locks in
+>> raid5_cache_count() fails to resolve atomicity violations, as
+>> raid5_set_cache_size() may hold intermediate values of
+>> conf->min_nr_stripes while unlocked. With this patch applied, our 
+>> tool no
+>> longer reports the bug, with the kernel configuration allyesconfig for
+>> x86_64. Due to the lack of associated hardware, we cannot test the patch
+>> in runtime testing, and just verify it according to the code logic.
+>>
+>> Fixes: edbe83ab4c27e ("md/raid5: allow the stripe_cache to grow and 
+>> ...")
+>> Reported-by: BassCheck <bass@buaa.edu.cn>
+>> Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+>>
+>> ---
+>> v2:
+>> * In this patch v2, we've updated to use READ_ONCE() instead of direct
+>> reads for accessing max_nr_stripes and min_nr_stripes, since read and
+>> write can concurrent.
+>>    Thank Yu Kuai for helpful advice.
+>> ---
+>>   drivers/md/raid5.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+>> index 8497880135ee..9037e46de0e2 100644
+>> --- a/drivers/md/raid5.c
+>> +++ b/drivers/md/raid5.c
+>> @@ -7391,10 +7391,12 @@ static unsigned long raid5_cache_count(struct 
+>> shrinker *shrink,
+>>   {
+>>       struct r5conf *conf = shrink->private_data;
+>>   -    if (conf->max_nr_stripes < conf->min_nr_stripes)
+>> +    int max_stripes = READ_ONCE(conf->max_nr_stripes);
+>> +    int min_stripes = READ_ONCE(conf->min_nr_stripes);
+>> +    if (max_stripes < min_stripes)
+>>           /* unlikely, but not impossible */
+>>           return 0;
+>> -    return conf->max_nr_stripes - conf->min_nr_stripes;
+>> +    return max_stripes - min_stripes;
+>>   }
+>>     static struct r5conf *setup_conf(struct mddev *mddev)
 
