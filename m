@@ -1,138 +1,139 @@
-Return-Path: <linux-kernel+bounces-23152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA0A682A85A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E80482A879
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0FB51C2349F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:31:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53EE1C21269
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 07:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED52BD2F0;
-	Thu, 11 Jan 2024 07:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D92D299;
+	Thu, 11 Jan 2024 07:38:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gj2GJVKu"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N6FpV21f"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3413D271;
-	Thu, 11 Jan 2024 07:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbe1560c5b0so553695276.0;
-        Wed, 10 Jan 2024 23:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704958265; x=1705563065; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4T5oinj6i4RtpTG4VL9LZbm5pLTPQsWr68EJIfiHeE0=;
-        b=gj2GJVKu3oRFYgsgTlbcc+ZYy8RJbcKnlqQolsg7ox8TDv5Vn1/TfXmZdMVquG1iO0
-         Hm/86EFyQv6YIe8YE5mTHenFTP8jhH8ESmvKIvoYjaNJuLlVToSf2X8cIhCJwSf7phDh
-         Grf+ffalQfFrJRD1S22cXmzIbpK1kMDIYH8D3gW0F4cGviwh8tqvLghRLbiYK4+0XHje
-         x0cOf5snxjHAGbTuO3QRnPvzSeDi5y4CnSUs8qFmwyKponMJKrEZsQbQrOiT9PdfRzHR
-         jCeE9n/w7IQAVQIwHQydVZJUDzP26EQfqEpg3XpWTq5iGMWhbvvzbpM6EaXNVnre3e1v
-         HKDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704958265; x=1705563065;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4T5oinj6i4RtpTG4VL9LZbm5pLTPQsWr68EJIfiHeE0=;
-        b=fwwG1aoKIMz6Ss3oNQeiWGTeq50QBnYoDgJAS7BPqyAO2xLSWzPfkogAmGS2osZEl1
-         klHZacaOu+q51SBkkVZsz24NrPqak0h/nswp0YG+fKg/fZw07cCpF/0/KuxSSKxA604H
-         6nmqdhSiAvjXfnM1TVRDzIq9KJ4RmfU1+T3/FNKSt1B0Ve+pxLaG6h7iLMU1t76ch2K8
-         AcdS3MkXX46NCe1+ckvolVFOaJZfgBmtL4BBTZsSnZ2uNLAIdaBF5oz2rWglz4i9O6NI
-         bgzQPuiimDRZP/6L7AYnTRip27Em0IWQHfGuHMylByN1/Sqgdxw9mXLpJ1lmQqpqqWUB
-         YCxQ==
-X-Gm-Message-State: AOJu0Yx60h19VX4lUsApi100ZoB9WkZmiJV6R8Kde3zh9fOecHuD76Ns
-	8Ahj7xv4y221NfJ6H/XRccgyYt03n5E=
-X-Google-Smtp-Source: AGHT+IHFyUhcUtqRSzpWm/gnjXz+qEZoFool0wFoHozXJQggC1lFv7etZ+nxppAw9wp+cAbX01nF8w==
-X-Received: by 2002:a81:ae43:0:b0:5f0:7272:c243 with SMTP id g3-20020a81ae43000000b005f07272c243mr1249913ywk.5.1704958264821;
-        Wed, 10 Jan 2024 23:31:04 -0800 (PST)
-Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id g189-20020a0df6c6000000b005a4da74b869sm200083ywf.139.2024.01.10.23.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 23:31:04 -0800 (PST)
-Date: Wed, 10 Jan 2024 23:31:00 -0800
-From: Richard Cochran <richardcochran@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Sagi Maimon <maimon.sagi@gmail.com>, Andy Lutomirski <luto@kernel.org>,
-	tglx@linutronix.de, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Nhat Pham <nphamcs@gmail.com>, Palmer Dabbelt <palmer@sifive.com>,
-	Kees Cook <keescook@chromium.org>,
-	Alexey Gladkov <legion@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
-	Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v3] posix-timers: add multi_clock_gettime system call
-Message-ID: <ZZ-ZNHgDsZwg9CaW@hoboy.vegasvil.org>
-References: <20231228122411.3189-1-maimon.sagi@gmail.com>
- <f254c189-463e-43a3-bc09-9a8869ebf819@app.fastmail.com>
- <CAMuE1bF0Hho4VwO6w3f+9z3j5TtscYzuAjj10MFt2mZXG2P8dQ@mail.gmail.com>
- <84d8e9d7-09ce-4781-8dfa-a74bb0955ae8@app.fastmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD1FD28F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 07:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704958705; x=1736494705;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1P8soOsSAg4WFnLHZTKMOzbTMCW8wETbL0uhEPdgccw=;
+  b=N6FpV21fHeJknRBKaPXaG/kKeWdYqsgJLMwDQ9ynSW7vShP1ZfLk/ALh
+   qG6wkO0yYKjDAWsF9bRuhR3XN6s1s7y6ZGXVyuJ4WO01Jn9h3isT/0o8m
+   fxi6OjbG3aR7OSMKIBQE9ZqR2+/5q1G5+4zZEIj5oDKmSz85nR+zOXdQE
+   jMCzIWVJvW8CoqG9OstXg82rIevgzuCHR55byhH+qakZGmPq0+78IDdxX
+   3RgwSEUOsZLRWq0iNkE37iaLbU4byEjW96Vx0K78ZQwOcDO2XLrA/hnvS
+   T0jmmRlpSl9CjMEgckV+eVnT/KwxIjHnWkAE2UOZ0K5YrzDt9t646UIe/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10949"; a="463056662"
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="463056662"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 23:37:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,185,1695711600"; 
+   d="scan'208";a="30909609"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by orviesa001.jf.intel.com with ESMTP; 10 Jan 2024 23:37:35 -0800
+From: Lu Baolu <baolu.lu@linux.intel.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>
+Cc: iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 1/1] iommufd/selftest: Use right iommu_ops for mock device
+Date: Thu, 11 Jan 2024 15:32:13 +0800
+Message-Id: <20240111073213.180020-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84d8e9d7-09ce-4781-8dfa-a74bb0955ae8@app.fastmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 02, 2024 at 12:29:59PM +0100, Arnd Bergmann wrote:
+In the iommu probe device path, __iommu_probe_device() gets the iommu_ops
+for the device from dev->iommu->fwspec if this field has been initialized
+before probing. Otherwise, it will lookup the global iommu device list
+and use the iommu_ops of the first iommu device which has no
+dev->iommu->fwspec. This causes the wrong iommu_ops to be used for the mock
+device on x86 platforms where dev->iommu->fwspec is not used.
 
-> I think Andy's suggestion of exposing time offsets instead
-> of absolute times would actually achieve that: If the
-> interface is changed to return the offset against
-> CLOCK_MONOTONIC, CLOCK_MONOTONIC_RAW or CLOCK_BOOTTIME
-> (not sure what is best here), then the new syscall can use
-> getcrosststamp() where supported for the best results or
-> fall back to gettimex64() or gettime64() otherwise to
-> provide a consistent user interface.
+Preallocate the fwspec for the mock device so that the right iommu ops can
+be used.
 
-Yes, it makes more sense to provide the offset, since that is what the
-user needs in the end.
+Fixes: 17de3f5fdd35 ("iommu: Retire bus ops")
+Cc: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ drivers/iommu/iommufd/selftest.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-Can we change the name of the system call to "clock compare"?
-
-int clock_compare(clockid_t a, clockid_t b,
-		  int64_t *offset, int64_t *error);
-
-returns: zero or error code,
- offset = a - b
- error  = maximum error due to asymmetry
-
-If clocks a and b are both System-V clocks, then *error=0 and *offset
-can be returned directly from the kernel's time keeping state.
-
-If getcrosststamp() is supported on a or b, then invoke it.
-
-otherwise do this:
-
-   t1 = gettime(a)
-   t2 = gettime(b)
-   t3 - gettime(c)
-
-   *offset = (t1 + t3)/2 - t2
-   *error  = (t3 - t1)/2
-
-There is no need for repeated measurement, since user space can call
-again when `error` is unacceptable.
-
-Thanks,
-Richard
-
-
+diff --git a/drivers/iommu/iommufd/selftest.c b/drivers/iommu/iommufd/selftest.c
+index cf3e9fed039e..4eca67b8a5c6 100644
+--- a/drivers/iommu/iommufd/selftest.c
++++ b/drivers/iommu/iommufd/selftest.c
+@@ -611,6 +611,8 @@ static void mock_dev_release(struct device *dev)
+ 
+ static struct mock_dev *mock_dev_create(unsigned long dev_flags)
+ {
++	struct iommu_fwspec *fwspec;
++	struct dev_iommu *param;
+ 	struct mock_dev *mdev;
+ 	int rc;
+ 
+@@ -621,10 +623,28 @@ static struct mock_dev *mock_dev_create(unsigned long dev_flags)
+ 	if (!mdev)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	/* fwspec and param will be freed in the iommu core */
++	fwspec = kzalloc(sizeof(*fwspec), GFP_KERNEL);
++	if (!fwspec) {
++		kfree(mdev);
++		return ERR_PTR(-ENOMEM);
++	}
++	fwspec->ops = &mock_ops;
++
++	param = kzalloc(sizeof(*param), GFP_KERNEL);
++	if (!param) {
++		kfree(mdev);
++		kfree(fwspec);
++		return ERR_PTR(-ENOMEM);
++	}
++	mutex_init(&param->lock);
++	param->fwspec = fwspec;
++
+ 	device_initialize(&mdev->dev);
+ 	mdev->flags = dev_flags;
+ 	mdev->dev.release = mock_dev_release;
+ 	mdev->dev.bus = &iommufd_mock_bus_type.bus;
++	mdev->dev.iommu = param;
+ 
+ 	rc = dev_set_name(&mdev->dev, "iommufd_mock%u",
+ 			  atomic_inc_return(&mock_dev_num));
+@@ -638,6 +658,8 @@ static struct mock_dev *mock_dev_create(unsigned long dev_flags)
+ 
+ err_put:
+ 	put_device(&mdev->dev);
++	kfree(param);
++	kfree(fwspec);
+ 	return ERR_PTR(rc);
+ }
+ 
+-- 
+2.34.1
 
 
