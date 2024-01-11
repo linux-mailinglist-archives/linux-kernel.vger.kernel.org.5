@@ -1,125 +1,163 @@
-Return-Path: <linux-kernel+bounces-23239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 538A582A94E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:46:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A759282A957
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 09:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0331E287D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:46:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BC271F2363C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 08:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1E910962;
-	Thu, 11 Jan 2024 08:45:53 +0000 (UTC)
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89869101FB;
-	Thu, 11 Jan 2024 08:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W-P1z6j_1704962735;
-Received: from i85c04085.eu95sqa.tbsite.net(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0W-P1z6j_1704962735)
-          by smtp.aliyun-inc.com;
-          Thu, 11 Jan 2024 16:45:43 +0800
-From: Hui Zhu <teawaterz@linux.alibaba.com>
-To: akpm@linux-foundation.org,
-	david@redhat.com,
-	avagin@google.com,
-	usama.anjum@collabora.com,
-	peterx@redhat.com,
-	hughd@google.com,
-	ryan.roberts@arm.com,
-	wangkefeng.wang@huawei.com,
-	Liam.Howlett@Oracle.com,
-	adobriyan@gmail.com,
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C95B11CB5;
+	Thu, 11 Jan 2024 08:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="G3ht1Hrb"
+Received: from m16.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC26811C8F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 08:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id; bh=K5jkcFwfLSzHGD8i3r
+	gXpJa3IpDSb25X30niYM6V+dU=; b=G3ht1Hrb6MQjvFAWak1VX81kWQnHU0dsXD
+	Ejz74HdMXp/kuEHHpW+c4y9LeW8WO4qKB72N8zVwQVlGwKuqCq2NoYRTAi0kWC8L
+	5y11Y0H8fxg7r2ztbKcuR5e0MVEUbJ7qnHdQ9kSY9gftY5Kqtd9vdEBdQ2wQu5Ts
+	4k0ZuUVR0=
+Received: from localhost.localdomain (unknown [182.148.14.173])
+	by gzga-smtp-mta-g0-2 (Coremail) with SMTP id _____wD3XwHKqp9lkZiWAA--.65077S2;
+	Thu, 11 Jan 2024 16:46:03 +0800 (CST)
+From: GuoHua Chen <chenguohua_716@163.com>
+To: daniel@ffwll.ch,
+	Xinhui.Pan@amd.com,
+	alexander.deucher@amd.com,
+	airlied@gmail.com,
+	christian.koenig@amd.com
+Cc: dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: teawater@gmail.com,
-	Hui Zhu <teawater@antgroup.com>
-Subject: [PATCH] fs/proc/task_mmu.c: add_to_pagemap: Remove useless parameter addr
-Date: Thu, 11 Jan 2024 08:45:33 +0000
-Message-Id: <20240111084533.40038-1-teawaterz@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
+	GuoHua Chen <chenguohua_716@163.com>
+Subject: [PATCH] drm/radeon: Clean up errors in rv770_smc.h
+Date: Thu, 11 Jan 2024 08:46:00 +0000
+Message-Id: <20240111084600.12587-1-chenguohua_716@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:_____wD3XwHKqp9lkZiWAA--.65077S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZF4rCw18Gw1xJr1DZw1UKFg_yoW5Cr47pw
+	47Gas8Jr45ta4293Z7GFWUAr1YyF4DtF43uFyava43XFWjvr4jkFy0gF45AFyfGa47uFyf
+	XrWDtryUZ3ZIyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UFdgAUUUUU=
+X-CM-SenderInfo: xfkh0w5xrk3tbbxrlqqrwthudrp/xtbBEA5i1mVOBlA7dAAAsY
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Hui Zhu <teawater@antgroup.com>
+Fix the following errors reported by checkpatch:
 
-Function parameters addr of add_to_pagemap is useless.
-This commit remove it.
+ERROR: open brace '{' following struct go on the same line
+ERROR: open brace '{' following union go on the same line
 
-Signed-off-by: Hui Zhu <teawater@antgroup.com>
+Signed-off-by: GuoHua Chen <chenguohua_716@163.com>
 ---
- fs/proc/task_mmu.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/radeon/rv770_smc.h | 27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 62b16f42d5d2..882e2569fc31 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1352,8 +1352,7 @@ static inline pagemap_entry_t make_pme(u64 frame, u64 flags)
- 	return (pagemap_entry_t) { .pme = (frame & PM_PFRAME_MASK) | flags };
- }
+diff --git a/drivers/gpu/drm/radeon/rv770_smc.h b/drivers/gpu/drm/radeon/rv770_smc.h
+index 3b2c963c4880..d8e8f70135f2 100644
+--- a/drivers/gpu/drm/radeon/rv770_smc.h
++++ b/drivers/gpu/drm/radeon/rv770_smc.h
+@@ -31,8 +31,7 @@
  
--static int add_to_pagemap(unsigned long addr, pagemap_entry_t *pme,
--			  struct pagemapread *pm)
-+static int add_to_pagemap(pagemap_entry_t *pme, struct pagemapread *pm)
- {
- 	pm->buffer[pm->pos++] = *pme;
- 	if (pm->pos >= pm->len)
-@@ -1380,7 +1379,7 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
- 			hole_end = end;
+ #define RV770_SMC_PERFORMANCE_LEVELS_PER_SWSTATE    3
  
- 		for (; addr < hole_end; addr += PAGE_SIZE) {
--			err = add_to_pagemap(addr, &pme, pm);
-+			err = add_to_pagemap(&pme, pm);
- 			if (err)
- 				goto out;
- 		}
-@@ -1392,7 +1391,7 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
- 		if (vma->vm_flags & VM_SOFTDIRTY)
- 			pme = make_pme(0, PM_SOFT_DIRTY);
- 		for (; addr < min(end, vma->vm_end); addr += PAGE_SIZE) {
--			err = add_to_pagemap(addr, &pme, pm);
-+			err = add_to_pagemap(&pme, pm);
- 			if (err)
- 				goto out;
- 		}
-@@ -1519,7 +1518,7 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 		for (; addr != end; addr += PAGE_SIZE) {
- 			pagemap_entry_t pme = make_pme(frame, flags);
+-struct RV770_SMC_SCLK_VALUE
+-{
++struct RV770_SMC_SCLK_VALUE {
+     uint32_t        vCG_SPLL_FUNC_CNTL;
+     uint32_t        vCG_SPLL_FUNC_CNTL_2;
+     uint32_t        vCG_SPLL_FUNC_CNTL_3;
+@@ -43,8 +42,7 @@ struct RV770_SMC_SCLK_VALUE
  
--			err = add_to_pagemap(addr, &pme, pm);
-+			err = add_to_pagemap(&pme, pm);
- 			if (err)
- 				break;
- 			if (pm->show_pfn) {
-@@ -1547,7 +1546,7 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 		pagemap_entry_t pme;
+ typedef struct RV770_SMC_SCLK_VALUE RV770_SMC_SCLK_VALUE;
  
- 		pme = pte_to_pagemap_entry(pm, vma, addr, ptep_get(pte));
--		err = add_to_pagemap(addr, &pme, pm);
-+		err = add_to_pagemap(&pme, pm);
- 		if (err)
- 			break;
- 	}
-@@ -1597,7 +1596,7 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
- 	for (; addr != end; addr += PAGE_SIZE) {
- 		pagemap_entry_t pme = make_pme(frame, flags);
+-struct RV770_SMC_MCLK_VALUE
+-{
++struct RV770_SMC_MCLK_VALUE {
+     uint32_t        vMPLL_AD_FUNC_CNTL;
+     uint32_t        vMPLL_AD_FUNC_CNTL_2;
+     uint32_t        vMPLL_DQ_FUNC_CNTL;
+@@ -59,8 +57,7 @@ struct RV770_SMC_MCLK_VALUE
+ typedef struct RV770_SMC_MCLK_VALUE RV770_SMC_MCLK_VALUE;
  
--		err = add_to_pagemap(addr, &pme, pm);
-+		err = add_to_pagemap(&pme, pm);
- 		if (err)
- 			return err;
- 		if (pm->show_pfn && (flags & PM_PRESENT))
+ 
+-struct RV730_SMC_MCLK_VALUE
+-{
++struct RV730_SMC_MCLK_VALUE {
+     uint32_t        vMCLK_PWRMGT_CNTL;
+     uint32_t        vDLL_CNTL;
+     uint32_t        vMPLL_FUNC_CNTL;
+@@ -73,8 +70,7 @@ struct RV730_SMC_MCLK_VALUE
+ 
+ typedef struct RV730_SMC_MCLK_VALUE RV730_SMC_MCLK_VALUE;
+ 
+-struct RV770_SMC_VOLTAGE_VALUE
+-{
++struct RV770_SMC_VOLTAGE_VALUE {
+     uint16_t             value;
+     uint8_t              index;
+     uint8_t              padding;
+@@ -82,16 +78,14 @@ struct RV770_SMC_VOLTAGE_VALUE
+ 
+ typedef struct RV770_SMC_VOLTAGE_VALUE RV770_SMC_VOLTAGE_VALUE;
+ 
+-union RV7XX_SMC_MCLK_VALUE
+-{
++union RV7XX_SMC_MCLK_VALUE {
+     RV770_SMC_MCLK_VALUE    mclk770;
+     RV730_SMC_MCLK_VALUE    mclk730;
+ };
+ 
+ typedef union RV7XX_SMC_MCLK_VALUE RV7XX_SMC_MCLK_VALUE, *LPRV7XX_SMC_MCLK_VALUE;
+ 
+-struct RV770_SMC_HW_PERFORMANCE_LEVEL
+-{
++struct RV770_SMC_HW_PERFORMANCE_LEVEL {
+     uint8_t                 arbValue;
+     union{
+         uint8_t             seqValue;
+@@ -126,8 +120,7 @@ struct RV770_SMC_HW_PERFORMANCE_LEVEL
+ 
+ typedef struct RV770_SMC_HW_PERFORMANCE_LEVEL RV770_SMC_HW_PERFORMANCE_LEVEL;
+ 
+-struct RV770_SMC_SWSTATE
+-{
++struct RV770_SMC_SWSTATE {
+     uint8_t           flags;
+     uint8_t           padding1;
+     uint8_t           padding2;
+@@ -142,8 +135,7 @@ typedef struct RV770_SMC_SWSTATE RV770_SMC_SWSTATE;
+ #define RV770_SMC_VOLTAGEMASK_VDDCI 2
+ #define RV770_SMC_VOLTAGEMASK_MAX  4
+ 
+-struct RV770_SMC_VOLTAGEMASKTABLE
+-{
++struct RV770_SMC_VOLTAGEMASKTABLE {
+     uint8_t  highMask[RV770_SMC_VOLTAGEMASK_MAX];
+     uint32_t lowMask[RV770_SMC_VOLTAGEMASK_MAX];
+ };
+@@ -152,8 +144,7 @@ typedef struct RV770_SMC_VOLTAGEMASKTABLE RV770_SMC_VOLTAGEMASKTABLE;
+ 
+ #define MAX_NO_VREG_STEPS 32
+ 
+-struct RV770_SMC_STATETABLE
+-{
++struct RV770_SMC_STATETABLE {
+     uint8_t             thermalProtectType;
+     uint8_t             systemFlags;
+     uint8_t             maxVDDCIndexInPPTable;
 -- 
-2.19.1.6.gb485710b
+2.17.1
 
 
