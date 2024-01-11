@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-23928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BF282B3FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:23:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEF782B401
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 18:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48B1AB22D58
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:23:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01CFF1F23340
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 17:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E449537F2;
-	Thu, 11 Jan 2024 17:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0809153E37;
+	Thu, 11 Jan 2024 17:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="D5YrtaqD"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2066.outbound.protection.outlook.com [40.107.237.66])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="jnWVSRFA"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2081.outbound.protection.outlook.com [40.107.93.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D54D524A9;
-	Thu, 11 Jan 2024 17:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4CD52F7B;
+	Thu, 11 Jan 2024 17:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=myCGBSkbqAQyqb5jiyOKnr2HkNTfCJbO2eS/RtnimoOKZjpLIEcgVekx+enA/1H1IBE+WijBZGgFw7GNx4ofxkhcAy+4xfgLopJGe+vRreK7huQL472c4j1ykvD19yBVBELlZn6Tvis+7BHv9um+WsdjNQ/IoZY9CK1Pai4F7Lnq03416/LK9gHfaJYuxjDCXPct2NWuJ8Gd0qNAhxk4SftbJafMklQageNijlxMxOBe1zCs7yutnjpEAfCAKo5uqdO1iwFtwIajzobQD8xEwfKeKN8z1KlfgBRNx3XpwMzbeP3Pz9cios+6sYiNTVq6WQWhtOG0YFIG/WTFDjSDBQ==
+ b=Io+5qOyDHbxOuRk3tl0Yvz1iQS646avmBAj3hL28wZtTE8P8wmV30fsL0HHw61NpuDHaCMnMpbVdCeb9+6MUOrrS06QCltk+PusGCPUPNRtIfe5hAKNUrIPOdEgc20h47JGN2PjLkB7RnnC7y7khha+vZyDiErZbfOGGa++Ks4kz45wl0Eda0W3aKcNE5RXmhK0IxHAwGNeSiZYavpgsS4nzNnG509h0DXcpZXKmJtgf+PJ4OyfklDOU4GINd4KdW2bvthgdd8HrL0S1OCkzQfUdmWgNslLYctrJswkIYOJw6OaZrUA9emDfib+oCYH4/bLTwd1PJozbbrAD1CgPoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AUXrcMYy4vwQm8cydCbjmiK9RdRAzCAl1eZ03Tf+x9U=;
- b=Tj2FatBUT4DFgJrtNXT6v7gilnAkf4xCK8bcBS+zjulng1zkY45lKVy8+EcLpdOYUrRXq2cucsIummmtS45Dnpe4GmtzG9hJ//YGvstR9jVRKkkvT/Hju2h27HjfQJ/k59PTHLbSDZttHZegEmr8ppd1jKGy9o6LH2yvRx/hAWkBtk+k61IPiBBqmp1VG+nxdyeou52cw9EAk9jOMW6UqK4f8TujC3h3tpT9KgtBUi07JVuxBu/CUdx8C4M9n7UY+sAbm1G6P+fmVN6tigh9vj1IO4z9RRaW/IMG21FoObX8AeLTwg3uSUxC17WmIIKin8hgwFLUlFraheWcfBPWmw==
+ bh=c7hjYKVewll6cWe/pWI6xUYo78ow+vkxPjGWO3wZ8Rw=;
+ b=JCcyrSFGWy4oe6zdpAiKY+mbguYXEey3wKNiEikiqvKknZILwNSLYWON+adu+CQL5x+uL35eOJUtploEUFm5AasdnNaf+iT4Jy7WQXLFcg97a8tASmxvu9FTuP84sKGYzMpKp0mnjDYogohV2gzCsq515pj5oIjj9yx2FKeVindXqklecWtlo+MOw1qNkuC3XnDQbesKG9oixbIW4je2YFp4FD/bxZhbw1I+bOVKYKWmHpNLe2HzWWeGvvqZAtI9wWTewjtuJZDDBB5fnC1HuHePNe1AMLweNa1nK04xOw5ddDXLXVTxq/ZRGSdgwhpnoNVsPsJCwiebweiaKxpXTA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AUXrcMYy4vwQm8cydCbjmiK9RdRAzCAl1eZ03Tf+x9U=;
- b=D5YrtaqDHPpNGetzgL9GPD4soqz7fhyYmNGtI2iZ4P0L8MT/ay4/fNtxDA1N5UDgG91A3uSQ1TJrjydzxfLdWja3uhXyqgzP25x69VAmVyap20uPkdPZp8vcg9ClI0gE4DUvGNeCoERAUqpDyfyV/rq5f9i1UE9lKKXa6NC03PE=
-Received: from SA1PR03CA0022.namprd03.prod.outlook.com (2603:10b6:806:2d3::27)
- by SA0PR12MB4382.namprd12.prod.outlook.com (2603:10b6:806:9a::14) with
+ bh=c7hjYKVewll6cWe/pWI6xUYo78ow+vkxPjGWO3wZ8Rw=;
+ b=jnWVSRFAM98LvX62E1Mm/i6x+lKRz1jUkKb9q7cFIjRymI946wyLGePC3fo5l/S1KVQ6wZGyQ2XL4O6AJBH6exACtfY6DK591VthfaH6K69s/PEVm6KGnuwCnYyw4XfsGWHksaSZlpzZuGyak/6UDXy+Y8wurikPNrQuUoPGXls=
+Received: from PA7P264CA0289.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:370::6)
+ by CYYPR12MB8653.namprd12.prod.outlook.com (2603:10b6:930:c5::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Thu, 11 Jan
- 2024 17:22:29 +0000
-Received: from SA2PEPF00001508.namprd04.prod.outlook.com
- (2603:10b6:806:2d3:cafe::2f) by SA1PR03CA0022.outlook.office365.com
- (2603:10b6:806:2d3::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19 via Frontend
- Transport; Thu, 11 Jan 2024 17:22:29 +0000
+ 2024 17:22:32 +0000
+Received: from SA2PEPF00001507.namprd04.prod.outlook.com
+ (2603:10a6:102:370:cafe::9d) by PA7P264CA0289.outlook.office365.com
+ (2603:10a6:102:370::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18 via Frontend
+ Transport; Thu, 11 Jan 2024 17:22:31 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -53,16 +53,16 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF00001508.mail.protection.outlook.com (10.167.242.40) with Microsoft
+ SA2PEPF00001507.mail.protection.outlook.com (10.167.242.39) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Thu, 11 Jan 2024 17:22:29 +0000
+ 15.20.7181.14 via Frontend Transport; Thu, 11 Jan 2024 17:22:30 +0000
 Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 11 Jan
- 2024 11:22:29 -0600
+ 2024 11:22:30 -0600
 Received: from xsjblevinsk50.xilinx.com (172.19.2.206) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Thu, 11 Jan 2024 11:22:28 -0600
+ Transport; Thu, 11 Jan 2024 11:22:29 -0600
 From: Ben Levinsky <ben.levinsky@amd.com>
 To: <jassisinghbrar@gmail.com>, <robh+dt@kernel.org>,
 	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
@@ -70,9 +70,9 @@ To: <jassisinghbrar@gmail.com>, <robh+dt@kernel.org>,
 	<jaswinder.singh@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <ben.levinsky@amd.com>
-Subject: [PATCH v2 2/3] mailbox: zynqmp: Move buffered IPI setup to of_match selected routine
-Date: Thu, 11 Jan 2024 09:22:25 -0800
-Message-ID: <20240111172226.1816105-3-ben.levinsky@amd.com>
+Subject: [PATCH v2 3/3] mailbox: zynqmp: Enable Bufferless IPI usage on Versal-based SOC's
+Date: Thu, 11 Jan 2024 09:22:26 -0800
+Message-ID: <20240111172226.1816105-4-ben.levinsky@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240111172226.1816105-1-ben.levinsky@amd.com>
 References: <20240111172226.1816105-1-ben.levinsky@amd.com>
@@ -86,227 +86,222 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001508:EE_|SA0PR12MB4382:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8ba1eb12-242b-4774-0256-08dc12c9e392
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001507:EE_|CYYPR12MB8653:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4713882b-57dc-4ca0-5606-08dc12c9e44a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	8v9q4U2d/EfUqNhVJdBv2T+2ZHb3qO0is34aU9/37WKKDyQVxWGykdGWby2ptkZYhYotI5/vB2ohR4klHVWCXIjWw9Yfvm88d+SMk6Rk8f/w4etoV+Wmr+e/IjV0yf0yWSia9w8g7i1R3pAj7i2hL+NBu+I16kvZp4fAZs/LJQFpBfHYQXFO6qKgSmPWGJ7UjhjFcZENjl3kLiqR+wCVTClNr69fWXcdUuM2axVCKC+V4KbDrrrZHSFOF5ZymrIRZLzUPPhkholMIwhcff2UTZfF3VZ2I5rv8WTUP4+/8oWJDrlcEJuQwMH5OQMsGfiwBqJL0gq4N4dZgtQlTlVlTfvjxvUxk2z5inOgM4SIc/QEMNfTWvD07nJA7srUOiaB+hv4umvPJ09TSrkGd2ySVgc1fSiHFS/ezTXQCHw4Glqc6+70SSm3kmzBzzGES9s/2X9+MndKnDtlJ5plSelxanWzQf0SNRecfUZ0DblbTOcnKYY8RPu4rB2LZ1aIjrSM+o9IgRuoy6BJfta6AKiVFtRbaimzFvCCXhbYuJW2O/lRoR7uP8dIuf6vzn9xTEwH6dKfJnsmHfHhlc5YdOkAmfdUmp/MR3kjzanuQb231GDqpKYmLopX5UAGnjNBbY86o7lzG5Lqy2cSInJcP49DMBYGeJH8uj5sNxiCugIp00tKN48FNJlqXZ1xvVBlr3ZPP1SK15Zu6qlcAHaCOg+Z/vYzEXyQyGQt1+AyZOW0B18pZHn1XHkBsaj/OlATMUb8EEcgeyLKLSNdE/tZmODCWw==
+	MOSaXF+KDk4+fTNXTJv5fQwIJ6e4jKJzxsIljECdikpHadbQRKUSZIQhS5gU0h6oSQwpA1zFxtyxO1Fobea0yVnzMfDM3iQE7lhaPqSdTAcbYhDhH7IG/ViAWQ2u/rg9yRobILjOgfYgxF6C1942KYPRnEt9KcttkZiLtrrqal+ATSz7EPx3/z4CHGqWpEX6io/73hRBAVvfKUaKPHeAEAOPGuJdkI05SIjPnnu2d4d/VpWWf9zFO03fNX/1hJIdHCs0AFgAjDZlc/IHJUhxdOcVnrVh3dh1asKkYe8M9TnLiXAjDV9vIVVsEGAo6uTRsLzJzYcsAW6VZ4G8Pay3Y4AD7vpbk5piSm1TanB59dJ6l4F8mMtqSESrfwe1XAgz6tS6SFO9yl7YMEdRGhKq0AJKCons1k0SLTU+GDxePfwedrJbhWdFNlJLTMqDdE5kn+nxSCpmfjneeH5kjcGnBbIx7cJ+pX5316zXmNSKyKqLvMgTs4NbA+ygyh4rtVBke4TGIJdIW5IH4TLIHqdWNZO/cH4Iqw7QTR1yMsX2a2OJFfuw53V+Tw1ryQSJY92snlpEqxfn5Wp2+/cPKI1QmYjObPyXD4sIz6TCL7Uae19b7qayLVu36DaizlM5JdalespcpKWZ7E8jWKwf02tOf40GvaC6YbsU7miEpqfFee/aw+i7NlKo9P564JoQWTWhAxhty097+MBC6Be+B/4V09fW0dYA4x8eqUxdoCE0VWL+tEVEaFSfL1BNxLKyz16TbZx414dIbdzA/gF2PEbDgj2lxDM+T4Bqvg7aGdjPH8qOBnfCBlFE5KO9l92/Bh8r
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(136003)(346002)(396003)(230922051799003)(82310400011)(64100799003)(1800799012)(451199024)(186009)(40470700004)(36840700001)(46966006)(40480700001)(83380400001)(40460700003)(8676002)(54906003)(44832011)(4326008)(8936002)(70206006)(2616005)(316002)(70586007)(36756003)(110136005)(82740400003)(478600001)(47076005)(26005)(336012)(1076003)(426003)(81166007)(356005)(36860700001)(6666004)(86362001)(15650500001)(2906002)(5660300002)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(230922051799003)(186009)(82310400011)(64100799003)(1800799012)(451199024)(36840700001)(46966006)(40470700004)(83380400001)(26005)(43170500006)(336012)(54906003)(1076003)(2616005)(36860700001)(47076005)(426003)(82740400003)(15650500001)(44832011)(8676002)(8936002)(4326008)(2906002)(5660300002)(478600001)(110136005)(6666004)(41300700001)(70206006)(70586007)(81166007)(316002)(86362001)(36756003)(356005)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 17:22:29.4866
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 17:22:30.6946
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ba1eb12-242b-4774-0256-08dc12c9e392
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4713882b-57dc-4ca0-5606-08dc12c9e44a
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00001508.namprd04.prod.outlook.com
+	SA2PEPF00001507.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4382
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8653
 
-Move routine that initializes the mailboxes for send and receive to
-a function pointer that is set based on compatible string.
+On Xilinx-AMD Versal and Versal-NET, there exist both
+inter-processor-interrupts with corresponding message buffers and without
+such buffers.
+
+Add a routine that, if the corresponding DT compatible
+string "xlnx,versal-ipi-mailbox" is used then a Versal-based SOC
+can use a mailbox Device Tree entry where both host and remote
+can use either of the buffered or bufferless interrupts.
 
 Signed-off-by: Ben Levinsky <ben.levinsky@amd.com>
 ---
- drivers/mailbox/zynqmp-ipi-mailbox.c | 123 +++++++++++++++++++--------
- 1 file changed, 88 insertions(+), 35 deletions(-)
+ drivers/mailbox/zynqmp-ipi-mailbox.c | 130 +++++++++++++++++++++++++--
+ 1 file changed, 123 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mailbox/zynqmp-ipi-mailbox.c b/drivers/mailbox/zynqmp-ipi-mailbox.c
-index 951389f0b90c..720da91b9efd 100644
+index 720da91b9efd..d5092c9ed180 100644
 --- a/drivers/mailbox/zynqmp-ipi-mailbox.c
 +++ b/drivers/mailbox/zynqmp-ipi-mailbox.c
-@@ -72,6 +72,10 @@ struct zynqmp_ipi_mchan {
- 	unsigned int chan_type;
- };
+@@ -52,6 +52,13 @@
+ #define IPI_MB_CHNL_TX	0 /* IPI mailbox TX channel */
+ #define IPI_MB_CHNL_RX	1 /* IPI mailbox RX channel */
  
-+struct zynqmp_ipi_mbox;
-+
-+typedef int (*setup_ipi_fn)(struct zynqmp_ipi_mbox *ipi_mbox, struct device_node *node);
++/* IPI Message Buffer Information */
++#define RESP_OFFSET	0x20U
++#define DEST_OFFSET	0x40U
++#define IPI_BUF_SIZE	0x20U
++#define DST_BIT_POS	9U
++#define SRC_BITMASK	GENMASK(11, 8)
 +
  /**
-  * struct zynqmp_ipi_mbox - Description of a ZynqMP IPI mailbox
-  *                          platform data.
-@@ -82,6 +86,7 @@ struct zynqmp_ipi_mchan {
-  * @mbox:                 mailbox Controller
-  * @mchans:               array for channels, tx channel and rx channel.
-  * @irq:                  IPI agent interrupt ID
-+ * @setup_ipi_fn:          Function Pointer to set up IPI Channels
-  */
- struct zynqmp_ipi_mbox {
- 	struct zynqmp_ipi_pdata *pdata;
-@@ -89,6 +94,7 @@ struct zynqmp_ipi_mbox {
- 	u32 remote_id;
- 	struct mbox_controller mbox;
- 	struct zynqmp_ipi_mchan mchans[2];
-+	setup_ipi_fn setup_ipi_fn;
- };
+  * struct zynqmp_ipi_mchan - Description of a Xilinx ZynqMP IPI mailbox channel
+  * @is_opened: indicate if the IPI channel is opened
+@@ -170,9 +177,11 @@ static irqreturn_t zynqmp_ipi_interrupt(int irq, void *data)
+ 		if (ret > 0 && ret & IPI_MB_STATUS_RECV_PENDING) {
+ 			if (mchan->is_opened) {
+ 				msg = mchan->rx_buf;
+-				msg->len = mchan->req_buf_size;
+-				memcpy_fromio(msg->data, mchan->req_buf,
+-					      msg->len);
++				if (msg) {
++					msg->len = mchan->req_buf_size;
++					memcpy_fromio(msg->data, mchan->req_buf,
++						      msg->len);
++				}
+ 				mbox_chan_received_data(chan, (void *)msg);
+ 				status = IRQ_HANDLED;
+ 			}
+@@ -282,26 +291,26 @@ static int zynqmp_ipi_send_data(struct mbox_chan *chan, void *data)
  
- /**
-@@ -466,12 +472,9 @@ static void zynqmp_ipi_mbox_dev_release(struct device *dev)
- static int zynqmp_ipi_mbox_probe(struct zynqmp_ipi_mbox *ipi_mbox,
- 				 struct device_node *node)
- {
--	struct zynqmp_ipi_mchan *mchan;
- 	struct mbox_chan *chans;
- 	struct mbox_controller *mbox;
--	struct resource res;
- 	struct device *dev, *mdev;
--	const char *name;
- 	int ret;
+ 	if (mchan->chan_type == IPI_MB_CHNL_TX) {
+ 		/* Send request message */
+-		if (msg && msg->len > mchan->req_buf_size) {
++		if (msg && msg->len > mchan->req_buf_size && mchan->req_buf) {
+ 			dev_err(dev, "channel %d message length %u > max %lu\n",
+ 				mchan->chan_type, (unsigned int)msg->len,
+ 				mchan->req_buf_size);
+ 			return -EINVAL;
+ 		}
+-		if (msg && msg->len)
++		if (msg && msg->len && mchan->req_buf)
+ 			memcpy_toio(mchan->req_buf, msg->data, msg->len);
+ 		/* Kick IPI mailbox to send message */
+ 		arg0 = SMC_IPI_MAILBOX_NOTIFY;
+ 		zynqmp_ipi_fw_call(ipi_mbox, arg0, 0, &res);
+ 	} else {
+ 		/* Send response message */
+-		if (msg && msg->len > mchan->resp_buf_size) {
++		if (msg && msg->len > mchan->resp_buf_size && mchan->resp_buf) {
+ 			dev_err(dev, "channel %d message length %u > max %lu\n",
+ 				mchan->chan_type, (unsigned int)msg->len,
+ 				mchan->resp_buf_size);
+ 			return -EINVAL;
+ 		}
+-		if (msg && msg->len)
++		if (msg && msg->len && mchan->resp_buf)
+ 			memcpy_toio(mchan->resp_buf, msg->data, msg->len);
+ 		arg0 = SMC_IPI_MAILBOX_ACK;
+ 		zynqmp_ipi_fw_call(ipi_mbox, arg0, IPI_SMC_ACK_EIRQ_MASK,
+@@ -639,6 +648,110 @@ static int zynqmp_ipi_setup(struct zynqmp_ipi_mbox *ipi_mbox,
+ 	return 0;
+ }
  
- 	dev = ipi_mbox->pdata->dev;
-@@ -491,6 +494,74 @@ static int zynqmp_ipi_mbox_probe(struct zynqmp_ipi_mbox *ipi_mbox,
- 	}
- 	mdev = &ipi_mbox->dev;
- 
-+	/* Get the IPI remote agent ID */
-+	ret = of_property_read_u32(node, "xlnx,ipi-id", &ipi_mbox->remote_id);
-+	if (ret < 0) {
-+		dev_err(dev, "No IPI remote ID is specified.\n");
-+		return ret;
-+	}
-+
-+	ret = ipi_mbox->setup_ipi_fn(ipi_mbox, node);
-+	if (ret) {
-+		dev_err(dev, "Failed to set up IPI Buffers.\n");
-+		return ret;
-+	}
-+
-+	mbox = &ipi_mbox->mbox;
-+	mbox->dev = mdev;
-+	mbox->ops = &zynqmp_ipi_chan_ops;
-+	mbox->num_chans = 2;
-+	mbox->txdone_irq = false;
-+	mbox->txdone_poll = true;
-+	mbox->txpoll_period = 5;
-+	mbox->of_xlate = zynqmp_ipi_of_xlate;
-+	chans = devm_kzalloc(mdev, 2 * sizeof(*chans), GFP_KERNEL);
-+	if (!chans)
-+		return -ENOMEM;
-+	mbox->chans = chans;
-+	chans[IPI_MB_CHNL_TX].con_priv = &ipi_mbox->mchans[IPI_MB_CHNL_TX];
-+	chans[IPI_MB_CHNL_RX].con_priv = &ipi_mbox->mchans[IPI_MB_CHNL_RX];
-+	ipi_mbox->mchans[IPI_MB_CHNL_TX].chan_type = IPI_MB_CHNL_TX;
-+	ipi_mbox->mchans[IPI_MB_CHNL_RX].chan_type = IPI_MB_CHNL_RX;
-+	ret = devm_mbox_controller_register(mdev, mbox);
-+	if (ret)
-+		dev_err(mdev,
-+			"Failed to register mbox_controller(%d)\n", ret);
-+	else
-+		dev_info(mdev,
-+			 "Registered ZynqMP IPI mbox with TX/RX channels.\n");
-+	return ret;
-+}
-+
 +/**
-+ * zynqmp_ipi_setup - set up IPI Buffers for classic flow
++ * versal_ipi_setup - Set up IPIs to support mixed usage of
++ *				 Buffered and Bufferless IPIs.
 + *
 + * @ipi_mbox: pointer to IPI mailbox private data structure
 + * @node: IPI mailbox device node
 + *
-+ * This will be used to set up IPI Buffers for ZynqMP SOC if user
-+ * wishes to use classic driver usage model on new SOC's with only
-+ * buffered IPIs.
-+ *
-+ * Note that bufferless IPIs and mixed usage of buffered and bufferless
-+ * IPIs are not supported with this flow.
-+ *
-+ * This will be invoked with compatible string "xlnx,zynqmp-ipi-mailbox".
-+ *
 + * Return: 0 for success, negative value for failure
 + */
-+static int zynqmp_ipi_setup(struct zynqmp_ipi_mbox *ipi_mbox,
++static int versal_ipi_setup(struct zynqmp_ipi_mbox *ipi_mbox,
 +			    struct device_node *node)
 +{
-+	struct zynqmp_ipi_mchan *mchan;
++	struct zynqmp_ipi_mchan *tx_mchan, *rx_mchan;
++	struct resource host_res, remote_res;
++	struct device_node *parent_node;
++	int host_idx, remote_idx;
 +	struct device *mdev, *dev;
-+	struct resource res;
-+	const char *name;
-+	int ret;
 +
-+	mdev = &ipi_mbox->dev;
++	tx_mchan = &ipi_mbox->mchans[IPI_MB_CHNL_TX];
++	rx_mchan = &ipi_mbox->mchans[IPI_MB_CHNL_RX];
++	parent_node = of_get_parent(node);
 +	dev = ipi_mbox->pdata->dev;
++	mdev = &ipi_mbox->dev;
 +
- 	mchan = &ipi_mbox->mchans[IPI_MB_CHNL_TX];
- 	name = "local_request_region";
- 	ret = zynqmp_ipi_mbox_get_buf_res(node, name, &res);
-@@ -565,37 +636,7 @@ static int zynqmp_ipi_mbox_probe(struct zynqmp_ipi_mbox *ipi_mbox,
- 	if (!mchan->rx_buf)
- 		return -ENOMEM;
- 
--	/* Get the IPI remote agent ID */
--	ret = of_property_read_u32(node, "xlnx,ipi-id", &ipi_mbox->remote_id);
--	if (ret < 0) {
--		dev_err(dev, "No IPI remote ID is specified.\n");
--		return ret;
--	}
--
--	mbox = &ipi_mbox->mbox;
--	mbox->dev = mdev;
--	mbox->ops = &zynqmp_ipi_chan_ops;
--	mbox->num_chans = 2;
--	mbox->txdone_irq = false;
--	mbox->txdone_poll = true;
--	mbox->txpoll_period = 5;
--	mbox->of_xlate = zynqmp_ipi_of_xlate;
--	chans = devm_kzalloc(mdev, 2 * sizeof(*chans), GFP_KERNEL);
--	if (!chans)
--		return -ENOMEM;
--	mbox->chans = chans;
--	chans[IPI_MB_CHNL_TX].con_priv = &ipi_mbox->mchans[IPI_MB_CHNL_TX];
--	chans[IPI_MB_CHNL_RX].con_priv = &ipi_mbox->mchans[IPI_MB_CHNL_RX];
--	ipi_mbox->mchans[IPI_MB_CHNL_TX].chan_type = IPI_MB_CHNL_TX;
--	ipi_mbox->mchans[IPI_MB_CHNL_RX].chan_type = IPI_MB_CHNL_RX;
--	ret = devm_mbox_controller_register(mdev, mbox);
--	if (ret)
--		dev_err(mdev,
--			"Failed to register mbox_controller(%d)\n", ret);
--	else
--		dev_info(mdev,
--			 "Registered ZynqMP IPI mbox with TX/RX channels.\n");
--	return ret;
-+	return 0;
- }
- 
- /**
-@@ -626,6 +667,7 @@ static int zynqmp_ipi_probe(struct platform_device *pdev)
- 	struct zynqmp_ipi_pdata *pdata;
- 	struct zynqmp_ipi_mbox *mbox;
- 	int num_mboxes, ret = -EINVAL;
-+	setup_ipi_fn ipi_fn;
- 
- 	num_mboxes = of_get_available_child_count(np);
- 	if (num_mboxes == 0) {
-@@ -646,9 +688,18 @@ static int zynqmp_ipi_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ipi_fn = (setup_ipi_fn)device_get_match_data(&pdev->dev);
-+	if (!ipi_fn) {
-+		dev_err(dev,
-+			"Mbox Compatible String is missing IPI Setup fn.\n");
-+		return -ENODEV;
++	host_idx = zynqmp_ipi_mbox_get_buf_res(parent_node, "msg", &host_res);
++	remote_idx = zynqmp_ipi_mbox_get_buf_res(node, "msg", &remote_res);
++
++	/*
++	 * Only set up buffers if both sides claim to have msg buffers.
++	 * This is because each buffered IPI's corresponding msg buffers
++	 * are reserved for use by other buffered IPI's.
++	 */
++	if (!host_idx && !remote_idx) {
++		u32 host_src, host_dst, remote_src, remote_dst;
++		u32 buff_sz;
++
++		buff_sz = resource_size(&host_res);
++
++		host_src = host_res.start & SRC_BITMASK;
++		remote_src = remote_res.start & SRC_BITMASK;
++
++		host_dst = (host_src >> DST_BIT_POS) * DEST_OFFSET;
++		remote_dst = (remote_src >> DST_BIT_POS) * DEST_OFFSET;
++
++		/* Validate that IPI IDs is within IPI Message buffer space. */
++		if (host_dst >= buff_sz || remote_dst >= buff_sz) {
++			dev_err(mdev,
++				"Invalid IPI Message buffer values: %x %x\n",
++				host_dst, remote_dst);
++			return -EINVAL;
++		}
++
++		tx_mchan->req_buf = devm_ioremap(mdev,
++						 host_res.start | remote_dst,
++						 IPI_BUF_SIZE);
++		if (!tx_mchan->req_buf) {
++			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
++			return -ENOMEM;
++		}
++
++		tx_mchan->resp_buf = devm_ioremap(mdev,
++						  (remote_res.start | host_dst) +
++						  RESP_OFFSET, IPI_BUF_SIZE);
++		if (!tx_mchan->resp_buf) {
++			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
++			return -ENOMEM;
++		}
++
++		rx_mchan->req_buf = devm_ioremap(mdev,
++						 remote_res.start | host_dst,
++						 IPI_BUF_SIZE);
++		if (!rx_mchan->req_buf) {
++			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
++			return -ENOMEM;
++		}
++
++		rx_mchan->resp_buf = devm_ioremap(mdev,
++						  (host_res.start | remote_dst) +
++						  RESP_OFFSET, IPI_BUF_SIZE);
++		if (!rx_mchan->resp_buf) {
++			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
++			return -ENOMEM;
++		}
++
++		tx_mchan->resp_buf_size = IPI_BUF_SIZE;
++		tx_mchan->req_buf_size = IPI_BUF_SIZE;
++		tx_mchan->rx_buf = devm_kzalloc(mdev, IPI_BUF_SIZE +
++						sizeof(struct zynqmp_ipi_message),
++						GFP_KERNEL);
++		if (!tx_mchan->rx_buf)
++			return -ENOMEM;
++
++		rx_mchan->resp_buf_size = IPI_BUF_SIZE;
++		rx_mchan->req_buf_size = IPI_BUF_SIZE;
++		rx_mchan->rx_buf = devm_kzalloc(mdev, IPI_BUF_SIZE +
++						sizeof(struct zynqmp_ipi_message),
++						GFP_KERNEL);
++		if (!rx_mchan->rx_buf)
++			return -ENOMEM;
 +	}
 +
- 	pdata->num_mboxes = num_mboxes;
- 
- 	mbox = pdata->ipi_mboxes;
-+	mbox->setup_ipi_fn = ipi_fn;
++	return 0;
++}
 +
- 	for_each_available_child_of_node(np, nc) {
- 		mbox->pdata = pdata;
- 		ret = zynqmp_ipi_mbox_probe(mbox, nc);
-@@ -694,7 +745,9 @@ static int zynqmp_ipi_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id zynqmp_ipi_of_match[] = {
--	{ .compatible = "xlnx,zynqmp-ipi-mailbox" },
-+	{ .compatible = "xlnx,zynqmp-ipi-mailbox",
-+	  .data = &zynqmp_ipi_setup,
+ /**
+  * zynqmp_ipi_free_mboxes - Free IPI mailboxes devices
+  *
+@@ -748,6 +861,9 @@ static const struct of_device_id zynqmp_ipi_of_match[] = {
+ 	{ .compatible = "xlnx,zynqmp-ipi-mailbox",
+ 	  .data = &zynqmp_ipi_setup,
+ 	},
++	{ .compatible = "xlnx,versal-ipi-mailbox",
++	  .data = &versal_ipi_setup,
 +	},
  	{},
  };
