@@ -1,232 +1,136 @@
-Return-Path: <linux-kernel+bounces-23745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB35082B10A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:54:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1194582B111
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 15:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A2A11F25569
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:54:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6286B25DF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 14:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D281A4C3C2;
-	Thu, 11 Jan 2024 14:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1DC4E1A3;
+	Thu, 11 Jan 2024 14:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F+8o1Drq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JL1Wdqds"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C6E4C3C8;
-	Thu, 11 Jan 2024 14:51:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 723B7C433C7;
-	Thu, 11 Jan 2024 14:51:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704984706;
-	bh=i6f1/14PJrdRngdxu4TuN5mOilOfj8PHEW7GGTEZJiE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F+8o1DrqtUWhBa87fT4v82Wvy/YQVwC1mEqvqUNVDilj/Txs9G4tdBRsIrQneD8aN
-	 CKv/E+I2mvkAPkag3fPsvsX8JDmZcx6zpOoJB+WcEE6muCUdZTke3oieaNZpyR6sH7
-	 BsXK0CBkm2FyzL0Eco+F2CVqrs6iyVaWqJi3sx3fQRUU0/A90RefriChN/cHF0J8fh
-	 7bAUobB2VfLz7B9dHmcvjj/HVECT7l7CfSy+qMF79VGu+N86iqX34HaPvg9B3rKGqv
-	 kURYtc5Jj2n9hUkzNztl6Iwn7fuSkutM4o54qYtBWyv9Inr7XhAal9SP5gGRc93s7u
-	 dakJBS9MpGftQ==
-Date: Thu, 11 Jan 2024 08:51:44 -0600
-From: Rob Herring <robh@kernel.org>
-To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Cc: Yannick Fertre <yannick.fertre@foss.st.com>,
-	Philippe Cornu <philippe.cornu@foss.st.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: display: add dt-bindings for STM32
- LVDS device
-Message-ID: <20240111145144.GA528743-robh@kernel.org>
-References: <20240111104049.38695-1-raphael.gallais-pou@foss.st.com>
- <20240111104049.38695-2-raphael.gallais-pou@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697B64D114;
+	Thu, 11 Jan 2024 14:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BDqEJb010708;
+	Thu, 11 Jan 2024 14:52:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=tkz1cSx9IdEECDph4vc580gKOOeh+JqsFYIn/myX+Ew=;
+ b=JL1Wdqds9K+Bu4QS+GOnwOmBNQxZQ0yn2NgkdP4nk5jPVHJwGdWHfvIDLWXpVJl9fI1q
+ FdCqAPhU9ry2ejudjyqzBcj87AGc8ZAt90bsJY0fyRpW5yFUhflBgJu0Ti1GSqLUUpAu
+ zNPaLowHvqXSHIuE4NX6ayKzEr1vn1IagWGuLkDvSqmaj+yPlT2+wRJffbkIproJGmLL
+ wJz3koEwdEgrPVqCQ8kDhna4qdh01LfmMsDOgsYUwlT+vrvbP6I4XgDJquAVfwgWQZYy
+ lrA3qkT6gmA68H04Y+A3NroIr2YzfGP/AsT4x41dpcXEqIMt8S2tIq8zvqV28wSjGUQB Aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjhkesu0p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:52:28 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40BDqVwJ012339;
+	Thu, 11 Jan 2024 14:52:28 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vjhkestyf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:52:28 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40BCWDPL004384;
+	Thu, 11 Jan 2024 14:52:26 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfjpm3vwn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Jan 2024 14:52:26 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40BEqP3t24248978
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Jan 2024 14:52:26 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 92F4A5805D;
+	Thu, 11 Jan 2024 14:52:25 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C112658058;
+	Thu, 11 Jan 2024 14:52:24 +0000 (GMT)
+Received: from [9.61.55.182] (unknown [9.61.55.182])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 11 Jan 2024 14:52:24 +0000 (GMT)
+Message-ID: <439339ca-74c1-4678-8602-85dc0bea81fb@linux.ibm.com>
+Date: Thu, 11 Jan 2024 09:52:24 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111104049.38695-2-raphael.gallais-pou@foss.st.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/6] s390/vfio-ap: reset queues removed from guest's AP
+ configuration
+From: Anthony Krowiak <akrowiak@linux.ibm.com>
+To: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc: jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
+        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+References: <20240111143846.8801-1-akrowiak@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <20240111143846.8801-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ppB82TJY2HWgh2BENK0S__lkFR-3iVk3
+X-Proofpoint-ORIG-GUID: L3MOvTATb4h9XEvUonCcmA-UvmD8ZQds
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-11_07,2024-01-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 suspectscore=0 impostorscore=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 phishscore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401110118
 
-On Thu, Jan 11, 2024 at 11:40:44AM +0100, Raphael Gallais-Pou wrote:
-> Add "st,stm32-lvds" compatible.
-> 
-> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-> ---
-> Changes in v2:
-> 	- Switch compatible and clock-cells related areas
-> 	- Remove faulty #include in the example.
-> 	- Add entry in MAINTAINERS
-> ---
->  .../bindings/display/st,stm32-lvds.yaml       | 117 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 118 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
-> new file mode 100644
-> index 000000000000..8dfc6e88f260
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
-> @@ -0,0 +1,117 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/st,stm32-lvds.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics STM32 LVDS Display Interface Transmitter
-> +
-> +maintainers:
-> +  - Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-> +  - Yannick Fertre <yannick.fertre@foss.st.com>
-> +
-> +description: |
-> +  The STMicroelectronics STM32 LVDS Display Interface Transmitter handles the
-> +  LVDS protocol: it maps the pixels received from the upstream Pixel-DMA (LTDC)
-> +  onto the LVDS PHY.
-> +
-> +  It regroups three sub blocks:
+Patches 1/6, 4/6 and 5/6 have Acked-by and the rest have at least one 
+Reviewed-by. Are there any objections to pushing these?
 
-regroups means rearranging. Perhaps 'contains' or 'is composed of' 
-instead.
-
-> +    - LVDS host: handles the LVDS protocol (FPD / OpenLDI) and maps its input
-> +      pixels onto the data lanes of the PHY
-> +    - LVDS PHY: parallelize the data and drives the LVDS data lanes
-> +    - LVDS wrapper: handles top-level settings
-> +
-> +  The LVDS controller driver supports the following high-level features:
-> +    - FDP-Link-I and OpenLDI (v0.95) protocols
-> +    - Single-Link or Dual-Link operation
-> +    - Single-Display or Double-Display (with the same content duplicated on both)
-> +    - Flexible Bit-Mapping, including JEIDA and VESA
-> +    - RGB888 or RGB666 output
-> +    - Synchronous design, with one input pixel per clock cycle
-> +
-> +properties:
-> +  compatible:
-> +    const: st,stm32-lvds
-
-SoC specific compatible needed.
-
-> +
-> +  "#clock-cells":
-> +    const: 0
-
-What clock is provided?
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: APB peripheral clock
-> +      - description: Reference clock for the internal PLL
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pclk
-> +      - const: ref
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: |
-
-Don't need '|' if no formatting to preserve.
-
-> +          LVDS input port node, connected to the LTDC RGB output port.
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: |
-> +          LVDS output port node, connected to a panel or bridge input port.
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
-> +
-> +required:
-> +  - compatible
-> +  - "#clock-cells"
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - resets
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/stm32mp25-clks.h>
-> +    #include <dt-bindings/reset/stm32mp25-resets.h>
-> +
-> +    lvds: lvds@48060000 {
-> +        compatible = "st,stm32-lvds";
-> +        reg = <0x48060000 0x2000>;
-> +        #clock-cells = <0>;
-> +        clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
-> +        clock-names = "pclk", "ref";
-> +        resets = <&rcc LVDS_R>;
-> +
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +                lvds_in: endpoint {
-> +                   remote-endpoint = <&ltdc_ep1_out>;
-> +                };
-> +            };
-> +
-> +            port@1 {
-> +                reg = <1>;
-> +                lvds_out0: endpoint {
-> +                   remote-endpoint = <&lvds_panel_in>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9d959a6881f7..0b6ec5347195 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7193,6 +7193,7 @@ L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
->  T:	git git://anongit.freedesktop.org/drm/drm-misc
->  F:	Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
-> +F:	Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
->  F:	drivers/gpu/drm/stm
->  
->  DRM DRIVERS FOR TI KEYSTONE
-> -- 
-> 2.25.1
-> 
+On 1/11/24 9:38 AM, Tony Krowiak wrote:
+> All queues removed from a guest's AP configuration must be reset so when
+> they are subsequently made available again to a guest, they re-appear in a
+> reset state. There are some scenarios where this is not the case. For
+> example, if a queue device that is passed through to a guest is unbound
+> from the vfio_ap device driver, the adapter to which the queue is attached
+> will be removed from the guest's AP configuration. Doing so implicitly
+> removes all queues associated with that adapter because the AP architecture
+> precludes removing a single queue. Those queues also need to be reset.
+>
+> This patch series ensures that all queues removed from a guest's AP
+> configuration are reset for all possible scenarios.
+>
+> Changelog v1=> v2:
+> -----------------
+> * Added r-b's to patch 6/6 for Jason and Halil
+>
+> Tony Krowiak (6):
+>    s390/vfio-ap: always filter entire AP matrix
+>    s390/vfio-ap: loop over the shadow APCB when filtering guest's AP
+>      configuration
+>    s390/vfio-ap: let 'on_scan_complete' callback filter matrix and update
+>      guest's APCB
+>    s390/vfio-ap: reset queues filtered from the guest's AP config
+>    s390/vfio-ap: reset queues associated with adapter for queue unbound
+>      from driver
+>    s390/vfio-ap: do not reset queue removed from host config
+>
+>   drivers/s390/crypto/vfio_ap_ops.c     | 268 +++++++++++++++++---------
+>   drivers/s390/crypto/vfio_ap_private.h |  11 +-
+>   2 files changed, 184 insertions(+), 95 deletions(-)
+>
 
