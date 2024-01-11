@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-24084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2277482B699
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:24:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3D782B69C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 22:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7A14288621
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:24:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FE021C2495A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 21:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D71258208;
-	Thu, 11 Jan 2024 21:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B10958AAE;
+	Thu, 11 Jan 2024 21:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JkAmrtxC"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ugXSvcPb"
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBEE5812E;
-	Thu, 11 Jan 2024 21:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B08758212;
+	Thu, 11 Jan 2024 21:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=b0t3x6hCu0x/ojo3PHAaC3r4/bQ6bUFU+eeGlqR4ams=; b=JkAmrtxCDZsHE68Vt/5sWw6/E5
-	xy/vZscRMIjfovLNp/OexA4gtXsc2GAVq7qPJrmJpWsgJRZAMD/5NiglDY7f7bndxm8txRepEsok9
-	gKwCWONbgJ4FY6JoWqVES+rYgEYB4GZRnNK0msgYCESzSZB0YqNMvxecCOjjXD6TN6EJKGsTJMrce
-	+0tAOPJAxTQ1GEdJbN1nHSNTHYr3kqSKJIu0gPiDv8SrsvGRSud5oTk38qYKlGZauqQ+MYRM5QB6l
-	JJa42YJ70zYONifTp7j276PAV8tRWEbBx3CDcp14JvDnXC9nceuIIeFeuF7TkIUK8ZIWSAQm9IUIV
-	XHwy30ow==;
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=h5JRxZmfjqOYZZRAvRI1Cwt+9QteJXdUxDRr8ebrX5I=; b=ugXSvcPbPDTMiiIY8MjQ/FEQyf
+	j3wIORkZgDASPDZrAeyTJLPHae7YoeOIPuXQyz6T5xwxRYQtGLRwZ2NBqCXHF68rdTNgK2JkKql8l
+	YBFtQth0SXlGA9tmI70yaZFUQgfnP3+14C7BBj308g2XbFt7WiB1p1yC2yuqhP3oME15RRmYhtv6d
+	6NgmlogEx64E4Ko4vVH1K5NMudBEFM+Rxk0tpcYYfHVlHPu/tWeFGSpWYQ7hj+r4CVwDMiSw7ggH8
+	Q6w5Bts9mCAUtcZbKTped29C/6bd/5Tc4tusZCcKya6iBPfYfCIcOdJ/yv4H0wniW59TUJy40ar90
+	F175KuYw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rO2XO-00EzID-CS; Thu, 11 Jan 2024 21:24:30 +0000
+	id 1rO2XO-00EzIG-Go; Thu, 11 Jan 2024 21:24:30 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Chandan Babu R <chandan.babu@oracle.com>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -44,10 +44,12 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>,
 	Will Deacon <will@kernel.org>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH v5 0/3] Remove the XFS mrlock
-Date: Thu, 11 Jan 2024 21:24:21 +0000
-Message-Id: <20240111212424.3572189-1-willy@infradead.org>
+Subject: [PATCH v5 1/3] locking: Add rwsem_assert_held() and rwsem_assert_held_write()
+Date: Thu, 11 Jan 2024 21:24:22 +0000
+Message-Id: <20240111212424.3572189-2-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20240111212424.3572189-1-willy@infradead.org>
+References: <20240111212424.3572189-1-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,74 +58,121 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-XFS has an mrlock wrapper around the rwsem which adds only the
-functionality of knowing whether the rwsem is currently held in read
-or write mode.  Both regular rwsems and rt-rwsems know this, they just
-don't expose it as an API.  By adding that, we can remove the XFS mrlock
-as well as improving the debug assertions for the mmap_lock when lockdep
-is disabled.
+Modelled after lockdep_assert_held() and lockdep_assert_held_write(),
+but are always active, even when lockdep is disabled.  Of course, they
+don't test that _this_ thread is the owner, but it's sufficient to catch
+many bugs and doesn't incur the same performance penalty as lockdep.
 
-I have an ack on the first patch from Peter, so I would like to see this
-merged through the XFS tree since most of what it touches is XFS.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/linux/rwbase_rt.h |  9 ++++++--
+ include/linux/rwsem.h     | 46 ++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 48 insertions(+), 7 deletions(-)
 
-v5:
- - Rebase on 5bad490858c3 (current Linus head) to pick up XFS changes
-
-v4:
- - Switch the BUG_ONs to WARN_ONs (Wayman, Peter)
-
-v3:
- - Rename __rwsem_assert_held() and __rwsem_assert_held_write() to
-   rwsem_assert_held*_nolockdep()
- - Use IS_ENABLED(CONFIG_LOCKDEP) to only dump the information once
- - Use ASSERT instead of BUG_ON in xfs
- - Fix typo in subject line of patch 4
- - Drop patch 5 (inode_assert_locked)
- - Rebase on top of xfs-6.7-merge-2 which had a merge conflict
-
-v2: Add rwsem_assert_held() and rwsem_assert_held_write() instead of
-augmenting the existing rwsem_is_locked() with rwsem_is_write_locked().
-There's also an __rwsem_assert_held() and __rwsem_assert_held_write()
-for the benefit of XFS when it's in a context where lockdep doesn't
-know what's going on.  It's still an improvement, so I hope those who
-are looking for perfection can accept a mere improvement.
-
-Matthew Wilcox (Oracle) (3):
-  locking: Add rwsem_assert_held() and rwsem_assert_held_write()
-  xfs: Replace xfs_isilocked with xfs_assert_ilocked
-  xfs: Remove mrlock wrapper
-
- fs/xfs/libxfs/xfs_attr.c        |  2 +-
- fs/xfs/libxfs/xfs_attr_remote.c |  2 +-
- fs/xfs/libxfs/xfs_bmap.c        | 21 ++++----
- fs/xfs/libxfs/xfs_defer.c       |  2 +-
- fs/xfs/libxfs/xfs_inode_fork.c  |  2 +-
- fs/xfs/libxfs/xfs_rtbitmap.c    |  2 +-
- fs/xfs/libxfs/xfs_trans_inode.c |  6 +--
- fs/xfs/mrlock.h                 | 78 ------------------------------
- fs/xfs/scrub/readdir.c          |  4 +-
- fs/xfs/xfs_attr_list.c          |  2 +-
- fs/xfs/xfs_bmap_util.c          | 10 ++--
- fs/xfs/xfs_dir2_readdir.c       |  2 +-
- fs/xfs/xfs_dquot.c              |  4 +-
- fs/xfs/xfs_file.c               |  4 +-
- fs/xfs/xfs_inode.c              | 86 ++++++++++++---------------------
- fs/xfs/xfs_inode.h              |  4 +-
- fs/xfs/xfs_inode_item.c         |  4 +-
- fs/xfs/xfs_iops.c               |  7 ++-
- fs/xfs/xfs_linux.h              |  2 +-
- fs/xfs/xfs_qm.c                 | 10 ++--
- fs/xfs/xfs_reflink.c            |  2 +-
- fs/xfs/xfs_rtalloc.c            |  2 +-
- fs/xfs/xfs_super.c              |  4 +-
- fs/xfs/xfs_symlink.c            |  2 +-
- fs/xfs/xfs_trans.c              |  2 +-
- fs/xfs/xfs_trans_dquot.c        |  2 +-
- include/linux/rwbase_rt.h       |  9 +++-
- include/linux/rwsem.h           | 46 ++++++++++++++++--
- 28 files changed, 129 insertions(+), 194 deletions(-)
- delete mode 100644 fs/xfs/mrlock.h
-
+diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
+index 1d264dd08625..29c4e4f243e4 100644
+--- a/include/linux/rwbase_rt.h
++++ b/include/linux/rwbase_rt.h
+@@ -26,12 +26,17 @@ struct rwbase_rt {
+ 	} while (0)
+ 
+ 
+-static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
++static __always_inline bool rw_base_is_locked(const struct rwbase_rt *rwb)
+ {
+ 	return atomic_read(&rwb->readers) != READER_BIAS;
+ }
+ 
+-static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
++static inline void rw_base_assert_held_write(const struct rwbase_rt *rwb)
++{
++	WARN_ON(atomic_read(&rwb->readers) != WRITER_BIAS);
++}
++
++static __always_inline bool rw_base_is_contended(const struct rwbase_rt *rwb)
+ {
+ 	return atomic_read(&rwb->readers) > 0;
+ }
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 9c29689ff505..4f1c18992f76 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -66,14 +66,24 @@ struct rw_semaphore {
+ #endif
+ };
+ 
+-/* In all implementations count != 0 means locked */
++#define RWSEM_UNLOCKED_VALUE		0UL
++#define RWSEM_WRITER_LOCKED		(1UL << 0)
++#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
++
+ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+ {
+-	return atomic_long_read(&sem->count) != 0;
++	return atomic_long_read(&sem->count) != RWSEM_UNLOCKED_VALUE;
+ }
+ 
+-#define RWSEM_UNLOCKED_VALUE		0L
+-#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
++static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
++{
++	WARN_ON(atomic_long_read(&sem->count) == RWSEM_UNLOCKED_VALUE);
++}
++
++static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
++{
++	WARN_ON(!(atomic_long_read(&sem->count) & RWSEM_WRITER_LOCKED));
++}
+ 
+ /* Common initializer macros and functions */
+ 
+@@ -152,11 +162,21 @@ do {								\
+ 	__init_rwsem((sem), #sem, &__key);			\
+ } while (0)
+ 
+-static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
++static __always_inline int rwsem_is_locked(const struct rw_semaphore *sem)
+ {
+ 	return rw_base_is_locked(&sem->rwbase);
+ }
+ 
++static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
++{
++	WARN_ON(!rwsem_is_locked(sem));
++}
++
++static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
++{
++	rw_base_assert_held_write(sem);
++}
++
+ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
+ {
+ 	return rw_base_is_contended(&sem->rwbase);
+@@ -169,6 +189,22 @@ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
+  * the RT specific variant.
+  */
+ 
++static inline void rwsem_assert_held(const struct rw_semaphore *sem)
++{
++	if (IS_ENABLED(CONFIG_LOCKDEP))
++		lockdep_assert_held(sem);
++	else
++		rwsem_assert_held_nolockdep(sem);
++}
++
++static inline void rwsem_assert_held_write(const struct rw_semaphore *sem)
++{
++	if (IS_ENABLED(CONFIG_LOCKDEP))
++		lockdep_assert_held_write(sem);
++	else
++		rwsem_assert_held_write_nolockdep(sem);
++}
++
+ /*
+  * lock for reading
+  */
 -- 
 2.43.0
 
