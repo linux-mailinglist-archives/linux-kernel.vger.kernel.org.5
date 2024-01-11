@@ -1,69 +1,63 @@
-Return-Path: <linux-kernel+bounces-23412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE9C82AC6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:48:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 023F982AC72
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 11:50:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A82BB26452
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:48:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FF451F23812
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 10:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5423614F60;
-	Thu, 11 Jan 2024 10:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B113114F6A;
+	Thu, 11 Jan 2024 10:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZJsEoHMj"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="aFX6KVGR"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84F914AB6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704970096;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gb635P6D37dItnS5Lkxshet4VrgKfKXqIRdta0HuSAg=;
-	b=ZJsEoHMjFZ9cSXJACMTRluOhx5rB2dCzDsc8/rK44sbdoxUwczCXMWcvy84+jIPs9UrOhj
-	5PvWTJICOjy1EiiDNU/3vlK62R4GDPajwosiJMzu4fjqbZzLVpqcPxqzOak2mBdotQM/y8
-	hWpkrE1fAw4UlvEY/QPGFvppzoeGX3E=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-151-mNH5w2LHMdS5GuZXDePWZQ-1; Thu, 11 Jan 2024 05:48:14 -0500
-X-MC-Unique: mNH5w2LHMdS5GuZXDePWZQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-50e81d186e2so5041723e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:48:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA6B14F60
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 10:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cd6c0b7dbbso5359931fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:49:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704970191; x=1705574991; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s1dTcljljjbzC/kh3vHpEuL3WEnDjy1A0qz4miGt7qo=;
+        b=aFX6KVGRNOdqho+GDybNitxAgXoqvkn0U+2Zi1amPz09NBwJXs3nKXnSH/vpkj9YjT
+         L4vsZS5jL1REGUMqUwStfsqQscBPEScFlNXQOdAfZXa23k5MQEn0C6UVt88D898CVjOm
+         tDH0UlCtllyxhPh/HAPQAWRdMedR39mHWXkK3Wu1S9Yry3UQZG8tEr7uqVzeVClOlFc4
+         mHtjoPgj2ithlT9kF+HAAfPekDsrrqWt4DUIvOwLNsFqwSYSU9TXE9fhR9fXLNjAq3sx
+         RR5/5JH6KuSb8b+kTP/oj3PdbIsejDcQQmk8NmtStmrV4CKK+9V13p+gwjYd3lACnk7J
+         FkEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704970093; x=1705574893;
+        d=1e100.net; s=20230601; t=1704970191; x=1705574991;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gb635P6D37dItnS5Lkxshet4VrgKfKXqIRdta0HuSAg=;
-        b=Ovt5jv4D3QjkMKJYRdh17llItzdNeNcHocRm1xG2Z8BRNd1PZ6eXGO/n1q68GJyAkK
-         DAjHopreNrAJgtbg6GwDAQVUFmrIq+7dyNmGV9g4w50K34y1MMc4Ww3ofQegZCzpNyxj
-         /JfY35PthAJBOKOnlCtI2KgYIbBaQDPix+MyhzPoup/eL3RCdv+54ifgG49y+KIgu/Ot
-         gIW4krIbHh51d8tQYo/SeKp1M7Q7mMO8ohXu3KbHs7CcO6m7msiFgq18CvAbvYMFYF4k
-         1DHjisVm0vpS8bFnlBiFpLmNMF1qjaXsweLvpk01tzFxa5hmXs703fWeph3aXuNFOl6/
-         XQyw==
-X-Gm-Message-State: AOJu0Ywd9N441q3BNxsGdqzAh6+X1WVKz3ZrmPx5cxZZt+7vY8EpslFk
-	YrXhUId4RJARbOfy1HiT0PpEZ8dX6+j/qN55RECMAJ9KFuUx6c2KDMxhEybAoyIiXF6w1eP4RCW
-	04tpU3LhpHuh6bqSFG1GqknoO2UslVGAZ
-X-Received: by 2002:ac2:4da3:0:b0:50e:7b67:b86e with SMTP id h3-20020ac24da3000000b0050e7b67b86emr502134lfe.76.1704970093232;
-        Thu, 11 Jan 2024 02:48:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHpI/1ITPTuh47uDUhlVWVfLk3ya78VXSjq3aPivPmgdPHI0oxnUORDi/kZxb10DteXW077mw==
-X-Received: by 2002:ac2:4da3:0:b0:50e:7b67:b86e with SMTP id h3-20020ac24da3000000b0050e7b67b86emr502126lfe.76.1704970092845;
-        Thu, 11 Jan 2024 02:48:12 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id q24-20020a170906541800b00a26f0f49dd2sm430461ejo.11.2024.01.11.02.48.12
+        bh=s1dTcljljjbzC/kh3vHpEuL3WEnDjy1A0qz4miGt7qo=;
+        b=MLjJqymD5A95lj5W55pkGRvPi6FMgs2lApAi1qFFeiGuV6YtZpVOOPccHx0i51rExE
+         PUKlwXFa+ao6+BsSbxn/kp6tXNen1mvvv2UFl7F5CHp7QO/CWu4caQj4A3H71UxTzeKI
+         nHx3b247ZDyxFWDw+FzqP51GgvbzFRfW6QyEGYq/8D64h93SiVhOolrnnhfrwsDUIoeX
+         E8KSMgEgnqDBC3WSzpWXwVBud5R6Mm4727a9MbYziT96bnyLxB2AaggTncF/14rMn6A/
+         hsU+7/JaLxIkvRvdGNJBcSpVxSfs5cyUBthKLkxjePHbNM+xDWym4yk1dIEOqkbanDne
+         HIsg==
+X-Gm-Message-State: AOJu0YzjbpzHLffI0cQSmGrIhwYM6KUMzmCog+NkvN7YuC3WnRwjBuBy
+	ejaH+49Y+tnu0ezTky8hYHr6jxjLsPUW8g==
+X-Google-Smtp-Source: AGHT+IEL/miHMbrsEIJ3YKGjGRju9tM/OC4JSiDh6ozMI3LPqM42XTQcwyS/+vFSR2fdmi7Ow55Ekg==
+X-Received: by 2002:a2e:860c:0:b0:2cd:3337:6729 with SMTP id a12-20020a2e860c000000b002cd33376729mr1118430lji.3.1704970190789;
+        Thu, 11 Jan 2024 02:49:50 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:999:a3a0:bf36:e934:b395:fd62? ([2a01:e0a:999:a3a0:bf36:e934:b395:fd62])
+        by smtp.gmail.com with ESMTPSA id k11-20020a2e92cb000000b002cd7a4a2611sm104933ljh.35.2024.01.11.02.49.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 02:48:12 -0800 (PST)
-Message-ID: <005a6d3c-ffba-45df-bdc0-cb2d32e6b676@redhat.com>
-Date: Thu, 11 Jan 2024 11:48:11 +0100
+        Thu, 11 Jan 2024 02:49:50 -0800 (PST)
+Message-ID: <78afc7ce-c6ce-4edd-b91a-1f8a94ce298a@rivosinc.com>
+Date: Thu, 11 Jan 2024 11:49:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,173 +65,130 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Input: i8042 - add quirk for Lenovo ThinkPad T14 Gen 1
-Content-Language: en-US, nl
-To: Jonathan Denose <jdenose@chromium.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, Jonathan Denose <jdenose@google.com>,
- Huacai Chen <chenhuacai@kernel.org>,
- Mattijs Korpershoek <mkorpershoek@baylibre.com>, Takashi Iwai
- <tiwai@suse.de>, Werner Sembach <wse@tuxedocomputers.com>,
- linux-kernel@vger.kernel.org
-References: <20230925163313.1.I55bfb5880d6755094a995d3ae44c13810ae98be4@changeid>
- <ZWF76ALANQwP_9b1@google.com>
- <CALNJtpUHHaq6g0wSuyaNBxtOE9kt6vDzdAGGu6j=JJdJmerDWQ@mail.gmail.com>
- <ZZ2eduF_h7lcBrSL@google.com>
- <CALNJtpWr0h+r3=R2scxyCGzgbZ1C6FiYrCGWW1_aSVPBdmNc3Q@mail.gmail.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CALNJtpWr0h+r3=R2scxyCGzgbZ1C6FiYrCGWW1_aSVPBdmNc3Q@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions &
+ cpufeature
+Content-Language: en-US
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: guoren@kernel.org, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+ paul.walmsley@sifive.com, palmer@dabbelt.com, panqinglin2020@iscas.ac.cn,
+ bjorn@rivosinc.com, conor.dooley@microchip.com, leobras@redhat.com,
+ peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn,
+ xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com,
+ uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org
+References: <20231231082955.16516-1-guoren@kernel.org>
+ <20231231082955.16516-2-guoren@kernel.org>
+ <6bce1adb-6808-40df-8dd7-b0b2c6031547@rivosinc.com>
+ <20240103-77f6b0856efb7a9f4591c53b@orel>
+ <331610f6-9987-4d1b-8d57-f21311a43f5d@rivosinc.com>
+ <20240111-416377ebfcaff924b71fb419@orel>
+From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20240111-416377ebfcaff924b71fb419@orel>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi Jonathan,
 
-On 1/11/24 00:42, Jonathan Denose wrote:
-> Dmitry,
-> 
-> Sorry I forgot to reply all, so I'm resending my other email.
-> 
-> On Tue, Jan 9, 2024 at 1:28 PM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
+
+On 11/01/2024 11:45, Andrew Jones wrote:
+> On Thu, Jan 11, 2024 at 11:31:32AM +0100, Clément Léger wrote:
 >>
->> Hi Jonathan,
 >>
->> On Mon, Nov 27, 2023 at 10:38:57AM -0600, Jonathan Denose wrote:
->>> Hi Dmitry
+>> On 03/01/2024 13:00, Andrew Jones wrote:
+>>> On Wed, Jan 03, 2024 at 10:31:37AM +0100, Clément Léger wrote:
+>>>>
+>>>>
+>>>> On 31/12/2023 09:29, guoren@kernel.org wrote:
+>>>>> From: Guo Ren <guoren@linux.alibaba.com>
+>>>>>
+>>>>> Cache-block prefetch instructions are HINTs to the hardware to
+>>>>> indicate that software intends to perform a particular type of
+>>>>> memory access in the near future. This patch adds prefetch.i,
+>>>>> prefetch.r and prefetch.w instruction definitions by
+>>>>> RISCV_ISA_EXT_ZICBOP cpufeature.
+>>>>>
+>>>>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+>>>>> Signed-off-by: Guo Ren <guoren@kernel.org>
+>>>>> ---
+>>>>>  arch/riscv/Kconfig                | 15 ++++++++
+>>>>>  arch/riscv/include/asm/hwcap.h    |  1 +
+>>>>>  arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
+>>>>>  arch/riscv/kernel/cpufeature.c    |  1 +
+>>>>>  4 files changed, 77 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>>>>> index 24c1799e2ec4..fcbd417d65ea 100644
+>>>>> --- a/arch/riscv/Kconfig
+>>>>> +++ b/arch/riscv/Kconfig
+>>>>> @@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
+>>>>>  
+>>>>>  	   If you don't know what to do here, say Y.
+>>>>>  
+>>>>> +config RISCV_ISA_ZICBOP
+>>>>> +	bool "Zicbop extension support for cache block prefetch"
+>>>>> +	depends on MMU
+>>>>> +	depends on RISCV_ALTERNATIVE
+>>>>> +	default y
+>>>>> +	help
+>>>>> +	  Adds support to dynamically detect the presence of the ZICBOP
+>>>>> +	  extension (Cache Block Prefetch Operations) and enable its
+>>>>> +	  usage.
+>>>>> +
+>>>>> +	  The Zicbop extension can be used to prefetch cache block for
+>>>>> +	  read/write fetch.
+>>>>> +
+>>>>> +	  If you don't know what to do here, say Y.
+>>>>> +
+>>>>>  config TOOLCHAIN_HAS_ZIHINTPAUSE
+>>>>>  	bool
+>>>>>  	default y
+>>>>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+>>>>> index 06d30526ef3b..77d3b6ee25ab 100644
+>>>>> --- a/arch/riscv/include/asm/hwcap.h
+>>>>> +++ b/arch/riscv/include/asm/hwcap.h
+>>>>> @@ -57,6 +57,7 @@
+>>>>>  #define RISCV_ISA_EXT_ZIHPM		42
+>>>>>  #define RISCV_ISA_EXT_SMSTATEEN		43
+>>>>>  #define RISCV_ISA_EXT_ZICOND		44
+>>>>> +#define RISCV_ISA_EXT_ZICBOP		45
+>>>>
+>>>> Hi Guo,
+>>>>
+>>>> Since you are adding support for the Zicbop extension, you could
+>>>> probably also allow to probe it from userspace using hwprobe. Add a few
+>>>> definitions to sys_riscv.c/hwprobe.h and it will be fine.
 >>>
->>> On Fri, Nov 24, 2023 at 10:45 PM Dmitry Torokhov
->>> <dmitry.torokhov@gmail.com> wrote:
->>>>
->>>> Hi Jonathan,
->>>>
->>>> On Mon, Sep 25, 2023 at 04:33:20PM -0500, Jonathan Denose wrote:
->>>>> The ThinkPad T14 Gen 1 touchpad works fine except that clicking
->>>>> and dragging by tapping the touchpad or depressing the touchpad
->>>>> do not work. Disabling PNP for controller setting discovery enables
->>>>> click and drag without negatively impacting other touchpad features.
->>>>
->>>> I would like to understand more on how enabling PnP discovery for i8042
->>>> affects the touchpad. Do you see it using different interrupt or IO
->>>> ports? What protocol does the touchpad use with/without PnP? If the
->>>> protocol is the same, do you see difference in the ranges (pressure,
->>>> etc) reported by the device?
->>>>
->>>> Thanks.
->>>>
->>>> --
->>>> Dmitry
->>>
->>> Without PnP discovery the touchpad is using the SynPS/2 protocol, with
->>> PnP discovery, the touchpad is using the rmi4 protocol. Since the
->>> protocols are different, so are the ranges but let me know if you
->>> still want to see them.
+>>> To expose to userspace, we should also start parsing the block size,
+>>> so it can also be exposed to userspace. Starting to parse the block
+>>> size first requires that we decide we need to parse the block size
+>>> (see [1]).
 >>
->> Thank you for this information. So it is not PnP discovery that appears
->> harmful in your case, but rather that legacy PS/2 mode appears to be
->> working better than RMI4 for the device in question.
+>> Hi Andrew, thanks for the thread.
 >>
->> I will note that the original enablement of RMI4 for T14 was done by
->> Hans in [1]. Later T14 with AMD were added to the list of devices that
->> should use RMI4 [2], however this was reverted in [3].
+>> I read it (and the other ones that are related to it) and basically, it
+>> seems there was a first decision (expose Zicbop block size indivudally)
+>> due to the fact the specification did not mentioned anything specific
+>> about clock sizes  but then after that, there was a clarification in the
+>> spec stating that Zicbop and Zicbom have the same block size so the
+>> first decision was questioned again.
 >>
->> Could you please tell me what exact device you are dealing with? What's
->> it ACPI ID?
->>
->> [1] https://lore.kernel.org/all/20201005114919.371592-1-hdegoede@redhat.com/
->> [2] https://lore.kernel.org/r/20220318113949.32722-1-snafu109@gmail.com
->> [3] https://lore.kernel.org/r/20220920193936.8709-1-markpearson@lenovo.com
->>
->> Thanks.
->>
->> --
->> Dmitry
+>> From a user coherency point of view, I think it would make more sense to
+>> expose it individually in hwprobe  so that zicboz, zicbop and zicbom
+>> have their "own" block size (even though zicbop and zicbom would use the
+>> same one). Moreover, it would allow us for future evolution easily
+>> without breaking any userspace later if zicbop and zicbom block size are
+>> decoupled.
 > 
-> Thanks for your reply!
-> 
-> I'm not 100% sure which of these is the ACPI ID, but from `udevadm
-> info -e` there's:
-> N: Name="Synaptics TM3471-020"
-> P: Phys=rmi4-00/input0
+> I agree and QEMU has already headed down the road of generating
+> riscv,cbop-block-size (I guess Conor's ack on [1] was interpreted as
+> being sufficient to merge the QEMU bits), so we can add the Linux
+> support and test with QEMU now. The work could probably be a separate
+> series to this one, though.
 
-To get the ACPI ID you need to run e.g. :``
+Yes, it QEMU had it merged. and agreed, since this requires a bit more
+plumbing, it can probably be left out of this series. I could probably
+take care of that later.
 
-cat /sys/bus/serio/devices/serio1/firmware_id
+Thanks,
 
-After reading the original bug report again I take back my
-Reviewed-by and I'm tending towards a nack for this.
-
-Jonathan upon re-reading things I think that your problem
-is more a case of user space mis-configuration then
-a kernel problem.
-
-You mention both tap-n-drag not working as well as click+drag
-not working.
-
-tap-n-drag is purely done in userspace and typically only
-works if tap-to-click is enabled in the touchpad configuration
-of your desktop environment.
-
-Click + drag requires you to use the bottom of the touchpad
-(the only part which actually clicks) as if there still were
-2 physical buttons there and then click the touchpad down
-with 1 finger till it clicks and then drags with another
-finger (you can click+drag with one finger but the force
-required to keep the touchpad clicked down while dragging
-makes this uncomfortable to do).
-
-This will likely also only work if the mouse click emulation
-mode is set to "area" and not "fingers" with "fingers" being
-the default now. In GNOME you can configure
-the "click emulation mode" in the "tweaks" tools under
-"mouse & touchpad" (and tap to click is in the normal
-settings menu / control panel).
-
-If you have the click emulations set to fingers and
-then do the click with 1 finger + drag with another
-finger thing, I think the drag will turn into a
-right button drag instead of a left button drag which
-is likely why this is not working.
-
-You can check which mode you are in by seeing how
-you right click. If you right-click by pressing down
-in the right bottom corner of the touchpad then
-your userspace (libinput) config is set to areas,
-if you can right click anywhere by pressing down
-with 2 fingers at once then your click emulation
-is in fingers mode and this is likely why click-n-drag
-is not working.
-
-I have just dug up my T14 gen1 (Intel) and updated it
-to kernel 6.6.11 to rule out kernel regressions.
-
-And both click-n-drag and tap-n-drag (double-tap then
-drag) both work fine there with a touchpad with
-an ACPI id of LEN2068 as shown by
-cat /sys/bus/serio/devices/serio1/firmware_id
-
-(with the Desktop Environment configured for bottom
-area click emulation and tap-to-click enabled)
-
-As for why changing things back to synps2 works,
-I don't know. One guess is that you already configured
-the touchpad behavior of your desktop environment to
-your liking in the past and your desktop environment
-has remembered this only for the input device-name
-which is used in SynPS/2 mode and the different
-input device-name in RMI4 mode in new (new-ish)
-kernels causes the desktop environment to use
-default settings which are typically "fingers"
-click emulation and tap-to-click disabled.
-
-This can e.g. also happen if you have moved your
-disk (contents) over from an older machine. IIRC
-the SynPS/2 driver always used the same input
-device-name where as with RMI4 the name is tied
-to the actual laptop model.
-
-Regards,
-
-Hans
-
-
+Clément
 
