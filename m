@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-22953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-22954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026FC82A5CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:04:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FCA882A5CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 03:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9369D1F24276
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:04:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 593AF1C227F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 02:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A858C2116;
-	Thu, 11 Jan 2024 02:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8089F809;
+	Thu, 11 Jan 2024 02:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="kCVHS4pt"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B1120E0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:03:54 +0000 (UTC)
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="RTI1FQHL"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5254C7EA
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 02:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=y6vDa0DRaabKBySXAU
-	ICJ5fEtOO8azvWflhkmAQ8vOg=; b=kCVHS4ptLgNfAVw7b48qFG1QK0YIuxdl3i
-	d2YVZZBHOSY84bx32kZzP2kA+wkEXplg4slEypmtkpw5P3+PEftf5VM87zYa4Ajf
-	cF1knzLybYQHrPoQzIWYWoopLq0vTaZ2TiegmfK3TqfHSfwklnoGQ8oI4BYy2TEA
-	4hAM9qvDA=
+	s=s110527; h=From:Subject:Date:Message-Id; bh=IqMfAJKFYt6J+qstwg
+	7rkqilU4HK/21NbhnZgMySj/E=; b=RTI1FQHLypmfWGLAY7ZqcpRrxF3YQq8VzK
+	H1bOFKnOlWspRfCs5SM59xIyKpYM4GSmSAnnt8U4LPysJGWy6U+VzCD2p1IowMb1
+	nFWXffRHqXpp5IEYt2AkHIBolwvREI9u/9iNFyyaBNPwhvVgVUyI/efKebkbsugx
+	diIKSccV0=
 Received: from localhost.localdomain (unknown [182.148.14.173])
-	by gzga-smtp-mta-g1-2 (Coremail) with SMTP id _____wDnr615TJ9l1gYtAA--.11544S2;
-	Thu, 11 Jan 2024 10:03:37 +0800 (CST)
+	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wD3_3FKTZ9lOOObAA--.54228S2;
+	Thu, 11 Jan 2024 10:07:06 +0800 (CST)
 From: chenxuebing <chenxb_99091@126.com>
 To: alexander.deucher@amd.com,
-	airlied@gmail.com,
 	daniel@ffwll.ch,
+	airlied@gmail.com,
 	Xinhui.Pan@amd.com,
 	christian.koenig@amd.com
-Cc: amd-gfx@lists.freedesktop.org,
+Cc: linux-kernel@vger.kernel.org,
 	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
 	chenxuebing <chenxb_99091@126.com>
-Subject: [PATCH] drm/amd/amdgpu: Clean up errors in amdgpu_umr.h
-Date: Thu, 11 Jan 2024 02:03:33 +0000
-Message-Id: <20240111020333.5611-1-chenxb_99091@126.com>
+Subject: [PATCH] drm/amd: Clean up errors in sdma_v2_4.c
+Date: Thu, 11 Jan 2024 02:07:05 +0000
+Message-Id: <20240111020705.5699-1-chenxb_99091@126.com>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wDnr615TJ9l1gYtAA--.11544S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKr47ZF1rJw1rAw4ruF45Wrg_yoWfZFc_C3
-	yUCa47Xry3XFnIv3W29rWrXr1Dt3WrCFs7Wr1ftasayryxu34UXa4DCry7Xa1I9FnxCF1q
-	q3WFgF15Z3ZrGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU5CztUUUUU==
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiHABixWV2zz4NxQABsQ
+X-CM-TRANSID:_____wD3_3FKTZ9lOOObAA--.54228S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KF4kGw1fWFyfJw1UJryxZrb_yoW8ur1rpF
+	Z5Zr98uFsYyF13K34UX3WkXrn5Kw1Uuayjyr4jg34I9w15Ar9xXr1xtrWfu345JFWfZrWI
+	qFy7Kry7ZF1jv3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UjtC7UUUUU=
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiOhpixWVEuXmeagABsT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,32 +56,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
 Fix the following errors reported by checkpatch:
 
-spaces required around that '=' (ctx:VxV)
+ERROR: that open brace { should be on the previous line
+ERROR: trailing statements should be on next line
 
 Signed-off-by: chenxuebing <chenxb_99091@126.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_umr.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_umr.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_umr.h
-index 107f9bb0e24f..5b27fc41ffbf 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_umr.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_umr.h
-@@ -69,12 +69,12 @@ struct amdgpu_debugfs_gprwave_data {
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
+index 8d5d86675a7f..07e19caf2bc1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
+@@ -57,22 +57,19 @@ static void sdma_v2_4_set_irq_funcs(struct amdgpu_device *adev);
+ MODULE_FIRMWARE("amdgpu/topaz_sdma.bin");
+ MODULE_FIRMWARE("amdgpu/topaz_sdma1.bin");
+ 
+-static const u32 sdma_offsets[SDMA_MAX_INSTANCE] =
+-{
++static const u32 sdma_offsets[SDMA_MAX_INSTANCE] = {
+ 	SDMA0_REGISTER_OFFSET,
+ 	SDMA1_REGISTER_OFFSET
  };
  
- enum AMDGPU_DEBUGFS_REGS2_CMDS {
--	AMDGPU_DEBUGFS_REGS2_CMD_SET_STATE=0,
-+	AMDGPU_DEBUGFS_REGS2_CMD_SET_STATE = 0,
- 	AMDGPU_DEBUGFS_REGS2_CMD_SET_STATE_V2,
+-static const u32 golden_settings_iceland_a11[] =
+-{
++static const u32 golden_settings_iceland_a11[] = {
+ 	mmSDMA0_CHICKEN_BITS, 0xfc910007, 0x00810007,
+ 	mmSDMA0_CLK_CTRL, 0xff000fff, 0x00000000,
+ 	mmSDMA1_CHICKEN_BITS, 0xfc910007, 0x00810007,
+ 	mmSDMA1_CLK_CTRL, 0xff000fff, 0x00000000,
  };
  
- enum AMDGPU_DEBUGFS_GPRWAVE_CMDS {
--	AMDGPU_DEBUGFS_GPRWAVE_CMD_SET_STATE=0,
-+	AMDGPU_DEBUGFS_GPRWAVE_CMD_SET_STATE = 0,
+-static const u32 iceland_mgcg_cgcg_init[] =
+-{
++static const u32 iceland_mgcg_cgcg_init[] = {
+ 	mmSDMA0_CLK_CTRL, 0xff000ff0, 0x00000100,
+ 	mmSDMA1_CLK_CTRL, 0xff000ff0, 0x00000100
  };
+@@ -142,7 +139,8 @@ static int sdma_v2_4_init_microcode(struct amdgpu_device *adev)
+ 	case CHIP_TOPAZ:
+ 		chip_name = "topaz";
+ 		break;
+-	default: BUG();
++	default:
++		BUG();
+ 	}
  
- //reg2 interface
+ 	for (i = 0; i < adev->sdma.num_instances; i++) {
+@@ -1258,8 +1256,7 @@ static void sdma_v2_4_set_vm_pte_funcs(struct amdgpu_device *adev)
+ 	adev->vm_manager.vm_pte_num_scheds = adev->sdma.num_instances;
+ }
+ 
+-const struct amdgpu_ip_block_version sdma_v2_4_ip_block =
+-{
++const struct amdgpu_ip_block_version sdma_v2_4_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_SDMA,
+ 	.major = 2,
+ 	.minor = 4,
 -- 
 2.17.1
 
