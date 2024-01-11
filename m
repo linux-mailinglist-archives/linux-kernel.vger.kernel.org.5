@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-23583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-23584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE6E82AEA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:25:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3378782AEAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 13:25:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035D01F222EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:25:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39AA91C23D39
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jan 2024 12:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34EA215ADF;
-	Thu, 11 Jan 2024 12:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9197A15E98;
+	Thu, 11 Jan 2024 12:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="SLW4lEfQ"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2108.outbound.protection.outlook.com [40.107.117.108])
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="cZ4hmo45"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2128.outbound.protection.outlook.com [40.107.215.128])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08B4156FF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB4F15AFE
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 12:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dMB294uaVJbdMKiiHQCqTWFWzKjfhA3BeC9ukBiBcpFEBVgMlDnYG1OpZsA5YgOmZ0QhoG+2FTQgpyrBjqcL3TE3PkO5e6KBvNHyVcU22bMQ65mHImhMPURqK1I6QP7Azz8wZ60NJ4mB9zJmhgLyow12v9yPtDhs0EFEz0bgDVrcUkFA+NddfwyIIIT2QQ5nSK1WFQWtVulyVW5SWjcGexX9qn2xcW3MBjI2zePMsQ08T5JFqBNcxz5c8WfSebW+7cNGudIEu2XFMfcJO87AOqlN5Nv4NuwhvN1UKN8rNf3PhIkAuTqkzLZtonmNRyBrQ6TXAdUk0Pz0plCNI4ypEA==
+ b=e2jJzPeOgKuBsEl9U3congLX8YiQQqKpRWoHDfj3vwGqkkwjzfVncsFLSirhI1YjBP27eOwbKbrNngmx3qRAMXfPJ+CEdY8MhkVTExUTmM3fO6CsMzg0sEUILapSpAJrxzGO/+3/aWrnOiwL8lYELDOUIVX0hiyi5RBaARtm8nELRFv/ZxrQwHGRNhKYaf6G/NUFSOrJLsgl3HGa8tZFjFCWIYkrNCYDOAfK+5m7H2JjXCQvGPmoux/7oa+TJkYremZw0p/Ch6DlmB6XVLj9XmBVsD/fxLoX76IkvsnCaysV6hmwQO1Zry0FINhHkCduIp2DjpTBmEgzeq766I8ahg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y/XbDFDyTHaoGg8tcaFHppYRuh89zfg9Wa5guHsA9GU=;
- b=ALNtkDSGeGFLEoi0KJ6KodENYTW0khla9pJrMRBckdacULrR4ShmmNerLdbsHjFZPIzqXVxgT9fkUDJP7s1jQiEZ8mDqD5EhbfylhcFENao8DBxfrC4bQD0uC0SOMiqdvA+YRkAhl5416Zw8Ue+Rpyaoq17rJuWZxIOezSBwFwYoXVEbWcc9JZ0yU6ZMqpXmSYSmLez7m089EjSTbvQnm9E+TZz+qUsfa7CG8zgWbkEVhGZ4cS9Pf1Zk906oAdN1dOPkJG7XhswIG7gEuv1Y9kUEEv7QGsoLyaUGwJ6AO5ppKmfWs3TCNwEG1m5imDuJp6Q9qZQd9Mz/zRodWf8Xdw==
+ bh=DPeKjVKms+05mZZodro9vsPnATybM3fXzXBC32DwSDw=;
+ b=SnKghWpo5+Eci6UxovbmYxjuZmH1/qECvlMz+YlbpIr9FNV04G/ib8s4IcMOck2S7zz0oAvTmook5tJkhvgBRcvuUrYQwLPX3hSEbvPID6woP1iSruxKp1ODoWivmes4wZ7iSLBHhC2mMRZmmRha51YWc/oAwlDgSUM0S1TWpKGJ6eiYFQW/L3GFKcjWwww9RMFZMGoq/MDkDqZ95xbz8N1WgD7C7vkNdV1az4PoF0IsAe11MetZJIVWeFicUsNUf2qg19RMCjmejPHFKZ9+8DqjQdEdV6qSNJZcHXC6di59+p9gDD/pIpLdkGZL2Tc4xtji/QjTHci/TsC+tfTE2Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y/XbDFDyTHaoGg8tcaFHppYRuh89zfg9Wa5guHsA9GU=;
- b=SLW4lEfQ2AyWqoC8kYHyFvIuoq/4bpE1Nr6NPWUQDw3LEMlLnsjfJ93hfjHN7H9V0nfJWW19kaGwXtUjwHLuSdmMacm/Jv6VERhKl5LRmOZi7X1ApsVQZYRIQY8dz5DnM0jSxIX9Ct24aPI6VdEyRgBprRda0XdDbE81WEwIdyzO84KUpCdyoWmMytUaVt6AruW2gdW4WIoV7mtWtot06zWV8fdP0VtTYzMyzwtfDI0336rCgO9G4ImoKhffMVzgkwf/OpzuNKgzIPEPHebEEm4uoiUKI5J2UdFSI1pzXnOHqRqq3eUV0DzsLn+/AHsSSihx5aPZT9JWLJoISf7mbw==
+ bh=DPeKjVKms+05mZZodro9vsPnATybM3fXzXBC32DwSDw=;
+ b=cZ4hmo45sToat/839J/kL8n6Fg++CP36hp/nfB4fA9daHh+hqK1rGWywDYXN9wn+55sqSP52QB+8lIqT7BrzHB1blMm/zpZ3M6n/qifp8RP2nvB+YLx502v24kfLEL60oA14yIOnElO3Bc+IgLpQENoYXlEgMWOrOYcT8d5XwuQMPVuX6jWn0Pr3fWqrIll8w9CC24e7azu7FT+eORYON6S6TiNxvqwtABoi/BhdfbMGko+iMfD++50DZqGAzCEMvM+bptY/9gcjLYuSsM1hvSjUkh3EFXhvOXOxOaoIZe02Xhj57s9l75gNxf95LBCdG/GZ3pVdB/X/oqLAA1riAg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from SEZPR06MB6871.apcprd06.prod.outlook.com (2603:1096:101:197::10)
- by SEZPR06MB6958.apcprd06.prod.outlook.com (2603:1096:101:1ef::9) with
+ by TYZPR06MB4477.apcprd06.prod.outlook.com (2603:1096:400:73::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18; Thu, 11 Jan
- 2024 12:25:06 +0000
+ 2024 12:25:09 +0000
 Received: from SEZPR06MB6871.apcprd06.prod.outlook.com
  ([fe80::e954:4698:8499:da81]) by SEZPR06MB6871.apcprd06.prod.outlook.com
  ([fe80::e954:4698:8499:da81%3]) with mapi id 15.20.7181.019; Thu, 11 Jan 2024
- 12:25:06 +0000
+ 12:25:09 +0000
 From: Zhiguo Jiang <justinjiang@vivo.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	David Hildenbrand <david@redhat.com>,
@@ -62,9 +62,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-mm@kvack.org
 Cc: opensource.kernel@vivo.com,
 	Zhiguo Jiang <justinjiang@vivo.com>
-Subject: [PATCH v1 1/2] mm:vmscan: fix workingset eviction memcg issue
-Date: Thu, 11 Jan 2024 20:24:50 +0800
-Message-ID: <20240111122451.682-2-justinjiang@vivo.com>
+Subject: [PATCH v1 2/2] mm:vmscan: fix shrink sc parameters issue
+Date: Thu, 11 Jan 2024 20:24:51 +0800
+Message-ID: <20240111122451.682-3-justinjiang@vivo.com>
 X-Mailer: git-send-email 2.41.0.windows.3
 In-Reply-To: <20240111122451.682-1-justinjiang@vivo.com>
 References: <20240111122451.682-1-justinjiang@vivo.com>
@@ -79,167 +79,164 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6871:EE_|SEZPR06MB6958:EE_
-X-MS-Office365-Filtering-Correlation-Id: dbaeaa7e-a1f6-4b2c-a402-08dc12a05816
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6871:EE_|TYZPR06MB4477:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8efb13bf-0589-45dc-5b6e-08dc12a059ae
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	C50FQXUEcP3QtxSFLpavBuzKLqKZXo/92HwmLjMeZOedRIutzB4voMSO8NpV9zll1LMg7c6RDaxpakrZsjxkhobCeicK6dHcosFPdZtJzk3NSMKXMlbuED4hJdmpLOe5mUyPTaXjWNymTCs9TVbKaF43L93oSNR8g4etyihv0asQdVqPYo3Bqdjjcrn/l811Q2KSacrHQ35EQ0bQ+1zFPDCv+ouiyb/0zDYlJSBNzTzzKNLKh5LuiZ+6W3LL++XGxMW7QbPpCEKeadK8VHq4oeOsGTeE0FHSBTmbXCGnL3WLh+InVTs6OKMHaPMpV27M5v0qRgtz+bPgMDBCUbSbnLGP2n1+MroeECUlJ1pmDQzn8JIcvf72G1d7OKuDRYqAYRqKeB5KgtmuQgs6pPMQpk9VyalaBNlDhAqSLxI2o5V9rcjBXf/P9eZgIlZNqfVA9UUDuN4gy42ElY+zl1IVOpUC72oJxO5LaZ05pUeLDao2JKKK4i6M943a97vkxkWRdeRH96W3mWaXdlczsdDu6qh5HNmuOh0cErqVHwZca098B1Qib9AjrSoGAwxPmfTAeFNFHOFLrL91yJw9YP6s/IEYE7O90pfb5amNVnRuGqM4wR/vfRCkiTseu/QqFd6eByV88oOq9Jqa0Fr6gKovU61Dff9U1Eo/sgQu18Y2TYI=
+	gxmNTqfgxw1o9Rv+b4QZ7S0gALG+twXXDXy34mkNyYdump32tWqCfesGAoqE0Rx1qKPZ5JKBPLJREDHSAg0o+04bk/T5DUkBGTSIXgy++FVYrWYvFJ9TzxkmlljnsCOewxUOPVh1jMmJiyfK6unjY/5TZ8vTJtCwHMXx0e9gWiWJOt4VdwAk0sTQx5rC2pGkpGaGIm4g4vDA0CY0i/S0UlcAaZnCMOblTSjXH0gTe1ReR1mBUg+1MAZOGWGlcQTXXUJx0cSqFXTDt3SuIruCI2xoUwpL86bJbkz5o0hxNwJZZ8e1cbLmO1h9eKbvalblbNbrXGgh3yC6ApdpR6eIjDZo7jSupFI23oPNTNnx1EWgJw3vBnR2OP16XonTG6VSb+C0v2crBrYmSoLKh7CD+iMwYnoj8ZP81uToyh7Giv6/lf7yAHqiLNChCV/ZT3l5/5hBSzU3fad70Yo6ShU8R33F1YOTsbdpW7XqneCaQ9yDH2k6tgkihkEhMkm0M+4qjM4UCDuzKHkvbkAGR0elI7yM5SG++ebLCz9BAi7VXTKSfmLW94WEH4HzenT8M90W7032QrzEN8Q5+0r1/80L8rMUYo3njtuhjTbnqgQbvkmDBxoGCzxLFE50HvSGxdipgT0mCNCW17xz6IvYzliO0Q==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB6871.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(136003)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(316002)(110136005)(6506007)(52116002)(8676002)(8936002)(6486002)(26005)(1076003)(41300700001)(107886003)(83380400001)(66476007)(66556008)(66946007)(4326008)(7416002)(478600001)(6512007)(2616005)(5660300002)(6666004)(2906002)(38100700002)(36756003)(86362001)(921011)(38350700005)(21314003);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB6871.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(376002)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(83380400001)(38100700002)(2906002)(1076003)(66476007)(66946007)(26005)(8936002)(8676002)(7416002)(2616005)(107886003)(4326008)(5660300002)(66556008)(36756003)(478600001)(6666004)(86362001)(52116002)(6506007)(41300700001)(6486002)(110136005)(6512007)(316002)(38350700005)(921011);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?pp+CnS6+Zz9SrCfXqE7i8T9L57iJe0jlJbM9yLfE6PfnGxKwxmshAXtUE9yr?=
- =?us-ascii?Q?LjnJA7hDF0Q0KoT3shRReCE5ec2fV1FbgmjTouzp1oRK/PUY8MMkPcGhqF0D?=
- =?us-ascii?Q?eM4Y7iYcAwWHHRR+Oy1Hc6K0/hkCDKMo4mYv9hfReOMH/xlhjbBd/HSE6h50?=
- =?us-ascii?Q?aOzHoCYHI1WVClNMhg55KZAWbmU+w8pLPH7Tqic/+GMIYAehMk8lU5AkSe79?=
- =?us-ascii?Q?lGRjrCdHI48Yp2+ym6xqfTL23rMphQWY7g/V0dlU5L8NAKqktIYpE/XTtq0z?=
- =?us-ascii?Q?SqDHZIbuFJIwnPsK3ahTYox4T5mNaZ8fdkRoJoAFnuCorpdPJ21PHoIkjXzR?=
- =?us-ascii?Q?2Noi95G0AmqqwmpYL/uCWz3dTzZtuCnt8/Dg9gok//4o0+Lz/ScTKiKH1DOY?=
- =?us-ascii?Q?DdzLec3rEcH/rzAykJloPqj4IdX3XRq/jYHO0wkUtBzxpq/eQ+6AXa0xk+1g?=
- =?us-ascii?Q?0bHv1AVDXbbr8tLbhQhJRKuUweZEOoVQTnIZ4enXTAG+na9KW8CS/kHW2K3n?=
- =?us-ascii?Q?L7A/bq+pRyvduOEAcVpGxRK2LVs3n0I4967c34mR11tlpY75Kz4R+4Wu74UE?=
- =?us-ascii?Q?Pb1FxUY6sy0xF0OONu55k9WwAMgksdRRsZ+4cf3Bb8drsl0HOTvvLLqoNEf6?=
- =?us-ascii?Q?vPvGqpP+1FwnLM83VgDoB+OQy+BYg/klM7WrHUbq5Kcg86SnwhX6k62OLRuY?=
- =?us-ascii?Q?hhwpxM2MnbeGAhwBAucXgFyYLEeg3DIGHvI77+L+lkoPFv54ss+/Z6cFKYFg?=
- =?us-ascii?Q?ujedFpUMcnC0p9/crttAXo8QhIOUnS96vNVsXcj9VfAc2+ySyxvCoJuD5Ish?=
- =?us-ascii?Q?EFDXuNdO88r1EiF2q3FtoOINiFCKoHSBOslgWlv29G20XMg1IAmXMHpXu9Ui?=
- =?us-ascii?Q?F8drvZOav7HjEJ4kHEjZFCLlDJw1gA3ho/s4s6SEfYVeFmZZ3lCuJ8VHtG3D?=
- =?us-ascii?Q?5CE51gt2yyRrZXMNAqV1BhLAIUnCLK+w6mQvcCUg8pDlvadrDi7y26p/eQ+W?=
- =?us-ascii?Q?GxyVCw7XQMWJgkC3guvSe+/VDNdjhfpfjNcx9fYFU1mAoxl8GLxDljcK+eW0?=
- =?us-ascii?Q?bXvpj+6SBiTRlAyKw2zPGdKJfErMWZpD3VkEb56VSZRdpt/CpXTCcw+eUpkq?=
- =?us-ascii?Q?O/IZTIMgu5a2BuVjbzRFvmhGJPXM3GCo46Jc5KxGdsLqQ/eJfmurvzsNPOTj?=
- =?us-ascii?Q?0d2w9lJR/acK/fRdwy1EdLod6FXAcr/eVqGTiS9GV/Lnzg2wgq6Joo9D/3Ic?=
- =?us-ascii?Q?iSLs4ldGIF6q684u9CjXMx+BCJ2l1IaKuAbNXhknezua62OQGEYs8gUSxur8?=
- =?us-ascii?Q?ehA2qGmD+yN7LbevVS3SYsHExsttfTxKUmEd6/pzXTEkG2/eAHr7BgZLB0Ot?=
- =?us-ascii?Q?ariswYmv+oc+wjfat6OdKKutJgoj8lD1VnAiH8bWCva2mVvdKuF62//3zX/0?=
- =?us-ascii?Q?ZVx9vMposS4CVbIb7PJBsk1pFjjvsOeo5uH7n8g62pn3SdtiC3ofc6vAbgxF?=
- =?us-ascii?Q?yTW/8UrDIKd/vNGLEx5yp/bITUrR8Ptwwxp8OH2a2ZwJmXVJKYVdGcX1BJ9R?=
- =?us-ascii?Q?vx3mrTgRwdgsM673qQW311LOD4t9EsonC1dXCVjv?=
+	=?us-ascii?Q?WjhbkzIRuUAfJTbKJBINLZmzdRwiwvCMpFKFDFSIMvkBpMXLin38RarDGFWF?=
+ =?us-ascii?Q?CglkRCYgfbCcXP76MvZZpsagwd1FmqVNuazUxCDkCp4ZrNpEQ35qKgya8K69?=
+ =?us-ascii?Q?jTcCOkACFZmS0xUWVSCYZre+MhOevo6GgwgWufpuuwuuOZ0M4CxIQMTogXKI?=
+ =?us-ascii?Q?gaAqtAaHpRkcNuvVuMozYlAbyCv+QPjHdOmWtDjJLKvwbYBjecAuBXfNKRGT?=
+ =?us-ascii?Q?5k3hwelvZIpKe5c9kbGvR6hbZNGNXnCOshBHdpqSAeUn3KmeQWgb9nOGR89N?=
+ =?us-ascii?Q?thux8hmRmk/1nV+DoVEMBdIwiWnwzbonps/uZ9VMAgztAS2qn/2nenJJYc7g?=
+ =?us-ascii?Q?XosznfoEprJEnwFcE2XHuIbbDwFcbx86PoSFU+JPe44UC4+DJjVovAWLSKKW?=
+ =?us-ascii?Q?xD3ZuJgiSa9JqB4PvuAGls9vzTEUL2MvI6UopmJHsa8kPy5PpB7S/IoO6dE3?=
+ =?us-ascii?Q?nNJCSaM9X60GlVVoqOuqXO8YFwmfmDe0bkTHrowGnvbIr5FvEsE3aLfrOMDF?=
+ =?us-ascii?Q?U2rf3CsXMXbz6r2fbYcSiYQe1t/EF6/GSHHB6DWzOjpabB4o/vZ8UTkrOqLb?=
+ =?us-ascii?Q?UKq79JI0CFu+XYfq17/zhOTrJlAezNrlfnPfr3pWNvLJMCTCh7jyp3/uRxMS?=
+ =?us-ascii?Q?cwmDOHecxXuVW2MBD0Jd0tdSZ1RynGbP2GSrkGd4wJ4L4RK8JymXzpgPXXe+?=
+ =?us-ascii?Q?f46ATp1jJ+WdRn95GC26Hjq4/Bza+H4eupHAyDo8UGEYUPxiCJYAsC/u095k?=
+ =?us-ascii?Q?Dz0qQ8RBLOMZijPedYq71Xvg7bZzB/lr3FP2rUJBjtcuxjYgC9gml2cqV3GE?=
+ =?us-ascii?Q?ucjBTxYjk6G6etZc+/pV0FtaYCaKtmSx0psxPxu8Hkvf8xX2rhQM+Pp/xSnU?=
+ =?us-ascii?Q?1B7bgwp4PKqUYT1AMRFhOvWI1FgRyY6nvrlOZXZL/QhXuQUxFpx4Z671ywYx?=
+ =?us-ascii?Q?3O3yFMXtksk1XYVDpFZl9c/vHGpRaUZXxQH5fKRMTr0/TBqfNf8HZGEc8Ovf?=
+ =?us-ascii?Q?MdWLmsK62Vj03sOSZLxEpTR48a5956ybK6e14AGwyadu5hghzoVzP/qwx3jH?=
+ =?us-ascii?Q?jc4CsoOLv2DIY/Roqo37maIuIx7RKD8XDeDQ9y74HipTvOKxUObt3GTcoTYj?=
+ =?us-ascii?Q?NPeFtoo2T5alFvw0UIFNVgVx5DSzrqBBGQM1TBqZi76OfkmYZ1x5jTFMD+SV?=
+ =?us-ascii?Q?rlTxNKQtYtbJxiJ8xe8N2Ys+EeY44HqayGnjh90NlwEG/LmphS5rzFoL9GeX?=
+ =?us-ascii?Q?INPimE8u1Q23a3K1QtbqEfWj7mslNWloChfvD6fHT0kUxxOuzwDagblz53vD?=
+ =?us-ascii?Q?q6Bg+qoRWncqnqFXS5gTnZ5An0rZOQJlR+lvgNU5TI2cuvdQFz3aXXE6TLK4?=
+ =?us-ascii?Q?rKzE83Oa5QLvRYTZx1b9190Wgns3bWEQFtNn1nU8APL6ycz5tQU+IvBHB7dh?=
+ =?us-ascii?Q?Xj0G7T6ZlLvjxp7WRbMfNXi+WvPzSe09p5VJWDdolbd0tVIt+Bpaokmr2AAa?=
+ =?us-ascii?Q?nhe0bMdNYFHBtWLp+jNTFLQI38mjNqWvKfRvcWTepNmFPzVNGcHhOMgXLC33?=
+ =?us-ascii?Q?YMvSSh7VmH9+cpw895bt/tX/YBYOMOtSsPkwTe1L?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dbaeaa7e-a1f6-4b2c-a402-08dc12a05816
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8efb13bf-0589-45dc-5b6e-08dc12a059ae
 X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6871.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 12:25:06.3820
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2024 12:25:09.0110
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xFszcyK3Oyk52rIv0TWl2KOLetmwlyJXnnXY9f2w4SPTqS5fQa6TeakfhNDzMdv0Jmx49ZLdG2RZN4JH2ccWSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6958
+X-MS-Exchange-CrossTenant-UserPrincipalName: ts4R12uI2iPUFlULfd9funkUN6DPZo0wV/LV/AXR9uJ2ZUTCNB19ANcfteUbGCZORWW21oHInBumbh2Nj1b5TQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB4477
 
-The parameter of target_memcg is NULL in workingset_eviction(), and
-the lruvec obtained by mem_cgroup_lruvec(target_memcg, pgdat) is always
-root_mem_cgroup->lruvec, rather than the lruvec of mem_cgroup where
-folio is actually located.
-
-Fix target_memcg to the memcg obtained by folio_memcg(folio).
+The values of struct scan_control's members obtained by
+prepare_scan_control() are always from root_mem_cgroup, rather than
+the memcg where the shrinked folio is actually located, such as
+sc->anon_cost, sc->file_cost, sc->may_deactivate and so on. This is
+an inaccurate sc values for the actual situation of the current
+shrinking memcg. so we need fix the values of struct scan_control's
+members are corresponding to the current shrinking memcg.
 
 Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
 ---
- include/linux/swap.h |  2 +-
- mm/vmscan.c          | 11 +++++------
- mm/workingset.c      |  6 +++---
- 3 files changed, 9 insertions(+), 10 deletions(-)
- mode change 100644 => 100755 include/linux/swap.h
- mode change 100644 => 100755 mm/vmscan.c
- mode change 100644 => 100755 mm/workingset.c
+ mm/vmscan.c | 35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 41e4b484bc34..4de61f158903
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -346,7 +346,7 @@ static inline swp_entry_t page_swap_entry(struct page *page)
- /* linux/mm/workingset.c */
- bool workingset_test_recent(void *shadow, bool file, bool *workingset);
- void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages);
--void *workingset_eviction(struct folio *folio, struct mem_cgroup *target_memcg);
-+void *workingset_eviction(struct folio *folio);
- void workingset_refault(struct folio *folio, void *shadow);
- void workingset_activation(struct folio *folio);
- 
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 91e7d334a7ca..8a1fbdaca042
+index 8a1fbdaca042..31001123e8f1 100755
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -693,7 +693,7 @@ static pageout_t pageout(struct folio *folio, struct address_space *mapping,
-  * gets returned with a refcount of 0.
-  */
- static int __remove_mapping(struct address_space *mapping, struct folio *folio,
--			    bool reclaimed, struct mem_cgroup *target_memcg)
-+			    bool reclaimed)
- {
- 	int refcount;
- 	void *shadow = NULL;
-@@ -742,7 +742,7 @@ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
- 		swp_entry_t swap = folio->swap;
+@@ -2229,29 +2229,30 @@ enum scan_balance {
+ 	SCAN_FILE,
+ };
  
- 		if (reclaimed && !mapping_exiting(mapping))
--			shadow = workingset_eviction(folio, target_memcg);
-+			shadow = workingset_eviction(folio);
- 		__delete_from_swap_cache(folio, swap, shadow);
- 		mem_cgroup_swapout(folio, swap);
- 		xa_unlock_irq(&mapping->i_pages);
-@@ -769,7 +769,7 @@ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
- 		 */
- 		if (reclaimed && folio_is_file_lru(folio) &&
- 		    !mapping_exiting(mapping) && !dax_mapping(mapping))
--			shadow = workingset_eviction(folio, target_memcg);
-+			shadow = workingset_eviction(folio);
- 		__filemap_remove_folio(folio, shadow);
- 		xa_unlock_irq(&mapping->i_pages);
- 		if (mapping_shrinkable(mapping))
-@@ -803,7 +803,7 @@ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
-  */
- long remove_mapping(struct address_space *mapping, struct folio *folio)
+-static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
++static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc,
++			   struct mem_cgroup *memcg)
  {
--	if (__remove_mapping(mapping, folio, false, NULL)) {
-+	if (__remove_mapping(mapping, folio, false)) {
- 		/*
- 		 * Unfreezing the refcount with 1 effectively
- 		 * drops the pagecache ref for us without requiring another
-@@ -1417,8 +1417,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 			 */
- 			count_vm_events(PGLAZYFREED, nr_pages);
- 			count_memcg_folio_events(folio, PGLAZYFREED, nr_pages);
--		} else if (!mapping || !__remove_mapping(mapping, folio, true,
--							 sc->target_mem_cgroup))
-+		} else if (!mapping || !__remove_mapping(mapping, folio, true))
- 			goto keep_locked;
+ 	unsigned long file;
+-	struct lruvec *target_lruvec;
++	struct lruvec *lruvec;
  
- 		folio_unlock(folio);
-diff --git a/mm/workingset.c b/mm/workingset.c
-index 226012974328..f29396d4bf75
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -372,15 +372,15 @@ void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages)
- 
- /**
-  * workingset_eviction - note the eviction of a folio from memory
-- * @target_memcg: the cgroup that is causing the reclaim
-  * @folio: the folio being evicted
-  *
-  * Return: a shadow entry to be stored in @folio->mapping->i_pages in place
-  * of the evicted @folio so that a later refault can be detected.
-  */
--void *workingset_eviction(struct folio *folio, struct mem_cgroup *target_memcg)
-+void *workingset_eviction(struct folio *folio)
- {
- 	struct pglist_data *pgdat = folio_pgdat(folio);
-+	struct mem_cgroup *memcg = folio_memcg(folio);
- 	unsigned long eviction;
- 	struct lruvec *lruvec;
- 	int memcgid;
-@@ -393,7 +393,7 @@ void *workingset_eviction(struct folio *folio, struct mem_cgroup *target_memcg)
  	if (lru_gen_enabled())
- 		return lru_gen_eviction(folio);
+ 		return;
  
--	lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
+-	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
 +	lruvec = mem_cgroup_lruvec(memcg, pgdat);
- 	/* XXX: target_memcg can be NULL, go through lruvec */
- 	memcgid = mem_cgroup_id(lruvec_memcg(lruvec));
- 	eviction = atomic_long_read(&lruvec->nonresident_age);
+ 
+ 	/*
+ 	 * Flush the memory cgroup stats, so that we read accurate per-memcg
+ 	 * lruvec stats for heuristics.
+ 	 */
+-	mem_cgroup_flush_stats(sc->target_mem_cgroup);
++	mem_cgroup_flush_stats(memcg);
+ 
+ 	/*
+ 	 * Determine the scan balance between anon and file LRUs.
+ 	 */
+-	spin_lock_irq(&target_lruvec->lru_lock);
+-	sc->anon_cost = target_lruvec->anon_cost;
+-	sc->file_cost = target_lruvec->file_cost;
+-	spin_unlock_irq(&target_lruvec->lru_lock);
++	spin_lock_irq(&lruvec->lru_lock);
++	sc->anon_cost = lruvec->anon_cost;
++	sc->file_cost = lruvec->file_cost;
++	spin_unlock_irq(&lruvec->lru_lock);
+ 
+ 	/*
+ 	 * Target desirable inactive:active list ratios for the anon
+@@ -2265,18 +2266,18 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+ 		 * workingset is being established. Deactivate to get
+ 		 * rid of any stale active pages quickly.
+ 		 */
+-		refaults = lruvec_page_state(target_lruvec,
++		refaults = lruvec_page_state(lruvec,
+ 				WORKINGSET_ACTIVATE_ANON);
+-		if (refaults != target_lruvec->refaults[WORKINGSET_ANON] ||
+-			inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
++		if (refaults != lruvec->refaults[WORKINGSET_ANON] ||
++			inactive_is_low(lruvec, LRU_INACTIVE_ANON))
+ 			sc->may_deactivate |= DEACTIVATE_ANON;
+ 		else
+ 			sc->may_deactivate &= ~DEACTIVATE_ANON;
+ 
+-		refaults = lruvec_page_state(target_lruvec,
++		refaults = lruvec_page_state(lruvec,
+ 				WORKINGSET_ACTIVATE_FILE);
+-		if (refaults != target_lruvec->refaults[WORKINGSET_FILE] ||
+-		    inactive_is_low(target_lruvec, LRU_INACTIVE_FILE))
++		if (refaults != lruvec->refaults[WORKINGSET_FILE] ||
++		    inactive_is_low(lruvec, LRU_INACTIVE_FILE))
+ 			sc->may_deactivate |= DEACTIVATE_FILE;
+ 		else
+ 			sc->may_deactivate &= ~DEACTIVATE_FILE;
+@@ -2288,7 +2289,7 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+ 	 * thrashing, try to reclaim those first before touching
+ 	 * anonymous pages.
+ 	 */
+-	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
++	file = lruvec_page_state(lruvec, NR_INACTIVE_FILE);
+ 	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+ 		sc->cache_trim_mode = 1;
+ 	else
+@@ -5885,6 +5886,8 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+ 		reclaimed = sc->nr_reclaimed;
+ 		scanned = sc->nr_scanned;
+ 
++		prepare_scan_control(pgdat, sc, memcg);
++
+ 		shrink_lruvec(lruvec, sc);
+ 
+ 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+@@ -5918,8 +5921,6 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 	nr_reclaimed = sc->nr_reclaimed;
+ 	nr_scanned = sc->nr_scanned;
+ 
+-	prepare_scan_control(pgdat, sc);
+-
+ 	shrink_node_memcgs(pgdat, sc);
+ 
+ 	flush_reclaim_state(sc);
 -- 
 2.39.0
 
