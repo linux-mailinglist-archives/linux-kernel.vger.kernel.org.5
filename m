@@ -1,46 +1,84 @@
-Return-Path: <linux-kernel+bounces-24924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F03D82C4D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:37:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DB7682C4DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:41:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15FD02858F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:37:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CA801C22449
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D57A17540;
-	Fri, 12 Jan 2024 17:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B7717C82;
+	Fri, 12 Jan 2024 17:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhsvjCmA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hNvUKiVt";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yhRGzsDZ"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9ED722601;
-	Fri, 12 Jan 2024 17:37:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E37C433F1;
-	Fri, 12 Jan 2024 17:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705081026;
-	bh=kyspuGF+/jomofVPFKqvjOWn53WkC65k3SpM8uRR2V8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=YhsvjCmAGkzhLHpefGxQfZI0s9oyOxD4Xx3IegbwDSErHF+O8QvdO5G7G2rOR1Bpv
-	 zdO3dQtzEnJsHDG/RiTpxMPc8Afq87IDF36FFm2/rt/AUf67ykCEEZ+xXtHh8xMst0
-	 32IzMtpxyANQFfmzij4zEnoCCauAKE69fsPUq3fAyuvNwgH7NHi0G300bDDDjKoCM7
-	 jty4ce++AsFyIkuGZrdSv2wtQTTVvv+YeweOAfBw/1CCKQvy1j2C9ayZ64UTQ7K2uD
-	 UJWhOrDdHekwwQmQYUnSbw7xqct69HaXS5DvQok/jNREfTNyhXq3H+jiy3VNxxolus
-	 4jATA4s9igCFQ==
-Date: Fri, 12 Jan 2024 11:37:04 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org,
-	Victor Shih <victor.shih@genesyslogic.com.tw>,
-	Ben Chuang <benchuanggli@gmail.com>, linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
- timer timeout during suspend
-Message-ID: <20240112173704.GA2272968@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A90E175A3;
+	Fri, 12 Jan 2024 17:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 12 Jan 2024 18:41:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705081299;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MSerJ1jiXzUOejSZwcpJCzNYxLNjbdJRxkU6ajmn+qM=;
+	b=hNvUKiVtIx2Q8yYcInszUSrifOyzrx1yC7DMnctpPd1RCvkGGCe87JwyVd6Df1OCHJG3Jo
+	WKJcVpew98o7k6XsyhsU6Up9WopBVpBHCRsEueszlWbuxy6paLWKV07AjjU7PecUHogMU5
+	xsNi+qFd5KGXbU0uAaFzbVL94GYssifSnzLpBMCzARK2EMzzan98bxQjZy2a1Wu9D6jSGP
+	wc7RsQTbrIIiuZ+KDUrf7924KkROskmvQ57YP7Wu2jI8E8VFs2OUdWAwZZu3VMtw1/HFuU
+	PA0NUqhwLDlghjjJuTwc4vqpQ+b7f3NZFPk+k0mIi5Ijnt2Vc6LIl6DbLyhhGQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705081299;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MSerJ1jiXzUOejSZwcpJCzNYxLNjbdJRxkU6ajmn+qM=;
+	b=yhRGzsDZ2lGrIgwoEKmPL7pgDjALimrtmgPXUY7K98e5nSXwOUzgXaLDYZAtD2grtVHq++
+	Q+A6E5QAfIWlXwCw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Hao Luo <haoluo@google.com>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Ronak Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
+ redirect.
+Message-ID: <20240112174138.tMmUs11o@linutronix.de>
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+ <20231215171020.687342-16-bigeasy@linutronix.de>
+ <CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
+ <87r0iw524h.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,91 +87,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p7ZwYNau1c=SDpGd+cqP2qO_7km9Q3-bow-Jqzo6STVFA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87r0iw524h.fsf@toke.dk>
 
-On Fri, Jan 12, 2024 at 01:14:42PM +0800, Kai-Heng Feng wrote:
-> On Sat, Jan 6, 2024 at 5:19 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+On 2024-01-04 20:29:02 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>=20
+> >> @@ -3925,6 +3926,7 @@ struct sk_buff *tcf_qevent_handle(struct tcf_qev=
+ent *qe, struct Qdisc *sch, stru
+> >>
+> >>         fl =3D rcu_dereference_bh(qe->filter_chain);
+> >>
+> >> +       guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+> >>         switch (tcf_classify(skb, NULL, fl, &cl_res, false)) {
+> >>         case TC_ACT_SHOT:
+> >>                 qdisc_qstats_drop(sch);
 > >
-> > On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng wrote:
-> > > Spamming `lspci -vv` can still observe the replay timer timeout error
-> > > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
-> > > replay timer timeout of AER"), albeit with a lower reproduce rate.
+> > Here and in all other places this patch adds locks that
+> > will kill performance of XDP, tcx and everything else in networking.
 > >
-> > I'm not sure what this is telling me.  By "spamming `lspci -vv`, do
-> > you mean that if you run lspci continually, you still see Replay Timer
-> > Timeout logged, e.g.,
-> >
-> >   CESta:        ... Timeout+
-> 
-> Yes it's logged and the AER IRQ is raised.
+> > I'm surprised Jesper and other folks are not jumping in with nacks.
+> > We measure performance in nanoseconds here.
+> > Extra lock is no go.
+> > Please find a different way without ruining performance.
+>=20
+> I'll add that while all this compiles out as no-ops on !PREEMPT_RT, I do
+> believe there are people who are using XDP on PREEMPT_RT kernels and
+> still expect decent performance. And to achieve that it is absolutely
+> imperative that we can amortise expensive operations (such as locking)
+> over multiple packets.
+>=20
+> I realise there's a fundamental trade-off between the amount of
+> amortisation and the latency hit that we take from holding locks for
+> longer, but tuning the batch size (while still keeping some amount of
+> batching) may be a way forward? I suppose Jakub's suggestion in the
+> other part of the thread, of putting the locks around napi->poll(), is a
+> step towards something like this.
 
-IIUC the AER IRQ is the important thing.
+The RT requirements are usually different. Networking as in CAN might be
+important but Ethernet could only used for remote communication and so
+"not" important. People complained that they need to wait for Ethernet
+to be done until the CAN packet can be injected into the stack.
+With that expectation you would like to pause Ethernet immediately and
+switch over the CAN interrupt thread.
 
-Neither 015c9cbcf0ad nor this patch affects logging in
-PCI_ERR_COR_STATUS, so the lspci output won't change and mentioning it
-here doesn't add useful information.
+But if someone managed to setup XDP then it is likely to be important.
+With RT traffic it is usually not the throughput that matters but the
+latency. You are likely in the position to receive a packet, say every
+1ms, and need to respond immediately. XDP would be used to inspect the
+packet and either hand it over to the stack or process it.
 
-I'd suggest more specific wording than "spamming `lspci -vv`", e.g.,
+I expected the lock operation (under RT) to always succeeds and not
+cause any delay because it should not be contended. It should only
+block if something with higher priority preempted the current interrupt
+thread _and_ also happen to use XDP on the same CPU. In that case (XDP
+is needed) it would flush the current user out of the locked section
+before the higher-prio thread could take over. Doing bulk and allowing
+the low-priority thread to complete would delay the high-priority
+thread. Maybe I am too pessimistic here and having two XDP programs on
+one CPU is unlikely to happen.
 
-  015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the replay timer
-  timeout of AER") masks Replay Timer Timeout errors at the GL975x
-  Endpoint.  When the Endpoint detects these errors, it still logs
-  them in its PCI_ERR_COR_STATUS, but masking prevents it from sending
-  ERR_COR messages upstream.
+Adding the lock on per-NAPI basis would allow to batch packets.
+Acquiring the lock only if XDP is supported would not block the CAN
+drivers since they dont't support XDP. But sounds like a hack.
 
-  The Downstream Port leading to a GL975x Endpoint is unaffected by
-  015c9cbcf0ad.  Previously, when that Port detected a Replay Timer
-  Timeout, it sent an ERR_COR message upstream, which eventually
-  caused an AER IRQ, which prevented the system from suspending.
+Daniel said netkit doesn't need this locking because it is not
+supporting this redirect and it made me think. Would it work to make
+the redirect structures part of the bpf_prog-structure instead of
+per-CPU? My understanding is that eBPF's programs data structures are
+part of it and contain locking allowing one eBPF program preempt
+another one.
+Having the redirect structures part of the program would obsolete
+locking. Do I miss anything?
 
-  Mask Replay Timer Timeout errors at the Downstream Port.  The errors
-  will still be logged in PCI_ERR_COR_STATUS, but no ERR_COR will be
-  sent.
+> -Toke
 
-> > 015c9cbcf0ad uses hard-coded PCI_GLI_9750_CORRERR_MASK offset and
-> > PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT value, which look like
-> > they *could* be PCI_ERR_COR_MASK and PCI_ERR_COR_REP_TIMER, but
-> > without the lspci output I can't tell for sure.  If they are, it would
-> > be nice to use the generic macros instead of defining new ones so it's
-> > easier to analyze PCI_ERR_COR_MASK usage.
-> >
-> > If 015c9cbcf0ad is updating the generic PCI_ERR_COR_MASK, it should
-> > only prevent sending ERR_COR.  It should not affect the *logging* in
-> > PCI_ERR_COR_STATUS (see PCIe r6.0, sec 6.2.3.2.2), so it shouldn't
-> > affect the lspci output.
-> 
-> PCI_GLI_9750_CORRERR_MASK is specific to GLI 975x devices, so it
-> doesn't conform to generic PCI_ERR_COR_STATUS behavior.
-
-*Could* 015c9cbcf0ad have used the generic PCI_ERR_COR_MASK to
-accomplish the same effect?  Is there an advantage to using the
-device-specific PCI_GLI_9750_CORRERR_MASK?
-
-If masking via PCI_ERR_COR_MASK would work, that would be much better
-because the PCI core can see, manage, and make that visible, e.g., via
-sysfs.  The core doesn't do that today, but people are working on it.
-
-> > If 015c9cbcf0ad is actually updating PCI_ERR_COR_MASK, it would be
-> > nice to clean that up, too.  And maybe PCI_ERR_COR_REP_TIMER should be
-> > masked/restored at the same place for both the Downstream Port and the
-> > Endpoint?
-> 
-> Since PCI_ERR_COR_REP_TIMER is already masked before 015c9cbcf0ad,
-> so I didn't think that's necessary.  Do you think it should still be
-> masked just to be safe?
-
-Did you mean "PCI_ERR_COR_REP_TIMER is already masked *by*
-015c9cbcf0ad"?
-
-If masking PCI_ERR_COR_REP_TIMER using the generic PCI_ERR_COR_MASK in
-the GL975x would have the same effect as masking it with
-PCI_GLI_9750_CORRERR_MASK, then I think you should *only* use the
-generic PCI_ERR_COR_MASK.
-
-No need to do both if the generic one is sufficient.  And I think both
-should be done in the same place since they're basically solving the
-same problem, just at both ends of the link.
-
-Bjorn
+Sebastian
 
