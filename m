@@ -1,159 +1,97 @@
-Return-Path: <linux-kernel+bounces-24312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F4282BAD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:24:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70AD082BAD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 495C4288DC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:24:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97B531C2490A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B53E5B5D3;
-	Fri, 12 Jan 2024 05:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hu648VVH"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B185B5D1;
+	Fri, 12 Jan 2024 05:25:50 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B275C8E1;
-	Fri, 12 Jan 2024 05:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5e7409797a1so59481087b3.0;
-        Thu, 11 Jan 2024 21:24:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705037068; x=1705641868; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=heVTH2EP/JfOmY9Rzq8j0Q0ltkkFkZbT8oB6/EA/QjU=;
-        b=hu648VVH2kYUu4lEodQaeYcP1B4Rsits3CLYbZp7NuycxoBngWpJ8Re4Oc75vs0nma
-         jgOy5N9maMKa2LBoMdO5bxB9kNStDnlX56wXTIp8K/FMHSVT8b6zNGNKjRKByYTAvwv6
-         JW7XmhZ6cJNfLHEudrfODQyJRqo8ScJjas4Qvv9OZWpSd71fK8Sp4Vjdrf16nCsN5JbC
-         GpZDpNArbU3AtX6F7CmP/jIX7jmIl+M6Wa4NRxVS2l8ExHNuXbb5a41Zwk2R5UfICLLv
-         iPnsvJtCZSAcYXphBYa6x9CRPZdyHLeQn+5mAma6VNT0JCyrm6c4r7iUiBbVnvvMYuPy
-         1/oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705037068; x=1705641868;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=heVTH2EP/JfOmY9Rzq8j0Q0ltkkFkZbT8oB6/EA/QjU=;
-        b=NqvJrnNbt0dIEMJEUzzz3klgU4gidwkefnw6NWLLnsCHpOCRf8T7E1s8ma2LNTlLOv
-         b6QJ97Jf4S/1uwb1/2wiKfIAIxAW3uydjfxzVs2o4Dy493kpcLaHO0scuPLxal+X0gde
-         Bgdv1SHjP22Ue6g3dMAHQK0HgL2SSlG+Z9UgKOt3rWIl+tzHBxKAH7ZDQex6GYOGwltt
-         P9Rfti9LOzl9TZrvo6uWcnNmK7MKnDjOC7TiaOL1aYRjlQgKaM7DLctdtzYDtNz2rW/X
-         Jwee3xcV0reKhI5AkXfu80YVg6mtmAOrU+L8r3d56gQVbC0GCq4MCXVrsny6Kuq/oB8S
-         3b4g==
-X-Gm-Message-State: AOJu0Yx4UVNNjCed3PCZcfCFJaZ0Od3otqLhQY/SRfms9ZsEeBaucna6
-	aGzVzyKXYm35hEQZWaP5aXA=
-X-Google-Smtp-Source: AGHT+IHuOgViTEPqU3OZ6NudbUXy1IrnGt80tE6bb6BIEVIHp1ZRyR4nzDuuMpu800H7CQ3z0WgXaw==
-X-Received: by 2002:a0d:cccf:0:b0:5cd:c7a3:6cb3 with SMTP id o198-20020a0dcccf000000b005cdc7a36cb3mr867678ywd.37.1705037067775;
-        Thu, 11 Jan 2024 21:24:27 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s65-20020a819b44000000b005e7fb8e1fdasm1058473ywg.14.2024.01.11.21.24.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 21:24:27 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 11 Jan 2024 21:24:25 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Miklos Szeredi <mszeredi@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
-	Karel Zak <kzak@redhat.com>, Ian Kent <raven@themaw.net>,
-	David Howells <dhowells@redhat.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <christian@brauner.io>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Matthew House <mattlloydhouse@gmail.com>,
-	Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
-Message-ID: <ab4e88fa-af6a-49e9-a8bc-3cdc3a531aaf@roeck-us.net>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-6-mszeredi@redhat.com>
- <75b87a85-7d2c-4078-91e3-024ea36cfb42@roeck-us.net>
- <CAHk-=wjdW-4s6Kpa4izJ2D=yPdCje6Ta=eQxxQG6e2SkP42vnw@mail.gmail.com>
- <2f595f28-7fcd-4196-a0b1-6598781530b9@roeck-us.net>
- <CAHk-=wjh6Cypo8WC-McXgSzCaou3UXccxB+7PVeSuGR8AjCphg@mail.gmail.com>
- <77b38aa7-a8b1-4450-8c50-379f130dda16@roeck-us.net>
- <CAHk-=wgK81n4=pfKnhWfYxxtFBS_1UQDaeBGRRJ39qjVw-oyCQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B745B5BA;
+	Fri, 12 Jan 2024 05:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 40C5OW5L068788;
+	Fri, 12 Jan 2024 13:24:32 +0800 (GMT-8)
+	(envelope-from hu.yadi@h3c.com)
+Received: from DAG6EX05-IMDC.srv.huawei-3com.com (unknown [10.62.14.14])
+	by mail.maildlp.com (Postfix) with ESMTP id CAE0720081B9;
+	Fri, 12 Jan 2024 13:28:54 +0800 (CST)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
+ DAG6EX05-IMDC.srv.huawei-3com.com (10.62.14.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27; Fri, 12 Jan 2024 13:24:33 +0800
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
+ by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
+ mapi id 15.02.1258.027; Fri, 12 Jan 2024 13:24:33 +0800
+From: Huyadi <hu.yadi@h3c.com>
+To: "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com"
+	<serge@hallyn.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "mic@digikod.net" <mic@digikod.net>
+CC: "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org"
+	<linux-security-module@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>,
+        "514118380@qq.com" <514118380@qq.com>
+Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0hdIHNlbGZ0ZXN0cy9jb3JlOiBGaXggYnVpbGQgaXNz?=
+ =?utf-8?B?dWUgd2l0aCBDTE9TRV9SQU5HRV9VTlNIQVJF?=
+Thread-Topic: [PATCH] selftests/core: Fix build issue with CLOSE_RANGE_UNSHARE
+Thread-Index: AQHaREFKmm7LKypC3ku5ZfvLUDPhobDVpjEw
+Date: Fri, 12 Jan 2024 05:24:33 +0000
+Message-ID: <721bdbfd706645379b6164199aa31165@h3c.com>
+References: <20240111034747.39746-1-hu.yadi@h3c.com>
+In-Reply-To: <20240111034747.39746-1-hu.yadi@h3c.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-sender-location: DAG2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgK81n4=pfKnhWfYxxtFBS_1UQDaeBGRRJ39qjVw-oyCQ@mail.gmail.com>
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 40C5OW5L068788
 
-On Thu, Jan 11, 2024 at 07:40:32PM -0800, Linus Torvalds wrote:
-> On Thu, 11 Jan 2024 at 15:57, Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > I wonder if something may be wrong with the definition and use of __m
-> > for u64 accesses. The code below also fixes the build problem.
-> 
-> Ok, that looks like the right workaround.
-> 
-
-I think I'll go with the code below. It doesn't touch the MMU code
-(which for some reason doesn't result in a build failure), and
-it generates
-
-! 5071 "fs/namespace.c" 1
-        mov.l   r6,@r1
-        mov.l   r7,@(4,r1)
-
-which seems to be correct. It also matches the pattern used
-for __put_user_asm(). Does that make sense ?
-
-Thanks,
-Guenter
-
----
-diff --git a/arch/sh/include/asm/uaccess_32.h b/arch/sh/include/asm/uaccess_32.h
-index 5d7ddc092afd..5ce46b2a95b6 100644
---- a/arch/sh/include/asm/uaccess_32.h
-+++ b/arch/sh/include/asm/uaccess_32.h
-@@ -176,6 +176,7 @@ do {							\
- } while (0)
- #endif /* CONFIG_MMU */
- 
-+#ifdef CONFIG_MMU
- #if defined(CONFIG_CPU_LITTLE_ENDIAN)
- #define __put_user_u64(val,addr,retval) \
- ({ \
-@@ -221,6 +222,26 @@ __asm__ __volatile__( \
- 	: "r" (val), "m" (__m(addr)), "i" (-EFAULT), "0" (retval) \
-         : "memory"); })
- #endif
-+#else
-+#if defined(CONFIG_CPU_LITTLE_ENDIAN)
-+#define __put_user_u64(val,addr,retval) \
-+({ \
-+__asm__ __volatile__( \
-+	"mov.l	%R0,%1\n\t" \
-+	"mov.l	%S0,%T1\n\t" \
-+	: /* no outputs */ \
-+	: "r" (val), "m" (*(u64 *)(addr)) \
-+	: "memory"); })
-+#else
-+({ \
-+__asm__ __volatile__( \
-+	"mov.l	%S0,%1\n\t" \
-+	"mov.l	%R0,%T1\n\t" \
-+	: /* no outputs */ \
-+	: "r" (val), "m" (*(u64 *)(addr)) \
-+	: "memory"); })
-+#endif
-+#endif /* CONFIG_MMU */
- 
- extern void __put_user_unknown(void);
- 
+QW55IGNvbW1lbnRzIHdpbGwgYmUgYXBwcmVjaWF0ZWQNCg0KPkZyb206ICJIdS5ZYWRpIiA8aHUu
+eWFkaUBoM2MuY29tPg0KPg0KPkFkZCBoZWFkIGZpbGUgdG8gZml4IGNwbXBpbGUgZXJyb3I6DQo+
+DQo+Z2NjIC1nIC1pc3lzdGVtIC9ob21lL2xpbnV4L3Vzci9pbmNsdWRlICAgICBjbG9zZV9yYW5n
+ZV90ZXN0LmMgIC1vIC9ob21lL2xpbnV4L3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2NvcmUvY2xv
+c2VfcmFuZ2VfdGVzdA0KPmNsb3NlX3JhbmdlX3Rlc3QuYzogSW4gZnVuY3Rpb24g4oCYY2xvc2Vf
+cmFuZ2VfdW5zaGFyZeKAmToNCj5jbG9zZV9yYW5nZV90ZXN0LmM6MTExOjExOiBlcnJvcjog4oCY
+Q0xPU0VfUkFOR0VfVU5TSEFSReKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5j
+dGlvbik7IGRpZCB5b3UgbWVhbiDigJhDTE9ORV9ORVdVU0VS4oCZPw0KPiAgICAgICAgICAgQ0xP
+U0VfUkFOR0VfVU5TSEFSRSk7DQo+ICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+DQo+DQoN
+Cj5TaWduZWQtb2ZmLWJ5OiBIdS5ZYWRpIDxodS55YWRpQGgzYy5jb20+DQo+U3VnZ2VzdGVkLWJ5
+OiBKaWFvIDxqaWFveHVwb0BoM2MuY29tPg0KPlJldmlld2VkLWJ5OiBCZXJsaW4gPGJlcmxpbkBo
+M2MuY29tPg0KPi0tLQ0KPiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9jb3JlL2Nsb3NlX3Jhbmdl
+X3Rlc3QuYyB8IDIgKy0NCj4gMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0
+aW9uKC0pDQo+DQo+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2NvcmUvY2xv
+c2VfcmFuZ2VfdGVzdC5jIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvY29yZS9jbG9zZV9yYW5n
+ZV90ZXN0LmMNCj5pbmRleCA1MzQ1NzZmMDZkZjEuLjU2M2JjMWU1NTkzNyAxMDA2NDQNCj4tLS0g
+YS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9jb3JlL2Nsb3NlX3JhbmdlX3Rlc3QuYw0KPisrKyBi
+L3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2NvcmUvY2xvc2VfcmFuZ2VfdGVzdC5jDQo+QEAgLTEy
+LDcgKzEyLDcgQEANCj4gI2luY2x1ZGUgPHN5c2NhbGwuaD4NCj4gI2luY2x1ZGUgPHVuaXN0ZC5o
+Pg0KPiAjaW5jbHVkZSA8c3lzL3Jlc291cmNlLmg+DQo+LQ0KPisjaW5jbHVkZSA8bGludXgvY2xv
+c2VfcmFuZ2UuaD4NCj4gI2luY2x1ZGUgIi4uL2tzZWxmdGVzdF9oYXJuZXNzLmgiDQo+ICNpbmNs
+dWRlICIuLi9jbG9uZTMvY2xvbmUzX3NlbGZ0ZXN0cy5oIg0KPiANCj4tLSANCj4yLjIzLjANCg==
 
