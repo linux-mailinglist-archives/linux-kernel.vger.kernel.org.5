@@ -1,159 +1,187 @@
-Return-Path: <linux-kernel+bounces-24380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4623D82BBCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:31:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 419D382BBC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:30:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E84241F232B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:31:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D58081F22AC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DE65D747;
-	Fri, 12 Jan 2024 07:30:53 +0000 (UTC)
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E906F5C8FD;
-	Fri, 12 Jan 2024 07:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [39.174.92.167])
-	by mail-app2 (Coremail) with SMTP id by_KCgBn+fCG6qBlmFQzAA--.25619S2;
-	Fri, 12 Jan 2024 15:30:16 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maor Gottlieb <maorg@mellanox.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v3] net/mlx5e: fix a double-free in arfs_create_groups
-Date: Fri, 12 Jan 2024 15:29:16 +0800
-Message-Id: <20240112072916.3726945-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227BC5D724;
+	Fri, 12 Jan 2024 07:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="f+wBvDm1"
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF5ED5C8FD;
+	Fri, 12 Jan 2024 07:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from sunspire (unknown [188.24.94.216])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id 7260728B531;
+	Fri, 12 Jan 2024 07:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1705044632;
+	bh=6Jm6c1mv+a3OF1N6sRuMkjN/1Cyes5vuHDzFuEGKHaE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=f+wBvDm1BomRuQJLr0eYgoYkPcFNhPLxl60od+6e+JGPA6LjsJHjWrKqXpztxwW7j
+	 q23f/I6j89d9hmEms4g/7sGVNUx8ucAf/hGRXPKJg0Wl+u/lXfteckzZdnFdmN5LIn
+	 h0Wy5yBovDJPT3ZeuUl8gXoI/prepLkgdFKubL8c=
+Date: Fri, 12 Jan 2024 09:30:30 +0200
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH 2/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
+ add sleep-mode
+Message-ID: <ZaDqlmXJD6if1xK7@sunspire>
+References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
+ <20240110172306.31273-3-petre.rodan@subdimension.ro>
+ <bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:by_KCgBn+fCG6qBlmFQzAA--.25619S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrWUGFWrJw1UGFWUWr1kGrg_yoW5Xr4DpF
-	47JryDtFs5A3WxX39Iy3y0qrn5Cw48Ka1UuFyI934Sqrsrtr4kGFy0g345ArWxCFy3AwnF
-	y34rZw1UCFnrCwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-	6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
-	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbU
-	UUUUU==
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="LTw4fbEjyL1VypdH"
+Content-Disposition: inline
+In-Reply-To: <bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
 
-When `in` allocated by kvzalloc fails, arfs_create_groups will free
-ft->g and return an error. However, arfs_create_table, the only caller of
-arfs_create_groups, will hold this error and call to
-mlx5e_destroy_flow_table, in which the ft->g will be freed again.
 
-Fixes: 1cabe6b0965e ("net/mlx5e: Create aRFS flow tables")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
----
-Changelog:
+--LTw4fbEjyL1VypdH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-v2: free ft->g just in arfs_create_groups with a unwind ladder.
-v3: split the allocation of ft->g and in. Rename the error label.
-    remove some refector change in v2.
----
- .../net/ethernet/mellanox/mlx5/core/en_arfs.c | 26 +++++++++++--------
- 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-index bb7f86c993e5..0424ae068a60 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-@@ -254,11 +254,13 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 
- 	ft->g = kcalloc(MLX5E_ARFS_NUM_GROUPS,
- 			sizeof(*ft->g), GFP_KERNEL);
--	in = kvzalloc(inlen, GFP_KERNEL);
--	if  (!in || !ft->g) {
--		kfree(ft->g);
--		kvfree(in);
-+	if(!ft->g)
- 		return -ENOMEM;
-+
-+	in = kvzalloc(inlen, GFP_KERNEL);
-+	if  (!in) {
-+		err = -ENOMEM;
-+		goto err_free_g;
- 	}
- 
- 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
-@@ -278,7 +280,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 		break;
- 	default:
- 		err = -EINVAL;
--		goto out;
-+		goto err_free_in;
- 	}
- 
- 	switch (type) {
-@@ -300,7 +302,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 		break;
- 	default:
- 		err = -EINVAL;
--		goto out;
-+		goto err_free_in;
- 	}
- 
- 	MLX5_SET_CFG(in, match_criteria_enable, MLX5_MATCH_OUTER_HEADERS);
-@@ -309,7 +311,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 	MLX5_SET_CFG(in, end_flow_index, ix - 1);
- 	ft->g[ft->num_groups] = mlx5_create_flow_group(ft->t, in);
- 	if (IS_ERR(ft->g[ft->num_groups]))
--		goto err;
-+		goto err_clean_group;
- 	ft->num_groups++;
- 
- 	memset(in, 0, inlen);
-@@ -318,18 +320,20 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 	MLX5_SET_CFG(in, end_flow_index, ix - 1);
- 	ft->g[ft->num_groups] = mlx5_create_flow_group(ft->t, in);
- 	if (IS_ERR(ft->g[ft->num_groups]))
--		goto err;
-+		goto err_clean_group;
- 	ft->num_groups++;
- 
- 	kvfree(in);
- 	return 0;
- 
--err:
-+err_clean_group:
- 	err = PTR_ERR(ft->g[ft->num_groups]);
- 	ft->g[ft->num_groups] = NULL;
--out:
-+err_free_in:
- 	kvfree(in);
--
-+err_free_g:
-+	kfree(ft->g);
-+	ft->g = NULL;
- 	return err;
- }
- 
--- 
-2.34.1
+Hello Krzysztof,
 
+On Wed, Jan 10, 2024 at 09:48:34PM +0100, Krzysztof Kozlowski wrote:
+> On 10/01/2024 18:22, Petre Rodan wrote:
+> > Add sleep-mode property present in some custom chips.
+> >=20
+> > This flag activates a special wakeup sequence prior to conversion.
+> >=20
+> > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+> > ---
+> >  .../bindings/iio/pressure/honeywell,hsc030pa.yaml      | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,h=
+sc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc=
+030pa.yaml
+> > index 89977b9f01cf..350da1d6991b 100644
+> > --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa=
+=2Eyaml
+> > +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa=
+=2Eyaml
+> > @@ -86,6 +86,15 @@ properties:
+> >        Maximum pressure value the sensor can measure in pascal.
+> >        To be specified only if honeywell,pressure-triplet is set to "NA=
+".
+> >=20
+> > +  honeywell,sleep-mode:
+>=20
+> "Sleep mode" naming suggests there are choices, like mode foo and mode
+> bar. Probably you want something like "sleep-between-measurements" or
+> something matching how does it work.
+
+"sleep mode" is the terminology used by Honeywell and it defines a chip cap=
+ability.
+it is present in the HSC/SSC and ABP series of ICs.
+
+other such options (capabilities) include temperature output in the ABP ser=
+ies.
+
+the action the driver needs to perform if this option is present is to prov=
+ide a
+wake-up sequence before reading out the conversions.
+
+now regarding a rename of this property, I would vote to leave it as is - f=
+or the
+users to have a 1:1 equivalence of terms between the driver and the datashe=
+et.
+
+I say that because for instance in circuit design when a part symbol and
+footprint is drawn based on a datasheet it is recommended to keep the same =
+pin
+notations and the same block diagram as in the datasheet, precisely for thi=
+s 1:1
+equivalence, so there is no uncertainty for the end-user.
+
+cheers,
+peter
+
+>=20
+> > +    description: |
+>=20
+> Do not need '|' unless you need to preserve formatting.
+>=20
+> > +      'Sleep Mode' is a special factory set mode of the chip that allo=
+ws the
+> > +      sensor to power down between measurements. It is implemented onl=
+y on
+> > +      special request, and it is an attribute not present in the HSC/S=
+SC series
+> > +      nomenclature.
+> > +      Set in order to enable the special wakeup sequence prior to conv=
+ersion.
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +
+> >    vdd-supply:
+> >      description:
+> >        Provide VDD power to the sensor (either 3.3V or 5V depending on =
+the chip)
+> > @@ -140,6 +149,7 @@ examples:
+> >              honeywell,pressure-triplet =3D "NA";
+> >              honeywell,pmin-pascal =3D <0>;
+> >              honeywell,pmax-pascal =3D <200000>;
+> > +            //honeywell,sleep-mode;
+>=20
+> Drop comment.
+>=20
+> > 2.41.0
+> >=20
+>=20
+> Best regards,
+> Krzysztof
+>=20
+
+--=20
+petre rodan
+
+--LTw4fbEjyL1VypdH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWg6o8ACgkQzyaZmYRO
+fzAg3g/8DsMXh3IKMM913xGGBa4Ntx7fvQ9JfUQb9xgKM5mKqEw5hV7Cnqp/vxGT
+dC2gG2X8wtzWRMqZ9cGxrvkBXt2AZ50o3c6v+EdAM84Caqb1283j1Leq3ccuIE3d
+diGQTbczspbRg5Z5z0h9pEbIkeVvHQyC2t3v+wYf1JcYkSQ7jfDTQHIcj+5Ak2ma
+MgaADJ7MeQOeXjQOseSycJB/x9+lVp6BXxuTCGf7V3o8mnCdTHlCl0U2Tkntlj/+
+PMj8p8pCplgNn8lRnrGUdUrxuwEfg+AY+rFOb5mLEkA+amZoNj/bK2w0wQ+Ry2S3
+/YZapuuWIha2+hxKoViRMFDC5VIM1taRVO1bHQKtPYZTfpRZUIwY+Am81cJgRp6l
+XbmCqF4RQyZZbpqCkfKriDSOWtmq45aejcmsw84YfVxDYP00Vfw0avAb2gOl6Jwj
+ZHtfZNh2/H9W9+ZhRwSItRVflvYg/XM9dcz5chZJHMtvf3Fd/lq7pe0/rSfRZWCq
+r0mf+/V5VEgm11RADaRyLpEMdg+tBXfteBZoMSXKgxHG7RC47SDRA7b7wlyAkQTx
+uaEjGSKPFFxPiCCAVjFM+vkqvyecyznMOTiQjIKfQK4AwOCGUG2If49JdZiuOhDf
+u+2E/yz08Z+6FHQNUdZmd9KJuvDm7ZaKcsL4Fbf3joXOIcwBKYA=
+=bErR
+-----END PGP SIGNATURE-----
+
+--LTw4fbEjyL1VypdH--
 
