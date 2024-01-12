@@ -1,105 +1,154 @@
-Return-Path: <linux-kernel+bounces-25020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6B7182C638
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:10:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6517782C640
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62B881F25E87
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3DAA28A93F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A50716436;
-	Fri, 12 Jan 2024 20:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83FD8171A9;
+	Fri, 12 Jan 2024 20:09:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KNNfilfS"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="1pgyGpfI"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BC616410;
-	Fri, 12 Jan 2024 20:08:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 77B0540E01BB;
-	Fri, 12 Jan 2024 20:08:33 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 8kA7_vDH_yh5; Fri, 12 Jan 2024 20:08:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705090111; bh=e1SfatK6kMuNuuwBDPnqHfNy3+Q98jf/weW6sPVIkD0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KNNfilfSV90nTYo01g8OipC9QBf4EsV5uS9Xh50yk1Yr/QWJAE4vpzA35JE3Nm9jG
-	 K0Q0RGMJS81gbue1mMgxIQPF8PZ9hs45zU2p05e8jyHqp5+5F385NOYXSI7LSGnyfw
-	 VodDIr+WPeasUIY4n93LC1K/wYVm8GHl2vfE9zBKj7PAkAocnwrYzjeWzldE2R29Go
-	 oMH30Yk1lxnm5za+ZQ1ShL1YQ4x5+Bd6Hd2X8lp7YLVJPHGCOtSExwNftBX/22cgWT
-	 Jb+R+FkOZGi1ibwlHJ8CDX67dOtESWRxXAHL3wjLzxxJ15WlLJD7dOBUUPSlI011pt
-	 YNYY+FUeS5kK2E3roloMIFvGd9F0ASqwfkms7Tgi94Np8PV8o/dmv/41axAi3xEqXc
-	 bMFohTfAYalOMlv/MRyfLsm6FhqzZg/0b/iiPmNyIJ9krTZUOkVYjkubIGTEjq59/4
-	 OkhtzKGnhXsA9rWEKO/KX1QZ9AhzRtZ1Kqioqkdg7qjPjq5SxqXYUZQezqU2groGuN
-	 T/8uiUWLxQhK86uU3X7YZb3PpoAnWJ+jrGnu35UajKR2lGck6bvk7b8VvNDqVEB9d0
-	 BvFgn/IBTM8lchd34kUpkgHg1dIl6e7ldu/5XcXG0HhNmap/MhQ383+sgVTB3IictL
-	 9g8wUqDg3EIOHRw8iFm8pukE=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F3A4240E00C5;
-	Fri, 12 Jan 2024 20:07:51 +0000 (UTC)
-Date: Fri, 12 Jan 2024 21:07:51 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
-	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
-	pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-	jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-	slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
-	ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 11/26] x86/sev: Invalidate pages from the direct map
- when adding them to the RMP table
-Message-ID: <20240112200751.GHZaGcF0-OZVJiIB7y@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-12-michael.roth@amd.com>
- <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E2D16433
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 20:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2ccbc328744so83647881fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:09:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1705090163; x=1705694963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KODDiTlCYJz8VsTSh5FfV19+LAJgiCFhCmKp66prebs=;
+        b=1pgyGpfIAUmtnVrgG2GiS1Bcof5zE5Ypo1c3vuQAugjD8jxG2OHBuff3dtj+ym2LH0
+         FyP5ZZQlcse7lt4saVLhFZJnH20xpgYueXwZRK49kgnypWa8l+DNsKR8rLntNZWmtm50
+         1vCV7vhpCi6J2vBeOIV5HevYJ7O6yLbLpUBa4QHyOaCFwZqjOHMOEd/xH5TtvwKBYdyy
+         5chv0NuZ2RvA/o7RxNiyUpRS33VLb5WRuWqAZJgmkrdVYWta5/d1v27v7KGJsTdZ50Tn
+         t43+45eMxxreA8nIsx+tkvVAER788TIkVyNrz5pvRncAJXBlH1e7znPk9fzwTwt+BVCh
+         zMog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705090163; x=1705694963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KODDiTlCYJz8VsTSh5FfV19+LAJgiCFhCmKp66prebs=;
+        b=FgtpyFa9u9N9zeaMaXVL2+FeXhsDgChccbMGJrkgbVl+sspgRJzmgcOQ/oKskq/Fhm
+         uXu6lXwb9Au09+A9VPq2n96VRMQHGw1CDFF4HO+ihpWNN6pAJ8AAYCvq/zjwl/rrlVNw
+         NXKSpmotIYN2TrugiED5Mh8ml6srArdlZ+fLxUKpQO4VMOgNdkgRKIlYw3Jo4wMkUimw
+         f1FgJVIIrK2JOn8OoanPC8O97t3ebVPiRRoGFkwt4KpewtwOvR18rD7CRk//axJzuPET
+         EADt9cXDOReFRfbSPn3aN0t24VHtagec5bq7uY5zcvbc6T64SSVIJY7ZYfxjeQqSG6cr
+         J21g==
+X-Gm-Message-State: AOJu0YxRhtZy4Sk8Y8lYz5hPAy/WN9vtfAc+0TrOlHS7PGO63suaMy89
+	1mN1ARB2tq2zan+qXx9p12xBQD3TXuk9qx3N9yKgnlbk6aZdhg==
+X-Google-Smtp-Source: AGHT+IGEuMOKDSkYS95xvat9jZtpVVIWQ7N5qewHjvbrG746DxH65fTxGieC8qJkBQ+ThV+voOiRxrp6c9DBjmLGD8c=
+X-Received: by 2002:a2e:7813:0:b0:2cd:85b9:5815 with SMTP id
+ t19-20020a2e7813000000b002cd85b95815mr890369ljc.42.1705090162684; Fri, 12 Jan
+ 2024 12:09:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
+References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+ <20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+ <2c74aad9-3cb9-4222-8072-e72120c2658e@sirena.org.uk> <CAMknhBGMRed9vDrDAuPJ5DnEe6MyHzd0VBebp5OaLX2Q+AyhMQ@mail.gmail.com>
+ <CAMknhBE-1Khe9J-n5WQnH=mFnN0ukiq7=F-SEOU6J-2_u-R0bw@mail.gmail.com>
+In-Reply-To: <CAMknhBE-1Khe9J-n5WQnH=mFnN0ukiq7=F-SEOU6J-2_u-R0bw@mail.gmail.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Fri, 12 Jan 2024 14:09:11 -0600
+Message-ID: <CAMknhBGzOFnMnpt7B8iHd9VwWA-_zFVdiswDUAheovrHXyAv=Q@mail.gmail.com>
+Subject: Re: [PATCH 01/13] spi: add core support for controllers with offload capabilities
+To: Mark Brown <broonie@kernel.org>
+Cc: Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Hennerich <michael.hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Frank Rowand <frowand.list@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Jonathan Corbet <corbet@lwn.net>, linux-spi@vger.kernel.org, linux-iio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Jander <david@protonic.nl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 12, 2024 at 12:00:01PM -0800, Dave Hansen wrote:
-> On 12/30/23 08:19, Michael Roth wrote:
-> > If the kernel uses a 2MB directmap mapping to write to an address, and
-> > that 2MB range happens to contain a 4KB page that set to private in the
-> > RMP table, that will also lead to a page-fault exception.
-> 
-> I thought we agreed long ago to just demote the whole direct map to 4k
-> on kernels that might need to act as SEV-SNP hosts.  That should be step
-> one and this can be discussed as an optimization later.
+On Thu, Jan 11, 2024 at 3:32=E2=80=AFPM David Lechner <dlechner@baylibre.co=
+m> wrote:
+>
+> On Thu, Jan 11, 2024 at 2:54=E2=80=AFPM David Lechner <dlechner@baylibre.=
+com> wrote:
+> >
+> > On Wed, Jan 10, 2024 at 3:36=E2=80=AFPM Mark Brown <broonie@kernel.org>=
+ wrote:
+> > >
+> > > On Wed, Jan 10, 2024 at 01:49:42PM -0600, David Lechner wrote:
+> > > > This adds a feature for specialized SPI controllers that can record
+> > > > a series of SPI transfers, including tx data, cs assertions, delays=
+,
+> > > > etc. and then play them back using a hardware trigger without CPU
+> > > > intervention.
+> > >
+> > > > The intended use case for this is with the AXI SPI Engine to captur=
+e
+> > > > data from ADCs at high rates (MSPS) with a stable sample period.
+> > >
+> > > > Most of the implementation is controller-specific and will be handl=
+ed by
+> > > > drivers that implement the offload_ops callbacks. The API follows a
+> > > > prepare/enable pattern that should be familiar to users of the clk
+> > > > subsystem.
+> > >
+> > > This is a lot to do in one go, and I think it's a bit too off on the
+> > > side and unintegrated with the core.  There's two very high level bit=
+s
+> > > here, there's the pre-cooking a message for offloading to be executed=
+ by
+> > > a hardware engine and there's the bit where that's triggered by some
+> > > hardwar event rather than by software.
+> > >
+> > > There was a bunch of discussion of the former case with David Jander
+> >
+> > I found [1] which appears to be the conversation you are referring to.
+> > Is that all or is there more that I missed?
+> >
+> > [1]: https://lore.kernel.org/linux-spi/20220512163445.6dcca126@erd992/
+> >
+> > > (CCed) a while back when he was doing all the work he did on optimisi=
+ng
+> > > the core for uncontended uses, the thinking there was to have a
+> > > spi_prepare_message() (or similar) API that drivers could call and th=
+en
+> > > reuse the same transfer repeatedly, and even without any interface fo=
+r
+> > > client drivers it's likely that we'd be able to take advantage of it =
+in
+> > > the core for multi-transfer messages.  I'd be surprised if there were=
+n't
+> > > wins when the message goes over the DMA copybreak size.  A much wider
+> > > range of hardware would be able to do this bit, for example David's c=
+ase
+> > > was a Raspberry Pi using the DMA controller to write into the SPI
+>
+> For those, following along, it looks like the RPi business was
+> actually a 2013 discussion with Martin Sperl [2]. Both this and [1]
+> discuss proposed spi_prepare_message() APIs.
+>
+> [2]: https://lore.kernel.org/linux-spi/CACRpkdb4mn_Hxg=3D3tuBu89n6eyJ082E=
+ETkwtNbzZDFZYTHbVVg@mail.gmail.com/T/#u
 
-What would be the disadvantage here? Higher TLB pressure when running
-kernel code I guess...
+I found one more. A patch from Martin with the basic proposed API but
+not much in the way of implementation. It looks like this is where the
+idea fizzled out.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+https://lore.kernel.org/linux-spi/0C7D5B1E-E561-4F52-BEA8-572EB0CA26A6@mart=
+in.sperl.org/
 
