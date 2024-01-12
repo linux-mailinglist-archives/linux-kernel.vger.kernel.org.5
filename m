@@ -1,182 +1,124 @@
-Return-Path: <linux-kernel+bounces-24354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDBA82BB79
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:10:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D051582BB7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70F1F1C24B71
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:09:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60482B24314
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EFF5C903;
-	Fri, 12 Jan 2024 07:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1555C908;
+	Fri, 12 Jan 2024 07:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rl6/mhHP"
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VgJ57ubh"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02015C8FB
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <feaf7851-f924-48f4-b16a-2fa5efdb28cf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705043387;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x1/E36ja6hSjXcFMnhf7nMX3AJMPWbXzIlOegBOBTgw=;
-	b=rl6/mhHP8qss1zJkt8tAb+O2UQRGEreguRM5ECbwehucdUCmiM3gdzMM1AvxJ6bX7sZ25K
-	tKZs7xxGHKIplmLH6QebIJt7P/KRkt3ckrFNsgOC+P31/Re+W92p+KVm7w3R9j9bpYCWaL
-	Zx12flbfZLdvnRGUe7PLpX4I8UkNgSs=
-Date: Fri, 12 Jan 2024 15:09:18 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68BDF5C8FA
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cd7e429429so29450571fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:10:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705043424; x=1705648224; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9CpLoCr6SU3NVlZhezQBUSxWV8XqfLhTOBbyUhiTFb0=;
+        b=VgJ57ubhOvan13TXjAubew5opmw4/johjsTAiLLPdcYfW5AfOgAw2UQPAMFcnvLVsf
+         X+bQ4fYVLhHwuKdC7ROZKhGXMfWt4gqeVAj//3avhTpWXxTIYqR4507uzwPkyApmU6xm
+         CihbrUjHGyBd0nJU3DnPEFuQUcxyDL3HpW/vs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705043424; x=1705648224;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9CpLoCr6SU3NVlZhezQBUSxWV8XqfLhTOBbyUhiTFb0=;
+        b=WZuzXNHZK20jR6VQl7i1lbQtt3my4SncrZamkn2+1SidHj2N5ij8YNdnV13HJd6MBB
+         uPnwZTrQqrT5Yr6vCNnJVyEBaiLhnucSM9GzbmuRWRC+gd20gfc2kF3Tj8aIDDNaPRqo
+         SyRQVBMVe5ODiU2DRtoh6JiF7EVYIe+otBMwtu9dZOt3hHZISrynucdfxTWGLDdWOGkp
+         ivfKtTf9IT8qq2dpdVkJ2/hdKuqt94CQw5JkOma+Rt1L5TqfqrQ0NC6M9OAHkuT7R6X+
+         8oozTngivY4HPV+p4W2U5cUtddZqV2DbQ9JLexxJ4B5I2IuwRpDiOv6jBvbR3NxYtPXA
+         /ltg==
+X-Gm-Message-State: AOJu0YzRerJYRt/mRyCVnlN8IR3IiPK9VI0ouJI+nDWWCTzIfgVUV/gg
+	XzI81twEEE4V/2YQcPDUg0lEzf2lfahPnWrdHGe3/ilYAowQ
+X-Google-Smtp-Source: AGHT+IHlsWzk7VBDrxQbPuwhEzOa8RrYAxu50cHzpD/G4LoHP/3wdiV0QT/8BgrvtuTGNBulNk5QS1QaSxP0kKJsgCE=
+X-Received: by 2002:a05:651c:170c:b0:2cc:a66d:3356 with SMTP id
+ be12-20020a05651c170c00b002cca66d3356mr424298ljb.11.1705043423754; Thu, 11
+ Jan 2024 23:10:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 3/7] padata: dispatch works on different nodes
-Content-Language: en-US
-To: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Mike Kravetz <mike.kravetz@oracle.com>, David Rientjes
- <rientjes@google.com>, linux-kernel@vger.kernel.org,
- ligang.bdlg@bytedance.com, David Hildenbrand <david@redhat.com>,
- Muchun Song <muchun.song@linux.dev>
-References: <20240102131249.76622-1-gang.li@linux.dev>
- <20240102131249.76622-4-gang.li@linux.dev>
- <1d9074955618ea0b4b155701f7c1b8b18a43fa8d.camel@linux.intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Gang Li <gang.li@linux.dev>
-In-Reply-To: <1d9074955618ea0b4b155701f7c1b8b18a43fa8d.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240111195335.871096-1-nfraprado@collabora.com>
+In-Reply-To: <20240111195335.871096-1-nfraprado@collabora.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Fri, 12 Jan 2024 15:10:12 +0800
+Message-ID: <CAGXv+5FKHX482+QjYP=jWKWz2HD=Af6x9Cahi+fc4EKNmM-MMQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8183: juniper: Remove CrosEC base detection node
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, kernel@collabora.com, 
+	Conor Dooley <conor+dt@kernel.org>, Enric Balletbo i Serra <eballetbo@kernel.org>, 
+	Ikjoon Jang <ikjn@chromium.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/1/12 01:50, Tim Chen wrote:
-> On Tue, 2024-01-02 at 21:12 +0800, Gang Li wrote:
->> When a group of tasks that access different nodes are scheduled on the
->> same node, they may encounter bandwidth bottlenecks and access latency.
->>
->> Thus, numa_aware flag is introduced here, allowing tasks to be
->> distributed across different nodes to fully utilize the advantage of
->> multi-node systems.
->>
->> Signed-off-by: Gang Li <gang.li@linux.dev>
->> ---
->>   include/linux/padata.h | 3 +++
->>   kernel/padata.c        | 8 ++++++--
->>   mm/mm_init.c           | 1 +
->>   3 files changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/padata.h b/include/linux/padata.h
->> index 495b16b6b4d72..f79ccd50e7f40 100644
->> --- a/include/linux/padata.h
->> +++ b/include/linux/padata.h
->> @@ -137,6 +137,8 @@ struct padata_shell {
->>    *             appropriate for one worker thread to do at once.
->>    * @max_threads: Max threads to use for the job, actual number may be less
->>    *               depending on task size and minimum chunk size.
->> + * @numa_aware: Dispatch jobs to different nodes. If a node only has memory but
->> + *              no CPU, dispatch its jobs to a random CPU.
->>    */
->>   struct padata_mt_job {
->>   	void (*thread_fn)(unsigned long start, unsigned long end, void *arg);
->> @@ -146,6 +148,7 @@ struct padata_mt_job {
->>   	unsigned long		align;
->>   	unsigned long		min_chunk;
->>   	int			max_threads;
->> +	bool			numa_aware;
->>   };
->>   
->>   /**
->> diff --git a/kernel/padata.c b/kernel/padata.c
->> index 179fb1518070c..1c2b3a337479e 100644
->> --- a/kernel/padata.c
->> +++ b/kernel/padata.c
->> @@ -485,7 +485,7 @@ void __init padata_do_multithreaded(struct padata_mt_job *job)
->>   	struct padata_work my_work, *pw;
->>   	struct padata_mt_job_state ps;
->>   	LIST_HEAD(works);
->> -	int nworks;
->> +	int nworks, nid = 0;
-> 
-> If we always start from 0, we may be biased towards the low numbered node,
-> and not use high numbered nodes at all.  Suggest you do
-> static nid = 0;
-> 
+On Fri, Jan 12, 2024 at 3:55=E2=80=AFAM N=C3=ADcolas F. R. A. Prado
+<nfraprado@collabora.com> wrote:
+>
+> The cbas node is used to describe base detection functionality in the
+> ChromeOS EC, which is used for units that have a detachable keyboard and
+> thus rely on this functionality to switch between tablet and laptop
+> mode.
+>
+> The juniper-sku16 machine is a convertible, meaning the keyboard can be
+> flipped but not detached. The detection for the keyboard getting
+> flipped is handled by the driver bound to the keyboard-controller
+> node in the EC.
 
-When we use `static`, if there are multiple parallel calls to
-`padata_do_multithreaded`, it may result in an uneven distribution of
-tasks for each padata_do_multithreaded.
+We could do this for the whole jacuzzi family, which are all clamshell
+or convertibles.
 
-We can make the following modifications to address this issue.
+ChenYu
 
-```
-diff --git a/kernel/padata.c b/kernel/padata.c
-index 1c2b3a337479e..925e48df6dd8d 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -485,7 +485,8 @@ void __init padata_do_multithreaded(struct 
-padata_mt_job *job)
-         struct padata_work my_work, *pw;
-         struct padata_mt_job_state ps;
-         LIST_HEAD(works);
--       int nworks, nid = 0;
-+       int nworks, nid;
-+       static volatile int global_nid = 0;
-
-         if (job->size == 0)
-                 return;
-@@ -516,12 +517,15 @@ void __init padata_do_multithreaded(struct 
-padata_mt_job *job)
-         ps.chunk_size = max(ps.chunk_size, job->min_chunk);
-         ps.chunk_size = roundup(ps.chunk_size, job->align);
-
-+       nid = global_nid;
-         list_for_each_entry(pw, &works, pw_list)
--               if (job->numa_aware)
--                       queue_work_node((++nid % num_node_state(N_MEMORY)),
--                                       system_unbound_wq, &pw->pw_work);
--               else
-+               if (job->numa_aware) {
-+                       queue_work_node(nid, system_unbound_wq, 
-&pw->pw_work);
-+                       nid = next_node(nid, node_states[N_CPU]);
-+               } else
-                         queue_work(system_unbound_wq, &pw->pw_work);
-+       if (job->numa_aware)
-+               global_nid = nid;
-
-         /* Use the current thread, which saves starting a workqueue 
-worker. */
-         padata_work_init(&my_work, padata_mt_helper, &ps, 
-PADATA_WORK_ONSTACK);
-```
-
-
->>   
->>   	if (job->size == 0)
->>   		return;
->> @@ -517,7 +517,11 @@ void __init padata_do_multithreaded(struct padata_mt_job *job)
->>   	ps.chunk_size = roundup(ps.chunk_size, job->align);
->>   
->>   	list_for_each_entry(pw, &works, pw_list)
->> -		queue_work(system_unbound_wq, &pw->pw_work);
->> +		if (job->numa_aware)
->> +			queue_work_node((++nid % num_node_state(N_MEMORY)),
->> +					system_unbound_wq, &pw->pw_work);
-> 
-> I think we should use nid = next_node(nid, node_states[N_CPU]) instead of
-> ++nid % num_node_state(N_MEMORY).  You are picking the next node with CPU
-> to handle the job.
-> 
-> Tim
-> 
-
-I agree.
+> Since there is no base detection in this machine, and the device backed
+> by this node fails to probe and goes unused, delete the node from the
+> DT.
+>
+> Fixes: 4fa8492d1e5b ("arm64: dts: mt8183: add cbas node under cros_ec")
+> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+>
+> ---
+>
+>  .../boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts   | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sk=
+u16.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.d=
+ts
+> index 8ac6bf5b17f9..8096ca215258 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dts
+> @@ -13,3 +13,6 @@ / {
+>         compatible =3D "google,juniper-sku16", "google,juniper", "mediate=
+k,mt8183";
+>  };
+>
+> +&cros_ec {
+> +       /delete-node/ cbas;
+> +};
+> --
+> 2.43.0
+>
+>
 
