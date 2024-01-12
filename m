@@ -1,180 +1,191 @@
-Return-Path: <linux-kernel+bounces-24201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C94A82B8FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:11:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96E7E82B913
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 134781C239F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:11:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F07AEB24C3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10261116;
-	Fri, 12 Jan 2024 01:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E4217736;
+	Fri, 12 Jan 2024 01:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rI9GGQXG"
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Ah4DutBe"
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F20AA4C;
-	Fri, 12 Jan 2024 01:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Jan 2024 20:10:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705021851;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6oGLhiFkWJYxCQX4sImM6I3DqLEsgGCfjkZs61RF9Oo=;
-	b=rI9GGQXGx7EXaFlxyd08Frv8dXmrBR3n85SDViVMju9SdaRaaG3W5Qy3t0KmnemS+jJYFV
-	rWDOj85l2M/iD/zZBnMc1tsmtB9LB6FmDdqRYxSEBlqJ0WDaUNkKk+u0Q5rD6JkmZfU7DM
-	AztHuQQ9RALaMvDDp9eslPwBfaZNvps=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Mark Brown <broonie@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Nikolai Kondrashov <spbnick@gmail.com>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
-References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
- <202401101525.112E8234@keescook>
- <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
- <202401101625.3664EA5B@keescook>
- <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
- <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE685171B4
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240112012257epoutp0432d82b414ba6f7123f4477780ae603ec~pdQBHQdTv2393423934epoutp04v
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:22:57 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240112012257epoutp0432d82b414ba6f7123f4477780ae603ec~pdQBHQdTv2393423934epoutp04v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1705022578;
+	bh=SFU7BaLlItzshQF51gNiPtOFAobwD70oxh7hUcOIdQg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Ah4DutBeudNLZhDDJP8SKSeLwgwAx6vr6ie06s6lhSG/8lN85bBXajadAY9zLQvxS
+	 JaG91Wg5FbvHxVMSriIAEka3Um8RyfLGxPC2oMUpEnXP1gQcytrecFJC0/aV11Dwy6
+	 AWY8QGb4QusJYvnvRRo3rl8m0zNVkw/YuIG67F/c=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20240112012256epcas5p17a75106713f4d72ae60e9727e033ddf7~pdP-_ENFF2394323943epcas5p1c;
+	Fri, 12 Jan 2024 01:22:56 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.179]) by
+	epsnrtp4.localdomain (Postfix) with ESMTP id 4TB3gg3jxbz4x9Pw; Fri, 12 Jan
+	2024 01:22:55 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	9B.FA.10009.F6490A56; Fri, 12 Jan 2024 10:22:55 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240112012013epcas5p38c70493069fb14da02befcf25e604bc1~pdNnrMaMm2285922859epcas5p3K;
+	Fri, 12 Jan 2024 01:20:13 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240112012013epsmtrp205ed4fe17598397c86e63ba7a850d2ff~pdNnqQ6002752627526epsmtrp2n;
+	Fri, 12 Jan 2024 01:20:13 +0000 (GMT)
+X-AuditID: b6c32a4a-ff1ff70000002719-65-65a0946f0aac
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	30.E7.08817.DC390A56; Fri, 12 Jan 2024 10:20:13 +0900 (KST)
+Received: from localhost.localdomain (unknown [109.105.118.124]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240112012011epsmtip1c7980d0818c780cc9d6e19307ba4b481~pdNmO1XZG0923009230epsmtip1g;
+	Fri, 12 Jan 2024 01:20:11 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com, xiaobing.li@samsung.com
+Subject: Re: Re: [PATCH v6] io_uring: Statistics of the true utilization of
+ sq threads.
+Date: Fri, 12 Jan 2024 09:12:02 +0800
+Message-ID: <20240112011202.1705067-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <b0c67327-5131-4cde-a8bd-df69b1f300e5@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIJsWRmVeSWpSXmKPExsWy7bCmum7+lAWpBrfWS1nMWbWN0WL13X42
+	i3et51gsjv5/y2bxq/suo8XWL19ZLS7vmsNm8Wwvp8WXw9/ZLc5O+MBqMXXLDiaLjpbLjA48
+	Hjtn3WX3uHy21KNvyypGj8+b5AJYorJtMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0t
+	zJUU8hJzU22VXHwCdN0yc4AOU1IoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUmBTo
+	FSfmFpfmpevlpZZYGRoYGJkCFSZkZ9z/EV/QKlHxeO0S1gbGDcJdjJwcEgImEju/v2DvYuTi
+	EBLYzSix4OZPdpCEkMAnRomLOyQgEt8YJc6sucIK07H6yGpmiMReRonvb+awQjhfGSV2zFrL
+	CFLFJqAtcX1dF1iHiICwxP6OVhaQImaBv4wSE17+ZgZJCAtESnR+O88EYrMIqEpM3rMWzOYV
+	sJNYNbEFap28xOIdy8HqOQVsJfrfXGeGqBGUODnzCQuIzQxU07x1NjNEfSuHxKb11hC2i8SJ
+	F2cZIWxhiVfHt7BD2FISn9/tZYOwiyWO9HwH+0BCoIFRYvrtq1BF1hL/ruwBWsABtEBTYv0u
+	fYiwrMTUU+uYIPbySfT+fsIEEeeV2DEPxlaVWH3pIQuELS3xuuE3E8gYCQEPicf7xCCBNYFR
+	Yv/+1+wTGBVmIXlnFpJ3ZiFsXsDIvIpRMrWgODc9tdi0wCgvtRweycn5uZsYwWlVy2sH48MH
+	H/QOMTJxMB5ilOBgVhLhVfg8J1WINyWxsiq1KD++qDQntfgQoykwvCcyS4km5wMTe15JvKGJ
+	pYGJmZmZiaWxmaGSOO/r1rkpQgLpiSWp2ampBalFMH1MHJxSDUwVe0sD9LclPq6WKmMKt5v4
+	Q0hZfKotn9Teap+5hZ+YpG5+eXkuQOSRnKfaR84XQubvY44U1ua/P2I7c7fE0qO/HrRnPmDq
+	Vdxxl6n0zt6M5LoZd/9zH/8tNS//8zmHLb4JOYfLpnItM56d8f3qxODPVuVvVwqvWjKVLeNO
+	hJHp6alFR1wjyn+fyvhtkPykcO+eP8dtwkWXlc148TrqlVHA9xxVjv0trE83fllw7BOrYFJp
+	ZnXp7eYK1hkTq/y//kp90eu8oibMSchQo+E01/X3C5TKyjvC++tiX06aGyDm35tWt8Jl5cdm
+	7mvVdffLxQ9asr/bqOj2yiyTM+dm2rWnj66aCfA+Wfynt3AH53MlluKMREMt5qLiRAAqCHtU
+	NAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOLMWRmVeSWpSXmKPExsWy7bCSnO7ZyQtSDZb8YrOYs2obo8Xqu/1s
+	Fu9az7FYHP3/ls3iV/ddRoutX76yWlzeNYfN4tleTosvh7+zW5yd8IHVYuqWHUwWHS2XGR14
+	PHbOusvucflsqUffllWMHp83yQWwRHHZpKTmZJalFunbJXBl3P8RX9AqUfF47RLWBsYNwl2M
+	nBwSAiYSq4+sZu5i5OIQEtjNKHHr7Fv2LkYOoIS0xJ8/5RA1whIr/z1nh6j5zChx/WQ3G0iC
+	TUBb4vq6LlYQWwSoaH9HKwuIzSzQySTx+rMeiC0sEC5xsPkWI4jNIqAqMXnPWiYQm1fATmLV
+	xBZWiAXyEot3LGcGsTkFbCX631wHs4UEbCS+nWhggagXlDg58wnUfHmJ5q2zmScwCsxCkpqF
+	JLWAkWkVo2RqQXFuem6xYYFRXmq5XnFibnFpXrpecn7uJkZw2Gtp7WDcs+qD3iFGJg7GQ4wS
+	HMxKIrwKn+ekCvGmJFZWpRblxxeV5qQWH2KU5mBREuf99ro3RUggPbEkNTs1tSC1CCbLxMEp
+	1cBkvsy62FAv0Lxt79bkjLLeNbWBR+wTr0S+Tll+OHJp8YdZAbezWjVPbl83iTdq1cIjYmtE
+	GCd9NQuP/BDNcvMGg7HAxCnzrbMD1mcfDckNq1joWnZtT4uybHnEuX8GicUzLnBsn99sEBN9
+	XkPu2/26bXOnvO9Z1Hpy3T9FxYP9c5Mk5+zmjlBb0Xbx6JXatq7GRB9uuZtymZOe7Kwp1/f/
+	6HrQmT3wUqSo5YKTU9c9C1wt+Ub5YMX2C39E/bxOmTE6nH59cc4FTjfRJrU3+w2+aCd9XMv4
+	39Fci8kn7pj7IW/zw/Pi1ztoXecRMNfakH/m85x2vR8fhY5Pebq46OTGo2WlfpV8bF7WCTsL
+	XqkrsRRnJBpqMRcVJwIAqUTybeoCAAA=
+X-CMS-MailID: 20240112012013epcas5p38c70493069fb14da02befcf25e604bc1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240112012013epcas5p38c70493069fb14da02befcf25e604bc1
+References: <b0c67327-5131-4cde-a8bd-df69b1f300e5@kernel.dk>
+	<CGME20240112012013epcas5p38c70493069fb14da02befcf25e604bc1@epcas5p3.samsung.com>
 
-On Thu, Jan 11, 2024 at 09:47:26PM +0000, Mark Brown wrote:
-> On Thu, Jan 11, 2024 at 12:38:57PM -0500, Kent Overstreet wrote:
-> > On Thu, Jan 11, 2024 at 03:35:40PM +0000, Mark Brown wrote:
-> 
-> > > IME the actually running the tests bit isn't usually *so* much the
-> > > issue, someone making a new test runner and/or output format does mean a
-> > > bit of work integrating it into infrastructure but that's more usually
-> > > annoying than a blocker.
-> 
-> > No, the proliferation of test runners, test output formats, CI systems,
-> > etc. really is an issue; it means we can't have one common driver that
-> > anyone can run from the command line, and instead there's a bunch of
-> > disparate systems with patchwork integration and all the feedback is nag
-> > emails - after you've finished whan you were working on instead of
-> > moving on to the next thing - with no way to get immediate feedback.
-> 
-> It's certainly an issue and it's much better if people do manage to fit
-> their tests into some existing thing but I'm not convinced that's the
-> big reason why you have a bunch of different systems running separately
-> and doing different things.  For example the enterprise vendors will
-> naturally tend to have a bunch of server systems in their labs and focus
-> on their testing needs while I know the Intel audio CI setup has a bunch
-> of laptops, laptop like dev boards and things in there with loopback
-> audio cables and I think test equipment plugged in and focuses rather
-> more on audio.  My own lab is built around on systems I can be in the
-> same room as without getting too annoyed and does things I find useful,
-> plus using spare bandwidth for KernelCI because they can take donated
-> lab time.
+On 1/10/24 16:15 AM, Jens Axboe wrote:
+>On 1/10/24 2:05 AM, Xiaobing Li wrote:
+>> On 1/5/24 04:02 AM, Pavel Begunkov wrote:
+>>> On 1/3/24 05:49, Xiaobing Li wrote:
+>>>> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
+>>>>> Why it uses jiffies instead of some task run time?
+>>>>> Consequently, why it's fine to account irq time and other
+>>>>> preemption? (hint, it's not)
+>>>>>
+>>>>> Why it can't be done with userspace and/or bpf? Why
+>>>>> can't it be estimated by checking and tracking
+>>>>> IORING_SQ_NEED_WAKEUP in userspace?
+>>>>>
+>>>>> What's the use case in particular? Considering that
+>>>>> one of the previous revisions was uapi-less, something
+>>>>> is really fishy here. Again, it's a procfs file nobody
+>>>>> but a few would want to parse to use the feature.
+>>>>>
+>>>>> Why it just keeps aggregating stats for the whole
+>>>>> life time of the ring? If the workload changes,
+>>>>> that would either totally screw the stats or would make
+>>>>> it too inert to be useful. That's especially relevant
+>>>>> for long running (days) processes. There should be a
+>>>>> way to reset it so it starts counting anew.
+>>>>
+>>>> Hi, Jens and Pavel,
+>>>> I carefully read the questions you raised.
+>>>> First of all, as to why I use jiffies to statistics time, it
+>>>> is because I have done some performance tests and found that
+>>>> using jiffies has a relatively smaller loss of performance
+>>>> than using task run time. Of course, using task run time is
+>>>
+>>> How does taking a measure for task runtime looks like? I expect it to
+>>> be a simple read of a variable inside task_struct, maybe with READ_ONCE,
+>>> in which case the overhead shouldn't be realistically measurable. Does
+>>> it need locking?
+>> 
+>> The task runtime I am talking about is similar to this:
+>> start = get_system_time(current);
+>> do_io_part();
+>> sq->total_time += get_system_time(current) - start;
+>
+>Not sure what get_system_time() is, don't see that anywhere.
+>
+>> Currently, it is not possible to obtain the execution time of a piece of 
+>> code by a simple read of a variable inside task_struct. 
+>> Or do you have any good ideas?
+>
+>I must be missing something, because it seems like all you need is to
+>read task->stime? You could possible even make do with just logging busy
+>loop time, as getrusage(RUSAGE_THREAD, &stat) from userspace would then
+>give you the total time.
+>
+>stat.ru_stime would then be the total time, the thread ran, and
+>1 - (above_busy_stime / stat.ru_stime) would give you the time the
+>percentage of time the thread ran and did useful work (eg not busy
+>looping.
 
-No, you're overthinking.
+getrusage can indeed get the total time of the thread, but this introduces an 
+extra function call, which is relatively more complicated than defining a variable.
+In fact, recording the total time of the loop and the time of processing the 
+IO part can achieve our observation purpose. Recording only two variables will 
+have less impact on the existing performance, so why not  choose a simpler 
+and effective method.
 
-The vast majority of kernel testing requires no special hardware, just a
-virtual machine.
-
-There is _no fucking reason_ we shouldn't be able to run tests on our
-own local machines - _local_ machines, not waiting for the Intel CI
-setup and asking for a git branch to be tested, not waiting for who
-knows how long for the CI farm to get to it - just run the damn tests
-immediately and get immediate feedback.
-
-You guys are overthinking and overengineering and ignoring the basics,
-the way enterprise people always do.
-
-> > And it's because building something shiny and new is the fun part, no
-> > one wants to do the grungy integration work.
-> 
-> I think you may be overestimating people's enthusiasm for writing test
-> stuff there!  There is NIH stuff going on for sure but lot of the time
-> when you look at something where people have gone off and done their own
-> thing it's either much older than you initially thought and predates
-> anything they might've integrated with or there's some reason why none
-> of the existing systems fit well.  Anecdotally it seems much more common
-> to see people looking for things to reuse in order to save time than it
-> is to see people going off and reinventing the world.
-
-It's a basic lack of leadership. Yes, the younger engineers are always
-going to be doing the new and shiny, and always going to want to build
-something new instead of finishing off the tests or integrating with
-something existing. Which is why we're supposed to have managers saying
-"ok, what do I need to prioritize for my team be able to develop
-effectively".
-
-> 
-> > > > example tests, example output:
-> > > > https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/single_device.ktest
-> > > > https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-testing
-> 
-> > > For example looking at the sample test there it looks like it needs
-> > > among other things mkfs.btrfs, bcachefs, stress-ng, xfs_io, fio, mdadm,
-> > > rsync
-> 
-> > Getting all that set up by the end user is one command:
-> >   ktest/root_image create
-> > and running a test is one morecommand:
-> > build-test-kernel run ~/ktest/tests/bcachefs/single_device.ktest
-> 
-> That does assume that you're building and running everything directly on
-> the system under test and are happy to have the test in a VM which isn't
-> an assumption that holds universally, and also that whoever's doing the
-> testing doesn't want to do something like use their own distro or
-> something - like I say none of it looks too unreasonable for
-> filesystems.
-
-No, I'm doing it that way because technically that's the simplest way to
-do it.
-
-All you guys building crazy contraptions for running tests on Google
-Cloud or Amazon or whatever - you're building technical workarounds for
-broken procurement.
-
-Just requisition the damn machines.
-
-> Some will be, some will have more demanding requirements especially when
-> you want to test on actual hardware rather than in a VM.  For example
-> with my own test setup which is more focused on hardware the operating
-> costs aren't such a big deal but I've got boards that are for various
-> reasons irreplaceable, often single instances of boards (which makes
-> scheduling a thing) and for some of the tests I'd like to get around to
-> setting up I need special physical setup.  Some of the hardware I'd like
-> to cover is only available in machines which are in various respects
-> annoying to automate, I've got a couple of unused systems waiting for me
-> to have sufficient bandwidth to work out how to automate them.  Either
-> way I don't think the costs are trival enough to be completely handwaved
-> away.
-
-That does complicate things.
-
-I'd also really like to get automated performance testing going too,
-which would have similar requirements in that jobs would need to be
-scheduled on specific dedicated machines. I think what you're doing
-could still build off of some common infrastructure.
-
-> I'd also note that the 9 hour turnaround time for that test set you're
-> pointing at isn't exactly what I'd associate with immediate feedback.
-
-My CI shards at the subtest level, and like I mentioned I run 10 VMs per
-physical machine, so with just 2 of the 80 core Ampere boxes I get full
-test runs done in ~20 minutes.
+--
+Xiaobing Li
 
