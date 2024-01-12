@@ -1,133 +1,85 @@
-Return-Path: <linux-kernel+bounces-24943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CFF82C513
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:53:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E8982C51E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6FEDB217C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:53:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6CF1C2257E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A12217C96;
-	Fri, 12 Jan 2024 17:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431A91AADE;
+	Fri, 12 Jan 2024 17:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q4YRZyfi";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ED0VmWNY"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f0/8IGu6"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC25C17C81;
-	Fri, 12 Jan 2024 17:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 12 Jan 2024 18:53:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705082020;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tCG6i8W/p1iLpKLZv+LzebT6VrGogYOB7oDgy6w/esw=;
-	b=Q4YRZyfieUbXw57ZkWutwz0rTD5SFBcfxVvcjO/5hb93D5N2lRglmys6t45a72/bSSFFo1
-	pKRmxHOd4z86rSWDF8o5mjYKJqcrcX5bbqnvbH4M3kjjrVLV2qyxR7fn/N2Yo19PmrCNTN
-	OsPnEn52U+Y5n+jhRFRSZ/Vp5XrLUOzVwHKSRZOicZrVKzUqhUYQl0MtHE1lQWwFi70YOV
-	sTHepBr9JipEtCOLJNeQg8t5RV7Wu0C7fQQl7bvGdpH00mPiOziexw2HpbsIav8QVRBCwa
-	x1CjGibLlCJ+m3sf4SE6HUa8PCSDYqQV3bxkThC8ryF8WBWi47bbtNhEeU0a/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705082020;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tCG6i8W/p1iLpKLZv+LzebT6VrGogYOB7oDgy6w/esw=;
-	b=ED0VmWNYaEoS/qOXaTBEfA8IweNyjKspoKZJ8c2ah68SSnzwGddB4IOr2e23MqQIgchXPh
-	17K3Ek5pesn0fRAw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: "Kiyanovski, Arthur" <akiyano@amazon.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"Arinzon, David" <darinzon@amazon.com>,
-	Igor Russkikh <irusskikh@marvell.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Michael Chan <michael.chan@broadcom.com>,
-	"Dagan, Noam" <ndagan@amazon.com>,
-	"Bshara, Saeed" <saeedb@amazon.com>,
-	"Agroskin, Shay" <shayagr@amazon.com>,
-	Sunil Goutham <sgoutham@marvell.com>
-Subject: Re: RE: [PATCH net-next 17/24] net: amazon, aquanti, broadcom,
- cavium, engleder: Use nested-BH locking for XDP redirect.
-Message-ID: <20240112175338.e5Ipk3C2@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
- <20231215171020.687342-18-bigeasy@linutronix.de>
- <13a755a898a44a98ac9b8e3240d17550@amazon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23CD71AAD2;
+	Fri, 12 Jan 2024 17:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-336897b6bd6so6275125f8f.2;
+        Fri, 12 Jan 2024 09:57:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705082222; x=1705687022; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UnAM9wMRuDbUF70i1sO7UDTTR2XU4ykGa9mCuob7srE=;
+        b=f0/8IGu6il5N5X2KjxDfjSTrIpVFA0ZjDkmQ7SJrH1sgC4sKteZXTTPA5mRjIzRxE4
+         TslEKLToHFeYCeqMJE/z9Y74E7iYYaebMys1XhD1E0Of/hNwlC/b7Q5uTZfXNKKHjqub
+         A968wCZJY3/2oUQeNTuIPZP0me29KtyP1unHzQmYVi1QUrZiFrhjR80XgbozjCXyIqvQ
+         BMKf+5XvL5JYXMEvpOlC3SYCm0xyp4Xcr3mzerUh1riYWqF3HI9QcWmrwAigQk/OIpUa
+         yyX5LwuLNxGSX9iZc5EAaHU6tgft6ZTnGW1KnNUzz3s2Wm43Xce23mkoqXDT0uAe5yk2
+         YSCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705082222; x=1705687022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UnAM9wMRuDbUF70i1sO7UDTTR2XU4ykGa9mCuob7srE=;
+        b=b6B8Q7Dtphfp4pagLTcPCeNJyKOgOlGzvv7mawOBOaugu0vIa71PXMFByo2IblirS6
+         ZhUpJlKqEz1Ah1bOBVY5YBmY1g1t2kSX7mOpt+ElP9kBXUd+64AhxgoDckrXVez6MWXA
+         5FWP/SX4H1RMRXahr/me79mycTxuNnoi9s5T7O9MgvHjK+1K9ItrPsI/vUvCibMEgdHE
+         zxH4uPpKLDVYImeN15TTNd6z+Qp+PU8uQLE1hUztQ5Vktw/chv3+Sdu48uz796vVtvTu
+         3+/6qyhMlZGiWkVcaJ9kxuLRiIvMNGGIXmKbg0sDLnz8XUWK0UP2guVTKUx+S8n/mAR3
+         Om9w==
+X-Gm-Message-State: AOJu0YxRDhaiqR+BE+KhrACb2bxFsRGqI6bwSeq25iUdW4hEFMOdasEC
+	rheOO7zcIczg8EvnFDjejOhEjay8Nw9FrUbBIsue/BAo
+X-Google-Smtp-Source: AGHT+IFUohHfasoeRDcAum0vBtM5I9vhFkVAA2LzRLQoQpbSc+WqVE3Q+8MHbPS3luCbeC4elupY5Ww0ESxMAzNNpzs=
+X-Received: by 2002:adf:f48a:0:b0:337:7086:b70c with SMTP id
+ l10-20020adff48a000000b003377086b70cmr975292wro.81.1705082222188; Fri, 12 Jan
+ 2024 09:57:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <13a755a898a44a98ac9b8e3240d17550@amazon.com>
+References: <20240112152011.6264-1-sunhao.th@gmail.com>
+In-Reply-To: <20240112152011.6264-1-sunhao.th@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 12 Jan 2024 09:56:50 -0800
+Message-ID: <CAADnVQK4S2roFHP6W+PwT6+CjcCaUVzTHGHs39bwZPU00PEh8w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
+To: Hao Sun <sunhao.th@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Willem de Bruijn <willemb@google.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2023-12-16 22:09:07 [+0000], Kiyanovski, Arthur wrote:
-> Hi Sebastian,
- Arthur,
+On Fri, Jan 12, 2024 at 7:20=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote=
+:
+>
+> For PTR_TO_FLOW_KEYS, check_flow_keys_access() only uses fixed off
+> for validation. However, variable offset ptr alu is not prohibited
+> for this ptr kind. So the variable offset is not checked.
 
-> I would like to make sure I understand correctly the difference in this patch
-> between ena and atlantic drivers.
-> 
-> In the atlantic driver the change you've made seems like the best change
-> in terms of making the critical section as small as possible.
-> 
-> You could have done exactly the same thing with ena, but you chose instead
-> to let ena release the lock at the end of the function, which in case of an XDP_TX
-> may make the critical section considerably longer than in the atlantic solution.
-> 
-> If I understand correctly (quote from your commit message "This does not
-> always work because some drivers (cpsw, atlantic) invoke xdp_do_flush()
-> in the same context"), in the case of atlantic you had to go for the more
-> code-altering change, because if you simply used guard() you would include
-> the xdp_do_flush() in the critical section, but in the case of ena xdp_do_flush()
-> is called after the function ends so guard is good enough.
-> 
-> Questions:
-> 1. Did I understand correctly the difference in solution choice between atlantic
-> and ena?
-
-Yes. I could have moved the "XDP_REDIRECT" case right after
-bpf_prog_run_xdp() and use "scope guard" to make it slim in the ena
-driver. I just made "this" because it was simpler I did not want to
-spent unnecessarily cycles on it especially if I have to maintain for a
-few releases.
-
-> 2. As far as I can see the guard() solution looks good for ena except for (maybe?)
-> XDP_TX, where the critical section becomes a bit long. Can you please explain,
-> why you think it is still  good enough for ena to use the guard() solution instead
-> of doing the more  code-altering atlantic solution?
-
-Well, it was simpler/ quicker. If this approach would have been accepted
-and this long section a problem then it could have been shorten
-afterwards. Maybe a another function/ method could be introduced since
-this pattern fits ~90% of all drivers.
-However it looks like touching all drivers is not what we want so
-avoiding spending a lot of cycles on it in the first place wasn't that
-bad. (Also it was the third iteration until I got all details right).
-
-> Thanks!
-> Arthur
-> 
-Sebastian
+Why resend v3?
+What changed from v2?
 
