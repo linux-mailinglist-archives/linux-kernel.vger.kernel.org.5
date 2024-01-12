@@ -1,161 +1,145 @@
-Return-Path: <linux-kernel+bounces-24781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD09C82C265
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:02:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED18682C26A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C7341F213E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:02:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98FA71F21987
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929476EB43;
-	Fri, 12 Jan 2024 15:01:56 +0000 (UTC)
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FE446EB41;
+	Fri, 12 Jan 2024 15:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XML8ROoH"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0B26E2AB;
-	Fri, 12 Jan 2024 15:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5958b9cda7aso498204eaf.0;
-        Fri, 12 Jan 2024 07:01:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5426B6E2B7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e7abe4be4so8777669e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:03:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705071806; x=1705676606; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=toiihwgbBXQtxuvplwPZBYyqQgpc30K6w6RtC5O5hmA=;
+        b=XML8ROoHt8d65P08AM15DZUPJXKIP/W0H0Ps2CLjxH2tT6iL5apC9jRDwW5uwdt/O6
+         k85Z/FrfvCrB82vIL86Z5xKS8O8pc8S1QqGHIWjoyhu7bqqe7t3ftpa9NXjvmfi0vOvS
+         4j8ge9FRIcsa8JvZUg84mPvL2UTpvyBB0A4K8VnNF1UYaaqE7PKrG3Sb6wnTCnoasfVO
+         2PumFY0V4SDT8fhqLDfH+Hpm5JiRWqhlHWGFJf9sLChZEiGSGp4wWY97Gr3bRxTBHcPx
+         kx3yA9R4cIk1jzPC+nfVUZCSPHihXuE0OKqiXMHN7lqv1290rJ9ZKR5hQfGPG7faHn0H
+         YTxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705071714; x=1705676514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GkosH+fDx4uydKCIfas+gX+lZQ+YATp8/cxPr7LCjXQ=;
-        b=hnVS9mcCzAsJ8JyEg2cqexDzAd/DNLAWAdzVysV4WxYJLUbAvn6SxWCrLHQwWZ8MaI
-         bd4hFXIcRPhU2GLwLU6OdOBmDO1i+nI7oWf3NS1AJkScJ9OyR3Sg6PLK16bsI9numdnT
-         Cla2L2zmk3u2sGSoXX8vzdhjZQwfnVMCr2XnTRibHE10z4lZs0fRD0y+7nnyi3L8CZ/o
-         06anvIrHFsLhCBdTLh9srYlNupwFoFvXZwb6rioeH4rppu7Z3xNhrnq+xxh+6Ln55tZq
-         Bul97I5P/7wc6W6uVk0d+AypSadHvFYaEq6nbwW4IbTlYDOxNpzPjYPSrFpt+a4+uiwO
-         cZsg==
-X-Gm-Message-State: AOJu0YxUOfwiQcVUXxNfjz4s7CY+ePQFbcJatLe2c/nxEMaYDgugqFNO
-	7B9nIgjrh+h9xQ7QbM6iv27ibxF4kgOxgl66Sto=
-X-Google-Smtp-Source: AGHT+IERQpK6tU+v/yvWRcm25F/amqoeR5fMDTcAHWek3SJqIecgzoDoVF8A5t7OAIKhoJcTR5teFvLzHtkulu/Qeec=
-X-Received: by 2002:a05:6820:510:b0:598:c118:30d1 with SMTP id
- m16-20020a056820051000b00598c11830d1mr2644001ooj.0.1705071713471; Fri, 12 Jan
- 2024 07:01:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705071806; x=1705676606;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=toiihwgbBXQtxuvplwPZBYyqQgpc30K6w6RtC5O5hmA=;
+        b=BFjbnNbGS4CcBjmsDbjNx+8E9WalSXdeHIKYfdT0LsL/B666vdb99RR9ioCD9nTlxc
+         kaLws2CmLM/KdkHhHqK8j1/z7Mp0laQg482KvV8HP0xCW/OZ2ExyJFiFZ0VWb4foL5uq
+         1r7VoV4SDVz+Z1XvME4+309P9ASceNEC9T4h8/R+p65PTCPTOkPIa96DDhYN7jjli4je
+         YKEuM+y1A/jgECLgw3APyiALFFWoBDghCmPLx8oyqdUSRHyn0WgINMOWFSb3PJhy0EhT
+         ILyQNQhL0EOasaWU16mgDV6v21npjjFElY+N6q4adv0BB9DBJeh9ehvDqIpmiU/ah7AN
+         QPMw==
+X-Gm-Message-State: AOJu0YzdA8wfHYdSKOhu7glLxJlCuPBovQKhBwEyLdYl5XGgoFDr87mK
+	lcAe+cJSIHXdPs75bBTPiL2yXpY8bcokUA==
+X-Google-Smtp-Source: AGHT+IHzWoBI/gw1ovzwFkaSh6dvJAdJYu8plavA7O8fbIQgYwdeuATmAxUsfd6HZf/jobqSR+6l8g==
+X-Received: by 2002:a05:6512:3b0b:b0:50e:4e6b:9cd7 with SMTP id f11-20020a0565123b0b00b0050e4e6b9cd7mr1128581lfv.12.1705071806353;
+        Fri, 12 Jan 2024 07:03:26 -0800 (PST)
+Received: from [127.0.0.1] (85-76-114-160-nat.elisa-mobile.fi. [85.76.114.160])
+        by smtp.gmail.com with ESMTPSA id u3-20020ac258c3000000b0050e7d22a9b8sm520518lfo.89.2024.01.12.07.03.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 07:03:25 -0800 (PST)
+Date: Fri, 12 Jan 2024 17:03:23 +0200
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Jie Luo <quic_luoj@quicinc.com>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ quic_kkumarcs@quicinc.com, quic_suruchia@quicinc.com, quic_soni@quicinc.com,
+ quic_pavir@quicinc.com, quic_souravp@quicinc.com, quic_linchen@quicinc.com,
+ quic_leiwei@quicinc.com
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: ipq9574: Add PPE device tree node
+User-Agent: K-9 Mail for Android
+In-Reply-To: <6fc9e65a-709a-4923-b0b3-7c460199417a@quicinc.com>
+References: <20240110112059.2498-1-quic_luoj@quicinc.com> <20240110112059.2498-2-quic_luoj@quicinc.com> <a42718a9-d0f9-47d9-9ee8-fb520ed2a7a8@linaro.org> <de0ad768-05fa-4bb1-bcbc-0adb28cb2257@quicinc.com> <CAA8EJppeQdB4W8u0ux16pxBBwF_fpt1j-5aC0f849n9_iaaYtQ@mail.gmail.com> <6fc9e65a-709a-4923-b0b3-7c460199417a@quicinc.com>
+Message-ID: <1552D7D8-2D1B-4236-A5BF-02B68DC919CB@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
- <20240111175908.00002f46@Huawei.com> <ZaA3l4yjgCXxSiVg@shell.armlinux.org.uk> <20240112092520.00001278@Huawei.com>
-In-Reply-To: <20240112092520.00001278@Huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 12 Jan 2024 16:01:40 +0100
-Message-ID: <CAJZ5v0g2CFPrSfNzHKBz_Spwt304QEQtR6w57VR11i5APPrD8Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
- described as container packages
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
-	kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 12, 2024 at 10:25=E2=80=AFAM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
+On 12 January 2024 16:40:02 EET, Jie Luo <quic_luoj@quicinc=2Ecom> wrote:
 >
-> On Thu, 11 Jan 2024 18:46:47 +0000
-> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 >
-> > On Thu, Jan 11, 2024 at 05:59:08PM +0000, Jonathan Cameron wrote:
-> > > On Mon, 18 Dec 2023 21:17:34 +0100
-> > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > >
-> > > > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@ar=
-mlinux.org.uk> wrote:
-> > > > >
-> > > > > From: James Morse <james.morse@arm.com>
-> > >
-> > > Done some digging + machine faking.  This is mid stage results at bes=
-t.
-> > >
-> > > Summary: I don't think this patch is necessary.  If anyone happens to=
- be in
-> > > the mood for testing on various platforms, can you drop this patch an=
-d
-> > > see if everything still works.
-> > >
-> > > With this patch in place, and a processor container containing
-> > > Processor() objects acpi_process_add is called twice - once via
-> > > the path added here and once via acpi_bus_attach etc.
-> > >
-> > > Maybe it's a left over from earlier approaches to some of this?
-> >
-> > From what you're saying, it seems that way. It would be really good to
-> > get a reply from James to see whether he agrees - or at least get the
-> > reason why this patch is in the series... but I suspect that will never
-> > come.
-> >
-> > > Both cases are covered by the existing handling without this.
-> > >
-> > > I'm far from clear on why we need this patch.  Presumably
-> > > it's the reference in the description on it breaking for
-> > > Processor Package containing Processor() objects that matters
-> > > after a move... I'm struggling to find that move though!
-> >
-> > I do know that James did a lot of testing, so maybe he found some
-> > corner case somewhere which made this necessary - but without input
-> > from James, we can't know that.
-> >
-> > So, maybe the right way forward on this is to re-test the series
-> > with this patch dropped, and see whether there's any ill effects.
-> > It should be possible to resurect the patch if it does turn out to
-> > be necessary.
-> >
-> > Does that sound like a good way forward?
-> >
-> > Thanks.
-> >
+>On 1/12/2024 12:06 AM, Dmitry Baryshkov wrote:
+>> On Thu, 11 Jan 2024 at 17:31, Jie Luo <quic_luoj@quicinc=2Ecom> wrote:
 >
-> Yes that sounds like the best plan. Note this patch can only make a
-> difference on non arm64 arches because it's a firmware bug to combine
-> Processor() with a GICC entry in APIC/MADT.  To even test on ARM64
-> you have to skip the bug check.
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/acpi/processor_cor=
-e.c#L101
->
->         /* device_declaration means Device object in DSDT, in the
->          * GIC interrupt model, logical processors are required to
->          * have a Processor Device object in the DSDT, so we should
->          * check device_declaration here
->          */
-> //      if (device_declaration && (gicc->uid =3D=3D acpi_id)) {
->         if (gicc->uid =3D=3D acpi_id) {
->                 *mpidr =3D gicc->arm_mpidr;
->                 return 0;
->         }
->
-> Only alternative is probably to go history diving and try and
-> find another change that would have required this and is now gone.
->
-> The ACPI scanning code has had a lot of changes whilst this work has
-> been underway.  More than possible that this was papering over some
-> issue that has long since been fixed. I can't find any deliberate
-> functional changes, but there is some code generalization that 'might'
-> have side effects in this area. Rafael, any expectation that anything
-> changed in how scanning processor containers works?
+>>>=20
+>>>>=20
+>>>>> +                    reg =3D <0x3a000000 0xb00000>;
+>>>>> +                    #address-cells =3D <1>;
+>>>>> +                    #size-cells =3D <1>;
+>>>>> +                    ranges;
+>>>>=20
+>>>> Put after reg=2E
+>>> Ok=2E
+>>>=20
+>>>>=20
+>>>>> +                    status =3D "okay";
+>>>>=20
+>>>> Drop
+>>> Ok=2E
+>>>=20
+>>>>=20
+>>>> All of above comments apply to your entire patchset and all places=2E
+>>>>=20
+>>>> Looking at code further, it does not look like suitable for mainline,
+>>>> but copy of downstream code=2E That's not what we expect upstream=2E =
+Please
+>>>> go back to your bindings first=2E Also, I really insist you reaching =
+out
+>>>> to other folks to help you in this process=2E
+>>>>=20
+>>>> Best regards,
+>>>> Krzysztof
+>>>>=20
+>>> We will do internal review of the gaps and update the patches as per
+>>> your comments=2E
+>>>=20
+>>> Thanks for the review comments=2E
+>>=20
+>>  From the first glance, the bindings do not follow upstream principles=
+=2E
+>> You have all the settings (tdm, port config, etc) in the DT, while
+>> they should instead go to the driver=2E Well, unless you expect that th=
+e
+>> board might need to override them=2E
+>>=20
+>Hi Dmitry,
+>The TDM configuration varies per SoC type, since the ethernet port capabi=
+lities of the SoCs vary=2E So we will have two different TDM configurations=
+ for IPQ5332 and IPQ9574 SoC=2E The driver also will
+>need to support future SoC, so we choose to configure this from the DTSI=
+=2E The same reason applies to the port scheduler config as well=2E
 
-There have been changes, but I can't recall when exactly without some
-git history research.
+If it differs from SoC to SoC only, it goes to the driver=2E Point=2E No o=
+ther options=2E Thank you=2E
 
-In any case, it is always better to work on top of the current
-mainline code IMO.
+>
+>Thanks for review comments=2E
+
 
