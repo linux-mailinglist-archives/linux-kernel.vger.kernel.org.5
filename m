@@ -1,162 +1,193 @@
-Return-Path: <linux-kernel+bounces-24534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3951C82BDFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:00:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB82482BDFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:00:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CF03B2173F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:00:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7E4D1C25B92
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1232B57330;
-	Fri, 12 Jan 2024 09:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DA25D8E7;
+	Fri, 12 Jan 2024 10:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LVPhsoZz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BTnLs+7K";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LVPhsoZz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BTnLs+7K"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OpOcctWq"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC53957301;
-	Fri, 12 Jan 2024 09:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B123A1FC24;
-	Fri, 12 Jan 2024 09:59:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705053589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
-	b=LVPhsoZzrqmaIPxbO3hJzEKngFpRGRxhzEkLBJqX+H4UMHywFzgWicWjUcr+tHtOrnPKuE
-	QtSvulQBOfynuRShDr9OezhwezW664d/eipB7f8XntSfTuC5f+Y+9uvuzw1Vtmw9fYqjyH
-	bLqK5UKY0Fi0FwsPc40I+B6U1b34+c4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705053589;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
-	b=BTnLs+7K8qJ85T0XdQ/Ii+GrHsCuvh5oZb/cGkclZY4pD+OF61lQgeZDf+cAqTA01Ncu4G
-	2nWOLgf2UxbYS4Cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705053589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
-	b=LVPhsoZzrqmaIPxbO3hJzEKngFpRGRxhzEkLBJqX+H4UMHywFzgWicWjUcr+tHtOrnPKuE
-	QtSvulQBOfynuRShDr9OezhwezW664d/eipB7f8XntSfTuC5f+Y+9uvuzw1Vtmw9fYqjyH
-	bLqK5UKY0Fi0FwsPc40I+B6U1b34+c4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705053589;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
-	b=BTnLs+7K8qJ85T0XdQ/Ii+GrHsCuvh5oZb/cGkclZY4pD+OF61lQgeZDf+cAqTA01Ncu4G
-	2nWOLgf2UxbYS4Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4FF413782;
-	Fri, 12 Jan 2024 09:59:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id c5tAKJUNoWUZPQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 12 Jan 2024 09:59:49 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5633AA0802; Fri, 12 Jan 2024 10:59:45 +0100 (CET)
-Date: Fri, 12 Jan 2024 10:59:45 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+172bdd582e5d63486948@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
-	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, shaggy@kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [jfs?] general protection fault in dtSplitUp
-Message-ID: <20240112095945.oxx42ycamfouw3xs@quack3>
-References: <000000000000ff4a1505e9f961a2@google.com>
- <000000000000ccb6c6060eb767bd@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FCA5D739
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-28ca63fd071so3380045a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:00:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705053624; x=1705658424; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dRYoalgnwKVYfdSiaBfDRevKcT4wc2GOJqsALypTOmU=;
+        b=OpOcctWqWBe3ajchwYGTl3RxOwVKYQiBfBqLvQPnN9D8/8aHpnJz3q8CFxEqBfsUz5
+         JCacvo4unw0zaCQBdj4M6F5i5WoCuGpCHuOYKV7nE+rvVqchOgHOsECliAMxK3y51HLF
+         rzi2gvAQUP7nPGrQ9WApRk9fws2Q2gJarzBju1s7MBOYwc9VHLYA7fkVglDsvqCeeFiE
+         HMZv7RO/ch4OuvWpErEJumEsS1cnaCnNgBIOKwgGGRrYTpMJX1G+kmIsRzVirT88jPKj
+         A+6UBi8td/SRVZ17mRI3eMvlyjP5TqYKFmvFKPuFutppLVyrVbJiu7TXitHS5rFPrKyL
+         6Y8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705053624; x=1705658424;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dRYoalgnwKVYfdSiaBfDRevKcT4wc2GOJqsALypTOmU=;
+        b=qzZ5S1fABEaZzqjRB1fpRu5KnUW1hOSoj92qfbFmyTqt0oEnv6i1cT63r4YmjY+O7E
+         DyX+QwW0NNjzmQ5f2ukifB+Jm/r/OupcSqEbGrPHw4+H33lcBIMp1PhKXfaPhcfHouy0
+         2THc4fe6Udd1ujLgbDqQzH/udo4JB8EHX1BshpuMt7U7S5SCcoi28nvioDdzRVB0dWV3
+         QhEzvW7/7PDg32AxB74K6o+7BvWZsGwFrpmN+1oO6lhzYz5Dr9v6jbFkP6JLxfGUpBy0
+         XVykVL/yoyA5aPo2gcgqsnyi49csxtbdMiKlcf2b3iNG3DP3FgfMHJiAwcC4LzCUsM/s
+         zmaw==
+X-Gm-Message-State: AOJu0YyUqj7mRxIlxHc+tQZQI7cbEZwZGVtYxtlJqGzGE55YnMqLGI6O
+	VcIwHBOXw/TQIzz32Jdr5AUJYQCnQkfz
+X-Google-Smtp-Source: AGHT+IGVBuc/bzfWDGIQZBxbBGBGgbQ8hy2U6+QesiLzQrB5AGxj9ilSJ5pZ8u646RBth+dnJjW/eA==
+X-Received: by 2002:a17:90a:898b:b0:28d:2b9d:e273 with SMTP id v11-20020a17090a898b00b0028d2b9de273mr917862pjn.74.1705053624143;
+        Fri, 12 Jan 2024 02:00:24 -0800 (PST)
+Received: from google.com (108.93.126.34.bc.googleusercontent.com. [34.126.93.108])
+        by smtp.gmail.com with ESMTPSA id px12-20020a17090b270c00b0028e17b2f27esm58229pjb.13.2024.01.12.02.00.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 02:00:23 -0800 (PST)
+Date: Fri, 12 Jan 2024 15:30:15 +0530
+From: Ajay Agarwal <ajayagarwal@google.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Johan Hovold <johan@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Sajid Dalvi <sdalvi@google.com>
+Subject: Re: [PATCH] Revert "PCI: dwc: Wait for link up only if link is
+ started"
+Message-ID: <ZaENr7jQ35winQAe@google.com>
+References: <20230706082610.26584-1-johan+linaro@kernel.org>
+ <20230706125811.GD4808@thinkpad>
+ <ZKgJfG5Mi-e77LQT@hovoldconsulting.com>
+ <ZKwwAin4FcCETGq/@google.com>
+ <20230711073719.GA36617@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <000000000000ccb6c6060eb767bd@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LVPhsoZz;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BTnLs+7K
-X-Spamd-Result: default: False [2.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 BAYES_HAM(-0.00)[24.04%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ea03ca45176080bc];
-	 TAGGED_RCPT(0.00)[172bdd582e5d63486948];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 2.69
-X-Rspamd-Queue-Id: B123A1FC24
-X-Spam-Level: **
-X-Spam-Flag: NO
-X-Spamd-Bar: ++
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230711073719.GA36617@thinkpad>
 
-On Thu 11-01-24 19:39:03, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On Tue, Jul 11, 2023 at 01:07:19PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Jul 10, 2023 at 09:51:22PM +0530, Ajay Agarwal wrote:
+> > On Fri, Jul 07, 2023 at 02:47:56PM +0200, Johan Hovold wrote:
+> > > On Thu, Jul 06, 2023 at 06:28:11PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Thu, Jul 06, 2023 at 10:26:10AM +0200, Johan Hovold wrote:
+> > > 
+> > > > > Finally, note that the intel-gw driver is the only driver currently not
+> > > > > providing a start_link callback and instead starts the link in its
+> > > > > host_init callback, and which may avoid an additional one-second timeout
+> > > > > during probe by making the link-up wait conditional. If anyone cares,
+> > > > > that can be done in a follow-up patch with a proper motivation.
+> > > 
+> > > > The offending commit is bogus since it makes the intel-gw _special_ w.r.t
+> > > > waiting for the link up. Most of the drivers call dw_pcie_host_init() during the
+> > > > probe time and they all have to wait for 1 sec if the slot is empty.
+> > Mani, can you please explain how my commit made the intel-gw driver
+> > special? The intel driver actually fails the dw_pcie_host_init if the
+> > link does not come up. That was my motivation behind adding the fail
+> > logic in the core driver as well.
 > 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1268fc69e80000
-> start commit:   a70385240892 Merge tag 'perf_urgent_for_v6.1_rc2' of git:/..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ea03ca45176080bc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=172bdd582e5d63486948
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15692dba880000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15017b2c880000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
- 
-Makes sense. When I'm looking at the dashboard I can see there's another
-(older) reproducer which is not marked as not reproducing anymore. I
-suppose this is because syzbot tests only the latest reproducer? Anyway,
-let's close this, if syzbot can find another reproducer for the problem
-with writes to mounted devices disabled, it'll surely tell us :)
+> Your commit ended up failing the probe, if dw_pcie_wait_for_link() fails for
+> SoCs defining start_link() callback, which is the case for all the drivers
+> except intel-gw. I take back my _special_ argument since it was special before
+> your commit and now you just made its behavior applicable to all SoCs.
+>
+You are right. I should not have returned an error from the
+dw_pcie_wait_for_link check. Raised v5 with the error return removed:
+https://lore.kernel.org/all/20240112093006.2832105-1-ajayagarwal@google.com/
 
-#syz fix: fs: Block writes to mounted block devices
+> > > 
+> > > Just to clarify, the intel-gw driver starts the link and waits for link
+> > > up in its host_init() callback, which is called during probe. That wait
+> > > could possibly just be dropped in favour of the one in
+> > > dw_pcie_host_init() and/or the driver could be reworked to implement
+> > > start_link().
+> > > 
+> > > Either way, the call in dw_pcie_host_init() will only add an additional
+> > > 1 second delay in cases where the link did *not* come up.
+> > > 
+> > > > As Johan noted, intel-gw should make use of the async probe to avoid the boot
+> > > > delay instead of adding a special case.
+> > > 
+> > > Indeed.
+> > > 
+> > > Johan
+> > Johan, Mani
+> > My apologies for adding this regression in some of the SOCs.
+> > May I suggest to keep my patch and make the following change instead?
+> > This shall keep the existing behavior as is, and save the boot time
+> > for drivers that do not define the start_link()?
+> > 
+> 
+> No, IMO the offending commit was wrong in serving its purpose so a revert makes
+> sense. Because, if the intention was to reduce the boot delay then it did not
+> fix that because dw_pcie_wait_for_link() is still called from intel-gw's
+> host_init() callback. You just skipped another instance which is there in
+> dw_pcie_host_init().
+> 
+> So to fix this issue properly intel-gw needs to do 2 things:
+> 
+> 1. Move the ltssm_enable to start_link() callback and get rid of
+> dw_pcie_wait_for_link() from its host_init() callback. If there is any special
+> reason to not do this way, please explain.
+> 
+> 2. Enable async probe so that other drivers can continue probing while this
+> driver waits for the link to be up. This will almost make the delay negligible.
+> 
+> The above 2 should be done in separate patches.
+> 
+> - Mani
+>
+Mani, the intention is not to fix the intel-gw driver in any manner. It
+calls dw_pcie_wait_for_link explicitly in the probe path and checks for
+the error as well. So it has to live with the delay and the probe
+failure if the link does not come up.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+My intention is just to get rid of the 1 sec delay for the drivers that
+do not define the start_link callback, and hence do not expect that the
+link will come up during probe anyway.
+
+> > ```
+> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > index cf61733bf78d..af6a7cd060b1 100644
+> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > @@ -492,11 +492,8 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
+> >                 if (ret)
+> >                         goto err_remove_edma;
+> > 
+> > -               if (pci->ops && pci->ops->start_link) {
+> > -                       ret = dw_pcie_wait_for_link(pci);
+> > -                       if (ret)
+> > -                               goto err_stop_link;
+> > -               }
+> > +               if (pci->ops && pci->ops->start_link)
+> > +                       dw_pcie_wait_for_link(pci);
+> >         }
+> > 
+> >         bridge->sysdata = pp;
+> > ```
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
