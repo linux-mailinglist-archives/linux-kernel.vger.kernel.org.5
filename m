@@ -1,180 +1,202 @@
-Return-Path: <linux-kernel+bounces-24837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4BE382C33B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:00:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0551482C341
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:03:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5568C1F2533E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:00:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D6E21C2212B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F89B73167;
-	Fri, 12 Jan 2024 16:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E9E6EB7F;
+	Fri, 12 Jan 2024 16:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VdXz1stN"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fNIxFy0M"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A5D6EB78
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33770772136so3297308f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:00:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705075221; x=1705680021; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KNSnE31mUWTtAu62zxte7+wGFbNxIAXcVNWvFpXarq8=;
-        b=VdXz1stNKCLwLQ/mnKJ4pCKXFCH2R3W95NvhAsG3UaYzV7EeVoYvLCMSkLeUPUpe8C
-         C8pt35XbrgtcDkRqxKon/pPVakcqHyn57h8vje1CoCajstWaf1zGl6ffSj/ufN8H+4gi
-         gPfeOX5VYVYSvyRTwyj4fomIrhEVdvYOA5hLoIW24fzi452kYyLBt9wXdUfIgSwARHL5
-         61Z5fhHJMQo30SvnjT8CjJfehVXmdjU+0VAzSjyMd16nxFMyR1n9v4tmIAP+rJTxvZTH
-         KyiZA/MCVr4ZFtGyHxEKXp/4X2GErFjvGefCwiY3svGWBrQipu2nF+PfebB4j6By+k7O
-         btsw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896341D53F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705075410;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=eM/q6+ASudnWqkA1GcXB1FCKeCcpDQUk18zBNzi9GWQ=;
+	b=fNIxFy0MwAQwlQM4g38cFwoBBgENnRSpUJuUTGVpN2icgkAd8kakKNrFUo3LnJYZxsT7PQ
+	Pd3Ei1T9Q8ulJMOmngUIyPrnVUEFKNJ5Hdcn3BQR5CfAey20uyyjR4YbgbeP3UaKIaJwTn
+	zUgxxDciwSFLn+Td6Y8la7HRSnF7w9A=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-424-uh3MCDPtP5-iPJetD9ZVNQ-1; Fri, 12 Jan 2024 11:03:29 -0500
+X-MC-Unique: uh3MCDPtP5-iPJetD9ZVNQ-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d3e569ba83so52585325ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:03:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705075221; x=1705680021;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KNSnE31mUWTtAu62zxte7+wGFbNxIAXcVNWvFpXarq8=;
-        b=SHtiSVPCBPEHK90A16ADRBzX2wi8XKlaS6kimR1pbSUV0Celz4J+nQOW/xHt+r+BRy
-         LX/S/LYlcngw6Jp/LS3gpBrps9GggccBYlGa1ylvfTatdHMDxTVm9pFzqv49zkk2J2SA
-         Xm8Q5OEc0jZAI5yWqkFnJdSSmPB8B9U4+33tSbvMDS1Yw8o1HBKxvWXsjlwJhiNip+/q
-         hfLT5DoW9d0RTLwPmA8epvnh+jymk8jreL9FEFRFoRxH2tmuZYZNrqA+F8QQ8mjpV8gU
-         7KdI7oBCRKGeNIF9ByWlfK6NHRTkjWYIwLhRfmychxpqVJ4vEbyNb8DJ0Yco3aRuQDmz
-         bbyg==
-X-Gm-Message-State: AOJu0YyQhQtCeoinyzuxPqRSVSWtWkWMymUij3R6hPseBdw0SisYvN1U
-	mzB0+wuA03UJ7R4AFANlTFR3Pyn4ZI/bPQ==
-X-Google-Smtp-Source: AGHT+IG0t8vwy4/T+jnfap/4JzmpTGUHJHK3NjF9tz0RjHW21dsfZTqkn2BSN+XKUADqV25rHt7bjA==
-X-Received: by 2002:adf:e8c6:0:b0:336:1182:6475 with SMTP id k6-20020adfe8c6000000b0033611826475mr875372wrn.34.1705075221351;
-        Fri, 12 Jan 2024 08:00:21 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id b6-20020adfee86000000b00337478efa4fsm4200905wro.60.2024.01.12.08.00.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 08:00:20 -0800 (PST)
-Message-ID: <a1e673be-9c4e-4bbc-abe6-56466f8a01ad@linaro.org>
-Date: Fri, 12 Jan 2024 17:00:18 +0100
+        d=1e100.net; s=20230601; t=1705075408; x=1705680208;
+        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eM/q6+ASudnWqkA1GcXB1FCKeCcpDQUk18zBNzi9GWQ=;
+        b=BHdLiSCdjiRdt86imhBzsip5+KqDMI1B8vi7DEfqer3AyQqFKofB4f1B+Gwfu0wTmy
+         hDfLOT1wDAhvHwf6k6Qp4CgX1rVGLDURAjCtx5GvtRJOQncRTV9Gqpmx9MDaDgdM03mY
+         p8ViaffGMQlhz2w9R6y5CnbPUwt8nYa3SeXxTG8/I9pw1OqnimO/pZ/sDFSPuklUH0Fy
+         J77+w7TXuore4k8UYBy0iUGrrJ9XAUvD6N7+1anNxkEorG/sBUOMmH76baLVTmru3sIH
+         11xff9z+QaD7yJ73pjNRDaVmwuHB4xwUlZWKYnpOrC0IRWglh7t2botOnyjQzi66yQtW
+         UVPg==
+X-Gm-Message-State: AOJu0YyIQQEMFZNh5r0UMkmzZnb5HeDpZ5j8SyoxTXNvyWUB6uImvcKb
+	BO86QJwco69XxYorp9w4sOLiJMGcMbwMiGOyHtKNLhu1HgQj84GjSmY49n1Ht0lSKW1ZYANVrcK
+	VWmGLt63K5KM1p88Eo1nn1FCc7httUE8a
+X-Received: by 2002:a17:902:e54b:b0:1d3:7368:663 with SMTP id n11-20020a170902e54b00b001d373680663mr1899473plf.7.1705075407984;
+        Fri, 12 Jan 2024 08:03:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHEE3bhlZZ9B9maxsi7Sr2DAFspnJ7Rv2qjDio1rzvyTwaxz5hENcZdZtmImKgo2rzVWof6LQ==
+X-Received: by 2002:a17:902:e54b:b0:1d3:7368:663 with SMTP id n11-20020a170902e54b00b001d373680663mr1899454plf.7.1705075407622;
+        Fri, 12 Jan 2024 08:03:27 -0800 (PST)
+Received: from rh (p200300c93f0273004f0fe90936098834.dip0.t-ipconnect.de. [2003:c9:3f02:7300:4f0f:e909:3609:8834])
+        by smtp.gmail.com with ESMTPSA id g11-20020a170902c98b00b001d4c97a2adcsm3319022plc.108.2024.01.12.08.03.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 08:03:27 -0800 (PST)
+Date: Fri, 12 Jan 2024 17:03:17 +0100 (CET)
+From: Sebastian Ott <sebott@redhat.com>
+To: dri-devel@lists.freedesktop.org, virtualization@lists.linux.dev, 
+    linux-kernel@vger.kernel.org
+cc: David Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+    Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH] drm/virtio: set segment size for virtio_gpu device
+Message-ID: <29a2b89d-7bf0-9dcb-5208-cd8e7d26e2f2@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
- silvaco,i3c-target-v1
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: robh@kernel.org, alexandre.belloni@bootlin.com,
- conor.culhane@silvaco.com, gregkh@linuxfoundation.org, imx@lists.linux.dev,
- jirislaby@kernel.org, joe@perches.com, linux-i3c@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- miquel.raynal@bootlin.com, zbigniew.lukwinski@linux.intel.com,
- devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org
-References: <20240110175221.2335480-1-Frank.Li@nxp.com>
- <20240110175221.2335480-3-Frank.Li@nxp.com>
- <3c0be658-e7a6-4231-b206-86ffb47e0cb2@linaro.org>
- <ZaFbbeQrC7o2dchO@lizhi-Precision-Tower-5810>
- <e3b9aa63-25a5-41cc-9eb7-6e7d1eacb136@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <e3b9aa63-25a5-41cc-9eb7-6e7d1eacb136@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 
-On 12/01/2024 16:50, Krzysztof Kozlowski wrote:
-> On 12/01/2024 16:31, Frank Li wrote:
->> I review previous comments. The previous RFC patches and I just want I3C
->> expert review to check if there are comments about whole software
->> architecture. Of course, thank you for your comments about "slave".
->>
->> Go back this binding doc problem. 
->>
->>   "No, it's the same device.
->>
->>    Anyway, this was not tested.
->>
->>    Please use scripts/get_maintainers.pl to get a list of necessary people
->>    and lists to CC. It might happen, that command when run on an older
->>    kernel, gives you outdated entries. Therefore please be sure you base
->>    your patches on recent Linux kernel.
->>
->>    You missed at least devicetree list (maybe more), so this won't be
->>    tested by automated tooling. Performing review on untested code might be
->>    a waste of time, thus I will skip this patch entirely till you follow
->>    the process allowing the patch to be tested.
->>
->>    Please kindly resend and include all necessary To/Cc entries.
->>    "
->>
->> It is the same devices, work at difference mode (master  and target).
->> what's do you want to change to?
->>
->> Copy to new file like pci/pci-ep? all context is the same, except for
->> compatible string. 
->>
-> 
-> Apologies, I mixed up a bit patches, so this was not obvious. I meant
-> this comment:
-> 
-> https://lore.kernel.org/all/20231017201404.GA2570433-robh@kernel.org/
-> 
-> There is no indication in your commit msg that these concerns were
-> addressed.
+Hej,
 
-And here:
+debug dma code is not happy with virtio gpu (arm64 VM):
 
-https://lore.kernel.org/all/6110c58a-8003-4889-9a4b-6a7d1821c00e@linaro.org/
+[  305.881733] ------------[ cut here ]------------
+[  305.883117] DMA-API: virtio-pci 0000:07:00.0: mapping sg segment longer than device claims to support [len=262144] [max=65536]
+[  305.885976] WARNING: CPU: 8 PID: 2002 at kernel/dma/debug.c:1177 check_sg_segment+0x2d0/0x420
+[  305.888038] Modules linked in: crct10dif_ce(+) polyval_ce polyval_generic ghash_ce virtio_gpu(+) virtio_net net_failover virtio_blk(+) virtio_dma_buf virtio_console failover virtio_mmio scsi_dh_r dac scsi_dh_emc scsi_dh_alua dm_multipath qemu_fw_cfg
+[  305.893496] CPU: 8 PID: 2002 Comm: (udev-worker) Not tainted 6.7.0 #1
+[  305.895070] Hardware name: QEMU KVM Virtual Machine, BIOS edk2-20230524-3.fc37 05/24/2023
+[  305.897112] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  305.897129] pc : check_sg_segment+0x2d0/0x420
+[  305.897139] lr : check_sg_segment+0x2d0/0x420
+[  305.897145] sp : ffff80008ffc69d0
+[  305.897149] x29: ffff80008ffc69d0 x28: dfff800000000000 x27: ffffb0232879e578
+[  305.897167] x26: ffffffff00000000 x25: ffffb0232778c060 x24: ffff19ee9b2060c0
+[  305.897181] x23: 00000000ffffffff x22: ffffb0232ab9ce10 x21: ffff19eece5c64ac
+[  305.906942] x20: 0000000000010000 x19: ffff19eece5c64a0 x18: ffff19eec36fc304
+[  305.908633] x17: 6e61687420726567 x16: 6e6f6c20746e656d x15: 6765732067732067
+[  305.910352] x14: 00000000f1f1f1f1 x13: 0000000000000001 x12: ffff700011ff8cc3
+[  305.912044] x11: 1ffff00011ff8cc2 x10: ffff700011ff8cc2 x9 : ffffb02324a70e54
+[  305.913751] x8 : 00008fffee00733e x7 : ffff80008ffc6617 x6 : 0000000000000001
+[  305.915451] x5 : ffff80008ffc6610 x4 : 1fffe33e70564622 x3 : dfff800000000000
+[  305.917158] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff19f382b23100
+[  305.918864] Call trace:
+[  305.919474]  check_sg_segment+0x2d0/0x420
+[  305.920443]  debug_dma_map_sg+0x2a0/0x428
+[  305.921402]  __dma_map_sg_attrs+0xf4/0x1a8
+[  305.922388]  dma_map_sgtable+0x7c/0x100
+[  305.923318]  drm_gem_shmem_get_pages_sgt+0x15c/0x328
+[  305.924500]  virtio_gpu_object_shmem_init.constprop.0.isra.0+0x50/0x628 [virtio_gpu]
+[  305.926390]  virtio_gpu_object_create+0x198/0x478 [virtio_gpu]
+[  305.927802]  virtio_gpu_mode_dumb_create+0x2a0/0x4c8 [virtio_gpu]
+[  305.929272]  drm_mode_create_dumb+0x1c0/0x280
+[  305.930327]  drm_client_framebuffer_create+0x140/0x328
+[  305.931555]  drm_fbdev_generic_helper_fb_probe+0x1bc/0x5c0
+[  305.932871]  __drm_fb_helper_initial_config_and_unlock+0x1e0/0x630
+[  305.934372]  drm_fb_helper_initial_config+0x50/0x68
+[  305.935540]  drm_fbdev_generic_client_hotplug+0x148/0x200
+[  305.936819]  drm_client_register+0x130/0x200
+[  305.937856]  drm_fbdev_generic_setup+0xe8/0x320
+[  305.938932]  virtio_gpu_probe+0x13c/0x2d0 [virtio_gpu]
+[  305.940190]  virtio_dev_probe+0x38c/0x600
+[  305.941153]  really_probe+0x334/0x9c8
+[  305.942047]  __driver_probe_device+0x164/0x3d8
+[  305.943102]  driver_probe_device+0x64/0x180
+[  305.944094]  __driver_attach+0x1d4/0x488
+[  305.945045]  bus_for_each_dev+0x104/0x198
+[  305.946008]  driver_attach+0x44/0x68
+[  305.946892]  bus_add_driver+0x23c/0x4a8
+[  305.947838]  driver_register+0xf8/0x3d0
+[  305.948770]  register_virtio_driver+0x74/0xc8
+[  305.949836]  virtio_gpu_driver_init+0x20/0xff8 [virtio_gpu]
+[  305.951237]  do_one_initcall+0x17c/0x8c0
+[  305.952182]  do_init_module+0x1dc/0x630
+[  305.953106]  load_module+0x10c0/0x1638
+[  305.954012]  init_module_from_file+0xe0/0x140
+[  305.955058]  idempotent_init_module+0x2c0/0x590
+[  305.956174]  __arm64_sys_finit_module+0xb4/0x140
+[  305.957282]  invoke_syscall+0xd8/0x258
+[  305.958187]  el0_svc_common.constprop.0+0x16c/0x240
+[  305.959526]  do_el0_svc+0x48/0x68
+[  305.960456]  el0_svc+0x58/0x118
+[  305.961310]  el0t_64_sync_handler+0x120/0x130
+[  305.962510]  el0t_64_sync+0x194/0x198
+[  305.963509] irq event stamp: 37944
+[  305.964412] hardirqs last  enabled at (37943): [<ffffb02324a7439c>] console_unlock+0x1a4/0x1c8
+[  305.966602] hardirqs last disabled at (37944): [<ffffb023276724e4>] el1_dbg+0x24/0xa0
+[  305.968535] softirqs last  enabled at (37930): [<ffffb0232475114c>] __do_softirq+0x8e4/0xe1c
+[  305.970781] softirqs last disabled at (37925): [<ffffb0232475a9b0>] ____do_softirq+0x18/0x30
+[  305.972937] ---[ end trace 0000000000000000 ]---
 
-Best regards,
-Krzysztof
+The 64K max_segment size of the device seems to be inherited by PCIs default.
+The sg list is crated via this drm helper:
+
+struct sg_table *drm_prime_pages_to_sg(struct drm_device *dev,
+ 				       struct page **pages, unsigned int nr_pages)
+{
+..
+ 	if (dev)
+ 		max_segment = dma_max_mapping_size(dev->dev);
+ 	if (max_segment == 0)
+ 		max_segment = UINT_MAX;
+ 	err = sg_alloc_table_from_pages_segment(sg, pages, nr_pages, 0,
+ 						nr_pages << PAGE_SHIFT,
+ 						max_segment, GFP_KERNEL);
+..
+}
+
+I'm a bit puzzled why this uses dma_max_mapping_size() and not
+dma_get_max_seg_size(). But since this is used by a lot of drivers
+I'm not really keen to touch this code that works like this for ages.
+
+So let's just make debug dma code aware of the actual segment size
+that's used by the device:
+
+--->8
+drm/virtio: set segment size for virtio_gpu device
+
+Set the segment size of the virtio_gpu device to the value
+used by the drm helpers when allocating sg lists to fix the
+following complaint from DMA_API debug code:
+DMA-API: virtio-pci 0000:07:00.0: mapping sg segment longer than device claims to support [len=262144] [max=65536]
+
+Signed-off-by: Sebastian Ott <sebott@redhat.com>
+---
+  drivers/gpu/drm/virtio/virtgpu_drv.c | 1 +
+  1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
+index 4334c7608408..74b2cb3295af 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_drv.c
++++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
+@@ -94,6 +94,7 @@ static int virtio_gpu_probe(struct virtio_device *vdev)
+  			goto err_free;
+  	}
+
++	dma_set_max_seg_size(dev->dev, dma_max_mapping_size(dev->dev) ? : UINT_MAX);
+  	ret = virtio_gpu_init(vdev, dev);
+  	if (ret)
+  		goto err_free;
+-- 
+2.43.0
 
 
