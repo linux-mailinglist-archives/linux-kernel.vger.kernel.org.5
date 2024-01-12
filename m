@@ -1,111 +1,99 @@
-Return-Path: <linux-kernel+bounces-24872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1202B82C3FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:50:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD73882C3F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:50:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 337C31C21BFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:50:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B588286292
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09D67763E;
-	Fri, 12 Jan 2024 16:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A067177645;
+	Fri, 12 Jan 2024 16:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="cRjBV0eg"
-Received: from forward101a.mail.yandex.net (forward101a.mail.yandex.net [178.154.239.84])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jz0yp4T3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FF577628;
-	Fri, 12 Jan 2024 16:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1f:5408:0:640:72fa:0])
-	by forward101a.mail.yandex.net (Yandex) with ESMTP id 99742608F4;
-	Fri, 12 Jan 2024 19:50:33 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id JonQVQ0tDiE0-IWp8t1EP;
-	Fri, 12 Jan 2024 19:50:32 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1705078232; bh=rVVwhkAzgNNIjBnRMvtTLSOGJVz0cJRV+tdzW1zfGkg=;
-	h=Message-Id:Date:Cc:Subject:To:From;
-	b=cRjBV0eglXmwE22B1dB+3kFCg6WSmP/CvWnfVgvwSWy6A9rLFrJ/6QklGA7VrhxiF
-	 zWrm7Wts5nypD2W3tyHH3mVUkjvbzB1v6GM113GqiVgKvkn5rOTUU3NG8hY8CMX6nD
-	 p2gY5FwY3gLOmih6HLZR7eJtDi+AJd5UlWFe9OYQ=
-Authentication-Results: mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-To: Dave Kleikamp <shaggy@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jan Kara <jack@suse.cz>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>,
-	jfs-discussion@lists.sourceforge.net,
-	stable@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	linux-kernel@vger.kernel.org,
-	Mikhail Ivanov <iwanov-23@bk.ru>,
-	Pavel Koshutin <koshutin.pavel@yandex.ru>,
-	Artem Sadovnikov <ancowi69@gmail.com>
-Subject: [PATCH 5.10/5.15] jfs: add check if log->bdev is NULL in lbmStartIO()
-Date: Fri, 12 Jan 2024 19:50:07 +0300
-Message-Id: <20240112165007.4764-1-mish.uxin2012@yandex.ru>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17F477634;
+	Fri, 12 Jan 2024 16:50:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29A11C433F1;
+	Fri, 12 Jan 2024 16:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705078212;
+	bh=l5fSgj+Gi5ykBYgS5TQAK8IZz/Rm0Gr+bg6Qn7vYmQ8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=jz0yp4T34rc4eH6Dgxm3lyAlylBbl9Lw5WOn+o2+nd7QYglpti6RV7NxLIu4yBnbp
+	 bhS6QWEWLIVNZSaKDtMJgoDt+aKLWvoiWguuXSgaGOAEiJazHtkzTY5Y7lHM8976su
+	 dPVTpfX9tc4OpgGAqguc4nPzLLi9aKW/rHnIVw+32RGf07XYZQcIoPzfWRMk8vdp33
+	 iPC8TL3xzZx+ypPC/sgn7GyqO+8ULN+TsehIn9cNveHgnBQzk1pucXtFsGR5O8eu7D
+	 DMEs5RdBq2k/V0gutS3D9JdUOD7qXlzLCcfiV7AJZO79KzxPmS40TkGCQKooPAW7IU
+	 tzTwMBcFpefGw==
+Date: Fri, 12 Jan 2024 10:50:10 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Brian Masney <bmasney@redhat.com>,
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
+	vireshk@kernel.org, quic_vbadigan@quicinc.com,
+	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
+ state of power domain
+Message-ID: <20240112165010.GA2271863@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
 
-Fuzzing of 5.10 stable branch shows NULL pointer dereference happens in 
-lbmStartIO() on log->bdev pointer. The reason for bdev being NULL is the 
-JFS_NOINTEGRITY flag is set on mount of this fs. When this flag is enabled,
-it results in the open_dummy_log function being called, which initializes a
-new dummy_log, but does not assign a value to bdev.
+On Fri, Jan 12, 2024 at 07:52:05PM +0530, Krishna chaitanya chundru wrote:
+> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
+> maintains hardware state of a regulator by performing max aggregation of
+> the requests made by all of the processors.
+> 
+> PCIe controller can operate on different RPMh performance state of power
+> domain based up on the speed of the link. And this performance state varies
+> from target to target.
+> 
+> It is manadate to scale the performance state based up on the PCIe speed
+> link operates so that SoC can run under optimum power conditions.
+> 
+> Add Operating Performance Points(OPP) support to vote for RPMh state based
+> upon GEN speed link is operating.
 
-The error is fixed in 5.18 by commit
-07888c665b405b1cd3577ddebfeb74f4717a84c4.
-Backport of this commit is too intrusive, so it is more reasonable to apply
-a small patch to fix this issue.
+Thanks for this "OPP" expansion!  Maybe "GEN" is unnecessary in this
+sentence?  And below, could be replaced with actual speeds?
 
-Found by Linux Verification Center (linuxtesting.org) with syzkaller.
+> OPP can handle ICC bw voting also, so move icc bw voting through opp
+> framework if opp entries are present.
 
-Signed-off-by: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-Signed-off-by: Mikhail Ivanov <iwanov-23@bk.ru>
-Signed-off-by: Pavel Koshutin <koshutin.pavel@yandex.ru>
-Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
----
- fs/jfs/jfs_logmgr.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+s/opp/OPP/ to match
+s/icc/ICC/ similarly (and perhaps expand once)
+Also below in comments, etc.
 
-diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-index 78fd136ac13b..d6f0fea96ba1 100644
---- a/fs/jfs/jfs_logmgr.c
-+++ b/fs/jfs/jfs_logmgr.c
-@@ -1983,7 +1983,8 @@ static int lbmRead(struct jfs_log * log, int pn, struct lbuf ** bpp)
- 	bio = bio_alloc(GFP_NOFS, 1);
- 
- 	bio->bi_iter.bi_sector = bp->l_blkno << (log->l2bsize - 9);
--	bio_set_dev(bio, log->bdev);
-+	if (log->bdev != NULL)
-+		bio_set_dev(bio, log->bdev);
- 
- 	bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
- 	BUG_ON(bio->bi_iter.bi_size != LOGPSIZE);
-@@ -2127,7 +2128,8 @@ static void lbmStartIO(struct lbuf * bp)
- 
- 	bio = bio_alloc(GFP_NOFS, 1);
- 	bio->bi_iter.bi_sector = bp->l_blkno << (log->l2bsize - 9);
--	bio_set_dev(bio, log->bdev);
-+	if (log->bdev != NULL)
-+		bio_set_dev(bio, log->bdev);
- 
- 	bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
- 	BUG_ON(bio->bi_iter.bi_size != LOGPSIZE);
--- 
-2.25.1
+> In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
+> same icc bw and has frequency, so use frequency based search to reduce
+> number of entries in the opp table.
+> 
+> Don't initialize icc if opp is supported.
 
+Bjorn
 
