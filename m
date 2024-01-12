@@ -1,162 +1,162 @@
-Return-Path: <linux-kernel+bounces-25115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5B282C81C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:50:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B09282C81F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:51:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7ED4DB224B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:50:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE17D1F23599
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183731A700;
-	Fri, 12 Jan 2024 23:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FA01A5BE;
+	Fri, 12 Jan 2024 23:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="DwH8nF/b"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="myfLgcSj"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A481A5AC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 23:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2ccae380df2so76822011fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:50:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E6581A700
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 23:51:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d5097150fso6875e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:51:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1705103426; x=1705708226; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705103498; x=1705708298; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KdVVm44GspY1vrqagFO17oKocrrGuSEpWF2qOryhvaY=;
-        b=DwH8nF/bCe0bcTBpKXmgiKKqi1Uik75coJ0vWRCb/lgd26I+xyo9zVEpJc0v08JYsc
-         qLqLD68GLWtfhqHt2H5HHeoBp4BMLZDjd6AIS6PTlezls0nUFNavMOTKAJzRZrX77F0j
-         9OuunS/PewiZBn+wYJXnvakqQCFmWaGLL9fkg=
+        bh=kp9mV4Ke/a2nl4+Mq/TPZKlXYFvSYBSYldkMY7yov80=;
+        b=myfLgcSjytfRZ6t/8DfAQPm/n1Cu0HBmrg+nJyGtRDDzjIc0W7QZE0UMBPAL9W4JHo
+         YZidLGqeidk+xuvmLM+Rj6JnLh56L9zWvfKEauB4PO+UOXZrYFvhVzYDzLAMH7EC9otz
+         oFSySZFEHTtUJQuAg2SpyD/5WVapblGxUqAzVnDs+Kg80vX8sWnXB/BJhRSB4lNMY4kz
+         mk9zy6ipFE2KZeWwh7e9m2dqdt/bNSa3ZoAGi0/JRCo6e+8Tj9UxfmgbHDiMjFWETkJl
+         xiXdMovx3hnFFssezLTz4Lf7TWEHmCJTddz6wixJ0pvTSc0k2tZ2a/8oRfBf5luFuaEb
+         /nYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705103426; x=1705708226;
+        d=1e100.net; s=20230601; t=1705103498; x=1705708298;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KdVVm44GspY1vrqagFO17oKocrrGuSEpWF2qOryhvaY=;
-        b=lmgmsvdF+XEwie0ImCNLyW+bUDA2j3145cPgJYb9a+/d0ysBFhx1PSS0gh1esryCWG
-         cFIPY7MZZFnmCrAsIC71i9u0SqISp5a5dUBTHTOQyGbduns+2AYD4bnjUqIMpEtZ8tDe
-         4xXjogFGZJ75ZKgwPz9TnI5l8+wg+WXDrZ1wVH25y2acva9b4kTALH9gS6fM5L1WI2mO
-         ruoEkxgAwV7TQkzTTZqp1xLLSwd1kRZyzrfD4Ofo0YpvQSWNVRncAVIpQNn4KbjGXa3U
-         6trjFdTMPOLF2p0Wrd6L6BEXrosQbIsunpZRLZq1Qzv4+ggYK3J9X3fwgqoVesdcgRaL
-         q+OQ==
-X-Gm-Message-State: AOJu0Yz4R+6vwvBuOEwM5o9yRvRiq02FjBLw1Vc2u0UCubhUGvnPpIdk
-	IMhhwsboQz0jzFutzp6tvA4CTBKRLwDAC3dzJVEqZCkCRT1j
-X-Google-Smtp-Source: AGHT+IG74fXTZOq2nIQGkABoTQvuIWpEvgArH4ko847NqdeZiegoSZ+CvkTfc7jJcqd/iuL4Jfoat0JYTgOT3NmkpCw=
-X-Received: by 2002:a2e:a36e:0:b0:2cd:8fe0:70ab with SMTP id
- i14-20020a2ea36e000000b002cd8fe070abmr1011564ljn.16.1705103426437; Fri, 12
- Jan 2024 15:50:26 -0800 (PST)
+        bh=kp9mV4Ke/a2nl4+Mq/TPZKlXYFvSYBSYldkMY7yov80=;
+        b=qobh9ivRKlMt0Cm/QFy5XvZQ3JiiWIhGOdiPSp/ZfAQNy6Xm7w6PEfhHn35wzsmNJL
+         LUSzj1xy06ZB/YT2195XJsqpiEsJg1e2Ky7mx445RQ+HrjUOHrVusma1Ly36pPMgLegR
+         pBd9Kbom7yKUCKfBIVLh58swYqGXync5n51Xx62izxs+wAR9WoW7RzE7V591psQdwrPF
+         lfg/oG1XpODz0c0jVAVDyIKg6CYSgT1faYqAtRnsaeUFUG+6KLawAXIQbixDj2w4hsRV
+         qYjBOQoaADbWbUiUvzg3c+AgB2e5I3JbYb6RLACySOmCoZfh5d5o0xn2q0eeGeMtrpUp
+         4LgQ==
+X-Gm-Message-State: AOJu0YwT32m/EHTogkLDTW65uiJD1nN/s+R3pYhkcZDiV5JSkBcrk2Hw
+	X/MFH6I+1LaJ4glJsQI4wmFNe79sm3Cm/3fPn/3kdhOG7qU=
+X-Google-Smtp-Source: AGHT+IHw6ArP/KmmpI2CYpNyzdh9UGjQJc8eU/h6V5ZAE1R9MItE23iIMtklhlwhBVwyIqzHg22KBjSAxDaPMMiP1UE=
+X-Received: by 2002:a05:600c:3b1d:b0:40d:87df:92ca with SMTP id
+ m29-20020a05600c3b1d00b0040d87df92camr30276wms.3.1705103498218; Fri, 12 Jan
+ 2024 15:51:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110073917.2398826-1-peterlin@andestech.com> <20240110073917.2398826-5-peterlin@andestech.com>
-In-Reply-To: <20240110073917.2398826-5-peterlin@andestech.com>
-From: Atish Patra <atishp@atishpatra.org>
-Date: Fri, 12 Jan 2024 15:50:15 -0800
-Message-ID: <CAOnJCUJ0fN5=+b4jDx+NPqUwgwGKuBNYt7d86dXYNyjzUYFAWQ@mail.gmail.com>
-Subject: Re: [PATCH v7 04/16] dt-bindings: riscv: Add Andes interrupt
- controller compatible string
-To: Yu Chien Peter Lin <peterlin@andestech.com>
-Cc: acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com, 
-	alexander.shishkin@linux.intel.com, andre.przywara@arm.com, 
-	anup@brainfault.org, aou@eecs.berkeley.edu, conor+dt@kernel.org, 
-	conor.dooley@microchip.com, conor@kernel.org, devicetree@vger.kernel.org, 
-	dminus@andestech.com, evan@rivosinc.com, geert+renesas@glider.be, 
-	guoren@kernel.org, heiko@sntech.de, irogers@google.com, 
-	jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, locus84@andestech.com, magnus.damm@gmail.com, 
-	mark.rutland@arm.com, mingo@redhat.com, n.shubin@yadro.com, 
-	namhyung@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, 
-	peterz@infradead.org, prabhakar.mahadev-lad.rj@bp.renesas.com, 
-	rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org, 
-	sunilvl@ventanamicro.com, tglx@linutronix.de, tim609@andestech.com, 
-	uwu@icenowy.me, wens@csie.org, will@kernel.org, ycliang@andestech.com, 
-	inochiama@outlook.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, 
-	wefu@redhat.com
+References: <20240112092014.23999-1-yong.wu@mediatek.com> <20240112092014.23999-4-yong.wu@mediatek.com>
+ <CANDhNCrxpeqEhJD0xJzu3vm8a4jMXD2v+_dbDNvaKhLsLB5-4g@mail.gmail.com> <CA+ddPcNdniUTpE_pJb-fL7+MHNSUZTkQojL48iqvW9JPr-Tc-g@mail.gmail.com>
+In-Reply-To: <CA+ddPcNdniUTpE_pJb-fL7+MHNSUZTkQojL48iqvW9JPr-Tc-g@mail.gmail.com>
+From: John Stultz <jstultz@google.com>
+Date: Fri, 12 Jan 2024 15:51:25 -0800
+Message-ID: <CANDhNCqieBaH-Wi=vy3NSKTpwHcWef6qMOFi-7sgdGiDW7JtwA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/7] dma-buf: heaps: restricted_heap: Add private heap ops
+To: Jeffrey Kardatzke <jkardatzke@google.com>
+Cc: Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com, 
+	Sumit Semwal <sumit.semwal@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Brian Starkey <Brian.Starkey@arm.com>, 
+	tjmercier@google.com, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	Robin Murphy <robin.murphy@arm.com>, Vijayanand Jitta <quic_vjitta@quicinc.com>, 
+	Joakim Bech <joakim.bech@linaro.org>, Pavel Machek <pavel@ucw.cz>, Simon Ser <contact@emersion.fr>, 
+	Pekka Paalanen <ppaalanen@gmail.com>, jianjiao.zeng@mediatek.com, kuohong.wang@mediatek.com, 
+	youlin.pei@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 9, 2024 at 11:40=E2=80=AFPM Yu Chien Peter Lin
-<peterlin@andestech.com> wrote:
+On Fri, Jan 12, 2024 at 3:27=E2=80=AFPM Jeffrey Kardatzke <jkardatzke@googl=
+e.com> wrote:
+> On Fri, Jan 12, 2024 at 2:52=E2=80=AFPM John Stultz <jstultz@google.com> =
+wrote:
+> > On Fri, Jan 12, 2024 at 1:21=E2=80=AFAM Yong Wu <yong.wu@mediatek.com> =
+wrote:
+> > > diff --git a/drivers/dma-buf/heaps/restricted_heap.h b/drivers/dma-bu=
+f/heaps/restricted_heap.h
+> > > index 443028f6ba3b..ddeaf9805708 100644
+> > > --- a/drivers/dma-buf/heaps/restricted_heap.h
+> > > +++ b/drivers/dma-buf/heaps/restricted_heap.h
+> > > @@ -15,6 +15,18 @@ struct restricted_buffer {
+> > >
+> > >  struct restricted_heap {
+> > >         const char              *name;
+> > > +
+> > > +       const struct restricted_heap_ops *ops;
+> > > +};
+> > > +
+> > > +struct restricted_heap_ops {
+> > > +       int     (*heap_init)(struct restricted_heap *heap);
+> > > +
+> > > +       int     (*memory_alloc)(struct restricted_heap *heap, struct =
+restricted_buffer *buf);
+> > > +       void    (*memory_free)(struct restricted_heap *heap, struct r=
+estricted_buffer *buf);
+> > > +
+> > > +       int     (*memory_restrict)(struct restricted_heap *heap, stru=
+ct restricted_buffer *buf);
+> > > +       void    (*memory_unrestrict)(struct restricted_heap *heap, st=
+ruct restricted_buffer *buf);
+> > >  };
+> > >
+> > >  int restricted_heap_add(struct restricted_heap *rstrd_heap);
+> >
+> > So, I'm a little worried here, because you're basically turning the
+> > restricted_heap dma-buf heap driver into a framework itself.
+> > Where this patch is creating a subdriver framework.
+> >
+> > Part of my hesitancy, is you're introducing this under the dma-buf
+> > heaps. For things like CMA, that's more of a core subsystem that has
+> > multiple users, and exporting cma buffers via dmabuf heaps is just an
+> > additional interface.  What I like about that is the core kernel has
+> > to define the semantics for the memory type and then the dmabuf heap
+> > is just exporting that well understood type of buffer.
+> >
+> > But with these restricted buffers, I'm not sure there's yet a well
+> > understood set of semantics nor a central abstraction for that which
+> > other drivers use directly.
+> >
+> > I know part of this effort here is to start to centralize all these
+> > vendor specific restricted buffer implementations, which I think is
+> > great, but I just worry that in doing it in the dmabuf heap interface,
+> > it is a bit too user-facing. The likelihood of encoding a particular
+> > semantic to the singular "restricted_heap" name seems high.
 >
-> Add "andestech,cpu-intc" compatible string to indicate that
-> Andes specific local interrupt is supported on the core,
-> e.g. AX45MP cores have 3 types of non-standard local interrupt
-> which can be handled in supervisor mode:
->
+> In patch #5 it has the actual driver implementation for the MTK heap
+> that includes the heap name of "restricted_mtk_cm", so there shouldn't
+> be a heap named "restricted_heap" that's actually getting exposed. The
 
-PATCH1 in this series renames everything from ANDESTECH to ANDES to be
-consistent.
-Here you are adding DT binding with "andestech". Is there any
-fundamental difference between these two to demand
-this change ?
+Ah, I appreciate that clarification! Indeed, you're right the name is
+passed through. Apologies for missing that detail.
 
-FYI: I don't mind either way as I don't have skin in the game. Just
-something I noticed while reviewing the series.
+> restricted_heap code is a framework, and not a driver itself.  Unless
+> I'm missing something in this patchset...but that's the way it's
+> *supposed* to be.
 
-> - Slave port ECC error interrupt
-> - Bus write transaction error interrupt
-> - Performance monitor overflow interrupt
->
-> These interrupts are enabled/disabled via a custom register
-> SLIE instead of the standard interrupt enable register SIE.
->
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
-> Changes v1 -> v2:
->   - New patch
-> Changes v2 -> v3:
->   - Updated commit message
->   - Fixed possible compatibles for Andes INTC
-> Changes v3 -> v4:
->   - Add const entry instead of enum (Suggested by Conor)
-> Changes v4 -> v5:
->   - Include Conor's Acked-by
->   - Include Prabhakar's Reviewed-by
-> Changes v5 -> v6:
->   - No change
-> Changes v6 -> v7:
->   - No change
-> ---
->  Documentation/devicetree/bindings/riscv/cpus.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Document=
-ation/devicetree/bindings/riscv/cpus.yaml
-> index 23646b684ea2..33c2b620a59f 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -101,7 +101,11 @@ properties:
->          const: 1
->
->        compatible:
-> -        const: riscv,cpu-intc
-> +        oneOf:
-> +          - items:
-> +              - const: andestech,cpu-intc
-> +              - const: riscv,cpu-intc
-> +          - const: riscv,cpu-intc
->
->        interrupt-controller: true
->
-> --
-> 2.34.1
->
+So I guess I'm not sure I understand the benefit of the extra
+indirection. What then does the restricted_heap.c logic itself
+provide?
+The dmabuf heaps framework already provides a way to add heap implementatio=
+ns.
 
-
---=20
-Regards,
-Atish
+thanks
+-john
 
