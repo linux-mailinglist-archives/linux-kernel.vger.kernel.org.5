@@ -1,118 +1,154 @@
-Return-Path: <linux-kernel+bounces-25023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7FA582C644
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:11:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76B1E82C659
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E96B1C2490B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:11:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEAE6B224ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B0616426;
-	Fri, 12 Jan 2024 20:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC3F168A2;
+	Fri, 12 Jan 2024 20:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="oV+eyzUF"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XqjvDXAE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="c+Wl162U";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KD4RU5Hn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6pI6985H"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D7C15AFD
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 20:11:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bed9f3ca97so141603239f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:11:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1705090303; x=1705695103; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+m+8+sn/yrRpMNmoKuVGJnl0KXgHIO06YV19abnxPJI=;
-        b=oV+eyzUF9mjPBBKXi7sOi0E6ipHIopSk2V+AaXbE2KUaLX2JkgMQLsZf7EnFyT2A3C
-         ty0RCoySkd949j1KrinljI/zljDDs9tALeUOejOWemr1u4xSdt1bIgwrjyPYFOE8fvgC
-         LcSLutP4FaKc/2PDkuskMBxkffoR+N8mC0k43Qt8cCPnN7AXQbWM9h5Cvf08xJnZu0xr
-         4w1KUu4mrPYMUmxuD8uF/+smMkKKASvPJvZuu5wRknnwdTDR9+xMApk/UYDHsB2HXmjR
-         ytQae2aXwBubd8FkypMyujeRZ7vwILeRm6NLaiARwrD11EvsbT6SSQnhDuA4ixLYw9xX
-         ZvKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705090303; x=1705695103;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+m+8+sn/yrRpMNmoKuVGJnl0KXgHIO06YV19abnxPJI=;
-        b=FUHO9498EFMEnYQVIgfGvsV5FkxA/PuW3M6mEXw5MtZKhfYq4Es4FZgfqDbvFxsQei
-         SUmLnrn2nawLRpX600jKXwLsWJusxwUVhVlXzl+t2lA0EUAtcUFyYtkeBNrB1sX3mxh6
-         3BZc6/0Iq1ff2MvAtaqhF6FXvEiPb/0Nu71XYFfRIAsj9SG8jGOGIlefgiy5frc6ymao
-         Z3jlmg++3C0GZmBdVvhk92VGOfVQFNurD//+DGSArKzNo33txgZjzSz0qvy+tMuZXsm2
-         lR3JzBNY0IJTSWuMpWj76tPzw7eMleVjef8iZT/yMjkoA4F6ETJ622S8/FB84YsbkPCe
-         1QoA==
-X-Gm-Message-State: AOJu0YzeBC5HrVSTLZ8s3ISWkBux8pqqQgcIPohsAbUskQQMq4UpeyMc
-	UG+0xqFZBaokLIPMYng5detyJtx7XN9UBw==
-X-Google-Smtp-Source: AGHT+IHqoFIA5SsY0S6pP9E/YEdP51Pl+qXJMok2jHmvOWgujRF0EPJI7JOUqJM1HPAneMcc2A0bVw==
-X-Received: by 2002:a05:6602:89b:b0:7ba:b9fd:a234 with SMTP id f27-20020a056602089b00b007bab9fda234mr1993100ioz.37.1705090303206;
-        Fri, 12 Jan 2024 12:11:43 -0800 (PST)
-Received: from [172.16.32.83] ([198.232.126.202])
-        by smtp.gmail.com with ESMTPSA id bt9-20020a056638430900b0046e25a7bb9esm1063767jab.176.2024.01.12.12.11.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 12:11:43 -0800 (PST)
-Message-ID: <2ff803d9-748c-e168-3775-b05fb11868bb@landley.net>
-Date: Fri, 12 Jan 2024 14:18:25 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D0416408;
+	Fri, 12 Jan 2024 20:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 482C61FCE8;
+	Fri, 12 Jan 2024 20:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705091267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l3HZdlUOpp8hqp5kkH50U1gvSbJXr0EkR5CiO7uJ5Bo=;
+	b=XqjvDXAESEoED/GxVyl76H3g3dEIog8jVndW2K0atDj+8mC4aP8G7wiR+/6kazHZKB6XuU
+	KWYqaeNyVuip583KceuYvSKPthEXx11bSNcZ+wdWokCSp5fYlAzjPJ7v8zE7Q9hS3iZ0Yo
+	t/qgF3E2gYVsYkTLhI/EXhhzUWfiNkg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705091267;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l3HZdlUOpp8hqp5kkH50U1gvSbJXr0EkR5CiO7uJ5Bo=;
+	b=c+Wl162UZcJ7GFS100RcrMYBULVzDNA35vwem9fOrK1g++F4R7bQxU/Jj0LhpR1n7WmI3k
+	IpLf9iPhDLqZr6AA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705091266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l3HZdlUOpp8hqp5kkH50U1gvSbJXr0EkR5CiO7uJ5Bo=;
+	b=KD4RU5HnqQTllTTeFhkd42GxQ1p6pnytJRa77cY7f/Pty+gouCgfc2FZJz8tsGke/cJFcy
+	+9rVUuObcFm6ZLR/cM3odQ47IhgZCgqnwa1PNHlx8eAW0oYqGIKFK8VBjW6BsBCK02vO9a
+	MiLVD9WQeDOXNgBwBsgCt7ThLYI/OoI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705091266;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l3HZdlUOpp8hqp5kkH50U1gvSbJXr0EkR5CiO7uJ5Bo=;
+	b=6pI6985HznZHcmxFVZiB+UZNtYi0j27rwz1nFMh6tHx5yuPVBWfdu8qae9/Yy+xz3KsT8z
+	seqO6XK28FWD+FCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED9E113782;
+	Fri, 12 Jan 2024 20:27:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +bhPOcGgoWVWYwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 12 Jan 2024 20:27:45 +0000
+Message-ID: <f0f44280-799a-4bf8-bf88-d423a2bd41ec@suse.cz>
+Date: Fri, 12 Jan 2024 21:27:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 11/26] x86/sev: Invalidate pages from the direct map
+ when adding them to the RMP table
+To: Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@intel.com>
+Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org, kvm@vger.kernel.org,
+ linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+ thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
+ pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+ jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+ slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+ srinivas.pandruvada@linux.intel.com, rientjes@google.com, tobin@ibm.com,
+ kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+ jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+ pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
+ Brijesh Singh <brijesh.singh@amd.com>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-12-michael.roth@amd.com>
+ <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
+ <20240112200751.GHZaGcF0-OZVJiIB7y@fat_crate.local>
 Content-Language: en-US
-To: Niklas Cassel <Niklas.Cassel@wdc.com>, Greg Ungerer <gerg@linux-m68k.org>
-Cc: Petr Vorel <pvorel@suse.cz>, Tim Bird <tim.bird@sony.com>,
- Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven <geert@linux-m68k.org>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang <liwang@redhat.com>,
- Andrea Cervesato <andrea.cervesato@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- "automated-testing@lists.yoctoproject.org"
- <automated-testing@lists.yoctoproject.org>,
- "buildroot@buildroot.org" <buildroot@buildroot.org>
-References: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
- <20240110141455.GC1698252@pevik>
- <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
- <ZZ8JbCPd3rq4u7iG@x1-carbon>
- <7e348eb3-bd34-4c66-9ed6-b5108da80486@linux-m68k.org>
- <ZZ+zB29hRhpjiOrh@x1-carbon>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <ZZ+zB29hRhpjiOrh@x1-carbon>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240112200751.GHZaGcF0-OZVJiIB7y@fat_crate.local>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-0.09 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[20.32%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RL81e5qggtdx371s8ik49ru6xr)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[39];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -0.09
 
-On 1/11/24 03:21, Niklas Cassel wrote:
->> > s/Linaro/Lineo/
+On 1/12/24 21:07, Borislav Petkov wrote:
+> On Fri, Jan 12, 2024 at 12:00:01PM -0800, Dave Hansen wrote:
+>> On 12/30/23 08:19, Michael Roth wrote:
+>> > If the kernel uses a 2MB directmap mapping to write to an address, and
+>> > that 2MB range happens to contain a 4KB page that set to private in the
+>> > RMP table, that will also lead to a page-fault exception.
 >> 
->> Lineo was not founded by Jeff Dionne, see https://en.wikipedia.org/wiki/Lineo
->> for its genisys. Maybe you are thinking of RT-Control.
+>> I thought we agreed long ago to just demote the whole direct map to 4k
+>> on kernels that might need to act as SEV-SNP hosts.  That should be step
+>> one and this can be discussed as an optimization later.
 > 
-> Yes, Jeff cofounded Rt-Control which later merged with Lineo.
-> 
-> My main point is that Linaro is a completely different company,
-> which did not "die in the dot-com crash", like stated above.
+> What would be the disadvantage here? Higher TLB pressure when running
+> kernel code I guess...
 
-Sorry, I typo uclibc/uclinux all the time too. (In extreme cases I swap
-busybox/toybox, which is personally embarassing...)
-
-Rob
+Yeah and last LSF/MM we concluded that it's not as a big disadvantage as we
+previously thought https://lwn.net/Articles/931406/
 
