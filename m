@@ -1,196 +1,232 @@
-Return-Path: <linux-kernel+bounces-24176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F5D82B894
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:27:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D93B82B895
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FEE31F2609F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:26:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36D0C2886E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D210657;
-	Fri, 12 Jan 2024 00:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C3410F1;
+	Fri, 12 Jan 2024 00:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MlI6MFwa"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BTYdAj08"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90B7361;
-	Fri, 12 Jan 2024 00:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96CAEC5
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 00:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705019208; x=1736555208;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=wWtcH6WYFrDRK28hFLh7sYKiAuWJEne9YA5yB4CHw+o=;
-  b=MlI6MFwacUmOu2K0uxhkxqp0wD1OiNcLeizxgUT5Gcvc7EDL+/3DCnJT
-   qZy9GYOiirzXF6vAukcQcNU5nWOyoqy3Gj/0LoG0j/bnMqiadgrA13J+a
-   JsNxkZaIBg0ygOg6jQ8q3Jihg6bS3e0xrAqjOIh3n4j9bnpevG+P1NBhW
-   OKyoJF3+RucSnvemhJzc9numpTbewjIjPMl1vNQI+9zfW7ULlusXnRxO/
-   SaFIiWPsx1yEbijkVnrHcwzG6PCaqXPZFEtWkyFi/S/3Jz8S02NQ81JgK
-   FkyB31NQZ+3mg3uwWdH779ob/tVwk4mewE1Dfd4ovVHQ25nrk6H16x2eQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="430218246"
+  t=1705019235; x=1736555235;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=i1UWrZ+W7NNjDlVpd+ksZYxVocCkskh0YhN/uIN1rs4=;
+  b=BTYdAj08d8UhsPxHRvx1EMcMlgeIAsBZbERHp+NKHMdiuz5lKxjDPnEi
+   Yhqq+8qrDn9WvhoBFxF9hpQ6pk8z/pY9jObnlQuTtgGZlnUsZqTn45GyC
+   u4rFk4H0fR1MJezNGlGrExp/hdRNwlfQbAQfSvH+F3Pbha5ItEgPe2x30
+   a72HfBbMkrna3t0gKS6YnFhTK6Yy6axx6ygL7lsup5QpZiuvFJg2DC473
+   CgQ1VUNxpAKWhZSiwIatEFcbZJRIUXabzJrBxg9DHrWK0IGSKDGQpsFIc
+   ExsiyC3yXdWtN8DZf9jqDy3un0bSRVeLJcmhr1ir2hPpi1sEMWeZnkdcU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="5766683"
 X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="430218246"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 16:26:47 -0800
+   d="scan'208";a="5766683"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 16:27:15 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="775816514"
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="906140356"
 X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="775816514"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Jan 2024 16:26:46 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 11 Jan 2024 16:26:45 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 11 Jan 2024 16:26:45 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Jan 2024 16:26:45 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kPOHE3+gVxeqPz0mumg+jfCglI0H+11I/NrIZPc3pONXb5rUqINBO0+jkCO/FIQK0ZzSdpbhecCD2hPd0Hx9BJeepOq3jhq7FH24D+2N/JhVeUoc31/UD9H2JggEa0tbpg1NvcAgZTDEb5XK+Zmv8+dtoJlBc0S9SL1kUANFySVqKOgIZypVNoKis6MP1UFY0nJh/32WW4yI4EY9wOuBeyMEb4kSOGbdGVI1PZ5rxWwm7CfABNIhf/6h+BZGapZ0ZaRX8HxVyHShDG5Fsvj+lGdkrX2KUI9NXjpelu7aI8XX5F68Pjdi1dHtk8LLf45RHDEIUFxH5IsWRFbR77Pw0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wWtcH6WYFrDRK28hFLh7sYKiAuWJEne9YA5yB4CHw+o=;
- b=AF3Ypx1mGR3sYDmYB1pftlopFOC9dfentN962CgZtnEohxCoNHo0X146JpgTCxUJe1UGMRbB5DOiyNsgowR/9K2EaxxjbJIYOI00gfoEYbgi6jx82IgKLVThBFAvOIDWCBj5r7o0WfKqT5Glu7vw5kZpb51zgJ2wPjMXp+AdNPnV9ZX8d8yfmDHRupI2vWA0OOyht1l7udIhhduDxT7QjuZ3KPiJRT5CkHp7/rKc+jIcj2n2CgouhkHTBPsStmFr59qrZqnMGQze3vnGSqVbeudZU4c6TuDSamRfEizC3S0alxXLa9v66V0vbdAvtXDA9AdC/hCV+fGbnnnalQkaLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by PH7PR11MB5765.namprd11.prod.outlook.com (2603:10b6:510:139::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18; Fri, 12 Jan
- 2024 00:26:42 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6dc:cee5:b26b:7d93]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6dc:cee5:b26b:7d93%4]) with mapi id 15.20.7181.018; Fri, 12 Jan 2024
- 00:26:42 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"ardb@kernel.org" <ardb@kernel.org>, "hch@infradead.org" <hch@infradead.org>,
-	"Lutomirski, Andy" <luto@kernel.org>, "mhklinux@outlook.com"
-	<mhklinux@outlook.com>, "linux-coco@lists.linux.dev"
-	<linux-coco@lists.linux.dev>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "thomas.lendacky@amd.com"
-	<thomas.lendacky@amd.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"mingo@redhat.com" <mingo@redhat.com>, "seanjc@google.com"
-	<seanjc@google.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"Cui, Dexuan" <decui@microsoft.com>, "urezki@gmail.com" <urezki@gmail.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"peterz@infradead.org" <peterz@infradead.org>, "wei.liu@kernel.org"
-	<wei.liu@kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Rodel, Jorg"
-	<jroedel@suse.de>, "sathyanarayanan.kuppuswamy@linux.intel.com"
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, "lstoakes@gmail.com"
-	<lstoakes@gmail.com>, "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v3 3/3] x86/hyperv: Make encrypted/decrypted changes safe
- for load_unaligned_zeropad()
-Thread-Topic: [PATCH v3 3/3] x86/hyperv: Make encrypted/decrypted changes safe
- for load_unaligned_zeropad()
-Thread-Index: AQHaQAVUxqgHxuoJlkaDzPPbYPQuurDVW/yA
-Date: Fri, 12 Jan 2024 00:26:42 +0000
-Message-ID: <21f41af44fcc2ce52bdb40c7560fc7c9c0d56ec4.camel@intel.com>
-References: <20240105183025.225972-1-mhklinux@outlook.com>
-	 <20240105183025.225972-4-mhklinux@outlook.com>
-In-Reply-To: <20240105183025.225972-4-mhklinux@outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|PH7PR11MB5765:EE_
-x-ms-office365-filtering-correlation-id: 4b98b119-85d3-477a-2051-08dc1305267b
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 99i/dJD4hp8SFX13k8LmsIJPdarx4PqatwKdtxTzsYmPE5qHd2dF6RCfSboiLI1ZQWCG1jXqSNNN2x3DYdN9TXj6upIIMqT8X5dW3+z849NUCvKVZsQ8sJYPgKR23QFcClBpGGweAWmC5CNlxH1ve8AqhWDEWzBwevFhtsXgnAfVYxzH1xF5yB+8L1bFPSY7rWVfqtH2E8eeIRtdBwUv41rC7RIMSWibHwnOTsmYQaBZhQLWnrZBp24oumoUIOQr3ug8mPUxj6R/pJNHDeF2Ct21AP9vM+rBfUhXLdabxfAAmW3HqdTAoDZ133k7wCM5ijfkQfw6W7fDwQj/yGj0KQsv0vHhnHIfBPHqVF9qbemUDdBJqZ2ej+kaohx/pQ7db2hxfPI2OqDmK6kFjprUNcqDx8DjDr8KGFMQTSnfccNatTO0JX+BofIIvZnAsTJbzeujEiotMwhMVRji7Qu7+V1o1QOj61Y7nmwF5J84V9oInSE33AHVpqNkkLEyDRk0s5EIUxpUchuTTsZJVCnhkfsiWHchMkWa1jtVzUlX1ooyYaeVXBvasU67QdUQpjl90OzuvwhWysgmmQmeGssiRRoKTbJoVelCutlLYxXtAUGWqCW0m7izPDM4KUrU/d+XABe27qPQXlDS2D6f6H6ejQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(136003)(39860400002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(6506007)(8676002)(5660300002)(7416002)(4744005)(2906002)(122000001)(38100700002)(8936002)(36756003)(41300700001)(82960400001)(86362001)(26005)(66946007)(6512007)(6486002)(66446008)(2616005)(478600001)(66476007)(316002)(64756008)(76116006)(91956017)(66556008)(110136005)(38070700009)(921011)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?czN3S3oyOXpnNSttbW5uYW5hNEIrUWNOVWRMMFZ1alNMdWg1STlxVnlNUDVF?=
- =?utf-8?B?QVpBQ1pRZWxVMWhveFBKV1FRbzA3TVhCbHB5eTVydVlxZEgxVVdkRmpacDNC?=
- =?utf-8?B?b0pUY3FoMFZVU25DRklxN2FsRVF2Mkg4WjByRGJkUmljSXZtMnJLMEdoMk1V?=
- =?utf-8?B?L0dPaFMvYnlxWGNuVXVOcEFtaXQzUmRQQlN6SGRycGJ2R0w0Y2hmZVQ5WDVz?=
- =?utf-8?B?SlVWaUozeElJU0xYVG40SHRsanRLa20zVEVJMngyNzJxZG11NHpMSXNGRDZM?=
- =?utf-8?B?T3ptSzIrTTZiZTByV1BuSGdRNk5MZm41N25MWVRMK0pmQ1JGOGI4a3AzU0xj?=
- =?utf-8?B?Ui9veGhlK1BYRzExY3NYOXlGdWNJcEx3QWdRRGpFY210akJWWmpVRUdVR3Nm?=
- =?utf-8?B?VWpkN0JMWitLcC9XYi9tcWFXZDBCWWxrUTNLNll5WWZwWmphYXZrS0dlK3F4?=
- =?utf-8?B?NlVXTzJWSTBTRGFteGR6R1FQRHFRbVZmK3ZWbm9uV0g3STludm1tc0tzUng0?=
- =?utf-8?B?S1dISHJzVE8yTU5VWlJZbTRsSXUvdG9yNG1yTEJlbm4wM09KaVhKUVBCLzRZ?=
- =?utf-8?B?SGoybWRnZU9mWTEwb2lxM0NUcW94dk9uMFJYVk9mWEJzeXc5Wjlvc2Mzalpx?=
- =?utf-8?B?VW9tdFlnd3d1WlQxWFpvVUg2ekNkVDJxczRQNi9NTUR2ZHJaVDVOMFFTU2Za?=
- =?utf-8?B?b2hXUGxVWFZvb2IvbFZnanp0WlQ1d0I4WlhLdGc0VTdsaGFXWWIxRWxIekRP?=
- =?utf-8?B?ZmtlRlhyN3RER2xiZVNYZzBOOTA3dVg0RFcxenhNRmVxN3l4dWVTeWttZnVz?=
- =?utf-8?B?RTRTMG9FMkFIZGJUWFQ4UnFxL3dDYkh6Rmw0MUpZUVByeEFqREhMbXFPNFBi?=
- =?utf-8?B?LzVvczZnd2RaTHB2eEZBNkNYWUt5NVJQNFQxaU1nb0IzZWh5dUwwaGlRcWFB?=
- =?utf-8?B?bE1VL2tiNXhlaEFRMUlWdDk4TGpqT2tEVmVrUXpReng0Q1dDZktQQk9tdTU2?=
- =?utf-8?B?bW1yV2VhRmh5Y0E2U1JzYWRvUHhGMTNTeThoVGdZNFE3dFJQMUVVRXp0TE45?=
- =?utf-8?B?MWpjTW5hNlcrTnY5SUxvNHFNNTVmMjdsQUZWMW1pbnE0QTRDOVNuNlhZYVlS?=
- =?utf-8?B?NFEvSEdpRy9NZlE1cnJoT2pBQVVKL2lHWEJSM2M4blFsMit2VjlHa1pab2I1?=
- =?utf-8?B?ZDRTTFdJb3AvOURhaTZ1VnNacTNSa0VyVXZhNUdnTEhjVm04VDQ5Z1diYnl4?=
- =?utf-8?B?NStWS2h5YUUrb3VialB2QjdjMzR3MS9jbitrVGU5d2NweVZrZW1qeUZaMkFx?=
- =?utf-8?B?UnptdElkT0hVVDRvMWlaMEFRTWVSNm8xeko5VDdodTRMY3BhbituOFYzdEJp?=
- =?utf-8?B?cE9HWWk2VElaY0JXWEpNV1NKZ2sraHl1TThxZXpGQkxUT3RZcXczMGNFVEdG?=
- =?utf-8?B?R21pK29RaWhJa1NZYzZFNjdQQW5YOGwzTXk3L2R0VXNnM0w1ekNpaE5yNjNJ?=
- =?utf-8?B?ZnpFVjBOVTNvSmk1WkZFNnZsWEhaQ2lzME92YzdoRitBOGJhWnBiWng2V2dr?=
- =?utf-8?B?NnFLS25TdTZLdEx3S2ZvdjhzbWZZN3pSZm5ocnBJWlUwZE40cEpnSXNZSDdP?=
- =?utf-8?B?TG9QTDFhWllGbkpWZjc2WWNOSklsVGpuM1R5eEJSSnlkbGFFNEs5L2F1Nkdl?=
- =?utf-8?B?WTBEV0x1aFIyRURJWHAyRmdzd21GOEc5NWFsU0Y5Nmx2Y01YY1BGd0tKWjRr?=
- =?utf-8?B?WERubzJFSitCYWdZY2h4ZmIyZHN4R1lHa0ZHTGNMVHhKNFZ1MUtpUzlrTEE3?=
- =?utf-8?B?b0VQR0VUajBVeWNQdFBwOTBhTHBvZTJqRnNuQ3hBc3RMODg4UHRCSExaVG5S?=
- =?utf-8?B?ZXFuY0VXZEJLTHJ3c3BkdmRpV2pOcXVCOEExb2NteTAxc3dpdnZrcS9sVENy?=
- =?utf-8?B?bTcyT2JBd1EzeFl2ZWlITWhNOG90Q09uc3NMYmpBQlZNa1NmUXBCM1E5OGp1?=
- =?utf-8?B?T2IvS3BoTHNMMWtsWEdGOFI3blJyOXpsTDBDczh3R0NOcmZQc29zUjlld2sr?=
- =?utf-8?B?YWd1WnBUNDNWY1R3VHBLbU40SjI0a0UvY1NpUjZ1cUR3QXYwQTdPNWcydlFz?=
- =?utf-8?B?THhhQk44cW94cFNqc2ZwNEJuenBXbk1maFlPc2ZRQ2M4NVovMUZNRllDRWV0?=
- =?utf-8?B?Y1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3F43C51E914DCD48B6989FBA1094B814@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+   d="scan'208";a="906140356"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 11 Jan 2024 16:27:13 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rO5OB-0008tO-1e;
+	Fri, 12 Jan 2024 00:27:11 +0000
+Date: Fri, 12 Jan 2024 08:27:03 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jassi Brar <jaswinder.singh@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Felipe Balbi <balbi@kernel.org>
+Subject: drivers/usb/gadget/udc/max3420_udc.c:555:41: sparse: sparse:
+ restricted __le16 degrades to integer
+Message-ID: <202401120851.7BJ9MPCT-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b98b119-85d3-477a-2051-08dc1305267b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 00:26:42.0960
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8xSBKdTGT5VIOr4yBY8xhpP7CZFw8HtcfRAFZ+L8g9x+5N/Bv2IHjilQiEeOk22sB/4uGYf3ygTLgRtmdAZzhe3CK5WoxHiB9q8poaeF82Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5765
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-T24gRnJpLCAyMDI0LTAxLTA1IGF0IDEwOjMwIC0wODAwLCBtaGtlbGxleTU4QGdtYWlsLmNvbSB3
-cm90ZToNCj4gwqAgKiBodl92dG9tX3NldF9ob3N0X3Zpc2liaWxpdHkgLSBTZXQgc3BlY2lmaWVk
-IG1lbW9yeSB2aXNpYmxlIHRvDQo+IGhvc3QuDQo+IMKgICoNCj4gQEAgLTUyMSw3ICs1NDcsNyBA
-QCBzdGF0aWMgYm9vbCBodl92dG9tX3NldF9ob3N0X3Zpc2liaWxpdHkodW5zaWduZWQNCj4gbG9u
-ZyBrYnVmZmVyLCBpbnQgcGFnZWNvdW50LCBibw0KPiDCoA0KPiDCoMKgwqDCoMKgwqDCoMKgcGZu
-X2FycmF5ID0ga21hbGxvYyhIVl9IWVBfUEFHRV9TSVpFLCBHRlBfS0VSTkVMKTsNCj4gwqDCoMKg
-wqDCoMKgwqDCoGlmICghcGZuX2FycmF5KQ0KPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgcmV0dXJuIGZhbHNlOw0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBl
-cnJfc2V0X21lbW9yeV9wOw0KPiDCoA0KDQpJZiBrbWFsbG9jKCkgZmFpbHMgaGVyZSwgYW5kIHNl
-dF9tZW1vcnlfcCgpIHN1Y2NlZWRzIGJlbG93LCB0aGVuDQpodl92dG9tX3NldF9ob3N0X3Zpc2li
-aWxpdHkoKSByZXR1cm5zIHRydWUsIGJ1dCBza2lwcyBhbGwgdGhlDQpodl9tYXJrX2dwYV92aXNp
-YmlsaXR5KCkgd29yay4gU2hvdWxkbid0IGl0IHJldHVybiBmYWxzZT8NCg==
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   457e4f99765cc41d0b90e1385f51b848d6a921d0
+commit: 48ba02b2e2b1a1c80718e93fefe99c8319597c4a usb: gadget: add udc driver for max3420
+date:   3 years, 10 months ago
+config: i386-randconfig-061-20240106 (https://download.01.org/0day-ci/archive/20240112/202401120851.7BJ9MPCT-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401120851.7BJ9MPCT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401120851.7BJ9MPCT-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/usb/gadget/udc/max3420_udc.c:555:41: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/gadget/udc/max3420_udc.c:556:31: sparse: sparse: restricted __le16 degrades to integer
+>> drivers/usb/gadget/udc/max3420_udc.c:570:16: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [assigned] [usertype] status @@     got restricted __le16 [usertype] @@
+   drivers/usb/gadget/udc/max3420_udc.c:570:16: sparse:     expected unsigned short [assigned] [usertype] status
+   drivers/usb/gadget/udc/max3420_udc.c:570:16: sparse:     got restricted __le16 [usertype]
+   drivers/usb/gadget/udc/max3420_udc.c:588:31: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/gadget/udc/max3420_udc.c:602:32: sparse: sparse: restricted __le16 degrades to integer
+>> drivers/usb/gadget/udc/max3420_udc.c:631:29: sparse: sparse: cast from restricted __le16
+   drivers/usb/gadget/udc/max3420_udc.c:632:29: sparse: sparse: cast from restricted __le16
+   drivers/usb/gadget/udc/max3420_udc.c:633:30: sparse: sparse: cast from restricted __le16
+
+vim +555 drivers/usb/gadget/udc/max3420_udc.c
+
+   538	
+   539	static void max3420_getstatus(struct max3420_udc *udc)
+   540	{
+   541		struct max3420_ep *ep;
+   542		u16 status = 0;
+   543	
+   544		switch (udc->setup.bRequestType & USB_RECIP_MASK) {
+   545		case USB_RECIP_DEVICE:
+   546			/* Get device status */
+   547			status = udc->gadget.is_selfpowered << USB_DEVICE_SELF_POWERED;
+   548			status |= (udc->remote_wkp << USB_DEVICE_REMOTE_WAKEUP);
+   549			break;
+   550		case USB_RECIP_INTERFACE:
+   551			if (udc->driver->setup(&udc->gadget, &udc->setup) < 0)
+   552				goto stall;
+   553			break;
+   554		case USB_RECIP_ENDPOINT:
+ > 555			ep = &udc->ep[udc->setup.wIndex & USB_ENDPOINT_NUMBER_MASK];
+   556			if (udc->setup.wIndex & USB_DIR_IN) {
+   557				if (!ep->ep_usb.caps.dir_in)
+   558					goto stall;
+   559			} else {
+   560				if (!ep->ep_usb.caps.dir_out)
+   561					goto stall;
+   562			}
+   563			if (ep->halted)
+   564				status = 1 << USB_ENDPOINT_HALT;
+   565			break;
+   566		default:
+   567			goto stall;
+   568		}
+   569	
+ > 570		status = cpu_to_le16(status);
+   571		spi_wr_buf(udc, MAX3420_REG_EP0FIFO, &status, 2);
+   572		spi_wr8_ack(udc, MAX3420_REG_EP0BC, 2, 1);
+   573		return;
+   574	stall:
+   575		dev_err(udc->dev, "Can't respond to getstatus request\n");
+   576		spi_wr8(udc, MAX3420_REG_EPSTALLS, STLEP0IN | STLEP0OUT | STLSTAT);
+   577	}
+   578	
+   579	static void max3420_set_clear_feature(struct max3420_udc *udc)
+   580	{
+   581		struct max3420_ep *ep;
+   582		int set = udc->setup.bRequest == USB_REQ_SET_FEATURE;
+   583		unsigned long flags;
+   584		int id;
+   585	
+   586		switch (udc->setup.bRequestType) {
+   587		case USB_RECIP_DEVICE:
+   588			if (udc->setup.wValue != USB_DEVICE_REMOTE_WAKEUP)
+   589				break;
+   590	
+   591			if (udc->setup.bRequest == USB_REQ_SET_FEATURE)
+   592				udc->remote_wkp = 1;
+   593			else
+   594				udc->remote_wkp = 0;
+   595	
+   596			return spi_ack_ctrl(udc);
+   597	
+   598		case USB_RECIP_ENDPOINT:
+   599			if (udc->setup.wValue != USB_ENDPOINT_HALT)
+   600				break;
+   601	
+   602			id = udc->setup.wIndex & USB_ENDPOINT_NUMBER_MASK;
+   603			ep = &udc->ep[id];
+   604	
+   605			spin_lock_irqsave(&ep->lock, flags);
+   606			ep->todo &= ~STALL_EP;
+   607			if (set)
+   608				ep->todo |= STALL;
+   609			else
+   610				ep->todo |= UNSTALL;
+   611			spin_unlock_irqrestore(&ep->lock, flags);
+   612	
+   613			spi_max3420_stall(ep);
+   614			return;
+   615		default:
+   616			break;
+   617		}
+   618	
+   619		dev_err(udc->dev, "Can't respond to SET/CLEAR FEATURE\n");
+   620		spi_wr8(udc, MAX3420_REG_EPSTALLS, STLEP0IN | STLEP0OUT | STLSTAT);
+   621	}
+   622	
+   623	static void max3420_handle_setup(struct max3420_udc *udc)
+   624	{
+   625		struct usb_ctrlrequest setup;
+   626		u8 addr;
+   627	
+   628		spi_rd_buf(udc, MAX3420_REG_SUDFIFO, (void *)&setup, 8);
+   629	
+   630		udc->setup = setup;
+ > 631		udc->setup.wValue = cpu_to_le16(setup.wValue);
+   632		udc->setup.wIndex = cpu_to_le16(setup.wIndex);
+   633		udc->setup.wLength = cpu_to_le16(setup.wLength);
+   634	
+   635		switch (udc->setup.bRequest) {
+   636		case USB_REQ_GET_STATUS:
+   637			/* Data+Status phase form udc */
+   638			if ((udc->setup.bRequestType &
+   639					(USB_DIR_IN | USB_TYPE_MASK)) !=
+   640					(USB_DIR_IN | USB_TYPE_STANDARD)) {
+   641				break;
+   642			}
+   643			return max3420_getstatus(udc);
+   644		case USB_REQ_SET_ADDRESS:
+   645			/* Status phase from udc */
+   646			if (udc->setup.bRequestType != (USB_DIR_OUT |
+   647					USB_TYPE_STANDARD | USB_RECIP_DEVICE)) {
+   648				break;
+   649			}
+   650			addr = spi_rd8_ack(udc, MAX3420_REG_FNADDR, 1);
+   651			dev_dbg(udc->dev, "Assigned Address=%d\n", udc->setup.wValue);
+   652			return;
+   653		case USB_REQ_CLEAR_FEATURE:
+   654		case USB_REQ_SET_FEATURE:
+   655			/* Requests with no data phase, status phase from udc */
+   656			if ((udc->setup.bRequestType & USB_TYPE_MASK)
+   657					!= USB_TYPE_STANDARD)
+   658				break;
+   659			return max3420_set_clear_feature(udc);
+   660		default:
+   661			break;
+   662		}
+   663	
+   664		if (udc->driver->setup(&udc->gadget, &setup) < 0) {
+   665			/* Stall EP0 */
+   666			spi_wr8(udc, MAX3420_REG_EPSTALLS,
+   667				STLEP0IN | STLEP0OUT | STLSTAT);
+   668		}
+   669	}
+   670	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
