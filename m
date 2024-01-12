@@ -1,387 +1,193 @@
-Return-Path: <linux-kernel+bounces-24825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 513F782C308
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0220482C30D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8EB61F250F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:48:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BD81F2506B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FB4768F3;
-	Fri, 12 Jan 2024 15:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796576EB6E;
+	Fri, 12 Jan 2024 15:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aO/cYc46"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UwfzX2mE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9709768E0;
-	Fri, 12 Jan 2024 15:46:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAA9C43399;
-	Fri, 12 Jan 2024 15:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79506EB4E;
+	Fri, 12 Jan 2024 15:48:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F028DC433F1;
+	Fri, 12 Jan 2024 15:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705074408;
-	bh=ghE3NvV6Osi8mVKGPqrvdRHt1SQMGOctvMN/yTIyii8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aO/cYc46DIMH3mlv7H3k3jWKxDvCCCttXDIa+56/NUh/ybmPJ0lMTmI/VO+ziEBHK
-	 xFrxNxtFKQ2S0hr9f31ZYD4S9NviEMqUVtjmBT9n0I+qQBt1L8T46YWtgZbUEKS9NF
-	 8EbPE9hpvs265Cqa+mq9q5EbXRc1Uw7WK4HCywWm3eBwXUBR1u8tI1RiwTkc/tNOi0
-	 Vk6cATHsIKHWJ2nsXxNHiDEvTcqY9bCrdqi/tpe6CkiUHuCWa/6BItjDe8YgSJwmJc
-	 +d2OdEXmySVgUwog8t+p91l/NFwOecEXeVIE5XQlO4z6+U/cdaMKdGLVyZwrM69Wyh
-	 l5JhhgIz4bIag==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: [PATCH 7/7] rcu/exp: Remove rcu_par_gp_wq
-Date: Fri, 12 Jan 2024 16:46:21 +0100
-Message-Id: <20240112154621.261852-8-frederic@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240112154621.261852-1-frederic@kernel.org>
-References: <20240112154621.261852-1-frederic@kernel.org>
+	s=k20201202; t=1705074526;
+	bh=LjNh32+q3C0+BqK8BlI5tSSM8lb3tGzw35+W/e7lDGA=;
+	h=Date:From:To:Subject:From;
+	b=UwfzX2mEQlMs7lKRKyPel2evCsbDKSF3FUJWhz2ja/dq05Zf8E2LeyAKqtghulLpq
+	 ZdITG9xio8wsxb3aEbE66gvbl7xwWfvDC8zdLdBfbo6nDoRr5K/2FYDwTMSP+1aTXO
+	 yUapVQDcRnDBzXNxRRXJVIhKYuatcVQScCr1aNn99StcNxluNspXVxAkY7wkvGptIm
+	 oD7706f5h6O5euzgYr+ywxiZRoCebK5twcPV36/yj6KaSt08ogPP1B41RPoh9XIAT/
+	 zB0rf6PqQbiPbnenPeiqIGWpAWP/2mdtPBD3Fp/wfdd8IEze9+H8kGf9NSFQSPu3qL
+	 GoUDR079kJFZw==
+Date: Fri, 12 Jan 2024 16:48:41 +0100
+From: Helge Deller <deller@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Dave Airlie <airlied@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [GIT PULL] fbdev fixes and updates for v6.8-rc1
+Message-ID: <ZaFfWY-bB_b9dGrO@carbonx1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-TREE04 running on short iterations can produce writer stalls of the
-following kind:
+Hi Linus,
 
- ??? Writer stall state RTWS_EXP_SYNC(4) g3968 f0x0 ->state 0x2 cpu 0
- task:rcu_torture_wri state:D stack:14568 pid:83    ppid:2      flags:0x00004000
- Call Trace:
-  <TASK>
-  __schedule+0x2de/0x850
-  ? trace_event_raw_event_rcu_exp_funnel_lock+0x6d/0xb0
-  schedule+0x4f/0x90
-  synchronize_rcu_expedited+0x430/0x670
-  ? __pfx_autoremove_wake_function+0x10/0x10
-  ? __pfx_synchronize_rcu_expedited+0x10/0x10
-  do_rtws_sync.constprop.0+0xde/0x230
-  rcu_torture_writer+0x4b4/0xcd0
-  ? __pfx_rcu_torture_writer+0x10/0x10
-  kthread+0xc7/0xf0
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x2f/0x50
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork_asm+0x1b/0x30
-  </TASK>
+please pull the fbdev changes for kernel 6.8-rc1.
 
-Waiting for an expedited grace period and polling for an expedited
-grace period both are operations that internally rely on the same
-workqueue performing necessary asynchronous work.
+Three fbdev drivers (~8500 lines of code) will be dropped:
+The Carillo Ranch fbdev driver is for an Intel product which was never shipped,
+and for the intelfb and the amba-clcd drivers the drm drivers can be used
+instead. 
 
-However, a dependency chain is involved between those two operations,
-as depicted below:
+The other code changes are minor:
+Some fb_deferred_io flushing fixes, imxfb margin fixes and stifb cleanups.
 
-       ====== CPU 0 =======                          ====== CPU 1 =======
+Please note that there is a merge conflict with the drm tree for those files:
+- drivers/video/fbdev/amba-clcd.c
+- drivers/video/fbdev/vermilion/vermilion.c
+They were modified in the drm tree, but deleted in the fbdev tree.
+In case you don't want to deal with this upcoming merge conflict I offer
+to resend a rebased pull request after you pulled drm.
 
-                                                     synchronize_rcu_expedited()
-                                                         exp_funnel_lock()
-                                                             mutex_lock(&rcu_state.exp_mutex);
-    start_poll_synchronize_rcu_expedited
-        queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-                                                         synchronize_rcu_expedited_queue_work()
-                                                             queue_work(rcu_gp_wq, &rew->rew_work);
-                                                         wait_event() // A, wait for &rew->rew_work completion
-                                                         mutex_unlock() // B
-    //======> switch to kworker
+Thanks!
+Helge
 
-    sync_rcu_do_polled_gp() {
-        synchronize_rcu_expedited()
-            exp_funnel_lock()
-                mutex_lock(&rcu_state.exp_mutex); // C, wait B
-                ....
-    } // D
+----------------------------------------------------------------
+The following changes since commit de927f6c0b07d9e698416c5b287c521b07694cac:
 
-Since workqueues are usually implemented on top of several kworkers
-handling the queue concurrently, the above situation wouldn't deadlock
-most of the time because A then doesn't depend on D. But in case of
-memory stress, a single kworker may end up handling alone all the works
-in a serialized way. In that case the above layout becomes a problem
-because A then waits for D, closing a circular dependency:
+  Merge tag 's390-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2024-01-10 18:18:20 -0800)
 
-	A -> D -> C -> B -> A
+are available in the Git repository at:
 
-This however only happens when CONFIG_RCU_EXP_KTHREAD=n. Indeed
-synchronize_rcu_expedited() is otherwise implemented on top of a kthread
-worker while polling still relies on rcu_gp_wq workqueue, breaking the
-above circular dependency chain.
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git tags/fbdev-for-6.8-rc1
 
-Fix this with making expedited grace period to always rely on kthread
-worker. The workqueue based implementation is essentially a duplicate
-anyway now that the per-node initialization is performed by per-node
-kthread workers.
+for you to fetch changes up to 689237ab37c59b9909bc9371d7fece3081683fba:
 
-Meanwhile the CONFIG_RCU_EXP_KTHREAD switch is still kept around to
-manage the scheduler policy of these kthread workers.
+  fbdev/intelfb: Remove driver (2024-01-12 12:38:37 +0100)
 
-Reported-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Suggested-by: Joel Fernandes <joel@joelfernandes.org>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/rcu.h      |  4 ---
- kernel/rcu/tree.c     | 40 ++++--------------------
- kernel/rcu/tree.h     |  6 +---
- kernel/rcu/tree_exp.h | 73 +------------------------------------------
- 4 files changed, 8 insertions(+), 115 deletions(-)
+----------------------------------------------------------------
+fbdev fixes and cleanups for 6.8-rc1:
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 4bc8cd6d461e..4e65a92e528e 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -623,11 +623,7 @@ int rcu_get_gp_kthreads_prio(void);
- void rcu_fwd_progress_check(unsigned long j);
- void rcu_force_quiescent_state(void);
- extern struct workqueue_struct *rcu_gp_wq;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- extern struct kthread_worker *rcu_exp_gp_kworker;
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--extern struct workqueue_struct *rcu_par_gp_wq;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- void rcu_gp_slow_register(atomic_t *rgssp);
- void rcu_gp_slow_unregister(atomic_t *rgssp);
- #endif /* #else #ifdef CONFIG_TINY_RCU */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 10fc2551d160..944e55085262 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4405,7 +4405,6 @@ rcu_boot_init_percpu_data(int cpu)
- 	rcu_boot_init_nocb_percpu_data(rdp);
- }
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- struct kthread_worker *rcu_exp_gp_kworker;
- 
- static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
-@@ -4425,7 +4424,9 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
- 		return;
- 	}
- 	WRITE_ONCE(rnp->exp_kworker, kworker);
--	sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
-+
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
- }
- 
- static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
-@@ -4449,39 +4450,14 @@ static void __init rcu_start_exp_gp_kworker(void)
- 		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
--	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
--}
--
--static inline void rcu_alloc_par_gp_wq(void)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--struct workqueue_struct *rcu_par_gp_wq;
--
--static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
--{
--}
--
--static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
--{
--	return NULL;
--}
--
--static void __init rcu_start_exp_gp_kworker(void)
--{
--}
- 
--static inline void rcu_alloc_par_gp_wq(void)
--{
--	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
--	WARN_ON(!rcu_par_gp_wq);
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
- }
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- 
- static void rcu_spawn_rnp_kthreads(struct rcu_node *rnp)
- {
--	if ((IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) ||
--	     IS_ENABLED(CONFIG_RCU_BOOST)) && rcu_scheduler_fully_active) {
-+	if (rcu_scheduler_fully_active) {
- 		mutex_lock(&rnp->kthread_mutex);
- 		rcu_spawn_one_boost_kthread(rnp);
- 		rcu_spawn_exp_par_gp_kworker(rnp);
-@@ -4565,9 +4541,6 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
- 	struct rcu_node *rnp;
- 	struct task_struct *task_boost, *task_exp;
- 
--	if (!IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) && !IS_ENABLED(CONFIG_RCU_BOOST))
--		return;
--
- 	rdp = per_cpu_ptr(&rcu_data, cpu);
- 	rnp = rdp->mynode;
- 
-@@ -5256,7 +5229,6 @@ void __init rcu_init(void)
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
--	rcu_alloc_par_gp_wq();
- 
- 	/* Fill in default value for rcutree.qovld boot parameter. */
- 	/* -After- the rcu_node ->lock fields are initialized! */
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index e173808f486f..f35e47f24d80 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -21,14 +21,10 @@
- 
- #include "rcu_segcblist.h"
- 
--/* Communicate arguments to a workqueue handler. */
-+/* Communicate arguments to a kthread worker handler. */
- struct rcu_exp_work {
- 	unsigned long rew_s;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- 	struct kthread_work rew_work;
--#else
--	struct work_struct rew_work;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- };
- 
- /* RCU's kthread states for tracing. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 0318a8a062d5..6b83537480b1 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -418,7 +418,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 
- static void rcu_exp_sel_wait_wake(unsigned long s);
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
- {
- 	struct rcu_exp_work *rewp =
-@@ -470,69 +469,6 @@ static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew
- 	kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
- }
- 
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp =
--		container_of(wp, struct rcu_exp_work, rew_work);
--
--	__sync_rcu_exp_select_node_cpus(rewp);
--}
--
--static inline bool rcu_exp_worker_started(void)
--{
--	return !!READ_ONCE(rcu_gp_wq);
--}
--
--static inline bool rcu_exp_par_worker_started(struct rcu_node *rnp)
--{
--	return !!READ_ONCE(rcu_par_gp_wq);
--}
--
--static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
--{
--	int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
--
--	INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
--	/* If all offline, queue the work on an unbound CPU. */
--	if (unlikely(cpu > rnp->grphi - rnp->grplo))
--		cpu = WORK_CPU_UNBOUND;
--	else
--		cpu += rnp->grplo;
--	queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
--}
--
--static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
--{
--	flush_work(&rnp->rew.rew_work);
--}
--
--/*
-- * Work-queue handler to drive an expedited grace period forward.
-- */
--static void wait_rcu_exp_gp(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp;
--
--	rewp = container_of(wp, struct rcu_exp_work, rew_work);
--	rcu_exp_sel_wait_wake(rewp->rew_s);
--}
--
--static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
--{
--	INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
--	queue_work(rcu_gp_wq, &rew->rew_work);
--}
--
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--	destroy_work_on_stack(&rew->rew_work);
--}
--#endif /* CONFIG_RCU_EXP_KTHREAD */
--
- /*
-  * Select the nodes that the upcoming expedited grace period needs
-  * to wait for.
-@@ -965,7 +901,6 @@ static void rcu_exp_print_detail_task_stall_rnp(struct rcu_node *rnp)
-  */
- void synchronize_rcu_expedited(void)
- {
--	bool use_worker;
- 	unsigned long flags;
- 	struct rcu_exp_work rew;
- 	struct rcu_node *rnp;
-@@ -976,9 +911,6 @@ void synchronize_rcu_expedited(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
--	use_worker = (rcu_scheduler_active != RCU_SCHEDULER_INIT) &&
--		      rcu_exp_worker_started();
--
- 	/* Is the state is such that the call is a grace period? */
- 	if (rcu_blocking_is_gp()) {
- 		// Note well that this code runs with !PREEMPT && !SMP.
-@@ -1008,7 +940,7 @@ void synchronize_rcu_expedited(void)
- 		return;  /* Someone else did our work for us. */
- 
- 	/* Ensure that load happens before action based on it. */
--	if (unlikely(!use_worker)) {
-+	if (unlikely((rcu_scheduler_active == RCU_SCHEDULER_INIT) || !rcu_exp_worker_started())) {
- 		/* Direct call during scheduler init and early_initcalls(). */
- 		rcu_exp_sel_wait_wake(s);
- 	} else {
-@@ -1025,9 +957,6 @@ void synchronize_rcu_expedited(void)
- 
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
--
--	if (likely(use_worker))
--		synchronize_rcu_expedited_destroy_work(&rew);
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
- 
--- 
-2.34.1
+- Remove intelfb fbdev driver (Thomas Zimmermann)
+- Remove amba-clcd fbdev driver (Linus Walleij)
+- Remove vmlfb Carillo Ranch fbdev driver (Matthew Wilcox)
+- fb_deferred_io flushing fixes (Nam Cao)
+- imxfb code fixes and cleanups (Dario Binacchi)
+- stifb primary screen detection cleanups (Thomas Zimmermann)
 
+----------------------------------------------------------------
+Colin Ian King (1):
+      video/logo: use %u format specifier for unsigned int values
+
+Dario Binacchi (11):
+      fbdev: imxfb: fix left margin setting
+      fbdev: imxfb: move PCR bitfields near their offset
+      fbdev: imxfb: use BIT, FIELD_{GET,PREP} and GENMASK macros
+      fbdev: imxfb: replace some magic numbers with constants
+      fbdev: imxfb: add missing SPDX tag
+      fbdev: imxfb: drop ftrace-like logging
+      fbdev: imxfb: add missing spaces after ','
+      fbdev: imxfb: Fix style warnings relating to printk()
+      fbdev: imxfb: use __func__ for function name
+      fbdev: imxfb: add '*/' on a separate line in block comment
+      fbdev: mmp: Fix typo and wording in code comment
+
+Linus Walleij (1):
+      fbdev: amba-clcd: Delete the old CLCD driver
+
+Matthew Wilcox (Oracle) (1):
+      fbdev: Remove support for Carillo Ranch driver
+
+Nam Cao (2):
+      fbdev: flush deferred work in fb_deferred_io_fsync()
+      fbdev: flush deferred IO before closing
+
+Randy Dunlap (1):
+      fbdev: hgafb: fix kernel-doc comments
+
+Stanislav Kinsburskii (1):
+      fbdev: fsl-diu-fb: Fix sparse warning due to virt_to_phys() prototype change
+
+Thomas Zimmermann (10):
+      video/sticore: Store ROM device in STI struct
+      fbdev/stifb: Allocate fb_info instance with framebuffer_alloc()
+      arch/parisc: Detect primary video device from device instance
+      video/sticore: Remove info field from STI struct
+      fbdev/sis: Remove dependency on screen_info
+      drm/hyperv: Remove firmware framebuffers with aperture helper
+      fbdev/hyperv_fb: Remove firmware framebuffers with aperture helpers
+      firmware/sysfb: Clear screen_info state after consuming it
+      fbdev/hyperv_fb: Do not clear global screen_info
+      fbdev/intelfb: Remove driver
+
+ Documentation/fb/index.rst                         |    1 -
+ Documentation/fb/intelfb.rst                       |  155 --
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    1 -
+ MAINTAINERS                                        |   12 -
+ arch/parisc/video/fbdev.c                          |    2 +-
+ drivers/Makefile                                   |    3 +-
+ drivers/firmware/sysfb.c                           |   14 +-
+ drivers/gpu/drm/hyperv/hyperv_drm_drv.c            |    8 +-
+ drivers/video/backlight/Kconfig                    |    7 -
+ drivers/video/backlight/Makefile                   |    1 -
+ drivers/video/backlight/cr_bllcd.c                 |  264 ---
+ drivers/video/fbdev/Kconfig                        |   72 -
+ drivers/video/fbdev/Makefile                       |    2 -
+ drivers/video/fbdev/amba-clcd.c                    |  984 ---------
+ drivers/video/fbdev/core/fb_defio.c                |    8 +-
+ drivers/video/fbdev/fsl-diu-fb.c                   |    2 +-
+ drivers/video/fbdev/hgafb.c                        |   13 +-
+ drivers/video/fbdev/hyperv_fb.c                    |   20 +-
+ drivers/video/fbdev/imxfb.c                        |  179 +-
+ drivers/video/fbdev/intelfb/Makefile               |    8 -
+ drivers/video/fbdev/intelfb/intelfb.h              |  382 ----
+ drivers/video/fbdev/intelfb/intelfb_i2c.c          |  209 --
+ drivers/video/fbdev/intelfb/intelfbdrv.c           | 1680 ----------------
+ drivers/video/fbdev/intelfb/intelfbhw.c            | 2115 --------------------
+ drivers/video/fbdev/intelfb/intelfbhw.h            |  609 ------
+ drivers/video/fbdev/mmp/hw/mmp_spi.c               |    2 +-
+ drivers/video/fbdev/sis/sis_main.c                 |   37 -
+ drivers/video/fbdev/stifb.c                        |  109 +-
+ drivers/video/fbdev/vermilion/Makefile             |    6 -
+ drivers/video/fbdev/vermilion/cr_pll.c             |  195 --
+ drivers/video/fbdev/vermilion/vermilion.c          | 1173 -----------
+ drivers/video/fbdev/vermilion/vermilion.h          |  245 ---
+ drivers/video/logo/pnmtologo.c                     |    6 +-
+ drivers/video/sticore.c                            |    5 +
+ include/linux/amba/clcd-regs.h                     |   87 -
+ include/linux/amba/clcd.h                          |  290 ---
+ include/video/sticore.h                            |    6 +-
+ 37 files changed, 208 insertions(+), 8704 deletions(-)
+ delete mode 100644 Documentation/fb/intelfb.rst
+ delete mode 100644 drivers/video/backlight/cr_bllcd.c
+ delete mode 100644 drivers/video/fbdev/amba-clcd.c
+ delete mode 100644 drivers/video/fbdev/intelfb/Makefile
+ delete mode 100644 drivers/video/fbdev/intelfb/intelfb.h
+ delete mode 100644 drivers/video/fbdev/intelfb/intelfb_i2c.c
+ delete mode 100644 drivers/video/fbdev/intelfb/intelfbdrv.c
+ delete mode 100644 drivers/video/fbdev/intelfb/intelfbhw.c
+ delete mode 100644 drivers/video/fbdev/intelfb/intelfbhw.h
+ delete mode 100644 drivers/video/fbdev/vermilion/Makefile
+ delete mode 100644 drivers/video/fbdev/vermilion/cr_pll.c
+ delete mode 100644 drivers/video/fbdev/vermilion/vermilion.c
+ delete mode 100644 drivers/video/fbdev/vermilion/vermilion.h
+ delete mode 100644 include/linux/amba/clcd-regs.h
+ delete mode 100644 include/linux/amba/clcd.h
 
