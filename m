@@ -1,132 +1,131 @@
-Return-Path: <linux-kernel+bounces-24388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B86E082BBE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:40:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 206BA82BBE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67414285C7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:40:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFBAC1F250C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:41:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1645D730;
-	Fri, 12 Jan 2024 07:40:38 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC6F5D726
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TBD2G4yTNzSnT4;
-	Fri, 12 Jan 2024 15:39:34 +0800 (CST)
-Received: from dggpeml500003.china.huawei.com (unknown [7.185.36.200])
-	by mail.maildlp.com (Postfix) with ESMTPS id BE6651402C7;
-	Fri, 12 Jan 2024 15:40:28 +0800 (CST)
-Received: from [10.174.177.173] (10.174.177.173) by
- dggpeml500003.china.huawei.com (7.185.36.200) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Jan 2024 15:40:28 +0800
-Message-ID: <44fa61a6-9ceb-0ebb-141f-0e2e703db47d@huawei.com>
-Date: Fri, 12 Jan 2024 15:40:27 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505025D733;
+	Fri, 12 Jan 2024 07:41:04 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E962E5B1E4;
+	Fri, 12 Jan 2024 07:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8CxrusI7aBlXHsEAA--.13273S3;
+	Fri, 12 Jan 2024 15:40:56 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx34cE7aBl_V8TAA--.50255S3;
+	Fri, 12 Jan 2024 15:40:53 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Skip callback tests if jit is
+ disabled in test_verifier
+To: Hou Tao <houtao@huaweicloud.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+References: <20240112015700.19974-1-yangtiezhu@loongson.cn>
+ <1e919c98-2fc4-bd03-df19-97c4e8a24649@huaweicloud.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+ John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <1930b1eb-afff-8509-e233-26c28e7622fd@loongson.cn>
+Date: Fri, 12 Jan 2024 15:40:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH] tick/broadcast-hrtimer: Prevent the timer device on
- broadcast duty CPU from being disabled
-Content-Language: en-US
-To: <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>
-CC: <liwei391@huawei.com>, <wangxiongfeng2@huawei.com>, <frederic@kernel.org>,
-	<mingo@kernel.org>
-References: <20231218025844.55675-1-liaoyu15@huawei.com>
-From: Yu Liao <liaoyu15@huawei.com>
-In-Reply-To: <20231218025844.55675-1-liaoyu15@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1e919c98-2fc4-bd03-df19-97c4e8a24649@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500003.china.huawei.com (7.185.36.200)
+X-CM-TRANSID:AQAAf8Bx34cE7aBl_V8TAA--.50255S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7uFW5uFWDJry3uF1kJrW8AFc_yoW8Xr4fpF
+	WDJFsFyFWkXryrKrWqqw17JF93trWkJryqyFZIgayUJwnxZr9YqF18KryF9FZrZryDua4I
+	vF48uF9xu3y3JacCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
+	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1
+	WlkUUUUU=
 
-Hi Thomas,
 
-Kindly ping..
 
-On 2023/12/18 10:58, Yu Liao wrote:
-> It was found that running the LTP hotplug stress test on a aarch64
-> system could produce rcu_sched stall warnings.
-> 
-> The issue is the following:
-> 
-> CPU1 (owns the broadcast hrtimer)	CPU2
-> 
-> 				tick_broadcast_enter()
-> 				//shut down local timer device
-> 				...
-> 				tick_broadcast_exit()
-> 				//exits with tick_broadcast_force_mask set,
-> 				timer device remains disabled
-> 
-> 				initiates offlining of CPU1
-> take_cpu_down()
-> //CPU1 shuts down and does
-> not send broadcast IPI anymore
-> 				takedown_cpu()
-> 				  hotplug_cpu__broadcast_tick_pull()
-> 				  //move broadcast hrtimer to this CPU
-> 				    clockevents_program_event()
-> 				      bc_set_next()
-> 					hrtimer_start()
-> 					//does not call hrtimer_reprogram()
-> 					to program timer device if expires
-> 					equals dev->next_event, so the timer
-> 					device remains disabled.
-> 
-> CPU2 takes over the broadcast duty but local timer device is disabled,
-> causing many CPUs to become stuck.
-> 
-> Fix this by calling tick_program_event() to reprogram the local timer
-> device in this scenario.
-> 
-> Signed-off-by: Yu Liao <liaoyu15@huawei.com>
-> ---
->  kernel/time/tick-broadcast-hrtimer.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/time/tick-broadcast-hrtimer.c b/kernel/time/tick-broadcast-hrtimer.c
-> index e28f9210f8a1..6a4a612581fb 100644
-> --- a/kernel/time/tick-broadcast-hrtimer.c
-> +++ b/kernel/time/tick-broadcast-hrtimer.c
-> @@ -42,10 +42,22 @@ static int bc_shutdown(struct clock_event_device *evt)
->   */
->  static int bc_set_next(ktime_t expires, struct clock_event_device *bc)
->  {
-> +	ktime_t next_event = this_cpu_ptr(&tick_cpu_device)->evtdev->next_event;
-> +
->  	/*
-> -	 * This is called either from enter/exit idle code or from the
-> -	 * broadcast handler. In all cases tick_broadcast_lock is held.
-> -	 *
-> +	 * This can be called from CPU offline operation to move broadcast
-> +	 * assignment. If tick_broadcast_force_mask is set, the CPU local
-> +	 * timer device may be disabled. And hrtimer_reprogram() will not
-> +	 * called if the timer is not the first expiring timer. Reprogram
-> +	 * the cpu local timer device to ensure we can take over the
-> +	 * broadcast duty.
-> +	 */
-> +	if (tick_check_broadcast_expired() && expires >= next_event)
-> +		tick_program_event(next_event, 1);
-> +
-> +	/*
-> +	 * This is called from enter/exit idle code, broadcast handler or
-> +	 * CPU offline operation. In all cases tick_broadcast_lock is held.
->  	 * hrtimer_cancel() cannot be called here neither from the
->  	 * broadcast handler nor from the enter/exit idle code. The idle
->  	 * code can run into the problem described in bc_shutdown() and the
+On 01/12/2024 12:21 PM, Hou Tao wrote:
+> Hi,
+>
+> On 1/12/2024 9:57 AM, Tiezhu Yang wrote:
+>> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
+>> exist 6 failed tests.
+
+..
+
+>> +static bool is_jit_enabled(void)
+>> +{
+>> +	const char *jit_sysctl = "/proc/sys/net/core/bpf_jit_enable";
+>> +	bool enabled = false;
+>> +	int sysctl_fd;
+>> +
+>> +	sysctl_fd = open(jit_sysctl, 0, O_RDONLY);
+>
+> It should be open(jit_sysctl, O_RDONLY).
+
+Yes, this function comes from test_progs.c, I think
+it is better to move it to testing_helpers.c with
+this change.
+
+>> +	if (sysctl_fd != -1) {
+>> +		char tmpc;
+>> +
+>> +		if (read(sysctl_fd, &tmpc, sizeof(tmpc)) == 1)
+>> +			enabled = (tmpc != '0');
+>> +		close(sysctl_fd);
+>> +	}
+>> +
+>> +	return enabled;
+>> +}
+>> +
+>>  static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
+>>  {
+>>  	int i;
+>> @@ -1662,6 +1691,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>>  		goto close_fds;
+>>  	}
+>>
+>> +	if (!is_jit_enabled()) {
+>
+> Is it necessary to check whether jit is enabled or not each time ? Could
+> we just check it only once just like unpriv_disabled does ?
+
+Yes, it looks better, will modify the related code.
+
+>> +		for (i = 0; i < prog_len; i++, prog++) {
+>
+> Is it better to only check pseudo_func only when both fd_prog < 0 and
+> saved_errno == EINVAL are true, so unnecessary check can be skipped ?
+
+Yes, will do it like this:
+
+   if (fd_prog < 0 && saved_errno == EINVAL && jit_disabled)
+
+Thanks,
+Tiezhu
 
 
