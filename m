@@ -1,111 +1,133 @@
-Return-Path: <linux-kernel+bounces-24886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5A6482C43A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:06:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078AF82C43B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3D551C2174C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:06:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE38A1F24976
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D31C1757F;
-	Fri, 12 Jan 2024 17:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D5817540;
+	Fri, 12 Jan 2024 17:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O3lS3yPQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CzJmzX9u";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CzJmzX9u"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94E217540;
-	Fri, 12 Jan 2024 17:06:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 634CBC433F1;
-	Fri, 12 Jan 2024 17:06:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705079190;
-	bh=wZDnbh7n64HZXBziqJnarpVCrDn44XHiaryQeXzT4Jk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O3lS3yPQkwbyA3T/nJ4LwyRW+9PissQShMQh5QL5f7Bmho0kWq2fc8EVIb/s7a0Ex
-	 f8rQ7wGaVWQVZ429XPgXv2+6eH92Krk3nyrexdA2hE5qUmi3yJBj0vkSX2kAJu3zN5
-	 eiRWTF7dz3mfOUIBAfUDNa1FzCy5xD40Y2tBFmKr91My270qB6kIFxv7gcjwsf++bS
-	 l83+elWFcsEgiDwapOb4z15ZJDiEzlv4pgq2C4Az4DJ6DMV8EwKTzhjMgKL5M2Q1/m
-	 2aon5a9GvA/fcN0f4uPmkNq2Io/7xwbtDpmKFCyIcO4XwZTBMnDBh06KGKyN9tcNt9
-	 1pxMwcGs/NSSw==
-Date: Fri, 12 Jan 2024 17:06:25 +0000
-From: Conor Dooley <conor@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-mediatek@lists.infradead.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	matthias.bgg@gmail.com, wenst@chromium.org, hsinyi@chromium.org,
-	nfraprado@collabora.com, macpaul.lin@mediatek.com,
-	sean.wang@mediatek.com, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	kernel@collabora.com
-Subject: Re: [PATCH 01/15] dt-bindings: arm64: mediatek: Add MT8395 Radxa NIO
- 12L board compatible
-Message-ID: <20240112-scanning-contour-019b286021e6@spud>
-References: <20240112094632.66310-1-angelogioacchino.delregno@collabora.com>
- <20240112094632.66310-2-angelogioacchino.delregno@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1311B5A5;
+	Fri, 12 Jan 2024 17:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 242151F396;
+	Fri, 12 Jan 2024 17:06:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705079200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9TtdXtQR+ltHvURBV7RXOVWC44VVGVh8yNJ9YJwFIw=;
+	b=CzJmzX9u/E6mMsRugcI6NK+0u8PnDPix0v9Q/Rj9A8iPbOT0dNbc6jqgkpKGS4zmknQo6Y
+	nIqjvMm6yUu7OqvNEShPQ9pXBdcSSFJug7d5GEvNFQ38jwbAZZn+TEs+VcHT4RSYo93MS1
+	eTper5Sk6OKwn1MnaARO0/lLWHv0xW0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705079200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9TtdXtQR+ltHvURBV7RXOVWC44VVGVh8yNJ9YJwFIw=;
+	b=CzJmzX9u/E6mMsRugcI6NK+0u8PnDPix0v9Q/Rj9A8iPbOT0dNbc6jqgkpKGS4zmknQo6Y
+	nIqjvMm6yUu7OqvNEShPQ9pXBdcSSFJug7d5GEvNFQ38jwbAZZn+TEs+VcHT4RSYo93MS1
+	eTper5Sk6OKwn1MnaARO0/lLWHv0xW0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB05013782;
+	Fri, 12 Jan 2024 17:06:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id f6NVNp9xoWUGNAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 12 Jan 2024 17:06:39 +0000
+Date: Fri, 12 Jan 2024 18:06:39 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+	Dan Schatzberg <schatzberg.dan@gmail.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
+Message-ID: <ZaFxn7JC8FeR-Si0@tiehlicka>
+References: <20240111132902.389862-1-hannes@cmpxchg.org>
+ <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
+ <20240111192807.GA424308@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="govvU38t0WtaM7t9"
-Content-Disposition: inline
-In-Reply-To: <20240112094632.66310-2-angelogioacchino.delregno@collabora.com>
-
-
---govvU38t0WtaM7t9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240111192807.GA424308@cmpxchg.org>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.29
+X-Spamd-Result: default: False [-0.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.99)[87.09%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,google.com,kernel.org,gmail.com,vger.kernel.org,kvack.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Fri, Jan 12, 2024 at 10:46:18AM +0100, AngeloGioacchino Del Regno wrote:
-> Add a board compatible for the Radxa NIO 12L, based on the MediaTek
-> MT8395 SoC.
->=20
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+On Thu 11-01-24 14:28:07, Johannes Weiner wrote:
+[...]
+> @@ -2867,11 +2882,17 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  		}
+>  	} while ((memcg = parent_mem_cgroup(memcg)));
+>  
+> +	/*
+> +	 * Reclaim is set up above to be called from the userland
+> +	 * return path. But also attempt synchronous reclaim to avoid
+> +	 * excessive overrun while the task is still inside the
+> +	 * kernel. If this is successful, the return path will see it
+> +	 * when it rechecks the overage and simply bail out.
+> +	 */
+>  	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
+>  	    !(current->flags & PF_MEMALLOC) &&
+> -	    gfpflags_allow_blocking(gfp_mask)) {
+> +	    gfpflags_allow_blocking(gfp_mask))
+>  		mem_cgroup_handle_over_high(gfp_mask);
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Have you lost the check for the dying task here?
 
-Cheers,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Docume=
-ntation/devicetree/bindings/arm/mediatek.yaml
-> index 5d49c7af50e5..cc37c88d8d4a 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -345,6 +345,7 @@ properties:
->        - items:
->            - enum:
->                - mediatek,mt8395-evk
-> +              - radxa,nio-12l
->            - const: mediatek,mt8395
->            - const: mediatek,mt8195
->        - items:
-> --=20
-> 2.43.0
->=20
-
---govvU38t0WtaM7t9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaFxkQAKCRB4tDGHoIJi
-0u2ZAQCrxxq3yuqhnnom8wr4ZvEFVZTjfwbrnntQ/oN+LUXvxQD9EornS9s9da5q
-6K6qX/043jYEYDy4qbt94rd6ApvhXgA=
-=yQm+
------END PGP SIGNATURE-----
-
---govvU38t0WtaM7t9--
+Other than that looks good to me.
+-- 
+Michal Hocko
+SUSE Labs
 
