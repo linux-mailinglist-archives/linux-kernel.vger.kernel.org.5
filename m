@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-24692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02A8282C0E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:32:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1611D82C0EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:32:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BCE02871D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:32:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CCDB1C21FBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2066D1B0;
-	Fri, 12 Jan 2024 13:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B4276D1CC;
+	Fri, 12 Jan 2024 13:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="d8e8vYat"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="GEe1UDMM"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274ED5D91A;
-	Fri, 12 Jan 2024 13:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9BE6BB49;
+	Fri, 12 Jan 2024 13:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705066350;
-	bh=a3smX73X/DO4mpCygf5S67DyKKn/F9+tabtj3srXY1o=;
-	h=From:To:Cc:Subject:Date:From;
-	b=d8e8vYat6IVxhJU0Nb1ligWNmsdgMgpmSW4Ig5CFnXPLLC/dxKs/kRFHjU3rF5WrJ
-	 AQSIUPLG4cWI6M1Boj1UttPt+XvcuUe69jfWbxVj48PXRLqrJSBNo8ehDnCsDt4jNG
-	 Cxd6SKa/5zOkhWqIaQoht8O/XzisZwFHrPhFXcSM9x14SgGiVPgqgD3yVjC/abrKHr
-	 lGfxygNCxRZOnvgtVJWz/ebCmLUhsciRF9IMFhuRDu81oDJkT5JxfQVJgjmVIwIqoO
-	 oWXGQQfDNkx2X0hGUK+pnx2YYt7A1qfud8lobobtNsEeVJjSvxw3EgHtVzFgpJ1nji
-	 HMivCm+jberMA==
+	s=mail; t=1705066351;
+	bh=YkdDpomM6xgjjZT3f/VDi2h3qQuEYm1oWG/yoqw8ImM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=GEe1UDMM/w79byImu60YnSiFe36p0UL+qBsPTpVtNNWtfFBqLiyvIan0nNcIPoyqT
+	 cr6WFujt7CCY5y14VrOsh6zMUtQTUW5opwob9x15/70A+SPwIhmb7mErsOlOJ3yFYT
+	 a9+QQMd+U7LawYmjrY//yHHkhWs6gCZBGnnz33LZzim/4oXyeMZqipqoVoHablgw+q
+	 JWmjNIiKWDssKe2Wz1+PHC9vb+RolyZqBjPY+HBCYPBsEkFHikirS5tnstnld+RPCm
+	 LEAgVIEzm4ffPAHZUfMN4q7GNtAYGySgWB7FbxWFUTxoAKd/NP3crBw+vdiFNkMPvL
+	 Ri5D+h10mpRYg==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 939E53781FE5;
-	Fri, 12 Jan 2024 13:32:29 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8D8E73782031;
+	Fri, 12 Jan 2024 13:32:30 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: chunfeng.yun@mediatek.com
 Cc: gregkh@linuxfoundation.org,
@@ -52,10 +52,12 @@ Cc: gregkh@linuxfoundation.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH 1/2] dt-bindings: usb: mtu3: Add MT8195 MTU3 ip-sleep support
-Date: Fri, 12 Jan 2024 14:32:21 +0100
-Message-ID: <20240112133222.240038-1-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 2/2] usb: mtu3: Add MT8195 MTU3 ip-sleep wakeup support
+Date: Fri, 12 Jan 2024 14:32:22 +0100
+Message-ID: <20240112133222.240038-2-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240112133222.240038-1-angelogioacchino.delregno@collabora.com>
+References: <20240112133222.240038-1-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,30 +66,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Of the four USB controllers present on the MediaTek MT8195 SoC, three
-of them (0, 2 and 3) are behind MTU3: add wakeup controls for them.
+Add support for the ip-sleep wakeup functionality on the three MTU3
+controllers found on the MT8195 SoC.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/usb/mtu3/mtu3_host.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-index a59d91243ac8..d4e187c78a0b 100644
---- a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-+++ b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-@@ -185,7 +185,10 @@ properties:
-             2 - used by mt2712 etc, revision 2 with following IPM rule;
-             101 - used by mt8183, specific 1.01;
-             102 - used by mt8192, specific 1.02;
--          enum: [1, 2, 101, 102]
-+            103 - used by mt8195, IP0, specific 1.03;
-+            105 - used by mt8195, IP2, specific 1.05;
-+            106 - used by mt8195, IP3, specific 1.06;
-+          enum: [1, 2, 101, 102, 103, 105, 106]
+diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
+index 9f2be22af844..85f49e00e8db 100644
+--- a/drivers/usb/mtu3/mtu3_host.c
++++ b/drivers/usb/mtu3/mtu3_host.c
+@@ -34,6 +34,19 @@
+ #define WC0_SSUSB0_CDEN		BIT(6)
+ #define WC0_IS_SPM_EN		BIT(1)
  
-   mediatek,u3p-dis-msk:
-     $ref: /schemas/types.yaml#/definitions/uint32
++/* mt8195 */
++#define PERI_WK_CTRL0_8195	0x04
++#define WC0_IS_P_95		BIT(30)	/* polarity */
++#define WC0_IS_C_95(x)		((u32)(((x) & 0x7) << 27))
++#define WC0_IS_EN_P3_95		BIT(26)
++#define WC0_IS_EN_P2_95		BIT(25)
++#define WC0_IS_EN_P1_95		BIT(24)
++
++#define PERI_WK_CTRL1_8195	0x20
++#define WC1_IS_C_95(x)		((u32)(((x) & 0xf) << 28))
++#define WC1_IS_P_95		BIT(12)
++#define WC1_IS_EN_P0_95		BIT(6)
++
+ /* mt2712 etc */
+ #define PERI_SSUSB_SPM_CTRL	0x0
+ #define SSC_IP_SLEEP_EN	BIT(4)
+@@ -44,6 +57,9 @@ enum ssusb_uwk_vers {
+ 	SSUSB_UWK_V2,
+ 	SSUSB_UWK_V1_1 = 101,	/* specific revision 1.01 */
+ 	SSUSB_UWK_V1_2,		/* specific revision 1.02 */
++	SSUSB_UWK_V1_3,		/* mt8195 IP0 */
++	SSUSB_UWK_V1_5 = 105,	/* mt8195 IP2 */
++	SSUSB_UWK_V1_6,		/* mt8195 IP3 */
+ };
+ 
+ /*
+@@ -70,6 +86,21 @@ static void ssusb_wakeup_ip_sleep_set(struct ssusb_mtk *ssusb, bool enable)
+ 		msk = WC0_SSUSB0_CDEN | WC0_IS_SPM_EN;
+ 		val = enable ? msk : 0;
+ 		break;
++	case SSUSB_UWK_V1_3:
++		reg = ssusb->uwk_reg_base + PERI_WK_CTRL1_8195;
++		msk = WC1_IS_EN_P0_95 | WC1_IS_C_95(0xf) | WC1_IS_P_95;
++		val = enable ? (WC1_IS_EN_P0_95 | WC1_IS_C_95(0x1)) : 0;
++		break;
++	case SSUSB_UWK_V1_5:
++		reg = ssusb->uwk_reg_base + PERI_WK_CTRL0_8195;
++		msk = WC0_IS_EN_P2_95 | WC0_IS_C_95(0x7) | WC0_IS_P_95;
++		val = enable ? (WC0_IS_EN_P2_95 | WC0_IS_C_95(0x1)) : 0;
++		break;
++	case SSUSB_UWK_V1_6:
++		reg = ssusb->uwk_reg_base + PERI_WK_CTRL0_8195;
++		msk = WC0_IS_EN_P3_95 | WC0_IS_C_95(0x7) | WC0_IS_P_95;
++		val = enable ? (WC0_IS_EN_P3_95 | WC0_IS_C_95(0x1)) : 0;
++		break;
+ 	case SSUSB_UWK_V2:
+ 		reg = ssusb->uwk_reg_base + PERI_SSUSB_SPM_CTRL;
+ 		msk = SSC_IP_SLEEP_EN | SSC_SPM_INT_EN;
 -- 
 2.43.0
 
