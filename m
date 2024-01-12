@@ -1,263 +1,258 @@
-Return-Path: <linux-kernel+bounces-24937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B3B282C4FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:48:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C9D82C503
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EF0B1F229EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:48:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5928D1F24D05
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09EA17C90;
-	Fri, 12 Jan 2024 17:48:29 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15F517C90;
+	Fri, 12 Jan 2024 17:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="GuFsTHZY"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2044.outbound.protection.outlook.com [40.107.212.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB5C17BDD
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf178281a5so131199639f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:48:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705081706; x=1705686506;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vp0EvF8U2UbDV2FBvCZR8vF2rmF/JTaZKQ9Mt2zNhDg=;
-        b=PczUtOm++mnWK7C00pNK4TY2gorAkjntW/P2Wxlpjsul3BbMldop65l1IX6A5OKaAg
-         sJ7kKfZQ3uk2Hbt39+XO/yNElTFqM4ueA2K9XkrqNjmbMhkK3zpnXzBPqGV3HZnUlPrP
-         OLZzncpMbr69jy/lBQfkYpDnyqupEZtKQYcT3paZAYv1LwEcT/y88lq4MdkkubLvbCvp
-         CIG29hBYfuierC60DorF0yA6hcTWM0iVbiESPNZAQy+vs8+7CL42CqHo0aXXL9+SMmn6
-         47bte7JFAD8FXPCT4TcmLEWjPrPNQpLZHGWEYan9Ju3AtKXj4DWaNtEAjQgs+Km+bnya
-         xGkg==
-X-Gm-Message-State: AOJu0YxxW9Ro5dTjlWaEmrxTP3bAmQCTNNwxi4SP5XqdFaWyi+S6S2zZ
-	qGh3C8/pidGGUuAbvxrtZo3qdqjB2aO3W5HDQRLwRURCnm8o
-X-Google-Smtp-Source: AGHT+IEa8/zxnGDI7CdiEMqCnGq9mwH97gPj+xChfYbUxcq77R4olEZ6Dpg/FGZ2zq3vRHImyUNWQawds73roMZWKeoC1i9zq9rl
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F401AAA6;
+	Fri, 12 Jan 2024 17:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d7E2GymxFq3uNY7RjqJdNLGAaxJLbDdeK8vwckkV8SC/FP2vbE5Bm1ULzpVWKlX6/Un7wkdFPSU/UufSGoSANx9it0RnOYXvT7aE7ZpFKvxmXldHtmoL74lpTBhlnQ5Hw3duXducxzjIBXOnfaP2L+W2PikBzgZPDJzTpggdyaq34NtL2TgnG5d7wcpFBjCSkK71XmmbFmLUdcx1yWChtP1I2KqrRNoyV5ZCeEKZunGQcPpvilHxlgU3VUsUOXh6VK9VE7D6RJzTKI4f70xUe2lIpRJza9xdaqkUES8Wnc0EZav5e3mcdFLRo9R58E0u1isXYogFtMit4Iiz4l+DIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=utpsbh3Ii3lnX3Ltoe0787VCsjROuxfkwNFy/HdsDMM=;
+ b=kX2iSiC9gydkNABRQ607apNAyjqKR9IJLzh4luuz3YZWbC6AR2tczMu9CV096/XWqJfB5GLvUI2iruiTXzIcgtcZwfehOvuFZ+HgmVBPBAAHvz06YXRGUiNHPt3B8/1glbPj7uJPQH+DtZgIPVjFfJRKCnUg9JQiwiyUrm8AObpnfoGQFJ5z7M75QzCQkekCFPwm4FAOHIdZmVmYcCar74ufjEPMra6+lSjMvLMc4HMasHdMFs8yNhFJm3Z/fKOwfecX35k6xB4Vc/MAXamcT2z3AxiqxCtVZjXyIm29bfkzjiLGPMq1535t1kCvqSHRlEssSFUKP+Y+ntXQJrZmdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=utpsbh3Ii3lnX3Ltoe0787VCsjROuxfkwNFy/HdsDMM=;
+ b=GuFsTHZY6/aF7BIif0Z5H309BR/Iqp6H9T8oDWQb4XW7a4iWLd05flYKRcST06ihvDubI0RnzuNu7d0v8c1II0ml3cDUCnog1Yf02GlHWsted4AkOIWhExoqibgevCrm2/ymga9xF+FxEcRLWVlpX1B7A7ybJSOcLIckdpl1nYLHiva1/NQH3d2h/ik9fWRb083RgmBC3aEwSFL6NAaSXpJ82l5YDDMJKlXYLZH81+jw1yqnR6ThINWQGMEaR/V3TUwA3ebuTTkxUt8FgxAus4pcr/dJh5EHUoTC/a3t5ioDF87UiI450NnPsMRghbjQEnCy0sLF/+rDXVOXz6pwsg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by LV8PR12MB9264.namprd12.prod.outlook.com (2603:10b6:408:1e8::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Fri, 12 Jan
+ 2024 17:49:30 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Fri, 12 Jan 2024
+ 17:49:30 +0000
+Date: Fri, 12 Jan 2024 13:49:28 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: iommu@lists.linux.dev, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>
+Subject: [GIT PULL] Please pull IOMMUFD subsystem changes
+Message-ID: <20240112174928.GA828978@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Z4b8nnA/cAQCd4Ug"
+Content-Disposition: inline
+X-ClientProxiedBy: SN6PR01CA0030.prod.exchangelabs.com (2603:10b6:805:b6::43)
+ To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a67:b0:360:96fd:f542 with SMTP id
- w7-20020a056e021a6700b0036096fdf542mr177673ilv.1.1705081706424; Fri, 12 Jan
- 2024 09:48:26 -0800 (PST)
-Date: Fri, 12 Jan 2024 09:48:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006cb174060ec34502@google.com>
-Subject: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in kill_f2fs_super
-From: syzbot <syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com>
-To: chao@kernel.org, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV8PR12MB9264:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8f4ade73-bd0a-413b-af6c-08dc1396d3d0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JNjpK2yFsox3cWYCGhbRBCplinnif5W67x8pOTI6BmDQ7BaLGYx7nqpf1l2LGFES8g5jn209juwYKhb3quDk0IYhSkIPrIo4njn97U5hU/7C6Ol2MK/efMDIU+GCwltfeSh43I4C1JamDm4A0svcElCk4j3hpxZKmy1dtOfUSsL0NI6qBImaGmHKgaRTsEJnqEh2+MqUK7VTBYKQHanwebNvA1TWIovOojNXtm64nW0Qew8Fqs6j6H4YUmWmff1XljZFI3TyutHASyCRFd3aecJMqwtOsVDtOLaYkMrGmTOmUVLqN0lPALtOJaS7FSLsAw/2jpkWRtIj1IHA1X4gMeVnhyAG5wDV/r9uj88YDMqOpJc44kw7uqc29ulUNi1omh3qihmSCMpSLLB70Y5kGv/iOgEAh9E6HwaxnCqCSMwJfRYgftZoj1Zvipilo53kk9oFhRKpy8Dgi+lF1DIW1pSyKtfXgwLMzHkJjZNv9C3DUyvtUmpqk4ndFsemb2WgXWcQ6mQo28Vy+tUu/W3+gmNO6i5+lrGCMwIE7S4qyqj/uVXL4fyOeOMeKcYp+/PCxvcvIV7L/vQGlxRDe+cqBPfPlr/uZkUWoE2tWwcYgfBZZi5wzvY6nNFzAIaLJt8v6sxDzDR3Zo7fBrS+zFIk/ODTra88rnk5A0+yFQE1kYBHusEuGN15sdA8xXiDN64M4E2dWlp+du+jEdtz7g2tbLe9mH7xtCUGZjdVmjERhHQ=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(366004)(136003)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(21480400003)(83380400001)(41300700001)(86362001)(36756003)(33656002)(38100700002)(6506007)(6512007)(66476007)(5660300002)(44144004)(316002)(6916009)(6486002)(478600001)(8676002)(8936002)(4326008)(966005)(26005)(1076003)(2616005)(2906002)(4001150100001)(66556008)(66946007)(27376004)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?mj9UwKYFc+9HGF6wftsVjiBZVQsBZ38L7zf/W/SAKw0oxKoxIfE/LgjikAy+?=
+ =?us-ascii?Q?5VGx9VPTp04H21X/pi232sgp9l/EP3pZdVsS4vAB8hsemBPvorl1br/dfRzL?=
+ =?us-ascii?Q?WZNV5xQ5gGtaGZC3ZTNCdvpxDF8LCkGXWe2qBvx5rqeLVeSW/tFOOW1u1V9o?=
+ =?us-ascii?Q?W8O8cXrlsELelv58V1qexlQvBlSVZQViKPhPdITft7/LRNeLfjef4u5lTl5o?=
+ =?us-ascii?Q?w6oOf8rLDFfWz8HKD7Nk/P0EmFF+2suDi5ghiVL6GnSbLhA+nI2BUtO2a1E8?=
+ =?us-ascii?Q?UPm44hqd8RRbK4CMIgsqd6MWcXCnHbQ9j6/TkOx4eMOIyPNafFoDq5gqPXE7?=
+ =?us-ascii?Q?AeTgjs+6FPoIut2GnZVbLIyAJxRG/o/lay82iXE1ABHfSIAnw/oc9ilk94rK?=
+ =?us-ascii?Q?ktgqyF5EoM3za+maND5tX3flYJ+kKsOFbWW52lwl66ksCVyRF1mZ/Uo7Kv8T?=
+ =?us-ascii?Q?hw54P8FBx5V8sq95kKyVsQb9qNcGm2PGiLSyz9HYt5e8PRGamPujilUV+XrK?=
+ =?us-ascii?Q?3QqO+IEH/DyNqqvUrl2Bv2LcliawtVhpAhtOyQNnZozWcTdD3sbHvTrBpbUv?=
+ =?us-ascii?Q?EnQW0iz4Org+qZPNlbOJVYJCIHmz+wFLqsUa6sL4QDx4YW4+eVOZmWk0bQ3X?=
+ =?us-ascii?Q?inkwofnOZ1eMYrlGLElBPHIlcVidTwJTlGbH8F8H2RN19fpbghflDCNKDKf7?=
+ =?us-ascii?Q?+8p4ZwE8W4U0Gxr4fLDtnNpvQxQTyX/7I1di25OALhYSRh5MTEWq1TfC5jCo?=
+ =?us-ascii?Q?gBhauTwIOu+hDqrn6Pv/swpAT20HMa/6gzbLUX/XItKv4kEnD1suk4OewBco?=
+ =?us-ascii?Q?WRA+stQhiBorttwaNd58weCS4FqjN246ZaAonsfodZI+zrcEvTIYey4T/mVa?=
+ =?us-ascii?Q?3rZgQq5iI0dMpMZ9JAgst8gTxvTFQBoxBmlgZdmBUOHoBRfoDEPWKbjSf+R/?=
+ =?us-ascii?Q?nbzOIbKeY6VPuyIeK7yQwi50BKequRkX66lVLTeMEx8uqHjV8s0cI4zDX+Y+?=
+ =?us-ascii?Q?UJ5w0tyrrdvHhBhlP1bL4WjiP8+79v8LwIPLFvyeWGYkvN7g5yr7ecWCCkqE?=
+ =?us-ascii?Q?kPREu4mt8vMCl/16Lgk5RfLo/x54lDmFvp1EXeR8gBgeugI26ja8uSDYH4CV?=
+ =?us-ascii?Q?Q1f22j/DydtFGfSG8oq4llTwlVZKSUGFKkZ+ATDwTF4Fj4kbj21YLwDLRo61?=
+ =?us-ascii?Q?UFvn9P/vVBJ2oJvDz8eCdXsv1YjNLye+aSG4T8wuV/ohPNTXsaUu/gynAM02?=
+ =?us-ascii?Q?EPJ8fo12L5LDsu5OhtphsO+p7QVi/EieB6tPOQxU8ufHyqhReJ0eArX9CCUd?=
+ =?us-ascii?Q?vFPNXa29kgixCJjpDhcFqgiM6Z00xuA7JSY5lZDegbnS0WTjCSHlgWyCnuLF?=
+ =?us-ascii?Q?MPjJeKoFdMFqNbY1LQt4lgFUIU1LxXylxTCvyZHYvDudmEjlF4LJ7XMg+an6?=
+ =?us-ascii?Q?rqwT8QmO10BCt7R5JRuHvQA3p25uB/nG1NkC+x58itmD12TXx5SVqceZA5vx?=
+ =?us-ascii?Q?56exWivrE0kqkhou9WzUT2k0WrJA8Q7cJ1MBT/Moh8ROzW78iufzfjTksPVI?=
+ =?us-ascii?Q?Vv7JVbm/d8WK+YfKXMkZeOfy6hh5OBxYuyQGIa/n?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f4ade73-bd0a-413b-af6c-08dc1396d3d0
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 17:49:30.1002
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: c/EUaGd+/96OE9jx/juFo3AGPrE4lS7SvleordZNA5yDGCenTwR10db8IqJrRFDm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9264
 
-Hello,
+--Z4b8nnA/cAQCd4Ug
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-syzbot found the following issue on:
+Hi Linus,
 
-HEAD commit:    70d201a40823 Merge tag 'f2fs-for-6.8-rc1' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e19adbe80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4607bc15d1c4bb90
-dashboard link: https://syzkaller.appspot.com/bug?extid=8f477ac014ff5b32d81f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+There was a last minute doubt from Intel on their error handling
+plan. They decided to remove it since it has uAPI meaning this was
+delayed while they made that edit. The prior verions has been in
+linux-next for a while now but the update has only had a day.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This PR includes the second part of the nested translation items for
+iommufd, details in the tag.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4faf0f99e43c/disk-70d201a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/23f59e40d2ef/vmlinux-70d201a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a0bc6007f0a4/bzImage-70d201a4.xz
+For those following, these series are still progressing:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com
+- User page table invalidation (non-Intel) has a roadmap:
+ https://lore.kernel.org/linux-iommu/20231209014726.GA2945299@nvidia.com/
 
-==================================================================
-BUG: KASAN: slab-use-after-free in destroy_device_list fs/f2fs/super.c:1606 [inline]
-BUG: KASAN: slab-use-after-free in kill_f2fs_super+0x618/0x690 fs/f2fs/super.c:4932
-Read of size 4 at addr ffff88801e12d77c by task syz-executor.1/9994
+ There will be at least two more invalidation IOCTLs - IOMMU_DEVICE_INVALIDATE
+ and IOMMU_VIOMMU_INVALIDATE in future.
 
-CPU: 1 PID: 9994 Comm: syz-executor.1 Not tainted 6.7.0-syzkaller-06264-g70d201a40823 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:488
- kasan_report+0x142/0x170 mm/kasan/report.c:601
- destroy_device_list fs/f2fs/super.c:1606 [inline]
- kill_f2fs_super+0x618/0x690 fs/f2fs/super.c:4932
- deactivate_locked_super+0xc1/0x130 fs/super.c:477
- mount_bdev+0x222/0x2d0 fs/super.c:1665
- legacy_get_tree+0xef/0x190 fs/fs_context.c:662
- vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f0966e7e4aa
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0967ca6ef8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f0967ca6f80 RCX: 00007f0966e7e4aa
-RDX: 0000000020000040 RSI: 0000000020000080 RDI: 00007f0967ca6f40
-RBP: 0000000020000040 R08: 00007f0967ca6f80 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000080
-R13: 00007f0967ca6f40 R14: 00000000000054f9 R15: 00000000200004c0
- </TASK>
+- ARM SMMUv3 nested translation:
+ https://github.com/jgunthorpe/linux/commits/smmuv3_newapi
 
-Allocated by task 9994:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:389
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- kmalloc_trace+0x1d6/0x360 mm/slub.c:4012
- kmalloc include/linux/slab.h:590 [inline]
- kzalloc include/linux/slab.h:711 [inline]
- f2fs_fill_super+0xce/0x8170 fs/f2fs/super.c:4397
- mount_bdev+0x206/0x2d0 fs/super.c:1663
- legacy_get_tree+0xef/0x190 fs/fs_context.c:662
- vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+- Draft AMD IOMMU nested translation:
+ https://lore.kernel.org/linux-iommu/20240112000646.98001-1-suravee.suthikulpanit@amd.com
 
-Freed by task 9994:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
- kasan_save_free_info+0x4e/0x60 mm/kasan/generic.c:634
- poison_slab_object+0xa6/0xe0 mm/kasan/common.c:241
- __kasan_slab_free+0x34/0x60 mm/kasan/common.c:257
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2121 [inline]
- slab_free mm/slub.c:4299 [inline]
- kfree+0x14a/0x380 mm/slub.c:4409
- f2fs_fill_super+0x6b04/0x8170 fs/f2fs/super.c:4882
- mount_bdev+0x206/0x2d0 fs/super.c:1663
- legacy_get_tree+0xef/0x190 fs/fs_context.c:662
- vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+- ARM SMMUv3 Dirty tracking:
+ https://lore.kernel.org/linux-iommu/20231128094940.1344-1-shameerali.kolothum.thodi@huawei.com/
 
-The buggy address belongs to the object at ffff88801e12c000
- which belongs to the cache kmalloc-8k of size 8192
-The buggy address is located 6012 bytes inside of
- freed 8192-byte region [ffff88801e12c000, ffff88801e12e000)
+- x86 KVM and IOMMU page table sharing (IOMMU_DOMAIN_KVM):
+ https://lore.kernel.org/all/20231202091211.13376-1-yan.y.zhao@intel.com/
 
-The buggy address belongs to the physical page:
-page:ffffea0000784a00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1e128
-head:ffffea0000784a00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012c42280 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000020002 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5039, tgid 5039 (syz-executor), ts 52116408241, free_ts 43224752194
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3311
- __alloc_pages+0x255/0x680 mm/page_alloc.c:4567
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page+0x5f/0x160 mm/slub.c:2190
- allocate_slab mm/slub.c:2354 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2407
- ___slab_alloc+0xd17/0x13d0 mm/slub.c:3540
- __slab_alloc mm/slub.c:3625 [inline]
- __slab_alloc_node mm/slub.c:3678 [inline]
- slab_alloc_node mm/slub.c:3850 [inline]
- kmalloc_trace+0x25d/0x360 mm/slub.c:4007
- kmalloc include/linux/slab.h:590 [inline]
- kzalloc include/linux/slab.h:711 [inline]
- cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1217 [inline]
- cgroup1_get_tree+0x52e/0x8c0 kernel/cgroup/cgroup-v1.c:1244
- vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-page last free pid 4924 tgid 4924 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x959/0xa80 mm/page_alloc.c:2346
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
- discard_slab mm/slub.c:2453 [inline]
- __put_partials+0xeb/0x130 mm/slub.c:2922
- put_cpu_partial+0x17b/0x250 mm/slub.c:2997
- __slab_free+0x2fe/0x410 mm/slub.c:4166
- qlink_free mm/kasan/quarantine.c:160 [inline]
- qlist_free_all+0x6d/0xd0 mm/kasan/quarantine.c:176
- kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:283
- __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:324
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3813 [inline]
- slab_alloc_node mm/slub.c:3860 [inline]
- __do_kmalloc_node mm/slub.c:3980 [inline]
- __kmalloc+0x1dd/0x490 mm/slub.c:3994
- kmalloc include/linux/slab.h:594 [inline]
- tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x2b7/0x730 security/tomoyo/file.c:822
- security_inode_getattr+0xd3/0x120 security/security.c:2237
- vfs_getattr+0x46/0x430 fs/stat.c:173
- vfs_fstat fs/stat.c:198 [inline]
- vfs_fstatat+0xd6/0x190 fs/stat.c:300
- __do_sys_newfstatat fs/stat.c:468 [inline]
- __se_sys_newfstatat fs/stat.c:462 [inline]
- __x64_sys_newfstatat+0x117/0x190 fs/stat.c:462
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+There is also a lot of ongoing work to consistently and generically enable
+PASID and SVA support in all the IOMMU drivers:
+ SMMUv3:
+   https://lore.kernel.org/r/0-v3-d794f8d934da+411a-smmuv3_newapi_p1_jgg@nvidia.com
+   https://lore.kernel.org/r/0-v3-9083a9368a5c+23fb-smmuv3_newapi_p2_jgg@nvidia.com
+ AMD:
+   https://lore.kernel.org/linux-iommu/20231212085224.6985-1-vasant.hegde@amd.com/
+   https://lore.kernel.org/linux-iommu/20231221111558.64652-1-vasant.hegde@amd.com/
+ Intel:
+   https://lore.kernel.org/r/20231017032045.114868-1-tina.zhang@intel.com
 
-Memory state around the buggy address:
- ffff88801e12d600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88801e12d680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88801e12d700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                                ^
- ffff88801e12d780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88801e12d800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+RFC patches for PASID support in iommufd & vfio:
+ https://lore.kernel.org/all/20231127063428.127436-1-yi.l.liu@intel.com/
+ https://lore.kernel.org/all/20231127063909.129153-1-yi.l.liu@intel.com/
 
+IO page faults and events delivered to userspace through iommufd:
+ https://lore.kernel.org/all/20231220012332.168188-1-baolu.lu@linux.intel.com/
+ https://lore.kernel.org/all/20231026024930.382898-1-baolu.lu@linux.intel.com/
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+RFC patches exploring support for the first Intel Scalable IO Virtualization
+(SIOV r1) device are posted:
+ https://lore.kernel.org/all/20231009085123.463179-1-yi.l.liu@intel.com/
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+A lot of the iommufd support has now been merged to qemu, though I think we
+are still needing dirty tracking and nesting stuff.
+ https://lore.kernel.org/all/20231121084426.1286987-1-zhenzhong.duan@intel.com/
+ https://lore.kernel.org/all/20230622214845.3980-1-joao.m.martins@oracle.com/
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+A video of the iommufd session at LPC has been posted:
+ https://youtu.be/IE_A8wSWV7g
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Thanks,
+Jason
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+The following changes since commit 861deac3b092f37b2c5e6871732f3e11486f7082:
 
-If you want to undo deduplication, reply with:
-#syz undup
+  Linux 6.7-rc7 (2023-12-23 16:25:56 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd.git tags/for-linus-iommufd
+
+for you to fetch changes up to 47f2bd2ff382e5fe766b1322e354558a8da4a470:
+
+  iommufd/selftest: Check the bus type during probe (2024-01-11 15:53:28 -0400)
+
+----------------------------------------------------------------
+iommufd for 6.8
+
+This brings the first of three planned user IO page table invalidation
+operations:
+
+ - IOMMU_HWPT_INVALIDATE allows invalidating the IOTLB integrated into the
+   iommu itself. The Intel implementation will also generate an ATC
+   invalidation to flush the device IOTLB as it unambiguously knows the
+   device, but other HW will not.
+
+It goes along with the prior PR to implement userspace IO page tables (aka
+nested translation for VMs) to allow Intel to have full functionality for
+simple cases. An Intel implementation of the operation is provided.
+
+Fix a small bug in the selftest mock iommu driver probe.
+
+----------------------------------------------------------------
+Jason Gunthorpe (1):
+      iommufd/selftest: Check the bus type during probe
+
+Lu Baolu (2):
+      iommu: Add cache_invalidate_user op
+      iommu/vt-d: Add iotlb flush for nested domain
+
+Nicolin Chen (4):
+      iommu: Add iommu_copy_struct_from_user_array helper
+      iommufd/selftest: Add mock_domain_cache_invalidate_user support
+      iommufd/selftest: Add IOMMU_TEST_OP_MD_CHECK_IOTLB test op
+      iommufd/selftest: Add coverage for IOMMU_HWPT_INVALIDATE ioctl
+
+Yi Liu (2):
+      iommufd: Add IOMMU_HWPT_INVALIDATE
+      iommufd: Add data structure for Intel VT-d stage-1 cache invalidation
+
+ drivers/iommu/intel/nested.c                  |  88 +++++++++++++++
+ drivers/iommu/iommufd/hw_pagetable.c          |  41 +++++++
+ drivers/iommu/iommufd/iommufd_private.h       |  10 ++
+ drivers/iommu/iommufd/iommufd_test.h          |  23 ++++
+ drivers/iommu/iommufd/main.c                  |   3 +
+ drivers/iommu/iommufd/selftest.c              | 104 +++++++++++++++---
+ include/linux/iommu.h                         |  77 +++++++++++++
+ include/uapi/linux/iommufd.h                  |  79 +++++++++++++
+ tools/testing/selftests/iommu/iommufd.c       | 152 ++++++++++++++++++++++++++
+ tools/testing/selftests/iommu/iommufd_utils.h |  55 ++++++++++
+ 10 files changed, 619 insertions(+), 13 deletions(-)
+
+--Z4b8nnA/cAQCd4Ug
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZaF7pwAKCRCFwuHvBreF
+YX3yAP0bCfw55km2i2uu5mAhuZK2r0J5+VlSgb6BW3+POQfdlgEA/cecY2rTJjpw
+u2hc5n+e2+p7OkqV37yWh4zVGm8OfAE=
+=PF9p
+-----END PGP SIGNATURE-----
+
+--Z4b8nnA/cAQCd4Ug--
 
