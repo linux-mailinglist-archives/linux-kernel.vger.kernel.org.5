@@ -1,51 +1,65 @@
-Return-Path: <linux-kernel+bounces-24453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D6982BCC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:14:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0828B82BCC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:14:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2375B1F25143
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:14:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66CCD1F24DE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:14:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B010A5675B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD0455C37;
 	Fri, 12 Jan 2024 09:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S+LUkimI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dyI+dSMe"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12B957302;
-	Fri, 12 Jan 2024 09:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705050873; x=1736586873;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xDlbUNbymer6SOczg+H/QNlKQU7IooBsAHOq1m2TIAA=;
-  b=S+LUkimImRx5cZO3qMYOBuOqj0Ll3srkPeF55QcVDZ/j9NhitvlN0J/Z
-   9y6fLPo1uaEBsnnMrcvzZluHYRw0U3SkF5DJ/gFPIAf6ZXlnjJ1SKXnUt
-   3NvcObIkshtJ5EhsFuANkfDEocM70Su/kg2+ytO0tw4HT9X3tblzlyX6D
-   QKYm4ajhwwiuyGfrlplUqhG80a6jgt0fVbcVXUg/oqGqOaaIMvqLEjfvj
-   iBZ8/Ub2tn3QF/Dk6ELDDVZbo/91d4mLOWNPwt/AfE5sMbtciW3W7sgvz
-   dP1cLG2WijFGvl/oalCSxw2wktzYVE7uml919YCLYVIDS/hUVDakBBlEV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="5856978"
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="5856978"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 01:14:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="31320582"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.98]) ([10.93.5.98])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 01:14:29 -0800
-Message-ID: <5f51fda5-bc07-42ac-a723-d09d90136961@linux.intel.com>
-Date: Fri, 12 Jan 2024 17:14:26 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1476A57301
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33678156e27so5179606f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:14:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705050872; x=1705655672; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S1vcfihMbPJOkqRcFLfQWKsQhpfYhll+IXXKznuEtxw=;
+        b=dyI+dSMe5xzWOhBFtOk8blSEC04KqBepDxdD7AnSPIyqq1oDr/++ugjwx2BZdicLn0
+         ZWMeK5pdVtUAOhRwydH3S48of9lYvdfBQDKEQUJrMH2Uzqu+5U2q8m7nCP1ew1VGEzi9
+         lPNJmPEyLVFxapm45pRacH46CJaEfyCcRXzaLo61e9Eo3X1LR6SNJlMTt6WTOl4mdwsp
+         DnM0CtzmAAeeaapyUJsn3rk5yndCj8JwLsIT9eF3+6ZaoPQxHhLt5NQXBY97NnwSiWtO
+         Ys/f4y0yS7prSNDZdNUnSstRrDCTqGjyzIhlU7FDk9V85uxvA23T9NJAVrDwkbEeRgyS
+         GuvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705050872; x=1705655672;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S1vcfihMbPJOkqRcFLfQWKsQhpfYhll+IXXKznuEtxw=;
+        b=ONSkM9y00IGj+04Z7JyMpeWCuw788YPJiBZnIdXCFi6wud4oWxXeoTw4Fmi5LgSo8h
+         62Jem7V71ipqWslt8Of1MWyHJltIAzxSHShBPa8zfnqCJ7pDwHkH3/YvP61x2uOdDhsf
+         7RAftTtu01ZGyWPTJv6400pRp0ZfmNXMXllIHC9Vn49v49WGuw+dMgwrc8JEBVqF/ovo
+         o42rFLse+iHxIEVUgH1IgIskNQdnAtrlI3RVlVLJOn0MB2Qu7YhPklMBzJmxT0F525uK
+         pKK70pJa9FKdu4+SP/aqLItkYQRyvjL5P2RcbMGhmbkmOAR9MD4b/lntX+YDcVIU7VoB
+         le8g==
+X-Gm-Message-State: AOJu0Yy+wheTItbZSCu4i3R8rvIB7oEb8RMnxnvDemMoRdL7BrCQEvK3
+	w8ddeSvWyOC0tuRXlh2rDytjJDrL1oyt2w==
+X-Google-Smtp-Source: AGHT+IF2lM8xorKoJqQrop3KBE3nNs+4mQdVKdaLe3zQQlFcjt449y+o2tAd/ER65AYtJU2SG1VAFQ==
+X-Received: by 2002:adf:eacc:0:b0:337:4bbe:97c3 with SMTP id o12-20020adfeacc000000b003374bbe97c3mr542587wrn.87.1705050872301;
+        Fri, 12 Jan 2024 01:14:32 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:59d5:231:f1ee:77f? ([2a01:e0a:982:cbb0:59d5:231:f1ee:77f])
+        by smtp.gmail.com with ESMTPSA id dr18-20020a5d5f92000000b0033677a4e0d6sm3337106wrb.13.2024.01.12.01.14.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 01:14:31 -0800 (PST)
+Message-ID: <cdc18e2a-b7eb-4b54-a513-481148fb3b0d@linaro.org>
+Date: Fri, 12 Jan 2024 10:14:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,399 +67,142 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 16/29] KVM: selftests: Test Intel PMU architectural
- events on gp counters
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Kan Liang <kan.liang@linux.intel.com>, Jim Mattson <jmattson@google.com>,
- Jinrong Liang <cloudliang@tencent.com>, Aaron Lewis <aaronlewis@google.com>,
- Like Xu <likexu@tencent.com>
-References: <20240109230250.424295-1-seanjc@google.com>
- <20240109230250.424295-17-seanjc@google.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20240109230250.424295-17-seanjc@google.com>
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for DJN HX83112A LCD panel
+Content-Language: en-US, fr
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Linus Walleij <linus.walleij@linaro.org>
+Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
+ <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>,
+ devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
+ <20240110-fp4-panel-v2-2-8ad11174f65b@fairphone.com>
+ <CACRpkdaWTfPDCin_L6pefHsokjNyO8Mo6hWPdzPLLi1EUkKUuA@mail.gmail.com>
+ <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com>
+ <CACRpkdZQbVXfBa70nhDOqfWPbsh-6DgX-uvZOxr19pzMmF2giQ@mail.gmail.com>
+ <CYCLSCKPPBOC.1B1MP3VOOC0Q8@fairphone.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CYCLSCKPPBOC.1B1MP3VOOC0Q8@fairphone.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+On 12/01/2024 10:00, Luca Weiss wrote:
+> On Thu Jan 11, 2024 at 8:05 PM CET, Linus Walleij wrote:
+>> On Thu, Jan 11, 2024 at 4:28 PM Luca Weiss <luca.weiss@fairphone.com> wrote:
+>>
+>>> In some internal documentation it says "LCD Driver IC" "HX83112A" and I
+>>> don't see any reference to Truly 5P65 anywhere.
+>>
+>> In the Android directory I pointed to I see this file:
+>> HX83112_Android_Driver/Truly_5p65_module_fw/UpdateFW.bat
+>>
+>> (Notice the 5p65 fw dir is *inside* the HX82112 dir)
+>>
+>> And in that file:
+>> adb push TRULY_5P65_1080_2160_HX83112A_D01C01.bin
+>> /system/etc/firmware/Himax_firmware.bin
+>>
+>> Clearly indicating that they are pushing a Truly 5P65 firmware into
+>> the Himax display firmware directory.
+>>
+>> To be fair, that is the driver for the touchscreen part of HX83112A,
+>> but ... Truly is a well known manufacturer of display controllers?
+>>
+>> But... given that you have a @fairphone.com mal address and
+>> a working relationship with them, can't you just ask?
+>>
+>>> On their website they have this sentence:
+>>
+>> All OEMs want to look like everything is their own product. It is
+>> business as usual.
+> 
+> I can't tell you anything there that I don't know, sorry.
+> 
+>>
+>> Further on the same note since I guess you have a datasheet)
+>> please bring in #defines for the commands (the first byte in the
+>> write sequences, for examples:
+>>
+>> +       mipi_dsi_dcs_write_seq(dsi, 0xbd, 0x02);
+>> +       mipi_dsi_dcs_write_seq(dsi, 0xd8,
+>> +                              0xaa, 0xff, 0xff, 0xff, 0xff, 0xff, 0xaa, 0xff,
+>> +                              0xff, 0xff, 0xff, 0xff);
+>> +       mipi_dsi_dcs_write_seq(dsi, 0xbd, 0x03);
+>>
+>> Clearly 0xbd is HX83112_CMD_SETREGBANK?
+>> (This is easily spotted from the similar structure in the
+>> existing panel-himax-hx8394.c.) So please add #defines
+>> for all commands you know, especially if you have a datasheet
+>> because we reviewers don't have them and "it's just magic
+>> bytes" isn't very compelling. It adds a lot to understanding.
+> 
+> Right, the register names seem to match more or less the ones from that
+> driver, plus some new ones and some differently named ones. Will send a
+> v3 with that.
+> 
+>>
+>> I strongly suspect other Himax displays such as HX8394 to
+>> be using a Truly controller as well, hence the similarities.
+>>
+>> In a datasheet for their TFT800480-84-V1-E display controller
+>> Truly kept the init sequence name of void LCD_INIT_HX8290(void)
+>> for example.
+> 
+> In that datasheet (assuming I'm looking at the same one?) it says
+> "Driver IC" "HX8290-A[...]" so there the display driver is manufactured
+> by Himax and not Truly to my understanding. Truly is assembling together
+> Driver + all the other parts that go into an LCD.
+> 
+> For the panel used on Fairphone 4 that part is done by the company DJN.
 
-On 1/10/2024 7:02 AM, Sean Christopherson wrote:
-> From: Jinrong Liang <cloudliang@tencent.com>
->
-> Add test cases to verify that Intel's Architectural PMU events work as
-> expected when they are available according to guest CPUID.  Iterate over a
-> range of sane PMU versions, with and without full-width writes enabled,
-> and over interesting combinations of lengths/masks for the bit vector that
-> enumerates unavailable events.
->
-> Test up to vPMU version 5, i.e. the current architectural max.  KVM only
-> officially supports up to version 2, but the behavior of the counters is
-> backwards compatible, i.e. KVM shouldn't do something completely different
-> for a higher, architecturally-defined vPMU version.  Verify KVM behavior
-> against the effective vPMU version, e.g. advertising vPMU 5 when KVM only
-> supports vPMU 2 shouldn't magically unlock vPMU 5 features.
->
-> According to Intel SDM, the number of architectural events is reported
-> through CPUID.0AH:EAX[31:24] and the architectural event x is supported
-> if EBX[x]=0 && EAX[31:24]>x.
->
-> Handcode the entirety of the measured section so that the test can
-> precisely assert on the number of instructions and branches retired.
->
-> Co-developed-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   tools/testing/selftests/kvm/Makefile          |   1 +
->   .../selftests/kvm/x86_64/pmu_counters_test.c  | 321 ++++++++++++++++++
->   2 files changed, 322 insertions(+)
->   create mode 100644 tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
->
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 479bd85e1c56..ab96fc80bfbd 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -81,6 +81,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/kvm_pv_test
->   TEST_GEN_PROGS_x86_64 += x86_64/monitor_mwait_test
->   TEST_GEN_PROGS_x86_64 += x86_64/nested_exceptions_test
->   TEST_GEN_PROGS_x86_64 += x86_64/platform_info_test
-> +TEST_GEN_PROGS_x86_64 += x86_64/pmu_counters_test
->   TEST_GEN_PROGS_x86_64 += x86_64/pmu_event_filter_test
->   TEST_GEN_PROGS_x86_64 += x86_64/private_mem_conversions_test
->   TEST_GEN_PROGS_x86_64 += x86_64/private_mem_kvm_exits_test
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> new file mode 100644
-> index 000000000000..5b8687bb4639
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -0,0 +1,321 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023, Tencent, Inc.
-> + */
-> +
-> +#define _GNU_SOURCE /* for program_invocation_short_name */
-> +#include <x86intrin.h>
-> +
-> +#include "pmu.h"
-> +#include "processor.h"
-> +
-> +/* Number of LOOP instructions for the guest measurement payload. */
-> +#define NUM_BRANCHES		10
-> +/*
-> + * Number of "extra" instructions that will be counted, i.e. the number of
-> + * instructions that are needed to set up the loop and then disabled the
-> + * counter.  2 MOV, 2 XOR, 1 WRMSR.
-> + */
-> +#define NUM_EXTRA_INSNS		5
-> +#define NUM_INSNS_RETIRED	(NUM_BRANCHES + NUM_EXTRA_INSNS)
-> +
-> +static uint8_t kvm_pmu_version;
-> +static bool kvm_has_perf_caps;
-> +
-> +static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
-> +						  void *guest_code,
-> +						  uint8_t pmu_version,
-> +						  uint64_t perf_capabilities)
-> +{
-> +	struct kvm_vm *vm;
-> +
-> +	vm = vm_create_with_one_vcpu(vcpu, guest_code);
-> +	vm_init_descriptor_tables(vm);
-> +	vcpu_init_descriptor_tables(*vcpu);
-> +
-> +	sync_global_to_guest(vm, kvm_pmu_version);
-> +
-> +	/*
-> +	 * Set PERF_CAPABILITIES before PMU version as KVM disallows enabling
-> +	 * features via PERF_CAPABILITIES if the guest doesn't have a vPMU.
-> +	 */
-> +	if (kvm_has_perf_caps)
-> +		vcpu_set_msr(*vcpu, MSR_IA32_PERF_CAPABILITIES, perf_capabilities);
-> +
-> +	vcpu_set_cpuid_property(*vcpu, X86_PROPERTY_PMU_VERSION, pmu_version);
-> +	return vm;
-> +}
-> +
-> +static void run_vcpu(struct kvm_vcpu *vcpu)
-> +{
-> +	struct ucall uc;
-> +
-> +	do {
-> +		vcpu_run(vcpu);
-> +		switch (get_ucall(vcpu, &uc)) {
-> +		case UCALL_SYNC:
-> +			break;
-> +		case UCALL_ABORT:
-> +			REPORT_GUEST_ASSERT(uc);
-> +			break;
-> +		case UCALL_PRINTF:
-> +			pr_info("%s", uc.buffer);
-> +			break;
-> +		case UCALL_DONE:
-> +			break;
-> +		default:
-> +			TEST_FAIL("Unexpected ucall: %lu", uc.cmd);
-> +		}
-> +	} while (uc.cmd != UCALL_DONE);
-> +}
-> +
-> +static uint8_t guest_get_pmu_version(void)
-> +{
-> +	/*
-> +	 * Return the effective PMU version, i.e. the minimum between what KVM
-> +	 * supports and what is enumerated to the guest.  The host deliberately
-> +	 * advertises a PMU version to the guest beyond what is actually
-> +	 * supported by KVM to verify KVM doesn't freak out and do something
-> +	 * bizarre with an architecturally valid, but unsupported, version.
-> +	 */
-> +	return min_t(uint8_t, kvm_pmu_version, this_cpu_property(X86_PROPERTY_PMU_VERSION));
-> +}
-> +
-> +/*
-> + * If an architectural event is supported and guaranteed to generate at least
-> + * one "hit, assert that its count is non-zero.  If an event isn't supported or
-> + * the test can't guarantee the associated action will occur, then all bets are
-> + * off regarding the count, i.e. no checks can be done.
-> + *
-> + * Sanity check that in all cases, the event doesn't count when it's disabled,
-> + * and that KVM correctly emulates the write of an arbitrary value.
-> + */
-> +static void guest_assert_event_count(uint8_t idx,
-> +				     struct kvm_x86_pmu_feature event,
-> +				     uint32_t pmc, uint32_t pmc_msr)
-> +{
-> +	uint64_t count;
-> +
-> +	count = _rdpmc(pmc);
-> +	if (!this_pmu_has(event))
-> +		goto sanity_checks;
-> +
-> +	switch (idx) {
-> +	case INTEL_ARCH_INSTRUCTIONS_RETIRED_INDEX:
-> +		GUEST_ASSERT_EQ(count, NUM_INSNS_RETIRED);
-> +		break;
-> +	case INTEL_ARCH_BRANCHES_RETIRED_INDEX:
-> +		GUEST_ASSERT_EQ(count, NUM_BRANCHES);
-> +		break;
-> +	case INTEL_ARCH_CPU_CYCLES_INDEX:
-> +	case INTEL_ARCH_REFERENCE_CYCLES_INDEX:
+Looking at the discussion, this seems to confirm the Display+Touch IC is HX83112A,
+and Truly is the panel manufacturer and all assembled by DJN, so IMHO the initial driver is right.
 
-Since we already support slots event in below guest_test_arch_event(), 
-we can add check for INTEL_ARCH_TOPDOWN_SLOTS_INDEX here.
+Perhaps the compatible should be djn,hx83112a-truly-5p65 to reflect that ?
 
+Neil
 
-> +		GUEST_ASSERT_NE(count, 0);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +sanity_checks:
-> +	__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
-> +	GUEST_ASSERT_EQ(_rdpmc(pmc), count);
-> +
-> +	wrmsr(pmc_msr, 0xdead);
-> +	GUEST_ASSERT_EQ(_rdpmc(pmc), 0xdead);
-> +}
-> +
-> +static void __guest_test_arch_event(uint8_t idx, struct kvm_x86_pmu_feature event,
-> +				    uint32_t pmc, uint32_t pmc_msr,
-> +				    uint32_t ctrl_msr, uint64_t ctrl_msr_value)
-> +{
-> +	wrmsr(pmc_msr, 0);
-> +
-> +	/*
-> +	 * Enable and disable the PMC in a monolithic asm blob to ensure that
-> +	 * the compiler can't insert _any_ code into the measured sequence.
-> +	 * Note, ECX doesn't need to be clobbered as the input value, @pmc_msr,
-> +	 * is restored before the end of the sequence.
-> +	 */
-> +	__asm__ __volatile__("wrmsr\n\t"
-> +			     "mov $" __stringify(NUM_BRANCHES) ", %%ecx\n\t"
-> +			     "loop .\n\t"
-> +			     "mov %%edi, %%ecx\n\t"
-> +			     "xor %%eax, %%eax\n\t"
-> +			     "xor %%edx, %%edx\n\t"
-> +			     "wrmsr\n\t"
-> +			     :: "a"((uint32_t)ctrl_msr_value),
-> +				"d"(ctrl_msr_value >> 32),
-> +				"c"(ctrl_msr), "D"(ctrl_msr)
-> +			     );
-> +
-> +	guest_assert_event_count(idx, event, pmc, pmc_msr);
-> +}
-> +
-> +static void guest_test_arch_event(uint8_t idx)
-> +{
-> +	const struct {
-> +		struct kvm_x86_pmu_feature gp_event;
-> +	} intel_event_to_feature[] = {
-> +		[INTEL_ARCH_CPU_CYCLES_INDEX]		 = { X86_PMU_FEATURE_CPU_CYCLES },
-> +		[INTEL_ARCH_INSTRUCTIONS_RETIRED_INDEX]	 = { X86_PMU_FEATURE_INSNS_RETIRED },
-> +		[INTEL_ARCH_REFERENCE_CYCLES_INDEX]	 = { X86_PMU_FEATURE_REFERENCE_CYCLES },
-> +		[INTEL_ARCH_LLC_REFERENCES_INDEX]	 = { X86_PMU_FEATURE_LLC_REFERENCES },
-> +		[INTEL_ARCH_LLC_MISSES_INDEX]		 = { X86_PMU_FEATURE_LLC_MISSES },
-> +		[INTEL_ARCH_BRANCHES_RETIRED_INDEX]	 = { X86_PMU_FEATURE_BRANCH_INSNS_RETIRED },
-> +		[INTEL_ARCH_BRANCHES_MISPREDICTED_INDEX] = { X86_PMU_FEATURE_BRANCHES_MISPREDICTED },
-> +		[INTEL_ARCH_TOPDOWN_SLOTS_INDEX]	 = { X86_PMU_FEATURE_TOPDOWN_SLOTS },
-> +	};
-> +
-> +	uint32_t nr_gp_counters = this_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
-> +	uint32_t pmu_version = guest_get_pmu_version();
-> +	/* PERF_GLOBAL_CTRL exists only for Architectural PMU Version 2+. */
-> +	bool guest_has_perf_global_ctrl = pmu_version >= 2;
-> +	struct kvm_x86_pmu_feature gp_event;
-> +	uint32_t base_pmc_msr;
-> +	unsigned int i;
-> +
-> +	/* The host side shouldn't invoke this without a guest PMU. */
-> +	GUEST_ASSERT(pmu_version);
-> +
-> +	if (this_cpu_has(X86_FEATURE_PDCM) &&
-> +	    rdmsr(MSR_IA32_PERF_CAPABILITIES) & PMU_CAP_FW_WRITES)
-> +		base_pmc_msr = MSR_IA32_PMC0;
-> +	else
-> +		base_pmc_msr = MSR_IA32_PERFCTR0;
-> +
-> +	gp_event = intel_event_to_feature[idx].gp_event;
-> +	GUEST_ASSERT_EQ(idx, gp_event.f.bit);
-> +
-> +	GUEST_ASSERT(nr_gp_counters);
-> +
-> +	for (i = 0; i < nr_gp_counters; i++) {
-> +		uint64_t eventsel = ARCH_PERFMON_EVENTSEL_OS |
-> +				    ARCH_PERFMON_EVENTSEL_ENABLE |
-> +				    intel_pmu_arch_events[idx];
-> +
-> +		wrmsr(MSR_P6_EVNTSEL0 + i, 0);
-> +		if (guest_has_perf_global_ctrl)
-> +			wrmsr(MSR_CORE_PERF_GLOBAL_CTRL, BIT_ULL(i));
-> +
-> +		__guest_test_arch_event(idx, gp_event, i, base_pmc_msr + i,
-> +					MSR_P6_EVNTSEL0 + i, eventsel);
-> +	}
-> +}
-> +
-> +static void guest_test_arch_events(void)
-> +{
-> +	uint8_t i;
-> +
-> +	for (i = 0; i < NR_INTEL_ARCH_EVENTS; i++)
-> +		guest_test_arch_event(i);
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void test_arch_events(uint8_t pmu_version, uint64_t perf_capabilities,
-> +			     uint8_t length, uint8_t unavailable_mask)
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	struct kvm_vm *vm;
-> +
-> +	/* Testing arch events requires a vPMU (there are no negative tests). */
-> +	if (!pmu_version)
-> +		return;
-> +
-> +	vm = pmu_vm_create_with_one_vcpu(&vcpu, guest_test_arch_events,
-> +					 pmu_version, perf_capabilities);
-> +
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_EBX_BIT_VECTOR_LENGTH,
-> +				length);
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_EVENTS_MASK,
-> +				unavailable_mask);
-> +
-> +	run_vcpu(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +}
-> +
-> +static void test_intel_counters(void)
-> +{
-> +	uint8_t nr_arch_events = kvm_cpu_property(X86_PROPERTY_PMU_EBX_BIT_VECTOR_LENGTH);
-> +	uint8_t pmu_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION);
-> +	unsigned int i;
-> +	uint8_t v, j;
-> +	uint32_t k;
-> +
-> +	const uint64_t perf_caps[] = {
-> +		0,
-> +		PMU_CAP_FW_WRITES,
-> +	};
-> +
-> +	/*
-> +	 * Test up to PMU v5, which is the current maximum version defined by
-> +	 * Intel, i.e. is the last version that is guaranteed to be backwards
-> +	 * compatible with KVM's existing behavior.
-> +	 */
-> +	uint8_t max_pmu_version = max_t(typeof(pmu_version), pmu_version, 5);
-> +
-> +	/*
-> +	 * Detect the existence of events that aren't supported by selftests.
-> +	 * This will (obviously) fail any time the kernel adds support for a
-> +	 * new event, but it's worth paying that price to keep the test fresh.
-> +	 */
-> +	TEST_ASSERT(nr_arch_events <= NR_INTEL_ARCH_EVENTS,
-> +		    "New architectural event(s) detected; please update this test (length = %u, mask = %x)",
-> +		    nr_arch_events, kvm_cpu_property(X86_PROPERTY_PMU_EVENTS_MASK));
-> +
-> +	/*
-> +	 * Force iterating over known arch events regardless of whether or not
-> +	 * KVM/hardware supports a given event.
-> +	 */
-> +	nr_arch_events = max_t(typeof(nr_arch_events), nr_arch_events, NR_INTEL_ARCH_EVENTS);
-> +
-> +	for (v = 0; v <= max_pmu_version; v++) {
-> +		for (i = 0; i < ARRAY_SIZE(perf_caps); i++) {
-> +			if (!kvm_has_perf_caps && perf_caps[i])
-> +				continue;
-> +
-> +			pr_info("Testing arch events, PMU version %u, perf_caps = %lx\n",
-> +				v, perf_caps[i]);
-> +			/*
-> +			 * To keep the total runtime reasonable, test every
-> +			 * possible non-zero, non-reserved bitmap combination
-> +			 * only with the native PMU version and the full bit
-> +			 * vector length.
-> +			 */
-> +			if (v == pmu_version) {
-> +				for (k = 1; k < (BIT(nr_arch_events) - 1); k++)
-> +					test_arch_events(v, perf_caps[i], nr_arch_events, k);
-> +			}
-> +			/*
-> +			 * Test single bits for all PMU version and lengths up
-> +			 * the number of events +1 (to verify KVM doesn't do
-> +			 * weird things if the guest length is greater than the
-> +			 * host length).  Explicitly test a mask of '0' and all
-> +			 * ones i.e. all events being available and unavailable.
-> +			 */
-> +			for (j = 0; j <= nr_arch_events + 1; j++) {
-> +				test_arch_events(v, perf_caps[i], j, 0);
-> +				test_arch_events(v, perf_caps[i], j, 0xff);
-> +
-> +				for (k = 0; k < nr_arch_events; k++)
-> +					test_arch_events(v, perf_caps[i], j, BIT(k));
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-> +
-> +	TEST_REQUIRE(host_cpu_is_intel);
-> +	TEST_REQUIRE(kvm_cpu_has_p(X86_PROPERTY_PMU_VERSION));
-> +	TEST_REQUIRE(kvm_cpu_property(X86_PROPERTY_PMU_VERSION) > 0);
-> +
-> +	kvm_pmu_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION);
-> +	kvm_has_perf_caps = kvm_cpu_has(X86_FEATURE_PDCM);
-> +
-> +	test_intel_counters();
-> +
-> +	return 0;
-> +}
+> 
+> Regards
+> Luca
+> 
+>>
+>> Yours,
+>> Linus Walleij
+> 
+
 
