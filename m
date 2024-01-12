@@ -1,106 +1,335 @@
-Return-Path: <linux-kernel+bounces-24707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E613A82C11C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A7E82C121
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:51:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 984C61F259C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:50:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209A81C221AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A39E6D1BA;
-	Fri, 12 Jan 2024 13:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8896D1BA;
+	Fri, 12 Jan 2024 13:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b3QPwCi8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="h1YIr9y7"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859AC6A038;
-	Fri, 12 Jan 2024 13:50:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06D5AC433F1;
-	Fri, 12 Jan 2024 13:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705067418;
-	bh=2GBsmlDMuRrcjc2Hma/6Rsppr8bfpOi1zXgsvajbU7A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b3QPwCi8lSUlKn9lVR7v8i0+OSGblLUhqlsqZKv6AReHbWezDzAbl5Ek0HuC1CMbH
-	 hn/K732i14ODy4j2Gz5t8iq1wiVIrk3MHXTxnaaTe4Io23MZhxn1BkFS0xUqAwdZHg
-	 Vz6QIeDaCfTzD9YbJgKaCHyNxhIMTmMuWDE+DJ3FgKiZPEPzEeUOKGALfd1OgO60AN
-	 cFFoMfQYsZFxQAZCdn/15HZoag1q5sVA2/btsTQxSYdhbfTLInbvYY8Xc7ABrVUw9/
-	 zwYQM6+8NRSDNSlwnhPXE+pdEGVIQVKm32r90zeT7MyJ/h93VrME76gBc61jsp553F
-	 LDNABLAzw/HEg==
-Date: Fri, 12 Jan 2024 13:50:09 +0000
-From: Will Deacon <will@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, Raag Jadav <raag.jadav@intel.com>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Khuong Dinh <khuong@os.amperecomputing.com>,
-	Kevin Hilman <khilman@baylibre.com>, Andy Gross <agross@kernel.org>,
-	NXP Linux Team <linux-imx@nxp.com>, linux-arm-msm@vger.kernel.org,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Frank Li <Frank.li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Besar Wicaksono <bwicaksono@nvidia.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	linux-amlogic@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Jiucheng Xu <jiucheng.xu@amlogic.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 00/18] perf: Convert to platform remove callback
- returning void
-Message-ID: <20240112135009.GA16771@willie-the-truck>
-References: <cover.1702648124.git.u.kleine-koenig@pengutronix.de>
- <vlnl6og3bts5hcdjw5h7c4km7zolzuf6h7cwyfymjzan3uqjwy@rsra3lqdhou7>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B46C6BB58
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6dc20b4595bso4243691a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:51:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1705067461; x=1705672261; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FCZ8j9fAWWRYV1vYgkF5hXOFc9k0Z1v9gjk2xHmazQc=;
+        b=h1YIr9y7KjbW4Y5DVe+tsCL2Xm+JOzWzxa2uTt2nUWE+deR+jVyDSiiC/FGbFxf4Hm
+         UuY3F2yhs53pM5K4yeFIGW37X/Qt4rxGhdkRPvEs5AifRTcLt22wgzWqhissYWHqTdVd
+         fX13fewegOLt8MsVKtUWWVSRDZAy1GRNWPxQg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705067461; x=1705672261;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FCZ8j9fAWWRYV1vYgkF5hXOFc9k0Z1v9gjk2xHmazQc=;
+        b=OTaznQlVgx0JeVdgwMkNPwrKAalWjX/rFcWR6nTC5Iq16XwADB3HQucT1KimCRxlxI
+         jyEHj2GNo4vercv//W3wXSG36l5SbZDWzYm1Rq4S0CjG67+hOOXKj5t0d7A/i9Aj1fjY
+         r6Opi4QiV0ltOV5cXS9zvIBLB5ovxsoCHoi/eQXlOsAKjuLn1W3SF4vi09BhDiiH92+o
+         Ivrzm8wtopVbEYa005eH38lJ4iikoPTzGHzlNZiHHvV2Cc13n+e6125mlBPVp8p9zXTu
+         XEXJCNwrXqC1nvcicGSfp2TXWQs223qNp2/dYGcVFZXro5sk8gxeOC2Lc+i1dcuCcrW5
+         2LVA==
+X-Gm-Message-State: AOJu0YxSwprDnswX0jr+ZwjoWvo+p0KqWGBhs5KJQ/cme2Fv+HaWEmb7
+	NIZoCfHAlaG12dEusH+H/fFoekE/2tVyvg==
+X-Google-Smtp-Source: AGHT+IH0v4LCgLQ6sLNFl0t4I7XWy3JDM7T0b9IHt4AhkGMTew7AXOuTU64SMTRUAm8aOp2Ur0Rv9A==
+X-Received: by 2002:a05:6870:b152:b0:205:c773:c6da with SMTP id a18-20020a056870b15200b00205c773c6damr1651211oal.60.1705067461069;
+        Fri, 12 Jan 2024 05:51:01 -0800 (PST)
+Received: from [10.5.0.2] ([185.172.52.113])
+        by smtp.gmail.com with ESMTPSA id j12-20020a056870530c00b00203d8ce415bsm790533oan.50.2024.01.12.05.50.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 05:51:00 -0800 (PST)
+Message-ID: <adea48e5-6c9f-41f1-9e7e-1f33aa520a85@joelfernandes.org>
+Date: Fri, 12 Jan 2024 08:50:47 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <vlnl6og3bts5hcdjw5h7c4km7zolzuf6h7cwyfymjzan3uqjwy@rsra3lqdhou7>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu/nocb: Fix WARN_ON_ONCE() in the
+ rcu_nocb_bypass_lock()
+To: Z qiang <qiang.zhang1211@gmail.com>
+Cc: paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+ rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240110081128.18683-1-qiang.zhang1211@gmail.com>
+ <CALm+0cXQF0nS6HD5iZ1RhbWo0rg8adwvcHrsS8W04K1MxY51bA@mail.gmail.com>
+ <06bb8028-a1be-431c-9bff-265777d64e27@paulmck-laptop>
+ <4a3031ff-49e5-4e95-914c-aa034ebfd8a7@joelfernandes.org>
+ <CALm+0cU2j9S7sL-zmXmYD3KBtGxtYgmbxA9rnF2Cud4d8BWH=A@mail.gmail.com>
+Content-Language: en-US
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <CALm+0cU2j9S7sL-zmXmYD3KBtGxtYgmbxA9rnF2Cud4d8BWH=A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Uwe,
 
-On Wed, Jan 10, 2024 at 09:56:26AM +0100, Uwe Kleine-König wrote:
-> On Fri, Dec 15, 2023 at 02:59:00PM +0100, Uwe Kleine-König wrote:
-> > this series converts all drivers below drivers/perf to use
-> > .remove_new(). See commit 5c5a7680e67b ("platform: Provide a remove
-> > callback that returns no value") for an extended explanation and the
-> > eventual goal. The TL;DR; is to make it harder for driver authors to
-> > leak resources without noticing.
-> > 
-> > I based the patches on today's next, I had to revert commits 
-> > 3115ee021bfb ("arm64: perf: Include threshold control fields in
-> > PMEVTYPER mask") and 816c26754447 ("arm64: perf: Add support for event
-> > counting threshold") to compile test on ARCH=arm (this is a problem in
-> > next, not in my patch series).
-> > 
-> > This is merge window material. All patches are pairwise independent of
-> > each other so they can be applied individually. Still it would be great
-> > to let them go in all together.
+
+On 1/12/2024 2:24 AM, Z qiang wrote:
+>>
+>>
+>>
+>> On 1/11/2024 6:54 AM, Paul E. McKenney wrote:
+>>> On Wed, Jan 10, 2024 at 04:36:46PM +0800, Z qiang wrote:
+>>>>>
+>>>>> For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
+>>>>> CONFIG_RCU_LAZY=y, here are the following scenarios that will trigger
+>>>>> WARN_ON_ONCE() in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended().
+>>>>>
+>>>>>         CPU2                                               CPU11
+>>>>> kthread
+>>>>> rcu_nocb_cb_kthread                                       ksys_write
+>>>>> rcu_do_batch                                              vfs_write
+>>>>> rcu_torture_timer_cb                                      proc_sys_write
+>>>>> __kmem_cache_free                                         proc_sys_call_handler
+>>>>> kmemleak_free                                             drop_caches_sysctl_handler
+>>>>> delete_object_full                                        drop_slab
+>>>>> __delete_object                                           shrink_slab
+>>>>> put_object                                                lazy_rcu_shrink_scan
+>>>>> call_rcu                                                  rcu_nocb_flush_bypass
+>>>>> __call_rcu_commn                                            rcu_nocb_bypass_lock
+>>>>>                                                             raw_spin_trylock(&rdp->nocb_bypass_lock) fail
+>>>>>                                                             atomic_inc(&rdp->nocb_lock_contended);
+>>>>> rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
+>>>>>  WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
+>>>>>                             |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
+>>>>>
+>>>>> This commit therefore use the rcu_nocb_try_flush_bypass() instead of
+>>>>> rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan(), if the nocb_bypass
+>>>>> queue is being flushed, the rcu_nocb_try_flush_bypass will return directly.
+>>>>>
+>>>>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>>>
+>>> Just to make sure I understand, the "echo" command called out below
+>>> will trigger the two-CPU scenario called out above in kernels built with
+>>> CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and CONFIG_RCU_LAZY=y, correct?
+>>>
+>>> If so, good catch!
+>>>
+>>> Any objections to this patch?  Or to put it another way, is there a
+>>> better fix via adjusting lazy RCU?
+>>
+>> I think it is a good find and no objections to this patch. One thing we could
+>> also do is have rcu_nocb_try_flush_bypass() return false if the
+>>  trylock fails, and then retry till lock is available. That would give us
+>> roughly the same behavior as rcu_nocb_flush_bypass() but I am not sure if it is
+>> worth it, because the shrinker will just try again if memory pressure is not
+>> relieved anyway.
+>>
+>> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> I wonder if this series is still on someone's radar. It didn't appear in
-> next up to now, so I guess it's too late for 6.8-rc1?!
+> Thanks Joel for the review :) .
 
-This came in during the holiday period so, by the time I saw it, it was
-too late to land for this merge window. I can pick it up for 6.9 in a few
-weeks, though. I usually start queueing stuff at -rc3.
+You're welcome! And thanks for the patch. :)
 
-Will
+ - Joel
+
+> 
+>>
+>> thanks,
+>>
+>>  - Joel
+>>
+>>
+>>>
+>>>                                                       Thanx, Paul
+>>>
+>>>>> ---
+>>>>
+>>>> During rcutorture testing, use echo 3 > /proc/sys/vm/drop_caches will trigger:
+>>>>
+>>>> [ 52.674359] WARNING: CPU: 11 PID: 505 at kernel/rcu/tree_nocb.h:104
+>>>> rcu_nocb_bypass_lock+0xc7/0xd0
+>>>> [ 52.674388] Modules linked in:
+>>>> [ 52.674406] CPU: 11 PID: 505 Comm: sh Not tainted 6.6.0-rt14zqiang-dirty #103
+>>>> [ 52.674422] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+>>>> rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+>>>> [ 52.674436] RIP: 0010:rcu_nocb_bypass_lock+0xc7/0xd0
+>>>> [ 52.674454] Code: 4c 89 e7 e8 4b 3d 6a 01 be 04 00 00 00 4c 89 ef e8
+>>>> ce 92 31 00 f0 ff 8b 68 02 00 00 5b 41 5c 41 5d 41 5e 5d c3 cc cc cc
+>>>> cc 90 <0f> 0b 90 eb d1 0f 1f 40 00 90 90 0
+>>>> [ 52.674467] RSP: 0018:ffff88800af6fa68 EFLAGS: 00010093
+>>>> [ 52.674487] RAX: 0000000000000000 RBX: ffff888069e0f540 RCX: ffffffffb5c12d44
+>>>> [ 52.674497] RDX: 0000000000000003 RSI: dffffc0000000000 RDI: ffff888069e0fb10
+>>>> [ 52.674508] RBP: ffff88800af6fa88 R08: ffffed100d3c1ef6 R09: ffffed100d3c1ef6
+>>>> [ 52.674518] R10: ffffed100d3c1ef5 R11: ffff888069e0f7ab R12: ffff888069e0f8c0
+>>>> [ 52.674529] R13: ffff888069e0f7a8 R14: 000000000000000b R15: ffff88800af6fb90
+>>>> [ 52.674540] FS: 00007ff543132740(0000) GS:ffff88806c000000(0000)
+>>>> knlGS:0000000000000000
+>>>> [ 52.674555] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> [ 52.674565] CR2: 000055df13465004 CR3: 00000000027f2000 CR4: 00000000001506e0
+>>>> [ 52.674576] Call Trace:
+>>>> [ 52.674583] <TASK>
+>>>> [ 52.674598] ? show_regs+0x66/0x70
+>>>> [ 52.674627] ? __warn+0xae/0x220
+>>>> [ 52.674657] ? rcu_nocb_bypass_lock+0xc7/0xd0
+>>>> [ 52.674693] ? report_bug+0x14a/0x240
+>>>> [ 52.674756] ------------[ cut here ]------------
+>>>> [ 52.674766] WARNING: CPU: 2 PID: 118 at kernel/rcu/tree_nocb.h:124
+>>>> __call_rcu_common+0xd3f/0xd80
+>>>> [ 52.674785] Modules linked in:
+>>>> [ 52.674785] ? handle_bug+0x44/0x80
+>>>> [ 52.674795] CPU: 2 PID: 118 Comm: rcuop/10 Not tainted
+>>>> 6.6.0-rt14zqiang-dirty #103
+>>>> [ 52.674806] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+>>>> rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+>>>> [ 52.674812] RIP: 0010:__call_rcu_common+0xd3f/0xd80
+>>>> [ 52.674816] ? exc_invalid_op+0x1c/0x50
+>>>> [ 52.674822] Code: 9e 02 4c 89 e2 e8 a1 46 ff ff e9 d0 fa ff ff 48 8d
+>>>> 7b 18 e8 43 5f 30 00 48 8b 7b 18 48 89 de e8 67 9a ff ff e9 69 f6 ff
+>>>> ff 90 <0f> 0b 90 f3 90 e9 17 fa ff ff 90 b
+>>>> [ 52.674832] RSP: 0018:ffff888002277af8 EFLAGS: 00010002
+>>>> [ 52.674847] RAX: 0000000000000001 RBX: ffff888069e0f540 RCX: ffffffffb5c24655
+>>>> [ 52.674848] ? asm_exc_invalid_op+0x1f/0x30
+>>>> [ 52.674857] RDX: 0000000000000003 RSI: dffffc0000000000 RDI: ffff888069e0f7a8
+>>>> [ 52.674867] RBP: ffff888002277bf0 R08: ffffed100d3c1ef6 R09: ffffed100d3c1ef6
+>>>> [ 52.674877] R10: ffffed100d3c1ef5 R11: ffff888069e0f7ab R12: ffff88800bab62f8
+>>>> [ 52.674887] R13: ffff888069e0f7a8 R14: 0000000000000000 R15: ffff888069e0f918
+>>>> [ 52.674897] FS: 0000000000000000(0000) GS:ffff888069c00000(0000)
+>>>> knlGS:0000000000000000
+>>>> [ 52.674910] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> [ 52.674920] CR2: 000055df13419911 CR3: 00000000027f2000 CR4: 00000000001506e0
+>>>> [ 52.674930] Call Trace:
+>>>> [ 52.674936] <TASK>
+>>>> [ 52.674934] ? rcu_nocb_bypass_lock+0x94/0xd0
+>>>> [ 52.674950] ? show_regs+0x66/0x70
+>>>> [ 52.674972] ? rcu_nocb_bypass_lock+0xc7/0xd0
+>>>> [ 52.674974] ? __warn+0xae/0x220
+>>>> [ 52.675002] ? __call_rcu_common+0xd3f/0xd80
+>>>> [ 52.675010] ? rcu_nocb_bypass_lock+0x94/0xd0
+>>>> [ 52.675037] ? report_bug+0x14a/0x240
+>>>> [ 52.675054] rcu_nocb_flush_bypass+0x3a/0x60
+>>>> [ 52.675094] ? handle_bug+0x44/0x80
+>>>> [ 52.675095] lazy_rcu_shrink_scan+0x12e/0x220
+>>>> [ 52.675114] ? exc_invalid_op+0x1c/0x50
+>>>> [ 52.675139] ? asm_exc_invalid_op+0x1f/0x30
+>>>> [ 52.675156] shrink_slab.constprop.116+0x2cd/0x6e0
+>>>> [ 52.675206] ? __call_rcu_common+0x775/0xd80
+>>>> [ 52.675239] ? __call_rcu_common+0xd3f/0xd80
+>>>> [ 52.675259] ? __pfx_shrink_slab.constprop.116+0x10/0x10
+>>>> [ 52.675272] ? __call_rcu_common+0x775/0xd80
+>>>> [ 52.675335] ? __pfx_drop_pagecache_sb+0x10/0x10
+>>>> [ 52.675365] ? __pfx___call_rcu_common+0x10/0x10
+>>>> [ 52.675386] ? preempt_schedule+0x7f/0xa0
+>>>> [ 52.675396] drop_slab+0x64/0x90
+>>>> [ 52.675413] ? preempt_schedule_thunk+0x1a/0x30
+>>>> [ 52.675426] drop_caches_sysctl_handler+0x82/0xe0
+>>>> [ 52.675472] call_rcu+0x17/0x20
+>>>> [ 52.675489] put_object+0x53/0x70
+>>>> [ 52.675513] __delete_object+0x73/0x90
+>>>> [ 52.675545] delete_object_full+0x1f/0x30
+>>>> [ 52.675563] kmemleak_free+0x41/0x70
+>>>> [ 52.675586] __kmem_cache_free+0x1bd/0x230
+>>>> [ 52.675598] ? rcu_torture_timer_cb+0x12/0x20
+>>>> [ 52.675623] ? rcu_do_batch+0x466/0xf50
+>>>> [ 52.675649] kfree+0x90/0x110
+>>>> [ 52.675661] ? __pfx_rcu_torture_timer_cb+0x10/0x10
+>>>> [ 52.675678] rcu_torture_timer_cb+0x12/0x20
+>>>> [ 52.675697] rcu_do_batch+0x46b/0xf50
+>>>> [ 52.675464] proc_sys_call_handler+0x247/0x310
+>>>> [ 52.675772] ? __pfx_rcu_do_batch+0x10/0x10
+>>>> [ 52.675785] ? migrate_disable+0x2a/0xf0
+>>>> [ 52.675815] ? lockdep_softirqs_off+0x13d/0x200
+>>>> [ 52.675854] ? rcu_nocb_cb_kthread+0x29c/0x880
+>>>> [ 52.675889] rcu_nocb_cb_kthread+0x2b1/0x880
+>>>> [ 52.675910] ? __pfx_proc_sys_call_handler+0x10/0x10
+>>>> [ 52.675945] ? vfs_write+0x3ea/0x7c0
+>>>> [ 52.675958] ? vfs_write+0x3ea/0x7c0
+>>>> [ 52.675959] ? __pfx_rcu_nocb_cb_kthread+0x10/0x10
+>>>> [ 52.675974] ? trace_preempt_on+0x54/0xe0
+>>>> [ 52.675990] ? __kthread_parkme+0x80/0x110
+>>>> [ 52.676015] ? preempt_count_sub+0x50/0x80
+>>>> [ 52.676031] proc_sys_write+0x17/0x20
+>>>> [ 52.676050] vfs_write+0x58b/0x7c0
+>>>> [ 52.676063] ? __kthread_parkme+0xf2/0x110
+>>>> [ 52.676111] ? __pfx_rcu_nocb_cb_kthread+0x10/0x10
+>>>> [ 52.676112] ? __pfx_vfs_write+0x10/0x10
+>>>> [ 52.676139] kthread+0x1a8/0x1f0
+>>>> [ 52.676161] ? kthread+0x107/0x1f0
+>>>> [ 52.676163] ? __might_fault+0x84/0xd0
+>>>> [ 52.676183] ? __pfx_kthread+0x10/0x10
+>>>> [ 52.676197] ? __might_fault+0xbe/0xd0
+>>>> [ 52.676213] ? __might_fault+0x84/0xd0
+>>>> [ 52.676223] ret_from_fork+0x40/0x60
+>>>> [ 52.676238] ? __pfx_kthread+0x10/0x10
+>>>> [ 52.676272] ? __fget_light+0xb8/0x120
+>>>> [ 52.676273] ret_from_fork_asm+0x1b/0x30
+>>>> [ 52.676355] ksys_write+0xd0/0x170
+>>>> [ 52.676386] ? __pfx_ksys_write+0x10/0x10
+>>>> [ 52.676418] </TASK>
+>>>> [ 52.676425] irq event stamp: 591689
+>>>> [ 52.676433] hardirqs last enabled at (591688): [<ffffffffb72b7193>]
+>>>> _raw_spin_unlock_irqrestore+0x63/0x80
+>>>> [ 52.676452] hardirqs last disabled at (591689): [<ffffffffb5c242f3>]
+>>>> __call_rcu_common+0x413/0xd80
+>>>> [ 52.676467] softirqs last enabled at (591668): [<ffffffffb5af3489>]
+>>>> __local_bh_enable_ip+0x109/0x160
+>>>> [ 52.676486] softirqs last disabled at (591672): [<ffffffffb5c1ed2d>]
+>>>> rcu_do_batch+0x5ad/0xf50
+>>>> [ 52.676488] __x64_sys_write+0x47/0x60
+>>>> [ 52.676500] ---[ end trace 0000000000000000 ]---
+>>>> root@qemux86-64:~# [ 52.676526] do_syscall_64+0x47/0x90
+>>>> [ 52.676552] entry_SYSCALL_64_after_hwframe+0x6f/0xd9
+>>>> [ 52.676566] RIP: 0033:0x7ff5432260c4
+>>>> [ 52.676583] Code: 15 59 7d 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff
+>>>> eb b7 0f 1f 00 f3 0f 1e fa 80 3d 1d 0d 0e 00 00 74 13 b8 01 00 00 00
+>>>> 0f 05 <48> 3d 00 f0 ff ff 77 54 c3 0f 1f 8
+>>>> [ 52.676596] RSP: 002b:00007ffcc9614998 EFLAGS: 00000202 ORIG_RAX:
+>>>> 0000000000000001
+>>>> [ 52.676613] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007ff5432260c4
+>>>> [ 52.676624] RDX: 0000000000000002 RSI: 000055df1345df40 RDI: 0000000000000001
+>>>> [ 52.676634] RBP: 000055df1345df40 R08: 000055df1345b700 R09: 0000000000000000
+>>>> [ 52.676644] R10: 00000000000001b6 R11: 0000000000000202 R12: 0000000000000001
+>>>> [ 52.676653] R13: 00007ff5431326c8 R14: 00007ffcc9614a00 R15: 000055df1345b6f8
+>>>> [ 52.676789] </TASK>
+>>>> [ 52.676796] irq event stamp: 502888
+>>>> [ 52.676804] hardirqs last enabled at (502887): [<ffffffffb72b7193>]
+>>>> _raw_spin_unlock_irqrestore+0x63/0x80
+>>>> [ 52.676823] hardirqs last disabled at (502888): [<ffffffffb5c19753>]
+>>>> lazy_rcu_shrink_scan+0x1d3/0x220
+>>>> [ 52.676838] softirqs last enabled at (54708): [<ffffffffb5af3489>]
+>>>> __local_bh_enable_ip+0x109/0x160
+>>>> [ 52.676854] softirqs last disabled at (54698): [<ffffffffb6fd861a>]
+>>>> unix_release_sock+0x26a/0x7c0
+>>>> [ 52.676888] ---[ end trace 0000000000000000 ]---
+>>>>
+>>>> Thanks
+>>>> Zqiang
+>>>>
+>>>>
+>>>>>  kernel/rcu/tree_nocb.h | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+>>>>> index d82f96a66600..9b618842c324 100644
+>>>>> --- a/kernel/rcu/tree_nocb.h
+>>>>> +++ b/kernel/rcu/tree_nocb.h
+>>>>> @@ -1381,7 +1381,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>>>>>                         rcu_nocb_unlock_irqrestore(rdp, flags);
+>>>>>                         continue;
+>>>>>                 }
+>>>>> -               WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
+>>>>> +               rcu_nocb_try_flush_bypass(rdp, jiffies);
+>>>>>                 rcu_nocb_unlock_irqrestore(rdp, flags);
+>>>>>                 wake_nocb_gp(rdp, false);
+>>>>>                 sc->nr_to_scan -= _count;
+>>>>> --
+>>>>> 2.17.1
+>>>>>
+>>>
 
