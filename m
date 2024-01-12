@@ -1,178 +1,140 @@
-Return-Path: <linux-kernel+bounces-24636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0486282BF91
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:05:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102A682BF96
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7CF52843EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:05:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 291B21C21FBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432C56A029;
-	Fri, 12 Jan 2024 12:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A556A322;
+	Fri, 12 Jan 2024 12:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Lymub0Cr"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hyM//Fnf"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4196537F1
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e490c2115so30946965e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:05:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1705061119; x=1705665919; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H7z3qZLN+aPCLKk/ll4OI3COVXKrUJk7WLGgQn7Z58Y=;
-        b=Lymub0CrNmmjQNF5+9mxWOdlsApdcU9VSf1+nPc5jgxDhhoOlMjx1J4UrDZ3YP5rEl
-         5al0iDr4I0+E7RiZnY1Ga4qvT5an6Sdoi96dNg6QRIYe7z5OCb34zTP/4wvH4IojKOT3
-         mYGgmXbTwet4F/lZm2iYoIrPs+j3mMnbSrDNoHDBYgnciLXj9CXkpqk5NhaRKvKQVRM0
-         mvxQN9pmjmuOg6lUCi+zE2w7AfsLt7gNpH0u/cCLq8+sNacuK9CHw5S9A/gq4pMLp5td
-         nBNju6phYrjRiPUvEZtV6ydQSaCjq1xRMibXOe8GVyyJD6JpFbnCDWv2GnVFvRTPXKo4
-         jNsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705061119; x=1705665919;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7z3qZLN+aPCLKk/ll4OI3COVXKrUJk7WLGgQn7Z58Y=;
-        b=rqFFpnM79yUejsS0NXv0WJ6lwUWdMlo1ynPxdIssx+DuRKSn3X4ZaFLWy16bfWbcMO
-         8vILPkXTpjGNp2ZaW9Ni9h4uTpJ6XXb59QHaAtGly02C3MCky/GuilrfhJyiXv/b+7Mx
-         xv2/EFmLqVUcX0mlzgI+TNjAnW7G5KCne+mIA5kGOaukwKWL1kXoKvOZM8FajLhIBN0W
-         kkKQXPj78tsqXD7LVQcepLmg97/QJoMn3sWArlAVZv6+hqXAcjvxdE1OHFy5GCbuI3JQ
-         jnNNZawpfYjQ05lZZIJeK12Dr8bw3TWSZjbJ0RfGEEvPYhSuJ+zm81hwykoMtUJWlRNd
-         i9Og==
-X-Gm-Message-State: AOJu0YyjUXvFHTVq+hSXKrNBRgfiinAm7ZBs29sBJ63rmcL30sKW2sKg
-	lLS0NcOMSTFGnS/JGq5XVk/Ymx3LKe2bGQ==
-X-Google-Smtp-Source: AGHT+IHRmCC++w1Zs1w8fgLWB7xpPr8zilYFO4eQQbZ5n0I7SQeBoZ2uX8cH+HmHxVUddjZdxv9mmQ==
-X-Received: by 2002:a7b:c848:0:b0:40d:94ba:cb8c with SMTP id c8-20020a7bc848000000b0040d94bacb8cmr627469wml.109.1705061118796;
-        Fri, 12 Jan 2024 04:05:18 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.5])
-        by smtp.gmail.com with ESMTPSA id fa7-20020a05600c518700b0040e6792305asm1420560wmb.16.2024.01.12.04.05.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 04:05:18 -0800 (PST)
-Message-ID: <98067d77-bfde-45a8-af6b-9eaf4bcc3839@tuxon.dev>
-Date: Fri, 12 Jan 2024 14:05:17 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526026A032
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705061188; x=1736597188;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=qZO5o8gloP88hNEdbyf9gooCX6/C7fxpb8IKA6kIC/U=;
+  b=hyM//FnfKYE1n2o5ZnHZAR1919Dre9R4uNLe9OsDqzuTw24JQkF6BvV/
+   HWWEa41oWu77lU6VN8uRXOTAyRt4YHpv+5M4z2APrTTCLarTXbFCWJ9cq
+   pfXhQdhR39DV/O87Y+QoDutx3lpd2/JohfRccufoN/pElEsZalVzbogT5
+   QQWdEq4j8LB6KUulyArRWdl7WedkRZiTAFYnW2Tg5VVO4DSTeRb9eN9et
+   +tHsSXMF/IftuW809i26bRGWQzo0Eh+jXZkZp5hPbXJC7rkMruMiXLfe8
+   zVqxWybOzmq+sBCXhFEkhebFMdbybdwwuZQN8TAJVw/0s/asSUabYDwWE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="463441909"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="463441909"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 04:06:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="24689196"
+Received: from kschuele-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.195])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 04:06:19 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id B843210A557; Fri, 12 Jan 2024 15:06:16 +0300 (+03)
+Date: Fri, 12 Jan 2024 15:06:16 +0300
+From: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To: NOMURA =?utf-8?B?SlVOSUNISSjph47mnZHjgIDmt7PkuIAp?= <junichi.nomura@nec.com>
+Cc: "mingo@redhat.com" <mingo@redhat.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"david@redhat.com" <david@redhat.com>,
+	"nikunj@amd.com" <nikunj@amd.com>,
+	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+	"debarbos@redhat.com" <debarbos@redhat.com>,
+	"jlelli@redhat.com" <jlelli@redhat.com>,
+	"lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+	"dzickus@redhat.com" <dzickus@redhat.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH repost] x86/boot: Add a message about ignored early NMIs
+Message-ID: <20240112120616.5zjojjmjeqg5egb7@box>
+References: <ZaEe8FC767f+sxRQ@jeru.linux.bs1.fc.nec.co.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pinctrl: renesas: rzg2l: Fix double unlock in
- rzg2l_dt_subnode_to_map()
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Linus Walleij <linus.walleij@linaro.org>, linux-renesas-soc@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-References: <f8c3a3a0-7c48-4e40-8af0-ed4e9d9b049f@moroto.mountain>
- <185128ab-f229-4b40-91cd-ebdc138e11ac@tuxon.dev>
- <300d204b-8151-45f3-9977-7ceb3a5c5eb0@moroto.mountain>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <300d204b-8151-45f3-9977-7ceb3a5c5eb0@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZaEe8FC767f+sxRQ@jeru.linux.bs1.fc.nec.co.jp>
 
-
-
-On 12.01.2024 11:53, Dan Carpenter wrote:
-> On Fri, Jan 12, 2024 at 10:55:40AM +0200, claudiu beznea wrote:
->> Hi, Dan,
->>
->> Thanks for your patch!
->>
->> On 10.01.2024 20:41, Dan Carpenter wrote:
->>> If rzg2l_map_add_config() fails then the error handling calls
->>> mutex_unlock(&pctrl->mutex) but we're not holding that mutex.  Move
->>> the unlocks to before the gotos to avoid this situation.
->>>
->>> Fixes: d3aaa7203a17 ("pinctrl: renesas: rzg2l: Add pin configuration support for pinmux groups")
->>> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
->>> ---
->>> (Not tested).
->>
->> I've tested it on RZ/G3S SoC and all is good.
->>
->> However, I think, to keep the locking scheme unchanged and simpler (FMPOV),
->> commit d3aaa7203a17 ("pinctrl: renesas: rzg2l: Add pin configuration
->> support for pinmux groups") should have been call rzg2l_map_add_config()
->> just before the mutex is locked. That would be the following diff:
->>
->> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
->> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
->> @@ -447,6 +447,16 @@ static int rzg2l_dt_subnode_to_map(struct pinctrl_dev
->> *pctldev,
->>  		name = np->name;
->>  	}
->>
->> +	if (num_configs) {
->> +		ret = rzg2l_map_add_config(&maps[idx], name,
->> +					   PIN_MAP_TYPE_CONFIGS_GROUP,
->> +					   configs, num_configs);
->> +		if (ret < 0)
->> +			goto done;
->> +
->> +		idx++;
->> +	}
->> +
->>  	mutex_lock(&pctrl->mutex);
->>
->>  	/* Register a single pin group listing all the pins we read from DT */
->> @@ -474,16 +484,6 @@ static int rzg2l_dt_subnode_to_map(struct pinctrl_dev
->> *pctldev,
->>  	maps[idx].data.mux.function = name;
->>  	idx++;
->         ^^^^^
-
-This needs to be here for subsequent calls of rzg2l_dt_subnode_to_map() to
-know which entry in maps[] to be populated next time.
-
+On Fri, Jan 12, 2024 at 11:13:53AM +0000, NOMURA JUNICHI(野村 淳一) wrote:
+> Commit 78a509fba9c9 ("x86/boot: Ignore NMIs during very early boot") added
+> empty handler in early boot stage to avoid boot failure by spurious NMIs.
 > 
->>
->> -	if (num_configs) {
->> -		ret = rzg2l_map_add_config(&maps[idx], name,
->> -					   PIN_MAP_TYPE_CONFIGS_GROUP,
->> -					   configs, num_configs);
->> -		if (ret < 0)
->> -			goto remove_group;
->> -
->> -		idx++;
->> -	}
+> Add a diagnostic message in case we need to know whether early NMIs have
+> occurred and/or what happened to them.
 > 
-> Does the ordering of the maps[] not matter?
-
-It doesn't matter, AFAIKT. The core code checks for map type (e.g.
-PIN_MAP_TYPE_CONFIGS_GROUP) when processes the data from maps[].
-
+> Signed-off-by: Jun'ichi Nomura <junichi.nomura@nec.com>
+> Suggested-by: Borislav Petkov <bp@alien8.de>
+> Suggested-by: H. Peter Anvin <hpa@zytor.com>
+> Link: https://lore.kernel.org/lkml/20231130103339.GCZWhlA196uRklTMNF@fat_crate.local/
 > 
->> -
->>  	dev_dbg(pctrl->dev, "Parsed %pOF with %d pins\n", np, num_pinmux);
->>  	ret = 0;
->>  	goto done;
->>
->> Would you mind doing it like this?
->>
->> Please, let me know if you want me to handle it.
-> 
-> Either way is fine.  Whatever is easiest.
+> diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+> --- a/arch/x86/boot/compressed/ident_map_64.c
+> +++ b/arch/x86/boot/compressed/ident_map_64.c
+> @@ -387,7 +387,10 @@ void do_boot_page_fault(struct pt_regs *regs, unsigned long error_code)
+>  	kernel_add_identity_map(address, end);
+>  }
+>  
+> +extern int spurious_nmi_count;
+> +
 
-Ok, I'll prepare a patch as I already tested it on my side on multiple
-platforms.
+It has to be in a header file.
 
-Thank you,
-Claudiu Beznea
+>  void do_boot_nmi_trap(struct pt_regs *regs, unsigned long error_code)
+>  {
+>  	/* Empty handler to ignore NMI during early boot */
+> +	spurious_nmi_count++;
+>  }
+> diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
+> --- a/arch/x86/boot/compressed/misc.c
+> +++ b/arch/x86/boot/compressed/misc.c
+> @@ -357,6 +357,8 @@ unsigned long decompress_kernel(unsigned char *outbuf, unsigned long virt_addr,
+>  	return entry;
+>  }
+>  
+> +int spurious_nmi_count;
+> +
 
-> 
-> regards,
-> dan carpenter
-> 
+It is not a right place to define a variable. Do it next to rest of
+variables at the beginning of the file.
+>  /*
+>   * The compressed kernel image (ZO), has been moved so that its position
+>   * is against the end of the buffer used to hold the uncompressed kernel
+> @@ -493,6 +495,12 @@ asmlinkage __visible void *extract_kernel(void *rmode, unsigned char *output)
+>  	/* Disable exception handling before booting the kernel */
+>  	cleanup_exception_handling();
+>  
+> +	if (spurious_nmi_count) {
+> +		error_putstr("Spurious early NMI ignored. Number of NMIs: 0x");
+> +		error_puthex(spurious_nmi_count);
+> +		error_putstr("\n");
+> +	}
+> +
+>  	return output + entry_offset;
+>  }
+>  
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
