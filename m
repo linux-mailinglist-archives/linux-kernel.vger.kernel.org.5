@@ -1,161 +1,161 @@
-Return-Path: <linux-kernel+bounces-25054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A6B82C6F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:03:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E40FB82C6FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:08:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D7182863B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:03:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8E8F1C21D63
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F41C17734;
-	Fri, 12 Jan 2024 22:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9687A17736;
+	Fri, 12 Jan 2024 22:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hv5cXUtY"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z/Hd5SsC"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C9F175B0
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-428405a0205so16241cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:03:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7D4171DC;
+	Fri, 12 Jan 2024 22:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78313f4d149so648486485a.1;
+        Fri, 12 Jan 2024 14:08:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705096996; x=1705701796; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9lHgN5qvgn7BlYDMVD9NaB939Lp8cACoBD9pFBrl1e8=;
-        b=hv5cXUtYVrK6GgP8gCLp8elexbbAzOMHeHxdrGzKjJHSHhzZuAn2l5l4hmLcOSNec2
-         s1D6o0mR+YzVGQ4SkznC4YSDeAvVc4CwETOe6kmCh9VfrvtYaC30C1slmKRLM1jZ4Enk
-         6M5SPt2+wvMEJrgOxbjsRrlrNrHnwgvNacty1W6/dRr+NU+RU33kp9CtMvLKAmheoHhg
-         vAYty9zdaftg0t/7ZVD5u/EdS76Th7PSqdslWBeaSRMaOw+x1lX43IsxRuCWq1OizN3/
-         uKrdT52RxnqS29Jh59lIOu2Dm6tgHK7m2lfspAZaObHZh5YAhJuWSHz/j7sKmYJ06OwI
-         BTMQ==
+        d=gmail.com; s=20230601; t=1705097292; x=1705702092; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L+7rof0WGlCw1G9RYMZg6Un65fjMjn71sH8lI9OCckg=;
+        b=Z/Hd5SsC8hJoSqn1bBPk3BCewsKnbrtX4TLiG+sbOXGpqSGzxC2Y9LQlYqtHzNpLUS
+         7+THXT53qF2TPtHx7ufqfmtjhzdxBIbiCvtVt2ileWjG2dhyLiBw4SuH7UZCYIyRZ/hF
+         hEKF/VwSUaJVOsZ17EK+2bcr3wRs7+M1R8pbyrS+skXlEwHVMS9DgMy5KjS3fmLp65xU
+         Tmkbm5z+Lw5aiECBJ2y0MtunSNiTMGyDBSOBsI6AZO4ifH14AEo/kf/vswCwSdS0iesh
+         wPowlj1sxSv5rQk9r7tOopw7PTebAVhc4tQ6UJiUc1YDCpDq02DcdMNTRHhIdOKYdOTt
+         J8PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705096996; x=1705701796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9lHgN5qvgn7BlYDMVD9NaB939Lp8cACoBD9pFBrl1e8=;
-        b=DaaBgrtGy1+WwrR+aOZFPD3NqXF5Vrdlg8GNsY6km2ueX/hRI5bZpbxlbsyPO5pDrc
-         cxbH5yCz+8hLLWWUsaQTrSujwNReFx2qEtV3AzvCA1okB4k7WA9e7uvgAxw9DXQUwt2q
-         Uyx/0KJVPzf4Sneb3rHaTbDGwdQ3oiekwVTomHahdA1JmWT8HyRwHSuedco0Fpw/GjKe
-         9GSA+FN4EtIm6z/7B0qb9HucfuYuKASQ+Fac8aUYbcRdySmgT9lA7Y5LxssGwDBIXOhP
-         5K4ieKLjLyvy+afbl+HKX5NxO1qxaGhbZtSg4Sxm4n2FJ/F0U8PdxnIyFXbknhTtvXSJ
-         RIMg==
-X-Gm-Message-State: AOJu0YyGgFr2kWLaJ9wzQH5mpqyoKu7GT93EAYQToA19moiZnE1jWHVS
-	TPWiqD5FeWe3Su+tGAQMmBgMWwrCJNCt9mubyc//uMVp6LnO
-X-Google-Smtp-Source: AGHT+IFYF/m2xgNcuqcb4/FbnoeqqUGLh9dFt6e8c8HCujTIksvXc3E02pJYkniEr3zNANu4be8EiMzLheZdRMp6fy8=
-X-Received: by 2002:a05:622a:14c8:b0:429:c835:cd9f with SMTP id
- u8-20020a05622a14c800b00429c835cd9fmr524482qtx.12.1705096995694; Fri, 12 Jan
- 2024 14:03:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705097292; x=1705702092;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L+7rof0WGlCw1G9RYMZg6Un65fjMjn71sH8lI9OCckg=;
+        b=rN75zFfViFNf6tpZclYAcoYToadpMsPpkxMPRQxLVLcDyCcWYi5ZoA/93b64a3munO
+         jHp0t9AbY14RnJja5RgNiynEsOH/v5I2BipRcUgL5yFQRBRp9LNHNE0UI28UJu0mODj4
+         neXMnswO3F73biQTeTTrN280XuNU/D/wz5MTh28HwDN0m+DPc/bnmnmZTurfy1gz673Y
+         SOdUUWxmheOhIicRj23VfiSD8xT0HC7hz2G4dqjb8f6BXqTMeKV6rwEjP28ddv+4Giog
+         3Zh9tNWjYJHiLs+a4Y41VxPWUYxrxgVnRSG3jFyu/sLcX0lAUP1entYyVrX0xLkm9f75
+         BhLg==
+X-Gm-Message-State: AOJu0YzmIJw8e5bkWZStMuUFZJ9YECK8R4eNGyeUNBO2kynzngp3KaTw
+	Wll3fibGkm9ntwaGututirU=
+X-Google-Smtp-Source: AGHT+IFMWkakS3L4QJvpofeuSpyOj3jN5og4vYpEA7zXTSj2qfQO35AsSgQitanirAcz/0rgJsgdDg==
+X-Received: by 2002:a37:e20d:0:b0:783:35c0:d912 with SMTP id g13-20020a37e20d000000b0078335c0d912mr2433654qki.107.1705097292268;
+        Fri, 12 Jan 2024 14:08:12 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id cn3-20020a05622a248300b00429c8ae9b94sm1417880qtb.85.2024.01.12.14.08.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 14:08:11 -0800 (PST)
+Message-ID: <e1a9f5cf-d935-4754-9e8c-d34fcae000ed@gmail.com>
+Date: Fri, 12 Jan 2024 14:08:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231111014933.1934562-1-davidai@google.com> <20231111014933.1934562-2-davidai@google.com>
- <865y231jvj.wl-maz@kernel.org> <CAGETcx9-n0z5buWgtLZ+6VxW2jEko1GWzkGtGhFiZEq-x_G4nw@mail.gmail.com>
- <867clpaxel.wl-maz@kernel.org>
-In-Reply-To: <867clpaxel.wl-maz@kernel.org>
-From: Saravana Kannan <saravanak@google.com>
-Date: Fri, 12 Jan 2024 14:02:39 -0800
-Message-ID: <CAGETcx_8x4p7WTwqQiVGdtHftVjFUJruXsOXwJXgDi0GdEtLNA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-To: Marc Zyngier <maz@kernel.org>
-Cc: David Dai <davidai@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Viresh Kumar <viresh.kumar@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Quentin Perret <qperret@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Pavan Kondeti <quic_pkondeti@quicinc.com>, Gupta Pankaj <pankaj.gupta@amd.com>, 
-	Mel Gorman <mgorman@suse.de>, kernel-team@android.com, linux-pm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: ethernet: ravb: fix dma mapping failure handling
+Content-Language: en-US
+To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
+ Denis Kirjanov <dkirjanov@suse.de>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240112050639.405784-1-nikita.yoush@cogentembedded.com>
+ <64deebbd-93d0-47dc-835e-f719655e076c@suse.de>
+ <804a4586-1909-44ee-a40c-d9cb615f75ad@cogentembedded.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <804a4586-1909-44ee-a40c-d9cb615f75ad@cogentembedded.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Sorry for the delay in response. Was very busy for a while and then
-holidays started.
+On 1/12/24 01:04, Nikita Yushchenko wrote:
+> 
+> 
+> 12.01.2024 14:56, Denis Kirjanov wrote:
+>>
+>>
+>> On 1/12/24 08:06, Nikita Yushchenko wrote:
+>>> dma_mapping_error() depends on getting full 64-bit dma_addr_t and does
+>>> not work correctly if 32-bit value is passed instead.
+>>>
+>>> Fix handling of dma_map_single() failures on Rx ring entries:
+>>> - do not store return value of dma_map_signle() in 32-bit variable,
+>>> - do not use dma_mapping_error() against 32-bit descriptor field when
+>>>    checking if unmap is needed, check for zero size instead.
+>>
+>> Hmm, something is wrong here since you're mixing DMA api and forced 
+>> 32bit values.
+>> if dma uses 32bit addresses then dma_addr_t need only be 32 bits wide
+> 
+> dma_addr_t is arch-wide type and it is 64bit on arm64
 
-On Fri, Dec 8, 2023 at 12:52=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Thu, 07 Dec 2023 22:44:36 +0000,
-> Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Wed, Nov 15, 2023 at 12:49=E2=80=AFAM Marc Zyngier <maz@kernel.org> =
-wrote:
-> > >
-> > > On Sat, 11 Nov 2023 01:49:29 +0000,
-> > > David Dai <davidai@google.com> wrote:
-> > > >
-> > > > Adding bindings to represent a virtual cpufreq device.
-> > > >
-> > > > Virtual machines may expose MMIO regions for a virtual cpufreq devi=
-ce
-> > > > for guests to read frequency information or to request frequency
-> > > > selection. The virtual cpufreq device has an individual controller =
-for
-> > > > each frequency domain.
-> > >
-> > > I would really refrain form having absolute frequencies here. A
-> > > virtual machine can be migrated, and there are *zero* guarantees that
-> > > the target system has the same clock range as the source.
-> > >
-> > > This really should be a relative number, much like the capacity. That=
-,
-> > > at least, can be migrated across systems.
-> >
-> > There's nothing in this patch that mandates absolute frequency.
-> > In true KVM philosophy, we leave it to the VMM to decide.
->
-> This has nothing to do with KVM. It would apply to any execution
-> environment, including QEMU in TCG mode.
->
-> To quote the original patch:
->
-> +    description:
-> +      Address and size of region containing frequency controls for each =
-of the
-> +      frequency domains. Regions for each frequency domain is placed
-> +      contiugously and contain registers for controlling DVFS(Dynamic Fr=
-equency
-> +      and Voltage) characteristics. The size of the region is proportion=
-al to
-> +      total number of frequency domains.
->
-> What part of that indicates that *relative* frequencies are
-> acceptable? The example explicitly uses the opp-v2 binding, which
-> clearly is about absolute frequency.
+Correct, does not mean all of the bits will be used, nor that there is 
+not an offset, see below.
 
-We can update the doc to make that clearer and update the example too.
+> 
+> Still, some devices use 32-bit dma addresses.
+> Proper setting of dma masks and/of configuring iommu ensures that in no 
+> error case, dma address fits into 32 bits.
 
-> To reiterate: absolute frequencies are not the right tool for the job,
-> and they should explicitly be described as relative in the spec. Not
-> left as a "whatev'" option for the execution environment to interpret.
+Yes, because dma_addr_t must be sized to the maximum supportable DMA 
+address in any given system, hence it is 64-bit for a 64-bit 
+architecture. If someone had a system with 32-bit DMA addressing 
+limitation, they could technically introduce a Kconfig option to narrow 
+dma_addr_t, not that this should ever be done. Anyway, I digress.
 
-I think it depends on the use case. If there's no plan to migrate the
-VM across different devices, there's no need to do the unnecessary
-normalization back and forth.
+> Still, in error case dma_map_single() returns ~((dma_addr_t)0) which 
+> uses fill dma_addr_t width and gets corrupted if assigned to 32-bit 
+> value, then later call to dma_mapping_error() does not recognize it. The 
+> patch fixes exactly this issue.
 
-And if we can translate between pCPU frequency and a normalized
-frequency, we can do the same for whatever made up frequencies too. In
-fact, we plan to do exactly that in our internal use cases for this.
-There's nothing here that prevents the VMM from doing that.
+Your patch is actually fine, but you might have to write a lot more 
+about it to tell the reviewers that it is fine.
 
-Also, if there are hardware virtualized performance counters (AMU,
-CPPC, etc) that are used for frequency normalization, then we have to
-use the real frequencies in those devices otherwise the "current
-frequency" can be 2 GHz while the max normalized frequency is 1024
-KHz. That'll mess up load tracking.
+At the very least you should explain that in case of DMA mapping failure 
+by ravb_rx_ring_format_gbeth() and ravb_rx_ring_format_rcar(), the 
+dsecriptor's ds_cc field is written to 0 to denote a mapping failure.
 
-Thanks,
-Saravana
+Note that we will still write a dma_addr_t cookie that corresponds to an 
+error, but this may be OK, because the hardware looks for a ds_cc != 0 
+to determine whether to DMA the packet into memory or not.
+
+Because of the convention established in ravb_rx_ring_format_gbeth() and 
+ravb_rx_ring_format_rcar(), checking for ds_cc == 0 to denote a mapping 
+error in ravb_rx_ring_free_gbeth() and ravb_rx_ring_free_rcar() is an 
+acceptable way of checking for a valid mapping.
+
+What is however not valid, is that again, we use desc->dptr and pass 
+that to dma_unmap_single() which would expect the non-truncated 
+dma_addr_t. Again, probably works by design, chance, whatever, but is 
+not supposed to be done that way.
+
+It looks like the hardware is limited to 32-bit of DMA addressing, and 
+assumes that the dma_addr_t cookie is 0-indexed, which may very well be 
+the case, even with 64-bit SoCs thanks to an IOMMU.
+
+It would feel a lot more comfortable if there was an actual check on the 
+upper 32-bits of dma_addr_t being zero, and issue a big fat warning in 
+case they are not.
+
+Thanks!
+-- 
+Florian
+
 
