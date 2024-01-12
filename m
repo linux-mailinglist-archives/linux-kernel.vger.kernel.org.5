@@ -1,384 +1,348 @@
-Return-Path: <linux-kernel+bounces-25112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47DBB82C812
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:43:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5370482C816
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CA191C22AD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:43:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA2711F236E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80041BDDA;
-	Fri, 12 Jan 2024 23:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DF31A5B9;
+	Fri, 12 Jan 2024 23:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="zFWZFLPH"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2061.outbound.protection.outlook.com [40.107.223.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="MlYt6vMR"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105FB1B27D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 23:42:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RJ1SLptHso8gIVN3L1ngq/3WvIT0oAAK4wN7aS+NwPBD5To2J6BKgOuOoB9m9Br2X+AbxCFPNEU6JJfvUAzk3S7Rak1E3Qmr12pVRfptRlByHxynIVTDWC+PaGFt4IiwPQoTnBIExSKI9FRApuFZDfRPxIGajjM/VYztcB7jCtjErL0rwx+GecP1yol3yp103UHv9GYcJBZ8C+JIAWNLDOem8H6gBf1qSOARIN0GlTb2ThJcYkYPeBBCZ3wYA3KPCWSwTYSWqn9NcQiA4iSrjOLEXeOmJaQpQ9eagMf+X5EhZDnWv+VDYiD9h8lV+1vdbqJz7fFnX+SIwwM0IoMGAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UfsYhXNsUCFCNTTYOFqudqAYleJl/Yb/KBCNQ7oDDks=;
- b=kpf0D0YSBrEBMxHjQxfMS0o8COO8aIMh2iExpv2CizNPp2fYqNbB/PB10Ox0JsxOUIVTzmygSqOegQOWyrexNuQBFW7/0sqpww4yDw5W8kLHnp8hUWMq17AmH/j34LUDXtc7Kk3b37gsrzwU1nc64QiKGbPE20gI6oYQUghlsRBk60y2pOWdqBjLR7HTk7ogEbsBuLGELRTU+dFIm9eLQqJMImf/3OEFVUoZBr3EFT/EBHAtkJwImAI+vHf9ynpncnZFMnnLitqX5Rwa+Ggjz6hZUn9g1eflf9VmGXZW+Qwg7RhXnPyY4xB8QBsvHleOVhDFWQGlDhIG7ZjBNcx+GQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ideasonboard.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UfsYhXNsUCFCNTTYOFqudqAYleJl/Yb/KBCNQ7oDDks=;
- b=zFWZFLPHyghOj16LVUFdZaRuAguWHOBlewjfxpVUY8mKmhF7rHZh8y301a0HGN6FpgcSL0hhwpomjkIGoQSIeuml+chEZYTUhu1HAguJbKcoALqxEAnfmT/kZybMmuqx2rNkYcLW3OvW0OJuv9Y/gO7wNerNuNptrTukmRRPwMQ=
-Received: from PH0PR07CA0015.namprd07.prod.outlook.com (2603:10b6:510:5::20)
- by CH0PR12MB5218.namprd12.prod.outlook.com (2603:10b6:610:d1::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Fri, 12 Jan
- 2024 23:42:29 +0000
-Received: from SN1PEPF000252A1.namprd05.prod.outlook.com
- (2603:10b6:510:5:cafe::d4) by PH0PR07CA0015.outlook.office365.com
- (2603:10b6:510:5::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21 via Frontend
- Transport; Fri, 12 Jan 2024 23:42:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF000252A1.mail.protection.outlook.com (10.167.242.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.13 via Frontend Transport; Fri, 12 Jan 2024 23:42:28 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 12 Jan
- 2024 17:42:27 -0600
-Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Fri, 12 Jan 2024 17:42:26 -0600
-From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-To: <laurent.pinchart@ideasonboard.com>, <maarten.lankhorst@linux.intel.com>,
-	<mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <michal.simek@amd.com>, <dri-devel@lists.freedesktop.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 4/4] drm: xlnx: zynqmp_dpsub: Set live video in format
-Date: Fri, 12 Jan 2024 15:42:22 -0800
-Message-ID: <20240112234222.913138-5-anatoliy.klymenko@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
-References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0857F1A59D
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 23:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cd64022164so71539551fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:44:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google; t=1705103044; x=1705707844; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FKzoznfuhAU3mzAePIS1P1Z8bzedL+mTaXOxTBLMlgg=;
+        b=MlYt6vMRJ1Y5DSGSH8KdOy+/Pe1uqDWbAkXOcAPAil8kVVkXzjqeTLfxHuRnYPSZmg
+         qc28jO2jxMvBEjTK0GjAB1lxah/cj04CpN+D0h/iqrS3+GzxNPGRFLofg6Wa1FBjfYln
+         KmjzUAdRrXbCPM5VlEFzi64E1A2lCWdz0r2m4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705103044; x=1705707844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FKzoznfuhAU3mzAePIS1P1Z8bzedL+mTaXOxTBLMlgg=;
+        b=qKOAR1qdYXkZW0Bbv/vkICx5Ymhrw0U7gRvM3l425OnExDe3WMoNobkU31U5LyFQdP
+         lFYMm2j4/EOIIAN8Mlm35wQvLliMOVSEQ3ik6eLG+W9jo+w3eA7d5MzEm/WvMdPZw9d+
+         vTVb91uCDkQWoYr5NHtQKixcIAyvEbAHWT2qI71G5fSuwJa0jtaRcp/p255R9LxanbSS
+         BScRnZaEsgnlJQaYnCPPz601BGU3+/BMMDK4Tj0eB6mKEIZ+m/pFk7FemsHzc2xIA0e5
+         /lQ1iHPFxE6/lRFSG90Pm/9IeeBOHJxByAwdvh80IJ7/TOpjp72q/1J7pKvQf91t0kCE
+         rjpQ==
+X-Gm-Message-State: AOJu0YzChLPVhBSADmmlrW0YZ2+0AdN/aa0OlmIkJh8H/OvAsHpCzRal
+	YBYAzGZH3+/1teVHirgsPo4kse12pAzb8mTgHJ+lCCr5QnBz
+X-Google-Smtp-Source: AGHT+IEuYhuaV0YfY7INlEFt2mMjJ+bbLhiRwxnYyuWvovTDvwX91aHjf1fNHKr+qqOgIt/FeATkjXnlLnqfQo777wg=
+X-Received: by 2002:a2e:b04b:0:b0:2cd:10be:cf1b with SMTP id
+ d11-20020a2eb04b000000b002cd10becf1bmr1260693ljl.12.1705103043924; Fri, 12
+ Jan 2024 15:44:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A1:EE_|CH0PR12MB5218:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d1528c3-6861-4456-d660-08dc13c822fa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	iGC4qWbBwyws/+3rpKUGCtNUjMh1gpMnNDThrFhcUwNYrXBhF5uy7B1Gw7HW0k8tN7YqXD+/XCLmlPYzSarwpGwZr6oV+tAFh2Uirp/X+j4IW5Uw5K9rlIxSWDhgx2+S51yH0CK6wqgMG0YG+L+epnnQ+Dy4KS/W0tfGHMmcHxMVc3CObF60gEOB6wOa+4r1LTGSzPHg4I/OLmOnD+9TJmzQf6T/TngDPVZp5kkbRBItU7g63mhns308EE+7qELZt4TpQJQvvCppLSw+cCtMVTUkTkb8q06cm4MI8m/zRkbXpedQEt9aZdJVHrOw1kM5fKBH+H0KrW8Z9OedDtmIF1PE5iAYR5+vYbS1AR0QyDaw98dTclCi9QN53RueuBUckX8VQ94A5cMS3Nll0zD5j0oEmsTaIp+zBHpCxZypovpixItPiuOSVeINa12jHJUZGZdbnhMbIfAkek3Mk2VegEZMJe3FHiOEC0SQ64sKEtDryML6/8eH7NWF336/jp/hnDQzRjouukZWpumLaHkUuVTg/jQGG5O3IudzTXOfslK7VlSNrifusMOANbkb3f4iybzjyCRauxkW/uY3aGgEWvvkjulUpr4r8HRH/Tl/VX1HJ7iwuI1RkQktv5en8Hw97Ghbc4EczjAfA7SkAg6KD8AUYKNXijCZaJs37vfdMJHsvQG6cNERX3Wtin6opIAy9veZZjdSUdSM8Kgtptsf0D+b2XsOlNpHE5oqo17x2l1eTPmZGATgayK977l1OpFXwSvWi3b0eVypiotqJWxTTY+tkf1CUNnUucw5v1ndHkM/8gP8+0LjfjlvtxSuI98TbXSBjD1/dKV0LS5bVJqGEw==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(376002)(136003)(346002)(230922051799003)(64100799003)(186009)(451199024)(82310400011)(1800799012)(36840700001)(46966006)(40470700004)(40460700003)(40480700001)(426003)(6666004)(36860700001)(1076003)(2616005)(336012)(26005)(81166007)(36756003)(86362001)(82740400003)(356005)(2906002)(44832011)(8936002)(8676002)(83380400001)(47076005)(5660300002)(921011)(41300700001)(70586007)(316002)(478600001)(70206006)(110136005)(83996005)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 23:42:28.0393
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d1528c3-6861-4456-d660-08dc13c822fa
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF000252A1.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5218
+References: <20240110073917.2398826-1-peterlin@andestech.com>
+ <20240110073917.2398826-4-peterlin@andestech.com> <CAAhSdy1vsngrYj2tjUJqxepLEcz1zOFfYHvAvL4kqX4p62gnGA@mail.gmail.com>
+In-Reply-To: <CAAhSdy1vsngrYj2tjUJqxepLEcz1zOFfYHvAvL4kqX4p62gnGA@mail.gmail.com>
+From: Atish Patra <atishp@atishpatra.org>
+Date: Fri, 12 Jan 2024 15:43:51 -0800
+Message-ID: <CAOnJCULm0DOEkWZN6sXx-jGzZZaHsQ+H5=dvx15f2KsgfsMrPA@mail.gmail.com>
+Subject: Re: [PATCH v7 03/16] irqchip/riscv-intc: Introduce Andes hart-level
+ interrupt controller
+To: Anup Patel <anup@brainfault.org>
+Cc: Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org, adrian.hunter@intel.com, 
+	ajones@ventanamicro.com, alexander.shishkin@linux.intel.com, 
+	andre.przywara@arm.com, aou@eecs.berkeley.edu, conor+dt@kernel.org, 
+	conor.dooley@microchip.com, conor@kernel.org, devicetree@vger.kernel.org, 
+	dminus@andestech.com, evan@rivosinc.com, geert+renesas@glider.be, 
+	guoren@kernel.org, heiko@sntech.de, irogers@google.com, 
+	jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, locus84@andestech.com, magnus.damm@gmail.com, 
+	mark.rutland@arm.com, mingo@redhat.com, n.shubin@yadro.com, 
+	namhyung@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, 
+	peterz@infradead.org, prabhakar.mahadev-lad.rj@bp.renesas.com, 
+	rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org, 
+	sunilvl@ventanamicro.com, tglx@linutronix.de, tim609@andestech.com, 
+	uwu@icenowy.me, wens@csie.org, will@kernel.org, ycliang@andestech.com, 
+	inochiama@outlook.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, 
+	wefu@redhat.com, Randolph <randolph@andestech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Live video input format is expected to be set as
-"bus-format" property in connected remote endpoint.
-Program live video input format DPSUB registers.
-Set display layer mode in layer creation context.
+On Wed, Jan 10, 2024 at 7:13=E2=80=AFAM Anup Patel <anup@brainfault.org> wr=
+ote:
+>
+> On Wed, Jan 10, 2024 at 1:10=E2=80=AFPM Yu Chien Peter Lin
+> <peterlin@andestech.com> wrote:
+> >
+> > Add support for the Andes hart-level interrupt controller. This
+> > controller provides interrupt mask/unmask functions to access the
+> > custom register (SLIE) where the non-standard S-mode local interrupt
+> > enable bits are located. The base of custom interrupt number is set
+> > to 256.
+> >
+> > To share the riscv_intc_domain_map() with the generic RISC-V INTC and
+> > ACPI, add a chip parameter to riscv_intc_init_common(), so it can be
+> > passed to the irq_domain_set_info() as a private data.
+> >
+> > Andes hart-level interrupt controller requires the "andestech,cpu-intc"
+> > compatible string to be present in interrupt-controller of cpu node to
+> > enable the use of custom local interrupt source.
+> > e.g.,
+> >
+> >   cpu0: cpu@0 {
+> >       compatible =3D "andestech,ax45mp", "riscv";
+> >       ...
+> >       cpu0-intc: interrupt-controller {
+> >           #interrupt-cells =3D <0x01>;
+> >           compatible =3D "andestech,cpu-intc", "riscv,cpu-intc";
+> >           interrupt-controller;
+> >       };
+> >   };
+> >
+> > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> > Reviewed-by: Randolph <randolph@andestech.com>
+>
+> Looks good to me.
+>
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+>
+> Regards,
+> Anup
+>
+> > ---
+> > Changes v1 -> v2:
+> >   - New patch
+> > Changes v2 -> v3:
+> >   - Return -ENXIO if no valid compatible INTC found
+> >   - Allow falling back to generic RISC-V INTC
+> > Changes v3 -> v4: (Suggested by Thomas [1])
+> >   - Add comment to andes irq chip function
+> >   - Refine code flow to share with generic RISC-V INTC and ACPI
+> >   - Move Andes specific definitions to include/linux/soc/andes/irq.h
+> > Changes v4 -> v5: (Suggested by Thomas)
+> >   - Fix commit message
+> >   - Subtract ANDES_SLI_CAUSE_BASE from d->hwirq to calculate the value =
+of mask
+> >   - Do not set chip_data to the chip itself with irq_domain_set_info()
+> >   - Follow reverse fir tree order variable declarations
+> > Changes v5 -> v6:
+> >   - To follow the naming on datasheet, rename ANDES_RV_IRQ_PMU to ANDES=
+_RV_IRQ_PMOVI
+> >   - Initialize the riscv_intc_* global variables for Andes INTC (Sugges=
+ted by Anup)
+> >   - Use BITS_PER_LONG to compute the bit mask of SIE/SLIE as they are 6=
+4-bit registers (32-bit for RV32)
+> > Changes v6 -> v7:
+> >   - No change
+> >
+> > [1] https://patchwork.kernel.org/project/linux-riscv/patch/202310191357=
+23.3657156-1-peterlin@andestech.com/
+> > ---
+> >  drivers/irqchip/irq-riscv-intc.c | 66 +++++++++++++++++++++++++++-----
+> >  include/linux/soc/andes/irq.h    | 18 +++++++++
+> >  2 files changed, 74 insertions(+), 10 deletions(-)
+> >  create mode 100644 include/linux/soc/andes/irq.h
+> >
+> > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-ris=
+cv-intc.c
+> > index b13a16b164c9..7064857f1f1d 100644
+> > --- a/drivers/irqchip/irq-riscv-intc.c
+> > +++ b/drivers/irqchip/irq-riscv-intc.c
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/of.h>
+> >  #include <linux/smp.h>
+> > +#include <linux/soc/andes/irq.h>
+> >
+> >  static struct irq_domain *intc_domain;
+> >  static unsigned int riscv_intc_nr_irqs __ro_after_init;
+> > @@ -49,6 +50,31 @@ static void riscv_intc_irq_unmask(struct irq_data *d=
+)
+> >         csr_set(CSR_IE, BIT(d->hwirq));
+> >  }
+> >
+> > +static void andes_intc_irq_mask(struct irq_data *d)
+> > +{
+> > +       /*
+> > +        * Andes specific S-mode local interrupt causes (hwirq)
+> > +        * are defined as (256 + n) and controlled by n-th bit
+> > +        * of SLIE.
+> > +        */
+> > +       unsigned int mask =3D BIT(d->hwirq % BITS_PER_LONG);
+> > +
+> > +       if (d->hwirq < ANDES_SLI_CAUSE_BASE)
+> > +               csr_clear(CSR_IE, mask);
+> > +       else
+> > +               csr_clear(ANDES_CSR_SLIE, mask);
+> > +}
+> > +
+> > +static void andes_intc_irq_unmask(struct irq_data *d)
+> > +{
+> > +       unsigned int mask =3D BIT(d->hwirq % BITS_PER_LONG);
+> > +
+> > +       if (d->hwirq < ANDES_SLI_CAUSE_BASE)
+> > +               csr_set(CSR_IE, mask);
+> > +       else
+> > +               csr_set(ANDES_CSR_SLIE, mask);
+> > +}
+> > +
+> >  static void riscv_intc_irq_eoi(struct irq_data *d)
+> >  {
+> >         /*
+> > @@ -72,12 +98,21 @@ static struct irq_chip riscv_intc_chip =3D {
+> >         .irq_eoi =3D riscv_intc_irq_eoi,
+> >  };
+> >
+> > +static struct irq_chip andes_intc_chip =3D {
+> > +       .name           =3D "RISC-V INTC",
+> > +       .irq_mask       =3D andes_intc_irq_mask,
+> > +       .irq_unmask     =3D andes_intc_irq_unmask,
+> > +       .irq_eoi        =3D riscv_intc_irq_eoi,
+> > +};
+> > +
+> >  static int riscv_intc_domain_map(struct irq_domain *d, unsigned int ir=
+q,
+> >                                  irq_hw_number_t hwirq)
+> >  {
+> > +       struct irq_chip *chip =3D d->host_data;
+> > +
+> >         irq_set_percpu_devid(irq);
+> > -       irq_domain_set_info(d, irq, hwirq, &riscv_intc_chip, d->host_da=
+ta,
+> > -                           handle_percpu_devid_irq, NULL, NULL);
+> > +       irq_domain_set_info(d, irq, hwirq, chip, NULL, handle_percpu_de=
+vid_irq,
+> > +                           NULL, NULL);
+> >
+> >         return 0;
+> >  }
+> > @@ -123,11 +158,12 @@ static struct fwnode_handle *riscv_intc_hwnode(vo=
+id)
+> >         return intc_domain->fwnode;
+> >  }
+> >
+> > -static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+> > +static int __init riscv_intc_init_common(struct fwnode_handle *fn,
+> > +                                        struct irq_chip *chip)
+> >  {
+> >         int rc;
+> >
+> > -       intc_domain =3D irq_domain_create_tree(fn, &riscv_intc_domain_o=
+ps, NULL);
+> > +       intc_domain =3D irq_domain_create_tree(fn, &riscv_intc_domain_o=
+ps, chip);
+> >         if (!intc_domain) {
+> >                 pr_err("unable to add IRQ domain\n");
+> >                 return -ENXIO;
+> > @@ -152,8 +188,9 @@ static int __init riscv_intc_init_common(struct fwn=
+ode_handle *fn)
+> >  static int __init riscv_intc_init(struct device_node *node,
+> >                                   struct device_node *parent)
+> >  {
+> > -       int rc;
+> > +       struct irq_chip *chip;
+> >         unsigned long hartid;
+> > +       int rc;
+> >
+> >         rc =3D riscv_of_parent_hartid(node, &hartid);
+> >         if (rc < 0) {
+> > @@ -178,14 +215,23 @@ static int __init riscv_intc_init(struct device_n=
+ode *node,
+> >                 return 0;
+> >         }
+> >
+> > -       riscv_intc_nr_irqs =3D BITS_PER_LONG;
+> > -       riscv_intc_custom_base =3D riscv_intc_nr_irqs;
+> > -       riscv_intc_custom_nr_irqs =3D 0;
+> > +       if (of_device_is_compatible(node, "andestech,cpu-intc")) {
+> > +               riscv_intc_nr_irqs =3D BITS_PER_LONG;
+> > +               riscv_intc_custom_base =3D ANDES_SLI_CAUSE_BASE;
+> > +               riscv_intc_custom_nr_irqs =3D ANDES_RV_IRQ_LAST;
+> > +               chip =3D &andes_intc_chip;
 
-Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
----
- drivers/gpu/drm/xlnx/zynqmp_disp.c      | 109 ++++++++++++++++++++++--
- drivers/gpu/drm/xlnx/zynqmp_disp.h      |   3 +-
- drivers/gpu/drm/xlnx/zynqmp_disp_regs.h |   8 +-
- drivers/gpu/drm/xlnx/zynqmp_dp.c        |   2 +-
- drivers/gpu/drm/xlnx/zynqmp_kms.c       |   2 +-
- 5 files changed, 107 insertions(+), 17 deletions(-)
+There may be similar usage of custom interrupt space in the future as
+well. I think it will be better if we define a generic structure and
+vendor
+specific registration mechanism based on compatible strings. This will
+avoid a bunch of if else blocks here.
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index 8a39b3accce5..83af3ad9cdb5 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -20,8 +20,10 @@
- #include <linux/dmaengine.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <linux/media-bus-format.h>
- 
- #include "zynqmp_disp.h"
- #include "zynqmp_disp_regs.h"
-@@ -67,12 +69,16 @@
- /**
-  * struct zynqmp_disp_format - Display subsystem format information
-  * @drm_fmt: DRM format (4CC)
-+ * @bus_fmt: Live video media bus format
-  * @buf_fmt: AV buffer format
-  * @swap: Flag to swap R & B for RGB formats, and U & V for YUV formats
-  * @sf: Scaling factors for color components
-  */
- struct zynqmp_disp_format {
--	u32 drm_fmt;
-+	union {
-+		u32 drm_fmt;
-+		u32 bus_fmt;
-+	};
- 	u32 buf_fmt;
- 	bool swap;
- 	const u32 *sf;
-@@ -354,6 +360,16 @@ static const struct zynqmp_disp_format avbuf_gfx_fmts[] = {
- 	},
- };
- 
-+/* TODO: add support for different formats */
-+static const struct zynqmp_disp_format avbuf_live_vid_fmts[] = {
-+	{
-+		.bus_fmt	= MEDIA_BUS_FMT_UYVY8_1X16,
-+		.buf_fmt	= ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_8 |
-+				  ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV422,
-+		.sf		= scaling_factors_888,
-+	}
-+};
-+
- static u32 zynqmp_disp_avbuf_read(struct zynqmp_disp *disp, int reg)
- {
- 	return readl(disp->avbuf.base + reg);
-@@ -369,6 +385,34 @@ static bool zynqmp_disp_layer_is_video(const struct zynqmp_disp_layer *layer)
- 	return layer->id == ZYNQMP_DPSUB_LAYER_VID;
- }
- 
-+/**
-+ * zynqmp_disp_avbuf_set_live_format - Set live input format for a layer
-+ * @disp: Display controller
-+ * @layer: The layer
-+ * @fmt: The format information
-+ *
-+ * Set the live video input format for @layer to @fmt.
-+ */
-+static void zynqmp_disp_avbuf_set_live_format(struct zynqmp_disp *disp,
-+					      struct zynqmp_disp_layer *layer,
-+					      const struct zynqmp_disp_format *fmt)
-+{
-+	u32 reg, i;
-+
-+	reg = zynqmp_disp_layer_is_video(layer)
-+	    ? ZYNQMP_DISP_AV_BUF_LIVE_VID_CONFIG
-+	    : ZYNQMP_DISP_AV_BUF_LIVE_GFX_CONFIG;
-+	zynqmp_disp_avbuf_write(disp, reg, fmt->buf_fmt);
-+
-+	for (i = 0; i < ZYNQMP_DISP_AV_BUF_NUM_SF; ++i) {
-+		reg = zynqmp_disp_layer_is_video(layer)
-+		    ? ZYNQMP_DISP_AV_BUF_LIVD_VID_COMP_SF(i)
-+		    : ZYNQMP_DISP_AV_BUF_LIVD_GFX_COMP_SF(i);
-+		zynqmp_disp_avbuf_write(disp, reg, fmt->sf[i]);
-+	}
-+	layer->disp_fmt = fmt;
-+}
-+
- /**
-  * zynqmp_disp_avbuf_set_format - Set the input format for a layer
-  * @disp: Display controller
-@@ -902,15 +946,12 @@ u32 *zynqmp_disp_layer_drm_formats(struct zynqmp_disp_layer *layer,
- /**
-  * zynqmp_disp_layer_enable - Enable a layer
-  * @layer: The layer
-- * @mode: Operating mode of layer
-  *
-  * Enable the @layer in the audio/video buffer manager and the blender. DMA
-  * channels are started separately by zynqmp_disp_layer_update().
-  */
--void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer,
--			      enum zynqmp_dpsub_layer_mode mode)
-+void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer)
- {
--	layer->mode = mode;
- 	zynqmp_disp_avbuf_enable_video(layer->disp, layer);
- 	zynqmp_disp_blend_layer_enable(layer->disp, layer);
- }
-@@ -950,11 +991,12 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
- 	layer->disp_fmt = zynqmp_disp_layer_find_format(layer, info->format);
- 	layer->drm_fmt = info;
- 
--	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
--
--	if (!layer->disp->dpsub->dma_enabled)
-+	/* Live format set during layer creation */
-+	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
- 		return;
- 
-+	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
-+
- 	/*
- 	 * Set pconfig for each DMA channel to indicate they're part of a
- 	 * video group.
-@@ -1083,7 +1125,7 @@ static int zynqmp_disp_layer_request_dma(struct zynqmp_disp *disp,
- 	unsigned int i;
- 	int ret;
- 
--	if (!disp->dpsub->dma_enabled)
-+	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
- 		return 0;
- 
- 	for (i = 0; i < layer->info->num_channels; i++) {
-@@ -1104,6 +1146,43 @@ static int zynqmp_disp_layer_request_dma(struct zynqmp_disp *disp,
- 	return 0;
- }
- 
-+/**
-+ * zynqmp_disp_get_live_fmt - Get live video format
-+ * @disp: Display controller
-+ * @layer: Display layer
-+ *
-+ * Parse connected remote endpoint and retrieve configured bus-format
-+ *
-+ * Return: live format pointer on success, NULL otherwise
-+ */
-+static const struct zynqmp_disp_format *zynqmp_disp_get_live_fmt(struct zynqmp_disp *disp,
-+								 struct zynqmp_disp_layer *layer)
-+{
-+	struct device_node *local, *remote, *dpsub = disp->dev->of_node;
-+	int rc, i;
-+	u32 fmt;
-+
-+	local = of_graph_get_endpoint_by_regs(dpsub, layer->id, -1);
-+	if (!local)
-+		return NULL;
-+
-+	remote = of_graph_get_remote_endpoint(local);
-+	of_node_put(local);
-+	if (!remote)
-+		return NULL;
-+
-+	rc = of_property_read_u32_index(remote, "bus-format", 0, &fmt);
-+	of_node_put(remote);
-+	if (rc)
-+		return NULL;
-+
-+	for (i = 0; i < ARRAY_SIZE(avbuf_live_vid_fmts); ++i)
-+		if (avbuf_live_vid_fmts[i].bus_fmt == fmt)
-+			return &avbuf_live_vid_fmts[i];
-+
-+	return NULL;
-+}
-+
- /**
-  * zynqmp_disp_create_layers - Create and initialize all layers
-  * @disp: Display controller
-@@ -1130,9 +1209,15 @@ static int zynqmp_disp_create_layers(struct zynqmp_disp *disp)
- 
- 	for (i = 0; i < ARRAY_SIZE(disp->layers); i++) {
- 		struct zynqmp_disp_layer *layer = &disp->layers[i];
-+		const struct zynqmp_disp_format *disp_fmt;
- 
- 		layer->id = i;
- 		layer->disp = disp;
-+		/* For now we assume dpsub works in either live or non-live mode for both layers.
-+		 * Hybrid mode is not supported yet.
-+		 */
-+		layer->mode = disp->dpsub->dma_enabled ? ZYNQMP_DPSUB_LAYER_NONLIVE
-+						       : ZYNQMP_DPSUB_LAYER_LIVE;
- 		layer->info = &layer_info[i];
- 
- 		ret = zynqmp_disp_layer_request_dma(disp, layer);
-@@ -1140,6 +1225,12 @@ static int zynqmp_disp_create_layers(struct zynqmp_disp *disp)
- 			goto err;
- 
- 		disp->dpsub->layers[i] = layer;
-+
-+		if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE) {
-+			disp_fmt = zynqmp_disp_get_live_fmt(disp, layer);
-+			if (disp_fmt)
-+				zynqmp_disp_avbuf_set_live_format(disp, layer, disp_fmt);
-+		}
- 	}
- 
- 	return 0;
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.h b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-index 123cffac08be..f3357b2d5c09 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.h
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-@@ -62,8 +62,7 @@ void zynqmp_disp_blend_set_global_alpha(struct zynqmp_disp *disp,
- 
- u32 *zynqmp_disp_layer_drm_formats(struct zynqmp_disp_layer *layer,
- 				   unsigned int *num_formats);
--void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer,
--			      enum zynqmp_dpsub_layer_mode mode);
-+void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer);
- void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer);
- void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
- 				  const struct drm_format_info *info);
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
-index f92a006d5070..926e07c255bb 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
-@@ -165,10 +165,10 @@
- #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_10		0x2
- #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_12		0x3
- #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_MASK		GENMASK(2, 0)
--#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_RGB		0x0
--#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV444	0x1
--#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV422	0x2
--#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YONLY	0x3
-+#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_RGB		0x00
-+#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV444	0x10
-+#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV422	0x20
-+#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YONLY	0x30
- #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_MASK		GENMASK(5, 4)
- #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_CB_FIRST		BIT(8)
- #define ZYNQMP_DISP_AV_BUF_PALETTE_MEMORY		0x400
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-index 571c5dbc97e5..59616ed1c3d9 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-@@ -1295,7 +1295,7 @@ static void zynqmp_dp_disp_enable(struct zynqmp_dp *dp,
- 	/* TODO: Make the format configurable. */
- 	info = drm_format_info(DRM_FORMAT_YUV422);
- 	zynqmp_disp_layer_set_format(layer, info);
--	zynqmp_disp_layer_enable(layer, ZYNQMP_DPSUB_LAYER_LIVE);
-+	zynqmp_disp_layer_enable(layer);
- 
- 	if (layer_id == ZYNQMP_DPSUB_LAYER_GFX)
- 		zynqmp_disp_blend_set_global_alpha(dp->dpsub->disp, true, 255);
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.c b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-index db3bb4afbfc4..43bf416b33d5 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_kms.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-@@ -122,7 +122,7 @@ static void zynqmp_dpsub_plane_atomic_update(struct drm_plane *plane,
- 
- 	/* Enable or re-enable the plane if the format has changed. */
- 	if (format_changed)
--		zynqmp_disp_layer_enable(layer, ZYNQMP_DPSUB_LAYER_NONLIVE);
-+		zynqmp_disp_layer_enable(layer);
- }
- 
- static const struct drm_plane_helper_funcs zynqmp_dpsub_plane_helper_funcs = {
--- 
-2.25.1
+> > +       } else {
+> > +               riscv_intc_nr_irqs =3D BITS_PER_LONG;
+> > +               riscv_intc_custom_base =3D riscv_intc_nr_irqs;
+> > +               riscv_intc_custom_nr_irqs =3D 0;
+> > +               chip =3D &riscv_intc_chip;
+> > +       }
+> >
+> > -       return riscv_intc_init_common(of_node_to_fwnode(node));
+> > +       return riscv_intc_init_common(of_node_to_fwnode(node), chip);
+> >  }
+> >
+> >  IRQCHIP_DECLARE(riscv, "riscv,cpu-intc", riscv_intc_init);
+> > +IRQCHIP_DECLARE(andes, "andestech,cpu-intc", riscv_intc_init);
+> >
+> >  #ifdef CONFIG_ACPI
+> >
+> > @@ -212,7 +258,7 @@ static int __init riscv_intc_acpi_init(union acpi_s=
+ubtable_headers *header,
+> >                 return -ENOMEM;
+> >         }
+> >
+> > -       return riscv_intc_init_common(fn);
+> > +       return riscv_intc_init_common(fn, &riscv_intc_chip);
+> >  }
+> >
+> >  IRQCHIP_ACPI_DECLARE(riscv_intc, ACPI_MADT_TYPE_RINTC, NULL,
+> > diff --git a/include/linux/soc/andes/irq.h b/include/linux/soc/andes/ir=
+q.h
+> > new file mode 100644
+> > index 000000000000..edc3182d6e66
+> > --- /dev/null
+> > +++ b/include/linux/soc/andes/irq.h
+> > @@ -0,0 +1,18 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Copyright (C) 2023 Andes Technology Corporation
+> > + */
+> > +#ifndef __ANDES_IRQ_H
+> > +#define __ANDES_IRQ_H
+> > +
+> > +/* Andes PMU irq number */
+> > +#define ANDES_RV_IRQ_PMOVI             18
+> > +#define ANDES_RV_IRQ_LAST              ANDES_RV_IRQ_PMOVI
+> > +#define ANDES_SLI_CAUSE_BASE           256
+> > +
+> > +/* Andes PMU related registers */
+> > +#define ANDES_CSR_SLIE                 0x9c4
+> > +#define ANDES_CSR_SLIP                 0x9c5
+> > +#define ANDES_CSR_SCOUNTEROF           0x9d4
+> > +
+> > +#endif /* __ANDES_IRQ_H */
+> > --
+> > 2.34.1
+> >
 
+
+
+--=20
+Regards,
+Atish
 
