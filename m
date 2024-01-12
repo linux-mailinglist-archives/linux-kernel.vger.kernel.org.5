@@ -1,94 +1,81 @@
-Return-Path: <linux-kernel+bounces-24646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AB8382BFAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:17:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8089D82BFAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2884D1F24AB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:17:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31151286CE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E654D6A031;
-	Fri, 12 Jan 2024 12:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7B1C6A02E;
+	Fri, 12 Jan 2024 12:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FcToq9du"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fPTW06PX"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5EF6A024
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705061859; x=1736597859;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xvCX4d6bX2d4IAUESbi7SQnSQnl8gaBJl/nEkzGvOoo=;
-  b=FcToq9durZcYm9L3BiWAr+IYgsb8X76Ndg+JDIc2XvToq7/E0SkuPIxC
-   m2LVSBt/fJLGTKrLKnZqDkvexW664YnbSqU5VZzLcvG922nVnpNfwSpKv
-   l8vz0mfBWbnV4xVYQK1MaOp+PWYYUxuLb5riREbcPqN64X3lq4l1+HsW/
-   4mvVxR00kCsKDla/0bzPv35XQC3sy9mx8zpsNRhxQUCW9PCrdDXkxU6nn
-   wqJFKOypXY/Gym/UlRpMZHrmrMNakBWP/QG1pALCAeIMQmKHzdLp0SLYC
-   /c6sw/Jq9qlZlzvdd0D9eQ/xIfEO2geOAnMUezs3GddmK4rDOYvZVmTKu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="20627413"
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="20627413"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 04:17:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="775990528"
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="775990528"
-Received: from kschuele-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.195])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 04:17:27 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id 13ED110A557; Fri, 12 Jan 2024 15:17:25 +0300 (+03)
-Date: Fri, 12 Jan 2024 15:17:25 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Kevin Loughlin <kevinloughlin@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Pankaj Gupta <pankaj.gupta@amd.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Steve Rutherford <srutherford@google.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Hou Wenlong <houwenlong.hwl@antgroup.com>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Wang Jinchao <wangjinchao@xfusion.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Brian Gerst <brgerst@gmail.com>, Hugh Dickins <hughd@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Brijesh Singh <brijesh.singh@amd.com>,
-	Michael Roth <michael.roth@amd.com>, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, linux-coco@lists.linux.dev,
-	Ashish Kalra <ashish.kalra@amd.com>,
-	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>,
-	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>,
-	Sidharth Telang <sidtelang@google.com>
-Subject: Re: [RFC PATCH v2] x86/sev: enforce RIP-relative accesses in early
- SEV/SME code
-Message-ID: <20240112121725.3amxlumpifhagamb@box>
-References: <ZZ7YuEexYSaZYmLK@tassilo>
- <20240111223650.3502633-1-kevinloughlin@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748626A024
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cd17a979bcso72653441fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:18:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705061911; x=1705666711; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oS2qn0GJyVpGgMF00XWbssPMomttVds4YoSmdD8QAUI=;
+        b=fPTW06PXZclcX19wEQ/OIkTJicxTqxhJdQu5NqnYcVnCEn1Mh742GSfDKICZrNS/mq
+         HOFSHdwFz8RfvIhSj87n0s8NjRCmwGrkKtjNYaA0kVHXfWRnYeZEVAT8Xba1nKGT57ft
+         JxhM+jG1mlxL8kiq3lAK6o63wUpEipgHtbmZKhEml3Ft6DLJD0LvXep4qac2kQScTxks
+         7UEobLzhnm0Sh11ThvnIB8ALJeruFqTiJJ8JM3USQ7VrYPlhGt7JSEl2B7CDiPyJY56G
+         W0VDEw27sUmGd6wBdEujVh6tbBAHhAeh7tapbz4o+GFxIhb78DaO7v+pak/VaVvapEcT
+         PMEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705061911; x=1705666711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oS2qn0GJyVpGgMF00XWbssPMomttVds4YoSmdD8QAUI=;
+        b=HT/F9W4J9rDqzXoOYdTh8OSJhk225pKfRvqBjpuE/bX64QLksE+hV30pWTO+6aQRJB
+         ocMoksdE4M856Y/zfcJShVpXntNrajWTMHOdOQpBd0sFtuXTSxe3jm79WOtgbPalBtRb
+         +eKR0XeFPu3VXsmAWNtUXy67Gn7IJBKmRX8tdVkzmDH7EZZuuZKTUx38F8HitzityJ7O
+         GPnQU3BWjLUUbN2S9IqX2latNG9LAp9Lar9BWRun6M9D+Cze2bNRv+r2pHK6v2kClt10
+         zjftXIkWfnhWr/skZkFvhkMworQBv++/MNVVIwcOo7iXThN44Egjx6Kho8fPgtQI1BVh
+         kBlA==
+X-Gm-Message-State: AOJu0YwTH5fX/OSq0VwB6p2EaeIHc3N6R+2+Rn3ygsJd8s6syp5fvn28
+	W/a15eSs8ACeKn7vuZMXjeE=
+X-Google-Smtp-Source: AGHT+IFNYL1OyfgyDf+BH6IU8s3uCsnkAlJGEbJN8LXhms+M85RFhVMkhw3DJJPnaL0spCEIxORJyg==
+X-Received: by 2002:a2e:9595:0:b0:2cc:7578:3ce6 with SMTP id w21-20020a2e9595000000b002cc75783ce6mr347140ljh.10.1705061911149;
+        Fri, 12 Jan 2024 04:18:31 -0800 (PST)
+Received: from pc636 (host-90-233-192-22.mobileonline.telia.com. [90.233.192.22])
+        by smtp.gmail.com with ESMTPSA id k38-20020a05651c062600b002cd1d9bf77dsm457803lje.81.2024.01.12.04.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 04:18:30 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Fri, 12 Jan 2024 13:18:27 +0100
+To: Dave Chinner <david@fromorbit.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
+Message-ID: <ZaEuE37TIM1s3OXF@pc636>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240102184633.748113-8-urezki@gmail.com>
+ <ZZ+umGZ2NFQN/KuW@dread.disaster.area>
+ <ZaAPSJHGsmG_oHAU@pc638.lan>
+ <ZaBRkCtkMoTdiN+3@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,36 +84,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240111223650.3502633-1-kevinloughlin@google.com>
+In-Reply-To: <ZaBRkCtkMoTdiN+3@dread.disaster.area>
 
-On Thu, Jan 11, 2024 at 10:36:50PM +0000, Kevin Loughlin wrote:
-> SEV/SME code can execute prior to page table fixups for kernel
-> relocation. However, as with global variables accessed in
-> __startup_64(), the compiler is not required to generate RIP-relative
-> accesses for SEV/SME global variables, causing certain flavors of SEV
-> hosts and guests built with clang to crash during boot.
+On Fri, Jan 12, 2024 at 07:37:36AM +1100, Dave Chinner wrote:
+> On Thu, Jan 11, 2024 at 04:54:48PM +0100, Uladzislau Rezki wrote:
+> > On Thu, Jan 11, 2024 at 08:02:16PM +1100, Dave Chinner wrote:
+> > > On Tue, Jan 02, 2024 at 07:46:29PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > > Concurrent access to a global vmap space is a bottle-neck.
+> > > > We can simulate a high contention by running a vmalloc test
+> > > > suite.
+> > > > 
+> > > > To address it, introduce an effective vmap node logic. Each
+> > > > node behaves as independent entity. When a node is accessed
+> > > > it serves a request directly(if possible) from its pool.
+> > > > 
+> > > > This model has a size based pool for requests, i.e. pools are
+> > > > serialized and populated based on object size and real demand.
+> > > > A maximum object size that pool can handle is set to 256 pages.
+> > > > 
+> > > > This technique reduces a pressure on the global vmap lock.
+> > > > 
+> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > 
+> > > Why not use a llist for this? That gets rid of the need for a
+> > > new pool_lock altogether...
+> > > 
+> > Initially i used the llist. I have changed it because i keep track
+> > of objects per a pool to decay it later. I do not find these locks
+> > as contented one therefore i did not think much.
 > 
-> While an attempt was made to force RIP-relative addressing for certain
-> global SEV/SME variables via inline assembly (see snp_cpuid_get_table()
-> for example), RIP-relative addressing must be pervasively-enforced for
-> SEV/SME global variables when accessed prior to page table fixups.
+> Ok. I've used llist and an atomic counter to track the list length
+> in the past.
 > 
-> __startup_64() already handles this issue for select non-SEV/SME global
-> variables using fixup_pointer(), which adjusts the pointer relative to
-> a `physaddr` argument. To avoid having to pass around this `physaddr`
-> argument across all functions needing to apply pointer fixups, this
-> patch introduces the macro GET_RIP_RELATIVE_PTR() (an abstraction of
-> the existing snp_cpuid_get_table()), which generates an RIP-relative
-> pointer to a passed variable. Similarly, PTR_TO_RIP_RELATIVE_PTR() is
-> introduced to fixup an existing pointer value with RIP-relative logic.
+> But is the list length even necessary? It seems to me that it is
+> only used by the shrinker to determine how many objects are on the
+> lists for scanning, and I'm not sure that's entirely necessary given
+> the way the current global shrinker works (i.e. completely unfair to
+> low numbered nodes due to scan loop start bias).
+> 
+I use the length to decay pools by certain percentage, currently it is
+25%, so i need to know number of objects. It is done in the purge path.
+As for shrinker, once it hits us we drain pools entirely.
 
-Can we replace existing fixup_pointer() (and other fixup_*()) with the new
-thing? I don't think we need two confusing things for the same function.
+> > Anyway, i will have a look at this to see if llist is easy to go with
+> > or not. If so i will send out a separate patch.
+> 
+> Sounds good, it was just something that crossed my mind given the
+> pattern of "producer adds single items, consumer detaches entire
+> list, processes it and reattaches remainder" is a perfect match for
+> the llist structure.
+> 
+The llist_del_first() has to be serialized. For this purpose a per-cpu
+pool would work or kind of "in_use" atomic that protects concurrent
+removing.
 
-Also, is there any reason why GET_RIP_RELATIVE_PTR() and
-PTR_TO_RIP_RELATIVE_PTR() have to be macros? Inline functions would be
-cleaner.
+If we detach entire llist, then we need to keep track of last node
+to add it later as a "batch" to already existing/populated list.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Thanks four looking!
+
+--
+Uladzislau Rezki
 
