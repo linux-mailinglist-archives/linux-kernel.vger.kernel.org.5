@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-25079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DBAF82C757
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:33:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E5282C75B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2247B287340
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:33:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4F64B241DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61D31802B;
-	Fri, 12 Jan 2024 22:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB4D18053;
+	Fri, 12 Jan 2024 22:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vT0tdSK7"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dqw1iPxv"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9453A1642D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFD91803E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55569b59f81so8522711a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:33:19 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28b1095064so773361466b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:37:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705098798; x=1705703598; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705099027; x=1705703827; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=21VIzpAcVyElKFBAjt6JPdjAMyK14m0eDmuJCWvWTSw=;
-        b=vT0tdSK74rpG/P2blB/NOpXDVI77zeThFNN3fekhb5K3dVqMd2BoAcv3KabnGQKFgV
-         2/YKkFjreVOB0hlaylDgiSpszQUUVrO0p4E34nRqpQslWvHt19X2ooR773PLby4BwpIx
-         vY3muey2wkPiGkr5LXWfzv2uj+dz0QTpvFag6n/Pny5v0DVn1uVv3TTAWHtWf1a+ixDp
-         MGdWGSMaXRnaU/eqbQFT/EqiXKGfk0/Blcs+dwDkNklQUHjuXMPkIjUNvI9P3ew5Im4B
-         tmhaQbzjTKuG8wT3/FfIJJNePbusszoJT8h76C/jqevdMc3ZE1oi2Av/BxlyNyP/Hy7X
-         U+Qw==
+        bh=0leS6hZ0DcZYl4DKzwe7v8pus4rqe1fDKXfntZRCqTg=;
+        b=dqw1iPxvpYN9NH+wq9oJMl1pId9u400cfxeXrZdeHZrt2YDF0QeUC+ZN1VLn/9rQpd
+         uWZmxztyzsawbjd//0VmhpRMFEwBnNmKA0laGPNF/OACeTSdApK8tFkC3OYKVOnSqbox
+         O15mkhVK9NEY7Ylv455Q60v/ig7jRRy87V92Uw6hwFUslOzoF+s2tmriuyR+Ez+N1pxX
+         VmsEGaxR8ZSQjxRMIvkydJPZV85BfCsjQOeRkc1206H7qvtjoRYrNnMiOpPJc9NEbohj
+         KMJMEXLwLQppPzNFIG7zeulMNB65AZCryrI8u13qziwGa9d6oUOpoRBhUwPqFgz/WUgt
+         c+QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705098798; x=1705703598;
+        d=1e100.net; s=20230601; t=1705099027; x=1705703827;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=21VIzpAcVyElKFBAjt6JPdjAMyK14m0eDmuJCWvWTSw=;
-        b=njXmFDIiGs6uWVZsJDuYu4jh1e5PnU8zwB+SmivcmT7frAzUBi1Sqvlibaos2krjLP
-         Onh6vR4QxAds6RQ3vsAjnt5rAO2FojHmrUXtc+8Bs+I+KaVzT0AeMyD8dI4WxGemDCml
-         S8O+e8nMewb7i7yN6hPStiLKk4ZVMq5HkiaB8NwPyRSCQoB+A/ZhEM4OGYoLQ3C/sxvK
-         R8ILMbghAuk3jpz4wzt/YdfoSsXJ8aM5hbPfLD2qsuxCfJsl54B3vkxcN3VmGVka3bgO
-         /6Gu6UZ8q9XIQf/kfJbDtvMeL6ZzWwEnLBiNgIln0c05Sqt60PazaGxDG37htKNKe63D
-         lyjg==
-X-Gm-Message-State: AOJu0YyMSgzi6wqwhUwGDT2fz1XqeTITMD6G9PgAGTWmr2eBk6BKaP9S
-	2Ohz/E0jAp2uH3wx0pRisoJg2JjW+S32Qw==
-X-Google-Smtp-Source: AGHT+IH8pm44dT/z4IAV6k2Car4N58TCRuCujxBhw2VypwrRO3YPmM4mzK6fyJaDxFfcNsbX69ig+w==
-X-Received: by 2002:a17:907:72c9:b0:a2a:99ae:3ff8 with SMTP id du9-20020a17090772c900b00a2a99ae3ff8mr1180861ejc.37.1705098797915;
-        Fri, 12 Jan 2024 14:33:17 -0800 (PST)
+        bh=0leS6hZ0DcZYl4DKzwe7v8pus4rqe1fDKXfntZRCqTg=;
+        b=amYc4zod45nO7XgbXpl0W2Fy2ePoE6/lQSUrJPy9bux66fG5Fjw3ko5HGzHV/GsEAC
+         GvaOwEoUZ6TdciQpNXyyEkoFwmjZxigWiiKMgPJrg3p7i9DbZdCuRuvBdN2q6IZgy+K9
+         +aGjBNO8QCH25kxS/aFeZ2q1Kvjmt1ZV1kmk3voZujbcb3tZBkXcrkx0CWZ1EHqb4IsI
+         PRbk8mFobGLa8Miz0/KAZ+lw/8JE3VZLW1ZksxKWAf+t8pul4EmARkxm+Z7mSu5TAPf2
+         SvopP3rjLxTvYp1Z5ed12xtCJKGmHcX5ebZ1CS62lzCSuXJy8N4PnxhCi2Yl4WpOW6V9
+         1LBw==
+X-Gm-Message-State: AOJu0Yx70eCy2cIgECTcQUQdXyf3etRO1C/RuZ/nNNWT3onlbx/Dar4P
+	wJDRm8lJx798gcdTP214GvplgYhsZXr6vA==
+X-Google-Smtp-Source: AGHT+IFYfL+XbWBb98zkfcqsCfe55RxOOq99xlv4gLhqJrYEridFURPMKn+2U5mwNzzeZSOYqQAVfg==
+X-Received: by 2002:a17:906:c094:b0:a2c:4b7e:2c27 with SMTP id f20-20020a170906c09400b00a2c4b7e2c27mr574752ejz.250.1705099026524;
+        Fri, 12 Jan 2024 14:37:06 -0800 (PST)
 Received: from [192.168.174.25] (178235179017.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.17])
-        by smtp.gmail.com with ESMTPSA id k7-20020a17090627c700b00a19b7362dcfsm2193541ejc.139.2024.01.12.14.33.16
+        by smtp.gmail.com with ESMTPSA id i2-20020a170906090200b00a2a04c9226asm2184486ejd.194.2024.01.12.14.37.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 14:33:17 -0800 (PST)
-Message-ID: <f9a177e0-3698-4865-9463-220c65c653fb@linaro.org>
-Date: Fri, 12 Jan 2024 23:33:15 +0100
+        Fri, 12 Jan 2024 14:37:05 -0800 (PST)
+Message-ID: <c278d89d-4eba-4ea7-8cf5-6b1de90dedbe@linaro.org>
+Date: Fri, 12 Jan 2024 23:37:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,24 +68,25 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v6 3/6] PCI: qcom: Add missing icc bandwidth vote for cpu
  to PCIe path
 Content-Language: en-US
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Krishna chaitanya chundru <quic_krichai@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+To: Johan Hovold <johan@kernel.org>,
+ Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
  Lorenzo Pieralisi <lpieralisi@kernel.org>,
  =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
  Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Conor Dooley <conor+dt@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>,
  Rob Herring <robh+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>,
- Brian Masney <bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, vireshk@kernel.org,
+ Brian Masney <bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>,
+ linux-arm-msm@vger.kernel.org, vireshk@kernel.org,
  quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
  quic_nitegupt@quicinc.com, linux-pci@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  stable@vger.kernel.org
 References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
  <20240112-opp_support-v6-3-77bbf7d0cc37@quicinc.com>
- <fecfd2d9-7302-4eb6-92d0-c2efbe824bf4@linaro.org>
+ <ZaFhzOCTpZYlAh60@hovoldconsulting.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -122,29 +123,56 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <fecfd2d9-7302-4eb6-92d0-c2efbe824bf4@linaro.org>
+In-Reply-To: <ZaFhzOCTpZYlAh60@hovoldconsulting.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 12.01.2024 16:17, Bryan O'Donoghue wrote:
-> On 12/01/2024 14:22, Krishna chaitanya chundru wrote:
+On 12.01.2024 16:59, Johan Hovold wrote:
+> On Fri, Jan 12, 2024 at 07:52:02PM +0530, Krishna chaitanya chundru wrote:
 >> CPU-PCIe path consits for registers PCIe BAR space, config space.
+> 
+> consits?
+> 
 >> As there is less access on this path compared to pcie to mem path
 >> add minimum vote i.e GEN1x1 bandwidth always.
->>
+> 
+> gen1 bandwidth can't be right.
+> 
 >> In suspend remove the cpu vote after register space access is done.
 >>
 >> Fixes: c4860af88d0c ("PCI: qcom: Add basic interconnect support")
+>> cc: stable@vger.kernel.org
 > 
-> If this patch is a Fixes then don't you need the accompanying dts change as a parallel Fixes too ?
+> This does not look like a fix so drop the above.
 > 
-> i.e. without the dts update - you won't have the nodes in the dts to consume => applying this code to the stable kernel absent the dts will result in no functional change and therefore no bugfix.
+> The commit you refer to explicitly left this path unconfigured for now
+> and only added support for the configuring the mem path as needed on
+> sc8280xp which otherwise would crash.
 
-The Fixes tag denotes a bug fix, its use for backport autosel is just
-a nice "coincidence".
+I only sorta agree. I'd include a fixes tag but point it to either 8450
+addition or original driver introduction, as this is patching up a real
+hole (see my reply to Bryan).
 
-Fixing a lack of a required icc path and having to rely on BL leftovers
-/ keepalive bus settings is definitely worth this tag in my eyes.
+> 
+>> @@ -1573,7 +1588,7 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
+>>  	 */
+>>  	ret = icc_set_bw(pcie->icc_mem, 0, kBps_to_icc(1));
+>>  	if (ret) {
+>> -		dev_err(dev, "Failed to set interconnect bandwidth: %d\n", ret);
+>> +		dev_err(dev, "Failed to set interconnect bandwidth for pcie-mem: %d\n", ret);
+>>  		return ret;
+>>  	}
+>>  
+>> @@ -1597,6 +1612,12 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
+>>  		pcie->suspended = true;
+>>  	}
+>>  
+>> +	/* Remove cpu path vote after all the register access is done */
+>> +	ret = icc_set_bw(pcie->icc_cpu, 0, 0);
+> 
+> I believe you should use icc_disable() here.
+
+Oh, TIL this exists!
 
 Konrad
 
