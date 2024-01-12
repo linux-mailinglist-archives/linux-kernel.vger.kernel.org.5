@@ -1,89 +1,94 @@
-Return-Path: <linux-kernel+bounces-24343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD8682BB54
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:41:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 833C582BB58
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE9BF1C246C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:41:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD0151C249AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B9A5C8F7;
-	Fri, 12 Jan 2024 06:41:25 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101535C8EE;
+	Fri, 12 Jan 2024 06:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4lNpPT8A"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C004123C1;
-	Fri, 12 Jan 2024 06:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 7edd3f55c4fd4d69b495c600238d36e7-20240112
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:075eb1eb-e05a-47d9-b6d3-5f0bf1fca848,IP:20,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:0
-X-CID-INFO: VERSION:1.1.35,REQID:075eb1eb-e05a-47d9-b6d3-5f0bf1fca848,IP:20,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:bd92457f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240112144115NLQS0K4F,BulkQuantity:0,Recheck:0,SF:19|44|66|24|17|102,
-	TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 7edd3f55c4fd4d69b495c600238d36e7-20240112
-X-User: chentao@kylinos.cn
-Received: from kernel.. [(116.128.244.171)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 856514401; Fri, 12 Jan 2024 14:41:12 +0800
-From: Kunwu Chan <chentao@kylinos.cn>
-To: eric.auger@redhat.com,
-	alex.williamson@redhat.com
-Cc: a.motakis@virtualopensystems.com,
-	b.reynal@virtualopensystems.com,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] vfio/platform: Remove unnecessary free in vfio_set_trigger
-Date: Fri, 12 Jan 2024 14:41:07 +0800
-Message-Id: <20240112064107.137384-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED51133067;
+	Fri, 12 Jan 2024 06:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705042228;
+	bh=rXcbu4QY6UCu3qy4gvXw+tpopWxC0tsBqLnsgFqfj/Y=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=4lNpPT8APDolfFCTLwh0woAmpgkpMjWjRiAcuOwGVtOmZHgPQJPjDY1i+rTrdB2jo
+	 rcLq9g8koWFxvFcoNPA6t6zy4fOxXySsLwmAPgXM0FD+11scWCGX3MGaDgD/FZ1CyV
+	 KMRCqOYoCxQQrN7fbTlRVoBgBdkE8c/9sFm7cHxjIzhxP8nr1tEn51VGbVZNWvbg+K
+	 4oJveuu99TmvFwQj7tp1/wpHPw+/4BsCoOMl2XjIJnulTxtFHOxzY/6EDeQhnuBn9A
+	 rPAyhbTVZdGvr+4haE6jnHKRaXNN9G779HKR2d3cHiwmg9/1Zji3GKx+wnSwFBsOeZ
+	 A7PSHbMh2Jijg==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EC6403780624;
+	Fri, 12 Jan 2024 06:50:25 +0000 (UTC)
+Message-ID: <bfb6f6ac-d29f-4857-aa8c-6b8da9c2f436@collabora.com>
+Date: Fri, 12 Jan 2024 11:50:33 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <shuah@kernel.org>,
+ "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, kernel@collabora.com,
+ linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/mm: mremap_test: fix build warning
+Content-Language: en-US
+To: Andrew Morton <akpm@linux-foundation.org>
+References: <20240111082039.3398848-1-usama.anjum@collabora.com>
+ <20240111131405.4b47521fb8884760d712e93d@linux-foundation.org>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240111131405.4b47521fb8884760d712e93d@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-commit 57f972e2b341 ("vfio/platform: trigger an interrupt via eventfd")
-add 'name' as member for vfio_platform_irq,it's initialed by kasprintf,
-so there is no need to free it before initializing.
+On 1/12/24 2:14 AM, Andrew Morton wrote:
+> On Thu, 11 Jan 2024 13:20:38 +0500 Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
+> 
+>> Fix following build warning:
+>> warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long long unsigned int’
+>>
+> 
+> Looks good to me, but... grumble.
+> 
+> `i' is an integer.  That's just how it is, Blame Fortran if you like. 
+Didn't know this. Thanks for sharing. I'll send a v2 by using two variables.
 
-Fixes: 57f972e2b341 ("vfio/platform: trigger an interrupt via eventfd")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/vfio/platform/vfio_platform_irq.c | 1 -
- 1 file changed, 1 deletion(-)
+> Discovering that someone used `i' for an unsigned long long is like
+> seeing
+> 
+> 	struct inode *page;
+> 
+> It is surprising, and readers shouldn't be subjected to surprises.
+> 
+> `i' is used in two ways here.  Twice to iterate across threshold values
+> (as a ULL) and once to iterate across dest_preamble_size, which is an
+> int.  It would be better to have two different variables for the two
+> different uses.  Ones with more appropriate names than `i'.
+> 
 
-diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/platform/vfio_platform_irq.c
-index 61a1bfb68ac7..5e3fd1926366 100644
---- a/drivers/vfio/platform/vfio_platform_irq.c
-+++ b/drivers/vfio/platform/vfio_platform_irq.c
-@@ -179,7 +179,6 @@ static int vfio_set_trigger(struct vfio_platform_device *vdev, int index,
- 	if (irq->trigger) {
- 		irq_clear_status_flags(irq->hwirq, IRQ_NOAUTOEN);
- 		free_irq(irq->hwirq, irq);
--		kfree(irq->name);
- 		eventfd_ctx_put(irq->trigger);
- 		irq->trigger = NULL;
- 	}
 -- 
-2.39.2
-
+BR,
+Muhammad Usama Anjum
 
