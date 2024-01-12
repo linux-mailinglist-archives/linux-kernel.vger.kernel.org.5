@@ -1,144 +1,158 @@
-Return-Path: <linux-kernel+bounces-24594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B8E82BE9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:28:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7266682BEBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:46:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D6C1F2433B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:28:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12F24B22300
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 701CB5EE95;
-	Fri, 12 Jan 2024 10:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F1359143;
+	Fri, 12 Jan 2024 10:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JVxv3hk5"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="B5Q4g6J+"
+Received: from smtp-bc0b.mail.infomaniak.ch (smtp-bc0b.mail.infomaniak.ch [45.157.188.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF245EE88
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:28:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a271a28aeb4so694053566b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:28:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1705055316; x=1705660116; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HU5eAL0BNu0Tz9jf6MkeJhwqR+ZIbtt2u9TiSiZUMjg=;
-        b=JVxv3hk5rj7ZAjUSNCdzPIMUm5yzkqwhHZHA9NHsudQY2SwRSxEKqNxPS6bl0pQGDS
-         hNpqExt5B6vEmQFM+H32WaH/eh1teoIz/zuW2M/zYi6rjjwV/JjfSJwkozuPIi/CkWu8
-         vzY9yrSn9SfSyK0Hk5tccsvn0v0ndG6LIdELXGK2we94C03MqHKXWmimzZRVKlAO406U
-         eHx+iitnmawv5lAdgsYpBneOn2nbsREbbZYnD+XrBWkCqZoHlILYm8E0cqJltTbFKJ3y
-         jfStkS6MierDqMzkKDaRZ5E/fXN7hTRUJBeeTMpdXZWew3OTmCIa0GYD6WHooEmzz+e7
-         wEfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705055316; x=1705660116;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HU5eAL0BNu0Tz9jf6MkeJhwqR+ZIbtt2u9TiSiZUMjg=;
-        b=HPpNQzGgsmj5BlJQwWHcWBfMRCX4MXPQlAGwDzkOBuBqrIi2HHE4Bm3mTobDdU3W3q
-         d4+wXTjKybHLgqxzz32XBii1NL5cQGzvXgkAfgCcnTjzkhgJ/+774c5iLAKnsSRQVEfv
-         k/r5fsxhBK5ungZe5T/3tCEUqm3uXlLMTuqZ8ecws+GTwixf8XCC5fIFzymDgZNGpd1F
-         qixCtlSp6r5H1vzObQg899yj8GJloHOSJH8els4mAngeqnv5q2YcJGSfN6Up05RGZ2zG
-         hfxEcxv9NZ+K6wY8ye2kEHzrXO6D0jfNSpWpAXux7KlrnXmdBPl2hSYcn6cSDxSiq+g2
-         /XHw==
-X-Gm-Message-State: AOJu0Yx/pyWGK16SmGQTQsbBEVatQxP8Ou5t+JIuUzR2p+jeLVnGMdVq
-	SUvFV8oFlOi9na61swf9VD481f+q4LDo9Q==
-X-Google-Smtp-Source: AGHT+IEkR2RoLcfPw1dJAPRjYQXVAEkVqUH1e9tJL1plqF0H0O5Da3og+MiV6ON7t17HNjno2lwuTw==
-X-Received: by 2002:a17:906:b7c8:b0:a2c:572c:b5e7 with SMTP id fy8-20020a170906b7c800b00a2c572cb5e7mr500040ejb.63.1705055315764;
-        Fri, 12 Jan 2024 02:28:35 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id k7-20020a17090627c700b00a19b7362dcfsm1625006ejc.139.2024.01.12.02.28.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 02:28:35 -0800 (PST)
-Date: Fri, 12 Jan 2024 11:28:33 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Francesco Dolcini <francesco@dolcini.it>,
-	kernel test robot <oliver.sang@intel.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH printk v3 02/14] printk: Adjust mapping for 32bit seq
- macros
-Message-ID: <ZaEUUZ6PICA54qVH@alley>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-3-john.ogness@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6AA58225;
+	Fri, 12 Jan 2024 10:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+	by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TBJ9H14c2zMrVlh;
+	Fri, 12 Jan 2024 10:45:55 +0000 (UTC)
+Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4TBJ9F6wTHzMpnPg;
+	Fri, 12 Jan 2024 11:45:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1705056355;
+	bh=0Xtl3exMkr4Vgw7Wdk8vaxK8FVOPw6r5Xm7224/uacI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B5Q4g6J+O2tyneb1iQmU5aC28ekvXJiODUBdbxXp+reDFQO06bkLNdDqy1wvR8lKA
+	 1rp03Ctp7sl++jxkF95VZibIwOecuro7KatD9sJFp3vjMqfmAJKLNu5sfw2rZ9T7im
+	 gdFDZizKF9Xmyeah3V0Utlwp7/5nodNRDU0gk5bI=
+Date: Fri, 12 Jan 2024 11:45:52 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Hu Yadi <hu.yadi@h3c.com>
+Cc: jmorris@namei.org, serge@hallyn.com, shuah@kernel.org, 
+	mathieu.desnoyers@efficios.com, linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org, 514118380@qq.com, 
+	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Subject: Re: [PATCH v3] selftests/landlock:Fix two build issues
+Message-ID: <20240112.mixei4sei0Pi@digikod.net>
+References: <20240112071245.669-1-hu.yadi@h3c.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231214214201.499426-3-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240112071245.669-1-hu.yadi@h3c.com>
+X-Infomaniak-Routing: alpha
 
-On Thu 2023-12-14 22:47:49, John Ogness wrote:
-> Note: This change only applies to 32bit architectures. On 64bit
->       architectures the macros are NOPs.
+On Fri, Jan 12, 2024 at 03:12:45PM +0800, Hu Yadi wrote:
+> From: "Hu.Yadi" <hu.yadi@h3c.com>
 > 
-> __ulseq_to_u64seq() computes the upper 32 bits of the passed
-> argument value (@ulseq). The upper bits are derived from a base
-> value (@rb_next_seq) in a way that assumes @ulseq represents a
-> 64bit number that is less than or equal to @rb_next_seq.
+> Two issues comes up while building selftest/landlock on my side
+> (gcc 7.3/glibc-2.28/kernel-4.19)
 > 
-> Until now this mapping has been correct for all call sites. However,
-> in a follow-up commit, values of @ulseq will be passed in that are
-> higher than the base value. This requires a change to how the 32bit
-> value is mapped to a 64bit sequence number.
+> the first one is as to gettid
 > 
-> Rather than mapping @ulseq such that the base value is the end of a
-> 32bit block, map @ulseq such that the base value is in the middle of
-> a 32bit block. This allows supporting 31 bits before and after the
-> base value, which is deemed acceptable for the console sequence
-> number during runtime.
+> net_test.c: In function ‘set_service’:
+> net_test.c:91:45: warning: implicit declaration of function ‘gettid’; [-Wimplicit-function-declaration]
+>     "_selftests-landlock-net-tid%d-index%d", gettid(),
+>                                              ^~~~~~
+>                                              getgid
+> net_test.c:(.text+0x4e0): undefined reference to `gettid'
 > 
-> Here is an example to illustrate the previous and new mappings.
+> the second is compiler error
+> gcc -Wall -O2 -isystem   fs_test.c -lcap -o selftests/landlock/fs_test
+> fs_test.c:4575:9: error: initializer element is not constant
+>   .mnt = mnt_tmp,
+>          ^~~~~~~
 > 
-> For a base value (@rb_next_seq) of 2 2000 0000...
+> this patch is to fix them
 > 
-> Before this change the range of possible return values was:
+> Signed-off-by: Hu.Yadi <hu.yadi@h3c.com>
+> Suggested-by: Jiao <jiaoxupo@h3c.com>
+> Reviewed-by: Berlin <berlin@h3c.com>
+> ---
+> Changes v3 -> v2:
+>  - add helper of gettid instead of __NR_gettid
+>  - add gcc/glibc version info in comments
+> Changes v1 -> v2:
+>  - fix whitespace error
+>  - replace SYS_gettid with _NR_gettid
 > 
-> 1 2000 0001 to 2 2000 0000
+>  tools/testing/selftests/landlock/fs_test.c  | 5 ++++-
+>  tools/testing/selftests/landlock/net_test.c | 9 +++++++++
+>  2 files changed, 13 insertions(+), 1 deletion(-)
 > 
-> __ulseq_to_u64seq(1fff ffff) => 2 1fff ffff
-> __ulseq_to_u64seq(2000 0000) => 2 2000 0000
-> __ulseq_to_u64seq(2000 0001) => 1 2000 0001
-> __ulseq_to_u64seq(9fff ffff) => 1 9fff ffff
-> __ulseq_to_u64seq(a000 0000) => 1 a000 0000
-> __ulseq_to_u64seq(a000 0001) => 1 a000 0001
-> 
-> After this change the range of possible return values are:
-> 1 a000 0001 to 2 a000 0000
-> 
-> __ulseq_to_u64seq(1fff ffff) => 2 1fff ffff
-> __ulseq_to_u64seq(2000 0000) => 2 2000 0000
-> __ulseq_to_u64seq(2000 0001) => 2 2000 0001
-> __ulseq_to_u64seq(9fff ffff) => 2 9fff ffff
-> __ulseq_to_u64seq(a000 0000) => 2 a000 0000
-> __ulseq_to_u64seq(a000 0001) => 1 a000 0001
-> 
-> [ john.ogness: Rewrite commit message. ]
-> 
-> Reported-by: Francesco Dolcini <francesco@dolcini.it>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202311171611.78d41dbe-oliver.sang@intel.com
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202311161555.3ee16fc9-oliver.sang@intel.com
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
+> index 18e1f86a6234..a992cf7c0ad1 100644
+> --- a/tools/testing/selftests/landlock/fs_test.c
+> +++ b/tools/testing/selftests/landlock/fs_test.c
+> @@ -4572,7 +4572,10 @@ FIXTURE_VARIANT(layout3_fs)
+>  /* clang-format off */
+>  FIXTURE_VARIANT_ADD(layout3_fs, tmpfs) {
+>  	/* clang-format on */
+> -	.mnt = mnt_tmp,
+> +	.mnt = {
+> +		.type = "tmpfs",
+> +		.data = "size=4m,mode=700",
 
-Great catch! It must have been complicated to debug this.
+OK, C doesn't play nice with constants. A better approach would be to
+define MNT_TMP_DATA, and use it with this fixture variant and the
+mnt_tmp variable.  No need for a MNT_TMP_TYPE though.  While you're at
+it, you can also make the mnt_tmp variable static const.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+You can create two patches from this one. This first hunk with:
 
-Best Regards,
-Petr
+Fixes: 04f9070e99a4 ("selftests/landlock: Add tests for pseudo filesystems")
 
+> +	},
+>  	.file_path = file1_s1d1,
+>  };
+>  
+> diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
+> index 929e21c4db05..12a6744568e2 100644
+> --- a/tools/testing/selftests/landlock/net_test.c
+> +++ b/tools/testing/selftests/landlock/net_test.c
+> @@ -21,6 +21,15 @@
+>  
+>  #include "common.h"
+
+..and this second hunk for another patch with:
+
+Fixes: a549d055a22e ("selftests/landlock: Add network tests")
+Cc: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+
+>  
+> +#ifndef gettid
+> +static pid_t gettid(void)
+> +{
+> +        return syscall(__NR_gettid);
+> +}
+> +
+
+Please remove this newline.
+
+> +#endif
+
+You can move this gettid hunk to common.h, under the
+landlock_restrict_self block.
+
+> +
+> +
+>  const short sock_port_start = (1 << 10);
+>  
+>  static const char loopback_ipv4[] = "127.0.0.1";
+> -- 
+> 2.23.0
+> 
 
