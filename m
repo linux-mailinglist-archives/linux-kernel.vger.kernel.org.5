@@ -1,202 +1,315 @@
-Return-Path: <linux-kernel+bounces-24838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0551482C341
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:03:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F7482C346
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D6E21C2212B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:03:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 657B2B22B4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E9E6EB7F;
-	Fri, 12 Jan 2024 16:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C011B73164;
+	Fri, 12 Jan 2024 16:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fNIxFy0M"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gr87F4fd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896341D53F
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705075410;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=eM/q6+ASudnWqkA1GcXB1FCKeCcpDQUk18zBNzi9GWQ=;
-	b=fNIxFy0MwAQwlQM4g38cFwoBBgENnRSpUJuUTGVpN2icgkAd8kakKNrFUo3LnJYZxsT7PQ
-	Pd3Ei1T9Q8ulJMOmngUIyPrnVUEFKNJ5Hdcn3BQR5CfAey20uyyjR4YbgbeP3UaKIaJwTn
-	zUgxxDciwSFLn+Td6Y8la7HRSnF7w9A=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-424-uh3MCDPtP5-iPJetD9ZVNQ-1; Fri, 12 Jan 2024 11:03:29 -0500
-X-MC-Unique: uh3MCDPtP5-iPJetD9ZVNQ-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d3e569ba83so52585325ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:03:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705075408; x=1705680208;
-        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eM/q6+ASudnWqkA1GcXB1FCKeCcpDQUk18zBNzi9GWQ=;
-        b=BHdLiSCdjiRdt86imhBzsip5+KqDMI1B8vi7DEfqer3AyQqFKofB4f1B+Gwfu0wTmy
-         hDfLOT1wDAhvHwf6k6Qp4CgX1rVGLDURAjCtx5GvtRJOQncRTV9Gqpmx9MDaDgdM03mY
-         p8ViaffGMQlhz2w9R6y5CnbPUwt8nYa3SeXxTG8/I9pw1OqnimO/pZ/sDFSPuklUH0Fy
-         J77+w7TXuore4k8UYBy0iUGrrJ9XAUvD6N7+1anNxkEorG/sBUOMmH76baLVTmru3sIH
-         11xff9z+QaD7yJ73pjNRDaVmwuHB4xwUlZWKYnpOrC0IRWglh7t2botOnyjQzi66yQtW
-         UVPg==
-X-Gm-Message-State: AOJu0YyIQQEMFZNh5r0UMkmzZnb5HeDpZ5j8SyoxTXNvyWUB6uImvcKb
-	BO86QJwco69XxYorp9w4sOLiJMGcMbwMiGOyHtKNLhu1HgQj84GjSmY49n1Ht0lSKW1ZYANVrcK
-	VWmGLt63K5KM1p88Eo1nn1FCc7httUE8a
-X-Received: by 2002:a17:902:e54b:b0:1d3:7368:663 with SMTP id n11-20020a170902e54b00b001d373680663mr1899473plf.7.1705075407984;
-        Fri, 12 Jan 2024 08:03:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHEE3bhlZZ9B9maxsi7Sr2DAFspnJ7Rv2qjDio1rzvyTwaxz5hENcZdZtmImKgo2rzVWof6LQ==
-X-Received: by 2002:a17:902:e54b:b0:1d3:7368:663 with SMTP id n11-20020a170902e54b00b001d373680663mr1899454plf.7.1705075407622;
-        Fri, 12 Jan 2024 08:03:27 -0800 (PST)
-Received: from rh (p200300c93f0273004f0fe90936098834.dip0.t-ipconnect.de. [2003:c9:3f02:7300:4f0f:e909:3609:8834])
-        by smtp.gmail.com with ESMTPSA id g11-20020a170902c98b00b001d4c97a2adcsm3319022plc.108.2024.01.12.08.03.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 08:03:27 -0800 (PST)
-Date: Fri, 12 Jan 2024 17:03:17 +0100 (CET)
-From: Sebastian Ott <sebott@redhat.com>
-To: dri-devel@lists.freedesktop.org, virtualization@lists.linux.dev, 
-    linux-kernel@vger.kernel.org
-cc: David Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
-    Daniel Vetter <daniel@ffwll.ch>
-Subject: [PATCH] drm/virtio: set segment size for virtio_gpu device
-Message-ID: <29a2b89d-7bf0-9dcb-5208-cd8e7d26e2f2@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF946EB52;
+	Fri, 12 Jan 2024 16:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705075555; x=1736611555;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ZiqSVUf82CR55TWUkVSfhK+GZ+0vmc+rRuBTia354gw=;
+  b=gr87F4fdyxW9dmGu4knGSI1bziu0hw/zxkTnLCAlT0XtB91F7Hfcd3iV
+   iiTSm25mKfFNodEUmBFLKIK3fmNPCDv9b/XQKE2szofGqxtEti9gPoeYq
+   FtP0U+qYIVJrbhMWtWtkem2+EHUpaW3h1zwh/ToJpopJEq9JHpxICgUrL
+   IC0jiqMF8FvlXiND6AsaKKOonIaLZSXOx+mxrIe+PSof66DEhkL/ZPt1L
+   5JKIRYf9U1EWmpIWB1v9E9dZvtxQul4lCS+tSHIdxSsPEtJPLWCP2dLcu
+   BsMNlaoeq3TWZi/MzyQ6OqoLwTuQi2JPSluwl/S7Dy2FPyu3xS5ib5Anc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="398087673"
+X-IronPort-AV: E=Sophos;i="6.04,190,1695711600"; 
+   d="scan'208";a="398087673"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 08:05:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="817112332"
+X-IronPort-AV: E=Sophos;i="6.04,190,1695711600"; 
+   d="scan'208";a="817112332"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Jan 2024 08:05:53 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Jan 2024 08:05:53 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Jan 2024 08:05:52 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 12 Jan 2024 08:05:52 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Jan 2024 08:05:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EEBh3EhWmrXlZAR61qARYT8uUrmSK0+UrcgVumYJ1ghQkggmQcKbiP7czzAFop5vUud9fWIrnggP8uT9jiLnkwUyaFELe0Ka+tTtxeT/mRbMlPSJ3nm2QfAmZ94eT0qyGvFPVkmhqiZyxPqC4PTdXB1pKp6WIkwvLF/VYXzh1wTg+aCW161tExPbqDVlnGWvCal3pbxUdOIDxbRo3NKzduFw95dAhp4g9E5hChsp6aLm+96R4+BouDu/NMlToQwIFK0hQELpxvoncFEo51l+ghGxIbR/qpS4ufNqud2ys1gLW0R/jVMDqcGNRN+D3NadbgpJmMHIbQ68bceEBIg7IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5niT+Vew9uBMBKLrcrFqrfoZwyjoXAWZRF7MEUHJOeg=;
+ b=RTUv9fcAouUaFmpR0Ho1zcXl4hp/Ep+nu/I3FY0gppcVI8MzwE7qjsA/H2wtaTCrE5tXqW+m/sBiaXOeOMb9BRX6Qp51x9KElccnT6qY8EfHTrcg/kf95+/lc2etCikhhSBg5gwzcmxvGSl7DGkOJIhhpsCMSrlkJZsXj22cuH+r4o7gv2kpCZKeLPbe8kW992XuLqn36YtUzXlClK/3rSxcV+4G91xr8V32h2dpNBe/f2UYDyC74VCO0j1q2dHoy8tmUltBeapoZX+QKma8HwL/I9JG5QeaL/6YwMBNwMzA/KFJhF3jRxcHHA76pThrD7KQfalzbCFlfscO5JzgFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
+ by DM4PR11MB5295.namprd11.prod.outlook.com (2603:10b6:5:392::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Fri, 12 Jan
+ 2024 16:05:50 +0000
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7181.019; Fri, 12 Jan 2024
+ 16:05:50 +0000
+Message-ID: <f4cabd98-2759-4cd3-81ac-4afdf9aadf56@intel.com>
+Date: Fri, 12 Jan 2024 09:05:42 -0700
+User-Agent: Betterbird (Linux)
+Subject: Re: [PATCH] cxl/pci: Skip irq features if MSI/MSI-X are not supported
+To: Ira Weiny <ira.weiny@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Dan
+ Williams" <dan.j.williams@intel.com>
+CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240111-dont-fail-irq-v1-1-802c22a79ecb@intel.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240111-dont-fail-irq-v1-1-802c22a79ecb@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0222.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c1::17) To PH7PR11MB5984.namprd11.prod.outlook.com
+ (2603:10b6:510:1e3::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|DM4PR11MB5295:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0e31a4cc-984a-4c7c-78ea-08dc138858c1
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lARdt6AaRZWrXYtvw3Hhv05rT3KkFLi9hbZrmG04fPsgLFT5iR4EcXHka+gOKH/mJhwfOyV2eTq4bRmkY08IxrJKIhP+CQsX58PZPJqabwyOASD1Us/C7ZO8Yr4xh/GD1xaXz8atwv5FyA6LEO2RSYomFTQhvtndFfcl6ktivBgwOZUMa6cTrZjCSd5WwdLNFpCzFAdCM2Gz6oRzfckJ2kv1dkdGw22eQKKTRxrpmlE84TOQntwF3xDGJXiy41yMzYJZGrDAp8UZQy9iUKGget4MClWCVXiDmyZmzmRF0Z1s3c7Rr2HQD4nGQVYC360nypExEdWHklPmBGad36xMSPAstZOFSsz6LG7n5uPR5PoQ82dm6Vv+CTeTeB+XhtycQJJk2pFwdxMWmoAjlhoiv2sZqBSOKI166l2FnM0T0a8ZjMsnmG+aSQKTJQBdo2DmvUfYdVQn5FKLxYFaBgQDhhybHUXfS5MlA19cROmMglWdheS/te04wfort4NAu6eYrUAU7JkSxCgJLp2lTaHQWQwFhSMz6FOondxmGkGVZPQN3tmVYgPKfFPQASlrUyTAqAGPfMyZ4bZRAU5qxBiSPeN1SakRUk7FOW/pbmJmMdY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(366004)(136003)(39860400002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(31686004)(83380400001)(36756003)(31696002)(82960400001)(86362001)(41300700001)(6486002)(38100700002)(110136005)(478600001)(4326008)(26005)(2616005)(6512007)(66556008)(66476007)(6636002)(966005)(316002)(2906002)(8936002)(6506007)(66946007)(8676002)(44832011)(5660300002)(6666004)(53546011)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z1AxaklFS21YSk02d1k0WXdmMGl1NzBFTDlKdnhhdGxKOUhUVkgrRnhwSFcw?=
+ =?utf-8?B?SVlmaTBYd2hReU1SL1lrSUlzQ1NJOUFnUFRlNG9WSEZRVTVCSDhrdHp6YW04?=
+ =?utf-8?B?WC9zVkVxZitxQnorclVGcWM3eEdqNVJZN2lwc1VsdWlhT0Z0bFVWdTBKVVd3?=
+ =?utf-8?B?SkVsUWJOMEJ0Vnp0SHVndEFNbVR4d1hqTmZ3S3RnUzZWdk9HS2p0c2VPeW1m?=
+ =?utf-8?B?OTBXM0dXRTREei84QTFwTW40SXZ5a2E0d0RSZS9scnVxd0MzUVNKdjk0TzJv?=
+ =?utf-8?B?bnExOWw5KzFzU2lja1hhd0ljMnBpTFZ0aXRRWnMvc0NxOEphb3BTVER5b3ht?=
+ =?utf-8?B?di9FSTlqRzJrT2tTOTEwTmF3eVY4YUVOSzJlS1A0TSt1a3JBRmdBNGZjT3lB?=
+ =?utf-8?B?UzFYK1FFSUpDQTIveFREV2xYTWdKc05YWFhSdm1nOXR6d0pPY3hVbGZJMXpV?=
+ =?utf-8?B?T016U09RT3gyeXhBMlVod2E2a2RyQlZiNk9FcnNSV2JBMmd5NEg2c3ovWDFl?=
+ =?utf-8?B?SDRBaS9tTHBxM25RUVdPL08zR1c4Nmh2dWFtNDdtTmhpcHYzVnhsTzBOV1dH?=
+ =?utf-8?B?U0xMSEtvbUEySDZqalY2di9lK2cweklyYlNFaXlOaDlzcXNLVjJCaU1TK1Fo?=
+ =?utf-8?B?Tmt3NnJ5c0VBOTJBUzBKZWJ2ZDlWTWc0S0tERkJ3d1lNVnRpazd5MmNTOUda?=
+ =?utf-8?B?YW5scmluNDhTK29vVWVFM25YKzlhNmdOd1Z0aC9RSWlLa0Jkd2RuNWZyNDJw?=
+ =?utf-8?B?TDZvclIyTk9JNmFBZWF4TXJzbEpTeTFWeFNQNHowWUJmd3ZoYnF3Rzd0eEFV?=
+ =?utf-8?B?bU94Ylo1YTNWOE90S0NwN1NpOTdXUDRZNC9DZm1xam91RytlTGM5M3VMOGU1?=
+ =?utf-8?B?UTlzdS9Qdk5DOVdrS1ZwNUNtYUdDbUhWYjdVOXZkcm9BZno5RkxhajlScDNG?=
+ =?utf-8?B?WFQ3UFRYL1pMNzVwcUhoRitBUnJaMWVTVEV4dVNmelpRZkJUWXIrbUdJYWs3?=
+ =?utf-8?B?Y29LVjFqeHcwVlBQVk5QSk5wWkhBaUlia051MGVUR0R1VXMrUjVTc0lCcTZ3?=
+ =?utf-8?B?R09yVVJXbmhnUUN2RWFzSW9aTTc1YmhiTU9hR2ppaHZRWWtKNzhSSUNVZ0hQ?=
+ =?utf-8?B?SnQ5cW9JTXBIUkJnUFptNEYvNUJ6THErT2FncE9UUFFRQVJsL0hCZ2k1UFNT?=
+ =?utf-8?B?L0pnYS96UzdHc2xzV0d3S2wxK3dWb2FHQmlneE1vMnp0aWRLR0k0M21STi9y?=
+ =?utf-8?B?cFFRU0VKL0FQSnBSSFduQTRPbHJZakRZSC9yR3F2YjdUb3N2clMvQlk2RUdD?=
+ =?utf-8?B?WTNuOHIvZ0lWKzR5ejVheDU5dWZqanB6ejdIbm9JR05pd011MzBVZnpGWUdp?=
+ =?utf-8?B?dUxlVkkzQmYyQUlYcmtLa3dKTkRoNkpacDd3ai8zcU53TGpxMGhVNGVtRkgr?=
+ =?utf-8?B?aExOMlRtOXErcmRVMXp2dG93UWJ5Wk1zOVBROC9jNWlNb2ZHLy8vQUMwb3JK?=
+ =?utf-8?B?MEdVQS9XTVY5ZFQxY3VWZnl0M3ltU2RmaCtHZDZUMUdMNnU5VmRYUEJxWGVL?=
+ =?utf-8?B?SldWeWl3TVY4QWxRdXlKeWt5WDZsZVp6Njd4MVc2SlBJSGJlZEsrb2RRRk5L?=
+ =?utf-8?B?NjNRSjVhT0tVNDVPenlYU2ZoVlh3YVd5M0tDZXUrcE1MNmlFWGpscjF5YWpt?=
+ =?utf-8?B?T0lLWFhGTnh2bHRkcmRWUlB3SENveUY1bDBBN1JhYUpEMmg1Szk3d3B0bFdW?=
+ =?utf-8?B?Y3JmeTB1aS9vMU9HZWVHenU2WHFrU0VyTTNmUVFyTTRKK0I0OFZ4aUFQR0lX?=
+ =?utf-8?B?RlY3dXZUY0NNbmhwZVBlOVV4NXhlQmlFWDc0M2N1VWZmczZSWWtld3ZoYUZB?=
+ =?utf-8?B?MjdZckhrOTBCNjlOK1ZGV0JHMkFBUDJwOENTV29QYk5DOE1HTlhsREVIUkcy?=
+ =?utf-8?B?Uk9GUk9vMGNQMGZWWlBENjgwMUR0UjBHc2RqUTFQeEFqeVE2TEpiQjhCbmZs?=
+ =?utf-8?B?VTBFaUJsOE5BM0pMVzNWMjljTkl6eEhVMjcyQWl0a3VYMWM5Zm9BV2Q5U094?=
+ =?utf-8?B?WEkrME9EUW1OWVd1V3pFWDUzVmk5RjRyc1NyVUtKT0RPSDRMTmxkVnd6dmpY?=
+ =?utf-8?Q?9lVNunKkfgOHp9jbyC8UGwnYc?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e31a4cc-984a-4c7c-78ea-08dc138858c1
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 16:05:50.6739
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XR2EXAN7vvBl4zQhwf94fjP3R1Q6WU93vcBm29BnlNjFYbjXylPkpNp8IJQ30R0blLNmagW11951k2inOxHtjg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5295
+X-OriginatorOrg: intel.com
 
-Hej,
 
-debug dma code is not happy with virtio gpu (arm64 VM):
 
-[  305.881733] ------------[ cut here ]------------
-[  305.883117] DMA-API: virtio-pci 0000:07:00.0: mapping sg segment longer than device claims to support [len=262144] [max=65536]
-[  305.885976] WARNING: CPU: 8 PID: 2002 at kernel/dma/debug.c:1177 check_sg_segment+0x2d0/0x420
-[  305.888038] Modules linked in: crct10dif_ce(+) polyval_ce polyval_generic ghash_ce virtio_gpu(+) virtio_net net_failover virtio_blk(+) virtio_dma_buf virtio_console failover virtio_mmio scsi_dh_r dac scsi_dh_emc scsi_dh_alua dm_multipath qemu_fw_cfg
-[  305.893496] CPU: 8 PID: 2002 Comm: (udev-worker) Not tainted 6.7.0 #1
-[  305.895070] Hardware name: QEMU KVM Virtual Machine, BIOS edk2-20230524-3.fc37 05/24/2023
-[  305.897112] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  305.897129] pc : check_sg_segment+0x2d0/0x420
-[  305.897139] lr : check_sg_segment+0x2d0/0x420
-[  305.897145] sp : ffff80008ffc69d0
-[  305.897149] x29: ffff80008ffc69d0 x28: dfff800000000000 x27: ffffb0232879e578
-[  305.897167] x26: ffffffff00000000 x25: ffffb0232778c060 x24: ffff19ee9b2060c0
-[  305.897181] x23: 00000000ffffffff x22: ffffb0232ab9ce10 x21: ffff19eece5c64ac
-[  305.906942] x20: 0000000000010000 x19: ffff19eece5c64a0 x18: ffff19eec36fc304
-[  305.908633] x17: 6e61687420726567 x16: 6e6f6c20746e656d x15: 6765732067732067
-[  305.910352] x14: 00000000f1f1f1f1 x13: 0000000000000001 x12: ffff700011ff8cc3
-[  305.912044] x11: 1ffff00011ff8cc2 x10: ffff700011ff8cc2 x9 : ffffb02324a70e54
-[  305.913751] x8 : 00008fffee00733e x7 : ffff80008ffc6617 x6 : 0000000000000001
-[  305.915451] x5 : ffff80008ffc6610 x4 : 1fffe33e70564622 x3 : dfff800000000000
-[  305.917158] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff19f382b23100
-[  305.918864] Call trace:
-[  305.919474]  check_sg_segment+0x2d0/0x420
-[  305.920443]  debug_dma_map_sg+0x2a0/0x428
-[  305.921402]  __dma_map_sg_attrs+0xf4/0x1a8
-[  305.922388]  dma_map_sgtable+0x7c/0x100
-[  305.923318]  drm_gem_shmem_get_pages_sgt+0x15c/0x328
-[  305.924500]  virtio_gpu_object_shmem_init.constprop.0.isra.0+0x50/0x628 [virtio_gpu]
-[  305.926390]  virtio_gpu_object_create+0x198/0x478 [virtio_gpu]
-[  305.927802]  virtio_gpu_mode_dumb_create+0x2a0/0x4c8 [virtio_gpu]
-[  305.929272]  drm_mode_create_dumb+0x1c0/0x280
-[  305.930327]  drm_client_framebuffer_create+0x140/0x328
-[  305.931555]  drm_fbdev_generic_helper_fb_probe+0x1bc/0x5c0
-[  305.932871]  __drm_fb_helper_initial_config_and_unlock+0x1e0/0x630
-[  305.934372]  drm_fb_helper_initial_config+0x50/0x68
-[  305.935540]  drm_fbdev_generic_client_hotplug+0x148/0x200
-[  305.936819]  drm_client_register+0x130/0x200
-[  305.937856]  drm_fbdev_generic_setup+0xe8/0x320
-[  305.938932]  virtio_gpu_probe+0x13c/0x2d0 [virtio_gpu]
-[  305.940190]  virtio_dev_probe+0x38c/0x600
-[  305.941153]  really_probe+0x334/0x9c8
-[  305.942047]  __driver_probe_device+0x164/0x3d8
-[  305.943102]  driver_probe_device+0x64/0x180
-[  305.944094]  __driver_attach+0x1d4/0x488
-[  305.945045]  bus_for_each_dev+0x104/0x198
-[  305.946008]  driver_attach+0x44/0x68
-[  305.946892]  bus_add_driver+0x23c/0x4a8
-[  305.947838]  driver_register+0xf8/0x3d0
-[  305.948770]  register_virtio_driver+0x74/0xc8
-[  305.949836]  virtio_gpu_driver_init+0x20/0xff8 [virtio_gpu]
-[  305.951237]  do_one_initcall+0x17c/0x8c0
-[  305.952182]  do_init_module+0x1dc/0x630
-[  305.953106]  load_module+0x10c0/0x1638
-[  305.954012]  init_module_from_file+0xe0/0x140
-[  305.955058]  idempotent_init_module+0x2c0/0x590
-[  305.956174]  __arm64_sys_finit_module+0xb4/0x140
-[  305.957282]  invoke_syscall+0xd8/0x258
-[  305.958187]  el0_svc_common.constprop.0+0x16c/0x240
-[  305.959526]  do_el0_svc+0x48/0x68
-[  305.960456]  el0_svc+0x58/0x118
-[  305.961310]  el0t_64_sync_handler+0x120/0x130
-[  305.962510]  el0t_64_sync+0x194/0x198
-[  305.963509] irq event stamp: 37944
-[  305.964412] hardirqs last  enabled at (37943): [<ffffb02324a7439c>] console_unlock+0x1a4/0x1c8
-[  305.966602] hardirqs last disabled at (37944): [<ffffb023276724e4>] el1_dbg+0x24/0xa0
-[  305.968535] softirqs last  enabled at (37930): [<ffffb0232475114c>] __do_softirq+0x8e4/0xe1c
-[  305.970781] softirqs last disabled at (37925): [<ffffb0232475a9b0>] ____do_softirq+0x18/0x30
-[  305.972937] ---[ end trace 0000000000000000 ]---
+On 1/11/24 18:54, Ira Weiny wrote:
+> CXL 3.1 Section 3.1.1 states:
+> 
+> 	"A Function on a CXL device must not generate INTx messages if
+> 	that Function participates in CXL.cache protocol or CXL.mem
+> 	protocols."
+> 
+> The generic CXL memory driver only supports devices which use the
+> CXL.mem protocol.  The current driver attempts to allocate MSI/MSI-X
+> vectors in anticipation of their need for mailbox interrupts or event
+> processing.  However, the above requirement does not require a device to
+> support interrupts, only that they use MSI/MSI-X.  For example, a device
+> may disable mailbox interrupts and be configured for firmware first
+> event processing and function well with the driver.
+> 
+> Rather than fail device probe if interrupts are not supported; flag that
+> irqs are not enabled and avoid features which require interrupts.
+> Emit messages appropriate for the situation to aid in debugging should
+> device behavior be unexpected due to a failure to allocate vectors.
+> 
+> Note that it is possible for a device to have host based event
+> processing through polling.  However, the driver does not support
+> polling and it is not anticipated to be required.  Leave that case to
+> the future if such a device comes along.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-The 64K max_segment size of the device seems to be inherited by PCIs default.
-The sg list is crated via this drm helper:
+v2?
 
-struct sg_table *drm_prime_pages_to_sg(struct drm_device *dev,
- 				       struct page **pages, unsigned int nr_pages)
-{
-..
- 	if (dev)
- 		max_segment = dma_max_mapping_size(dev->dev);
- 	if (max_segment == 0)
- 		max_segment = UINT_MAX;
- 	err = sg_alloc_table_from_pages_segment(sg, pages, nr_pages, 0,
- 						nr_pages << PAGE_SHIFT,
- 						max_segment, GFP_KERNEL);
-..
-}
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 
-I'm a bit puzzled why this uses dma_max_mapping_size() and not
-dma_get_max_seg_size(). But since this is used by a lot of drivers
-I'm not really keen to touch this code that works like this for ages.
-
-So let's just make debug dma code aware of the actual segment size
-that's used by the device:
-
---->8
-drm/virtio: set segment size for virtio_gpu device
-
-Set the segment size of the virtio_gpu device to the value
-used by the drm helpers when allocating sg lists to fix the
-following complaint from DMA_API debug code:
-DMA-API: virtio-pci 0000:07:00.0: mapping sg segment longer than device claims to support [len=262144] [max=65536]
-
-Signed-off-by: Sebastian Ott <sebott@redhat.com>
----
-  drivers/gpu/drm/virtio/virtgpu_drv.c | 1 +
-  1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
-index 4334c7608408..74b2cb3295af 100644
---- a/drivers/gpu/drm/virtio/virtgpu_drv.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
-@@ -94,6 +94,7 @@ static int virtio_gpu_probe(struct virtio_device *vdev)
-  			goto err_free;
-  	}
-
-+	dma_set_max_seg_size(dev->dev, dma_max_mapping_size(dev->dev) ? : UINT_MAX);
-  	ret = virtio_gpu_init(vdev, dev);
-  	if (ret)
-  		goto err_free;
--- 
-2.43.0
-
+> ---
+> Changes in v1:
+> - [djbw: remove persistent irq boolean]
+> - [djbw: Simplify error messages]
+> - [Alison: spell check]
+> - [iweiny: test]
+> - Link to RFC: https://lore.kernel.org/r/20240108-dont-fail-irq-v1-1-4407228debd2@intel.com
+> ---
+>  drivers/cxl/pci.c | 29 +++++++++++++++++++----------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 0155fb66b580..bd12b97bb38e 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -381,7 +381,7 @@ static int cxl_pci_mbox_send(struct cxl_memdev_state *mds,
+>  	return rc;
+>  }
+>  
+> -static int cxl_pci_setup_mailbox(struct cxl_memdev_state *mds)
+> +static int cxl_pci_setup_mailbox(struct cxl_memdev_state *mds, bool irq_avail)
+>  {
+>  	struct cxl_dev_state *cxlds = &mds->cxlds;
+>  	const int cap = readl(cxlds->regs.mbox + CXLDEV_MBOX_CAPS_OFFSET);
+> @@ -443,6 +443,11 @@ static int cxl_pci_setup_mailbox(struct cxl_memdev_state *mds)
+>  	if (!(cap & CXLDEV_MBOX_CAP_BG_CMD_IRQ))
+>  		return 0;
+>  
+> +	if (!irq_avail) {
+> +		dev_err(cxlds->dev, "Mailbox irq enabled but no interrupt vectors.\n");
+> +		return 0;
+> +	}
+> +
+>  	msgnum = FIELD_GET(CXLDEV_MBOX_CAP_IRQ_MSGNUM_MASK, cap);
+>  	irq = pci_irq_vector(to_pci_dev(cxlds->dev), msgnum);
+>  	if (irq < 0)
+> @@ -587,7 +592,7 @@ static int cxl_mem_alloc_event_buf(struct cxl_memdev_state *mds)
+>  	return devm_add_action_or_reset(mds->cxlds.dev, free_event_buf, buf);
+>  }
+>  
+> -static int cxl_alloc_irq_vectors(struct pci_dev *pdev)
+> +static bool cxl_alloc_irq_vectors(struct pci_dev *pdev)
+>  {
+>  	int nvecs;
+>  
+> @@ -604,9 +609,9 @@ static int cxl_alloc_irq_vectors(struct pci_dev *pdev)
+>  				      PCI_IRQ_MSIX | PCI_IRQ_MSI);
+>  	if (nvecs < 1) {
+>  		dev_dbg(&pdev->dev, "Failed to alloc irq vectors: %d\n", nvecs);
+> -		return -ENXIO;
+> +		return false;
+>  	}
+> -	return 0;
+> +	return true;
+>  }
+>  
+>  static irqreturn_t cxl_event_thread(int irq, void *id)
+> @@ -742,7 +747,7 @@ static bool cxl_event_int_is_fw(u8 setting)
+>  }
+>  
+>  static int cxl_event_config(struct pci_host_bridge *host_bridge,
+> -			    struct cxl_memdev_state *mds)
+> +			    struct cxl_memdev_state *mds, bool irq_avail)
+>  {
+>  	struct cxl_event_interrupt_policy policy;
+>  	int rc;
+> @@ -754,6 +759,11 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
+>  	if (!host_bridge->native_cxl_error)
+>  		return 0;
+>  
+> +	if (!irq_avail) {
+> +		dev_info(mds->cxlds.dev, "No interrupt vectors, no polling, skip event processing.\n");
+> +		return 0;
+> +	}
+> +
+>  	rc = cxl_mem_alloc_event_buf(mds);
+>  	if (rc)
+>  		return rc;
+> @@ -788,6 +798,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	struct cxl_register_map map;
+>  	struct cxl_memdev *cxlmd;
+>  	int i, rc, pmu_count;
+> +	bool irq_avail;
+>  
+>  	/*
+>  	 * Double check the anonymous union trickery in struct cxl_regs
+> @@ -845,11 +856,9 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	else
+>  		dev_warn(&pdev->dev, "Media not active (%d)\n", rc);
+>  
+> -	rc = cxl_alloc_irq_vectors(pdev);
+> -	if (rc)
+> -		return rc;
+> +	irq_avail = cxl_alloc_irq_vectors(pdev);
+>  
+> -	rc = cxl_pci_setup_mailbox(mds);
+> +	rc = cxl_pci_setup_mailbox(mds, irq_avail);
+>  	if (rc)
+>  		return rc;
+>  
+> @@ -908,7 +917,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  		}
+>  	}
+>  
+> -	rc = cxl_event_config(host_bridge, mds);
+> +	rc = cxl_event_config(host_bridge, mds, irq_avail);
+>  	if (rc)
+>  		return rc;
+>  
+> 
+> ---
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> change-id: 20240108-dont-fail-irq-a96310368f0f
+> 
+> Best regards,
 
