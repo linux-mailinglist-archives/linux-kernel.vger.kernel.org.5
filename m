@@ -1,99 +1,153 @@
-Return-Path: <linux-kernel+bounces-24592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFC5C82BE98
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:27:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49EA482BE9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DA2428A828
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:27:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BE7D1C252FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BAC860B8B;
-	Fri, 12 Jan 2024 10:26:35 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF445EE9D;
+	Fri, 12 Jan 2024 10:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BBDwWL8f"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EE55EE81;
-	Fri, 12 Jan 2024 10:26:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TBHjz0hqSzsVqh;
-	Fri, 12 Jan 2024 18:25:43 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (unknown [7.193.23.164])
-	by mail.maildlp.com (Postfix) with ESMTPS id 36D6A14011A;
-	Fri, 12 Jan 2024 18:26:30 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Jan 2024 18:26:29 +0800
-From: Weili Qian <qianweili@huawei.com>
-To: <herbert@gondor.apana.org.au>
-CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<liulongfang@huawei.com>, Weili Qian <qianweili@huawei.com>
-Subject: [PATCH 2/2] crypto: hisilicon/qm - dump important registers values before resetting
-Date: Fri, 12 Jan 2024 18:25:46 +0800
-Message-ID: <20240112102546.2213-3-qianweili@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240112102546.2213-1-qianweili@huawei.com>
-References: <20240112102546.2213-1-qianweili@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434A05EE8A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:26:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3377d45c178so1752090f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:26:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705055206; x=1705660006; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C0Lc99ilQ42af+xslRM658d3mAj5DW98oVamnjTJWVg=;
+        b=BBDwWL8fwf0FXzb5aWIR41mlLwN2QymHN50Yx6Q0GhNCxqmT531Sy6NRE+N1IeCjpM
+         jRZTn+IcIxTfIV0YUJRqot7mbg1uLXw8jPgDwknrxZ5OzeY2gtTYfoFN2KepN1LaQLEV
+         S56MISWhGUYf2vEz6QyE4zvnfPd5L44lKXlHzxWiXOzifurL1KRof86bF/SxJMCzUbJl
+         tAWjDPTv18qrzHUPTbJp4tI3RqS7tuZNuUihp25xUCgxBi7CUVCcr1l2d428PxJK4V3E
+         R3tklHqFVA6OPrqk6cZQm8MlXp0SVXPsFmA/p8xBktGxMdQc/DYoCvURFUXbkoyHziRD
+         M53w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705055206; x=1705660006;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=C0Lc99ilQ42af+xslRM658d3mAj5DW98oVamnjTJWVg=;
+        b=SQmkcEFaLu8FIhrz4KVrTKHCxecrf1Q4/PYhlY2gZ7HziMLQJW4C4eOEBwomAUUD3x
+         4he/mlO2L2f44NPLi95W0aO1aQLvXKXbXqpzI1x84UPEHIcib8We7fefzfsU/Bh4eqhS
+         Z6hfDRQ10Vbh9UXjGLTBGmFflv4ItkDC+rtGSU/KhhY0cphv4gmuN6jlatjfn7LtDvzd
+         vICMo8fuVM+ivSlmKeogBx54f1DpWlg7ggiiRB0yrfJv5zlXSaAY8QZ+AC3xb1bofrOU
+         da7RiXnGY4AhrRHeBVbk3t+5N7Tr6cRPkJJ6QsgQrAw0eHf6YYEw04wD4Xth8ZNBl5YT
+         /Rzw==
+X-Gm-Message-State: AOJu0YyBkNDSxtO8LQ2WBobzYh+pleBwsKqVZUhRkdSb592fYXuqkrAN
+	Hu/UkoaGE+3KHywjJ/396eSDOAR4JfoRcw==
+X-Google-Smtp-Source: AGHT+IEJ0X+IfLsBVCPTmjzGkvUhKKx4wLj7tOWDMjhPq6GtB3+I1Fs/2fvJMVmiCPfL0g/HihfoHw==
+X-Received: by 2002:a05:6000:184f:b0:336:5e6c:a1f8 with SMTP id c15-20020a056000184f00b003365e6ca1f8mr684134wri.92.1705055206508;
+        Fri, 12 Jan 2024 02:26:46 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:59d5:231:f1ee:77f? ([2a01:e0a:982:cbb0:59d5:231:f1ee:77f])
+        by smtp.gmail.com with ESMTPSA id h18-20020adf9cd2000000b00336a1f6ce7csm3456348wre.19.2024.01.12.02.26.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 02:26:46 -0800 (PST)
+Message-ID: <f99d363c-d4a6-44b3-8057-3925f8dac1d5@linaro.org>
+Date: Fri, 12 Jan 2024 11:26:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for DJN HX83112A LCD panel
+Content-Language: en-US, fr
+To: Linus Walleij <linus.walleij@linaro.org>,
+ Luca Weiss <luca.weiss@fairphone.com>
+Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
+ <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>,
+ devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
+ <20240110-fp4-panel-v2-2-8ad11174f65b@fairphone.com>
+ <CACRpkdaWTfPDCin_L6pefHsokjNyO8Mo6hWPdzPLLi1EUkKUuA@mail.gmail.com>
+ <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com>
+ <CACRpkdZQbVXfBa70nhDOqfWPbsh-6DgX-uvZOxr19pzMmF2giQ@mail.gmail.com>
+ <CYCLSCKPPBOC.1B1MP3VOOC0Q8@fairphone.com>
+ <cdc18e2a-b7eb-4b54-a513-481148fb3b0d@linaro.org>
+ <CYCMVXHYVDCI.HVH1TR8MWEUK@fairphone.com>
+ <CACRpkdacS9ojXUuogygkz6xxCf3mMq6GG_75sze8ukUu=rxVyw@mail.gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CACRpkdacS9ojXUuogygkz6xxCf3mMq6GG_75sze8ukUu=rxVyw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
 
-Read the values of some device registers before the device
-is reset, these values help analyze the cause of the device exception.
+On 12/01/2024 11:23, Linus Walleij wrote:
+> On Fri, Jan 12, 2024 at 10:52 AM Luca Weiss <luca.weiss@fairphone.com> wrote:
+> 
+>> Since there's zero indication Truly is involved in this panel in my
+>> documentation - much less the number 5P65 - I'm not going to add that.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
----
- drivers/crypto/hisilicon/debugfs.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Ack
 
-diff --git a/drivers/crypto/hisilicon/debugfs.c b/drivers/crypto/hisilicon/debugfs.c
-index 615c8e18d8b0..06e67eda409f 100644
---- a/drivers/crypto/hisilicon/debugfs.c
-+++ b/drivers/crypto/hisilicon/debugfs.c
-@@ -83,6 +83,30 @@ static const struct debugfs_reg32 qm_dfx_regs[] = {
- 	{"QM_DFX_FF_ST5                 ",  0x1040dc},
- 	{"QM_DFX_FF_ST6                 ",  0x1040e0},
- 	{"QM_IN_IDLE_ST                 ",  0x1040e4},
-+	{"QM_CACHE_CTL                  ",  0x100050},
-+	{"QM_TIMEOUT_CFG                ",  0x100070},
-+	{"QM_DB_TIMEOUT_CFG             ",  0x100074},
-+	{"QM_FLR_PENDING_TIME_CFG       ",  0x100078},
-+	{"QM_ARUSR_MCFG1                ",  0x100088},
-+	{"QM_AWUSR_MCFG1                ",  0x100098},
-+	{"QM_AXI_M_CFG_ENABLE           ",  0x1000B0},
-+	{"QM_RAS_CE_THRESHOLD           ",  0x1000F8},
-+	{"QM_AXI_TIMEOUT_CTRL           ",  0x100120},
-+	{"QM_AXI_TIMEOUT_STATUS         ",  0x100124},
-+	{"QM_CQE_AGGR_TIMEOUT_CTRL      ",  0x100144},
-+	{"ACC_RAS_MSI_INT_SEL           ",  0x1040fc},
-+	{"QM_CQE_OUT                    ",  0x104100},
-+	{"QM_EQE_OUT                    ",  0x104104},
-+	{"QM_AEQE_OUT                   ",  0x104108},
-+	{"QM_DB_INFO0                   ",  0x104180},
-+	{"QM_DB_INFO1                   ",  0x104184},
-+	{"QM_AM_CTRL_GLOBAL             ",  0x300000},
-+	{"QM_AM_CURR_PORT_STS           ",  0x300100},
-+	{"QM_AM_CURR_TRANS_RETURN       ",  0x300150},
-+	{"QM_AM_CURR_RD_MAX_TXID        ",  0x300154},
-+	{"QM_AM_CURR_WR_MAX_TXID        ",  0x300158},
-+	{"QM_AM_ALARM_RRESP             ",  0x300180},
-+	{"QM_AM_ALARM_BRESP             ",  0x300184},
- };
- 
- static const struct debugfs_reg32 qm_vf_dfx_regs[] = {
--- 
-2.33.0
+> 
+> OK then, I fold, thanks for looking into it.
+> Keep the Himax hx83112a file name and symbols.
+> 
+>> So in short this panel is the model 9A-3R063-1102B from DJN, which uses
+>> a Himax HX83112A driver IC.
+> 
+> So compatible = "djn,9a-3r063-1102b" since the setup sequences for
+> hx83112a are clearly for this one display?
+
+Yep let's settle on that!
+
+Thanks,
+Neil
+
+> 
+> Yours,
+> Linus Walleij
 
 
