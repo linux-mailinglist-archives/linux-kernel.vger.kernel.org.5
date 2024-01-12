@@ -1,189 +1,133 @@
-Return-Path: <linux-kernel+bounces-25059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 631FB82C70B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:15:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B129182C711
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C25A0B23CA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:15:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F4B2837F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D2717730;
-	Fri, 12 Jan 2024 22:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A947117735;
+	Fri, 12 Jan 2024 22:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LWq9gfbW"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dc8Z7/ao"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2A41772D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4b71e8790efso1634799e0c.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:15:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC5617726
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3fde109f2so10975ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:16:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705097732; x=1705702532; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zZLcBXN1VISPyK9csvDi01+514yu9ykhkUQUMngzxPc=;
-        b=LWq9gfbWpdnBml2v1CcITvhS7Njz7l/1gmgRqwG//WNhYjt861bFy+GbkiizHrcIGO
-         M04+r8QwsMBnlP9FPJ53A4RIv7t35Xryh3tHcwCup+ci6C4lE3Cb+H03uJsxdVsTWHMi
-         R2SHmBNygFMcLkwr+kUHRXZthNeH6PHl1UB6IRS+xRDqSdlvhXrjtQmtz8fBYDU8ugyZ
-         owZecSktkBgJti4MRkdoCl1v0Uuwbkv0RUQxFmbpQEIuM+2Q+hIWIQJNYLzC7pBqb8pw
-         eLo00yCOC4HPWucvEp9q867qRNg3sjZ7bC6e9P2jIfKWkG4LrAKRIH7kSGkY2sPl1lRq
-         lLdw==
+        d=google.com; s=20230601; t=1705097814; x=1705702614; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lry9qLsx6UZvlRxob1780MirJjVFaR6R1yAoW5+x8Hk=;
+        b=dc8Z7/aomT9QRgG04selIE/s6ThMYsbvvNBGU5Rd4gt8HPEsYDKoldeJKLgGgrCPkU
+         0FCgKDB5Pp5//RhUH7qRDraAXdr66WyaAXr11Ow2eqwWk5Q0YJECKkz8GDj7LYtOcECy
+         DasoPAgX5yyklpg0F/Tpqtv5t9TVNz7SZIQ1PeZPaf10VBlJus0Y+klAya8uH1CrLk3Q
+         Y2/5YRQnRUWFX6uN93ljhRLdqIbL2pZSQWLyKX1TpIR6EBMH9ZcTz33fiJ8b4a/QPOyd
+         GBr9FAXISl3EoNmRcJWOrgh386pRz3hP3yUdAppjQuChiwgk9oei4NzMY+pGUJgc+DLb
+         gvqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705097732; x=1705702532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zZLcBXN1VISPyK9csvDi01+514yu9ykhkUQUMngzxPc=;
-        b=eSJ3mXOeMcb7TyPI7Ng7S1ndSUspBz7WU54JxU5M9Dx1qNvqZhYyqh1LCoJcPLw5mo
-         GaMVLYEjOQcNP1yeUkeE+gSIT6/BxYwOThPvGsjTIR4njBzbFYIpqlYI3mMzg/zcdl7f
-         hbs+Ylt8yMhZnhW+osL9gZyI+qDteQ4C91wBpUKubtw+sX9UhKtH6EXXFgpRc1wYSBpJ
-         NBVzWLAJjxUqZQx1On7pQF2bdOPalKZ1nDXoKFLuoheXd4NGOSfYYn3hG33quMkyOUZI
-         S8vhlop2S4owTGMPZGHM0Un2EwnYkf4p8DEmELricAdajadQ0FAni5UXTd8TQ3VYNgeS
-         3Arw==
-X-Gm-Message-State: AOJu0YxTNz61EfdmEze8cpDWpf57YMh7JAxjgV3eo5l7CLwv+SLMGs2g
-	nzhamrVoWizqoqLMECBF9mZJ7lD6WrJ1UfimjjpYdm/oDcKoCw==
-X-Google-Smtp-Source: AGHT+IHHuqY0GhkSlzBBxqUM8EnRdHKfLdtdAhi/wUWxG1H3uryUyFZNmTG47dvVCuK3mbQ+YtZIPdv9kUf7SQ229rY=
-X-Received: by 2002:a05:6122:4490:b0:4b7:8d7c:3483 with SMTP id
- cz16-20020a056122449000b004b78d7c3483mr1713549vkb.19.1705097732196; Fri, 12
- Jan 2024 14:15:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705097814; x=1705702614;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lry9qLsx6UZvlRxob1780MirJjVFaR6R1yAoW5+x8Hk=;
+        b=HeX+kC2736/Cn2h1bqMeWX5QX77TLLnbESPpEwF1ZD6bXGf9e9GNTkE49bA08VzHcd
+         e8W8mUlkTQB9m27mRNhnJGgMQ2M1MwbVyXVbqKNr2/mC05OrVPCGsF9tzhqaZslEaqkP
+         ShxBK5t6l9M+JUemCL88ycoE5OCdOlmBt8mqrKAoM/hDpqVT5iTTHlpSqggEq8R3Znve
+         KbkApbmXEsgcVruoBTC13rV/ytVSXZLygAPPDSyviI2TXRKk7J2cGvXiuhhCWQLvP7DK
+         oKiW7Jwcu+KAH0qb7kP9NKXEVcvKU/Kcw6wx2STBCUZTGgorDkQIWh5z7V85WC/fKvY0
+         3c1Q==
+X-Gm-Message-State: AOJu0Yx+w9WmIT2Rlny3FxrgEDuDM3n2sYalDl+qo6DCm9NfMwF9E28Z
+	9GQM6XofatUcdHWGffjIj6x9KWeIxrqc
+X-Google-Smtp-Source: AGHT+IHZxFmKAb81aZbOG13seu8/SecJ0oTiSTHCDMzD2aW6mfK8h3njEoIKTzRV2XruCxfBbfLtyQ==
+X-Received: by 2002:a17:902:f544:b0:1d5:4c40:bf01 with SMTP id h4-20020a170902f54400b001d54c40bf01mr22623plf.17.1705097813656;
+        Fri, 12 Jan 2024 14:16:53 -0800 (PST)
+Received: from google.com (78.250.82.34.bc.googleusercontent.com. [34.82.250.78])
+        by smtp.gmail.com with ESMTPSA id b13-20020a65668d000000b005cdf0b46fecsm3218397pgw.81.2024.01.12.14.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 14:16:52 -0800 (PST)
+Date: Fri, 12 Jan 2024 14:16:49 -0800
+From: William McVicker <willmcvicker@google.com>
+To: Joe Perches <joe@perches.com>
+Cc: Andy Whitcroft <apw@canonical.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	linux-kbuild@vger.kernel.org, kernel-team@android.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] checkpatch: allow build files to reference other
+ build files
+Message-ID: <ZaG6UcGSrxduqtFH@google.com>
+References: <20240112183420.1777576-1-willmcvicker@google.com>
+ <3513adb04d17156242c92121a7aec4515c39bcf5.camel@perches.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111064208.2969599-1-chao@kernel.org> <20240111064208.2969599-2-chao@kernel.org>
-In-Reply-To: <20240111064208.2969599-2-chao@kernel.org>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Fri, 12 Jan 2024 14:15:21 -0800
-Message-ID: <CACOAw_xnOKPeFQ7u5o17coYkpVepYT8DBQPoi1okuR8VvjfMvg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v4 2/6] f2fs: compress: fix to cover normal
- cluster write with cp_rwsem
-To: Chao Yu <chao@kernel.org>
-Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3513adb04d17156242c92121a7aec4515c39bcf5.camel@perches.com>
 
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
+On 01/12/2024, Joe Perches wrote:
+> On Fri, 2024-01-12 at 10:34 -0800, Will McVicker wrote:
+> > Add an exception to the EMBEDDED_FILENAME warning for build files. This
+> > fixes the below warnings where the Kconfig and Makefile files reference
+> > other similarly named build files.
+> > 
+> >   WARNING:EMBEDDED_FILENAME: It's generally not useful to have the
+> >   filename in the file
+> >   #24: FILE: Kconfig:34:
+> >   +source "drivers/willmcvicker/Kconfig"
+> > 
+> >   WARNING:EMBEDDED_FILENAME: It's generally not useful to have the
+> >   filename in the file
+> >   #36: FILE: Makefile:667:
+> >   +	} > Makefile
+> 
+> No need to wrap here I think.
 
-On Wed, Jan 10, 2024 at 10:43=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
->
-> When we overwrite compressed cluster w/ normal cluster, we should
-> not unlock cp_rwsem during f2fs_write_raw_pages(), otherwise data
-> will be corrupted if partial blocks were persisted before CP & SPOR,
-> due to cluster metadata wasn't updated atomically.
->
-> Fixes: 4c8ff7095bef ("f2fs: support data compression")
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
->  fs/f2fs/compress.c | 20 ++++++++++++++------
->  fs/f2fs/data.c     |  3 ++-
->  2 files changed, 16 insertions(+), 7 deletions(-)
->
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 9940b7886e5d..bf4cfab67aec 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1448,7 +1448,8 @@ static int f2fs_write_raw_pages(struct compress_ctx=
- *cc,
->                                         enum iostat_type io_type)
->  {
->         struct address_space *mapping =3D cc->inode->i_mapping;
-> -       int _submitted, compr_blocks, ret, i;
-> +       struct f2fs_sb_info *sbi =3D F2FS_M_SB(mapping);
-> +       int _submitted, compr_blocks, ret =3D 0, i;
->
->         compr_blocks =3D f2fs_compressed_blocks(cc);
->
-> @@ -1463,6 +1464,10 @@ static int f2fs_write_raw_pages(struct compress_ct=
-x *cc,
->         if (compr_blocks < 0)
->                 return compr_blocks;
->
-> +       /* overwrite compressed cluster w/ normal cluster */
-> +       if (compr_blocks > 0)
-> +               f2fs_lock_op(sbi);
-> +
->         for (i =3D 0; i < cc->cluster_size; i++) {
->                 if (!cc->rpages[i])
->                         continue;
-> @@ -1495,26 +1500,29 @@ static int f2fs_write_raw_pages(struct compress_c=
-tx *cc,
->                                 unlock_page(cc->rpages[i]);
->                                 ret =3D 0;
->                         } else if (ret =3D=3D -EAGAIN) {
-> +                               ret =3D 0;
->                                 /*
->                                  * for quota file, just redirty left page=
-s to
->                                  * avoid deadlock caused by cluster updat=
-e race
->                                  * from foreground operation.
->                                  */
->                                 if (IS_NOQUOTA(cc->inode))
-> -                                       return 0;
-> -                               ret =3D 0;
-> +                                       goto out;
->                                 f2fs_io_schedule_timeout(DEFAULT_IO_TIMEO=
-UT);
->                                 goto retry_write;
->                         }
-> -                       return ret;
-> +                       goto out;
->                 }
->
->                 *submitted +=3D _submitted;
->         }
->
-> -       f2fs_balance_fs(F2FS_M_SB(mapping), true);
-> +out:
-> +       if (compr_blocks > 0)
-> +               f2fs_unlock_op(sbi);
->
-> -       return 0;
-> +       f2fs_balance_fs(sbi, true);
-> +       return ret;
->  }
->
->  int f2fs_write_multi_pages(struct compress_ctx *cc,
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 81f9e2cc49e2..b171a9980f6a 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2839,7 +2839,7 @@ int f2fs_write_single_data_page(struct page *page, =
-int *submitted,
->                 .encrypted_page =3D NULL,
->                 .submitted =3D 0,
->                 .compr_blocks =3D compr_blocks,
-> -               .need_lock =3D LOCK_RETRY,
-> +               .need_lock =3D compr_blocks ? LOCK_DONE : LOCK_RETRY,
->                 .post_read =3D f2fs_post_read_required(inode) ? 1 : 0,
->                 .io_type =3D io_type,
->                 .io_wbc =3D wbc,
-> @@ -2920,6 +2920,7 @@ int f2fs_write_single_data_page(struct page *page, =
-int *submitted,
->         if (err =3D=3D -EAGAIN) {
->                 err =3D f2fs_do_write_data_page(&fio);
->                 if (err =3D=3D -EAGAIN) {
-> +                       f2fs_bug_on(sbi, compr_blocks);
->                         fio.need_lock =3D LOCK_REQ;
->                         err =3D f2fs_do_write_data_page(&fio);
->                 }
-> --
-> 2.40.1
->
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+You're right. I'll update in v2.
+
+> 
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -3785,7 +3785,9 @@ sub process {
+> >  		}
+> >  
+> >  # check for embedded filenames
+> > -		if ($rawline =~ /^\+.*\b\Q$realfile\E\b/) {
+> > +		if ($rawline =~ /^\+.*\b\Q$realfile\E\b/ &&
+> > +			$realfile !~ /Kconfig.*/ &&
+> > +			$realfile !~ /Makefile.*/) {
+> 
+> Align to open parenthesis please.
+> It's not useful to have .* before the /
+
+I was following other references in this file, but looks like you're right that
+it's not needed. Your recommendation passed the tests I have. So I'll update
+the regex in v2.
+
+Thanks,
+Will
+
+> 
+> So perhaps better to be
+> 
+> 		if ($rawline =~ /^\+.*\b\Q$realfile\E\b/ &&
+> 		    $realfile !~ /(?:Kconfig|Makefile)/) {
+> 	
+> >  			WARN("EMBEDDED_FILENAME",
+> >  			     "It's generally not useful to have the filename in the file\n" . $herecurr);
+> >  		}
+> 
 
