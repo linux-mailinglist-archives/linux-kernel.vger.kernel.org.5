@@ -1,69 +1,109 @@
-Return-Path: <linux-kernel+bounces-24637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 241AD82BF95
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:06:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6487282BF98
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:08:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54F0B1C222B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:06:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0947E1F233EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:08:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63576A01F;
-	Fri, 12 Jan 2024 12:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="yo1MKtw3"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E0A537F1
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
-	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Cffey9hokFJyLo//uJvjZx4J5ZVKwCgqh2CfxNbL6Ew=; b=yo1MKtw3ItKom2AvVvWsPuv0jo
-	6v4wG9aZvIGEqEm9qVXZL+/IbtO341C2cCcpP/vPfNRzjXYs3EouWFDW171ToVEqMJ8VCkOkXrhOl
-	FJPVlNn2BnCa9sfXUnZe1HAao0AuFwK1DVvnDIYPFb/kHBw6ZXZjaNzBp82UUGcdcW5U/uHmV5i9Y
-	dlEtEUV3ywBIIsCmGwbmbghx0rnyncMorzuGbNLumecrBVBFuaXWonDRh+FijFlsi8L9BLQQLdoQ5
-	rvfO43+Cuz8d/FwapB31vlLPAFxN8vaLLbiuZNSSDMDOuOrCCiM0EBcX5zx+gAFWKzfVuS5b38AaF
-	2yeVexiQ==;
-Received: from [84.215.119.50] (port=59607 helo=[192.168.0.2])
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
-	id 1rOGIo-00D8hD-1W
-	for linux-kernel@vger.kernel.org;
-	Fri, 12 Jan 2024 13:06:22 +0100
-Message-ID: <8064926b-ec75-4a64-9bbc-ac434c1e69ca@cu-phil.org>
-Date: Fri, 12 Jan 2024 13:06:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADA46A029;
+	Fri, 12 Jan 2024 12:07:54 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0C36A011;
+	Fri, 12 Jan 2024 12:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6313D1FB;
+	Fri, 12 Jan 2024 04:08:37 -0800 (PST)
+Received: from e127643.arm.com (unknown [10.57.91.137])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CD8843F73F;
+	Fri, 12 Jan 2024 04:07:47 -0800 (PST)
+From: James Clark <james.clark@arm.com>
+To: linux-perf-users@vger.kernel.org,
+	ilkka@os.amperecomputing.com
+Cc: James Clark <james.clark@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Anup Sharma <anupnewsmail@gmail.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] perf test: Fixed masked error condition in perf data convert test
+Date: Fri, 12 Jan 2024 12:07:35 +0000
+Message-Id: <20240112120737.1995575-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-kernel@vger.kernel.org
-From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
-Subject: Apple is scared!
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-https://www.youtube.com/watch?v=07cKD8GK__c
+The test does set -e, so any errors go straight to the exit handler,
+where it returns err=0 (success). Fix it by leaving err=1 from the
+beginning and only set the success code if it ran all the way to the end
+without errors.
 
-This video symbolically shows Apple is scared.
+Also remove the exit code argument from the last exit because it doesn't
+do anything, it's always replaced by err in the exit handler.
 
-Why would supposedly a technology "giant" like Apple be scared? M2 and 
-all that.
+Fixes: 68d124182610 ("perf test: Add test validating JSON generated by 'perf data convert --to-json'")
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ tools/perf/tests/shell/test_perf_data_converter_json.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-This means, go for the kill.
+diff --git a/tools/perf/tests/shell/test_perf_data_converter_json.sh b/tools/perf/tests/shell/test_perf_data_converter_json.sh
+index c4f1b59d116f..1781b7215c11 100755
+--- a/tools/perf/tests/shell/test_perf_data_converter_json.sh
++++ b/tools/perf/tests/shell/test_perf_data_converter_json.sh
+@@ -4,7 +4,7 @@
+ 
+ set -e
+ 
+-err=0
++err=1
+ 
+ shelldir=$(dirname "$0")
+ # shellcheck source=lib/setup_python.sh
+@@ -36,7 +36,6 @@ test_json_converter_command()
+ 		echo "Perf Data Converter Command to JSON [SUCCESS]"
+ 	else
+ 		echo "Perf Data Converter Command to JSON [FAILED]"
+-		err=1
+ 		exit
+ 	fi
+ }
+@@ -49,7 +48,6 @@ validate_json_format()
+ 			echo "The file contains valid JSON format [SUCCESS]"
+ 		else
+ 			echo "The file does not contain valid JSON format [FAILED]"
+-			err=1
+ 			exit
+ 		fi
+ 	else
+@@ -62,4 +60,7 @@ validate_json_format()
+ test_json_converter_command
+ validate_json_format
+ 
+-exit ${err}
++# Set -e is on, so it was only successful if it ran up to this point.
++# Therefore only set err=0 here.
++err=0
++exit
+-- 
+2.34.1
 
--Peace.
-Ywe Cærlyn.
 
