@@ -1,118 +1,187 @@
-Return-Path: <linux-kernel+bounces-24705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA9F82C117
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:48:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E9A082C11D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:50:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BF31B231A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:48:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF9341F25ABB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BCE6D1BB;
-	Fri, 12 Jan 2024 13:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB9C6D1BB;
+	Fri, 12 Jan 2024 13:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LPFbBNAq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="P1QGGUCc"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747AB6D1A8;
-	Fri, 12 Jan 2024 13:48:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 516F5C433C7;
-	Fri, 12 Jan 2024 13:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705067301;
-	bh=EFpXmdi+94w1NoCiiu1BKtTy8v+SRmS3ykZ0eRaUW30=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LPFbBNAqGLfRO+EmAnPz+SzHL4dFyN4vF9ZdZIZp/bYmcGQ4PkvfKjov3ndqXJ1PU
-	 4lqr8S6BF6ld4MjJqZ6ehTp7/RwVGwxuAONtXSwq8Co/n/gDiZ02sDP9rvqciLBfE/
-	 TFgt+yDnQnjyv8VXbZlAnmDtT4/fL1yozlGYckf4=
-Date: Fri, 12 Jan 2024 14:48:18 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Gui-Dong Han <2045gemini@gmail.com>
-Cc: jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, baijiaju1990@outlook.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] tty: fix atomicity violation in n_tty_read
-Message-ID: <2024011212-disbelief-respect-5230@gregkh>
-References: <20240112125801.2650-1-2045gemini@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3AC6D1B1;
+	Fri, 12 Jan 2024 13:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40CDo1jA077687;
+	Fri, 12 Jan 2024 07:50:01 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705067401;
+	bh=lbPtsYeeY36RDpZ1dpZig59RqjnFtrAMDUMxS5lJiOg=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=P1QGGUCcDQTxgCawaAy38Us4GC2dmjSNZuufDxydkw5c5hystE1J9OKTXiEBaUHao
+	 noAlvBW5guI4vd84Fg9glwttkG5/9dkOnRgU5SBcAevkz/ei6d3Fug1FDYvH87xybK
+	 E6vlgGlDPiRKAFGWDaeuOKsL3tSSeg1Ah/JSyY5E=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40CDo161065703
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 12 Jan 2024 07:50:01 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 12
+ Jan 2024 07:50:00 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 12 Jan 2024 07:50:00 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40CDo0JX110565;
+	Fri, 12 Jan 2024 07:50:00 -0600
+Date: Fri, 12 Jan 2024 07:50:00 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Sjoerd Simons <sjoerd@collabora.com>
+CC: <linux-arm-kernel@lists.infradead.org>, Roger Quadros <rogerq@kernel.org>,
+        <kernel@collabora.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am625-beagleplay: Use the builtin
+ mdio bus
+Message-ID: <20240112135000.b54xz3boeua7y2jf@music>
+References: <20240112124505.2054212-1-sjoerd@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240112125801.2650-1-2045gemini@gmail.com>
+In-Reply-To: <20240112124505.2054212-1-sjoerd@collabora.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Jan 12, 2024 at 08:58:01PM +0800, Gui-Dong Han wrote:
-> In n_tty_read():
->     if (packet && tty->link->ctrl.pktstatus) {
->     ...
->     spin_lock_irq(&tty->link->ctrl.lock);
->     cs = tty->link->ctrl.pktstatus;
->     tty->link->ctrl.pktstatus = 0;
->     spin_unlock_irq(&tty->link->ctrl.lock);
->     *kb++ = cs;
->     ...
+On 13:44-20240112, Sjoerd Simons wrote:
+> The beagleplay dts was using a bit-bang gpio mdio bus as a work-around
+> for errata i2329. However since commit d04807b80691 ("net: ethernet: ti:
+> davinci_mdio: Add workaround for errata i2329") the mdio driver itself
+> already takes care of this errata for effected silicon, which landed
+> well before the beagleplay dts. So i suspect the reason for the
+> workaround in upstream was simply due to copying the vendor dts.
 > 
-> In n_tty_read() function, there is a potential atomicity violation issue.
-> The tty->link->ctrl.pktstatus might be set to 0 after being checked, which
-> could lead to incorrect values in the kernel space buffer
-> pointer (kb/kbuf). The check if (packet && tty->link->ctrl.pktstatus)
-> occurs outside the spin_lock_irq(&tty->link->ctrl.lock) block. This may
-> lead to tty->link->ctrl.pktstatus being altered between the check and the
-> lock, causing *kb++ = cs; to be assigned with a zero pktstatus value.
+> Switch the dts to the ti,cpsw-mdio instead so it described the actual
+> hardware and is consistent with other AM625 based boards
 > 
-> This possible bug is found by an experimental static analysis tool
-> developed by our team, BassCheck[1]. This tool analyzes the locking APIs
-> to extract function pairs that can be concurrently executed, and then
-> analyzes the instructions in the paired functions to identify possible
-> concurrency bugs including data races and atomicity violations. The above
-> possible bug is reported when our tool analyzes the source code of
-> Linux 5.17.
-
-Again, we can't do anything with 5.17 patches :(
-
-> To resolve this atomicity issue, it is suggested to move the condition
-> check if (packet && tty->link->ctrl.pktstatus) inside the spin_lock block.
-> With this patch applied, our tool no longer reports the bug, with the
-> kernel configuration allyesconfig for x86_64. Due to the absence of the
-> requisite hardware, we are unable to conduct runtime testing of the patch.
-> Therefore, our verification is solely based on code logic analysis.
+> Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
 > 
-> [1] https://sites.google.com/view/basscheck/
-> 
-> Fixes: 64d608db38ff ("tty: cumulate and document tty_struct::ctrl* members")
-
-That is not where this code came from :(
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
 > ---
->  drivers/tty/n_tty.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
+
+We have had issues with the ethernet integration previously (also why
+ethernet in u-boot is not yet functional on beagleplay[1]).
+
+https://openbeagle.org/beagleplay/beagleplay/-/issues/101
+
+we should probably do a 1000 boot nfs test or something to ensure this
+doesn't introduce regressions (I recollect mdio wasn't stable on
+beagleplay) and switching to bitbang driver stopped all complains.
+
+[1] https://lore.kernel.org/u-boot/20230822121350.51324-1-rogerq@kernel.org/
 > 
-> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-> index f252d0b5a434..df54ab0c4d8c 100644
-> --- a/drivers/tty/n_tty.c
-> +++ b/drivers/tty/n_tty.c
-> @@ -2222,19 +2222,23 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file, u8 *kbuf,
->  	add_wait_queue(&tty->read_wait, &wait);
->  	while (nr) {
->  		/* First test for status change. */
-> +		spin_lock_irq(&tty->link->ctrl.lock);
+>  .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 42 +++++++------------
+>  1 file changed, 16 insertions(+), 26 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> index eadbdd9ffe37..49fb21ba62b0 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> @@ -29,7 +29,6 @@ aliases {
+>  		i2c3 = &main_i2c3;
+>  		i2c4 = &wkup_i2c0;
+>  		i2c5 = &mcu_i2c0;
+> -		mdio-gpio0 = &mdio0;
+>  		mmc0 = &sdhci0;
+>  		mmc1 = &sdhci1;
+>  		mmc2 = &sdhci2;
+> @@ -231,27 +230,6 @@ simple-audio-card,codec {
+>  		};
+>  	};
+>  
+> -	/* Workaround for errata i2329 - just use mdio bitbang */
+> -	mdio0: mdio {
+> -		compatible = "virtual,mdio-gpio";
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&mdio0_pins_default>;
+> -		gpios = <&main_gpio0 86 GPIO_ACTIVE_HIGH>, /* MDC */
+> -			<&main_gpio0 85 GPIO_ACTIVE_HIGH>; /* MDIO */
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		cpsw3g_phy0: ethernet-phy@0 {
+> -			reg = <0>;
+> -		};
+> -
+> -		cpsw3g_phy1: ethernet-phy@1 {
+> -			reg = <1>;
+> -			reset-gpios = <&main_gpio1 5 GPIO_ACTIVE_LOW>;
+> -			reset-assert-us = <25>;
+> -			reset-deassert-us = <60000>; /* T2 */
+> -		};
+> -	};
+>  };
+>  
+>  &main_pmx0 {
+> @@ -312,8 +290,8 @@ AM62X_IOPAD(0x00b4, PIN_INPUT_PULLUP, 1) /* (K24) GPMC0_CSn3.I2C2_SDA */
+>  
+>  	mdio0_pins_default: mdio0-default-pins {
+>  		pinctrl-single,pins = <
+> -			AM62X_IOPAD(0x0160, PIN_OUTPUT, 7) /* (AD24) MDIO0_MDC.GPIO0_86 */
+> -			AM62X_IOPAD(0x015c, PIN_INPUT, 7) /* (AB22) MDIO0_MDIO.GPIO0_85 */
+> +			AM62X_IOPAD(0x0160, PIN_OUTPUT, 0) /* (AD24) MDIO0_MDC */
+> +			AM62X_IOPAD(0x015c, PIN_INPUT, 0) /* (AB22) MDIO0_MDIO */
+>  		>;
+>  	};
+>  
+> @@ -611,8 +589,20 @@ &cpsw_port2 {
+>  };
+>  
+>  &cpsw3g_mdio {
+> -	/* Workaround for errata i2329 - Use mdio bitbang */
+> -	status = "disabled";
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mdio0_pins_default>;
+> +
+> +	cpsw3g_phy0: ethernet-phy@0 {
+> +		reg = <0>;
+> +	};
+> +
+> +	cpsw3g_phy1: ethernet-phy@1 {
+> +		reg = <1>;
+> +		reset-gpios = <&main_gpio1 5 GPIO_ACTIVE_LOW>;
+> +		reset-assert-us = <25>;
+> +		reset-deassert-us = <60000>; /* T2 */
+> +	};
+>  };
+>  
+>  &main_gpio0 {
+> -- 
+> 2.43.0
+> 
 
-What is this lock going to do for the performance?  The n_tty_read path
-is VERY tricky, and heavily used and tested, without a real reproducer
-or proof of a bug here, we are going to be very loath to change anything
-for obvious reasons.
-
-Also, how was this tested?
-
-thanks,
-
-greg k-h
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
