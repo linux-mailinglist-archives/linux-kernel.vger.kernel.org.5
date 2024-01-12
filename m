@@ -1,166 +1,171 @@
-Return-Path: <linux-kernel+bounces-24926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB7682C4DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:41:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C39C82C4DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:42:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CA801C22449
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:41:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D70AA1F2490F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B7717C82;
-	Fri, 12 Jan 2024 17:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DC517BB8;
+	Fri, 12 Jan 2024 17:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hNvUKiVt";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yhRGzsDZ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=stwcx.xyz header.i=@stwcx.xyz header.b="TMz9U1wX";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BETqwby7"
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A90E175A3;
-	Fri, 12 Jan 2024 17:41:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 12 Jan 2024 18:41:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705081299;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MSerJ1jiXzUOejSZwcpJCzNYxLNjbdJRxkU6ajmn+qM=;
-	b=hNvUKiVtIx2Q8yYcInszUSrifOyzrx1yC7DMnctpPd1RCvkGGCe87JwyVd6Df1OCHJG3Jo
-	WKJcVpew98o7k6XsyhsU6Up9WopBVpBHCRsEueszlWbuxy6paLWKV07AjjU7PecUHogMU5
-	xsNi+qFd5KGXbU0uAaFzbVL94GYssifSnzLpBMCzARK2EMzzan98bxQjZy2a1Wu9D6jSGP
-	wc7RsQTbrIIiuZ+KDUrf7924KkROskmvQ57YP7Wu2jI8E8VFs2OUdWAwZZu3VMtw1/HFuU
-	PA0NUqhwLDlghjjJuTwc4vqpQ+b7f3NZFPk+k0mIi5Ijnt2Vc6LIl6DbLyhhGQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705081299;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MSerJ1jiXzUOejSZwcpJCzNYxLNjbdJRxkU6ajmn+qM=;
-	b=yhRGzsDZ2lGrIgwoEKmPL7pgDjALimrtmgPXUY7K98e5nSXwOUzgXaLDYZAtD2grtVHq++
-	Q+A6E5QAfIWlXwCw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Cong Wang <xiyou.wangcong@gmail.com>, Hao Luo <haoluo@google.com>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Ronak Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
- redirect.
-Message-ID: <20240112174138.tMmUs11o@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
- <20231215171020.687342-16-bigeasy@linutronix.de>
- <CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
- <87r0iw524h.fsf@toke.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B0A1AAA6;
+	Fri, 12 Jan 2024 17:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stwcx.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stwcx.xyz
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id E88BD5C01AB;
+	Fri, 12 Jan 2024 12:42:03 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Fri, 12 Jan 2024 12:42:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1705081323; x=1705167723; bh=s11rx7yU1c
+	wWsVDclFsnGfU1dha05r3l4G2kyuqKUiM=; b=TMz9U1wX/twIacvV25BZV4T5wz
+	bnt2CSBsmXNRr5tWGpzPhB+CABy6F9aXdgFmsSC0zBBRo3plxUUAxvapP4CEiv1S
+	1fsceHjdoCuoDor+h8s8orLKmHKZFeIqbg1ufmvvKRordtyjn2hroQCeoi/6Pb1J
+	sLm9ygVmsH7JoQzIRb6mB7uqs3QAB/yAV1Z8GBYBTu+C7PqupJNGJnu6XoH0Y6EI
+	7BOScYGBMeraMn00dyXana/0WCIJFVDlgCNR4rCryTQ9FPNS7nHq4huZazdrRiK/
+	QezVpNOO+QtqdMZHDxJh+47gK4nS0GJR0Ptz1mvTjDpyR7xGKp8MyY6lxxdw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1705081323; x=1705167723; bh=s11rx7yU1cwWsVDclFsnGfU1dha0
+	5r3l4G2kyuqKUiM=; b=BETqwby7pBGbv3c4yt5HkQmjbuMsxezpu6eYRhkSf9lO
+	ecHvQdfcK5qD9ELqhMuHXHnJjtq/oXkFoh6Gv1jPz3kve/R7Hs7A35tAGszfQ/5I
+	THZMzER1scyVmgeiZSqx7TIFceZS+tjWLrQHAxLZAS0Sew+aCzM83PIcdsC58weV
+	0A6XEE1oPiDCvCWJHjVZzEWCDtzvJf4Ocr/g7BGznH2eWuTmHSKPfFPaqre8BXw1
+	D6b5YVqDwsQ5/Ja78jjlcm5hM5LjxxxfJ/AGZpy088nWzcCX6CFthJgsVigsuXTC
+	Ro6tTkrD8kwKkenG8i5YQIYj4D/gWdQWay8KnslSBA==
+X-ME-Sender: <xms:63mhZccNZ43UJ6_cYLiDAlDApogVeJVIwbp6wpAIo9CQnfr-aH1sBw>
+    <xme:63mhZePDq1h45LlZ_z23hGVXGsr10wdIYlcTElzsIa28RNm2U0UE4aWxmUQEJbRXM
+    hjLNTW8d_j_PoglttY>
+X-ME-Received: <xmr:63mhZdixxHmxQ_GNX0i6r7zFDfB5Yb4Cddu1jDrRo7OLIAjX2V4qksplzBODstUTfvf9MB0LUFf870C6Kw6Xpg4FpOl-gg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeihedguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddvfedmnecujfgurhepfffhvfevuffkfhggtggujgesghdtreer
+    tddtvdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkh
+    esshhtfigtgidrgiihiieqnecuggftrfgrthhtvghrnhepjefgtdelledvfedtgeegffef
+    ueefveegjeekleegueejveevueefiefgiedvjeejnecuffhomhgrihhnpehkvghrnhgvlh
+    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehprghtrhhitghksehsthiftgigrdighiii
+X-ME-Proxy: <xmx:63mhZR81ixhnsGIUlgjpvayR8hk-oQfrSk7IU1qg-svzBBcDv6DVEw>
+    <xmx:63mhZYs815sFK8Fo3bwqKOdzZ2XmgKgsO3aouDKgR-lmPWhCOtG-tg>
+    <xmx:63mhZYFFFJb3_0YKoY3tpX_wrIVjzTXFin-ZoqjHlkA3uBejtPHERg>
+    <xmx:63mhZVNpUKrEsGl9k9RegQ0EiXC5Qp6_oU2EHBcVQ2w_aBuNm1CT4w>
+Feedback-ID: i68a1478a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 12 Jan 2024 12:42:03 -0500 (EST)
+Date: Fri, 12 Jan 2024 11:42:02 -0600
+From: Patrick Williams <patrick@stwcx.xyz>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	Avi Fishman <avifishman70@gmail.com>,
+	Tomer Maimon <tmaimon77@gmail.com>,
+	Tali Perry <tali.perry1@gmail.com>,
+	Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>,
+	Benjamin Fair <benjaminfair@google.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+	openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: arm: nuvoton: add Facebook Yosemite
+ 4 board
+Message-ID: <ZaF56lwEi1MES89Q@heinlein.vulture-banana.ts.net>
+References: <20240112013654.1424451-1-Delphine_CC_Chiu@wiwynn.com>
+ <20240112013654.1424451-2-Delphine_CC_Chiu@wiwynn.com>
+ <8efef092-e70f-46c0-a60a-e62e676d6eb2@linaro.org>
+ <ZaFydbPxbeczo97t@heinlein.vulture-banana.ts.net>
+ <c0a83358-09a3-4c51-b8b6-6d6ea8b4f196@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hWV98mDElNT6jKhP"
+Content-Disposition: inline
+In-Reply-To: <c0a83358-09a3-4c51-b8b6-6d6ea8b4f196@linaro.org>
+
+
+--hWV98mDElNT6jKhP
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87r0iw524h.fsf@toke.dk>
 
-On 2024-01-04 20:29:02 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->=20
-> >> @@ -3925,6 +3926,7 @@ struct sk_buff *tcf_qevent_handle(struct tcf_qev=
-ent *qe, struct Qdisc *sch, stru
+On Fri, Jan 12, 2024 at 06:14:26PM +0100, Krzysztof Kozlowski wrote:
+> On 12/01/2024 18:10, Patrick Williams wrote:
+> > On Fri, Jan 12, 2024 at 08:10:25AM +0100, Krzysztof Kozlowski wrote:
+> >> On 12/01/2024 02:36, Delphine CC Chiu wrote:
+> >>> Document the new compatibles used on Facebook Yosemite 4.
 > >>
-> >>         fl =3D rcu_dereference_bh(qe->filter_chain);
-> >>
-> >> +       guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
-> >>         switch (tcf_classify(skb, NULL, fl, &cl_res, false)) {
-> >>         case TC_ACT_SHOT:
-> >>                 qdisc_qstats_drop(sch);
-> >
-> > Here and in all other places this patch adds locks that
-> > will kill performance of XDP, tcx and everything else in networking.
-> >
-> > I'm surprised Jesper and other folks are not jumping in with nacks.
-> > We measure performance in nanoseconds here.
-> > Extra lock is no go.
-> > Please find a different way without ruining performance.
+> >> There is Yosemite4 board already supported. What is this for?
+> >> https://lore.kernel.org/all/20240109072053.3980855-5-Delphine_CC_Chiu@=
+wiwynn.com/
+> >=20
+> > Yosemite4 is a server chassis which is managed by a BMC.  The BMC is on
+> > a pluggable module card.  Typically we've used Aspeed chips for this,
+> > but we are building an alternative BMC module using Nuvoton BMC chips.
 >=20
-> I'll add that while all this compiles out as no-ops on !PREEMPT_RT, I do
-> believe there are people who are using XDP on PREEMPT_RT kernels and
-> still expect decent performance. And to achieve that it is absolutely
-> imperative that we can amortise expensive operations (such as locking)
-> over multiple packets.
+> There are few ways to solve this, like having different compatibles or
+> having some shared compatibles to note common part of hardware. However
+> usually the final compatible represents the final device, which here you
+> use for two entirely different products. This works only for the cases
+> of carrier boards, where that compatible indeed represents the same
+> hardware.
 >=20
-> I realise there's a fundamental trade-off between the amount of
-> amortisation and the latency hit that we take from holding locks for
-> longer, but tuning the batch size (while still keeping some amount of
-> batching) may be a way forward? I suppose Jakub's suggestion in the
-> other part of the thread, of putting the locks around napi->poll(), is a
-> step towards something like this.
+> Not your case. This needs fixing.
 
-The RT requirements are usually different. Networking as in CAN might be
-important but Ethernet could only used for remote communication and so
-"not" important. People complained that they need to wait for Ethernet
-to be done until the CAN packet can be injected into the stack.
-With that expectation you would like to pause Ethernet immediately and
-switch over the CAN interrupt thread.
+This patch:
++	model =3D "Facebook Yosemite 4 BMC";
++	compatible =3D "facebook,yosemite4-n-bmc", "nuvoton,npcm845";
 
-But if someone managed to setup XDP then it is likely to be important.
-With RT traffic it is usually not the throughput that matters but the
-latency. You are likely in the position to receive a packet, say every
-1ms, and need to respond immediately. XDP would be used to inspect the
-packet and either hand it over to the stack or process it.
+Aspeed patch:
++       model =3D "Facebook Yosemite 4 BMC";
++       compatible =3D "facebook,yosemite4-bmc", "aspeed,ast2600";
 
-I expected the lock operation (under RT) to always succeeds and not
-cause any delay because it should not be contended. It should only
-block if something with higher priority preempted the current interrupt
-thread _and_ also happen to use XDP on the same CPU. In that case (XDP
-is needed) it would flush the current user out of the locked section
-before the higher-prio thread could take over. Doing bulk and allowing
-the low-priority thread to complete would delay the high-priority
-thread. Maybe I am too pessimistic here and having two XDP programs on
-one CPU is unlikely to happen.
+These have different compatibles already ('-n' for Nuvoton).  Do we just
+need the model to be clearly different also?  Maybe there is something
+else I'm not understanding.
 
-Adding the lock on per-NAPI basis would allow to batch packets.
-Acquiring the lock only if XDP is supported would not block the CAN
-drivers since they dont't support XDP. But sounds like a hack.
+--=20
+Patrick Williams
 
-Daniel said netkit doesn't need this locking because it is not
-supporting this redirect and it made me think. Would it work to make
-the redirect structures part of the bpf_prog-structure instead of
-per-CPU? My understanding is that eBPF's programs data structures are
-part of it and contain locking allowing one eBPF program preempt
-another one.
-Having the redirect structures part of the program would obsolete
-locking. Do I miss anything?
+--hWV98mDElNT6jKhP
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> -Toke
+-----BEGIN PGP SIGNATURE-----
 
-Sebastian
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmWheegACgkQqwNHzC0A
+wRmuSg/+IUyH4CzVAeyui/NfgsYtbgD5YYyLywW9Gdl3td9rcUn702bmrtZ5t3QD
+PmOf443x6sTrZqED46Sw0EiL2/6F9p09IQCfcP0xIDAilhystlZh/aIffi0N2r7Q
+meD5whSSe5ur+xNd4T6Y+CW3bBzN9b2NAjhTKaX7t6b+j2otf7quEXW9yenUO8He
+hEUqBwrexdtTV6PQSuPDoAbMWmUxdjrU+SFWnP7D98R2HWixaqwG/JcSDYCsrwQc
+7LMiO+ICcV2POevQC7zqWKel1T3VXqZa2ShCsWJxW/hyHhl/aWWM+4cwvm6z2XwI
+NmQRyfXpqMUcHDFTH3sLnG/pgc1IXbnGmmKXyLFbj97AtORkU9z0zwie6y1z6F9D
+/7PY0oBS+mX0NPMHSPVMxQ2UZkUuhyDggTu5T6gdgph/mGFd0hlEWruW7CrxiTfY
+z88y48PAJsUzf+fdkeVB7XRE45LPRL64b7pqQGlWbZQEwpHWIL4VDisL+W+Oj7bV
+IL2v3BiKKfzt5w0yA5sA7hMhE/k3jvTKkzKqLBsVRpwq4wa5peypz0rcb685dqzZ
+GOAHvvZmQaCelXfbZXne8X/cSPuzWJI/XT8MeDJuAzNa/bCVxJuMONNTECxvOMDT
+xItWvlKKXLPA+P56a3As6iZAc+ynu+mYghxeKgAF9U4OXFWq0kY=
+=3qaC
+-----END PGP SIGNATURE-----
+
+--hWV98mDElNT6jKhP--
 
