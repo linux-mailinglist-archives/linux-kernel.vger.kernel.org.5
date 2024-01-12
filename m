@@ -1,254 +1,201 @@
-Return-Path: <linux-kernel+bounces-24627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DC5282BF63
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:42:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930CC82BF67
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6E0D1C23DC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:42:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94B1B1C24000
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5638D6BB23;
-	Fri, 12 Jan 2024 11:41:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386616A00F;
+	Fri, 12 Jan 2024 11:42:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Mf2grg7G"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2053.outbound.protection.outlook.com [40.107.93.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="DvjVeClZ"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79FF6A34A;
-	Fri, 12 Jan 2024 11:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aAvMU4DrXQlRAU8qtGmG3sjj6WMM8eGyMPpj1Xsx5kGpNcA7dHupbZf10GKRc0Un0Wg7/38o93G7Pxfr/WcLni5mssqZpN14PcwRfKu4DxwcicK9NdsylDo0s7gb4yzaIEkkR8hA5P2d4ws+pqEjEkbpaIyoIKNiKgRPFSrLL2REvtP65gW8IYhbYJ/UvxG44Ixw66WsBYydumYaZPIAVwdJvRC6PmdluQ/qeIadCduT6ClGVCasfr8SjM7eUzRZ+udNGX2ZhTb2YSC6fU16hX2hNJ7n8ZVfjyetTZ9GPPzzx6yxZwsvccnR2xUL15EA7XLEaD/wvG+dnxjSOiH1pQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/EIallbDZQqPnj4t5E2adbK7o25+8EmHC2146XW0dC8=;
- b=YahBcic4+ekFvfEdvXmgYazVs4qYTsfDclq5Tk/ckXRoQUaBTx3qWzBHlHoIsRFDi0xHB0F4pzqNBWC97FzPCAsrbGvdNIeopp2dW6oLop8PTPrXqulCWIqcU3j3b9X0EBB7GaQZLIKYGOiqikDn5lOedldkgb7e8TnCqG8bFl1RsyrnzmZ8WErlWAVL5aRlkwd52gd+1RV3l1gxIWCi48xBGeYRybIGw6vwpv5CMFLf2ZCwEFdVjGbM0/x7w305WELOAN4OaMKVkIV+ohIRkEHQORO75zOnwrlQqp7wPhdoAUfSdmTA/aQDpoWIUJ9nLsZGOfeHOFqRqRE9YPHEhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=grandegger.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/EIallbDZQqPnj4t5E2adbK7o25+8EmHC2146XW0dC8=;
- b=Mf2grg7GX8t7UKqaXSWfy1+vw9loy6C7+lJ4KLrN7gpn48KpSZep9phXZsh3o5EL2Gs6Zn57UFclBzOBwch3+hLCCK70HFxg07Sh0q0jTjU1Jgk5fO+Tgmfe0axNKQjZWwNazsW+Uuu1kF08KPL5zDz+9j5ZBPzlpIr+H3tKBYY=
-Received: from DS7PR06CA0013.namprd06.prod.outlook.com (2603:10b6:8:2a::13) by
- DS0PR12MB6630.namprd12.prod.outlook.com (2603:10b6:8:d2::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7181.21; Fri, 12 Jan 2024 11:41:05 +0000
-Received: from SA2PEPF00001509.namprd04.prod.outlook.com
- (2603:10b6:8:2a:cafe::d5) by DS7PR06CA0013.outlook.office365.com
- (2603:10b6:8:2a::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19 via Frontend
- Transport; Fri, 12 Jan 2024 11:41:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF00001509.mail.protection.outlook.com (10.167.242.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Fri, 12 Jan 2024 11:41:05 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 12 Jan
- 2024 05:41:04 -0600
-Received: from xhdvnc205.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Fri, 12 Jan 2024 05:41:00 -0600
-From: Srinivas Goud <srinivas.goud@amd.com>
-To: <wg@grandegger.com>, <mkl@pengutronix.de>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <p.zabel@pengutronix.de>
-CC: <git@amd.com>, <michal.simek@xilinx.com>, <linux-can@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Srinivas Goud <srinivas.goud@amd.com>
-Subject: [PATCH RESEND v7 3/3] can: xilinx_can: Add ethtool stats interface for ECC errors
-Date: Fri, 12 Jan 2024 17:07:33 +0530
-Message-ID: <1705059453-29099-4-git-send-email-srinivas.goud@amd.com>
-X-Mailer: git-send-email 2.1.1
-In-Reply-To: <1705059453-29099-1-git-send-email-srinivas.goud@amd.com>
-References: <1705059453-29099-1-git-send-email-srinivas.goud@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2866467E99
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 11:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cd853c159eso20474981fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 03:42:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1705059725; x=1705664525; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rump7FJVJNPWGDY7eQkIygw/qM87nMEtv54Kd1xEhw=;
+        b=DvjVeClZhnKc60WELMH/5aVdlL0M4HuqaZ5UiUZKPC7YBhRhS+xZMTVTDE0bBU5sFo
+         0uHCLBjpA1LrZuOYh045hx3P9soxpv+oSpP1h+Dq8HSo1tfV4tQKMGtoLimx8DMvXBNY
+         g9+2UquVBfRpHLarvlpAB3GKepQDn4ProFIN1z1FWeSthAKrHLRb12e9n7mHqfNcC3xN
+         rLOgzbnDbY/Yg4UAylsM4kAnQe1QgqHIp1Xfx7FkmZxj6ZYsuFPmtAlvGFOc4p2zBkv4
+         ejGRcjPri/ue5A+sLSYMXSrPS6nMyL2kT9HDyP+/qOGRYTvvUw0Ld7PCCgD9LxQiHYz0
+         Ot3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705059725; x=1705664525;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/rump7FJVJNPWGDY7eQkIygw/qM87nMEtv54Kd1xEhw=;
+        b=EDNvzC6xvBpxmzqOwfqt3XLET7uDUmmudobYRqODPb2hpktXvs2OnZE7FeGJiQE9EP
+         rzjMFLiy4fRn0z9Pa5gWxGHrxHJ9bxSUdQ2vLV59SghHHYKZ59qiDtsABwbGvlv1Ww2Q
+         NSt6aOcLyYuDgST5FaeCyUrSVcPEqFQvgA9kB4/tLPCiBTOnHi3SM1ifQXI0kyg+cRQU
+         fvN9MkpRO+5L6E0+eDgXa2V9TMxROBrtAeWyeacnKIdyMCwbQhi8BqJthatU3J0iJieV
+         38hJQit3hOrqlLrE4PcrNmx+intWhzEnkDmyHrWkmZBOHRL2gjKCR9A5Z7V1J5hJ4E0P
+         LSCQ==
+X-Gm-Message-State: AOJu0YxjsLMnMcAbhvzuKH+MuJ9MmnP8P3KkU6UMIGHUBUCy0z+ovONr
+	EaC2yPOXTYE8oQEYmxVBUDx6BTOLGw1+4g==
+X-Google-Smtp-Source: AGHT+IE4w/nFjCzljVEDAPK0XNlU8n5xrN4aXj734ZNsjQ41zwqRmP98QLtd8L+nPaXRNeAkqJWPog==
+X-Received: by 2002:a2e:b17b:0:b0:2cc:e48d:d0f3 with SMTP id a27-20020a2eb17b000000b002cce48dd0f3mr624955ljm.79.1705059724916;
+        Fri, 12 Jan 2024 03:42:04 -0800 (PST)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.5])
+        by smtp.gmail.com with ESMTPSA id cw3-20020a056000090300b003367a5b6b69sm3667726wrb.106.2024.01.12.03.42.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 03:42:04 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: wsa+renesas@sang-engineering.com,
+	ulf.hansson@linaro.org,
+	yoshihiro.shimoda.uh@renesas.com,
+	takeshi.saito.xv@renesas.com,
+	masaharu.hayakawa.ry@renesas.com
+Cc: linux-mmc@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH] mmc: renesas_sdhi: Fix change point of data handling
+Date: Fri, 12 Jan 2024 13:41:47 +0200
+Message-Id: <20240112114147.1977955-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001509:EE_|DS0PR12MB6630:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1fb5ce60-6c16-4143-a33b-08dc13635c59
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3GZHnkRCEQ30i4/Odm2moTvnFDDYNF4Ttwv8j6QYrusKYLniJkZ5Rlpoh6CrF9ANdkAXNVPCmE2R2o9uNYy5h/5coJLq65dXCbAfBRuMK0LDWxc6CvrP2z5RGf4tSSzfk0Of+Rz69wS3EHeN/dwtXxlSBK9Ci90Ac9K/dKZ7HKaNirtDWYZVngbe9DNleF3zPSBEn8HYFVr/YXEc1eVzURRvqm2m35BYVCqdXG3BSLSrZSre3D6x5CHx6QQHg9fwFT/HBsawckorfFLC3Y+pWyhVBIrGVQNsk3ZIjRumtMO8ODhPSz/Fy9h0rY5zpB361XdID1zoGYki/hk399IzZUYPDVmYJvWtRfpMi/FpUdBcYXfZ7rdkahvUg5MBjmvJY+rouZ96Ug2zlJbghrvg23ZAVV4u20MW06L+ZnAOo3qnhvxHYb8DlD9zqjTRNNhxqwZX1Qn/fzRBypc+b5+hujkzYYdJl8euzWOx/K2nLbfd58R9vkaLz79XtJkLfKITglxwBjTRTfq5fwHxgvcBAgIGShfzb7jmvTILSnPQdEHVwps9WDsDC5Bu1e1J5ngT5mbm+mzqywJkwP6izfUCOt19MbltALINoFMd4h6fA6qhL/ExnR/3fNOlEQTPdXnkAjj/acyNCXtN3/qtOUJm++ERjhIueUJGC2EAxHseZ+4vrwRfABMTzrZ/q3JmEfVg9DDoNey4xfHSRFdusdMLhzWTDXdUZ2gfBkicqjfS3ulgAc5JXcdxMZuGc0FP6g2mma7Mcsxz5pg0Kw3huWNsAtDF9+do9yjUnV3T4V36ijc=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(136003)(376002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(82310400011)(186009)(36840700001)(46966006)(40470700004)(83380400001)(336012)(2616005)(26005)(47076005)(36860700001)(6666004)(4326008)(8676002)(5660300002)(8936002)(44832011)(41300700001)(2906002)(7416002)(426003)(478600001)(54906003)(316002)(70586007)(70206006)(921011)(110136005)(36756003)(86362001)(81166007)(82740400003)(356005)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 11:41:05.1054
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fb5ce60-6c16-4143-a33b-08dc13635c59
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00001509.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6630
+Content-Transfer-Encoding: 8bit
 
-Add ethtool stats interface for reading FIFO 1bit/2bit ECC errors information.
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
+On latest kernel revisions it has been noticed (on a RZ/G3S system) that
+when booting Linux and root file system is on eMMC, at some point in
+the booting process, when the systemd applications are started, the
+"mmc0: tuning execution failed: -5" message is displayed on console.
+On kernel v6.7-rc5 this is reproducible in 90% of the boots. This was
+missing on the same system with kernel v6.5.0-rc1. It was also noticed on
+kernel revisions v6.6-rcX on a RZ/G2UL based system but not on the kernel
+this fix is based on (v6.7-rc5).
+
+Investigating it on RZ/G3S lead to the conclusion that every time the issue
+is reproduced all the probed TAPs are OK. According to datasheet, when this
+happens the change point of data need to be considered for tuning.
+
+Previous code considered the change point of data happens when the content
+of the SMPCMP register is zero. According to RZ/V2M hardware manual,
+chapter "Change Point of the Input Data" (as this is the most clear
+description that I've found about change point of the input data and all
+RZ hardware manual are similar on this chapter), at the time of tuning,
+data is captured by the previous and next TAPs and the result is stored in
+the SMPCMP register (previous TAP in bits 22..16, next TAP in bits 7..0).
+If there is a mismatch b/w the previous and the next TAPs, it indicates
+that there is a change point of the input data.
+
+To comply with this, the code checks if this mismatch is present and
+updates the priv->smpcmp mask.
+
+This change has been checked on the devices with the following DTSes by
+doing 50 consecutive reboots and checking for the tuning failure message:
+- r9a08g045s33-smarc.dts
+- r8a7742-iwg21d-q7.dts
+- r8a7743-iwg20d-q7.dts
+- r8a7744-iwg20d-q7.dts
+- r8a7745-iwg22d-sodimm.dts
+- r8a77470-iwg23s-sbc.dts
+- r8a774a1-hihope-rzg2m-ex.dts
+- r8a774b1-hihope-rzg2n-ex.dts
+- r8a774c0-ek874.dts
+- r8a774e1-hihope-rzg2h-ex.dts
+- r9a07g043u11-smarc-rzg2ul.dts
+- r9a07g044c2-smarc-rzg2lc.dts
+- r9a07g044l2-smarc-rzg2l.dts
+- r9a07g054l2-smarc-rzv2l.dts
+
+On r8a774a1-hihope-rzg2m-ex, even though the hardware manual doesn't say
+anything special about it in the "Change Point of the Input Data" chapter
+or SMPCMP register description, it has been noticed that although all TAPs
+probed in the tuning process are OK the SMPCMP is zero. For this updated
+the renesas_sdhi_select_tuning() function to use priv->taps in case all
+TAPs are OK.
+
+Fixes: 5fb6bf51f6d1 ("mmc: renesas_sdhi: improve TAP selection if all TAPs are good")
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
-Changes in v7:
-Update with spinlock only for stats counters
+ drivers/mmc/host/renesas_sdhi_core.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-Changes in v6:
-None
-
-Changes in v5:
-Address review comments
-Add get_strings and get_sset_count stats interface
-Use u64 stats helper function
-
-Changes in v4:
-None
-
-Changes in v3:
-None
-
-Changes in v2:
-Add ethtool stats interface
-
- drivers/net/can/xilinx_can.c | 54 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
-
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index c8691a1..80b0586 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -228,6 +228,7 @@ struct xcan_devtype_data {
-  * @transceiver:		Optional pointer to associated CAN transceiver
-  * @rstc:			Pointer to reset control
-  * @ecc_enable:			ECC enable flag
-+ * @stats_lock:			Lock for synchronizing ECC errors stats
-  * @ecc_2bit_rxfifo_cnt:	RXFIFO 2bit ECC count
-  * @ecc_1bit_rxfifo_cnt:	RXFIFO 1bit ECC count
-  * @ecc_2bit_txolfifo_cnt:	TXOLFIFO 2bit ECC count
-@@ -254,6 +255,7 @@ struct xcan_priv {
- 	struct phy *transceiver;
- 	struct reset_control *rstc;
- 	bool ecc_enable;
-+	spinlock_t stats_lock; /* Lock for synchronizing ECC errors stats */
- 	u64_stats_t ecc_2bit_rxfifo_cnt;
- 	u64_stats_t ecc_1bit_rxfifo_cnt;
- 	u64_stats_t ecc_2bit_txolfifo_cnt;
-@@ -347,6 +349,12 @@ static const struct can_tdc_const xcan_tdc_const_canfd2 = {
- 	.tdcf_max = 0,
- };
+diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
+index c675dec587ef..f86260800076 100644
+--- a/drivers/mmc/host/renesas_sdhi_core.c
++++ b/drivers/mmc/host/renesas_sdhi_core.c
+@@ -18,6 +18,7 @@
+  *
+  */
  
-+static const char xcan_priv_flags_strings[][ETH_GSTRING_LEN] = {
-+	"err-ecc-rx-2-bit", "err-ecc-rx-1-bit",
-+	"err-ecc-txol-2-bit", "err-ecc-txol-1-bit",
-+	"err-ecc-txtl-2-bit", "err-ecc-txtl-1-bit",
-+};
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/iopoll.h>
+@@ -312,6 +313,9 @@ static int renesas_sdhi_start_signal_voltage_switch(struct mmc_host *mmc,
+ #define SH_MOBILE_SDHI_SCC_SMPCMP_CMD_REQDOWN	BIT(8)
+ #define SH_MOBILE_SDHI_SCC_SMPCMP_CMD_REQUP	BIT(24)
+ #define SH_MOBILE_SDHI_SCC_SMPCMP_CMD_ERR	(BIT(8) | BIT(24))
++#define SH_MOBILE_SDHI_SCC_SMPCMP_CMPNGU_DATA	GENMASK(23, 16)
++#define SH_MOBILE_SDHI_SCC_SMPCMP_CMPNGD_DATA	GENMASK(7, 0)
 +
- /**
-  * xcan_write_reg_le - Write a value to the device register little endian
-  * @priv:	Driver private data structure
-@@ -1171,6 +1179,7 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
  
- 	if (priv->ecc_enable && isr & XCAN_IXR_ECC_MASK) {
- 		u32 reg_rx_ecc, reg_txol_ecc, reg_txtl_ecc;
-+		unsigned long flags;
+ #define SH_MOBILE_SDHI_SCC_TMPPORT2_HS400OSEL	BIT(4)
+ #define SH_MOBILE_SDHI_SCC_TMPPORT2_HS400EN	BIT(31)
+@@ -641,7 +645,14 @@ static int renesas_sdhi_select_tuning(struct tmio_mmc_host *host)
+ 	 * identifying the change point of data.
+ 	 */
+ 	if (bitmap_full(priv->taps, taps_size)) {
+-		bitmap = priv->smpcmp;
++		/*
++		 * On some setups it happens that all TAPS are OK but
++		 * no change point of data. Any tap should be OK for this.
++		 */
++		if (bitmap_empty(priv->smpcmp, taps_size))
++			bitmap = priv->taps;
++		else
++			bitmap = priv->smpcmp;
+ 		min_tap_row = 1;
+ 	} else {
+ 		bitmap = priv->taps;
+@@ -698,6 +709,7 @@ static int renesas_sdhi_execute_tuning(struct mmc_host *mmc, u32 opcode)
  
- 		reg_rx_ecc = priv->read_reg(priv, XCAN_RXFIFO_ECC_OFFSET);
- 		reg_txol_ecc = priv->read_reg(priv, XCAN_TXOLFIFO_ECC_OFFSET);
-@@ -1182,6 +1191,8 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 		priv->write_reg(priv, XCAN_ECC_CFG_OFFSET, XCAN_ECC_CFG_REECRX_MASK |
- 				XCAN_ECC_CFG_REECTXOL_MASK | XCAN_ECC_CFG_REECTXTL_MASK);
+ 	/* Issue CMD19 twice for each tap */
+ 	for (i = 0; i < 2 * priv->tap_num; i++) {
++		u32 val, cmpngu_data, cmpngd_data;
+ 		int cmd_error = 0;
  
-+		spin_lock_irqsave(&priv->stats_lock, flags);
-+
- 		if (isr & XCAN_IXR_E2BERX_MASK) {
- 			u64_stats_add(&priv->ecc_2bit_rxfifo_cnt,
- 				      FIELD_GET(XCAN_ECC_2BIT_CNT_MASK, reg_rx_ecc));
-@@ -1211,6 +1222,8 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 			u64_stats_add(&priv->ecc_1bit_txtlfifo_cnt,
- 				      FIELD_GET(XCAN_ECC_1BIT_CNT_MASK, reg_txtl_ecc));
- 		}
-+
-+		spin_unlock_irqrestore(&priv->stats_lock, flags);
- 	}
+ 		/* Set sampling clock position */
+@@ -706,7 +718,10 @@ static int renesas_sdhi_execute_tuning(struct mmc_host *mmc, u32 opcode)
+ 		if (mmc_send_tuning(mmc, opcode, &cmd_error) == 0)
+ 			set_bit(i, priv->taps);
  
- 	if (cf.can_id) {
-@@ -1637,6 +1650,44 @@ static int xcan_get_auto_tdcv(const struct net_device *ndev, u32 *tdcv)
- 	return 0;
- }
+-		if (sd_scc_read32(host, priv, SH_MOBILE_SDHI_SCC_SMPCMP) == 0)
++		val = sd_scc_read32(host, priv, SH_MOBILE_SDHI_SCC_SMPCMP);
++		cmpngu_data = FIELD_GET(SH_MOBILE_SDHI_SCC_SMPCMP_CMPNGU_DATA, val);
++		cmpngd_data = FIELD_GET(SH_MOBILE_SDHI_SCC_SMPCMP_CMPNGD_DATA, val);
++		if (!cmd_error && cmpngu_data != cmpngd_data)
+ 			set_bit(i, priv->smpcmp);
  
-+static void xcan_get_strings(struct net_device *ndev, u32 stringset, u8 *buf)
-+{
-+	switch (stringset) {
-+	case ETH_SS_STATS:
-+		memcpy(buf, &xcan_priv_flags_strings,
-+		       sizeof(xcan_priv_flags_strings));
-+	}
-+}
-+
-+static int xcan_get_sset_count(struct net_device *netdev, int sset)
-+{
-+	switch (sset) {
-+	case ETH_SS_STATS:
-+		return ARRAY_SIZE(xcan_priv_flags_strings);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static void xcan_get_ethtool_stats(struct net_device *ndev,
-+				   struct ethtool_stats *stats, u64 *data)
-+{
-+	struct xcan_priv *priv = netdev_priv(ndev);
-+	unsigned long flags;
-+	int i = 0;
-+
-+	spin_lock_irqsave(&priv->stats_lock, flags);
-+
-+	data[i++] = u64_stats_read(&priv->ecc_2bit_rxfifo_cnt);
-+	data[i++] = u64_stats_read(&priv->ecc_1bit_rxfifo_cnt);
-+	data[i++] = u64_stats_read(&priv->ecc_2bit_txolfifo_cnt);
-+	data[i++] = u64_stats_read(&priv->ecc_1bit_txolfifo_cnt);
-+	data[i++] = u64_stats_read(&priv->ecc_2bit_txtlfifo_cnt);
-+	data[i++] = u64_stats_read(&priv->ecc_1bit_txtlfifo_cnt);
-+
-+	spin_unlock_irqrestore(&priv->stats_lock, flags);
-+}
-+
- static const struct net_device_ops xcan_netdev_ops = {
- 	.ndo_open	= xcan_open,
- 	.ndo_stop	= xcan_close,
-@@ -1646,6 +1697,9 @@ static const struct net_device_ops xcan_netdev_ops = {
- 
- static const struct ethtool_ops xcan_ethtool_ops = {
- 	.get_ts_info = ethtool_op_get_ts_info,
-+	.get_strings = xcan_get_strings,
-+	.get_sset_count = xcan_get_sset_count,
-+	.get_ethtool_stats = xcan_get_ethtool_stats,
- };
- 
- /**
+ 		if (cmd_error)
 -- 
-2.1.1
+2.39.2
 
 
