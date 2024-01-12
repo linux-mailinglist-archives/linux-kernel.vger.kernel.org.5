@@ -1,101 +1,93 @@
-Return-Path: <linux-kernel+bounces-24983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B23882C59C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:51:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D0482C59F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:53:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C51A1F22F32
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:51:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F0AB1F24724
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2767B15ACF;
-	Fri, 12 Jan 2024 18:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6EC15AC9;
+	Fri, 12 Jan 2024 18:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akADFvt8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GuvMqsp0"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA34156CD;
-	Fri, 12 Jan 2024 18:51:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F4CEC433C7;
-	Fri, 12 Jan 2024 18:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705085490;
-	bh=TTvtQ1O6bYOGyAq062N/HpL4Y1P60eFyaPwHfY+VEu4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=akADFvt8gXXY2XwsyOWh+FzLAlO16KTuPXmF51KI2OHRZyeGB2tApPR+VdwSk3djC
-	 emYrLUeRvqeeSUHEDxSrXwi3wLnd13XUWrsZt25/AmCpx1H/IujaxslJUiPCcjfRmu
-	 Fu6W7GIMa48md5m1/dJQG7filnocPXNlW4PLI6Ym/rgTkK3rwO2Mwn7JY6u1wdzJoa
-	 RfvUtJnrUDwZ59IedaB8AHpYjYZsRVunDJQXovH2De6WefcsUeBfw9Wz7fHqPeIVvr
-	 MeEvotyw9xtfp0O/NC3d9K9sQr928uyLG8Ort+lbY02RhT81JYgp8pZAgJR0abmRKg
-	 HdIAMC+fhP62w==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e7ddd999bso7545088e87.1;
-        Fri, 12 Jan 2024 10:51:30 -0800 (PST)
-X-Gm-Message-State: AOJu0YzxspiWLp1s+ONYhTJ4QMbUsA0eTsQbCQiI9mAdCehRuzNu85jf
-	REU7ldTGHSk6Nr2bI1Zp5w22kaKBta01/h8Ovzw=
-X-Google-Smtp-Source: AGHT+IF/mJ1IiMoZ6NPwfATjHVnzpVsMppdDErD+ZdVIZRVx3da7n5+7RstE4IMHTnRRX1Hbfzfy8FSwdL54R9TFLLU=
-X-Received: by 2002:a05:6512:21a8:b0:50e:76ca:52c6 with SMTP id
- c8-20020a05651221a800b0050e76ca52c6mr731172lft.52.1705085488444; Fri, 12 Jan
- 2024 10:51:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267BB15E8E;
+	Fri, 12 Jan 2024 18:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d5a7954b8bso5533235ad.1;
+        Fri, 12 Jan 2024 10:53:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705085598; x=1705690398; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=84k2E/jFHGmRPt2TX0Wfbqb1lV5t099ixH2DWzPbXTY=;
+        b=GuvMqsp0gsZwDL+b8Ce2D5inphp3ylxd+i1QfmBu2DEum+5B1YnDb1cbj+LEXhdQA5
+         VC+GEZb8g9yo5UcBuaZeYz403A8h/wBoFCcFsWLSOKjoKOKzfNIXJp2DsWQDmxVc2TBc
+         x6PZtPZrm/qjzl9zvdt4shHP9lEO9Wa3EjrguH7V1zqw/8bk61jljcHyW+JTBhyDj5mG
+         7HwhWzmBU7XkVJ8itVsCXNUkh76z1FPRp5l1YKSiqNi1A7IEnaYUXTMsVSX4Gl0YLQOU
+         Q3uUinvyIkfR0Q19uui091DF76raMi2m23aS76dqVqvyFA1oShzu0LSAAfr4CQK2fGRC
+         XwsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705085598; x=1705690398;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=84k2E/jFHGmRPt2TX0Wfbqb1lV5t099ixH2DWzPbXTY=;
+        b=iaAz0unmrBqtbgw6Cyld1pCRrHvXpamXp8r/MnIdqTACSC7hWmfpLPQliAMQz6vXgU
+         bHSeSqjVOjNDHY9VlOe+9tPupI6GX7JMTk9G+In5QZdE8JefIygR2SFT54534hRGUXNx
+         DZslleWmJymZ6w0RWKO+cdLtkunZoLqx/ju1BYFegr33yD1wHL2RLCgGu+vn7Am0IFVB
+         lA+wSEoBJvcMSI9Up4JWpkTIdp4FaPFbB50wYVL7H0NpqGeSmdiSPFYWEyLDkhG3Trvj
+         I2HS5iddCtzzDhQW6o9xBfS5d96JgqNaY/0/moexmkFYJv5jHYHs814TXz6gaxx2KjKQ
+         RMuQ==
+X-Gm-Message-State: AOJu0Yyy648FcHKb1xXhJvelrzFTBfilvY7SMP+sGHSe9em5PE7EyY+6
+	A/WqNWEt7x7/ACQuQ/0t4uHFoLp9mW3iyiSs71Y=
+X-Google-Smtp-Source: AGHT+IFg4NCjR9gKqEIPMZ/TQOXnEfnqmDJRUIJiD4cqo5huuacha57jJ6vQS/BvEejG+/wUOygIp+m6gQLapXDoa7U=
+X-Received: by 2002:a17:90a:eb0a:b0:28e:1eff:241d with SMTP id
+ j10-20020a17090aeb0a00b0028e1eff241dmr369026pjz.67.1705085598366; Fri, 12 Jan
+ 2024 10:53:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <42c63cb9-87d0-49db-9af8-95771b186684@siemens.com>
-In-Reply-To: <42c63cb9-87d0-49db-9af8-95771b186684@siemens.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 12 Jan 2024 19:51:16 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHUAQVrzdqFXDX1Fid38Gov3R-DNwJSSXXNqVgJPr6cBw@mail.gmail.com>
-Message-ID: <CAMj1kXHUAQVrzdqFXDX1Fid38Gov3R-DNwJSSXXNqVgJPr6cBw@mail.gmail.com>
-Subject: Re: [PATCH] riscv/efistub: Ensure GP-relative addressing is not used
-To: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-efi <linux-efi@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20240112121844.17580-1-2045gemini@gmail.com> <3bbabf34-1eba-8983-439e-f23e811e80a8@linux.intel.com>
+In-Reply-To: <3bbabf34-1eba-8983-439e-f23e811e80a8@linux.intel.com>
+From: Gui-Dong Han <2045gemini@gmail.com>
+Date: Sat, 13 Jan 2024 02:52:42 +0800
+Message-ID: <CAOPYjvZYAxo=-H2eeJ8mHjx4af=TetbtZ_54-iX2cokzEHFeaA@mail.gmail.com>
+Subject: Re: [PATCH] serial: core: Fix double fetch in uart_throttle/uart_unthrottle
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Tony Lindgren <tony@atomide.com>, l.sanfilippo@kunbus.com, john.ogness@linutronix.de, 
+	tglx@linutronix.de, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-serial <linux-serial@vger.kernel.org>, 
+	baijiaju1990@outlook.com, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hi Jan,
+Hi
 
-On Fri, 12 Jan 2024 at 19:37, Jan Kiszka <jan.kiszka@siemens.com> wrote:
->
-> From: Jan Kiszka <jan.kiszka@siemens.com>
->
-> The cflags for the RISC-V efistub were missing -mno-relax, thus were
-> under the risk that the compiler could use GP-relative addressing. That
-> happened for _edata with binutils-2.41 and kernel 6.1, causing the
-> relocation to fail due to an invalid kernel_size in handle_kernel_image.
-> It was not yet observed with newer versions, but that may just be luck.
->
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> ---
->
-> Something like this should go to stable as well, but we will need
-> rebased patches.
->
->  drivers/firmware/efi/libstub/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-> index 06964a3c130f..d561d7de46a9 100644
-> --- a/drivers/firmware/efi/libstub/Makefile
-> +++ b/drivers/firmware/efi/libstub/Makefile
-> @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)          += -DEFI_HAVE_STRLEN -DEFI_HAVE_STRNLEN \
->                                    -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
->                                    -DEFI_HAVE_STRCMP -fno-builtin -fpic \
->                                    $(call cc-option,-mno-single-pic-base)
-> -cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE
-> +cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE -mno-relax
+I apologize for any issues and lack of clarity in my previous patch.
+In patch v2, I've revised the fix to use local variables instead of
+locks and improved the description to clearly explain the harm and
+potential for concurrency.
 
-Can we detect the presence of these references (via the relocation
-type)? We already do something similar for ordinary absolute
-references too.
+The patch was developed and tested on linux-next, not Linux 5.17. My
+reference to 5.17 was due to a project I'm working on, which involves
+kernel static analysis and a comparison with earlier studies that
+support up to Linux 5.17. Therefore, I initially ran my tool on 5.17
+to filter potential bugs that are still unaddressed in the upstream.
+Then I worked on linux-next to develop and test the patch. I
+understand this might have caused misunderstandings, and I'll aim for
+clearer communication in future submissions.
 
->  cflags-$(CONFIG_LOONGARCH)     += -fpie
->
->  cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)   += -I$(srctree)/scripts/dtc/libfdt
-> --
-> 2.35.3
+Thanks,
+Han
 
