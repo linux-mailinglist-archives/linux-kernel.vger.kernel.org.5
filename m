@@ -1,181 +1,144 @@
-Return-Path: <linux-kernel+bounces-24786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8646A82C289
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:08:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A752A82C28E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5112B2195A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:08:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D22D41C21EBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E206E2DC;
-	Fri, 12 Jan 2024 15:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589C26E2C5;
+	Fri, 12 Jan 2024 15:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="bceDg11Z"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2010.outbound.protection.outlook.com [40.92.20.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tmgKjx9V"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4526DD12;
-	Fri, 12 Jan 2024 15:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N9D0UkHH0S3D+D5O5/bpY43jV8uaRvOX3uXwcXq208LQ2SIRQU3mJ/XPE4sK0+SxMB1N7tckQHcgqC5gmx4m+yoN5x+ClqWaXJGAJNxZuK2zdksI0T3zSyUmhS0k2uHs8Dpgw3z8gZh6jGLi3PI6GbuL0WYy3gqksiLv6GzbP5ulH1RNVnVs3WKiRl1hkwzmFQihcSXc0bOU9hoZGUnrVp71jUmk3ODYiQExdjY4BiHbQbYG4zWPqPbobaa22JCisDr2IMLnJ6Jjx5nNFR2KA/X8EhzxEbJg+AHatB6ffYsFGKlu7LMhOuhVeVXz2a+UP7BKmTWP8c79ukfX1bHVxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MI6buMWYXbYNgq4zmU7vND/bpGj8N9UtRrZi86nCDO4=;
- b=jLWm7tnzEldIvkBzSuE3OnJDHlw/sSDVF0WzaJ4Btv/OzM4SBGJFrGF0cY1D+qJLrcOKWwtel/vMxdHHVuS9CY8DWeP8y3z66Qf88+73S3DlQGJMU/86G1QqKZB3sbHUWIzVC0AkZA+X5fjViG80kmS9aBPMvjXs80cyh71HYf9cmVyk/g/dOpLU+IcfexU2n4TWZ9FVQOzA42fFvdVnDgQZIP7WbwTFr+W7H9kodxDuyO/h66A5KzD0kIBvBlN4zVCH1ZksTgktb6fvvSEyMl3H8ICScNLWhg+OfvqWJpZBfkYtETr5B34jpAZNMxGHLdadIrgzmBMSGR6L5CG7rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MI6buMWYXbYNgq4zmU7vND/bpGj8N9UtRrZi86nCDO4=;
- b=bceDg11Z43k/+NQi848d/9blS1KHgpHZMMpELp84ajuS5zXjCR602kCVDkdmk0V5sGwV/lsBCJuMsEOBVwA41KtGywOuISh9AzB5qSkqC5iL4j864hZTf3/2VwKxUIvYXYefvRdgnIhGTPaAYXrE2vVq0D9p5HGEyUuK9/K/umqlsjZBE9fEBWiHDOiUaF5J0rOquLKx4EgW7qUzLd/H87JONnTajLxoM1zYhaiqbQu10cXlY1wrb8ESxLmChQpFFuAmGsL5V7ZigeGqFPWQO/FWBxYMRPQqx6qUpmpEMyVxzjFKt5IYWy16cf6f6SvUubv94G5dam/rCdiEPGvRNw==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by SA1PR02MB8413.namprd02.prod.outlook.com (2603:10b6:806:1f4::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Fri, 12 Jan
- 2024 15:07:52 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::3524:e4b3:632d:d8b2%4]) with mapi id 15.20.7181.015; Fri, 12 Jan 2024
- 15:07:51 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"ardb@kernel.org" <ardb@kernel.org>, "hch@infradead.org" <hch@infradead.org>,
-	"Lutomirski, Andy" <luto@kernel.org>, "linux-coco@lists.linux.dev"
-	<linux-coco@lists.linux.dev>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "thomas.lendacky@amd.com"
-	<thomas.lendacky@amd.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"mingo@redhat.com" <mingo@redhat.com>, "seanjc@google.com"
-	<seanjc@google.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"Cui, Dexuan" <decui@microsoft.com>, "urezki@gmail.com" <urezki@gmail.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"peterz@infradead.org" <peterz@infradead.org>, "wei.liu@kernel.org"
-	<wei.liu@kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Rodel, Jorg"
-	<jroedel@suse.de>, "sathyanarayanan.kuppuswamy@linux.intel.com"
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, "lstoakes@gmail.com"
-	<lstoakes@gmail.com>, "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [PATCH v3 1/3] x86/hyperv: Use slow_virt_to_phys() in page
- transition hypervisor callback
-Thread-Topic: [PATCH v3 1/3] x86/hyperv: Use slow_virt_to_phys() in page
- transition hypervisor callback
-Thread-Index: AQHaQAVimv7uqsPUukqF0M02BKDa3rDVauWAgADjM5A=
-Date: Fri, 12 Jan 2024 15:07:51 +0000
-Message-ID:
- <SN6PR02MB4157B123128F6C2F6C3600D9D46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240105183025.225972-1-mhklinux@outlook.com>
-	 <20240105183025.225972-2-mhklinux@outlook.com>
- <9dcdd088494b3fa285781cccfd35cd47a70d69c3.camel@intel.com>
-In-Reply-To: <9dcdd088494b3fa285781cccfd35cd47a70d69c3.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [CqlCFPn5JUinYjOBK7Yu0ALr/Tt4DCHW]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SA1PR02MB8413:EE_
-x-ms-office365-filtering-correlation-id: 9d4f45f9-670d-4c57-17a7-08dc13803f1d
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- kGoUFeaLdOsCyaacA7Q8vpkfmUtfXkEzkYF0mu8G91rHwwKrV2YkNBs756sqolMLlqsE8fcmhcvFnKK5hLP2gx48A04IRQ3QhQCwryaTEV258Byuq4vL+XnOWa1uvLlFah+1pMp3ViThxnp02IUKHnj/W76/yBSfaeIV/yBaw38cJ+LwTKc8lz4QjEn6P9TQSTGSOqCgWe9DrZvscAIlFp27P7LYJ0LDHNOE8nPCnovxTAzaJ2BIcSyzNB10G2rMTLxCwn+4PGvqUCT+IdDcuuvICNA4t9+SHMGqLYhg+PIoSY1nk0Oq4ehZbzWoAqX1ZU4f5j5GRd9jHwcbHuWYFLpDLYqzDRbvcsIpxOpcTMCfHrKVZdAo9SD9SQYEmvKb2sd6qn9vOaQqDjNeukuKWTU25WNAv6mIkvwHTEmu7WUtWxE2E/cbTR5L1eZ/0BLT4MDfREkWZNex6xVO+y18kjOxpKYoz9VupJlLf6sz8j7Fy3UO4DBMyZphfYeofeRuqIE5/bBgzlBm4gAs/6PDShLuJjJfpMtMPmOxQH14NU8=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?ZklsY2hBRXJLblVGT2lrQUlJT01HZDFFaTJjY3VwZkxkeS8vVDN5ZTlDWE5O?=
- =?utf-8?B?ZUtUbXlCTkZmNTJBWXY5QTRMWUFMd0k3RVpoeFRUWjh6d1hXcTBuU0xRczAr?=
- =?utf-8?B?SVdNYkl5SHVKQXN3Tk5zalJxRDRZcjI0aDM0dTFIaXBobFlhaU1ETkQ3YXFS?=
- =?utf-8?B?SDhwbGxDUyt1RmJDazJjV05aeWk3eXFJdVdqNjJRNXROSTl0L1VnVkNyMWtp?=
- =?utf-8?B?VWNLZ3JOZ3FzMGwxcFBjU1daODduVlVkNEhta2V5QlN4c09aV00vQ0dhYk1R?=
- =?utf-8?B?SGdvdHpwbGtXS3c1VXBVb3d5dGxkRjFPcGliY0doU21VTUlSaTFUc1Y1NGZJ?=
- =?utf-8?B?bHRubjFVYTkwY0l3aEdrNzFJbFBqUTFlN0s3R25TTWYxVjY4c0NFbDBWOVBK?=
- =?utf-8?B?UkgzbDYrRk5PZ0E5UEE4dk5FeEROdjZKcERJdVBmR2trNGRqQ3Q5ZHh6L245?=
- =?utf-8?B?bUlVS3FLcHJ6TEo3c0FlM2RhSGxlTzlySjFpZUpaaXFTUWYwQ3VyOFdqR0xJ?=
- =?utf-8?B?VzUxbTgrejMyYUtURUhLRjh4ZDJiUHhGZGo4cU00OFg5NzdJcHBpbHJtZmpT?=
- =?utf-8?B?RkZsVmRTL0lwemtpMEtnVlZoNU1zNmpOVXQzTHlUMzJtN1FLa2xkYThWUDhq?=
- =?utf-8?B?Skd2c2ZGK2dsMGM2YlptWDZPR2dTL3VZNDRBMmx0SXBYQjFDZ2oxZjZwYUUy?=
- =?utf-8?B?WmVpU1VBRWpzRWtVMlJHMEcyMkRxV0gyUTJCTnp6MEZHNnl1ZmFCdVBHUUsr?=
- =?utf-8?B?d0FZM2M1VUdrZmlsc3VRTTJzeHhUQXJaZ0dpZjBxYnVPQS9NeHZIcnpuOXdB?=
- =?utf-8?B?VFRvb3JnaFc0RDhUTXk3Q3VEZGdDS3kxWElRRUtWN2FUWE1lSllxaVA4VEJT?=
- =?utf-8?B?bUZRaUlmSm8rV2t6b0ZRMjhZVDIzTzFuTGZiYjlVRVFOTjRTUW9iTlNHZ0dS?=
- =?utf-8?B?UmQzKzF4ckttTnhpUzdRTUc2dk9OQUQ3QWN2Sm5mYkcxZGN3OXovOU9RRW5Y?=
- =?utf-8?B?QTRVWEdWSVdSNWN6Yi9BL0xUa1U2RU1qaFdYSFhGbjNzcHFTUVFuQThRK09p?=
- =?utf-8?B?UlRmenNWRXdpYk9UL3djSEpUaDhKdUcvOHFDZ3ZIZlQ2WDdqMGhXVUJzbHJW?=
- =?utf-8?B?VVpJZ1d6V3BrM0dTYURYRjhKTXY1UzJaRE5oTXpEVEU3a0dGY1BWQVFjTzM1?=
- =?utf-8?B?MnRlSXFQY3RESE9ldkQ5dm5zYTlCRXlQd3Z3WVRxb2lna3gveHlQMTkwVlFh?=
- =?utf-8?B?YTZ2M1NvTE9ZQ1p3NHFEd0hpRTMzR3Fob3RNNFJHUGdPWkd0UFMvMHExaC9Y?=
- =?utf-8?B?dFQyYUFjY2xoOW02RzUzQXMwc0gvR3ZnVFY5NXBtRXIzM1BBbXcrZUFseHR0?=
- =?utf-8?B?bHhjQ2UvVTNRcWl3dUxxQ2VySHpyUUZzeWdWaXM0NW93d0d4dzNZVVVVeENZ?=
- =?utf-8?B?OVRTdFJ3SUhOR2d5UDhrMjhxL2xML3V0WkJ6b2NVZklTNjdHNFZqeW5lcG5t?=
- =?utf-8?B?d3ExZHFYWmlvaklVUnFraFlPUjlxZHZjOVdhQXpBT0hRTHNkWW5UT0pkRHRR?=
- =?utf-8?B?WXlqK0dQSnc5cE1SWmdrcDZpSDZQd0lmRmV3TEVQWkxNNUdHMko4QjdxSTRp?=
- =?utf-8?B?SmhZYkpFQUxsU0pHUzdzdUtKT1JMR3c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7FD6E2D1
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3376d424a79so4487407f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:08:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705072107; x=1705676907; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YlH+RSdYRoNdfUEygz2Iz90RJfaOQT2YtQneGSIE04U=;
+        b=tmgKjx9VR4KDZvHWU5+EAOE929PjGRjMgga00/c7QiD2HXr3xigTagwNMKpOPVOL2V
+         55R+EEMd4p6VCPZBr8vmawjuUCpaHbJ0jnqm0Ci81ws9YyZ+ok+a+qeXUwQWhJ3ExliJ
+         ZhaZcr2eQC7IHR8uarJCQuR6Fpx7TtlQcMp6Qb/veBJ9qTYrqhTDfxbpGLPatR5n8Xgx
+         6uehEq9AwnwFRRC52/hHDgwK+1Tq2Szwo43Swp3y6s57CKRWoCnxRzYeJZFLXTCYN24N
+         lL/703MWFZ4Byoohpbov5PBqswFaiEj5BYw9udefibtele1dWgzlg41jRv0BC8DEGQNv
+         wRWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705072107; x=1705676907;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YlH+RSdYRoNdfUEygz2Iz90RJfaOQT2YtQneGSIE04U=;
+        b=xT5sqYy4OkdIQWMh3GrvCBN6ZyNVe/SBFFj5U3wnD4LPWgBbOfhvYlT6vrF4RNHr4f
+         uBt0qtjPbJXYaUmxcjHypfQRZtGJO7kyskwJPIRqhc43b2Th+cxJZ65dokCEE7vv0e++
+         Lpxe7fZDr3E2ZjchixSNtLLCd5JuEfL8RQsUHGuaEB7H73cPtVVn0X1Fsiawoen/4g9V
+         MfHMGK2lI/ymH2aDjKRizfA17ewnlAsOrdq2yXTbbSbXLYiVOU/i+xJahYLY6lJ/M2lj
+         9lZEDabrjCt5YXhtOLM+RW+tePW3SpyNHAflE1OCgL66zYsfTNEKYW204S7IMAuGMjZs
+         EKNg==
+X-Gm-Message-State: AOJu0YyHsq4AB2Rfltz43H2hqz6FlFAodx+zd/6jBCaQ6inVoDUuZyCj
+	MnDl6B8V5zSASoPPJvU64S8w7USAtm1Vzw==
+X-Google-Smtp-Source: AGHT+IHcab6t7oU8df+Vv5MKkJQwgZOMfKP62VXTh5xVxPG6f8EpxAJLVT+q/6kp36EYqcr/SZ226Q==
+X-Received: by 2002:a5d:64ef:0:b0:337:97ec:d73c with SMTP id g15-20020a5d64ef000000b0033797ecd73cmr496429wri.22.1705072107391;
+        Fri, 12 Jan 2024 07:08:27 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:59d5:231:f1ee:77f? ([2a01:e0a:982:cbb0:59d5:231:f1ee:77f])
+        by smtp.gmail.com with ESMTPSA id j21-20020a5d6e55000000b0033672cfca96sm4123938wrz.89.2024.01.12.07.08.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 07:08:26 -0800 (PST)
+Message-ID: <98ed4ee9-f381-43a0-a5cc-523ad108b374@linaro.org>
+Date: Fri, 12 Jan 2024 16:08:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d4f45f9-670d-4c57-17a7-08dc13803f1d
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 15:07:51.5353
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR02MB8413
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v14 2/4] Input: add core support for Goodix Berlin
+ Touchscreen IC
+Content-Language: en-US, fr
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bastien Nocera <hadess@hadess.net>,
+ Hans de Goede <hdegoede@redhat.com>, Henrik Rydberg <rydberg@bitmath.org>,
+ Jeff LaBundy <jeff@labundy.com>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231221-topic-goodix-berlin-upstream-initial-v14-0-04459853b640@linaro.org>
+ <20231221-topic-goodix-berlin-upstream-initial-v14-2-04459853b640@linaro.org>
+ <ZZ-W0UPHOdpU-8el@google.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <ZZ-W0UPHOdpU-8el@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-RnJvbTogRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPiBTZW50
-OiBUaHVyc2RheSwgSmFudWFyeSAxMSwgMjAyNCA1OjIwIFBNDQo+IA0KPiBPbiBGcmksIDIwMjQt
-MDEtMDUgYXQgMTA6MzAgLTA4MDAsIG1oa2VsbGV5NThAZ21haWwuY29tIHdyb3RlOg0KPiA+ICsg
-KiBJdCBpcyBhbHNvIHVzZWQgaW4gY2FsbGJhY2tzIGZvciBDb0NvIFZNIHBhZ2UgdHJhbnNpdGlv
-bnMgYmV0d2VlbiBwcml2YXRlDQo+ID4gKyAqIGFuZCBzaGFyZWQgYmVjYXVzZSBpdCB3b3JrcyB3
-aGVuIHRoZSBQUkVTRU5UIGJpdCBpcyBub3Qgc2V0IGluIHRoZSBsZWFmDQo+ID4gKyAqIFBURS4g
-SW4gc3VjaCBjYXNlcywgdGhlIHN0YXRlIG9mIHRoZSBQVEVzLCBpbmNsdWRpbmcgdGhlIFBGTiwg
-aXMgb3RoZXJ3aXNlDQo+ID4gKyAqIGtub3duIHRvIGJlIHZhbGlkLCBzbyB0aGUgcmV0dXJuZWQg
-cGh5c2ljYWwgYWRkcmVzcyBpcyBjb3JyZWN0LiAgVGhlIHNpbWlsYXINCj4gPiArICogZnVuY3Rp
-b24gdm1hbGxvY190b19wZm4oKSBjYW4ndCBiZSB1c2VkIGJlY2F1c2UgaXQgcmVxdWlyZXMgdGhl
-IFBSRVNFTlQgYml0Lg0KPiANCj4gSSdtIG5vdCBzdXJlIGFib3V0IHRoaXMgY29tbWVudC4gSXQg
-aXMgbW9zdGx5IGFib3V0IGNhbGxlcnMgZmFyIGF3YXkNCj4gYW5kIG90aGVyIGZ1bmN0aW9ucyBp
-biB2bWFsbG9jLiBQcm9iYWJseSBhIGRlY2VudCBjaGFuY2UgdG8gZ2V0IHN0YWxlLg0KPiBJdCBh
-bHNvIGtpbmQgb2YgYmVncyB0aGUgcXVlc3Rpb24gb2Ygd2h5IHZtYWxsb2NfdG9fcGZuKCkgcmVx
-dWlyZXMgdGhlDQo+IHByZXNlbnQgYml0IGluIHRoZSBsZWFmLg0KDQpUaGUgY29tbWVudCBpcyBL
-aXJpbGwgU2h1dGVtb3YncyBzdWdnZXN0aW9uIGJhc2VkIG9uIGNvbW1lbnRzIGluDQphbiBlYXJs
-aWVyIHZlcnNpb24gb2YgdGhlIHBhdGNoIHNlcmllcy4gIFNlZSBbMV0uICAgVGhlIGludGVudCBp
-cyB0byBwcmV2ZW50DQpzb21lIGxhdGVyIHJldmlzaW9uIHRvIHNsb3dfdmlydF90b19waHlzKCkg
-ZnJvbSBhZGRpbmcgYSBjaGVjayBmb3IgdGhlDQpwcmVzZW50IGJpdCBhbmQgYnJlYWtpbmcgdGhl
-IENvQ28gVk0gaHlwZXJ2aXNvciBjYWxsYmFjay4gIFllcywgdGhlDQpjb21tZW50IGNvdWxkIGdl
-dCBzdGFsZSwgYnV0IEknbSBub3Qgc3VyZSBob3cgZWxzZSB0byBjYWxsIG91dCB0aGUNCmltcGxp
-Y2l0IGRlcGVuZGVuY3kuICBUaGUgaWRlYSBvZiBjcmVhdGluZyBhIHByaXZhdGUgdmVyc2lvbiBv
-Zg0Kc2xvd192aXJ0X3RvX3BoeXMoKSBmb3IgdXNlIG9ubHkgaW4gdGhlIENvQ28gVk0gaHlwZXJ2
-aXNvciBjYWxsYmFjaw0KaXMgYWxzbyBkaXNjdXNzZWQgaW4gdGhlIHRocmVhZCwgYnV0IHRoYXQg
-c2VlbXMgd29yc2Ugb3ZlcmFsbC4NCg0KQXMgZm9yIHdoeSB2bWFsbG9jX3RvX3BhZ2UoKSBjaGVj
-a3MgdGhlIHByZXNlbnQgYml0LCBJIGRvbid0IGtub3cuDQpCdXQgdm1hbGxvY190b19wYWdlKCkg
-aXMgdmVyeSB3aWRlbHkgdXNlZCwgc28gdHJ5aW5nIHRvIGNoYW5nZSBpdA0KZG9lc24ndCBzZWVt
-IHZpYWJsZS4NCg0KPiANCj4gSXQgc2VlbXMgdGhlIGZpcnN0IHBhcnQgb2YgdGhlIGNvbW1lbnQg
-aXMgYWJvdXQgd2h5IHRoaXMgaXMgbmVlZGVkIHdoZW4NCj4gX19wYSgpIGV4aXN0cy4gT25lIHJl
-YXNvbiBnaXZlbiBpcyB0aGF0IF9fcGEoKSBkb2Vzbid0IHdvcmsgd2l0aA0KPiB2bWFsbG9jIG1l
-bW9yeS4gVGhlbiB0aGUgbmV4dCBiaXQgdGFsa3MgYWJvdXQgYW5vdGhlciBzaW1pbGFyIGZ1bmN0
-aW9uDQo+IHRoYXQgd29ya3Mgd2l0aCB2bWFsbG9jIG1lbW9yeS4NCj4gDQo+IFNvIHRoZSBjb21t
-ZW50IGlzIGEgcmlzayB0byBnZXQgc3RhbGUsIGFuZCBsZWF2ZXMgbWUgYSBsaXR0bGUgY29uZnVz
-ZWQNCj4gd2h5IHRoaXMgZnVuY3Rpb24gZXhpc3RzLg0KPiANCj4gSSB0aGluayB0aGUgcmVhc29u
-IGlzIGJlY2F1c2Ugdm1hbGxvY190b19wZm4oKSAqb25seSogd29ya3Mgd2l0aA0KPiB2bWFsbG9j
-IG1lbW9yeSBhbmQgdGhpcyBpcyBuZWVkZWQgdG8gd29yayBvbiBvdGhlciBhbGlhcyBtYXBwaW5n
-cy4NCg0KUHJlc3VtYWJseSBzby4gIFRoZSBmaXJzdCBwYXJhZ3JhcGggb2YgdGhlIGV4aXN0aW5n
-IGNvbW1lbnQgYWxzbw0KY2FsbHMgb3V0ICJhbGxvY19yZW1hcCgpIGFyZWFzIG9uIDMyLWJpdCBO
-VU1BIHN5c3RlbXMiIGFzDQpuZWVkaW5nIHNsb3dfdmlydF90b19waHlzKCkuDQoNCk1pY2hhZWwN
-Cg0KWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMzA4MjgyMjEzMzMuNWJsc2hv
-c3lxYWZiZ3dsY0Bib3guc2h1dGVtb3YubmFtZS8NCg==
+Hi Dmitry,
+
+On 11/01/2024 08:20, Dmitry Torokhov wrote:
+> Hi Neil,
+> 
+> On Thu, Dec 21, 2023 at 04:21:20PM +0100, Neil Armstrong wrote:
+>> Add initial support for the new Goodix "Berlin" touchscreen ICs.
+> 
+> Thank you very much for explaining how reading of additional contacts
+> and checksum works, it makes sense now.
+> 
+> I was a bit unhappy about number of times we copy/move the data over;
+> could you please try the patch below to see if the device still works
+> with it?
+
+Sure, I'll test it and report you.
+
+> 
+> I also shortened some #defines and defines some additional structures.
+> Also as far as I can see not everything needs to be packed as the data
+> is naturally aligned on the word boundaries.
+
+Great, thank!
+
+Neil
+
+> 
+> Thanks!
+> 
+
 
