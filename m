@@ -1,149 +1,115 @@
-Return-Path: <linux-kernel+bounces-24831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC6E82C326
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:58:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4700782C338
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:00:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95D9DB229E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:58:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 534F81C21BDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6F26EB7B;
-	Fri, 12 Jan 2024 15:57:52 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E4A73175;
+	Fri, 12 Jan 2024 15:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="Sc+oUxFE"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF106EB6E;
-	Fri, 12 Jan 2024 15:57:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61562C433C7;
-	Fri, 12 Jan 2024 15:57:50 +0000 (UTC)
-Date: Fri, 12 Jan 2024 10:58:55 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, mhiramat@kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- kernel-team@android.com
-Subject: Re: [PATCH v11 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <20240112105855.7f4c290d@gandalf.local.home>
-In-Reply-To: <20240112100641.3675edad@gandalf.local.home>
-References: <20240111161712.1480333-1-vdonnefort@google.com>
-	<20240111161712.1480333-3-vdonnefort@google.com>
-	<c3dba53f-66de-43f5-9b82-38aa807da67a@efficios.com>
-	<20240111181814.362c42cf@gandalf.local.home>
-	<ZaECnv7EJHo6sqcT@google.com>
-	<20240112100641.3675edad@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 441A86EB75
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbed179f0faso5294943276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1705075163; x=1705679963; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OOjkY6qLcUDJ6pAB2XOnTphDRYpUaH4ZDZBnldaqt/Y=;
+        b=Sc+oUxFEciCOQuRfnIBX3GJ5LrAnNGXl43YU7QlCK0pTzz5b1KfFVmsxrLO9pWeZ0v
+         /kRgBumkheClcn4+OFHy5BZYCMXtZUzPTVpKObIG1AKG94/l0lTGncHqDl2ZnItwyfZb
+         lAOZraLzsEiQ6Xsx++z/488vxPftWrt0m+6nvs4+HdjfpQbxLM+mSEUEkGYJ2tB/4Zci
+         2KMvkD5xhSlvmbrtWf0LkVAW8WZ1BljFuet7o9ICCnBgfSZeREWnuLO7kZED718wvcAn
+         A+Tv+p3ULm5usZS6iKoai7gOzgxI2ZHrGCVRWjBTLiwap86KjAlk/Hob75LMi2y9IujJ
+         qFMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705075163; x=1705679963;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OOjkY6qLcUDJ6pAB2XOnTphDRYpUaH4ZDZBnldaqt/Y=;
+        b=g6kqpi28RNWiTz5gTnD0a+H0h0BXXqmkEHZGCaGtNYOdUQVY9zyM/ciAbMCG//JZws
+         qsuJfYoA3DnzUnb3ZyFqi/Z1d2jDAqNlzLEcxEgVvqmNbticvlwzH4mKhpCo64Tmb5lL
+         26HmthvsGH4CCbDGc8oVDMdSvsx1yTpeKMfkQmIQ4I7V24hwrxlUDLUhOxY1AyTPBchc
+         B3OWaPDWFFCHYgVWDnA8qT5JCCXH0yOxPPKbKnTO9Sf1CQS4NrbFAKvqXm4RFU1k5Q5c
+         PylESv7qYdf72sAi9Chlf/lIJJff+HrUGZtobGOAARUUeXQj/LKlSLKmaS7MmkMSkQuI
+         eSCw==
+X-Gm-Message-State: AOJu0Ywfi3UdAsE7InSQxmKb9VzH6fWT+vUsspdBT70i7PZXG5FrUs64
+	CElT/5hdCfBwrigTrXVtWIHYE3qPkB5BvfBGBfWeonnuEPiSQQ==
+X-Google-Smtp-Source: AGHT+IHr3UudPwurXaz4S+dT72h2sVx6HX8ltwQ55glZrlvIRFVV+m1zueg0vrLt+5IAqr6Wt0L8KbJCDVH/13I+Tbw=
+X-Received: by 2002:a25:8106:0:b0:dbf:3d61:8d03 with SMTP id
+ o6-20020a258106000000b00dbf3d618d03mr551130ybk.28.1705075163182; Fri, 12 Jan
+ 2024 07:59:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
+ <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
+ <CAPY8ntCs9EAYsxwjkscms3kqoC0N8+CcTHoyrG+gFMc0Mh=cwg@mail.gmail.com> <337mubsn42zlpuoqqvqmsjtdww4kg3x6lo6brdos5o6xgwjdwo@cxfad2pk2so2>
+In-Reply-To: <337mubsn42zlpuoqqvqmsjtdww4kg3x6lo6brdos5o6xgwjdwo@cxfad2pk2so2>
+From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date: Fri, 12 Jan 2024 15:59:06 +0000
+Message-ID: <CAPY8ntDbM=j6YP3A5TNHoK73eTj0uUvnbAS0cZtxHgVoeuOFrg@mail.gmail.com>
+Subject: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB property
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, 
+	=?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	Hans Verkuil <hverkuil@xs4all.nl>, linux-rockchip@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 12 Jan 2024 10:06:41 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Maxime
 
-> I'm thinking both may be good, as the number of dropped events are not
-> added if there's no room to put it at the end of the ring buffer. When
-> there's no room, it just sets a flag that there was missed events but
-> doesn't give how many events were missed.
-> 
-> If anything, it should be in both locations. In the sub-buffer header, to
-> be consistent with the read/splice version, and in the meta page were if
-> there's no room to add the count, it can be accessed in the meta page.
+On Fri, 12 Jan 2024 at 13:59, Maxime Ripard <mripard@kernel.org> wrote:
+>
+> Hi Dave,
+>
+> On Thu, Dec 14, 2023 at 02:43:37PM +0000, Dave Stevenson wrote:
+> > On Thu, 7 Dec 2023 at 15:50, Maxime Ripard <mripard@kernel.org> wrote:
+> > >
+> > > The i915 driver has a property to force the RGB range of an HDMI output.
+> > > The vc4 driver then implemented the same property with the same
+> > > semantics. KWin has support for it, and a PR for mutter is also there to
+> > > support it.
+> > >
+> > > Both drivers implementing the same property with the same semantics,
+> > > plus the userspace having support for it, is proof enough that it's
+> > > pretty much a de-facto standard now and we can provide helpers for it.
+> > >
+> > > Let's plumb it into the newly created HDMI connector.
+> >
+> > To have such a significant proportion of the patch being kunit tests
+> > when there was no reference to such in the commit text was slightly
+> > unexpected.
+>
+> Thanks for your review. Does that mean that you would prefer the tests
+> to be in a separate patch?
 
-I think  the meta data page should look like this:
+If there was a need for a respin, then I think ideally yes, or at
+least a mention in the commit text ("Let's plumb it into the newly
+created HDMI connector*, and add appropriate unit tests*").
+Overall I'm not that fussed though.
 
-struct trace_buffer_meta {
-	__u32		meta_page_size;
-	__u32		meta_struct_len;
- 
-	__u32		subbuf_size;
-	__u32		nr_subbufs;
- 
-	struct {
-		__u64		lost_events;
-		__u32		id;
-		__u32		read;
-	} reader;
- 
-	__u64	entries;
-	__u64	overrun;
-	__u64	read;
-
-};
-
-1) meta_page_size
-
-      The size of this meta page. It's the first thing the application
-      needs to know how much to mmap.
-
-2) meta_struct_len
-
-      The actual length of the structure. It's the second thing the
-      application will look at to know what version it is dealing with.
-
-3) subbuf_size
-4) nr_subbufs
-
-      The next two is the next thing the application should do. That is to
-      memory map in all the sub-buffers. With 1) and this, it knows how to
-      do that.
-
-The first four are needed for setup, and never changes once mapped. The
-rest gets updated during the trace.
-
-5) reader
-  5a) lost_events
-  5b) id
-  5c) read
-
-      This is actively needed during tracing. It is what is used to know
-      where and how to read the reader sub-buffer.
-
-6) entries
-7) overrun
-8) read
-
-      These are useful statistics, but probably seldom really looked at.
-      They should be at the end.
-
-Also notice that I converted all "unsigned long" to __u64. This is because
-it is possible to have a 32 bit userspace running this on top of a 64 bit
-kernel. If we were to use "long" it would be inconsistent and buggy.
-
-Now if you need subbufs_touched and subbufs_lost. When that gets opened, it
-would update the  meta_struct_len accordingly, and the structure would look
-like:
-
-struct trace_buffer_meta {
-	__u32		meta_page_size;
-	__u32		meta_struct_len;
- 
-	__u32		subbuf_size;
-	__u32		nr_subbufs;
- 
-	struct {
-		__u64		lost_events;
-		__u32		id;
-		__u32		read;
-	} reader;
- 
-	__u64	entries;
-	__u64	overrun;
-	__u64	read;
-
-	__u64	subbufs_touched;
-	__u64	subbufs_lost;
-};
-
-
-Make sense?
-
--- Steve
+  Dave
 
