@@ -1,179 +1,306 @@
-Return-Path: <linux-kernel+bounces-24374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815D682BBB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:23:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5091E82BBB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:24:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C742288522
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:23:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE6571F2685C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F505D726;
-	Fri, 12 Jan 2024 07:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582625D8EC;
+	Fri, 12 Jan 2024 07:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h+ljQAPB"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eNLu5Gej"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5B45C919
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-336897b6bd6so5705316f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:22:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFC45D758;
+	Fri, 12 Jan 2024 07:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28db4f860easo2020132a91.3;
+        Thu, 11 Jan 2024 23:23:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705044172; x=1705648972; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0zod9jOIigkgHYYflYbRUuAS95/eYFPo+RbuUcLeBEY=;
-        b=h+ljQAPB1sEFSIrzkwsbNxJg78+yJb1WrhJuhwoW6xaIFCrbGOLCgRs/lryna3cqqC
-         oKnvFUKHpqEcPbjIUJeOK97HrRQDZFi23OspPe4GT/FeyNbsNmAi5me0PHvboJ3/1FHu
-         BJw9nR6p1N2aiUAaTyg0h1T1yUrk+ppxPoE0BF7oZnvEzSVP/RJu34RC5JBkaNeIb7SS
-         CuQFkQbumxcGeGCp7MdGBcA9XjweLLUw90ecVJF1qguUjEogOR/I2zvnioQd5QWl2myY
-         Dnihu4CVVJaPjivsQcEnHY5daaL0fJW9y/GnBlTbnMT1p2IfmbLRuvZKbr36YxNDwbge
-         c2ww==
+        d=gmail.com; s=20230601; t=1705044194; x=1705648994; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ynmu5VFSpv9EjfrGfZBX9TIqZ8DOyumYNBpsJkiQS0Q=;
+        b=eNLu5Gejs774323bDaf0jNNtFKZo25lJWvCrtzGBUqb/8Dzggy7OK0uEI0kzYEN811
+         rRe14zdv4q5jrvo9wyRPjeJfHLKxyKNmC5HUtEqiNE+wN7kawVBS+YizYuZNtrcqVmGf
+         jm22MjQsTYn4ZoMN/qpH/28oAQEZRksU8JuXyhvdzFfFq9D9cMupDTmUYTOJCSyGQCSS
+         SU3R+//UtUsLpXQG7VceMIXLXprhCEzNlTpczRYrPC178wYGhhgSjQzEvntD1rnYWs3a
+         p9emuDLkeIJIEF8PLkFoTvVRuXiuqRdD0cxGAOJ0sHHFFSm4t8wCLfQ/O0x1kSC+nhfD
+         x4ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705044172; x=1705648972;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zod9jOIigkgHYYflYbRUuAS95/eYFPo+RbuUcLeBEY=;
-        b=cwdrcq3qZtX0xA7msk/bo99ssKyZwU2e+NBx2PM8392OcCAXj9jIsFs20XWdvTcflp
-         UtM7uLIp4uSx/dtdVO+yN9DY9qPBkn3HMIMZRDpqnToJEQ83MOgEUJSiGpZMpL2itca9
-         IgVc7n0knJbNcLZtmkFlwUs9mHA4hPXImM+iekA85mDo+JWt/yB47Sq+phoCe66BnNNA
-         nZQ9sSvNso25ZbslDKlaABdyVa6Zq6c2bYdXrVcOQGR+AjlYKl+xhBPBnlj7YBGn49ID
-         GXe1W/wdxMDyiqUlR12UEXeNR50kecqK2ZdisZP3C/cWLJKkDnQwwvJ4aSGnuAtX/yH1
-         xh4Q==
-X-Gm-Message-State: AOJu0Yw8ofWamLINbgn3fcloFdNBtgCy/+mGe3QGvD75XiKwuPE6PZ5d
-	xVNByy13ErBCYdB/+oCs+oUtcSn9oz5HMA==
-X-Google-Smtp-Source: AGHT+IH8XR4Nx8gUk/Kge85NcS9avYm1/LLvwfVHCmNYNEidlWnAfkghnFOXYxB52gQp6ClSIF/xkg==
-X-Received: by 2002:a5d:4102:0:b0:336:66f7:2d2e with SMTP id l2-20020a5d4102000000b0033666f72d2emr539289wrp.8.1705044172163;
-        Thu, 11 Jan 2024 23:22:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id q6-20020adf9dc6000000b003378e67fd2asm2407525wre.86.2024.01.11.23.22.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 23:22:51 -0800 (PST)
-Message-ID: <d1bae8c6-a511-4bd2-9bc6-1b3c4dc6fb42@linaro.org>
-Date: Fri, 12 Jan 2024 08:22:49 +0100
+        d=1e100.net; s=20230601; t=1705044194; x=1705648994;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ynmu5VFSpv9EjfrGfZBX9TIqZ8DOyumYNBpsJkiQS0Q=;
+        b=p1bMAeIEzz/wb1NdmVVMHo2qHjlSCwI+aE+lP6krWC0h0TYVeD23nqAwVMnAPWvogX
+         joKfecK/xZZW45Flosr6qfOoGWv+2hd/TxCVBNjJOY2lB6nk1fAdXt81yet60/RRgExK
+         JvyUgcGBQ2iCLp31hEfa/Odn2fcp6HbFPXNyJbu8WyPpHcYUVUF5ZjrTz2PzJG0UTzUc
+         Zv3G7gOI/iNRmZo9g+o/r0DhdDl3wI606t6WN3TtQwk9T32kuEjP2MMkV4xtWjZgH5zE
+         Ux1Ya6MChoA8t2dDmUMpPx1P1QuMnhAkDnS/IsdQGS5KJWUDTrxIVTOmftj7OjM6N2NR
+         2cFA==
+X-Gm-Message-State: AOJu0YxMID/q2Bb8z9QfCHfGiW23jBJ+hbHnXG+ZStJkbTwaRF9Ajw1t
+	rwFmbeoMm9/7JyyrXpuNJNgGh6n0E2WWEswiP0g=
+X-Google-Smtp-Source: AGHT+IGbXfgYfuHlp9AIF2iv3hZEOYR3jqICAdCf0oRgmuYFCYhxy+v/KucsGbZ3/xkoFv1X5rVoTm0tg0b34Q8anfI=
+X-Received: by 2002:a17:90b:1043:b0:28c:bced:5e64 with SMTP id
+ gq3-20020a17090b104300b0028cbced5e64mr708920pjb.34.1705044193837; Thu, 11 Jan
+ 2024 23:23:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] dt-bindings: media: mediatek: mdp: Change
- mediatek,gce-events to reference
-Content-Language: en-US
-To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
- Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Jason-ch Chen <jason-ch.chen@mediatek.com>,
- Johnson Wang <johnson.wang@mediatek.com>,
- Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
- Shawn Sung <shawn.sung@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20240110063532.14124-1-jason-jh.lin@mediatek.com>
- <20240110063532.14124-4-jason-jh.lin@mediatek.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110063532.14124-4-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240110081128.18683-1-qiang.zhang1211@gmail.com>
+ <CALm+0cXQF0nS6HD5iZ1RhbWo0rg8adwvcHrsS8W04K1MxY51bA@mail.gmail.com> <06bb8028-a1be-431c-9bff-265777d64e27@paulmck-laptop>
+In-Reply-To: <06bb8028-a1be-431c-9bff-265777d64e27@paulmck-laptop>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Fri, 12 Jan 2024 15:23:02 +0800
+Message-ID: <CALm+0cWnJJ2jt6C0YjOFe5akVTKLUTLgTa9ezd+TTSnJQa=9RA@mail.gmail.com>
+Subject: Re: [PATCH] rcu/nocb: Fix WARN_ON_ONCE() in the rcu_nocb_bypass_lock()
+To: paulmck@kernel.org
+Cc: frederic@kernel.org, quic_neeraju@quicinc.com, joel@joelfernandes.org, 
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/01/2024 07:35, Jason-JH.Lin wrote:
-> Change mediatek,gce-events property to reference mediatek,gce-props.yaml
-> instead of defining itself.
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->  .../bindings/media/mediatek,mdp3-rdma.yaml           | 11 +++--------
->  .../devicetree/bindings/media/mediatek,mdp3-rsz.yaml | 12 ++++--------
->  .../bindings/media/mediatek,mdp3-wrot.yaml           | 12 ++++--------
->  3 files changed, 11 insertions(+), 24 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> index 59db8306485b..1ba70b9a5843 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> @@ -44,13 +44,6 @@ properties:
->        4 arguments defined in this property. Each GCE subsys id is mapping to
->        a client defined in the header include/dt-bindings/gce/<chip>-gce.h.
->  
-> -  mediatek,gce-events:
-> -    description:
-> -      The event id which is mapping to the specific hardware event signal
-> -      to gce. The event id is defined in the gce header
-> -      include/dt-bindings/gce/<chip>-gce.h of each chips.
-> -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> -
->    mediatek,scp:
->      $ref: /schemas/types.yaml#/definitions/phandle
->      description:
-> @@ -96,6 +89,8 @@ required:
->    - '#dma-cells'
->  
->  allOf:
-> +  - $ref: ../mailbox/mediatek,gce-props.yaml
+>
+> On Wed, Jan 10, 2024 at 04:36:46PM +0800, Z qiang wrote:
+> > >
+> > > For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
+> > > CONFIG_RCU_LAZY=y, here are the following scenarios that will trigger
+> > > WARN_ON_ONCE() in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended().
+> > >
+> > >         CPU2                                               CPU11
+> > > kthread
+> > > rcu_nocb_cb_kthread                                       ksys_write
+> > > rcu_do_batch                                              vfs_write
+> > > rcu_torture_timer_cb                                      proc_sys_write
+> > > __kmem_cache_free                                         proc_sys_call_handler
+> > > kmemleak_free                                             drop_caches_sysctl_handler
+> > > delete_object_full                                        drop_slab
+> > > __delete_object                                           shrink_slab
+> > > put_object                                                lazy_rcu_shrink_scan
+> > > call_rcu                                                  rcu_nocb_flush_bypass
+> > > __call_rcu_commn                                            rcu_nocb_bypass_lock
+> > >                                                             raw_spin_trylock(&rdp->nocb_bypass_lock) fail
+> > >                                                             atomic_inc(&rdp->nocb_lock_contended);
+> > > rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
+> > >  WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
+> > >                             |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
+> > >
+> > > This commit therefore use the rcu_nocb_try_flush_bypass() instead of
+> > > rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan(), if the nocb_bypass
+> > > queue is being flushed, the rcu_nocb_try_flush_bypass will return directly.
+> > >
+> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>
+> Just to make sure I understand, the "echo" command called out below
+> will trigger the two-CPU scenario called out above in kernels built with
+> CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and CONFIG_RCU_LAZY=y, correct?
 
-You need full path, so /schemas/mailbox/
+Yes,  this is not the only configuration, even though the
+CONFIG_RCU_NOCB_CPU_DEFAULT_ALL
+is not enabled, but we set rcu_nocbs will also trigger this scenario.
 
-Applies to all the patches.
+Thanks
+Zqiang
 
-Best regards,
-Krzysztof
-
+>
+> If so, good catch!
+>
+> Any objections to this patch?  Or to put it another way, is there a
+> better fix via adjusting lazy RCU?
+>
+>                                                         Thanx, Paul
+>
+> > > ---
+> >
+> > During rcutorture testing, use echo 3 > /proc/sys/vm/drop_caches will trigger:
+> >
+> > [ 52.674359] WARNING: CPU: 11 PID: 505 at kernel/rcu/tree_nocb.h:104
+> > rcu_nocb_bypass_lock+0xc7/0xd0
+> > [ 52.674388] Modules linked in:
+> > [ 52.674406] CPU: 11 PID: 505 Comm: sh Not tainted 6.6.0-rt14zqiang-dirty #103
+> > [ 52.674422] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+> > [ 52.674436] RIP: 0010:rcu_nocb_bypass_lock+0xc7/0xd0
+> > [ 52.674454] Code: 4c 89 e7 e8 4b 3d 6a 01 be 04 00 00 00 4c 89 ef e8
+> > ce 92 31 00 f0 ff 8b 68 02 00 00 5b 41 5c 41 5d 41 5e 5d c3 cc cc cc
+> > cc 90 <0f> 0b 90 eb d1 0f 1f 40 00 90 90 0
+> > [ 52.674467] RSP: 0018:ffff88800af6fa68 EFLAGS: 00010093
+> > [ 52.674487] RAX: 0000000000000000 RBX: ffff888069e0f540 RCX: ffffffffb5c12d44
+> > [ 52.674497] RDX: 0000000000000003 RSI: dffffc0000000000 RDI: ffff888069e0fb10
+> > [ 52.674508] RBP: ffff88800af6fa88 R08: ffffed100d3c1ef6 R09: ffffed100d3c1ef6
+> > [ 52.674518] R10: ffffed100d3c1ef5 R11: ffff888069e0f7ab R12: ffff888069e0f8c0
+> > [ 52.674529] R13: ffff888069e0f7a8 R14: 000000000000000b R15: ffff88800af6fb90
+> > [ 52.674540] FS: 00007ff543132740(0000) GS:ffff88806c000000(0000)
+> > knlGS:0000000000000000
+> > [ 52.674555] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 52.674565] CR2: 000055df13465004 CR3: 00000000027f2000 CR4: 00000000001506e0
+> > [ 52.674576] Call Trace:
+> > [ 52.674583] <TASK>
+> > [ 52.674598] ? show_regs+0x66/0x70
+> > [ 52.674627] ? __warn+0xae/0x220
+> > [ 52.674657] ? rcu_nocb_bypass_lock+0xc7/0xd0
+> > [ 52.674693] ? report_bug+0x14a/0x240
+> > [ 52.674756] ------------[ cut here ]------------
+> > [ 52.674766] WARNING: CPU: 2 PID: 118 at kernel/rcu/tree_nocb.h:124
+> > __call_rcu_common+0xd3f/0xd80
+> > [ 52.674785] Modules linked in:
+> > [ 52.674785] ? handle_bug+0x44/0x80
+> > [ 52.674795] CPU: 2 PID: 118 Comm: rcuop/10 Not tainted
+> > 6.6.0-rt14zqiang-dirty #103
+> > [ 52.674806] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+> > [ 52.674812] RIP: 0010:__call_rcu_common+0xd3f/0xd80
+> > [ 52.674816] ? exc_invalid_op+0x1c/0x50
+> > [ 52.674822] Code: 9e 02 4c 89 e2 e8 a1 46 ff ff e9 d0 fa ff ff 48 8d
+> > 7b 18 e8 43 5f 30 00 48 8b 7b 18 48 89 de e8 67 9a ff ff e9 69 f6 ff
+> > ff 90 <0f> 0b 90 f3 90 e9 17 fa ff ff 90 b
+> > [ 52.674832] RSP: 0018:ffff888002277af8 EFLAGS: 00010002
+> > [ 52.674847] RAX: 0000000000000001 RBX: ffff888069e0f540 RCX: ffffffffb5c24655
+> > [ 52.674848] ? asm_exc_invalid_op+0x1f/0x30
+> > [ 52.674857] RDX: 0000000000000003 RSI: dffffc0000000000 RDI: ffff888069e0f7a8
+> > [ 52.674867] RBP: ffff888002277bf0 R08: ffffed100d3c1ef6 R09: ffffed100d3c1ef6
+> > [ 52.674877] R10: ffffed100d3c1ef5 R11: ffff888069e0f7ab R12: ffff88800bab62f8
+> > [ 52.674887] R13: ffff888069e0f7a8 R14: 0000000000000000 R15: ffff888069e0f918
+> > [ 52.674897] FS: 0000000000000000(0000) GS:ffff888069c00000(0000)
+> > knlGS:0000000000000000
+> > [ 52.674910] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 52.674920] CR2: 000055df13419911 CR3: 00000000027f2000 CR4: 00000000001506e0
+> > [ 52.674930] Call Trace:
+> > [ 52.674936] <TASK>
+> > [ 52.674934] ? rcu_nocb_bypass_lock+0x94/0xd0
+> > [ 52.674950] ? show_regs+0x66/0x70
+> > [ 52.674972] ? rcu_nocb_bypass_lock+0xc7/0xd0
+> > [ 52.674974] ? __warn+0xae/0x220
+> > [ 52.675002] ? __call_rcu_common+0xd3f/0xd80
+> > [ 52.675010] ? rcu_nocb_bypass_lock+0x94/0xd0
+> > [ 52.675037] ? report_bug+0x14a/0x240
+> > [ 52.675054] rcu_nocb_flush_bypass+0x3a/0x60
+> > [ 52.675094] ? handle_bug+0x44/0x80
+> > [ 52.675095] lazy_rcu_shrink_scan+0x12e/0x220
+> > [ 52.675114] ? exc_invalid_op+0x1c/0x50
+> > [ 52.675139] ? asm_exc_invalid_op+0x1f/0x30
+> > [ 52.675156] shrink_slab.constprop.116+0x2cd/0x6e0
+> > [ 52.675206] ? __call_rcu_common+0x775/0xd80
+> > [ 52.675239] ? __call_rcu_common+0xd3f/0xd80
+> > [ 52.675259] ? __pfx_shrink_slab.constprop.116+0x10/0x10
+> > [ 52.675272] ? __call_rcu_common+0x775/0xd80
+> > [ 52.675335] ? __pfx_drop_pagecache_sb+0x10/0x10
+> > [ 52.675365] ? __pfx___call_rcu_common+0x10/0x10
+> > [ 52.675386] ? preempt_schedule+0x7f/0xa0
+> > [ 52.675396] drop_slab+0x64/0x90
+> > [ 52.675413] ? preempt_schedule_thunk+0x1a/0x30
+> > [ 52.675426] drop_caches_sysctl_handler+0x82/0xe0
+> > [ 52.675472] call_rcu+0x17/0x20
+> > [ 52.675489] put_object+0x53/0x70
+> > [ 52.675513] __delete_object+0x73/0x90
+> > [ 52.675545] delete_object_full+0x1f/0x30
+> > [ 52.675563] kmemleak_free+0x41/0x70
+> > [ 52.675586] __kmem_cache_free+0x1bd/0x230
+> > [ 52.675598] ? rcu_torture_timer_cb+0x12/0x20
+> > [ 52.675623] ? rcu_do_batch+0x466/0xf50
+> > [ 52.675649] kfree+0x90/0x110
+> > [ 52.675661] ? __pfx_rcu_torture_timer_cb+0x10/0x10
+> > [ 52.675678] rcu_torture_timer_cb+0x12/0x20
+> > [ 52.675697] rcu_do_batch+0x46b/0xf50
+> > [ 52.675464] proc_sys_call_handler+0x247/0x310
+> > [ 52.675772] ? __pfx_rcu_do_batch+0x10/0x10
+> > [ 52.675785] ? migrate_disable+0x2a/0xf0
+> > [ 52.675815] ? lockdep_softirqs_off+0x13d/0x200
+> > [ 52.675854] ? rcu_nocb_cb_kthread+0x29c/0x880
+> > [ 52.675889] rcu_nocb_cb_kthread+0x2b1/0x880
+> > [ 52.675910] ? __pfx_proc_sys_call_handler+0x10/0x10
+> > [ 52.675945] ? vfs_write+0x3ea/0x7c0
+> > [ 52.675958] ? vfs_write+0x3ea/0x7c0
+> > [ 52.675959] ? __pfx_rcu_nocb_cb_kthread+0x10/0x10
+> > [ 52.675974] ? trace_preempt_on+0x54/0xe0
+> > [ 52.675990] ? __kthread_parkme+0x80/0x110
+> > [ 52.676015] ? preempt_count_sub+0x50/0x80
+> > [ 52.676031] proc_sys_write+0x17/0x20
+> > [ 52.676050] vfs_write+0x58b/0x7c0
+> > [ 52.676063] ? __kthread_parkme+0xf2/0x110
+> > [ 52.676111] ? __pfx_rcu_nocb_cb_kthread+0x10/0x10
+> > [ 52.676112] ? __pfx_vfs_write+0x10/0x10
+> > [ 52.676139] kthread+0x1a8/0x1f0
+> > [ 52.676161] ? kthread+0x107/0x1f0
+> > [ 52.676163] ? __might_fault+0x84/0xd0
+> > [ 52.676183] ? __pfx_kthread+0x10/0x10
+> > [ 52.676197] ? __might_fault+0xbe/0xd0
+> > [ 52.676213] ? __might_fault+0x84/0xd0
+> > [ 52.676223] ret_from_fork+0x40/0x60
+> > [ 52.676238] ? __pfx_kthread+0x10/0x10
+> > [ 52.676272] ? __fget_light+0xb8/0x120
+> > [ 52.676273] ret_from_fork_asm+0x1b/0x30
+> > [ 52.676355] ksys_write+0xd0/0x170
+> > [ 52.676386] ? __pfx_ksys_write+0x10/0x10
+> > [ 52.676418] </TASK>
+> > [ 52.676425] irq event stamp: 591689
+> > [ 52.676433] hardirqs last enabled at (591688): [<ffffffffb72b7193>]
+> > _raw_spin_unlock_irqrestore+0x63/0x80
+> > [ 52.676452] hardirqs last disabled at (591689): [<ffffffffb5c242f3>]
+> > __call_rcu_common+0x413/0xd80
+> > [ 52.676467] softirqs last enabled at (591668): [<ffffffffb5af3489>]
+> > __local_bh_enable_ip+0x109/0x160
+> > [ 52.676486] softirqs last disabled at (591672): [<ffffffffb5c1ed2d>]
+> > rcu_do_batch+0x5ad/0xf50
+> > [ 52.676488] __x64_sys_write+0x47/0x60
+> > [ 52.676500] ---[ end trace 0000000000000000 ]---
+> > root@qemux86-64:~# [ 52.676526] do_syscall_64+0x47/0x90
+> > [ 52.676552] entry_SYSCALL_64_after_hwframe+0x6f/0xd9
+> > [ 52.676566] RIP: 0033:0x7ff5432260c4
+> > [ 52.676583] Code: 15 59 7d 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff
+> > eb b7 0f 1f 00 f3 0f 1e fa 80 3d 1d 0d 0e 00 00 74 13 b8 01 00 00 00
+> > 0f 05 <48> 3d 00 f0 ff ff 77 54 c3 0f 1f 8
+> > [ 52.676596] RSP: 002b:00007ffcc9614998 EFLAGS: 00000202 ORIG_RAX:
+> > 0000000000000001
+> > [ 52.676613] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007ff5432260c4
+> > [ 52.676624] RDX: 0000000000000002 RSI: 000055df1345df40 RDI: 0000000000000001
+> > [ 52.676634] RBP: 000055df1345df40 R08: 000055df1345b700 R09: 0000000000000000
+> > [ 52.676644] R10: 00000000000001b6 R11: 0000000000000202 R12: 0000000000000001
+> > [ 52.676653] R13: 00007ff5431326c8 R14: 00007ffcc9614a00 R15: 000055df1345b6f8
+> > [ 52.676789] </TASK>
+> > [ 52.676796] irq event stamp: 502888
+> > [ 52.676804] hardirqs last enabled at (502887): [<ffffffffb72b7193>]
+> > _raw_spin_unlock_irqrestore+0x63/0x80
+> > [ 52.676823] hardirqs last disabled at (502888): [<ffffffffb5c19753>]
+> > lazy_rcu_shrink_scan+0x1d3/0x220
+> > [ 52.676838] softirqs last enabled at (54708): [<ffffffffb5af3489>]
+> > __local_bh_enable_ip+0x109/0x160
+> > [ 52.676854] softirqs last disabled at (54698): [<ffffffffb6fd861a>]
+> > unix_release_sock+0x26a/0x7c0
+> > [ 52.676888] ---[ end trace 0000000000000000 ]---
+> >
+> > Thanks
+> > Zqiang
+> >
+> >
+> > >  kernel/rcu/tree_nocb.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > index d82f96a66600..9b618842c324 100644
+> > > --- a/kernel/rcu/tree_nocb.h
+> > > +++ b/kernel/rcu/tree_nocb.h
+> > > @@ -1381,7 +1381,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+> > >                         rcu_nocb_unlock_irqrestore(rdp, flags);
+> > >                         continue;
+> > >                 }
+> > > -               WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
+> > > +               rcu_nocb_try_flush_bypass(rdp, jiffies);
+> > >                 rcu_nocb_unlock_irqrestore(rdp, flags);
+> > >                 wake_nocb_gp(rdp, false);
+> > >                 sc->nr_to_scan -= _count;
+> > > --
+> > > 2.17.1
+> > >
+>
 
