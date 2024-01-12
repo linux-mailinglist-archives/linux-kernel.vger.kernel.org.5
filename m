@@ -1,74 +1,189 @@
-Return-Path: <linux-kernel+bounces-25180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8608782C928
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:45:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817E082C943
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 04:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D83B6282A9D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:45:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D50BBB23FF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84266CA62;
-	Sat, 13 Jan 2024 02:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E254EDDB8;
+	Sat, 13 Jan 2024 03:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="feGcgba9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQBXkuzY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAC21C2E;
-	Sat, 13 Jan 2024 02:44:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBF57C433F1;
-	Sat, 13 Jan 2024 02:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D80CCA68
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 03:57:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 773A7C433C7;
+	Sat, 13 Jan 2024 03:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705113898;
-	bh=BzT25cXi1cMZyRyCto2mcPnNVmM/UVdj5o9CdlbbAbE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=feGcgba9BKLJGGc2npBabHiVmw5NHLR+0ul8vA9DpZsrY2ffhdB6AqWvuY8Po5jYs
-	 jT08umgtShrLTuyZvY7YHOJWb5si/wW6LrYy5/ZmTG+54gFnwn+GKvWXLxI9zjluYZ
-	 1fbRkccoaRqv6oAetob/q3Jg+1wAEB8ABngOqL3AwtSVrW5AVem4nIacVNkNs8Gvek
-	 wztUGMGp7xeU9i+tW6u9cog9iysUb8+FPLeo0FcEMtCDBaMReJcBd4OdI6kYTXtbXr
-	 JZO5hUWIpg8IixFGnjoQaB5GNqBMchYcEJyh6oLGpUZpSLPQyXwVPP1+rXI+UBwihz
-	 Y3avb2F4/Zy2A==
-Date: Fri, 12 Jan 2024 18:44:56 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, kernel@pengutronix.de,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: netdev_queue: netdev_txq_completed_mb(): fix wake
- condition
-Message-ID: <20240112184456.107a3756@kernel.org>
-In-Reply-To: <20240112-netdev_queue-v1-1-102c2d57e20a@pengutronix.de>
-References: <20240112-netdev_queue-v1-1-102c2d57e20a@pengutronix.de>
+	s=k20201202; t=1705118242;
+	bh=ywpF7M7D95zhHcwElxt0DfykbkE6hwAR+GppJ/4fpB0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hQBXkuzYfllzx+qIwwaNwncmmkXi0y4ESLWwb4bR55nooqz/eokfESkvYvMk5WtHi
+	 YNPLHBGN6oapFSvu3fTmqpKPtjHyZCdEL70q1BUnm+zS4OVbj9S5vAFVH/7c0QvP0G
+	 UtOlsosWRZkRebr243HNptLlyR7TA4DoUXw6nn8/01KfOVniJ7FcXcbHxF1fsFprBg
+	 zmK/EV9k2Wu00MQwLJFto9ifNqkb6acsRCI/23fCZtpfyg8lfoAGud73Tkef22dHFV
+	 6LYW2F90Xfg7uIwKVFjW/m23MPi3iWSZo8RlcqaJ2FScv+GkiojS2nnfGGyhOzAJdz
+	 Q5uCx9yCF1o/w==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>,
+	Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v5 1/6] f2fs: compress: fix to guarantee persisting compressed blocks by CP
+Date: Sat, 13 Jan 2024 03:41:27 +0800
+Message-Id: <20240112194132.25637-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 12 Jan 2024 17:13:14 +0100 Marc Kleine-Budde wrote:
-> netif_txq_try_stop() uses "get_desc >= start_thrs" as the check for
-> the call to netif_tx_start_queue().
-> 
-> Use ">=" i netdev_txq_completed_mb(), too.
-> 
-> Fixes: c91c46de6bbc ("net: provide macros for commonly copied lockless queue stop/wake code")
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
-> I'm currently converting a networking driver with a TX-FIFO depth of
-> 1 (CAN device with lots of errata :/) to the netdev_queue.h helpers
-> and stumbled over an off-by-one error on __netif_txq_completed_wake().
+If data block in compressed cluster is not persisted with metadata
+during checkpoint, after SPOR, the data may be corrupted, let's
+guarantee to write compressed page by checkpoint.
 
-Makes sense, could be copy'n'paste from one of the drivers this is
-based on. A bit unsure if it deserves the Fixes tag and net as we don't
-know of any current user that would be suffering. start_thrs == ring size
-is a bit of an extreme use case indeed :) Either way:
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/f2fs/compress.c |  4 +++-
+ fs/f2fs/data.c     | 17 +++++++++--------
+ fs/f2fs/f2fs.h     |  4 +++-
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index c5a4364c4482..9940b7886e5d 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1418,6 +1418,8 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+ 	struct f2fs_sb_info *sbi = bio->bi_private;
+ 	struct compress_io_ctx *cic =
+ 			(struct compress_io_ctx *)page_private(page);
++	enum count_type type = WB_DATA_TYPE(page,
++				f2fs_is_compressed_page(page));
+ 	int i;
+ 
+ 	if (unlikely(bio->bi_status))
+@@ -1425,7 +1427,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+ 
+ 	f2fs_compress_free_page(page);
+ 
+-	dec_page_count(sbi, F2FS_WB_DATA);
++	dec_page_count(sbi, type);
+ 
+ 	if (atomic_dec_return(&cic->pending_pages))
+ 		return;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index dce8defdf4c7..81f9e2cc49e2 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -48,7 +48,7 @@ void f2fs_destroy_bioset(void)
+ 	bioset_exit(&f2fs_bioset);
+ }
+ 
+-static bool __is_cp_guaranteed(struct page *page)
++bool f2fs_is_cp_guaranteed(struct page *page)
+ {
+ 	struct address_space *mapping = page->mapping;
+ 	struct inode *inode;
+@@ -65,8 +65,6 @@ static bool __is_cp_guaranteed(struct page *page)
+ 			S_ISDIR(inode->i_mode))
+ 		return true;
+ 
+-	if (f2fs_is_compressed_page(page))
+-		return false;
+ 	if ((S_ISREG(inode->i_mode) && IS_NOQUOTA(inode)) ||
+ 			page_private_gcing(page))
+ 		return true;
+@@ -338,7 +336,7 @@ static void f2fs_write_end_io(struct bio *bio)
+ 
+ 	bio_for_each_segment_all(bvec, bio, iter_all) {
+ 		struct page *page = bvec->bv_page;
+-		enum count_type type = WB_DATA_TYPE(page);
++		enum count_type type = WB_DATA_TYPE(page, false);
+ 
+ 		if (page_private_dummy(page)) {
+ 			clear_page_private_dummy(page);
+@@ -762,7 +760,7 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
+ 		wbc_account_cgroup_owner(fio->io_wbc, fio->page, PAGE_SIZE);
+ 
+ 	inc_page_count(fio->sbi, is_read_io(fio->op) ?
+-			__read_io_type(page) : WB_DATA_TYPE(fio->page));
++			__read_io_type(page) : WB_DATA_TYPE(fio->page, false));
+ 
+ 	if (is_read_io(bio_op(bio)))
+ 		f2fs_submit_read_bio(fio->sbi, bio, fio->type);
+@@ -973,7 +971,7 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+ 	if (fio->io_wbc)
+ 		wbc_account_cgroup_owner(fio->io_wbc, fio->page, PAGE_SIZE);
+ 
+-	inc_page_count(fio->sbi, WB_DATA_TYPE(page));
++	inc_page_count(fio->sbi, WB_DATA_TYPE(page, false));
+ 
+ 	*fio->last_block = fio->new_blkaddr;
+ 	*fio->bio = bio;
+@@ -1007,6 +1005,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
+ 	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
+ 	struct page *bio_page;
++	enum count_type type;
+ 
+ 	f2fs_bug_on(sbi, is_read_io(fio->op));
+ 
+@@ -1046,7 +1045,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	/* set submitted = true as a return value */
+ 	fio->submitted = 1;
+ 
+-	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
++	type = WB_DATA_TYPE(bio_page, fio->compressed_page);
++	inc_page_count(sbi, type);
+ 
+ 	if (io->bio &&
+ 	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
+@@ -1059,7 +1059,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 		if (F2FS_IO_ALIGNED(sbi) &&
+ 				(fio->type == DATA || fio->type == NODE) &&
+ 				fio->new_blkaddr & F2FS_IO_SIZE_MASK(sbi)) {
+-			dec_page_count(sbi, WB_DATA_TYPE(bio_page));
++			dec_page_count(sbi, WB_DATA_TYPE(bio_page,
++						fio->compressed_page));
+ 			fio->retry = 1;
+ 			goto skip;
+ 		}
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 65294e3b0bef..50f3d546ded8 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1080,7 +1080,8 @@ struct f2fs_sm_info {
+  * f2fs monitors the number of several block types such as on-writeback,
+  * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
+  */
+-#define WB_DATA_TYPE(p)	(__is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
++#define WB_DATA_TYPE(p, f)			\
++	(f || f2fs_is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
+ enum count_type {
+ 	F2FS_DIRTY_DENTS,
+ 	F2FS_DIRTY_DATA,
+@@ -3804,6 +3805,7 @@ void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
+  */
+ int __init f2fs_init_bioset(void);
+ void f2fs_destroy_bioset(void);
++bool f2fs_is_cp_guaranteed(struct page *page);
+ int f2fs_init_bio_entry_cache(void);
+ void f2fs_destroy_bio_entry_cache(void);
+ void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
+-- 
+2.40.1
+
 
