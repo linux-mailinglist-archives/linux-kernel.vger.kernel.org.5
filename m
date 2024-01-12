@@ -1,384 +1,221 @@
-Return-Path: <linux-kernel+bounces-24217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD4982B93A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:45:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 332DB82B93D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:49:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46CD61F23817
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:45:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D8991F232CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1311117;
-	Fri, 12 Jan 2024 01:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D682B1399;
+	Fri, 12 Jan 2024 01:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZabsNhqF"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="oLRbIr1Y";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="UE7J/rBe"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7831108
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:45:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-557bbcaa4c0so2614a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 17:45:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14901EA6;
+	Fri, 12 Jan 2024 01:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: bf910bb6b0ec11eea2298b7352fd921d-20240112
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=7alT9VPprqD92vSNfjfh3mVnOm44hZ5NuG7kv2KaNlU=;
+	b=oLRbIr1YcWXK9WFia26EF/6snfCLk7oHs9aDRkOa1UGv/o98HxTa1a/yT06sFejywwa4QiYDW5kF9fo2hD3EkdnuUgqk3kZH0kWvwRx9j/jGH4OCkLGZxFyAz9g53VyNGdBQ4LcuPuJIMpPwy673eo5Lo0dW9QxsbK4LoLiByKA=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:c0003981-495f-43d6-84d7-6fcc1ab8bb23,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:647c298e-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: bf910bb6b0ec11eea2298b7352fd921d-20240112
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
+	(envelope-from <ck.hu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 9469205; Fri, 12 Jan 2024 09:48:56 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 12 Jan 2024 09:48:53 +0800
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 12 Jan 2024 09:48:53 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sg3XL9ZGQIZpmqeNc8ueA7g7NeGEdRh6NFdis6E2roG4Tr5CzIDRMef6foEi0ZkMwACvWv75IJbkqpKNUftNTeNOQz41PB1h1V1gLLjcVw9l/ai6bW/Y3ArJzqdk1zYLjyGjM+DJrj78dFtVspTESCWhmOMoD6LzR8ItuPoN0IZGsFXMpraYNwGVxGeUZMyPZ5fHy5URmchvBKYIX+y6A+LCwnwjLS/BAGfzEN//+rW1UyzwA1GkxOpDInvEjHBE+V7e8GsxHMa9OSDUyeVSZcIHHDe6aGZVmyfEEcFojBQ2G6Z+z0OqsBIhEmY9XkmpLotdL41oOIQ0l+8cI7HArA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7alT9VPprqD92vSNfjfh3mVnOm44hZ5NuG7kv2KaNlU=;
+ b=XCrG7ebz2BOfOdGIhCjza25wc8ZW3CvpO1EKIRHgysIcxXlmoEvPxNvYHodJNro3Gf9o2vNEoS4JOSopp5zlmNxhjRMBauPzh9gOlTfK6P4TfSNINJIAj45Xu1CykCjjK2q+pZqbVjt0YzoE2rSKwUnU3jIcCzQUd3zJNolTTUJ2ffqTZjI9WznBGF4UJY1b+gkV/GzQTA65c/MJbiL2BKA/dqVuLaKUOSMZeCHX0UIyWKVi0RP2dQxVgM3iNZ6cAhpV8mSWLkRShtIJ0FPoBx9gLjZvIAL++BewPJCcu7v8XXH5BhdFxN8sD8qYlW2B6kMEH3g+kBXEtLOJ4zQPTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705023944; x=1705628744; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sEfISs9ZyPWQwCOYVIyleeKa+hLnbG7wvgHnAkt1Tcs=;
-        b=ZabsNhqFOOJyBEYpSeUGL5Fv8y/f03i3CL8T9tpltuNe9A3oOu5Txv1k1CQ7JiyspF
-         hY0vrq1n8DdySE8dR3GOU5tveQjGkQgGZL76KH5Pi5dGHfiULtEV+rjSPcmqYI9SdXOY
-         dk2KnATQ2f1KvOA373OKbb8xWOEHPuTayAWBj/8uMjj7T/RAmeIcWB/8B95Cx4Bw+Fxf
-         iV6y5BARgR+TWs6Dn5OuQslAeOBL06iIvyCZujE9qanbOYM0MjtNzK/4hF+dRTbKTydP
-         yHC8dMeaH40PiJfZBMvoX0VhA0SscbmxeJz0CXOj1mIbUqGcRZ/aNtnciQlrZau9XbEr
-         izNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705023944; x=1705628744;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sEfISs9ZyPWQwCOYVIyleeKa+hLnbG7wvgHnAkt1Tcs=;
-        b=QBMygkiVijJSnHU4bha4Aig6xKPkl1GGApeHDyUrcRjbQc9xHVYEMoXRb4D2we8THX
-         mCWaElmvYMeTu4x13hHtTmhdgA8/pKjFE8hzkNqjuc7+RwMjvF8/pu8IzAW5VOgU43ds
-         9QFfxuqsT2z9dW2tH+Sf3JvIVGz2hGxYpMP7phEza6UfvfKj4O9W7MJriu648rOPa/KO
-         uX3RKOANWz/b41BFzAQ9MPl10oCAB4ht4HO86W7mPwl47ltdfK0cn13bPQ89feEdllPU
-         As5G7HXqk41jP08mksvorJup2ETkkiMXzYI4nGxUW+fuUN0lmZJee5UGzM2mQgNnx70f
-         asCw==
-X-Gm-Message-State: AOJu0Yx4+yb3qid90Zj4sGFQyD6YT6hnGhx5/5y/jkoXKxHbrtyqzrBB
-	3kXleS16j8+kP/KsLTdmS4nIUvWd0Kob6zgtm+ioZMkcYZXw
-X-Google-Smtp-Source: AGHT+IHLx9fUoHx6GHUHd75f0Eh5Bj9WLXwRPezg7yzXALYXeT4YUVTyI9zKPXGPnXtIMRn6NT5EMpFd1SyNM9ywMq8=
-X-Received: by 2002:a05:6402:40d2:b0:557:15d:b784 with SMTP id
- z18-20020a05640240d200b00557015db784mr246444edb.2.1705023943390; Thu, 11 Jan
- 2024 17:45:43 -0800 (PST)
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7alT9VPprqD92vSNfjfh3mVnOm44hZ5NuG7kv2KaNlU=;
+ b=UE7J/rBeredc0Btv+rQU9Z+nFGFfUUI+gSTUwJeduGx70qtmgIEeJ6EY/4nJiPpFKLin2kq0r9gxc4u8g4UNU/2PPIO3Dw3xlTGLQhMWvoZkKCvpp/6hSdj/AUT6ZciM1Wlv4JyiT7AV0ZAAt/SahiKmWZqIjS7DafNzytwUlPk=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by SEZPR03MB6991.apcprd03.prod.outlook.com (2603:1096:101:9e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Fri, 12 Jan
+ 2024 01:48:49 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::eb43:57cb:edfd:3762]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::eb43:57cb:edfd:3762%7]) with mapi id 15.20.7181.019; Fri, 12 Jan 2024
+ 01:48:49 +0000
+From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To: "jstephan@baylibre.com" <jstephan@baylibre.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "paul.elder@ideasonboard.com"
+	<paul.elder@ideasonboard.com>, "mchehab@kernel.org" <mchehab@kernel.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	=?utf-8?B?QW5keSBIc2llaCAo6Kyd5pm655qTKQ==?= <Andy.Hsieh@mediatek.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, =?utf-8?B?TG91aXMgS3VvICjpg63lvrflr6cp?=
+	<louis.kuo@mediatek.com>, "laurent.pinchart@ideasonboard.com"
+	<laurent.pinchart@ideasonboard.com>, "fsylvestre@baylibre.com"
+	<fsylvestre@baylibre.com>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>, "pnguyen@baylibre.com"
+	<pnguyen@baylibre.com>
+Subject: Re: [PATCH v4 4/5] media: platform: mediatek: isp_30: add mediatek
+ ISP3.0 camsv
+Thread-Topic: [PATCH v4 4/5] media: platform: mediatek: isp_30: add mediatek
+ ISP3.0 camsv
+Thread-Index: AQHaQ8+pgBL6pTKEqkml+zYix0rfyLDVa1gA
+Date: Fri, 12 Jan 2024 01:48:49 +0000
+Message-ID: <f821ede01547956809576a159476e7ac33b2dd47.camel@mediatek.com>
+References: <20240110141443.364655-1-jstephan@baylibre.com>
+	 <20240110141443.364655-5-jstephan@baylibre.com>
+In-Reply-To: <20240110141443.364655-5-jstephan@baylibre.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEZPR03MB6991:EE_
+x-ms-office365-filtering-correlation-id: a453ca98-5d82-4737-4013-08dc13109f57
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KuRWb3XJ0RJ6WABSxLdCGsYtejYRPD+H+Bz5hY70alUJLE1uddZcYd+cpG3MeYnE6kW0sx9yfD0nsctqUy++nbesqOVYrh0ikZDT8dn7SkmmQ09VT5pJRtMU/8GhFMxksm8JinipQT2tCXSHK/tBPlsDpz9+Ks2WhmQa0cA9frMtAEBJgJvTnDRK0CHocjof06YbrjL48qJyu+5oM/xVwv9JaeP8ZOQHXYa9rJRjQ/yQooJbkUfWipW700hnj9ZcI5UQFryNuL879iZ48LaRIQfkDcueT7hvv0T2VOgYAUk4Oe4HRpUOqundUElI6r5gXEOazVgBiTwS2ex63p9UroahjwbBsmgBN+Z5nWqbVgidcmCRSKu/y4B2kHJmNWODey4dHvtQ3WmTQBETcYzV1VleoQe3SXo9d0rObov1am7VY6advxmEMmhb5oCYz0i7x5HGO2sIbFXIQkJPq80diNdFI/x18UAHi16zSKA2Y1euF9AKXyMw8yhneYujp629NLsbeAt63/DLFism+Hxo0bUNVxD06k9Xa6u2559GjXRd6ZpeMh4reJjBk7hn6kc5BQSCbz8rEvJCMc5WKliAlNFBARRS7WccBUQluOr8PcvuJGCEHBLejWiIEk/+M3Gi07DhnGHvQdtcc3K5qsX+NuShoh9qfhvE2w+rhBwQs6I=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(366004)(396003)(39860400002)(230273577357003)(230922051799003)(230173577357003)(64100799003)(186009)(1800799012)(451199024)(54906003)(6506007)(6512007)(5660300002)(64756008)(66446008)(66946007)(66556008)(76116006)(66476007)(6486002)(38100700002)(8936002)(8676002)(478600001)(316002)(2906002)(71200400001)(7416002)(2616005)(6916009)(26005)(83380400001)(4326008)(122000001)(41300700001)(85182001)(36756003)(86362001)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?M3RXd0NYSzk4K3gxOHh6TUVPVWl6RTRUb1R2Qkdsd1lpdW1tSVFUczZLbnFP?=
+ =?utf-8?B?NjlCNGxqd3lWc0RJVlE2QTRWb0VJSXZYelp1emZxSkp5QzVoSEpLemtCRFE1?=
+ =?utf-8?B?b09MYzJuR2RvcFppeWFWMHRyeS9sYTR4eFU1YnAzT1Mvc3dNNE9WNXRxOW5U?=
+ =?utf-8?B?L0IzUjNraHdLN0FQM2QyalZxenp4aVY4MzA5UlIxd3dwaWpXNlliempyVENn?=
+ =?utf-8?B?Y3MwWEZ2TWNiMXJJWkZRdGttcmU1S2VkSUZYbDF3TUFZcWJaVmVpR1dLRlJV?=
+ =?utf-8?B?OFg2SjM0blQxWk4wenZlQnVJdmd4YzJ1U3VGVnBYQUdwNWVacDJWMHhtTUxZ?=
+ =?utf-8?B?UUZXVUN1STl5cmwzcVdnS2MvSjk2YktjVVB6OWR2M3U0RHRKUG1NNG9YTHMw?=
+ =?utf-8?B?OXFGVmxpSHZJZFVwZ1BtczdSS2QrWW1DSDRYa3N4Tkx2NjAyY3p3TW4zTGNo?=
+ =?utf-8?B?WmNBZXNjYVplTjV6UldPcU1Eb2duSHc3MGtMNUpqSkxNZmtpT0RpWTZpU2o0?=
+ =?utf-8?B?WVVlV0NreUpiYmxqNVo3clJzWGMwNC9mdDBuWnRPZTNhZWhvdndsd2pZeTFj?=
+ =?utf-8?B?S1RGOTdsS3QvazJLR3U2eVdvQlMxSFdERU8yeEZoYjhGUk1rRTBITTJra28v?=
+ =?utf-8?B?U0MyeExPVFI5eWNhYmFQQlJ4ejhFbzFEWVh2dS9QVkNDSEd3NlV2VkZVS3dG?=
+ =?utf-8?B?SkozbVlLQml5VWJBb3RGa3pBOEdKWHk2dzI3eDdhbkFIaFI1alFsaUtLS2Rq?=
+ =?utf-8?B?YjhWcDVWclEzRUpSQUl4RndqZEFNQ0dwWThmQ09YcGpaczMvdW1sR2JmTEFo?=
+ =?utf-8?B?TFF0M2lLa0F2QWR4QVc5WEFwbVVSUUhrN20rSVRKOUk0bnNyYnNLVm9KSVFX?=
+ =?utf-8?B?WEQvREZuQ3A3RkFPeEhDMFVnRXpwQmpkSmpuTFFnMThLL1c4NHRVSTBnUmtN?=
+ =?utf-8?B?QUd2QmNDd1dFbGxqTzFUdUJHTndpb1k1eVpobjVtR25XdWtwV0x0czAvSXRx?=
+ =?utf-8?B?dHZCcmd6ME5sRmZiMVBvSHkrdFBnaXFlcmwwMTBIcjRVUnoyRE5nOWNjZDF3?=
+ =?utf-8?B?N3E4d2JHMXhtUVNqRUc5UGpuU0RMd1pNNXJTZmFDdlFIUytDblY5Tm5vR1Ry?=
+ =?utf-8?B?Q1labk13MzRieDQvY3o0WVNOU0NSblBsK3Yzc3A5Vkd3ekRHRmhZNGk4UlRT?=
+ =?utf-8?B?UXorQjV4cTN2ai9MYVpuMXVIdnZVT3lCblJmUy9WZVpaSklGSUpQcy92ckx3?=
+ =?utf-8?B?ZTdPOXpycVBjL0MvOGdNeEVMMERmQW1INVBSTFo1NFFLVk9KUm82WkQ4dGd0?=
+ =?utf-8?B?RnFjYXRBYVRQekZMZUx3V0dpbHBxSnpKMk5QUFNuUXh5c3pPWjJHZ1cwajky?=
+ =?utf-8?B?cG00clA1ME1NSWw4OE50T0dubno5T3dhWDU3cGQ0ZEoyQW5UYlhBV2FYNjV4?=
+ =?utf-8?B?SHhORkx6WFZuRUErRlZsUVhJMlFnT1VoYUl3TktXaGgzYUphS0RJeEVEc2Rl?=
+ =?utf-8?B?Nk81NEl3U3U4SGovUUNucGlhS3ZUQVBJRDE4QUYwYW5lcjlXYndyWnk1M0w2?=
+ =?utf-8?B?V3ZPS0t1amNMcGdqalJOd3ExQTFUTVd3UlpmakJyME4ybnpIbWRlZlpuTm1T?=
+ =?utf-8?B?SE1MaTRPaTZRNEpnODh5RWZoMEk5bVNlK0RRV3laSWNDbisyTUppQ3BsSE1u?=
+ =?utf-8?B?MzhNWUlsUlpiQUJMNGJqZDhyb1RaRXB6VThwZTd3RUxLbGhva3hpVFRsUHcr?=
+ =?utf-8?B?akVTM2FFSXk5SFg4WG9HQVZZNGdNVER0ZTQwQkI5UkxwOXFkajI3S00zUFIz?=
+ =?utf-8?B?Q0FEa2U3N1VBRmdTTEErc0xaRVIvRU13TjluaFFJNXE0OGxBZ3ppQWE3VWN0?=
+ =?utf-8?B?dVNzMklUd3hhcnFFTUx3c0w5ajhSMnkrWnJhTllvL0FEbDZvS2NTY0x3NkF3?=
+ =?utf-8?B?V2I5SUZ6NkFJOTR4NFRJTFZzVTVMbExac0tZK2lTaWQ5QWtpWFZpRDdXeFlJ?=
+ =?utf-8?B?SWE1elpNYm9xRUkzbS95elo3Y2c1VUZGdEEvMVhwWXRNbDJjb2k0MkVvZmVr?=
+ =?utf-8?B?YjZuRGZCWGhzUVMvWkZoQ0tDeVF5LzFQSENEL0tlMkFQd0NFOXB0czBaN1BF?=
+ =?utf-8?Q?iOCQH2iXLhV8GE1fnNmwxoM0i?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1EBD91438FE165419E6EB9F0A4F51984@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208061407.2125867-1-yuzhao@google.com> <CAMgjq7BTaV5OvHNjGRVJP2VDxj+PXhfd6957CjS4BJ9J4OY8HA@mail.gmail.com>
- <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
- <CAMgjq7AtceR-CXnKFfQHM3qi0y4oGyJ4_sw_uh5EkpXCBzkCXg@mail.gmail.com>
- <CAMgjq7CJ3hYHysyRfHzYU4hOYqhUOttxMYGtg0FxzM_wvvyhFA@mail.gmail.com>
- <CAOUHufa=ybd-EPos9DryLHYyhphN0P7qyV5NY3Pui0dfVSk9tQ@mail.gmail.com>
- <ZXpx0K8Vdo3FJixg@google.com> <CAMgjq7CRf4iEKuW2qWKzbhssMbixBo3UoLPqsSk4b+Tvw8at8A@mail.gmail.com>
- <CAOUHufY6x_Erz02Bzoejfs_g2hcmrMFpiOdjiaWZ97oirz71aQ@mail.gmail.com>
- <ZXvcgyjTu92Qqk5X@google.com> <CAMgjq7BsY1tJeOZwSppxUN7Lha-_a7WLfhv1_bxTuU4EuiQyVg@mail.gmail.com>
- <CAOUHufZFkdDjCdQKBV5+W_bp_7x5VwrwkYbJeDdQ19S=m4Mc6A@mail.gmail.com>
- <CAOUHufbRq8WsGzNRn119GqL5AmeSOkZxQv3L2LTaCm=k3bzrRA@mail.gmail.com>
- <CAMgjq7C8uUOz5i8rEHNCs37fdEiAuMZsuV+Ktnz3TMX9Nf8F+g@mail.gmail.com>
- <CAOUHufamzdOL8ByV9V7KQJKnvZBMboVz-EGD=Fus7LZk1inhCw@mail.gmail.com>
- <CAOUHufaWkAvQK_fmXF5WZW4ZKQ0W4UZfjWDG+OZAxgF_J0dOuA@mail.gmail.com>
- <CAMgjq7BR4wyT5itvs58Wjar6EymdazhKvpAjSPHF-SYvrguu2Q@mail.gmail.com>
- <CAOUHufbZTJN6TRv55DVDjMp3frqpJOZP0HsQx3Y7veGCuaih8g@mail.gmail.com>
- <CAMgjq7C+zMYtoE=JVsXZitxKHoCh5MqB76OENs7a+NDgGGQ0Kw@mail.gmail.com>
- <CAOUHufbnLX60n+=OV92kXLZGY5_-f_y0ZtETV+0uTqFo5dvBCg@mail.gmail.com>
- <CAOUHufa12C7Knp78fq4C-ohGz1yrtdriW5xQD=wchinTJD8UVQ@mail.gmail.com>
- <CAMgjq7BRaRgYLf2+8=+=nWtzkrHFKmudZPRm41PR6W+A+L=AKA@mail.gmail.com>
- <CAOUHufahuWcKf5f1Sg3emnqX+cODuR=2TQo7T4Gr-QYLujn4RA@mail.gmail.com> <CAMgjq7CWRH0sJLCTU80c44gG9z=ff75u_S104iot0wNv_ModdQ@mail.gmail.com>
-In-Reply-To: <CAMgjq7CWRH0sJLCTU80c44gG9z=ff75u_S104iot0wNv_ModdQ@mail.gmail.com>
-From: Yu Zhao <yuzhao@google.com>
-Date: Thu, 11 Jan 2024 18:45:05 -0700
-Message-ID: <CAOUHufbMnwcWd0g3rJuC+wsFr8E4DD_EUYUbj+J8iGkOw7McEQ@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 1/4] mm/mglru: fix underprotected page cache
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Charan Teja Kalla <quic_charante@quicinc.com>, 
-	Kalesh Singh <kaleshsingh@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a453ca98-5d82-4737-4013-08dc13109f57
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 01:48:49.3252
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QBCUPpTzacT6UpnfLSMzVJsivtg9KxMYXC/6BslRbPNhAswDB99S5AHoMIFFRLa0rcpRFqA3u4Rs2UynN9mVsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB6991
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--17.468200-8.000000
+X-TMASE-MatchedRID: 9zTThWtzImsOwH4pD14DsPHkpkyUphL9meN8m2FdGic3xO2R3boBWFbu
+	qIY+/skQkABPgKBt/0r/XD0CNJ3fxO4dcT3ZaTocyYHhs0mgDoxyETzgIO4sasaQTVtPXXNM8ha
+	W4U9IrFp8dbyXEG2mDz9n/vgRBjkdtiC6nY+rGaDhPQQVFw3HFE9nxZsOR/FTmyiLZetSf8n5kv
+	mj69FXvAOkBnb8H8GWt7DW3B48kkHdB/CxWTRRu25FeHtsUoHuXCgU6tQzpcCmv3zUTvQebbh9s
+	Oeak89A6lcGBlh+YMzrpcchznD6Bw==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--17.468200-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	5E8015052F85C0A7122C47274D3525D1729D0B3A107B15366AF7D3A21F9D0D232000:8
 
-On Thu, Jan 11, 2024 at 11:24=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
->
-> Yu Zhao <yuzhao@google.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=8811=E6=97=A5=
-=E5=91=A8=E5=9B=9B 15:02=E5=86=99=E9=81=93=EF=BC=9A
-> > Could you try the attached patch on the mainline v6.7 and see how it
-> > compares with the results above? Thanks.
->
-> Hi Yu,
->
-> Thanks for the patch, it helped in some degrees, but not as effective:
-> On that exclusive baremetal, I did a resetup, rebase on 6.7 mainline
-> and reran the test:
->
-> Refault distance series:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Execution Results after 901 seconds
-> ------------------------------------------------------------------
->                   Executed        Time (=C2=B5s)       Rate
->   STOCK_LEVEL     4224            27030724835.9   0.16 txn/s
-> ------------------------------------------------------------------
->   TOTAL           4224            27030724835.9   0.16 txn/s
->
-> workingset_nodes 111349
-> workingset_refault_anon 261331
-> workingset_refault_file 42862224
-> workingset_activate_anon 0
-> workingset_activate_file 13803763
-> workingset_restore_anon 250743
-> workingset_restore_file 599031
-> workingset_nodereclaim 23708
->
-> memcg    67 /machine.slice/libpod-edbf5a3cb2574c60180c1fb5ddb2fb160df00bc=
-ee3758b7649f2b31baa97ed78.scope/container
->  node     0
->          10     347163     518379      207449
->                      0          0r          2e          0p      33017r
->    1726749e          0p
->                      1          0r          0e          0p       7278r
->     496268e          0p
->                      2          0r          0e          0p      19789r
->      55418e          0p
->                      3          0r          0e          0p          0r
->          0e    4747801p
->                                 0           0           0           0
->          0           0
->          11     283279     154400     4791558
->                      0          0           0           0           0
->          0           0
->                      1          0           0           0           0
->          0           0
->                      2          0           0           0           0
->          0           0
->                      3          0           0           0           0
->          0           0
->                                 0           0           0           0
->          0           0
->          12     158723     431513       37647
->                      0          0           0           0           0
->          0           0
->                      1          0           0           0           0
->          0           0
->                      2          0           0           0           0
->          0           0
->                      3          0           0           0           0
->          0           0
->                                 0           0           0           0
->          0           0
->          13      44775     104986       27258
->                      0        576R        982T          0     2488768R
->    5769505T          0
->                      1          0R          0T          0     2335910R
->    3357277T          0
->                      2          0R          0T          0      647398R
->     753021T          0
->                      3          0R         20T          0       52725R
->    4740516T          0
->                           2819476L      31196O    2551928Y       8298N
->       5549F       5329A
->
-> Device             tps    kB_read/s    kB_wrtn/s    kB_dscd/s
-> kB_read    kB_wrtn    kB_dscd
-> dm-0             12.81       546.32        39.04         0.00
-> 520178      37171          0
-> dm-1              0.05         1.10         0.00         0.00
-> 1044          0          0
-> nvme0n1          13.17       561.99        41.19         0.00
-> 535103      39219          0
-> nvme1n1        5220.39    227385.96      1028.17         0.00
-> 216505545     978976          0
-> zram0          2440.61      2856.32      6907.13         0.00
-> 2719644    6576628          0
->
->                total        used        free      shared  buff/cache   av=
-ailable
-> Mem:           31830       11251         332           0       20246     =
-  20144
-> Swap:          31829        3761       28068
->
-> Your attachment:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Execution Results after 905 seconds
-> ------------------------------------------------------------------
->                   Executed        Time (=C2=B5s)       Rate
->   STOCK_LEVEL     4070            27170023578.4   0.15 txn/s
-> ------------------------------------------------------------------
->   TOTAL           4070            27170023578.4   0.15 txn/s
->
-> workingset_nodes 121864
-> workingset_refault_anon 430917
-> workingset_refault_file 42915675
-> workingset_activate_anon 100194
-> workingset_activate_file 21619480
-> workingset_restore_anon 100194
-> workingset_restore_file 165054
-> workingset_nodereclaim 26851
->
-> memcg    65 /machine.slice/libpod-c6d8c5fedb9b390ec7f1db7d0d7c57d6a284a94=
-e74a3923d93ea0ce4e4ffdf28.scope/container
->  node     0
->           8     418689      55033      106862
->                      0         16r         17e          0p    2789768r
->    6034831e          0p
->                      1          0r          0e          0p     239664r
->     490278e          0p
->                      2          0r          0e          0p      79145r
->     126408e          0p
->                      3         23r         23e          0p      23404r
->      27107e    4736933p
->                                 0           0           0           0
->          0           0
->           9     322798     237713     4759110
->                      0          0           0           0           0
->          0           0
->                      1          0           0           0           0
->          0           0
->                      2          0           0           0           0
->          0           0
->                      3          0           0           0           0
->          0           0
->                                 0           0           0           0
->          0           0
->          10     182729     942701        5348
->                      0          0           0           0           0
->          0           0
->                      1          0           0           0           0
->          0           0
->                      2          0           0           0           0
->          0           0
->                      3          0           0           0           0
->          0           0
->                                 0           0           0           0
->          0           0
->          11     120287        560         375
->                      0      25187R      29324T          0     1679308R
->    4256147T          0
->                      1          0R          0T          0      153592R
->     364122T          0
->                      2          0R          0T          0       51825R
->      98646T          0
->                      3        101R       2944T          0       13985R
->    4743515T          0
->                           7702245L     865749O    6514831Y      16843N
->      15088F      14167A
->
-> Device             tps    kB_read/s    kB_wrtn/s    kB_dscd/s
-> kB_read    kB_wrtn    kB_dscd
-> dm-0             11.49       489.97        41.80         0.00
-> 488006      41633          0
-> dm-1              0.05         1.05         0.00         0.00
-> 1044          0          0
-> nvme0n1          11.83       504.95        43.86         0.00
-> 502932      43682          0
-> nvme0n1        5145.44    218803.29       984.46         0.00
-> 217928081     980520          0
-> zram0          3164.11      4399.55      8257.84         0.00
-> 4381952    8224812          0
->
->                total        used        free      shared  buff/cache   av=
-ailable
-> Mem:           31830       11583         310           1       19935     =
-  19809
-> Swap:          31829        3710       28119
->
-> Refault distance series still have a better performance and lower total I=
-O.
->
-> Similar result on that VM:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Execution Results after 907 seconds
-> ------------------------------------------------------------------
->                   Executed        Time (=C2=B5s)       Rate
->   STOCK_LEVEL     1667            27151581934.5   0.06 txn/s
-> ------------------------------------------------------------------
->   TOTAL           1667            27151581934.5   0.06 txn/s
->
-> While refault distance series had about ~2500 - 2600 txns, mainline
-> 6.7 had about ~800 - 900 txns.
->
-> Loop test so far:
-> Using refault distance seriese (previous result, it doesn't change much a=
-nyway):
->   STOCK_LEVEL     2605            27120667462.8   0.10 txn/s
->   STOCK_LEVEL     3000            27106854857.2   0.11 txn/s
->   STOCK_LEVEL     2925            27066601064.4   0.11 txn/s
->   STOCK_LEVEL     2757            27035248005.2   0.10 txn/s
->   STOCK_LEVEL     1325            28053716046.8   0.05 txn/s
->   STOCK_LEVEL     717             27455091366.3   0.03 txn/s
->   STOCK_LEVEL     967             27404085208.2   0.04 txn/s
-> Refault stat here:
-> workingset_refault_anon 109337
-> workingset_refault_file 191249716
->
-> Using the attached patch:
-> STOCK_LEVEL     1667            27151581934.5   0.06 txn/s
-> STOCK_LEVEL     2999            27085125092.3   0.11 txn/s
-> STOCK_LEVEL     2874            27120635371.2   0.11 txn/s
-> STOCK_LEVEL     2658            27139142413.9   0.10 txn/s
-> STOCK_LEVEL     1254            27526009063.7   0.05 txn/s
-> STOCK_LEVEL     993             28065506801.8   0.04 txn/s
-> STOCK_LEVEL     954             27226012906.3   0.04 txn/s
-> Refault stat here:
-> workingset_refault_anon 383579
-> workingset_refault_file 205493832
->
-> The peak performance almost equal, but still starts slow, refault is
-> higher too. File refault might be interfered due to some IO layer
-> issue, but anon refault is always accurate.
->
-> I see the improvement you did in the attachment patch, I think
-> actually they are not in conflict with the refault distance series.
-> Maybe they can be combined into a even better result.
->
-> Refault distance (which originally used by active/inactive LRU) is
-> used here to give evicted pages priorities based on eviction distance
-> and add extra feedback to PID and gen. While the PID info recorded in
-> page flags/shadow represents pages's access pattern before eviction,
-> and all the check and logics about it can also be improved.
->
-> One critical effect of the refault distance series that boost the
-> MongoDB startup (and I haven't see any negative effect of it on other
-> test / workload / benchmark yet, except the overhead of memcg
-> statistics itself) is it prevents overprotecting of tier 0 page: that
-> is, a tier 0 page evicted but refaulted very quickly (refault distance
-> < LRU / MAX_NR_GEN, this value may worth some more adjustment, but
-> with LRU / MAX_NR_GEN, it can be imaged as an idea that having a small
-> shadow gen holding these page shadows...) will be categorised as tier
-> 1 and get protect. Other wise, if I got everything right, when most
-> pages are stuck in tier 0 and keep refaulting, tier 0 will have a very
-> high refault rate, and no pages will be protect, until randomness
-> causes quick repeated read of some page, so they get promoted to tier
-> 3 get get protected.
->
-> Now min_seq contains lower tier pages and new pages will be added to
-> min_seq too, so min_seq will stay for a long time, while min_seq + 1
-> holds protected full ref tier 3 pages and they stay long enough to get
-> promoted as tier 3 again, so they will always be kept in memory.
-> Now MongoDB will perform well even without refault distance series,
-> but this period may take a long time (~15 min for the MongoDB test for
-> SATA SSD, which is based on a real workload), long enough to cause
-> real issue.
->
-> And this also means PID won't react to workload change fast enough.
->
-> Also the anon refault's refs value is adjusted by refault distance too
-> in the series, it tries to split the whole LRU as at least two gens
-> for refaulted pages (only page with refault distance < LRU /
-> MIN_NR_GEN will have full refs set, else will have refs - 1 set as
-> penalty for long time evicted and unused page, which complies with
-> LRU's nature). Which seems actually decreased refault of anon pages.
->
-> There are some other issue that refault distance series is trying to
-> solve too, eg. if there is a user agent force MGLRU to age
-> periodically for proactive memory reclaim, or MGLRU simply ages fast,
-> min_seq will grow periodically and PID won't catch enough feedback
-> using previous logic.
-
-Thanks. So far I've been making shots in the dark since I haven't been
-able to reproduce your results on bare metal or VMs. So, either the
-benchmark itself is not reliable, which according to your results is
-unlikely, or I've been using different hardware configurations. Do you
-think you can share some off-the-shelf hardware configuration that I
-can buy and use to reliably reproduce your results? Ideally we use the
-exactly same model from, for example, Dell, HP or Lenovo.
+SGksIEp1bGllbjoNCg0KT24gV2VkLCAyMDI0LTAxLTEwIGF0IDE1OjE0ICswMTAwLCBKdWxpZW4g
+U3RlcGhhbiB3cm90ZToNCj4gIAkgDQo+IEV4dGVybmFsIGVtYWlsIDogUGxlYXNlIGRvIG5vdCBj
+bGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVudGlsDQo+IHlvdSBoYXZlIHZlcmlmaWVk
+IHRoZSBzZW5kZXIgb3IgdGhlIGNvbnRlbnQuDQo+ICBGcm9tOiBQaGktYmFuZyBOZ3V5ZW4gPHBu
+Z3V5ZW5AYmF5bGlicmUuY29tPg0KPiANCj4gVGhpcyBkcml2ZXIgcHJvdmlkZXMgYSBwYXRoIHRv
+IGJ5cGFzcyB0aGUgU29DIElTUCBzbyB0aGF0IGltYWdlIGRhdGENCj4gY29taW5nIGZyb20gdGhl
+IFNFTklORiBjYW4gZ28gZGlyZWN0bHkgaW50byBtZW1vcnkgd2l0aG91dCBhbnkgaW1hZ2UNCj4g
+cHJvY2Vzc2luZy4gVGhpcyBhbGxvd3MgdGhlIHVzZSBvZiBhbiBleHRlcm5hbCBJU1AuDQo+IA0K
+PiBTaWduZWQtb2ZmLWJ5OiBQaGktYmFuZyBOZ3V5ZW4gPHBuZ3V5ZW5AYmF5bGlicmUuY29tPg0K
+PiBTaWduZWQtb2ZmLWJ5OiBGbG9yaWFuIFN5bHZlc3RyZSA8ZnN5bHZlc3RyZUBiYXlsaWJyZS5j
+b20+DQo+IFtQYXVsIEVsZGVyIGZpeCBpcnEgbG9ja2luZ10NCj4gU2lnbmVkLW9mZi1ieTogUGF1
+bCBFbGRlciA8cGF1bC5lbGRlckBpZGVhc29uYm9hcmQuY29tPg0KPiBDby1kZXZlbG9wZWQtYnk6
+IExhdXJlbnQgUGluY2hhcnQgPGxhdXJlbnQucGluY2hhcnRAaWRlYXNvbmJvYXJkLmNvbT4NCj4g
+U2lnbmVkLW9mZi1ieTogTGF1cmVudCBQaW5jaGFydCA8bGF1cmVudC5waW5jaGFydEBpZGVhc29u
+Ym9hcmQuY29tPg0KPiBDby1kZXZlbG9wZWQtYnk6IEp1bGllbiBTdGVwaGFuIDxqc3RlcGhhbkBi
+YXlsaWJyZS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEp1bGllbiBTdGVwaGFuIDxqc3RlcGhhbkBi
+YXlsaWJyZS5jb20+DQo+IC0tLQ0KDQpbc25pcF0NCg0KPiArDQo+ICtzdGF0aWMgdm9pZCBtdGtf
+Y2FtX2Ntb3NfdmZfZW5hYmxlKHN0cnVjdCBtdGtfY2FtX2RldiAqY2FtX2RldiwNCj4gKwkJCQkg
+ICBib29sIGVuYWJsZSwgYm9vbCBwYWtfZW4pDQo+ICt7DQo+ICsJc3RydWN0IGRldmljZSAqZGV2
+ID0gY2FtX2Rldi0+ZGV2Ow0KPiArCXVuc2lnbmVkIGxvbmcgZmxhZ3MgPSAwOw0KPiArDQo+ICsJ
+aWYgKHBtX3J1bnRpbWVfZ2V0X3N5bmMoZGV2KSA8IDApIHsNCj4gKwkJZGV2X2VycihkZXYsICJm
+YWlsZWQgdG8gZ2V0IHBtX3J1bnRpbWVcbiIpOw0KPiArCQlnb3RvIG91dDsNCj4gKwl9DQo+ICsN
+Cj4gKwlzcGluX2xvY2tfaXJxc2F2ZSgmY2FtX2Rldi0+aXJxbG9jaywgZmxhZ3MpOw0KDQpUaGUg
+Y29tbWVudCBvZiBjYW1fZGV2LT5pcnFsb2NrIGlzICJQcm90ZWN0cyB0aGUgYnVmZmVyIGxpc3Qi
+LiBXaHkgZG8NCnlvdSBwcm90ZWN0IGh3X2VuYWJsZS9od19kaXNhYmxlPyBBbmQgSSB0aGluayB0
+aGUgbmFtaW5nIG9mIGlycWxvY2sNCnNob3VsZCBiZSBjaGFuZ2VkIHRvICdidWZfbGlzdF9sb2Nr
+Jy4NCg0KUmVnYXJkcywNCkNLDQoNCj4gKwlpZiAoZW5hYmxlKQ0KPiArCQkoKmNhbV9kZXYtPmh3
+X2Z1bmN0aW9ucy0NCj4gPm10a19jYW1fY21vc192Zl9od19lbmFibGUpKGNhbV9kZXYsIHBha19l
+bik7DQo+ICsJZWxzZQ0KPiArCQkoKmNhbV9kZXYtPmh3X2Z1bmN0aW9ucy0NCj4gPm10a19jYW1f
+Y21vc192Zl9od19kaXNhYmxlKShjYW1fZGV2LCBwYWtfZW4pOw0KPiArCXNwaW5fdW5sb2NrX2ly
+cXJlc3RvcmUoJmNhbV9kZXYtPmlycWxvY2ssIGZsYWdzKTsNCj4gKw0KPiArb3V0Og0KPiArCXBt
+X3J1bnRpbWVfcHV0X2F1dG9zdXNwZW5kKGRldik7DQo+ICt9DQo+ICsNCg==
 
