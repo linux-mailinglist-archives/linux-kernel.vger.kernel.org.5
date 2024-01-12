@@ -1,70 +1,133 @@
-Return-Path: <linux-kernel+bounces-24274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F288482BA22
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:50:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1033E82BA23
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87CA61F25F4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:50:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8B4E1F25AAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7262622095;
-	Fri, 12 Jan 2024 03:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9ABC381B7;
+	Fri, 12 Jan 2024 03:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IOEtFr2h"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S7AAR4UK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB48022078;
-	Fri, 12 Jan 2024 03:50:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 343C7C43399;
-	Fri, 12 Jan 2024 03:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705031426;
-	bh=YJZ6ML1A0RE9FhlS+qdtiqNQjCB51NLmM0gDMt179TM=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=IOEtFr2hJzqiWHFouMAIoTDRe59YRZKhnFGAm4axzyG1Giu9X+y5uzxO7NXe0PpjQ
-	 GVUSDMVKUFczL93LOQmJuIZ96cwqxe7ToyVo2dx7xcbJw45plLIktu2tC8kzcdlXlX
-	 sr1XuTXqfhRxOuWDNc7er+HPaLepAOGfvQImRdwOMd++uF6Bat/sgQwGrky/vmumy4
-	 Urs0zwdJ7rJzvFt/6nbjHAZibg9LhnhqNMKYo6ShUjiYa3QigYuvXc3LNGOW7yevon
-	 grhe66NLrv9zGvZA6z/eMsaldGn1Zg9Ls3DGSSAl8HH+DhhKhltvGXWUHCcyWsSmXW
-	 E5q8xu+VQwz9Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 135D0D8C96E;
-	Fri, 12 Jan 2024 03:50:26 +0000 (UTC)
-Subject: Re: [GIT PULL] Documentation for 6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <87sf37vegj.fsf@meer.lwn.net>
-References: <87sf37vegj.fsf@meer.lwn.net>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87sf37vegj.fsf@meer.lwn.net>
-X-PR-Tracked-Remote: git://git.lwn.net/linux.git tags/docs-6.8
-X-PR-Tracked-Commit-Id: 2d179e8ac02e33c82c1a314961254353eb5028b3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5b9b41617bf3e1282cc60f07d3d52e62399aa4ba
-Message-Id: <170503142601.20435.15974984992469566347.pr-tracker-bot@kernel.org>
-Date: Fri, 12 Jan 2024 03:50:26 +0000
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE9C29D07;
+	Fri, 12 Jan 2024 03:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705031434; x=1736567434;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=32XZ4fGvgZQ7I9ngj0l5boYFVTWWUsztHQpTOBJ0QK8=;
+  b=S7AAR4UKsmFUwSVQbLuvyfc4xBRa2bNLFPXLw1Fbl6MLf1BxEHZMzFSN
+   XxJt1wNF9l/wbIUAOjlO+Zb1jSB5odKPEzLlh78AgdSAY1Q+2QwmkizQ3
+   icycmvyIlqx+lUpyP5htyp0peYmwE3GyRTHqMcUZDWJXNwu17Q2pRbrXM
+   VLh1iK/g6tcnx2zk89gviLD9/NFv6pv7C4FmMFl4g1rphg96jbBZNQSuq
+   HPs98rz/IL0e2zn53TgffJQ82hzUOTbMdhd9/3mgMzT7OFygiVPWqoflB
+   iw2mXpubrYBbTPfOvwIl96SM5nsx7z5yrkrUS7+DUnRrhBAourfrzrPjt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="397952993"
+X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
+   d="scan'208";a="397952993"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 19:50:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
+   d="scan'208";a="24579052"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.98]) ([10.93.5.98])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 19:50:31 -0800
+Message-ID: <35f1573e-2800-4cf1-a9f1-b3fa05d7a097@linux.intel.com>
+Date: Fri, 12 Jan 2024 11:50:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 11/29] KVM: x86/pmu: Explicitly check for RDPMC of
+ unsupported Intel PMC types
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Kan Liang <kan.liang@linux.intel.com>, Jim Mattson <jmattson@google.com>,
+ Jinrong Liang <cloudliang@tencent.com>, Aaron Lewis <aaronlewis@google.com>,
+ Like Xu <likexu@tencent.com>
+References: <20240109230250.424295-1-seanjc@google.com>
+ <20240109230250.424295-12-seanjc@google.com>
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <20240109230250.424295-12-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Mon, 08 Jan 2024 11:59:24 -0700:
 
-> git://git.lwn.net/linux.git tags/docs-6.8
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5b9b41617bf3e1282cc60f07d3d52e62399aa4ba
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+On 1/10/2024 7:02 AM, Sean Christopherson wrote:
+> Explicitly check for attempts to read unsupported PMC types instead of
+> letting the bounds check fail.  Functionally, letting the check fail is
+> ok, but it's unnecessarily subtle and does a poor job of documenting the
+> architectural behavior that KVM is emulating.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/vmx/pmu_intel.c | 21 +++++++++++++++------
+>   1 file changed, 15 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index c37dd3aa056b..b41bdb0a0995 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -26,6 +26,7 @@
+>    * further confuse things, non-architectural PMUs use bit 31 as a flag for
+>    * "fast" reads, whereas the "type" is an explicit value.
+>    */
+> +#define INTEL_RDPMC_GP		0
+>   #define INTEL_RDPMC_FIXED	INTEL_PMC_FIXED_RDPMC_BASE
+>   
+>   #define INTEL_RDPMC_TYPE_MASK	GENMASK(31, 16)
+> @@ -89,21 +90,29 @@ static struct kvm_pmc *intel_rdpmc_ecx_to_pmc(struct kvm_vcpu *vcpu,
+>   		return NULL;
+>   
+>   	/*
+> -	 * Fixed PMCs are supported on all architectural PMUs.  Note, KVM only
+> -	 * emulates fixed PMCs for PMU v2+, but the flag itself is still valid,
+> -	 * i.e. let RDPMC fail due to accessing a non-existent counter.
+> +	 * General Purpose (GP) PMCs are supported on all PMUs, and fixed PMCs
+> +	 * are supported on all architectural PMUs, i.e. on all virtual PMUs
+> +	 * supported by KVM.  Note, KVM only emulates fixed PMCs for PMU v2+,
+> +	 * but the type itself is still valid, i.e. let RDPMC fail due to
+> +	 * accessing a non-existent counter.  Reject attempts to read all other
+> +	 * types, which are unknown/unsupported.
+>   	 */
+> -	idx &= ~INTEL_RDPMC_FIXED;
+> -	if (type == INTEL_RDPMC_FIXED) {
+> +	switch (type) {
+> +	case INTEL_RDPMC_FIXED:
+>   		counters = pmu->fixed_counters;
+>   		num_counters = pmu->nr_arch_fixed_counters;
+>   		bitmask = pmu->counter_bitmask[KVM_PMC_FIXED];
+> -	} else {
+> +		break;
+> +	case INTEL_RDPMC_GP:
+>   		counters = pmu->gp_counters;
+>   		num_counters = pmu->nr_arch_gp_counters;
+>   		bitmask = pmu->counter_bitmask[KVM_PMC_GP];
+> +		break;
+> +	default:
+> +		return NULL;
+>   	}
+>   
+> +	idx &= INTEL_RDPMC_INDEX_MASK;
+>   	if (idx >= num_counters)
+>   		return NULL;
+>   
+Reviewed-by: Dapeng Mi  <dapeng1.mi@linux.intel.com>
 
