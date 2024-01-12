@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-24821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F90482C303
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:47:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D86482C304
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:47:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0E41C21BD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:47:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DE251C21A41
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA01745D0;
-	Fri, 12 Jan 2024 15:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE3B745E9;
+	Fri, 12 Jan 2024 15:46:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uS5uBpu4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iWqY4Itv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089C57319F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053B1745DD;
+	Fri, 12 Jan 2024 15:46:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02C57C43390;
 	Fri, 12 Jan 2024 15:46:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB5FC433B1;
-	Fri, 12 Jan 2024 15:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705074398;
-	bh=/cQxWnqvZS3pZ1bKPTWJvWEqbyrOWscjBjQf2J79KU8=;
+	s=k20201202; t=1705074400;
+	bh=eRD9p7kQfk59EpEoFx0hyM9cqrA750l1QKynzHAEjBk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uS5uBpu4kmfDvBa6MjrP2/TzKSp5FYWW9aaF9yP9XYVFRx/Nk8Ha0xuiBe2SY+EJX
-	 h/Q3e+WveP34vV+jJ1/sZLgVmR+Seez65KaL1eyTtt5ocdYzk6NRzSKm2eOo4h0I18
-	 AgJ+iR0rMeJfLB3om+1zMJe2fIQKmUchD7AKm623NtIb3GgLXwR6ElPrqH5dZTulrI
-	 wqftYvX92Qlasa0lmfgLGibORq3bpTvZnK35ILr9XBb30e4jyMecA7mjIM5/ZPJXo1
-	 TsQdm53r0YNHKy/LA9rCOnPR4LZ7v7pIBw274xP/kVqssVLp7/b6X/PUkr+ewoqOsh
-	 9gZ47S9YFKGLg==
+	b=iWqY4ItvYn/nlg+ThvpzoZmAGs/jIV+67i8VsPEXEae22c4PqUqPVjG5/Es9L9/cH
+	 MVnPX0UQ+TC1bA4tjGVTMrUmwFwpiwYZdvKA0sUDEGQtxhckBPOjSHiwtrV4V60d0o
+	 mIfeTXKDqQh3+F594UCw65oHTiXxJnWyJeCeWuZw19Hhjl0VIe56RRaLRtxnWfEVlN
+	 mdpzwcB0vahoysza8T6RAWQkAtsBDjoIDKTrA9z002TjOyLXLXTO9KeJpGa4fRmH7B
+	 UClUcnjoMyIuMgb/utu957OSGEkKyDqMOxkulGaffBmSgu2TI+dFADCASmJrPsLD9i
+	 360pRstM54iNg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -40,9 +40,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	rcu <rcu@vger.kernel.org>
-Subject: [PATCH 3/7] rcu: s/boost_kthread_mutex/kthread_mutex
-Date: Fri, 12 Jan 2024 16:46:17 +0100
-Message-Id: <20240112154621.261852-4-frederic@kernel.org>
+Subject: [PATCH 4/7] rcu/exp: Move expedited kthread worker creation functions above rcutree_prepare_cpu()
+Date: Fri, 12 Jan 2024 16:46:18 +0100
+Message-Id: <20240112154621.261852-5-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240112154621.261852-1-frederic@kernel.org>
 References: <20240112154621.261852-1-frederic@kernel.org>
@@ -54,99 +54,137 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This mutex is currently protecting per node boost kthreads creation and
-affinity setting across CPU hotplug operations.
+The expedited kthread worker performing the per node initialization is
+going to be split into per node kthreads. As such, the future per node
+kthread creation will need to be called from CPU hotplug callbacks
+instead of an initcall, right beside the per node boost kthread
+creation.
 
-Since the expedited kworkers will soon be split per node as well, they
-will be subject to the same concurrency constraints against hotplug.
+To prepare for that, move the kthread worker creation above
+rcutree_prepare_cpu() as a first step to make the review smoother for
+the upcoming modifications.
 
-Therefore their creation and affinity tuning operations will be grouped
-with those of boost kthreads and then rely on the same mutex.
-
-To prepare for that, generalize its name.
+No intended functional change.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c        |  2 +-
- kernel/rcu/tree.h        |  2 +-
- kernel/rcu/tree_plugin.h | 10 +++++-----
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/tree.c | 96 +++++++++++++++++++++++------------------------
+ 1 file changed, 48 insertions(+), 48 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5cd90f1762e9..0c818e75e8e2 100644
+index 0c818e75e8e2..8f4fc8882e93 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4929,7 +4929,7 @@ static void __init rcu_init_one(void)
- 			init_waitqueue_head(&rnp->exp_wq[2]);
- 			init_waitqueue_head(&rnp->exp_wq[3]);
- 			spin_lock_init(&rnp->exp_lock);
--			mutex_init(&rnp->boost_kthread_mutex);
-+			mutex_init(&rnp->kthread_mutex);
- 			raw_spin_lock_init(&rnp->exp_poll_lock);
- 			rnp->exp_seq_poll_rq = RCU_GET_STATE_COMPLETED;
- 			INIT_WORK(&rnp->exp_poll_wq, sync_rcu_do_polled_gp);
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index e9821a8422db..13e7b0d907ab 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -113,7 +113,7 @@ struct rcu_node {
- 				/*  side effect, not as a lock. */
- 	unsigned long boost_time;
- 				/* When to start boosting (jiffies). */
--	struct mutex boost_kthread_mutex;
-+	struct mutex kthread_mutex;
- 				/* Exclusion for thread spawning and affinity */
- 				/*  manipulation. */
- 	struct task_struct *boost_kthread_task;
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 41021080ad25..0d307674915c 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1195,7 +1195,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- 	struct sched_param sp;
- 	struct task_struct *t;
- 
--	mutex_lock(&rnp->boost_kthread_mutex);
-+	mutex_lock(&rnp->kthread_mutex);
- 	if (rnp->boost_kthread_task || !rcu_scheduler_fully_active)
- 		goto out;
- 
-@@ -1212,7 +1212,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- 	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
- 
-  out:
--	mutex_unlock(&rnp->boost_kthread_mutex);
-+	mutex_unlock(&rnp->kthread_mutex);
+@@ -4405,6 +4405,54 @@ rcu_boot_init_percpu_data(int cpu)
+ 	rcu_boot_init_nocb_percpu_data(rdp);
  }
  
++#ifdef CONFIG_RCU_EXP_KTHREAD
++struct kthread_worker *rcu_exp_gp_kworker;
++struct kthread_worker *rcu_exp_par_gp_kworker;
++
++static void __init rcu_start_exp_gp_kworkers(void)
++{
++	const char *par_gp_kworker_name = "rcu_exp_par_gp_kthread_worker";
++	const char *gp_kworker_name = "rcu_exp_gp_kthread_worker";
++	struct sched_param param = { .sched_priority = kthread_prio };
++
++	rcu_exp_gp_kworker = kthread_create_worker(0, gp_kworker_name);
++	if (IS_ERR_OR_NULL(rcu_exp_gp_kworker)) {
++		pr_err("Failed to create %s!\n", gp_kworker_name);
++		rcu_exp_gp_kworker = NULL;
++		return;
++	}
++
++	rcu_exp_par_gp_kworker = kthread_create_worker(0, par_gp_kworker_name);
++	if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
++		pr_err("Failed to create %s!\n", par_gp_kworker_name);
++		rcu_exp_par_gp_kworker = NULL;
++		kthread_destroy_worker(rcu_exp_gp_kworker);
++		rcu_exp_gp_kworker = NULL;
++		return;
++	}
++
++	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
++	sched_setscheduler_nocheck(rcu_exp_par_gp_kworker->task, SCHED_FIFO,
++				   &param);
++}
++
++static inline void rcu_alloc_par_gp_wq(void)
++{
++}
++#else /* !CONFIG_RCU_EXP_KTHREAD */
++struct workqueue_struct *rcu_par_gp_wq;
++
++static void __init rcu_start_exp_gp_kworkers(void)
++{
++}
++
++static inline void rcu_alloc_par_gp_wq(void)
++{
++	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
++	WARN_ON(!rcu_par_gp_wq);
++}
++#endif /* CONFIG_RCU_EXP_KTHREAD */
++
  /*
-@@ -1224,7 +1224,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-  * no outgoing CPU.  If there are no CPUs left in the affinity set,
-  * this function allows the kthread to execute on any CPU.
-  *
-- * Any future concurrent calls are serialized via ->boost_kthread_mutex.
-+ * Any future concurrent calls are serialized via ->kthread_mutex.
-  */
- static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
- {
-@@ -1237,7 +1237,7 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
- 		return;
- 	if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
- 		return;
--	mutex_lock(&rnp->boost_kthread_mutex);
-+	mutex_lock(&rnp->kthread_mutex);
- 	mask = rcu_rnp_online_cpus(rnp);
- 	for_each_leaf_node_possible_cpu(rnp, cpu)
- 		if ((mask & leaf_node_cpu_bit(rnp, cpu)) &&
-@@ -1250,7 +1250,7 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
- 			cpumask_clear_cpu(outgoingcpu, cm);
- 	}
- 	set_cpus_allowed_ptr(t, cm);
--	mutex_unlock(&rnp->boost_kthread_mutex);
-+	mutex_unlock(&rnp->kthread_mutex);
- 	free_cpumask_var(cm);
+  * Invoked early in the CPU-online process, when pretty much all services
+  * are available.  The incoming CPU is not present.
+@@ -4741,54 +4789,6 @@ static int rcu_pm_notify(struct notifier_block *self,
+ 	return NOTIFY_OK;
  }
  
+-#ifdef CONFIG_RCU_EXP_KTHREAD
+-struct kthread_worker *rcu_exp_gp_kworker;
+-struct kthread_worker *rcu_exp_par_gp_kworker;
+-
+-static void __init rcu_start_exp_gp_kworkers(void)
+-{
+-	const char *par_gp_kworker_name = "rcu_exp_par_gp_kthread_worker";
+-	const char *gp_kworker_name = "rcu_exp_gp_kthread_worker";
+-	struct sched_param param = { .sched_priority = kthread_prio };
+-
+-	rcu_exp_gp_kworker = kthread_create_worker(0, gp_kworker_name);
+-	if (IS_ERR_OR_NULL(rcu_exp_gp_kworker)) {
+-		pr_err("Failed to create %s!\n", gp_kworker_name);
+-		rcu_exp_gp_kworker = NULL;
+-		return;
+-	}
+-
+-	rcu_exp_par_gp_kworker = kthread_create_worker(0, par_gp_kworker_name);
+-	if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
+-		pr_err("Failed to create %s!\n", par_gp_kworker_name);
+-		rcu_exp_par_gp_kworker = NULL;
+-		kthread_destroy_worker(rcu_exp_gp_kworker);
+-		rcu_exp_gp_kworker = NULL;
+-		return;
+-	}
+-
+-	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
+-	sched_setscheduler_nocheck(rcu_exp_par_gp_kworker->task, SCHED_FIFO,
+-				   &param);
+-}
+-
+-static inline void rcu_alloc_par_gp_wq(void)
+-{
+-}
+-#else /* !CONFIG_RCU_EXP_KTHREAD */
+-struct workqueue_struct *rcu_par_gp_wq;
+-
+-static void __init rcu_start_exp_gp_kworkers(void)
+-{
+-}
+-
+-static inline void rcu_alloc_par_gp_wq(void)
+-{
+-	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
+-	WARN_ON(!rcu_par_gp_wq);
+-}
+-#endif /* CONFIG_RCU_EXP_KTHREAD */
+-
+ /*
+  * Spawn the kthreads that handle RCU's grace periods.
+  */
 -- 
 2.34.1
 
