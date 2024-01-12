@@ -1,113 +1,108 @@
-Return-Path: <linux-kernel+bounces-24426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EDC582BC65
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1FD282BC74
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D132D2874A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAC1F2836ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D5D5DF05;
-	Fri, 12 Jan 2024 08:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eIZbtwrH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F74A5D8F6;
-	Fri, 12 Jan 2024 08:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705048191; x=1736584191;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=GtyZZyZf58oRN+ctD+6ZI18xy1j8TFB3G36HFFq94ew=;
-  b=eIZbtwrHc8kxm9oTVg/E1UcT++UqalQBO34FqrSank6F/AXA8eV6p9Py
-   HOYo4yAoiwPxD2gJKxEPjQG112YE3EJePx2ece04ReDkrc4cEfghdCh9E
-   LB73IFM/azo5XGCpr4H6JBe5EAsxJkJg6LMEyek2mAYo0Qocx7/xc3HwI
-   6S7M7rC2M4Vj2gRWKdjclkxBpyKv1iH9XWeWjepARR6h3+hCrrRQ8eyVe
-   Zt3dBn1ob+akiH5IKgLoH4YzBsaZx7nOf9ZD9y08KiEJB7Hf/NZ+lqzgc
-   bvNW/J3MLZdp4blE/jpDPNpoi1DS7bQEkGLEswcBFd0Eg89yo1vrNf8o5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="398801393"
-X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
-   d="scan'208";a="398801393"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 00:29:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="901910176"
-X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
-   d="scan'208";a="901910176"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.141])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 00:29:48 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 12 Jan 2024 10:29:43 +0200 (EET)
-To: Dan Carpenter <dan.carpenter@linaro.org>
-cc: Hans de Goede <hdegoede@redhat.com>, Henry Shi <henryshi2018@gmail.com>, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] platform/x86: silicom-platform: clean up a check
-In-Reply-To: <a58bffb7-0a8b-4195-b273-f65a188ace7b@moroto.mountain>
-Message-ID: <f066439f-57d1-7ccf-3d3c-546aa90a17bb@linux.intel.com>
-References: <a58bffb7-0a8b-4195-b273-f65a188ace7b@moroto.mountain>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B40F53E23;
+	Fri, 12 Jan 2024 08:43:10 +0000 (UTC)
+Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F2139AC8;
+	Fri, 12 Jan 2024 08:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [39.174.92.167])
+	by mail-app4 (Coremail) with SMTP id cS_KCgAXHy98+6BlXum4AA--.47709S2;
+	Fri, 12 Jan 2024 16:42:38 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Kate Hsuan <hpa@redhat.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Dan Carpenter <error27@gmail.com>,
+	Brent Pappas <bpappas@pappasbrent.com>,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] media: atomisp: ssh_css: Fix a null-pointer dereference in load_video_binaries
+Date: Fri, 12 Jan 2024 16:34:19 +0800
+Message-Id: <20240112083421.3728017-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-303773933-1705048183=:1030"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cS_KCgAXHy98+6BlXum4AA--.47709S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw15uw1xGrW5KF18tF17Awb_yoW8CFyxpF
+	48Gw1Uur1UZrs7Ca17G347uF90g3sY9ay5Ww4DJa4fZ3Z7Aas2qF15KFWYgry8ur4fJ3yD
+	tryjgFyYvr1FvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHU
+	DUUUUU=
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The allocation failure of mycs->yuv_scaler_binary in load_video_binaries
+is followed with a dereference of mycs->yuv_scaler_binary after the
+following call chain:
 
---8323328-303773933-1705048183=:1030
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+sh_css_pipe_load_binaries
+  |-> load_video_binaries (mycs->yuv_scaler_binary == NULL)
+  |
+  |-> sh_css_pipe_unload_binaries
+        |-> unload_video_binaries
 
-On Fri, 12 Jan 2024, Dan Carpenter wrote:
+In unload_video_binaries, it calls to ia_css_binary_unload with argument
+&pipe->pipe_settings.video.yuv_scaler_binary[i], which refers to the
+same memory slot as mycs->yuv_scaler_binary. Thus, a null-pointer
+dereference is triggered.
 
-> The error message in this code can't be reached because value is either
-> zero or non-zero.  There isn't a third option.  Really, it's nicer to
-> write this as a one liner.
->=20
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->  drivers/platform/x86/silicom-platform.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
->=20
-> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x=
-86/silicom-platform.c
-> index 6ce43ccb3112..c0910af16a3a 100644
-> --- a/drivers/platform/x86/silicom-platform.c
-> +++ b/drivers/platform/x86/silicom-platform.c
-> @@ -256,12 +256,7 @@ static void silicom_gpio_set(struct gpio_chip *gc,
->  =09if (direction =3D=3D GPIO_LINE_DIRECTION_IN)
->  =09=09return;
-> =20
-> -=09if (value)
-> -=09=09silicom_mec_port_set(channel, 0);
-> -=09else if (value =3D=3D 0)
-> -=09=09silicom_mec_port_set(channel, 1);
-> -=09else
-> -=09=09pr_err("Wrong argument value: %d\n", value);
-> +=09silicom_mec_port_set(channel, !value);
->  }
-> =20
->  static int silicom_gpio_direction_output(struct gpio_chip *gc,
->=20
+Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+ drivers/staging/media/atomisp/pci/sh_css.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Thanks for the update,
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index f35c90809414..eb43f4e99d02 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -4936,9 +4936,10 @@ unload_video_binaries(struct ia_css_pipe *pipe)
+ 	ia_css_binary_unload(&pipe->pipe_settings.video.video_binary);
+ 	ia_css_binary_unload(&pipe->pipe_settings.video.vf_pp_binary);
+ 
+-	for (i = 0; i < pipe->pipe_settings.video.num_yuv_scaler; i++)
+-		ia_css_binary_unload(&pipe->pipe_settings.video.yuv_scaler_binary[i]);
+-
++	if (pipe->pipe_settings.video.yuv_scaler_binary)
++		for (i = 0; i < pipe->pipe_settings.video.num_yuv_scaler; i++)
++			ia_css_binary_unload(&pipe->pipe_settings.video.yuv_scaler_binary[i]);
++		
+ 	kfree(pipe->pipe_settings.video.is_output_stage);
+ 	pipe->pipe_settings.video.is_output_stage = NULL;
+ 	kfree(pipe->pipe_settings.video.yuv_scaler_binary);
+-- 
+2.34.1
 
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
---8323328-303773933-1705048183=:1030--
 
