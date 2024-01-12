@@ -1,162 +1,383 @@
-Return-Path: <linux-kernel+bounces-24977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3010882C584
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:37:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38AE882C587
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EE1D1C21F9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:37:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F7FB1C21F31
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419C8154B8;
-	Fri, 12 Jan 2024 18:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7C215AE7;
+	Fri, 12 Jan 2024 18:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b="P1LMye9I"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2073.outbound.protection.outlook.com [40.107.22.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="lEHZYuf1"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076C014F6C;
-	Fri, 12 Jan 2024 18:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VMhBC6C6RRlpknmfJW6kWKljxY1vgBjAh6jQCiDkx7fM/z98XiIHvnFOuehRoCZxx9vmlyUqfEwEl3NlgwTuT5I9QnJP1PUxHaGBa8HbSUmt9thlXW1kMUp09FPWwWT8G6ifty7CcgehuTHJ6iH9TPKh/6JjRED3YQmf+DxhLQa7Dr04n5iTwWiEsUW7K+f93Dv4/UQmGFidVDdziuxosi7IfGcz8SEY/YBEC+Y51pSkTIPf/BSmx8kyz6zzoDyaD/pJxrE4A2oOgaHjq5S1Wzjs5tvSeGI8+s7UYgU1DS/Mq6IBYs0YT8P6ZDNqdKFUDErowpD39EL0xJnuac5YAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O/LENPqC9BmBNWPKYaIBYOfpLLIo80zXFYbB2OELyFQ=;
- b=PP4BOqp/NRnXKQJ8zFgzUXxEovnWdUDexzgCfhpsaFyA3qRDnb2MDRvnsVfkY0k+MHFjTpFWzqX8LJ+Ozd9nEYe4NAUtgioGHeokkLy0o7GeDkOdaPrU416Y3D4rTmyyIr3SpktGtARiGHRZk5Y0R+T1m0qH4ucwspLhG0fNq80+2AtZJu3Qpaox8j5M2n/MKtzUFBb6gnzDrZsG1lqHdgvOLrdJAkFKY2xghFFTkSe7nsFhXrCIMyUUDpCbW3fRN9U94g85n/BtTMHrgumO1nb6nP15KyXmtgfjG3tZyfNub6gBQPFkfdmEzNp5Tpl45UCFJyBnBGnhTIEWYHfADg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O/LENPqC9BmBNWPKYaIBYOfpLLIo80zXFYbB2OELyFQ=;
- b=P1LMye9IMs24t1QtbdnMVHIAVrsXbG4n8dNifPGO3kc//tRHXrIiPuWeDdeg9Oo/r4ujO3fHOUymemhe05cvCe9gAtNjLfMCZyEdgcMU0BbXnsb5OpxxqXnjlijhlWgshGmUHvdT0peoPp9+oa8LUZir9M8pLJeJ7cchLCIvYrOAKS/ympy8UEEq+hsu7HHu9dxxk9v4lWWhe49BB7KaEQ4LWdZu2aeDoTIKqGy3SQVs0i8Z0Nku3FiPIHG2wNAN9R4EAsWM50Q7ezVjTf9WRnoaWwDK+eqJxE+Lu7XhjVZ7Bgs18tf5aiAM1GiIdNIZw3ohRZQvJFvs2e+IBYcq/Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
- by AS8PR10MB6890.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:5b4::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Fri, 12 Jan
- 2024 18:37:35 +0000
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::8d16:7fbb:4964:94fe]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::8d16:7fbb:4964:94fe%3]) with mapi id 15.20.7181.018; Fri, 12 Jan 2024
- 18:37:33 +0000
-Message-ID: <42c63cb9-87d0-49db-9af8-95771b186684@siemens.com>
-Date: Fri, 12 Jan 2024 19:37:29 +0100
-User-Agent: Mozilla Thunderbird
-From: Jan Kiszka <jan.kiszka@siemens.com>
-Subject: [PATCH] riscv/efistub: Ensure GP-relative addressing is not used
-Content-Language: en-US
-To: Ard Biesheuvel <ardb@kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>
-Cc: linux-efi <linux-efi@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0259.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e8::9) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:588::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098B814F72
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 18:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4298bd85e33so36874731cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:37:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1705084659; x=1705689459; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sXPF+GJwWlxVUGqIrI+FF3iXQIPfphfOcegcyI8wUZc=;
+        b=lEHZYuf1UpUKNIOe5R1mxv2EBe89H5gMzzMrj96TlEAyiCSwBRkSg2nJPGAeMJYDb2
+         v6kqJUhFW/h55wzG4u201LmKYBc47cko2GznEbk6J1JTEPhzfKTwSOYzmHBlr0+F2FlU
+         v9e6d+WSB75NT7VKHUMiUO7zIumxkJQtzYR34=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705084659; x=1705689459;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sXPF+GJwWlxVUGqIrI+FF3iXQIPfphfOcegcyI8wUZc=;
+        b=hv+Hrun1XQGWUDdH2PYoKbeH7CCGJXRytLUzmk8fK+D4vp7s8zuyD3n4f+sZcNb0al
+         +li99/qmdJJCgiBuPPzPUkzZmnhHKDcYP9IOr3N+oXLd1RBPk1Wb2r5zQt/q015UgC0J
+         qubdqwOZ8KW160ONd/ICYlk1F1UwXpGnwxC9bAbJDbsRO1RczUGlNWR1WVvwOE/o4rpy
+         x/ryJNe6q208Qas7WcSkNCmtvsNYa1oqCpm4juKDWEa8r86E9ueN1Eb8bbmeYq4rqH2U
+         4Jn3SAaL/Lf6SPMjnW+tNC5LLqCXkLGoGFw8/+06cAdMbZ7hw37bhgQUpFzP+A1tDNmr
+         k2HQ==
+X-Gm-Message-State: AOJu0Yy5Vx3hHy93d+Qlp8eOfjdrLMiB3GrEYkHUQLPUrepiywwbnIsY
+	DlOw7kf9nFiVaTCFBVvI/kvEdQ3Blh7FYg==
+X-Google-Smtp-Source: AGHT+IHEBI3StujPO1gEeMK+FHELDwzAlGRHty8nS4QVxQ52YW7MA/nMHNzVh/59kcSsosfuPm95Lg==
+X-Received: by 2002:a05:622a:243:b0:429:aee6:ba49 with SMTP id c3-20020a05622a024300b00429aee6ba49mr2205786qtx.32.1705084658621;
+        Fri, 12 Jan 2024 10:37:38 -0800 (PST)
+Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id ch7-20020a05622a40c700b00429970654b6sm1582376qtb.33.2024.01.12.10.37.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 10:37:37 -0800 (PST)
+Message-ID: <65a186f1.050a0220.867e0.8696@mx.google.com>
+X-Google-Original-Message-ID: <20240112183736.GA1379@JoelBox.>
+Date: Fri, 12 Jan 2024 13:37:36 -0500
+From: Joel Fernandes <joel@joelfernandes.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+	Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>,
+	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>
+Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
+References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
+ <ZXsvl7mabUuNkWcY@google.com>
+ <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
+ <ZXth7hu7jaHbJZnj@google.com>
+ <CAEXW_YTfgemRBKRv2UNjsOLhokxvvmHbVVj1JLtVmhywKtqeHA@mail.gmail.com>
+ <ZXyA-Me-DSmCWr7x@google.com>
+ <CAEXW_YQ6hVwWrRe-Fgk8bU6BcbwVYoX5ARB8eR+ERZuTuE-wug@mail.gmail.com>
+ <ZXzMqiGFVe4sepaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|AS8PR10MB6890:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e87843f-fdae-4d8c-2374-08dc139d8a8f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YpsqL4gZ7SI6EkVdFflwHPooIXl6Eabe1bV6iLApzqB6gBuQuJEVzUtvJC7coPc7Ak/ycJN6gR+HOHksTh6gDr0OtyBCuoYBb8QwfGoKs5DC1ycmiUj4FaFJ7sCt8QBvnJqY058gbA1svBS/QWqSbHyqMC7wwdPF5unt28osHnW+m8HG5p1cemeaBdetJDTHaKypN+gDTX9rclZq0uVBrZBWq9BOo9zzb4BaCeOEbyD7YV3FdpjhHvbC9dcEQ36Oe5vj6qyFHdQDSsAKEsnclHG0No7LOwFaYlKSYJg/JrdKEVtLm1T9ndmSoVM+wtXPcEp8XqElcIH4EV+V5p7hcx/YwFMq1rWsowrZocyxokySOHM6JGoFoDjt6jBUr/ULWiqL+hUWlSMRBdVkoGWLBgXPuEH8yxD08VI9iTOc3o1pM/ljdbwFJS0Q7tqYj3/faFms3ksfXBJ4htnLeDjBipGtkEn2uAuwXogySciYzxAECvPVd6Jc5t9IaGL+1WkvhSzT3QREXrpwp1ShH9X+rd3RfClhsU7HbFXvL4CZqKUDtGbTL52eDkY3bIbrRwo7coOts/9gbudgIrjaNSk/KrCkw5aetKNsg/fYOWgS68Gx+D3ZTztudPU+wI4ZolQDb/Phr5kg+h9SF1SHbb4nDg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(376002)(39860400002)(366004)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(44832011)(4326008)(8936002)(8676002)(2906002)(5660300002)(86362001)(82960400001)(31696002)(36756003)(2616005)(478600001)(83380400001)(26005)(6506007)(41300700001)(6512007)(38100700002)(54906003)(316002)(66476007)(66946007)(6666004)(66556008)(6486002)(110136005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QU9zZTRscERuR05BcTkwUy9EN1FjRGNLVFQ1MkVNNUp6bk1valdGZkdnUEQ5?=
- =?utf-8?B?dzNJVFpNb2pjL3dTVzZjejZQOXp4VzAvaFl6MkJCbU1QelZES2phb1MrRk92?=
- =?utf-8?B?dS9hYnRnbG1TMlVqTVlRRUg0bHNCcnpqQVZ4RXFicWJTVFJYbEFpZ3QySjYr?=
- =?utf-8?B?M294UHQxdVowZjQ1anN5R2hBZ0x2TnlLeFlsSlR5bnpoZ3RpbGhhd3VwYjUy?=
- =?utf-8?B?Qmh5NlBUUUtJZFFBckQrWGVWWm1LR3NRSVpDd0MwR1hPZ1Jna0xoWi9mbjl6?=
- =?utf-8?B?Rys4NHVNWVNiUmdFbHQyTjI0aWNyVkdwY3VFQTJkZFpVTkp4OU5iQi9qM29i?=
- =?utf-8?B?Zjd1M3NJRUU4TTZYMi9aQ3JuNCtiN1Z3VEUzSksxNU1DaXhOT1Q5VE9yenJE?=
- =?utf-8?B?dWJVOXo4R2FOY0tKN3dwOXlhT3ZEZGV2TDNidUt1Z011R3BUcFVjVEZ3b04y?=
- =?utf-8?B?M3lCbVRkbGdLMThaT3pLNWZ0ZWFDeEF2WUpCcEVnY2J4aTlYTXd1aWhuMEVQ?=
- =?utf-8?B?U2llWFR4b0JKWDUyTnp0STZTakhKeXp2M1o4MDVwMGl6YWhKUGdIeXRiQy9N?=
- =?utf-8?B?MGF5T0ZjTnE0ODN3N2VET28yUEJFR3FFWGtpWWpQbVhpR0FCTGNiRUFYc2Vh?=
- =?utf-8?B?N040RGN5Z2xMb0xYU0ZFMmxab1N0aXErQXMyWWcxWmc5QXNadUhNb3dCMjBw?=
- =?utf-8?B?c0M0N3g3MGpLYmszZHJVcWROM2VCMjB5VXFISndNc0tzMyt1Q25wUW1iVzRl?=
- =?utf-8?B?T3l1L09ROTBUYnFXQ3FEZVlrNXF6OFdTeWR1UEQ1UVVjcWlHb2Q3Mk5ydzdS?=
- =?utf-8?B?OVJqbVdZcFd4dDhEQWR6dzNsWDZ5ekZMYmRJMHk1ejIzeHh6LzczVDhKZVVm?=
- =?utf-8?B?L1U3ajE0SGMwTGZRR0R5b1BYaXFTblY0cno1a3RuR0RuaUZUM3JZb3VTQy9W?=
- =?utf-8?B?Nko3aU5DRGR1a2xsczBaNldoVlhKOGZIY1JqK2Zqeis4enhGSDAwaWpVQWli?=
- =?utf-8?B?ZlFqTHQ0M1NsZzY2QUpLcWR1TjJtY2RqSWFzTmJYaU1JQWlVNGRCazJ3Q1pm?=
- =?utf-8?B?VU1wd0FBQ29pTWJxOHFHanhqY0dhSnpRUjdBZ0ZrVUJQdjVZVGoxTi8xeW9W?=
- =?utf-8?B?dW9ySnZEak91b0hMMFg5Q2pMQloxcjdtamxaYmZzdmVWMHEySXM0QlExa2pQ?=
- =?utf-8?B?VDlFVml3M0dhRHM5R3hCeE91aXBXZU1rQkhEZGM2MXFGM0g4WXZKeHpmV0hN?=
- =?utf-8?B?WmtJeHByUXRZSEpzR3lsbm40SEk1bG9JS3hvb01BNzlmdzRzWEh3QkE1WUtr?=
- =?utf-8?B?blU4ditIK0J5RkJkT0laUzdSVHBHZFMyMkpQRCs5QWt1SGVqMWhjb0hxbXhW?=
- =?utf-8?B?c0RXcUNHUitNY3UwNkFVbzAxUis5ait2bnc5Ymo4SG5CaXRaQnlXdSswVmox?=
- =?utf-8?B?L09OK0xPcTlSZG1DWGtaSTZPdVBld2JqeGovb0p6SDhheUo4TWtpa0Y3ZmRD?=
- =?utf-8?B?RHU1NkVjMjdXOTlHeDA5OWpCc0o5TDRZdUg4MlZneENWQnNaNnNLeXVRUWVn?=
- =?utf-8?B?NmRFajB1TjZyZC94dUQzK1dHdTIxNlVBMjFjQmFoVk5yV2RFOWh2WTZWRnlU?=
- =?utf-8?B?UFVDVXc3eGpGZVFidXZFLytGYkQ5amtRTW5CSjE0VC8weUlHRzZBVUpwZ2FT?=
- =?utf-8?B?Q3dpRE5xWVRtU0ZwYXpwemhtdlhDM2RMWWgzMzRMWVRkOUM0QmFEeURFR3lZ?=
- =?utf-8?B?V0JWOVY5alYrSjFINm5VTlZ5T0wxN3paYmRYVlJvUFFKdHNkZTQ4MlRiQVJi?=
- =?utf-8?B?bW5oMERlS2tKRXBscEppZWZsdURDWHJ2T3ZtOXNmNXRGS2cxWEFnUG0wTDl3?=
- =?utf-8?B?SE12WWRvL29CL0RUeTJ2ZE53T1RuN3VUMmQ1SEpXYldoZnNsTVB3MzlKbXJy?=
- =?utf-8?B?ZHRjTW9JNzVreGhHS2ZTRlZKSDZzaDR1VG0wTFBIWHJ2UHpTRVFkOEpwSzRu?=
- =?utf-8?B?QkZ0QjU5MzEzTllHODYxeHNOaXU1dHRrWTVRRmRsREpnU1haejM2MGtBVHEy?=
- =?utf-8?B?cnIvL2FyMGJpREMzRkczbUdvbXV1cHhwR3FzeDF0WGc1ZkNFalNZM29RWjBi?=
- =?utf-8?Q?lOsAEuqF8gOOok4hxYw4dp6A5?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e87843f-fdae-4d8c-2374-08dc139d8a8f
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 18:37:33.6084
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lq62neP7DPeyr8A/pFG4K0mpD0EqPSd2gpk6aj6MHLOxooJ/gUhmv5XVWZ64b9aRU7iGZ82xDkvLBeS5o58wNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB6890
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXzMqiGFVe4sepaw@google.com>
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+Hi Sean,
 
-The cflags for the RISC-V efistub were missing -mno-relax, thus were
-under the risk that the compiler could use GP-relative addressing. That
-happened for _edata with binutils-2.41 and kernel 6.1, causing the
-relocation to fail due to an invalid kernel_size in handle_kernel_image.
-It was not yet observed with newer versions, but that may just be luck.
+Happy new year. Just back from holidays, thanks for the discussions. I
+replied below:
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
+On Fri, Dec 15, 2023 at 02:01:14PM -0800, Sean Christopherson wrote:
+> On Fri, Dec 15, 2023, Joel Fernandes wrote:
+> > On Fri, Dec 15, 2023 at 11:38 AM Sean Christopherson <seanjc@google.com> wrote:
+> > >
+> > > On Fri, Dec 15, 2023, Joel Fernandes wrote:
+> > > > Hi Sean,
+> > > > Nice to see your quick response to the RFC, thanks. I wanted to
+> > > > clarify some points below:
+> > > >
+> > > > On Thu, Dec 14, 2023 at 3:13 PM Sean Christopherson <seanjc@google.com> wrote:
+> > > > >
+> > > > > On Thu, Dec 14, 2023, Vineeth Remanan Pillai wrote:
+> > > > > > On Thu, Dec 14, 2023 at 11:38 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > > > > Now when I think about it, the implementation seems to
+> > > > > > suggest that we are putting policies in kvm. Ideally, the goal is:
+> > > > > > - guest scheduler communicates the priority requirements of the workload
+> > > > > > - kvm applies the priority to the vcpu task.
+> > > > >
+> > > > > Why?  Tasks are tasks, why does KVM need to get involved?  E.g. if the problem
+> > > > > is that userspace doesn't have the right knobs to adjust the priority of a task
+> > > > > quickly and efficiently, then wouldn't it be better to solve that problem in a
+> > > > > generic way?
+> > > >
+> > > > No, it is not only about tasks. We are boosting anything RT or above
+> > > > such as softirq, irq etc as well.
+> > >
+> > > I was talking about the host side of things.  A vCPU is a task, full stop.  KVM
+> > > *may* have some information that is useful to the scheduler, but KVM does not
+> > > *need* to initiate adjustments to a vCPU's priority.
+> > 
+> > Sorry I thought you were referring to guest tasks. You are right, KVM
+> > does not *need* to change priority. But a vCPU is a container of tasks
+> > who's priority dynamically changes. Still, I see your point of view
+> > and that's also why we offer the capability to be selectively enabled
+> > or disabled per-guest by the VMM (Vineeth will make it default off and
+> > opt-in in the next series).
+> > 
+> > > > Could you please see the other patches?
+> > >
+> > > I already have, see my comments about boosting vCPUs that have received
+> > > NMIs and IRQs not necessarily being desirable.
+> > 
+> > Ah, I was not on CC for that email. Seeing it now. I think I don't
+> > fully buy that argument, hard IRQs are always high priority IMHO.
+> 
+> They most definitely are not, and there are undoubtedly tiers of priority, e.g.
+> tiers are part and parcel of the APIC architecture.  I agree that *most* IRQs are
+> high-ish priority, but that is not the same that *all* IRQs are high priority.
+> It only takes one example to disprove the latter, and I can think of several off
+> the top of my head.
+> 
+> Nested virtualization is the easy one to demonstrate.
+> 
+> On AMD, which doesn't have an equivalent to the VMX preemption timer, KVM uses a
+> self-IPI to wrest control back from the guest immediately after VMRUN in some
+> situations (mostly to inject events into L2 while honoring the architectural
+> priority of events).  If the guest is running a nested workload, the resulting
+> IRQ in L1 is not at all interesting or high priority, as the L2 workload hasn't
+> suddenly become high priority just because KVM wants to inject an event.
 
-Something like this should go to stable as well, but we will need 
-rebased patches.
+Ok I see your point of view and tend to agree with you. I think I was mostly
+going by my experience which has predominantly been on embedded systems. One
+counter argument I would make is that just because an IRQ event turned out
+not to be high priority, doesn't mean it would never be. For instance, if the
+guest was running something important and not just a nested workload, then
+perhaps the self-IPI in your example would be important. As another example,
+the scheduling clock interrupt may be a useless a lot of times but those
+times that it does become useful make it worth prioritizing highly (example,
+preempting a task after it exhausts slice, invoking RCU core to service
+callbacks, etc).
 
- drivers/firmware/efi/libstub/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But I see your point of view and tend to agree with it too!
 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index 06964a3c130f..d561d7de46a9 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)		+= -DEFI_HAVE_STRLEN -DEFI_HAVE_STRNLEN \
- 				   -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
- 				   -DEFI_HAVE_STRCMP -fno-builtin -fpic \
- 				   $(call cc-option,-mno-single-pic-base)
--cflags-$(CONFIG_RISCV)		+= -fpic -DNO_ALTERNATIVE
-+cflags-$(CONFIG_RISCV)		+= -fpic -DNO_ALTERNATIVE -mno-relax
- cflags-$(CONFIG_LOONGARCH)	+= -fpie
- 
- cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)	+= -I$(srctree)/scripts/dtc/libfdt
--- 
-2.35.3
+> 
+> Anyways, I didn't mean to start a debate over the priority of handling IRQs and
+> NMIs, quite the opposite actually.  The point I'm trying to make is that under
+> no circumstance do I want KVM to be making decisions about whether or not such
+> things are high priority.  I have no objection to KVM making information available
+> to whatever entity is making the actual decisions, it's having policy in KVM that
+> I am staunchly opposed to.
+
+Ok makes sense, I think we have converged on this now and I agree it seems
+wrong to bake the type of policy we were attempting into KVM, which may not
+work for everyone and makes it inflexible to experiment. So back to the
+drawing board on that..
+
+> > If an hrtimer expires on a CPU running a low priority workload, that
+> > hrtimer might itself wake up a high priority thread. If we don't boost
+> > the hrtimer interrupt handler, then that will delay the wakeup as
+> > well. It is always a chain of events and it has to be boosted from the
+> > first event. If a system does not wish to give an interrupt a high
+> > priority, then the typical way is to use threaded IRQs and lower the
+> > priority of the thread. That will give the interrupt handler lower
+> > priority and the guest is free to do that. We had many POCs before
+> > where we don't boost at all for interrupts and they all fall apart.
+> > This is the only POC that works without any issues as far as we know
+> > (we've been trying to do this for a long time :P).
+> 
+> In *your* environment.  The fact that it took multiple months to get a stable,
+> functional set of patches for one use case is *exactly* why I am pushing back on
+> this.  Change any number of things about the setup and odds are good that the
+> result would need different tuning.  E.g. the ratio of vCPUs to pCPUs, the number
+> of VMs, the number of vCPUs per VM, whether or not the host kernel is preemptible,
+> whether or not the guest kernel is preemptible, the tick rate of the host and
+> guest kernels, the workload of the VM, the affinity of tasks within the VM, and
+> and so on and so forth.
+> 
+> It's a catch-22 of sorts.  Anything that is generic enough to land upstream is
+> likely going to be too coarse grained to be universally applicable.
+
+Ok, agreed.
+
+> > Regarding perf, I similarly disagree. I think a PMU event is super
+> > important (example, some versions of the kernel watchdog that depend
+> > on PMU fail without it). But if some VM does not want this to be
+> > prioritized, they could just not opt-in for the feature IMO. I can see
+> > your point of view that not all VMs may want this behavior though.
+> 
+> Or a VM may want it conditionally, e.g. only for select tasks.
+
+Got it.
+
+> > > > At the moment, the only ABI is a shared memory structure and a custom
+> > > > MSR. This is no different from the existing steal time accounting
+> > > > where a shared structure is similarly shared between host and guest,
+> > > > we could perhaps augment that structure with other fields instead of
+> > > > adding a new one?
+> > >
+> > > I'm not concerned about the number of structures/fields, it's the amount/type of
+> > > information and the behavior of KVM that is problematic.  E.g. boosting the priority
+> > > of a vCPU that has a pending NMI is dubious.
+> > 
+> > I think NMIs have to be treated as high priority, the perf profiling
+> > interrupt for instance works well on x86 (unlike ARM) because it can
+> > interrupt any context (other than NMI and possibly the machine check
+> > ones). On ARM on the other hand, because the perf interrupt is a
+> > regular non-NMI interrupt, you cannot profile hardirq and IRQ-disable
+> > regions (this could have changed since pseudo-NMI features). So making
+> > the NMI a higher priority than IRQ is not dubious AFAICS, it is a
+> > requirement in many cases IMHO.
+> 
+> Again, many, but not all.  A large part of KVM's success is that KVM has very few
+> "opinions" of its own.  Outside of the MMU and a few paravirt paths, KVM mostly
+> just emulates/virtualizes hardware according to the desires of userspace.  This
+> has allowed a fairly large variety of use cases to spring up with relatively few
+> changes to KVM.
+> 
+> What I want to avoid is (a) adding something that only works for one use case
+> and (b) turning KVM into a scheduler of any kind.
+
+Ok. Makes sense.
+
+> > > Which illustrates one of the points I'm trying to make is kind of my point.
+> > > Upstream will never accept anything that's wildly complex or specific because such
+> > > a thing is unlikely to be maintainable.
+> > 
+> > TBH, it is not that complex though. 
+> 
+> Yet.  Your use case is happy with relatively simple, coarse-grained hooks.  Use
+> cases that want to squeeze out maximum performance, e.g. because shaving N% off
+> the runtime saves $$$, are likely willing to take on far more complexity, or may
+> just want to make decisions at a slightly different granularity.
+
+Ok.
+
+> > But let us know which parts, if any, can be further simplified (I saw your
+> > suggestions for next steps in the reply to Vineeth, those look good to me and
+> > we'll plan accordingly).
+> 
+> It's not a matter of simplifying things, it's a matter of KVM (a) not defining
+> policy of any kind and (b) KVM not defining a guest/host ABI.
+
+Ok.
+
+> > > > We have to intervene *before* the scheduler takes the vCPU thread off the
+> > > > CPU.
+> > >
+> > > If the host scheduler is directly involved in the paravirt shenanigans, then
+> > > there is no need to hook KVM's VM-Exit path because the scheduler already has the
+> > > information needed to make an informed decision.
+> > 
+> > Just to clarify, we're not making any "decisions" in the VM exit path,
+> 
+> Yes, you are.
+
+Ok sure, I see what you mean. We're making decisions about the "when to
+boost" thing. Having worked on the scheduler for a few years, I was more
+referring to "decisions that the scheduler makes such as where to place a
+task during wakeup, load balance, whether to migrate, etc" due to my bias.
+Those are complex decisions that even with these patches, it is upto the
+scheduler. But I see you were referring to a different type of decision
+making, so agreed with you.
+
+> > we're just giving the scheduler enough information (via the
+> > setscheduler call). The scheduler may just as well "decide" it wants
+> > to still preempt the vCPU thread -- that's Ok in fact required some
+> > times. We're just arming it with more information, specifically that
+> > this is an important thread. We can find another way to pass this
+> > information along (BPF etc) but I just wanted to mention that KVM is
+> > not really replacing the functionality or decision-making of the
+> > scheduler even with this POC.
+> 
+> Yes, it is.  kvm_vcpu_kick_boost() *directly* adjusts the priority of the task.
+> KVM is not just passing a message, KVM is defining a scheduling policy of "boost
+> vCPUs with pending IRQs, NMIs, SMIs, and PV unhalt events".
+
+Fair enough.
+
+> The VM-Exit path also makes those same decisions by boosting a vCPU if the guest
+> has requested boost *or* the vCPU has a pending event (but oddly, not pending
+> NMIs, SMIs, or PV unhalt events):
+> 
+> 	bool pending_event = kvm_cpu_has_pending_timer(vcpu) || kvm_cpu_has_interrupt(vcpu);
+> 
+> 	/*
+> 	 * vcpu needs a boost if
+> 	 * - A lazy boost request active or a pending latency sensitive event, and
+> 	 * - Preemption disabled duration on this vcpu has not crossed the threshold.
+> 	 */
+> 	return ((schedinfo.boost_req == VCPU_REQ_BOOST || pending_event) &&
+> 			!kvm_vcpu_exceeds_preempt_disabled_duration(&vcpu->arch));
+> 
+> 
+> Which, by the by is suboptimal.  Detecting for pending events isn't free, so you
+> ideally want to check for pending events if and only if the guest hasn't requested
+> a boost.
+
+That sounds like a worthwhile optimization! Agreed that the whole
+boosting-a-pending-event can also be looked at as policy..
+
+> > > > Similarly, in the case of an interrupt injected into the guest, we have
+> > > > to boost the vCPU before the "vCPU run" stage -- anything later might be too
+> > > > late.
+> > >
+> > > Except that this RFC doesn't actually do this.  KVM's relevant function names suck
+> > > and aren't helping you, but these patches boost vCPUs when events are *pended*,
+> > > not when they are actually injected.
+> > 
+> > We are doing the injection bit in:
+> > https://lore.kernel.org/all/20231214024727.3503870-5-vineeth@bitbyteword.org/
+> > 
+> > For instance, in:
+> > 
+> >  kvm_set_msi ->
+> >   kvm_irq_delivery_to_apic ->
+> >      kvm_apic_set_irq ->
+> >        __apic_accept_irq ->
+> >             kvm_vcpu_kick_boost();
+> > 
+> > The patch is a bit out of order because patch 4 depends on 3. Patch 3
+> > does what you're referring to, which is checking for pending events.
+> > 
+> > Did we miss something? If there is some path that we are missing, your
+> > help is much appreciated as you're likely much more versed with this
+> > code than me.  But doing the boosting at injection time is what has
+> > made all the difference (for instance with cyclictest latencies).
+> 
+> That accepts in IRQ into the vCPU's local APIC, it does not *inject* the IRQ into
+> the vCPU proper.  The actual injection is done by kvm_check_and_inject_events().
+> A pending IRQ is _usually_ delivered/injected fairly quickly, but not always.
+> 
+> E.g. if the guest has IRQs disabled (RFLAGS.IF=0), KVM can't immediately inject
+> the IRQ (without violating x86 architecture).  In that case, KVM will twiddle
+> VMCS/VMCB knobs to detect an IRQ window, i.e. to cause a VM-Exit when IRQs are
+> no longer blocked in the guest.
+> 
+> Your PoC actually (mostly) handles this (see above) by keeping the vCPU boosted
+> after EXIT_REASON_INTERRUPT_WINDOW (because the IRQ will obviously still be pending).
+
+Ah got it now, thanks for the detailed description of the implementation and
+what we might be missing. Will dig further.
+
+Thanks Sean!
+
+ - Joel
+
 
