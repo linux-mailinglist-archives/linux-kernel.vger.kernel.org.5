@@ -1,120 +1,87 @@
-Return-Path: <linux-kernel+bounces-24694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1262382C0F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:40:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A6882C0F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BCA72824FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:40:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7A98B23DD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7D06D1A9;
-	Fri, 12 Jan 2024 13:40:00 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5B222078
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 393541FB;
-	Fri, 12 Jan 2024 05:40:36 -0800 (PST)
-Received: from [10.57.77.195] (unknown [10.57.77.195])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EED703F5A1;
-	Fri, 12 Jan 2024 05:39:47 -0800 (PST)
-Message-ID: <d0f1617e-0088-4bd9-bea6-e89c63b0e2ae@arm.com>
-Date: Fri, 12 Jan 2024 14:39:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8886D1B1;
+	Fri, 12 Jan 2024 13:40:28 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A981B25746;
+	Fri, 12 Jan 2024 13:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from msexch01.omp.ru (10.188.4.12) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 12 Jan
+ 2024 16:40:17 +0300
+Received: from msexch01.omp.ru ([fe80::4020:d881:621a:6b6b]) by
+ msexch01.omp.ru ([fe80::4020:d881:621a:6b6b%5]) with mapi id 15.02.1258.012;
+ Fri, 12 Jan 2024 16:40:17 +0300
+From: Roman Smirnov <r.smirnov@omp.ru>
+To: Matthew Wilcox <willy@infradead.org>
+CC: "stable@vger.kernel.org" <stable@vger.kernel.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>, Sergey Shtylyov
+	<s.shtylyov@omp.ru>, Karina Yankevich <k.yankevich@omp.ru>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 5.10 0/2] mm/truncate: fix issue in ext4_set_page_dirty()
+Thread-Topic: [PATCH 5.10 0/2] mm/truncate: fix issue in ext4_set_page_dirty()
+Thread-Index: AQHaRJvZs/ufXYdw80SbjgapkLNiNLDUiucAgAGlSY4=
+Date: Fri, 12 Jan 2024 13:40:17 +0000
+Message-ID: <3cd52f6e1b3d4daba35fb350e990e646@omp.ru>
+References: <20240111143747.4418-1-r.smirnov@omp.ru>,<ZaAJwEg4rvleFuC9@casper.infradead.org>
+In-Reply-To: <ZaAJwEg4rvleFuC9@casper.infradead.org>
+Accept-Language: ru-RU, en-US
+Content-Language: ru-RU
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-kse-serverinfo: msexch01.omp.ru, 9
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: Clean, bases: 1/12/2024 9:53:00 AM
+x-kse-attachment-filter-triggered-rules: Clean
+x-kse-attachment-filter-triggered-filters: Clean
+x-kse-bulkmessagesfiltering-scan-result: InTheLimit
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/idle: Prevent stopping the tick when there is no
- cpuidle driver
-Content-Language: en-US
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
- linux-kernel@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>
-References: <20231215130501.24542-1-anna-maria@linutronix.de>
- <c09fb78b-5bf9-4c0b-b93f-10fd19a4ab36@arm.com> <87ttnmiif9.fsf@somnus>
- <06a2561f-557b-4eaa-8f11-75883bbbaef9@arm.com> <87a5pag6q7.fsf@somnus>
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <87a5pag6q7.fsf@somnus>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello Anna-Maria,
+On Thu, 11 Jan 2024 15:31:12 +0000, Matthew Wilcox wrote:
 
-On 1/12/24 11:56, Anna-Maria Behnsen wrote:
-> Pierre Gondois <pierre.gondois@arm.com> writes:
-> 
->> Hello Anna-Maria,
->>
->> On 1/9/24 17:24, Anna-Maria Behnsen wrote:
->>>
->>> When there is no cpuidle driver, there is no instance which could bring
->>> the CPU into a deeper C state. But at the moment the code does
->>> unconditionally try to stop the tick. So the aim of the patch is to
->>> remove this unconditional stop of the tick.
->>
->> I agree that the absence of cpuidle driver prevents from reaching deep
->> idle states. FWIU, there is however still benefits in stopping the tick
->> on such platform.
-> 
-> What's the benefit?
+> I do not understand the crash, and I do not understand why this patch
+> would fix it.  Can you explain either?
 
-I did the following test:
-- on an arm64 Juno-r2 platform (2 big A-72 and 4 little A-53 CPUs)
-- booting with 'cpuidle.off=1'
-- using the energy counters of the platforms
-   (the counters measure energy for the whole cluster of big/little CPUs)
-- letting the platform idling during 10s
+The WARNING appears in the following location:
+https://elixir.bootlin.com/linux/v5.10.205/source/fs/ext4/inode.c#L3693
 
-Without patch:
-|       |     big-CPUs | little-CPUs |
-|:------|-------------:|------------:|
-| count | 10           | 10          |
-| mean  |  0.353266    |  0.33399    |
-| std   |  0.000254574 |  0.00206803 |
-| min   |  0.352991    |  0.332145   |
-| 25%   |  0.353039    |  0.332506   |
-| 50%   |  0.353267    |  0.333089   |
-| 75%   |  0.353412    |  0.335231   |
-| max   |  0.353737    |  0.337964   |
+Reverse bisection pointed at the 2nd patch as a fix, but after=20
+backporting this patch to 5.10 branch I still hit the WARNING.
+I noticed that there was some missing code compared to the original
+patch:
 
-With patch:
-|       |     big-CPUs |  little-CPUs |
-|:------|-------------:|-------------:|
-| count | 10           | 10           |
-| mean  |  0.375086    |  0.352451    |
-| std   |  0.000299919 |  0.000752727 |
-| min   |  0.374527    |  0.351743    |
-| 25%   |  0.374872    |  0.35181     |
-| 50%   |  0.37512     |  0.352063    |
-| 75%   |  0.375335    |  0.353256    |
-| max   |  0.375485    |  0.353461    |
+if (folio_has_private(folio) && !filemap_release_folio(folio, 0))
+         return 0;
 
-So the energy consumption would be up:
-- ~6% for the big CPUs
-- ~10% for the litte CPUs
+Then I found a patch with this code before using folio, applied it,
+and tests showed the WARNING disappeared. I also used the linux test
+project to make sure nothing was broken. I'll try to dig a little
+deeper and explain the crash.
 
-Regards,
-Pierre
-
-
-> 
-> Thanks,
-> 
->          Anna-Maria
-> 
+Thanks for the reply.
 
