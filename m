@@ -1,343 +1,320 @@
-Return-Path: <linux-kernel+bounces-24557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 124C182BE43
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:14:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910BE82BE45
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B04B1C2528D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:14:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E50EF1F26D0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB8425FEFD;
-	Fri, 12 Jan 2024 10:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EDC95DF0A;
+	Fri, 12 Jan 2024 10:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gCGy8G8N"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVioRYqj"
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC865D91C;
-	Fri, 12 Jan 2024 10:13:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9469CC433C7;
-	Fri, 12 Jan 2024 10:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705054388;
-	bh=3KtQ6xuniH+/KSvmf9jB46ULXGxeZpaBXCup0Gi8jCE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gCGy8G8NP6jJ/9EseOOT1aCYT9eqknSzf4yHuI1OpEU4tDykkLeEsbz1k9xos+bqW
-	 0TtuqnH4YkbcsTKBE8YWvhw/pzDqHB21sae+Kim8YNqixJ3/0s56im1NdW5bFRmPre
-	 otkgV6NZ8LT6bMOb9qnhck3kFoEwRNIGpPS32ufKeGa0XS66UJv7dTxd2NgMdZ9Eym
-	 WeZVlpCpKSzkl9DamPOxRfL32bvhBZCGBTcItmfW/bGh085sorHxaobWht/Z9ozVnm
-	 cUwlGqidH2LHqiiUUeTAkP0SH9uM+T3eQKd9qClEzE0qPTPphCu8FqOL+lXW91k5vw
-	 /HMQH6pLSTBkQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v6 11/36] ftrace: Allow function_graph tracer to be enabled in instances
-Date: Fri, 12 Jan 2024 19:13:01 +0900
-Message-Id: <170505438157.459169.6484982360827324036.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170505424954.459169.10630626365737237288.stgit@devnote2>
-References: <170505424954.459169.10630626365737237288.stgit@devnote2>
-User-Agent: StGit/0.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BA460BAA;
+	Fri, 12 Jan 2024 10:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-466eb1aeb6eso1523045137.2;
+        Fri, 12 Jan 2024 02:13:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705054397; x=1705659197; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VLh0yoRDVYS02VLCwwHyJ7G1SLN/WeEw9DcnpYHiLy8=;
+        b=PVioRYqjX2fX5m2P74Pz3RcTvrd2CPXqtGJuFS/ybcx2K50++nl6SEx9w/3RcfquMW
+         sB7SmetKwyM+kkI2uvxIhxnVkN7Sa1KlkvAdK4kQH95E/OOC7C7W1XQlG9BChwBKdDl2
+         RlfuvwAwL4oDfWw9S+yCCybmJ4vXmWWa3G+QYXwhAej3KckSWq8O+QznHBniAhm/oB7/
+         RomEp8jeNy47olaU54gscwxDf11Gg2EnF4lbhrOJ/81RHQzgQe+5z/keEUt4eJ2AnbE8
+         /EGHeOOmGzpmWY3MbZ5LpCPosp4YYkjh5IcqZrP3p3sXW2Yhf3URQHibDT2Yp78wTRkw
+         tHbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705054397; x=1705659197;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VLh0yoRDVYS02VLCwwHyJ7G1SLN/WeEw9DcnpYHiLy8=;
+        b=BXkCkTi/Wj0fgi/SQDDYkCnl6RAYTeltBI9ytpsg6PiL+ARmZOcQuE2GvpUNJ+knVe
+         mztpWMQOTma8KoOUnrv68aJk+faqWep4v+ehlQipDQ07r5drj7K0oTXemftmtMiEmnCh
+         dMN/4nLsRcFgH60k/+OtETTq1C5ErCrq3LdlCpUtDHJIpPxthuQDG5qU5qmboh5/btOW
+         Is5jliKwckxmllVbJak8pmgH7sHpSqz7n6uEgNrAEU1AMGuzgIAblx37iQpYEFyqXOVd
+         NSowshowNyjXXdEcHepO47KqqijAeyePYZNR7XPCtUVjXLQGWO4wqdtevCGpvRXBFOaj
+         oGFg==
+X-Gm-Message-State: AOJu0YxvmnQ5G6TWGwc9dMyd32sj/niJqQ77iVt8oa8mbE8Zwnw6TbFv
+	ieS06CDnDVt5t10ueGkKupFmM9Z2xaaSjgmTrcs=
+X-Google-Smtp-Source: AGHT+IFQDf/FIrFVhRhUV9vm5XGLTZjFUEVfwVG8N6ns8pkN03egdrkuBfTz7+ZoClKaKUGTS1c/zqeTKBA+kzrkSng=
+X-Received: by 2002:a05:6102:4a2:b0:467:cbd5:14b6 with SMTP id
+ r2-20020a05610204a200b00467cbd514b6mr1033493vsa.7.1705054396637; Fri, 12 Jan
+ 2024 02:13:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20240111154106.3692206-1-ryan.roberts@arm.com>
+In-Reply-To: <20240111154106.3692206-1-ryan.roberts@arm.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Fri, 12 Jan 2024 23:13:05 +1300
+Message-ID: <CAGsJ_4xPgmgt57sw2c5==bPN+YL23zn=hZweu8u2ceWei7+q4g@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] mm/filemap: Allow arch to request folio size for
+ exec memory
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	John Hubbard <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+On Fri, Jan 12, 2024 at 4:41=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
+>
+> Change the readahead config so that if it is being requested for an
+> executable mapping, do a synchronous read of an arch-specified size in a
+> naturally aligned manner.
+>
+> On arm64 if memory is physically contiguous and naturally aligned to the
+> "contpte" size, we can use contpte mappings, which improves utilization
+> of the TLB. When paired with the "multi-size THP" changes, this works
+> well to reduce dTLB pressure. However iTLB pressure is still high due to
+> executable mappings having a low liklihood of being in the required
+> folio size and mapping alignment, even when the filesystem supports
+> readahead into large folios (e.g. XFS).
+>
+> The reason for the low liklihood is that the current readahead algorithm
+> starts with an order-2 folio and increases the folio order by 2 every
+> time the readahead mark is hit. But most executable memory is faulted in
+> fairly randomly and so the readahead mark is rarely hit and most
+> executable folios remain order-2. This is observed impirically and
+> confirmed from discussion with a gnu linker expert; in general, the
+> linker does nothing to group temporally accessed text together
+> spacially. Additionally, with the current read-around approach there are
+> no alignment guarrantees between the file and folio. This is
+> insufficient for arm64's contpte mapping requirement (order-4 for 4K
+> base pages).
+>
+> So it seems reasonable to special-case the read(ahead) logic for
+> executable mappings. The trade-off is performance improvement (due to
+> more efficient storage of the translations in iTLB) vs potential read
+> amplification (due to reading too much data around the fault which won't
+> be used), and the latter is independent of base page size. I've chosen
+> 64K folio size for arm64 which benefits both the 4K and 16K base page
+> size configs and shouldn't lead to any further read-amplification since
+> the old read-around path was (usually) reading blocks of 128K (with the
+> last 32K being async).
+>
+> Performance Benchmarking
+> ------------------------
+>
+> The below shows kernel compilation and speedometer javascript benchmarks
+> on Ampere Altra arm64 system. (The contpte patch series is applied in
+> the baseline).
+>
+> First, confirmation that this patch causes more memory to be contained
+> in 64K folios (this is for all file-backed memory so includes
+> non-executable too):
+>
+> | File-backed folios      |   Speedometer   |  Kernel Compile |
+> | by size as percentage   |-----------------|-----------------|
+> | of all mapped file mem  | before |  after | before |  after |
+> |=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D|=3D=3D=3D=3D=3D=3D=3D=3D|=3D=3D=3D=3D=3D=3D=3D=3D|=3D=3D=3D=3D=3D=3D=3D=
+=3D|=3D=3D=3D=3D=3D=3D=3D=3D|
+> |file-thp-aligned-16kB    |    45% |     9% |    46% |     7% |
+> |file-thp-aligned-32kB    |     2% |     0% |     3% |     1% |
+> |file-thp-aligned-64kB    |     3% |    63% |     5% |    80% |
+> |file-thp-aligned-128kB   |    11% |    11% |     0% |     0% |
+> |file-thp-unaligned-16kB  |     1% |     0% |     3% |     1% |
+> |file-thp-unaligned-128kB |     1% |     0% |     0% |     0% |
+> |file-thp-partial         |     0% |     0% |     0% |     0% |
+> |-------------------------|--------|--------|--------|--------|
+> |file-cont-aligned-64kB   |    16% |    75% |     5% |    80% |
+>
+> The above shows that for both use cases, the amount of file memory
+> backed by 16K folios reduces and the amount backed by 64K folios
+> increases significantly. And the amount of memory that is contpte-mapped
+> significantly increases (last line).
+>
+> And this is reflected in performance improvement:
+>
+> Kernel Compilation (smaller is faster):
+> | kernel   |   real-time |   kern-time |   user-time |   peak memory |
+> |----------|-------------|-------------|-------------|---------------|
+> | before   |        0.0% |        0.0% |        0.0% |          0.0% |
+> | after    |       -1.6% |       -2.1% |       -1.7% |          0.0% |
+>
+> Speedometer (bigger is faster):
+> | kernel   |   runs_per_min |   peak memory |
+> |----------|----------------|---------------|
+> | before   |           0.0% |          0.0% |
+> | after    |           1.3% |          1.0% |
+>
+> Both benchmarks show a ~1.5% improvement once the patch is applied.
+>
+> Alternatives
+> ------------
+>
+> I considered (and rejected for now - but I anticipate this patch will
+> stimulate discussion around what the best approach is) alternative
+> approaches:
+>
+>   - Expose a global user-controlled knob to set the preferred folio
+>     size; this would move policy to user space and allow (e.g.) setting
+>     it to PMD-size for even better iTLB utilizaiton. But this would add
+>     ABI, and I prefer to start with the simplest approach first. It also
+>     has the downside that a change wouldn't apply to memory already in
+>     the page cache that is in active use (e.g. libc) so we don't get the
+>     same level of utilization as for something that is fixed from boot.
+>
+>   - Add a per-vma attribute to allow user space to specify preferred
+>     folio size for memory faulted from the range. (we've talked about
+>     such a control in the context of mTHP). The dynamic loader would
+>     then be responsible for adding the annotations. Again this feels
+>     like something that could be added later if value was demonstrated.
+>
+>   - Enhance MADV_COLLAPSE to collapse to THP sizes less than PMD-size.
+>     This would still require dynamic linker involvement, but would
+>     additionally neccessitate a copy and all memory in the range would
+>     be synchronously faulted in, adding to application load time. It
+>     would work for filesystems that don't support large folios though.
+>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>
+> Hi all,
+>
+> I originally concocted something similar to this, with Matthew's help, as=
+ a
+> quick proof of concept hack. Since then I've tried a few different approa=
+ches
+> but always came back to this as the simplest solution. I expect this will=
+ raise
+> a few eyebrows but given it is providing a real performance win, I hope w=
+e can
+> converge to something that can be upstreamed.
+>
+> This depends on my contpte series to actually set the contiguous bit in t=
+he page
+> table.
+>
+> Thanks,
+> Ryan
+>
+>
+>  arch/arm64/include/asm/pgtable.h | 12 ++++++++++++
+>  include/linux/pgtable.h          | 12 ++++++++++++
+>  mm/filemap.c                     | 19 +++++++++++++++++++
+>  3 files changed, 43 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pg=
+table.h
+> index f5bf059291c3..8f8f3f7eb8d8 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1143,6 +1143,18 @@ static inline void update_mmu_cache_range(struct v=
+m_fault *vmf,
+>   */
+>  #define arch_wants_old_prefaulted_pte  cpu_has_hw_af
+>
+> +/*
+> + * Request exec memory is read into pagecache in at least 64K folios. Th=
+e
+> + * trade-off here is performance improvement due to storing translations=
+ more
+> + * effciently in the iTLB vs the potential for read amplification due to=
+ reading
+> + * data from disk that won't be used. The latter is independent of base =
+page
+> + * size, so we set a page-size independent block size of 64K. This size =
+can be
+> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB en=
+try),
+> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base page=
+s are in
+> + * use.
+> + */
+> +#define arch_wants_exec_folio_order(void) ilog2(SZ_64K >> PAGE_SHIFT)
+> +
+>  static inline bool pud_sect_supported(void)
+>  {
+>         return PAGE_SIZE =3D=3D SZ_4K;
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 170925379534..57090616d09c 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -428,6 +428,18 @@ static inline bool arch_has_hw_pte_young(void)
+>  }
+>  #endif
+>
+> +#ifndef arch_wants_exec_folio_order
+> +/*
+> + * Returns preferred minimum folio order for executable file-backed memo=
+ry. Must
+> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has no
+> + * preference and mm will not special-case executable memory in the page=
+cache.
+> + */
+> +static inline int arch_wants_exec_folio_order(void)
+> +{
+> +       return -1;
+> +}
+> +#endif
+> +
+>  #ifndef arch_check_zapped_pte
+>  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
+>                                          pte_t pte)
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 67ba56ecdd32..80a76d755534 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3115,6 +3115,25 @@ static struct file *do_sync_mmap_readahead(struct =
+vm_fault *vmf)
+>         }
+>  #endif
+>
+> +       /*
+> +        * Allow arch to request a preferred minimum folio order for exec=
+utable
+> +        * memory. This can often be beneficial to performance if (e.g.) =
+arm64
+> +        * can contpte-map the folio. Executable memory rarely benefits f=
+rom
+> +        * read-ahead anyway, due to its random access nature.
+> +        */
+> +       if (vm_flags & VM_EXEC) {
+> +               int order =3D arch_wants_exec_folio_order();
+> +
+> +               if (order >=3D 0) {
+> +                       fpin =3D maybe_unlock_mmap_for_io(vmf, fpin);
+> +                       ra->size =3D 1UL << order;
+> +                       ra->async_size =3D 0;
+> +                       ractl._index &=3D ~((unsigned long)ra->size - 1);
+> +                       page_cache_ra_order(&ractl, ra, order);
+> +                       return fpin;
+> +               }
+> +       }
 
-Now that function graph tracing can handle more than one user, allow it to
-be enabled in the ftrace instances. Note, the filtering of the functions is
-still joined by the top level set_ftrace_filter and friends, as well as the
-graph and nograph files.
+I don't know, but most filesystems don't support large mapping,even iomap.
+This patch might negatively affect them. i feel we need to check
+mapping_large_folio_support() at least.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Fix to remove set_graph_array() completely.
----
- include/linux/ftrace.h               |    1 +
- kernel/trace/ftrace.c                |    1 +
- kernel/trace/trace.h                 |   13 ++++++-
- kernel/trace/trace_functions.c       |    8 ++++
- kernel/trace/trace_functions_graph.c |   65 +++++++++++++++++++++-------------
- kernel/trace/trace_selftest.c        |    4 +-
- 6 files changed, 64 insertions(+), 28 deletions(-)
+> +
+>         /* If we don't want any read-ahead, don't bother */
+>         if (vm_flags & VM_RAND_READ)
+>                 return fpin;
+> --
+> 2.25.1
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index d173270352c3..4df3f44043b8 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1070,6 +1070,7 @@ extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph
- struct fgraph_ops {
- 	trace_func_graph_ent_t		entryfunc;
- 	trace_func_graph_ret_t		retfunc;
-+	void				*private;
- };
- 
- /*
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index b063ab2d2b1f..a720dd7cf290 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7323,6 +7323,7 @@ __init void ftrace_init_global_array_ops(struct trace_array *tr)
- 	tr->ops = &global_ops;
- 	tr->ops->private = tr;
- 	ftrace_init_trace_array(tr);
-+	init_array_fgraph_ops(tr);
- }
- 
- void ftrace_init_array_ops(struct trace_array *tr, ftrace_func_t func)
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b04a18af71e4..b11e4cf4f72e 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -395,6 +395,9 @@ struct trace_array {
- 	struct ftrace_ops	*ops;
- 	struct trace_pid_list	__rcu *function_pids;
- 	struct trace_pid_list	__rcu *function_no_pids;
-+#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+	struct fgraph_ops	*gops;
-+#endif
- #ifdef CONFIG_DYNAMIC_FTRACE
- 	/* All of these are protected by the ftrace_lock */
- 	struct list_head	func_probes;
-@@ -678,7 +681,6 @@ void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
- 
- void trace_graph_return(struct ftrace_graph_ret *trace, struct fgraph_ops *gops);
- int trace_graph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
--void set_graph_array(struct trace_array *tr);
- 
- void tracing_start_cmdline_record(void);
- void tracing_stop_cmdline_record(void);
-@@ -889,6 +891,9 @@ extern int __trace_graph_entry(struct trace_array *tr,
- extern void __trace_graph_return(struct trace_array *tr,
- 				 struct ftrace_graph_ret *trace,
- 				 unsigned int trace_ctx);
-+extern void init_array_fgraph_ops(struct trace_array *tr);
-+extern int allocate_fgraph_ops(struct trace_array *tr);
-+extern void free_fgraph_ops(struct trace_array *tr);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
- extern struct ftrace_hash __rcu *ftrace_graph_hash;
-@@ -1001,6 +1006,12 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
- {
- 	return TRACE_TYPE_UNHANDLED;
- }
-+static inline void init_array_fgraph_ops(struct trace_array *tr) { }
-+static inline int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	return 0;
-+}
-+static inline void free_fgraph_ops(struct trace_array *tr) { }
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- 
- extern struct list_head ftrace_pids;
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 9f1bfbe105e8..8e8da0d0ee52 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -80,6 +80,7 @@ void ftrace_free_ftrace_ops(struct trace_array *tr)
- int ftrace_create_function_files(struct trace_array *tr,
- 				 struct dentry *parent)
- {
-+	int ret;
- 	/*
- 	 * The top level array uses the "global_ops", and the files are
- 	 * created on boot up.
-@@ -90,6 +91,12 @@ int ftrace_create_function_files(struct trace_array *tr,
- 	if (!tr->ops)
- 		return -EINVAL;
- 
-+	ret = allocate_fgraph_ops(tr);
-+	if (ret) {
-+		kfree(tr->ops);
-+		return ret;
-+	}
-+
- 	ftrace_create_filter_files(tr->ops, parent);
- 
- 	return 0;
-@@ -99,6 +106,7 @@ void ftrace_destroy_function_files(struct trace_array *tr)
- {
- 	ftrace_destroy_filter_files(tr->ops);
- 	ftrace_free_ftrace_ops(tr);
-+	free_fgraph_ops(tr);
- }
- 
- static ftrace_func_t select_trace_function(u32 flags_val)
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index b7b142b65299..9ccc904a7703 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -83,8 +83,6 @@ static struct tracer_flags tracer_flags = {
- 	.opts = trace_opts
- };
- 
--static struct trace_array *graph_array;
--
- /*
-  * DURATION column is being also used to display IRQ signs,
-  * following values are used by print_graph_irq and others
-@@ -132,7 +130,7 @@ static inline int ftrace_graph_ignore_irqs(void)
- int trace_graph_entry(struct ftrace_graph_ent *trace,
- 		      struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -242,7 +240,7 @@ void __trace_graph_return(struct trace_array *tr,
- void trace_graph_return(struct ftrace_graph_ret *trace,
- 			struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -268,15 +266,6 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- 	local_irq_restore(flags);
- }
- 
--void set_graph_array(struct trace_array *tr)
--{
--	graph_array = tr;
--
--	/* Make graph_array visible before we start tracing */
--
--	smp_mb();
--}
--
- static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 				      struct fgraph_ops *gops)
- {
-@@ -294,25 +283,53 @@ static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 		trace_graph_return(trace, gops);
- }
- 
--static struct fgraph_ops funcgraph_thresh_ops = {
--	.entryfunc = &trace_graph_entry,
--	.retfunc = &trace_graph_thresh_return,
--};
--
- static struct fgraph_ops funcgraph_ops = {
- 	.entryfunc = &trace_graph_entry,
- 	.retfunc = &trace_graph_return,
- };
- 
-+int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	struct fgraph_ops *gops;
-+
-+	gops = kzalloc(sizeof(*gops), GFP_KERNEL);
-+	if (!gops)
-+		return -ENOMEM;
-+
-+	gops->entryfunc = &trace_graph_entry;
-+	gops->retfunc = &trace_graph_return;
-+
-+	tr->gops = gops;
-+	gops->private = tr;
-+	return 0;
-+}
-+
-+void free_fgraph_ops(struct trace_array *tr)
-+{
-+	kfree(tr->gops);
-+}
-+
-+__init void init_array_fgraph_ops(struct trace_array *tr)
-+{
-+	tr->gops = &funcgraph_ops;
-+	funcgraph_ops.private = tr;
-+}
-+
- static int graph_trace_init(struct trace_array *tr)
- {
- 	int ret;
- 
--	set_graph_array(tr);
-+	tr->gops->entryfunc = trace_graph_entry;
-+
- 	if (tracing_thresh)
--		ret = register_ftrace_graph(&funcgraph_thresh_ops);
-+		tr->gops->retfunc = trace_graph_thresh_return;
- 	else
--		ret = register_ftrace_graph(&funcgraph_ops);
-+		tr->gops->retfunc = trace_graph_return;
-+
-+	/* Make gops functions are visible before we start tracing */
-+	smp_mb();
-+
-+	ret = register_ftrace_graph(tr->gops);
- 	if (ret)
- 		return ret;
- 	tracing_start_cmdline_record();
-@@ -323,10 +340,7 @@ static int graph_trace_init(struct trace_array *tr)
- static void graph_trace_reset(struct trace_array *tr)
- {
- 	tracing_stop_cmdline_record();
--	if (tracing_thresh)
--		unregister_ftrace_graph(&funcgraph_thresh_ops);
--	else
--		unregister_ftrace_graph(&funcgraph_ops);
-+	unregister_ftrace_graph(tr->gops);
- }
- 
- static int graph_trace_update_thresh(struct trace_array *tr)
-@@ -1365,6 +1379,7 @@ static struct tracer graph_trace __tracer_data = {
- 	.print_header	= print_graph_headers,
- 	.flags		= &tracer_flags,
- 	.set_flag	= func_graph_set_flag,
-+	.allow_instances = true,
- #ifdef CONFIG_FTRACE_SELFTEST
- 	.selftest	= trace_selftest_startup_function_graph,
- #endif
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index 914331d8242c..f0758afa2f7d 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -813,7 +813,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	 * to detect and recover from possible hangs
- 	 */
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 	ret = register_ftrace_graph(&fgraph_ops);
- 	if (ret) {
- 		warn_failed_init_tracer(trace, ret);
-@@ -856,7 +856,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	cond_resched();
- 
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 
- 	/*
- 	 * Some archs *cough*PowerPC*cough* add characters to the
-
+Thanks
+Barry
 
