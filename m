@@ -1,180 +1,263 @@
-Return-Path: <linux-kernel+bounces-24936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 471EE82C4FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3B282C4FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:48:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A22251F22579
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:46:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EF0B1F229EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6BA1AAAD;
-	Fri, 12 Jan 2024 17:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wmRKJ2Re"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09EA17C90;
+	Fri, 12 Jan 2024 17:48:29 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACBD17C82
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so77653895e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705081576; x=1705686376; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dl7S1NAFZ0VMy5uxses/Ge8AyRzyd0KPqbKc6GY+0fA=;
-        b=wmRKJ2Rev5W/WEyud0eFZy0GVSndxeKJ6NtKpURIvN9jDVijc9YUjrKiGxFdxYfuMx
-         GIWq+9uHD8+5I1AmQoLP5LCk43vzvceVgA98MGvg2UBhdEQrmMkT5037h3efEWoR2LQY
-         Fg5CUKsUFbfIK9+6CGXkP29xj/0MRGRiGGoyi0//d6hBNqaZibjdp+WVfvoBjXp0bZoB
-         NefBWYziu9K0G4g2FvMIzdd2Dt+O3YLi+MEufsY0GmwVE6TRbWjGvjDppiXf8kJaUzm7
-         uHy7n60KA9C8EF4soy3wC8j918E7pUJLpyvutw/dkCXRVClqwSOGGp/FnC7nivN7eXFT
-         F6Pw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB5C17BDD
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf178281a5so131199639f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:48:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705081576; x=1705686376;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dl7S1NAFZ0VMy5uxses/Ge8AyRzyd0KPqbKc6GY+0fA=;
-        b=tAYdUIini2Am+5bkC8C9oq1Dq03HS6dUSHkMw5ExW5kK6RAtg9rVpY2nyJUZvtn7AQ
-         yXK/uaVWSBVDAgWgwcAuaNGRFO1yv9zuWiEh6vK1sdxOS7tKGz9wNfYQfk6tvUhgYVDX
-         y4UTlYWp1hh2N7mb5B50jFgiyMrtCphCHKJU/gxq9xX8s0Q4VqDQmuzsdcYCCGz+52f8
-         6TOF0X2RenUtwERk1IQAPtg6ySgBX7FcFNIv8Ko45tcG4eTV3IFQyexrfBeM6MERfE4x
-         nA2OMR7ti1UMSkbmH2272uBa64KAWg1m1SXTUNwegWZxKF06gcJPVAcgCog9SpzYfepJ
-         LJuw==
-X-Gm-Message-State: AOJu0YwqrcIN0Xrt71m9DWgOfOqzabujcFOFODbpMw/qXpaXL6qIq20v
-	9T+XiaLgJ7W0YjdIMbcg+7z2aZBqUIMKHw==
-X-Google-Smtp-Source: AGHT+IExNXnfteMV9BfxGzW28CNSMTJA6onBUh7HAdDLcbMAaUD6Z8XAylVAdNrCWD7kP3WcBIbblQ==
-X-Received: by 2002:a1c:7510:0:b0:40e:4244:c01b with SMTP id o16-20020a1c7510000000b0040e4244c01bmr750213wmc.7.1705081576064;
-        Fri, 12 Jan 2024 09:46:16 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id c8-20020a05600c0a4800b0040e4746d80fsm6513363wmq.19.2024.01.12.09.46.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 09:46:15 -0800 (PST)
-Message-ID: <61df52a3-860f-4813-9a71-72ab6be2d559@linaro.org>
-Date: Fri, 12 Jan 2024 18:46:13 +0100
+        d=1e100.net; s=20230601; t=1705081706; x=1705686506;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vp0EvF8U2UbDV2FBvCZR8vF2rmF/JTaZKQ9Mt2zNhDg=;
+        b=PczUtOm++mnWK7C00pNK4TY2gorAkjntW/P2Wxlpjsul3BbMldop65l1IX6A5OKaAg
+         sJ7kKfZQ3uk2Hbt39+XO/yNElTFqM4ueA2K9XkrqNjmbMhkK3zpnXzBPqGV3HZnUlPrP
+         OLZzncpMbr69jy/lBQfkYpDnyqupEZtKQYcT3paZAYv1LwEcT/y88lq4MdkkubLvbCvp
+         CIG29hBYfuierC60DorF0yA6hcTWM0iVbiESPNZAQy+vs8+7CL42CqHo0aXXL9+SMmn6
+         47bte7JFAD8FXPCT4TcmLEWjPrPNQpLZHGWEYan9Ju3AtKXj4DWaNtEAjQgs+Km+bnya
+         xGkg==
+X-Gm-Message-State: AOJu0YxxW9Ro5dTjlWaEmrxTP3bAmQCTNNwxi4SP5XqdFaWyi+S6S2zZ
+	qGh3C8/pidGGUuAbvxrtZo3qdqjB2aO3W5HDQRLwRURCnm8o
+X-Google-Smtp-Source: AGHT+IEa8/zxnGDI7CdiEMqCnGq9mwH97gPj+xChfYbUxcq77R4olEZ6Dpg/FGZ2zq3vRHImyUNWQawds73roMZWKeoC1i9zq9rl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: nuvoton: add Facebook Yosemite 4
- board
-Content-Language: en-US
-To: Patrick Williams <patrick@stwcx.xyz>
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
- Avi Fishman <avifishman70@gmail.com>, Tomer Maimon <tmaimon77@gmail.com>,
- Tali Perry <tali.perry1@gmail.com>, Patrick Venture <venture@google.com>,
- Nancy Yuen <yuenn@google.com>, Benjamin Fair <benjaminfair@google.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
- openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240112013654.1424451-1-Delphine_CC_Chiu@wiwynn.com>
- <20240112013654.1424451-2-Delphine_CC_Chiu@wiwynn.com>
- <8efef092-e70f-46c0-a60a-e62e676d6eb2@linaro.org>
- <ZaFydbPxbeczo97t@heinlein.vulture-banana.ts.net>
- <c0a83358-09a3-4c51-b8b6-6d6ea8b4f196@linaro.org>
- <ZaF56lwEi1MES89Q@heinlein.vulture-banana.ts.net>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZaF56lwEi1MES89Q@heinlein.vulture-banana.ts.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1a67:b0:360:96fd:f542 with SMTP id
+ w7-20020a056e021a6700b0036096fdf542mr177673ilv.1.1705081706424; Fri, 12 Jan
+ 2024 09:48:26 -0800 (PST)
+Date: Fri, 12 Jan 2024 09:48:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006cb174060ec34502@google.com>
+Subject: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in kill_f2fs_super
+From: syzbot <syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com>
+To: chao@kernel.org, jaegeuk@kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/01/2024 18:42, Patrick Williams wrote:
-> On Fri, Jan 12, 2024 at 06:14:26PM +0100, Krzysztof Kozlowski wrote:
->> On 12/01/2024 18:10, Patrick Williams wrote:
->>> On Fri, Jan 12, 2024 at 08:10:25AM +0100, Krzysztof Kozlowski wrote:
->>>> On 12/01/2024 02:36, Delphine CC Chiu wrote:
->>>>> Document the new compatibles used on Facebook Yosemite 4.
->>>>
->>>> There is Yosemite4 board already supported. What is this for?
->>>> https://lore.kernel.org/all/20240109072053.3980855-5-Delphine_CC_Chiu@wiwynn.com/
->>>
->>> Yosemite4 is a server chassis which is managed by a BMC.  The BMC is on
->>> a pluggable module card.  Typically we've used Aspeed chips for this,
->>> but we are building an alternative BMC module using Nuvoton BMC chips.
->>
->> There are few ways to solve this, like having different compatibles or
->> having some shared compatibles to note common part of hardware. However
->> usually the final compatible represents the final device, which here you
->> use for two entirely different products. This works only for the cases
->> of carrier boards, where that compatible indeed represents the same
->> hardware.
->>
->> Not your case. This needs fixing.
-> 
-> This patch:
-> +	model = "Facebook Yosemite 4 BMC";
-> +	compatible = "facebook,yosemite4-n-bmc", "nuvoton,npcm845";
-> 
-> Aspeed patch:
-> +       model = "Facebook Yosemite 4 BMC";
-> +       compatible = "facebook,yosemite4-bmc", "aspeed,ast2600";
-> 
-> These have different compatibles already ('-n' for Nuvoton).  Do we just
-> need the model to be clearly different also?  Maybe there is something
-> else I'm not understanding.
+Hello,
 
-Ah, no, it's fine. It is just a bit confusing.
+syzbot found the following issue on:
 
-However commit msg for sure misses a lot of this explanation. Please
-write something useful to avoid such discussions...
+HEAD commit:    70d201a40823 Merge tag 'f2fs-for-6.8-rc1' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e19adbe80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4607bc15d1c4bb90
+dashboard link: https://syzkaller.appspot.com/bug?extid=8f477ac014ff5b32d81f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Best regards,
-Krzysztof
+Unfortunately, I don't have any reproducer for this issue yet.
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4faf0f99e43c/disk-70d201a4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/23f59e40d2ef/vmlinux-70d201a4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a0bc6007f0a4/bzImage-70d201a4.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in destroy_device_list fs/f2fs/super.c:1606 [inline]
+BUG: KASAN: slab-use-after-free in kill_f2fs_super+0x618/0x690 fs/f2fs/super.c:4932
+Read of size 4 at addr ffff88801e12d77c by task syz-executor.1/9994
+
+CPU: 1 PID: 9994 Comm: syz-executor.1 Not tainted 6.7.0-syzkaller-06264-g70d201a40823 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:488
+ kasan_report+0x142/0x170 mm/kasan/report.c:601
+ destroy_device_list fs/f2fs/super.c:1606 [inline]
+ kill_f2fs_super+0x618/0x690 fs/f2fs/super.c:4932
+ deactivate_locked_super+0xc1/0x130 fs/super.c:477
+ mount_bdev+0x222/0x2d0 fs/super.c:1665
+ legacy_get_tree+0xef/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f0966e7e4aa
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0967ca6ef8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f0967ca6f80 RCX: 00007f0966e7e4aa
+RDX: 0000000020000040 RSI: 0000000020000080 RDI: 00007f0967ca6f40
+RBP: 0000000020000040 R08: 00007f0967ca6f80 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000080
+R13: 00007f0967ca6f40 R14: 00000000000054f9 R15: 00000000200004c0
+ </TASK>
+
+Allocated by task 9994:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:389
+ kasan_kmalloc include/linux/kasan.h:211 [inline]
+ kmalloc_trace+0x1d6/0x360 mm/slub.c:4012
+ kmalloc include/linux/slab.h:590 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ f2fs_fill_super+0xce/0x8170 fs/f2fs/super.c:4397
+ mount_bdev+0x206/0x2d0 fs/super.c:1663
+ legacy_get_tree+0xef/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Freed by task 9994:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
+ kasan_save_free_info+0x4e/0x60 mm/kasan/generic.c:634
+ poison_slab_object+0xa6/0xe0 mm/kasan/common.c:241
+ __kasan_slab_free+0x34/0x60 mm/kasan/common.c:257
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2121 [inline]
+ slab_free mm/slub.c:4299 [inline]
+ kfree+0x14a/0x380 mm/slub.c:4409
+ f2fs_fill_super+0x6b04/0x8170 fs/f2fs/super.c:4882
+ mount_bdev+0x206/0x2d0 fs/super.c:1663
+ legacy_get_tree+0xef/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+The buggy address belongs to the object at ffff88801e12c000
+ which belongs to the cache kmalloc-8k of size 8192
+The buggy address is located 6012 bytes inside of
+ freed 8192-byte region [ffff88801e12c000, ffff88801e12e000)
+
+The buggy address belongs to the physical page:
+page:ffffea0000784a00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1e128
+head:ffffea0000784a00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+anon flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c42280 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000000020002 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5039, tgid 5039 (syz-executor), ts 52116408241, free_ts 43224752194
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3311
+ __alloc_pages+0x255/0x680 mm/page_alloc.c:4567
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page+0x5f/0x160 mm/slub.c:2190
+ allocate_slab mm/slub.c:2354 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2407
+ ___slab_alloc+0xd17/0x13d0 mm/slub.c:3540
+ __slab_alloc mm/slub.c:3625 [inline]
+ __slab_alloc_node mm/slub.c:3678 [inline]
+ slab_alloc_node mm/slub.c:3850 [inline]
+ kmalloc_trace+0x25d/0x360 mm/slub.c:4007
+ kmalloc include/linux/slab.h:590 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1217 [inline]
+ cgroup1_get_tree+0x52e/0x8c0 kernel/cgroup/cgroup-v1.c:1244
+ vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+page last free pid 4924 tgid 4924 stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1140 [inline]
+ free_unref_page_prepare+0x959/0xa80 mm/page_alloc.c:2346
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
+ discard_slab mm/slub.c:2453 [inline]
+ __put_partials+0xeb/0x130 mm/slub.c:2922
+ put_cpu_partial+0x17b/0x250 mm/slub.c:2997
+ __slab_free+0x2fe/0x410 mm/slub.c:4166
+ qlink_free mm/kasan/quarantine.c:160 [inline]
+ qlist_free_all+0x6d/0xd0 mm/kasan/quarantine.c:176
+ kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:283
+ __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:324
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3813 [inline]
+ slab_alloc_node mm/slub.c:3860 [inline]
+ __do_kmalloc_node mm/slub.c:3980 [inline]
+ __kmalloc+0x1dd/0x490 mm/slub.c:3994
+ kmalloc include/linux/slab.h:594 [inline]
+ tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x2b7/0x730 security/tomoyo/file.c:822
+ security_inode_getattr+0xd3/0x120 security/security.c:2237
+ vfs_getattr+0x46/0x430 fs/stat.c:173
+ vfs_fstat fs/stat.c:198 [inline]
+ vfs_fstatat+0xd6/0x190 fs/stat.c:300
+ __do_sys_newfstatat fs/stat.c:468 [inline]
+ __se_sys_newfstatat fs/stat.c:462 [inline]
+ __x64_sys_newfstatat+0x117/0x190 fs/stat.c:462
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+
+Memory state around the buggy address:
+ ffff88801e12d600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801e12d680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88801e12d700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                                ^
+ ffff88801e12d780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801e12d800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
