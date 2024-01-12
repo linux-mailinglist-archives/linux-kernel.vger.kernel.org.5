@@ -1,150 +1,155 @@
-Return-Path: <linux-kernel+bounces-24855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B645D82C382
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:21:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B3482C384
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:21:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6585E285279
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:21:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A3C21F21BBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DBBF745F4;
-	Fri, 12 Jan 2024 16:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQi3GsuP"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA4974E15;
+	Fri, 12 Jan 2024 16:20:54 +0000 (UTC)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A313745CD;
-	Fri, 12 Jan 2024 16:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B53D745CD;
+	Fri, 12 Jan 2024 16:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e835800adso7049324e87.0;
-        Fri, 12 Jan 2024 08:20:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705076443; x=1705681243; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AXoDO1itquPIC9RJIHRuZv9xrGW2cJyAPsZoJpPFw+4=;
-        b=YQi3GsuPQdbaK3cuDViE97rOjQGoVKF8vp0RpTh+OmhXDyXd+w4Y46pzWIoWyLgbUF
-         wQOxuIMrXSTgmAjqcJ8GLeQ6WjBU67yNYk4uwz3RpUP/9Z1fMujV+e7o7uN/xz3vsARk
-         3exFKktnqZzr9NVzmap4CGlLj1OXI2N0DO67D10CNE3VIZ21zTURG8ahjjv4Tmw6oEo2
-         jq1LPdDP4alq1oWPCOrJT/JeJffsdx7Rvznu3JYVx83hzo162yy+l8y9uM3MZocBsw99
-         XzOWAZZvx1n2Wrkpeg085sAFb6C0y6Si5AmTa5DJCe76jqighGIqDPIt83+6Gl7FDdTA
-         NtRg==
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5f3da7ba2bfso68077987b3.3;
+        Fri, 12 Jan 2024 08:20:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705076443; x=1705681243;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AXoDO1itquPIC9RJIHRuZv9xrGW2cJyAPsZoJpPFw+4=;
-        b=nc8+nyT1HcqqyIDZLpsv2gWLrnx8OHiwqLgS1eiICTicwsVOj9YYAqX/BGbzKFec0C
-         plgwpHljb/qgJ9MHVQDhL9WOu9vDhdMYC4QT29TUpeQav6Nn5H3mzOcVR+O34Ea+o0vU
-         4ECp5RYLeTGNZR1IG9J4UsgL3U9QObMF/s7vo299hJ+vYk0qbM8GRQRVK/S+UXVqo62j
-         qINQs/EZvPuQOZTikokrWBvQqvdEFyWH+jHwrye8IOppVt1+tIs/Zk4uf93ShfDp2rC+
-         lDb6ncl5gKvZBz8qu/7R+cVy1b+Got8YMcFToK7injFEzYVtz4MKTjx74r5MuUNBjmwW
-         1erg==
-X-Gm-Message-State: AOJu0YxuMV3vPqvnDGPHhtG0P7sHKBK1jatNLUQKtj/nOgB/sCXYNe5y
-	bNmyUn88onWsOiNEQfsanbc=
-X-Google-Smtp-Source: AGHT+IE54+pPKK6YhmHg0iM9e5UupkHUdB/tKeoGr8eQ2XZMM3dBdNGnw8BrNqPksBRiLQFF6ydb5Q==
-X-Received: by 2002:a05:6512:128d:b0:50e:7b9c:8b1a with SMTP id u13-20020a056512128d00b0050e7b9c8b1amr697559lfs.95.1705076443029;
-        Fri, 12 Jan 2024 08:20:43 -0800 (PST)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id w26-20020a17090652da00b00a1c7b20e9e6sm1931682ejn.32.2024.01.12.08.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 08:20:42 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 12 Jan 2024 17:20:39 +0100
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: linux-input@vger.kernel.org, coreteam@netfilter.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, fsverity@lists.linux.dev,
-	bpf@vger.kernel.org, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com, cgroups@vger.kernel.org,
-	alexei.starovoitov@gmail.com, olsajiri@gmail.com,
-	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com
-Subject: Re: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
-Message-ID: <ZaFm13GyXUukcnkm@krava>
-References: <cover.1704565248.git.dxu@dxuuu.xyz>
+        d=1e100.net; s=20230601; t=1705076451; x=1705681251;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6cpwkfjYe1zF94sQukQ8o3Koi2YLeB3fY8FqoXNE21c=;
+        b=uGUCM9YbXy9m+xstVPQFrJXqMG2wZQ+3pACpus8qw4jhq9IMEIXG5CHt4HouG0GY+3
+         rsvirF6JDz4+LpLGb++UxWqBpdBqF9+2ioue0zUaSLoGlDgVi1zszXt9ZIRESJjxI6HO
+         Eq63I61SgEI7UMcyA80o0/WUWqN7/QUuBU0OQdS6FyPLXJGig/8Qjn+T9WAPiYqWwDi2
+         Et99FFCl2XB65crSYWWaomYrhA6B7hK2p2fOEDr2iIa7w5DIPvPn9nILaNiiBLH3O/Ch
+         K5OjNG02ddo5w39fxRRHcev6DxCfy3tE5wf8bgLSJK76b6HZEHXz1rAFUeN9qvWN8t87
+         4bQw==
+X-Gm-Message-State: AOJu0Yzqs6wsMFERWU/kcfJgQrEJ4oAB+0suaVcKGopkLNMaICcnFwzu
+	tS7XOvvrRhL9+kp9epwANEPpCPmQ0a5aMQ==
+X-Google-Smtp-Source: AGHT+IG7Dgz/aNlBMZeIRpYwmKvZqYxUjK3D6zzq0oyomm6WGwhsSphdtu5Q/cRiIipOExiuY7CiFw==
+X-Received: by 2002:a05:690c:f8e:b0:5e8:2eac:d77b with SMTP id df14-20020a05690c0f8e00b005e82eacd77bmr1811764ywb.9.1705076451242;
+        Fri, 12 Jan 2024 08:20:51 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id u80-20020a818453000000b005e7467eaa43sm1459526ywf.32.2024.01.12.08.20.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 08:20:51 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso69925147b3.1;
+        Fri, 12 Jan 2024 08:20:51 -0800 (PST)
+X-Received: by 2002:a05:690c:b08:b0:5ee:381a:3b33 with SMTP id
+ cj8-20020a05690c0b0800b005ee381a3b33mr1571767ywb.94.1705076450821; Fri, 12
+ Jan 2024 08:20:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1704565248.git.dxu@dxuuu.xyz>
+References: <20231227130810.2744550-1-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdVnsJfOtZPpr+_MRNkx-bSXrCm8Hy_j6Gy58WnGn_kaMA@mail.gmail.com> <30608a28-b1e3-4ad3-aad5-1033eb8adc6f@tuxon.dev>
+In-Reply-To: <30608a28-b1e3-4ad3-aad5-1033eb8adc6f@tuxon.dev>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 12 Jan 2024 17:20:39 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXokhEEARUSSY_x74A0eRGpeJ2Y30neMP57fnjRJ7HQeg@mail.gmail.com>
+Message-ID: <CAMuHMdXokhEEARUSSY_x74A0eRGpeJ2Y30neMP57fnjRJ7HQeg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: renesas: rzg3s-smarc: Add gpio keys
+To: claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc: magnus.damm@gmail.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 06, 2024 at 11:24:07AM -0700, Daniel Xu wrote:
-> === Description ===
-> 
-> This is a bpf-treewide change that annotates all kfuncs as such inside
-> .BTF_ids. This annotation eventually allows us to automatically generate
-> kfunc prototypes from bpftool.
-> 
-> We store this metadata inside a yet-unused flags field inside struct
-> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
-> 
-> More details about the full chain of events are available in commit 3's
-> description.
-> 
-> The accompanying pahole changes (still needs some cleanup) can be viewed
-> here on this "frozen" branch [0].
+Hi Claudiu,
 
-so the plan is to have bpftool support to generate header file
-with detected kfuncs?
+On Fri, Jan 12, 2024 at 4:38=E2=80=AFPM claudiu beznea <claudiu.beznea@tuxo=
+n.dev> wrote:
+> On 12.01.2024 15:55, Geert Uytterhoeven wrote:
+> > On Wed, Dec 27, 2023 at 2:08=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.d=
+ev> wrote:
+> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>
+> >> RZ SMARC Carrier II board has 3 user buttons called USER_SW1, USER_SW2=
+,
+> >> USER_SW3. Add a DT node in device tree to propertly instantiate the
+> >> gpio-keys driver for these buttons.
+> >>
+> >> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >
+> > Thanks for your patch!
+> >
+> >> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+> >> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+> >> @@ -14,6 +15,37 @@ aliases {
+> >>                 mmc1 =3D &sdhi1;
+> >>         };
+> >>
+> >> +       keys {
+> >
+> > Do you mind if I s/keys/keypad/ while applying? ...
+>
+> Is not actually a keypad... there are 3 buttons in a corner of the board.=
+.
+>
+> I see only 2 entries in arm64 and arm DTS directory following this patter=
+n
+> for gpio-keys compatible node:
+>
+>  arch/arm/boot/dts/renesas/r8a7779-marzen.dts
+>  arch/arm/boot/dts/renesas/r8a7779-marzen.dts
+>
+> But if you prefer it like this, I have nothing against.
+>
+> Just asking, do you have a particular reason for naming it like this?
 
-jirka
+See the discussion in [1], and the resulting patch[2], which added the
+(so far) single user in arch/arm/boot/dts/renesas/r8a7779-marzen.dts
 
-> 
-> [0]: https://github.com/danobi/pahole/tree/kfunc_btf-mailed
-> 
-> === Changelog ===
-> 
-> Changes from v2:
-> * Only WARN() for vmlinux kfuncs
-> 
-> Changes from v1:
-> * Move WARN_ON() up a call level
-> * Also return error when kfunc set is not properly tagged
-> * Use BTF_KFUNCS_START/END instead of flags
-> * Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
-> 
-> Daniel Xu (3):
->   bpf: btf: Support flags for BTF_SET8 sets
->   bpf: btf: Add BTF_KFUNCS_START/END macro pair
->   bpf: treewide: Annotate BPF kfuncs in BTF
-> 
->  drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
->  fs/verity/measure.c                           |  4 ++--
->  include/linux/btf_ids.h                       | 21 +++++++++++++++----
->  kernel/bpf/btf.c                              |  8 +++++++
->  kernel/bpf/cpumask.c                          |  4 ++--
->  kernel/bpf/helpers.c                          |  8 +++----
->  kernel/bpf/map_iter.c                         |  4 ++--
->  kernel/cgroup/rstat.c                         |  4 ++--
->  kernel/trace/bpf_trace.c                      |  8 +++----
->  net/bpf/test_run.c                            |  8 +++----
->  net/core/filter.c                             | 16 +++++++-------
->  net/core/xdp.c                                |  4 ++--
->  net/ipv4/bpf_tcp_ca.c                         |  4 ++--
->  net/ipv4/fou_bpf.c                            |  4 ++--
->  net/ipv4/tcp_bbr.c                            |  4 ++--
->  net/ipv4/tcp_cubic.c                          |  4 ++--
->  net/ipv4/tcp_dctcp.c                          |  4 ++--
->  net/netfilter/nf_conntrack_bpf.c              |  4 ++--
->  net/netfilter/nf_nat_bpf.c                    |  4 ++--
->  net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
->  net/xfrm/xfrm_state_bpf.c                     |  4 ++--
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
->  22 files changed, 81 insertions(+), 60 deletions(-)
-> 
-> -- 
-> 2.42.1
-> 
+[1] https://lore.kernel.org/all/20231023144134.1881973-1-geert+renesas@glid=
+er.be
+[2] https://lore.kernel.org/all/eec1ccfb75c6215428609fdcaf3a37c75fe1fc87.16=
+98228163.git.geert+renesas@glider.be
+>
+> >> +                       interrupt-parent =3D <&pinctrl>;
+> >
+> > ... and move these one level up, to avoid duplication?
+>
+> Moving it just near compatible will make the schema validation to fail wi=
+th
+> this (driver is working, though):
+>
+> arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dtb: keys:
+> 'interrupt-parent' does not match any of the regexes:
+> '^(button|event|key|switch|(button|event|key|switch)-[a-z0-9-]+|[a-z0-9-]=
++-(button|event|key|switch))$',
+> 'pinctrl-[0-9]+'
+>         from schema $id: http://devicetree.org/schemas/input/gpio-keys.ya=
+ml#
+
+Oops, I had completely forgotten r8a7779-marzen.dts triggers this, too...
+Let's keep it for now.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
