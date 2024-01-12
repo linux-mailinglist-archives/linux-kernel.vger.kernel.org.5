@@ -1,230 +1,183 @@
-Return-Path: <linux-kernel+bounces-24963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A26982C559
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:23:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE22A82C55C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A6981F2484C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:23:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98957284FF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D05517C95;
-	Fri, 12 Jan 2024 18:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA34E1AABE;
+	Fri, 12 Jan 2024 18:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cdlcrtmq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZNMBC8z2"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597902560A;
-	Fri, 12 Jan 2024 18:23:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B58C433C7;
-	Fri, 12 Jan 2024 18:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705083780;
-	bh=lU3HCrdKgQWP+2uYW9g0VOt5OLiZn7shgDnF710EWXA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cdlcrtmqtc4RIj/ehk3I9GgSPENo8oFhjP05Q1gjkiiVIzH5RcFlOnoRBKmnvhC8S
-	 MGXlhqBNmJ8uXmDzFEhy6HHY8uFIDjaqWE2klebrDfPJj9VW4D3a3jbQ//VIGi2hRH
-	 gspA72SUP4AyCNu0l3Fo/7lOcYKiFnkg1v+4YSbAxd1vmnAe5OaBzZa/eft3LOcfcD
-	 CtS4KbLBHMQ8/pqAfF+aOJPlXRzoPR70YFSHl8dXneVjl0OVTxUUejeYYb5heSdOar
-	 0G9Y46AfkxdhMHfrAKnFBj2aJHokLxuY/VK1E9WXEjbNU9zGnRt47+Ts4v95VnzCEX
-	 bKU0KuUs0/AmQ==
-Date: Fri, 12 Jan 2024 18:22:55 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Neal Gompa <neal@gompa.dev>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Nikolai Kondrashov <spbnick@gmail.com>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
-References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
- <202401101525.112E8234@keescook>
- <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
- <202401101625.3664EA5B@keescook>
- <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
- <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E62A1AAA6
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 18:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-556c3f0d6c5so8051157a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:24:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705083858; x=1705688658; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tnu8ykiaLhvhfeKozjNh1muEVcXSR2hqekqJyEyZRj8=;
+        b=ZNMBC8z2q8l1bz1V5MGF1cJ52PXvhWn7NOyjaJY38Rn9ZW5qgXgDl3sDJZ5+RlXgPn
+         Roz+39KQ5pK1ep8QCghItxi1Hcy7bHmHPAjuX0KmjiosN2Adq72qI6Nv3bSXdXfxLom9
+         jzWwEzR1K3eloJgcfiv5f/yyIAg2MuTIBHOfXI6rwPaDHMMd6KgEt3VzV6rTEKDw1IzP
+         UHV04/ebWbS/6AKhLjAPhiO4PEWduYenNRpy0l9L50lGP85Av6M025kKfFWgjrvNOctF
+         y2N/RmdCpzjDB3eGVTnWjpl+0NaOSzN7vGU1z13hN9IGORUR1lASJZw+kA0hTwvY1FTo
+         fEIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705083858; x=1705688658;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tnu8ykiaLhvhfeKozjNh1muEVcXSR2hqekqJyEyZRj8=;
+        b=bUsYMR4IhOQrmgPnvtMy+xY/czJUnWsfjH+HZSPm0xpRbfYtS8d2c+oL7rhrs3/AAB
+         g264QEvnMRYafKRprj2TMeSFRG7IYewYlqZ+WMo9PbUzKCHFjEqP4An/SgWCjMjnMgea
+         SvytHFC0Dt33K6K8Yb93eeodR3MCRyL2kc08Z9kCjXRLrV70vdVCnUeqHrh/u4b8KLQn
+         p4yvj7k/wEUn0FXU4CbtbGuXhQugEU9tjLeNC7RDUH1bNUZa2/IX+o1ULwq3U7FJfuL0
+         UKqVNrPnSsYM1w6vqoiwE1DpI6NVD+LrjYyTyUcROT7QCIVBui789WDz/JQPRfIVgZrt
+         pP/g==
+X-Gm-Message-State: AOJu0YzP1mN/3v/arUMHhFjQMxkgIgZdamvmSfAXqv+EWEtGUOK35deU
+	ZfS50Av+VOzS3yylGm3shn4=
+X-Google-Smtp-Source: AGHT+IEKDaQ2qCIotP2BJERSrZBjWe+z/Mch3BGJTxeTpS6IVe0Xn9pm7TXN4WqlJ9/U7ffR14Vtxg==
+X-Received: by 2002:a05:6402:3d2:b0:557:2aae:a362 with SMTP id t18-20020a05640203d200b005572aaea362mr550826edw.109.1705083858309;
+        Fri, 12 Jan 2024 10:24:18 -0800 (PST)
+Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
+        by smtp.gmail.com with ESMTPSA id i16-20020aa7c9d0000000b005582b9d551csm2070960edt.30.2024.01.12.10.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 10:24:17 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 12 Jan 2024 19:24:14 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCH] Revert "sched/cpufreq: Rework schedutil governor
+ performance estimation" and dependent commit
+Message-ID: <ZaGDziEnKJ988zHh@gmail.com>
+References: <ZTz9RpZxfxysYCmt@gmail.com>
+ <ZZwBi/YmnMqm7zrO@gmail.com>
+ <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+ <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+ <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
+ <ZZ/MY0KEGXotqGHY@gmail.com>
+ <CAKfTPtCR5U++CF93aUq8i+j9G5nLRvUUbCESX=CwemYu9LKOqQ@mail.gmail.com>
+ <ZaBUFETV53cRF7RB@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UV+e11fnWR99TzU9"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
-X-Cookie: I want a WESSON OIL lease!!
+In-Reply-To: <ZaBUFETV53cRF7RB@gmail.com>
 
 
---UV+e11fnWR99TzU9
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-On Fri, Jan 12, 2024 at 06:11:04AM -0500, Neal Gompa wrote:
-> On Thu, Jan 11, 2024 at 8:11=E2=80=AFPM Kent Overstreet
-> > On Thu, Jan 11, 2024 at 09:47:26PM +0000, Mark Brown wrote:
+> > I can provide a clean revert of only :
+> > f12560779f9d ("sched/cpufreq: Rework iowait boost")
+> > 9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor performance estimation")
+> 
+> I've done this too, see this new commit in sched/urgent:
+> 
+>   60ee1706bd11 ("Revert "sched/cpufreq: Rework schedutil governor performance estimation" and dependent commit")
+> 
+> Also attached below.
+> 
+> > if the fix that i proposed doesn't work:
+> > https://lore.kernel.org/all/ZZ+ixagkxRPYyTCE@vingu-book/
+> 
+> Yeah - although of course Linus is free to just pull the revert as well. 
+> I'll try to reproduce the regression locally as well.
 
-> > > It's certainly an issue and it's much better if people do manage to f=
-it
-> > > their tests into some existing thing but I'm not convinced that's the
-> > > big reason why you have a bunch of different systems running separate=
-ly
-> > > and doing different things.  For example the enterprise vendors will
-> > > naturally tend to have a bunch of server systems in their labs and fo=
-cus
-> > > on their testing needs while I know the Intel audio CI setup has a bu=
-nch
+Update & heads up: unfortunately I'm unable to reproduce the regression on 
+a fairly similar system with a Threadripper 3970X CPU.
 
-> > No, you're overthinking.
+Kernel build times are very close, with or without the revert, on vanilla 
+v6.7 or v6.7+sched/core.
 
-> > The vast majority of kernel testing requires no special hardware, just a
-> > virtual machine.
+Here's a few results where I tried to quantify kernel build times without 
+having to wait a long time.
 
-This depends a lot on the area of the kernel you're looking at - some
-things are very amenable to testing in a VM but there's plenty of code
-where you really do want to ensure that at some point you're running
-with some actual hardware, ideally as wide a range of it with diverse
-implementation decisions as you can manage.  OTOH some things can only
-be tested virtually because the hardware doesn't exist yet!
+Re-building the kernel/**.o object files in a loop:
 
-> > There is _no fucking reason_ we shouldn't be able to run tests on our
-> > own local machines - _local_ machines, not waiting for the Intel CI
-> > setup and asking for a git branch to be tested, not waiting for who
-> > knows how long for the CI farm to get to it - just run the damn tests
-> > immediately and get immediate feedback.
+   $ perf stat --pre 'rm -f kernel/*.o kernel/*/*.o kernel/*/*/*.o' --null --sync --repeat 3 make -j64 kernel/ >/dev/null
 
-> > You guys are overthinking and overengineering and ignoring the basics,
-> > the way enterprise people always do.
 
-> As one of those former enterprise people that actually did do this
-> stuff, I can say that even when I was "in the enterprise", I tried to
-> avoid overthinking and overengineering stuff like this. :)
+    # v6.7.0:
+    # bootup default schedutil governor:
+              24.521 +- 0.077 seconds time elapsed  ( +-  0.31% )
+              24.644 +- 0.071 seconds time elapsed  ( +-  0.29% )
 
-> Nobody can maintain anything that's so complicated nobody can run the
-> tests on their machine. That is the root of all sadness.
+    # cpufreq-max:
+              24.452 +- 0.110 seconds time elapsed  ( +-  0.45% )
+              24.482 +- 0.048 seconds time elapsed  ( +-  0.20% )
 
-Yeah, similar with a lot of the more hardware focused or embedded stuff
-- running something on the machine that's in front of you is seldom the
-bit that causes substantial issues.  Most of the exceptions I've
-personally dealt with involved testing hardware (from simple stuff like
-wiring the audio inputs and outputs together to verify that they're
-working to attaching fancy test equipment to simulate things or validate
-that desired physical parameters are being achieved).
+    # v6.7.0+sched/core:
+    # bootup default schedutil governor:
+              24.666 +- 0.063 seconds time elapsed  ( +-  0.26% )
+              24.809 +- 0.118 seconds time elapsed  ( +-  0.48% )
 
-> > > of the existing systems fit well.  Anecdotally it seems much more com=
-mon
-> > > to see people looking for things to reuse in order to save time than =
-it
-> > > is to see people going off and reinventing the world.
+The fully-cached build numbers are very close to each other, and during the 
+hot phase of the kernel build all CPUs are saturated.
 
-> > It's a basic lack of leadership. Yes, the younger engineers are always
-> > going to be doing the new and shiny, and always going to want to build
-> > something new instead of finishing off the tests or integrating with
-> > something existing. Which is why we're supposed to have managers saying
-> > "ok, what do I need to prioritize for my team be able to develop
-> > effectively".
+The 2x performance regression that Linus is seeing is either some 
+pathological wakeup behavior, or perhaps the cores don't transition 
+frequencies? The difference between the lowest and highest frequency is 
+pretty substantial (at least on my box):
 
-That sounds more like a "(reproducible) tests don't exist" complaint
-which is a different thing again to people going off and NIHing fancy
-frameworks.
+  cpu MHz		: 2200.000
+  ...
+  cpu MHz		: 4000.000
 
-> > > That does assume that you're building and running everything directly=
- on
-> > > the system under test and are happy to have the test in a VM which is=
-n't
-> > > an assumption that holds universally, and also that whoever's doing t=
-he
-> > > testing doesn't want to do something like use their own distro or
-> > > something - like I say none of it looks too unreasonable for
-> > > filesystems.
 
-> > No, I'm doing it that way because technically that's the simplest way to
-> > do it.
+There was *one* test when the tree was cache-cold, when I saw really bad 
+performance (which I didn't really expect with my nvram system), with -j32 
+builds:
 
-> > All you guys building crazy contraptions for running tests on Google
-> > Cloud or Amazon or whatever - you're building technical workarounds for
-> > broken procurement.
+   Performance counter stats for 'make -j32 kernel/' (3 runs):
 
-I think you're addressing some specific stuff that I'm not super
-familiar with here?  My own stuff (and most of the stuff I end up
-looking at) involves driving actual hardware.
+              64.34 +- 39.22 seconds time elapsed  ( +- 60.95% )
+              25.08 +- 0.142 seconds time elapsed  ( +-  0.56% )
+              24.97 +- 0.072 seconds time elapsed  ( +-  0.29% )
 
-> > Just requisition the damn machines.
+Unfortunately that outlier was on a vanilla v6.7 bootup.
 
-There's some assumptions there which are true for a lot of people
-working on the kernel but not all of them...
+As a next step I could try Linus's specific config, maybe there's some 
+detail in it that makes the difference.
 
-> Running in the cloud does not mean it has to be complicated. It can be
-> a simple Buildbot or whatever that knows how to spawn spot instances
-> for tests and destroy them when they're done *if the test passed*. If
-> a test failed on an instance, it could hold onto them for a day or two
-> for someone to debug if needed.
+The commit itself that Linus bisected to (9c0b4bb7f6303c) doesn't *seem* 
+wrong in itself, especially without uclamp [I presume Linus doesn't use 
+CONFIG_UCLAMP_TASK=y and the cpu.uclamp.min/uclamp.max cgroup interface 
+that goes with it?], but the commit changes how we use sched_util metrics, 
+which could change scheduling patterns - which is why I was spending many 
+hours yesterday and today trying to find a pathological workload to 
+reproduce this. No luck so far.
 
-> (I mention Buildbot because in a previous life, I used that to run
-> tests for the dattobd out-of-tree kernel module before. That was the
-> strategy I used for it.)
+Linus: I can send a pull request for the 2-commit revert, or maybe you 
+could try Vincent's guess-patch that tries to restore to previous behavior 
+as closely as possible.
 
-Yeah, or if your thing runs in a Docker container rather than a VM then
-throwing it at a Kubernetes cluster using a batch job isn't a big jump.
+Thanks,
 
-> > I'd also really like to get automated performance testing going too,
-> > which would have similar requirements in that jobs would need to be
-> > scheduled on specific dedicated machines. I think what you're doing
-> > could still build off of some common infrastructure.
-
-It does actually - like quite a few test labs mine is based around LAVA,
-labgrid is the other popular option (people were actually thinking about
-integrating the two recently since labgrid is a bit lower level than
-LAVA and they could conceptually play nicely with each other).  Since
-the control API is internet accessible this means that it's really
-simple for me to to donate spare time on the boards to KernelCI as it
-understands how to drive LAVA, testing that I in turn use myself.  Both
-my stuff and KernelCI use a repository of glue which knows how to drive
-various testsuites inside a LAVA job, that's also used by other systems
-using LAVA like LKFT.
-
-The custom stuff I have is all fairly thin (and quite janky), mostly
-just either things specific to my physical lab or managing which tests I
-want to run and what results I expect.  What I've got is *much* more
-limited than I'd like, and frankly if I wasn't able to pick up huge
-amounts of preexisting work most of this stuff would not be happening.
-
-> > > I'd also note that the 9 hour turnaround time for that test set you're
-> > > pointing at isn't exactly what I'd associate with immediate feedback.
-
-> > My CI shards at the subtest level, and like I mentioned I run 10 VMs per
-> > physical machine, so with just 2 of the 80 core Ampere boxes I get full
-> > test runs done in ~20 minutes.
-
-> This design, ironically, is way more cloud-friendly than a lot of
-> testing system designs I've seen in the past. :)
-
-Sounds like a small private cloud to me!  :P
-
---UV+e11fnWR99TzU9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWhg38ACgkQJNaLcl1U
-h9DHZwf+PUi1dDbFvsjAfmvcY+0m2KkcjKJUtDiUwTEHmzVMfX8ecVVG8n3KvIoK
-yJPiP3akTv4vWMqCVYjXdWrIWgxd9JD3tLscfll2OH1dFJPKVKynWNhqdAKLfBIv
-dZALV/v+MthofRA4/SQclK5mUqp8TfQ9Y+oHdKoc9IZ/ouD2XKpmdx2Pd7czeDXF
-3g5bgNNV0B6qTNySSsk9kFIMqGrFd9x8lD5JGDI+Yn0Pszd1apv0G2Jd0GizYuUa
-0zWhQFJC1o7YVIdocJlIUQMMw4DarW45ZWzhHOqw/l4qyJ5ozT5LPB+PzEmfNLQj
-Sk+tVn8kcBGo7OmCWlw8wcd5eUNqvQ==
-=b3J3
------END PGP SIGNATURE-----
-
---UV+e11fnWR99TzU9--
+	Ingo
 
