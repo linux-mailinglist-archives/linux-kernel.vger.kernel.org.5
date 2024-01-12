@@ -1,127 +1,132 @@
-Return-Path: <linux-kernel+bounces-24741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0857382C1A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:25:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC9E82C1AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E3111F23B06
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:25:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71C3E1C21CEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BAFD74E03;
-	Fri, 12 Jan 2024 14:23:48 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD858745F1
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 987091FB;
-	Fri, 12 Jan 2024 06:24:31 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BD8D3F5A1;
-	Fri, 12 Jan 2024 06:23:43 -0800 (PST)
-Message-ID: <4405adb5-0b16-4716-9542-47d8bb1737ee@arm.com>
-Date: Fri, 12 Jan 2024 15:23:41 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 309E76D1C3;
+	Fri, 12 Jan 2024 14:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ME1AYTsv"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D446C6BB45;
+	Fri, 12 Jan 2024 14:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40CEPcfP087825;
+	Fri, 12 Jan 2024 08:25:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705069538;
+	bh=vrIOR55d4f+zfTazwATsPkDxflsXmVUUyKRUlABLwvg=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=ME1AYTsvVj3lKj9pYvLghfQ+lD9PzIZLGhBDfKBUCivY8xPfTe6SoGYa9I5/g4Zkt
+	 IWKiKAe+kga5wit/ikFBY84ECh6uJfDIeHIRjP52o2VeVwpLtDlhFKk03u4tqE8/fh
+	 viMXw0uGjV6gS6Rji4FaZg3UJihU94LW94DvRs+8=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40CEPbCg100103
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 12 Jan 2024 08:25:38 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 12
+ Jan 2024 08:25:37 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 12 Jan 2024 08:25:37 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40CEPbwF030055;
+	Fri, 12 Jan 2024 08:25:37 -0600
+Date: Fri, 12 Jan 2024 08:25:37 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Sjoerd Simons <sjoerd@collabora.com>
+CC: <linux-arm-kernel@lists.infradead.org>, Roger Quadros <rogerq@kernel.org>,
+        <kernel@collabora.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am625-beagleplay: Use the builtin
+ mdio bus
+Message-ID: <20240112142537.axjy5risfe5lpnqc@quintet>
+References: <20240112124505.2054212-1-sjoerd@collabora.com>
+ <20240112135000.b54xz3boeua7y2jf@music>
+ <2ce27ed917b9bd569ee4a7f87b3d9b78d07cecbd.camel@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Scheduler changes for v6.8
-Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>
-References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com>
- <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
- <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
- <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
- <ZZ+ixagkxRPYyTCE@vingu-book>
- <CAHk-=wj75Er8k4QY-KF34NBCWkDpr3D26XptOpkfDcTyGEA7iA@mail.gmail.com>
- <CAHk-=whK-cuBUQ2hECtkGu3LR-ipai+tmB85M=C7n3b1M8B4gQ@mail.gmail.com>
- <CAKfTPtCnT9VLqiQGL5kyhzqv=WAUNRA3tVDVoKjB7jX-00Un+g@mail.gmail.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <CAKfTPtCnT9VLqiQGL5kyhzqv=WAUNRA3tVDVoKjB7jX-00Un+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2ce27ed917b9bd569ee4a7f87b3d9b78d07cecbd.camel@collabora.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 11/01/2024 19:16, Vincent Guittot wrote:
-> On Thu, 11 Jan 2024 at 18:53, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> On Thu, 11 Jan 2024 at 09:45, Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->>>
->>> On Thu, 11 Jan 2024 at 00:11, Vincent Guittot
->>> <vincent.guittot@linaro.org> wrote:
->>>>
->>>> Could you confirm that cpufreq governor is schedutil and the driver is
->>>> amd-pstate on your system ?
->>>
->>> schedutil yes, amd-pstate no. I actually just use acpi_cpufreq
->>
->> Bah. Hit 'send' mistakenly too soon, thus the abrupt end and
->> unfinished quoting removal.
->>
->> And don't ask me why it's acpi_pstate-driven. I have X86_AMD_PSTATE=y, but
->>
->>     /sys/devices/system/cpu/cpufreq/policy0/scaling_driver
->>
->> clearly says 'acpi-cpufreq'. Maybe I'm looking in the wrong place. My dmesg says
+On 15:20-20240112, Sjoerd Simons wrote:
+> On Fri, 2024-01-12 at 07:50 -0600, Nishanth Menon wrote:
+> > On 13:44-20240112, Sjoerd Simons wrote:
+> > > The beagleplay dts was using a bit-bang gpio mdio bus as a work-
+> > > around
+> > > for errata i2329. However since commit d04807b80691 ("net:
+> > > ethernet: ti:
+> > > davinci_mdio: Add workaround for errata i2329") the mdio driver
+> > > itself
+> > > already takes care of this errata for effected silicon, which
+> > > landed
+> > > well before the beagleplay dts. So i suspect the reason for the
+> > > workaround in upstream was simply due to copying the vendor dts.
+> > > 
+> > > Switch the dts to the ti,cpsw-mdio instead so it described the
+> > > actual
+> > > hardware and is consistent with other AM625 based boards
+> > > 
+> > > Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
+> > > 
+> > > ---
+> > 
+> > We have had issues with the ethernet integration previously (also why
+> > ethernet in u-boot is not yet functional on beagleplay[1]).
+> > 
+> > https://openbeagle.org/beagleplay/beagleplay/-/issues/101
+> > 
+> > we should probably do a 1000 boot nfs test or something to ensure
+> > this
+> > doesn't introduce regressions (I recollect mdio wasn't stable on
+> > beagleplay) and switching to bitbang driver stopped all complains.
 > 
-> That seems to be the right place to look
+> I can do a longer test with that over the weekend sure; For reference
+> I'm seeing issues in u-boot as well on initial probe with these
+> changes, but i've not seen the same on the linux side.
 > 
->>
->>     amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
->>
->> which is presumably the reason my machine uses acpi-pstate.
->>
->> I will also test out your other questions, but I need to go back and
->> do more pull requests first.
+> Do you remember with what kernel versions users saw the mdio
+> instabilities? I wonder if that was a version with the commit mentioned
+> that includes the errata fix for the mdio driver.
 > 
-> ok, thanks
-> 
-> I'm going to continue checking what else could trigger such regression
-> having in mind that your system should not have beeb impacted by this
-> changes
 
-I can't see the regression on my
+we were on TI 5.10 kernel (the image that went into production) and it
+did have errata fix (I am not sure if it is similar or same as what
+finally went into upstream now).. I have started an automated multiple
+boot test on my end as well..
 
-  20-core (40-thread) Intel Xeon CPU E5-2690 v2
+The signature as I recollect was spurious link Down and Up logs
+(though the cable is not physically disconnected).. been a bit of
+time.. so my memory on exact signature might be vague.
 
-with 'schedutil' and 'acpi-cpufreq'.
-
-f12560779f9d - sched/cpufreq: Rework iowait boost                              <- (w/ patches)
-9c0b4bb7f630 - sched/cpufreq: Rework schedutil governor performance estimation
-50181c0cff31 - sched/pelt: Avoid underestimation of task utilization           <- (base)
-..
-
-# cpufreq-info -c 0 -e
-..
-analyzing CPU 0:
-  driver: acpi-cpufreq
-  CPUs which run at the same hardware frequency: 0
-  CPUs which need to have their frequency coordinated by software: 0
-  maximum transition latency: 10.0 us.
-  hardware limits: 1.20 GHz - 3.00 GHz
-  available frequency steps: 3.00 GHz, 3.00 GHz, 2.90 GHz, 2.70 GHz, 2.60 GHz, 2.50 GHz, 2.40 GHz, 2.20 GHz,
-                             2.10 GHz, 2.00 GHz, 1.80 GHz, 1.70 GHz, 1.60 GHz, 1.50 GHz, 1.30 GHz, 1.20 GHz
-  available cpufreq governors: conservative, ondemand, userspace, powersave, performance, schedutil
-  current policy: frequency should be within 1.20 GHz and 3.00 GHz.
-                  The governor "schedutil" may decide which speed to use
-                  within this range.
-  current CPU frequency is 1.20 GHz (asserted by call to hardware).
-
-
-cpufreq is still fast-switching, so no schedutil 'sugov' DL threads.
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
