@@ -1,169 +1,148 @@
-Return-Path: <linux-kernel+bounces-24715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A860082C136
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:57:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF1E82C138
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E0F3B23B6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:57:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4910B1F26427
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C468E6D1C1;
-	Fri, 12 Jan 2024 13:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14F66D1BC;
+	Fri, 12 Jan 2024 13:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fl7OnfoI"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2041.outbound.protection.outlook.com [40.107.244.41])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bnrPWFXs"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8F86BB40;
-	Fri, 12 Jan 2024 13:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S8z4H/Z560Frt4V2sDQy8z7RFOl/VvlwIFj9LQvUC/fHVecviri/BXdNYkmymJvl0+97Xaf9WDQSLqi002s1SUHHPSkamDQUUuA7l4J6UCiqSQBKCbR6mNREeJDV46onnaKWyfHIGEWc1U/ZJ55+M+Y2R7uyHvtqHa4BnccaUXEyQ+wn//thRjYpSnSgftNfQasF7UOlpNFk8ZrSarfXOV2YhIrgqZV2Fp/6BjsRp/qB+I7ZlqNjnOjBpxS1BysHl4fz0PDQQrdq0KjFZTUDFHvBQCCPQI395TUnmj3KMuKDETQ1bgQmq80D5LoeKtLxQn+5A+jwi6U3CvNYn2ynGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9Rl+fe+FUUksL3jEW5yeYMjit4z+Wrka+OwOUvTVFjg=;
- b=SUl8DfAbgJmi1dkl+jE94H8kwNENmPSgftyWg7wyZ1z/DFwTD0t+ZiuK/gfNG1R7ujYpFJbJXQxeGMtTvMC+kl5S4qHWcw/G6/WnST5jDw8p9QYt11+I0JPo7Xm15yJbsoZIXybogruwxkeixrICbCc3EcwcvA0rNIC4jZPRQnqhr4aMMBAAfj0iR9/FaIKJTrwKbceyhWYwRniRqp/2+IEsZNqOeF3IMZjipCUjTiXTXlhT8H6k0SLyHnuc0WOM+az+70ltj4DUiFAV6dDxhIVPQq/PlpFJ+o7gyXfL8uZSNFKvAzxWQqHLT8H2x66cszkGGEacm9kIBlrpAJfa1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9Rl+fe+FUUksL3jEW5yeYMjit4z+Wrka+OwOUvTVFjg=;
- b=fl7OnfoI46SEAS/D8Rw5reXkrInvZrRbFjPE8CwyyYpE08ET806VyRk/fOpp/Fy1lQ7VBeiUKQmHHQ4z97v7cQURi3I+4hVOP6jr8tY7qLBrKlQBz9XV7jkcQk+l3IZAjcIwhXLZO1Gpni1q4eu8QjmR1dzDUQ215qQGd+0jN/6QBxd4Z4nt8Z5Duj+sXHRw3Qyr2VPe1vJg/himDTOPcP+wr5m1haJhr9whmF4WiR1tFAn3x6y72GJ0Em2j6mGuzLdSDo3NyK/DfOtB4V3pwiQPyM94w/SUFGPePP6yuSPeBkpFJUQOyCI2FMtwv5XJba1tGaWpskZTZp5UI9wSKw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from PH8PR12MB6674.namprd12.prod.outlook.com (2603:10b6:510:1c1::18)
- by DS0PR12MB8219.namprd12.prod.outlook.com (2603:10b6:8:de::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Fri, 12 Jan
- 2024 13:57:27 +0000
-Received: from PH8PR12MB6674.namprd12.prod.outlook.com
- ([fe80::55f7:f35f:a684:bf3c]) by PH8PR12MB6674.namprd12.prod.outlook.com
- ([fe80::55f7:f35f:a684:bf3c%4]) with mapi id 15.20.7159.020; Fri, 12 Jan 2024
- 13:57:27 +0000
-Message-ID: <b04ae5f5-4770-466d-87bb-d1b96d65e89c@nvidia.com>
-Date: Fri, 12 Jan 2024 19:27:18 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V1] PCI: Clear errors logged in Secondary Status Register
-Content-Language: en-US
-To: bhelgaas@google.com
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
- mmaddireddy@nvidia.com, sagar.tv@gmail.com
-References: <20240104013229.693041-1-vidyas@nvidia.com>
-From: Vidya Sagar <vidyas@nvidia.com>
-In-Reply-To: <20240104013229.693041-1-vidyas@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MAXP287CA0024.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a00:49::32) To PH8PR12MB6674.namprd12.prod.outlook.com
- (2603:10b6:510:1c1::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425B86D1B9
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705067911; x=1736603911;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=DZ3thWCMXzVKYHpidQUx936D1LbhAlLXp+GRrOgJgnQ=;
+  b=bnrPWFXskGbNR1JMwSpvnP1ygX6uHbSqW0OeMcmXFcWzdzNEdXV3nqz6
+   I31+1SKbFF5bHKU1SJJqnmp0CsKNvkA/UTzX4zrbKzNXjFjjWe8WK+dQI
+   NEUq670XNwkuguu47lqmRVQwggLJ6kPAoXoUPuFMXRBITu+wIhjVWwXp+
+   QvENpWILv2icM94IRnwI6FKqyoXstgPhnGdaKlCukSPVL3n6QghSXFf+n
+   AWj1tb3l+uUAIGLTmY/btuO5yNdG5BkYRy+/Td8MG76TH5ilO7wLXeRZm
+   W6x4SFwastE+a9/AoKHmDx5BniCDnuaSv+rjRN9HdtYXDmhzRbF5kyU3A
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="430352717"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="430352717"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 05:58:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="873369008"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="873369008"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Jan 2024 05:58:29 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rOI3H-0009Xo-0o;
+	Fri, 12 Jan 2024 13:58:27 +0000
+Date: Fri, 12 Jan 2024 21:58:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in
+ initializer (different address spaces)
+Message-ID: <202401122136.5Kgy2ZR3-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR12MB6674:EE_|DS0PR12MB8219:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1d875d7f-6fe7-4049-6568-08dc137668cf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZMRounmt7bikhoS76s8hVl6q1ASilFEMonf6xTqk6C6B1SffBTYhMP2aba401VuQaTmiQMovaP7HGvI2dxj21pFHJUU/ukMeo9jkJm2fq30uieowrCxGo0eZ62PMMtOkVHs/lMOBnIX9k9AxtSuYsiLho6e8/LNhGJQolEc9HdOsdFZugoNSKkW5HfDPJoZoEs1+TpLTTBP8j1nRjaDW+79QeBrySLe8PprHgAXxNBBfHNDzmQCLaapJcKwlS7SBdcF6UzQbfs+nz5X9kXO9aVYYBL72KPAhbnCGb++59R6mDeqd5JrbjWS9amSbOKY7wHbEs2WeOTqEVHL+rvla5LA6n8+GZ7BzAUz0UtgYwBhbbF7zC5binik+GTUYR8ZHuLbrghEMf5ISbU90Fn9vLRGoiZFfEgniVhDzLBcgGG7fVQeXcXu6BjhApg4XqrPEP27zrXWgRQSpFQspyCTklc4e33uH4uxq8S125u/AaPFvlm8Gh3YgGS/WzrOLk2O/Eg2jjVdsCyWgYjErDndVoHUpi8dI+OaczpEng0+fSJtIWjN0lBOEdcc7rMt+4nm/jAEzwTZf+rS+nRLfXCqFYj+Nlb1nN/4j5cWJzC3k2zPdBA5ewY9LquDWt7/7JVZesj1BwXI2NLQekF17pcYYcVk97C+cfoo552ILRaPf67lfyJ3WzO3JJLwF3Q8Bvfiu
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6674.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(376002)(136003)(396003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(26005)(66476007)(2616005)(66946007)(66556008)(6506007)(478600001)(6916009)(6666004)(53546011)(6512007)(966005)(6486002)(38100700002)(83380400001)(41300700001)(4326008)(316002)(5660300002)(8676002)(8936002)(2906002)(36756003)(31686004)(31696002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NFQ2ZFNnK1dKV1hqWWs3dHgyd3Y0Y2QzRG1oekR5b2ViMG1tVnhaUW1TVkl6?=
- =?utf-8?B?dHVhdHBnT3E1Z0pDdkZIaWVCV3lKWk1JNDRzT0pRdDVVa0UvcERHZFRTRTMy?=
- =?utf-8?B?YmxIc0RCQVhjZlNRVGh2NkVRRUdtRkI0R210WW0yN0tDYzJPMjlQVExNcWtI?=
- =?utf-8?B?MWUwdHZodlBlQnNxOUNtdVh5Vjh3S3g4NHFYOXVuemtrR1BaZW5RTFJNcjEz?=
- =?utf-8?B?SUd0b2syNDBRdCtYUVJtRDZHQlNHd0ZKc0dmTFpCN1YwNitoSk5tamUzay9p?=
- =?utf-8?B?K0xPQ1BUenhHd0swUVoyUkZ1c0crUWd1Y2I3amJpQnpMYytJSTArc0Y0R2Rz?=
- =?utf-8?B?YmNqTFAvUDZndHpHblJrTXUycVphbmIrMC94TzFTRmJvMGFGNW00MXpYVGVr?=
- =?utf-8?B?MlU1bFhjQ2pMSVk2d0k2djV4clNhbnVlOFQ3dXNwM2tIRDVjeWRCcHlQN1hr?=
- =?utf-8?B?b2JqYVRQNDVnNzJZUHdoUm9TRDZSVkdMdytOcHhOY0d5dGxnNHZDdUExTGxZ?=
- =?utf-8?B?emhML1NZNmFoNnpwRGdJb0loSEVGNWg4QXVpNzM2UmowSVBQTWx6QU0wT1pz?=
- =?utf-8?B?WVB0U1lvQmt4T1lMNlN1T0ExSm1HUzZDODQvb1FXQWVTa05rL2pSK1RLWGN0?=
- =?utf-8?B?TUgvZWNYeFBQZG9aMmhxZXBZL0hpUTFrOE44dGozdDhkNFBDdUtJODFadHkw?=
- =?utf-8?B?Tm1FMmd4MTA4TWNsMnEvMmJwYUNRaCtSUStGeFAxSHRPYklmOFBiRVpXZkow?=
- =?utf-8?B?enMydG5yRmZVTVcyYW5qYnUrbnFTZFMweTI1ck9KN3BETSs5RHlIQm1KYis5?=
- =?utf-8?B?c0dORDZ5Zm52NlpjUmhpSjdsYnY0V2IvMHJnSGdKQS9IMEQ5SW1vUmZTL3Vs?=
- =?utf-8?B?OUE2QU1lZVdmaEZ1U0ZsMHVyamhvaWhPZGVRTkJIWkZuL1Rtb3d4eGxVTlJp?=
- =?utf-8?B?NlU2UWFZWGlmb3EzZUs5TnI4MitzaldPd0V0UHdaZXF1U2RzZGNIR3BpdGw3?=
- =?utf-8?B?ZVdnb29nb2JURlZqTzVhMDF4NE4rRlFEYWVmamhyV3pCNVRVcU5iMWZqTFBk?=
- =?utf-8?B?cG5yMEJ4WEJ0MFBOZmFERW1xZ2I0QXllYzFSeEdCNGx1eEw5TjZjcnV4QXJl?=
- =?utf-8?B?NEp6c3VYNG1EcWIzTEMwcUZvbHliR3U5Q3dkYmg4ZlM5Q2EvV1ZTbVRyam1i?=
- =?utf-8?B?YTJycGphTVZub21OcTgxMDFjZS8wdEREQnViNmVkSTNIOHlWUkM4cmRVWjVF?=
- =?utf-8?B?RlJ3TWVtUFdZUlIwSHFnbktoWjhiaXBJL2hycHEwaDJMRFZGZ3VhVnJHMytC?=
- =?utf-8?B?N3RsNGRWakh2bEZ2cVhST3czVHptM0VVTEVpL3kvNmcxbGFlV1l3T0JNYVFP?=
- =?utf-8?B?bG9LRnlzZVFBVHVHbTdadWxYaWg5bHZLSVE3ejFoWm0wWSs5SktUOEMxdU5n?=
- =?utf-8?B?MzRQUjY5YXdoV1lSUzVwWEJNOFdPK1pOci9hTzBzTUJFdzJIdzJVMzVoc1VM?=
- =?utf-8?B?cW43ei9pVm5MME1oMmxFUFMvdXNrYmVJRU5MVlAwbEY2MW9TSy9OeUpYdEV3?=
- =?utf-8?B?SjBLVzBxUnJhMVpYR1hmV1UrUis0SEhJdVkyUTk2K2kyMlRqK1ZLYmpVbmo2?=
- =?utf-8?B?OGdJZVZtQUhSekR6R2l6QVhGcnd5MGdvaTBWY1Y2UzlYTkUvQmRORGM1MVI2?=
- =?utf-8?B?RkxTYUJUUTZoVGNnR0pqQlNTTEZMbmo1NWRqUERKSWpRb2xHMW9LSldDZlpN?=
- =?utf-8?B?dDJPMlBtMFZwdU5WU1VNZlcyS0J6blhoeFl0UGxBcFp3UGhRTjI0Zzk5Q3FV?=
- =?utf-8?B?bW9pdzNoK1Z2WHR0bkRvNjNnbndGVjFqRjd0L3BUUStxblRhK2xORngvSUF3?=
- =?utf-8?B?V0ZPcVRZMG1zdVlmcWpMMk9reHdDLzVLYnplaVBTNlZHbG50K3FIdkFuZWVJ?=
- =?utf-8?B?eFF6MU1Pb042T2ptRzV3UitDTnNzWm5jbXV4cEh3QktieVNxQ3Y4QmJudDAv?=
- =?utf-8?B?R3h1RUp2bzZyelVIYjJOOVFiREU0NFdwQU5UZlNpalBERjJxK0VUaHR0T2RY?=
- =?utf-8?B?NWt1OHkrcENSMUo3ZUhQVm1xVVk1bndoZUxoYThxVTVuVUFJMEdFUU9zcmVB?=
- =?utf-8?Q?mJOOPpimEox9rawkWfIlJGp0s?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d875d7f-6fe7-4049-6568-08dc137668cf
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6674.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 13:57:26.9027
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8UlqrPqQ7S3O8++B0b66SFD/Y7x0bdyf3wwjhHnDepP/bGbtkxYLypfebMdXob/Vn6JJ+FQbpOsJvH4WAh5mjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8219
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Bjorn,
-Do you have any comments for this patch?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   70d201a40823acba23899342d62bc2644051ad2e
+commit: 481461f5109919babbb393d6f68002936b8e2493 linux/export.h: make <linux/export.h> independent of CONFIG_MODULES
+date:   6 months ago
+config: csky-buildonly-randconfig-r006-20230413 (https://download.01.org/0day-ci/archive/20240112/202401122136.5Kgy2ZR3-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20240112/202401122136.5Kgy2ZR3-lkp@intel.com/reproduce)
 
-Thanks,
-Vidya Sagar
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401122136.5Kgy2ZR3-lkp@intel.com/
 
-On 1/4/2024 7:02 AM, Vidya Sagar wrote:
-> If a downstream port has a PCIe switch connected to it, the enumeration
-> process leaves the 'Received Master Abort' bit set in the Secondary
-> Status Register of the downstream port because of the Unsupported
-> Requests (URs) take place in the downstream hierarchy. Since the
-> ownership of Secondary Status Register always lies with the OS including
-> systems with Firmware-First approach for error handling[1], clear the
-> error status bits in the Secondary Status Register post enumeration.
-> 
-> [1] https://lore.kernel.org/all/1fb9d746-0695-4d19-af98-f442f31cd464@nvidia.com/T/
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
->   drivers/pci/probe.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 43159965e09e..edf8202465d8 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
->   	}
->   
->   out:
-> +	/* Clear errors in the Secondary Status Register */
-> +	pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
-> +
->   	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
->   
->   	pm_runtime_put(&dev->dev);
+sparse warnings: (new ones prefixed by >>)
+>> kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
+   kernel/context_tracking.c:126:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   kernel/context_tracking.c:126:39: sparse:     got struct context_tracking *
+   kernel/context_tracking.c:165:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
+   kernel/context_tracking.c:165:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   kernel/context_tracking.c:165:39: sparse:     got struct context_tracking *
+   kernel/context_tracking.c:206:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
+   kernel/context_tracking.c:206:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   kernel/context_tracking.c:206:39: sparse:     got struct context_tracking *
+   kernel/context_tracking.c:261:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
+   kernel/context_tracking.c:261:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   kernel/context_tracking.c:261:39: sparse:     got struct context_tracking *
+   kernel/context_tracking.c: note: in included file (through include/linux/mmzone.h, include/linux/topology.h, include/linux/irq.h, ...):
+   include/linux/page-flags.h:240:46: sparse: sparse: self-comparison always evaluates to false
+
+vim +126 kernel/context_tracking.c
+
+172114552701b8 Frederic Weisbecker 2022-06-08  115  
+172114552701b8 Frederic Weisbecker 2022-06-08  116  /*
+172114552701b8 Frederic Weisbecker 2022-06-08  117   * Enter an RCU extended quiescent state, which can be either the
+172114552701b8 Frederic Weisbecker 2022-06-08  118   * idle loop or adaptive-tickless usermode execution.
+172114552701b8 Frederic Weisbecker 2022-06-08  119   *
+172114552701b8 Frederic Weisbecker 2022-06-08  120   * We crowbar the ->dynticks_nmi_nesting field to zero to allow for
+172114552701b8 Frederic Weisbecker 2022-06-08  121   * the possibility of usermode upcalls having messed up our count
+172114552701b8 Frederic Weisbecker 2022-06-08  122   * of interrupt nesting level during the prior busy period.
+172114552701b8 Frederic Weisbecker 2022-06-08  123   */
+171476775d32a4 Frederic Weisbecker 2022-06-08  124  static void noinstr ct_kernel_exit(bool user, int offset)
+172114552701b8 Frederic Weisbecker 2022-06-08  125  {
+172114552701b8 Frederic Weisbecker 2022-06-08 @126  	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
+172114552701b8 Frederic Weisbecker 2022-06-08  127  
+172114552701b8 Frederic Weisbecker 2022-06-08  128  	WARN_ON_ONCE(ct_dynticks_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
+172114552701b8 Frederic Weisbecker 2022-06-08  129  	WRITE_ONCE(ct->dynticks_nmi_nesting, 0);
+172114552701b8 Frederic Weisbecker 2022-06-08  130  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+172114552701b8 Frederic Weisbecker 2022-06-08  131  		     ct_dynticks_nesting() == 0);
+172114552701b8 Frederic Weisbecker 2022-06-08  132  	if (ct_dynticks_nesting() != 1) {
+172114552701b8 Frederic Weisbecker 2022-06-08  133  		// RCU will still be watching, so just do accounting and leave.
+172114552701b8 Frederic Weisbecker 2022-06-08  134  		ct->dynticks_nesting--;
+172114552701b8 Frederic Weisbecker 2022-06-08  135  		return;
+172114552701b8 Frederic Weisbecker 2022-06-08  136  	}
+172114552701b8 Frederic Weisbecker 2022-06-08  137  
+172114552701b8 Frederic Weisbecker 2022-06-08  138  	instrumentation_begin();
+172114552701b8 Frederic Weisbecker 2022-06-08  139  	lockdep_assert_irqs_disabled();
+172114552701b8 Frederic Weisbecker 2022-06-08  140  	trace_rcu_dyntick(TPS("Start"), ct_dynticks_nesting(), 0, ct_dynticks());
+172114552701b8 Frederic Weisbecker 2022-06-08  141  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+172114552701b8 Frederic Weisbecker 2022-06-08  142  	rcu_preempt_deferred_qs(current);
+172114552701b8 Frederic Weisbecker 2022-06-08  143  
+171476775d32a4 Frederic Weisbecker 2022-06-08  144  	// instrumentation for the noinstr ct_kernel_exit_state()
+171476775d32a4 Frederic Weisbecker 2022-06-08  145  	instrument_atomic_write(&ct->state, sizeof(ct->state));
+172114552701b8 Frederic Weisbecker 2022-06-08  146  
+172114552701b8 Frederic Weisbecker 2022-06-08  147  	instrumentation_end();
+172114552701b8 Frederic Weisbecker 2022-06-08  148  	WRITE_ONCE(ct->dynticks_nesting, 0); /* Avoid irq-access tearing. */
+172114552701b8 Frederic Weisbecker 2022-06-08  149  	// RCU is watching here ...
+171476775d32a4 Frederic Weisbecker 2022-06-08  150  	ct_kernel_exit_state(offset);
+172114552701b8 Frederic Weisbecker 2022-06-08  151  	// ... but is no longer watching here.
+172114552701b8 Frederic Weisbecker 2022-06-08  152  	rcu_dynticks_task_enter();
+172114552701b8 Frederic Weisbecker 2022-06-08  153  }
+172114552701b8 Frederic Weisbecker 2022-06-08  154  
+
+:::::: The code at line 126 was first introduced by commit
+:::::: 172114552701b85d5c3b1a089a73ee85d0d7786b rcu/context-tracking: Move RCU-dynticks internal functions to context_tracking
+
+:::::: TO: Frederic Weisbecker <frederic@kernel.org>
+:::::: CC: Paul E. McKenney <paulmck@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
