@@ -1,137 +1,161 @@
-Return-Path: <linux-kernel+bounces-24418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF9082BC47
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:15:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C9382BC4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:17:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E54681F2534E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:15:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72AE1F254D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B5395D758;
-	Fri, 12 Jan 2024 08:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FE25D755;
+	Fri, 12 Jan 2024 08:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nTrfIg57"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="HCX3aoW4"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2065.outbound.protection.outlook.com [40.107.94.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662425B5C1
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3375a236525so4748652f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 00:15:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705047324; x=1705652124; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LdZ2A7dsvgQXBYeHWuarmaG+1syVTAwg3jfZxPSOceA=;
-        b=nTrfIg57vDFGIW2nev0nIrUkLuYyJmqd3Be9AMB47sHSEJ9qLI8yR8RrA2zIfIhtoy
-         8EelnER7CCzCpHKrTyQkVkCWryBMpcPbbkPGZBQL6CIv+zd09Pm1wodYgGZPrvxe2rQo
-         4KXkEqUAAOt+CR8Se4hbgF8eCQGcgy41Jz8LxSNtJlLl/csRm0YoIGEGurAhG9FBhpNY
-         yzGXkIt4pvvZGhoauKpiKJc7BybWAKsD0eDoX+siRdQbu2dj+WXe1lgShkjSoWo9ma6P
-         NhrXmhy2cngBxRcTANIm8c1fz27PfSR3DXzIU01duxSP4VObZRIVtjZZ0rWOJVVaOqxh
-         ruVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705047324; x=1705652124;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LdZ2A7dsvgQXBYeHWuarmaG+1syVTAwg3jfZxPSOceA=;
-        b=hPLXxAJ4hnSm+2l0wSYsD+T1gEvDTUp4cVMzKcvHq5btBzHxPCxfmPMFoFCrMezuO1
-         DNXKG40SnD1M1gQu6ZFZNyKGmyVSBkpT/7drsSTmMtEOpLGTT6tnPPGqZECVGyhhQpcF
-         N1Vi0dSyzYR4I/lCub1d/K0m48vkWSNc+sMQRMooVkbVToDeD5Y3YQLTB4MRpSodz+I5
-         nt+FO2H6VC6izrZyYmkHl35bPQnVMzplzt5QOhznYCAmDvzA1QdFZw4jw+NWRdKVG4vR
-         HHrNg0pChHioYdgXpUWu9Htd4crS6astE1cy5+yaC4pqdG6fK3PgxXb8f5q5OIVJLbsv
-         4rqw==
-X-Gm-Message-State: AOJu0YwMB+MWfIf2JMwbMSLXl2juv7i0/eZyRwxyZ/rqIT+t9HO3c9Zj
-	B8/AJElaFzOxrRFckAeWrwOsIfA+odD1jQ==
-X-Google-Smtp-Source: AGHT+IFOKe1PRp7Z0l54PGVgTBC9V5JuMIp1OeyxyDbdA7WriL32ihY1AnHGT1UHVJkF8k536FU7Bg==
-X-Received: by 2002:a5d:5f4b:0:b0:337:4a10:de9 with SMTP id cm11-20020a5d5f4b000000b003374a100de9mr454411wrb.120.1705047323687;
-        Fri, 12 Jan 2024 00:15:23 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id f6-20020adfb606000000b00336aa190139sm3150070wre.5.2024.01.12.00.15.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 00:15:23 -0800 (PST)
-Message-ID: <99d3821d-734f-47ac-b81a-2f7790449660@linaro.org>
-Date: Fri, 12 Jan 2024 09:15:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B92C5D747
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZQwkPmYjLmEdNv+mghYad2FkFWtYSCxqoTE1jL6k4YP+0St9OXsYyN70I+0S605mA00xYQ5ct3vEoljwO3gyKxDlEu8cBlPgnZKKUPwP53sau7J+UCNrahPeN4BketeCkHsHL23/u8DQsJH1iEwsyQb1rw6SZwhk3gaLPVIK9EOIggzT4TEKvKki/2xqeRMTfWLCtEjIfkHvbpTbcjIZqEWdtaolyuMup5mhkCPq9dH1aX2IdE3E0q6Wk0qGMpExNM71Wb6bTURJJo5kz+0xE4l612He5LS3KwBTMO8EkhH0Qsq0frmxfhzmGgiDmFiBuEHv3ZQdArANlYXoQurZQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E8VZSfcuArfpURE4P9aHRuMHQGADDP9ishzcNcsuh1I=;
+ b=FDnHMqlzDa4OEZDs7P7OYd86oj91sx4CK2ByrF277d2pDEpysTGaLtWAOedUjfE3WxSYOCN4iTd6faxR34hc3bqC6ZPLV7HNcfOsMX32gYDzy1XgvvbPA27McgoUWjPDbit8LMwXssMxEXIkB7I4F0pDkvGvHrb7Ns3Ttz2lO/2YmV3dfi0l6QDlGEn3PUt+2SfUAw/8a21tq3Df8/3HXTEID1fMz7KBSAQnGDThoKW2C2udoMzAqBq+TRfZZGR6kC9CJVXLicBCSt4Jy/x+kbbOJr6KnDL9GL6Ln6LWirNJ7rBnFn2MJDtxNn0h6gjn0AdXwccnwpgGjryITcHVDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E8VZSfcuArfpURE4P9aHRuMHQGADDP9ishzcNcsuh1I=;
+ b=HCX3aoW4O6x9rKQdZc8g2bvoGNsokKGDhCPRRZr3hcMv2f97KZDtLKpLHTSLQRIhTMhq/8j9EDlbh/rmpNW4lW/5XGdQkau1wSO39If+kcm4VvQqAMDYadfD6wuCIvZ0epmke8mZOgddL9OaFL3u0EIC8XPfMIQKOA64ZLoZ/oM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by IA0PR12MB8981.namprd12.prod.outlook.com (2603:10b6:208:484::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Fri, 12 Jan
+ 2024 08:17:44 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Fri, 12 Jan 2024
+ 08:17:43 +0000
+Message-ID: <95e791b0-4672-4a1a-940b-684d8c96e995@amd.com>
+Date: Fri, 12 Jan 2024 09:17:37 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: Failed to create a rescuer kthread for the amdgpu-reset-dev
+ workqueue
+Content-Language: en-US
+To: Thomas Perrot <thomas.perrot@bootlin.com>, alexander.deucher@amd.com,
+ Xinhui.Pan@amd.com, lijo.lazar@amd.com, kenneth.feng@amd.com,
+ guchun.chen@amd.com, evan.quan@amd.com, srinivasan.shanmugam@amd.com
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <cf1a3a2b7599b7b6900ff45aa8b204169411687f.camel@bootlin.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <cf1a3a2b7599b7b6900ff45aa8b204169411687f.camel@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR2P281CA0018.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::28) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] dt-bindings: media: add Maxim MAX96714F GMSL2
- Deserializer
-Content-Language: en-US
-To: Julien Massot <julien.massot@collabora.com>, linux-media@vger.kernel.org
-Cc: kernel@collabora.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, mchehab@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-References: <20240111130349.2776699-1-julien.massot@collabora.com>
- <20240111130349.2776699-3-julien.massot@collabora.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240111130349.2776699-3-julien.massot@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|IA0PR12MB8981:EE_
+X-MS-Office365-Filtering-Correlation-Id: 068f7a6f-aaa2-418c-ebe6-08dc1346f398
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NKMrqMZdCW8/hX1K2CdAnqR1BOb92XZGBnWVGy41ZadztGSNlRzaaVxFvJqo55gdHXtkwMe64h248fyKPprZlnKmWR+1k/lDeBP3MbpxABTwOcWa/cbQjvdfKluuikJL2wlq98kqybfcGQp3XZf13X9YSU7X7vW6s/Yebdjj/XzFAhqvCKH12E3M/1URvhWhpOBBKOyqd3EU+Helig7L/xdlATFoZ2lBwbXeOIOUg6hS8U0LYExAN3JxJvaYceoSKcQzHtZMmGeQ85rZToWV6nTc1873Spu2XBlRGCQu2DrJ2aYnYBZ5Bolz4yHqodFQpbvwLvwobNFZpNKgT7VpZl85kEZFk0VUUne2BTK1g7nosHYJOdLn4kHan8/McZSSW4KhxZrtHRER8+XMng6Bgr+r3G+XZAJWXFFbjeaZQ8lw+hgD8OUQ+4QhxUeT49+UjTNegrTyHwi11ek/owCF5yziEeFO5BIakC/+qpQzSqHjOSrAibOdNrp0Zh1JekG8WmDClaIfZcHS7ewPiqyx4X1jeNHUI47UdHT5v1HejxYdFMD+rDezE3jbP7vvpiDvtBfEYb9OWReKXsHZtPYhODF6LTSgGWFzaObW6ZK4Yz5sckd3rptdOd9ZhuCwLUg+YfbopZlkWukYvOuRpKhang==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(366004)(346002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(31686004)(26005)(6512007)(83380400001)(31696002)(36756003)(38100700002)(86362001)(4744005)(6636002)(4326008)(6506007)(6666004)(2616005)(5660300002)(8676002)(66476007)(8936002)(41300700001)(2906002)(66556008)(6486002)(478600001)(66946007)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WXRkYmlkNTJMTG1yR2YxMDlkSSs0eStYZW1FK25NWW9iVjM1R1Y3cXpiTUdw?=
+ =?utf-8?B?ZXZCZTBZNThBTGRBb3BVVWF5SmJnM3k4R3FZMHF0NmVlVzZSSDJuZGlzWVFj?=
+ =?utf-8?B?aVVmcTFXMXRmbEJmZytGQ2dNSE9LTVNES0t5TGNuZzl1T1k5UzdmOTlHcWdi?=
+ =?utf-8?B?dVVicEE3dVNrSDZML29TUmhGNlNFZHFiMStDV2tyT0taWU9MWm1VWkRJczdP?=
+ =?utf-8?B?ekhaTnJqRCs5TkNrV3ZmOFpiazVzZjQ4cGhQenFuWXFUU01HWmpqRHRFOXpY?=
+ =?utf-8?B?QWR3Q1g2WDhYQWFMaWFJbGI1TDVNeHFDdUpNNXUvUUFXdFpqWk9zOVJ5bzlN?=
+ =?utf-8?B?dndLZFlTdmdvb3QzSVZhVGpKc2pYcTVhY3JRcm02U0RZcHBzMGlxWVhvYjE4?=
+ =?utf-8?B?WlB3N1AzZjNMNmlMSkppR3F3cHJ2NURqaUpmZGZYa0VqaU9KU0FCVG5wOSs5?=
+ =?utf-8?B?d2I4V1dYMnJ0ZGdGM2pRNEJaU0FDaVFqY2Zmcjd6aVZpS1czNTd4eXlxaFF1?=
+ =?utf-8?B?aXd3cm0rTHNTbDROVGpEUlk3dzIxbGZQVm56anFJaUVLdHU3WDhhVUtCZi9a?=
+ =?utf-8?B?Wm5heklzbTBDdEU1WjlDZmJLMGFSZTRHMFhBQkt6eWhnK0lGWjZEVmlvQ3RZ?=
+ =?utf-8?B?bjc3dkt5eldhdVNYTndXeTgweWYxYXdFd2o3cm0vZ3JPVlU1TmFoMVBRVUpz?=
+ =?utf-8?B?S1F0MVllMHBPT0t5WmFMdU1OZDR6N2pxK1V0aHpCb3VUS2F4aktMNDQycVd6?=
+ =?utf-8?B?dlZTeTc5emhIODdiQkNUak5hNGJQbGZnMGFQT05uZnF1SGZVcTlsNFgzZkhl?=
+ =?utf-8?B?SFBqZkNRWkpWMnZhcWl6d2FwV1lMcFh4OGFKdEtNMTV1YXFXTGZWSW9Odllp?=
+ =?utf-8?B?MWtjZTFqQTVzbldENk1aclo1ako4SVE0aU1UMFFlalU4eVl0RHJsd1VIc0RQ?=
+ =?utf-8?B?Q1J4SkNxMEVSLzdxUDhMUWRKVERBYXU4bGxrRWFueUo2cVRjU2tBTDhVanhx?=
+ =?utf-8?B?aWhPRm9JaEdMSytFVFhYS2N2dW1zaWtpZDNGSTFxMXhpQ2hsbTZlSk5BdDZu?=
+ =?utf-8?B?UzRoVThzRkhyaGRvN0RsS1cwbTcvSUwvWWd0OHZoWnVPaXJCUkVvS3g4NmR3?=
+ =?utf-8?B?V0ZOcFF2eDFKVzBvUlJndldkNlB5ZGFpOUtWeG1IdWZPbnlja0dOaWpUYVlj?=
+ =?utf-8?B?aU1vbFdPVW94R2NXUjg5L1duRHFkRHcvNDBuazQxTi9jWVRVNlgvb1NuZVV0?=
+ =?utf-8?B?TzZDUFVqbkh6VzFOTFZHb1AxUmc5Lzg3UmJQMGJmNlFESEpRNTNJMkwyTnpt?=
+ =?utf-8?B?b2VlWm1BVWx2VDMwa3hIVmlJNDhtUXdwVG1McFVmeFFTa3F5QkJzSVBJcHR0?=
+ =?utf-8?B?QWp5SnhMZHNScGFzSGxlaWMzSWtHeEk1Q0ErV1FGUjIvbEpmYzJjdzltWS9J?=
+ =?utf-8?B?VEVGTHVWS09UaERuaVFMOXE1SHZhc1lGNGJHbHpmakZlWHR4eHVPZ3c3SFV0?=
+ =?utf-8?B?VEFzbDRWU0g0a013OVlDYmtWV0lsblRqdFN0Wi9vcmQ3Nmo5WFZMSjR6VS9L?=
+ =?utf-8?B?VG1PaUNDTnBmOUlaTVpUZ1NkTTg5MXFIdkRRZ0FBRno0YWpGbWRSVXhia2tM?=
+ =?utf-8?B?bzB0Vm8vazNZOVlXRUhCcWJha214clVTOWNUT08xV3E4MTU5OXBpbjlEeTF3?=
+ =?utf-8?B?N3pQZGlWazFvVjNXSjJtNHRFQ25TeFpMSHlZVGp6ODd3QW90WTRaWmd1K0w5?=
+ =?utf-8?B?aUNEQThsRzVScWRwSUw0ejdnVnFCSWhPNUJHQk5ueWIyK29lNVpYSUtSV2RI?=
+ =?utf-8?B?dUtPNklBU0Y0L0o3OW41a3JacEpQRE1OeFlQcDZISWJIMlYvMGx3c0J2U0ZB?=
+ =?utf-8?B?V2J6MGlYUW4wOTFyN0JybHNJZ25EcXVkM3BOcHlkRUVvVVhhMVZKSnRtUHN1?=
+ =?utf-8?B?UXFZcjIwYmhRZktTbWd1MHN1bkpBZnhQRXFRWWM5ZTVrREpFUEdGRTN4cDVP?=
+ =?utf-8?B?bk1nbmpVaGF4dnJma2dQeGplbC9RdTM5OUF1cEMzWFdybFZmVHlhZWJZUVlC?=
+ =?utf-8?B?dVdJMW11eEZKTlVnN1hqR2xkNWhTYWlxdHdLT2NueHFEbEZOUXJ1N3ZWTzhx?=
+ =?utf-8?Q?lAI/v6VKL231BJetwkK8oLrhp?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 068f7a6f-aaa2-418c-ebe6-08dc1346f398
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 08:17:43.7998
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gRokJ1E+Xe+7lqgcUM/5eulK57q382Jfxv0sO3UZzG2c06/1B1lqazgszeLtUuF4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8981
 
-On 11/01/2024 14:03, Julien Massot wrote:
-> Add DT bindings for Maxim MAX96714F GMSL2 Deserializer.
-> 
-> Signed-off-by: Julien Massot <julien.massot@collabora.com>
-> 
+Well the driver load is interrupted for some reason.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Have you set any timeout for modprobe?
 
-Best regards,
-Krzysztof
+Regards,
+Christian.
+
+Am 12.01.24 um 09:11 schrieb Thomas Perrot:
+> Hello,
+>
+> We are updating the kernel from the 6.1 to the 6.6 and we observe an
+> amdgpu’s regression with Radeon RX580 8GB and SiFive Unmatched:
+> “workqueue: Failed to create a rescuer kthread for wq 'amdgpu-reset-
+> dev': -EINTR
+> [drm:amdgpu_reset_create_reset_domain [amdgpu]] *ERROR* Failed to
+> allocate wq for amdgpu_reset_domain!
+> amdgpu 0000:07:00.0: amdgpu: Fatal error during GPU init
+> amdgpu 0000:07:00.0: amdgpu: amdgpu: finishing device.
+> amdgpu: probe of 0000:07:00.0 failed with error -12”
+>
+> We tried to figure it out without success for the moment, do you have
+> some advice to identify the root cause and to fix it?
+>
+> Kind regards,
+> Thomas Perrot
+>
 
 
