@@ -1,140 +1,186 @@
-Return-Path: <linux-kernel+bounces-24299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFEA682BA95
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:04:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85BF182BA98
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 838011F25D7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:04:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F187F1C24F76
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C405B5C0;
-	Fri, 12 Jan 2024 05:04:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9175B5CA;
+	Fri, 12 Jan 2024 05:05:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="e+dXlrz0"
-Received: from m13147.mail.163.com (m13147.mail.163.com [220.181.13.147])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616D25B5B9
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=NHxktqG/f66mPydOSWSUf0yLZRu2tHfLC5IFIGeGNEg=; b=e
-	+dXlrz0msQq2gp9A4FOgaRMjNOYKtWwrDxAEtMvZUihrFji181xj3fl9oO/o9x/f
-	CrTU/wri+wrBmBwn1WGGVCmrnWeLgCR3NIKvl+vYZmqzpdWAyKQBcCrc0AQQe22L
-	UWqhQTC2NVe1uV977JjBtNBI2tkmsU8aU9sglGtDP8=
-Received: from sensor1010$163.com ( [36.4.236.25] ) by ajax-webmail-wmsvr147
- (Coremail) ; Fri, 12 Jan 2024 13:03:47 +0800 (CST)
-Date: Fri, 12 Jan 2024 13:03:47 +0800 (CST)
-From: lizhe  <sensor1010@163.com>
-To: "Thomas Gleixner" <tglx@linutronix.de>
-Cc: ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH] hrtimer.c : Remove redundant thread state settings
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <877ckfkefv.ffs@tglx>
-References: <20240110141349.52718-1-sensor1010@163.com>
- <877ckfkefv.ffs@tglx>
-X-NTES-SC: AL_Qu2bB/yYukAp4SeRbekXnEYbhes6WcawuPUn34ZXN5E0pizNyy0tYVBsFlza9dKJNxKXnzeOWgNM8uJqe4ZaeaQfy1TWhmCFc5ADusj+CHcm
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_19914_641272657.1705035827801"
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="LEsYPTBR"
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC505B5BA
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3606f3f2f37so33756745ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:05:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1705035918; x=1705640718; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X8rappFKRLNOmh48iN1mvyDH+G2PtYqO6EungDZP0OA=;
+        b=LEsYPTBRSt/FFR8y4cYlxuEQMUORzDfznVf2G+z3upMhR6M4NLs/6dHaWCmF1tFxPP
+         P43ubGgrArnxnZjB7rOpi4c693BATZkpiQPGfJt6d7sBg62RtkA23uubGirVhr+lOzSI
+         bRlk0sr6u0eOlpFm/xjYCam1ju7hPPRWA1hSuFQ/t57vWorUqUX8HGD3jl+MWcRm70Ie
+         2VOY58niALvv4nQ0wFhb9Ve57j+TFFfQ1quYOyy/8446O6WgS/rT2PvxlJoAK5v3fEsy
+         uedY16XFzEm42AKOZBme9TbnYYS1yTRRn8lKH+x9+2QPAEE6NRw+ZXXmYGH/So6EK0nC
+         s15Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705035918; x=1705640718;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X8rappFKRLNOmh48iN1mvyDH+G2PtYqO6EungDZP0OA=;
+        b=PogkMSRbOu1xQ/MBHf9pHFW+47kDWbIZcDPf1XL3a5o39IoFnPdm0mp3XHMBrGTCk/
+         Lpor1i8a+ZuUAXcl0Vspje01sCI6xxlTj8XI4hJk0UPXQE8fRQbdqJOU/amF/WunyeI+
+         7HJwj5zxRAnrMQwEvAJ/hD61SMk2Mld7QZiLVYZnB0MY0MWMiNzgI6gslJ7ACxGc0R03
+         +q75iZErdg/SqlS4zDk+o2KLxT6tV3YVhAXzUlhmSn6FtPwfxQ7vIzlP9J5S1qhryDeS
+         t2OQUbs8NRQ5feugEYrTGTGngGzNxISBMXDNWQHzwSRbTNQI9EdB8wAZ36fqkjcDdurg
+         XZFA==
+X-Gm-Message-State: AOJu0YzNqrYbihd2lp/OOCQd2ObIA33B3tiFnzJUSoxejBjuHCXpZNJq
+	r4R912c6JHmP2/T/1k5SvXia2caTgQuYECnA5q9jheZvEx03Xw==
+X-Google-Smtp-Source: AGHT+IGCR28IRbastME/z+5U6vMfxuvFQ4GIlL0eywubg6xedGxnSa839M5nymwISZxw5wbZTYlIBpblsPmMoFP5VFI=
+X-Received: by 2002:a05:6e02:20e8:b0:360:a0fc:cbdb with SMTP id
+ q8-20020a056e0220e800b00360a0fccbdbmr582188ilv.66.1705035918451; Thu, 11 Jan
+ 2024 21:05:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <257fc950.14ca.18cfc0e0a5a.Coremail.sensor1010@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:k8GowAD3Xzg0yKBlRfwCAA--.29994W
-X-CM-SenderInfo: 5vhq20jurqiii6rwjhhfrp/1tbiWBZjq2VOA+EtEwACsz
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+References: <20240111093058.121838-1-sunilvl@ventanamicro.com> <20240111093058.121838-3-sunilvl@ventanamicro.com>
+In-Reply-To: <20240111093058.121838-3-sunilvl@ventanamicro.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Fri, 12 Jan 2024 10:35:07 +0530
+Message-ID: <CAAhSdy22JrFOS8V-FC=ZCQiybhcJCszxy_TsnGAzuzYA06Mw7Q@mail.gmail.com>
+Subject: Re: [PATCH -next 2/2] cpuidle: RISC-V: Add ACPI LPI support
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Conor Dooley <conor@kernel.org>, Andrew Jones <ajones@ventanamicro.com>, 
+	Atish Kumar Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-------=_Part_19914_641272657.1705035827801
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_19916_1101272449.1705035827801"
+On Thu, Jan 11, 2024 at 3:01=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.com=
+> wrote:
+>
+> Add required callbacks to support Low Power Idle (LPI) on ACPI based
+> RISC-V platforms.
+>
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  drivers/cpuidle/cpuidle-riscv-sbi.c | 78 +++++++++++++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+>
+> diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/cpuidl=
+e-riscv-sbi.c
+> index e8094fc92491..cea67a54ab39 100644
+> --- a/drivers/cpuidle/cpuidle-riscv-sbi.c
+> +++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> @@ -632,3 +632,81 @@ static int __init sbi_cpuidle_init(void)
+>         return 0;
+>  }
+>  device_initcall(sbi_cpuidle_init);
+> +
+> +#ifdef CONFIG_ACPI_PROCESSOR_IDLE
+> +
+> +#include <linux/acpi.h>
+> +#include <acpi/processor.h>
+> +
+> +#define RISCV_FFH_LPI_TYPE_MASK                0x1000000000000000ULL
+> +#define RISCV_FFH_LPI_RSVD_MASK                0x0FFFFFFF00000000ULL
+> +
+> +static int acpi_cpu_init_idle(unsigned int cpu)
+> +{
+> +       int i;
+> +       struct acpi_lpi_state *lpi;
+> +       struct acpi_processor *pr =3D per_cpu(processors, cpu);
+> +
+> +       if (unlikely(!pr || !pr->flags.has_lpi))
+> +               return -EINVAL;
+> +
+> +       /*
+> +        * The SBI HSM suspend function is only available when:
+> +        * 1) SBI version is 0.3 or higher
+> +        * 2) SBI HSM extension is available
+> +        */
+> +       if (sbi_spec_version < sbi_mk_version(0, 3) ||
+> +           !sbi_probe_extension(SBI_EXT_HSM)) {
+> +               pr_warn("HSM suspend not available\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (pr->power.count <=3D 1)
+> +               return -ENODEV;
+> +
+> +       for (i =3D 1; i < pr->power.count; i++) {
+> +               u32 state;
+> +
+> +               lpi =3D &pr->power.lpi_states[i];
+> +
+> +               /* Validate Entry Method as per FFH spec.
+> +                * bits[63:60] should be 0x1
+> +                * bits[59:32] should be 0x0
+> +                * bits[31:0] represent a SBI power_state
+> +                */
+> +               if (!(lpi->address & RISCV_FFH_LPI_TYPE_MASK) ||
+> +                   (lpi->address & RISCV_FFH_LPI_RSVD_MASK)) {
+> +                       pr_warn("Invalid LPI entry method %#llx\n", lpi->=
+address);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               state =3D lpi->address;
+> +               if (!sbi_suspend_state_is_valid(state)) {
+> +                       pr_warn("Invalid SBI power state %#x\n", state);
+> +                       return -EINVAL;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +int acpi_processor_ffh_lpi_probe(unsigned int cpu)
+> +{
+> +       return acpi_cpu_init_idle(cpu);
+> +}
+> +
+> +int acpi_processor_ffh_lpi_enter(struct acpi_lpi_state *lpi)
+> +{
+> +       u32 state =3D lpi->address;
+> +
+> +       if (state & SBI_HSM_SUSP_NON_RET_BIT)
+> +               return CPU_PM_CPU_IDLE_ENTER_PARAM(sbi_suspend,
+> +                                                  lpi->index,
+> +                                                  state);
+> +       else
+> +               return CPU_PM_CPU_IDLE_ENTER_RETENTION_PARAM(sbi_suspend,
+> +                                                            lpi->index,
+> +                                                            state);
+> +}
+> +
+> +#endif
 
-------=_Part_19916_1101272449.1705035827801
-Content-Type: text/plain; charset=GBK
-Content-Transfer-Encoding: base64
+Lets keep the cpuidle-riscv-sbi.c driver focused on DT only. Instead,
+I would suggest moving the required function from cpuidle-riscv-sbi.c
+to arch/riscv and have a separate driver under driver/acpi/riscv for
+LPI states.
 
-CgoKCgoKSGksIAogICAgUGxlYXNlIHJldmlldyB0aGlzIHBhdGNoLCBJdCBkb2VzIG5vdCBjaGVj
-ayB0aGUgY29uZGl0aW9uIHdoZW4gZXhlY3V0aW5nIHRoZSBzY2hlZHVsZXIoKSBmdW5jdGlvbi4K
-ICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTGl6
-aGUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRoYW5rcwoKCgoKCgoKCgoKCkF0
-IDIwMjQtMDEtMTIgMDA6NDQ6MjAsICJUaG9tYXMgR2xlaXhuZXIiIDx0Z2x4QGxpbnV0cm9uaXgu
-ZGU+IHdyb3RlOgo+T24gV2VkLCBKYW4gMTAgMjAyNCBhdCAwNjoxMywgTGl6aGUgd3JvdGU6Cj4+
-IEFmdGVyIGEgdGhyZWFkIGlzIGF3YWtlbmVkLCBpdHMgc3RhdGUgaXMgYWxyZWFkeSB0YXNrX3J1
-bm5pbmcKPgo+VGhhdCdzIGNvcnJlY3QsIGJ1dCBwbGVhc2UgbG9vayBhdCBocnRpbWVyX3dha2V1
-cCgpIGFuZCB0aGUgY29uZGl0aW9uYWwKPnNjaGVkdWxlKCkgaW52b2NhdGlvbiBpbiBzY2hlZHVs
-ZV9ocnRpbWVvdXRfcmFuZ2VfY2xvY2soKS4gWW91IGJyZWFrIHRoZQo+Z3VhcmFudGVlIHRoYXQg
-dGhpcyBmdW5jdGlvbiByZXR1cm5zIHdpdGggdGFzayBzdGF0ZSA9PSBUQVNLX1JVTk5JTkcuCj4K
-PlRoYW5rcywKPgo+ICAgICAgICB0Z2x4Cg==
-------=_Part_19916_1101272449.1705035827801
-Content-Type: text/html; charset=GBK
-Content-Transfer-Encoding: base64
-
-PGRpdiBzdHlsZT0ibGluZS1oZWlnaHQ6MS43O2NvbG9yOiMwMDAwMDA7Zm9udC1zaXplOjE0cHg7
-Zm9udC1mYW1pbHk6QXJpYWwiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij48YnI+PC9wPjxwIHN0eWxl
-PSJtYXJnaW46IDA7Ij48YnI+PC9wPjxkaXYgc3R5bGU9Im1hcmdpbjogMDsiPkhpLCZuYnNwOzwv
-ZGl2PjxkaXYgc3R5bGU9Im1hcmdpbjogMDsiPiZuYnNwOyAmbmJzcDsgUGxlYXNlIHJldmlldyB0
-aGlzIHBhdGNoLCBJdCBkb2VzIG5vdCBjaGVjayB0aGUgY29uZGl0aW9uIHdoZW4gZXhlY3V0aW5n
-IHRoZSBzY2hlZHVsZXIoKSBmdW5jdGlvbi48L2Rpdj48ZGl2IHN0eWxlPSJtYXJnaW46IDA7Ij4m
-bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDs8L2Rpdj48ZGl2IHN0eWxlPSJtYXJnaW46IDA7Ij4m
-bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZu
-YnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5i
-c3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
-cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNw
-OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsg
-Jm5ic3A7ICZuYnNwOyAmbmJzcDs8c3BhbiBzdHlsZT0iZm9udC1zaXplOiAxNnB4OyI+PGI+TGl6
-aGU8L2I+PC9zcGFuPjwvZGl2PjxkaXYgc3R5bGU9Im1hcmdpbjogMDsiPjxzcGFuIHN0eWxlPSJm
-b250LXNpemU6IDE2cHg7Ij48Yj4mbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZu
-YnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5i
-c3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
-cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNw
-OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDs8
-L2I+dGhhbmtzPC9zcGFuPjwvZGl2PjxwIHN0eWxlPSJtYXJnaW46IDA7Ij48YnI+PC9wPjxwIHN0
-eWxlPSJtYXJnaW46IDA7Ij48YnI+PC9wPjxkaXYgc3R5bGU9InBvc2l0aW9uOnJlbGF0aXZlO3pv
-b206MSI+PC9kaXY+PGRpdiBpZD0iZGl2TmV0ZWFzZU1haWxDYXJkIj48L2Rpdj48cCBzdHlsZT0i
-bWFyZ2luOiAwOyI+PGJyPjwvcD48cHJlPjxicj5BdCAyMDI0LTAxLTEyIDAwOjQ0OjIwLCAiVGhv
-bWFzIEdsZWl4bmVyIiAmbHQ7dGdseEBsaW51dHJvbml4LmRlJmd0OyB3cm90ZToKJmd0O09uIFdl
-ZCwgSmFuIDEwIDIwMjQgYXQgMDY6MTMsIExpemhlIHdyb3RlOgomZ3Q7Jmd0OyBBZnRlciBhIHRo
-cmVhZCBpcyBhd2FrZW5lZCwgaXRzIHN0YXRlIGlzIGFscmVhZHkgdGFza19ydW5uaW5nCiZndDsK
-Jmd0O1RoYXQncyBjb3JyZWN0LCBidXQgcGxlYXNlIGxvb2sgYXQgaHJ0aW1lcl93YWtldXAoKSBh
-bmQgdGhlIGNvbmRpdGlvbmFsCiZndDtzY2hlZHVsZSgpIGludm9jYXRpb24gaW4gc2NoZWR1bGVf
-aHJ0aW1lb3V0X3JhbmdlX2Nsb2NrKCkuIFlvdSBicmVhayB0aGUKJmd0O2d1YXJhbnRlZSB0aGF0
-IHRoaXMgZnVuY3Rpb24gcmV0dXJucyB3aXRoIHRhc2sgc3RhdGUgPT0gVEFTS19SVU5OSU5HLgom
-Z3Q7CiZndDtUaGFua3MsCiZndDsKJmd0OyAgICAgICAgdGdseAo8L3ByZT48L2Rpdj4=
-------=_Part_19916_1101272449.1705035827801--
-
-------=_Part_19914_641272657.1705035827801
-Content-Type: application/octet-stream; 
-	name=0001-drivers-dm-crypt.c-remove-redundant-state-settings-a.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="0001-drivers-dm-crypt.c-remove-redundant-state-settings-a.patch"
-
-RnJvbSA4MWE2OTIwNTE3ZTVlMmQ5YWM2ZjViM2U0NjRiNjRiNTUwZjA3MDQ5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBMaXpoZSA8c2Vuc29yMTAxMEAxNjMuY29tPgpEYXRlOiBUaHUs
-IDExIEphbiAyMDI0IDIwOjU3OjAxIC0wODAwClN1YmplY3Q6IFtQQVRDSF0gZHJpdmVycy9kbS1j
-cnlwdC5jIDogcmVtb3ZlIHJlZHVuZGFudCBzdGF0ZSBzZXR0aW5ncyBhZnRlcgogd2FraW5nIHVw
-CgpUaGUgdGFzayBzdGF0dXMgaGFzIGJlZW4gc2V0IHRvIFRBU0tfUlVOTklORyBpbiBzY2hlZHVs
-ZSgpLgpObyBuZWVkIHRvIHNldCBhZ2FpbiBoZXJlLgoKU2lnbmVkLW9mZi1ieTogTGl6aGUgPHNl
-bnNvcjEwMTBAMTYzLmNvbT4KLS0tCiBkcml2ZXJzL21kL2RtLWNyeXB0LmMgfCAxIC0KIDEgZmls
-ZSBjaGFuZ2VkLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZC9kbS1jcnlw
-dC5jIGIvZHJpdmVycy9tZC9kbS1jcnlwdC5jCmluZGV4IDg1NWI0ODJjYmZmMS4uYWIxZTMwNjMw
-ZTY0IDEwMDY0NAotLS0gYS9kcml2ZXJzL21kL2RtLWNyeXB0LmMKKysrIGIvZHJpdmVycy9tZC9k
-bS1jcnlwdC5jCkBAIC0xOTQ4LDcgKzE5NDgsNiBAQCBzdGF0aWMgaW50IGRtY3J5cHRfd3JpdGUo
-dm9pZCAqZGF0YSkKIAogCQlzY2hlZHVsZSgpOwogCi0JCXNldF9jdXJyZW50X3N0YXRlKFRBU0tf
-UlVOTklORyk7CiAJCXNwaW5fbG9ja19pcnEoJmNjLT53cml0ZV90aHJlYWRfbG9jayk7CiAJCWdv
-dG8gY29udGludWVfbG9ja2VkOwogCi0tIAoyLjI1LjEKCg==
-------=_Part_19914_641272657.1705035827801--
-
+Regards,
+Anup
 
