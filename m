@@ -1,126 +1,129 @@
-Return-Path: <linux-kernel+bounces-24921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD9F82C4B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9485A82C4B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A46C61C2207F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:29:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96771C21C2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3840B175A3;
-	Fri, 12 Jan 2024 17:29:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB5C2262D;
+	Fri, 12 Jan 2024 17:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c/6K2Dib"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yfU83nNg"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743BF22626;
-	Fri, 12 Jan 2024 17:29:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48D4DC43330;
-	Fri, 12 Jan 2024 17:29:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705080547;
-	bh=jssAwbuPxvN7TZtNLg2pY60C9/BU5tslVku5TmAKZdw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=c/6K2Dib9ffLTtP8V3/i61Poz6aqFNtuEEiSH0No09eQkAnvZjXt3iRP+NM8lpPGf
-	 rfNOdrI5hPYSrKpRznCK4RiWlk1LTqHjExhvF6deHyxnrKjrTthONGs8tQN09BJyf+
-	 ZNGF3PNfHa6Te4/El8O2JyvHYWpOjCcA40X44RODeJz3hvWAishkave2Lcm354ZJc2
-	 mys6CNHCSLP8C9gXnK28wYuqNQA0WLGIbfTwVqJZuQnYdLrK4TWSLuE/PlqXv1o0oU
-	 8tdoLtWgTzcqN2SvAVAkkn1JH7Uv1B7TActqvkq91t/8/IVXMpok59UqhgkZGnQnRI
-	 waDPJr64KryrA==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e7dd8bce8so7970180e87.1;
-        Fri, 12 Jan 2024 09:29:07 -0800 (PST)
-X-Gm-Message-State: AOJu0YxRpTl3mvhOMIuewhyMF3yah9db0Z7hRUc/woI05YEWclUkEUzL
-	kmQQFgj+KrydHIDBxj8sIN133EXjWUnpIhRSdtY=
-X-Google-Smtp-Source: AGHT+IHv4U6Bv1CLMGqgczNTVhhcMsKubjnAMrFM7bbub8DgPF2lBHnCeeFTbjYR9e4eTnYIRgHyWdZc6b2WsJsdG64=
-X-Received: by 2002:a05:6512:39d2:b0:50e:7b01:70df with SMTP id
- k18-20020a05651239d200b0050e7b0170dfmr1134504lfu.72.1705080545496; Fri, 12
- Jan 2024 09:29:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8316A175A3
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5fc2e997804so5853417b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:31:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705080702; x=1705685502; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pz+3iGhrnb+ZuxKUBKuJ2apXdm0vVIBrk/mh4QD2xmU=;
+        b=yfU83nNgrNLEQk2fNZ44QuzSiUb5jEYpegauz5gs5fSJblPFEpB2DWpcKEKj6WccVT
+         Ni7zJMiKyLheksYYwaGhi3XmG/njSXjMyS8ETeKr2hhmXnKBVGFrZj4jetWH530l/rbs
+         vtjL5sxEnOL8PrblQzuCuBFB0a+5NHtzR0Ql1gUrQ4dSKTAQwIcQhuGsQ1RxLWFoQhjZ
+         Pny5zavW6jmonL5l3h/aURKg4s2jiaZsHLeHuqEeke/iCYfj8AvZv5IwlRL/hgInCvFK
+         QLt9eMzNaFhyfswuyVAOFrxFhywbk+zZU9VgymtnPB22xiPHKazbsVgitJQI3VssA5zP
+         6WFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705080702; x=1705685502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pz+3iGhrnb+ZuxKUBKuJ2apXdm0vVIBrk/mh4QD2xmU=;
+        b=Ls8CCjE2FGMITn6gm2W2wmtbhznLDMPwg8/aaCiHm9aRXKT3oGvej2WRkjpYa4Bt6r
+         EAgI3JxKHNvT4KjuY/zRQQxIO+uQNI4hUGGk2U/qfPjQ67Cn0sWekWrYV7OQeHJ+hyaF
+         6s5wYg2dWI4DEvJWjQXa6Vf/laBl0P0JUtHx7e4lfc/XPqrOPVBG4dyMnfUr3gEKQW/3
+         FA0x6GnxEMybaoQHwSAZRKfJ5yzk98pouYGcrfukp17ys33NfPbrnOeems6D2U7MzKyB
+         x/ectg/YuneiBqwxBrGyJWN0fQBe/f0RRyPzPQuHz9posH2mTNs46x1MDujEMeg6wiEE
+         UxSQ==
+X-Gm-Message-State: AOJu0YxGs0BQS4zKStzwwob8P2OrsZaQhcLnTZTdRVVVrHsvfVhOrb55
+	oB/Rz4HhKlKoBHAX1GSPb8YHSqGxYUbUcZn5PfvA58UY40yQ+yxFKp02OiCqtg==
+X-Google-Smtp-Source: AGHT+IHBb5mDw+d8Tra+UVvOzbfRUJqQK71uVqt24u7gwAq0b8xOdU2w+foZ0OV0Oz970+U0g8un3UIE1MrduUh832k=
+X-Received: by 2002:a81:5291:0:b0:5f9:d44:2fd9 with SMTP id
+ g139-20020a815291000000b005f90d442fd9mr1628503ywb.93.1705080701888; Fri, 12
+ Jan 2024 09:31:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112095000.8952-1-tzimmermann@suse.de>
-In-Reply-To: <20240112095000.8952-1-tzimmermann@suse.de>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 12 Jan 2024 18:28:53 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGxNTvCca+9TfUfvp06ppyD9XiyO59khYXg88VkyFm1rw@mail.gmail.com>
-Message-ID: <CAMj1kXGxNTvCca+9TfUfvp06ppyD9XiyO59khYXg88VkyFm1rw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] arch/x86: Remove unnecessary dependencies on bootparam.h
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: nathan@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com, 
-	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, javierm@redhat.com, linux-arch@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
+References: <20240112013935.1474648-1-surenb@google.com> <511e07da-9b34-4707-8f5a-f1e534c4445a@redhat.com>
+In-Reply-To: <511e07da-9b34-4707-8f5a-f1e534c4445a@redhat.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 12 Jan 2024 09:31:28 -0800
+Message-ID: <CAJuCfpHQn1ruQy_L073bMDaeohsXrpAQnxc7rrKJ43d5wZUt3Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] userfaultfd: avoid huge_zero_page in UFFDIO_MOVE
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, sfr@canb.auug.org.au, peterx@redhat.com, 
+	aarcange@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzbot+705209281e36404998f6@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 12 Jan 2024 at 10:50, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+On Fri, Jan 12, 2024 at 12:57=E2=80=AFAM David Hildenbrand <david@redhat.co=
+m> wrote:
 >
-> Reduce build time in some cases by removing unnecessary include statements
-> for <asm/bootparam.h>. Reorganize some header files accordingly.
+> On 12.01.24 02:39, Suren Baghdasaryan wrote:
+> > While testing UFFDIO_MOVE ioctl, syzbot triggered VM_BUG_ON_PAGE caused
+> > by a call to PageAnonExclusive() with a huge_zero_page as a parameter.
+> > UFFDIO_MOVE does not yet handle zeropages and returns EBUSY when one is
+> > encountered. Add an early huge_zero_page check in the PMD move path
+> > to avoid this situation.
+> >
+> > Reported-by: syzbot+705209281e36404998f6@syzkaller.appspotmail.com
+> > Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> > Applies cleanly over linux-next, mm-stable and mm-unstable branches
+> >
+> >   mm/userfaultfd.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> >
+> > diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> > index 216ab4c8621f..20e3b0d9cf7e 100644
+> > --- a/mm/userfaultfd.c
+> > +++ b/mm/userfaultfd.c
+> > @@ -1393,6 +1393,12 @@ ssize_t move_pages(struct userfaultfd_ctx *ctx, =
+struct mm_struct *mm,
+> >                               err =3D -ENOENT;
+> >                               break;
+> >                       }
+> > +                     /* Avoid moving zeropages for now */
+> > +                     if (is_huge_zero_pmd(*src_pmd)) {
+> > +                             spin_unlock(ptl);
+> > +                             err =3D -EBUSY;
+> > +                             break;
+> > +                     }
 >
-> While working on the kernel's boot-up graphics, I noticed that touching
-> include/linux/screen_info.h triggers a complete rebuild of the kernel
-> on x86. It turns out that the architecture's PCI and EFI headers include
-> <asm/bootparam.h>, which depends on <linux/screen_info.h>. But none of
-> the drivers have any business with boot parameters or the screen_info
-> state.
->
-> The patchset moves code from bootparam.h and efi.h into separate header
-> files and removes obsolete include statements on x86. I did
->
->   make allmodconfig
->   make -j28
->   touch include/linux/screen_info.h
->   time make -j28
->
-> to measure the time it takes to rebuild. Results without the patchset
-> are around 20 minutes.
->
->   real    20m46,705s
->   user    354m29,166s
->   sys     28m27,359s
->
-> And with the patchset applied it goes down to less than one minute.
->
->   real    0m56,643s
->   user    4m0,661s
->   sys     0m32,956s
->
-> The test system is an Intel i5-13500.
->
-> v5:
->         * silence clang warnings for real-mode code (Nathan)
->         * revert boot/compressed/misc.h (kernel test robot)
-> v4:
->         * fix fwd declaration in compressed/misc.h (Ard)
-> v3:
->         * keep setup_header in bootparam.h (Ard)
->         * implement arch_ima_efi_boot_mode() in source file (Ard)
-> v2:
->         * only keep struct boot_params in bootparam.h (Ard)
->         * simplify arch_ima_efi_boot_mode define (Ard)
->         * updated cover letter
->
-> Thomas Zimmermann (4):
->   arch/x86: Move UAPI setup structures into setup_data.h
->   arch/x86: Move internal setup_data structures into setup_data.h
->   arch/x86: Implement arch_ima_efi_boot_mode() in source file
->   arch/x86: Do not include <asm/bootparam.h> in several files
->
+> As an alternative (and more future proof?) just reject anything that is
+> not an anon folio as well?
 
-This looks ok to me, thanks for sticking with it.
+Yes, but I'm going to remove this check shortly, once zeropage
+movement patch is ready.
 
-For the series,
+>
+> Anyhow, this should handle the issue at hand.
+>
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+Thanks!
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
