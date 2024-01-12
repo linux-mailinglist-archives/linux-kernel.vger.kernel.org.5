@@ -1,108 +1,183 @@
-Return-Path: <linux-kernel+bounces-24330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5983582BB13
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:54:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F92082BB14
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:54:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08A47289D59
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F2591F258BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99ED85D73B;
-	Fri, 12 Jan 2024 05:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE525C8EE;
+	Fri, 12 Jan 2024 05:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z9k1mwSi"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HLV487+N"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42585D754
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vannapurve.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e9de9795dfso116557157b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705038795; x=1705643595; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MxvkESmzviEYCBtp91snCvTXp4bYwC2oMLMP2RAwiuA=;
-        b=Z9k1mwSi3Lrc7sKciPEyKLWtgn/dQi3Igqi+JSP+YZoi4eO+aTjh9Dd0d6+6EB80EE
-         lxHol5Bn8YJ79P6KQjHoBGzBF4nX4nEZDLSqWMc9fkx+y7lo2SzJe9DsLZrXRTo0f346
-         M4gBmBmT75EIobbjPaN0TRNWod16RKAJWmtgg2Cx4jfe8iluEGCqF96krG3z8jZ6kVP/
-         h8aUWwzv93o1DCGlE80pI2ZVBTCG0uojo7In9TDtlmuNcJEwaTDq8PNMexaMACdePyZn
-         k6NkCHIsRBq99NtpqLci+xKTsCnQO4ZWjaENDMNPg90JZKXvBaxwvHougTEEJ13FrF6L
-         +Myg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705038795; x=1705643595;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MxvkESmzviEYCBtp91snCvTXp4bYwC2oMLMP2RAwiuA=;
-        b=cfCHft7+FbUQ/Ym9tHJ+eaPFAl4NiHeu0TPgc82vReOePER5Xig9iD283XOG4fVbQC
-         1KQFVoS6X35DHETJkuFXD+uAsFwsqn5t6S9rLzIpwFQ3XqA27iduJlvtyIdl1OjeI5Zq
-         U9EuUpAAVhsqoKgMuE4sv6blMj8bNAsB39u8oEtBxinA26EpD+BPlqVaJPzBQAfx0bZq
-         kI9m7X6yVgH1UO/40c5fRQq2iyeqplLAoqB9r+c09y4Bo40RaWlpwnbmoQ6cpGZ1QgHU
-         lvvaeO9FLAPcvJN6c8XXHwdxK5cgwQK5eh4jsnmy1EbH73Hr3L9iaAjFAn6xXVy5QSRs
-         LybA==
-X-Gm-Message-State: AOJu0YwGAKVJYBxIND+NkQZ2QCGitbIarRKEZMDhmrB0g4dSDlvA6fIZ
-	IXsqyGxZnXBsELS7x5K+9It6ErXeT36nNekrvXokeKU=
-X-Google-Smtp-Source: AGHT+IEQgbkriNOGK5mfwWNuA4LMZiYYrvGPT1vz3dpLuatntUClCmGcbrPmnPd+PTEtKaWhmKYQgGZpVUGSTNxw
-X-Received: from vannapurve2.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:43a4])
- (user=vannapurve job=sendgmr) by 2002:a0d:e003:0:b0:5fb:7d88:a558 with SMTP
- id j3-20020a0de003000000b005fb7d88a558mr497217ywe.0.1705038794846; Thu, 11
- Jan 2024 21:53:14 -0800 (PST)
-Date: Fri, 12 Jan 2024 05:52:51 +0000
-In-Reply-To: <20240112055251.36101-1-vannapurve@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E30E5C8E1
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705038855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=GP1qDRaGGYNkvm0KV8/GWSP2DF/3SQkemClyjrO5cH0=;
+	b=HLV487+NzSsBjIfOkTb7gWLs4XhclLkzE8SMgkZowmv7R+qviZoqrbHYcfTOjD3jZbI9dp
+	qmQsYs7Roex4TYIwUrstcvj8jAwCeqr50t+Qnviil5Ew1/G5hpCOxin+cqjyIWWg08mnJ6
+	tWEQmb4N3K2HQmQebKoF2JFrs/Snqxg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-91-nYBvnK9GMumwfMd65qae7A-1; Fri, 12 Jan 2024 00:53:46 -0500
+X-MC-Unique: nYBvnK9GMumwfMd65qae7A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E5F6B85A588;
+	Fri, 12 Jan 2024 05:53:45 +0000 (UTC)
+Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id CA8BE2026D66;
+	Fri, 12 Jan 2024 05:53:45 +0000 (UTC)
+From: Shaoqin Huang <shahuang@redhat.com>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	Marc Zyngier <maz@kernel.org>,
+	Peter Xu <peterx@redhat.com>,
+	kvmarm@lists.linux.dev,
+	Shaoqin Huang <shahuang@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM: selftests: Fix the dirty_log_test semaphore imbalance
+Date: Fri, 12 Jan 2024 00:53:39 -0500
+Message-Id: <20240112055340.19372-1-shahuang@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240112055251.36101-1-vannapurve@google.com>
-X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
-Message-ID: <20240112055251.36101-6-vannapurve@google.com>
-Subject: [RFC V1 5/5] x86: CVMs: Ensure that memory conversions happen at 2M alignment
-From: Vishal Annapurve <vannapurve@google.com>
-To: x86@kernel.org, linux-kernel@vger.kernel.org
-Cc: pbonzini@redhat.com, rientjes@google.com, bgardon@google.com, 
-	seanjc@google.com, erdemaktas@google.com, ackerleytng@google.com, 
-	jxgao@google.com, sagis@google.com, oupton@google.com, peterx@redhat.com, 
-	vkuznets@redhat.com, dmatlack@google.com, pgonda@google.com, 
-	michael.roth@amd.com, kirill@shutemov.name, thomas.lendacky@amd.com, 
-	dave.hansen@linux.intel.com, linux-coco@lists.linux.dev, 
-	chao.p.peng@linux.intel.com, isaku.yamahata@gmail.com, andrew.jones@linux.dev, 
-	corbet@lwn.net, hch@lst.de, m.szyprowski@samsung.com, bp@suse.de, 
-	rostedt@goodmis.org, iommu@lists.linux.dev, 
-	Vishal Annapurve <vannapurve@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Return error on conversion of memory ranges not aligned to 2M size.
+When execute the dirty_log_test on some aarch64 machine, it sometimes
+trigger the ASSERT:
 
-Signed-off-by: Vishal Annapurve <vannapurve@google.com>
+==== Test Assertion Failure ====
+  dirty_log_test.c:384: dirty_ring_vcpu_ring_full
+  pid=14854 tid=14854 errno=22 - Invalid argument
+     1  0x00000000004033eb: dirty_ring_collect_dirty_pages at dirty_log_test.c:384
+     2  0x0000000000402d27: log_mode_collect_dirty_pages at dirty_log_test.c:505
+     3   (inlined by) run_test at dirty_log_test.c:802
+     4  0x0000000000403dc7: for_each_guest_mode at guest_modes.c:100
+     5  0x0000000000401dff: main at dirty_log_test.c:941 (discriminator 3)
+     6  0x0000ffff9be173c7: ?? ??:0
+     7  0x0000ffff9be1749f: ?? ??:0
+     8  0x000000000040206f: _start at ??:?
+  Didn't continue vcpu even without ring full
+
+The dirty_log_test fails when execute the dirty-ring test, this is
+because the sem_vcpu_cont and the sem_vcpu_stop is non-zero value when
+execute the dirty_ring_collect_dirty_pages() function. When those two
+sem_t variables are non-zero, the dirty_ring_wait_vcpu() at the
+beginning of the dirty_ring_collect_dirty_pages() will not wait for the
+vcpu to stop, but continue to execute the following code. In this case,
+before vcpu stop, if the dirty_ring_vcpu_ring_full is true, and the
+dirty_ring_collect_dirty_pages() has passed the check for the
+dirty_ring_vcpu_ring_full but hasn't execute the check for the
+continued_vcpu, the vcpu stop, and set the dirty_ring_vcpu_ring_full to
+false. Then dirty_ring_collect_dirty_pages() will trigger the ASSERT.
+
+Why sem_vcpu_cont and sem_vcpu_stop can be non-zero value? It's because
+the dirty_ring_before_vcpu_join() execute the sem_post(&sem_vcpu_cont)
+at the end of each dirty-ring test. It can cause two cases:
+
+1. sem_vcpu_cont be non-zero. When we set the host_quit to be true,
+   the vcpu_worker directly see the host_quit to be true, it quit. So
+   the log_mode_before_vcpu_join() function will set the sem_vcpu_cont
+   to 1, since the vcpu_worker has quit, it won't consume it.
+2. sem_vcpu_stop be non-zero. When we set the host_quit to be true,
+   the vcpu_worker has entered the guest state, the next time it exit
+   from guest state, it will set the sem_vcpu_stop to 1, and then see
+   the host_quit, no one will consume the sem_vcpu_stop.
+
+When execute more and more dirty-ring tests, the sem_vcpu_cont and
+sem_vcpu_stop can be larger and larger, which makes many code paths
+don't wait for the sem_t. Thus finally cause the problem.
+
+To fix this problem, we can wait a while before set the host_quit to
+true, which gives the vcpu time to enter the guest state, so it will
+exit again. Then we can wait the vcpu to exit, and let it continue
+again, then the vcpu will see the host_quit. Thus the sem_vcpu_cont and
+sem_vcpu_stop will be both zero when test finished.
+
+Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
 ---
- arch/x86/mm/pat/set_memory.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+v1->v2:
+  - Fix the real logic bug, not just fresh the context.
 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index bda9f129835e..6f7b06a502f4 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -2133,8 +2133,10 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
- 	int ret;
+v1: https://lore.kernel.org/all/20231116093536.22256-1-shahuang@redhat.com/
+---
+ tools/testing/selftests/kvm/dirty_log_test.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index 936f3a8d1b83..a6e0ff46a07c 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -417,7 +417,8 @@ static void dirty_ring_after_vcpu_run(struct kvm_vcpu *vcpu, int ret, int err)
  
- 	/* Should not be working on unaligned addresses */
--	if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n", addr))
--		addr &= PAGE_MASK;
-+	if (WARN_ONCE(addr & ~HPAGE_MASK, "misaligned address: %#lx\n", addr)
-+		|| WARN_ONCE((numpages << PAGE_SHIFT) & ~HPAGE_MASK,
-+			"misaligned numpages: %#lx\n", numpages))
-+		return -EINVAL;
+ static void dirty_ring_before_vcpu_join(void)
+ {
+-	/* Kick another round of vcpu just to make sure it will quit */
++	/* Wait vcpu exit, and let it continue to see the host_quit. */
++	dirty_ring_wait_vcpu();
+ 	sem_post(&sem_vcpu_cont);
+ }
  
- 	memset(&cpa, 0, sizeof(cpa));
- 	cpa.vaddr = &addr;
+@@ -719,6 +720,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 	struct kvm_vm *vm;
+ 	unsigned long *bmap;
+ 	uint32_t ring_buf_idx = 0;
++	int sem_val;
+ 
+ 	if (!log_mode_supported()) {
+ 		print_skip("Log mode '%s' not supported",
+@@ -726,6 +728,11 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 		return;
+ 	}
+ 
++	sem_getvalue(&sem_vcpu_stop, &sem_val);
++	assert(sem_val == 0);
++	sem_getvalue(&sem_vcpu_cont, &sem_val);
++	assert(sem_val == 0);
++
+ 	/*
+ 	 * We reserve page table for 2 times of extra dirty mem which
+ 	 * will definitely cover the original (1G+) test range.  Here
+@@ -825,6 +832,13 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 		sync_global_to_guest(vm, iteration);
+ 	}
+ 
++	/*
++	 *
++	 * Before we set the host_quit, let the vcpu has time to run, to make
++	 * sure we consume the sem_vcpu_stop and the vcpu consume the
++	 * sem_vcpu_cont, to keep the semaphore balance.
++	 */
++	usleep(p->interval * 1000);
+ 	/* Tell the vcpu thread to quit */
+ 	host_quit = true;
+ 	log_mode_before_vcpu_join();
 -- 
-2.43.0.275.g3460e3d667-goog
+2.40.1
 
 
