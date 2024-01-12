@@ -1,191 +1,139 @@
-Return-Path: <linux-kernel+bounces-24925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F76F82C4D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:40:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F03D82C4D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 266C91C22279
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:40:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15FD02858F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F5F17BDD;
-	Fri, 12 Jan 2024 17:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D57A17540;
+	Fri, 12 Jan 2024 17:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="jL32j5Fw";
-	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="pHXvjyM6"
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhsvjCmA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB6822637;
-	Fri, 12 Jan 2024 17:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
-ARC-Seal: i=1; a=rsa-sha256; t=1705080852; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=W3GWy0FmIaj8bnyQOLBzXX83ySwtjGcplbG/RlF6oXx9qygnBd9EMgXtiadN4VCuYL
-    Vzb9K/1Q4zEh0B7XcKv8F2Sx4FijwnMPXysHfKJDCuQG0VCoTY5bqyISD5X10Sklu//B
-    6VkzB1eAyWBDr/bYsxdCjCk7edGU3pgaP2hEzvpyZbAxOha7gyG3pLDtiV5WNhRfEYbL
-    TDD/pLVM6nJvYv+XcCrZwcaohlv+M2+F2XzRIFeiekgqkBmiLXVXMh3jQ6/CCRVmglED
-    VgmepBQlqLq+ZF6ebJlWo7K1uGUcBpy8sQQyJjroV+U5685/yWLccmDVI8r77ioDgMW0
-    JoMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1705080852;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=x1r68xA9wRZ4ANIBi9hA9+/f2i2/5reMcctFU/rKIWM=;
-    b=VDcJUmHB6n+dNWMqrBgIeSm07uZuiZ3Lo4YHM+4lHTEf/fShWCuTsnhOvGLLQPDnuX
-    DVAPLYAUhm05iR1fke6fvyGt2yjAOY9M0JpWsM0G7ZDb7NOVtKdS5okSvg27EKDAjxe4
-    EZA65KUjsuxqrlxq3A4GvhvmCzWHoRqtwrIEFgzCZ+5/k2+oHOIrVt8PoLSJaD5ZuoIt
-    SkIGnPo+f/Kh0VfwAACyGqpv0UWlsRVd0cuYtQVx3MTV8cVZA1NPKmpaCAhndTK188ip
-    jcc0l/OXnhCOTjIjugpKHKxL3l3jO3UA4Ps7c/ux8panbv6FBehkIg3hmwU9B0kTY7rX
-    EJQQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1705080852;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=x1r68xA9wRZ4ANIBi9hA9+/f2i2/5reMcctFU/rKIWM=;
-    b=jL32j5FwaeApRttmOhW1Gu7gSfqOtYGFDHV/dfmiVwk6lv/rGq6WkiuBz82beG8UnO
-    swrsv0PhvQYaN21JZmxO2+xU2OKEIDHGCNxj9juFGzg+Ldkd0mhSBo97APtDJ6U+LRqu
-    7blY6TeqlvdGLoENvx22BbsH/dahwDdBTiZ9BLCKDH+ergN8Y0RIkiA25I65IuRw4QpB
-    qzlOiNthWw+WTgSS1LzxBVQAwVwPewl9NQf1D7CfvSzknu8aEGQJDyWjtSAjV3d/ogkE
-    eT3drVtVQwHCoz/BHuQVEe8SLaX+rax4SpDu49ZC3/DEwQeCoUx/w0zBh8zzKKg1e7bO
-    eWKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1705080852;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=x1r68xA9wRZ4ANIBi9hA9+/f2i2/5reMcctFU/rKIWM=;
-    b=pHXvjyM6SXoq2JN88aS5Df7FeZdKXhVFedn7SwZ4nyqUqIMi1EYmq65gduamPGp39D
-    E3e2r+2FnzciMSGM/LCQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGZjDY="
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 49.10.2 DYNA|AUTH)
-    with ESMTPSA id dbe64400CHY9PpN
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Fri, 12 Jan 2024 18:34:09 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9ED722601;
+	Fri, 12 Jan 2024 17:37:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E37C433F1;
+	Fri, 12 Jan 2024 17:37:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705081026;
+	bh=kyspuGF+/jomofVPFKqvjOWn53WkC65k3SpM8uRR2V8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=YhsvjCmAGkzhLHpefGxQfZI0s9oyOxD4Xx3IegbwDSErHF+O8QvdO5G7G2rOR1Bpv
+	 zdO3dQtzEnJsHDG/RiTpxMPc8Afq87IDF36FFm2/rt/AUf67ykCEEZ+xXtHh8xMst0
+	 32IzMtpxyANQFfmzij4zEnoCCauAKE69fsPUq3fAyuvNwgH7NHi0G300bDDDjKoCM7
+	 jty4ce++AsFyIkuGZrdSv2wtQTTVvv+YeweOAfBw/1CCKQvy1j2C9ayZ64UTQ7K2uD
+	 UJWhOrDdHekwwQmQYUnSbw7xqct69HaXS5DvQok/jNREfTNyhXq3H+jiy3VNxxolus
+	 4jATA4s9igCFQ==
+Date: Fri, 12 Jan 2024 11:37:04 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org,
+	Victor Shih <victor.shih@genesyslogic.com.tw>,
+	Ben Chuang <benchuanggli@gmail.com>, linux-mmc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
+ timer timeout during suspend
+Message-ID: <20240112173704.GA2272968@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH RFC v2 04/11] ARM: dts: omap4: Add device tree entry for
- SGX GPU
-From: H. Nikolaus Schaller <hns@goldelico.com>
-In-Reply-To: <20240108183302.255055-5-afd@ti.com>
-Date: Fri, 12 Jan 2024 18:33:58 +0100
-Cc: Frank Binns <frank.binns@imgtec.com>,
- Donald Robson <donald.robson@imgtec.com>,
- Matt Coster <matt.coster@imgtec.com>,
- Adam Ford <aford173@gmail.com>,
- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
- Tony Lindgren <tony@atomide.com>,
- Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev,
- linux-omap@vger.kernel.org,
- linux-mips@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <122DC5ED-2AA7-46A0-845F-083922458385@goldelico.com>
-References: <20240108183302.255055-1-afd@ti.com>
- <20240108183302.255055-5-afd@ti.com>
-To: Andrew Davis <afd@ti.com>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAd53p7ZwYNau1c=SDpGd+cqP2qO_7km9Q3-bow-Jqzo6STVFA@mail.gmail.com>
 
-Hi,
-I just comment on this example, but it applies almost the same for all =
-other .dtsi changes.
+On Fri, Jan 12, 2024 at 01:14:42PM +0800, Kai-Heng Feng wrote:
+> On Sat, Jan 6, 2024 at 5:19 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng wrote:
+> > > Spamming `lspci -vv` can still observe the replay timer timeout error
+> > > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
+> > > replay timer timeout of AER"), albeit with a lower reproduce rate.
+> >
+> > I'm not sure what this is telling me.  By "spamming `lspci -vv`, do
+> > you mean that if you run lspci continually, you still see Replay Timer
+> > Timeout logged, e.g.,
+> >
+> >   CESta:        ... Timeout+
+> 
+> Yes it's logged and the AER IRQ is raised.
 
-> Am 08.01.2024 um 19:32 schrieb Andrew Davis <afd@ti.com>:
->=20
-> Add SGX GPU device entry to base OMAP4 dtsi file.
->=20
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
-> arch/arm/boot/dts/ti/omap/omap4.dtsi | 9 +++++----
-> 1 file changed, 5 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/arm/boot/dts/ti/omap/omap4.dtsi =
-b/arch/arm/boot/dts/ti/omap/omap4.dtsi
-> index 2bbff9032be3e..559b2bfe4ca7c 100644
-> --- a/arch/arm/boot/dts/ti/omap/omap4.dtsi
-> +++ b/arch/arm/boot/dts/ti/omap/omap4.dtsi
-> @@ -501,10 +501,11 @@ sgx_module: target-module@56000000 {
-> #size-cells =3D <1>;
-> ranges =3D <0 0x56000000 0x2000000>;
->=20
-> - /*
-> - * Closed source PowerVR driver, no child device
-> - * binding or driver in mainline
-> - */
-> + gpu@0 {
+IIUC the AER IRQ is the important thing.
 
-I wonder why we don't add a "gpu:" label here.
+Neither 015c9cbcf0ad nor this patch affects logging in
+PCI_ERR_COR_STATUS, so the lspci output won't change and mentioning it
+here doesn't add useful information.
 
-Almost all other subsystem nodes have one (e.g. emif:, aes:, dss:, dsi:, =
-hdmi:, etc.),
-obviously for convenience when using a .dtsi file.
+I'd suggest more specific wording than "spamming `lspci -vv`", e.g.,
 
-It would allow a board-specific DTS to easily add status =3D "disabled" =
-to avoid driver
-probing or disabling the GPU (e.g. if there is no display).
+  015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the replay timer
+  timeout of AER") masks Replay Timer Timeout errors at the GL975x
+  Endpoint.  When the Endpoint detects these errors, it still logs
+  them in its PCI_ERR_COR_STATUS, but masking prevents it from sending
+  ERR_COR messages upstream.
 
-> + compatible =3D "ti,omap4430-gpu", "img,powervr-sgx540";
+  The Downstream Port leading to a GL975x Endpoint is unaffected by
+  015c9cbcf0ad.  Previously, when that Port detected a Replay Timer
+  Timeout, it sent an ERR_COR message upstream, which eventually
+  caused an AER IRQ, which prevented the system from suspending.
 
-It still appears to me that the "img,powervr-sgx540" (or similar) entry =
-is redundant
-information.
+  Mask Replay Timer Timeout errors at the Downstream Port.  The errors
+  will still be logged in PCI_ERR_COR_STATUS, but no ERR_COR will be
+  sent.
 
-I have experimentally updated our openpvrsgx driver and we do not have =
-any use for
-this information (at least in the kernel driver):
+> > 015c9cbcf0ad uses hard-coded PCI_GLI_9750_CORRERR_MASK offset and
+> > PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT value, which look like
+> > they *could* be PCI_ERR_COR_MASK and PCI_ERR_COR_REP_TIMER, but
+> > without the lspci output I can't tell for sure.  If they are, it would
+> > be nice to use the generic macros instead of defining new ones so it's
+> > easier to analyze PCI_ERR_COR_MASK usage.
+> >
+> > If 015c9cbcf0ad is updating the generic PCI_ERR_COR_MASK, it should
+> > only prevent sending ERR_COR.  It should not affect the *logging* in
+> > PCI_ERR_COR_STATUS (see PCIe r6.0, sec 6.2.3.2.2), so it shouldn't
+> > affect the lspci output.
+> 
+> PCI_GLI_9750_CORRERR_MASK is specific to GLI 975x devices, so it
+> doesn't conform to generic PCI_ERR_COR_STATUS behavior.
 
-=
-https://github.com/goldelico/letux-kernel/commit/f2f7cb3b858ef255f52f2b82a=
-8bb34c047337afe
+*Could* 015c9cbcf0ad have used the generic PCI_ERR_COR_MASK to
+accomplish the same effect?  Is there an advantage to using the
+device-specific PCI_GLI_9750_CORRERR_MASK?
 
-It shows how easy it is to derive the sgx version and revision number if =
-we ever
-need it inside the driver.
+If masking via PCI_ERR_COR_MASK would work, that would be much better
+because the PCI core can see, manage, and make that visible, e.g., via
+sysfs.  The core doesn't do that today, but people are working on it.
 
-So if you want to keep a reference to powervr, it would suffice to have
+> > If 015c9cbcf0ad is actually updating PCI_ERR_COR_MASK, it would be
+> > nice to clean that up, too.  And maybe PCI_ERR_COR_REP_TIMER should be
+> > masked/restored at the same place for both the Downstream Port and the
+> > Endpoint?
+> 
+> Since PCI_ERR_COR_REP_TIMER is already masked before 015c9cbcf0ad,
+> so I didn't think that's necessary.  Do you think it should still be
+> masked just to be safe?
 
-> + compatible =3D "ti,omap4430-gpu", "img,powervr-sgx";
+Did you mean "PCI_ERR_COR_REP_TIMER is already masked *by*
+015c9cbcf0ad"?
 
-Otherwise your device tree entries compile fine and seem to work (at =
-least in
-a cursory test on PandaBoard ES).
+If masking PCI_ERR_COR_REP_TIMER using the generic PCI_ERR_COR_MASK in
+the GL975x would have the same effect as masking it with
+PCI_GLI_9750_CORRERR_MASK, then I think you should *only* use the
+generic PCI_ERR_COR_MASK.
 
-> + reg =3D <0x0 0x2000000>; /* 32MB */
-> + interrupts =3D <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
-> + };
-> };
+No need to do both if the generic one is sufficient.  And I think both
+should be done in the same place since they're basically solving the
+same problem, just at both ends of the link.
 
-BR and thanks,
-Nikolaus=
+Bjorn
 
