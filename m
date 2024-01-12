@@ -1,157 +1,309 @@
-Return-Path: <linux-kernel+bounces-24517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 055D682BDB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5AFE82BDB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 900562814D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:51:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5051F28A8FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB9C57328;
-	Fri, 12 Jan 2024 09:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F21D57302;
+	Fri, 12 Jan 2024 09:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QYKIC9a5"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="hFkVC9Mi"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC2F5D8F5
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e67e90d4cso1824935e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:48:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F59B5DF1E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-557678c50feso1379781a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:49:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705052880; x=1705657680; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ovZ/Rsc76gCmScDPQUgFFZxG8LWAV54uOr42sgWehgw=;
-        b=QYKIC9a5X4D3+fIlBeR9MdedZSQQXUli1B6Mt7PNtGNp0IpXqIaDzEECcRt0osR7xj
-         Yik5OtvuOVUvMy0m7g3c6U4Y56mKCWE675evOpQ18NzuWUBLK5LwLxqJvA/LoritN8t/
-         7Uzt5dNrQb7ZmNXp8m1BCAaDK4dfrvgLazWlwR+OU68Z1CBJnkBrJsPMWc62pqkEmBLV
-         U1I8wmwCE5rmNQX5QTGIwgq0doIfWROWiTsaXnMRj+ST1QNpqRlgnyKmR8MQzBt5FpXC
-         QFhF1owHWgp5FaQ5EXGLTi6g/hAAvUKAdGrKBpJJ7aBECwz9FjyuznJO+XolaOfGXNtu
-         dSfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705052880; x=1705657680;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+        d=ffwll.ch; s=google; t=1705052946; x=1705657746; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ovZ/Rsc76gCmScDPQUgFFZxG8LWAV54uOr42sgWehgw=;
-        b=fUd83IIZktNt10l/e3dDkiAT/jogtfN8RWQSahzfD/FDCwFf+r31qzPYe6ChqoyfxT
-         TL3u2SLXGfRc29WFdP9ooJ5B0pSh4yd+XDJj3pDfScU2/fqBLhVA/1NQ6XM0XWj02Dke
-         15AoOP9a5dOuyVrWrOtcDhodAAn5EH7xaxPnal3y6WWs7vsL4XUB1GS0bkqQe4OJPDj4
-         5If6Lf8Txky+bIkv5kFTiYulpQLF+ivPppNQcjbldoDM9Zb3PPESdzwMdC6WU8fHU4ky
-         baQ2p7/QCCHAT1JLruYXEunTqj0kH/BvHfVMywu2T8Jk8D+YkWEVerJdYMbZBo8KlbV3
-         Ueeg==
-X-Gm-Message-State: AOJu0YygNQJvc9L0eLZB4Wq16EIrxHp/tfiHLWZfaKorOAozB4vQqcpK
-	/vk6uw9PjEAK0SbrFPvvFFMvQiFpvvcOQg==
-X-Google-Smtp-Source: AGHT+IFCVQiCGA8CwwGN9Z4mOg5MdzbzmpZUSAPck2ahtMQxmi5wqVGJ970b76RdmjniT6cRu5oLeg==
-X-Received: by 2002:a05:600c:b92:b0:40e:4838:f374 with SMTP id fl18-20020a05600c0b9200b0040e4838f374mr391476wmb.78.1705052879754;
-        Fri, 12 Jan 2024 01:47:59 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:59d5:231:f1ee:77f? ([2a01:e0a:982:cbb0:59d5:231:f1ee:77f])
-        by smtp.gmail.com with ESMTPSA id v23-20020a5d5917000000b00337876596d1sm3373237wrd.111.2024.01.12.01.47.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 01:47:59 -0800 (PST)
-Message-ID: <a5c22fd2-8967-47ad-b936-4d1fdc4ab64d@linaro.org>
-Date: Fri, 12 Jan 2024 10:47:58 +0100
+        bh=us7FlGdER6e8HJOcJ9DbE8FEDZwENOAoyDuutoH2bnc=;
+        b=hFkVC9Mif2HBdcMArgHKUWXyRYjoFTJQhqgwB5D8PgNZOVRYB7ZpE66cbg1U/8vVX3
+         P6d9CnoY14GSShjZ/kf1CpFeq7709DiignVi4kHVpO513KazjEUWHhsS/k91+z0VIFny
+         Mhekf+jCdyQTOYc16B37xdDOXC1Y9wE/tWpZ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705052946; x=1705657746;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=us7FlGdER6e8HJOcJ9DbE8FEDZwENOAoyDuutoH2bnc=;
+        b=oWvqT+CxCM9Xzm3/GvmXUS+fiUPqPHJMvoJqv4krfydYf4KPUYzwDqaAkDPKuBFGQ4
+         NeNiRUHRuwErZBK1EyMBV9Fy9DAAba17HmZD9q//dOXAq+V1zzjAuIDDf7c/GYym3UnG
+         lYI7a6ENLDODCSICuuU2Ke73UPhHuwFrbvvwZUUUDF30qA6aRV/TPZEXn4YxV0XpDbvJ
+         FPLNeIDgd0aENB4WfGHG1oNdRlLaLT3EyAqXa0cswFbfcGqmis8UrTqv00Nw9IxYFNKB
+         SZwUmhjQ7SdDd4cS4dcq6A4IC56dSEUyCQ0y82GT6IuQqNS1Vz61+jDWsckPduJ2ps07
+         T7EQ==
+X-Gm-Message-State: AOJu0YyjwIwI7e7qgaVkTQbBxOdqXQ/ZS09h7Fh/KblvhMsQOimh/tDU
+	fq4K2nzXEPxneFDb0+VuZI9ffL56GfOI5w==
+X-Google-Smtp-Source: AGHT+IEOiq3FXhd4T4HCBcGkiMyRtMKljt8lxwRBUf3NerLJ5gdqm06t+lKy82F5LT4WBLgvMEXbXw==
+X-Received: by 2002:a05:6402:148d:b0:557:4249:44 with SMTP id e13-20020a056402148d00b0055742490044mr760113edv.1.1705052946272;
+        Fri, 12 Jan 2024 01:49:06 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id dh19-20020a0564021d3300b00557332d657fsm1610937edb.39.2024.01.12.01.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 01:49:05 -0800 (PST)
+Date: Fri, 12 Jan 2024 10:49:03 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	Jeffrey Kardatzke <jkardatzke@google.com>,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+	Vijayanand Jitta <quic_vjitta@quicinc.com>,
+	jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	linaro-mm-sig@lists.linaro.org,
+	Pekka Paalanen <ppaalanen@gmail.com>,
+	linux-mediatek@lists.infradead.org,
+	Joakim Bech <joakim.bech@linaro.org>, tjmercier@google.com,
+	linux-arm-kernel@lists.infradead.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	youlin.pei@mediatek.com, kuohong.wang@mediatek.com,
+	linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v4 4/7] dma-buf: heaps: restricted_heap: Add dma_ops
+Message-ID: <ZaELD4APVuX4p77P@phenom.ffwll.local>
+Mail-Followup-To: Yong Wu <yong.wu@mediatek.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	Jeffrey Kardatzke <jkardatzke@google.com>,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+	Vijayanand Jitta <quic_vjitta@quicinc.com>,
+	jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	linaro-mm-sig@lists.linaro.org,
+	Pekka Paalanen <ppaalanen@gmail.com>,
+	linux-mediatek@lists.infradead.org,
+	Joakim Bech <joakim.bech@linaro.org>, tjmercier@google.com,
+	linux-arm-kernel@lists.infradead.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	youlin.pei@mediatek.com, kuohong.wang@mediatek.com,
+	linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
+References: <20240112092014.23999-1-yong.wu@mediatek.com>
+ <20240112092014.23999-5-yong.wu@mediatek.com>
+ <ZaEJOjXP2EJIe9rK@phenom.ffwll.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2] power: supply: qcom_battmgr: Ignore notifications
- before initialization
-Content-Language: en-US, fr
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Sebastian Reichel <sre@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- Sebastian Reichel <sebastian.reichel@collabora.com>,
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Xilin Wu <wuxilin123@gmail.com>
-References: <20240103-topic-battmgr2-v2-1-c07b9206a2a5@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240103-topic-battmgr2-v2-1-c07b9206a2a5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaEJOjXP2EJIe9rK@phenom.ffwll.local>
+X-Operating-System: Linux phenom 6.5.0-4-amd64 
 
-On 03/01/2024 13:36, Konrad Dybcio wrote:
-> Commit b43f7ddc2b7a ("power: supply: qcom_battmgr: Register the power
-> supplies after PDR is up") moved the devm_power_supply_register() calls
-> so that the power supply devices are not registered before we go through
-> the entire initialization sequence (power up the ADSP remote processor,
-> wait for it to come online, coordinate with userspace..).
+On Fri, Jan 12, 2024 at 10:41:14AM +0100, Daniel Vetter wrote:
+> On Fri, Jan 12, 2024 at 05:20:11PM +0800, Yong Wu wrote:
+> > Add the dma_ops for this restricted heap. For restricted buffer,
+> > cache_ops/mmap are not allowed, thus return EPERM for them.
+> > 
+> > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> > ---
+> >  drivers/dma-buf/heaps/restricted_heap.c | 103 ++++++++++++++++++++++++
+> >  1 file changed, 103 insertions(+)
+> > 
+> > diff --git a/drivers/dma-buf/heaps/restricted_heap.c b/drivers/dma-buf/heaps/restricted_heap.c
+> > index 8c266a0f6192..ec4c63d2112d 100644
+> > --- a/drivers/dma-buf/heaps/restricted_heap.c
+> > +++ b/drivers/dma-buf/heaps/restricted_heap.c
+> > @@ -12,6 +12,10 @@
+> >  
+> >  #include "restricted_heap.h"
+> >  
+> > +struct restricted_heap_attachment {
+> > +	struct sg_table			*table;
+> > +};
+> > +
+> >  static int
+> >  restricted_heap_memory_allocate(struct restricted_heap *heap, struct restricted_buffer *buf)
+> >  {
+> > @@ -45,6 +49,104 @@ restricted_heap_memory_free(struct restricted_heap *heap, struct restricted_buff
+> >  	ops->memory_free(heap, buf);
+> >  }
+> >  
+> > +static int restricted_heap_attach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
+> > +{
+> > +	struct restricted_buffer *restricted_buf = dmabuf->priv;
+> > +	struct restricted_heap_attachment *a;
+> > +	struct sg_table *table;
+> > +	int ret;
+> > +
+> > +	a = kzalloc(sizeof(*a), GFP_KERNEL);
+> > +	if (!a)
+> > +		return -ENOMEM;
+> > +
+> > +	table = kzalloc(sizeof(*table), GFP_KERNEL);
+> > +	if (!table) {
+> > +		ret = -ENOMEM;
+> > +		goto err_free_attach;
+> > +	}
+> > +
+> > +	ret = sg_alloc_table(table, 1, GFP_KERNEL);
+> > +	if (ret)
+> > +		goto err_free_sgt;
+> > +	sg_set_page(table->sgl, NULL, restricted_buf->size, 0);
 > 
-> Some firmware versions (e.g. on SM8550) seem to leave battmgr at least
-> partly initialized when exiting the bootloader and loading Linux. Check
-> if the power supply devices are registered before consuming the battmgr
-> notifications.
+> So this is definitely broken and violating the dma-buf api rules. You
+> cannot let attach succed and supply a dummy/invalid sg table.
 > 
-> Fixes: b43f7ddc2b7a ("power: supply: qcom_battmgr: Register the power supplies after PDR is up")
-> Reported-by: Xilin Wu <wuxilin123@gmail.com>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
-> Changes in v2:
-> - Fix the commit title
-> - Link to v1: https://lore.kernel.org/linux-arm-msm/d9cf7d9d-60d9-4637-97bf-c9840452899e@linaro.org/T/#t
-> ---
->   drivers/power/supply/qcom_battmgr.c | 4 ++++
->   1 file changed, 4 insertions(+)
+> Two options:
 > 
-> diff --git a/drivers/power/supply/qcom_battmgr.c b/drivers/power/supply/qcom_battmgr.c
-> index a12e2a66d516..7d85292eb839 100644
-> --- a/drivers/power/supply/qcom_battmgr.c
-> +++ b/drivers/power/supply/qcom_battmgr.c
-> @@ -1271,6 +1271,10 @@ static void qcom_battmgr_callback(const void *data, size_t len, void *priv)
->   	struct qcom_battmgr *battmgr = priv;
->   	unsigned int opcode = le32_to_cpu(hdr->opcode);
->   
-> +	/* Ignore the pings that come before Linux cleanly initializes the battmgr stack */
-> +	if (!battmgr->bat_psy)
-> +		return;
-> +
->   	if (opcode == BATTMGR_NOTIFICATION)
->   		qcom_battmgr_notification(battmgr, data, len);
->   	else if (battmgr->variant == QCOM_BATTMGR_SC8280XP)
+> - Reject ->attach for all this buffers with -EBUSY and provide instead a
+>   private api for these secure buffers, similar to how virtio_dma_buf has
+>   private virto-specific apis. This interface would need to be
+>   standardized across all arm TEE users, so that we don't have a
+>   disastrous proliferation of apis.
 > 
-> ---
-> base-commit: 0fef202ac2f8e6d9ad21aead648278f1226b9053
-> change-id: 20240103-topic-battmgr2-15c17fac6d35
+> - Allow ->attach, but _only_ for drivers/devices which can access the
+>   secure buffer correctly, and only if you can put the right secure buffer
+>   address into the sg table directly. If dma to a secure buffer for a
+>   given struct device * will not work correctly (i.e. without data
+>   corruption), you _must_ reject the attach attempt with -EBUSY.
 > 
-> Best regards,
+> The 2nd approach would be my preferred one, if it's technically possible.
+> 
+> Also my understanding is that arm TEE is standardized, so I think we'll at
+> least want some acks from other soc people whether this will work for them
+> too.
+> 
+> Finally the usual drill:
+> - this also needs the driver side support, if there's any changes needed.
+>   Just the new heap isn't enough.
 
-Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8650-QRD
+Ok I quickly scrolled through your drm patches and that confirms that the
+current dma-buf interface you're implementing is just completely breaking
+the api. And you need to paper over that will all kinds of very icky
+special-casing.
+
+So definitely need to rethink the overall design between dma-buf heaps and
+drivers here.
+-Sima
+
+> - and for drm you need open userspace for this. Doesn't have to be the
+>   full content protection decode pipeline, the drivers in drm that landed
+>   secure buffer support thus far enabled it using the
+>   EGL_EXT_protected_content extension using gl, which side steps all the
+>   complications around content decryption keys and support
+> 
+> Cheers, Sima
+> 
+> > +
+> > +	a->table = table;
+> > +	attachment->priv = a;
+> > +
+> > +	return 0;
+> > +
+> > +err_free_sgt:
+> > +	kfree(table);
+> > +err_free_attach:
+> > +	kfree(a);
+> > +	return ret;
+> > +}
+> > +
+> > +static void restricted_heap_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
+> > +{
+> > +	struct restricted_heap_attachment *a = attachment->priv;
+> > +
+> > +	sg_free_table(a->table);
+> > +	kfree(a->table);
+> > +	kfree(a);
+> > +}
+> > +
+> > +static struct sg_table *
+> > +restricted_heap_map_dma_buf(struct dma_buf_attachment *attachment, enum dma_data_direction direct)
+> > +{
+> > +	struct restricted_heap_attachment *a = attachment->priv;
+> > +	struct sg_table *table = a->table;
+> > +
+> > +	return table;
+> > +}
+> > +
+> > +static void
+> > +restricted_heap_unmap_dma_buf(struct dma_buf_attachment *attachment, struct sg_table *table,
+> > +			      enum dma_data_direction direction)
+> > +{
+> > +	struct restricted_heap_attachment *a = attachment->priv;
+> > +
+> > +	WARN_ON(a->table != table);
+> > +}
+> > +
+> > +static int
+> > +restricted_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf, enum dma_data_direction direction)
+> > +{
+> > +	return -EPERM;
+> > +}
+> > +
+> > +static int
+> > +restricted_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf, enum dma_data_direction direction)
+> > +{
+> > +	return -EPERM;
+> > +}
+> > +
+> > +static int restricted_heap_dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+> > +{
+> > +	return -EPERM;
+> > +}
+> > +
+> > +static void restricted_heap_free(struct dma_buf *dmabuf)
+> > +{
+> > +	struct restricted_buffer *restricted_buf = dmabuf->priv;
+> > +	struct restricted_heap *heap = dma_heap_get_drvdata(restricted_buf->heap);
+> > +
+> > +	restricted_heap_memory_free(heap, restricted_buf);
+> > +	kfree(restricted_buf);
+> > +}
+> > +
+> > +static const struct dma_buf_ops restricted_heap_buf_ops = {
+> > +	.attach		= restricted_heap_attach,
+> > +	.detach		= restricted_heap_detach,
+> > +	.map_dma_buf	= restricted_heap_map_dma_buf,
+> > +	.unmap_dma_buf	= restricted_heap_unmap_dma_buf,
+> > +	.begin_cpu_access = restricted_heap_dma_buf_begin_cpu_access,
+> > +	.end_cpu_access	= restricted_heap_dma_buf_end_cpu_access,
+> > +	.mmap		= restricted_heap_dma_buf_mmap,
+> > +	.release	= restricted_heap_free,
+> > +};
+> > +
+> >  static struct dma_buf *
+> >  restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
+> >  			 unsigned long fd_flags, unsigned long heap_flags)
+> > @@ -66,6 +168,7 @@ restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
+> >  	if (ret)
+> >  		goto err_free_buf;
+> >  	exp_info.exp_name = dma_heap_get_name(heap);
+> > +	exp_info.ops = &restricted_heap_buf_ops;
+> >  	exp_info.size = restricted_buf->size;
+> >  	exp_info.flags = fd_flags;
+> >  	exp_info.priv = restricted_buf;
+> > -- 
+> > 2.25.1
+> > 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
