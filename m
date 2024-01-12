@@ -1,67 +1,53 @@
-Return-Path: <linux-kernel+bounces-24202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66DB982B900
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:11:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C94A82B8FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1A1D1F226D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:11:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 134781C239F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29330110D;
-	Fri, 12 Jan 2024 01:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10261116;
+	Fri, 12 Jan 2024 01:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iRBL3n60"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rI9GGQXG"
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B85EA6;
-	Fri, 12 Jan 2024 01:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705021903; x=1736557903;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bRgCO+xQvI0DoUXfM+Vajb+rpF3VFlCfbXxGEOR60DU=;
-  b=iRBL3n60YYLEBWSd6hMtRiOaSa+qboyi5n/+cj00+c5Np0qvSCvPdO2d
-   NWMhvD/MqP3DyMiMBZSHKkDq+SXcV4XoGffhliR7nwbMmfzpGgfRsd8BD
-   Jj/bbQ50KtsiWcZDFAReB9n0g8g4D6OaoljYxOY8VNjIKVEVe7LrPOhVe
-   I3v1rNStqzoRHzTzJIzGtl0i2NsmTFBCnsnDrI10RvOE9NL+Yac+btdjw
-   bDucdpW9aoUYDqpR84m0a0/AXb1PafyNIFMz5p214o4PgmzRH5uqttpQB
-   irUBBreoAIQCjxy+ox1i6J3ZmfJ/dJzwWdSzdqDnkxjoe5R67x4d6Vtwn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="6417511"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="6417511"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 17:11:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="901791863"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="901791863"
-Received: from linux.bj.intel.com ([10.238.157.71])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 17:11:38 -0800
-Date: Fri, 12 Jan 2024 09:08:36 +0800
-From: Tao Su <tao1.su@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Chao Gao <chao.gao@intel.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Yi Lai <yi1.lai@intel.com>, Xudong Hao <xudong.hao@intel.com>
-Subject: Re: [PATCH] x86/cpu: Add a VMX flag to enumerate 5-level EPT support
- to userspace
-Message-ID: <ZaCRFPIMfAPNy2rU@linux.bj.intel.com>
-References: <20240110002340.485595-1-seanjc@google.com>
- <ZZ42Vs3uAPwBmezn@chao-email>
- <ZZ7FMWuTHOV-_Gn7@google.com>
- <ZZ9X5anB/HGS8JR6@linux.bj.intel.com>
- <ZaAWXSvMgIMkxr50@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F20AA4C;
+	Fri, 12 Jan 2024 01:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Jan 2024 20:10:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705021851;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6oGLhiFkWJYxCQX4sImM6I3DqLEsgGCfjkZs61RF9Oo=;
+	b=rI9GGQXGx7EXaFlxyd08Frv8dXmrBR3n85SDViVMju9SdaRaaG3W5Qy3t0KmnemS+jJYFV
+	rWDOj85l2M/iD/zZBnMc1tsmtB9LB6FmDdqRYxSEBlqJ0WDaUNkKk+u0Q5rD6JkmZfU7DM
+	AztHuQQ9RALaMvDDp9eslPwBfaZNvps=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Mark Brown <broonie@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	Nikolai Kondrashov <spbnick@gmail.com>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook>
+ <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+ <202401101625.3664EA5B@keescook>
+ <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
+ <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,50 +56,125 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZaAWXSvMgIMkxr50@google.com>
+In-Reply-To: <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 11, 2024 at 08:25:01AM -0800, Sean Christopherson wrote:
-> On Thu, Jan 11, 2024, Tao Su wrote:
-> > On Wed, Jan 10, 2024 at 08:26:25AM -0800, Sean Christopherson wrote:
-> > > On Wed, Jan 10, 2024, Chao Gao wrote:
-> > > > On Tue, Jan 09, 2024 at 04:23:40PM -0800, Sean Christopherson wrote:
-> > > > >Add a VMX flag in /proc/cpuinfo, ept_5level, so that userspace can query
-> > > > >whether or not the CPU supports 5-level EPT paging.  EPT capabilities are
-> > > > >enumerated via MSR, i.e. aren't accessible to userspace without help from
-> > > > >the kernel, and knowing whether or not 5-level EPT is supported is sadly
-> > > > >necessary for userspace to correctly configure KVM VMs.
-> > > > 
-> > > > This assumes procfs is enabled in Kconfig and userspace has permission to
-> > > > access /proc/cpuinfo. But it isn't always true. So, I think it is better to
-> > > > advertise max addressable GPA via KVM ioctls.
-> > > 
-> > > Hrm, so the help for PROC_FS says:
-> > > 
-> > >   Several programs depend on this, so everyone should say Y here.
-> > > 
-> > > Given that this is working around something that is borderline an erratum, I'm
-> > > inclined to say that userspace shouldn't simply assume the worst if /proc isn't
-> > > available.  Practically speaking, I don't think a "real" VM is likely to be
-> > > affected; AFAIK, there's no reason for QEMU or any other VMM to _need_ to expose
-> > > a memslot at GPA[51:48] unless the VM really has however much memory that is
-> > > (hundreds of terabytes?).  And a if someone is trying to run such a massive VM on
-> > > such a goofy CPU...
-> > 
-> > It is unusual to assign a huge RAM to guest, but passthrough a device also may trigger
-> > this issue which we have met, i.e. alloc memslot for the 64bit BAR which can set
-> > bits[51:48]. BIOS can control the BAR address, e.g. seabios moved 64bit pci window
-> > to end of address space by using advertised physical bits[1].
+On Thu, Jan 11, 2024 at 09:47:26PM +0000, Mark Brown wrote:
+> On Thu, Jan 11, 2024 at 12:38:57PM -0500, Kent Overstreet wrote:
+> > On Thu, Jan 11, 2024 at 03:35:40PM +0000, Mark Brown wrote:
 > 
-> Drat.  Do you know if these CPUs are going to be productized?  We'll still need
-> something in KVM either way, but whether or not the problems are more or less
-> limited to funky software setups might influence how we address this.
+> > > IME the actually running the tests bit isn't usually *so* much the
+> > > issue, someone making a new test runner and/or output format does mean a
+> > > bit of work integrating it into infrastructure but that's more usually
+> > > annoying than a blocker.
+> 
+> > No, the proliferation of test runners, test output formats, CI systems,
+> > etc. really is an issue; it means we can't have one common driver that
+> > anyone can run from the command line, and instead there's a bunch of
+> > disparate systems with patchwork integration and all the feedback is nag
+> > emails - after you've finished whan you were working on instead of
+> > moving on to the next thing - with no way to get immediate feedback.
+> 
+> It's certainly an issue and it's much better if people do manage to fit
+> their tests into some existing thing but I'm not convinced that's the
+> big reason why you have a bunch of different systems running separately
+> and doing different things.  For example the enterprise vendors will
+> naturally tend to have a bunch of server systems in their labs and focus
+> on their testing needs while I know the Intel audio CI setup has a bunch
+> of laptops, laptop like dev boards and things in there with loopback
+> audio cables and I think test equipment plugged in and focuses rather
+> more on audio.  My own lab is built around on systems I can be in the
+> same room as without getting too annoyed and does things I find useful,
+> plus using spare bandwidth for KernelCI because they can take donated
+> lab time.
 
-Yes, please see the CPU model I submitted[1].
+No, you're overthinking.
 
-[1] https://lore.kernel.org/all/20231206131923.1192066-1-tao1.su@linux.intel.com/
+The vast majority of kernel testing requires no special hardware, just a
+virtual machine.
 
-Thanks,
-Tao
+There is _no fucking reason_ we shouldn't be able to run tests on our
+own local machines - _local_ machines, not waiting for the Intel CI
+setup and asking for a git branch to be tested, not waiting for who
+knows how long for the CI farm to get to it - just run the damn tests
+immediately and get immediate feedback.
+
+You guys are overthinking and overengineering and ignoring the basics,
+the way enterprise people always do.
+
+> > And it's because building something shiny and new is the fun part, no
+> > one wants to do the grungy integration work.
+> 
+> I think you may be overestimating people's enthusiasm for writing test
+> stuff there!  There is NIH stuff going on for sure but lot of the time
+> when you look at something where people have gone off and done their own
+> thing it's either much older than you initially thought and predates
+> anything they might've integrated with or there's some reason why none
+> of the existing systems fit well.  Anecdotally it seems much more common
+> to see people looking for things to reuse in order to save time than it
+> is to see people going off and reinventing the world.
+
+It's a basic lack of leadership. Yes, the younger engineers are always
+going to be doing the new and shiny, and always going to want to build
+something new instead of finishing off the tests or integrating with
+something existing. Which is why we're supposed to have managers saying
+"ok, what do I need to prioritize for my team be able to develop
+effectively".
 
 > 
+> > > > example tests, example output:
+> > > > https://evilpiepirate.org/git/ktest.git/tree/tests/bcachefs/single_device.ktest
+> > > > https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-testing
+> 
+> > > For example looking at the sample test there it looks like it needs
+> > > among other things mkfs.btrfs, bcachefs, stress-ng, xfs_io, fio, mdadm,
+> > > rsync
+> 
+> > Getting all that set up by the end user is one command:
+> >   ktest/root_image create
+> > and running a test is one morecommand:
+> > build-test-kernel run ~/ktest/tests/bcachefs/single_device.ktest
+> 
+> That does assume that you're building and running everything directly on
+> the system under test and are happy to have the test in a VM which isn't
+> an assumption that holds universally, and also that whoever's doing the
+> testing doesn't want to do something like use their own distro or
+> something - like I say none of it looks too unreasonable for
+> filesystems.
+
+No, I'm doing it that way because technically that's the simplest way to
+do it.
+
+All you guys building crazy contraptions for running tests on Google
+Cloud or Amazon or whatever - you're building technical workarounds for
+broken procurement.
+
+Just requisition the damn machines.
+
+> Some will be, some will have more demanding requirements especially when
+> you want to test on actual hardware rather than in a VM.  For example
+> with my own test setup which is more focused on hardware the operating
+> costs aren't such a big deal but I've got boards that are for various
+> reasons irreplaceable, often single instances of boards (which makes
+> scheduling a thing) and for some of the tests I'd like to get around to
+> setting up I need special physical setup.  Some of the hardware I'd like
+> to cover is only available in machines which are in various respects
+> annoying to automate, I've got a couple of unused systems waiting for me
+> to have sufficient bandwidth to work out how to automate them.  Either
+> way I don't think the costs are trival enough to be completely handwaved
+> away.
+
+That does complicate things.
+
+I'd also really like to get automated performance testing going too,
+which would have similar requirements in that jobs would need to be
+scheduled on specific dedicated machines. I think what you're doing
+could still build off of some common infrastructure.
+
+> I'd also note that the 9 hour turnaround time for that test set you're
+> pointing at isn't exactly what I'd associate with immediate feedback.
+
+My CI shards at the subtest level, and like I mentioned I run 10 VMs per
+physical machine, so with just 2 of the 80 core Ampere boxes I get full
+test runs done in ~20 minutes.
 
