@@ -1,146 +1,107 @@
-Return-Path: <linux-kernel+bounces-24386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0436082BBDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:39:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6EC82BBE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:39:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3F25282D46
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:39:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2DAF1F2358D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:39:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2D25D726;
-	Fri, 12 Jan 2024 07:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7F25C91E;
+	Fri, 12 Jan 2024 07:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AhuOaNR0"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a0J3FRSe"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B085C90C;
-	Fri, 12 Jan 2024 07:39:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d9cdd0a5e6so3696431b3a.3;
-        Thu, 11 Jan 2024 23:39:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705045151; x=1705649951; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ltxfqdn8oMs6HiFEgPdU5d3jRUgHJ3wntYFCndBlEL0=;
-        b=AhuOaNR0pSJdkFQuwOxyK/b+ALALPGdN+knq/7Nz+ZiLKnzr42VEUvIB6C0wAb+lLQ
-         iw+NxI045owqxnRWew7nA9pydu0QuTP6+CDhD9Vj6W3iD2xp50tionHGh5njl1DtCC8Y
-         rbWf3aI3OGCpt1PIPLXhW0B2IM+kuqUYcrAzzDB3gnWCVs3S9yvySfWHO0inAAfJGg1D
-         TyRN8vHfahW8kcwZUL8wioTzM83ZMsGu+vR1VTFdFFCoxpQSn58QMBsJZi+A1hGlzsyc
-         tFcIw1VMBYymTW7YfBZHAw2WAQ/zO63v7CyhXDVUIFKCrj/tb51UMJi9vfqa3odonm+y
-         OSVQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CDD5B1E4
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705045166;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7Btb+Nkd76BScAGZ0KbC8/OACivjuRPWvQS8QIQEFPk=;
+	b=a0J3FRSe675u2tVw2KHhbrbvolhot3EgSbdJQdZBmb5KUZE2V7xIbFXUolQCL1z+ttbY8J
+	R279AqNs/g24vbcezv6PafO0dHH5Y0/OzBgpNrFsw7CoISW4I3ZKTC7A+iMsvugsoPXF9B
+	aiIi94H/ufYjuVOCrxhyammwuU0wosY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-52-ra18yDtFPuWOXEsLCnJq3Q-1; Fri, 12 Jan 2024 02:39:24 -0500
+X-MC-Unique: ra18yDtFPuWOXEsLCnJq3Q-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a2bc6645267so178670866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:39:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705045151; x=1705649951;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ltxfqdn8oMs6HiFEgPdU5d3jRUgHJ3wntYFCndBlEL0=;
-        b=PbuAG5MdgrEoyADk99a6m7ZqnaUmM/0N5jocaRUdK0phYPx4yCbs6mkw7MKnNoeBV2
-         Eo6pDzv+f2NoqeXPyz/2ewhZCrWMTipjmTDZXfCeMth1jorYv9T0an3ipV/cU1x/+DFK
-         sfbalUDROK6Mbb/Q43FL1GYQSVd+PwfKFCy1ZMcIKQUZxC8nOuUDCeo/692axVSyhEuE
-         2SasWymN3TGYpi/bGMAR8hbEaRrSNdpYHP9CzBbXGV4lazLMLS5u1s9a0dhyDnUNbvyN
-         wa+UDagVNLc6EB7Zc13k71KMtNko+cv6EJJX57EgJWnfQD8WYN9ZAeVR5oJfJS1izERm
-         VzyA==
-X-Gm-Message-State: AOJu0YyenFN72QPgNBX8R7Mtp7TTGzMtf4HHO9AtZ6HwBVWft6suBIv7
-	C+C4TwzBecgkNqIw9EKci9E=
-X-Google-Smtp-Source: AGHT+IHHyM4INeewJgDCfByb1wR/DWXGrSMUSzpTM4WgHiY4EFQ9S7QWLIsDnv8bY2tCOBNXv8rW+w==
-X-Received: by 2002:aa7:9e52:0:b0:6d9:a0a2:a7c0 with SMTP id z18-20020aa79e52000000b006d9a0a2a7c0mr388151pfq.66.1705045150890;
-        Thu, 11 Jan 2024 23:39:10 -0800 (PST)
-Received: from g2039B650.. ([106.39.42.152])
-        by smtp.gmail.com with ESMTPSA id ka6-20020a056a00938600b006d991505b4csm2565570pfb.76.2024.01.11.23.39.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 23:39:10 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: dmitry.torokhov@gmail.com,
-	arnd@kernel.org,
-	schnelle@linux.ibm.com
-Cc: linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] Input: fix atomicity violation in gameport_run_poll_handler
-Date: Fri, 12 Jan 2024 15:38:55 +0800
-Message-Id: <20240112073855.16594-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1705045163; x=1705649963;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Btb+Nkd76BScAGZ0KbC8/OACivjuRPWvQS8QIQEFPk=;
+        b=oRXphyhVGA49drCokiB58q433bgGtwR/5y0mwP9/cbOBa+hYa9JXnYQEDy0nVVjBT1
+         oEEZLP76a8cxo73hcefX78fJGqU6tbueASTFqd+nzKE2dGM6LNGr8owJw7k+jIvKOCsI
+         7Sr0YUUyA+gPHUmBkuNO3PSntMyvCGqf31pLwUSLnm2A1p2lJ6mgfTrrcVViH5UDpAck
+         2C7yVfttT+lzpRXxE2PAOMlVCxBdpUvgvuOi9trt7kE3j5H6s2gNogZpYoRlPT7wiQZQ
+         Pm3yh06KMNUfAWJ6gtg+HAkYQL9vPr2R5yaEocWNJRiydq20nurd2nzbXTd9ve2TiT1i
+         70AQ==
+X-Gm-Message-State: AOJu0YwDR60QCobwc+Q3ZHtm8NED8CY8gtCi5uzDdGOmPsPV9md+0bNi
+	8iU0GDSxEWjCB/dhGQ047igcFnkCjHpYDGjHBHjrXtR8Lh53LkHzql1tLuFLIr+PvzZJzNUuIeh
+	aTgknnATsmQGAR3AYMq2CAgBKoLCFEysn
+X-Received: by 2002:a17:906:801:b0:a23:3298:25fe with SMTP id e1-20020a170906080100b00a23329825femr274259ejd.232.1705045163348;
+        Thu, 11 Jan 2024 23:39:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGMjnqy/B1vYtx9+feQ1GimNFS8D/HrxDCf8Hs3NZLd+HxDzrQaAJkIjGhq6ccyoWkgbGmbYw==
+X-Received: by 2002:a17:906:801:b0:a23:3298:25fe with SMTP id e1-20020a170906080100b00a23329825femr274246ejd.232.1705045163089;
+        Thu, 11 Jan 2024 23:39:23 -0800 (PST)
+Received: from [192.168.0.182] (host-80-181-166-228.retail.telecomitalia.it. [80.181.166.228])
+        by smtp.gmail.com with ESMTPSA id bm19-20020a170906c05300b00a2362c5e3dbsm1478884ejb.151.2024.01.11.23.39.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 23:39:22 -0800 (PST)
+Message-ID: <9ce7c466-ce9d-4673-b89a-d3244226dbde@redhat.com>
+Date: Fri, 12 Jan 2024 08:39:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] sched/stats: Fix rt/dl task's sched latency statistics
+ error in sched_stat_wait tracepoint
+To: Junwen Wu <wudaemon@163.com>, mingo@redhat.com, peterz@infradead.org,
+ juri.lelli@redhat.com
+Cc: mgorman@suse.de, vschneid@redhat.com, linux-kernel@vger.kernel.org,
+ laoar.shao@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com
+References: <20240111150147.182937-1-wudaemon@163.com>
+Content-Language: en-US, pt-BR, it-IT
+From: Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <20240111150147.182937-1-wudaemon@163.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-In gameport_run_poll_handler():
-    ...
-    if (gameport->poll_cnt)
-        mod_timer(&gameport->poll_timer, jiffies + ...));
+On 1/11/24 16:01, Junwen Wu wrote:
+> The sched_stat_wait tracepoint is showing unreasonably long
+> latencies for real-time tasks. For example:
+> 
+> sched_stat_wait: comm=rcu_preempt pid=14 delay=4936139545261 [ns]
+> 
+> This error happens when the rt task balances off the source CPU because
+> the dequeue operation is not updating the sched_statistics. So, follow
+> update_stats_wait_end_fair() and update the stats. Do the same for
+> SCHED_DEADLINE.
+> 
+> Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
+> Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched class")
 
-In gameport_stop_polling():
-    spin_lock(&gameport->timer_lock);
-    if (!--gameport->poll_cnt)
-        del_timer(&gameport->poll_timer);
-    spin_unlock(&gameport->timer_lock);
+Reviewed-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-An atomicity violation occurs due to the concurrent execution of
-gameport_run_poll_handler() and gameport_stop_polling(). The current check
-for gameport->poll_cnt in gameport_run_poll_handler() is not effective
-because poll_cnt can be decremented to 0 and del_timer can be called in
-gameport_stop_polling() before mod_timer is called in
-gameport_run_poll_handler(). This situation leads to the risk of calling
-mod_timer for a timer that has already been deleted in
-gameport_stop_polling(). Since calling mod_timer on a deleted timer
-reactivates it, this atomicity violation could result in the timer being
-activated while the poll_cnt value is 0.
-
-This possible bug is found by an experimental static analysis tool
-developed by our team, BassCheck[1]. This tool analyzes the locking APIs
-to extract function pairs that can be concurrently executed, and then
-analyzes the instructions in the paired functions to identify possible
-concurrency bugs including data races and atomicity violations. The above
-possible bug is reported when our tool analyzes the source code of
-Linux 5.17.
-
-To resolve this issue, it is suggested to add a spinlock pair in
-gameport_run_poll_handler() to ensure atomicity. With this patch applied,
-our tool no longer reports the bug, with the kernel configuration
-allyesconfig for x86_64. Due to the absence of the requisite hardware, we
-are unable to conduct runtime testing of the patch. Therefore, our
-verification is solely based on code logic analysis.
-
-[1] https://sites.google.com/view/basscheck/
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
----
- drivers/input/gameport/gameport.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/input/gameport/gameport.c b/drivers/input/gameport/gameport.c
-index 34f416a3ebcb..12af46d3c059 100644
---- a/drivers/input/gameport/gameport.c
-+++ b/drivers/input/gameport/gameport.c
-@@ -202,8 +202,13 @@ static void gameport_run_poll_handler(struct timer_list *t)
- 	struct gameport *gameport = from_timer(gameport, t, poll_timer);
- 
- 	gameport->poll_handler(gameport);
-+
-+	spin_lock(&gameport->timer_lock);
-+
- 	if (gameport->poll_cnt)
- 		mod_timer(&gameport->poll_timer, jiffies + msecs_to_jiffies(gameport->poll_interval));
-+
-+	spin_unlock(&gameport->timer_lock);
- }
- 
- /*
--- 
-2.34.1
+Thanks
+-- Daniel
 
 
