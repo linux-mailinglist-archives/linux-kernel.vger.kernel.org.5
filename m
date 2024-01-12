@@ -1,321 +1,218 @@
-Return-Path: <linux-kernel+bounces-24675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9C0F82C09D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:13:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62E5B82C0A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 606F81F24CAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:13:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA34DB22604
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56EE36BB57;
-	Fri, 12 Jan 2024 13:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 558946BB59;
+	Fri, 12 Jan 2024 13:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="cqxFlnPH"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RzsEtuiB"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62932AEEC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e7e6239e1so1729404e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:13:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B7C6BB4F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso5624291276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:14:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1705065215; x=1705670015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x7MESFOqMbldu0jdAkEUCRW758Po4BcRceiIfnJUgcs=;
-        b=cqxFlnPHO69LD5aTtyfALGvzCdylQeOlaDJqKQ25mmtOm+glkX5AlnMaR91YulZqth
-         b802txLb1lYec96a1xwbfjwh3jGO0WIw2uTy/oWZsM0V+WwVYIVpfWZCduM8e8zwQ9No
-         pP1jk4ZUA31ion7LYMuAnA4zs3+2v4NY+f0ZA=
+        d=linaro.org; s=google; t=1705065298; x=1705670098; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDWt7qNI0NuDiSYcTfV6CD0Gy7BpMOi0Lg0E40nc3b8=;
+        b=RzsEtuiBHgLbdnur6za2Jfq9ltR3zu/AKjZxecR0ZkAVjR4XgCD16/wnkdcsTUal3h
+         84i16XGAzwqI43+K1FEPmlvhqFWmzpgdWjpu0rhajk119MNw77d2F8JDmNjBm0bee3nz
+         bJY+yjdcb20IoQ1NIKZB5qCk3nS9tx/gjbrSmunt6wqik4cIsruS5BeJNzfoehksoX0N
+         auoeV/IW+fOC5DOiWduLMFjqVTQj45s0IiVuBfMkpN0Xt3Yq7XibLSqwqUBdLR4FW8R2
+         8c+NTiCxJmJIBObu3oZ3yIcHD4QGLHbouv3SjCF0dxKtFKik7mxB9AAhXVeGetl729pk
+         5QnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705065215; x=1705670015;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x7MESFOqMbldu0jdAkEUCRW758Po4BcRceiIfnJUgcs=;
-        b=ssMU2upPqYcQk7/2YLcNiA2HB6RJhlCnaj7WZQ612yTg6xj9vHet171ZkWfbBLhDNv
-         DsAy1BLlwgNLQm2tK1Gmw7F0EcAFesPRCD72T9gBiOtaYazGk1npWJqh/J67R1HqGOtj
-         7pczuFxdUd9cHqkcyBLpjRPnWyetycg/AhLA6Y0H6QlgYd76k1Bs7YNCy3l58KxUJgz5
-         vXupEvAO8omOFgK66PI7fwElyVeHQPOS2qCBouv06flnbHsbj6XNNmIc5ST/ntWs8AfX
-         GtlbTftmHHBnCNYsKKwhJVvose6MW5hl5j1uZPz6vwm2sDZ24BfjaGqIiPUv1J3Uus/i
-         cn3A==
-X-Gm-Message-State: AOJu0Yzh2Yz6mqm6AsGWfYB4NTaKf2tZCPvlzVePElMPpzA58o/TvV2X
-	GDqbA2AE1GXXMDVAeamdkjbrtVH/Io6u5A==
-X-Google-Smtp-Source: AGHT+IGDocnKA5u5Ry/6tcJ2qWsqvkAYYFcoQDwE3LVjDtNYc/uY2Ce4syB0oTLhh+z+YdT5+6GIXg==
-X-Received: by 2002:a19:8c4a:0:b0:50e:84f9:22dc with SMTP id i10-20020a198c4a000000b0050e84f922dcmr1041071lfj.2.1705065214674;
-        Fri, 12 Jan 2024 05:13:34 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id x25-20020a1709064bd900b00a28f54aacf1sm1789075ejv.185.2024.01.12.05.13.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 05:13:34 -0800 (PST)
-Date: Fri, 12 Jan 2024 14:13:32 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-	Jeffrey Kardatzke <jkardatzke@google.com>,
-	devicetree@vger.kernel.org,
-	Project_Global_Chrome_Upstream_Group@mediatek.com,
-	Singo Chang <singo.chang@mediatek.com>,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	Jason-ch Chen <jason-ch.chen@mediatek.com>,
-	Nancy Lin <nancy.lin@mediatek.com>,
-	linux-mediatek@lists.infradead.org,
-	Shawn Sung <shawn.sung@mediatek.com>,
-	Johnson Wang <johnson.wang@mediatek.com>,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 03/11] drm/mediatek: Add secure buffer control flow to
- mtk_drm_gem
-Message-ID: <ZaE6_I95IcxIUB4x@phenom.ffwll.local>
-Mail-Followup-To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-	Jeffrey Kardatzke <jkardatzke@google.com>,
-	devicetree@vger.kernel.org,
-	Project_Global_Chrome_Upstream_Group@mediatek.com,
-	Singo Chang <singo.chang@mediatek.com>,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	Jason-ch Chen <jason-ch.chen@mediatek.com>,
-	Nancy Lin <nancy.lin@mediatek.com>,
-	linux-mediatek@lists.infradead.org,
-	Shawn Sung <shawn.sung@mediatek.com>,
-	Johnson Wang <johnson.wang@mediatek.com>,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20231223182932.27683-1-jason-jh.lin@mediatek.com>
- <20231223182932.27683-4-jason-jh.lin@mediatek.com>
+        d=1e100.net; s=20230601; t=1705065298; x=1705670098;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iDWt7qNI0NuDiSYcTfV6CD0Gy7BpMOi0Lg0E40nc3b8=;
+        b=GB9DdYH8r9vleVqQOFiLI+kzvZfh58rVpHK79Tti4EAlUbp0Y1zqkyyTehfEhtfx/a
+         JFjQdAKeqxiH0ixRGu2uUDR2nI9B9P7zlsjTAz79LpECZQYWbbHwEwn3PJH21qaphoOc
+         jBC259K47DVKs6zDONUa+ddT5wJKruvuYGlUFfLP9jJpabi172vJWGT8umu16oYnDZgZ
+         NMjHuWzK/l4v+pSjv2YGf5gPxn93wScwZ2auw2+5zxs5fb7RmmaamtUZy/IQGc4EPutG
+         YFxpzXFPUKcGKR7M0I0p83PaW5FTvPrrXBSWvvyU4XiK9yO/s4fHw1fy8uafo/dQhVUO
+         MZ3w==
+X-Gm-Message-State: AOJu0YxMKRXc8/Ju44w5YmomzkWXEnHGw7i6lgEOg2iMMK/LsxFov0oR
+	1rlUWTPIe4Op2yanle9tcvBtThNE9o3wnFwJwb5/l4osVaZ9cw==
+X-Google-Smtp-Source: AGHT+IH1RX2+oy5HazPnAb/xvxbNva+AvDgMRcaARltCKAQWsGN6VdkvcSbNWjOTJS9uBfPDKv4YUt2awYjUB1O3IEg=
+X-Received: by 2002:a25:d20f:0:b0:d9a:b9fe:a318 with SMTP id
+ j15-20020a25d20f000000b00d9ab9fea318mr713671ybg.58.1705065297965; Fri, 12 Jan
+ 2024 05:14:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231223182932.27683-4-jason-jh.lin@mediatek.com>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
+ <20240109114220.30243-4-quic_bibekkum@quicinc.com> <2ad70157-27d1-41df-8866-c226af690cf6@quicinc.com>
+ <ec31fafa-b912-454a-8b64-e0593911aaf2@quicinc.com> <4a595815-7fcc-47e2-b22c-dac349af6d79@quicinc.com>
+ <492aeca3-a4df-47a3-9c77-02ea4235d736@linaro.org> <1a1f9b11-5a6d-41f7-8bcd-533a61a27a65@quicinc.com>
+ <babd9514-6202-486f-a7c5-51ad793aaca6@linaro.org> <d7110cff-334f-40cd-9f11-62fafd8d722d@quicinc.com>
+In-Reply-To: <d7110cff-334f-40cd-9f11-62fafd8d722d@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 12 Jan 2024 15:14:46 +0200
+Message-ID: <CAA8EJpqO2vEQP3B3gpGHvMSiaMQspz+63WVVXbkd0Hrx-AFeCQ@mail.gmail.com>
+Subject: Re: [PATCH v7 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Pavan Kondeti <quic_pkondeti@quicinc.com>, will@kernel.org, 
+	robin.murphy@arm.com, joro@8bytes.org, jsnitsel@redhat.com, 
+	quic_bjorande@quicinc.com, mani@kernel.org, quic_eberman@quicinc.com, 
+	robdclark@chromium.org, u.kleine-koenig@pengutronix.de, robh@kernel.org, 
+	vladimir.oltean@nxp.com, quic_molvera@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Dec 24, 2023 at 02:29:24AM +0800, Jason-JH.Lin wrote:
-> Add secure buffer control flow to mtk_drm_gem.
-> 
-> When user space takes DRM_MTK_GEM_CREATE_ENCRYPTED flag and size
-> to create a mtk_drm_gem object, mtk_drm_gem will find a matched size
-> dma buffer from secure dma-heap and bind it to mtk_drm_gem object.
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-
-Apologies for jumping rather late, but last year was a mess here.
-
-There's the fundamental issue that this is new uapi, and it needs open
-userspace, and I haven't seen that.
-
-What's more, this is a pure kms api so there's no precedent at all for
-adding special ioctl to those - all the existing support for
-protected/restricted content buffers in upstream has used render nodes and
-EGL_EXT_protected_content in mesa3d to enable this feature on the drm/kms
-side. So I'm not exactly sure what your plan here is, but you need one,
-and it needs to be more than a testcase/demo.
-
-The other issue, and the reason I've looked into the mtk code, is that the
-dma-buf implementation breaks the dma-buf api. So that needs to be
-changed.
-
-Finally I think the primary way to display a protected content buffer on a
-pure kms driver should be by using prime fd2handle buffer importing.
-Because you're adding a dma-buf heap it's already possible for userspace
-to use this path (or at least try), and so we have to make this path work
-anyway.
-
-Once we have the prime import path working correctly for protected content
-buffers (which should shake out all the dma-api issues I've explained in
-the dma-buf heaps thread), it should be possible to implement the direct
-allocation function in a generic helper:
-
-struct drm_gem_object * drm_gem_create_object_from_heap(struct drm_device *dev,
-							struct drm_file *file,
-							struct drm_buf_heap *heap);
-
-Which does roughly:
-
-- allocate a dma-buf from the desired heap
-- import that dma-buf into the device using prime for the drm_file
-- using the already implemented driver import code for special cases like
-  protected content buffers
-
-There should be no need to hand-roll all this code here, and especially
-not have any special-casing for the heap string name or things like that.
-That all must be handled in the dma-buf prime import code.
-
-Cheers, Sima
-
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_gem.c | 85 +++++++++++++++++++++++++-
->  drivers/gpu/drm/mediatek/mtk_drm_gem.h |  4 ++
->  2 files changed, 88 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_gem.c b/drivers/gpu/drm/mediatek/mtk_drm_gem.c
-> index 30e347adcbe9..858f34a735f8 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_gem.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_gem.c
-> @@ -4,6 +4,8 @@
->   */
->  
->  #include <linux/dma-buf.h>
-> +#include <linux/dma-heap.h>
-> +#include <uapi/linux/dma-heap.h>
->  #include <drm/mediatek_drm.h>
->  
->  #include <drm/drm.h>
-> @@ -55,6 +57,81 @@ static struct mtk_drm_gem_obj *mtk_drm_gem_init(struct drm_device *dev,
->  	return mtk_gem_obj;
->  }
->  
-> +struct mtk_drm_gem_obj *mtk_drm_gem_create_from_heap(struct drm_device *dev,
-> +						     const char *heap, size_t size)
-> +{
-> +	struct mtk_drm_private *priv = dev->dev_private;
-> +	struct mtk_drm_gem_obj *mtk_gem;
-> +	struct drm_gem_object *obj;
-> +	struct dma_heap *dma_heap;
-> +	struct dma_buf *dma_buf;
-> +	struct dma_buf_attachment *attach;
-> +	struct sg_table *sgt;
-> +	struct iosys_map map = {};
-> +	int ret;
+On Fri, 12 Jan 2024 at 15:07, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+>
+>
+> On 1/12/2024 3:31 PM, Konrad Dybcio wrote:
+> >
+> >
+> > On 1/11/24 19:09, Bibek Kumar Patro wrote:
+> >>
+> >>
+> >> On 1/10/2024 11:26 PM, Konrad Dybcio wrote:
+> >>>
+> >>>
+> >>> On 1/10/24 13:55, Bibek Kumar Patro wrote:
+> >>>>
+> >>>>
+> >>>> On 1/10/2024 4:46 PM, Bibek Kumar Patro wrote:
+> >>>>>
+> >>>>>
+> >>>>> On 1/10/2024 9:36 AM, Pavan Kondeti wrote:
+> >>>>
+> >>>> [...]
+> >>>>
+> >>>>>>> @@ -274,6 +321,21 @@ static const struct of_device_id
+> >>>>>>> qcom_smmu_client_of_match[] __maybe_unused = {
+> >>>>>>>   static int qcom_smmu_init_context(struct arm_smmu_domain
+> >>>>>>> *smmu_domain,
+> >>>>>>>           struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+> >>>>>>>   {
+> >>>>>>> +    struct arm_smmu_device *smmu = smmu_domain->smmu;
+> >>>>>>> +    struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> >>>>>>> +    const struct actlr_variant *actlrvar;
+> >>>>>>> +    int cbndx = smmu_domain->cfg.cbndx;
+> >>>>>>> +
+> >>>>>>> +    if (qsmmu->data->actlrvar) {
+> >>>>>>> +        actlrvar = qsmmu->data->actlrvar;
+> >>>>>>> +        for (; actlrvar->io_start; actlrvar++) {
+> >>>>>>> +            if (actlrvar->io_start == smmu->ioaddr) {
+> >>>>>>> +                qcom_smmu_set_actlr(dev, smmu, cbndx,
+> >>>>>>> actlrvar->actlrcfg);
+> >>>>>>> +                break;
+> >>>>>>> +            }
+> >>>>>>> +        }
+> >>>>>>> +    }
+> >>>>>>> +
+> >>>>>>
+> >>>>>> This block and the one in qcom_adreno_smmu_init_context() are exactly
+> >>>>>> the same. Possible to do some refactoring?
+> >>>>>>
+> >>>>>
+> >>>>> I will check if this repeated blocks can be accomodated this into
+> >>>>> qcom_smmu_set_actlr function if that would be fine.
+> >>>>>
+> >>>>
+> >>>> Also adding to this, this might increase the number of indentation
+> >>>> inside qcom_smmu_set_actlr as well, to around 5. So wouldn't this
+> >>>> be an issue?
+> >>>
+> >>> By the way, we can refactor this:
+> >>>
+> >>> if (qsmmu->data->actlrvar) {
+> >>>      actlrvar = qsmmu->data->actlrvar;
+> >>>      for (; actlrvar->io_start; actlrvar++) {
+> >>>          if (actlrvar->io_start == smmu->ioaddr) {
+> >>>              qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
+> >>>              break;
+> >>>          }
+> >>>      }
+> >>> }
+> >>>
+> >>> into
+> >>>
+> >>> // add const u8 num_actlrcfgs to struct actrl_variant to
+> >>> // save on sentinel space:
+> >>> //   sizeof(u8) < sizeof(ptr) + sizeof(resource_size_t)
+> >>>
+> >>
+> >> Git it, Would it be better to add this in struct qcom_smmu_match_data ?
+> >
+> > Yes, right.
+> >
+>
+> Actually, I noticed now, we can do both the actlr_config (num_actlrcfg
+> is used) and actlr_var (num_smmu is used) in the similar by storing the
+> number of elements in each of them.
+> something like this:
+>
+> +static const struct actlr_config sc7280_apps_actlr_cfg[] = {
+> +       { 0x0800, 0x24e1, PREFETCH_DEFAULT | CMTLB },
+> +       { 0x2000, 0x0163, PREFETCH_DEFAULT | CMTLB },
+> +       { 0x2080, 0x0461, PREFETCH_DEFAULT | CMTLB },
+> +       { 0x2100, 0x0161, PREFETCH_DEFAULT | CMTLB },
+> +       { 0x0900, 0x0407, PREFETCH_SHALLOW | CPRE | CMTLB },
+> +       { 0x2180, 0x0027, PREFETCH_SHALLOW | CPRE | CMTLB },
+> +       { 0x1000, 0x07ff, PREFETCH_DEEP | CPRE | CMTLB },
+> +};
 > +
-> +	mtk_gem = mtk_drm_gem_init(dev, size);
-> +	if (IS_ERR(mtk_gem))
-> +		return ERR_CAST(mtk_gem);
+> +static const struct actlr_config sc7280_gfx_actlr_cfg[] = {
+> +       { 0x0000, 0x07ff, PREFETCH_SWITCH_GFX | PREFETCH_DEEP | CPRE | CMTLB },
+> +};
 > +
-> +	obj = &mtk_gem->base;
+> +static const struct actlr_variant sc7280_actlr[] = {
+> +       { .io_start = 0x15000000, .actlrcfg = sc7280_apps_actlr_cfg,
+> .num_actlrcfg = 7 },
+> +       { .io_start = 0x03da0000, .actlrcfg = sc7280_gfx_actlr_cfg,
+> .num_actlrcfg = 1 },
+> +};
 > +
-> +	dma_heap = dma_heap_find(heap);
-> +	if (!dma_heap) {
-> +		DRM_ERROR("heap find fail\n");
-> +		goto err_gem_free;
-> +	}
-> +	dma_buf = dma_heap_buffer_alloc(dma_heap, size,
-> +					O_RDWR | O_CLOEXEC, DMA_HEAP_VALID_HEAP_FLAGS);
-> +	if (IS_ERR(dma_buf)) {
-> +		DRM_ERROR("buffer alloc fail\n");
-> +		dma_heap_put(dma_heap);
-> +		goto err_gem_free;
-> +	}
-> +	dma_heap_put(dma_heap);
-> +
-> +	attach = dma_buf_attach(dma_buf, priv->dma_dev);
-> +	if (IS_ERR(attach)) {
-> +		DRM_ERROR("attach fail, return\n");
-> +		dma_buf_put(dma_buf);
-> +		goto err_gem_free;
-> +	}
-> +
-> +	sgt = dma_buf_map_attachment(attach, DMA_BIDIRECTIONAL);
-> +	if (IS_ERR(sgt)) {
-> +		DRM_ERROR("map failed, detach and return\n");
-> +		dma_buf_detach(dma_buf, attach);
-> +		dma_buf_put(dma_buf);
-> +		goto err_gem_free;
-> +	}
-> +	obj->import_attach = attach;
-> +	mtk_gem->dma_addr = sg_dma_address(sgt->sgl);
-> +	mtk_gem->sg = sgt;
-> +	mtk_gem->size = dma_buf->size;
-> +
-> +	if (!strcmp(heap, "mtk_svp") || !strcmp(heap, "mtk_svp_cma")) {
-> +		/* secure buffer can not be mapped */
-> +		mtk_gem->secure = true;
-> +	} else {
-> +		ret = dma_buf_vmap(dma_buf, &map);
-> +		mtk_gem->kvaddr = map.vaddr;
-> +		if (ret) {
-> +			DRM_ERROR("map failed, ret=%d\n", ret);
-> +			dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
-> +			dma_buf_detach(dma_buf, attach);
-> +			dma_buf_put(dma_buf);
-> +			mtk_gem->kvaddr = NULL;
-> +		}
-> +	}
-> +
-> +	return mtk_gem;
-> +
-> +err_gem_free:
-> +	drm_gem_object_release(obj);
-> +	kfree(mtk_gem);
-> +	return ERR_PTR(-ENOMEM);
-> +}
-> +
->  struct mtk_drm_gem_obj *mtk_drm_gem_create(struct drm_device *dev,
->  					   size_t size, bool alloc_kmap)
->  {
-> @@ -225,7 +302,9 @@ struct drm_gem_object *mtk_gem_prime_import_sg_table(struct drm_device *dev,
->  	if (IS_ERR(mtk_gem))
->  		return ERR_CAST(mtk_gem);
->  
-> +	mtk_gem->secure = !sg_page(sg->sgl);
->  	mtk_gem->dma_addr = sg_dma_address(sg->sgl);
-> +	mtk_gem->size = attach->dmabuf->size;
->  	mtk_gem->sg = sg;
->  
->  	return &mtk_gem->base;
-> @@ -301,7 +380,11 @@ int mtk_gem_create_ioctl(struct drm_device *dev, void *data,
->  	struct drm_mtk_gem_create *args = data;
->  	int ret;
->  
-> -	mtk_gem = mtk_drm_gem_create(dev, args->size, false);
-> +	if (args->flags & DRM_MTK_GEM_CREATE_ENCRYPTED)
-> +		mtk_gem = mtk_drm_gem_create_from_heap(dev, "mtk_svp_cma", args->size);
-> +	else
-> +		mtk_gem = mtk_drm_gem_create(dev, args->size, false);
-> +
->  	if (IS_ERR(mtk_gem))
->  		return PTR_ERR(mtk_gem);
->  
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_gem.h b/drivers/gpu/drm/mediatek/mtk_drm_gem.h
-> index 90f3d2916ec5..8fd5ce827d4f 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_gem.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_gem.h
-> @@ -27,9 +27,11 @@ struct mtk_drm_gem_obj {
->  	void			*cookie;
->  	void			*kvaddr;
->  	dma_addr_t		dma_addr;
-> +	size_t			size;
->  	unsigned long		dma_attrs;
->  	struct sg_table		*sg;
->  	struct page		**pages;
-> +	bool			secure;
->  };
->  
->  #define to_mtk_gem_obj(x)	container_of(x, struct mtk_drm_gem_obj, base)
-> @@ -37,6 +39,8 @@ struct mtk_drm_gem_obj {
->  void mtk_drm_gem_free_object(struct drm_gem_object *gem);
->  struct mtk_drm_gem_obj *mtk_drm_gem_create(struct drm_device *dev, size_t size,
->  					   bool alloc_kmap);
-> +struct mtk_drm_gem_obj *mtk_drm_gem_create_from_heap(struct drm_device *dev,
-> +						     const char *heap, size_t size);
->  int mtk_drm_gem_dumb_create(struct drm_file *file_priv, struct drm_device *dev,
->  			    struct drm_mode_create_dumb *args);
->  struct sg_table *mtk_gem_prime_get_sg_table(struct drm_gem_object *obj);
-> -- 
-> 2.18.0
-> 
+>   static const struct actlr_config sm8550_apps_actlr_cfg[] = {
+>         { 0x18a0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>         { 0x18e0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+> @@ -661,6 +680,13 @@ static const struct qcom_smmu_match_data
+> sdm845_smmu_500_data = {
+>         /* Also no debug configuration. */
+>   };
+>
+> +static const struct qcom_smmu_match_data sc7280_smmu_500_impl0_data = {
+> +       .impl = &qcom_smmu_500_impl,
+> +       .adreno_impl = &qcom_adreno_smmu_500_impl,
+> +       .cfg = &qcom_smmu_impl0_cfg,
+> +       .actlrvar = sc7280_actlr,
+> +       .num_smmu = 2,
+> +};
+>
+> Just for note , there's a small hiccup here as we have to manually
+> calculate and the number of elements in actlr_config size everytime we
+> add this info for a new target, won't be an issue though but just a
+> hindrance to automation (?)
+
+Just use ARRAY_SIZE(sc7280_actlr).
+
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+With best wishes
+Dmitry
 
