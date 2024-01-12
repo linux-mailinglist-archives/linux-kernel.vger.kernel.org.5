@@ -1,141 +1,97 @@
-Return-Path: <linux-kernel+bounces-24771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC0C382C237
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:53:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B3682C238
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49BE01F24C49
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:52:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5EA1287DCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0162B6EB4D;
-	Fri, 12 Jan 2024 14:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961056EB79;
+	Fri, 12 Jan 2024 14:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N+NHAOHl"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0Tb4v22A";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5zjTs2Ta"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8CB6DD19;
-	Fri, 12 Jan 2024 14:52:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6ddf05b1922so1811530a34.2;
-        Fri, 12 Jan 2024 06:52:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705071150; x=1705675950; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZO45YkzCWML/dfVASjM1WgREcSCHVv4YlKgRi2In5SM=;
-        b=N+NHAOHlty+e+26ZSuZwn5EtDxqMoiMrYPERwvjRASNtFLpcC8YSRWo8IkR3OT5jWx
-         R4uZy4AlDpZPCI3C2bP+6FbKlLbHI3XqnFJDBIKBorRUs5dLOAowPAVLCmaolt7DEkde
-         P6aLsvOMAiLfYvaMLsirSV3+BQFKJp8MHDqHhxZv/CaVawJP3R3tkmVFhhzOK+cOCdVC
-         myCwRZUUV1A1V/fYXp7awT7nzf5B1kBocSPP2pBBzRq9ppDSJMu/7u+S7FY8sFjib2Y2
-         IZooIRZZsGH1yw0aLowLeAIhJ4SfG4A3kpAAWL59HQk7Dr7YWyN5KEmpNGLMDcXZRgIH
-         GTnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705071150; x=1705675950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZO45YkzCWML/dfVASjM1WgREcSCHVv4YlKgRi2In5SM=;
-        b=DJnd8AyZbJDUXoeswZ/WZ5dlbii0fecqgcTvFMVNucD5/P9zP2FZ1fqYTMLcjLHa8B
-         89Cj4sAkYZDc0wwU5ej9wAtb6Obwtyr5GU6AplKCroLOxvXlHn4UCg6jCT2rhio0Was5
-         GlaXv7AfniVUcuD4g41HLdU3PjxcbowU6clr7uQjtXfHWUYOF0jqRJsv4Ki7wgOnCpo9
-         5m3iN2YYP/4M51kcuGvi/HhFmUOP/sEtdfKHtHoliFXhpXnmHcE0yFTOl5IytoVS4Q8b
-         ++sQOjaxq/sb59b68640vD4d7K/AB9SyIVOxfyaJNFiTWYIrw1JNTtIM0nmF38ruiplV
-         nqZQ==
-X-Gm-Message-State: AOJu0Ywr5kBTYnkoROxhc+O7JZkFcapLeh1fRW1muamb9l0hWHX/8Z4x
-	MrE8jub/uveaagWaqthR9ezEUzyE4Ob3PYBFKJs=
-X-Google-Smtp-Source: AGHT+IF3L5IPA3aINLKE1Gh2ONL1jl1iO/jiOLm/9Zoi+Tx7cZA3qsT/gQ+IN9bZafCkSYUcodRd62GQ0tiAxg2qKZk=
-X-Received: by 2002:a05:6871:452:b0:206:8691:cc78 with SMTP id
- e18-20020a056871045200b002068691cc78mr1680164oag.34.1705071149757; Fri, 12
- Jan 2024 06:52:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C18B6EB74
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705071154;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NdU9EUuaq5xIuz7Dx7kAj78GZgJNR892u+3NLj09xAU=;
+	b=0Tb4v22AWgQyxnaapyqWuR7ryqLwix39lSCDgP0LIcnQp3fDK53xfz6AWo7GZp/Bwb366w
+	JkmW3kCaIgFHZQ5WXQOkLckLiRTF/BV0ybqrXtH5Fo0LoSugWJZ9c7G4mtDwBM5/mX/hbC
+	xHRaY1ZupKxAD+GNACdouJnrPckgqEbsT9eY6JAXlGzaeNvL7f9JrW6vyQD5hgDWhN9F0Y
+	KLjqHC55G/HC0aeqfiifLULB7DmdbFrX2o3QYvpCZ4CEpsNVxcYPvMs7ca6Ui7fjSh8Ggc
+	9RPw+kVkj8Z3VPInEPXNf9Lc1XIHcmJf6VuS++D/W2R1U5GFpIPzP603W6Wc4w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705071154;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NdU9EUuaq5xIuz7Dx7kAj78GZgJNR892u+3NLj09xAU=;
+	b=5zjTs2TaDiewcCXytz4MwOSffHfvhZPS44D/4UVseXR1sk4VLjrwDpJRJjrNcOVOoPm34H
+	MFr5TBHTzJ3Vh5Cw==
+To: Pierre Gondois <pierre.gondois@arm.com>, Anna-Maria Behnsen
+ <anna-maria@linutronix.de>, linux-kernel@vger.kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
+ Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCH] sched/idle: Prevent stopping the tick when there is no
+ cpuidle driver
+In-Reply-To: <d0f1617e-0088-4bd9-bea6-e89c63b0e2ae@arm.com>
+References: <20231215130501.24542-1-anna-maria@linutronix.de>
+ <c09fb78b-5bf9-4c0b-b93f-10fd19a4ab36@arm.com> <87ttnmiif9.fsf@somnus>
+ <06a2561f-557b-4eaa-8f11-75883bbbaef9@arm.com> <87a5pag6q7.fsf@somnus>
+ <d0f1617e-0088-4bd9-bea6-e89c63b0e2ae@arm.com>
+Date: Fri, 12 Jan 2024 15:52:33 +0100
+Message-ID: <87mstaioy6.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
-In-Reply-To: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
-From: Alex Deucher <alexdeucher@gmail.com>
-Date: Fri, 12 Jan 2024 09:52:17 -0500
-Message-ID: <CADnq5_MVDDR-EvgSEhiw_qPkUDPnV25tjUN0SNYq45Q29BN4EQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Update LLVM Phabricator and Bugzilla links
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: akpm@linux-foundation.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, 
-	llvm@lists.linux.dev, ast@kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, kasan-dev@googlegroups.com, 
-	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, mykolal@fb.com, 
-	daniel@iogearbox.net, andrii@kernel.org, amd-gfx@lists.freedesktop.org, 
-	linux-media@vger.kernel.org, linux-pm@vger.kernel.org, bridge@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, 
-	patches@lists.linux.dev, linux-security-module@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Jan 9, 2024 at 5:26=E2=80=AFPM Nathan Chancellor <nathan@kernel.org=
-> wrote:
+On Fri, Jan 12 2024 at 14:39, Pierre Gondois wrote:
+> On 1/12/24 11:56, Anna-Maria Behnsen wrote:
+>> Pierre Gondois <pierre.gondois@arm.com> writes:
+>>> I agree that the absence of cpuidle driver prevents from reaching deep
+>>> idle states. FWIU, there is however still benefits in stopping the tick
+>>> on such platform.
+>> 
+>> What's the benefit?
 >
-> This series updates all instances of LLVM Phabricator and Bugzilla links
-> to point to GitHub commits directly and LLVM's Bugzilla to GitHub issue
-> shortlinks respectively.
+> I did the following test:
+> - on an arm64 Juno-r2 platform (2 big A-72 and 4 little A-53 CPUs)
+> - booting with 'cpuidle.off=1'
+> - using the energy counters of the platforms
+>    (the counters measure energy for the whole cluster of big/little CPUs)
+> - letting the platform idling during 10s
 >
-> I split up the Phabricator patch into BPF selftests and the rest of the
-> kernel in case the BPF folks want to take it separately from the rest of
-> the series, there are obviously no dependency issues in that case. The
-> Bugzilla change was mechanical enough and should have no conflicts.
->
-> I am aiming this at Andrew and CC'ing other lists, in case maintainers
-> want to chime in, but I think this is pretty uncontroversial (famous
-> last words...).
->
+> So the energy consumption would be up:
+> - ~6% for the big CPUs
+> - ~10% for the litte CPUs
 
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Fair enough, but what's the actual usecase?
 
-> ---
-> Nathan Chancellor (3):
->       selftests/bpf: Update LLVM Phabricator links
->       arch and include: Update LLVM Phabricator links
->       treewide: Update LLVM Bugzilla links
->
->  arch/arm64/Kconfig                                 |  4 +--
->  arch/powerpc/Makefile                              |  4 +--
->  arch/powerpc/kvm/book3s_hv_nested.c                |  2 +-
->  arch/riscv/Kconfig                                 |  2 +-
->  arch/riscv/include/asm/ftrace.h                    |  2 +-
->  arch/s390/include/asm/ftrace.h                     |  2 +-
->  arch/x86/power/Makefile                            |  2 +-
->  crypto/blake2b_generic.c                           |  2 +-
->  drivers/firmware/efi/libstub/Makefile              |  2 +-
->  drivers/gpu/drm/amd/amdgpu/sdma_v4_4_2.c           |  2 +-
->  drivers/media/test-drivers/vicodec/codec-fwht.c    |  2 +-
->  drivers/regulator/Kconfig                          |  2 +-
->  include/asm-generic/vmlinux.lds.h                  |  2 +-
->  include/linux/compiler-clang.h                     |  2 +-
->  lib/Kconfig.kasan                                  |  2 +-
->  lib/raid6/Makefile                                 |  2 +-
->  lib/stackinit_kunit.c                              |  2 +-
->  mm/slab_common.c                                   |  2 +-
->  net/bridge/br_multicast.c                          |  2 +-
->  security/Kconfig                                   |  2 +-
->  tools/testing/selftests/bpf/README.rst             | 32 +++++++++++-----=
-------
->  tools/testing/selftests/bpf/prog_tests/xdpwall.c   |  2 +-
->  .../selftests/bpf/progs/test_core_reloc_type_id.c  |  2 +-
->  23 files changed, 40 insertions(+), 40 deletions(-)
-> ---
-> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-> change-id: 20240109-update-llvm-links-d03f9d649e1e
->
-> Best regards,
-> --
-> Nathan Chancellor <nathan@kernel.org>
->
+NOHZ w/o cpuidle driver seems a rather academic exercise to me.
+
+Thanks,
+
+        tglx
 
