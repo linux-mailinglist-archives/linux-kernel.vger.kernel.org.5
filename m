@@ -1,149 +1,169 @@
-Return-Path: <linux-kernel+bounces-24909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872A482C48B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 32E0E82C48E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA002B24139
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:15:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C85D0B24663
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3944D17570;
-	Fri, 12 Jan 2024 17:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E69522615;
+	Fri, 12 Jan 2024 17:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BU0gdRsk"
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pOFakgN2";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3U/xrbqH";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OdYJTRRS";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="laykCk9x"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CF717569;
-	Fri, 12 Jan 2024 17:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7ce415b5492so1872301241.0;
-        Fri, 12 Jan 2024 09:15:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705079713; x=1705684513; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rkseUqPo8OXQ3YOG2VTgeQHbmBTlfvlda5FttZ/w2HE=;
-        b=BU0gdRske5sEcPRZiDZAZ9wfpmC01sS+A7WZGh+y7jBvkc7rk2YJPOt3Ofh8zrd0u+
-         huw+KJrOZmJ41xaJQpjUf7jDQ8Jr2CGSrGagnbOSrnEO08CozNZmmkxN7NMGmfgE1lnu
-         8T96B8byIzkTadvH9I3HrXJ3XN0+V0KqaATNZ/dcpH1EgB/71h0JTaFV1AmqqwQ8L0iU
-         39LDIwE++44yjITXFag8YDlYJoa/GRJMvTFo8I2qFO9tZyaHZDizt/bXjBU1r1EfpURp
-         g3WEuAt/R6QtQkblmzD1alNYe3La0JJ1fd5YfxQ3ZzL9x2WQU3BdVLgAxfu14rCRqo6P
-         QRrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705079713; x=1705684513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rkseUqPo8OXQ3YOG2VTgeQHbmBTlfvlda5FttZ/w2HE=;
-        b=kVvLxz9EIz0Z6Iu5cFLtPLGcBI7V236gy0mLls4qX+hNvG7nHlEkdKuyWznd3FuQDn
-         ueBGZbA9+0t9MmuRTibt+mzElo7YHHGvoHueTHR5voCo23gva6jr1XSR2dP60kHpaHdI
-         R0N4XcGhyTBHyNwSklJWxS4VG9QIzhGwE/ChMCG6J+DVpxVzVnShtbLbgSWkBDTa4E1R
-         TrXL/DjBEkEjAxtYngvhr50SIreVxr+MKE8fEZyAUSV7PKA/L4D14Puj2dqLqOBJXv6U
-         bHz4bNlmliN+SIMCEOJf2qzCKBqERLD3rA/2sDRNA5mSiqp5WQJHCVQWEji5wonDCmr5
-         r0vA==
-X-Gm-Message-State: AOJu0YxJJJ3zmhLDY9s82ylTmd1vd9JKIzcll9CrzGWu0o9Q9gdOQQyN
-	Qr+FKBkyAH14Ep5lVYPIRqHNicwtl3sljRc3jus=
-X-Google-Smtp-Source: AGHT+IEtyS+zRiryoiEol1GpjC1w298O0gfObrmREKMAHHDiKjWPg5utyGaAszkNnTgUD0jUCqxwBLwFcY9rn2/AIc0=
-X-Received: by 2002:a05:6122:400f:b0:4b6:e339:31b3 with SMTP id
- ca15-20020a056122400f00b004b6e33931b3mr1348367vkb.27.1705079712913; Fri, 12
- Jan 2024 09:15:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D73417540;
+	Fri, 12 Jan 2024 17:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4ADF9222AA;
+	Fri, 12 Jan 2024 17:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705079752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QqUQhBDcgdZyOv8TeTdNa2X3hbRCyaNOdKOQw+rOND8=;
+	b=pOFakgN2novJBoIe/iFQ8vjhNShphLRBKJPRuRWmpXUvhJyS7wGTgidEnH/XjqkKnFPAZY
+	PJL0ixNtTqVZ2PJ3rvLNdRalnqrK17DQKMNtf1USpEpRZO9i3zovVA8oUiDmFKecMmIEeM
+	uSll6hLWFsbVEpzPoKdf5yigxy0vSng=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705079752;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QqUQhBDcgdZyOv8TeTdNa2X3hbRCyaNOdKOQw+rOND8=;
+	b=3U/xrbqHKRZ/InWwrjPbspD4/Kv+ArJ+w7Bxrg09mdVOv87XMbG4FU0RblQ4BeFKpHkG4F
+	CUs0bHVjUAMGI/DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705079751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QqUQhBDcgdZyOv8TeTdNa2X3hbRCyaNOdKOQw+rOND8=;
+	b=OdYJTRRSHv8ieZ9bVkUSRU9UeI6IyPu9kAAcjqybL46StLMMPPhRm1drR2by2W08gokJai
+	eDZTeCLDKWei34xzeRb0XGk2Cessl837S9lHdhev5OfBBUCPc+Fp03tXDrz1FwnyqksKmk
+	K4ZdszJ1Kri2TkT+/19Qs+NP6yWFoLM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705079751;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QqUQhBDcgdZyOv8TeTdNa2X3hbRCyaNOdKOQw+rOND8=;
+	b=laykCk9xJ778xF6jpevLLuNWry5nM60KF/wXJrROdTkDO6ZKSys4SLjV/hT1epiQkmfXuc
+	xuZVFI8ZPPrM9uAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B64CF136A4;
+	Fri, 12 Jan 2024 17:15:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id KcWeHsZzoWWdNgAAD6G6ig
+	(envelope-from <krisman@suse.de>); Fri, 12 Jan 2024 17:15:50 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Markus Elfring <Markus.Elfring@web.de>,  io-uring@vger.kernel.org,
+  kernel-janitors@vger.kernel.org,  Pavel Begunkov
+ <asml.silence@gmail.com>,  LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] io_uring: Delete a redundant kfree() call in
+ io_ring_ctx_alloc()
+In-Reply-To: <c17648db-469c-4d3c-8c2e-774b88e79f07@kernel.dk> (Jens Axboe's
+	message of "Fri, 12 Jan 2024 09:18:44 -0700")
+Organization: SUSE
+References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
+	<aa867594-e79d-6d08-a08e-8c9e952b4724@web.de>
+	<878r4xnn52.fsf@mailhost.krisman.be>
+	<b9c9ba9f-459e-40b5-ae4b-703dcc03871d@web.de>
+	<edeafe29-2ab1-4e87-853c-912b4da06ad5@web.de>
+	<87jzoek4r7.fsf@mailhost.krisman.be>
+	<c17648db-469c-4d3c-8c2e-774b88e79f07@kernel.dk>
+Date: Fri, 12 Jan 2024 14:15:47 -0300
+Message-ID: <87bk9qjwvw.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112142621.13525-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240112142621.13525-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <TYCPR01MB112699FAB53E6E4647893516B866F2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <CA+V-a8smkiub9ACDsqxv0z8yF_iLVEXG2OHwS7iJ+tmsdmTQ6g@mail.gmail.com> <TYCPR01MB11269F75A63DB020297DF21DA866F2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYCPR01MB11269F75A63DB020297DF21DA866F2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Fri, 12 Jan 2024 17:14:46 +0000
-Message-ID: <CA+V-a8tsxoaLfxCHmViyewYVbtZMkDAkYjUUYAoH_2MDi2ugBw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] pinctrl: renesas: pinctrl-rzg2l: Add the missing
- port pins P19 to P28
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=OdYJTRRS;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=laykCk9x
+X-Spamd-Result: default: False [1.18 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,web.de];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-0.01)[45.66%];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 HAS_ORG_HEADER(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,kernel.dk:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[web.de,vger.kernel.org,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.18
+X-Rspamd-Queue-Id: 4ADF9222AA
+X-Spam-Level: *
+X-Spam-Flag: NO
+X-Spamd-Bar: +
 
-On Fri, Jan 12, 2024 at 5:10=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas.co=
-m> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Lad, Prabhakar <prabhakar.csengg@gmail.com>
-> > Sent: Friday, January 12, 2024 5:06 PM
-> > Subject: Re: [PATCH v4 3/4] pinctrl: renesas: pinctrl-rzg2l: Add the
-> > missing port pins P19 to P28
-> >
-> > Hi Biju,
-> >
-> > Thank you for the review.
-> >
-> > On Fri, Jan 12, 2024 at 2:31=E2=80=AFPM Biju Das <biju.das.jz@bp.renesa=
-s.com>
-> > wrote:
-> > >
-> > >
-> > > Hi Prabhakar,
-> > >
-> > > > -----Original Message-----
-> > > > From: Prabhakar <prabhakar.csengg@gmail.com>
-> > > > Sent: Friday, January 12, 2024 2:26 PM
-> > > > Subject: [PATCH v4 3/4] pinctrl: renesas: pinctrl-rzg2l: Add the
-> > > > missing port pins P19 to P28
-> > > >
-> > <snip>
-> > > >
-> > > > +/**
-> > > > + * struct rzg2l_variable_pin_cfg - pin data cfg
-> > > > + * @cfg: port pin configuration
-> > > > + * @port: port number
-> > > > + * @pin: port pin
-> > > > + */
-> > > > +struct rzg2l_variable_pin_cfg {
-> > > > +     u32 cfg:20;
-> > > > +     u8 port:5;
-> > >
-> > >  u32 ??
-> > This is done based on the feedback provided previously by Geert [0].
-> >
-> > > > +     u8 pin:5;
-> > >
-> > >  u32 ??
-> > >
-> > ditto.
-> >
->
-> As per[0] suggestion is,
->
-> As cfg only contains the lower bits (PIN_CFG_*), I think you can fit
-> everything in a u32:
->
->     u32 cfg: 20;
->     u32 port: 5;
->     u32 pin: 3;
->
-Ouch my bad, i'll send a v5 with this change.
+Jens Axboe <axboe@kernel.dk> writes:
 
-Cheers,
-Prabhakar
+> On 1/12/24 7:25 AM, Gabriel Krisman Bertazi wrote:
+>> Markus Elfring <Markus.Elfring@web.de> writes:
+>> 
+>>> From: Markus Elfring <elfring@users.sourceforge.net>
+>>> Date: Wed, 10 Jan 2024 20:54:43 +0100
+>>>
+>>> Another useful pointer was not reassigned to the data structure member
+>>> ?io_bl? by this function implementation.
+>>> Thus omit a redundant call of the function ?kfree? at the end.
+>
+> This is just nonsense...
+>
+> On top of that, this patch is pointless, and the 2nd patch is even worse
+> in that it just makes a mess of cleanup. And for what reasoning?
+> Absolutely none.
+
+Ah, The description is non-sense, but the change in this patch seemed
+correct to me, even if pointless, which is why I reviewed it.  patch 2
+is just garbage.
+
+> There's a reason why I filter emails from this particular author
+> straight to the trash, there's a long history of this kind of thing and
+> not understanding feedback.
+
+Clearly there is background with this author that I wasn't aware, and
+just based on his responses, I can see your point. So I apologize for
+giving him space to continue the spamming.  My bad.
+
+-- 
+Gabriel Krisman Bertazi
 
