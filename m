@@ -1,99 +1,162 @@
-Return-Path: <linux-kernel+bounces-24265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281F882B9F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:29:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA0D82BA00
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:37:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44C0A1C24981
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:29:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C786B1C2416D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D5B1A73D;
-	Fri, 12 Jan 2024 03:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1ADB1B280;
+	Fri, 12 Jan 2024 03:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="DlRS6rMC";
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="XPM/MIwE"
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y4joe22e"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638B21A72F;
-	Fri, 12 Jan 2024 03:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
-Received: by nautica.notk.org (Postfix, from userid 108)
-	id B309AC01F; Fri, 12 Jan 2024 04:28:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1705030122; bh=sOf+lqfIzp8E71sKYf3rSI5oFCI5DnGWAw5lqIcnSvI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DlRS6rMC0VCc65tP+UxfLFUtv1ti5YOrnZQ+ylJlLJjXfQCo/j0xp3PhndVvXqqF4
-	 18h+0VFmOcKMy+rJvFX3X6Af21GyPAWMCxxIBDBAQEWrHKMZFVquAdTB+pHZVBIzzW
-	 eUifX75I8xWEi6Fy2lk8DCK1sTbCB/dcbbSSt1ACpncuJcyPKpADCakJqa7hUSoC6e
-	 T/SRpoQITH/bWAfceYrXt6mzIyS4XLoaN53zfpVhN7rOqpTwqjFdjaelZoy/DQtit/
-	 GVtFDTxi+kOx0MkZ3HXQ+CD95pIQLhZ0PqrDl8CaLLVqlWAEinMJUCn5i9mk2zf0nm
-	 HGBK8AMfdYHqw==
-X-Spam-Level: 
-Received: from gaia (localhost [127.0.0.1])
-	by nautica.notk.org (Postfix) with ESMTPS id 62DD6C01D;
-	Fri, 12 Jan 2024 04:28:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1705030121; bh=sOf+lqfIzp8E71sKYf3rSI5oFCI5DnGWAw5lqIcnSvI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XPM/MIwEKjQNHY7040+XGrhxW/xxnC5pRGPQQHRVWOa8qmlvdJEoLuYF4y8aSQo26
-	 Eanw9byvK6vn0ygMAktEw6o5+ejZ8B0H1v78hBiIHXMvlOuVci798iRAxpcQ0vOMQa
-	 lEYoAMHbvxGAZkp04qXm5LYLnkLvCdS1la1kSAYIV7ik/lyspEcFtVcinXtyZMZhBX
-	 9OwfiqFDCwdeVpITD+fTBX/7KjwGBb9nT9Qld0zYHu5jlOK067Fu1y1/2LN5DGLT/9
-	 u3kU5+m2X+qGF2WcL0wAhk4U+fLnYdyZQpxeFgQflUhoIuwqzk0OsTgt26WjBeWG/i
-	 fEbyU4SkF5+Nw==
-Received: from localhost (gaia [local])
-	by gaia (OpenSMTPD) with ESMTPA id f2592dda;
-	Fri, 12 Jan 2024 03:28:33 +0000 (UTC)
-Date: Fri, 12 Jan 2024 12:28:18 +0900
-From: Dominique Martinet <asmadeus@codewreck.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 5.10 0/7] 5.10.207-rc1 review
-Message-ID: <ZaCx0rLZHyBRsb1A@codewreck.org>
-References: <20240111094700.222742213@linuxfoundation.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6988E1A733
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 03:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5f2aab1c0c5so55313857b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 19:36:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705030608; x=1705635408; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GEYe0U4gORZBXN1j3b/LGEmE8U+x0Ew9Qh5xXurgWGw=;
+        b=Y4joe22eo1SrfigjCJx8/zwIDfIOhVhcoK27HnXQBLg9lQRsDiyHoCM7w7j+RwoFdH
+         Z+v8KpEH4EMN6Z2oj62H7JqYldHyjUepOmJU691AZWpP48VKtk6R3l8NWylqoHt0k0vm
+         r02GAewzm0NXksiORO/2tR7iu3Qh5UkF5zLLyJ0BmDTOF8nIPOm2zoAnBjIyKcGPFxwH
+         BMXclz4mefJ7sE7MnwXenleI4NiXVBhOiYP4AiFsJI8GFSGgVH5rMBSol4glEqnnpdEq
+         /gMsQ6FxBYhUWYcx/x1HyRGPDi0Nnmln9ltMlk5T0SGTyUQyX3ziqiZewlDvTo7uQp45
+         L7hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705030608; x=1705635408;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GEYe0U4gORZBXN1j3b/LGEmE8U+x0Ew9Qh5xXurgWGw=;
+        b=ItF+Co+iGUYdSMINFRXH98pvMkFvT50nHYgs3i9wpGJpoA4WOoVQEd/4mAZm/pe//V
+         nFKcFiV9HmwVuc2medIFgO+HLuvFkURqaAzlKRR8pa6ogsTMcmNAhF49LM5Bjt+3XaiC
+         ZXnB+pCQSBk7d4WKaI38bZ0g1FE3Y0/m2myUSmGPqoyEMr8PFWUMPaaAyKFzwatHbLSv
+         0oWRKvuYvZbwkGIs/cTlbA0UXP6zlyNgHlmGiK9cpdpscqi1vVjtalWluN2+uh1FNZiQ
+         s8X5odWKd01oEQde+eafq09R9TEVxU/hVae/CXnSNNkqhbCTyNaUCbCxF61hy68amp4R
+         XByA==
+X-Gm-Message-State: AOJu0YxFbx17SHwgk6xar+rOK2bXpUiCnhRb9WfE6P71I+5P3/8BoYpN
+	igBd5fFmPDelhGmSkgmVnqW82hG3FiVDnzbKMBpUlpix52Zz9Q==
+X-Google-Smtp-Source: AGHT+IFWS7RDvOXQIhqh60aLsH3T1/KMPFvHobCssgGPky7B5SPWl831YOqQfs6r6SRgYCi9tMwT87VGR+S3cDUc3/Y=
+X-Received: by 2002:a81:b610:0:b0:5e5:3342:c600 with SMTP id
+ u16-20020a81b610000000b005e53342c600mr1050213ywh.9.1705030607689; Thu, 11 Jan
+ 2024 19:36:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240111094700.222742213@linuxfoundation.org>
+References: <20240112-lpg-v4-1-c4004026686b@quicinc.com>
+In-Reply-To: <20240112-lpg-v4-1-c4004026686b@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 12 Jan 2024 05:36:37 +0200
+Message-ID: <CAA8EJppdjVRpzrdqm4VOZwUO+khjTdRbY6jN2E2VGmCKSd8inA@mail.gmail.com>
+Subject: Re: [PATCH v4] arm64: dts: qcom: qcs6490-idp: Add definition for
+ three LEDs.
+To: quic_huliu@quicinc.com
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Greg Kroah-Hartman wrote on Thu, Jan 11, 2024 at 10:52:49AM +0100:
-> This is the start of the stable review cycle for the 5.10.207 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 13 Jan 2024 09:46:53 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.207-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+On Fri, 12 Jan 2024 at 05:07, Hui Liu via B4 Relay
+<devnull+quic_huliu.quicinc.com@kernel.org> wrote:
+>
+> From: Hui Liu <quic_huliu@quicinc.com>
+>
+> Add definition for three LEDs to make sure they can
+> be enabled base on QCOM LPG LED driver.
+>
+> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> ---
+> Changes in v4:
+> - Removed "label" definition and added "function" definition.
 
-Tested 9d64f2ec9cf9 ("Linux 5.10.207-rc1") on:
-- arm i.MX6ULL (Armadillo 640)
-- arm64 i.MX8MP (Armadillo G4)
+You have removed "label", but you didn't add "function".
 
-No obvious regression in dmesg or basic tests:
-Tested-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+BTW: the commit subject is still wrong. Compare "qmp6490-idp" vs "qcs6490-idp"
+
+> - Link to v3: https://lore.kernel.org/r/20231215-lpg-v3-1-4e2db0c6df5f@quicinc.com
+>
+> Changes in v3:
+> - Rephrased commit text and updated the nodes to qcm6490-idp board file.
+> - Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
+>
+> Changes in v2:
+> - Rephrased commit text and updated the nodes to board file.
+> - Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
+> ---
+>  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> index 37c91fdf3ab9..8268fad505e7 100644
+> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> @@ -5,6 +5,7 @@
+>
+>  /dts-v1/;
+>
+> +#include <dt-bindings/leds/common.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include "sc7280.dtsi"
+>  #include "pm7325.dtsi"
+> @@ -414,6 +415,28 @@ vreg_bob_3p296: bob {
+>         };
+>  };
+>
+> +&pm8350c_pwm {
+> +       function = LED_FUNCTION_STATUS;
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +       status = "okay";
+> +
+> +       led@1 {
+> +               reg = <1>;
+> +               color = <LED_COLOR_ID_RED>;
+> +       };
+> +
+> +       led@2 {
+> +               reg = <2>;
+> +               color = <LED_COLOR_ID_GREEN>;
+> +       };
+> +
+> +       led@3 {
+> +               reg = <3>;
+> +               color = <LED_COLOR_ID_BLUE>;
+> +       };
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
+>
+> ---
+> base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
+> change-id: 20231215-lpg-4aadd374811a
+>
+> Best regards,
+> --
+> Hui Liu <quic_huliu@quicinc.com>
+>
+>
+
 
 -- 
-Dominique Martinet | Asmadeus
+With best wishes
+Dmitry
 
