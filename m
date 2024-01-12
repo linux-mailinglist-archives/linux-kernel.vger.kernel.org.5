@@ -1,92 +1,62 @@
-Return-Path: <linux-kernel+bounces-25042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3967182C691
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:09:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD8882C6B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F271C2232E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:09:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 581FDB21D96
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B030C179A6;
-	Fri, 12 Jan 2024 21:08:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433E71773D;
+	Fri, 12 Jan 2024 21:30:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kLOzSElp"
-Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="fCT9yDvM"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB1A1772F;
-	Fri, 12 Jan 2024 21:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-5f3da7ba2bfso70740497b3.3;
-        Fri, 12 Jan 2024 13:08:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705093724; x=1705698524; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PiIoFXAtLYDcaRD95aOOGNs+4GbHvnGDWcpOfSyNcnY=;
-        b=kLOzSElpQ6x2Gxk919mr+MJ9wjX3rqYgT1PApNxFnE4a6Fc0eVOCOgAhuMZPiBg4tN
-         Myj5pHl+080zJtUgD52WlQqyZvSaOypXJLnSVUdjx6iqEJZA5QxONmRO0Z2YvfUBdw6V
-         g1kbsJb2D94XAHyLPKbN+8MkGAm1SquDdeeM0cU0gi6ix3Jt2RBhElKDVyZjfOfhIEND
-         wV0in4jCrH5Gh2YGU0wMgYf8TVwhU7kF0shB0sbbzDQnfIAUphT0RrPhI5dGlhj/8PgI
-         NvvCNkq7aoaX2jWMLVeSt+wIW1TuWcoYBqC0tcnzMryhdU5JBtYL9BByPUaXEo7JlQJx
-         kL9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705093724; x=1705698524;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PiIoFXAtLYDcaRD95aOOGNs+4GbHvnGDWcpOfSyNcnY=;
-        b=DrZE+m23SgeJEimj0DACK+6ck10pH/1Sx/ngdwaDkgNauquOKarHEaPoena+uQv9YH
-         O/zUAuwApXlYd7fsZKl3cH3tbTHFVl/txPs5xGltN/7i6KWkdeNLpzh/6dXjVelEssBq
-         0UwWD9hi2fL+3f9Bc5TWgYmOXQ4UrcUft74LPIxk/n93LDTBMSwk6GzLrvNtrTKJsOLD
-         U8yBUBpyQb1CNNA6wFaKMrYtMxAMDt9d/h1iwTMYntuDt6nshFIYtRL+bXn7OX2fl5uY
-         WQ18iPXqVOaXlZuRitsin5ASNZiqxCMV+C+aqij4nGWS21qS9NeoBxubYc58ghUvrcO3
-         iIrw==
-X-Gm-Message-State: AOJu0YzPJbyC0xSZ5juVw5hacDpRfkkQ2j53GiXYm/nXQPsEEjMt04hR
-	yF2PPlt4hHX+f3OffYTpVw==
-X-Google-Smtp-Source: AGHT+IGCnmUom0ICH1KYC73MM9s7LOdRSmnzcWpTuRJgL1vv8TMBiSmGu+gCIhpP8R1rY4qX0tk38Q==
-X-Received: by 2002:a81:c74d:0:b0:5f6:e0f3:e8df with SMTP id i13-20020a81c74d000000b005f6e0f3e8dfmr1676816ywl.97.1705093724121;
-        Fri, 12 Jan 2024 13:08:44 -0800 (PST)
-Received: from fedora.mshome.net (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
-        by smtp.gmail.com with ESMTPSA id ci24-20020a05690c0a9800b005f93cc31ff0sm1635518ywb.72.2024.01.12.13.08.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 13:08:43 -0800 (PST)
-From: Gregory Price <gourry.memverge@gmail.com>
-X-Google-Original-From: Gregory Price <gregory.price@memverge.com>
-To: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	corbet@lwn.net,
-	akpm@linux-foundation.org,
-	gregory.price@memverge.com,
-	honggyu.kim@sk.com,
-	rakie.kim@sk.com,
-	hyeongtak.ji@sk.com,
-	mhocko@kernel.org,
-	ying.huang@intel.com,
-	vtavarespetr@micron.com,
-	jgroves@micron.com,
-	ravis.opensrc@micron.com,
-	sthanneeru@micron.com,
-	emirakhur@micron.com,
-	Hasan.Maruf@amd.com,
-	seungjun.ha@samsung.com,
-	hannes@cmpxchg.org,
-	dan.j.williams@intel.com,
-	Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
-Subject: [PATCH 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE for weighted interleaving
-Date: Fri, 12 Jan 2024 16:08:34 -0500
-Message-Id: <20240112210834.8035-4-gregory.price@memverge.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20240112210834.8035-1-gregory.price@memverge.com>
-References: <20240112210834.8035-1-gregory.price@memverge.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F371C171D8;
+	Fri, 12 Jan 2024 21:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id B2EA5120002;
+	Sat, 13 Jan 2024 00:30:03 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B2EA5120002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1705095003;
+	bh=Orr+8pQCj9w9tZ7vpvYVcKAP7cJ4B2uVNjRXKEdlhj4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=fCT9yDvMSwdkTK3LeVjBdnHOBXnHPirzwWCvcmssk46yvFJct+qSBECci8voK9OAG
+	 pMG4Qth6HA9hibRAIZ4mATAlSiNAQRFU5UFAXyMmp7fcfpJPVFZuVhfHSoozzDNbKj
+	 ieEKlSFSjD2IWYdO5HwrlxI1kr8xCFkR7JHYJ9qUV2YK011Vb3BdMhEc2iJJ+N/Eql
+	 9WvlUDqpNG5JSAD6zzf5dxNrrgQ9Duc6wy6cE+kweCkv0xbnFhZr4/mG8uSCZBB8Fh
+	 YcOpcDnV5ShG3NRG15ym57LLKuDbGEw6sTiSF3VoCi1lB3OFjkwAmXjJdXLIyrxY3m
+	 aR54vOGhkNiWA==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Sat, 13 Jan 2024 00:30:03 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 13 Jan 2024 00:30:03 +0300
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+To: Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella
+	<sgarzare@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+	<jasowang@redhat.com>, Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC: <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@sberdevices.ru>, <oxffffaa@gmail.com>, <avkrasnov@salutedevices.com>
+Subject: [RFC PATCH v1] vsock/test: add '--peer-port' input argument
+Date: Sat, 13 Jan 2024 00:21:10 +0300
+Message-ID: <20240112212110.1906150-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,496 +64,686 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 182617 [Jan 12 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/12 18:46:00 #23122211
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-When a system has multiple NUMA nodes and it becomes bandwidth hungry,
-using the current MPOL_INTERLEAVE could be an wise option.
+Implement port for given CID as input argument instead of using
+hardcoded value '1234'. This allows to run different test instances
+on a single CID. Port argument is not required parameter and if it is
+not set, then default value will be '1234' - thus we preserve previous
+behaviour.
 
-However, if those NUMA nodes consist of different types of memory such
-as socket-attached DRAM and CXL/PCIe attached DRAM, the round-robin
-based interleave policy does not optimally distribute data to make use
-of their different bandwidth characteristics.
-
-Instead, interleave is more effective when the allocation policy follows
-each NUMA nodes' bandwidth weight rather than a simple 1:1 distribution.
-
-This patch introduces a new memory policy, MPOL_WEIGHTED_INTERLEAVE,
-enabling weighted interleave between NUMA nodes.  Weighted interleave
-allows for proportional distribution of memory across multiple numa
-nodes, preferably apportioned to match the bandwidth of each node.
-
-For example, if a system has 1 CPU node (0), and 2 memory nodes (0,1),
-with bandwidth of (100GB/s, 50GB/s) respectively, the appropriate
-weight distribution is (2:1).
-
-Weights for each node can be assigned via the new sysfs extension:
-/sys/kernel/mm/mempolicy/weighted_interleave/
-
-In addition, the `default_iw_table` is created, which will be extended
-in the future to allow defaults to be registered by drivers. For now,
-the default value of all nodes will be `1`, which matches the behavior
-of standard 1:1 round-robin interleave.
-
-The policy allocates a number of pages equal to the set weights. For
-example, if the weights are (2,1), then 2 pages will be allocated on
-node0 for every 1 page allocated on node1.
-
-The new flag MPOL_WEIGHTED_INTERLEAVE can be used in set_mempolicy(2)
-and mbind(2).
-
-There are 3 integration points:
-
-weighted_interleave_nodes:
-    Counts the number of allocations as they occur, and applies the
-    weight for the current node.  When the weight reaches 0, switch
-    to the next node.
-
-weighted_interleave_nid:
-    Gets the total weight of the nodemask as well as each individual
-    node weight, then calculates the node based on the given index.
-
-bulk_array_weighted_interleave:
-    Gets the total weight of the nodemask as well as each individual
-    node weight, then calculates the number of "interleave rounds" as
-    well as any delta ("partial round").  Calculates the number of
-    pages for each node and allocates them.
-
-    If a node was scheduled for interleave via interleave_nodes, the
-    current weight (pol->cur_weight) will be allocated first, before
-    the remaining bulk calculation is done.
-
-One piece of complexity is the interaction between a recent refactor
-which split the logic to acquire the "ilx" (interleave index) of an
-allocation and the actually application of the interleave.  The
-calculation of the `interleave index` is done by `get_vma_policy()`,
-while the actual selection of the node will be later appliex by the
-relevant weighted_interleave function.
-
-Suggested-by: Hasan Al Maruf <Hasan.Maruf@amd.com>
-Signed-off-by: Gregory Price <gregory.price@memverge.com>
-Co-developed-by: Rakie Kim <rakie.kim@sk.com>
-Signed-off-by: Rakie Kim <rakie.kim@sk.com>
-Co-developed-by: Honggyu Kim <honggyu.kim@sk.com>
-Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
-Co-developed-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-Co-developed-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
-Signed-off-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
-Co-developed-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
-Signed-off-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
+Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
 ---
- .../admin-guide/mm/numa_memory_policy.rst     |   9 +
- include/linux/mempolicy.h                     |   5 +
- include/uapi/linux/mempolicy.h                |   1 +
- mm/mempolicy.c                                | 214 +++++++++++++++++-
- 4 files changed, 226 insertions(+), 3 deletions(-)
+ tools/testing/vsock/util.c                | 17 +++-
+ tools/testing/vsock/util.h                |  4 +
+ tools/testing/vsock/vsock_diag_test.c     | 18 ++++-
+ tools/testing/vsock/vsock_test.c          | 96 +++++++++++++----------
+ tools/testing/vsock/vsock_test_zerocopy.c | 12 +--
+ tools/testing/vsock/vsock_uring_test.c    | 16 +++-
+ 6 files changed, 107 insertions(+), 56 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
-index eca38fa81e0f..a70f20ce1ffb 100644
---- a/Documentation/admin-guide/mm/numa_memory_policy.rst
-+++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
-@@ -250,6 +250,15 @@ MPOL_PREFERRED_MANY
- 	can fall back to all existing numa nodes. This is effectively
- 	MPOL_PREFERRED allowed for a mask rather than a single node.
- 
-+MPOL_WEIGHTED_INTERLEAVE
-+	This mode operates the same as MPOL_INTERLEAVE, except that
-+	interleaving behavior is executed based on weights set in
-+	/sys/kernel/mm/mempolicy/weighted_interleave/
-+
-+	Weighted interleave allocates pages on nodes according to a
-+	weight.  For example if nodes [0,1] are weighted [5,2], 5 pages
-+	will be allocated on node0 for every 2 pages allocated on node1.
-+
- NUMA memory policy supports the following optional mode flags:
- 
- MPOL_F_STATIC_NODES
-diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index 931b118336f4..c1a083eb0dd5 100644
---- a/include/linux/mempolicy.h
-+++ b/include/linux/mempolicy.h
-@@ -54,6 +54,11 @@ struct mempolicy {
- 		nodemask_t cpuset_mems_allowed;	/* relative to these nodes */
- 		nodemask_t user_nodemask;	/* nodemask passed by user */
- 	} w;
-+
-+	/* Weighted interleave settings */
-+	struct {
-+		u8 cur_weight;
-+	} wil;
- };
- 
- /*
-diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
-index a8963f7ef4c2..1f9bb10d1a47 100644
---- a/include/uapi/linux/mempolicy.h
-+++ b/include/uapi/linux/mempolicy.h
-@@ -23,6 +23,7 @@ enum {
- 	MPOL_INTERLEAVE,
- 	MPOL_LOCAL,
- 	MPOL_PREFERRED_MANY,
-+	MPOL_WEIGHTED_INTERLEAVE,
- 	MPOL_MAX,	/* always last member of enum */
- };
- 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 0abd3a3394ef..a2b5d64b28e0 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -19,6 +19,13 @@
-  *                for anonymous memory. For process policy an process counter
-  *                is used.
-  *
-+ * weighted interleave
-+ *                Allocate memory interleaved over a set of nodes based on
-+ *                a set of weights (per-node), with normal fallback if it
-+ *                fails.  Otherwise operates the same as interleave.
-+ *                Example: nodeset(0,1) & weights (2,1) - 2 pages allocated
-+ *                on node 0 for every 1 page allocated on node 1.
-+ *
-  * bind           Only allocate memory on a specific set of nodes,
-  *                no fallback.
-  *                FIXME: memory is allocated starting with the first node
-@@ -327,6 +334,7 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
- 	policy->mode = mode;
- 	policy->flags = flags;
- 	policy->home_node = NUMA_NO_NODE;
-+	policy->wil.cur_weight = 0;
- 
- 	return policy;
- }
-@@ -439,6 +447,10 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 		.create = mpol_new_nodemask,
- 		.rebind = mpol_rebind_preferred,
- 	},
-+	[MPOL_WEIGHTED_INTERLEAVE] = {
-+		.create = mpol_new_nodemask,
-+		.rebind = mpol_rebind_nodemask,
-+	},
- };
- 
- static bool migrate_folio_add(struct folio *folio, struct list_head *foliolist,
-@@ -860,7 +872,8 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
- 
- 	old = current->mempolicy;
- 	current->mempolicy = new;
--	if (new && new->mode == MPOL_INTERLEAVE)
-+	if (new && (new->mode == MPOL_INTERLEAVE ||
-+		    new->mode == MPOL_WEIGHTED_INTERLEAVE))
- 		current->il_prev = MAX_NUMNODES-1;
- 	task_unlock(current);
- 	mpol_put(old);
-@@ -886,6 +899,7 @@ static void get_policy_nodemask(struct mempolicy *pol, nodemask_t *nodes)
- 	case MPOL_INTERLEAVE:
- 	case MPOL_PREFERRED:
- 	case MPOL_PREFERRED_MANY:
-+	case MPOL_WEIGHTED_INTERLEAVE:
- 		*nodes = pol->nodes;
- 		break;
- 	case MPOL_LOCAL:
-@@ -970,6 +984,13 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
- 		} else if (pol == current->mempolicy &&
- 				pol->mode == MPOL_INTERLEAVE) {
- 			*policy = next_node_in(current->il_prev, pol->nodes);
-+		} else if (pol == current->mempolicy &&
-+				(pol->mode == MPOL_WEIGHTED_INTERLEAVE)) {
-+			if (pol->wil.cur_weight)
-+				*policy = current->il_prev;
-+			else
-+				*policy = next_node_in(current->il_prev,
-+						       pol->nodes);
- 		} else {
- 			err = -EINVAL;
- 			goto out;
-@@ -1799,7 +1820,8 @@ struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
- 	pol = __get_vma_policy(vma, addr, ilx);
- 	if (!pol)
- 		pol = get_task_policy(current);
--	if (pol->mode == MPOL_INTERLEAVE) {
-+	if (pol->mode == MPOL_INTERLEAVE ||
-+	    pol->mode == MPOL_WEIGHTED_INTERLEAVE) {
- 		*ilx += vma->vm_pgoff >> order;
- 		*ilx += (addr - vma->vm_start) >> (PAGE_SHIFT + order);
- 	}
-@@ -1849,6 +1871,28 @@ bool apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
- 	return zone >= dynamic_policy_zone;
+diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
+index ae2b33c21c45..554b290fefdc 100644
+--- a/tools/testing/vsock/util.c
++++ b/tools/testing/vsock/util.c
+@@ -33,8 +33,7 @@ void init_signals(void)
+ 	signal(SIGPIPE, SIG_IGN);
  }
  
-+static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
-+{
-+	unsigned int next;
-+	struct task_struct *me = current;
-+	struct iw_table __rcu *table;
-+
-+	next = next_node_in(me->il_prev, policy->nodes);
-+	if (next == MAX_NUMNODES)
-+		return next;
-+
-+	rcu_read_lock();
-+	table = rcu_dereference(iw_table);
-+	if (!policy->wil.cur_weight)
-+		policy->wil.cur_weight = table->weights[next];
-+	rcu_read_unlock();
-+
-+	policy->wil.cur_weight--;
-+	if (!policy->wil.cur_weight)
-+		me->il_prev = next;
-+	return next;
-+}
-+
- /* Do dynamic interleaving for a process */
- static unsigned int interleave_nodes(struct mempolicy *policy)
+-/* Parse a CID in string representation */
+-unsigned int parse_cid(const char *str)
++static unsigned int parse_uint(const char *str, const char *err_str)
  {
-@@ -1883,6 +1927,9 @@ unsigned int mempolicy_slab_node(void)
- 	case MPOL_INTERLEAVE:
- 		return interleave_nodes(policy);
- 
-+	case MPOL_WEIGHTED_INTERLEAVE:
-+		return weighted_interleave_nodes(policy);
-+
- 	case MPOL_BIND:
- 	case MPOL_PREFERRED_MANY:
- 	{
-@@ -1921,6 +1968,39 @@ static unsigned int read_once_policy_nodemask(struct mempolicy *pol,
- 	return nodes_weight(*mask);
- }
- 
-+static unsigned int weighted_interleave_nid(struct mempolicy *pol, pgoff_t ilx)
-+{
-+	nodemask_t nodemask;
-+	unsigned int target, nr_nodes;
-+	struct iw_table __rcu *table;
-+	unsigned int weight_total = 0;
-+	u8 weight;
-+	int nid;
-+
-+	nr_nodes = read_once_policy_nodemask(pol, &nodemask);
-+	if (!nr_nodes)
-+		return numa_node_id();
-+
-+	rcu_read_lock();
-+	table = rcu_dereference(iw_table);
-+	/* calculate the total weight */
-+	for_each_node_mask(nid, nodemask)
-+		weight_total += table->weights[nid];
-+
-+	/* Calculate the node offset based on totals */
-+	target = ilx % weight_total;
-+	nid = first_node(nodemask);
-+	while (target) {
-+		weight = table->weights[nid];
-+		if (target < weight)
-+			break;
-+		target -= weight;
-+		nid = next_node_in(nid, nodemask);
-+	}
-+	rcu_read_unlock();
-+	return nid;
-+}
-+
- /*
-  * Do static interleaving for interleave index @ilx.  Returns the ilx'th
-  * node in pol->nodes (starting from ilx=0), wrapping around if ilx
-@@ -1981,6 +2061,11 @@ static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *pol,
- 		*nid = (ilx == NO_INTERLEAVE_INDEX) ?
- 			interleave_nodes(pol) : interleave_nid(pol, ilx);
- 		break;
-+	case MPOL_WEIGHTED_INTERLEAVE:
-+		*nid = (ilx == NO_INTERLEAVE_INDEX) ?
-+			weighted_interleave_nodes(pol) :
-+			weighted_interleave_nid(pol, ilx);
-+		break;
+ 	char *endptr = NULL;
+ 	unsigned long n;
+@@ -42,12 +41,24 @@ unsigned int parse_cid(const char *str)
+ 	errno = 0;
+ 	n = strtoul(str, &endptr, 10);
+ 	if (errno || *endptr != '\0') {
+-		fprintf(stderr, "malformed CID \"%s\"\n", str);
++		fprintf(stderr, "malformed %s \"%s\"\n", err_str, str);
+ 		exit(EXIT_FAILURE);
  	}
- 
- 	return nodemask;
-@@ -2042,6 +2127,7 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
- 	case MPOL_PREFERRED_MANY:
- 	case MPOL_BIND:
- 	case MPOL_INTERLEAVE:
-+	case MPOL_WEIGHTED_INTERLEAVE:
- 		*mask = mempolicy->nodes;
- 		break;
- 
-@@ -2141,7 +2227,8 @@ struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
- 		 * If the policy is interleave or does not allow the current
- 		 * node in its nodemask, we allocate the standard way.
- 		 */
--		if (pol->mode != MPOL_INTERLEAVE &&
-+		if ((pol->mode != MPOL_INTERLEAVE &&
-+		    pol->mode != MPOL_WEIGHTED_INTERLEAVE) &&
- 		    (!nodemask || node_isset(nid, *nodemask))) {
- 			/*
- 			 * First, try to allocate THP only on local node, but
-@@ -2277,6 +2364,114 @@ static unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
- 	return total_allocated;
+ 	return n;
  }
  
-+static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
-+		struct mempolicy *pol, unsigned long nr_pages,
-+		struct page **page_array)
++/* Parse a CID in string representation */
++unsigned int parse_cid(const char *str)
 +{
-+	struct task_struct *me = current;
-+	unsigned long total_allocated = 0;
-+	unsigned long nr_allocated;
-+	unsigned long rounds;
-+	unsigned long node_pages, delta;
-+	u8 weight;
-+	struct iw_table __rcu *table;
-+	u8 *weights;
-+	unsigned int weight_total = 0;
-+	unsigned long rem_pages = nr_pages;
-+	nodemask_t nodes;
-+	int nnodes, node, weight_nodes;
-+	int prev_node = NUMA_NO_NODE;
-+	int i;
-+
-+	nnodes = read_once_policy_nodemask(pol, &nodes);
-+	if (!nnodes)
-+		return 0;
-+
-+	/* Continue allocating from most recent node and adjust the nr_pages */
-+	if (pol->wil.cur_weight) {
-+		node = next_node_in(me->il_prev, nodes);
-+		node_pages = pol->wil.cur_weight;
-+		if (node_pages > rem_pages)
-+			node_pages = rem_pages;
-+		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
-+						  NULL, page_array);
-+		page_array += nr_allocated;
-+		total_allocated += nr_allocated;
-+		/* if that's all the pages, no need to interleave */
-+		if (rem_pages <= pol->wil.cur_weight) {
-+			pol->wil.cur_weight -= rem_pages;
-+			return total_allocated;
-+		}
-+		/* Otherwise we adjust nr_pages down, and continue from there */
-+		rem_pages -= pol->wil.cur_weight;
-+		pol->wil.cur_weight = 0;
-+		prev_node = node;
-+	}
-+
-+	/* fetch the weights for this operation and calculate total weight */
-+	weights = kmalloc(nnodes, GFP_KERNEL);
-+	if (!weights)
-+		return total_allocated;
-+
-+	rcu_read_lock();
-+	table = rcu_dereference(iw_table);
-+	weight_nodes = 0;
-+	for_each_node_mask(node, nodes) {
-+		weights[weight_nodes++] = table->weights[node];
-+		weight_total += table->weights[node];
-+	}
-+	rcu_read_unlock();
-+
-+	if (!weight_total) {
-+		kfree(weights);
-+		return total_allocated;
-+	}
-+
-+	/* Now we can continue allocating as if from 0 instead of an offset */
-+	rounds = rem_pages / weight_total;
-+	delta = rem_pages % weight_total;
-+	for (i = 0; i < nnodes; i++) {
-+		node = next_node_in(prev_node, nodes);
-+		weight = weights[i];
-+		node_pages = weight * rounds;
-+		if (delta) {
-+			if (delta > weight) {
-+				node_pages += weight;
-+				delta -= weight;
-+			} else {
-+				node_pages += delta;
-+				delta = 0;
-+			}
-+		}
-+		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
-+						  NULL, page_array);
-+		page_array += nr_allocated;
-+		total_allocated += nr_allocated;
-+		if (total_allocated == nr_pages)
-+			break;
-+		prev_node = node;
-+	}
-+
-+	/*
-+	 * Finally, we need to update me->il_prev and pol->wil.cur_weight
-+	 * if there were overflow pages, but not equivalent to the node
-+	 * weight, set the cur_weight to node_weight - delta and the
-+	 * me->il_prev to the previous node. Otherwise if it was perfect
-+	 * we can simply set il_prev to node and cur_weight to 0
-+	 */
-+	if (node_pages) {
-+		me->il_prev = prev_node;
-+		node_pages %= weight;
-+		pol->wil.cur_weight = weight - node_pages;
-+	} else {
-+		me->il_prev = node;
-+		pol->wil.cur_weight = 0;
-+	}
-+
-+	kfree(weights);
-+	return total_allocated;
++	return parse_uint(str, "CID");
 +}
 +
- static unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
- 		struct mempolicy *pol, unsigned long nr_pages,
- 		struct page **page_array)
-@@ -2317,6 +2512,11 @@ unsigned long alloc_pages_bulk_array_mempolicy(gfp_t gfp,
- 		return alloc_pages_bulk_array_interleave(gfp, pol,
- 							 nr_pages, page_array);
- 
-+	if (pol->mode == MPOL_WEIGHTED_INTERLEAVE)
-+		return alloc_pages_bulk_array_weighted_interleave(gfp, pol,
-+								  nr_pages,
-+								  page_array);
++/* Parse a port in string representation */
++unsigned int parse_port(const char *str)
++{
++	return parse_uint(str, "port");
++}
 +
- 	if (pol->mode == MPOL_PREFERRED_MANY)
- 		return alloc_pages_bulk_array_preferred_many(gfp,
- 				numa_node_id(), pol, nr_pages, page_array);
-@@ -2392,6 +2592,7 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
- 	case MPOL_INTERLEAVE:
- 	case MPOL_PREFERRED:
- 	case MPOL_PREFERRED_MANY:
-+	case MPOL_WEIGHTED_INTERLEAVE:
- 		return !!nodes_equal(a->nodes, b->nodes);
- 	case MPOL_LOCAL:
- 		return true;
-@@ -2528,6 +2729,10 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
- 		polnid = interleave_nid(pol, ilx);
- 		break;
- 
-+	case MPOL_WEIGHTED_INTERLEAVE:
-+		polnid = weighted_interleave_nid(pol, ilx);
-+		break;
-+
- 	case MPOL_PREFERRED:
- 		if (node_isset(curnid, pol->nodes))
- 			goto out;
-@@ -2902,6 +3107,7 @@ static const char * const policy_modes[] =
- 	[MPOL_PREFERRED]  = "prefer",
- 	[MPOL_BIND]       = "bind",
- 	[MPOL_INTERLEAVE] = "interleave",
-+	[MPOL_WEIGHTED_INTERLEAVE] = "weighted interleave",
- 	[MPOL_LOCAL]      = "local",
- 	[MPOL_PREFERRED_MANY]  = "prefer (many)",
+ /* Wait for the remote to close the connection */
+ void vsock_wait_remote_close(int fd)
+ {
+diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
+index 03c88d0cb861..e95e62485959 100644
+--- a/tools/testing/vsock/util.h
++++ b/tools/testing/vsock/util.h
+@@ -12,10 +12,13 @@ enum test_mode {
+ 	TEST_MODE_SERVER
  };
-@@ -2961,6 +3167,7 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
- 		}
- 		break;
- 	case MPOL_INTERLEAVE:
-+	case MPOL_WEIGHTED_INTERLEAVE:
- 		/*
- 		 * Default to online nodes with memory if no nodelist
- 		 */
-@@ -3071,6 +3278,7 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
- 	case MPOL_PREFERRED_MANY:
- 	case MPOL_BIND:
- 	case MPOL_INTERLEAVE:
-+	case MPOL_WEIGHTED_INTERLEAVE:
- 		nodes = pol->nodes;
- 		break;
- 	default:
+ 
++#define DEFAULT_PEER_PORT	1234
++
+ /* Test runner options */
+ struct test_opts {
+ 	enum test_mode mode;
+ 	unsigned int peer_cid;
++	unsigned int peer_port;
+ };
+ 
+ /* A test case definition.  Test functions must print failures to stderr and
+@@ -35,6 +38,7 @@ struct test_case {
+ 
+ void init_signals(void);
+ unsigned int parse_cid(const char *str);
++unsigned int parse_port(const char *str);
+ int vsock_stream_connect(unsigned int cid, unsigned int port);
+ int vsock_bind_connect(unsigned int cid, unsigned int port,
+ 		       unsigned int bind_port, int type);
+diff --git a/tools/testing/vsock/vsock_diag_test.c b/tools/testing/vsock/vsock_diag_test.c
+index fa927ad16f8a..5e6049226b77 100644
+--- a/tools/testing/vsock/vsock_diag_test.c
++++ b/tools/testing/vsock/vsock_diag_test.c
+@@ -342,7 +342,7 @@ static void test_listen_socket_server(const struct test_opts *opts)
+ 	} addr = {
+ 		.svm = {
+ 			.svm_family = AF_VSOCK,
+-			.svm_port = 1234,
++			.svm_port = opts->peer_port,
+ 			.svm_cid = VMADDR_CID_ANY,
+ 		},
+ 	};
+@@ -378,7 +378,7 @@ static void test_connect_client(const struct test_opts *opts)
+ 	LIST_HEAD(sockets);
+ 	struct vsock_stat *st;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -403,7 +403,7 @@ static void test_connect_server(const struct test_opts *opts)
+ 	LIST_HEAD(sockets);
+ 	int client_fd;
+ 
+-	client_fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	client_fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (client_fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -461,6 +461,11 @@ static const struct option longopts[] = {
+ 		.has_arg = required_argument,
+ 		.val = 'p',
+ 	},
++	{
++		.name = "peer-port",
++		.has_arg = required_argument,
++		.val = 'q',
++	},
+ 	{
+ 		.name = "list",
+ 		.has_arg = no_argument,
+@@ -481,7 +486,7 @@ static const struct option longopts[] = {
+ 
+ static void usage(void)
+ {
+-	fprintf(stderr, "Usage: vsock_diag_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--list] [--skip=<test_id>]\n"
++	fprintf(stderr, "Usage: vsock_diag_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>] [--list] [--skip=<test_id>]\n"
+ 		"\n"
+ 		"  Server: vsock_diag_test --control-port=1234 --mode=server --peer-cid=3\n"
+ 		"  Client: vsock_diag_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
+@@ -503,6 +508,7 @@ static void usage(void)
+ 		"  --control-port <port>  Server port to listen on/connect to\n"
+ 		"  --mode client|server   Server or client mode\n"
+ 		"  --peer-cid <cid>       CID of the other side\n"
++		"  --peer-port <port>     Port of the other side\n"
+ 		"  --list                 List of tests that will be executed\n"
+ 		"  --skip <test_id>       Test ID to skip;\n"
+ 		"                         use multiple --skip options to skip more tests\n"
+@@ -517,6 +523,7 @@ int main(int argc, char **argv)
+ 	struct test_opts opts = {
+ 		.mode = TEST_MODE_UNSET,
+ 		.peer_cid = VMADDR_CID_ANY,
++		.peer_port = DEFAULT_PEER_PORT
+ 	};
+ 
+ 	init_signals();
+@@ -544,6 +551,9 @@ int main(int argc, char **argv)
+ 		case 'p':
+ 			opts.peer_cid = parse_cid(optarg);
+ 			break;
++		case 'q':
++			opts.peer_port = parse_port(optarg);
++			break;
+ 		case 'P':
+ 			control_port = optarg;
+ 			break;
+diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+index 66246d81d654..58574f4d1fe1 100644
+--- a/tools/testing/vsock/vsock_test.c
++++ b/tools/testing/vsock/vsock_test.c
+@@ -34,7 +34,7 @@ static void test_stream_connection_reset(const struct test_opts *opts)
+ 	} addr = {
+ 		.svm = {
+ 			.svm_family = AF_VSOCK,
+-			.svm_port = 1234,
++			.svm_port = opts->peer_port,
+ 			.svm_cid = opts->peer_cid,
+ 		},
+ 	};
+@@ -70,7 +70,7 @@ static void test_stream_bind_only_client(const struct test_opts *opts)
+ 	} addr = {
+ 		.svm = {
+ 			.svm_family = AF_VSOCK,
+-			.svm_port = 1234,
++			.svm_port = opts->peer_port,
+ 			.svm_cid = opts->peer_cid,
+ 		},
+ 	};
+@@ -112,7 +112,7 @@ static void test_stream_bind_only_server(const struct test_opts *opts)
+ 	} addr = {
+ 		.svm = {
+ 			.svm_family = AF_VSOCK,
+-			.svm_port = 1234,
++			.svm_port = opts->peer_port,
+ 			.svm_cid = VMADDR_CID_ANY,
+ 		},
+ 	};
+@@ -138,7 +138,7 @@ static void test_stream_client_close_client(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -152,7 +152,7 @@ static void test_stream_client_close_server(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -173,7 +173,7 @@ static void test_stream_server_close_client(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -194,7 +194,7 @@ static void test_stream_server_close_server(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -215,7 +215,7 @@ static void test_stream_multiconn_client(const struct test_opts *opts)
+ 	int i;
+ 
+ 	for (i = 0; i < MULTICONN_NFDS; i++) {
+-		fds[i] = vsock_stream_connect(opts->peer_cid, 1234);
++		fds[i] = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 		if (fds[i] < 0) {
+ 			perror("connect");
+ 			exit(EXIT_FAILURE);
+@@ -239,7 +239,7 @@ static void test_stream_multiconn_server(const struct test_opts *opts)
+ 	int i;
+ 
+ 	for (i = 0; i < MULTICONN_NFDS; i++) {
+-		fds[i] = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++		fds[i] = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 		if (fds[i] < 0) {
+ 			perror("accept");
+ 			exit(EXIT_FAILURE);
+@@ -267,9 +267,9 @@ static void test_msg_peek_client(const struct test_opts *opts,
+ 	int i;
+ 
+ 	if (seqpacket)
+-		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++		fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 	else
+-		fd = vsock_stream_connect(opts->peer_cid, 1234);
++		fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 
+ 	if (fd < 0) {
+ 		perror("connect");
+@@ -295,9 +295,9 @@ static void test_msg_peek_server(const struct test_opts *opts,
+ 	int fd;
+ 
+ 	if (seqpacket)
+-		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	else
+-		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++		fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 
+ 	if (fd < 0) {
+ 		perror("accept");
+@@ -363,7 +363,7 @@ static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
+ 	int msg_count;
+ 	int fd;
+ 
+-	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -434,7 +434,7 @@ static void test_seqpacket_msg_bounds_server(const struct test_opts *opts)
+ 	struct msghdr msg = {0};
+ 	struct iovec iov = {0};
+ 
+-	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -505,7 +505,7 @@ static void test_seqpacket_msg_trunc_client(const struct test_opts *opts)
+ 	int fd;
+ 	char buf[MESSAGE_TRUNC_SZ];
+ 
+-	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -524,7 +524,7 @@ static void test_seqpacket_msg_trunc_server(const struct test_opts *opts)
+ 	struct msghdr msg = {0};
+ 	struct iovec iov = {0};
+ 
+-	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -575,7 +575,7 @@ static void test_seqpacket_timeout_client(const struct test_opts *opts)
+ 	time_t read_enter_ns;
+ 	time_t read_overhead_ns;
+ 
+-	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -620,7 +620,7 @@ static void test_seqpacket_timeout_server(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -639,7 +639,7 @@ static void test_seqpacket_bigmsg_client(const struct test_opts *opts)
+ 
+ 	len = sizeof(sock_buf_size);
+ 
+-	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -671,7 +671,7 @@ static void test_seqpacket_bigmsg_server(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -692,7 +692,7 @@ static void test_seqpacket_invalid_rec_buffer_client(const struct test_opts *opt
+ 	unsigned char *buf2;
+ 	int buf_size = getpagesize() * 3;
+ 
+-	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -732,7 +732,7 @@ static void test_seqpacket_invalid_rec_buffer_server(const struct test_opts *opt
+ 	int flags = MAP_PRIVATE | MAP_ANONYMOUS;
+ 	int i;
+ 
+-	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -808,7 +808,7 @@ static void test_stream_poll_rcvlowat_server(const struct test_opts *opts)
+ 	int fd;
+ 	int i;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -839,7 +839,7 @@ static void test_stream_poll_rcvlowat_client(const struct test_opts *opts)
+ 	short poll_flags;
+ 	int fd;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -906,9 +906,9 @@ static void test_inv_buf_client(const struct test_opts *opts, bool stream)
+ 	int fd;
+ 
+ 	if (stream)
+-		fd = vsock_stream_connect(opts->peer_cid, 1234);
++		fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	else
+-		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++		fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 
+ 	if (fd < 0) {
+ 		perror("connect");
+@@ -941,9 +941,9 @@ static void test_inv_buf_server(const struct test_opts *opts, bool stream)
+ 	int fd;
+ 
+ 	if (stream)
+-		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++		fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	else
+-		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 
+ 	if (fd < 0) {
+ 		perror("accept");
+@@ -986,7 +986,7 @@ static void test_stream_virtio_skb_merge_client(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -1015,7 +1015,7 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
+ 	unsigned char buf[64];
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -1108,7 +1108,7 @@ static void test_stream_shutwr_client(const struct test_opts *opts)
+ 
+ 	sigaction(SIGPIPE, &act, NULL);
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -1130,7 +1130,7 @@ static void test_stream_shutwr_server(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -1151,7 +1151,7 @@ static void test_stream_shutrd_client(const struct test_opts *opts)
+ 
+ 	sigaction(SIGPIPE, &act, NULL);
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -1170,7 +1170,7 @@ static void test_stream_shutrd_server(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -1193,7 +1193,7 @@ static void test_double_bind_connect_server(const struct test_opts *opts)
+ 	struct sockaddr_vm sa_client;
+ 	socklen_t socklen_client = sizeof(sa_client);
+ 
+-	listen_fd = vsock_stream_listen(VMADDR_CID_ANY, 1234);
++	listen_fd = vsock_stream_listen(VMADDR_CID_ANY, opts->peer_port);
+ 
+ 	for (i = 0; i < 2; i++) {
+ 		control_writeln("LISTENING");
+@@ -1226,7 +1226,13 @@ static void test_double_bind_connect_client(const struct test_opts *opts)
+ 		/* Wait until server is ready to accept a new connection */
+ 		control_expectln("LISTENING");
+ 
+-		client_fd = vsock_bind_connect(opts->peer_cid, 1234, 4321, SOCK_STREAM);
++		/* We use 'peer_port + 1' as "some" port for the 'bind()'
++		 * call. It is safe for overflow, but must be considered,
++		 * when running multiple test applications simultaneously
++		 * where 'peer-port' argument differs by 1.
++		 */
++		client_fd = vsock_bind_connect(opts->peer_cid, opts->peer_port,
++					       opts->peer_port + 1, SOCK_STREAM);
+ 
+ 		close(client_fd);
+ 	}
+@@ -1246,7 +1252,7 @@ static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opt
+ 	void *buf;
+ 	int fd;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -1282,7 +1288,7 @@ static void test_stream_credit_update_test(const struct test_opts *opts,
+ 	void *buf;
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -1542,6 +1548,11 @@ static const struct option longopts[] = {
+ 		.has_arg = required_argument,
+ 		.val = 'p',
+ 	},
++	{
++		.name = "peer-port",
++		.has_arg = required_argument,
++		.val = 'q',
++	},
+ 	{
+ 		.name = "list",
+ 		.has_arg = no_argument,
+@@ -1562,7 +1573,7 @@ static const struct option longopts[] = {
+ 
+ static void usage(void)
+ {
+-	fprintf(stderr, "Usage: vsock_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--list] [--skip=<test_id>]\n"
++	fprintf(stderr, "Usage: vsock_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>] [--list] [--skip=<test_id>]\n"
+ 		"\n"
+ 		"  Server: vsock_test --control-port=1234 --mode=server --peer-cid=3\n"
+ 		"  Client: vsock_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
+@@ -1584,6 +1595,7 @@ static void usage(void)
+ 		"  --control-port <port>  Server port to listen on/connect to\n"
+ 		"  --mode client|server   Server or client mode\n"
+ 		"  --peer-cid <cid>       CID of the other side\n"
++		"  --peer-port <port>     Port of the other side\n"
+ 		"  --list                 List of tests that will be executed\n"
+ 		"  --skip <test_id>       Test ID to skip;\n"
+ 		"                         use multiple --skip options to skip more tests\n"
+@@ -1598,6 +1610,7 @@ int main(int argc, char **argv)
+ 	struct test_opts opts = {
+ 		.mode = TEST_MODE_UNSET,
+ 		.peer_cid = VMADDR_CID_ANY,
++		.peer_port = DEFAULT_PEER_PORT
+ 	};
+ 
+ 	srand(time(NULL));
+@@ -1626,6 +1639,9 @@ int main(int argc, char **argv)
+ 		case 'p':
+ 			opts.peer_cid = parse_cid(optarg);
+ 			break;
++		case 'q':
++			opts.peer_port = parse_port(optarg);
++			break;
+ 		case 'P':
+ 			control_port = optarg;
+ 			break;
+diff --git a/tools/testing/vsock/vsock_test_zerocopy.c b/tools/testing/vsock/vsock_test_zerocopy.c
+index a16ff76484e6..04c376b6937f 100644
+--- a/tools/testing/vsock/vsock_test_zerocopy.c
++++ b/tools/testing/vsock/vsock_test_zerocopy.c
+@@ -152,9 +152,9 @@ static void test_client(const struct test_opts *opts,
+ 	int fd;
+ 
+ 	if (sock_seqpacket)
+-		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
++		fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
+ 	else
+-		fd = vsock_stream_connect(opts->peer_cid, 1234);
++		fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 
+ 	if (fd < 0) {
+ 		perror("connect");
+@@ -248,9 +248,9 @@ static void test_server(const struct test_opts *opts,
+ 	int fd;
+ 
+ 	if (sock_seqpacket)
+-		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
++		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	else
+-		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++		fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 
+ 	if (fd < 0) {
+ 		perror("accept");
+@@ -323,7 +323,7 @@ void test_stream_msgzcopy_empty_errq_client(const struct test_opts *opts)
+ 	ssize_t res;
+ 	int fd;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -347,7 +347,7 @@ void test_stream_msgzcopy_empty_errq_server(const struct test_opts *opts)
+ {
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
+index d976d35f0ba9..4e363c6d6e4d 100644
+--- a/tools/testing/vsock/vsock_uring_test.c
++++ b/tools/testing/vsock/vsock_uring_test.c
+@@ -66,7 +66,7 @@ static void vsock_io_uring_client(const struct test_opts *opts,
+ 	struct msghdr msg;
+ 	int fd;
+ 
+-	fd = vsock_stream_connect(opts->peer_cid, 1234);
++	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
+ 	if (fd < 0) {
+ 		perror("connect");
+ 		exit(EXIT_FAILURE);
+@@ -120,7 +120,7 @@ static void vsock_io_uring_server(const struct test_opts *opts,
+ 	void *data;
+ 	int fd;
+ 
+-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
++	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
+ 	if (fd < 0) {
+ 		perror("accept");
+ 		exit(EXIT_FAILURE);
+@@ -247,6 +247,11 @@ static const struct option longopts[] = {
+ 		.has_arg = required_argument,
+ 		.val = 'p',
+ 	},
++	{
++		.name = "peer-port",
++		.has_arg = required_argument,
++		.val = 'q',
++	},
+ 	{
+ 		.name = "help",
+ 		.has_arg = no_argument,
+@@ -257,7 +262,7 @@ static const struct option longopts[] = {
+ 
+ static void usage(void)
+ {
+-	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
++	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>]\n"
+ 		"\n"
+ 		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
+ 		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
+@@ -271,6 +276,7 @@ static void usage(void)
+ 		"  --control-port <port>  Server port to listen on/connect to\n"
+ 		"  --mode client|server   Server or client mode\n"
+ 		"  --peer-cid <cid>       CID of the other side\n"
++		"  --peer-port <port>     Port of the other side\n"
+ 		);
+ 	exit(EXIT_FAILURE);
+ }
+@@ -282,6 +288,7 @@ int main(int argc, char **argv)
+ 	struct test_opts opts = {
+ 		.mode = TEST_MODE_UNSET,
+ 		.peer_cid = VMADDR_CID_ANY,
++		.peer_port = DEFAULT_PEER_PORT
+ 	};
+ 
+ 	init_signals();
+@@ -309,6 +316,9 @@ int main(int argc, char **argv)
+ 		case 'p':
+ 			opts.peer_cid = parse_cid(optarg);
+ 			break;
++		case 'q':
++			opts.peer_port = parse_port(optarg);
++			break;
+ 		case 'P':
+ 			control_port = optarg;
+ 			break;
 -- 
-2.39.1
+2.25.1
 
 
