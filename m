@@ -1,107 +1,215 @@
-Return-Path: <linux-kernel+bounces-24968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB1BB82C566
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 062E382C567
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:28:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 477FFB219A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:28:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0555EB216C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE00F17C9B;
-	Fri, 12 Jan 2024 18:27:56 +0000 (UTC)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CC125624;
+	Fri, 12 Jan 2024 18:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YlhyInO8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F03417C8D;
-	Fri, 12 Jan 2024 18:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5e82f502a4cso58009917b3.0;
-        Fri, 12 Jan 2024 10:27:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705084073; x=1705688873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0BJ2WZX4mtYqpwBUHJyyeiT7eNbqAuxy96Kww4r+LXQ=;
-        b=GUt+ndJf52R/+30jG/w/aJJQWnspE13Xmif7JivZcKju1OgdPNPR6z67cTCq25QSdt
-         ModJZ0DkkrgdwYdoFp1TgNr/UA5eNE0UO+7xobGkLJ9GdgrIgOwtF/jId4BCKcSK5tnN
-         6lpaooo0PVDHtBq+zL2AiMmSKM4Jwwls89kzZ8R2ifIDTq2jiABEZ3pcMvL5h9eTI1/j
-         8H9ico0Gz9lVtTALdPznGO6OpxFYGvX9P+CY/CBLYZqNSc6ReqmC+EPv2MIaNsHa0cyS
-         7RkcBiMpfVbDMTC3BRzfjV0zOTd783qPdKJyvP1dPuvbI0cZke0iDSxBL3CDKPFYeNTB
-         wmLA==
-X-Gm-Message-State: AOJu0YwxK1ryP39vJz+f5pAVQuqAprdcwZxz+pPrqk4g4bwPS/kSgmrG
-	JPm1FJktf49W38ucAMK0mtwB5Qv4ywRi5Q==
-X-Google-Smtp-Source: AGHT+IE9RoWp3i10xpf6g1epyIgWlK9Sn/awn4vi1jxOqmRmn2q4EuJbdULMc4brijGsWdtY0usgjQ==
-X-Received: by 2002:a0d:d5d1:0:b0:5fb:60db:86b0 with SMTP id x200-20020a0dd5d1000000b005fb60db86b0mr1390345ywd.19.1705084072947;
-        Fri, 12 Jan 2024 10:27:52 -0800 (PST)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id v141-20020a814893000000b005fb420b14dcsm1422530ywa.108.2024.01.12.10.27.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 10:27:52 -0800 (PST)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e7467eb93aso58735757b3.1;
-        Fri, 12 Jan 2024 10:27:52 -0800 (PST)
-X-Received: by 2002:a25:d84f:0:b0:dbc:d3a5:d039 with SMTP id
- p76-20020a25d84f000000b00dbcd3a5d039mr779893ybg.32.1705084072167; Fri, 12 Jan
- 2024 10:27:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE271AAC5
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 18:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705084079; x=1736620079;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=esm7T4hjM8QAkRTfzrz5TRd+KgY+XxGQvjLSsmczK0Q=;
+  b=YlhyInO8Icx4nC02QE/+4bbAlRRHDjXSIN3RALxU0wc46FuKATfH4Siu
+   CAKFDPu1ziQxCIHIRMLtNIBmbHj6ngnMAz9uHpq6CWFmgGwFFtLKs3rHP
+   +2tWuWV8foImfr+nwcNvRF4pnNyAoztjOfcg13gE1msGMY9H9HrlS73JU
+   b5s+tW2G7F7QIEKk6XjEf812ffKJEpWO1tqzha9YnXpeOAhV7I6GqvIxb
+   jK/LmptjpfYZVW3p+jVrJTO9MCcc2CpkkfApwPI+JhVeYvMPbQNgy7BLN
+   ApLmfUlNxvRxbA0GER5UE4suq12u4qfAAMmUwkcucMAc2j8cMMbZ3QpJP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="20727411"
+X-IronPort-AV: E=Sophos;i="6.04,190,1695711600"; 
+   d="scan'208";a="20727411"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 10:27:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,190,1695711600"; 
+   d="scan'208";a="31478061"
+Received: from jarteaga-mobl1.amr.corp.intel.com (HELO [10.212.169.181]) ([10.212.169.181])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 10:27:57 -0800
+Message-ID: <1bd6ee64a600daad58866ce684b591d39879c470.camel@linux.intel.com>
+Subject: Re: [PATCH v3 3/7] padata: dispatch works on different nodes
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Gang Li <gang.li@linux.dev>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Mike
+ Kravetz <mike.kravetz@oracle.com>, David Rientjes <rientjes@google.com>, 
+ linux-kernel@vger.kernel.org, ligang.bdlg@bytedance.com, David Hildenbrand
+ <david@redhat.com>, Muchun Song <muchun.song@linux.dev>
+Date: Fri, 12 Jan 2024 10:27:56 -0800
+In-Reply-To: <feaf7851-f924-48f4-b16a-2fa5efdb28cf@linux.dev>
+References: <20240102131249.76622-1-gang.li@linux.dev>
+	 <20240102131249.76622-4-gang.li@linux.dev>
+	 <1d9074955618ea0b4b155701f7c1b8b18a43fa8d.camel@linux.intel.com>
+	 <feaf7851-f924-48f4-b16a-2fa5efdb28cf@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214222107.2016042-1-song@kernel.org> <20231214222107.2016042-2-song@kernel.org>
- <CAMuHMdUtzhwHLa_DTtH00YsZ6t_CefZjZj6oS_mpckHDNXpYWw@mail.gmail.com>
- <CAPhsuW6KVN1c=dB1RXVQjygBevVcb_1qQJoLz3zA-qTVVmbCAw@mail.gmail.com> <20240112171010.GA18360@lst.de>
-In-Reply-To: <20240112171010.GA18360@lst.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 12 Jan 2024 19:27:40 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWvo5ggC31Ukd8+sLC1jyqcXw=T-tVDtwdLqRg87HwvCQ@mail.gmail.com>
-Message-ID: <CAMuHMdWvo5ggC31Ukd8+sLC1jyqcXw=T-tVDtwdLqRg87HwvCQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] md: Remove deprecated CONFIG_MD_LINEAR
-To: Christoph Hellwig <hch@lst.de>
-Cc: Song Liu <song@kernel.org>, linux-raid@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, 
-	Jens Axboe <axboe@kernel.dk>, Neil Brown <neilb@suse.de>, Guoqing Jiang <guoqing.jiang@linux.dev>, 
-	Mateusz Grzonka <mateusz.grzonka@intel.com>, Jes Sorensen <jes@trained-monkey.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Christoph,
+On Fri, 2024-01-12 at 15:09 +0800, Gang Li wrote:
+> On 2024/1/12 01:50, Tim Chen wrote:
+> > On Tue, 2024-01-02 at 21:12 +0800, Gang Li wrote:
+> > > When a group of tasks that access different nodes are scheduled on th=
+e
+> > > same node, they may encounter bandwidth bottlenecks and access latenc=
+y.
+> > >=20
+> > > Thus, numa_aware flag is introduced here, allowing tasks to be
+> > > distributed across different nodes to fully utilize the advantage of
+> > > multi-node systems.
+> > >=20
+> > > Signed-off-by: Gang Li <gang.li@linux.dev>
+> > > ---
+> > >   include/linux/padata.h | 3 +++
+> > >   kernel/padata.c        | 8 ++++++--
+> > >   mm/mm_init.c           | 1 +
+> > >   3 files changed, 10 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/include/linux/padata.h b/include/linux/padata.h
+> > > index 495b16b6b4d72..f79ccd50e7f40 100644
+> > > --- a/include/linux/padata.h
+> > > +++ b/include/linux/padata.h
+> > > @@ -137,6 +137,8 @@ struct padata_shell {
+> > >    *             appropriate for one worker thread to do at once.
+> > >    * @max_threads: Max threads to use for the job, actual number may =
+be less
+> > >    *               depending on task size and minimum chunk size.
+> > > + * @numa_aware: Dispatch jobs to different nodes. If a node only has=
+ memory but
+> > > + *              no CPU, dispatch its jobs to a random CPU.
+> > >    */
+> > >   struct padata_mt_job {
+> > >   	void (*thread_fn)(unsigned long start, unsigned long end, void *ar=
+g);
+> > > @@ -146,6 +148,7 @@ struct padata_mt_job {
+> > >   	unsigned long		align;
+> > >   	unsigned long		min_chunk;
+> > >   	int			max_threads;
+> > > +	bool			numa_aware;
+> > >   };
+> > >  =20
+> > >   /**
+> > > diff --git a/kernel/padata.c b/kernel/padata.c
+> > > index 179fb1518070c..1c2b3a337479e 100644
+> > > --- a/kernel/padata.c
+> > > +++ b/kernel/padata.c
+> > > @@ -485,7 +485,7 @@ void __init padata_do_multithreaded(struct padata=
+_mt_job *job)
+> > >   	struct padata_work my_work, *pw;
+> > >   	struct padata_mt_job_state ps;
+> > >   	LIST_HEAD(works);
+> > > -	int nworks;
+> > > +	int nworks, nid =3D 0;
+> >=20
+> > If we always start from 0, we may be biased towards the low numbered no=
+de,
+> > and not use high numbered nodes at all.  Suggest you do
+> > static nid =3D 0;
+> >=20
+>=20
+> When we use `static`, if there are multiple parallel calls to
+> `padata_do_multithreaded`, it may result in an uneven distribution of
+> tasks for each padata_do_multithreaded.
+>=20
+> We can make the following modifications to address this issue.
+>=20
+> ```
+> diff --git a/kernel/padata.c b/kernel/padata.c
+> index 1c2b3a337479e..925e48df6dd8d 100644
+> --- a/kernel/padata.c
+> +++ b/kernel/padata.c
+> @@ -485,7 +485,8 @@ void __init padata_do_multithreaded(struct=20
+> padata_mt_job *job)
+>          struct padata_work my_work, *pw;
+>          struct padata_mt_job_state ps;
+>          LIST_HEAD(works);
+> -       int nworks, nid =3D 0;
+> +       int nworks, nid;
+> +       static volatile int global_nid =3D 0;
+>=20
+>          if (job->size =3D=3D 0)
+>                  return;
+> @@ -516,12 +517,15 @@ void __init padata_do_multithreaded(struct=20
+> padata_mt_job *job)
+>          ps.chunk_size =3D max(ps.chunk_size, job->min_chunk);
+>          ps.chunk_size =3D roundup(ps.chunk_size, job->align);
+>=20
+> +       nid =3D global_nid;
+>          list_for_each_entry(pw, &works, pw_list)
+> -               if (job->numa_aware)
+> -                       queue_work_node((++nid % num_node_state(N_MEMORY)=
+),
+> -                                       system_unbound_wq, &pw->pw_work);
+> -               else
+> +               if (job->numa_aware) {
+> +                       queue_work_node(nid, system_unbound_wq,=20
+> &pw->pw_work);
+> +                       nid =3D next_node(nid, node_states[N_CPU]);
+> +               } else
+>                          queue_work(system_unbound_wq, &pw->pw_work);
+> +       if (job->numa_aware)
+> +               global_nid =3D nid;
 
-On Fri, Jan 12, 2024 at 6:10=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrot=
-e:
-> On Fri, Jan 12, 2024 at 09:08:04AM -0800, Song Liu wrote:
-> > Thanks for the heads-up. I honestly don't know about this use case.
-> > Where can I find/get more information about it?
->
-> What NAS uses md linear?
+Thinking more about it, there could still be multiple threads working
+at the same time with stale global_nid.  We should probably do a compare
+exchange of global_nid with new nid only if the global nid was unchanged.
+Otherwise we should go to the next node with the changed global nid before
+we queue the job.
 
-No idea, I was just wondering....
-Lots of NASes sold support JBOD (yes, I know I should not use anything
-that lacks mirroring for data I care about ;-)
+Tim
 
-> Either way you can always set up a dm-linear table to get at the
-> data.
+>=20
+>          /* Use the current thread, which saves starting a workqueue=20
+> worker. */
+>          padata_work_init(&my_work, padata_mt_helper, &ps,=20
+> PADATA_WORK_ONSTACK);
+> ```
+>=20
+>=20
+> > >  =20
+> > >   	if (job->size =3D=3D 0)
+> > >   		return;
+> > > @@ -517,7 +517,11 @@ void __init padata_do_multithreaded(struct padat=
+a_mt_job *job)
+> > >   	ps.chunk_size =3D roundup(ps.chunk_size, job->align);
+> > >  =20
+> > >   	list_for_each_entry(pw, &works, pw_list)
+> > > -		queue_work(system_unbound_wq, &pw->pw_work);
+> > > +		if (job->numa_aware)
+> > > +			queue_work_node((++nid % num_node_state(N_MEMORY)),
+> > > +					system_unbound_wq, &pw->pw_work);
+> >=20
+> > I think we should use nid =3D next_node(nid, node_states[N_CPU]) instea=
+d of
+> > ++nid % num_node_state(N_MEMORY).  You are picking the next node with C=
+PU
+> > to handle the job.
+> >=20
+> > Tim
+> >=20
+>=20
+> I agree.
 
-If dm-linear offers the same functionality, I have no objection.
-
-Note to self: learn about the difference between dm and md, finally...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
