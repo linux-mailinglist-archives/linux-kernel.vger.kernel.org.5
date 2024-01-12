@@ -1,239 +1,424 @@
-Return-Path: <linux-kernel+bounces-24973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69D3482C571
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:31:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A8E82C57D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D80391F2299B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:31:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B99612820DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E16F1BF3D;
-	Fri, 12 Jan 2024 18:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F111548B;
+	Fri, 12 Jan 2024 18:33:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="HtVpHxtc"
-Received: from DM4PR02CU002.outbound.protection.outlook.com (mail-centralusazon11023014.outbound.protection.outlook.com [52.101.61.14])
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="SFefs9+D"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2116.outbound.protection.outlook.com [40.107.96.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE0C1BA5D;
-	Fri, 12 Jan 2024 18:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D06E13AD4;
+	Fri, 12 Jan 2024 18:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=af71Ni/j4l4TWA9vx77pBj+g1w9eHxd87olq+srWfEC8bBtN3yhRpceBhwdTlI9lZjGe6kxXJqsWJ1Ff2kpzdTQozFWYyPlet7STkI4cJn2mtu1In4MubU1hwhCOWxdf809Dc8uJaxmkp2NtrGv0P5Soaq+GfKqyJkK1j/FogEMhGbX+MJbNCYI7osyaEXGhgr0TeMx/GxGfwnvh1OvY3IpC853oRpb7euFtRnwpg2FRs0mB4P4+csI0CzP92PXuZ5F2a7XiviSdbxX7O8BEuisXz7PKUHUJaJfbOkpoxRklZ+cvsruKnNVfqCWSHH++lKtu7tduIDawUmWTVcx1ew==
+ b=Fdgd8lkMx+v2r5EIahtJiXIV6E3ZhYa7mC2ZAY2SDfHEY2dOTaIySiCIQlRCtZ+qnHyZjRr0ovrGHhgdoZKx9ninKd27sqQBmWs66cSJhpttZraBAg86cXAn0PBqdUfqSeFiocYDfRtro33LI6D53GZ2ZAMNB81lYMjwXSeOcSC/YNo9jLxMBDZE7DqCHMPjgDtTvvHUBNNNWt37CnMPYGIXA9NGikxKW06jdRVYys7sUC2hCYeGzJ9S/jCpO8//ZLd0VNZ1Ao/919GJOzaCKHXmS8aYd4oskM3ZkaW2HRZDAPzK49HGca5CQyVD+IeOkm3dLGaHf9iybY1cLmXf9A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Yn7+X1zjGis/P3+26owTuIFeLSUDz1pvBoWTJykyQlU=;
- b=dw5JPSEBJGIefZOXujrBD7kYiaINp/NNEbfuoT4xBeS0trxAgdNyBSao8zp48CnH97Y95WIlDqXlqmEAXMnmPbcMsm/k8db8Y9hhEqX8sXT9l0JFGhcRJYFEU+qU4olWIB9BiOw7cfHduGQg87TpbfHx0JMJAyQeCPHxNi2wcUMxDAW3LtPcVU/CuNcy0rPNPJlNDmxTlyQ0pztMqnC8QKriRoVnPVNTL4kwmjytORLWbFh9h1H1XmZK2OFZZL9EGOAZXQhw4tqBljFdiBdisdz5Mjz98KJNPny/hWTUuq3c92q7UxA2pmYii3WfsdxdziLUJha5+C9sGzUlmdVx/A==
+ bh=simLBWeFkFi5vmBKOdXR0LiWpUH3LhJTfjJg3zrAMKw=;
+ b=Ac/ZIQ2i/NjqWZg0TEsF/2slZMWFuKwn6Do+YMa9yX7IGzk4WGL4lETdTmt6y/ZjHB54J0Pzi5pdlzyDeYMywG7MwYRcBShmoOY+836swd6dwKxM+BEJH6t197JE+EZbqsBGDu0/C0CyWGVf19CGImldI5P5wiXXzQqZ9EE2MT2QZvalwOiUHVIGJmGQHUvrxEvfkpfbsU8qWD0L8NVLoBMTkBnQK/yb58Pe7/wHcMbCZXGKW4t0g7sjB9Gv432M2O5FyOJhJMzfAdhVZwbmRS19887a1FbF0d9AapElRjFrO3Bwqh8KFI7vahLIhKi2Ppf0QhDZfmHJV6kW7mslTQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yn7+X1zjGis/P3+26owTuIFeLSUDz1pvBoWTJykyQlU=;
- b=HtVpHxtc+JDiq2sKnC+GLl63DBEMf8Ef3o2vM+rmyq2hYK7HURAmyY1l6KFbo70wsuSASCJtdZbTWpFf0hKllV4gbf9J3C61i34LhgHtJHOfqigrCf9VwqtdFwk97r2Ll1IxV+EH7+itzoQvp3WxqZLVcYBsAi6Gv4La6os8xhU=
-Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
- (2603:10b6:2c:400:0:3:0:10) by SN6PR2101MB1344.namprd21.prod.outlook.com
- (2603:10b6:805:107::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.14; Fri, 12 Jan
- 2024 18:30:45 +0000
-Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
- ([fe80::ff76:81ea:f8d6:45]) by DS1PEPF00012A5F.namprd21.prod.outlook.com
- ([fe80::ff76:81ea:f8d6:45%8]) with mapi id 15.20.7202.002; Fri, 12 Jan 2024
- 18:30:45 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Michael Kelley <mhklinux@outlook.com>, Souradeep Chakrabarti
-	<schakrabarti@linux.microsoft.com>
-CC: Yury Norov <yury.norov@gmail.com>, KY Srinivasan <kys@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	"davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, Long Li <longli@microsoft.com>,
-	"leon@kernel.org" <leon@kernel.org>, "cai.huoqing@linux.dev"
-	<cai.huoqing@linux.dev>, "ssengar@linux.microsoft.com"
-	<ssengar@linux.microsoft.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, Souradeep Chakrabarti
-	<schakrabarti@microsoft.com>, Paul Rosswurm <paulros@microsoft.com>
-Subject: RE: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs per
- CPUs
-Thread-Topic: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs
- per CPUs
-Thread-Index:
- AQHaQunR3RrbavDz00+r/Bf4otFslrDR3JYAgABE1ICAABB2AIAB8teAgAJAkQCAAB8NgA==
-Date: Fri, 12 Jan 2024 18:30:44 +0000
-Message-ID:
- <DS1PEPF00012A5F513F916690B9F94D3262CA6F2@DS1PEPF00012A5F.namprd21.prod.outlook.com>
-References:
- <1704797478-32377-1-git-send-email-schakrabarti@linux.microsoft.com>
- <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
- <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <ZZ3Wsxq8rHShTUdA@yury-ThinkPad>
- <SN6PR02MB415704D36B82D5793CC4558FD4692@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240111061319.GC5436@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <SN6PR02MB4157234176238D6C1F35B90BD46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-In-Reply-To:
- <SN6PR02MB4157234176238D6C1F35B90BD46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=afd57b44-64e7-4e9c-a23e-7f005544b8dc;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-01-12T18:28:03Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS1PEPF00012A5F:EE_|SN6PR2101MB1344:EE_
-x-ms-office365-filtering-correlation-id: 16d0784e-c015-4e15-0c1e-08dc139c9712
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- RB9m8zxfAVlGus+Npn/IIDQ1ZTDxUc6xFV7Cq0Ry9oyeyuUohtfqI5ZOqAu2idqUZHYi6wKGDyIK6BwwEbo2ia5+aKqkLtK4zjyzf6w/89OIrH/qVMfGAJLPDocJF4+qiKEkbIHn49x7QSSPimP1m6Vg/pPbqgrvznB6O183rEqEqWDck1lDaSd/MFTXEbHsiPZ9u4uBMHIK0hnwZvVejqe+rV0q+unD8gXnOH5fva0i72zl4GGy/EclZ1iYt8uGETFfpHlWwA4YePXa4Lga4iTZx+ZYw5Kc1MPxd4l6Z1KSEfypLmb5RyuLooh0v8I+nwid1ZMSd1mHWQDj4qaiEbUs9wFcT4alaFEAx1PyjN0ZBmY5GS0F6ojfqIdq9SBPNYqDzgAkKg2JwD+R+bE/cbBZ+wLAhTvf/404/ujQRuF60jzaulnYu5OpU286YazzBjUVTCxAMieDfeFcvMpBgOh2uEEnmVaDJlgFv/DWwyLEoQcxXvxf/JZatch5RZ4L2Ebqvxit2AAM+lDcQGS+Wnn9kSuYLXdIpXQsw8n6x9dffaQi72BOcJ9QaBwNu538IOi4/2jK2rDGqaz8v2n4AKT1NvVLlFag90tw+rW+FRJXa03GzYw63rcO06wOD4PdcIAP56I6x6bGcyqElkeBJDNU9NJmiVeqjHzSuSwGVns=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS1PEPF00012A5F.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(396003)(376002)(366004)(346002)(230922051799003)(230173577357003)(230273577357003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(107886003)(26005)(7696005)(53546011)(71200400001)(6506007)(9686003)(7416002)(5660300002)(4326008)(66556008)(41300700001)(8990500004)(52536014)(66946007)(2906002)(966005)(316002)(10290500003)(478600001)(8676002)(8936002)(66476007)(54906003)(76116006)(64756008)(66446008)(110136005)(38070700009)(86362001)(38100700002)(33656002)(82950400001)(82960400001)(122000001)(55016003)(66899024);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?dZdemcQPbaGgTGqJHResDdaIlz3O4Ig2Oca0siktqqzytjVpL/P6vJtcIGvz?=
- =?us-ascii?Q?LYuno/W95TTkof9qOOSaS+9/E8z+9dhgXQxfCeBTBGkQ3wmgBEXw58nYx0he?=
- =?us-ascii?Q?BL5nM3pUuaUIyg1fO6dXPzYuqnioLIpHFwBVq/GE73txEUo7naj1jgUbde2V?=
- =?us-ascii?Q?o9VLXReV22T4nU/VYsQsvxLHMMhL3JmNlncwaQW1BiirJ/W6nFZzFfnpsWT+?=
- =?us-ascii?Q?5ZUoJ0F/Hp2Furd6HmdIS29k/e2My2QdxujdQtJPiVzh4Or+j19LS3NqyFuU?=
- =?us-ascii?Q?/o1vDOlpwbbmyWYybL3ENVTfQdIrzurSHCe4fTAyYNwJYSteebqhI5tD2I8V?=
- =?us-ascii?Q?uT2tKsoa7ACBGt7+jBO2oY6uIvKA0T5ZJvQKXCj+Hn4Gx/TyHebAI0GBKTbD?=
- =?us-ascii?Q?ZZpwKELu7KPZymKB9SNn6ysG92UfDBtAsYgNBdFCm42rm3M9/IyBqnY3+/B2?=
- =?us-ascii?Q?7qdceSDz0iYw+JNP2svpUTFSBkQj1ZkcskkSqrujdaSmo76z+Pe0i39x2yeh?=
- =?us-ascii?Q?y24bRoHs+d4tI0Q50dj0s7NOQB4ucb2KmICznnTf/xNg8R9E13z5Rl1U+vOm?=
- =?us-ascii?Q?FOMQjuG22YJv9Lp7+FIBtwBxN1SIE1g49CJg/Is52bLpeO0FC05OekkZQ/uw?=
- =?us-ascii?Q?HsBoHaWW8M+9HvcOCqvcGqoJsCFJ/LpQX5P6VWCxUaCJy5HUFfto7Qy/aq2R?=
- =?us-ascii?Q?bWMwgoYBOGBAambZ0m4730z413LaTmZ+Rb0P7YQ6V5hs1N/hcDJJeahDFBQ0?=
- =?us-ascii?Q?ixhue9EESn9wjhM0u4AoiLzPgah3VsmRlWf8LN4gf4Gw6VqUAieZVTaAFNMw?=
- =?us-ascii?Q?On0cLD7zfi1P81wY+3033MrLUERUFd68S2ndXFVJsiPhqe/un7fpZjiKl4Ua?=
- =?us-ascii?Q?h35xgZj8C+YcE4NqMfvuPPs2jdojhTtHysMLdig7Sx0ceqDXqVWNJXJBLadL?=
- =?us-ascii?Q?twLhkU113fYoglYvBYuiMrwUCGB00L72uz19wfr2mZNjuHTjxI0iBxPOEDrM?=
- =?us-ascii?Q?nn/VHm38p4/e6SLeSpL8cPS7fGzZTSdw8Cv05Bi7tiGU2pPSRg5L3lD2EadK?=
- =?us-ascii?Q?xRxsP9YGXgDeovwO78LNriobadA332HvNi1LJZ6WX5t+TIM9qc3WJBe9kjmU?=
- =?us-ascii?Q?/8A0HCcLgnFUhWhvUTfvemUNlkD5ir2UY7poHWC8Q9a0bNNpm3+Mt38XBXy3?=
- =?us-ascii?Q?yWFWCXQj0Lfd7RLYL/4pe/oR/8j067KkehipSZLUGGLEWFL/YvXdCGudHm6m?=
- =?us-ascii?Q?LxjdCV6aG9U1bqAo9vjJB5H/v/hk4LUKTBmmL4HIFruHsBF+y5Oj0WG8Oub+?=
- =?us-ascii?Q?z0zvHEMvTVpayVhejG4jfZdqmc95eoIFf/oKWssNKm1Pui3jIvhlWemk3s7R?=
- =?us-ascii?Q?dKV3ndrUm4eKuYQRCEl18RBpJHFPBqUmr03bTRvwQI7r26gQo8zwYgai5nj4?=
- =?us-ascii?Q?eZDaGJtjYVa7usrGGCy5z/+34o6w68NdARNFvN3zt/swsWSVfQ5yPNO4fxwi?=
- =?us-ascii?Q?5X65GnOEGkn/XeCZzWSgvgGDwi8gJ3KZb125r/oYHzSEUcVLaGhzq0HRj0Kn?=
- =?us-ascii?Q?GwpJ/wlukC7/otDw/Bs7ThdNKUtQ/Yw1xozBLBgc?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=simLBWeFkFi5vmBKOdXR0LiWpUH3LhJTfjJg3zrAMKw=;
+ b=SFefs9+DY3k0USi9dA15B9P+Td9vuRPWwVjFufbLZmeYYvelVF6Rw2yhotumSWFq6Pc4L16lu6mzloftlRDaY4IOluD2zawiixwaochHZ3Q8YYMNNg5HOnLsNj7IrHFqre7aT4WdSpJL4hoTbsRHDO74FCzkYXk1shcIl3Pk7ic=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from MW4PR01MB6498.prod.exchangelabs.com (2603:10b6:303:79::19) by
+ IA0PR01MB8209.prod.exchangelabs.com (2603:10b6:208:48d::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7181.19; Fri, 12 Jan 2024 18:33:45 +0000
+Received: from MW4PR01MB6498.prod.exchangelabs.com
+ ([fe80::7c00:4415:9732:a74b]) by MW4PR01MB6498.prod.exchangelabs.com
+ ([fe80::7c00:4415:9732:a74b%4]) with mapi id 15.20.7181.020; Fri, 12 Jan 2024
+ 18:33:44 +0000
+Date: Fri, 12 Jan 2024 10:33:41 -0800
+From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+To: "lihuisong (C)" <lihuisong@huawei.com>
+Cc: Ionela Voinescu <ionela.voinescu@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	rafael@kernel.org, beata.michalska@arm.com, sumitg@nvidia.com, zengheng4@huawei.com, 
+	yang@os.amperecomputing.com, will@kernel.org, sudeep.holla@arm.com, liuyonglong@huawei.com, 
+	zhanjie9@hisilicon.com, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
+ from cpuinfo_cur_freq
+Message-ID: <sx74toxx4ce2jayhvganvhrbkmoi7dnsk3hbzpcbco5wgxk3fo@2r46yhmsgfp4>
+References: <20231212072617.14756-1-lihuisong@huawei.com>
+ <ZZWfJOsDlEXWYHA5@arm.com>
+ <9428a1ed-ba4d-1fe6-63e8-11e152bf1f09@huawei.com>
+ <lnocwcitdbmgcyhd2dlczgdlhtfw4pfot2br2i3hqscnvr3xgq@nuxlauxum3nr>
+ <d0f47e9d-6a58-8b46-89be-b3182abb69f0@huawei.com>
+ <ZZwAmqp6hcmMF8aN@arm.com>
+ <6505bdcb-5a5f-cba6-483b-75c51414a9c6@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6505bdcb-5a5f-cba6-483b-75c51414a9c6@huawei.com>
+X-ClientProxiedBy: CH0PR03CA0040.namprd03.prod.outlook.com
+ (2603:10b6:610:b3::15) To MW4PR01MB6498.prod.exchangelabs.com
+ (2603:10b6:303:79::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR01MB6498:EE_|IA0PR01MB8209:EE_
+X-MS-Office365-Filtering-Correlation-Id: a3885f1c-c547-44ab-01cb-08dc139d0217
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	MC/dAPLCXhZP3j3f1ItjhtdGt2WZ3bak8h1W0DTqXrvni4w0/Malu0ROhgNX9+w3zABhPP+cvY9v3/SfanZ558vGp2d2Ah1UiX+2WDPb1ufB4maGGJD8Dxitb92xr1rZLYGwzVYhLcRgMq0UzaM8tVnHgxFNTLWXKuJhsPhgWtonGdCLCVtPouNJz+gVLMXlaj8+e/rXg+Iv+4y2zi3fcX2+VQ3qByoy4z7VPv8j0tHfJM8m2/dOz8x8KKyfgWUXMy//RyWPleaDu6zPtaL4fW6BDl20NcJ30kGpw/gKvpLHVRh/9COaJaSJm0tT5Ya7eXSD6R/65zwaJB8m239g+47eGCHLAmpI5h2RCXFgORuibZMOJz4VCMXb5CnJtZgiYJf6QCHgYQ+I7jcXTSFgOE2hUOm1TJARDiW2aYdK1s5BamAjOS8bctqtNS6IXj8KC4VrKaWEIMywRdv/yykabiJukmOFJNSv8oVpXL3Uq/7TGhFmtnIiHlviChaMUgF8ZVhb6T5a9H3uwKSOHBffLaXPVWrapi40qQiIdoJUhJU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR01MB6498.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39850400004)(376002)(136003)(366004)(346002)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(38100700002)(41300700001)(33716001)(8676002)(8936002)(6486002)(316002)(66476007)(54906003)(83380400001)(966005)(6506007)(4326008)(478600001)(6666004)(66556008)(6916009)(66946007)(30864003)(86362001)(7416002)(9686003)(6512007)(5660300002)(26005)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?REFKSk9qWXMzN0JLTmxJVnMxeFlQbjkveEdvRTBLT1NTMmJuVS9qeTREL2xq?=
+ =?utf-8?B?MHNBTG1jN1dZRmd6TGNmUWkwclEvNWlSbU1pWjRpM1hvRXh4TUpzbnliMmc2?=
+ =?utf-8?B?VjNjQkx3NWFRbk5JYzJCNXRpZGYwZjhlaVRSVDJTL3ZwdVdVT3VqSk1RcWd2?=
+ =?utf-8?B?YXM1RmN3MkdReVFtaUJXa1dYa0J2VWhFdzNNZWZHdVl2VFNUemp1QzM3VEs1?=
+ =?utf-8?B?UkxWVHhVU01LbkNKRmIrd3NYd0JyNXFxbDlVTUh3eThYOEw3bDR3UXl1QTQz?=
+ =?utf-8?B?TDl5Z1hqaHpSd0JqWk1BTzdnc0pCbmxqT2VNRUtvYUVtWWxsdStQb3AwTmpI?=
+ =?utf-8?B?d2lmaHZmeVFqdUlWZmxLa2dPS01RRlgxOG83YzZmbnJmdjhjaVpKR2p1TkhH?=
+ =?utf-8?B?azEzdEl6b3UzR1c4QlhEZTdkWFY3NDlla0h1Tkg3K3NYRGZzZVBCTThhMEVZ?=
+ =?utf-8?B?cVd5ZWZES25rNVRZRlFXYWZycWVrdGFXYmwvMzk0U1JwckRHcElrNUN0cDJy?=
+ =?utf-8?B?cUZ0K2g4LzhqOERtOUNOWThRRWdpc1drT09ZSlptNlBQd0JnWjJaRDN5YUNo?=
+ =?utf-8?B?WGxDN09UN0tPcTVaeGhiWGZhdk9RYzQvS2dIcEVqOXNnSTRnZ3VSb0ZLYitE?=
+ =?utf-8?B?d3VKVzArT2drL1hSUjJmQkhHVzRkenJGWmpIdjJkZFNBL2luUTk1bTRSOU5S?=
+ =?utf-8?B?TjJzczV1YW9iNjNyRTB2TjJhZXJ4L2tFeGt2RWE4NXBETnZrVXluOW9BaW1a?=
+ =?utf-8?B?T2poUmRQaGlwTnVuY2EzQm5OdFduWmczSDdtRnlDR3FySGVNV1g1TTVYT2Jt?=
+ =?utf-8?B?Ti9KVjZwYzBZT3VHM1FoRVcwYm5xdUhvYjIrUDh2c01lYi9WZk93NGRaOEZJ?=
+ =?utf-8?B?K2ZWV0lkcVlublJZcFFSVk83eGVUSC9FRE5NT1N2MkZBdHJBM1lTd1JSS0l3?=
+ =?utf-8?B?akhvSlVaOG9lbXFGa0tNVmxlaG9URFFUVXZlVWhwdFZSZ0o2aVhvM1R4dHZ1?=
+ =?utf-8?B?QWs1bnRmaXREKzBOS0ZvNDNrWFNaTzZTbTRFZzg4OFJlOHFUVnhid0E5aVNP?=
+ =?utf-8?B?QTQ0QzUvSXRGa1ZJSlRBb0o4eDZFZDdSR0dPUEdVZlhYakcxc3p0M1diMnlN?=
+ =?utf-8?B?andELzd5U1Z6SEZUd1FqZVZJVElKY3dDVVVpVlhYbjJ1Y0VxRzV4OURtajBU?=
+ =?utf-8?B?VjRaMVpOZEg4LzhucXZhUU96cjBGZjNwdkN5b29WajM4OVNnamhSV0FnV3R6?=
+ =?utf-8?B?TDA3MTBMd1FSY04xSWxRRDd3MzJXZCtOT3ZQWHNtVzNSZjVqUDAzVEt3YUtZ?=
+ =?utf-8?B?MEV6VHphQkd6OXVIdDFjSE5jUEtJd2lYaE5RckR5Skw4RGhXdGxwNXRTelYv?=
+ =?utf-8?B?NWlZQ3l3VTNXTWdqeUkyYUlTQXhaSjl3dm1Nck9VR0p3K3Q1ZTROVjJYYlYz?=
+ =?utf-8?B?S3ZxSnYrc25iQ1MwS1VVR29JTTIwTFlQR293Rm9iNWpEaXFhMForeUJWVndY?=
+ =?utf-8?B?c2ZkaXBnYkc2WWdrRi9qU3grdXYwODc1amZEeXZ6bFNVcVozSzF5cThQNFlt?=
+ =?utf-8?B?NlNxN1c4Z0tjeG1wYWVwT0xwQzI1KzRpeUc4d0w4OWZ5YUNzMkVpdk9uUzFw?=
+ =?utf-8?B?Y1lBUTVEWC9sbmZSNU92Yk1reVMvbTBxTXkrbEVKbjY2YzBaR2dENm9KVHhy?=
+ =?utf-8?B?alQ0RWZiZE1yT1BhV2VITGprUDdYNkF0cElLaHpIeEphN0E4UmR3ZnJWb0Ev?=
+ =?utf-8?B?Z3ZvSENDRnMzLzRqZHlVUktiZ2E2T0prdFFQRVdMTTE4UzBqVnpnZHZSMmlu?=
+ =?utf-8?B?V1cvckFvWVZOY29HUzc0dWp4QTBjakI5TEpILy9QV0RmWHZOTXBaRVROWGNo?=
+ =?utf-8?B?M1ArVWFkTGR3M1pGRWIzN3lFVkFNa0JYMm82UFc2NDc1RVJiUnZRYngwc3lT?=
+ =?utf-8?B?K3RQZi9KcHEzTk9HSnlUZk4wa0s3T0NMWUovV2VRdHk0YmNMTGxvVFdCY0sz?=
+ =?utf-8?B?NnRsb0NrSVpSa1lwZ25KcFZIR0tOVVZNMlRqLy9QNGlmN05jZGRDQjNQMmJJ?=
+ =?utf-8?B?NlduRVNMbnVGdUJnZWwwNVQvK1lERGZ2bUFxclVEdkVTdXdiUE1aSGtDSUFx?=
+ =?utf-8?B?WTg2Q3dGbmVlVjlSMm8zYzZCQmEwZEU0ZEZBQjlWWWZwMnVtQUFxTDFEb2hk?=
+ =?utf-8?Q?yhWalRnrupD87sYbzm4kCUsrN4DOU58+bBFsDfZjwQE1?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3885f1c-c547-44ab-01cb-08dc139d0217
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR01MB6498.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00012A5F.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16d0784e-c015-4e15-0c1e-08dc139c9712
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 18:30:44.9565
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 18:33:44.8071
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3HlWzcRVHcdW4DQFO/wpUjtcuyulfPMogytDuNt86mNR5g1D1297ic25uE8059RZhOkqgw1ySCn4KhJzXqtMcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB1344
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CNSdZ0gccqkjimgONcuTxTBYB6OiCdpQ9Hdx9dBmeamd1TAMk0w12VHLrJVBNWZEdBNZfRI44TfRupPSB60trZCHfgWl1hKJwld578t/cG50uVxPMDX+RI8VpaXP8gJH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR01MB8209
 
+On Wed, Jan 10, 2024 at 03:09:48PM +0800, lihuisong (C) wrote:
+>Hi Ionela,
+>
+>在 2024/1/8 22:03, Ionela Voinescu 写道:
+>>Hi,
+>>
+>>On Friday 05 Jan 2024 at 15:04:47 (+0800), lihuisong (C) wrote:
+>>>Hi Vanshi,
+>>>
+>>>在 2024/1/5 8:48, Vanshidhar Konda 写道:
+>>>>On Thu, Jan 04, 2024 at 05:36:51PM +0800, lihuisong (C) wrote:
+>>>>>在 2024/1/4 1:53, Ionela Voinescu 写道:
+>>>>>>Hi,
+>>>>>>
+>>>>>>On Tuesday 12 Dec 2023 at 15:26:17 (+0800), Huisong Li wrote:
+>>>>>>>Many developers found that the cpu current frequency is greater than
+>>>>>>>the maximum frequency of the platform, please see [1], [2] and [3].
+>>>>>>>
+>>>>>>>In the scenarios with high memory access pressure, the patch [1] has
+>>>>>>>proved the significant latency of cpc_read() which is used to obtain
+>>>>>>>delivered and reference performance counter cause an absurd frequency.
+>>>>>>>The sampling interval for this counters is very critical and
+>>>>>>>is expected
+>>>>>>>to be equal. However, the different latency of cpc_read() has a direct
+>>>>>>>impact on their sampling interval.
+>>>>>>>
+>>>>>>Would this [1] alternative solution work for you?
+>>>>>It would work for me AFAICS.
+>>>>>Because the "arch_freq_scale" is also from AMU core and constant
+>>>>>counter, and read together.
+>>>>>But, from their discuss line, it seems that there are some tricky
+>>>>>points to clarify or consider.
+>>>>I think the changes in [1] would work better when CPUs may be idle. With
+>>>>this
+>>>>patch we would have to wake any core that is in idle state to read the
+>>>>AMU
+>>>>counters. Worst case, if core 0 is trying to read the CPU frequency of
+>>>>all
+>>>>cores, it may need to wake up all the other cores to read the AMU
+>>>>counters.
+>>> From the approach in [1], if all CPUs (one or more cores) under one policy
+>>>are idle, they still cannot be obtained the CPU frequency, right?
+>>>In this case, the [1] API will return 0 and have to back to call
+>>>cpufreq_driver->get() for cpuinfo_cur_freq.
+>>>Then we still need to face the issue this patch mentioned.
+>>With the implementation at [1], arch_freq_get_on_cpu() will not return 0
+>>for idle CPUs and the get() callback will not be called to wake up the
+>>CPUs.
+>Right, arch_freq_get_on_cpu() will not return 0 for idle CPUs.
+>However, for no-housekeeping CPUs, it will return 0 and have to call 
+>get() callback, right?
+>>
+>>Worst case, arch_freq_get_on_cpu() will return a frequency based on the
+>>AMU counter values obtained on the last tick on that CPU. But if that CPU
+>>is not a housekeeping CPU, a housekeeping CPU in the same policy will be
+>>selected, as it would have had a more recent tick, and therefore a more
+>>recent frequency value for the domain.
+>But this frequency is from the last tick,
+>this last tick is probably a long time ago and it doesn't update 
+>'arch_freq_scale' for some reasons like CPU dile.
+>In addition, I'm not sure if there is possible that 
+>amu_scale_freq_tick() is executed delayed under high stress case.
+>It also have an impact on the accuracy of the cpu frequency we query.
+>>
+>>I understand that the frequency returned here will not be up to date,
+>>but there's no proper frequency feedback for an idle CPU. If one only
+>>wakes up a CPU to sample counters, before the CPU goes back to sleep,
+>>the obtained frequency feedback is meaningless.
+>>
+>>>>For systems with 128 cores or more, this could be very expensive and
+>>>>happen
+>>>>very frequently.
+>>>>
+>>>>AFAICS, the approach in [1] would avoid this cost.
+>>>But the CPU frequency is just an average value for the last tick period
+>>>instead of the current one the CPU actually runs at.
+>>>In addition, there are some conditions to use 'arch_freq_scale' in this
+>>>approach.
+>>What are the conditions you are referring to?
+>It depends on the housekeeping CPUs.
+>>
+>>>So I'm not sure if this approach can entirely cover the frequency
+>>>discrepancy issue.
+>>Unfortunately there is no perfect frequency feedback. By the time you
+>>observe/use the value of scaling_cur_freq/cpuinfo_cur_freq, the frequency
+>>of the CPU might have already changed. Therefore, an average value might
+>>be a better indication of the recent performance level of a CPU.
+>An average value for CPU frequency is ok. It may be better if it has 
+>not any delaying.
+>
+>The original implementation for cpuinfo_cur_freq can more reflect their
+>meaning in the user-guide [1]. The user-guide said:
+>"cpuinfo_cur_freq : Current frequency of the CPU as obtained from the 
+>hardware, in KHz.
+>This is the frequency the CPU actually runs at."
+>
+>
+>[1]https://www.kernel.org/doc/Documentation/cpu-freq/user-guide.txt
+>
+>>
+>>Would you be able to test [1] on your platform and usecase?
+>I has tested it on my platform (CPU number: 64, SMT: off and CPU base 
+>frequency: 2.7GHz).
+>Accoding to the testing result,
+>1> I found that patch [1] and [2] cannot cover the no housekeeping 
+>CPUs. They still have to face the large frequency discrepancy issue my 
+>patch mentioned.
+>2> Additionally, the frequency value of all CPUs are almost the same 
+>by using the 'arch_freq_scale' factor way. I'm not sure if it is ok.
+>
+>The patch [1] has been modified silightly as below:
+>-->
+>@@ -1756,7 +1756,10 @@ static unsigned int 
+>cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
+> {
+>        unsigned int new_freq;
+>
+>-       new_freq = cpufreq_driver->get(policy->cpu);
+>+       new_freq = arch_freq_get_on_cpu(policy->cpu);
+>+       if (!new_freq)
+>+               new_freq = cpufreq_driver->get(policy->cpu);
+>+
+>        if (!new_freq)
+>                return 0;
+>
+>And the result is as follows:
+>*case 1:**No setting the nohz_full and cpufreq use performance governor*
+>*--> Step1: *read 'cpuinfo_cur_freq' in no pressure
+>  0: 2699264     2: 2699264     4: 2699264     6: 2699264
+>  8: 2696628    10: 2696628    12: 2696628    14: 2699264
+> 16: 2699264    18: 2696628    20: 2699264    22: 2696628
+> 24: 2699264    26: 2696628    28: 2699264    30: 2696628
+> 32: 2696628    34: 2696628    36: 2696628    38: 2696628
+> 40: 2699264    42: 2699264    44: 2696628    46: 2696628
+> 48: 2696628    50: 2699264    52: 2699264    54: 2696628
+> 56: 2696628    58: 2696628    60: 2696628    62: 2696628
+> 64: 2696628    66: 2699264    68: 2696628    70: 2696628
+> 72: 2699264    74: 2696628    76: 2696628    78: 2699264
+> 80: 2696628    82: 2696628    84: 2699264    86: 2696628
+> 88: 2696628    90: 2696628    92: 2696628    94: 2699264
+> 96: 2696628    98: 2699264   100: 2699264   102: 2696628
+>104: 2699264   106: 2699264   108: 2699264   110: 2696628
+>112: 2699264   114: 2699264   116: 2699264   118: 2699264
+>120: 2696628   122: 2699264   124: 2696628   126: 2699264
+>Note: the frequency of all CPUs are almost the same.
+>
+>*--> Step 2: *read 'cpuinfo_cur_freq' in the high memory access pressure.
+>  0: 2696628     2: 2696628     4: 2696628     6: 2696628
+>  8: 2696628    10: 2696628    12: 2696628    14: 2696628
+> 16: 2696628    18: 2696628    20: 2696628    22: 2696628
+> 24: 2696628    26: 2696628    28: 2696628    30: 2696628
+> 32: 2696628    34: 2696628    36: 2696628    38: 2696628
+> 40: 2696628    42: 2696628    44: 2696628    46: 2696628
+> 48: 2696628    50: 2696628    52: 2696628    54: 2696628
+> 56: 2696628    58: 2696628    60: 2696628    62: 2696628
+> 64: 2696628    66: 2696628    68: 2696628    70: 2696628
+> 72: 2696628    74: 2696628    76: 2696628    78: 2696628
+> 80: 2696628    82: 2696628    84: 2696628    86: 2696628
+> 88: 2696628    90: 2696628    92: 2696628    94: 2696628
+> 96: 2696628    98: 2696628   100: 2696628   102: 2696628
+>104: 2696628   106: 2696628   108: 2696628   110: 2696628
+>112: 2696628   114: 2696628   116: 2696628   118: 2696628
+>120: 2696628   122: 2696628   124: 2696628   126: 2696628
+>
+>*Case 2: setting nohz_full and cpufreq use ondemand governor*
+>There is "isolcpus=1-10,41-50 nohz_full=1-10,41-50 
+>rcu_nocbs=1-10,41-50" in /proc/cmdline.
+>*--> Step 1: *setting ondemand governor to all policy and query 
+>'cpuinfo_cur_freq' in no pressure case.
+>And the frequency of CPUs all are about 400MHz.
+>*--> Step 2:* read 'cpuinfo_cur_freq' in the high memory access pressure.
+>The high memory access pressure is from the command: "stress-ng -c 64 
+>--cpu-load 100% --taskset 0-63"
+>The result:
+> 0: 2696628     1:  400000     2:  400000     3:  400909
+> 4:  400000     5:  400000     6:  400000     7:  400000
+> 8:  400000     9:  400000    10:  400600    11: 2696628
+>12: 2696628    13: 2696628    14: 2696628    15: 2696628
+>16: 2696628    17: 2696628    18: 2696628    19: 2696628
+>20: 2696628    21: 2696628    22: 2696628    23: 2696628
+>24: 2696628    25: 2696628    26: 2696628    27: 2696628
+>28: 2696628    29: 2696628    30: 2696628    31: 2696628
+>32: 2696628    33: 2696628    34: 2696628    35: 2696628
+>36: 2696628    37: 2696628    38: 2696628    39: 2696628
+>40: 2696628    41:  400000    42:  400000    43:  400000
+>44:  400000    45:  398847    46:  400000    47:  400000
+>48:  400000    49:  400000    50:  400000    51: 2696628
+>52: 2696628    53: 2696628    54: 2696628    55: 2696628
+>56: 2696628    57: 2696628    58: 2696628    59: 2696628
+>60: 2696628    61: 2696628    62: 2696628    63: 2699264
+>
+>Note:
+>(1) The frequency of 1-10 and 41-50 CPUs work on the lowest frequency.
+>     It turned out that nohz full was already work.
+>     I guess that stress-ng cannot use the CPU in the range of nohz full.
+>     Because the CPU frequency will be increased to 2.7G by binding 
+>CPU to other application.
+>(2) The frequency of the nohz full core is calculated by get() 
+>callback according to ftrace.
 
+I think this is a good point. It is possible that on large core count
+systems a number of CPUs are isolated and don't have a kernel tick. The
+approach in [1] won't work for those CPUs. The changes proposed in this
+patch make sure that regardless of the scheduler or governor
+configuration, the CPU frequency reporting will be correct.
 
-> -----Original Message-----
-> From: Michael Kelley <mhklinux@outlook.com>
-> Sent: Friday, January 12, 2024 11:37 AM
-> To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> Cc: Yury Norov <yury.norov@gmail.com>; KY Srinivasan <kys@microsoft.com>;
-> Haiyang Zhang <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> <decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
-> kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
-> leon@kernel.org; cai.huoqing@linux.dev; ssengar@linux.microsoft.com;
-> vkuznets@redhat.com; tglx@linutronix.de; linux-hyperv@vger.kernel.org;
-> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> rdma@vger.kernel.org; Souradeep Chakrabarti <schakrabarti@microsoft.com>;
-> Paul Rosswurm <paulros@microsoft.com>
-> Subject: RE: [PATCH 3/4 net-next] net: mana: add a function to spread
-> IRQs per CPUs
->=20
-> [Some people who received this message don't often get email from
-> mhklinux@outlook.com. Learn why this is important at
-> https://aka.ms/LearnAboutSenderIdentification ]
->=20
-> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent:
-> Wednesday, January 10, 2024 10:13 PM
-> >
-> > The test topology was used to check the performance between
-> > cpu_local_spread() and the new approach is :
-> > Case 1
-> > IRQ     Nodes  Cores CPUs
-> > 0       1      0     0-1
-> > 1       1      1     2-3
-> > 2       1      2     4-5
-> > 3       1      3     6-7
-> >
-> > and with existing cpu_local_spread()
-> > Case 2
-> > IRQ    Nodes  Cores CPUs
-> > 0      1      0     0
-> > 1      1      0     1
-> > 2      1      1     2
-> > 3      1      1     3
-> >
-> > Total 4 channels were used, which was set up by ethtool.
-> > case 1 with ntttcp has given 15 percent better performance, than
-> > case 2. During the test irqbalance was disabled as well.
-> >
-> > Also you are right, with 64CPU system this approach will spread
-> > the irqs like the cpu_local_spread() but in the future we will offer
-> > MANA nodes, with more than 64 CPUs. There it this new design will
-> > give better performance.
-> >
-> > I will add this performance benefit details in commit message of
-> > next version.
->=20
-> Here are my concerns:
->=20
-> 1.  The most commonly used VMs these days have 64 or fewer
-> vCPUs and won't see any performance benefit.
->=20
-> 2.  Larger VMs probably won't see the full 15% benefit because
-> all vCPUs in the local NUMA node will be assigned IRQs.  For
-> example, in a VM with 96 vCPUs and 2 NUMA nodes, all 48
-> vCPUs in NUMA node 0 will all be assigned IRQs.  The remaining
-> 16 IRQs will be spread out on the 48 CPUs in NUMA node 1
-> in a way that avoids sharing a core.  But overall the means
-> that 75% of the IRQs will still be sharing a core and
-> presumably not see any perf benefit.
->=20
-> 3.  Your experiment was on a relatively small scale:   4 IRQs
-> spread across 2 cores vs. across 4 cores.  Have you run any
-> experiments on VMs with 128 vCPUs (for example) where
-> most of the IRQs are not sharing a core?  I'm wondering if
-> the results with 4 IRQs really scale up to 64 IRQs.  A lot can
-> be different in a VM with 64 cores and 2 NUMA nodes vs.
-> 4 cores in a single node.
->=20
-> 4.  The new algorithm prefers assigning to all vCPUs in
-> each NUMA hop over assigning to separate cores.  Are there
-> experiments showing that is the right tradeoff?  What
-> are the results if assigning to separate cores is preferred?
+My concerns with this approach:
+1. We will wake up idle CPUs and query the AMU counters.
+    a. This may not reflect the CPU frequency at the time the CPU was
+    running. For example, CPU was running at 2.7 GHz, then became idle and
+    invoked WFI. The CPU implementation reduces the CPU frequency to 400
+    MHz when it enters WFI. Now if we wake up the CPU to query the
+    frequency, it will return 400 MHz. This might be misleading.
 
-I remember in a customer case, putting the IRQs on the same=20
-NUMA node has better perf. But I agree, this should be re-tested
-on MANA nic.
+    b. It wastes energy as we may wake up cores just to query frequency
+    and then have them go back to idle.
 
-- Haiyang
+    To solve this, may be we can cache the value of AMU counters; return
+    the cached value of the AMU counter if the CPU is idle.
 
+2. I think the acpi_cppc should use FFH registers only if the firmware
+    publishes FFH support for both the delivered and reference counters.
+    That way the system designer (through firmware) can control if the
+    FFH registers are used for computing frequency.
 
+[1] https://lore.kernel.org/lkml/20231127160838.1403404-3-beata.michalska@arm.com/
+
+Thanks,
+Vanshidhar
+
+>
+>[1] https://lore.kernel.org/lkml/20230418113459.12860-7-sumitg@nvidia.com/
+>[2] https://lore.kernel.org/lkml/20231127160838.1403404-3-beata.michalska@arm.com/
+>>
+>>Many thanks,
+>>Ionela.
+>>
+>>>/Huisong
+>>>
+>>>>>>[1] https://lore.kernel.org/lkml/20231127160838.1403404-1-beata.michalska@arm.com/
+>>>>>>
+>>>>>>Thanks,
+>>>>>>Ionela.
+>>>>>>
+>>>>>>>This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
+>>>>>>>delivered and reference performance counter together. According to my
+>>>>>>>test[4], the discrepancy of cpu current frequency in the
+>>>>>>>scenarios with
+>>>>>>>high memory access pressure is lower than 0.2% by stress-ng
+>>>>>>>application.
+>>>>>>>
+>>>>>>>[1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
+>>>>>>>[2] https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecomputing.com/
+>>>>>>>[3]
+>>>>>>>https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
+>>>>>>>
+>>>>>>>[4] My local test:
+>>>>>>>The testing platform enable SMT and include 128 logical CPU in total,
+>>>>>>>and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
+>>>>>>>physical core on platform during the high memory access pressure from
+>>>>>>>stress-ng, and the output is as follows:
+>>>>>>>   0: 2699133     2: 2699942     4: 2698189     6: 2704347
+>>>>>>>   8: 2704009    10: 2696277    12: 2702016    14: 2701388
+>>>>>>>  16: 2700358    18: 2696741    20: 2700091    22: 2700122
+>>>>>>>  24: 2701713    26: 2702025    28: 2699816    30: 2700121
+>>>>>>>  32: 2700000    34: 2699788    36: 2698884    38: 2699109
+>>>>>>>  40: 2704494    42: 2698350    44: 2699997    46: 2701023
+>>>>>>>  48: 2703448    50: 2699501    52: 2700000    54: 2699999
+>>>>>>>  56: 2702645    58: 2696923    60: 2697718    62: 2700547
+>>>>>>>  64: 2700313    66: 2700000    68: 2699904    70: 2699259
+>>>>>>>  72: 2699511    74: 2700644    76: 2702201    78: 2700000
+>>>>>>>  80: 2700776    82: 2700364    84: 2702674    86: 2700255
+>>>>>>>  88: 2699886    90: 2700359    92: 2699662    94: 2696188
+>>>>>>>  96: 2705454    98: 2699260   100: 2701097   102: 2699630
+>>>>>>>104: 2700463   106: 2698408   108: 2697766   110: 2701181
+>>>>>>>112: 2699166   114: 2701804   116: 2701907   118: 2701973
+>>>>>>>120: 2699584   122: 2700474   124: 2700768   126: 2701963
+>>>>>>>
+>>>>>>>Signed-off-by: Huisong Li <lihuisong@huawei.com>
+>>>>>>>---
+>[snip]
+>>.
 
