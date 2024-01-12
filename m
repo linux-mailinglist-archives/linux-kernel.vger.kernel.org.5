@@ -1,137 +1,90 @@
-Return-Path: <linux-kernel+bounces-24157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9990682B863
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:02:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535F382B867
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01189B22F92
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:02:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0CFD1F26719
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE7FA56;
-	Fri, 12 Jan 2024 00:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iNitxEDG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8CBDF52;
+	Fri, 12 Jan 2024 00:04:30 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D76563F;
-	Fri, 12 Jan 2024 00:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705017739; x=1736553739;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Idr2q7bMY9FM4vtt/eAt2b8/L8zbVhXJW9vHdLjzwjI=;
-  b=iNitxEDGNKPLShmRY0MUu1XMoIv/ZOF4oIszuMV3lhg3XZ3NwWwtUXtr
-   ZQ299ASUoZMbHriYGnAY3s9k+/qJpnUPSVrj5hCQpo/vybWAUxGSF5lDD
-   PHXXgKhdgfJkn6GRI/c8n5BIHnBKsT4Ar2tBuZoSygo6o7nj3kYyuzN/s
-   LBRahpFHH9V6jD5Bhap1PCUWD/GwAzjMhZ4TFf9s+Kf8EjlR+sDNS7qtp
-   FGwvMJMTjh2OmIKPANYQoAF6Zecyn0YykXoT09w6gVdTloEJbeUttNCxr
-   RfHqCc7VgdgH7HBu6f7D3um7DLfUzShp+Oi2N7L5NstYV4LX1s5N2mUjj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="6399394"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="6399394"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 16:02:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="1029737238"
-X-IronPort-AV: E=Sophos;i="6.04,187,1695711600"; 
-   d="scan'208";a="1029737238"
-Received: from tungyenc-mobl.amr.corp.intel.com (HELO desk) ([10.209.69.66])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 16:02:15 -0800
-Date: Thu, 11 Jan 2024 16:02:06 -0800
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-	ak@linux.intel.com, tim.c.chen@linux.intel.com,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org,
-	Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	antonio.gomez.iglesias@linux.intel.com
-Subject: Re: [PATCH  v5 6/6] KVM: VMX: Move VERW closer to VMentry for MDS
- mitigation
-Message-ID: <20240112000206.ur5ub5bf5noesvc3@desk>
-References: <20240111-delay-verw-v5-0-a3b234933ea6@linux.intel.com>
- <20240111-delay-verw-v5-6-a3b234933ea6@linux.intel.com>
- <ZaAbGWFEfUt1PX66@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5537AB646
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 00:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf0305ded5so69862239f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:04:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705017867; x=1705622667;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8xpDiqNEwArw50N7Lg2HZuMoMi1N+LpphpiDT2blddI=;
+        b=OHwG6GAE6aSWIHqhpaZj34JWzvkz192kYlSRt3wrL6A/gEAYUKaQY4qMKMYPMf06vT
+         coAzFU+XwB9ADeIUxozqDTIJ7oeiD4Mjypr8DK6+7LZuofUynA+fispEHf42IfGDIudY
+         4yQYlUjltvyE9F8+Jb4QWJ231ZQxjsTk41B0q9GGY5nZpxav6/kqHvUccWN9bTPUtVCF
+         VpcH4a7aSz0VdyI5UuBc8SAGTakODh4AsgD4/Wdtu5Vt4foO3TQZh4wOqr3TIiEHtw0b
+         jWmW0/vFxRZaWqFqgPn7UIeuLX9oyWPB8tIOjqpL4900oxhQIa1ZoLomnUlSs903fK0Z
+         GkJw==
+X-Gm-Message-State: AOJu0YxmUXYtFBfAjlFZfXHTlmfIgTsUYiplYAnpw+sI8bz1ObBb54Oa
+	qrYG7KImhnBGp+CT1mb2RE1EynDC32klFjPRiLLRxLoQEQDA
+X-Google-Smtp-Source: AGHT+IGChu8fGl9D+SA4BIa887LqB3kDIlxbCu5Ph+kisWPnmpq6voLkoaimmlGJZtFxYd1krdrvUSiHQ2qbOk1drakhziO+jjCy
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZaAbGWFEfUt1PX66@google.com>
+X-Received: by 2002:a05:6638:1918:b0:46e:5dfe:42bc with SMTP id
+ p24-20020a056638191800b0046e5dfe42bcmr17819jal.0.1705017867308; Thu, 11 Jan
+ 2024 16:04:27 -0800 (PST)
+Date: Thu, 11 Jan 2024 16:04:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000511463060eb468d7@google.com>
+Subject: [syzbot] Monthly nfc report (Jan 2024)
+From: syzbot <syzbot+list2e368c73436f97eb5665@syzkaller.appspotmail.com>
+To: krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 11, 2024 at 08:45:13AM -0800, Sean Christopherson wrote:
-> On Thu, Jan 11, 2024, Pawan Gupta wrote:
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index bdcf2c041e0c..8defba8e417b 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -387,6 +387,17 @@ static __always_inline void vmx_enable_fb_clear(struct vcpu_vmx *vmx)
-> >  
-> >  static void vmx_update_fb_clear_dis(struct kvm_vcpu *vcpu, struct vcpu_vmx *vmx)
-> >  {
-> > +	/*
-> > +	 * FB_CLEAR_CTRL is to optimize VERW latency in guests when host is
-> > +	 * affected by MMIO Stale Data, but not by MDS/TAA. When
-> > +	 * X86_FEATURE_CLEAR_CPU_BUF is enabled, system is likely affected by
-> > +	 * MDS/TAA. Skip the optimization for such a case.
-> 
-> This is unnecessary speculation (ha!), and it'll also be confusing for many readers
-> as the code below explicitly checks for MDS/TAA.  We have no idea why the host
-> admin forced the mitigation to be enabled, and it doesn't matter.  The important
-> thing to capture is that the intent is to keep the mitigation enabled when it
-> was forcefully enabled, that should be self-explanatory and doesn't require
-> speculating on _why_ the mitigation was forced on.
+Hello nfc maintainers/developers,
 
-Agree.
+This is a 31-day syzbot report for the nfc subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/nfc
 
-> > +	 */
-> > +	if (cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF)) {
-> > +		vmx->disable_fb_clear = false;
-> > +		return;
-> > +	}
-> > +
-> >  	vmx->disable_fb_clear = (host_arch_capabilities & ARCH_CAP_FB_CLEAR_CTRL) &&
-> >  				!boot_cpu_has_bug(X86_BUG_MDS) &&
-> >  				!boot_cpu_has_bug(X86_BUG_TAA);
-> 
-> I would rather include the X86_FEATURE_CLEAR_CPU_BUF check along with all the
-> other checks, and then add a common early return. E.g.
-> 
-> 	/*
-> 	 * Disable VERW's behavior of clearing CPU buffers for the guest if the
-> 	 * CPU isn't affected MDS/TAA, and the host hasn't forcefully enabled
-> 	 * the mitigation.  Disabing the clearing provides a performance boost
-> 	 * for guests that aren't aware that manually clearing CPU buffers is
-> 	 * unnecessary, at the cost of MSR accesses on VM-Entry and VM-Exit.
-> 	 */
-> 	vmx->disable_fb_clear = !cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF) &&
-> 				(host_arch_capabilities & ARCH_CAP_FB_CLEAR_CTRL) &&
-> 				!boot_cpu_has_bug(X86_BUG_MDS) &&
-> 				!boot_cpu_has_bug(X86_BUG_TAA);
-> 
-> 	if (!vmx->disable_fb_clear)
-> 		return;
+During the period, 2 new issues were detected and 1 were fixed.
+In total, 11 issues are still open and 20 have been fixed so far.
 
-This is better. Thanks.
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 715     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
+                  https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
+<2> 110     Yes   INFO: task hung in nfc_rfkill_set_block
+                  https://syzkaller.appspot.com/bug?extid=3e3c2f8ca188e30b1427
+<3> 88      Yes   KMSAN: uninit-value in nci_rx_work
+                  https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534
+<4> 10      Yes   KMSAN: uninit-value in nci_ntf_packet
+                  https://syzkaller.appspot.com/bug?extid=29b5ca705d2e0f4a44d2
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
