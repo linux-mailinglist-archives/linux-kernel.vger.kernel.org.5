@@ -1,81 +1,96 @@
-Return-Path: <linux-kernel+bounces-24728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68B082C171
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:19:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9840682C176
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1731F2369B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:19:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4313FB21B05
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9946DCE9;
-	Fri, 12 Jan 2024 14:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375436DCF5;
+	Fri, 12 Jan 2024 14:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="io8SmW2A"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA3064AAA;
-	Fri, 12 Jan 2024 14:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.192.9.210] (unknown [167.220.81.210])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3973420B3CDD;
-	Fri, 12 Jan 2024 06:19:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3973420B3CDD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1705069172;
-	bh=Hf/1xwwBQuN1sfFBigN5QHzku0/GhLdtO5+o3Q14nPg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=io8SmW2AsPSi33kTlc8853e86u0ggvFPZa+pTze/SEIO9PLniCuek13WIN5+ubJuc
-	 rTrLlIuuYeIHmJbCpRexjaoLnjy7fswD/LK8ktayRNf9aT827Epn6TRnwllZZk4ID5
-	 SIKWCqw7DtVBx41Kj38+ha+sOLSbpWXEQ+K7lkDM=
-Message-ID: <bf1a84e0-bf88-41a1-ad0c-4270aaa5d3aa@linux.microsoft.com>
-Date: Fri, 12 Jan 2024 06:19:31 -0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K/2TkSzw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B61C6BB41;
+	Fri, 12 Jan 2024 14:20:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDDD7C433C7;
+	Fri, 12 Jan 2024 14:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705069221;
+	bh=zmlC6jkMelq285ECzm84F7pJRpHbtewNs6IurYJ0/EM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K/2TkSzwlKIvIFYzFvUSp7Lg4gjIlDR9tPEg0iGi282ybmiyDw7wMISWdGupf5F4J
+	 VX3Rp0AioRhHA7gWiKoOCWY1t/6DGST6UDp2Nt1u0psSL8dcwkfszVuMRCQGbBJEJC
+	 q2SkJl392wwe2DahvMB5LLm4lI9R7e7ynEPPzvXwpHEpghxz66SskoRpgEP565I+RF
+	 ApvkRqhD8HLTinyc7vdzCVCxaPJ1Uk+zENq20+NWUOcNJKL3CPjCL7IoKR+/tBMyx8
+	 v059iRjQa93nv+5DSN9ooL0L+JLQK+7vkE5OSWfXmwcHUUJuFvLdSoZaZoIAYB1/jF
+	 imbCsXe6C14vA==
+Date: Fri, 12 Jan 2024 08:20:18 -0600
+From: Rob Herring <robh@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: chunfeng.yun@mediatek.com, gregkh@linuxfoundation.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	matthias.bgg@gmail.com, linux@roeck-us.net,
+	heikki.krogerus@linux.intel.com, cy_huang@richtek.com,
+	linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 1/2] dt-bindings: usb: mt6360-tcpc: Rename IRQ to PD-IRQB
+Message-ID: <20240112142018.GA3127117-robh@kernel.org>
+References: <20240112094538.65639-1-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v2] acpi: Use access_width over register_width for
- system memory accesses
-Content-Language: en-US
-To: Easwar Hariharan <eahariha@linux.microsoft.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>, "open list:ACPI"
- <linux-acpi@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <20231216001312.1160-1-jarredwhite@linux.microsoft.com>
- <CAJZ5v0gZ39zJEGV7gQLg6Y0=ke1W7bctqtZ46K+SR9RT5Bx4Hg@mail.gmail.com>
- <6e7db718-65ec-4461-bab9-0ee4c96c25eb@linux.microsoft.com>
-From: Jarred White <jarredwhite@linux.microsoft.com>
-In-Reply-To: <6e7db718-65ec-4461-bab9-0ee4c96c25eb@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112094538.65639-1-angelogioacchino.delregno@collabora.com>
 
-On 12/22/2023 4:00 PM, Easwar Hariharan wrote:
->  >> @@ -784,7 +792,8 @@ int acpi_cppc_processor_probe(struct 
-> acpi_processor *pr)
->  >>                                                          goto out_free;
->  >>                                          }
->  >>
->  >> -                                       addr = 
-> ioremap(gas_t->address, gas_t->bit_width/8);
->  >> +                                       access_width = 
-> ACCESS_WIDTH_TO_BITS(gas_t) / 8;
->  >
->  > What would happen if the platform firmware incorrectly provided
->  > reg->access_witdh == 0?
->  >
+On Fri, Jan 12, 2024 at 10:45:37AM +0100, AngeloGioacchino Del Regno wrote:
+> Since there is no user yet, rename the only interrupt of this device
+> to "PD-IRQB", avoiding underscores.
+
+It is primarily node and property names that have this recommendation, 
+not so much -names values.
+
+If there is only 1 interrupt, I'd just drop the name.
+
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml         | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-
-Unfortunately, we have no hardware platform with this configuration to 
-test with. What is the level of concern here? Were there previous 
-changes that raised this similar concerns?
-
-
-Thanks,
-Jarred
-
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml b/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
+> index 053264e60583..0bea23ce2f09 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
+> @@ -24,7 +24,7 @@ properties:
+>  
+>    interrupt-names:
+>      items:
+> -      - const: PD_IRQB
+> +      - const: PD-IRQB
+>  
+>    connector:
+>      type: object
+> @@ -58,7 +58,7 @@ examples:
+>          tcpc {
+>            compatible = "mediatek,mt6360-tcpc";
+>            interrupts-extended = <&gpio26 3 IRQ_TYPE_LEVEL_LOW>;
+> -          interrupt-names = "PD_IRQB";
+> +          interrupt-names = "PD-IRQB";
+>  
+>            connector {
+>              compatible = "usb-c-connector";
+> -- 
+> 2.43.0
+> 
 
