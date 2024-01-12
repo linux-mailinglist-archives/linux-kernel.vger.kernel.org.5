@@ -1,161 +1,211 @@
-Return-Path: <linux-kernel+bounces-24419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C9382BC4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:17:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15EF182BC4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:18:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72AE1F254D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:17:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A8B41C23094
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FE25D755;
-	Fri, 12 Jan 2024 08:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD66B5D8F7;
+	Fri, 12 Jan 2024 08:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="HCX3aoW4"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2065.outbound.protection.outlook.com [40.107.94.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P/HHYg1y"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B92C5D747
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZQwkPmYjLmEdNv+mghYad2FkFWtYSCxqoTE1jL6k4YP+0St9OXsYyN70I+0S605mA00xYQ5ct3vEoljwO3gyKxDlEu8cBlPgnZKKUPwP53sau7J+UCNrahPeN4BketeCkHsHL23/u8DQsJH1iEwsyQb1rw6SZwhk3gaLPVIK9EOIggzT4TEKvKki/2xqeRMTfWLCtEjIfkHvbpTbcjIZqEWdtaolyuMup5mhkCPq9dH1aX2IdE3E0q6Wk0qGMpExNM71Wb6bTURJJo5kz+0xE4l612He5LS3KwBTMO8EkhH0Qsq0frmxfhzmGgiDmFiBuEHv3ZQdArANlYXoQurZQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=E8VZSfcuArfpURE4P9aHRuMHQGADDP9ishzcNcsuh1I=;
- b=FDnHMqlzDa4OEZDs7P7OYd86oj91sx4CK2ByrF277d2pDEpysTGaLtWAOedUjfE3WxSYOCN4iTd6faxR34hc3bqC6ZPLV7HNcfOsMX32gYDzy1XgvvbPA27McgoUWjPDbit8LMwXssMxEXIkB7I4F0pDkvGvHrb7Ns3Ttz2lO/2YmV3dfi0l6QDlGEn3PUt+2SfUAw/8a21tq3Df8/3HXTEID1fMz7KBSAQnGDThoKW2C2udoMzAqBq+TRfZZGR6kC9CJVXLicBCSt4Jy/x+kbbOJr6KnDL9GL6Ln6LWirNJ7rBnFn2MJDtxNn0h6gjn0AdXwccnwpgGjryITcHVDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E8VZSfcuArfpURE4P9aHRuMHQGADDP9ishzcNcsuh1I=;
- b=HCX3aoW4O6x9rKQdZc8g2bvoGNsokKGDhCPRRZr3hcMv2f97KZDtLKpLHTSLQRIhTMhq/8j9EDlbh/rmpNW4lW/5XGdQkau1wSO39If+kcm4VvQqAMDYadfD6wuCIvZ0epmke8mZOgddL9OaFL3u0EIC8XPfMIQKOA64ZLoZ/oM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by IA0PR12MB8981.namprd12.prod.outlook.com (2603:10b6:208:484::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Fri, 12 Jan
- 2024 08:17:44 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Fri, 12 Jan 2024
- 08:17:43 +0000
-Message-ID: <95e791b0-4672-4a1a-940b-684d8c96e995@amd.com>
-Date: Fri, 12 Jan 2024 09:17:37 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: Failed to create a rescuer kthread for the amdgpu-reset-dev
- workqueue
-Content-Language: en-US
-To: Thomas Perrot <thomas.perrot@bootlin.com>, alexander.deucher@amd.com,
- Xinhui.Pan@amd.com, lijo.lazar@amd.com, kenneth.feng@amd.com,
- guchun.chen@amd.com, evan.quan@amd.com, srinivasan.shanmugam@amd.com
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <cf1a3a2b7599b7b6900ff45aa8b204169411687f.camel@bootlin.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <cf1a3a2b7599b7b6900ff45aa8b204169411687f.camel@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR2P281CA0018.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a::28) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD115D8F6
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2ccbc328744so75175041fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 00:17:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705047471; x=1705652271; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZLUoJHH9vL1bZ2GgbR3YmRRkEoCjkjm9bBOPWHQDlGA=;
+        b=P/HHYg1yaD9tXJ/D9nGC0v8sCFr8Zx95lDaeN0Ac+qtmL21aP/E2CciwnHawuxxk8a
+         1CcCkM/Png3GlpQg0reO0My5ftHFr5rX9tKTb7Um6bz7luO1UckmmpCvfZ6nuM8PyKU6
+         SHiFQ5U6a2tpK9C1hi7ApJwnLbpzlbAYbWMiI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705047471; x=1705652271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZLUoJHH9vL1bZ2GgbR3YmRRkEoCjkjm9bBOPWHQDlGA=;
+        b=I68UEwcSBGZaRuMCJfOOQ231pCo39jhRX5RR5++GgGVIIcJ9mR7zHZYL/bq7nRE2ra
+         NFhcPAKpWMiuKcTn8fjRyHpXj6h7imXFSuKR2Ko7e9NINTq4jg0Xs52DF2zRXwfMn1RZ
+         5rahgFOH5adSppgopNCSUJPktYtANRvlX8mm/w/4WNI9JQPKGJvoYjToNAadFBi3+L6V
+         jOgqxC0o2JgjWWV7veEPku2WiD8jyOO5RvB6bKmHjn8z/25/zEZrwO/o4+r2UlKsgzVl
+         DyrmwAHFOABJfIGx1aaAW2/4aXFaEOcQLqNK8wApcHGLY0HM3DAJtVPKCOYBPEnNqp8r
+         uGdA==
+X-Gm-Message-State: AOJu0Yyk/fVV0VEsP8Ar1WxiNWJOxieXqhjI7B/pvXNMSwwnGYgXo09p
+	Ak/Ttc8yWue6Og+v5puN9I9ma5fCNR8n6qpFLaug/YF2gj/Q
+X-Google-Smtp-Source: AGHT+IFnPq0abOqgKKGI/Lb7ZpqZ+iFRv9oNGRxuG8trKPUudrojUe1vsbrgqwS0pyK/Y0QND6YXPHJynUU7wm90eOs=
+X-Received: by 2002:a2e:8346:0:b0:2cc:e9de:3905 with SMTP id
+ l6-20020a2e8346000000b002cce9de3905mr412718ljh.68.1705047471044; Fri, 12 Jan
+ 2024 00:17:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|IA0PR12MB8981:EE_
-X-MS-Office365-Filtering-Correlation-Id: 068f7a6f-aaa2-418c-ebe6-08dc1346f398
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NKMrqMZdCW8/hX1K2CdAnqR1BOb92XZGBnWVGy41ZadztGSNlRzaaVxFvJqo55gdHXtkwMe64h248fyKPprZlnKmWR+1k/lDeBP3MbpxABTwOcWa/cbQjvdfKluuikJL2wlq98kqybfcGQp3XZf13X9YSU7X7vW6s/Yebdjj/XzFAhqvCKH12E3M/1URvhWhpOBBKOyqd3EU+Helig7L/xdlATFoZ2lBwbXeOIOUg6hS8U0LYExAN3JxJvaYceoSKcQzHtZMmGeQ85rZToWV6nTc1873Spu2XBlRGCQu2DrJ2aYnYBZ5Bolz4yHqodFQpbvwLvwobNFZpNKgT7VpZl85kEZFk0VUUne2BTK1g7nosHYJOdLn4kHan8/McZSSW4KhxZrtHRER8+XMng6Bgr+r3G+XZAJWXFFbjeaZQ8lw+hgD8OUQ+4QhxUeT49+UjTNegrTyHwi11ek/owCF5yziEeFO5BIakC/+qpQzSqHjOSrAibOdNrp0Zh1JekG8WmDClaIfZcHS7ewPiqyx4X1jeNHUI47UdHT5v1HejxYdFMD+rDezE3jbP7vvpiDvtBfEYb9OWReKXsHZtPYhODF6LTSgGWFzaObW6ZK4Yz5sckd3rptdOd9ZhuCwLUg+YfbopZlkWukYvOuRpKhang==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(366004)(346002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(31686004)(26005)(6512007)(83380400001)(31696002)(36756003)(38100700002)(86362001)(4744005)(6636002)(4326008)(6506007)(6666004)(2616005)(5660300002)(8676002)(66476007)(8936002)(41300700001)(2906002)(66556008)(6486002)(478600001)(66946007)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WXRkYmlkNTJMTG1yR2YxMDlkSSs0eStYZW1FK25NWW9iVjM1R1Y3cXpiTUdw?=
- =?utf-8?B?ZXZCZTBZNThBTGRBb3BVVWF5SmJnM3k4R3FZMHF0NmVlVzZSSDJuZGlzWVFj?=
- =?utf-8?B?aVVmcTFXMXRmbEJmZytGQ2dNSE9LTVNES0t5TGNuZzl1T1k5UzdmOTlHcWdi?=
- =?utf-8?B?dVVicEE3dVNrSDZML29TUmhGNlNFZHFiMStDV2tyT0taWU9MWm1VWkRJczdP?=
- =?utf-8?B?ekhaTnJqRCs5TkNrV3ZmOFpiazVzZjQ4cGhQenFuWXFUU01HWmpqRHRFOXpY?=
- =?utf-8?B?QWR3Q1g2WDhYQWFMaWFJbGI1TDVNeHFDdUpNNXUvUUFXdFpqWk9zOVJ5bzlN?=
- =?utf-8?B?dndLZFlTdmdvb3QzSVZhVGpKc2pYcTVhY3JRcm02U0RZcHBzMGlxWVhvYjE4?=
- =?utf-8?B?WlB3N1AzZjNMNmlMSkppR3F3cHJ2NURqaUpmZGZYa0VqaU9KU0FCVG5wOSs5?=
- =?utf-8?B?d2I4V1dYMnJ0ZGdGM2pRNEJaU0FDaVFqY2Zmcjd6aVZpS1czNTd4eXlxaFF1?=
- =?utf-8?B?aXd3cm0rTHNTbDROVGpEUlk3dzIxbGZQVm56anFJaUVLdHU3WDhhVUtCZi9a?=
- =?utf-8?B?Wm5heklzbTBDdEU1WjlDZmJLMGFSZTRHMFhBQkt6eWhnK0lGWjZEVmlvQ3RZ?=
- =?utf-8?B?bjc3dkt5eldhdVNYTndXeTgweWYxYXdFd2o3cm0vZ3JPVlU1TmFoMVBRVUpz?=
- =?utf-8?B?S1F0MVllMHBPT0t5WmFMdU1OZDR6N2pxK1V0aHpCb3VUS2F4aktMNDQycVd6?=
- =?utf-8?B?dlZTeTc5emhIODdiQkNUak5hNGJQbGZnMGFQT05uZnF1SGZVcTlsNFgzZkhl?=
- =?utf-8?B?SFBqZkNRWkpWMnZhcWl6d2FwV1lMcFh4OGFKdEtNMTV1YXFXTGZWSW9Odllp?=
- =?utf-8?B?MWtjZTFqQTVzbldENk1aclo1ako4SVE0aU1UMFFlalU4eVl0RHJsd1VIc0RQ?=
- =?utf-8?B?Q1J4SkNxMEVSLzdxUDhMUWRKVERBYXU4bGxrRWFueUo2cVRjU2tBTDhVanhx?=
- =?utf-8?B?aWhPRm9JaEdMSytFVFhYS2N2dW1zaWtpZDNGSTFxMXhpQ2hsbTZlSk5BdDZu?=
- =?utf-8?B?UzRoVThzRkhyaGRvN0RsS1cwbTcvSUwvWWd0OHZoWnVPaXJCUkVvS3g4NmR3?=
- =?utf-8?B?V0ZOcFF2eDFKVzBvUlJndldkNlB5ZGFpOUtWeG1IdWZPbnlja0dOaWpUYVlj?=
- =?utf-8?B?aU1vbFdPVW94R2NXUjg5L1duRHFkRHcvNDBuazQxTi9jWVRVNlgvb1NuZVV0?=
- =?utf-8?B?TzZDUFVqbkh6VzFOTFZHb1AxUmc5Lzg3UmJQMGJmNlFESEpRNTNJMkwyTnpt?=
- =?utf-8?B?b2VlWm1BVWx2VDMwa3hIVmlJNDhtUXdwVG1McFVmeFFTa3F5QkJzSVBJcHR0?=
- =?utf-8?B?QWp5SnhMZHNScGFzSGxlaWMzSWtHeEk1Q0ErV1FGUjIvbEpmYzJjdzltWS9J?=
- =?utf-8?B?VEVGTHVWS09UaERuaVFMOXE1SHZhc1lGNGJHbHpmakZlWHR4eHVPZ3c3SFV0?=
- =?utf-8?B?VEFzbDRWU0g0a013OVlDYmtWV0lsblRqdFN0Wi9vcmQ3Nmo5WFZMSjR6VS9L?=
- =?utf-8?B?VG1PaUNDTnBmOUlaTVpUZ1NkTTg5MXFIdkRRZ0FBRno0YWpGbWRSVXhia2tM?=
- =?utf-8?B?bzB0Vm8vazNZOVlXRUhCcWJha214clVTOWNUT08xV3E4MTU5OXBpbjlEeTF3?=
- =?utf-8?B?N3pQZGlWazFvVjNXSjJtNHRFQ25TeFpMSHlZVGp6ODd3QW90WTRaWmd1K0w5?=
- =?utf-8?B?aUNEQThsRzVScWRwSUw0ejdnVnFCSWhPNUJHQk5ueWIyK29lNVpYSUtSV2RI?=
- =?utf-8?B?dUtPNklBU0Y0L0o3OW41a3JacEpQRE1OeFlQcDZISWJIMlYvMGx3c0J2U0ZB?=
- =?utf-8?B?V2J6MGlYUW4wOTFyN0JybHNJZ25EcXVkM3BOcHlkRUVvVVhhMVZKSnRtUHN1?=
- =?utf-8?B?UXFZcjIwYmhRZktTbWd1MHN1bkpBZnhQRXFRWWM5ZTVrREpFUEdGRTN4cDVP?=
- =?utf-8?B?bk1nbmpVaGF4dnJma2dQeGplbC9RdTM5OUF1cEMzWFdybFZmVHlhZWJZUVlC?=
- =?utf-8?B?dVdJMW11eEZKTlVnN1hqR2xkNWhTYWlxdHdLT2NueHFEbEZOUXJ1N3ZWTzhx?=
- =?utf-8?Q?lAI/v6VKL231BJetwkK8oLrhp?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 068f7a6f-aaa2-418c-ebe6-08dc1346f398
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 08:17:43.7998
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gRokJ1E+Xe+7lqgcUM/5eulK57q382Jfxv0sO3UZzG2c06/1B1lqazgszeLtUuF4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8981
+References: <20240111105247.117766-1-angelogioacchino.delregno@collabora.com> <20240111105247.117766-3-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240111105247.117766-3-angelogioacchino.delregno@collabora.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Fri, 12 Jan 2024 16:17:40 +0800
+Message-ID: <CAGXv+5Grq8XrpP9yssduXtetxWBb3PB1z7O6rvvaW=CcSPB8Dg@mail.gmail.com>
+Subject: Re: [PATCH 2/7] ASoC: mediatek: mt8173-afe-pcm: Use devm_snd_soc_register_component()
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, 
+	matthias.bgg@gmail.com, ribalda@chromium.org, nicolas.ferre@microchip.com, 
+	u.kleine-koenig@pengutronix.de, kuninori.morimoto.gx@renesas.com, 
+	nfraprado@collabora.com, alsa-devel@alsa-project.org, trevor.wu@mediatek.com, 
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Well the driver load is interrupted for some reason.
-
-Have you set any timeout for modprobe?
-
-Regards,
-Christian.
-
-Am 12.01.24 um 09:11 schrieb Thomas Perrot:
-> Hello,
+On Thu, Jan 11, 2024 at 6:53=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
 >
-> We are updating the kernel from the 6.1 to the 6.6 and we observe an
-> amdgpu’s regression with Radeon RX580 8GB and SiFive Unmatched:
-> “workqueue: Failed to create a rescuer kthread for wq 'amdgpu-reset-
-> dev': -EINTR
-> [drm:amdgpu_reset_create_reset_domain [amdgpu]] *ERROR* Failed to
-> allocate wq for amdgpu_reset_domain!
-> amdgpu 0000:07:00.0: amdgpu: Fatal error during GPU init
-> amdgpu 0000:07:00.0: amdgpu: amdgpu: finishing device.
-> amdgpu: probe of 0000:07:00.0 failed with error -12”
+> Function devm_snd_soc_register_component() allocates a new struct
+> snd_soc_component, adds components and initializes them; since this
+> is also devm, it automatically unregisters components and frees
+> memory upon destruction.
 >
-> We tried to figure it out without success for the moment, do you have
-> some advice to identify the root cause and to fix it?
+> That's exactly what we're doing in the probe function of this driver:
+> switch to that function instead, allowing to remove the last goto and
+> to discard the .remove_new() callback for this driver.
 >
-> Kind regards,
-> Thomas Perrot
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
+abora.com>
+> ---
+>  sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 58 +++-------------------
+>  1 file changed, 8 insertions(+), 50 deletions(-)
 >
+> diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/media=
+tek/mt8173/mt8173-afe-pcm.c
+> index ea611730de9c..b887e10635fe 100644
+> --- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+> +++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+> @@ -1129,72 +1129,31 @@ static int mt8173_afe_pcm_dev_probe(struct platfo=
+rm_device *pdev)
+>         afe->runtime_resume =3D mt8173_afe_runtime_resume;
+>         afe->runtime_suspend =3D mt8173_afe_runtime_suspend;
+>
+> -       ret =3D devm_snd_soc_register_component(&pdev->dev,
+> -                                        &mtk_afe_pcm_platform,
+> -                                        NULL, 0);
+> +       ret =3D devm_snd_soc_register_component(&pdev->dev, &mtk_afe_pcm_=
+platform, NULL, 0);
+>         if (ret)
+>                 return ret;
+>
+> -       comp_pcm =3D devm_kzalloc(&pdev->dev, sizeof(*comp_pcm), GFP_KERN=
+EL);
+> -       if (!comp_pcm)
+> -               return -ENOMEM;
+> -
+> -       ret =3D snd_soc_component_initialize(comp_pcm,
+> -                                          &mt8173_afe_pcm_dai_component,
+> -                                          &pdev->dev);
+> +       ret =3D devm_snd_soc_register_component(&pdev->dev, &mt8173_afe_p=
+cm_dai_component,
+> +                                             mt8173_afe_pcm_dais,
+> +                                             ARRAY_SIZE(mt8173_afe_pcm_d=
+ais));
+>         if (ret)
+>                 return ret;
+>
+> -#ifdef CONFIG_DEBUG_FS
+> -       comp_pcm->debugfs_prefix =3D "pcm";
+> -#endif
 
+To match existing behavior, can you move this to the component driver?
+In snd_soc_component_initialize(), component->debugfs_prefix will take
+component_driver->debugfs_prefix as default if it is not set.
+
+Same for the HDMI component.
+
+ChenYu
+
+> -
+> -       ret =3D snd_soc_add_component(comp_pcm,
+> -                                   mt8173_afe_pcm_dais,
+> -                                   ARRAY_SIZE(mt8173_afe_pcm_dais));
+> +       ret =3D devm_snd_soc_register_component(&pdev->dev, &mt8173_afe_h=
+dmi_dai_component,
+> +                                             mt8173_afe_hdmi_dais,
+> +                                             ARRAY_SIZE(mt8173_afe_hdmi_=
+dais));
+>         if (ret)
+>                 return ret;
+>
+> -       comp_hdmi =3D devm_kzalloc(&pdev->dev, sizeof(*comp_hdmi), GFP_KE=
+RNEL);
+> -       if (!comp_hdmi) {
+> -               ret =3D -ENOMEM;
+> -               goto err_cleanup_components;
+> -       }
+> -
+> -       ret =3D snd_soc_component_initialize(comp_hdmi,
+> -                                          &mt8173_afe_hdmi_dai_component=
+,
+> -                                          &pdev->dev);
+> -       if (ret)
+> -               goto err_cleanup_components;
+> -
+> -#ifdef CONFIG_DEBUG_FS
+> -       comp_hdmi->debugfs_prefix =3D "hdmi";
+> -#endif
+> -
+> -       ret =3D snd_soc_add_component(comp_hdmi,
+> -                                   mt8173_afe_hdmi_dais,
+> -                                   ARRAY_SIZE(mt8173_afe_hdmi_dais));
+> -       if (ret)
+> -               goto err_cleanup_components;
+> -
+>         ret =3D devm_request_irq(afe->dev, irq_id, mt8173_afe_irq_handler=
+,
+>                                0, "Afe_ISR_Handle", (void *)afe);
+>         if (ret) {
+>                 dev_err(afe->dev, "could not request_irq\n");
+> -               goto err_cleanup_components;
+> +               return ret;
+>         }
+>
+>         dev_info(&pdev->dev, "MT8173 AFE driver initialized.\n");
+>         return 0;
+> -
+> -err_cleanup_components:
+> -       snd_soc_unregister_component(&pdev->dev);
+> -       return ret;
+> -}
+> -
+> -static void mt8173_afe_pcm_dev_remove(struct platform_device *pdev)
+> -{
+> -       snd_soc_unregister_component(&pdev->dev);
+>  }
+>
+>  static const struct of_device_id mt8173_afe_pcm_dt_match[] =3D {
+> @@ -1215,7 +1174,6 @@ static struct platform_driver mt8173_afe_pcm_driver=
+ =3D {
+>                    .pm =3D &mt8173_afe_pm_ops,
+>         },
+>         .probe =3D mt8173_afe_pcm_dev_probe,
+> -       .remove_new =3D mt8173_afe_pcm_dev_remove,
+>  };
+>
+>  module_platform_driver(mt8173_afe_pcm_driver);
+> --
+> 2.43.0
+>
+>
 
