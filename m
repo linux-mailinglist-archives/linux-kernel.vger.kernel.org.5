@@ -1,111 +1,134 @@
-Return-Path: <linux-kernel+bounces-24358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B87B482BB80
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:13:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7774782BB8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBD821C236F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:13:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 136931F2143D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88ECB5D725;
-	Fri, 12 Jan 2024 07:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="W2B/Y4R4"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C3C5C914;
+	Fri, 12 Jan 2024 07:16:19 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BB45C900
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=VCEqIivkHRIrYsw4MOEaXLZlutGhQyNEOuISiki+wOM=; b=W2B/Y4R4AIGJarjY9sQq+lbTg7
-	pqy5MthOXo0dJ1LTA4vrqeusN7lE70iX9dKDy5UTb7u31UkcQdzjpV+NIv19GbcENjkjQpsnDGu/K
-	NVnI0M1bSS8WMMwupiu+VZapWMag7LrIehc0IWqTDeMev0+JreCdd/uJR0kSAyvRZaZ3+QeJjvLVG
-	6AF1r5uLxS6AdEbaMEsfnLiAJcICBjI0FkhpmIIChPCLRlgMVEE0/cUz6S23h1rwv+93cS4tdTYZQ
-	Y0KFmHsbeNZQ3eTcDXGCPLBLMNNebOc1OELp4DwVB6bMnw8CY5Lfd4VqhuZiSdiyGQZFLd2oeYL1w
-	6Imo4YMg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOBic-00E5Wm-1r;
-	Fri, 12 Jan 2024 07:12:42 +0000
-Date: Fri, 12 Jan 2024 07:12:42 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux F2FS Dev Mailing List <linux-f2fs-devel@lists.sourceforge.net>
-Subject: Re: [GIT PULL] f2fs update for 6.8-rc1
-Message-ID: <20240112071242.GA1674809@ZenIV>
-References: <ZaAzOgd3iWL0feTU@google.com>
- <CAHk-=wgTbey3-RCz8ZpmTsMhUGf02YVV068k3OzrmOvJPowXfw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125B55C902;
+	Fri, 12 Jan 2024 07:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 40C7F1rd043835;
+	Fri, 12 Jan 2024 15:15:02 +0800 (GMT-8)
+	(envelope-from hu.yadi@h3c.com)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
+	by mail.maildlp.com (Postfix) with ESMTP id 886D122E1859;
+	Fri, 12 Jan 2024 15:19:24 +0800 (CST)
+Received: from localhost.localdomain (10.99.206.12) by
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Fri, 12 Jan 2024 15:15:02 +0800
+From: Hu Yadi <hu.yadi@h3c.com>
+To: <jmorris@namei.org>, <serge@hallyn.com>, <shuah@kernel.org>,
+        <mathieu.desnoyers@efficios.com>, <mic@digikod.net>
+CC: <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <514118380@qq.com>,
+        "Hu.Yadi" <hu.yadi@h3c.com>
+Subject: [PATCH v3] selftests/landlock:Fix two build issues
+Date: Fri, 12 Jan 2024 15:12:45 +0800
+Message-ID: <20240112071245.669-1-hu.yadi@h3c.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgTbey3-RCz8ZpmTsMhUGf02YVV068k3OzrmOvJPowXfw@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 40C7F1rd043835
 
-On Thu, Jan 11, 2024 at 09:05:51PM -0800, Linus Torvalds wrote:
-> On Thu, 11 Jan 2024 at 10:28, Jaegeuk Kim <jaegeuk@kernel.org> wrote:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-6.8-rc1
-> 
-> Hmm. I got a somewhat confusing conflict in f2fs_rename().
-> 
-> And honestly, I really don't know what the right resolution is. What I
-> ended up with was this:
-> 
->         if (old_is_dir) {
->                 if (old_dir_entry)
->                         f2fs_set_link(old_inode, old_dir_entry,
->                                                 old_dir_page, new_dir);
->                 else
->                         f2fs_put_page(old_dir_page, 0);
+From: "Hu.Yadi" <hu.yadi@h3c.com>
 
-Where would you end up with old_dir_page != NULL and old_dir_entry == NULL?
-old_dir_page is initialized to NULL and the only place where it's altered
-is
-                old_dir_entry = f2fs_parent_dir(old_inode, &old_dir_page);
-Which is immediately followed by
-                if (!old_dir_entry) {
-                        if (IS_ERR(old_dir_page))
-                                err = PTR_ERR(old_dir_page);
-                        goto out_old;
-                }
-so we are *not* going to end up at that if (old_is_dir) in that case.
+Two issues comes up while building selftest/landlock on my side
+(gcc 7.3/glibc-2.28/kernel-4.19)
 
-Original would have been more clear as
-	if (old_is_dir) {
-		if (old_dir != new_dir) {
-			/* we have .. in old_dir_page/old_dir_entry */
-			if (!whiteout)
-	                        f2fs_set_link(old_inode, old_dir_entry,
-                                                old_dir_page, new_dir);
-			else
-	                        f2fs_put_page(old_dir_page, 0);
-		}
-                f2fs_i_links_write(old_dir, false);
-	}
-- it is equivalent to what that code used to do.  And "don't update ..
-if we are leaving a whiteout behind" was teh bug fixed by commit
-in f2fs tree...
+the first one is as to gettid
 
-The bottom line: your variant is not broken, but only because
-f2fs_put_page() starts with
-static inline void f2fs_put_page(struct page *page, int unlock)
-{
-        if (!page)
-                return;
+net_test.c: In function ‘set_service’:
+net_test.c:91:45: warning: implicit declaration of function ‘gettid’; [-Wimplicit-function-declaration]
+    "_selftests-landlock-net-tid%d-index%d", gettid(),
+                                             ^~~~~~
+                                             getgid
+net_test.c:(.text+0x4e0): undefined reference to `gettid'
 
-IOW, you are doing f2fs_put_page(NULL, 0), which is an explicit no-op.
+the second is compiler error
+gcc -Wall -O2 -isystem   fs_test.c -lcap -o selftests/landlock/fs_test
+fs_test.c:4575:9: error: initializer element is not constant
+  .mnt = mnt_tmp,
+         ^~~~~~~
+
+this patch is to fix them
+
+Signed-off-by: Hu.Yadi <hu.yadi@h3c.com>
+Suggested-by: Jiao <jiaoxupo@h3c.com>
+Reviewed-by: Berlin <berlin@h3c.com>
+---
+Changes v3 -> v2:
+ - add helper of gettid instead of __NR_gettid
+ - add gcc/glibc version info in comments
+Changes v1 -> v2:
+ - fix whitespace error
+ - replace SYS_gettid with _NR_gettid
+
+ tools/testing/selftests/landlock/fs_test.c  | 5 ++++-
+ tools/testing/selftests/landlock/net_test.c | 9 +++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
+index 18e1f86a6234..a992cf7c0ad1 100644
+--- a/tools/testing/selftests/landlock/fs_test.c
++++ b/tools/testing/selftests/landlock/fs_test.c
+@@ -4572,7 +4572,10 @@ FIXTURE_VARIANT(layout3_fs)
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(layout3_fs, tmpfs) {
+ 	/* clang-format on */
+-	.mnt = mnt_tmp,
++	.mnt = {
++		.type = "tmpfs",
++		.data = "size=4m,mode=700",
++	},
+ 	.file_path = file1_s1d1,
+ };
+ 
+diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
+index 929e21c4db05..12a6744568e2 100644
+--- a/tools/testing/selftests/landlock/net_test.c
++++ b/tools/testing/selftests/landlock/net_test.c
+@@ -21,6 +21,15 @@
+ 
+ #include "common.h"
+ 
++#ifndef gettid
++static pid_t gettid(void)
++{
++        return syscall(__NR_gettid);
++}
++
++#endif
++
++
+ const short sock_port_start = (1 << 10);
+ 
+ static const char loopback_ipv4[] = "127.0.0.1";
+-- 
+2.23.0
+
 
