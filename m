@@ -1,116 +1,193 @@
-Return-Path: <linux-kernel+bounces-24731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9961982C179
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:21:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC95F82C186
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE7961C2210A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:21:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D4831F23A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C796DCEC;
-	Fri, 12 Jan 2024 14:20:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B42E6DCFB;
+	Fri, 12 Jan 2024 14:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZM7i33VK"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LCM7Xpej"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDDA6D1DC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9344f30caso4473858b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 06:20:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705069249; x=1705674049; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2sON2zsEgmOr2oRLYLHAKX2KUxW1/7chOQU/DqL3AV4=;
-        b=ZM7i33VKYCX1edB2L20HggEYeq92vLAv03XZkFWET0Me19h+/e42BJDieztjJEvEtx
-         +Dr8P3Cw5XA+ku9VijxxP+3PIIQ7132NSim5mamdOqCkja5zsEqOiW6eCGP1BP1NkKgv
-         sHEVpwCSHOoec0F0ZnIHtzm4XF4T4cJlqFDgz2qTjEkMa8ZIWYRm9ttFedeLyso6myrd
-         8LZqO2n7tmILBmYwEjYzcOMquXYcQro414C2B5IFxOpYP0p9cy/hGcc9IoUmmRhuOg51
-         jfg6L0Fsdy9of/Vn9h9bCwr6cjXmLSLkQ8aiPdF6QQQ/wlhRl5uvTZECfNB8cLfhbUWp
-         v6EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705069249; x=1705674049;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2sON2zsEgmOr2oRLYLHAKX2KUxW1/7chOQU/DqL3AV4=;
-        b=YiWVCkqgNhyWzgco8lm84uUYomx5lS6a0xWc6JDYiIYiW1o6kUXZI6Q9ub+JOfa2JB
-         xpAD/VlTzLTbGv8J9x3zxtss6EviZqccAS6eA3cmmcs2K4ByirrcI5epu9GEUj+XV1Mq
-         nA3yQBbbEFhf3iOVMJZXTyzdkQi1Thjmh5bG+pEcVkHwnpQqM7WzsV++7CQP9uwvqCa4
-         aHx0MdF7pRovYD0lv3WDYqOM4HAbVLARosEMaItRdtEo3GJQSeCR58lxerCmuJE7JAyQ
-         1rTifoHjmoRuh3LBc3bRV1PXRlw3WkRhVjUg/tlf63N8Irgum/AUtI1gEUgzw3HGPG6a
-         5muQ==
-X-Gm-Message-State: AOJu0YyhxFAX/0WAdGhdzZsED5Pn0LNSQgCyhLK+mya+M89ivqyCDvN8
-	hQ02DhE6r7kKGnDqHaH3l2c=
-X-Google-Smtp-Source: AGHT+IGEI+FxtB7YCv0q78LKq6Lhf6thYTjYnOOjc2RxTqiVGhRFJeuJkzcDbU6KfHBrh+/NGHAYWQ==
-X-Received: by 2002:a05:6a00:3a1c:b0:6d9:baf0:b8a2 with SMTP id fj28-20020a056a003a1c00b006d9baf0b8a2mr1589144pfb.4.1705069249175;
-        Fri, 12 Jan 2024 06:20:49 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id g26-20020aa79f1a000000b006dab0d72cd0sm3221775pfr.214.2024.01.12.06.20.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 06:20:48 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 6C65B18503882; Fri, 12 Jan 2024 21:20:45 +0700 (WIB)
-Date: Fri, 12 Jan 2024 21:20:45 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: Deliberately sending partial patch sets?
-Message-ID: <ZaFKvZg-MtZgbCKA@archie.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48253537E6;
+	Fri, 12 Jan 2024 14:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40CDGp7K005990;
+	Fri, 12 Jan 2024 14:22:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=Qm7o6bH8UVSUpx
+	L/qtsM2qZhfc8EIq6ci44HkAJiWTk=; b=LCM7Xpej1m+XX3xIhGq85Cx4YgTthg
+	uh7The2GByO2NsBSFx/p9WNxuUm4hfe4YnTe1U9FkFDCALLtdRLzIJbt8vM2NKIH
+	cxhR8gYrmqaOupM68RgMSaka/fX1gk1QDWb4xfgI7JjCG63+NEBBolW22qMeKdNI
+	5rmY/58NNI1PKls56lB9+6Luq4bDUSz7Bhr3sKpAL0RjTNWwHqWKG3RiGfjmd292
+	HM7TJEPjLsGlpSiRXPQAaihF083/jsj4aaHT4hq6m7hnaGFXcy1LkBcUwV9c6gkE
+	OOX+mVEYGHf/7bdO9GSqsKZ0zZ6l36s1u8x4qHsFaU+13IH7IrWkNCFQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjrqj21pq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Jan 2024 14:22:21 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40CEMK9k012100
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Jan 2024 14:22:20 GMT
+Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 12 Jan 2024 06:22:13 -0800
+From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v6 0/6] PCI: qcom: Add support for OPP
+Date: Fri, 12 Jan 2024 19:51:59 +0530
+Message-ID: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YnDQqZwqJe9COSOd"
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAlLoWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyzHQUlJIzE
+ vPSU3UzU4B8JSMDIxMDQ0Mj3fyCgvji0oKC/KISXeNEQwtjy2SzRENzQyWgjoKi1LTMCrBp0bG
+ 1tQBPdsBfXQAAAA==
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Lorenzo
+ Pieralisi" <lpieralisi@kernel.org>,
+        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Brian Masney <bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <vireshk@kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Krishna
+ chaitanya chundru" <quic_krichai@quicinc.com>,
+        <stable@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Manivannan Sadhasivam
+	<mani@kernel.org>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705069332; l=3741;
+ i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
+ bh=9kevASbFSlCa+E9D4QNcPS8Hm0GHBKXoPdtlEYKpU/I=;
+ b=TkbG+97xSskiAuMM7ujhw/fz19PSVsYk/JtTjmnxRbr7ObgM4feJbxMkSc5ZAa7JrhVEcfqzg
+ edWA125UvkMCSPCd7gq1LgaZPYRHWklNm74uwlxYon8RfuUI9li5Ne5
+X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
+ pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: E_e2NKtgP26VpO_TI45SSss7BBctYDWY
+X-Proofpoint-GUID: E_e2NKtgP26VpO_TI45SSss7BBctYDWY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 mlxscore=0 clxscore=1011 adultscore=0
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401120113
 
+This patch adds support for OPP to vote for the performance state of RPMH
+power domain based upon GEN speed it PCIe got enumerated.
 
---YnDQqZwqJe9COSOd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
+maintains hardware state of a regulator by performing max aggregation of
+the requests made by all of the processors.
 
-Hi,
+PCIe controller can operate on different RPMh performance state of power
+domain based up on the speed of the link. And this performance state varies
+from target to target.
 
-Let's say that there is a contributor who wish to send a patch set (e.g.
-20-30 patches in the series) to LKML. But instead of sending the full
-series, he either do one of the following:
+It is manadate to scale the performance state based up on the PCIe speed
+link operates so that SoC can run under optimum power conditions.
 
-* Send only the cover letter (analogous to movie trailers)
-* Send only a few arbitrary patches in a series that are most important
-  (e.g. patch [01,04,11,18,23/30]) (analogous to match highlights)
-* Send only the first few patches in a series (i.e. subject of one of
-  patches says [09/30]) (analogous to sample book chapters)
+Add Operating Performance Points(OPP) support to vote for RPMh state based
+upon GEN speed link is operating.
 
-The rest of patches are behind closed doors (i.e. not sent), possibly
-behind charm-priced (pay)walls.
+Before link up PCIe driver will vote for the maximum performance state.
 
-Is the submission like above acceptable (when in review)?
+As now we are adding ICC BW vote in OPP, the ICC BW voting depends both
+GEN speed and link width using opp-level to indicate the opp entry table
+will be difficult.
 
-Thanks.
+In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
+same icc bw if we use freq in the opp table to represent the PCIe Gen
+speed number of PCIe entries can reduced.
 
---=20
-An old man doll... just what I always wanted! - Clara
+So going back to use freq in the opp table instead of level.
 
---YnDQqZwqJe9COSOd
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+---
+Changes frm v5:
+	- Add ICC BW voting as part of OPP, rebase the latest kernel, and only
+	- either OPP or ICC BW voting will supported we removed the patch to
+	- return eror for icc opp update patch.
+	- As we added the icc bw voting in opp table I am not including reviewed
+	- by tags given in previous patch.
+	- Use opp freq to find opp entries as now we need to include pcie link
+	- also in to considerations.
+	- Add CPU-PCIe BW voting which is not present till now.
+	- Drop  PCI: qcom: Return error from 'qcom_pcie_icc_update' as either opp or icc bw
+	- only one executes and there is no need to fail if opp or icc update fails.
+	- Link for v5: https://lore.kernel.org/linux-arm-msm/20231101063323.GH2897@thinkpad/T/
+Changes from v4:
+	- Added a separate patch for returning error from the qcom_pcie_upadate
+	  and moved opp update logic to icc_update and used a bool variable to 
+	  update the opp.
+	- Addressed comments made by pavan.
+changes from v3:
+	- Removing the opp vote on suspend when the link is not up and link is not
+	  up and add debug prints as suggested by pavan.
+	- Added dev_pm_opp_find_level_floor API to find the highest opp to vote.
+changes from v2:
+	- Instead of using the freq based opp search use level based as suggested
+	  by Dmitry Baryshkov.
+Changes from v1:
+        - Addressed comments from Krzysztof Kozlowski.
+        - Added the rpmhpd_opp_xxx phandle as suggested by pavan.
+        - Added dev_pm_opp_set_opp API call which was missed on previous patch.
 
------BEGIN PGP SIGNATURE-----
+---
+Krishna chaitanya chundru (6):
+      dt-bindings: PCI: qcom: Add interconnects path as required property
+      arm64: dts: qcom: sm8450: Add interconnect path to PCIe node
+      PCI: qcom: Add missing icc bandwidth vote for cpu to PCIe path
+      dt-bindings: pci: qcom: Add opp table
+      arm64: dts: qcom: sm8450: Add opp table support to PCIe
+      PCI: qcom: Add OPP support to scale performance state of power domain
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZaFKuQAKCRD2uYlJVVFO
-oyK3AP9E9wtVBSlPGAo0UtbWhvTCnSDB86LMRwdKtVCcAfIGJAD/dV+/2leBp+jD
-89GKopwZUgbpZg+Rv4SkXMeeLXtxbQE=
-=UalB
------END PGP SIGNATURE-----
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |   6 ++
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               |  82 +++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             | 114 ++++++++++++++++++---
+ 3 files changed, 187 insertions(+), 15 deletions(-)
+---
+base-commit: 70d201a40823acba23899342d62bc2644051ad2e
+change-id: 20240112-opp_support-3a1839c6a171
 
---YnDQqZwqJe9COSOd--
+Best regards,
+-- 
+Krishna chaitanya chundru <quic_krichai@quicinc.com>
+
 
