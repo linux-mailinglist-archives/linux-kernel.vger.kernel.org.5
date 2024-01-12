@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-24603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DBAF82BEF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:10:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B9E82BEFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:10:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B95C1C23E7A
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93BE6B214E6
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927C66351E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927606351D;
 	Fri, 12 Jan 2024 11:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KcU9n2XI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dfn7HiVd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E4F634F8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E96634F9;
 	Fri, 12 Jan 2024 11:10:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5FFE7C43390;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6BB5CC433F1;
 	Fri, 12 Jan 2024 11:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705057826;
-	bh=ENF/dO9gAomIOEvQaS8M4ij6ATRkJ5A5aK4s+0X+rD4=;
+	bh=LiBLajmA7uXC+66jfNQCT8GgUggwuGVXAxL/x96ZZNs=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KcU9n2XIuY2mgpbqZ9mpU/euyJzJcuDOH3RaKN7ny4hdoxrwxZM/rwOnJh6OXFAaH
-	 Y7bWV5AoEavtM0+hbml2yKJ6LI3LCDANB4hejbaHPEaRu8ZjTVI4AvFzS5dn19fGYQ
-	 df97XZxbJQQadTL18OoGKHXlxmwqQNhqVFpwqX5Eugo/XTTl84qRd+G4oWXbB201nY
-	 A5kE8IxVjHt7A8aZoNlx3Z9+nGKBrjy1e1zCq2195i6xztDyTh3JmXW02kZEjwyK0x
-	 K3DWTRiFMelnawnm6BOSfywWERAdFMh4YsPDnddtDBIaEcea8c540QIEGtHfMW7yQS
-	 OhNRoSWKpg8tA==
+	b=Dfn7HiVd32RIHN/nwnjIOKavUD1jDRAQRZl6RIpUteZB3RqVK/OUVtzFBahEg1fiu
+	 4ZTVNH6G3z21e93R8iClQc6LXeMH2qPQxypE5NhFPiUwtzg4GSEATX6jH/4h9ncVuc
+	 1+BXb7NaatgCIa5eB1M5T+C94FKnf1FkmKTNOK+qwkOA9ekE9yvDulAOe/k4YmHviZ
+	 w5pWoCdpPgGMV4lc8OJQ6HvdaAu3wMJpDfkghf6eNUXlPcSQmaUNRKPlw3eQuDMIoh
+	 zYg9RetHkBQl62wVIztVP95uqQdcZszAVrD/IzSsyIUpS5lBz0J9oxyyLHRjgJfdqY
+	 nquy2fhkx5a0A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4520FD8C984;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51639DFC697;
 	Fri, 12 Jan 2024 11:10:26 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -42,40 +42,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: micrel: Fix PTP frame parsing for lan8841
+Subject: Re: [PATCH net] net: phy: micrel: populate .soft_reset for KSZ9131
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170505782627.23132.8127636448769245123.git-patchwork-notify@kernel.org>
+ <170505782632.23132.18265133237882813457.git-patchwork-notify@kernel.org>
 Date: Fri, 12 Jan 2024 11:10:26 +0000
-References: <20240110113730.3704712-1-horatiu.vultur@microchip.com>
-In-Reply-To: <20240110113730.3704712-1-horatiu.vultur@microchip.com>
-To: Horatiu Vultur <horatiu.vultur@microchip.com>
+References: <20240105085242.1471050-1-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240105085242.1471050-1-claudiu.beznea.uj@bp.renesas.com>
+To: claudiu beznea <claudiu.beznea@tuxon.dev>
 Cc: andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
  davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+ yuiko.oshino@microchip.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, claudiu.beznea.uj@bp.renesas.com
 
 Hello:
 
 This patch was applied to netdev/net.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Wed, 10 Jan 2024 12:37:30 +0100 you wrote:
-> The HW has the capability to check each frame if it is a PTP frame,
-> which domain it is, which ptp frame type it is, different ip address in
-> the frame. And if one of these checks fail then the frame is not
-> timestamp. Most of these checks were disabled except checking the field
-> minorVersionPTP inside the PTP header. Meaning that once a partner sends
-> a frame compliant to 8021AS which has minorVersionPTP set to 1, then the
-> frame was not timestamp because the HW expected by default a value of 0
-> in minorVersionPTP.
-> Fix this issue by removing this check so the userspace can decide on this.
+On Fri,  5 Jan 2024 10:52:42 +0200 you wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> The RZ/G3S SMARC Module has 2 KSZ9131 PHYs. In this setup, the KSZ9131 PHY
+> is used with the ravb Ethernet driver. It has been discovered that when
+> bringing the Ethernet interface down/up continuously, e.g., with the
+> following sh script:
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: micrel: Fix PTP frame parsing for lan8841
-    https://git.kernel.org/netdev/net/c/acd66c2126eb
+  - [net] net: phy: micrel: populate .soft_reset for KSZ9131
+    https://git.kernel.org/netdev/net/c/e398822c4751
 
 You are awesome, thank you!
 -- 
