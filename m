@@ -1,240 +1,91 @@
-Return-Path: <linux-kernel+bounces-24291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC5282BA6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:37:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 665D282BA73
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:40:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F4351F269DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:37:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 153692855A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCC85B5B3;
-	Fri, 12 Jan 2024 04:37:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O+EUHf8k"
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF285B5B3;
+	Fri, 12 Jan 2024 04:40:41 +0000 (UTC)
+Received: from out0-194.mail.aliyun.com (out0-194.mail.aliyun.com [140.205.0.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734A61110
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-467ed334c40so886340137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 20:37:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705034225; x=1705639025; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hzf90LiTCpa5sUiUA09sK84T6uPQpjZSE/91dDd8yLA=;
-        b=O+EUHf8kdj3+ercLW8F7fTngMYIFBgaH4u4HdbmIGcAkrwmbBz0yruipENN57mMg9Q
-         NJFca9cyCkZsmptSWL0zidW2DTiPiltnIUEqzqQaEA0HbCyP3gbLTMaAZca3cogeprPB
-         zdXYI6RtxeHsGU9HjaQ8wPR/Zcjj+qzaw+xlK6BAunfG9E/IbSkHGG4/qbYMZ9BVyZym
-         XEHGYCkqt0TgtVeWHuQKDR5/y9GQYUU0rQ8zpy7Vz3uNnCl0B2o9TR2CDhCRMALssO9t
-         eGY+QwWC6l7h5yU3yFWZJzCMjv38/GmSJYd+H75Yj0xSSeqZzeiGLnVrGBveZwyeGjh5
-         ZUkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705034225; x=1705639025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hzf90LiTCpa5sUiUA09sK84T6uPQpjZSE/91dDd8yLA=;
-        b=C6NrTNw5nw4okK6seGDJW9kpHMvxmbmL1M9XcQauOQiU98lBkUfFNVLbcjwI+HwjYI
-         1hERepOVpmglvIKAoAj4T9MYCSUoCJCCJJkgPoiApSf8nMrO1EQ07+1j+GiiLqKGikxm
-         OIUO7XX+Oj25zFzXdAMbpSqRBJQI4xH9nfFlVoOqQH4SjK0NgPFcL4WEYHsrlCG7v8h+
-         M/SC3fFAO27LiaMRyj9VLx1jmLQ4BMxs7kpSEhsnynmMmWchQzuR/wWMOwKh/eegsTZk
-         gy7+TUIFwB6DUVhNlgTQ4Q6ksYBowfxCWHImaHgZImxDoq96ICn8v3U9O10Ov3e7rRXR
-         hFjg==
-X-Gm-Message-State: AOJu0YzZCXQUD3y2OqOv8o5QdYKQTISXfgdKdHuJyCwpaxa6PcmUb297
-	NM12yFgH4+0g31mKaJDrkI0QJzeF8kPZfCusAPzdegqRN26ltA==
-X-Google-Smtp-Source: AGHT+IFgVO94yzNbpSrgU12juUhZjn92ct+FeTcTjVmz/40/7oK7QO3ODgIsc0i1L8MqSRllGGwhsg4CwbAR62aRlFE=
-X-Received: by 2002:a67:fa0d:0:b0:468:836:3d51 with SMTP id
- i13-20020a67fa0d000000b0046808363d51mr871292vsq.31.1705034225092; Thu, 11 Jan
- 2024 20:37:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3507F4F7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:40:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047194;MF=henry.hj@antgroup.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---.W4EnNzt_1705034428;
+Received: from localhost(mailfrom:henry.hj@antgroup.com fp:SMTPD_---.W4EnNzt_1705034428)
+          by smtp.aliyun-inc.com;
+          Fri, 12 Jan 2024 12:40:29 +0800
+From: "Henry Huang" <henry.hj@antgroup.com>
+To: yuanchu@google.com
+Cc:  <akpm@linux-foundation.org>,
+  "Henry Huang" <henry.hj@antgroup.com>,
+  "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
+   <linux-kernel@vger.kernel.org>,
+   <linux-mm@kvack.org>,
+   <rientjes@google.com>,
+  "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>,
+   <yuzhao@google.com>
+Subject: Re: [RFC v2] mm: Multi-Gen LRU: fix use mm/page_idle/bitmap
+Date: Fri, 12 Jan 2024 12:40:22 +0800
+Message-ID: <20240112044026.58580-1-henry.hj@antgroup.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CAJj2-QG3jJcA=71n5imx+OjhMapPMN-1bfT5XQRjswxOPG9MvA@mail.gmail.com>
+References: <CAJj2-QG3jJcA=71n5imx+OjhMapPMN-1bfT5XQRjswxOPG9MvA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111094700.222742213@linuxfoundation.org>
-In-Reply-To: <20240111094700.222742213@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 12 Jan 2024 10:06:53 +0530
-Message-ID: <CA+G9fYtnNWLzNXRs_k9Qa8pdFn911T-vFOtcR2UnCYGb1KRYAg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 0/7] 5.10.207-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, 11 Jan 2024 at 15:23, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Thanks for replying.
+
+On Thu, Jan 11, 2024 at 03:24 AM Yuanchu Xie <yuanchu@google.com> wrote:
+> Does this present a problem with setting memcg limits or OOMs? It
+> seems like deterministically charging shared pages would be highly
+> desirable. Mina Almasry previously proposed a memcg= mount option to
+> implement deterministic charging[1], but it wasn't a generic sharing
+> mechanism. Nonetheless, the problem remains, and it would be
+> interesting to learn if this presents any issues for you.
 >
-> This is the start of the stable review cycle for the 5.10.207 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 13 Jan 2024 09:46:53 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.207-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> [1] https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+In this case, total size of shared memory usually is small(< 100MB).
+What's more, almost shared pages were file cache. So it doesn't present any problems.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> I'm working on a kernel driver/per-memcg interface to perform aging
+> with MGLRU, including configuration for the MGLRU page scanning
+> optimizations. I suspect scanning the PTE accessed bits for pages
+> charged to a foreign memcg ad-hoc has some performance implications,
+> and the more general solution is to charge in a predetermined way,
+> which makes the scanning on behalf of the foreign memcg a bit cleaner.
+> This is possible nonetheless, but a bit hacky. Let me know you have
+> any ideas.
 
-## Build
-* kernel: 5.10.207-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: 9d64f2ec9cf9d1a55dabce3c7f639ec26bd1d7b4
-* git describe: v5.10.206-8-g9d64f2ec9cf9
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-206-8-g9d64f2ec9cf9
+Wow! per-memcg interface is also what we need.
+It's hardly to control user's behaviors in our envrionment. We can't promise that all
+process who share memory would be in same memcg.
+Maybe kernel should provide new interface to make shared page charge more predictable.
+I think it would take some overhead to do this.
 
-## Test Regressions (compared to v5.10.206)
+The key problem of us is that we can't check whether page is accesed(no gen or ref changed) 
+in this case.
+page belongs to A, but maybe process in B read/write this page more frequently.
+we may treat this page as cold page but accutly hot page.
+Maybe just call folio_mark_accessed instead of folio_update_gen(should hold memcg lru lock)
+for those remote memcg pages?
 
-## Metric Regressions (compared to v5.10.206)
+-- 
+2.43.0
 
-## Test Fixes (compared to v5.10.206)
-
-## Metric Fixes (compared to v5.10.206)
-
-## Test result summary
-total: 99306, pass: 75376, fail: 4061, skip: 19792, xfail: 77
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 117 total, 117 passed, 0 failed
-* arm64: 44 total, 44 passed, 0 failed
-* i386: 35 total, 35 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 25 total, 25 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 38 total, 38 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
