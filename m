@@ -1,100 +1,131 @@
-Return-Path: <linux-kernel+bounces-24443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D441482BC9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:01:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A3882BCA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:05:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6BC71C251D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:01:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB1DC1F235A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D58155786;
-	Fri, 12 Jan 2024 09:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D765555C06;
+	Fri, 12 Jan 2024 09:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CuzGRTsw";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uhIVYCUR"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=protonic.nl header.i=@protonic.nl header.b="RWiNGh+S"
+Received: from smtp28.bhosted.nl (smtp28.bhosted.nl [94.124.121.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9FFB14F66;
-	Fri, 12 Jan 2024 09:01:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 12 Jan 2024 10:01:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705050102;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cYtWY9hDXkpJN3n4nxz2ZUDW4riO9eRN9qxUsjklYiE=;
-	b=CuzGRTswnalzZbMOffuEnmxQw7N8eG94OCB9DMMcd/yHLwwSkHiizA9uj2Wh8R7IDzbYRb
-	53+qCoZiqbpWFhBp3zRIOyD/Bq6YpVy39M2ssOHnCmQXwbGahKkb3/Nt0FLkul3VQCmnQ/
-	/arUdwpmpZGSLdkKkWGfvqfEA4HoF5EKrxv8Wjo/7haxNb9C8JEj6I6zt1S3LV37IA2a1L
-	SKHaCMD35rJvUopI7dEKXmG8UV4ltjyOhYe/zZZ80SSJpcnGcETzYlO+Md7w9uH3c1a2Kx
-	DU4iHR/q0u/rjRm5s29P7Ntq8h1apcEwhAX9k5oTqnmpgU2QiRD1ah65idA2gw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705050102;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cYtWY9hDXkpJN3n4nxz2ZUDW4riO9eRN9qxUsjklYiE=;
-	b=uhIVYCURSTw9wJBjiY3yz2qpg2LnjrnOiCtlGBOUBjwOMmeyLS5bjCly/h4q2ivDmycAWV
-	ExgLPgVwEai9cgBw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH net-next 03/24] net: Use __napi_alloc_frag_align()
- instead of open coding it.
-Message-ID: <20240112090140.u5Lac1X9@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
- <20231215171020.687342-4-bigeasy@linutronix.de>
- <9d4e1a18e6402f5476ebaaafd4a40a925daf19e6.camel@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A652F56B64
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=protonic.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonic.nl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=protonic.nl; s=202111;
+	h=content-transfer-encoding:content-type:mime-version:references:in-reply-to:
+	 message-id:subject:cc:to:from:date:from;
+	bh=xxLKZfR9ym3NvYaTuybR8pXKjRLGsluBabcSdUsoEsA=;
+	b=RWiNGh+SiP6oLepQrpQjzq3eyHcLtAafx5MtVsKMs41YlrxI7ZDYzsTEha7a/lscDptg/p8X4EdNG
+	 9hQHbb2LuE7Uk1+KOJb52iF4rkGv8v+U7irlFstAzWwblSFHHr2kpCLv5LttCQbC8I/DuV8lypwLrh
+	 ukPzt5VNY2e2ta05CYqQUJAH0lh4v4mRXfhbqHUzUwUEsaL5xOd6FZht0tZo7804cM4GnZ8H4fkHME
+	 9tjzvQNDu11r7Dk167wVVYPb2lT9z6zget+3lO/HDjuihwGjq7rM4uTW1V/4ij56Th+HnhrF5tgdI+
+	 3RE2mITMqmCDX8kcE8XPiaFC3Rp4+mw==
+X-MSG-ID: 7eeba78f-b129-11ee-ba53-0050568164d1
+Date: Fri, 12 Jan 2024 10:03:47 +0100
+From: David Jander <david@protonic.nl>
+To: Mark Brown <broonie@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>, Jonathan Cameron
+ <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Michael Hennerich <michael.hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?=
+ <nuno.sa@analog.com>, Frank Rowand <frowand.list@gmail.com>, Thierry Reding
+ <thierry.reding@gmail.com>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
+ <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
+ linux-spi@vger.kernel.org, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/13] spi: add core support for controllers with
+ offload capabilities
+Message-ID: <20240112100347.548298e9@erd003.prtnl>
+In-Reply-To: <829ac770-1955-45b7-9033-6ed60ffdf77e@sirena.org.uk>
+References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+	<20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+	<2c74aad9-3cb9-4222-8072-e72120c2658e@sirena.org.uk>
+	<CAMknhBGMRed9vDrDAuPJ5DnEe6MyHzd0VBebp5OaLX2Q+AyhMQ@mail.gmail.com>
+	<CAMknhBE-1Khe9J-n5WQnH=mFnN0ukiq7=F-SEOU6J-2_u-R0bw@mail.gmail.com>
+	<829ac770-1955-45b7-9033-6ed60ffdf77e@sirena.org.uk>
+Organization: Protonic Holland
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9d4e1a18e6402f5476ebaaafd4a40a925daf19e6.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2023-12-18 08:48:56 [+0100], Paolo Abeni wrote:
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index b157efea5dea8..de9397e45718a 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -311,11 +311,8 @@ void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align_mask)
-> >  
-> >  		data = page_frag_alloc_align(nc, fragsz, GFP_ATOMIC, align_mask);
-> >  	} else {
-> > -		struct napi_alloc_cache *nc;
-> > -
-> >  		local_bh_disable();
-> > -		nc = this_cpu_ptr(&napi_alloc_cache);
-> > -		data = page_frag_alloc_align(&nc->page, fragsz, GFP_ATOMIC, align_mask);
-> 
-> There is a:
-> 
-> 	fragsz = SKB_DATA_ALIGN(fragsz);
-> 
-> statement just before the enclosing 'if'. I would consider moving such
-> assignment inside the 'then' branch - since __napi_alloc_frag_align()
-> already include that.
 
-Okay, moved.
+Hi Mark, David,
 
-> /P
-Sebastian
+Thanks for CC'ing me. Been reading the discussion so far.
+
+On Thu, 11 Jan 2024 21:49:53 +0000
+Mark Brown <broonie@kernel.org> wrote:
+
+> On Thu, Jan 11, 2024 at 03:32:54PM -0600, David Lechner wrote:
+> > On Thu, Jan 11, 2024 at 2:54=E2=80=AFPM David Lechner <dlechner@baylibr=
+e.com> wrote: =20
+>=20
+> > > > (CCed) a while back when he was doing all the work he did on optimi=
+sing
+> > > > the core for uncontended uses, the thinking there was to have a
+> > > > spi_prepare_message() (or similar) API that drivers could call and =
+then
+> > > > reuse the same transfer repeatedly, and even without any interface =
+for
+> > > > client drivers it's likely that we'd be able to take advantage of i=
+t in
+> > > > the core for multi-transfer messages.  I'd be surprised if there we=
+ren't
+> > > > wins when the message goes over the DMA copybreak size.  A much wid=
+er
+> > > > range of hardware would be able to do this bit, for example David's=
+ case
+> > > > was a Raspberry Pi using the DMA controller to write into the SPI =
+=20
+>=20
+> > For those, following along, it looks like the RPi business was
+> > actually a 2013 discussion with Martin Sperl [2]. Both this and [1]
+> > discuss proposed spi_prepare_message() APIs. =20
+>=20
+> > [2]: https://lore.kernel.org/linux-spi/CACRpkdb4mn_Hxg=3D3tuBu89n6eyJ08=
+2EETkwtNbzZDFZYTHbVVg@mail.gmail.com/T/#u =20
+>=20
+> Oh, yes - sorry, I'd misremembered which optimisation effort it was
+> associated with.  Apologies.
+
+Yes. It was Martin Sperl who proposed this on a Rpi. I mentioned something
+similar toward the end of my 2nd email reply in that thread [1]. That might
+have triggered the confusion.
+As for my interests, I am all for devising ways to make the SPI subsystem m=
+ore
+suitable for optimized high-performance use-cases. In that regard, I think
+re-usable messages (spi_prepare_message()) can be useful. More capable
+hardware can enable very powerful use-cases for SPI, and it would be cool if
+the spi subsystem had the needed infrastructure to support those. As for
+hardware-triggers, I still need to wrap my head around how to have a
+universally usable API that works nice for the first use-case that comes al=
+ong
+and also doesn't screw up the next use-case that might follow. Keep me post=
+ed.
+
+[1] https://lore.kernel.org/linux-spi/20220513144645.2d16475c@erd992/
+
+Best regards,
+
+--=20
+David Jander
+Protonic Holland.
 
