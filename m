@@ -1,133 +1,98 @@
-Return-Path: <linux-kernel+bounces-24671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD73B82C040
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:59:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8AE782C04A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3A4E1C219CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:59:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 631A11F2205D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB51F6BB37;
-	Fri, 12 Jan 2024 12:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="gjckNLXe"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0066A353;
+	Fri, 12 Jan 2024 13:00:19 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322596A019
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2bea904e72so78099766b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:59:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1705064341; x=1705669141; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q/IzbCUttBySDW4UF+/3Rn+hm1gmEpaoc8lHsutNmx8=;
-        b=gjckNLXeJl1VQKwGhBLQJ6tU0IFqxyl6G/BhGUbaaaHvDKDRm++LMsDYwin5W7Dtbw
-         eq6Ilj484MUG7TV6UC94ZWWISkSfgp75ESs4EV4WrwFJ1TWXU2kOx9sKkismzM5LmxZf
-         WqfDsWg4P1C2ILDwlsjlB+2pVhE1xX6VQeIi8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705064341; x=1705669141;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q/IzbCUttBySDW4UF+/3Rn+hm1gmEpaoc8lHsutNmx8=;
-        b=k/GHL1E3MRrYVNSO82e6BazBCfo6pKNri6ZkRCksMiJKk0OkMbCPFR9GQEXnhCVxL5
-         1TKZsxoEMBxeNhOTh6KTFllGiQz91EUbV2RiUsTtUQBCFy2c9Twe3TLSVLI4jS36u+VP
-         WaGv+x3Re1U0aSA0EydvkXR4e6PweeCuwNyHXrY74uR6lSuvAQNwjoHK0nAgbrdnLSLL
-         FdPgGR42uu26EYEJci15F5UwpKAz5LBah5UnZRhP5u91ZEHcPVkB6lB53mHDzWy0cWwV
-         9d3UI+BLofmUy0xKcxNET9YcupaLVAvdmbwaItpwsn0ooRsqTuTb5aqK55jfC7BFFt17
-         GD8A==
-X-Gm-Message-State: AOJu0Yzqr7yq35PigIblftGGlOQ+lDQjh1UqFHem5Frcgy7R/L/uYRvR
-	zqoInVw6d++KYIypJw1t6jOeVCQYXjldCQ==
-X-Google-Smtp-Source: AGHT+IEfYaqUTOGYXCnanYoymnssMQ6JQhm90dq0lyVwhDnSY+yy0Tw5ugD8WF4joaSuBa55ngsAoA==
-X-Received: by 2002:a17:906:5859:b0:a28:6639:ba53 with SMTP id h25-20020a170906585900b00a286639ba53mr1417632ejs.6.1705064341418;
-        Fri, 12 Jan 2024 04:59:01 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id tg14-20020a1709078dce00b00a2cb117050fsm806326ejc.126.2024.01.12.04.59.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 04:59:01 -0800 (PST)
-Date: Fri, 12 Jan 2024 13:58:59 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org, Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH] drm/doc: internals: remove section on PCI legacy support
-Message-ID: <ZaE3k1042oCQdft0@phenom.ffwll.local>
-Mail-Followup-To: Randy Dunlap <rdunlap@infradead.org>,
-	linux-kernel@vger.kernel.org,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-References: <20240112051731.15722-1-rdunlap@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE6F6A34F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-107-MotGPF6GOuKC6jFoeEgFUA-1; Fri, 12 Jan 2024 13:00:14 +0000
+X-MC-Unique: MotGPF6GOuKC6jFoeEgFUA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 12 Jan
+ 2024 12:59:56 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 12 Jan 2024 12:59:56 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Dongsoo Lee' <letrhee@nsr.re.kr>, Herbert Xu
+	<herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, "Jens
+ Axboe" <axboe@kernel.dk>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y.
+ Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "x86@kernel.org"
+	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+CC: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v6 RESEND 5/5] crypto: LEA block cipher x86_64
+ optimization
+Thread-Topic: [PATCH v6 RESEND 5/5] crypto: LEA block cipher x86_64
+ optimization
+Thread-Index: AQHaRP97Qv3M1SIfYkW1atonfzlDU7DWJB2Q
+Date: Fri, 12 Jan 2024 12:59:56 +0000
+Message-ID: <cbd8de6ff70849a98faf2fd25b065a94@AcuMS.aculab.com>
+References: <20240112022859.2384-1-letrhee@nsr.re.kr>
+ <20240112022859.2384-6-letrhee@nsr.re.kr>
+In-Reply-To: <20240112022859.2384-6-letrhee@nsr.re.kr>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112051731.15722-1-rdunlap@infradead.org>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 09:17:31PM -0800, Randy Dunlap wrote:
-> The functions that were described in this section of
-> drm-internals.rst were removed in NOV-2023, along with all of the
-> kernel-doc comments in the source file. This now causes a
-> docs build warning, so remove that section of the documentation also.
-> 
-> drivers/gpu/drm/drm_pci.c:1: warning: no structured comments found
-> 
-> Fixes: 2504c7ec728b ("drm: Remove source code for non-KMS drivers")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
+From: Dongsoo Lee
+> Sent: 12 January 2024 02:29
+>=20
+> For the x86_64 environment, we use AVX-512F/AVX2/SSE2 instructions.
+> Since LEA uses 128-bit blocks of four 32-bit integers, for optimization,
+> SSE2 encrypts 4 blocks, AVX2 encrypts 4/8 blocks, and AVX-512F encrypts
+> 4/8/16 blocks at a time.
+>=20
+> Our submission provides a optimized implementation of ECB, CBC
+> decryption, CTR, and XTS cipher operation modes on x86_64 CPUs
+> supporting.
 
-Applied to drm-misc-next, thanks!
--Sima
+Given you say in 0/0:
 
-> ---
->  Documentation/gpu/drm-internals.rst |   12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff -- a/Documentation/gpu/drm-internals.rst b/Documentation/gpu/drm-internals.rst
-> --- a/Documentation/gpu/drm-internals.rst
-> +++ b/Documentation/gpu/drm-internals.rst
-> @@ -153,18 +153,6 @@ Managed Resources
->  .. kernel-doc:: include/drm/drm_managed.h
->     :internal:
->  
-> -Bus-specific Device Registration and PCI Support
-> -------------------------------------------------
-> -
-> -A number of functions are provided to help with device registration. The
-> -functions deal with PCI and platform devices respectively and are only
-> -provided for historical reasons. These are all deprecated and shouldn't
-> -be used in new drivers. Besides that there's a few helpers for pci
-> -drivers.
-> -
-> -.. kernel-doc:: drivers/gpu/drm/drm_pci.c
-> -   :export:
-> -
->  Open/Close, File Operations and IOCTLs
->  ======================================
->  
+The LEA algorithm is a lightweight block cipher that processes data blocks =
+of 128-bits and has three different key lengths, each with a different numb=
+er of rounds:
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Just how big is it ?
+Doesn't look 'lightweight' to me.
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
