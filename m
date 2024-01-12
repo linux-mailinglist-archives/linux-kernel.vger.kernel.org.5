@@ -1,185 +1,214 @@
-Return-Path: <linux-kernel+bounces-24525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE39782BDE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:53:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F8B82BDE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:54:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D436C1C25903
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:53:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D36D1F2741C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFCB57877;
-	Fri, 12 Jan 2024 09:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312695D8F4;
+	Fri, 12 Jan 2024 09:52:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Du9KTIU3"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="ok5R+uLD"
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89BCC56B74;
-	Fri, 12 Jan 2024 09:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705053068; x=1736589068;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=FPdfpw0WZUm/iOXzZuKfmQozG49iFsQuMT8wBOhSSbE=;
-  b=Du9KTIU3QUpTNLnENOdGAkaKrfwD4bxAK88WPMVNxQX5RVx3ysPpmZiq
-   oGMrmYWjoXMaddf5C7R+m3iIl2AmiWU9BAH+c0r/tg7S9IMHE7+bCeSrL
-   3ru3C2VwI82x4Wux08Ki4ckeYph3TLXigIEpKr2B7jiyzp68P7NKIXXAv
-   CWHRhFdwM5Wyq2XUAejMTbivtW+FYVix242fqmXZFjFYJBVOO3ZQEfs1L
-   PPrOTP6IEoGXN68NdX06p7npYxqqd/O4MQZbOudGotjGz2jrIatqwYFwR
-   d4TS45DLd2U5G2flmep14QduyuPC2BQtUdXl+uOa9OvR/epehu4g7+rVR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="485307053"
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="485307053"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 01:51:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="775958961"
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="775958961"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Jan 2024 01:51:07 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Jan 2024 01:51:06 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 12 Jan 2024 01:51:06 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Jan 2024 01:51:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QEmAWTBIKyrz37qK6C7jBv2gDf4DllZWuB2wDHMZKkoX4diNy2u0y+/KinOoRtPv6uoA2xmkM40eRsHuDBA9JwG9vnjM/PmxVHioUJrKWT+eje+Wfq67gddWsQXlYj19vx8jt9bui/zvy3MDkkhvrmCWld2Fs1T3nH4aZ/zL6DDzXxHO2nhKfUfxKcLgpaJd7MmPm8CdpukLm4Xsg71AA6DIKAGkjxm7611uhW1WnX7N2dgPC4m46kXAHHUS4ej4y/lx8ob1mhbrqazbcEV9ofwVoZsbq6l0Nf7FX/uVf43IO1Pnw4gZ2cIb6snWy7UUC9g+XqJTcF46dk7ozOLdOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FPdfpw0WZUm/iOXzZuKfmQozG49iFsQuMT8wBOhSSbE=;
- b=GvrxxDR0zR3pgSnXKzpwox9y2/6IAdWPpWWYa+KNfNshIrKj8tZgZSRMQx4Poei/ETFNMjIBfYJ2BZDUWcT+xjZzs5dQG06v/SjNZAK1p9x4WJ3XKhbJG31hJMddtjAi1VvsYmhwiUKr22Ooz0fDVXKaVyY6CMw9W04IA/qci9ejxTTIYKaPoG/7rc2gvGzZHehoi6xgljClKvvu0pE1qGhvJxEqFQitgBZ9meJBhzsVe3ATfS61jCVcGOO0mWZT9+l7BvKBk+5RasPtXsf3OY4ohHvInAIvc4qpPOa4Q/+1XlOt4zHWWDK3B5Zp5hhbCC/2TNRcKZW7fMz3/8VFMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
- by BN0PR11MB5710.namprd11.prod.outlook.com (2603:10b6:408:14a::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Fri, 12 Jan
- 2024 09:51:04 +0000
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::8ccb:4e83:8802:c277]) by SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::8ccb:4e83:8802:c277%4]) with mapi id 15.20.7181.020; Fri, 12 Jan 2024
- 09:51:04 +0000
-From: "Li, Xin3" <xin3.li@intel.com>
-To: Xin Li <xin@zytor.com>, "Huang, Kai" <kai.huang@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "Yang, Weijiang" <weijiang.yang@intel.com>, "Christopherson,, Sean"
-	<seanjc@google.com>, "x86@kernel.org" <x86@kernel.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com"
-	<hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>, "pbonzini@redhat.com"
-	<pbonzini@redhat.com>
-Subject: RE: [PATCH v3 1/2] KVM: VMX: Cleanup VMX basic information defines
- and usages
-Thread-Topic: [PATCH v3 1/2] KVM: VMX: Cleanup VMX basic information defines
- and usages
-Thread-Index: AQHaC4qSP11mhPXdtUaggDGBDHZ2JLBjmx0AgACNOICAcjlxIA==
-Date: Fri, 12 Jan 2024 09:51:04 +0000
-Message-ID: <SA1PR11MB6734789DDF72683C9C783F70A86F2@SA1PR11MB6734.namprd11.prod.outlook.com>
-References: <20231030233940.438233-1-xin@zytor.com>
- <2158ef3c5ce2de96c970b49802b7e1dba8b704d6.camel@intel.com>
- <47316871-db95-4f72-9f3a-71743d97d336@zytor.com>
-In-Reply-To: <47316871-db95-4f72-9f3a-71743d97d336@zytor.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|BN0PR11MB5710:EE_
-x-ms-office365-filtering-correlation-id: 48d70093-f0ec-4525-2b12-08dc1353fdda
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /UIGaG4uvO0QAJ05icr221VwogGcEQ1FLDvLFmW2T/k6weV1qJiJ4fuolZb6vZpWI4A3mJhOaKqky91QtJGDtq6MPOrYoEAzs8o2fWJIHuUwxf9BzJUJK8J01YNyE22sxQoZT4GJ6bYKgtWbS15cRclrnsz+hff6TYNHaySus4hAK29LgqUBh/3bUB3K1n0b8U/HJBN+28VF0zZ2w6DqCqaB1Oq4xYzvJcwTrzgbdYDhf3lfuYsm/CXlZ0wwWRc0tsxpew7OrcPGImdNTYgSd7kvKBNvR3Es41Rg4E9RCImS6n2xze5vzVVtXMlWs66zkuDJ4WOCVGmc6G9csrBnuCrycqa5jezfljSRtqOxH+bEb+a00gvyo93tE5yAhysAPlAov2HxLKylOdOch2mo6sS3HnFu483u9jWwy+2Q0d1L+ug5JJPWbEMHMrG+taMmpADsu7XUq8AcVBw5QSfzk5eOLdWkQQ1VokzoF8HbkLhGLrr97sp3H6RPpt0QWDYqd8FaUVpSR975PhNqJseLQBa4tmqVMQ2bWPx+n/8HBRs4zKcrgeQENI0PFmIBiyGLE0J4fZAYMAHf3MuK8/ZdWkdGvI+uo9eIpTKALKU3ydWNAjZavS646La0AmpNZW3F
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(136003)(346002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(82960400001)(86362001)(33656002)(66946007)(66446008)(64756008)(66476007)(66556008)(76116006)(110136005)(54906003)(52536014)(4326008)(8936002)(8676002)(316002)(26005)(71200400001)(38070700009)(478600001)(6506007)(9686003)(7696005)(122000001)(38100700002)(41300700001)(7416002)(2906002)(4744005)(5660300002)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Nk9CUDZxTWQwdXBMbVc1Z20vUFNrNk9QVjF5MzZzekF5aXFOa2ZpdW9mME5L?=
- =?utf-8?B?NVdCOFlHUzZIMlJPR1Q4RnRMcGdFY0ZFZDdzdkN6SldXWXI4QWdDa0Q3aS8r?=
- =?utf-8?B?eVFhQi9SUEtuU2xHSzFPQ0wyS3FBdHdjeU1URTR6amFTMjJQclZod29obmhB?=
- =?utf-8?B?TXBQR21PcE0zMUZIK0J3SlVQSXJCQWVpRzIwYUp2eDF5UVBXU0lrUTdmRkVi?=
- =?utf-8?B?ZkhZMFpuYTRPWk8vbGF4Y0VGME9WRWZBVTlQajVzWHdnQkpwRnJXandNb3lC?=
- =?utf-8?B?MUdBYUd3OW1sOGV5RlZnRVVwMVhVMVIyKzZpUEZWUEhxTnVEN1RNak9OaFVs?=
- =?utf-8?B?amdFbG1UeVFDUXlXVytLL1ErUnZIQ1hVM0RVc0FxYzd3cW56RVpBaWFvN0lM?=
- =?utf-8?B?aUpiaFhPeTczakJNbkFxVkxNMUJmRWtEUkw3bjQ5cUZQNUJtVUlYR1BHOEcw?=
- =?utf-8?B?UlY4ckNmQTZTYU13N1VDMWVWUW5lR3d3S2J3aGg2dU1UdEpqY3cxV2RRcEI2?=
- =?utf-8?B?SURoYzlaV3NDMnVpa21iNk1TbU5Ndi9qN29aZ0g3S1BrWUErQ3kxMllOaE5E?=
- =?utf-8?B?WFZOQjlRcCt5NVVoZ2hMM2Y1UndCenhTcDV0YnpQTUtwb0xaS0ppcUF1N2g0?=
- =?utf-8?B?VS9aM3dRMS9VbDl4UjVlT0d4VTR2L1A1TktjaFQxM1lqcnRjVXB4YlNWSWVo?=
- =?utf-8?B?U3ozK0lQNU91ZWpMUGwrUHR1aG5qNVdHMytsQzRIOGs2cGdSMHFMc1U3WVI2?=
- =?utf-8?B?SEVjaXp5Y3p1bU1pM1pzb3J3aWVFZDNBWHd4UzBtT2VvZDhiQXF2Q2UvNjl2?=
- =?utf-8?B?U2wrRW1XMGJrd1h2bWlqd0ZWWHZqUklCUzNHcjUwdFhVQVZhL3ZBWDBRSnYr?=
- =?utf-8?B?c2ZJL3duSEc2K096bzM0V2hERW5uUmRsY1pEWkY4Yzd2dTE5d0I0MXZ3SkpN?=
- =?utf-8?B?TXpDUUxUY3QxUkxINU90K2w0Q1U0eHFRQ1hFRFhJUzl5bmwxQlJ0a0VJQVIy?=
- =?utf-8?B?ampqOVpYNTRSUklBamx1ekdWNCt6alhUNGk5dHZZNCt5eWVjZVB3a2h5a3Mv?=
- =?utf-8?B?MzNVRGlReklzY1BsaGxwQUZSejMwZmxybnhqVDArTFdsaDJnT2NVYzRRUVBQ?=
- =?utf-8?B?eVNiYXI1ZnpvWStJK3l6U01NSVBGS0p5SjBQNmF6aXNBVlNHRzB5a1VuZUk0?=
- =?utf-8?B?VFFuUDUvMkJGWm1uRVdyamxaY0JUWEh6OEU0eld1S0dDWkpEeU8wL00yZ1Zo?=
- =?utf-8?B?QlB6VWg2WnpmeTgwWkRvenBSQm9CSHJtaVNEdFNUOWtHSDFrODhWOGtNYS8w?=
- =?utf-8?B?NVJTRlRuZnhqOWVNZnJxSFEweGJXRHdqQ3ZyT3pRWmFpNVk4V2ViN2x1QlBN?=
- =?utf-8?B?TmZndFdxb3lBeEVNTENRMzBxazFlMXBUcmlZZHlqZnFobVBDcXMrbExFQkl6?=
- =?utf-8?B?S3B4MUNiSmw5dmF5bWk4dklOc3A2bnNrR1BjUGZvYWhLUi9mTFpqM3NZejNT?=
- =?utf-8?B?Vk9UY2NFWjFvSU9rUThMWGRqeUNZdStVU2svbDNiUnVRV1FiUTY0RFBYVTl2?=
- =?utf-8?B?cWxmUEJJRWxlQTI4ZEsvNU9WbVl4aXo2UGRFT2Z4M0l1NnJGWGk2cUYyZkdP?=
- =?utf-8?B?L2U1cTYwVGpUQlBCTUJQM2syWFh5RnA1VzZhOWUyc2ViSHNLZ1BHc0tqcHpq?=
- =?utf-8?B?anJsRUc5MTM0cmliaGdCS2RhcW43VEdJTDZYRUpGLy9OZU4vdHc0RGpjN1cr?=
- =?utf-8?B?aUJCeno0UjlvbHM0eUxSbFpRL05mUmloOVpROTM0STFtWVJHUG5ON09jR1dI?=
- =?utf-8?B?OVNWT1ozR24xSStEL0JpZE9KVEU3T01mRStGc0JGdjZNVld5eElucWtNalpr?=
- =?utf-8?B?UXpGYlljcHFZS29KazVodDQvNnA0bXNIL2hxZHZpRXdaNk1wVlorM1RmY0Z5?=
- =?utf-8?B?aXdlakhDaEN2Zno3SUo3Q09iR1R2ckU4SHptVDdBYWlkUE1TVTBrYUpOWXFC?=
- =?utf-8?B?RWEwNUlUN05wNGhBUjIvMGFjWTJDV2FBMVdPbmhPYWF2Z2U4WHVsU0k1M09C?=
- =?utf-8?B?N3hiN3pMQ0pKc1ZpWVVpUjVISFBrTUhMMVppbU1mcGliVG5WVzZiK3p0V29G?=
- =?utf-8?Q?5c6c=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A7760EC7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-5574feb7958so7303815a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1705053120; x=1705657920; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HlNYofu3r8i2ZCiashKW8Im9PXJC4O/VU7zX1cqDADg=;
+        b=ok5R+uLD6ZTnei0DVPWInfSJ85n49ghZCKD3glCaQMa+f//WmrikyFRrLtuYKf724v
+         x4F8ajGuLYjagd++ZzM2jU808PNxVdVE1yty5NEh/d+JJzE13S7JgptnV7E8Z2SyETg8
+         Y4LnyvFBnsrx9bVwEEYjN385B0e7TSkxuje0S6nd6YtFjGEmNPSrPEoU+/DmCM3fwtns
+         Y0f6jBK8kUxRgn7pCTYWaGdiGszKtB6MCGhhTA8M0dlYRYrcBRM9eExzqPN2+Ru9p2s2
+         nb9Cdo3LKOc/b4KjCYy+9rpcCxE6Xv8vwwyDeMdK5XfCEpaSNmWS4+knq+gun2J4XWYu
+         h7jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705053120; x=1705657920;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HlNYofu3r8i2ZCiashKW8Im9PXJC4O/VU7zX1cqDADg=;
+        b=Spe+TI++BUnPni0ApjMFb+OgHyHUL181913z2oCTmW58qsaX664IoHbKDQruNzMpOj
+         HmFFOSmoaLWyV8JLueHZ0vXMMVvmmBUGFXZXJEDjpdv4npMEsy6KqbxXhoAtGRsfbD+A
+         CdRrEdJ7L4VfiITvG791J5ccg64QcZ8F94UE0cyf1GZx55grF7ahZ1fdOGHcUU1PU3Zh
+         isFuhE5yu+9Ef0zK0nZUbj0Zupo4CP1XuDHetZ/Xzr+WrNYFX2ncSpZ18xnd6eYZjFzi
+         iPCVtrskFYh02Gs+iuL9rI0GTK/Y2OloFz0fKxi7Zm9bFWGL1ofuwPCwZUKEQmySRveX
+         JvFg==
+X-Gm-Message-State: AOJu0YxhfcNdZpBriXkGnyOm5FD54YdfW/aEKqKu1I4AvCoC7JR2LaUi
+	UNJzUw5hhhQYSxwgzQwdUZjufnghxDbNvQ==
+X-Google-Smtp-Source: AGHT+IH6D9hm2y3kaGCs5RwJQn2m/6/TZIAhrZDDw5invkLKwXZ/IILZ+DDyExfQK5cF5FyfT3lihA==
+X-Received: by 2002:a05:6402:1d1c:b0:557:aa16:1e44 with SMTP id dg28-20020a0564021d1c00b00557aa161e44mr489041edb.79.1705053119939;
+        Fri, 12 Jan 2024 01:51:59 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id eg7-20020a056402288700b0055515b40464sm1616621edb.81.2024.01.12.01.51.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 01:51:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48d70093-f0ec-4525-2b12-08dc1353fdda
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 09:51:04.1571
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RlNIm0DavC3Rk/DBt3s0g3tjHfJYHrYHfqscdQ8K8LPHppRAOiQV3AIMV+rT1zRAQmPwtx9m1q+sbYQotbxoQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR11MB5710
-X-OriginatorOrg: intel.com
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 12 Jan 2024 10:51:59 +0100
+Message-Id: <CYCMVXHYVDCI.HVH1TR8MWEUK@fairphone.com>
+Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for DJN HX83112A LCD panel
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: <neil.armstrong@linaro.org>, "Linus Walleij" <linus.walleij@linaro.org>
+Cc: "Jessica Zhang" <quic_jesszhan@quicinc.com>, "Sam Ravnborg"
+ <sam@ravnborg.org>, "David Airlie" <airlied@gmail.com>, "Daniel Vetter"
+ <daniel@ffwll.ch>, "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+ "Maxime Ripard" <mripard@kernel.org>, "Thomas Zimmermann"
+ <tzimmermann@suse.de>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Bjorn Andersson" <andersson@kernel.org>, "Konrad
+ Dybcio" <konrad.dybcio@linaro.org>, "Andy Gross" <agross@kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+ <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
+ <20240110-fp4-panel-v2-2-8ad11174f65b@fairphone.com>
+ <CACRpkdaWTfPDCin_L6pefHsokjNyO8Mo6hWPdzPLLi1EUkKUuA@mail.gmail.com>
+ <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com>
+ <CACRpkdZQbVXfBa70nhDOqfWPbsh-6DgX-uvZOxr19pzMmF2giQ@mail.gmail.com>
+ <CYCLSCKPPBOC.1B1MP3VOOC0Q8@fairphone.com>
+ <cdc18e2a-b7eb-4b54-a513-481148fb3b0d@linaro.org>
+In-Reply-To: <cdc18e2a-b7eb-4b54-a513-481148fb3b0d@linaro.org>
 
-PiA+PiBAQCAtNjk2NCw3ICs2OTc1LDcgQEAgc3RhdGljIHZvaWQgbmVzdGVkX3ZteF9zZXR1cF9i
-YXNpYyhzdHJ1Y3QNCj4gbmVzdGVkX3ZteF9tc3JzICptc3JzKQ0KPiA+PiAgIAkJVk1DUzEyX1JF
-VklTSU9OIHwNCj4gPj4gICAJCVZNWF9CQVNJQ19UUlVFX0NUTFMgfA0KPiA+PiAgIAkJKCh1NjQp
-Vk1DUzEyX1NJWkUgPDwgVk1YX0JBU0lDX1ZNQ1NfU0laRV9TSElGVCkgfA0KPiA+PiAtCQkoVk1Y
-X0JBU0lDX01FTV9UWVBFX1dCIDw8DQo+IFZNWF9CQVNJQ19NRU1fVFlQRV9TSElGVCk7DQo+ID4+
-ICsJCShNRU1fVFlQRV9XQiA8PCBWTVhfQkFTSUNfTUVNX1RZUEVfU0hJRlQpOw0KPiA+Pg0KPiA+
-DQo+ID4gLi4uIGhlcmUsIHdlIGNhbiByZW1vdmUgdGhlIHR3byBfU0hJRlQgYnV0IGRlZmluZSBi
-ZWxvdyBpbnN0ZWFkOg0KPiA+DQo+ID4gICAgI2RlZmluZSBWTVhfQkFTSUNfVk1DUzEyX1NJWkUJ
-KCh1NjQpVk1DUzEyX1NJWkUgPDwgMzIpDQo+ID4gICAgI2RlZmluZSBWTVhfQkFTSUNfTUVNX1RZ
-UEVfV0IJKE1FTV9UWVBFX1dCIDw8IDUwKQ0KPiANCj4gSSBwZXJzb25hbGx5IGRvbid0IGxpa2Ug
-c3VjaCBuYW1lcywgdW5sZXNzIHdlIGNhbiBuYW1lIHRoZW0gaW4gYSBiZXR0ZXIgd2F5Lg0KPiAN
-Cj4gPg0KPiA+IEFuZCB1c2UgYWJvdmUgdHdvIG1hY3JvcyBpbiBuZXN0ZWRfdm14X3NldHVwX2Jh
-c2ljKCk/DQoNCkEgc2Vjb25kIHRob3VnaHQgb24gdGhpcywgSSBhZ3JlZSB0aGlzIGlzIGJldHRl
-ci4gIEFuZCBJIHdpbGwgcG9zdCB2NC4NCg0KVGhhbmtzIQ0KICAgIFhpbg0K
+On Fri Jan 12, 2024 at 10:14 AM CET, Neil Armstrong wrote:
+> On 12/01/2024 10:00, Luca Weiss wrote:
+> > On Thu Jan 11, 2024 at 8:05 PM CET, Linus Walleij wrote:
+> >> On Thu, Jan 11, 2024 at 4:28=E2=80=AFPM Luca Weiss <luca.weiss@fairpho=
+ne.com> wrote:
+> >>
+> >>> In some internal documentation it says "LCD Driver IC" "HX83112A" and=
+ I
+> >>> don't see any reference to Truly 5P65 anywhere.
+> >>
+> >> In the Android directory I pointed to I see this file:
+> >> HX83112_Android_Driver/Truly_5p65_module_fw/UpdateFW.bat
+> >>
+> >> (Notice the 5p65 fw dir is *inside* the HX82112 dir)
+> >>
+> >> And in that file:
+> >> adb push TRULY_5P65_1080_2160_HX83112A_D01C01.bin
+> >> /system/etc/firmware/Himax_firmware.bin
+> >>
+> >> Clearly indicating that they are pushing a Truly 5P65 firmware into
+> >> the Himax display firmware directory.
+> >>
+> >> To be fair, that is the driver for the touchscreen part of HX83112A,
+> >> but ... Truly is a well known manufacturer of display controllers?
+> >>
+> >> But... given that you have a @fairphone.com mal address and
+> >> a working relationship with them, can't you just ask?
+> >>
+> >>> On their website they have this sentence:
+> >>
+> >> All OEMs want to look like everything is their own product. It is
+> >> business as usual.
+> >=20
+> > I can't tell you anything there that I don't know, sorry.
+> >=20
+> >>
+> >> Further on the same note since I guess you have a datasheet)
+> >> please bring in #defines for the commands (the first byte in the
+> >> write sequences, for examples:
+> >>
+> >> +       mipi_dsi_dcs_write_seq(dsi, 0xbd, 0x02);
+> >> +       mipi_dsi_dcs_write_seq(dsi, 0xd8,
+> >> +                              0xaa, 0xff, 0xff, 0xff, 0xff, 0xff, 0xa=
+a, 0xff,
+> >> +                              0xff, 0xff, 0xff, 0xff);
+> >> +       mipi_dsi_dcs_write_seq(dsi, 0xbd, 0x03);
+> >>
+> >> Clearly 0xbd is HX83112_CMD_SETREGBANK?
+> >> (This is easily spotted from the similar structure in the
+> >> existing panel-himax-hx8394.c.) So please add #defines
+> >> for all commands you know, especially if you have a datasheet
+> >> because we reviewers don't have them and "it's just magic
+> >> bytes" isn't very compelling. It adds a lot to understanding.
+> >=20
+> > Right, the register names seem to match more or less the ones from that
+> > driver, plus some new ones and some differently named ones. Will send a
+> > v3 with that.
+> >=20
+> >>
+> >> I strongly suspect other Himax displays such as HX8394 to
+> >> be using a Truly controller as well, hence the similarities.
+> >>
+> >> In a datasheet for their TFT800480-84-V1-E display controller
+> >> Truly kept the init sequence name of void LCD_INIT_HX8290(void)
+> >> for example.
+> >=20
+> > In that datasheet (assuming I'm looking at the same one?) it says
+> > "Driver IC" "HX8290-A[...]" so there the display driver is manufactured
+> > by Himax and not Truly to my understanding. Truly is assembling togethe=
+r
+> > Driver + all the other parts that go into an LCD.
+> >=20
+> > For the panel used on Fairphone 4 that part is done by the company DJN.
+>
+> Looking at the discussion, this seems to confirm the Display+Touch IC is =
+HX83112A,
+> and Truly is the panel manufacturer and all assembled by DJN, so IMHO the=
+ initial driver is right.
+>
+> Perhaps the compatible should be djn,hx83112a-truly-5p65 to reflect that =
+?
+
+Since there's zero indication Truly is involved in this panel in my
+documentation - much less the number 5P65 - I'm not going to add that.
+
+One other number I'm certain of is from DJN's side the model number of
+this panel is 9A-3R063-1102B, which I assume is the specific combination
+of components + frame and everything for Fairphone 4 device.
+
+That one you can also find in this document (Ctrl-F for DJN)
+https://www.fairphone.com/wp-content/uploads/2022/09/FP4_Information-for-re=
+pairers-and-recyclers.pdf
+. or on this picture:
+https://guide-images.cdn.ifixit.com/igi/HgTquQPABg1mAMHD.huge
+
+So something like djn,9a-3r063-1102b would also be somewhat valid I
+guess?
+
+So in short this panel is the model 9A-3R063-1102B from DJN, which uses
+a Himax HX83112A driver IC.
+
+And there's also AU Optronics listed as =E7=8E=BB=E7=92=83=E5=8E=82=E5=AE=
+=B6 ("glass manufacturer"?)
+fwiw, though the display also uses Corning Gorilla Glass 5 so not sure
+who's supplying what.
+
+Regards
+Luca
+
+>
+> Neil
+>
+> >=20
+> > Regards
+> > Luca
+> >=20
+> >>
+> >> Yours,
+> >> Linus Walleij
+> >=20
+
 
