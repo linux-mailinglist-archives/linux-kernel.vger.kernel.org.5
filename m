@@ -1,105 +1,121 @@
-Return-Path: <linux-kernel+bounces-24889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F4382C447
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:08:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D2382C448
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA633283113
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:08:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D227A283740
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C2F175A3;
-	Fri, 12 Jan 2024 17:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A591B5B0;
+	Fri, 12 Jan 2024 17:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRVpXWqf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oT6zVPJ1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DAAF1B5A9;
-	Fri, 12 Jan 2024 17:08:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EFB1C433F1;
-	Fri, 12 Jan 2024 17:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FE81B5A5
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:09:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A3ABC43390;
+	Fri, 12 Jan 2024 17:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705079297;
-	bh=sE1TCe80xpKNIxZm8GXM9fLcVkdAEX6Fc2Z2vgDhElE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fRVpXWqf2aJoqxFaPcC1R/GyqHT2YPwwGsRWgDYpzhmMgdGZFpjWwbLFWPOax0zm/
-	 VSJoaHnAemwwPl1vsNnoTON0lJfGtVHQ0UK+YpnR4qBAwS7OXZdp2nIssn4qlN8BH4
-	 QiypiMwBewbX5T+eHf09P3XzL7Fb+rcLUOXV1c7FC9eZU0i05tNe8Fe1F9zVhYwOBu
-	 KtBjyXP2C1AMrvKkwJUCoZmTzRAhfefsAQIhYcqRWK/JBk7JMcBAEYMZl7nYmAVuxg
-	 t3yuDgB7Kp+LHqBmH/wFPMzGeIXa28npbPi52xs6/WQpTmd8/JH6xPQRI7UscTkFNf
-	 iw8gIfpvYEUiA==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cd7e429429so35774721fa.1;
-        Fri, 12 Jan 2024 09:08:17 -0800 (PST)
-X-Gm-Message-State: AOJu0YzAZLTUoELgRxHU3+d3D2VP1pWsp1YntgxYHairS//G87qsraFx
-	GPOLhaOnCFrZrlnEnfmIbH4u3C6EyG24+nAfhCs=
-X-Google-Smtp-Source: AGHT+IHyAqay9dvgUNhPdxBClQnLJFRhZs6TShMRqnoDzO/tn6LzEQj4Bd27DfAjV2Uk0jCL5TT4pF5PbmXdq+XuE5w=
-X-Received: by 2002:a05:6512:74:b0:50e:69df:b067 with SMTP id
- i20-20020a056512007400b0050e69dfb067mr767864lfo.11.1705079295776; Fri, 12 Jan
- 2024 09:08:15 -0800 (PST)
+	s=k20201202; t=1705079340;
+	bh=GDl6p3UZsPjLAqZ6riRDVB5aigv9wH3zVmTnLWIcCLI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oT6zVPJ1R4hpGcq1aYlIz3BQCRh9WApN8ONK8zmQdxhnpvQ4qnEitpsH/OaFXD7Lv
+	 pQYWqm+0WDhpeJreemXvrlAuK7AU4Hc4uIa4nlQpz0d9OLm0gGEjjyuSO4bLv48gNO
+	 wBpO2MgUt2REUjD9v8uQbuBBLgFkt9lh8NTLS8FdPZ7WLpCskAkiT3zi21d7UqBtVn
+	 JS1S7XlfxIALEhlgXbbrghvQDmBraimE2YU1/uOKIyP/EdEnD3lIBU9TDoZp54fiW3
+	 BjRIr4aEZruzFNycr5wKIvzaDW8rkO23ZZAW9/S2AOwa7o5iLpehdKKUeZX6/SHQtS
+	 MMuYRYDBwcCZw==
+Date: Fri, 12 Jan 2024 09:08:58 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux F2FS Dev Mailing List <linux-f2fs-devel@lists.sourceforge.net>
+Subject: Re: [GIT PULL] f2fs update for 6.8-rc1
+Message-ID: <ZaFyKl-iqh9J64du@google.com>
+References: <ZaAzOgd3iWL0feTU@google.com>
+ <CAHk-=wgTbey3-RCz8ZpmTsMhUGf02YVV068k3OzrmOvJPowXfw@mail.gmail.com>
+ <20240112071242.GA1674809@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214222107.2016042-1-song@kernel.org> <20231214222107.2016042-2-song@kernel.org>
- <CAMuHMdUtzhwHLa_DTtH00YsZ6t_CefZjZj6oS_mpckHDNXpYWw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUtzhwHLa_DTtH00YsZ6t_CefZjZj6oS_mpckHDNXpYWw@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Fri, 12 Jan 2024 09:08:04 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6KVN1c=dB1RXVQjygBevVcb_1qQJoLz3zA-qTVVmbCAw@mail.gmail.com>
-Message-ID: <CAPhsuW6KVN1c=dB1RXVQjygBevVcb_1qQJoLz3zA-qTVVmbCAw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] md: Remove deprecated CONFIG_MD_LINEAR
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, 
-	Neil Brown <neilb@suse.de>, Guoqing Jiang <guoqing.jiang@linux.dev>, 
-	Mateusz Grzonka <mateusz.grzonka@intel.com>, Jes Sorensen <jes@trained-monkey.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112071242.GA1674809@ZenIV>
 
-Hi Geert,
+On 01/12, Al Viro wrote:
+> On Thu, Jan 11, 2024 at 09:05:51PM -0800, Linus Torvalds wrote:
+> > On Thu, 11 Jan 2024 at 10:28, Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+> > >
+> > >   git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-6.8-rc1
+> > 
+> > Hmm. I got a somewhat confusing conflict in f2fs_rename().
+> > 
+> > And honestly, I really don't know what the right resolution is. What I
+> > ended up with was this:
+> > 
+> >         if (old_is_dir) {
+> >                 if (old_dir_entry)
+> >                         f2fs_set_link(old_inode, old_dir_entry,
+> >                                                 old_dir_page, new_dir);
+> >                 else
+> >                         f2fs_put_page(old_dir_page, 0);
+> 
+> Where would you end up with old_dir_page != NULL and old_dir_entry == NULL?
+> old_dir_page is initialized to NULL and the only place where it's altered
+> is
+>                 old_dir_entry = f2fs_parent_dir(old_inode, &old_dir_page);
+> Which is immediately followed by
+>                 if (!old_dir_entry) {
+>                         if (IS_ERR(old_dir_page))
+>                                 err = PTR_ERR(old_dir_page);
+>                         goto out_old;
+>                 }
+> so we are *not* going to end up at that if (old_is_dir) in that case.
 
-On Fri, Jan 12, 2024 at 1:28=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-[...]
->
-> > --- a/drivers/md/Kconfig
-> > +++ b/drivers/md/Kconfig
-> > @@ -61,19 +61,6 @@ config MD_BITMAP_FILE
-> >           various kernel APIs and can only work with files on a file sy=
-stem not
-> >           actually sitting on the MD device.
-> >
-> > -config MD_LINEAR
-> > -       tristate "Linear (append) mode (deprecated)"
-> > -       depends on BLK_DEV_MD
-> > -       help
-> > -         If you say Y here, then your multiple devices driver will be =
-able to
-> > -         use the so-called linear mode, i.e. it will combine the hard =
-disk
-> > -         partitions by simply appending one to the other.
-> > -
-> > -         To compile this as a module, choose M here: the module
-> > -         will be called linear.
-> > -
-> > -         If unsure, say Y.
-> > -
->
-> Is this what you need to recover data from disks salvaged from a
-> commercial NAS configured in JBOD mode?
-> If yes, and there is no better way to do that, you probably do not
-> want to drop this support.  Actual NAS systems running Linux might
-> use this as well.
+It seems [1] changed the condition of getting old_dir_page reference as below,
+which made f2fs_put_page(old_dir_page, 0) voided.
 
-Thanks for the heads-up. I honestly don't know about this use case.
-Where can I find/get more information about it?
+-       if (S_ISDIR(old_inode->i_mode)) {
++       if (old_is_dir && old_dir != new_dir) {
+                old_dir_entry = f2fs_parent_dir(old_inode, &old_dir_page);
+                if (!old_dir_entry) {
+                        if (IS_ERR(old_dir_page))
 
-Thanks,
-Song
+[1] 7deee77b993a ("f2fs: Avoid reading renamed directory if parent does not change")
+
+> 
+> Original would have been more clear as
+> 	if (old_is_dir) {
+> 		if (old_dir != new_dir) {
+> 			/* we have .. in old_dir_page/old_dir_entry */
+> 			if (!whiteout)
+> 	                        f2fs_set_link(old_inode, old_dir_entry,
+>                                                 old_dir_page, new_dir);
+> 			else
+> 	                        f2fs_put_page(old_dir_page, 0);
+> 		}
+>                 f2fs_i_links_write(old_dir, false);
+> 	}
+> - it is equivalent to what that code used to do.  And "don't update ..
+> if we are leaving a whiteout behind" was teh bug fixed by commit
+> in f2fs tree...
+> 
+> The bottom line: your variant is not broken, but only because
+> f2fs_put_page() starts with
+> static inline void f2fs_put_page(struct page *page, int unlock)
+> {
+>         if (!page)
+>                 return;
+> 
+> IOW, you are doing f2fs_put_page(NULL, 0), which is an explicit no-op.
 
