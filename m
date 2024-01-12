@@ -1,156 +1,236 @@
-Return-Path: <linux-kernel+bounces-24929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8967882C4E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A85F282C4E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D6721F24BAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:43:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D1001F24BAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4833A17BB8;
-	Fri, 12 Jan 2024 17:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E2317C8C;
+	Fri, 12 Jan 2024 17:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FJH3AJ/9"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Fo5wse9h";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Fo5wse9h"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC3317C78
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:43:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-336897b6bd6so6264202f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:43:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705081416; x=1705686216; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ee6xKpvxneUnoDiC8AB7cIQc/ZfkSZ84CMrUIJPEZ+c=;
-        b=FJH3AJ/9muIjbC//4TR89xmHMhguiJM6JI8gT020x0e1U3pd72+U10gGS/t8ZVg/8s
-         ciPh22T2jIc9REkzFIhwvBg42Xnpopuo/bD08BecS6AG1/HE8fo4QFRlQOoi8uS2lACf
-         qy/c4aPXF0w03AhTI0Z0CmWkr73h5gYgOF+FqWb0i7o80DDJLvuXsJXjghwDFNg4kVZQ
-         9YzV9fAnR1IZlfvcHa+2A++WE3krwe7x3OZD7lvIvOIluYNW/YD2qU0GIOvoEmHD155c
-         BFt3Jz5Dz2Ve+kDPhtENFjO1UT7gtRDMG7FONDm+8HhAvepW/YaXyM86AGTM9RAsrpkv
-         g0Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705081416; x=1705686216;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ee6xKpvxneUnoDiC8AB7cIQc/ZfkSZ84CMrUIJPEZ+c=;
-        b=hg+ecFg9TtMOpQDGIbCzDmloIXwmO23K8at0Zx/60fc65GOVyJW7Ltv4A83/UilBeA
-         Mcfqq2yt93pxqUi/FtR2jQZUKRyblskyYOOh2wHw/tRl+4d6V2HDpa7Dm9DVuoPeRKXV
-         PYaFmTtex4we9cJCtN+SU0WIgJh4i5FJoQvRSdLp/w9nDtVck85jCcZVqayGdb1zsBjR
-         V1jamZU3LlHZW9jbnCehzgeUU6WC4nWsvTuYXveUrjL7ljiRmeI2D99rzczv7+u12wCQ
-         4/fO+j50KOIurK87tK8/S6Cwfkit5prCQ42qatQ6/gT+xQODNpDaXlJov0GEZpDmEP0A
-         ezHA==
-X-Gm-Message-State: AOJu0YyeSjFdGSFvxEuHTckwRcQ9PSrVqIgQgYYk5G1z9RpzlgM20J0V
-	gHJ8VBGILEMRp9LZVQvR/8NKOAWBEXQ0sw==
-X-Google-Smtp-Source: AGHT+IEG/RfygOLnVEXU1ua+90WU6Kb2zmqMLCNjZlPGmGHulU5Ed+rlhuWJaTig7LLnl+pgA60sTA==
-X-Received: by 2002:adf:a319:0:b0:336:8ce8:454f with SMTP id c25-20020adfa319000000b003368ce8454fmr738433wrb.138.1705081416323;
-        Fri, 12 Jan 2024 09:43:36 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id b7-20020adfe647000000b0033763a9ea2dsm4462856wrn.63.2024.01.12.09.43.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 09:43:35 -0800 (PST)
-Message-ID: <21a8feea-7306-4016-9a58-6e5bf8fe30a8@linaro.org>
-Date: Fri, 12 Jan 2024 18:43:33 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135C117BB8;
+	Fri, 12 Jan 2024 17:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 240F31FCE1;
+	Fri, 12 Jan 2024 17:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705081436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dfYWGR1tBHj4DNq4HxQTR05QZzyb9i60J+dSqVxCRZ4=;
+	b=Fo5wse9hgSHMplYDW+7nsrDGhLul7ene7XbJHvbKY1BRCiYCqn/ffzglQ/Phr2lXxTs/dA
+	3rvlPYqiXKj6YpEqVoDHRoGoECkTOypp0Jbg+pL4PqY3CqIPUb5JIZ+S7NWkxWBvjdC7rU
+	FqHG02pCk+3wF1M2g1DHPtECjj5c8KU=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705081436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dfYWGR1tBHj4DNq4HxQTR05QZzyb9i60J+dSqVxCRZ4=;
+	b=Fo5wse9hgSHMplYDW+7nsrDGhLul7ene7XbJHvbKY1BRCiYCqn/ffzglQ/Phr2lXxTs/dA
+	3rvlPYqiXKj6YpEqVoDHRoGoECkTOypp0Jbg+pL4PqY3CqIPUb5JIZ+S7NWkxWBvjdC7rU
+	FqHG02pCk+3wF1M2g1DHPtECjj5c8KU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A009136A4;
+	Fri, 12 Jan 2024 17:43:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id SHDNF1t6oWX/PQAAD6G6ig
+	(envelope-from <mpdesouza@suse.com>); Fri, 12 Jan 2024 17:43:55 +0000
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH v6 0/3] livepatch: Move modules to selftests and add a new
+ test
+Date: Fri, 12 Jan 2024 14:43:49 -0300
+Message-Id: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: rockchip: Add Hardkernel ODROID-M1S
- board
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: KyuHyuk Lee <lee@kyuhyuk.kr>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Chris Morgan <macromorgan@hotmail.com>, Jagan Teki <jagan@edgeble.ai>,
- Tianling Shen <cnsztl@gmail.com>, Andy Yan <andyshrk@163.com>,
- Ondrej Jirman <megi@xff.cz>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240112134230.28055-1-lee@kyuhyuk.kr>
- <20240112-granola-underline-36a525dc789c@spud>
- <dc4e9808-cd36-4b99-afd9-8dd4cd16a2a9@linaro.org>
- <20240112-headsman-concur-1d47da7e3e14@spud>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240112-headsman-concur-1d47da7e3e14@spud>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFV6oWUC/32P3W6DMAxGX6XK9YIc5wfo1d5j2kVIzIjWAsIUb
+ at494VKVauq2+Vn+ZzPPgumKRGL/e4sJloSp6HPwb3sROh8/0EyxZwFAmoFWkmmPsrDKD+ZDu1
+ MPLM0oVZlDNFYZ0UGG88km8n3odvQZmzvtxfcdsaJ2vR1KX57z7lLPA/T9+WORW3TrRLB5U6j0
+ WBRlSCVPI6ReDj9+Fc+MRVhOIoNz9IbokEZhegKrAD/YfSV+fOzRUuQ2ChnbUAHtn0wmJshFz8
+ 1mGwwEaCsyNaNf7zBXg0GFNRPDTYbtDPR1t7VrcI7w7quvwgouL7CAQAA
+To: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+ Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>, 
+ Petr Mladek <pmladek@suse.com>, Joe Lawrence <joe.lawrence@redhat.com>
+Cc: linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
+ live-patching@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705081432; l=6073;
+ i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
+ bh=Db0T1Mq+alE4Mw064gEzKEj1s/yqlCXRfv91dO8/7sk=;
+ b=iy9svV7iVWtl5onmz0yzTkWGl8ndRuRKPoFYVQLfOQpL+pP+axxbXkC/yRM/2h6PmWJnSRHJl
+ 0GlMZwzKM16Bur9DARRh8HDDeglSS51XPyFjGgJv2r1UsMi+FMXQJM8
+X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
+ pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.10
 
-On 12/01/2024 18:26, Conor Dooley wrote:
->>> if the vendor for this board is hardkernel...
->>>
->>>> +        items:
->>>> +          - const: rockchip,rk3566-odroid-m1s
->>>
->>> ...why is the vendor prefix here rockchip?
->>
->> Uh, good catch. I missed it when acking their earlier mistake year ago
->> :( Would be nice if they fixed that one too.
-> 
-> Maybe they will if they got your email, they did not get mine
-> apparently:
-> <lee@kyuhyuk.kr>: host mx02.mail.icloud.com[17.57.155.34] said: 554 5.7.1
->     [HM08] Message rejected due to local policy. Please visit
->     https://support.apple.com/en-us/HT204137 (in reply to end of DATA command)
+Changes in v6:
+- Rebased on top of 70d201a40823 (thanks Alexander Gordeev!)
+- Resolved a conflict because of 43e8832fed08 being reverted
+- Resolved a missing static declaration for lp_sys_getpid, since
+  -Wmissing-prototypes warning was enabled.
+- Retested everything, from running the livepatch selftests from kernel
+  source, running from a directory here the testes were installed (Joe's
+  usecase), and running from a gen_tar'ed directory. All of them
+  executed correctly.
+- Added Petr review tags (Thanks!)
+- Link to v5: https://lore.kernel.org/r/20240109-send-lp-kselftests-v5-0-364d59a69f12@suse.com
 
-Uh, what did you do to Apple to be denied by their policy? Admit, you
-have an Android phone?
+Changes in v5:
+* Fixed an issue found by Joe that copied Kbuild files along with the
+  test modules to the installation directory.
+* Added Joe Lawrense review tags.
+
+Changes in v4:
+* Documented how to compile the livepatch selftests without running the
+  tests (Joe)
+* Removed the mention to lib/livepatch on MAINTAINERS file, reported by
+  checkpatch.
+
+Changes in v3:
+* Rebased on top of v6.6-rc5
+* The commits messages were improved (Thanks Petr!)
+* Created TEST_GEN_MODS_DIR variable to point to a directly that contains kernel
+  modules, and adapt selftests to build it before running the test.
+* Moved test_klp-call_getpid out of test_programs, since the gen_tar
+  would just copy the generated test programs to the livepatches dir,
+  and so scripts relying on test_programs/test_klp-call_getpid will fail.
+* Added a module_param for klp_pids, describing it's usage.
+* Simplified the call_getpid program to ignore the return of getpid syscall,
+  since we only want to make sure the process transitions correctly to the
+  patched stated
+* The test-syscall.sh not prints a log message showing the number of remaining
+  processes to transition into to livepatched state, and check_output expects it
+  to be 0.
+* Added MODULE_AUTHOR and MODULE_DESCRIPTION to test_klp_syscall.c
+
+- Link to v3: https://lore.kernel.org/r/20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com
+- Link to v2: https://lore.kernel.org/linux-kselftest/20220630141226.2802-1-mpdesouza@suse.com/
+
+This patchset moves the current kernel testing livepatch modules from
+lib/livepatches to tools/testing/selftest/livepatch/test_modules, and compiles
+them as out-of-tree modules before testing.
+
+There is also a new test being added. This new test exercises multiple processes
+calling a syscall, while a livepatch patched the syscall.
+
+Why this move is an improvement:
+* The modules are now compiled as out-of-tree modules against the current
+  running kernel, making them capable of being tested on different systems with
+  newer or older kernels.
+* Such approach now needs kernel-devel package to be installed, since they are
+  out-of-tree modules. These can be generated by running "make rpm-pkg" in the
+  kernel source.
+
+What needs to be solved:
+* Currently gen_tar only packages the resulting binaries of the tests, and not
+  the sources. For the current approach, the newly added modules would be
+  compiled and then packaged. It works when testing on a system with the same
+  kernel version. But it will fail when running on a machine with different kernel
+  version, since module was compiled against the kernel currently running.
+
+  This is not a new problem, just aligning the expectations. For the current
+  approach to be truly system agnostic gen_tar would need to include the module
+  and program sources to be compiled in the target systems.
+
+Thanks in advance!
+  Marcos
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+Marcos Paulo de Souza (3):
+      kselftests: lib.mk: Add TEST_GEN_MODS_DIR variable
+      livepatch: Move tests from lib/livepatch to selftests/livepatch
+      selftests: livepatch: Test livepatching a heavily called syscall
+
+ Documentation/dev-tools/kselftest.rst              |   4 +
+ MAINTAINERS                                        |   1 -
+ arch/s390/configs/debug_defconfig                  |   1 -
+ arch/s390/configs/defconfig                        |   1 -
+ lib/Kconfig.debug                                  |  22 ----
+ lib/Makefile                                       |   2 -
+ lib/livepatch/Makefile                             |  14 ---
+ tools/testing/selftests/lib.mk                     |  26 ++++-
+ tools/testing/selftests/livepatch/Makefile         |   5 +-
+ tools/testing/selftests/livepatch/README           |  25 +++--
+ tools/testing/selftests/livepatch/config           |   1 -
+ tools/testing/selftests/livepatch/functions.sh     |  34 +++---
+ .../testing/selftests/livepatch/test-callbacks.sh  |  50 ++++-----
+ tools/testing/selftests/livepatch/test-ftrace.sh   |   6 +-
+ .../testing/selftests/livepatch/test-livepatch.sh  |  10 +-
+ .../selftests/livepatch/test-shadow-vars.sh        |   2 +-
+ tools/testing/selftests/livepatch/test-state.sh    |  18 ++--
+ tools/testing/selftests/livepatch/test-syscall.sh  |  53 ++++++++++
+ tools/testing/selftests/livepatch/test-sysfs.sh    |   6 +-
+ .../selftests/livepatch/test_klp-call_getpid.c     |  44 ++++++++
+ .../selftests/livepatch/test_modules/Makefile      |  20 ++++
+ .../test_modules}/test_klp_atomic_replace.c        |   0
+ .../test_modules}/test_klp_callbacks_busy.c        |   0
+ .../test_modules}/test_klp_callbacks_demo.c        |   0
+ .../test_modules}/test_klp_callbacks_demo2.c       |   0
+ .../test_modules}/test_klp_callbacks_mod.c         |   0
+ .../livepatch/test_modules}/test_klp_livepatch.c   |   0
+ .../livepatch/test_modules}/test_klp_shadow_vars.c |   0
+ .../livepatch/test_modules}/test_klp_state.c       |   0
+ .../livepatch/test_modules}/test_klp_state2.c      |   0
+ .../livepatch/test_modules}/test_klp_state3.c      |   0
+ .../livepatch/test_modules/test_klp_syscall.c      | 116 +++++++++++++++++++++
+ 32 files changed, 340 insertions(+), 121 deletions(-)
+---
+base-commit: 70d201a40823acba23899342d62bc2644051ad2e
+change-id: 20231031-send-lp-kselftests-4c917dcd4565
 
 Best regards,
-Krzysztof
+-- 
+Marcos Paulo de Souza <mpdesouza@suse.com>
 
 
