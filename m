@@ -1,98 +1,173 @@
-Return-Path: <linux-kernel+bounces-24491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3829882BD5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79C0682BD60
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:40:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47D661C23D3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:36:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E0A51C25447
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B00557303;
-	Fri, 12 Jan 2024 09:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980A556B9D;
+	Fri, 12 Jan 2024 09:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mawCA5/4"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WlVKOnSW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB11251C2E
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:36:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e54f233abso31526035e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:36:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705052191; x=1705656991; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zrigGjhUftMsEvvhMgmyslWsk/A848z/GQjhjvTjG/k=;
-        b=mawCA5/4be53fynPQBvy4OVV1P0XzS82li55NAuCX6XeGOGq6MjgkoWY8XnzicHh/W
-         WIeSmWTXK4ZhvKUYq5B0kJ1M69OKXuo1hIEzd0CEt7/BmfETnCRY5TR7BGFw05HNcEfg
-         4yKAYOIqjAJA7eRdI3d3dyPc83Bqnb308ALftmgJ7jhvDZMsVeA0tx4Qp8dbP0k5cqLc
-         PNOcwkhY6yIQWVffQRek1jXb2qXhnZ9jCYrbXRl2NImhW13wpGlCBZPhHw9BUMqVAwja
-         Q+hi/G3i6n6kk0JNMgiXvjnGm4V+WmaoqonHDIuyH+gvffTZKu2P6EKIDRDVp1HD96dj
-         lIeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705052191; x=1705656991;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zrigGjhUftMsEvvhMgmyslWsk/A848z/GQjhjvTjG/k=;
-        b=s5HCQfk143CRYy6/bRSLK5rLzrmppwQWBHVdcuFmgEYCZweG1T3GHDiGrFR4Bv6xBK
-         p1cvD0QTD+q7PX+s688O3KJqLY/I8iCQdB2QMUQ9eEfqi4Txyyx5+/6QNc/8fq8ly6Ig
-         zvdIxHzI4VTEFW1o3+m1//3rdINnI+mhOYYZDA5RFUAgJA7xpWrnVuR7cuB4WA6DGpyp
-         Aiocu9U+e1KNlzeTPAgbguanGH2WkmgMDoXI7zYy3BY+BMF41Dp1amwdd32N0PToqw6A
-         taof3f+6xWXj+WHJPVzi/E8SEF0PqS5lWYeKzlYl/yoiNO+m5sGYJZP2ukSgW8ExCyXT
-         Zkrw==
-X-Gm-Message-State: AOJu0Yxibbjc9A5T3mlkdqD3LaJKw89d+0iqisnqQDZUvZzLPREWIa00
-	TRDc8dvK0pKwex2m5DrZ/QO40k7dizzLsw==
-X-Google-Smtp-Source: AGHT+IHgqUL55KHKFHM7XsRYKmr5WOBKPZJZ5ZbriznBeeHT9jeaIeg+abl+at93zuAmnmr9t1om2w==
-X-Received: by 2002:a05:600c:1f92:b0:40d:70c3:5f3d with SMTP id je18-20020a05600c1f9200b0040d70c35f3dmr577626wmb.105.1705052191103;
-        Fri, 12 Jan 2024 01:36:31 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id fl13-20020a05600c0b8d00b0040d8cd116e4sm9009008wmb.37.2024.01.12.01.36.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 01:36:30 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: hanxu5@huaqin.corp-partner.google.com, chenguanxi11234@163.com
-Cc: cgel.zte@gmail.com, quic_jesszhan@quicinc.com, sam@ravnborg.org, 
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
- airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, 
- linux-kernel@vger.kernel.org, yang.guang5@zte.com.cn, 
- jiang.xuexin@zte.com.cn, Chen Haonan <chen.haonan2@zte.com.cn>
-In-Reply-To: <3ac20d355b0b3ad3cedb87c8f4efa819a055624b.1702967834.git.chen.haonan2@zte.com.cn>
-References: <3ac20d355b0b3ad3cedb87c8f4efa819a055624b.1702967834.git.chen.haonan2@zte.com.cn>
-Subject: Re: [PATCH linux-next v2] drm/panel: Simplify with dev_err_probe()
-Message-Id: <170505219020.999327.8364667104260922232.b4-ty@linaro.org>
-Date: Fri, 12 Jan 2024 10:36:30 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27776168B5;
+	Fri, 12 Jan 2024 09:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705052414; x=1736588414;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=mYZ8szFmxn+ynEuSW/tRuoGiph0TTNr3kjNUdauc12s=;
+  b=WlVKOnSWgY91qw3lIjkeAPJe9c9gnGP9HkRkM6bhU1FqVQ01fvLT0uOA
+   pfnXSEj7rvF/p4MNpfaqoidCyLsmcuOH4b8s0v9TjKtCuyxl3pK/lIHYx
+   cwwUkuBnTrseJgQokEeo+mtkXvJ73x5Ol6MU7ls7rCXLr+DeZT5G2SfRV
+   FsqylqPgXjnRx1cQknHk0AJ5sZDluC74KZMDIBp/2noc/BXFKiHJDQh/H
+   GZ4XGfo80EiOaigNDAVVg/fQ0bbxPtChLk7tKjtFU/BkxwU4hsrYZXZDD
+   5oHf1lBEk+WiWRbpCtR/f0zW+JC2chfUy537R6Anobcn9sNcb4jpV7RG1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="6493353"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="6493353"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 01:40:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="786283497"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="786283497"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.141])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 01:40:08 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 12 Jan 2024 11:40:04 +0200 (EET)
+To: John Ogness <john.ogness@linutronix.de>
+cc: Gui-Dong Han <2045gemini@gmail.com>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+    l.sanfilippo@kunbus.com, tglx@linutronix.de, 
+    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    linux-serial <linux-serial@vger.kernel.org>, baijiaju1990@outlook.com, 
+    stable@vger.kernel.org
+Subject: Re: [PATCH] serial: core: Fix atomicity violation in uart_tiocmget
+In-Reply-To: <87msta7vbe.fsf@jogness.linutronix.de>
+Message-ID: <4a52df23-71c3-59c7-fee4-e7cde526d249@linux.intel.com>
+References: <20240112075732.16730-1-2045gemini@gmail.com> <87msta7vbe.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=US-ASCII
 
-Hi,
+On Fri, 12 Jan 2024, John Ogness wrote:
 
-On Mon, 25 Dec 2023 22:26:15 +0800, chenguanxi11234@163.com wrote:
-> dev_err_probe() can check if the error code is -EPROBE_DEFER
-> and can return the error code, replacing dev_err() with it
-> simplifies the code.
+> On 2024-01-12, Gui-Dong Han <2045gemini@gmail.com> wrote:
+> > In uart_tiocmget():
+> >     result = uport->mctrl;
+> >     uart_port_lock_irq(uport);
+> >     result |= uport->ops->get_mctrl(uport);
+> >     uart_port_unlock_irq(uport);
+> >     ...
+> >     return result;
+> >
+> > In uart_update_mctrl():
+> >     uart_port_lock_irqsave(port, &flags);
+> >     ...
+> >     port->mctrl = (old & ~clear) | set;
+> >     ...
+> >     uart_port_unlock_irqrestore(port, flags);
+> >
+> > An atomicity violation is identified due to the concurrent execution of
+> > uart_tiocmget() and uart_update_mctrl(). After assigning
+> > result = uport->mctrl, the mctrl value may change in uart_update_mctrl(),
+> > leading to a mismatch between the value returned by
+> > uport->ops->get_mctrl(uport) and the mctrl value previously read.
+> > This can result in uart_tiocmget() returning an incorrect value.
+> >
+> > This possible bug is found by an experimental static analysis tool
+> > developed by our team, BassCheck[1]. This tool analyzes the locking APIs
+> > to extract function pairs that can be concurrently executed, and then
+> > analyzes the instructions in the paired functions to identify possible
+> > concurrency bugs including data races and atomicity violations. The above
+> > possible bug is reported when our tool analyzes the source code of
+> > Linux 5.17.
+> >
+> > To address this issue, it is suggested to move the line
+> > result = uport->mctrl inside the uart_port_lock block to ensure atomicity
+> > and prevent the mctrl value from being altered during the execution of
+> > uart_tiocmget(). With this patch applied, our tool no longer reports the
+> > bug, with the kernel configuration allyesconfig for x86_64. Due to the
+> > absence of the requisite hardware, we are unable to conduct runtime
+> > testing of the patch. Therefore, our verification is solely based on code
+> > logic analysis.
+> >
+> > [1] https://sites.google.com/view/basscheck/
+> >
+> > Fixes: 559c7ff4e324 ("serial: core: Use port lock wrappers")
 > 
-> 
+> It fixes c5f4644e6c8b ("[PATCH] Serial: Adjust serial locking").
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
-
-[1/1] drm/panel: Simplify with dev_err_probe()
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=9f78b3ae051d9eeeed9658cf54b3f0ea6920097b
+That commit only extracted the locks from ->get_mctrl() into the caller
+but this assignment was outside both pre and post that commit (the issue 
+goes all the way back into history.git domain into 33c0d1b0c3eb ("[PATCH] 
+Serial driver stuff") which introduced ->mctrl).
 
 -- 
-Neil
+ i.
 
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+> > ---
+> >  drivers/tty/serial/serial_core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> > index 80085b151b34..a9e39416d877 100644
+> > --- a/drivers/tty/serial/serial_core.c
+> > +++ b/drivers/tty/serial/serial_core.c
+> > @@ -1085,8 +1085,8 @@ static int uart_tiocmget(struct tty_struct *tty)
+> >  		goto out;
+> >  
+> >  	if (!tty_io_error(tty)) {
+> > -		result = uport->mctrl;
+> >  		uart_port_lock_irq(uport);
+> > +		result = uport->mctrl;
+> >  		result |= uport->ops->get_mctrl(uport);
+> >  		uart_port_unlock_irq(uport);
+> >  	}
+> 
+> Looking over the RMW accesses to @mctrl, I expect you will also need
+> this hunk:
+> 
+> @@ -2242,6 +2242,7 @@ uart_set_options(struct uart_port *port, struct console *co,
+>  {
+>  	struct ktermios termios;
+>  	static struct ktermios dummy;
+> +	unsigned long flags;
+>  
+>  	/*
+>  	 * Ensure that the serial-console lock is initialised early.
+> @@ -2279,7 +2280,9 @@ uart_set_options(struct uart_port *port, struct console *co,
+>  	 * some uarts on other side don't support no flow control.
+>  	 * So we set * DTR in host uart to make them happy
+>  	 */
+> +	uart_port_lock_irqsave(port, &flags);
+>  	port->mctrl |= TIOCM_DTR;
+> +	uart_port_unlock_irqrestore(port, flags);
+>  
+>  	port->ops->set_termios(port, &termios, &dummy);
+>  	/*
+> 
+> FWIW,
+> Reviewed-by: John Ogness <john.ogness@linutronix.de>
+> 
 
