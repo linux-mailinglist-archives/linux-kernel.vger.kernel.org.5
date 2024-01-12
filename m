@@ -1,128 +1,161 @@
-Return-Path: <linux-kernel+bounces-24780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 951CF82C25D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD09C82C265
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33CE61F25654
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:01:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C7341F213E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF3A6E2D4;
-	Fri, 12 Jan 2024 15:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aPP/EA2D"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929476EB43;
+	Fri, 12 Jan 2024 15:01:56 +0000 (UTC)
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52506DD07;
-	Fri, 12 Jan 2024 15:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40CDLlW6030090;
-	Fri, 12 Jan 2024 15:00:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Nt/sEVIDai5Q8pS8pgV/u7mjDZ+NS62VC4KAIb5S5MM=; b=aP
-	P/EA2DldXlpghdwXF7VXxi20HKajXZe4z3q1PIiHxrStCS0E3pEAxMXmWwV5sUw5
-	gGMFQ6b1vvVyzi5kTjfCQesB1xijKg3lAhr0KqABXyAPH2nVbQuRXKEzjyVzZzDg
-	1F15x0eqEn58sW6rDaYCDS1dYxbz4opEXkwFDn0NDNrGaFlkmrhS/M47xpnXwRvg
-	FlbAVRZc/Ah2oHyNjEoKb1cY1LHPN8FRqpifRGiGRIjm9vXoZS/NDPhae08qBzNL
-	jd3EH4MiMncGk3HmQhsjpILwwyLX9hR8+oUAzBPghV/t6GvM62RI0VVlGycSZNMT
-	blG22eF0/Suei5GDMELw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjymn9agm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Jan 2024 15:00:44 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40CF0hid010713
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Jan 2024 15:00:43 GMT
-Received: from [10.253.78.164] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 12 Jan
- 2024 07:00:38 -0800
-Message-ID: <840fc48b-956d-47e8-8307-c419afb1efc2@quicinc.com>
-Date: Fri, 12 Jan 2024 23:00:35 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0B26E2AB;
+	Fri, 12 Jan 2024 15:01:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5958b9cda7aso498204eaf.0;
+        Fri, 12 Jan 2024 07:01:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705071714; x=1705676514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GkosH+fDx4uydKCIfas+gX+lZQ+YATp8/cxPr7LCjXQ=;
+        b=hnVS9mcCzAsJ8JyEg2cqexDzAd/DNLAWAdzVysV4WxYJLUbAvn6SxWCrLHQwWZ8MaI
+         bd4hFXIcRPhU2GLwLU6OdOBmDO1i+nI7oWf3NS1AJkScJ9OyR3Sg6PLK16bsI9numdnT
+         Cla2L2zmk3u2sGSoXX8vzdhjZQwfnVMCr2XnTRibHE10z4lZs0fRD0y+7nnyi3L8CZ/o
+         06anvIrHFsLhCBdTLh9srYlNupwFoFvXZwb6rioeH4rppu7Z3xNhrnq+xxh+6Ln55tZq
+         Bul97I5P/7wc6W6uVk0d+AypSadHvFYaEq6nbwW4IbTlYDOxNpzPjYPSrFpt+a4+uiwO
+         cZsg==
+X-Gm-Message-State: AOJu0YxUOfwiQcVUXxNfjz4s7CY+ePQFbcJatLe2c/nxEMaYDgugqFNO
+	7B9nIgjrh+h9xQ7QbM6iv27ibxF4kgOxgl66Sto=
+X-Google-Smtp-Source: AGHT+IERQpK6tU+v/yvWRcm25F/amqoeR5fMDTcAHWek3SJqIecgzoDoVF8A5t7OAIKhoJcTR5teFvLzHtkulu/Qeec=
+X-Received: by 2002:a05:6820:510:b0:598:c118:30d1 with SMTP id
+ m16-20020a056820051000b00598c11830d1mr2644001ooj.0.1705071713471; Fri, 12 Jan
+ 2024 07:01:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/6] Add PPE device tree node for Qualcomm IPQ SoC
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <quic_kkumarcs@quicinc.com>, <quic_suruchia@quicinc.com>,
-        <quic_soni@quicinc.com>, <quic_pavir@quicinc.com>,
-        <quic_souravp@quicinc.com>, <quic_linchen@quicinc.com>,
-        <quic_leiwei@quicinc.com>
-References: <20240110112059.2498-1-quic_luoj@quicinc.com>
- <458ded82-b200-4946-9b22-31cda68f1c8c@linaro.org>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <458ded82-b200-4946-9b22-31cda68f1c8c@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GDThB25HhrPiZt1J6QblhAeyuRjVe6HS
-X-Proofpoint-GUID: GDThB25HhrPiZt1J6QblhAeyuRjVe6HS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- clxscore=1015 lowpriorityscore=0 bulkscore=0 impostorscore=0 spamscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=532 phishscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401120117
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+ <20240111175908.00002f46@Huawei.com> <ZaA3l4yjgCXxSiVg@shell.armlinux.org.uk> <20240112092520.00001278@Huawei.com>
+In-Reply-To: <20240112092520.00001278@Huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 12 Jan 2024 16:01:40 +0100
+Message-ID: <CAJZ5v0g2CFPrSfNzHKBz_Spwt304QEQtR6w57VR11i5APPrD8Q@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
+ described as container packages
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Jan 12, 2024 at 10:25=E2=80=AFAM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Thu, 11 Jan 2024 18:46:47 +0000
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+>
+> > On Thu, Jan 11, 2024 at 05:59:08PM +0000, Jonathan Cameron wrote:
+> > > On Mon, 18 Dec 2023 21:17:34 +0100
+> > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> > >
+> > > > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@ar=
+mlinux.org.uk> wrote:
+> > > > >
+> > > > > From: James Morse <james.morse@arm.com>
+> > >
+> > > Done some digging + machine faking.  This is mid stage results at bes=
+t.
+> > >
+> > > Summary: I don't think this patch is necessary.  If anyone happens to=
+ be in
+> > > the mood for testing on various platforms, can you drop this patch an=
+d
+> > > see if everything still works.
+> > >
+> > > With this patch in place, and a processor container containing
+> > > Processor() objects acpi_process_add is called twice - once via
+> > > the path added here and once via acpi_bus_attach etc.
+> > >
+> > > Maybe it's a left over from earlier approaches to some of this?
+> >
+> > From what you're saying, it seems that way. It would be really good to
+> > get a reply from James to see whether he agrees - or at least get the
+> > reason why this patch is in the series... but I suspect that will never
+> > come.
+> >
+> > > Both cases are covered by the existing handling without this.
+> > >
+> > > I'm far from clear on why we need this patch.  Presumably
+> > > it's the reference in the description on it breaking for
+> > > Processor Package containing Processor() objects that matters
+> > > after a move... I'm struggling to find that move though!
+> >
+> > I do know that James did a lot of testing, so maybe he found some
+> > corner case somewhere which made this necessary - but without input
+> > from James, we can't know that.
+> >
+> > So, maybe the right way forward on this is to re-test the series
+> > with this patch dropped, and see whether there's any ill effects.
+> > It should be possible to resurect the patch if it does turn out to
+> > be necessary.
+> >
+> > Does that sound like a good way forward?
+> >
+> > Thanks.
+> >
+>
+> Yes that sounds like the best plan. Note this patch can only make a
+> difference on non arm64 arches because it's a firmware bug to combine
+> Processor() with a GICC entry in APIC/MADT.  To even test on ARM64
+> you have to skip the bug check.
+>
+> https://elixir.bootlin.com/linux/latest/source/drivers/acpi/processor_cor=
+e.c#L101
+>
+>         /* device_declaration means Device object in DSDT, in the
+>          * GIC interrupt model, logical processors are required to
+>          * have a Processor Device object in the DSDT, so we should
+>          * check device_declaration here
+>          */
+> //      if (device_declaration && (gicc->uid =3D=3D acpi_id)) {
+>         if (gicc->uid =3D=3D acpi_id) {
+>                 *mpidr =3D gicc->arm_mpidr;
+>                 return 0;
+>         }
+>
+> Only alternative is probably to go history diving and try and
+> find another change that would have required this and is now gone.
+>
+> The ACPI scanning code has had a lot of changes whilst this work has
+> been underway.  More than possible that this was papering over some
+> issue that has long since been fixed. I can't find any deliberate
+> functional changes, but there is some code generalization that 'might'
+> have side effects in this area. Rafael, any expectation that anything
+> changed in how scanning processor containers works?
 
+There have been changes, but I can't recall when exactly without some
+git history research.
 
-On 1/10/2024 8:13 PM, Krzysztof Kozlowski wrote:
-> On 10/01/2024 12:20, Luo Jie wrote:
->> The PPE(packet process engine) hardware block is supported by Qualcomm
->> IPQ platforms, such as IPQ9574 and IPQ5332. The PPE includes the various
->> packet processing modules such as the routing and bridging flow engines,
->> L2 switch capability, VLAN and tunnels. Also included are integrated
->> ethernet MAC and PCS(uniphy), which is used to connect with the external
->> PHY devices by PCS.
->>
->> This patch series enables support for the following DTSI functionality
->> for Qualcomm IPQ9574 and IPQ5332 chipsets.
->>
->> 1. Add PPE (Packet Processing Engine) HW support
->>
->> 2. Add IPQ9574 RDP433 board support, where the PPE is connected
->>     with qca8075 PHY and AQ PHY.
->>
->> 3. Add IPQ5332 RDP441 board support, where the PPE is connected
->>     with qca8386 and SFP
->>
->> PPE DTS depends on the NSSCC clock driver below, which provides the
->> clocks for the PPE driver.
-> 
-> DTS cannot depend on clock drivers. Maybe you meant that it depends on
-> NSSCC clock controller DTS changes, which would be fine. However
-> depending on drivers is neither necessary nor allowed.
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Yes, this DTSI series depends on the NSSCC clock controller DTS patches 
-which are referred to in the cover letter. I will rectify the cover 
-letter text when the series resumes later.
-
+In any case, it is always better to work on top of the current
+mainline code IMO.
 
