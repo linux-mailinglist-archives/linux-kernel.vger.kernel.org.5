@@ -1,118 +1,146 @@
-Return-Path: <linux-kernel+bounces-24748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBAA582C1C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:27:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D0B282C1C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:27:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9ECFF1F24B6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:27:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46C20286E96
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07746EB52;
-	Fri, 12 Jan 2024 14:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fiXFnMCR"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A756D6DCF9;
+	Fri, 12 Jan 2024 14:26:56 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2366E2AC;
-	Fri, 12 Jan 2024 14:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3374c693f92so4690535f8f.1;
-        Fri, 12 Jan 2024 06:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705069591; x=1705674391; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WclvSvESBcB1ccyxeqjrdGj+frspJc0esD0QtgwrkCo=;
-        b=fiXFnMCRuBjSwm73Btaj/H8JIXnPI7NSLtHC1f+2XZhVnVNWfKXO+4yl3hBfbVhmOD
-         VN7ICRBp0RNP42BE+1GUFAg1nPZwZqiMlRcRDiVb+bLRL8aFz27ycRZp9sHc9Dlkx6ZY
-         9u82MUjwaEsnVFG3b6ElYLPkLB7xsGhNMLuVk1D9YtVGX3f0Jk4AQataLcKZ4ESttT6Q
-         2I5gysR8JME1Cyo/Pz14s5IGXa6icjEd3bFuwvr8ezc6HcC9xOaDB+wf9zFM7nSkZdE5
-         rBXvNWh7be6ntmlURZpIcfdM/k+DCaQ8V+GnIhki1uHpzLInbZxdtxOfDWTzC/oGo1gt
-         6pFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705069591; x=1705674391;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WclvSvESBcB1ccyxeqjrdGj+frspJc0esD0QtgwrkCo=;
-        b=F0gn30k9bxXr8kJfnbayfDiI94bm6Gnb8z98gmlQ63Jen7uZOqB7U/CtlxjNgnDaHB
-         R9AXGcXDhUndAiuTC6v64sv8okj3d6iJIcxQZZeHaYXmV7SS4AlCwWDcuBZVg5vFPzpb
-         9LMlV+sEOiORofspjzqLuKSsn8JRr5ZyUcbkAzo/whNY0vRdWV9Cbx9EI7+QZbAwJdj/
-         MwUONWzKIENjfiZfIadbtxbSvWAS3+QjFdMoKyTuVVOoKefcKB3+UJHXGvqvanLyPfYD
-         qfUt+rKRMKPL4rZz1pqIif0mAOLsYus7HD/wqvKrJ/k/1QZfgEasjXwhCYUydeLlwycX
-         rP+g==
-X-Gm-Message-State: AOJu0Yya9aI1czSgStXfWKb7he/u1u9DBsNu5MpAkJoPm50o0EJZf5nM
-	9SW63RGhtfWiJANVY0JEUic=
-X-Google-Smtp-Source: AGHT+IHVtC639FZXHSGXUI4wjXAd7RHB12n7+GICuZHzambNk3DzkW0+DuDqNWSh+t2v9ArOYbiv9A==
-X-Received: by 2002:adf:fa51:0:b0:336:c3c7:75e8 with SMTP id y17-20020adffa51000000b00336c3c775e8mr697221wrr.45.1705069591670;
-        Fri, 12 Jan 2024 06:26:31 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:494d:c489:3d96:1b15])
-        by smtp.gmail.com with ESMTPSA id f6-20020a5d4dc6000000b00336a2566aa2sm4021219wru.61.2024.01.12.06.26.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 06:26:31 -0800 (PST)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-renesas-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v4 4/4] riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
-Date: Fri, 12 Jan 2024 14:26:21 +0000
-Message-Id: <20240112142621.13525-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240112142621.13525-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240112142621.13525-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B3E6DCEC
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mtapsc-6-Q8eILX2xM8GtnaZZwK-k-w-1; Fri, 12 Jan 2024 14:26:51 +0000
+X-MC-Unique: Q8eILX2xM8GtnaZZwK-k-w-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 12 Jan
+ 2024 14:26:33 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 12 Jan 2024 14:26:33 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Dan Carpenter' <dan.carpenter@linaro.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Linus
+ Torvalds" <torvalds@linux-foundation.org>, 'Andy Shevchenko'
+	<andriy.shevchenko@linux.intel.com>, 'Andrew Morton'
+	<akpm@linux-foundation.org>, "'Matthew Wilcox (Oracle)'"
+	<willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>, "'Jason A.
+ Donenfeld'" <Jason@zx2c4.com>
+Subject: RE: [PATCH next v4 1/5] minmax: Add umin(a, b) and umax(a, b)
+Thread-Topic: [PATCH next v4 1/5] minmax: Add umin(a, b) and umax(a, b)
+Thread-Index: AdnqCG3fyWBHnOXsRX2exERoRDa2+hbTWv2AAAC2xJAAAdpggAAAPeZw
+Date: Fri, 12 Jan 2024 14:26:33 +0000
+Message-ID: <d05f91a308174cf0b3e5707625a212bc@AcuMS.aculab.com>
+References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
+ <41d93ca827a248698ec64bf57e0c05a5@AcuMS.aculab.com>
+ <737627fd-b68b-4c9d-8700-f0e0d6d9cec8@moroto.mountain>
+ <8e45b321c49b4c27a61b2db076ed5383@AcuMS.aculab.com>
+ <02701430-65cf-44ab-8a8b-752c5d973d21@moroto.mountain>
+In-Reply-To: <02701430-65cf-44ab-8a8b-752c5d973d21@moroto.mountain>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Dan Carpenter
+> Sent: 12 January 2024 14:03
+>=20
+> On Fri, Jan 12, 2024 at 01:40:30PM +0000, David Laight wrote:
+> > From: Dan Carpenter
+> > > Sent: 12 January 2024 12:50
+> > >
+> > > On Mon, Sep 18, 2023 at 08:16:30AM +0000, David Laight wrote:
+> > > > +/**
+> > > > + * umin - return minimum of two non-negative values
+> > > > + *   Signed types are zero extended to match a larger unsigned typ=
+e.
+> > > > + * @x: first value
+> > > > + * @y: second value
+> > > > + */
+> > > > +#define umin(x, y)=09\
+> > > > +=09__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
+> > >
+> > > Why do we match "a larger unsigned type" instead of ULL_MAX?  Presuma=
+bly
+> > > it helps performance somehow...  I agree that it's probably fine but =
+I
+> > > would be more comfortable if it skipped UINT_MAX and jumped directly =
+to
+> > > ULONG_MAX.  These days 4 gigs is small potatoes.  The vmalloc() funct=
+ion
+> > > can allocate 4G so we've had integer overflow bugs with this before.
+> >
+> > The '+ 0ul*' carefully zero extend signed values without changing
+> > unsigned values.
+> > The compiler detects when it has zero-extended both sides and
+> > uses the smaller compare.
+> > In essence:
+> > =09x + 0u converts 'int' to 'unsigned int'.
+> > =09=09Avoids the sign extension adding 0ul on 64bit.
+> > =09x + 0ul converts a 'long' to 'unsigned long'.
+> > =09=09Avoids the sign extension adding 0ull on 32bit
+> > =09x + 0ull converts a 'long long' to 'unsigned long long'.
+> > You need all three to avoid sign extensions and get an unsigned
+> > compare.
+>=20
+> So unsigned int compares are faster than unsigned long compares?
+>=20
+> It's just sort of weird how it works.
+>=20
+> =09min_t(unsigned long, -1, 10000000000)); =3D> 10000000000
+> =09umin(umin(-1, 10000000000)); =3D> UINT_MAX
+>=20
+> UINT_MAX is just kind of a random value.  I would have prefered
+> ULONG_MAX, it's equally random but it's more safe because nothing can
+> allocate ULONG_MAX bytes.
 
-On RZ/Five we have additional pins compared to the RZ/G2UL SoC so update
-the gpio-ranges property in RZ/Five SoC DTSI.
+umin() is only defined for non-negative values.
+So that example is really outside the domain of the function.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- arch/riscv/boot/dts/renesas/r9a07g043f.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+Consider:
+=09int x =3D some_positive_value;
+=09unsigned long long y;
+then:
+=09min_t(unsigned long long, x, y);
+=09Does (unsigned long long)x which is (unsigned long long)(long long)x
+=09and requires that x be sign extended to 64bits.
+=09On 32bit that is quite horrid.
+whereas:
+=09umin(x, y);
+=09Only has to zero extend x.
+=09So is compiled as:
+=09=09y:hi || y:lo > x ? x ; y
 
-diff --git a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-index d2272a0bfb61..aa3b1d2b999d 100644
---- a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-+++ b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-@@ -46,6 +46,10 @@ cpu0_intc: interrupt-controller {
- 	};
- };
- 
-+&pinctrl {
-+	gpio-ranges = <&pinctrl 0 0 232>;
-+};
-+
- &soc {
- 	dma-noncoherent;
- 	interrupt-parent = <&plic>;
--- 
-2.34.1
+If both values are 32bit the compiler generates a 32bit compare
+(even on 64bit).
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
