@@ -1,98 +1,91 @@
-Return-Path: <linux-kernel+bounces-24672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8AE782C04A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:00:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 915F882C055
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 631A11F2205D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:00:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ADBB2861F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0066A353;
-	Fri, 12 Jan 2024 13:00:19 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6766BB3E;
+	Fri, 12 Jan 2024 13:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b4z0gnfg";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0SpkV9u1"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE6F6A34F
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-107-MotGPF6GOuKC6jFoeEgFUA-1; Fri, 12 Jan 2024 13:00:14 +0000
-X-MC-Unique: MotGPF6GOuKC6jFoeEgFUA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 12 Jan
- 2024 12:59:56 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 12 Jan 2024 12:59:56 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Dongsoo Lee' <letrhee@nsr.re.kr>, Herbert Xu
-	<herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, "Jens
- Axboe" <axboe@kernel.dk>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y.
- Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Thomas Gleixner
-	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "x86@kernel.org"
-	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-CC: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 RESEND 5/5] crypto: LEA block cipher x86_64
- optimization
-Thread-Topic: [PATCH v6 RESEND 5/5] crypto: LEA block cipher x86_64
- optimization
-Thread-Index: AQHaRP97Qv3M1SIfYkW1atonfzlDU7DWJB2Q
-Date: Fri, 12 Jan 2024 12:59:56 +0000
-Message-ID: <cbd8de6ff70849a98faf2fd25b065a94@AcuMS.aculab.com>
-References: <20240112022859.2384-1-letrhee@nsr.re.kr>
- <20240112022859.2384-6-letrhee@nsr.re.kr>
-In-Reply-To: <20240112022859.2384-6-letrhee@nsr.re.kr>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A6F5EE94;
+	Fri, 12 Jan 2024 13:02:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705064519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TS9YhPDldTTjGIAAyOKez0LHmI8RD+x8kd63E/fDUqw=;
+	b=b4z0gnfg3rYIPjuHC/+CGOngTgmZ9G/DZXjxT14EEbShfFMUK5PKsI8npORtSBvthF7rtJ
+	yqzfmZbzTNHjv0fFq5/IvHsyrxeiO3i+YC/JJzf7SvmTgwNFUU58WzXM85C+kxC09cd8D7
+	nIrsR0z079jwaHZGWj5G9Kj8KdHaC0206jHSUouGA2o6I3klx9munEuxSfN3kqugkCipvS
+	qi5EE5vehBmE8QuXy5PPASCrHq5b0gOE4sC1g2oC/sb6ycHA3oFVVgLFABk6+glZ1Ff5Gn
+	tglPiZYslYqXiVLwophieMD7GSGxgzKfUGwS44yoTaYFA1/lDveIJDvEse9TZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705064519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TS9YhPDldTTjGIAAyOKez0LHmI8RD+x8kd63E/fDUqw=;
+	b=0SpkV9u11zaLX55bOD86IHPv7DtnCwvpuus8BBQZWxykzJqS/dBPPl80+NnP/wnrpIrI+c
+	tBdvUUSr/sYzSyBA==
+To: Dave Chinner <david@fromorbit.com>, Jian Wen <wenjianhn@gmail.com>
+Cc: linux-xfs@vger.kernel.org, djwong@kernel.org, hch@lst.de,
+ dchinner@redhat.com, Jian Wen <wenjian1@xiaomi.com>,
+ linux-kernel@vger.kernel.org, Ankur Arora <ankur.a.arora@oracle.com>
+Subject: Re: [PATCH] xfs: explicitly call cond_resched in
+ xfs_itruncate_extents_flags
+In-Reply-To: <ZaBPM14r5vGrQ9mc@dread.disaster.area>
+References: <20240110071347.3711925-1-wenjian1@xiaomi.com>
+ <ZZ8OaNnp6b/PJzsb@dread.disaster.area>
+ <CAMXzGWJU+a2s-tbpzdmPTCg9Et7UpDdpdBEjkiUUvAV5kxTjig@mail.gmail.com>
+ <ZaBPM14r5vGrQ9mc@dread.disaster.area>
+Date: Fri, 12 Jan 2024 14:01:59 +0100
+Message-ID: <87v87yiu2g.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-From: Dongsoo Lee
-> Sent: 12 January 2024 02:29
->=20
-> For the x86_64 environment, we use AVX-512F/AVX2/SSE2 instructions.
-> Since LEA uses 128-bit blocks of four 32-bit integers, for optimization,
-> SSE2 encrypts 4 blocks, AVX2 encrypts 4/8 blocks, and AVX-512F encrypts
-> 4/8/16 blocks at a time.
->=20
-> Our submission provides a optimized implementation of ECB, CBC
-> decryption, CTR, and XTS cipher operation modes on x86_64 CPUs
-> supporting.
+On Fri, Jan 12 2024 at 07:27, Dave Chinner wrote:
 
-Given you say in 0/0:
+Cc: Ankur
 
-The LEA algorithm is a lightweight block cipher that processes data blocks =
-of 128-bits and has three different key lengths, each with a different numb=
-er of rounds:
+> On Thu, Jan 11, 2024 at 08:52:22PM +0800, Jian Wen wrote:
+>> On Thu, Jan 11, 2024 at 5:38=E2=80=AFAM Dave Chinner <david@fromorbit.co=
+m> wrote:
+>> > IOWs, this is no longer considered an acceptible solution by core
+>> > kernel maintainers.
+>> Understood. I will only build a hotfix for our production kernel then.
+>
+> Yeah, that may be your best short term fix. We'll need to clarify
+> what the current policy is on adding cond_resched points before we
+> go any further in this direction.
 
-Just how big is it ?
-Doesn't look 'lightweight' to me.
+Well, right now until the scheduler situation is sorted there is no
+other solution than to add the cond_resched() muck.
 
-=09David
+> Thomas, any update on what is happening with cond_resched() - is
+> there an ETA on it going away/being unnecessary?
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
-
+Ankur is working on that...
 
