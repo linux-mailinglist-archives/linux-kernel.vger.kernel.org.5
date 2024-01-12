@@ -1,133 +1,189 @@
-Return-Path: <linux-kernel+bounces-24630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E7E382BF6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:43:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D45D82BF77
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38129287D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:43:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 837011F251DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F856A002;
-	Fri, 12 Jan 2024 11:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="VFLkmTpb"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F8F6A01B;
+	Fri, 12 Jan 2024 11:51:34 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C5D67E8D;
-	Fri, 12 Jan 2024 11:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 879AD12002F;
-	Fri, 12 Jan 2024 14:43:19 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 879AD12002F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1705059799;
-	bh=/eFJ5zdlWZNOA1X7gSb3A6Ck0vtdZ8leabcrBG+9O8M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=VFLkmTpbsuaDh9fUiaAHc/e91SwHDXGr9Hl/DuIdmwY5PtJpMImE0QbkBFONyvatX
-	 qPQ/BLzDIybSKiWn+rOL2TGdSEwubOPUc2o1AkM1QYftQxGVIuI0J7eKRyJ9sSO9LC
-	 U9HkNWEuEU5MEfJJj3AOjjSQEQ04VGAYs9q6En9iD00pGfCBYn4FLXJkq4rBE0M/J+
-	 ZM9RCt2lw/kKRGOpmoz/3qcga8qiOWD/ajctSAY8ken5j6hdsbqbKq501RAuh01FP0
-	 ZiUPbnfWRPlLuUJXSEEsK2PClikXCrGjgn7mvv6oCiWUQSyL+5lJ15JqOSkw84SRPe
-	 /UFCsSnpvBiCw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 12 Jan 2024 14:43:17 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 12 Jan 2024 14:43:17 +0300
-Message-ID: <85c89859-ae03-4692-9c09-5779e4c40eae@salutedevices.com>
-Date: Fri, 12 Jan 2024 14:43:16 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2885C651BF;
+	Fri, 12 Jan 2024 11:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TBKbv3krrz1Q7kQ;
+	Fri, 12 Jan 2024 19:50:35 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8BCDA1402C7;
+	Fri, 12 Jan 2024 19:51:22 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 12 Jan
+ 2024 19:51:21 +0800
+Subject: Re: [RFC PATCH net-next v5 2/2] net: add netmem to skb_frag_t
+To: Mina Almasry <almasrymina@google.com>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jason Gunthorpe
+	<jgg@nvidia.com>, =?UTF-8?Q?Christian_K=c3=b6nig?=
+	<christian.koenig@amd.com>, Shakeel Butt <shakeelb@google.com>, Willem de
+ Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20240109011455.1061529-1-almasrymina@google.com>
+ <20240109011455.1061529-3-almasrymina@google.com>
+ <5219f2cd-6854-0134-560d-8ae3f363b53f@huawei.com>
+ <CAHS8izOtr+jfqQ6xCB3CoN-K_V1-4hPsB4-k5+1z-M3Qy2BbwA@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <0711845b-c435-251f-0bbc-20b243721c06@huawei.com>
+Date: Fri, 12 Jan 2024 19:51:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] leds: aw200xx: support for hw pattern controllers
+In-Reply-To: <CAHS8izOtr+jfqQ6xCB3CoN-K_V1-4hPsB4-k5+1z-M3Qy2BbwA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To: Lee Jones <lee@kernel.org>
-CC: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andy Shevchenko
-	<andy.shevchenko@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <kernel@salutedevices.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-References: <20231207125938.175119-1-mmkurbanov@salutedevices.com>
- <20231207125938.175119-2-mmkurbanov@salutedevices.com>
- <20231221161011.GO10102@google.com>
-From: Martin Kurbanov <mmkurbanov@salutedevices.com>
-In-Reply-To: <20231221161011.GO10102@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182598 [Jan 12 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/12 10:31:00 #23117109
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-Hello Lee,
-
-On 21.12.2023 19:10, Lee Jones wrote:
-> On Thu, 07 Dec 2023, Martin Kurbanov wrote:
-> 
->> This led-controller supports 3 pattern controllers for auto breathing or
->> group dimming control. Each pattern controller can work in auto
->> breathing or manual control mode. All breathing parameters including
->> rising/falling slope, on/off time, repeat times, min/max brightness
->> and so on are configurable.
+On 2024/1/12 8:34, Mina Almasry wrote:
+> On Thu, Jan 11, 2024 at 4:45 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 >>
->> Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
->> ---
->>  .../testing/sysfs-class-led-driver-aw200xx    | 108 +++
->>  Documentation/leds/leds-aw200xx.rst           | 274 ++++++++
->>  drivers/leds/leds-aw200xx.c                   | 649 ++++++++++++++++++
->>  3 files changed, 1031 insertions(+)
->>  create mode 100644 Documentation/leds/leds-aw200xx.rst
+>> On 2024/1/9 9:14, Mina Almasry wrote:
+>>
+>> ...
+>>
+>>>
+>>> +             if (WARN_ON_ONCE(!skb_frag_page(&skb_shinfo(skb)->frags[0]))) {
+>>
+>> I am really hate to bring it up again.
+>> If you are not willing to introduce a new helper,
 > 
-> This interface is bananas.  Exposing an entire register interface to
-> sysfs does not sit will with me at all.  When we add support to a sysfs
-> class, we usually require it to be generic and work across all devices.
-> Adding device specific interfaces is generally decried and to be
-> avoided.  Don't forget, once we commit something to sysfs, it becomes
-> ABI and we have to support it forever.
+> I'm actually more than happy to add a new helper like:
 > 
-> A far better approach would be to add support for this in userspace
-> instead  You can use the standard I2C character device API to achieve
-> the same result.  That way we don't have the same level of commitment
-> and is generally a much more flexible/future-proof.
+> static inline netmem_ref skb_frag_netmem();
 > 
+> For future callers to obtain frag->netmem to use the netmem_ref directly.
+> 
+> What I'm hung up on is really your follow up request:
+> 
+> "Is it possible to introduce something like skb_frag_netmem() for
+> netmem? so that we can keep most existing users of skb_frag_page()
+> unchanged and avoid adding additional checking overhead for existing
+> users."
+> 
+> With this patchseries, skb_frag_t no longer has a page pointer inside
+> of it, it only has a netmem_ref. The netmem_ref is currently always a
+> page, but in the future may not be a page. Can you clarify how we keep
+> skb_frag_page() unchanged and without checks? What do you expect
+> skb_frag_page() and its callers to do? We can not assume netmem_ref is
+> always a struct page. I'm happy to implement a change but I need to
+> understand it a bit better.
 
-I used sysfs similarly to other LED drivers (for example, leds-lm3533).
-Additionally, the controller has interrupts about the completion of the pattern,
-which is best to handle in the kernel. In the case of implementation in user
-mode, there may be synchronization problems, as the controller has several
-memory pages that can be switched by writing the page number to register 0xF0.
+There are still many existing places still not expecting or handling
+skb_frag_page() returning NULL, mostly those are in the drivers not
+supporting devmem, what's the point of adding the extral overhead for
+those driver?
 
--- 
-Best Regards,
-Martin Kurbanov
+The networking stack should forbid skb with devmem frag being forwarded
+to drivers not supporting devmem yet. I am sure if this is done properly
+in your patchset yet? if not, I think you might to audit every existing
+drivers handling skb_frag_page() returning NULL correctly.
+
+
+> 
+>> do you care to use some
+>> existing API like skb_frag_address_safe()?
+>>
+> 
+> skb_frag_address_safe() checks that the page is mapped. In this case,
+> we are not checking if the frag page is mapped; we would like to make
+> sure that the skb_frag has a page inside of it in the first place.
+> Seems like a different check from skb_frag_address_safe().
+> 
+> In fact, skb_frag_address[_safe]() actually assume that the skb frag
+> is always a page currently, I think I need to squash this fix:
+> 
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index e59f76151628..bc8b107d0235 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -3533,7 +3533,9 @@ static inline void skb_frag_unref(struct sk_buff
+> *skb, int f)
+>   */
+>  static inline void *skb_frag_address(const skb_frag_t *frag)
+>  {
+> -       return page_address(skb_frag_page(frag)) + skb_frag_off(frag);
+> +       return skb_frag_page(frag) ?
+> +               page_address(skb_frag_page(frag)) + skb_frag_off(frag) :
+> +               NULL;
+>  }
+> 
+>  /**
+> @@ -3545,7 +3547,14 @@ static inline void *skb_frag_address(const
+> skb_frag_t *frag)
+>   */
+>  static inline void *skb_frag_address_safe(const skb_frag_t *frag)
+>  {
+> -       void *ptr = page_address(skb_frag_page(frag));
+> +       struct page *page;
+> +       void *ptr;
+> +
+> +       page = skb_frag_page(frag);
+> +       if (!page)
+> +               return NULL;
+> +
+> +       ptr = page_address(skb_frag_page(frag));
+>         if (unlikely(!ptr))
+>                 return NULL;
+> 
+>>> +                     ret = -EINVAL;
+>>> +                     goto out;
+>>> +             }
+>>> +
+>>>               iov_iter_bvec(&msg.msg_iter, ITER_SOURCE,
+>>> -                           skb_shinfo(skb)->frags, skb_shinfo(skb)->nr_frags,
+>>> -                           msize);
+>>> +                           (const struct bio_vec *)skb_shinfo(skb)->frags,
+>>> +                           skb_shinfo(skb)->nr_frags, msize);
+>>
+>> I think we need to use some built-time checking to ensure some consistency
+>> between skb_frag_t and bio_vec.
+>>
+> 
+> I can add static_assert() that bio_vec->bv_len & bio_vec->bv_offset
+> are aligned with skb_frag_t->len & skb_frag_t->offset.
+> 
+> I can also maybe add a helper skb_frag_bvec() to do the cast instead
+> of doing it at the calling site. That may be a bit cleaner.
+
+I think the more generic way to do is to add something like iov_iter_netmem()
+instead of doing any cast, so that netmem can be decoupled from bvec completely.
+
+> 
+>>>               iov_iter_advance(&msg.msg_iter, txm->frag_offset);
+>>>
+>>>               do {
+>>>
+> 
+> 
+> 
+> --
+> Thanks,
+> Mina
+> .
+> 
 
