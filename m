@@ -1,151 +1,266 @@
-Return-Path: <linux-kernel+bounces-24542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C9082BE22
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:10:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B91D882BE28
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:11:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA5D21F21F32
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:10:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8FD91C25132
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0143F5D907;
-	Fri, 12 Jan 2024 10:10:31 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD845D905;
+	Fri, 12 Jan 2024 10:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CzhPqmYc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FD55D755
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36072f247bdso63357885ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:10:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705054228; x=1705659028;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wq/Neynlo7rd9EMdFfz+w2uSTNXBQrlV6BSSyVMmA8Q=;
-        b=LlzPi9nmBKGhfqq4PCqJqGek6ulm4QCokUvvPbj9RyMgkOxo55GtC7+hfFVpTtpEn7
-         fx4ak3GQZUh/0maHpNLNOyUTsGw4l0tiS6ttXLFkQ50mV1tlOCj2sEn4cUeDf2p38MxY
-         cRY87hSXhiMpaTEghoGjWz7zwwQipOVdBc6taZaD3TG6dhm4Yp5xk69TM5ZLxzK34++f
-         6bblQ/syhmiZ/uilBPCNwoyxJdEvygdW/n5TPJ1mp5t0N0a52iYHBrWI7GsaKL5iHA0x
-         QcKOcHEq+TeIaI8TI3RYW2+a5KwE2u7KM5Ub8TaC80+y1mCjgRSkK+Y9R902Q1uSAQv2
-         65BQ==
-X-Gm-Message-State: AOJu0YzYywRi2nhb8L76qY0w89IIfTRwvjwfj8dKgBjpXwodRJeNnisZ
-	TIZspXN2efgaUAdqVMh5boUWOv33CgtnbPNORYj/cNaEqAm2
-X-Google-Smtp-Source: AGHT+IGl20DykQgHikEGY9DrhP3cYgtQLM3BTHK1OM3/ZjSp1AaJonRlHFb8otrnOonC0bofGF4ls+S9ysIJU+N+zqF654IKs5Ax
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C705C8FE;
+	Fri, 12 Jan 2024 10:10:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D885AC433C7;
+	Fri, 12 Jan 2024 10:10:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705054257;
+	bh=zMCldC3g0if4jocUa7hXngCNMXtp+UiFT5i/S3qyfxU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CzhPqmYcyijuC6OkxKcjAEV54/ThoBtq93+JD03SpasKNxKZyIdXCYGfzusHi/emr
+	 oVQhPe0WZyVlmL5yDFNSb0jlhHHxOKHwa+lx9XbgprRivq75UuS8Q90Zpk6XC8sZOW
+	 +OQDgC8bKjFaensf/VBlVYpTybZdnX7VLBK6UXA5Mwdf0jHxj7Fx1AYvxk2mvOTpxD
+	 NnlJMi2oOKl8i42Lf6JJYNgrQf56tFYfPA4mXMtlIFrZWWtxy87DiURkdMhEo6Q0rA
+	 XQQ1LSxdA3LD3no8kavQx6nufBptxd5PpyZVVAqTFj01GIV18trVEkEQ5T3Kt8pHJh
+	 0qofCsrSxNTSg==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v6 00/36] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Fri, 12 Jan 2024 19:10:50 +0900
+Message-Id: <170505424954.459169.10630626365737237288.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:16cf:b0:35f:b1e7:cac with SMTP id
- 15-20020a056e0216cf00b0035fb1e70cacmr38175ilx.4.1705054228268; Fri, 12 Jan
- 2024 02:10:28 -0800 (PST)
-Date: Fri, 12 Jan 2024 02:10:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000994e09060ebcdffb@google.com>
-Subject: [syzbot] [net?] KCSAN: data-race in ipv6_mc_down / mld_ifc_work (2)
-From: syzbot <syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+Here is the 6th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-HEAD commit:    8735c7c84d1b Merge tag '6.7rc7-smb3-srv-fix' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17948c9ae80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4da1e2da456c3a7d
-dashboard link: https://syzkaller.appspot.com/bug?extid=a9400cabb1d784e49abf
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+https://lore.kernel.org/all/170290509018.220107.1347127510564358608.stgit@devnote2/
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This version fixes use-after-unregister bug and arm64 stack unwinding
+bug [13/36], add an improvement for multiple interrupts during push
+operation[20/36], keep SAVE_REGS until BPF and fprobe_event using
+ftrace_regs[26/36], also reorder the patches[30/36][31/36] so that new
+fprobe can switch to SAVE_ARGS[32/36] safely.
+This series also temporarily adds a DIRECT_CALLS bugfix[1/36], which
+should be pushed separatedly as a stable bugfix.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f263d974af01/disk-8735c7c8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9faf34fc0b3e/vmlinux-8735c7c8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0b52a58ecd0e/bzImage-8735c7c8.xz
+There are some TODOs:
+ - Add s390x and loongarch support to fprobe (multiple fgraph).
+ - Fix to get the symbol address from ftrace entry address on arm64.
+   (This should be done in BPF trace event)
+ - Cleanup code, rename some terms(offset/index) and FGRAPH_TYPE_BITMAP
+   part should be merged to FGRAPH_TYPE_ARRAY patch.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com
 
-==================================================================
-BUG: KCSAN: data-race in ipv6_mc_down / mld_ifc_work
+Overview
+--------
+This series does major 2 changes, enable multiple function-graphs on
+the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+fprobe on this function-graph.
 
-write to 0xffff88813a80c832 of 1 bytes by task 3771 on cpu 0:
- mld_ifc_stop_work net/ipv6/mcast.c:1080 [inline]
- ipv6_mc_down+0x10a/0x280 net/ipv6/mcast.c:2725
- addrconf_ifdown+0xe32/0xf10 net/ipv6/addrconf.c:3949
- addrconf_notify+0x310/0x980
- notifier_call_chain kernel/notifier.c:93 [inline]
- raw_notifier_call_chain+0x6b/0x1c0 kernel/notifier.c:461
- __dev_notify_flags+0x205/0x3d0
- dev_change_flags+0xab/0xd0 net/core/dev.c:8685
- do_setlink+0x9f6/0x2430 net/core/rtnetlink.c:2916
- rtnl_group_changelink net/core/rtnetlink.c:3458 [inline]
- __rtnl_newlink net/core/rtnetlink.c:3717 [inline]
- rtnl_newlink+0xbb3/0x1670 net/core/rtnetlink.c:3754
- rtnetlink_rcv_msg+0x807/0x8c0 net/core/rtnetlink.c:6558
- netlink_rcv_skb+0x126/0x220 net/netlink/af_netlink.c:2545
- rtnetlink_rcv+0x1c/0x20 net/core/rtnetlink.c:6576
- netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
- netlink_unicast+0x589/0x650 net/netlink/af_netlink.c:1368
- netlink_sendmsg+0x66e/0x770 net/netlink/af_netlink.c:1910
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x37c/0x4d0 net/socket.c:2584
- ___sys_sendmsg net/socket.c:2638 [inline]
- __sys_sendmsg+0x1e9/0x270 net/socket.c:2667
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x46/0x50 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+The former changes had been sent from Steven Rostedt 4 years ago (*),
+which allows users to set different setting function-graph tracer (and
+other tracers based on function-graph) in each trace-instances at the
+same time.
 
-write to 0xffff88813a80c832 of 1 bytes by task 22 on cpu 1:
- mld_ifc_work+0x54c/0x7b0 net/ipv6/mcast.c:2653
- process_one_work kernel/workqueue.c:2627 [inline]
- process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2700
- worker_thread+0x525/0x730 kernel/workqueue.c:2781
- kthread+0x1d7/0x210 kernel/kthread.c:388
- ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+(*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
 
-value changed: 0x02 -> 0x00
+The purpose of latter change are;
 
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 22 Comm: kworker/1:0 Not tainted 6.7.0-rc7-syzkaller-00029-g8735c7c84d1b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Workqueue: mld mld_ifc_work
-==================================================================
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
 
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, which enables to
+call function-graph entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+This series can be applied against the v6.7 kernel.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Masami Hiramatsu (Google) (21):
+      ftrace: Fix DIRECT_CALLS to use SAVE_REGS by default
+      tracing: Add a comment about ftrace_regs definition
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      x86: tracing: Add ftrace_regs definition in the header
+      function_graph: Use a simple LRU for fgraph_array index number
+      function_graph: Improve push operation for several interrupts
+      function_graph: Add a new entry handler with parent_ip and ftrace_regs
+      function_graph: Add a new exit handler with parent_ip and ftrace_regs
+      x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      arm64: ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Steven Rostedt (VMware) (15):
+      function_graph: Convert ret_stack to a series of longs
+      fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+      function_graph: Add an array structure that will allow multiple callbacks
+      function_graph: Allow multiple users to attach to function graph
+      function_graph: Remove logic around ftrace_graph_entry and return
+      ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+      ftrace: Allow function_graph tracer to be enabled in instances
+      ftrace: Allow ftrace startup flags exist without dynamic ftrace
+      function_graph: Have the instances use their own ftrace_ops for filtering
+      function_graph: Add "task variables" per task for fgraph_ops
+      function_graph: Move set_graph_function tests to shadow stack global var
+      function_graph: Move graph depth stored data to shadow stack global var
+      function_graph: Move graph notrace bit to shadow stack global var
+      function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+      function_graph: Add selftest for passing local variables
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/ftrace.h                    |   24 
+ arch/arm64/kernel/entry-ftrace.S                   |   28 +
+ arch/arm64/kernel/ftrace.c                         |   21 
+ arch/loongarch/Kconfig                             |    1 
+ arch/loongarch/include/asm/ftrace.h                |    2 
+ arch/loongarch/kernel/ftrace_dyn.c                 |    6 
+ arch/powerpc/include/asm/ftrace.h                  |    9 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/s390/Kconfig                                  |    1 
+ arch/s390/include/asm/ftrace.h                     |    7 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   17 
+ arch/x86/kernel/ftrace.c                           |   51 +
+ arch/x86/kernel/ftrace_64.S                        |   37 +
+ include/linux/fprobe.h                             |   58 +
+ include/linux/ftrace.h                             |  167 +++
+ include/linux/sched.h                              |    3 
+ include/linux/trace_recursion.h                    |   39 -
+ kernel/trace/Kconfig                               |   19 
+ kernel/trace/bpf_trace.c                           |   14 
+ kernel/trace/fgraph.c                              | 1067 ++++++++++++++++----
+ kernel/trace/fprobe.c                              |  631 ++++++++----
+ kernel/trace/ftrace.c                              |   23 
+ kernel/trace/ftrace_internal.h                     |    2 
+ kernel/trace/trace.h                               |   94 +-
+ kernel/trace/trace_fprobe.c                        |  114 +-
+ kernel/trace/trace_functions.c                     |    8 
+ kernel/trace/trace_functions_graph.c               |   96 +-
+ kernel/trace/trace_irqsoff.c                       |   10 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |   10 
+ kernel/trace/trace_selftest.c                      |  178 +++
+ lib/test_fprobe.c                                  |   51 -
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 39 files changed, 2177 insertions(+), 700 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
 
-If you want to undo deduplication, reply with:
-#syz undup
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
