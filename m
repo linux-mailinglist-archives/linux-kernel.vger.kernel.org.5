@@ -1,194 +1,130 @@
-Return-Path: <linux-kernel+bounces-24814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B614C82C2E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:38:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 503D482C2E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:39:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67F2C1F23729
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:38:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E33F71F23CC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958A76EB5C;
-	Fri, 12 Jan 2024 15:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013876EB5E;
+	Fri, 12 Jan 2024 15:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="NquVzITc"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dFmxTTQg";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="no5JwyVt"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4347D67E95
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:38:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3367601a301so5550163f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:38:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1705073925; x=1705678725; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rcF2XsVN5qfBcTnWBw/ZNq4CN89fzFSDAjr71tltvUY=;
-        b=NquVzITc9CUNEHvFsBIGQNJLEO9tlGBF/7BB1idU8AGYFwUavhGWbKTZT/yqBIUk+U
-         QUfUyyrecNUgLoSm37k8i8sRXiJoLHnNNghtmhjS6VgYLkLjA33UkxFakVLaHDw7bZrN
-         l4SFxtvlrRojdIVZTFD0DXvh1fuHwoI3vk/t/hWHpt9eTwRI2rPXpA76azObRyG8acAl
-         ZZLcEddSsdbxwim7gGF2AUrplwHwDC5tsRzMZuK9ssLgxLJTTdJH59Okydltv2q0zgv4
-         HzqVuvRql7wTL46/VJY80CQ4KYW6LthHIw++jtSDx6Tg/weUSALg/eWu3A5WkAHdZCw4
-         HvkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705073925; x=1705678725;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rcF2XsVN5qfBcTnWBw/ZNq4CN89fzFSDAjr71tltvUY=;
-        b=Cx3DkslOVZiUm2XV7zx4S8fzbmq0mth3tl1Upd1d0/eYXIbLtommpXMA3aJUxXhLIh
-         +6xyNN0/LjwyiJHA5LdqNZLFq64rT3VfQWBYcma4ui4QzeFFSXaMtFiFrPWepV/Z7Qwt
-         QUEoASAYUO0NG672PX3OgwLqlRjcwTt8TNC1SsfmuDDtzG4dQgLi+wpP/p1BroqmZuTk
-         Zf9G2x/nAGGVdW+mUHxkTLDzWCI+CYMHO8KkZIBCeFgbDBg9DBlfF2sZkXfQjKSjjSkl
-         HjLFgj+A2QpAg3k3IYB37KzofLXmHVk1zKtQlNZRIeVYsSvUsYZls31ddYGl6/mhRxcT
-         DqqA==
-X-Gm-Message-State: AOJu0Yzcc6UeBOMTjzn8CinYZHOXUbZJrGPKHv7vxZEZ8AzPjW8tdJXU
-	c2gFpxwpn9956UKn5vdKOjbej20tqy68EQ==
-X-Google-Smtp-Source: AGHT+IF0zG9DS1T1lBHEK7Tyf5JdSHUKjdp3RO4nxo4seLerrUeIhtouJLMU3LHaBbB/oj0JVvXr3w==
-X-Received: by 2002:a05:600c:4795:b0:40e:470a:d867 with SMTP id k21-20020a05600c479500b0040e470ad867mr560082wmo.222.1705073925366;
-        Fri, 12 Jan 2024 07:38:45 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.5])
-        by smtp.gmail.com with ESMTPSA id m6-20020adffa06000000b00336c6b77584sm4192623wrr.91.2024.01.12.07.38.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 07:38:45 -0800 (PST)
-Message-ID: <30608a28-b1e3-4ad3-aad5-1033eb8adc6f@tuxon.dev>
-Date: Fri, 12 Jan 2024 17:38:43 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CECA6EB45
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705073985;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=67Uy+xhGrqYkO1Av45A28fcnjxtc8LhN+2a/aHhmapI=;
+	b=dFmxTTQg/dIndngXy7D1328VAC8fb38C9VJ4X1o3ewLia4TGVa9wAtDOjN0+/tn/tRpujV
+	hbh5LXDTTCqQHhYT3mTEyAAZqmEGBWZLrJE6qluvISNJTVIKgoWZEk1b57KsImdMsBPVgt
+	/JX8eA9gR3Lt1CTncgjo6J8hfe4RhOoz4CudQ3ouZ/UVZHkp5gJ9lVltG8OtSV8ZgHzHd5
+	MCW1fPS5uM9WGEeXwkTr1AHELcycksqU7RjxqetguO/YZIxREZXXOUMGJKRf5+rY1zhUyi
+	sH8/RDv6Y3UGc9kjiWJ89iRul4oE/iTtxytlKdG9a3s4tb3ydLtYssF2L8TQmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705073985;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=67Uy+xhGrqYkO1Av45A28fcnjxtc8LhN+2a/aHhmapI=;
+	b=no5JwyVtQJcvBedZG3HEST21xAghCRMvMEWZEAok147fvhdFDCeIZXVEwDQIxvEw7eNqLO
+	p1U7FWpW9+LwcHCg==
+To: "Zhang, Rui" <rui.zhang@intel.com>, "Brown, Len" <len.brown@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "jgross@suse.com" <jgross@suse.com>, "x86@kernel.org" <x86@kernel.org>,
+ "arjan@linux.intel.com" <arjan@linux.intel.com>, "kprateek.nayak@amd.com"
+ <kprateek.nayak@amd.com>, "Tang, Feng" <feng.tang@intel.com>,
+ "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
+ "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>, "ray.huang@amd.com"
+ <ray.huang@amd.com>, "andrew.cooper3@citrix.com"
+ <andrew.cooper3@citrix.com>, "Sivanich, Dimitri"
+ <dimitri.sivanich@hpe.com>, "paulmck@kernel.org" <paulmck@kernel.org>,
+ "Mehta, Sohil" <sohil.mehta@intel.com>, "andy@infradead.org"
+ <andy@infradead.org>
+Subject: Re: [patch 37/53] x86/cpu: Detect real BSP on crash kernels
+In-Reply-To: <dbad0f6f9dee5851aa21ffae9e8877cf23645af5.camel@intel.com>
+References: <20230807130108.853357011@linutronix.de>
+ <20230807135028.381851690@linutronix.de>
+ <7443f3200ef0be756566059e8c9b0657f3cefcff.camel@intel.com>
+ <871qarlvub.ffs@tglx> <87y1czkdlg.ffs@tglx>
+ <ff58623cdf63dc75fc245fd18ee776465f4bb3b8.camel@intel.com>
+ <87frz5jmnl.ffs@tglx> <87a5pdjk54.ffs@tglx>
+ <dbad0f6f9dee5851aa21ffae9e8877cf23645af5.camel@intel.com>
+Date: Fri, 12 Jan 2024 16:39:44 +0100
+Message-ID: <87edemimrj.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: renesas: rzg3s-smarc: Add gpio keys
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: geert+renesas@glider.be, magnus.damm@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231227130810.2744550-1-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdVnsJfOtZPpr+_MRNkx-bSXrCm8Hy_j6Gy58WnGn_kaMA@mail.gmail.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-Content-Language: en-US
-In-Reply-To: <CAMuHMdVnsJfOtZPpr+_MRNkx-bSXrCm8Hy_j6Gy58WnGn_kaMA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi, Geert,
+On Fri, Jan 12 2024 at 09:14, Zhang, Rui wrote:
+> On Wed, 2024-01-10 at 16:14 +0100, Thomas Gleixner wrote:
+>> On Wed, Jan 10 2024 at 15:19, Thomas Gleixner wrote:
+>> > > This is the order in MADT,
+>> > > $ cat apic.dsl=C2=A0 | grep x2Apic
+>> > > [030h 0048=C2=A0=C2=A0 4]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 Processor x2Apic ID : 00000010
+>> > > [040h 0064=C2=A0=C2=A0 4]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 Processor x2Apic ID : 00000011
+>> ...
+>> > > and this is the order in Linux (from CPU0 to CPUN)
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 x2APIC ID of logical processor =3D 0x=
+20 (32)
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 x2APIC ID of logical processor =3D 0x=
+10 (16)
+>> >=20
+>> > What a mess...
+>>=20
+>> And clearly not according to the spec
+>>=20
+>> =C2=A0 "The second is that platform firmware should list the boot
+>> processor
+>> =C2=A0=C2=A0 as the first processor entry in the MADT."
+>>=20
+>> Oh well. There are reasons why this is written the way it is.
+>
+> This is indeed a violation of the ACPI spec and we should modify the
+> order in MADT. But this doesn't bring any actual effect as Linux
+> already handles this, right?
 
-On 12.01.2024 15:55, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Wed, Dec 27, 2023 at 2:08 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> RZ SMARC Carrier II board has 3 user buttons called USER_SW1, USER_SW2,
->> USER_SW3. Add a DT node in device tree to propertly instantiate the
->> gpio-keys driver for these buttons.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Thanks for your patch!
-> 
->> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
->> @@ -6,6 +6,7 @@
->>   */
->>
->>  #include <dt-bindings/gpio/gpio.h>
->> +#include <dt-bindings/input/input.h>
->>  #include <dt-bindings/pinctrl/rzg2l-pinctrl.h>
->>
->>  / {
->> @@ -14,6 +15,37 @@ aliases {
->>                 mmc1 = &sdhi1;
->>         };
->>
->> +       keys {
-> 
-> Do you mind if I s/keys/keypad/ while applying? ...
+It brings the effect that we can detect when we are not booting (kexec
+case) on the actual boot CPU because then the first enumerated APIC ID
+is not the same as the boot CPU APIC ID. No?
 
-Is not actually a keypad... there are 3 buttons in a corner of the board...
+> For the BSP APIC ID 0x20, I didn't find out a specific reason why we
+> have to do it in that way, but it is still legal.
 
-I see only 2 entries in arm64 and arm DTS directory following this pattern
-for gpio-keys compatible node:
+Linux does not really care in which order the APICs are enumerated.
 
- arch/arm/boot/dts/renesas/r8a7779-marzen.dts
- arch/arm/boot/dts/renesas/r8a7779-marzen.dts
+> We may need to figure out another way to distinguish the kdump kernel.
 
-But if you prefer it like this, I have nothing against.
+Having the first enumerated APIC in the MADT as the actual boot CPU is a
+sensible and functional way. Everything else including the silly kexec
+boot parameter is error prone.
 
-Just asking, do you have a particular reason for naming it like this?
+I agree that MADT is error prone too given the fact that not even Intel
+can get it right....
 
-> 
->> +               compatible = "gpio-keys";
->> +
->> +               key-1 {
->> +                       interrupts = <RZG2L_GPIO(18, 0) IRQ_TYPE_EDGE_FALLING>;
-> 
-> Oh, the horror of interrupt controllers that don't support generating
-> interrupts on both edges...
+Thanks,
 
-Yes.
-
-> 
->> +                       interrupt-parent = <&pinctrl>;
-> 
-> ... and move these one level up, to avoid duplication?
-
-Moving it just near compatible will make the schema validation to fail with
-this (driver is working, though):
-
-arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dtb: keys:
-'interrupt-parent' does not match any of the regexes:
-'^(button|event|key|switch|(button|event|key|switch)-[a-z0-9-]+|[a-z0-9-]+-(button|event|key|switch))$',
-'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/input/gpio-keys.yaml#
-
-Thank  you,
-Claudiu Beznea
-
-> 
->> +                       linux,code = <KEY_1>;
->> +                       label = "USER_SW1";
->> +                       wakeup-source;
->> +                       debounce-interval = <20>;
->> +               };
->> +
->> +               key-2 {
->> +                       interrupts = <RZG2L_GPIO(0, 1) IRQ_TYPE_EDGE_FALLING>;
->> +                       interrupt-parent = <&pinctrl>;
->> +                       linux,code = <KEY_2>;
->> +                       label = "USER_SW2";
->> +                       wakeup-source;
->> +                       debounce-interval = <20>;
->> +               };
->> +
->> +               key-3 {
->> +                       interrupts = <RZG2L_GPIO(0, 3) IRQ_TYPE_EDGE_FALLING>;
->> +                       interrupt-parent = <&pinctrl>;
->> +                       linux,code = <KEY_3>;
->> +                       label = "USER_SW3";
->> +                       wakeup-source;
->> +                       debounce-interval = <20>;
->> +               };
->> +       };
->> +
->>         vcc_sdhi1: regulator-vcc-sdhi1 {
->>                 compatible = "regulator-fixed";
->>                 regulator-name = "SDHI1 Vcc";
-> 
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v6.9, with the above fixed.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+        tglx
 
