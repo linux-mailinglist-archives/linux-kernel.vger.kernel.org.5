@@ -1,424 +1,711 @@
-Return-Path: <linux-kernel+bounces-25056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB8282C703
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:13:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4958882C707
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52A45286F9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:13:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 740EBB23CEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C78317738;
-	Fri, 12 Jan 2024 22:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6202D1772F;
+	Fri, 12 Jan 2024 22:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ajy3kdZQ"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ivE4FuIj"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B30915AE3;
-	Fri, 12 Jan 2024 22:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dbed5d1ffb0so6603960276.1;
-        Fri, 12 Jan 2024 14:13:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A844F17726
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d5336986cso87123425e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:15:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705097593; x=1705702393; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1705097712; x=1705702512; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YvOCHmUc0lLvZimXZvMNfX+hZiconfYp5v7rp8iwL5k=;
-        b=ajy3kdZQqsdGajpOkCG+iqOmUD3b8g82YhdeAVbkxZ9hJ8lgbfkGZbFgLC9J5oIERM
-         YAH8w76lhWOpGHamx8dWWckhNostOKkewunFtYlB13h05Gz/z9eFqu1A5b7EZ43ahqfe
-         gJ3v26sxz2vHRKyxJGg11gWC/8i1VVD3EN+T2X/34Vc7GRtOYwfVJA8GW+C1V+ftrfum
-         ZAGfzbR3vlLMm+c+CvCuZDhGaxCiEfaXtgYnK5gSfgqs7Msc/zzADsnp5BnYXLzSpkTQ
-         5Ugsuf48nLPYf2n+czc7EjoT6Rz9f94RCajg0B+z5xMDWfrF00C1lrAwhN9hBgxG2IB8
-         CZPw==
+        bh=iVWW8WEf7nba+lvB2pD2jpKaUi1Mq5gzEuxlWtWIR5E=;
+        b=ivE4FuIjMu8dND0J06Srm8mtq+KotFcg/j7OFkedsTjl4f1WXng+8n0R55pHBY9ONV
+         Hyiw15FbD+N5j/fK6au+bJihf8RI5oXAHIR0zWAz8sO3AsxIyrp6ggRJgfwgoB9ksZsq
+         A++jvfPpaNbTqUmW8pnShHsyVgNdKE1GLGzpKWP98d+zm0wLt2vaTPNOzYenS1TUS1P9
+         67kImy6+B+Ln5l4HeXXa29/Mgx3SCsqN9EVo9EhBWN/7/rBrsLL34b9Bvz2gjdFE3bYp
+         9shxZTdJ+4/dozGE42mprajg35cB48w6jcSuh3y46ZZewUAQE5v+fWOLMbL1aunnkjDR
+         6inA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705097593; x=1705702393;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705097712; x=1705702512;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YvOCHmUc0lLvZimXZvMNfX+hZiconfYp5v7rp8iwL5k=;
-        b=drLdyzwYsar8WbC85PIjOKnNWWIoWwW+knNCnoUc+dePj0Z9U8My8a27NwPvEykDmo
-         g7ZGXELb8VC3yctQmp8JfvD/V1DkeS4j3aSbDuvXaICHukiNh8RgqZ3Ac1nDwzyKo0YM
-         1tWc/RTBY8nzCPniH+D1h26Fj/fqbpxvp6m32cClxlbLhPNbd5xFGDZfMn/uRbiMGuio
-         uhdYRXvqGcDakhEie4TXo40nvQ/0dPMNazL4XKJyvsPkd/VuEqwz3Jxb72A6hHq/KSRg
-         w+TuYHaXQkFIwZWJ3QsR6cuvQ92OQBiev+mHUS4NKuzw9MJnVqsvyDWVTZ2obVjkr12L
-         Pctg==
-X-Gm-Message-State: AOJu0Yy1XujfutvVFV6GZJ5R0mZFQcMtm0o/HFAKFQ9OGdIGJnALsI5J
-	6ZIi6K7GaTCKabQn9wF6Z9nbwuac/Yh2WSQ+pZU=
-X-Google-Smtp-Source: AGHT+IHC3gA4oy6vewLDEr58W+knh0O1swPVnISiPtzYc7c8rvKGBileTPTfqqeAQ/jZ+JosheFztvyAMbu9iudYYE4=
-X-Received: by 2002:a25:ef45:0:b0:dbd:5cd8:1a4f with SMTP id
- w5-20020a25ef45000000b00dbd5cd81a4fmr1268714ybm.54.1705097592997; Fri, 12 Jan
- 2024 14:13:12 -0800 (PST)
+        bh=iVWW8WEf7nba+lvB2pD2jpKaUi1Mq5gzEuxlWtWIR5E=;
+        b=kZM9b+cWlD9QWeMAIboy/xe4vKRizCyBCRCjPVlcVG1y66oFivXbflv+L9YHj8lcwf
+         t1ESbTvijkpPcvTK0IdSqi+gS2D1h6I6f5mhcWrv550JgqhxCi1TKFuKnEtLR4aAj3ht
+         z3Gqw0MQXtfmVlW8H/WNJSySR3GZDrQwokTkyqPbpfmMDPNKQdoGUBahF9XSpyVYon4i
+         Ic4YpjNGDTXUPWpBT6+NgrvjuHrvnCe/vQnaSOe4Lr6iMpRIJ1xuKYr6g2phe60COJH4
+         QZpbZaXmt2rZQuc517rEwaGmpWO15krDiIk69XEcp5ZOo3c4JhtL3mqjahJqWrHl6lD4
+         EhzA==
+X-Gm-Message-State: AOJu0YzX27MHhH1AYBEqz7whR1BLObUeSQ4ivM2lkWvNca5RwKLplk4P
+	FxQpbaN9ZFIVXk3s0nhsJX0k3+3SHccU
+X-Google-Smtp-Source: AGHT+IHV8pHGlvwmQiVj2G9JmAihmXZEX0/wI4eR5dd0ObFcNAuy2wTBMVYofxngd4adQhJULHybBw==
+X-Received: by 2002:a05:600c:ad2:b0:40e:4614:492e with SMTP id c18-20020a05600c0ad200b0040e4614492emr968708wmr.69.1705097711540;
+        Fri, 12 Jan 2024 14:15:11 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:a295:22ad:7be8:13cd])
+        by smtp.gmail.com with ESMTPSA id z15-20020a5d654f000000b00336c9ad1173sm4934753wrv.26.2024.01.12.14.15.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 14:15:11 -0800 (PST)
+Date: Fri, 12 Jan 2024 23:15:05 +0100
+From: Marco Elver <elver@google.com>
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andi Kleen <ak@linux.intel.com>, Oscar Salvador <osalvador@suse.de>,
+	andrey.konovalov@linux.dev,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexander Potapenko <glider@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+	Evgenii Stepanov <eugenis@google.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH v4 12/22] lib/stackdepot: use read/write lock
+Message-ID: <ZaG56XTDwPfkqkJb@elver.google.com>
+References: <cover.1700502145.git.andreyknvl@google.com>
+ <9f81ffcc4bb422ebb6326a65a770bf1918634cbb.1700502145.git.andreyknvl@google.com>
+ <ZZUlgs69iTTlG8Lh@localhost.localdomain>
+ <87sf34lrn3.fsf@linux.intel.com>
+ <CANpmjNNdWwGsD3JRcEqpq_ywwDFoxsBjz6n=6vL5YksNsPyqHw@mail.gmail.com>
+ <ZZ_gssjTCyoWjjhP@tassilo>
+ <ZaA8oQG-stLAVTbM@elver.google.com>
+ <CA+fCnZeS=OrqSK4QVUVdS6PwzGrpg8CBj8i2Uq=VMgMcNg1FYw@mail.gmail.com>
+ <CANpmjNOoidtyeQ76274SWtTYR4zZPdr1DnxhLaagHGXcKwPOhA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111154106.3692206-1-ryan.roberts@arm.com>
- <CAGsJ_4xPgmgt57sw2c5==bPN+YL23zn=hZweu8u2ceWei7+q4g@mail.gmail.com> <654df189-e472-4a75-b2be-6faa8ba18a08@arm.com>
-In-Reply-To: <654df189-e472-4a75-b2be-6faa8ba18a08@arm.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 13 Jan 2024 11:13:01 +1300
-Message-ID: <CAGsJ_4zyK4kSF4XYWwLTLN8816KL+u=p6WhyEsRu8PMnQTNRUg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] mm/filemap: Allow arch to request folio size for
- exec memory
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
-	John Hubbard <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOoidtyeQ76274SWtTYR4zZPdr1DnxhLaagHGXcKwPOhA@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On Sat, Jan 13, 2024 at 12:15=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
->
-> On 12/01/2024 10:13, Barry Song wrote:
-> > On Fri, Jan 12, 2024 at 4:41=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.=
-com> wrote:
-> >>
-> >> Change the readahead config so that if it is being requested for an
-> >> executable mapping, do a synchronous read of an arch-specified size in=
- a
-> >> naturally aligned manner.
-> >>
-> >> On arm64 if memory is physically contiguous and naturally aligned to t=
-he
-> >> "contpte" size, we can use contpte mappings, which improves utilizatio=
-n
-> >> of the TLB. When paired with the "multi-size THP" changes, this works
-> >> well to reduce dTLB pressure. However iTLB pressure is still high due =
-to
-> >> executable mappings having a low liklihood of being in the required
-> >> folio size and mapping alignment, even when the filesystem supports
-> >> readahead into large folios (e.g. XFS).
-> >>
-> >> The reason for the low liklihood is that the current readahead algorit=
-hm
-> >> starts with an order-2 folio and increases the folio order by 2 every
-> >> time the readahead mark is hit. But most executable memory is faulted =
-in
-> >> fairly randomly and so the readahead mark is rarely hit and most
-> >> executable folios remain order-2. This is observed impirically and
-> >> confirmed from discussion with a gnu linker expert; in general, the
-> >> linker does nothing to group temporally accessed text together
-> >> spacially. Additionally, with the current read-around approach there a=
-re
-> >> no alignment guarrantees between the file and folio. This is
-> >> insufficient for arm64's contpte mapping requirement (order-4 for 4K
-> >> base pages).
-> >>
-> >> So it seems reasonable to special-case the read(ahead) logic for
-> >> executable mappings. The trade-off is performance improvement (due to
-> >> more efficient storage of the translations in iTLB) vs potential read
-> >> amplification (due to reading too much data around the fault which won=
-'t
-> >> be used), and the latter is independent of base page size. I've chosen
-> >> 64K folio size for arm64 which benefits both the 4K and 16K base page
-> >> size configs and shouldn't lead to any further read-amplification sinc=
-e
-> >> the old read-around path was (usually) reading blocks of 128K (with th=
-e
-> >> last 32K being async).
-> >>
-> >> Performance Benchmarking
-> >> ------------------------
-> >>
-> >> The below shows kernel compilation and speedometer javascript benchmar=
-ks
-> >> on Ampere Altra arm64 system. (The contpte patch series is applied in
-> >> the baseline).
-> >>
-> >> First, confirmation that this patch causes more memory to be contained
-> >> in 64K folios (this is for all file-backed memory so includes
-> >> non-executable too):
-> >>
-> >> | File-backed folios      |   Speedometer   |  Kernel Compile |
-> >> | by size as percentage   |-----------------|-----------------|
-> >> | of all mapped file mem  | before |  after | before |  after |
-> >> |=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D|=3D=3D=3D=3D=3D=3D=3D=3D|=3D=3D=3D=3D=3D=3D=3D=3D|=3D=3D=3D=3D=3D=3D=
-=3D=3D|=3D=3D=3D=3D=3D=3D=3D=3D|
-> >> |file-thp-aligned-16kB    |    45% |     9% |    46% |     7% |
-> >> |file-thp-aligned-32kB    |     2% |     0% |     3% |     1% |
-> >> |file-thp-aligned-64kB    |     3% |    63% |     5% |    80% |
-> >> |file-thp-aligned-128kB   |    11% |    11% |     0% |     0% |
-> >> |file-thp-unaligned-16kB  |     1% |     0% |     3% |     1% |
-> >> |file-thp-unaligned-128kB |     1% |     0% |     0% |     0% |
-> >> |file-thp-partial         |     0% |     0% |     0% |     0% |
-> >> |-------------------------|--------|--------|--------|--------|
-> >> |file-cont-aligned-64kB   |    16% |    75% |     5% |    80% |
-> >>
-> >> The above shows that for both use cases, the amount of file memory
-> >> backed by 16K folios reduces and the amount backed by 64K folios
-> >> increases significantly. And the amount of memory that is contpte-mapp=
-ed
-> >> significantly increases (last line).
-> >>
-> >> And this is reflected in performance improvement:
-> >>
-> >> Kernel Compilation (smaller is faster):
-> >> | kernel   |   real-time |   kern-time |   user-time |   peak memory |
-> >> |----------|-------------|-------------|-------------|---------------|
-> >> | before   |        0.0% |        0.0% |        0.0% |          0.0% |
-> >> | after    |       -1.6% |       -2.1% |       -1.7% |          0.0% |
-> >>
-> >> Speedometer (bigger is faster):
-> >> | kernel   |   runs_per_min |   peak memory |
-> >> |----------|----------------|---------------|
-> >> | before   |           0.0% |          0.0% |
-> >> | after    |           1.3% |          1.0% |
-> >>
-> >> Both benchmarks show a ~1.5% improvement once the patch is applied.
-> >>
-> >> Alternatives
-> >> ------------
-> >>
-> >> I considered (and rejected for now - but I anticipate this patch will
-> >> stimulate discussion around what the best approach is) alternative
-> >> approaches:
-> >>
-> >>   - Expose a global user-controlled knob to set the preferred folio
-> >>     size; this would move policy to user space and allow (e.g.) settin=
-g
-> >>     it to PMD-size for even better iTLB utilizaiton. But this would ad=
-d
-> >>     ABI, and I prefer to start with the simplest approach first. It al=
-so
-> >>     has the downside that a change wouldn't apply to memory already in
-> >>     the page cache that is in active use (e.g. libc) so we don't get t=
-he
-> >>     same level of utilization as for something that is fixed from boot=
-.
-> >>
-> >>   - Add a per-vma attribute to allow user space to specify preferred
-> >>     folio size for memory faulted from the range. (we've talked about
-> >>     such a control in the context of mTHP). The dynamic loader would
-> >>     then be responsible for adding the annotations. Again this feels
-> >>     like something that could be added later if value was demonstrated=
-.
-> >>
-> >>   - Enhance MADV_COLLAPSE to collapse to THP sizes less than PMD-size.
-> >>     This would still require dynamic linker involvement, but would
-> >>     additionally neccessitate a copy and all memory in the range would
-> >>     be synchronously faulted in, adding to application load time. It
-> >>     would work for filesystems that don't support large folios though.
-> >>
-> >> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> >> ---
-> >>
-> >> Hi all,
-> >>
-> >> I originally concocted something similar to this, with Matthew's help,=
- as a
-> >> quick proof of concept hack. Since then I've tried a few different app=
-roaches
-> >> but always came back to this as the simplest solution. I expect this w=
-ill raise
-> >> a few eyebrows but given it is providing a real performance win, I hop=
-e we can
-> >> converge to something that can be upstreamed.
-> >>
-> >> This depends on my contpte series to actually set the contiguous bit i=
-n the page
-> >> table.
-> >>
-> >> Thanks,
-> >> Ryan
-> >>
-> >>
-> >>  arch/arm64/include/asm/pgtable.h | 12 ++++++++++++
-> >>  include/linux/pgtable.h          | 12 ++++++++++++
-> >>  mm/filemap.c                     | 19 +++++++++++++++++++
-> >>  3 files changed, 43 insertions(+)
-> >>
-> >> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm=
-/pgtable.h
-> >> index f5bf059291c3..8f8f3f7eb8d8 100644
-> >> --- a/arch/arm64/include/asm/pgtable.h
-> >> +++ b/arch/arm64/include/asm/pgtable.h
-> >> @@ -1143,6 +1143,18 @@ static inline void update_mmu_cache_range(struc=
-t vm_fault *vmf,
-> >>   */
-> >>  #define arch_wants_old_prefaulted_pte  cpu_has_hw_af
-> >>
-> >> +/*
-> >> + * Request exec memory is read into pagecache in at least 64K folios.=
- The
-> >> + * trade-off here is performance improvement due to storing translati=
-ons more
-> >> + * effciently in the iTLB vs the potential for read amplification due=
- to reading
-> >> + * data from disk that won't be used. The latter is independent of ba=
-se page
-> >> + * size, so we set a page-size independent block size of 64K. This si=
-ze can be
-> >> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB=
- entry),
-> >> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base p=
-ages are in
-> >> + * use.
-> >> + */
-> >> +#define arch_wants_exec_folio_order(void) ilog2(SZ_64K >> PAGE_SHIFT)
-> >> +
-> >>  static inline bool pud_sect_supported(void)
-> >>  {
-> >>         return PAGE_SIZE =3D=3D SZ_4K;
-> >> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> >> index 170925379534..57090616d09c 100644
-> >> --- a/include/linux/pgtable.h
-> >> +++ b/include/linux/pgtable.h
-> >> @@ -428,6 +428,18 @@ static inline bool arch_has_hw_pte_young(void)
-> >>  }
-> >>  #endif
-> >>
-> >> +#ifndef arch_wants_exec_folio_order
-> >> +/*
-> >> + * Returns preferred minimum folio order for executable file-backed m=
-emory. Must
-> >> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has=
- no
-> >> + * preference and mm will not special-case executable memory in the p=
-agecache.
-> >> + */
-> >> +static inline int arch_wants_exec_folio_order(void)
-> >> +{
-> >> +       return -1;
-> >> +}
-> >> +#endif
-> >> +
-> >>  #ifndef arch_check_zapped_pte
-> >>  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
-> >>                                          pte_t pte)
-> >> diff --git a/mm/filemap.c b/mm/filemap.c
-> >> index 67ba56ecdd32..80a76d755534 100644
-> >> --- a/mm/filemap.c
-> >> +++ b/mm/filemap.c
-> >> @@ -3115,6 +3115,25 @@ static struct file *do_sync_mmap_readahead(stru=
-ct vm_fault *vmf)
-> >>         }
-> >>  #endif
-> >>
-> >> +       /*
-> >> +        * Allow arch to request a preferred minimum folio order for e=
-xecutable
-> >> +        * memory. This can often be beneficial to performance if (e.g=
-) arm64
-> >> +        * can contpte-map the folio. Executable memory rarely benefit=
-s from
-> >> +        * read-ahead anyway, due to its random access nature.
-> >> +        */
-> >> +       if (vm_flags & VM_EXEC) {
-> >> +               int order =3D arch_wants_exec_folio_order();
-> >> +
-> >> +               if (order >=3D 0) {
-> >> +                       fpin =3D maybe_unlock_mmap_for_io(vmf, fpin);
-> >> +                       ra->size =3D 1UL << order;
-> >> +                       ra->async_size =3D 0;
-> >> +                       ractl._index &=3D ~((unsigned long)ra->size - =
-1);
-> >> +                       page_cache_ra_order(&ractl, ra, order);
-> >> +                       return fpin;
-> >> +               }
-> >> +       }
-> >
-> > I don't know, but most filesystems don't support large mapping,even iom=
-ap.
->
-> True, but more are coming. For example ext4 is in the works:
-> https://lore.kernel.org/all/20240102123918.799062-1-yi.zhang@huaweicloud.=
-com/
+On Fri, Jan 12, 2024 at 09:24AM +0100, Marco Elver wrote:
+> On Fri, 12 Jan 2024 at 03:38, Andrey Konovalov <andreyknvl@gmail.com> wrote:
+[...]
+> > Looks good to me from the functional perspective (modulo the
+> > clarification comments I left above), but it would be great to get a
+> > review from someone with a better understanding of the low-level
+> > synchronization primitives.
+> 
+> Yes - and I'll have to rework this to use get_state_synchronize_rcu()
+> after all. When it's ready for proper review I'll send an RFC patch.
 
-right, hopefully more filesystems will join.
+The below should be what we want, this time without weird hacks.
+NMI-safe RCU does work for this case.
 
->
-> > This patch might negatively affect them. i feel we need to check
-> > mapping_large_folio_support() at least.
->
-> page_cache_ra_order() does this check and falls back to small folios if n=
-eeded.
-> So correctness-wise it all works out. I guess your concern is performance=
- due to
-> effectively removing the async readahead aspect? But if that is a problem=
-, then
-> it's not just a problem if we are reading small folios, so I don't think =
-the
-> proposed check is correct.
+I'll let the test robot beat on it then send the patch next week
+(there's going to be a patch 1/2 to add stats counters as well).
 
-My point is that this patch is actually changing two things.
-1. readahead index/size and async_size=3D0
-2. try to use CONT-PTE
+Also note that the rwlock broke RT kernels, which is also fixed by the
+below patch.
 
-for filesystems which support large mapping, we are getting 2 to help
-improve performance; for filesystems without large_mapping, 1 has
-been changed from losing read-around,
-        /*
-         * mmap read-around
-         */
-        fpin =3D maybe_unlock_mmap_for_io(vmf, fpin);
-        ra->start =3D max_t(long, 0, vmf->pgoff - ra->ra_pages / 2);
-        ra->size =3D ra->ra_pages;
-        ra->async_size =3D ra->ra_pages / 4;
-        ractl._index =3D ra->start;
-        page_cache_ra_order(&ractl, ra, 0);
+Thanks,
+-- Marco
 
-We probably need data to prove this makes no regression. otherwise,
-it is safer to let the code have no side effects on other file systems if
-we haven't data.
 
->
-> Perhaps an alternative would be to double ra->size and set ra->async_size=
- to
-> (ra->size / 2)? That would ensure we always have 64K aligned blocks but w=
-ould
-> give us an async portion so readahead can still happen.
+From 02b11afe1dcaf42e86b7030e32146a8b34d4bd09 Mon Sep 17 00:00:00 2001
+From: Marco Elver <elver@google.com>
+Date: Tue, 9 Jan 2024 10:21:56 +0100
+Subject: [PATCH] stackdepot: make fast paths lock-less again
 
-this might be worth to try as PMD is exactly doing this because async
-can decrease
-the latency of subsequent page faults.
+With the introduction of the pool_rwlock (reader-writer lock), several
+fast paths end up taking the pool_rwlock as readers. Furthermore,
+stack_depot_put() unconditionally takes the pool_rwlock as a writer.
 
-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-        /* Use the readahead code, even if readahead is disabled */
-        if (vm_flags & VM_HUGEPAGE) {
-                fpin =3D maybe_unlock_mmap_for_io(vmf, fpin);
-                ractl._index &=3D ~((unsigned long)HPAGE_PMD_NR - 1);
-                ra->size =3D HPAGE_PMD_NR;
-                /*
-                 * Fetch two PMD folios, so we get the chance to actually
-                 * readahead, unless we've been told not to.
-                 */
-                if (!(vm_flags & VM_RAND_READ))
-                        ra->size *=3D 2;
-                ra->async_size =3D HPAGE_PMD_NR;
-                page_cache_ra_order(&ractl, ra, HPAGE_PMD_ORDER);
-                return fpin;
-        }
-#endif
+Despite allowing readers to make forward-progress concurrently,
+reader-writer locks have inherent cache contention issues, which does
+not scale well on systems with large CPU counts. For cases with short
+critical sections, as is the case with stack depot, they can cause more
+harm than good, and alternative designs should be preferred.
 
->
-> I don't feel very expert with this area of the code so I might be talking
-> rubbish - would be great to hear from others.
->
-> >
-> >> +
-> >>         /* If we don't want any read-ahead, don't bother */
-> >>         if (vm_flags & VM_RAND_READ)
-> >>                 return fpin;
-> >> --
-> >> 2.25.1
-> >
+Rework the synchronization story of stack depot to again avoid taking
+any locks in the fast paths. This is done by relying on RCU-protected
+list traversal, and the NMI-safe subset of RCU to delay reuse of freed
+stack records. See code comments for more details.
 
-BTW, is it also possible that user space also wants to map some data
-as cont-pte hugepage? just like we have a strong VM_HUGEPAGE
-flag for PMD THP?
+Along with the performance issues, this also fixes incorrect nesting of rwlock
+within a raw_spinlock (pool->lock is the raw spinlock), given that stack depot
+should still be usable from anywhere:
 
-Thanks
-Barry
+ | [ BUG: Invalid wait context ]
+ | -----------------------------
+ | swapper/0/1 is trying to lock:
+ | ffffffff89869be8 (pool_rwlock){..--}-{3:3}, at: stack_depot_save_flags+0x147/0x660
+ | other info that might help us debug this:
+ | context-{5:5}
+ | 2 locks held by swapper/0/1:
+ |  #0: ffffffff89632440 (rcu_read_lock){....}-{1:3}, at: __queue_work+0x153/0xd70
+ |  #1: ffff888100092018 (&pool->lock){-.-.}-{2:2}, at: __queue_work+0x549/0xd70
+
+Stack depot usage stats are similar to the previous version after a KASAN
+kernel boot:
+
+ $ cat /sys/kernel/debug/stackdepot/stats
+ pools: 838
+ allocations: 29865
+ frees: 6604
+ in_use: 23261
+ freelist_size: 1879
+
+As we can see, the number of pools is the same as previously. The freelist size
+is minimally larger, but this may also be due to variance across system boots.
+This shows that even though we do not eagerly wait for the next RCU grace
+period (such as with synchronize_rcu() or call_rcu()) after freeing a stack
+record - requiring depot_pop_free() to "poll" if an entry may be used - new
+allocations are very likely to happen only in later RCU grace periods.
+
+Fixes: 108be8def46e ("lib/stackdepot: allow users to evict stack traces")
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+---
+ lib/stackdepot.c | 327 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 215 insertions(+), 112 deletions(-)
+
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index 80a8ca24ccc8..456396df1c0e 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -24,6 +24,8 @@
+ #include <linux/mutex.h>
+ #include <linux/percpu.h>
+ #include <linux/printk.h>
++#include <linux/rculist.h>
++#include <linux/rcupdate.h>
+ #include <linux/refcount.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+@@ -68,12 +70,28 @@ union handle_parts {
+ };
+ 
+ struct stack_record {
+-	struct list_head list;		/* Links in hash table or freelist */
++	struct list_head hash_list;	/* Links in the hash table */
+ 	u32 hash;			/* Hash in hash table */
+ 	u32 size;			/* Number of stored frames */
+-	union handle_parts handle;
++	union handle_parts handle;	/* Constant after initialization */
+ 	refcount_t count;
+-	unsigned long entries[CONFIG_STACKDEPOT_MAX_FRAMES];	/* Frames */
++	union {
++		unsigned long entries[CONFIG_STACKDEPOT_MAX_FRAMES];	/* Frames */
++		struct {
++			/*
++			 * An important invariant of the implementation is to
++			 * only place a stack record onto the freelist iff its
++			 * refcount is zero. Because stack records with a zero
++			 * refcount are never considered as valid, it is safe to
++			 * union @entries and freelist management state below.
++			 * Conversely, as soon as an entry is off the freelist
++			 * and its refcount becomes non-zero, the below must not
++			 * be accessed until being placed back on the freelist.
++			 */
++			struct list_head free_list;	/* Links in the freelist */
++			unsigned long rcu_state;	/* RCU cookie */
++		};
++	};
+ };
+ 
+ #define DEPOT_STACK_RECORD_SIZE \
+@@ -113,8 +131,8 @@ static LIST_HEAD(free_stacks);
+  * yet allocated or if the limit on the number of pools is reached.
+  */
+ static bool new_pool_required = true;
+-/* Lock that protects the variables above. */
+-static DEFINE_RWLOCK(pool_rwlock);
++/* The lock must be held when performing pool or free list modifications. */
++static DEFINE_RAW_SPINLOCK(pool_lock);
+ 
+ /* Statistics counters for debugfs. */
+ enum depot_counter_id {
+@@ -276,14 +294,15 @@ int stack_depot_init(void)
+ }
+ EXPORT_SYMBOL_GPL(stack_depot_init);
+ 
+-/* Initializes a stack depol pool. */
++/*
++ * Initializes new stack depot @pool, release all its entries to the freelist,
++ * and update the list of pools.
++ */
+ static void depot_init_pool(void *pool)
+ {
+ 	int offset;
+ 
+-	lockdep_assert_held_write(&pool_rwlock);
+-
+-	WARN_ON(!list_empty(&free_stacks));
++	lockdep_assert_held(&pool_lock);
+ 
+ 	/* Initialize handles and link stack records into the freelist. */
+ 	for (offset = 0; offset <= DEPOT_POOL_SIZE - DEPOT_STACK_RECORD_SIZE;
+@@ -294,19 +313,31 @@ static void depot_init_pool(void *pool)
+ 		stack->handle.offset = offset >> DEPOT_STACK_ALIGN;
+ 		stack->handle.extra = 0;
+ 
+-		list_add(&stack->list, &free_stacks);
++		/*
++		 * Stack traces of size 0 are never saved, and we can simply use
++		 * the size field as an indicator if this is a new unused stack
++		 * record in the freelist.
++		 */
++		stack->size = 0;
++
++		INIT_LIST_HEAD(&stack->hash_list);
++		/* Add to the freelist front to prioritize never-used entries. */
++		list_add(&stack->free_list, &free_stacks);
+ 		counters[DEPOT_COUNTER_FREELIST_SIZE]++;
+ 	}
+ 
+ 	/* Save reference to the pool to be used by depot_fetch_stack(). */
+ 	stack_pools[pools_num] = pool;
+-	pools_num++;
++
++	/* Pairs with concurrent READ_ONCE() in depot_fetch_stack(). */
++	WRITE_ONCE(pools_num, pools_num + 1);
++	ASSERT_EXCLUSIVE_WRITER(pools_num);
+ }
+ 
+ /* Keeps the preallocated memory to be used for a new stack depot pool. */
+ static void depot_keep_new_pool(void **prealloc)
+ {
+-	lockdep_assert_held_write(&pool_rwlock);
++	lockdep_assert_held(&pool_lock);
+ 
+ 	/*
+ 	 * If a new pool is already saved or the maximum number of
+@@ -329,17 +360,16 @@ static void depot_keep_new_pool(void **prealloc)
+ 	 * number of pools is reached. In either case, take note that
+ 	 * keeping another pool is not required.
+ 	 */
+-	new_pool_required = false;
++	WRITE_ONCE(new_pool_required, false);
+ }
+ 
+-/* Updates references to the current and the next stack depot pools. */
+-static bool depot_update_pools(void **prealloc)
++/*
++ * Try to initialize a new stack depot pool from either a previous or the
++ * current pre-allocation, and release all its entries to the freelist.
++ */
++static bool depot_try_init_pool(void **prealloc)
+ {
+-	lockdep_assert_held_write(&pool_rwlock);
+-
+-	/* Check if we still have objects in the freelist. */
+-	if (!list_empty(&free_stacks))
+-		goto out_keep_prealloc;
++	lockdep_assert_held(&pool_lock);
+ 
+ 	/* Check if we have a new pool saved and use it. */
+ 	if (new_pool) {
+@@ -348,10 +378,9 @@ static bool depot_update_pools(void **prealloc)
+ 
+ 		/* Take note that we might need a new new_pool. */
+ 		if (pools_num < DEPOT_MAX_POOLS)
+-			new_pool_required = true;
++			WRITE_ONCE(new_pool_required, true);
+ 
+-		/* Try keeping the preallocated memory for new_pool. */
+-		goto out_keep_prealloc;
++		return true;
+ 	}
+ 
+ 	/* Bail out if we reached the pool limit. */
+@@ -368,12 +397,30 @@ static bool depot_update_pools(void **prealloc)
+ 	}
+ 
+ 	return false;
++}
++
++/* Try to find next free usable entry. */
++static struct stack_record *depot_pop_free(void)
++{
++	struct stack_record *stack;
++
++	if (list_empty(&free_stacks))
++		return NULL;
++
++	/*
++	 * We maintain the invariant that the elements in front are least
++	 * recently used, and are therefore more likely to be associated with an
++	 * RCU grace period in the past. Consequently it is sufficient to only
++	 * check the first entry.
++	 */
++	stack = list_first_entry(&free_stacks, struct stack_record, free_list);
++	if (stack->size && !poll_state_synchronize_rcu(stack->rcu_state))
++		return NULL;
+ 
+-out_keep_prealloc:
+-	/* Keep the preallocated memory for a new pool if required. */
+-	if (*prealloc)
+-		depot_keep_new_pool(prealloc);
+-	return true;
++	list_del(&stack->free_list);
++	counters[DEPOT_COUNTER_FREELIST_SIZE]--;
++
++	return stack;
+ }
+ 
+ /* Allocates a new stack in a stack depot pool. */
+@@ -382,20 +429,18 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ {
+ 	struct stack_record *stack;
+ 
+-	lockdep_assert_held_write(&pool_rwlock);
+-
+-	/* Update current and new pools if required and possible. */
+-	if (!depot_update_pools(prealloc))
+-		return NULL;
++	lockdep_assert_held(&pool_lock);
+ 
+ 	/* Check if we have a stack record to save the stack trace. */
+-	if (list_empty(&free_stacks))
+-		return NULL;
+-
+-	/* Get and unlink the first entry from the freelist. */
+-	stack = list_first_entry(&free_stacks, struct stack_record, list);
+-	list_del(&stack->list);
+-	counters[DEPOT_COUNTER_FREELIST_SIZE]--;
++	stack = depot_pop_free();
++	if (!stack) {
++		/* No usable entries on the freelist - try to refill the freelist. */
++		if (!depot_try_init_pool(prealloc))
++			return NULL;
++		stack = depot_pop_free();
++		if (WARN_ON(!stack))
++			return NULL;
++	}
+ 
+ 	/* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. */
+ 	if (size > CONFIG_STACKDEPOT_MAX_FRAMES)
+@@ -421,37 +466,73 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ 
+ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
+ {
++	const int pools_num_cached = READ_ONCE(pools_num);
+ 	union handle_parts parts = { .handle = handle };
+ 	void *pool;
+ 	size_t offset = parts.offset << DEPOT_STACK_ALIGN;
+ 	struct stack_record *stack;
+ 
+-	lockdep_assert_held(&pool_rwlock);
++	lockdep_assert_not_held(&pool_lock);
+ 
+-	if (parts.pool_index > pools_num) {
++	if (parts.pool_index > pools_num_cached) {
+ 		WARN(1, "pool index %d out of bounds (%d) for stack id %08x\n",
+-		     parts.pool_index, pools_num, handle);
++		     parts.pool_index, pools_num_cached, handle);
+ 		return NULL;
+ 	}
+ 
+ 	pool = stack_pools[parts.pool_index];
+-	if (!pool)
++	if (WARN_ON(!pool))
+ 		return NULL;
+ 
+ 	stack = pool + offset;
++	if (WARN_ON(!refcount_read(&stack->count)))
++		return NULL;
++
+ 	return stack;
+ }
+ 
+ /* Links stack into the freelist. */
+ static void depot_free_stack(struct stack_record *stack)
+ {
+-	lockdep_assert_held_write(&pool_rwlock);
++	unsigned long flags;
++
++	lockdep_assert_not_held(&pool_lock);
++
++	raw_spin_lock_irqsave(&pool_lock, flags);
++	printk_deferred_enter();
++
++	/*
++	 * Remove the entry from the hash list. Concurrent list traversal may
++	 * still observe the entry, but since the refcount is zero, this entry
++	 * will no longer be considered as valid.
++	 */
++	list_del_rcu(&stack->hash_list);
++
++	/*
++	 * Due to being used from constrained contexts such as the allocators,
++	 * NMI, or even RCU itself, stack depot cannot rely on primitives that
++	 * would sleep (such as synchronize_rcu()) or recursively call into
++	 * stack depot again (such as call_rcu()).
++	 *
++	 * Instead, get an RCU cookie, so that we can ensure this entry isn't
++	 * moved onto another list until the next grace period, and concurrent
++	 * RCU list traversal remains safe.
++	 */
++	stack->rcu_state = get_state_synchronize_rcu();
+ 
+-	list_add(&stack->list, &free_stacks);
++	/*
++	 * Add the entry to the freelist tail, so that older entries are
++	 * considered first - their RCU cookie is more likely to no longer be
++	 * associated with the current grace period.
++	 */
++	list_add_tail(&stack->free_list, &free_stacks);
+ 
+ 	counters[DEPOT_COUNTER_FREELIST_SIZE]++;
+ 	counters[DEPOT_COUNTER_FREES]++;
+ 	counters[DEPOT_COUNTER_INUSE]--;
++
++	printk_deferred_exit();
++	raw_spin_unlock_irqrestore(&pool_lock, flags);
+ }
+ 
+ /* Calculates the hash for a stack. */
+@@ -479,22 +560,65 @@ int stackdepot_memcmp(const unsigned long *u1, const unsigned long *u2,
+ 
+ /* Finds a stack in a bucket of the hash table. */
+ static inline struct stack_record *find_stack(struct list_head *bucket,
+-					     unsigned long *entries, int size,
+-					     u32 hash)
++					      unsigned long *entries, int size,
++					      u32 hash, depot_flags_t flags)
+ {
+-	struct list_head *pos;
+-	struct stack_record *found;
++	struct stack_record *stack, *ret = NULL;
++
++	rcu_read_lock();
+ 
+-	lockdep_assert_held(&pool_rwlock);
++	list_for_each_entry_rcu(stack, bucket, hash_list) {
++		if (stack->hash != hash || stack->size != size)
++			continue;
+ 
+-	list_for_each(pos, bucket) {
+-		found = list_entry(pos, struct stack_record, list);
+-		if (found->hash == hash &&
+-		    found->size == size &&
+-		    !stackdepot_memcmp(entries, found->entries, size))
+-			return found;
++		/*
++		 * This may race with depot_free_stack() accessing the freelist
++		 * management state unioned with @entries. The refcount is zero
++		 * in that case and the below refcount_inc_not_zero() will fail.
++		 */
++		if (data_race(stackdepot_memcmp(entries, stack->entries, size)))
++			continue;
++
++		/*
++		 * Try to increment refcount. If this succeeds, the stack record
++		 * is valid and has not yet been freed.
++		 *
++		 * If STACK_DEPOT_FLAG_GET is not used, it is undefined behavior
++		 * to then call stack_depot_put() later, and we can assume that
++		 * a stack record is never placed back on the freelist.
++		 */
++		if (flags & STACK_DEPOT_FLAG_GET) {
++			if (!refcount_inc_not_zero(&stack->count))
++				continue;
++			smp_mb__after_atomic();
++		} else {
++			/*
++			 * Pairs with the release implied by list_add_rcu() to
++			 * turn the list-pointer access into an acquire; as-is
++			 * it only provides dependency-ordering implied by
++			 * READ_ONCE().
++			 *
++			 * Normally this is not needed, if we were to continue
++			 * using the stack_record pointer only. But, the pointer
++			 * returned here is not actually used to lookup entries.
++			 * Instead, the handle is returned, from which a pointer
++			 * may then be reconstructed in depot_fetch_stack().
++			 *
++			 * Therefore, it is required to upgrade the ordering
++			 * from dependency-ordering only to at least acquire to
++			 * be able to use the handle as another reference to the
++			 * same stack record.
++			 */
++			smp_mb();
++		}
++
++		ret = stack;
++		break;
+ 	}
+-	return NULL;
++
++	rcu_read_unlock();
++
++	return ret;
+ }
+ 
+ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+@@ -508,7 +632,6 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+ 	struct page *page = NULL;
+ 	void *prealloc = NULL;
+ 	bool can_alloc = depot_flags & STACK_DEPOT_FLAG_CAN_ALLOC;
+-	bool need_alloc = false;
+ 	unsigned long flags;
+ 	u32 hash;
+ 
+@@ -531,31 +654,16 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+ 	hash = hash_stack(entries, nr_entries);
+ 	bucket = &stack_table[hash & stack_hash_mask];
+ 
+-	read_lock_irqsave(&pool_rwlock, flags);
+-	printk_deferred_enter();
+-
+-	/* Fast path: look the stack trace up without full locking. */
+-	found = find_stack(bucket, entries, nr_entries, hash);
+-	if (found) {
+-		if (depot_flags & STACK_DEPOT_FLAG_GET)
+-			refcount_inc(&found->count);
+-		printk_deferred_exit();
+-		read_unlock_irqrestore(&pool_rwlock, flags);
++	/* Fast path: look the stack trace up without locking. */
++	found = find_stack(bucket, entries, nr_entries, hash, depot_flags);
++	if (found)
+ 		goto exit;
+-	}
+-
+-	/* Take note if another stack pool needs to be allocated. */
+-	if (new_pool_required)
+-		need_alloc = true;
+-
+-	printk_deferred_exit();
+-	read_unlock_irqrestore(&pool_rwlock, flags);
+ 
+ 	/*
+ 	 * Allocate memory for a new pool if required now:
+ 	 * we won't be able to do that under the lock.
+ 	 */
+-	if (unlikely(can_alloc && need_alloc)) {
++	if (unlikely(can_alloc && READ_ONCE(new_pool_required))) {
+ 		/*
+ 		 * Zero out zone modifiers, as we don't have specific zone
+ 		 * requirements. Keep the flags related to allocation in atomic
+@@ -569,31 +677,36 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+ 			prealloc = page_address(page);
+ 	}
+ 
+-	write_lock_irqsave(&pool_rwlock, flags);
++	raw_spin_lock_irqsave(&pool_lock, flags);
+ 	printk_deferred_enter();
+ 
+-	found = find_stack(bucket, entries, nr_entries, hash);
++	/* Try to find again, to avoid concurrently inserting duplicates. */
++	found = find_stack(bucket, entries, nr_entries, hash, depot_flags);
+ 	if (!found) {
+ 		struct stack_record *new =
+ 			depot_alloc_stack(entries, nr_entries, hash, &prealloc);
+ 
+ 		if (new) {
+-			list_add(&new->list, bucket);
++			/*
++			 * This releases the stack record into the bucket and
++			 * makes it visible to readers in find_stack().
++			 */
++			list_add_rcu(&new->hash_list, bucket);
+ 			found = new;
+ 		}
+-	} else {
+-		if (depot_flags & STACK_DEPOT_FLAG_GET)
+-			refcount_inc(&found->count);
++	}
++
++	if (prealloc) {
+ 		/*
+-		 * Stack depot already contains this stack trace, but let's
+-		 * keep the preallocated memory for future.
++		 * Either stack depot already contains this stack trace, or
++		 * depot_alloc_stack() did not consume the preallocated memory.
++		 * Try to keep the preallocated memory for future.
+ 		 */
+-		if (prealloc)
+-			depot_keep_new_pool(&prealloc);
++		depot_keep_new_pool(&prealloc);
+ 	}
+ 
+ 	printk_deferred_exit();
+-	write_unlock_irqrestore(&pool_rwlock, flags);
++	raw_spin_unlock_irqrestore(&pool_lock, flags);
+ exit:
+ 	if (prealloc) {
+ 		/* Stack depot didn't use this memory, free it. */
+@@ -618,7 +731,6 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+ 			       unsigned long **entries)
+ {
+ 	struct stack_record *stack;
+-	unsigned long flags;
+ 
+ 	*entries = NULL;
+ 	/*
+@@ -630,13 +742,13 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+ 	if (!handle || stack_depot_disabled)
+ 		return 0;
+ 
+-	read_lock_irqsave(&pool_rwlock, flags);
+-	printk_deferred_enter();
+-
+ 	stack = depot_fetch_stack(handle);
+-
+-	printk_deferred_exit();
+-	read_unlock_irqrestore(&pool_rwlock, flags);
++	/*
++	 * Should never be NULL, otherwise this is a use-after-put (or just a
++	 * corrupt handle).
++	 */
++	if (WARN(!stack, "corrupt handle or use after stack_depot_put()"))
++		return 0;
+ 
+ 	*entries = stack->entries;
+ 	return stack->size;
+@@ -646,29 +758,20 @@ EXPORT_SYMBOL_GPL(stack_depot_fetch);
+ void stack_depot_put(depot_stack_handle_t handle)
+ {
+ 	struct stack_record *stack;
+-	unsigned long flags;
+ 
+ 	if (!handle || stack_depot_disabled)
+ 		return;
+ 
+-	write_lock_irqsave(&pool_rwlock, flags);
+-	printk_deferred_enter();
+-
+ 	stack = depot_fetch_stack(handle);
+-	if (WARN_ON(!stack))
+-		goto out;
+-
+-	if (refcount_dec_and_test(&stack->count)) {
+-		/* Unlink stack from the hash table. */
+-		list_del(&stack->list);
++	/*
++	 * Should always be able to find the stack record, otherwise this is an
++	 * unbalanced put attempt (or corrupt handle).
++	 */
++	if (WARN(!stack, "corrupt handle or unbalanced stack_depot_put()"))
++		return;
+ 
+-		/* Free stack. */
++	if (refcount_dec_and_test(&stack->count))
+ 		depot_free_stack(stack);
+-	}
+-
+-out:
+-	printk_deferred_exit();
+-	write_unlock_irqrestore(&pool_rwlock, flags);
+ }
+ EXPORT_SYMBOL_GPL(stack_depot_put);
+ 
+-- 
+2.43.0.275.g3460e3d667-goog
+
 
