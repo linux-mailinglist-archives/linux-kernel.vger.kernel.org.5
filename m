@@ -1,126 +1,93 @@
-Return-Path: <linux-kernel+bounces-24851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ADCC82C369
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:18:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37A8F82C2FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2D81F230A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:18:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF876B225D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFED745CA;
-	Fri, 12 Jan 2024 16:18:04 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7927E6EB6A;
+	Fri, 12 Jan 2024 15:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s1VHfd28"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B997319F
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:18:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rOKEA-0000I6-2s; Fri, 12 Jan 2024 17:17:50 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rOKE7-002Bnr-Ow; Fri, 12 Jan 2024 17:17:47 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7CBE82751CD;
-	Fri, 12 Jan 2024 15:43:16 +0000 (UTC)
-Date: Fri, 12 Jan 2024 16:43:16 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Kumar, Udit" <u-kumar1@ti.com>
-Cc: Bhavya Kapoor <b-kapoor@ti.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-can@vger.kernel.org, mailhol.vincent@wanadoo.fr, 
-	rcsekar@samsung.com, pabeni@redhat.com, kuba@kernel.org, edumazet@google.com, 
-	davem@davemloft.net, wg@grandegger.com, vigneshr@ti.com
-Subject: Re: [PATCH] net: can: Add support for aliases in CAN
-Message-ID: <20240112-overreact-dwindling-2949267e8a02-mkl@pengutronix.de>
-References: <20240102102949.138607-1-b-kapoor@ti.com>
- <20240102-chop-extending-b7dc1acaf5db-mkl@pengutronix.de>
- <8dee1738-0bde-48fb-bd0e-b8d06b609677@ti.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C104D6EB4E;
+	Fri, 12 Jan 2024 15:46:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 614ECC433C7;
+	Fri, 12 Jan 2024 15:46:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705074391;
+	bh=sqERbnaek2gOhofvXHUtaO6gMYEIXaSQNKqGujdSGJs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=s1VHfd28XLMMWLH27XZJhQJuSKihUO2kfwK8Q0e4CcjbNWEo6bWpYb8hHvli79hrT
+	 1bMHVu1vt2phOwgvIJx6pf2xfgxkfkqaZDf30YgovBRjdFihg5+XJkz07DoN0cvCua
+	 Uc+YI973ty5oeC08vyE8MGlx5EdAftM2sQ+x25fjKfpY3lczMAt9shiXT3vIbTadOm
+	 TpBtlk47uTEEowBQcN8t0RIC1YmFqMqfVIVl2I21/p0N39YO1U29x4Ylq3Dzs7aSCX
+	 Q43T+Lqx5CHF4D03Bwrk6P7yM1l6QtKsxLSceJE/9IwqmAm99oyDz5OwcOOOb6oavy
+	 17LWod7r0pjWA==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	rcu <rcu@vger.kernel.org>
+Subject: [PATCH 0/7] rcu: Fix expedited GP deadlock
+Date: Fri, 12 Jan 2024 16:46:14 +0100
+Message-Id: <20240112154621.261852-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uxczuahqgymwfz6l"
-Content-Disposition: inline
-In-Reply-To: <8dee1738-0bde-48fb-bd0e-b8d06b609677@ti.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+TREE04 can trigger a writer stall if run with memory pressure. This
+is due to a circular dependency between waiting for expedited grace
+period and polling on expedited grace period when workqueues go back
+to mayday serialization.
 
---uxczuahqgymwfz6l
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here is a proposal fix.
 
-On 12.01.2024 20:53:32, Kumar, Udit wrote:
-> Hi Marc
->=20
-> On 1/2/2024 4:43 PM, Marc Kleine-Budde wrote:
-> > On 02.01.2024 15:59:49, Bhavya Kapoor wrote:
-> > > When multiple CAN's are present, then names that are getting assigned
-> > > changes after every boot even after providing alias in the device tre=
-e.
-> > > Thus, Add support for implementing CAN aliasing so that names or
-> > > alias for CAN will now be provided from device tree.
-> > NACK, please use udev or systemd-networkd to provide stable names for
-> > CAN interfaces.
->=20
-> Would you like to re-consider this NACK.
+Changes since v2 (no functional changes, just renames and reorganization):
 
-This is not a CAN device specific problem. If you want to change this,
-talk/convince the networking people.
+_ Move nocb cleanups to their own series
+_ Rename can_queue parameter to use_worker [2/7]
+_ Better explain the rename of the mutex [3/7]
+_ New commit with just code move to ease review [4/7]
+_ Comment declaration of the new rnp->exp_worker field [5/7]
 
-> From kernel side,
->=20
-> IMO if aliasing is set in device tree then kernel should provide consiste=
-nt
-> baseline names.
->=20
-> However, distributions may choose different or other stable naming,
->=20
-> Also, if some distribution want to rely on kernel naming they still can d=
-o.
+Thanks.
 
-regards,
-Marc
+Frederic Weisbecker (7):
+  rcu/exp: Fix RCU expedited parallel grace period kworker allocation
+    failure recovery
+  rcu/exp: Handle RCU expedited grace period kworker allocation failure
+  rcu: s/boost_kthread_mutex/kthread_mutex
+  rcu/exp: Move expedited kthread worker creation functions above
+    rcutree_prepare_cpu()
+  rcu/exp: Make parallel exp gp kworker per rcu node
+  rcu/exp: Handle parallel exp gp kworkers affinity
+  rcu/exp: Remove rcu_par_gp_wq
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+ kernel/rcu/rcu.h         |   5 --
+ kernel/rcu/tree.c        | 175 +++++++++++++++++++++++++++------------
+ kernel/rcu/tree.h        |  11 ++-
+ kernel/rcu/tree_exp.h    |  78 +++--------------
+ kernel/rcu/tree_plugin.h |  52 ++----------
+ 5 files changed, 142 insertions(+), 179 deletions(-)
 
---uxczuahqgymwfz6l
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.34.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmWhXhAACgkQvlAcSiqK
-BOjD0wgAriZqvA12Vu5nzdKCKAjSH8J55u83wid8H1TFwOTI44OzbAg0a6AakQua
-JRGAbYx0pivUuwNf8emVJ1FVJMxyPH1lMPwQep6ZYtTVqoWfhOFDWk2m14xBYTVj
-DguY9dlaK/uBU39GBDnk3b8dMd+l6QwSDJhymFTO5P5c87YLzVlpa4FkbSVE2Atz
-wQVQZdMzIUJK4FwFaymKkT2SjLsLb5kZPM8t80L7oknZruvsJKGEAm2KF9TJYnV0
-fjdBgfzdbdxFrJqJEd7YSOK5aN0mv2/gyb16rpGDYRsrWmBN2sffk4kIC1TmsSwS
-Do9pEjkihZ2wEpAShuxai2OdqVMBMQ==
-=709B
------END PGP SIGNATURE-----
-
---uxczuahqgymwfz6l--
 
