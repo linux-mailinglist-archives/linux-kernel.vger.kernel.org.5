@@ -1,148 +1,105 @@
-Return-Path: <linux-kernel+bounces-24716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF1E82C138
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:58:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F33B582C13F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4910B1F26427
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:58:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AB7AB23B52
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14F66D1BC;
-	Fri, 12 Jan 2024 13:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88F46D1CB;
+	Fri, 12 Jan 2024 13:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bnrPWFXs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GtVdOY5/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425B86D1B9
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705067911; x=1736603911;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=DZ3thWCMXzVKYHpidQUx936D1LbhAlLXp+GRrOgJgnQ=;
-  b=bnrPWFXskGbNR1JMwSpvnP1ygX6uHbSqW0OeMcmXFcWzdzNEdXV3nqz6
-   I31+1SKbFF5bHKU1SJJqnmp0CsKNvkA/UTzX4zrbKzNXjFjjWe8WK+dQI
-   NEUq670XNwkuguu47lqmRVQwggLJ6kPAoXoUPuFMXRBITu+wIhjVWwXp+
-   QvENpWILv2icM94IRnwI6FKqyoXstgPhnGdaKlCukSPVL3n6QghSXFf+n
-   AWj1tb3l+uUAIGLTmY/btuO5yNdG5BkYRy+/Td8MG76TH5ilO7wLXeRZm
-   W6x4SFwastE+a9/AoKHmDx5BniCDnuaSv+rjRN9HdtYXDmhzRbF5kyU3A
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="430352717"
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="430352717"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 05:58:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="873369008"
-X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
-   d="scan'208";a="873369008"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Jan 2024 05:58:29 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rOI3H-0009Xo-0o;
-	Fri, 12 Jan 2024 13:58:27 +0000
-Date: Fri, 12 Jan 2024 21:58:02 +0800
-From: kernel test robot <lkp@intel.com>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in
- initializer (different address spaces)
-Message-ID: <202401122136.5Kgy2ZR3-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2DC6BB40;
+	Fri, 12 Jan 2024 13:59:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128A9C43390;
+	Fri, 12 Jan 2024 13:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705067947;
+	bh=oMZ81G+ISx28UspkijwH23mXsSLB67wCS+jmcXwB6yY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GtVdOY5/OXfe3N1BykNwp68hEIs60DIJYDyl+AlX0nCj9eJxFKR5OiAS5jEmtiai7
+	 Lh5w0lq3TuoU/0QWJcTlMBDth5cQc4SoeFJDSX0C2hMy34NA6bN0e+zQOVxHqu2mrU
+	 gkS7MFmC0XPxQ0PWhdoksLauX9kABC5Tujy2/8RWZ/uwbnusqCBH/mlViwVJmNO3X7
+	 /BCC/5yZTFcUJhuCGADzM8KoVYAH3Lt6XgnvyGwV3XGEAj/POqc2S9bd+Y2kmOgl7i
+	 H0F2Zo4xgYbBckgUw41Ctigvb4MImw8NBqvdZBO/qk7zPZaEn3Sg+iuAshdqiTOdkm
+	 eLurRwbq/0TRQ==
+Date: Fri, 12 Jan 2024 14:59:04 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>, 
+	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>, 
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB property
+Message-ID: <337mubsn42zlpuoqqvqmsjtdww4kg3x6lo6brdos5o6xgwjdwo@cxfad2pk2so2>
+References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
+ <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
+ <CAPY8ntCs9EAYsxwjkscms3kqoC0N8+CcTHoyrG+gFMc0Mh=cwg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qktymaok2b34jnq7"
+Content-Disposition: inline
+In-Reply-To: <CAPY8ntCs9EAYsxwjkscms3kqoC0N8+CcTHoyrG+gFMc0Mh=cwg@mail.gmail.com>
+
+
+--qktymaok2b34jnq7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   70d201a40823acba23899342d62bc2644051ad2e
-commit: 481461f5109919babbb393d6f68002936b8e2493 linux/export.h: make <linux/export.h> independent of CONFIG_MODULES
-date:   6 months ago
-config: csky-buildonly-randconfig-r006-20230413 (https://download.01.org/0day-ci/archive/20240112/202401122136.5Kgy2ZR3-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20240112/202401122136.5Kgy2ZR3-lkp@intel.com/reproduce)
+Hi Dave,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401122136.5Kgy2ZR3-lkp@intel.com/
+On Thu, Dec 14, 2023 at 02:43:37PM +0000, Dave Stevenson wrote:
+> On Thu, 7 Dec 2023 at 15:50, Maxime Ripard <mripard@kernel.org> wrote:
+> >
+> > The i915 driver has a property to force the RGB range of an HDMI output.
+> > The vc4 driver then implemented the same property with the same
+> > semantics. KWin has support for it, and a PR for mutter is also there to
+> > support it.
+> >
+> > Both drivers implementing the same property with the same semantics,
+> > plus the userspace having support for it, is proof enough that it's
+> > pretty much a de-facto standard now and we can provide helpers for it.
+> >
+> > Let's plumb it into the newly created HDMI connector.
+>=20
+> To have such a significant proportion of the patch being kunit tests
+> when there was no reference to such in the commit text was slightly
+> unexpected.
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:126:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:126:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:165:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:165:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:165:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:206:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:206:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:206:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:261:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:261:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:261:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c: note: in included file (through include/linux/mmzone.h, include/linux/topology.h, include/linux/irq.h, ...):
-   include/linux/page-flags.h:240:46: sparse: sparse: self-comparison always evaluates to false
+Thanks for your review. Does that mean that you would prefer the tests
+to be in a separate patch?
 
-vim +126 kernel/context_tracking.c
+Maxime
 
-172114552701b8 Frederic Weisbecker 2022-06-08  115  
-172114552701b8 Frederic Weisbecker 2022-06-08  116  /*
-172114552701b8 Frederic Weisbecker 2022-06-08  117   * Enter an RCU extended quiescent state, which can be either the
-172114552701b8 Frederic Weisbecker 2022-06-08  118   * idle loop or adaptive-tickless usermode execution.
-172114552701b8 Frederic Weisbecker 2022-06-08  119   *
-172114552701b8 Frederic Weisbecker 2022-06-08  120   * We crowbar the ->dynticks_nmi_nesting field to zero to allow for
-172114552701b8 Frederic Weisbecker 2022-06-08  121   * the possibility of usermode upcalls having messed up our count
-172114552701b8 Frederic Weisbecker 2022-06-08  122   * of interrupt nesting level during the prior busy period.
-172114552701b8 Frederic Weisbecker 2022-06-08  123   */
-171476775d32a4 Frederic Weisbecker 2022-06-08  124  static void noinstr ct_kernel_exit(bool user, int offset)
-172114552701b8 Frederic Weisbecker 2022-06-08  125  {
-172114552701b8 Frederic Weisbecker 2022-06-08 @126  	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-172114552701b8 Frederic Weisbecker 2022-06-08  127  
-172114552701b8 Frederic Weisbecker 2022-06-08  128  	WARN_ON_ONCE(ct_dynticks_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
-172114552701b8 Frederic Weisbecker 2022-06-08  129  	WRITE_ONCE(ct->dynticks_nmi_nesting, 0);
-172114552701b8 Frederic Weisbecker 2022-06-08  130  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
-172114552701b8 Frederic Weisbecker 2022-06-08  131  		     ct_dynticks_nesting() == 0);
-172114552701b8 Frederic Weisbecker 2022-06-08  132  	if (ct_dynticks_nesting() != 1) {
-172114552701b8 Frederic Weisbecker 2022-06-08  133  		// RCU will still be watching, so just do accounting and leave.
-172114552701b8 Frederic Weisbecker 2022-06-08  134  		ct->dynticks_nesting--;
-172114552701b8 Frederic Weisbecker 2022-06-08  135  		return;
-172114552701b8 Frederic Weisbecker 2022-06-08  136  	}
-172114552701b8 Frederic Weisbecker 2022-06-08  137  
-172114552701b8 Frederic Weisbecker 2022-06-08  138  	instrumentation_begin();
-172114552701b8 Frederic Weisbecker 2022-06-08  139  	lockdep_assert_irqs_disabled();
-172114552701b8 Frederic Weisbecker 2022-06-08  140  	trace_rcu_dyntick(TPS("Start"), ct_dynticks_nesting(), 0, ct_dynticks());
-172114552701b8 Frederic Weisbecker 2022-06-08  141  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-172114552701b8 Frederic Weisbecker 2022-06-08  142  	rcu_preempt_deferred_qs(current);
-172114552701b8 Frederic Weisbecker 2022-06-08  143  
-171476775d32a4 Frederic Weisbecker 2022-06-08  144  	// instrumentation for the noinstr ct_kernel_exit_state()
-171476775d32a4 Frederic Weisbecker 2022-06-08  145  	instrument_atomic_write(&ct->state, sizeof(ct->state));
-172114552701b8 Frederic Weisbecker 2022-06-08  146  
-172114552701b8 Frederic Weisbecker 2022-06-08  147  	instrumentation_end();
-172114552701b8 Frederic Weisbecker 2022-06-08  148  	WRITE_ONCE(ct->dynticks_nesting, 0); /* Avoid irq-access tearing. */
-172114552701b8 Frederic Weisbecker 2022-06-08  149  	// RCU is watching here ...
-171476775d32a4 Frederic Weisbecker 2022-06-08  150  	ct_kernel_exit_state(offset);
-172114552701b8 Frederic Weisbecker 2022-06-08  151  	// ... but is no longer watching here.
-172114552701b8 Frederic Weisbecker 2022-06-08  152  	rcu_dynticks_task_enter();
-172114552701b8 Frederic Weisbecker 2022-06-08  153  }
-172114552701b8 Frederic Weisbecker 2022-06-08  154  
+--qktymaok2b34jnq7
+Content-Type: application/pgp-signature; name="signature.asc"
 
-:::::: The code at line 126 was first introduced by commit
-:::::: 172114552701b85d5c3b1a089a73ee85d0d7786b rcu/context-tracking: Move RCU-dynticks internal functions to context_tracking
+-----BEGIN PGP SIGNATURE-----
 
-:::::: TO: Frederic Weisbecker <frederic@kernel.org>
-:::::: CC: Paul E. McKenney <paulmck@kernel.org>
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZaFFqAAKCRDj7w1vZxhR
+xaVsAQCQvfIMIrKA7nqrSHokMD20be4Xcm2T84v3PW9kS4jdiAD/Qli9xSKrx6Q9
+1g/aGgxA2VDLSgq0Ag5FVT+HFhvA9gE=
+=hMit
+-----END PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--qktymaok2b34jnq7--
 
