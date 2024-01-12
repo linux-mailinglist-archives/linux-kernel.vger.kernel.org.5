@@ -1,97 +1,74 @@
-Return-Path: <linux-kernel+bounces-24248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475F682B9BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:53:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B5782B9BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A19B1C240ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:53:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FA1C1F23E26
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A35A15AF;
-	Fri, 12 Jan 2024 02:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B279EDDBA;
+	Fri, 12 Jan 2024 02:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="d2zC4uzX"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="QaoTr9z2"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3230E136B
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Jan 2024 21:52:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705027969;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0WGRvqKfKKjOW3jwQBWKqWmSsWWXWXxNdLOh25a2djs=;
-	b=d2zC4uzXBKnAD4YRD4kgwiqldlv/EANQt7WRysVCN78K4SIysaV0eFXDOJfvoZYa8OCzI6
-	jNzoNt4oqaOvG4m+Gw8qXN5BVNh1svKfWImcFhen8d9qMT57eyiJfWpqgHGeZRplaYEtbi
-	BI+GZhAuBrOBDEw0JstWl4nednrcgp4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Neal Gompa <neal@gompa.dev>, 
-	Jason Gunthorpe <jgg@nvidia.com>, jirislaby@kernel.org, dhowells@redhat.com, 
-	linux-kernel@vger.kernel.org, pinskia@gmail.com, Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
-Message-ID: <v32ygf4fyse7cqqf5bljwrak3qapxlfcdxxp4u3ydz6tejnme7@ltatskfcerg3>
-References: <938ebce3-74c5-4fcf-9de3-849271d3581d@kernel.org>
- <20240110130456.142763-1-neal@gompa.dev>
- <20240110155233.GA623732@nvidia.com>
- <CAEg-Je_P6-3PWNxM4HCzcgM=H4Y1vmywaM3gbwK0gAe0UVoZGw@mail.gmail.com>
- <20240110175755.GC1006537@mit.edu>
- <e5949a27-999d-4b6e-8c49-3dbed32a00bc@zytor.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7D0C151
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPV6:2601:646:8002:4641:eb14:ad94:2806:1c1a] ([IPv6:2601:646:8002:4641:eb14:ad94:2806:1c1a])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40C2skmQ060187
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Thu, 11 Jan 2024 18:54:46 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40C2skmQ060187
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2023121201; t=1705028087;
+	bh=uK0/9rbfDfcAI/GGyRYe4b5BWbtxjK6N6VZfagVqrDE=;
+	h=Date:Subject:From:To:References:In-Reply-To:From;
+	b=QaoTr9z22PwK9nPBDrsNqpSc5YA67jS7MSgMLqTQD8QkuDSUderJTN6oKqVQ7mWsn
+	 AMEfL+1Ys0TBWRRhkY6+hCPRyE3SxdfNwNz8AcyDJETRgsWiBp7xr6S4bSUnHdOL3b
+	 HKKdcKsCDNnSrDVl5c14J4Agoa32y7VBTwQsFsyCRfqLfniH1JWqFTV5bLG+imJDXl
+	 3fUFl8NI2rsCPHQisFkwoLyEZSPmkVaNBJ9GGsOrpLT3ALXj1FgjzhUJhzlgQxJKtc
+	 djMqKwbvMAmnR+j4FmeZkt6hRsIE3/LgTyQjykn5j0M3rxpdKhVrim3vzL9DYFyy3L
+	 gFeGgK7wm8fIg==
+Message-ID: <49231a98-d39f-4920-8d9f-e60aa014f518@zytor.com>
+Date: Thu, 11 Jan 2024 18:54:41 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5949a27-999d-4b6e-8c49-3dbed32a00bc@zytor.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/45] C++: Convert the kernel to C++
+Content-Language: en-US
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org,
+        pinskia@gmail.com
+References: <152261521484.30503.16131389653845029164.stgit@warthog.procyon.org.uk>
+ <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
+In-Reply-To: <3465e0c6-f5b2-4c42-95eb-29361481f805@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 11, 2024 at 06:23:10PM -0800, H. Peter Anvin wrote:
-> 
-> 
-> On 1/10/24 09:57, Theodore Ts'o wrote:
-> > On Wed, Jan 10, 2024 at 11:25:29AM -0500, Neal Gompa wrote:
-> > > 
-> > > For what it's worth, I'm totally in favor of C++20 as well. I've
-> > > mostly written C++17 as of late and it is really nice to me, but I'm
-> > > genuinely excited about C++20 and newer revisions.
-> > > 
-> > > I also think that Linux adopting C++ and intentionally adopting safety
-> > > features that exist and are being added to C++ over time would also
-> > > further encourage the ecosystem to use them as well as make the Linux
-> > > codebase much easier to work with.
-> > 
-> > Can someone speak to whether the C++ standards committee and C++
-> > compiler implementations are more or less unreasonable compared to
-> > their C counterparts regarding compilers being able to arbitrary
-> > statement reordering, or other random futzing all in the name of
-> > better benchmarks, but which make life a living nightmware for honest
-> > kernel developers?
-> > 
-> 
-> I suspect that the gcc and clang developers are more motivated these days
-> about such issues since they are now using C++ as their own implementation
-> language.
-> 
-> I had a member of the C++ standards committee reach out to me already, and
-> I'm going to have a discussion with him next week.
-> 
-> I have a lot more to say in response to all the (excellent!) comments, but
-> I'm about to leave for a long birthday weekend, so my apologies if I don't
-> get back to things until next week.
+One thing I forgot to mention that would be quite useful is careful use 
+of namespaces. For example, putting init functions in their own 
+namespace would have not only make it a lot harder to call init 
+functions from non-init functions by mistake (calling init::func() 
+explicitly is a highly visible "I really do mean to do this."
 
-Happy birthday, Peter :)
+However, it also let us do separate init versions of functions like 
+cpu_feature_enable() that contain optimizations that aren't actually 
+usable at init time (alternatives have not been applied.) The idea is 
+*not* to change the code, but rather the compiler will simply prefer 
+init:: functions from inside other init:: functions (a direct 
+consequence of how namespaces work.)
 
-Would this cause any issues for the Rust people, e.g. linking? I'd like
-to hear their input.
+	-hpa
 
