@@ -1,30 +1,47 @@
-Return-Path: <linux-kernel+bounces-24643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACA6282BFA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:15:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CC4882BFA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BDC62868BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:15:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE9CFB22ED9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013956A03D;
-	Fri, 12 Jan 2024 12:15:42 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694506A039
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF68E1FB;
-	Fri, 12 Jan 2024 04:16:24 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B4DC3F73F;
-	Fri, 12 Jan 2024 04:15:37 -0800 (PST)
-Message-ID: <9856921b-40c4-4989-b7b6-134559564203@arm.com>
-Date: Fri, 12 Jan 2024 12:15:34 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBDF6A34C;
+	Fri, 12 Jan 2024 12:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="ClXn4Wh6"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1256A320
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
+	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References
+	:To:From:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=ClCV6WR87Ke66aJucyH1nmMqzNAU0ve4Gp37UiRpP9g=; b=ClXn4Wh6rIWXnQm8GGnCDgLcTL
+	FHJvUphyPmoJKjMnhAW5jHOEYj9M11Py3vMnUzPBm2hcTEtlE057FhCux6KVElXwU3EGkn/fnx5Dw
+	mnjwGk86DZa/lKXEYMnk9+jFT3hJEEjxqpduACAOMLJ72cLAMh3QFCuf1yJJBQlbH+GmWtYtWnZpI
+	khXWtJdeKtaXbSequXH60CSwtiLAcoOBtmvcwkeYgGv82od/knUQpRVNbOSDzJj3GQY/gBnZfqzTz
+	MoT8ugHvZ0FMgmk89XFqeSFSXylXRvL3gplKbSGEmJPQZfH/YoEw5/BeyoLdVi/6fw7F8jZCX+9xw
+	5Ysw/Bqw==;
+Received: from [84.215.119.50] (port=62964 helo=[192.168.0.2])
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
+	id 1rOGRo-00DD8i-4U
+	for linux-kernel@vger.kernel.org;
+	Fri, 12 Jan 2024 13:15:40 +0100
+Message-ID: <0113f981-214e-4133-be55-614e34fce12b@cu-phil.org>
+Date: Fri, 12 Jan 2024 13:15:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -32,40 +49,27 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/4] coresight: Make current W=1 warnings default
-Content-Language: en-US
-To: James Clark <james.clark@arm.com>, coresight@lists.linaro.org
-Cc: Mike Leach <mike.leach@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20231123120459.287578-1-james.clark@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231123120459.287578-1-james.clark@arm.com>
+Subject: Re: Apple is scared!
+From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
+To: linux-kernel@vger.kernel.org
+References: <8064926b-ec75-4a64-9bbc-ac434c1e69ca@cu-phil.org>
+In-Reply-To: <8064926b-ec75-4a64-9bbc-ac434c1e69ca@cu-phil.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 23/11/2023 12:04, James Clark wrote:
-> Changes since v2:
+Do remember, they did use BSD without paying for it, leaving creators to 
+die for nothing.
+
+Den 12.01.2024 13:06, skrev Ywe Caerlyn:
+> https://www.youtube.com/watch?v=07cKD8GK__c
 > 
->    * Split code and Makefile changes
->    * Add a fix for a comment warning in etm3x
->    * Add some sparse checker fixes in coresight-cfg-afdo.c
->    * Fix the 0 instead of NULL warnings reported by kernel test robot
+> This video symbolically shows Apple is scared.
 > 
-> James Clark (4):
->    coresight: Fix uninitialized struct warnings
->    coresight: etm3x: Fix build warning
->    coresight: Fix undeclared variable warnings from sparse checker
->    coresight: Make current W=1 warnings default
-
-Apologies for the delay, this is now in my queue for next.
-
-git://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux.git 
-for-next/queue
-
-Suzuki
-
+> Why would supposedly a technology "giant" like Apple be scared? M2 and 
+> all that.
+> 
+> This means, go for the kill.
+> 
+> -Peace.
+> Ywe Cærlyn.
 
