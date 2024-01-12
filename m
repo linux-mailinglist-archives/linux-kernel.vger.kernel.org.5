@@ -1,109 +1,162 @@
-Return-Path: <linux-kernel+bounces-24533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40DFA82BDFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:57:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3951C82BDFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 670701C224D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:57:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CF03B2173F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D08F5732F;
-	Fri, 12 Jan 2024 09:57:39 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1232B57330;
+	Fri, 12 Jan 2024 09:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LVPhsoZz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BTnLs+7K";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LVPhsoZz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BTnLs+7K"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7EA55769;
-	Fri, 12 Jan 2024 09:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 466271ff02ce42efb222d7f9b175a673-20240112
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:8a9438d2-85ff-414d-96af-d16c5e2421db,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:20
-X-CID-INFO: VERSION:1.1.35,REQID:8a9438d2-85ff-414d-96af-d16c5e2421db,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:20
-X-CID-META: VersionHash:5d391d7,CLOUDID:b8fc182f-1ab8-4133-9780-81938111c800,B
-	ulkID:240112175728QEUER3N2,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,
-	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
-	TF_CID_SPAM_ULN
-X-UUID: 466271ff02ce42efb222d7f9b175a673-20240112
-X-User: chentao@kylinos.cn
-Received: from kernel.. [(116.128.244.171)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 484211676; Fri, 12 Jan 2024 17:57:27 +0800
-From: Kunwu Chan <chentao@kylinos.cn>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: f.fainelli@gmail.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH net] net: phy: Fix possible NULL pointer dereference issues caused by phy_attached_info_irq
-Date: Fri, 12 Jan 2024 17:57:24 +0800
-Message-Id: <20240112095724.154197-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC53957301;
+	Fri, 12 Jan 2024 09:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B123A1FC24;
+	Fri, 12 Jan 2024 09:59:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705053589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
+	b=LVPhsoZzrqmaIPxbO3hJzEKngFpRGRxhzEkLBJqX+H4UMHywFzgWicWjUcr+tHtOrnPKuE
+	QtSvulQBOfynuRShDr9OezhwezW664d/eipB7f8XntSfTuC5f+Y+9uvuzw1Vtmw9fYqjyH
+	bLqK5UKY0Fi0FwsPc40I+B6U1b34+c4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705053589;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
+	b=BTnLs+7K8qJ85T0XdQ/Ii+GrHsCuvh5oZb/cGkclZY4pD+OF61lQgeZDf+cAqTA01Ncu4G
+	2nWOLgf2UxbYS4Cw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705053589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
+	b=LVPhsoZzrqmaIPxbO3hJzEKngFpRGRxhzEkLBJqX+H4UMHywFzgWicWjUcr+tHtOrnPKuE
+	QtSvulQBOfynuRShDr9OezhwezW664d/eipB7f8XntSfTuC5f+Y+9uvuzw1Vtmw9fYqjyH
+	bLqK5UKY0Fi0FwsPc40I+B6U1b34+c4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705053589;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FBVSPSStzukEuy78v0iO713Dp6S4Tr9jYl8yIfg303o=;
+	b=BTnLs+7K8qJ85T0XdQ/Ii+GrHsCuvh5oZb/cGkclZY4pD+OF61lQgeZDf+cAqTA01Ncu4G
+	2nWOLgf2UxbYS4Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4FF413782;
+	Fri, 12 Jan 2024 09:59:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id c5tAKJUNoWUZPQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 12 Jan 2024 09:59:49 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5633AA0802; Fri, 12 Jan 2024 10:59:45 +0100 (CET)
+Date: Fri, 12 Jan 2024 10:59:45 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+172bdd582e5d63486948@syzkaller.appspotmail.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
+	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, shaggy@kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [jfs?] general protection fault in dtSplitUp
+Message-ID: <20240112095945.oxx42ycamfouw3xs@quack3>
+References: <000000000000ff4a1505e9f961a2@google.com>
+ <000000000000ccb6c6060eb767bd@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000ccb6c6060eb767bd@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LVPhsoZz;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BTnLs+7K
+X-Spamd-Result: default: False [2.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-0.00)[24.04%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ea03ca45176080bc];
+	 TAGGED_RCPT(0.00)[172bdd582e5d63486948];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 2.69
+X-Rspamd-Queue-Id: B123A1FC24
+X-Spam-Level: **
+X-Spam-Flag: NO
+X-Spamd-Bar: ++
 
-kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
-
-Fixes: e27f178793de ("net: phy: Added IRQ print to phylink_bringup_phy()")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/net/phy/phy_device.c | 3 +++
- drivers/net/phy/phylink.c    | 2 ++
- 2 files changed, 5 insertions(+)
-
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 3611ea64875e..10fa99d957c0 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -1299,6 +1299,9 @@ void phy_attached_print(struct phy_device *phydev, const char *fmt, ...)
- 	const char *unbound = phydev->drv ? "" : "[unbound] ";
- 	char *irq_str = phy_attached_info_irq(phydev);
+On Thu 11-01-24 19:39:03, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1268fc69e80000
+> start commit:   a70385240892 Merge tag 'perf_urgent_for_v6.1_rc2' of git:/..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ea03ca45176080bc
+> dashboard link: https://syzkaller.appspot.com/bug?extid=172bdd582e5d63486948
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15692dba880000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15017b2c880000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
  
-+	if (!irq_str)
-+		return;
-+
- 	if (!fmt) {
- 		phydev_info(phydev, ATTACHED_FMT "\n", unbound,
- 			    phydev_name(phydev), irq_str);
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index ed0b4ccaa6a6..db0a545c9468 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -1884,6 +1884,8 @@ static int phylink_bringup_phy(struct phylink *pl, struct phy_device *phy,
- 	phy->phy_link_change = phylink_phy_change;
- 
- 	irq_str = phy_attached_info_irq(phy);
-+	if (!irq_str)
-+		return -ENOMEM;
- 	phylink_info(pl,
- 		     "PHY [%s] driver [%s] (irq=%s)\n",
- 		     dev_name(&phy->mdio.dev), phy->drv->name, irq_str);
+Makes sense. When I'm looking at the dashboard I can see there's another
+(older) reproducer which is not marked as not reproducing anymore. I
+suppose this is because syzbot tests only the latest reproducer? Anyway,
+let's close this, if syzbot can find another reproducer for the problem
+with writes to mounted devices disabled, it'll surely tell us :)
+
+#syz fix: fs: Block writes to mounted block devices
+
+								Honza
 -- 
-2.39.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
