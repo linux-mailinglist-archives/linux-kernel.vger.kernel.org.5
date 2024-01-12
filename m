@@ -1,178 +1,254 @@
-Return-Path: <linux-kernel+bounces-25050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6000B82C6E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:54:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E74282C6E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9EE3B21E00
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:54:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7B671F23025
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C72F175B0;
-	Fri, 12 Jan 2024 21:54:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493FE1772D;
+	Fri, 12 Jan 2024 21:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WDACWI9J"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2089.outbound.protection.outlook.com [40.107.93.89])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="PqeonxXw"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D6415E94;
-	Fri, 12 Jan 2024 21:54:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fd/9T53Gh+7idJ323io9J0NXkXSIFLv1/ZK9EfqGk+8eHRWnJDu2WGqCHKPO8JzvDbmkqcYCblrHoM7QqeESQVDV+yDV2gCDJrSmVu3oNkN+lH89IgkGYMPnsg8EhtQIZBmlWZjNmoW/j5E8XS7tmooNUK27neY3BDQG27RPu/CYm3jTztMx9JoPGva0juZRe0RxmEbaWJS2RoVSdjgn551tNg3D97cbNugrmuTkkfilvbv4ylvyOKjJS7NLbhGgQ7v3K6a8mjbwMXzcmZWAfs04TceTNw77EodHgSxL7foXdtf9ON1efZjkNHH6YN0K1Fvv0s7tX+Su+vxgOTCxEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sevUwa48a7Og2C8OUcw9D78OmqWv5oyTyNenWiiDtCQ=;
- b=STm0R+/jHXPnV1ebrFaXktLxdnvuxtNnmsoSOGzXYMH5BHbkdDd0NRqFGCe/kTGXz5ft2J0QkGhRTBJzncPVQWweogRfvjWzSIyCP9VSHALMHQqMjv7h6gD+4G/5pDcMEMw8i//BPkNlu70x/f/iY/m5GNQREm+ZP4+aAbN7YMHqDeOUmeIqJ3b2BrVRYc61clOZYhKSw/oI5fNcz6qxWuAyOSJ6VrsRC4N4Iyt2RItWpNEWii2p4g+uv0ahMGeuSgQRDPukcU7a5d5C1Jt88wNNjQcKtDGGP87OyvyqSwmmudOEZuNGGAzyIF18ZI+hikjyeUtya+7VPOHSClc8Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sevUwa48a7Og2C8OUcw9D78OmqWv5oyTyNenWiiDtCQ=;
- b=WDACWI9JftvQcCTSQfm3hEBC3ltpcvjxNtepYMr3e6ZeTTZEbP13Vq0sMPxS6aThoav1eT+gk6bbkWX4jFOPV7yJbvBZiqmfAqax+dfhR2erPmazD4XOHWDhFYl9snm26q3WYISSlSBm9Nkt5poExuGocd9YdGv4lZcwCLM5pbc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by SA0PR12MB7003.namprd12.prod.outlook.com (2603:10b6:806:2c0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Fri, 12 Jan
- 2024 21:54:11 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::f1ae:6833:99e2:9dd4]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::f1ae:6833:99e2:9dd4%6]) with mapi id 15.20.7181.020; Fri, 12 Jan 2024
- 21:54:11 +0000
-Message-ID: <f75232ea-9e3e-1b21-4369-9a5798afbd6b@amd.com>
-Date: Fri, 12 Jan 2024 15:54:06 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v4 2/2] x86/resctrl: Read supported bandwidth sources
- using CPUID command
-Content-Language: en-US
-To: Reinette Chatre <reinette.chatre@intel.com>, babu.moger@amd.com,
- corbet@lwn.net, fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, dave.hansen@linux.intel.com
-Cc: x86@kernel.org, hpa@zytor.com, paulmck@kernel.org, rdunlap@infradead.org,
- tj@kernel.org, peterz@infradead.org, seanjc@google.com,
- kim.phillips@amd.com, jmattson@google.com, ilpo.jarvinen@linux.intel.com,
- jithu.joseph@intel.com, kan.liang@linux.intel.com, nikunj@amd.com,
- daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
- rick.p.edgecombe@intel.com, rppt@kernel.org,
- maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, eranian@google.com, peternewman@google.com,
- dhagiani@amd.com
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <ba1305bf2a29ce2667d01cf997718126a7ea607b.1705009003.git.babu.moger@amd.com>
- <4c5bb5ac-1e84-4021-845d-cafea5a1fbde@intel.com>
- <3bd2a660-82fd-51fe-f7cd-492908d90ca7@amd.com>
- <920e6d40-78d8-4e98-8f85-6d015681887f@intel.com>
-From: "Moger, Babu" <bmoger@amd.com>
-In-Reply-To: <920e6d40-78d8-4e98-8f85-6d015681887f@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA9P221CA0008.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:806:25::13) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78B2175A3;
+	Fri, 12 Jan 2024 21:56:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240112215611euoutp01652c7af9e2c3d60ce82af0bc96ac27f4~puExS00OF1899918999euoutp01i;
+	Fri, 12 Jan 2024 21:56:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240112215611euoutp01652c7af9e2c3d60ce82af0bc96ac27f4~puExS00OF1899918999euoutp01i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1705096571;
+	bh=6zCGMWCax/qJYpkJrdkcT6JwsFwHR3HjXz+MQ9iqCzQ=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=PqeonxXwIBXV2fASQAVbNTxPdZnliuU4gKErTEDsEzWkiqkDAHOw2IwDCpe1+V4bv
+	 Kp3F+yck7UtD60v9xLbRDwNNqeBhJ8HWMhXGXrQevuecqX6jWP8cZdHgFxsifntKcM
+	 cORKbtT9YGrxCV8Yup/l1TVdj3m1I+f3ckwNvJdY=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240112215611eucas1p1a9663c9ea3ce3dcd894815053dd56953~puEwipuPJ2821928219eucas1p1B;
+	Fri, 12 Jan 2024 21:56:11 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 4B.A8.09539.A75B1A56; Fri, 12
+	Jan 2024 21:56:10 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240112215609eucas1p1eedeeee8e1cca2c935b41816a50f56f6~puEvWNvf02838228382eucas1p16;
+	Fri, 12 Jan 2024 21:56:09 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240112215609eusmtrp2bb2b77f8af2e051db05780cab5914189~puEvU_2Be2234422344eusmtrp2v;
+	Fri, 12 Jan 2024 21:56:09 +0000 (GMT)
+X-AuditID: cbfec7f2-515ff70000002543-07-65a1b57a47ea
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id F0.01.10702.975B1A56; Fri, 12
+	Jan 2024 21:56:09 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240112215609eusmtip287e4849dd24c90e8ed0d2a1c744fa705~puEvI1R7w1480514805eusmtip2b;
+	Fri, 12 Jan 2024 21:56:09 +0000 (GMT)
+Received: from localhost (106.210.248.50) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Fri, 12 Jan 2024 21:56:08 +0000
+Date: Fri, 12 Jan 2024 22:56:06 +0100
+From: Joel Granados <j.granados@samsung.com>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+CC: Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+	"Joerg Roedel" <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin
+	Murphy <robin.murphy@arm.com>, Jean-Philippe Brucker
+	<jean-philippe@linaro.org>, Nicolin Chen <nicolinc@nvidia.com>, Yi Liu
+	<yi.l.liu@intel.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	<iommu@lists.linux.dev>, <linux-kselftest@vger.kernel.org>,
+	<virtualization@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
+Message-ID: <20240112215606.36sth724y6zcj43k@localhost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SA0PR12MB7003:EE_
-X-MS-Office365-Filtering-Correlation-Id: af6b9153-9115-477f-a431-08dc13b90261
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	7Cshp5767gwAWpUpDG7LjTaTs7TRwqAI1oKv1LY31vOTXRCb2DP1Q8qEREYn9BRJdj+it5SCLBmLDn6BMkyc7aU9tQo6NWb5qG60KVakoWdhlXT2EvVNpNKi1zzB6ZQdEOE/7JMFQrdgEOe0eFWrDon/hwSmIZnjtIpKGc7pUUW1RbqjrsVZT6YiOBmcGEsldsFiTrCIj4K3axsX1/Z2N60IzC0UVuIQU2pSjYMWpTFgw3P1OLvjICQYbsJ/XEtTgQDix2NwgVRkKpKshO8HKela0SOxVlELtHgnYFGGZUqbyMML2KIUq1pUZlpptE3l7UAg1Ch2jh+y640ilpkfUpGZ7ybU1YixAlFHYlax5qsNCJRf8wnzzkZMxofZeu4jHU3hBFnbhy+rUR2AkgKYwDIh5eGiVKYZLgl/rVIr6Q9EC6jEXjgw5Xoar8WaFKo2XYWwJAIOFWtkGq7rG7DGXeJ+waDVhP597krghT+8YdgntntuEHqoJgsxavuOxHxEQpqG176p5eubQvuBLti4ereVoMKR0h+7R2j/z4kN+aKba+LL7Y8PGMktTIWkvokL8A0GLfbbwAzdl4/XK/Hiz7EKPSapgIiMQg15rI5AtYwRpkK9qWwCJP9zAHgywitCuHdkvu0VVfg3mQ/irmEufw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(366004)(396003)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(2906002)(5660300002)(478600001)(7416002)(4744005)(2616005)(4326008)(36756003)(66556008)(8676002)(66476007)(41300700001)(8936002)(316002)(66946007)(31696002)(6512007)(6506007)(53546011)(6486002)(6666004)(26005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Y2lvcHF3bHUxc054QWhycTl3SUJzTkVKVEFGaVhUTUtsN0pDNmFyQ2M2cHpx?=
- =?utf-8?B?QUUydG92M2ZaZTYvVVlGSXdUaUZTVHZmZ3pVUGpQVnhtVU1MZGxZNzBYRVBj?=
- =?utf-8?B?Z1lEaFFseG1oenRiMXg3LzRwbDIwVHJLbm1ZZnZuckxiVjRaT0JnaDhnNHYr?=
- =?utf-8?B?dVdrclY3TVhsbHdzZW5laHNWYXRoWWk0ZE8yV0FrTHg4dGJaUjFGTTlSTVJW?=
- =?utf-8?B?WXBKWGxqQThTeVc1NkJwbnA0cHlMNVp5THlaOFlZbXVCdjkwOWsxcGs5dkRt?=
- =?utf-8?B?azM4TyszODZWRkxZWUxxODdFN1ZzR21Qc091WE5VcU1rL0M5T0RIdTZ1NTFY?=
- =?utf-8?B?N1RRRVphdWF4c01LZmk3VW1GakhscTNSYzgzRFZvU0lDeUt6OGcyVmVmOC9P?=
- =?utf-8?B?R3lsbUJTK3BxMTFWQlA5Q0s1d0srZ2kxaEVHQ01ScGVLQUVRcmlPVFE1ZXJU?=
- =?utf-8?B?YW9Nais4U1N2UklyblNpMmJoUGdLMjZ5dHJMd0piQUhMMjJ4OElCMzFURkQx?=
- =?utf-8?B?N0FCcEwwZi9jaDdEekpoWjlFZGg4SWs3V0NsT0NmUzVDa0lVSGh2d3VjYk82?=
- =?utf-8?B?VGQ1NWs2QmhOZGNwNEV4Uk1HY0lHYmM1K0IrNURZc2NJMDZvdk0xcDFMUmQz?=
- =?utf-8?B?VXNudk4zdi9qeDJQSmFNZmxScGpiSUE1K0pDVnI3aE9BS21ycUNPRURWQTh0?=
- =?utf-8?B?SmlLa3NpbVFZbzA2U25wRlYzcGFJaXF1T08rOWdhK3FRUy91T05KTFMzYjlv?=
- =?utf-8?B?aEFJTVJYdjhXM0Z4SEM0WWlLcGhGN3dvTytnZVY3clJ5UVRGMTlpZ1V6VmN2?=
- =?utf-8?B?YllWZE9vTHB1cHE5MUN3TzFrenMzZmhaV2dnUmo1aVo3M0k5VXloSDdiUldN?=
- =?utf-8?B?NFIxVTJQL1F1ZDl5aHZXaC9mRGtpdmg3R1l5VmswN3dzcng2SkNQWDBBTVhi?=
- =?utf-8?B?d3p0c0dYTmwrWS9iWjFSQnMrZ2dncHRrM3N1L05jOVJ3MzM0akt6Rk1FSlNB?=
- =?utf-8?B?MGkvWHNsRVRnNFAxMHRwSlVMTFZYWXpJdklqZzIvNFhvbkorZDAvZ3FScW5B?=
- =?utf-8?B?NjdFbmo3cFh2dFNZZzNITTNVYklmSUR3Y05UeVAyNHl3YlRXd1FXOFBhdUx0?=
- =?utf-8?B?SGZUVmRPRjVVOUxWMHU1dk1TU1ZNeWxFVmxzRnJObHJ4dWIwMzdudVV1b0Q2?=
- =?utf-8?B?VUY1LzZjUEJnbU1VTGJvQjVXNjhWVUc3ZzhXQUNXRHBJRU9tU05INm80NFVO?=
- =?utf-8?B?R21HVCtnOUcrdUkvN3RJSmFsVEJHbC84dDZCY1U2Z29meWo3YmdMTDZYKzh1?=
- =?utf-8?B?Z1dxQkliWTFZVkROTVNoanpnVW1SSVBtZ0syUlBqMXBKM0FUVS9Pc095RmNJ?=
- =?utf-8?B?S0Rod2FBOVd2QnBENHFzQk5pdFB0bXhTZkpBZUwxNzNNc0tzZXNMQjVadHA4?=
- =?utf-8?B?MkE0bUJraGVVWlBYRGxrd3JuSFdZUHhMdnRWTEVhaWE4d1B3S1ZYQzRyVldo?=
- =?utf-8?B?Y3pPUDU4c0RML29SeklaU05wQWx0ZHhPNlF6V0lsQUVSNU1pd09YUVM4NFZV?=
- =?utf-8?B?eFVCd0pBb05sVDMvckR1NThVZlhBZldqblRKNG9SZ1NieiswRDBoL0MxLzVt?=
- =?utf-8?B?YytiNlBpTDhPUmFKT1VGM1laT1htSit0M3hneVNLeS9FaFpGRE9WZ09VYzlJ?=
- =?utf-8?B?bkhyU3NCeGhBTGd2Z09qMTh1MFd3WG1rL1hKblJxaGZqRDlQRDZZRTZ1VE5h?=
- =?utf-8?B?S0YxNFNadG5CQXNWY3lLTFVvV0dPNndVUHQ1VTVpMnRzU2R5U2dQUjVXZXpZ?=
- =?utf-8?B?S3A4UnQyVE81V2lMTDZpbjhHS2crRGdac1QydkNQSFhVVHlmektQMUY1NHZq?=
- =?utf-8?B?dUVoRlpyUElsbGh0MDlBR0NYSEFLU0xqbVFyRkkvQ2pVNU4yVlJQYWtQYThy?=
- =?utf-8?B?OXh4RGw2OXRPZFlEcmoxd2JITG5EazF3TUlLR1FhTGthK3RTRWNUWWVZZm90?=
- =?utf-8?B?ekFSS1BOZHd4aTJvYkxNcTNSWTI2VDU4V2Z2ZU5HbGt3RkZNNGVCVGN1emdX?=
- =?utf-8?B?RmptdjNCNDZqeEVqTkFKQUVMeCtaU3ZGc0RWNGNFdmtiVGk3a0ZzQVc2RFdF?=
- =?utf-8?Q?qhTcfpI52n2d5sEsuH3BXBjtE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af6b9153-9115-477f-a431-08dc13b90261
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 21:54:11.0945
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pLbQmcaFBnyomvKk/UWi2GmzsNZglOwF5p/gHhf34gIyrFUl6ifDXVBBW66CRwIz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7003
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="c4dq2qnbv4wtniq5"
+Content-Disposition: inline
+In-Reply-To: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupik+LIzCtJLcpLzFFi42LZduznOd2qrQtTDdoPWVtsnriVzeLXFwuL
+	pQfXs1g0rL7AajFzxglGi87ZG9gtlr7dym5xedccNovpd96zWex9+pjN4uCHJ6wWy8/OY7No
+	uWNqMffnNRYHPo8nB+cxeayZt4bRY/Gel0wem1Z1snncubaHzWPeyUCPyTeWM3q82DyT0aO3
+	+R2bx+dNch5bP99mCeCO4rJJSc3JLEst0rdL4Mr4sPkte8ELzYq/VxIbGNcqdTFyckgImEg0
+	b2xk72Lk4hASWMEosffnT2YI5wujxOPvv6Gcz4wSFz++ZIJpWXPnMwtEYjmjxJ8fN1nhqlbM
+	nMUE4WxhlPjybw8bSAuLgKrEtrl72EFsNgEdifNv7gDN5eAQEVCXePYlAKSeWeAes8S113NY
+	QWqEBTwl3q8/BtbLK2Au8fjEdSYIW1Di5MwnLCA2s0CFxKelF8HmMAtISyz/xwES5hSwlzh+
+	5ikrSFhCQEni+2oviKNrJU5tuQV2moTAP06J51tnM0PUuEjs75GCqBGWeHV8CzuELSPxf+d8
+	qPrJjBL7/31gh3BWM0osa/wKDQpriZYrT6A6HCXWt7awQAzlk7jxVhDiTD6JSdumQ+3ileho
+	E4KoVpNYfe8NywRG5VlIHpuF5LFZCI9BhHUkFuz+xIYhrC2xbOFrZgjbVmLduvcsCxjZVzGK
+	p5YW56anFhvmpZbrFSfmFpfmpesl5+duYgQm0dP/jn/awTj31Ue9Q4xMHIyHGFWAmh9tWH2B
+	UYolLz8vVUmE9+DzBalCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeVVT5FOFBNITS1KzU1MLUotg
+	skwcnFINTIplc+d9nbjV+p+a76UfH2cm3PfofMzuXp+Z+nm2ZcuPm+2bMi9UrZowj7vFYq/u
+	6wPhgtv9Klhsvc9u0SpYs/DDliU7Zp9kuNLAXfVE6/WCmz/67Up5pv5/mnAkOvzawyIB++q5
+	3V7mR8J+iHdfnPxv0vosI8byDan2ATlfmTQWK8wNPFwg1rNnLneT8DIf1z18Xy/zq5qKRa1z
+	tg7/lPPy7N5fc856RmypPS9yeeu6M39Zrb3XNF/80Hzm+ra366UbfGw//b1qwbrjUURnbab5
+	OyblxF2/329Njg0WmaTocTj7o1+iU9SaMCbu4xbXDspzO1SIsz/zCvvS0NQtF9J5/tudabV8
+	J26cuXaqoU2JpTgj0VCLuag4EQD5aHN4HQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKKsWRmVeSWpSXmKPExsVy+t/xe7qVWxemGqzaommxeeJWNotfXyws
+	lh5cz2LRsPoCq8XMGScYLTpnb2C3WPp2K7vF5V1z2Cym33nPZrH36WM2i4MfnrBaLD87j82i
+	5Y6pxdyf11gc+DyeHJzH5LFm3hpGj8V7XjJ5bFrVyeZx59oeNo95JwM9Jt9YzujxYvNMRo/e
+	5ndsHp83yXls/XybJYA7Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384m
+	JTUnsyy1SN8uQS/j4le3gmeaFRfPb2dsYFyt1MXIySEhYCKx5s5nli5GLg4hgaWMEjN6/7BD
+	JGQkNn65ygphC0v8udbFBlH0kVFizZztjCAJIYEtjBIL1gaB2CwCqhLb5u4Ba2YT0JE4/+YO
+	cxcjB4eIgLrEsy8BIL3MAveYJf7+esEMUiMs4Cnxfv0xNhCbV8Bc4vGJ60wQM+0knn3cyA4R
+	F5Q4OfMJC4jNLFAmcXzRWXaQmcwC0hLL/3GAhDkF7CWOn3nKChKWEFCS+L7aC+LkWonPf58x
+	TmAUnoVk0Cwkg2YhDIIIa0nc+PeSCUNYW2LZwtfMELatxLp171kWMLKvYhRJLS3OTc8tNtIr
+	TswtLs1L10vOz93ECEwj24793LKDceWrj3qHGJk4GA8xqgB1Ptqw+gKjFEtefl6qkgjvwecL
+	UoV4UxIrq1KL8uOLSnNSiw8xmgLDcCKzlGhyPjDB5ZXEG5oZmBqamFkamFqaGSuJ83oWdCQK
+	CaQnlqRmp6YWpBbB9DFxcEo1MNVNXP23v52HR9pEf/EhTsl9NcoW79mlWWWv/mWfV3rU+0+l
+	zozT875PCHWte/F41h/DU8YKicLRU8/cD71Y63vhkHn65V+TDYxcNKw6pufOey/isMthzbb5
+	Wd9+HN5hZRzYJfM4hNcvabqi4XpV1tSKPPEutxOx1W3nWB1vPj18fp/BvXuLHtn+YIw+334g
+	a9vcyQeaDe3yFZfVBNh3i/w8M4XvQXvg9Lpj4mUfItYwhaRaG7WXHyw5+OmoWxmL8aWPUkIL
+	/kYu/razeMZuxxTPX4JLl+veu8G9WTfT9G/n/gDO/AvGHx/dLZ0Xvvojh0v01jOTJxeZH160
+	r9v471IduYWcy2S6Hx0Tm8r346oSS3FGoqEWc1FxIgBRFj8yuAMAAA==
+X-CMS-MailID: 20240112215609eucas1p1eedeeee8e1cca2c935b41816a50f56f6
+X-Msg-Generator: CA
+X-RootMTR: 20240112215609eucas1p1eedeeee8e1cca2c935b41816a50f56f6
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240112215609eucas1p1eedeeee8e1cca2c935b41816a50f56f6
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+	<CGME20240112215609eucas1p1eedeeee8e1cca2c935b41816a50f56f6@eucas1p1.samsung.com>
 
-Hi Reinette,
+--c4dq2qnbv4wtniq5
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/12/2024 3:24 PM, Reinette Chatre wrote:
-> Hi Babu,
->
-> On 1/12/2024 12:38 PM, Moger, Babu wrote:
->> Hi  Reinette,
->>
->> On 1/12/2024 1:02 PM, Reinette Chatre wrote:
->>> Hi Babu,
->>>
->>> On 1/11/2024 1:36 PM, Babu Moger wrote:
->>>
->>>> @@ -1686,6 +1681,13 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
->>>>            return -EINVAL;
->>>>        }
->>>>    +    /* mon_config cannot be more than the supported set of events */
->>> copy&paste error? There is no mon_config in this function.
->> Yea. it should be mbm_cfg_mask.  Will fix it.
-> I do not think it is correct to replace mon_config with mbm_cfg_mask. Is this comment
-> not referring to the user provided value (that is checked against mbm_cfg_mask)? So
-> perhaps something like:
->
-> 	 /* Check value from user against supported events. */
-> 	or
-> 	 /* Value from user cannot be more than the supported set of events. */
+On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
+> Hi folks,
+>=20
+> This series implements the functionality of delivering IO page faults to
+> user space through the IOMMUFD framework for nested translation. Nested
+> translation is a hardware feature that supports two-stage translation
+> tables for IOMMU. The second-stage translation table is managed by the
+> host VMM, while the first-stage translation table is owned by user
+> space. This allows user space to control the IOMMU mappings for its
+> devices.
+>=20
+> When an IO page fault occurs on the first-stage translation table, the
+> IOMMU hardware can deliver the page fault to user space through the
+> IOMMUFD framework. User space can then handle the page fault and respond
+> to the device top-down through the IOMMUFD. This allows user space to
+> implement its own IO page fault handling policies.
+>=20
+> User space indicates its capability of handling IO page faults by
+> setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
+> hardware page table (HWPT). IOMMUFD will then set up its infrastructure
+> for page fault delivery. On a successful return of HWPT allocation, the
+> user can retrieve and respond to page faults by reading and writing to
+> the file descriptor (FD) returned in out_fault_fd.
+>=20
+> The iommu selftest framework has been updated to test the IO page fault
+> delivery and response functionality.
+>=20
+> This series is based on the latest implementation of nested translation
+> under discussion [1] and the page fault handling framework refactoring in
+> the IOMMU core [2].
+>=20
+> The series and related patches are available on GitHub: [3]
+>=20
+> [1] https://lore.kernel.org/linux-iommu/20230921075138.124099-1-yi.l.liu@=
+intel.com/
+> [2] https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@l=
+inux.intel.com/
+> [3] https://github.com/LuBaolu/intel-iommu/commits/iommufd-io-pgfault-del=
+ivery-v2
+I was working with this branch that included Yi Liu's
+wip/iommufd_nesting branch. Now Yi Lui has updated his work in this post
+https://lore.kernel.org/all/20240102143834.146165-1-yi.l.liu@intel.com.
+Is there an updated version of the page fault work that is rebased on
+top of Liu's new version?
 
-This looks good. Thanks
+Thx in advance
 
-Babu
+Best
 
+>=20
+> Best regards,
+> baolu
+>=20
+> Change log:
+> v2:
+>  - Move all iommu refactoring patches into a sparated series and discuss
+>    it in a different thread. The latest patch series [v6] is available at
+>    https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@li=
+nux.intel.com/
+>  - We discussed the timeout of the pending page fault messages. We
+>    agreed that we shouldn't apply any timeout policy for the page fault
+>    handling in user space.
+>    https://lore.kernel.org/linux-iommu/20230616113232.GA84678@myrica/
+>  - Jason suggested that we adopt a simple file descriptor interface for
+>    reading and responding to I/O page requests, so that user space
+>    applications can improve performance using io_uring.
+>    https://lore.kernel.org/linux-iommu/ZJWjD1ajeem6pK3I@ziepe.ca/
+>=20
+> v1: https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@=
+linux.intel.com/
+>=20
+> Lu Baolu (6):
+>   iommu: Add iommu page fault cookie helpers
+>   iommufd: Add iommu page fault uapi data
+>   iommufd: Initializing and releasing IO page fault data
+>   iommufd: Deliver fault messages to user space
+>   iommufd/selftest: Add IOMMU_TEST_OP_TRIGGER_IOPF test support
+>   iommufd/selftest: Add coverage for IOMMU_TEST_OP_TRIGGER_IOPF
+>=20
+>  include/linux/iommu.h                         |   9 +
+>  drivers/iommu/iommu-priv.h                    |  15 +
+>  drivers/iommu/iommufd/iommufd_private.h       |  12 +
+>  drivers/iommu/iommufd/iommufd_test.h          |   8 +
+>  include/uapi/linux/iommufd.h                  |  65 +++++
+>  tools/testing/selftests/iommu/iommufd_utils.h |  66 ++++-
+>  drivers/iommu/io-pgfault.c                    |  50 ++++
+>  drivers/iommu/iommufd/device.c                |  69 ++++-
+>  drivers/iommu/iommufd/hw_pagetable.c          | 260 +++++++++++++++++-
+>  drivers/iommu/iommufd/selftest.c              |  56 ++++
+>  tools/testing/selftests/iommu/iommufd.c       |  24 +-
+>  .../selftests/iommu/iommufd_fail_nth.c        |   2 +-
+>  12 files changed, 620 insertions(+), 16 deletions(-)
+>=20
+> --=20
+> 2.34.1
+>=20
+
+--=20
+
+Joel Granados
+
+--c4dq2qnbv4wtniq5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmWhtWkACgkQupfNUreW
+QU8/pAv8D4KTohFrO9O/fJaowA1ej0E90/Y/0yMRldOc/hUCO9OL1m/+S3mndDho
+QRBdwSLmeqSnZm7HJzQEaWULb2YBooS0y/SeY2F/fbYbgV6/oJFNllUukedb/x1F
+4LvzxKp3agIEHGbBdmzMa131yhzQJZFC4AMMDPporcOoOfQjsXGB1w0TX1E7ngNE
+n4oI89D8d7y42un9/eeY43zgXxylENp8jQSrleGcM5Eop09xv3uW0SBaeLbOopxs
+uU2u4+wy+tUiAqbzdO2ObiAoJaFX2SMm7dlSttIDsm5OKhcYRolwhorqsV+NqIqN
+vSbA/IuGmlxlB+pFBa6UuobrKEADQg3YzmFLIpnOeRzkZibmynf15US6058hwwOn
+jUhbhMSwX4dFQ3Jlto0noQJmn95Sv0x3FJ/mdn/bQynBGptPOlX2V2QWtfea0h7x
+FoIbfSHE+mIVeKhnC+/Ot1P9E7WW93WRAzwk8tbYaq17mZH+P3ejJLvmzFvSxFc1
+buViNbPz
+=Llua
+-----END PGP SIGNATURE-----
+
+--c4dq2qnbv4wtniq5--
 
