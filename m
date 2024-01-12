@@ -1,65 +1,201 @@
-Return-Path: <linux-kernel+bounces-24199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39FB82B8F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:07:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA1F182B8EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:06:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2422E1C242A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:07:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38195286746
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C266517E8;
-	Fri, 12 Jan 2024 01:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4795EBD;
+	Fri, 12 Jan 2024 01:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="JVaFkVBF"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gVc5HDk+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7914814
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=JirkDiOLIcgfiGK4i5BgIE2o8L87QMTz7u6sXd+9BV4=; b=JVaFkVBF5jTqT/2Cklldtky4u9
-	iZiPGCxo8jTrdkIsUg1hSrG0hokegysZuJ41/XonuehxCmXIhvAenvVRvvGJkFZqrndwyrJdFr3SS
-	ICJKXxwzj8oRuZzi9XuZdSZ7aU2vaRf0rfJ+uCDzLRXqPHMwtJVTnDokYZLx+R9brSpvOt5MSDA0w
-	d5UTPTJom3lYdw3K2Gahdkq3IthpFYcuvG++gRcnM9pk1zWvFKexIsGVUngPOIQr3fZuBxp7khVKB
-	ZgVVNS/fpBTrhj4Cn7NhnayFERr4l8qc4gYCRq7PcN+Onopre0ZW08joIR6Ivgm3GqAReAglGgrzJ
-	BYSSGqTQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rO60E-00DVoZ-12;
-	Fri, 12 Jan 2024 01:06:30 +0000
-Date: Fri, 12 Jan 2024 01:06:30 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Guilherme =?iso-8859-1?Q?Gi=E1como_Sim=F5es?= <trintaeoitogc@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: new library
-Message-ID: <20240112010630.GZ1674809@ZenIV>
-References: <5AFF5BF9-BD11-4A60-BD42-7EC516164D41@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E463D81C
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:06:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88EB7C433F1;
+	Fri, 12 Jan 2024 01:06:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705021601;
+	bh=hVgQfaTNbu8e8u2PuXBunuk/KB2v9c8tBDHRJ1yrMBY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gVc5HDk+8JyrndEwP6so6gn1fSvC35oo6TbS2MvWsd5x0QaWgcx4HXwwHfOoCGdHu
+	 P3qOgI+3LgX9KOVKu6IfLSmuoz+YM56OtZeZG7I4/PblmsrATdO4j9JnXit0UL2Uxz
+	 hzGzUY5C4jXi0q0B1+bKUT9ZMjbdjrXANT73AJ5I6rmQCY3xHvfgnOdPQ+d3ckJbds
+	 C0TXuUUHto2MYqguGC+vdmFNriUJXJ8F2DhmmGybVWfmG93bYTIKrqlPVD7BxQqmAf
+	 e/ET8wCG01xC8ZNRhOZF6HVB33XzVARyMQI4oajxKjg+l6N0JtmAJfAjQf53y50Jtl
+	 gUiU1BLBDLM2A==
+Message-ID: <d2f2e4ba-8668-4e37-a56f-dbe7c730b01f@kernel.org>
+Date: Fri, 12 Jan 2024 09:06:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH v3 3/6] f2fs: compress: fix to check unreleased
+ compressed cluster
+To: Daeho Jeong <daeho43@gmail.com>
+Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20231228143152.1543509-1-chao@kernel.org>
+ <20231228143152.1543509-3-chao@kernel.org>
+ <CACOAw_xCfOtJaC3FbOhvbrEzyUwecdSujFo4-f--dz+33BC+Sg@mail.gmail.com>
+ <e7f4a835-6a4c-4f94-a79f-a425b04516e2@kernel.org>
+ <CACOAw_wzBTV=+cqZeiCZvhud1Ek06aW_5nJbg=9FF327MNgxEg@mail.gmail.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+Autocrypt: addr=chao@kernel.org; keydata=
+ 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
+In-Reply-To: <CACOAw_wzBTV=+cqZeiCZvhud1Ek06aW_5nJbg=9FF327MNgxEg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5AFF5BF9-BD11-4A60-BD42-7EC516164D41@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Thu, Jan 11, 2024 at 09:48:46PM -0300, Guilherme Giácomo Simões wrote:
+On 2024/1/12 1:15, Daeho Jeong wrote:
+> On Wed, Jan 10, 2024 at 5:33â€¯PM Chao Yu <chao@kernel.org> wrote:
+>>
+>> On 2024/1/11 9:18, Daeho Jeong wrote:
+>>> On Thu, Dec 28, 2023 at 6:33â€¯AM Chao Yu <chao@kernel.org> wrote:
+>>>>
+>>>> From: Sheng Yong <shengyong@oppo.com>
+>>>>
+>>>> Compressed cluster may not be released due to we can fail in
+>>>> release_compress_blocks(), fix to handle reserved compressed
+>>>> cluster correctly in reserve_compress_blocks().
+>>>>
+>>>> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+>>>> Signed-off-by: Sheng Yong <shengyong@oppo.com>
+>>>> Signed-off-by: Chao Yu <chao@kernel.org>
+>>>> ---
+>>>>    fs/f2fs/file.c | 12 ++++++++++++
+>>>>    1 file changed, 12 insertions(+)
+>>>>
+>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>> index 026d05a7edd8..782ae3be48f6 100644
+>>>> --- a/fs/f2fs/file.c
+>>>> +++ b/fs/f2fs/file.c
+>>>> @@ -3624,6 +3624,15 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+>>>>                                   goto next;
+>>>>                           }
+>>>>
+>>>> +                       /*
+>>>> +                        * compressed cluster was not released due to
+>>>> +                        * it fails in release_compress_blocks().
+>>>> +                        */
+>>>> +                       if (blkaddr == NEW_ADDR) {
+>>>> +                               compr_blocks++;
+>>>> +                               continue;
+>>>> +                       }
+>>>> +
+>>>>                           if (__is_valid_data_blkaddr(blkaddr)) {
+>>>>                                   compr_blocks++;
+>>>>                                   continue;
+>>>
+>>> How about merging two conditions like "blkaddr == NEW_ADDR ||
+>>> __is_valid_data_blkaddr(blkaddr)"?
+>>
+>> Oh, sure.
+>>
+>>>
+>>>> @@ -3633,6 +3642,9 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+>>>>                   }
+>>>>
+>>>>                   reserved = cluster_size - compr_blocks;
+>>>> +               if (!reserved)
+>>>> +                       goto next;
+>>>> +
+>>>
+>>> How can the reserved variable be zero?
+>>
+>> I guess it can happen if a cluster was not released during
+>> release_compress_blocks(), then all blocks in the cluster should
+>> has been reserved, so, in this round of reserving, it needs to skip
+>> reserve blocks, right?
+> 
+> Let's assume cluster_size is 4. How can compr_blocks be 4?
+> 
+>                          if (i == 0) {
+>                                  if (blkaddr == COMPRESS_ADDR)
+>                                          continue;
+>                                  dn->ofs_in_node += cluster_size;
+>                                  goto next;
+>                          }
+> 
+> We skip the block having COMPRESS_ADDR when counting compr_blocks.
+> So, the maximum value of compr_blocks should be 3, right?
 
-> For ex: 1234 -> "12.34", and i show this in dmesg output: [09876] 12.34
+Ah, got it, and I think you're right.
 
-Er...  What's wrong with "%d.%0*d", n / 100, 2, n % 100 in sprintf/printk/etc.
-arguments?  It's slightly messier if you want to handle the negatives as well,
-but also not impossible - "%s%d.%0*d", n < 0 ? "-" : "", abs(n) / 100, 2, abs(n) % 100
-will do it, kernel and userland alike.  And I'm pretty sure it's going to be cheaper
-than your solution...
+Should fix the condition as below?
+
+		/* for the case all blocks in cluster were reserved */
+		if (reserved == 1)
+			goto next;
+
+Thanks,
+
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>>>                   ret = inc_valid_block_count(sbi, dn->inode, &reserved);
+>>>>                   if (ret)
+>>>>                           return ret;
+>>>> --
+>>>> 2.40.1
+>>>>
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> Linux-f2fs-devel mailing list
+>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
