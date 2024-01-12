@@ -1,216 +1,196 @@
-Return-Path: <linux-kernel+bounces-24906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2CE082C481
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:14:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE9582C487
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80EAA1F24AC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:14:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09AF21C22252
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641E922609;
-	Fri, 12 Jan 2024 17:14:03 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EE72260E;
+	Fri, 12 Jan 2024 17:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nmh6/Z7s"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1497917C83;
-	Fri, 12 Jan 2024 17:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TBSkn3kDJz6K5sk;
-	Sat, 13 Jan 2024 01:12:01 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id CB7D9140B2A;
-	Sat, 13 Jan 2024 01:13:57 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 12 Jan
- 2024 17:13:57 +0000
-Date: Fri, 12 Jan 2024 17:13:56 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Petre Rodan <petre.rodan@subdimension.ro>
-CC: <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Jonathan
- Cameron" <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 6/6] iio: pressure: hsc030pa add sleep mode
-Message-ID: <20240112171356.00003e88@Huawei.com>
-In-Reply-To: <20240110172306.31273-7-petre.rodan@subdimension.ro>
-References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
-	<20240110172306.31273-7-petre.rodan@subdimension.ro>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA2222606;
+	Fri, 12 Jan 2024 17:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-557bfc7f7b4so9527655a12.0;
+        Fri, 12 Jan 2024 09:14:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705079676; x=1705684476; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gkRip5P/CSH4Zjga6g7Ad+NhClHoMzovsmKSyhbUtXI=;
+        b=Nmh6/Z7sMOOWiVD7SBEno5YLeBNngSkGArrgJ8cWt6xMQdNuEtHQPuHmJiuYP7HjV0
+         PhKXVEpA3jAT2aBjv9DlM5n9rzNLjQCkqKYqEI8oE/1FkV8znN0MwmTFuBSA0bQLbgN+
+         zKSu6+lPzfTUMRU8woUpwBsEPTXeOzV0O7kR6JEKacSUHgOnbW0QLcJVk8h+sffCRpHT
+         ev7cNoMzkB5B0bZOBOk2evGFA7egZbo4HdEnd+Km+Pi9OIjQYcEIbDLcJjLXdiPPovpe
+         Uu4E69NeefoXKVqgCnN7TbLBBlUUds+2sTSqlpbUFqhnqK+8op0z7k9j6HahNHL04tPu
+         u0dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705079676; x=1705684476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gkRip5P/CSH4Zjga6g7Ad+NhClHoMzovsmKSyhbUtXI=;
+        b=a4Qyrf8DpymFOnj7BwI47tu5AE+k9mcJ7bH8h90VeEyIEQoKo0LrX7X0Kvt/8JdZvw
+         XcQOtxHQREXhybyxtCJaJRfkiwbgtXSMvzCyHgf0t0qF9lQO8lLa6maTDLUH20x1Ds1J
+         r2Hwbs2UOY4EYLu98X3NuT+jCIOsLP9p/9sSnooU94ljSoMJD3MSjOAXU1g2QkYH4v1k
+         +iI1yyLthBNiynJBAxlVbMwO/4M5iCjkHYxUcNd/t1JRi/30FSTJ/Y3PTcz2WAKVb33P
+         y6INEIb3j7V1I+v0KoIJYd33IeU4ayqfT/hzMpKaSPGea7rm0x+OmKR13h9NPFJSjG8Z
+         UOKA==
+X-Gm-Message-State: AOJu0YwhODHmN6RD+GcByoi7yRsLz4LdS+RkwXILREaw1p+gYXbry6B2
+	tX9N56O8WkW3w9tR3gCKNKsbfJ0aE5l5GXk7/iM=
+X-Google-Smtp-Source: AGHT+IF9IMPBk8V3jyU215rKqdmijeXsvs7Ngpeca5FQb7pvIGZgTeR2+krrbELKgsorLRv1yVbITGICkSbSxw/uz2Q=
+X-Received: by 2002:a50:9fab:0:b0:558:b5d0:e77a with SMTP id
+ c40-20020a509fab000000b00558b5d0e77amr1925498edf.36.1705079676202; Fri, 12
+ Jan 2024 09:14:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+References: <20240108195016.156583-1-robdclark@gmail.com> <27e64458-7cb1-99a4-f67e-60d911f28f44@collabora.com>
+ <CAF6AEGvBFdXe9rHjbwWv9eLUMv2YEP7cfMoXcWgZ30Wn4LzOjw@mail.gmail.com>
+In-Reply-To: <CAF6AEGvBFdXe9rHjbwWv9eLUMv2YEP7cfMoXcWgZ30Wn4LzOjw@mail.gmail.com>
+From: Rob Clark <robdclark@gmail.com>
+Date: Fri, 12 Jan 2024 09:14:24 -0800
+Message-ID: <CAF6AEGuXi1wTbE0j6FmSnqw_EVUYSdnk5WeFL6abD=zeNutPpg@mail.gmail.com>
+Subject: Re: [PATCH] drm/ci: Add msm tests
+To: Vignesh Raman <vignesh.raman@collabora.com>
+Cc: dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>, 
+	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	open list <linux-kernel@vger.kernel.org>, Maxime Ripard <mripard@kernel.org>, 
+	Helen Koike <helen.koike@collabora.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, freedreno@lists.freedesktop.org, 
+	Daniel Stone <daniel@fooishbar.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 10 Jan 2024 19:22:41 +0200
-Petre Rodan <petre.rodan@subdimension.ro> wrote:
+On Fri, Jan 12, 2024 at 7:57=E2=80=AFAM Rob Clark <robdclark@gmail.com> wro=
+te:
+>
+> On Fri, Jan 12, 2024 at 3:42=E2=80=AFAM Vignesh Raman
+> <vignesh.raman@collabora.com> wrote:
+> >
+> > Hi Rob,
+> >
+> >
+> > On 09/01/24 01:20, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > The msm tests should skip on non-msm hw, so I think it should be safe=
+ to
+> > > enable everywhere.
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >   drivers/gpu/drm/ci/testlist.txt | 49 ++++++++++++++++++++++++++++++=
++++
+> > >   1 file changed, 49 insertions(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/ci/testlist.txt b/drivers/gpu/drm/ci/tes=
+tlist.txt
+> > > index f82cd90372f4..eaeb751bb0ad 100644
+> > > --- a/drivers/gpu/drm/ci/testlist.txt
+> > > +++ b/drivers/gpu/drm/ci/testlist.txt
+> > > @@ -2910,3 +2910,52 @@ kms_writeback@writeback-invalid-parameters
+> > >   kms_writeback@writeback-fb-id
+> > >   kms_writeback@writeback-check-output
+> > >   prime_mmap_kms@buffer-sharing
+> > > +msm_shrink@copy-gpu-sanitycheck-8
+> > > +msm_shrink@copy-gpu-sanitycheck-32
+> > > +msm_shrink@copy-gpu-8
+> > > +msm_shrink@copy-gpu-32
+> > > +msm_shrink@copy-gpu-madvise-8
+> > > +msm_shrink@copy-gpu-madvise-32
+> > > +msm_shrink@copy-gpu-oom-8
+> > > +msm_shrink@copy-gpu-oom-32
+> > > +msm_shrink@copy-mmap-sanitycheck-8
+> > > +msm_shrink@copy-mmap-sanitycheck-32
+> > > +msm_shrink@copy-mmap-8
+> > > +msm_shrink@copy-mmap-32
+> > > +msm_shrink@copy-mmap-madvise-8
+> > > +msm_shrink@copy-mmap-madvise-32
+> > > +msm_shrink@copy-mmap-oom-8
+> > > +msm_shrink@copy-mmap-oom-32
+> > > +msm_shrink@copy-mmap-dmabuf-sanitycheck-8
+> > > +msm_shrink@copy-mmap-dmabuf-sanitycheck-32
+> > > +msm_shrink@copy-mmap-dmabuf-8
+> > > +msm_shrink@copy-mmap-dmabuf-32
+> > > +msm_shrink@copy-mmap-dmabuf-madvise-8
+> > > +msm_shrink@copy-mmap-dmabuf-madvise-32
+> > > +msm_shrink@copy-mmap-dmabuf-oom-8
+> > > +msm_shrink@copy-mmap-dmabuf-oom-32
+> > > +msm_mapping@ring
+> > > +msm_mapping@sqefw
+> > > +msm_mapping@shadow
+> > > +msm_submitoverhead@submitbench-10-bos
+> > > +msm_submitoverhead@submitbench-10-bos-no-implicit-sync
+> > > +msm_submitoverhead@submitbench-100-bos
+> > > +msm_submitoverhead@submitbench-100-bos-no-implicit-sync
+> > > +msm_submitoverhead@submitbench-250-bos
+> > > +msm_submitoverhead@submitbench-250-bos-no-implicit-sync
+> > > +msm_submitoverhead@submitbench-500-bos
+> > > +msm_submitoverhead@submitbench-500-bos-no-implicit-sync
+> > > +msm_submitoverhead@submitbench-1000-bos
+> > > +msm_submitoverhead@submitbench-1000-bos-no-implicit-sync
+> > > +msm_recovery@hangcheck
+> > > +msm_recovery@gpu-fault
+> > > +msm_recovery@gpu-fault-parallel
+> > > +msm_recovery@iova-fault
+> > > +msm_submit@empty-submit
+> > > +msm_submit@invalid-queue-submit
+> > > +msm_submit@invalid-flags-submit
+> > > +msm_submit@invalid-in-fence-submit
+> > > +msm_submit@invalid-duplicate-bo-submit
+> > > +msm_submit@invalid-cmd-idx-submit
+> > > +msm_submit@invalid-cmd-type-submit
+> > > +msm_submit@valid-submit
+> >
+> > I tested this patch with latest drm-misc/drm-misc-next and there was
+> > some failures seen for the newly added msm tests. I have updated the
+> > xfails with below commit,
+> >
+> > https://gitlab.freedesktop.org/vigneshraman/linux/-/commit/d012893597a6=
+61d6ebbb755bf2607dfb055524a1
+> >
+> > I will notify the maintainers about the flaky tests, update the url in
+> > the flakes.txt, and submit a separate patch for this change.
 
-> Some custom chips from this series require a wakeup sequence before the
-> measurement cycle is started.
->=20
-> Quote from the product datasheet:
-> "Optional sleep mode available upon special request."
->=20
-> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> ---
->  drivers/iio/pressure/hsc030pa.c     |  4 ++++
->  drivers/iio/pressure/hsc030pa.h     |  4 ++++
->  drivers/iio/pressure/hsc030pa_i2c.c | 19 +++++++++++++++++
->  drivers/iio/pressure/hsc030pa_spi.c | 32 +++++++++++++++++++++++++++--
->  4 files changed, 57 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/iio/pressure/hsc030pa.c b/drivers/iio/pressure/hsc03=
-0pa.c
-> index 3faa0fd42201..9e66fd561801 100644
-> --- a/drivers/iio/pressure/hsc030pa.c
-> +++ b/drivers/iio/pressure/hsc030pa.c
-> @@ -501,6 +501,10 @@ int hsc_common_probe(struct device *dev, hsc_recv_fn=
- recv)
->  		return dev_err_probe(dev, -EINVAL,
->  				     "pressure limits are invalid\n");
->=20
-> +	ret =3D device_property_read_bool(dev, "honeywell,sleep-mode");
-> +	if (ret)
-> +		hsc->capabilities |=3D HSC_CAP_SLEEP;
-	if (device_property_read_bool())
-		hsc->cap...
+Oh, you should probably move msm_mapping@* to skips on sdm845.  I had
+a closer look at those, and they are failing due to a bootloader/fw
+issue.  We work around this in mesa CI with these two patches:
 
-The return value is not an int so it's inappropriate to stash it in ret.
+https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/4b49f902ec6f2bb382cbbf=
+489870573f4b43371e
+https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/38cdf4c5559771e2474ae0=
+fecef8469f65147bc1
 
-> +
->  	ret =3D devm_regulator_get_enable(dev, "vdd");
->  	if (ret)
->  		return dev_err_probe(dev, ret, "can't get vdd supply\n");
-> diff --git a/drivers/iio/pressure/hsc030pa.h b/drivers/iio/pressure/hsc03=
-0pa.h
-> index 6c635c42d85d..4e356944d67d 100644
-> --- a/drivers/iio/pressure/hsc030pa.h
-> +++ b/drivers/iio/pressure/hsc030pa.h
-> @@ -15,6 +15,8 @@
->  #define HSC_REG_MEASUREMENT_RD_SIZE 4
->  #define HSC_RESP_TIME_MS            2
->=20
-> +#define HSC_CAP_SLEEP               0x1
-> +
->  struct device;
->=20
->  struct iio_chan_spec;
-> @@ -29,6 +31,7 @@ typedef int (*hsc_recv_fn)(struct hsc_data *);
->   * struct hsc_data
->   * @dev: current device structure
->   * @chip: structure containing chip's channel properties
-> + * @capabilities: chip specific attributes
->   * @recv_cb: function that implements the chip reads
->   * @is_valid: true if last transfer has been validated
->   * @pmin: minimum measurable pressure limit
-> @@ -45,6 +48,7 @@ typedef int (*hsc_recv_fn)(struct hsc_data *);
->  struct hsc_data {
->  	struct device *dev;
->  	const struct hsc_chip_data *chip;
-> +	u32 capabilities;
->  	hsc_recv_fn recv_cb;
->  	bool is_valid;
->  	s32 pmin;
-> diff --git a/drivers/iio/pressure/hsc030pa_i2c.c b/drivers/iio/pressure/h=
-sc030pa_i2c.c
-> index b3fd230e71da..62bdae272012 100644
-> --- a/drivers/iio/pressure/hsc030pa_i2c.c
-> +++ b/drivers/iio/pressure/hsc030pa_i2c.c
-> @@ -24,8 +24,27 @@ static int hsc_i2c_recv(struct hsc_data *data)
->  {
->  	struct i2c_client *client =3D to_i2c_client(data->dev);
->  	struct i2c_msg msg;
-> +	u8 buf;
->  	int ret;
->=20
-> +	if (data->capabilities & HSC_CAP_SLEEP) {
-> +		/*
-> +		 * Send the Full Measurement Request (FMR) command on the CS
-> +		 * line in order to wake up the sensor as per
-> +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
-> +		 * technical note (consult the datasheet link in the header).
-> +		 *
-> +		 * These specifications require a dummy packet comprised only by
-> +		 * a single byte that contains the 7bit slave address and the
-> +		 * READ bit followed by a STOP.
-> +		 * Because the i2c API does not allow packets without a payload,
-> +		 * the driver sends two bytes in this implementation.
-> +		 */
-> +		ret =3D i2c_master_recv(client, &buf, 1);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
->  	msleep_interruptible(HSC_RESP_TIME_MS);
->=20
->  	msg.addr =3D client->addr;
-> diff --git a/drivers/iio/pressure/hsc030pa_spi.c b/drivers/iio/pressure/h=
-sc030pa_spi.c
-> index 737197eddff0..1c139cdfe856 100644
-> --- a/drivers/iio/pressure/hsc030pa_spi.c
-> +++ b/drivers/iio/pressure/hsc030pa_spi.c
-> @@ -25,12 +25,40 @@ static int hsc_spi_recv(struct hsc_data *data)
->  	struct spi_device *spi =3D to_spi_device(data->dev);
->  	struct spi_transfer xfer =3D {
->  		.tx_buf =3D NULL,
-> -		.rx_buf =3D data->buffer,
-> -		.len =3D HSC_REG_MEASUREMENT_RD_SIZE,
-> +		.rx_buf =3D NULL,
-> +		.len =3D 0,
->  	};
-> +	u16 orig_cs_setup_value;
-> +	u8 orig_cs_setup_unit;
-> +
-> +	if (data->capabilities & HSC_CAP_SLEEP) {
-> +		/*
-> +		 * Send the Full Measurement Request (FMR) command on the CS
-> +		 * line in order to wake up the sensor as per
-> +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
-> +		 * technical note (consult the datasheet link in the header).
-> +		 *
-> +		 * These specifications require the CS line to be held asserted
-> +		 * for at least 8=B5s without any payload being generated.
-> +		 */
-> +		orig_cs_setup_value =3D spi->cs_setup.value;
-> +		orig_cs_setup_unit =3D spi->cs_setup.unit;
-> +		spi->cs_setup.value =3D 8;
-> +		spi->cs_setup.unit =3D SPI_DELAY_UNIT_USECS;
-> +		/*
-> +		 * Send a dummy 0-size packet so that CS gets toggled.
-> +		 * Trying to manually call spi->controller->set_cs() instead
-> +		 * does not work as expected during the second call.
-> +		 */
+But given that sdm845 is similar to sc7180 as far as kernel gpu
+driver, it is probably just better to skip these on sdm845 (with a
+comment referring to the hack patches we use in mesa CI)
 
-Do you have a reference that says the CS must be toggled on 0 length transf=
-er?
-If that's not specified in the SPI core somewhere then you will need to send
-something...
+BR,
+-R
 
-> +		spi_sync_transfer(spi, &xfer, 1);
-> +		spi->cs_setup.value =3D orig_cs_setup_value;
-> +		spi->cs_setup.unit =3D orig_cs_setup_unit;
-> +	}
->=20
->  	msleep_interruptible(HSC_RESP_TIME_MS);
->=20
-> +	xfer.rx_buf =3D data->buffer;
-> +	xfer.len =3D HSC_REG_MEASUREMENT_RD_SIZE;
->  	return spi_sync_transfer(spi, &xfer, 1);
->  }
->=20
-> --
-> 2.41.0
->=20
->=20
-
+>
+> Thanks, it looks like you also have a relatively recent igt (there
+> were some msm_submit fails until I fixed the test)..
+>
+> BR,
+> -R
+>
+> > Regards,
+> > Vignesh
 
