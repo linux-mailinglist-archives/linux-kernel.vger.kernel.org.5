@@ -1,151 +1,131 @@
-Return-Path: <linux-kernel+bounces-24719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A31EE82C149
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:03:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E50982C14B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D2F7B21390
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:03:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A54E285ED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340096D1BF;
-	Fri, 12 Jan 2024 14:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BA26D1CB;
+	Fri, 12 Jan 2024 14:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lhpBqmVy"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SpLx4LW0"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40E95917D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:03:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e5a5b0fb5so25945615e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 06:03:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95ED06BB3E;
+	Fri, 12 Jan 2024 14:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4610133a12.3;
+        Fri, 12 Jan 2024 06:03:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705068213; x=1705673013; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705068230; x=1705673030; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UEeO6KfMVHE4TCnnYSwCeQCXJS1d2iwkJ/b5jGtcO00=;
-        b=lhpBqmVy1C+HoAGTAZiwIlQVKasJ/yD2fmy8hi3vDZn0nQ8RWZxVmcvrWLFs7Ip3V7
-         LZk98wK73NgIcaJNfCvcrLXN05Tum9vxqWUoYKJM9UIojOh9nVv+KAxkrXaQAqRTd6MC
-         7zZEY4bWfqfxiFhPUIjG85F2ymVyB6oCS5sZiMwYmPUGIizypik5gvd+2lfdoOE8OSOJ
-         hjCBXWHD+9rxxxfvuBguGyYIjeSEGwhGB9PajfKnAmAqjezlSr/tXHcOIpJ8ut2dyUdH
-         xwF/quAGXJcAhzIUn5A/lvKoIf1BII9IZ/88SAa1lrFY0QjCpGoJFUvUr8f8aw/Q0XDN
-         VwZA==
+        bh=O088ye5Vczz+Cex9AYDIz9lw484DzSeXBcQhFwm7euY=;
+        b=SpLx4LW0KhbAWhI/zwklsOpY0CiwX1oi7lrNMT37dCXW/mnhSJEqt03mtnD2nWoaxR
+         FtMI8l/I/vP9Id+tchNZd84FHya+4MK91wbBCm/dkF3XnFNwKgNkruvJaxxYDrh9aPP0
+         6SAb1dYnRSheukqO7Futeig/YHjky8YaRgHjIHTee8DWM3cdnIbpd8aAeQ+6w4LW5ByV
+         Bu/8Z1bAQoRFGIXi8ekJCxTqj3PEliIQteAditJaW+7Sr1mfFvz9n4EMYRT4jW3UzD5m
+         3FB4c06GV9DD+2OO9vcFVAOocfhwAlsHg6okTikjA61XIxbc3sD4H/jkJ5vm6JwJn7sk
+         i+lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705068213; x=1705673013;
+        d=1e100.net; s=20230601; t=1705068230; x=1705673030;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UEeO6KfMVHE4TCnnYSwCeQCXJS1d2iwkJ/b5jGtcO00=;
-        b=v+sijBKHcurvgkodvf1uWPcA0Ofy4BDHyD9KoXFnqA2UStmq9wgClblCHgTIr9tLCp
-         ml5/mlvWaxN2yyK0ZeSApY5mhqVJXAfWQlfVz2jzTFtNaMxhnN9UyjUo+Jv2UoHRzv7r
-         WgtfjA2ecc82BR/sqm2LJWIaCldH4JuOZ3RypljrPy2eA49q/2RK+Xo3UddIcnlM1w9k
-         hvlQQ+RhLJFl7YhJj+VVj4LVw8T3BQpMCwSOmFt8jo64tSCOpYaYCxPZh7m/cyt1iunf
-         UelbaRAsYIt0uVFKdgfAGAFoNUwUtAe2BWcsnoBrY67nxeJ+1EEkfesvzhEi4OrPS8Da
-         8C5Q==
-X-Gm-Message-State: AOJu0Yz6Gba41BG8ybVMB63UxeWmqAMEn/LTBLnJ68m+G10MB/cSUVIY
-	wlNaPCC5JTjuCFdP7bLsZ9lG4MjPHyHDbnEtFDDCZubsrs4=
-X-Google-Smtp-Source: AGHT+IFgGgR8UEGkfCFo4XcLeyMOXZstBznmpQZ1x/fsp8+54cyEfD+rBX3DXCfu0AYfHvPVXdt8Fg==
-X-Received: by 2002:a05:600c:154b:b0:40e:50c1:4e6c with SMTP id f11-20020a05600c154b00b0040e50c14e6cmr738521wmg.153.1705068213030;
-        Fri, 12 Jan 2024 06:03:33 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id c11-20020a05600c0a4b00b0040d53588d94sm9899003wmq.46.2024.01.12.06.03.32
+        bh=O088ye5Vczz+Cex9AYDIz9lw484DzSeXBcQhFwm7euY=;
+        b=puKrDaGMPZ4kvGXXorejmjIgf6TEkOxxQNVbzis6+tp4sQN9cXf3jnQkCmGvSVw3ak
+         1DrcZ39GZNsqaIdYXasS4h6He26bNmgiUy+aUKCnSKH49hcGj0ewZUg5ai+4SMM2IGXp
+         PhOE1qJXCtGdtKR3EG/cvG+sfjBlTTnAGhw3yLzyMqAI8sngUt0GtZqrDRrSqEXddJqT
+         A8dRMganNf8Roq/Z98/B39l3cGWy8jxgOEwzDJLiraLMbofoZbz72gjCRqMVXwDlUs1X
+         YX2jI2eaRPH2JdMAEI+1dYEfMVPaArKj2t6P/n2WsxPNEKFwzfnp6Wrd2WdgPTLoluCg
+         GFZA==
+X-Gm-Message-State: AOJu0Yy8tr7zUxddO5cVBNRDD7JYHLR0ujIGr2h3pSWpR+Q29ompJdIC
+	nUgebWrwvenc09hV2xmaA5o=
+X-Google-Smtp-Source: AGHT+IFb65ZbUbd5LdSxD4vK9Kx1NokhkW3hZLtNs1TCetui1BAjq6vV8mvo7uqTFUSb7P/g0K/iqw==
+X-Received: by 2002:a17:90a:318a:b0:28b:e124:1b00 with SMTP id j10-20020a17090a318a00b0028be1241b00mr1276932pjb.4.1705068229859;
+        Fri, 12 Jan 2024 06:03:49 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id cz13-20020a17090ad44d00b0028c8a2a9c73sm4141066pjb.25.2024.01.12.06.03.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 06:03:32 -0800 (PST)
-Date: Fri, 12 Jan 2024 17:03:29 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: David Laight <David.Laight@aculab.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-	'Andrew Morton' <akpm@linux-foundation.org>,
-	"'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-	'Christoph Hellwig' <hch@infradead.org>,
-	"'Jason A. Donenfeld'" <Jason@zx2c4.com>
-Subject: Re: [PATCH next v4 1/5] minmax: Add umin(a, b) and umax(a, b)
-Message-ID: <02701430-65cf-44ab-8a8b-752c5d973d21@moroto.mountain>
-References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
- <41d93ca827a248698ec64bf57e0c05a5@AcuMS.aculab.com>
- <737627fd-b68b-4c9d-8700-f0e0d6d9cec8@moroto.mountain>
- <8e45b321c49b4c27a61b2db076ed5383@AcuMS.aculab.com>
+        Fri, 12 Jan 2024 06:03:49 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 527C818503882; Fri, 12 Jan 2024 21:03:43 +0700 (WIB)
+Date: Fri, 12 Jan 2024 21:03:42 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Networking <netdev@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: What to do on MIA maintainers?
+Message-ID: <ZaFGvkA-ZoZ1OTID@archie.me>
+References: <ZZ_JuZd0RJUzIrgY@archie.me>
+ <20240111094055.3efa6157@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vVBsWQof3GLpBVhI"
 Content-Disposition: inline
-In-Reply-To: <8e45b321c49b4c27a61b2db076ed5383@AcuMS.aculab.com>
-
-On Fri, Jan 12, 2024 at 01:40:30PM +0000, David Laight wrote:
-> From: Dan Carpenter
-> > Sent: 12 January 2024 12:50
-> > 
-> > On Mon, Sep 18, 2023 at 08:16:30AM +0000, David Laight wrote:
-> > > +/**
-> > > + * umin - return minimum of two non-negative values
-> > > + *   Signed types are zero extended to match a larger unsigned type.
-> > > + * @x: first value
-> > > + * @y: second value
-> > > + */
-> > > +#define umin(x, y)	\
-> > > +	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
-> > 
-> > Why do we match "a larger unsigned type" instead of ULL_MAX?  Presumably
-> > it helps performance somehow...  I agree that it's probably fine but I
-> > would be more comfortable if it skipped UINT_MAX and jumped directly to
-> > ULONG_MAX.  These days 4 gigs is small potatoes.  The vmalloc() function
-> > can allocate 4G so we've had integer overflow bugs with this before.
-> 
-> The '+ 0ul*' carefully zero extend signed values without changing
-> unsigned values.
-> The compiler detects when it has zero-extended both sides and
-> uses the smaller compare.
-> In essence:
-> 	x + 0u converts 'int' to 'unsigned int'.
-> 		Avoids the sign extension adding 0ul on 64bit.
-> 	x + 0ul converts a 'long' to 'unsigned long'.
-> 		Avoids the sign extension adding 0ull on 32bit
-> 	x + 0ull converts a 'long long' to 'unsigned long long'.
-> You need all three to avoid sign extensions and get an unsigned
-> compare.
-
-So unsigned int compares are faster than unsigned long compares?
-
-It's just sort of weird how it works.
-
-	min_t(unsigned long, -1, 10000000000)); => 10000000000
-	umin(umin(-1, 10000000000)); => UINT_MAX
-
-UINT_MAX is just kind of a random value.  I would have prefered
-ULONG_MAX, it's equally random but it's more safe because nothing can
-allocate ULONG_MAX bytes.
-
-regards,
-dan carpenter
+In-Reply-To: <20240111094055.3efa6157@kernel.org>
 
 
+--vVBsWQof3GLpBVhI
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jan 11, 2024 at 09:40:55AM -0800, Jakub Kicinski wrote:
+> On Thu, 11 Jan 2024 17:58:01 +0700 Bagas Sanjaya wrote:
+> > Earlier in late last December, I sent a patch removing Karsten Keil
+> > <isdn@linux-pingi.de> from MAINTAINERS due to inactivity [1], but Greg =
+was
+> > unsure about that [2]. So I privately tried to reach Karsten (asking for
+> > confirmation), but until now he is still not responding to my outreach,=
+ hence
+> > IMO he is MIA.
+> >=20
+> > What to do on this situation? Should he be removed from MAINTAINERS?
+>=20
+> Well. I'm not sure you should do anything about it.. In an ideal world
+> with properly set up maintainer structure it should be up to the next
+> level maintainer to decide when to do the cleanups. Random people
+> initiating that sort of work can backfire in too many ways. IDK what
+> a good analogy would be here, but you wouldn't for example come up
+> to an employee in a store, when you think they aren't doing anything,
+> and tell them to go stock shelves.
+>=20
+> If there are patches on the list that needs reviewing and the person
+> is not reviewing them, or questions being asked / regressions being
+> reported and they go unanswered - the upper level maintainer can act.
+> But trust me, it's impossible for someone who is not an upper
+> maintainer to judge the situation.
 
+OK, thanks!
 
+--=20
+An old man doll... just what I always wanted! - Clara
 
+--vVBsWQof3GLpBVhI
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> If the type is __int128 (signed or unsigned) then nothing happens.
-> (which means you can still get a signed v unsigned error.)
-> You could add in (__uint128)0 on 64bit systems that support it,
-> but it is so uncommon it really isn't worth the hassle.
-> 
-> Unlike any kind of cast the arithmetic cannot discard high bits.
-> I've found a few min_t() with dubious types.
-> One was a real bug found by someone else at much the same time.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZaFGugAKCRD2uYlJVVFO
+o6McAP4pJHlnOCwtmMryoqnye3GFaq011ELb3GasFQdH8Yu5FwEA5vZbESmCEPLz
+ulK8wueqFc4PAcM6CyWfFekrKDX0JQI=
+=saio
+-----END PGP SIGNATURE-----
+
+--vVBsWQof3GLpBVhI--
 
