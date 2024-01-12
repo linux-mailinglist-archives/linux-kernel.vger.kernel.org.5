@@ -1,291 +1,169 @@
-Return-Path: <linux-kernel+bounces-24608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C0382BF1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:15:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29B182BF1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2632A1F24828
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:15:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05934B21133
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3405667E66;
-	Fri, 12 Jan 2024 11:15:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D648865198;
-	Fri, 12 Jan 2024 11:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BC201FB;
-	Fri, 12 Jan 2024 03:16:19 -0800 (PST)
-Received: from [10.57.76.127] (unknown [10.57.76.127])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1399E3F73F;
-	Fri, 12 Jan 2024 03:15:30 -0800 (PST)
-Message-ID: <654df189-e472-4a75-b2be-6faa8ba18a08@arm.com>
-Date: Fri, 12 Jan 2024 11:15:29 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6902767E68;
+	Fri, 12 Jan 2024 11:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="M4NkbJwx"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6529663510
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 11:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d5595997ffso7842315ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 03:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705058254; x=1705663054; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n/r2CUr6NQRTkWJSfnfsoonlWRwu5UcKq/JbWJG+yiE=;
+        b=M4NkbJwxobpQJ7ua2oUyJczplkO+iu/aA34PxNETzX0lcPZK2joRbNVragVcvi/z5f
+         3kWYzoaf4ruaee2pT5yaknX7oifCW829Y03ISQtxg0pZUX63VYgRveNzKr3ERyqdS+yo
+         OqRca7vrXEFws68h/zqKsqF9Ij6jcPfXRNgjk545bYg3prqm4A6ZtIC605K79hXPFU4Y
+         w/CA1ubZzjjWr2V6ksIalhHpNoc9qBgQ6vZHZ7r431HV68C1H0gUt65PaJJWgF31R2qG
+         kG80P2xLoIvk8j8asxw0afKimBtAL3GeRoTNOMfyraBDILkldKY/oiLwQbVJFv7OvqKz
+         xJGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705058254; x=1705663054;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n/r2CUr6NQRTkWJSfnfsoonlWRwu5UcKq/JbWJG+yiE=;
+        b=tTCcbFIUteIrGEOn/LNsfGn7PKigGu8m0LZ3156pg2ge/GJk6NmC1rQNlUQxE4BpHP
+         gq7QykpElw/pyzaNy7j2jsyuZqVKUyrsetw2m8hAyboQYSaEzvnu/XX8Kkm477hAJHRY
+         c8nqukPwLnas4EWtbkt2/IWxuD1JrNxMsb6zlkc6Mkitbu1BR3Op24ui5aGsaghhqnQP
+         d/WGHstuDtXmL6Fj6tGzOMMRxo5R36dFsROUC0q2G5Y40Dcl5eWgbACoEx2stDBKnvDv
+         6gV0l3aQFkKdpgoWg6pzTYrKSaZ0s2MGJvmV86BRNF/850BKdT0HJiTbG2U4qDvDDYIr
+         brjA==
+X-Gm-Message-State: AOJu0YxT2Z/hrP6gGOjVFW4kFhUG65cI0uN4l5volGBa7QEI7ga7+tak
+	7Zi68wuRfYTSXe3hJwTlb3RJPEtyqZl63g==
+X-Google-Smtp-Source: AGHT+IGQohed/oEcJo01neyqBjBHsaj+nu3i/3udCsZR7M7O8D2uGXWtzMc93+BA3NLF+ZCUdujm1w==
+X-Received: by 2002:a17:90a:ad8b:b0:28e:1609:88e4 with SMTP id s11-20020a17090aad8b00b0028e160988e4mr326280pjq.3.1705058254520;
+        Fri, 12 Jan 2024 03:17:34 -0800 (PST)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:a276:8a4e:2aa1:5f09])
+        by smtp.gmail.com with ESMTPSA id sd12-20020a17090b514c00b0028cef021d45sm3794179pjb.17.2024.01.12.03.17.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 03:17:34 -0800 (PST)
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Atish Patra <atishp@atishpatra.org>,
+	Anup Patel <apatel@ventanamicro.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Himanshu Chauhan <hchauhan@ventanamicro.com>,
+	Xu Lu <luxu.kernel@bytedance.com>
+Subject: [RFC PATCH v2 0/3] riscv: add support for SBI Supervisor Software Events
+Date: Fri, 12 Jan 2024 12:17:12 +0100
+Message-ID: <20240112111720.2975069-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1] mm/filemap: Allow arch to request folio size for
- exec memory
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20240111154106.3692206-1-ryan.roberts@arm.com>
- <CAGsJ_4xPgmgt57sw2c5==bPN+YL23zn=hZweu8u2ceWei7+q4g@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4xPgmgt57sw2c5==bPN+YL23zn=hZweu8u2ceWei7+q4g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 12/01/2024 10:13, Barry Song wrote:
-> On Fri, Jan 12, 2024 at 4:41 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Change the readahead config so that if it is being requested for an
->> executable mapping, do a synchronous read of an arch-specified size in a
->> naturally aligned manner.
->>
->> On arm64 if memory is physically contiguous and naturally aligned to the
->> "contpte" size, we can use contpte mappings, which improves utilization
->> of the TLB. When paired with the "multi-size THP" changes, this works
->> well to reduce dTLB pressure. However iTLB pressure is still high due to
->> executable mappings having a low liklihood of being in the required
->> folio size and mapping alignment, even when the filesystem supports
->> readahead into large folios (e.g. XFS).
->>
->> The reason for the low liklihood is that the current readahead algorithm
->> starts with an order-2 folio and increases the folio order by 2 every
->> time the readahead mark is hit. But most executable memory is faulted in
->> fairly randomly and so the readahead mark is rarely hit and most
->> executable folios remain order-2. This is observed impirically and
->> confirmed from discussion with a gnu linker expert; in general, the
->> linker does nothing to group temporally accessed text together
->> spacially. Additionally, with the current read-around approach there are
->> no alignment guarrantees between the file and folio. This is
->> insufficient for arm64's contpte mapping requirement (order-4 for 4K
->> base pages).
->>
->> So it seems reasonable to special-case the read(ahead) logic for
->> executable mappings. The trade-off is performance improvement (due to
->> more efficient storage of the translations in iTLB) vs potential read
->> amplification (due to reading too much data around the fault which won't
->> be used), and the latter is independent of base page size. I've chosen
->> 64K folio size for arm64 which benefits both the 4K and 16K base page
->> size configs and shouldn't lead to any further read-amplification since
->> the old read-around path was (usually) reading blocks of 128K (with the
->> last 32K being async).
->>
->> Performance Benchmarking
->> ------------------------
->>
->> The below shows kernel compilation and speedometer javascript benchmarks
->> on Ampere Altra arm64 system. (The contpte patch series is applied in
->> the baseline).
->>
->> First, confirmation that this patch causes more memory to be contained
->> in 64K folios (this is for all file-backed memory so includes
->> non-executable too):
->>
->> | File-backed folios      |   Speedometer   |  Kernel Compile |
->> | by size as percentage   |-----------------|-----------------|
->> | of all mapped file mem  | before |  after | before |  after |
->> |=========================|========|========|========|========|
->> |file-thp-aligned-16kB    |    45% |     9% |    46% |     7% |
->> |file-thp-aligned-32kB    |     2% |     0% |     3% |     1% |
->> |file-thp-aligned-64kB    |     3% |    63% |     5% |    80% |
->> |file-thp-aligned-128kB   |    11% |    11% |     0% |     0% |
->> |file-thp-unaligned-16kB  |     1% |     0% |     3% |     1% |
->> |file-thp-unaligned-128kB |     1% |     0% |     0% |     0% |
->> |file-thp-partial         |     0% |     0% |     0% |     0% |
->> |-------------------------|--------|--------|--------|--------|
->> |file-cont-aligned-64kB   |    16% |    75% |     5% |    80% |
->>
->> The above shows that for both use cases, the amount of file memory
->> backed by 16K folios reduces and the amount backed by 64K folios
->> increases significantly. And the amount of memory that is contpte-mapped
->> significantly increases (last line).
->>
->> And this is reflected in performance improvement:
->>
->> Kernel Compilation (smaller is faster):
->> | kernel   |   real-time |   kern-time |   user-time |   peak memory |
->> |----------|-------------|-------------|-------------|---------------|
->> | before   |        0.0% |        0.0% |        0.0% |          0.0% |
->> | after    |       -1.6% |       -2.1% |       -1.7% |          0.0% |
->>
->> Speedometer (bigger is faster):
->> | kernel   |   runs_per_min |   peak memory |
->> |----------|----------------|---------------|
->> | before   |           0.0% |          0.0% |
->> | after    |           1.3% |          1.0% |
->>
->> Both benchmarks show a ~1.5% improvement once the patch is applied.
->>
->> Alternatives
->> ------------
->>
->> I considered (and rejected for now - but I anticipate this patch will
->> stimulate discussion around what the best approach is) alternative
->> approaches:
->>
->>   - Expose a global user-controlled knob to set the preferred folio
->>     size; this would move policy to user space and allow (e.g.) setting
->>     it to PMD-size for even better iTLB utilizaiton. But this would add
->>     ABI, and I prefer to start with the simplest approach first. It also
->>     has the downside that a change wouldn't apply to memory already in
->>     the page cache that is in active use (e.g. libc) so we don't get the
->>     same level of utilization as for something that is fixed from boot.
->>
->>   - Add a per-vma attribute to allow user space to specify preferred
->>     folio size for memory faulted from the range. (we've talked about
->>     such a control in the context of mTHP). The dynamic loader would
->>     then be responsible for adding the annotations. Again this feels
->>     like something that could be added later if value was demonstrated.
->>
->>   - Enhance MADV_COLLAPSE to collapse to THP sizes less than PMD-size.
->>     This would still require dynamic linker involvement, but would
->>     additionally neccessitate a copy and all memory in the range would
->>     be synchronously faulted in, adding to application load time. It
->>     would work for filesystems that don't support large folios though.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>
->> Hi all,
->>
->> I originally concocted something similar to this, with Matthew's help, as a
->> quick proof of concept hack. Since then I've tried a few different approaches
->> but always came back to this as the simplest solution. I expect this will raise
->> a few eyebrows but given it is providing a real performance win, I hope we can
->> converge to something that can be upstreamed.
->>
->> This depends on my contpte series to actually set the contiguous bit in the page
->> table.
->>
->> Thanks,
->> Ryan
->>
->>
->>  arch/arm64/include/asm/pgtable.h | 12 ++++++++++++
->>  include/linux/pgtable.h          | 12 ++++++++++++
->>  mm/filemap.c                     | 19 +++++++++++++++++++
->>  3 files changed, 43 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index f5bf059291c3..8f8f3f7eb8d8 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -1143,6 +1143,18 @@ static inline void update_mmu_cache_range(struct vm_fault *vmf,
->>   */
->>  #define arch_wants_old_prefaulted_pte  cpu_has_hw_af
->>
->> +/*
->> + * Request exec memory is read into pagecache in at least 64K folios. The
->> + * trade-off here is performance improvement due to storing translations more
->> + * effciently in the iTLB vs the potential for read amplification due to reading
->> + * data from disk that won't be used. The latter is independent of base page
->> + * size, so we set a page-size independent block size of 64K. This size can be
->> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB entry),
->> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base pages are in
->> + * use.
->> + */
->> +#define arch_wants_exec_folio_order(void) ilog2(SZ_64K >> PAGE_SHIFT)
->> +
->>  static inline bool pud_sect_supported(void)
->>  {
->>         return PAGE_SIZE == SZ_4K;
->> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->> index 170925379534..57090616d09c 100644
->> --- a/include/linux/pgtable.h
->> +++ b/include/linux/pgtable.h
->> @@ -428,6 +428,18 @@ static inline bool arch_has_hw_pte_young(void)
->>  }
->>  #endif
->>
->> +#ifndef arch_wants_exec_folio_order
->> +/*
->> + * Returns preferred minimum folio order for executable file-backed memory. Must
->> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has no
->> + * preference and mm will not special-case executable memory in the pagecache.
->> + */
->> +static inline int arch_wants_exec_folio_order(void)
->> +{
->> +       return -1;
->> +}
->> +#endif
->> +
->>  #ifndef arch_check_zapped_pte
->>  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
->>                                          pte_t pte)
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 67ba56ecdd32..80a76d755534 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -3115,6 +3115,25 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
->>         }
->>  #endif
->>
->> +       /*
->> +        * Allow arch to request a preferred minimum folio order for executable
->> +        * memory. This can often be beneficial to performance if (e.g.) arm64
->> +        * can contpte-map the folio. Executable memory rarely benefits from
->> +        * read-ahead anyway, due to its random access nature.
->> +        */
->> +       if (vm_flags & VM_EXEC) {
->> +               int order = arch_wants_exec_folio_order();
->> +
->> +               if (order >= 0) {
->> +                       fpin = maybe_unlock_mmap_for_io(vmf, fpin);
->> +                       ra->size = 1UL << order;
->> +                       ra->async_size = 0;
->> +                       ractl._index &= ~((unsigned long)ra->size - 1);
->> +                       page_cache_ra_order(&ractl, ra, order);
->> +                       return fpin;
->> +               }
->> +       }
-> 
-> I don't know, but most filesystems don't support large mapping,even iomap.
+The SBI Supervisor Software Events (SSE) extensions provides a mechanism
+to inject software events from an SBI implementation to supervisor
+software such that it preempts all other supervisor level traps and
+interrupts [1].
 
-True, but more are coming. For example ext4 is in the works:
-https://lore.kernel.org/all/20240102123918.799062-1-yi.zhang@huaweicloud.com/
+Various events are defined and can be send asynchronously to supervisor
+software (RAS, PMU, DEBUG, Asynchronous page fault) from SBI as well
+as platform specific events. Events can be either local (per-hart) or
+global. Events can be nested on top of each other based on priority and
+can interrupt the kernel at any time.
 
-> This patch might negatively affect them. i feel we need to check
-> mapping_large_folio_support() at least.
+First patch adds the SSE definitions. Second one adds support for SSE
+itself. Implementation is split between arch specific code and generic
+part (similarly to what is done for ARM SDEI). Finally, the last patch
+add support for SSE events in the SBI PMU driver. If the SSE event is
+available from the SBI then, it will be used instead of the normal
+interrupt.
 
-page_cache_ra_order() does this check and falls back to small folios if needed.
-So correctness-wise it all works out. I guess your concern is performance due to
-effectively removing the async readahead aspect? But if that is a problem, then
-it's not just a problem if we are reading small folios, so I don't think the
-proposed check is correct.
+Amongst the specific points that needs to be handle is the interruption
+at any point of the kernel execution and more specifically during
+exception handling. Due to the fact that the exception entry
+implementation uses the SCRATCH CSR as both the current task struct and
+as the temporary register to switch the stack and save register, it is
+difficult to reliably get the current task struct if we get interrupted
+at this specific moment. A fixup-like mechanism allows to mark the
+location of the current task struct depending on the entry level
+(user/kernel) and the location. This is then used in the SSE assembly to
+determine where is located the current task_struct.
 
-Perhaps an alternative would be to double ra->size and set ra->async_size to
-(ra->size / 2)? That would ensure we always have 64K aligned blocks but would
-give us an async portion so readahead can still happen.
+Contrary to pseudo NMI [2], SSE does not modifies the way interrupts are
+handled and does not adds any overhead to existing code. Moreover, it
+provides "true" NMI-like interrupts which can interrupt the kernel at
+any time (even in exception handling). This is particularly crucial for
+RAS errors which needs to be handled as fast as possible to avoid any
+fault propagation. Additionally, SSE event handling is faster that the
+standard IRQ handling path with almost half executed instruction (700 vs
+1590). Some complementary tests/perf measurements will be done.
 
-I don't feel very expert with this area of the code so I might be talking
-rubbish - would be great to hear from others.
+For testing purpose, one can use the provided SBI implementation at [3].
+This series also needs patch [4] to fix a bug in the PMU driver.
 
-> 
->> +
->>         /* If we don't want any read-ahead, don't bother */
->>         if (vm_flags & VM_RAND_READ)
->>                 return fpin;
->> --
->> 2.25.1
-> 
-> Thanks
-> Barry
+Link: https://lists.riscv.org/g/tech-prs/message/744 [1]
+Link: https://lore.kernel.org/lkml/20231023082911.23242-10-luxu.kernel@bytedance.com/T/ [2]
+Link: https://github.com/rivosinc/opensbi/tree/sse_v2 [3]
+
+---
+
+Changes in v2:
+ - Implemented specification v2
+ - Fix various error handling cases
+ - Added shadow stack support
+
+v1: https://lore.kernel.org/linux-riscv/20231026143122.279437-1-cleger@rivosinc.com/
+
+Clément Léger (3):
+  riscv: add SBI SSE extension definitions
+  riscv: add support for SBI Supervisor Software Events extension
+  perf: RISC-V: add support for SSE event
+
+ arch/riscv/include/asm/asm-prototypes.h |   4 +
+ arch/riscv/include/asm/asm.h            |  42 +-
+ arch/riscv/include/asm/sbi.h            |  47 ++
+ arch/riscv/include/asm/scs.h            |   7 +
+ arch/riscv/include/asm/sse.h            |  12 +
+ arch/riscv/include/asm/thread_info.h    |   1 +
+ arch/riscv/kernel/Makefile              |   1 +
+ arch/riscv/kernel/asm-offsets.c         |  26 ++
+ arch/riscv/kernel/entry.S               | 202 +++++++++
+ arch/riscv/kernel/sbi.c                 |   4 +
+ arch/riscv/kernel/sse.c                 | 130 ++++++
+ arch/riscv/kernel/stacktrace.c          |  13 +
+ arch/riscv/kernel/vmlinux.lds.S         |   6 +
+ drivers/firmware/Kconfig                |  10 +
+ drivers/firmware/Makefile               |   1 +
+ drivers/firmware/riscv_sse.c            | 567 ++++++++++++++++++++++++
+ drivers/perf/riscv_pmu_sbi.c            |  46 +-
+ include/linux/riscv_sse.h               |  76 ++++
+ 18 files changed, 1176 insertions(+), 19 deletions(-)
+ create mode 100644 arch/riscv/include/asm/sse.h
+ create mode 100644 arch/riscv/kernel/sse.c
+ create mode 100644 drivers/firmware/riscv_sse.c
+ create mode 100644 include/linux/riscv_sse.h
+
+-- 
+2.43.0
 
 
