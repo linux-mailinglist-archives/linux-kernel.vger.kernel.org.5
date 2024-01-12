@@ -1,128 +1,142 @@
-Return-Path: <linux-kernel+bounces-24689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5169582C0D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:24:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0080982C0DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:27:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB0FE1F25AB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:23:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A976E1F25781
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BCE6D1AA;
-	Fri, 12 Jan 2024 13:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F9E6BB58;
+	Fri, 12 Jan 2024 13:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bnfAV6Ec"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sUygNlSy"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1FD59B5C;
-	Fri, 12 Jan 2024 13:23:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C66C433F1;
-	Fri, 12 Jan 2024 13:23:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705065822;
-	bh=PO/ei/2mmnwHSDFyStI5ioXVpVbB1tuGCWTDflUdODY=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=bnfAV6EcUIn1tavl9s8rXDi+7gO/7mEUSDg2JF1+ZN4wL4dlY19+fJ+m92a4eCduY
-	 R00Aop8XmjvGpJ2/kNqGuT03nq62tm0j1gaVTdv7gFdgg5Ly1mtBA+aIFzf1KNYH7u
-	 YC4qPDeMAu8xPe/5kZOMlbPocyRZNNSAlLcnGPKQgfVOgBrLAkKye2nG1MYzkUD60j
-	 Tc9pJ6Z0daJmJQPa4JtwQTh5Y0iYnBJHCR0okEfB7OWPWtJX5FI8gHyx3VPbwIDYNT
-	 XBUK2x/4Y6fW/UmuqzUdyCtPk4WnGb3Q9bCgvKoW+vFlrbH0xOsgfei1QsmLcELzIN
-	 zTRn4NLpXsB8g==
-Message-ID: <95a8beb95aee10b20492dd01813f2da985e31ba9.camel@kernel.org>
-Subject: Re: [PATCH] [v2] SUNRPC: fix a memleak in gss_import_v2_context
-From: Jeff Layton <jlayton@kernel.org>
-To: Zhipeng Lu <alexious@zju.edu.cn>
-Cc: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, Olga
- Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
- <tom@talpey.com>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna
- Schumaker <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,  Paolo
- Abeni <pabeni@redhat.com>, Simo Sorce <simo@redhat.com>, Steve Dickson
- <steved@redhat.com>, Kevin Coffman <kwc@citi.umich.edu>,
- linux-nfs@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Date: Fri, 12 Jan 2024 08:23:39 -0500
-In-Reply-To: <20240112084540.3729001-1-alexious@zju.edu.cn>
-References: <20240112084540.3729001-1-alexious@zju.edu.cn>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxwn8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1WvegyjnSsFt7EGoDjdKqr1TS9syJYFjagYtvWk/UfHlW09X+jOh4vYtfX7iYSx/NfqV3W1D7EDi0PqVT2h6v8i8YqsATFPwO4nuiTmL6I40ZofxVd+9wdRI4Db8yUNA4ZSP2nqLcLtFjClYRBoJvRWvsv4lm0OX6MYPtv76hka8lW4mnRmZqqx3UtfHX/hF/zH24Gj7A6sYKYLCU3YrI2Ogiu7/ksKcl7goQjpvtVYrOOI5VGLHge0awt7bhMCTM9KAfPc+xL/ZxAMVWd3NCk5SamL2cE99UWgtvNOIYU8m6EjTLhsj8snVluJH0/RcxEeFbnSaswVChNSGa7mXJrTR22lRL6ZPjdMgS2Km90haWPRc8Wolcz07Y2se0xpGVLEQcDEsvv5IMmeMe1/qLZ6NaVkNuL3WOXvxaVT9USW1+/SGipO2IpKJjeDZfehlB/kpfF24+RrK+seQfCBYyUE8QJpvTZyfUHNYldXlrjO6n5MdOempLqWpfOmcGkwnyNRBR46g/jf8KnPRwXs509yAqDB6sELZH+yWr9LQZEwARAQABtCVKZWZmIExheXRvbiA8amxheXRvbkBwb29jaGllcmVkcy5uZXQ+iQI7BBMBAgAlAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAUCTpXWPAIZAQAKCRAADmhBGVaCFc65D/4gBLNMHopQYgG/9RIM3kgFCCQV0pLv0hcg1cjr+bPI5f1PzJoOVi9s0wBDHwp8+vtHgYhM54yt43uI7Htij0RHFL5eFqoVT4TSfAg2qlvNemJEOY0e4daljjmZM7UtmpGs9NN0r9r50W82eb5Kw5bc/
-	r0kmR/arUS2st+ecRsCnwAOj6HiURwIgfDMHGPtSkoPpu3DDp/cjcYUg3HaOJuTjtGHFH963B+f+hyQ2BrQZBBE76ErgTDJ2Db9Ey0kw7VEZ4I2nnVUY9B5dE2pJFVO5HJBMp30fUGKvwaKqYCU2iAKxdmJXRIONb7dSde8LqZahuunPDMZyMA5+mkQl7kpIpR6kVDIiqmxzRuPeiMP7O2FCUlS2DnJnRVrHmCljLkZWf7ZUA22wJpepBligemtSRSbqCyZ3B48zJ8g5B8xLEntPo/NknSJaYRvfEQqGxgk5kkNWMIMDkfQOlDSXZvoxqU9wFH/9jTv1/6p8dHeGM0BsbBLMqQaqnWiVt5mG92E1zkOW69LnoozE6Le+12DsNW7RjiR5K+27MObjXEYIW7FIvNN/TQ6U1EOsdxwB8o//Yfc3p2QqPr5uS93SDDan5ehH59BnHpguTc27XiQQZ9EGiieCUx6Zh2ze3X2UW9YNzE15uKwkkuEIj60NvQRmEDfweYfOfPVOueC+iFifbQgSmVmZiBMYXl0b24gPGpsYXl0b25AcmVkaGF0LmNvbT6JAjgEEwECACIFAk6V0q0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEAAOaEEZVoIViKUQALpvsacTMWWOd7SlPFzIYy2/fjvKlfB/Xs4YdNcf9qLqF+lk2RBUHdR/dGwZpvw/OLmnZ8TryDo2zXVJNWEEUFNc7wQpl3i78r6UU/GUY/RQmOgPhs3epQC3PMJj4xFx+VuVcf/MXgDDdBUHaCTT793hyBeDbQuciARDJAW24Q1RCmjcwWIV/pgrlFa4lAXsmhoac8UPc82Ijrs6ivlTweFf16VBc4nSLX5FB3ls7S5noRhm5/Zsd4PGPgIHgCZcPgkAnU1S/A/rSqf3FLpU+CbVBDvlVAnOq9gfNF+QiTlOHdZVIe4gEYAU3CUjbleywQqV02BKxPVM0C5/oVjMVx
-	3bri75n1TkBYGmqAXy9usCkHIsG5CBHmphv9MHmqMZQVsxvCzfnI5IO1+7MoloeeW/lxuyd0pU88dZsV/riHw87i2GJUJtVlMl5IGBNFpqoNUoqmvRfEMeXhy/kUX4Xc03I1coZIgmwLmCSXwx9MaCPFzV/dOOrju2xjO+2sYyB5BNtxRqUEyXglpujFZqJxxau7E0eXoYgoY9gtFGsspzFkVNntamVXEWVVgzJJr/EWW0y+jNd54MfPRqH+eCGuqlnNLktSAVz1MvVRY1dxUltSlDZT7P2bUoMorIPu8p7ZCg9dyX1+9T6Muc5dHxf/BBP/ir+3e8JTFQBFOiLNdFtB9KZWZmIExheXRvbiA8amxheXRvbkBzYW1iYS5vcmc+iQI4BBMBAgAiBQJOldK9AhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRAADmhBGVaCFWgWD/0ZRi4hN9FK2BdQs9RwNnFZUr7JidAWfCrs37XrA/56olQl3ojn0fQtrP4DbTmCuh0SfMijB24psy1GnkPepnaQ6VRf7Dxg/Y8muZELSOtsv2CKt3/02J1BBitrkkqmHyni5fLLYYg6fub0T/8Kwo1qGPdu1hx2BQRERYtQ/S5d/T0cACdlzi6w8rs5f09hU9Tu4qV1JLKmBTgUWKN969HPRkxiojLQziHVyM/weR5Reu6FZVNuVBGqBD+sfk/c98VJHjsQhYJijcsmgMb1NohAzwrBKcSGKOWJToGEO/1RkIN8tqGnYNp2G+aR685D0chgTl1WzPRM6mFG1+n2b2RR95DxumKVpwBwdLPoCkI24JkeDJ7lXSe3uFWISstFGt0HL8EewP8RuGC8s5h7Ct91HMNQTbjgA+Vi1foWUVXpEintAKgoywaIDlJfTZIl6Ew8ETN/7DLy8bXYgq0XzhaKg3CnOUuGQV5/nl4OAX/3jocT5Cz/OtAiNYj5mLPeL5z2ZszjoCAH6caqsF2oLyA
-	nLqRgDgR+wTQT6gMhr2IRsl+cp8gPHBwQ4uZMb+X00c/Amm9VfviT+BI7B66cnC7Zv6Gvmtu2rEjWDGWPqUgccB7hdMKnKDthkA227/82tYoFiFMb/NwtgGrn5n2vwJyKN6SEoygGrNt0SI84y6hEVbQlSmVmZiBMYXl0b24gPGpsYXl0b25AcHJpbWFyeWRhdGEuY29tPokCOQQTAQIAIwUCU4xmKQIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEAAOaEEZVoIV1H0P/j4OUTwFd7BBbpoSp695qb6HqCzWMuExsp8nZjruymMaeZbGr3OWMNEXRI1FWNHMtcMHWLP/RaDqCJil28proO+PQ/yPhsr2QqJcW4nr91tBrv/MqItuAXLYlsgXqp4BxLP67bzRJ1Bd2x0bWXurpEXY//VBOLnODqThGEcL7jouwjmnRh9FTKZfBDpFRaEfDFOXIfAkMKBa/c9TQwRpx2DPsl3eFWVCNuNGKeGsirLqCxUg5kWTxEorROppz9oU4HPicL6rRH22Ce6nOAON2vHvhkUuO3GbffhrcsPD4DaYup4ic+DxWm+DaSSRJ+e1yJvwi6NmQ9P9UAuLG93S2MdNNbosZ9P8k2mTOVKMc+GooI9Ve/vH8unwitwo7ORMVXhJeU6Q0X7zf3SjwDq2lBhn1DSuTsn2DbsNTiDvqrAaCvbsTsw+SZRwF85eG67eAwouYk+dnKmp1q57LDKMyzysij2oDKbcBlwB/TeX16p8+LxECv51asjS9TInnipssssUDrHIvoTTXWcz7Y5wIngxDFwT8rPY3EggzLGfK5Zx2Q5S/N0FfmADmKknG/D8qGIcJE574D956tiUDKN4I+/g125ORR1v7bP+OIaayAvq17RP+qcAqkxc0x8iCYVCYDouDyNvWPGRhbLUO7mlBpjW9jK9e2fvZY9iw3QzIPGKtClKZWZmIExheXRvbiA8amVmZi5sYXl0
-	b25AcHJpbWFyeWRhdGEuY29tPokCOQQTAQIAIwUCU4xmUAIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEAAOaEEZVoIVzJoQALFCS6n/FHQS+hIzHIb56JbokhK0AFqoLVzLKzrnaeXhE5isWcVg0eoV2oTScIwUSUapy94if69tnUo4Q7YNt8/6yFM6hwZAxFjOXR0ciGE3Q+Z1zi49Ox51yjGMQGxlakV9ep4sV/d5a50M+LFTmYSAFp6HY23JN9PkjVJC4PUv5DYRbOZ6Y1+TfXKBAewMVqtwT1Y+LPlfmI8dbbbuUX/kKZ5ddhV2736fgyfpslvJKYl0YifUOVy4D1G/oSycyHkJG78OvX4JKcf2kKzVvg7/Rnv+AueCfFQ6nGwPn0P91I7TEOC4XfZ6a1K3uTp4fPPs1Wn75X7K8lzJP/p8lme40uqwAyBjk+IA5VGd+CVRiyJTpGZwA0jwSYLyXboX+Dqm9pSYzmC9+/AE7lIgpWj+3iNisp1SWtHc4pdtQ5EU2SEz8yKvDbD0lNDbv4ljI7eflPsvN6vOrxz24mCliEco5DwhpaaSnzWnbAPXhQDWb/lUgs/JNk8dtwmvWnqCwRqElMLVisAbJmC0BhZ/Ab4sph3EaiZfdXKhiQqSGdK4La3OTJOJYZphPdGgnkvDV9Pl1QZ0ijXQrVIy3zd6VCNaKYq7BAKidn5g/2Q8oio9Tf4XfdZ9dtwcB+bwDJFgvvDYaZ5bI3ln4V3EyW5i2NfXazz/GA/I/ZtbsigCFc8ftCBKZWZmIExheXRvbiA8amxheXRvbkBrZXJuZWwub3JnPokCOAQTAQIAIgUCWe8u6AIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQAA5oQRlWghUuCg/+Lb/xGxZD2Q1oJVAE37uW308UpVSD2tAMJUvFTdDbfe3zKlPDTuVsyNsALBGclPLagJ5ZTP+Vp2irAN9uwBuac
-	BOTtmOdz4ZN2tdvNgozzuxp4CHBDVzAslUi2idy+xpsp47DWPxYFIRP3M8QG/aNW052LaPc0cedYxp8+9eiVUNpxF4SiU4i9JDfX/sn9XcfoVZIxMpCRE750zvJvcCUz9HojsrMQ1NFc7MFT1z3MOW2/RlzPcog7xvR5ENPH19ojRDCHqumUHRry+RF0lH00clzX/W8OrQJZtoBPXv9ahka/Vp7kEulcBJr1cH5Wz/WprhsIM7U9pse1f1gYy9YbXtWctUz8uvDR7shsQxAhX3qO7DilMtuGo1v97I/Kx4gXQ52syh/w6EBny71CZrOgD6kJwPVVAaM1LRC28muq91WCFhs/nzHozpbzcheyGtMUI2Ao4K6mnY+3zIuXPygZMFr9KXE6fF7HzKxKuZMJOaEZCiDOq0anx6FmOzs5E6Jqdpo/mtI8beK+BE7Va6ni7YrQlnT0i3vaTVMTiCThbqsB20VrbMjlhpf8lfK1XVNbRq/R7GZ9zHESlsa35ha60yd/j3pu5hT2xyy8krV8vGhHvnJ1XRMJBAB/UYb6FyC7S+mQZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65ke5Ag0ETpXRPAEQAJkVmzCmF+IEenf9a2nZRXMluJohnfl2wCMmw5qNzyk0f+mYuTwTCpw7BE2H0yXk4ZfAuA+xdj14K0A1Dj52j/fKRuDqoNAhQe0b6ipo85Sz98G+XnmQOMeFVp5G1Z7r/QP/nus3mXvtFsu9lLSjMA0cam2NLDt7vx3l9kUYlQBhyIE7/DkKg+3fdqRg7qJoMHNcODtQY+n3hMyaVpplJ/l0DdQDbRSZi5AzDM3DWZEShhuP6/E2LN4O3xWnZukEiz688d1ppl7vBZO9wBql6Ft9Og74diZrTN6lXGGjEWRvO55h6ijMsLCLNDRAVehPhZvSlPldtUuvhZLAjdWpwmzbRIwgoQcO51aWeKthpcpj8feDdKdlVjvJO9fgFD5kqZ
-	QiErRVPpB7VzA/pYV5Mdy7GMbPjmO0IpoL0tVZ8JvUzUZXB3ErS/dJflvboAAQeLpLCkQjqZiQ/DCmgJCrBJst9Xc7YsKKS379Tc3GU33HNSpaOxs2NwfzoesyjKU+P35czvXWTtj7KVVSj3SgzzFk+gLx8y2Nvt9iESdZ1Ustv8tipDsGcvIZ43MQwqU9YbLg8k4V9ch+Mo8SE+C0jyZYDCE2ZGf3OztvtSYMsTnF6/luzVyej1AFVYjKHORzNoTwdHUeC+9/07GO0bMYTPXYvJ/vxBFm3oniXyhgb5FtABEBAAGJAh8EGAECAAkFAk6V0TwCGwwACgkQAA5oQRlWghXhZRAAyycZ2DDyXh2bMYvI8uHgCbeXfL3QCvcw2XoZTH2l2umPiTzrCsDJhgwZfG9BDyOHaYhPasd5qgrUBtjjUiNKjVM+Cx1DnieR0dZWafnqGv682avPblfi70XXr2juRE/fSZoZkyZhm+nsLuIcXTnzY4D572JGrpRMTpNpGmitBdh1l/9O7Fb64uLOtA5Qj5jcHHOjL0DZpjmFWYKlSAHmURHrE8M0qRryQXvlhoQxlJR4nvQrjOPMsqWD5F9mcRyowOzr8amasLv43w92rD2nHoBK6rbFE/qC7AAjABEsZq8+TQmueN0maIXUQu7TBzejsEbV0i29z+kkrjU2NmK5pcxgAtehVxpZJ14LqmN6E0suTtzjNT1eMoqOPrMSx+6vOCIuvJ/MVYnQgHhjtPPnU86mebTY5Loy9YfJAC2EVpxtcCbx2KiwErTndEyWL+GL53LuScUD7tW8vYbGIp4RlnUgPLbqpgssq2gwYO9m75FGuKuB2+2bCGajqalid5nzeq9v7cYLLRgArJfOIBWZrHy2m0C+pFu9DSuV6SNr2dvMQUv1V58h0FaSOxHVQnJdnoHn13g/CKKvyg2EMrMt/EfcXgvDwQbnG9we4xJiWOIOcsvrWcB6C6lWBDA+In7w7SXnnok
-	kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C662D6BB57
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9dacc912so7926872276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:27:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705066021; x=1705670821; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=f93Ig9LJYi6SxdMZrbYZZHjHKOcib3L6QU/xnO4vU2I=;
+        b=sUygNlSyCS5vY6Fk6MTb1dALHL9wYVw3GoCyPUx/hDpPatN0773TiQ5XqszcdpNVmv
+         /fs9w1ONsQDFoy+fGNLRndio09a21H3GFteGWTdkvT2COxdPO+MVUscmXim5VRkGsgbq
+         hdsNs/j1EJd2TN6zeqNVrsuBJnxGFiLRljVVz9WQ35m5if1Qb4Acn+tBBvZWqoU9LEd/
+         NoMtNRuuxpYiw826QdLA1v53r71GL2T/geoCcBiH3dlWMFW8cYWFkdCLuxzhWi4VRKfd
+         nQVBtHncuyfGktgFuPSN0Z9CzDTcV+BlxYaMM1QuTfSX6G4FjAx9TZ3Ja8PbUqMeXhUs
+         INRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705066021; x=1705670821;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f93Ig9LJYi6SxdMZrbYZZHjHKOcib3L6QU/xnO4vU2I=;
+        b=lc8tsOXn7OM6VpWxjf6Dl9VTpucnh2rymr6vHoXM5uLj2ZT4w03wUbomYO/QdguMVW
+         MM7fDRDku+ZVgF4JB9mhiEPAA++MYZ1CkM2k9n1uKSADnA5r/wxuNYwOyvatu/awtZbF
+         H9rNT3kIM9hQHBMKaAOK2FKG0lWyqONa78XET8GgxU671W34wzuUYeMcC/qpGYYEQ9l5
+         x8s82/a1HORmj76FjWofWv01Q/ZFg63SUKzQv5pvX6Hh52Q6CXhsFjgJfV0MMKW5vkUM
+         SdZt0qfJCe6oUh0sG/XHp/FicEkSUi/+VfwEmtZDiE9eaDp7s5IparDoB2oyD+aowQRV
+         bTbw==
+X-Gm-Message-State: AOJu0YwLy81bxHj+1YKRE+zLH91JGAzRmjhddw6bMbQAnW824t4YGMg9
+	e1a/ahPns9zFti5GLWhdjuFNsFs47ec96yuV+iNU
+X-Google-Smtp-Source: AGHT+IEdNpp9MV1efGqWVumTNO6v9b0Uyr5We6/Yz4ZyzAHpiTLmjWlQyhYuSCloT/e8oLsD+H1RgUnxsQqoUQ==
+X-Received: from edumazet1.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:395a])
+ (user=edumazet job=sendgmr) by 2002:a05:6902:2483:b0:dbd:73bd:e55a with SMTP
+ id ds3-20020a056902248300b00dbd73bde55amr21536ybb.4.1705066020920; Fri, 12
+ Jan 2024 05:27:00 -0800 (PST)
+Date: Fri, 12 Jan 2024 13:26:57 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
+Message-ID: <20240112132657.647112-1-edumazet@google.com>
+Subject: [PATCH net] nbd: always initialize struct msghdr completely
+From: Eric Dumazet <edumazet@google.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org, 
+	Eric Dumazet <edumazet@google.com>, Eric Dumazet <eric.dumazet@gmail.com>, 
+	syzbot <syzkaller@googlegroups.com>, stable@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, linux-block@vger.kernel.org, nbd@other.debian.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2024-01-12 at 16:45 +0800, Zhipeng Lu wrote:
-> The ctx->mech_used.data allocated by kmemdup is not freed in neither
-> gss_import_v2_context nor it only caller radeon_driver_open_kms.
+syzbot complains that msg->msg_get_inq value can be uninitialized [1]
 
+struct msghdr got many new fields recently, we should always make
+sure their values is zero by default.
 
-I'm not sure what this has to do with the radeon driver? The changelog
-probably needs to be revised.
+[1]
+ BUG: KMSAN: uninit-value in tcp_recvmsg+0x686/0xac0 net/ipv4/tcp.c:2571
+  tcp_recvmsg+0x686/0xac0 net/ipv4/tcp.c:2571
+  inet_recvmsg+0x131/0x580 net/ipv4/af_inet.c:879
+  sock_recvmsg_nosec net/socket.c:1044 [inline]
+  sock_recvmsg+0x12b/0x1e0 net/socket.c:1066
+  __sock_xmit+0x236/0x5c0 drivers/block/nbd.c:538
+  nbd_read_reply drivers/block/nbd.c:732 [inline]
+  recv_work+0x262/0x3100 drivers/block/nbd.c:863
+  process_one_work kernel/workqueue.c:2627 [inline]
+  process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
+  worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
+  kthread+0x3ed/0x540 kernel/kthread.c:388
+  ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
 
-> Thus, this patch reform the last call of gss_import_v2_context to the
-> gss_krb5_import_ctx_v2, preventing the memleak while keepping the return
-> formation.
->=20
-> Fixes: 47d848077629 ("gss_krb5: handle new context format from gssd")
-> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-> ---
-> Changelog:
->=20
-> v2: add non-error case
-> ---
->  net/sunrpc/auth_gss/gss_krb5_mech.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->=20
-> diff --git a/net/sunrpc/auth_gss/gss_krb5_mech.c b/net/sunrpc/auth_gss/gs=
-s_krb5_mech.c
-> index e31cfdf7eadc..5e6f90d73858 100644
-> --- a/net/sunrpc/auth_gss/gss_krb5_mech.c
-> +++ b/net/sunrpc/auth_gss/gss_krb5_mech.c
-> @@ -398,6 +398,7 @@ gss_import_v2_context(const void *p, const void *end,=
- struct krb5_ctx *ctx,
->  	u64 seq_send64;
->  	int keylen;
->  	u32 time32;
-> +	int ret;
-> =20
->  	p =3D simple_get_bytes(p, end, &ctx->flags, sizeof(ctx->flags));
->  	if (IS_ERR(p))
-> @@ -450,8 +451,16 @@ gss_import_v2_context(const void *p, const void *end=
-, struct krb5_ctx *ctx,
->  	}
->  	ctx->mech_used.len =3D gss_kerberos_mech.gm_oid.len;
-> =20
-> -	return gss_krb5_import_ctx_v2(ctx, gfp_mask);
-> +	ret =3D gss_krb5_import_ctx_v2(ctx, gfp_mask);
-> +	if (ret) {
-> +		p =3D ERR_PTR(ret);
-> +		goto out_free;
-> +	};
-> =20
-> +	return 0;
-> +
-> +out_free:
-> +	kfree(ctx->mech_used.data);
->  out_err:
->  	return PTR_ERR(p);
->  }
+Local variable msg created at:
+  __sock_xmit+0x4c/0x5c0 drivers/block/nbd.c:513
+  nbd_read_reply drivers/block/nbd.c:732 [inline]
+  recv_work+0x262/0x3100 drivers/block/nbd.c:863
 
-Nice catch!
+CPU: 1 PID: 7465 Comm: kworker/u5:1 Not tainted 6.7.0-rc7-syzkaller-00041-gf016f7547aee #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Workqueue: nbd5-recv recv_work
 
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Fixes: f94fd25cb0aa ("tcp: pass back data left in socket after receive")
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: stable@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org
+Cc: nbd@other.debian.org
+---
+ drivers/block/nbd.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 4e72ec4e25ac5a0f41bca299e7efaecf6503c451..33a8f37bb6a1f504060f783c6d727e4c76026a2e 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -508,7 +508,7 @@ static int __sock_xmit(struct nbd_device *nbd, struct socket *sock, int send,
+ 		       struct iov_iter *iter, int msg_flags, int *sent)
+ {
+ 	int result;
+-	struct msghdr msg;
++	struct msghdr msg = {} ;
+ 	unsigned int noreclaim_flag;
+ 
+ 	if (unlikely(!sock)) {
+@@ -524,10 +524,6 @@ static int __sock_xmit(struct nbd_device *nbd, struct socket *sock, int send,
+ 	do {
+ 		sock->sk->sk_allocation = GFP_NOIO | __GFP_MEMALLOC;
+ 		sock->sk->sk_use_task_frag = false;
+-		msg.msg_name = NULL;
+-		msg.msg_namelen = 0;
+-		msg.msg_control = NULL;
+-		msg.msg_controllen = 0;
+ 		msg.msg_flags = msg_flags | MSG_NOSIGNAL;
+ 
+ 		if (send)
+-- 
+2.43.0.275.g3460e3d667-goog
+
 
