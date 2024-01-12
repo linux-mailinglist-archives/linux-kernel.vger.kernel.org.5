@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-24384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F8082BBD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:35:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A147182BBDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:39:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC4F41C24BAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:35:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17AB1B22C3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138C35D729;
-	Fri, 12 Jan 2024 07:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BB45D737;
+	Fri, 12 Jan 2024 07:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CkBATEBS"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V+x2yjxW"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17E45C90C
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8EB1370
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-336c5b5c163so3656190f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:35:43 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso13911295e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:38:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705044942; x=1705649742; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705045121; x=1705649921; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=i8RXyMrbx6Hr2r1zY5r+vgTqculOuLcjeE55YqU9Wvs=;
-        b=CkBATEBS74e9g5Hvhw/HNjlKTZX1z40DHQcuc1GfH3pSRaLfQhveoCv6gZTrW044xO
-         Q9DCHSVp5K3hscsMOqTBmWvifnS2Pxko1VliLwcc6UaqsM2RrJoim+4BudRY5/yRypOt
-         2ocMxApPcXZFYf5Xu447FgyjRzL1axzuQ6wAXDjVLaz462CI/014UeNaPmwi5xi7YjQG
-         TN1fTpiP5jtyvkpmTjv4eN6pItEIJ073sUPRQNu5irXJTi//7j67qrJEcssi7e/+hLEu
-         Br5EF/73BwN55/7NUlj5CLNYEup0uARy23SZsOCrhiCvOVqSWKyKrPH+8R/s+6303bAb
-         iO4Q==
+        bh=iDp8DOinr9gJiQ2caAeolBWLcVUyNvP+wqwEKaD3vBg=;
+        b=V+x2yjxW1x81RaK7jn0GLICumotl1ZEaO+3uooC0TUYV2H3yc10kjvIKt3NaV90DHA
+         WSjIxEYv/CASi1G0QMROkTaAjnEpXcMke0/Lx6PUCdnR0sgq1TuRmTUMxi13DLKyf/wX
+         rhT4sztojhtuU26XpeKQ2mX8DjnbaXm3miJSwcMPM3rIT0xE0bhxLHZuRwh86lmsOdir
+         1bCCDTMQLNN5FpHLpeLSexH36VDNKKTRfABMijwjkPatN9sRsn8hqL6rvnEg5n1e4Ovn
+         L1c6kOxD8MqEHZRF4luIeWWJ/QbsQS0c8Jh41cuhDh59vrv1iLSQ5mY0THAYt2o5WO+/
+         LGwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705044942; x=1705649742;
+        d=1e100.net; s=20230601; t=1705045121; x=1705649921;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i8RXyMrbx6Hr2r1zY5r+vgTqculOuLcjeE55YqU9Wvs=;
-        b=LLmatmk+aZDSQtI70hgRBJfdJXBBcjPT1cJhhFeBl3s9x6heChOeax/cqqzUymSPRo
-         YzThgj+RG/WeUBiw9DIUNHJc1CZTZQIyq/Cu+mdbFqNP5xc5Tfnmjgkt1dG6Hd383Ej6
-         lTBw/VuD764jthoqOLd7J+mRkiUadcgfpVPmKMX9z9vj7tpDZFgCpvQMkmNnfMPUWRaS
-         dGtCtA/cnGzvLITYuqCeQ/kaCWQcV2ndpPjP5ejDHWN3muLd+vVDId+P45ZCYJKI9c7H
-         6fBMl1AzXiFb03chIKxyFlpU1SVBbb0RYVOSO+e5pQMEwqQZb9vnkQ9RXoAk1ca0SaWB
-         Boog==
-X-Gm-Message-State: AOJu0YyRdiBVwWaaCdxdH0m3G6yFEqoCiSxZqjx4udrUlrABSMhA7vUC
-	R+6PAfl8CTEwHN/97CXxxTVLp2LuWPaAUA==
-X-Google-Smtp-Source: AGHT+IE3t6guwCPjVpNn/txwjvZie6PhBIVXbNlSCVZYTGIQb9PhEqj179AyFo06qyOu64EZ/qSvYg==
-X-Received: by 2002:adf:9794:0:b0:337:8274:a302 with SMTP id s20-20020adf9794000000b003378274a302mr462933wrb.23.1705044942112;
-        Thu, 11 Jan 2024 23:35:42 -0800 (PST)
+        bh=iDp8DOinr9gJiQ2caAeolBWLcVUyNvP+wqwEKaD3vBg=;
+        b=Idf406nVPFxiKqTk8yNIEprAutVcXesd7XYijzhv3Q2JbLwaUCCOP/FsnGKHn31nGo
+         D7BgWn91dj7T++TU8dVcTHlW6huUs8ic//+qdeGDoxoIvtpOqdfPk/ZHEE5HP0trL4TK
+         pPA1IGwmAg0DNd/7YPO+5Yi3MlKMu0PAvJpMg7bN4hrthBudjvdXFiLbhfVopzuheC9X
+         wKn0LZu+in1RIWbMJxmQDvh03KagW8dNbvu8X72swrXJ7NGaGsZ7Vu/gAGJiv85h28Fk
+         KxTZ8FfxBtataHsVboFlRrS3YXDn3gb3/ZosY+BUZUkK7Vivl7xdol4pdwd1aOAWezfV
+         7ulw==
+X-Gm-Message-State: AOJu0YyxStp7qwfbexxt/uP8/gDJoPcHIGhVhzD5pxs2Swr4wkWIFXMr
+	mafibyo9erx/r9zsX5Nc7HbpMPuKbmYliA==
+X-Google-Smtp-Source: AGHT+IFNScRG8y28Q84hdUVIzxVba8kAQufG74CduMidAqwTiwiDmYzWuDabEwi6C9HDdadF49leKQ==
+X-Received: by 2002:a05:600c:332a:b0:40e:42e7:4c42 with SMTP id q42-20020a05600c332a00b0040e42e74c42mr472136wmp.60.1705045121265;
+        Thu, 11 Jan 2024 23:38:41 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id l26-20020adfb11a000000b0033762d4ad5asm3092792wra.81.2024.01.11.23.35.40
+        by smtp.gmail.com with ESMTPSA id u6-20020a05600c138600b0040d5a9d6b68sm8713498wmf.6.2024.01.11.23.38.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 23:35:41 -0800 (PST)
-Message-ID: <2e3b0bcc-e57a-43b0-9f92-da4e3ff3d540@linaro.org>
-Date: Fri, 12 Jan 2024 08:35:40 +0100
+        Thu, 11 Jan 2024 23:38:40 -0800 (PST)
+Message-ID: <3c0be658-e7a6-4231-b206-86ffb47e0cb2@linaro.org>
+Date: Fri, 12 Jan 2024 08:38:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,21 +65,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: bus: Document Broadcom GISB arbiter
- 74165 compatible
+Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
+ silvaco,i3c-target-v1
 Content-Language: en-US
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Bjorn Helgaas
- <bhelgaas@google.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <20240111231539.783785-1-florian.fainelli@broadcom.com>
- <20240111231539.783785-2-florian.fainelli@broadcom.com>
+To: Frank Li <Frank.Li@nxp.com>, robh@kernel.org
+Cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+ gregkh@linuxfoundation.org, imx@lists.linux.dev, jirislaby@kernel.org,
+ joe@perches.com, linux-i3c@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+ miquel.raynal@bootlin.com, zbigniew.lukwinski@linux.intel.com,
+ devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org
+References: <20240110175221.2335480-1-Frank.Li@nxp.com>
+ <20240110175221.2335480-3-Frank.Li@nxp.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,19 +122,52 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240111231539.783785-2-florian.fainelli@broadcom.com>
+In-Reply-To: <20240110175221.2335480-3-Frank.Li@nxp.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 12/01/2024 00:15, Florian Fainelli wrote:
-> The 74165 chip introduces a new layout for the GISB arbiter which is not
-> identical to previous chips, document the new compatible that we are
-> going to key off.
-> 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> ---
+On 10/01/2024 18:52, Frank Li wrote:
+> Add compatible string 'silvaco,i3c-target-v1' for target mode.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Your subject has some multiple prefixes? Why there is one more ":"?
+Just: add XYZ device
+
+
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  .../devicetree/bindings/i3c/silvaco,i3c-master.yaml        | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+> index 133855f11b4f5..17849c91d4d2b 100644
+> --- a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+> +++ b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/i3c/silvaco,i3c-master.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Silvaco I3C master
+> +title: Silvaco I3C master/target
+>  
+>  maintainers:
+>    - Conor Culhane <conor.culhane@silvaco.com>
+> @@ -14,8 +14,9 @@ allOf:
+>  
+>  properties:
+>    compatible:
+> -    const: silvaco,i3c-master-v1
+
+NAK, you got comment, didn't you? Why did you ignore it? It's like third
+time you try to push it ignoring what we keep asking. Pushing the same
+without resolving anything in previous discussion is not acceptable and
+it feels like waste of my time.
+
+
+> -
+
+Why are you removing the blank line?
+
 
 Best regards,
 Krzysztof
