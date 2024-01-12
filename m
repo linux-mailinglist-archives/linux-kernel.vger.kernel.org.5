@@ -1,309 +1,185 @@
-Return-Path: <linux-kernel+bounces-24519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5AFE82BDB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:51:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE39782BDE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:53:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5051F28A8FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:51:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D436C1C25903
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F21D57302;
-	Fri, 12 Jan 2024 09:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFCB57877;
+	Fri, 12 Jan 2024 09:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="hFkVC9Mi"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Du9KTIU3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F59B5DF1E
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-557678c50feso1379781a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:49:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1705052946; x=1705657746; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=us7FlGdER6e8HJOcJ9DbE8FEDZwENOAoyDuutoH2bnc=;
-        b=hFkVC9Mif2HBdcMArgHKUWXyRYjoFTJQhqgwB5D8PgNZOVRYB7ZpE66cbg1U/8vVX3
-         P6d9CnoY14GSShjZ/kf1CpFeq7709DiignVi4kHVpO513KazjEUWHhsS/k91+z0VIFny
-         Mhekf+jCdyQTOYc16B37xdDOXC1Y9wE/tWpZ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705052946; x=1705657746;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=us7FlGdER6e8HJOcJ9DbE8FEDZwENOAoyDuutoH2bnc=;
-        b=oWvqT+CxCM9Xzm3/GvmXUS+fiUPqPHJMvoJqv4krfydYf4KPUYzwDqaAkDPKuBFGQ4
-         NeNiRUHRuwErZBK1EyMBV9Fy9DAAba17HmZD9q//dOXAq+V1zzjAuIDDf7c/GYym3UnG
-         lYI7a6ENLDODCSICuuU2Ke73UPhHuwFrbvvwZUUUDF30qA6aRV/TPZEXn4YxV0XpDbvJ
-         FPLNeIDgd0aENB4WfGHG1oNdRlLaLT3EyAqXa0cswFbfcGqmis8UrTqv00Nw9IxYFNKB
-         SZwUmhjQ7SdDd4cS4dcq6A4IC56dSEUyCQ0y82GT6IuQqNS1Vz61+jDWsckPduJ2ps07
-         T7EQ==
-X-Gm-Message-State: AOJu0YyjwIwI7e7qgaVkTQbBxOdqXQ/ZS09h7Fh/KblvhMsQOimh/tDU
-	fq4K2nzXEPxneFDb0+VuZI9ffL56GfOI5w==
-X-Google-Smtp-Source: AGHT+IEOiq3FXhd4T4HCBcGkiMyRtMKljt8lxwRBUf3NerLJ5gdqm06t+lKy82F5LT4WBLgvMEXbXw==
-X-Received: by 2002:a05:6402:148d:b0:557:4249:44 with SMTP id e13-20020a056402148d00b0055742490044mr760113edv.1.1705052946272;
-        Fri, 12 Jan 2024 01:49:06 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id dh19-20020a0564021d3300b00557332d657fsm1610937edb.39.2024.01.12.01.49.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 01:49:05 -0800 (PST)
-Date: Fri, 12 Jan 2024 10:49:03 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Jeffrey Kardatzke <jkardatzke@google.com>,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Vijayanand Jitta <quic_vjitta@quicinc.com>,
-	jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	linaro-mm-sig@lists.linaro.org,
-	Pekka Paalanen <ppaalanen@gmail.com>,
-	linux-mediatek@lists.infradead.org,
-	Joakim Bech <joakim.bech@linaro.org>, tjmercier@google.com,
-	linux-arm-kernel@lists.infradead.org,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	youlin.pei@mediatek.com, kuohong.wang@mediatek.com,
-	linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH v4 4/7] dma-buf: heaps: restricted_heap: Add dma_ops
-Message-ID: <ZaELD4APVuX4p77P@phenom.ffwll.local>
-Mail-Followup-To: Yong Wu <yong.wu@mediatek.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Jeffrey Kardatzke <jkardatzke@google.com>,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Vijayanand Jitta <quic_vjitta@quicinc.com>,
-	jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	linaro-mm-sig@lists.linaro.org,
-	Pekka Paalanen <ppaalanen@gmail.com>,
-	linux-mediatek@lists.infradead.org,
-	Joakim Bech <joakim.bech@linaro.org>, tjmercier@google.com,
-	linux-arm-kernel@lists.infradead.org,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	youlin.pei@mediatek.com, kuohong.wang@mediatek.com,
-	linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
-References: <20240112092014.23999-1-yong.wu@mediatek.com>
- <20240112092014.23999-5-yong.wu@mediatek.com>
- <ZaEJOjXP2EJIe9rK@phenom.ffwll.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89BCC56B74;
+	Fri, 12 Jan 2024 09:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705053068; x=1736589068;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=FPdfpw0WZUm/iOXzZuKfmQozG49iFsQuMT8wBOhSSbE=;
+  b=Du9KTIU3QUpTNLnENOdGAkaKrfwD4bxAK88WPMVNxQX5RVx3ysPpmZiq
+   oGMrmYWjoXMaddf5C7R+m3iIl2AmiWU9BAH+c0r/tg7S9IMHE7+bCeSrL
+   3ru3C2VwI82x4Wux08Ki4ckeYph3TLXigIEpKr2B7jiyzp68P7NKIXXAv
+   CWHRhFdwM5Wyq2XUAejMTbivtW+FYVix242fqmXZFjFYJBVOO3ZQEfs1L
+   PPrOTP6IEoGXN68NdX06p7npYxqqd/O4MQZbOudGotjGz2jrIatqwYFwR
+   d4TS45DLd2U5G2flmep14QduyuPC2BQtUdXl+uOa9OvR/epehu4g7+rVR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="485307053"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="485307053"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 01:51:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="775958961"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="775958961"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Jan 2024 01:51:07 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Jan 2024 01:51:06 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 12 Jan 2024 01:51:06 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Jan 2024 01:51:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QEmAWTBIKyrz37qK6C7jBv2gDf4DllZWuB2wDHMZKkoX4diNy2u0y+/KinOoRtPv6uoA2xmkM40eRsHuDBA9JwG9vnjM/PmxVHioUJrKWT+eje+Wfq67gddWsQXlYj19vx8jt9bui/zvy3MDkkhvrmCWld2Fs1T3nH4aZ/zL6DDzXxHO2nhKfUfxKcLgpaJd7MmPm8CdpukLm4Xsg71AA6DIKAGkjxm7611uhW1WnX7N2dgPC4m46kXAHHUS4ej4y/lx8ob1mhbrqazbcEV9ofwVoZsbq6l0Nf7FX/uVf43IO1Pnw4gZ2cIb6snWy7UUC9g+XqJTcF46dk7ozOLdOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FPdfpw0WZUm/iOXzZuKfmQozG49iFsQuMT8wBOhSSbE=;
+ b=GvrxxDR0zR3pgSnXKzpwox9y2/6IAdWPpWWYa+KNfNshIrKj8tZgZSRMQx4Poei/ETFNMjIBfYJ2BZDUWcT+xjZzs5dQG06v/SjNZAK1p9x4WJ3XKhbJG31hJMddtjAi1VvsYmhwiUKr22Ooz0fDVXKaVyY6CMw9W04IA/qci9ejxTTIYKaPoG/7rc2gvGzZHehoi6xgljClKvvu0pE1qGhvJxEqFQitgBZ9meJBhzsVe3ATfS61jCVcGOO0mWZT9+l7BvKBk+5RasPtXsf3OY4ohHvInAIvc4qpPOa4Q/+1XlOt4zHWWDK3B5Zp5hhbCC/2TNRcKZW7fMz3/8VFMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
+ by BN0PR11MB5710.namprd11.prod.outlook.com (2603:10b6:408:14a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Fri, 12 Jan
+ 2024 09:51:04 +0000
+Received: from SA1PR11MB6734.namprd11.prod.outlook.com
+ ([fe80::8ccb:4e83:8802:c277]) by SA1PR11MB6734.namprd11.prod.outlook.com
+ ([fe80::8ccb:4e83:8802:c277%4]) with mapi id 15.20.7181.020; Fri, 12 Jan 2024
+ 09:51:04 +0000
+From: "Li, Xin3" <xin3.li@intel.com>
+To: Xin Li <xin@zytor.com>, "Huang, Kai" <kai.huang@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: "Yang, Weijiang" <weijiang.yang@intel.com>, "Christopherson,, Sean"
+	<seanjc@google.com>, "x86@kernel.org" <x86@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com"
+	<hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>
+Subject: RE: [PATCH v3 1/2] KVM: VMX: Cleanup VMX basic information defines
+ and usages
+Thread-Topic: [PATCH v3 1/2] KVM: VMX: Cleanup VMX basic information defines
+ and usages
+Thread-Index: AQHaC4qSP11mhPXdtUaggDGBDHZ2JLBjmx0AgACNOICAcjlxIA==
+Date: Fri, 12 Jan 2024 09:51:04 +0000
+Message-ID: <SA1PR11MB6734789DDF72683C9C783F70A86F2@SA1PR11MB6734.namprd11.prod.outlook.com>
+References: <20231030233940.438233-1-xin@zytor.com>
+ <2158ef3c5ce2de96c970b49802b7e1dba8b704d6.camel@intel.com>
+ <47316871-db95-4f72-9f3a-71743d97d336@zytor.com>
+In-Reply-To: <47316871-db95-4f72-9f3a-71743d97d336@zytor.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|BN0PR11MB5710:EE_
+x-ms-office365-filtering-correlation-id: 48d70093-f0ec-4525-2b12-08dc1353fdda
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /UIGaG4uvO0QAJ05icr221VwogGcEQ1FLDvLFmW2T/k6weV1qJiJ4fuolZb6vZpWI4A3mJhOaKqky91QtJGDtq6MPOrYoEAzs8o2fWJIHuUwxf9BzJUJK8J01YNyE22sxQoZT4GJ6bYKgtWbS15cRclrnsz+hff6TYNHaySus4hAK29LgqUBh/3bUB3K1n0b8U/HJBN+28VF0zZ2w6DqCqaB1Oq4xYzvJcwTrzgbdYDhf3lfuYsm/CXlZ0wwWRc0tsxpew7OrcPGImdNTYgSd7kvKBNvR3Es41Rg4E9RCImS6n2xze5vzVVtXMlWs66zkuDJ4WOCVGmc6G9csrBnuCrycqa5jezfljSRtqOxH+bEb+a00gvyo93tE5yAhysAPlAov2HxLKylOdOch2mo6sS3HnFu483u9jWwy+2Q0d1L+ug5JJPWbEMHMrG+taMmpADsu7XUq8AcVBw5QSfzk5eOLdWkQQ1VokzoF8HbkLhGLrr97sp3H6RPpt0QWDYqd8FaUVpSR975PhNqJseLQBa4tmqVMQ2bWPx+n/8HBRs4zKcrgeQENI0PFmIBiyGLE0J4fZAYMAHf3MuK8/ZdWkdGvI+uo9eIpTKALKU3ydWNAjZavS646La0AmpNZW3F
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(136003)(346002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(82960400001)(86362001)(33656002)(66946007)(66446008)(64756008)(66476007)(66556008)(76116006)(110136005)(54906003)(52536014)(4326008)(8936002)(8676002)(316002)(26005)(71200400001)(38070700009)(478600001)(6506007)(9686003)(7696005)(122000001)(38100700002)(41300700001)(7416002)(2906002)(4744005)(5660300002)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Nk9CUDZxTWQwdXBMbVc1Z20vUFNrNk9QVjF5MzZzekF5aXFOa2ZpdW9mME5L?=
+ =?utf-8?B?NVdCOFlHUzZIMlJPR1Q4RnRMcGdFY0ZFZDdzdkN6SldXWXI4QWdDa0Q3aS8r?=
+ =?utf-8?B?eVFhQi9SUEtuU2xHSzFPQ0wyS3FBdHdjeU1URTR6amFTMjJQclZod29obmhB?=
+ =?utf-8?B?TXBQR21PcE0zMUZIK0J3SlVQSXJCQWVpRzIwYUp2eDF5UVBXU0lrUTdmRkVi?=
+ =?utf-8?B?ZkhZMFpuYTRPWk8vbGF4Y0VGME9WRWZBVTlQajVzWHdnQkpwRnJXandNb3lC?=
+ =?utf-8?B?MUdBYUd3OW1sOGV5RlZnRVVwMVhVMVIyKzZpUEZWUEhxTnVEN1RNak9OaFVs?=
+ =?utf-8?B?amdFbG1UeVFDUXlXVytLL1ErUnZIQ1hVM0RVc0FxYzd3cW56RVpBaWFvN0lM?=
+ =?utf-8?B?aUpiaFhPeTczakJNbkFxVkxNMUJmRWtEUkw3bjQ5cUZQNUJtVUlYR1BHOEcw?=
+ =?utf-8?B?UlY4ckNmQTZTYU13N1VDMWVWUW5lR3d3S2J3aGg2dU1UdEpqY3cxV2RRcEI2?=
+ =?utf-8?B?SURoYzlaV3NDMnVpa21iNk1TbU5Ndi9qN29aZ0g3S1BrWUErQ3kxMllOaE5E?=
+ =?utf-8?B?WFZOQjlRcCt5NVVoZ2hMM2Y1UndCenhTcDV0YnpQTUtwb0xaS0ppcUF1N2g0?=
+ =?utf-8?B?VS9aM3dRMS9VbDl4UjVlT0d4VTR2L1A1TktjaFQxM1lqcnRjVXB4YlNWSWVo?=
+ =?utf-8?B?U3ozK0lQNU91ZWpMUGwrUHR1aG5qNVdHMytsQzRIOGs2cGdSMHFMc1U3WVI2?=
+ =?utf-8?B?SEVjaXp5Y3p1bU1pM1pzb3J3aWVFZDNBWHd4UzBtT2VvZDhiQXF2Q2UvNjl2?=
+ =?utf-8?B?U2wrRW1XMGJrd1h2bWlqd0ZWWHZqUklCUzNHcjUwdFhVQVZhL3ZBWDBRSnYr?=
+ =?utf-8?B?c2ZJL3duSEc2K096bzM0V2hERW5uUmRsY1pEWkY4Yzd2dTE5d0I0MXZ3SkpN?=
+ =?utf-8?B?TXpDUUxUY3QxUkxINU90K2w0Q1U0eHFRQ1hFRFhJUzl5bmwxQlJ0a0VJQVIy?=
+ =?utf-8?B?ampqOVpYNTRSUklBamx1ekdWNCt6alhUNGk5dHZZNCt5eWVjZVB3a2h5a3Mv?=
+ =?utf-8?B?MzNVRGlReklzY1BsaGxwQUZSejMwZmxybnhqVDArTFdsaDJnT2NVYzRRUVBQ?=
+ =?utf-8?B?eVNiYXI1ZnpvWStJK3l6U01NSVBGS0p5SjBQNmF6aXNBVlNHRzB5a1VuZUk0?=
+ =?utf-8?B?VFFuUDUvMkJGWm1uRVdyamxaY0JUWEh6OEU0eld1S0dDWkpEeU8wL00yZ1Zo?=
+ =?utf-8?B?QlB6VWg2WnpmeTgwWkRvenBSQm9CSHJtaVNEdFNUOWtHSDFrODhWOGtNYS8w?=
+ =?utf-8?B?NVJTRlRuZnhqOWVNZnJxSFEweGJXRHdqQ3ZyT3pRWmFpNVk4V2ViN2x1QlBN?=
+ =?utf-8?B?TmZndFdxb3lBeEVNTENRMzBxazFlMXBUcmlZZHlqZnFobVBDcXMrbExFQkl6?=
+ =?utf-8?B?S3B4MUNiSmw5dmF5bWk4dklOc3A2bnNrR1BjUGZvYWhLUi9mTFpqM3NZejNT?=
+ =?utf-8?B?Vk9UY2NFWjFvSU9rUThMWGRqeUNZdStVU2svbDNiUnVRV1FiUTY0RFBYVTl2?=
+ =?utf-8?B?cWxmUEJJRWxlQTI4ZEsvNU9WbVl4aXo2UGRFT2Z4M0l1NnJGWGk2cUYyZkdP?=
+ =?utf-8?B?L2U1cTYwVGpUQlBCTUJQM2syWFh5RnA1VzZhOWUyc2ViSHNLZ1BHc0tqcHpq?=
+ =?utf-8?B?anJsRUc5MTM0cmliaGdCS2RhcW43VEdJTDZYRUpGLy9OZU4vdHc0RGpjN1cr?=
+ =?utf-8?B?aUJCeno0UjlvbHM0eUxSbFpRL05mUmloOVpROTM0STFtWVJHUG5ON09jR1dI?=
+ =?utf-8?B?OVNWT1ozR24xSStEL0JpZE9KVEU3T01mRStGc0JGdjZNVld5eElucWtNalpr?=
+ =?utf-8?B?UXpGYlljcHFZS29KazVodDQvNnA0bXNIL2hxZHZpRXdaNk1wVlorM1RmY0Z5?=
+ =?utf-8?B?aXdlakhDaEN2Zno3SUo3Q09iR1R2ckU4SHptVDdBYWlkUE1TVTBrYUpOWXFC?=
+ =?utf-8?B?RWEwNUlUN05wNGhBUjIvMGFjWTJDV2FBMVdPbmhPYWF2Z2U4WHVsU0k1M09C?=
+ =?utf-8?B?N3hiN3pMQ0pKc1ZpWVVpUjVISFBrTUhMMVppbU1mcGliVG5WVzZiK3p0V29G?=
+ =?utf-8?Q?5c6c=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZaEJOjXP2EJIe9rK@phenom.ffwll.local>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48d70093-f0ec-4525-2b12-08dc1353fdda
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 09:51:04.1571
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RlNIm0DavC3Rk/DBt3s0g3tjHfJYHrYHfqscdQ8K8LPHppRAOiQV3AIMV+rT1zRAQmPwtx9m1q+sbYQotbxoQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR11MB5710
+X-OriginatorOrg: intel.com
 
-On Fri, Jan 12, 2024 at 10:41:14AM +0100, Daniel Vetter wrote:
-> On Fri, Jan 12, 2024 at 05:20:11PM +0800, Yong Wu wrote:
-> > Add the dma_ops for this restricted heap. For restricted buffer,
-> > cache_ops/mmap are not allowed, thus return EPERM for them.
-> > 
-> > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > ---
-> >  drivers/dma-buf/heaps/restricted_heap.c | 103 ++++++++++++++++++++++++
-> >  1 file changed, 103 insertions(+)
-> > 
-> > diff --git a/drivers/dma-buf/heaps/restricted_heap.c b/drivers/dma-buf/heaps/restricted_heap.c
-> > index 8c266a0f6192..ec4c63d2112d 100644
-> > --- a/drivers/dma-buf/heaps/restricted_heap.c
-> > +++ b/drivers/dma-buf/heaps/restricted_heap.c
-> > @@ -12,6 +12,10 @@
-> >  
-> >  #include "restricted_heap.h"
-> >  
-> > +struct restricted_heap_attachment {
-> > +	struct sg_table			*table;
-> > +};
-> > +
-> >  static int
-> >  restricted_heap_memory_allocate(struct restricted_heap *heap, struct restricted_buffer *buf)
-> >  {
-> > @@ -45,6 +49,104 @@ restricted_heap_memory_free(struct restricted_heap *heap, struct restricted_buff
-> >  	ops->memory_free(heap, buf);
-> >  }
-> >  
-> > +static int restricted_heap_attach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
-> > +{
-> > +	struct restricted_buffer *restricted_buf = dmabuf->priv;
-> > +	struct restricted_heap_attachment *a;
-> > +	struct sg_table *table;
-> > +	int ret;
-> > +
-> > +	a = kzalloc(sizeof(*a), GFP_KERNEL);
-> > +	if (!a)
-> > +		return -ENOMEM;
-> > +
-> > +	table = kzalloc(sizeof(*table), GFP_KERNEL);
-> > +	if (!table) {
-> > +		ret = -ENOMEM;
-> > +		goto err_free_attach;
-> > +	}
-> > +
-> > +	ret = sg_alloc_table(table, 1, GFP_KERNEL);
-> > +	if (ret)
-> > +		goto err_free_sgt;
-> > +	sg_set_page(table->sgl, NULL, restricted_buf->size, 0);
-> 
-> So this is definitely broken and violating the dma-buf api rules. You
-> cannot let attach succed and supply a dummy/invalid sg table.
-> 
-> Two options:
-> 
-> - Reject ->attach for all this buffers with -EBUSY and provide instead a
->   private api for these secure buffers, similar to how virtio_dma_buf has
->   private virto-specific apis. This interface would need to be
->   standardized across all arm TEE users, so that we don't have a
->   disastrous proliferation of apis.
-> 
-> - Allow ->attach, but _only_ for drivers/devices which can access the
->   secure buffer correctly, and only if you can put the right secure buffer
->   address into the sg table directly. If dma to a secure buffer for a
->   given struct device * will not work correctly (i.e. without data
->   corruption), you _must_ reject the attach attempt with -EBUSY.
-> 
-> The 2nd approach would be my preferred one, if it's technically possible.
-> 
-> Also my understanding is that arm TEE is standardized, so I think we'll at
-> least want some acks from other soc people whether this will work for them
-> too.
-> 
-> Finally the usual drill:
-> - this also needs the driver side support, if there's any changes needed.
->   Just the new heap isn't enough.
-
-Ok I quickly scrolled through your drm patches and that confirms that the
-current dma-buf interface you're implementing is just completely breaking
-the api. And you need to paper over that will all kinds of very icky
-special-casing.
-
-So definitely need to rethink the overall design between dma-buf heaps and
-drivers here.
--Sima
-
-> - and for drm you need open userspace for this. Doesn't have to be the
->   full content protection decode pipeline, the drivers in drm that landed
->   secure buffer support thus far enabled it using the
->   EGL_EXT_protected_content extension using gl, which side steps all the
->   complications around content decryption keys and support
-> 
-> Cheers, Sima
-> 
-> > +
-> > +	a->table = table;
-> > +	attachment->priv = a;
-> > +
-> > +	return 0;
-> > +
-> > +err_free_sgt:
-> > +	kfree(table);
-> > +err_free_attach:
-> > +	kfree(a);
-> > +	return ret;
-> > +}
-> > +
-> > +static void restricted_heap_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
-> > +{
-> > +	struct restricted_heap_attachment *a = attachment->priv;
-> > +
-> > +	sg_free_table(a->table);
-> > +	kfree(a->table);
-> > +	kfree(a);
-> > +}
-> > +
-> > +static struct sg_table *
-> > +restricted_heap_map_dma_buf(struct dma_buf_attachment *attachment, enum dma_data_direction direct)
-> > +{
-> > +	struct restricted_heap_attachment *a = attachment->priv;
-> > +	struct sg_table *table = a->table;
-> > +
-> > +	return table;
-> > +}
-> > +
-> > +static void
-> > +restricted_heap_unmap_dma_buf(struct dma_buf_attachment *attachment, struct sg_table *table,
-> > +			      enum dma_data_direction direction)
-> > +{
-> > +	struct restricted_heap_attachment *a = attachment->priv;
-> > +
-> > +	WARN_ON(a->table != table);
-> > +}
-> > +
-> > +static int
-> > +restricted_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf, enum dma_data_direction direction)
-> > +{
-> > +	return -EPERM;
-> > +}
-> > +
-> > +static int
-> > +restricted_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf, enum dma_data_direction direction)
-> > +{
-> > +	return -EPERM;
-> > +}
-> > +
-> > +static int restricted_heap_dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
-> > +{
-> > +	return -EPERM;
-> > +}
-> > +
-> > +static void restricted_heap_free(struct dma_buf *dmabuf)
-> > +{
-> > +	struct restricted_buffer *restricted_buf = dmabuf->priv;
-> > +	struct restricted_heap *heap = dma_heap_get_drvdata(restricted_buf->heap);
-> > +
-> > +	restricted_heap_memory_free(heap, restricted_buf);
-> > +	kfree(restricted_buf);
-> > +}
-> > +
-> > +static const struct dma_buf_ops restricted_heap_buf_ops = {
-> > +	.attach		= restricted_heap_attach,
-> > +	.detach		= restricted_heap_detach,
-> > +	.map_dma_buf	= restricted_heap_map_dma_buf,
-> > +	.unmap_dma_buf	= restricted_heap_unmap_dma_buf,
-> > +	.begin_cpu_access = restricted_heap_dma_buf_begin_cpu_access,
-> > +	.end_cpu_access	= restricted_heap_dma_buf_end_cpu_access,
-> > +	.mmap		= restricted_heap_dma_buf_mmap,
-> > +	.release	= restricted_heap_free,
-> > +};
-> > +
-> >  static struct dma_buf *
-> >  restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
-> >  			 unsigned long fd_flags, unsigned long heap_flags)
-> > @@ -66,6 +168,7 @@ restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
-> >  	if (ret)
-> >  		goto err_free_buf;
-> >  	exp_info.exp_name = dma_heap_get_name(heap);
-> > +	exp_info.ops = &restricted_heap_buf_ops;
-> >  	exp_info.size = restricted_buf->size;
-> >  	exp_info.flags = fd_flags;
-> >  	exp_info.priv = restricted_buf;
-> > -- 
-> > 2.25.1
-> > 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+PiA+PiBAQCAtNjk2NCw3ICs2OTc1LDcgQEAgc3RhdGljIHZvaWQgbmVzdGVkX3ZteF9zZXR1cF9i
+YXNpYyhzdHJ1Y3QNCj4gbmVzdGVkX3ZteF9tc3JzICptc3JzKQ0KPiA+PiAgIAkJVk1DUzEyX1JF
+VklTSU9OIHwNCj4gPj4gICAJCVZNWF9CQVNJQ19UUlVFX0NUTFMgfA0KPiA+PiAgIAkJKCh1NjQp
+Vk1DUzEyX1NJWkUgPDwgVk1YX0JBU0lDX1ZNQ1NfU0laRV9TSElGVCkgfA0KPiA+PiAtCQkoVk1Y
+X0JBU0lDX01FTV9UWVBFX1dCIDw8DQo+IFZNWF9CQVNJQ19NRU1fVFlQRV9TSElGVCk7DQo+ID4+
+ICsJCShNRU1fVFlQRV9XQiA8PCBWTVhfQkFTSUNfTUVNX1RZUEVfU0hJRlQpOw0KPiA+Pg0KPiA+
+DQo+ID4gLi4uIGhlcmUsIHdlIGNhbiByZW1vdmUgdGhlIHR3byBfU0hJRlQgYnV0IGRlZmluZSBi
+ZWxvdyBpbnN0ZWFkOg0KPiA+DQo+ID4gICAgI2RlZmluZSBWTVhfQkFTSUNfVk1DUzEyX1NJWkUJ
+KCh1NjQpVk1DUzEyX1NJWkUgPDwgMzIpDQo+ID4gICAgI2RlZmluZSBWTVhfQkFTSUNfTUVNX1RZ
+UEVfV0IJKE1FTV9UWVBFX1dCIDw8IDUwKQ0KPiANCj4gSSBwZXJzb25hbGx5IGRvbid0IGxpa2Ug
+c3VjaCBuYW1lcywgdW5sZXNzIHdlIGNhbiBuYW1lIHRoZW0gaW4gYSBiZXR0ZXIgd2F5Lg0KPiAN
+Cj4gPg0KPiA+IEFuZCB1c2UgYWJvdmUgdHdvIG1hY3JvcyBpbiBuZXN0ZWRfdm14X3NldHVwX2Jh
+c2ljKCk/DQoNCkEgc2Vjb25kIHRob3VnaHQgb24gdGhpcywgSSBhZ3JlZSB0aGlzIGlzIGJldHRl
+ci4gIEFuZCBJIHdpbGwgcG9zdCB2NC4NCg0KVGhhbmtzIQ0KICAgIFhpbg0K
 
