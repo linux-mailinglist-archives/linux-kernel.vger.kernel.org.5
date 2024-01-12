@@ -1,114 +1,105 @@
-Return-Path: <linux-kernel+bounces-24750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A9282C1CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:28:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C84082C1D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:30:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFA191C23B86
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:28:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D52EE1F24F3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73BC6E2AB;
-	Fri, 12 Jan 2024 14:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021656BB48;
+	Fri, 12 Jan 2024 14:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="pOJ1cgW3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fg78jlqL"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2986DCF2;
-	Fri, 12 Jan 2024 14:27:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4449BC433F1;
-	Fri, 12 Jan 2024 14:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705069648;
-	bh=rURI4j8Qzdu95xSW0tWCVC+7bpXBaT8ciPIXxAKQmg8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pOJ1cgW3CWiVAHKRwC/0P+QLn6Rc+YRjGcrFkax05Yw8qge//B1fNWXjwf40ZQNk5
-	 HFGBx0FPiN/gLjP/Y5bNdy6nPnmigOrmQLGEEDTG3d4bEfrOy5KDDcfMa8wnnL9oNC
-	 QC/SDSPB8RmizPkWwIIqQIgdsH/L6DyBaJeKO0do=
-Date: Fri, 12 Jan 2024 09:27:27 -0500
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] first round of SCSI updates for the 6.7+ merge window
-Message-ID: <20240112-steadfast-eager-porcupine-2c9b3a@lemur>
-References: <c5ac3166f35bac3a618b126dabadaddc11c8512d.camel@HansenPartnership.com>
- <CAHk-=whKVgb27o3+jhSRzuZdpjWJiAvxeO8faMjHpb-asONE1g@mail.gmail.com>
- <CAHk-=wiHCkxrMCOL+rSGuPxUoX0_GSMLjgs9v5NJg6okxc1NLw@mail.gmail.com>
- <255e3328bd48c23fbaae0be6d927820d36e14404.camel@HansenPartnership.com>
- <CAHk-=wi6PenRqDCuumMK_5+_gU+JdUqrBEDS-XwFiaNdVRZAHA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D486DCF6
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso17363425e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 06:30:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705069804; x=1705674604; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z+wi6LxV5EZ0n10N9SHFswFNcko0BVzpNz628Oa0p9E=;
+        b=fg78jlqLaXCKFa/ziQkns4T/jKeR0o2I/la2AMYIazf1zPwK/LCeaUge6Z3inIcb++
+         Slx8xYafdHWNOKqWD1+Lcuarh0NJHuXdOrv8xCBI/QIKm1lv7FLtTMWffDnoEnVoMXyu
+         ZNNJWI7p7FxtUA0nAEBCTZ2NUhiDKpWP8SbjjXWG77aTeuLCJ20VMrV30s5A0ZiIBl/Z
+         NIe7I2wxR/XihVmjLVARsLYWTr/ogZ7TGalF7xOa95RaBb66LOqm6ZvhyXCTK6oH45kb
+         1ZU1ptJPTvVyXJhKtRx08b60nZhPQPeeisZRrIwE81+QV38IS9SlvxEgE+iYl0AA9Fms
+         7yKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705069804; x=1705674604;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z+wi6LxV5EZ0n10N9SHFswFNcko0BVzpNz628Oa0p9E=;
+        b=o/M2XXPfIPp/ZkevFPZYa1nAUHkPLTN/atuuu1esJAMlvw0uXCk1fhS+Nz3Saq2+/0
+         DVxoC25tJLazl4a6eKlB8BRqf6AhT1NQttBM1uG2GHFwTPWR9W3ol53m9U6TLsCH91qg
+         Bqv08qCyx1CRXP2PxFx86mXIlHaxJVGO43Ee2TQhchVj4JJbmeuywSdz+k/nvvqCYg/O
+         Fs+WQWkSXZdRa8MxnjWmzkKeoK7ug+b/+01uEPeySGQbvyFcQGR4yQOs7QnrcocuV8Xv
+         pl//a4kywCro0jWvqL+RdebqNAg4z3BNZhkNzXFEtwG8gLTXxNNzsgw9VDjAn50EGnbw
+         btDw==
+X-Gm-Message-State: AOJu0Yx7g/sE8SeoGLbtQs8YlJHPBhxVOhC8kiPSoXxKGTwQRvnMghTc
+	ZTSCsJqTuwOYNd4DoRSTzUCd+nq+SvzVzw==
+X-Google-Smtp-Source: AGHT+IFEpB1LZ1xc3CQ44FCbNbDdLXUyk9YByyFqv5s3twL1MZ7zUuKibTl7Ck+2HxkJODQhK7YCyQ==
+X-Received: by 2002:a05:600c:4ecc:b0:40e:500c:23d8 with SMTP id g12-20020a05600c4ecc00b0040e500c23d8mr791947wmq.151.1705069804093;
+        Fri, 12 Jan 2024 06:30:04 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id z10-20020a05600c0a0a00b0040e4bcfd826sm6116088wmp.47.2024.01.12.06.30.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 06:30:03 -0800 (PST)
+Date: Fri, 12 Jan 2024 17:30:00 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Yang Wang <kevinyang.wang@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Hawking Zhang <Hawking.Zhang@amd.com>,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] drm/amdgpu: fix return value in aca_bank_hwip_is_matched()
+Message-ID: <b311c5e2-ae9a-4558-a51a-a332d0fdfd9b@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wi6PenRqDCuumMK_5+_gU+JdUqrBEDS-XwFiaNdVRZAHA@mail.gmail.com>
+X-Mailer: git-send-email haha only kidding
 
-On Thu, Jan 11, 2024 at 03:50:32PM -0800, Linus Torvalds wrote:
-> > jejb@lingrow:~> gpg --list-key E76040DB76CA3D176708F9AAE742C94CEE98AC85
-> > pub   rsa2048 2011-09-23 [SC] [expires: 2026-03-11]
-> >       D5606E73C8B46271BEAD9ADF814AE47C214854D6
-> > uid           [ultimate] James Bottomley
-> > <James.Bottomley@HansenPartnership.com>
-> > uid           [ultimate] James Bottomley <jejb@linux.vnet.ibm.com>
-> > uid           [ultimate] James Bottomley <jejb@kernel.org>
-> > uid           [ultimate] [jpeg image of size 5254]
-> > uid           [ultimate] James Bottomley <jejb@linux.ibm.com>
-> > uid           [ultimate] James Bottomley <jejb@hansenpartnership.com>
-> > sub   nistp256 2018-01-23 [S] [expires: 2024-01-16]
-> > sub   nistp256 2018-01-23 [E] [expires: 2024-01-16]
-> > sub   nistp256 2023-07-20 [A] [expires: 2024-01-16]
-> 
-> Look closer.
-> 
-> NOWHERE there does it mention E76040D.. Nowhere.
+The aca_bank_hwip_is_matched() function is type bool.  This error path
+return -EINVAL which is cast to true, but it should return false
+instead.
 
-I'm piping up just because I know how to get the output you want, not because
-I hold any opinions on GnuPG (I do, but they aren't relevant here). :)
+Fixes: 22a4fa4709e3 ("drm/amdgpu: implement RAS ACA driver framework")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_aca.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Add the following to your ~/.gnupg/gpg.conf:
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_aca.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_aca.c
+index 6074a529caf7..1d3ae7c241e5 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_aca.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_aca.c
+@@ -182,7 +182,7 @@ static bool aca_bank_hwip_is_matched(struct aca_bank *bank, enum aca_hwip_type t
+ 	u64 ipid;
+ 
+ 	if (!bank || type == ACA_HWIP_TYPE_UNKNOW)
+-		return -EINVAL;
++		return false;
+ 
+ 	hwip = &aca_hwid_mcatypes[type];
+ 	if (!hwip->hwid)
+-- 
+2.43.0
 
-    keyid-format long
-
-After that the output should look like this:
-
-    $ gpg --list-key E76040DB76CA3D176708F9AAE742C94CEE98AC85
-    pub   rsa2048/814AE47C214854D6 2011-09-23 [SC] [expires: 2026-03-11]
-          D5606E73C8B46271BEAD9ADF814AE47C214854D6
-    uid                 [  full  ] James Bottomley <James.Bottomley@HansenPartnership.com>
-    uid                 [  full  ] James Bottomley <jejb@kernel.org>
-    uid                 [  full  ] James Bottomley <jejb@linux.vnet.ibm.com>
-    uid                 [  never ] [jpeg image of size 5254]
-    uid                 [  full  ] James Bottomley <jejb@linux.ibm.com>
-    sub   nistp256/E742C94CEE98AC85 2018-01-23 [S] [expires: 2024-01-16]
-    sub   nistp256/3E01E40786F26FB8 2018-01-23 [E] [expires: 2024-01-16]
-    sub   nistp256/920E9CA6AA3F170D 2023-07-20 [A] [expires: 2024-01-16]
-
-Note, that keyids are truncated from the right, as opposed to git commits.
-
-> And the above is actually being *generous* to gpg. The reality is even
-> worse. Try this:
-> 
->    gpg --list-key 37AAA9562C5CBD0C
-> 
-> and notice how it doesn't even list the subkey I asked about. Not even
-> with '--with-subkey-fingerprint'.
-
-Again, just because I happen to know the right incantation and it may come up
-in a search for someone:
-
-    $ gpg --list-options show-unusable-subkeys --list-key 37AAA9562C5CBD0C
-
-You can add it to your .gnupg/gpg.conf as well:
-
-    list-options show-unusable-subkeys
-
--K
 
