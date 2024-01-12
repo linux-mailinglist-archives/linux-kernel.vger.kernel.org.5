@@ -1,91 +1,120 @@
-Return-Path: <linux-kernel+bounces-24698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14FA682C0FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:41:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1262382C0F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:40:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90986B23C1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:41:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BCA72824FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F646D1AF;
-	Fri, 12 Jan 2024 13:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="YsYg7Hty"
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DD76D1A3;
-	Fri, 12 Jan 2024 13:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=W/DoE
-	b9FwSanGKvU8HAUWKBed/QOzlqzNKFOJh+GK88=; b=YsYg7Hty959xJqrhZUNGk
-	94fEHSpiBbf1B/1qMnjM5UIEYximpWtik73ijJ5p8tCSC2MaEcNOQHDS+agBtWF8
-	wa7S3ZedB1+E0QJKRH33gPbvM89MYpWc85jNT7CzteKDP2zL9vCNeboKyzW8gcll
-	OWQQzmtxq3zVdu9lFadoXM=
-Received: from localhost.localdomain (unknown [36.4.236.25])
-	by zwqz-smtp-mta-g3-0 (Coremail) with SMTP id _____wD3vyUMQaFlmw_AAw--.36249S4;
-	Fri, 12 Jan 2024 21:39:56 +0800 (CST)
-From: Lizhe <sensor1010@163.com>
-To: ilpo.jarvinen@linux.intel.com,
-	gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	frank.li@vivo.com,
-	tglx@linutronix.de,
-	zhang_shurong@foxmail.com,
-	robh@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Lizhe <sensor1010@163.com>
-Subject: [PATCH v10] serial: linflexuart: Remove redundant uart type assignment
-Date: Fri, 12 Jan 2024 05:39:23 -0800
-Message-Id: <20240112133923.190852-1-sensor1010@163.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7D06D1A9;
+	Fri, 12 Jan 2024 13:40:00 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5B222078
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 13:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 393541FB;
+	Fri, 12 Jan 2024 05:40:36 -0800 (PST)
+Received: from [10.57.77.195] (unknown [10.57.77.195])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EED703F5A1;
+	Fri, 12 Jan 2024 05:39:47 -0800 (PST)
+Message-ID: <d0f1617e-0088-4bd9-bea6-e89c63b0e2ae@arm.com>
+Date: Fri, 12 Jan 2024 14:39:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3vyUMQaFlmw_AAw--.36249S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtw4rJF4kGF18Gr4ftw1UWrg_yoW3trb_CF
-	nru347ur10kFWakFnrXFWYkrWSgws5ZF48ZF1vq3saq3yqvw4rXry0grZrW39rJ3yUZr97
-	ursrWr12yrsrXjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRNvtCUUUUUU==
-X-CM-SenderInfo: 5vhq20jurqiii6rwjhhfrp/xtbBXhdjq2VOA9DkXgABsC
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/idle: Prevent stopping the tick when there is no
+ cpuidle driver
+Content-Language: en-US
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ linux-kernel@vger.kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>
+References: <20231215130501.24542-1-anna-maria@linutronix.de>
+ <c09fb78b-5bf9-4c0b-b93f-10fd19a4ab36@arm.com> <87ttnmiif9.fsf@somnus>
+ <06a2561f-557b-4eaa-8f11-75883bbbaef9@arm.com> <87a5pag6q7.fsf@somnus>
+From: Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <87a5pag6q7.fsf@somnus>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In linflex_config_port() the member variable type will be
-assigned again. Remove redundant uart type assignment from
-linflex_probe().
+Hello Anna-Maria,
 
-Signed-off-by: Lizhe <sensor1010@163.com>
+On 1/12/24 11:56, Anna-Maria Behnsen wrote:
+> Pierre Gondois <pierre.gondois@arm.com> writes:
+> 
+>> Hello Anna-Maria,
+>>
+>> On 1/9/24 17:24, Anna-Maria Behnsen wrote:
+>>>
+>>> When there is no cpuidle driver, there is no instance which could bring
+>>> the CPU into a deeper C state. But at the moment the code does
+>>> unconditionally try to stop the tick. So the aim of the patch is to
+>>> remove this unconditional stop of the tick.
+>>
+>> I agree that the absence of cpuidle driver prevents from reaching deep
+>> idle states. FWIU, there is however still benefits in stopping the tick
+>> on such platform.
+> 
+> What's the benefit?
 
----
+I did the following test:
+- on an arm64 Juno-r2 platform (2 big A-72 and 4 little A-53 CPUs)
+- booting with 'cpuidle.off=1'
+- using the energy counters of the platforms
+   (the counters measure energy for the whole cluster of big/little CPUs)
+- letting the platform idling during 10s
 
-v10:
-    Move changelog below --- line.
-    Correct commit message.
----
- drivers/tty/serial/fsl_linflexuart.c | 1 -
- 1 file changed, 1 deletion(-)
+Without patch:
+|       |     big-CPUs | little-CPUs |
+|:------|-------------:|------------:|
+| count | 10           | 10          |
+| mean  |  0.353266    |  0.33399    |
+| std   |  0.000254574 |  0.00206803 |
+| min   |  0.352991    |  0.332145   |
+| 25%   |  0.353039    |  0.332506   |
+| 50%   |  0.353267    |  0.333089   |
+| 75%   |  0.353412    |  0.335231   |
+| max   |  0.353737    |  0.337964   |
 
-diff --git a/drivers/tty/serial/fsl_linflexuart.c b/drivers/tty/serial/fsl_linflexuart.c
-index 3bdaf1ddc309..c5a04a168c15 100644
---- a/drivers/tty/serial/fsl_linflexuart.c
-+++ b/drivers/tty/serial/fsl_linflexuart.c
-@@ -837,7 +837,6 @@ static int linflex_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	sport->dev = &pdev->dev;
--	sport->type = PORT_LINFLEXUART;
- 	sport->iotype = UPIO_MEM;
- 	sport->irq = ret;
- 	sport->ops = &linflex_pops;
--- 
-2.25.1
+With patch:
+|       |     big-CPUs |  little-CPUs |
+|:------|-------------:|-------------:|
+| count | 10           | 10           |
+| mean  |  0.375086    |  0.352451    |
+| std   |  0.000299919 |  0.000752727 |
+| min   |  0.374527    |  0.351743    |
+| 25%   |  0.374872    |  0.35181     |
+| 50%   |  0.37512     |  0.352063    |
+| 75%   |  0.375335    |  0.353256    |
+| max   |  0.375485    |  0.353461    |
 
+So the energy consumption would be up:
+- ~6% for the big CPUs
+- ~10% for the litte CPUs
+
+Regards,
+Pierre
+
+
+> 
+> Thanks,
+> 
+>          Anna-Maria
+> 
 
