@@ -1,187 +1,122 @@
-Return-Path: <linux-kernel+bounces-24379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419D382BBC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:30:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC5E82BBCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:31:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D58081F22AC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:30:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 255D51F225E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227BC5D724;
-	Fri, 12 Jan 2024 07:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE045D72A;
+	Fri, 12 Jan 2024 07:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="f+wBvDm1"
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IY3Lh7uO"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF5ED5C8FD;
-	Fri, 12 Jan 2024 07:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
-Received: from sunspire (unknown [188.24.94.216])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 7260728B531;
-	Fri, 12 Jan 2024 07:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-	s=skycaves; t=1705044632;
-	bh=6Jm6c1mv+a3OF1N6sRuMkjN/1Cyes5vuHDzFuEGKHaE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=f+wBvDm1BomRuQJLr0eYgoYkPcFNhPLxl60od+6e+JGPA6LjsJHjWrKqXpztxwW7j
-	 q23f/I6j89d9hmEms4g/7sGVNUx8ucAf/hGRXPKJg0Wl+u/lXfteckzZdnFdmN5LIn
-	 h0Wy5yBovDJPT3ZeuUl8gXoI/prepLkgdFKubL8c=
-Date: Fri, 12 Jan 2024 09:30:30 +0200
-From: Petre Rodan <petre.rodan@subdimension.ro>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 2/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
- add sleep-mode
-Message-ID: <ZaDqlmXJD6if1xK7@sunspire>
-References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
- <20240110172306.31273-3-petre.rodan@subdimension.ro>
- <bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240F03D7C;
+	Fri, 12 Jan 2024 07:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-680f48ce344so12108636d6.0;
+        Thu, 11 Jan 2024 23:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705044679; x=1705649479; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UzmJYQifp0tT8HMYxNeNkEtPO1O5pS2d3JZ6MMXiyEw=;
+        b=IY3Lh7uOc/dMZEhAufI1uVfI7QxieDfcnJ3P9P5ksWIDqVvU7NBx33+VTolRoebLH3
+         AhXUlm42txQtnznibN+00oQlsyqMHo/tw1+yvPtRRbZy72GQJ1wlQuYx1VmhDzv5ZWo6
+         tTTRvRTqxt4c8av/aXEYWJkMR6xfei0v+ZoDLEvOyo3BwwAx+v8notIxKdxGPjjqTTKb
+         IDLk876L8d7xjDfx0zixISJQoeN027SuiYeXUB+eaJ9pEM78a7jcdpxu5xbDCYFQqGtr
+         iXqlf/BH9RGKKmp2aGVYdqS6hR3cyDD4Mid55Aj9Fz+Gx5zwWNLf0lPiW8N5KCXAJRiw
+         8bow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705044679; x=1705649479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UzmJYQifp0tT8HMYxNeNkEtPO1O5pS2d3JZ6MMXiyEw=;
+        b=gToEMxDNFW00bHt1uiQmCfIeFNjAi/BAVXQw6BAe4+IbgntZm+P7D+0/USU6ImZPa4
+         qhGz5I2MHSpLwNaPopg8rr0icplzLRzCqDFp3YiEs38dXmNNiG2VFrmGqDhfOuab/cST
+         RXbt7oUKz1Aa7wg4ZW0J889c6/D6Ln6Yui8yrrALox5gbPkKhGIgG60IAjfKT3JN7M19
+         etlDlw/iyTeTvCwFA08zjqMFXfn4m83zBHvgZBgN1kdIi5JQlEhm/WS2JYiI2Hcw6zBp
+         0vS7XTvrjuS3uyEMdgRqcWleAHbxOxgNIVHBANXqCbsmsic+gXkVXmCas7S4n9lxq/gE
+         hCnw==
+X-Gm-Message-State: AOJu0Yyy63Z37EAPBy7KdCrD1jmFqXGP5EmhInPW9PmImCn0Tx5e53x3
+	fNsfEmPg5QCE6j6oaIyvR53fwRqdzuaheqvqBmY=
+X-Google-Smtp-Source: AGHT+IEZYRtJV23LfZzikBGgRvQiIaymJwe9noiRvbJ1Sx4KzU7o8kxXfZX9iTngfrbE6cTAG+IAm1U3b2+OEdeyVak=
+X-Received: by 2002:a05:6214:246d:b0:681:16ec:25e2 with SMTP id
+ im13-20020a056214246d00b0068116ec25e2mr822887qvb.6.1705044678915; Thu, 11 Jan
+ 2024 23:31:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="LTw4fbEjyL1VypdH"
-Content-Disposition: inline
-In-Reply-To: <bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
-
-
---LTw4fbEjyL1VypdH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CABXGCsOdvVwdLmSsC8TZ1jF0UOg_F_W3wqLECWX620PUkvNk=A@mail.gmail.com>
+ <efcb591e162ff0b04a9878f7250ab6ee6907f4a4.camel@mediatek.com>
+In-Reply-To: <efcb591e162ff0b04a9878f7250ab6ee6907f4a4.camel@mediatek.com>
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date: Fri, 12 Jan 2024 12:31:07 +0500
+Message-ID: <CABXGCsPF6MbSOpfUBbT77Hnfc450kutsc8Fzr1O_O9bgtQ5PAw@mail.gmail.com>
+Subject: Re: [BUG] Unloading mt7921e module cause use-after-free
+To: =?UTF-8?B?RGVyZW4gV3UgKOatpuW+t+S7gSk=?= <Deren.Wu@mediatek.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "nbd@nbd.name" <nbd@nbd.name>, 
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+On Fri, Jan 12, 2024 at 10:34=E2=80=AFAM Deren Wu (=E6=AD=A6=E5=BE=B7=E4=BB=
+=81) <Deren.Wu@mediatek.com> wrote:
+>
+> Hi Mikhail,
+>
+> I can reproduce a similar problem when CONFI_DEBUG_SHIRQ is enabled.
+>
+> Pleaese try this patch in mainline kernel (6.7+)
+> ---
+> --- a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
+> +++ b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
+> @@ -387,6 +387,7 @@ static void mt7921_pci_remove(struct pci_dev *pdev)
+>         struct mt792x_dev *dev =3D container_of(mdev, struct mt792x_dev,
+> mt76);
+>
+>         mt7921e_unregister_device(dev);
+> +       set_bit(MT76_REMOVED, &mdev->phy.state);
+>         devm_free_irq(&pdev->dev, pdev->irq, dev);
+>         mt76_free_device(&dev->mt76);
+>         pci_free_irq_vectors(pdev);
+> diff --git a/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
+> b/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
+> index 488326ce5ed4..3893dbe866fe 100644
+> --- a/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
+> +++ b/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
+> @@ -12,6 +12,8 @@ irqreturn_t mt792x_irq_handler(int irq, void
+> *dev_instance)
+>  {
+>         struct mt792x_dev *dev =3D dev_instance;
+>
+> +       if (test_bit(MT76_REMOVED, &dev->mt76.phy.state))
+> +               return IRQ_NONE;
+>         mt76_wr(dev, dev->irq_map->host_irq_enable, 0);
+>
+>         if (!test_bit(MT76_STATE_INITIALIZED, &dev->mphy.state))
+>
+>
 
-Hello Krzysztof,
+Thanks, this patch looks good to me.
+Demonstration: https://youtu.be/nKnA2ftVoXw
 
-On Wed, Jan 10, 2024 at 09:48:34PM +0100, Krzysztof Kozlowski wrote:
-> On 10/01/2024 18:22, Petre Rodan wrote:
-> > Add sleep-mode property present in some custom chips.
-> >=20
-> > This flag activates a special wakeup sequence prior to conversion.
-> >=20
-> > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> > ---
-> >  .../bindings/iio/pressure/honeywell,hsc030pa.yaml      | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,h=
-sc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc=
-030pa.yaml
-> > index 89977b9f01cf..350da1d6991b 100644
-> > --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa=
-=2Eyaml
-> > +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa=
-=2Eyaml
-> > @@ -86,6 +86,15 @@ properties:
-> >        Maximum pressure value the sensor can measure in pascal.
-> >        To be specified only if honeywell,pressure-triplet is set to "NA=
-".
-> >=20
-> > +  honeywell,sleep-mode:
->=20
-> "Sleep mode" naming suggests there are choices, like mode foo and mode
-> bar. Probably you want something like "sleep-between-measurements" or
-> something matching how does it work.
-
-"sleep mode" is the terminology used by Honeywell and it defines a chip cap=
-ability.
-it is present in the HSC/SSC and ABP series of ICs.
-
-other such options (capabilities) include temperature output in the ABP ser=
-ies.
-
-the action the driver needs to perform if this option is present is to prov=
-ide a
-wake-up sequence before reading out the conversions.
-
-now regarding a rename of this property, I would vote to leave it as is - f=
-or the
-users to have a 1:1 equivalence of terms between the driver and the datashe=
-et.
-
-I say that because for instance in circuit design when a part symbol and
-footprint is drawn based on a datasheet it is recommended to keep the same =
-pin
-notations and the same block diagram as in the datasheet, precisely for thi=
-s 1:1
-equivalence, so there is no uncertainty for the end-user.
-
-cheers,
-peter
-
->=20
-> > +    description: |
->=20
-> Do not need '|' unless you need to preserve formatting.
->=20
-> > +      'Sleep Mode' is a special factory set mode of the chip that allo=
-ws the
-> > +      sensor to power down between measurements. It is implemented onl=
-y on
-> > +      special request, and it is an attribute not present in the HSC/S=
-SC series
-> > +      nomenclature.
-> > +      Set in order to enable the special wakeup sequence prior to conv=
-ersion.
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +
-> >    vdd-supply:
-> >      description:
-> >        Provide VDD power to the sensor (either 3.3V or 5V depending on =
-the chip)
-> > @@ -140,6 +149,7 @@ examples:
-> >              honeywell,pressure-triplet =3D "NA";
-> >              honeywell,pmin-pascal =3D <0>;
-> >              honeywell,pmax-pascal =3D <200000>;
-> > +            //honeywell,sleep-mode;
->=20
-> Drop comment.
->=20
-> > 2.41.0
-> >=20
->=20
-> Best regards,
-> Krzysztof
->=20
+Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
 
 --=20
-petre rodan
-
---LTw4fbEjyL1VypdH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWg6o8ACgkQzyaZmYRO
-fzAg3g/8DsMXh3IKMM913xGGBa4Ntx7fvQ9JfUQb9xgKM5mKqEw5hV7Cnqp/vxGT
-dC2gG2X8wtzWRMqZ9cGxrvkBXt2AZ50o3c6v+EdAM84Caqb1283j1Leq3ccuIE3d
-diGQTbczspbRg5Z5z0h9pEbIkeVvHQyC2t3v+wYf1JcYkSQ7jfDTQHIcj+5Ak2ma
-MgaADJ7MeQOeXjQOseSycJB/x9+lVp6BXxuTCGf7V3o8mnCdTHlCl0U2Tkntlj/+
-PMj8p8pCplgNn8lRnrGUdUrxuwEfg+AY+rFOb5mLEkA+amZoNj/bK2w0wQ+Ry2S3
-/YZapuuWIha2+hxKoViRMFDC5VIM1taRVO1bHQKtPYZTfpRZUIwY+Am81cJgRp6l
-XbmCqF4RQyZZbpqCkfKriDSOWtmq45aejcmsw84YfVxDYP00Vfw0avAb2gOl6Jwj
-ZHtfZNh2/H9W9+ZhRwSItRVflvYg/XM9dcz5chZJHMtvf3Fd/lq7pe0/rSfRZWCq
-r0mf+/V5VEgm11RADaRyLpEMdg+tBXfteBZoMSXKgxHG7RC47SDRA7b7wlyAkQTx
-uaEjGSKPFFxPiCCAVjFM+vkqvyecyznMOTiQjIKfQK4AwOCGUG2If49JdZiuOhDf
-u+2E/yz08Z+6FHQNUdZmd9KJuvDm7ZaKcsL4Fbf3joXOIcwBKYA=
-=bErR
------END PGP SIGNATURE-----
-
---LTw4fbEjyL1VypdH--
+Best Regards,
+Mike Gavrilov.
 
