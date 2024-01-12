@@ -1,137 +1,127 @@
-Return-Path: <linux-kernel+bounces-24847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0237982C35F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E7D582C368
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52A422870DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:12:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE1EF2850EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054C37317B;
-	Fri, 12 Jan 2024 16:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Ekgw2bsD"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA836745D4;
+	Fri, 12 Jan 2024 16:17:54 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1B55731D;
-	Fri, 12 Jan 2024 16:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40CGCDqZ006156;
-	Fri, 12 Jan 2024 16:12:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=NFapylbjEhpI9ckI99MhiQeANSyVA+//ij/N9PxpdpI=; b=Ek
-	gw2bsDCHG/6fxBSf6MEiUYjv3+RXUA3m5Obgl9ouKiY6IYcYcevvwS/6ROmR/qR2
-	9nUXwgi9/3/v6Z1a2CvrCRo8rnyPoG2H8lNpN90ct7LcvQ5d8KcEupM+AsCvwHpb
-	Ex6x2RhW10eyMrtdxViXNgXvjl4FnVsfPV/nUBTPUsX6VS6H6FF1Tn74F3uHjTFU
-	b2PrWN60j0zFhuHluYMn5KCgHCGvnSQ9fXcQjFYvxmIg8zt7C6b2JbS3AHcr4Zdb
-	zvPFkarWKDb89J3PArbwsFSZ7FWHMWP4a5xuD/2iF1OYL/zT142doDdALzuzeSlv
-	BWP0taambtWRXNNydDAg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vk18d16u8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Jan 2024 16:12:12 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40CGC1Gs010550
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Jan 2024 16:12:01 GMT
-Received: from [10.253.78.164] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 12 Jan
- 2024 08:11:57 -0800
-Message-ID: <fdd45bd1-abff-40ab-8340-a94f5a450914@quicinc.com>
-Date: Sat, 13 Jan 2024 00:11:54 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2310E7319F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rOKE8-0000I0-0A
+	for linux-kernel@vger.kernel.org; Fri, 12 Jan 2024 17:17:48 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rOKE7-002Bnl-Im
+	for linux-kernel@vger.kernel.org; Fri, 12 Jan 2024 17:17:47 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id 16FF5275222
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:13:20 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 28927275213;
+	Fri, 12 Jan 2024 16:13:18 +0000 (UTC)
+Received: from [172.20.34.65] (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d9b81a73;
+	Fri, 12 Jan 2024 16:13:17 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Fri, 12 Jan 2024 17:13:14 +0100
+Subject: [PATCH] net: netdev_queue: netdev_txq_completed_mb(): fix wake
+ condition
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] arm64: dts: qcom: ipq5332: Add MDIO device tree
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <quic_kkumarcs@quicinc.com>, <quic_suruchia@quicinc.com>,
-        <quic_soni@quicinc.com>, <quic_pavir@quicinc.com>,
-        <quic_souravp@quicinc.com>, <quic_linchen@quicinc.com>,
-        <quic_leiwei@quicinc.com>
-References: <20240110112059.2498-1-quic_luoj@quicinc.com>
- <20240110112059.2498-4-quic_luoj@quicinc.com>
- <9b44a04d-3d04-4fdb-a51c-b0e4b72af558@linaro.org>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <9b44a04d-3d04-4fdb-a51c-b0e4b72af558@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: TeepRPbdvO01qmk4mQqCyZspsvLVYboM
-X-Proofpoint-ORIG-GUID: TeepRPbdvO01qmk4mQqCyZspsvLVYboM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401120127
+Message-Id: <20240112-netdev_queue-v1-1-102c2d57e20a@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIABlloWUC/x3MQQqAIBRF0a3EHyeoVFRbiYjIZ/2JlWYE0t6Th
+ mdwb6IAzwjUF4k8bg68uwxVFrRss1sh2GSTlrqSSmnhcBnc0xkRIdCppm1sbbGAcnJ4WH7+3TC
+ +7wchRTDoXgAAAA==
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Herbert Xu <herbert@gondor.apana.org.au>
+Cc: kernel@pengutronix.de, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.13-dev-f0463
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1364; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=CkEKs9/ASN2pww0g0ug4I7HYAiq8bIX4Yqwzznlyw/4=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBloWUa98YtsGRxO4OY7nG90d2rMUTs9xKV9hUp4
+ YoKoQPLipmJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZaFlGgAKCRC+UBxKKooE
+ 6KeICACY3D2klvan6Q4R965DSPSOZiScSg3DoNHPLut+48r26NGzmPwepHnGUvxExCKWShF8O9I
+ 55Q5qMSQO8dFKIoNoyrn8sitRwUWP/tJQFpg8kTwJBfcLySxyL58BVHccxbsovVPont8s9oc1Ev
+ WWtYQ+gu/1RFbkuetQJF9QegiSmiqpVZD9wZkHW9nPJPWGuKTFGwHqwuPFSP/y6yOtsjzBwXmXi
+ 2VogySlyZSSdaTiyZ3jeKuCWEOfS/KQsAIo5Bx5+Y/LYpEolrZks8G5obTYJJOWEC+1PX/ZvVwz
+ Nr6PDmdONeeBuiTwRnOGFhM9BsWzyKP+auS1SeSDhjVpH7u0
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+netif_txq_try_stop() uses "get_desc >= start_thrs" as the check for
+the call to netif_tx_start_queue().
+
+Use ">=" i netdev_txq_completed_mb(), too.
+
+Fixes: c91c46de6bbc ("net: provide macros for commonly copied lockless queue stop/wake code")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello,
+
+I'm currently converting a networking driver with a TX-FIFO depth of
+1 (CAN device with lots of errata :/) to the netdev_queue.h helpers
+and stumbled over an off-by-one error on __netif_txq_completed_wake().
+
+regards,
+Marc
+---
+ include/net/netdev_queues.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
+index d68b0a483431..8b8ed4e13d74 100644
+--- a/include/net/netdev_queues.h
++++ b/include/net/netdev_queues.h
+@@ -128,7 +128,7 @@ netdev_txq_completed_mb(struct netdev_queue *dev_queue,
+ 		netdev_txq_completed_mb(txq, pkts, bytes);		\
+ 									\
+ 		_res = -1;						\
+-		if (pkts && likely(get_desc > start_thrs)) {		\
++		if (pkts && likely(get_desc >= start_thrs)) {		\
+ 			_res = 1;					\
+ 			if (unlikely(netif_tx_queue_stopped(txq)) &&	\
+ 			    !(down_cond)) {				\
+
+---
+base-commit: 907ee6681788556b9ade3ad0a1f6f4aea192399c
+change-id: 20240112-netdev_queue-e91686f5fece
+
+Best regards,
+-- 
+Marc Kleine-Budde <mkl@pengutronix.de>
 
 
-
-On 1/10/2024 7:56 PM, Krzysztof Kozlowski wrote:
-> On 10/01/2024 12:20, Luo Jie wrote:
->> Add the MDIO device tree of ipq5332.
-> 
-> Subject: drop "device tree", it is obvious. Commit msg: say something
-> more instead of copying the subject. Or better squash the entire patch.
-
-Will update the commit message to improve the description when the 
-series is updated.
-
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq5332.dtsi | 44 +++++++++++++++++++++++++++
->>   1 file changed, 44 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> index bc89480820cb..e6c780e69d6e 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> @@ -214,6 +214,38 @@ serial_0_pins: serial0-state {
->>   				drive-strength = <8>;
->>   				bias-pull-up;
->>   			};
->> +
->> +			mdio0_pins: mdio0-state {
->> +				mux_0 {
-> 
-> This wasn't tested...
-> 
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check W=1` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-> for instructions).
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-
-We will follow up the guidance mentioned in the link to validate the DTS 
-patches.
 
