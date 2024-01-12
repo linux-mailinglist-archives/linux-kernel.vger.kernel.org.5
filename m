@@ -1,311 +1,263 @@
-Return-Path: <linux-kernel+bounces-24406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058C382BC24
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:59:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F423482BC26
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1E371C24090
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:59:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B7B02848CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6EA5D74D;
-	Fri, 12 Jan 2024 07:59:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24CF5C902;
-	Fri, 12 Jan 2024 07:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 228621FB;
-	Fri, 12 Jan 2024 00:00:30 -0800 (PST)
-Received: from [192.168.68.104] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DB153F64C;
-	Thu, 11 Jan 2024 23:59:42 -0800 (PST)
-Message-ID: <08c16f7d-f3b3-4f22-9acc-da943f647dc3@arm.com>
-Date: Fri, 12 Jan 2024 07:59:41 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DF25D740;
+	Fri, 12 Jan 2024 08:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fx4zCRAW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F77B5D73B;
+	Fri, 12 Jan 2024 08:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705046696; x=1736582696;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Uv6Ype/eC4lHKRzgMxquVIgBBZeHuFiDJm+CmozdVpA=;
+  b=Fx4zCRAWGBEaxP9k9rK4QcpfpEvI1LJSP0bMuFJfEik4dcCneyvmQNLI
+   RFOlLnb2PcQQDnbu4W9S8Yy78TIPUwany0G3x0Sx9T6Q5moMfi+vpapwe
+   KtC3PIfnZ1KzOYd0mTmWL6vxg6W0nVpAh5wxIe8D9JAKlWAZD6z8ZqHVU
+   gu4b+srIDuxLfF3/5D8ENoFmUK4gUzTz3ZY602HSQr9NLeNSkIKUkNcUY
+   fvYG12XXVKQFpmhXTjY2un16O8vrmKcPcUWXmK5VudNBQXs7SZkpmhzd/
+   ikIqCXnh03AX4ldl+wZifTmoxtmxDSRAN2C1wetxIJz1NhedQB3g9Md+l
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="20577906"
+X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
+   d="scan'208";a="20577906"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 00:04:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="926312678"
+X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
+   d="scan'208";a="926312678"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Jan 2024 00:02:34 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rOCUR-0009DU-2u;
+	Fri, 12 Jan 2024 08:02:20 +0000
+Date: Fri, 12 Jan 2024 16:01:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	lgirdwood@gmail.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, broonie@kernel.org,
+	perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com, ribalda@chromium.org,
+	nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+	kuninori.morimoto.gx@renesas.com, nfraprado@collabora.com,
+	alsa-devel@alsa-project.org, trevor.wu@mediatek.com,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 6/7] ASoC: mediatek: mt8192-afe-pcm: Simplify with
+ dev_err_probe()
+Message-ID: <202401121548.rwSkkCvR-lkp@intel.com>
+References: <20240111105247.117766-7-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1] mm/filemap: Allow arch to request folio size for
- exec memory
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20240111154106.3692206-1-ryan.roberts@arm.com>
- <CAGsJ_4wJogNK1Gi5aZNsz7KS4wDDLoXZpLcyOeEAqHft-eo9QA@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4wJogNK1Gi5aZNsz7KS4wDDLoXZpLcyOeEAqHft-eo9QA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111105247.117766-7-angelogioacchino.delregno@collabora.com>
 
-On 12/01/2024 05:23, Barry Song wrote:
-> On Fri, Jan 12, 2024 at 4:41 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Change the readahead config so that if it is being requested for an
->> executable mapping, do a synchronous read of an arch-specified size in a
->> naturally aligned manner.
->>
->> On arm64 if memory is physically contiguous and naturally aligned to the
->> "contpte" size, we can use contpte mappings, which improves utilization
->> of the TLB. When paired with the "multi-size THP" changes, this works
->> well to reduce dTLB pressure. However iTLB pressure is still high due to
->> executable mappings having a low liklihood of being in the required
->> folio size and mapping alignment, even when the filesystem supports
->> readahead into large folios (e.g. XFS).
->>
->> The reason for the low liklihood is that the current readahead algorithm
->> starts with an order-2 folio and increases the folio order by 2 every
->> time the readahead mark is hit. But most executable memory is faulted in
->> fairly randomly and so the readahead mark is rarely hit and most
->> executable folios remain order-2. This is observed impirically and
->> confirmed from discussion with a gnu linker expert; in general, the
->> linker does nothing to group temporally accessed text together
->> spacially. Additionally, with the current read-around approach there are
->> no alignment guarrantees between the file and folio. This is
->> insufficient for arm64's contpte mapping requirement (order-4 for 4K
->> base pages).
->>
->> So it seems reasonable to special-case the read(ahead) logic for
->> executable mappings. The trade-off is performance improvement (due to
->> more efficient storage of the translations in iTLB) vs potential read
->> amplification (due to reading too much data around the fault which won't
->> be used), and the latter is independent of base page size. I've chosen
->> 64K folio size for arm64 which benefits both the 4K and 16K base page
->> size configs and shouldn't lead to any further read-amplification since
->> the old read-around path was (usually) reading blocks of 128K (with the
->> last 32K being async).
->>
->> Performance Benchmarking
->> ------------------------
->>
->> The below shows kernel compilation and speedometer javascript benchmarks
->> on Ampere Altra arm64 system. (The contpte patch series is applied in
->> the baseline).
->>
->> First, confirmation that this patch causes more memory to be contained
->> in 64K folios (this is for all file-backed memory so includes
->> non-executable too):
->>
->> | File-backed folios      |   Speedometer   |  Kernel Compile |
->> | by size as percentage   |-----------------|-----------------|
->> | of all mapped file mem  | before |  after | before |  after |
->> |=========================|========|========|========|========|
->> |file-thp-aligned-16kB    |    45% |     9% |    46% |     7% |
->> |file-thp-aligned-32kB    |     2% |     0% |     3% |     1% |
->> |file-thp-aligned-64kB    |     3% |    63% |     5% |    80% |
->> |file-thp-aligned-128kB   |    11% |    11% |     0% |     0% |
->> |file-thp-unaligned-16kB  |     1% |     0% |     3% |     1% |
->> |file-thp-unaligned-128kB |     1% |     0% |     0% |     0% |
->> |file-thp-partial         |     0% |     0% |     0% |     0% |
->> |-------------------------|--------|--------|--------|--------|
->> |file-cont-aligned-64kB   |    16% |    75% |     5% |    80% |
->>
->> The above shows that for both use cases, the amount of file memory
->> backed by 16K folios reduces and the amount backed by 64K folios
->> increases significantly. And the amount of memory that is contpte-mapped
->> significantly increases (last line).
->>
->> And this is reflected in performance improvement:
->>
->> Kernel Compilation (smaller is faster):
->> | kernel   |   real-time |   kern-time |   user-time |   peak memory |
->> |----------|-------------|-------------|-------------|---------------|
->> | before   |        0.0% |        0.0% |        0.0% |          0.0% |
->> | after    |       -1.6% |       -2.1% |       -1.7% |          0.0% |
->>
->> Speedometer (bigger is faster):
->> | kernel   |   runs_per_min |   peak memory |
->> |----------|----------------|---------------|
->> | before   |           0.0% |          0.0% |
->> | after    |           1.3% |          1.0% |
->>
->> Both benchmarks show a ~1.5% improvement once the patch is applied.
-> 
-> Hi Ryan,
-> you had the data regarding exec-cont-pte in cont-pte series[1], which has
-> already shown 1-2% improvement.
-> 
-> Kernel Compilation with -j8 (negative is faster):
-> 
-> | kernel                    | real-time | kern-time | user-time |
-> |---------------------------|-----------|-----------|-----------|
-> | baseline                  |      0.0% |      0.0% |      0.0% |
-> | mTHP                      |     -4.6% |    -38.0% |     -0.4% |
-> | mTHP + contpte            |     -5.4% |    -37.7% |     -1.3% |
-> | mTHP + contpte + exefolio |     -7.4% |    -39.5% |     -3.5% |
-> 
-> Kernel Compilation with -j80 (negative is faster):
-> 
-> | kernel                    | real-time | kern-time | user-time |
-> |---------------------------|-----------|-----------|-----------|
-> | baseline                  |      0.0% |      0.0% |      0.0% |
-> | mTHP                      |     -4.9% |    -36.1% |     -0.2% |
-> | mTHP + contpte            |     -5.8% |    -36.0% |     -1.2% |
-> | mTHP + contpte + exefolio |     -6.8% |    -37.0% |     -3.1% |
-> 
-> Speedometer (positive is faster):
-> 
-> | kernel                    | runs_per_min |
-> |:--------------------------|--------------|
-> | baseline                  |         0.0% |
-> | mTHP                      |         1.5% |
-> | mTHP + contpte            |         3.7% |
-> | mTHP + contpte + exefolio |         4.9% |
-> 
-> 
-> Is this 1.5% you are saying now an extra improvement after you have
-> mTHP + contpte + exefolio in [1]?
+Hi AngeloGioacchino,
 
-The latter; it's the same ~1.5% I mentioned in [1]. This is the first time I've
-posted the "exefolio" change publicly.
+kernel test robot noticed the following build warnings:
 
-> 
-> [1] https://lore.kernel.org/linux-mm/20231218105100.172635-1-ryan.roberts@arm.com/
-> 
->>
->> Alternatives
->> ------------
->>
->> I considered (and rejected for now - but I anticipate this patch will
->> stimulate discussion around what the best approach is) alternative
->> approaches:
->>
->>   - Expose a global user-controlled knob to set the preferred folio
->>     size; this would move policy to user space and allow (e.g.) setting
->>     it to PMD-size for even better iTLB utilizaiton. But this would add
->>     ABI, and I prefer to start with the simplest approach first. It also
->>     has the downside that a change wouldn't apply to memory already in
->>     the page cache that is in active use (e.g. libc) so we don't get the
->>     same level of utilization as for something that is fixed from boot.
->>
->>   - Add a per-vma attribute to allow user space to specify preferred
->>     folio size for memory faulted from the range. (we've talked about
->>     such a control in the context of mTHP). The dynamic loader would
->>     then be responsible for adding the annotations. Again this feels
->>     like something that could be added later if value was demonstrated.
->>
->>   - Enhance MADV_COLLAPSE to collapse to THP sizes less than PMD-size.
->>     This would still require dynamic linker involvement, but would
->>     additionally neccessitate a copy and all memory in the range would
->>     be synchronously faulted in, adding to application load time. It
->>     would work for filesystems that don't support large folios though.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>
->> Hi all,
->>
->> I originally concocted something similar to this, with Matthew's help, as a
->> quick proof of concept hack. Since then I've tried a few different approaches
->> but always came back to this as the simplest solution. I expect this will raise
->> a few eyebrows but given it is providing a real performance win, I hope we can
->> converge to something that can be upstreamed.
->>
->> This depends on my contpte series to actually set the contiguous bit in the page
->> table.
->>
->> Thanks,
->> Ryan
->>
->>
->>  arch/arm64/include/asm/pgtable.h | 12 ++++++++++++
->>  include/linux/pgtable.h          | 12 ++++++++++++
->>  mm/filemap.c                     | 19 +++++++++++++++++++
->>  3 files changed, 43 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index f5bf059291c3..8f8f3f7eb8d8 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -1143,6 +1143,18 @@ static inline void update_mmu_cache_range(struct vm_fault *vmf,
->>   */
->>  #define arch_wants_old_prefaulted_pte  cpu_has_hw_af
->>
->> +/*
->> + * Request exec memory is read into pagecache in at least 64K folios. The
->> + * trade-off here is performance improvement due to storing translations more
->> + * effciently in the iTLB vs the potential for read amplification due to reading
->> + * data from disk that won't be used. The latter is independent of base page
->> + * size, so we set a page-size independent block size of 64K. This size can be
->> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB entry),
->> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base pages are in
->> + * use.
->> + */
->> +#define arch_wants_exec_folio_order(void) ilog2(SZ_64K >> PAGE_SHIFT)
->> +
->>  static inline bool pud_sect_supported(void)
->>  {
->>         return PAGE_SIZE == SZ_4K;
->> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->> index 170925379534..57090616d09c 100644
->> --- a/include/linux/pgtable.h
->> +++ b/include/linux/pgtable.h
->> @@ -428,6 +428,18 @@ static inline bool arch_has_hw_pte_young(void)
->>  }
->>  #endif
->>
->> +#ifndef arch_wants_exec_folio_order
->> +/*
->> + * Returns preferred minimum folio order for executable file-backed memory. Must
->> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has no
->> + * preference and mm will not special-case executable memory in the pagecache.
->> + */
->> +static inline int arch_wants_exec_folio_order(void)
->> +{
->> +       return -1;
->> +}
->> +#endif
->> +
->>  #ifndef arch_check_zapped_pte
->>  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
->>                                          pte_t pte)
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 67ba56ecdd32..80a76d755534 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -3115,6 +3115,25 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
->>         }
->>  #endif
->>
->> +       /*
->> +        * Allow arch to request a preferred minimum folio order for executable
->> +        * memory. This can often be beneficial to performance if (e.g.) arm64
->> +        * can contpte-map the folio. Executable memory rarely benefits from
->> +        * read-ahead anyway, due to its random access nature.
->> +        */
->> +       if (vm_flags & VM_EXEC) {
->> +               int order = arch_wants_exec_folio_order();
->> +
->> +               if (order >= 0) {
->> +                       fpin = maybe_unlock_mmap_for_io(vmf, fpin);
->> +                       ra->size = 1UL << order;
->> +                       ra->async_size = 0;
->> +                       ractl._index &= ~((unsigned long)ra->size - 1);
->> +                       page_cache_ra_order(&ractl, ra, order);
->> +                       return fpin;
->> +               }
->> +       }
->> +
->>         /* If we don't want any read-ahead, don't bother */
->>         if (vm_flags & VM_RAND_READ)
->>                 return fpin;
->> --
->> 2.25.1
->>
-> 
-> Thanks
-> barry
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on broonie-spi/for-next tiwai-sound/for-next tiwai-sound/for-linus linus/master v6.7 next-20240112]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/AngeloGioacchino-Del-Regno/ASoC-mediatek-mt8173-afe-pcm-Convert-to-devm_pm_runtime_enable/20240111-185734
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20240111105247.117766-7-angelogioacchino.delregno%40collabora.com
+patch subject: [PATCH 6/7] ASoC: mediatek: mt8192-afe-pcm: Simplify with dev_err_probe()
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20240112/202401121548.rwSkkCvR-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 9bde5becb44ea071f5e1fa1f5d4071dc8788b18c)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401121548.rwSkkCvR-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401121548.rwSkkCvR-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> sound/soc/mediatek/mt8192/mt8192-afe-pcm.c:2284:46: warning: more '%' conversions than data arguments [-Wformat-insufficient-args]
+    2284 |                         return dev_err_probe(afe->dev, ret, "dai %d register fail");
+         |                                                                  ~^
+   1 warning generated.
+
+
+vim +2284 sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+
+  2172	
+  2173	static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
+  2174	{
+  2175		struct mtk_base_afe *afe;
+  2176		struct mt8192_afe_private *afe_priv;
+  2177		struct device *dev;
+  2178		struct reset_control *rstc;
+  2179		int i, ret, irq_id;
+  2180	
+  2181		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
+  2182		if (ret)
+  2183			return ret;
+  2184	
+  2185		afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+  2186		if (!afe)
+  2187			return -ENOMEM;
+  2188		platform_set_drvdata(pdev, afe);
+  2189	
+  2190		afe->platform_priv = devm_kzalloc(&pdev->dev, sizeof(*afe_priv),
+  2191						  GFP_KERNEL);
+  2192		if (!afe->platform_priv)
+  2193			return -ENOMEM;
+  2194		afe_priv = afe->platform_priv;
+  2195	
+  2196		afe->dev = &pdev->dev;
+  2197		dev = afe->dev;
+  2198	
+  2199		/* init audio related clock */
+  2200		ret = mt8192_init_clock(afe);
+  2201		if (ret) {
+  2202			dev_err(dev, "init clock error\n");
+  2203			return ret;
+  2204		}
+  2205	
+  2206		/* reset controller to reset audio regs before regmap cache */
+  2207		rstc = devm_reset_control_get_exclusive(dev, "audiosys");
+  2208		if (IS_ERR(rstc))
+  2209			return dev_err_probe(dev, PTR_ERR(rstc), "could not get audiosys reset\n");
+  2210	
+  2211		ret = reset_control_reset(rstc);
+  2212		if (ret)
+  2213			return dev_err_probe(dev, ret, "failed to trigger audio reset\n");
+  2214	
+  2215		ret = devm_pm_runtime_enable(&pdev->dev);
+  2216		if (ret)
+  2217			return ret;
+  2218	
+  2219		/* regmap init */
+  2220		afe->regmap = syscon_node_to_regmap(dev->parent->of_node);
+  2221		if (IS_ERR(afe->regmap))
+  2222			return dev_err_probe(dev, PTR_ERR(afe->regmap),
+  2223					     "could not get regmap from parent");
+  2224	
+  2225		ret = regmap_attach_dev(dev, afe->regmap, &mt8192_afe_regmap_config);
+  2226		if (ret)
+  2227			return dev_err_probe(dev, ret, "regmap_attach_dev fail\n");
+  2228	
+  2229		/* enable clock for regcache get default value from hw */
+  2230		afe_priv->pm_runtime_bypass_reg_ctl = true;
+  2231		pm_runtime_get_sync(&pdev->dev);
+  2232	
+  2233		ret = regmap_reinit_cache(afe->regmap, &mt8192_afe_regmap_config);
+  2234		if (ret)
+  2235			return dev_err_probe(dev, ret, "regmap_reinit_cache fail\n");
+  2236	
+  2237		pm_runtime_put_sync(&pdev->dev);
+  2238		afe_priv->pm_runtime_bypass_reg_ctl = false;
+  2239	
+  2240		regcache_cache_only(afe->regmap, true);
+  2241		regcache_mark_dirty(afe->regmap);
+  2242	
+  2243		/* init memif */
+  2244		afe->memif_size = MT8192_MEMIF_NUM;
+  2245		afe->memif = devm_kcalloc(dev, afe->memif_size, sizeof(*afe->memif),
+  2246					  GFP_KERNEL);
+  2247		if (!afe->memif)
+  2248			return -ENOMEM;
+  2249	
+  2250		for (i = 0; i < afe->memif_size; i++) {
+  2251			afe->memif[i].data = &memif_data[i];
+  2252			afe->memif[i].irq_usage = memif_irq_usage[i];
+  2253			afe->memif[i].const_irq = 1;
+  2254		}
+  2255	
+  2256		mutex_init(&afe->irq_alloc_lock);	/* needed when dynamic irq */
+  2257	
+  2258		/* init irq */
+  2259		afe->irqs_size = MT8192_IRQ_NUM;
+  2260		afe->irqs = devm_kcalloc(dev, afe->irqs_size, sizeof(*afe->irqs),
+  2261					 GFP_KERNEL);
+  2262		if (!afe->irqs)
+  2263			return -ENOMEM;
+  2264	
+  2265		for (i = 0; i < afe->irqs_size; i++)
+  2266			afe->irqs[i].irq_data = &irq_data[i];
+  2267	
+  2268		/* request irq */
+  2269		irq_id = platform_get_irq(pdev, 0);
+  2270		if (irq_id < 0)
+  2271			return irq_id;
+  2272	
+  2273		ret = devm_request_irq(dev, irq_id, mt8192_afe_irq_handler,
+  2274				       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
+  2275		if (ret)
+  2276			return dev_err_probe(dev, ret, "could not request_irq for Afe_ISR_Handle\n");
+  2277	
+  2278		/* init sub_dais */
+  2279		INIT_LIST_HEAD(&afe->sub_dais);
+  2280	
+  2281		for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
+  2282			ret = dai_register_cbs[i](afe);
+  2283			if (ret)
+> 2284				return dev_err_probe(afe->dev, ret, "dai %d register fail");
+  2285		}
+  2286	
+  2287		/* init dai_driver and component_driver */
+  2288		ret = mtk_afe_combine_sub_dai(afe);
+  2289		if (ret)
+  2290			return dev_err_probe(afe->dev, ret, "mtk_afe_combine_sub_dai fail\n");
+  2291	
+  2292		/* others */
+  2293		afe->mtk_afe_hardware = &mt8192_afe_hardware;
+  2294		afe->memif_fs = mt8192_memif_fs;
+  2295		afe->irq_fs = mt8192_irq_fs;
+  2296		afe->get_dai_fs = mt8192_get_dai_fs;
+  2297		afe->get_memif_pbuf_size = mt8192_get_memif_pbuf_size;
+  2298		afe->memif_32bit_supported = 1;
+  2299	
+  2300		afe->runtime_resume = mt8192_afe_runtime_resume;
+  2301		afe->runtime_suspend = mt8192_afe_runtime_suspend;
+  2302	
+  2303		/* register platform */
+  2304		ret = devm_snd_soc_register_component(&pdev->dev,
+  2305						      &mt8192_afe_component, NULL, 0);
+  2306		if (ret)
+  2307			return dev_err_probe(dev, ret, "Couldn't register AFE component\n");
+  2308	
+  2309		ret = devm_snd_soc_register_component(&pdev->dev,
+  2310						      &mt8192_afe_pcm_component,
+  2311						      afe->dai_drivers,
+  2312						      afe->num_dai_drivers);
+  2313		if (ret)
+  2314			return dev_err_probe(dev, ret, "Couldn't register AFE-PCM component\n");
+  2315	
+  2316		return 0;
+  2317	}
+  2318	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
