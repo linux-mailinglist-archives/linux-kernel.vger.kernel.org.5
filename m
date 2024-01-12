@@ -1,125 +1,145 @@
-Return-Path: <linux-kernel+bounces-24390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A8382BBE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:41:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84F8082BBD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37614B21326
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:41:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC4F41C24BAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03B25D74E;
-	Fri, 12 Jan 2024 07:41:06 +0000 (UTC)
-Received: from out187-20.us.a.mail.aliyun.com (out187-20.us.a.mail.aliyun.com [47.90.187.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138C35D729;
+	Fri, 12 Jan 2024 07:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CkBATEBS"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D4F5B5BF
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047207;MF=libang.li@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.W4PYTwM_1705044926;
-Received: from localhost(mailfrom:libang.li@antgroup.com fp:SMTPD_---.W4PYTwM_1705044926)
-          by smtp.aliyun-inc.com;
-          Fri, 12 Jan 2024 15:35:27 +0800
-From: "Bang Li" <libang.li@antgroup.com>
-To: akpm@linux-foundation.org
-Cc:  <linux-mm@kvack.org>,
-   <linux-kernel@vger.kernel.org>,
-  "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>,
-  "=?UTF-8?B?WWFuIFlhbihjYWlsaW5nKQ==?=" <yanyan.yan@antgroup.com>,
-  "Bang Li" <libang.li@antgroup.com>
-Subject: [PATCH] mm/compaction: Reduce unnecessary loops
-Date: Fri, 12 Jan 2024 15:35:24 +0800
-Message-Id: <20240112073524.80724-1-libang.li@antgroup.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17E45C90C
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-336c5b5c163so3656190f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:35:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705044942; x=1705649742; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i8RXyMrbx6Hr2r1zY5r+vgTqculOuLcjeE55YqU9Wvs=;
+        b=CkBATEBS74e9g5Hvhw/HNjlKTZX1z40DHQcuc1GfH3pSRaLfQhveoCv6gZTrW044xO
+         Q9DCHSVp5K3hscsMOqTBmWvifnS2Pxko1VliLwcc6UaqsM2RrJoim+4BudRY5/yRypOt
+         2ocMxApPcXZFYf5Xu447FgyjRzL1axzuQ6wAXDjVLaz462CI/014UeNaPmwi5xi7YjQG
+         TN1fTpiP5jtyvkpmTjv4eN6pItEIJ073sUPRQNu5irXJTi//7j67qrJEcssi7e/+hLEu
+         Br5EF/73BwN55/7NUlj5CLNYEup0uARy23SZsOCrhiCvOVqSWKyKrPH+8R/s+6303bAb
+         iO4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705044942; x=1705649742;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i8RXyMrbx6Hr2r1zY5r+vgTqculOuLcjeE55YqU9Wvs=;
+        b=LLmatmk+aZDSQtI70hgRBJfdJXBBcjPT1cJhhFeBl3s9x6heChOeax/cqqzUymSPRo
+         YzThgj+RG/WeUBiw9DIUNHJc1CZTZQIyq/Cu+mdbFqNP5xc5Tfnmjgkt1dG6Hd383Ej6
+         lTBw/VuD764jthoqOLd7J+mRkiUadcgfpVPmKMX9z9vj7tpDZFgCpvQMkmNnfMPUWRaS
+         dGtCtA/cnGzvLITYuqCeQ/kaCWQcV2ndpPjP5ejDHWN3muLd+vVDId+P45ZCYJKI9c7H
+         6fBMl1AzXiFb03chIKxyFlpU1SVBbb0RYVOSO+e5pQMEwqQZb9vnkQ9RXoAk1ca0SaWB
+         Boog==
+X-Gm-Message-State: AOJu0YyRdiBVwWaaCdxdH0m3G6yFEqoCiSxZqjx4udrUlrABSMhA7vUC
+	R+6PAfl8CTEwHN/97CXxxTVLp2LuWPaAUA==
+X-Google-Smtp-Source: AGHT+IE3t6guwCPjVpNn/txwjvZie6PhBIVXbNlSCVZYTGIQb9PhEqj179AyFo06qyOu64EZ/qSvYg==
+X-Received: by 2002:adf:9794:0:b0:337:8274:a302 with SMTP id s20-20020adf9794000000b003378274a302mr462933wrb.23.1705044942112;
+        Thu, 11 Jan 2024 23:35:42 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id l26-20020adfb11a000000b0033762d4ad5asm3092792wra.81.2024.01.11.23.35.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 23:35:41 -0800 (PST)
+Message-ID: <2e3b0bcc-e57a-43b0-9f92-da4e3ff3d540@linaro.org>
+Date: Fri, 12 Jan 2024 08:35:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: bus: Document Broadcom GISB arbiter
+ 74165 compatible
+Content-Language: en-US
+To: Florian Fainelli <florian.fainelli@broadcom.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Bjorn Helgaas
+ <bhelgaas@google.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20240111231539.783785-1-florian.fainelli@broadcom.com>
+ <20240111231539.783785-2-florian.fainelli@broadcom.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240111231539.783785-2-florian.fainelli@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Compaction will be triggered when we write 1 to '/proc/sys/vm/
-compact_memory'. During the execution of the process, when we send
-SIGKILL to terminate the compaction, the process does not exit
-immediately. Instead, it will continue to loop through the remaining
-zones and nodes before exiting.
+On 12/01/2024 00:15, Florian Fainelli wrote:
+> The 74165 chip introduces a new layout for the GISB arbiter which is not
+> identical to previous chips, document the new compatible that we are
+> going to key off.
+> 
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
 
-in my environment:
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[root]# cat /proc/buddyinfo
-Node 0, zone      DMA      1      1      1      0      2      1      1      0      1      1      3
-Node 0, zone    DMA32   1666   1123    804    625    488    356    321    278    209    178    250
-Node 0, zone   Normal  58852  83160  49983   9812   2287   1229  19604  24471  10346   5219  12205
-[root]# echo 1 > /sys/kernel/debug/tracing/events/compaction/mm_compaction_end/enable
-
-before the patch:
-
-[root]# timeout --signal=SIGKILL 0.002 bash -c 'echo 1 > /proc/sys/vm/compact_memory'
-[root]# cat /sys/kernel/debug/tracing/trace_pipe
-           <...>-26494   [014] .....   226.468993: mm_compaction_end: zone_start=0x1 migrate_pfn=0xe00 free_pfn=0xe00 zone_end=0x1000, mode=sync status=complete
-           <...>-26494   [014] .....   226.469718: mm_compaction_end: zone_start=0x1000 migrate_pfn=0x20a80 free_pfn=0xffe00 zone_end=0x100000, mode=sync status=contended
-           <...>-26494   [014] .....   226.469720: mm_compaction_end: zone_start=0x100000 migrate_pfn=0x100000 free_pfn=0x307fe00 zone_end=0x3080000, mode=sync status=contended
-
-after the patch:
-
-[root]# timeout --signal=SIGKILL 0.002 bash -c 'echo 1 > /proc/sys/vm/compact_memory'
-[root]# cat /sys/kernel/debug/tracing/trace_pipe
-           <...>-17491   [053] .....   109.005387: mm_compaction_end: zone_start=0x1 migrate_pfn=0xe00 free_pfn=0xe00 zone_end=0x1000, mode=sync status=complete
-           <...>-17491   [053] .....   109.006139: mm_compaction_end: zone_start=0x1000 migrate_pfn=0x22220 free_pfn=0xffe00 zone_end=0x100000, mode=sync status=contended
-
-Although it exits quickly after receiving the SIGKILL signal, a better
-solution is to terminate the loop early after receiving the SIGKILL
-signal.
-
-Signed-off-by: Bang Li <libang.li@antgroup.com>
----
- mm/compaction.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 27ada42924d5..16f2bde5205d 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2807,7 +2807,7 @@ static void proactive_compact_node(pg_data_t *pgdat)
- }
- 
- /* Compact all zones within a node */
--static void compact_node(int nid)
-+static int compact_node(int nid)
- {
- 	pg_data_t *pgdat = NODE_DATA(nid);
- 	int zoneid;
-@@ -2830,7 +2830,12 @@ static void compact_node(int nid)
- 		cc.zone = zone;
- 
- 		compact_zone(&cc, NULL);
-+
-+		if (fatal_signal_pending(current))
-+			return -EINTR;
- 	}
-+
-+	return 0;
- }
- 
- /* Compact all nodes in the system */
-@@ -2841,8 +2846,10 @@ static void compact_nodes(void)
- 	/* Flush pending updates to the LRU lists */
- 	lru_add_drain_all();
- 
--	for_each_online_node(nid)
--		compact_node(nid);
-+	for_each_online_node(nid) {
-+		if (compact_node(nid))
-+			break;
-+	}
- }
- 
- static int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
--- 
-2.19.1.6.gb485710b
+Best regards,
+Krzysztof
 
 
