@@ -1,199 +1,97 @@
-Return-Path: <linux-kernel+bounces-24577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2280B82BE6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:20:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0AC82BE73
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B67E01F250E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:20:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC14A1C20A5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D33A5EE81;
-	Fri, 12 Jan 2024 10:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E880564CEE;
+	Fri, 12 Jan 2024 10:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="daeZwfSN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="OTc6kLuE"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44CE5DF13;
-	Fri, 12 Jan 2024 10:16:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1762C433C7;
-	Fri, 12 Jan 2024 10:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705054597;
-	bh=qNmjHVAcUhvkoBgfYIyluKuCUP9AzOWE8BbeAF90uB0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=daeZwfSNTwQZ2fmtQBwAyjUTbM1eSft8cfUGaIWterJ1VCgY1F8o0dPS/wR+rP/G/
-	 j+Gv0Wag/w4JZaXLK00ol2BxRNm2exXI59dBqPxYfz+6arS/C6p7ZM4Hdw0/ZQzsVA
-	 RTt6qu9mJrGkJuV59dqqo4mYCuqM8GPMvegewhGwOtsTCUaN2YBwvsAxwvhjKGe+VD
-	 rPEZkf5t0qjxAjw1e/Trz/UcpWiwKzic8BJLdv66Q3DUkqb9lNne5MGcDUBUBfVF60
-	 vdAAQ+wVB9tiNRlIsGRigwVgHhUIHvNOx5JYHkwfnz5e3Wy5fk3eAGYpvqCgJsC5nx
-	 mt5veFDo6ZgMg==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v6 29/36] tracing: Add ftrace_fill_perf_regs() for perf event
-Date: Fri, 12 Jan 2024 19:16:31 +0900
-Message-Id: <170505459120.459169.12920628413665440562.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170505424954.459169.10630626365737237288.stgit@devnote2>
-References: <170505424954.459169.10630626365737237288.stgit@devnote2>
-User-Agent: StGit/0.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17ACE60B89;
+	Fri, 12 Jan 2024 10:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8CE61C000F;
+	Fri, 12 Jan 2024 10:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705054607;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0K0NkJXHATQCdt6Zs6v3+PLVIU0Q+wxMutthUOuyUe0=;
+	b=OTc6kLuE8/j50AyxXkOpTdbycuBdRRsukDgen1EqqVONnMp0PamyOrRuoWRUIED/OYtTEw
+	7lkETMD0ixKhcBqNAjH/q0aO8LEJ7usz/0T6/CqFl/jKKnibtxI88c0XjSB0knZL1yMsy4
+	0pQ6aNrdW9EBzF87wkoZ7lNQK5KQWfh9qwzn26VoEfVeiE7OykI+AtQuPKiaEYpZgpl7Lp
+	yg4MyEJLoXbjJyzj4G3h37iTqwWY7Y1qqfyxUn+Uy1OYxw8EgIGKuqGsoredvq/F2Z+seW
+	r0v8UJV84XImt35JzOb6qjErjAXnp2jFnbJBQ7hiBgOWs1fa6EVlq6+Ya4qVCg==
+Date: Fri, 12 Jan 2024 11:16:37 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>, Gustavo Pimentel
+ <gustavo.pimentel@synopsys.com>, Vinod Koul <vkoul@kernel.org>, Cai Huoqing
+ <cai.huoqing@linux.dev>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, Herve Codina
+ <herve.codina@bootlin.com>
+Subject: Re: [PATCH v6 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
+ setup
+Message-ID: <20240112111637.01a5ea21@kmaincent-XPS-13-7390>
+In-Reply-To: <20231122171242.GA266396@thinkpad>
+References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
+	<20231121062629.GA3315@thinkpad>
+	<js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
+	<20231121120828.GC3315@thinkpad>
+	<bqtgnsxqmvndog4jtmyy6lnj2cp4kh7c2lcwmjjqbet53vrhhn@i6fc6vxsvbam>
+	<20231122171242.GA266396@thinkpad>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Wed, 22 Nov 2023 22:42:42 +0530
+Manivannan Sadhasivam <mani@kernel.org> wrote:
 
-Add ftrace_fill_perf_regs() which should be compatible with the
-perf_fetch_caller_regs(). In other words, the pt_regs returned from the
-ftrace_fill_perf_regs() must satisfy 'user_mode(regs) == false' and can be
-used for stack tracing.
+> > For all of that you'll need to fix the
+> > dw_pcie_edma_find_chip()/dw_pcie_edma_detect() method somehow.
+> >=20
+> > Alternatively, to keep things simple you can convert the
+> > dw_pcie_edma_find_chip()/dw_pcie_edma_detect() methods to just relying
+> > on the HDMA settings being fully specified by the low-level drivers.
+> >  =20
+>=20
+> This looks like the best possible solution at the moment. Thanks for the
+> insight!
+>=20
+> I will post the patches together with the HDMA enablement ones.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
-  Changes from previous series: NOTHING, just forward ported.
----
- arch/arm64/include/asm/ftrace.h   |    7 +++++++
- arch/powerpc/include/asm/ftrace.h |    7 +++++++
- arch/s390/include/asm/ftrace.h    |    5 +++++
- arch/x86/include/asm/ftrace.h     |    7 +++++++
- include/linux/ftrace.h            |   31 +++++++++++++++++++++++++++++++
- 5 files changed, 57 insertions(+)
+Hello Manivannan,
 
-diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-index 31051fa2b4d9..c1921bdf760b 100644
---- a/arch/arm64/include/asm/ftrace.h
-+++ b/arch/arm64/include/asm/ftrace.h
-@@ -154,6 +154,13 @@ ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
- 	return regs;
- }
- 
-+#define arch_ftrace_fill_perf_regs(fregs, _regs) do {		\
-+		(_regs)->pc = (fregs)->pc;			\
-+		(_regs)->regs[29] = (fregs)->fp;		\
-+		(_regs)->sp = (fregs)->sp;			\
-+		(_regs)->pstate = PSR_MODE_EL1h;		\
-+	} while (0)
-+
- int ftrace_regs_query_register_offset(const char *name);
- 
- int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
-diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
-index 7e138e0e3baf..8737a794c764 100644
---- a/arch/powerpc/include/asm/ftrace.h
-+++ b/arch/powerpc/include/asm/ftrace.h
-@@ -52,6 +52,13 @@ static __always_inline struct pt_regs *arch_ftrace_get_regs(struct ftrace_regs *
- 	return fregs->regs.msr ? &fregs->regs : NULL;
- }
- 
-+#define arch_ftrace_fill_perf_regs(fregs, _regs) do {		\
-+		(_regs)->result = 0;				\
-+		(_regs)->nip = (fregs)->regs.nip;		\
-+		(_regs)->gpr[1] = (fregs)->regs.gpr[1];		\
-+		asm volatile("mfmsr %0" : "=r" ((_regs)->msr));	\
-+	} while (0)
-+
- static __always_inline void
- ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs,
- 				    unsigned long ip)
-diff --git a/arch/s390/include/asm/ftrace.h b/arch/s390/include/asm/ftrace.h
-index 01e775c98425..c2a269c1617c 100644
---- a/arch/s390/include/asm/ftrace.h
-+++ b/arch/s390/include/asm/ftrace.h
-@@ -97,6 +97,11 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs,
- #define ftrace_regs_query_register_offset(name) \
- 	regs_query_register_offset(name)
- 
-+#define arch_ftrace_fill_perf_regs(fregs, _regs)	 do {		\
-+		(_regs)->psw.addr = (fregs)->regs.psw.addr;		\
-+		(_regs)->gprs[15] = (fregs)->regs.gprs[15];		\
-+	} while (0)
-+
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- /*
-  * When an ftrace registered caller is tracing a function that is
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index a061f8832b20..2e3de45e9746 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -54,6 +54,13 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
- 	return &fregs->regs;
- }
- 
-+#define arch_ftrace_fill_perf_regs(fregs, _regs) do {	\
-+		(_regs)->ip = (fregs)->regs.ip;		\
-+		(_regs)->sp = (fregs)->regs.sp;		\
-+		(_regs)->cs = __KERNEL_CS;		\
-+		(_regs)->flags = 0;			\
-+	} while (0)
-+
- #define ftrace_regs_set_instruction_pointer(fregs, _ip)	\
- 	do { (fregs)->regs.ip = (_ip); } while (0)
- 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 515ec804d605..8150edcf8496 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -190,6 +190,37 @@ ftrace_partial_regs(struct ftrace_regs *fregs, struct pt_regs *regs)
- 
- #endif /* !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS || CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST */
- 
-+#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+
-+/*
-+ * Please define arch dependent pt_regs which compatible to the
-+ * perf_arch_fetch_caller_regs() but based on ftrace_regs.
-+ * This requires
-+ *   - user_mode(_regs) returns false (always kernel mode).
-+ *   - able to use the _regs for stack trace.
-+ */
-+#ifndef arch_ftrace_fill_perf_regs
-+/* As same as perf_arch_fetch_caller_regs(), do nothing by default */
-+#define arch_ftrace_fill_perf_regs(fregs, _regs) do {} while (0)
-+#endif
-+
-+static __always_inline struct pt_regs *
-+ftrace_fill_perf_regs(struct ftrace_regs *fregs, struct pt_regs *regs)
-+{
-+	arch_ftrace_fill_perf_regs(fregs, regs);
-+	return regs;
-+}
-+
-+#else /* !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
-+
-+static __always_inline struct pt_regs *
-+ftrace_fill_perf_regs(struct ftrace_regs *fregs, struct pt_regs *regs)
-+{
-+	return &fregs->regs;
-+}
-+
-+#endif
-+
- /*
-  * When true, the ftrace_regs_{get,set}_*() functions may be used on fregs.
-  * Note: this can be true even when ftrace_get_regs() cannot provide a pt_regs.
+What is the status of this series?
+Do you want to wait for designware-ep.c to be HDMA compatible before merging
+the fixes? Do you expect us to do something? We can't work on the
+designware-ep.c driver as we do not have such hardware.
+Shouldn't fixes be merged as soon as possible?
 
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
