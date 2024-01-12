@@ -1,201 +1,133 @@
-Return-Path: <linux-kernel+bounces-24399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE3A182BC0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:50:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CDCA82BBE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:43:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E1E928257F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:50:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C37F61C24FDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A6D5D742;
-	Fri, 12 Jan 2024 07:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FAB5D730;
+	Fri, 12 Jan 2024 07:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="U6UnVReg"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="FKRjjSpE"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9616A5C919;
-	Fri, 12 Jan 2024 07:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4F96BC67;
-	Fri, 12 Jan 2024 08:40:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1705045229;
-	bh=MO4/NjAx26u9xJe2adlZSy9KUvlbrcggy/xFbm+XEuo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=U6UnVRegzaVTm42OrnsGkNMEHYm4Rn5PJNsaKSnU37eepdVp/Tv2BLSt+t19UZdic
-	 kfh6h1Pa8LGdVl/KzIiIgWMtwZ47KwhnlMj0rZi1PQhA66Bbr5qkzGsg3f9+wLTZ/N
-	 4ewFUQryZb+sEPuJLkQDvHj39Gp9QBPBk5Rnq+W4=
-Date: Fri, 12 Jan 2024 09:41:41 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Julien Stephan <jstephan@baylibre.com>,
-	Phi-bang Nguyen <pnguyen@baylibre.com>,
-	Andy Hsieh <andy.hsieh@mediatek.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	Florian Sylvestre <fsylvestre@baylibre.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-	Louis Kuo <louis.kuo@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 2/5] dt-bindings: media: add mediatek ISP3.0 camsv
-Message-ID: <20240112074141.GA21256@pendragon.ideasonboard.com>
-References: <20240110141443.364655-1-jstephan@baylibre.com>
- <20240110141443.364655-3-jstephan@baylibre.com>
- <feb4e04f-8282-4b52-b785-07bf15008e06@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA125C8E1;
+	Fri, 12 Jan 2024 07:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1705045401; x=1736581401;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1T3tgkH4iijZDYGTTzAf0IpYzhHY6enp+pqFzjuGwdw=;
+  b=FKRjjSpEBTRyEYz9JO+JgDbEv99IjV8mJAfYCoW2wXuFLU8v2kOmLXaX
+   XywKJZFaR8/fAxyKCfBzl8iXK8vb9BUEPEG42NJfiaBiuhE+634qVZsJD
+   CJk/g/oEZsik4SfhJNgJjFL0m3AMnfFQS9vQ5mgvx73NIhBGTmFaRLBR/
+   hqat4wU0NJNq4KdRAmihW27JUfXC40QgdYVEHA5Q09Cfwv+o78YYCDhma
+   /JigGYNaXRQyD853lAQB8ti5DBeOq6AF3pryIVX4ckQUgBjR0ZaVpZt1H
+   gdgthgZdlwXDaxRsgExtmRuifdNRCvyt6hWK0MRrruYAOK/6ca7HhCCv3
+   w==;
+X-CSE-ConnectionGUID: tOc90VrxTfqk6wus7ohuMw==
+X-CSE-MsgGUID: sHvIQsA7RM2ZtlC6VGTG9w==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
+   d="asc'?scan'208";a="15111438"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Jan 2024 00:43:14 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Jan 2024 00:42:53 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 12 Jan 2024 00:42:49 -0700
+Date: Fri, 12 Jan 2024 07:42:14 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Chen Wang <unicorn_wang@outlook.com>
+CC: Conor Dooley <conor@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>, Chen Wang <unicornxw@gmail.com>,
+	<aou@eecs.berkeley.edu>, <chao.wei@sophgo.com>,
+	<krzysztof.kozlowski+dt@linaro.org>, <mturquette@baylibre.com>,
+	<palmer@dabbelt.com>, <paul.walmsley@sifive.com>, <richardcochran@gmail.com>,
+	<robh+dt@kernel.org>, <sboyd@kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <haijiao.liu@sophgo.com>,
+	<xiaoguang.xing@sophgo.com>, <guoren@kernel.org>, <jszhang@kernel.org>,
+	<inochiama@outlook.com>, <samuel.holland@sifive.com>
+Subject: Re: [PATCH v7 2/4] dt-bindings: clock: sophgo: support SG2042
+Message-ID: <20240112-overhead-disallow-8c2a4b97c36c@wendy>
+References: <cover.1704694903.git.unicorn_wang@outlook.com>
+ <925d99d5b4ece01337cb3389aaea4b631894dd1d.1704694903.git.unicorn_wang@outlook.com>
+ <f88b79c3-e44b-4136-ae56-10e1f2502e2d@linaro.org>
+ <MA0P287MB2822C7A3C1DC7786708E860BFE692@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+ <20240110-untoasted-underfed-fe81479506f6@spud>
+ <MA0P287MB282224A6097B4FCCF721C89AFE682@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+ <20240111-jolly-prize-930931cc648a@spud>
+ <MA0P287MB28229BCC9EA83507B99A9F3BFE6F2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IJiafrCvNW1u7xS0"
+Content-Disposition: inline
+In-Reply-To: <MA0P287MB28229BCC9EA83507B99A9F3BFE6F2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+
+--IJiafrCvNW1u7xS0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <feb4e04f-8282-4b52-b785-07bf15008e06@linaro.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 12, 2024 at 08:34:45AM +0100, Krzysztof Kozlowski wrote:
-> On 10/01/2024 15:14, Julien Stephan wrote:
-> > From: Phi-bang Nguyen <pnguyen@baylibre.com>
-> > 
-> > This adds the bindings, for the ISP3.0 camsv module embedded in
-> > some Mediatek SoC, such as the mt8365
-> > 
-> > Signed-off-by: Phi-bang Nguyen <pnguyen@baylibre.com>
-> > Signed-off-by: Julien Stephan <jstephan@baylibre.com>
-> > Link: https://lore.kernel.org/r/20230807094940.329165-4-jstephan@baylibre.com
-> > ---
-> >  .../bindings/media/mediatek,mt8365-camsv.yaml | 109 ++++++++++++++++++
-> >  MAINTAINERS                                   |   1 +
-> >  2 files changed, 110 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mt8365-camsv.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/mediatek,mt8365-camsv.yaml b/Documentation/devicetree/bindings/media/mediatek,mt8365-camsv.yaml
-> > new file mode 100644
-> > index 000000000000..097b1ab6bc72
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/mediatek,mt8365-camsv.yaml
-> > @@ -0,0 +1,109 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +# Copyright (c) 2023 MediaTek, BayLibre
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/mediatek,mt8365-camsv.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MediaTek CAMSV 3.0
-> > +
-> > +maintainers:
-> > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > +  - Julien Stephan <jstephan@baylibre.com>
-> > +  - Andy Hsieh <andy.hsieh@mediatek.com>
-> > +
-> > +description:
-> > +  The CAMSV is a set of DMA engines connected to the SENINF CSI-2
-> > +  receivers. The number of CAMSVs depend on the SoC model.
-> 
-> DMA should not go to media, but to dma
+On Fri, Jan 12, 2024 at 08:08:15AM +0800, Chen Wang wrote:
+> On 2024/1/12 0:58, Conor Dooley wrote:
+> > On Thu, Jan 11, 2024 at 04:00:04PM +0800, Chen Wang wrote:
 
-They're not generic DMA engines. The CAMSV is a video capture device
-that includes a DMA engine, much like pretty much all the other video
-capture devices.
+> > > There are four types of clocks for SG2042 and following are where the=
+ir
+> > > control registers are defined in:
+> > >=20
+> > > PLL=EF=BC=9Aall in SYS_CTRL
+> > > DIV: all in CLOCK
+> > > GATE: some are in SYS_CTRL, some others are in CLOCK
+> > When you say "some", do you meant some entire clocks are in SYS_CTRL and
+> > some entire clocks are in the CLOCKS? Or do you meant that for a given
+> > clock, some registers are in SYS_CTRL and some are in CLOCK? It's the
+> > first option, right?
+>=20
+> It's the first option.
 
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,mt8365-camsv
-> > +
-> > +  reg:
-> > +    items:
-> > +      - description: camsv base
-> > +      - description: img0 base
-> > +      - description: tg base
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  power-domains:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: cam clock
-> > +      - description: camtg clock
-> > +      - description: camsv clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: cam
-> > +      - const: camtg
-> > +      - const: camsv
-> > +
-> > +  iommus:
-> > +    maxItems: 1
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        $ref: /schemas/graph.yaml#/properties/port
-> > +        description: connection point for camsv0
-> 
-> This explains me nothing. What type of connection point? How does it fit
-> the pipeline going to the display?
+Then the gate clocks that are fully contained within SYS_CTRL are
+outputs of SYS_CTRL and gate clocks fully contained within CLOCK are
+outputs of CLOCK. You should not use a phandle to SYS_CTRL from the
+CLOCKS node so that you can pretend they are part of CLOCKS just because
+that makes writing your driver easier. That said, obviously you can
+share the routines for turning the gates on and off etc.
 
-The description seems wrong, it should state
+Cheers,
+Conor.
 
-        description: Connection to the SENINF output
+--IJiafrCvNW1u7xS0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-or something similar.
+-----BEGIN PGP SIGNATURE-----
 
-> It seems you represented DMA as some other device to make your drivers
-> easier... That's not how it works.
-> 
-> > +
-> > +    required:
-> > +      - port@0
-> > +
-> > +required:
-> > +  - compatible
-> > +  - interrupts
-> > +  - clocks
-> > +  - clock-names
-> > +  - power-domains
-> > +  - iommus
-> > +  - ports
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    #include <dt-bindings/clock/mediatek,mt8365-clk.h>
-> > +    #include <dt-bindings/memory/mediatek,mt8365-larb-port.h>
-> > +    #include <dt-bindings/power/mediatek,mt8365-power.h>
-> > +
-> > +    soc {
-> > +        #address-cells = <2>;
-> > +        #size-cells = <2>;
-> > +
-> > +        camsv1: camsv@15050000 {
-> 
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaDtUAAKCRB4tDGHoIJi
+0nxTAP9CrpCZwpKaT/G47Q3VE/Iop0YxDp0B26eM0tRrfqHaLwD/cs6kxe63wPej
+jDHoKl/useqwla8QveRde8FpitXfYwE=
+=y7/T
+-----END PGP SIGNATURE-----
 
--- 
-Regards,
-
-Laurent Pinchart
+--IJiafrCvNW1u7xS0--
 
