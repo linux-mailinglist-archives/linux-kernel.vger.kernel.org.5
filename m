@@ -1,154 +1,133 @@
-Return-Path: <linux-kernel+bounces-24670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44E1282C037
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD73B82C040
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BF861C21BB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:58:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3A4E1C219CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0602F6BB37;
-	Fri, 12 Jan 2024 12:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB51F6BB37;
+	Fri, 12 Jan 2024 12:59:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i9sgU9YS"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="gjckNLXe"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083B059B4E;
-	Fri, 12 Jan 2024 12:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-598699c0f1eso2457143eaf.2;
-        Fri, 12 Jan 2024 04:58:15 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322596A019
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2bea904e72so78099766b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:59:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705064295; x=1705669095; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKCP4kSmi8Znay+ncNnEwwM69gACCAM8H97RoLluFSU=;
-        b=i9sgU9YS4bbT/hL35ORVlh7BSyMLzDm4VYmgEcS2w8+k4SlBGyEUtmQQA5p+MoLY5m
-         o0pH/usAbtSngmVqc1e53QGetkcOQ9e2TKDXtSVfkW+eKSA4PQhvZBqtG8pFSk02iClO
-         iPgx5vVrMj5t0qTuMCGvRH937H51AtiGu0lK/OAV2JzGTJPUW/WwRZA7PDuPRQYNt5wM
-         BpZdUlJjrcahzzjxVqlF8uvDnWYxoWh0tMI1evcd5RmGlSkAk3V9z496xjKcon2/8XsK
-         Kp7S8UtQwv2ouqKPi+1i8ODiVu8cDatmvkO2IQqkfIMzsj46H62SeTXbCAgqp5e8HOVq
-         g/yA==
+        d=ffwll.ch; s=google; t=1705064341; x=1705669141; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q/IzbCUttBySDW4UF+/3Rn+hm1gmEpaoc8lHsutNmx8=;
+        b=gjckNLXeJl1VQKwGhBLQJ6tU0IFqxyl6G/BhGUbaaaHvDKDRm++LMsDYwin5W7Dtbw
+         eq6Ilj484MUG7TV6UC94ZWWISkSfgp75ESs4EV4WrwFJ1TWXU2kOx9sKkismzM5LmxZf
+         WqfDsWg4P1C2ILDwlsjlB+2pVhE1xX6VQeIi8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705064295; x=1705669095;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SKCP4kSmi8Znay+ncNnEwwM69gACCAM8H97RoLluFSU=;
-        b=TJw7c5kNHIMih9HNNyYOmPPpwAxft0+mv877XxDmXkuzu2GSKMF4uCz233PH3r8+l7
-         +k61fjhxjy03W6YNGH1/ZnfJVfeYPqm1X/gVcusO7YvqupudlsnyNJfs/bT6+b66uKQk
-         GaWbp8BUf7/nvEbSA151Z0CK2rKesf554pUEo4ykbCfLDKBIGZkBFrkAFr5ID/XYB1c/
-         Ede/QQQjaGQKCsF1iX3oiR2EcepaHSjBbyu7PvfFSa+T54dUaSnQL3owv6CHw6z7dhpi
-         ke3ySCOBIC1eVuggZGPcOBZb351psxWSq1Ei7t1cFfx+as/QoM0gkawsIPmPtEVFjaC2
-         AjJQ==
-X-Gm-Message-State: AOJu0YxCJyL6QKus+ne/TqCwveemwoA6+vdEGOXU9+SeH2p0mLy7890A
-	y4fhthPY0UYiPiAzcfiVDw0=
-X-Google-Smtp-Source: AGHT+IFyWL6bt24i5tSo2BMxGDGJWVKgM4GucDENZVqsHtJAJBXAYskf/llxHwOfhtIMdDRmCxXWaA==
-X-Received: by 2002:a05:6358:4d83:b0:172:ae2a:2256 with SMTP id cc3-20020a0563584d8300b00172ae2a2256mr1350395rwb.27.1705064294552;
-        Fri, 12 Jan 2024 04:58:14 -0800 (PST)
-Received: from g2039B650.. ([106.39.42.152])
-        by smtp.gmail.com with ESMTPSA id fd14-20020a056a002e8e00b006dad4c91e8fsm3103080pfb.205.2024.01.12.04.58.11
+        d=1e100.net; s=20230601; t=1705064341; x=1705669141;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q/IzbCUttBySDW4UF+/3Rn+hm1gmEpaoc8lHsutNmx8=;
+        b=k/GHL1E3MRrYVNSO82e6BazBCfo6pKNri6ZkRCksMiJKk0OkMbCPFR9GQEXnhCVxL5
+         1TKZsxoEMBxeNhOTh6KTFllGiQz91EUbV2RiUsTtUQBCFy2c9Twe3TLSVLI4jS36u+VP
+         WaGv+x3Re1U0aSA0EydvkXR4e6PweeCuwNyHXrY74uR6lSuvAQNwjoHK0nAgbrdnLSLL
+         FdPgGR42uu26EYEJci15F5UwpKAz5LBah5UnZRhP5u91ZEHcPVkB6lB53mHDzWy0cWwV
+         9d3UI+BLofmUy0xKcxNET9YcupaLVAvdmbwaItpwsn0ooRsqTuTb5aqK55jfC7BFFt17
+         GD8A==
+X-Gm-Message-State: AOJu0Yzqr7yq35PigIblftGGlOQ+lDQjh1UqFHem5Frcgy7R/L/uYRvR
+	zqoInVw6d++KYIypJw1t6jOeVCQYXjldCQ==
+X-Google-Smtp-Source: AGHT+IEfYaqUTOGYXCnanYoymnssMQ6JQhm90dq0lyVwhDnSY+yy0Tw5ugD8WF4joaSuBa55ngsAoA==
+X-Received: by 2002:a17:906:5859:b0:a28:6639:ba53 with SMTP id h25-20020a170906585900b00a286639ba53mr1417632ejs.6.1705064341418;
+        Fri, 12 Jan 2024 04:59:01 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id tg14-20020a1709078dce00b00a2cb117050fsm806326ejc.126.2024.01.12.04.59.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 04:58:14 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: gregkh@linuxfoundation.org,
-	jirislaby@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] tty: fix atomicity violation in n_tty_read
-Date: Fri, 12 Jan 2024 20:58:01 +0800
-Message-Id: <20240112125801.2650-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 12 Jan 2024 04:59:01 -0800 (PST)
+Date: Fri, 12 Jan 2024 13:58:59 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org, Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH] drm/doc: internals: remove section on PCI legacy support
+Message-ID: <ZaE3k1042oCQdft0@phenom.ffwll.local>
+Mail-Followup-To: Randy Dunlap <rdunlap@infradead.org>,
+	linux-kernel@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+References: <20240112051731.15722-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112051731.15722-1-rdunlap@infradead.org>
+X-Operating-System: Linux phenom 6.5.0-4-amd64 
 
-In n_tty_read():
-    if (packet && tty->link->ctrl.pktstatus) {
-    ...
-    spin_lock_irq(&tty->link->ctrl.lock);
-    cs = tty->link->ctrl.pktstatus;
-    tty->link->ctrl.pktstatus = 0;
-    spin_unlock_irq(&tty->link->ctrl.lock);
-    *kb++ = cs;
-    ...
+On Thu, Jan 11, 2024 at 09:17:31PM -0800, Randy Dunlap wrote:
+> The functions that were described in this section of
+> drm-internals.rst were removed in NOV-2023, along with all of the
+> kernel-doc comments in the source file. This now causes a
+> docs build warning, so remove that section of the documentation also.
+> 
+> drivers/gpu/drm/drm_pci.c:1: warning: no structured comments found
+> 
+> Fixes: 2504c7ec728b ("drm: Remove source code for non-KMS drivers")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
 
-In n_tty_read() function, there is a potential atomicity violation issue.
-The tty->link->ctrl.pktstatus might be set to 0 after being checked, which
-could lead to incorrect values in the kernel space buffer
-pointer (kb/kbuf). The check if (packet && tty->link->ctrl.pktstatus)
-occurs outside the spin_lock_irq(&tty->link->ctrl.lock) block. This may
-lead to tty->link->ctrl.pktstatus being altered between the check and the
-lock, causing *kb++ = cs; to be assigned with a zero pktstatus value.
+Applied to drm-misc-next, thanks!
+-Sima
 
-This possible bug is found by an experimental static analysis tool
-developed by our team, BassCheck[1]. This tool analyzes the locking APIs
-to extract function pairs that can be concurrently executed, and then
-analyzes the instructions in the paired functions to identify possible
-concurrency bugs including data races and atomicity violations. The above
-possible bug is reported when our tool analyzes the source code of
-Linux 5.17.
+> ---
+>  Documentation/gpu/drm-internals.rst |   12 ------------
+>  1 file changed, 12 deletions(-)
+> 
+> diff -- a/Documentation/gpu/drm-internals.rst b/Documentation/gpu/drm-internals.rst
+> --- a/Documentation/gpu/drm-internals.rst
+> +++ b/Documentation/gpu/drm-internals.rst
+> @@ -153,18 +153,6 @@ Managed Resources
+>  .. kernel-doc:: include/drm/drm_managed.h
+>     :internal:
+>  
+> -Bus-specific Device Registration and PCI Support
+> -------------------------------------------------
+> -
+> -A number of functions are provided to help with device registration. The
+> -functions deal with PCI and platform devices respectively and are only
+> -provided for historical reasons. These are all deprecated and shouldn't
+> -be used in new drivers. Besides that there's a few helpers for pci
+> -drivers.
+> -
+> -.. kernel-doc:: drivers/gpu/drm/drm_pci.c
+> -   :export:
+> -
+>  Open/Close, File Operations and IOCTLs
+>  ======================================
+>  
 
-To resolve this atomicity issue, it is suggested to move the condition
-check if (packet && tty->link->ctrl.pktstatus) inside the spin_lock block.
-With this patch applied, our tool no longer reports the bug, with the
-kernel configuration allyesconfig for x86_64. Due to the absence of the
-requisite hardware, we are unable to conduct runtime testing of the patch.
-Therefore, our verification is solely based on code logic analysis.
-
-[1] https://sites.google.com/view/basscheck/
-
-Fixes: 64d608db38ff ("tty: cumulate and document tty_struct::ctrl* members")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
----
- drivers/tty/n_tty.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index f252d0b5a434..df54ab0c4d8c 100644
---- a/drivers/tty/n_tty.c
-+++ b/drivers/tty/n_tty.c
-@@ -2222,19 +2222,23 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file, u8 *kbuf,
- 	add_wait_queue(&tty->read_wait, &wait);
- 	while (nr) {
- 		/* First test for status change. */
-+		spin_lock_irq(&tty->link->ctrl.lock);
- 		if (packet && tty->link->ctrl.pktstatus) {
- 			u8 cs;
--			if (kb != kbuf)
-+			if (kb != kbuf) {
-+				spin_unlock_irq(&tty->link->ctrl.lock);
- 				break;
--			spin_lock_irq(&tty->link->ctrl.lock);
-+			}
- 			cs = tty->link->ctrl.pktstatus;
- 			tty->link->ctrl.pktstatus = 0;
- 			spin_unlock_irq(&tty->link->ctrl.lock);
- 			*kb++ = cs;
- 			nr--;
- 			break;
-+		} else {
-+			spin_unlock_irq(&tty->link->ctrl.lock);
- 		}
--
-+
- 		if (!input_available_p(tty, 0)) {
- 			up_read(&tty->termios_rwsem);
- 			tty_buffer_flush_work(tty->port);
 -- 
-2.34.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
