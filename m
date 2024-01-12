@@ -1,186 +1,103 @@
-Return-Path: <linux-kernel+bounces-24587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEBF682BE89
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:23:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D11882BE8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:23:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43F011F2A4B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:23:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 098991F2A78A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787C15FEED;
-	Fri, 12 Jan 2024 10:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F355EE80;
+	Fri, 12 Jan 2024 10:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="S0DBiAfO"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E11F5EE8A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 7434020B3CD5; Fri, 12 Jan 2024 02:22:37 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7434020B3CD5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1705054957;
-	bh=T3B5+PthjQIw2LxpelxUCUZWnHz2lUrA4eOBRCI6B0s=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=S0DBiAfOM6uk5obokhBue1Ly47Qe+69aXxCUqQMFZRUtxBUnJ75T9eBlxBBu+mug5
-	 v1VrJHbhveGUooZNFNuHw77/vnayKLg0mQ9jEsG7fNxyJA9JM3p2d9axcCVRPnhGA9
-	 qBdB/gNuMSL1t2KNYnR7j6/xruu1CzAVLfYIJNAU=
-Date: Fri, 12 Jan 2024 02:22:37 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: linux-kernel@vger.kernel.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.dev>,
-	David Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
-	Saurabh Singh Sengar <ssengar@linux.microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v2] drm: Check output polling initialized before disabling
-Message-ID: <20240112102237.GA4332@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1704869987-7546-1-git-send-email-shradhagupta@linux.microsoft.com>
- <ZZ53P1v0nms-Y8gk@phenom.ffwll.local>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="spC2baQ/"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C4B5D910
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso66047047b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:23:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705054991; x=1705659791; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uoixCIvUaJI+Ikw8bVxT8gSbu0EfclZZOnaz2syKKYw=;
+        b=spC2baQ/D8jPu7CEJOU1UPOIN16iZNlCsr3QXetR7rqP/O6ARnnDL1eTkw/s90ZqKc
+         etq4/kbAXij7fdiNlkjfxpMp/ePmC7Jo3Ukdt+rp/aVLZiXQRJezlSxGNczMGfjq3pzf
+         C/9qyekg1pRk7UDFY2CVvMyNCYxhA8Kxgw2w/vGKF+vSebD3LYsUyApejvOfKXWjYf+i
+         8yXXBoHbnWy2L4c7PnlGeOU0pWmnVC8sQvYQV4pKV8YPs9Ze3EDOVX16ueew3M9rBbEK
+         0aj2F9dx5PYbmTmHxT8qMKJZXejVHszUCn+MFlZQVZ7vmnKGeEBOVRTRJJHKzVbTY1lw
+         VB0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705054991; x=1705659791;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uoixCIvUaJI+Ikw8bVxT8gSbu0EfclZZOnaz2syKKYw=;
+        b=FKhXedSTNzOSX1DnT2bDhidjwWQEMBy02GOobb3CAcJHTsWmJfKvuDMiLYFItQ2tN5
+         JipDxg8Z7xORG3QXNbABNZGQ5j0Y59/rigAewT4c9PxfhvnuyuJ6ujPTXYbBnyj9eOzH
+         LC7sQNwBdTNIcJ1JhX2KZ5fVdfDN5PvqpahfJfxnhhC4PjuKFVZpxTbxwJy5VQaKCe45
+         QEZqshy9+N/afdZnKduvTY25q2XPKL7pBYITQdPrCfnNLmPfj2etSOCeBR7LzjgPLRWl
+         mZIPaWOWHCftXUuC7a3amJATYKa0lZwvjqMCs1Hnfbh776XRPrGUS0/Gkgw4uCXG6c80
+         ZZrw==
+X-Gm-Message-State: AOJu0YyRFG0ZDE5WrCXKdVkx4l4Kob17PFjONU6RMccKZtWJzunB1bT1
+	NBjSNRyboropNj6DzN/NeVj2ouI7JNbwsJ5Jpf2bEafeF8PHtw==
+X-Google-Smtp-Source: AGHT+IHmVOQtBdyVCbejqekjIZT/Rhkl+4ZWZHIRmIXNgIVih5i3KRfprEy8VQeiPbDlnOubwhyA1NG9t/mgb8i6gp4=
+X-Received: by 2002:a81:ed0b:0:b0:5ee:6491:c2e5 with SMTP id
+ k11-20020a81ed0b000000b005ee6491c2e5mr1005535ywm.10.1705054991639; Fri, 12
+ Jan 2024 02:23:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZ53P1v0nms-Y8gk@phenom.ffwll.local>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
+ <20240110-fp4-panel-v2-2-8ad11174f65b@fairphone.com> <CACRpkdaWTfPDCin_L6pefHsokjNyO8Mo6hWPdzPLLi1EUkKUuA@mail.gmail.com>
+ <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com> <CACRpkdZQbVXfBa70nhDOqfWPbsh-6DgX-uvZOxr19pzMmF2giQ@mail.gmail.com>
+ <CYCLSCKPPBOC.1B1MP3VOOC0Q8@fairphone.com> <cdc18e2a-b7eb-4b54-a513-481148fb3b0d@linaro.org>
+ <CYCMVXHYVDCI.HVH1TR8MWEUK@fairphone.com>
+In-Reply-To: <CYCMVXHYVDCI.HVH1TR8MWEUK@fairphone.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 12 Jan 2024 11:23:00 +0100
+Message-ID: <CACRpkdacS9ojXUuogygkz6xxCf3mMq6GG_75sze8ukUu=rxVyw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for DJN HX83112A LCD panel
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: neil.armstrong@linaro.org, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, ~postmarketos/upstreaming@lists.sr.ht, 
+	phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 11:53:51AM +0100, Daniel Vetter wrote:
-> On Tue, Jan 09, 2024 at 10:59:47PM -0800, Shradha Gupta wrote:
-> > In drm_kms_helper_poll_disable() check if output polling
-> > support is initialized before disabling polling.
-> > For drivers like hyperv-drm, that do not initialize connector
-> > polling, if suspend is called without this check, it leads to
-> > suspend failure with following stack
-> > [  770.719392] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> > [  770.720592] printk: Suspending console(s) (use no_console_suspend to debug)
-> > [  770.948823] ------------[ cut here ]------------
-> > [  770.948824] WARNING: CPU: 1 PID: 17197 at kernel/workqueue.c:3162 __flush_work.isra.0+0x212/0x230
-> > [  770.948831] Modules linked in: rfkill nft_counter xt_conntrack xt_owner udf nft_compat crc_itu_t nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink vfat fat mlx5_ib ib_uverbs ib_core mlx5_core intel_rapl_msr intel_rapl_common kvm_amd ccp mlxfw kvm psample hyperv_drm tls drm_shmem_helper drm_kms_helper irqbypass pcspkr syscopyarea sysfillrect sysimgblt hv_balloon hv_utils joydev drm fuse xfs libcrc32c pci_hyperv pci_hyperv_intf sr_mod sd_mod cdrom t10_pi sg hv_storvsc scsi_transport_fc hv_netvsc serio_raw hyperv_keyboard hid_hyperv crct10dif_pclmul crc32_pclmul crc32c_intel hv_vmbus ghash_clmulni_intel dm_mirror dm_region_hash dm_log dm_mod
-> > [  770.948863] CPU: 1 PID: 17197 Comm: systemd-sleep Not tainted 5.14.0-362.2.1.el9_3.x86_64 #1
-> > [  770.948865] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 05/09/2022
-> > [  770.948866] RIP: 0010:__flush_work.isra.0+0x212/0x230
-> > [  770.948869] Code: 8b 4d 00 4c 8b 45 08 89 ca 48 c1 e9 04 83 e2 08 83 e1 0f 83 ca 02 89 c8 48 0f ba 6d 00 03 e9 25 ff ff ff 0f 0b e9 4e ff ff ff <0f> 0b 45 31 ed e9 44 ff ff ff e8 8f 89 b2 00 66 66 2e 0f 1f 84 00
-> > [  770.948870] RSP: 0018:ffffaf4ac213fb10 EFLAGS: 00010246
-> > [  770.948871] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8c992857
-> > [  770.948872] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9aad82b00330
-> > [  770.948873] RBP: ffff9aad82b00330 R08: 0000000000000000 R09: ffff9aad87ee3d10
-> > [  770.948874] R10: 0000000000000200 R11: 0000000000000000 R12: ffff9aad82b00330
-> > [  770.948874] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-> > [  770.948875] FS:  00007ff1b2f6bb40(0000) GS:ffff9aaf37d00000(0000) knlGS:0000000000000000
-> > [  770.948878] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  770.948878] CR2: 0000555f345cb666 CR3: 00000001462dc005 CR4: 0000000000370ee0
-> > [  770.948879] Call Trace:
-> > [  770.948880]  <TASK>
-> > [  770.948881]  ? show_trace_log_lvl+0x1c4/0x2df
-> > [  770.948884]  ? show_trace_log_lvl+0x1c4/0x2df
-> > [  770.948886]  ? __cancel_work_timer+0x103/0x190
-> > [  770.948887]  ? __flush_work.isra.0+0x212/0x230
-> > [  770.948889]  ? __warn+0x81/0x110
-> > [  770.948891]  ? __flush_work.isra.0+0x212/0x230
-> > [  770.948892]  ? report_bug+0x10a/0x140
-> > [  770.948895]  ? handle_bug+0x3c/0x70
-> > [  770.948898]  ? exc_invalid_op+0x14/0x70
-> > [  770.948899]  ? asm_exc_invalid_op+0x16/0x20
-> > [  770.948903]  ? __flush_work.isra.0+0x212/0x230
-> > [  770.948905]  __cancel_work_timer+0x103/0x190
-> > [  770.948907]  ? _raw_spin_unlock_irqrestore+0xa/0x30
-> > [  770.948910]  drm_kms_helper_poll_disable+0x1e/0x40 [drm_kms_helper]
-> > [  770.948923]  drm_mode_config_helper_suspend+0x1c/0x80 [drm_kms_helper]
-> 
-> So since this only happens for drivers using
-> drm_mode_config_helper_suspend, I think we should put the check in there.
-> And then we also need to (somehow, not sure how?) make sure that for that
-> case, we do not enable polling on resume either.
-> 
-> Because for drivers using poll helpers directly it would be a driver bug
-> to call _disable without having called _enable first. And so I think we
-> should at least put a drm_WARN around the if() check your adding, since
-> that if check papers over some more fundamental issue.
-> 
-> Cheers, Sima
-Thanks Daniel, that helps.I will keep the original check in the suspend call
-and correct the resume flow to not invoke enable helper call too.
-Also, would keep these current checks in enable and disable functions with the
-WARN_ON's for catching these issues in future.
+On Fri, Jan 12, 2024 at 10:52=E2=80=AFAM Luca Weiss <luca.weiss@fairphone.c=
+om> wrote:
 
-Thanks,
-Shradha
-> 
-> > [  770.948933]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
-> > [  770.948942]  hyperv_vmbus_suspend+0x17/0x40 [hyperv_drm]
-> > [  770.948944]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
-> > [  770.948951]  dpm_run_callback+0x4c/0x140
-> > [  770.948954]  __device_suspend_noirq+0x74/0x220
-> > [  770.948956]  dpm_noirq_suspend_devices+0x148/0x2a0
-> > [  770.948958]  dpm_suspend_end+0x54/0xe0
-> > [  770.948960]  create_image+0x14/0x290
-> > [  770.948963]  hibernation_snapshot+0xd6/0x200
-> > [  770.948964]  hibernate.cold+0x8b/0x1fb
-> > [  770.948967]  state_store+0xcd/0xd0
-> > [  770.948969]  kernfs_fop_write_iter+0x124/0x1b0
-> > [  770.948973]  new_sync_write+0xff/0x190
-> > [  770.948976]  vfs_write+0x1ef/0x280
-> > [  770.948978]  ksys_write+0x5f/0xe0
-> > [  770.948979]  do_syscall_64+0x5c/0x90
-> > [  770.948981]  ? syscall_exit_work+0x103/0x130
-> > [  770.948983]  ? syscall_exit_to_user_mode+0x12/0x30
-> > [  770.948985]  ? do_syscall_64+0x69/0x90
-> > [  770.948986]  ? do_syscall_64+0x69/0x90
-> > [  770.948987]  ? do_user_addr_fault+0x1d6/0x6a0
-> > [  770.948989]  ? do_syscall_64+0x69/0x90
-> > [  770.948990]  ? exc_page_fault+0x62/0x150
-> > [  770.948992]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> > [  770.948995] RIP: 0033:0x7ff1b293eba7
-> > [  770.949010] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> > [  770.949011] RSP: 002b:00007ffde3912128 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> > [  770.949012] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007ff1b293eba7
-> > [  770.949013] RDX: 0000000000000005 RSI: 00007ffde3912210 RDI: 0000000000000004
-> > [  770.949014] RBP: 00007ffde3912210 R08: 000055d7dd4c9510 R09: 00007ff1b29b14e0
-> > [  770.949014] R10: 00007ff1b29b13e0 R11: 0000000000000246 R12: 0000000000000005
-> > [  770.949015] R13: 000055d7dd4c53e0 R14: 0000000000000005 R15: 00007ff1b29f69e0
-> > [  770.949016]  </TASK>
-> > [  770.949017] ---[ end trace e6fa0618bfa2f31d ]---
-> > 
-> > Built-on: Rhel9, Ubuntu22
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > ---
-> > Changes in v2
-> >  * Moved the poll_enabled check in drm_kms_helper_poll_disable()
-> >  * Reworded the patch description based on new changes
-> > ---
-> > ---
-> >  drivers/gpu/drm/drm_probe_helper.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
-> > index 3f479483d7d8..b9f07d5f999f 100644
-> > --- a/drivers/gpu/drm/drm_probe_helper.c
-> > +++ b/drivers/gpu/drm/drm_probe_helper.c
-> > @@ -877,6 +877,9 @@ EXPORT_SYMBOL(drm_kms_helper_is_poll_worker);
-> >   */
-> >  void drm_kms_helper_poll_disable(struct drm_device *dev)
-> >  {
-> > +	if (!dev->mode_config.poll_enabled)
-> > +		return;
-> > +
-> >  	if (dev->mode_config.poll_running)
-> >  		drm_kms_helper_disable_hpd(dev);
-> >  
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> Since there's zero indication Truly is involved in this panel in my
+> documentation - much less the number 5P65 - I'm not going to add that.
+
+OK then, I fold, thanks for looking into it.
+Keep the Himax hx83112a file name and symbols.
+
+> So in short this panel is the model 9A-3R063-1102B from DJN, which uses
+> a Himax HX83112A driver IC.
+
+So compatible =3D "djn,9a-3r063-1102b" since the setup sequences for
+hx83112a are clearly for this one display?
+
+Yours,
+Linus Walleij
 
