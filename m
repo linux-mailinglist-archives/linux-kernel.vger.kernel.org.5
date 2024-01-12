@@ -1,189 +1,444 @@
-Return-Path: <linux-kernel+bounces-24619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D1B82BF42
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:33:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EAAA82BF48
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3FE6286A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:33:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79396B23355
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F58B67E93;
-	Fri, 12 Jan 2024 11:33:49 +0000 (UTC)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E8036A016;
+	Fri, 12 Jan 2024 11:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="TXOZno8n"
+Received: from aposti.net (aposti.net [89.234.176.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341E667E83;
-	Fri, 12 Jan 2024 11:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5f07f9d57b9so62996337b3.1;
-        Fri, 12 Jan 2024 03:33:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705059225; x=1705664025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wJjVyh+7oYXym23boo4u//OtALG0QudsORSegf3gMfU=;
-        b=ik20vNzQ2gO6ND4LchWuysAUC9bQvo+Ks29nGwXp3kIIVcirRDJvJ7+voI4NVix6r1
-         SVIZW7ZbyoFW2yuR6JN+RUHpi/re7nbgwkvRdn27Bpl1vYgzDfzEdO2LOITDfXr5bS1h
-         J602ayASd+27dCLAOIzKh3IJerEUMLIqw8hCVD4J8B9gMg8Q75eubpNGdWOCOxYH+AKq
-         Jhb8spdPh2y3C749in3Tbht1PQGiI+Umj9aKGiZwB9TDE6EkB9Wx/fHjgsSyVBBxvQxt
-         Q9F9tA0lxCqLqN609qYH7YUpTOeta9O0X61AfToa5KtA0hEPS/KOeQlOwBFA0QPYnGi+
-         Sgjg==
-X-Gm-Message-State: AOJu0YyUjTIniEaCkLwQU00Tnw7g9H8/gLywB4oBrcVquaifoKAdvpp5
-	fjr/nIcpBJV+igqRIqeCzifHgPzR8IQKeA==
-X-Google-Smtp-Source: AGHT+IEiJOfRxtKJH7BEiPKzT7rZmAL3A78HPD9ldDc6m+i5McVCXufe2sL9UH8lKGwdBnPCOSGRQA==
-X-Received: by 2002:a05:690c:7:b0:5fb:86a1:3e57 with SMTP id bc7-20020a05690c000700b005fb86a13e57mr1277241ywb.39.1705059224939;
-        Fri, 12 Jan 2024 03:33:44 -0800 (PST)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id d20-20020a81ab54000000b005e1a5593c0csm1222838ywk.60.2024.01.12.03.33.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 03:33:44 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5fa52e173f7so31599737b3.3;
-        Fri, 12 Jan 2024 03:33:44 -0800 (PST)
-X-Received: by 2002:a81:b650:0:b0:5ea:5340:fb1d with SMTP id
- h16-20020a81b650000000b005ea5340fb1dmr1186575ywk.53.1705059224288; Fri, 12
- Jan 2024 03:33:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132026A009;
+	Fri, 12 Jan 2024 11:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1705059226;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=sH64oullDZ7RJP3FM9t7ObORfwdWzEysNhg/bsqbBbI=;
+	b=TXOZno8nifkzr/D8qdkXHWJBjg5xOBoR0ZMOc1+7oBP5NygZuRxJp1mm3873Yf/lMsGCLw
+	v/pYr6F6O8jn7b9RVGyypMgMPIPVME7NgRZ1V1uXFx7d0+CMqZD7ihVYgPLxeYB4c80rPf
+	WUugyFQ9TWd2Ba0zRZ+vyYjt1yEzgNY=
+Message-ID: <61d1708a309e3873978992feb0d068b36c6924ea.camel@crapouillou.net>
+Subject: Re: [PATCH v5 0/8] iio: new DMABUF based API, v5
+From: Paul Cercueil <paul@crapouillou.net>
+To: Andrew Davis <afd@ti.com>, Jonathan Cameron <jic23@kernel.org>, 
+	Lars-Peter Clausen
+	 <lars@metafoo.de>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
+	=?ISO-8859-1?Q?K=F6nig?=
+	 <christian.koenig@amd.com>, Vinod Koul <vkoul@kernel.org>, Jonathan Corbet
+	 <corbet@lwn.net>
+Cc: Michael Hennerich <Michael.Hennerich@analog.com>, 
+ linux-doc@vger.kernel.org, linux-iio@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ linaro-mm-sig@lists.linaro.org, Nuno =?ISO-8859-1?Q?S=E1?=
+ <noname.nuno@gmail.com>, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org
+Date: Fri, 12 Jan 2024 12:33:44 +0100
+In-Reply-To: <d67aba3f-d95a-4dfc-8fdb-234843047432@ti.com>
+References: <20231219175009.65482-1-paul@crapouillou.net>
+	 <6ec8c7c4-588a-48b5-b0c5-56ca5216a757@ti.com>
+	 <bbd6e9d6f239efee8886e08f3c3493fc968e53ce.camel@crapouillou.net>
+	 <d67aba3f-d95a-4dfc-8fdb-234843047432@ti.com>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111162419.12406-1-pmladek@suse.com> <CAMuHMdW1XyimybybSwAfwgzeUyFj6riRZZZzQK7zjTVUJziX-Q@mail.gmail.com>
- <ZaEiFXscVBdOJEeI@alley>
-In-Reply-To: <ZaEiFXscVBdOJEeI@alley>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 12 Jan 2024 12:33:32 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW5V9wQzTzYt+iGBtYEDrcL-g4nzswAB6ME1At1W42qRw@mail.gmail.com>
-Message-ID: <CAMuHMdW5V9wQzTzYt+iGBtYEDrcL-g4nzswAB6ME1At1W42qRw@mail.gmail.com>
-Subject: Re: [PATCH] scsi: core: Safe warning about bad dev info string
-To: Petr Mladek <pmladek@suse.com>
-Cc: "James E . J . Bottomley" <jejb@linux.ibm.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Chris Down <chris@chrisdown.name>, oe-kbuild-all@lists.linux.dev, 
-	kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Petr,
+Hi Andrew,
 
-On Fri, Jan 12, 2024 at 12:27=E2=80=AFPM Petr Mladek <pmladek@suse.com> wro=
-te:
-> On Fri 2024-01-12 10:22:44, Geert Uytterhoeven wrote:
-> > On Thu, Jan 11, 2024 at 5:26=E2=80=AFPM Petr Mladek <pmladek@suse.com> =
-wrote:
-> > > Both "model" and "strflags" are passed to "%s" even when one or both
-> > > are NULL.
-> > >
-> > > It is safe because vsprintf() would detect the NULL pointer and print
-> > > "(null)". But it is a kernel-specific feature and compiler warns
-> > > about it:
-> > >
-> > > <warning>
-> > >    In file included from include/linux/kernel.h:19,
-> > >                     from arch/x86/include/asm/percpu.h:27,
-> > >                     from arch/x86/include/asm/current.h:6,
-> > >                     from include/linux/sched.h:12,
-> > >                     from include/linux/blkdev.h:5,
-> > >                     from drivers/scsi/scsi_devinfo.c:3:
-> > >    drivers/scsi/scsi_devinfo.c: In function 'scsi_dev_info_list_add_s=
-tr':
-> > > >> include/linux/printk.h:434:44: warning: '%s' directive argument is=
- null [-Wformat-overflow=3D]
-> > >      434 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, #=
-#__VA_ARGS__)
-> > >          |                                            ^
-> > >    include/linux/printk.h:430:3: note: in definition of macro 'printk=
-_index_wrap'
-> > >      430 |   _p_func(_fmt, ##__VA_ARGS__);    \
-> > >          |   ^~~~~~~
-> > >    drivers/scsi/scsi_devinfo.c:551:4: note: in expansion of macro 'pr=
-intk'
-> > >      551 |    printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
-> > >          |    ^~~~~~
-> > >    drivers/scsi/scsi_devinfo.c:552:14: note: format string is defined=
- here
-> > >      552 |           " '%s'\n", __func__, vendor, model,
-> > >          |              ^~
-> > > </warning>
-> > >
-> > > Do not rely on the kernel specific behavior and print the message
-> > > a safe way.
-> > >
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202401112002.AOjwMNM0-l=
-kp@intel.com/
-> > > Signed-off-by: Petr Mladek <pmladek@suse.com>
-> > > ---
-> > > Note: The patch is only compile tested.
-> > >
-> > >  drivers/scsi/scsi_devinfo.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.=
-c
-> > > index 3fcaf10a9dfe..ba7237e83863 100644
-> > > --- a/drivers/scsi/scsi_devinfo.c
-> > > +++ b/drivers/scsi/scsi_devinfo.c
-> > > @@ -551,9 +551,9 @@ static int scsi_dev_info_list_add_str(char *dev_l=
-ist)
-> > >                 if (model)
-> > >                         strflags =3D strsep(&next, next_check);
-> > >                 if (!model || !strflags) {
-> > > -                       printk(KERN_ERR "%s: bad dev info string '%s'=
- '%s'"
-> > > -                              " '%s'\n", __func__, vendor, model,
-> > > -                              strflags);
-> > > +                       pr_err("%s: bad dev info string '%s' '%s' '%s=
-'\n",
-> > > +                              __func__, vendor, model ? model : "",
-> > > +                              strflags ? strflags : "");
-> >
-> > Do we really want to make this change?
-> > The kernel's vsprintf() implementation has supported NULL pointers
-> > since forever, and lots of code relies on that behavior.
->
-> Yeah, it was safe even in the first git commit. And it was probably
-> safe long before.
->
-> Well, I can't find easily how much code relies on this. I would
-> personally do not rely on it when writing new code.
+Le jeudi 11 janvier 2024 =C3=A0 11:30 -0600, Andrew Davis a =C3=A9crit=C2=
+=A0:
+> On 1/11/24 3:20 AM, Paul Cercueil wrote:
+> > Hi Andrew,
+> >=20
+> > Le lundi 08 janvier 2024 =C3=A0 15:12 -0600, Andrew Davis a =C3=A9crit=
+=C2=A0:
+> > > On 12/19/23 11:50 AM, Paul Cercueil wrote:
+> > > > [V4 was: "iio: Add buffer write() support"][1]
+> > > >=20
+> > > > Hi Jonathan,
+> > > >=20
+> > > > This is a respin of the V3 of my patchset that introduced a new
+> > > > interface based on DMABUF objects [2].
+> > > >=20
+> > > > The V4 was a split of the patchset, to attempt to upstream
+> > > > buffer
+> > > > write() support first. But since there is no current user
+> > > > upstream,
+> > > > it
+> > > > was not merged. This V5 is about doing the opposite, and
+> > > > contains
+> > > > the
+> > > > new DMABUF interface, without adding the buffer write()
+> > > > support. It
+> > > > can
+> > > > already be used with the upstream adi-axi-adc driver.
+> > > >=20
+> > > > In user-space, Libiio uses it to transfer back and forth blocks
+> > > > of
+> > > > samples between the hardware and the applications, without
+> > > > having
+> > > > to
+> > > > copy the data.
+> > > >=20
+> > > > On a ZCU102 with a FMComms3 daughter board, running Libiio from
+> > > > the
+> > > > pcercuei/dev-new-dmabuf-api branch [3], compiled with
+> > > > WITH_LOCAL_DMABUF_API=3DOFF (so that it uses fileio):
+> > > > =C2=A0=C2=A0=C2=A0 sudo utils/iio_rwdev -b 4096 -B cf-ad9361-lpc
+> > > > =C2=A0=C2=A0=C2=A0 Throughput: 116 MiB/s
+> > > >=20
+> > > > Same hardware, with the DMABUF API (WITH_LOCAL_DMABUF_API=3DON):
+> > > > =C2=A0=C2=A0=C2=A0 sudo utils/iio_rwdev -b 4096 -B cf-ad9361-lpc
+> > > > =C2=A0=C2=A0=C2=A0 Throughput: 475 MiB/s
+> > > >=20
+> > > > This benchmark only measures the speed at which the data can be
+> > > > fetched
+> > > > to iio_rwdev's internal buffers, and does not actually try to
+> > > > read
+> > > > the
+> > > > data (e.g. to pipe it to stdout). It shows that fetching the
+> > > > data
+> > > > is
+> > > > more than 4x faster using the new interface.
+> > > >=20
+> > > > When actually reading the data, the performance difference
+> > > > isn't
+> > > > that
+> > > > impressive (maybe because in case of DMABUF the data is not in
+> > > > cache):
+> > > >=20
+> > > > WITH_LOCAL_DMABUF_API=3DOFF (so that it uses fileio):
+> > > > =C2=A0=C2=A0=C2=A0 sudo utils/iio_rwdev -b 4096 cf-ad9361-lpc | dd
+> > > > of=3D/dev/zero
+> > > > status=3Dprogress
+> > > > =C2=A0=C2=A0=C2=A0 2446422528 bytes (2.4 GB, 2.3 GiB) copied, 22 s,=
+ 111 MB/s
+> > > >=20
+> > > > WITH_LOCAL_DMABUF_API=3DON:
+> > > > =C2=A0=C2=A0=C2=A0 sudo utils/iio_rwdev -b 4096 cf-ad9361-lpc | dd
+> > > > of=3D/dev/zero
+> > > > status=3Dprogress
+> > > > =C2=A0=C2=A0=C2=A0 2334388736 bytes (2.3 GB, 2.2 GiB) copied, 21 s,=
+ 114 MB/s
+> > > >=20
+> > > > One interesting thing to note is that fileio is (currently)
+> > > > actually
+> > > > faster than the DMABUF interface if you increase a lot the
+> > > > buffer
+> > > > size.
+> > > > My explanation is that the cache invalidation routine takes
+> > > > more
+> > > > and
+> > > > more time the bigger the DMABUF gets. This is because the
+> > > > DMABUF is
+> > > > backed by small-size pages, so a (e.g.) 64 MiB DMABUF is backed
+> > > > by
+> > > > up
+> > > > to 16 thousands pages, that have to be invalidated one by one.
+> > > > This
+> > > > can
+> > > > be addressed by using huge pages, but the udmabuf driver does
+> > > > not
+> > > > (yet)
+> > > > support creating DMABUFs backed by huge pages.
+> > > >=20
+> > >=20
+> > > Have you tried DMABUFs created using the DMABUF System heap
+> > > exporter?
+> > > (drivers/dma-buf/heaps/system_heap.c) It should be able to handle
+> > > larger allocation better here, and if you don't have any active
+> > > mmaps or vmaps then it can skip CPU-side coherency maintenance
+> > > (useful for device to device transfers).
+> >=20
+> > I didn't know about it!
+> >=20
+> > But udmabuf also allows you to skip CPU-side coherency maintenance,
+> > since DMABUFs have two ioctls to start/finish CPU access anyway.
+> >=20
+>=20
+> The only way it lets you skip that is if your application just
+> doesn't
+> call those begin/end ioctls, which is wrong. That may work on a
+> system
+> where CPU caches can be snooped by all devices that could attach to
+> a buffer(x86), but that might not work on others(ARM). So calling
+> those begin/end ioctls is required[0]. If maintenance is not actually
+> needed then the kernel will turn those calls into NOPs for you, but
+> only
+> the kernel can know when that is correct (based on the running system
+> and the devices attached to that buffer), not userspace.
 
-Lots of debug code relies on this when printing string pointers.
-It doesn't warn because the compiler cannot prove (yet) that such a
-pointer can be NULL...
+My application only calls these begin/end IOCTLs when the DMABUF's data
+is accessed (through its mmapped address), and not ie. when I just pass
+around the DMABUF to another device driver. In that case I don't care
+that the CPU caches aren't sync'd.
 
-> > Perhaps this warning can be disabled instead?
->
-> IMHO, it is not a good idea to disable the warning. I believe that it
-> checks also other scenarios and can find real problems.
+>=20
+> > > Allocating DMABUFs out of user pages has a bunch of other issues
+> > > you
+> > > might run into also. I'd argue udmabuf is now completely
+> > > superseded
+> > > by DMABUF system heaps. Try it out :)
+> >=20
+> > I'm curious, what other issues?
+> >=20
+>=20
+> For starters the {begin,end}_cpu_access() callbacks don't actually
+> sync the pages for any of the devices attached to the DMABUF, it
+> only makes a fake mapping for the misc device(CPU) then syncs with
+> that. That probably works for the QEMU case it was designed for where
+> the device is always a VM instance running on the same CPU, but for
+> any real devices the sync never happens towards them.
+>=20
+> I have some patches fixing the above I'll post this cycle, but it
+> wont help with folks doing reads/wrties on the original shmem/memfd
+> outside of the begin/end ioctls. So there is a fundamental issue
+> with the buffer's backing memory's ownership/lifecycle that makes
+> udmabuf broken by design.
+>=20
+> The DMABUF System Heap owns the backing memory and manages that
+> memory's lifecycle as all correct DMABUF exporters must.
 
-True.
+Sounds good.
 
-> Also I think that compilers are getting more and more "clever".
-> So keeping the "suspicious" code might be fighting with windmills.
+One other issue I was having with udmabuf is that it does not like huge
+pages, so I had to use small 4096 bytes pages. Since my DMABUFs can be
+huge (half of the RAM) this caused my SGs to be very long, and in turn
+cause the CPU to spend an enormous amount of time inside
+dma_sg_sync_for_cpu().
 
-Also true, unfortunately.
+At least the DMABUF system heap seems better designed in that regard.
 
-So one day the whole "if (!model || !strflags) { ... }" block might
-be optimized away, when the compiler decides that NULL pointers are
-Undefined Behavior, and thus this cannot happen.
+>=20
+> > The good thing about udmabuf is that the memory is backed by pages,
+> > so
+> > we can use MSG_ZEROCOPY on sockets to transfer the mmapped data
+> > over
+> > the network (having a DMABUF interface to the network stack would
+> > be
+> > better, but I'm not opening that can of worms).
+> >=20
+>=20
+> Yes, having a DMABUF importer interface for the network stack would
+> be
+> the best long-term solution here, and one will probably end up being
+> needed for zero-copy buffer passing directly between HW and network
+> which seems to be a growing area of interest. And would help solve
+> some cases where MSG_ZEROCOPY fails (such as devices without
+> scatter-gather) by making sure the backing buffer meets the needs
+> of all attached devices, etc.. But I do agree let's leave those
+> worm-cans for someone else to open :)
+>=20
+> I wonder what would happen if you tried a MSG_ZEROCOPY on a buffer
+> that was an mmap'd address from a DMABUF.. probably nothing good
+> but might be worth looking into.
 
-Gr{oetje,eeting}s,
+I'll give it a try at some point.
 
-                        Geert
+Cheers,
+-Paul
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+>=20
+> Andrew
+>=20
+> [0]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/d=
+rivers/dma-buf/dma-buf.c#n1323
+>=20
+> > > Andrew
+> >=20
+> > Cheers,
+> > -Paul
+> >=20
+> > > > Anyway, the real benefits happen when the DMABUFs are either
+> > > > shared
+> > > > between IIO devices, or between the IIO subsystem and another
+> > > > filesystem. In that case, the DMABUFs are simply passed around
+> > > > drivers,
+> > > > without the data being copied at any moment.
+> > > >=20
+> > > > We use that feature to transfer samples from our transceivers
+> > > > to
+> > > > USB,
+> > > > using a DMABUF interface to FunctionFS [4].
+> > > >=20
+> > > > This drastically increases the throughput, to about 274 MiB/s
+> > > > over
+> > > > a
+> > > > USB3 link, vs. 127 MiB/s using IIO's fileio interface + write()
+> > > > to
+> > > > the
+> > > > FunctionFS endpoints, for a lower CPU usage (0.85 vs. 0.65 load
+> > > > avg.).
+> > > >=20
+> > > > Based on linux-next/next-20231219.
+> > > >=20
+> > > > Cheers,
+> > > > -Paul
+> > > >=20
+> > > > [1]
+> > > > https://lore.kernel.org/all/20230807112113.47157-1-paul@crapouillou=
+net/
+> > > > [2]
+> > > > https://lore.kernel.org/all/20230403154800.215924-1-paul@crapouillo=
+u.net/
+> > > > [3]
+> > > > https://github.com/analogdevicesinc/libiio/tree/pcercuei/dev-new-dm=
+abuf-api
+> > > > [4]
+> > > > https://lore.kernel.org/all/20230322092118.9213-1-paul@crapouillou.=
+net/
+> > > >=20
+> > > > ---
+> > > > Changelog:
+> > > > - [3/8]: Replace V3's dmaengine_prep_slave_dma_array() with a
+> > > > new
+> > > > =C2=A0=C2=A0=C2=A0 dmaengine_prep_slave_dma_vec(), which uses a new=
+ 'dma_vec'
+> > > > struct.
+> > > > =C2=A0=C2=A0=C2=A0 Note that at some point we will need to support =
+cyclic
+> > > > transfers
+> > > > =C2=A0=C2=A0=C2=A0 using dmaengine_prep_slave_dma_vec(). Maybe with=
+ a new
+> > > > "flags"
+> > > > =C2=A0=C2=A0=C2=A0 parameter to the function?
+> > > >=20
+> > > > - [4/8]: Implement .device_prep_slave_dma_vec() instead of V3's
+> > > > =C2=A0=C2=A0=C2=A0 .device_prep_slave_dma_array().
+> > > >=20
+> > > > =C2=A0=C2=A0=C2=A0 @Vinod: this patch will cause a small conflict w=
+ith my
+> > > > other
+> > > > =C2=A0=C2=A0=C2=A0 patchset adding scatter-gather support to the ax=
+i-dmac
+> > > > driver.
+> > > > =C2=A0=C2=A0=C2=A0 This patch adds a call to axi_dmac_alloc_desc(nu=
+m_sgs), but
+> > > > the
+> > > > =C2=A0=C2=A0=C2=A0 prototype of this function changed in my other p=
+atchset -
+> > > > it
+> > > > would
+> > > > =C2=A0=C2=A0=C2=A0 have to be passed the "chan" variable. I don't k=
+now how you
+> > > > prefer it
+> > > > =C2=A0=C2=A0=C2=A0 to be resolved. Worst case scenario (and if @Jon=
+athan is
+> > > > okay
+> > > > with
+> > > > =C2=A0=C2=A0=C2=A0 that) this one patch can be re-sent later, but i=
+t would
+> > > > make
+> > > > this
+> > > > =C2=A0=C2=A0=C2=A0 patchset less "atomic".
+> > > >=20
+> > > > - [5/8]:
+> > > > =C2=A0=C2=A0=C2=A0 - Use dev_err() instead of pr_err()
+> > > > =C2=A0=C2=A0=C2=A0 - Inline to_iio_dma_fence()
+> > > > =C2=A0=C2=A0=C2=A0 - Add comment to explain why we unref twice when=
+ detaching
+> > > > dmabuf
+> > > > =C2=A0=C2=A0=C2=A0 - Remove TODO comment. It is actually safe to fr=
+ee the
+> > > > file's
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 private data even when transfers are=
+ still pending
+> > > > because it
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 won't be accessed.
+> > > > =C2=A0=C2=A0=C2=A0 - Fix documentation of new fields in struct
+> > > > iio_buffer_access_funcs
+> > > > =C2=A0=C2=A0=C2=A0 - iio_dma_resv_lock() does not need to be export=
+ed, make it
+> > > > static
+> > > >=20
+> > > > - [7/8]:
+> > > > =C2=A0=C2=A0=C2=A0 - Use the new dmaengine_prep_slave_dma_vec().
+> > > > =C2=A0=C2=A0=C2=A0 - Restrict to input buffers, since output buffer=
+s are not
+> > > > yet
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 supported by IIO buffers.
+> > > >=20
+> > > > - [8/8]:
+> > > > =C2=A0=C2=A0=C2=A0 Use description lists for the documentation of t=
+he three
+> > > > new
+> > > > IOCTLs
+> > > > =C2=A0=C2=A0=C2=A0 instead of abusing subsections.
+> > > >=20
+> > > > ---
+> > > > Alexandru Ardelean (1):
+> > > > =C2=A0=C2=A0=C2=A0 iio: buffer-dma: split iio_dma_buffer_fileio_fre=
+e()
+> > > > function
+> > > >=20
+> > > > Paul Cercueil (7):
+> > > > =C2=A0=C2=A0=C2=A0 iio: buffer-dma: Get rid of outgoing queue
+> > > > =C2=A0=C2=A0=C2=A0 dmaengine: Add API function dmaengine_prep_slave=
+_dma_vec()
+> > > > =C2=A0=C2=A0=C2=A0 dmaengine: dma-axi-dmac: Implement
+> > > > device_prep_slave_dma_vec
+> > > > =C2=A0=C2=A0=C2=A0 iio: core: Add new DMABUF interface infrastructu=
+re
+> > > > =C2=A0=C2=A0=C2=A0 iio: buffer-dma: Enable support for DMABUFs
+> > > > =C2=A0=C2=A0=C2=A0 iio: buffer-dmaengine: Support new DMABUF based =
+userspace
+> > > > API
+> > > > =C2=A0=C2=A0=C2=A0 Documentation: iio: Document high-speed DMABUF b=
+ased API
+> > > >=20
+> > > > =C2=A0=C2=A0 Documentation/iio/dmabuf_api.rst=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 54 +++
+> > > > =C2=A0=C2=A0 Documentation/iio/index.rst=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0=C2=A0 2 +
+> > > > =C2=A0=C2=A0 drivers/dma/dma-axi-dmac.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0 40 ++
+> > > > =C2=A0=C2=A0 drivers/iio/buffer/industrialio-buffer-dma.c=C2=A0 | 2=
+42
+> > > > ++++++++---
+> > > > =C2=A0=C2=A0 .../buffer/industrialio-buffer-dmaengine.c=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 52 ++-
+> > > > =C2=A0=C2=A0 drivers/iio/industrialio-buffer.c=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 402
+> > > > ++++++++++++++++++
+> > > > =C2=A0=C2=A0 include/linux/dmaengine.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0 25 ++
+> > > > =C2=A0=C2=A0 include/linux/iio/buffer-dma.h=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 =
+33 +-
+> > > > =C2=A0=C2=A0 include/linux/iio/buffer_impl.h=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 26 =
+++
+> > > > =C2=A0=C2=A0 include/uapi/linux/iio/buffer.h=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 22 =
++
+> > > > =C2=A0=C2=A0 10 files changed, 836 insertions(+), 62 deletions(-)
+> > > > =C2=A0=C2=A0 create mode 100644 Documentation/iio/dmabuf_api.rst
+> > > >=20
+> >=20
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
