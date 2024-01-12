@@ -1,118 +1,155 @@
-Return-Path: <linux-kernel+bounces-24875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E7182C419
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 040A682C41D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:58:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B923B1F24747
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:58:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 985BE1F247F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6669517C85;
-	Fri, 12 Jan 2024 16:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AEBD17C94;
+	Fri, 12 Jan 2024 16:58:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sryWrizc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qaWX86vl"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CE517C78;
-	Fri, 12 Jan 2024 16:58:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7067AC43390;
-	Fri, 12 Jan 2024 16:58:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705078689;
-	bh=R017C35XZgULOTl/xha7MyuS1RZo/GZh2uHIhJvPTbM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sryWrizcLFiIRtjL2T2O6J7y4Xf1KNRTjVhxcm6onbBPZtNH00DpE2nWImgF/qG90
-	 Ez4H++i94x6WyBeSN83a+c5wPpBwvKUtxeeb/jd+RGn5zmF2Tf0D/iquqSX4iJns7M
-	 /wMfqFRKTi9z77H8BuEOmD18h4fE5G0KOBhZqRt86tmOg1gcouFERrO3ihwf51HSnx
-	 QVjcn8ILDd40b+hv9NeRCMs9P6MmY/rDOpj6JJUz6ESYxRHnLJlK49B/5bafsjOia3
-	 JUNWm5H6MniZio06IaTuyedkZ8zoObTyH4H1orTW07gFL7FyWD0iBZE02oA2/8x/f1
-	 6marEdWt9+q6A==
-Date: Fri, 12 Jan 2024 16:58:04 +0000
-From: Conor Dooley <conor@kernel.org>
-To: KyuHyuk Lee <lee@kyuhyuk.kr>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Jagan Teki <jagan@edgeble.ai>, Tianling Shen <cnsztl@gmail.com>,
-	Andy Yan <andyshrk@163.com>, Ondrej Jirman <megi@xff.cz>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: rockchip: Add Hardkernel ODROID-M1S
- board
-Message-ID: <20240112-granola-underline-36a525dc789c@spud>
-References: <20240112134230.28055-1-lee@kyuhyuk.kr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4045617540
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dc36e501e1so4571686a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705078710; x=1705683510; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u+lQGn74TGq7hrOXT4TkI+kQ8ytJDBxjKrUJkE5tzl4=;
+        b=qaWX86vlJlNHKDapvCjUIJO13Fb2vfor+fqeSrXYleqqEjUBux4pDDQ8QtY/bCXnjG
+         1e2DAyJPjvAdtcShn14coOIIqHgYVJGENXmLEtPMGnDSI093N8cPpYOXdNpCZlkKl69P
+         T//1B4x6ldVbV7mgWvCeaQQvCoTCJtYpOLa3ileVnHQ6UikdZHm4mbP7GO+L27PIWJb8
+         LmCLnhVpr1gJ+xKfjhk2/uLDcyihV65wlMYwPayusKP1Y2A6Ocayg8GHh6I1HLLeUrnl
+         BKaxLYMjZCVBAsTf7MBQc/0JvB7ZxZB07INL+ZMSrYoCm5uACzobz47vhQzzK+UdGOPU
+         UnSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705078710; x=1705683510;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u+lQGn74TGq7hrOXT4TkI+kQ8ytJDBxjKrUJkE5tzl4=;
+        b=JUYtXfuPGAR/0XfhJCatu/CHuqRTg3fbhfFb/wXD4JnDiUKlGj3LZIyTTKBIeylaZH
+         cDJglFs4iW+sfg2R4tpWdw465kTvfUo4E3yJKBaUtsTcgi96xGRepJ5ZJlvobw5+YphU
+         OlVZKmrPCIViK23vwZPjsGejD2HUEyGEhnDktE5zI72yZAKTH6eG6DnvIxU0frYk7PTh
+         eCrRx5VvCyzRHfrZrzhMtQeEBMQroaw/pcPP+1bwYq1ob4CsnI1gEOmV8Mv9VkGtlsa7
+         KyL67LKkxmuGZIwBVk37VOR4mOelHxHbVHUyXtH+/xlojlN9rtwHTU1ZuYBckfyNICP2
+         cqaw==
+X-Gm-Message-State: AOJu0YzW8gvyEtvHU1VfSpRpn2GRPYG9YYs3k0jG5xzW3rx0jhVhhv5t
+	iPBOHw3SuFerGxKi0ZhlXx9lcRARhe+JSBkLIPgcDNEDGSi7sQ==
+X-Google-Smtp-Source: AGHT+IFSJ+4kv5Xs/qSCOHlxXtVL+bWi6OI4MLczYE6LXm3MNhlMW9aCl25vEmTgGsslYr0h2HnoONvX8TJ6FfWASaM=
+X-Received: by 2002:a05:6358:917:b0:175:97b6:af54 with SMTP id
+ r23-20020a056358091700b0017597b6af54mr2046614rwi.15.1705078710054; Fri, 12
+ Jan 2024 08:58:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8SF8l+0YFEFPpEIl"
-Content-Disposition: inline
-In-Reply-To: <20240112134230.28055-1-lee@kyuhyuk.kr>
+References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com>
+ <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+ <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+ <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
+ <ZZ+ixagkxRPYyTCE@vingu-book> <CAHk-=wj75Er8k4QY-KF34NBCWkDpr3D26XptOpkfDcTyGEA7iA@mail.gmail.com>
+ <CAHk-=whK-cuBUQ2hECtkGu3LR-ipai+tmB85M=C7n3b1M8B4gQ@mail.gmail.com>
+ <CAKfTPtCnT9VLqiQGL5kyhzqv=WAUNRA3tVDVoKjB7jX-00Un+g@mail.gmail.com> <4405adb5-0b16-4716-9542-47d8bb1737ee@arm.com>
+In-Reply-To: <4405adb5-0b16-4716-9542-47d8bb1737ee@arm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 12 Jan 2024 17:58:18 +0100
+Message-ID: <CAKfTPtDqYW7Zw7AB2B_2QdGDdGi1x46tghSTE_pG234kPea4BQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Juri Lelli <juri.lelli@redhat.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Fri, 12 Jan 2024 at 15:23, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 11/01/2024 19:16, Vincent Guittot wrote:
+> > On Thu, 11 Jan 2024 at 18:53, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> >>
+> >> On Thu, 11 Jan 2024 at 09:45, Linus Torvalds
+> >> <torvalds@linux-foundation.org> wrote:
+> >>>
+> >>> On Thu, 11 Jan 2024 at 00:11, Vincent Guittot
+> >>> <vincent.guittot@linaro.org> wrote:
+> >>>>
+> >>>> Could you confirm that cpufreq governor is schedutil and the driver is
+> >>>> amd-pstate on your system ?
+> >>>
+> >>> schedutil yes, amd-pstate no. I actually just use acpi_cpufreq
+> >>
+> >> Bah. Hit 'send' mistakenly too soon, thus the abrupt end and
+> >> unfinished quoting removal.
+> >>
+> >> And don't ask me why it's acpi_pstate-driven. I have X86_AMD_PSTATE=y, but
+> >>
+> >>     /sys/devices/system/cpu/cpufreq/policy0/scaling_driver
+> >>
+> >> clearly says 'acpi-cpufreq'. Maybe I'm looking in the wrong place. My dmesg says
+> >
+> > That seems to be the right place to look
+> >
+> >>
+> >>     amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+> >>
+> >> which is presumably the reason my machine uses acpi-pstate.
+> >>
+> >> I will also test out your other questions, but I need to go back and
+> >> do more pull requests first.
+> >
+> > ok, thanks
+> >
+> > I'm going to continue checking what else could trigger such regression
+> > having in mind that your system should not have beeb impacted by this
+> > changes
+>
+> I can't see the regression on my
+>
+>   20-core (40-thread) Intel Xeon CPU E5-2690 v2
+>
+> with 'schedutil' and 'acpi-cpufreq'.
 
---8SF8l+0YFEFPpEIl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the tests
 
-On Fri, Jan 12, 2024 at 10:42:30PM +0900, KyuHyuk Lee wrote:
-> Add device tree binding for Hardkernel ODROID-M1S board based on
-> RK3566 SoC.
->=20
-> Signed-off-by: KyuHyuk Lee <lee@kyuhyuk.kr>
-> ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Docume=
-ntation/devicetree/bindings/arm/rockchip.yaml
-> index 5cf5cbef2cf5..cc37d2118131 100644
-> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> @@ -566,6 +566,11 @@ properties:
->            - const: rockchip,rk3568-odroid-m1
->            - const: rockchip,rk3568
-> =20
-> +      - description: Hardkernel Odroid M1S
-
-if the vendor for this board is hardkernel...
-
-> +        items:
-> +          - const: rockchip,rk3566-odroid-m1s
-
-=2E..why is the vendor prefix here rockchip?
-
-Thanks,
-Conor.
-
-> +          - const: rockchip,rk3566
-> +
->        - description: Hugsun X99 TV Box
->          items:
->            - const: hugsun,x99
-> --=20
-> 2.34.1
->=20
-
---8SF8l+0YFEFPpEIl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaFvnAAKCRB4tDGHoIJi
-0n/AAQDkHzkEpbkEcPgsWiysuI7BEp4nrEoSAcQvm/4eChZuegD6Aztb5FfajYfD
-gJvPbsipxJ9PyVMsiM5/pyUwU68MZwk=
-=bjqJ
------END PGP SIGNATURE-----
-
---8SF8l+0YFEFPpEIl--
+>
+> f12560779f9d - sched/cpufreq: Rework iowait boost                              <- (w/ patches)
+> 9c0b4bb7f630 - sched/cpufreq: Rework schedutil governor performance estimation
+> 50181c0cff31 - sched/pelt: Avoid underestimation of task utilization           <- (base)
+> ...
+>
+> # cpufreq-info -c 0 -e
+> ...
+> analyzing CPU 0:
+>   driver: acpi-cpufreq
+>   CPUs which run at the same hardware frequency: 0
+>   CPUs which need to have their frequency coordinated by software: 0
+>   maximum transition latency: 10.0 us.
+>   hardware limits: 1.20 GHz - 3.00 GHz
+>   available frequency steps: 3.00 GHz, 3.00 GHz, 2.90 GHz, 2.70 GHz, 2.60 GHz, 2.50 GHz, 2.40 GHz, 2.20 GHz,
+>                              2.10 GHz, 2.00 GHz, 1.80 GHz, 1.70 GHz, 1.60 GHz, 1.50 GHz, 1.30 GHz, 1.20 GHz
+>   available cpufreq governors: conservative, ondemand, userspace, powersave, performance, schedutil
+>   current policy: frequency should be within 1.20 GHz and 3.00 GHz.
+>                   The governor "schedutil" may decide which speed to use
+>                   within this range.
+>   current CPU frequency is 1.20 GHz (asserted by call to hardware).
+>
+>
+> cpufreq is still fast-switching, so no schedutil 'sugov' DL threads.
 
