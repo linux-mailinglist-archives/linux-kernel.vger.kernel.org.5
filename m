@@ -1,137 +1,90 @@
-Return-Path: <linux-kernel+bounces-24272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D411982BA1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:45:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09A0482BA05
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:40:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73FBE1F25F32
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:45:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EB5A1C24142
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1551A1B281;
-	Fri, 12 Jan 2024 03:44:57 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9106E1B28C;
+	Fri, 12 Jan 2024 03:40:23 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB8D1B27B;
-	Fri, 12 Jan 2024 03:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TB6pf01FpzNkyp;
-	Fri, 12 Jan 2024 11:44:09 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
-	by mail.maildlp.com (Postfix) with ESMTPS id 93C29140555;
-	Fri, 12 Jan 2024 11:44:34 +0800 (CST)
-Received: from ubuntu2204.huawei.com (10.67.174.22) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Jan 2024 11:44:33 +0800
-From: Yang Jihong <yangjihong1@huawei.com>
-To: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-	<namhyung@kernel.org>, <mark.rutland@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<irogers@google.com>, <adrian.hunter@intel.com>,
-	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <yangjihong1@huawei.com>
-Subject: [PATCH] perf build: Check whether pkg-config is installed when libtraceevent is linked
-Date: Fri, 12 Jan 2024 03:40:19 +0000
-Message-ID: <20240112034019.3558584-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F1A1A737
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 03:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36076605584so31403515ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 19:40:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705030821; x=1705635621;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=sFtvpz83LGsRnBrfo7MmDyIbMyvubYId5O4OWcXQQYEjfywqLR3vawemoy9fwe4bFL
+         cY3m63GS/cUD1aRMom74+T663wAXYK3hlUAWmSldkKOllDqQQCtOxTJQG0BR3ugWSyuM
+         V69YvXlIlrodYjs1JpvR/Oml2TXI0jq7zN97Vztq2mfWC7XlmlgiybXyIVC5kC7f0xJX
+         hvMTujOKFzPixxF5Vdi1U+f8ZPRbk8L6/zc20K5Y1T5N66V36Cs3JjG2vUROKVleS3UW
+         wxuRPr0KwADOMIQdjXSRMZy11OSw9H+5pq7TuID3B8DDkFrpB+8s4vWzd2sjRwlQqv3p
+         av/w==
+X-Gm-Message-State: AOJu0Yw8rfkWbb30D2/CunkiebryLdYAD3eTttNPkcbtEq4XAR2lqMim
+	oKWlPwsp4NYykN7Sd5sxbgmgY6N1r/vsqVuBRXG0kfh9N/x+
+X-Google-Smtp-Source: AGHT+IFB9wtwpmlwh1hN38Y/mekRfMgDkX1YMtupYMYRVCkd0mAl9XPC2cSN1Nuc1Ci1vxRGdUPjVwpCgKAHanbVQVeQU5MJSIOV
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+X-Received: by 2002:a92:c24b:0:b0:35f:e864:f6f with SMTP id
+ k11-20020a92c24b000000b0035fe8640f6fmr27789ilo.0.1705030821093; Thu, 11 Jan
+ 2024 19:40:21 -0800 (PST)
+Date: Thu, 11 Jan 2024 19:40:21 -0800
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006c2b4f060eb76cfa@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-If pkg-config is not installed when libtraceevent is linked, the build fails.
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-The error information is as follows:
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-  $ make
-  <SNIP>
-  In file included from /home/yjh/projects_linux/perf-tool-next/linux/tools/perf/util/evsel.c:43:
-  /home/yjh/projects_linux/perf-tool-next/linux/tools/perf/util/trace-event.h:149:62: error: operator '&&' has no right operand
-    149 | #if defined(LIBTRACEEVENT_VERSION) &&  LIBTRACEEVENT_VERSION >= MAKE_LIBTRACEEVENT_VERSION(1, 5, 0)
-        |                                                              ^~
-  error: command '/usr/bin/gcc' failed with exit code 1
-  cp: cannot stat 'python_ext_build/lib/perf*.so': No such file or directory
-  make[2]: *** [Makefile.perf:668: python/perf.cpython-310-x86_64-linux-gnu.so] Error 1
-  make[2]: *** Waiting for unfinished jobs....
+#syz fix: exact-commit-title
 
-Because pkg-config is not installed, fail to get libtraceevent version in
-Makefile.config file. As a result, LIBTRACEEVENT_VERSION is empty.
-However, the preceding error information is not user-friendly.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-Identify errors in advance by checking that pkg-config is installed at
-compile time.
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
 
-The build results of various scenarios are as follows:
-
-1. build successful when libtraceevent is not linked and pkg-config is not installed
-
-  $ pkg-config --version
-  -bash: /usr/bin/pkg-config: No such file or directory
-  $ make clean >/dev/null
-  $ make NO_LIBTRACEEVENT=1 >/dev/null
-  Makefile.config:1133: No alternatives command found, you need to set JDIR= to point to the root of your Java directory
-    PERF_VERSION = 6.7.rc6.gd988c9f511af
-  $ echo $?
-  0
-
-2. dummy pkg-config is missing when libtraceevent is linked
-
-  $ pkg-config --version
-  -bash: /usr/bin/pkg-config: No such file or directory
-  $ make clean >/dev/null
-  $ make >/dev/null
-  Makefile.config:221: *** Error: pkg-config needed by libtraceevent is missing on this system, please install it.  Stop.
-  make[1]: *** [Makefile.perf:251: sub-make] Error 2
-  make: *** [Makefile:70: all] Error 2
-  $ echo $?
-  2
-
-3. build successful when libtraceevent is linked and pkg-config is installed
-
-  $ pkg-config --version
-  0.29.2
-  $ make clean >/dev/null
-  $ make >/dev/null
-  Makefile.config:1133: No alternatives command found, you need to set JDIR= to point to the root of your Java directory
-    PERF_VERSION = 6.7.rc6.gd988c9f511af
-  $ echo $?
-  0
-
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- tools/perf/Makefile.config | 6 ++++++
- 1 file changed, 6 insertions(+)
+[1] I expect the commit to be present in:
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index aa55850fbc21..70c33c935a98 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -216,6 +216,12 @@ ifeq ($(call get-executable,$(BISON)),)
-   dummy := $(error Error: $(BISON) is missing on this system, please install it)
- endif
- 
-+ifneq ($(NO_LIBTRACEEVENT),1)
-+  ifeq ($(call get-executable,$(PKG_CONFIG)),)
-+  dummy := $(error Error: $(PKG_CONFIG) needed by libtraceevent is missing on this system, please install it)
-+  endif
-+endif
-+
- ifneq ($(OUTPUT),)
-   ifeq ($(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 371), 1)
-     BISON_FILE_PREFIX_MAP := --file-prefix-map=$(OUTPUT)=
--- 
-2.34.1
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
