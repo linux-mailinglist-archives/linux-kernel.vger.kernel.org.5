@@ -1,129 +1,165 @@
-Return-Path: <linux-kernel+bounces-24922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9485A82C4B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:31:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFFEB82C4CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:33:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96771C21C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:31:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B6871F24A62
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB5C2262D;
-	Fri, 12 Jan 2024 17:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA3F2263A;
+	Fri, 12 Jan 2024 17:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yfU83nNg"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KTHu+24N"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2045.outbound.protection.outlook.com [40.107.223.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8316A175A3
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5fc2e997804so5853417b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705080702; x=1705685502; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pz+3iGhrnb+ZuxKUBKuJ2apXdm0vVIBrk/mh4QD2xmU=;
-        b=yfU83nNgrNLEQk2fNZ44QuzSiUb5jEYpegauz5gs5fSJblPFEpB2DWpcKEKj6WccVT
-         Ni7zJMiKyLheksYYwaGhi3XmG/njSXjMyS8ETeKr2hhmXnKBVGFrZj4jetWH530l/rbs
-         vtjL5sxEnOL8PrblQzuCuBFB0a+5NHtzR0Ql1gUrQ4dSKTAQwIcQhuGsQ1RxLWFoQhjZ
-         Pny5zavW6jmonL5l3h/aURKg4s2jiaZsHLeHuqEeke/iCYfj8AvZv5IwlRL/hgInCvFK
-         QLt9eMzNaFhyfswuyVAOFrxFhywbk+zZU9VgymtnPB22xiPHKazbsVgitJQI3VssA5zP
-         6WFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705080702; x=1705685502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pz+3iGhrnb+ZuxKUBKuJ2apXdm0vVIBrk/mh4QD2xmU=;
-        b=Ls8CCjE2FGMITn6gm2W2wmtbhznLDMPwg8/aaCiHm9aRXKT3oGvej2WRkjpYa4Bt6r
-         EAgI3JxKHNvT4KjuY/zRQQxIO+uQNI4hUGGk2U/qfPjQ67Cn0sWekWrYV7OQeHJ+hyaF
-         6s5wYg2dWI4DEvJWjQXa6Vf/laBl0P0JUtHx7e4lfc/XPqrOPVBG4dyMnfUr3gEKQW/3
-         FA0x6GnxEMybaoQHwSAZRKfJ5yzk98pouYGcrfukp17ys33NfPbrnOeems6D2U7MzKyB
-         x/ectg/YuneiBqwxBrGyJWN0fQBe/f0RRyPzPQuHz9posH2mTNs46x1MDujEMeg6wiEE
-         UxSQ==
-X-Gm-Message-State: AOJu0YxGs0BQS4zKStzwwob8P2OrsZaQhcLnTZTdRVVVrHsvfVhOrb55
-	oB/Rz4HhKlKoBHAX1GSPb8YHSqGxYUbUcZn5PfvA58UY40yQ+yxFKp02OiCqtg==
-X-Google-Smtp-Source: AGHT+IHBb5mDw+d8Tra+UVvOzbfRUJqQK71uVqt24u7gwAq0b8xOdU2w+foZ0OV0Oz970+U0g8un3UIE1MrduUh832k=
-X-Received: by 2002:a81:5291:0:b0:5f9:d44:2fd9 with SMTP id
- g139-20020a815291000000b005f90d442fd9mr1628503ywb.93.1705080701888; Fri, 12
- Jan 2024 09:31:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C52617540;
+	Fri, 12 Jan 2024 17:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mTy5b7d9qMgAkDNKR6iaGGVnYWjx5hV24xdoPqzEKTAZpFJWrE53VDWpWoTN8lwyVUOiwtEt9yLb92N6rWJPBgpv3ccTpJ2LXfNcH0gnaE8b7cF5OXq6IYqRWmpCLCntuJHxjdvt/SIS1kRliQv2vZJm6GxDzAzpeT294YQ2fuHvBjK+2NAoy0I9YLUf0nk5YHcwPZl+x7LFjF9fj4runTLrntK7VafircoJ++fmXkV0aIKMEZKSbsPKqB7135gdderh1qSjh51elPGHMRlQyRtpLqIvyWoHDZzxH3oiac+TcgFF+INQYotgfUiaRp/uyU+8iJRrt1b/oZNGTjxorg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3AI4s/lg2eeJn6SHXOUzU/1eog8PZHzKJ0L+erGjp40=;
+ b=VJDDBFkGzcu0SZZc8yH48zhLwIrjG68uaa6aUZGeDShkXidk0BQ56/dNd3exLEK/B7mPJfqNymx619dmmTYgDidUv8/mCmb1rVSzwqPr5T5NmHJkUOjhhgoqlUa1cb6SiI2uqyNumYyIPlm2QOMqnTc/dank6qektgOkfVm4H8M+JKOZ6sbgdYlvrufLAJC3zaGxzaseq9/ySAb+wkre3myOChG2MzeTA5/pYgT2+Yh7PZkKIGGkI6qsd5iumH5lewZvHzkAKM8xOEPRZcUxfbP7MJ4w71hg2NmFLBUITZMnRLPkrIFx6SjmtRPPcj2DwitKZD40T12jowWHeeSy/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3AI4s/lg2eeJn6SHXOUzU/1eog8PZHzKJ0L+erGjp40=;
+ b=KTHu+24NTmhZAr/sQx2DcpDWSX9NlT8UxAv69q4yLIOtcBVYn6jvGiw/43y84mlaZ8py2wRi2iDzIJVoymv40XKrMjeIVPa3ao0K49gMlFovbql2reONZYw+U9LPcmVlwYTATeiX40IjzDq1N9rDi48CE5Q5gjh98cdqyBPyVkpgOMV7iNQyxJ7iYZH2tVjZlXqrjacdPISGecqV32i/tMQTgiPaWPofyHeN02yyEpYGZhyzWF0AxnudRJQl0o4HuS2As5JAulXu5r4Aji2p2dKPu6GsU3BRloA0KoYpVBoElP2EBWv4oO3vBTeLLu4DmHbtZfTGQcWKBH5NNw4KeQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com (2603:10b6:510:1c1::18)
+ by IA1PR12MB8078.namprd12.prod.outlook.com (2603:10b6:208:3f1::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.25; Fri, 12 Jan
+ 2024 17:33:41 +0000
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::55f7:f35f:a684:bf3c]) by PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::55f7:f35f:a684:bf3c%4]) with mapi id 15.20.7159.020; Fri, 12 Jan 2024
+ 17:33:41 +0000
+Message-ID: <b9a7b855-af2b-4858-b9d8-3340a0421cfe@nvidia.com>
+Date: Fri, 12 Jan 2024 23:03:31 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3] PCI/MSI: Fix MSI hwirq truncation
+Content-Language: en-US
+To: Thomas Gleixner <tglx@linutronix.de>, bhelgaas@google.com,
+ rdunlap@infradead.org, ilpo.jarvinen@linux.intel.com,
+ jiang.liu@linux.intel.com
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ treding@nvidia.com, jonathanh@nvidia.com, sdonthineni@nvidia.com,
+ kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+References: <20240108120522.1368240-1-vidyas@nvidia.com>
+ <20240111052814.713016-1-vidyas@nvidia.com> <87bk9qim4p.ffs@tglx>
+From: Vidya Sagar <vidyas@nvidia.com>
+In-Reply-To: <87bk9qim4p.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MAXPR01CA0098.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:5d::16) To PH8PR12MB6674.namprd12.prod.outlook.com
+ (2603:10b6:510:1c1::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112013935.1474648-1-surenb@google.com> <511e07da-9b34-4707-8f5a-f1e534c4445a@redhat.com>
-In-Reply-To: <511e07da-9b34-4707-8f5a-f1e534c4445a@redhat.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 12 Jan 2024 09:31:28 -0800
-Message-ID: <CAJuCfpHQn1ruQy_L073bMDaeohsXrpAQnxc7rrKJ43d5wZUt3Q@mail.gmail.com>
-Subject: Re: [PATCH 1/1] userfaultfd: avoid huge_zero_page in UFFDIO_MOVE
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, sfr@canb.auug.org.au, peterx@redhat.com, 
-	aarcange@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzbot+705209281e36404998f6@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR12MB6674:EE_|IA1PR12MB8078:EE_
+X-MS-Office365-Filtering-Correlation-Id: dcbf2744-a2a9-40b7-ca72-08dc13949e05
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ppjN6uzdqI8Tz7t0uSIS+iKFaWjeIv3PF9IMJolh4JoHkCaVxY7Q69vvDjNGZxkJUtQrX8nZ1pSqZ9+7myDKWo6BwnDYgy4lXRbz+g4FwfwwAqssP7Mdw55HPZsXQfFQimRKkpKEyUrrw4YoFC8GQ11XtHDybZG8ZaydPmYvpANEEJC30JTkBDG9/d59Icp6KgBNwTsf1GOmm8YeBcllR+4zGKLJOgVE7OBTaxkhxBzMnpzI0vBExjmpi9lpHeWJCpoZRmKlRd2BFzmEpgizmkrPO+TFXN4imJ/p4wVZVoivQm0qp33SRuf1WzdthqPSv5LXk/8WjmXzVUxYgrlC5S8CMlf5sORaBz3JRlZUSFE94p7unI4l+6pRX4Hvet3vlukkeVfn3I4g44ROadgD9L41zXWMfdv8wHHmJxLeE61i0uhGk1bqAuF7qx4qEgY4GsI1zFVgCAy4lKcRyu47MFg75MBiFTKedcPnqczxtyZTCMMcmlqShQCOdPY1MeyZTIGOBU3vOWltZNYxtx4AmAq7Ur07Xil+Swdg5QQ5qQw9kk+3/7bFAL6lLNf7h/csPpbc7GUzgzhFVMeghkdUhnj0T4A0fU8mStl0aLAvqnepwAE3XfZucnyWOzCDlO/VWNdo4vO4giZjK1xQHCvbKeVzcQ7nu+FKEFGAYU/DoJ3u+6+s2dt0pobzBj8erOfv
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6674.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(136003)(376002)(346002)(230173577357003)(230273577357003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(31686004)(41300700001)(86362001)(36756003)(31696002)(38100700002)(2906002)(83380400001)(4326008)(26005)(478600001)(2616005)(66476007)(6506007)(316002)(6486002)(66556008)(6666004)(66946007)(8936002)(53546011)(5660300002)(6512007)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?STMydkNaSjFMTW9sL0NBbDI4ZGE0ZnBjWnBwenFYQmlLZDBhQnp6Wkl3dXdh?=
+ =?utf-8?B?aHl2MFBTRE50U0d2S0FiVEREMkdxMm00dWNYb3lUam5uUVNKanpWMWRxZG03?=
+ =?utf-8?B?TXBvWGQ1ZWxJZy9jRnhOaWZFQVIxV1YydW9hUE1yZVFjRytWWGJwbklNdVZN?=
+ =?utf-8?B?S1FUS3NxeFRGSDV3c2wycnE3UmpRTDZhOEU4aS9PNjBKRTFGT1g2YTVFT2ZV?=
+ =?utf-8?B?WFBpZHZjQXBPS0dMU1NNUTNGUlRGVnp1SGVkamx2OHU2U2Y0UjdaTnRxZGZp?=
+ =?utf-8?B?anc0eGZiZWx1c3dxNnl1d3JwVlhjUXI4TVEydUhVVTg1aVlVSVpoUUV6dDR1?=
+ =?utf-8?B?SG1sVUJEWTBHbHJmZytHSWpOcDQwTFZ3K2xXK2hRaGFBbFFIbVFKbzhoWDZM?=
+ =?utf-8?B?RTg5cDhEbDg2b1hxTFJIcEsxa0NDbjNJOEJEVHBYb1JLWktPRXlzTHZVajEv?=
+ =?utf-8?B?RXd0a0NFaldLK1Y5UEk0SldHVnpMaWNGR1JST3Y5REF2bVB0K0JOK01LaWZ2?=
+ =?utf-8?B?bXk3dEdmejlHKzgwcURnemwydEdyY2lmaHBGaUhOQnQ3YTc3SWkwbCtEczc2?=
+ =?utf-8?B?LzEzZ1ZRSmdoVUdyUEpnU3VCT3RNME1BNjZ4L0FRSTEvazgvY3RjRk9WZEV1?=
+ =?utf-8?B?WXdTKzhISk40dmQ0NTRid2xBRG9reFhRQ25BU05ibVZuR0N0dzZZQ3FoQ1U0?=
+ =?utf-8?B?QVZZdXQvb1dmTEVRbXo3TUF5OHhtVUpzSG9tcjNYYWlKZlNkMlRSL1dZLytp?=
+ =?utf-8?B?cWZ4a084a3NqV0ltS1ZKTFA4eVV4WVNrRFVoclBzNHkwN1JDYWlSVzNDZTA4?=
+ =?utf-8?B?NFV4dDN1M25wOUUweXRDSjVNMi9vYTdBUWlnNkhRNldzcU9hbWtPMTlzYzdY?=
+ =?utf-8?B?Njk3bWJQUFJmRDdCWlROTERSOHRWS2hMbkdMMkxaK3dwUDlBZXZmSGtGMXRH?=
+ =?utf-8?B?V3E1TDVYK3ltOUtNZFJDc2pFNzVGNVo2aHJyRGFFR1oxQnRTdWRWRDlxenpB?=
+ =?utf-8?B?NjM1SUlqaTE0TWgrUWkxKzVOWXFxdGJGOEN3eDRsWGVGa05iOGh5MEJjbjlH?=
+ =?utf-8?B?ODhRNVpheFY1N0pJLzBKbWtLRlJTcmNtb1MydlJ1R3doMXpRYk52TGNxRXJy?=
+ =?utf-8?B?Rjh3aVYvZHFvaWgxcXd0cTAxYWlFMUJMT2orWHZrdkpQSGtEYUR0c3BLaEJN?=
+ =?utf-8?B?bkV4ZStwYSsvckh4Q3pXZlNzY0ZVWFdQOUcrVkR4c3lXZ0tXQnJiaHpNTlVx?=
+ =?utf-8?B?djJ4dEZqbXgxemo5aWFsdDVkOGZweFpqaDJaSWhSTC9MT2JoWW1TdUxycEgz?=
+ =?utf-8?B?dGpVSWFVWDVGaUpNRlEzZytvUWpVM1JWWHNEQUdHenFxRWJ5WHRESFhkSWF3?=
+ =?utf-8?B?Uyt4dEc1MEg5enM4NVNIcWFYYjNPT2RNSVBLU0VKME5WQ0ZHWmszcDl2VHZC?=
+ =?utf-8?B?aUtjUEUxK0NMOFMxcVZmTWdybXVvVjRUcnBCWVVCUnhKYUd6ZXc1TFRwOENJ?=
+ =?utf-8?B?Z0J1NklEdlh5cVMzL2JsMnVQRW9rU2hJTDFBUDBRdThpUzhzUXVUdVQzZ00r?=
+ =?utf-8?B?aTRqUEovbll0WmdNZU5FSGhvbmVYWVJMNmR3WFFFVDFRai90Sm9JYjRNQm9Z?=
+ =?utf-8?B?a3V0QkJrTDlpQnR6bEpiSTF3RWN3S1loR0xqNkJaNzVJMjY0LzJzeDdRRTNE?=
+ =?utf-8?B?cGdmTU9DSFJTQzNMQ2xLL0FIbFdHWHRHQjk2YjZZRi8wWS9CN1BRNjJITHNQ?=
+ =?utf-8?B?SUpPQzRnSDE5S3JQSW9ZUksxWVRmWXFuNVBtRjlkMTg4Q29iWmMxYnRJTnRW?=
+ =?utf-8?B?Q2RnR2l1dkdpU1FrZDdLdjhKMDVJVlA3K2NycjNuMGh3aGk0ckxCUTk3cVc5?=
+ =?utf-8?B?SnZ2QkxBSTVPcVdxOXZIOTQrMmJCaGlycHRXZVMycExSMkJJeXIxcmRzTWEx?=
+ =?utf-8?B?cHgxY2xPRVJXeUlYWHBhZk5GSTl2Q0I0UzZ6UFJTNkorVEJwT21ZRXZVRzJZ?=
+ =?utf-8?B?ajF2ZVNIYVJjdjR5TDk1eVdrNUZsc3VYR3J2cjBDNnBFR1VWNm5wM1dmaDBG?=
+ =?utf-8?B?MHZXVnFzdDZVYkVtbXBQczV4V3hWOUtyZUtlTVRwbVRyS2VmN0hWRjNQSVlB?=
+ =?utf-8?Q?wIkIJAadxI1R9gl5am57/PzqI?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dcbf2744-a2a9-40b7-ca72-08dc13949e05
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6674.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 17:33:41.0499
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GsqnFe0bqUrHY5aDuQVwWiDncV+IalpIA5nBWXtlJRXSfal66ypurbxklMY8gERDoHApe7SdUPTcvd8BFlsIlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8078
 
-On Fri, Jan 12, 2024 at 12:57=E2=80=AFAM David Hildenbrand <david@redhat.co=
-m> wrote:
->
-> On 12.01.24 02:39, Suren Baghdasaryan wrote:
-> > While testing UFFDIO_MOVE ioctl, syzbot triggered VM_BUG_ON_PAGE caused
-> > by a call to PageAnonExclusive() with a huge_zero_page as a parameter.
-> > UFFDIO_MOVE does not yet handle zeropages and returns EBUSY when one is
-> > encountered. Add an early huge_zero_page check in the PMD move path
-> > to avoid this situation.
-> >
-> > Reported-by: syzbot+705209281e36404998f6@syzkaller.appspotmail.com
-> > Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> > Applies cleanly over linux-next, mm-stable and mm-unstable branches
-> >
-> >   mm/userfaultfd.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
-> >
-> > diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> > index 216ab4c8621f..20e3b0d9cf7e 100644
-> > --- a/mm/userfaultfd.c
-> > +++ b/mm/userfaultfd.c
-> > @@ -1393,6 +1393,12 @@ ssize_t move_pages(struct userfaultfd_ctx *ctx, =
-struct mm_struct *mm,
-> >                               err =3D -ENOENT;
-> >                               break;
-> >                       }
-> > +                     /* Avoid moving zeropages for now */
-> > +                     if (is_huge_zero_pmd(*src_pmd)) {
-> > +                             spin_unlock(ptl);
-> > +                             err =3D -EBUSY;
-> > +                             break;
-> > +                     }
->
-> As an alternative (and more future proof?) just reject anything that is
-> not an anon folio as well?
 
-Yes, but I'm going to remove this check shortly, once zeropage
-movement patch is ready.
 
->
-> Anyhow, this should handle the issue at hand.
->
-> Acked-by: David Hildenbrand <david@redhat.com>
+On 1/12/2024 9:23 PM, Thomas Gleixner wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On Thu, Jan 11 2024 at 10:58, Vidya Sagar wrote:
+>> While calculating the hwirq number for an MSI interrupt, the higher
+>> bits (i.e. from bit-5 onwards a.k.a domain_nr >= 32) of the PCI domain
+>> number gets truncated because of the shifted value casting to return
+>> type of pci_domain_nr() which is 'int'. This for example is resulting
+>> in same hwirq number for devices 0019:00:00.0 and 0039:00:00.0.
+>>
+>> So, cast the PCI domain number to 'irq_hw_number_t' before left shifting
+>> it to calculate hwirq number.
+> 
+> This still does not explain that this fixes it only on 64-bit platforms
+> and why we don't care for 32-bit systems.
+Agree that this fixes the issue only on 64-bit platforms. It doesn't
+change the behavior on 32-bit platforms. My understanding is that the
+issue surfaces only if there are too many PCIe controllers in the system
+which usually is the case in modern server systems and it is arguable if
+the server systems really run 32-bit kernels.
 
-Thanks!
-
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+One way to fix it for both 32-bit and 64-bit systems is by changing the
+type of 'hwirq' to u64. This may cause two memory reads in 32-bit
+systems whenever 'hwirq' is accessed and that may intern cause some perf
+impact?? Is this the way you think I should be handling it?
+> 
 
