@@ -1,198 +1,144 @@
-Return-Path: <linux-kernel+bounces-24634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B95FC82BF8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:02:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A0D382BF8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:03:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6AEE1C22FE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:02:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0261B287950
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 12:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E7A6A027;
-	Fri, 12 Jan 2024 12:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA296A027;
+	Fri, 12 Jan 2024 12:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="R8368RNu"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ln8FEqWg"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944876A007
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so7654a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:02:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5546A01A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 12:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e5701cbbaso16232795e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:03:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705060928; x=1705665728; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9dAsdRRMNENTHmN3GFUI2+NQJszM6FWe9QJkear/o/c=;
-        b=R8368RNuoLGUQxQlwUvdu+LSu3HylKc1cwVUnocV+4s2/EGobg39udeDx44d3dwpDy
-         2WUtkkDCu2ZO1W8KiV3Z6IL1fPguWTxy8i1uR0cbbo22lrU84i7ewDAmC+I6cUQXhkab
-         Fn1aUfnwFd53u9SQGymU7KWA4ua41IMz1xZnK+O3W61ASkc8WgyWcxOk9VwyFjT0IeQh
-         tiGZELR92CMIoAzu3Y/3igWjZIWhiXBWLRUAVBBMcDAQwKvmzmkc3Qy3fYrYF0JN4/zC
-         jk02493SQH6PyO2PtRkKa1cMLlO1fwbgnsSxRT6yEOihsPR4qMglI9nCsCrS2Z7ntSSj
-         V5aA==
+        d=linaro.org; s=google; t=1705060982; x=1705665782; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lG3DVTyul+Az7FwEZbzHHVPFfwGzXyT44hRv1Ky8tHc=;
+        b=ln8FEqWgpuFZmlHcrgfAiUWRxlJjdP8kCNskSRUQw3FH02HM3PiuZcloEvixZfyAV2
+         Tj2eUtJo8Ln5WG8HI59buQNO0HAHYyKOlEYzHE7Sh5++fnqrtoXWeku1B6+RxYSzudKo
+         ISJbT2uGFimEi5JrYIT0gragrOeXiCOGjHqZCpSPao72p8y5xapyuYBIOaF9JsmiccEk
+         LUcp2uTwUxs0AbVEgz4aeb240LMCgr0J+mC2eC3zS7eXBKiOg7pJJB1CLf+1bbi9plU2
+         OJj4ObuSAMqbuU8UbwUn+2jvZAyOWYCFXhxBUlbsuoWhXZe7LjnIjrxAz91WwuZxtlCo
+         BeOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705060928; x=1705665728;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9dAsdRRMNENTHmN3GFUI2+NQJszM6FWe9QJkear/o/c=;
-        b=RQmjEtVPjdcIjGv9ZFoTx5o+RP6nNySV48Ib8x/Aih+iktpXENTTvmC//UGcgjhUzc
-         SpdJOuNnub12D3ZbxokfSIIK86wS2ukySKbRPKnEFKygrhLzZ7Aidzckxuyl5mvHKH29
-         QFq22sZc41Z5GUT2m3s8sHI1YVoxnHWsGWjYDzW4e2iANx2jmmCaIddUig8+4Qhx43gT
-         +JYBE5PdyFCbWPxO+m2VEGjDNOuGnfjixKSwpKh4Knyc5Jfyl9YudavvVJypHR3VALFb
-         hd9v17MClBIG61IZSaJpODldhevzLYz6h5DlE/C33/pq3QBaMYgkfpY/7K3UyBXOUHXj
-         9K/g==
-X-Gm-Message-State: AOJu0YzNZMktaE3ky2xY+kqoZFocuaLnL+Q7ISGYMawp+Wc6PnkNWNqk
-	Hy+SnZ6j0HUIvfQziLfp+npd7+zJK8l8NkLyNlBzQJBK0wBP9xLk6unWLnbtAfaI
-X-Google-Smtp-Source: AGHT+IEhXeQEzFajWvgplZ8zKMplV6cTXaxn8qEDBxdXMX5lYoErm6IwzrWMAJjCCnBDIbUAmsWv3Nn9gbZAad2Mmo8=
-X-Received: by 2002:a05:6402:1d97:b0:558:c18b:6dcb with SMTP id
- dk23-20020a0564021d9700b00558c18b6dcbmr112818edb.2.1705060927680; Fri, 12 Jan
- 2024 04:02:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705060982; x=1705665782;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lG3DVTyul+Az7FwEZbzHHVPFfwGzXyT44hRv1Ky8tHc=;
+        b=fx38AqFc4khurHV6xbhQfLo4ZFwoZz0OTt9qJEjCl3Q18GXjs/DyUOK6deOT/FiP7S
+         Fw7PrT2J1t7UPli8F+1G3Va1G1LKKWiHSPb0D1E56MfFpDcDdYJ+Er7ixlTPtyG0JSZ5
+         y1buke68VQux1IpOSO3UIpf5LkV4DbP9UEGUBxdsVDKOQVW9t9LRLioYJMkd6sT5IeDD
+         GU4e/5Kwlls1N3B1bDpPwc9WgigelbdyTR5amojzrNvJEZbk5HTb0CelB08qPGZQ31aL
+         v1leZGM5p/ABbxJ0e+dTGLhnTRoL2He0m9w+srt4e1f+SCg7OiLEX8pkDWsjerChcl1E
+         5yKg==
+X-Gm-Message-State: AOJu0Yz4suAqR+lZkGyMJ8TbYmCoXFBApfC6lHidnDI3buZ/SIBXX6Mx
+	lB9tQdA/gGVy8xGOpXFq6r6aDHPBekqS2g==
+X-Google-Smtp-Source: AGHT+IG9YbqxbbXWb0aoWE1cupVqwWaDwdHGEEAV83TuLI+KpxMXFzcrWVakzMK6eepEejWrHfsMeg==
+X-Received: by 2002:a05:600c:601a:b0:40e:5afe:a449 with SMTP id az26-20020a05600c601a00b0040e5afea449mr702262wmb.107.1705060982505;
+        Fri, 12 Jan 2024 04:03:02 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id u17-20020a05600c19d100b0040e47dc2e8fsm5518239wmq.6.2024.01.12.04.03.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 04:03:01 -0800 (PST)
+Message-ID: <92995b38-dbda-4d26-b47f-0b207127ea3d@linaro.org>
+Date: Fri, 12 Jan 2024 13:02:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000994e09060ebcdffb@google.com>
-In-Reply-To: <000000000000994e09060ebcdffb@google.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 12 Jan 2024 13:01:54 +0100
-Message-ID: <CANn89iKar6cuJAdQbL2n9vYWRL=yMQBEahfhXNVFNa0aax9OsQ@mail.gmail.com>
-Subject: Re: [syzbot] [net?] KCSAN: data-race in ipv6_mc_down / mld_ifc_work (2)
-To: syzbot <syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com>, 
-	Taehee Yoo <ap420073@gmail.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: gpio: xilinx: Fix node address in gpio
+Content-Language: en-US
+To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+ Srinivas Neeli <srinivas.neeli@amd.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ "moderated list:ARM/ZYNQ ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <168de7084faeee0113cc7b93800cc24c49f308c7.1705059172.git.michal.simek@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <168de7084faeee0113cc7b93800cc24c49f308c7.1705059172.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 12, 2024 at 11:10=E2=80=AFAM syzbot
-<syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    8735c7c84d1b Merge tag '6.7rc7-smb3-srv-fix' of git://git=
-..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17948c9ae8000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4da1e2da456c3=
-a7d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Da9400cabb1d784e=
-49abf
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/f263d974af01/dis=
-k-8735c7c8.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/9faf34fc0b3e/vmlinu=
-x-8735c7c8.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/0b52a58ecd0e/b=
-zImage-8735c7c8.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KCSAN: data-race in ipv6_mc_down / mld_ifc_work
->
-> write to 0xffff88813a80c832 of 1 bytes by task 3771 on cpu 0:
->  mld_ifc_stop_work net/ipv6/mcast.c:1080 [inline]
->  ipv6_mc_down+0x10a/0x280 net/ipv6/mcast.c:2725
->  addrconf_ifdown+0xe32/0xf10 net/ipv6/addrconf.c:3949
->  addrconf_notify+0x310/0x980
->  notifier_call_chain kernel/notifier.c:93 [inline]
->  raw_notifier_call_chain+0x6b/0x1c0 kernel/notifier.c:461
->  __dev_notify_flags+0x205/0x3d0
->  dev_change_flags+0xab/0xd0 net/core/dev.c:8685
->  do_setlink+0x9f6/0x2430 net/core/rtnetlink.c:2916
->  rtnl_group_changelink net/core/rtnetlink.c:3458 [inline]
->  __rtnl_newlink net/core/rtnetlink.c:3717 [inline]
->  rtnl_newlink+0xbb3/0x1670 net/core/rtnetlink.c:3754
->  rtnetlink_rcv_msg+0x807/0x8c0 net/core/rtnetlink.c:6558
->  netlink_rcv_skb+0x126/0x220 net/netlink/af_netlink.c:2545
->  rtnetlink_rcv+0x1c/0x20 net/core/rtnetlink.c:6576
->  netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
->  netlink_unicast+0x589/0x650 net/netlink/af_netlink.c:1368
->  netlink_sendmsg+0x66e/0x770 net/netlink/af_netlink.c:1910
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg net/socket.c:745 [inline]
->  ____sys_sendmsg+0x37c/0x4d0 net/socket.c:2584
->  ___sys_sendmsg net/socket.c:2638 [inline]
->  __sys_sendmsg+0x1e9/0x270 net/socket.c:2667
->  __do_sys_sendmsg net/socket.c:2676 [inline]
->  __se_sys_sendmsg net/socket.c:2674 [inline]
->  __x64_sys_sendmsg+0x46/0x50 net/socket.c:2674
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
->
-> write to 0xffff88813a80c832 of 1 bytes by task 22 on cpu 1:
->  mld_ifc_work+0x54c/0x7b0 net/ipv6/mcast.c:2653
->  process_one_work kernel/workqueue.c:2627 [inline]
->  process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2700
->  worker_thread+0x525/0x730 kernel/workqueue.c:2781
->  kthread+0x1d7/0x210 kernel/kthread.c:388
->  ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
->
-> value changed: 0x02 -> 0x00
->
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 1 PID: 22 Comm: kworker/1:0 Not tainted 6.7.0-rc7-syzkaller-00029-g8=
-735c7c84d1b #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 11/17/2023
-> Workqueue: mld mld_ifc_work
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->
+On 12/01/2024 12:32, Michal Simek wrote:
+> Node address doesn't match reg property which is not correct.
+> 
+> Fixes: ba96b2e7974b ("dt-bindings: gpio: gpio-xilinx: Convert Xilinx axi gpio binding to YAML")
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
 
-Bug added in
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-commit 63ed8de4be81b699ca727e9f8e3344bd487806d7
-Author: Taehee Yoo <ap420073@gmail.com>
-Date:   Thu Mar 25 16:16:57 2021 +0000
+Best regards,
+Krzysztof
 
-    mld: add mc_lock for protecting per-interface mld data
-
-
-ipv6_mc_down() calls mld_ifc_stop_work() while mc_lock is not held.
 
