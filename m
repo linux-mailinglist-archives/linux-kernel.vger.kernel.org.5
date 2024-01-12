@@ -1,290 +1,282 @@
-Return-Path: <linux-kernel+bounces-24803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5797482C2C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:32:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E8582C2CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:33:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FE0B1C21ADC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:32:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307DA1C219CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B026EB67;
-	Fri, 12 Jan 2024 15:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4AB66EB66;
+	Fri, 12 Jan 2024 15:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LjUwMWRM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xSEqMrNr"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8556EB4C;
-	Fri, 12 Jan 2024 15:32:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D888EC43399;
-	Fri, 12 Jan 2024 15:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705073550;
-	bh=wmOL8t5NR/xPSMgkZHegKI+IyLdAz1AEkzYz2/dO+og=;
-	h=Date:From:To:Cc:Subject:From;
-	b=LjUwMWRMgJtMW0EV7GaNr3R5Lbzf97VZ/zEm6UVo0n7MMIM9OMudPoeXFiJknZGW9
-	 jr8Hbf6+/JV0RnHaKHXavspaQEg19Op2etriTPlfEWKPsGya3xqnDXvwxs47f644QW
-	 wd/Yi1omLcPSRoFU67V8c2hXEhVN7gWO7ibexijA8lB4tpWfc3tWyuAb6TtpPtXeSK
-	 xwt0+L4+f2nQE5/a37qNRmz866bk8t9NyyVdTTWu00dUAS7PlGBdQZIh5cvxsdU1kP
-	 SXNGu4YM18E8JlfiEtdUIC0czhJL0/wjzXVHOcYyQW8TRfmeFNXfY/RCEeuR57okb1
-	 oHZftgB7BIWFQ==
-Date: Fri, 12 Jan 2024 09:32:27 -0600
-From: Rob Herring <robh@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Frank Rowand <frowand.list@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [GIT PULL] Devicetree updates for v6.8
-Message-ID: <20240112153227.GA3368286-robh@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606EF6EB57
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5fa4b03f3f5so36911967b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:33:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705073620; x=1705678420; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0J+mgh+Zx+BAS24mdFPK/hF26M4UfTo4a+waDKfwV38=;
+        b=xSEqMrNrtva8qJE+8pN8jfCKWt8b8fSN89Ls0r5uAyTiH8DZr0S1n+KbOGjWcD7qi4
+         oDTaPwfPQFKIxNGVU6TbSRfLZ40aqXJ/FLEzXos0jKJH5p+qlsdd5ioDuH+q4qI+DSH/
+         F7Qs+CqvLzczbLRehW4Mv5kLQLW0Sm7L8h9sZ39OYIf1bpOZcItk+YTgW090zhV01VFU
+         /1VbVqK48srVk/YAOo1tB/Hi+NEh39HCHGZWwOgiNxSdsYNcqBXSkCrsYtVGFPc1E6H4
+         Ok+Wbcjy2mHeQgdjtlqvm5XExyOirh35OzJ/9Gt/UcXDy3SWJ47U/q5SnfTr85Hio38b
+         EH4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705073620; x=1705678420;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0J+mgh+Zx+BAS24mdFPK/hF26M4UfTo4a+waDKfwV38=;
+        b=tCO/YPusIlNRvaPXjEgxNUvAVl8POo++PaOjnQaQ5TSVq2hhdpRdKCCXaPvihMokeJ
+         r1LFZPyqUoBIc6Z5nnhefdV/mNTUb+Fjb6XX2u2DEK9nocc3QgAkORxbo5NKKM89dACb
+         cQ6BYfkEZz9z/q5RXlBTuNEV7jyPfiRa+fRz8F7EupQ8XN+YU27zt4rqoUva1oEFzVA7
+         +CH0x5eT+ciZLq9aphWeOEDXRSHQDt7Rwva2qrI/XS0nAEiMjcZiopnNneHRpP7KM8fu
+         KI6i7UqUxtvB4ia1TtNqpuGgHK1VmNPchRhIqCsYKtMZeeyvtsUTHwHWs+fJNQ0U6Fbk
+         6oig==
+X-Gm-Message-State: AOJu0YwYsE6EFKaIKVnl38671QTj9z9hm8EKPjouAYqHn0cIynl/5HMy
+	zNn71n2xQXrvQgsU5AEbiP0b1TXLBTSc4wxJm/TjFPtnVeyWtA==
+X-Google-Smtp-Source: AGHT+IGHEFK/VO2iCL3+a+f40HQuY1B4l5ByHYvCrVdLkznfELnIJyvNlwXygCRWvzwslHJ2QXGBP8yc4cCPvTndIvI=
+X-Received: by 2002:a0d:d507:0:b0:5fb:bfa4:f6f7 with SMTP id
+ x7-20020a0dd507000000b005fbbfa4f6f7mr1325370ywd.78.1705073619964; Fri, 12 Jan
+ 2024 07:33:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com> <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
+In-Reply-To: <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 12 Jan 2024 17:33:28 +0200
+Message-ID: <CAA8EJpqwOfeS-QpLVvYGf0jmTVxiT02POwK+9tkN03Cr4DgL+g@mail.gmail.com>
+Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
+ state of power domain
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, Brian Masney <bmasney@redhat.com>, 
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org, vireshk@kernel.org, 
+	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com, 
+	quic_nitegupt@quicinc.com, linux-pci@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Linus,
+On Fri, 12 Jan 2024 at 16:25, Krishna chaitanya chundru
+<quic_krichai@quicinc.com> wrote:
+>
+> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
+> maintains hardware state of a regulator by performing max aggregation of
+> the requests made by all of the processors.
+>
+> PCIe controller can operate on different RPMh performance state of power
+> domain based up on the speed of the link. And this performance state varies
+> from target to target.
+>
+> It is manadate to scale the performance state based up on the PCIe speed
+> link operates so that SoC can run under optimum power conditions.
+>
+> Add Operating Performance Points(OPP) support to vote for RPMh state based
+> upon GEN speed link is operating.
+>
+> OPP can handle ICC bw voting also, so move icc bw voting through opp
+> framework if opp entries are present.
+>
+> In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
+> same icc bw and has frequency, so use frequency based search to reduce
+> number of entries in the opp table.
+>
+> Don't initialize icc if opp is supported.
+>
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 83 ++++++++++++++++++++++++++++------
+>  1 file changed, 70 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 035953f0b6d8..31512dc9d6ff 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/pci.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/pcie.h>
+> @@ -244,6 +245,7 @@ struct qcom_pcie {
+>         const struct qcom_pcie_cfg *cfg;
+>         struct dentry *debugfs;
+>         bool suspended;
+> +       bool opp_supported;
+>  };
+>
+>  #define to_qcom_pcie(x)                dev_get_drvdata((x)->dev)
+> @@ -1404,16 +1406,14 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+>         return 0;
+>  }
+>
+> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
+>  {
+>         struct dw_pcie *pci = pcie->pci;
+> -       u32 offset, status;
+> +       u32 offset, status, freq;
+> +       struct dev_pm_opp *opp;
+>         int speed, width;
+>         int ret;
+>
+> -       if (!pcie->icc_mem)
+> -               return;
+> -
+>         offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+>         status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+>
+> @@ -1424,11 +1424,42 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>         speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+>         width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+>
+> -       ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> -       if (ret) {
+> -               dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> -                       ret);
+> +       if (pcie->opp_supported) {
+> +               switch (speed) {
+> +               case 1:
+> +                       freq = 2500000;
+> +                       break;
+> +               case 2:
+> +                       freq = 5000000;
+> +                       break;
+> +               case 3:
+> +                       freq = 8000000;
+> +                       break;
+> +               default:
+> +                       WARN_ON_ONCE(1);
+> +                       fallthrough;
+> +               case 4:
+> +                       freq = 16000000;
 
-Please pull DT updates for v6.8.
+I expected that this kind of detail goes to the OPP table itself. Can
+we index the table using the generation instead of frequency?
 
-Note that I have a final DT header detangling patch[1] to send as well. 
-I'll be doing that once all the dependencies are merged towards the end 
-of the merge window.
+> +                       break;
+> +               }
+> +
+> +               opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
+> +               if (!IS_ERR(opp)) {
+> +                       ret = dev_pm_opp_set_opp(pci->dev, opp);
+> +                       if (ret)
+> +                               dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
+> +                                       dev_pm_opp_get_freq(opp), ret);
+> +                       dev_pm_opp_put(opp);
+> +               }
+> +       } else {
+> +               ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> +               if (ret) {
+> +                       dev_err(pci->dev, "failed to set interconnect bandwidth for pcie-mem: %d\n",
+> +                               ret);
+> +               }
+>         }
+> +
+> +       return;
+>  }
+>
+>  static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
+> @@ -1471,8 +1502,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
+>  static int qcom_pcie_probe(struct platform_device *pdev)
+>  {
+>         const struct qcom_pcie_cfg *pcie_cfg;
+> +       unsigned long max_freq = INT_MAX;
+>         struct device *dev = &pdev->dev;
+>         struct qcom_pcie *pcie;
+> +       struct dev_pm_opp *opp;
+>         struct dw_pcie_rp *pp;
+>         struct resource *res;
+>         struct dw_pcie *pci;
+> @@ -1539,9 +1572,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>                 goto err_pm_runtime_put;
+>         }
+>
+> -       ret = qcom_pcie_icc_init(pcie);
+> -       if (ret)
+> +        /* OPP table is optional */
+> +       ret = devm_pm_opp_of_add_table(dev);
+> +       if (ret && ret != -ENODEV) {
+> +               dev_err_probe(dev, ret, "Failed to add OPP table\n");
+>                 goto err_pm_runtime_put;
+> +       }
 
-Rob
+Can we initialise the table from the driver if it is not found? This
+will help us by having the common code later on.
 
-[1] https://lore.kernel.org/all/20231129164316.2663565-1-robh@kernel.org/
+> +
+> +       /* vote for max freq in the opp table if opp table is present */
+> +       if (ret != -ENODEV) {
+> +               opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
+> +               if (!IS_ERR(opp)) {
+> +                       ret = dev_pm_opp_set_opp(dev, opp);
+> +                       if (ret)
+> +                               dev_err_probe(pci->dev, ret,
+> +                                             "Failed to set opp: freq %ld\n",
+> +                                             dev_pm_opp_get_freq(opp));
+> +                       dev_pm_opp_put(opp);
+> +               }
+> +               pcie->opp_supported = true;
+> +       }
+> +
+> +       /* Skip icc init if opp is supported as icc bw vote is handled by opp framework */
+> +       if (!pcie->opp_supported) {
+> +               ret = qcom_pcie_icc_init(pcie);
+> +               if (ret)
+> +                       goto err_pm_runtime_put;
+> +       }
+>
+>         ret = pcie->cfg->ops->get_resources(pcie);
+>         if (ret)
+> @@ -1561,7 +1618,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>                 goto err_phy_exit;
+>         }
+>
+> -       qcom_pcie_icc_update(pcie);
+> +       qcom_pcie_icc_opp_update(pcie);
+>
+>         if (pcie->mhi)
+>                 qcom_pcie_init_debugfs(pcie);
+> @@ -1640,7 +1697,7 @@ static int qcom_pcie_resume_noirq(struct device *dev)
+>                 pcie->suspended = false;
+>         }
+>
+> -       qcom_pcie_icc_update(pcie);
+> +       qcom_pcie_icc_opp_update(pcie);
+>
+>         return 0;
+>  }
+>
+> --
+> 2.42.0
+>
+>
 
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-for-6.8
-
-for you to fetch changes up to 716089b417cf98d01f0dc1b39f9c47e1d7b4c965:
-
-  of: unittest: Fix of_count_phandle_with_args() expected value message (2024-01-11 16:18:30 -0600)
-
-----------------------------------------------------------------
-Devicetree for v6.8:
-
-- Convert FPGA bridge, all TPMs (finally), and Rockchip HDMI bindings to
-  schemas
-
-- Improvements in Samsung GPU schemas
-
-- A few more cases of dropping unneeded quotes in schemas
-
-- Merge QCom idle-states txt binding into common idle-states schema
-
-- Add X1E80100, SM8650, SM8650, and SDX75 SoCs to QCom Power Domain
-  Controller
-
-- Add NXP i.mx8dl to SCU PD
-
-- Add synaptics r63353 panel controller
-
-- Clarify the wording around the use of 'wakeup-source' property
-
-- Add a DTS coding style doc
-
-- Add smi vendor prefix
-
-- Fix DT_SCHEMA_FILES incorrect matching of paths outside the kernel
-  tree
-
-- Disable sysfb (e.g. EFI FB) when simple-framebuffer node is present
-
-- Fix double free in of_parse_phandle_with_args_map()
-
-- A couple of kerneldoc fixes
-
-----------------------------------------------------------------
-Abel Vesa (1):
-      dt-bindings: qcom,pdc: Add compatible for SM8550
-
-Alex Bee (1):
-      dt-bindings: display: rockchip,inno-hdmi: Document RK3128 compatible
-
-André Draszik (1):
-      dt-bindings: ignore paths outside kernel for DT_SCHEMA_FILES
-
-Christian A. Ehrhardt (1):
-      of: Fix double free in of_parse_phandle_with_args_map
-
-David Heidelberg (1):
-      dt-bindings: arm: merge qcom,idle-state with idle-state
-
-Fabio Estevam (1):
-      dt-bindings: power: fsl,scu-pd: Document imx8dl
-
-Geert Uytterhoeven (1):
-      of: unittest: Fix of_count_phandle_with_args() expected value message
-
-Javier Martinez Canillas (1):
-      of/platform: Disable sysfb if a simple-framebuffer node is found
-
-Johan Hovold (1):
-      of: fix recursion typo in kernel doc
-
-Johan Jonker (1):
-      dt-bindings: drm: rockchip: convert inno_hdmi-rockchip.txt to yaml
-
-Krzysztof Kozlowski (8):
-      dt-bindings: correct white-spaces in examples
-      docs: dt-bindings: add DTS Coding Style document
-      dt-bindings: gpu: samsung-rotator: drop redundant quotes
-      dt-bindings: gpu: samsung: re-order entries to match coding convention
-      dt-bindings: gpu: samsung: constrain clocks in top-level properties
-      dt-bindings: gpu: samsung-g2d: constrain iommus and power-domains
-      dt-bindings: gpu: samsung-scaler: constrain iommus and power-domains
-      dt-bindings: cache: qcom,llcc: correct QDU1000 reg entries
-
-Luca Ceresoli (1):
-      of: overlay: enable of_overlay_fdt_apply() kerneldoc
-
-Lukas Wunner (4):
-      dt-bindings: tpm: Consolidate TCG TIS bindings
-      dt-bindings: tpm: Convert Google Cr50 bindings to DT schema
-      dt-bindings: tpm: Convert IBM vTPM bindings to DT schema
-      dt-bindings: tpm: Document Microsoft fTPM bindings
-
-Mao Jinlong (1):
-      dt-bindings: arm: Add remote etm dt-binding
-
-Mark Hasemeyer (1):
-      dt-bindings: power: Clarify wording for wakeup-source property
-
-Michael Trimarchi (1):
-      dt-bindings: display: panel: Add synaptics r63353 panel controller
-
-Michal Simek (2):
-      dt-bindings: fpga: Convert bridge binding to yaml
-      dt-bindings: fpga: altera: Convert bridge bindings to yaml
-
-Muzammil Ashraf (1):
-      drivers: of: Fixed kernel doc warning
-
-Neil Armstrong (1):
-      dt-bindings: qcom,pdc: document the SM8650 Power Domain Controller
-
-Rob Herring (4):
-      dt-bindings: fsl,dpaa2-console: drop unneeded quotes
-      dt-bindings: arm/calxeda: drop unneeded quotes
-      media: dt-bindings: samsung,s5p-mfc: Fix iommu properties schemas
-      dt-bindings: mmc: sdhci-pxa: Fix 'regs' typo
-
-Rohit Agarwal (1):
-      dt-bindings: interrupt-controller: Add SDX75 PDC compatible
-
-Sibi Sankar (1):
-      dt-bindings: interrupt-controller: qcom,pdc: document pdc on X1E80100
-
-Yoshinori Sato (1):
-      dt-bindings: vendor-prefixes: Add smi
-
- Documentation/devicetree/bindings/Makefile         |   2 +-
- .../devicetree/bindings/arm/calxeda/l2ecc.yaml     |   2 +-
- .../bindings/arm/msm/qcom,idle-state.txt           |  84 ---------
- .../bindings/arm/qcom,coresight-remote-etm.yaml    |  51 ++++++
- .../bindings/auxdisplay/hit,hd44780.yaml           |   2 +-
- .../devicetree/bindings/cache/qcom,llcc.yaml       |   2 +-
- .../bindings/clock/baikal,bt1-ccu-pll.yaml         |   2 +-
- .../devicetree/bindings/cpu/idle-states.yaml       |  81 ++++++++-
- .../bindings/display/panel/synaptics,r63353.yaml   |  61 +++++++
- .../display/rockchip/inno_hdmi-rockchip.txt        |  49 ------
- .../display/rockchip/rockchip,inno-hdmi.yaml       | 139 +++++++++++++++
- .../devicetree/bindings/dts-coding-style.rst       | 196 +++++++++++++++++++++
- .../bindings/fpga/altera-fpga2sdram-bridge.txt     |  13 --
- .../bindings/fpga/altera-freeze-bridge.txt         |  20 ---
- .../bindings/fpga/altera-hps2fpga-bridge.txt       |  36 ----
- .../fpga/altr,freeze-bridge-controller.yaml        |  41 +++++
- .../fpga/altr,socfpga-fpga2sdram-bridge.yaml       |  33 ++++
- .../fpga/altr,socfpga-hps2fpga-bridge.yaml         |  49 ++++++
- .../devicetree/bindings/fpga/fpga-bridge.txt       |  13 --
- .../devicetree/bindings/fpga/fpga-bridge.yaml      |  30 ++++
- .../bindings/fpga/xlnx,pr-decoupler.yaml           |   5 +-
- .../devicetree/bindings/gpu/samsung-g2d.yaml       |  71 ++++----
- .../devicetree/bindings/gpu/samsung-rotator.yaml   |   9 +-
- .../devicetree/bindings/gpu/samsung-scaler.yaml    |  81 +++++----
- .../devicetree/bindings/iio/adc/adi,ad7780.yaml    |   6 +-
- .../bindings/iio/adc/qcom,spmi-iadc.yaml           |   2 +-
- .../bindings/iio/adc/qcom,spmi-rradc.yaml          |   2 +-
- Documentation/devicetree/bindings/index.rst        |   1 +
- .../bindings/interrupt-controller/qcom,pdc.yaml    |   4 +
- .../st,stih407-irq-syscfg.yaml                     |   4 +-
- .../devicetree/bindings/media/samsung,s5p-mfc.yaml |  33 ++--
- .../bindings/misc/fsl,dpaa2-console.yaml           |   2 +-
- .../devicetree/bindings/mmc/arm,pl18x.yaml         |   2 +-
- .../devicetree/bindings/mmc/sdhci-pxa.yaml         |   4 +-
- Documentation/devicetree/bindings/net/sff,sfp.yaml |   2 +-
- .../bindings/pci/toshiba,visconti-pcie.yaml        |   2 +-
- .../bindings/pinctrl/renesas,rzg2l-pinctrl.yaml    |   6 +-
- .../devicetree/bindings/power/fsl,scu-pd.yaml      |   1 +
- .../bindings/power/supply/richtek,rt9455.yaml      |   8 +-
- .../devicetree/bindings/power/wakeup-source.txt    |  18 +-
- .../devicetree/bindings/regulator/mps,mp5416.yaml  |   4 +-
- .../devicetree/bindings/regulator/mps,mpq7920.yaml |   4 +-
- .../bindings/remoteproc/fsl,imx-rproc.yaml         |   8 +-
- .../bindings/security/tpm/google,cr50.txt          |  19 --
- .../devicetree/bindings/security/tpm/ibmvtpm.txt   |  41 -----
- .../bindings/security/tpm/st33zp24-i2c.txt         |  34 ----
- .../bindings/security/tpm/st33zp24-spi.txt         |  32 ----
- .../devicetree/bindings/security/tpm/tpm-i2c.txt   |  26 ---
- .../bindings/security/tpm/tpm_tis_mmio.txt         |  25 ---
- .../bindings/security/tpm/tpm_tis_spi.txt          |  23 ---
- .../devicetree/bindings/tpm/google,cr50.yaml       |  65 +++++++
- .../devicetree/bindings/tpm/ibm,vtpm.yaml          | 104 +++++++++++
- .../devicetree/bindings/tpm/microsoft,ftpm.yaml    |  47 +++++
- .../devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml   |  90 ++++++++++
- .../devicetree/bindings/tpm/tcg,tpm-tis-mmio.yaml  |  49 ++++++
- .../devicetree/bindings/tpm/tcg,tpm_tis-spi.yaml   |  75 ++++++++
- .../devicetree/bindings/tpm/tpm-common.yaml        |  87 +++++++++
- .../devicetree/bindings/trivial-devices.yaml       |  16 --
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- drivers/of/base.c                                  |   1 +
- drivers/of/overlay.c                               |   2 +-
- drivers/of/platform.c                              |  22 ++-
- drivers/of/property.c                              |   7 +-
- drivers/of/unittest-data/tests-phandle.dtsi        |  10 +-
- drivers/of/unittest.c                              |  74 ++++----
- 65 files changed, 1432 insertions(+), 604 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,idle-state.txt
- create mode 100644 Documentation/devicetree/bindings/arm/qcom,coresight-remote-etm.yaml
- create mode 100644 Documentation/devicetree/bindings/display/panel/synaptics,r63353.yaml
- delete mode 100644 Documentation/devicetree/bindings/display/rockchip/inno_hdmi-rockchip.txt
- create mode 100644 Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
- create mode 100644 Documentation/devicetree/bindings/dts-coding-style.rst
- delete mode 100644 Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt
- delete mode 100644 Documentation/devicetree/bindings/fpga/altera-freeze-bridge.txt
- delete mode 100644 Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.txt
- create mode 100644 Documentation/devicetree/bindings/fpga/altr,freeze-bridge-controller.yaml
- create mode 100644 Documentation/devicetree/bindings/fpga/altr,socfpga-fpga2sdram-bridge.yaml
- create mode 100644 Documentation/devicetree/bindings/fpga/altr,socfpga-hps2fpga-bridge.yaml
- delete mode 100644 Documentation/devicetree/bindings/fpga/fpga-bridge.txt
- create mode 100644 Documentation/devicetree/bindings/fpga/fpga-bridge.yaml
- delete mode 100644 Documentation/devicetree/bindings/security/tpm/google,cr50.txt
- delete mode 100644 Documentation/devicetree/bindings/security/tpm/ibmvtpm.txt
- delete mode 100644 Documentation/devicetree/bindings/security/tpm/st33zp24-i2c.txt
- delete mode 100644 Documentation/devicetree/bindings/security/tpm/st33zp24-spi.txt
- delete mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-i2c.txt
- delete mode 100644 Documentation/devicetree/bindings/security/tpm/tpm_tis_mmio.txt
- delete mode 100644 Documentation/devicetree/bindings/security/tpm/tpm_tis_spi.txt
- create mode 100644 Documentation/devicetree/bindings/tpm/google,cr50.yaml
- create mode 100644 Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
- create mode 100644 Documentation/devicetree/bindings/tpm/microsoft,ftpm.yaml
- create mode 100644 Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml
- create mode 100644 Documentation/devicetree/bindings/tpm/tcg,tpm-tis-mmio.yaml
- create mode 100644 Documentation/devicetree/bindings/tpm/tcg,tpm_tis-spi.yaml
- create mode 100644 Documentation/devicetree/bindings/tpm/tpm-common.yaml
+-- 
+With best wishes
+Dmitry
 
