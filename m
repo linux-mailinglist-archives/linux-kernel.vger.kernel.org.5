@@ -1,77 +1,151 @@
-Return-Path: <linux-kernel+bounces-24186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF9182B8B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:44:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B757E82B8B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90267282C2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:44:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF1AB1C21AFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2264C10FE;
-	Fri, 12 Jan 2024 00:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD74ED5;
+	Fri, 12 Jan 2024 00:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hsXk11xq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ITV8y+JE"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F17B812;
-	Fri, 12 Jan 2024 00:44:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EE17C433F1;
-	Fri, 12 Jan 2024 00:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705020256;
-	bh=+ieIg1Vyrm7V4Kx0AWUkiM3IfDgk/8hVTKmTn+rXIUY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=hsXk11xqgvlvqBCv3MXy+6XQzo99gGTJPlboJrXI4F5CZcLU+MqenfuD6HXXX4JCS
-	 KrLch1AcWdOvv3HkjZ+gkGtjUjFSgC9vKxVVClVoCTxCCXYPY7HZr6v9JTjDKH9IMC
-	 hzaUd49PCUL3lIqCdlMSRRB0XgqzaKsbKEgKoWWSf3Xx9G9a8R5nR3joQqfrp0aUTU
-	 OzubsdpCx5XxFl9HYLG0q7ElB4kIFsQMT4LAexZE3yk67qj/CpHv3bTdl1R8t881xX
-	 scSeFGg6HBc3U1lj2/Ujz+p3TUvWxIM4xBdKGHVdivN5acqSsmXgNV0brz4A0MIDFF
-	 k5M+5WEHIK5/w==
-Date: Thu, 11 Jan 2024 16:44:14 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Aahil Awatramani <aahila@google.com>
-Cc: David Dillow <dave@thedillows.org>, Mahesh Bandewar
- <maheshb@google.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek
- <andy@greyhouse.net>, "David S . Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Martin
- KaFai Lau <martin.lau@kernel.org>, Herbert Xu
- <herbert@gondor.apana.org.au>, Daniel Borkmann <daniel@iogearbox.net>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 1/2] bonding: Add independent control state
- machine
-Message-ID: <20240111164414.58c7af7d@kernel.org>
-In-Reply-To: <20240111203244.1712804-1-aahila@google.com>
-References: <20240111203244.1712804-1-aahila@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B2D808
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 00:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-28bbe965867so4095269a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:44:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705020285; x=1705625085; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sN2es8KlQfgJlHIGj5HF3V4E8vkTP0blruT0KN91HgE=;
+        b=ITV8y+JEIUqkHd2L5nkGpuraOPsGYiKofNUDKqTrVUKpCJWdD6+yepTBNKJ8EwDa7I
+         w32qqS8VeB0X1CMgNY2GOnkEygG4c9qiv56cFdBldoJLUg66WMHO76/qlyCkF1H9u6Kf
+         pKO3uuhGz/lgGouJ4OTwwJSbRUcPZMzwv6uiQOguBy++g+40Ww0jAWN+a32ocB3V6Ikf
+         6Y1rUo9Lw1sUc8gadVB/Ua1Z+6FjerNRdAanFhqnCI3nyXV7WiD9AaZ2EYM/2+KMm8Xn
+         bQFteOE+kRvMWY+0gvIs6qOCn0nZWHQYpFSddMY6egO2aHhoB9IyZuDGK2+rICcIcuB1
+         s3MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705020285; x=1705625085;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sN2es8KlQfgJlHIGj5HF3V4E8vkTP0blruT0KN91HgE=;
+        b=w+KaOwrEjz21lBhw9FC+Ensiih49SD58pr3t9F5YNWQsx66FnOhNhOflfhTW21l/53
+         HX6GBBUVNXiRnTvoOF2VQHzje21h84bSjSRpCl8ugNZC0bvctGTaiF6WaLCQhHOwg1w1
+         dQu3wJ/gioSTLN1TJIaG4Y3bs8xwyLry6FxuFASbtrCPAgm7fBFgtokssiKL11qRrrkG
+         ETZXiE5NJb+ghaz3tu9l9P4ik/0XBl4mUxgw1AY19QywGbZTTsmEUkK3xKDy0qfIIp92
+         TRen8qanUvO8aPzmM6sykFYLez5H36IqDJ0nK02C6+4TPFuTBoShQq/4fi3mPM5RmdeQ
+         oSNg==
+X-Gm-Message-State: AOJu0YxoUMHraA14q7LU6+q21fgfgDBNzLIJyYd63GdWeiptU+s4h1AP
+	A/DT0Q+ap1fzU3sl/DoiGc0N1DB9lxorFpcXWA==
+X-Google-Smtp-Source: AGHT+IG5ommWT719Fl7J9iZ+Wiaz9wxUw0BgdIsI4EBsqWk43AnLBHzc1JTU7N4YI/8UprhBryXp0Cn89eA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:5209:b0:28e:272:4e18 with SMTP id
+ sg9-20020a17090b520900b0028e02724e18mr2054pjb.2.1705020284924; Thu, 11 Jan
+ 2024 16:44:44 -0800 (PST)
+Date: Thu, 11 Jan 2024 16:44:43 -0800
+In-Reply-To: <ZZdlt2Dm36VF4WL6@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20231110235528.1561679-1-seanjc@google.com> <20231110235528.1561679-4-seanjc@google.com>
+ <3ad69657ba8e1b19d150db574193619cf0cb34df.camel@redhat.com>
+ <ZWk8IMZamuemfwXG@google.com> <daaf098a6219310b6b1c1e3dc147fbb7e48b6f54.camel@redhat.com>
+ <ZZdlt2Dm36VF4WL6@google.com>
+Message-ID: <ZaCLe4UdDgLuT21S@google.com>
+Subject: Re: [PATCH 3/9] KVM: x86: Initialize guest cpu_caps based on guest CPUID
+From: Sean Christopherson <seanjc@google.com>
+To: Maxim Levitsky <mlevitsk@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, 11 Jan 2024 20:32:43 +0000 Aahil Awatramani wrote:
-> Add support for the independent control state machine per IEEE
-> 802.1AX-2008 5.4.15 in addition to the existing implementation of the
-> coupled control state machine.
+On Thu, Jan 04, 2024, Sean Christopherson wrote:
+> On Thu, Dec 21, 2023, Maxim Levitsky wrote:
+> > On Thu, 2023-11-30 at 17:51 -0800, Sean Christopherson wrote:
+> > > On Sun, Nov 19, 2023, Maxim Levitsky wrote:
+> > > > On Fri, 2023-11-10 at 15:55 -0800, Sean Christopherson wrote:
+ 
+> > > > Also why not to initialize guest_caps = host_caps & userspace_cpuid?
+> > > > 
+> > > > If this was the default we won't need any guest_cpu_cap_restrict and such,
+> > > > instead it will just work.
+> > > 
+> > > Hrm, I definitely like the idea.  Unfortunately, unless we do an audit of all
+> > > ~120 uses of guest_cpuid_has(), restricting those based on kvm_cpu_caps might
+> > > break userspace.
+> > 
+> > 120 uses is not that bad, IMHO it is worth it - we won't need to deal with that
+> > in the future.
+> > 
+> > How about a compromise - you change the patches such as it will be possible
+> > to remove these cases one by one, and also all new cases will be fully
+> > automatic?
+> 
+> Hrm, I'm not necessarily opposed to that, but I don't think we should go partway
+> unless we are 100% confident that changing the default to "use guest CPUID ANDed
+> with KVM capabilities" is the best end state, *and* that someone will actually
+> have the bandwidth to do the work soon-ish so that KVM isn't in a half-baked
+> state for months on end.  Even then, my preference would definitely be to switch
+> everything in one go.
+> 
+> And automatically handling new features would only be feasible for entirely new
+> leafs.  E.g. X86_FEATURE_RDPID is buried in CPUID.0x7.0x0.ECX, so to automatically
+> handle new features KVM would need to set the default guest_caps for all bits
+> *except* RDPID, at which point we're again building a set of features that need
+> to opt-out.
+> 
+> > > To be fair, the manual lists predate the governed features.
+> > 
+> > 100% agree, however the point of governed features was to simplify this list,
+> > the point of this patch set is to simplify these lists and yet they still remain,
+> > more or less untouched, and we will still need to maintain them.
+> > 
+> > Again I do think that governed features and/or this patchset are better than
+> > the mess that was there before, but a part of me wants to fully get rid of
+> > this mess instead of just making it a bit more beautiful. 
+> 
+> Oh, I would love to get rid of the mess too, I _completely_ getting rid of the
+> mess isn't realistic.  There are guaranteed to be exceptions to the rule, whether
+> the rule is "use guest CPUID by default" or "use guest CPUID constrained by KVM
+> capabilities by default".
+> 
+> I.e. there will always be some amount of manual messiness, the question is which
+> default behavior would yield the smallest mess.  My gut agrees with you, that
+> defaulting to "guest & KVM" would yield the fewest exceptions.  But as above,
+> I think we're better off doing the switch as an all-or-nothing things (where "all"
+> means within a single series, not within a single patch).
 
-## Form letter - net-next-closed
+Ok, the idea of having vcpu->arch.cpu_caps default to a KVM & GUEST is growing
+on me.  There's a lurking bug in KVM that in some ways is due to lack of a per-vCPU,
+KVM-enforced set of a features.  The bug is relatively benign (VMX passes through
+CR4.FSGSBASE when it's not supported in the host), and easy to fix (incorporate
+KVM-reserved CR4 bits into vcpu->arch.cr4_guest_rsvd_bits), but it really is
+something that just shouldn't happen.  E.g. KVM's handling of EFER has a similar
+lurking problem where __kvm_valid_efer() is unsafe to use without also consulting
+efer_reserved_bits.
 
-The merge window for v6.8 has begun and we have already posted our pull
-request. Therefore net-next is closed for new drivers, features, code
-refactoring and optimizations. We are currently accepting bug fixes only.
+And after digging a bit more, I think I'm just being overly paranoid.  I'm fairly
+certain the only exceptions are literally the few that I've called out (RDPID,
+MOVBE, and MWAIT (which is only a problem because of a stupid quirk)).  I don't
+yet have a firm plan on how to deal with the exceptions in a clean way, e.g. I'd
+like to somehow have the "opt-out" code share the set of emulated features with
+__do_cpuid_func_emulated().  One thought would be to add kvm_emulated_cpu_caps,
+which would be *comically* wasteful, but might be worth the 90 bytes.
 
-Please repost when net-next reopens after January 22nd.
-
-RFC patches sent for review only are obviously welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
--- 
-pw-bot: defer
-
+For v2, what if I post this more or less as-is, with a "convert to KVM & GUEST"
+patch thrown in at the end as an RFC?  I want to do a lot more testing (and staring)
+before committing to the conversion, and sadly I don't have anywhere near enough
+cycles to do that right now.
 
