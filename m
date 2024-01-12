@@ -1,293 +1,144 @@
-Return-Path: <linux-kernel+bounces-24493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDA1982BD64
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:41:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BFC82BD6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:43:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03528286A3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:41:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DA011C23D1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09D3357309;
-	Fri, 12 Jan 2024 09:41:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D63456B99;
+	Fri, 12 Jan 2024 09:43:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="NDBTXbaZ"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="TXwmvMkQ"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C1B51C2E
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a28f12a12e5so180338066b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:41:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6785556B67
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4b7153b8d76so1116830e0c.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:43:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1705052477; x=1705657277; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6vipcplhMlhbtLQhB0mA3Dqq/xKRhLIIoRd1dJzj/OY=;
-        b=NDBTXbaZ5KvhT8GWHP53frf5scYPkdnBhm+5ct9ywna3dZDqt4adA1cjzv+MnJYeFE
-         G/pL4ai3iN2jVPFYpajcLwD/dz7xNMggpn/ky+3tXvCMvlJhzFxIecCNV6y/g1o8pEk/
-         hX34l96Y9UbovbCC/ERIKHxHCDfFZS/7F/2kQ=
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705052595; x=1705657395; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7SOKaW2woRervs3SEctxvdhsDA2CX0fXEo5IZIZEkjI=;
+        b=TXwmvMkQt1bOumNT9ex0KA1MwvpznXy0lLXDMsJFXN+cnNl2GWlLSfZaFxsjYsWF9q
+         KQuvfv4cjMnyMvqCIC8QnRA4z2lrgXxakAnNvkb7iDmqX1X59vyi9F8ASou8YzD8BknU
+         ZjMlx7pocpxBBPNoGDAN4oCPgtF7Noz0slVoAEAP8mKPbVnnmnqTfrr6OVBLPsTvnCI8
+         qJIrBAILq9vRyzZqZuBhhQYoJOWNGAqiBRiDdJW0f2/D52c9XwRhccAncOdIceHb6YLf
+         1YK/T8iE0U3rl9C3fw0UqyHc4Al6UJVfBS0ZUCswy9SsL4dyz54iGYahruAMR97cI7rG
+         hdJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705052477; x=1705657277;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6vipcplhMlhbtLQhB0mA3Dqq/xKRhLIIoRd1dJzj/OY=;
-        b=JHkFE63XOjmmQ1IktY0zxxewF1Xyw0cUleUr/3vlPXhlLStO7GdQMkPmFE16u/SZCb
-         KD5mtIAKZnCMdziCsx3MXT3bLFjVyJJWQpXIAAdprU3miFiJ/dxUnmY7cXua9fTBJlYe
-         Ndo7EnesI4yfq5YdN9ylxVIAOdanJhnzz1rw8a8Jr7IG0p+rPjPHcT4G/KnRsazm1T2F
-         HdDP8Aae7TW769Zi9y72x8JgM4XBlxWVJzI0KaqKrGs81YpCAgsY4SXoSkjlpKMhYDts
-         L5bjDnrKmzLAe3nEyrqyQi2YJgD7ky2abgiQ7bCKUVMkOW9d/sQ33KYHrYu0N49ziopN
-         Q6Rg==
-X-Gm-Message-State: AOJu0Yy//OcxagEBxDXaACWzNMvVmOR88jXo8rtMDzeMANl22Y9khu2c
-	sNvN9iSZPUaxdfDeZxf1m+28T6Yc7Sgx5A==
-X-Google-Smtp-Source: AGHT+IFUrhEHLoxtmAPHlwzPSqcUm50dU47tJkMYj4SyQG2gZxwrNIyppWWPgxoz02QrYem4DZmo/w==
-X-Received: by 2002:a17:907:1b0f:b0:a2c:ea34:5fa5 with SMTP id mp15-20020a1709071b0f00b00a2cea345fa5mr138146ejc.6.1705052476728;
-        Fri, 12 Jan 2024 01:41:16 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170906c08400b00a2b10e20292sm1597859ejz.215.2024.01.12.01.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 01:41:16 -0800 (PST)
-Date: Fri, 12 Jan 2024 10:41:14 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Yong Wu <yong.wu@mediatek.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Jeffrey Kardatzke <jkardatzke@google.com>,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Vijayanand Jitta <quic_vjitta@quicinc.com>,
-	jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	linaro-mm-sig@lists.linaro.org,
-	Pekka Paalanen <ppaalanen@gmail.com>,
-	linux-mediatek@lists.infradead.org,
-	Joakim Bech <joakim.bech@linaro.org>, tjmercier@google.com,
-	linux-arm-kernel@lists.infradead.org,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	youlin.pei@mediatek.com, kuohong.wang@mediatek.com,
-	linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH v4 4/7] dma-buf: heaps: restricted_heap: Add dma_ops
-Message-ID: <ZaEJOjXP2EJIe9rK@phenom.ffwll.local>
-Mail-Followup-To: Yong Wu <yong.wu@mediatek.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Jeffrey Kardatzke <jkardatzke@google.com>,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Vijayanand Jitta <quic_vjitta@quicinc.com>,
-	jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	linaro-mm-sig@lists.linaro.org,
-	Pekka Paalanen <ppaalanen@gmail.com>,
-	linux-mediatek@lists.infradead.org,
-	Joakim Bech <joakim.bech@linaro.org>, tjmercier@google.com,
-	linux-arm-kernel@lists.infradead.org,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	youlin.pei@mediatek.com, kuohong.wang@mediatek.com,
-	linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
-References: <20240112092014.23999-1-yong.wu@mediatek.com>
- <20240112092014.23999-5-yong.wu@mediatek.com>
+        d=1e100.net; s=20230601; t=1705052595; x=1705657395;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7SOKaW2woRervs3SEctxvdhsDA2CX0fXEo5IZIZEkjI=;
+        b=pdRIt/PuFv1uH9tfScSziN8F1QRfMy+dV4nwleVO2tKpHpyCifcLblXEB/QzYTzQNy
+         vJJXGSl3YksillTg9kWv90zahXbj/C8Y1QH3GR3SCNpUWIv9hVm81QWXMynrAj2SFzlo
+         /3wAH2A9xyfl65/n/fGLHy6Zo25Snbk72pE6DvT7CQ85dEi8KoSU4FUn8a1hMZnRios6
+         q2Van+bNjZZmKLx02pMnn9zLGvKgdIBWkNKOQ4O3e22SBqQfkgBGRVOmMmSOB428UsQS
+         Frzvrb0xbsrNGuAZe2mnrDoeccoW5qpqdo868FGshk3beVO2eG+2hc/PKSNNO0spdJXT
+         N81g==
+X-Gm-Message-State: AOJu0YzonHWm9Xclnef0rHV017Uu2daRrBa1dABhBjSDLK9LMdv+6oAm
+	WvG+SjaFsfn8SIl42+2Y4235G0BGDTY54mGeXeaDBC0XxATPjg==
+X-Google-Smtp-Source: AGHT+IGaXoThckSM8NX1Ht9fT8RFyHBo65nMhJgSYIF7TWGvCDsemWJEAEquS+QXpokkqOQiXcw1Whlfv4mDa2JkGVI=
+X-Received: by 2002:a05:6122:3b88:b0:4b6:aeb7:3f1d with SMTP id
+ fs8-20020a0561223b8800b004b6aeb73f1dmr839449vkb.9.1705052595200; Fri, 12 Jan
+ 2024 01:43:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112092014.23999-5-yong.wu@mediatek.com>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+References: <20240104130123.37115-1-brgl@bgdev.pl> <20240104130123.37115-4-brgl@bgdev.pl>
+ <20240109144327.GA10780@wunner.de> <CAMRc=MdXO6c6asvRSn_Z8-oFS48hroT+dazGKB6WWY1_Zu7f1Q@mail.gmail.com>
+ <20240110132853.GA6860@wunner.de> <CAMRc=MdBSAb_kEO2r7r-vwLuRAEv7pMODOMtZoCCRAd=zsQb_w@mail.gmail.com>
+ <20240110164105.GA13451@wunner.de> <CAMRc=MdQKPN8UbagmswjFx7_JvmJuBeuq8+9=z-+GBNUmdpWEA@mail.gmail.com>
+ <20240111104211.GA32504@wunner.de> <CAMRc=MfT_VLo7++K4M89iYrciqWSrX_JyS1LX5kaGTNDNVQiOg@mail.gmail.com>
+ <20240111150201.GA28409@wunner.de> <CAMRc=Mcngw1vw9q0DXRWLKk4o9FOY+Mzz-niueT-v2THvbS1Dw@mail.gmail.com>
+ <CAMuHMdUnB_eGhzyOYRczXLMgb65dfHgwHgnv7eXSWDvOvTEdjQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUnB_eGhzyOYRczXLMgb65dfHgwHgnv7eXSWDvOvTEdjQ@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 12 Jan 2024 10:43:04 +0100
+Message-ID: <CAMRc=MeGsWV_71MzJ-Srm5MnwMfmwac_DLyC9O-8242eekuhNg@mail.gmail.com>
+Subject: Re: [RFC 3/9] PCI/portdrv: create platform devices for child OF nodes
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Lukas Wunner <lukas@wunner.de>, Kalle Valo <kvalo@kernel.org>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 12, 2024 at 05:20:11PM +0800, Yong Wu wrote:
-> Add the dma_ops for this restricted heap. For restricted buffer,
-> cache_ops/mmap are not allowed, thus return EPERM for them.
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/dma-buf/heaps/restricted_heap.c | 103 ++++++++++++++++++++++++
->  1 file changed, 103 insertions(+)
-> 
-> diff --git a/drivers/dma-buf/heaps/restricted_heap.c b/drivers/dma-buf/heaps/restricted_heap.c
-> index 8c266a0f6192..ec4c63d2112d 100644
-> --- a/drivers/dma-buf/heaps/restricted_heap.c
-> +++ b/drivers/dma-buf/heaps/restricted_heap.c
-> @@ -12,6 +12,10 @@
->  
->  #include "restricted_heap.h"
->  
-> +struct restricted_heap_attachment {
-> +	struct sg_table			*table;
-> +};
-> +
->  static int
->  restricted_heap_memory_allocate(struct restricted_heap *heap, struct restricted_buffer *buf)
->  {
-> @@ -45,6 +49,104 @@ restricted_heap_memory_free(struct restricted_heap *heap, struct restricted_buff
->  	ops->memory_free(heap, buf);
->  }
->  
-> +static int restricted_heap_attach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
-> +{
-> +	struct restricted_buffer *restricted_buf = dmabuf->priv;
-> +	struct restricted_heap_attachment *a;
-> +	struct sg_table *table;
-> +	int ret;
-> +
-> +	a = kzalloc(sizeof(*a), GFP_KERNEL);
-> +	if (!a)
-> +		return -ENOMEM;
-> +
-> +	table = kzalloc(sizeof(*table), GFP_KERNEL);
-> +	if (!table) {
-> +		ret = -ENOMEM;
-> +		goto err_free_attach;
-> +	}
-> +
-> +	ret = sg_alloc_table(table, 1, GFP_KERNEL);
-> +	if (ret)
-> +		goto err_free_sgt;
-> +	sg_set_page(table->sgl, NULL, restricted_buf->size, 0);
+On Thu, Jan 11, 2024 at 10:44=E2=80=AFPM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Bartosz,
+>
+> On Thu, Jan 11, 2024 at 5:16=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+> > No, it was actually a no-op due to CONFIG_PCI_DYNAMIC_OF_NODES not
+> > being set. But this is only available if CONFIG_OF_DYNAMIC is enabled
+> > which requires OF_UNITTEST (!).
+>
+> Huh? Config PCI_DYNAMIC_OF_NODES does select OF_DYNAMIC.
+>
 
-So this is definitely broken and violating the dma-buf api rules. You
-cannot let attach succed and supply a dummy/invalid sg table.
+Indeed, I got something wrong.
 
-Two options:
+But in any case: we *don't* need dynamic OF nodes as we don't create
+new ones. We use the ones that already exist. This is logically a
+wrong place to add this.
 
-- Reject ->attach for all this buffers with -EBUSY and provide instead a
-  private api for these secure buffers, similar to how virtio_dma_buf has
-  private virto-specific apis. This interface would need to be
-  standardized across all arm TEE users, so that we don't have a
-  disastrous proliferation of apis.
+Lukas, Terry: am I getting this right - is the port driver supposed to
+go away at some point? Because I'm not sure I understand what the
+problem is here. To me it seems that when we create a real device for
+the PCIe port, then it's only normal to populate its child devices
+from the port driver.
 
-- Allow ->attach, but _only_ for drivers/devices which can access the
-  secure buffer correctly, and only if you can put the right secure buffer
-  address into the sg table directly. If dma to a secure buffer for a
-  given struct device * will not work correctly (i.e. without data
-  corruption), you _must_ reject the attach attempt with -EBUSY.
+Bartosz
 
-The 2nd approach would be my preferred one, if it's technically possible.
-
-Also my understanding is that arm TEE is standardized, so I think we'll at
-least want some acks from other soc people whether this will work for them
-too.
-
-Finally the usual drill:
-- this also needs the driver side support, if there's any changes needed.
-  Just the new heap isn't enough.
-- and for drm you need open userspace for this. Doesn't have to be the
-  full content protection decode pipeline, the drivers in drm that landed
-  secure buffer support thus far enabled it using the
-  EGL_EXT_protected_content extension using gl, which side steps all the
-  complications around content decryption keys and support
-
-Cheers, Sima
-
-> +
-> +	a->table = table;
-> +	attachment->priv = a;
-> +
-> +	return 0;
-> +
-> +err_free_sgt:
-> +	kfree(table);
-> +err_free_attach:
-> +	kfree(a);
-> +	return ret;
-> +}
-> +
-> +static void restricted_heap_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
-> +{
-> +	struct restricted_heap_attachment *a = attachment->priv;
-> +
-> +	sg_free_table(a->table);
-> +	kfree(a->table);
-> +	kfree(a);
-> +}
-> +
-> +static struct sg_table *
-> +restricted_heap_map_dma_buf(struct dma_buf_attachment *attachment, enum dma_data_direction direct)
-> +{
-> +	struct restricted_heap_attachment *a = attachment->priv;
-> +	struct sg_table *table = a->table;
-> +
-> +	return table;
-> +}
-> +
-> +static void
-> +restricted_heap_unmap_dma_buf(struct dma_buf_attachment *attachment, struct sg_table *table,
-> +			      enum dma_data_direction direction)
-> +{
-> +	struct restricted_heap_attachment *a = attachment->priv;
-> +
-> +	WARN_ON(a->table != table);
-> +}
-> +
-> +static int
-> +restricted_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf, enum dma_data_direction direction)
-> +{
-> +	return -EPERM;
-> +}
-> +
-> +static int
-> +restricted_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf, enum dma_data_direction direction)
-> +{
-> +	return -EPERM;
-> +}
-> +
-> +static int restricted_heap_dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
-> +{
-> +	return -EPERM;
-> +}
-> +
-> +static void restricted_heap_free(struct dma_buf *dmabuf)
-> +{
-> +	struct restricted_buffer *restricted_buf = dmabuf->priv;
-> +	struct restricted_heap *heap = dma_heap_get_drvdata(restricted_buf->heap);
-> +
-> +	restricted_heap_memory_free(heap, restricted_buf);
-> +	kfree(restricted_buf);
-> +}
-> +
-> +static const struct dma_buf_ops restricted_heap_buf_ops = {
-> +	.attach		= restricted_heap_attach,
-> +	.detach		= restricted_heap_detach,
-> +	.map_dma_buf	= restricted_heap_map_dma_buf,
-> +	.unmap_dma_buf	= restricted_heap_unmap_dma_buf,
-> +	.begin_cpu_access = restricted_heap_dma_buf_begin_cpu_access,
-> +	.end_cpu_access	= restricted_heap_dma_buf_end_cpu_access,
-> +	.mmap		= restricted_heap_dma_buf_mmap,
-> +	.release	= restricted_heap_free,
-> +};
-> +
->  static struct dma_buf *
->  restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
->  			 unsigned long fd_flags, unsigned long heap_flags)
-> @@ -66,6 +168,7 @@ restricted_heap_allocate(struct dma_heap *heap, unsigned long size,
->  	if (ret)
->  		goto err_free_buf;
->  	exp_info.exp_name = dma_heap_get_name(heap);
-> +	exp_info.ops = &restricted_heap_buf_ops;
->  	exp_info.size = restricted_buf->size;
->  	exp_info.flags = fd_flags;
->  	exp_info.priv = restricted_buf;
-> -- 
-> 2.25.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
+>
 
