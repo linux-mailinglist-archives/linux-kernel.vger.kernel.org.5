@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-24347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73C7582BB65
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:55:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E22082BB67
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D48E1B25302
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:55:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207821C24FC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB0A5C901;
-	Fri, 12 Jan 2024 06:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886A25C8FE;
+	Fri, 12 Jan 2024 06:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GGlzY+o2"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IrjQh1wM"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB9942A87
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 06:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B18042A87
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 06:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-336746c7b6dso5139810f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 22:55:30 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3374eb61cbcso5376880f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 22:56:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705042529; x=1705647329; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705042588; x=1705647388; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=63UjO/yImm96QE/+VfB7fa+RlurKaZGr2phbbenRcSU=;
-        b=GGlzY+o224Ru9J3u249etAKvOErEhzoWqH0GMAbsYHN8QY906PgEIh2/zmVgyNyAJW
-         zyVDVtEqCwdCoYxwC4yzkKOlmYe9DZQs3Vz5ncT5ZgPh5lGUNmlTJXRJZTx8bf/PS2xu
-         YF5UNHUWocLhF0wWgngvo+ab2xVBUKoeRKD8kiKmzhoVwDChW85loa5352xW2F29x3Bp
-         iJe4ST+CzHyR/hPXkZf7b/eFgoJU7RgMZ9X/roJYZAPFy1RtZMRLQKzYELHKm8sry05J
-         1HFa+fhcwEjnkijem7cx/aCqYwEs8cZ4bN7BBr2rO7nMMLw4quW4ysGHrZXD1fDAx4Oh
-         2bCQ==
+        bh=9prXoTbAmkoR0CZO9d0SNqMhaDHqa31k4/WzflBN+f4=;
+        b=IrjQh1wMctaMiqlMKDXXjr2CzSqAu3HFdYdyugt2MgNsDOmB0LNVorGBlYIFtLHqP5
+         UD+lib05Tcym45i+C6gOKXF7WYMiZGQJVOAp0zzh+hnEb1O5Oo5O/KZW6CF8y4LYDmH5
+         5M8xjEPAtIysW4FxEk/jQ2QKRXCcj26NxNX44hsuxzt6lgnc5SIbsnBvi1aUGWCDaTAx
+         IEvGwEHyYCoF4uGpln/xlvy4BmkF6UbOrr+mky2xjaa0KDY9fOL6wTN6uWsNybXXPlI/
+         A6aT8o9hihZzds2B3MfbMiIvn8P0/iQisYnaU+7Gsnmjcgr84GRiWR6lap0P4GDn+i+3
+         4Hdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705042529; x=1705647329;
+        d=1e100.net; s=20230601; t=1705042588; x=1705647388;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=63UjO/yImm96QE/+VfB7fa+RlurKaZGr2phbbenRcSU=;
-        b=cBYxivQDd8Ho41DJu/16go5Ixsoaa0zBZ5EsZ6kACzfWBdNJhUX308UG4qdH3xpq91
-         1Vr5KOiRREU51LP+gGX1zHvCTIzfn4VqWFmmA8zeGp+CYd+MGV5xI4jztk2aar2LSYCX
-         aGBMqO6hiaIMDduLvyKAm1E6RXzm/N40Y8rf/LPVBm+NFY1ohFv4e2V88ObzLvIkCD/0
-         0HGOfJBApjbLK0/rjaFLWtf2R0r2m6Tp0BHgfKnTXY+jh5BAHU19AhORiqTCOt0QytAZ
-         rgF1Njf2NN3G3VnVywbSVPKchAHdRVtUlCMyCWc1a3qpnYQHFpShQOE7J5tNyfO7mFlQ
-         93jg==
-X-Gm-Message-State: AOJu0YxOBcAS5Kkz1UiY7lsKU+KSN0yZr1XgntxWdbWFOB39B9BOVclp
-	4XBujnhR+VBQKg8ggSKfOIXWV0ZpWjkFAA==
-X-Google-Smtp-Source: AGHT+IFYyXyn3K/JOwDJilFEclpAaIimSSiow+hzHZK4+0CXb3Se3RROQAPmH0iur0XUlIjkKHaeUA==
-X-Received: by 2002:a5d:590f:0:b0:337:7680:8ccf with SMTP id v15-20020a5d590f000000b0033776808ccfmr453616wrd.56.1705042529315;
-        Thu, 11 Jan 2024 22:55:29 -0800 (PST)
+        bh=9prXoTbAmkoR0CZO9d0SNqMhaDHqa31k4/WzflBN+f4=;
+        b=wcdhpdwxAfrgbbC5GzRALup7p47QttWQnKQ4mQ6OF8UscZy8oezPsfigM7fp96Jkoe
+         uu7qZNOZy9eR20YTu8PE+ggTddEUjMRAc/2aNklVDv5Y2UMWongfIeVh3Cur9WrmBPi+
+         yw7fMjU5GeLRaYsUzT2S1V9nrZNPfp52w5H+m1CajDfFRd54DKJ3DA6kAuEjaGHrk0yH
+         ezUeXlwdOI51CqD3qNFR4EXjBB1dUqBQ1ScQYJ2Qe2e4dD+1No/Mx1qPJGL1UTJyI7hL
+         oowAh2kL3n3745Gj3df7J0ueA9eNxe1SzhdpCamc3rwaXBHULZQKDGeMHX+0ZI/RmxGJ
+         K+xg==
+X-Gm-Message-State: AOJu0YyZqjsA9adfYRMhIgc6TYZx7oQInTkWr8ygP7FNz0PKhv3rQ6P/
+	LDfQf+aSKCdomsVrx4u1T1iZGm6q58b32Q==
+X-Google-Smtp-Source: AGHT+IH6gsHGVIynSC4gedvLtDCTO7G8G5VIZut2PGL0yCvFoPazVS5ii5HisQkORg+7Nmq9Qnuw5Q==
+X-Received: by 2002:a05:6000:141:b0:337:404b:1d67 with SMTP id r1-20020a056000014100b00337404b1d67mr447985wrx.69.1705042588682;
+        Thu, 11 Jan 2024 22:56:28 -0800 (PST)
 Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id d18-20020a5d6452000000b0033761b2de64sm2986699wrw.76.2024.01.11.22.55.28
+        by smtp.gmail.com with ESMTPSA id a7-20020adff7c7000000b0033660f75d08sm2983461wrq.116.2024.01.11.22.56.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 22:55:28 -0800 (PST)
-Date: Fri, 12 Jan 2024 09:55:25 +0300
+        Thu, 11 Jan 2024 22:56:28 -0800 (PST)
+Date: Fri, 12 Jan 2024 09:56:25 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Tzuyi Chang <tychang@realtek.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] gpio: rtd: Fix signedness bug in probe
-Message-ID: <46566e85-4afa-4c55-93b2-0d0b71d76b12@moroto.mountain>
+To: Hans de Goede <hdegoede@redhat.com>, Henry Shi <henryshi2018@gmail.com>
+Cc: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] platform/x86: silicom-platform: clean up a check
+Message-ID: <a58bffb7-0a8b-4195-b273-f65a188ace7b@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,47 +72,33 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 
-The "data->irqs[]" array holds unsigned int so this error handling will
-not work correctly.
+The error message in this code can't be reached because value is either
+zero or non-zero.  There isn't a third option.  Really, it's nicer to
+write this as a one liner.
 
-Fixes: eee636bff0dc ("gpio: rtd: Add support for Realtek DHC(Digital Home Center) RTD SoCs")
 Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/gpio/gpio-rtd.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/platform/x86/silicom-platform.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/gpio/gpio-rtd.c b/drivers/gpio/gpio-rtd.c
-index a7939bd0aa56..bf7f008f58d7 100644
---- a/drivers/gpio/gpio-rtd.c
-+++ b/drivers/gpio/gpio-rtd.c
-@@ -525,18 +525,21 @@ static int rtd_gpio_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct gpio_irq_chip *irq_chip;
- 	struct rtd_gpio *data;
-+	int ret;
+diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
+index 6ce43ccb3112..c0910af16a3a 100644
+--- a/drivers/platform/x86/silicom-platform.c
++++ b/drivers/platform/x86/silicom-platform.c
+@@ -256,12 +256,7 @@ static void silicom_gpio_set(struct gpio_chip *gc,
+ 	if (direction == GPIO_LINE_DIRECTION_IN)
+ 		return;
  
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
+-	if (value)
+-		silicom_mec_port_set(channel, 0);
+-	else if (value == 0)
+-		silicom_mec_port_set(channel, 1);
+-	else
+-		pr_err("Wrong argument value: %d\n", value);
++	silicom_mec_port_set(channel, !value);
+ }
  
--	data->irqs[0] = platform_get_irq(pdev, 0);
--	if (data->irqs[0] < 0)
--		return data->irqs[0];
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		return ret;
-+	data->irqs[0] = ret;
- 
--	data->irqs[1] = platform_get_irq(pdev, 1);
--	if (data->irqs[1] < 0)
--		return data->irqs[1];
-+	ret = platform_get_irq(pdev, 1);
-+	if (ret < 0)
-+		return ret;
-+	data->irqs[1] = ret;
- 
- 	data->info = device_get_match_data(dev);
- 	if (!data->info)
+ static int silicom_gpio_direction_output(struct gpio_chip *gc,
 -- 
 2.43.0
 
