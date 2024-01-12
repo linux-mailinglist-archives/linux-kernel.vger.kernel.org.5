@@ -1,203 +1,132 @@
-Return-Path: <linux-kernel+bounces-25000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EBE82C5E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:32:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C41382C5E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:33:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F2A8B23ADF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:32:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1BE01C22012
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:33:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF87816423;
-	Fri, 12 Jan 2024 19:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98BF015E94;
+	Fri, 12 Jan 2024 19:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HrVLB5sh"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZYsGi9Am"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6276A16418
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 19:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705087899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=qARUiNn2Jrx1KvihHVdfIiteTOrgQb9MKbdKKhl244M=;
-	b=HrVLB5shDNrEeq4NhRWb9vmEkdTTNYyv8RxrBoefv/tkLsJbc28j5+QP88K+cc9mUI6opf
-	/9CDP+398/rOBIFuFYWKDEKnb9n+ug2BsXYdQdwsGcF8kMykCEt1l69KhVHYsP89gxe5i6
-	7EY9CXr3W8KIq7C3AFd4RhO/E6kQL8o=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-46-66otMtfdPgWu8QLUZVWWpA-1; Fri, 12 Jan 2024 14:31:37 -0500
-X-MC-Unique: 66otMtfdPgWu8QLUZVWWpA-1
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf2e91b0c4so16666939f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 11:31:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB5E015AF4
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 19:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28f66dc7ffso1433268766b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 11:33:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1705087999; x=1705692799; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j27coH7dN6dynLCy7PqLOH/19550Y5l0cyL43P460HQ=;
+        b=ZYsGi9Am9A7adgJH4KSFtl9k0mLsRRcjreeWX5h9avWgT6cvn551yk5wFIXz3gUVLx
+         37nLQK2fmvUfZWC+JbRKPh7pQvBI6yzblNaIMC8knqnBWuhDdnJ1W7hqrusgXi2f+LdZ
+         tbaO+pEL4ZTB83yDtD5IKxVTv8t3ZMsB37yBk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705087897; x=1705692697;
-        h=content-transfer-encoding:mime-version:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qARUiNn2Jrx1KvihHVdfIiteTOrgQb9MKbdKKhl244M=;
-        b=TA0N/Fk6TKPbLe9QFF4EF42L+6Bk7alwBCXONxFiFcSC15xEXG4nLBfPIXNLvMSmza
-         V369aqM6WTTzJgULckM89NzBhiHV7DDWEJAzXa3W82M8IsLPtRlCYjxnlN14WJAWA+TE
-         o8V477eh2ipexcCWJRvIlEwYA0hsainPpxetVJjyksKdvxQn0CWOf/NylmxtxizBDvwB
-         C0gebdVWXN1hz1ILJ6NfLTEnzfLHtZVQKFJqLub+M5z05meFSD4WZyAuSF8YlzkOsDUM
-         T8DA4isVMMjDRnEVCsFR0yRVjobgNmXk4/offNsHNlrCsM+bCwm8jB+qcPAU7/E0ECrv
-         Z3LA==
-X-Gm-Message-State: AOJu0Yx4t72CwsztfQPGfuGhyY11IUqBQuHL4XSWX4S/qJRLWutsQO+Y
-	n2B/0qyb429I5eaUF0dmEX5OU/xS2K6v3ZeRuU5S9eNrFgCh40uNOn4nwKJilmX00mBLfZcACs+
-	4NsVmTQdJrIgjM7ihDzQiRvIFvb6yvgkh
-X-Received: by 2002:a6b:e919:0:b0:7bf:2b94:5cc1 with SMTP id u25-20020a6be919000000b007bf2b945cc1mr818551iof.7.1705087896845;
-        Fri, 12 Jan 2024 11:31:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEsgUtGzSjQB4EJc5YO3yWNR79/7QpPWBImRh6SQMbd/m8WXcEDug1AZhFYJnmepx/TIhlvjA==
-X-Received: by 2002:a6b:e919:0:b0:7bf:2b94:5cc1 with SMTP id u25-20020a6be919000000b007bf2b945cc1mr818538iof.7.1705087896477;
-        Fri, 12 Jan 2024 11:31:36 -0800 (PST)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id a1-20020a0566380b0100b0046d9e290a74sm1045304jab.7.2024.01.12.11.31.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 11:31:35 -0800 (PST)
-Date: Fri, 12 Jan 2024 12:31:34 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org"
- <kvm@vger.kernel.org>, mst@redhat.com
-Subject: [GIT PULL] VFIO updates for v6.8-rc1
-Message-ID: <20240112123134.2deb3896.alex.williamson@redhat.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        d=1e100.net; s=20230601; t=1705087999; x=1705692799;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j27coH7dN6dynLCy7PqLOH/19550Y5l0cyL43P460HQ=;
+        b=C2W8/RFjJ7xrCelGsFhRsLV2MyXiXlQcypqKNRZ9ohzdDUt187DiO6xMg//tgrUhTl
+         PxN+k1+BY6FaHVkyNbshklKp/xqvEffc0oDhX2hLPlgTiqXvrfz7zIfizKL+i6jKYjOp
+         dSH8ToAy7/FO9Enh3m0AasPVa0hM4mzZiD9z1YzAsTN4FG+iwN9wL5iMxL61oD1dH5jn
+         9fh8q3YA2E1GIER2E+4n1ay26rDAmyuYcKo0IuN2w/kTmc56oQ83ihfInqd9PRvb3mcj
+         8EcxG9xkc7H5TxK+PGZWJ4YbaFPZY4ssusHR4Ye/GAl1FtQemb4Jk2qb25hzsCjdpE86
+         /8eQ==
+X-Gm-Message-State: AOJu0Yy0OzNcz/KTi28iSBR322W4HuYvNhtj35DY25Aw8Q8ygDWGkxa5
+	hHK+59YzrL7mEAUPyHrESZJ64P03E3DjnMkzeDVXh/UYArEiHwVs
+X-Google-Smtp-Source: AGHT+IF/ItaLHPAO22Pgp5K7YEGRFWGjuCjKQzvtr4DoLZuombXbNVX3xHAM7KAVs0uLJTsMO/i4kg==
+X-Received: by 2002:a17:907:7891:b0:a27:d309:b6b8 with SMTP id ku17-20020a170907789100b00a27d309b6b8mr1775465ejc.35.1705087998774;
+        Fri, 12 Jan 2024 11:33:18 -0800 (PST)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id v9-20020a170906380900b00a26ac037ff3sm2080418ejc.132.2024.01.12.11.33.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 11:33:18 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28bf46ea11so1194703366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 11:33:18 -0800 (PST)
+X-Received: by 2002:a17:906:4307:b0:a23:1b07:5c1b with SMTP id
+ j7-20020a170906430700b00a231b075c1bmr1933545ejm.10.1705087997668; Fri, 12 Jan
+ 2024 11:33:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAPM=9twKBmO2Svky-zeP+KS8qWHFj9zrgeBqW9y__tUwcAYZhw@mail.gmail.com>
+In-Reply-To: <CAPM=9twKBmO2Svky-zeP+KS8qWHFj9zrgeBqW9y__tUwcAYZhw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 12 Jan 2024 11:33:00 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgPJttFz8yrdpPTN-ypMmDXHOKw9yi1nZSEq+7+tGftZA@mail.gmail.com>
+Message-ID: <CAHk-=wgPJttFz8yrdpPTN-ypMmDXHOKw9yi1nZSEq+7+tGftZA@mail.gmail.com>
+Subject: Re: [git pull] drm for 6.8
+To: Dave Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, dri-devel <dri-devel@lists.freedesktop.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Wed, 10 Jan 2024 at 11:49, Dave Airlie <airlied@gmail.com> wrote:
+>
+> Let me know if there are any issues,
 
-The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
+Your testing is seriously lacking.
 
-  Linux 6.7-rc4 (2023-12-03 18:52:56 +0900)
+This doesn't even build. The reason seems to be that commit
+b49e894c3fd8 ("drm/i915: Replace custom intel runtime_pm tracker with
+ref_tracker library") changed the 'intel_wakeref_t' type from a
+'depot_stack_handle_t' to 'unsigned long', and as a result did this:
 
-are available in the Git repository at:
+-       drm_dbg(&i915->drm, "async_put_wakeref %u\n",
++       drm_dbg(&i915->drm, "async_put_wakeref %lu\n",
+                power_domains->async_put_wakeref);
 
-  https://github.com/awilliam/linux-vfio.git tags/vfio-v6.8-rc1
+meanwhile, the Xe driver has this:
 
-for you to fetch changes up to 78f70c02bdbccb5e9b0b0c728185d4aeb7044ace:
+  drivers/gpu/drm/xe/compat-i915-headers/intel_wakeref.h:
+        typedef bool intel_wakeref_t;
 
-  vfio/virtio: fix virtio-pci dependency (2024-01-10 15:10:41 -0700)
+which has never been valid, but now the build fails with
 
-----------------------------------------------------------------
-VFIO updates for v6.8-rc1
+  drivers/gpu/drm/i915/display/intel_display_power.c: In function
+=E2=80=98print_async_put_domains_state=E2=80=99:
+  drivers/gpu/drm/i915/display/intel_display_power.c:408:29: error:
+format =E2=80=98%lu=E2=80=99 expects argument of type =E2=80=98long unsigne=
+d int=E2=80=99, but
+argument 5 has type =E2=80=98int=E2=80=99 [-Werror=3Dformat=3D]
 
- - Add debugfs support, initially used for reporting device migration
-   state. (Longfang Liu)
+because the drm header files have this disgusting thing where a
+*header* file includes a *C* file:
 
- - Fixes and support for migration dirty tracking across multiple IOVA
-   regions in the pds-vfio-pci driver. (Brett Creeley)
+  In file included from ./include/drm/drm_mm.h:51,
+                 from drivers/gpu/drm/xe/xe_bo_types.h:11,
+                 from drivers/gpu/drm/xe/xe_bo.h:11,
+                 from
+/drivers/gpu/drm/xe/compat-i915-headers/gem/i915_gem_object.h:11,
+                 from ./drivers/gpu/drm/xe/compat-i915-headers/i915_drv.h:1=
+5,
+                 from drivers/gpu/drm/i915/display/intel_display_power.c:8:
 
- - Improved IOMMU allocation accounting visibility. (Pasha Tatashin)
+nasty.
 
- - Virtio infrastructure and a new virtio-vfio-pci variant driver, which
-   provides emulation of a legacy virtio interfaces on modern virtio
-   hardware for virtio-net VF devices where the PF driver exposes
-   support for legacy admin queues, ie. an emulated IO BAR on an SR-IOV
-   VF to provide driver ABI compatibility to legacy devices.
-   (Yishai Hadas & Feng Liu)
+I made it build by fixing that broken Xe compat header file, but this
+is definitely *NOT* how things should have worked. How did this ever
+get to me without any kind of build testing?
 
- - Migration fixes for the hisi-acc-vfio-pci variant driver.
-   (Shameer Kolothum)
+And why the %^!@$% does a header file include a C file? That's wrong
+regardless of this bug.
 
- - Kconfig dependency fix for new virtio-vfio-pci variant driver.
-   (Arnd Bergmann)
-
-----------------------------------------------------------------
-Alex Williamson (2):
-      Merge branches 'v6.8/vfio/debugfs', 'v6.8/vfio/pds' and 'v6.8/vfio/type1-account' into v6.8/vfio/next
-      Merge branch 'v6.8/vfio/virtio' into v6.8/vfio/next
-
-Arnd Bergmann (1):
-      vfio/virtio: fix virtio-pci dependency
-
-Brett Creeley (6):
-      vfio/pds: Fix calculations in pds_vfio_dirty_sync
-      vfio/pds: Only use a single SGL for both seq and ack
-      vfio/pds: Move and rename region specific info
-      vfio/pds: Pass region info to relevant functions
-      vfio/pds: Move seq/ack bitmaps into region struct
-      vfio/pds: Add multi-region support
-
-Feng Liu (4):
-      virtio: Define feature bit for administration virtqueue
-      virtio-pci: Introduce admin virtqueue
-      virtio-pci: Introduce admin command sending function
-      virtio-pci: Introduce admin commands
-
-Longfang Liu (3):
-      vfio/migration: Add debugfs to live migration driver
-      Documentation: add debugfs description for vfio
-      MAINTAINERS: Add vfio debugfs interface doc link
-
-Pasha Tatashin (1):
-      vfio/type1: account iommu allocations
-
-Shameer Kolothum (1):
-      hisi_acc_vfio_pci: Update migration data pointer correctly on saving/resume
-
-Yishai Hadas (6):
-      virtio-pci: Initialize the supported admin commands
-      virtio-pci: Introduce APIs to execute legacy IO admin commands
-      vfio/pci: Expose vfio_pci_core_setup_barmap()
-      vfio/pci: Expose vfio_pci_core_iowrite/read##size()
-      vfio/virtio: Introduce a vfio driver over virtio devices
-      vfio/virtio: Declare virtiovf_pci_aer_reset_done() static
-
- Documentation/ABI/testing/debugfs-vfio         |  25 ++
- MAINTAINERS                                    |   8 +
- drivers/vfio/Kconfig                           |  10 +
- drivers/vfio/Makefile                          |   1 +
- drivers/vfio/debugfs.c                         |  92 ++++
- drivers/vfio/pci/Kconfig                       |   2 +
- drivers/vfio/pci/Makefile                      |   2 +
- drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c |   7 +-
- drivers/vfio/pci/pds/dirty.c                   | 309 ++++++++-----
- drivers/vfio/pci/pds/dirty.h                   |  18 +-
- drivers/vfio/pci/vfio_pci_rdwr.c               |  57 +--
- drivers/vfio/pci/virtio/Kconfig                |  15 +
- drivers/vfio/pci/virtio/Makefile               |   3 +
- drivers/vfio/pci/virtio/main.c                 | 576 +++++++++++++++++++++++++
- drivers/vfio/vfio.h                            |  14 +
- drivers/vfio/vfio_iommu_type1.c                |   8 +-
- drivers/vfio/vfio_main.c                       |   4 +
- drivers/virtio/Kconfig                         |   5 +
- drivers/virtio/Makefile                        |   1 +
- drivers/virtio/virtio.c                        |  37 +-
- drivers/virtio/virtio_pci_admin_legacy_io.c    | 244 +++++++++++
- drivers/virtio/virtio_pci_common.c             |  14 +
- drivers/virtio/virtio_pci_common.h             |  42 +-
- drivers/virtio/virtio_pci_modern.c             | 259 ++++++++++-
- drivers/virtio/virtio_pci_modern_dev.c         |  24 +-
- include/linux/vfio.h                           |   7 +
- include/linux/vfio_pci_core.h                  |  20 +
- include/linux/virtio.h                         |   8 +
- include/linux/virtio_config.h                  |   4 +
- include/linux/virtio_pci_admin.h               |  23 +
- include/linux/virtio_pci_modern.h              |   2 +
- include/uapi/linux/vfio.h                      |   1 +
- include/uapi/linux/virtio_config.h             |   8 +-
- include/uapi/linux/virtio_pci.h                |  68 +++
- 34 files changed, 1754 insertions(+), 164 deletions(-)
- create mode 100644 Documentation/ABI/testing/debugfs-vfio
- create mode 100644 drivers/vfio/debugfs.c
- create mode 100644 drivers/vfio/pci/virtio/Kconfig
- create mode 100644 drivers/vfio/pci/virtio/Makefile
- create mode 100644 drivers/vfio/pci/virtio/main.c
- create mode 100644 drivers/virtio/virtio_pci_admin_legacy_io.c
- create mode 100644 include/linux/virtio_pci_admin.h
-
+                   Linus
 
