@@ -1,217 +1,172 @@
-Return-Path: <linux-kernel+bounces-24721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D9D82C150
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:04:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B67C82C156
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:05:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C18E81F270E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:04:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16108B24136
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF736D1C8;
-	Fri, 12 Jan 2024 14:04:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C35B6BB41;
-	Fri, 12 Jan 2024 14:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2176D1FB;
-	Fri, 12 Jan 2024 06:05:16 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E21A93F5A1;
-	Fri, 12 Jan 2024 06:04:26 -0800 (PST)
-Message-ID: <2c920dda-fdd3-436a-85cc-ead018f28ee4@arm.com>
-Date: Fri, 12 Jan 2024 14:04:25 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332976D1CC;
+	Fri, 12 Jan 2024 14:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oKDDUd8r"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA43D59175;
+	Fri, 12 Jan 2024 14:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705068342; x=1736604342;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=77qUhIk8UEJUQ4AxK+DOYzJtZ9F/QPegLGP5CRgl2gg=;
+  b=oKDDUd8rXYobRYrhlRWSI5vhQ3NY9pzP5eAym6h7km4dG6AZKtWxFI9H
+   awtaanxcXxnycq8+AxE8GVS16z+FlSXiyiNdNsZ/oNpNmQKWgoBLqEAUo
+   7vgvs+Jns8yoDrktkIFcccCX9OFyL1dZrhT1CqdB9z/708H5opbXKOBd+
+   Rj/h21ZKZPUOqH0saz5vOiOya29+/i8ewpkT7VsP0pG1vImFcaQZZJhMg
+   VO+yLU6xz4QLlMGWtumASkhZIFPKVA2U/texz7RATNz7RdKOgx3gmjewi
+   hsJvb6k4beCSt0aFB5pEKE9gzEY/F17iK3b7v5zGopei8ZnRHX6bC50UV
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="398862244"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="398862244"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 06:05:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="786357248"
+X-IronPort-AV: E=Sophos;i="6.04,189,1695711600"; 
+   d="scan'208";a="786357248"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.141])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 06:05:37 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 12 Jan 2024 16:05:34 +0200 (EET)
+To: Gui-Dong Han <2045gemini@gmail.com>
+cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+    l.sanfilippo@kunbus.com, john.ogness@linutronix.de, tglx@linutronix.de, 
+    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    linux-serial <linux-serial@vger.kernel.org>, baijiaju1990@outlook.com, 
+    stable@vger.kernel.org
+Subject: Re: [PATCH] serial: core: Fix double fetch in
+ uart_throttle/uart_unthrottle
+In-Reply-To: <20240112121844.17580-1-2045gemini@gmail.com>
+Message-ID: <3bbabf34-1eba-8983-439e-f23e811e80a8@linux.intel.com>
+References: <20240112121844.17580-1-2045gemini@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/7] coresight: config: Add preloaded configuration
-Content-Language: en-US
-To: Linu Cherian <lcherian@marvell.com>, mike.leach@linaro.org,
- james.clark@arm.com, leo.yan@linaro.org
-Cc: linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, sgoutham@marvell.com, gcherian@marvell.com
-References: <20240105055840.1977897-1-lcherian@marvell.com>
- <20240105055840.1977897-8-lcherian@marvell.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240105055840.1977897-8-lcherian@marvell.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 
-On 05/01/2024 05:58, Linu Cherian wrote:
-> Add a preloaded configuration for generating
-> external trigger on address match. This can be
-> used by CTI and ETR blocks to stop trace capture
-> on kernel panic.
+On Fri, 12 Jan 2024, Gui-Dong Han wrote:
+
+> In uart_throttle() and uart_unthrottle():
+>     if (port->status & mask) {
+>         port->ops->throttle/unthrottle(port);
+>         mask &= ~port->status;
+>     }
+>     // Code segment utilizing the mask value to determine UART behavior
 > 
-> Kernel address for panic function to be
-> programmed as below.
+> In uart_change_line_settings():
+>     uart_port_lock_irq(uport);
+>     // Code segment responsible for updating uport->status
+>     uart_port_unlock_irq(uport);
 > 
-> $cd /config/cs-syscfg/features/gen_etrig/params
-> $echo <panic_address> > address/value
+> In the uart_throttle() and uart_unthrottle() functions, there is a double
+> fetch issue due to concurrent execution with uart_change_line_settings().
+> In uart_throttle() and uart_unthrottle(), the check
+> if (port->status & mask) is made, followed by mask &= ~port->status,
+> where the relevant bits are cleared. However, port->status may be modified
+> in uart_change_line_settings(). The current implementation does not ensure
+> atomicity in the access and modification of port->status and mask. This
+> can result in mask being updated based on a modified port->status value,
+> leading to improper UART actions.
 > 
-> Signed-off-by: Linu Cherian <lcherian@marvell.com>
+> This possible bug is found by an experimental static analysis tool
+> developed by our team, BassCheck[1]. This tool analyzes the locking APIs
+> to extract function pairs that can be concurrently executed, and then
+> analyzes the instructions in the paired functions to identify possible
+> concurrency bugs including data races and atomicity violations. The above
+> possible bug is reported when our tool analyzes the source code of
+> Linux 5.17.
+> 
+> To resolve this double fetch, it is suggested to add a uart_port_lock pair
+> in uart_throttle() and uart_unthrottle(). With this patch applied, our
+> tool no longer reports the bug, with the kernel configuration allyesconfig
+> for x86_64. Due to the absence of the requisite hardware, we are unable to
+> conduct runtime testing of the patch. Therefore, our verification is
+> solely based on code logic analysis.
+> 
+> [1] https://sites.google.com/view/basscheck/
+> 
+> Fixes: 391f93f2ec9f ("serial: core: Rework hw-assisted flow control support")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
 > ---
-> Changelog from v5:
-> * No changes
+>  drivers/tty/serial/serial_core.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
->   drivers/hwtracing/coresight/Makefile          |  2 +-
->   .../coresight/coresight-cfg-preload.c         |  2 +
->   .../coresight/coresight-cfg-preload.h         |  2 +
->   .../hwtracing/coresight/coresight-cfg-pstop.c | 83 +++++++++++++++++++
->   4 files changed, 88 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/hwtracing/coresight/coresight-cfg-pstop.c
-> 
-> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
-> index 995d3b2c76df..68b15c8d9462 100644
-> --- a/drivers/hwtracing/coresight/Makefile
-> +++ b/drivers/hwtracing/coresight/Makefile
-> @@ -5,7 +5,7 @@
->   obj-$(CONFIG_CORESIGHT) += coresight.o
->   coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
->   		coresight-sysfs.o coresight-syscfg.o coresight-config.o \
-> -		coresight-cfg-preload.o coresight-cfg-afdo.o \
-> +		coresight-cfg-preload.o coresight-cfg-afdo.o coresight-cfg-pstop.o \
->   		coresight-syscfg-configfs.o coresight-trace-id.o
->   obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
->   coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
-> diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.c b/drivers/hwtracing/coresight/coresight-cfg-preload.c
-> index e237a4edfa09..4980e68483c5 100644
-> --- a/drivers/hwtracing/coresight/coresight-cfg-preload.c
-> +++ b/drivers/hwtracing/coresight/coresight-cfg-preload.c
-> @@ -13,6 +13,7 @@
->   static struct cscfg_feature_desc *preload_feats[] = {
->   #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
->   	&strobe_etm4x,
-> +	&gen_etrig_etm4x,
->   #endif
->   	NULL
->   };
-> @@ -20,6 +21,7 @@ static struct cscfg_feature_desc *preload_feats[] = {
->   static struct cscfg_config_desc *preload_cfgs[] = {
->   #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
->   	&afdo_etm4x,
-> +	&pstop_etm4x,
->   #endif
->   	NULL
->   };
-> diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.h b/drivers/hwtracing/coresight/coresight-cfg-preload.h
-> index 21299e175477..291ba530a6a5 100644
-> --- a/drivers/hwtracing/coresight/coresight-cfg-preload.h
-> +++ b/drivers/hwtracing/coresight/coresight-cfg-preload.h
-> @@ -10,4 +10,6 @@
->   #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
->   extern struct cscfg_feature_desc strobe_etm4x;
->   extern struct cscfg_config_desc afdo_etm4x;
-> +extern struct cscfg_feature_desc gen_etrig_etm4x;
-> +extern struct cscfg_config_desc pstop_etm4x;
->   #endif
-> diff --git a/drivers/hwtracing/coresight/coresight-cfg-pstop.c b/drivers/hwtracing/coresight/coresight-cfg-pstop.c
-> new file mode 100644
-> index 000000000000..037d6773fab8
-> --- /dev/null
-> +++ b/drivers/hwtracing/coresight/coresight-cfg-pstop.c
-> @@ -0,0 +1,83 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright(C) 2023  Marvell.
-> + * Based on coresight-cfg-afdo.c
-> + */
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> index 80085b151b34..9d905fdf2843 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -723,11 +723,13 @@ static void uart_throttle(struct tty_struct *tty)
+>  		mask |= UPSTAT_AUTOXOFF;
+>  	if (C_CRTSCTS(tty))
+>  		mask |= UPSTAT_AUTORTS;
+> -
 > +
-> +#include "coresight-config.h"
-> +
-> +/* ETMv4 includes and features */
-> +#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
-> +#include "coresight-etm4x-cfg.h"
-> +
-> +/* preload configurations and features */
-> +
-> +/* preload in features for ETMv4 */
-> +
-> +/* panic_stop feature */
-> +static struct cscfg_parameter_desc gen_etrig_params[] = {
-> +	{
-> +		.name = "address",
-> +		.value = 0x0,
-> +	},
-> +};
-> +
-> +static struct cscfg_regval_desc gen_etrig_regs[] = {
-> +	/* resource selector */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCRSCTLRn(2),
-> +		.hw_info = ETM4_CFG_RES_SEL,
-> +		.val32 = 0x40001,
-> +	},
-> +	/* single address comparator */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_64BIT |
-> +			CS_CFG_REG_TYPE_VAL_PARAM,
-> +		.offset =  TRCACVRn(0),
-> +		.val32 = 0x0,
-> +	},
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCACATRn(0),
-> +		.val64 = 0xf00,
-> +	},
-> +	/* Driver external output[0] with comparator out */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCEVENTCTL0R,
-> +		.val32 = 0x2,
-> +	},
-> +	/* end of regs */
-> +};
-> +
-> +struct cscfg_feature_desc gen_etrig_etm4x = {
-> +	.name = "gen_etrig",
-> +	.description = "Generate external trigger on address match\n"
-> +		       "parameter \'address\': address of kernel address\n",
-> +	.match_flags = CS_CFG_MATCH_CLASS_SRC_ETM4,
-> +	.nr_params = ARRAY_SIZE(gen_etrig_params),
-> +	.params_desc = gen_etrig_params,
-> +	.nr_regs = ARRAY_SIZE(gen_etrig_regs),
-> +	.regs_desc = gen_etrig_regs,
-> +};
-> +
-> +/* create a panic stop configuration */
-> +
-> +/* the total number of parameters in used features */
-> +#define PSTOP_NR_PARAMS	ARRAY_SIZE(gen_etrig_params)
-> +
-> +static const char *pstop_ref_names[] = {
-> +	"gen_etrig",
-> +};
-> +
-> +struct cscfg_config_desc pstop_etm4x = {
-> +	.name = "panicstop",
-> +	.description = "Stop ETM on kernel panic\n",
+> +	uart_port_lock_irq(port);
+>  	if (port->status & mask) {
+>  		port->ops->throttle(port);
+>  		mask &= ~port->status;
+>  	}
+> +	uart_port_unlock_irq(port);
+>  
+>  	if (mask & UPSTAT_AUTORTS)
+>  		uart_clear_mctrl(port, TIOCM_RTS);
+> @@ -753,10 +755,12 @@ static void uart_unthrottle(struct tty_struct *tty)
+>  	if (C_CRTSCTS(tty))
+>  		mask |= UPSTAT_AUTORTS;
+>  
+> +	uart_port_lock_irq(port);
+>  	if (port->status & mask) {
+>  		port->ops->unthrottle(port);
+>  		mask &= ~port->status;
+>  	}
+> +	uart_port_unlock_irq(port);
+>  
+>  	if (mask & UPSTAT_AUTORTS)
+>  		uart_set_mctrl(port, TIOCM_RTS);
 
-Since this is actually generic, i.e., Stop trace on a Kernel address, we
-could rename this ?  Or why don't we pre-populate the address of "panic"
-at load time. That way the user doesn't have to figure out the kernel
-address (e.g., if KASLR is enabled)
+Hi,
 
-Suzuki
+This is very bogus "fix". While change to the local variable gets 
+"protected", uart_change_line_settings() can race after unlock and the 
+value held in mask is again stale.
 
+If, and it's a big if, this is a real problem, the patch does not fix 
+anything! It proves your tool is flawed because it doesn't detect the 
+race with uart_change_line_settings() issue still exists after this 
+non-fix.
 
-> +	.nr_feat_refs = ARRAY_SIZE(pstop_ref_names),
-> +	.feat_ref_names = pstop_ref_names,
-> +	.nr_total_params = PSTOP_NR_PARAMS,
-> +};
-> +
-> +/* end of ETM4x configurations */
-> +#endif	/* IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X) */
+So NAK from me. Please provide a real fix instead if you think there is
+a real issue.
+
+Also, don't use vague wording like "leading to improper UART action" but 
+describe precisely what goes wrong!
+
+-- 
+ i.
 
 
