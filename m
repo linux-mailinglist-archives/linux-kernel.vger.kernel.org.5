@@ -1,128 +1,178 @@
-Return-Path: <linux-kernel+bounces-24713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F93882C12B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8EAC82C129
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:53:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 665DE1C23978
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:54:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 030A21C23472
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 13:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59E26D1C3;
-	Fri, 12 Jan 2024 13:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AievCUHb"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539016D1C3;
+	Fri, 12 Jan 2024 13:53:48 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72B86D1B4;
-	Fri, 12 Jan 2024 13:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40CDIW99009300;
-	Fri, 12 Jan 2024 13:53:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=DhVXr6gyIbMg
-	zR2b0surHFdqtEQz2xq2bAyxCY1BWNg=; b=AievCUHbdq/ugHWm/OsV+lLygUYw
-	K4NGsL8+BJKPUcnaL5SLCddxxnLGtTrMlu/YrkUMYAEX3mKJ6rMsXWz8ZVlcvz1+
-	RBDQwQjJHe8is7YTZnhNKGI+S7wOmHMyknU/EpYpZl2mcKI10rrNyU4Hf7WBbhch
-	1wmMuY95zzYuRv9R9lzZzgcpCo3LlP9Cj/oIwKLQQr780eBCGW5MvAsCX4JRWrEA
-	J7LObRPepcjDFQVOLNC57IDNKcy+qdEboAgBom+AEedwPK8shDK9XUCrT+FAobpM
-	obsUYXxRqVwwkVmwKo53WKfamBm698dM9jDzQXwJXgJM4wUIjpdJfpA1MA==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vjrqj1ysn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Jan 2024 13:53:46 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 40CDrhs3005326;
-	Fri, 12 Jan 2024 13:53:43 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3veyxm4mxw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Fri, 12 Jan 2024 13:53:43 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40CDrgeK005319;
-	Fri, 12 Jan 2024 13:53:42 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 40CDrg91005316;
-	Fri, 12 Jan 2024 13:53:42 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
-	id 29C915013A9; Fri, 12 Jan 2024 19:23:41 +0530 (+0530)
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-To: andersson@kernel.org, konrad.dybcio@linaro.org, andi.shyti@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkoul@kernel.org
-Cc: quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com,
-        Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Subject: [PATCH 1/1] i2c: i2c-qcom-geni: Correct I2C TRE sequence
-Date: Fri, 12 Jan 2024 19:23:32 +0530
-Message-Id: <20240112135332.24957-1-quic_vdadhani@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: OoHBo6GdfJgBuPdX_brWoMYa6rkH5ixG
-X-Proofpoint-GUID: OoHBo6GdfJgBuPdX_brWoMYa6rkH5ixG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- malwarescore=0 mlxlogscore=720 mlxscore=0 clxscore=1011 adultscore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401120109
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52906BB40;
+	Fri, 12 Jan 2024 13:53:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31075C433F1;
+	Fri, 12 Jan 2024 13:53:46 +0000 (UTC)
+Date: Fri, 12 Jan 2024 08:53:44 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
+ <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
+ default ownership
+Message-ID: <20240112085344.30540d10@rorschach.local.home>
+In-Reply-To: <20240112-normierung-knipsen-dccb7cac7efc@brauner>
+References: <20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+	<20240105095954.67de63c2@gandalf.local.home>
+	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
+	<20240107132912.71b109d8@rorschach.local.home>
+	<20240108-ortsrand-ziehen-4e9a9a58e708@brauner>
+	<20240108102331.7de98cab@gandalf.local.home>
+	<20240110-murren-extra-cd1241aae470@brauner>
+	<20240110080746.50f7767d@gandalf.local.home>
+	<20240111-unzahl-gefegt-433acb8a841d@brauner>
+	<20240111165319.4bb2af76@gandalf.local.home>
+	<20240112-normierung-knipsen-dccb7cac7efc@brauner>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-For i2c read operation, we are getting gsi mode timeout due
-to malformed TRE(Transfer Ring Element). currently for read opreration,
-we are configuring incorrect TRE sequence(config->dma->go).
+On Fri, 12 Jan 2024 09:27:24 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
-So correct TRE sequence(config->go->dma) to resolve timeout
-issue for read operation.
+> On Thu, Jan 11, 2024 at 04:53:19PM -0500, Steven Rostedt wrote:
+> > On Thu, 11 Jan 2024 22:01:32 +0100
+> > Christian Brauner <brauner@kernel.org> wrote:
+> >   
+> > > What I'm pointing out in the current logic is that the caller is
+> > > taxed twice:
+> > > 
+> > > (1) Once when the VFS has done inode_permission(MAY_EXEC, "xfs")
+> > > (2) And again when you call lookup_one_len() in eventfs_start_creating()
+> > >     _because_ the permission check in lookup_one_len() is the exact
+> > >     same permission check again that the vfs has done
+> > >     inode_permission(MAY_EXEC, "xfs").  
+> > 
+> > As I described in: https://lore.kernel.org/all/20240110133154.6e18feb9@gandalf.local.home/
+> > 
+> > The eventfs files below "events" doesn't need the .permissions callback at
+> > all. It's only there because the "events" inode uses it.
+> > 
+> > The .permissions call for eventfs has:  
+> 
+> It doesn't matter whether there's a ->permission handler. If you don't
+> add one explicitly the VFS will simply call generic_permission():
+> 
+> inode_permission()
+> -> do_inode_permission()  
+>    {
+>         if (unlikely(!(inode->i_opflags & IOP_FASTPERM))) {
+>                 if (likely(inode->i_op->permission))
+>                         return inode->i_op->permission(idmap, inode, mask);
+>                
+>                 /* This gets set once for the inode lifetime */
+>                 spin_lock(&inode->i_lock);
+>                 inode->i_opflags |= IOP_FASTPERM;
+>                 spin_unlock(&inode->i_lock);
+>         }
+>         return generic_permission(idmap, inode, mask);
+>    }
 
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
----
- drivers/i2c/busses/i2c-qcom-geni.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Yes I know that, because that's where I knew what to call in the non
+"events" dir case.
 
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index 0d2e7171e3a6..5904fc8bba71 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -613,6 +613,11 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
- 
- 		peripheral.addr = msgs[i].addr;
- 
-+		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
-+				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
-+		if (ret)
-+			goto err;
-+
- 		if (msgs[i].flags & I2C_M_RD) {
- 			ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
- 					    &rx_addr, &rx_buf, I2C_READ, gi2c->rx_c);
-@@ -620,11 +625,6 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
- 				goto err;
- 		}
- 
--		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
--				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
--		if (ret)
--			goto err;
--
- 		if (msgs[i].flags & I2C_M_RD)
- 			dma_async_issue_pending(gi2c->rx_c);
- 		dma_async_issue_pending(gi2c->tx_c);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+> 
+> > Anyway, the issue is with "events" directory and remounting, because like
+> > the tracefs system, the inode and dentry for "evnets" is created at boot
+> > up, before the mount happens. The VFS layer is going to check the
+> > permissions of its inode and dentry, which will be incorrect if the mount
+> > was mounted with a "gid" option.  
+> 
+> The gid option has nothing to do with this and it is just handled fine
+> if you remove the second permission checking in (2).
 
+I guess I'm confused to what you are having an issue with. Is it just
+that the permission check gets called twice?
+
+> 
+> You need to remove the inode_permission() code from
+> eventfs_start_creating(). It is just an internal lookup and the fact
+> that you have it in there allows userspace to break readdir on the
+> eventfs portions of tracefs as I've shown in the parts of the mail that
+> you cut off.
+
+That's because I didn't see how it was related to the way I fixed the
+mount=gid issue. Are you only concerned because of the check in
+eventfs_start_creating()?
+
+Yes, you posted code that would make things act funny for some code
+that I see no real world use case for. Yeah, it may not act "properly"
+but I'm not sure that's bad.
+
+Here, I'll paste it back:
+
+> // We managed to open the directory so we have permission to list
+> // directory entries in "xfs".
+> fd = open("/sys/kernel/tracing/events/xfs");
+> 
+> // Remove ownership so we can't open the directory anymore
+> chown("/sys/kernel/tracing/events/xfs", 0, 0);
+> 
+> // Or just remove exec bit for the group and restrict to owner
+> chmod("/sys/kernel/tracing/events/xfs", 700);
+> 
+> // Drop caches to force an eventfs_root_lookup() on everything
+> write("/proc/sys/vm/drop_caches", "3", 1);
+
+This requires opening the directory, then having it's permissions
+change, and then immediately dropping the caches.
+
+> 
+> // Returns 0 even though directory has a lot of entries and we should be
+> // able to list them
+> getdents64(fd, ...);
+
+And do we care?
+
+Since tracing exposes internal kernel information, perhaps this is a
+feature and not a bug. If someone who had access to the tracing system
+and you wanted to stop them, if they had a directory open that they no
+longer have access to, you don't want them to see what's left in the
+directory.
+
+In other words, I like the idea that the getends64(fd, ...) will fail!
+
+If there's a file underneath that wasn't change, and the admin thought
+that just keeping the top directory permissions off is good enough,
+then that attacker having that directory open before the directory had
+it's file permissions change is a way to still have access to the files
+below it.
+
+> 
+> And the failure is in the inode_permission(MAY_EXEC, "xfs") call in
+> lookup_one_len() in eventfs_start_creating() which now fails.
+
+And I think is a good thing!
+
+Again, tracefs is special. It gives you access and possibly control to
+the kernel behavior. I like the fact that as soon as someone loses
+permission to a directory, they immediately lose it.
+
+-- Steve
 
