@@ -1,155 +1,99 @@
-Return-Path: <linux-kernel+bounces-24877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 040A682C41D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:58:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E1282C41C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:58:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 985BE1F247F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:58:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8AB31C22037
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AEBD17C94;
-	Fri, 12 Jan 2024 16:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F12175B8;
+	Fri, 12 Jan 2024 16:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qaWX86vl"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S/it6ZRJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4045617540
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dc36e501e1so4571686a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 08:58:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705078710; x=1705683510; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=u+lQGn74TGq7hrOXT4TkI+kQ8ytJDBxjKrUJkE5tzl4=;
-        b=qaWX86vlJlNHKDapvCjUIJO13Fb2vfor+fqeSrXYleqqEjUBux4pDDQ8QtY/bCXnjG
-         1e2DAyJPjvAdtcShn14coOIIqHgYVJGENXmLEtPMGnDSI093N8cPpYOXdNpCZlkKl69P
-         T//1B4x6ldVbV7mgWvCeaQQvCoTCJtYpOLa3ileVnHQ6UikdZHm4mbP7GO+L27PIWJb8
-         LmCLnhVpr1gJ+xKfjhk2/uLDcyihV65wlMYwPayusKP1Y2A6Ocayg8GHh6I1HLLeUrnl
-         BKaxLYMjZCVBAsTf7MBQc/0JvB7ZxZB07INL+ZMSrYoCm5uACzobz47vhQzzK+UdGOPU
-         UnSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705078710; x=1705683510;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u+lQGn74TGq7hrOXT4TkI+kQ8ytJDBxjKrUJkE5tzl4=;
-        b=JUYtXfuPGAR/0XfhJCatu/CHuqRTg3fbhfFb/wXD4JnDiUKlGj3LZIyTTKBIeylaZH
-         cDJglFs4iW+sfg2R4tpWdw465kTvfUo4E3yJKBaUtsTcgi96xGRepJ5ZJlvobw5+YphU
-         OlVZKmrPCIViK23vwZPjsGejD2HUEyGEhnDktE5zI72yZAKTH6eG6DnvIxU0frYk7PTh
-         eCrRx5VvCyzRHfrZrzhMtQeEBMQroaw/pcPP+1bwYq1ob4CsnI1gEOmV8Mv9VkGtlsa7
-         KyL67LKkxmuGZIwBVk37VOR4mOelHxHbVHUyXtH+/xlojlN9rtwHTU1ZuYBckfyNICP2
-         cqaw==
-X-Gm-Message-State: AOJu0YzW8gvyEtvHU1VfSpRpn2GRPYG9YYs3k0jG5xzW3rx0jhVhhv5t
-	iPBOHw3SuFerGxKi0ZhlXx9lcRARhe+JSBkLIPgcDNEDGSi7sQ==
-X-Google-Smtp-Source: AGHT+IFSJ+4kv5Xs/qSCOHlxXtVL+bWi6OI4MLczYE6LXm3MNhlMW9aCl25vEmTgGsslYr0h2HnoONvX8TJ6FfWASaM=
-X-Received: by 2002:a05:6358:917:b0:175:97b6:af54 with SMTP id
- r23-20020a056358091700b0017597b6af54mr2046614rwi.15.1705078710054; Fri, 12
- Jan 2024 08:58:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A081757F;
+	Fri, 12 Jan 2024 16:58:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5983C433F1;
+	Fri, 12 Jan 2024 16:58:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705078712;
+	bh=6BMDfJ5c63lfLV+AgM5FqKmFO/iabKogwK/rRP83CI8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=S/it6ZRJzqE59hXdX3tLslvvnHCf7nPCJEBt1pv9HEHDmtmqvX9FY4MBiOp9ROPpH
+	 URStaObMvnyhJRqYcWfOmofllck+lV5RyS4z3LkMwp8p8493KKkm3b/JRd7qS7pn1u
+	 IaFS0oOfW+xfjdAA6FTM/hVgVnFD/GvOSCMm8E27PvbMMFMQgIQip+mD9QlexYgjaP
+	 QK2itt5Uh4x5G5bv7CDmLq0i+bc0wIZJaLmV4UM4K1CQOlKwcWg1H9VgozmKuy9iWz
+	 HjsvD306JQDVchYbwxWa/l81qIgMgu4+nhGyrcTgt1hO03mM6SP7tBfgmB+dLG7JKH
+	 +edfStHMgp5fw==
+Date: Fri, 12 Jan 2024 10:58:30 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Vidya Sagar <vidyas@nvidia.com>
+Cc: lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+	bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, will@kernel.org, frowand.list@gmail.com,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
+	mmaddireddy@nvidia.com, sagar.tv@gmail.com,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH V2 2/2] PCI: Add support for "preserve-boot-config"
+ property
+Message-ID: <20240112165830.GA2271982@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com>
- <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
- <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
- <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
- <ZZ+ixagkxRPYyTCE@vingu-book> <CAHk-=wj75Er8k4QY-KF34NBCWkDpr3D26XptOpkfDcTyGEA7iA@mail.gmail.com>
- <CAHk-=whK-cuBUQ2hECtkGu3LR-ipai+tmB85M=C7n3b1M8B4gQ@mail.gmail.com>
- <CAKfTPtCnT9VLqiQGL5kyhzqv=WAUNRA3tVDVoKjB7jX-00Un+g@mail.gmail.com> <4405adb5-0b16-4716-9542-47d8bb1737ee@arm.com>
-In-Reply-To: <4405adb5-0b16-4716-9542-47d8bb1737ee@arm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 12 Jan 2024 17:58:18 +0100
-Message-ID: <CAKfTPtDqYW7Zw7AB2B_2QdGDdGi1x46tghSTE_pG234kPea4BQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Scheduler changes for v6.8
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
-	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Juri Lelli <juri.lelli@redhat.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110030725.710547-3-vidyas@nvidia.com>
 
-On Fri, 12 Jan 2024 at 15:23, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 11/01/2024 19:16, Vincent Guittot wrote:
-> > On Thu, 11 Jan 2024 at 18:53, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> >>
-> >> On Thu, 11 Jan 2024 at 09:45, Linus Torvalds
-> >> <torvalds@linux-foundation.org> wrote:
-> >>>
-> >>> On Thu, 11 Jan 2024 at 00:11, Vincent Guittot
-> >>> <vincent.guittot@linaro.org> wrote:
-> >>>>
-> >>>> Could you confirm that cpufreq governor is schedutil and the driver is
-> >>>> amd-pstate on your system ?
-> >>>
-> >>> schedutil yes, amd-pstate no. I actually just use acpi_cpufreq
-> >>
-> >> Bah. Hit 'send' mistakenly too soon, thus the abrupt end and
-> >> unfinished quoting removal.
-> >>
-> >> And don't ask me why it's acpi_pstate-driven. I have X86_AMD_PSTATE=y, but
-> >>
-> >>     /sys/devices/system/cpu/cpufreq/policy0/scaling_driver
-> >>
-> >> clearly says 'acpi-cpufreq'. Maybe I'm looking in the wrong place. My dmesg says
-> >
-> > That seems to be the right place to look
-> >
-> >>
-> >>     amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
-> >>
-> >> which is presumably the reason my machine uses acpi-pstate.
-> >>
-> >> I will also test out your other questions, but I need to go back and
-> >> do more pull requests first.
-> >
-> > ok, thanks
-> >
-> > I'm going to continue checking what else could trigger such regression
-> > having in mind that your system should not have beeb impacted by this
-> > changes
->
-> I can't see the regression on my
->
->   20-core (40-thread) Intel Xeon CPU E5-2690 v2
->
-> with 'schedutil' and 'acpi-cpufreq'.
+On Wed, Jan 10, 2024 at 08:37:25AM +0530, Vidya Sagar wrote:
+> Add support for "preserve-boot-config" property that can be used to
+> selectively (i.e. per host bridge) instruct the kernel to preserve the
+> boot time configuration done by the platform firmware.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> V2:
+> * Addressed issues reported by kernel test robot <lkp@intel.com>
+> 
+>  drivers/pci/controller/pci-host-common.c |  5 ++++-
+>  drivers/pci/of.c                         | 18 ++++++++++++++++++
+>  drivers/pci/probe.c                      |  2 +-
+>  include/linux/of_pci.h                   |  6 ++++++
+>  4 files changed, 29 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pci-host-common.c b/drivers/pci/controller/pci-host-common.c
+> index 6be3266cd7b5..d3475dc9ec44 100644
+> --- a/drivers/pci/controller/pci-host-common.c
+> +++ b/drivers/pci/controller/pci-host-common.c
+> @@ -68,13 +68,16 @@ int pci_host_common_probe(struct platform_device *pdev)
+>  
+>  	of_pci_check_probe_only();
+>  
+> +	bridge->preserve_config =
+> +		of_pci_check_preserve_boot_config(dev->of_node);
 
-Thanks for the tests
+Thanks for leveraging the existing "preserve_config" support for the
+ACPI _DSM.  Is pci_host_common_probe() the best place for this?  I
+think there are many DT platform drivers that do not use
+pci_host_common_probe(), so I wonder if there's a more generic place
+to put this.
 
->
-> f12560779f9d - sched/cpufreq: Rework iowait boost                              <- (w/ patches)
-> 9c0b4bb7f630 - sched/cpufreq: Rework schedutil governor performance estimation
-> 50181c0cff31 - sched/pelt: Avoid underestimation of task utilization           <- (base)
-> ...
->
-> # cpufreq-info -c 0 -e
-> ...
-> analyzing CPU 0:
->   driver: acpi-cpufreq
->   CPUs which run at the same hardware frequency: 0
->   CPUs which need to have their frequency coordinated by software: 0
->   maximum transition latency: 10.0 us.
->   hardware limits: 1.20 GHz - 3.00 GHz
->   available frequency steps: 3.00 GHz, 3.00 GHz, 2.90 GHz, 2.70 GHz, 2.60 GHz, 2.50 GHz, 2.40 GHz, 2.20 GHz,
->                              2.10 GHz, 2.00 GHz, 1.80 GHz, 1.70 GHz, 1.60 GHz, 1.50 GHz, 1.30 GHz, 1.20 GHz
->   available cpufreq governors: conservative, ondemand, userspace, powersave, performance, schedutil
->   current policy: frequency should be within 1.20 GHz and 3.00 GHz.
->                   The governor "schedutil" may decide which speed to use
->                   within this range.
->   current CPU frequency is 1.20 GHz (asserted by call to hardware).
->
->
-> cpufreq is still fast-switching, so no schedutil 'sugov' DL threads.
+I see Rob's concern about adding "preserve-boot-config" vs extending
+"linux,pci-probe-only" and I don't really have an opinion on that,
+although I do think the "pci-probe-only" name is not as descriptive as
+it could be.  I guess somebody will argue that "preserve_config" could
+be more descriptive, too :)
+
+Bjorn
 
