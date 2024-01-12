@@ -1,136 +1,181 @@
-Return-Path: <linux-kernel+bounces-24785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CD5C82C27A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:05:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8646A82C289
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA9421F21C08
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:05:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5112B2195A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A5D6E2D0;
-	Fri, 12 Jan 2024 15:05:38 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E206E2DC;
+	Fri, 12 Jan 2024 15:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="bceDg11Z"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2010.outbound.protection.outlook.com [40.92.20.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0FC41C62;
-	Fri, 12 Jan 2024 15:05:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 145AAC433F1;
-	Fri, 12 Jan 2024 15:05:36 +0000 (UTC)
-Date: Fri, 12 Jan 2024 10:06:41 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, mhiramat@kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- kernel-team@android.com
-Subject: Re: [PATCH v11 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <20240112100641.3675edad@gandalf.local.home>
-In-Reply-To: <ZaECnv7EJHo6sqcT@google.com>
-References: <20240111161712.1480333-1-vdonnefort@google.com>
-	<20240111161712.1480333-3-vdonnefort@google.com>
-	<c3dba53f-66de-43f5-9b82-38aa807da67a@efficios.com>
-	<20240111181814.362c42cf@gandalf.local.home>
-	<ZaECnv7EJHo6sqcT@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4526DD12;
+	Fri, 12 Jan 2024 15:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N9D0UkHH0S3D+D5O5/bpY43jV8uaRvOX3uXwcXq208LQ2SIRQU3mJ/XPE4sK0+SxMB1N7tckQHcgqC5gmx4m+yoN5x+ClqWaXJGAJNxZuK2zdksI0T3zSyUmhS0k2uHs8Dpgw3z8gZh6jGLi3PI6GbuL0WYy3gqksiLv6GzbP5ulH1RNVnVs3WKiRl1hkwzmFQihcSXc0bOU9hoZGUnrVp71jUmk3ODYiQExdjY4BiHbQbYG4zWPqPbobaa22JCisDr2IMLnJ6Jjx5nNFR2KA/X8EhzxEbJg+AHatB6ffYsFGKlu7LMhOuhVeVXz2a+UP7BKmTWP8c79ukfX1bHVxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MI6buMWYXbYNgq4zmU7vND/bpGj8N9UtRrZi86nCDO4=;
+ b=jLWm7tnzEldIvkBzSuE3OnJDHlw/sSDVF0WzaJ4Btv/OzM4SBGJFrGF0cY1D+qJLrcOKWwtel/vMxdHHVuS9CY8DWeP8y3z66Qf88+73S3DlQGJMU/86G1QqKZB3sbHUWIzVC0AkZA+X5fjViG80kmS9aBPMvjXs80cyh71HYf9cmVyk/g/dOpLU+IcfexU2n4TWZ9FVQOzA42fFvdVnDgQZIP7WbwTFr+W7H9kodxDuyO/h66A5KzD0kIBvBlN4zVCH1ZksTgktb6fvvSEyMl3H8ICScNLWhg+OfvqWJpZBfkYtETr5B34jpAZNMxGHLdadIrgzmBMSGR6L5CG7rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MI6buMWYXbYNgq4zmU7vND/bpGj8N9UtRrZi86nCDO4=;
+ b=bceDg11Z43k/+NQi848d/9blS1KHgpHZMMpELp84ajuS5zXjCR602kCVDkdmk0V5sGwV/lsBCJuMsEOBVwA41KtGywOuISh9AzB5qSkqC5iL4j864hZTf3/2VwKxUIvYXYefvRdgnIhGTPaAYXrE2vVq0D9p5HGEyUuK9/K/umqlsjZBE9fEBWiHDOiUaF5J0rOquLKx4EgW7qUzLd/H87JONnTajLxoM1zYhaiqbQu10cXlY1wrb8ESxLmChQpFFuAmGsL5V7ZigeGqFPWQO/FWBxYMRPQqx6qUpmpEMyVxzjFKt5IYWy16cf6f6SvUubv94G5dam/rCdiEPGvRNw==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SA1PR02MB8413.namprd02.prod.outlook.com (2603:10b6:806:1f4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Fri, 12 Jan
+ 2024 15:07:52 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::3524:e4b3:632d:d8b2]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::3524:e4b3:632d:d8b2%4]) with mapi id 15.20.7181.015; Fri, 12 Jan 2024
+ 15:07:51 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"ardb@kernel.org" <ardb@kernel.org>, "hch@infradead.org" <hch@infradead.org>,
+	"Lutomirski, Andy" <luto@kernel.org>, "linux-coco@lists.linux.dev"
+	<linux-coco@lists.linux.dev>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "thomas.lendacky@amd.com"
+	<thomas.lendacky@amd.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"mingo@redhat.com" <mingo@redhat.com>, "seanjc@google.com"
+	<seanjc@google.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
+	"Cui, Dexuan" <decui@microsoft.com>, "urezki@gmail.com" <urezki@gmail.com>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"peterz@infradead.org" <peterz@infradead.org>, "wei.liu@kernel.org"
+	<wei.liu@kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Rodel, Jorg"
+	<jroedel@suse.de>, "sathyanarayanan.kuppuswamy@linux.intel.com"
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, "lstoakes@gmail.com"
+	<lstoakes@gmail.com>, "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH v3 1/3] x86/hyperv: Use slow_virt_to_phys() in page
+ transition hypervisor callback
+Thread-Topic: [PATCH v3 1/3] x86/hyperv: Use slow_virt_to_phys() in page
+ transition hypervisor callback
+Thread-Index: AQHaQAVimv7uqsPUukqF0M02BKDa3rDVauWAgADjM5A=
+Date: Fri, 12 Jan 2024 15:07:51 +0000
+Message-ID:
+ <SN6PR02MB4157B123128F6C2F6C3600D9D46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240105183025.225972-1-mhklinux@outlook.com>
+	 <20240105183025.225972-2-mhklinux@outlook.com>
+ <9dcdd088494b3fa285781cccfd35cd47a70d69c3.camel@intel.com>
+In-Reply-To: <9dcdd088494b3fa285781cccfd35cd47a70d69c3.camel@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [CqlCFPn5JUinYjOBK7Yu0ALr/Tt4DCHW]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SA1PR02MB8413:EE_
+x-ms-office365-filtering-correlation-id: 9d4f45f9-670d-4c57-17a7-08dc13803f1d
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ kGoUFeaLdOsCyaacA7Q8vpkfmUtfXkEzkYF0mu8G91rHwwKrV2YkNBs756sqolMLlqsE8fcmhcvFnKK5hLP2gx48A04IRQ3QhQCwryaTEV258Byuq4vL+XnOWa1uvLlFah+1pMp3ViThxnp02IUKHnj/W76/yBSfaeIV/yBaw38cJ+LwTKc8lz4QjEn6P9TQSTGSOqCgWe9DrZvscAIlFp27P7LYJ0LDHNOE8nPCnovxTAzaJ2BIcSyzNB10G2rMTLxCwn+4PGvqUCT+IdDcuuvICNA4t9+SHMGqLYhg+PIoSY1nk0Oq4ehZbzWoAqX1ZU4f5j5GRd9jHwcbHuWYFLpDLYqzDRbvcsIpxOpcTMCfHrKVZdAo9SD9SQYEmvKb2sd6qn9vOaQqDjNeukuKWTU25WNAv6mIkvwHTEmu7WUtWxE2E/cbTR5L1eZ/0BLT4MDfREkWZNex6xVO+y18kjOxpKYoz9VupJlLf6sz8j7Fy3UO4DBMyZphfYeofeRuqIE5/bBgzlBm4gAs/6PDShLuJjJfpMtMPmOxQH14NU8=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ZklsY2hBRXJLblVGT2lrQUlJT01HZDFFaTJjY3VwZkxkeS8vVDN5ZTlDWE5O?=
+ =?utf-8?B?ZUtUbXlCTkZmNTJBWXY5QTRMWUFMd0k3RVpoeFRUWjh6d1hXcTBuU0xRczAr?=
+ =?utf-8?B?SVdNYkl5SHVKQXN3Tk5zalJxRDRZcjI0aDM0dTFIaXBobFlhaU1ETkQ3YXFS?=
+ =?utf-8?B?SDhwbGxDUyt1RmJDazJjV05aeWk3eXFJdVdqNjJRNXROSTl0L1VnVkNyMWtp?=
+ =?utf-8?B?VWNLZ3JOZ3FzMGwxcFBjU1daODduVlVkNEhta2V5QlN4c09aV00vQ0dhYk1R?=
+ =?utf-8?B?SGdvdHpwbGtXS3c1VXBVb3d5dGxkRjFPcGliY0doU21VTUlSaTFUc1Y1NGZJ?=
+ =?utf-8?B?bHRubjFVYTkwY0l3aEdrNzFJbFBqUTFlN0s3R25TTWYxVjY4c0NFbDBWOVBK?=
+ =?utf-8?B?UkgzbDYrRk5PZ0E5UEE4dk5FeEROdjZKcERJdVBmR2trNGRqQ3Q5ZHh6L245?=
+ =?utf-8?B?bUlVS3FLcHJ6TEo3c0FlM2RhSGxlTzlySjFpZUpaaXFTUWYwQ3VyOFdqR0xJ?=
+ =?utf-8?B?VzUxbTgrejMyYUtURUhLRjh4ZDJiUHhGZGo4cU00OFg5NzdJcHBpbHJtZmpT?=
+ =?utf-8?B?RkZsVmRTL0lwemtpMEtnVlZoNU1zNmpOVXQzTHlUMzJtN1FLa2xkYThWUDhq?=
+ =?utf-8?B?Skd2c2ZGK2dsMGM2YlptWDZPR2dTL3VZNDRBMmx0SXBYQjFDZ2oxZjZwYUUy?=
+ =?utf-8?B?WmVpU1VBRWpzRWtVMlJHMEcyMkRxV0gyUTJCTnp6MEZHNnl1ZmFCdVBHUUsr?=
+ =?utf-8?B?d0FZM2M1VUdrZmlsc3VRTTJzeHhUQXJaZ0dpZjBxYnVPQS9NeHZIcnpuOXdB?=
+ =?utf-8?B?VFRvb3JnaFc0RDhUTXk3Q3VEZGdDS3kxWElRRUtWN2FUWE1lSllxaVA4VEJT?=
+ =?utf-8?B?bUZRaUlmSm8rV2t6b0ZRMjhZVDIzTzFuTGZiYjlVRVFOTjRTUW9iTlNHZ0dS?=
+ =?utf-8?B?UmQzKzF4ckttTnhpUzdRTUc2dk9OQUQ3QWN2Sm5mYkcxZGN3OXovOU9RRW5Y?=
+ =?utf-8?B?QTRVWEdWSVdSNWN6Yi9BL0xUa1U2RU1qaFdYSFhGbjNzcHFTUVFuQThRK09p?=
+ =?utf-8?B?UlRmenNWRXdpYk9UL3djSEpUaDhKdUcvOHFDZ3ZIZlQ2WDdqMGhXVUJzbHJW?=
+ =?utf-8?B?VVpJZ1d6V3BrM0dTYURYRjhKTXY1UzJaRE5oTXpEVEU3a0dGY1BWQVFjTzM1?=
+ =?utf-8?B?MnRlSXFQY3RESE9ldkQ5dm5zYTlCRXlQd3Z3WVRxb2lna3gveHlQMTkwVlFh?=
+ =?utf-8?B?YTZ2M1NvTE9ZQ1p3NHFEd0hpRTMzR3Fob3RNNFJHUGdPWkd0UFMvMHExaC9Y?=
+ =?utf-8?B?dFQyYUFjY2xoOW02RzUzQXMwc0gvR3ZnVFY5NXBtRXIzM1BBbXcrZUFseHR0?=
+ =?utf-8?B?bHhjQ2UvVTNRcWl3dUxxQ2VySHpyUUZzeWdWaXM0NW93d0d4dzNZVVVVeENZ?=
+ =?utf-8?B?OVRTdFJ3SUhOR2d5UDhrMjhxL2xML3V0WkJ6b2NVZklTNjdHNFZqeW5lcG5t?=
+ =?utf-8?B?d3ExZHFYWmlvaklVUnFraFlPUjlxZHZjOVdhQXpBT0hRTHNkWW5UT0pkRHRR?=
+ =?utf-8?B?WXlqK0dQSnc5cE1SWmdrcDZpSDZQd0lmRmV3TEVQWkxNNUdHMko4QjdxSTRp?=
+ =?utf-8?B?SmhZYkpFQUxsU0pHUzdzdUtKT1JMR3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d4f45f9-670d-4c57-17a7-08dc13803f1d
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 15:07:51.5353
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR02MB8413
 
-On Fri, 12 Jan 2024 09:13:02 +0000
-Vincent Donnefort <vdonnefort@google.com> wrote:
-
-> > > +
-> > > +	unsigned long	subbufs_touched;
-> > > +	unsigned long	subbufs_lost;
-> > > +	unsigned long	subbufs_read;  
-> > 
-> > Now I'm thinking we may not want this exported, as I'm not sure it's useful.  
-> 
-> touched and lost are not useful now, but it'll be for my support of the
-> hypervisor tracing, that's why I added them already.
-> 
-> subbufs_read could probably go away though as even in that case I can track that
-> in the reader.
-
-Yeah, but I think we can leave it off for now.
-
-This is something we could extend the structure with. In fact, it can be
-different for different buffers!
-
-That is, since they are pretty meaningless for the normal ring buffer, I
-don't think we need to export it. But if it's useful for your hypervisor
-buffer, it can export it. It would be a good test to know if the extension
-works. Of course, that means if the normal ring buffer needs more info, it
-must also include this as well, as it will already be part of the extended
-structure.
-
-
-> 
-> > 
-> > Vincent, talking with Mathieu, he was suggesting that we only export what
-> > we really need, and I don't think we need the above. Especially since they
-> > are not exposed in the stats file.
-> > 
-> >   
-> > > +
-> > > +	struct {
-> > > +		unsigned long	lost_events;
-> > > +		__u32		id;
-> > > +		__u32		read;
-> > > +	} reader;  
-> > 
-> > The above is definitely needed, as all of it is used to read the
-> > reader-page of the sub-buffer.
-> > 
-> > lost_events is the number of lost events that happened before this
-> > sub-buffer was swapped out.
-> > 
-> > Hmm, Vincent, I just notice that you update the lost_events as:
-> >   
-> > > +static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > > +{
-> > > +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-> > > +
-> > > +	WRITE_ONCE(meta->entries, local_read(&cpu_buffer->entries));
-> > > +	WRITE_ONCE(meta->overrun, local_read(&cpu_buffer->overrun));
-> > > +	WRITE_ONCE(meta->read, cpu_buffer->read);
-> > > +
-> > > +	WRITE_ONCE(meta->subbufs_touched, local_read(&cpu_buffer->pages_touched));
-> > > +	WRITE_ONCE(meta->subbufs_lost, local_read(&cpu_buffer->pages_lost));
-> > > +	WRITE_ONCE(meta->subbufs_read, local_read(&cpu_buffer->pages_read));
-> > > +
-> > > +	WRITE_ONCE(meta->reader.read, cpu_buffer->reader_page->read);
-> > > +	WRITE_ONCE(meta->reader.id, cpu_buffer->reader_page->id);
-> > > +	WRITE_ONCE(meta->reader.lost_events, cpu_buffer->lost_events);
-> > > +}  
-> > 
-> > The lost_events may need to be handled differently, as it doesn't always
-> > get cleared. So it may be stale data.  
-> 
-> My idea was to check this value after the ioctl(). If > 0 then events were lost
-> between the that ioctl() and the previous swap.
-> 
-> But now if with "[PATCH] ring-buffer: Have mmapped ring buffer keep track of
-> missed events" we put this information in the page itself, we can get rid of
-> this field.
-> 
-
-I'm thinking both may be good, as the number of dropped events are not
-added if there's no room to put it at the end of the ring buffer. When
-there's no room, it just sets a flag that there was missed events but
-doesn't give how many events were missed.
-
-If anything, it should be in both locations. In the sub-buffer header, to
-be consistent with the read/splice version, and in the meta page were if
-there's no room to add the count, it can be accessed in the meta page.
-
--- Steve
+RnJvbTogRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPiBTZW50
+OiBUaHVyc2RheSwgSmFudWFyeSAxMSwgMjAyNCA1OjIwIFBNDQo+IA0KPiBPbiBGcmksIDIwMjQt
+MDEtMDUgYXQgMTA6MzAgLTA4MDAsIG1oa2VsbGV5NThAZ21haWwuY29tIHdyb3RlOg0KPiA+ICsg
+KiBJdCBpcyBhbHNvIHVzZWQgaW4gY2FsbGJhY2tzIGZvciBDb0NvIFZNIHBhZ2UgdHJhbnNpdGlv
+bnMgYmV0d2VlbiBwcml2YXRlDQo+ID4gKyAqIGFuZCBzaGFyZWQgYmVjYXVzZSBpdCB3b3JrcyB3
+aGVuIHRoZSBQUkVTRU5UIGJpdCBpcyBub3Qgc2V0IGluIHRoZSBsZWFmDQo+ID4gKyAqIFBURS4g
+SW4gc3VjaCBjYXNlcywgdGhlIHN0YXRlIG9mIHRoZSBQVEVzLCBpbmNsdWRpbmcgdGhlIFBGTiwg
+aXMgb3RoZXJ3aXNlDQo+ID4gKyAqIGtub3duIHRvIGJlIHZhbGlkLCBzbyB0aGUgcmV0dXJuZWQg
+cGh5c2ljYWwgYWRkcmVzcyBpcyBjb3JyZWN0LiAgVGhlIHNpbWlsYXINCj4gPiArICogZnVuY3Rp
+b24gdm1hbGxvY190b19wZm4oKSBjYW4ndCBiZSB1c2VkIGJlY2F1c2UgaXQgcmVxdWlyZXMgdGhl
+IFBSRVNFTlQgYml0Lg0KPiANCj4gSSdtIG5vdCBzdXJlIGFib3V0IHRoaXMgY29tbWVudC4gSXQg
+aXMgbW9zdGx5IGFib3V0IGNhbGxlcnMgZmFyIGF3YXkNCj4gYW5kIG90aGVyIGZ1bmN0aW9ucyBp
+biB2bWFsbG9jLiBQcm9iYWJseSBhIGRlY2VudCBjaGFuY2UgdG8gZ2V0IHN0YWxlLg0KPiBJdCBh
+bHNvIGtpbmQgb2YgYmVncyB0aGUgcXVlc3Rpb24gb2Ygd2h5IHZtYWxsb2NfdG9fcGZuKCkgcmVx
+dWlyZXMgdGhlDQo+IHByZXNlbnQgYml0IGluIHRoZSBsZWFmLg0KDQpUaGUgY29tbWVudCBpcyBL
+aXJpbGwgU2h1dGVtb3YncyBzdWdnZXN0aW9uIGJhc2VkIG9uIGNvbW1lbnRzIGluDQphbiBlYXJs
+aWVyIHZlcnNpb24gb2YgdGhlIHBhdGNoIHNlcmllcy4gIFNlZSBbMV0uICAgVGhlIGludGVudCBp
+cyB0byBwcmV2ZW50DQpzb21lIGxhdGVyIHJldmlzaW9uIHRvIHNsb3dfdmlydF90b19waHlzKCkg
+ZnJvbSBhZGRpbmcgYSBjaGVjayBmb3IgdGhlDQpwcmVzZW50IGJpdCBhbmQgYnJlYWtpbmcgdGhl
+IENvQ28gVk0gaHlwZXJ2aXNvciBjYWxsYmFjay4gIFllcywgdGhlDQpjb21tZW50IGNvdWxkIGdl
+dCBzdGFsZSwgYnV0IEknbSBub3Qgc3VyZSBob3cgZWxzZSB0byBjYWxsIG91dCB0aGUNCmltcGxp
+Y2l0IGRlcGVuZGVuY3kuICBUaGUgaWRlYSBvZiBjcmVhdGluZyBhIHByaXZhdGUgdmVyc2lvbiBv
+Zg0Kc2xvd192aXJ0X3RvX3BoeXMoKSBmb3IgdXNlIG9ubHkgaW4gdGhlIENvQ28gVk0gaHlwZXJ2
+aXNvciBjYWxsYmFjaw0KaXMgYWxzbyBkaXNjdXNzZWQgaW4gdGhlIHRocmVhZCwgYnV0IHRoYXQg
+c2VlbXMgd29yc2Ugb3ZlcmFsbC4NCg0KQXMgZm9yIHdoeSB2bWFsbG9jX3RvX3BhZ2UoKSBjaGVj
+a3MgdGhlIHByZXNlbnQgYml0LCBJIGRvbid0IGtub3cuDQpCdXQgdm1hbGxvY190b19wYWdlKCkg
+aXMgdmVyeSB3aWRlbHkgdXNlZCwgc28gdHJ5aW5nIHRvIGNoYW5nZSBpdA0KZG9lc24ndCBzZWVt
+IHZpYWJsZS4NCg0KPiANCj4gSXQgc2VlbXMgdGhlIGZpcnN0IHBhcnQgb2YgdGhlIGNvbW1lbnQg
+aXMgYWJvdXQgd2h5IHRoaXMgaXMgbmVlZGVkIHdoZW4NCj4gX19wYSgpIGV4aXN0cy4gT25lIHJl
+YXNvbiBnaXZlbiBpcyB0aGF0IF9fcGEoKSBkb2Vzbid0IHdvcmsgd2l0aA0KPiB2bWFsbG9jIG1l
+bW9yeS4gVGhlbiB0aGUgbmV4dCBiaXQgdGFsa3MgYWJvdXQgYW5vdGhlciBzaW1pbGFyIGZ1bmN0
+aW9uDQo+IHRoYXQgd29ya3Mgd2l0aCB2bWFsbG9jIG1lbW9yeS4NCj4gDQo+IFNvIHRoZSBjb21t
+ZW50IGlzIGEgcmlzayB0byBnZXQgc3RhbGUsIGFuZCBsZWF2ZXMgbWUgYSBsaXR0bGUgY29uZnVz
+ZWQNCj4gd2h5IHRoaXMgZnVuY3Rpb24gZXhpc3RzLg0KPiANCj4gSSB0aGluayB0aGUgcmVhc29u
+IGlzIGJlY2F1c2Ugdm1hbGxvY190b19wZm4oKSAqb25seSogd29ya3Mgd2l0aA0KPiB2bWFsbG9j
+IG1lbW9yeSBhbmQgdGhpcyBpcyBuZWVkZWQgdG8gd29yayBvbiBvdGhlciBhbGlhcyBtYXBwaW5n
+cy4NCg0KUHJlc3VtYWJseSBzby4gIFRoZSBmaXJzdCBwYXJhZ3JhcGggb2YgdGhlIGV4aXN0aW5n
+IGNvbW1lbnQgYWxzbw0KY2FsbHMgb3V0ICJhbGxvY19yZW1hcCgpIGFyZWFzIG9uIDMyLWJpdCBO
+VU1BIHN5c3RlbXMiIGFzDQpuZWVkaW5nIHNsb3dfdmlydF90b19waHlzKCkuDQoNCk1pY2hhZWwN
+Cg0KWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMzA4MjgyMjEzMzMuNWJsc2hv
+c3lxYWZiZ3dsY0Bib3guc2h1dGVtb3YubmFtZS8NCg==
 
